@@ -5,11 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  ManyToMany,
-  JoinTable,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
+import { ClassStudent } from './class-student.entity';
 
 @Entity('classes')
 export class Class {
@@ -33,14 +33,12 @@ export class Class {
   @Column()
   teacherId!: number;
 
-  // Relación ManyToMany: Una clase puede tener muchos estudiantes
-  @ManyToMany(() => User, { eager: false })
-  @JoinTable({
-    name: 'class_students',
-    joinColumn: { name: 'classId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'studentId', referencedColumnName: 'id' },
-  })
-  students!: User[];
+  // Relación OneToMany: Una clase tiene muchas inscripciones (ClassStudent)
+  @OneToMany(() => ClassStudent, (classStudent) => classStudent.class, { eager: false })
+  classStudents!: ClassStudent[];
+
+  // Propiedad virtual para mantener compatibilidad con el frontend
+  students?: User[];
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -3,8 +3,10 @@ import {
   Column, 
   PrimaryGeneratedColumn, 
   CreateDateColumn, 
-  UpdateDateColumn 
+  UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
+import { ClassStudent } from '../../class/entities/class-student.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -42,6 +44,9 @@ export class User {
 
   @Column({ nullable: true })
   programa!: string;
+
+  @OneToMany(() => ClassStudent, (classStudent) => classStudent.student)
+  classStudents!: ClassStudent[];
 
   @CreateDateColumn()
   createdAt!: Date;

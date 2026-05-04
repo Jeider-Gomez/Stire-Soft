@@ -11,12 +11,15 @@ import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import { UserService } from '../user/user.service';
 import { UserRole } from '../user/entities/user.entity';
+import { ClassStudent } from './entities/class-student.entity';
 
 @Injectable()
 export class ClassService {
   constructor(
     @InjectRepository(Class)
     private readonly classRepository: Repository<Class>,
+    @InjectRepository(ClassStudent)
+    private readonly classStudentRepository: Repository<ClassStudent>,
     private readonly userService: UserService,
   ) {}
 
@@ -54,9 +57,14 @@ export class ClassService {
    * Obtener clases de un docente
    */
   async findByTeacher(teacherId: number): Promise<Class[]> {
-    return await this.classRepository.find({
+    const classes = await this.classRepository.find({
       where: { teacherId },
-      relations: ['teacher', 'students'],
+      relations: ['teacher', 'classStudents', 'classStudents.student'],
+    });
+    
+    return classes.map(c => {
+      c.students = c.classStudents?.map(cs => cs.student) || [];
+      return c;
     });
   }
 
@@ -64,12 +72,18 @@ export class ClassService {
    * Obtener clases donde un estudiante está inscrito
    */
   async findByStudent(studentId: number): Promise<Class[]> {
-    return await this.classRepository
+    const classes = await this.classRepository
       .createQueryBuilder('class')
       .leftJoinAndSelect('class.teacher', 'teacher')
-      .leftJoin('class.students', 'student')
+      .leftJoinAndSelect('class.classStudents', 'classStudent')
+      .leftJoinAndSelect('classStudent.student', 'student')
       .where('student.id = :studentId', { studentId })
       .getMany();
+      
+    return classes.map(c => {
+      c.students = c.classStudents?.map(cs => cs.student) || [];
+      return c;
+    });
   }
 
   /**
@@ -78,13 +92,14 @@ export class ClassService {
   async findOne(id: number): Promise<Class> {
     const classEntity = await this.classRepository.findOne({
       where: { id },
-      relations: ['teacher', 'students'],
+      relations: ['teacher', 'classStudents', 'classStudents.student'],
     });
 
     if (!classEntity) {
       throw new NotFoundException(`Clase con ID ${id} no encontrada`);
     }
 
+    classEntity.students = classEntity.classStudents?.map(cs => cs.student) || [];
     return classEntity;
   }
 
@@ -109,13 +124,18 @@ export class ClassService {
     }
 
     // Verificar si ya está inscrito
-    const alreadyEnrolled = classEntity.students.some((s) => s.id === studentId);
+    const alreadyEnrolled = classEntity.classStudents?.some((cs) => cs.student.id === studentId);
     if (alreadyEnrolled) {
       throw new ConflictException('El estudiante ya está inscrito en esta clase');
     }
 
-    classEntity.students.push(student);
-    return await this.classRepository.save(classEntity);
+    const classStudent = this.classStudentRepository.create({
+      classId,
+      studentId,
+    });
+    
+    await this.classStudentRepository.save(classStudent);
+    return this.findOne(classId);
   }
 
   /**
@@ -124,8 +144,8 @@ export class ClassService {
   async removeStudent(classId: number, studentId: number): Promise<Class> {
     const classEntity = await this.findOne(classId);
 
-    classEntity.students = classEntity.students.filter((s) => s.id !== studentId);
-    return await this.classRepository.save(classEntity);
+    await this.classStudentRepository.delete({ classId, studentId });
+    return this.findOne(classId);
   }
 
   /**
@@ -133,7 +153,11 @@ export class ClassService {
    */
   async getStudents(classId: number) {
     const classEntity = await this.findOne(classId);
-    return classEntity.students;
+    // Ahora que mapped `students` es poblado en findOne, devolvemos junto con la fecha
+    return classEntity.classStudents?.map(cs => ({
+      ...cs.student,
+      registrationDate: cs.registrationDate
+    })) || [];
   }
 
   /**
