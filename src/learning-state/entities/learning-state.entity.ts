@@ -19,9 +19,9 @@ export enum ProgressState {
   DOMINADO = 'dominado',
 }
 
-@Entity('progress')
+@Entity('learning_states')
 @Unique(['studentId', 'learningUnitId'])
-export class Progress {
+export class LearningState {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -65,13 +65,13 @@ export class Progress {
   @Column({ type: 'int', default: 0 })
   urgencyLevel!: number;
 
-  // Última revisión (compatibilidad)
-  @Column({ type: 'timestamp', nullable: true })
-  lastReview!: Date | null;
+  // Tasa de éxito (0-100% evaluaciones aprobadas >= 70%)
+  @Column({ type: 'int', default: 0 })
+  successRate!: number;
 
   // Número de revisiones/intentos totales
   @Column({ type: 'int', default: 0 })
-  reviewCount!: number;
+  totalAttempts!: number;
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -74,8 +74,8 @@ export class ClassController {
   @Patch(':id')
   @UseGuards(RolesGuard)
   @Roles('docente')
-  update(@Param('id') id: string, @Body() updateClassDto: UpdateClassDto) {
-    return this.classService.update(+id, updateClassDto);
+  update(@Param('id') id: string, @Body() updateClassDto: UpdateClassDto, @GetUser() user: User) {
+    return this.classService.update(+id, updateClassDto, user.id);
   }
 
   /**

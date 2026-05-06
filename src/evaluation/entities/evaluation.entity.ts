@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { LearningUnit } from '../../learning-unit/entities/learning-unit.entity';
+import { Difficulty } from '../../common/enums/difficulty.enum';
 
 export enum EvaluationType {
   QUIZ = 'quiz',
@@ -38,6 +39,17 @@ export class Evaluation {
   // Puntaje máximo posible de esta evaluación
   @Column({ type: 'int', nullable: false })
   maxScore!: number;
+
+  @Column({
+    type: 'enum',
+    enum: Difficulty,
+    default: Difficulty.BASICO,
+  })
+  difficulty!: Difficulty;
+
+  // Peso del cálculo: basico=1.0, intermedio=1.5, avanzado=2.0
+  @Column({ type: 'float', default: 1.0 })
+  weight!: number;
 
   @Column({ default: true })
   isActive!: boolean;

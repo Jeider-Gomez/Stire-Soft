@@ -1,5 +1,6 @@
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EvaluationType } from '../entities/evaluation.entity';
+import { Difficulty } from '../../common/enums/difficulty.enum';
 
 export class UpdateEvaluationDto {
   @IsString()
@@ -17,6 +18,14 @@ export class UpdateEvaluationDto {
   @IsNumber()
   @IsOptional()
   maxScore?: number;
+
+  @IsEnum(Difficulty)
+  @IsOptional()
+  difficulty?: Difficulty;
+
+  @IsNumber()
+  @IsOptional()
+  weight?: number;
 
   @IsBoolean()
   @IsOptional()

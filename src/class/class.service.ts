@@ -106,8 +106,14 @@ export class ClassService {
   /**
    * Actualizar una clase
    */
-  async update(id: number, updateClassDto: UpdateClassDto): Promise<Class> {
+  async update(id: number, updateClassDto: UpdateClassDto, teacherId: number): Promise<Class> {
     const classEntity = await this.findOne(id);
+
+    // Validate ownership
+    if (classEntity.teacherId !== teacherId) {
+      throw new ConflictException('No tienes permiso para modificar esta clase');
+    }
+
     Object.assign(classEntity, updateClassDto);
     return await this.classRepository.save(classEntity);
   }

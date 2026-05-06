@@ -1,13 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TutorService } from './tutor.service';
 import { TutorController } from './tutor.controller';
-import { ProgressModule } from '../progress/progress.module';
+import { LearningStateModule } from '../learning-state/learning-state.module';
+import { EvaluationModule } from '../evaluation/evaluation.module';
+import { LearningUnitModule } from '../learning-unit/learning-unit.module';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    ProgressModule,
+    LearningStateModule,
+    EvaluationModule,
+    LearningUnitModule,
     UserModule,
     AuthModule,
   ],

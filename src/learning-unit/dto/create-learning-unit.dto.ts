@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { Difficulty } from '../entities/learning-unit.entity';
+import { Difficulty } from '../../common/enums/difficulty.enum';
 
 export class CreateLearningUnitDto {
   @IsString({ message: 'El título debe ser una cadena de texto' })

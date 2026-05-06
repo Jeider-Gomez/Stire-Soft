@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { Submission } from './entities/submission.entity';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { EvaluationService } from '../evaluation/evaluation.service';
-import { ProgressService } from '../progress/progress.service';
+import { LearningStateService } from '../learning-state/learning-state.service';
 
 @Injectable()
 export class SubmissionService {
@@ -16,7 +16,7 @@ export class SubmissionService {
     @InjectRepository(Submission)
     private readonly submissionRepository: Repository<Submission>,
     private readonly evaluationService: EvaluationService,
-    private readonly progressService: ProgressService,
+    private readonly learningStateService: LearningStateService,
   ) {}
 
   /**
@@ -54,7 +54,7 @@ export class SubmissionService {
 
     // 4. Recalcular mastery de la unidad correspondiente
     const unitId = evaluation.learningUnitId;
-    const updatedProgress = await this.progressService.recalculateMastery(studentId, unitId);
+    const updatedProgress = await this.learningStateService.recalculateMastery(studentId, unitId);
 
     return {
       submission: savedSubmission,
@@ -104,5 +104,36 @@ export class SubmissionService {
     }
 
     return results;
+  }
+
+  /**
+   * Obtener el mejor score del estudiante en una evaluación específica
+   * Usado por LearningStateService para calcular mastery
+   */
+  async getBestScore(studentId: number, evaluationId: number): Promise<number> {
+    const bestSubmission = await this.submissionRepository
+      .createQueryBuilder('submission')
+      .where('submission.studentId = :studentId', { studentId })
+      .andWhere('submission.evaluationId = :evaluationId', { evaluationId })
+      .orderBy('submission.score', 'DESC')
+      .getOne();
+
+    return bestSubmission?.score || 0;
+  }
+
+  /**
+   * Contar total de submissions del estudiante en una unidad
+   */
+  async countByUnit(studentId: number, unitId: number): Promise<number> {
+    const evaluations = await this.evaluationService.findActiveByUnit(unitId);
+    if (evaluations.length === 0) return 0;
+
+    const evaluationIds = evaluations.map(e => e.id);
+    
+    return await this.submissionRepository
+      .createQueryBuilder('submission')
+      .where('submission.studentId = :studentId', { studentId })
+      .andWhere('submission.evaluationId IN (:...evaluationIds)', { evaluationIds })
+      .getCount();
   }
 }

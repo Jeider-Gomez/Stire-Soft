@@ -1,5 +1,6 @@
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EvaluationType } from '../entities/evaluation.entity';
+import { Difficulty } from '../../common/enums/difficulty.enum';
 
 export class CreateEvaluationDto {
   @IsString({ message: 'El título debe ser texto' })
@@ -17,6 +18,14 @@ export class CreateEvaluationDto {
   @IsNumber({}, { message: 'El puntaje máximo debe ser un número' })
   @IsNotEmpty({ message: 'El puntaje máximo es obligatorio' })
   maxScore!: number;
+
+  @IsEnum(Difficulty, { message: 'La dificultad debe ser: basico, intermedio o avanzado' })
+  @IsOptional()
+  difficulty?: Difficulty;
+
+  @IsNumber({}, { message: 'El peso debe ser un número' })
+  @IsOptional()
+  weight?: number;
 
   @IsNumber({}, { message: 'El learningUnitId debe ser un número' })
   @IsNotEmpty({ message: 'El learningUnitId es obligatorio' })

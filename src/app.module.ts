@@ -9,7 +9,7 @@ import { TopicModule } from './topic/topic.module';
 import { LearningUnitModule } from './learning-unit/learning-unit.module';
 import { EvaluationModule } from './evaluation/evaluation.module';
 import { SubmissionModule } from './submission/submission.module';
-import { ProgressModule } from './progress/progress.module';
+import { LearningStateModule } from './learning-state/learning-state.module';
 import { MessageModule } from './message/message.module';
 import { TutorModule } from './tutor/tutor.module';
 
@@ -50,7 +50,7 @@ import { TutorModule } from './tutor/tutor.module';
     LearningUnitModule,
     EvaluationModule,
     SubmissionModule,
-    ProgressModule,
+    LearningStateModule,
     MessageModule,
     TutorModule,
   ],

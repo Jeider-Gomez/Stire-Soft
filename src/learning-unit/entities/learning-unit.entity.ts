@@ -11,11 +11,7 @@ import {
 import { Topic } from '../../topic/entities/topic.entity';
 import { Evaluation } from '../../evaluation/entities/evaluation.entity';
 
-export enum Difficulty {
-  BASICO = 'basico',
-  INTERMEDIO = 'intermedio',
-  AVANZADO = 'avanzado',
-}
+import { Difficulty } from '../../common/enums/difficulty.enum';
 
 @Entity('learning_units')
 export class LearningUnit {

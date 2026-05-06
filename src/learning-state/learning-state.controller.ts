@@ -7,7 +7,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { ProgressService } from './progress.service';
+import { LearningStateService } from './learning-state.service';
 import { UpdateMasteryDto } from './dto/update-mastery.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -17,8 +17,8 @@ import { User } from '../user/entities/user.entity';
 
 @Controller('progress')
 @UseGuards(JwtAuthGuard)
-export class ProgressController {
-  constructor(private readonly progressService: ProgressService) {}
+export class LearningStateController {
+  constructor(private readonly learningStateService: LearningStateService) {}
 
   /**
    * Dashboard completo del estudiante
@@ -28,7 +28,7 @@ export class ProgressController {
   @UseGuards(RolesGuard)
   @Roles('estudiante')
   getMyDashboard(@GetUser() user: User) {
-    return this.progressService.getMyDashboard(user.id);
+    return this.learningStateService.getMyDashboard(user.id);
   }
 
   /**
@@ -38,7 +38,7 @@ export class ProgressController {
   @UseGuards(RolesGuard)
   @Roles('estudiante')
   getMyProgress(@GetUser() user: User) {
-    return this.progressService.getFullStudentProgress(user.id);
+    return this.learningStateService.getFullStudentProgress(user.id);
   }
 
   /**
@@ -48,7 +48,7 @@ export class ProgressController {
   @UseGuards(RolesGuard)
   @Roles('estudiante')
   getRecommendations(@GetUser() user: User) {
-    return this.progressService.getRecommendations(user.id);
+    return this.learningStateService.getRecommendations(user.id);
   }
 
   /**
@@ -58,7 +58,7 @@ export class ProgressController {
   @UseGuards(RolesGuard)
   @Roles('estudiante')
   markAsViewed(@GetUser() user: User, @Param('unitId') unitId: string) {
-    return this.progressService.markAsViewed(user.id, +unitId);
+    return this.learningStateService.markAsViewed(user.id, +unitId);
   }
 
   /**
@@ -70,7 +70,7 @@ export class ProgressController {
     @Param('unitId') unitId: string,
     @Body() updateMasteryDto: UpdateMasteryDto,
   ) {
-    return this.progressService.updateMastery(user.id, +unitId, updateMasteryDto.mastery);
+    return this.learningStateService.updateMastery(user.id, +unitId, updateMasteryDto.mastery);
   }
 
   /**
@@ -84,7 +84,7 @@ export class ProgressController {
     @Param('unitId') unitId: string,
     @Body() updateMasteryDto: UpdateMasteryDto,
   ) {
-    return this.progressService.updateMastery(+studentId, +unitId, updateMasteryDto.mastery);
+    return this.learningStateService.updateMastery(+studentId, +unitId, updateMasteryDto.mastery);
   }
 
   /**
@@ -94,7 +94,7 @@ export class ProgressController {
   @UseGuards(RolesGuard)
   @Roles('docente', 'admin')
   getStudentProgress(@Param('studentId') studentId: string) {
-    return this.progressService.getFullStudentProgress(+studentId);
+    return this.learningStateService.getFullStudentProgress(+studentId);
   }
 
   /**
@@ -104,6 +104,6 @@ export class ProgressController {
   @UseGuards(RolesGuard)
   @Roles('docente', 'admin')
   getProgressSummary(@Param('studentId') studentId: string) {
-    return this.progressService.getProgressSummaryForTutor(+studentId);
+    return this.learningStateService.getProgressSummaryForTutor(+studentId);
   }
 }
