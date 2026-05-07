@@ -92,7 +92,7 @@ export class LearningStateService {
   /**
    * RECALCULAR MASTERY — Se llama desde SubmissionService después de cada intento
    */
-  async recalculateMastery(studentId: number, unitId: number): Promise<LearningState> {
+  async recalculateMastery(studentId: number, unitId: number, evaluationId?: number): Promise<LearningState> {
     const learningState = await this.getOrCreateLearningState(studentId, unitId);
 
     // 1. Obtener todas las evaluaciones activas de esta unidad
@@ -111,8 +111,10 @@ export class LearningStateService {
       const bestScore = await this.submissionService.getBestScore(studentId, evaluation.id);
       
       const weight = evaluation.weight || 1.0;
-      totalWeightedMax += evaluation.maxScore * weight;
-      totalWeightedBest += bestScore * weight;
+      const effectiveWeight = evaluation.isRequired ? weight : weight * 0.5;
+      
+      totalWeightedMax += evaluation.maxScore * effectiveWeight;
+      totalWeightedBest += bestScore * effectiveWeight;
 
       if (bestScore >= (evaluation.maxScore * 0.7)) {
         approvedEvaluations++;
@@ -144,6 +146,9 @@ export class LearningStateService {
     learningState.nextReviewDate = nextReviewDate;
     learningState.urgencyLevel = urgencyLevel;
     learningState.totalAttempts = totalAttempts;
+    if (evaluationId) {
+      learningState.lastEvaluationId = evaluationId;
+    }
 
     return await this.learningStateRepository.save(learningState);
   }
@@ -238,6 +243,31 @@ export class LearningStateService {
         totalAttempts: state?.totalAttempts || 0,
       };
     });
+  }
+
+  async getClassProgress(studentId: number, classId: number): Promise<number> {
+    const classUnits = await this.learningUnitService.findByClass(classId);
+    if (classUnits.length === 0) return 0;
+
+    const studentProgress = await this.getStudentProgress(studentId);
+
+    let totalWeightedMastery = 0;
+    let totalWeights = 0;
+
+    for (const unit of classUnits) {
+      const state = studentProgress.find(p => p.learningUnitId === unit.id);
+      const mastery = state?.mastery || 0;
+      
+      // Default weight for a unit could be based on its evaluations or just 1
+      // For simplicity, we assign a weight of 1 per unit if we don't have unit-level weights
+      const weight = 1;
+      
+      totalWeightedMastery += mastery * weight;
+      totalWeights += weight;
+    }
+
+    if (totalWeights === 0) return 0;
+    return Math.round(totalWeightedMastery / totalWeights);
   }
 
   async getMyDashboard(studentId: number) {

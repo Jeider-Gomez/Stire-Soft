@@ -12,6 +12,7 @@ import { SubmissionModule } from './submission/submission.module';
 import { LearningStateModule } from './learning-state/learning-state.module';
 import { MessageModule } from './message/message.module';
 import { TutorModule } from './tutor/tutor.module';
+import { EnrollmentModule } from './enrollment/enrollment.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { TutorModule } from './tutor/tutor.module';
     LearningStateModule,
     MessageModule,
     TutorModule,
+    EnrollmentModule,
   ],
 })
 export class AppModule {}

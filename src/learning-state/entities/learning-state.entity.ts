@@ -73,6 +73,9 @@ export class LearningState {
   @Column({ type: 'int', default: 0 })
   totalAttempts!: number;
 
+  @Column({ type: 'int', nullable: true })
+  lastEvaluationId?: number;
+
   @CreateDateColumn()
   createdAt!: Date;
 

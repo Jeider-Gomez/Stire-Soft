@@ -6,6 +6,7 @@ import { EvaluationModule } from '../evaluation/evaluation.module';
 import { LearningUnitModule } from '../learning-unit/learning-unit.module';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
+import { EnrollmentModule } from '../enrollment/enrollment.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from '../auth/auth.module';
     LearningUnitModule,
     UserModule,
     AuthModule,
+    EnrollmentModule,
   ],
   controllers: [TutorController],
   providers: [TutorService],

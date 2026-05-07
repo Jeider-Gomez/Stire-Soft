@@ -40,6 +40,18 @@ export class LearningUnitService {
   }
 
   /**
+   * Obtener todas las unidades de una clase
+   */
+  async findByClass(classId: number): Promise<LearningUnit[]> {
+    return await this.learningUnitRepository
+      .createQueryBuilder('unit')
+      .innerJoin('unit.topic', 'topic')
+      .where('topic.classId = :classId', { classId })
+      .orderBy('unit.order', 'ASC')
+      .getMany();
+  }
+
+  /**
    * Obtener una unidad por ID
    */
   async findOne(id: number): Promise<LearningUnit> {

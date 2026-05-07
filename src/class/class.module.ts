@@ -1,15 +1,18 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Class } from './entities/class.entity';
 import { ClassService } from './class.service';
 import { ClassController } from './class.controller';
-import { Class } from './entities/class.entity';
-import { ClassStudent } from './entities/class-student.entity';
+import { EnrollmentModule } from '../enrollment/enrollment.module';
+import { LearningStateModule } from '../learning-state/learning-state.module';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Class, ClassStudent]),
+    TypeOrmModule.forFeature([Class]),
+    forwardRef(() => EnrollmentModule),
+    forwardRef(() => LearningStateModule),
     UserModule,
     AuthModule,
   ],

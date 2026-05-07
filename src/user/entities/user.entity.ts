@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany
 } from 'typeorm';
-import { ClassStudent } from '../../class/entities/class-student.entity';
+import { Enrollment } from '../../enrollment/entities/enrollment.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -45,8 +45,8 @@ export class User {
   @Column({ nullable: true })
   programa!: string;
 
-  @OneToMany(() => ClassStudent, (classStudent) => classStudent.student)
-  classStudents!: ClassStudent[];
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
+  enrollments!: Enrollment[];
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -9,6 +9,7 @@ import { Submission } from './entities/submission.entity';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { EvaluationService } from '../evaluation/evaluation.service';
 import { LearningStateService } from '../learning-state/learning-state.service';
+import { EnrollmentService } from '../enrollment/enrollment.service';
 
 @Injectable()
 export class SubmissionService {
@@ -17,6 +18,7 @@ export class SubmissionService {
     private readonly submissionRepository: Repository<Submission>,
     private readonly evaluationService: EvaluationService,
     private readonly learningStateService: LearningStateService,
+    private readonly enrollmentService: EnrollmentService,
   ) {}
 
   /**
@@ -36,6 +38,12 @@ export class SubmissionService {
       throw new BadRequestException('Esta evaluación no está activa');
     }
 
+    const classId = evaluation.learningUnit?.topic?.classId;
+    if (!classId) {
+      throw new BadRequestException('La evaluación no está asignada a una clase');
+    }
+    await this.enrollmentService.validateEnrollment(studentId, classId);
+
     // 2. Validar que el score no exceda el máximo
     if (createDto.score > evaluation.maxScore) {
       throw new BadRequestException(
@@ -54,7 +62,7 @@ export class SubmissionService {
 
     // 4. Recalcular mastery de la unidad correspondiente
     const unitId = evaluation.learningUnitId;
-    const updatedProgress = await this.learningStateService.recalculateMastery(studentId, unitId);
+    const updatedProgress = await this.learningStateService.recalculateMastery(studentId, unitId, evaluation.id);
 
     return {
       submission: savedSubmission,

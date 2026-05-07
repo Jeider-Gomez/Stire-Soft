@@ -45,6 +45,7 @@ export class EvaluationService {
   async findOne(id: number): Promise<Evaluation> {
     const evaluation = await this.evaluationRepository.findOne({
       where: { id },
+      relations: ['learningUnit', 'learningUnit.topic'],
     });
 
     if (!evaluation) {

@@ -4,6 +4,7 @@ import { LearningStateService } from '../learning-state/learning-state.service';
 import { UserService } from '../user/user.service';
 import { LearningUnitService } from '../learning-unit/learning-unit.service';
 import { EvaluationService } from '../evaluation/evaluation.service';
+import { EnrollmentService } from '../enrollment/enrollment.service';
 
 @Injectable()
 export class TutorService {
@@ -17,6 +18,7 @@ export class TutorService {
     private readonly userService: UserService,
     private readonly learningUnitService: LearningUnitService,
     private readonly evaluationService: EvaluationService,
+    private readonly enrollmentService: EnrollmentService,
   ) {
     this.apiKey = this.configService.get<string>('OPENAI_API_KEY') || '';
     this.apiUrl = this.configService.get<string>('OPENAI_API_URL') || 'https://api.openai.com/v1/chat/completions';
@@ -99,6 +101,10 @@ REGLAS IMPORTANTES:
 
 CONTEXTO ACTUAL:\n`;
     
+    if (context.enrollment) {
+      prompt += `Contexto de la clase:\nClase: ${context.enrollment.class?.name || 'Desconocida'}\nDocente: ${context.enrollment.class?.teacher?.fullName || 'Desconocido'}\nEstado de inscripción: ${context.enrollment.status}\nProgreso global en la clase: ${context.classProgress}%\n\n`;
+    }
+
     if (context.currentUnit) {
       prompt += `Unidad en discusión: ${context.currentUnit.title}\nEstado: ${context.currentUnit.state}\nDominio (mastery): ${context.currentUnit.mastery}%\nTasa de éxito: ${context.currentUnit.successRate}%\nUrgencia: ${context.currentUnit.urgencyLevel}\n\n`;
     }
@@ -121,8 +127,20 @@ CONTEXTO ACTUAL:\n`;
     return prompt;
   }
 
-  async chat(studentId: number, userMessage: string) {
+  async chat(studentId: number, userMessage: string, classId?: number) {
     const student = await this.userService.findOne(studentId);
+    
+    // Check enrollment if classId is provided
+    let enrollment: any = null;
+    let classProgress = 0;
+    if (classId) {
+      try {
+        enrollment = await this.enrollmentService.validateEnrollment(studentId, classId);
+        classProgress = await this.learningStateService.getClassProgress(studentId, classId);
+      } catch (e) {
+        // Ignore if validation fails here, we will just not have class context
+      }
+    }
     
     // 1. Detect unit
     const detected = await this.detectUnit(userMessage, studentId);
@@ -141,7 +159,7 @@ CONTEXTO ACTUAL:\n`;
       practice = await this.suggestPractice(studentId, detected.unit.id, context.currentUnit.mastery, context.currentUnit.successRate, userMessage);
     }
 
-    const systemPrompt = this.buildSystemPrompt(context || {}, student.fullName, level, practice);
+    const systemPrompt = this.buildSystemPrompt({ ...context, enrollment, classProgress }, student.fullName, level, practice);
 
     let llmResponse = '';
 

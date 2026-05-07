@@ -24,6 +24,6 @@ export class TutorController {
   @UseGuards(RolesGuard)
   @Roles('estudiante')
   async chat(@Body() chatDto: ChatDto, @GetUser() user: User) {
-    return this.tutorService.chat(user.id, chatDto.message);
+    return this.tutorService.chat(user.id, chatDto.message, chatDto.classId);
   }
 }

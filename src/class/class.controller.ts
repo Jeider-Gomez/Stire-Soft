@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { ClassService } from './class.service';
 import { CreateClassDto } from './dto/create-class.dto';
@@ -16,15 +18,20 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../user/entities/user.entity';
+import { EnrollmentService } from '../enrollment/enrollment.service';
+import { LearningStateService } from '../learning-state/learning-state.service';
 
 @Controller('class')
 @UseGuards(JwtAuthGuard)
 export class ClassController {
-  constructor(private readonly classService: ClassService) {}
+  constructor(
+    private readonly classService: ClassService,
+    @Inject(forwardRef(() => EnrollmentService))
+    private readonly enrollmentService: EnrollmentService,
+    @Inject(forwardRef(() => LearningStateService))
+    private readonly learningStateService: LearningStateService,
+  ) {}
 
-  /**
-   * Crear una nueva clase (solo docentes)
-   */
   @Post()
   @UseGuards(RolesGuard)
   @Roles('docente')
@@ -32,45 +39,48 @@ export class ClassController {
     return this.classService.create(createClassDto, user.id);
   }
 
-  /**
-   * Obtener todas las clases
-   */
+  @Post('join')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
+  joinClass(@Body('code') code: string, @GetUser() user: User) {
+    return this.enrollmentService.joinClass(user.id, code);
+  }
+
   @Get()
   findAll() {
     return this.classService.findAll();
   }
 
-  /**
-   * Obtener mis clases como docente
-   */
   @Get('my-classes')
   @UseGuards(RolesGuard)
-  @Roles('docente')
-  findMyClasses(@GetUser() user: User) {
-    return this.classService.findByTeacher(user.id);
+  @Roles('docente', 'estudiante')
+  async findMyClasses(@GetUser() user: User) {
+    if (user.role === 'docente') {
+      return this.classService.findByTeacher(user.id);
+    } else {
+      // Estudiante
+      const enrollments = await this.enrollmentService.findByStudent(user.id);
+      const results: any[] = [];
+      for (const enr of enrollments) {
+        const progress = await this.learningStateService.getClassProgress(user.id, enr.classId);
+        results.push({
+          classId: enr.classId,
+          className: enr.class.name,
+          teacherName: enr.class.teacher?.fullName,
+          enrollmentStatus: enr.status,
+          progress,
+          lastActivityAt: enr.lastActivityAt,
+        });
+      }
+      return results;
+    }
   }
 
-  /**
-   * Obtener mis clases como estudiante
-   */
-  @Get('my-enrollments')
-  @UseGuards(RolesGuard)
-  @Roles('estudiante')
-  findMyEnrollments(@GetUser() user: User) {
-    return this.classService.findByStudent(user.id);
-  }
-
-  /**
-   * Obtener una clase por ID
-   */
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.classService.findOne(+id);
   }
 
-  /**
-   * Actualizar una clase (solo docentes)
-   */
   @Patch(':id')
   @UseGuards(RolesGuard)
   @Roles('docente')
@@ -78,39 +88,36 @@ export class ClassController {
     return this.classService.update(+id, updateClassDto, user.id);
   }
 
-  /**
-   * Agregar un estudiante a una clase (solo docentes)
-   */
-  @Post(':id/students/:studentId')
-  @UseGuards(RolesGuard)
-  @Roles('docente')
-  addStudent(@Param('id') id: string, @Param('studentId') studentId: string) {
-    return this.classService.addStudent(+id, +studentId);
-  }
-
-  /**
-   * Remover un estudiante de una clase (solo docentes)
-   */
-  @Delete(':id/students/:studentId')
-  @UseGuards(RolesGuard)
-  @Roles('docente')
-  removeStudent(@Param('id') id: string, @Param('studentId') studentId: string) {
-    return this.classService.removeStudent(+id, +studentId);
-  }
-
-  /**
-   * Obtener estudiantes de una clase
-   */
   @Get(':id/students')
   @UseGuards(RolesGuard)
   @Roles('docente', 'admin')
-  getStudents(@Param('id') id: string) {
-    return this.classService.getStudents(+id);
+  async getStudents(@Param('id') id: string) {
+    const enrollments = await this.enrollmentService.findByClass(+id);
+    const results: any[] = [];
+    for (const enr of enrollments) {
+      const progress = await this.learningStateService.getClassProgress(enr.studentId, +id);
+      
+      // Calculate basic riskLevel based on activity and progress (for now a simple heuristic)
+      let riskLevel = 'LOW';
+      if (enr.status === 'active') {
+        const inactiveDays = enr.lastActivityAt ? (new Date().getTime() - enr.lastActivityAt.getTime()) / (1000 * 3600 * 24) : 30;
+        if (progress < 40 && inactiveDays > 14) riskLevel = 'HIGH';
+        else if (progress < 60 || inactiveDays > 7) riskLevel = 'MEDIUM';
+      }
+
+      results.push({
+        studentId: enr.studentId,
+        name: enr.student.fullName,
+        enrollmentStatus: enr.status,
+        joinedAt: enr.joinedAt,
+        progress,
+        lastActivityAt: enr.lastActivityAt,
+        riskLevel,
+      });
+    }
+    return results;
   }
 
-  /**
-   * Eliminar una clase (solo docentes)
-   */
   @Delete(':id')
   @UseGuards(RolesGuard)
   @Roles('docente', 'admin')

@@ -54,6 +54,9 @@ export class Evaluation {
   @Column({ default: true })
   isActive!: boolean;
 
+  @Column({ default: true })
+  isRequired!: boolean;
+
   // Una evaluación pertenece a una unidad de aprendizaje
   @ManyToOne(() => LearningUnit, (unit) => unit.evaluations, { eager: true })
   @JoinColumn({ name: 'learningUnitId' })

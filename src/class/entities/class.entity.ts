@@ -9,7 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { ClassStudent } from './class-student.entity';
+import { Enrollment } from '../../enrollment/entities/enrollment.entity';
 
 @Entity('classes')
 export class Class {
@@ -33,9 +33,21 @@ export class Class {
   @Column()
   teacherId!: number;
 
-  // Relación OneToMany: Una clase tiene muchas inscripciones (ClassStudent)
-  @OneToMany(() => ClassStudent, (classStudent) => classStudent.class, { eager: false })
-  classStudents!: ClassStudent[];
+  @Column({ default: true })
+  isActive!: boolean;
+
+  @Column({ type: 'date', nullable: true })
+  startDate?: Date;
+
+  @Column({ type: 'date', nullable: true })
+  endDate?: Date;
+
+  @Column({ type: 'int', nullable: true })
+  maxStudents?: number;
+
+  // Relación OneToMany: Una clase tiene muchas inscripciones (Enrollment)
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.class, { eager: false })
+  enrollments!: Enrollment[];
 
   // Propiedad virtual para mantener compatibilidad con el frontend
   students?: User[];
