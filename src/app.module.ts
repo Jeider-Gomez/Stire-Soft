@@ -2,32 +2,70 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { CacheModule } from '@nestjs/cache-manager';
+import { BullModule } from '@nestjs/bullmq';
+
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ClassModule } from './class/class.module';
 import { TopicModule } from './topic/topic.module';
 import { LearningUnitModule } from './learning-unit/learning-unit.module';
-import { EvaluationModule } from './evaluation/evaluation.module';
-import { SubmissionModule } from './submission/submission.module';
-import { LearningStateModule } from './learning-state/learning-state.module';
-import { MessageModule } from './message/message.module';
-import { TutorModule } from './tutor/tutor.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
+import { MessageModule } from './message/message.module';
+
+// New Architecture Modules
+import { ActivityTypesModule } from './activity-types/activity-types.module';
+import { ActivitiesModule } from './activities/activities.module';
+import { ActivityQuestionsModule } from './activity-questions/activity-questions.module';
+import { EvaluationEngineModule } from './evaluation-engine/evaluation-engine.module';
+import { SubmissionsModule } from './submissions/submissions.module';
+import { SubmissionAnswersModule } from './submission-answers/submission-answers.module';
+import { JudgeEngineModule } from './judge-engine/judge-engine.module';
+import { TutorModule } from './tutor/tutor.module';
+import { LearningProgressModule } from './learning-progress/learning-progress.module';
+import { ReviewSchedulesModule } from './review-schedules/review-schedules.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { GamificationModule } from './gamification/gamification.module';
+import { ContentRenderingModule } from './content-rendering/content-rendering.module';
+import { QuestionBanksModule } from './question-banks/question-banks.module';
+import { PrerequisitesModule } from './prerequisites/prerequisites.module';
 
 @Module({
   imports: [
-    // Configuración de variables de entorno
-    // isGlobal: true hace que ConfigModule esté disponible en toda la app
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
     }),
 
-    // Configurar Passport globalmente
     PassportModule.register({ defaultStrategy: 'jwt' }),
 
-    // Configuración de TypeORM con MySQL
-    // useFactory permite inyectar ConfigService para leer variables de entorno
+    EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
+    
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 100,
+    }]),
+
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 300000, // 5 minutes
+    }),
+
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        connection: {
+          host: configService.get('REDIS_HOST', 'localhost'),
+          port: configService.get('REDIS_PORT', 6379),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -38,23 +76,36 @@ import { EnrollmentModule } from './enrollment/enrollment.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // ⚠️ Solo en desarrollo
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),
 
-    // Módulos del sistema
+    // Legacy Modules
     UserModule,
     AuthModule,
     ClassModule,
     TopicModule,
     LearningUnitModule,
-    EvaluationModule,
-    SubmissionModule,
-    LearningStateModule,
-    MessageModule,
-    TutorModule,
     EnrollmentModule,
+    MessageModule,
+
+    // New Modules
+    ActivityTypesModule,
+    ActivitiesModule,
+    ActivityQuestionsModule,
+    EvaluationEngineModule,
+    SubmissionsModule,
+    SubmissionAnswersModule,
+    JudgeEngineModule,
+    TutorModule,
+    LearningProgressModule,
+    ReviewSchedulesModule,
+    AnalyticsModule,
+    GamificationModule,
+    ContentRenderingModule,
+    QuestionBanksModule,
+    PrerequisitesModule,
   ],
 })
 export class AppModule {}

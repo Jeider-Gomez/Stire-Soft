@@ -1,23 +1,19 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TutorConversation } from './entities/tutor-conversation.entity';
+import { TutorConversationsRepository } from './tutor-conversations.repository';
+import { TutorContextService } from './tutor-context.service';
 import { TutorService } from './tutor.service';
 import { TutorController } from './tutor.controller';
-import { LearningStateModule } from '../learning-state/learning-state.module';
-import { EvaluationModule } from '../evaluation/evaluation.module';
-import { LearningUnitModule } from '../learning-unit/learning-unit.module';
-import { UserModule } from '../user/user.module';
-import { AuthModule } from '../auth/auth.module';
-import { EnrollmentModule } from '../enrollment/enrollment.module';
+import { LearningProgressModule } from '../learning-progress/learning-progress.module';
 
 @Module({
   imports: [
-    LearningStateModule,
-    EvaluationModule,
-    LearningUnitModule,
-    UserModule,
-    AuthModule,
-    EnrollmentModule,
+    TypeOrmModule.forFeature([TutorConversation]),
+    LearningProgressModule,
   ],
   controllers: [TutorController],
-  providers: [TutorService],
+  providers: [TutorConversationsRepository, TutorContextService, TutorService],
+  exports: [TutorService],
 })
 export class TutorModule {}

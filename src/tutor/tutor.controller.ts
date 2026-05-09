@@ -1,29 +1,20 @@
-import {
-  Controller,
-  Post,
-  Body,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { TutorService } from './tutor.service';
-import { ChatDto } from './dto/chat.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { GetUser } from '../auth/decorators/get-user.decorator';
-import { User } from '../user/entities/user.entity';
 
+@ApiTags('AI Tutor')
 @Controller('tutor')
-@UseGuards(JwtAuthGuard)
 export class TutorController {
   constructor(private readonly tutorService: TutorService) {}
 
-  /**
-   * Enviar mensaje al tutor inteligente (solo estudiantes)
-   */
   @Post('chat')
-  @UseGuards(RolesGuard)
-  @Roles('estudiante')
-  async chat(@Body() chatDto: ChatDto, @GetUser() user: User) {
-    return this.tutorService.chat(user.id, chatDto.message, chatDto.classId);
+  @ApiOperation({ summary: 'Enviar un mensaje al Tutor IA adaptativo' })
+  async chat(@Body('message') message: string) {
+    const mockStudentId = 1; // Extraer del JWT en producción
+    const response = await this.tutorService.sendMessage(mockStudentId, message);
+    return {
+      success: true,
+      message: response
+    };
   }
 }

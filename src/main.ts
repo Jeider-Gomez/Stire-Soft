@@ -1,25 +1,36 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Configurar ValidationPipe globalmente
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Elimina propiedades no definidas en el DTO
-      forbidNonWhitelisted: true, // Lanza error si hay propiedades no permitidas
-      transform: true, // Transforma los datos al tipo definido en el DTO
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
 
-  // Habilitar CORS (opcional, para desarrollo con frontend)
   app.enableCors();
+
+  const config = new DocumentBuilder()
+    .setTitle('STIRE Platform API')
+    .setDescription('LMS adaptativo con Tutor IA e integración LeetCode-style')
+    .setVersion('2.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`Aplicación escuchando en puerto ${port}`);
-  console.log('🚀 Servidor corriendo en http://localhost:3000');
+  console.log(`Swagger Docs disponibles en http://localhost:${port}/docs`);
 }
 bootstrap();

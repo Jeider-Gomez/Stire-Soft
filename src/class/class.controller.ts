@@ -19,7 +19,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { EnrollmentService } from '../enrollment/enrollment.service';
-import { LearningStateService } from '../learning-state/learning-state.service';
+import { LearningProgressService } from '../learning-progress/learning-progress.service';
 
 @Controller('class')
 @UseGuards(JwtAuthGuard)
@@ -28,8 +28,8 @@ export class ClassController {
     private readonly classService: ClassService,
     @Inject(forwardRef(() => EnrollmentService))
     private readonly enrollmentService: EnrollmentService,
-    @Inject(forwardRef(() => LearningStateService))
-    private readonly learningStateService: LearningStateService,
+    @Inject(forwardRef(() => LearningProgressService))
+    private readonly learningProgressService: LearningProgressService,
   ) {}
 
   @Post()
@@ -62,7 +62,7 @@ export class ClassController {
       const enrollments = await this.enrollmentService.findByStudent(user.id);
       const results: any[] = [];
       for (const enr of enrollments) {
-        const progress = await this.learningStateService.getClassProgress(user.id, enr.classId);
+        const progress = await this.learningProgressService.getClassProgress(user.id, enr.classId);
         results.push({
           classId: enr.classId,
           className: enr.class.name,
@@ -95,7 +95,7 @@ export class ClassController {
     const enrollments = await this.enrollmentService.findByClass(+id);
     const results: any[] = [];
     for (const enr of enrollments) {
-      const progress = await this.learningStateService.getClassProgress(enr.studentId, +id);
+      const progress = await this.learningProgressService.getClassProgress(enr.studentId, +id);
       
       // Calculate basic riskLevel based on activity and progress (for now a simple heuristic)
       let riskLevel = 'LOW';

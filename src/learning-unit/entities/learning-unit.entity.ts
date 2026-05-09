@@ -9,7 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Topic } from '../../topic/entities/topic.entity';
-import { Evaluation } from '../../evaluation/entities/evaluation.entity';
+import { Activity } from '../../activities/entities/activity.entity';
 
 import { Difficulty } from '../../common/enums/difficulty.enum';
 
@@ -48,9 +48,9 @@ export class LearningUnit {
   @Column({ nullable: true })
   topicId!: number | null;
 
-  // Una unidad tiene muchas evaluaciones
-  @OneToMany(() => Evaluation, (evaluation) => evaluation.learningUnit)
-  evaluations!: Evaluation[];
+  // Una unidad tiene muchas actividades
+  @OneToMany(() => Activity, (activity) => activity.learningUnit)
+  activities!: Activity[];
 
   @CreateDateColumn()
   createdAt!: Date;
