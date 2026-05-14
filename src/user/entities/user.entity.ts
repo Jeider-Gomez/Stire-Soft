@@ -4,9 +4,11 @@ import {
   PrimaryGeneratedColumn, 
   CreateDateColumn, 
   UpdateDateColumn,
-  OneToMany
+  OneToMany,
+  OneToOne
 } from 'typeorm';
 import { Enrollment } from '../../enrollment/entities/enrollment.entity';
+import { UserAffiliation } from './user-affiliation.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -39,11 +41,8 @@ export class User {
   @Column({ default: true })
   isActive!: boolean;
 
-  @Column({ nullable: true })
-  semestre!: number;
-
-  @Column({ nullable: true })
-  programa!: string;
+  @OneToMany(() => UserAffiliation, (affiliation) => affiliation.user)
+  affiliations!: UserAffiliation[];
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
   enrollments!: Enrollment[];

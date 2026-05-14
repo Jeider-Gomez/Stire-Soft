@@ -6,16 +6,20 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
+import { UserAffiliation } from './entities/user-affiliation.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InstitutionService } from '../institution/institution.service';
 
 @Injectable()
 export class UserService {
   constructor(
-    // Inyección del repositorio de User
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserAffiliation)
+    private readonly affiliationRepository: Repository<UserAffiliation>,
+    private readonly institutionService: InstitutionService,
   ) {}
   /**
    * Crear un nuevo usuario
@@ -91,6 +95,35 @@ export class UserService {
     Object.assign(user, updateUserDto);
 
     return await this.userRepository.save(user);
+  }
+
+  /**
+   * Actualizar el rol de un usuario
+   */
+  async updateRole(id: number, role: string): Promise<{ message: string }> {
+    const user = await this.findOne(id);
+    
+    user.role = role as UserRole;
+    await this.userRepository.save(user);
+
+    return { message: 'Rol de usuario actualizado con éxito' };
+  }
+
+  /**
+   * Agregar afiliación académica a un usuario
+   */
+  async addAffiliation(userId: number, data: { programId: number; roleType: string; currentSemester?: number }) {
+    const user = await this.findOne(userId);
+    const program = await this.institutionService.findProgramById(data.programId);
+
+    const affiliation = this.affiliationRepository.create({
+      user,
+      program,
+      roleType: data.roleType,
+      currentSemester: data.currentSemester,
+    });
+
+    return await this.affiliationRepository.save(affiliation);
   }
 
   /**

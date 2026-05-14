@@ -8,13 +8,22 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from './entities/user.entity';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('me/affiliations')
+  addAffiliation(
+    @GetUser() user: User,
+    @Body() body: { programId: number; roleType: string; currentSemester?: number }
+  ) {
+    return this.userService.addAffiliation(user.id, body);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -31,6 +40,13 @@ export class UserController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Patch(':id/role')
+  updateRole(@Param('id') id: string, @Body('role') role: string) {
+    return this.userService.updateRole(+id, role);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

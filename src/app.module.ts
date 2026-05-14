@@ -15,6 +15,7 @@ import { TopicModule } from './topic/topic.module';
 import { LearningUnitModule } from './learning-unit/learning-unit.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
 import { MessageModule } from './message/message.module';
+import { InstitutionModule } from './institution/institution.module';
 
 // New Architecture Modules
 import { ActivityTypesModule } from './activity-types/activity-types.module';
@@ -83,6 +84,7 @@ import { PrerequisitesModule } from './prerequisites/prerequisites.module';
 
     // Legacy Modules
     UserModule,
+    InstitutionModule,
     AuthModule,
     ClassModule,
     TopicModule,
