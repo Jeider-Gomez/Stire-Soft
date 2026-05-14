@@ -16,6 +16,6 @@ import { ReviewSchedulesModule } from '../review-schedules/review-schedules.modu
     ReviewSchedulesModule,
   ],
   providers: [LearningProgressRepository, LearningProgressService, SubmissionGradedListener],
-  exports: [LearningProgressService],
+  exports: [LearningProgressService, LearningProgressRepository],
 })
 export class LearningProgressModule {}
