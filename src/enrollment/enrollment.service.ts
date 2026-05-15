@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException, ForbiddenException, Inject, forwardRef } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Enrollment } from './entities/enrollment.entity';
@@ -12,16 +18,14 @@ export class EnrollmentService {
   constructor(
     @InjectRepository(Enrollment)
     private readonly enrollmentRepository: Repository<Enrollment>,
-    @Inject(forwardRef(() => ClassService))
     private readonly classService: ClassService,
-    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
 
   async joinClass(userId: number, code: string): Promise<Enrollment> {
     const user = await this.userService.findOne(userId);
-    if (user.role === UserRole.DOCENTE || user.role === 'teacher' as any) {
-      throw new ForbiddenException('Teachers cannot enroll as students.');
+    if (user.role === UserRole.DOCENTE) {
+      throw new ForbiddenException('Los docentes no pueden matricularse como estudiantes.');
     }
 
     const classEntity = await this.classService.findByCode(code);
@@ -94,8 +98,8 @@ export class EnrollmentService {
 
   async validateEnrollment(userId: number, classId: number): Promise<Enrollment> {
     const user = await this.userService.findOne(userId);
-    if (user.role === UserRole.DOCENTE || user.role === 'teacher' as any) {
-      throw new ForbiddenException('Teachers cannot have student enrollments.');
+    if (user.role === UserRole.DOCENTE) {
+      throw new ForbiddenException('Los docentes no tienen matrículas de estudiante.');
     }
 
     const enrollment = await this.enrollmentRepository.findOne({

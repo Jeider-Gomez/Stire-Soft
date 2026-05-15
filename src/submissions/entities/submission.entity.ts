@@ -1,9 +1,11 @@
-import { Entity, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, Index } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Activity } from '../../activities/entities/activity.entity';
 import { SubmissionStatus } from '../../common/enums/submission-status.enum';
 
 @Entity('submissions')
+@Index(['studentId', 'activityId'])
+@Index(['studentId', 'status'])
 export class Submission {
   @PrimaryGeneratedColumn('uuid')
   id: string;

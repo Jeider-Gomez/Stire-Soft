@@ -7,11 +7,13 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Enrollment } from '../../enrollment/entities/enrollment.entity';
 
 @Entity('classes')
+@Index(['teacherId'])
 export class Class {
   @PrimaryGeneratedColumn()
   id!: number;
