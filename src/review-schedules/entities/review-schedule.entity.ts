@@ -6,14 +6,14 @@ import { LearningUnit } from '../../learning-unit/entities/learning-unit.entity'
 @Entity('review_schedules')
 @Index(['studentId', 'learningUnitId'], { unique: true })
 export class ReviewSchedule extends StireBaseEntity {
-  @ManyToOne(() => User, { eager: false, nullable: false })
+  @ManyToOne(() => User, { eager: false, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'studentId' })
   student: User;
 
   @Column({ nullable: false })
   studentId: number;
 
-  @ManyToOne(() => LearningUnit, { eager: false, nullable: false })
+  @ManyToOne(() => LearningUnit, { eager: false, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'learningUnitId' })
   learningUnit: LearningUnit;
 

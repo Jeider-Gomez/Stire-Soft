@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { In } from 'typeorm';
 import { LearningProgressRepository } from './learning-progress.repository';
 import { SubmissionsRepository } from '../submissions/submissions.repository';
 import { ActivitiesRepository } from '../activities/activities.repository';
@@ -56,5 +57,17 @@ export class LearningProgressService {
     
     const sum = progresses.reduce((acc, curr) => acc + curr.mastery, 0);
     return Math.round(sum / progresses.length);
+  }
+
+  async findForUnits(studentId: number, unitIds: number[]) {
+    if (!unitIds || unitIds.length === 0) {
+      return [];
+    }
+    return this.progressRepo.find({
+      where: {
+        studentId,
+        learningUnitId: In(unitIds),
+      },
+    });
   }
 }

@@ -7,14 +7,14 @@ import { Activity } from '../../activities/entities/activity.entity';
 @Entity('learning_progress')
 @Index(['studentId', 'learningUnitId'], { unique: true })
 export class LearningProgress extends StireBaseEntity {
-  @ManyToOne(() => User, { eager: false, nullable: false })
+  @ManyToOne(() => User, { eager: false, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'studentId' })
   student: User;
 
   @Column({ nullable: false })
   studentId: number;
 
-  @ManyToOne(() => LearningUnit, { eager: false, nullable: false })
+  @ManyToOne(() => LearningUnit, { eager: false, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'learningUnitId' })
   learningUnit: LearningUnit;
 

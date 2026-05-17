@@ -10,14 +10,14 @@ export class Submission {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Activity, { eager: false, nullable: false })
+  @ManyToOne(() => Activity, { eager: false, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'activityId' })
   activity: Activity;
 
   @Column({ nullable: false })
   activityId: number;
 
-  @ManyToOne(() => User, { eager: false, nullable: false })
+  @ManyToOne(() => User, { eager: false, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'studentId' })
   student: User;
 
