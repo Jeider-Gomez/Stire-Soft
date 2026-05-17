@@ -8,7 +8,7 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { Class } from '../../class/entities/class.entity';
+import { Section } from '../../section/entities/section.entity';
 import { LearningUnit } from '../../learning-unit/entities/learning-unit.entity';
 
 @Entity('topics')
@@ -20,7 +20,7 @@ export class Topic {
   title!: string;
 
   @Column({ type: 'text', nullable: true })
-  description!: string;
+  description?: string;
 
   @Column({ default: 0 })
   order!: number;
@@ -28,13 +28,17 @@ export class Topic {
   @Column({ default: true })
   isActive!: boolean;
 
-  // Un topic pertenece a una clase
-  @ManyToOne(() => Class, { eager: true })
-  @JoinColumn({ name: 'classId' })
-  class!: Class;
+  // Un topic pertenece a una sección (jerarquía: Class → Section → Topic)
+  @ManyToOne(() => Section, (section) => section.topics, {
+    eager: false,
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'sectionId' })
+  section!: Section;
 
-  @Column()
-  classId!: number;
+  @Column({ nullable: false })
+  sectionId!: number;
 
   // Un topic tiene muchas unidades de aprendizaje
   @OneToMany(() => LearningUnit, (unit) => unit.topic)

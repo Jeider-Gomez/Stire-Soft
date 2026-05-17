@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Topic } from '../../topic/entities/topic.entity';
 import { Activity } from '../../activities/entities/activity.entity';
+import { Content } from '../../content/entities/content.entity';
 
 import { Difficulty } from '../../common/enums/difficulty.enum';
 
@@ -51,6 +52,10 @@ export class LearningUnit {
   // Una unidad tiene muchas actividades
   @OneToMany(() => Activity, (activity) => activity.learningUnit)
   activities!: Activity[];
+
+  // Una unidad tiene muchos bloques de contenido (TEXT, VIDEO, CODE, PDF, IMAGE)
+  @OneToMany(() => Content, (content) => content.learningUnit, { eager: false })
+  contents!: Content[];
 
   @CreateDateColumn()
   createdAt!: Date;

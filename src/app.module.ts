@@ -12,6 +12,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ClassModule } from './class/class.module';
 import { TopicModule } from './topic/topic.module';
+import { SectionModule } from './section/section.module';
 import { LearningUnitModule } from './learning-unit/learning-unit.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
 import { MessageModule } from './message/message.module';
@@ -32,6 +33,8 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { GamificationModule } from './gamification/gamification.module';
 import { ContentRenderingModule } from './content-rendering/content-rendering.module';
 import { QuestionBanksModule } from './question-banks/question-banks.module';
+import { ContentModule } from './content/content.module';
+import { ActivityLogModule } from './activity-log/activity-log.module';
 import { PrerequisitesModule } from './prerequisites/prerequisites.module';
 
 @Module({
@@ -87,6 +90,7 @@ import { PrerequisitesModule } from './prerequisites/prerequisites.module';
     InstitutionModule,
     AuthModule,
     ClassModule,
+    SectionModule,
     TopicModule,
     LearningUnitModule,
     EnrollmentModule,
@@ -108,6 +112,8 @@ import { PrerequisitesModule } from './prerequisites/prerequisites.module';
     ContentRenderingModule,
     QuestionBanksModule,
     PrerequisitesModule,
+    ContentModule,
+    ActivityLogModule,
   ],
 })
 export class AppModule {}

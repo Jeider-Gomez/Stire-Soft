@@ -3,13 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TopicService } from './topic.service';
 import { TopicController } from './topic.controller';
 import { Topic } from './entities/topic.entity';
-import { ClassModule } from '../class/class.module';
+import { SectionModule } from '../section/section.module';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Topic]),
-    ClassModule,
+    SectionModule,   // Para validar ownership vía SectionService
     AuthModule,
   ],
   controllers: [TopicController],

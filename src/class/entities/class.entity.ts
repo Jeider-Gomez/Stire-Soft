@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Enrollment } from '../../enrollment/entities/enrollment.entity';
+import { Section } from '../../section/entities/section.entity';
 
 @Entity('classes')
 @Index(['teacherId'])
@@ -50,6 +51,10 @@ export class Class {
   // Relación OneToMany: Una clase tiene muchas inscripciones (Enrollment)
   @OneToMany(() => Enrollment, (enrollment) => enrollment.class, { eager: false })
   enrollments!: Enrollment[];
+
+  // Relación OneToMany: Una clase tiene muchas secciones/módulos
+  @OneToMany(() => Section, (section) => section.class, { eager: false })
+  sections!: Section[];
 
   // Propiedad virtual para mantener compatibilidad con el frontend
   students?: User[];
