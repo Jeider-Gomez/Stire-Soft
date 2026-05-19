@@ -11,6 +11,8 @@ import { SubmitAnswersDto } from './dto/submit-answers.dto';
 import { Submission } from './entities/submission.entity';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
 import { SubmissionGradedEvent } from '../common/events/submission-graded.event';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class SubmissionsService {
@@ -22,6 +24,7 @@ export class SubmissionsService {
     private readonly questionsRepo: ActivityQuestionsRepository,
     private readonly evalEngine: EvaluationEngineService,
     private readonly eventEmitter: EventEmitter2,
+    @InjectQueue('judge') private readonly judgeQueue: Queue,
   ) {}
 
   async startSubmission(dto: StartSubmissionDto, studentId: number): Promise<Submission> {
@@ -93,6 +96,35 @@ export class SubmissionsService {
 
       await queryRunner.manager.save(answerEntities);
 
+      // Encolar trabajos asíncronos después de guardar las entidades para tener los IDs
+      for (let i = 0; i < dto.answers.length; i++) {
+        const answerDto = dto.answers[i];
+        const question = questions.find(q => q.id === answerDto.questionId);
+        if (!question) continue;
+
+        const evalResult = this.evalEngine.evaluateAnswer(question.type, answerDto.answer, question.config, question.points);
+        if (evalResult.needsAsyncJudge) {
+          const savedAnswer = answerEntities.find(a => a.questionId === question.id);
+          if (savedAnswer) {
+            await this.judgeQueue.add(
+              'evaluate-code',
+              {
+                submissionAnswerId: savedAnswer.id,
+                code: answerDto.answer.code,
+                language: question.config.language || 'javascript',
+                testCases: question.config.testCases || [],
+              },
+              {
+                attempts: 3,
+                backoff: { type: 'exponential', delay: 2000 },
+                removeOnComplete: true,
+                removeOnFail: false,
+              }
+            );
+          }
+        }
+      }
+
       // Finalize submission
       submission.score = totalScore;
       submission.status = SubmissionStatus.GRADED;
@@ -141,5 +173,18 @@ export class SubmissionsService {
     if (dto.timeSpentSeconds) submission.timeSpentSeconds += dto.timeSpentSeconds;
 
     return this.submissionsRepo.save(submission);
+  }
+
+  async markAsFailed(submissionAnswerId: number, errorMessage: string) {
+    const answer = await this.answersRepo.findOne({ where: { id: submissionAnswerId } });
+    if (!answer) return;
+
+    const submission = await this.submissionsRepo.findOne({ where: { id: answer.submissionId } });
+    if (!submission) return;
+
+    submission.status = SubmissionStatus.IN_PROGRESS; // O crear estado específico como JUDGE_FAILED
+    submission.feedback = `Error en evaluación: ${errorMessage}`;
+    
+    await this.submissionsRepo.save(submission);
   }
 }

@@ -1,20 +1,22 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
+import { Job } from 'bullmq';
 import { ExecutionResultsRepository } from './judge-engine.repository';
 import { DockerSandboxService } from './docker-sandbox.service';
+import { SubmissionsService } from '../submissions/submissions.service';
 
-// Mock de Job interface de BullMQ para evitar dependencias fallidas si no está instalado
-interface Job<T> { data: T; id: string; }
-
-@Injectable()
-export class JudgeWorker {
+@Processor('judge')
+export class JudgeWorker extends WorkerHost {
   private readonly logger = new Logger(JudgeWorker.name);
 
   constructor(
     private readonly sandbox: DockerSandboxService,
     private readonly resultsRepo: ExecutionResultsRepository,
-  ) {}
+    private readonly submissionsService: SubmissionsService,
+  ) {
+    super();
+  }
 
-  // @Processor('judge_queue') en la implementación real de BullMQ
   async process(job: Job<any>): Promise<any> {
     const { submissionAnswerId, code, language, testCases } = job.data;
     
@@ -43,5 +45,18 @@ export class JudgeWorker {
     }
 
     return { success: true, score: totalScore };
+  }
+
+  @OnWorkerEvent('failed')
+  async onFailed(job: Job, error: Error) {
+    this.logger.error(`Trabajo ${job.id} falló con error: ${error.message}`);
+    
+    if (job.attemptsMade >= (job.opts?.attempts || 1)) {
+      this.logger.warn(`Trabajo ${job.id} ha fallado definitivamente (DLQ). Marcando submission como fallida.`);
+      const { submissionAnswerId } = job.data;
+      if (submissionAnswerId) {
+        await this.submissionsService.markAsFailed(submissionAnswerId, error.message);
+      }
+    }
   }
 }

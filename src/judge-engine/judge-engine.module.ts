@@ -5,8 +5,13 @@ import { ExecutionResultsRepository } from './judge-engine.repository';
 import { DockerSandboxService } from './docker-sandbox.service';
 import { JudgeWorker } from './judge.worker';
 
+import { SubmissionsModule } from '../submissions/submissions.module';
+
 @Module({
-  imports: [TypeOrmModule.forFeature([ExecutionResult])],
+  imports: [
+    TypeOrmModule.forFeature([ExecutionResult]),
+    SubmissionsModule,
+  ],
   providers: [ExecutionResultsRepository, DockerSandboxService, JudgeWorker],
   exports: [ExecutionResultsRepository, JudgeWorker],
 })

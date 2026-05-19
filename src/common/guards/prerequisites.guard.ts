@@ -36,7 +36,7 @@ export class PrerequisitesGuard implements CanActivate {
     const progresses = await this.learningProgressService.findForUnits(studentId, requiredUnitIds);
 
     // 3. Verificar si cumple con el minMasteryRequired
-    const missingUnits = [];
+    const missingUnits: any[] = [];
 
     for (const prereq of prerequisites) {
       const progress = progresses.find(p => p.learningUnitId === prereq.requiredUnitId);

@@ -36,6 +36,7 @@ import { QuestionBanksModule } from './question-banks/question-banks.module';
 import { ContentModule } from './content/content.module';
 import { ActivityLogModule } from './activity-log/activity-log.module';
 import { PrerequisitesModule } from './prerequisites/prerequisites.module';
+import { WorkersModule } from './common/workers/workers.module';
 
 @Module({
   imports: [
@@ -114,6 +115,7 @@ import { PrerequisitesModule } from './prerequisites/prerequisites.module';
     PrerequisitesModule,
     ContentModule,
     ActivityLogModule,
+    WorkersModule,
   ],
 })
 export class AppModule {}

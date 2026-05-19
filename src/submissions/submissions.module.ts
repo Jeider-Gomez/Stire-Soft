@@ -8,6 +8,7 @@ import { SubmissionAnswersModule } from '../submission-answers/submission-answer
 import { ActivitiesModule } from '../activities/activities.module';
 import { ActivityQuestionsModule } from '../activity-questions/activity-questions.module';
 import { EvaluationEngineModule } from '../evaluation-engine/evaluation-engine.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -16,6 +17,9 @@ import { EvaluationEngineModule } from '../evaluation-engine/evaluation-engine.m
     ActivitiesModule,
     ActivityQuestionsModule,
     EvaluationEngineModule,
+    BullModule.registerQueue({
+      name: 'judge',
+    }),
   ],
   controllers: [SubmissionsController],
   providers: [SubmissionsService, SubmissionsRepository],
