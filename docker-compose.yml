@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: stire_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: basestire
+    ports:
+      - "3306:3306"
+    volumes:
+      - stire_db_data:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    container_name: stire_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - stire_redis_data:/data
+
+volumes:
+  stire_db_data:
+  stire_redis_data:

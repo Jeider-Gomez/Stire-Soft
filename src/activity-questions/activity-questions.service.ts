@@ -3,12 +3,27 @@ import { ActivityQuestionsRepository } from './activity-questions.repository';
 import { ActivityQuestion } from './entities/activity-question.entity';
 import { QuestionType } from '../common/enums/question-type.enum';
 
+import { IsInt, IsEnum, IsString, IsNumber, IsOptional, IsObject } from 'class-validator';
+
 export class CreateActivityQuestionDto {
+  @IsInt()
   activityId: number;
+
+  @IsEnum(QuestionType)
   type: QuestionType;
+
+  @IsString()
   question: string;
+
+  @IsNumber()
+  @IsOptional()
   points?: number;
+
+  @IsNumber()
+  @IsOptional()
   order?: number;
+
+  @IsObject()
   config: Record<string, any>;
 }
 
