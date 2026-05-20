@@ -7,6 +7,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
 import { BullModule } from '@nestjs/bullmq';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
 
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
@@ -67,6 +70,15 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
         connection: {
           host: configService.get('REDIS_HOST', 'localhost'),
           port: configService.get('REDIS_PORT', 6379),
+          enableOfflineQueue: false, // Evita encolar comandos cuando Redis está caído (previene cuelgues indefinidos)
+          connectTimeout: 5000,      // Timeout de conexión de 5 segundos
+          retryStrategy(times) {
+            // Reintentar un máximo de 3 veces si Redis está caído al inicio, con delay de 1s
+            if (times > 3) {
+              return null; // Deja de reintentar y lanza error
+            }
+            return 1000;
+          }
         },
       }),
       inject: [ConfigService],
@@ -118,6 +130,16 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
     ActivityLogModule,
     WorkersModule,
     MaintenanceModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}

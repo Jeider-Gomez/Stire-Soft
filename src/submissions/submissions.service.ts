@@ -71,6 +71,13 @@ export class SubmissionsService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
+    // Recopilar los jobs asíncronos a encolar DESPUÉS de comprometer la transacción
+    const asyncJobs: Array<{
+      savedAnswer: any;
+      answerDto: any;
+      question: any;
+    }> = [];
+
     try {
       const answerEntities: any[] = [];
 
@@ -96,7 +103,7 @@ export class SubmissionsService {
 
       await queryRunner.manager.save(answerEntities);
 
-      // Encolar trabajos asíncronos después de guardar las entidades para tener los IDs
+      // Identificar qué respuestas necesitan evaluación asíncrona (sin encolar aún)
       for (let i = 0; i < dto.answers.length; i++) {
         const answerDto = dto.answers[i];
         const question = questions.find(q => q.id === answerDto.questionId);
@@ -106,21 +113,7 @@ export class SubmissionsService {
         if (evalResult.needsAsyncJudge) {
           const savedAnswer = answerEntities.find(a => a.questionId === question.id);
           if (savedAnswer) {
-            await this.judgeQueue.add(
-              'evaluate-code',
-              {
-                submissionAnswerId: savedAnswer.id,
-                code: answerDto.answer.code,
-                language: question.config.language || 'javascript',
-                testCases: question.config.testCases || [],
-              },
-              {
-                attempts: 3,
-                backoff: { type: 'exponential', delay: 2000 },
-                removeOnComplete: true,
-                removeOnFail: false,
-              }
-            );
+            asyncJobs.push({ savedAnswer, answerDto, question });
           }
         }
       }
@@ -134,9 +127,10 @@ export class SubmissionsService {
       
       await queryRunner.manager.save(submission);
 
+      // ✅ COMMIT PRIMERO — la transacción DB siempre se compromete antes de tocar Redis
       await queryRunner.commitTransaction();
 
-      // Emitir evento fuera de la transacción (side-effects desacoplados)
+      // Emitir evento (solo si no hay evaluación asíncrona pendiente)
       if (!hasAsync) {
         this.eventEmitter.emit(
           'submission.graded',
@@ -151,13 +145,44 @@ export class SubmissionsService {
         );
       }
 
+      // Encolar jobs en BullMQ FUERA de la transacción.
+      // Si Redis no está disponible, el job no se encola pero la submission
+      // permanece en estado SUBMITTED. El MaintenanceService limpia el limbo.
+      for (const job of asyncJobs) {
+        try {
+          await this.judgeQueue.add(
+            'evaluate-code',
+            {
+              submissionAnswerId: job.savedAnswer.id,
+              code: job.answerDto.answer.code,
+              language: job.question.config.language || 'javascript',
+              testCases: job.question.config.testCases || [],
+            },
+            {
+              attempts: 3,
+              backoff: { type: 'exponential', delay: 2000 },
+              removeOnComplete: true,
+              removeOnFail: false,
+            }
+          );
+        } catch (queueError: any) {
+          // Redis no disponible — loguear pero NO fallar. La submission ya fue guardada.
+          // El servicio de mantenimiento marcará estas respuestas como incorrectas.
+          console.warn(
+            `[SubmissionsService] No se pudo encolar job para respuesta ID ${job.savedAnswer.id}. ` +
+            `Redis no disponible: ${queueError.message}. La limpieza de mantenimiento actuará sobre el limbo.`
+          );
+        }
+      }
+
       return {
         submissionId: submission.id,
         totalScore,
         status: submission.status,
       };
 
-    } catch (error) {
+    } catch (error: any) {
+      console.error('[SubmissionsService] Error crítico en submitAnswers — haciendo rollback:', error);
       await queryRunner.rollbackTransaction();
       throw new BadRequestException('Fallo crítico al procesar la evaluación de la entrega.');
     } finally {

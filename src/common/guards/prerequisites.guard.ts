@@ -21,6 +21,11 @@ export class PrerequisitesGuard implements CanActivate {
       return true; 
     }
 
+    // Docentes y admins no están sujetos a prerrequisitos académicas
+    if (user.role !== 'estudiante') {
+      return true;
+    }
+
     const studentId = user.id;
 
     // 1. Consultar los requisitos de la unidad objetivo

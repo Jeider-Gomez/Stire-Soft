@@ -14,6 +14,7 @@ import { UpdateLearningUnitDto } from './dto/update-learning-unit.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { PrerequisitesGuard } from '../common/guards/prerequisites.guard';
 
 @Controller('learning-unit')
 @UseGuards(JwtAuthGuard)
@@ -52,6 +53,7 @@ export class LearningUnitController {
    * Obtener una unidad por ID
    */
   @Get(':id')
+  @UseGuards(PrerequisitesGuard)
   findOne(@Param('id') id: string) {
     return this.learningUnitService.findOne(+id);
   }

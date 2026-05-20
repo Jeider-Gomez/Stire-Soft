@@ -16,6 +16,10 @@ export class DockerSandboxService {
     this.logger.log(`[DOCKER MOCK] Ejecutando código en ${language}`);
     
     // Aquí iría la lógica real usando Dockerode o exec(`docker run ...`)
+    if (code.includes('timeout')) {
+      throw new Error('Timeout: Execution exceeded maximum time limit of 2000ms');
+    }
+
     // Simulando retraso de ejecución segura:
     await new Promise(resolve => setTimeout(resolve, 500));
 

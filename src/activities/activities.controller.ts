@@ -5,6 +5,9 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { PublicationStatus } from '../common/enums/status.enum';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '../user/entities/user.entity';
 
 @ApiTags('Activities')
 @Controller('activities')
@@ -12,12 +15,11 @@ export class ActivitiesController {
   constructor(private readonly activitiesService: ActivitiesService) {}
 
   @Post()
+  @Roles('docente', 'admin')
   @ApiOperation({ summary: 'Crear una nueva actividad' })
   @ApiResponse({ status: 201, description: 'La actividad ha sido creada exitosamente.' })
-  create(@Body() createActivityDto: CreateActivityDto) {
-    // TODO: Obtener el userId del request context via @CurrentUser() guard
-    const mockUserId = 1; 
-    return this.activitiesService.create(createActivityDto, mockUserId);
+  create(@Body() createActivityDto: CreateActivityDto, @GetUser() user: User) {
+    return this.activitiesService.create(createActivityDto, user.id);
   }
 
   @Get()
