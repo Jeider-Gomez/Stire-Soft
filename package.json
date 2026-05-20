@@ -21,7 +21,10 @@
     "test:flow": "npx tsx stire-tester.ts",
     "db:simulate": "npx tsx stire-simulator.ts",
     "db:seed-v2": "npx tsx stire-seeder-v2.ts",
-    "db:seed-v3": "npx tsx stire-seeder-v3.ts"
+    "db:seed-v3": "npx tsx stire-seeder-v3.ts",
+    "db:seed-destructivo": "npx tsx stire-seeder-destructivo.ts",
+    "db:seed-qa": "npx tsx src/seeds/qa-destructivo.seeder.ts",
+    "test:qa": "npx tsx stire-qa-tester.ts"
   },
   "dependencies": {
     "@nestjs/bullmq": "^11.0.4",

@@ -126,8 +126,9 @@ export class SubmissionsService {
       }
 
       // Finalize submission
+      const hasAsync = answerEntities.some(a => a.isCorrect === null);
       submission.score = totalScore;
-      submission.status = SubmissionStatus.GRADED;
+      submission.status = hasAsync ? SubmissionStatus.SUBMITTED : SubmissionStatus.GRADED;
       submission.submittedAt = new Date();
       if (dto.timeSpentSeconds) submission.timeSpentSeconds = dto.timeSpentSeconds;
       
@@ -136,17 +137,19 @@ export class SubmissionsService {
       await queryRunner.commitTransaction();
 
       // Emitir evento fuera de la transacción (side-effects desacoplados)
-      this.eventEmitter.emit(
-        'submission.graded',
-        new SubmissionGradedEvent(
-          submission.id,
-          submission.studentId,
-          submission.activityId,
-          submission.activity.learningUnitId,
-          submission.score,
-          submission.activity.passingScore,
-        )
-      );
+      if (!hasAsync) {
+        this.eventEmitter.emit(
+          'submission.graded',
+          new SubmissionGradedEvent(
+            submission.id,
+            submission.studentId,
+            submission.activityId,
+            submission.activity.learningUnitId,
+            submission.score,
+            submission.activity.passingScore,
+          )
+        );
+      }
 
       return {
         submissionId: submission.id,
@@ -175,16 +178,60 @@ export class SubmissionsService {
     return this.submissionsRepo.save(submission);
   }
 
+  async updateAnswerScore(answerId: number, isCorrect: boolean, score: number, feedback?: string) {
+    const answer = await this.answersRepo.findOne({ where: { id: answerId } });
+    if (!answer) return null;
+
+    answer.isCorrect = isCorrect;
+    answer.score = score;
+    if (feedback) answer.feedback = feedback;
+
+    return this.answersRepo.save(answer);
+  }
+
+  async consolidateSubmission(submissionId: string) {
+    const submission = await this.submissionsRepo.findOne({
+      where: { id: submissionId },
+      relations: ['activity'],
+    });
+    if (!submission) return;
+
+    const answers = await this.answersRepo.find({ where: { submissionId } });
+    const isPending = answers.some(a => a.isCorrect === null);
+
+    if (isPending) return;
+
+    const totalScore = answers.reduce((sum, a) => sum + a.score, 0);
+
+    submission.score = totalScore;
+    submission.status = SubmissionStatus.GRADED;
+    
+    await this.submissionsRepo.save(submission);
+
+    this.eventEmitter.emit(
+      'submission.graded',
+      new SubmissionGradedEvent(
+        submission.id,
+        submission.studentId,
+        submission.activityId,
+        submission.activity.learningUnitId,
+        submission.score,
+        submission.activity.passingScore,
+      )
+    );
+  }
+
   async markAsFailed(submissionAnswerId: number, errorMessage: string) {
     const answer = await this.answersRepo.findOne({ where: { id: submissionAnswerId } });
     if (!answer) return;
 
-    const submission = await this.submissionsRepo.findOne({ where: { id: answer.submissionId } });
-    if (!submission) return;
+    // 1. Calificar la respuesta como incorrecta para evitar deadlock de consolidación
+    answer.isCorrect = false;
+    answer.score = 0;
+    answer.feedback = `Fallo crítico de evaluación en sandbox: ${errorMessage}`;
+    await this.answersRepo.save(answer);
 
-    submission.status = SubmissionStatus.IN_PROGRESS; // O crear estado específico como JUDGE_FAILED
-    submission.feedback = `Error en evaluación: ${errorMessage}`;
-    
-    await this.submissionsRepo.save(submission);
+    // 2. Ejecutar la consolidación del intento para actualizar el score total y emitir el evento correspondiente
+    await this.consolidateSubmission(answer.submissionId);
   }
 }

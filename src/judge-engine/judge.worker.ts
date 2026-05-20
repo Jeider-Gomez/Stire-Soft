@@ -21,6 +21,8 @@ export class JudgeWorker extends WorkerHost {
     const { submissionAnswerId, code, language, testCases } = job.data;
     
     let totalScore = 0;
+    let allAccepted = true;
+    let statusSummary = 'accepted';
     
     for (const testCase of testCases) {
       this.logger.log(`Procesando Test Case ${testCase.label || 'Oculto'}`);
@@ -39,9 +41,27 @@ export class JudgeWorker extends WorkerHost {
 
       if (runResult.status === 'accepted') {
         totalScore += testCase.weight || 10;
+      } else {
+        allAccepted = false;
+        statusSummary = runResult.status;
       }
       
       // Emitir progreso por WebSockets a través de un Gateway
+    }
+
+    const feedback = allAccepted 
+      ? '¡Excelente! Todos los casos pasaron.' 
+      : `Falló la evaluación: ${statusSummary}.`;
+
+    const answer = await this.submissionsService.updateAnswerScore(
+      submissionAnswerId,
+      allAccepted,
+      totalScore,
+      feedback,
+    );
+
+    if (answer) {
+      await this.submissionsService.consolidateSubmission(answer.submissionId);
     }
 
     return { success: true, score: totalScore };

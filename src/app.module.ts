@@ -37,6 +37,7 @@ import { ContentModule } from './content/content.module';
 import { ActivityLogModule } from './activity-log/activity-log.module';
 import { PrerequisitesModule } from './prerequisites/prerequisites.module';
 import { WorkersModule } from './common/workers/workers.module';
+import { MaintenanceModule } from './maintenance/maintenance.module';
 
 @Module({
   imports: [
@@ -116,6 +117,7 @@ import { WorkersModule } from './common/workers/workers.module';
     ContentModule,
     ActivityLogModule,
     WorkersModule,
+    MaintenanceModule,
   ],
 })
 export class AppModule {}

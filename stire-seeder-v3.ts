@@ -232,11 +232,22 @@ async function seedHierarchy(db: Conn, teacherIds: number[], actTypeIds: number[
                     ) as any;
 
                     // Pregunta MCQ
+                    const rawOptions = ['Nada', 'Error', 'Un número', 'True'];
+                    const correctIndex = 2;
+                    const formattedOptions = rawOptions.map((text, index) => ({
+                        id: (index + 1).toString(),
+                        text: text
+                    }));
+                    const mcqConfig = {
+                        options: formattedOptions,
+                        correctAnswerId: (correctIndex + 1).toString()
+                    };
+
                     await db.execute(
                         'INSERT INTO activity_questions (activityId,type,question,points,`order`,config,createdAt,updatedAt) VALUES (?,?,?,20,2,?,?,?)',
                         [actId, 'mcq',
                          `¿Cuál es la salida de print(${rndInt(1, 9)} + ${rndInt(1, 9)})?`,
-                         JSON.stringify({ options: ['Nada', 'Error', 'Un número', 'True'], correctIndex: 2 }),
+                         JSON.stringify(mcqConfig),
                          now, now]
                     );
 
@@ -263,8 +274,14 @@ async function seedQuestionBanks(db: Conn, teacherIds: number[]) {
 
         const questions = [
             ['coding', '¿Qué imprime print(2**10)?', { answer: '1024' }],
-            ['mcq', '¿Cuál es el resultado de bool(0)?', { options: ['True', 'False', 'None', 'Error'], correctIndex: 1 }],
-            ['mcq', '¿Cuál estructura usa LIFO?', { options: ['Cola', 'Árbol', 'Pila', 'Lista'], correctIndex: 2 }],
+            ['mcq', '¿Cuál es el resultado de bool(0)?', {
+                options: ['True', 'False', 'None', 'Error'].map((text, idx) => ({ id: (idx + 1).toString(), text })),
+                correctAnswerId: '2'
+            }],
+            ['mcq', '¿Cuál estructura usa LIFO?', {
+                options: ['Cola', 'Árbol', 'Pila', 'Lista'].map((text, idx) => ({ id: (idx + 1).toString(), text })),
+                correctAnswerId: '3'
+            }],
             ['coding', 'Invierte una cadena en Python', { starter: 's = input()' }],
         ];
         for (const [type, question, config] of questions) {

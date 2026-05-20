@@ -24,18 +24,28 @@ export class LearningProgressService {
 
     // Todos los submissions del estudiante para estas actividades
     const activityIds = activities.map(a => a.id);
-    const submissions = await this.submissionsRepo.createQueryBuilder('sub')
-      .where('sub.studentId = :studentId', { studentId })
-      .andWhere('sub.activityId IN (:...activityIds)', { activityIds })
-      .andWhere('sub.status != :status', { status: 'in_progress' })
-      .getMany();
+    const submissions = activityIds.length > 0
+      ? await this.submissionsRepo.createQueryBuilder('sub')
+          .where('sub.studentId = :studentId', { studentId })
+          .andWhere('sub.activityId IN (:...activityIds)', { activityIds })
+          .andWhere('sub.status != :status', { status: 'in_progress' })
+          .getMany()
+      : [];
 
     progress.mastery = calculateUnitMastery(submissions, activities);
     
     progress.attemptsCount += 1;
-    if (score >= passingScore) {
-      progress.completedActivities += 1;
-    }
+    
+    // Calcular de forma exacta el conteo de actividades únicas completadas
+    const distinctPassedActivities = new Set(
+      submissions
+        .filter(s => {
+          const act = activities.find(a => a.id === s.activityId);
+          return act && s.score >= act.passingScore;
+        })
+        .map(s => s.activityId)
+    );
+    progress.completedActivities = distinctPassedActivities.size;
     
     // Calcular successRate global de la unidad
     const passed = submissions.filter(s => {
