@@ -1,7 +1,8 @@
-import { Entity, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, Index } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, Index, OneToMany } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Activity } from '../../activities/entities/activity.entity';
 import { SubmissionStatus } from '../../common/enums/submission-status.enum';
+import { SubmissionAnswer } from '../../submission-answers/entities/submission-answer.entity';
 
 @Entity('submissions')
 @Index(['studentId', 'activityId'])
@@ -53,6 +54,9 @@ export class Submission {
 
   @Column({ type: 'boolean', default: false })
   isAbandoned: boolean;
+
+  @OneToMany(() => SubmissionAnswer, (answer) => answer.submission)
+  answers: SubmissionAnswer[];
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

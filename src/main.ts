@@ -17,7 +17,16 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors();
+  const corsOriginEnv = process.env.CORS_ORIGIN;
+  const originList = corsOriginEnv
+    ? corsOriginEnv.split(',').map((o) => o.trim())
+    : ['http://localhost:5173', 'http://localhost:3000'];
+
+  app.enableCors({
+    origin: originList,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('STIRE Platform API')

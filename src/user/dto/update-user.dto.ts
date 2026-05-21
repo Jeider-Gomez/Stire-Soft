@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsEnum } from 'class-validator';
+import { UserRole } from '../entities/user.entity';
 
 // PartialType hace que todas las propiedades de CreateUserDto sean opcionales
 export class UpdateUserDto extends PartialType(CreateUserDto) {
@@ -10,7 +11,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   isActive?: boolean;
 
   // Campo opcional para actualizar el rol
-  @IsString({ message: 'El rol debe ser una cadena de texto' })
+  @IsEnum(UserRole, { message: 'El rol debe ser un rol válido (admin, docente, estudiante)' })
   @IsOptional()
-  role?: string;
+  role?: UserRole;
 }
