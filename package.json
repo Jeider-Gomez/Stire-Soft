@@ -24,7 +24,11 @@
     "db:seed-v3": "npx tsx stire-seeder-v3.ts",
     "db:seed-destructivo": "npx tsx stire-seeder-destructivo.ts",
     "db:seed-qa": "npx tsx src/seeds/qa-destructivo.seeder.ts",
-    "test:qa": "npx tsx stire-qa-tester.ts"
+    "test:qa": "npx tsx stire-qa-tester.ts",
+    "migration:generate": "npx typeorm-ts-node-commonjs migration:generate -d src/data-source.ts",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
+    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d src/data-source.ts",
+    "migration:show": "npx typeorm-ts-node-commonjs migration:show -d src/data-source.ts"
   },
   "dependencies": {
     "@nestjs/bullmq": "^11.0.4",

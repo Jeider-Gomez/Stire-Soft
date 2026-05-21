@@ -64,25 +64,6 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
       ttl: 300000, // 5 minutes
     }),
 
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        connection: {
-          host: configService.get('REDIS_HOST', 'localhost'),
-          port: configService.get('REDIS_PORT', 6379),
-          enableOfflineQueue: false, // Evita encolar comandos cuando Redis está caído (previene cuelgues indefinidos)
-          connectTimeout: 5000,      // Timeout de conexión de 5 segundos
-          retryStrategy(times) {
-            // Reintentar un máximo de 3 veces si Redis está caído al inicio, con delay de 1s
-            if (times > 3) {
-              return null; // Deja de reintentar y lanza error
-            }
-            return 1000;
-          }
-        },
-      }),
-      inject: [ConfigService],
-    }),
 
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

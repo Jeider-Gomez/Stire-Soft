@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExecutionResult } from './entities/execution-result.entity';
 import { ExecutionResultsRepository } from './judge-engine.repository';
 import { DockerSandboxService } from './docker-sandbox.service';
-import { JudgeWorker } from './judge.worker';
 
 import { SubmissionsModule } from '../submissions/submissions.module';
 
@@ -12,7 +11,7 @@ import { SubmissionsModule } from '../submissions/submissions.module';
     TypeOrmModule.forFeature([ExecutionResult]),
     SubmissionsModule,
   ],
-  providers: [ExecutionResultsRepository, DockerSandboxService, JudgeWorker],
-  exports: [ExecutionResultsRepository, JudgeWorker],
+  providers: [ExecutionResultsRepository, DockerSandboxService],
+  exports: [ExecutionResultsRepository],
 })
 export class JudgeEngineModule {}
