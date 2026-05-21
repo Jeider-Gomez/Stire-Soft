@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn, 
   CreateDateColumn, 
   UpdateDateColumn,
+  DeleteDateColumn,
   OneToMany,
   OneToOne
 } from 'typeorm';
@@ -52,4 +53,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt?: Date;
 }

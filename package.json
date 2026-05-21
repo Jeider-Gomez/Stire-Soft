@@ -17,6 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:judge": "jest --runInBand --testPathPatterns='judge-engine/.*\\.spec\\.ts$'",
+    "test:tutor": "jest --runInBand src/tutor/tutor.service.spec.ts",
+    "test:tutor-e2e": "jest --runInBand src/tutor/tutor.e2e-spec.ts",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:flow": "npx tsx stire-tester.ts",
     "db:simulate": "npx tsx stire-simulator.ts",
@@ -45,6 +48,7 @@
     "@nestjs/swagger": "^11.4.2",
     "@nestjs/throttler": "^6.5.0",
     "@nestjs/typeorm": "^11.0.0",
+    "openai": "^4.5.0",
     "@types/marked": "^5.0.2",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.76.6",
@@ -88,23 +92,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
+    "sqlite3": "^5.1.6",
     "typescript-eslint": "^8.20.0"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
   }
 }

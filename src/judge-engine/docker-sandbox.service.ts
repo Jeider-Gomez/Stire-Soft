@@ -1,16 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-
-export interface RunResult {
-  status: 'accepted' | 'wrong_answer' | 'time_limit' | 'compile_error' | 'runtime_error';
-  stdout: string;
-  stderr: string;
-  timeMs: number;
-  memoryKb: number;
-}
+import { SandboxAdapter, RunResult } from './sandbox-adapter.interface';
 
 @Injectable()
-export class DockerSandboxService {
-  private readonly logger = new Logger(DockerSandboxService.name);
+export class DockerSandboxAdapter implements SandboxAdapter {
+  private readonly logger = new Logger(DockerSandboxAdapter.name);
 
   async executeIsolated(code: string, language: string, testCase: any): Promise<RunResult> {
     this.logger.log(`[DOCKER MOCK] Ejecutando código en ${language}`);

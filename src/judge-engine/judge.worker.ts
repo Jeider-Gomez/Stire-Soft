@@ -1,8 +1,8 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { ExecutionResultsRepository } from './judge-engine.repository';
-import { DockerSandboxService } from './docker-sandbox.service';
+import { SandboxAdapter, SANDBOX_ADAPTER } from './sandbox-adapter.interface';
 import { SubmissionsService } from '../submissions/submissions.service';
 
 @Processor('judge')
@@ -10,7 +10,8 @@ export class JudgeWorker extends WorkerHost {
   private readonly logger = new Logger(JudgeWorker.name);
 
   constructor(
-    private readonly sandbox: DockerSandboxService,
+    @Inject(SANDBOX_ADAPTER)
+    private readonly sandbox: SandboxAdapter,
     private readonly resultsRepo: ExecutionResultsRepository,
     private readonly submissionsService: SubmissionsService,
   ) {

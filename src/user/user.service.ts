@@ -131,6 +131,6 @@ export class UserService {
    */
   async remove(id: number): Promise<void> {
     const user = await this.findOne(id);
-    await this.userRepository.remove(user);
+    await this.userRepository.softRemove(user);
   }
 }
