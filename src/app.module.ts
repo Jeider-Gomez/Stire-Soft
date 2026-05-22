@@ -32,6 +32,7 @@ import { JudgeEngineModule } from './judge-engine/judge-engine.module';
 import { TutorModule } from './tutor/tutor.module';
 import { LearningProgressModule } from './learning-progress/learning-progress.module';
 import { ReviewSchedulesModule } from './review-schedules/review-schedules.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { GamificationModule } from './gamification/gamification.module';
 import { ContentRenderingModule } from './content-rendering/content-rendering.module';
@@ -102,6 +103,7 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
     TutorModule,
     LearningProgressModule,
     ReviewSchedulesModule,
+    NotificationsModule,
     AnalyticsModule,
     GamificationModule,
     ContentRenderingModule,

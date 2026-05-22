@@ -1,20 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { In } from 'typeorm';
 import { LearningProgressRepository } from './learning-progress.repository';
 import { SubmissionsRepository } from '../submissions/submissions.repository';
 import { ActivitiesRepository } from '../activities/activities.repository';
 import { calculateUnitMastery } from '../common/utils/mastery.calculator';
+import { LearningStatus } from '../common/enums/learning-status.enum';
+import { LearningStatusChangedEvent } from '../common/events/learning-status-changed.event';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class LearningProgressService {
+  private readonly logger = new Logger(LearningProgressService.name);
+
   constructor(
     private readonly progressRepo: LearningProgressRepository,
     private readonly submissionsRepo: SubmissionsRepository,
     private readonly activitiesRepo: ActivitiesRepository,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async recalculateMastery(studentId: number, learningUnitId: number, lastActivityId: number, score: number, passingScore: number) {
     const progress = await this.progressRepo.findOrCreate(studentId, learningUnitId);
+    const oldStatus = progress.status || LearningStatus.NO_VISTO;
     
     // Todas las actividades de la unidad
     const activities = await this.activitiesRepo.find({
@@ -35,6 +42,21 @@ export class LearningProgressService {
     progress.mastery = calculateUnitMastery(submissions, activities);
     
     progress.attemptsCount += 1;
+
+    // Transición automática del estado cognitivo del estudiante
+    let newStatus = LearningStatus.NO_VISTO;
+    if (progress.attemptsCount > 0) {
+      if (progress.mastery < 20) {
+        newStatus = LearningStatus.EXPLORADO;
+      } else if (progress.mastery < 60) {
+        newStatus = LearningStatus.EN_PRACTICA;
+      } else if (progress.mastery < 85) {
+        newStatus = LearningStatus.COMPRENSION_PARCIAL;
+      } else {
+        newStatus = LearningStatus.DOMINADO;
+      }
+    }
+    progress.status = newStatus;
     
     // Calcular de forma exacta el conteo de actividades únicas completadas
     const distinctPassedActivities = new Set(
@@ -56,7 +78,20 @@ export class LearningProgressService {
     
     progress.lastActivityId = lastActivityId;
 
-    return this.progressRepo.save(progress);
+    const savedProgress = await this.progressRepo.save(progress);
+
+    // Emitir y registrar evento de cambio de estado de aprendizaje
+    if (oldStatus !== newStatus) {
+      this.logger.log(
+        `[Transición Cognitiva] Estudiante ${studentId} cambió su estado en Unidad ${learningUnitId}: ${oldStatus} -> ${newStatus} (Maestría: ${progress.mastery.toFixed(2)}%)`
+      );
+      this.eventEmitter.emit(
+        'learning.status.changed',
+        new LearningStatusChangedEvent(studentId, learningUnitId, oldStatus, newStatus, progress.mastery)
+      );
+    }
+
+    return savedProgress;
   }
 
   async getClassProgress(studentId: number, classId: number): Promise<number> {

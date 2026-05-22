@@ -1,28 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { User } from './entities/user.entity';
 
 describe('UserController', () => {
   let controller: UserController;
 
-  const mockUserRepository = {
-    find: jest.fn(),
+  const mockUserService = {
+    findAll: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
-    save: jest.fn(),
+    update: jest.fn(),
     remove: jest.fn(),
+    updateRole: jest.fn(),
+    addAffiliation: jest.fn(),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [
-        UserService,
         {
-          provide: getRepositoryToken(User),
-          useValue: mockUserRepository,
+          provide: UserService,
+          useValue: mockUserService,
         },
       ],
     }).compile();

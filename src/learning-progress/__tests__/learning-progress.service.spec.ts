@@ -67,10 +67,14 @@ describe('LearningProgressService', () => {
   let progressRepo: any;
   let submissionsRepo: any;
   let activitiesRepo: any;
+  let eventEmitter: any;
 
   beforeEach(() => {
     ({ progressRepo, submissionsRepo, activitiesRepo } = buildMocks());
-    service = new LearningProgressService(progressRepo, submissionsRepo, activitiesRepo);
+    eventEmitter = {
+      emit: jest.fn(),
+    };
+    service = new LearningProgressService(progressRepo, submissionsRepo, activitiesRepo, eventEmitter);
   });
 
   // ─── recalculateMastery ───────────────────────────────────────────────────
@@ -174,6 +178,41 @@ describe('LearningProgressService', () => {
       const result = await service.recalculateMastery(42, 10, 99, 80, 60);
 
       expect(result.lastActivityId).toBe(99);
+    });
+
+    it('transiciona el estado cognitivo a dominado cuando la maestria >= 85', async () => {
+      const activity = makeActivity({ id: 1, totalPoints: 100, passingScore: 60 });
+      const submission = makeSubmission({ activityId: 1, score: 95 });
+
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress({ status: 'no_visto', attemptsCount: 0 }));
+      activitiesRepo.find.mockResolvedValue([activity]);
+      mockQueryBuilder([submission]);
+
+      const result = await service.recalculateMastery(42, 10, 1, 95, 60);
+
+      expect(result.status).toBe('dominado');
+      expect(eventEmitter.emit).toHaveBeenCalledWith(
+        'learning.status.changed',
+        expect.objectContaining({
+          studentId: 42,
+          learningUnitId: 10,
+          oldStatus: 'no_visto',
+          newStatus: 'dominado',
+        })
+      );
+    });
+
+    it('transiciona a explorado si la maestria < 20', async () => {
+      const activity = makeActivity({ id: 1, totalPoints: 100, passingScore: 60 });
+      const submission = makeSubmission({ activityId: 1, score: 10 });
+
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress({ status: 'no_visto', attemptsCount: 0 }));
+      activitiesRepo.find.mockResolvedValue([activity]);
+      mockQueryBuilder([submission]);
+
+      const result = await service.recalculateMastery(42, 10, 1, 10, 60);
+
+      expect(result.status).toBe('explorado');
     });
   });
 

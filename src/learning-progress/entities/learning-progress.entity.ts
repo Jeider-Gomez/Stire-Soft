@@ -3,6 +3,7 @@ import { StireBaseEntity } from '../../common/entities/base.entity';
 import { User } from '../../user/entities/user.entity';
 import { LearningUnit } from '../../learning-unit/entities/learning-unit.entity';
 import { Activity } from '../../activities/entities/activity.entity';
+import { LearningStatus } from '../../common/enums/learning-status.enum';
 
 @Entity('learning_progress')
 @Index(['studentId', 'learningUnitId'], { unique: true })
@@ -23,6 +24,16 @@ export class LearningProgress extends StireBaseEntity {
 
   @Column({ type: 'float', default: 0 })
   mastery: number;
+
+  @Column({
+    type: 'enum',
+    enum: LearningStatus,
+    default: LearningStatus.NO_VISTO,
+  })
+  status: LearningStatus;
+
+  @Column({ type: 'int', default: 0 })
+  priority: number;
 
   @Column({ type: 'float', default: 0 })
   successRate: number;
