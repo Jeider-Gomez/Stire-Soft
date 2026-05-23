@@ -1,281 +1,150 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# STIRE — Sistema Tutor Inteligente con Repetición Espaciada
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+> **Repositorio IA-Friendly** · Lee los 5 documentos en `docs/` y tendrás el contexto completo del proyecto.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🎯 Resumen Ejecutivo
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**STIRE** es una plataforma backend de tutoría inteligente que combina **evaluación adaptativa**, **repetición espaciada (SM-2)** y un **Tutor IA socrático** para resolver el problema del olvido acelerado y la falta de personalización en la enseñanza universitaria de Algoritmia.
 
-## Project setup
+Construida con **NestJS + TypeORM + MariaDB**, la arquitectura sigue principios **DDD (Domain-Driven Design)** y un modelo **event-driven** que garantiza respuestas instantáneas al estudiante mientras los motores cognitivos operan en segundo plano.
 
-```bash
-$ npm install
-```
+**Estado actual:** Backend v2 — Auditoría completada ✅ · 19 test suites · 103 tests en verde · Listo para Sprint de Frontend.
 
-## Prompt profesional para VS Code
+---
 
-Usa este prompt en VS Code Copilot / ChatGPT para trabajar con el proyecto STIRE y guiar la creación del backend.
+## 📖 Base de Conocimiento — Los 5 Documentos Fundamentales
 
-```txt
-Actúa como un desarrollador senior experto en NestJS, arquitectura backend y diseño de sistemas educativos.
+> Leer en orden para contexto completo. Cada documento responde una pregunta clave.
 
-Estoy desarrollando un sistema llamado STIRE (Sistema Tutor Inteligente con Repetición Espaciada), enfocado en la asignatura Fundamentos de Algoritmia.
+| Pregunta | Documento |
+|----------|-----------|
+| **¿Por qué existe STIRE?** Visión pedagógica, problema, propuesta de valor, actores y roadmap. | 📘 [STIRE\_FUNCTIONAL\_VISION.md](./docs/STIRE_FUNCTIONAL_VISION.md) |
+| **¿Qué es técnicamente?** Arquitectura DDD, decisiones ADR, esquema relacional completo y módulos. | 🏗️ [01\_ARQUITECTURA\_Y\_DISENO.md](./docs/01_ARQUITECTURA_Y_DISENO.md) |
+| **¿Cómo funciona?** Flujos del estudiante y docente, happy path E2E y trazabilidad de logs. | 🔄 [02\_FLUJOS\_Y\_OPERACIONES.md](./docs/02_FLUJOS_Y_OPERACIONES.md) |
+| **¿Cuál es el cerebro?** Motor de evaluación, Judge Engine (Docker), Mastery, SM-2 y Tutor IA. | 🧠 [03\_MOTOR\_Y\_TUTOR.md](./docs/03_MOTOR_Y_TUTOR.md) |
+| **¿Cuáles son las reglas?** Convenciones de código, seguridad XSS/RCE, escalabilidad y deuda técnica. | 🔐 [04\_ESTANDARES\_Y\_SEGURIDAD.md](./docs/04_ESTANDARES_Y_SEGURIDAD.md) |
 
-Necesito que me ayudes a construir el backend completo usando:
+Para el índice completo de documentación: [`docs/README.md`](./docs/README.md)
 
-- NestJS
-- TypeORM
-- MariaDB
-- JWT (autenticación)
-- Guards y Roles
-- Arquitectura modular
+---
 
------------------------------------
-🎯 CONTEXTO DEL SISTEMA
------------------------------------
+## 🏗️ Stack Tecnológico
 
-El sistema tiene 3 roles:
+| Capa | Tecnología |
+|------|-----------|
+| Framework | NestJS 10 + TypeScript |
+| ORM | TypeORM |
+| Base de datos | MariaDB |
+| Autenticación | JWT (RS256) |
+| Cola de tareas | BullMQ + Redis |
+| Sandbox de código | Docker (contenedores efímeros) |
+| Sanitización XSS | DOMPurify + JSDOM |
+| Eventos | EventEmitter2 |
+| Tests | Jest + Supertest |
 
-1. admin
-2. docente
-3. estudiante
+---
 
-El sistema combina:
-
-- Tutor inteligente (IA conversacional tipo docente)
-- Seguimiento del aprendizaje por "Unidad de Aprendizaje"
-- Evaluaciones básicas
-- Recomendaciones automáticas
-- Comunicación entre docente y estudiante
-
------------------------------------
-📚 CONCEPTO CLAVE
------------------------------------
-
-Unidad de Aprendizaje:
-
-Es la unidad mínima evaluable del sistema.
-
-Ejemplo:
-- Variables
-- Condicionales
-- Ciclos FOR
-
-Cada unidad:
-- se puede explicar
-- se puede practicar
-- se puede evaluar
-
------------------------------------
-🧩 MÓDULOS DEL SISTEMA
------------------------------------
-
-Necesito trabajar con estos módulos:
-
-- auth
-- user
-- docente
-- estudiante
-- grupo (clase)
-- unidad-aprendizaje
-- progreso
-- evaluacion
-- resultado
-- tutor
-- recomendacion
-- mensaje
-- notificacion
-
------------------------------------
-🗄️ MODELO DE DATOS (RESUMIDO)
------------------------------------
-
-user:
-- id
-- email
-- password
-- fullName
-- role (admin | docente | estudiante)
-
-docente:
-- id
-- userId
-
-estudiante:
-- id
-- userId
-
-grupo:
-- id
-- nombre
-- docenteId
-
-estudiante_grupo:
-- id
-- estudianteId
-- grupoId
-
-unidad_aprendizaje:
-- id
-- nombre
-- descripcion
-- nivel_dificultad
-- orden
-
-progreso:
-- id
-- estudianteId
-- unidadId
-- estado_aprendizaje (no_visto, explorado, en_practica, comprension_parcial, dominado)
-- porcentaje_dominio
-- prioridad
-- fecha_ultimo_repaso
-
-evaluacion:
-- id
-- unidadId
-- pregunta
-- respuesta_correcta
-
-resultado:
-- id
-- estudianteId
-- evaluacionId
-- respuesta
-- es_correcta
-
-mensaje:
-- id
-- emisorId
-- receptorId
-- contenido
-- tipo (consulta, respuesta)
-
-notificacion:
-- id
-- userId
-- titulo
-- mensaje
-- leido
-
------------------------------------
-🔐 REQUISITOS DE SEGURIDAD
------------------------------------
-
-- Implementar JWT
-- Guards con roles
-- Decoradores personalizados (@Roles, @GetUser)
-- Separar rutas públicas y protegidas
-
------------------------------------
-⚙️ LO QUE NECESITO DE TI
------------------------------------
-
-Quiero que me ayudes paso a paso a construir este sistema.
-
-Cuando te haga una petición:
-
-1. Genera código limpio y funcional
-2. Usa buenas prácticas de NestJS
-3. Explica brevemente lo que haces
-4. No compliques innecesariamente
-5. Mantén todo alineado con este modelo
-
------------------------------------
-📌 PRIMERA TAREA
------------------------------------
-
-Quiero que empieces creando:
-
-1. Entidad User con TypeORM
-2. Roles (admin, docente, estudiante)
-3. Módulo Auth completo con JWT
-4. Guards y decoradores de roles
-
-Después seguimos con los demás módulos.
-```
-
-## Compile and run the project
+## 🚀 Inicio Rápido
 
 ```bash
-# development
-$ npm run start
+# 1. Instalar dependencias
+npm install
 
-# watch mode
-$ npm run start:dev
+# 2. Configurar variables de entorno
+cp .env.example .env
+# Editar .env: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, JWT_SECRET
 
-# production mode
-$ npm run start:prod
+# 3. Levantar base de datos (Docker opcional)
+docker-compose up -d
+
+# 4. Ejecutar en modo desarrollo
+npm run start:dev
 ```
 
-## Run tests
+La API estará disponible en `http://localhost:3000`.  
+Documentación Swagger: `http://localhost:3000/api`.
+
+---
+
+## 🧪 Tests
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run test          # Suite completa (103 tests)
+npm run test:e2e      # Tests end-to-end
+npm run test:cov      # Reporte de cobertura
 ```
 
-## Deployment
+**Resultado actual:** `Test Suites: 19 passed · Tests: 103 passed · Time: ~17s`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+---
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 📁 Estructura del Repositorio
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```
+stire/
+├── src/                          # Código fuente NestJS
+│   ├── auth/                     # Autenticación JWT
+│   ├── user/                     # Gestión de usuarios y roles
+│   ├── class/                    # Clases y matrículas
+│   ├── learning-unit/            # Unidades de aprendizaje
+│   ├── submissions/              # Motor de entregas
+│   ├── evaluation-engine/        # Motor de calificación (Strategy Pattern)
+│   ├── judge-engine/             # Evaluación de código (Docker Sandbox)
+│   ├── learning-progress/        # Seguimiento de mastery
+│   ├── review-schedules/         # Repetición espaciada SM-2
+│   ├── tutor/                    # Tutor IA (RAG + LLM)
+│   ├── analytics/                # Métricas de clase y estudiante
+│   ├── content-rendering/        # Markdown → HTML sanitizado (DOMPurify)
+│   ├── notifications/            # Sistema de notificaciones
+│   └── gamification/             # [EN PAUSA] Logros y recompensas
+├── docs/                         # 📚 Documentación técnica completa
+│   ├── README.md                 # Índice de navegación
+│   ├── STIRE_FUNCTIONAL_VISION.md
+│   ├── 01_ARQUITECTURA_Y_DISENO.md
+│   ├── 02_FLUJOS_Y_OPERACIONES.md
+│   ├── 03_MOTOR_Y_TUTOR.md
+│   └── 04_ESTANDARES_Y_SEGURIDAD.md
+├── docker-compose.yml            # Entorno local completo
+├── .env.example                  # Plantilla de variables de entorno
+└── README.md                     # ← Estás aquí
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 🔐 Seguridad
 
-Check out a few resources that may come in handy when working with NestJS:
+- **XSS**: Todo HTML generado desde Markdown pasa por `DOMPurify` (backend, con JSDOM).
+- **RCE**: El código de estudiantes se ejecuta en contenedores Docker efímeros con límites de CPU, RAM y sin acceso a red.
+- **Auth**: Guards y decoradores de roles (`@Roles`, `@GetUser`) en cada endpoint sensible.
+- **Validación**: DTOs con `class-validator` en todas las entradas de la API.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## 🗺️ Roadmap
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+| Fase | Estado |
+|------|--------|
+| ✅ Fase 1 — Core Backend (Auth, User, Class, Submissions, Evaluation) | Completado |
+| ✅ Fase 2 — Inteligencia (Tutor IA, SM-2, Analytics, Notifications) | Completado |
+| ✅ Auditoría v2 — Seguridad, limpieza de código muerto, optimización | Completado |
+| 🚧 Fase 5 — Frontend (React/Next.js) | Próximo Sprint |
+| 🕐 Fase 3 — Gamificación (Badges, XP, Ranking) | En Pausa |
+| 🕐 Fase 4 — Bancos de Preguntas reutilizables | En Pausa |
 
-## Stay in touch
+---
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 🤝 Contribución
 
-## License
+1. Lee [`docs/04_ESTANDARES_Y_SEGURIDAD.md`](./docs/04_ESTANDARES_Y_SEGURIDAD.md) antes de contribuir.
+2. Crea una rama descriptiva (`feature/nombre-feature` o `fix/descripcion`).
+3. Escribe tests para tu cambio.
+4. Asegúrate de que `npm run test` pase al 100 %.
+5. Abre un Pull Request con descripción de motivación y cambios.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+## 📄 Licencia
+
+MIT © 2026 STIRE Team — Universidad de Córdoba.

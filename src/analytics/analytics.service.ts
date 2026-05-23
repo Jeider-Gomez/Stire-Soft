@@ -128,8 +128,10 @@ export class AnalyticsService {
     }
 
     // Promedio de mastery de los estudiantes
+    // Use a JOIN to fetch learning progress directly linked to enrollments of this class
     const progressList = await progressRepo.createQueryBuilder('p')
-      .where('p.studentId IN (:...studentIds)', { studentIds })
+      .innerJoin(Enrollment, 'e', 'e.studentId = p.studentId')
+      .where('e.classId = :classId', { classId })
       .getMany();
 
     const submissions = await submissionRepo.createQueryBuilder('s')

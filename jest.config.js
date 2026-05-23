@@ -10,4 +10,12 @@ module.exports = {
   coverageDirectory: 'coverage',
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules/'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@exodus/bytes|@exodus|parse5|entities|@asamuzakjp|marked)/)',
+  ],
+  moduleNameMapper: {
+    '^marked$': '<rootDir>/node_modules/marked/lib/marked.umd.js',
+  },
 };
+
+

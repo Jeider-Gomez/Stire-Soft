@@ -36,7 +36,9 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { GamificationModule } from './gamification/gamification.module';
 import { ContentRenderingModule } from './content-rendering/content-rendering.module';
-import { QuestionBanksModule } from './question-banks/question-banks.module';
+// QuestionBanksModule eliminado del árbol activo de dependencias.
+// Las entidades QuestionBank y BankQuestion están definidas en src/question-banks/entities/
+// para una implementación futura. Ver README.md sección "Módulos en Pausa".
 import { ContentModule } from './content/content.module';
 import { ActivityLogModule } from './activity-log/activity-log.module';
 import { PrerequisitesModule } from './prerequisites/prerequisites.module';
@@ -107,7 +109,6 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
     AnalyticsModule,
     GamificationModule,
     ContentRenderingModule,
-    QuestionBanksModule,
     PrerequisitesModule,
     ContentModule,
     ActivityLogModule,
