@@ -147,6 +147,37 @@ describe('SubmissionsService', () => {
         .rejects.toThrow(BadRequestException);
     });
 
+    it('[FIX] attemptsAllowed = 0 permite intentos ilimitados — no bloquea cuando ya hay N intentos', async () => {
+      // attemptsAllowed = 0 significa "sin límite"
+      const activity = makeActivity({ attemptsAllowed: 0 });
+      const newSubmission = makeSubmission();
+      activitiesRepo.findOne.mockResolvedValue(activity);
+      submissionsRepo.findActiveSubmission.mockResolvedValue(null);
+      // Simular que el estudiante ya hizo 999 intentos
+      submissionsRepo.getAttemptCount.mockResolvedValue(999);
+      submissionsRepo.create.mockReturnValue(newSubmission);
+      submissionsRepo.save.mockResolvedValue(newSubmission);
+
+      // No debe lanzar BadRequestException
+      await expect(service.startSubmission(dto, studentId)).resolves.toBe(newSubmission);
+      expect(submissionsRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({ attemptNumber: 1000 }),
+      );
+    });
+
+    it('[FIX] attemptsAllowed = 0 con 0 intentos previos también permite iniciar', async () => {
+      const activity = makeActivity({ attemptsAllowed: 0 });
+      const newSubmission = makeSubmission();
+      activitiesRepo.findOne.mockResolvedValue(activity);
+      submissionsRepo.findActiveSubmission.mockResolvedValue(null);
+      submissionsRepo.getAttemptCount.mockResolvedValue(0);
+      submissionsRepo.create.mockReturnValue(newSubmission);
+      submissionsRepo.save.mockResolvedValue(newSubmission);
+
+      await expect(service.startSubmission(dto, studentId)).resolves.toBe(newSubmission);
+    });
+
+
     it('crea y guarda un nuevo intento cuando es el primero del estudiante', async () => {
       const activity = makeActivity({ attemptsAllowed: 3 });
       const newSubmission = makeSubmission();

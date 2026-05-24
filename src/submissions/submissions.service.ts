@@ -36,8 +36,9 @@ export class SubmissionsService {
     if (active) return active;
 
     // Verificar límites de intentos
+    // attemptsAllowed = 0 → intentos infinitos; > 0 → límite estricto
     const attempts = await this.submissionsRepo.getAttemptCount(studentId, activity.id);
-    if (attempts >= activity.attemptsAllowed) {
+    if (activity.attemptsAllowed > 0 && attempts >= activity.attemptsAllowed) {
       throw new BadRequestException(`Límite de intentos alcanzado (${activity.attemptsAllowed})`);
     }
 

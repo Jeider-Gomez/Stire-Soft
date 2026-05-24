@@ -5,8 +5,10 @@ import { SubmissionsRepository } from '../submissions/submissions.repository';
 import { ActivitiesRepository } from '../activities/activities.repository';
 import { calculateUnitMastery } from '../common/utils/mastery.calculator';
 import { LearningStatus } from '../common/enums/learning-status.enum';
+import { PublicationStatus } from '../common/enums/status.enum';
 import { LearningStatusChangedEvent } from '../common/events/learning-status-changed.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+
 
 @Injectable()
 export class LearningProgressService {
@@ -25,7 +27,7 @@ export class LearningProgressService {
     
     // Todas las actividades de la unidad
     const activities = await this.activitiesRepo.find({
-      where: { learningUnitId, status: 'published' as any },
+      where: { learningUnitId, status: PublicationStatus.PUBLISHED },
       relations: ['activityType'],
     });
 
