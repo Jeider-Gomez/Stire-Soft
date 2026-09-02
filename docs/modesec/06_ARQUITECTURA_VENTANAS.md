@@ -1,201 +1,254 @@
-﻿# 🏛️ Insumo 06 — Arquitectura Funcional de Ventanas MODESEC
+# 🏛️ Insumo 06 — Arquitectura Funcional de Ventanas MODESEC
 
-**Proyecto:** STIRE-Soft  
-**Norma:** MODESEC §3.3 / Especificación Técnica de Pantallas  
-**Total de Ventanas:** 15 (1 Común + 6 Estudiante + 5 Docente + 3 Administrador)  
-**Fecha:** 30 de agosto de 2026  
+> **Proyecto:** STIRE-Soft  
+> **Norma:** MODESEC §3.3 / Especificación Técnica de Pantallas  
+> **Nomenclatura Oficial:** Estandarizada según [NAMING_STIRE.md](./NAMING_STIRE.md) (Código Técnico $\to$ Nombre Documental $\to$ Nombre Visible)  
+> **Total de Ventanas:** 15 (1 Común + 6 Estudiante + 5 Docente + 3 Administrador)  
+> **Fecha de Actualización:** 2 de septiembre de 2026 | **Versión:** 2.0 Multi-Rol
 
 ---
 
 ## 🔑 PARTE 0: VISTA COMÚN
 
-### VENTANA: Ingreso y Autenticación
-* **CÓDIGO:** `COMP-V00`
+### VENTANA: Acceso y Autenticación
+* **CÓDIGO TÉCNICO:** `COMP-V00`
+* **NOMBRE DOCUMENTAL:** Acceso y Autenticación Multi-Rol
+* **NOMBRE VISIBLE EN UI:** **Iniciar Sesión / Crear Cuenta**
 * **ROL:** Público / Todos los roles (`estudiante`, `docente`, `admin`)
 * **OBJETIVO:** Permitir el acceso seguro al sistema y registrar nuevos estudiantes.
 * **ENTRADA:** Ruta raíz `/` o `/auth/login`.
-* **DATOS MOSTRADOS:** Formulario de credenciales (email y password), botones de acción, mensajes de error en línea.
-* **ACCIONES:** `[Iniciar Sesión]`, `[Crear Cuenta]`, `[Alternar Vista Registro/Login]`.
+* **DATOS MOSTRADOS:** Formulario de credenciales (email y password), selector de pestañas (Ingresar / Registrarse), mensajes de error en línea.
+* **ACCIONES:** `[Iniciar Sesión]`, `[Crear Cuenta]`, `[Alternar Pestañas]`.
 * **COMPONENTES:** `AuthCard`, `InputField`, `ButtonPrimary`, `AlertMessage`.
 * **ENDPOINTS:** `POST /auth/login`, `POST /auth/register`.
 * **ESTADOS:**
   * **Carga:** Botón con spinner, inputs deshabilitados.
-  * **Error:** Alerta roja con mensaje ("Credenciales inválidas" o "Usuario inactivo").
+  * **Error:** Alerta roja en línea ("Credenciales inválidas" o "Usuario inactivo").
   * **Éxito:** Redirección automática a la vista correspondiente según el rol del token JWT.
 * **NAVEGACIÓN:**
-  * Estudiante -> `EST-V01`
-  * Docente -> `DOC-V01`
-  * Admin -> `ADM-V01`
+  * Estudiante -> `EST-V01` (Inicio)
+  * Docente -> `DOC-V01` (Mis Clases)
+  * Admin -> `ADM-V01` (Estado del Sistema)
 * **REGLAS DE NEGOCIO:** Throttling estricto a 5 intentos/minuto. La contraseña jamás se expone en la respuesta.
-* **DEPENDENCIAS:** `AuthService`, `JwtModule`.
 
 ---
 
 ## 🎓 PARTE 1: VISTAS DEL ESTUDIANTE
 
-### VENTANA: Mi Banco de Trabajo
-* **CÓDIGO:** `EST-V01`
+### VENTANA: Dashboard del Estudiante
+* **CÓDIGO TÉCNICO:** `EST-V01`
+* **NOMBRE DOCUMENTAL:** Dashboard del Estudiante
+* **NOMBRE VISIBLE EN UI:** **Inicio**
 * **ROL:** `estudiante`
-* **OBJETIVO:** Servir como panel central de control, mostrando estado actual, accesos directos de repaso y avance curricular.
+* **OBJETIVO:** Servir como panel central de control, orientando al alumno con la acción de aprendizaje prioritaria del día.
 * **ENTRADA:** `/estudiante/dashboard`
-* **DATOS:** Saludo, tarjeta de última unidad estudiada, contador de repasos pendientes hoy, barra de maestría global, lista de clases matriculadas.
-* **ACCIONES:** `[Continuar Unidad]`, `[Iniciar Repasos de Hoy]`, `[Unirse a Clase con Código]`, `[Abrir Bitácora]`.
-* **COMPONENTES:** `HeaderStudent`, `MasterySummaryCard`, `SpacedRepetitionBadge`, `ClassCardList`, `JoinClassModal`.
+* **DATOS:** Saludo, tarjeta Hero dinámica ("Continuar lección" o "Repaso prioritario"), badge de repasos pendientes hoy, barra de dominio global, grid de clases matriculadas.
+* **ACCIONES:** `[Continuar lección]`, `[Iniciar repaso (5 min)]`, `[+ Unirse a una clase]`, `[Ver Mi Progreso]`.
+* **COMPONENTES:** `StudentHeader`, `MasterySummaryCard`, `SpacedRepetitionBadge`, `ClassCardList`, `JoinClassModal`.
 * **ENDPOINTS:** `GET /enrollment/my`, `GET /analytics/student/:id`, `POST /enrollment/join`.
 * **ESTADOS:**
-  * **Vacío:** "No estás matriculado en ninguna clase. Ingresa el código provisto por tu docente".
-  * **Carga:** Skeletons de tarjetas y barra de progreso titilante.
-  * **Error:** "No se pudo cargar tu información de progreso. [Reintentar]".
-  * **Éxito:** Renderizado de métricas y tarjetas de acción.
-* **NAVEGACIÓN:** A `EST-V02` (Unidad), `EST-V05` (Repasos), `EST-V06` (Bitácora), `EST-V04` (Tutor).
+  * **Vacío:** "No estás matriculado en ninguna clase. Ingresa el código provisto por tu docente [+ Unirse a una clase]".
+  * **Carga:** Skeletons de tarjetas y barra de progreso.
+  * **Con Repasos Críticos:** Tarjeta Hero prioriza el mantenimiento de la memoria.
+  * **Al Día:** Tarjeta Hero prioriza avanzar a la siguiente unidad.
+* **NAVEGACIÓN:** A `EST-V02` (Lección), `EST-V05` (Repasos), `EST-V06` (Mi Progreso), `EST-V04` (Tutor IA).
+
+---
 
 ### VENTANA: Unidad de Aprendizaje (Teoría)
-* **CÓDIGO:** `EST-V02`
+* **CÓDIGO TÉCNICO:** `EST-V02`
+* **NOMBRE DOCUMENTAL:** Unidad de Aprendizaje (Teoría y Trazado)
+* **NOMBRE VISIBLE EN UI:** **Lección: [Título de Unidad]**
 * **ROL:** `estudiante`
-* **OBJETIVO:** Presentar la base conceptual, ejemplos de código y trazados de escritorio de una unidad temática.
+* **OBJETIVO:** Presentar la base conceptual, ejemplos de código y trazados de escritorio interactivos de una unidad temática.
 * **ENTRADA:** `/estudiante/unidad/:id`
-* **DATOS:** Título de la unidad, bloques de contenido Markdown (teoría, sintaxis, casos de uso), diagrama conceptual SVG, indicador de dificultad.
-* **ACCIONES:** `[Comenzar Reto Práctico]`, `[Pedir Explicación al Tutor]`, `[Marcar como Leído]`.
-* **COMPONENTES:** `ContentBlockViewer`, `CodeSyntaxHighlighter`, `BreadcrumbNav`, `ActionButtonGroup`.
+* **DATOS:** Título de la unidad, bloques Markdown de lectura, diagrama conceptual SVG, tabla de variables paso a paso, badge de dificultad.
+* **ACCIONES:** `[Ir al ejercicio ➔]`, `[💡 Pedir pista al Tutor]`, `[Marcar como leído]` *(Requerida - Pendiente backend)*.
+* **COMPONENTES:** `MarkdownViewer`, `CodeHighlighter`, `ConceptualDiagramViewer`, `StartExerciseButton`.
 * **ENDPOINTS:** `GET /learning-unit/:id`, `GET /content/unit/:id`.
 * **ESTADOS:**
   * **Vacío:** "Esta unidad aún no tiene bloques de contenido publicados".
-  * **Carga:** Skeleton de lectura de texto.
-  * **Error:** "Unidad no encontrada o sin acceso".
-* **NAVEGACIÓN:** A `EST-V03` (Práctica/Evaluación), `EST-V01` (Volver al banco).
+  * **Carga:** Skeleton de lectura de texto y código.
+* **NAVEGACIÓN:** A `EST-V03` (Práctica/Ejercicio), `EST-V01` (Inicio).
 
-### VENTANA: Resolución de Ejercicio (Sandbox)
-* **CÓDIGO:** `EST-V03`
+---
+
+### VENTANA: Entorno de Programación (Sandbox)
+* **CÓDIGO TÉCNICO:** `EST-V03`
+* **NOMBRE DOCUMENTAL:** Entorno de Programación y Evaluación en Sandbox
+* **NOMBRE VISIBLE EN UI:** **Ejercicio: [Nombre]** *(Navbar: Práctica)*
 * **ROL:** `estudiante`
-* **OBJETIVO:** Proveer un entorno de codificación interactivo donde el estudiante implementa algoritmos y los valida contra pruebas del juez.
+* **OBJETIVO:** Proveer un entorno de codificación interactivo donde el estudiante implementa algoritmos y los valida contra pruebas del juez seguro.
 * **ENTRADA:** `/estudiante/evaluacion/:activityId`
-* **DATOS:** Enunciado estructurado, editor de código con numeración de líneas, consola de ejecución, tabla de casos de prueba (públicos: entrada, esperado, obtenido; privados: resultado oculto), contador de intentos.
-* **ACCIONES:** `[Ejecutar]` (gratis, prueba libre), `[Entregar Solución]` (consume intento), `[Pedir Pista al Tutor]`, `[Reiniciar Código]`.
-* **COMPONENTES:** `CodeEditorMonaco`, `TestCasesViewer`, `ConsoleOutput`, `SubmissionCountdown`, `ConfirmModal`.
+* **DATOS:** Enunciado estructurado (colapsable), editor de código Monaco, consola de ejecución con pestañas (Casos Públicos con diff, Casos Privados ciegos, Errores), contador de intentos.
+* **ACCIONES:** `[▶ Probar código]` (prueba libre gratuita sin consumir intentos), `[🚀 Entregar solución]` (evaluación formal calificada), `[💡 Pedir pista al Tutor]`, `[Reiniciar código]`.
+* **COMPONENTES:** `CodeEditorMonaco`, `ProblemStatement`, `TestCasesPanel`, `ConsoleOutput`, `AutosaveIndicator`.
 * **ENDPOINTS:** `POST /submissions/start`, `PUT /submissions/:id/autosave`, `POST /submissions/:id/submit`.
 * **ESTADOS:**
-  * **Carga:** "Iniciando sandbox y cargando reto...".
-  * **Ejecutando:** Spinner en consola "Sandbox ejecutando pruebas aisladas...".
-  * **Éxito (Accepted):** Tarjeta verde de felicitación + actualización de maestría (+X%).
-  * **Fallo (Wrong Answer / Error):** Detalle de diferencias en casos públicos sin revelar casos privados.
-* **REGLAS DE NEGOCIO:** Autoguardado cada 15 segundos (`autosave`). `attemptsAllowed = 0` permite intentos ilimitados.
+  * **Ejecutando Sandbox:** Spinner en consola "Ejecutando pruebas aisladas en entorno seguro...".
+  * **Éxito (Accepted):** Tarjeta de felicitación verde + actualización de dominio (+X%).
+  * **Fallo (Wrong Answer):** Resaltado de diferencias en casos públicos sin revelar casos privados.
+  * **Límite de Intentos:** Botón de entrega deshabilitado con mensaje de retroalimentación final.
+* **REGLAS DE NEGOCIO:** Autoguardado cada 15 segundos (`autosave`).
 
-### VENTANA: Maestro de Taller (Tutor IA Socrático)
-* **CÓDIGO:** `EST-V04`
+---
+
+### VENTANA: Tutor Socrático Adaptativo
+* **CÓDIGO TÉCNICO:** `EST-V04`
+* **NOMBRE DOCUMENTAL:** Tutor Socrático Adaptativo con IA
+* **NOMBRE VISIBLE EN UI:** **Tutor IA**
 * **ROL:** `estudiante`
-* **OBJETIVO:** Brindar andamiaje pedagógico personalizado mediante diálogo socrático guiado por el estado cognitivo del estudiante.
-* **ENTRADA:** Modal flotante global o `/estudiante/tutor`.
-* **DATOS:** Historial de conversación reciente, badge de nivel cognitivo (Principiante / Intermedio / Avanzado), aviso de IA ("Verifica ejecutando tu algoritmo").
-* **ACCIONES:** `[Enviar Mensaje]`, `[Adjuntar Código Actual]`, `[Limpiar Chat]`.
-* **COMPONENTES:** `ChatTimeline`, `ChatMessageBubble`, `PromptInput`, `ThinkingIndicator`.
+* **OBJETIVO:** Brindar andamiaje pedagógico personalizado mediante diálogo socrático guiado por el estado cognitivo del estudiante sin entregar código.
+* **ENTRADA:** Drawer lateral flotante global o `/estudiante/tutor`.
+* **DATOS:** Historial de conversación tipo chat, badge de nivel cognitivo (Principiante / Intermedio / Avanzado), aviso visible de IA.
+* **ACCIONES:** `[Enviar pregunta]`, `[Adjuntar mi código actual]`, `[Pistas rápidas: Pista conceptual / Pregunta orientadora / Ubicación de falla]`.
+* **COMPONENTES:** `TutorChatDrawer`, `ChatMessageItem`, `PromptInput`, `ThinkingIndicator`.
 * **ENDPOINTS:** `POST /tutor/chat`.
 * **ESTADOS:**
-  * **Carga:** Indicador de digitación ("El Tutor está analizando tu algoritmo...").
-  * **Error:** "El Tutor no está disponible temporalmente. Intenta nuevamente".
-* **REGLAS DE NEGOCIO:** Throttle 20 req/min. NUNCA entrega el código resuelto.
+  * **Pensando:** Indicador de 3 puntos titilantes.
+  * **Límite de Consultas:** "Has alcanzado el límite de 20 consultas por minuto".
 
-### VENTANA: Mantenimiento (Repaso Espaciado SM-2)
-* **CÓDIGO:** `EST-V05`
+---
+
+### VENTANA: Módulo de Repetición Espaciada (SM-2)
+* **CÓDIGO TÉCNICO:** `EST-V05`
+* **NOMBRE DOCUMENTAL:** Módulo de Repetición Espaciada (SM-2)
+* **NOMBRE VISIBLE EN UI:** **Repasos**
 * **ROL:** `estudiante`
-* **OBJETIVO:** Listar y ejecutar las actividades de repaso recomendadas por la curva del olvido para evitar el desentrenamiento de conceptos.
+* **OBJETIVO:** Listar y ejecutar las actividades de repaso recomendadas por la curva del olvido para consolidar la retención a largo plazo.
 * **ENTRADA:** `/estudiante/repasos`
-* **DATOS:** Lista de unidades con fecha de vencimiento SM-2 cumplida o próxima, etiqueta de urgencia (Crítico, Vencido, Para Hoy), factor de facilidad.
-* **ACCIONES:** `[Iniciar Repaso]`, `[Posponer 24h]`.
-* **COMPONENTES:** `ReviewCardList`, `UrgencyTag`, `EbbinghausProgressChart`.
+* **DATOS:** Tarjetas de unidades vencidas con badges de urgencia accesible (■ Crítico, ▲ Toca repasar hoy, ⬤ Al día), justificación en lenguaje natural, gráfico de salud de la memoria.
+* **ACCIONES:** `[Iniciar repaso (5 min)]`, `[Posponer 24h]`.
+* **COMPONENTES:** `SpacedRepetitionCard`, `UrgencyTag`, `EmptyState`, `MemoryHealthChart`.
 * **ENDPOINTS:** `GET /analytics/student/:id`.
 * **ESTADOS:**
-  * **Vacío (Al día):** "¡Excelente! No tienes deuda de repaso pendiente hoy".
+  * **Al día (Sin deuda):** Empty state de felicitación "¡Excelente memoria! No tienes conceptos vencidos hoy".
+  * **Con Repasos:** Tarjetas ordenadas de mayor a menor urgencia.
 
-### VENTANA: Mi Bitácora (Progreso y Analítica)
-* **CÓDIGO:** `EST-V06`
+---
+
+### VENTANA: Analítica y Bitácora de Aprendizaje
+* **CÓDIGO TÉCNICO:** `EST-V06`
+* **NOMBRE DOCUMENTAL:** Analítica y Bitácora de Aprendizaje
+* **NOMBRE VISIBLE EN UI:** **Mi Progreso**
 * **ROL:** `estudiante`
-* **OBJETIVO:** Visualizar el progreso histórico, distribución de maestría por tema, tasa de éxito y racha de estudio.
+* **OBJETIVO:** Visualizar el progreso histórico, distribución de dominio por tema y habilitar rutas de refuerzo directo.
 * **ENTRADA:** `/estudiante/progreso`
-* **DATOS:** Gráfico radar/barras de dominio por tema, total de actividades completadas, tasa global de éxito %, historial de envíos.
-* **COMPONENTES:** `MasteryBarChart`, `StatCounter`, `SubmissionHistoryTable`.
+* **DATOS:** Barras de dominio por tema (0 a 100%) con estados cualitativos (`no_visto` $\to$ `dominado`), historial tabular de entregas, visor de código en modal.
+* **ACCIONES:** `[Reforzar este tema]`, `[Inspeccionar código de entrega pasada]`, `[Filtrar por asignatura]`.
+* **COMPONENTES:** `MasteryBarChart`, `StreakCounter`, `SubmissionsHistoryTable`, `CognitiveStateBadge`.
 * **ENDPOINTS:** `GET /learning-progress/student/:id`, `GET /analytics/student/:id`.
 
 ---
 
 ## 👨‍🏫 PARTE 2: VISTAS DEL DOCENTE
 
-### VENTANA: Panel de Mis Clases
-* **CÓDIGO:** `DOC-V01`
+### VENTANA: Panel de Gestión de Clases
+* **CÓDIGO TÉCNICO:** `DOC-V01`
+* **NOMBRE DOCUMENTAL:** Panel de Gestión de Clases Docente
+* **NOMBRE VISIBLE EN UI:** **Mis Clases**
 * **ROL:** `docente`
 * **OBJETIVO:** Administrar las aulas activas, crear nuevas cohortes y consultar códigos de invitación.
 * **ENTRADA:** `/docente/dashboard` o `/docente/clases`
-* **DATOS:** Tarjetas de clases con nombre, código de matrícula, conteo de estudiantes matriculados y promedio de cohorte.
-* **ACCIONES:** `[Crear Nueva Clase]`, `[Copiar Código de Acceso]`, `[Abrir Seguimiento]`, `[Archivar Clase]`.
-* **COMPONENTES:** `ClassManagementGrid`, `CreateClassModal`, `CopyCodeButton`.
+* **DATOS:** Tarjetas de clases con nombre, código de acceso, conteo de estudiantes y promedio de dominio del grupo.
+* **ACCIONES:** `[Crear clase]`, `[Copiar código de acceso]`, `[Ver rendimiento del grupo]`, `[Archivar]`.
+* **COMPONENTES:** `ClassCardGrid`, `CreateClassModal`, `CopyAccessCodeButton`.
 * **ENDPOINTS:** `GET /class/my-classes`, `POST /class`, `PATCH /class/:id`.
 
-### VENTANA: Gestor Curricular y Contenidos
-* **CÓDIGO:** `DOC-V02`
+---
+
+### VENTANA: Gestor Curricular de Unidades
+* **CÓDIGO TÉCNICO:** `DOC-V02`
+* **NOMBRE DOCUMENTAL:** Gestor Curricular de Módulos y Unidades
+* **NOMBRE VISIBLE EN UI:** **Contenidos y Temas**
 * **ROL:** `docente`
 * **OBJETIVO:** Organizar la estructura didáctica en módulos, temas y unidades de aprendizaje, regulando su publicación.
 * **ENTRADA:** `/docente/contenidos`
 * **DATOS:** Árbol jerárquico desplegable (Módulo > Tema > Unidad), interruptor de estado (Borrador / Publicado).
-* **ACCIONES:** `[Agregar Tema]`, `[Agregar Unidad]`, `[Alternar Publicación]`, `[Reordenar]`.
-* **COMPONENTES:** `CurriculumTreeView`, `ContentItemRow`, `PublishSwitch`.
+* **ACCIONES:** `[Crear tema]`, `[Crear unidad]`, `[Publicar / Guardar borrador]`, `[Editar contenido]`.
+* **COMPONENTES:** `TopicTreeAccordion`, `LearningUnitRow`, `PublishToggle`, `UnitEditModal`.
 * **ENDPOINTS:** `GET /topic`, `POST /topic`, `POST /learning-unit`, `PATCH /learning-unit/:id`.
 
-### VENTANA: Diseñador de Ejercicios y Rúbricas
-* **CÓDIGO:** `DOC-V03`
+---
+
+### VENTANA: Diseñador de Ejercicios y Casos de Prueba
+* **CÓDIGO TÉCNICO:** `DOC-V03`
+* **NOMBRE DOCUMENTAL:** Diseñador de Ejercicios y Casos de Prueba
+* **NOMBRE VISIBLE EN UI:** **Crear Ejercicio**
 * **ROL:** `docente`
-* **OBJETIVO:** Crear ejercicios prácticos con enunciados, código base, solución de referencia y casos de prueba.
+* **OBJETIVO:** Crear problemas prácticos con enunciados Markdown, rúbricas de puntaje y casos de prueba para el Sandbox.
 * **ENTRADA:** `/docente/ejercicios/crear`
-* **DATOS:** Formulario de título, enunciado Markdown, selector de tipo de pregunta, tabla de casos de prueba.
-* **ACCIONES:** `[Añadir Caso de Prueba]`, `[Probar Solución en Sandbox]`, `[Guardar Ejercicio]`.
-* **COMPONENTES:** `ExerciseBuilderForm`, `TestCasesManagerTable`, `CodeEditorMonaco`.
+* **DATOS:** Formulario de enunciado, editor de solución modelo, tabla de casos de prueba (públicos y privados).
+* **ACCIONES:** `[Agregar caso de prueba]`, `[Validar solución en Sandbox]`, `[Guardar ejercicio]`.
+* **COMPONENTES:** `ExerciseForm`, `TestCasesEditorTable`, `SandboxTestButton`.
 * **ENDPOINTS:** `POST /activities`, `POST /activity-questions`.
 
+---
+
 ### VENTANA: Analítica de Cohorte y Alertas
-* **CÓDIGO:** `DOC-V04`
+* **CÓDIGO TÉCNICO:** `DOC-V04`
+* **NOMBRE DOCUMENTAL:** Analítica de Cohorte y Alertas de Rendimiento
+* **NOMBRE VISIBLE EN UI:** **Rendimiento del Grupo**
 * **ROL:** `docente`
-* **OBJETIVO:** Monitorear el rendimiento grupal, detectar estudiantes en rezago cognitivo y exportar planillas.
+* **OBJETIVO:** Monitorear el rendimiento grupal, detectar estudiantes en rezago cognitivo (< 50% dominio) y consultar el roster.
 * **ENTRADA:** `/docente/clase/:id/analitica`
-* **DATOS:** Promedio de dominio de la cohorte, lista de estudiantes ordenados por rendimiento, ranking, tasa de error por ejercicio.
-* **ACCIONES:** `[Filtrar por Riesgo]`, `[Ver Detalle de Estudiante]`, `[Exportar Reporte CSV]`.
-* **COMPONENTES:** `ClassMetricsSummary`, `StudentRankingsTable`, `RiskIndicatorBadge`.
-* **ENDPOINTS:** `GET /analytics/class/:id`.
+* **DATOS:** Promedio de dominio de la clase, ranking de estudiantes, alertas de riesgo (`RiskAlertBadge`), tabla de roster matriculado.
+* **ACCIONES:** `[Filtrar por riesgo]`, `[Ver detalle de estudiante]`, `[Exportar reporte CSV]`.
+* **COMPONENTES:** `CohortMetricsCard`, `StudentRankingsTable`, `RiskAlertBadge`.
+* **ENDPOINTS:** `GET /analytics/class/:id`, `GET /enrollment/class/:id`.
+
+---
 
 ### VENTANA: Seguimiento Individual de Estudiante
-* **CÓDIGO:** `DOC-V05`
+* **CÓDIGO TÉCNICO:** `DOC-V05`
+* **NOMBRE DOCUMENTAL:** Seguimiento Individual de Estudiante
+* **NOMBRE VISIBLE EN UI:** **Detalle de Estudiante**
 * **ROL:** `docente`
-* **OBJETIVO:** Inspeccionar en profundidad el desempeño de un estudiante particular de la clase.
+* **OBJETIVO:** Inspeccionar en profundidad el desempeño, código entregado y evolución SM-2 de un estudiante específico.
 * **ENTRADA:** `/docente/estudiante/:id`
-* **DATOS:** Historial de intentos, código enviado en cada submission, evolución del mastery individual.
-* **COMPONENTES:** `StudentProfileHeader`, `SubmissionsInspector`, `MasteryRadarChart`.
+* **DATOS:** Historial de envíos con visor de código fuente entregado, gráfico de dominio individual por tema, registro de actividad.
+* **ACCIONES:** `[Inspeccionar código de entrega]`, `[Ver evolución SM-2]`, `[Volver a Rendimiento del Grupo]`.
+* **COMPONENTES:** `StudentDetailCard`, `SubmissionCodeInspector`, `MasteryBarChart`.
 * **ENDPOINTS:** `GET /learning-progress/student/:id`, `GET /analytics/student/:id`.
 
 ---
 
 ## 🛡️ PARTE 3: VISTAS DEL ADMINISTRADOR
 
-### VENTANA: Panel de Control del Sistema
-* **CÓDIGO:** `ADM-V01`
+### VENTANA: Panel de Control y Salud del Sistema
+* **CÓDIGO TÉCNICO:** `ADM-V01`
+* **NOMBRE DOCUMENTAL:** Panel de Control y Salud del Sistema
+* **NOMBRE VISIBLE EN UI:** **Estado del Sistema**
 * **ROL:** `admin`
-* **OBJETIVO:** Supervisión general del estado operativo de STIRE.
+* **OBJETIVO:** Supervisión general del estado operativo, disponibilidad de base de datos y sandbox en STIRE.
 * **ENTRADA:** `/admin/dashboard`
-* **DATOS:** Total de usuarios registrados por rol, total de clases activas, volumen de ejecuciones en sandbox hoy.
-* **COMPONENTES:** `StatKpiGrid`, `ServerHealthTacometer`, `RecentActivityFeed`.
-* **ENDPOINTS:** `GET /maintenance`, `GET /analytics`.
+* **DATOS:** Usuarios registrados por rol, total de clases activas, volumen de ejecuciones en sandbox hoy, uptime.
+* **COMPONENTES:** `KpiGrid`, `ServiceHealthCard`, `RecentActivitySummary`.
+* **ENDPOINTS:** `GET /maintenance`.
 
-### VENTANA: Gestión de Usuarios y Permisos
-* **CÓDIGO:** `ADM-V02`
+---
+
+### VENTANA: Directorio y Gestión de Usuarios
+* **CÓDIGO TÉCNICO:** `ADM-V02`
+* **NOMBRE DOCUMENTAL:** Directorio y Gestión de Usuarios y Roles
+* **NOMBRE VISIBLE EN UI:** **Usuarios y Roles**
 * **ROL:** `admin`
 * **OBJETIVO:** Administrar cuentas de usuario, asignación de roles y estados de actividad.
 * **ENTRADA:** `/admin/usuarios`
-* **DATOS:** Tabla paginada con nombre, email, rol actual, estado activo/inactivo, fecha de creación.
-* **ACCIONES:** `[Crear Usuario]`, `[Cambiar Rol]`, `[Activar/Desactivar]`, `[Restablecer Acceso]`.
-* **COMPONENTES:** `UsersDataTable`, `RoleBadgeSelect`, `UserEditModal`.
-* **ENDPOINTS:** `GET /users`, `PATCH /users/:id`, `POST /users`.
+* **DATOS:** Tabla paginada con nombre, email institucional, rol asignado, estado activo/inactivo, fecha de creación.
+* **ACCIONES:** `[Buscar usuario]`, `[Cambiar rol]`, `[Activar / Desactivar cuenta]`.
+* **COMPONENTES:** `UsersTable`, `ChangeRoleModal`, `UserStatusToggle`.
+* **ENDPOINTS:** `GET /users`, `PATCH /users/:id`.
 
-### VENTANA: Parámetros del Sistema y Logs
-* **CÓDIGO:** `ADM-V03`
+---
+
+### VENTANA: Auditoría Técnica y Parámetros
+* **CÓDIGO TÉCNICO:** `ADM-V03`
+* **NOMBRE DOCUMENTAL:** Auditoría Técnica y Parámetros del Entorno
+* **NOMBRE VISIBLE EN UI:** **Logs y Mantenimiento**
 * **ROL:** `admin`
-* **OBJETIVO:** Consultar logs de auditoría técnica y estado de componentes del sistema.
+* **OBJETIVO:** Consultar logs de auditoría técnica, eventos de seguridad y configuración del sandbox seguro.
 * **ENTRADA:** `/admin/sistema`
-* **DATOS:** Logs de eventos de seguridad, estado de conexión de base de datos, memoria utilizada por el sandbox.
-* **COMPONENTES:** `SystemLogsViewer`, `ServiceStatusList`.
+* **DATOS:** Visor de logs técnicos con filtros por nivel, constantes globales (límites de memoria, timeout de 2s, throttles).
+* **COMPONENTES:** `SystemLogsViewer`, `SandboxConfigCard`.
 * **ENDPOINTS:** `GET /maintenance`.

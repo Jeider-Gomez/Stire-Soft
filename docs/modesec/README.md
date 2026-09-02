@@ -12,10 +12,12 @@ Carpeta de trabajo del modelo **MODESEC-ISO/IEC 12207** aplicado al proyecto **S
 
 | Si quieres… | Abre |
 |---|---|
+| Entender la experiencia, principios pedagógicos y trazabilidad | [`MARCO_UX_PEDAGOGICO_STIRE.md`](MARCO_UX_PEDAGOGICO_STIRE.md) |
+| Consultar la nomenclatura oficial y microcopy visible para UI | [`NAMING_STIRE.md`](NAMING_STIRE.md) |
+| Ver la especificación por actor (Estudiante, Docente, Admin) | [`usuarios/`](usuarios/) |
 | Entender qué es MODESEC y qué se hace en cada fase | [`00_QUE_ES_MODESEC.md`](00_QUE_ES_MODESEC.md) |
 | Saber qué nos falta y quién lo hace | [`01_GAP_Y_PLAN.md`](01_GAP_Y_PLAN.md) |
 | Leer la Fase II completa de un tirón (entrega al docente) | [`FASE_II_DISENO_MULTIMEDIAL.md`](FASE_II_DISENO_MULTIMEDIAL.md) |
-| Trabajar tu sección asignada | la tabla de estado (§3) |
 | Presentar en clase | [`entregables/STIRE_MODESEC_FASE_II.pptx`](entregables/) |
 
 ---
@@ -25,6 +27,11 @@ Carpeta de trabajo del modelo **MODESEC-ISO/IEC 12207** aplicado al proyecto **S
 ```
 docs/modesec/
 ├── README.md                          ← este índice: estado y responsables
+├── usuarios/                          ← INSUMOS POR ROL (Estudiante, Docente, Administrador)
+│   ├── README.md                      ← índice de especificaciones por actor
+│   ├── estudiante/README.md           ← insumo maestro rol estudiante (EST-V01..V06)
+│   ├── docente/README.md              ← insumo maestro rol docente (DOC-V01..V05)
+│   └── administrador/README.md        ← insumo maestro rol administrador (ADM-V01..V03)
 ├── 00_QUE_ES_MODESEC.md               ← el modelo explicado (las 5 fases, los 17 formatos)
 ├── 01_GAP_Y_PLAN.md                   ← qué falta, quién lo hace, en qué orden
 ├── PLANTILLAS_MODESEC_FASE2.md        ← plantillas vacías (no se edita: se copia)

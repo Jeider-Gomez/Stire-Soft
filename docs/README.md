@@ -24,9 +24,12 @@
 | Archivo | Descripción |
 |---------|-------------|
 | [05_METODOLOGIA_Y_EQUIPO.md](./05_METODOLOGIA_Y_EQUIPO.md) | **Cómo trabaja el equipo:** sprint semanal, reunión del viernes, reportes de martes y jueves, tablero en Trello, roles y los 3 entregables. |
+| [modesec/MARCO_UX_PEDAGOGICO_STIRE.md](./modesec/MARCO_UX_PEDAGOGICO_STIRE.md) | **Marco UX + Pedagógico Oficial (v1.0):** 10 Principios Rectores (P01–P10), trazabilidad científica y flujo coherente. |
+| [modesec/NAMING_STIRE.md](./modesec/NAMING_STIRE.md) | **Guía Oficial de Naming y Lenguaje de Producto:** Vocabulario, microcopy de acciones y separación en 3 capas. |
+| [modesec/usuarios/](./modesec/usuarios/) | **Insumos por Rol:** Especificación completa para Estudiante, Docente y Administrador. |
+| [modesec/](./modesec/) | **MODESEC completo.** Fase II cerrada (§3.1 a §3.3.3, Formatos 10 a 14), gráficos en `assets/`, diagnóstico de lo que falta en `01_GAP_Y_PLAN.md`. Empieza por [`modesec/README.md`](./modesec/README.md). |
 | [`../MONITOREO_SEMANAL.md`](../MONITOREO_SEMANAL.md) | Bitácora oficial del curso (vive en la raíz del repositorio). |
 | [seguimiento/](./seguimiento/) | Bitácoras de semanas ya cerradas, numeradas. La semana en curso vive en `MONITOREO_SEMANAL.md`, en la raíz. |
-| [modesec/](./modesec/) | Diseño multimedial MODESEC Fase II: plantillas y documentos de trabajo. |
 | [pitch/](./pitch/) | Guiones del pitch en inglés por reto. |
 | [CHANGELOG.md](../CHANGELOG.md) | Historial de versiones y cambios principales por sprint. |
 | [`_archivo/`](./_archivo/) | Documentos históricos o deprecados. No forman parte de la documentación activa. |

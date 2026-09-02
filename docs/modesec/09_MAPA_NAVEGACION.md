@@ -1,48 +1,48 @@
-﻿# 🗺️ Insumo 09 — Mapa Completo de Navegación y Sitemap Nuxt
+# 🗺️ Insumo 09 — Mapa Completo de Navegación y Sitemap Nuxt
 
-**Proyecto:** STIRE-Soft Frontend (Vue 3 + Nuxt)  
-**Estructura de Vistas:** 15 Ventanas Oficiales MODESEC  
-**Fecha:** 30 de agosto de 2026  
+> **Proyecto:** STIRE-Soft Frontend (Vue 3 + Nuxt 3)  
+> **Nomenclatura Oficial:** Estandarizada según [NAMING_STIRE.md](./NAMING_STIRE.md)  
+> **Fecha de Actualización:** 2 de septiembre de 2026 | **Versión:** 2.0 Multi-Rol
 
 ---
 
-## 1. Árbol de Rutas del Frontend
+## 1. Árbol de Rutas y Naming Visible en Frontend
 
 ```
-/ (Landing & Login) ───► COMP-V00 (Ingreso al Taller)
+/ (Acceso Público) ──────────► COMP-V00 (Iniciar Sesión / Crear Cuenta)
 │
 ├── /auth/
-│   ├── login ──────────► COMP-V00
-│   └── register ───────► COMP-V00
+│   ├── login ───────────────► COMP-V00 (Iniciar Sesión)
+│   └── register ────────────► COMP-V00 (Crear Cuenta)
 │
 ├── /estudiante/ (Layout: StudentAppLayout)
-│   ├── dashboard ──────► EST-V01 (Mi Banco de Trabajo)
-│   ├── unidad/:id ─────► EST-V02 (Teoría de Unidad de Aprendizaje)
-│   ├── evaluacion/:id ─► EST-V03 (Resolución de Ejercicio en Sandbox)
-│   ├── tutor ──────────► EST-V04 (Maestro de Taller - Tutor IA)
-│   ├── repasos ────────► EST-V05 (Mantenimiento SM-2 de Algoritmos)
-│   └── progreso ───────► EST-V06 (Mi Bitácora y Analítica Personal)
+│   ├── dashboard ───────────► EST-V01 (Inicio)
+│   ├── unidad/:id ──────────► EST-V02 (Lección: [Título de Unidad])
+│   ├── evaluacion/:id ──────► EST-V03 (Práctica / Ejercicio: [Nombre])
+│   ├── tutor ───────────────► EST-V04 (Tutor IA — Drawer Flotante)
+│   ├── repasos ─────────────► EST-V05 (Repasos)
+│   └── progreso ────────────► EST-V06 (Mi Progreso)
 │
 ├── /docente/ (Layout: TeacherAppLayout)
-│   ├── dashboard ──────► DOC-V01 (Panel de Mis Clases y Cohortes)
-│   ├── contenidos ─────► DOC-V02 (Gestor Curricular de Módulos y Unidades)
-│   ├── ejercicios/crear► DOC-V03 (Diseñador de Ejercicios y Casos de Prueba)
-│   ├── clase/:id/analitica ► DOC-V04 (Analítica de Cohorte y Alertas de Riesgo)
-│   └── estudiante/:id ─► DOC-V05 (Seguimiento Individual de Estudiante)
+│   ├── dashboard ───────────► DOC-V01 (Mis Clases)
+│   ├── contenidos ──────────► DOC-V02 (Contenidos y Temas)
+│   ├── ejercicios/crear ────► DOC-V03 (Crear Ejercicio)
+│   ├── clase/:id/analitica ─► DOC-V04 (Rendimiento del Grupo)
+│   └── estudiante/:id ──────► DOC-V05 (Detalle de Estudiante)
 │
 └── /admin/ (Layout: AdminAppLayout)
-    ├── dashboard ──────► ADM-V01 (Panel de Control Global)
-    ├── usuarios ───────► ADM-V02 (Gestión de Usuarios y Roles)
-    └── sistema ────────► ADM-V03 (Parámetros Técnicos y Logs de Auditoría)
+    ├── dashboard ───────────► ADM-V01 (Estado del Sistema)
+    ├── usuarios ────────────► ADM-V02 (Usuarios y Roles)
+    └── sistema ─────────────► ADM-V03 (Logs y Mantenimiento)
 ```
 
 ---
 
 ## 2. Matriz de Rutas, Permisos y Middleware Nuxt
 
-| Ruta Nuxt | Ventana | Middleware de Guardia | Redirección si falla |
-|---|---|---|---|
-| `/auth/login` | `COMP-V00` | `guest.ts` (si ya tiene JWT, redirige a su rol) | `/estudiante/dashboard` o `/docente/dashboard` |
-| `/estudiante/*` | `EST-V01` a `EST-V06` | `auth.ts` + `role-student.ts` | `/auth/login` con toast "Acceso no autorizado" |
-| `/docente/*` | `DOC-V01` a `DOC-V05` | `auth.ts` + `role-teacher.ts` | `/auth/login` |
-| `/admin/*` | `ADM-V01` a `ADM-V03` | `auth.ts` + `role-admin.ts` | `/auth/login` |
+| Ruta Nuxt | Código Técnico | Nombre Visible en UI | Middleware de Guardia | Redirección si falla |
+|---|---|---|---|---|
+| `/auth/login` | `COMP-V00` | Iniciar Sesión / Registro | `guest.ts` (si tiene JWT activo, redirige a su rol) | `/estudiante/dashboard` o `/docente/dashboard` |
+| `/estudiante/*` | `EST-V01` a `EST-V06` | Inicio, Lección, Ejercicio, Tutor, Repasos, Mi Progreso | `auth.ts` + `role-student.ts` | `/auth/login` |
+| `/docente/*` | `DOC-V01` a `DOC-V05` | Mis Clases, Contenidos, Crear Ejercicio, Rendimiento, Detalle | `auth.ts` + `role-teacher.ts` | `/auth/login` |
+| `/admin/*` | `ADM-V01` a `ADM-V03` | Estado del Sistema, Usuarios y Roles, Logs | `auth.ts` + `role-admin.ts` | `/auth/login` |
