@@ -106,6 +106,91 @@ La regla de CC-02 ("sin DOI no entra") era incorrecta y quedó reemplazada por e
 
 ---
 
+## 🔗 Referencias — enlaces directos
+
+Listado plano para copiar y pegar. Las URLs van sin formato de enlace para que funcionen en
+cualquier visor, incluidos los que no renderizan Markdown.
+
+1. Bloom, B. S. (1968). Learning for Mastery. Evaluation Comment, 1(2).
+   https://eric.ed.gov/?id=ED053419
+
+2. Woźniak, P. & Gorzelańczyk, E. (1994). Optimization of repetition spacing in the practice of learning. Acta Neurobiologiae Experimentalis, 54(1), 59-62.
+   https://doi.org/10.55782/ane-1994-1003
+
+3. Cepeda, N. J.; Pashler, H.; Vul, E.; Wixted, J. T.; Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. Psychological Bulletin, 132(3), 354-380.
+   https://doi.org/10.1037/0033-2909.132.3.354
+
+4. Roediger, H. L. & Karpicke, J. D. (2006). Test-Enhanced Learning. Psychological Science, 17(3), 249-255.
+   https://doi.org/10.1111/j.1467-9280.2006.01693.x
+
+5. VanLehn, K. (2011). The Relative Effectiveness of Human Tutoring, Intelligent Tutoring Systems, and Other Tutoring Systems. Educational Psychologist, 46(4), 197-221.
+   https://doi.org/10.1080/00461520.2011.611369
+
+6. Koedinger, K. R. & Aleven, V. (2007). Exploring the Assistance Dilemma in Experiments with Cognitive Tutors. Educational Psychology Review, 19(3), 239-264.
+   https://doi.org/10.1007/s10648-007-9049-0
+
+7. Malan, D. J. (2013). CS50 sandbox: secure execution of untrusted code. Proc. 44th ACM SIGCSE, 141-146.
+   https://doi.org/10.1145/2445196.2445242
+
+8. Kratzke, N. (2019). Smart Like a Fox: How Clever Students Trick Dumb Automated Programming Assignment Assessment Systems. Proc. 11th CSEDU, 15-26.
+   https://doi.org/10.5220/0007424800150026
+
+9. Ihantola, P.; Ahoniemi, T.; Karavirta, V.; Seppälä, O. (2010). Review of recent systems for automatic assessment of programming assignments. Proc. 10th Koli Calling, 86-93.
+   https://doi.org/10.1145/1930464.1930480
+
+10. Ala-Mutka, K. M. (2005). A Survey of Automated Assessment Approaches for Programming Assignments. Computer Science Education, 15(2), 83-102.
+    https://doi.org/10.1080/08993400500150747
+
+11. Douce, C.; Livingstone, D.; Orwell, J. (2005). Automatic test-based assessment of programming. Journal on Educational Resources in Computing, 5(3), Art. 4.
+    https://doi.org/10.1145/1163405.1163409
+
+12. Paiva, J. C.; Leal, J. P.; Figueira, Á. (2022). Automated Assessment in Computer Science Education: A State-of-the-Art Review. ACM Transactions on Computing Education, 22(3), 1-40.
+    https://doi.org/10.1145/3513140
+
+13. Hattie, J. & Timperley, H. (2007). The Power of Feedback. Review of Educational Research, 77(1), 81-112.
+    https://doi.org/10.3102/003465430298487
+
+14. Sweller, J.; van Merriënboer, J. J. G.; Paas, F. G. W. C. (1998). Cognitive Architecture and Instructional Design. Educational Psychology Review, 10(3), 251-296.
+    https://doi.org/10.1023/A:1022193728205
+
+15. Chandler, P. & Sweller, J. (1992). The Split-Attention Effect as a Factor in the Design of Instruction. British Journal of Educational Psychology, 62(2), 233-246.
+    https://doi.org/10.1111/j.2044-8279.1992.tb01017.x
+
+16. Sorva, J. (2013). Notional Machines and Introductory Programming Education. ACM Transactions on Computing Education, 13(2), 1-31.
+    https://doi.org/10.1145/2483710.2483713
+
+17. Sorva, J.; Karavirta, V.; Malmi, L. (2013). A Review of Generic Program Visualization Systems for Introductory Programming Education. ACM Transactions on Computing Education, 13(4), 1-64.
+    https://doi.org/10.1145/2490822
+
+18. Blackwell, A. F. (2006). The Reification of Metaphor as a Design Tool. ACM Transactions on Computer-Human Interaction, 13(4), 490-530.
+    https://doi.org/10.1145/1188816.1188820
+
+19. Becker, B. A. et al. (2019). Compiler Error Messages Considered Unhelpful. Proc. ITiCSE-WGR '19, 177-210.
+    https://doi.org/10.1145/3344429.3372508
+
+20. Knoop-van Campen, C. A. N. & Molenaar, I. (2020). How Teachers Integrate Dashboards into Their Feedback Practices. Frontline Learning Research, 8(4), 37-51.
+    https://doi.org/10.14786/flr.v8i4.641
+
+21. Verbert, K.; Duval, E.; Klerkx, J.; Govaerts, S.; Santos, J. L. (2013). Learning Analytics Dashboard Applications. American Behavioral Scientist, 57(10), 1500-1509.
+    https://doi.org/10.1177/0002764213479363
+
+22. Mandel, T. (1997). The Elements of User Interface Design. Wiley.
+    https://openlibrary.org/isbn/9780471162674
+
+23. Pressman, R. S. & Maxim, B. R. (2020). Software Engineering: A Practitioner's Approach, 9th ed. McGraw-Hill.
+    https://openlibrary.org/isbn/9781259872976
+
+24. Sommerville, I. (2018). Software Engineering, 10th ed. Pearson.
+    https://openlibrary.org/isbn/9789332582699
+
+25. Caro, M. F.; Toscano, R. E.; Hernández, F. M.; David, M. E. (2009). Diseño de software educativo basado en competencias. Revista de Investigaciones Universidad del Quindío, 19(1), 42-53.
+    https://ojs.uniquindio.edu.co/ojs/index.php/riuq/article/view/772
+
+26. W3C (2018). Web Content Accessibility Guidelines (WCAG) 2.1. W3C Recommendation, 05 June 2018.
+    https://www.w3.org/TR/WCAG21/
+
+---
+
 ## Apéndice: Registro de Verificación
 
 ### Los 15 originales — auditados completos en CC-02/CC-03, 15 de 15 fabricados
