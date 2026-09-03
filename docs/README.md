@@ -29,6 +29,8 @@
 | [modesec/usuarios/](./modesec/usuarios/) | **Insumos por Rol:** Especificación completa para Estudiante, Docente y Administrador. |
 | [modesec/](./modesec/) | **MODESEC completo.** Fase II cerrada (§3.1 a §3.3.3, Formatos 10 a 14), gráficos en `assets/`, diagnóstico de lo que falta en `01_GAP_Y_PLAN.md`. Empieza por [`modesec/README.md`](./modesec/README.md). |
 | [`../MONITOREO_SEMANAL.md`](../MONITOREO_SEMANAL.md) | Bitácora oficial del curso (vive en la raíz del repositorio). |
+| [investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md](./investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md) | **Saneamiento de la bibliografía:** los 15 artículos originales resultaron fabricados; cómo se detectó, cómo se reconstruyó (24 obras reales) y qué controles quedaron instalados. |
+| [investigacion/MATRIZ_ARTICULOS.md](./investigacion/MATRIZ_ARTICULOS.md) | Matriz bibliográfica vigente de STIRE — 24 obras verificadas por eje, con registro comprobable de cada una. |
 | [seguimiento/](./seguimiento/) | Bitácoras de semanas ya cerradas, numeradas. La semana en curso vive en `MONITOREO_SEMANAL.md`, en la raíz. |
 | [pitch/](./pitch/) | Guiones del pitch en inglés por reto. |
 | [CHANGELOG.md](../CHANGELOG.md) | Historial de versiones y cambios principales por sprint. |

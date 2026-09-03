@@ -6,6 +6,9 @@
 
 > **Propósito:** Fundamentar las decisiones pedagógicas, arquitectónicas y de experiencia de usuario de STIRE-Soft en literatura científica real y en fuentes institucionales verificables.
 
+> 📋 **Ver también:** [INFORME_SANEAMIENTO_BIBLIOGRAFICO.md](INFORME_SANEAMIENTO_BIBLIOGRAFICO.md) —
+> qué se encontró fabricado, cómo se detectó y cómo se reconstruyó, con trazabilidad completa por fase.
+
 ---
 
 ## Criterio de verificación (corregido en FASE CC-03)
