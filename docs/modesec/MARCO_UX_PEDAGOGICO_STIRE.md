@@ -35,7 +35,7 @@ Para garantizar rigor académico y claridad en el desarrollo, toda decisión de 
 ---
 
 ### P02 — Pedagogía del Error Transparente y Formativo
-* **Evidencia Científica:** La teoría de retroalimentación formativa (*Hattie & Timperley, 2007; Becker et al., 2021*) demuestra que informar únicamente si una respuesta es correcta/incorrecta genera frustración; el feedback efectivo debe responder a *¿Hacia dónde voy?*, *¿Cómo voy?* y *¿Qué hago ahora?*.
+* **Evidencia Científica:** La teoría de retroalimentación formativa (*Hattie & Timperley, 2007; Becker et al., 2019*) demuestra que informar únicamente si una respuesta es correcta/incorrecta genera frustración; el feedback efectivo debe responder a *¿Hacia dónde voy?*, *¿Cómo voy?* y *¿Qué hago ahora?*.
 * **Principio STIRE:** Todo error en el Sandbox debe ser una oportunidad diagnóstica que enseñe a depurar sin revelar la solución completa.
 * **Decisión UX:** La consola de `EST-V03` desglosa los casos de prueba públicos mostrando entrada, salida esperada, salida obtenida y la diferencia visual (*diff*). Los casos privados permanecen ocultos para evitar la memorización superficial.
 * **Decisión Visual (Figma):** Pestañas de consola con doble codificación: icono ✔/✖ + texto descriptivo + resaltado de discrepancias en rojo suave.
@@ -44,7 +44,7 @@ Para garantizar rigor académico y claridad en el desarrollo, toda decisión de 
 ---
 
 ### P03 — Modelo de Andamiaje Progresivo del Tutor IA
-* **Evidencia Científica:** El *Assistance Dilemma* en Sistemas Tutores Inteligentes (*Koedinger & Aleven, 2007; VanLehn, 2011; Chen et al., 2023*) demuestra que dar respuestas directas destruye el aprendizaje profundo, mientras que la falta total de ayuda induce abandono (*wheel-spinning*).
+* **Evidencia Científica:** El *Assistance Dilemma* en Sistemas Tutores Inteligentes (*Koedinger & Aleven, 2007; VanLehn, 2011*) demuestra que dar respuestas directas destruye el aprendizaje profundo, mientras que la falta total de ayuda induce abandono (*wheel-spinning*). La implementación concreta del tutor mediante un LLM que restringe sus respuestas a preguntas guía es una **DECISIÓN STIRE**: la cita que la respaldaba ("Chen et al., 2023") resultó fabricada (ver MATRIZ_ARTICULOS.md) y no se encontró un artículo peer-reviewed equivalente que estudie diálogo socrático generado por LLM en tutoría de programación.
 * **Principio STIRE:** La ayuda de la IA se entrega en niveles crecientes de concreción según el bloqueo del estudiante, manteniendo la autoría del alumno sobre el código.
 * **Decisión UX:** Operacionalización propuesta por STIRE en 3 niveles:
   * *Nivel 1 (Pista Conceptual):* Recordatorio de la regla teórica o definición.
@@ -101,7 +101,7 @@ Para garantizar rigor académico y claridad en el desarrollo, toda decisión de 
 ---
 
 ### P09 — Asistencia Contextual No Obstructiva
-* **Evidencia Científica:** El manejo de múltiples ventanas desarticuladas en entornos de desarrollo (*Split-Attention Effect; Becker et al., 2021*) fragmenta la atención del alumno.
+* **Evidencia Científica:** El manejo de múltiples ventanas desarticuladas en entornos de desarrollo (*Split-Attention Effect; Chandler & Sweller, 1992*) fragmenta la atención del alumno.
 * **Principio STIRE:** El estudiante debe poder recibir ayuda del tutor sin perder la visibilidad de su código ni del enunciado.
 * **Decisión UX:** `EST-V04` opera como un Drawer lateral que se despliega sobre el lateral derecho, manteniendo el editor Monaco visible y leyendo automáticamente el código activo sin requerir copy-paste.
 * **Decisión Visual (Figma):** Panel lateral de 400px superpuesto con backdrop tenue y botón de colapso rápido `[✕]`.
@@ -110,7 +110,7 @@ Para garantizar rigor académico y claridad en el desarrollo, toda decisión de 
 ---
 
 ### P10 — Transición Cualitativa del Dominio Cognitivo
-* **Evidencia Científica:** Los marcos de *Mastery Learning* (*Bloom, 1968; Anderson et al., 2020*) demuestran que categorizar el aprendizaje en etapas cualitativas orienta mejor al estudiante que las calificaciones numéricas continuas.
+* **Evidencia Científica:** Los marcos de *Mastery Learning* (*Bloom, 1968*) demuestran que categorizar el aprendizaje en etapas cualitativas orienta mejor al estudiante que las calificaciones numéricas continuas. La adaptación a los 5 estados cualitativos específicos de STIRE (`no_visto → explorado → en_practica → comprension_parcial → dominado`) es una **DECISIÓN STIRE**: la cita que los respaldaba ("Anderson et al., 2020") resultó fabricada (ver MATRIZ_ARTICULOS.md) y no se encontró un artículo equivalente verificable sobre ITS de programación con mastery learning por etapas.
 * **Principio STIRE:** El avance se representa mediante estados pedagógicos comprensibles: `no_visto` $\to$ `explorado` $\to$ `en_practica` $\to$ `comprension_parcial` $\to$ `dominado`.
 * **Decisión UX:** El progreso en `EST-V01` y `EST-V06` muestra badges de nivel cualitativo con descripciones de lo que falta para alcanzar el siguiente hito.
 * **Decisión Visual (Figma):** Indicadores de progreso por etapas con colores graduales y micro-textos explicativos.
