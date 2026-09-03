@@ -1,30 +1,20 @@
 # FASE II — DISEÑO MULTIMEDIAL (MODESEC)
 ## STIRE-Soft · Sistema Tutor Inteligente para la Resolución de Ejercicios
 
-| Campo | Valor |
-|---|---|
-| **Proyecto** | STIRE-Soft (LMS adaptativo con tutor IA) |
-| **Norma aplicada** | `DDS3-01.pdf` — GUIA MODESEC, §3 Fase II: Diseño Multimedial |
-| **Fuente base** | Caro, Toscano, Hernández y David (2012), *MODESEC*, cap. 3 (Formatos 10 a 14) |
-| **Modelo pedagógico** | MOCAVI |
-| **Nivel educativo** | Universitario — 3.er semestre, Licenciatura en Informática |
-| **Asignatura** | Fundamentos de Algoritmia |
-| **Población objetivo** | 18–22 años · alfabetización digital media · sin experiencia previa de programación formal |
-| **Versión** | v2.0 — Fase II completa (§3.1 a §3.3.3) |
-| **Fecha** | 2026-08-28 |
+---
+estado:     derivado
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     derivado de contenidos/3.1_DIAGRAMA_CONTENIDOS.md, guiones/3.2_GUION_TECNICO_MULTIMEDIAL.md, ventanas/3.3_VENTANA_ESTANDAR.md, ventanas/3.3.1_FICHAS_VENTANAS.md, contenidos/3.3.2_GUIA_METAFORAS.md, contenidos/3.3.3_MAPA_NAVEGACION.md
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
 
-> ⚙️ **Este documento es generado.** Consolida las seis secciones de la Fase II para leerlas de un
-> tirón y para la entrega al docente. **La fuente de verdad son los archivos individuales**
-> (`contenidos/`, `guiones/`, `ventanas/`): edítalos allí y vuelve a generar este consolidado.
-> El índice, el estado por sección y los responsables están en [`README.md`](README.md).
-
-**Contenido:** §3.1 Diagrama de contenidos · §3.2 Guión técnico multimedial (Formatos 10 y 11) ·
-§3.3 Ventana estándar (Formato 12) · §3.3.1 Fichas de ventanas (Formato 13) ·
-§3.3.2 Guía de metáforas (Formato 14) · §3.3.3 Mapa de navegación (Gráfico 2).
-
-**Lo que aún no está en Fase II:** producción del video de unidad y de la animación de trazado
-(§3.2.3), y verificación de los endpoints citados en las fichas. Detalle y plan en
-[`01_GAP_Y_PLAN.md`](01_GAP_Y_PLAN.md).
+> ⚠️ **ESTE DOCUMENTO ES GENERADO. NO SE EDITA DIRECTAMENTE.**
+> Es la concatenación literal de los seis documentos fuente listados arriba, regenerada en
+> FASE CC-04 (2026-09-03) porque la versión anterior se había editado a mano y había divergido de
+> las fuentes (usaba una numeración `V-01..V06` que no coincidía con ninguna fuente real). Para
+> corregir el contenido de cualquier sección de este documento, edita el archivo fuente
+> correspondiente en `contenidos/`, `guiones/` o `ventanas/` y vuelve a regenerar este archivo —
+> nunca edites este archivo directamente, el próximo regenerado descartaría el cambio.
 
 ---
 
@@ -176,12 +166,12 @@ correcciones. De la baja tolerancia a la espera sale el indicador de estado del 
 
 Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categorías del formato).
 
-### V-01 · Mi banco de trabajo
+### V-01 · Inicio
 
 | Título de la Ventana | Descripción | Formato / fuente | Acción | Evento |
 |---|---|---|---|---|
 | **Texto** | Saludo (1 línea), tres tarjetas de estado, métricas de dominio. Sans serif humanista 14–16 px, color `#2B2622`, interlínea 1.5 | UTF-8 renderizado desde Markdown · fuente: producción propia + API `learning-progress` | Muestra el estado real del estudiante; cada tarjeta enlaza a su ventana | Al cargar la ventana (`onLoad`) |
-| **Imagen** | Iconografía lineal 24 px (banco de trabajo, mantenimiento, bitácora) e ilustración de cabecera plana | SVG · producción propia (`assets/icons/`) | Icono clicable: navega a la sección correspondiente | Clic sobre el icono o su etiqueta |
+| **Imagen** | Iconografía lineal 24 px (inicio, repasos, mi progreso) e ilustración de cabecera plana | SVG · producción propia (`assets/icons/`) | Icono clicable: navega a la sección correspondiente | Clic sobre el icono o su etiqueta |
 | **Sonido** | No se utiliza | — | — | — |
 
 ### V-02 · Unidad de aprendizaje (contenido teórico)
@@ -203,7 +193,7 @@ Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categoría
 | **Sonido** | Dos señales cortas y **desactivadas por defecto**: éxito y fallo de la ejecución | WAV/OGG ≤1 s · biblioteca libre de derechos, **pendiente de selección** | Avisa del fin de la ejecución sin mirar la pantalla | Fin de la ejecución del juez |
 | **Animación** | Indicador de progreso del sandbox: en cola → ejecutando → evaluando; los casos se revelan en secuencia | CSS + SVG · producción propia | Comunica que el sistema no está congelado | Envío al juez |
 
-### V-04 · Maestro de taller (tutor IA)
+### V-04 · Tutor IA
 
 | Título de la Ventana | Descripción | Formato / fuente | Acción | Evento |
 |---|---|---|---|---|
@@ -212,7 +202,7 @@ Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categoría
 | **Sonido** | **No se utiliza, por decisión pedagógica:** sintetizar voz sobre texto generado por IA aumenta la percepción de autoridad de una fuente falible | — | — | — |
 | **Animación** | Indicador de escritura y entrega progresiva del texto | CSS · producción propia | Evita la percepción de sistema colgado | Mientras se genera la respuesta |
 
-### V-05 · Mantenimiento (repaso espaciado)
+### V-05 · Repasos (repaso espaciado)
 
 | Título de la Ventana | Descripción | Formato / fuente | Acción | Evento |
 |---|---|---|---|---|
@@ -221,7 +211,7 @@ Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categoría
 | **Sonido** | No se utiliza | — | — | — |
 | **Animación** | Al completar un repaso, la tarjeta sale de la lista y aparece la nueva fecha (≤300 ms) | CSS · producción propia | Hace visible que el intervalo se extendió | Fin del repaso |
 
-### V-06 · Mi bitácora (progreso)
+### EST-V06 · Mi Progreso
 
 | Título de la Ventana | Descripción | Formato / fuente | Acción | Evento |
 |---|---|---|---|---|
@@ -229,6 +219,63 @@ Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categoría
 | **Imagen** | Barras de dominio, mapa de calor de actividad y línea de evolución, sin efectos 3D | SVG generado en cliente · producción propia | Amplía o exporta el reporte | Clic en **Exportar** |
 | **Sonido** | No se utiliza | — | — | — |
 | **Animación** | Las barras crecen desde cero al cargar (400 ms); se resalta lo que cambió desde la última visita | CSS · producción propia | Dirige la atención al cambio, no al adorno | `onLoad` |
+
+---
+
+### Vistas del Docente (Gestión y Analítica Pedagógica)
+
+#### DOC-V01 · Panel de Mis Clases
+| Título | Descripción | Formato / fuente | Acción | Evento |
+|---|---|---|---|---|
+| **Texto** | Listado de asignaturas/clases activas, códigos de acceso, conteo de matriculados y promedio de cohorte | UTF-8 · API `class/my-classes` | Permite crear nueva clase o abrir el seguimiento de una cohorte | `onLoad` · Clic en tarjeta de clase |
+| **Imagen** | Iconos de cohorte, código QR de matrícula rápida | SVG · producción propia | Genera QR para proyectar en aula | Clic en icono QR |
+| **Sonido** | No se utiliza | — | — | — |
+| **Animación** | Transición al abrir el panel de detalle de cohorte (300 ms) | CSS · producción propia | Retroalimentación de navegación | Clic en clase |
+
+#### DOC-V02 · Gestor de Contenidos y Unidades
+| Título | Descripción | Formato / fuente | Acción | Evento |
+|---|---|---|---|---|
+| **Texto** | Árbol jerárquico de Módulos, Temas y Unidades con interruptores de publicación (Borrador / Publicado) | UTF-8 · API `topic`, `learning-unit` | Modifica visibilidad, reorganiza secuencia | Clic en interruptor o drag-and-drop |
+| **Imagen** | Iconos de estado de publicación (verde/gris) | SVG · producción propia | Identifica unidades visibles a estudiantes | `onLoad` |
+| **Sonido** | No se utiliza | — | — | — |
+| **Animación** | Reordenamiento de lista con animación de desplazamiento | CSS · producción propia | Muestra nuevo orden | Soltar elemento |
+
+#### DOC-V03 · Editor de Ejercicios y Casos de Prueba
+| Título | Descripción | Formato / fuente | Acción | Evento |
+|---|---|---|---|---|
+| **Texto** | Formulario de enunciado estructurado, solución de referencia, tabla de casos públicos y privados | UTF-8 · API `activities`, `activity-questions` | Valida sintaxis de casos, guarda o publica ejercicio | Clic en **Guardar** / **Probar solución** |
+| **Imagen** | Iconos de visibilidad de casos (ojo abierto = público, candado = privado) | SVG · producción propia | Conmuta visibilidad de caso | Clic en icono |
+| **Sonido** | No se utiliza | — | — | — |
+| **Animación** | Indicador de ejecución de la solución de referencia en el sandbox | CSS · producción propia | Valida que los casos de prueba sean consistentes con la solución | Clic en Probar |
+
+#### DOC-V04 · Analítica de Cohorte y Alertas
+| Título | Descripción | Formato / fuente | Acción | Evento |
+|---|---|---|---|---|
+| **Texto** | Cuadrante de dominio grupal, lista de estudiantes en rezago (alerta cognitiva), tasa de error por ejercicio | UTF-8 · API `analytics/class/:id` | Filtra por unidad o umbral de riesgo; exporta planilla de notas | `onLoad` · Clic en filtro |
+| **Imagen** | Gráficos de dispersión y mapas de calor de avance por unidad | SVG generado en cliente · producción propia | Muestra detalle individual al posar cursor | Hover sobre nodo |
+| **Sonido** | No se utiliza | — | — | — |
+| **Animación** | Renderizado progresivo de gráficos estadísticos (500 ms) | CSS/Canvas · producción propia | Transición suave de datos | Clic en selector de métrica |
+
+---
+
+### Vistas del Administrador (Gobernanza y Salud del Sistema)
+
+#### ADM-V01 · Panel de Control del Sistema
+| Título | Descripción | Formato / fuente | Acción | Evento |
+|---|---|---|---|---|
+| **Texto** | Métricas operativas globales: usuarios activos por rol, total de ejecuciones en sandbox, estado de servicios | UTF-8 · API `analytics`, `maintenance` | Supervisa salud general del backend y base de datos | `onLoad` (auto-refresco 60 s) |
+| **Imagen** | Tacómetros e indicadores de estado de servicios (verde = OK, amarillo = advertencia, rojo = crítico) | SVG · producción propia | Muestra log de eventos al hacer clic | Clic en indicador |
+| **Sonido** | No se utiliza | — | — | — |
+| **Animación** | Pulso sutil en el indicador de latencia del sandbox | CSS · producción propia | Señaliza monitoreo en tiempo real | Continuo |
+
+#### ADM-V02 · Gestión de Usuarios y Roles
+| Título | Descripción | Formato / fuente | Acción | Evento |
+|---|---|---|---|---|
+| **Texto** | Tabla paginada de usuarios con filtros por rol, estado activo/inactivo, afiliación institucional | UTF-8 · API `user` | Cambiar rol, activar/desactivar cuenta, restablecer credenciales | Clic en acción por fila |
+| **Imagen** | Iconos de rol (birrete = estudiante, portafolio = docente, escudo = admin) | SVG · producción propia | Identificación visual rápida | `onLoad` |
+| **Sonido** | No se utiliza | — | — | — |
+| **Animación** | Modal de confirmación con animación de entrada (200 ms) | CSS · producción propia | Previene cambios accidentales de privilegios | Clic en Cambiar Rol |
+
 
 ---
 
@@ -254,8 +301,8 @@ estático tabulado** y se documenta en `RELEASE_NOTES.md`. No se elimina en sile
 ## 4. Trazabilidad
 
 Cada ventana de este guión tiene su ficha de 7 categorías en
-[`../ventanas/3.3.1_FICHAS_VENTANAS.md`](ventanas/3.3.1_FICHAS_VENTANAS.md) y su posición en el
-sistema en [`../contenidos/3.3.3_MAPA_NAVEGACION.md`](contenidos/3.3.3_MAPA_NAVEGACION.md).
+[`../ventanas/3.3.1_FICHAS_VENTANAS.md`](../ventanas/3.3.1_FICHAS_VENTANAS.md) y su posición en el
+sistema en [`../contenidos/3.3.3_MAPA_NAVEGACION.md`](../contenidos/3.3.3_MAPA_NAVEGACION.md).
 
 ---
 
@@ -286,7 +333,7 @@ sistema en [`../contenidos/3.3.3_MAPA_NAVEGACION.md`](contenidos/3.3.3_MAPA_NAVE
 ║ [A] HEADER — logo · ruta Módulo › Tema › Unidad · barra de dominio · repasos      ║
 ╠═══════════════════════╤══════════════════════════════════════════════════════════╣
 ║ [B] MENÚ  (260 px)    │ [C] ZONA DE CONTENIDO                                     ║
-║  ▸ Mi banco de trabajo│   ┌────────────────────────────────────────────────────┐  ║
+║  ▸ Inicio             │   ┌────────────────────────────────────────────────────┐  ║
 ║  ▾ M1 Fundamentos  ✔  │   │  Título de la unidad o del ejercicio                │ ║
 ║      1.1 Algoritmo ✔  │   │  teoría · enunciado + editor · tutor · repasos      │ ║
 ║  ▾ M2 Control      ◐  │   └────────────────────────────────────────────────────┘  ║
@@ -329,7 +376,7 @@ desplegable y las acciones [D] se anclan al borde inferior.
 2. Nunca hay más de **una acción primaria** visible en [D] (primaria llena · secundaria contorno · terciaria texto).
 3. El color **nunca** es el único portador de significado: todo estado lleva icono y etiqueta (WCAG 2.1 AA, contraste ≥ 4.5:1).
 4. Toda operación destructiva (Reiniciar, entregar el último intento) exige confirmación explícita.
-5. Toda ventana retorna a **Mi banco de trabajo** en un clic.
+5. Toda ventana retorna a **Inicio** en un clic.
 6. Ningún elemento decorativo compite con el contenido: si no informa, no entra.
 
 ⚠️ La conformidad WCAG 2.1 AA está **declarada en el diseño pero no auditada**. No debe reportarse
@@ -337,161 +384,278 @@ como cumplida hasta ejecutar la verificación con herramienta.
 
 ---
 
-## 5. Ventanas derivadas
+## 5. Adaptación de Secciones según Rol
 
-Las seis ventanas que heredan de este modelo están descritas en
-[`3.3.1_FICHAS_VENTANAS.md`](ventanas/3.3.1_FICHAS_VENTANAS.md), cada una con su maqueta y sus 7 categorías.
+La Ventana Estándar mantiene la misma estructura espacial de 5 zonas (A–E) para todos los roles, adaptando los contenidos y acciones pertinentes:
 
----
-
-# § 3.3.1 · Fichas de Descripción de Ventanas — STIRE
-
-**Norma:** MODESEC §3.3.1.1 · **Formato 13** (Descripción de las ventanas) · `DDS3-01.pdf` §3.3
-**Dueño:** José · **Estado:** ✅ 6 ventanas · **Última actualización:** 2026-08-28
-
-> **Regla del formato.** MODESEC exige describir cada ventana en **siete categorías**: imagen,
-> nombre, texto, audio, video, animación y acciones. Ninguna puede quedar en blanco: cuando una no
-> aplica, se escribe **por qué** no aplica. Un "no aplica" sin justificación es indistinguible de un
-> olvido. Todas las ventanas derivan de la [ventana estándar](ventanas/3.3_VENTANA_ESTANDAR.md).
-
-> ⚠️ **Sobre la categoría 7 (acciones).** Los endpoints citados entre corchetes son un **contrato
-> propuesto**, aún **no verificado contra el código**. Tarea P1 en `../01_GAP_Y_PLAN.md`.
+| Sección | Estudiante | Docente | Administrador |
+|---|---|---|---|
+| **[A] Header** | Marca · Ruta de unidad · Barra de Mastery · Repasos · Perfil | Marca · Selector de Clase activa · Resumen de alertas · Perfil | Marca · Indicador de Estado del Sistema · Perfil Admin |
+| **[B] Menú** | Inicio, Módulos/Temas, Repasos, Mi Progreso, Tutor | Mis Clases, Catálogo/Banco de Ejercicios, Analítica, Tareas por Calificar, Mensajes | Gestión de Usuarios, Instituciones, Parámetros del Sistema, Logs de Auditoría |
+| **[C] Contenido** | Teoría, Editor de código + Casos de prueba, Diálogo Tutor, Repaso SM-2 | Tablero de seguimiento de cohorte, Diseñador de ejercicios, Editor de rúbricas | Tablas maestras, Formularios de configuración, Métricas del sistema |
+| **[D] Acciones** | `[Ejecutar]` (gratis), `[Entregar]`, `[Pedir Pista]`, `[Reiniciar]` | `[Crear Clase]`, `[Publicar Ejercicio]`, `[Exportar Reporte]`, `[Guardar Borrador]` | `[Crear Usuario]`, `[Guardar Configuración]`, `[Purgar Caché]`, `[Restaurar]` |
+| **[E] Footer** | Versión · Estado de Autoguardado · Accesibilidad · Créditos | Versión · Estado de Sincronización · Soporte Docente | Versión · Estado de Servidores / Sandbox · Uptime |
 
 ---
 
-### Ficha V-01 · Mi banco de trabajo (panel del estudiante)
+## 6. Ventanas derivadas del modelo
 
-![Maqueta de la ventana V-01](assets/png/3.3.1_v01_banco_trabajo.png)
+El inventario completo de las **16 ventanas** que heredan de este modelo está especificado en:
+👉 [`3.3.1_FICHAS_VENTANAS.md`](3.3.1_FICHAS_VENTANAS.md)
 
-*Fuente editable: [`assets/3.3.1_v01_banco_trabajo.svg`](assets/3.3.1_v01_banco_trabajo.svg)*
-
-| # | Categoría | Descripción |
-|---|---|---|
-| 1 | **Imagen** | Iconografía lineal monocromática de 24 px (SVG) para estados de unidad y acciones. Ilustración de cabecera única, plana, sin texto embebido. Sin fotografías: evitan la fatiga visual y no aportan información algorítmica. |
-| 2 | **Nombre de ventana** | Interno: `V-01_BANCO_TRABAJO` · Visible: **"Mi banco de trabajo"** |
-| 3 | **Texto** | Saludo breve (1 línea), tres tarjetas de estado (*Continuar donde ibas*, *Repasos de hoy*, *Dominio del módulo*). Registro cercano y directo, segunda persona, frases ≤ 20 palabras. Sin jerga técnica no introducida aún. |
-| 4 | **Audio** | **No aplica.** El panel es de consulta rápida (< 30 s) y suele usarse en sala de cómputo compartida. Un audio no solicitado sería intrusivo y no aporta información que el texto no dé mejor. |
-| 5 | **Video** | **No aplica** salvo el primer ingreso: video de bienvenida opcional de 60 s, silenciable y descartable de forma permanente. Después no se muestra. |
-| 6 | **Animación** | Barra de dominio con transición de 400 ms al actualizarse (hace perceptible el avance). Aparición escalonada de tarjetas (60 ms). Sin bucles infinitos ni parpadeos. Respeta `prefers-reduced-motion`. |
-| 7 | **Acciones** | Continuar unidad en curso `[GET /learning-progress/me]` · Abrir repasos del día `[GET /review-schedules/due]` · Navegar a una unidad desbloqueada · Abrir el tutor · Ver progreso detallado. Toda acción registra metadato de interacción. |
-
-### Ficha V-02 · Unidad de aprendizaje (contenido teórico)
-
-![Maqueta de la ventana V-02](assets/png/3.3.1_v02_unidad_teoria.png)
-
-*Fuente editable: [`assets/3.3.1_v02_unidad_teoria.svg`](assets/3.3.1_v02_unidad_teoria.svg)*
-
-| # | Categoría | Descripción |
-|---|---|---|
-| 1 | **Imagen** | Diagramas de flujo y esquemas conceptuales en SVG (escalables y legibles con zoom). Toda imagen lleva texto alternativo descriptivo. Capturas de código como texto seleccionable, **nunca** como imagen. |
-| 2 | **Nombre de ventana** | Interno: `V-02_UNIDAD_TEORIA` · Visible: nombre de la unidad (p. ej. **"2.3 Ciclos: while"**) |
-| 3 | **Texto** | Cuerpo teórico en Markdown renderizado: definición, ejemplo resuelto y trazado paso a paso. Bloques de ≤ 150 palabras separados por ejemplo ejecutable. Nivel de lectura para estudiante sin experiencia previa. Glosario emergente al pasar sobre un término marcado. |
-| 4 | **Audio** | **No aplica** como narración obligatoria. Se ofrece lectura por voz del texto vía tecnología asistiva del navegador (accesibilidad), sin locución producida: la locución fija impone un ritmo que perjudica la lectura de código. |
-| 5 | **Video** | **Aplica.** Cápsula de 3–6 min por unidad, subtitulada, con control de velocidad, marcadores por concepto y transcripción descargable. Es material de apoyo, no sustituye el texto. |
-| 6 | **Animación** | Animación paso a paso del trazado de escritorio: resalta la línea en ejecución y actualiza la tabla de variables. Controlada por el estudiante (avanzar / retroceder), nunca automática. Es la pieza multimedial con mayor valor pedagógico de esta ventana: hace visible el estado de la memoria. |
-| 7 | **Acciones** | Marcar como explorado `[POST /learning-progress/:unitId/explored]` · Avanzar/retroceder el trazado · Abrir el ejercicio asociado · Preguntar al tutor sobre el fragmento seleccionado `[POST /tutor/chat]` · Descargar transcripción. |
-
-### Ficha V-03 · Resolución de ejercicio (banco de trabajo activo)
-
-![Maqueta de la ventana V-03](assets/png/3.3.1_v03_ejercicio.png)
-
-*Fuente editable: [`assets/3.3.1_v03_ejercicio.svg`](assets/3.3.1_v03_ejercicio.svg)*
-
-| # | Categoría | Descripción |
-|---|---|---|
-| 1 | **Imagen** | Iconos de estado de caso de prueba (✔ pasa · ✖ falla · ⏱ tiempo excedido). Sin decoración: cualquier elemento gráfico no funcional compite con el enunciado y el editor. |
-| 2 | **Nombre de ventana** | Interno: `V-03_EJERCICIO` · Visible: **"Ejercicio: "** + título del ejercicio |
-| 3 | **Texto** | Enunciado estructurado (contexto, entrada, salida esperada, restricciones), ejemplos de entrada/salida y contador de intentos restantes. Enunciado ≤ 200 palabras; los casos límite van en ejemplos, no en prosa. |
-| 4 | **Audio** | **No aplica** como contenido. Solo dos señales sonoras cortas y desactivables por defecto: éxito y fallo de la ejecución, para no obligar a mirar la pantalla durante la espera del juez. |
-| 5 | **Video** | **No aplica.** El video obligaría a abandonar el estado mental del problema. La ayuda audiovisual pertenece a V-02 y es accesible desde el enlace a la teoría de la unidad. |
-| 6 | **Animación** | Indicador de progreso durante la ejecución en el sandbox (estados: en cola → ejecutando → evaluando). Los casos de prueba se revelan en secuencia conforme el juez responde. Sin animación en el editor. |
-| 7 | **Acciones** | Ejecutar contra casos públicos `[POST /judge/run]` · Entregar `[POST /submissions]` (consume intento, exige confirmación) · Pedir pista `[POST /tutor/hint]` · Reiniciar plantilla (confirmación) · Autoguardado periódico del borrador. **Los casos con `isPublic: false` nunca se envían al cliente.** |
-
-### Ficha V-04 · Retroalimentación del tutor inteligente
-
-![Maqueta de la ventana V-04](assets/png/3.3.1_v04_tutor.png)
-
-*Fuente editable: [`assets/3.3.1_v04_tutor.svg`](assets/3.3.1_v04_tutor.svg)*
-
-| # | Categoría | Descripción |
-|---|---|---|
-| 1 | **Imagen** | Avatar geométrico abstracto del tutor (no humanoide, no antropomórfico): evita atribuirle autoridad o infalibilidad humana. Marcas visuales que distinguen mensaje del tutor de mensaje del estudiante. |
-| 2 | **Nombre de ventana** | Interno: `V-04_TUTOR` · Visible: **"Maestro de taller"** (metáfora rectora, §3.3.2) |
-| 3 | **Texto** | Diálogo socrático: el tutor responde con preguntas guía, contraejemplos y señalamientos sobre el propio código del estudiante. **Nunca entrega la solución**. Turnos ≤ 80 palabras. Aviso permanente y visible: *"Respuestas generadas por IA: verifícalas ejecutando tu algoritmo."* |
-| 4 | **Audio** | **No aplica.** Sintetizar voz sobre texto generado por IA aumenta la percepción de autoridad de una fuente que puede equivocarse. Decisión pedagógica deliberada, no limitación técnica. |
-| 5 | **Video** | **No aplica.** El intercambio es contextual e irrepetible; ningún video pregrabado puede responder al código concreto del estudiante. |
-| 6 | **Animación** | Indicador de escritura mientras se genera la respuesta (evita la percepción de sistema congelado) y entrega progresiva del texto. Sin gestos ni expresiones del avatar. |
-| 7 | **Acciones** | Enviar consulta `[POST /tutor/chat]` · Adjuntar el fragmento de código seleccionado como contexto · Marcar la respuesta como útil / no útil (insumo de calidad del tutor) · Volver al ejercicio conservando el borrador. Se persisten **metadatos** de interacción, no la conversación completa (RF-27). |
-
-### Ficha V-05 · Repaso espaciado (SM-2)
-
-![Maqueta de la ventana V-05](assets/png/3.3.1_v05_repaso.png)
-
-*Fuente editable: [`assets/3.3.1_v05_repaso.svg`](assets/3.3.1_v05_repaso.svg)*
-
-| # | Categoría | Descripción |
-|---|---|---|
-| 1 | **Imagen** | Iconografía de urgencia con **doble codificación** (forma + color + etiqueta): ⬤ al día · ◐ vence mañana · ▲ vencido · ■ crítico. Curva del olvido como esquema explicativo en la primera visita. |
-| 2 | **Nombre de ventana** | Interno: `V-05_REPASO` · Visible: **"Mantenimiento del taller"** |
-| 3 | **Texto** | Lista de unidades con repaso programado, fecha de vencimiento, nivel de urgencia y explicación de una línea: *"Dominaste esto hace 12 días; un repaso corto ahora lo fija."* La justificación es obligatoria: sin ella el repaso se percibe como trabajo arbitrario. |
-| 4 | **Audio** | **No aplica.** Sesión de trabajo focalizada y breve. |
-| 5 | **Video** | **No aplica.** El repaso es recuperación activa; ver un video la sustituye por reconocimiento pasivo y anula el efecto del método. |
-| 6 | **Animación** | Al completar un repaso, la tarjeta se desplaza fuera de la lista y la nueva fecha aparece con transición corta (≤ 300 ms): hace visible que el intervalo se extendió, que es el refuerzo conductual del método. |
-| 7 | **Acciones** | Iniciar repaso de una unidad `[GET /review-schedules/due]` · Resolver el ejercicio de repaso (reutiliza V-03) · Posponer con motivo (registro auditable) · Ver historial de intervalos. La calificación actualiza `easeFactor` e intervalo SM-2. |
-
-### Ficha V-06 · Mi progreso (bitácora de dominio)
-
-![Maqueta de la ventana V-06](assets/png/3.3.1_v06_progreso.png)
-
-*Fuente editable: [`assets/3.3.1_v06_progreso.svg`](assets/3.3.1_v06_progreso.svg)*
-
-| # | Categoría | Descripción |
-|---|---|---|
-| 1 | **Imagen** | Visualizaciones de datos: barras de dominio por módulo, mapa de calor de actividad, línea de evolución. Sin gráficas 3D ni efectos: distorsionan la lectura de magnitudes. |
-| 2 | **Nombre de ventana** | Interno: `V-06_PROGRESO` · Visible: **"Mi bitácora"** |
-| 3 | **Texto** | Métricas con su interpretación al lado: `mastery`, `successRate`, `attemptsCount`, unidades dominadas y racha de repasos. Cada métrica lleva una línea de lectura: *"72 %: te faltan 13 puntos para desbloquear 2.4."* Un número sin interpretación no orienta la acción. |
-| 4 | **Audio** | **No aplica.** Ventana de consulta analítica. |
-| 5 | **Video** | **No aplica.** El dato es propio y cambiante; ningún video puede describirlo. |
-| 6 | **Animación** | Las barras crecen desde cero al cargar (400 ms) y la unidad que cambió desde la última visita se resalta brevemente. Sin animación en cada re-render, para no convertir el dato en espectáculo. |
-| 7 | **Acciones** | Filtrar por módulo o rango de fechas · Abrir la unidad más débil (acción sugerida por el sistema) · Exportar reporte personal · Consultar al tutor sobre el plan de estudio `[POST /tutor/chat]`. |
+- **Común (1):** `COMP-V00` (Autenticación y Acceso)
+- **Estudiante (6):** `EST-V01` (Inicio), `EST-V02` (Teoría), `EST-V03` (Resolución de ejercicio), `EST-V04` (Tutor IA), `EST-V05` (Repasos SM-2), `EST-V06` (Mi Progreso)
+- **Docente (6):** `DOC-V01` (Mis Clases), `DOC-V02` (Contenidos y Temas), `DOC-V03` (Crear Ejercicio), `DOC-V04` (Rendimiento del Grupo), `DOC-V05` (Detalle de Estudiante), `DOC-V06` (Mensajes)
+- **Administrador (3):** `ADM-V01` (Panel de control), `ADM-V02` (Gestión de usuarios y roles), `ADM-V03` (Parámetros y salud del sistema)
 
 ---
 
----
+# § 3.3.1 · Fichas de Descripción de Ventanas Multi-Rol — STIRE
 
-## Vista consolidada — Formato 13 original
+**Norma:** MODESEC §3.3.1.1 · **Formato 13** (Descripción de las ventanas) · `DDS3-01.pdf` §3.3  
+**Autores:** José López (UI/UX), Julio Galvis (Diseño Instruccional), Jeider Gómez (Líder Técnico)  
+**Estado:** ⚠️ 6 Estudiante + 1 Común + 4 Docente completas + 2 Docente pendientes + 3 Administrador · **Última actualización:** 2026-09-03 (FASE CC-04, códigos unificados según D-02)
 
-Presentación tabular equivalente, en el formato exacto del libro, para la sustentación:
-
-| Ventana | Texto | Imagen | Audio | Videos | Animación | Acciones |
-|---|---|---|---|---|---|---|
-| **V-01 Mi banco de trabajo** | Saludo y 3 tarjetas de estado; frases ≤20 palabras | Iconografía lineal SVG 24 px + ilustración plana | No aplica: consulta rápida en sala compartida | Solo bienvenida opcional de 60 s en el primer ingreso | Barra de dominio con transición de 400 ms | Continuar unidad · abrir repasos · navegar · ver progreso |
-| **V-02 Unidad de aprendizaje** | Teoría en bloques ≤150 palabras + glosario emergente | Diagramas de flujo SVG con texto alternativo | No aplica como locución; se soporta lectura por voz | Cápsula 3–6 min subtitulada (pendiente de producción) | **Trazado de escritorio paso a paso**, controlado por el estudiante | Marcar explorado · avanzar trazado · ir al ejercicio · preguntar al tutor |
-| **V-03 Resolución de ejercicio** | Enunciado ≤200 palabras, ejemplos E/S, intentos restantes | Iconos de estado por caso de prueba | Dos señales cortas desactivadas por defecto | No aplica: obligaría a abandonar el problema | Indicador de progreso del juez; casos revelados en secuencia | Ejecutar · Entregar · Pedir pista · Reiniciar · autoguardado |
-| **V-04 Maestro de taller** | Diálogo socrático, turnos ≤80 palabras, aviso de IA | Avatar geométrico no humanoide | No aplica **por decisión pedagógica** | No aplica: el intercambio es irrepetible | Indicador de escritura y entrega progresiva | Enviar consulta · adjuntar código · marcar utilidad · volver |
-| **V-05 Mantenimiento (SM-2)** | Lista de repasos con justificación de una línea | Iconos de urgencia con doble codificación | No aplica: sesión breve y focalizada | No aplica: anularía la recuperación activa | Salida de la tarjeta y nueva fecha (≤300 ms) | Iniciar repaso · posponer con motivo · ver historial |
-| **V-06 Mi bitácora** | Métricas con su línea de interpretación | Barras, mapa de calor y línea de evolución | No aplica: ventana analítica | No aplica: el dato es propio y cambiante | Barras que crecen al cargar; resalte de lo que cambió | Filtrar · abrir unidad más débil · exportar · consultar al tutor |
+> **Regla del formato MODESEC:** Cada ventana se describe obligatoriamente en **siete categorías**: (1) Imagen, (2) Nombre de ventana, (3) Texto, (4) Audio, (5) Video, (6) Animación y (7) Acciones. Cuando una categoría no aplica, se fundamenta su **motivo pedagógico o funcional**. Todas las ventanas derivan de la [Ventana Estándar](3.3_VENTANA_ESTANDAR.md).
 
 ---
 
-## Trazabilidad con los requisitos funcionales
+## 🔑 PARTE 0: VISTA COMÚN DE AUTENTICACIÓN
 
-| Ventana | RF cubiertos | Módulo del sistema |
+### Ficha COMP-V00 · Autenticación y Acceso al Sistema
+
+| # | Categoría | Descripción |
 |---|---|---|
-| V-01 | RF-08, RF-10, RF-11, RF-22, RF-23 | Seguimiento del aprendizaje · Recomendación de repaso |
-| V-02 | RF-05, RF-06, RF-07, RF-09 | Gestión de unidades de aprendizaje |
-| V-03 | RF-17, RF-18, RF-19, RF-20 | Evaluación de conceptos · Judge |
-| V-04 | RF-12 a RF-16, RF-25 a RF-27 | Tutor inteligente · Registro de interacciones |
-| V-05 | RF-21, RF-22, RF-23, RF-24 | Recomendación de repaso (SM-2) |
-| V-06 | RF-08, RF-10, RF-11 | Seguimiento del aprendizaje |
-| V-00 *(fuera de esta entrega)* | RF-01 a RF-04 | Gestión de usuarios |
+| 1 | **Imagen** | Isotipo de STIRE (SVG 48 px), fondo minimalista `#F6F3EF`. Sin ilustraciones decorativas complejas para evitar distracción en el ingreso. |
+| 2 | **Nombre de ventana** | Interno: `COMP-V00_AUTH` · Visible: **"Iniciar Sesión — STIRE"** |
+| 3 | **Texto** | Formulario con etiquetas claras: correo institucional, contraseña. Enlace a "Registrarse" o "Recuperar acceso". Mensajes de validación concisos en línea (< 12 palabras). |
+| 4 | **Audio** | **No aplica.** Pantalla de transición transaccional rápida. |
+| 5 | **Video** | **No aplica.** No aporta valor didáctico en el punto de autenticación. |
+| 6 | **Animación** | Transición de entrada suave (fade-in 200 ms). Micro-animación de carga en el botón durante la verificación del token JWT. |
+| 7 | **Acciones** | Iniciar sesión `[POST /auth/login]` · Registrar nuevo usuario `[POST /auth/register]` · Redirección automática según rol (`estudiante` → `EST-V01`, `docente` → `DOC-V01`, `admin` → `ADM-V01`). |
+
+---
+
+## 🎓 PARTE 1: VISTAS DEL ESTUDIANTE (Núcleo de Práctica)
+
+### Ficha EST-V01 · Inicio (panel del estudiante)
+*Ver maqueta: [`assets/png/3.3.1_v01_banco_trabajo.png`](assets/png/3.3.1_v01_banco_trabajo.png) · Fuente: [`assets/3.3.1_v01_banco_trabajo.svg`](assets/3.3.1_v01_banco_trabajo.svg)*
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Iconografía lineal monocromática de 24 px (SVG) para estados de unidad y acciones. Ilustración de cabecera plana sin texto incrustado. |
+| 2 | **Nombre de ventana** | Interno: `EST-V01_INICIO` · Visible: **"Inicio"** |
+| 3 | **Texto** | Saludo personalizado, tres tarjetas de estado (*Continuar donde ibas*, *Repasos de hoy*, *Dominio del módulo*). Segunda persona, frases ≤ 20 palabras. |
+| 4 | **Audio** | **No aplica.** Panel de consulta rápida (< 30 s) para uso en salas de cómputo compartidas. |
+| 5 | **Video** | **No aplica** salvo bienvenida inicial opcional (60 s descartable). |
+| 6 | **Animación** | Barra de progreso con transición de 400 ms al actualizarse; aparición escalonada de tarjetas (60 ms). |
+| 7 | **Acciones** | Continuar unidad `[GET /progress/my-progress]` · Abrir repasos pendientes `[GET /progress/recommendations]` · Abrir tutor modal · Ver Mi Progreso. |
+
+### Ficha EST-V02 · Unidad de aprendizaje (contenido teórico interactivo)
+*Ver maqueta: [`assets/png/3.3.1_v02_unidad_teoria.png`](assets/png/3.3.1_v02_unidad_teoria.png) · Fuente: [`assets/3.3.1_v02_unidad_teoria.svg`](assets/3.3.1_v02_unidad_teoria.svg)*
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Diagramas de flujo y esquemas conceptuales en SVG escalables con texto alternativo. Código siempre en texto seleccionable. |
+| 2 | **Nombre de ventana** | Interno: `EST-V02_UNIDAD_TEORIA` · Visible: Título de la unidad temática (ej. **"2.3 Ciclos: while"**) |
+| 3 | **Texto** | Contenido teórico en Markdown renderizado estructurado: concepto, sintaxis, ejemplos y trazado. Bloques ≤ 150 palabras. |
+| 4 | **Audio** | **No aplica** como locución obligatoria. Soporte nativo para lectores de pantalla. |
+| 5 | **Video** | **Aplica.** Cápsula explicativa de 3–6 min con subtítulos y transcripción descargable. |
+| 6 | **Animación** | Trazado de escritorio paso a paso: resalta la línea activa y actualiza la tabla de memoria/variables de forma interactiva. |
+| 7 | **Acciones** | Marcar como visto `[POST /progress/view/:unitId]` · Avanzar/retroceder trazado · Ir al ejercicio práctico · Consultar al tutor IA. |
+
+### Ficha EST-V03 · Resolución de ejercicio (editor y juez)
+*Ver maqueta: [`assets/png/3.3.1_v03_ejercicio.png`](assets/png/3.3.1_v03_ejercicio.png) · Fuente: [`assets/3.3.1_v03_ejercicio.svg`](assets/3.3.1_v03_ejercicio.svg)*
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Iconos de estado de casos de prueba (✔ Pasa · ✖ Falla · ⏱ Tiempo excedido). |
+| 2 | **Nombre de ventana** | Interno: `EST-V03_EJERCICIO` · Visible: **"Ejercicio: "** + nombre de la actividad |
+| 3 | **Texto** | Enunciado formal (contexto, entrada, salida, restricciones) y ejemplos con entrada/salida visible. |
+| 4 | **Audio** | **No aplica.** Solo señales sonoras opcionales de éxito/fallo al finalizar la ejecución del juez. |
+| 5 | **Video** | **No aplica.** Mantener la concentración cognitiva en el editor de código. |
+| 6 | **Animación** | Indicador de estado del sandbox en tiempo real (En cola → Ejecutando → Evaluando). |
+| 7 | **Acciones** | Probar casos públicos `[POST /submissions]` · Enviar solución definitiva · Pedir pista al Tutor `[POST /tutor/chat]` · Autoguardado de borrador. |
+
+### Ficha EST-V04 · Tutor IA (tutor IA adaptativo)
+*Ver maqueta: [`assets/png/3.3.1_v04_tutor.png`](assets/png/3.3.1_v04_tutor.png) · Fuente: [`assets/3.3.1_v04_tutor.svg`](assets/3.3.1_v04_tutor.svg)*
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Avatar geométrico abstracto del tutor (no antropomórfico) y marcas de turnos conversacionales. |
+| 2 | **Nombre de ventana** | Interno: `EST-V04_TUTOR` · Visible: **"Tutor IA"** |
+| 3 | **Texto** | Intercambio socrático: preguntas reflexivas y contraejemplos. **Nunca da el código resuelto**. Turnos ≤ 80 palabras con advertencia visible de IA. |
+| 4 | **Audio** | **No aplica.** Decisión pedagógica para evitar atribuir infalibilidad a una IA. |
+| 5 | **Video** | **No aplica.** Conversación contextual e irrepetible. |
+| 6 | **Animación** | Indicador de escritura y renderizado progresivo del texto socrático. |
+| 7 | **Acciones** | Enviar consulta `[POST /tutor/chat]` adjuntando código actual · Calificar utilidad de la pista · Cerrar modal conservando el código. |
+
+### Ficha EST-V05 · Repasos (repaso espaciado SM-2)
+*Ver maqueta: [`assets/png/3.3.1_v05_repaso.png`](assets/png/3.3.1_v05_repaso.png) · Fuente: [`assets/3.3.1_v05_repaso.svg`](assets/3.3.1_v05_repaso.svg)*
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Iconos de urgencia con doble codificación (forma + color): ⬤ Al día, ◐ Vence mañana, ▲ Vencido, ■ Crítico. |
+| 2 | **Nombre de ventana** | Interno: `EST-V05_REPASO` · Visible: **"Repasos"** |
+| 3 | **Texto** | Lista de conceptos por repasar con justificación del intervalo SM-2: *"Dominado hace 10 días; un repaso corto ahora consolida la memoria."* |
+| 4 | **Audio** | **No aplica.** Sesión de recuperación activa focalizada. |
+| 5 | **Video** | **No aplica.** La recuperación activa requiere resolver problemas, no ver videos pasivamente. |
+| 6 | **Animación** | Al completar un repaso, la tarjeta sale de la lista y se revela la nueva fecha calculada por SM-2. |
+| 7 | **Acciones** | Iniciar ejercicio de repaso `[GET /progress/recommendations]` · Posponer con justificación · Consultar historial de intervalos. |
+
+### Ficha EST-V06 · Mi Progreso (progreso y métricas)
+*Ver maqueta: [`assets/png/3.3.1_v06_progreso.png`](assets/png/3.3.1_v06_progreso.png) · Fuente: [`assets/3.3.1_v06_progreso.svg`](assets/3.3.1_v06_progreso.svg)*
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Barras de dominio por módulo, mapa de calor de constancia y gráfico de progreso sin 3D. |
+| 2 | **Nombre de ventana** | Interno: `EST-V06_PROGRESO` · Visible: **"Mi Progreso"** |
+| 3 | **Texto** | Métricas con interpretación: porcentaje de mastery, efectividad, intentos promedio y unidades desbloqueadas. |
+| 4 | **Audio** | **No aplica.** Ventana analítica de inspección reflexiva. |
+| 5 | **Video** | **No aplica.** Los datos son dinámicos y propios del alumno. |
+| 6 | **Animación** | Barras de dominio con animación de llenado al cargar (400 ms). |
+| 7 | **Acciones** | Filtrar por módulo · Abrir la unidad más débil recomendada · Exportar resumen de aprendizaje. |
+
+---
+
+## 👨‍🏫 PARTE 2: VISTAS DEL DOCENTE (Gestión y Acompañamiento)
+
+> **Nota de unificación (FASE CC-04, D-02):** esta sección usaba una numeración `DOC-V0x`
+> incompatible con la de `NAMING_STIRE.md` y el resto de `docs/`. Se recodificó cada ficha según
+> su función real, no según el número que traía. Ningún contenido pedagógico se reescribió — solo
+> el código y el nombre visible. Dos códigos de D-02 (`DOC-V03 · Crear Ejercicio` y
+> `DOC-V04 · Rendimiento del Grupo`) no tenían ficha en este documento y no se inventan aquí — ver
+> el aviso REQUERIDO-PENDIENTE al final de esta parte.
+
+### Ficha DOC-V01 · Mis Clases
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Tarjetas resumen con iconos SVG: total de clases activas, estudiantes matriculados y alertas de bajo rendimiento. |
+| 2 | **Nombre de ventana** | Interno: `DOC-V01_MIS_CLASES` · Visible: **"Mis Clases"** |
+| 3 | **Texto** | Saludo institucional, listado de cursos asignados con código de acceso y métricas agregadas de rendimiento del grupo. |
+| 4 | **Audio** | **No aplica.** Panel de supervisión y gestión rápida. |
+| 5 | **Video** | **No aplica.** Información administrativa y de control en tiempo real. |
+| 6 | **Animación** | Transición de carga suave en tarjetas de resumen y contadores numéricos al entrar. |
+| 7 | **Acciones** | Acceder a gestión de clases `[GET /class/my-classes]` · Crear nueva clase `[POST /class]` · Ver alertas pedagógicas. |
+
+**Sub-vista: detalle de clase y roster** (se abre al seleccionar una clase desde DOC-V01, no es
+una ventana con código propio en D-02): listado tabular de estudiantes matriculados con correo y
+fecha de ingreso, código `joinCode` de la clase. El enrolamiento real se hace vía
+`POST /enrollment/join` (el estudiante se une con el código) — no existe endpoint para que el
+docente añada o retire estudiantes manualmente uno por uno; el docente consulta el roster con
+`GET /enrollment/class/:classId`. La ficha original describía `POST/DELETE /class/:id/students/:id`,
+que **no existe** en `src/` — corregido en el Paso 5 de esta fase.
+
+### Ficha DOC-V02 · Contenidos y Temas
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Estructura de árbol con iconos de módulo, tema, unidad teórica y banco de ejercicios. |
+| 2 | **Nombre de ventana** | Interno: `DOC-V02_CONTENIDOS` · Visible: **"Contenidos y Temas"** |
+| 3 | **Texto** | Formularios de edición para título, descripción, nivel de dificultad, orden y prerrequisitos de cada unidad. |
+| 4 | **Audio** | **No aplica.** Edición de contenidos formativos. |
+| 5 | **Video** | **No aplica.** |
+| 6 | **Animación** | Reordenamiento interactivo tipo arrastrar y soltar (drag & drop) para estructurar el orden de temas. |
+| 7 | **Acciones** | Crear unidad `[POST /learning-unit]` · Modificar unidad `[PATCH /learning-unit/:id]` · Consultar catálogo global `[GET /learning-unit/all]`. |
+
+### Ficha DOC-V05 · Detalle de Estudiante
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Gráficas comparativas de mastery individual frente al promedio del grupo y distribución de errores frecuentes. |
+| 2 | **Nombre de ventana** | Interno: `DOC-V05_DETALLE_ESTUDIANTE` · Visible: **"Detalle de Estudiante"** |
+| 3 | **Texto** | Ficha detallada del estudiante seleccionado: historial de intentos, tasa de éxito por unidad y estado en el algoritmo SM-2. |
+| 4 | **Audio** | **No aplica.** Análisis de métricas académicas. |
+| 5 | **Video** | **No aplica.** |
+| 6 | **Animación** | Despliegue interactivo del desglose de intentos y tiempo de resolución por ejercicio. |
+| 7 | **Acciones** | Consultar progreso detallado `[GET /learning-progress/student/:studentId]` · Consultar detalle por unidad `[GET /learning-progress/student/:studentId/unit/:unitId]`. |
+
+### Ficha DOC-V06 · Mensajes
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Lista de conversaciones con avatares e indicador de mensajes no leídos (badge numérico). |
+| 2 | **Nombre de ventana** | Interno: `DOC-V06_MENSAJES` · Visible: **"Mensajes"** |
+| 3 | **Texto** | Hilo de comunicación bidireccional entre docente y estudiante para resolver dudas metodológicas o administrativas. Bandeja de entrada, enviados y contador de no leídos separados por conversación. |
+| 4 | **Audio** | **No aplica.** Comunicación asíncrona escrita. |
+| 5 | **Video** | **No aplica.** |
+| 6 | **Animación** | Desplazamiento automático al final de la conversación al enviar o recibir mensajes; badge de no leídos se actualiza sin recargar la página. |
+| 7 | **Acciones** | Enviar mensaje `[POST /message]` · Ver bandeja de entrada `[GET /message/inbox]` · Ver enviados `[GET /message/sent]` · Ver contador de no leídos `[GET /message/unread-count]` · Ver conversación con un usuario `[GET /message/conversation/:userId]` · Marcar como leído `[PATCH /message/:id/read]`. |
+
+> **NOTA:** `DOC-V03 · Crear Ejercicio` y `DOC-V04 · Rendimiento del Grupo` (analítica de cohorte,
+> no individual) no tienen ficha en el formato de siete categorías de este documento — pero **sí
+> están completamente especificadas**, con endpoints reales, en
+> [`usuarios/docente/README.md`](../usuarios/docente/README.md) (secciones `DOC-V03` y `DOC-V04`)
+> y en [`06_ARQUITECTURA_VENTANAS.md`](../06_ARQUITECTURA_VENTANAS.md). No se duplica aquí ese
+> contenido para no generar dos fuentes que puedan divergir — este documento remite a la fuente
+> existente en vez de redactar una ficha paralela.
+
+---
+
+## ⚙️ PARTE 3: VISTAS DEL ADMINISTRADOR (Supervisión y Gobernanza)
+
+### Ficha ADM-V01 · Panel de Control de la Plataforma
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Tarjetas de estado global: usuarios totales, volumen de código ejecutado, estado del sandbox y tasa de disponibilidad. |
+| 2 | **Nombre de ventana** | Interno: `ADM-V01_DASHBOARD` · Visible: **"Panel de Control Administrativo"** |
+| 3 | **Texto** | Métricas de uso del sistema, consumo de recursos del sandbox y resumen de eventos recientes de seguridad. |
+| 4 | **Audio** | **No aplica.** Supervisión operativa. |
+| 5 | **Video** | **No aplica.** |
+| 6 | **Animación** | Actualización de contadores de carga de servidor en tiempo real. |
+| 7 | **Acciones** | Monitorear estado del sistema · Acceder a administración de usuarios · Auditar logs de seguridad. |
+
+### Ficha ADM-V02 · Gestión Global de Usuarios y Roles
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Tabla con filtros avanzados por rol (`estudiante`, `docente`, `admin`), estado activo/inactivo y botón de alta. |
+| 2 | **Nombre de ventana** | Interno: `ADM-V02_USUARIOS` · Visible: **"Directorio y Control de Usuarios"** |
+| 3 | **Texto** | Información de cuenta: nombre completo, correo institucional, rol asignado, afiliación y estado de activación. |
+| 4 | **Audio** | **No aplica.** Gestión administrativa. |
+| 5 | **Video** | **No aplica.** |
+| 6 | **Animación** | Modal de confirmación con animación de advertencia al suspender cuentas o modificar roles privilegiados. |
+| 7 | **Acciones** | Listar usuarios `[GET /users]` · Crear cuenta `[POST /users]` · Modificar rol `[PATCH /users/:id/role]` · Desactivar usuario `[DELETE /users/:id]`. |
+
+### Ficha ADM-V03 · Supervisión y Parámetros del Sistema
+
+| # | Categoría | Descripción |
+|---|---|---|
+| 1 | **Imagen** | Esquema visual de parámetros del sistema: límites del sandbox (timeout, memoria), umbrales de mastery y configuración de IA. |
+| 2 | **Nombre de ventana** | Interno: `ADM-V03_PARAMETROS` · Visible: **"Configuración y Parámetros Globales"** |
+| 3 | **Texto** | Descripción de constantes del sistema: umbral de dominio (70%), reintentos del tutor y límites de llamadas a API. |
+| 4 | **Audio** | **No aplica.** Configuración de plataforma. |
+| 5 | **Video** | **No aplica.** |
+| 6 | **Animación** | Indicador de guardado persistente al actualizar variables del entorno. |
+| 7 | **Acciones** | Visualizar configuración de umbrales · Auditar integridad de unidades de aprendizaje `[GET /learning-unit/all]`. |
 
 ---
 
 # § 3.3.2 · Guía de Metáforas — STIRE
 
 **Norma:** MODESEC §3.3.2 · **Formato 14** (Diseño de guía de metáforas) · `DDS3-01.pdf` §3.3.2
-**Dueño:** Julio · **Estado:** ✅ 12 metáforas · **Última actualización:** 2026-08-28
+**Dueño:** Julio · **Estado:** ✅ 12 metáforas, reencuadradas (D-01, FASE CC-04) · **Última actualización:** 2026-09-03
+
+---
+
+## 0. Reencuadre (D-01, decisión de Jeider, 2026-09-03)
+
+> **La metáfora del taller gobierna la ICONOGRAFÍA, la paleta y el marco conceptual — nunca las
+> etiquetas visibles de la interfaz.** Las etiquetas que el estudiante lee en pantalla son las de
+> [`NAMING_STIRE.md`](../NAMING_STIRE.md) (Inicio, Lección, Ejercicio, Tutor IA, Repasos, Mi
+> Progreso), sin excepción.
+
+`NAMING_STIRE.md` §2 documentó por qué "Mi Banco de Trabajo", "Maestro de Taller",
+"Mantenimiento del Taller" y "Bitácora" fallan como texto visible: exigen interpretación, suenan a
+soporte técnico o son arcaicas para un estudiante universitario de Algoritmos I. Esta guía no
+contradice esa decisión — la metáfora del taller sigue siendo válida y valiosa, pero en la capa
+donde sí funciona: como marco conceptual que explica **por qué** la interfaz se comporta como se
+comporta (por qué probar no cuesta nada, por qué el repaso no es castigo, por qué el tutor pregunta
+en vez de responder), y como criterio de coherencia para iconos, paleta y tono visual. La sección 2
+de esta guía separa explícitamente qué se conserva de la metáfora (el concepto) y qué usa la
+etiqueta del naming (lo que el estudiante lee).
 
 ---
 
@@ -515,45 +679,55 @@ herramental**.
 
 ## 2. Equivalencias de la metáfora
 
-| Elemento de la interfaz | Equivalente en la metáfora | Qué comunica al estudiante |
-|---|---|---|
-| Panel principal (V-01) | **Mi banco de trabajo** | "Este es tu puesto: aquí está lo que dejaste a medias y lo que toca hoy." |
-| Ejercicio (V-03) | **Pieza en el banco** | "Es un encargo concreto, con medidas y tolerancias: entrada, salida y restricciones." |
-| Ejecutar sin entregar | **Prueba de banco** | "Ensaya cuantas veces quieras; probar no cuesta nada y no consume intento." |
-| Intento fallido | **Pieza que no pasa la medida** | "No pasó la verificación. Se ajusta y se vuelve a probar: eso es el oficio." |
-| Tutor IA (V-04) | **Maestro de taller** | "Te muestra dónde mirar y te pregunta por qué; no hace la pieza por ti." |
-| Casos de prueba | **Calibradores** | "Criterios objetivos y públicos: no dependen de la opinión de nadie." |
-| Nivel de dominio (`mastery`) | **Temple de la herramienta** | "Se gana con uso repetido y se pierde con el desuso; por eso hay repasos." |
-| Repaso espaciado (V-05) | **Mantenimiento del herramental** | "Se afila antes de que se desafile, no cuando ya falló." |
-| Unidad bloqueada | **Encargo fuera de tu nivel** | "Aún no tienes la base; termina el encargo anterior y se abre." |
-| Progreso del módulo (V-06) | **Bitácora del taller** | "Registro de lo que has producido y de lo que domina tu mano." |
+> **Lectura de la tabla (D-01):** la columna *"Concepto en la metáfora"* es marco conceptual e
+> iconografía — se conserva. La columna *"Etiqueta visible (naming)"* es lo único que el
+> estudiante lee en pantalla, y es la que manda en cualquier conflicto. Ver
+> [`NAMING_STIRE.md` §8](../NAMING_STIRE.md#8-trazabilidad-completa-código-→-documental-→-visible).
+
+| Elemento de la interfaz | Concepto en la metáfora (se conserva) | Etiqueta visible (naming, manda) | Qué comunica el concepto |
+|---|---|---|---|
+| Panel principal (EST-V01) | Banco de trabajo | **Inicio** | "Este es tu puesto: aquí está lo que dejaste a medias y lo que toca hoy." |
+| Ejercicio (EST-V03) | Pieza en el banco | **Ejercicio** | "Es un encargo concreto, con medidas y tolerancias: entrada, salida y restricciones." |
+| Ejecutar sin entregar | Prueba de banco | **Probar código** | "Ensaya cuantas veces quieras; probar no cuesta nada y no consume intento." |
+| Intento fallido | Pieza que no pasa la medida | *(sin etiqueta propia; feedback inline)* | "No pasó la verificación. Se ajusta y se vuelve a probar: eso es el oficio." |
+| Tutor IA (EST-V04) | Maestro de taller | **Tutor IA** | "Te muestra dónde mirar y te pregunta por qué; no hace la pieza por ti." |
+| Casos de prueba | Calibradores | **Casos públicos / Casos ocultos** | "Criterios objetivos y públicos: no dependen de la opinión de nadie." |
+| Nivel de dominio (`mastery`) | Temple de la herramienta | **Dominio** | "Se gana con uso repetido y se pierde con el desuso; por eso hay repasos." |
+| Repaso espaciado (EST-V05) | Mantenimiento del herramental | **Repasos** | "Se afila antes de que se desafile, no cuando ya falló." |
+| Unidad bloqueada | Encargo fuera de tu nivel | *(sin etiqueta propia; estado visual bloqueado)* | "Aún no tienes la base; termina el encargo anterior y se abre." |
+| Progreso del módulo (EST-V06) | Bitácora del taller | **Mi Progreso** | "Registro de lo que has producido y de lo que domina tu mano." |
 
 ---
 
 ## 3. Formato 14 — Guía de metáforas (iconografía)
 
+> Nombres de archivo renombrados a FUNCIÓN (D-01, FASE CC-04) — el nombre del archivo ya no
+> lleva vocabulario de taller, solo la ilustración conserva el concepto.
+
 <table>
 <tr><th align="center">DISEÑO DE GUÍA DE METÁFORAS</th><th></th><th></th></tr>
-<tr><th align="left">Nombre</th><th align="center">Imagen</th><th align="left">Descripción</th></tr>
-<tr><td width="220"><b>Mi banco de trabajo</b></td><td align="center" width="90"><img src="assets/icons/mi_banco_de_trabajo.svg" width="40" alt="Icono: Mi banco de trabajo"></td><td>Panel del estudiante (V-01): lo que dejó a medias y lo que toca hoy.</td></tr>
-<tr><td width="220"><b>Encargo / pieza</b></td><td align="center" width="90"><img src="assets/icons/encargo_pieza.svg" width="40" alt="Icono: Encargo / pieza"></td><td>Ejercicio con medidas y tolerancias: entrada, salida y restricciones.</td></tr>
-<tr><td width="220"><b>Prueba de banco</b></td><td align="center" width="90"><img src="assets/icons/prueba_de_banco.svg" width="40" alt="Icono: Prueba de banco"></td><td>Ejecutar sin entregar: ensayo ilimitado que no consume intento.</td></tr>
-<tr><td width="220"><b>Calibrador</b></td><td align="center" width="90"><img src="assets/icons/calibrador.svg" width="40" alt="Icono: Calibrador"></td><td>Casos de prueba: criterio objetivo y público, no opinión.</td></tr>
-<tr><td width="220"><b>Maestro de taller</b></td><td align="center" width="90"><img src="assets/icons/maestro_de_taller.svg" width="40" alt="Icono: Maestro de taller"></td><td>Tutor IA (V-04): pregunta y señala; nunca hace la pieza por ti.</td></tr>
-<tr><td width="220"><b>Temple</b></td><td align="center" width="90"><img src="assets/icons/temple.svg" width="40" alt="Icono: Temple"></td><td>Nivel de dominio (mastery): se gana con uso y se pierde con desuso.</td></tr>
-<tr><td width="220"><b>Mantenimiento</b></td><td align="center" width="90"><img src="assets/icons/mantenimiento.svg" width="40" alt="Icono: Mantenimiento"></td><td>Repaso espaciado SM-2: se afila antes de que se desafile.</td></tr>
-<tr><td width="220"><b>Encargo fuera de nivel</b></td><td align="center" width="90"><img src="assets/icons/encargo_fuera_de_nivel.svg" width="40" alt="Icono: Encargo fuera de nivel"></td><td>Unidad bloqueada por el grafo de prerrequisitos.</td></tr>
-<tr><td width="220"><b>Bitácora</b></td><td align="center" width="90"><img src="assets/icons/bitacora.svg" width="40" alt="Icono: Bitácora"></td><td>Progreso y dominio (V-06): registro de lo producido.</td></tr>
-<tr><td width="220"><b>Entregar</b></td><td align="center" width="90"><img src="assets/icons/entregar.svg" width="40" alt="Icono: Entregar"></td><td>Consume intento y dispara la evaluación del juez.</td></tr>
-<tr><td width="220"><b>Pedir pista</b></td><td align="center" width="90"><img src="assets/icons/pedir_pista.svg" width="40" alt="Icono: Pedir pista"></td><td>Abre al maestro de taller con el contexto del código actual.</td></tr>
-<tr><td width="220"><b>Cerrar sesión</b></td><td align="center" width="90"><img src="assets/icons/cerrar_sesion.svg" width="40" alt="Icono: Cerrar sesión"></td><td>Sale del taller guardando el estado del banco.</td></tr>
+<tr><th align="left">Nombre visible (naming)</th><th align="center">Imagen</th><th align="left">Descripción (concepto en la metáfora)</th></tr>
+<tr><td width="220"><b>Inicio</b></td><td align="center" width="90"><img src="assets/icons/inicio.svg" width="40" alt="Icono: Inicio"></td><td>Panel del estudiante (EST-V01): lo que dejó a medias y lo que toca hoy. Concepto: mi banco de trabajo.</td></tr>
+<tr><td width="220"><b>Ejercicio</b></td><td align="center" width="90"><img src="assets/icons/ejercicio.svg" width="40" alt="Icono: Ejercicio"></td><td>Ejercicio con medidas y tolerancias: entrada, salida y restricciones. Concepto: encargo / pieza.</td></tr>
+<tr><td width="220"><b>Probar código</b></td><td align="center" width="90"><img src="assets/icons/probar_codigo.svg" width="40" alt="Icono: Probar código"></td><td>Ejecutar sin entregar: ensayo ilimitado que no consume intento. Concepto: prueba de banco.</td></tr>
+<tr><td width="220"><b>Casos de prueba</b></td><td align="center" width="90"><img src="assets/icons/casos_prueba.svg" width="40" alt="Icono: Casos de prueba"></td><td>Casos de prueba: criterio objetivo y público, no opinión. Concepto: calibrador.</td></tr>
+<tr><td width="220"><b>Tutor IA</b></td><td align="center" width="90"><img src="assets/icons/tutor_ia.svg" width="40" alt="Icono: Tutor IA"></td><td>Tutor IA (EST-V04): pregunta y señala; nunca hace la pieza por ti. Concepto: maestro de taller.</td></tr>
+<tr><td width="220"><b>Dominio</b></td><td align="center" width="90"><img src="assets/icons/dominio.svg" width="40" alt="Icono: Dominio"></td><td>Nivel de dominio (mastery): se gana con uso y se pierde con desuso. Concepto: temple.</td></tr>
+<tr><td width="220"><b>Repasos</b></td><td align="center" width="90"><img src="assets/icons/repasos.svg" width="40" alt="Icono: Repasos"></td><td>Repaso espaciado SM-2: se afila antes de que se desafile. Concepto: mantenimiento del herramental.</td></tr>
+<tr><td width="220"><b>Unidad bloqueada</b></td><td align="center" width="90"><img src="assets/icons/unidad_bloqueada.svg" width="40" alt="Icono: Unidad bloqueada"></td><td>Unidad bloqueada por el grafo de prerrequisitos. Concepto: encargo fuera de nivel.</td></tr>
+<tr><td width="220"><b>Mi Progreso</b></td><td align="center" width="90"><img src="assets/icons/progreso.svg" width="40" alt="Icono: Mi Progreso"></td><td>Progreso y dominio (EST-V06): registro de lo producido. Concepto: bitácora.</td></tr>
+<tr><td width="220"><b>Entregar solución</b></td><td align="center" width="90"><img src="assets/icons/entregar.svg" width="40" alt="Icono: Entregar solución"></td><td>Consume intento y dispara la evaluación del juez.</td></tr>
+<tr><td width="220"><b>Pedir pista al Tutor</b></td><td align="center" width="90"><img src="assets/icons/pedir_pista.svg" width="40" alt="Icono: Pedir pista al Tutor"></td><td>Abre el Tutor IA con el contexto del código actual. Concepto: maestro de taller.</td></tr>
+<tr><td width="220"><b>Cerrar sesión</b></td><td align="center" width="90"><img src="assets/icons/cerrar_sesion.svg" width="40" alt="Icono: Cerrar sesión"></td><td>Sale de la sesión guardando el estado del panel.</td></tr>
 </table>
 
 **Hoja completa de iconografía:**
 
 ![Guía de metáforas de STIRE](assets/png/3.3.2_guia_metaforas.png)
 
-*Iconos individuales en [`assets/icons/`](assets/icons/) (SVG, 48×48, trazo 2.2 px).*
+*Iconos individuales en [`assets/icons/`](assets/icons/) (SVG, 48×48, trazo 2.2 px). Nombres de
+archivo renombrados a función en FASE CC-04 — la imagen del PNG consolidado arriba es anterior al
+renombrado y se regenerará en CC-06/CC-08 desde Figma (ver Paso 10, estado `derivado`).*
 
 ---
 
@@ -580,123 +754,133 @@ herramental**.
 
 ---
 
-# § 3.3.3 · Mapa de Navegación — STIRE
+# § 3.3.3 · Mapa de Navegación Multi-Rol — STIRE
 
-**Norma:** MODESEC §3.3.3 · **Gráfico 2** (Esquema de navegación) · `DDS3-01.pdf` §3.3.3
-**Dueño:** Julio · **Estado:** ✅ completo · **Última actualización:** 2026-08-28
+**Norma:** MODESEC §3.3.3 · **Gráfico 2** (Esquema de navegación) · `DDS3-01.pdf` §3.3.3  
+**Autores:** Julio Galvis (Diseño Instruccional), José López (UI/UX), Jeider Gómez (Líder Técnico)  
+**Estado:** ⚠️ Códigos de Docente unificados según D-02 (FASE CC-04); DOC-V03 y DOC-V04 pendientes de ventana · **Última actualización:** 2026-09-03
 
-> **Qué es esta pieza.** MODESEC: *"al culminar el diseño de todas las ventanas se hace
-> indispensable la creación de una guía o mapa que permita ubicar de forma ordenada cada una de las
-> interfaces"*. El mapa muestra cómo están organizadas las ventanas y qué hipervínculo las
-> interconecta. No es un dibujo decorativo: es lo que permite detectar ventanas huérfanas antes de
-> programarlas.
+> **Propósito MODESEC:** El mapa de navegación define formalmente las rutas de transición entre pantallas, los disparadores de interacción y la reversibilidad de cada cambio de estado, garantizando que no existan ventanas huérfanas ni caminos ciegos en la plataforma.
 
 ---
 
-## 1. Esquema de navegación
-
-![Mapa de navegación de STIRE](assets/png/3.3.3_mapa_navegacion.png)
-
-*Fuente editable: [`assets/3.3.3_mapa_navegacion.svg`](assets/3.3.3_mapa_navegacion.svg)*
-
-<details>
-<summary>Versión en Mermaid (se renderiza directamente en GitHub)</summary>
+## 1. Esquema de Navegación Global y por Roles
 
 ```mermaid
 stateDiagram-v2
-    [*] --> V00
-    V00: V-00 Autenticación
-    V01: V-01 Mi banco de trabajo (HUB)
-    V02: V-02 Unidad de aprendizaje
-    V03: V-03 Resolución de ejercicio
-    V04: V-04 Maestro de taller
-    V05: V-05 Mantenimiento (SM-2)
-    V06: V-06 Mi bitácora
-    V07: V-07 Resultado de la entrega
+    [*] --> COMP_V00 : Arranque de la plataforma
+    COMP_V00: COMP-V00 Autenticación y Registro
 
-    V00 --> V01 : ingreso válido
-    V01 --> V02 : abre unidad
-    V01 --> V03 : continúa ejercicio
-    V01 --> V05 : repasos del día
-    V01 --> V06 : ver progreso
-    V02 --> V03 : ir al ejercicio
-    V03 --> V04 : pedir pista
-    V04 --> V03 : volver (borrador intacto)
-    V03 --> V07 : entregar (consume intento)
-    V07 --> V03 : reintenta (mastery < 70 %)
-    V07 --> V05 : domina → SM-2 programa repaso
-    V05 --> V03 : resuelve ejercicio de repaso
-    V02 --> V01 : retorno al panel
-    V03 --> V01 : retorno al panel
-    V05 --> V01 : retorno al panel
-    V06 --> V01 : retorno al panel
-    V01 --> [*] : cerrar sesión
+    state "Rol: Estudiante" as R_EST {
+        EST_V01: EST-V01 Inicio (Hub)
+        EST_V02: EST-V02 Unidad de Aprendizaje
+        EST_V03: EST-V03 Resolución de Ejercicio
+        EST_V04: EST-V04 Tutor IA
+        EST_V05: EST-V05 Repasos (SM-2)
+        EST_V06: EST-V06 Mi Progreso
+
+        EST_V01 --> EST_V02 : Abrir unidad desbloqueada
+        EST_V01 --> EST_V03 : Continuar ejercicio en curso
+        EST_V01 --> EST_V05 : Atender repasos del día
+        EST_V01 --> EST_V06 : Consultar métricas de dominio
+        EST_V02 --> EST_V03 : Ir a resolver el problema
+        EST_V03 --> EST_V04 : Pedir pista socrática (modal)
+        EST_V04 --> EST_V03 : Retornar (borrador intacto)
+        EST_V03 --> EST_V05 : Domina unidad → SM-2 programa repaso
+        EST_V05 --> EST_V03 : Resolver ejercicio de repaso
+        EST_V02 --> EST_V01 : Volver al hub
+        EST_V03 --> EST_V01 : Volver al hub (guarda borrador)
+        EST_V05 --> EST_V01 : Volver al hub
+        EST_V06 --> EST_V01 : Volver al hub
+    }
+
+    state "Rol: Docente" as R_DOC {
+        DOC_V01: DOC-V01 Mis Clases (Hub)
+        DOC_ROSTER: Detalle de Clase (dentro de Mis Clases, sin código propio)
+        DOC_V02: DOC-V02 Contenidos y Temas
+        DOC_V05: DOC-V05 Detalle de Estudiante
+        DOC_V06: DOC-V06 Mensajes
+
+        DOC_V01 --> DOC_ROSTER : Administrar clases y alumnos
+        DOC_V01 --> DOC_V02 : Gestionar unidades y teoría
+        DOC_V01 --> DOC_V05 : Ver progreso pedagógico
+        DOC_V01 --> DOC_V06 : Abrir canal de mensajes
+        DOC_ROSTER --> DOC_V05 : Ver ficha de alumno de la clase
+        DOC_ROSTER --> DOC_V01 : Retornar al panel
+        DOC_V02 --> DOC_V01 : Retornar al panel
+        DOC_V05 --> DOC_V01 : Retornar al panel
+        DOC_V06 --> DOC_V01 : Retornar al panel
+    }
+
+    state "Rol: Administrador" as R_ADM {
+        ADM_V01: ADM-V01 Panel de Control (Hub)
+        ADM_V02: ADM-V02 Gestión de Usuarios y Roles
+        ADM_V03: ADM-V03 Supervisión Global
+
+        ADM_V01 --> ADM_V02 : Gestionar cuentas y roles
+        ADM_V01 --> ADM_V03 : Auditar unidades y plataforma
+        ADM_V02 --> ADM_V01 : Retornar al panel
+        ADM_V03 --> ADM_V01 : Retornar al panel
+    }
+
+    COMP_V00 --> EST_V01 : Credenciales de Estudiante
+    COMP_V00 --> DOC_V01 : Credenciales de Docente
+    COMP_V00 --> ADM_V01 : Credenciales de Administrador
+
+    EST_V01 --> COMP_V00 : Cerrar Sesión
+    DOC_V01 --> COMP_V00 : Cerrar Sesión
+    ADM_V01 --> COMP_V00 : Cerrar Sesión
 ```
-</details>
+
+> **REQUERIDO-PENDIENTE (FASE CC-04, D-02):** `DOC-V03 · Crear Ejercicio` y
+> `DOC-V04 · Rendimiento del Grupo` (analítica de cohorte) no tienen ventana ni ficha todavía, por
+> lo que no aparecen en este mapa. No se inventan aquí — ver la misma nota en
+> [`ventanas/3.3.1_FICHAS_VENTANAS.md`](../ventanas/3.3.1_FICHAS_VENTANAS.md).
 
 ---
 
-## 2. Tabla de transiciones
+## 2. Tabla de Transiciones Multi-Rol
 
-| # | Origen | Destino | Disparador / condición | ¿Reversible? | Efecto en el sistema |
+| # | Origen | Destino | Disparador / Condición | ¿Reversible? | Efecto en el Sistema |
 |---|---|---|---|---|---|
-| 1 | — | V-00 Autenticación | Arranque de la aplicación | — | — |
-| 2 | V-00 | V-01 Banco de trabajo | Credenciales válidas | No (requiere cerrar sesión) | Se emite el token de sesión |
-| 3 | V-01 | V-02 Unidad | Clic en unidad **desbloqueada** (`mastery` del prerrequisito ≥ 70 %) | Sí | Estado → *Explorado* |
-| 4 | V-01 | V-03 Ejercicio | Clic en "Continuar" o en una actividad de la unidad | Sí | Se carga el borrador autoguardado |
-| 5 | V-01 | V-05 Mantenimiento | Clic en "Repaso de hoy" (existe al menos un repaso vencido o del día) | Sí | — |
-| 6 | V-01 | V-06 Bitácora | Clic en "Mi progreso" | Sí | — |
-| 7 | V-02 | V-03 | Clic en "Ir al ejercicio" | Sí | — |
-| 8 | V-03 | V-04 Tutor | Clic en "Pedir pista" | Sí (modal) | Se adjunta el código actual como contexto |
-| 9 | V-04 | V-03 | "Volver al ejercicio" | Sí | **El borrador se conserva intacto** |
-| 10 | V-03 | V-07 Resultado | Clic en "Entregar" + confirmación | **No: consume intento** | Se crea la entrega, se ejecuta el juez y se recalcula `mastery` |
-| 11 | V-07 | V-03 | "Reintentar" (si `mastery` < 70 % y quedan intentos) | Sí | Nuevo intento sobre el mismo ejercicio |
-| 12 | V-07 | V-05 | Automático al alcanzar dominio | — | SM-2 programa `nextReviewDate` |
-| 13 | V-05 | V-03 | "Iniciar repaso" | Sí | Se abre el ejercicio de repaso de la unidad |
-| 14 | cualquiera | V-01 | Clic en la marca o en "Mi banco de trabajo" | Sí | Guarda el borrador antes de salir |
-| 15 | V-01 | — | "Cerrar sesión" | — | Invalida la sesión; el borrador queda persistido |
+| 1 | — | `COMP-V00` | Arranque de la aplicación en el navegador | — | Carga inicial del estado de autenticación |
+| 2 | `COMP-V00` | `EST-V01` | Login exitoso con rol `estudiante` | No (requiere logout) | Emisión y guardado de JWT en cliente |
+| 3 | `COMP-V00` | `DOC-V01` | Login exitoso con rol `docente` | No (requiere logout) | Emisión de JWT con privilegios docentes |
+| 4 | `COMP-V00` | `ADM-V01` | Login exitoso con rol `admin` | No (requiere logout) | Emisión de JWT con acceso administrativo |
+| 5 | `EST-V01` | `EST-V02` | Clic en unidad desbloqueada (`mastery` previo ≥ 70%) | Sí | Estado de la unidad → *Explorado* |
+| 6 | `EST-V01` | `EST-V03` | Clic en "Continuar ejercicio" o actividad | Sí | Recupera borrador autoguardado |
+| 7 | `EST-V01` | `EST-V05` | Clic en "Repasos de hoy" | Sí | Consulta unidades vencidas en SM-2 |
+| 8 | `EST-V01` | `EST-V06` | Clic en "Mi Progreso" | Sí | Carga analítica y métricas de dominio |
+| 9 | `EST-V02` | `EST-V03` | Clic en "Ir a resolver el problema" | Sí | Abre entorno de programación |
+| 10 | `EST-V03` | `EST-V04` | Clic en "Pedir pista al Tutor" | Sí (modal) | Inyecta código actual como contexto socrático |
+| 11 | `EST-V04` | `EST-V03` | Clic en "Volver al ejercicio" | Sí | Conserva el código y borrador intacto |
+| 12 | `EST-V03` | `EST-V05` | Entrega evaluada con éxito (`score` ≥ 70) | — | Algoritmo SM-2 programa `nextReviewDate` |
+| 13 | `EST-V05` | `EST-V03` | Clic en "Iniciar repaso de unidad" | Sí | Carga ejercicio de refuerzo |
+| 14 | `DOC-V01` | Detalle de Clase | Clic en "Gestionar Clases" | Sí | Carga listado de cursos asignados (sub-vista sin código propio, ver ficha DOC-V01) |
+| 15 | `DOC-V01` | `DOC-V02` | Clic en "Contenidos y Temas" | Sí | Abre gestor curricular |
+| 16 | `DOC-V01` | `DOC-V05` | Clic en "Seguimiento de Estudiantes" | Sí | Lista alumnos matriculados con métricas |
+| 17 | `DOC-V01` | `DOC-V06` | Clic en "Mensajes" | Sí | Carga hilos de conversación |
+| 18 | Detalle de Clase | `DOC-V05` | Clic en un alumno de la clase | Sí | Muestra detalle individual de mastery |
+| 19 | `ADM-V01` | `ADM-V02` | Clic en "Gestión de Usuarios" | Sí | Carga directorio global de cuentas |
+| 20 | `ADM-V01` | `ADM-V03` | Clic en "Supervisión Global" | Sí | Abre panel de parámetros del sistema |
+| 21 | Cualquier ventana | Hub correspondiente (`V01`) | Clic en el logotipo o botón de inicio | Sí | Guarda estado y vuelve al panel |
+| 22 | Hub (`V01`) | `COMP-V00` | Clic en "Cerrar Sesión" | — | Invalida el token JWT local |
 
 ---
 
-## 3. Reglas de calidad verificadas
+## 3. Reglas de Calidad y Ergonomía Cognitiva
 
-| # | Regla | Verificación |
-|---|---|---|
-| 1 | Ninguna ventana sin ruta de entrada | ✅ V-00 es el único origen; todas las demás se alcanzan desde V-01 o desde una transición explícita |
-| 2 | Ninguna ventana huérfana (sin salida) | ✅ Las 8 ventanas retornan a V-01 en un clic |
-| 3 | Toda ventana con retorno al panel principal | ✅ Transición 14, disponible desde el header |
-| 4 | Condiciones de transición explícitas | ✅ *entregar* consume intento; *volver* conserva el borrador; el repaso lo programa SM-2, no el estudiante |
-| 5 | El tutor nunca es destino final | ✅ V-04 es modal sobre el contexto y siempre devuelve al origen |
-| 6 | No hay calificación sin entrega | ✅ V-07 solo se alcanza desde V-03 mediante la transición 10 |
-
----
-
-## 4. Decisiones de navegación y su razón
-
-**V-01 es un hub, no una portada.** Podría haberse diseñado una pantalla de bienvenida decorativa;
-se descartó. El panel es funcional desde el primer segundo porque el estudiante entra con una
-pregunta concreta —"¿qué hago hoy?"— y el sistema ya sabe la respuesta.
-
-**El tutor es modal, no una sección.** Si el tutor fuera un destino de navegación, el estudiante
-podría "irse a preguntar" abandonando el problema. Siendo modal sobre el contexto, la consulta
-ocurre **con el código a la vista** y el regreso es inmediato.
-
-**El repaso no se puede adelantar.** El estudiante no elige cuándo repasar: lo programa SM-2. Si
-pudiera adelantarlo a voluntad, el algoritmo de repetición espaciada perdería su efecto, que depende
-precisamente del intervalo.
-
-**La entrega tiene fricción deliberada.** Es la única transición irreversible del sistema, y por eso
-es la única que pide confirmación. La fricción no es un descuido de usabilidad: comunica que ahí
-cambia el estado académico del estudiante.
-
----
+1. **Aislamiento por Rol:** Cada rol cuenta con un punto de entrada unificado (`COMP-V00`) y un panel principal dedicado (`EST-V01`, `DOC-V01`, `ADM-V01`), evitando la saturación cognitiva del usuario con funciones ajenas a su objetivo.
+2. **Cero Pantallas Huérfanas:** Todas las vistas secundarias cuentan con un botón de retorno directo a su panel principal en el header.
+3. **El Tutor no Rompe el Flujo:** El tutor IA (`EST-V04`) opera como una capa modal sobre el ejercicio, garantizando que el estudiante nunca pierda de vista su código ni deba recargar la pantalla.
+4. **Persistencia Transparente:** Las transiciones desde el editor de código guardan automáticamente el borrador en el almacenamiento local o base de datos antes de navegar.
 
 ## Fuentes
 
-- Guía de la asignatura `DDS3-01.pdf` (2024) — *3. Fase II: Diseño Multimedial*, §3.1 a §3.3.3.
-- Caro, M., Toscano, R., Hernández, F. y David, M. (2012). *MODESEC: Modelo para el desarrollo de software educativo basado en competencias.* Formatos 10 a 14 y Gráficos 1 y 2.
-- Caro, M. et al. (2009). *MODESEC*. Nuevas Ideas en Informática Educativa, 5, 188–200.
-- Guía de trabajo del estudiante, Clase 02 — DDSE3, Universidad de Córdoba.
-- *Modelo pedagógico Educación virtual — MOCAVI* (2023).
-- Giraldo, J. C. (2004). *Metodología SEMLI*. Montería.
-- Documentación interna STIRE: `docs/STIRE_FUNCTIONAL_VISION.md`, documento maestro de requisitos (RF-01 a RF-27).
+Este documento se regenera a partir de, en este orden:
+1. [`contenidos/3.1_DIAGRAMA_CONTENIDOS.md`](contenidos/3.1_DIAGRAMA_CONTENIDOS.md) — congelado, pendiente de rederivación desde COMP-203413 en FASE CC-05 (ver nota en ese archivo).
+2. [`guiones/3.2_GUION_TECNICO_MULTIMEDIAL.md`](guiones/3.2_GUION_TECNICO_MULTIMEDIAL.md)
+3. [`ventanas/3.3_VENTANA_ESTANDAR.md`](ventanas/3.3_VENTANA_ESTANDAR.md)
+4. [`ventanas/3.3.1_FICHAS_VENTANAS.md`](ventanas/3.3.1_FICHAS_VENTANAS.md)
+5. [`contenidos/3.3.2_GUIA_METAFORAS.md`](contenidos/3.3.2_GUIA_METAFORAS.md)
+6. [`contenidos/3.3.3_MAPA_NAVEGACION.md`](contenidos/3.3.3_MAPA_NAVEGACION.md)
