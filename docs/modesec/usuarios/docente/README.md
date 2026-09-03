@@ -1,7 +1,7 @@
 # 👨‍🏫 MODESEC — Insumo Maestro: Rol Docente
 
 > **Documento de Especificación para Diseño en Figma, Implementación Nuxt 3 y Validación Backend.**  
-> **Actor:** Docente (`role: 'docente'`) | **Vistas Asociadas:** `DOC-V01` a `DOC-V05`  
+> **Actor:** Docente (`role: 'docente'`) | **Vistas Asociadas:** `DOC-V01` a `DOC-V06`  
 > **Nomenclatura Oficial:** Estandarizada según [NAMING_STIRE.md](../../NAMING_STIRE.md)  
 > **Fecha de Actualización:** 2 de septiembre de 2026 | **Versión:** 2.0 Multi-Rol
 
@@ -69,6 +69,15 @@ sequenceDiagram
     UI->>API: GET /learning-progress/student/:id
     API-->>UI: Historial completo de intentos y código enviado
     UI->>D: Renderiza DOC-V05 (Detalle de Estudiante)
+
+    opt Mensajería
+        D->>UI: Navega a DOC-V06 (Mensajes)
+        UI->>API: GET /message/inbox
+        API-->>UI: Lista de conversaciones + contador de no leídos
+        D->>UI: Responde a un estudiante
+        UI->>API: POST /message
+        API-->>UI: Mensaje enviado
+    end
 ```
 
 ---
@@ -156,9 +165,31 @@ sequenceDiagram
 
 ---
 
+### `DOC-V06` · Bandeja de Mensajería Docente-Estudiante *(Nombre visible en UI: Mensajes)*
+* **Ruta Nuxt:** `/docente/mensajes`
+* **Layout:** `layouts/teacher.vue`
+* **Objetivo:** Comunicación bidireccional asíncrona con estudiantes para resolver dudas
+  metodológicas o administrativas fuera del Tutor IA (que es exclusivo del estudiante y no
+  involucra al docente).
+* **Recuperación (FASE CC-04, D-02):** el backend de mensajería ya existía y funcionaba (6
+  endpoints), pero no tenía ventana asignada en la numeración `DOC-V0x` — quedó fuera del naming
+  anterior por un error de inventario, no por estar incompleto.
+* **Información Visual Requerida:**
+  * Lista de conversaciones con avatar, último mensaje, marca de tiempo y badge numérico de no
+    leídos.
+  * Hilo de conversación seleccionado con burbujas diferenciadas por emisor.
+  * Campo de redacción con envío rápido.
+* **Acciones Principales:** `[Enviar mensaje]`, `[Abrir conversación]`, `[Marcar como leído]`.
+* **Endpoints Backend:** `POST /message`, `GET /message/inbox`, `GET /message/sent`,
+  `GET /message/unread-count`, `GET /message/conversation/:userId`, `PATCH /message/:id/read`.
+* **Componentes Vue:** `ConversationList.vue`, `MessageThread.vue`, `UnreadBadge.vue`.
+
+---
+
 ## 4. Criterios de Aceptación para Testing / QA
 
 1. **Aislamiento de Clases:** Un docente no puede editar ni consultar analíticas de clases creadas por otros docentes (`403 Forbidden` garantizado por `AuthorizationService`).
 2. **Validación de Casos de Prueba en DOC-V03:** No se debe permitir publicar una actividad de programación sin al menos un caso de prueba público y un caso de prueba privado.
 3. **Cómputo de Alertas en DOC-V04:** Todo estudiante matriculado en la clase con un promedio de dominio inferior a 50% debe recibir de forma automática la marca visual `RiskAlertBadge` ("Alerta Cognitiva").
 4. **Visor de Código en DOC-V05:** El inspector de código debe renderizar exactamente el string entregado por el estudiante en su último envío con resaltado de sintaxis y formato seguro anti-XSS.
+5. **Alcance de Mensajería en DOC-V06:** un docente solo debe poder ver conversaciones donde es emisor o receptor (`WHERE senderId = user.id OR receiverId = user.id`); no existe bandeja compartida entre docentes.

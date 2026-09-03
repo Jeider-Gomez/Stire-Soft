@@ -213,6 +213,20 @@
 
 ---
 
+### VENTANA: Mensajes
+* **CÓDIGO TÉCNICO:** `DOC-V06`
+* **NOMBRE DOCUMENTAL:** Bandeja de Mensajería Docente-Estudiante
+* **NOMBRE VISIBLE EN UI:** **Mensajes**
+* **ROL:** `docente`
+* **OBJETIVO:** Comunicación bidireccional asíncrona entre docente y estudiante para dudas metodológicas o administrativas (recuperada en FASE CC-04, D-02 — existía como backend funcional sin ventana asignada en el naming).
+* **ENTRADA:** `/docente/mensajes`
+* **DATOS:** Lista de conversaciones con avatar, último mensaje y contador de no leídos; hilo de conversación seleccionado.
+* **ACCIONES:** `[Enviar mensaje]`, `[Marcar como leído]`, `[Abrir conversación]`.
+* **COMPONENTES:** `ConversationList`, `MessageThread`, `UnreadBadge`.
+* **ENDPOINTS:** `POST /message`, `GET /message/inbox`, `GET /message/sent`, `GET /message/unread-count`, `GET /message/conversation/:userId`, `PATCH /message/:id/read`.
+
+---
+
 ## 🛡️ PARTE 3: VISTAS DEL ADMINISTRADOR
 
 ### VENTANA: Panel de Control y Salud del Sistema

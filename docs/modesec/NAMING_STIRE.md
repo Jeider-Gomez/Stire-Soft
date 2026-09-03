@@ -92,7 +92,8 @@ Estructura de Navegación del Docente
 ├── Contenidos y Temas (DOC-V02)
 ├── Crear Ejercicio (DOC-V03)
 ├── Rendimiento del Grupo (DOC-V04)
-└── Detalle de Estudiante (DOC-V05)
+├── Detalle de Estudiante (DOC-V05)
+└── Mensajes (DOC-V06)
 ```
 
 | Código | Nombre Documental (MODESEC) | Nombre Visible en UI / Navbar | Justificación de la Elección |
@@ -102,6 +103,7 @@ Estructura de Navegación del Docente
 | **`DOC-V03`** | **Diseñador de Ejercicios y Casos de Prueba** | **Crear Ejercicio** *(o Banco de Ejercicios)* | Verbo de acción directo para la autoría pedagógica de problemas de código. |
 | **`DOC-V04`** | **Analítica de Cohorte y Alertas** | **Rendimiento del Grupo** | Comunica supervisión académica y detección de estudiantes rezagados. |
 | **`DOC-V05`** | **Seguimiento Individual de Estudiante** | **Detalle de Estudiante** | Vista profunda para inspeccionar el historial y código de un alumno específico. |
+| **`DOC-V06`** | **Bandeja de Mensajería Docente-Estudiante** | **Mensajes** | Comunicación directa fuera del Tutor IA (exclusivo del estudiante). Recuperada en FASE CC-04 (D-02): el backend ya existía (6 endpoints) sin ventana asignada en esta guía. |
 
 ---
 
@@ -187,6 +189,7 @@ Los conceptos técnicos del motor de evaluación y del algoritmo SM-2 deben trad
 | `DOC-V03` | Diseñador de Ejercicios y Casos de Prueba | **Crear Ejercicio** |
 | `DOC-V04` | Analítica de Cohorte y Alertas de Rendimiento | **Rendimiento del Grupo** |
 | `DOC-V05` | Seguimiento Individual de Estudiante | **Detalle de Estudiante** |
+| `DOC-V06` | Bandeja de Mensajería Docente-Estudiante | **Mensajes** |
 | `ADM-V01` | Panel de Control y Salud del Sistema | **Estado del Sistema** |
 | `ADM-V02` | Directorio y Gestión de Usuarios y Roles | **Usuarios y Roles** |
 | `ADM-V03` | Auditoría Técnica y Parámetros del Entorno | **Logs y Mantenimiento** |

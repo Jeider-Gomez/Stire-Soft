@@ -28,7 +28,8 @@
 │   ├── contenidos ──────────► DOC-V02 (Contenidos y Temas)
 │   ├── ejercicios/crear ────► DOC-V03 (Crear Ejercicio)
 │   ├── clase/:id/analitica ─► DOC-V04 (Rendimiento del Grupo)
-│   └── estudiante/:id ──────► DOC-V05 (Detalle de Estudiante)
+│   ├── estudiante/:id ──────► DOC-V05 (Detalle de Estudiante)
+│   └── mensajes ────────────► DOC-V06 (Mensajes)
 │
 └── /admin/ (Layout: AdminAppLayout)
     ├── dashboard ───────────► ADM-V01 (Estado del Sistema)
@@ -44,5 +45,5 @@
 |---|---|---|---|---|
 | `/auth/login` | `COMP-V00` | Iniciar Sesión / Registro | `guest.ts` (si tiene JWT activo, redirige a su rol) | `/estudiante/dashboard` o `/docente/dashboard` |
 | `/estudiante/*` | `EST-V01` a `EST-V06` | Inicio, Lección, Ejercicio, Tutor, Repasos, Mi Progreso | `auth.ts` + `role-student.ts` | `/auth/login` |
-| `/docente/*` | `DOC-V01` a `DOC-V05` | Mis Clases, Contenidos, Crear Ejercicio, Rendimiento, Detalle | `auth.ts` + `role-teacher.ts` | `/auth/login` |
+| `/docente/*` | `DOC-V01` a `DOC-V06` | Mis Clases, Contenidos, Crear Ejercicio, Rendimiento, Detalle, Mensajes | `auth.ts` + `role-teacher.ts` | `/auth/login` |
 | `/admin/*` | `ADM-V01` a `ADM-V03` | Estado del Sistema, Usuarios y Roles, Logs | `auth.ts` + `role-admin.ts` | `/auth/login` |

@@ -16,6 +16,7 @@
 * [x] **Cálculo de Maestría (Mastery Learning):** Algoritmo `calculateUnitMastery()` ponderado por dificultad y estado cognitivo (`EST-V06`).
 * [x] **Repetición Espaciada SM-2:** Programación de fechas de repaso y lista de unidades por vencer (`EST-V05`).
 * [x] **Panel Docente de Cohorte:** Promedio de maestría grupal y ranking de estudiantes (`DOC-V04`).
+* [x] **Mensajería Docente-Estudiante:** Bandeja de entrada, enviados, conversación por usuario y contador de no leídos — 6 endpoints funcionando (`DOC-V06`, recuperada en FASE CC-04, D-02; el backend ya existía y no tenía ventana asignada).
 
 ---
 

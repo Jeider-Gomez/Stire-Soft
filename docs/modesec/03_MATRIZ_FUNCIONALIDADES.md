@@ -29,6 +29,17 @@
 | **Dominio & SM-2**| Ver Mastery por unidad | ✅ (Propio) | ✅ (Cohorte) | ✅ | `GET /learning-progress/student/:id` | `LearningProgress` | `EST-V06`, `DOC-V05` |
 | | Consultar repasos SM-2 | ✅ | ❌ | ❌ | `GET /analytics/student/:id` | `ReviewSchedule` | `EST-V05` |
 | **Tutoría IA** | Chat socrático adaptativo | ✅ | ❌ | ❌ | `POST /tutor/chat` | `TutorConversation` | `EST-V04` |
+| **Mensajería** | Enviar mensaje | ✅ | ✅ | ✅ | `POST /message` | `Message` | `DOC-V06` (docente); sin ventana asignada en estudiante — ver nota |
+| | Ver bandeja de entrada / enviados | ✅ | ✅ | ✅ | `GET /message/inbox`, `GET /message/sent` | `Message` | `DOC-V06` (docente); sin ventana asignada en estudiante — ver nota |
+| | Ver conversación con un usuario | ✅ | ✅ | ✅ | `GET /message/conversation/:userId` | `Message` | `DOC-V06` (docente); sin ventana asignada en estudiante — ver nota |
 | **Analítica** | Dashboard de cohorte y alertas| ❌ | ✅ | ✅ | `GET /analytics/class/:id` | `LearningProgress`, `Enrollment` | `DOC-V04` |
 | | Dashboard de salud global | ❌ | ❌ | ✅ | `GET /maintenance` | `ActivityLog` | `ADM-V01`, `ADM-V03` |
 | **Gobernanza** | Gestión de usuarios y roles | ❌ | ❌ | ✅ | `GET /users`, `PATCH /users/:id` | `User` | `ADM-V02` |
+
+---
+
+> **Nota (FASE CC-04, D-02):** el backend de mensajería (`MessageController`) no restringe por rol
+> — cualquier usuario autenticado puede enviar y leer mensajes. D-02 asignó ventana solo al lado
+> docente (`DOC-V06 · Mensajes`); el lado estudiante no tiene una ventana `EST-V0x` asignada en
+> `NAMING_STIRE.md` todavía. No se inventa una aquí — queda como hallazgo para una decisión de
+> producto futura.
