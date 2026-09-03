@@ -24,7 +24,7 @@
 
 ---
 
-### `EST-V01` · Mi Banco de Trabajo
+### `EST-V01` · Inicio
 * **Componente:** `views/estudiante/DashboardView.vue`
 * **Trigger:** Carga inicial (`onMounted`).
 * **Request 1:** `GET /enrollment/my` (Header: `Authorization: Bearer <token>`)
@@ -61,7 +61,7 @@
 
 ---
 
-### `EST-V04` · Maestro de Taller (Tutor IA)
+### `EST-V04` · Tutor IA
 * **Componente:** `components/tutor/TutorChatDrawer.vue`
 * **Trigger:** Clic en "Enviar" o `Ctrl+Enter`.
 * **Request:** `POST /tutor/chat` `{ message: "¿Por qué mi ciclo no se detiene cuando el arreglo termina?" }`

@@ -26,18 +26,18 @@ $$\text{Evidencia Científica} \longrightarrow \text{Principio STIRE} \longright
 
 ```
 Vistas del Estudiante
-├── COMP-V00 · Ingreso al Taller (Acceso & Registro)
-├── EST-V01 · Mi Banco de Trabajo (Dashboard & Orientación)
+├── COMP-V00 · Iniciar Sesión (Acceso & Registro)
+├── EST-V01 · Inicio (Dashboard & Orientación)
 ├── EST-V02 · Unidad de Aprendizaje (Teoría & Trazados)
 ├── EST-V03 · Resolución de Ejercicio (Editor Monaco & Sandbox Aislado)
-├── EST-V04 · Maestro de Taller (Tutor IA Socrático Adaptativo)
-├── EST-V05 · Mantenimiento del Taller (Repaso Espaciado SM-2)
-└── EST-V06 · Mi Bitácora (Progreso, Maestría & Analítica Personal)
+├── EST-V04 · Tutor IA (Tutor IA Socrático Adaptativo)
+├── EST-V05 · Repasos (Repaso Espaciado SM-2)
+└── EST-V06 · Mi Progreso (Progreso, Maestría & Analítica Personal)
 ```
 
 ---
 
-### 🔑 `COMP-V00` · Ingreso al Taller (Autenticación y Registro)
+### 🔑 `COMP-V00` · Iniciar Sesión (Autenticación y Registro)
 
 #### A. Propósito y Objetivo
 * **Propósito:** Brindar un punto de entrada seguro, ágil y sin fricción al entorno de aprendizaje.
@@ -56,14 +56,14 @@ Vistas del Estudiante
 
 #### D. Estructura de la Pantalla
 * **Contenedor Central (`AuthCard`):**
-  * Cabecera: Isotipo STIRE + Título *"Taller de Algoritmia"*.
+  * Cabecera: Isotipo STIRE + Título *"STIRE — Tutor Inteligente de Algoritmia"*.
   * Selector: Tabs *"Iniciar Sesión"* | *"Crear Cuenta"*.
   * Cuerpo: Inputs con labels flotantes y validación en tiempo real.
-  * Botón de Acción: *"Ingresar al Taller"* con estado de carga integrado.
+  * Botón de Acción: *"Iniciar sesión"* con estado de carga integrado.
   * Pie: Enlace de recuperación de acceso.
 
 #### E. Flujo de Interacción
-1. Estudiante ingresa credenciales $\to$ Clic en *"Ingresar al Taller"*.
+1. Estudiante ingresa credenciales $\to$ Clic en *"Iniciar sesión"*.
 2. Botón entra en estado `loading` (spinner) $\to$ Petición a `POST /auth/login`.
 3. Sistema valida JWT, extrae `role: 'estudiante'` $\to$ Redirige inmediatamente a `EST-V01`.
 4. *Si falla:* Alerta visual roja en línea: *"Correo o contraseña incorrectos"*.
@@ -80,7 +80,7 @@ Vistas del Estudiante
 
 ---
 
-### 🏠 `EST-V01` · Mi Banco de Trabajo (Dashboard & Orientación)
+### 🏠 `EST-V01` · Inicio (Dashboard & Orientación)
 
 #### A. Propósito y Objetivo
 * **Propósito:** Actuar como brújula de orientación diaria del estudiante, eliminando la sobrecarga cognitiva al iniciar sesión.
@@ -93,7 +93,7 @@ Vistas del Estudiante
 #### C. Experiencia del Usuario
 * **Pregunta Principal:** *“¿Qué debería estudiar o practicar hoy?”*
 * **Acción Principal:** `[Continuar Unidad Recomendada]` (Tarjeta de Acción Rápida).
-* **Acciones Secundarias:** `[Iniciar Repasos de Hoy]`, `[Unirse a Clase con Código]`, `[Ver Bitácora]`.
+* **Acciones Secundarias:** `[Iniciar Repasos de Hoy]`, `[Unirse a Clase con Código]`, `[Ver Mi Progreso]`.
 * **Sensación Buscada:** **Orientación, claridad y sensación de progreso continuo.**
 
 #### D. Jerarquía de Información
@@ -102,7 +102,7 @@ Vistas del Estudiante
   2. Tarjeta principal *"Continuar donde ibas"* (Unidad activa + % avance + botón directo).
   3. Badge / Alerta de Repasos SM-2 pendientes para hoy.
 * **Prioridad 2 (Importante):** Grid de asignaturas/clases matriculadas (Nombre, docente, código, botón de acceso).
-* **Prioridad 3 (Secundaria):** Resumen global de maestría promedio (% Mastery) y accesos a bitácora.
+* **Prioridad 3 (Secundaria):** Resumen global de maestría promedio (% Mastery) y accesos a Mi Progreso.
 
 #### E. Estructura de la Pantalla
 * **Zona Superior (Header Persistente):** Saludo, racha de días activos, barra compacta de maestría global, botón de perfil.
@@ -261,7 +261,7 @@ Vistas del Estudiante
 
 ---
 
-### 🤖 `EST-V04` · Maestro de Taller (Tutor IA Socrático Adaptativo)
+### 🤖 `EST-V04` · Tutor IA (Tutor IA Socrático Adaptativo)
 
 #### A. Propósito y Objetivo
 * **Propósito:** Proveer andamiaje cognitivo personalizado en el momento exacto del bloqueo, guiando al alumno sin darle el código resuelto.
@@ -284,7 +284,7 @@ Vistas del Estudiante
 
 #### E. Estructura de la Pantalla (Drawer Lateral Deslizable)
 * **Formato:** Panel lateral superpuesto (Drawer) de 400px de ancho que no oculta el editor de código.
-* **Cabecera del Drawer:** Avatar del Maestro de Taller + Badge de Nivel Cognitivo + Botón de cerrar `[✕]`.
+* **Cabecera del Drawer:** Avatar del Tutor IA + Badge de Nivel Cognitivo + Botón de cerrar `[✕]`.
 * **Cuerpo (Timeline de Mensajes):**
   * Mensaje de bienvenida contextual: *"Veo que estás trabajando en Ciclos While. ¿En qué parte de tu lógica sientes que hay dudas?"*.
   * Burbujas de chat con soporte para fragmentos cortos de código o pseudocódigo orientador.
@@ -296,7 +296,7 @@ Vistas del Estudiante
 1. Estudiante hace clic en *"Consultar al Tutor"* en `EST-V02` o `EST-V03`.
 2. El Drawer se desliza suavemente desde la derecha sin recargar la página.
 3. Estudiante formula su duda (opcionalmente adjunta su código) $\to$ Clic en Enviar.
-4. La interfaz muestra animación de digitación *"El Maestro de Taller está analizando tu lógica..."*.
+4. La interfaz muestra animación de digitación *"El Tutor IA está analizando tu lógica..."*.
 5. `POST /tutor/chat` retorna la respuesta socrática $\to$ El estudiante reflexiona y prueba en su editor.
 
 #### G. Estados Relevantes
@@ -315,7 +315,7 @@ Vistas del Estudiante
 
 ---
 
-### ⏰ `EST-V05` · Mantenimiento del Taller (Repaso Espaciado SM-2)
+### ⏰ `EST-V05` · Repasos (Repaso Espaciado SM-2)
 
 #### A. Propósito y Objetivo
 * **Propósito:** Combatir activamente la curva del olvido de Ebbinghaus mediante la recuperación programada matemáticamente de conceptos previos.
@@ -337,7 +337,7 @@ Vistas del Estudiante
 * **Prioridad 3 (Secundaria):** Gráfico de retención estimada y contador de repasos completados en la semana.
 
 #### E. Estructura de la Pantalla
-* **Cabecera:** Título *"Mantenimiento del Taller"* + Indicador general *"X temas requieren repaso hoy"*.
+* **Cabecera:** Título *"Repasos"* + Indicador general *"X temas requieren repaso hoy"*.
 * **Panel de Lista de Repasos:**
   * Tarjetas de Unidad con:
     * Nombre del concepto (ej. *"Recursión en Árboles"*).
@@ -368,7 +368,7 @@ Vistas del Estudiante
 
 ---
 
-### 📊 `EST-V06` · Mi Bitácora (Progreso, Maestría & Analítica)
+### 📊 `EST-V06` · Mi Progreso (Progreso, Maestría & Analítica)
 
 #### A. Propósito y Objetivo
 * **Propósito:** Ofrecer un espejo analítico de autorregulación del aprendizaje, mostrando la evolución objetiva del dominio conceptual.

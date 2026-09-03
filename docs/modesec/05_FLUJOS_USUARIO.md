@@ -21,7 +21,7 @@ sequenceDiagram
     E->>UI: Ingresa a STIRE y se autentica
     UI->>API: POST /auth/login
     API-->>UI: Retorna JWT Token + Rol (estudiante)
-    UI->>E: Renderiza EST-V01 (Mi banco de trabajo)
+    UI->>E: Renderiza EST-V01 (Inicio)
 
     opt Matrícula en Clase
         E->>UI: Ingresa código de clase en EST-V01
@@ -61,7 +61,7 @@ sequenceDiagram
     UI->>E: Muestra veredicto y actualiza Mastery Bar
 
     opt Repaso Espaciado
-        E->>UI: Abre EST-V05 (Mantenimiento de algoritmos)
+        E->>UI: Abre EST-V05 (Repasos)
         UI->>API: GET /analytics/student/:id
         API-->>UI: Lista de unidades urgentes por vencer
         UI->>E: Inicia sesión de consolidación SM-2
