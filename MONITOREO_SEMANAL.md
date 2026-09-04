@@ -3,7 +3,7 @@
 **Repositorio GitHub:** https://github.com/Jeider-Gomez/Stire-Soft
 **Semana reportada:** 31 de agosto – 4 de septiembre de 2026 | **Cierre:** viernes 4 de septiembre, 8:00 p.m.
 **Estado del sprint:** Reestructuración de MODESEC por roles · decisión de Vue 3 + Nuxt · cierre progresivo del backend · definición del sandbox · nueva base frontend · Trello operativo.
-**Tablero Kanban (Trello):** `[https://trello.com/b/Zek3mVEX]`
+**Tablero Kanban (Trello):** `https://trello.com/b/Zek3mVEX`
 
 *STIRE-Soft es un Sistema Tutor Inteligente para la Resolución de Ejercicios: el estudiante entrega código, el sistema lo ejecuta de forma aislada, lo califica y adapta los siguientes ejercicios a su nivel de dominio.*
 
