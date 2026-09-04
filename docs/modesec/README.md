@@ -1,6 +1,6 @@
 ---
 estado:     vigente
-verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+verificado: 2026-09-04 contra commit HEAD (FASE CC-06)
 fuente:     normativo (índice)
 codigos:    no aplica (índice)
 ---
@@ -12,6 +12,11 @@ Carpeta de trabajo del modelo **MODESEC-ISO/IEC 12207** aplicado al proyecto **S
 
 **Curso:** DDSE3 2026-2 · Universidad de Córdoba · Docente: Dr. Raúl Emiro Toscano Miranda
 **Norma de la asignatura:** presentación `DDS3-01.pdf` §3 · **Fuente base:** Caro, Toscano, Hernández y David (2012), *MODESEC*.
+
+**Archivo Figma (FASE CC-06):** `STIRE-Soft — Sistema Visual` · fileKey `1MjKiDrjU65ezO3ztO0v4m` ·
+<https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m> — fundaciones (Color/Tipo/Espacio/Radio/Borde/Icono),
+12 iconos D-01, componente `Ventana Estándar` (variante `Rol=Estudiante` diseñada; Docente/Admin
+placeholder para CC-07/CC-08), y `COMP-V00` + `EST-V01..V06` en 4 estados cada una.
 
 ---
 

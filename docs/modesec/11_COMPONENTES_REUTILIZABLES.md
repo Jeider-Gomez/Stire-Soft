@@ -1,6 +1,6 @@
 ---
 estado:     vigente
-verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+verificado: 2026-09-04 contra commit HEAD (FASE CC-06)
 fuente:     normativo
 codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 ---
@@ -74,3 +74,25 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 ### `ErrorAlert.vue`
 * **Props:** `title: string`, `message: string`, `retryable?: boolean`.
 * **Eventos:** `@retry`.
+
+---
+
+## 6. Componentes construidos en Figma (FASE CC-06) — mapeo a nombre Vue
+
+**Archivo Figma:** `STIRE-Soft — Sistema Visual` (fileKey `1MjKiDrjU65ezO3ztO0v4m`). Todos enlazados a
+variables (`Color`, `Tipo`, `Espacio`, `Radio`, `Borde`, `Icono`) — cero valores literales.
+
+| Nombre en Figma | Nombre Vue (Pascal Case) | Notas |
+|---|---|---|
+| `Ventana Estándar` (component set, variante `Rol`) | `VentanaEstandar.vue` | Formato 12. Solo la variante `Rol=Estudiante` está diseñada en CC-06; `Rol=Docente` y `Rol=Administrador` son placeholders reservados para CC-07/CC-08. Zonas A/B/D/E como slots fijos, `[C]` como `<slot name="contenido" />`. |
+| `icono/inicio`, `icono/tutor_ia`, `icono/repasos`, `icono/progreso`, `icono/casos_prueba`, `icono/dominio`, `icono/ejercicio`, `icono/unidad_bloqueada`, `icono/probar_codigo`, `icono/entregar`, `icono/pedir_pista`, `icono/cerrar_sesion` | `IconoInicio.vue`, `IconoTutorIa.vue`, `IconoRepasos.vue`, `IconoProgreso.vue`, `IconoCasosPrueba.vue`, `IconoDominio.vue`, `IconoEjercicio.vue`, `IconoUnidadBloqueada.vue`, `IconoProbarCodigo.vue`, `IconoEntregar.vue`, `IconoPedirPista.vue`, `IconoCerrarSesion.vue` | 12 iconos de función (D-01), stroke enlazado a `color/acento/ambar`, tamaño a `icono/tamano/*`. Nombres de FUNCIÓN, no de metáfora. |
+| Tarjeta de módulo en `[B] Menú` (fila `menu-item-*`) | `MenuModuloItem.vue` | Prop `estado: 'dominado' \| 'en-progreso' \| 'por-iniciar' \| 'bloqueado'` enlazada a `color/estado-unidad/*`. Al hacer clic abre el flyout de unidades (no navega directo) — ver `contenidos/3.3.3_MAPA_NAVEGACION.md` filas 23-25. |
+| Flyout de unidades del Menú (diseñado como patrón, no como frame propio en CC-06) | `MenuModuloFlyout.vue` | Resuelve el hallazgo 7±2 de CC-04: el Menú nunca crece más allá de 6 ítems persistentes. **Pendiente de maquetarse como frame en CC-07/CC-08** — aquí solo queda definido el comportamiento. |
+| Tarjeta de repaso urgencia (forma + color + etiqueta) | `RepasoUrgenciaCard.vue` | Prop `urgencia: 'al-dia' \| 'manana' \| 'vencido' \| 'critico'`, enlazada a `color/urgencia-repaso/*`. Reemplaza/extiende `SpacedRepetitionCard.vue` de la sección 2 con los 4 niveles reales en vez de 3. |
+| Modal del Tutor IA (`EST-V04`) | `TutorModal.vue` | Overlay sobre la ventana activa, `layoutPositioning: ABSOLUTE` en Figma — en Vue, modal con `<Teleport>` y foco atrapado. Cierra conservando el código (no navega). |
+| Botón primario/secundario/terciario (`btn-*`) | `AppButton.vue` | Prop `variant: 'primaria' \| 'secundaria' \| 'terciaria'`. Regla: nunca más de una `primaria` visible por vista — ver §4 de `ventanas/3.3_VENTANA_ESTANDAR.md`. |
+| Tarjeta base (`card`) | `AppCard.vue` | Contenedor blanco con borde sutil y radio `radio/md`, usado en todas las vistas para agrupar contenido dentro de `[C]`. |
+
+**No exportado como componente Figma en esta fase** (documentado como patrón, no como frame): flyout
+de módulo (ver fila de arriba) y las variantes Docente/Administrador de `VentanaEstandar.vue` —
+ambos son trabajo explícito de CC-07/CC-08, no de esta fase.
