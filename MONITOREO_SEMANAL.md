@@ -13,7 +13,7 @@
 
 | Integrante | Rol Principal y Responsabilidades del Sprint | Horario de Reunión Individual | GitHub User |
 | :--- | :--- | :--- | :--- |
-| **Jeider Gómez** | **Líder Técnico & Backend:** Arquitectura, cierre backend, Tutor IA, Sandbox y setup Nuxt | *[por completar]* | @Jeider-Gomez |
+| **Jeider Gómez** | **Líder Técnico & Backend:** Arquitectura, cierre backend, Tutor IA, Sandbox y setup Nuxt | *[Miércoles 4 a 6 pm]* | @Jeider-Gomez |
 | **Jorge Cervantes** | **Gestión & Calidad:** Tablero Trello, QA de entregables e Investigación (15 artículos) | *[por completar]* | @*[por completar]* |
 | **José López** | **UI/UX & Comunicación:** Diseño visual, wireframes de vistas y Pitch de avances | *[Miércoles 2 a 4 pm]* | @JoseTheGoat90 |
 | **Julio Galvis** | **Diseño Instruccional:** MODESEC multi-rol, flujos pedagógicos y navegación | *[por completar]* | @*[por completar]* |
