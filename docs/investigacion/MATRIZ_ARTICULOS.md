@@ -43,7 +43,7 @@ La regla de CC-02 ("sin DOI no entra") era incorrecta y quedó reemplazada por e
 
 ---
 
-## 🏗️ EJE 2: Arquitectura de Software (6 obras verificadas)
+## 🏗️ EJE 2: Arquitectura de Software (8 obras verificadas)
 *Búsqueda reformulada en CC-03: no se busca literatura sobre "Vue vs React" (no existe), sino sobre la CLASE de sistema que STIRE es — un sistema de evaluación automática de código con sandbox seguro.*
 
 | # | Título | Autores y Año | Fuente | Registro verificado | Nivel de Evidencia | Decisión STIRE que fundamenta |
@@ -54,8 +54,31 @@ La regla de CC-02 ("sin DOI no entra") era incorrecta y quedó reemplazada por e
 | 10 | *A Survey of Automated Assessment Approaches for Programming Assignments* | Ala-Mutka, K. M. (2005) | Computer Science Education, 15(2), 83-102 | DOI [10.1080/08993400500150747](https://doi.org/10.1080/08993400500150747) | 🟢 EVIDENCIA DIRECTA (revisión) | Survey fundacional del campo; respalda el desacoplamiento entre entrega, ejecución y calificación. |
 | 11 | *Automatic test-based assessment of programming* | Douce, C.; Livingstone, D.; Orwell, J. (2005) | Journal on Educational Resources in Computing, 5(3), Art. 4 | DOI [10.1145/1163405.1163409](https://doi.org/10.1145/1163405.1163409) | 🟢 EVIDENCIA DIRECTA (revisión) | Respalda la evaluación por casos de prueba público/privados (`EST-V03`, `DOC-V03`). |
 | 12 | *Automated Assessment in Computer Science Education: A State-of-the-Art Review* | Paiva, J. C.; Leal, J. P.; Figueira, Á. (2022) | ACM Transactions on Computing Education, 22(3), 1-40 | DOI [10.1145/3513140](https://doi.org/10.1145/3513140) | 🟢 EVIDENCIA DIRECTA (revisión sistemática) | Revisión más reciente y completa del campo; respalda la clase de sistema STIRE de punta a punta. |
+| 25 | *To Type or Not to Type: Quantifying Detectable Bugs in JavaScript* | Gao, Z.; Bird, C.; Barr, E. T. (2017) | Proc. IEEE/ACM 39th ICSE | DOI [10.1109/icse.2017.75](https://doi.org/10.1109/icse.2017.75) | 🟢 EVIDENCIA DIRECTA | Tipado estático (TypeScript) detecta ~15% de los bugs públicos reportados en proyectos JavaScript antes de producción; fundamenta la elección de TypeScript en el backend NestJS y en el frontend Nuxt. |
+| 26 | *Maintainability Analysis of Component-Based Software Architecture* | Upadhyay, N. (2019) | Advances in Intelligent Systems and Computing | DOI [10.1007/978-981-10-8848-3_37](https://doi.org/10.1007/978-981-10-8848-3_37) | 🟡 EVIDENCIA CONTEXTUAL | Sobre la *propiedad* de bajo acoplamiento/alta cohesión que una arquitectura por componentes favorece — no es un estudio sobre Vue específicamente, sino sobre la propiedad arquitectónica que Vue (y cualquier framework por componentes) implementa. |
 
-**Nota:** las decisiones de stack específicas de STIRE (Vue 3/Nuxt, NestJS modular, sanitización dual RICH/PLAIN, colas de eventos `submission.graded`) **no tienen** literatura académica indexada que las respalde directamente — son ingeniería de software estándar, no fenómenos estudiados. La literatura de este eje respalda la *clase* de sistema (evaluación automática de código con sandbox), no la elección de framework. Ver sección de decisiones sin respaldo.
+### Nuxt/Vue 3 — la entrada reformulada en tres capas (FASE CC-04, Paso 9)
+
+La entrada original de este eje afirmaba "Vue 3/Nuxt... EVIDENCIA CONTEXTUAL" sin distinguir qué
+parte de la decisión tiene respaldo científico real y cuál es, simplemente, un requisito que hay
+que cumplir. Se separa en tres capas, cada una con su propia clasificación:
+
+| Capa de la decisión | Clasificación | Fundamento |
+|---|---|---|
+| **a) Nuxt/Vue 3 como framework específico** | 🔵 **REQUISITO INSTITUCIONAL** — no es evidencia científica | La Guía de Semana 03 (`docs/investigacion/fuentes-institucionales/Guia_Estudiante_semana_03.docx`, §4) **prescribe** Nuxt/Vue 3 explícitamente: *"Iniciar el desarrollo frontend en Nuxt (Vue 3) aprovechando las herramientas de Google Antigravity."* Se cumple porque el docente lo exige, se cita como fuente institucional (igual que MOCAVI o el Plan de Curso), **no** como si la literatura hubiera comparado Vue contra alternativas y Vue hubiera ganado. |
+| **b) TypeScript** | 🟢 **EVIDENCIA DIRECTA** (obra #25 arriba) | Gao, Bird & Barr (2017) cuantifican empíricamente que el tipado estático detecta una fracción real de bugs de producción en JavaScript antes de que ocurran — esto sí es una propiedad medida, no una preferencia. |
+| **c) Arquitectura por componentes** | 🟡 **EVIDENCIA CONTEXTUAL** (obra #26 arriba) | La literatura sobre modularidad, acoplamiento y cohesión (Upadhyay, 2019) respalda la *propiedad* de mantenibilidad que un diseño por componentes favorece — pero es evidencia sobre la propiedad arquitectónica, no sobre Vue como implementación particular de esa propiedad. |
+
+**Se declara explícitamente:** la comparación específica "Vue vs. React" **no tiene** respaldo
+empírico concluyente en la literatura revisada en ninguna fase de este proyecto (CC-02, CC-03,
+CC-04) — por eso no se afirma. Ninguna obra de esta matriz compara frameworks de UI entre sí.
+
+**Nota general del eje:** las decisiones de stack restantes (NestJS modular, sanitización dual
+RICH/PLAIN, colas de eventos `submission.graded`) siguen **sin** literatura académica indexada que
+las respalde directamente — son ingeniería de software estándar, no fenómenos estudiados. La
+literatura de este eje respalda la *clase* de sistema (evaluación automática de código con
+sandbox) y, ahora, dos propiedades técnicas puntuales (tipado estático, modularidad) — no la
+elección de framework en sí. Ver sección de decisiones sin respaldo.
 
 ---
 
@@ -105,7 +128,8 @@ La regla de CC-02 ("sin DOI no entra") era incorrecta y quedó reemplazada por e
 | Umbral numérico exacto del 70% de dominio | Bloom (1968) respalda el marco de *mastery learning* por etapas, ningún estudio fija un porcentaje específico | 🔵 **HIPÓTESIS A VALIDAR** |
 | Estructura de exactamente 3 niveles de andamiaje del Tutor IA | Koedinger & Aleven (2007) respaldan el *assistance dilemma* como fenómeno, no una cantidad de niveles | 🟡 **PROPUESTA STIRE** |
 | Implementación del tutor socrático mediante un LLM específico | Sin literatura peer-reviewed encontrada sobre diálogo socrático generado por LLM en este dominio; la cita original ("Chen et al., 2023") era fabricada | 🔵 **DECISIÓN STIRE** |
-| Vue 3 + Nuxt, NestJS modular, sanitización dual, colas de eventos | Sin literatura académica indexada específica — la Guía de Semana 03 pide justificar "por qué Nuxt/Vue 3" explícitamente; ver **CONTRADICCIÓN** en el reporte de cierre de CC-03 | 🔵 **DECISIÓN STIRE** (ingeniería estándar) |
+| Nuxt/Vue 3 como framework específico | Resuelto en FASE CC-04, Paso 9: la Guía de Semana 03 lo **prescribe** explícitamente — se cita como requisito institucional, no como hallazgo científico. Ver desglose en tres capas al final del Eje 2 arriba. | 🔵 **REQUISITO INSTITUCIONAL** (ya no es una contradicción abierta) |
+| NestJS modular, sanitización dual, colas de eventos | Sin literatura académica indexada específica — ingeniería de software estándar | 🔵 **DECISIÓN STIRE** |
 
 ---
 
@@ -192,6 +216,12 @@ cualquier visor, incluidos los que no renderizan Markdown.
 26. W3C (2018). Web Content Accessibility Guidelines (WCAG) 2.1. W3C Recommendation, 05 June 2018.
     https://www.w3.org/TR/WCAG21/
 
+27. Gao, Z.; Bird, C.; Barr, E. T. (2017). To Type or Not to Type: Quantifying Detectable Bugs in JavaScript. Proc. IEEE/ACM 39th International Conference on Software Engineering (ICSE).
+    https://doi.org/10.1109/icse.2017.75
+
+28. Upadhyay, N. (2019). Maintainability Analysis of Component-Based Software Architecture. Advances in Intelligent Systems and Computing.
+    https://doi.org/10.1007/978-981-10-8848-3_37
+
 ---
 
 ## Apéndice: Registro de Verificación
@@ -218,7 +248,10 @@ cualquier visor, incluidos los que no renderizan Markdown.
 
 **Resultado: 15 de 15 fabricados** (11 inexistentes, 4 con DOI real de otra obra). Detectado 2026-09-03.
 
-### Las 24 obras reconstruidas — todas verificadas contra Crossref, ERIC u OpenLibrary
+### Las 26 obras reconstruidas — todas verificadas contra Crossref, ERIC u OpenLibrary
+
+(24 de FASE CC-03 + 2 agregadas en FASE CC-04, Paso 9: Gao et al. 2017 y Upadhyay 2019, para
+fundamentar TypeScript y arquitectura por componentes respectivamente — ver Eje 2 arriba.)
 
 Ver registros enlazados en las tablas de cada eje y en la sección de fuentes institucionales arriba. Cada una fue comprobada individualmente y contrastada manualmente contra lo escrito en este documento antes de incluirla.
 
