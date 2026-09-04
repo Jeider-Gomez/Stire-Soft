@@ -1,5 +1,17 @@
 # 🗺️ Insumo 09 — Mapa Completo de Navegación y Sitemap Nuxt
 
+---
+estado:     derivado
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     derivado de contenidos/3.3.3_MAPA_NAVEGACION.md (el Gráfico 2 normativo)
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
+> **Este documento es DERIVADO — traduce el mapa de navegación normativo a rutas concretas de
+> Nuxt.** No manda sobre [`contenidos/3.3.3_MAPA_NAVEGACION.md`](contenidos/3.3.3_MAPA_NAVEGACION.md)
+> (el Gráfico 2 de MODESEC): si hay una diferencia entre ambos, ese es el que decide y este se
+> actualiza para igualarlo, nunca al revés.
+
 > **Proyecto:** STIRE-Soft Frontend (Vue 3 + Nuxt 3)  
 > **Nomenclatura Oficial:** Estandarizada según [NAMING_STIRE.md](./NAMING_STIRE.md)  
 > **Fecha de Actualización:** 2 de septiembre de 2026 | **Versión:** 2.0 Multi-Rol
