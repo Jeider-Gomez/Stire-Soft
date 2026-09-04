@@ -23,6 +23,12 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 **Proyecto:** STIRE-Soft · **Curso:** DDSE3 2026-2 · **Norma:** `DDS3-01.pdf` §3.1 · MODESEC §3.1
 **Dueño:** Julio · **Estado:** ✅ completo · **Última actualización:** 2026-08-28
 
+> ⚠️ **NOTA DE ALCANCE (D-04, FASE CC-04):** este diagrama queda **pendiente de rederivarse desde
+> `COMP-203413` en FASE CC-05**. La rederivación de §3.1 fue explícitamente sacada de alcance de
+> FASE CC-04 (documento normativo D-04) — **no se reescribe su contenido en esta fase**, solo se le
+> agrega la cabecera de estado de Paso 10. El contenido debajo de esta nota es el que existía antes
+> de CC-04 y se mantiene sin cambios hasta que CC-05 lo rederive.
+
 ---
 
 ## 1. Representación elegida y por qué
@@ -595,7 +601,12 @@ que **no existe** en `src/` — corregido en el Paso 5 de esta fase.
 
 ## ⚙️ PARTE 3: VISTAS DEL ADMINISTRADOR (Supervisión y Gobernanza)
 
-### Ficha ADM-V01 · Panel de Control de la Plataforma
+### Ficha ADM-V01 · Panel de Control de la Plataforma — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03)
+
+> No existe endpoint de consulta de estado/métricas del sistema; el único endpoint real de
+> `MaintenanceController` es `POST /maintenance/cleanup` (una acción, no una consulta). Las filas
+> "Monitorear estado del sistema" y "Auditar logs de seguridad" son especificación de diseño para
+> cuando se construya ese backend — no se implementan en esta fase (D-03).
 
 | # | Categoría | Descripción |
 |---|---|---|
@@ -605,7 +616,7 @@ que **no existe** en `src/` — corregido en el Paso 5 de esta fase.
 | 4 | **Audio** | **No aplica.** Supervisión operativa. |
 | 5 | **Video** | **No aplica.** |
 | 6 | **Animación** | Actualización de contadores de carga de servidor en tiempo real. |
-| 7 | **Acciones** | Monitorear estado del sistema · Acceder a administración de usuarios · Auditar logs de seguridad. |
+| 7 | **Acciones** | ⚠️ PROPUESTO — NO IMPLEMENTADO: Monitorear estado del sistema · Acceder a administración de usuarios · Auditar logs de seguridad. |
 
 ### Ficha ADM-V02 · Gestión Global de Usuarios y Roles
 
@@ -619,7 +630,11 @@ que **no existe** en `src/` — corregido en el Paso 5 de esta fase.
 | 6 | **Animación** | Modal de confirmación con animación de advertencia al suspender cuentas o modificar roles privilegiados. |
 | 7 | **Acciones** | Listar usuarios `[GET /users]` · Crear cuenta `[POST /users]` · Modificar rol `[PATCH /users/:id/role]` · Desactivar usuario `[DELETE /users/:id]`. |
 
-### Ficha ADM-V03 · Supervisión y Parámetros del Sistema
+### Ficha ADM-V03 · Supervisión y Parámetros del Sistema — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03)
+
+> "Visualizar configuración de umbrales" no tiene endpoint: no existe consulta de parámetros del
+> sistema, solo constantes fijadas en código. `[GET /learning-unit/all]` sí es real (docente/admin)
+> y se conserva sin marcar; el resto de la ficha es especificación de diseño (D-03).
 
 | # | Categoría | Descripción |
 |---|---|---|
@@ -629,7 +644,7 @@ que **no existe** en `src/` — corregido en el Paso 5 de esta fase.
 | 4 | **Audio** | **No aplica.** Configuración de plataforma. |
 | 5 | **Video** | **No aplica.** |
 | 6 | **Animación** | Indicador de guardado persistente al actualizar variables del entorno. |
-| 7 | **Acciones** | Visualizar configuración de umbrales · Auditar integridad de unidades de aprendizaje `[GET /learning-unit/all]`. |
+| 7 | **Acciones** | ⚠️ PROPUESTO — NO IMPLEMENTADO: Visualizar configuración de umbrales · Auditar integridad de unidades de aprendizaje `[GET /learning-unit/all]`. |
 
 ---
 
@@ -759,6 +774,10 @@ renombrado y se regenerará en CC-06/CC-08 desde Figma (ver Paso 10, estado `der
 **Norma:** MODESEC §3.3.3 · **Gráfico 2** (Esquema de navegación) · `DDS3-01.pdf` §3.3.3  
 **Autores:** Julio Galvis (Diseño Instruccional), José López (UI/UX), Jeider Gómez (Líder Técnico)  
 **Estado:** ⚠️ Códigos de Docente unificados según D-02 (FASE CC-04); DOC-V03 y DOC-V04 pendientes de ventana · **Última actualización:** 2026-09-03
+
+> **Este documento es el NORMATIVO (Gráfico 2 de MODESEC, FASE CC-04, Paso 7).** Cualquier
+> diferencia con [`09_MAPA_NAVEGACION.md`](../09_MAPA_NAVEGACION.md) (la traducción a rutas Nuxt,
+> que es derivada) se resuelve a favor de este documento — 09 no manda sobre este.
 
 > **Propósito MODESEC:** El mapa de navegación define formalmente las rutas de transición entre pantallas, los disparadores de interacción y la reversibilidad de cada cambio de estado, garantizando que no existan ventanas huérfanas ni caminos ciegos en la plataforma.
 
