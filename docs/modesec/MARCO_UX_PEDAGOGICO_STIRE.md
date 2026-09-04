@@ -118,6 +118,82 @@ Para garantizar rigor académico y claridad en el desarrollo, toda decisión de 
 
 ---
 
+## 2.5 Fundamentación de Ingeniería de Interfaces (FASE CC-04, Paso 8)
+
+Requisito explícito de la Guía de Semana 03, sin cubrir hasta esta fase: "Pressman", "Mandel",
+"reglas de oro" y "3 clics" no aparecían en `docs/` antes de FASE CC-04.
+
+### Las Tres Reglas de Oro de Theo Mandel
+
+Fuente: **Mandel, T. (1997). *The Elements of User Interface Design*. Wiley** (ISBN
+`9780471162674`, verificada en `docs/investigacion/MATRIZ_ARTICULOS.md` #22), citadas
+explícitamente por **Pressman, R. S. & Maxim, B. R. (2020). *Software Engineering: A
+Practitioner's Approach*, 9.ª ed., cap. 12 — User Experience Design** (ISBN `9781259872976`,
+`MATRIZ_ARTICULOS.md` #23).
+
+| Regla de Oro (Mandel) | Qué exige | Decisión concreta de la ventana estándar que la materializa |
+|---|---|---|
+| **1. Dar el control al usuario** (*Place the user in control*) | El usuario nunca queda atrapado; puede deshacer, cancelar y navegar libremente. | El Menú [B] es siempre visible y clicable — ninguna ventana bloquea la navegación. El Tutor IA (`EST-V04`) es un Drawer modal que se cierra sin perder el código (P09, `MARCO_UX §P09`). `[▶ Probar Código]` nunca consume un intento: el estudiante controla cuándo arriesga su intento real. |
+| **2. Reducir la carga de memoria** (*Reduce the user's memory load*) | La interfaz no exige recordar lo que no está en pantalla. | El Header [A] muestra siempre la ruta *Módulo › Tema › Unidad*, la barra de dominio y el contador de repasos — el estudiante nunca tiene que recordar dónde está. El `easeFactor` de SM-2 permanece **oculto** (`NAMING_STIRE.md §6`) precisamente porque es un dato que el usuario no necesita retener. |
+| **3. Mantener la consistencia** (*Make the interface consistent*) | Misma paleta, tipografía, estilo de botones y respuestas en todo el sistema. | Las cinco secciones (Header, Menú, Contenido, Acciones, Footer) son estructuralmente **invariantes** entre las 16 ventanas — solo cambia la zona de Contenido [C] (`ventanas/3.3_VENTANA_ESTANDAR.md §1`). Las acciones repetidas (`Entregar`, `Probar código`, `Pedir pista`) usan siempre el mismo verbo y el mismo ícono en cualquier ventana donde aparecen. |
+
+### Auditoría: regla de los 3 clics
+
+**Método:** se cuenta la ruta más larga desde `EST-V01` (Inicio) hasta contenido formativo
+(`EST-V02` Lección o `EST-V03` Ejercicio), usando la tabla de transiciones normativa de
+[`contenidos/3.3.3_MAPA_NAVEGACION.md`](contenidos/3.3.3_MAPA_NAVEGACION.md).
+
+- **Ruta recomendada** (la unidad/ejercicio que el sistema sugiere en la tarjeta *"Continuar donde
+  ibas"*): `EST-V01 → EST-V02`/`EST-V03` = **1 clic**. Cumple con margen.
+
+- **🔴 Hallazgo — no declarado antes de esta fase:** no existe, en ninguno de los documentos de
+  ventanas (`ventanas/3.3.1_FICHAS_VENTANAS.md`, `usuarios/estudiante/README.md`), una pantalla o
+  mecanismo para que el estudiante **navegue a una unidad distinta de la recomendada**. El Menú
+  [B] de la ventana estándar muestra el árbol de Módulos/Temas (`M1`, `M2`, `M3`...) con estados
+  (✔/◐/🔒), lo que sugiere que sí se puede hacer clic en un tema del árbol para abrir su unidad —
+  pero esa transición **no está en la tabla de transiciones normativa** (§2 de
+  `3.3.3_MAPA_NAVEGACION.md` no tiene ninguna fila `EST-V01 → EST-V02` disparada por "clic en tema
+  del árbol de Menú", solo por "clic en unidad desbloqueada" desde la tarjeta de la ventana). Si
+  esa transición existe en la intención de diseño (parece evidente que sí, dado que el árbol de
+  Menú lista todos los temas con su estado), sería también **1 clic** — pero como documento no lo
+  registra explícitamente, no se puede auditar "cumple" con evidencia, solo declarar el vacío.
+  **No se corrige el diseño para que la auditoría "pase":** se dice tal como está.
+
+**Conclusión:** la ruta feliz cumple la regla de los 3 clics con margen amplio (1 de 3). La
+cobertura documental de la navegación por el árbol de Menú tiene un vacío que se recomienda cerrar
+en CC-06 (mockups Figma), agregando la transición explícita a la tabla normativa.
+
+### Auditoría: 7±2 elementos por zona
+
+**Método:** se cuentan los elementos listados explícitamente para cada zona en
+`ventanas/3.3_VENTANA_ESTANDAR.md` (Formato 12, tabla de la sección 3, y maqueta en texto de la
+sección 2).
+
+| Zona | Elementos contados (rol Estudiante) | Cantidad | ¿Dentro de 7±2 (5-9)? |
+|---|---|---|---|
+| **[A] Header** | Marca · Ruta *Módulo › Tema › Unidad* · Barra de Mastery · Contador de repasos · Perfil | 5 | ✅ Sí |
+| **[B] Menú (colapsado, 1 nivel)** | Inicio · M1 Fundamentos · M2 Control · M3 Datos · Repaso de hoy · Mi Progreso | 6 | ✅ Sí |
+| **[B] Menú (con 2 módulos expandidos, como en la maqueta de texto)** | Inicio · M1 · 1.1 Algoritmo · M2 · 2.3 Ciclos · 2.4 Acumular · M3 · Repaso de hoy · Mi Progreso | 9 | ⚠️ **Al límite superior** — ver hallazgo abajo |
+| **[C] Contenido** | Bloque de título/unidad · Panel auxiliar contextual | 2 | ✅ Sí |
+| **[D] Acciones** | `[▶ Ejecutar]` · `[✔ Entregar]` · `[⚑ Pedir pista]` · `[⟲ Reiniciar]` | 4 | ✅ Sí |
+| **[E] Footer** | Versión · Estado de Autoguardado · Accesibilidad · Créditos | 4 | ✅ Sí |
+
+**🔴 Hallazgo:** la maqueta en texto (§2 de `ventanas/3.3_VENTANA_ESTANDAR.md`) muestra el Menú
+[B] con **dos módulos simultáneamente expandidos** (▾ M1, ▾ M2) más uno colapsado (▸ M3),
+alcanzando **9 elementos visibles** — el límite superior exacto de 7±2. Ningún documento
+especifica si el patrón de expansión es **acordeón** (expandir un módulo colapsa los demás,
+manteniendo el conteo bajo) o **multi-expansión libre** (el estudiante puede abrir todos los
+módulos a la vez). Con 4 o más módulos en un curso real (`13_BACKLOG_FUNCIONAL.md` no fija un
+máximo de módulos por clase), la multi-expansión libre **rompería 7±2 con facilidad**. No se
+ajusta el diseño aquí — se declara **NO VERIFICADO**, pendiente de que CC-06 defina el patrón de
+interacción del árbol de Menú.
+
+**Conclusión:** 5 de 6 zonas cumplen 7±2 con margen. La zona de Menú cumple en el estado mostrado
+por la maqueta (9, límite exacto) pero el comportamiento de expansión no está especificado, por lo
+que el cumplimiento con cursos de muchos módulos no está garantizado por el diseño actual.
+
+---
+
 ## 3. Matriz de Decisiones y Grado de Confianza
 
 | ID | Decisión de Diseño | Tipo de Fundamentación | Nivel de Confianza | Acción en el Proyecto |
