@@ -2,7 +2,7 @@
 **Curso:** DDSE3 — 2026-2 | **Grupo:** [G1 / G2]
 **Repositorio GitHub:** https://github.com/Jeider-Gomez/Stire-Soft
 **Semana reportada:** 31 de agosto – 4 de septiembre de 2026 | **Cierre:** viernes 4 de septiembre, 8:00 p.m.
-**Estado del sprint:** MODESEC multi-rol cerrado (16 ventanas, matriz de permisos corregida contra el código) · bibliografía reconstruida y verificada (15/15 + 24 obras) · Fase I de MODESEC cerrada para el alcance del MVP (D-06) · sistema visual y prototipo interactivo cableados en Figma · Nuxt sin iniciar (frontend Next.js/React sigue congelado, decisión ya tomada en Bitácora N.º 2).
+**Estado del sprint:** dentro del ciclo del **Reto 2 oficial** (Diseño de Arquitectura y Guion — UI/UX y modelo pedagógico, sustentación 15/17 sep). Objetivo 1 (mockups + navegación) cumplido para estudiante, parcial para docente/admin; Objetivo 2 (15 artículos) cumplido y superado; Objetivo 3 (Nuxt) no iniciado, declarado con su razón. MODESEC multi-rol cerrado, bibliografía reconstruida y verificada, Fase I cerrada para el alcance del MVP (D-06), prototipo interactivo con 38 conexiones en Figma.
 **Tablero Kanban (Trello):** `https://trello.com/b/Zek3mVEX`
 
 *STIRE-Soft es un Sistema Tutor Inteligente para la Resolución de Ejercicios: el estudiante entrega código, el sistema lo ejecuta de forma aislada, lo califica y adapta los siguientes ejercicios a su nivel de dominio.*
@@ -46,14 +46,62 @@ En paralelo, se busca cerrar los componentes fundamentales del backend que ya pu
 
 ---
 
-### 3.1 Retos del Sprint — estado real al cierre (4 de septiembre, 8:00 p.m.)
+## 🎓 3.0 Objetivos Oficiales de la Semana 03 (fuente: el docente)
 
-> **Nota de trazabilidad:** no se localizó en el repositorio un archivo que enumere los 8 Retos con
-> nombre y alcance (la Guía de Semana y el cronograma del docente están en `.docx`, no legibles por
-> esta herramienta). Los Retos 1, 5 y 7 se verifican con el nombre dado por Jeider en la instrucción
-> de esta fase. Los Retos 2, 3, 4, 6 y 8 se **infieren** de los "Resultados esperados" §2.1 de este
-> mismo documento (ítems 6-10) y de los roles del equipo — están marcados como inferidos para que
-> se corrijan si el docente usa una numeración distinta.
+> Leídos directamente de `docs/investigacion/fuentes-institucionales/Guia_Estudiante_semana_03.docx`
+> y `cronograma.docx` (FASE CC-08, Parte C1) — no parafraseados de memoria. Estos son los objetivos
+> del **docente** para esta semana. Son una lista distinta de los "Retos internos" de la sección
+> 3.1: esos son la forma en que el equipo organiza su propio trabajo, no la numeración oficial del
+> curso — ver la nota de corrección justo debajo.
+>
+> **Entrada a MODESEC:** [`docs/modesec/README.md`](docs/modesec/README.md).
+
+**OBJETIVO 1 · Diseñar los mockups de alta fidelidad y el mapa de navegación fundamentados en
+Pressman y MODESEC.**
+→ **CUMPLIDO PARA EL ESTUDIANTE.** 7 vistas × 4 estados = 28 frames, prototipo navegable con **38
+conexiones**, ruta más larga de 3 clics a contenido formativo (2 clics para el contenido formativo
+en sí — `EST-V02`/`EST-V03` —, 3 solo para estados secundarios como error/completado/tutor).
+Fundamentación en las tres reglas de oro de Mandel (Mandel 1997; Pressman & Maxim, cap. 12) con
+auditoría de 3 clics y 7±2 en [`MARCO_UX_PEDAGOGICO_STIRE.md` §2.5](docs/modesec/MARCO_UX_PEDAGOGICO_STIRE.md).
+Mapa normativo en [`contenidos/3.3.3_MAPA_NAVEGACION.md`](docs/modesec/contenidos/3.3.3_MAPA_NAVEGACION.md).
+**PARCIAL** en docente y administrador: la ventana estándar ya tiene sus 3 variantes de rol
+demostradas con una vista real cada una donde aplica (`DOC-V01 · Mis Clases`, `ADM-V02 · Usuarios y
+Roles`, FASE CC-08 Parte B) — mismas 5 zonas, misma paleta, mismo lenguaje visual que Estudiante.
+Las 10 vistas restantes de esos dos roles quedan para la próxima semana.
+
+**OBJETIVO 2 · Consolidar el reto de los 15 artículos científicos.**
+→ **CUMPLIDO Y SUPERADO.** [`docs/investigacion/MATRIZ_ARTICULOS.md`](docs/investigacion/MATRIZ_ARTICULOS.md)
+con los 15 verificados 15/15 contra Crossref, ERIC e ISBN. Además
+[`MATRIZ_ARTICULOS_AMPLIADA.md`](docs/investigacion/MATRIZ_ARTICULOS_AMPLIADA.md) con 24 obras de
+fundamento y [`INFORME_SANEAMIENTO_BIBLIOGRAFICO.md`](docs/investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md)
+con la auditoría que detectó que las 15 referencias originales estaban fabricadas (11 DOI
+inexistentes, 4 resolviendo a obra distinta) antes de reconstruirlas.
+
+**OBJETIVO 3 · Iniciar el desarrollo frontend en Nuxt (Vue 3) aprovechando Google Antigravity.**
+→ **NO INICIADO.** No existe `frontend-nuxt/` ni ningún directorio Vue/Nuxt en el repositorio.
+Razón: se priorizó cerrar la coherencia de MODESEC, que bloqueaba el diseño — cuatro códigos de
+ventana designaban dos pantallas distintas y 19 endpoints documentados no existían en el backend
+real. Sin eso resuelto, cualquier código de Nuxt habría que rehacerlo sobre una base que cambiaba
+de forma. Se declara, no se maquilla. Es la primera prioridad de la Semana 04.
+
+> **Corrección de trazabilidad (FASE CC-08, Parte C1):** el cronograma oficial define **5 Retos
+> formales** (`cronograma.docx` §4), no 8 — Reto 1 Concepción y Necesidad Educativa, **Reto 2 Diseño
+> de Arquitectura y Guion (UI/UX y modelo pedagógico)**, Reto 3 Prototipado e Interacción Base, Reto
+> 4 Integración de Medios y Evaluación, Reto 5 Pruebas Piloto y Correcciones. **Todo el trabajo de
+> esta bitácora corresponde al ciclo del Reto 2 oficial** (lanzado 28 ago, sustentación 15/17 sep —
+> exactamente la fecha que ya se venía señalando como riesgo). Los tres objetivos de arriba son las
+> tareas concretas de esa semana dentro del Reto 2, tomadas literalmente de la guía del docente. La
+> sección 3.1 de abajo usa "Reto 1..8" como organización **interna** del equipo — no corresponde a
+> la numeración oficial y se aclara ahí mismo para no confundirlas en la sustentación.
+
+---
+
+### 3.1 Retos internos del equipo — estado real al cierre (4 de septiembre, 8:00 p.m.)
+
+> **Estos son subdivisiones de trabajo del equipo, no los 5 Retos oficiales del curso** (ver §3.0
+> arriba). Se numeran 1-8 porque así los venía organizando el equipo desde Bitácora N.º 2; se
+> mantiene esa numeración interna por continuidad, corregida donde el nombre chocaba con el oficial
+> (el "Reto 5" interno de aquí es sobre Nuxt, no confundir con el Reto 5 oficial "Pruebas Piloto").
 >
 > Regla aplicada: **solo se marca `[x]` lo que tiene un commit o un archivo real detrás.** Lo demás
 > queda `[ ]` con su razón.
@@ -83,7 +131,9 @@ En paralelo, se busca cerrar los componentes fundamentales del backend que ya pu
   Bitácora N.º 2): `HardenedProcessSandboxAdapter`, aislamiento por proceso del sistema operativo,
   sin Docker. No hubo cambios de código al sandbox esta semana — se mantiene el estado.
 
-- [ ] **Reto 5 · Nuxt — NO INICIADO.** No existe `frontend-nuxt/` ni ningún directorio Vue/Nuxt en
+- [ ] **Reto 5 (interno, NO es el Reto 5 oficial) · Nuxt — NO INICIADO.** Ver Objetivo 3 en §3.0
+  arriba, que es la fuente autorizada de este punto. No existe `frontend-nuxt/` ni ningún directorio
+  Vue/Nuxt en
   el repositorio. Razón: se priorizó la coherencia de MODESEC (Fase I y el sistema visual en
   Figma), que es lo que debía existir *antes* de escribir la primera línea de Nuxt, para no repetir
   el error que Bitácora N.º 2 ya señaló ("no construir un frontend fragmentado sin especificación
@@ -94,9 +144,10 @@ En paralelo, se busca cerrar los componentes fundamentales del backend que ya pu
   congelarlo como "prueba histórica y sin nuevas funcionalidades". Se reafirma esa decisión: no se
   tocó ni se extendió esta semana.
 
-- [ ] **Reto 6 (inferido) · Gestión / Trello — NO VERIFICABLE DESDE EL REPOSITORIO.** El tablero
-  (`https://trello.com/b/Zek3mVEX`) no es accesible con las herramientas de esta sesión. No se marca
-  cerrado sin evidencia.
+- [x] **Reto 6 (interno) · Gestión / Trello — CERRADO.** El tablero ya está completo, confirmado por
+  Jeider (FASE CC-08, Parte C4). Enlace del tablero:
+  `[Jeider: pega aquí el enlace directo al tablero Trello actualizado]`
+  (referencia previa sin confirmar: `https://trello.com/b/Zek3mVEX`)
 
 - [x] **Reto 7 · 15 artículos — CERRADO, resultado más fuerte de la semana.** Las 15 referencias
   originales de la matriz resultaron **fabricadas** (11 DOI inexistentes, 4 resolviendo a una obra
@@ -116,25 +167,33 @@ cobertura — 10 filas `cubierto`, 3 `pendiente` (huecos reales, declarados uno 
 
 ---
 
-## 🔗 Prototipo interactivo (FASE CC-07, Parte A)
+## 🔗 Prototipo interactivo (FASE CC-07 Parte A + FASE CC-08 Parte A)
 
 **Archivo Figma:** `STIRE-Soft — Sistema Visual` · fileKey `1MjKiDrjU65ezO3ztO0v4m`
 **Enlace de presentación:** https://www.figma.com/proto/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft?node-id=11-2&starting-point-node-id=11-2
 
-Arranca en `COMP-V00`, recorre `EST-V01` → `EST-V02`/`EST-V03`/`EST-V05`/`EST-V06`, con el Tutor IA
-(`EST-V04`) cableado como **overlay** (no como navegación) — se cierra y devuelve el ejercicio
-intacto, sosteniendo la decisión de que el tutor no es un destino. Caminos cableados a los 3 estados
-exigidos por la auditoría: `EST-V03` Entregar → completado, caso de prueba que falla → error;
-`EST-V05` sin repasos pendientes → **declarado sin camino natural** en vez de inventar un hotspot
-falso (no hay una acción de "completar todos los repasos" en el diseño actual).
+Arranca en `COMP-V00`. **38 conexiones** en total (17 de CC-07 + 21 nuevas en CC-08: Menú lateral
+completo en las 6 vistas, control de trazado en `EST-V02`, "Probar código" con resultado de casos,
+clic fuera del overlay del Tutor cierra, tarjeta "Unidad más débil", "Posponer" en repasos). El
+Tutor IA (`EST-V04`) sigue cableado como **overlay real** (`navigation: OVERLAY` + acción `CLOSE`,
+también al hacer clic fuera) — nunca como navegación, sostiene la decisión de que el tutor no es un
+destino. Todo elemento con reacción lleva un borde de afordancia enlazado a
+`color/base/borde-fuerte` para que se note qué es clicable.
 
-**Ruta más larga a contenido formativo:** `COMP-V00 → EST-V01 → EST-V02 → EST-V03` = **3 clics**
-(exigencia del docente: ≤3 — se cumple, en el límite). Rutas directas desde `EST-V01` (tarjeta
-"Continuar ejercicio", menú "Mi Progreso") acortan a 2 clics desde el login.
-Ninguna conexión wireada quedó rota — las 17 reacciones creadas se verificaron una por una contra
-sus IDs de destino reales. El resto de los 28 frames (estados vacío/error/completado de las vistas
-no cubiertas por A3) permanecen navegables desde el editor de Figma pero no desde clics del
-prototipo — no se inventaron hotspots para forzar su alcance.
+**Limpieza (CC-08 Parte A1):** se eliminó la página huérfana "🖥️ Prototipo — Estudiante", que tenía
+3 frames sueltos (`COMP-V00`, `EST-V01`, `EST-V02`) con colores literales sin enlazar a variable y
+sin ninguna reacción — un duplicado estrictamente inferior de la página canónica, no aportaba nada.
+También se limpiaron 6 reacciones residuales a nivel de frame completo, sobrantes de un primer
+intento de cableado en CC-07 que había quedado sin borrar tras refinarlo a hotspots específicos.
+
+**Ruta más larga a contenido formativo:** `COMP-V00 → EST-V01 → EST-V02/EST-V03` = **2 clics** para
+el contenido formativo real (mejoró respecto a CC-07). La ruta más larga del prototipo completo es
+**3 clics**, hacia estados secundarios (`EST-V04` overlay, `EST-V03` completado/error, paso
+siguiente del trazado) — exigencia del docente ≤3, se cumple con margen para lo formativo.
+0 conexiones rotas (verificado por BFS contra los IDs de destino reales). De los 29 frames de la
+página canónica, 10 son alcanzables por clic desde el login; los 19 restantes (estados
+vacío/error/completado no cubiertos por un camino explícito) permanecen navegables desde el editor
+de Figma pero no se inventaron hotspots falsos para forzar su alcance por clic.
 
 ---
 
@@ -164,21 +223,22 @@ prototipo — no se inventaron hotspots para forzar su alcance.
 4. **Tests del sandbox intermitentes por timing**, no por defecto de código — documentado en
    `CLAUDE.md` (degradación bajo memoria reducida en sesiones largas). Repetir antes de reportar un
    hallazgo de código si `verify:clean` u otra corrida falla en el arranque.
-5. **Reto 3 (Tutor IA con proveedor real) y Reto 6 (Trello) no verificables desde este repositorio**
-   — no se marcan como cerrados sin evidencia, pero tampoco se puede confirmar que sigan abiertos.
+5. **Reto 3 interno (Tutor IA con proveedor real) no verificable desde este repositorio** — no se
+   marca cerrado sin evidencia, pero tampoco se puede confirmar que siga abierto. (Reto 6/Trello ya
+   se cerró esta semana — ver §3.1.)
 
 ---
 
 ## 📌 11. Compromisos para la Semana Siguiente
 
 - Iniciar `frontend-nuxt/` (Vue 3 + Nuxt 3) sobre el sistema visual ya cableado en Figma — es la
-  tarea que más bloquea la sustentación del 15/17 de septiembre.
+  tarea que más bloquea la sustentación del Reto 2 oficial (15/17 de septiembre).
 - Corregir el control de rol de las 4 rutas listadas en Riesgos vivos #2.
 - Sembrar contenido real para las 8 unidades de aprendizaje pendientes (Riesgo #3).
-- Confirmar en persona (no en este repositorio) el estado real del Tutor IA con proveedor real y del
-  tablero Trello, para poder cerrar los Retos 3 y 6 con evidencia.
-- Diseñar las vistas de Docente y Administrador en Figma (CC-08) — explícitamente fuera de esta
-  semana.
+- Confirmar en persona (no en este repositorio) el estado real del Tutor IA con proveedor real, para
+  poder cerrar el Reto 3 interno con evidencia.
+- Diseñar las 10 vistas restantes de Docente y Administrador en Figma — solo `DOC-V01` y `ADM-V02`
+  quedaron demostradas esta semana (CC-08 Parte B), por decisión explícita de alcance.
 
 ---
 
