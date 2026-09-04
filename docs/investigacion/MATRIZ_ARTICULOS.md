@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-04 contra commit HEAD (separación de matrices bibliográficas)
+fuente:     normativo (entrega de asignatura — Reto 2)
+codigos:    no aplica (investigación, no ventanas)
+---
+
 # 📚 Matriz de Respaldo Bibliográfico e Investigación Científica — STIRE-Soft
 
 **Norma de la Asignatura:** `DDS3-01.pdf` — Guía de Semana 03 · 15 Artículos Indexados  
@@ -5,6 +12,14 @@
 **Estado:** ✅ Matriz estructurada con los 3 ejes temáticos · **Última actualización:** 2026-09-03
 
 > **Propósito:** Fundamentar las decisiones pedagógicas, arquitectónicas y de experiencia de usuario de STIRE-Soft en literatura científica indexada (IEEE, ACM, Scopus, SciELO, Redalyc).
+
+> **Este documento es la entrega puntual de los 15 artículos indexados que exige la Guía de Semana
+> 03 (Reto 2)**, a cargo de Jorge Cervantes. Es distinto de
+> [`MATRIZ_ARTICULOS_AMPLIADA.md`](MATRIZ_ARTICULOS_AMPLIADA.md), que contiene el fundamento
+> bibliográfico canónico del proyecto (24 obras que ya sustentan decisiones tomadas en STIRE-Soft)
+> más el registro de la auditoría que lo produjo — ver también
+> [`INFORME_SANEAMIENTO_BIBLIOGRAFICO.md`](INFORME_SANEAMIENTO_BIBLIOGRAFICO.md). Los dos
+> coexisten a propósito, sin fusionarse: responden a normas distintas.
 
 ***
 

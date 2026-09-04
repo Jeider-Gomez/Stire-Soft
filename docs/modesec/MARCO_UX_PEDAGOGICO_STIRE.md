@@ -201,6 +201,25 @@ que el cumplimiento con cursos de muchos módulos no está garantizado por el di
 
 ---
 
+## 2.6 Nota: Fundamento de la Decisión Tecnológica Frontend (Vue 3/Nuxt)
+
+La elección de Vue 3/Nuxt como framework de este proyecto quedó reformulada en tres capas en FASE
+CC-04, Paso 9 (ver `docs/investigacion/MATRIZ_ARTICULOS_AMPLIADA.md`, Eje 2, "Nuxt/Vue 3 — la
+entrada reformulada en tres capas", para el detalle completo): **(a)** Nuxt/Vue 3 como framework
+específico es **REQUISITO INSTITUCIONAL** (la Guía de Semana 03 lo prescribe explícitamente), no
+un hallazgo científico; **(b)** TypeScript sí tiene **EVIDENCIA DIRECTA** — actualizado en la
+verificación de la matriz de Jorge Cervantes (2026-09-04): Bogner, J. & Merkel, M. (2022), *"To
+type or not to type? A systematic comparison of the software quality of JavaScript and TypeScript
+applications on GitHub"*, MSR '22, DOI
+[10.1145/3524842.3528454](https://doi.org/10.1145/3524842.3528454) — comparación directa y más
+reciente de calidad de software JS/TS en proyectos reales de GitHub, mejor fuente para esta capa
+que la citada originalmente (Gao, Bird & Barr, 2017, que se conserva como evidencia secundaria);
+**(c)** la arquitectura por componentes tiene **EVIDENCIA CONTEXTUAL** (Upadhyay, 2019, sobre la
+propiedad de modularidad/cohesión, no sobre Vue específicamente). La comparación "Vue vs. React"
+sigue sin respaldo empírico en ninguna fase de este proyecto — no se afirma.
+
+---
+
 ## 3. Matriz de Decisiones y Grado de Confianza
 
 | ID | Decisión de Diseño | Tipo de Fundamentación | Nivel de Confianza | Acción en el Proyecto |

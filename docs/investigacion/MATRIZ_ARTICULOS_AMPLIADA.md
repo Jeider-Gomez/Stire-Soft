@@ -1,0 +1,294 @@
+---
+estado:     vigente
+verificado: 2026-09-04 contra commit HEAD (separación de matrices bibliográficas)
+fuente:     normativo (fundamento bibliográfico extendido)
+codigos:    no aplica (investigación, no ventanas)
+---
+
+# 📚 Matriz de Artículos Ampliada — Fundamento Bibliográfico Extendido
+
+**Norma de la Asignatura:** `DDS3-01.pdf` — Guía de Semana 03  
+**Responsable:** Jorge Cervantes (Calidad e Investigación) · **Colaboradores:** Pedro Romero, Julio Galvis, Jeider Gómez  
+**Estado:** ✅ Reconstruida y cerrada (FASE CC-03), ampliada en FASE CC-04 · **Última actualización:** 2026-09-04
+
+> **Qué es este documento y en qué se diferencia de [`MATRIZ_ARTICULOS.md`](MATRIZ_ARTICULOS.md):**
+> este archivo contiene el **fundamento bibliográfico canónico y verificado** de STIRE-Soft — 27
+> obras que sustentan las decisiones pedagógicas, arquitectónicas y de UX ya tomadas en el proyecto
+> (mastery learning, repetición espaciada, el *assistance dilemma* en tutoría inteligente,
+> visualización de programas, evaluación automática de código, accesibilidad), más el registro
+> completo de la auditoría bibliográfica que lo produjo (qué se detectó fabricado en la matriz
+> original, cómo se reconstruyó). `MATRIZ_ARTICULOS.md` es un documento distinto: la entrega
+> puntual de los 15 artículos indexados que exige la Guía de Semana 03 como requisito de la
+> asignatura (Reto 2), a cargo de Jorge Cervantes. Los dos coexisten a propósito — no se fusionan —
+> porque responden a normas distintas: este a la necesidad real del proyecto, el otro al entregable
+> de curso. Ver también [`INFORME_SANEAMIENTO_BIBLIOGRAFICO.md`](INFORME_SANEAMIENTO_BIBLIOGRAFICO.md)
+> para el detalle completo, fase por fase, de la reconstrucción.
+
+> **Propósito:** Fundamentar las decisiones pedagógicas, arquitectónicas y de experiencia de usuario de STIRE-Soft en literatura científica real y en fuentes institucionales verificables.
+
+> 📋 **Ver también:** [INFORME_SANEAMIENTO_BIBLIOGRAFICO.md](INFORME_SANEAMIENTO_BIBLIOGRAFICO.md) —
+> qué se encontró fabricado, cómo se detectó y cómo se reconstruyó, con trazabilidad completa por fase.
+
+---
+
+## Criterio de verificación (corregido en FASE CC-03)
+
+La regla de CC-02 ("sin DOI no entra") era incorrecta y quedó reemplazada por esta:
+
+> **NINGUNA CITA ENTRA SIN UN REGISTRO ESTABLE Y COMPROBABLE**, del tipo que corresponde a su naturaleza y época:
+>
+> | Tipo de obra | Registro exigido |
+> |---|---|
+> | Obra indexada moderna | DOI resuelto en Crossref, con metadatos coincidentes |
+> | Obra anterior a ~1995 | Identificador ERIC, WorldCat o catálogo del editor |
+> | Libro académico | ISBN verificable (catálogo de editor / OpenLibrary / Google Books) |
+> | Documento institucional | Se cita como tal, en su propia categoría — no se busca en Crossref |
+> | Estándar (W3C, ISO, etc.) | URL oficial y versión exacta del organismo emisor |
+>
+> Una obra real sin DOI **no es** una obra fabricada. Lo único prohibido es una referencia que nadie pueda localizar, o que resuelva a una obra distinta de la citada.
+
+---
+
+## 🧠 EJE 1: Pedagógico y Cognitivo (6 obras verificadas)
+*Foco: Aprendizaje por dominio (Mastery Learning), repetición espaciada (SM-2/práctica distribuida), assistance dilemma en tutoría inteligente.*
+
+| # | Título | Autores y Año | Fuente | Registro verificado | Nivel de Evidencia | Decisión STIRE que fundamenta |
+|---|---|---|---|---|---|---|
+| 1 | *Learning for Mastery* | Bloom, B. S. (1968) | Evaluation Comment, 1(2). UCLA Center for the Study of Evaluation of Instructional Programs | ERIC [ED053419](https://eric.ed.gov/?id=ED053419) | 🟡 EVIDENCIA CONTEXTUAL | Fuente original del marco de *mastery learning* por etapas. **No** fundamenta el umbral numérico del 70% — ver decisiones sin respaldo. |
+| 2 | *Optimization of repetition spacing in the practice of learning* | Woźniak, P. & Gorzelańczyk, E. (1994) | Acta Neurobiologiae Experimentalis, 54(1), 59-62 | DOI [10.55782/ane-1994-1003](https://doi.org/10.55782/ane-1994-1003) | 🟢 EVIDENCIA DIRECTA | Base matemática del algoritmo SM-2 (intervalos, factor de facilidad) en `ReviewScheduleService`. |
+| 3 | *Distributed practice in verbal recall tasks: A review and quantitative synthesis* | Cepeda, N. J.; Pashler, H.; Vul, E.; Wixted, J. T.; Rohrer, D. (2006) | Psychological Bulletin, 132(3), 354-380 | DOI [10.1037/0033-2909.132.3.354](https://doi.org/10.1037/0033-2909.132.3.354) | 🟢 EVIDENCIA DIRECTA (meta-análisis) | Respalda el mecanismo del espaciado como estrategia de retención. |
+| 4 | *Test-Enhanced Learning* | Roediger, H. L. & Karpicke, J. D. (2006) | Psychological Science, 17(3), 249-255 | DOI [10.1111/j.1467-9280.2006.01693.x](https://doi.org/10.1111/j.1467-9280.2006.01693.x) | 🟡 EVIDENCIA CONTEXTUAL | Respalda la práctica de recuperación (repasos activos) complementaria al espaciado. |
+| 5 | *The Relative Effectiveness of Human Tutoring, Intelligent Tutoring Systems, and Other Tutoring Systems* | VanLehn, K. (2011) | Educational Psychologist, 46(4), 197-221 | DOI [10.1080/00461520.2011.611369](https://doi.org/10.1080/00461520.2011.611369) | 🟢 EVIDENCIA DIRECTA | El andamiaje guiado supera a la entrega directa de respuestas; base del Tutor IA socrático. |
+| 6 | *Exploring the Assistance Dilemma in Experiments with Cognitive Tutors* | Koedinger, K. R. & Aleven, V. (2007) | Educational Psychology Review, 19(3), 239-264 | DOI [10.1007/s10648-007-9049-0](https://doi.org/10.1007/s10648-007-9049-0) | 🟢 EVIDENCIA DIRECTA | *Assistance dilemma*: ayuda directa destruye aprendizaje profundo, ausencia de ayuda induce abandono. Base del `TutorContextService`. |
+
+---
+
+## 🏗️ EJE 2: Arquitectura de Software (9 obras verificadas)
+*Búsqueda reformulada en CC-03: no se busca literatura sobre "Vue vs React" (no existe), sino sobre la CLASE de sistema que STIRE es — un sistema de evaluación automática de código con sandbox seguro.*
+
+> ⚠️ **Nota de recuperación:** las obras #25, #26 y #27 de este eje, y la subsección "Nuxt/Vue 3 —
+> la entrada reformulada en tres capas" que sigue, se agregaron en FASE CC-04, Paso 9 — DESPUÉS del
+> commit `c50049d` del que se rescató el resto de este documento. El commit `1245574` de Jorge
+> Cervantes sobrescribió `MATRIZ_ARTICULOS.md` (incluido este contenido) antes de que este documento
+> ampliado existiera como archivo separado; se reconstruyen aquí desde el diff del propio Paso 9
+> (`git show 30292dc`) y se actualizan con el hallazgo del Paso 5 de la tarea de separación de
+> matrices (2026-09-04): la obra #27 (Bogner & Merkel) reemplaza a la #25 (Gao, Bird & Barr) como
+> evidencia principal de la capa (b) — se conserva la #25 como evidencia secundaria, no se descarta.
+
+| # | Título | Autores y Año | Fuente | Registro verificado | Nivel de Evidencia | Decisión STIRE que fundamenta |
+|---|---|---|---|---|---|---|
+| 7 | *CS50 sandbox: secure execution of untrusted code* | Malan, D. J. (2013) | Proc. 44th ACM SIGCSE, 141-146 | DOI [10.1145/2445196.2445242](https://doi.org/10.1145/2445196.2445242) | 🟡 EVIDENCIA CONTEXTUAL | Precedente de sandboxing pedagógico para código de estudiantes; no describe la implementación concreta (`HardenedProcessSandboxAdapter`, ADR 06). |
+| 8 | *Smart Like a Fox: How Clever Students Trick Dumb Automated Programming Assignment Assessment Systems* | Kratzke, N. (2019) | Proc. 11th CSEDU, 15-26 | DOI [10.5220/0007424800150026](https://doi.org/10.5220/0007424800150026) | 🟡 EVIDENCIA CONTEXTUAL | Cataloga vectores de evasión en jueces automáticos; justifica el aislamiento real del sandbox frente a código adversarial. |
+| 9 | *Review of recent systems for automatic assessment of programming assignments* | Ihantola, P.; Ahoniemi, T.; Karavirta, V.; Seppälä, O. (2010) | Proc. 10th Koli Calling, 86-93 | DOI [10.1145/1930464.1930480](https://doi.org/10.1145/1930464.1930480) | 🟢 EVIDENCIA DIRECTA (revisión) | Caracteriza la clase de sistema "juez automático de programación" a la que pertenece STIRE; respalda la arquitectura general de evaluación automatizada. |
+| 10 | *A Survey of Automated Assessment Approaches for Programming Assignments* | Ala-Mutka, K. M. (2005) | Computer Science Education, 15(2), 83-102 | DOI [10.1080/08993400500150747](https://doi.org/10.1080/08993400500150747) | 🟢 EVIDENCIA DIRECTA (revisión) | Survey fundacional del campo; respalda el desacoplamiento entre entrega, ejecución y calificación. |
+| 11 | *Automatic test-based assessment of programming* | Douce, C.; Livingstone, D.; Orwell, J. (2005) | Journal on Educational Resources in Computing, 5(3), Art. 4 | DOI [10.1145/1163405.1163409](https://doi.org/10.1145/1163405.1163409) | 🟢 EVIDENCIA DIRECTA (revisión) | Respalda la evaluación por casos de prueba público/privados (`EST-V03`, `DOC-V03`). |
+| 12 | *Automated Assessment in Computer Science Education: A State-of-the-Art Review* | Paiva, J. C.; Leal, J. P.; Figueira, Á. (2022) | ACM Transactions on Computing Education, 22(3), 1-40 | DOI [10.1145/3513140](https://doi.org/10.1145/3513140) | 🟢 EVIDENCIA DIRECTA (revisión sistemática) | Revisión más reciente y completa del campo; respalda la clase de sistema STIRE de punta a punta. |
+| 25 | *To Type or Not to Type: Quantifying Detectable Bugs in JavaScript* | Gao, Z.; Bird, C.; Barr, E. T. (2017) | Proc. IEEE/ACM 39th ICSE | DOI [10.1109/icse.2017.75](https://doi.org/10.1109/icse.2017.75) | 🟡 EVIDENCIA SECUNDARIA (capa b) | Tipado estático (TypeScript) detecta ~15% de los bugs públicos reportados en proyectos JavaScript antes de producción. Conservada como evidencia complementaria a la #27 tras la actualización del Paso 5 (verificación de la matriz de Jorge Cervantes, 2026-09-04). |
+| 26 | *Maintainability Analysis of Component-Based Software Architecture* | Upadhyay, N. (2019) | Advances in Intelligent Systems and Computing | DOI [10.1007/978-981-10-8848-3_37](https://doi.org/10.1007/978-981-10-8848-3_37) | 🟡 EVIDENCIA CONTEXTUAL (capa c) | Sobre la *propiedad* de bajo acoplamiento/alta cohesión que una arquitectura por componentes favorece — no es un estudio sobre Vue específicamente, sino sobre la propiedad arquitectónica que Vue (y cualquier framework por componentes) implementa. |
+| 27 | *To type or not to type? A systematic comparison of the software quality of JavaScript and TypeScript applications on GitHub* | Bogner, J. & Merkel, M. (2022) | Proc. 19th International Conference on Mining Software Repositories (MSR '22) | DOI [10.1145/3524842.3528454](https://doi.org/10.1145/3524842.3528454) | 🟢 EVIDENCIA DIRECTA (capa b, principal) | Comparación empírica directa de la calidad de software (bugs, mantenibilidad) entre proyectos JavaScript y TypeScript reales en GitHub — fuente más directa y reciente que la #25 para fundamentar TypeScript. Verificada por Crossref el 2026-09-04 al separar las matrices bibliográficas; identificada originalmente por Jorge Cervantes en `MATRIZ_ARTICULOS.md`. |
+
+### Nuxt/Vue 3 — la entrada reformulada en tres capas (FASE CC-04, Paso 9; capa b actualizada 2026-09-04)
+
+La entrada original de este eje afirmaba "Vue 3/Nuxt... EVIDENCIA CONTEXTUAL" sin distinguir qué
+parte de la decisión tiene respaldo científico real y cuál es, simplemente, un requisito que hay
+que cumplir. Se separa en tres capas, cada una con su propia clasificación:
+
+| Capa de la decisión | Clasificación | Fundamento |
+|---|---|---|
+| **a) Nuxt/Vue 3 como framework específico** | 🔵 **REQUISITO INSTITUCIONAL** — no es evidencia científica | La Guía de Semana 03 (`docs/investigacion/fuentes-institucionales/Guia_Estudiante_semana_03.docx`, §4) **prescribe** Nuxt/Vue 3 explícitamente: *"Iniciar el desarrollo frontend en Nuxt (Vue 3) aprovechando las herramientas de Google Antigravity."* Se cumple porque el docente lo exige, se cita como fuente institucional (igual que MOCAVI o el Plan de Curso), **no** como si la literatura hubiera comparado Vue contra alternativas y Vue hubiera ganado. |
+| **b) TypeScript** | 🟢 **EVIDENCIA DIRECTA** (obra #27 arriba, principal; #25 secundaria) | Bogner & Merkel (2022) comparan empíricamente la calidad de software entre proyectos JavaScript y TypeScript reales en GitHub — evidencia directa y actual. Gao, Bird & Barr (2017) se conserva como evidencia complementaria: cuantifica qué fracción de bugs de producción en JavaScript son detectables por tipado estático. |
+| **c) Arquitectura por componentes** | 🟡 **EVIDENCIA CONTEXTUAL** (obra #26 arriba) | La literatura sobre modularidad, acoplamiento y cohesión (Upadhyay, 2019) respalda la *propiedad* de mantenibilidad que un diseño por componentes favorece — pero es evidencia sobre la propiedad arquitectónica, no sobre Vue como implementación particular de esa propiedad. |
+
+**Se declara explícitamente:** la comparación específica "Vue vs. React" **no tiene** respaldo
+empírico concluyente en la literatura revisada en ninguna fase de este proyecto (CC-02, CC-03,
+CC-04) — por eso no se afirma. Ninguna obra de esta matriz compara frameworks de UI entre sí.
+
+**Nota general del eje:** las decisiones de stack restantes (NestJS modular, sanitización dual
+RICH/PLAIN, colas de eventos `submission.graded`) siguen **sin** literatura académica indexada que
+las respalde directamente — son ingeniería de software estándar, no fenómenos estudiados. La
+literatura de este eje respalda la *clase* de sistema (evaluación automática de código con
+sandbox) y, ahora, dos propiedades técnicas puntuales (tipado estático, modularidad) — no la
+elección de framework en sí. Ver sección de decisiones sin respaldo.
+
+---
+
+## 🎨 EJE 3: GUI, UX y Usabilidad Educativa (12 obras verificadas: 9 artículos + 3 libros académicos)
+
+### Artículos indexados
+
+| # | Título | Autores y Año | Fuente | Registro verificado | Nivel de Evidencia | Decisión STIRE que fundamenta |
+|---|---|---|---|---|---|---|
+| 13 | *The Power of Feedback* | Hattie, J. & Timperley, H. (2007) | Review of Educational Research, 77(1), 81-112 | DOI [10.3102/003465430298487](https://doi.org/10.3102/003465430298487) | 🟢 EVIDENCIA DIRECTA | Feedback formativo transparente (P02); consola `EST-V03`. |
+| 14 | *Cognitive Architecture and Instructional Design* | Sweller, J.; van Merriënboer, J. J. G.; Paas, F. G. W. C. (1998) | Educational Psychology Review, 10(3), 251-296 | DOI [10.1023/A:1022193728205](https://doi.org/10.1023/A:1022193728205) | 🟢 EVIDENCIA DIRECTA (revisión) | Teoría de Carga Cognitiva (P01, P08): separación "Probar código" / "Entregar solución". |
+| 15 | *The Split-Attention Effect as a Factor in the Design of Instruction* | Chandler, P. & Sweller, J. (1992) | British Journal of Educational Psychology, 62(2), 233-246 | DOI [10.1111/j.2044-8279.1992.tb01017.x](https://doi.org/10.1111/j.2044-8279.1992.tb01017.x) | 🟢 EVIDENCIA DIRECTA | Fuente original del efecto de atención dividida; Drawer no bloqueante del Tutor IA (P09). |
+| 16 | *Notional Machines and Introductory Programming Education* | Sorva, J. (2013) | ACM Transactions on Computing Education, 13(2), 1-31 | DOI [10.1145/2483710.2483713](https://doi.org/10.1145/2483710.2483713) | 🟢 EVIDENCIA DIRECTA | Trazado de memoria paso a paso en `EST-V02`. |
+| 17 | *A Review of Generic Program Visualization Systems for Introductory Programming Education* | Sorva, J.; Karavirta, V.; Malmi, L. (2013) | ACM Transactions on Computing Education, 13(4), 1-64 | DOI [10.1145/2490822](https://doi.org/10.1145/2490822) | 🟢 EVIDENCIA DIRECTA (revisión) | Refuerza el valor de la visualización interactiva de ejecución (Codificación Dual, P07). |
+| 18 | *The Reification of Metaphor as a Design Tool* | Blackwell, A. F. (2006) | ACM Transactions on Computer-Human Interaction, 13(4), 490-530 | DOI [10.1145/1188816.1188820](https://doi.org/10.1145/1188816.1188820) | 🟡 EVIDENCIA CONTEXTUAL | Guía de Metáforas STIRE (§3.3.2, "Taller del Artesano"); HCI general, no específico de programación educativa. |
+| 19 | *Compiler Error Messages Considered Unhelpful* | Becker, B. A. et al. (2019) | Proc. ITiCSE-WGR '19, 177-210 | DOI [10.1145/3344429.3372508](https://doi.org/10.1145/3344429.3372508) | 🟢 EVIDENCIA DIRECTA (revisión) | Mensajes de error explicativos con diff visual (`EST-V03`, P02). |
+| 20 | *How Teachers Integrate Dashboards into Their Feedback Practices* | Knoop-van Campen, C. A. N. & Molenaar, I. (2020) | Frontline Learning Research, 8(4), 37-51 | DOI [10.14786/flr.v8i4.641](https://doi.org/10.14786/flr.v8i4.641) | 🟢 EVIDENCIA DIRECTA | Dashboard docente con alertas tempranas (`DOC-V04`). |
+| 21 | *Learning Analytics Dashboard Applications* | Verbert, K.; Duval, E.; Klerkx, J.; Govaerts, S.; Santos, J. L. (2013) | American Behavioral Scientist, 57(10), 1500-1509 | DOI [10.1177/0002764213479363](https://doi.org/10.1177/0002764213479363) | 🟢 EVIDENCIA DIRECTA | Métrica de progreso acompañada de interpretación accionable (`EST-V06`). |
+
+### Libros académicos (requisito explícito del docente — Guía de Semana 03)
+
+| # | Título | Autor y Año | Editorial | Registro verificado | Nivel de Evidencia | Decisión STIRE que fundamenta |
+|---|---|---|---|---|---|---|
+| 22 | *The Elements of User Interface Design* | Mandel, T. (1997) | Wiley | ISBN [9780471162674](https://openlibrary.org/isbn/9780471162674) | 🟢 EVIDENCIA DIRECTA | Las 3 Reglas de Oro de Theo Mandel (control al usuario, reducir carga de memoria, consistencia) — citadas explícitamente por Pressman & Maxim cap. 12 y exigidas por la Guía de Semana 03. |
+| 23 | *Software Engineering: A Practitioner's Approach*, 9.ª ed. | Pressman, R. S. & Maxim, B. R. (2020) | McGraw-Hill | ISBN [9781259872976](https://openlibrary.org/isbn/9781259872976) | 🟢 EVIDENCIA DIRECTA | Cap. 12 (User Experience Design): fuente directa de las 3 Reglas de Oro de Mandel; cap. 13 (WebApps): pirámide de diseño web y navegación. |
+| 24 | *Software Engineering*, 10.ª ed. | Sommerville, I. (2018) | Pearson | ISBN [9789332582699](https://openlibrary.org/isbn/9789332582699) | 🟢 EVIDENCIA DIRECTA | Cap. 5.2 (Interaction Models) y cap. 8.4 (User Testing), exigidos explícitamente por la Guía de Semana 03. |
+
+---
+
+## 📖 Fuentes institucionales y estándares
+
+*Capa de evidencia distinta de la literatura indexada — no se buscan en Crossref, se citan por su naturaleza propia.*
+
+| Fuente | Tipo | Autores / Emisor y Año | Registro | Uso en STIRE |
+|---|---|---|---|---|
+| *Modelo Pedagógico para la Educación Virtual — MOCAVI* | Documento institucional | Giraldo Cardozo, J. C. & Muñoz Vargas, I. C. (2022). Universidad de Córdoba, Facultad de Educación y Ciencias Humanas, Depto. de Informática Educativa | Copia local: [docs/investigacion/fuentes-institucionales/2023 05 01 Modelo pedagógico Educación virtual - MOCAVI.pdf](fuentes-institucionales/2023%2005%2001%20Modelo%20pedagógico%20Educación%20virtual%20-%20MOCAVI.pdf) | Marco pedagógico institucional (Sustentabilidad, Coaprendizaje, momentos Proyección/Co-creación/Aplicación/Difusión). Reemplaza la cita fabricada "Toscano Miranda et al. (2015)" de la matriz original, que resolvía a un artículo distinto. |
+| *Diseño de software educativo basado en competencias* (fuente de MODESEC §3.3.1 y §3.3.3) | Artículo indexado, citado como fuente de MODESEC | Caro, M. F.; Toscano, R. E.; Hernández, F. M.; David, M. E. (2009) | Revista de Investigaciones Universidad del Quindío, 19(1), 42-53 — [ojs.uniquindio.edu.co](https://ojs.uniquindio.edu.co/ojs/index.php/riuq/article/view/772) | Fundamenta la regla de los 3 clics y el diseño de interfaces/mapa de navegación (GUI.docx, recurso oficial de la Guía de Semana 03). |
+| WCAG 2.1 | Estándar (W3C Recommendation) | W3C (2018) | [https://www.w3.org/TR/WCAG21/](https://www.w3.org/TR/WCAG21/) — versión exacta "WCAG 2.1", W3C Recommendation 05 June 2018 | Doble codificación forma+color+texto (P06, `EST-V05`). Se cita como estándar, no como artículo — no se forzó un DOI académico (Crossref solo indexa, vía catálogo BSI, las versiones 2.0 y 2.2, no la 2.1 exacta). |
+| Plan de Curso FDOC-088 / Guía de Semana 03 | Documento docente (norma de la asignatura) | Toscano Miranda, R. E. (docente titular), Universidad de Córdoba, 2026-2 | Copia local: [docs/investigacion/fuentes-institucionales/Guia_Estudiante_semana_03.docx](fuentes-institucionales/Guia_Estudiante_semana_03.docx), [GUI.docx](fuentes-institucionales/GUI.docx), [cronograma.docx](fuentes-institucionales/cronograma.docx) | Norma que exige los 15 artículos, la fundamentación en Pressman/Mandel/Sommerville y la regla de los 3 clics — ver detalle en el reporte de FASE CC-03. |
+
+---
+
+## 📌 Decisiones de STIRE sin respaldo en literatura
+
+| Decisión STIRE | Literatura relacionada | Clasificación |
+|---|---|---|
+| Umbral numérico exacto del 70% de dominio | Bloom (1968) respalda el marco de *mastery learning* por etapas, ningún estudio fija un porcentaje específico | 🔵 **HIPÓTESIS A VALIDAR** |
+| Estructura de exactamente 3 niveles de andamiaje del Tutor IA | Koedinger & Aleven (2007) respaldan el *assistance dilemma* como fenómeno, no una cantidad de niveles | 🟡 **PROPUESTA STIRE** |
+| Implementación del tutor socrático mediante un LLM específico | Sin literatura peer-reviewed encontrada sobre diálogo socrático generado por LLM en este dominio; la cita original ("Chen et al., 2023") era fabricada | 🔵 **DECISIÓN STIRE** |
+| Nuxt/Vue 3 como framework específico | Resuelto en FASE CC-04, Paso 9 (capa b actualizada 2026-09-04): la Guía de Semana 03 lo **prescribe** explícitamente — se cita como requisito institucional, no como hallazgo científico. Ver desglose en tres capas al final del Eje 2 arriba. | 🔵 **REQUISITO INSTITUCIONAL** (ya no es una contradicción abierta) |
+| NestJS modular, sanitización dual, colas de eventos | Sin literatura académica indexada específica — ingeniería de software estándar | 🔵 **DECISIÓN STIRE** |
+
+---
+
+## 🔗 Referencias — enlaces directos
+
+Listado plano para copiar y pegar. Las URLs van sin formato de enlace para que funcionen en
+cualquier visor, incluidos los que no renderizan Markdown.
+
+1. Bloom, B. S. (1968). Learning for Mastery. Evaluation Comment, 1(2).
+   https://eric.ed.gov/?id=ED053419
+
+2. Woźniak, P. & Gorzelańczyk, E. (1994). Optimization of repetition spacing in the practice of learning. Acta Neurobiologiae Experimentalis, 54(1), 59-62.
+   https://doi.org/10.55782/ane-1994-1003
+
+3. Cepeda, N. J.; Pashler, H.; Vul, E.; Wixted, J. T.; Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. Psychological Bulletin, 132(3), 354-380.
+   https://doi.org/10.1037/0033-2909.132.3.354
+
+4. Roediger, H. L. & Karpicke, J. D. (2006). Test-Enhanced Learning. Psychological Science, 17(3), 249-255.
+   https://doi.org/10.1111/j.1467-9280.2006.01693.x
+
+5. VanLehn, K. (2011). The Relative Effectiveness of Human Tutoring, Intelligent Tutoring Systems, and Other Tutoring Systems. Educational Psychologist, 46(4), 197-221.
+   https://doi.org/10.1080/00461520.2011.611369
+
+6. Koedinger, K. R. & Aleven, V. (2007). Exploring the Assistance Dilemma in Experiments with Cognitive Tutors. Educational Psychology Review, 19(3), 239-264.
+   https://doi.org/10.1007/s10648-007-9049-0
+
+7. Malan, D. J. (2013). CS50 sandbox: secure execution of untrusted code. Proc. 44th ACM SIGCSE, 141-146.
+   https://doi.org/10.1145/2445196.2445242
+
+8. Kratzke, N. (2019). Smart Like a Fox: How Clever Students Trick Dumb Automated Programming Assignment Assessment Systems. Proc. 11th CSEDU, 15-26.
+   https://doi.org/10.5220/0007424800150026
+
+9. Ihantola, P.; Ahoniemi, T.; Karavirta, V.; Seppälä, O. (2010). Review of recent systems for automatic assessment of programming assignments. Proc. 10th Koli Calling, 86-93.
+   https://doi.org/10.1145/1930464.1930480
+
+10. Ala-Mutka, K. M. (2005). A Survey of Automated Assessment Approaches for Programming Assignments. Computer Science Education, 15(2), 83-102.
+    https://doi.org/10.1080/08993400500150747
+
+11. Douce, C.; Livingstone, D.; Orwell, J. (2005). Automatic test-based assessment of programming. Journal on Educational Resources in Computing, 5(3), Art. 4.
+    https://doi.org/10.1145/1163405.1163409
+
+12. Paiva, J. C.; Leal, J. P.; Figueira, Á. (2022). Automated Assessment in Computer Science Education: A State-of-the-Art Review. ACM Transactions on Computing Education, 22(3), 1-40.
+    https://doi.org/10.1145/3513140
+
+13. Hattie, J. & Timperley, H. (2007). The Power of Feedback. Review of Educational Research, 77(1), 81-112.
+    https://doi.org/10.3102/003465430298487
+
+14. Sweller, J.; van Merriënboer, J. J. G.; Paas, F. G. W. C. (1998). Cognitive Architecture and Instructional Design. Educational Psychology Review, 10(3), 251-296.
+    https://doi.org/10.1023/A:1022193728205
+
+15. Chandler, P. & Sweller, J. (1992). The Split-Attention Effect as a Factor in the Design of Instruction. British Journal of Educational Psychology, 62(2), 233-246.
+    https://doi.org/10.1111/j.2044-8279.1992.tb01017.x
+
+16. Sorva, J. (2013). Notional Machines and Introductory Programming Education. ACM Transactions on Computing Education, 13(2), 1-31.
+    https://doi.org/10.1145/2483710.2483713
+
+17. Sorva, J.; Karavirta, V.; Malmi, L. (2013). A Review of Generic Program Visualization Systems for Introductory Programming Education. ACM Transactions on Computing Education, 13(4), 1-64.
+    https://doi.org/10.1145/2490822
+
+18. Blackwell, A. F. (2006). The Reification of Metaphor as a Design Tool. ACM Transactions on Computer-Human Interaction, 13(4), 490-530.
+    https://doi.org/10.1145/1188816.1188820
+
+19. Becker, B. A. et al. (2019). Compiler Error Messages Considered Unhelpful. Proc. ITiCSE-WGR '19, 177-210.
+    https://doi.org/10.1145/3344429.3372508
+
+20. Knoop-van Campen, C. A. N. & Molenaar, I. (2020). How Teachers Integrate Dashboards into Their Feedback Practices. Frontline Learning Research, 8(4), 37-51.
+    https://doi.org/10.14786/flr.v8i4.641
+
+21. Verbert, K.; Duval, E.; Klerkx, J.; Govaerts, S.; Santos, J. L. (2013). Learning Analytics Dashboard Applications. American Behavioral Scientist, 57(10), 1500-1509.
+    https://doi.org/10.1177/0002764213479363
+
+22. Mandel, T. (1997). The Elements of User Interface Design. Wiley.
+    https://openlibrary.org/isbn/9780471162674
+
+23. Pressman, R. S. & Maxim, B. R. (2020). Software Engineering: A Practitioner's Approach, 9th ed. McGraw-Hill.
+    https://openlibrary.org/isbn/9781259872976
+
+24. Sommerville, I. (2018). Software Engineering, 10th ed. Pearson.
+    https://openlibrary.org/isbn/9789332582699
+
+25. Caro, M. F.; Toscano, R. E.; Hernández, F. M.; David, M. E. (2009). Diseño de software educativo basado en competencias. Revista de Investigaciones Universidad del Quindío, 19(1), 42-53.
+    https://ojs.uniquindio.edu.co/ojs/index.php/riuq/article/view/772
+
+26. W3C (2018). Web Content Accessibility Guidelines (WCAG) 2.1. W3C Recommendation, 05 June 2018.
+    https://www.w3.org/TR/WCAG21/
+
+27. Gao, Z.; Bird, C.; Barr, E. T. (2017). To Type or Not to Type: Quantifying Detectable Bugs in JavaScript. Proc. IEEE/ACM 39th International Conference on Software Engineering (ICSE).
+    https://doi.org/10.1109/icse.2017.75
+
+28. Upadhyay, N. (2019). Maintainability Analysis of Component-Based Software Architecture. Advances in Intelligent Systems and Computing.
+    https://doi.org/10.1007/978-981-10-8848-3_37
+
+29. Bogner, J. & Merkel, M. (2022). To type or not to type? A systematic comparison of the software quality of JavaScript and TypeScript applications on GitHub. Proc. 19th International Conference on Mining Software Repositories (MSR).
+    https://doi.org/10.1145/3524842.3528454
+
+---
+
+## Apéndice: Registro de Verificación
+
+### Los 15 originales — auditados completos en CC-02/CC-03, 15 de 15 fabricados
+
+| # eje | Cita original reclamada | DOI reclamado | Resultado |
+|---|---|---|---|
+| E1-1 | Anderson et al. (2020), IEEE TLT | `10.1109/TLT.2020.2987654` | ❌ 404 — no existe |
+| E1-2 | Wozniak & Gorzelanczyk (2018), Computers & Education | `10.1016/j.compedu.2018.04.012` | ❌ Resuelve a Molinillo et al., obra distinta |
+| E1-3 | Chen, Zhang & Kumar (2023), IJAIED | `10.1007/s40593-023-00342-1` | ❌ 404 — no existe |
+| E1-4 | Sweller & Robins (2019), ACM TOCE | `10.1145/3313831` | ❌ Resuelve a las actas completas de CHI 2020 |
+| E1-5 | Toscano Miranda et al. (2015), Educación y Humanismo | `10.17081/eduhum.17.29.1254` | ❌ Resuelve a Feo (2015), obra distinta en la misma revista |
+| E2-6 | Vasconcelos & Silva (2021), IEEE Software | `10.1109/MS.2021.3098124` | ❌ 404 — no existe |
+| E2-7 | Fagerström & Larsson (2022), J. Systems and Software | `10.1016/j.jss.2022.111452` | ❌ Resuelve a Song et al., obra distinta |
+| E2-8 | Gomez-Arnedo et al. (2021), ACM SIGPLAN Notices | `10.1145/3486608.3486615` | ❌ 404 — no existe |
+| E2-9 | Johansson & Berg (2020), Computers & Security | `10.1016/j.cose.2020.101893` | ❌ 404 — no existe |
+| E2-10 | Miller & O'Connor (2022), IEEE Access | `10.1109/ACCESS.2022.3184512` | ❌ 404 — no existe |
+| E3-11 | Blackwell & Green (2019), Human-Computer Interaction | `10.1080/07370024.2019.1623541` | ❌ 404 — no existe |
+| E3-12 | Becker et al. (2021), ITiCSE | `10.1145/3430665.3446382` | ❌ 404 — no existe |
+| E3-13 | Sorva & Sirkiä (2020), IEEE Trans. Education | `10.1109/TE.2020.2974512` | ❌ 404 — no existe |
+| E3-14 | Molenaar & Knoop-van Campen (2021), Computers in Human Behavior | `10.1016/j.chb.2021.106894` | ❌ Resuelve a Lai & Patrick Rau, obra distinta (reconocimiento facial) |
+| E3-15 | Harper & Yesilada (2020), Universal Access in the Information Society | `10.1007/s10209-020-00721-3` | ❌ 404 — no existe |
+
+**Resultado: 15 de 15 fabricados** (11 inexistentes, 4 con DOI real de otra obra). Detectado 2026-09-03.
+
+### Las 27 obras reconstruidas — todas verificadas contra Crossref, ERIC u OpenLibrary
+
+(24 de FASE CC-03 + 3 agregadas en FASE CC-04: Gao et al. 2017 y Upadhyay 2019 en el Paso 9, y
+Bogner & Merkel 2022 en el Paso 5 de la tarea de separación de matrices — 2026-09-04 — para
+fundamentar TypeScript y arquitectura por componentes; ver Eje 2 arriba.)
+
+Ver registros enlazados en las tablas de cada eje y en la sección de fuentes institucionales arriba. Cada una fue comprobada individualmente y contrastada manualmente contra lo escrito en este documento antes de incluirla.
+
+### Candidatos descartados sin sustituto (no se rellena)
+
+- **Harper & Yesilada, WCAG 2.1 como artículo académico** — reemplazado por la cita correcta como estándar W3C (ver Fuentes institucionales).
