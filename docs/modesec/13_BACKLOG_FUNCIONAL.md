@@ -32,7 +32,6 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 * [ ] **Diseñador Visual de Casos de Prueba en UI:** Interfaz enriquecida para que el docente cree y pruebe casos sin tocar base de datos (`DOC-V03`).
 * [ ] **Animación Interactiva de Trazado de Memoria:** Visor paso a paso de variables y llamadas a pila en la teoría (`EST-V02`).
 * [ ] **Exportación de Reportes Académicos:** Descarga de notas en formato CSV/Excel para el sistema de calificaciones institucional (`DOC-V04`).
-* [ ] **Gamificación y Logros Pedagógicos:** Medallas no invasivas por constancia, racha de repasos y dominio de módulos complejos (`GamificationModule`).
 * [ ] **Panel Administrativo de Monitoreo en Tiempo Real:** Tacómetros visuales de uso de memoria, colas BullMQ y logs de seguridad (`ADM-V01`, `ADM-V03`).
 
 ---
@@ -42,3 +41,26 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 * [ ] **BYOK (Bring Your Own Key):** Interfaz para que estudiantes avanzados ingresen su propia clave de OpenAI/Gemini con almacenamiento cifrado AES-256 (`EST-V04`).
 * [ ] **Soporte Multi-Lenguaje en Sandbox:** Incorporación de Python, C++ y Java en el motor de ejecución aislado.
 * [ ] **Integración LTI con Moodle / Canvas:** Sincronización automática de notas y matrículas con el LMS institucional.
+
+---
+
+## 4. Retirado (D-05, FASE CC-04 — documentado, código no removido en esta fase)
+
+* **Gamificación y Logros Pedagógicos (`GamificationModule`):** decisión de producto D-05 retira esta
+  funcionalidad del backlog activo — no se construirá la UI de medallas/rachas descrita antes en este
+  documento. `GamificationModule` sigue registrado en `src/app.module.ts` con `gamification.service.ts`
+  y sus entidades, pero **no tiene controller ni rutas HTTP** (igual que `review-schedules` y
+  `judge-engine`): es código muerto desde la perspectiva de la API, no una feature parcialmente
+  construida. Esta fase (documentación pura) no toca `src/`; la retirada del código, si procede, es
+  trabajo de una fase posterior explícitamente autorizada para tocar código.
+
+---
+
+## 5. Hallazgo operativo — timing de `verify:clean` bajo memoria reducida
+
+No es un ítem de producto sino una nota de proceso registrada en `CLAUDE.md` (Regla de Oro): en
+sesiones largas con muchos procesos Node acumulados (`npm ci` repetido, suites Jest completas), la
+memoria libre del sistema puede caer a ~1 GB y el arranque de `dist/main.js` dentro de
+`npm run verify:clean` puede no completar en el plazo esperado — sin que sea un defecto del script.
+Se registra aquí para que quien reproduzca `verify:clean` y vea un fallo de arranque compruebe primero
+la memoria libre del sistema antes de abrir un hallazgo de código.
