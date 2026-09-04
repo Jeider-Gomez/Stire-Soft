@@ -64,3 +64,35 @@ memoria libre del sistema puede caer a ~1 GB y el arranque de `dist/main.js` den
 `npm run verify:clean` puede no completar en el plazo esperado — sin que sea un defecto del script.
 Se registra aquí para que quien reproduzca `verify:clean` y vea un fallo de arranque compruebe primero
 la memoria libre del sistema antes de abrir un hallazgo de código.
+
+---
+
+## 6. Hallazgo de seguridad — sin restricción de rol en 4 rutas de estudiante (FASE CC-05, Paso 0b)
+
+**Severidad: 🟠 MEDIA** (no es fuga de datos entre usuarios ni escalamiento de privilegios sobre
+identidad ajena; sí es un defecto real de integridad de dominio y de control de acceso por rol).
+
+**Rutas afectadas:** `POST /submissions/start`, `POST /submissions/:id/submit`,
+`PUT /submissions/:id/autosave` (`submissions.controller.ts`), `POST /tutor/chat`
+(`tutor.controller.ts`). Ya se habían identificado sin `@Roles(...)` en `04_MATRIZ_PERMISOS.md`
+(FASE CC-04, Paso 6); este hallazgo verifica **a nivel de servicio** si algo más las restringe.
+
+**Verificación (código real, no hipótesis):**
+- `JwtAuthGuard` y `RolesGuard` están registrados globalmente (`APP_GUARD` en `app.module.ts`), así
+  que las 4 rutas exigen JWT válido — pero `RolesGuard` solo bloquea cuando la ruta declara
+  `@Roles(...)`; ninguna de las 4 lo declara, así que **cualquier rol autenticado pasa**.
+- `SubmissionsService.startSubmission/submitAnswers/autosave` reciben `studentId` como el `user.id`
+  del JWT del que llama, sin comprobar `user.role`. Un docente o admin autenticado puede iniciar,
+  entregar y autoguardar un intento — bajo su propio `id`, no el de un estudiante real.
+- `TutorService.sendMessage` recibe `studentId` de la misma forma, sin comprobar rol; un docente o
+  admin puede consumir el Tutor IA (con costo de inferencia real, mitigado solo por el throttle de
+  20 req/min, no por rol).
+- **No hay fuga entre cuentas:** en ningún caso un usuario puede actuar como OTRO usuario — el
+  `studentId`/`user.id` siempre es el propio del token. El riesgo es de integridad de datos
+  (registros de "estudiante" generados por cuentas docente/admin, que pueden contaminar analíticas
+  de cohorte en `DOC-V04` y cálculos de mastery) y de uso indebido de un recurso de costo (Tutor
+  IA), no de confidencialidad.
+
+**No se corrige en esta fase** (FASE CC-05 es documental, no toca `src/`). Queda como hallazgo
+abierto para una fase de remediación de código: la corrección natural es `@Roles('estudiante')` en
+las 4 rutas, análoga a como ya están protegidas otras rutas de rol único en el mismo controlador.
