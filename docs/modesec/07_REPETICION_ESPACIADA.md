@@ -1,4 +1,11 @@
-﻿# ⏳ Insumo 07 — Mecanismo y Visualización de Repetición Espaciada (SM-2)
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V05
+---
+
+# ⏳ Insumo 07 — Mecanismo y Visualización de Repetición Espaciada (SM-2)
 
 **Proyecto:** STIRE-Soft  
 **Fundamentación Pedagógica:** Modelo de Ebbinghaus (Curva del Olvido) + Algoritmo SuperMemo-2 (SM-2)  

@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V01..V06 · COMP-V00
+---
+
 # 🎓 Insumo Maestro UX + Pedagógico: Rol Estudiante (STIRE-Soft)
 
 > **Guía de Diseño de Experiencia de Usuario, Intención Pedagógica y Flujos de Interacción para Mockups en Figma e Implementación en Vue 3 / Nuxt.**  

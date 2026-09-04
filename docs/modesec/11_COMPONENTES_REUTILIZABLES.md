@@ -1,4 +1,11 @@
-﻿# 🧩 Insumo 11 — Catálogo de Componentes Vue 3 Reutilizables
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
+# 🧩 Insumo 11 — Catálogo de Componentes Vue 3 Reutilizables
 
 **Proyecto:** STIRE-Soft Frontend (Nuxt 3 + Tailwind/Vanilla CSS + TypeScript)  
 **Fecha:** 30 de agosto de 2026  

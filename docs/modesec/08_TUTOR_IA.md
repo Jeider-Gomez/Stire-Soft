@@ -1,4 +1,11 @@
-﻿# 🤖 Insumo 08 — Especificación y Diseño Seguro del Tutor IA
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V04
+---
+
+# 🤖 Insumo 08 — Especificación y Diseño Seguro del Tutor IA
 
 **Proyecto:** STIRE-Soft  
 **Módulo:** `src/tutor/`  

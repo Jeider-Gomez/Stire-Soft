@@ -1,4 +1,11 @@
-﻿# 🤝 Insumo 12 — Contrato Técnico Frontend ↔ Backend
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
+# 🤝 Insumo 12 — Contrato Técnico Frontend ↔ Backend
 
 **Proyecto:** STIRE-Soft  
 **Propósito:** Especificar el flujo de datos exacto por cada ventana: Componente Vue -> Endpoint -> Payload -> Respuesta -> Mapeo UI.  

@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    no aplica (seguridad, no ventanas)
+---
+
 # 🔐 Insumo 04 — Matriz de Permisos y Control de Acceso (RBAC + BOLA)
 
 **Proyecto:** STIRE-Soft Backend

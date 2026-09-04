@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
 # 🏛️ Insumo 06 — Arquitectura Funcional de Ventanas MODESEC
 
 > **Proyecto:** STIRE-Soft  

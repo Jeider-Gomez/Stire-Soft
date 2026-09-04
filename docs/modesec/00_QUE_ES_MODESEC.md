@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    no aplica (documento conceptual)
+---
+
 # 🧭 ¿Qué es MODESEC? — el modelo explicado, fase por fase
 
 > Documento de referencia del equipo. Explica **qué es** MODESEC, **qué se produce** en cada fase y

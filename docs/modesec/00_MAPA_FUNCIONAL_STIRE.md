@@ -1,4 +1,11 @@
-﻿# 🗺️ Insumo 00 — Mapa Funcional del Sistema STIRE-Soft
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
+# 🗺️ Insumo 00 — Mapa Funcional del Sistema STIRE-Soft
 
 **Proyecto:** STIRE-Soft (Sistema Tutor Inteligente con Repetición Espaciada para la Enseñanza de Algoritmia y Programación)  
 **Versión de Especificación:** 2.0 (MODESEC Multi-Rol + Vue 3 / Nuxt)  

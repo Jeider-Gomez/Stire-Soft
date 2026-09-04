@@ -1,4 +1,11 @@
-﻿# 💡 Insumo 10 — Análisis Comparativo con Referentes EdTech
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo (benchmarking)
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
+# 💡 Insumo 10 — Análisis Comparativo con Referentes EdTech
 
 **Proyecto:** STIRE-Soft  
 **Propósito:** Analizar patrones de UX educativa consolidados y adaptarlos a la identidad algorítmica de STIRE sin copiar interfaces.  

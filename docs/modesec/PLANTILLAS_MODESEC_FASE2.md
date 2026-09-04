@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo (plantillas de trabajo)
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
 # 📐 PLANTILLAS — MODESEC Fase II (Diseño Multimedial)
 **Proyecto:** STIRE-Soft · **Curso:** DDSE3 2026-2 · **Norma:** presentación `DDS3-01.pdf` §3
 **Para qué sirve este archivo:** nadie empieza en hoja en blanco. Se copia la plantilla que le toca a

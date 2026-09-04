@@ -1,4 +1,11 @@
-﻿# 📋 Insumo 13 — Backlog Funcional y Priorización
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo (bitácora)
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
+# 📋 Insumo 13 — Backlog Funcional y Priorización
 
 **Proyecto:** STIRE-Soft  
 **Metodología de Clasificación:** MoSCoW (MVP / Importante / Futuro)  

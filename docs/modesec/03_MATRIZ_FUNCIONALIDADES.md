@@ -1,4 +1,11 @@
-﻿# 🎯 Insumo 03 — Matriz de Funcionalidades por Rol
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
+# 🎯 Insumo 03 — Matriz de Funcionalidades por Rol
 
 **Proyecto:** STIRE-Soft  
 **Norma:** MODESEC Multi-Rol (Estudiante, Docente, Administrador)  

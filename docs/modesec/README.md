@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo (índice)
+codigos:    no aplica (índice)
+---
+
 # 📐 MODESEC — Diseño educativo y multimedial de STIRE-Soft
 
 Carpeta de trabajo del modelo **MODESEC-ISO/IEC 12207** aplicado al proyecto **STIRE**

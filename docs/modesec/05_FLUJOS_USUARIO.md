@@ -1,4 +1,11 @@
-﻿# 🚶 Insumo 05 — Flujos Principales de Usuario (User Journeys)
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
+# 🚶 Insumo 05 — Flujos Principales de Usuario (User Journeys)
 
 **Proyecto:** STIRE-Soft  
 **Norma:** MODESEC §3.3.3 / Flujos Didácticos y de Gestión  

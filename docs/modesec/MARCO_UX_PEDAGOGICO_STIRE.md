@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
 # 🧭 Marco UX + Pedagógico Oficial — STIRE-Soft (v1.0)
 
 > **Documento Maestro de Trazabilidad:** Evidencia Científica $\to$ Principios STIRE $\to$ Decisiones UX $\to$ Decisiones Visuales para Figma.  

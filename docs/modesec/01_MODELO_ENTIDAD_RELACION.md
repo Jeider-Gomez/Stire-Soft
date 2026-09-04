@@ -1,4 +1,11 @@
-﻿# 🧱 Insumo 01 — Modelo de Entidad-Relación y Catálogo de Datos
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo
+codigos:    no aplica (modelo de datos)
+---
+
+# 🧱 Insumo 01 — Modelo de Entidad-Relación y Catálogo de Datos
 
 **Proyecto:** STIRE-Soft  
 **Fuente de Verdad:** Entidades TypeORM en `src/**/entities/*.entity.ts`  

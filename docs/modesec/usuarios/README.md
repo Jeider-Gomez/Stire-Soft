@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo (índice de roles)
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
 # 👥 MODESEC — Especificación Funcional por Rol de Usuario
 
 > **Base de Conocimiento de Usuario para Diseño en Figma, Implementación Nuxt 3 y Validación Backend.**  

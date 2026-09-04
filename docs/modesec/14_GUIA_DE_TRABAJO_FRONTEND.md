@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     derivado de las fichas de ventanas y NAMING_STIRE.md
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
 # 🚀 Insumo 14 — Guía Maestra de Implementación Frontend (Vue 3 + Nuxt 3)
 
 > **Proyecto:** STIRE-Soft Frontend  

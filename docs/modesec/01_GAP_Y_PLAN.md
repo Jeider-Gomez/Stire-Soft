@@ -1,3 +1,10 @@
+---
+estado:     vigente
+verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+fuente:     normativo (bitácora de brechas)
+codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
+---
+
 # 🔍 Qué le falta a nuestro MODESEC — diagnóstico y plan
 
 **Fecha del diagnóstico:** 28 de agosto de 2026 · **Responsable del diagnóstico:** CTO / Líder Técnico
