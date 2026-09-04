@@ -79,7 +79,7 @@
 * **Responsable:** Julio Galvis (Diseño Instruccional)
 * **Ruta Nuxt:** `/docente/contenidos`
 * **Componentes:** `TopicTreeAccordion.vue`, `LearningUnitRow.vue`, `PublishToggle.vue`, `UnitEditModal.vue`.
-* **Endpoints:** `GET /topic`, `POST /topic`, `POST /learning-unit`, `PATCH /learning-unit/:id`.
+* **Endpoints:** `GET /topic/section/:sectionId`, `POST /topic`, `POST /learning-unit`, `PATCH /learning-unit/:id`.
 
 #### `DOC-V03` · Diseñador de Ejercicios y Casos de Prueba *(Nombre visible: Crear Ejercicio)*
 * **Responsable:** Jeider Gómez (Backend) & José López (UI)
@@ -103,11 +103,11 @@
 
 ### 🛡️ VISTAS DEL ADMINISTRADOR
 
-#### `ADM-V01` · Panel de Control y Salud *(Nombre visible: Estado del Sistema)*
+#### `ADM-V01` · Panel de Control y Salud *(Nombre visible: Estado del Sistema)* — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03)
 * **Responsable:** Jeider Gómez & Jorge Cervantes
 * **Ruta Nuxt:** `/admin/dashboard`
 * **Componentes:** `KpiGrid.vue`, `ServiceHealthCard.vue`, `RecentActivitySummary.vue`.
-* **Endpoints:** `GET /maintenance`.
+* **Endpoints:** ⚠️ PROPUESTO — NO IMPLEMENTADO. Solo existe `POST /maintenance/cleanup`.
 
 #### `ADM-V02` · Directorio y Gestión de Usuarios *(Nombre visible: Usuarios y Roles)*
 * **Responsable:** Pedro Romero & Jeider Gómez
@@ -115,8 +115,8 @@
 * **Componentes:** `UsersTable.vue`, `ChangeRoleModal.vue`, `UserStatusToggle.vue`.
 * **Endpoints:** `GET /users`, `PATCH /users/:id`.
 
-#### `ADM-V03` · Auditoría Técnica y Parámetros *(Nombre visible: Logs y Mantenimiento)*
+#### `ADM-V03` · Auditoría Técnica y Parámetros *(Nombre visible: Logs y Mantenimiento)* — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03)
 * **Responsable:** Jorge Cervantes (QA) & Jeider Gómez
 * **Ruta Nuxt:** `/admin/sistema`
 * **Componentes:** `SystemLogsViewer.vue`, `SandboxConfigCard.vue`.
-* **Endpoints:** `GET /maintenance`.
+* **Endpoints:** ⚠️ PROPUESTO — NO IMPLEMENTADO. Solo existe `POST /maintenance/cleanup`.

@@ -167,7 +167,7 @@
 * **DATOS:** Árbol jerárquico desplegable (Módulo > Tema > Unidad), interruptor de estado (Borrador / Publicado).
 * **ACCIONES:** `[Crear tema]`, `[Crear unidad]`, `[Publicar / Guardar borrador]`, `[Editar contenido]`.
 * **COMPONENTES:** `TopicTreeAccordion`, `LearningUnitRow`, `PublishToggle`, `UnitEditModal`.
-* **ENDPOINTS:** `GET /topic`, `POST /topic`, `POST /learning-unit`, `PATCH /learning-unit/:id`.
+* **ENDPOINTS:** `GET /topic/section/:sectionId`, `POST /topic`, `POST /learning-unit`, `PATCH /learning-unit/:id`.
 
 ---
 
@@ -229,7 +229,7 @@
 
 ## 🛡️ PARTE 3: VISTAS DEL ADMINISTRADOR
 
-### VENTANA: Panel de Control y Salud del Sistema
+### VENTANA: Panel de Control y Salud del Sistema — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03)
 * **CÓDIGO TÉCNICO:** `ADM-V01`
 * **NOMBRE DOCUMENTAL:** Panel de Control y Salud del Sistema
 * **NOMBRE VISIBLE EN UI:** **Estado del Sistema**
@@ -238,7 +238,7 @@
 * **ENTRADA:** `/admin/dashboard`
 * **DATOS:** Usuarios registrados por rol, total de clases activas, volumen de ejecuciones en sandbox hoy, uptime.
 * **COMPONENTES:** `KpiGrid`, `ServiceHealthCard`, `RecentActivitySummary`.
-* **ENDPOINTS:** `GET /maintenance`.
+* **ENDPOINTS:** ⚠️ PROPUESTO — NO IMPLEMENTADO. Solo existe `POST /maintenance/cleanup` (acción, no consulta de estado).
 
 ---
 
@@ -256,7 +256,7 @@
 
 ---
 
-### VENTANA: Auditoría Técnica y Parámetros
+### VENTANA: Auditoría Técnica y Parámetros — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03)
 * **CÓDIGO TÉCNICO:** `ADM-V03`
 * **NOMBRE DOCUMENTAL:** Auditoría Técnica y Parámetros del Entorno
 * **NOMBRE VISIBLE EN UI:** **Logs y Mantenimiento**
@@ -265,4 +265,4 @@
 * **ENTRADA:** `/admin/sistema`
 * **DATOS:** Visor de logs técnicos con filtros por nivel, constantes globales (límites de memoria, timeout de 2s, throttles).
 * **COMPONENTES:** `SystemLogsViewer`, `SandboxConfigCard`.
-* **ENDPOINTS:** `GET /maintenance`.
+* **ENDPOINTS:** ⚠️ PROPUESTO — NO IMPLEMENTADO. Solo existe `POST /maintenance/cleanup` (acción, no consulta de logs).

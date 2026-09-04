@@ -1,7 +1,11 @@
 # 🛡️ MODESEC — Insumo Maestro: Rol Administrador
 
 > **Documento de Especificación para Diseño en Figma, Implementación Nuxt 3 y Validación Backend.**  
-> **Actor:** Administrador (`role: 'admin'`) | **Vistas Asociadas:** `ADM-V01` a `ADM-V03`  
+> **Actor:** Administrador (`role: 'admin'`) | **Vistas Asociadas:** `ADM-V01` a `ADM-V03`
+> ⚠️ **`ADM-V01` y `ADM-V03` son REQUERIDO — PENDIENTE DE BACKEND (D-03, FASE CC-04):** el
+> endpoint `GET /maintenance` que documenta esta ficha para ambas **no existe** — el único
+> endpoint real de `MaintenanceController` es `POST /maintenance/cleanup`. No se construye backend
+> nuevo en esta fase; la especificación de diseño se conserva para cuando se implemente.
 > **Nomenclatura Oficial:** Estandarizada según [NAMING_STIRE.md](../../NAMING_STIRE.md)  
 > **Fecha de Actualización:** 2 de septiembre de 2026 | **Versión:** 2.0 Multi-Rol
 
@@ -18,7 +22,7 @@ El administrador es el responsable de la gobernanza, supervisión técnica y est
 * Auditar los registros de actividad técnica y anomalías de seguridad.
 
 ### 1.3 Matriz de Permisos (RBAC)
-* **Permitido:** Supervisión global irrestricta. Listar todos los usuarios (`GET /users`), actualizar roles y estados (`PATCH /users/:id`), consultar métricas técnicas y de mantenimiento (`GET /maintenance`), ver todas las clases y contenidos del sistema.
+* **Permitido:** Supervisión global irrestricta. Listar todos los usuarios (`GET /users`), actualizar roles y estados (`PATCH /users/:id`), ver todas las clases y contenidos del sistema. Consultar métricas técnicas y de mantenimiento: ⚠️ PROPUESTO — NO IMPLEMENTADO (no existe endpoint de consulta; solo `POST /maintenance/cleanup`, una acción, no una consulta de estado).
 * **Restricciones:** No interviene en la resolución de ejercicios como estudiante ni altera calificaciones pedagógicas individuales sin trazabilidad.
 
 ---
@@ -39,8 +43,8 @@ sequenceDiagram
     UI->>A: Redirige a ADM-V01 (Estado del Sistema)
 
     A->>UI: Inspecciona métricas de uso y salud operativa
-    UI->>API: GET /maintenance
-    API-->>UI: Retorna estado del sandbox, conexiones y logs recientes
+    Note over UI,API: ⚠️ PROPUESTO — NO IMPLEMENTADO: no existe endpoint de consulta de salud
+    UI--xAPI: GET /maintenance/health (no existe)
 
     opt Gestión de Usuarios y Roles
         A->>UI: Navega a ADM-V02 (Usuarios y Roles)
@@ -54,9 +58,8 @@ sequenceDiagram
 
     opt Auditoría Técnica
         A->>UI: Navega a ADM-V03 (Logs y Mantenimiento)
-        UI->>API: GET /maintenance
-        API-->>UI: Detalle de eventos de seguridad y ejecuciones
-        UI->>A: Visualiza consola de auditoría
+        Note over UI,API: ⚠️ PROPUESTO — NO IMPLEMENTADO: no existe endpoint de logs
+        UI--xAPI: GET /maintenance/logs (no existe)
     end
 ```
 
@@ -64,7 +67,7 @@ sequenceDiagram
 
 ## 3. Especificación Detallada de Pantallas
 
-### `ADM-V01` · Panel de Control y Salud del Sistema *(Nombre visible en UI: Estado del Sistema)*
+### `ADM-V01` · Panel de Control y Salud del Sistema *(Nombre visible en UI: Estado del Sistema)* — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03)
 * **Ruta Nuxt:** `/admin/dashboard`
 * **Layout:** `layouts/admin.vue`
 * **Objetivo:** Ofrecer una vista panorámica del volumen de uso, usuarios registrados y disponibilidad técnica de STIRE.
@@ -72,7 +75,7 @@ sequenceDiagram
   * Tarjetas KPI: Total de Usuarios (desglosado por Estudiantes y Docentes), Total de Clases Activas, Total de Ejecuciones en Sandbox Hoy.
   * Tarjeta de Estado del Servidor: Uptime, estado de conexión a MySQL, modo de Sandbox activo (`HardenedProcessSandboxAdapter`).
 * **Acciones Principales:** `[Actualizar métricas]`, `[Ir a gestión de usuarios]`, `[Ver logs de sistema]`.
-* **Endpoints Backend:** `GET /maintenance`.
+* **Endpoints Backend:** ⚠️ PROPUESTO — NO IMPLEMENTADO. No existe endpoint de consulta de salud/métricas; el único endpoint real de `MaintenanceController` es `POST /maintenance/cleanup` (una acción de limpieza, no una consulta de estado).
 * **Componentes Vue:** `KpiGrid.vue`, `ServiceHealthCard.vue`, `RecentActivitySummary.vue`.
 
 ---
@@ -93,7 +96,7 @@ sequenceDiagram
 
 ---
 
-### `ADM-V03` · Auditoría Técnica y Parámetros *(Nombre visible en UI: Logs y Mantenimiento)*
+### `ADM-V03` · Auditoría Técnica y Parámetros *(Nombre visible en UI: Logs y Mantenimiento)* — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03)
 * **Ruta Nuxt:** `/admin/sistema`
 * **Layout:** `layouts/admin.vue`
 * **Objetivo:** Monitorear logs de eventos técnicos, parámetros de configuración y límites del entorno seguro.
@@ -101,7 +104,7 @@ sequenceDiagram
   * Visor de Logs con scroll infinito o paginación: Timestamp, Nivel (`INFO`, `WARN`, `ERROR`), Módulo emisor, Mensaje.
   * Resumen de Parámetros Globales: Límites del Sandbox (Timeout: 2000 ms, Memoria Heap: 128 MB), Throttle global (100 req/min), Throttle del Tutor (20 req/min).
 * **Acciones Principales:** `[Filtrar logs por nivel]`, `[Descargar registro de logs]`, `[Verificar estado de servicios]`.
-* **Endpoints Backend:** `GET /maintenance`.
+* **Endpoints Backend:** ⚠️ PROPUESTO — NO IMPLEMENTADO. No existe endpoint de consulta de logs; el único endpoint real de `MaintenanceController` es `POST /maintenance/cleanup`.
 * **Componentes Vue:** `SystemLogsViewer.vue`, `SandboxConfigCard.vue`, `LogLevelFilter.vue`.
 
 ---

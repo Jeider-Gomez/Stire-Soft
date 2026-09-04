@@ -128,7 +128,6 @@ sequenceDiagram
     API-->>UI: Permisos actualizados
 
     A->>UI: Abre ADM-V03 (Salud y Mantenimiento)
-    UI->>API: GET /maintenance
-    API-->>UI: Métricas de rendimiento, uptime y registros de error
-    UI->>A: Visualiza logs operativos y estado del sandbox
+    Note over UI,API: ⚠️ PROPUESTO — NO IMPLEMENTADO: solo existe POST /maintenance/cleanup
+    UI--xAPI: GET /maintenance (no existe)
 ```

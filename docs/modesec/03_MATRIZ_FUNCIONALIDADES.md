@@ -33,7 +33,7 @@
 | | Ver bandeja de entrada / enviados | ✅ | ✅ | ✅ | `GET /message/inbox`, `GET /message/sent` | `Message` | `DOC-V06` (docente); sin ventana asignada en estudiante — ver nota |
 | | Ver conversación con un usuario | ✅ | ✅ | ✅ | `GET /message/conversation/:userId` | `Message` | `DOC-V06` (docente); sin ventana asignada en estudiante — ver nota |
 | **Analítica** | Dashboard de cohorte y alertas| ❌ | ✅ | ✅ | `GET /analytics/class/:id` | `LearningProgress`, `Enrollment` | `DOC-V04` |
-| | Dashboard de salud global | ❌ | ❌ | ✅ | `GET /maintenance` | `ActivityLog` | `ADM-V01`, `ADM-V03` |
+| | Dashboard de salud global | ❌ | ❌ | ✅ | ⚠️ PROPUESTO — NO IMPLEMENTADO (solo existe `POST /maintenance/cleanup`) | `ActivityLog` | `ADM-V01`, `ADM-V03` |
 | **Gobernanza** | Gestión de usuarios y roles | ❌ | ❌ | ✅ | `GET /users`, `PATCH /users/:id` | `User` | `ADM-V02` |
 
 ---

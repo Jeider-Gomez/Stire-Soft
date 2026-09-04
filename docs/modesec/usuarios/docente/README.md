@@ -110,7 +110,7 @@ sequenceDiagram
   * Indicador de estado por unidad: `Borrador (DRAFT)` o `Publicado (PUBLISHED)`.
   * Formulario / Modal para crear o editar Unidades de Aprendizaje (Título, descripción, nivel de dificultad, orden).
 * **Acciones Principales:** `[Crear tema]`, `[Crear unidad]`, `[Publicar / Guardar borrador]`, `[Editar contenido Markdown]`, `[Eliminar]`.
-* **Endpoints Backend:** `GET /topic`, `POST /topic`, `POST /learning-unit`, `PATCH /learning-unit/:id`.
+* **Endpoints Backend:** `GET /topic/section/:sectionId`, `POST /topic`, `POST /learning-unit`, `PATCH /learning-unit/:id`.
 * **Estados de Interfaz:**
   * *Actualización Exitosa:* Toast flotante "Unidad publicada exitosamente".
 * **Componentes Vue:** `TopicTreeAccordion.vue`, `LearningUnitRow.vue`, `PublishToggle.vue`, `UnitEditModal.vue`.

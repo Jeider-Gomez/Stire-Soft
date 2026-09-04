@@ -99,7 +99,7 @@ ejercicio · V-03 Retroalimentación del tutor · V-04 Repaso espaciado (SM-2) �
 
 **Enlace con la ingeniería (verifica Jeider):** cada acción de la categoría 7 debe corresponder a una
 capacidad real o planificada de la API. Anotar el endpoint entre corchetes, p. ej.
-`Entregar solución [POST /submissions]`.
+`Entregar solución [POST /submissions/:id/submit]`.
 
 ---
 

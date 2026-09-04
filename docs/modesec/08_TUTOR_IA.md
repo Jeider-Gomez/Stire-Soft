@@ -78,8 +78,8 @@ graph TD
         BE1 -->|Lee OPENAI_API_KEY\ndesde .env en servidor| GEMINI1["Google Gemini AI"]
     end
 
-    subgraph Modo_B["Modo B (Fase Futura - BYOK Seguro)"]
-        UI2["Estudiante en Perfil"] -->|POST /users/api-key\n(Clave personal)| BE2["NestJS Backend Proxy"]
+    subgraph Modo_B["Modo B (Fase Futura - BYOK Seguro) - PROPUESTO, NO IMPLEMENTADO"]
+        UI2["Estudiante en Perfil"] -->|POST /users/api-key\n(no existe aun)| BE2["NestJS Backend Proxy"]
         BE2 -->|Cifra con AES-256-GCM\nGuarda en DB| DB2[("MySQL Encriptada")]
         BE2 -->|Descifra en memoria\nsolo durante inferencia| GEMINI2["Google Gemini AI"]
     end

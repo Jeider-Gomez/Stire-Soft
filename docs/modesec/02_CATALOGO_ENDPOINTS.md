@@ -44,7 +44,7 @@
 
 | Método | Endpoint | Roles Permitidos | Throttle | Parámetros / Body | Respuesta | Ventana MODESEC | Estado |
 |---|---|---|---|---|---|---|---|
-| `GET` | `/topic` | `estudiante`, `docente`, `admin` | 100/min | Ninguno | `Topic[]` con unidades | `EST-V01`, `DOC-V02` | ✅ Activo |
+| `GET` | `/topic/section/:sectionId` | `estudiante`, `docente`, `admin` | 100/min | `sectionId: number` | `Topic[]` con unidades | `EST-V01`, `DOC-V02` | ✅ Activo |
 | `POST` | `/topic` | `docente`, `admin` | 100/min | `CreateTopicDto` | `Topic` | `DOC-V02` | ✅ Activo |
 | `GET` | `/learning-unit/:id` | `estudiante`, `docente`, `admin` | 100/min | `id: number` | `LearningUnit` con contenidos | `EST-V02` | ✅ Activo |
 | `POST` | `/learning-unit` | `docente`, `admin` | 100/min | `CreateLearningUnitDto` | `LearningUnit` | `DOC-V02` | ✅ Activo |

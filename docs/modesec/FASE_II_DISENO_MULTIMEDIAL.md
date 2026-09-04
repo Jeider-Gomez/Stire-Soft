@@ -449,7 +449,7 @@ El inventario completo de las **16 ventanas** que heredan de este modelo está e
 | 4 | **Audio** | **No aplica.** Panel de consulta rápida (< 30 s) para uso en salas de cómputo compartidas. |
 | 5 | **Video** | **No aplica** salvo bienvenida inicial opcional (60 s descartable). |
 | 6 | **Animación** | Barra de progreso con transición de 400 ms al actualizarse; aparición escalonada de tarjetas (60 ms). |
-| 7 | **Acciones** | Continuar unidad `[GET /progress/my-progress]` · Abrir repasos pendientes `[GET /progress/recommendations]` · Abrir tutor modal · Ver Mi Progreso. |
+| 7 | **Acciones** | Continuar unidad (dato real vía `[GET /learning-progress/student/:studentId]`) · Abrir repasos pendientes ⚠️ PROPUESTO — NO IMPLEMENTADO (no existe endpoint de recomendaciones; `review-schedules` no tiene controller) · Abrir tutor modal · Ver Mi Progreso. |
 
 ### Ficha EST-V02 · Unidad de aprendizaje (contenido teórico interactivo)
 *Ver maqueta: [`assets/png/3.3.1_v02_unidad_teoria.png`](assets/png/3.3.1_v02_unidad_teoria.png) · Fuente: [`assets/3.3.1_v02_unidad_teoria.svg`](assets/3.3.1_v02_unidad_teoria.svg)*
@@ -462,7 +462,7 @@ El inventario completo de las **16 ventanas** que heredan de este modelo está e
 | 4 | **Audio** | **No aplica** como locución obligatoria. Soporte nativo para lectores de pantalla. |
 | 5 | **Video** | **Aplica.** Cápsula explicativa de 3–6 min con subtítulos y transcripción descargable. |
 | 6 | **Animación** | Trazado de escritorio paso a paso: resalta la línea activa y actualiza la tabla de memoria/variables de forma interactiva. |
-| 7 | **Acciones** | Marcar como visto `[POST /progress/view/:unitId]` · Avanzar/retroceder trazado · Ir al ejercicio práctico · Consultar al tutor IA. |
+| 7 | **Acciones** | Marcar como visto ⚠️ PROPUESTO — NO IMPLEMENTADO (no existe endpoint para marcar unidad como explorada) · Avanzar/retroceder trazado · Ir al ejercicio práctico · Consultar al tutor IA. |
 
 ### Ficha EST-V03 · Resolución de ejercicio (editor y juez)
 *Ver maqueta: [`assets/png/3.3.1_v03_ejercicio.png`](assets/png/3.3.1_v03_ejercicio.png) · Fuente: [`assets/3.3.1_v03_ejercicio.svg`](assets/3.3.1_v03_ejercicio.svg)*
@@ -475,7 +475,7 @@ El inventario completo de las **16 ventanas** que heredan de este modelo está e
 | 4 | **Audio** | **No aplica.** Solo señales sonoras opcionales de éxito/fallo al finalizar la ejecución del juez. |
 | 5 | **Video** | **No aplica.** Mantener la concentración cognitiva en el editor de código. |
 | 6 | **Animación** | Indicador de estado del sandbox en tiempo real (En cola → Ejecutando → Evaluando). |
-| 7 | **Acciones** | Probar casos públicos `[POST /submissions]` · Enviar solución definitiva · Pedir pista al Tutor `[POST /tutor/chat]` · Autoguardado de borrador. |
+| 7 | **Acciones** | Iniciar intento `[POST /submissions/start]` · Autoguardado `[PUT /submissions/:id/autosave]` · Entregar solución definitiva `[POST /submissions/:id/submit]` · Pedir pista al Tutor `[POST /tutor/chat]`. |
 
 ### Ficha EST-V04 · Tutor IA (tutor IA adaptativo)
 *Ver maqueta: [`assets/png/3.3.1_v04_tutor.png`](assets/png/3.3.1_v04_tutor.png) · Fuente: [`assets/3.3.1_v04_tutor.svg`](assets/3.3.1_v04_tutor.svg)*
@@ -501,7 +501,7 @@ El inventario completo de las **16 ventanas** que heredan de este modelo está e
 | 4 | **Audio** | **No aplica.** Sesión de recuperación activa focalizada. |
 | 5 | **Video** | **No aplica.** La recuperación activa requiere resolver problemas, no ver videos pasivamente. |
 | 6 | **Animación** | Al completar un repaso, la tarjeta sale de la lista y se revela la nueva fecha calculada por SM-2. |
-| 7 | **Acciones** | Iniciar ejercicio de repaso `[GET /progress/recommendations]` · Posponer con justificación · Consultar historial de intervalos. |
+| 7 | **Acciones** | Iniciar ejercicio de repaso ⚠️ PROPUESTO — NO IMPLEMENTADO (no existe endpoint de recomendaciones de repaso; `review-schedules` no tiene controller, solo servicio interno) · Posponer con justificación · Consultar historial de intervalos. |
 
 ### Ficha EST-V06 · Mi Progreso (progreso y métricas)
 *Ver maqueta: [`assets/png/3.3.1_v06_progreso.png`](assets/png/3.3.1_v06_progreso.png) · Fuente: [`assets/3.3.1_v06_progreso.svg`](assets/3.3.1_v06_progreso.svg)*
