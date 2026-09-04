@@ -1,11 +1,11 @@
-# 🗺️ Insumo 09 — Mapa Completo de Navegación y Sitemap Nuxt
-
 ---
 estado:     derivado
 verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
 fuente:     derivado de contenidos/3.3.3_MAPA_NAVEGACION.md (el Gráfico 2 normativo)
 codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 ---
+
+# 🗺️ Insumo 09 — Mapa Completo de Navegación y Sitemap Nuxt
 
 > **Este documento es DERIVADO — traduce el mapa de navegación normativo a rutas concretas de
 > Nuxt.** No manda sobre [`contenidos/3.3.3_MAPA_NAVEGACION.md`](contenidos/3.3.3_MAPA_NAVEGACION.md)

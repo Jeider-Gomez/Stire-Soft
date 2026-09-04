@@ -1,12 +1,12 @@
-# FASE II — DISEÑO MULTIMEDIAL (MODESEC)
-## STIRE-Soft · Sistema Tutor Inteligente para la Resolución de Ejercicios
-
 ---
 estado:     derivado
 verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
 fuente:     derivado de contenidos/3.1_DIAGRAMA_CONTENIDOS.md, guiones/3.2_GUION_TECNICO_MULTIMEDIAL.md, ventanas/3.3_VENTANA_ESTANDAR.md, ventanas/3.3.1_FICHAS_VENTANAS.md, contenidos/3.3.2_GUIA_METAFORAS.md, contenidos/3.3.3_MAPA_NAVEGACION.md
 codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 ---
+
+# FASE II — DISEÑO MULTIMEDIAL (MODESEC)
+## STIRE-Soft · Sistema Tutor Inteligente para la Resolución de Ejercicios
 
 > ⚠️ **ESTE DOCUMENTO ES GENERADO. NO SE EDITA DIRECTAMENTE.**
 > Es la concatenación literal de los seis documentos fuente listados arriba, regenerada en
@@ -164,7 +164,7 @@ diagrama debe revisarse y corregirse en lo que no trace. Está registrado como t
 **Por qué se llenó así:** las características psicológicas no son un adorno del formato. De la
 ansiedad ante el error salen tres decisiones de interfaz que aparecen en §3.3: *Ejecutar* separado
 de *Entregar*, autoguardado visible en el footer, y un tutor que responde con preguntas en lugar de
-correcciones. De la baja tolerancia a la espera sale el indicador de estado del juez en V-03.
+correcciones. De la baja tolerancia a la espera sale el indicador de estado del juez en EST-V03.
 
 ---
 
@@ -172,7 +172,7 @@ correcciones. De la baja tolerancia a la espera sale el indicador de estado del 
 
 Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categorías del formato).
 
-### V-01 · Inicio
+### EST-V01 · Inicio
 
 | Título de la Ventana | Descripción | Formato / fuente | Acción | Evento |
 |---|---|---|---|---|
@@ -180,7 +180,7 @@ Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categoría
 | **Imagen** | Iconografía lineal 24 px (inicio, repasos, mi progreso) e ilustración de cabecera plana | SVG · producción propia (`assets/icons/`) | Icono clicable: navega a la sección correspondiente | Clic sobre el icono o su etiqueta |
 | **Sonido** | No se utiliza | — | — | — |
 
-### V-02 · Unidad de aprendizaje (contenido teórico)
+### EST-V02 · Unidad de aprendizaje (contenido teórico)
 
 | Título de la Ventana | Descripción | Formato / fuente | Acción | Evento |
 |---|---|---|---|---|
@@ -190,7 +190,7 @@ Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categoría
 | **Video** | Cápsula de 3–6 min por unidad, subtitulada, con control de velocidad y transcripción | MP4 H.264 720p + WebVTT · **producción pendiente** | Reproduce, pausa, cambia velocidad, descarga transcripción | Clic en ▶ / controles del reproductor |
 | **Animación** | Trazado de escritorio paso a paso: resalta la línea en ejecución y actualiza la tabla de variables | SVG + JS (sin dependencias de video) · producción propia | Avanza o retrocede un paso del trazado | Clic en ◀ / ▶ (nunca automático) |
 
-### V-03 · Resolución de ejercicio
+### EST-V03 · Resolución de ejercicio
 
 | Título de la Ventana | Descripción | Formato / fuente | Acción | Evento |
 |---|---|---|---|---|
@@ -199,7 +199,7 @@ Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categoría
 | **Sonido** | Dos señales cortas y **desactivadas por defecto**: éxito y fallo de la ejecución | WAV/OGG ≤1 s · biblioteca libre de derechos, **pendiente de selección** | Avisa del fin de la ejecución sin mirar la pantalla | Fin de la ejecución del juez |
 | **Animación** | Indicador de progreso del sandbox: en cola → ejecutando → evaluando; los casos se revelan en secuencia | CSS + SVG · producción propia | Comunica que el sistema no está congelado | Envío al juez |
 
-### V-04 · Tutor IA
+### EST-V04 · Tutor IA
 
 | Título de la Ventana | Descripción | Formato / fuente | Acción | Evento |
 |---|---|---|---|---|
@@ -208,7 +208,7 @@ Un bloque por ventana. Filas: **Texto · Imagen · Sonido** (las tres categoría
 | **Sonido** | **No se utiliza, por decisión pedagógica:** sintetizar voz sobre texto generado por IA aumenta la percepción de autoridad de una fuente falible | — | — | — |
 | **Animación** | Indicador de escritura y entrega progresiva del texto | CSS · producción propia | Evita la percepción de sistema colgado | Mientras se genera la respuesta |
 
-### V-05 · Repasos (repaso espaciado)
+### EST-V05 · Repasos (repaso espaciado)
 
 | Título de la Ventana | Descripción | Formato / fuente | Acción | Evento |
 |---|---|---|---|---|
