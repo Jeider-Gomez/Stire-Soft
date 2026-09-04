@@ -1,6 +1,6 @@
 ---
 estado:     vigente
-verificado: 2026-09-04 contra commit HEAD (FASE CC-05)
+verificado: 2026-09-04 contra commit HEAD (FASE CC-05B)
 fuente:     normativo (bitácora de brechas)
 codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 ---
@@ -16,11 +16,13 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 
 1. **La Fase II ya está completa** (§3.1 a §3.3.3, con sus 5 formatos y 10 gráficos): era lo exigido
    para esta entrega y es lo que se presenta.
-2. **La Fase I ya tiene su cadena mínima demostrable** (FASE CC-05): Formato 5 (competencias),
-   Formato 6 (contenidos, rederivado) y la tabla de trazabilidad completa
-   `COMP-203413 → RA → contenido → ventana → endpoint` existen y son verificables. Los Formatos 1,
-   4, 7, 8 y 9 quedan **deliberadamente diferidos** — no alimentan esa cadena — y se declaran como
-   tal, no como huecos accidentales.
+2. **La Fase I queda CERRADA PARA EL ALCANCE DEL MVP** (FASE CC-05B, decisión D-06): STIRE es una
+   herramienta de apoyo docente con alcance declarado — razonamiento algorítmico y estructuras de
+   control, no `COMP-203413` completa. Formato 5 (competencias), Formato 6 (contenidos, rederivado
+   con el alcance MVP explícito) y la tabla de trazabilidad completa
+   `COMP-203413 → RA → contenido → ventana → endpoint` existen y son verificables, con exactamente
+   3 huecos reales declarados. Los Formatos 1, 4, 7, 8 y 9 quedan **deliberadamente diferidos** —
+   no alimentan esa cadena — y se declaran como tal, no como huecos accidentales.
 3. **La Fase III existe pero no está rotulada como MODESEC**, y las Fases IV y V están abiertas
    (falta juicio de expertos y prueba modelo). Eso es normal a esta altura del semestre, pero debe
    quedar declarado, no omitido.
@@ -34,6 +36,12 @@ Leyenda: ✅ completo · 🟡 existe pero no en formato MODESEC / incompleto · 
 CC-05, Paso 4)
 
 ### FASE I — Diseño educativo
+
+> ✅ **CERRADA PARA EL ALCANCE DEL MVP (D-06, FASE CC-05B).** STIRE es una herramienta de apoyo al
+> docente, no la plataforma del curso completo. Cubre razonamiento algorítmico y estructuras de
+> control (`RA-203413-U1` + parte algorítmica de `U2`); el resto de `COMP-203413` (HTML5/CSS/DOM,
+> Unidad 3 OVA/REDA) se dicta por otros medios del curso — alcance declarado, no hueco. Ver
+> `contenidos/3.1_DIAGRAMA_CONTENIDOS.md` §6 y `fase1/TRAZABILIDAD.md`.
 
 | § | Pieza | Formato | Estado | Dónde está hoy |
 |---|---|---|---|---|
@@ -100,7 +108,7 @@ CC-05, Paso 4)
 | Organización en Git | Los archivos de la Fase II no existían en el repositorio: solo la plantilla vacía | Estructura descrita en `README.md` |
 | Formato 5 — Sistema de competencias | Sin él no hay transcripción autorizada de `COMP-203413` ni de los `RA-203413-U1/U2/U3`; era la pieza más crítica del semáforo | `fase1/2.4_SISTEMA_COMPETENCIAS.md` (FASE CC-05, Paso 1) |
 | §3.1 sin rederivar desde el Formato 5 | El diagrama de contenidos cubría pseudocódigo/arreglos/modularidad sin trazar contra ninguna competencia oficial | `contenidos/3.1_DIAGRAMA_CONTENIDOS.md`, rederivado (FASE CC-05, Paso 2) — con lo no cubierto declarado explícitamente en su §6 |
-| Trazabilidad `competencia → contenido → ventana → endpoint` no demostrable | Era exactamente el riesgo #1 de este documento | `fase1/TRAZABILIDAD.md` (FASE CC-05, Paso 3) — 10 filas, huecos de contenido sembrado declarados donde existen |
+| Trazabilidad `competencia → contenido → ventana → endpoint` no demostrable | Era exactamente el riesgo #1 de este documento | `fase1/TRAZABILIDAD.md` (FASE CC-05 Paso 3, columna de cobertura en CC-05B Paso 2) — 10 filas `cubierto` + 3 `pendiente` (huecos reales), 0 `fuera de alcance` en la tabla |
 
 ---
 
@@ -134,10 +142,10 @@ que alimentan la cadena `competencia → contenido → ventana`. Las tareas 2 y 
 
 | # | Riesgo | Impacto | Mitigación |
 |---|---|---|---|
-| 1 | ~~Fase I no formalizada~~ — **mitigado en FASE CC-05:** Formato 5, §3.1 rederivado y la tabla de trazabilidad ya demuestran la cadena `competencia → contenido → ventana → endpoint` con huecos declarados | Bajo (era Alto) | Resuelto — ver `fase1/2.4_SISTEMA_COMPETENCIAS.md`, `fase1/TRAZABILIDAD.md` |
-| 1b | **STIRE no cubre la mayoría de la competencia oficial:** `COMP-203413` exige HTML5/CSS/JS-DOM (Unidad 1-2) y construcción de OVA/REDA (Unidad 3); STIRE solo evalúa lógica algorítmica vía Judge Engine. Cubre una fracción de U1 y un fragmento de U2 (diseño modular) — nada de HTML/CSS, DOM, ni la Unidad 3 completa | Alto (nuevo hallazgo, FASE CC-05 Paso 2) | Declarado explícitamente en `contenidos/3.1_DIAGRAMA_CONTENIDOS.md` §6; no se resuelve con código en esta fase (documental). Requiere decisión de producto: ¿se amplía el alcance de STIRE, o se acepta que STIRE cubre solo una porción de la competencia? |
-| 1c | **8 de 10 unidades de aprendizaje sin contenido/actividad sembrados** en `db:seed:demo` — el modelo de datos las soporta, no hay instancias | Medio | Declarado en `fase1/TRAZABILIDAD.md`; no se puebla contenido en esta fase (documental) |
-| 1d | **Contradicción interna del propio Plan de Curso** entre §5 y §6 en el texto de `RA-203413-U2` y `RA-203413-U3` (nombres de unidad y wording del RA no coinciden) | Bajo | Declarado en `fase1/2.4_SISTEMA_COMPETENCIAS.md` §3.2-3.3; no es corregible por STIRE — es un documento institucional de la Universidad |
+| 1 | ~~Fase I no formalizada~~ — **mitigado en FASE CC-05:** Formato 5, §3.1 rederivado y la tabla de trazabilidad ya demuestran la cadena `competencia → contenido → ventana → endpoint`, ahora con columna de cobertura y exactamente 3 huecos reales | Bajo (era Alto) | Resuelto — ver `fase1/2.4_SISTEMA_COMPETENCIAS.md`, `fase1/TRAZABILIDAD.md` |
+| 1b | ~~STIRE no cubre la mayoría de la competencia oficial~~ — **resuelto por decisión de producto D-06 (FASE CC-05B):** ya no es un hallazgo abierto, es alcance MVP declarado. STIRE cubre razonamiento algorítmico y estructuras de control; HTML5/CSS/DOM y la Unidad 3 (OVA/REDA) se dictan por otros medios del curso, por decisión explícita, no por limitación descubierta | Bajo (era Alto) | Resuelto — ver `contenidos/3.1_DIAGRAMA_CONTENIDOS.md` §6 y `fase1/TRAZABILIDAD.md` (nota de sustentación) |
+| 1c | **8 de 10 unidades de aprendizaje sin contenido/actividad sembrados** en `db:seed:demo` — el modelo de datos las soporta, no hay instancias | Medio | Declarado en `fase1/TRAZABILIDAD.md` como Hueco #1 (de 3); trabajo de contenido, no de arquitectura — no se puebla en esta fase (documental) |
+| 1d | **Contradicción interna del propio Plan de Curso** entre §5 y §6 en el texto de `RA-203413-U2` y `RA-203413-U3` (nombres de unidad y wording del RA no coinciden) | Bajo | Declarado en `fase1/2.4_SISTEMA_COMPETENCIAS.md` §3.2-3.3 y como Hueco #3 (de 3) en `fase1/TRAZABILIDAD.md`; no es corregible por STIRE — es un documento institucional de la Universidad, se pregunta al docente titular |
 | 1e | **Rol sin restricción en `POST /submissions/start`, `POST /submissions/:id/submit`, `PUT /submissions/:id/autosave`, `POST /tutor/chat`** — un docente o admin puede usarlas como si fuera estudiante | Medio | Registrado en `13_BACKLOG_FUNCIONAL.md` §6 (FASE CC-05, Paso 0b); no se corrige en esta fase (documental) |
 | 2 | Endpoints de las fichas **no verificados** contra el código | Resuelto | Tarea 6 (FASE CC-04, Paso 5) |
 | 3 | Video y animación **declarados pero no producidos** | Medio | Si no se producen, degradar a trazado estático tabulado y **declararlo**, nunca eliminarlo en silencio |
