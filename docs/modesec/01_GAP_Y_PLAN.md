@@ -16,9 +16,11 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 
 1. **La Fase II ya está completa** (§3.1 a §3.3.3, con sus 5 formatos y 10 gráficos): era lo exigido
    para esta entrega y es lo que se presenta.
-2. **La Fase I es el hueco real del proyecto.** Existe el trabajo educativo, pero disperso y en
-   formato de ingeniería, no en los formatos 1 a 9 de MODESEC. Sin Fase I formalizada, la
-   trazabilidad "competencia → contenido → ventana" no se puede demostrar ante el docente.
+2. **La Fase I ya tiene su cadena mínima demostrable** (FASE CC-05): Formato 5 (competencias),
+   Formato 6 (contenidos, rederivado) y la tabla de trazabilidad completa
+   `COMP-203413 → RA → contenido → ventana → endpoint` existen y son verificables. Los Formatos 1,
+   4, 7, 8 y 9 quedan **deliberadamente diferidos** — no alimentan esa cadena — y se declaran como
+   tal, no como huecos accidentales.
 3. **La Fase III existe pero no está rotulada como MODESEC**, y las Fases IV y V están abiertas
    (falta juicio de expertos y prueba modelo). Eso es normal a esta altura del semestre, pero debe
    quedar declarado, no omitido.
@@ -27,19 +29,21 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 
 ## 2. Semáforo completo del modelo
 
-Leyenda: ✅ completo · 🟡 existe pero no en formato MODESEC / incompleto · 🔴 no iniciado
+Leyenda: ✅ completo · 🟡 existe pero no en formato MODESEC / incompleto · 🔴 no iniciado ·
+⏸️ **PENDIENTE — ALCANCE DIFERIDO** (decisión explícita de producto, no negligencia — ver FASE
+CC-05, Paso 4)
 
 ### FASE I — Diseño educativo
 
 | § | Pieza | Formato | Estado | Dónde está hoy |
 |---|---|---|---|---|
-| 2.1 | Análisis de la necesidad educativa | 1 | 🟡 | Justificación dispersa en el documento maestro; **falta** el formato con ideal/real, falencias, causas y tipo de software |
+| 2.1 | Análisis de la necesidad educativa | 1 | ⏸️ PENDIENTE — ALCANCE DIFERIDO | Decisión de Jeider (FASE CC-05): de los 5 formatos de Fase I solo se formalizan los que alimentan la cadena competencia → contenido → ventana. El Formato 1 no la alimenta. No se escribe en esta fase. |
 | 2.2 | Planeación del proceso de producción | 2, 3 | 🟡 | `MONITOREO_SEMANAL.md`, `TABLERO.md`, `DISPONIBILIDAD_EQUIPO.md` cubren cronograma y roles; falta el registro de tiempos |
-| 2.3 | Diseño de fines educativos | 4 | 🔴 | No existe: objetivos, dimensiones y valores no están declarados |
-| 2.4 | **Diseño del sistema de competencias** | 5 | 🔴 | **La pieza más crítica que falta.** La competencia está enunciada en la Fase II, pero sin desagregar en objetivos, norma, conceptos y habilidades |
-| 2.5 | Diseño de contenidos | 6 | 🟡 | Los contenidos están en §3.1, pero deben *derivarse* del formato 5, no al revés |
-| 2.6 | Diseño pedagógico | 7 | 🟡 | MOCAVI está declarado; **falta** decir qué aspectos concretos de MOCAVI se materializan en el software |
-| 2.7 | Diseño de aprendizaje y proceso evaluativo | 8, 9 | 🟡 | El ciclo cognitivo y el motor de dominio existen en `STIRE_FUNCTIONAL_VISION.md`; falta pasarlo al formato de secuencia de aprendizaje |
+| 2.3 | Diseño de fines educativos | 4 | ⏸️ PENDIENTE — ALCANCE DIFERIDO | Mismo criterio que 2.1: no alimenta la cadena competencia → contenido → ventana. No se escribe en esta fase. |
+| 2.4 | **Diseño del sistema de competencias** | 5 | ✅ | [`fase1/2.4_SISTEMA_COMPETENCIAS.md`](fase1/2.4_SISTEMA_COMPETENCIAS.md) (FASE CC-05, Paso 1) — transcripción literal de `COMP-203413`, `RA-203413-U1/U2/U3` y las tres unidades del Plan de Curso `FDOC-088`, con página citada, más su desagregación en objetivos/norma de desempeño/conceptos/habilidades. |
+| 2.5 | Diseño de contenidos | 6 | ✅ | [`contenidos/3.1_DIAGRAMA_CONTENIDOS.md`](contenidos/3.1_DIAGRAMA_CONTENIDOS.md), rederivado del Formato 5 en FASE CC-05, Paso 2 — reconcilia lo que STIRE cubre de `COMP-203413` (parte de algoritmia de U1, diseño modular de U2) y declara explícitamente lo que no cubre (HTML/CSS/DOM, Unidad 3 completa, arreglos sin respaldo curricular). Trazabilidad completa en [`fase1/TRAZABILIDAD.md`](fase1/TRAZABILIDAD.md). |
+| 2.6 | Diseño pedagógico | 7 | ⏸️ PENDIENTE — ALCANCE DIFERIDO | Mismo criterio: no alimenta la cadena competencia → contenido → ventana. MOCAVI sigue declarado como marco (ver `MARCO_UX_PEDAGOGICO_STIRE.md`), pero el Formato 7 formal no se escribe en esta fase. |
+| 2.7 | Diseño de aprendizaje y proceso evaluativo | 8, 9 | ⏸️ PENDIENTE — ALCANCE DIFERIDO | Mismo criterio: no alimenta la cadena competencia → contenido → ventana. No se escribe en esta fase. |
 
 ### FASE II — Diseño multimedial
 
