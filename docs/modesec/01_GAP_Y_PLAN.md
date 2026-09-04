@@ -1,6 +1,6 @@
 ---
 estado:     vigente
-verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+verificado: 2026-09-04 contra commit HEAD (FASE CC-05)
 fuente:     normativo (bitácora de brechas)
 codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 ---
@@ -98,6 +98,9 @@ CC-05, Paso 4)
 | Iconografía de la guía de metáforas | El Formato 14 tiene una columna **Imagen** que no se puede llenar con texto | `assets/3.3.2_guia_metaforas.svg` (12 iconos dibujados) |
 | Fichas de ventana sin maqueta | Describir una ventana sin mostrarla deja el Formato 13 a medias | 6 wireframes `assets/3.3.1_v0*.svg` |
 | Organización en Git | Los archivos de la Fase II no existían en el repositorio: solo la plantilla vacía | Estructura descrita en `README.md` |
+| Formato 5 — Sistema de competencias | Sin él no hay transcripción autorizada de `COMP-203413` ni de los `RA-203413-U1/U2/U3`; era la pieza más crítica del semáforo | `fase1/2.4_SISTEMA_COMPETENCIAS.md` (FASE CC-05, Paso 1) |
+| §3.1 sin rederivar desde el Formato 5 | El diagrama de contenidos cubría pseudocódigo/arreglos/modularidad sin trazar contra ninguna competencia oficial | `contenidos/3.1_DIAGRAMA_CONTENIDOS.md`, rederivado (FASE CC-05, Paso 2) — con lo no cubierto declarado explícitamente en su §6 |
+| Trazabilidad `competencia → contenido → ventana → endpoint` no demostrable | Era exactamente el riesgo #1 de este documento | `fase1/TRAZABILIDAD.md` (FASE CC-05, Paso 3) — 10 filas, huecos de contenido sembrado declarados donde existen |
 
 ---
 
@@ -107,14 +110,19 @@ El orden **no es negociable**: MODESEC es secuencial y la Fase I alimenta a la I
 trabajando "hacia atrás" porque el curso lo pidió así, y eso hay que corregirlo antes del siguiente
 reto o la trazabilidad no se sostiene.
 
+**Decisión de alcance (Jeider, FASE CC-05):** de los 5 formatos de Fase I, solo se formalizan los
+que alimentan la cadena `competencia → contenido → ventana`. Las tareas 2 y 4 (Formatos 1, 4, 7, 8,
+9) quedan **PENDIENTES — ALCANCE DIFERIDO** por esa razón, no reprogramadas por falta de tiempo.
+
 | # | Tarea | Entregable | Dueño sugerido | Esfuerzo | Prioridad |
 |---|---|---|---|---|---|
-| 1 | **Formalizar el sistema de competencias** (Formato 5): objetivos, norma, conceptos y habilidades | `fase1/2.4_SISTEMA_COMPETENCIAS.md` | Julio + Líder | 3 h | 🔥 P0 |
-| 2 | **Análisis de la necesidad educativa** (Formato 1): ideal vs. real, falencias, causas, tipo de software y justificación | `fase1/2.1_NECESIDAD_EDUCATIVA.md` | Equipo (taller de 1 sesión) | 2 h | 🔥 P0 |
-| 3 | Rederivar §3.1 desde el Formato 5 y corregir lo que no trace | ajuste en `3.1_DIAGRAMA_CONTENIDOS.md` | Julio | 1 h | 🔥 P0 |
-| 4 | Diseño de fines educativos (Formato 4) y diseño pedagógico (Formato 7): qué aspectos de MOCAVI se materializan | `fase1/2.3_FINES.md`, `fase1/2.6_PEDAGOGICO.md` | Diseñador instruccional | 3 h | P1 |
-| 5 | Diseño de aprendizaje y proceso evaluativo (Formatos 8 y 9) | `fase1/2.7_APRENDIZAJE.md` | Diseñador instruccional | 3 h | P1 |
-| 6 | **Verificar los endpoints citados en las fichas** contra el código real | corrección en `3.3.1_FICHAS_VENTANAS.md` | Jeider | 1 h | P1 |
+| 1 | ~~Formalizar el sistema de competencias~~ (Formato 5) | `fase1/2.4_SISTEMA_COMPETENCIAS.md` | — | — | ✅ **HECHO** (FASE CC-05, Paso 1) |
+| 2 | Análisis de la necesidad educativa (Formato 1) | `fase1/2.1_NECESIDAD_EDUCATIVA.md` | — | — | ⏸️ **DIFERIDO** — no alimenta la cadena competencia → contenido → ventana |
+| 3 | ~~Rederivar §3.1 desde el Formato 5~~ | `3.1_DIAGRAMA_CONTENIDOS.md` | — | — | ✅ **HECHO** (FASE CC-05, Paso 2) — con lo no cubierto declarado en su §6 |
+| 3b | Tabla de trazabilidad `competencia → RA → contenido → ventana → endpoint` | `fase1/TRAZABILIDAD.md` | — | — | ✅ **HECHO** (FASE CC-05, Paso 3) |
+| 4 | Diseño de fines educativos (Formato 4) y diseño pedagógico (Formato 7) | `fase1/2.3_FINES.md`, `fase1/2.6_PEDAGOGICO.md` | — | — | ⏸️ **DIFERIDO** — mismo criterio que tarea 2 |
+| 5 | Diseño de aprendizaje y proceso evaluativo (Formatos 8 y 9) | `fase1/2.7_APRENDIZAJE.md` | — | — | ⏸️ **DIFERIDO** — mismo criterio que tarea 2 |
+| 6 | **Verificar los endpoints citados en las fichas** contra el código real | corrección en `3.3.1_FICHAS_VENTANAS.md` | Jeider | 1 h | ✅ **HECHO** (FASE CC-04, Paso 5) |
 | 7 | Rotular la Fase III existente como MODESEC (Formatos 15, 16, 17) y añadir diccionario de datos | `fase3/` | Jeider | 4 h | P2 |
 | 8 | Producir el video de unidad y la animación de trazado (§3.2.3) | `assets/media/` | Por asignar | 8 h+ | P2 |
 | 9 | Diseñar el instrumento de **juicio de expertos** (Formato 17 de la Fase IV) | `fase4/5.3_JUICIO_EXPERTOS.md` | Líder | 2 h | P2 |
@@ -126,12 +134,17 @@ reto o la trazabilidad no se sostiene.
 
 | # | Riesgo | Impacto | Mitigación |
 |---|---|---|---|
-| 1 | **Fase I no formalizada.** Si el docente pide la trazabilidad competencia → contenido → ventana, hoy no se puede demostrar con formatos | Alto | Tareas 1 a 3 del plan, antes del próximo reto |
-| 2 | Endpoints de las fichas **no verificados** contra el código | Medio | Tarea 6; mientras tanto están rotulados como "contrato propuesto" |
+| 1 | ~~Fase I no formalizada~~ — **mitigado en FASE CC-05:** Formato 5, §3.1 rederivado y la tabla de trazabilidad ya demuestran la cadena `competencia → contenido → ventana → endpoint` con huecos declarados | Bajo (era Alto) | Resuelto — ver `fase1/2.4_SISTEMA_COMPETENCIAS.md`, `fase1/TRAZABILIDAD.md` |
+| 1b | **STIRE no cubre la mayoría de la competencia oficial:** `COMP-203413` exige HTML5/CSS/JS-DOM (Unidad 1-2) y construcción de OVA/REDA (Unidad 3); STIRE solo evalúa lógica algorítmica vía Judge Engine. Cubre una fracción de U1 y un fragmento de U2 (diseño modular) — nada de HTML/CSS, DOM, ni la Unidad 3 completa | Alto (nuevo hallazgo, FASE CC-05 Paso 2) | Declarado explícitamente en `contenidos/3.1_DIAGRAMA_CONTENIDOS.md` §6; no se resuelve con código en esta fase (documental). Requiere decisión de producto: ¿se amplía el alcance de STIRE, o se acepta que STIRE cubre solo una porción de la competencia? |
+| 1c | **8 de 10 unidades de aprendizaje sin contenido/actividad sembrados** en `db:seed:demo` — el modelo de datos las soporta, no hay instancias | Medio | Declarado en `fase1/TRAZABILIDAD.md`; no se puebla contenido en esta fase (documental) |
+| 1d | **Contradicción interna del propio Plan de Curso** entre §5 y §6 en el texto de `RA-203413-U2` y `RA-203413-U3` (nombres de unidad y wording del RA no coinciden) | Bajo | Declarado en `fase1/2.4_SISTEMA_COMPETENCIAS.md` §3.2-3.3; no es corregible por STIRE — es un documento institucional de la Universidad |
+| 1e | **Rol sin restricción en `POST /submissions/start`, `POST /submissions/:id/submit`, `PUT /submissions/:id/autosave`, `POST /tutor/chat`** — un docente o admin puede usarlas como si fuera estudiante | Medio | Registrado en `13_BACKLOG_FUNCIONAL.md` §6 (FASE CC-05, Paso 0b); no se corrige en esta fase (documental) |
+| 2 | Endpoints de las fichas **no verificados** contra el código | Resuelto | Tarea 6 (FASE CC-04, Paso 5) |
 | 3 | Video y animación **declarados pero no producidos** | Medio | Si no se producen, degradar a trazado estático tabulado y **declararlo**, nunca eliminarlo en silencio |
 | 4 | Accesibilidad WCAG 2.1 AA declarada **sin auditoría ejecutada** | Medio | No reportarla como cumplida hasta pasar una herramienta de verificación |
 | 5 | Los umbrales de dominio (70 % / 85 % / 60 %) son **propuesta de diseño**, no validados con el docente titular | Bajo | Validar en la próxima sesión presencial |
 | 6 | Fases IV y V sin evaluación de expertos ni prueba modelo | Bajo hoy, alto al cierre | Programar la prueba modelo antes de la última entrega del semestre |
+| 7 | Formatos 1, 4, 7, 8 y 9 de Fase I **diferidos por decisión de alcance**, no escritos | Bajo (decisión deliberada) | Retomar si una fase futura los necesita; no bloquean la cadena competencia → contenido → ventana |
 
 > **Criterio de honestidad del equipo:** una pieza pendiente se declara pendiente. Un "no aplica"
 > sin justificación y un formato lleno con texto genérico valen menos que un vacío reconocido, y
