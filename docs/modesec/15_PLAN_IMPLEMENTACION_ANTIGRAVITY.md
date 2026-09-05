@@ -1,0 +1,299 @@
+---
+estado:     vigente
+verificado: 2026-09-04 contra el archivo Figma real (fileKey 1MjKiDrjU65ezO3ztO0v4m) y contra
+            src/ real del backend
+fuente:     normativo (insumo de arranque para Google Antigravity)
+codigos:    COMP-V00 · EST-V01..V06 · DOC-V01 · ADM-V02
+---
+
+# 🚀 Insumo 15 — Plan de Implementación en Nuxt para Google Antigravity
+
+**Propósito:** llevar a código real, con Antigravity, **exactamente lo que ya se construyó y se
+verificó en Figma** esta semana — ni más, ni menos. Este documento no rediseña nada: donde el
+Insumo 12 (`12_CONTRATO_FRONTEND_BACKEND.md`) y el Insumo 14 (`14_GUIA_DE_TRABAJO_FRONTEND.md`) ya
+especifican rutas, componentes y payloads, este plan **no los repite ni los reinterpreta** — solo
+dice en qué orden usarlos y qué verificar contra el prototipo real antes de dar un paso por cerrado.
+
+**Este documento es un plan, no código.** No se ha escrito ni una línea de Vue en este repositorio
+como parte de esta fase — eso es exactamente lo que Antigravity debe hacer a partir de aquí.
+
+---
+
+## 1. Alcance exacto — qué SÍ se replica y qué NO
+
+Lo construido y cableado en Figma esta semana, y solo eso:
+
+| Ventana | Estados diseñados | Rol |
+|---|---|---|
+| `COMP-V00` · Iniciar Sesión | 1 (defecto) | Común |
+| `EST-V01` · Inicio | 4 (defecto, vacío, error, completado) | Estudiante |
+| `EST-V02` · Lección | 4 + clon de trazado (paso 3) | Estudiante |
+| `EST-V03` · Ejercicio / Sandbox | 4 | Estudiante |
+| `EST-V04` · Tutor IA (overlay) | 4 | Estudiante |
+| `EST-V05` · Repasos | 4 | Estudiante |
+| `EST-V06` · Mi Progreso | 4 | Estudiante |
+| `DOC-V01` · Mis Clases | 1 (solo defecto) | Docente |
+| `ADM-V02` · Usuarios y Roles | 1 (solo defecto) | Administrador |
+
+**Explícitamente FUERA de este plan** (no diseñadas todavía, no se inventan ahora):
+`DOC-V02..V05`, `ADM-V01`, `ADM-V03` — 10 ventanas restantes de Docente/Administrador. Si Antigravity
+llega a necesitar una de ellas para navegar, se implementa como placeholder de "próximamente" con la
+Ventana Estándar vacía en zona `[C]` — nunca inventando contenido no diseñado.
+
+**No se implementa** el patrón de "flyout de módulo" del Menú (navegación a unidad específica desde
+un módulo expandido) como overlay real: está documentado como comportamiento pretendido en
+`contenidos/3.3.3_MAPA_NAVEGACION.md`, pero nunca se construyó como frame en Figma. Antigravity debe
+resolver el clic en un módulo del Menú como una expansión/acordeón simple en el propio Menú — no como
+un flyout flotante — hasta que exista una referencia visual real.
+
+---
+
+## 2. Lectura obligatoria antes de escribir código (no se re-deriva nada de esto)
+
+1. [`14_GUIA_DE_TRABAJO_FRONTEND.md`](14_GUIA_DE_TRABAJO_FRONTEND.md) — stack oficial, rutas Nuxt,
+   nombres de componente y endpoints por ventana. **Fuente de verdad de rutas y componentes.**
+2. [`12_CONTRATO_FRONTEND_BACKEND.md`](12_CONTRATO_FRONTEND_BACKEND.md) — payloads de request/response
+   reales por ventana. **Fuente de verdad de contratos de datos.**
+3. [`ventanas/3.3_VENTANA_ESTANDAR.md`](ventanas/3.3_VENTANA_ESTANDAR.md) — las 5 zonas A-E y cuáles
+   son invariantes.
+4. [`contenidos/3.3.3_MAPA_NAVEGACION.md`](contenidos/3.3.3_MAPA_NAVEGACION.md) — mapa de navegación
+   normativo (3 clics máx., 7±2 en el Menú).
+5. [`NAMING_STIRE.md`](NAMING_STIRE.md) — **única fuente de etiquetas visibles.** Ningún texto de UI
+   se escribe a mano sin consultar este archivo primero (esta misma semana se encontró y corrigió un
+   caso: un botón etiquetado "▶ Ejecutar" en vez de "▶ Probar código").
+6. Prototipo navegable en Figma:
+   `https://www.figma.com/proto/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft?node-id=11-2&starting-point-node-id=11-2`
+   — úsese como referencia visual y de interacción real, no solo las fichas de texto.
+7. [`04_MATRIZ_PERMISOS.md`](04_MATRIZ_PERMISOS.md) — antes de cablear cualquier llamada autenticada,
+   qué rol puede pegarle a qué endpoint.
+
+---
+
+## 3. Paso 0 — Scaffold del proyecto
+
+- **Ubicación:** `frontend-nuxt/`, nuevo directorio en la raíz del repo, **en paralelo** a
+  `frontend/` (el experimental Next.js/React, congelado por decisión de Bitácora N.º 2 — no se toca,
+  no se borra, no se reutiliza código de ahí).
+- **Stack** (ya decidido, Insumo 14 §"Stack Oficial"): Nuxt 3 (SSR/SSG híbrido) + Vue 3
+  (`<script setup>`, Composition API) + TypeScript + Pinia + Tailwind CSS.
+- Autenticación: JWT en `useCookie('auth_token')`, usuario en `useAuthStore()` (Pinia) — contrato
+  exacto en Insumo 12 §`COMP-V00`.
+- No copiar configuración de `frontend/` (Next.js) — son stacks distintos, un `next.config.ts` o
+  `AGENTS.md` de ese proyecto no aplica aquí.
+
+---
+
+## 4. Paso 1 — Tokens de diseño como código (antes que cualquier componente)
+
+**Regla que viene de Figma y debe sobrevivir a la traducción a código: cero valores literales.**
+Ningún componente Vue escribe un hex, un `px` o un nombre de fuente directo — todo pasa por estos
+tokens. Los valores de abajo se extrajeron en frío de las 6 colecciones de variables y los 3 estilos
+de efecto reales del archivo Figma (no transcritos de memoria) el 2026-09-04.
+
+### 4.1 Color (`tailwind.config.ts` → `theme.extend.colors`)
+
+```ts
+colors: {
+  base: {
+    blanco:            '#FFFFFF',
+    'bg-primario':     '#F6F3EF',
+    'bg-secundario':   '#EDE8E1',
+    'borde-sutil':     '#C9C1B8', // decorativo — NO usar en bordes funcionales/interactivos (no llega a 3:1)
+    'borde-fuerte':    '#998878', // único borde válido para affordance de clic (≥3:1)
+    'texto-secundario':'#6F6761', // corregido en CC-06 tras fallar 4.32:1 contra bg-primario (necesita ≥4.5:1)
+    'texto-primario':  '#2B2622',
+  },
+  acento: {
+    ambar:        '#C87B1E', // solo superficies grandes / no-texto (pasa ≥3:1, NO pasa 4.5:1 para texto)
+    'ambar-fuerte':'#A76719', // único tono de ámbar válido para texto o texto-sobre-relleno (blanco sobre este = 4.57:1)
+  },
+  semantico: {
+    pasa:  '#2F7D4F',
+    falla: '#B3261E',
+    info:  '#2B5D8A',
+  },
+  'estado-unidad': {
+    dominado:     '#2F7D4F', // = semantico.pasa (alias en Figma)
+    'en-progreso':'#A76719', // = acento.ambar-fuerte (alias en Figma)
+    'por-iniciar':'#2B5D8A', // = semantico.info (alias en Figma)
+    bloqueado:    '#6F6761', // = base.texto-secundario (alias en Figma)
+  },
+  'urgencia-repaso': {
+    'al-dia':  '#2F7D4F', // = semantico.pasa
+    'manana':  '#A76719', // = acento.ambar-fuerte
+    vencido:   '#A85A1E', // valor propio, no alias
+    'critico': '#B3261E', // = semantico.falla
+  },
+}
+```
+
+> **Nota WCAG (no renegociable):** `texto-secundario` y `ambar-fuerte` fueron corregidos en Figma
+> esta semana precisamente porque sus valores originales fallaban contraste 2.1 AA. Si Antigravity o
+> cualquier iteración futura "ajusta" estos hex por estética, debe volver a medir el contraste real
+> antes de aceptar el cambio — no basta con que "se vea bien".
+
+### 4.2 Tipografía (`theme.extend.fontFamily` / `fontSize`)
+
+```ts
+fontFamily: {
+  interfaz: ['Inter', 'sans-serif'],
+  codigo:   ['"JetBrains Mono"', 'monospace'],
+},
+fontSize: {
+  xs: '12px', sm: '14px', base: '16px', md: '18px', lg: '20px', xl: '24px', '2xl': '32px',
+},
+fontWeight: {
+  regular: 400, medio: 500, semibold: 600, bold: 700,
+}
+```
+
+### 4.3 Espaciado, radio, borde, ícono
+
+```ts
+spacing: { xs: '4px', sm: '8px', md: '16px', lg: '24px', xl: '32px', '2xl': '48px', '3xl': '64px' },
+borderRadius: { none: '0px', sm: '4px', md: '8px', lg: '16px', full: '999px' },
+borderWidth: { fino: '1px', medio: '2px', grueso: '4px' },
+// tamaños de ícono: sm 20px, md 24px, lg 32px — token de utilidad, no de Tailwind core
+```
+
+**Rejilla:** 12 columnas, canal de 24px, ancho mínimo de página 1024px (`espacio/rejilla/*`) — usar
+como `container`/grid config, no hardcodear un layout de ancho fijo distinto.
+
+### 4.4 Sombras (`theme.extend.boxShadow`, sustituyen los 3 Effect Styles "Sombra/sm·md·lg")
+
+```ts
+boxShadow: {
+  sm: '0 1px 2px 0 rgba(43,38,34,0.08)',
+  md: '0 4px 8px -2px rgba(43,38,34,0.10)',
+  lg: '0 12px 24px -4px rgba(43,38,34,0.14)',
+}
+```
+
+---
+
+## 5. Paso 2 — Ventana Estándar como layout compartido
+
+Traducir §3.3 (`ventanas/3.3_VENTANA_ESTANDAR.md`) a `layouts/` de Nuxt, no a un componente que se
+reimporta a mano en cada vista:
+
+- **Cuatro zonas invariantes** (Header `[A]`, Menú `[B]` 260px, Acciones `[D]` máx. 1 acción
+  primaria, Footer `[E]`) viven en el layout. **Solo `[C]` (Contenido) es el `<slot />`** de cada
+  página.
+- Un layout por variante de rol, ya nombrados en Insumo 14: `layouts/student.vue`,
+  `layouts/workspace.vue` (EST-V03, pantalla completa), `layouts/auth.vue` (`COMP-V00`). Para
+  Docente/Administrador, construir `layouts/teacher.vue` y `layouts/admin.vue` siguiendo la MISMA
+  estructura de zonas — la "verificación de ecosistema" de Figma (EST-V01/DOC-V01/ADM-V02 leídas
+  como la misma plataforma) es el criterio de aceptación visual, no una vista aparte.
+- **Menú `[B]`:** exactamente 6 ítems persistentes (Inicio, 3 Módulos, Repaso de hoy, Mi Progreso)
+  para Estudiante — nunca crece con el contenido del curso (resuelve 7±2, decisión de CC-06). Clic en
+  un módulo expande sus unidades **en el propio Menú** (ver §1 — el flyout NO está diseñado, no se
+  inventa un overlay para esto).
+- **Borde de afordancia:** todo elemento con una interacción real lleva `border: 1px solid
+  theme('colors.base.borde-fuerte')` (o su clase Tailwind equivalente) en estado normal, más un
+  cambio de fondo/borde en `:hover` — es la traducción directa del borde de hover que se añadió en
+  Figma esta semana (Parte A3, CC-08) para que "se note qué es clicable". No es opcional ni
+  cosmético: sin él, la paridad con el prototipo verificado no existe.
+
+---
+
+## 6. Paso 3 — Orden de construcción
+
+Seguir el mismo orden en que se construyó y se verificó en Figma — minimiza el riesgo de descubrir
+tarde una inconsistencia de layout compartido:
+
+1. `layouts/auth.vue` + `COMP-V00` (login) — sin esto nada más es alcanzable.
+2. `layouts/student.vue` (zonas A/B/D/E) — una sola vez, todas las vistas de estudiante lo heredan.
+3. `EST-V01` (Inicio) — primera vista real, valida que el layout funciona con datos.
+4. `EST-V02` (Lección) — incluye el control de trazado (`◀ ▶`) con sus 2 estados navegables.
+5. `EST-V03` (Ejercicio/Sandbox) con `layouts/workspace.vue` — **ver el bloqueo declarado en §7.1
+   antes de cablear "Probar código".**
+6. `EST-V04` (Tutor IA) como overlay/drawer global, nunca como ruta de página — igual que en Figma
+   (`navigation: OVERLAY`, cierre con clic fuera o botón cerrar, nunca con "atrás" del navegador).
+7. `EST-V05` (Repasos) y `EST-V06` (Mi Progreso).
+8. `layouts/teacher.vue` + `DOC-V01`, `layouts/admin.vue` + `ADM-V02` — al final, para que los dos
+   layouts de rol nuevos se validen contra los tokens y zonas ya probados en Estudiante, no al revés.
+
+---
+
+## 7. Paso 4 — Brechas verificadas contra el backend real (no tapar en silencio)
+
+Estas son diferencias reales entre lo que el prototipo de Figma sugiere y lo que el backend expone
+hoy — verificadas contra `src/` esta misma sesión, no supuestos:
+
+### 7.1 "▶ Probar código" (EST-V03) no tiene endpoint propio
+
+En Figma, este botón es una **acción libre que no consume intento** — descrita en la instrucción de
+diseño como "la decisión de diseño más importante del producto". El backend real
+(`src/submissions/submissions.controller.ts`) solo expone tres rutas: `POST /submissions/start`,
+`PUT /submissions/:id/autosave`, `POST /submissions/:id/submit`. **No existe una ruta de "ejecutar
+sin calificar".** Antigravity no debe simular un resultado falso de casos de prueba para tapar este
+hueco. Opciones reales, a decidir por el equipo backend antes de cablear este botón contra datos
+reales:
+  - (a) Backend agrega un endpoint nuevo, p. ej. `POST /submissions/:id/run` (ejecuta en el mismo
+    sandbox aislado, no persiste intento, no califica), o
+  - (b) el botón queda visualmente presente y funcional en la UI pero deshabilitado/con aviso
+    explícito "función pendiente de backend" hasta que (a) exista.
+  Cualquiera de las dos es aceptable como estado intermedio; lo que **no** es aceptable es que el
+  botón llame a `submit` disfrazado de "probar" — eso rompería la garantía que el propio diseño
+  protege (una prueba no debe consumir un intento real).
+
+### 7.2 Cuatro rutas de estudiante sin control de rol
+
+`POST /submissions/start`, `POST /submissions/:id/submit`, `PUT /submissions/:id/autosave`,
+`POST /tutor/chat` no tienen `@Roles` a nivel de servicio (`13_BACKLOG_FUNCIONAL.md` §6, ya
+registrado como riesgo en la bitácora). No es un problema de frontend, pero Antigravity no debe
+asumir que el backend ya filtra esto — si construye una vista de Docente/Administrador que también
+podría alcanzar estas rutas por error de navegación, no hay una segunda barrera del lado servidor
+todavía.
+
+### 7.3 Vistas de Docente/Administrador con backend incompleto
+
+`ADM-V01` y `ADM-V03` no tienen endpoints reales (solo existe `POST /maintenance/cleanup`) — pero
+como están fuera de este plan (§1), esto no bloquea nada esta semana. Se deja registrado para que no
+se redescubra desde cero cuando llegue su turno.
+
+---
+
+## 8. Paso 5 — Paridad de interacción (traducción de las 38 conexiones de Figma)
+
+No es necesario reproducir el grafo completo de reacciones de Figma — Vue Router ya resuelve la
+navegación entre páginas. Lo que sí debe verificarse uno a uno, porque cada uno codifica una decisión
+de producto real, no solo un `<NuxtLink>` genérico:
+
+| Interacción (origen) | Comportamiento esperado |
+|---|---|
+| `EST-V03` "▶ Probar código" | Ejecuta sin navegar, sin consumir intento, sin pasar por `submit` (ver §7.1) |
+| `EST-V04` overlay Tutor IA | Se abre como drawer/modal superpuesto, nunca como ruta propia; clic fuera **y** botón cerrar cierran igual |
+| `EST-V02` control de trazado `◀ ▶` | Cambia de estado/paso dentro de la MISMA vista, no navega a otra ruta |
+| Menú lateral `[B]`, cualquier vista de Estudiante | Inicio / Repasos / Mi Progreso siempre alcanzables en 1 clic, sin excepción por vista |
+| Toda tarjeta con métrica de riesgo (ej. "unidad más débil", alertas de docente) | Navega directo al recurso referenciado, no a un dashboard genérico |
+| Todo elemento con interacción | Tiene el borde de afordancia + estado `:hover` (§5) — verificar visualmente, no solo funcionalmente |
+
+**Ruta máxima aceptada:** 3 clics desde el login a cualquier estado; 2 clics a contenido formativo
+real (`EST-V02`/`EST-V03`) — es la métrica que ya se verificó en Figma esta semana y la que debe
+seguir siendo cierta en la app real.
+
+---
+
+## 9. Qué NO incluye este plan
+
+- No incluye escribir el código Vue/Nuxt en sí — eso es el trabajo de Antigravity a partir de aquí.
+- No rediseña ninguna vista ni propone un token o color nuevo — todo sale de lo ya verificado en
+  Figma y en `src/` real.
+- No cambia el backend — la decisión de `POST /submissions/:id/run` (§7.1) es una recomendación, no
+  una implementación; la ejecuta quien corresponda cuando se decida.
+- No corre `npm run verify:clean` todavía — no aplica hasta que exista código de `frontend-nuxt/`
+  que arrancar. Cuando exista, la Regla de Oro del proyecto (`CLAUDE.md`) aplica igual que al
+  backend: build + test tras cada bloque, contador de errores no creciente.
+
+---
+
+## 10. Criterio de cierre de esta fase
+
+- `frontend-nuxt/` existe, con `npm run build` (o el equivalente Nuxt) pasando.
+- Cada vista del alcance (§1) tiene una captura de pantalla real de la app corriendo, comparada
+  lado a lado contra su frame de Figma — no basta con que compile.
+- `grep` de valores hex/`px` literales fuera de `tailwind.config.ts` en `frontend-nuxt/` devuelve
+  vacío.
+- El punto §7.1 tiene una decisión tomada (a o b), no queda abierto en silencio.
+- Los 38 puntos de interacción de §8 se probaron uno por uno, no solo los que "se ven".
