@@ -27,6 +27,7 @@ export class AuthService {
     return {
       user: userWithoutPassword,
       token,
+      access_token: token,
     };
   }
 
@@ -60,6 +61,7 @@ export class AuthService {
     return {
       user: userWithoutPassword,
       token,
+      access_token: token,
     };
   }
 

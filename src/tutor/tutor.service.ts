@@ -23,7 +23,7 @@ export class TutorService {
   ) {
     const rawApiKey = this.configService.get<string>('OPENAI_API_KEY');
     this.apiKey = rawApiKey ? rawApiKey.trim() : '';
-    this.openAiModel = this.configService.get<string>('OPENAI_MODEL', 'gemini-1.5-flash');
+    this.openAiModel = this.configService.get<string>('OPENAI_MODEL', 'gemini-flash-latest');
     this.openAiRetryCount = this.configService.get<number>('OPENAI_RETRY_COUNT', 3);
     const rawBaseURL = this.configService.get<string>('OPENAI_API_URL', '');
 
@@ -127,9 +127,15 @@ export class TutorService {
     history: Array<{ role: string; content: string }>,
     userMessage: string,
   ): Promise<string> {
-    const model = this.openAiModel || 'gemini-1.5-flash';
-    const cleanModel = model.replace(/^models\//, '');
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${cleanModel}:generateContent?key=${this.apiKey}`;
+    const primaryModel = this.openAiModel || 'gemini-flash-latest';
+    const fallbackModels = [
+      primaryModel,
+      'gemini-flash-latest',
+      'gemini-3.8-flash',
+      'gemini-3.5-flash-lite',
+    ].map(m => m.replace(/^models\//, ''));
+    // Desduplicar manteniendo orden
+    const candidateModels = Array.from(new Set(fallbackModels));
 
     const contents = [
       ...history.map(msg => ({
@@ -145,28 +151,41 @@ export class TutorService {
       },
       contents,
       generationConfig: {
-        maxOutputTokens: 600,
+        maxOutputTokens: 2048,
         temperature: 0.7,
       },
     };
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    let lastError: Error | null = null;
+    for (const cleanModel of candidateModels) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${cleanModel}:generateContent?key=${this.apiKey}`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Google Gemini Error ${res.status}: ${errText}`);
+        if (!res.ok) {
+          const errText = await res.text();
+          this.logger.warn(`Modelo ${cleanModel} devolvió ${res.status}: ${errText.slice(0, 100)}... Probando siguiente candidato.`);
+          lastError = new Error(`Google Gemini Error ${res.status}: ${errText}`);
+          continue;
+        }
+
+        const data: any = await res.json();
+        const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        if (candidateText) {
+          this.logger.log(`Inferencia exitosa con Google Gemini (${cleanModel})`);
+          return candidateText;
+        }
+      } catch (err: any) {
+        lastError = err;
+        this.logger.warn(`Fallo al llamar a ${cleanModel}: ${err.message}. Probando siguiente modelo.`);
+      }
     }
 
-    const data: any = await res.json();
-    const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    if (!candidateText) {
-      throw new Error('Google Gemini devolvió una respuesta vacía');
-    }
-    return candidateText;
+    throw lastError || new Error('Google Gemini: ningún modelo candidato estuvo disponible');
   }
 
   private async callWithRetry<T>(fn: () => Promise<T>, retries: number, attempt = 1): Promise<T> {

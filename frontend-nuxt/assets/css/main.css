@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-base-bg-primario text-base-texto-primario font-interfaz antialiased min-h-screen selection:bg-acento-ambar/20;
+  }
+
+  code, pre, kbd {
+    @apply font-codigo;
+  }
+}
+
+@layer utilities {
+  /* Borde de afordancia normativo de Figma (Parte A3, CC-08 / Insumo 15 §5) */
+  .borde-afordancia {
+    @apply border border-base-borde-fuerte transition-colors duration-150;
+  }
+
+  .borde-afordancia:hover {
+    @apply border-acento-ambar-fuerte bg-base-bg-secundario;
+  }
+
+  .borde-afordancia-focus {
+    @apply outline-none ring-2 ring-acento-ambar-fuerte ring-offset-2 ring-offset-base-bg-primario;
+  }
+}
