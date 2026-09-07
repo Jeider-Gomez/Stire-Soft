@@ -51,11 +51,12 @@ El alcance inicial de frontend se mantiene limitado a las vistas ya diseñadas: 
 
 ### Jeider Gómez — Líder Técnico
 
-- [ ] **S04-J01 · Preparar frontend Nuxt** — objetivo 08/09.
-- [ ] **S04-J02 · Ventana Estándar** — objetivo 10/09.
-- [ ] **S04-J03 · Backend + Tutor IA** — objetivo 11/09.
+- [x] **S04-J01 · Preparar frontend Nuxt** — objetivo 08/09. *(Completado anticipadamente 07/09: Nuxt 3, Vue 3, Pinia, Tailwind y TS)*
+- [x] **S04-J02 · Ventana Estándar** — objetivo 10/09. *(Completado anticipadamente 07/09: COMP-V00, EST-V01..V06, DOC-V01, ADM-V02)*
+- [x] **S04-J03 · Backend + Tutor IA** — objetivo 11/09. *(Completado anticipadamente 07/09: Auditoría auth, token JWT real y Google Gemini LLM activo)*
 
-**Dependencias:** S04-J02 depende de S04-J01. S04-J03 puede ejecutarse en paralelo.
+**Dependencias:** S04-J02 depende de S04-J01. S04-J03 puede ejecutarse en paralelo.  
+**Evidencias:** Ver informe oficial [`docs/informes-antigravity/INFORME_2026-09-07_SESION_01.md`](./docs/informes-antigravity/INFORME_2026-09-07_SESION_01.md).
 
 ### Pedro Romero — Gestión + Documentación + Apoyo Técnico
 
@@ -167,9 +168,9 @@ Se realiza el cierre del sprint:
 
 ### Jeider Gómez
 
-- [ ] Nuxt iniciado y funcionando.
-- [ ] Ventana Estándar implementada.
-- [ ] Backend y Tutor IA verificados.
+- [x] Nuxt iniciado y funcionando.
+- [x] Ventana Estándar implementada.
+- [x] Backend y Tutor IA verificados.
 
 ### Pedro Romero
 
