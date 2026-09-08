@@ -25,6 +25,8 @@ C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\_archivo\gestion-v3-descartada\TABLERO.md
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\_archivo\pitch\README.md
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\backend-audit.md
+C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\informes-antigravity\INFORME_2026-09-07_SESION_01.md
+C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\informes-antigravity\TEMPLATE_INFORME.md
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\investigacion\CUADERNO_INVESTIGACION_TUTORES_Y_REPETICION_ESPACIADA.md
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\investigacion\INFORME_SANEAMIENTO_BIBLIOGRAFICO.md
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\investigacion\MATRIZ_ARTICULOS.md
@@ -95,6 +97,8 @@ C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\seguimiento\MONITOREO_SEMANAL_01.md
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\seguimiento\MONITOREO_SEMANAL_02.md
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\docs\seguimiento\MONITOREO_SEMANAL_03.md
+C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\frontend-nuxt\README.md
+C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\frontend-nuxt\public\robots.txt
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\frontend\AGENTS.md
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\frontend\CLAUDE.md
 C:\Users\gomez\OneDrive - UNIVERSIDAD DE CORDOBA\Documentos\Universidad\Practica unicor\stire\frontend\README.md

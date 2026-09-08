@@ -9,6 +9,1268 @@
       "_origin": "ast"
     },
     {
+      "id": "frontend_nuxt_app",
+      "label": "app.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/app.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_app_app",
+      "label": "app.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/app/app.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_footerbar",
+      "label": "FooterBar.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/FooterBar.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_headernav",
+      "label": "HeaderNav.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_headernav_authstore",
+      "label": "authStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L83",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_headernav_studentstore",
+      "label": "studentStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L84",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_headernav_tutorstore",
+      "label": "tutorStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L85",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_headernav_rolelabel",
+      "label": "roleLabel",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L87",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_headernav_userinitials",
+      "label": "userInitials",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L96",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_headernav_handlelogout",
+      "label": "handleLogout()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L101",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_sidebarnav",
+      "label": "SidebarNav.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_sidebarnav_authstore",
+      "label": "authStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L123",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_sidebarnav_studentstore",
+      "label": "studentStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L124",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_sidebarnav_route",
+      "label": "route",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L125",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_sidebarnav_openmodules",
+      "label": "openModules",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L127",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_sidebarnav_togglemodule",
+      "label": "toggleModule()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L129",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_sidebarnav_iscurrentroute",
+      "label": "isCurrentRoute()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L137",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_layout_sidebarnav_getstatusdotclass",
+      "label": "getStatusDotClass()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L141",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_tutor_tutorchatdrawer",
+      "label": "TutorChatDrawer.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_tutor_tutorchatdrawer_tutorstore",
+      "label": "tutorStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L129",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_tutor_tutorchatdrawer_inputquery",
+      "label": "inputQuery",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L130",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_tutor_tutorchatdrawer_messagescontainer",
+      "label": "messagesContainer",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L131",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_tutor_tutorchatdrawer_handlesend",
+      "label": "handleSend()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L133",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_tutor_tutorchatdrawer_scrolltobottom",
+      "label": "scrollToBottom()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L141",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_components_tutor_tutorchatdrawer_formatmessage",
+      "label": "formatMessage()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L149",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_composables_useapi",
+      "label": "useApi.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_composables_useapi_apierror",
+      "label": "ApiError",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L3",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_composables_useapi_httpmethod",
+      "label": "HttpMethod",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L9",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_composables_useapi_useapi",
+      "label": "useApi()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L11",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_composables_useapi_useapi_apifetch",
+      "label": "apiFetch()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L18",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_composables_useapi_useapi_get",
+      "label": "get()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L48",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_composables_useapi_useapi_post",
+      "label": "post()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L53",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_composables_useapi_useapi_put",
+      "label": "put()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L58",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_layouts_admin",
+      "label": "admin.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/layouts/admin.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_layouts_auth",
+      "label": "auth.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/layouts/auth.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_layouts_student",
+      "label": "student.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/layouts/student.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_layouts_teacher",
+      "label": "teacher.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/layouts/teacher.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_layouts_workspace",
+      "label": "workspace.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/layouts/workspace.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_layouts_workspace_workspacestore",
+      "label": "workspaceStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/layouts/workspace.vue",
+      "source_location": "L85",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_layouts_workspace_tutorstore",
+      "label": "tutorStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/layouts/workspace.vue",
+      "source_location": "L86",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_middleware_auth_global",
+      "label": "auth.global.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/middleware/auth.global.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_middleware_auth_global_getdashboardforrole",
+      "label": "getDashboardForRole()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/middleware/auth.global.ts",
+      "source_location": "L55",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_nuxt_config",
+      "label": "nuxt.config.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/nuxt.config.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package",
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L2",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_type",
+      "label": "type",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L3",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_private",
+      "label": "private",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L4",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_scripts",
+      "label": "scripts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L5",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_scripts_build",
+      "label": "build",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L6",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_scripts_dev",
+      "label": "dev",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L7",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_scripts_generate",
+      "label": "generate",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L8",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_scripts_preview",
+      "label": "preview",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L9",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_scripts_postinstall",
+      "label": "postinstall",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L10",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_dependencies",
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L12",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_dependencies_pinia_nuxt",
+      "label": "@pinia/nuxt",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L13",
+      "_origin": "ast"
+    },
+    {
+      "id": "pinia_nuxt",
+      "label": "@pinia/nuxt",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L13",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_dependencies_vueuse_core",
+      "label": "@vueuse/core",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L14",
+      "_origin": "ast"
+    },
+    {
+      "id": "vueuse_core",
+      "label": "@vueuse/core",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L14",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_dependencies_lucide_vue_next",
+      "label": "lucide-vue-next",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L15",
+      "_origin": "ast"
+    },
+    {
+      "id": "lucide_vue_next",
+      "label": "lucide-vue-next",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L15",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_dependencies_nuxt",
+      "label": "nuxt",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L16",
+      "_origin": "ast"
+    },
+    {
+      "id": "nuxt",
+      "label": "nuxt",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L16",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_dependencies_pinia",
+      "label": "pinia",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L17",
+      "_origin": "ast"
+    },
+    {
+      "id": "pinia",
+      "label": "pinia",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L17",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_dependencies_vue",
+      "label": "vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L18",
+      "_origin": "ast"
+    },
+    {
+      "id": "vue",
+      "label": "vue",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L18",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_dependencies_vue_router",
+      "label": "vue-router",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L19",
+      "_origin": "ast"
+    },
+    {
+      "id": "vue_router",
+      "label": "vue-router",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L19",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_devdependencies",
+      "label": "devDependencies",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L21",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_devdependencies_nuxtjs_tailwindcss",
+      "label": "@nuxtjs/tailwindcss",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L22",
+      "_origin": "ast"
+    },
+    {
+      "id": "nuxtjs_tailwindcss",
+      "label": "@nuxtjs/tailwindcss",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L22",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_devdependencies_autoprefixer",
+      "label": "autoprefixer",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L23",
+      "_origin": "ast"
+    },
+    {
+      "id": "autoprefixer",
+      "label": "autoprefixer",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L23",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_devdependencies_postcss",
+      "label": "postcss",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L24",
+      "_origin": "ast"
+    },
+    {
+      "id": "postcss",
+      "label": "postcss",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L24",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_devdependencies_tailwindcss",
+      "label": "tailwindcss",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L25",
+      "_origin": "ast"
+    },
+    {
+      "id": "tailwindcss",
+      "label": "tailwindcss",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L25",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_devdependencies_typescript",
+      "label": "typescript",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L26",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_json_typescript",
+      "label": "typescript",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L26",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_package_devdependencies_vue_tsc",
+      "label": "vue-tsc",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L27",
+      "_origin": "ast"
+    },
+    {
+      "id": "vue_tsc",
+      "label": "vue-tsc",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L27",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_admin_index",
+      "label": "index.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/admin/index.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_admin_index_searchquery",
+      "label": "searchQuery",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/admin/index.vue",
+      "source_location": "L105",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_admin_index_rolefilter",
+      "label": "roleFilter",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/admin/index.vue",
+      "source_location": "L106",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_admin_index_users",
+      "label": "users",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/admin/index.vue",
+      "source_location": "L108",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_admin_index_filteredusers",
+      "label": "filteredUsers",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/admin/index.vue",
+      "source_location": "L116",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_auth_login",
+      "label": "login.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_auth_login_authstore",
+      "label": "authStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L112",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_auth_login_email",
+      "label": "email",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L114",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_auth_login_password",
+      "label": "password",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L115",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_auth_login_isloading",
+      "label": "isLoading",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L116",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_auth_login_errormessage",
+      "label": "errorMessage",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L117",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_auth_login_handlelogin",
+      "label": "handleLogin()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L119",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_auth_login_quickdemologin",
+      "label": "quickDemoLogin()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L138",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_docente_index",
+      "label": "index.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/docente/index.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_docente_index_classes",
+      "label": "classes",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/docente/index.vue",
+      "source_location": "L80",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_evaluacion_activityid",
+      "label": "[activityId].vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_evaluacion_activityid_workspacestore",
+      "label": "workspaceStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L227",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_evaluacion_activityid_lefttab",
+      "label": "leftTab",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L228",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_evaluacion_activityid_passedcount",
+      "label": "passedCount",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L230",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_evaluacion_activityid_linecount",
+      "label": "lineCount",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L234",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_evaluacion_activityid_formatmarkdown",
+      "label": "formatMarkdown()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L238",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_index",
+      "label": "index.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_index_studentstore",
+      "label": "studentStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L163",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_index_getstatusbadgeclass",
+      "label": "getStatusBadgeClass()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L165",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_index_getstatuslabel",
+      "label": "getStatusLabel()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L174",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_progreso",
+      "label": "progreso.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/progreso.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_progreso_studentstore",
+      "label": "studentStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/progreso.vue",
+      "source_location": "L149",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_progreso_getmasterylevelname",
+      "label": "getMasteryLevelName()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/progreso.vue",
+      "source_location": "L151",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_repasos",
+      "label": "repasos.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_repasos_studentstore",
+      "label": "studentStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L130",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_repasos_geturgencybadgeclass",
+      "label": "getUrgencyBadgeClass()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L132",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_repasos_geturgencyshape",
+      "label": "getUrgencyShape()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L141",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_repasos_completereview",
+      "label": "completeReview()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L150",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_unidad_id",
+      "label": "[id].vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_unidad_id_route",
+      "label": "route",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L155",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_unidad_id_studentstore",
+      "label": "studentStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L156",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_unidad_id_unitdata",
+      "label": "unitData",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L159",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_unidad_id_currentstep",
+      "label": "currentStep",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L164",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_unidad_id_tracesteps",
+      "label": "traceSteps",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L166",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_unidad_id_nexttracestep",
+      "label": "nextTraceStep()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L209",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_estudiante_unidad_id_prevtracestep",
+      "label": "prevTraceStep()",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L215",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_index",
+      "label": "index.vue",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/index.vue",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_pages_index_authstore",
+      "label": "authStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/pages/index.vue",
+      "source_location": "L10",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_plugins_auth_client",
+      "label": "auth.client.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/plugins/auth.client.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_stores_auth",
+      "label": "auth.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/stores/auth.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_stores_auth_useauthstore",
+      "label": "useAuthStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/stores/auth.ts",
+      "source_location": "L4",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_stores_student",
+      "label": "student.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/stores/student.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_stores_student_usestudentstore",
+      "label": "useStudentStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/stores/student.ts",
+      "source_location": "L4",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_stores_tutor",
+      "label": "tutor.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_stores_tutor_usetutorstore",
+      "label": "useTutorStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L5",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_stores_workspace",
+      "label": "workspace.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_stores_workspace_useworkspacestore",
+      "label": "useWorkspaceStore",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L5",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_tailwind_config",
+      "label": "tailwind.config.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/tailwind.config.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_tsconfig",
+      "label": "tsconfig.json",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/tsconfig.json",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_tsconfig_extends",
+      "label": "extends",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/tsconfig.json",
+      "source_location": "L3",
+      "_origin": "ast"
+    },
+    {
+      "id": "ref_nuxt_tsconfig_json",
+      "label": "./.nuxt/tsconfig.json",
+      "file_type": "concept",
+      "source_file": "frontend-nuxt/tsconfig.json",
+      "source_location": "L3",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index",
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_role",
+      "label": "Role",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L1",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_user",
+      "label": "User",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L3",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_unitstatus",
+      "label": "UnitStatus",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L10",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_learningunit",
+      "label": "LearningUnit",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L12",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_coursemodule",
+      "label": "CourseModule",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L25",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_reviewurgency",
+      "label": "ReviewUrgency",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L32",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_spacedreviewitem",
+      "label": "SpacedReviewItem",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L34",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_studentanalytics",
+      "label": "StudentAnalytics",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L46",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_testcase",
+      "label": "TestCase",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L64",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_submissionanswer",
+      "label": "SubmissionAnswer",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L73",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_submissionstatus",
+      "label": "SubmissionStatus",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L78",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_submissionresult",
+      "label": "SubmissionResult",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L80",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "frontend_nuxt_types_index_tutormessage",
+      "label": "TutorMessage",
+      "file_type": "code",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L96",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
       "id": "frontend_eslint_config",
       "label": "eslint.config.mjs",
       "file_type": "code",
@@ -5231,7 +6493,7 @@
       "label": ".login()",
       "file_type": "code",
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "_callable": true,
       "_origin": "ast"
     },
@@ -5240,7 +6502,7 @@
       "label": ".generateToken()",
       "file_type": "code",
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L69",
+      "source_location": "L71",
       "_callable": true,
       "_origin": "ast"
     },
@@ -5249,7 +6511,7 @@
       "label": ".validateToken()",
       "file_type": "code",
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L86",
+      "source_location": "L88",
       "_callable": true,
       "_origin": "ast"
     },
@@ -14241,7 +15503,7 @@
       "label": ".callWithRetry()",
       "file_type": "code",
       "source_file": "src/tutor/tutor.service.ts",
-      "source_location": "L172",
+      "source_location": "L191",
       "_callable": true,
       "_origin": "ast"
     },
@@ -14250,7 +15512,7 @@
       "label": ".normalizeRole()",
       "file_type": "code",
       "source_file": "src/tutor/tutor.service.ts",
-      "source_location": "L194",
+      "source_location": "L213",
       "_callable": true,
       "_origin": "ast"
     },
@@ -14259,7 +15521,7 @@
       "label": ".buildMessages()",
       "file_type": "code",
       "source_file": "src/tutor/tutor.service.ts",
-      "source_location": "L198",
+      "source_location": "L217",
       "_callable": true,
       "_origin": "ast"
     },
@@ -14268,7 +15530,7 @@
       "label": ".mockLlmInference()",
       "file_type": "code",
       "source_file": "src/tutor/tutor.service.ts",
-      "source_location": "L213",
+      "source_location": "L232",
       "_callable": true,
       "_origin": "ast"
     },
@@ -16092,6 +17354,2003 @@
       "confidence": "EXTRACTED",
       "source_file": "eslint.config.mjs",
       "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_stores_auth",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_stores_student",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_stores_student_usestudentstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_stores_tutor",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_stores_tutor_usetutorstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_components_layout_headernav_authstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_components_layout_headernav_studentstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_components_layout_headernav_tutorstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_components_layout_headernav_rolelabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_components_layout_headernav_userinitials",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L96",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_headernav",
+      "target": "frontend_nuxt_components_layout_headernav_handlelogout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/HeaderNav.vue",
+      "source_location": "L101",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_stores_auth",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L120",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L120",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_stores_student",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L121",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_stores_student_usestudentstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L121",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_components_layout_sidebarnav_authstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_components_layout_sidebarnav_studentstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L124",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_components_layout_sidebarnav_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L125",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_components_layout_sidebarnav_openmodules",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L127",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_components_layout_sidebarnav_togglemodule",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_components_layout_sidebarnav_iscurrentroute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L137",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_layout_sidebarnav",
+      "target": "frontend_nuxt_components_layout_sidebarnav_getstatusdotclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/layout/SidebarNav.vue",
+      "source_location": "L141",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_tutor_tutorchatdrawer",
+      "target": "frontend_nuxt_stores_tutor",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L127",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_tutor_tutorchatdrawer",
+      "target": "frontend_nuxt_stores_tutor_usetutorstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L127",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_tutor_tutorchatdrawer",
+      "target": "frontend_nuxt_components_tutor_tutorchatdrawer_tutorstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_tutor_tutorchatdrawer",
+      "target": "frontend_nuxt_components_tutor_tutorchatdrawer_inputquery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L130",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_tutor_tutorchatdrawer",
+      "target": "frontend_nuxt_components_tutor_tutorchatdrawer_messagescontainer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L131",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_tutor_tutorchatdrawer",
+      "target": "frontend_nuxt_components_tutor_tutorchatdrawer_handlesend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_tutor_tutorchatdrawer",
+      "target": "frontend_nuxt_components_tutor_tutorchatdrawer_scrolltobottom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L141",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_tutor_tutorchatdrawer",
+      "target": "frontend_nuxt_components_tutor_tutorchatdrawer_formatmessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L149",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_components_tutor_tutorchatdrawer_handlesend",
+      "target": "frontend_nuxt_components_tutor_tutorchatdrawer_scrolltobottom",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/components/tutor/TutorChatDrawer.vue",
+      "source_location": "L138",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi",
+      "target": "frontend_nuxt_stores_auth",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi",
+      "target": "frontend_nuxt_composables_useapi_apierror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi",
+      "target": "frontend_nuxt_composables_useapi_httpmethod",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi",
+      "target": "frontend_nuxt_composables_useapi_useapi",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi",
+      "target": "frontend_nuxt_composables_useapi_useapi_apifetch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi",
+      "target": "frontend_nuxt_composables_useapi_useapi_get",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi",
+      "target": "frontend_nuxt_composables_useapi_useapi_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi",
+      "target": "frontend_nuxt_composables_useapi_useapi_put",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi",
+      "target": "frontend_nuxt_composables_useapi_useapi_apifetch",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi",
+      "target": "frontend_nuxt_composables_useapi_useapi_get",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L64",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi",
+      "target": "frontend_nuxt_composables_useapi_useapi_post",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi",
+      "target": "frontend_nuxt_composables_useapi_useapi_put",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi_get",
+      "target": "frontend_nuxt_composables_useapi_useapi_apifetch",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi_post",
+      "target": "frontend_nuxt_composables_useapi_useapi_apifetch",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_composables_useapi_useapi_put",
+      "target": "frontend_nuxt_composables_useapi_useapi_apifetch",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_layouts_workspace",
+      "target": "frontend_nuxt_stores_workspace",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/layouts/workspace.vue",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_layouts_workspace",
+      "target": "frontend_nuxt_stores_workspace_useworkspacestore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/layouts/workspace.vue",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_layouts_workspace",
+      "target": "frontend_nuxt_stores_tutor",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/layouts/workspace.vue",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_layouts_workspace",
+      "target": "frontend_nuxt_stores_tutor_usetutorstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/layouts/workspace.vue",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_layouts_workspace",
+      "target": "frontend_nuxt_layouts_workspace_workspacestore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/layouts/workspace.vue",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_layouts_workspace",
+      "target": "frontend_nuxt_layouts_workspace_tutorstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/layouts/workspace.vue",
+      "source_location": "L86",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_middleware_auth_global",
+      "target": "frontend_nuxt_stores_auth",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/middleware/auth.global.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_middleware_auth_global",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/middleware/auth.global.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_middleware_auth_global",
+      "target": "frontend_nuxt_middleware_auth_global_getdashboardforrole",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/middleware/auth.global.ts",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package",
+      "target": "frontend_nuxt_package_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package",
+      "target": "frontend_nuxt_package_type",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package",
+      "target": "frontend_nuxt_package_private",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package",
+      "target": "frontend_nuxt_package_scripts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_scripts",
+      "target": "frontend_nuxt_package_scripts_build",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_scripts",
+      "target": "frontend_nuxt_package_scripts_dev",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_scripts",
+      "target": "frontend_nuxt_package_scripts_generate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_scripts",
+      "target": "frontend_nuxt_package_scripts_preview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_scripts",
+      "target": "frontend_nuxt_package_scripts_postinstall",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package",
+      "target": "frontend_nuxt_package_dependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies",
+      "target": "frontend_nuxt_package_dependencies_pinia_nuxt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies_pinia_nuxt",
+      "target": "pinia_nuxt",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies",
+      "target": "frontend_nuxt_package_dependencies_vueuse_core",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies_vueuse_core",
+      "target": "vueuse_core",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L14",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies",
+      "target": "frontend_nuxt_package_dependencies_lucide_vue_next",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies_lucide_vue_next",
+      "target": "lucide_vue_next",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies",
+      "target": "frontend_nuxt_package_dependencies_nuxt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies_nuxt",
+      "target": "nuxt",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies",
+      "target": "frontend_nuxt_package_dependencies_pinia",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies_pinia",
+      "target": "pinia",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies",
+      "target": "frontend_nuxt_package_dependencies_vue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies_vue",
+      "target": "vue",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies",
+      "target": "frontend_nuxt_package_dependencies_vue_router",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_dependencies_vue_router",
+      "target": "vue_router",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L19",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package",
+      "target": "frontend_nuxt_package_devdependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies",
+      "target": "frontend_nuxt_package_devdependencies_nuxtjs_tailwindcss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies_nuxtjs_tailwindcss",
+      "target": "nuxtjs_tailwindcss",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies",
+      "target": "frontend_nuxt_package_devdependencies_autoprefixer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies_autoprefixer",
+      "target": "autoprefixer",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L23",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies",
+      "target": "frontend_nuxt_package_devdependencies_postcss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies_postcss",
+      "target": "postcss",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L24",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies",
+      "target": "frontend_nuxt_package_devdependencies_tailwindcss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies_tailwindcss",
+      "target": "tailwindcss",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L25",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies",
+      "target": "frontend_nuxt_package_devdependencies_typescript",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies_typescript",
+      "target": "frontend_nuxt_package_json_typescript",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L26",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies",
+      "target": "frontend_nuxt_package_devdependencies_vue_tsc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_package_devdependencies_vue_tsc",
+      "target": "vue_tsc",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/package.json",
+      "source_location": "L27",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_admin_index",
+      "target": "frontend_nuxt_pages_admin_index_searchquery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/admin/index.vue",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_admin_index",
+      "target": "frontend_nuxt_pages_admin_index_rolefilter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/admin/index.vue",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_admin_index",
+      "target": "frontend_nuxt_pages_admin_index_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/admin/index.vue",
+      "source_location": "L108",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_admin_index",
+      "target": "frontend_nuxt_pages_admin_index_filteredusers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/admin/index.vue",
+      "source_location": "L116",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_stores_auth",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_types_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L106",
+      "weight": 1.0,
+      "type_only": true,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_types_index_role",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_pages_auth_login_authstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L112",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_pages_auth_login_email",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L114",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_pages_auth_login_password",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_pages_auth_login_isloading",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L116",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_pages_auth_login_errormessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L117",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_pages_auth_login_handlelogin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L119",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_auth_login",
+      "target": "frontend_nuxt_pages_auth_login_quickdemologin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/auth/login.vue",
+      "source_location": "L138",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_docente_index",
+      "target": "frontend_nuxt_pages_docente_index_classes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/docente/index.vue",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_evaluacion_activityid",
+      "target": "frontend_nuxt_stores_workspace",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L221",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_evaluacion_activityid",
+      "target": "frontend_nuxt_stores_workspace_useworkspacestore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L221",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_evaluacion_activityid",
+      "target": "frontend_nuxt_pages_estudiante_evaluacion_activityid_workspacestore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L227",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_evaluacion_activityid",
+      "target": "frontend_nuxt_pages_estudiante_evaluacion_activityid_lefttab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L228",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_evaluacion_activityid",
+      "target": "frontend_nuxt_pages_estudiante_evaluacion_activityid_passedcount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L230",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_evaluacion_activityid",
+      "target": "frontend_nuxt_pages_estudiante_evaluacion_activityid_linecount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L234",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_evaluacion_activityid",
+      "target": "frontend_nuxt_pages_estudiante_evaluacion_activityid_formatmarkdown",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue",
+      "source_location": "L238",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_index",
+      "target": "frontend_nuxt_stores_student",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L156",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_index",
+      "target": "frontend_nuxt_stores_student_usestudentstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L156",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_index",
+      "target": "frontend_nuxt_types_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L157",
+      "weight": 1.0,
+      "type_only": true,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_index",
+      "target": "frontend_nuxt_types_index_unitstatus",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L157",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_index",
+      "target": "frontend_nuxt_pages_estudiante_index_studentstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L163",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_index",
+      "target": "frontend_nuxt_pages_estudiante_index_getstatusbadgeclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L165",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_index",
+      "target": "frontend_nuxt_pages_estudiante_index_getstatuslabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/index.vue",
+      "source_location": "L174",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_progreso",
+      "target": "frontend_nuxt_stores_student",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/progreso.vue",
+      "source_location": "L143",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_progreso",
+      "target": "frontend_nuxt_stores_student_usestudentstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/progreso.vue",
+      "source_location": "L143",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_progreso",
+      "target": "frontend_nuxt_pages_estudiante_progreso_studentstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/progreso.vue",
+      "source_location": "L149",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_progreso",
+      "target": "frontend_nuxt_pages_estudiante_progreso_getmasterylevelname",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/progreso.vue",
+      "source_location": "L151",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_repasos",
+      "target": "frontend_nuxt_stores_student",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_repasos",
+      "target": "frontend_nuxt_stores_student_usestudentstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_repasos",
+      "target": "frontend_nuxt_types_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L124",
+      "weight": 1.0,
+      "type_only": true,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_repasos",
+      "target": "frontend_nuxt_types_index_reviewurgency",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L124",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_repasos",
+      "target": "frontend_nuxt_pages_estudiante_repasos_studentstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L130",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_repasos",
+      "target": "frontend_nuxt_pages_estudiante_repasos_geturgencybadgeclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_repasos",
+      "target": "frontend_nuxt_pages_estudiante_repasos_geturgencyshape",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L141",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_repasos",
+      "target": "frontend_nuxt_pages_estudiante_repasos_completereview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/repasos.vue",
+      "source_location": "L150",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_unidad_id",
+      "target": "frontend_nuxt_stores_student",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L149",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_unidad_id",
+      "target": "frontend_nuxt_stores_student_usestudentstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L149",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_unidad_id",
+      "target": "frontend_nuxt_pages_estudiante_unidad_id_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L155",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_unidad_id",
+      "target": "frontend_nuxt_pages_estudiante_unidad_id_studentstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L156",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_unidad_id",
+      "target": "frontend_nuxt_pages_estudiante_unidad_id_unitdata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L159",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_unidad_id",
+      "target": "frontend_nuxt_pages_estudiante_unidad_id_currentstep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L164",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_unidad_id",
+      "target": "frontend_nuxt_pages_estudiante_unidad_id_tracesteps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L166",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_unidad_id",
+      "target": "frontend_nuxt_pages_estudiante_unidad_id_nexttracestep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L209",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_estudiante_unidad_id",
+      "target": "frontend_nuxt_pages_estudiante_unidad_id_prevtracestep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/estudiante/unidad/[id].vue",
+      "source_location": "L215",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_index",
+      "target": "frontend_nuxt_stores_auth",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/index.vue",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_index",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/index.vue",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_pages_index",
+      "target": "frontend_nuxt_pages_index_authstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/pages/index.vue",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_plugins_auth_client",
+      "target": "frontend_nuxt_stores_auth",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/plugins/auth.client.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_plugins_auth_client",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/plugins/auth.client.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_auth",
+      "target": "ref_pinia",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/auth.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_auth",
+      "target": "frontend_nuxt_types_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/auth.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "type_only": true,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_auth",
+      "target": "frontend_nuxt_types_index_user",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/auth.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_auth",
+      "target": "frontend_nuxt_types_index_role",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/auth.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_auth",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/auth.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_student",
+      "target": "ref_pinia",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/student.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_student",
+      "target": "frontend_nuxt_types_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/student.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "type_only": true,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_student",
+      "target": "frontend_nuxt_types_index_coursemodule",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/student.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_student",
+      "target": "frontend_nuxt_types_index_spacedreviewitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/student.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_student",
+      "target": "frontend_nuxt_types_index_studentanalytics",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/student.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_student",
+      "target": "frontend_nuxt_stores_student_usestudentstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/student.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_tutor",
+      "target": "ref_pinia",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_tutor",
+      "target": "frontend_nuxt_types_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "type_only": true,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_tutor",
+      "target": "frontend_nuxt_types_index_tutormessage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_tutor",
+      "target": "frontend_nuxt_stores_auth",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_tutor",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_tutor",
+      "target": "frontend_nuxt_stores_tutor_usetutorstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_workspace",
+      "target": "ref_pinia",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_workspace",
+      "target": "frontend_nuxt_types_index",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "type_only": true,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_workspace",
+      "target": "frontend_nuxt_types_index_testcase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_workspace",
+      "target": "frontend_nuxt_types_index_submissionresult",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_workspace",
+      "target": "frontend_nuxt_stores_auth",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_workspace",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_workspace",
+      "target": "frontend_nuxt_stores_workspace_useworkspacestore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_tailwind_config",
+      "target": "ref_tailwindcss",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/tailwind.config.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "type_only": true,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_tsconfig",
+      "target": "frontend_nuxt_tsconfig_extends",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/tsconfig.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_tsconfig",
+      "target": "ref_nuxt_tsconfig_json",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/tsconfig.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_role",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_user",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_unitstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_learningunit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_coursemodule",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_reviewurgency",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_spacedreviewitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_studentanalytics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_testcase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L64",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_submissionanswer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_submissionstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L78",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_submissionresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_types_index",
+      "target": "frontend_nuxt_types_index_tutormessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend-nuxt/types/index.ts",
+      "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -29855,7 +33114,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -29865,7 +33124,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L69",
+      "source_location": "L71",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -29875,7 +33134,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L86",
+      "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -29897,7 +33156,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L55",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -57219,7 +60478,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/tutor/tutor.service.ts",
-      "source_location": "L172",
+      "source_location": "L191",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -57229,7 +60488,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/tutor/tutor.service.ts",
-      "source_location": "L194",
+      "source_location": "L213",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -57239,7 +60498,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/tutor/tutor.service.ts",
-      "source_location": "L198",
+      "source_location": "L217",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -57249,7 +60508,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/tutor/tutor.service.ts",
-      "source_location": "L213",
+      "source_location": "L232",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -57304,7 +60563,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/tutor/tutor.service.ts",
-      "source_location": "L206",
+      "source_location": "L225",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -63564,7 +66823,7 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -67309,6 +70568,54 @@
       "_origin": "ast"
     },
     {
+      "source": "frontend_nuxt_composables_useapi_useapi",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend-nuxt/composables/useApi.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_tutor_usetutorstore",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_tutor_usetutorstore",
+      "target": "src_tutor_tutor_service_tutorservice_sendmessage",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "frontend-nuxt/stores/tutor.ts",
+      "source_location": "L120",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "frontend_nuxt_stores_workspace_useworkspacestore",
+      "target": "frontend_nuxt_stores_auth_useauthstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend-nuxt/stores/workspace.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "frontend_src_app_admin_page_admindashboard",
       "target": "frontend_src_context_authcontext_useauth",
       "relation": "calls",
@@ -68132,7 +71439,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L39",
+      "source_location": "L40",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -68144,7 +71451,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/auth/auth.service.ts",
-      "source_location": "L90",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast"
     },
