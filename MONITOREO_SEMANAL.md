@@ -67,6 +67,20 @@ archivos, y el punto de "Probar código" — ver riesgo #6 abajo). Detalle compl
 "Ventana Estándar implementada" (arriba) es cierto para las 9 vistas construidas — no significa que
 las 10 restantes de Docente/Administrador existan.
 
+**Actualización (09/09, Figma):** las 10 vistas restantes de Docente y Administrador ya no faltan
+en Figma — se construyeron `DOC-V02..V06` y `ADM-V01`/`ADM-V03` (7 ventanas nuevas, estado por
+defecto únicamente, ensambladas a partir de `DOC-V01`/`ADM-V02` existentes) más 36 conexiones nuevas
+de menú (30 docente + 6 admin), 0 rotas, mismo borde de afordancia que el resto del prototipo. De
+paso se corrigió un defecto real: el menú de `DOC-V01` tenía dos ítems ("Banco de Ejercicios",
+"Tareas por Calificar") y el de `ADM-V02` dos ítems ("Instituciones", "Logs de Auditoría") que no
+correspondían a ningún código `DOC-V0x`/`ADM-V0x` real de `NAMING_STIRE.md` — quedaron reemplazados
+por los 6 y 3 ítems canónicos respectivamente, en el orden documentado. **Lo que sigue sin existir:**
+los 4 estados (vacío/error/completado) de las 7 vistas nuevas — solo tienen el estado por defecto,
+igual que ya era el caso de `DOC-V01`/`ADM-V02`; y el contenido de cada vista nueva usa datos de
+ejemplo, no una consulta real (no aplica de todos modos: estas vistas no se conectan a datos reales
+esta semana, ver Insumo 15 §1). `ADM-V01` y `ADM-V03` llevan explícito "⚠ Ejemplo — sin backend
+(D-03)" en su encabezado para no disimular que no hay endpoint de consulta real detrás.
+
 ### Pedro Romero — Gestión + Documentación + Apoyo Técnico
 
 - [ ] **S04-P01 · Gestionar Trello** — objetivo 07/09.
