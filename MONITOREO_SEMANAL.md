@@ -81,6 +81,23 @@ ejemplo, no una consulta real (no aplica de todos modos: estas vistas no se cone
 esta semana, ver Insumo 15 §1). `ADM-V01` y `ADM-V03` llevan explícito "⚠ Ejemplo — sin backend
 (D-03)" en su encabezado para no disimular que no hay endpoint de consulta real detrás.
 
+**Cierre de Figma (09/09, segunda pasada):** se completaron los estados **vacío** y **error** de las
+9 vistas de Docente/Administrador (18 frames más, mismo patrón que Estudiante: título + tarjeta de
+mensaje; el estado error incluye un botón "Reintentar" cableado de vuelta al estado por defecto).
+Total de conexiones ahora: **96 en el grupo Docente, 21 en el grupo Administrador** (defecto+vacío+
+error heredan el menú lateral completo; 0 rotas, verificado). También se completó la página
+**"🧩 Ventana Estándar"**: las variantes `Rol=Docente` y `Rol=Administrador` del componente maestro
+eran un texto placeholder ("NO DISEÑADO EN ESTA FASE") desde FASE CC-06/07 — ahora contienen el
+contenido real de `DOC-V01`/`ADM-V02`, igual que la variante `Rol=Estudiante`.
+
+**Lo único que falta a propósito, declarado:** el estado **completado** no se construyó para
+Docente/Administrador. A diferencia de las vistas de estudiante (que tienen un flujo de tarea con un
+final claro: ejercicio entregado, repaso hecho), las vistas de Docente/Administrador son paneles de
+gestión persistentes sin un momento de "completado" natural — forzar ese estado en las 9 vistas
+habría sido inventar contenido sin respaldo, no completar un diseño real. Con esto, **Figma queda
+completo para el alcance decidido esta semana** (D-06 + Insumo 15 §1): las 9 ventanas de Estudiante
+en sus 4 estados, y las 9 de Docente/Administrador en 3 de 4 estados, todas cableadas.
+
 ### Pedro Romero — Gestión + Documentación + Apoyo Técnico
 
 - [ ] **S04-P01 · Gestionar Trello** — objetivo 07/09.
