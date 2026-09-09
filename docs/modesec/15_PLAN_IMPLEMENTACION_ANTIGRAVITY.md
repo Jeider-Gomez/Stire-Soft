@@ -1,7 +1,8 @@
 ---
-estado:     vigente
-verificado: 2026-09-04 contra el archivo Figma real (fileKey 1MjKiDrjU65ezO3ztO0v4m) y contra
-            src/ real del backend
+estado:     vigente — Paso 1 (tokens) reconciliado con el código real; Pasos 2-5 con brechas
+            declaradas, ver §11
+verificado: 2026-09-09 contra el archivo Figma real (fileKey 1MjKiDrjU65ezO3ztO0v4m) y contra
+            frontend-nuxt/ y src/ reales tal como los dejó Antigravity
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    COMP-V00 · EST-V01..V06 · DOC-V01 · ADM-V02
 ---
@@ -297,3 +298,66 @@ seguir siendo cierta en la app real.
   vacío.
 - El punto §7.1 tiene una decisión tomada (a o b), no queda abierto en silencio.
 - Los 38 puntos de interacción de §8 se probaron uno por uno, no solo los que "se ven".
+
+---
+
+## 11. Verificación en frío de este criterio de cierre (2026-09-09)
+
+Antigravity ya construyó `frontend-nuxt/` (ver `docs/informes-antigravity/INFORME_2026-09-07_SESION_01.md`
+y la Bitácora N.º 4). Antes de declarar cerrada esta fase se volvió a comprobar cada punto de §10
+contra el código real y contra el archivo Figma real — no se acepta el informe de Antigravity como
+evidencia por sí solo, sección 7 del `CLAUDE.md` del proyecto lo exige.
+
+### 11.1 Reconciliación de tokens (Figma ← código) — HECHO
+
+`tailwind.config.ts` divergía de las 6 colecciones de variables de Figma en 9 valores que no
+existían del lado de diseño: la paleta `editor.*` (7 colores del panel de código en `EST-V03`, sin
+equivalente diseñado — Figma nunca maquetó el editor Monaco en detalle) y dos anchos con nombre,
+`spacing.sidebar` (260px, ya documentado como ancho de `[B]` en `3.3_VENTANA_ESTANDAR.md` pero nunca
+capturado como variable) y `spacing.drawer` (400px, el drawer del Tutor IA). El resto — 20 colores,
+13 variables de tipografía, 8 de espaciado, 5 de radio, 3 de borde — coincide exactamente, verificado
+valor por valor, no por muestreo.
+
+Se agregaron las 9 variables faltantes a las colecciones `Color` y `Espacio` del archivo Figma real
+(`color/editor/bg·header·border·line·text·muted·status`, `espacio/sidebar`, `espacio/drawer`), con
+`description` explicando su origen (portadas desde `frontend-nuxt/tailwind.config.ts`, sin diseño
+Figma previo). Verificado por conteo: colección `Color` 20→27 variables, `Espacio` 10→12.
+
+### 11.2 Los otros cuatro criterios de §10 — NO se cumplen todavía, declarado sin maquillar
+
+- **Capturas lado a lado por vista contra Figma:** no se hicieron. Solo se verificaron
+  funcionalmente 3 de 9 ventanas (login, sandbox, tutor — ver Bitácora N.º 4).
+- **`grep` de hex/px literal fuera de `tailwind.config.ts`:** **falla.** Hoy existen en
+  `frontend-nuxt/pages/estudiante/evaluacion/[activityId].vue` y
+  `frontend-nuxt/pages/estudiante/unidad/[id].vue`. Una parte (`#1e1e1e`, `#252526`, `#333333`,
+  `#d4d4d4`, `#858585`, `#007acc`) ya tiene token equivalente desde §11.1 y solo falta reemplazar la
+  clase arbitraria de Tailwind (`bg-[#1e1e1e]` → `bg-editor-bg`, etc.) — no se hizo aquí porque
+  implica editar `frontend-nuxt/`, fuera del alcance que se acordó para este cierre (Figma + MODESEC,
+  no código de Antigravity). El resto (≈10 colores de resaltado de sintaxis: `#4ec9b0`, `#f14c4c`,
+  `#dcdcaa`, `#9cdcfe`, `#f97583`, `#b392f0`, `#79b8ff`, `#24292e`, `#5a5a5a`, `#2d2d2d`, `#264f78`)
+  no tiene token ni equivalente en Figma — es una paleta de resaltado de sintaxis de código de
+  ejemplo, un dominio de diseño distinto al de la UI de producto. No se propone tokenizarla ahora:
+  sería sobre-ingeniería para un bloque de código estático de un solo lugar. Queda como excepción
+  aceptada, no como pendiente oculto.
+- **§7.1 con decisión (a) o (b) tomada:** **no exactamente ninguna de las dos.** Antigravity
+  implementó una tercera vía no prevista: `runIsolatedCode()` en `frontend-nuxt/stores/workspace.ts`
+  ejecuta el código del estudiante con `new Function(...)` **en el propio navegador**, no contra el
+  sandbox aislado del backend (`HardenedProcessSandboxAdapter`) — cumple la restricción real
+  ("no consume intento, no llama a `submit`"), pero no es lo que el comentario del propio código dice
+  ("sandbox aislado"): es evaluación JS directa en el cliente, sin aislamiento de proceso. Además los
+  casos de prueba y el nombre de función esperado (`sumarPares`) están hardcodeados — solo funciona
+  para un ejercicio, no para cualquier `activityId`. Esto no bloquea la demo de la sustentación (no
+  rompe la garantía de "no consumir intento"), pero **no** es la opción (a) del backend real ni la
+  opción (b) de botón deshabilitado — es una tercera decisión de facto que el equipo no tomó
+  explícitamente y que no escala a contenido real. Queda registrado para decidir antes de sembrar las
+  8 unidades de aprendizaje pendientes.
+- **38 puntos de interacción probados uno por uno:** no, solo los 3 ya verificados (login real,
+  submit real, tutor real).
+
+### 11.3 Qué queda cerrado y qué no
+
+**Cerrado:** la reconciliación de tokens de diseño entre Figma y el código real — el sistema de
+variables vuelve a ser la fuente completa y única, sin drift. **No cerrado:** el resto de los
+criterios de §10 — se mantienen como trabajo pendiente de Antigravity/equipo, no de esta fase
+documental. Esta sección no declara la Fase de Figma "terminada"; declara con precisión qué parte de
+ella sí lo está.

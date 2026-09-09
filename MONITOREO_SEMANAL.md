@@ -56,7 +56,16 @@ El alcance inicial de frontend se mantiene limitado a las vistas ya diseñadas: 
 - [x] **S04-J03 · Backend + Tutor IA** — objetivo 11/09. *(Completado anticipadamente 07/09: Auditoría auth, token JWT real y Google Gemini LLM activo)*
 
 **Dependencias:** S04-J02 depende de S04-J01. S04-J03 puede ejecutarse en paralelo.  
-**Evidencias:** Ver informe oficial [`docs/informes-antigravity/INFORME_2026-09-07_SESION_01.md`](./docs/informes-antigravity/INFORME_2026-09-07_SESION_01.md).
+**Evidencias:** Ver informe oficial [`docs/informes-antigravity/INFORME_2026-09-07_SESION_01.md`](./docs/informes-antigravity/INFORME_2026-09-07_SESION_01.md).  
+**Verificación en frío (09/09):** los tokens de `tailwind.config.ts` se compararon variable por
+variable contra el Figma real — coincidían todos salvo 9 (paleta del editor de código y dos anchos
+con nombre), ya agregados a Figma para que quede completo. El resto de los criterios de cierre del
+[Insumo 15 §10](docs/modesec/15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md#10-criterio-de-cierre-de-esta-fase)
+**no** se cumplen todavía (capturas contra Figma, valores literales fuera del token system en 2
+archivos, y el punto de "Probar código" — ver riesgo #6 abajo). Detalle completo en
+[Insumo 15 §11](docs/modesec/15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md#11-verificación-en-frío-de-este-criterio-de-cierre-2026-09-09).
+"Ventana Estándar implementada" (arriba) es cierto para las 9 vistas construidas — no significa que
+las 10 restantes de Docente/Administrador existan.
 
 ### Pedro Romero — Gestión + Documentación + Apoyo Técnico
 
@@ -127,6 +136,11 @@ El alcance inicial de frontend se mantiene limitado a las vistas ya diseñadas: 
 3. **Contenido:** permanecen unidades de aprendizaje sin contenido sembrado en `db:seed:demo`.
 4. **Sandbox:** los tests pueden presentar intermitencia por timing; cualquier fallo debe repetirse antes de declararlo defecto de código.
 5. **Tutor IA:** su funcionamiento con proveedor real debe verificarse con evidencia externa al repositorio.
+6. **"Probar código" no usa el sandbox del backend.** `frontend-nuxt/stores/workspace.ts` ejecuta el
+   código del estudiante con `new Function(...)` en el propio navegador, no contra
+   `HardenedProcessSandboxAdapter`. Cumple la regla de "no consumir intento", pero no es aislamiento
+   real y los casos de prueba están hardcodeados a un solo ejercicio (`sumarPares`) — no escala a las
+   unidades reales que faltan por sembrar. Ver [Insumo 15 §11.2](docs/modesec/15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md#112-los-otros-cuatro-criterios-de-10-no-se-cumplen-todavía-declarado-sin-maquillar).
 
 ---
 
