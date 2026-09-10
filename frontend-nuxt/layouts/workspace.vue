@@ -47,9 +47,9 @@
         <!-- Acción 1: "▶ Probar código" (Acción libre sin consumir intento - Insumo 15 §7.1) -->
         <button
           @click="workspaceStore.runIsolatedCode()"
-          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting"
+          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting || !isCodingActivity"
           class="borde-afordancia px-3 py-1.5 rounded text-xs font-bold text-base-texto-primario bg-base-bg-secundario hover:bg-base-borde-sutil transition-colors flex items-center gap-1.5 disabled:opacity-50"
-          title="Evalúa contra casos de prueba públicos sin consumir intentos">
+          :title="isCodingActivity ? 'Evalúa contra casos de prueba públicos sin consumir intentos' : `Esta actividad es de tipo ${workspaceStore.currentExercise.questionType}, no de código libre`">
           <span v-if="workspaceStore.isRunning" class="animate-spin">⚙️</span>
           <span v-else>▶</span>
           <span>Probar código</span>
@@ -58,15 +58,26 @@
         <!-- Acción 2: "🚀 Entregar solución" (Calificación formal definitiva) -->
         <button
           @click="workspaceStore.submitSolution()"
-          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting"
+          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting || !isCodingActivity"
           class="px-3.5 py-1.5 rounded text-xs font-bold text-base-blanco bg-acento-ambar-fuerte hover:bg-acento-ambar transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-50"
-          title="Envía tu solución formalmente para calificación y actualización de progreso">
+          :title="isCodingActivity ? 'Envía tu solución formalmente para calificación y actualización de progreso' : `Esta actividad es de tipo ${workspaceStore.currentExercise.questionType}; este editor todavía no sabe evaluarla`">
           <span v-if="workspaceStore.isSubmitting" class="animate-spin">⏳</span>
           <span v-else>🚀</span>
           <span>Entregar solución</span>
         </button>
       </div>
     </header>
+
+    <!-- Aviso honesto: este editor solo sabe evaluar actividades de tipo CODING -->
+    <div
+      v-if="!isCodingActivity"
+      class="bg-acento-ambar/10 border-b border-acento-ambar-fuerte/30 px-4 py-2 text-xs text-base-texto-primario flex items-center gap-2 flex-shrink-0">
+      <span>⚠</span>
+      <span>
+        Esta actividad es de tipo <strong>{{ workspaceStore.currentExercise.questionType }}</strong>, no de código libre.
+        Este editor todavía no la soporta — "Probar código" y "Entregar solución" están deshabilitados para no perder un intento real.
+      </span>
+    </div>
 
     <!-- Contenido Workspace (Monaco Editor + Consola) -->
     <main class="flex-1 overflow-hidden">
@@ -84,4 +95,6 @@ import { useTutorStore } from '~/stores/tutor'
 
 const workspaceStore = useWorkspaceStore()
 const tutorStore = useTutorStore()
+
+const isCodingActivity = computed(() => workspaceStore.currentExercise.questionType === 'coding')
 </script>

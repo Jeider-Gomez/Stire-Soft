@@ -175,28 +175,30 @@
       </div>
     </div>
 
-    <!-- Modal de Resultado de Entrega Exitosa -->
+    <!-- Modal de Resultado de Entrega (refleja el resultado real, no siempre es éxito) -->
     <div
       v-if="workspaceStore.submissionResult"
       class="fixed inset-0 bg-base-texto-primario/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-center">
-        <div class="w-14 h-14 bg-semantico-pasa/15 text-semantico-pasa rounded-full flex items-center justify-center text-2xl mx-auto font-bold">
-          🎉
+        <div
+          class="w-14 h-14 rounded-full flex items-center justify-center text-2xl mx-auto font-bold"
+          :class="allTestsPassed ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+          {{ allTestsPassed ? '🎉' : '📋' }}
         </div>
 
         <h3 class="text-lg font-bold text-base-texto-primario">
-          ¡Ejercicio Completado con Éxito!
+          {{ allTestsPassed ? '¡Ejercicio Completado con Éxito!' : 'Intento Calificado' }}
         </h3>
 
         <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
-          <p class="text-2xl font-bold text-semantico-pasa">100 / 100 pts</p>
+          <p class="text-2xl font-bold text-semantico-pasa">{{ workspaceStore.submissionResult?.totalScore ?? 0 }} / 100 pts</p>
           <p class="text-xs text-base-texto-secundario mt-1">
-            Superaste 3 casos públicos y 2 casos privados de prueba.
+            Superaste {{ workspaceStore.submissionResult?.passedCount ?? 0 }} de {{ workspaceStore.submissionResult?.totalCount ?? 0 }} casos de prueba.
           </p>
         </div>
 
-        <p class="text-xs text-base-texto-secundario">
-          Tu dominio sobre <strong>Ciclos e Iteraciones</strong> se ha incrementado a <strong>85%</strong>.
+        <p v-if="workspaceStore.submissionResult?.feedback" class="text-xs text-base-texto-secundario">
+          {{ workspaceStore.submissionResult.feedback }}
         </p>
 
         <div class="flex items-center gap-2 pt-2">
@@ -230,6 +232,11 @@ const leftTab = ref<'enunciado' | 'casos' | 'consola'>('enunciado')
 
 const passedCount = computed(() => {
   return workspaceStore.publicTestCases.filter(tc => tc.passed === true).length
+})
+
+const allTestsPassed = computed(() => {
+  const result = workspaceStore.submissionResult
+  return !!result && result.totalCount > 0 && result.passedCount === result.totalCount
 })
 
 const lineCount = computed(() => {

@@ -6,6 +6,7 @@ import { useApi } from '~/composables/useApi'
 export interface WorkspaceExercise {
   activityId: number
   questionId: number
+  questionType: string
   title: string
   unitTitle: string
   difficulty: string
@@ -22,6 +23,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const currentExercise = ref<WorkspaceExercise>({
     activityId: 0,
     questionId: 0,
+    questionType: 'coding',
     title: 'Cargando ejercicio...',
     unitTitle: '',
     difficulty: 'Básico',
@@ -71,40 +73,51 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const questions = await api.get<any[]>(`/activity-questions/activity/${activityId}`)
       
       if (activity && Array.isArray(questions) && questions.length > 0) {
-        // Encontrar pregunta de código o la primera pregunta
-        const codingQuestion = questions.find(q => q.type === 'CODING') || questions[0]
-        const config = codingQuestion.config || {}
+        // La actividad puede tener preguntas de distintos tipos (CODING, FILL_CODE,
+        // MCQ, DRAG_DROP, MATCHING...). Este editor solo sabe operar sobre CODING —
+        // si no hay ninguna, se registra el tipo real de la primera pregunta en vez
+        // de fingir que es código libre (eso producía un starter JS falso y un 400
+        // real al intentar "Probar código" contra un tipo que no lo soporta).
+        const primaryQuestion = questions.find(q => q.type === 'coding') || questions[0]
+        const isCoding = primaryQuestion.type === 'coding'
+        const config = primaryQuestion.config || {}
 
-        const starter = config.starterCode || 
-          `const fs = require('fs');\n\n// Leer entrada estándar\nconst input = fs.readFileSync(0, 'utf-8').trim();\n\n// Escribe tu algoritmo aquí:\n`
+        const starter = isCoding
+          ? (config.starterCode || `const fs = require('fs');\n\n// Leer entrada estándar\nconst input = fs.readFileSync(0, 'utf-8').trim();\n\n// Escribe tu algoritmo aquí:\n`)
+          : `// Esta actividad es de tipo "${primaryQuestion.type}", no de código libre.\n// Este editor todavía no soporta ese tipo de pregunta.\n`
 
         currentExercise.value = {
           activityId: activity.id,
-          questionId: codingQuestion.id,
+          questionId: primaryQuestion.id,
+          questionType: primaryQuestion.type,
           title: activity.title,
           unitTitle: activity.learningUnit?.title || 'Unidad de Aprendizaje',
           difficulty: activity.difficulty || 'Básico',
           maxAttempts: activity.attemptsAllowed || 3,
           usedAttempts: 0,
-          description: activity.description || codingQuestion.question || 'Sin enunciado disponible.',
+          description: activity.description || primaryQuestion.question || 'Sin enunciado disponible.',
           initialCode: starter
         }
 
         code.value = starter
 
-        // Cargar casos de prueba públicos
-        const rawCases = config.testCases || config.publicTestCases || []
-        publicTestCases.value = rawCases.map((tc: any, index: number) => ({
-          id: index + 1,
-          input: tc.input || tc.label || `Caso #${index + 1}`,
-          expectedOutput: String(tc.expected !== undefined ? tc.expected : tc.expectedOutput || ''),
-          actualOutput: '',
-          isPublic: true,
-          passed: undefined
-        }))
-
-        consoleLog.value.push(`✔ Actividad "${activity.title}" cargada exitosamente.`)
-        consoleLog.value.push(`  → ${publicTestCases.value.length} caso(s) de prueba público(s) disponible(s).`)
+        if (isCoding) {
+          // Cargar casos de prueba públicos
+          const rawCases = config.testCases || config.publicTestCases || []
+          publicTestCases.value = rawCases.map((tc: any, index: number) => ({
+            id: index + 1,
+            input: tc.input || tc.label || `Caso #${index + 1}`,
+            expectedOutput: String(tc.expected !== undefined ? tc.expected : tc.expectedOutput || ''),
+            actualOutput: '',
+            isPublic: true,
+            passed: undefined
+          }))
+          consoleLog.value.push(`✔ Actividad "${activity.title}" cargada exitosamente.`)
+          consoleLog.value.push(`  → ${publicTestCases.value.length} caso(s) de prueba público(s) disponible(s).`)
+        } else {
+          publicTestCases.value = []
+          consoleLog.value.push(`⚠ Actividad "${activity.title}" es de tipo "${primaryQuestion.type}" — este editor de código libre no la soporta todavía.`)
+        }
       }
     } catch (err: any) {
       console.error('[STIRE Workspace] Error cargando actividad:', err)
@@ -133,6 +146,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
   // Acción 1: "▶ Probar código" — Evaluación en sandbox libre sin consumir intento
   async function runIsolatedCode() {
+    if (currentExercise.value.questionType !== 'coding') {
+      consoleLog.value.push(`⚠ "Probar código" no aplica: esta actividad es de tipo "${currentExercise.value.questionType}", no de código libre.`)
+      return
+    }
     isRunning.value = true
     activeTab.value = 'casos'
     consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Solicitando ejecución en sandbox real (POST /submissions/:id/run)...`)
@@ -188,6 +205,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
   // Acción 2: "🚀 Entregar solución" — Calificación formal contra el backend NestJS
   async function submitSolution() {
+    if (currentExercise.value.questionType !== 'coding') {
+      consoleLog.value.push(`⚠ No se puede entregar: esta actividad es de tipo "${currentExercise.value.questionType}" y este editor de código libre no sabe todavía cómo evaluarla. No se consumió ningún intento.`)
+      return
+    }
     isSubmitting.value = true
     submissionResult.value = null
     consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Enviando solución formal para calificación (POST /submissions/:id/submit)...`)
@@ -229,6 +250,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
   // Autosave: PUT /submissions/:id/autosave
   async function triggerAutosave() {
+    if (currentExercise.value.questionType !== 'coding') return
     lastAutosave.value = `Autoguardando...`
 
     try {
