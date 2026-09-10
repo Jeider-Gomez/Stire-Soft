@@ -64,9 +64,15 @@ export class TutorService {
       aiResponseContent = this.mockLlmInference(message, context);
     } else if (this.isGemini) {
       try {
+        // callGeminiApi ya prueba hasta 4 modelos candidatos internamente
+        // (con 4s de timeout cada uno) -- envolverla con el mismo
+        // openAiRetryCount (3) multiplicaba la espera del estudiante a ~90s+
+        // en la práctica (retries 2s/4s/8s x 4 modelos c/u), sin que reintentar
+        // ayude contra un 429 real de cuota agotada. Un solo reintento del
+        // ciclo completo es suficiente para cubrir fallos transitorios de red.
         aiResponseContent = await this.callWithRetry(
           () => this.callGeminiApi(systemPrompt, history, message),
-          this.openAiRetryCount,
+          1,
         );
       } catch (err: any) {
         const errorMessage = err instanceof Error ? err.message : String(err);
