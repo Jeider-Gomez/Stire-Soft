@@ -15,6 +15,17 @@ en el mismo archivo — no se archivan por eso. Se archiva completo, con fecha e
 [`docs/_archivo/`](../_archivo/) únicamente cuando se reemplaza de fondo (fases nuevas, no una
 corrección más) — ver la regla exacta ahí.
 
+## Planes independientes
+
+Cuando una pieza de trabajo es lo bastante grande como para merecer su propio documento (no una
+sección más dentro de `PLAN_IMPLEMENTACION.md`), vive aparte, en su propio archivo, referenciado
+desde acá — nunca mezclado en el plan vigente ni reemplazándolo.
+
+- [`PLAN_TIPOS_DE_ACTIVIDAD.md`](./PLAN_TIPOS_DE_ACTIVIDAD.md) (2026-09-10) — pantallas para los
+  tipos de pregunta `mcq`, `fill_code`, `drag_drop`, `ordering` y `matching` (el motor de
+  calificación del backend ya los soporta a todos salvo `ai_evaluated`, que queda excluido de la
+  fase). Motivado por `PLAN_IMPLEMENTACION.md` §13.
+
 ## Historial de sesiones ejecutadas
 
 Cada sesión de Antigravity deja un informe fechado en [`informes/`](./informes/), siguiendo
