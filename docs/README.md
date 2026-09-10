@@ -32,7 +32,10 @@
 | [investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md](./investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md) | **Saneamiento de la bibliografía:** los 15 artículos originales resultaron fabricados; cómo se detectó, cómo se reconstruyó (24 obras reales) y qué controles quedaron instalados. |
 | [investigacion/MATRIZ_ARTICULOS.md](./investigacion/MATRIZ_ARTICULOS.md) | Matriz bibliográfica vigente de STIRE — 24 obras verificadas por eje, con registro comprobable de cada una. |
 | [seguimiento/](./seguimiento/) | Bitácoras de semanas ya cerradas, numeradas. La semana en curso vive en `MONITOREO_SEMANAL.md`, en la raíz. |
+| [modesec/15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md](./modesec/15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md) | **Plan de implementación vigente para Antigravity** (Insumo 15) — documento vivo, se actualiza en el sitio. Versiones reemplazadas de fondo (no correcciones puntuales) se archivan en `_archivo/`. |
+| [informes-antigravity/](./informes-antigravity/) | Informes fechados de cada sesión de Antigravity — historial cronológico en su propio `README.md`. |
 | [pitch/](./pitch/) | Guiones del pitch en inglés por reto. |
+| [presentacion/](./presentacion/) | Documento de presentación de avances (HTML) y el prompt que lo generó. |
 | [CHANGELOG.md](../CHANGELOG.md) | Historial de versiones y cambios principales por sprint. |
 | [`_archivo/`](./_archivo/) | Documentos históricos o deprecados. No forman parte de la documentación activa. |
 | `testing/` | Guías y artefactos relacionados con la estrategia de pruebas. |

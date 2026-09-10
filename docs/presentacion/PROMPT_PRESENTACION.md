@@ -1,6 +1,9 @@
 # Prompt de trabajo — Documento de presentación de avances (Reto 1)
-> Archivo temporal de trabajo. Cuando el documento esté hecho, este archivo se puede borrar.
-> Uso: abre Claude Code en la raíz del repositorio y dile: **"Lee PROMPT_PRESENTACION.md y ejecútalo."**
+> Ya ejecutado: el resultado es [`RECORRIDO_Y_SEMANA_01.html`](./RECORRIDO_Y_SEMANA_01.html), en
+> esta misma carpeta. Se conserva este prompt como referencia de cómo se generó, no como tarea
+> pendiente. Reubicado desde la raíz del repo el 2026-09-10 (reorganización documental).
+> Uso original: abrir Claude Code en la raíz del repositorio y decirle: **"Lee
+> docs/presentacion/PROMPT_PRESENTACION.md y ejecútalo."**
 
 ```
 DOCUMENTO DE PRESENTACION DE AVANCES — RETO 1
