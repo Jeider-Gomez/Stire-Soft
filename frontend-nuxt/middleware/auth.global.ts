@@ -11,8 +11,18 @@
  */
 import { useAuthStore } from '~/stores/auth'
 
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   const authStore = useAuthStore()
+
+  // Si hay cookie de token pero Pinia todavía no tiene el user en memoria
+  // (recarga de página), hidratar ANTES de decidir la ruta. plugins/auth.client.ts
+  // hace lo mismo, pero depender de que ese plugin termine antes de que este
+  // middleware corra es una carrera real: en una recarga se veía un parpadeo
+  // real hacia /auth/login antes de volver al dashboard (verificado con
+  // Playwright). hydrateUser() es idempotente -- si ya hay user, no hace nada.
+  if (authStore.token && !authStore.user) {
+    await authStore.hydrateUser()
+  }
 
   const isPublicRoute = to.path.startsWith('/auth')
 
