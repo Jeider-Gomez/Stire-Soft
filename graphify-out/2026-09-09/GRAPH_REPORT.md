@@ -1,7 +1,8 @@
 # Graph Report - stire  (2026-09-09)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 409 files · ~259,005 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
 - 3235 nodes · 5569 edges · 272 communities (191 shown, 67 thin omitted)
@@ -131,7 +132,7 @@
 - ⏰ `EST-V05` · Repasos (Repaso Espaciado SM-2)
 - 📊 `EST-V06` · Mi Progreso (Progreso, Maestría & Analítica)
 - 🏠 `EST-V01` · Inicio (Dashboard & Orientación)
-- useAuthStore
+- auth.ts
 - exclude
 - dependencies
 - CLAUDE.md — reglas de trabajo de este proyecto
@@ -281,21 +282,21 @@
 5. `AuthorizationService` - 35 edges
 6. `Activity` - 33 edges
 7. `UserRole` - 32 edges
-8. `Class` - 29 edges
-9. `StireBaseEntity` - 29 edges
-10. `scripts` - 29 edges
+8. `scripts` - 29 edges
+9. `Class` - 29 edges
+10. `StireBaseEntity` - 29 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `InlineJudgeQueueAdapter` --implements--> `JudgeQueue`  [EXTRACTED]
-  src/judge-engine/adapters/inline-judge-queue.adapter.ts → src/judge-engine/judge-queue.interface.ts
+- `useApi()` --calls--> `useAuthStore`  [EXTRACTED]
+  frontend-nuxt/composables/useApi.ts → frontend-nuxt/stores/auth.ts
+- `useTutorStore` --calls--> `useAuthStore`  [EXTRACTED]
+  frontend-nuxt/stores/tutor.ts → frontend-nuxt/stores/auth.ts
+- `useWorkspaceStore` --calls--> `useAuthStore`  [EXTRACTED]
+  frontend-nuxt/stores/workspace.ts → frontend-nuxt/stores/auth.ts
 - `CreateActivityDto` --references--> `Difficulty`  [EXTRACTED]
   src/activities/dto/create-activity.dto.ts → src/common/enums/difficulty.enum.ts
-- `Activity` --references--> `Difficulty`  [EXTRACTED]
-  src/activities/entities/activity.entity.ts → src/common/enums/difficulty.enum.ts
-- `LearningUnit` --references--> `Difficulty`  [EXTRACTED]
-  src/learning-unit/entities/learning-unit.entity.ts → src/common/enums/difficulty.enum.ts
-- `Enrollment` --references--> `EnrollmentStatus`  [EXTRACTED]
-  src/enrollment/entities/enrollment.entity.ts → src/enrollment/enums/enrollment-status.enum.ts
+- `Activity` --references--> `ActivityType`  [EXTRACTED]
+  src/activities/entities/activity.entity.ts → src/activity-types/entities/activity-type.entity.ts
 
 ## Import Cycles
 - None detected.
@@ -770,7 +771,7 @@ Nodes (10): A. Propósito y Objetivo, B. Intención Pedagógica, C. Experiencia 
 Cohesion: 0.20
 Nodes (10): A. Propósito y Objetivo, B. Intención Pedagógica, C. Experiencia del Usuario, D. Jerarquía de Información, E. Estructura de la Pantalla, 🏠 `EST-V01` · Inicio (Dashboard & Orientación), F. Flujo de Interacción, G. Estados Relevantes (+2 more)
 
-### Community 117 - "useAuthStore"
+### Community 117 - "auth.ts"
 Cohesion: 0.29
 Nodes (4): ApiError, HttpMethod, authStore, useAuthStore
 
@@ -1067,7 +1068,7 @@ Cohesion: 0.13
 Nodes (13): HardenedProcessSandboxAdapter, ADR-0006, ADR-0006, Injectable, JudgeEngineModule, ADR-0008, Module, ExecutionResultsRepository (+5 more)
 
 ## Knowledge Gaps
-- **1220 isolated node(s):** `Conn`, `ApiError`, `HttpMethod`, `LearningUnit`, `Role` (+1215 more)
+- **1220 isolated node(s):** `authStore`, `studentStore`, `tutorStore`, `config`, `roleLabel` (+1215 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1847 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **67 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -1075,12 +1076,12 @@ Nodes (13): HardenedProcessSandboxAdapter, ADR-0006, ADR-0006, Injectable, Judge
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `User` connect `User` to `Section`, `content.service.ts`, `ClassService`, `Message`, `Roles`, `user.entity.ts`, `content.controller.ts`, `UserRole`, `Topic`, `ActivityQuestionsController`, `LearningUnitController`, `ActivitiesController`, `authorization.module.ts`, `NotificationsService`, `UserService`, `submissions.module.ts`, `Activity`, `activities.service.ts`, `.changePassword`, `GetUser`, `auth.controller.ts`, `Class`, `ContentRenderingService`, `StireBaseEntity`, `LearningUnit`, `SubmitAnswersDto`, `NotificationsController`, `.getDueReviews`, `ReviewSchedule`, `EnrollmentController`, `get-route-exceptions.spec.ts`, `activity-questions.service.ts`, `learning-progress.module.ts`?**
-  _High betweenness centrality (0.075) - this node is a cross-community bridge._
-- **Why does `useTutorStore` connect `TutorChatDrawer.vue` to `HeaderNav.vue`, `ContentRenderingService`, `useAuthStore`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+  _High betweenness centrality (0.083) - this node is a cross-community bridge._
+- **Why does `useTutorStore` connect `TutorChatDrawer.vue` to `HeaderNav.vue`, `ContentRenderingService`, `auth.ts`?**
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
 - **Why does `Roles()` connect `Roles` to `PaginationQueryDto`, `Section`, `.changePassword`, `ClassService`, `GetUser`, `Program`, `SubmitAnswersDto`, `.getDueReviews`, `content.controller.ts`, `UserRole`, `Topic`, `EnrollmentController`, `ActivityQuestionsController`, `LearningUnitController`, `ExecutionResult`, `ContentRenderingService`, `ActivitiesController`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
-- **What connects `Conn`, `ApiError`, `HttpMethod` to the rest of the system?**
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
+- **What connects `authStore`, `studentStore`, `tutorStore` to the rest of the system?**
   _1220 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `judge-execution.service.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.08205128205128205 - nodes in this community are weakly interconnected._
