@@ -98,6 +98,35 @@ habría sido inventar contenido sin respaldo, no completar un diseño real. Con 
 completo para el alcance decidido esta semana** (D-06 + Insumo 15 §1): las 9 ventanas de Estudiante
 en sus 4 estados, y las 9 de Docente/Administrador en 3 de 4 estados, todas cableadas.
 
+**Backend — auditoría de autenticación y cierre de FASE CC-09 (09/09, con Claude Code):**
+- Bloqueo 1 y 2 cerrados: `POST /submissions/:id/run` ("Probar código" sin consumir intento,
+  reutiliza el sandbox real vía `JudgeExecutionService.runPublicCases()`) y
+  `GET /review-schedules/due` (primera consulta real para `EST-V05`, urgencia calculada en vivo,
+  `easeFactor` ahora persistido). Verificado en vivo, no solo con tests.
+- Auditoría de autenticación pedida explícitamente por el dueño del proyecto: se eliminó el login
+  falso de `stores/auth.ts` (un diccionario fabricaba un JWT sin tocar el backend; si el backend
+  real fallaba por cualquier razón que no fuera credenciales incorrectas, caía en silencio a otro
+  token falso y reportaba éxito). El acceso-demo ahora hace login real con cuentas sembradas y
+  queda gateado detrás de `NUXT_PUBLIC_DEMO_MODE` (apagado por defecto).
+- Cierre del Riesgo #2 heredado (§5): las 4 rutas de estudiante sin `@Roles()`
+  (`/submissions/start`, `/submissions/:id/submit`, `/submissions/:id/autosave`, `/tutor/chat`)
+  quedaron protegidas — verificado en vivo que docente y admin ya reciben `403`.
+- Corregido además un parpadeo real a `/auth/login` en cada recarga de página (condición de carrera
+  entre la hidratación de sesión y el middleware de rutas), encontrado con Playwright, no por
+  lectura de código.
+
+**Figma — pantalla de Registro (09/09):** `COMP-V00` solo tenía los 4 estados de Login; no existía
+Registro pese a que `POST /auth/register` ya funciona en el backend (verificado: contraseña
+hasheada, rol `estudiante` por defecto, rechazo de email duplicado). Se construyó
+`COMP-V00 · Registro — Por defecto` clonando el layout y los tokens exactos del Login (mismos
+componentes de input, mismo botón, misma tipografía) con los 4 campos del contrato real
+(`RegisterDto`: nombre completo, correo, contraseña, confirmar contraseña). Cableado: el enlace de
+Login "¿No tienes cuenta?" (que nunca había tenido una reacción) ahora navega a Registro; el enlace
+de Registro navega de vuelta a Login; el botón "Crear cuenta" navega al mismo destino que el login
+exitoso (`EST-V01` defecto), porque el registro público siempre asigna rol `estudiante`. **Declarado,
+no silencioso:** solo se construyó el estado "Por defecto" — vacío/error/completado quedan fuera de
+esta pasada, mismo criterio de alcance aplicado a Docente/Administrador esta semana.
+
 ### Pedro Romero — Gestión + Documentación + Apoyo Técnico
 
 - [ ] **S04-P01 · Gestionar Trello** — objetivo 07/09.
@@ -163,15 +192,22 @@ en sus 4 estados, y las 9 de Docente/Administrador en 3 de 4 estados, todas cabl
 ## ⚠️ 5. Riesgos y pendientes heredados
 
 1. **Nuxt:** principal prioridad técnica de la Semana 4.
-2. **Control de roles:** permanecen como prioridad las cuatro rutas identificadas previamente: `POST /submissions/start`, `POST /submissions/:id/submit`, `PUT /submissions/:id/autosave` y `POST /tutor/chat`.
+2. ~~**Control de roles:** permanecen como prioridad las cuatro rutas identificadas previamente:
+   `POST /submissions/start`, `POST /submissions/:id/submit`, `PUT /submissions/:id/autosave` y
+   `POST /tutor/chat`.~~ **Cerrado (09/09).** Las 4 rutas tienen `@Roles('estudiante')`. Verificado
+   en vivo: docente y admin autenticados reciben `403` en las 4; estudiante sin cambios.
 3. **Contenido:** permanecen unidades de aprendizaje sin contenido sembrado en `db:seed:demo`.
 4. **Sandbox:** los tests pueden presentar intermitencia por timing; cualquier fallo debe repetirse antes de declararlo defecto de código.
 5. **Tutor IA:** su funcionamiento con proveedor real debe verificarse con evidencia externa al repositorio.
-6. **"Probar código" no usa el sandbox del backend.** `frontend-nuxt/stores/workspace.ts` ejecuta el
-   código del estudiante con `new Function(...)` en el propio navegador, no contra
-   `HardenedProcessSandboxAdapter`. Cumple la regla de "no consumir intento", pero no es aislamiento
-   real y los casos de prueba están hardcodeados a un solo ejercicio (`sumarPares`) — no escala a las
-   unidades reales que faltan por sembrar. Ver [Insumo 15 §11.2](docs/modesec/15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md#112-los-otros-cuatro-criterios-de-10-no-se-cumplen-todavía-declarado-sin-maquillar).
+6. **"Probar código" no usa el sandbox del backend — mitad cerrado (09/09).** El backend ya no es el
+   bloqueo: `POST /submissions/:id/run` existe y reutiliza el sandbox real
+   (`HardenedProcessSandboxAdapter` vía `JudgeExecutionService.runPublicCases()`), verificado en vivo
+   sin consumir intento. Lo que sigue pendiente es del lado frontend:
+   `frontend-nuxt/stores/workspace.ts` todavía ejecuta con `new Function(...)` en el navegador en vez
+   de llamar al endpoint real — migrarlo es trabajo de Antigravity (Fase 4/6 del plan de
+   implementación), no un hallazgo de backend nuevo. Ver
+   [Insumo 15 §11.2](docs/modesec/15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md#112-los-otros-cuatro-criterios-de-10-no-se-cumplen-todavía-declarado-sin-maquillar)
+   (desactualizado en este punto específico, no se reescribe aquí para no duplicar mantenimiento).
 
 ---
 
