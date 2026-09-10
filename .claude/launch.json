@@ -2,11 +2,22 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "start",
+      "name": "backend",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "run",
-        "start"
+        "start:dev"
+      ],
+      "port": 3001
+    },
+    {
+      "name": "frontend-nuxt",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "frontend-nuxt"
       ],
       "port": 3000
     }
