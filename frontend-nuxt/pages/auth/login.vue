@@ -58,61 +58,64 @@
         </button>
       </form>
 
-      <!-- Divisor Demo -->
-      <div class="relative my-6 text-center">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-base-borde-sutil"></div>
+      <!-- Acceso rápido de demostración: solo visible con NUXT_PUBLIC_DEMO_MODE=true.
+           No es un atajo de autenticación falso -- hace login real contra el backend
+           con cuentas institucionales sembradas (ver stores/auth.ts). -->
+      <template v-if="demoModeEnabled">
+        <div class="relative my-6 text-center">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-base-borde-sutil"></div>
+          </div>
+          <span class="relative bg-base-blanco px-3 text-[11px] text-base-texto-secundario uppercase tracking-wider">
+            O acceso rápido de demostración
+          </span>
         </div>
-        <span class="relative bg-base-blanco px-3 text-[11px] text-base-texto-secundario uppercase tracking-wider">
-          O acceso rápido de demostración
-        </span>
-      </div>
 
-      <!-- Botones de Acceso Rápido por Rol -->
-      <div class="grid grid-cols-3 gap-2">
-        <button
-          @click="quickDemoLogin('estudiante')"
-          type="button"
-          class="borde-afordancia p-2 rounded-md bg-base-bg-secundario text-center hover:border-acento-ambar-fuerte">
-          <span class="block text-base mb-0.5">🎓</span>
-          <span class="block text-[11px] font-bold text-base-texto-primario">Estudiante</span>
-          <span class="block text-[9px] text-base-texto-secundario">Pedro Romero</span>
-        </button>
+        <div class="grid grid-cols-3 gap-2">
+          <button
+            @click="quickDemoLogin('estudiante')"
+            type="button"
+            class="borde-afordancia p-2 rounded-md bg-base-bg-secundario text-center hover:border-acento-ambar-fuerte">
+            <span class="block text-base mb-0.5">🎓</span>
+            <span class="block text-[11px] font-bold text-base-texto-primario">Estudiante</span>
+            <span class="block text-[9px] text-base-texto-secundario">Pedro Romero</span>
+          </button>
 
-        <button
-          @click="quickDemoLogin('docente')"
-          type="button"
-          class="borde-afordancia p-2 rounded-md bg-base-bg-secundario text-center hover:border-acento-ambar-fuerte">
-          <span class="block text-base mb-0.5">👨‍🏫</span>
-          <span class="block text-[11px] font-bold text-base-texto-primario">Docente</span>
-          <span class="block text-[9px] text-base-texto-secundario">Prof. Toscano</span>
-        </button>
+          <button
+            @click="quickDemoLogin('docente')"
+            type="button"
+            class="borde-afordancia p-2 rounded-md bg-base-bg-secundario text-center hover:border-acento-ambar-fuerte">
+            <span class="block text-base mb-0.5">👨‍🏫</span>
+            <span class="block text-[11px] font-bold text-base-texto-primario">Docente</span>
+            <span class="block text-[9px] text-base-texto-secundario">Prof. Toscano</span>
+          </button>
 
-        <button
-          @click="quickDemoLogin('administrador')"
-          type="button"
-          class="borde-afordancia p-2 rounded-md bg-base-bg-secundario text-center hover:border-acento-ambar-fuerte">
-          <span class="block text-base mb-0.5">⚙️</span>
-          <span class="block text-[11px] font-bold text-base-texto-primario">Admin</span>
-          <span class="block text-[9px] text-base-texto-secundario">Gestión</span>
-        </button>
-      </div>
+          <button
+            @click="quickDemoLogin('administrador')"
+            type="button"
+            class="borde-afordancia p-2 rounded-md bg-base-bg-secundario text-center hover:border-acento-ambar-fuerte">
+            <span class="block text-base mb-0.5">⚙️</span>
+            <span class="block text-[11px] font-bold text-base-texto-primario">Admin</span>
+            <span class="block text-[9px] text-base-texto-secundario">Gestión</span>
+          </button>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
-import type { Role } from '~/types'
 
 definePageMeta({
   layout: 'auth'
 })
 
 const authStore = useAuthStore()
-// Credenciales reales del seeder — facilita pruebas
-const email = ref('pedro.estudiante@unicor.edu.co')
-const password = ref('Test1234!')
+const config = useRuntimeConfig()
+const demoModeEnabled = config.public.demoMode
+const email = ref('')
+const password = ref('')
 const isLoading = ref(false)
 const errorMessage = ref('')
 
@@ -135,15 +138,18 @@ async function handleLogin() {
   }
 }
 
-async function quickDemoLogin(role: Role) {
+async function quickDemoLogin(role: 'estudiante' | 'docente' | 'administrador') {
   isLoading.value = true
-  const result = await authStore.login(role)
+  errorMessage.value = ''
+  const result = await authStore.switchRoleForDemo(role)
   isLoading.value = false
 
   if (result.ok) {
     if (role === 'docente') navigateTo('/docente')
     else if (role === 'administrador') navigateTo('/admin')
     else navigateTo('/estudiante')
+  } else {
+    errorMessage.value = result.error || 'No se pudo iniciar la cuenta de demostración.'
   }
 }
 </script>
