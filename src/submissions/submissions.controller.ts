@@ -18,6 +18,8 @@ export class SubmissionsController {
   constructor(private readonly submissionsService: SubmissionsService) {}
 
   @Post('start')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
   @ApiOperation({ summary: 'Iniciar un intento de actividad' })
   startSubmission(@Body() dto: StartSubmissionDto, @GetUser() user: User) {
     return this.submissionsService.startSubmission(dto, user.id);
@@ -27,6 +29,8 @@ export class SubmissionsController {
   // examen sin fricción más allá del límite global (inactivo hasta este bloque).
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post(':id/submit')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
   @ApiOperation({ summary: 'Enviar y calificar respuestas' })
   submitAnswers(@Param('id') id: string, @Body() dto: SubmitAnswersDto, @GetUser() user: User) {
     return this.submissionsService.submitAnswers(id, dto, user.id);
@@ -41,6 +45,8 @@ export class SubmissionsController {
   }
 
   @Put(':id/autosave')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
   @ApiOperation({ summary: 'Autoguardado del progreso' })
   autosave(@Param('id') id: string, @Body() dto: SubmitAnswersDto, @GetUser() user: User) {
     return this.submissionsService.autosave(id, dto, user.id);

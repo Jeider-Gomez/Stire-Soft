@@ -2,6 +2,8 @@ import { Controller, Post, Body, BadRequestException, UseGuards } from '@nestjs/
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { GetUser } from '../auth/decorators/get-user.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { User } from '../user/entities/user.entity';
 import { TutorService } from './tutor.service';
 import { ChatDto } from './dto/chat.dto';
@@ -14,6 +16,8 @@ export class TutorController {
 
   @Throttle({ default: { limit: 20, ttl: 60000 } })
   @Post('chat')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
   @ApiOperation({ summary: 'Enviar un mensaje al Tutor IA adaptativo' })
   async chat(@Body() body: ChatDto | any, @GetUser() user: User) {
     const rawMessage =
