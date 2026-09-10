@@ -1,10 +1,9 @@
 ---
-estado:     vigente — Paso 1 (tokens) reconciliado con el código real; Pasos 2-5 con brechas
-            declaradas, ver §11
-verificado: 2026-09-09 contra el archivo Figma real (fileKey 1MjKiDrjU65ezO3ztO0v4m) y contra
-            frontend-nuxt/ y src/ reales tal como los dejó Antigravity
+estado:     vigente — §7.1/§7.2 resueltos del lado backend (ver §12); Fase siguiente definida en §12
+verificado: 2026-09-10 contra frontend-nuxt/ y src/ reales (segunda pasada, posterior a FASE CC-09) —
+            primera pasada 2026-09-09 contra el archivo Figma real (fileKey 1MjKiDrjU65ezO3ztO0v4m)
 fuente:     normativo (insumo de arranque para Google Antigravity)
-codigos:    COMP-V00 · EST-V01..V06 · DOC-V01 · ADM-V02
+codigos:    COMP-V00 · EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03
 ---
 
 # 🚀 Insumo 15 — Plan de Implementación en Nuxt para Google Antigravity
@@ -36,10 +35,17 @@ Lo construido y cableado en Figma esta semana, y solo eso:
 | `DOC-V01` · Mis Clases | 1 (solo defecto) | Docente |
 | `ADM-V02` · Usuarios y Roles | 1 (solo defecto) | Administrador |
 
-**Explícitamente FUERA de este plan** (no diseñadas todavía, no se inventan ahora):
-`DOC-V02..V05`, `ADM-V01`, `ADM-V03` — 10 ventanas restantes de Docente/Administrador. Si Antigravity
-llega a necesitar una de ellas para navegar, se implementa como placeholder de "próximamente" con la
-Ventana Estándar vacía en zona `[C]` — nunca inventando contenido no diseñado.
+**Explícitamente FUERA de este plan** (no diseñadas todavía cuando se escribió esta sección, no se
+inventan ahora): `DOC-V02..V05`, `ADM-V01`, `ADM-V03` — 10 ventanas restantes de Docente/Administrador.
+Si Antigravity llega a necesitar una de ellas para navegar, se implementa como placeholder de
+"próximamente" con la Ventana Estándar vacía en zona `[C]` — nunca inventando contenido no diseñado.
+
+> **Actualización 2026-09-09/10:** estas 10 ventanas **ya existen en Figma** — `DOC-V02..V06` y
+> `ADM-V01`/`ADM-V03`, cada una con 3 de 4 estados (defecto/vacío/error; sin completado, decisión
+> declarada en `MONITOREO_SEMANAL.md`). Aun así **siguen fuera del alcance de la próxima sesión de
+> Antigravity** (ver §12) — la prioridad para el 15/17 de septiembre es cerrar el flujo real de
+> Estudiante, no construir Docente/Administrador en código. No es un olvido: es la misma decisión de
+> priorización de antes, reafirmada con el trabajo de Figma ya disponible para cuando le toque el turno.
 
 **No se implementa** el patrón de "flyout de módulo" del Menú (navegación a unidad específica desde
 un módulo expandido) como overlay real: está documentado como comportamiento pretendido en
@@ -223,6 +229,17 @@ hoy — verificadas contra `src/` esta misma sesión, no supuestos:
 
 ### 7.1 "▶ Probar código" (EST-V03) no tiene endpoint propio
 
+> **✅ RESUELTO del lado backend, 2026-09-09.** Se implementó la opción (a) de abajo:
+> `POST /submissions/:id/run` existe, reutiliza el sandbox real (`HardenedProcessSandboxAdapter` vía
+> `JudgeExecutionService.runPublicCases()`), ejecuta solo casos `isPublic:true`, no crea intento, no
+> modifica `attemptsCount` ni `status`, no dispara `submission.graded`. Verificado en vivo: 3 llamadas
+> seguidas no mueven el contador; el caso oculto nunca aparece en la respuesta; un estudiante no puede
+> ejecutar sobre la submission de otro (404); un docente/admin recibe 403. Contrato exacto en
+> `12_CONTRATO_FRONTEND_BACKEND.md` (EST-V03, paso 1.5). **Lo que queda pendiente es del lado
+> frontend** — ver §12: `runIsolatedCode()` en `stores/workspace.ts` todavía no llama a este endpoint.
+> El razonamiento original de abajo (por qué hacía falta la opción (a) y no (b)) se conserva porque
+> sigue siendo la justificación de la decisión, no un hueco abierto.
+
 En Figma, este botón es una **acción libre que no consume intento** — descrita en la instrucción de
 diseño como "la decisión de diseño más importante del producto". El backend real
 (`src/submissions/submissions.controller.ts`) solo expone tres rutas: `POST /submissions/start`,
@@ -240,6 +257,11 @@ reales:
 
 ### 7.2 Cuatro rutas de estudiante sin control de rol
 
+> **✅ RESUELTO, 2026-09-09.** Las 4 rutas listadas abajo, más `POST /submissions/:id/run` (§7.1),
+> tienen `@Roles('estudiante')`. Verificado en vivo: docente y admin autenticados reciben `403` en
+> las 4; estudiante no perdió acceso. Ya hay una segunda barrera real del lado servidor — el
+> razonamiento de abajo explica por qué hacía falta, se conserva por eso, no porque siga abierto.
+
 `POST /submissions/start`, `POST /submissions/:id/submit`, `PUT /submissions/:id/autosave`,
 `POST /tutor/chat` no tienen `@Roles` a nivel de servicio (`13_BACKLOG_FUNCIONAL.md` §6, ya
 registrado como riesgo en la bitácora). No es un problema de frontend, pero Antigravity no debe
@@ -252,6 +274,11 @@ todavía.
 `ADM-V01` y `ADM-V03` no tienen endpoints reales (solo existe `POST /maintenance/cleanup`) — pero
 como están fuera de este plan (§1), esto no bloquea nada esta semana. Se deja registrado para que no
 se redescubra desde cero cuando llegue su turno.
+
+> **Actualización 2026-09-09/10:** sigue sin haber endpoints reales para estas vistas — nada cambió
+> del lado backend aquí. Lo que sí cambió es que las 9 ventanas de Docente/Administrador ya existen
+> completas en Figma (ver nota en §1); cuando llegue su turno, ese es el punto de partida visual, no
+> hay que rediseñar nada.
 
 ---
 
@@ -361,3 +388,69 @@ variables vuelve a ser la fuente completa y única, sin drift. **No cerrado:** e
 criterios de §10 — se mantienen como trabajo pendiente de Antigravity/equipo, no de esta fase
 documental. Esta sección no declara la Fase de Figma "terminada"; declara con precisión qué parte de
 ella sí lo está.
+
+---
+
+## 12. Fase siguiente — alcance real para la próxima sesión de Antigravity (2026-09-10)
+
+Entre el 09 y el 10 de septiembre, una sesión de Claude Code cerró los dos bloqueos de backend de
+§7.1/§7.2 y corrigió la autenticación. Esta sección verifica en frío qué de eso cambia el trabajo
+pendiente de Antigravity, más lo que se encontró de nuevo al releer `frontend-nuxt/` completo —
+contra el código real, línea por línea, no contra lo que este documento o el informe de Antigravity
+decían.
+
+### 12.1 Qué se desbloqueó
+
+- `POST /submissions/:id/run` y las 4 rutas con `@Roles('estudiante')` — ver §7.1/§7.2 arriba.
+- `GET /review-schedules/due` existe (no estaba en el alcance original de este plan, pero
+  `stores/student.ts` lo necesita — ver §12.3).
+- El acceso-demo (botones de login.vue, selector de HeaderNav.vue) ya está gateado y hace login real
+  — **Antigravity no debe tocar `pages/auth/login.vue` ni `components/layout/HeaderNav.vue` para
+  esto, ya está cerrado.**
+
+### 12.2 Hallazgo nuevo, no buscado en el cierre original: `workspace.ts` tiene su propio "fallo
+disfrazado de éxito"
+
+`submitSolution()` (`stores/workspace.ts`, función completa) hace `$fetch` crudo (no usa
+`composables/useApi.ts`, que ya existe y ya centraliza el header de autorización) contra
+`/submissions/start` y `/submissions/:id/submit`, y **si esa llamada real falla, cae en un fallback
+local que fabrica una calificación de 100/100** y la muestra como si el backend la hubiera dado.
+`triggerAutosave()` tiene el mismo patrón de `$fetch` crudo (silencioso en error, sin fabricar datos
+ahí). Es el mismo defecto que se eliminó de `stores/auth.ts` el 09/09 (login falso en vez de error
+real) — aquí sigue vivo. Corregirlo es parte del alcance de abajo.
+
+### 12.3 Alcance de la próxima sesión
+
+**Fase A — "Probar código" real.** Reemplazar `new Function(...)` en `runIsolatedCode()` por una
+llamada real a `POST /submissions/:id/run` vía `useApi()`. Deja de estar hardcodeado a `sumarPares`
+— funciona para cualquier `activityId` con pregunta CODING.
+
+**Fase B — Eliminar el fallback falso de `submitSolution()`/`triggerAutosave()`.** Migrar ambas a
+`useApi()` (mismo patrón que ya usa el resto del código nuevo). Un fallo real de red o de backend se
+muestra como error real al estudiante — nunca como una calificación de 100/100 inventada. Esto es
+directamente análogo a lo que se hizo en `auth.ts` el 09/09; mismo criterio, mismo motivo.
+
+**Fase C — Conectar `stores/student.ts` a datos reales.** Sigue 100% mock (`modules`, `reviews`,
+`analytics` son `ref()` estáticos). Reemplazar con `useApi()` contra los endpoints reales de
+`12_CONTRATO_FRONTEND_BACKEND.md` para Inicio/Mi Progreso, más `GET /review-schedules/due` (nuevo,
+contrato en `07_REPETICION_ESPACIADA.md` §5) para Repasos. Donde no haya contenido sembrado, mostrar
+datos de ejemplo **rotulados como tal** — nunca disimulados como reales.
+
+**Fase D — Registro real.** No existe `pages/auth/register.vue` ni existía el frame en Figma hasta
+esta semana. Claude Code ya construyó `COMP-V00 · Registro — Por defecto` en Figma (mismo layout y
+tokens que Login), cableado Login↔Registro y Registro→`EST-V01` en éxito. Implementar la página
+contra `POST /auth/register` (ya funciona: password hasheado, rol `estudiante` por defecto,
+verificado en vivo) usando `useApi()`.
+
+**Explícitamente fuera de esta sesión:** el gateo de acceso-demo (§12.1, ya cerrado), y las vistas de
+Docente/Administrador (§1, §7.3 — siguen fuera por prioridad, no por falta de diseño).
+
+### 12.4 Criterio de cierre de esta fase
+
+- Las 4 fases anteriores, cada una con verificación en navegador real (Browser Subagent), no solo
+  compilación.
+- `grep` de `useApi` en `stores/workspace.ts` y `stores/student.ts` deja de devolver vacío.
+- Ningún camino de error en `workspace.ts` fabrica un resultado exitoso — un `network offline`
+  forzado debe mostrar un error real en la UI, no una calificación.
+- Informe de sesión nuevo en `docs/antigravity/informes/`, siguiendo `TEMPLATE_INFORME.md`, con fila
+  agregada al índice de `docs/antigravity/README.md`.
