@@ -31,7 +31,7 @@ placeholder para CC-07/CC-08), y `COMP-V00` + `EST-V01..V06` en 4 estados cada u
 | Saber qué nos falta y quién lo hace | [`01_GAP_Y_PLAN.md`](01_GAP_Y_PLAN.md) |
 | Leer la Fase II completa de un tirón (entrega al docente) | [`FASE_II_DISENO_MULTIMEDIAL.md`](FASE_II_DISENO_MULTIMEDIAL.md) |
 | Presentar en clase | [`entregables/STIRE_MODESEC_FASE_II.pptx`](entregables/) |
-| Implementar en Nuxt lo ya cableado en Figma (guía para Antigravity) | [`15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md`](15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md) |
+| Implementar en Nuxt lo ya cableado en Figma (guía para Antigravity) | [`../antigravity/PLAN_IMPLEMENTACION.md`](../antigravity/PLAN_IMPLEMENTACION.md) — sigue siendo "Insumo 15" en las citas, reubicado el 2026-09-10 fuera de esta carpeta porque es un plan operativo que cambia seguido, no una especificación de diseño estable como el resto de los insumos 00-14 |
 
 ---
 

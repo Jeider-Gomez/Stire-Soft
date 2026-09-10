@@ -30,16 +30,17 @@ sistema** — para eso está `docs/ESTADO_STIRE_HANDOFF.md`, siempre.
 
 ## Regla para archivar versiones del plan de Antigravity
 
-`docs/modesec/15_PLAN_IMPLEMENTACION_ANTIGRAVITY.md` (Insumo 15) es un documento **vivo**: las
-correcciones y verificaciones en frío se agregan como secciones fechadas en el mismo archivo (así
-quedó §11, por ejemplo) — eso NO se archiva, es el historial natural de un documento vigente.
+`docs/antigravity/PLAN_IMPLEMENTACION.md` (Insumo 15 — reubicado desde `docs/modesec/` el
+2026-09-10, el número de cita no cambió) es un documento **vivo**: las correcciones y
+verificaciones en frío se agregan como secciones fechadas en el mismo archivo (así quedó §11, por
+ejemplo) — eso NO se archiva, es el historial natural de un documento vigente.
 
 Se archiva completo, con nombre `PLAN_IMPLEMENTACION_ANTIGRAVITY_YYYY-MM-DD.md`, únicamente cuando
 el plan se **reemplaza de fondo** — fases nuevas que ya no son una corrección sino un plan
 distinto (ej. cuando cierre esta ola de FASE CC-09 y arranque la siguiente ronda de fases de
 Antigravity). En ese momento: copiar la versión saliente aquí con esa fecha, añadir la cabecera
-histórica estándar de esta carpeta, y dejar en `docs/informes-antigravity/README.md` la referencia
-a dónde quedó. Los informes de sesión (`docs/informes-antigravity/`) nunca se archivan aquí — son
+histórica estándar de esta carpeta, y dejar en `docs/antigravity/README.md` la referencia a dónde
+quedó. Los informes de sesión (`docs/antigravity/informes/`) nunca se archivan aquí — son
 registros de punto en el tiempo, no un documento vigente que se pueda superar.
 
 ## Nota sobre archivos que NO están aquí

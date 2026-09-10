@@ -303,7 +303,7 @@ seguir siendo cierta en la app real.
 
 ## 11. Verificación en frío de este criterio de cierre (2026-09-09)
 
-Antigravity ya construyó `frontend-nuxt/` (ver `docs/informes-antigravity/INFORME_2026-09-07_SESION_01.md`
+Antigravity ya construyó `frontend-nuxt/` (ver `docs/antigravity/informes/INFORME_2026-09-07_SESION_01.md`
 y la Bitácora N.º 4). Antes de declarar cerrada esta fase se volvió a comprobar cada punto de §10
 contra el código real y contra el archivo Figma real — no se acepta el informe de Antigravity como
 evidencia por sí solo, sección 7 del `CLAUDE.md` del proyecto lo exige.
