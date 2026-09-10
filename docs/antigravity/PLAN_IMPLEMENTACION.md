@@ -442,15 +442,45 @@ tokens que Login), cableado Login↔Registro y Registro→`EST-V01` en éxito. I
 contra `POST /auth/register` (ya funciona: password hasheado, rol `estudiante` por defecto,
 verificado en vivo) usando `useApi()`.
 
+**Fase E — UX del ejercicio de programación, más intuitivo.** Pedido explícito del dueño del
+proyecto, no descubierto en esta verificación: que resolver un ejercicio (`EST-V03`) se sienta más
+intuitivo. **Auditar antes de rediseñar** — ya hay una implementación real construida ahí (editor,
+pestañas de consola/casos/tutor, autosave). Antes de tocar código: describir con precisión qué hace
+confuso el flujo hoy (¿enunciado, casos de prueba y editor se leen como paneles desconectados? ¿el
+estudiante entiende la diferencia entre "Probar" y "Entregar" sin leer la letra pequeña?) y por qué,
+en un informe corto — no rediseñar a ciegas algo que ya funciona parcialmente.
+
+**Fase F — Tutor IA y tipos de actividad: auditar antes de proponer.** Pedido explícito del dueño
+del proyecto: que el Tutor y "los varios tipos de actividad" que se plantearon sirvan de verdad para
+el andamiaje didáctico — que el estudiante aprenda fundamentos de algoritmia y programación de forma
+fácil, con seguimiento real a su ritmo y su progreso. Ya existen dos piezas reales para esto, sin
+conectar entre sí todavía:
+  - `stores/tutor.ts` ya tiene un selector de 3 niveles de andamiaje socrático
+    (`activeScaffoldingLevel`), con un **fallback local** cuando el backend no responde ("andamiaje
+    socrático local", línea ~76) — mismo patrón de "el backend falla, el cliente sigue como si nada"
+    que las Fases A/B corrigen en otros lados; revisar si aquí también hace falta que el fallo se
+    muestre como tal en vez de disimularse.
+  - `ActivityType` (backend, tabla `activity_types`: `autoGradable`, `baseWeight`, `configSchema`) es
+    el mecanismo real para "varios tipos de actividad" — hoy tiene un único tipo sembrado
+    (`DEMO-AUTO`) y nada en el frontend lo usa todavía para adaptar el andamiaje del Tutor al tipo de
+    actividad que el estudiante está resolviendo.
+  Antes de proponer algo nuevo: verificar si estas dos piezas ya cubren la intención pedagógica
+  (aprendizaje a ritmo propio, seguimiento de progreso, guía sin dar la respuesta) y solo falta
+  conectarlas a datos reales — o si genuinamente falta algo, y en ese caso decir qué archivo y por
+  qué, no inventarlo en silencio. Referencia normativa: `08_TUTOR_IA.md` y
+  `MARCO_UX_PEDAGOGICO_STIRE.md` ya documentan la intención pedagógica; no se re-deriva aquí.
+
 **Explícitamente fuera de esta sesión:** el gateo de acceso-demo (§12.1, ya cerrado), y las vistas de
 Docente/Administrador (§1, §7.3 — siguen fuera por prioridad, no por falta de diseño).
 
 ### 12.4 Criterio de cierre de esta fase
 
-- Las 4 fases anteriores, cada una con verificación en navegador real (Browser Subagent), no solo
-  compilación.
+- Las 6 fases anteriores. A-D con verificación en navegador real (Browser Subagent), no solo
+  compilación. E y F entregan un informe de auditoría antes que código — no se acepta un rediseño o
+  una propuesta nueva sin ese informe primero.
 - `grep` de `useApi` en `stores/workspace.ts` y `stores/student.ts` deja de devolver vacío.
-- Ningún camino de error en `workspace.ts` fabrica un resultado exitoso — un `network offline`
-  forzado debe mostrar un error real en la UI, no una calificación.
+- Ningún camino de error en `workspace.ts` (ni, si Fase F lo confirma necesario, en `tutor.ts`)
+  fabrica un resultado exitoso — un `network offline` forzado debe mostrar un error real en la UI,
+  no una calificación ni una respuesta que finge venir del backend.
 - Informe de sesión nuevo en `docs/antigravity/informes/`, siguiendo `TEMPLATE_INFORME.md`, con fila
   agregada al índice de `docs/antigravity/README.md`.
