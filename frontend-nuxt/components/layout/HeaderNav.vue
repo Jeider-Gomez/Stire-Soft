@@ -26,32 +26,8 @@
       <span>{{ studentStore.currentTeacher }}</span>
     </div>
 
-    <!-- Acciones Derecha: Demo Switcher + Tutor IA + Perfil -->
+    <!-- Acciones Derecha: Tutor IA + Perfil -->
     <div class="flex items-center gap-3">
-      <!-- Selector Demo de Rol: solo con NUXT_PUBLIC_DEMO_MODE=true. Hace login
-           real contra el backend con cuentas sembradas (stores/auth.ts) -- no
-           es un bypass de autenticación, es una demora fuera de producción. -->
-      <div v-if="demoModeEnabled" class="flex items-center gap-1 text-xs bg-base-bg-secundario p-1 rounded-md">
-        <button
-          @click="switchDemoRole('estudiante')"
-          class="px-2 py-1 rounded text-xs font-medium transition-colors"
-          :class="authStore.currentRole === 'estudiante' ? 'bg-base-blanco text-base-texto-primario shadow-sm' : 'text-base-texto-secundario hover:text-base-texto-primario'">
-          Estudiante
-        </button>
-        <button
-          @click="switchDemoRole('docente')"
-          class="px-2 py-1 rounded text-xs font-medium transition-colors"
-          :class="authStore.currentRole === 'docente' ? 'bg-base-blanco text-base-texto-primario shadow-sm' : 'text-base-texto-secundario hover:text-base-texto-primario'">
-          Docente
-        </button>
-        <button
-          @click="switchDemoRole('administrador')"
-          class="px-2 py-1 rounded text-xs font-medium transition-colors"
-          :class="authStore.currentRole === 'administrador' ? 'bg-base-blanco text-base-texto-primario shadow-sm' : 'text-base-texto-secundario hover:text-base-texto-primario'">
-          Admin
-        </button>
-      </div>
-
       <!-- Botón Tutor IA (EST-V04 Trigger) -->
       <button
         v-if="authStore.currentRole === 'estudiante'"
@@ -85,8 +61,6 @@ import { useTutorStore } from '~/stores/tutor'
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
 const tutorStore = useTutorStore()
-const config = useRuntimeConfig()
-const demoModeEnabled = config.public.demoMode
 
 const roleLabel = computed(() => {
   switch (authStore.currentRole) {
@@ -105,15 +79,5 @@ const userInitials = computed(() => {
 function handleLogout() {
   authStore.logout()
   navigateTo('/auth/login')
-}
-
-// Espera a que el login real termine antes de navegar -- con login-real
-// (round-trip de red) navegar sin esperar dejaba la app en la ruta vieja
-// con el rol todavía sin actualizar.
-async function switchDemoRole(role: 'estudiante' | 'docente' | 'administrador') {
-  const result = await authStore.switchRoleForDemo(role)
-  if (result.ok) {
-    navigateTo(`/${role === 'administrador' ? 'admin' : role}`)
-  }
 }
 </script>

@@ -32,12 +32,13 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3001',
-      // Gatea el acceso-rápido de demostración (login.vue, HeaderNav.vue) y el
-      // selector de rol. Apagado por defecto: no debe estar en el uso normal
-      // de la aplicación ni en el flujo de autenticación de producción.
+      // Gatea el acceso-rápido de demostración en login.vue. Apagado por
+      // defecto: no debe estar en el flujo de autenticación de producción.
       // Los botones, cuando están visibles, hacen login real — nunca fabrican
-      // un token (ver stores/auth.ts, switchRoleForDemo).
-      demoMode: process.env.NUXT_PUBLIC_DEMO_MODE === 'true'
+      // un token (ver stores/auth.ts, switchRoleForDemo). Defensa en
+      // profundidad: aunque NUXT_PUBLIC_DEMO_MODE quede en "true" por error en
+      // un despliegue real, NODE_ENV=production lo anula igual.
+      demoMode: process.env.NUXT_PUBLIC_DEMO_MODE === 'true' && process.env.NODE_ENV !== 'production'
     }
   },
 
