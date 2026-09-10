@@ -167,7 +167,43 @@ que describían.
 | 9 — aceptar/rechazar, cerrar curso, quitar estudiante | ❌ **No resuelto**, salvo cerrar curso | `POST /enrollment/join` matricula de inmediato, sin estado "pendiente de aprobación" (el enum `EnrollmentStatus` no tiene ese estado). No existe ningún endpoint para que un docente expulse a un estudiante puntual. Cerrar/terminar un curso sí es posible hoy vía `PATCH` de clase (`isActive: false`). |
 | 10 — evaluación ponderada por unidad / elección según dominio | ⚠️ **Parcialmente resuelto** | `Activity.adaptiveWeight` (`src/activities/entities/activity.entity.ts:64`) ya existe y se usa de verdad en `src/common/utils/mastery.calculator.ts:14` para ponderar el `mastery` según el peso de cada actividad — eso es real, no decorativo. Lo que NO existe todavía: ningún mecanismo que, ANTES de resolver una actividad, recomiende o deje elegir al estudiante cuál actividad le corresponde según su dominio actual o su autopercepción ("me siento experto"). Es decir: el peso ya afecta el cálculo posterior, pero no hay motor de selección/recomendación previo. |
 | 11 — docente crea actividades y organiza su clase | ✅ **Resuelto** | `src/activities/activities.controller.ts:20-26` ya expone `POST /activities` con `@Roles('docente', 'admin')`; `src/class`, `src/section`, `src/topic` ya tienen CRUD completo. El docente puede crear actividades y estructura vía API hoy — falta la interfaz gráfica para hacerlo sin Postman/Swagger, que es trabajo de frontend. |
-| 12 — selector de rol solo en demo / seguridad de auth real | ⚠️ **Parcialmente resuelto** | El login real (`stores/auth.ts` `login()` + `src/auth/auth.service.ts`) es honesto: sin JWT falso, sin fallback, `bcrypt.compare` obligatorio, y el backend no tiene ningún endpoint de cambio de rol o impersonación. El selector rápido de demo (`switchRoleForDemo`) solo se muestra en la UI cuando `NUXT_PUBLIC_DEMO_MODE=true` (`v-if` en `HeaderNav.vue` y `login.vue`) — pero la función en sí no valida ese flag internamente, así que sigue siendo invocable desde la consola del navegador aunque el modo demo esté apagado en producción. Es un hallazgo real de seguridad, de severidad baja (requiere acceso a devtools y a las credenciales demo ya sembradas), pendiente de cerrar con un guard explícito en la función. |
+| 12 — selector de rol solo en demo / seguridad de auth real | ✅ **Resuelto** (commit `4692ea0`) | `switchRoleForDemo()` ahora valida `config.public.demoMode` dentro de la propia función, no solo en el `v-if` del botón — ya no es invocable desde la consola del navegador si el modo demo está apagado. Verificado en vivo que el acceso demo real sigue funcionando igual con el modo activo. |
+
+### 9.3 Segundo checkpoint, mismo día — verificación en vivo contra backend + frontend reales
+
+Se levantaron ambos servidores (backend `:3001`, frontend `:3000`, ver `.claude/launch.json`) y se
+reprodujo el flujo exacto del punto 1 de la §9.1 con el navegador, no solo leyendo código.
+
+- **Punto 1 (404 en sandbox) — confirmado resuelto**, pero se encontró un bug relacionado y distinto:
+  `POST /submissions/start` ya responde `201`, pero al presionar "Probar código" sobre "Completar
+  Código: Validador de Formulario de Registro" el backend respondía `400`: *"Esta actividad no tiene
+  una pregunta de código para ensayar"*. Causa real: esa actividad es de tipo `fill_code`
+  (`src/seeds/seed-runner.ts:538-578`), no `coding` — pero `workspace.ts` trataba cualquier pregunta
+  como si fuera código libre. **Corregido en el commit `29575e6`**: el store ahora registra el tipo
+  real de la pregunta y solo arma el sandbox de código cuando es `coding`; para otros tipos, el botón
+  queda deshabilitado con un aviso explícito en vez de dejar que el estudiante choque con un error
+  confuso o pierda un intento real. Verificado en vivo contra ambos casos: la actividad `fill_code`
+  (id 19) queda bloqueada correctamente; la actividad `coding` real (id 20, "Validador de Acceso por
+  Edad") sigue funcionando de punta a punta — `POST /submissions/:id/run` responde `201` con 2/2 casos
+  superados.
+- **De paso**, se encontró y corrigió que el modal de "Entrega Exitosa" en
+  `pages/estudiante/evaluacion/[activityId].vue` mostraba siempre "100/100 pts" y "85% de dominio"
+  fabricados, sin mirar el resultado real — mismo patrón de "fallo/resultado disfrazado" que ya se
+  había cerrado en `auth.ts` y `workspace.ts` en sesiones anteriores. Ahora usa
+  `totalScore`/`passedCount`/`totalCount` de la respuesta real y solo felicita cuando de verdad se
+  superaron todos los casos.
+- **Hallazgo nuevo, NO resuelto todavía** (encontrado al probar "Entregar solución" de punta a punta
+  sobre la actividad `coding` real): `POST /submissions/:id/submit` respondió
+  `{"totalScore":0,"status":"submitted"}` — sin `totalScore` real ni conteo de casos — a pesar de que
+  el mismo código ya había superado 2/2 casos con "Probar código" segundos antes. Causa raíz
+  (`src/submissions/submissions.service.ts:64-158`): la calificación de preguntas `coding` es
+  asíncrona a propósito (`evalResult.needsAsyncJudge`, arquitectura event-driven — ver §7.3), así que
+  la respuesta inmediata del `submit` nunca trae la nota final; el resultado real solo se conoce
+  después, vía el evento `submission.graded`. **El frontend no tiene ningún mecanismo (polling,
+  websocket o notificación) para recoger ese resultado una vez calificado** — hoy, para una actividad
+  de código real, el estudiante nunca ve su nota verdadera en esta pantalla. Pendiente de decidir el
+  mecanismo (encuesta periódica a `GET /submissions/:id`, canal de notificaciones ya existente, o
+  ambos) antes de implementarlo.
 
 ---
 
