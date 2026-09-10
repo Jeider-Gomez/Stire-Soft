@@ -1,6 +1,6 @@
 ---
 estado:     vigente
-verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+verificado: 2026-09-09 contra commit HEAD (FASE CC-09) — añade contrato de EST-V03 "Probar código" y EST-V05 Repasos
 fuente:     normativo
 codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 ---
@@ -53,6 +53,25 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 * **Componente:** `views/estudiante/ExerciseView.vue`
 * **Paso 1 (Inicio):** `POST /submissions/start` `{ activityId: 5 }`
   * **Response `201 Created`:** `{ id: "uuid-sub-1", attemptNumber: 2, status: "in_progress" }`
+* **Paso 1.5 ("▶ Probar código", opcional, cualquier número de veces — FASE CC-09, 2026-09-09):**
+  `POST /submissions/:id/run` `{ code: "function sumarPares(a,b){...}" }`
+  * **Response `200 OK`:**
+    ```json
+    {
+      "submissionId": "uuid-sub-1",
+      "results": [
+        { "label": "público", "passed": true, "actualOutput": "8", "expectedOutput": "8" }
+      ],
+      "allPassed": true
+    }
+    ```
+  * Solo casos `isPublic:true` — ningún caso oculto se ejecuta ni se serializa. NO consume intento,
+    NO cambia `attemptNumber` ni `status` (verificado en vivo: 3 llamadas seguidas, mismo
+    `attemptNumber`). Reemplaza la evaluación local con `new Function()` que corría en el navegador
+    (`frontend-nuxt/stores/workspace.ts`, `runIsolatedCode()`) — antes de este bloque no había
+    backend real detrás de "Probar código".
+  * **Manejo UI:** Botón separado y visualmente distinto de "Entregar solución"; mostrar resultado
+    por caso en la pestaña "Casos", sin tocar la barra de progreso ni el contador de intentos.
 * **Paso 2 (Autosave en vivo):** `PUT /submissions/:id/autosave` `{ answers: [ { questionId: 10, answer: { code: "let x = 0;" } } ] }`
   * **Response `200 OK`:** Actualiza indicador en footer: "Autoguardado a las 16:30 ✔".
 * **Paso 3 (Entrega definitiva):** `POST /submissions/:id/submit` `{ answers: [ { questionId: 10, answer: { code: "function sol()..." } } ] }`
@@ -65,6 +84,33 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
     }
     ```
 * **Manejo UI:** Disparar animación de éxito, actualizar `MasteryProgressBar` y mostrar desglose de casos de prueba superados.
+
+---
+
+### `EST-V05` · Repasos (FASE CC-09, 2026-09-09 — antes sin contrato en este documento)
+* **Componente:** `views/estudiante/ReviewsView.vue`
+* **Trigger:** Carga inicial (`onMounted`).
+* **Request:** `GET /review-schedules/due` (Header: `Authorization: Bearer <token>`, sin parámetros —
+  el estudiante sale del JWT, nunca de la URL).
+* **Response `200 OK`:**
+  ```json
+  [
+    {
+      "id": 1,
+      "learningUnitId": 10,
+      "learningUnitTitle": "Ciclos e Iteraciones",
+      "nextReviewDate": "2026-09-09T00:00:00.000Z",
+      "urgency": "vencido",
+      "intervalDays": 3,
+      "easeFactor": 2.5,
+      "repetitions": 1
+    }
+  ]
+  ```
+* **Manejo UI:** Agrupar por `urgency` (`critico` primero, luego `vencido`, `manana`, `al-dia`),
+  doble codificación forma + color + etiqueta (nunca solo color) usando los tokens
+  `urgencia-repaso.*` de `tailwind.config.ts`. Arreglo vacío → `EmptyState` ("sin repasos
+  pendientes"), no un error.
 
 ---
 

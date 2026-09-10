@@ -1,6 +1,6 @@
 ---
 estado:     vigente
-verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+verificado: 2026-09-09 contra commit HEAD (FASE CC-09) — GET /review-schedules/due implementado
 fuente:     normativo
 codigos:    EST-V05
 ---
@@ -73,3 +73,49 @@ En `EST-V05 (Mantenimiento de Algoritmos)`, las unidades se agrupan en tres nive
 [⬤ AL DÍA]   - Programado para el 4 de septiembre
              Unidad 1.1: Asignación y Variables (Mastery: 95%)
 ```
+
+**Nota de verificación en frío (09/09, FASE CC-09):** el ejemplo de arriba usa 3 niveles de urgencia
+(CRÍTICO / PARA HOY / AL DÍA), pero los tokens de diseño ya shippeados
+(`frontend-nuxt/tailwind.config.ts` → `urgencia-repaso`) definen 4: `al-dia`, `manana`, `vencido`,
+`critico`. El backend implementado (ver §5) sigue los 4 tokens reales, no el ejemplo de 3 de esta
+página — se deja señalado aquí en vez de reescribir la sección en silencio. Tampoco se tocó el
+"Repetición 2: 6 días" del §3: el código real de `calculateNextReview()`
+(`src/common/utils/spaced-repetition.ts`) usa 3 días para repetición 1, no 6 — discrepancia
+preexistente, fuera del alcance de este bloque, dejada como hallazgo, no como corrección silenciosa.
+
+---
+
+## 5. `GET /review-schedules/due` — contrato real (FASE CC-09 Bloqueo 2, 2026-09-09)
+
+Antes de este bloque, `ReviewSchedulesService` solo exponía `updateSchedule()` (llamada desde el
+flujo de calificación) y el cron `checkOverdueReviews()` — no existía forma de **consultar** los
+repasos de un estudiante. `EST-V05` no tenía backend real detrás.
+
+```
+GET /review-schedules/due
+Roles: estudiante (el propio — sale del JWT, no acepta studentId como parámetro)
+200 OK → Array<{
+  id: number
+  learningUnitId: number
+  learningUnitTitle: string | null
+  nextReviewDate: string (ISO)
+  urgency: 'al-dia' | 'manana' | 'vencido' | 'critico'
+  intervalDays: number
+  easeFactor: number
+  repetitions: number
+}>
+```
+
+`urgency` se calcula en vivo a partir de `nextReviewDate` comparado con la fecha de hoy — no del
+`urgencyLevel` persistido, que el cron diario (`checkOverdueReviews`) solo refresca una vez a
+medianoche y por tanto puede estar desactualizado dentro del mismo día: `vencido` = hoy, `manana` =
+mañana, `al-dia` = 2 o más días, `critico` = ya pasó.
+
+`easeFactor` ahora se persiste en la entidad (`ReviewSchedule.easeFactor`, migración
+`1788999128282-AddEaseFactorToReviewSchedules`). Antes, `calculateNextReview()` lo calculaba
+internamente (ver §3) para derivar `intervalDays` y lo descartaba al retornar — nunca llegaba a la
+base de datos.
+
+Verificado en vivo (no solo por lectura de código): un estudiante autenticado con cero
+`ReviewSchedule` sembrados recibe `200 OK []` (no un error) — el endpoint no asume que siempre haya
+datos.

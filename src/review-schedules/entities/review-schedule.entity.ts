@@ -32,6 +32,13 @@ export class ReviewSchedule extends StireBaseEntity {
   @Column({ type: 'int', default: 0 })
   repetitions: number;
 
+  // FASE CC-09 Bloqueo 2: calculateNextReview() ya calculaba este valor
+  // para derivar intervalDays, pero se descartaba al retornar — nunca se
+  // guardaba. 2.5 es el punto de partida estándar SM-2 (repetitions 0-1,
+  // donde el algoritmo actual todavía no calcula un ease factor propio).
+  @Column({ type: 'float', default: 2.5 })
+  easeFactor: number;
+
   @Column({ type: 'timestamp', nullable: true })
   lastReviewedAt: Date;
 }

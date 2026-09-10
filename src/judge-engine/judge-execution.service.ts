@@ -84,4 +84,31 @@ export class JudgeExecutionService {
       new JudgeAnswerFailedEvent(submissionAnswerId, errorMessage),
     );
   }
+
+  // "Probar código" (EST-V03, Insumo 15 §7.1): ejecuta SOLO contra casos
+  // públicos, reutilizando el mismo sandbox que gradeAnswer(), pero a
+  // propósito NO persiste en ExecutionResultsRepository ni emite
+  // 'judge.answer-graded' — no es una calificación, es un ensayo efímero
+  // que no debe dejar rastro ni disparar el listener de submissions.
+  async runPublicCases(
+    code: string,
+    language: string,
+    testCases: Array<{ label?: string; input?: string; expected?: string; isPublic?: boolean }>,
+  ): Promise<Array<{ label: string; passed: boolean; actualOutput: string; expectedOutput: string }>> {
+    const publicCases = testCases.filter((tc) => tc.isPublic === true);
+
+    const results: Array<{ label: string; passed: boolean; actualOutput: string; expectedOutput: string }> = [];
+    for (const testCase of publicCases) {
+      const runResult = await this.sandbox.executeIsolated(code, language, testCase);
+      results.push({
+        label: testCase.label || 'Caso público',
+        passed: runResult.status === 'accepted',
+        actualOutput: runResult.status === 'runtime_error' || runResult.status === 'time_limit'
+          ? runResult.stderr || runResult.stdout
+          : runResult.stdout,
+        expectedOutput: testCase.expected ?? '',
+      });
+    }
+    return results;
+  }
 }

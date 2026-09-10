@@ -4,7 +4,10 @@ import { Throttle } from '@nestjs/throttler';
 import { SubmissionsService } from './submissions.service';
 import { StartSubmissionDto } from './dto/start-submission.dto';
 import { SubmitAnswersDto } from './dto/submit-answers.dto';
+import { RunCodeDto } from './dto/run-code.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../user/entities/user.entity';
 
@@ -27,6 +30,14 @@ export class SubmissionsController {
   @ApiOperation({ summary: 'Enviar y calificar respuestas' })
   submitAnswers(@Param('id') id: string, @Body() dto: SubmitAnswersDto, @GetUser() user: User) {
     return this.submissionsService.submitAnswers(id, dto, user.id);
+  }
+
+  @Post(':id/run')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
+  @ApiOperation({ summary: 'Ensayar código contra los casos públicos, sin consumir intento' })
+  runPublicCases(@Param('id') id: string, @Body() dto: RunCodeDto, @GetUser() user: User) {
+    return this.submissionsService.runPublicCases(id, dto, user.id);
   }
 
   @Put(':id/autosave')

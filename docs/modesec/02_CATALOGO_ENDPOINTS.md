@@ -1,6 +1,6 @@
 ---
 estado:     vigente
-verificado: 2026-09-03 contra commit HEAD (FASE CC-04)
+verificado: 2026-09-09 contra commit HEAD (FASE CC-09) — añade POST /submissions/:id/run y GET /review-schedules/due
 fuente:     normativo
 codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 ---
@@ -67,6 +67,16 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 | `POST` | `/submissions/start` | `estudiante` | 100/min | `StartSubmissionDto` `{ activityId }` | `Submission` (`in_progress`) | `EST-V03` | ✅ Activo |
 | `PUT` | `/submissions/:id/autosave` | `estudiante` | 100/min | `SubmitAnswersDto` (respuestas en borrador) | `Submission` | `EST-V03` | ✅ Activo |
 | `POST` | `/submissions/:id/submit` | `estudiante` | **10/min** | `SubmitAnswersDto` `{ answers: [...] }` | `{ submissionId, totalScore, status }` | `EST-V03` | ✅ Activo |
+| `POST` | `/submissions/:id/run` | `estudiante` (dueño de la submission) | 100/min | `RunCodeDto` `{ code: string }` | `{ submissionId, results: [{label, passed, actualOutput, expectedOutput}], allPassed }` — solo casos `isPublic:true`, ninguno oculto se ejecuta ni se serializa | `EST-V03` | ✅ Activo (FASE CC-09, 2026-09-09) |
+
+**`POST /submissions/:id/run` — contrato exacto (FASE CC-09 Bloqueo 1):** ejecuta el `code` del body SOLO
+contra los casos de la pregunta CODING de la actividad con `isPublic:true`, reutilizando el mismo
+sandbox endurecido de `JudgeExecutionService` (`runPublicCases()`). NO crea intento, NO modifica
+`attemptsCount`/`attemptNumber`, NO cambia el `status` de la submission, NO emite `submission.graded`,
+NO toca `mastery` — verificado en vivo: 3 llamadas consecutivas dejan `attemptNumber` sin cambios.
+`404` si la submission no existe o no pertenece al estudiante autenticado (ownership por
+`where: {id, studentId}`, verificado en vivo: `estudiante2` sobre la submission de `estudiante1` → 404).
+`400` si la actividad no tiene pregunta CODING.
 
 ---
 
@@ -78,6 +88,15 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 | `GET` | `/analytics/student/:studentId` | `estudiante` (propio), `docente` (su clase), `admin` | 100/min | `studentId: number` | Dashboard consolidado con métricas, racha y envíos | `EST-V01`, `EST-V06` | ✅ Activo |
 | `GET` | `/analytics/class/:classId` | `docente` (propietario), `admin` | 100/min | `classId: number` | Métricas de cohorte, promedios y ranking | `DOC-V04` | ✅ Activo |
 | `POST` | `/tutor/chat` | `estudiante` | **20/min** | `ChatDto` `{ message: string }` | `{ success: true, message: string }` | `EST-V04` | ✅ Activo |
+| `GET` | `/review-schedules/due` | `estudiante` (propio) | 100/min | Ninguno (usa token) | `200 OK` `Array<{id, learningUnitId, learningUnitTitle, nextReviewDate, urgency, intervalDays, easeFactor, repetitions}>` | `EST-V05` | ✅ Activo (FASE CC-09, 2026-09-09) |
+
+**`GET /review-schedules/due` — contrato exacto (FASE CC-09 Bloqueo 2):** repasos del estudiante
+autenticado (nunca de otro — verificado en vivo, no acepta `studentId` como parámetro, sale del JWT),
+ordenados del más próximo/vencido al más lejano. `urgency` se calcula en vivo a partir de
+`nextReviewDate` (no del `urgencyLevel` persistido, que el cron diario solo refresca una vez al día):
+`vencido` = hoy, `manana` = mañana, `al-dia` = 2+ días, `critico` = ya pasó. `easeFactor` ahora se
+persiste (antes `calculateNextReview()` lo calculaba y se descartaba — ver
+`src/migrations/1788999128282-AddEaseFactorToReviewSchedules.ts`).
 
 ---
 
@@ -85,6 +104,6 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 
 | Endpoint Deseado | Rol | Justificación MODESEC | Estado Actual | Solución Transitoria Frontend |
 |---|---|---|---|---|
-| `GET /review-schedules/today` | `estudiante` | Obtener directamente la lista de repasos vencidos del día (`EST-V05`). | `[BACKEND PENDIENTE]` | Filtrar el array de `GET /analytics/student/:id` en cliente. |
+| ~~`GET /review-schedules/today`~~ | `estudiante` | ~~Obtener directamente la lista de repasos vencidos del día (`EST-V05`).~~ | ✅ Implementado como `GET /review-schedules/due` (ver §6, FASE CC-09) | — |
 | `POST /users/bulk-import` | `admin` | Carga masiva de estudiantes por archivo CSV en `ADM-V02`. | `[FUTURO]` | Registro individual en MVP. |
 | `GET /maintenance/health` | `admin` | Tacómetro visual de salud del sandbox y base de datos (`ADM-V01`, `ADM-V03`). | `[BACKEND PENDIENTE]` | Consultar endpoints de prueba con ping local. |

@@ -25,14 +25,50 @@ export class ReviewSchedulesService {
       schedule.repetitions = 0; // Reseteamos si le va mal
     }
 
-    const { nextReviewDate, intervalDays } = calculateNextReview(schedule.repetitions, currentMastery);
+    const { nextReviewDate, intervalDays, easeFactor } = calculateNextReview(schedule.repetitions, currentMastery);
 
     schedule.nextReviewDate = nextReviewDate;
     schedule.intervalDays = intervalDays;
+    schedule.easeFactor = easeFactor;
     schedule.lastReviewedAt = new Date();
     schedule.urgencyLevel = 0; // Reseteado al repasar
 
     await this.reviewRepo.save(schedule);
+  }
+
+  /**
+   * Repasos del estudiante con nivel de urgencia calculado en vivo a partir
+   * de nextReviewDate (no del urgencyLevel persistido, que solo se
+   * actualiza una vez al día vía checkOverdueReviews): >1 día antes → al-dia,
+   * mañana → manana, hoy → vencido, ya pasado → critico.
+   */
+  async getDueReviews(studentId: number) {
+    const schedules = await this.reviewRepo.findDueForStudent(studentId);
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    return schedules.map((schedule) => {
+      const reviewDay = new Date(schedule.nextReviewDate);
+      reviewDay.setHours(0, 0, 0, 0);
+      const daysUntil = Math.round((reviewDay.getTime() - startOfToday.getTime()) / 86400000);
+
+      let urgency: 'al-dia' | 'manana' | 'vencido' | 'critico';
+      if (daysUntil < 0) urgency = 'critico';
+      else if (daysUntil === 0) urgency = 'vencido';
+      else if (daysUntil === 1) urgency = 'manana';
+      else urgency = 'al-dia';
+
+      return {
+        id: schedule.id,
+        learningUnitId: schedule.learningUnitId,
+        learningUnitTitle: schedule.learningUnit?.title ?? null,
+        nextReviewDate: schedule.nextReviewDate,
+        urgency,
+        intervalDays: schedule.intervalDays,
+        easeFactor: schedule.easeFactor,
+        repetitions: schedule.repetitions,
+      };
+    });
   }
 
   /**

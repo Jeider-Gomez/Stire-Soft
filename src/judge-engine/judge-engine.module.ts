@@ -92,6 +92,10 @@ const QUEUE_DRIVER = process.env.QUEUE_DRIVER === 'redis' ? 'redis' : 'inline';
     // El worker de BullMQ solo tiene sentido si hay una cola de la que consumir.
     ...(QUEUE_DRIVER === 'redis' ? [JudgeWorker] : []),
   ],
-  exports: [ExecutionResultsRepository, JUDGE_QUEUE],
+  // JudgeExecutionService ahora se exporta ademas de via JUDGE_QUEUE: el
+  // endpoint "Probar código" (SubmissionsService.runPublicCases) necesita
+  // invocar runPublicCases() directamente, sin pasar por la cola de
+  // calificación — esa ruta es solo para gradeAnswer().
+  exports: [ExecutionResultsRepository, JUDGE_QUEUE, JudgeExecutionService],
 })
 export class JudgeEngineModule {}

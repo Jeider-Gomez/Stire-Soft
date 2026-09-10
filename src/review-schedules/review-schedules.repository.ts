@@ -16,4 +16,13 @@ export class ReviewSchedulesRepository extends Repository<ReviewSchedule> {
     }
     return schedule;
   }
+
+  /** Todos los repasos del propio estudiante, del más próximo/vencido al más lejano. */
+  async findDueForStudent(studentId: number): Promise<ReviewSchedule[]> {
+    return this.find({
+      where: { studentId },
+      relations: ['learningUnit'],
+      order: { nextReviewDate: 'ASC' },
+    });
+  }
 }

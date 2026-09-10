@@ -11,11 +11,18 @@ function makeReviewSchedule(overrides: Partial<any> = {}): any {
     nextReviewDate: new Date(Date.now() - 3600000), // 1 hour ago (overdue)
     urgencyLevel: 0,
     intervalDays: 1,
+    easeFactor: 2.5,
     repetitions: 0,
     lastReviewedAt: null,
     learningUnit: { id: 10, title: 'Unidad de Introducción' },
     ...overrides,
   };
+}
+
+function daysFromNow(days: number): Date {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d;
 }
 
 describe('ReviewSchedulesService Unit Tests', () => {
@@ -28,6 +35,7 @@ describe('ReviewSchedulesService Unit Tests', () => {
       findOrCreate: jest.fn(),
       save: jest.fn(async (s) => s),
       find: jest.fn(),
+      findDueForStudent: jest.fn(),
     };
     notificationsService = {
       createNotification: jest.fn(async () => ({})),
@@ -57,6 +65,55 @@ describe('ReviewSchedulesService Unit Tests', () => {
 
       expect(schedule.repetitions).toBe(0);
       expect(reviewRepo.save).toHaveBeenCalledWith(schedule);
+    });
+
+    it('[FASE CC-09] persiste el easeFactor calculado — antes se calculaba y se descartaba', async () => {
+      const schedule = makeReviewSchedule({ repetitions: 3, easeFactor: 2.5 });
+      reviewRepo.findOrCreate.mockResolvedValue(schedule);
+
+      await service.updateSchedule(42, 10, 90.0);
+
+      // repetitions pasa a 4 (>=2) => rama que calcula un easeFactor propio, distinto del default 2.5
+      expect(schedule.easeFactor).not.toBe(2.5);
+      expect(schedule.easeFactor).toBeGreaterThanOrEqual(1.3);
+      expect(schedule.easeFactor).toBeLessThanOrEqual(2.5);
+    });
+  });
+
+  describe('getDueReviews', () => {
+    it('un estudiante no puede consultar los repasos de otro — solo pasa su propio studentId al repo', async () => {
+      reviewRepo.findDueForStudent.mockResolvedValue([]);
+
+      await service.getDueReviews(42);
+
+      expect(reviewRepo.findDueForStudent).toHaveBeenCalledWith(42);
+      expect(reviewRepo.findDueForStudent).toHaveBeenCalledTimes(1);
+    });
+
+    it('clasifica la urgencia a partir de nextReviewDate: hoy=vencido, mañana=manana, +4 días=al-dia, ayer=critico', async () => {
+      reviewRepo.findDueForStudent.mockResolvedValue([
+        makeReviewSchedule({ id: 1, nextReviewDate: daysFromNow(0) }),
+        makeReviewSchedule({ id: 2, nextReviewDate: daysFromNow(1) }),
+        makeReviewSchedule({ id: 3, nextReviewDate: daysFromNow(4) }),
+        makeReviewSchedule({ id: 4, nextReviewDate: daysFromNow(-1) }),
+      ]);
+
+      const result = await service.getDueReviews(42);
+
+      expect(result.find((r: any) => r.id === 1).urgency).toBe('vencido');
+      expect(result.find((r: any) => r.id === 2).urgency).toBe('manana');
+      expect(result.find((r: any) => r.id === 3).urgency).toBe('al-dia');
+      expect(result.find((r: any) => r.id === 4).urgency).toBe('critico');
+    });
+
+    it('incluye easeFactor persistido en cada repaso devuelto', async () => {
+      reviewRepo.findDueForStudent.mockResolvedValue([
+        makeReviewSchedule({ id: 1, easeFactor: 1.9, nextReviewDate: daysFromNow(0) }),
+      ]);
+
+      const result = await service.getDueReviews(42);
+
+      expect(result[0].easeFactor).toBe(1.9);
     });
   });
 

@@ -8,11 +8,14 @@ import { ActivityQuestionsRepository } from '../activity-questions/activity-ques
 import { EvaluationEngineService } from '../evaluation-engine/evaluation-engine.service';
 import { StartSubmissionDto } from './dto/start-submission.dto';
 import { SubmitAnswersDto } from './dto/submit-answers.dto';
+import { RunCodeDto } from './dto/run-code.dto';
 import { Submission } from './entities/submission.entity';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
+import { QuestionType } from '../common/enums/question-type.enum';
 import { SubmissionGradedEvent } from '../common/events/submission-graded.event';
 import { JUDGE_QUEUE } from '../judge-engine/judge-queue.interface';
 import type { JudgeQueue } from '../judge-engine/judge-queue.interface';
+import { JudgeExecutionService } from '../judge-engine/judge-execution.service';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
 
 @Injectable()
@@ -29,6 +32,7 @@ export class SubmissionsService {
     // acoplaba este servicio a Redis incluso para poder arrancar.
     @Inject(JUDGE_QUEUE) private readonly judgeQueue: JudgeQueue,
     private readonly contentRenderingService: ContentRenderingService,
+    private readonly judgeExecutionService: JudgeExecutionService,
   ) {}
 
   async startSubmission(dto: StartSubmissionDto, studentId: number): Promise<Submission> {
@@ -187,6 +191,41 @@ export class SubmissionsService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  // "Probar código" (EST-V03, Insumo 15 §7.1): ensayo libre contra los casos
+  // PÚBLICOS de la pregunta CODING de la actividad, sin consumir intento.
+  // A propósito NO crea submission, NO modifica attemptsCount/attemptNumber,
+  // NO cambia el status de la submission, NO emite 'submission.graded' y NO
+  // toca mastery — nada de esto pasa por submissionsRepo.save() ni por el
+  // event emitter, a diferencia de submitAnswers().
+  async runPublicCases(submissionId: string, dto: RunCodeDto, studentId: number) {
+    const submission = await this.submissionsRepo.findOne({
+      where: { id: submissionId, studentId },
+    });
+    if (!submission) throw new NotFoundException('Intento no encontrado');
+
+    const questions = await this.questionsRepo.findByActivityId(submission.activityId);
+    const codingQuestion = questions.find((q) => q.type === QuestionType.CODING);
+    if (!codingQuestion) {
+      throw new BadRequestException('Esta actividad no tiene una pregunta de código para ensayar');
+    }
+
+    const config = codingQuestion.config || {};
+    const testCases: Array<{ label?: string; input?: string; expected?: string; isPublic?: boolean }> =
+      config.testCases || [];
+
+    const results = await this.judgeExecutionService.runPublicCases(
+      dto.code,
+      config.language || 'javascript',
+      testCases,
+    );
+
+    return {
+      submissionId: submission.id,
+      results,
+      allPassed: results.length > 0 && results.every((r) => r.passed),
+    };
   }
 
   async autosave(submissionId: string, dto: SubmitAnswersDto, studentId: number) {

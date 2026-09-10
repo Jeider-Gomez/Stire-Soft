@@ -1,6 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { SubmissionsService } from '../submissions.service';
 import { SubmissionStatus } from '../../common/enums/submission-status.enum';
+import { QuestionType } from '../../common/enums/question-type.enum';
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -59,6 +60,7 @@ describe('SubmissionsService', () => {
   let evalEngine: any;
   let eventEmitter: any;
   let judgeQueue: any;
+  let judgeExecutionService: any;
 
   beforeEach(() => {
     dataSource = {
@@ -101,6 +103,10 @@ describe('SubmissionsService', () => {
       enqueue: jest.fn().mockResolvedValue(undefined),
     };
 
+    judgeExecutionService = {
+      runPublicCases: jest.fn(),
+    };
+
     const contentRenderingService = {
       escapePlainText: jest.fn((s: string) => s),
     };
@@ -115,6 +121,7 @@ describe('SubmissionsService', () => {
       eventEmitter,
       judgeQueue,
       contentRenderingService as any,
+      judgeExecutionService,
     );
   });
 
@@ -204,6 +211,89 @@ describe('SubmissionsService', () => {
       );
       expect(submissionsRepo.save).toHaveBeenCalled();
       expect(result).toBe(newSubmission);
+    });
+  });
+
+  // ─── runPublicCases ("Probar código", FASE CC-09 Bloqueo 1) ──────────────
+
+  describe('runPublicCases', () => {
+    const submissionId = 'sub-uuid-1';
+    const studentId = 42;
+    const dto = { code: 'function sumarPares(a,b){return a+b;}' };
+
+    function makeCodingQuestion(overrides: Partial<any> = {}) {
+      return {
+        id: 1,
+        activityId: 1,
+        type: QuestionType.CODING,
+        config: {
+          language: 'javascript',
+          testCases: [
+            { label: 'público', input: '5\n3', expected: '8', isPublic: true },
+            { label: 'oculto', input: '10\n20', expected: '30', isPublic: false },
+          ],
+        },
+        ...overrides,
+      };
+    }
+
+    it('lanza NotFoundException cuando la submission no existe o no pertenece al estudiante', async () => {
+      submissionsRepo.findOne.mockResolvedValue(null);
+
+      await expect(service.runPublicCases(submissionId, dto, studentId))
+        .rejects.toThrow(NotFoundException);
+      expect(judgeExecutionService.runPublicCases).not.toHaveBeenCalled();
+    });
+
+    it('lanza BadRequestException cuando la actividad no tiene pregunta CODING', async () => {
+      submissionsRepo.findOne.mockResolvedValue(makeSubmission());
+      questionsRepo.findByActivityId.mockResolvedValue([]);
+
+      await expect(service.runPublicCases(submissionId, dto, studentId))
+        .rejects.toThrow(BadRequestException);
+    });
+
+    it('ejecuta solo contra los casos públicos, sin crear intento ni tocar attemptsCount/status', async () => {
+      const submission = makeSubmission({ attemptNumber: 1, status: SubmissionStatus.IN_PROGRESS });
+      submissionsRepo.findOne.mockResolvedValue(submission);
+      questionsRepo.findByActivityId.mockResolvedValue([makeCodingQuestion()]);
+      judgeExecutionService.runPublicCases.mockResolvedValue([
+        { label: 'público', passed: true, actualOutput: '8', expectedOutput: '8' },
+      ]);
+
+      const result = await service.runPublicCases(submissionId, dto, studentId);
+
+      // Solo el caso público llega al sandbox — el oculto se filtra en JudgeExecutionService,
+      // pero verificamos aquí que el flujo completo no lo filtra tarde ni lo expone.
+      expect(judgeExecutionService.runPublicCases).toHaveBeenCalledWith(
+        dto.code,
+        'javascript',
+        expect.arrayContaining([
+          expect.objectContaining({ isPublic: true }),
+          expect.objectContaining({ isPublic: false }),
+        ]),
+      );
+      expect(result.results).toEqual([
+        { label: 'público', passed: true, actualOutput: '8', expectedOutput: '8' },
+      ]);
+      expect(result.results.some((r: any) => r.label === 'oculto')).toBe(false);
+
+      // No side effects: ni save, ni create, ni evento, ni cambio de estado.
+      expect(submissionsRepo.save).not.toHaveBeenCalled();
+      expect(submissionsRepo.create).not.toHaveBeenCalled();
+      expect(eventEmitter.emit).not.toHaveBeenCalled();
+      expect(submission.attemptNumber).toBe(1);
+      expect(submission.status).toBe(SubmissionStatus.IN_PROGRESS);
+    });
+
+    it('un estudiante no puede ejecutar sobre la submission de otro (ownership por where studentId)', async () => {
+      submissionsRepo.findOne.mockResolvedValue(null); // findOne con {id, studentId} no matchea
+
+      await expect(service.runPublicCases(submissionId, dto, 999))
+        .rejects.toThrow(NotFoundException);
+      expect(submissionsRepo.findOne).toHaveBeenCalledWith({
+        where: { id: submissionId, studentId: 999 },
+      });
     });
   });
 

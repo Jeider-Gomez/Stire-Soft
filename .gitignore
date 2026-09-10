@@ -69,3 +69,5 @@ docs/_archivo/REVISION_2.2_Y_SEGURIDAD_DEL_REPO.md
 docs/REAUDITORIA_CIERRE_OLA1.md
 docs/REAUDITORIA_OLA2.md
 docs/testing/poc-sandbox-endurecido.cjs
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
