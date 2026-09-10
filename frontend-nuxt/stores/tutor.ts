@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import type { TutorMessage } from '~/types'
 import { useAuthStore } from './auth'
+import { useApi } from '~/composables/useApi'
 
 export const useTutorStore = defineStore('tutor', () => {
-  const config = useRuntimeConfig()
-  const apiBase = config.public.apiBase || 'http://localhost:3001'
+  const api = useApi()
   const authStore = useAuthStore()
 
   const isOpen = ref(false)
@@ -48,14 +48,8 @@ export const useTutorStore = defineStore('tutor', () => {
 
     try {
       // 1. Petición HTTP Real al Backend NestJS: POST /tutor/chat (Insumo 12 §EST-V04)
-      const res = await $fetch<{ success: boolean; message: string }>(`${apiBase}/tutor/chat`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${authStore.token}`
-        },
-        body: {
-          message: userText
-        }
+      const res = await api.post<{ success: boolean; message: string }>('/tutor/chat', {
+        message: userText
       })
 
       if (res && res.message) {
@@ -66,34 +60,21 @@ export const useTutorStore = defineStore('tutor', () => {
           scaffoldingLevel: level,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         })
-        isThinking.value = false
         return
       }
     } catch (err: any) {
-      console.warn('[STIRE Tutor] Backend tutor offline o modo desarrollo, usando andamiaje socrático local:', err.message)
-    }
-
-    // 2. Fallback de andamiaje socrático adaptativo local en 3 niveles
-    setTimeout(() => {
-      let responseText = ''
-      if (level === 1) {
-        responseText = '💡 **Pista Conceptual:** Recuerda que un ciclo `while` continúa ejecutándose mientras su condición sea verdadera. Si el acumulador no cambia dentro del bloque, la condición nunca llegará a ser falsa.'
-      } else if (level === 2) {
-        responseText = '🧭 **Pregunta Guía:** Observa el valor de la variable `i` en la línea 4. ¿Se está incrementando en cada iteración o mantiene su valor inicial?'
-      } else {
-        responseText = '🔍 **Localización de la Falla:** Revisa el bloque interno de las líneas 5 a 7. Tu condición de parada evalúa `i <= fin`, pero debes asegurar que el acumulador sume únicamente en caso de que `i % 2 === 0`.'
-      }
-
+      const msg = err?.data?.message || err?.message || 'Error de comunicación'
+      console.warn('[STIRE Tutor] Error al consultar Tutor IA:', msg)
       messages.value.push({
         id: `msg-${Date.now()}-tutor`,
         sender: 'tutor',
-        text: responseText,
+        text: `⚠ **Servicio de Tutoría No Disponible:** ${typeof msg === 'string' ? msg : 'Error de conexión con el backend'}. Por favor intenta de nuevo en unos segundos.`,
         scaffoldingLevel: level,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       })
-
+    } finally {
       isThinking.value = false
-    }, 500)
+    }
   }
 
   function requestQuickHint(type: 'conceptual' | 'borde' | 'parada') {

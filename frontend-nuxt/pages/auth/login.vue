@@ -58,6 +58,14 @@
         </button>
       </form>
 
+      <!-- Enlace hacia Registro -->
+      <div class="mt-4 text-center text-xs text-base-texto-secundario">
+        <span>¿No tienes una cuenta aún?</span>
+        <NuxtLink to="/auth/register" class="ml-1 text-acento-ambar-fuerte font-semibold hover:underline">
+          Regístrate aquí
+        </NuxtLink>
+      </div>
+
       <!-- Acceso rápido de demostración: solo visible con NUXT_PUBLIC_DEMO_MODE=true.
            No es un atajo de autenticación falso -- hace login real contra el backend
            con cuentas institucionales sembradas (ver stores/auth.ts). -->

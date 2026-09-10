@@ -140,6 +140,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useStudentStore } from '~/stores/student'
 
 definePageMeta({
@@ -147,6 +148,10 @@ definePageMeta({
 })
 
 const studentStore = useStudentStore()
+
+onMounted(() => {
+  studentStore.fetchStudentData()
+})
 
 function getMasteryLevelName(percentage: number) {
   if (percentage >= 85) return 'Dominado'
@@ -156,3 +161,4 @@ function getMasteryLevelName(percentage: number) {
   return 'No Visto'
 }
 </script>
+

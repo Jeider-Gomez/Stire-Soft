@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import type { TestCase, SubmissionResult } from '~/types'
 import { useAuthStore } from './auth'
+import { useApi } from '~/composables/useApi'
 
 export const useWorkspaceStore = defineStore('workspace', () => {
-  const config = useRuntimeConfig()
-  const apiBase = config.public.apiBase || 'http://localhost:3001'
+  const api = useApi()
   const authStore = useAuthStore()
 
   const currentExercise = ref({
@@ -42,6 +42,7 @@ function sumarPares(inicio, fin) {
   const isSubmitting = ref(false)
   const lastAutosave = ref<string>('Autoguardado sincronizado ✔')
   const activeTab = ref<'consola' | 'casos' | 'tutor'>('casos')
+  const currentSubmissionId = ref<string | null>(null)
 
   const publicTestCases = ref<TestCase[]>([
     {
@@ -77,125 +78,143 @@ function sumarPares(inicio, fin) {
 
   const submissionResult = ref<SubmissionResult | null>(null)
 
-  // Acción 1: "▶ Probar código" — Acción libre sin consumir intento (Insumo 15 §7.1)
-  function runIsolatedCode() {
-    isRunning.value = true
-    activeTab.value = 'casos'
-    consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Evaluando casos públicos en sandbox aislado...`)
-
-    setTimeout(() => {
-      try {
-        const userFunction = new Function(`${code.value}; return sumarPares;`)()
-
-        let allPassed = true
-        publicTestCases.value.forEach((tc) => {
-          let res: any
-          if (tc.id === 1) res = userFunction(1, 10)
-          else if (tc.id === 2) res = userFunction(3, 7)
-          else res = userFunction(5, 5)
-
-          tc.actualOutput = String(res)
-          tc.passed = String(res) === tc.expectedOutput
-          if (!tc.passed) allPassed = false
-        })
-
-        if (allPassed) {
-          consoleLog.value.push('✔ Todos los casos públicos aprobados (3/3).')
-        } else {
-          consoleLog.value.push('✖ Discrepancias encontradas en la salida. Revisa la pestaña de casos.')
-        }
-      } catch (err: any) {
-        consoleLog.value.push(`⚠ Error de sintaxis o ejecución: ${err.message}`)
-        publicTestCases.value.forEach(tc => {
-          tc.actualOutput = 'Error de ejecución'
-          tc.passed = false
-        })
-      } finally {
-        isRunning.value = false
-      }
-    }, 350)
+  /**
+   * Asegura que exista un intento activo de la actividad en el backend NestJS.
+   * Si ya existe un intento en progreso para el estudiante, startSubmission lo retorna
+   * sin consumir ni incrementar intentos.
+   */
+  async function ensureActiveSubmission(): Promise<string> {
+    if (currentSubmissionId.value) {
+      return currentSubmissionId.value
+    }
+    const res = await api.post<{ id: string }>('/submissions/start', {
+      activityId: currentExercise.value.activityId
+    })
+    if (!res?.id) {
+      throw new Error('No se pudo obtener el identificador del intento')
+    }
+    currentSubmissionId.value = res.id
+    return res.id
   }
 
-  // Acción 2: "🚀 Entregar solución" — Calificación formal contra el backend NestJS
-  // Contrato real: POST /submissions/start → obtener submissionId → POST /submissions/:id/submit
-  async function submitSolution() {
-    isSubmitting.value = true
-    consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Enviando solución formal...`)
+  // Acción 1: "▶ Probar código" — Acción libre sin consumir intento (Insumo 15 §7.1 / §12 Fase A)
+  // Backend real: POST /submissions/:id/run
+  async function runIsolatedCode() {
+    isRunning.value = true
+    activeTab.value = 'casos'
+    consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Solicitando ejecución en sandbox real (POST /submissions/:id/run)...`)
 
     try {
-      // Paso 1: Abrir el intento formal
-      const startRes = await $fetch<{ id: string }>(`${apiBase}/submissions/start`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${authStore.token}` },
-        body: { activityId: currentExercise.value.activityId }
+      const subId = await ensureActiveSubmission()
+      consoleLog.value.push(`  → Evaluando contra casos públicos en sandbox aislado (Intento #${subId})...`)
+
+      const res = await api.post<{
+        submissionId: string
+        results: Array<{
+          label?: string
+          input?: string
+          expected?: string
+          expectedOutput?: string
+          actualOutput?: string
+          passed: boolean
+        }>
+        allPassed: boolean
+      }>(`/submissions/${subId}/run`, {
+        code: code.value
       })
 
-      if (!startRes?.id) throw new Error('No se pudo iniciar el intento')
+      if (res && Array.isArray(res.results)) {
+        publicTestCases.value = res.results.map((r, index) => ({
+          id: index + 1,
+          input: r.input || r.label || `Caso #${index + 1}`,
+          expectedOutput: r.expected || r.expectedOutput || '',
+          actualOutput: r.actualOutput !== undefined ? String(r.actualOutput) : '',
+          isPublic: true,
+          passed: r.passed
+        }))
 
-      consoleLog.value.push(`  → Intento creado: #${startRes.id}`)
-
-      // Paso 2: Enviar y calificar
-      const submitRes = await $fetch<SubmissionResult>(`${apiBase}/submissions/${startRes.id}/submit`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${authStore.token}` },
-        body: {
-          answers: [{ questionId: 1, code: code.value }]
+        if (res.allPassed) {
+          consoleLog.value.push(`✔ Todos los casos públicos aprobados (${res.results.length}/${res.results.length}).`)
+        } else {
+          const passedCount = res.results.filter(r => r.passed).length
+          consoleLog.value.push(`✖ Discrepancias encontradas: ${passedCount}/${res.results.length} casos aprobados. Revisa la pestaña de casos.`)
         }
+      }
+    } catch (err: any) {
+      const status = err?.response?.status || err?.statusCode
+      const msg = err?.data?.message || err?.message || 'Error de conexión con el sandbox del backend'
+      consoleLog.value.push(`⚠ Error al ensayar código (${status || 'red'}): ${msg}`)
+      publicTestCases.value.forEach(tc => {
+        tc.actualOutput = 'Error de ejecución'
+        tc.passed = false
+      })
+    } finally {
+      isRunning.value = false
+    }
+  }
+
+  // Acción 2: "🚀 Entregar solución" — Calificación formal contra el backend NestJS (Insumo 15 §12 Fase B)
+  // Contrato real: POST /submissions/start → obtener submissionId → POST /submissions/:id/submit
+  // SIN FALLBACK FALSO: si el backend o la red fallan, se reporta error real al estudiante.
+  async function submitSolution() {
+    isSubmitting.value = true
+    submissionResult.value = null
+    consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Enviando solución formal para calificación (POST /submissions/:id/submit)...`)
+
+    try {
+      const subId = await ensureActiveSubmission()
+      consoleLog.value.push(`  → Calificando intento formal #${subId}...`)
+
+      const submitRes = await api.post<SubmissionResult>(`/submissions/${subId}/submit`, {
+        answers: [
+          {
+            questionId: 1,
+            answer: { code: code.value }
+          }
+        ]
       })
 
       if (submitRes) {
         submissionResult.value = submitRes
         currentExercise.value.usedAttempts += 1
-        isSubmitting.value = false
+        currentSubmissionId.value = null // Intento cerrado
         consoleLog.value.push(`🎯 Solución calificada con ${submitRes.totalScore}/100 puntos por el backend.`)
         return
       }
     } catch (err: any) {
-      const status = err?.response?.status
-      const msg = err?.data?.message || err?.message || 'sin conexión'
-      console.warn('[STIRE Submissions] Backend no disponible, evaluación local:', msg)
+      const status = err?.response?.status || err?.statusCode
+      const msg = err?.data?.message || err?.message || 'Error de red o backend no disponible'
+      console.warn('[STIRE Submissions] Error al calificar solución:', msg)
 
-      // 403 / 409 = sin intentos disponibles
       if (status === 403 || status === 409) {
-        consoleLog.value.push(`⛔ ${err?.data?.message || 'Sin intentos disponibles.'}`)
-        isSubmitting.value = false
-        return
+        consoleLog.value.push(`⛔ Límite alcanzado o acceso no autorizado: ${msg}`)
+      } else {
+        consoleLog.value.push(`✖ No se pudo procesar la entrega formal (${status || 'offline'}): ${msg}`)
       }
-    }
-
-    // Fallback de evaluación local (modo offline o backend no disponible)
-    setTimeout(() => {
-      runIsolatedCode()
-
-      submissionResult.value = {
-        submissionId: 'sub-' + Date.now(),
-        totalScore: 100,
-        passedCount: 5,
-        totalCount: 5,
-        status: 'graded',
-        feedback: '¡Excelente trabajo! Has superado los 3 casos públicos y los 2 casos privados de verificación.'
-      }
-
-      currentExercise.value.usedAttempts += 1
+    } finally {
       isSubmitting.value = false
-      consoleLog.value.push('🎯 Solución calificada con 100/100 puntos (modo local).')
-    }, 600)
+    }
   }
 
+  // Autosave: PUT /submissions/:id/autosave
   async function triggerAutosave() {
     lastAutosave.value = `Autoguardando...`
 
     try {
-      await $fetch(`${apiBase}/submissions/${currentExercise.value.activityId}/autosave`, {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${authStore.token}` },
-        body: { code: code.value }
+      const subId = await ensureActiveSubmission()
+      await api.put(`/submissions/${subId}/autosave`, {
+        answers: [
+          {
+            questionId: 1,
+            answer: { code: code.value }
+          }
+        ]
       })
-    } catch {
-      // Autosave silencioso en caso de estar offline
+      lastAutosave.value = `Autoguardado a las ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ✔`
+    } catch (err: any) {
+      lastAutosave.value = `Error al autoguardar`
+      console.warn('[STIRE Autosave] No se pudo autoguardar:', err?.message)
     }
-
-    lastAutosave.value = `Autoguardado a las ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ✔`
   }
 
   return {
@@ -205,6 +224,7 @@ function sumarPares(inicio, fin) {
     isSubmitting,
     lastAutosave,
     activeTab,
+    currentSubmissionId,
     publicTestCases,
     consoleLog,
     submissionResult,
@@ -213,3 +233,4 @@ function sumarPares(inicio, fin) {
     triggerAutosave
   }
 })
+

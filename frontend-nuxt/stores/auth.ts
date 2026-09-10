@@ -55,6 +55,44 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  /**
+   * Registro real contra el backend NestJS (POST /auth/register).
+   * Al registrarse con éxito, guarda el token y el perfil y autentica la sesión.
+   */
+  async function register(fullName: string, email: string, password: string): Promise<{ ok: boolean; error?: string }> {
+    try {
+      const response = await $fetch<{ user: User; token?: string; access_token?: string }>(`${apiBase}/auth/register`, {
+        method: 'POST',
+        body: { fullName, email, password }
+      })
+
+      const jwt = response?.token || response?.access_token
+      if (jwt && response?.user) {
+        token.value = jwt
+        const u = { ...response.user }
+        if ((u.role as string) === 'admin') {
+          u.role = 'administrador'
+        }
+        user.value = u
+        return { ok: true }
+      }
+      return { ok: false, error: 'Respuesta inesperada del servidor tras el registro' }
+    } catch (err: any) {
+      const status = err?.response?.status || err?.statusCode
+      const msg = err?.data?.message || err?.message || 'Error de conexión'
+
+      if (status === 409) {
+        return { ok: false, error: 'Ya existe una cuenta registrada con este correo institucional.' }
+      }
+
+      if (Array.isArray(msg)) {
+        return { ok: false, error: msg.join('. ') }
+      }
+
+      return { ok: false, error: typeof msg === 'string' ? msg : 'Error al registrar la cuenta. Verifica los datos ingresados.' }
+    }
+  }
+
   function logout() {
     token.value = null
     user.value = null
@@ -103,6 +141,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     currentRole,
     login,
+    register,
     logout,
     switchRoleForDemo,
     hydrateUser

@@ -153,6 +153,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useStudentStore } from '~/stores/student'
 import type { UnitStatus } from '~/types'
 
@@ -161,6 +162,10 @@ definePageMeta({
 })
 
 const studentStore = useStudentStore()
+
+onMounted(() => {
+  studentStore.fetchStudentData()
+})
 
 function getStatusBadgeClass(status: UnitStatus) {
   switch (status) {
@@ -180,3 +185,4 @@ function getStatusLabel(status: UnitStatus) {
   }
 }
 </script>
+

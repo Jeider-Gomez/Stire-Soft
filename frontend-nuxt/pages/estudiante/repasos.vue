@@ -120,6 +120,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useStudentStore } from '~/stores/student'
 import type { ReviewUrgency } from '~/types'
 
@@ -128,6 +129,10 @@ definePageMeta({
 })
 
 const studentStore = useStudentStore()
+
+onMounted(() => {
+  studentStore.fetchStudentData()
+})
 
 function getUrgencyBadgeClass(urgency: ReviewUrgency) {
   switch (urgency) {
