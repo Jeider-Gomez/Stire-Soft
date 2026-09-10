@@ -1,7 +1,9 @@
 ---
-estado:     vigente — §7.1/§7.2 resueltos del lado backend (ver §12); Fase siguiente definida en §12
-verificado: 2026-09-10 contra frontend-nuxt/ y src/ reales (segunda pasada, posterior a FASE CC-09) —
-            primera pasada 2026-09-09 contra el archivo Figma real (fileKey 1MjKiDrjU65ezO3ztO0v4m)
+estado:     vigente — Fases A-F de §12 ya ejecutadas por Antigravity (ver docs/antigravity/informes/
+            INFORME_2026-09-10_SESION_01.md); Fase siguiente definida en §13
+verificado: 2026-09-10 contra frontend-nuxt/ y src/ reales (tercera pasada, posterior a la ejecución
+            de las Fases A-F) — segunda pasada 2026-09-10 antes de esa ejecución, primera pasada
+            2026-09-09 contra el archivo Figma real (fileKey 1MjKiDrjU65ezO3ztO0v4m)
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    COMP-V00 · EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03
 ---
@@ -484,3 +486,95 @@ Docente/Administrador (§1, §7.3 — siguen fuera por prioridad, no por falta d
   no una calificación ni una respuesta que finge venir del backend.
 - Informe de sesión nuevo en `docs/antigravity/informes/`, siguiendo `TEMPLATE_INFORME.md`, con fila
   agregada al índice de `docs/antigravity/README.md`.
+
+---
+
+## 13. Fase siguiente — pantallas de tipos de actividad (MCQ, FILL_CODE), 2026-09-10
+
+Las Fases A-F de §12 ya se ejecutaron (ver
+`docs/antigravity/informes/INFORME_2026-09-10_SESION_01.md`). Después de eso, en la misma tarde,
+Claude Code investigó el pedido del dueño del proyecto de "calcular o dejar elegir la actividad
+según el dominio del estudiante" — antes de construir nada, verificó qué tan armado está esto
+contra `src/seeds/seed-runner.ts` línea por línea. Lo que encontró cambia el alcance real de esa
+feature y **es lo que motiva esta fase**.
+
+### 13.1 Hallazgo que abre esta fase
+
+Cada unidad de aprendizaje sembrada tiene siempre el mismo patrón de 3 actividades, en este orden
+de peso: **1 Quiz (`MCQ`, peso bajo) → 1 Completar Código (`FILL_CODE`, peso medio) → 1 Desafío de
+Código (`CODING`, siempre el de mayor peso)**. Nunca hay dos actividades del mismo tipo a distinto
+nivel — es una progresión de tipos, no la misma actividad repetida más difícil.
+
+El problema: **hoy solo `CODING` tiene pantalla real.** `pages/estudiante/evaluacion/[activityId].vue`
+y `stores/workspace.ts` fueron corregidos hoy mismo (commit `29575e6`, Claude Code) para dejar de
+fingir que cualquier pregunta es código libre — ahora, si la actividad es `mcq` o `fill_code`,
+`workspace.ts` expone `currentExercise.questionType` con el valor real y la UI deshabilita "Probar
+código"/"Entregar solución" mostrando un aviso honesto de "este editor no soporta este tipo
+todavía", en vez de dejar que el estudiante choque con un sandbox de código que no le corresponde.
+
+Esto significa que un motor de "elegir la actividad según el dominio" no tiene todavía dónde
+mandar a un estudiante principiante (el Quiz) ni a uno de nivel medio (Completar Código) — solo el
+nivel más alto (Desafío de Código) resuelve en una pantalla que funciona de verdad. Construir el
+selector de dominio antes de esto sería el mismo patrón de "funcionalidad que aparenta pero no
+cumple" que se viene cerrando toda esta semana — así que se pausó esa feature y se abre esta fase
+en su lugar.
+
+### 13.2 Alcance de esta fase — SOLO estas dos pantallas
+
+**No** rediseñar `EST-V03` (el sandbox de `CODING`) — ya funciona de punta a punta, verificado en
+vivo hoy (`docs/00_VISION_FUNCIONAL.md` §9.3). **No** tocar `stores/workspace.ts` en su rama
+`coding`, ni el backend de submissions/judge-engine — ya son correctos y ya tienen tests. El
+alcance es exclusivamente construir la experiencia de resolver una actividad `mcq` y una `fill_code`,
+reusando los mismos tokens de diseño, la misma cabecera (`layouts/workspace.vue`: título, intentos,
+autoguardado, Tutor IA) y el mismo patrón de panel izquierdo (Enunciado/Casos/Consola) que ya existe
+para `CODING` — adaptado a lo que cada tipo necesita mostrar, no un layout nuevo desde cero.
+
+**Pantalla MCQ (Quiz):**
+- Config real de la pregunta (`src/seeds/seed-runner.ts:353-362`, ejemplo real ya sembrado):
+  `config.options: [{id, text}]`, `config.correctAnswerId`, `config.explanation`.
+- Respuesta esperada por el backend (`src/evaluation-engine/__tests__/evaluation-engine.service.spec.ts:15-24`):
+  `answer: { selectedId: 'opt_a' }` vía el mismo `POST /submissions/:id/submit` que ya usa `CODING`
+  (`answers: [{ questionId, answer }]`) — el motor de evaluación (`McqEvaluator`) ya existe y ya
+  califica esto en el backend, no hay que tocar nada ahí.
+- UI: opciones de selección única (radio), botón "Entregar solución" ya existente en el layout
+  (sin "Probar código" — un quiz no tiene sentido de ensayo libre).
+
+**Pantalla FILL_CODE (Completar Código):**
+- Config real (`seed-runner.ts:566-575`): `config.codeTemplate` (string con placeholders
+  `___b1___`, `___b2___`...) y `config.blanks: [{id, answer}]`.
+- Respuesta esperada (`evaluation-engine.service.spec.ts:26-34`): `answer: { blanks: { b1: '>=', b2: 'else' } }`.
+- UI: el `codeTemplate` se muestra como bloque de código de solo lectura, con un campo de entrada
+  editable en cada posición `___id___` — no es un editor Monaco libre, son huecos puntuales dentro
+  de código fijo. Igual que MCQ, solo "Entregar solución" tiene sentido aquí, no "Probar código"
+  (no hay casos de prueba que ensayar, hay blanks que completar).
+
+Antes de escribir código: confirmar estos dos `config` contra una pregunta real de cada tipo en la
+base de datos sembrada (`GET /activity-questions/activity/:id` con un `activityId` de un Quiz o un
+FILL_CODE reales — no asumir que el ejemplo de arriba es representativo de todos).
+
+### 13.3 Explícitamente fuera de esta fase
+
+- El selector de "¿cómo te sientes con este tema?" y cualquier lógica de elegir la actividad según
+  el dominio del estudiante — eso lo continúa Claude Code después, una vez que las 3 pantallas
+  existan de verdad (ver §13.4).
+- Docente/Administrador (siguen fuera por prioridad, sin cambios respecto a §1/§7.3/§12.3-E).
+- Cualquier tipo de pregunta más allá de `MCQ` y `FILL_CODE` (`DRAG_DROP`, `MATCHING`,
+  `AI_EVALUATED` no tienen contenido sembrado todavía — no construir pantallas para ellos sin
+  contenido real que las use).
+
+### 13.4 Qué sigue después, ya no en esta fase
+
+Con las 3 pantallas reales (MCQ, FILL_CODE, CODING) funcionando, Claude Code retoma el motor de
+selección de actividad por dominio: cálculo automático según el `mastery` de la unidad (usando
+`Activity.adaptiveWeight`, ya real — ver `src/common/utils/mastery.calculator.ts`) más un selector
+opcional de autopercepción que lo sobreescribe, tal como lo pidió el dueño del proyecto. No hace
+falta que Antigravity toque nada de esa lógica — solo que las pantallas de destino existan.
+
+### 13.5 Criterio de cierre de esta fase
+
+- `mcq` y `fill_code` abren una pantalla real (no el aviso de "no soportado") y "Entregar solución"
+  califica de verdad contra el backend existente — verificado en navegador real contra al menos una
+  actividad de cada tipo ya sembrada, no solo compilación.
+- `workspace.ts` en su rama `coding` no cambia de comportamiento (regresión cero, verificable
+  reproduciendo el flujo de `docs/00_VISION_FUNCIONAL.md` §9.3 sin diferencias).
+- Informe de sesión nuevo en `docs/antigravity/informes/`, mismo criterio que el resto.
