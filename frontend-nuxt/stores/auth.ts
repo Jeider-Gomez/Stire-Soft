@@ -123,9 +123,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Acceso rápido de demostración: SIEMPRE hace un login real contra el
   // backend con credenciales institucionales sembradas — nunca fabrica un
-  // token. Solo se muestra en la UI cuando NUXT_PUBLIC_DEMO_MODE=true
-  // (ver pages/auth/login.vue y components/layout/HeaderNav.vue); fuera de
-  // ese modo esta función existe pero ningún botón la invoca.
+  // token. Solo se muestra en la UI cuando NUXT_PUBLIC_DEMO_MODE=true (ver
+  // pages/auth/login.vue y components/layout/HeaderNav.vue). La propia
+  // función valida el flag también (no solo el v-if del botón): sin esto,
+  // era invocable desde la consola del navegador (useAuthStore().switchRoleForDemo(...))
+  // aunque el modo demo estuviera apagado en producción.
   const DEMO_ACCOUNTS: Record<'estudiante' | 'docente' | 'administrador', { email: string; password: string }> = {
     'estudiante':    { email: 'pedro.estudiante@unicor.edu.co', password: 'Test1234!' },
     'docente':       { email: 'roberto.toscano@unicor.edu.co',  password: 'Test1234!' },
@@ -133,6 +135,9 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function switchRoleForDemo(role: 'estudiante' | 'docente' | 'administrador') {
+    if (!config.public.demoMode) {
+      return Promise.resolve({ ok: false, error: 'El acceso rápido de demostración está desactivado.' })
+    }
     const account = DEMO_ACCOUNTS[role]
     return login(account.email, account.password)
   }
