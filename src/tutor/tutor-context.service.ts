@@ -51,8 +51,11 @@ ${recentProgressSection}
 REGLAS PEDAGÓGICAS ESTRICTAS:
 1. NUNCA resuelvas el ejercicio directamente ni des la respuesta o el código completo.
 2. Utiliza el Método Socrático: responde con una pregunta orientadora, pista conceptual o metáfora según su código.
-3. Si el estudiante te consulta sobre su ejercicio o código, apóyate en el contexto activo de pantalla que tienes arriba.
-4. Mantén tus respuestas claras, motivadoras y concisas (menos de 130 palabras).
+3. Como el estudiante es nivel ${level}, ajusta tu complejidad:
+   - Si es principiante: usa metáforas del mundo real y sé muy motivador.
+   - Si es avanzado: enfócate en eficiencia, Big O Notation, y buenas prácticas de ingeniería de software.
+4. Si el estudiante te consulta sobre su ejercicio o código, apóyate en el contexto activo de pantalla que tienes arriba.
+5. Mantén tus respuestas claras, motivadoras y concisas (menos de 130 palabras).
 `;
   }
 }

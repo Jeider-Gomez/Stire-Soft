@@ -87,9 +87,9 @@ describe('TutorService E2E', () => {
     const call = openaiCreateSpy.mock.calls[0][0];
     expect(call.model).toBe('gpt-4o-mini');
     expect(call.messages[0]).toEqual({ role: 'system', content: expect.any(String) });
-    expect(call.messages[0].content).toContain('Eres el Tutor IA de STIRE');
-    expect(call.messages[0].content).toContain('Mastery Global: 75%');
-    expect(call.messages[0].content).toContain('ÚLTIMOS 3 PROGRESOS:');
+    expect(call.messages[0].content).toContain('Eres el Tutor Inteligente de STIRE');
+    expect(call.messages[0].content).toContain('Maestría Global: 75%');
+    expect(call.messages[0].content).toContain('ÚLTIMOS PROGRESOS DEL ESTUDIANTE:');
     expect(call.messages).toContainEqual({ role: 'assistant', content: 'Primero define los parámetros y luego llama a la función.' });
     expect(call.messages[call.messages.length - 1]).toEqual({ role: 'user', content: '¿Qué modelo debo usar para resolver esto?' });
   });
