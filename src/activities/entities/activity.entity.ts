@@ -9,7 +9,7 @@ import { PublicationStatus } from '../../common/enums/status.enum';
 @Entity('activities')
 @Index(['learningUnitId', 'status'])
 export class Activity extends StireBaseEntity {
-  @ManyToOne(() => LearningUnit, { eager: false, nullable: false })
+  @ManyToOne(() => LearningUnit, (unit) => unit.activities, { eager: false, nullable: false })
   @JoinColumn({ name: 'learningUnitId' })
   learningUnit: LearningUnit;
 

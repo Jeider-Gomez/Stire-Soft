@@ -30,7 +30,8 @@ export class TutorController {
     }
 
     const studentId = user.id;
-    const response = await this.tutorService.sendMessage(studentId, rawMessage.trim());
+    const context = typeof body === 'object' ? body?.context : undefined;
+    const response = await this.tutorService.sendMessage(studentId, rawMessage.trim(), context);
 
     return {
       success: true,

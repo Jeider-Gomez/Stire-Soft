@@ -75,6 +75,21 @@
             class="w-full px-3 py-2 text-xs rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
         </div>
 
+        <div>
+          <label for="classCode" class="block text-xs font-semibold text-base-texto-primario mb-1">
+            Código de Clase <span class="text-[10px] font-normal text-base-texto-secundario">(Opcional)</span>
+          </label>
+          <input
+            id="classCode"
+            v-model="classCode"
+            type="text"
+            placeholder="Ej: WEB-ALGO-T01"
+            class="w-full px-3 py-2 text-xs uppercase tracking-wider rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none font-mono" />
+          <p class="text-[10px] text-base-texto-secundario mt-1">
+            Si tu docente te suministró un código de clase, ingrésalo para matricularte de inmediato.
+          </p>
+        </div>
+
         <button
           type="submit"
           :disabled="isLoading"
@@ -107,6 +122,7 @@ const fullName = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const classCode = ref('')
 const isLoading = ref(false)
 const errorMessage = ref('')
 
@@ -119,7 +135,12 @@ async function handleRegister() {
   isLoading.value = true
   errorMessage.value = ''
 
-  const result = await authStore.register(fullName.value, email.value, password.value)
+  const result = await authStore.register(
+    fullName.value,
+    email.value,
+    password.value,
+    classCode.value
+  )
 
   isLoading.value = false
 

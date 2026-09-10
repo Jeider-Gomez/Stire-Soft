@@ -3,85 +3,119 @@ import type { TestCase, SubmissionResult } from '~/types'
 import { useAuthStore } from './auth'
 import { useApi } from '~/composables/useApi'
 
+export interface WorkspaceExercise {
+  activityId: number
+  questionId: number
+  title: string
+  unitTitle: string
+  difficulty: string
+  maxAttempts: number
+  usedAttempts: number
+  description: string
+  initialCode: string
+}
+
 export const useWorkspaceStore = defineStore('workspace', () => {
   const api = useApi()
   const authStore = useAuthStore()
 
-  const currentExercise = ref({
-    activityId: 103,
-    title: 'Ejercicio: Sumatoria de Elementos Pares en un Rango',
-    unitTitle: 'Unidad 3: Ciclos e Iteraciones',
-    difficulty: 'Intermedio',
+  const currentExercise = ref<WorkspaceExercise>({
+    activityId: 0,
+    questionId: 0,
+    title: 'Cargando ejercicio...',
+    unitTitle: '',
+    difficulty: 'Básico',
     maxAttempts: 3,
-    usedAttempts: 1,
-    description: `### Enunciado del Problema
-Escribe una función \`sumarPares(inicio, fin)\` que reciba dos números enteros positivos \`inicio\` y \`fin\` (\`inicio <= fin\`) y retorne la suma acumulada de todos los números pares contenidos dentro de dicho rango (incluyendo los extremos si son pares).
-
-#### Requisitos:
-1. Si no existen números pares en el rango, la función debe retornar \`0\`.
-2. Utiliza una estructura de ciclo (\`for\` o \`while\`) para acumular el resultado.`,
-    initialCode: `/**
- * Retorna la suma de los pares entre inicio y fin inclusive.
- * @param {number} inicio
- * @param {number} fin
- * @returns {number}
- */
-function sumarPares(inicio, fin) {
-  let suma = 0;
-  for (let i = inicio; i <= fin; i++) {
-    if (i % 2 === 0) {
-      suma += i;
-    }
-  }
-  return suma;
-}`
+    usedAttempts: 0,
+    description: 'Cargando enunciado desde la base de datos de STIRE...',
+    initialCode: '// Cargando plantilla...\n'
   })
 
   const code = ref(currentExercise.value.initialCode)
   const isRunning = ref(false)
   const isSubmitting = ref(false)
+  const isLoadingExercise = ref(false)
   const lastAutosave = ref<string>('Autoguardado sincronizado ✔')
   const activeTab = ref<'consola' | 'casos' | 'tutor'>('casos')
   const currentSubmissionId = ref<string | null>(null)
-
-  const publicTestCases = ref<TestCase[]>([
-    {
-      id: 1,
-      input: 'sumarPares(1, 10)',
-      expectedOutput: '30',
-      actualOutput: '',
-      isPublic: true,
-      passed: undefined
-    },
-    {
-      id: 2,
-      input: 'sumarPares(3, 7)',
-      expectedOutput: '10',
-      actualOutput: '',
-      isPublic: true,
-      passed: undefined
-    },
-    {
-      id: 3,
-      input: 'sumarPares(5, 5)',
-      expectedOutput: '0',
-      actualOutput: '',
-      isPublic: true,
-      passed: undefined
-    }
-  ])
+  const publicTestCases = ref<TestCase[]>([])
 
   const consoleLog = ref<string[]>([
-    'STIRE Sandbox v1.0 — Conectado a la plataforma STIRE.',
+    'STIRE Sandbox v2.0 — Conectado a la plataforma STIRE.',
     'Presiona [▶ Probar código] para evaluar contra casos de prueba públicos sin consumir intentos.'
   ])
 
   const submissionResult = ref<SubmissionResult | null>(null)
 
   /**
+   * Carga una actividad real desde el backend NestJS
+   * 1. GET /activities/:activityId
+   * 2. GET /activity-questions/activity/:activityId
+   */
+  async function loadActivity(activityId: number) {
+    if (!activityId) return
+    isLoadingExercise.value = true
+    currentSubmissionId.value = null
+    submissionResult.value = null
+
+    consoleLog.value = [
+      'STIRE Sandbox v2.0 — Conectado a la plataforma STIRE.',
+      `Cargando actividad académica #${activityId}...`
+    ]
+
+    try {
+      // 1. Metadatos de la actividad
+      const activity = await api.get<any>(`/activities/${activityId}`)
+      
+      // 2. Preguntas asociadas
+      const questions = await api.get<any[]>(`/activity-questions/activity/${activityId}`)
+      
+      if (activity && Array.isArray(questions) && questions.length > 0) {
+        // Encontrar pregunta de código o la primera pregunta
+        const codingQuestion = questions.find(q => q.type === 'CODING') || questions[0]
+        const config = codingQuestion.config || {}
+
+        const starter = config.starterCode || 
+          `const fs = require('fs');\n\n// Leer entrada estándar\nconst input = fs.readFileSync(0, 'utf-8').trim();\n\n// Escribe tu algoritmo aquí:\n`
+
+        currentExercise.value = {
+          activityId: activity.id,
+          questionId: codingQuestion.id,
+          title: activity.title,
+          unitTitle: activity.learningUnit?.title || 'Unidad de Aprendizaje',
+          difficulty: activity.difficulty || 'Básico',
+          maxAttempts: activity.attemptsAllowed || 3,
+          usedAttempts: 0,
+          description: activity.description || codingQuestion.question || 'Sin enunciado disponible.',
+          initialCode: starter
+        }
+
+        code.value = starter
+
+        // Cargar casos de prueba públicos
+        const rawCases = config.testCases || config.publicTestCases || []
+        publicTestCases.value = rawCases.map((tc: any, index: number) => ({
+          id: index + 1,
+          input: tc.input || tc.label || `Caso #${index + 1}`,
+          expectedOutput: String(tc.expected !== undefined ? tc.expected : tc.expectedOutput || ''),
+          actualOutput: '',
+          isPublic: true,
+          passed: undefined
+        }))
+
+        consoleLog.value.push(`✔ Actividad "${activity.title}" cargada exitosamente.`)
+        consoleLog.value.push(`  → ${publicTestCases.value.length} caso(s) de prueba público(s) disponible(s).`)
+      }
+    } catch (err: any) {
+      console.error('[STIRE Workspace] Error cargando actividad:', err)
+      consoleLog.value.push(`⚠ Error al cargar actividad #${activityId}: ${err?.data?.message || err?.message}`)
+    } finally {
+      isLoadingExercise.value = false
+    }
+  }
+
+  /**
    * Asegura que exista un intento activo de la actividad en el backend NestJS.
-   * Si ya existe un intento en progreso para el estudiante, startSubmission lo retorna
-   * sin consumir ni incrementar intentos.
    */
   async function ensureActiveSubmission(): Promise<string> {
     if (currentSubmissionId.value) {
@@ -97,8 +131,7 @@ function sumarPares(inicio, fin) {
     return res.id
   }
 
-  // Acción 1: "▶ Probar código" — Acción libre sin consumir intento (Insumo 15 §7.1 / §12 Fase A)
-  // Backend real: POST /submissions/:id/run
+  // Acción 1: "▶ Probar código" — Evaluación en sandbox libre sin consumir intento
   async function runIsolatedCode() {
     isRunning.value = true
     activeTab.value = 'casos'
@@ -153,9 +186,7 @@ function sumarPares(inicio, fin) {
     }
   }
 
-  // Acción 2: "🚀 Entregar solución" — Calificación formal contra el backend NestJS (Insumo 15 §12 Fase B)
-  // Contrato real: POST /submissions/start → obtener submissionId → POST /submissions/:id/submit
-  // SIN FALLBACK FALSO: si el backend o la red fallan, se reporta error real al estudiante.
+  // Acción 2: "🚀 Entregar solución" — Calificación formal contra el backend NestJS
   async function submitSolution() {
     isSubmitting.value = true
     submissionResult.value = null
@@ -168,7 +199,7 @@ function sumarPares(inicio, fin) {
       const submitRes = await api.post<SubmissionResult>(`/submissions/${subId}/submit`, {
         answers: [
           {
-            questionId: 1,
+            questionId: currentExercise.value.questionId,
             answer: { code: code.value }
           }
         ]
@@ -205,7 +236,7 @@ function sumarPares(inicio, fin) {
       await api.put(`/submissions/${subId}/autosave`, {
         answers: [
           {
-            questionId: 1,
+            questionId: currentExercise.value.questionId,
             answer: { code: code.value }
           }
         ]
@@ -222,15 +253,16 @@ function sumarPares(inicio, fin) {
     code,
     isRunning,
     isSubmitting,
+    isLoadingExercise,
     lastAutosave,
     activeTab,
     currentSubmissionId,
     publicTestCases,
     consoleLog,
     submissionResult,
+    loadActivity,
     runIsolatedCode,
     submitSolution,
     triggerAutosave
   }
 })
-

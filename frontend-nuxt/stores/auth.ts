@@ -58,8 +58,14 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * Registro real contra el backend NestJS (POST /auth/register).
    * Al registrarse con éxito, guarda el token y el perfil y autentica la sesión.
+   * Si se proporciona un código de clase, inscribe automáticamente al estudiante.
    */
-  async function register(fullName: string, email: string, password: string): Promise<{ ok: boolean; error?: string }> {
+  async function register(
+    fullName: string,
+    email: string,
+    password: string,
+    classCode?: string
+  ): Promise<{ ok: boolean; error?: string; enrollmentWarning?: string }> {
     try {
       const response = await $fetch<{ user: User; token?: string; access_token?: string }>(`${apiBase}/auth/register`, {
         method: 'POST',
@@ -74,7 +80,23 @@ export const useAuthStore = defineStore('auth', () => {
           u.role = 'administrador'
         }
         user.value = u
-        return { ok: true }
+
+        // Si se envió un código de clase, intentar inscripción inmediata
+        let enrollmentWarning: string | undefined
+        if (classCode && classCode.trim()) {
+          try {
+            await $fetch(`${apiBase}/enrollment/join`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${jwt}` },
+              body: { code: classCode.trim().toUpperCase() }
+            })
+          } catch (enrollErr: any) {
+            console.warn('[STIRE Auth] Falló inscripción inicial por código:', enrollErr?.message)
+            enrollmentWarning = 'Tu cuenta fue creada, pero no se pudo asociar el código de clase. Podrás unirte desde tu panel.'
+          }
+        }
+
+        return { ok: true, enrollmentWarning }
       }
       return { ok: false, error: 'Respuesta inesperada del servidor tras el registro' }
     } catch (err: any) {

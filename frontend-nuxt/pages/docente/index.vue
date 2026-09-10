@@ -12,7 +12,7 @@
           Mis Clases y Grupos Asignados
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
-          Período Académico 2026-2 • Universidad de Córdoba
+          Universidad de Córdoba • Sistema de Tutoría Inteligente STIRE
         </p>
       </div>
 
@@ -22,49 +22,71 @@
       </button>
     </header>
 
+    <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
+      <span class="inline-block animate-spin mr-2">⏳</span> Cargando tus clases académicas...
+    </div>
+
+    <div v-else-if="classes.length === 0" class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-2">
+      <p class="font-bold text-base-texto-primario">No tienes clases creadas aún.</p>
+      <p class="text-base-texto-secundario">Crea una nueva clase para generar un código que tus estudiantes usarán al registrarse.</p>
+    </div>
+
     <!-- Lista de Clases a Cargo -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <section v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div
         v-for="cls in classes"
         :key="cls.id"
         class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4 hover:border-acento-ambar-fuerte transition-colors">
         <div class="flex items-start justify-between gap-2">
           <div>
-            <span class="text-[10px] font-bold text-acento-ambar-fuerte uppercase tracking-wider block">
-              Código: {{ cls.code }}
-            </span>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-[11px] font-bold font-mono tracking-wider px-2 py-0.5 rounded bg-acento-ambar/15 text-acento-ambar-fuerte border border-acento-ambar/30">
+                {{ cls.code }}
+              </span>
+              <button
+                @click="copyCode(cls.code)"
+                class="text-[10px] text-base-texto-secundario hover:text-acento-ambar-fuerte underline cursor-pointer">
+                {{ copiedCode === cls.code ? '¡Copiado! ✔' : 'Copiar código' }}
+              </button>
+            </div>
             <h2 class="text-sm font-bold text-base-texto-primario mt-0.5">
               {{ cls.name }}
             </h2>
+            <p v-if="cls.description" class="text-xs text-base-texto-secundario mt-1 line-clamp-2">
+              {{ cls.description }}
+            </p>
           </div>
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa">
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa flex-shrink-0">
             Activo
           </span>
         </div>
 
         <div class="grid grid-cols-3 gap-2 text-center p-3 bg-base-bg-secundario rounded-lg text-xs">
           <div>
-            <span class="text-base-texto-secundario text-[10px] block">Estudiantes</span>
-            <span class="font-bold text-base-texto-primario">{{ cls.studentsCount }}</span>
+            <span class="text-base-texto-secundario text-[10px] block">Código de Ingreso</span>
+            <span class="font-mono font-bold text-acento-ambar-fuerte text-xs">{{ cls.code }}</span>
           </div>
           <div>
-            <span class="text-base-texto-secundario text-[10px] block">Dominio Prom.</span>
-            <span class="font-bold text-semantico-pasa">{{ cls.avgMastery }}%</span>
+            <span class="text-base-texto-secundario text-[10px] block">Estado</span>
+            <span class="font-bold text-semantico-pasa">{{ cls.isActive ? 'Habilitada' : 'Inactiva' }}</span>
           </div>
           <div>
-            <span class="text-base-texto-secundario text-[10px] block">En Riesgo</span>
-            <span class="font-bold text-semantico-falla">{{ cls.atRiskCount }}</span>
+            <span class="text-base-texto-secundario text-[10px] block">Tipo</span>
+            <span class="font-bold text-base-texto-primario">Semestral</span>
           </div>
         </div>
 
         <!-- Acciones Rápidas -->
         <div class="flex items-center justify-between pt-2 border-t border-base-borde-sutil text-xs">
           <span class="text-base-texto-secundario text-[11px]">
-            Horario: {{ cls.schedule }}
+            Comparte el código con tus alumnos
           </span>
 
-          <button class="borde-afordancia px-3 py-1.5 rounded-md font-semibold text-base-texto-primario hover:bg-base-bg-secundario text-xs">
-            Ver Cohorte
+          <button
+            @click="copyCode(cls.code)"
+            class="borde-afordancia px-3 py-1.5 rounded-md font-semibold text-base-texto-primario hover:bg-base-bg-secundario text-xs flex items-center gap-1">
+            <span>📋</span>
+            <span>{{ copiedCode === cls.code ? 'Copiado' : 'Copiar Código' }}</span>
           </button>
         </div>
       </div>
@@ -73,28 +95,50 @@
 </template>
 
 <script setup lang="ts">
+import { useApi } from '~/composables/useApi'
+
 definePageMeta({
   layout: 'teacher'
 })
 
-const classes = ref([
-  {
-    id: 1,
-    code: 'ALG-101-G1',
-    name: 'Algoritmia y Programación I — Grupo 01',
-    studentsCount: 28,
-    avgMastery: 74.2,
-    atRiskCount: 2,
-    schedule: 'Lun / Mié 08:00 - 10:00'
-  },
-  {
-    id: 2,
-    code: 'EST-202-G2',
-    name: 'Estructuras de Datos I — Grupo 02',
-    studentsCount: 22,
-    avgMastery: 68.5,
-    atRiskCount: 4,
-    schedule: 'Mar / Jue 14:00 - 16:00'
+interface TeacherClass {
+  id: number
+  code: string
+  name: string
+  description?: string
+  isActive: boolean
+}
+
+const api = useApi()
+const classes = ref<TeacherClass[]>([])
+const isLoading = ref(false)
+const copiedCode = ref<string | null>(null)
+
+async function fetchClasses() {
+  isLoading.value = true
+  try {
+    const res = await api.get<TeacherClass[]>('/class/my-classes')
+    if (Array.isArray(res)) {
+      classes.value = res
+    }
+  } catch (err: any) {
+    console.error('[STIRE Docente] Error al cargar clases:', err)
+  } finally {
+    isLoading.value = false
   }
-])
+}
+
+function copyCode(code: string) {
+  if (navigator?.clipboard) {
+    navigator.clipboard.writeText(code)
+    copiedCode.value = code
+    setTimeout(() => {
+      if (copiedCode.value === code) copiedCode.value = null
+    }, 2500)
+  }
+}
+
+onMounted(() => {
+  fetchClasses()
+})
 </script>

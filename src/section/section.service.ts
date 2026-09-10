@@ -41,11 +41,18 @@ export class SectionService {
    * Listar todas las secciones de una clase, ordenadas por su campo order.
    */
   async findByClass(classId: number): Promise<Section[]> {
-    return this.sectionRepository.find({
-      where: { classId },
-      relations: ['topics', 'topics.learningUnits'],
-      order: { order: 'ASC' },
-    });
+    return this.sectionRepository
+      .createQueryBuilder('section')
+      .leftJoinAndSelect('section.topics', 'topic')
+      .leftJoinAndSelect('topic.learningUnits', 'learningUnit')
+      .leftJoinAndSelect('learningUnit.activities', 'activity')
+      .leftJoinAndSelect('activity.activityType', 'activityType')
+      .where('section.classId = :classId', { classId })
+      .orderBy('section.order', 'ASC')
+      .addOrderBy('topic.order', 'ASC')
+      .addOrderBy('learningUnit.order', 'ASC')
+      .addOrderBy('activity.order', 'ASC')
+      .getMany();
   }
 
   /**
@@ -54,7 +61,15 @@ export class SectionService {
   async findOne(id: number): Promise<Section> {
     const section = await this.sectionRepository.findOne({
       where: { id },
-      relations: ['topics', 'topics.learningUnits'],
+      relations: {
+        topics: {
+          learningUnits: {
+            activities: {
+              activityType: true,
+            },
+          },
+        },
+      },
     });
 
     if (!section) {

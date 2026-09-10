@@ -55,6 +55,17 @@
           </div>
         </div>
 
+        <!-- Indicador de Contexto Activo de Aprendizaje -->
+        <div v-if="activeContextLabel" class="px-4 py-1.5 bg-base-bg-secundario border-b border-base-borde-sutil flex items-center justify-between text-[11px] text-base-texto-secundario">
+          <div class="flex items-center gap-1.5 truncate">
+            <span>📍</span>
+            <span class="truncate font-medium text-base-texto-primario">{{ activeContextLabel }}</span>
+          </div>
+          <span class="text-[10px] px-1.5 py-0.2 rounded bg-semantico-pasa/15 text-semantico-pasa font-semibold flex-shrink-0">
+            Contexto en vivo
+          </span>
+        </div>
+
         <!-- Mensajes del Chat -->
         <div class="flex-1 overflow-y-auto p-4 space-y-3.5" ref="messagesContainer">
           <div
@@ -125,10 +136,26 @@
 
 <script setup lang="ts">
 import { useTutorStore } from '~/stores/tutor'
+import { useWorkspaceStore } from '~/stores/workspace'
+import { useStudentStore } from '~/stores/student'
 
 const tutorStore = useTutorStore()
+const workspaceStore = useWorkspaceStore()
+const studentStore = useStudentStore()
+
 const inputQuery = ref('')
 const messagesContainer = ref<HTMLElement | null>(null)
+
+const activeContextLabel = computed(() => {
+  if (workspaceStore.currentExercise?.title && workspaceStore.currentExercise?.activityId) {
+    const unitPrefix = workspaceStore.currentExercise.unitTitle ? `${workspaceStore.currentExercise.unitTitle} • ` : ''
+    return `${unitPrefix}${workspaceStore.currentExercise.title}`
+  }
+  if (studentStore.activeUnit?.title) {
+    return `Unidad activa: ${studentStore.activeUnit.title}`
+  }
+  return null
+})
 
 function handleSend() {
   if (!inputQuery.value.trim()) return

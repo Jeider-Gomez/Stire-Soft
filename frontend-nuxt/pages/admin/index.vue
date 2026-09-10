@@ -59,29 +59,43 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-base-borde-sutil">
+            <tr v-if="isLoading">
+              <td colspan="5" class="p-8 text-center text-base-texto-secundario">
+                <span class="inline-block animate-spin mr-2">⏳</span> Cargando usuarios desde la base de datos...
+              </td>
+            </tr>
+            <tr v-else-if="filteredUsers.length === 0">
+              <td colspan="5" class="p-8 text-center text-base-texto-secundario">
+                No se encontraron usuarios que coincidan con la búsqueda o filtro.
+              </td>
+            </tr>
             <tr v-for="user in filteredUsers" :key="user.id" class="hover:bg-base-bg-primario/60 transition-colors">
               <td class="p-3 font-bold text-base-texto-primario flex items-center gap-2">
-                <span class="w-6 h-6 rounded-full bg-base-bg-secundario border border-base-borde-fuerte flex items-center justify-center text-[10px]">
-                  {{ user.name[0] }}
+                <span class="w-6 h-6 rounded-full bg-base-bg-secundario border border-base-borde-fuerte flex items-center justify-center text-[10px] uppercase font-bold">
+                  {{ (user.fullName || user.email || '?')[0] }}
                 </span>
-                <span>{{ user.name }}</span>
+                <span>{{ user.fullName || 'Usuario sin nombre' }}</span>
               </td>
               <td class="p-3 font-codigo text-base-texto-secundario">{{ user.email }}</td>
               <td class="p-3">
                 <span
-                  class="px-2 py-0.5 rounded text-[10px] font-bold"
+                  class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
                   :class="{
                     'bg-acento-ambar/15 text-acento-ambar-fuerte': user.role === 'estudiante',
                     'bg-semantico-info/15 text-semantico-info': user.role === 'docente',
-                    'bg-semantico-pasa/15 text-semantico-pasa': user.role === 'administrador'
+                    'bg-semantico-pasa/15 text-semantico-pasa': user.role === 'admin' || user.role === 'administrador'
                   }">
                   {{ user.role }}
                 </span>
               </td>
               <td class="p-3">
-                <span class="flex items-center gap-1.5 text-semantico-pasa font-medium">
+                <span v-if="user.isActive !== false" class="flex items-center gap-1.5 text-semantico-pasa font-medium">
                   <span class="w-1.5 h-1.5 rounded-full bg-semantico-pasa"></span>
                   <span>Activo</span>
+                </span>
+                <span v-else class="flex items-center gap-1.5 text-base-texto-secundario font-medium">
+                  <span class="w-1.5 h-1.5 rounded-full bg-base-borde-fuerte"></span>
+                  <span>Inactivo</span>
                 </span>
               </td>
               <td class="p-3 text-right">
@@ -98,26 +112,60 @@
 </template>
 
 <script setup lang="ts">
+import { useApi } from '~/composables/useApi'
+
 definePageMeta({
   layout: 'admin'
 })
 
+interface BackendUser {
+  id: number
+  fullName: string
+  email: string
+  role: string
+  isActive: boolean
+  createdAt?: string
+}
+
+const api = useApi()
 const searchQuery = ref('')
 const roleFilter = ref('todos')
+const users = ref<BackendUser[]>([])
+const isLoading = ref(false)
+const errorMessage = ref('')
 
-const users = ref([
-  { id: 1, name: 'Pedro Romero', email: 'pedro.estudiante@unicor.edu.co', role: 'estudiante' },
-  { id: 2, name: 'Ana María Gómez', email: 'ana.gomez@unicor.edu.co', role: 'estudiante' },
-  { id: 3, name: 'Prof. Roberto Toscano', email: 'roberto.toscano@unicor.edu.co', role: 'docente' },
-  { id: 4, name: 'Prof. Julio Galvis', email: 'julio.galvis@unicor.edu.co', role: 'docente' },
-  { id: 5, name: 'Administrador STIRE', email: 'admin.sistema@unicor.edu.co', role: 'administrador' }
-])
+async function fetchUsers() {
+  isLoading.value = true
+  errorMessage.value = ''
+  try {
+    const data = await api.get<BackendUser[]>('/users')
+    if (Array.isArray(data)) {
+      users.value = data
+    }
+  } catch (err: any) {
+    console.error('[STIRE Admin] Error cargando usuarios:', err)
+    errorMessage.value = 'No se pudieron cargar los usuarios de la base de datos.'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchUsers()
+})
 
 const filteredUsers = computed(() => {
   return users.value.filter(u => {
-    const matchesSearch = u.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                          u.email.toLowerCase().includes(searchQuery.value.toLowerCase())
-    const matchesRole = roleFilter.value === 'todos' || u.role === roleFilter.value
+    const name = u.fullName || ''
+    const email = u.email || ''
+    const matchesSearch = name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                          email.toLowerCase().includes(searchQuery.value.toLowerCase())
+    
+    // Normalizar admin / administrador para el filtro
+    const userRole = u.role === 'admin' ? 'administrador' : u.role
+    const targetFilter = roleFilter.value
+    const matchesRole = targetFilter === 'todos' || userRole === targetFilter || u.role === targetFilter
+
     return matchesSearch && matchesRole
   })
 })

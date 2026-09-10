@@ -58,7 +58,40 @@ export class AnalyticsService {
     const totalReviews = reviews.length;
     const pendingReviews = reviews.filter(r => r.nextReviewDate <= now).length;
 
-    // 3. Recent submissions
+    // 3. Racha real calculada desde las entregas
+    const allSubs = await submissionRepo.find({
+      where: { studentId },
+      order: { createdAt: 'DESC' },
+      select: ['createdAt'],
+    });
+
+    let streakDays = 0;
+    if (allSubs.length > 0) {
+      const distinctDays = Array.from(
+        new Set(allSubs.map(s => new Date(s.createdAt).toISOString().slice(0, 10)))
+      ).sort().reverse();
+
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const yesterdayStr = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+
+      const startsToday = distinctDays.includes(todayStr);
+      const startsYesterday = distinctDays.includes(yesterdayStr);
+
+      if (startsToday || startsYesterday) {
+        let cursor = startsToday ? new Date() : new Date(Date.now() - 86400000);
+        while (true) {
+          const cursorStr = cursor.toISOString().slice(0, 10);
+          if (distinctDays.includes(cursorStr)) {
+            streakDays++;
+            cursor = new Date(cursor.getTime() - 86400000);
+          } else {
+            break;
+          }
+        }
+      }
+    }
+
+    // 4. Recent submissions
     const recentSubmissions = await submissionRepo.find({
       where: { studentId },
       relations: ['activity'],
@@ -74,6 +107,7 @@ export class AnalyticsService {
         totalUnitsTracked,
         totalAttempts,
         completedActivitiesCount,
+        streakDays,
         reviewStats: {
           total: totalReviews,
           pending: pendingReviews,

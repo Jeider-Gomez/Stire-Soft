@@ -43,7 +43,7 @@ export class TutorService {
     }
   }
 
-  async sendMessage(studentId: number, message: string): Promise<string> {
+  async sendMessage(studentId: number, message: string, context?: any): Promise<string> {
     // ADR 07, perfil PLAIN: texto de estudiante, sin HTML.
     await this.convRepo.save({
       studentId,
@@ -51,7 +51,7 @@ export class TutorService {
       content: this.contentRenderingService.escapePlainText(message),
     });
 
-    const systemPrompt = await this.contextService.buildSystemPrompt(studentId);
+    const systemPrompt = await this.contextService.buildSystemPrompt(studentId, context);
     const history = await this.convRepo.getRecentContext(studentId, 6);
     const payload = this.buildMessages(systemPrompt, history, message);
 
@@ -61,7 +61,7 @@ export class TutorService {
 
     if (!this.apiKey) {
       this.logger.warn('OPENAI_API_KEY no configurada. Usando inferencia local mock.');
-      aiResponseContent = this.mockLlmInference(message);
+      aiResponseContent = this.mockLlmInference(message, context);
     } else if (this.isGemini) {
       try {
         aiResponseContent = await this.callWithRetry(
@@ -71,7 +71,7 @@ export class TutorService {
       } catch (err: any) {
         const errorMessage = err instanceof Error ? err.message : String(err);
         this.logger.error(`Error en Google Gemini: ${errorMessage}`);
-        aiResponseContent = this.mockLlmInference(message);
+        aiResponseContent = this.mockLlmInference(message, context);
       }
     } else if (this.openai) {
       const client = this.openai;
@@ -164,6 +164,7 @@ export class TutorService {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
+          signal: AbortSignal.timeout(4000),
         });
 
         if (!res.ok) {
@@ -229,17 +230,23 @@ export class TutorService {
     ];
   }
 
-  private mockLlmInference(userMessage: string): string {
+  private mockLlmInference(userMessage: string, context?: any): string {
     const text = userMessage.toLowerCase().trim();
 
-    // 1. Saludos
+    // 1. Saludos contextuales
     if (/^(hola|buenas|buen[oa]s d[ií]as|buenas tardes|buenas noches|saludos|hi|hello|hey)/i.test(text)) {
-      return '¡Hola! Soy tu Tutor Inteligente de STIRE. Estoy aquí para acompañarte en tu aprendizaje de Algoritmia y Programación. ¿Qué concepto, ejercicio o duda te gustaría que analicemos juntos hoy?';
+      if (context?.activityTitle) {
+        return `¡Hola! Soy tu Tutor Inteligente de STIRE. Veo que estás trabajando en la actividad "${context.activityTitle}". ¿Qué parte del planteamiento o lógica quisieras que examinemos juntos?`;
+      }
+      return '¡Hola! Soy tu Tutor Inteligente de STIRE. Estoy aquí para acompañarte en tu aprendizaje de Algoritmos Web con HTML5, CSS y JavaScript. ¿Qué concepto, ejercicio o duda te gustaría que analicemos juntos hoy?';
     }
 
-    // 2. Bloques de código explícito
+    // 2. Bloques de código explícito o código en el editor
     const isCode = userMessage.includes('{') || userMessage.includes('}') || userMessage.includes('function') || userMessage.includes('def ') || userMessage.includes('return ') || userMessage.includes('console.log');
-    if (isCode) {
+    if (isCode || context?.currentCode) {
+      if (context?.activityTitle) {
+        return `Observo tu avance en "${context.activityTitle}". Revisa con cuidado cómo estás leyendo los valores de entrada y la condición de decisión. ¿Qué resultado esperas obtener frente al que observas en la consola?`;
+      }
       return 'Veo que estás analizando código. Recuerda revisar la condición de parada de tu bucle y los tipos de tus variables. ¿Qué resultado esperas obtener y qué salida estás observando actualmente?';
     }
 

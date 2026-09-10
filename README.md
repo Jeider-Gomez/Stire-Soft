@@ -87,17 +87,26 @@ npm start
 La API estará disponible en `http://localhost:3001`.  
 Documentación Swagger: `http://localhost:3001/docs`.
 
-**Credenciales de demo** (creadas por `npm run db:seed:demo`, ver `stire-seeder-demo.ts`):
+**Credenciales de demostración oficiales** (creadas por `npm run seed`, ver `src/seeds/seed-runner.ts`):
 
-| Rol | Email | Contraseña |
-|---|---|---|
-| Docente | `docente.demo@stire.local` | `Demo1234!` |
-| Estudiante | `estudiante1.demo@stire.local` | `Demo1234!` |
-| Estudiante | `estudiante2.demo@stire.local` | `Demo1234!` |
-| Estudiante | `estudiante3.demo@stire.local` | `Demo1234!` |
+| Rol | Nombre | Email | Contraseña | Clases / Acceso |
+|---|---|---|---|---|
+| **Administrador** | Administrador del Sistema | `admin.sistema@unicor.edu.co` | `Admin1234!` | Panel Global de Usuarios (`/admin`) |
+| **Docente 1** | Prof. Roberto Toscano Miranda | `roberto.toscano@unicor.edu.co` | `Test1234!` | `ALGO-WEB-T01` |
+| **Docente 2** | Prof. Victor Castro | `victor.castro@unicor.edu.co` | `Test1234!` | `ALGO-WEB-V02` |
+| **Docente 3** | Prof. Ali Pérez | `ali.docente@unicor.edu.co` | `Test1234!` | `ALGO-WEB-A03` |
+| **Estudiante** | Pedro Romero Mendoza | `pedro.estudiante@unicor.edu.co` | `Test1234!` | Matriculado en `ALGO-WEB-T01` y `ALGO-WEB-V02` |
 
-La clase de demo (`DEMO-STIRE-01`) trae 2 unidades de aprendizaje con un prerrequisito entre ellas,
-contenido teórico y 3 actividades publicadas (MCQ, CODING en JavaScript con testCase público, y
+**Códigos de Clase para Matrícula e Inscripción:**
+- `ALGO-WEB-T01` — *Algoritmos Básicos con HTML5, CSS y JavaScript* (Prof. Roberto Toscano).
+- `ALGO-WEB-V02` — *Algoritmia y Lógica Computacional para la Web* (Prof. Victor Castro).
+- `ALGO-WEB-A03` — *Desarrollo Frontend Interactivo y Algoritmos Web* (Prof. Ali Pérez).
+
+La clase principal (`ALGO-WEB-T01`) contiene el currículo completo:
+- **Módulo 1:** Fundamentos y Estructuras de Control (Variables, Operadores, Condicionales).
+- **Módulo 2:** Bucles, Iteraciones y Manipulación de Colecciones (for/while, Arreglos).
+- **Módulo 3:** Funciones y Modularidad en Desarrollo Web (Funciones puras, slugs).
+Cada unidad cuenta con múltiples actividades ponderadas (MCQ, FILL_CODE y CODING en JavaScript) y repetición espaciada real (SM-2).
 FILL_CODE) — suficiente para probar el flujo completo estudiante → docente sin capturas ni datos
 inventados a mano.
 

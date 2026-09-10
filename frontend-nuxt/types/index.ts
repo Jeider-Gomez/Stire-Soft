@@ -20,6 +20,16 @@ export interface LearningUnit {
   masteryPercentage: number
   contentMarkdown?: string
   exerciseActivityId?: number
+  activities?: Array<{
+    id: number
+    title: string
+    adaptiveWeight?: number
+    totalPoints?: number
+    activityType?: {
+      code: string
+      name?: string
+    }
+  }>
 }
 
 export interface CourseModule {

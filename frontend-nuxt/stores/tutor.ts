@@ -1,11 +1,16 @@
 import { defineStore } from 'pinia'
 import type { TutorMessage } from '~/types'
 import { useAuthStore } from './auth'
+import { useWorkspaceStore } from './workspace'
+import { useStudentStore } from './student'
 import { useApi } from '~/composables/useApi'
 
 export const useTutorStore = defineStore('tutor', () => {
   const api = useApi()
   const authStore = useAuthStore()
+  const workspaceStore = useWorkspaceStore()
+  const studentStore = useStudentStore()
+  const route = useRoute()
 
   const isOpen = ref(false)
   const isThinking = ref(false)
@@ -15,7 +20,7 @@ export const useTutorStore = defineStore('tutor', () => {
     {
       id: 'msg-0',
       sender: 'tutor',
-      text: '¡Hola, Pedro! Soy tu Tutor IA. Estoy aquí para guiarte en tu lógica sin darte la solución directa. ¿En qué parte del ejercicio sientes dudas?',
+      text: '¡Hola! Soy tu Tutor IA de STIRE. Estoy aquí para acompañar tu razonamiento pedagógico paso a paso. ¿En qué parte del algoritmo o ejercicio necesitas orientación?',
       timestamp: 'Ahora'
     }
   ])
@@ -47,9 +52,17 @@ export const useTutorStore = defineStore('tutor', () => {
     isThinking.value = true
 
     try {
-      // 1. Petición HTTP Real al Backend NestJS: POST /tutor/chat (Insumo 12 §EST-V04)
+      // Petición HTTP con contexto completo de pantalla
       const res = await api.post<{ success: boolean; message: string }>('/tutor/chat', {
-        message: userText
+        message: userText,
+        context: {
+          currentRoute: route.path,
+          unitTitle: workspaceStore.currentExercise?.unitTitle || studentStore.activeUnit?.title,
+          learningUnitId: studentStore.activeUnit?.id,
+          activityTitle: workspaceStore.currentExercise?.title,
+          activityId: workspaceStore.currentExercise?.activityId,
+          currentCode: workspaceStore.code
+        }
       })
 
       if (res && res.message) {
@@ -68,7 +81,7 @@ export const useTutorStore = defineStore('tutor', () => {
       messages.value.push({
         id: `msg-${Date.now()}-tutor`,
         sender: 'tutor',
-        text: `⚠ **Servicio de Tutoría No Disponible:** ${typeof msg === 'string' ? msg : 'Error de conexión con el backend'}. Por favor intenta de nuevo en unos segundos.`,
+        text: `⚠ **Tutor Temporalmente Indisponible:** ${typeof msg === 'string' ? msg : 'Error de comunicación'}. Intenta nuevamente en unos instantes.`,
         scaffoldingLevel: level,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       })
@@ -80,13 +93,13 @@ export const useTutorStore = defineStore('tutor', () => {
   function requestQuickHint(type: 'conceptual' | 'borde' | 'parada') {
     if (type === 'conceptual') {
       activeScaffoldingLevel.value = 1
-      sendMessage('¿Cuál es la regla teórica para este problema?', 1)
+      sendMessage('¿Cuál es la regla conceptual o teórica para este problema?', 1)
     } else if (type === 'borde') {
       activeScaffoldingLevel.value = 2
-      sendMessage('¿Cómo debo manejar los casos límite con arreglos vacíos o n=0?', 2)
+      sendMessage('¿Cómo debo manejar los casos de frontera o entradas límite?', 2)
     } else {
       activeScaffoldingLevel.value = 3
-      sendMessage('¿Por qué mi condición de parada no termina?', 3)
+      sendMessage('¿Por qué mi algoritmo no produce la salida esperada?', 3)
     }
   }
 
