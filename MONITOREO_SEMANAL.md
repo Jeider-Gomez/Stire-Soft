@@ -127,6 +127,16 @@ exitoso (`EST-V01` defecto), porque el registro público siempre asigna rol `est
 no silencioso:** solo se construyó el estado "Por defecto" — vacío/error/completado quedan fuera de
 esta pasada, mismo criterio de alcance aplicado a Docente/Administrador esta semana.
 
+**Trello revisado y ajustado (09/09):** varias tarjetas tenían fecha viernes 11/09, más allá del
+tope de jueves que exige la metodología del sprint (cierre viernes 8pm sin margen). Se movieron a
+jueves 10/09 (mismo horario, 23:00 UTC = tarde local): `S04-JO02`, `S04-JO03`, `S04-JL03`,
+`S04-JOR01`, `S04-JOR02`, `S04-JOR03`, `S04-P03`. `S04-J03 · Backend + Tutor IA` se marcó **Hecho**
+con la evidencia de arriba (commits `4eb2246`, `c44498e`, `81bbef9`, `f4f1cae`) y se movió a la
+lista `✅ Hecho`; `S04-J02 · Ventana Estándar` ya estaba en esa lista pero le faltaba marcarse como
+completada — corregido. **No se tocó el estado de ninguna tarjeta de Julio, José o Jorge más allá
+de la fecha** — no hay evidencia en este repositorio de su avance real; que cada quien marque lo
+propio cuando lo tenga listo.
+
 ### Pedro Romero — Gestión + Documentación + Apoyo Técnico
 
 - [ ] **S04-P01 · Gestionar Trello** — objetivo 07/09.
