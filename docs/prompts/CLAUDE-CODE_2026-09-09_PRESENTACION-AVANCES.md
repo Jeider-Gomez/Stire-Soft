@@ -1,9 +1,20 @@
+---
+fecha:      2026-09-09
+herramienta: Claude Code
+estado:     sin confirmar — CORRECCIÓN (ver nota abajo)
+resultado:  Sin evidencia de ejecución. docs/presentacion/RECORRIDO_Y_SEMANA_01.html es del
+            28/08, más de una semana antes de que este prompt existiera (creado 09/09) — no puede
+            ser su resultado. La vuelta anterior de esta reorganización afirmó lo contrario sin
+            verificar el título del HTML contra el contenido de este prompt; queda corregido aquí
+            en vez de dejarlo. Si este prompt sí se ejecutó, el HTML que produjo no está en el
+            repositorio bajo un nombre identificable.
+---
+
 # Prompt de trabajo — Documento de presentación de avances (Reto 1)
-> Ya ejecutado: el resultado es [`RECORRIDO_Y_SEMANA_01.html`](./RECORRIDO_Y_SEMANA_01.html), en
-> esta misma carpeta. Se conserva este prompt como referencia de cómo se generó, no como tarea
-> pendiente. Reubicado desde la raíz del repo el 2026-09-10 (reorganización documental).
-> Uso original: abrir Claude Code en la raíz del repositorio y decirle: **"Lee
-> docs/presentacion/PROMPT_PRESENTACION.md y ejecútalo."**
+> Reubicado desde la raíz del repo el 2026-09-10 (reorganización documental), y de
+> docs/presentacion/ a docs/prompts/ el mismo día (los prompts se registran aparte de sus
+> resultados). Uso original: abrir Claude Code en la raíz del repositorio y decirle: **"Lee
+> PROMPT_PRESENTACION.md y ejecútalo."**
 
 ```
 DOCUMENTO DE PRESENTACION DE AVANCES — RETO 1

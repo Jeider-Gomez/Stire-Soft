@@ -1,3 +1,12 @@
+---
+fecha:      2026-08-28
+herramienta: Claude Code
+estado:     ejecutado
+resultado:  docs/presentacion/RECORRIDO_Y_SEMANA_01.html — confirmado por título exacto
+            ("STIRE-Soft — Recorrido del proyecto y Semana 1 del Reto 1") y misma fecha de
+            creación (28/08) que este prompt.
+---
+
 # Prompt para Claude Code — Página web: recorrido del proyecto y semana 1
 
 Archivo de trabajo. Pegar el bloque en Claude Code, en la raíz del repositorio.

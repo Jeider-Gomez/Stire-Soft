@@ -1,3 +1,15 @@
+---
+fecha:      2026-08-28
+herramienta: Claude Code
+estado:     sin confirmar
+resultado:  No se encontró un HTML distinto que corresponda a este prompt específico (el único
+            resultado en docs/presentacion/, RECORRIDO_Y_SEMANA_01.html, coincide por título con
+            CLAUDE-CODE_2026-08-28_AVANCES-SEMANA-01.md, no con este). Puede que este prompt haya
+            sido un borrador anterior reemplazado por ese, o que se haya ejecutado y el resultado
+            no se haya conservado. Se archiva de todos modos por la misma razón que el resto de
+            esta carpeta: registrar qué se le pidió a la herramienta, no solo lo que sobrevivió.
+---
+
 # Instrucción para Claude Code — Documento de presentación del Reto 1
 
 **Archivo de trabajo, no entregable.** Se puede borrar cuando la presentación esté hecha.

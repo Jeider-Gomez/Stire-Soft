@@ -35,7 +35,7 @@
 | [antigravity/](./antigravity/) | **Plan de implementación vigente para Antigravity** (Insumo 15, `PLAN_IMPLEMENTACION.md` — documento vivo) + historial cronológico de informes de sesión (`informes/`). Empieza por [`antigravity/README.md`](./antigravity/README.md). |
 | [prompts/](./prompts/) | Registro de los prompts multi-fase entregados a Claude Code y Antigravity, archivados tal como se enviaron, con su resultado. |
 | [pitch/](./pitch/) | Guiones del pitch en inglés por reto. |
-| [presentacion/](./presentacion/) | Documento de presentación de avances (HTML) y el prompt que lo generó. |
+| [presentacion/](./presentacion/) | Documentos de presentación de avances ya generados (HTML). Los prompts que los produjeron están en `prompts/`, no aquí. |
 | [CHANGELOG.md](../CHANGELOG.md) | Historial de versiones y cambios principales por sprint. |
 | [`_archivo/`](./_archivo/) | Documentos históricos o deprecados. No forman parte de la documentación activa. |
 | `testing/` | Guías y artefactos relacionados con la estrategia de pruebas. |
