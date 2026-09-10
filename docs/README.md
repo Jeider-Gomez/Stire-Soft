@@ -33,6 +33,7 @@
 | [investigacion/MATRIZ_ARTICULOS.md](./investigacion/MATRIZ_ARTICULOS.md) | Matriz bibliográfica vigente de STIRE — 24 obras verificadas por eje, con registro comprobable de cada una. |
 | [seguimiento/](./seguimiento/) | Bitácoras de semanas ya cerradas, numeradas. La semana en curso vive en `MONITOREO_SEMANAL.md`, en la raíz. |
 | [antigravity/](./antigravity/) | **Plan de implementación vigente para Antigravity** (Insumo 15, `PLAN_IMPLEMENTACION.md` — documento vivo) + historial cronológico de informes de sesión (`informes/`). Empieza por [`antigravity/README.md`](./antigravity/README.md). |
+| [claude-code/](./claude-code/) | **Historial de informes de sesión de Claude Code** — verificación en vivo contra backend+frontend reales, hallazgos y commits. Empieza por [`claude-code/README.md`](./claude-code/README.md). |
 | [prompts/](./prompts/) | Registro de los prompts multi-fase entregados a Claude Code y Antigravity, archivados tal como se enviaron, con su resultado. |
 | [pitch/](./pitch/) | Guiones del pitch en inglés por reto. |
 | [presentacion/](./presentacion/) | Documentos de presentación de avances ya generados (HTML). Los prompts que los produjeron están en `prompts/`, no aquí. |
