@@ -108,7 +108,66 @@ La **Unidad de Aprendizaje** es la unidad mínima evaluable del sistema: es el g
 | **Fase 2 — Inteligencia** | TutorIA (RAG + SM-2), LearningProgress, ReviewSchedules, Notifications | ✅ Completado |
 | **Fase 3 — Gamificación** | Badges, Logros, Tablas de clasificación, Puntos de experiencia | 🕐 En Pausa |
 | **Fase 4 — Bancos de Preguntas** | QuestionBank reutilizable entre clases y docentes | 🕐 En Pausa |
-| **Fase 5 — Frontend** | Interfaz de estudiante, docente y administrador | 🚧 Próxima Sprint |
+| **Fase 5 — Frontend** | Interfaz de estudiante, docente y administrador | 🚧 En construcción activa — estudiante casi cerrado, docente/admin parciales |
+
+---
+
+## 9. Problemas Conocidos y Decisiones Pendientes (checkpoint 2026-09-10)
+
+Esta sección registra, con fecha, los problemas reales reportados por el dueño del proyecto al usar la
+plataforma y el estado verificado contra el código (no contra lo que dice un informe) el mismo día. Se
+actualiza por checkpoints fechados, sin borrar los anteriores — mismo criterio que
+`docs/antigravity/PLAN_IMPLEMENTACION.md`.
+
+### 9.1 Reportado por el dueño del proyecto, 2026-09-10 (uso real de la plataforma)
+
+1. Error 404 en `POST /submissions/start` al usar "Probar código" — perdió el sentido de continuidad de
+   una racha (`streakDays`) de 4 días de uso real.
+2. Los ejercicios se sienten muy difíciles y la jerarquía Clase → Sección → Tema → Unidad de Aprendizaje
+   → Actividad no se explica por sí sola en la interfaz.
+3. El Tutor IA tarda respondiendo y, al preguntar algo del ejercicio actual, pide "las instrucciones" en
+   vez de detectar automáticamente en qué unidad/actividad está el estudiante.
+4. El sandbox asume que el estudiante ya sabe JavaScript — falta un enfoque más didáctico para principiantes.
+5. El panel de administrador no mostraba el usuario recién registrado.
+6. El registro matriculó automáticamente al estudiante en la clase del Prof. Toscano, sin posibilidad real
+   de elegir — pero el sistema va a tener varios docentes con contenido distinto cada uno.
+7. Faltan credenciales documentadas para probar el sistema con datos reales, y un criterio simple de
+   contraseña (mayúscula + minúscula + número) para las cuentas demo.
+8. El registro debería tener un código de clase opcional; falta un flujo de "unirse a una clase con
+   código" para el estudiante y de "crear clase con código" para el docente.
+9. El docente debería poder aceptar/rechazar el ingreso de un estudiante a su clase (no solo matricularlo
+   automáticamente al usar el código), cerrar/dar por terminado un curso, y quitar a un estudiante de su
+   clase.
+10. Cada Unidad de Aprendizaje puede tener varios tipos de evaluación, cada uno con un peso distinto; la
+    idea es poder calcular (o dejar elegir al estudiante) qué actividad le corresponde según su dominio —
+    si se siente experto, una actividad de mayor peso.
+11. El docente debe poder crear esas actividades y organizar su propia clase (secciones, temas, unidades) —
+    aunque primero se siembran datos demo para poder probar la aplicación.
+12. Los roles no deberían poder cambiarse "así como así" en producción — el cambio rápido de rol
+    (estudiante/docente/administrador) debe existir solo en la vista de demostración, junto a la
+    nomenclatura MODESEC; en autenticación real el usuario entra como lo que es, sin selector de rol.
+    Pidió verificar explícitamente si la autenticación real está implementada de forma segura.
+
+### 9.2 Estado verificado contra el árbol de trabajo real, 2026-09-10 (commit `c989c15`)
+
+Verificación hecha leyendo el código fuente directamente (backend y frontend), no los informes de
+Antigravity — que para varios de estos puntos habían quedado desactualizados por un commit posterior al
+que describían.
+
+| # (ver 9.1) | Estado | Evidencia |
+|---|---|---|
+| 1 — 404 en sandbox | ✅ **Resuelto** en el código actual | `frontend-nuxt/stores/workspace.ts` ya no tiene ningún `activityId` fijo; `ensureActiveSubmission()` usa el id real que llegó del backend (`GET /activities/:id`). `src/submissions/submissions.service.ts` solo devuelve 404 si el id no existe en BD. El reporte del dueño del proyecto es de las 7:57 a.m.; el fix llegó en el commit de las 9:36 a.m. del mismo día — hay que volver a probar. |
+| 2 — dificultad / jerarquía poco clara | ⚠️ No es un bug — el modelo Clase→Sección→Tema→Unidad→Actividad existe tal cual en el backend (`src/class`, `src/section`, `src/topic`, `src/learning-unit`). Pendiente: hacerlo más legible en la UI y calibrar dificultad del contenido sembrado. |
+| 3 — Tutor sin contexto | ✅ **Resuelto** en el código actual | `src/tutor/dto/chat.dto.ts` (`ChatContextDto`) + `tutor-context.service.ts` ya reciben y usan `learningUnitId`, `activityId`, `currentRoute`, `currentCode`; el frontend (`stores/tutor.ts`) ya los envía en cada mensaje. Falta feedback progresivo durante la espera del LLM (DIS-03 del informe de Antigravity). |
+| 4 — solo JavaScript | ❌ **No resuelto** | El editor está fijo a "JS"/"JavaScript" en `pages/estudiante/evaluacion/[activityId].vue`, y el único sandbox de ejecución real (`src/judge-engine/hardened-process-sandbox.adapter.ts`) rechaza explícitamente cualquier lenguaje que no sea `javascript`. El campo `language` existe en el modelo de datos pero no se usa. |
+| 5 — admin sin datos reales | ✅ **Resuelto** | `pages/admin/index.vue` ya llama `GET /users` real. |
+| 6 — auto-matrícula fija | ⚠️ **Parcialmente resuelto** | El registro ya NO matricula a nadie automáticamente (`src/auth/auth.service.ts` no toca enrollment); existe `POST /enrollment/join` con código real y el campo opcional en `register.vue`. Pero el seed solo pobló contenido curricular para la clase del Prof. Toscano — las clases del Prof. Castro y del Prof. Ali existen pero están vacías, así que la "coherencia multi-docente" todavía no se puede demostrar con datos reales. |
+| 7 — credenciales de prueba documentadas | ✅ **Resuelto** | Tabla de credenciales demo ya está en el `README.md` raíz (creadas por `npm run seed` / `src/seeds/seed-runner.ts`), contraseñas con mayúscula+minúscula+número. |
+| 8 — código de clase en registro / unirse / crear | ⚠️ **Parcialmente resuelto** | Backend y campo de registro ya existen. Falta confirmar/crear la pantalla del lado docente que muestre el código de su clase de forma clara para poder compartirlo. |
+| 9 — aceptar/rechazar, cerrar curso, quitar estudiante | ❌ **No resuelto**, salvo cerrar curso | `POST /enrollment/join` matricula de inmediato, sin estado "pendiente de aprobación" (el enum `EnrollmentStatus` no tiene ese estado). No existe ningún endpoint para que un docente expulse a un estudiante puntual. Cerrar/terminar un curso sí es posible hoy vía `PATCH` de clase (`isActive: false`). |
+| 10 — evaluación ponderada por unidad / elección según dominio | ⚠️ **Parcialmente resuelto** | `Activity.adaptiveWeight` (`src/activities/entities/activity.entity.ts:64`) ya existe y se usa de verdad en `src/common/utils/mastery.calculator.ts:14` para ponderar el `mastery` según el peso de cada actividad — eso es real, no decorativo. Lo que NO existe todavía: ningún mecanismo que, ANTES de resolver una actividad, recomiende o deje elegir al estudiante cuál actividad le corresponde según su dominio actual o su autopercepción ("me siento experto"). Es decir: el peso ya afecta el cálculo posterior, pero no hay motor de selección/recomendación previo. |
+| 11 — docente crea actividades y organiza su clase | ✅ **Resuelto** | `src/activities/activities.controller.ts:20-26` ya expone `POST /activities` con `@Roles('docente', 'admin')`; `src/class`, `src/section`, `src/topic` ya tienen CRUD completo. El docente puede crear actividades y estructura vía API hoy — falta la interfaz gráfica para hacerlo sin Postman/Swagger, que es trabajo de frontend. |
+| 12 — selector de rol solo en demo / seguridad de auth real | ⚠️ **Parcialmente resuelto** | El login real (`stores/auth.ts` `login()` + `src/auth/auth.service.ts`) es honesto: sin JWT falso, sin fallback, `bcrypt.compare` obligatorio, y el backend no tiene ningún endpoint de cambio de rol o impersonación. El selector rápido de demo (`switchRoleForDemo`) solo se muestra en la UI cuando `NUXT_PUBLIC_DEMO_MODE=true` (`v-if` en `HeaderNav.vue` y `login.vue`) — pero la función en sí no valida ese flag internamente, así que sigue siendo invocable desde la consola del navegador aunque el modo demo esté apagado en producción. Es un hallazgo real de seguridad, de severidad baja (requiere acceso a devtools y a las credenciales demo ya sembradas), pendiente de cerrar con un guard explícito en la función. |
 
 ---
 
