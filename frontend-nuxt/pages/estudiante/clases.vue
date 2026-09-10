@@ -143,7 +143,7 @@ import { useApi } from '~/composables/useApi'
 import { useStudentStore } from '~/stores/student'
 
 definePageMeta({
-  layout: 'default'
+  layout: 'student'
 })
 
 interface EnrollmentItem {

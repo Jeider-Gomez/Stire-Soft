@@ -44,23 +44,23 @@
           <span class="hidden md:inline">Tutor IA</span>
         </button>
 
-        <!-- Acción 1: "▶ Probar código" (Acción libre sin consumir intento - Insumo 15 §7.1) -->
+        <!-- Acción 1: "▶ Probar código" (Solo para coding - Insumo 15 §7.1) -->
         <button
           @click="workspaceStore.runIsolatedCode()"
           :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting || !isCodingActivity"
-          class="borde-afordancia px-3 py-1.5 rounded text-xs font-bold text-base-texto-primario bg-base-bg-secundario hover:bg-base-borde-sutil transition-colors flex items-center gap-1.5 disabled:opacity-50"
-          :title="isCodingActivity ? 'Evalúa contra casos de prueba públicos sin consumir intentos' : `Esta actividad es de tipo ${workspaceStore.currentExercise.questionType}, no de código libre`">
+          class="borde-afordancia px-3 py-1.5 rounded text-xs font-bold text-base-texto-primario bg-base-bg-secundario hover:bg-base-borde-sutil transition-colors flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+          :title="isCodingActivity ? 'Evalúa contra casos de prueba públicos sin consumir intentos' : 'Esta actividad se califica directamente al entregar'">
           <span v-if="workspaceStore.isRunning" class="animate-spin">⚙️</span>
           <span v-else>▶</span>
           <span>Probar código</span>
         </button>
 
-        <!-- Acción 2: "🚀 Entregar solución" (Calificación formal definitiva) -->
+        <!-- Acción 2: "🚀 Entregar solución" (Calificación formal definitiva para todos los tipos) -->
         <button
           @click="workspaceStore.submitSolution()"
-          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting || !isCodingActivity"
-          class="px-3.5 py-1.5 rounded text-xs font-bold text-base-blanco bg-acento-ambar-fuerte hover:bg-acento-ambar transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-50"
-          :title="isCodingActivity ? 'Envía tu solución formalmente para calificación y actualización de progreso' : `Esta actividad es de tipo ${workspaceStore.currentExercise.questionType}; este editor todavía no sabe evaluarla`">
+          :disabled="!canSubmit"
+          class="px-3.5 py-1.5 rounded text-xs font-bold text-base-blanco bg-acento-ambar-fuerte hover:bg-acento-ambar transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          :title="canSubmit ? 'Envía tu solución formalmente para calificación' : 'Completa la respuesta antes de entregar'">
           <span v-if="workspaceStore.isSubmitting" class="animate-spin">⏳</span>
           <span v-else>🚀</span>
           <span>Entregar solución</span>
@@ -68,18 +68,18 @@
       </div>
     </header>
 
-    <!-- Aviso honesto: este editor solo sabe evaluar actividades de tipo CODING -->
+    <!-- Aviso solo si el tipo no está soportado en la plataforma -->
     <div
-      v-if="!isCodingActivity"
+      v-if="isUnsupportedType"
       class="bg-acento-ambar/10 border-b border-acento-ambar-fuerte/30 px-4 py-2 text-xs text-base-texto-primario flex items-center gap-2 flex-shrink-0">
       <span>⚠</span>
       <span>
-        Esta actividad es de tipo <strong>{{ workspaceStore.currentExercise.questionType }}</strong>, no de código libre.
-        Este editor todavía no la soporta — "Probar código" y "Entregar solución" están deshabilitados para no perder un intento real.
+        Esta actividad es de tipo <strong>{{ workspaceStore.currentExercise.questionType }}</strong>.
+        Este tipo aún no cuenta con evaluación automática en la plataforma.
       </span>
     </div>
 
-    <!-- Contenido Workspace (Monaco Editor + Consola) -->
+    <!-- Contenido Workspace -->
     <main class="flex-1 overflow-hidden">
       <slot />
     </main>
@@ -96,5 +96,15 @@ import { useTutorStore } from '~/stores/tutor'
 const workspaceStore = useWorkspaceStore()
 const tutorStore = useTutorStore()
 
+const supportedTypes = ['coding', 'mcq', 'fill_code', 'drag_drop', 'ordering', 'matching']
+
 const isCodingActivity = computed(() => workspaceStore.currentExercise.questionType === 'coding')
+const isUnsupportedType = computed(() => !supportedTypes.includes(workspaceStore.currentExercise.questionType))
+
+const canSubmit = computed(() => {
+  if (workspaceStore.isRunning || workspaceStore.isSubmitting) return false
+  if (isUnsupportedType.value) return false
+  if (isCodingActivity.value) return true
+  return Boolean(workspaceStore.pendingAnswer)
+})
 </script>

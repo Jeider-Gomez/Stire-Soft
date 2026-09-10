@@ -37,6 +37,7 @@ que reportan queda desactualizado, el informe siguiente lo señala, no se reescr
 |---|---|---|---|
 | 01 | 2026-09-07 | [`informes/INFORME_2026-09-07_SESION_01.md`](./informes/INFORME_2026-09-07_SESION_01.md) | Auditoría de autenticación (token real, credenciales del seeder), integración real del Tutor IA con Google Gemini, verificación de los 7 pasos del plan. |
 | 02 | 2026-09-10 | [`informes/INFORME_2026-09-10_SESION_01.md`](./informes/INFORME_2026-09-10_SESION_01.md) | Ejecución Fases A-F (§12 PLAN_IMPLEMENTACION): "Probar código" real en backend (`POST /submissions/:id/run`), eliminación de calificaciones falsas, conexión de matrículas/analíticas/repasos SM-2 reales, registro oficial (`COMP-V00`), auditorías UX de sandbox y Tutor IA. |
+| 03 | 2026-09-10 | [`informes/INFORME_2026-09-10_SESION_02.md`](./informes/INFORME_2026-09-10_SESION_02.md) | Implementación completa de pantallas de tipos de actividad (`PLAN_TIPOS_DE_ACTIVIDAD.md`): `mcq`, `fill_code`, `drag_drop`, `ordering` y `matching`. Siembra en BD de Nivel 2 y verificación E2E de calificación formal contra backend NestJS. |
 
 Para agregar una sesión nueva: copiar `informes/TEMPLATE_INFORME.md`, completar, renombrar como
 `informes/INFORME_YYYY-MM-DD_SESION_NN.md` (`NN` reinicia en `01` cada día si hay más de una

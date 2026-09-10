@@ -16,6 +16,14 @@ export interface WorkspaceExercise {
   initialCode: string
 }
 
+/** Config saneada que llega del backend para cada tipo de pregunta */
+export interface WorkspaceQuestion {
+  id: number
+  type: string
+  question: string
+  config: Record<string, any>
+}
+
 export const useWorkspaceStore = defineStore('workspace', () => {
   const api = useApi()
   const authStore = useAuthStore()
@@ -32,6 +40,16 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     description: 'Cargando enunciado desde la base de datos de STIRE...',
     initialCode: '// Cargando plantilla...\n'
   })
+
+  /** Pregunta completa (config saneada) para tipos distintos de coding */
+  const currentQuestion = ref<WorkspaceQuestion | null>(null)
+
+  /**
+   * Respuesta pendiente para tipos MCQ / FILL_CODE / DRAG_DROP / ORDERING / MATCHING.
+   * Cada componente de ejercicio la actualiza conforme el estudiante interactúa.
+   * submitSolution() la consume al entregar.
+   */
+  const pendingAnswer = ref<Record<string, any> | null>(null)
 
   const code = ref(currentExercise.value.initialCode)
   const isRunning = ref(false)
@@ -59,6 +77,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     isLoadingExercise.value = true
     currentSubmissionId.value = null
     submissionResult.value = null
+    pendingAnswer.value = null
+    currentQuestion.value = null
 
     consoleLog.value = [
       'STIRE Sandbox v2.0 — Conectado a la plataforma STIRE.',
@@ -84,7 +104,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
         const starter = isCoding
           ? (config.starterCode || `const fs = require('fs');\n\n// Leer entrada estándar\nconst input = fs.readFileSync(0, 'utf-8').trim();\n\n// Escribe tu algoritmo aquí:\n`)
-          : `// Esta actividad es de tipo "${primaryQuestion.type}", no de código libre.\n// Este editor todavía no soporta ese tipo de pregunta.\n`
+          : `// Esta actividad es de tipo "${primaryQuestion.type}", no de código libre.\n// Usa el panel izquierdo para responder.\n`
 
         currentExercise.value = {
           activityId: activity.id,
@@ -97,6 +117,14 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           usedAttempts: 0,
           description: activity.description || primaryQuestion.question || 'Sin enunciado disponible.',
           initialCode: starter
+        }
+
+        // Guardar pregunta completa para los componentes de ejercicio
+        currentQuestion.value = {
+          id: primaryQuestion.id,
+          type: primaryQuestion.type,
+          question: primaryQuestion.question || '',
+          config
         }
 
         code.value = starter
@@ -116,7 +144,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           consoleLog.value.push(`  → ${publicTestCases.value.length} caso(s) de prueba público(s) disponible(s).`)
         } else {
           publicTestCases.value = []
-          consoleLog.value.push(`⚠ Actividad "${activity.title}" es de tipo "${primaryQuestion.type}" — este editor de código libre no la soporta todavía.`)
+          consoleLog.value.push(`✔ Actividad "${activity.title}" cargada (tipo: ${primaryQuestion.type}).`)
+          consoleLog.value.push(`  → Completa la respuesta en el panel izquierdo y presiona "Entregar solución".`)
         }
       }
     } catch (err: any) {
@@ -219,11 +248,15 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   }
 
   // Acción 2: "🚀 Entregar solución" — Calificación formal contra el backend NestJS
+  // Para CODING: usa code.value. Para el resto: usa pendingAnswer.value.
   async function submitSolution() {
-    if (currentExercise.value.questionType !== 'coding') {
-      consoleLog.value.push(`⚠ No se puede entregar: esta actividad es de tipo "${currentExercise.value.questionType}" y este editor de código libre no sabe todavía cómo evaluarla. No se consumió ningún intento.`)
+    const qType = currentExercise.value.questionType
+
+    if (qType !== 'coding' && !pendingAnswer.value) {
+      consoleLog.value.push(`⚠ Completa la respuesta antes de entregar.`)
       return
     }
+
     isSubmitting.value = true
     submissionResult.value = null
     consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Enviando solución formal para calificación (POST /submissions/:id/submit)...`)
@@ -232,11 +265,16 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const subId = await ensureActiveSubmission()
       consoleLog.value.push(`  → Calificando intento formal #${subId}...`)
 
+      // Construir el answer según el tipo
+      const answer = qType === 'coding'
+        ? { code: code.value }
+        : pendingAnswer.value!
+
       const submitRes = await api.post<SubmissionResult>(`/submissions/${subId}/submit`, {
         answers: [
           {
             questionId: currentExercise.value.questionId,
-            answer: { code: code.value }
+            answer
           }
         ]
       })
@@ -244,6 +282,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       if (submitRes) {
         currentExercise.value.usedAttempts += 1
         currentSubmissionId.value = null // Intento cerrado
+        pendingAnswer.value = null
 
         if (submitRes.status === 'graded') {
           submissionResult.value = submitRes
@@ -251,20 +290,17 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           return
         }
 
-        // Preguntas de código real: la calificación corre en el sandbox aislado
-        // de forma asíncrona (arquitectura event-driven) -- la respuesta inmediata
-        // del submit todavía no trae la nota final. Se sondea GET /submissions/:id
-        // hasta que el backend termine de calificar, en vez de mostrar un 0/100 falso.
-        consoleLog.value.push(`  → Calificación en proceso en el sandbox aislado, esperando resultado real...`)
-        const finalResult = await pollSubmissionStatus(subId)
-
-        if (finalResult) {
-          submissionResult.value = finalResult
-          consoleLog.value.push(`🎯 Solución calificada con ${finalResult.totalScore}/100 puntos por el backend.`)
-        } else {
-          consoleLog.value.push(`⚠ La calificación está tardando más de lo esperado. Revisa tus notificaciones en unos minutos para ver el resultado final.`)
+        // CODING asíncrono: sondear resultado
+        if (qType === 'coding') {
+          consoleLog.value.push(`  → Calificación en proceso en el sandbox aislado, esperando resultado real...`)
+          const finalResult = await pollSubmissionStatus(subId)
+          if (finalResult) {
+            submissionResult.value = finalResult
+            consoleLog.value.push(`🎯 Solución calificada con ${finalResult.totalScore}/100 puntos por el backend.`)
+          } else {
+            consoleLog.value.push(`⚠ La calificación está tardando más de lo esperado. Revisa tus notificaciones en unos minutos.`)
+          }
         }
-        return
       }
     } catch (err: any) {
       const status = err?.response?.status || err?.statusCode
@@ -281,7 +317,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
-  // Autosave: PUT /submissions/:id/autosave
+  // Autosave: PUT /submissions/:id/autosave (solo aplica a coding)
   async function triggerAutosave() {
     if (currentExercise.value.questionType !== 'coding') return
     lastAutosave.value = `Autoguardando...`
@@ -305,6 +341,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
   return {
     currentExercise,
+    currentQuestion,
+    pendingAnswer,
     code,
     isRunning,
     isSubmitting,

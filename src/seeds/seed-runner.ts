@@ -1042,6 +1042,160 @@ console.log(slug);
     'Pregunta CODING Actividad 12',
   );
 
+  // ─── Nivel 2: Actividades DRAG_DROP, ORDERING y MATCHING ───────────────────
+
+  // Actividad 13: DRAG_DROP en unit4 (Clasificación de Métodos de Arrays)
+  const act13 = await findOrCreate(
+    activityRepo,
+    { learningUnitId: unit4.id, title: 'Clasificación: Métodos Mutables vs Inmutables de Arrays' },
+    () => ({
+      learningUnitId: unit4.id,
+      activityTypeId: autoType.id,
+      createdBy: teacherToscano.id,
+      title: 'Clasificación: Métodos Mutables vs Inmutables de Arrays',
+      description: 'Clasifica los métodos de arreglos según modifiquen el arreglo original o retornen una copia nueva.',
+      difficulty: Difficulty.INTERMEDIO,
+      totalPoints: 20,
+      passingScore: 60,
+      attemptsAllowed: 3,
+      order: 3,
+      status: PublicationStatus.PUBLISHED,
+      isRequired: true,
+      adaptiveWeight: 0.35,
+      publishedAt: new Date(),
+    }),
+    'Actividad 13 (DRAG_DROP - peso 0.35)',
+  );
+  await findOrCreate(
+    questionRepo,
+    { activityId: act13.id },
+    () => ({
+      activityId: act13.id,
+      type: QuestionType.DRAG_DROP,
+      question: 'Arrastra o asigna cada método de Array a su categoría correspondiente (Mutadores vs Inmutables):',
+      points: 20,
+      order: 0,
+      config: {
+        items: [
+          { id: 'item_push', content: 'arr.push()' },
+          { id: 'item_pop', content: 'arr.pop()' },
+          { id: 'item_map', content: 'arr.map()' },
+          { id: 'item_filter', content: 'arr.filter()' },
+        ],
+        targets: [
+          { id: 'zone_mut', label: 'Mutan el arreglo original' },
+          { id: 'zone_inmut', label: 'Retornan un nuevo arreglo' },
+        ],
+        mappings: {
+          item_push: 'zone_mut',
+          item_pop: 'zone_mut',
+          item_map: 'zone_inmut',
+          item_filter: 'zone_inmut',
+        },
+      },
+    }),
+    'Pregunta DRAG_DROP Actividad 13',
+  );
+
+  // Actividad 14: ORDERING en unit3 (Flujo de Ejecución de un Bucle For)
+  const act14 = await findOrCreate(
+    activityRepo,
+    { learningUnitId: unit3.id, title: 'Secuencia: Fases de Ejecución del Bucle For' },
+    () => ({
+      learningUnitId: unit3.id,
+      activityTypeId: autoType.id,
+      createdBy: teacherToscano.id,
+      title: 'Secuencia: Fases de Ejecución del Bucle For',
+      description: 'Ordena cronológicamente los pasos que ejecuta el motor de JavaScript en un ciclo for.',
+      difficulty: Difficulty.INTERMEDIO,
+      totalPoints: 20,
+      passingScore: 60,
+      attemptsAllowed: 3,
+      order: 3,
+      status: PublicationStatus.PUBLISHED,
+      isRequired: true,
+      adaptiveWeight: 0.35,
+      publishedAt: new Date(),
+    }),
+    'Actividad 14 (ORDERING - peso 0.35)',
+  );
+  await findOrCreate(
+    questionRepo,
+    { activityId: act14.id },
+    () => ({
+      activityId: act14.id,
+      type: QuestionType.ORDERING,
+      question: 'Ordena de primero a último los pasos de ejecución de un ciclo `for (let i = 0; i < N; i++)`:',
+      points: 20,
+      order: 0,
+      config: {
+        blocks: [
+          { id: 'b_init', content: '1. Inicialización: se define la variable de control (let i = 0)' },
+          { id: 'b_eval', content: '2. Condición: se evalúa la expresión lógica (i < N)' },
+          { id: 'b_body', content: '3. Cuerpo: se ejecuta el bloque de código entre llaves' },
+          { id: 'b_step', content: '4. Actualización: se incrementa la variable de control (i++)' },
+        ],
+        correctOrder: ['b_init', 'b_eval', 'b_body', 'b_step'],
+      },
+    }),
+    'Pregunta ORDERING Actividad 14',
+  );
+
+  // Actividad 15: MATCHING en unit5 (Emparejamiento: Conceptos y Sintaxis de Funciones)
+  const act15 = await findOrCreate(
+    activityRepo,
+    { learningUnitId: unit5.id, title: 'Emparejamiento: Sintaxis y Tipos de Funciones' },
+    () => ({
+      learningUnitId: unit5.id,
+      activityTypeId: autoType.id,
+      createdBy: teacherToscano.id,
+      title: 'Emparejamiento: Sintaxis y Tipos de Funciones',
+      description: 'Empareja cada declaración o término de funciones con su característica o sintaxis correcta.',
+      difficulty: Difficulty.INTERMEDIO,
+      totalPoints: 20,
+      passingScore: 60,
+      attemptsAllowed: 3,
+      order: 3,
+      status: PublicationStatus.PUBLISHED,
+      isRequired: true,
+      adaptiveWeight: 0.35,
+      publishedAt: new Date(),
+    }),
+    'Actividad 15 (MATCHING - peso 0.35)',
+  );
+  await findOrCreate(
+    questionRepo,
+    { activityId: act15.id },
+    () => ({
+      activityId: act15.id,
+      type: QuestionType.MATCHING,
+      question: 'Empareja cada concepto de función en JavaScript con su definición correspondiente:',
+      points: 20,
+      order: 0,
+      config: {
+        leftColumn: [
+          { id: 'l_arrow', content: 'Función Flecha (Arrow Function)' },
+          { id: 'l_pure', content: 'Función Pura' },
+          { id: 'l_return', content: 'Palabra clave `return`' },
+          { id: 'l_param', content: 'Parámetro por Defecto' },
+        ],
+        rightColumn: [
+          { id: 'r_arrow', content: 'Sintaxis concisa que usa la flecha `=>`' },
+          { id: 'r_pure', content: 'No produce efectos secundarios y siempre retorna el mismo resultado para las mismas entradas' },
+          { id: 'r_return', content: 'Detiene la ejecución de la función y devuelve un valor al llamador' },
+          { id: 'r_param', content: 'Valor que se asigna automáticamente si el argumento es omitido o `undefined`' },
+        ],
+        pairs: {
+          l_arrow: 'r_arrow',
+          l_pure: 'r_pure',
+          l_return: 'r_return',
+          l_param: 'r_param',
+        },
+      },
+    }),
+    'Pregunta MATCHING Actividad 15',
+  );
+
   // 7. Datos de Progreso y Repetición Espaciada para Pedro
   console.log('\n7. Sembrando Progreso y Repetición Espaciada (SM-2) para Pedro...');
   const progressRepo = AppDataSource.getRepository(LearningProgress);
