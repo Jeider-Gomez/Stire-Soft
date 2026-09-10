@@ -85,7 +85,8 @@ export interface SubmissionAnswer {
   code: string
 }
 
-export type SubmissionStatus = 'in_progress' | 'grading' | 'graded' | 'error'
+// Debe coincidir con src/common/enums/submission-status.enum.ts (backend)
+export type SubmissionStatus = 'in_progress' | 'submitted' | 'graded' | 'expired'
 
 export interface SubmissionResult {
   submissionId: string

@@ -203,6 +203,21 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
+  // Sondea GET /submissions/:id hasta que el backend termine de calificar de
+  // forma asíncrona (preguntas CODING) o se agote el número de intentos.
+  async function pollSubmissionStatus(subId: string, maxAttempts = 10, intervalMs = 1200): Promise<SubmissionResult | null> {
+    for (let i = 0; i < maxAttempts; i++) {
+      await new Promise((resolve) => setTimeout(resolve, intervalMs))
+      try {
+        const res = await api.get<SubmissionResult>(`/submissions/${subId}`)
+        if (res?.status === 'graded') return res
+      } catch {
+        // Error puntual de sondeo: se reintenta en la siguiente iteración.
+      }
+    }
+    return null
+  }
+
   // Acción 2: "🚀 Entregar solución" — Calificación formal contra el backend NestJS
   async function submitSolution() {
     if (currentExercise.value.questionType !== 'coding') {
@@ -227,10 +242,28 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       })
 
       if (submitRes) {
-        submissionResult.value = submitRes
         currentExercise.value.usedAttempts += 1
         currentSubmissionId.value = null // Intento cerrado
-        consoleLog.value.push(`🎯 Solución calificada con ${submitRes.totalScore}/100 puntos por el backend.`)
+
+        if (submitRes.status === 'graded') {
+          submissionResult.value = submitRes
+          consoleLog.value.push(`🎯 Solución calificada con ${submitRes.totalScore}/100 puntos por el backend.`)
+          return
+        }
+
+        // Preguntas de código real: la calificación corre en el sandbox aislado
+        // de forma asíncrona (arquitectura event-driven) -- la respuesta inmediata
+        // del submit todavía no trae la nota final. Se sondea GET /submissions/:id
+        // hasta que el backend termine de calificar, en vez de mostrar un 0/100 falso.
+        consoleLog.value.push(`  → Calificación en proceso en el sandbox aislado, esperando resultado real...`)
+        const finalResult = await pollSubmissionStatus(subId)
+
+        if (finalResult) {
+          submissionResult.value = finalResult
+          consoleLog.value.push(`🎯 Solución calificada con ${finalResult.totalScore}/100 puntos por el backend.`)
+        } else {
+          consoleLog.value.push(`⚠ La calificación está tardando más de lo esperado. Revisa tus notificaciones en unos minutos para ver el resultado final.`)
+        }
         return
       }
     } catch (err: any) {

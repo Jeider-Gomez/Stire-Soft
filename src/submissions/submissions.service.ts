@@ -254,6 +254,27 @@ export class SubmissionsService {
     return this.answersRepo.save(answer);
   }
 
+  // Consulta de estado (Insumo 15 §9.3): la calificación de preguntas CODING es
+  // asíncrona (ver consolidateSubmission más abajo) -- la respuesta inmediata de
+  // submitAnswers() no trae la nota final. El frontend usa este endpoint para
+  // sondear el resultado real hasta que status pase a GRADED.
+  async getSubmissionStatus(submissionId: string, studentId: number) {
+    const submission = await this.submissionsRepo.findOne({
+      where: { id: submissionId, studentId },
+      relations: ['answers'],
+    });
+    if (!submission) throw new NotFoundException('Intento no encontrado');
+
+    return {
+      submissionId: submission.id,
+      status: submission.status,
+      totalScore: submission.score,
+      passedCount: submission.answers.filter((a) => a.isCorrect === true).length,
+      totalCount: submission.answers.length,
+      feedback: submission.feedback,
+    };
+  }
+
   async consolidateSubmission(submissionId: string) {
     const submission = await this.submissionsRepo.findOne({
       where: { id: submissionId },

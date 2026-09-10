@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { SubmissionsService } from './submissions.service';
@@ -42,6 +42,14 @@ export class SubmissionsController {
   @ApiOperation({ summary: 'Ensayar código contra los casos públicos, sin consumir intento' })
   runPublicCases(@Param('id') id: string, @Body() dto: RunCodeDto, @GetUser() user: User) {
     return this.submissionsService.runPublicCases(id, dto, user.id);
+  }
+
+  @Get(':id')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
+  @ApiOperation({ summary: 'Consultar el estado y resultado de un intento (para sondear calificación asíncrona)' })
+  getSubmissionStatus(@Param('id') id: string, @GetUser() user: User) {
+    return this.submissionsService.getSubmissionStatus(id, user.id);
   }
 
   @Put(':id/autosave')
