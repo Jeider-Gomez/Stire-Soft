@@ -205,6 +205,27 @@ reprodujo el flujo exacto del punto 1 de la §9.1 con el navegador, no solo leye
   mecanismo (encuesta periódica a `GET /submissions/:id`, canal de notificaciones ya existente, o
   ambos) antes de implementarlo.
 
+### 9.4 Checkpoint 2026-09-11 — cierre de los puntos 6, 9 y 10 de §9.1
+
+Los tres puntos que §9.2 dejaba en ⚠️/❌ quedaron resueltos y verificados en vivo (navegador real,
+no solo lectura de código) entre el 2026-09-10 (tarde) y el 2026-09-11. Detalle completo en
+`docs/claude-code/informes/INFORME_2026-09-10_SESION_02.md` y
+`INFORME_2026-09-11_SESION_01.md`; el plan que gobernó la ejecución de los puntos 9 y 10 (delegados
+a Codex) está en `docs/codex/PLAN_IMPLEMENTACION.md`.
+
+| # (ver 9.1) | Estado (era en §9.2) | Estado ahora | Evidencia |
+|---|---|---|---|
+| 6 — Castro/Ali sin contenido | ⚠️ Parcial | ✅ **Resuelto** | Currículo real (no relleno genérico) sembrado para ambas clases, `src/seeds/seed-runner.ts`. Un primer intento de Codex cumplió la estructura pero con preguntas de relleno idénticas entre clases — corregido en el commit `d1fdf19`. |
+| 9 — aceptar/rechazar matrícula, quitar estudiante | ❌ No resuelto | ✅ **Resuelto** | `EnrollmentStatus.PENDING` + `Class.requiresApproval` + `GET /enrollment/class/:id/pending` + `PATCH .../approve` + `PATCH .../reject` + `DELETE /enrollment/:id` (soft, nunca borra la fila). UI del docente conectada (antes quedaba huérfana, sin link de navegación ni forma de activar el flag) en el commit `3306212`. |
+| 10 — motor de selección de actividad por dominio | ⚠️ Parcial | ✅ **Resuelto** | `GET /learning-progress/student/:id/unit/:id/next-activity` recomienda la actividad de menor `order` no aprobada (reutiliza la misma fórmula normalizada de `passingScore`, no una reimplementación distinta) + selector "Elegir yo mismo" en `estudiante/unidad/[id].vue`. La tarjeta de Inicio usaba un heurístico local distinto que saltaba cualquier MCQ — unificado al mismo motor real en el commit `32c12e9`. |
+
+**Hallazgo adicional, no parte de §9.1 original:** normalizando lo anterior se encontró y corrigió
+un bug real de `passingScore` — se comparaba como puntaje crudo contra un umbral fijo (60) sin
+importar el `totalPoints` de cada actividad (10-30 según el tipo), así que ninguna actividad de
+bajo puntaje total podía "aprobarse" nunca, sin importar qué tan bien la resolviera el estudiante.
+Ahora es un porcentaje del `totalPoints` de cada actividad, en los 3 sitios que lo comparaban
+(commit `741b18f`, `docs/claude-code/informes/INFORME_2026-09-10_SESION_02.md`).
+
 ---
 
 *Este documento es la referencia de visión funcional de STIRE. Toda decisión técnica tomada en el backend debe poder trazarse hasta uno de los 3 pilares pedagógicos descritos en la sección 2.*
