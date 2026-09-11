@@ -7,6 +7,14 @@
 
 ---
 
+## 🗺️ Plan Maestro
+
+[`PLAN_MAESTRO.md`](./PLAN_MAESTRO.md) — **cómo colaboran las distintas IA de este proyecto (Claude
+Code, Antigravity, Codex) y el checklist único de qué está hecho, a medias, o pendiente en todo
+STIRE.** No reemplaza los planes de cada herramienta (`antigravity/`, `codex/`) — los indexa. Su
+checklist y su registro de checkpoints los edita únicamente Claude Code, tras verificar contra el
+código real.
+
 ## 📚 Mapa de Documentos
 
 | # | Archivo | Responde a | Audiencia |
