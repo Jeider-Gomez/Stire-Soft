@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { ActivitiesService } from './activities.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
-import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
+import { FindActivitiesQueryDto } from './dto/find-activities-query.dto';
 import { PublicationStatus } from '../common/enums/status.enum';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -33,11 +33,10 @@ export class ActivitiesController {
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiQuery({ name: 'learningUnitId', required: false, type: Number })
   findAll(
-    @Query() paginationQuery: PaginationQueryDto,
+    @Query() paginationQuery: FindActivitiesQueryDto,
     @GetUser() user: User,
-    @Query('learningUnitId') learningUnitId?: number,
   ) {
-    return this.activitiesService.findAll(paginationQuery, user, learningUnitId ? +learningUnitId : undefined);
+    return this.activitiesService.findAll(paginationQuery, user, paginationQuery.learningUnitId);
   }
 
   @Get(':id')
