@@ -5,7 +5,7 @@ fuente:     normativo (insumo para sustentación oral)
 codigos:    no aplica (pitch, no ventanas)
 ---
 
-# Pitch — Bitácora N.º 3 (31 ago – 4 sep 2026)
+# Pitch — Bitácora N.º 3 (31 ago – 11 sep 2026)
 
 **Regla de este documento:** ninguna afirmación sin un commit o un archivo real detrás. Si algo
 solo está documentado y no implementado, se dice así en el guion, no se disimula.
