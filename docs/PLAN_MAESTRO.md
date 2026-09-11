@@ -173,7 +173,7 @@ propósito (decisión del dueño del proyecto, no olvido).
 |---|:---:|---|
 | Selector de rol solo en modo demo, blindado a nivel de función (no solo de plantilla) | ✅ | `docs/claude-code/informes/INFORME_2026-09-10_SESION_01.md` §3.4 |
 | BOLA en matrícula, progreso, y actividades por unidad | ✅ | `AuthorizationService.assertTeacherOwnsClass` / `assertEnrolledInClass`, usado consistentemente |
-| `GET /learning-unit/:id` verifica matrícula/propiedad antes de responder | ❌ | Hallazgo reciente, no explotado ni corregido todavía — `GET /content/unit/:id` sí lo hace, este endpoint hermano no |
+| `GET /learning-unit/:id` verifica matrícula/propiedad antes de responder | ✅ | `src/learning-unit/learning-unit.service.ts` (`findOne`/`assertCanReadClass`, mismo patrón que `ContentService`), cubierto por `learning-unit.service.spec.ts` — commit `b1bc096` |
 | Repositorio público — sin secretos en el historial | ✅ | `CLAUDE.md`, sección Seguridad y Datos |
 
 ### 4.6 Frontend
@@ -204,6 +204,7 @@ queda un renglón aquí — mismo criterio de checkpoints fechados, sin borrar, 
 | Fecha | Qué cambió | Verificado por |
 |---|---|---|
 | 2026-09-11 | Creación de este documento. Checklist inicial construido a partir del estado real verificado en `docs/00_VISION_FUNCIONAL.md` §9.2-§9.4 y los informes de sesión de Claude Code del 2026-09-10 y 2026-09-11. | Claude Code (Sonnet 5) |
+| 2026-09-11 | §4.5: `GET /learning-unit/:id` ahora verifica matrícula/propiedad (BOLA cerrado) — mismo patrón que `ContentService.assertCanReadClass`. `npm run build` limpio, suite completa 302/305 (3 fallos preexistentes en `hardened-process-sandbox.adapter.spec.ts`, flaky por contención de recursos al correr en paralelo — pasan 18/18 en aislado, no relacionados con este cambio). Commit `b1bc096`. | Claude Code (Sonnet 5) |
 
 ---
 
