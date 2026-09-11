@@ -7,7 +7,7 @@ import { Section } from '../section/entities/section.entity';
 import { CreateLearningUnitDto } from './dto/create-learning-unit.dto';
 import { UpdateLearningUnitDto } from './dto/update-learning-unit.dto';
 import { AuthorizationService } from '../common/authorization/authorization.service';
-import { User } from '../user/entities/user.entity';
+import { User, UserRole } from '../user/entities/user.entity';
 
 @Injectable()
 export class LearningUnitService {
@@ -73,9 +73,12 @@ export class LearningUnitService {
   }
 
   /**
-   * Obtener una unidad por ID
+   * Fetch interno SIN autorización — lo usan `update`/`remove`, que ya
+   * hacen su propia verificación de propiedad inmediatamente después.
+   * `findOne` (público, más abajo) es la versión CON autorización, para la
+   * ruta de lectura.
    */
-  async findOne(id: number): Promise<LearningUnit> {
+  private async findOneRaw(id: number): Promise<LearningUnit> {
     const unit = await this.learningUnitRepository.findOne({ where: { id } });
 
     if (!unit) {
@@ -86,13 +89,39 @@ export class LearningUnitService {
   }
 
   /**
+   * OLA 3 (pendiente identificado en
+   * `docs/claude-code/informes/INFORME_2026-09-11_SESION_01.md` §7, punto 2):
+   * este endpoint no verificaba NADA — a diferencia de
+   * `ContentService.findOne`/`findByUnit`, cualquier usuario autenticado
+   * (estudiante o docente) podía leer título/descripción de una unidad de
+   * CUALQUIER clase, no solo la suya. Mismo patrón que
+   * `ContentService.assertCanReadClass`: admin pasa siempre; docente solo su
+   * propia clase (403 si es ajena); estudiante solo si está matriculado
+   * (403 si no).
+   */
+  async findOne(id: number, user: User): Promise<LearningUnit> {
+    const unit = await this.findOneRaw(id);
+    await this.assertCanReadClass(user, await this.resolveClassId(unit));
+    return unit;
+  }
+
+  private async assertCanReadClass(user: User, classId: number): Promise<void> {
+    if (user.role === UserRole.DOCENTE) {
+      await this.authorizationService.assertTeacherOwnsClass(user, classId);
+    } else if (user.role === UserRole.ESTUDIANTE) {
+      await this.authorizationService.assertEnrolledInClass(user, classId);
+    }
+    // admin: pasa siempre.
+  }
+
+  /**
    * Actualizar una unidad de aprendizaje. Solo el docente dueño de la clase
    * de su topic (o admin). Falla cerrado si la unidad no tiene topic
    * asignado: no hay clase que verificar, así que no se puede autorizar
    * a un docente sobre ella (un admin sí puede, siempre).
    */
   async update(id: number, updateDto: UpdateLearningUnitDto, user: User): Promise<LearningUnit> {
-    const unit = await this.findOne(id);
+    const unit = await this.findOneRaw(id);
     await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(unit));
     Object.assign(unit, updateDto);
     return await this.learningUnitRepository.save(unit);
@@ -104,7 +133,7 @@ export class LearningUnitService {
    * es defensa en profundidad si esa restricción de rol cambia.
    */
   async remove(id: number, user: User): Promise<void> {
-    const unit = await this.findOne(id);
+    const unit = await this.findOneRaw(id);
     await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(unit));
     await this.learningUnitRepository.remove(unit);
   }

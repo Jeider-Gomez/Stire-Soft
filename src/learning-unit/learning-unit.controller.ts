@@ -61,8 +61,8 @@ export class LearningUnitController {
   @Get(':id')
   @UseGuards(PrerequisitesGuard)
   @Roles('estudiante', 'docente', 'admin')
-  findOne(@Param('id') id: string) {
-    return this.learningUnitService.findOne(+id);
+  findOne(@Param('id') id: string, @GetUser() user: User) {
+    return this.learningUnitService.findOne(+id, user);
   }
 
   /**
