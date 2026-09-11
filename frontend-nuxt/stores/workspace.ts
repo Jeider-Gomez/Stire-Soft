@@ -9,11 +9,14 @@ export interface WorkspaceExercise {
   questionType: string
   title: string
   unitTitle: string
+  learningUnitId: number
   difficulty: string
   maxAttempts: number
   usedAttempts: number
   description: string
   initialCode: string
+  /** Puntaje máximo real de la actividad (activity.totalPoints) — nunca asumir 100. */
+  maxScore: number
 }
 
 /** Config saneada que llega del backend para cada tipo de pregunta */
@@ -34,11 +37,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     questionType: 'coding',
     title: 'Cargando ejercicio...',
     unitTitle: '',
+    learningUnitId: 0,
     difficulty: 'Básico',
     maxAttempts: 3,
     usedAttempts: 0,
     description: 'Cargando enunciado desde la base de datos de STIRE...',
-    initialCode: '// Cargando plantilla...\n'
+    initialCode: '// Cargando plantilla...\n',
+    maxScore: 100
   })
 
   /** Pregunta completa (config saneada) para tipos distintos de coding */
@@ -68,6 +73,29 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const submissionResult = ref<SubmissionResult | null>(null)
 
   /**
+   * Dominio (mastery %) del estudiante en la unidad de aprendizaje de esta
+   * actividad, antes y después de calificar. Permite mostrarle al estudiante
+   * cuánto avanzó su dominio real en vez de solo un puntaje crudo confuso.
+   */
+  const masteryBefore = ref<number | null>(null)
+  const masteryAfter = ref<number | null>(null)
+
+  async function fetchUnitMastery(unitId: number): Promise<number | null> {
+    const studentId = authStore.user?.id
+    if (!studentId || !unitId) return null
+    try {
+      const progress = await api.get<{ mastery: number } | null>(
+        `/learning-progress/student/${studentId}/unit/${unitId}`
+      )
+      return progress?.mastery ?? 0
+    } catch {
+      // Sin progreso registrado aún, o error puntual de red: no bloquea la
+      // experiencia principal, simplemente no se muestra el delta de dominio.
+      return null
+    }
+  }
+
+  /**
    * Carga una actividad real desde el backend NestJS
    * 1. GET /activities/:activityId
    * 2. GET /activity-questions/activity/:activityId
@@ -79,6 +107,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     submissionResult.value = null
     pendingAnswer.value = null
     currentQuestion.value = null
+    masteryBefore.value = null
+    masteryAfter.value = null
 
     consoleLog.value = [
       'STIRE Sandbox v2.0 — Conectado a la plataforma STIRE.',
@@ -112,12 +142,18 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           questionType: primaryQuestion.type,
           title: activity.title,
           unitTitle: activity.learningUnit?.title || 'Unidad de Aprendizaje',
+          learningUnitId: activity.learningUnitId,
           difficulty: activity.difficulty || 'Básico',
           maxAttempts: activity.attemptsAllowed || 3,
           usedAttempts: 0,
           description: activity.description || primaryQuestion.question || 'Sin enunciado disponible.',
-          initialCode: starter
+          initialCode: starter,
+          maxScore: activity.totalPoints ?? 100
         }
+
+        // Dominio actual de la unidad ANTES de este intento, para poder
+        // mostrar el delta real una vez calificado.
+        masteryBefore.value = await fetchUnitMastery(activity.learningUnitId)
 
         // Guardar pregunta completa para los componentes de ejercicio
         currentQuestion.value = {
@@ -284,9 +320,12 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         currentSubmissionId.value = null // Intento cerrado
         pendingAnswer.value = null
 
+        const maxScore = submitRes.maxScore ?? currentExercise.value.maxScore
+
         if (submitRes.status === 'graded') {
           submissionResult.value = submitRes
-          consoleLog.value.push(`🎯 Solución calificada con ${submitRes.totalScore}/100 puntos por el backend.`)
+          consoleLog.value.push(`🎯 Solución calificada con ${submitRes.totalScore}/${maxScore} puntos por el backend.`)
+          masteryAfter.value = await fetchUnitMastery(currentExercise.value.learningUnitId)
           return
         }
 
@@ -296,7 +335,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           const finalResult = await pollSubmissionStatus(subId)
           if (finalResult) {
             submissionResult.value = finalResult
-            consoleLog.value.push(`🎯 Solución calificada con ${finalResult.totalScore}/100 puntos por el backend.`)
+            const finalMaxScore = finalResult.maxScore ?? maxScore
+            consoleLog.value.push(`🎯 Solución calificada con ${finalResult.totalScore}/${finalMaxScore} puntos por el backend.`)
+            masteryAfter.value = await fetchUnitMastery(currentExercise.value.learningUnitId)
           } else {
             consoleLog.value.push(`⚠ La calificación está tardando más de lo esperado. Revisa tus notificaciones en unos minutos.`)
           }
@@ -353,6 +394,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     publicTestCases,
     consoleLog,
     submissionResult,
+    masteryBefore,
+    masteryAfter,
     loadActivity,
     runIsolatedCode,
     submitSolution,

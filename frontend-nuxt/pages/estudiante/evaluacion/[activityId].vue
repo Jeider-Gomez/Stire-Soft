@@ -50,7 +50,7 @@
             <ul v-else class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">
               <li>Evaluación formal inmediata al entregar.</li>
               <li>Consumo de intento al enviar solución definitiva.</li>
-              <li>Puntaje sobre 100 ponderado según tu respuesta.</li>
+              <li>Puntaje sobre {{ workspaceStore.currentExercise.maxScore }} puntos según tu respuesta.</li>
             </ul>
           </div>
         </div>
@@ -257,14 +257,24 @@
         </h3>
 
         <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
-          <p class="text-2xl font-bold" :class="workspaceStore.submissionResult?.totalScore >= 70 ? 'text-semantico-pasa' : 'text-semantico-falla'">
-            {{ workspaceStore.submissionResult?.totalScore ?? 0 }} / 100 pts
+          <p class="text-2xl font-bold" :class="isSuccessResult ? 'text-semantico-pasa' : 'text-semantico-falla'">
+            {{ workspaceStore.submissionResult?.totalScore ?? 0 }} / {{ resultMaxScore }} pts
           </p>
           <p v-if="isCodingActivity" class="text-xs text-base-texto-secundario mt-1">
             Superaste {{ workspaceStore.submissionResult?.passedCount ?? 0 }} de {{ workspaceStore.submissionResult?.totalCount ?? 0 }} casos de prueba.
           </p>
           <p v-else class="text-xs text-base-texto-secundario mt-1">
             Evaluación registrada formalmente en tu progreso STIRE.
+          </p>
+        </div>
+
+        <!-- Dominio de la unidad: la señal que de verdad importa para el
+             estudiante, más allá del puntaje crudo de un solo intento. -->
+        <div v-if="masteryDelta" class="p-3 bg-acento-ambar/10 rounded-lg border border-acento-ambar/30">
+          <p class="text-sm font-semibold text-base-texto-primario">
+            📈 Tu dominio de esta unidad {{ masteryDelta.diff > 0 ? 'subió' : 'se mantiene' }} en
+            <span class="text-acento-ambar-fuerte">{{ masteryDelta.after }}%</span>
+            <span v-if="masteryDelta.diff > 0" class="text-semantico-pasa"> (+{{ masteryDelta.diff }}%)</span>
           </p>
         </div>
 
@@ -318,13 +328,31 @@ const passedCount = computed(() => {
   return workspaceStore.publicTestCases.filter(tc => tc.passed === true).length
 })
 
+const resultMaxScore = computed(() => {
+  return workspaceStore.submissionResult?.maxScore ?? workspaceStore.currentExercise.maxScore
+})
+
 const isSuccessResult = computed(() => {
   const result = workspaceStore.submissionResult
   if (!result) return false
   if (isCodingActivity.value) {
     return result.totalCount > 0 && result.passedCount === result.totalCount
   }
-  return (result.totalScore ?? 0) >= 70
+  // El backend ya normaliza el puntaje contra el total real de la actividad
+  // (activity.totalPoints) antes de comparar con el umbral de aprobación —
+  // ver submissions.service.ts. No se recalcula acá para no duplicar esa
+  // regla de negocio ni desalinearse si cambia en el backend.
+  return result.passed === true
+})
+
+// Cuánto subió el dominio (mastery %) de la unidad de aprendizaje tras este
+// intento, para comunicar el resultado en términos de progreso real y no
+// solo con un puntaje crudo de un único intento.
+const masteryDelta = computed(() => {
+  const before = workspaceStore.masteryBefore
+  const after = workspaceStore.masteryAfter
+  if (before === null || after === null) return null
+  return { before, after, diff: Math.max(0, after - before) }
 })
 
 const lineCount = computed(() => {

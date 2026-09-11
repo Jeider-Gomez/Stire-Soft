@@ -91,6 +91,10 @@ export type SubmissionStatus = 'in_progress' | 'submitted' | 'graded' | 'expired
 export interface SubmissionResult {
   submissionId: string
   totalScore: number
+  /** Puntaje máximo real de la actividad (activity.totalPoints) — nunca asumir 100. */
+  maxScore?: number
+  /** true/false una vez calificado; null mientras la evaluación asíncrona (CODING) está pendiente. */
+  passed?: boolean | null
   passedCount: number
   totalCount: number
   status: SubmissionStatus

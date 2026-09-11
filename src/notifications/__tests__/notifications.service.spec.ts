@@ -132,7 +132,8 @@ describe('Notifications Module Unit Tests', () => {
     });
 
     it('should create an approved activity notification when student passes', async () => {
-      const event = new SubmissionGradedEvent('sub-1', 42, 5, 10, 8.5, 6.0);
+      // passingScore es un porcentaje (60%): 8.5/10 = 85% >= 60% → aprueba.
+      const event = new SubmissionGradedEvent('sub-1', 42, 5, 10, 8.5, 60.0, 10);
 
       await listener.handleSubmissionGradedEvent(event);
 
@@ -145,7 +146,8 @@ describe('Notifications Module Unit Tests', () => {
     });
 
     it('should create a graded notification urging review when student does not pass', async () => {
-      const event = new SubmissionGradedEvent('sub-2', 42, 5, 10, 4.0, 6.0);
+      // passingScore es un porcentaje (60%): 4.0/10 = 40% < 60% → no aprueba.
+      const event = new SubmissionGradedEvent('sub-2', 42, 5, 10, 4.0, 60.0, 10);
 
       await listener.handleSubmissionGradedEvent(event);
 

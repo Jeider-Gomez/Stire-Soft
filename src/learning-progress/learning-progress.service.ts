@@ -60,22 +60,26 @@ export class LearningProgressService {
     }
     progress.status = newStatus;
     
+    // passingScore es un PORCENTAJE (0-100) del totalPoints de CADA actividad,
+    // no un puntaje crudo — las actividades no valen todas lo mismo (10, 15,
+    // 20... puntos según su tipo/dificultad), así que comparar el score crudo
+    // contra un mismo umbral fijo dejaba actividades de bajo puntaje total
+    // imposibles de aprobar sin importar qué tan bien se resolvieran.
+    const isPassed = (s: any, act: any) =>
+      !!act && act.totalPoints > 0 && (s.score / act.totalPoints) * 100 >= act.passingScore;
+
     // Calcular de forma exacta el conteo de actividades únicas completadas
     const distinctPassedActivities = new Set(
       submissions
-        .filter(s => {
-          const act = activities.find(a => a.id === s.activityId);
-          return act && s.score >= act.passingScore;
-        })
+        .filter(s => isPassed(s, activities.find(a => a.id === s.activityId)))
         .map(s => s.activityId)
     );
     progress.completedActivities = distinctPassedActivities.size;
-    
+
     // Calcular successRate global de la unidad
-    const passed = submissions.filter(s => {
-      const act = activities.find(a => a.id === s.activityId);
-      return act && s.score >= act.passingScore;
-    }).length;
+    const passed = submissions.filter(s =>
+      isPassed(s, activities.find(a => a.id === s.activityId))
+    ).length;
     progress.successRate = submissions.length > 0 ? (passed / submissions.length) * 100 : 0;
     
     progress.lastActivityId = lastActivityId;

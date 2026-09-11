@@ -202,6 +202,40 @@ describe('LearningProgressService', () => {
       );
     });
 
+    // [FIX] Regresión: antes se comparaba el score CRUDO contra un
+    // passingScore fijo (60), así que una actividad de bajo puntaje total
+    // (10, 15, 20... como las de mcq/fill_code/drag_drop/ordering/matching
+    // sembradas en seed-runner.ts) nunca podía "aprobarse" sin importar qué
+    // tan bien la resolviera el estudiante — su score máximo posible ya era
+    // menor que el umbral. passingScore es un PORCENTAJE del totalPoints de
+    // CADA actividad.
+    it('[FIX] completedActivities=1 con un score PERFECTO en una actividad de bajo puntaje total (20 pts)', async () => {
+      const activity = makeActivity({ id: 1, totalPoints: 20, passingScore: 60 });
+      const submission = makeSubmission({ activityId: 1, score: 20 }); // perfecto: 20/20 = 100%
+
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress());
+      activitiesRepo.find.mockResolvedValue([activity]);
+      mockQueryBuilder([submission]);
+
+      const result = await service.recalculateMastery(42, 10, 1, 20, 60);
+
+      expect(result.completedActivities).toBe(1);
+      expect(result.successRate).toBe(100);
+    });
+
+    it('[FIX] completedActivities=0 en una actividad de bajo puntaje total cuando el % real no alcanza', async () => {
+      const activity = makeActivity({ id: 1, totalPoints: 20, passingScore: 60 });
+      const submission = makeSubmission({ activityId: 1, score: 10 }); // 10/20 = 50% < 60%
+
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress());
+      activitiesRepo.find.mockResolvedValue([activity]);
+      mockQueryBuilder([submission]);
+
+      const result = await service.recalculateMastery(42, 10, 1, 10, 60);
+
+      expect(result.completedActivities).toBe(0);
+    });
+
     it('transiciona a explorado si la maestria < 20', async () => {
       const activity = makeActivity({ id: 1, totalPoints: 100, passingScore: 60 });
       const submission = makeSubmission({ activityId: 1, score: 10 });

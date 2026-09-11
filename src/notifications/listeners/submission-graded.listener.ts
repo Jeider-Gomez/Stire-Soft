@@ -16,11 +16,15 @@ export class SubmissionGradedListener {
       `[Notificaciones] Generando notificación de calificación para estudiante ${event.studentId}, actividad ${event.activityId}`,
     );
 
-    const isApproved = event.score >= event.passingScore;
+    // passingScore es un porcentaje (0-100): normalizamos el score crudo
+    // contra el totalPoints de ESA actividad antes de comparar — actividades
+    // distintas valen puntajes totales distintos (10, 15, 20...).
+    const percentage = event.totalPoints > 0 ? (event.score / event.totalPoints) * 100 : 0;
+    const isApproved = percentage >= event.passingScore;
     const title = isApproved ? '¡Actividad Aprobada!' : 'Actividad Calificada';
     const message = isApproved
-      ? `¡Felicidades! Has superado con éxito la actividad. Obtuviste una calificación de ${event.score.toFixed(1)} (Puntaje mínimo requerido: ${event.passingScore.toFixed(1)}). ¡Sigue así!`
-      : `Tu entrega de la actividad ha sido calificada con ${event.score.toFixed(1)} (Puntaje mínimo requerido: ${event.passingScore.toFixed(1)}). Te invitamos a revisar el material de estudio e intentarlo de nuevo.`;
+      ? `¡Felicidades! Has superado con éxito la actividad. Obtuviste ${event.score}/${event.totalPoints} puntos (${percentage.toFixed(0)}%). ¡Sigue así!`
+      : `Tu entrega ha sido calificada con ${event.score}/${event.totalPoints} puntos (${percentage.toFixed(0)}%, mínimo requerido: ${event.passingScore.toFixed(0)}%). Te invitamos a revisar el material de estudio e intentarlo de nuevo.`;
 
     try {
       await this.notificationsService.createNotification(

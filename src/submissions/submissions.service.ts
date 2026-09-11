@@ -142,9 +142,13 @@ export class SubmissionsService {
       // ✅ COMMIT PRIMERO — la transacción DB siempre se compromete antes de tocar Redis
       await queryRunner.commitTransaction();
 
-      // Emitir evento (solo si no hay evaluación asíncrona pendiente)
+      // Emitir evento (solo si no hay evaluación asíncrona pendiente).
+      // emitAsync (no emit): esperamos a que mastery/repasos/notificaciones
+      // terminen de procesar el evento ANTES de responder al frontend, para
+      // que el mastery ya esté actualizado cuando el estudiante lo consulte
+      // justo después de recibir la calificación (ver workspace.ts).
       if (!hasAsync) {
-        this.eventEmitter.emit(
+        await this.eventEmitter.emitAsync(
           'submission.graded',
           new SubmissionGradedEvent(
             submission.id,
@@ -153,6 +157,7 @@ export class SubmissionsService {
             submission.activity.learningUnitId,
             submission.score,
             submission.activity.passingScore,
+            submission.activity.totalPoints,
           )
         );
       }
@@ -181,6 +186,10 @@ export class SubmissionsService {
       return {
         submissionId: submission.id,
         totalScore,
+        maxScore: submission.activity.totalPoints,
+        passed: !hasAsync
+          ? (totalScore / submission.activity.totalPoints) * 100 >= submission.activity.passingScore
+          : null,
         status: submission.status,
       };
 
@@ -261,7 +270,7 @@ export class SubmissionsService {
   async getSubmissionStatus(submissionId: string, studentId: number) {
     const submission = await this.submissionsRepo.findOne({
       where: { id: submissionId, studentId },
-      relations: ['answers'],
+      relations: ['answers', 'activity'],
     });
     if (!submission) throw new NotFoundException('Intento no encontrado');
 
@@ -269,6 +278,11 @@ export class SubmissionsService {
       submissionId: submission.id,
       status: submission.status,
       totalScore: submission.score,
+      maxScore: submission.activity.totalPoints,
+      passed:
+        submission.status === SubmissionStatus.GRADED
+          ? (submission.score / submission.activity.totalPoints) * 100 >= submission.activity.passingScore
+          : null,
       passedCount: submission.answers.filter((a) => a.isCorrect === true).length,
       totalCount: submission.answers.length,
       feedback: submission.feedback,
@@ -294,7 +308,10 @@ export class SubmissionsService {
     
     await this.submissionsRepo.save(submission);
 
-    this.eventEmitter.emit(
+    // await emitAsync (ver nota en submitAnswers): quien consulte
+    // GET /submissions/:id después de que este método retorne debe encontrar
+    // el mastery ya recalculado, no una carrera contra el listener.
+    await this.eventEmitter.emitAsync(
       'submission.graded',
       new SubmissionGradedEvent(
         submission.id,
@@ -303,6 +320,7 @@ export class SubmissionsService {
         submission.activity.learningUnitId,
         submission.score,
         submission.activity.passingScore,
+        submission.activity.totalPoints,
       )
     );
   }

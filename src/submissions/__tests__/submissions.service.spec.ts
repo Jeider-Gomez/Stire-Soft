@@ -97,6 +97,7 @@ describe('SubmissionsService', () => {
 
     eventEmitter = {
       emit: jest.fn(),
+      emitAsync: jest.fn().mockResolvedValue([]),
     };
 
     judgeQueue = {
@@ -352,6 +353,138 @@ describe('SubmissionsService', () => {
       const result = await service.autosave(submissionId, dtoWithTime, studentId);
 
       expect(result.timeSpentSeconds).toBe(180); // 120 + 60
+    });
+  });
+
+  // ─── submitAnswers — normalización de passingScore como PORCENTAJE ───────
+  // Regresión: antes se comparaba el score crudo contra un passingScore fijo
+  // (60) sin importar cuánto valiera la actividad en total (10, 15, 20...),
+  // así que una actividad de 20 puntos jamás podía "aprobarse" aunque el
+  // estudiante la resolviera perfecta. Ver learning-progress.service.ts y
+  // notifications/listeners/submission-graded.listener.ts para el mismo fix.
+
+  describe('submitAnswers', () => {
+    const submissionId = 'sub-uuid-1';
+    const studentId = 42;
+
+    function makeQuestion(overrides: Partial<any> = {}) {
+      return {
+        id: 1,
+        activityId: 1,
+        type: QuestionType.MCQ,
+        points: 20,
+        config: { options: [], correctAnswerId: 'a' },
+        ...overrides,
+      };
+    }
+
+    it('marca passed=true cuando el score normalizado alcanza el passingScore (actividad de bajo puntaje total)', async () => {
+      const activity = makeActivity({ totalPoints: 20, passingScore: 60 });
+      const submission = makeSubmission({ status: SubmissionStatus.IN_PROGRESS, activity });
+      submissionsRepo.findOne.mockResolvedValue(submission);
+      questionsRepo.findByActivityId.mockResolvedValue([makeQuestion()]);
+      evalEngine.evaluateAnswer.mockReturnValue({
+        isCorrect: true,
+        score: 20, // 20/20 = 100% >= 60%
+        needsAsyncJudge: false,
+        feedback: '¡Correcto!',
+      });
+      submissionsRepo.save.mockResolvedValue(submission);
+
+      const dto: any = { answers: [{ questionId: 1, answer: { selectedId: 'a' } }] };
+      const result = await service.submitAnswers(submissionId, dto, studentId);
+
+      expect(result.totalScore).toBe(20);
+      expect(result.maxScore).toBe(20);
+      expect(result.passed).toBe(true);
+      expect(eventEmitter.emitAsync).toHaveBeenCalledWith(
+        'submission.graded',
+        expect.objectContaining({ score: 20, passingScore: 60, totalPoints: 20 }),
+      );
+    });
+
+    it('marca passed=false cuando el score normalizado no alcanza el passingScore', async () => {
+      const activity = makeActivity({ totalPoints: 20, passingScore: 60 });
+      const submission = makeSubmission({ status: SubmissionStatus.IN_PROGRESS, activity });
+      submissionsRepo.findOne.mockResolvedValue(submission);
+      questionsRepo.findByActivityId.mockResolvedValue([makeQuestion()]);
+      evalEngine.evaluateAnswer.mockReturnValue({
+        isCorrect: false,
+        score: 5, // 5/20 = 25% < 60%
+        needsAsyncJudge: false,
+        feedback: 'Respuesta incorrecta.',
+      });
+      submissionsRepo.save.mockResolvedValue(submission);
+
+      const dto: any = { answers: [{ questionId: 1, answer: { selectedId: 'b' } }] };
+      const result = await service.submitAnswers(submissionId, dto, studentId);
+
+      expect(result.totalScore).toBe(5);
+      expect(result.maxScore).toBe(20);
+      expect(result.passed).toBe(false);
+    });
+
+    it('deja passed=null cuando queda evaluación asíncrona pendiente (CODING)', async () => {
+      const activity = makeActivity({ totalPoints: 25, passingScore: 60 });
+      const submission = makeSubmission({ status: SubmissionStatus.IN_PROGRESS, activity });
+      submissionsRepo.findOne.mockResolvedValue(submission);
+      questionsRepo.findByActivityId.mockResolvedValue([
+        makeQuestion({ type: QuestionType.CODING, config: { language: 'javascript', testCases: [] } }),
+      ]);
+      evalEngine.evaluateAnswer.mockReturnValue({
+        isCorrect: null,
+        score: 0,
+        needsAsyncJudge: true,
+        feedback: null,
+      });
+      submissionsRepo.save.mockResolvedValue(submission);
+
+      const dto: any = { answers: [{ questionId: 1, answer: { code: 'x' } }] };
+      const result = await service.submitAnswers(submissionId, dto, studentId);
+
+      expect(result.status).toBe(SubmissionStatus.SUBMITTED);
+      expect(result.passed).toBeNull();
+      // Sin evaluación síncrona completa, el evento no se emite todavía.
+      expect(eventEmitter.emitAsync).not.toHaveBeenCalled();
+    });
+  });
+
+  // ─── getSubmissionStatus ──────────────────────────────────────────────────
+
+  describe('getSubmissionStatus', () => {
+    const submissionId = 'sub-uuid-1';
+    const studentId = 42;
+
+    it('incluye maxScore y passed normalizado cuando status=GRADED', async () => {
+      const activity = makeActivity({ totalPoints: 20, passingScore: 60 });
+      const submission = makeSubmission({
+        status: SubmissionStatus.GRADED,
+        score: 20,
+        activity,
+        answers: [{ isCorrect: true }],
+      });
+      submissionsRepo.findOne.mockResolvedValue(submission);
+
+      const result = await service.getSubmissionStatus(submissionId, studentId);
+
+      expect(result.maxScore).toBe(20);
+      expect(result.passed).toBe(true);
+      expect(result.totalScore).toBe(20);
+    });
+
+    it('deja passed=null mientras status no sea GRADED', async () => {
+      const activity = makeActivity({ totalPoints: 20, passingScore: 60 });
+      const submission = makeSubmission({
+        status: SubmissionStatus.SUBMITTED,
+        score: 0,
+        activity,
+        answers: [],
+      });
+      submissionsRepo.findOne.mockResolvedValue(submission);
+
+      const result = await service.getSubmissionStatus(submissionId, studentId);
+
+      expect(result.passed).toBeNull();
     });
   });
 });

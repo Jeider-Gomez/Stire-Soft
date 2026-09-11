@@ -19,8 +19,12 @@
       </span>
     </div>
 
-    <!-- Barra Central Informativa / Curso -->
-    <div class="hidden md:flex items-center gap-2 text-xs text-base-texto-secundario bg-base-bg-secundario px-3 py-1.5 rounded-md">
+    <!-- Barra Central Informativa / Curso: solo tiene sentido para el estudiante,
+         que siempre está dentro del contexto de una clase concreta. Docente y
+         administrador navegan entre varias clases o no tienen una "clase actual". -->
+    <div
+      v-if="authStore.currentRole === 'estudiante'"
+      class="hidden md:flex items-center gap-2 text-xs text-base-texto-secundario bg-base-bg-secundario px-3 py-1.5 rounded-md">
       <span class="font-medium text-base-texto-primario">{{ studentStore.currentClassName }}</span>
       <span>•</span>
       <span>{{ studentStore.currentTeacher }}</span>
