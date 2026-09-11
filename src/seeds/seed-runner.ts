@@ -1196,47 +1196,67 @@ console.log(slug);
     'Pregunta MATCHING Actividad 15',
   );
 
-  // 6b. Contenido curricular mínimo para Castro y Ali.
-  // Se mantiene la progresión MCQ -> FILL_CODE -> CODING y cada clave usa
-  // findOrCreate para que las corridas repetidas sean idempotentes.
-  async function seedClassCurriculum(classEntity: Class, teacherId: number, subject: string): Promise<void> {
+  // 6b. Contenido curricular real para Castro y Ali.
+  // Cada unidad mantiene la progresión MCQ -> FILL_CODE -> CODING ya usada en
+  // toda la clase de Toscano, con preguntas y desafíos propios de cada
+  // dominio (no una plantilla genérica con el nombre de la materia
+  // interpolado) -- ver docs/codex/PLAN_IMPLEMENTACION.md §C.2. findOrCreate
+  // en cada entidad para que las corridas repetidas sean idempotentes.
+  interface CurriculumActivityDef {
+    type: QuestionType;
+    title: string;
+    points: number;
+    weight: number;
+    question: string;
+    config: Record<string, any>;
+  }
+  interface CurriculumUnitDef {
+    title: string;
+    description: string;
+    contentBody: string;
+    activities: CurriculumActivityDef[];
+  }
+  async function seedRealCurriculum(
+    classEntity: Class,
+    teacherId: number,
+    moduleTitle: string,
+    moduleDescription: string,
+    topicTitle: string,
+    topicDescription: string,
+    units: CurriculumUnitDef[],
+  ): Promise<void> {
     const section = await findOrCreate(
       sectionRepo,
-      { classId: classEntity.id, title: `Módulo 1: ${subject}` },
-      () => ({ classId: classEntity.id, title: `Módulo 1: ${subject}`, description: `Fundamentos de ${subject.toLowerCase()}.`, order: 1, isPublished: true }),
+      { classId: classEntity.id, title: moduleTitle },
+      () => ({ classId: classEntity.id, title: moduleTitle, description: moduleDescription, order: 1, isPublished: true }),
       `Módulo ${classEntity.name}`,
     );
     const topic = await findOrCreate(
       topicRepo,
-      { sectionId: section.id, title: `Tema 1: ${subject}` },
-      () => ({ sectionId: section.id, title: `Tema 1: ${subject}`, description: `Conceptos esenciales de ${subject.toLowerCase()}.`, order: 1, isActive: true }),
+      { sectionId: section.id, title: topicTitle },
+      () => ({ sectionId: section.id, title: topicTitle, description: topicDescription, order: 1, isActive: true }),
       `Tema ${classEntity.name}`,
     );
-    const unitTitles = [`Fundamentos de ${subject}`, `Aplicaciones de ${subject}`];
-    for (let unitIndex = 0; unitIndex < unitTitles.length; unitIndex += 1) {
+    for (let unitIndex = 0; unitIndex < units.length; unitIndex += 1) {
+      const unitDef = units[unitIndex];
       const unit = await findOrCreate(
         unitRepo,
-        { topicId: topic.id, title: unitTitles[unitIndex] },
-        () => ({ topicId: topic.id, title: unitTitles[unitIndex], description: `Unidad práctica de ${subject.toLowerCase()}.`, difficulty: Difficulty.BASICO, order: unitIndex + 1, isActive: true }),
-        `${classEntity.name} ${unitTitles[unitIndex]}`,
+        { topicId: topic.id, title: unitDef.title },
+        () => ({ topicId: topic.id, title: unitDef.title, description: unitDef.description, difficulty: Difficulty.BASICO, order: unitIndex + 1, isActive: true }),
+        `${classEntity.name} ${unitDef.title}`,
       );
-      await findOrCreate(contentRepo, { learningUnitId: unit.id, title: `Guía de ${unitTitles[unitIndex]}` }, () => ({
-        learningUnitId: unit.id, title: `Guía de ${unitTitles[unitIndex]}`, type: ContentType.MARKDOWN,
-        body: `# ${unitTitles[unitIndex]}\n\nPractica ${subject.toLowerCase()} con ejemplos guiados.`, order: 1, isVisible: true,
-      }), `Contenido ${classEntity.name} ${unitTitles[unitIndex]}`);
+      await findOrCreate(contentRepo, { learningUnitId: unit.id, title: `Guía de ${unitDef.title}` }, () => ({
+        learningUnitId: unit.id, title: `Guía de ${unitDef.title}`, type: ContentType.MARKDOWN,
+        body: unitDef.contentBody, order: 1, isVisible: true,
+      }), `Contenido ${classEntity.name} ${unitDef.title}`);
 
-      const activities = [
-        { type: QuestionType.MCQ, title: `Quiz: conceptos de ${subject}`, points: 10, config: { options: [{ id: 'a', text: 'La opción correcta' }, { id: 'b', text: 'Una opción alternativa' }], correctAnswerId: 'a', explanation: 'La primera opción aplica el concepto.' }, question: `¿Cuál afirmación describe mejor ${subject.toLowerCase()}?` },
-        { type: QuestionType.FILL_CODE, title: `Completar código: ${subject}`, points: 15, config: { codeTemplate: '___b1___ resultado = 2 + 2;', blanks: [{ id: 'b1', answer: 'const' }] }, question: 'Completa la declaración válida.' },
-        { type: QuestionType.CODING, title: `Desafío de código: ${subject}`, points: 20, config: { language: 'javascript', starterCode: 'const fs = require(\'fs\');\nconst input = fs.readFileSync(0, \'utf-8\').trim();\nconsole.log(input);', testCases: [{ label: 'Caso público', input: '4', expected: '4', isPublic: true }] }, question: `Resuelve un problema básico de ${subject.toLowerCase()}.` },
-      ];
-      for (let activityIndex = 0; activityIndex < activities.length; activityIndex += 1) {
-        const definition = activities[activityIndex];
+      for (let activityIndex = 0; activityIndex < unitDef.activities.length; activityIndex += 1) {
+        const definition = unitDef.activities[activityIndex];
         const activity = await findOrCreate(activityRepo, { learningUnitId: unit.id, title: definition.title }, () => ({
           learningUnitId: unit.id, activityTypeId: autoType.id, createdBy: teacherId, title: definition.title,
-          description: `Actividad de ${subject.toLowerCase()}.`, difficulty: Difficulty.BASICO, totalPoints: definition.points,
+          description: definition.question, difficulty: Difficulty.BASICO, totalPoints: definition.points,
           passingScore: 60, attemptsAllowed: 3, order: activityIndex + 1, status: PublicationStatus.PUBLISHED,
-          isRequired: true, adaptiveWeight: activityIndex === 0 ? 0.2 : activityIndex === 1 ? 0.3 : 0.5, publishedAt: new Date(),
+          isRequired: true, adaptiveWeight: definition.weight, publishedAt: new Date(),
         }), `${classEntity.name} ${definition.title}`);
         await findOrCreate(questionRepo, { activityId: activity.id }, () => ({
           activityId: activity.id, type: definition.type, question: definition.question, points: definition.points, order: 0, config: definition.config,
@@ -1245,8 +1265,191 @@ console.log(slug);
     }
   }
 
-  await seedClassCurriculum(classCastro, teacherCastro.id, 'Algoritmia y lógica computacional');
-  await seedClassCurriculum(classAli, teacherAli.id, 'Desarrollo frontend interactivo');
+  await seedRealCurriculum(
+    classCastro,
+    teacherCastro.id,
+    'Módulo 1: Fundamentos de Algoritmia y Lógica Computacional',
+    'Pensamiento algorítmico, estructuras de control y su aplicación en la web.',
+    'Tema 1: Algoritmos, Condicionales y Bucles',
+    'Qué es un algoritmo, cómo tomar decisiones con condicionales y cómo repetir pasos con bucles.',
+    [
+      {
+        title: 'Fundamentos de Algoritmos y Estructuras de Control',
+        description: 'Qué caracteriza a un algoritmo y cómo expresar decisiones y repeticiones en código.',
+        contentBody: '# Fundamentos de Algoritmos y Estructuras de Control\n\nUn algoritmo es una secuencia finita y no ambigua de pasos que resuelve un problema. Las estructuras de control (`if`/`else` para decisiones, `for`/`while` para repeticiones) son las herramientas con las que un algoritmo cobra vida en código.',
+        activities: [
+          {
+            type: QuestionType.MCQ, title: 'Quiz: ¿Qué es un algoritmo?', points: 10, weight: 0.2,
+            question: '¿Cuál de las siguientes es una característica esencial de todo algoritmo?',
+            config: {
+              options: [
+                { id: 'a', text: 'Debe tener un número finito de pasos y terminar en algún momento' },
+                { id: 'b', text: 'Debe estar escrito siempre en un lenguaje de programación específico' },
+                { id: 'c', text: 'Puede tener pasos ambiguos si el programador los entiende' },
+                { id: 'd', text: 'Nunca puede tomar decisiones condicionales' },
+              ],
+              correctAnswerId: 'a',
+              explanation: 'Un algoritmo es, por definición, una secuencia finita y no ambigua de pasos — el lenguaje en que se exprese (pseudocódigo, JavaScript, un diagrama de flujo) es solo una representación.',
+            },
+          },
+          {
+            type: QuestionType.FILL_CODE, title: 'Completar Código: Determinar si un Número es Par', points: 15, weight: 0.3,
+            question: 'Completa la estructura condicional que determina si un número es par.',
+            config: {
+              codeTemplate: 'function esPar(numero) {\n  ___b1___ (numero % 2 === 0) {\n    return true;\n  }\n  ___b2___ {\n    return false;\n  }\n}',
+              blanks: [{ id: 'b1', answer: 'if' }, { id: 'b2', answer: 'else' }],
+            },
+          },
+          {
+            type: QuestionType.CODING, title: 'Desafío de Código: Máximo de una Lista', points: 20, weight: 0.5,
+            question: 'Lee una línea con números enteros separados por espacio e imprime el valor máximo.',
+            config: {
+              language: 'javascript',
+              starterCode: 'const fs = require(\'fs\');\nconst input = fs.readFileSync(0, \'utf-8\').trim();\n\n// Escribe tu algoritmo aquí:\n',
+              testCases: [
+                { label: 'Caso público 1', input: '3 7 2 9 4', expected: '9', isPublic: true },
+                { label: 'Caso oculto 1', input: '10 2 8', expected: '10', isPublic: false },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        title: 'Complejidad y Búsqueda en Estructuras de Datos',
+        description: 'Por qué la estrategia de búsqueda importa cuando los datos crecen, y cómo recorrer una colección para acumular un resultado.',
+        contentBody: '# Complejidad y Búsqueda\n\nNo todos los algoritmos que resuelven el mismo problema son igual de eficientes. Comparar la búsqueda lineal contra la búsqueda binaria en una lista ordenada es el ejemplo clásico de por qué la estrategia importa tanto como el resultado.',
+        activities: [
+          {
+            type: QuestionType.MCQ, title: 'Quiz: Búsqueda Lineal vs. Binaria', points: 10, weight: 0.2,
+            question: 'Si tienes una lista ORDENADA de un millón de elementos y buscas uno en particular, ¿qué estrategia es más eficiente?',
+            config: {
+              options: [
+                { id: 'a', text: 'Revisar uno por uno desde el principio (búsqueda lineal)' },
+                { id: 'b', text: 'Dividir repetidamente la lista a la mitad, descartando la mitad donde no puede estar el valor (búsqueda binaria)' },
+                { id: 'c', text: 'Elegir un elemento al azar y esperar acertar' },
+                { id: 'd', text: 'Ordenar la lista de nuevo antes de buscar' },
+              ],
+              correctAnswerId: 'b',
+              explanation: 'La búsqueda binaria aprovecha que la lista ya está ordenada para descartar la mitad de las opciones en cada paso, llegando al resultado en muchos menos pasos que revisar elemento por elemento.',
+            },
+          },
+          {
+            type: QuestionType.FILL_CODE, title: 'Completar Código: Suma Acumulada de una Lista', points: 15, weight: 0.3,
+            question: 'Completa el bucle que acumula la suma de todos los elementos de la lista.',
+            config: {
+              codeTemplate: 'function sumar(lista) {\n  let total = 0;\n  ___b1___ (let i = 0; i < lista.length; i++) {\n    total ___b2___ lista[i];\n  }\n  return total;\n}',
+              blanks: [{ id: 'b1', answer: 'for' }, { id: 'b2', answer: '+=' }],
+            },
+          },
+          {
+            type: QuestionType.CODING, title: 'Desafío de Código: Detector de Números Primos', points: 25, weight: 0.5,
+            question: 'Lee un número entero N desde stdin e imprime "true" si es primo, o "false" si no lo es.',
+            config: {
+              language: 'javascript',
+              starterCode: 'const fs = require(\'fs\');\nconst n = parseInt(fs.readFileSync(0, \'utf-8\').trim(), 10);\n\n// Escribe tu algoritmo aquí:\n',
+              testCases: [
+                { label: 'Caso público 1', input: '7', expected: 'true', isPublic: true },
+                { label: 'Caso oculto 1', input: '10', expected: 'false', isPublic: false },
+              ],
+            },
+          },
+        ],
+      },
+    ],
+  );
+
+  await seedRealCurriculum(
+    classAli,
+    teacherAli.id,
+    'Módulo 1: Desarrollo Frontend Interactivo',
+    'Validación de entradas de usuario y algoritmos aplicados a interfaces dinámicas.',
+    'Tema 1: Interactividad, Validación y Listas Dinámicas',
+    'Cómo validar lo que escribe un usuario y cómo procesar colecciones de datos para mostrarlas en pantalla.',
+    [
+      {
+        title: 'Validación e Interacción con el Usuario',
+        description: 'Por qué validar la entrada del usuario antes de procesarla, y cómo expresar esa validación en código.',
+        contentBody: '# Validación e Interacción con el Usuario\n\nToda interfaz interactiva recibe datos que el usuario escribe libremente. Validar esa entrada — longitud, formato, presencia — antes de usarla evita que datos inesperados rompan la lógica de la aplicación.',
+        activities: [
+          {
+            type: QuestionType.MCQ, title: 'Quiz: Por Qué Validar en el Frontend', points: 10, weight: 0.2,
+            question: 'En una interfaz web interactiva, ¿por qué es importante validar la entrada del usuario antes de procesarla?',
+            config: {
+              options: [
+                { id: 'a', text: 'Para evitar que datos inválidos o inesperados rompan la lógica de la aplicación o generen resultados incorrectos' },
+                { id: 'b', text: 'Porque el navegador lo hace automáticamente y no afecta el código' },
+                { id: 'c', text: 'Solo es necesario si el formulario tiene más de 10 campos' },
+                { id: 'd', text: 'No es necesario si el backend también valida' },
+              ],
+              correctAnswerId: 'a',
+              explanation: 'Validar en el frontend da retroalimentación inmediata al usuario y protege la lógica de la aplicación de datos inesperados — aunque el backend siempre debe validar también, nunca confiar solo en el cliente.',
+            },
+          },
+          {
+            type: QuestionType.FILL_CODE, title: 'Completar Código: Validador de Nombre de Usuario', points: 15, weight: 0.3,
+            question: 'Completa la validación: un nombre de usuario debe tener al menos 3 caracteres.',
+            config: {
+              codeTemplate: 'function esNombreValido(nombre) {\n  ___b1___ (nombre.length ___b2___ 3) {\n    return false;\n  }\n  return true;\n}',
+              blanks: [{ id: 'b1', answer: 'if' }, { id: 'b2', answer: '<' }],
+            },
+          },
+          {
+            type: QuestionType.CODING, title: 'Desafío de Código: Contador de Caracteres de un Campo de Texto', points: 20, weight: 0.5,
+            question: 'Simula un contador de caracteres: lee una línea, quítale los espacios al inicio y al final, e imprime cuántos caracteres tiene.',
+            config: {
+              language: 'javascript',
+              starterCode: 'const fs = require(\'fs\');\nconst texto = fs.readFileSync(0, \'utf-8\');\n\n// Escribe tu algoritmo aquí:\n',
+              testCases: [
+                { label: 'Caso público 1', input: '  hola mundo  ', expected: '10', isPublic: true },
+                { label: 'Caso oculto 1', input: '  hola  ', expected: '4', isPublic: false },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        title: 'Algoritmos para Interfaces Dinámicas',
+        description: 'Cómo transformar, filtrar y ordenar colecciones de datos antes de mostrarlas en una interfaz.',
+        contentBody: '# Algoritmos para Interfaces Dinámicas\n\nUna interfaz interactiva casi nunca muestra los datos "crudos" tal como llegan: los filtra, los transforma para mostrarlos con el formato correcto, o los ordena antes de renderizarlos. `map`, `filter` y `sort` son las herramientas más comunes para eso.',
+        activities: [
+          {
+            type: QuestionType.MCQ, title: 'Quiz: Filtrar una Lista sin Modificar el Original', points: 10, weight: 0.2,
+            question: 'Al renderizar dinámicamente una lista de productos, ¿qué método de array usarías para mostrar solo los que tienen stock disponible, sin modificar el arreglo original?',
+            config: {
+              options: [
+                { id: 'a', text: 'array.filter()' },
+                { id: 'b', text: 'array.push()' },
+                { id: 'c', text: 'array.splice()' },
+                { id: 'd', text: 'array.sort() sin comparador' },
+              ],
+              correctAnswerId: 'a',
+              explanation: 'filter() retorna un nuevo arreglo con los elementos que cumplen la condición, sin mutar el original — exactamente lo que se necesita para renderizar una vista derivada de los datos.',
+            },
+          },
+          {
+            type: QuestionType.FILL_CODE, title: 'Completar Código: Formatear Precios para Mostrar en Pantalla', points: 15, weight: 0.3,
+            question: 'Completa la transformación que agrega el símbolo de moneda a cada precio para mostrarlo en pantalla.',
+            config: {
+              codeTemplate: 'function formatearPrecios(precios) {\n  return precios.___b1___(precio => \'$\' ___b2___ precio);\n}',
+              blanks: [{ id: 'b1', answer: 'map' }, { id: 'b2', answer: '+' }],
+            },
+          },
+          {
+            type: QuestionType.CODING, title: 'Desafío de Código: Ordenar una Lista para Mostrarla', points: 25, weight: 0.5,
+            question: 'Lee una lista de nombres separados por comas e imprime la misma lista ordenada alfabéticamente, separada por comas (simula ordenar una lista antes de mostrarla en la interfaz).',
+            config: {
+              language: 'javascript',
+              starterCode: 'const fs = require(\'fs\');\nconst input = fs.readFileSync(0, \'utf-8\').trim();\n\n// Escribe tu algoritmo aquí:\n',
+              testCases: [
+                { label: 'Caso público 1', input: 'Juan,Ana,Carlos', expected: 'Ana,Carlos,Juan', isPublic: true },
+                { label: 'Caso oculto 1', input: 'Zoe,Bruno,Ana', expected: 'Ana,Bruno,Zoe', isPublic: false },
+              ],
+            },
+          },
+        ],
+      },
+    ],
+  );
 
   // 7. Datos de Progreso y Repetición Espaciada para Pedro
   console.log('\n7. Sembrando Progreso y Repetición Espaciada (SM-2) para Pedro...');
