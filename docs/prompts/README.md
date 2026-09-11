@@ -29,6 +29,7 @@ que no dejó un plan de trabajo propio — eso vive en el historial de la conver
 | 2026-09-09 | Claude Code | [`CLAUDE-CODE_2026-09-09_PRESENTACION-AVANCES.md`](./CLAUDE-CODE_2026-09-09_PRESENTACION-AVANCES.md) | ❓ Sin confirmar — sin evidencia de ejecución |
 | 2026-09-09 | Claude Code | [`CLAUDE-CODE_2026-09-09_FASE-CC09.md`](./CLAUDE-CODE_2026-09-09_FASE-CC09.md) | ✅ Ejecutado — Bloques 0 a 4, más verificación de autenticación adicional pedida en la misma sesión |
 | — | Antigravity | *(pendiente de redactar la versión final — depende del cierre de FASE CC-09)* | ⏳ Pendiente |
+| 2026-09-11 | Codex | [`CODEX_2026-09-11_PENDIENTES.md`](./CODEX_2026-09-11_PENDIENTES.md) | ⏳ Pendiente de ejecutar — referencia `docs/codex/PLAN_IMPLEMENTACION.md` (motor de selección por dominio, moderación de matrícula, contenido curricular de Castro/Ali) |
 
 Cuando el prompt de Antigravity quede listo para entregarse, se archiva aquí con su propia fila.
 
