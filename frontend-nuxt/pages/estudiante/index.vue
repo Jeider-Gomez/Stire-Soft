@@ -80,8 +80,8 @@
         <!-- Botón de Gran Jerarquía Visual (P01) -->
         <div class="flex flex-col sm:flex-row md:flex-col gap-2 w-full md:w-auto flex-shrink-0">
           <NuxtLink
-            v-if="studentStore.activeUnit.exerciseActivityId"
-            :to="`/estudiante/evaluacion/${studentStore.activeUnit.exerciseActivityId}`"
+            v-if="recommendedExerciseId"
+            :to="`/estudiante/evaluacion/${recommendedExerciseId}`"
             class="px-5 py-3 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs text-center transition-colors shadow-sm flex items-center justify-center gap-2">
             <span>🚀</span>
             <span>Continuar Ejercicio</span>
@@ -218,8 +218,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useStudentStore } from '~/stores/student'
+import { useAuthStore } from '~/stores/auth'
+import { useApi } from '~/composables/useApi'
 import type { UnitStatus } from '~/types'
 
 definePageMeta({
@@ -227,10 +229,40 @@ definePageMeta({
 })
 
 const studentStore = useStudentStore()
+const authStore = useAuthStore()
+const api = useApi()
 
 onMounted(() => {
   studentStore.fetchStudentData()
 })
+
+// Ejercicio a recomendar en la tarjeta hero: usa el mismo motor de dominio
+// (GET .../next-activity) que /estudiante/unidad/[id].vue, en vez del
+// heurístico local de studentStore ("primera actividad cuyo título contenga
+// 'código'/'desafío'") -- ese heurístico salta cualquier MCQ sin importar su
+// order, porque un quiz nunca calza esas palabras, así que nunca coincidía
+// con la Fase A pedagógicamente correcta.
+const recommendedExerciseId = ref<number | null>(null)
+
+watch(
+  () => studentStore.activeUnit?.id,
+  async (unitId) => {
+    recommendedExerciseId.value = null
+    const studentId = authStore.user?.id
+    if (!unitId || !studentId) return
+
+    try {
+      const rec = await api.get<{ activityId: number } | null>(
+        `/learning-progress/student/${studentId}/unit/${unitId}/next-activity`
+      )
+      recommendedExerciseId.value = rec?.activityId ?? null
+    } catch (error: unknown) {
+      console.warn('[STIRE Student] No se pudo cargar la actividad recomendada real, usando heurístico local:', error)
+      recommendedExerciseId.value = studentStore.activeUnit?.exerciseActivityId ?? null
+    }
+  },
+  { immediate: true }
+)
 
 function getStatusBadgeClass(status: UnitStatus) {
   switch (status) {

@@ -4,129 +4,53 @@
     <nav class="flex items-center gap-2 text-xs text-base-texto-secundario">
       <NuxtLink to="/estudiante" class="hover:underline">Inicio</NuxtLink>
       <span>›</span>
-      <span>{{ unitData.moduleTitle }}</span>
+      <span>Plan de Estudio</span>
       <span>›</span>
-      <span class="font-bold text-base-texto-primario">{{ unitData.title }}</span>
+      <span class="font-bold text-base-texto-primario">{{ unitData?.title || 'Cargando…' }}</span>
     </nav>
 
-    <!-- Cabecera de la Lección (EST-V02) -->
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-          Lección Teórica • Unidad {{ unitData.id }}
-        </span>
-        <span class="text-xs text-base-texto-secundario">• Tiempo estimado: 15 min</span>
-      </div>
+    <!-- Estado de carga -->
+    <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
+      <span class="inline-block animate-spin mr-2">⏳</span> Cargando unidad de aprendizaje...
+    </div>
 
-      <h1 class="text-xl md:text-2xl font-bold text-base-texto-primario tracking-tight">
-        Lección: {{ unitData.title }}
-      </h1>
-      <p class="text-xs text-base-texto-secundario mt-1">
-        {{ unitData.description }}
-      </p>
-    </header>
+    <!-- Unidad no encontrada / sin acceso -->
+    <div v-else-if="loadError || !unitData" class="p-8 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
+      <p class="font-bold text-base-texto-primario">No pudimos cargar esta unidad.</p>
+      <p class="text-base-texto-secundario">Puede que no exista o que no estés matriculado en la clase a la que pertenece.</p>
+      <NuxtLink to="/estudiante" class="inline-block borde-afordancia px-4 py-2 rounded-md text-xs font-semibold bg-base-blanco text-base-texto-primario">
+        ◀ Volver al Menú
+      </NuxtLink>
+    </div>
 
-    <!-- Cuerpo del Contenido (Diseño de lectura limpio ~750px) -->
-    <article class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 md:p-8 shadow-sm space-y-6 text-xs text-base-texto-primario leading-relaxed">
-      <section class="space-y-3">
-        <h2 class="text-sm font-bold text-base-texto-primario border-b border-base-borde-sutil pb-2">
-          1. Concepto Fundamental y Modelo Mental
-        </h2>
-        <p>
-          En ciencias de la computación, una estructura de ciclo permite repetir un bloque de instrucciones de manera determinística o condicional. La clave para evitar <em>ciclos infinitos</em> radica en asegurar que la expresión de control modifique su estado en cada iteración hasta que la condición se evalúe como <code>false</code>.
+    <template v-else>
+      <!-- Cabecera de la Lección (EST-V02) -->
+      <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
+            Lección Teórica • Unidad {{ unitData.id }}
+          </span>
+        </div>
+
+        <h1 class="text-xl md:text-2xl font-bold text-base-texto-primario tracking-tight">
+          Lección: {{ unitData.title }}
+        </h1>
+        <p class="text-xs text-base-texto-secundario mt-1">
+          {{ unitData.description }}
         </p>
-      </section>
+      </header>
 
-      <!-- Bloque de Código de Ejemplo -->
-      <section class="space-y-2">
-        <h3 class="text-xs font-bold text-base-texto-primario">Ejemplo de Recorrido con Acumulador:</h3>
-        <div class="rounded-lg bg-[#24292e] text-base-blanco p-4 font-codigo text-xs overflow-x-auto shadow-inner">
-          <pre><code><span class="text-[#f97583]">function</span> <span class="text-[#b392f0]">calcularSumaPares</span>(limite) {
-  <span class="text-[#f97583]">let</span> total = <span class="text-[#79b8ff]">0</span>;
-  <span class="text-[#f97583]">for</span> (<span class="text-[#f97583]">let</span> i = <span class="text-[#79b8ff]">1</span>; i &lt;= limite; i++) {
-    <span class="text-[#f97583]">if</span> (i % <span class="text-[#79b8ff]">2</span> === <span class="text-[#79b8ff]">0</span>) {
-      total += i;
-    }
-  }
-  <span class="text-[#f97583]">return</span> total;
-}</code></pre>
-        </div>
-      </section>
+      <!-- Cuerpo del Contenido: bloques REALES de la unidad, no una plantilla fija -->
+      <article
+        v-if="unitContent.length > 0"
+        class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 md:p-8 shadow-sm space-y-6 text-xs text-base-texto-primario leading-relaxed">
+        <section v-for="content in unitContent" :key="content.id" class="prose prose-xs space-y-3" v-html="formatMarkdown(content.body)" />
+      </article>
+      <article v-else class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 text-xs text-base-texto-secundario">
+        Esta unidad todavía no tiene material de lectura publicado. Pasa directamente al ejercicio práctico.
+      </article>
 
-      <!-- 🔍 TRAZADO DE MEMORIA INTERACTIVO (P07 — Codificación Dual / Insumo 15 §8) -->
-      <section class="bg-base-bg-secundario/70 border border-base-borde-fuerte rounded-xl p-5 space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="text-base">🧠</span>
-            <div>
-              <h3 class="font-bold text-xs text-base-texto-primario">
-                Máquina Nocional: Trazado de Memoria en Vivo
-              </h3>
-              <p class="text-[11px] text-base-texto-secundario">
-                Observa cómo mutan las variables en la pila de memoria paso a paso
-              </p>
-            </div>
-          </div>
-
-          <!-- Controles de Trazado ◀ ▶ -->
-          <div class="flex items-center gap-1.5 bg-base-blanco border border-base-borde-fuerte rounded-lg p-1 shadow-sm">
-            <button
-              @click="prevTraceStep"
-              :disabled="currentStep === 1"
-              class="px-2.5 py-1 rounded text-xs font-bold hover:bg-base-bg-secundario disabled:opacity-30 transition-colors"
-              title="Paso anterior">
-              ◀
-            </button>
-            <span class="px-2 text-xs font-bold text-acento-ambar-fuerte">
-              Paso {{ currentStep }} de {{ traceSteps.length }}
-            </span>
-            <button
-              @click="nextTraceStep"
-              :disabled="currentStep === traceSteps.length"
-              class="px-2.5 py-1 rounded text-xs font-bold hover:bg-base-bg-secundario disabled:opacity-30 transition-colors"
-              title="Paso siguiente">
-              ▶
-            </button>
-          </div>
-        </div>
-
-        <!-- Estado Actual de la Pila de Variables -->
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p class="text-[11px] font-semibold text-base-texto-secundario mb-1">Línea Ejecutada:</p>
-              <div class="p-2.5 bg-base-bg-secundario rounded font-codigo text-xs text-acento-ambar-fuerte border border-base-borde-sutil">
-                {{ traceSteps[currentStep - 1].lineExecuted }}
-              </div>
-              <p class="text-[11px] text-base-texto-secundario mt-2">
-                <strong>Explicación:</strong> {{ traceSteps[currentStep - 1].explanation }}
-              </p>
-            </div>
-
-            <div>
-              <p class="text-[11px] font-semibold text-base-texto-secundario mb-1">Tabla de Estado de Variables:</p>
-              <table class="w-full text-xs text-left border border-base-borde-sutil rounded overflow-hidden">
-                <thead class="bg-base-bg-secundario text-base-texto-primario">
-                  <tr>
-                    <th class="p-2 border-b border-base-borde-sutil font-bold">Variable</th>
-                    <th class="p-2 border-b border-base-borde-sutil font-bold">Valor Actual</th>
-                    <th class="p-2 border-b border-base-borde-sutil font-bold">Tipo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="v in traceSteps[currentStep - 1].variables" :key="v.name" class="border-b border-base-borde-sutil/50">
-                    <td class="p-2 font-codigo text-acento-ambar-fuerte font-semibold">{{ v.name }}</td>
-                    <td class="p-2 font-codigo">{{ v.value }}</td>
-                    <td class="p-2 text-base-texto-secundario">{{ v.type }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Botón de Navegación al Ejercicio Práctico (Zona D) -->
+      <!-- Botón de Navegación al Ejercicio Práctico -->
       <section class="rounded-lg border border-acento-ambar-fuerte/30 bg-acento-ambar/10 p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -135,21 +59,36 @@
               {{ recommendedActivity?.allCompleted ? 'Completaste la unidad. Puedes seguir practicando.' : 'Te recomendamos continuar con esta actividad.' }}
             </p>
           </div>
-          <button type="button" class="text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="chooseManually = !chooseManually">
+          <button
+            v-if="recommendedActivity"
+            type="button"
+            class="text-xs font-semibold text-acento-ambar-fuerte hover:underline"
+            @click="toggleManualChoice">
             {{ chooseManually ? 'Usar recomendado para ti' : 'Elegir yo mismo' }}
           </button>
         </div>
+
         <NuxtLink
           v-if="recommendedActivity && !chooseManually"
           :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
           class="inline-flex px-4 py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors">
           Continuar donde quedaste: {{ recommendedActivity.title }}
         </NuxtLink>
+
         <div v-else-if="chooseManually" class="flex flex-col gap-2">
-          <NuxtLink v-for="activity in unitData.activities" :key="activity.id" :to="`/estudiante/evaluacion/${activity.id}`" class="text-xs font-semibold text-acento-ambar-fuerte hover:underline">
+          <p v-if="isLoadingActivities" class="text-xs text-base-texto-secundario">Cargando actividades...</p>
+          <NuxtLink
+            v-for="activity in unitActivities"
+            :key="activity.id"
+            :to="`/estudiante/evaluacion/${activity.id}`"
+            class="text-xs font-semibold text-acento-ambar-fuerte hover:underline">
             {{ activity.title }}
           </NuxtLink>
         </div>
+
+        <p v-else class="text-xs text-base-texto-secundario">
+          Todavía no hay una actividad publicada para esta unidad.
+        </p>
       </section>
 
       <div class="pt-4 border-t border-base-borde-sutil flex items-center justify-between">
@@ -158,20 +97,12 @@
           class="borde-afordancia px-4 py-2 rounded-md text-xs font-semibold bg-base-blanco text-base-texto-primario">
           ◀ Volver al Menú
         </NuxtLink>
-
-        <NuxtLink
-          :to="`/estudiante/evaluacion/${unitData.exerciseActivityId}`"
-          class="px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors shadow-sm flex items-center gap-2">
-          <span>Pasar al Ejercicio Práctico</span>
-          <span>▶</span>
-        </NuxtLink>
       </div>
-    </article>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
 
@@ -180,14 +111,27 @@ definePageMeta({
 })
 
 const route = useRoute()
-const studentStore = useStudentStore()
 const authStore = useAuthStore()
 const api = useApi()
 
-const unitId = Number(route.params.id) || 1
-const unitData = computed(() => {
-  return studentStore.modules.flatMap(m => m.units).find(u => u.id === unitId) || studentStore.modules[0].units[0]
-})
+const unitId = Number(route.params.id) || 0
+
+interface UnitDetail {
+  id: number
+  title: string
+  description: string
+}
+
+interface ContentBlock {
+  id: number
+  title: string
+  body: string
+}
+
+interface ActivitySummary {
+  id: number
+  title: string
+}
 
 interface NextActivityRecommendation {
   activityId: number
@@ -197,12 +141,53 @@ interface NextActivityRecommendation {
   allCompleted: boolean
 }
 
+const isLoading = ref(true)
+const loadError = ref(false)
+const unitData = ref<UnitDetail | null>(null)
+const unitContent = ref<ContentBlock[]>([])
 const recommendedActivity = ref<NextActivityRecommendation | null>(null)
 const chooseManually = ref(false)
+const unitActivities = ref<ActivitySummary[]>([])
+const isLoadingActivities = ref(false)
+
+async function toggleManualChoice() {
+  chooseManually.value = !chooseManually.value
+  if (chooseManually.value && unitActivities.value.length === 0) {
+    isLoadingActivities.value = true
+    try {
+      const res = await api.get<{ data: ActivitySummary[] }>(`/activities?learningUnitId=${unitId}`)
+      unitActivities.value = res?.data || []
+    } catch (error: unknown) {
+      console.warn('[STIRE Student] No se pudo cargar la lista de actividades de la unidad:', error)
+    } finally {
+      isLoadingActivities.value = false
+    }
+  }
+}
 
 onMounted(async () => {
+  if (!unitId) {
+    loadError.value = true
+    isLoading.value = false
+    return
+  }
+
+  try {
+    const [unit, contents] = await Promise.all([
+      api.get<UnitDetail>(`/learning-unit/${unitId}`),
+      api.get<ContentBlock[]>(`/content/unit/${unitId}`)
+    ])
+    unitData.value = unit
+    unitContent.value = contents || []
+  } catch (error: unknown) {
+    console.warn('[STIRE Student] No se pudo cargar la unidad:', error)
+    loadError.value = true
+  } finally {
+    isLoading.value = false
+  }
+
   const studentId = authStore.user?.id
-  if (!studentId || !unitId) return
+  if (!studentId) return
 
   try {
     recommendedActivity.value = await api.get<NextActivityRecommendation | null>(
@@ -213,61 +198,12 @@ onMounted(async () => {
   }
 })
 
-// Pasos del Trazador Interactivo (P07)
-const currentStep = ref(1)
-
-const traceSteps = [
-  {
-    step: 1,
-    lineExecuted: 'let total = 0;',
-    explanation: 'Se asigna espacio en memoria para la variable acumuladora total con valor inicial 0.',
-    variables: [
-      { name: 'limite', value: '4', type: 'number' },
-      { name: 'total', value: '0', type: 'number' },
-      { name: 'i', value: 'undefined', type: 'undefined' }
-    ]
-  },
-  {
-    step: 2,
-    lineExecuted: 'for (let i = 1; i <= limite; i++) [Iteración 1]',
-    explanation: 'Se inicializa el contador i = 1. Se evalúa (1 <= 4) -> true. Como 1 % 2 !== 0, no se acumula.',
-    variables: [
-      { name: 'limite', value: '4', type: 'number' },
-      { name: 'total', value: '0', type: 'number' },
-      { name: 'i', value: '1', type: 'number' }
-    ]
-  },
-  {
-    step: 3,
-    lineExecuted: 'total += i; [Iteración 2, i=2]',
-    explanation: 'i se incrementa a 2. La condición (2 % 2 === 0) es verdadera. total pasa a ser 0 + 2 = 2.',
-    variables: [
-      { name: 'limite', value: '4', type: 'number' },
-      { name: 'total', value: '2', type: 'number' },
-      { name: 'i', value: '2', type: 'number' }
-    ]
-  },
-  {
-    step: 4,
-    lineExecuted: 'total += i; [Iteración 4, i=4]',
-    explanation: 'Tras i=3 (impar), i llega a 4 (par). Se suma total = 2 + 4 = 6. Siguiente i=5 termina el ciclo.',
-    variables: [
-      { name: 'limite', value: '4', type: 'number' },
-      { name: 'total', value: '6', type: 'number' },
-      { name: 'i', value: '4', type: 'number' }
-    ]
-  }
-]
-
-function nextTraceStep() {
-  if (currentStep.value < traceSteps.length) {
-    currentStep.value++
-  }
-}
-
-function prevTraceStep() {
-  if (currentStep.value > 1) {
-    currentStep.value--
-  }
+function formatMarkdown(raw: string) {
+  if (!raw) return ''
+  return raw
+    .replace(/^## (.*?)$/gm, '<h4 class="font-bold text-sm text-base-texto-primario mt-3 mb-1">$1</h4>')
+    .replace(/^# (.*?)$/gm, '<h3 class="font-bold text-base text-base-texto-primario mt-1 mb-2">$1</h3>')
+    .replace(/`([^`]+)`/g, '<code class="bg-base-bg-secundario px-1.5 py-0.5 rounded text-acento-ambar-fuerte font-codigo text-[11px] border border-base-borde-sutil">$1</code>')
+    .replace(/\n\n/g, '<br/><br/>')
 }
 </script>
