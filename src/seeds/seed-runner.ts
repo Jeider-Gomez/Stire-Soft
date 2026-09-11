@@ -1196,6 +1196,58 @@ console.log(slug);
     'Pregunta MATCHING Actividad 15',
   );
 
+  // 6b. Contenido curricular mínimo para Castro y Ali.
+  // Se mantiene la progresión MCQ -> FILL_CODE -> CODING y cada clave usa
+  // findOrCreate para que las corridas repetidas sean idempotentes.
+  async function seedClassCurriculum(classEntity: Class, teacherId: number, subject: string): Promise<void> {
+    const section = await findOrCreate(
+      sectionRepo,
+      { classId: classEntity.id, title: `Módulo 1: ${subject}` },
+      () => ({ classId: classEntity.id, title: `Módulo 1: ${subject}`, description: `Fundamentos de ${subject.toLowerCase()}.`, order: 1, isPublished: true }),
+      `Módulo ${classEntity.name}`,
+    );
+    const topic = await findOrCreate(
+      topicRepo,
+      { sectionId: section.id, title: `Tema 1: ${subject}` },
+      () => ({ sectionId: section.id, title: `Tema 1: ${subject}`, description: `Conceptos esenciales de ${subject.toLowerCase()}.`, order: 1, isActive: true }),
+      `Tema ${classEntity.name}`,
+    );
+    const unitTitles = [`Fundamentos de ${subject}`, `Aplicaciones de ${subject}`];
+    for (let unitIndex = 0; unitIndex < unitTitles.length; unitIndex += 1) {
+      const unit = await findOrCreate(
+        unitRepo,
+        { topicId: topic.id, title: unitTitles[unitIndex] },
+        () => ({ topicId: topic.id, title: unitTitles[unitIndex], description: `Unidad práctica de ${subject.toLowerCase()}.`, difficulty: Difficulty.BASICO, order: unitIndex + 1, isActive: true }),
+        `${classEntity.name} ${unitTitles[unitIndex]}`,
+      );
+      await findOrCreate(contentRepo, { learningUnitId: unit.id, title: `Guía de ${unitTitles[unitIndex]}` }, () => ({
+        learningUnitId: unit.id, title: `Guía de ${unitTitles[unitIndex]}`, type: ContentType.MARKDOWN,
+        body: `# ${unitTitles[unitIndex]}\n\nPractica ${subject.toLowerCase()} con ejemplos guiados.`, order: 1, isVisible: true,
+      }), `Contenido ${classEntity.name} ${unitTitles[unitIndex]}`);
+
+      const activities = [
+        { type: QuestionType.MCQ, title: `Quiz: conceptos de ${subject}`, points: 10, config: { options: [{ id: 'a', text: 'La opción correcta' }, { id: 'b', text: 'Una opción alternativa' }], correctAnswerId: 'a', explanation: 'La primera opción aplica el concepto.' }, question: `¿Cuál afirmación describe mejor ${subject.toLowerCase()}?` },
+        { type: QuestionType.FILL_CODE, title: `Completar código: ${subject}`, points: 15, config: { codeTemplate: '___b1___ resultado = 2 + 2;', blanks: [{ id: 'b1', answer: 'const' }] }, question: 'Completa la declaración válida.' },
+        { type: QuestionType.CODING, title: `Desafío de código: ${subject}`, points: 20, config: { language: 'javascript', starterCode: 'const fs = require(\'fs\');\nconst input = fs.readFileSync(0, \'utf-8\').trim();\nconsole.log(input);', testCases: [{ label: 'Caso público', input: '4', expected: '4', isPublic: true }] }, question: `Resuelve un problema básico de ${subject.toLowerCase()}.` },
+      ];
+      for (let activityIndex = 0; activityIndex < activities.length; activityIndex += 1) {
+        const definition = activities[activityIndex];
+        const activity = await findOrCreate(activityRepo, { learningUnitId: unit.id, title: definition.title }, () => ({
+          learningUnitId: unit.id, activityTypeId: autoType.id, createdBy: teacherId, title: definition.title,
+          description: `Actividad de ${subject.toLowerCase()}.`, difficulty: Difficulty.BASICO, totalPoints: definition.points,
+          passingScore: 60, attemptsAllowed: 3, order: activityIndex + 1, status: PublicationStatus.PUBLISHED,
+          isRequired: true, adaptiveWeight: activityIndex === 0 ? 0.2 : activityIndex === 1 ? 0.3 : 0.5, publishedAt: new Date(),
+        }), `${classEntity.name} ${definition.title}`);
+        await findOrCreate(questionRepo, { activityId: activity.id }, () => ({
+          activityId: activity.id, type: definition.type, question: definition.question, points: definition.points, order: 0, config: definition.config,
+        }), `Pregunta ${definition.title}`);
+      }
+    }
+  }
+
+  await seedClassCurriculum(classCastro, teacherCastro.id, 'Algoritmia y lógica computacional');
+  await seedClassCurriculum(classAli, teacherAli.id, 'Desarrollo frontend interactivo');
+
   // 7. Datos de Progreso y Repetición Espaciada para Pedro
   console.log('\n7. Sembrando Progreso y Repetición Espaciada (SM-2) para Pedro...');
   const progressRepo = AppDataSource.getRepository(LearningProgress);
