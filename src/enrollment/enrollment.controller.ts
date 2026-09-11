@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { EnrollmentService } from './enrollment.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -6,6 +6,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../user/entities/user.entity';
+import { EnrollmentStatus } from './enums/enrollment-status.enum';
 
 @ApiTags('Enrollment')
 @Controller('enrollment')
@@ -45,5 +46,33 @@ export class EnrollmentController {
   @ApiOperation({ summary: 'Ver estudiantes matriculados en una clase' })
   findByClass(@Param('classId') classId: string, @GetUser() user: User) {
     return this.enrollmentService.findByClass(+classId, user);
+  }
+
+  @Get('class/:classId/pending')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  findPendingByClass(@Param('classId') classId: string, @GetUser() user: User) {
+    return this.enrollmentService.findPendingByClass(+classId, user);
+  }
+
+  @Patch(':enrollmentId/approve')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  approve(@Param('enrollmentId') enrollmentId: string, @GetUser() user: User) {
+    return this.enrollmentService.changeStatus(enrollmentId, EnrollmentStatus.ACTIVE, user);
+  }
+
+  @Patch(':enrollmentId/reject')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  reject(@Param('enrollmentId') enrollmentId: string, @GetUser() user: User) {
+    return this.enrollmentService.changeStatus(enrollmentId, EnrollmentStatus.WITHDRAWN, user);
+  }
+
+  @Delete(':enrollmentId')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  remove(@Param('enrollmentId') enrollmentId: string, @GetUser() user: User) {
+    return this.enrollmentService.changeStatus(enrollmentId, EnrollmentStatus.WITHDRAWN, user);
   }
 }

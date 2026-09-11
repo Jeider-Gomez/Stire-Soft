@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateClassDto {
   @IsString({ message: 'El nombre debe ser una cadena de texto' })
@@ -12,4 +12,8 @@ export class CreateClassDto {
   @IsString({ message: 'El código debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'El código es obligatorio' })
   code: string;
+
+  @IsBoolean()
+  @IsOptional()
+  requiresApproval?: boolean;
 }

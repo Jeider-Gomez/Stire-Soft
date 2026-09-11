@@ -39,6 +39,9 @@ export class Class {
   @Column({ default: true })
   isActive!: boolean;
 
+  @Column({ default: false })
+  requiresApproval!: boolean;
+
   @Column({ type: 'date', nullable: true })
   startDate?: Date;
 

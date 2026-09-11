@@ -68,7 +68,7 @@ export class EnrollmentService {
         throw new ConflictException('Ya has completado esta clase');
       }
 
-      enrollment.status = EnrollmentStatus.ACTIVE;
+      enrollment.status = classEntity.requiresApproval ? EnrollmentStatus.PENDING : EnrollmentStatus.ACTIVE;
       enrollment.leftAt = undefined;
       enrollment.lastActivityAt = new Date();
       return await this.enrollmentRepository.save(enrollment);
@@ -77,7 +77,7 @@ export class EnrollmentService {
     enrollment = this.enrollmentRepository.create({
       studentId: userId,
       classId: classEntity.id,
-      status: EnrollmentStatus.ACTIVE,
+      status: classEntity.requiresApproval ? EnrollmentStatus.PENDING : EnrollmentStatus.ACTIVE,
       lastActivityAt: new Date(),
     });
 
@@ -97,6 +97,26 @@ export class EnrollmentService {
       where: { classId },
       relations: ['student'],
     });
+  }
+
+  async findPendingByClass(classId: number, user: User): Promise<Enrollment[]> {
+    await this.authorizationService.assertTeacherOwnsClass(user, classId);
+    return this.enrollmentRepository.find({
+      where: { classId, status: EnrollmentStatus.PENDING },
+      relations: ['student'],
+    });
+  }
+
+  async changeStatus(enrollmentId: string, status: EnrollmentStatus, user: User): Promise<Enrollment> {
+    const enrollment = await this.enrollmentRepository.findOne({
+      where: { id: enrollmentId },
+      relations: ['class', 'student'],
+    });
+    if (!enrollment) throw new NotFoundException('Matrícula no encontrada');
+    await this.authorizationService.assertTeacherOwnsClass(user, enrollment.classId);
+    enrollment.status = status;
+    enrollment.leftAt = status === EnrollmentStatus.WITHDRAWN ? new Date() : undefined;
+    return this.enrollmentRepository.save(enrollment);
   }
 
   async validateEnrollment(userId: number, classId: number): Promise<Enrollment> {
