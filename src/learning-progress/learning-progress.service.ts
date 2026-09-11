@@ -8,7 +8,21 @@ import { LearningStatus } from '../common/enums/learning-status.enum';
 import { PublicationStatus } from '../common/enums/status.enum';
 import { LearningStatusChangedEvent } from '../common/events/learning-status-changed.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Activity } from '../activities/entities/activity.entity';
+import { Submission } from '../submissions/entities/submission.entity';
 
+export interface NextActivityRecommendation {
+  activityId: number;
+  title: string;
+  questionType: string;
+  order: number;
+  allCompleted: boolean;
+}
+
+export function isSubmissionPassed(submission: Submission, activity: Activity | undefined): boolean {
+  return !!activity && activity.totalPoints > 0
+    && (submission.score / activity.totalPoints) * 100 >= activity.passingScore;
+}
 
 @Injectable()
 export class LearningProgressService {
@@ -65,20 +79,17 @@ export class LearningProgressService {
     // 20... puntos según su tipo/dificultad), así que comparar el score crudo
     // contra un mismo umbral fijo dejaba actividades de bajo puntaje total
     // imposibles de aprobar sin importar qué tan bien se resolvieran.
-    const isPassed = (s: any, act: any) =>
-      !!act && act.totalPoints > 0 && (s.score / act.totalPoints) * 100 >= act.passingScore;
-
     // Calcular de forma exacta el conteo de actividades únicas completadas
     const distinctPassedActivities = new Set(
       submissions
-        .filter(s => isPassed(s, activities.find(a => a.id === s.activityId)))
+        .filter(s => isSubmissionPassed(s, activities.find(a => a.id === s.activityId)))
         .map(s => s.activityId)
     );
     progress.completedActivities = distinctPassedActivities.size;
 
     // Calcular successRate global de la unidad
     const passed = submissions.filter(s =>
-      isPassed(s, activities.find(a => a.id === s.activityId))
+      isSubmissionPassed(s, activities.find(a => a.id === s.activityId))
     ).length;
     progress.successRate = submissions.length > 0 ? (passed / submissions.length) * 100 : 0;
     
@@ -120,5 +131,36 @@ export class LearningProgressService {
         learningUnitId: In(unitIds),
       },
     });
+  }
+
+  async getNextActivity(studentId: number, learningUnitId: number): Promise<NextActivityRecommendation | null> {
+    const activities = await this.activitiesRepo.find({
+      where: { learningUnitId, status: PublicationStatus.PUBLISHED },
+      relations: ['activityType'],
+      order: { order: 'ASC', id: 'ASC' },
+    });
+
+    if (activities.length === 0) return null;
+
+    const submissions = await this.submissionsRepo.createQueryBuilder('sub')
+      .where('sub.studentId = :studentId', { studentId })
+      .andWhere('sub.activityId IN (:...activityIds)', { activityIds: activities.map(activity => activity.id) })
+      .andWhere('sub.status != :status', { status: 'in_progress' })
+      .getMany();
+    const passedActivityIds = new Set(
+      submissions
+        .filter(submission => isSubmissionPassed(submission, activities.find(activity => activity.id === submission.activityId)))
+        .map(submission => submission.activityId),
+    );
+    const nextActivity = activities.find(activity => !passedActivityIds.has(activity.id));
+    const selectedActivity = nextActivity ?? activities[activities.length - 1];
+
+    return {
+      activityId: selectedActivity.id,
+      title: selectedActivity.title,
+      questionType: selectedActivity.activityType.code,
+      order: selectedActivity.order,
+      allCompleted: nextActivity === undefined,
+    };
   }
 }

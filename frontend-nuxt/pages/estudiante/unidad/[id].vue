@@ -127,6 +127,31 @@
       </section>
 
       <!-- Botón de Navegación al Ejercicio Práctico (Zona D) -->
+      <section class="rounded-lg border border-acento-ambar-fuerte/30 bg-acento-ambar/10 p-4 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-bold text-base-texto-primario">Tu siguiente paso</h2>
+            <p class="text-xs text-base-texto-secundario">
+              {{ recommendedActivity?.allCompleted ? 'Completaste la unidad. Puedes seguir practicando.' : 'Te recomendamos continuar con esta actividad.' }}
+            </p>
+          </div>
+          <button type="button" class="text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="chooseManually = !chooseManually">
+            {{ chooseManually ? 'Usar recomendado para ti' : 'Elegir yo mismo' }}
+          </button>
+        </div>
+        <NuxtLink
+          v-if="recommendedActivity && !chooseManually"
+          :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
+          class="inline-flex px-4 py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors">
+          Continuar donde quedaste: {{ recommendedActivity.title }}
+        </NuxtLink>
+        <div v-else-if="chooseManually" class="flex flex-col gap-2">
+          <NuxtLink v-for="activity in unitData.activities" :key="activity.id" :to="`/estudiante/evaluacion/${activity.id}`" class="text-xs font-semibold text-acento-ambar-fuerte hover:underline">
+            {{ activity.title }}
+          </NuxtLink>
+        </div>
+      </section>
+
       <div class="pt-4 border-t border-base-borde-sutil flex items-center justify-between">
         <NuxtLink
           to="/estudiante"
@@ -147,6 +172,8 @@
 
 <script setup lang="ts">
 import { useStudentStore } from '~/stores/student'
+import { useAuthStore } from '~/stores/auth'
+import { useApi } from '~/composables/useApi'
 
 definePageMeta({
   layout: 'student'
@@ -154,10 +181,36 @@ definePageMeta({
 
 const route = useRoute()
 const studentStore = useStudentStore()
+const authStore = useAuthStore()
+const api = useApi()
 
 const unitId = Number(route.params.id) || 1
 const unitData = computed(() => {
   return studentStore.modules.flatMap(m => m.units).find(u => u.id === unitId) || studentStore.modules[0].units[0]
+})
+
+interface NextActivityRecommendation {
+  activityId: number
+  title: string
+  questionType: string
+  order: number
+  allCompleted: boolean
+}
+
+const recommendedActivity = ref<NextActivityRecommendation | null>(null)
+const chooseManually = ref(false)
+
+onMounted(async () => {
+  const studentId = authStore.user?.id
+  if (!studentId || !unitId) return
+
+  try {
+    recommendedActivity.value = await api.get<NextActivityRecommendation | null>(
+      `/learning-progress/student/${studentId}/unit/${unitId}/next-activity`
+    )
+  } catch (error: unknown) {
+    console.warn('[STIRE Student] No se pudo cargar la actividad recomendada:', error)
+  }
 })
 
 // Pasos del Trazador Interactivo (P07)

@@ -9,8 +9,10 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { LearningProgressRepository } from './learning-progress.repository';
+import { LearningProgressService } from './learning-progress.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthorizationService } from '../common/authorization/authorization.service';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('Learning Progress')
 @Controller('learning-progress')
@@ -19,6 +21,7 @@ export class LearningProgressController {
   constructor(
     private readonly progressRepo: LearningProgressRepository,
     private readonly authorizationService: AuthorizationService,
+    private readonly learningProgressService: LearningProgressService,
   ) {}
 
   /**
@@ -70,5 +73,21 @@ export class LearningProgressController {
     return this.progressRepo.findOne({
       where: { studentId, learningUnitId: unitId },
     });
+  }
+
+  @Get('student/:studentId/unit/:unitId/next-activity')
+  @Roles('estudiante', 'docente', 'admin')
+  @ApiOperation({ summary: 'Recomendar la siguiente actividad de una unidad' })
+  async getNextActivity(
+    @Param('studentId', ParseIntPipe) studentId: number,
+    @Param('unitId', ParseIntPipe) unitId: number,
+    @Request() req: any,
+  ) {
+    const user = req.user;
+    if (user.role === 'estudiante' && user.id !== studentId) {
+      throw new ForbiddenException('No tienes permiso para ver el progreso de otro estudiante');
+    }
+    await this.authorizationService.assertTeacherSharesClassWithStudent(user, studentId);
+    return this.learningProgressService.getNextActivity(studentId, unitId);
   }
 }

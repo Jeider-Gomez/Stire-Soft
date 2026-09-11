@@ -287,6 +287,56 @@ describe('LearningProgressService', () => {
 
   // ─── findForUnits ─────────────────────────────────────────────────────────
 
+  describe('getNextActivity', () => {
+    function mockNextActivityQuery(submissions: any[]) {
+      const qb: any = {
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue(submissions),
+      };
+      submissionsRepo.createQueryBuilder.mockReturnValue(qb);
+    }
+
+    it('recomienda la actividad publicada de menor order sin aprobaciones', async () => {
+      activitiesRepo.find.mockResolvedValue([
+        makeActivity({ id: 1, order: 1, title: 'Primera', activityType: { code: 'mcq', baseWeight: 1 } }),
+        makeActivity({ id: 2, order: 2, title: 'Segunda', activityType: { code: 'fill_code', baseWeight: 1 } }),
+      ]);
+      mockNextActivityQuery([]);
+
+      const result = await service.getNextActivity(42, 10);
+
+      expect(result).toEqual(expect.objectContaining({ activityId: 1, order: 1, allCompleted: false }));
+    });
+
+    it('recomienda la siguiente actividad cuando la primera ya fue aprobada por porcentaje', async () => {
+      activitiesRepo.find.mockResolvedValue([
+        makeActivity({ id: 1, order: 1, totalPoints: 20, passingScore: 60, activityType: { code: 'mcq', baseWeight: 1 } }),
+        makeActivity({ id: 2, order: 2, activityType: { code: 'fill_code', baseWeight: 1 } }),
+      ]);
+      mockNextActivityQuery([makeSubmission({ activityId: 1, score: 12 })]);
+
+      const result = await service.getNextActivity(42, 10);
+
+      expect(result).toEqual(expect.objectContaining({ activityId: 2, order: 2, allCompleted: false }));
+    });
+
+    it('devuelve la última actividad con allCompleted cuando todas están aprobadas', async () => {
+      activitiesRepo.find.mockResolvedValue([
+        makeActivity({ id: 1, order: 1, activityType: { code: 'mcq', baseWeight: 1 } }),
+        makeActivity({ id: 2, order: 2, activityType: { code: 'coding', baseWeight: 1 } }),
+      ]);
+      mockNextActivityQuery([
+        makeSubmission({ activityId: 1, score: 60 }),
+        makeSubmission({ id: 'sub-2', activityId: 2, score: 80 }),
+      ]);
+
+      const result = await service.getNextActivity(42, 10);
+
+      expect(result).toEqual(expect.objectContaining({ activityId: 2, order: 2, allCompleted: true }));
+    });
+  });
+
   describe('findForUnits', () => {
     it('retorna [] sin llamar al repositorio cuando unitIds está vacío', async () => {
       const result = await service.findForUnits(42, []);
