@@ -82,12 +82,21 @@
             Comparte el código con tus alumnos
           </span>
 
-          <button
-            @click="copyCode(cls.code)"
-            class="borde-afordancia px-3 py-1.5 rounded-md font-semibold text-base-texto-primario hover:bg-base-bg-secundario text-xs flex items-center gap-1">
-            <span>📋</span>
-            <span>{{ copiedCode === cls.code ? 'Copiado' : 'Copiar Código' }}</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <NuxtLink
+              :to="`/docente/clase/${cls.id}`"
+              class="borde-afordancia px-3 py-1.5 rounded-md font-semibold text-base-texto-primario hover:bg-base-bg-secundario text-xs flex items-center gap-1">
+              <span>👥</span>
+              <span>Gestionar matrícula</span>
+            </NuxtLink>
+
+            <button
+              @click="copyCode(cls.code)"
+              class="borde-afordancia px-3 py-1.5 rounded-md font-semibold text-base-texto-primario hover:bg-base-bg-secundario text-xs flex items-center gap-1">
+              <span>📋</span>
+              <span>{{ copiedCode === cls.code ? 'Copiado' : 'Copiar Código' }}</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>

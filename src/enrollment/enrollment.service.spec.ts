@@ -68,6 +68,23 @@ describe('EnrollmentService — moderación de matrícula', () => {
     expect(enrollment.status).toBe('pending');
   });
 
+  // [FIX] Regresión: joinClass() debe conservar el comportamiento previo a
+  // esta fase (auto-ACTIVE) para toda clase que NO exija aprobación —
+  // requiresApproval=false es el default tanto en la entidad como en la
+  // migración, así que las 3 clases ya sembradas (Toscano, Castro, Ali) no
+  // deben verse afectadas por esta feature.
+  it('[FIX] crea ACTIVE de inmediato cuando la clase NO exige aprobación (comportamiento previo, sin regresión)', async () => {
+    classService.findByCode.mockResolvedValue({ id: 3, isActive: true, requiresApproval: false });
+    const enrollment = await service.joinClass(7, 'ABC');
+    expect(enrollment.status).toBe(EnrollmentStatus.ACTIVE);
+  });
+
+  it('[FIX] crea ACTIVE de inmediato cuando la clase no declara requiresApproval (undefined, clases sembradas antes de esta migración)', async () => {
+    classService.findByCode.mockResolvedValue({ id: 3, isActive: true });
+    const enrollment = await service.joinClass(7, 'ABC');
+    expect(enrollment.status).toBe(EnrollmentStatus.ACTIVE);
+  });
+
   it('aprueba una solicitud y conserva la matrícula', async () => {
     repository.findOne.mockResolvedValue({ id: 'e1', classId: 3, status: 'pending', class: {} });
     const result = await service.changeStatus('e1', EnrollmentStatus.ACTIVE, { id: 10, role: UserRole.DOCENTE } as any);
