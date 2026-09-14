@@ -12,8 +12,9 @@ codigos:    no aplica (investigación, no ventanas)
 **Estado:** ✅ Reconstruida y cerrada (FASE CC-03), ampliada en FASE CC-04 · **Última actualización:** 2026-09-04
 
 > **Qué es este documento y en qué se diferencia de [`MATRIZ_ARTICULOS.md`](MATRIZ_ARTICULOS.md):**
-> este archivo contiene el **fundamento bibliográfico canónico y verificado** de STIRE-Soft — 27
-> obras que sustentan las decisiones pedagógicas, arquitectónicas y de UX ya tomadas en el proyecto
+> este archivo contiene el **fundamento bibliográfico canónico y verificado** de STIRE-Soft — 29
+> obras que sustentan las decisiones pedagógicas, arquitectónicas y de UX ya tomadas en el proyecto,
+> y también el fundamento teórico usado en los entregables del informe de investigación (tesis)
 > (mastery learning, repetición espaciada, el *assistance dilemma* en tutoría inteligente,
 > visualización de programas, evaluación automática de código, accesibilidad), más el registro
 > completo de la auditoría bibliográfica que lo produjo (qué se detectó fabricado en la matriz
@@ -49,7 +50,7 @@ La regla de CC-02 ("sin DOI no entra") era incorrecta y quedó reemplazada por e
 
 ---
 
-## 🧠 EJE 1: Pedagógico y Cognitivo (6 obras verificadas)
+## 🧠 EJE 1: Pedagógico y Cognitivo (8 obras verificadas)
 *Foco: Aprendizaje por dominio (Mastery Learning), repetición espaciada (SM-2/práctica distribuida), assistance dilemma en tutoría inteligente.*
 
 | # | Título | Autores y Año | Fuente | Registro verificado | Nivel de Evidencia | Decisión STIRE que fundamenta |
@@ -60,6 +61,8 @@ La regla de CC-02 ("sin DOI no entra") era incorrecta y quedó reemplazada por e
 | 4 | *Test-Enhanced Learning* | Roediger, H. L. & Karpicke, J. D. (2006) | Psychological Science, 17(3), 249-255 | DOI [10.1111/j.1467-9280.2006.01693.x](https://doi.org/10.1111/j.1467-9280.2006.01693.x) | 🟡 EVIDENCIA CONTEXTUAL | Respalda la práctica de recuperación (repasos activos) complementaria al espaciado. |
 | 5 | *The Relative Effectiveness of Human Tutoring, Intelligent Tutoring Systems, and Other Tutoring Systems* | VanLehn, K. (2011) | Educational Psychologist, 46(4), 197-221 | DOI [10.1080/00461520.2011.611369](https://doi.org/10.1080/00461520.2011.611369) | 🟢 EVIDENCIA DIRECTA | El andamiaje guiado supera a la entrega directa de respuestas; base del Tutor IA socrático. |
 | 6 | *Exploring the Assistance Dilemma in Experiments with Cognitive Tutors* | Koedinger, K. R. & Aleven, V. (2007) | Educational Psychology Review, 19(3), 239-264 | DOI [10.1007/s10648-007-9049-0](https://doi.org/10.1007/s10648-007-9049-0) | 🟢 EVIDENCIA DIRECTA | *Assistance dilemma*: ayuda directa destruye aprendizaje profundo, ausencia de ayuda induce abandono. Base del `TutorContextService`. |
+| 30 | *The 2 Sigma Problem: The Search for Methods of Group Instruction as Effective as One-to-One Tutoring* | Bloom, B. S. (1984) | Educational Researcher, 13(6), 4-16 | DOI [10.3102/0013189X013006004](https://doi.org/10.3102/0013189X013006004) | 🟢 EVIDENCIA DIRECTA | Respalda la adaptación al ritmo y nivel individual del estudiante (CAR-01 del informe de investigación): la ventaja de la tutoría uno a uno frente a la instrucción grupal se atribuye al ajuste continuo del ritmo y la retroalimentación al alumno individual, no a un método distinto en sí. Agregada 2026-09-14 para el entregable 01 de `docs/investigacion/PLAN_ENTREGABLES_INFORME.md`. |
+| 31 | *Becoming a Self-Regulated Learner: An Overview* | Zimmerman, B. J. (2002) | Theory Into Practice, 41(2), 64-70 | DOI [10.1207/s15430421tip4102_2](https://doi.org/10.1207/s15430421tip4102_2) | 🟢 EVIDENCIA DIRECTA | Respalda las recomendaciones personalizadas y elementos de motivación orientados a fortalecer hábitos de estudio autónomo (CAR-06 del informe de investigación). Agregada 2026-09-14 para el entregable 01. |
 
 ---
 
@@ -254,6 +257,12 @@ cualquier visor, incluidos los que no renderizan Markdown.
 
 29. Bogner, J. & Merkel, M. (2022). To type or not to type? A systematic comparison of the software quality of JavaScript and TypeScript applications on GitHub. Proc. 19th International Conference on Mining Software Repositories (MSR).
     https://doi.org/10.1145/3524842.3528454
+
+30. Bloom, B. S. (1984). The 2 Sigma Problem: The Search for Methods of Group Instruction as Effective as One-to-One Tutoring. Educational Researcher, 13(6), 4-16.
+    https://doi.org/10.3102/0013189X013006004
+
+31. Zimmerman, B. J. (2002). Becoming a Self-Regulated Learner: An Overview. Theory Into Practice, 41(2), 64-70.
+    https://doi.org/10.1207/s15430421tip4102_2
 
 ---
 
