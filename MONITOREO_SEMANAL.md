@@ -70,9 +70,17 @@ botón sin formulario); las otras cinco quedan por verificar.
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] **S05-JL01 · Preparar contenido de las próximas unidades de aprendizaje.**
+**Esta semana:**
 - [ ] **S05-JL02 · Guion pedagógico de apoyo para la sustentación.**
-- [ ] **S05-JL03 · Validación pedagógica en vivo — aplazada** hasta que el proyecto se despliegue en la nube (en Backlog del tablero, sin fecha).
+
+**En Backlog** (no se pueden terminar esta semana; sin fecha fija):
+- [ ] **S05-JL01 · Construir dos pistas de contenido, con dos docentes distintos.** Decisión de esta
+  semana: el contenido real de Fundamentos de Algoritmia incluye HTML5/CSS/JavaScript, más complejo
+  de tratar para público general que algoritmia "pura" — se decidió no comprometerse a una sola
+  versión, sino construir dos pistas con dos docentes y probar en el programa real cuál resulta más
+  útil.
+- [ ] **S05-JL03 · Validación pedagógica en vivo** — aplazada hasta que el proyecto se despliegue en la nube.
+- [ ] **S05-JL04 · Probar las funciones de docente en la creación/gestión de contenido de unidades** — también aplazada hasta el despliegue; Julio queda a cargo.
 
 ### Jorge Cervantes — Calidad y Pruebas
 
@@ -119,6 +127,10 @@ botón sin formulario); las otras cinco quedan por verificar.
 6. **"Probar código" no usa el sandbox real desde el frontend (`FE-01`)** — `workspace.ts` usa `new Function(...)`.
 7. **Contenido:** unidades de aprendizaje sin sembrar en `db:seed:demo`.
 8. **Sandbox:** tests intermitentes por timing bajo memoria reducida; repetir antes de declarar defecto.
+9. **Decisión de contenido (14/09):** el contenido real de Fundamentos de Algoritmia incluye
+   HTML5/CSS/JavaScript — más complejo que algoritmia "pura" para público general. Se decide
+   construir dos pistas de contenido con dos docentes distintos y probar en el programa real cuál
+   es más útil, en vez de comprometerse a una sola versión esta semana. Va a Backlog (`S05-JL01`).
 
 ---
 
@@ -159,9 +171,9 @@ botón sin formulario); las otras cinco quedan por verificar.
 
 ### Julio Galvis
 
-- [ ] Contenido de próximas unidades listo.
 - [ ] Guion pedagógico entregado.
-- [ ] *(Validación en vivo — aplazada, no aplica esta semana.)*
+- [ ] *(Las dos pistas de contenido, la validación en vivo y las funciones de docente quedan en
+  Backlog — no aplican esta semana, ver §3.)*
 
 ### Jorge Cervantes
 
