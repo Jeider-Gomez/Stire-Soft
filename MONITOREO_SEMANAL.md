@@ -1,13 +1,15 @@
-# 🚀 Bitácora de Monitoreo y Control N.º 4 — Proyecto: STIRE-Soft
+# 🚀 Bitácora de Monitoreo y Control N.º 5 — Proyecto: STIRE-Soft
 
 **Curso:** DDSE3 — 2026-2  
 **Grupo:** [G1 / G2]  
 **Repositorio GitHub:** https://github.com/Jeider-Gomez/Stire-Soft  
-**Semana:** 7 – 11 de septiembre de 2026  
-**Cierre:** viernes 11 de septiembre, 8:00 p. m.  
-**Tablero Kanban:** https://trello.com/b/WW9nWXQ5/stire-kanban-desarrollo-semana-04
+**Semana:** 14 – 18 de septiembre de 2026  
+**Cierre:** viernes 18 de septiembre, 8:00 p. m.  
+**Tablero Kanban:** https://trello.com/b/sdy0VdLm/stire-kanban-desarrollo-semana-05-14-18-sep-2026
 
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
+
+> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_04.md`](./docs/seguimiento/MONITOREO_SEMANAL_04.md) — ahí queda el cierre completo de la Semana 4.
 
 ---
 
@@ -29,145 +31,53 @@
 
 ## 🎯 2. Objetivo del Sprint
 
-Durante esta semana el equipo debe **iniciar la implementación real del frontend en Nuxt 3**, tomando como fuente de verdad el sistema visual y el prototipo de Figma ya verificados, mientras se atienden las brechas críticas del backend y se preparan los contenidos y evidencias necesarios para la siguiente sustentación.
+Esta semana está dominada por la **sustentación del Reto 2 oficial** (15–17 de septiembre). Todo lo
+demás se organiza alrededor de llegar a esa sustentación con evidencia real.
 
-El alcance inicial de frontend se mantiene limitado a las vistas ya diseñadas: `COMP-V00`, `EST-V01..V06`, `DOC-V01` y `ADM-V02`. No se rediseñan ni inventan vistas nuevas durante este sprint.
+En paralelo, el QA de Jorge (12/09, `docs/ReportesQA/`) dejó una lista de brechas concretas. Dos ya
+se verificaron contra el código real y quedan para corregir esta semana (`P2-R4` Self-XSS, `FE-02`
+botón sin formulario); las otras cinco quedan por verificar.
 
 ### Resultados esperados
 
-1. `frontend-nuxt/` creado y funcionando con Nuxt 3, Vue 3, TypeScript, Pinia y Tailwind.
-2. Tokens visuales y Ventana Estándar traducidos a código reutilizable.
-3. Primera vista de estudiante funcionando y validada contra Figma.
-4. Corrección de las cuatro rutas críticas sin control de rol.
-5. Verificación real del Tutor IA con proveedor LLM.
-6. Contenidos pendientes organizados para las unidades de aprendizaje.
-7. Validación de navegación y flujo pedagógico.
-8. Pitch de avances preparado con evidencias reales.
-9. Bitácora actualizada y cerrada con resultados verificables.
+1. Sustentación del Reto 2 realizada con evidencia real.
+2. Self-XSS del Tutor IA (`P2-R4`) y botón "Crear Nueva Clase" (`FE-02`) corregidos.
+3. Los otros 5 hallazgos del QA (`P1-07`, `P1-08`, `P2-R3`, `FE-03`, `BE-01`) verificados en frío.
+4. Bitácora cerrada el viernes, sin retraso.
 
 ---
 
 ## 📋 3. Plan de trabajo semanal
 
+> Tablero: https://trello.com/b/sdy0VdLm/stire-kanban-desarrollo-semana-05-14-18-sep-2026
+
 ### Jeider Gómez — Líder Técnico
 
-- [x] **S04-J01 · Preparar frontend Nuxt** — objetivo 08/09. *(Completado anticipadamente 07/09: Nuxt 3, Vue 3, Pinia, Tailwind y TS)*
-- [x] **S04-J02 · Ventana Estándar** — objetivo 10/09. *(Completado anticipadamente 07/09: COMP-V00, EST-V01..V06, DOC-V01, ADM-V02)*
-- [x] **S04-J03 · Backend + Tutor IA** — objetivo 11/09. *(Completado anticipadamente 07/09: Auditoría auth, token JWT real y Google Gemini LLM activo)*
+- [ ] **S05-J01 · Preparar y ejecutar la sustentación del Reto 2** (15–17/09).
+- [ ] **S05-J02 · Corregir el Self-XSS del Tutor IA (`P2-R4`)** — `TutorChatDrawer.vue`, reemplazar `v-html` sin sanitizar.
+- [ ] **S05-J03 · Conectar "Crear Nueva Clase" a `POST /class` (`FE-02`)**.
 
-**Dependencias:** S04-J02 depende de S04-J01. S04-J03 puede ejecutarse en paralelo.  
-**Evidencias:** Ver informe oficial [`docs/antigravity/informes/INFORME_2026-09-07_SESION_01.md`](./docs/antigravity/informes/INFORME_2026-09-07_SESION_01.md).  
-**Verificación en frío (09/09):** los tokens de `tailwind.config.ts` se compararon variable por
-variable contra el Figma real — coincidían todos salvo 9 (paleta del editor de código y dos anchos
-con nombre), ya agregados a Figma para que quede completo. El resto de los criterios de cierre del
-[Insumo 15 §10](docs/antigravity/PLAN_IMPLEMENTACION.md#10-criterio-de-cierre-de-esta-fase)
-**no** se cumplen todavía (capturas contra Figma, valores literales fuera del token system en 2
-archivos, y el punto de "Probar código" — ver riesgo #6 abajo). Detalle completo en
-[Insumo 15 §11](docs/antigravity/PLAN_IMPLEMENTACION.md#11-verificación-en-frío-de-este-criterio-de-cierre-2026-09-09).
-"Ventana Estándar implementada" (arriba) es cierto para las 9 vistas construidas — no significa que
-las 10 restantes de Docente/Administrador existan.
+### Pedro Romero — Gestión + Documentación
 
-**Actualización (09/09, Figma):** las 10 vistas restantes de Docente y Administrador ya no faltan
-en Figma — se construyeron `DOC-V02..V06` y `ADM-V01`/`ADM-V03` (7 ventanas nuevas, estado por
-defecto únicamente, ensambladas a partir de `DOC-V01`/`ADM-V02` existentes) más 36 conexiones nuevas
-de menú (30 docente + 6 admin), 0 rotas, mismo borde de afordancia que el resto del prototipo. De
-paso se corrigió un defecto real: el menú de `DOC-V01` tenía dos ítems ("Banco de Ejercicios",
-"Tareas por Calificar") y el de `ADM-V02` dos ítems ("Instituciones", "Logs de Auditoría") que no
-correspondían a ningún código `DOC-V0x`/`ADM-V0x` real de `NAMING_STIRE.md` — quedaron reemplazados
-por los 6 y 3 ítems canónicos respectivamente, en el orden documentado. **Lo que sigue sin existir:**
-los 4 estados (vacío/error/completado) de las 7 vistas nuevas — solo tienen el estado por defecto,
-igual que ya era el caso de `DOC-V01`/`ADM-V02`; y el contenido de cada vista nueva usa datos de
-ejemplo, no una consulta real (no aplica de todos modos: estas vistas no se conectan a datos reales
-esta semana, ver Insumo 15 §1). `ADM-V01` y `ADM-V03` llevan explícito "⚠ Ejemplo — sin backend
-(D-03)" en su encabezado para no disimular que no hay endpoint de consulta real detrás.
-
-**Cierre de Figma (09/09, segunda pasada):** se completaron los estados **vacío** y **error** de las
-9 vistas de Docente/Administrador (18 frames más, mismo patrón que Estudiante: título + tarjeta de
-mensaje; el estado error incluye un botón "Reintentar" cableado de vuelta al estado por defecto).
-Total de conexiones ahora: **96 en el grupo Docente, 21 en el grupo Administrador** (defecto+vacío+
-error heredan el menú lateral completo; 0 rotas, verificado). También se completó la página
-**"🧩 Ventana Estándar"**: las variantes `Rol=Docente` y `Rol=Administrador` del componente maestro
-eran un texto placeholder ("NO DISEÑADO EN ESTA FASE") desde FASE CC-06/07 — ahora contienen el
-contenido real de `DOC-V01`/`ADM-V02`, igual que la variante `Rol=Estudiante`.
-
-**Lo único que falta a propósito, declarado:** el estado **completado** no se construyó para
-Docente/Administrador. A diferencia de las vistas de estudiante (que tienen un flujo de tarea con un
-final claro: ejercicio entregado, repaso hecho), las vistas de Docente/Administrador son paneles de
-gestión persistentes sin un momento de "completado" natural — forzar ese estado en las 9 vistas
-habría sido inventar contenido sin respaldo, no completar un diseño real. Con esto, **Figma queda
-completo para el alcance decidido esta semana** (D-06 + Insumo 15 §1): las 9 ventanas de Estudiante
-en sus 4 estados, y las 9 de Docente/Administrador en 3 de 4 estados, todas cableadas.
-
-**Backend — auditoría de autenticación y cierre de FASE CC-09 (09/09, con Claude Code):**
-- Bloqueo 1 y 2 cerrados: `POST /submissions/:id/run` ("Probar código" sin consumir intento,
-  reutiliza el sandbox real vía `JudgeExecutionService.runPublicCases()`) y
-  `GET /review-schedules/due` (primera consulta real para `EST-V05`, urgencia calculada en vivo,
-  `easeFactor` ahora persistido). Verificado en vivo, no solo con tests.
-- Auditoría de autenticación pedida explícitamente por el dueño del proyecto: se eliminó el login
-  falso de `stores/auth.ts` (un diccionario fabricaba un JWT sin tocar el backend; si el backend
-  real fallaba por cualquier razón que no fuera credenciales incorrectas, caía en silencio a otro
-  token falso y reportaba éxito). El acceso-demo ahora hace login real con cuentas sembradas y
-  queda gateado detrás de `NUXT_PUBLIC_DEMO_MODE` (apagado por defecto).
-- Cierre del Riesgo #2 heredado (§5): las 4 rutas de estudiante sin `@Roles()`
-  (`/submissions/start`, `/submissions/:id/submit`, `/submissions/:id/autosave`, `/tutor/chat`)
-  quedaron protegidas — verificado en vivo que docente y admin ya reciben `403`.
-- Corregido además un parpadeo real a `/auth/login` en cada recarga de página (condición de carrera
-  entre la hidratación de sesión y el middleware de rutas), encontrado con Playwright, no por
-  lectura de código.
-
-**Figma — pantalla de Registro (09/09):** `COMP-V00` solo tenía los 4 estados de Login; no existía
-Registro pese a que `POST /auth/register` ya funciona en el backend (verificado: contraseña
-hasheada, rol `estudiante` por defecto, rechazo de email duplicado). Se construyó
-`COMP-V00 · Registro — Por defecto` clonando el layout y los tokens exactos del Login (mismos
-componentes de input, mismo botón, misma tipografía) con los 4 campos del contrato real
-(`RegisterDto`: nombre completo, correo, contraseña, confirmar contraseña). Cableado: el enlace de
-Login "¿No tienes cuenta?" (que nunca había tenido una reacción) ahora navega a Registro; el enlace
-de Registro navega de vuelta a Login; el botón "Crear cuenta" navega al mismo destino que el login
-exitoso (`EST-V01` defecto), porque el registro público siempre asigna rol `estudiante`. **Declarado,
-no silencioso:** solo se construyó el estado "Por defecto" — vacío/error/completado quedan fuera de
-esta pasada, mismo criterio de alcance aplicado a Docente/Administrador esta semana.
-
-**Trello revisado y ajustado (09/09):** varias tarjetas tenían fecha viernes 11/09, más allá del
-tope de jueves que exige la metodología del sprint (cierre viernes 8pm sin margen). Se movieron a
-jueves 10/09 (mismo horario, 23:00 UTC = tarde local): `S04-JO02`, `S04-JO03`, `S04-JL03`,
-`S04-JOR01`, `S04-JOR02`, `S04-JOR03`, `S04-P03`. `S04-J03 · Backend + Tutor IA` se marcó **Hecho**
-con la evidencia de arriba (commits `4eb2246`, `c44498e`, `81bbef9`, `f4f1cae`) y se movió a la
-lista `✅ Hecho`; `S04-J02 · Ventana Estándar` ya estaba en esa lista pero le faltaba marcarse como
-completada — corregido. **No se tocó el estado de ninguna tarjeta de Julio, José o Jorge más allá
-de la fecha** — no hay evidencia en este repositorio de su avance real; que cada quien marque lo
-propio cuando lo tenga listo.
-
-### Pedro Romero — Gestión + Documentación + Apoyo Técnico
-
-- [ ] **S04-P01 · Gestionar Trello** — objetivo 07/09.
-- [ ] **S04-P02 · Apoyar frontend** — objetivo 10/09.
-- [ ] **S04-P03 · Bitácora y evidencias** — objetivo 11/09.
-
-**Dependencias:** S04-P02 depende de S04-J01. S04-P03 depende de las evidencias y resultados del equipo.
+- [x] **S05-P01 · Tablero Trello de la Semana 5** — hecho, 14/09.
+- [ ] **S05-P02 · Apoyar la sustentación** — evidencias y orden de la presentación.
+- [ ] **S05-P03 · Bitácora** — mantenerla al día y cerrarla el viernes.
 
 ### José López — UI/UX + Comunicación
 
-- [ ] **S04-JO01 · Validar UI contra Figma** — objetivo 10/09.
-- [ ] **S04-JO02 · Pitch de avances** — objetivo 11/09.
-- [ ] **S04-JO03 · Material visual** — objetivo 11/09.
-
-**Dependencias:** S04-JO01 depende de S04-J02. S04-JO02 y S04-JO03 dependen de los avances y evidencias reales del equipo.
+- [ ] **S05-JO01 · Material de apoyo para la sustentación** — coordinado con Jeider.
+- [ ] **S05-JO02 · Validar las 9 vistas reales de Nuxt contra Figma.**
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] **S04-JL01 · Validar navegación** — objetivo 09/09.
-- [ ] **S04-JL02 · Preparar contenidos** — objetivo 10/09.
-- [ ] **S04-JL03 · Validación pedagógica** — objetivo 11/09.
-
-**Dependencias:** S04-JL01 y S04-JL02 pueden ejecutarse en paralelo. S04-JL03 depende de que exista una vista funcional.
+- [ ] **S05-JL01 · Preparar contenido de las próximas unidades de aprendizaje.**
+- [ ] **S05-JL02 · Guion pedagógico de apoyo para la sustentación.**
+- [ ] **S05-JL03 · Validación pedagógica en vivo — aplazada** hasta que el proyecto se despliegue en la nube (en Backlog del tablero, sin fecha).
 
 ### Jorge Cervantes — Calidad y Pruebas
 
-- [ ] **S04-JOR01 · Pruebas funcionales** — objetivo 11/09.
-- [ ] **S04-JOR02 · Calidad frontend** — objetivo 11/09.
-- [ ] **S04-JOR03 · Revisión final** — objetivo 11/09.
-
-**Dependencias:** S04-JOR01 depende de las correcciones críticas del backend. S04-JOR02 depende de S04-J02. S04-JOR03 depende de los entregables del equipo.
+- [ ] **S05-JOR01 · Re-verificar `P1-07`, `P1-08`, `P2-R3`, `FE-03`, `BE-01`** con pasos de reproducción.
+- [ ] **S05-JOR02 · QA de las correcciones de S05-J02/J03.**
 
 ---
 
@@ -199,25 +109,16 @@ propio cuando lo tenga listo.
 
 ---
 
-## ⚠️ 5. Riesgos y pendientes heredados
+## ⚠️ 5. Riesgos vivos
 
-1. **Nuxt:** principal prioridad técnica de la Semana 4.
-2. ~~**Control de roles:** permanecen como prioridad las cuatro rutas identificadas previamente:
-   `POST /submissions/start`, `POST /submissions/:id/submit`, `PUT /submissions/:id/autosave` y
-   `POST /tutor/chat`.~~ **Cerrado (09/09).** Las 4 rutas tienen `@Roles('estudiante')`. Verificado
-   en vivo: docente y admin autenticados reciben `403` en las 4; estudiante sin cambios.
-3. **Contenido:** permanecen unidades de aprendizaje sin contenido sembrado en `db:seed:demo`.
-4. **Sandbox:** los tests pueden presentar intermitencia por timing; cualquier fallo debe repetirse antes de declararlo defecto de código.
-5. **Tutor IA:** su funcionamiento con proveedor real debe verificarse con evidencia externa al repositorio.
-6. **"Probar código" no usa el sandbox del backend — mitad cerrado (09/09).** El backend ya no es el
-   bloqueo: `POST /submissions/:id/run` existe y reutiliza el sandbox real
-   (`HardenedProcessSandboxAdapter` vía `JudgeExecutionService.runPublicCases()`), verificado en vivo
-   sin consumir intento. Lo que sigue pendiente es del lado frontend:
-   `frontend-nuxt/stores/workspace.ts` todavía ejecuta con `new Function(...)` en el navegador en vez
-   de llamar al endpoint real — migrarlo es trabajo de Antigravity (Fase 4/6 del plan de
-   implementación), no un hallazgo de backend nuevo. Ver
-   [Insumo 15 §11.2](docs/antigravity/PLAN_IMPLEMENTACION.md#112-los-otros-cuatro-criterios-de-10-no-se-cumplen-todavía-declarado-sin-maquillar)
-   (desactualizado en este punto específico, no se reescribe aquí para no duplicar mantenimiento).
+1. **Sustentación del Reto 2 esta semana (15–17/09)** — sin margen para moverla.
+2. **Cobertura real de frontend baja:** 9 de 19 pantallas con integración real (QA de Jorge, 12/09).
+3. **Self-XSS confirmado en el chat del Tutor IA (`P2-R4`)**, sin corregir.
+4. **Botón "Crear Nueva Clase" sin formulario (`FE-02`)**, confirmado, sin corregir.
+5. **Hallazgos del QA sin verificar:** `P1-07`, `P1-08`, `P2-R3`, `FE-03`, `BE-01` — hipótesis, no hechos, hasta reproducirlos.
+6. **"Probar código" no usa el sandbox real desde el frontend (`FE-01`)** — `workspace.ts` usa `new Function(...)`.
+7. **Contenido:** unidades de aprendizaje sin sembrar en `db:seed:demo`.
+8. **Sandbox:** tests intermitentes por timing bajo memoria reducida; repetir antes de declarar defecto.
 
 ---
 
@@ -225,33 +126,15 @@ propio cuando lo tenga listo.
 
 ### Martes
 
-Cada integrante reporta:
-
-- Qué terminó.
-- Qué está haciendo.
-- Qué falta.
-- Si tiene algún bloqueo.
+- Qué terminó, qué está haciendo, qué falta, si hay bloqueo.
 
 ### Jueves
 
-Cada integrante reporta:
-
-- Qué lleva terminado.
-- Qué puede cerrar el viernes.
-- Qué está en riesgo.
-- Qué necesita de otro integrante.
+- Qué lleva terminado, qué puede cerrar el viernes, qué está en riesgo, qué necesita de otro.
 
 ### Viernes
 
-Se realiza el cierre del sprint:
-
-- Revisar Trello.
-- Validar evidencias.
-- Revisar GitHub.
-- Separar terminado y pendiente.
-- Registrar riesgos nuevos.
-- Actualizar esta bitácora.
-- Preparar el siguiente sprint.
+- Revisar Trello y GitHub, validar evidencias, registrar riesgos nuevos, actualizar esta bitácora, preparar el siguiente sprint.
 
 ---
 
@@ -259,35 +142,33 @@ Se realiza el cierre del sprint:
 
 ### Jeider Gómez
 
-- [x] Nuxt iniciado y funcionando.
-- [x] Ventana Estándar implementada.
-- [x] Backend y Tutor IA verificados.
+- [ ] Sustentación realizada.
+- [ ] Self-XSS corregido.
+- [ ] Formulario de "Crear Nueva Clase" conectado.
 
 ### Pedro Romero
 
-- [ ] Trello gestionado durante el sprint.
-- [ ] Apoyo técnico realizado.
-- [ ] Bitácora y evidencias consolidadas.
+- [x] Tablero de la Semana 5 creado. *(14/09.)*
+- [ ] Apoyo a la sustentación.
+- [ ] Bitácora cerrada el viernes, sin retraso.
 
 ### José López
 
-- [ ] UI validada contra Figma.
-- [ ] Pitch preparado.
-- [ ] Material visual organizado.
+- [ ] Material de la sustentación listo.
+- [ ] 9 vistas validadas contra Figma.
 
 ### Julio Galvis
 
-- [ ] Navegación validada.
-- [ ] Contenidos pendientes preparados.
-- [ ] Flujo pedagógico revisado.
+- [ ] Contenido de próximas unidades listo.
+- [ ] Guion pedagógico entregado.
+- [ ] *(Validación en vivo — aplazada, no aplica esta semana.)*
 
 ### Jorge Cervantes
 
-- [ ] Pruebas funcionales realizadas.
-- [ ] Calidad del frontend revisada.
-- [ ] Entregables revisados.
+- [ ] Hallazgos re-verificados.
+- [ ] QA de las correcciones de Jeider.
 
-> **Nota:** esta sección se marca únicamente con base en resultados verificables al cierre del viernes 11 de septiembre.
+> **Nota:** se marca solo con resultados verificables al cierre del viernes 18/09.
 
 ---
 
@@ -298,9 +179,10 @@ Se realiza el cierre del sprint:
 | 1 | 17 – 21 de agosto de 2026 | [`MONITOREO_SEMANAL_01.md`](./docs/seguimiento/MONITOREO_SEMANAL_01.md) |
 | 2 | 24 – 28 de agosto de 2026 | [`MONITOREO_SEMANAL_02.md`](./docs/seguimiento/MONITOREO_SEMANAL_02.md) |
 | 3 | 31 de agosto – 4 de septiembre de 2026 | [`MONITOREO_SEMANAL_03.md`](./docs/seguimiento/MONITOREO_SEMANAL_03.md) |
-| 4 | 7 – 11 de septiembre de 2026 | `MONITOREO_SEMANAL.md` |
+| 4 | 7 – 11 de septiembre de 2026 | [`MONITOREO_SEMANAL_04.md`](./docs/seguimiento/MONITOREO_SEMANAL_04.md) |
+| 5 | 14 – 18 de septiembre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
 
 ---
 
-*Bitácora N.º 4 · Semana del 7 al 11 de septiembre de 2026.*  
+*Bitácora N.º 5 · Semana del 14 al 18 de septiembre de 2026.*  
 *Responsable de seguimiento y cierre documental: Pedro Romero.*
