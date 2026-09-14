@@ -155,16 +155,23 @@ propio cuando lo tenga listo.
 ### José López — UI/UX + Comunicación
 
 - [x] **S04-JO01 · Validar UI contra Figma** — objetivo 10/09. *(Hecho — tarjeta cerrada en Trello 10/09.)*
-- [ ] **S04-JO02 · Pitch de avances** — objetivo 11/09. *(Sin cerrar en Trello al 14/09 — checklist sin marcar. Pasa a la Bitácora N.º 5 como pendiente.)*
+- [x] **S04-JO02 · Pitch de avances** — objetivo 11/09. *(Completado — evidencia real:
+  `docs/pitch/PITCH_SEMANA_03 Y 04.md`, guion de 60s en español e inglés, cabecera `estado: hecho`.
+  Tarjeta de Trello movida a `✅ Hecho` el 14/09.)*
 - [x] **S04-JO03 · Material visual** — objetivo 11/09. *(Hecho — tarjeta cerrada en Trello 10/09.)*
 
 **Dependencias:** S04-JO01 depende de S04-J02. S04-JO02 y S04-JO03 dependen de los avances y evidencias reales del equipo.
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] **S04-JL01 · Validar navegación** — objetivo 09/09. *(Sin cerrar en Trello al 14/09 — checklist sin marcar. Pasa a la Bitácora N.º 5 como pendiente.)*
-- [ ] **S04-JL02 · Preparar contenidos** — objetivo 10/09. *(Sin cerrar en Trello al 14/09 — checklist sin marcar. Pasa a la Bitácora N.º 5 como pendiente.)*
-- [ ] **S04-JL03 · Validación pedagógica** — objetivo 11/09. *(Sin cerrar en Trello al 14/09 — sigue en la lista Backlog, ni siquiera se movió a "Esta semana". Pasa a la Bitácora N.º 5 como pendiente.)*
+- [x] **S04-JL01 · Validar navegación** — objetivo 09/09. *(Completado — reportado por Julio a Pedro
+  el 14/09. Único de los tres objetivos de Julio que se cerró esta semana; los otros dos se aplazan,
+  ver abajo.)*
+- [ ] **S04-JL02 · Preparar contenidos** — objetivo 10/09. *(Sin cerrar. Se aplaza a la Semana 5
+  como continuación real del mismo trabajo — ver `S05-JL01` en `MONITOREO_SEMANAL.md`.)*
+- [ ] **S04-JL03 · Validación pedagógica** — objetivo 11/09. *(Sin cerrar. Se aplaza hasta que el
+  proyecto se despliegue de verdad en la nube — depende de un entorno funcional en vivo, no solo de
+  Figma/localhost. Tarjeta en Backlog del tablero de la Semana 5, sin fecha.)*
 
 **Dependencias:** S04-JL01 y S04-JL02 pueden ejecutarse en paralelo. S04-JL03 depende de que exista una vista funcional.
 
@@ -323,14 +330,15 @@ Se realiza el cierre del sprint:
 ### José López
 
 - [x] UI validada contra Figma. *(Trello: S04-JO01 Hecho.)*
-- [ ] Pitch preparado. *(Trello: S04-JO02 sigue sin marcar al 14/09.)*
+- [x] Pitch preparado. *(Completado — `docs/pitch/PITCH_SEMANA_03 Y 04.md`. Trello: S04-JO02 Hecho.)*
 - [x] Material visual organizado. *(Trello: S04-JO03 Hecho.)*
 
 ### Julio Galvis
 
-- [ ] Navegación validada. *(Trello: S04-JL01 sigue sin marcar al 14/09.)*
-- [ ] Contenidos pendientes preparados. *(Trello: S04-JL02 sigue sin marcar al 14/09.)*
-- [ ] Flujo pedagógico revisado. *(Trello: S04-JL03 sigue en Backlog al 14/09, ni siquiera se movió.)*
+- [x] Navegación validada. *(Completado — reportado a Pedro el 14/09. Único objetivo de Julio
+  cerrado esta semana.)*
+- [ ] Contenidos pendientes preparados. *(Aplazado a la Semana 5 — `S05-JL01`.)*
+- [ ] Flujo pedagógico revisado. *(Aplazado hasta el despliegue del proyecto en la nube.)*
 
 ### Jorge Cervantes
 
@@ -340,8 +348,9 @@ Se realiza el cierre del sprint:
 - [x] Entregables revisados. *(Misma evidencia; dictamen del propio reporte: 🔴 no apto para
   producción, ~65% de avance real — se cierra la tarea, no se maquilla el resultado.)*
 
-**Resumen real de cierre:** 12 de 15 ítems de sprint cerrados con evidencia verificable. Los 3 que
-no cierran (pitch de José, navegación y contenidos de Julio) pasan íntegros a la Bitácora N.º 5.
+**Resumen real de cierre:** 13 de 15 ítems de sprint cerrados con evidencia verificable. Los 2 que
+no cierran son de Julio — contenidos (aplazado a la Semana 5, `S05-JL01`) y validación pedagógica
+(aplazado hasta el despliegue del proyecto en la nube, no cancelado).
 
 ---
 
