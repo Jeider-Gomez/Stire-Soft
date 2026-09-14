@@ -1,5 +1,6 @@
-import { Inject, Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { Inject, Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SubmissionsRepository } from './submissions.repository';
 import { SubmissionAnswersRepository } from '../submission-answers/submission-answers.repository';
@@ -17,6 +18,9 @@ import { JUDGE_QUEUE } from '../judge-engine/judge-queue.interface';
 import type { JudgeQueue } from '../judge-engine/judge-queue.interface';
 import { JudgeExecutionService } from '../judge-engine/judge-execution.service';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
+import { Enrollment } from '../enrollment/entities/enrollment.entity';
+import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
+import { Activity } from '../activities/entities/activity.entity';
 
 @Injectable()
 export class SubmissionsService {
@@ -33,11 +37,18 @@ export class SubmissionsService {
     @Inject(JUDGE_QUEUE) private readonly judgeQueue: JudgeQueue,
     private readonly contentRenderingService: ContentRenderingService,
     private readonly judgeExecutionService: JudgeExecutionService,
+    @InjectRepository(Enrollment)
+    private readonly enrollmentRepo: Repository<Enrollment>,
   ) {}
 
   async startSubmission(dto: StartSubmissionDto, studentId: number): Promise<Submission> {
-    const activity = await this.activitiesRepo.findOne({ where: { id: dto.activityId } });
+    const activity = await this.activitiesRepo.findOne({
+      where: { id: dto.activityId },
+      relations: ['learningUnit', 'learningUnit.topic', 'learningUnit.topic.section'],
+    });
     if (!activity) throw new NotFoundException('Actividad no encontrada');
+
+    await this.assertActiveEnrollment(activity, studentId);
 
     // Verificar si ya hay uno en progreso
     const active = await this.submissionsRepo.findActiveSubmission(studentId, activity.id);
@@ -58,7 +69,17 @@ export class SubmissionsService {
       startedAt: new Date(),
     });
 
-    return this.submissionsRepo.save(submission);
+    try {
+      return await this.submissionsRepo.save(submission);
+    } catch (error: unknown) {
+      // La restricción de BD cierra la carrera entre dos POST concurrentes.
+      // Si otro request creó el intento primero, devolvemos ese mismo intento.
+      if (this.isActiveAttemptDuplicate(error)) {
+        const concurrentActive = await this.submissionsRepo.findActiveSubmission(studentId, activity.id);
+        if (concurrentActive) return concurrentActive;
+      }
+      throw error;
+    }
   }
 
   async submitAnswers(submissionId: string, dto: SubmitAnswersDto, studentId: number) {
@@ -68,6 +89,7 @@ export class SubmissionsService {
     });
 
     if (!submission) throw new NotFoundException('Intento no encontrado');
+
     if (submission.status !== SubmissionStatus.IN_PROGRESS) {
       throw new BadRequestException('El intento ya fue procesado o ha expirado');
     }
@@ -147,20 +169,7 @@ export class SubmissionsService {
       // terminen de procesar el evento ANTES de responder al frontend, para
       // que el mastery ya esté actualizado cuando el estudiante lo consulte
       // justo después de recibir la calificación (ver workspace.ts).
-      if (!hasAsync) {
-        await this.eventEmitter.emitAsync(
-          'submission.graded',
-          new SubmissionGradedEvent(
-            submission.id,
-            submission.studentId,
-            submission.activityId,
-            submission.activity.learningUnitId,
-            submission.score,
-            submission.activity.passingScore,
-            submission.activity.totalPoints,
-          )
-        );
-      }
+      if (!hasAsync) await this.emitSubmissionGraded(submission);
 
       // Encolar jobs FUERA de la transacción, vía el puerto JudgeQueue.
       // En modo inline (default) no hay Redis que pueda fallar aquí; en modo
@@ -213,6 +222,13 @@ export class SubmissionsService {
       where: { id: submissionId, studentId },
     });
     if (!submission) throw new NotFoundException('Intento no encontrado');
+
+    const activity = await this.activitiesRepo.findOne({
+      where: { id: submission.activityId },
+      relations: ['learningUnit', 'learningUnit.topic', 'learningUnit.topic.section'],
+    });
+    if (!activity) throw new NotFoundException('Actividad no encontrada');
+    await this.assertActiveEnrollment(activity, studentId);
 
     const questions = await this.questionsRepo.findByActivityId(submission.activityId);
     const codingQuestion = questions.find((q) => q.type === QuestionType.CODING);
@@ -311,18 +327,7 @@ export class SubmissionsService {
     // await emitAsync (ver nota en submitAnswers): quien consulte
     // GET /submissions/:id después de que este método retorne debe encontrar
     // el mastery ya recalculado, no una carrera contra el listener.
-    await this.eventEmitter.emitAsync(
-      'submission.graded',
-      new SubmissionGradedEvent(
-        submission.id,
-        submission.studentId,
-        submission.activityId,
-        submission.activity.learningUnitId,
-        submission.score,
-        submission.activity.passingScore,
-        submission.activity.totalPoints,
-      )
-    );
+    await this.emitSubmissionGraded(submission);
   }
 
   async markAsFailed(submissionAnswerId: number, errorMessage: string) {
@@ -342,5 +347,44 @@ export class SubmissionsService {
 
     // 2. Ejecutar la consolidación del intento para actualizar el score total y emitir el evento correspondiente
     await this.consolidateSubmission(answer.submissionId);
+  }
+
+  private isActiveAttemptDuplicate(error: unknown): boolean {
+    if (typeof error !== 'object' || error === null) return false;
+    const databaseError = error as { code?: string; sqlState?: string };
+    return databaseError.code === 'ER_DUP_ENTRY' || databaseError.sqlState === '23000';
+  }
+
+  private async assertActiveEnrollment(activity: Activity, studentId: number): Promise<void> {
+    const classId = activity.learningUnit?.topic?.section?.classId;
+    if (!classId) throw new ForbiddenException('No se pudo verificar la matrícula de esta actividad');
+    const enrollment = await this.enrollmentRepo.findOne({
+      where: { classId, studentId, status: EnrollmentStatus.ACTIVE },
+    });
+    if (!enrollment) throw new ForbiddenException('No estás matriculado en esta clase');
+  }
+
+  private async emitSubmissionGraded(submission: Submission): Promise<void> {
+    try {
+      await this.eventEmitter.emitAsync(
+        'submission.graded',
+        new SubmissionGradedEvent(
+          submission.id,
+          submission.studentId,
+          submission.activityId,
+          submission.activity.learningUnitId,
+          submission.score,
+          submission.activity.passingScore,
+          submission.activity.totalPoints,
+        ),
+      );
+    } catch (error: unknown) {
+      // Mitigación ligera: la calificación ya fue persistida. Un outbox con
+      // reintentos sería el siguiente paso si estos fallos son frecuentes.
+      console.error(
+        `[SubmissionsService] No se pudo emitir submission.graded (submissionId=${submission.id}, studentId=${submission.studentId}, activityId=${submission.activityId}):`,
+        error,
+      );
+    }
   }
 }

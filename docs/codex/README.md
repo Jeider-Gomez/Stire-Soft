@@ -20,6 +20,7 @@ lo señala, no se reescribe el anterior.
 
 | # | Fecha | Documento | Resumen |
 |---|---|---|---|
+| 01 | 2026-09-14 | [`informes/INFORME_2026-09-14_SESION_01.md`](./informes/INFORME_2026-09-14_SESION_01.md) | Fases D-F: restricción de intento activo en MariaDB, comprobación de matrícula activa al iniciar/ensayar y aislamiento de fallos al emitir `submission.graded`. Pendientes las comprobaciones contra BD y navegador reales, además del commit autorizado. |
 | 01 | 2026-09-11 | [`../antigravity/INFORME_CODEX_PENDIENTES_2026-09-11.md`](../antigravity/INFORME_CODEX_PENDIENTES_2026-09-11.md) | Fases A-C: recomendación de siguiente actividad por dominio, moderación de matrícula, currículo real para Castro y Ali. Entregado en la rama `codex-pendientes`, luego fusionado a `main`. Nota: este informe quedó archivado en `docs/antigravity/` por cómo se ejecutó esa sesión (Codex corriendo dentro de Antigravity) — las sesiones siguientes de Codex usan `docs/codex/informes/`. |
 
 Para agregar una sesión nueva: copiar `informes/TEMPLATE_INFORME.md`, completar, renombrar como

@@ -1,4 +1,4 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { SubmissionsService } from '../submissions.service';
 import { SubmissionStatus } from '../../common/enums/submission-status.enum';
 import { QuestionType } from '../../common/enums/question-type.enum';
@@ -12,6 +12,7 @@ function makeActivity(overrides: Partial<any> = {}): any {
     attemptsAllowed: 3,
     passingScore: 60,
     totalPoints: 100,
+    learningUnit: { topic: { section: { classId: 7 } } },
     ...overrides,
   };
 }
@@ -61,6 +62,7 @@ describe('SubmissionsService', () => {
   let eventEmitter: any;
   let judgeQueue: any;
   let judgeExecutionService: any;
+  let enrollmentRepo: any;
 
   beforeEach(() => {
     dataSource = {
@@ -84,7 +86,7 @@ describe('SubmissionsService', () => {
     };
 
     activitiesRepo = {
-      findOne: jest.fn(),
+      findOne: jest.fn().mockResolvedValue(makeActivity()),
     };
 
     questionsRepo = {
@@ -108,6 +110,10 @@ describe('SubmissionsService', () => {
       runPublicCases: jest.fn(),
     };
 
+    enrollmentRepo = {
+      findOne: jest.fn().mockResolvedValue({ id: 'enrollment-1' }),
+    };
+
     const contentRenderingService = {
       escapePlainText: jest.fn((s: string) => s),
     };
@@ -123,6 +129,7 @@ describe('SubmissionsService', () => {
       judgeQueue,
       contentRenderingService as any,
       judgeExecutionService,
+      enrollmentRepo,
     );
   });
 
@@ -148,6 +155,28 @@ describe('SubmissionsService', () => {
 
       expect(result).toBe(activeSubmission);
       expect(submissionsRepo.create).not.toHaveBeenCalled();
+    });
+
+    it('rechaza con 403 a un estudiante sin matrícula activa en la clase de la actividad', async () => {
+      activitiesRepo.findOne.mockResolvedValue(makeActivity());
+      enrollmentRepo.findOne.mockResolvedValue(null);
+
+      await expect(service.startSubmission(dto, studentId)).rejects.toThrow(ForbiddenException);
+      expect(submissionsRepo.findActiveSubmission).not.toHaveBeenCalled();
+    });
+
+    it('devuelve el intento creado en paralelo cuando la restricción única reporta duplicado', async () => {
+      const activity = makeActivity();
+      const activeSubmission = makeSubmission();
+      activitiesRepo.findOne.mockResolvedValue(activity);
+      submissionsRepo.findActiveSubmission
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(activeSubmission);
+      submissionsRepo.getAttemptCount.mockResolvedValue(0);
+      submissionsRepo.create.mockReturnValue(makeSubmission());
+      submissionsRepo.save.mockRejectedValue({ code: 'ER_DUP_ENTRY', sqlState: '23000' });
+
+      await expect(service.startSubmission(dto, studentId)).resolves.toBe(activeSubmission);
     });
 
     it('lanza BadRequestException cuando se alcanzó el límite de intentos', async () => {
@@ -243,6 +272,14 @@ describe('SubmissionsService', () => {
 
       await expect(service.runPublicCases(submissionId, dto, studentId))
         .rejects.toThrow(NotFoundException);
+      expect(judgeExecutionService.runPublicCases).not.toHaveBeenCalled();
+    });
+
+    it('rechaza con 403 si la matrícula deja de estar activa antes de ensayar código', async () => {
+      submissionsRepo.findOne.mockResolvedValue(makeSubmission());
+      enrollmentRepo.findOne.mockResolvedValue(null);
+
+      await expect(service.runPublicCases(submissionId, dto, studentId)).rejects.toThrow(ForbiddenException);
       expect(judgeExecutionService.runPublicCases).not.toHaveBeenCalled();
     });
 
@@ -446,6 +483,27 @@ describe('SubmissionsService', () => {
       expect(result.passed).toBeNull();
       // Sin evaluación síncrona completa, el evento no se emite todavía.
       expect(eventEmitter.emitAsync).not.toHaveBeenCalled();
+    });
+
+    it('retorna la calificación persistida aunque falle un listener de submission.graded', async () => {
+      const activity = makeActivity({ totalPoints: 20, passingScore: 60 });
+      const submission = makeSubmission({ status: SubmissionStatus.IN_PROGRESS, activity });
+      submissionsRepo.findOne.mockResolvedValue(submission);
+      questionsRepo.findByActivityId.mockResolvedValue([makeQuestion()]);
+      evalEngine.evaluateAnswer.mockReturnValue({
+        isCorrect: true,
+        score: 20,
+        needsAsyncJudge: false,
+        feedback: 'Correcto',
+      });
+      eventEmitter.emitAsync.mockRejectedValue(new Error('listener caído'));
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      await expect(
+        service.submitAnswers(submissionId, { answers: [{ questionId: 1, answer: { selectedId: 'a' } }] }, studentId),
+      ).resolves.toEqual(expect.objectContaining({ status: SubmissionStatus.GRADED, totalScore: 20 }));
+      expect(errorSpy).toHaveBeenCalled();
+      errorSpy.mockRestore();
     });
   });
 

@@ -11,10 +11,11 @@ import { EvaluationEngineModule } from '../evaluation-engine/evaluation-engine.m
 import { JudgeEngineModule } from '../judge-engine/judge-engine.module';
 import { JudgeGradedListener } from './listeners/judge-graded.listener';
 import { ContentRenderingModule } from '../content-rendering/content-rendering.module';
+import { Enrollment } from '../enrollment/entities/enrollment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Submission]),
+    TypeOrmModule.forFeature([Submission, Enrollment]),
     SubmissionAnswersModule,
     ActivitiesModule,
     ActivityQuestionsModule,
