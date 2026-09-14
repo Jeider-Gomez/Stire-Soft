@@ -71,14 +71,18 @@ botón sin formulario); las otras cinco quedan por verificar.
 ### Julio Galvis — Diseño Instruccional
 
 **Esta semana:**
+- [ ] **S05-JL01 · Organizar la estructura de dos cursos de contenido**, siguiendo el formato de
+  STIRE (unidades de aprendizaje, ejercicios, actividades) — no escribir el contenido completo
+  todavía, solo la estructura:
+  - **Curso 1 — complejo:** sigue el plan oficial de 3er semestre de Fundamentos de Algoritmia, que
+    ya trabaja HTML5, CSS y JavaScript.
+  - **Curso 2 — general:** para la enseñanza de algoritmia en general, pensado según la plataforma
+    STIRE, sus funciones y su propia organización.
 - [ ] **S05-JL02 · Guion pedagógico de apoyo para la sustentación.**
 
 **En Backlog** (no se pueden terminar esta semana; sin fecha fija):
-- [ ] **S05-JL01 · Construir dos pistas de contenido, con dos docentes distintos.** Decisión de esta
-  semana: el contenido real de Fundamentos de Algoritmia incluye HTML5/CSS/JavaScript, más complejo
-  de tratar para público general que algoritmia "pura" — se decidió no comprometerse a una sola
-  versión, sino construir dos pistas con dos docentes y probar en el programa real cuál resulta más
-  útil.
+- [ ] **S05-JL05 · Escribir el contenido completo de los dos cursos y probarlos en el programa** —
+  depende de que `S05-JL01` (la estructura) esté lista primero.
 - [ ] **S05-JL03 · Validación pedagógica en vivo** — aplazada hasta que el proyecto se despliegue en la nube.
 - [ ] **S05-JL04 · Probar las funciones de docente en la creación/gestión de contenido de unidades** — también aplazada hasta el despliegue; Julio queda a cargo.
 
@@ -129,8 +133,10 @@ botón sin formulario); las otras cinco quedan por verificar.
 8. **Sandbox:** tests intermitentes por timing bajo memoria reducida; repetir antes de declarar defecto.
 9. **Decisión de contenido (14/09):** el contenido real de Fundamentos de Algoritmia incluye
    HTML5/CSS/JavaScript — más complejo que algoritmia "pura" para público general. Se decide
-   construir dos pistas de contenido con dos docentes distintos y probar en el programa real cuál
-   es más útil, en vez de comprometerse a una sola versión esta semana. Va a Backlog (`S05-JL01`).
+   organizar dos cursos con la estructura de STIRE (unidades, ejercicios, actividades): uno
+   complejo (plan oficial, HTML/CSS/JS) y uno general (pensado para la plataforma), y probar cuál
+   es más útil. Organizar la estructura es tarea de esta semana (`S05-JL01`); escribir el contenido
+   completo y probarlo va a Backlog (`S05-JL05`).
 
 ---
 
@@ -171,8 +177,9 @@ botón sin formulario); las otras cinco quedan por verificar.
 
 ### Julio Galvis
 
-- [ ] Guion pedagógico entregado.
-- [ ] *(Las dos pistas de contenido, la validación en vivo y las funciones de docente quedan en
+- [ ] Estructura de los dos cursos organizada (`S05-JL01`).
+- [ ] Guion pedagógico entregado (`S05-JL02`).
+- [ ] *(Escribir el contenido completo, la validación en vivo y las funciones de docente quedan en
   Backlog — no aplican esta semana, ver §3.)*
 
 ### Jorge Cervantes
