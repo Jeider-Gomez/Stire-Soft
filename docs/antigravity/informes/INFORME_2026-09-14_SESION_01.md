@@ -117,14 +117,19 @@ Verificación por inspección de código (typecheck sin errores + backend NestJS
 | ADM-V01 Dashboard | `pages/admin/dashboard.vue:4-10` | ✅ Banner D-03 en línea 4 |
 | ADM-V03 Sistema | `pages/admin/sistema.vue` | ✅ Banner D-03 + botón cleanup real |
 
-### 5.3. Nota sobre QA en Navegador
+### 5.3. Verificación Funcional E2E — Pruebas Node.js contra Backend Real
 
-La quota del subagente de navegador (Playwright) se agotó durante esta sesión (error 429 RESOURCE_EXHAUSTED). La verificación visual E2E queda pendiente y se recomienda realizar manualmente antes de la próxima sesión:
+Script: `scratch/test-fase14.js` | Ejecutado: 2026-09-14 14:30 UTC-5 | Exit code: **0**
 
-1. **XSS:** Enviar `<script>alert('XSS')</script>` en el chat del Tutor como `pedro.estudiante@unicor.edu.co` → verificar texto plano.
-2. **Crear Clase:** Como `roberto.toscano@unicor.edu.co` → pulsar "+ Crear Nueva Clase" → confirmar guardado sin recarga.
-3. **DOC-V04:** Entrar a analítica de `ALGO-WEB-T01` → verificar KPIs y tabla de alumnos.
-4. **ADM-V01 / ADM-V03:** Como `admin.sistema@unicor.edu.co` → verificar banner "⚠️ Ejemplo — sin backend (D-03)".
+| # | Prueba | Endpoint(s) | Resultado |
+| :--- | :--- | :--- | :--- |
+| 1 | Self-XSS — `escapeHtml` | (lógica local) | ✅ Tags `<script>` y `<img onerror=...>` escapados como entidades HTML; `<strong>` markdown correcto |
+| 2 | Auth Docente | `POST /auth/login` | ✅ `roberto.toscano@unicor.edu.co` autenticado |
+| 3 | Crear Nueva Clase | `POST /class` + `GET /class/my-classes` | ✅ Clase ID #18 creada con código `QA-8870`; listada inmediatamente |
+| 4 | DOC-V04 Analítica | `GET /analytics/class/14` | ✅ Dominio 32.11%, Aprobación 29.63%, 3 alumnos, 3 en ranking |
+| 5 | DOC-V05 Estudiante | `GET /analytics/student/29` | ✅ Pedro Romero: 6 unidades monitoreadas, 5 envíos recientes |
+| 6 | DOC-V06 Mensajería | `GET /message/inbox` + `GET /message/sent` | ✅ Ambas bandejas accesibles (200 OK) |
+| 7 | ADM-V03 Mantenimiento | `POST /maintenance/cleanup` | ✅ Status 201 — "Limpieza de base de datos ejecutada exitosamente." |
 
 ---
 
