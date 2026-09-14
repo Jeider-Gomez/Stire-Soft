@@ -78,7 +78,6 @@ botón sin formulario); las otras cinco quedan por verificar.
     ya trabaja HTML5, CSS y JavaScript.
   - **Curso 2 — general:** para la enseñanza de algoritmia en general, pensado según la plataforma
     STIRE, sus funciones y su propia organización.
-- [ ] **S05-JL02 · Guion pedagógico de apoyo para la sustentación.**
 
 **En Backlog** (no se pueden terminar esta semana; sin fecha fija):
 - [ ] **S05-JL05 · Escribir el contenido completo de los dos cursos y probarlos en el programa** —
@@ -178,7 +177,6 @@ botón sin formulario); las otras cinco quedan por verificar.
 ### Julio Galvis
 
 - [ ] Estructura de los dos cursos organizada (`S05-JL01`).
-- [ ] Guion pedagógico entregado (`S05-JL02`).
 - [ ] *(Escribir el contenido completo, la validación en vivo y las funciones de docente quedan en
   Backlog — no aplican esta semana, ver §3.)*
 
