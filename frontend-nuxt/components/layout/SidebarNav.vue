@@ -72,9 +72,10 @@
         </NuxtLink>
       </nav>
 
-      <!-- 👨‍🏫 NAVEGACIÓN DOCENTE -->
+      <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
       <nav v-else-if="authStore.currentRole === 'docente'" class="space-y-1.5 text-sm font-medium">
         <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Gestión Docente</p>
+
         <NuxtLink
           to="/docente"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
@@ -82,23 +83,66 @@
           <span>👥</span>
           <span>Mis Clases (DOC-V01)</span>
         </NuxtLink>
-        <div class="px-3 py-2 text-xs text-base-texto-secundario">
-          <span class="block font-medium text-base-texto-primario mb-1">Módulos Próximos:</span>
-          <span class="block">· Contenidos y Temas</span>
-          <span class="block">· Diseñador Ejercicios</span>
-          <span class="block">· Analítica Cohorte</span>
-        </div>
+
+        <NuxtLink
+          to="/docente/contenidos"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path === '/docente/contenidos' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <span>📚</span>
+          <span>Contenidos (DOC-V02)</span>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/docente/ejercicios/crear"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path === '/docente/ejercicios/crear' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <span>✍️</span>
+          <span>Crear Ejercicio (DOC-V03)</span>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/docente/rendimiento"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path.startsWith('/docente/rendimiento') || route.path.startsWith('/docente/estudiante') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <span>📊</span>
+          <span>Rendimiento (DOC-V04)</span>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/docente/mensajes"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path === '/docente/mensajes' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <span>✉️</span>
+          <span>Mensajes (DOC-V06)</span>
+        </NuxtLink>
       </nav>
 
-      <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR -->
+      <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR (ADM-V01..V03) -->
       <nav v-else class="space-y-1.5 text-sm font-medium">
         <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Administración</p>
+
+        <NuxtLink
+          to="/admin/dashboard"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path === '/admin/dashboard' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <span>📊</span>
+          <span>Estado del Sistema (ADM-V01)</span>
+        </NuxtLink>
+
         <NuxtLink
           to="/admin"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          :class="route.path === '/admin' || route.path === '/admin/usuarios' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <span>🛡️</span>
           <span>Usuarios y Roles (ADM-V02)</span>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/admin/sistema"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path === '/admin/sistema' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <span>⚙️</span>
+          <span>Logs y Mantenimiento (ADM-V03)</span>
         </NuxtLink>
       </nav>
     </div>

@@ -50,13 +50,23 @@ export function useApi() {
   }
 
   // Conveniencia: POST tipado
-  function post<T>(endpoint: string, body: unknown) {
+  function post<T>(endpoint: string, body?: unknown) {
     return apiFetch<T>(endpoint, { method: 'POST', body })
   }
 
   // Conveniencia: PUT tipado
-  function put<T>(endpoint: string, body: unknown) {
+  function put<T>(endpoint: string, body?: unknown) {
     return apiFetch<T>(endpoint, { method: 'PUT', body })
+  }
+
+  // Conveniencia: PATCH tipado
+  function patch<T>(endpoint: string, body?: unknown) {
+    return apiFetch<T>(endpoint, { method: 'PATCH', body })
+  }
+
+  // Conveniencia: DELETE tipado
+  function del<T>(endpoint: string) {
+    return apiFetch<T>(endpoint, { method: 'DELETE' })
   }
 
   return {
@@ -64,6 +74,8 @@ export function useApi() {
     get,
     post,
     put,
+    patch,
+    del,
     baseUrl
   }
 }

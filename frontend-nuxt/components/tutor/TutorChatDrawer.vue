@@ -173,9 +173,20 @@ function scrollToBottom() {
   })
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 function formatMessage(rawText: string) {
-  // Conversión básica de markdown simple a HTML seguro
-  return rawText
+  if (!rawText) return ''
+  // Sanitizar HTML primero contra inyecciones XSS, luego formatear markdown seguro
+  const safeText = escapeHtml(rawText)
+  return safeText
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/`(.*?)`/g, '<code class="bg-base-blanco px-1 py-0.5 rounded text-acento-ambar-fuerte font-codigo text-[11px]">$1</code>')
     .replace(/\n/g, '<br/>')
