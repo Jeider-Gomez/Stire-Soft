@@ -1,9 +1,10 @@
 ---
-estado:     vigente — Fases A-F de §12 ya ejecutadas por Antigravity (ver docs/antigravity/informes/
-            INFORME_2026-09-10_SESION_01.md); Fase siguiente definida en §13
-verificado: 2026-09-10 contra frontend-nuxt/ y src/ reales (tercera pasada, posterior a la ejecución
-            de las Fases A-F) — segunda pasada 2026-09-10 antes de esa ejecución, primera pasada
-            2026-09-09 contra el archivo Figma real (fileKey 1MjKiDrjU65ezO3ztO0v4m)
+estado:     vigente — Fases A-F de §12 y Fase de §13 (MCQ/FILL_CODE) ejecutadas y verificadas; Fase
+            siguiente definida en §14 (2026-09-14)
+verificado: 2026-09-14 contra frontend-nuxt/ y src/ reales (cuarta pasada) — tercera pasada
+            2026-09-10, posterior a la ejecución de las Fases A-F; segunda pasada 2026-09-10 antes de
+            esa ejecución; primera pasada 2026-09-09 contra el archivo Figma real
+            (fileKey 1MjKiDrjU65ezO3ztO0v4m)
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    COMP-V00 · EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03
 ---
@@ -578,3 +579,118 @@ falta que Antigravity toque nada de esa lógica — solo que las pantallas de de
 - `workspace.ts` en su rama `coding` no cambia de comportamiento (regresión cero, verificable
   reproduciendo el flujo de `docs/00_VISION_FUNCIONAL.md` §9.3 sin diferencias).
 - Informe de sesión nuevo en `docs/antigravity/informes/`, mismo criterio que el resto.
+
+---
+
+## 14. Fase siguiente — Docente/Administrador en Nuxt + 2 correcciones verificadas (2026-09-14)
+
+### 14.0 Coordinación con Codex — leer antes de empezar
+
+**Codex está trabajando en paralelo sobre backend de `submissions`** (`docs/codex/PLAN_IMPLEMENTACION.md`
+Fases D/E/F: restricción contra intentos duplicados, verificación de matrícula en
+`POST /submissions/start`, endurecimiento de `submission.graded`). Esta fase de Antigravity **no
+toca `src/submissions/` ni `frontend-nuxt/stores/workspace.ts`** — son de Codex. Si algo de esta fase
+pareciera requerir tocar esos archivos, es una señal de que el alcance se está saliendo de lo
+descrito abajo; deténte y avisa antes de continuar.
+
+### 14.1 Qué motiva esta fase — verificación en frío contra el código real (14/09)
+
+Jorge Cervantes (Calidad y Pruebas del equipo) entregó una auditoría QA completa el 12/09
+(`docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE2VERSION.md`). Antes de convertir sus hallazgos de
+frontend en trabajo para esta fase, Claude Code los verificó uno por uno contra `frontend-nuxt/`
+real, siguiendo la regla de este proyecto de tratar todo hallazgo como hipótesis hasta comprobarlo:
+
+- **Confirmados reales** — sí son trabajo para esta fase:
+  - `P2-R4`: `TutorChatDrawer.vue:81` renderiza `formatMessage(msg.text)` vía `v-html` sin sanitizar
+    — Self-XSS real. Ver §14.3.
+  - `FE-02`: el botón "+ Crear Nueva Clase" en `pages/docente/index.vue:19-22` no tiene `@click` —
+    no existe el formulario. Ver §14.4.
+  - Cobertura real de pantallas: solo `DOC-V01` y la gestión de matrícula (`pages/docente/clase/
+    [classId].vue`, ya construida por Codex) existen del lado Docente; solo `ADM-V02` del lado
+    Administrador. Las 7 ventanas restantes (`DOC-V02..V06`, `ADM-V01`, `ADM-V03`) ya están
+    completas en Figma (defecto/vacío/error) desde la semana pasada, sin una línea de código Nuxt
+    todavía. Ver §14.2.
+- **Refutados, no son trabajo de esta fase** — verificados y ya resueltos desde antes de la fecha
+  del propio reporte de Jorge (commits `715b43b`, `29575e6`, `5310967`, todos del 09-10/09):
+  - `FE-01` ("`workspace.ts` usa `new Function()`"): falso hoy — `runIsolatedCode()` llama a
+    `POST /submissions/:id/run` real vía `useApi()`.
+  - `FE-03` ("sin polling para notas asíncronas"): falso hoy — `submitSolution()` ya usa
+    `pollSubmissionStatus()`. **No los reabras** — probablemente Jorge auditó un ZIP desactualizado.
+
+### 14.2 Alcance principal — construir las ventanas de Docente/Administrador que faltan
+
+**Lectura obligatoria antes de escribir código** (mismo criterio que §2 de este documento, no se
+re-deriva nada de esto):
+- [`ventanas/3.3.1_FICHAS_VENTANAS.md`](../modesec/ventanas/3.3.1_FICHAS_VENTANAS.md) — fichas de
+  `DOC-V02` (Contenidos y Temas), `DOC-V05` (Detalle de Estudiante), `DOC-V06` (Mensajes), `ADM-V01`
+  (Panel de Control Administrativo) y `ADM-V03` (Configuración y Parámetros Globales).
+- `DOC-V03` (Crear Ejercicio) y `DOC-V04` (Rendimiento del Grupo) **no tienen ficha en ese
+  documento** — están en
+  [`docs/modesec/usuarios/docente/README.md`](../modesec/usuarios/docente/README.md), secciones
+  `DOC-V03`/`DOC-V04`. No inventar contenido si la ficha no está completa; señalarlo en el informe.
+- El prototipo de Figma real (mismo `fileKey`, página "🎓 Prototipo") para las 7 ventanas, cada una
+  con 3 de 4 estados (defecto/vacío/error — **no** completado, decisión ya tomada y declarada en
+  `MONITOREO_SEMANAL_04.md`, no se rediscute aquí).
+
+**Prioridad dentro de esta fase** (no construir todo a la vez; en este orden):
+1. `DOC-V04` · Rendimiento del Grupo — Jorge confirmó en su QA que las APIs de analítica ya existen
+   (`src/analytics/`). Es la ventana con más probabilidad de conectar a datos reales de inmediato.
+2. `DOC-V02` · Contenidos y Temas, `DOC-V05` · Detalle de Estudiante, `DOC-V06` · Mensajes — layout y
+   estados primero; conectar a datos reales donde el endpoint ya exista, o mostrar dato de ejemplo
+   **rotulado como tal** donde no exista, nunca disimulado (mismo criterio que el resto de este plan).
+3. `DOC-V03` · Crear Ejercicio — depende de que la ficha en `usuarios/docente/README.md` alcance para
+   construir sin inventar campos.
+4. `ADM-V01` y `ADM-V03` — **ya están marcadas en Figma como "⚠ Ejemplo — sin backend (D-03)"**; no
+   hay endpoint real detrás de ninguna de las dos. Construir como mockup explícito con esa misma
+   leyenda visible — no simular datos reales. Menor prioridad que las de Docente.
+
+**Reutilizar, no rehacer:** `layouts/teacher.vue` y `layouts/admin.vue` ya existen (Paso 2, §5 de este
+documento) — las zonas A/B/D/E, el menú lateral y el borde de afordancia ya están resueltos ahí. Cada
+ventana nueva es una página que llena `[C]`, igual que ya se hizo para `DOC-V01`/`ADM-V02`.
+
+### 14.3 Corregir el Self-XSS del Tutor IA (`P2-R4`)
+
+- Archivo: `frontend-nuxt/components/tutor/TutorChatDrawer.vue`, función `formatMessage()`
+  (líneas 176-182) y su uso en línea 81 (`v-html="formatMessage(msg.text)"`).
+- El problema: `formatMessage` transforma **markdown** (`**bold**`, `` `code` ``, saltos de línea) a
+  HTML, pero nunca escapa el texto original antes de aplicar esos reemplazos — cualquier `<script>`
+  o atributo `onerror=` en `msg.text` pasa intacto al DOM vía `v-html`.
+- Corrección esperada: escapar el HTML del texto original **antes** de aplicar los reemplazos de
+  markdown (o usar una librería de sanitización tipo DOMPurify sobre el resultado final) — de forma
+  que `**negrita**` siga rindiendo `<strong>`, pero `<script>alert(1)</script>` rinda como texto
+  literal, no como HTML ejecutable.
+- No cambiar el contrato de `msg.text` ni el store de `tutor.ts` — es un fix acotado al renderizado.
+
+### 14.4 Construir el formulario de "Crear Nueva Clase" (`FE-02`)
+
+- Archivo: `frontend-nuxt/pages/docente/index.vue`, botón en líneas 19-22 (sin `@click`).
+- Backend ya existe y funciona: `POST /class` (ver `docs/codex/PLAN_IMPLEMENTACION.md` Fase B,
+  commit `7aa51e8`, incluye `requiresApproval`).
+- Construir un modal/formulario simple (nombre de la clase, y el toggle `requiresApproval` que hoy
+  solo existe en la pantalla de gestión de una clase ya creada) que, al enviarse, llame a `POST
+  /class` y refresque la lista de clases del docente sin recargar la página completa.
+- No construir un "editor de configuración de clase" completo — el formulario de creación basta para
+  esta fase (mismo criterio que el plan de Codex que dejó esto fuera de su Fase B).
+
+### 14.5 Explícitamente fuera de esta fase
+
+- Cualquier cambio a `src/submissions/` o `frontend-nuxt/stores/workspace.ts` — es de Codex (§14.0).
+- Backend nuevo para `ADM-V01`/`ADM-V03` — siguen "pendiente de backend (D-03)"; esta fase construye
+  el mockup declarado, no el backend que falta.
+- `ai_evaluated`, sandbox multi-lenguaje, progresión de 3 pasos para Nivel 2 — sin alcance definido
+  todavía, ver `docs/PLAN_MAESTRO.md` §6.3.
+
+### 14.6 Criterio de cierre de esta fase
+
+- Las 7 ventanas de §14.2 existen en `frontend-nuxt/`, con sus 3 estados (defecto/vacío/error),
+  reutilizando `layouts/teacher.vue`/`layouts/admin.vue` — verificado en navegador real, no solo
+  compilación. `ADM-V01`/`ADM-V03` muestran su leyenda de "sin backend" tal como en Figma.
+- El chat del Tutor IA ya no ejecuta HTML/script inyectado en un mensaje de prueba (§14.3),
+  verificado probando con un mensaje que contenga `<script>` o un atributo `onerror=`.
+- Un docente puede crear una clase real desde la interfaz y la ve aparecer en su lista sin recargar
+  (§14.4), verificado en navegador real.
+- `npx nuxi typecheck` y `npm run build` (frontend) en verde.
+- **Informe de sesión obligatorio** en `docs/antigravity/informes/`, siguiendo
+  `informes/TEMPLATE_INFORME.md`, con fila agregada al índice de `docs/antigravity/README.md` — sin
+  este informe, esta fase no se considera cerrada aunque el código ya esté en el repositorio (mismo
+  criterio de todas las fases anteriores).

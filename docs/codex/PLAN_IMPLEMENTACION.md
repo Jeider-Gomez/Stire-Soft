@@ -1,9 +1,20 @@
 # Plan de implementación para Codex — pendientes reales de STIRE-Soft
 
-**Fecha:** 2026-09-11
+**Fecha:** 2026-09-11 (Fases A-C) · **actualizado 2026-09-14** (Fases D-F)
 **Herramienta objetivo:** Codex (CLI / IDE)
 **Autor del plan:** Claude Code, tras verificar en vivo (backend real, MariaDB real, navegador
 real) el estado del proyecto en la misma sesión que lo redactó.
+
+**Documento vivo, mismo criterio que `docs/antigravity/PLAN_IMPLEMENTACION.md`:** las Fases A-C ya
+se ejecutaron y verificaron (ver `docs/antigravity/INFORME_CODEX_PENDIENTES_2026-09-11.md` y
+`docs/PLAN_MAESTRO.md` §4.3/§4.4). Las Fases D-F, agregadas el 14/09, son la siguiente entrega.
+
+> **Coordinación con Antigravity (leer antes de empezar las Fases D-F):** Antigravity trabaja en
+> paralelo sobre `frontend-nuxt/pages/docente/`, `frontend-nuxt/pages/admin/` y
+> `frontend-nuxt/components/tutor/TutorChatDrawer.vue` (`docs/antigravity/PLAN_IMPLEMENTACION.md`
+> §14). Las Fases D-F de este documento **no tocan esos archivos** — son exclusivamente
+> `src/submissions/`. Si algo pareciera requerir tocar frontend de Docente/Administrador o el Tutor
+> IA, es de Antigravity, no de esta entrega.
 
 ---
 
@@ -247,7 +258,151 @@ usa `classToscano` (Module → Topic → LearningUnit → Activity → ActivityQ
 
 ---
 
-## 1. Verificación final (las 3 fases, si se hacen todas)
+## Fase D — Restricción real contra intentos activos duplicados
+
+### D.1 Qué existe hoy (evidencia, verificada 2026-09-14)
+
+- `startSubmission` (`src/submissions/submissions.service.ts:38-62`) comprueba si ya existe un
+  intento activo con `submissionsRepo.findActiveSubmission(studentId, activity.id)` **antes** de
+  crear uno nuevo — es un patrón *leer-luego-escribir* (check-then-act), no una restricción a nivel
+  de base de datos.
+- `submission.entity.ts` (`src/submissions/entities/submission.entity.ts:8-9`) solo tiene
+  `@Index(['studentId','activityId'])` y `@Index(['studentId','status'])` — índices normales para
+  acelerar consultas, ninguno con `@Unique`.
+- Consecuencia real: dos requests concurrentes de `POST /submissions/start` para la misma actividad
+  (doble clic, red lenta con reintento del cliente, dos pestañas) pueden ambas pasar la comprobación
+  antes de que la primera termine de guardar, y terminar creando dos filas `IN_PROGRESS` para el
+  mismo `(studentId, activityId)`. Esto es el hallazgo `P1-07` del QA de Jorge Cervantes
+  (`docs/ReportesQA/`) — verificado contra el código real, es real.
+
+### D.2 Qué construir
+
+- Nueva migración TypeORM (revisa `src/migrations/` para el patrón exacto ya usado, p. ej.
+  `1789000000000-AddApprovalToClasses.ts` de la Fase B) que agregue un **índice único parcial/
+  condicional** sobre `(studentId, activityId)` donde `status = 'in_progress'` — MariaDB soporta
+  índices funcionales/generados o, más simple y portable, una columna generada booleana
+  (`isActiveAttempt`) que sea `true` solo cuando `status='in_progress'` y un índice único sobre
+  `(studentId, activityId, isActiveAttempt)` con `isActiveAttempt` como parte de la clave (el valor
+  `false` no colisiona porque MariaDB no aplica unicidad sobre múltiples `NULL`, pero si se usa un
+  booleano en vez de `NULL` hay que verificarlo con una prueba real de dos inserciones — no asumir
+  el comportamiento de memoria).
+- Ajustar `startSubmission` para que, si el `INSERT` falla por violar esa restricción (captura el
+  error de MariaDB, código `ER_DUP_ENTRY`/`23000`), la reintente como una simple relectura +
+  devolución del intento activo real (mismo resultado que el `return active` de hoy) — el usuario
+  nunca debe ver un 500 por esto, la restricción es una defensa adicional, no un nuevo error visible.
+- **No** cambies la firma de `startSubmission` ni el contrato de `POST /submissions/start` — el
+  frontend (`workspace.ts`) sigue esperando exactamente la misma respuesta de siempre.
+
+### D.3 Explícitamente fuera de esta fase
+
+- No toques `findActiveSubmission` ni el resto de `submissions.repository.ts` más allá de lo
+  necesario para el manejo del error de duplicado.
+- No apliques la misma restricción a otras entidades — el hallazgo es específico de `submissions`.
+
+### D.4 Criterio de cierre
+
+- Test nuevo que dispare dos `startSubmission` concurrentes (p. ej. `Promise.all` de dos llamadas al
+  servicio con el mismo `studentId`/`activityId` contra una BD de test real, no mockeada) y verifique
+  que solo existe una fila `IN_PROGRESS` al final, sin que la segunda llamada lance un error visible
+  al usuario.
+- `npm run build`, `npm test` en verde. Migración corrida contra una BD real de desarrollo
+  (`npm run migration:run`), no solo generada.
+
+---
+
+## Fase E — Verificar matrícula activa en `POST /submissions/start`
+
+### E.1 Qué existe hoy (evidencia, verificada 2026-09-14)
+
+- `startSubmission` (`src/submissions/submissions.service.ts:38-62`) solo verifica que la actividad
+  exista (`activitiesRepo.findOne`) y el límite de intentos — **nunca** verifica que el
+  `studentId` esté matriculado (`EnrollmentStatus.ACTIVE`) en la clase que contiene esa actividad.
+  Un estudiante autenticado que conozca o adivine un `activityId` de una clase en la que no está
+  inscrito puede iniciar un intento igual. Hallazgo `P2-R3` del QA de Jorge — verificado, es real.
+- Ya existe el mecanismo para esta verificación en otro lugar del código: revisa
+  `AuthorizationService` (usado en `enrollment.service.ts`, `learning-progress.controller.ts` y
+  `learning-unit.service.ts` — este último cerrado por Claude Code el 11/09, commit `b1bc096`, mismo
+  tipo de hallazgo). **No reimplementes la verificación de matrícula distinta a la que ya existe** —
+  localiza el método equivalente a `assertEnrolledInClass`/`assertCanReadClass` y reutilízalo, o
+  replica exactamente su misma consulta si el método no es directamente inyectable aquí.
+
+### E.2 Qué construir
+
+- En `startSubmission`, después de cargar `activity` y antes de crear la submission: obtener la
+  clase propietaria de la actividad (`activity.learningUnit.topic.section.classId` o el camino real
+  que uses en otros servicios — verifica la relación exacta en `activity.entity.ts` antes de asumir
+  la ruta) y verificar que el estudiante tenga una matrícula `ACTIVE` en esa clase. Si no,
+  `ForbiddenException` (403), igual que el patrón ya usado en las rutas hermanas.
+- Verifica también `POST /submissions/:id/run` (mismo servicio, función de ejecución libre) — si
+  comparte la falta de verificación, corrígela ahí también; si ya la tiene (por ejemplo porque
+  reutiliza `ensureActiveSubmission` de una submission ya creada con matrícula válida), no dupliques
+  la comprobación innecesariamente.
+
+### E.3 Explícitamente fuera de esta fase
+
+- No cambies el comportamiento para las 3 clases ya sembradas con estudiantes ya matriculados
+  (Toscano, Castro, Ali) — cero regresión, deben seguir pudiendo iniciar submissions con normalidad.
+- No toques `submitAnswers` ni `runIsolatedCode` del lado backend más allá de la verificación de
+  matrícula si aplica — su lógica de calificación no cambia.
+
+### E.4 Criterio de cierre
+
+- Test nuevo: un estudiante NO matriculado en la clase de una actividad recibe 403 al intentar
+  `POST /submissions/start` con esa `activityId`; un estudiante SÍ matriculado sigue funcionando
+  igual que antes (regresión cero, reutiliza los tests existentes de `submissions.service.spec.ts`).
+- Verificado en navegador real: `pedro.estudiante@unicor.edu.co` (matriculado en Castro y Toscano)
+  no puede iniciar una actividad de una clase en la que no está inscrito, aunque conozca el
+  `activityId` por URL directa.
+- `npm run build`, `npm test` en verde.
+
+---
+
+## Fase F — Endurecer la emisión de `submission.graded` (mitigación ligera, no outbox completo)
+
+### F.1 Qué existe hoy (evidencia, verificada 2026-09-14)
+
+- `submitAnswers` (`submissions.service.ts:140-163`) ya hace lo correcto en el orden: comita la
+  transacción de BD (`queryRunner.commitTransaction()`) **antes** de emitir `submission.graded` vía
+  `eventEmitter.emitAsync(...)` — el comentario en el propio código lo llama "COMMIT PRIMERO". Esto
+  contradice la descripción literal del hallazgo `P1-08` del QA de Jorge ("se pierde si la
+  transacción falla") — con este orden, si la transacción falla, el evento nunca se emite y no hay
+  inconsistencia. **No repitas el hallazgo como está escrito en el reporte de Jorge; el riesgo real
+  es más angosto**, ver abajo.
+- El riesgo real que sí queda abierto: el `await this.eventEmitter.emitAsync(...)` en sí mismo no
+  está en un `try/catch`. Si ese `emitAsync` lanza (un listener con un bug, una excepción no
+  controlada en el cálculo de mastery), la promesa de `submitAnswers` se rechaza **después** de que
+  la submission ya quedó `GRADED` en BD — el estudiante puede recibir un error 500 en la respuesta
+  aunque su calificación ya se guardó correctamente, y no hay ningún reintento ni registro de que el
+  procesamiento de mastery/repasos no terminó.
+
+### F.2 Qué construir (mitigación acotada, no un patrón Outbox completo)
+
+- Envolver el `emitAsync('submission.graded', ...)` en un `try/catch` dentro de `submitAnswers`: si
+  falla, registrar el error con suficiente contexto para diagnosticarlo (`submission.id`,
+  `studentId`, `activityId`) usando el logger que ya use el resto del servicio — **y responder al
+  cliente con la submission ya calificada igual** (el `GRADED` en BD es el resultado que importa;
+  que el estudiante lo vea es más importante que ocultarlo por un fallo del post-proceso).
+- No implementes un patrón Outbox completo (tabla de eventos pendientes + reintentos automáticos) —
+  es sobre-ingeniería para el tamaño actual de este proyecto; deja explícito en el código (comentario)
+  que esta es una mitigación ligera y que un outbox real sería el siguiente paso si el problema se
+  vuelve frecuente en producción.
+
+### F.3 Explícitamente fuera de esta fase
+
+- No cambies el orden commit-luego-emit que ya es correcto.
+- No agregues colas, tablas de eventos, ni infraestructura nueva — un `try/catch` con logging basta
+  para el alcance de esta fase.
+
+### F.4 Criterio de cierre
+
+- Test nuevo: forzar que `eventEmitter.emitAsync` lance dentro de `submitAnswers` (mock) y verificar
+  que el método de todas formas retorna la submission ya calificada (no relanza el error al
+  controller) y que se registró el error.
+- `npm run build`, `npm test` en verde.
+
+---
+
+## 1. Verificación final (todas las fases, si se hacen todas)
 
 Corre, en este orden, y pega la salida real (no un resumen) como evidencia de cierre:
 
@@ -259,3 +414,8 @@ cd frontend-nuxt && npx nuxi typecheck
 
 Y al menos un recorrido en navegador real por fase, como se describe en cada criterio de cierre
 arriba — "compiló" no es lo mismo que "funciona", regla que gobierna todo este proyecto.
+
+**Informe de sesión obligatorio al terminar**, siguiendo `docs/codex/informes/TEMPLATE_INFORME.md`,
+guardado como `docs/codex/informes/INFORME_YYYY-MM-DD_SESION_NN.md`, con fila agregada al índice de
+`docs/codex/README.md` — mismo criterio que ya usa Antigravity. Un commit por fase (D, E, F) — no las
+mezcles en un solo commit, igual que se pidió para las Fases A-C.

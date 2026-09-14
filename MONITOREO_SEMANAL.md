@@ -54,8 +54,8 @@ botón sin formulario); las otras cinco quedan por verificar.
 ### Jeider Gómez — Líder Técnico
 
 - [ ] **S05-J01 · Preparar y ejecutar la sustentación del Reto 2** (15–17/09).
-- [ ] **S05-J02 · Corregir el Self-XSS del Tutor IA (`P2-R4`)** — `TutorChatDrawer.vue`, reemplazar `v-html` sin sanitizar.
-- [ ] **S05-J03 · Conectar "Crear Nueva Clase" a `POST /class` (`FE-02`)**.
+- [ ] **S05-J02 · Corregir el Self-XSS del Tutor IA (`P2-R4`)** — `TutorChatDrawer.vue`, reemplazar `v-html` sin sanitizar. Ejecutado vía Antigravity (`docs/antigravity/PLAN_IMPLEMENTACION.md` §14.3).
+- [ ] **S05-J03 · Conectar "Crear Nueva Clase" a `POST /class` (`FE-02`)**. Ejecutado vía Antigravity (§14.4), junto con las 7 ventanas de Docente/Administrador que faltan en código (§14.2).
 
 ### Pedro Romero — Gestión + Documentación
 
@@ -87,8 +87,13 @@ botón sin formulario); las otras cinco quedan por verificar.
 
 ### Jorge Cervantes — Calidad y Pruebas
 
-- [ ] **S05-JOR01 · Re-verificar `P1-07`, `P1-08`, `P2-R3`, `FE-03`, `BE-01`** con pasos de reproducción.
-- [ ] **S05-JOR02 · QA de las correcciones de S05-J02/J03.**
+- [x] **S05-JOR01 · Re-verificar `P1-07`, `P1-08`, `P2-R3`, `FE-03`, `BE-01`.** Hecho por Claude
+  Code el 14/09 contra el código real (no repetido por Jorge para no duplicar el trabajo):
+  `P1-07`/`P2-R3` confirmados reales, `P1-08` matizado, `BE-01` ya era conocido, `FE-03` refutado
+  (ya resuelto desde antes del propio reporte). Detalle completo en `docs/PLAN_MAESTRO.md` §5
+  (checkpoint 2026-09-14).
+- [ ] **S05-JOR02 · QA de las correcciones que entreguen Antigravity (§14) y Codex (Fases D/E/F)** —
+  no solo de Jeider; el trabajo se ejecuta vía esos dos planes, ver arriba.
 
 ---
 
@@ -126,8 +131,12 @@ botón sin formulario); las otras cinco quedan por verificar.
 2. **Cobertura real de frontend baja:** 9 de 19 pantallas con integración real (QA de Jorge, 12/09).
 3. **Self-XSS confirmado en el chat del Tutor IA (`P2-R4`)**, sin corregir.
 4. **Botón "Crear Nueva Clase" sin formulario (`FE-02`)**, confirmado, sin corregir.
-5. **Hallazgos del QA sin verificar:** `P1-07`, `P1-08`, `P2-R3`, `FE-03`, `BE-01` — hipótesis, no hechos, hasta reproducirlos.
-6. **"Probar código" no usa el sandbox real desde el frontend (`FE-01`)** — `workspace.ts` usa `new Function(...)`.
+5. **Hallazgos del QA verificados el 14/09 contra el código real:** `P1-07` (sin restricción real
+   contra intentos duplicados) y `P2-R3` (`/submissions/start` sin verificar matrícula) —
+   **confirmados reales**, van a `docs/codex/PLAN_IMPLEMENTACION.md` Fases D/E. `P1-08` —
+   matizado, ver `PLAN_MAESTRO.md` §4.1 (Fase F). `BE-01` ya era conocido. **`FE-01` y `FE-03` —
+   refutados:** ya estaban resueltos desde el 09-10/09, antes de la fecha del propio reporte de
+   Jorge — no son trabajo pendiente, no se reabren.
 7. **Contenido:** unidades de aprendizaje sin sembrar en `db:seed:demo`.
 8. **Sandbox:** tests intermitentes por timing bajo memoria reducida; repetir antes de declarar defecto.
 9. **Decisión de contenido (14/09):** el contenido real de Fundamentos de Algoritmia incluye
