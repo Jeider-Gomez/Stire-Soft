@@ -27,6 +27,7 @@ sistema** — para eso está `docs/ESTADO_STIRE_HANDOFF.md`, siempre.
 | `REVISION_2.2_Y_SEGURIDAD_DEL_REPO.md` | Revisión de seguridad del repositorio en el punto 2.2. Superada. |
 | `REPORTE_FINAL_ESTABILIDAD.md` | Reporte de estabilidad de una versión anterior del sistema. Los datos que reporta ya no reflejan el estado actual — ver `docs/ESTADO_STIRE_HANDOFF.md` para las cifras vigentes. |
 | `gestion-v3-descartada/` | Una tercera línea de metodología de gestión de proyecto (tablero Kanban, disponibilidad de equipo, formatos de reporte/ceremonia, entregables del Reto 1) que se evaluó y no se adoptó — la metodología vigente está en `docs/05_METODOLOGIA_Y_EQUIPO.md`. |
+| `PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md` | Fases 1-15 del plan de Antigravity (Insumo 15): scaffold, tokens de diseño, 9 ventanas de Estudiante, Fases A-F de estabilización, MCQ/FILL_CODE, y las 7 ventanas de Docente/Administrador. Todas ejecutadas y verificadas. El plan vigente (`docs/antigravity/PLAN_IMPLEMENTACION.md`) sigue desde la Fase 16. |
 
 ## Regla para archivar versiones del plan de Antigravity
 

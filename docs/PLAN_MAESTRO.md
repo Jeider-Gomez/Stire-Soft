@@ -1,6 +1,6 @@
 # STIRE — Plan Maestro de Implementación y Seguimiento
 
-**Documento vivo. Última actualización: 2026-09-15.**
+**Documento vivo. Última actualización: 2026-09-15 (segunda pasada del día).**
 
 > ## ⚠️ Regla de edición — leer antes de tocar este archivo
 >
@@ -84,21 +84,35 @@ Este proyecto usa **tres herramientas de IA con roles distintos**, no intercambi
   `PLAN_TIPOS_DE_ACTIVIDAD.md`).
 - Deja su propio informe de sesión en `docs/antigravity/informes/` — registro de punto en el tiempo,
   nunca editado después.
-- **Libertad ampliada desde la Fase 16 (decisión del dueño del proyecto, 15/09):** cuando una ficha
-  de diseño (`docs/modesec/ventanas/3.3.1_FICHAS_VENTANAS.md` o un README de `docs/modesec/usuarios/`)
-  especifica en texto un formulario/pantalla que nadie dibujó como frame de Figma, Antigravity puede
-  diseñarlo directamente — reutilizando tokens (`tailwind.config.ts`) y el patrón de componente más
-  parecido que ya funcione, nunca inventando ambos a la vez. Sigue sin poder inventar contenido que
-  ni la ficha ni el README especifican — ver `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.0b para el
-  criterio completo y su justificación (mismo patrón que ya funcionó con `DOC-V03`/`DOC-V04`).
+- **Libertad de diseño ampliada desde la Fase 16 (decisión del dueño del proyecto, 15/09):** cuando
+  una ficha de diseño (`docs/modesec/ventanas/3.3.1_FICHAS_VENTANAS.md` o un README de
+  `docs/modesec/usuarios/`) especifica en texto un formulario/pantalla que nadie dibujó como frame de
+  Figma, Antigravity puede diseñarlo directamente — reutilizando tokens (`tailwind.config.ts`) y el
+  patrón de componente más parecido que ya funcione, nunca inventando ambos a la vez. Sigue sin poder
+  inventar contenido que ni la ficha ni el README especifican — ver
+  `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.0b para el criterio completo (mismo patrón que ya
+  funcionó con `DOC-V03`/`DOC-V04`).
+- **Libertad de backend ampliada, mismo día:** puede hacer ediciones **sencillas** de `src/` cuando
+  las necesita para su propia pantalla (campo opcional aditivo, `GET` nuevo de solo lectura sobre
+  datos ya calculados, fix aislado de forma de respuesta) — siempre con test propio y
+  `npm run build`/`npm test` en verde, declarado aparte en su informe. Sigue sin poder tocar
+  `src/submissions/`, `src/auth/`, `src/enrollment/`, migraciones, ni lógica de cálculo pedagógico —
+  eso sigue siendo de Codex o de Claude Code sin excepción. Criterio completo en
+  `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.0c.
 
-### Codex — fases delegadas de backend + frontend
+### Codex — fases delegadas de backend + frontend, invocado por criterio de Claude Code
 
 - Ejecuta fases completas (backend y frontend) descritas en `docs/codex/PLAN_IMPLEMENTACION.md`, con
   mayor autonomía de implementación dentro del alcance y las restricciones que el plan fija.
 - Su entrega se audita igual que la de Antigravity antes de aceptarse — ver
   `docs/claude-code/informes/INFORME_2026-09-11_SESION_01.md` para un ejemplo completo del proceso
   (incluyendo un caso donde la entrega cumplía la estructura pedida pero no la intención).
+- **Cuándo se invoca (decisión del dueño del proyecto, 15/09):** no en cada ronda, ni con una
+  cadencia fija — queda a criterio de Claude Code, cuando aparece trabajo que de verdad amerita su
+  autonomía y alcance (backend con reglas de negocio nuevas, migraciones, algo que cruza varios
+  módulos) y que no cabe en la libertad sencilla que ahora tiene Antigravity (ver arriba). Si Claude
+  Code decide que algo lo amerita, lo declara con evidencia — igual que cualquier otra fase — no se
+  invoca "porque tocaba".
 
 ### El ciclo, en resumen
 
@@ -223,6 +237,7 @@ queda un renglón aquí — mismo criterio de checkpoints fechados, sin borrar, 
 | 2026-09-14 | Cruce en frío de los hallazgos de la auditoría QA de Jorge Cervantes (`docs/ReportesQA/`, 12/09) contra el código real de `main`, hallazgo por hallazgo, antes de aceptarlos (regla de "hipótesis hasta verificar", `CLAUDE.md`). Confirmados reales y agregados al checklist: `P1-07` (§4.1, sin restricción real contra intentos activos duplicados), `P2-R3` (§4.5, `/submissions/start` sin verificar matrícula), `P2-R4` (§4.5, Self-XSS en `TutorChatDrawer.vue`). Matizado: `P1-08` (§4.1 — el commit de BD ya ocurre antes del evento, orden correcto; el riesgo real es más angosto, sin outbox/reintento). **Refutados** — verificado que ya estaban resueltos desde el 09-10/09, antes de la fecha del propio reporte de Jorge: `FE-01` y `FE-03` (§4.6) — probablemente un ZIP desactualizado, no `main`. `FE-02` confirma un hallazgo que este documento ya tenía registrado desde el 11/09 (creación de clase). `BE-01` ya estaba registrado (§4.2, `ai_evaluated`). Se agregó §6 "Hoja de ruta hacia el cierre" y se escribieron `docs/antigravity/PLAN_IMPLEMENTACION.md` §14 y nuevas fases en `docs/codex/PLAN_IMPLEMENTACION.md` a partir de este cruce. | Claude Code (Sonnet 5) |
 | 2026-09-14 (2ª pasada) | **Auditoría en vivo de las entregas de Antigravity (Fase 14, commit `71360b7`) y Codex (Fases D-F, commit `d5a481e`)** — backend y frontend reales levantados, login real como docente/admin/estudiante, navegación real, `curl` directo a los endpoints, y `npm test` completo. Cerrados y verificados: `P1-07`, `P1-08`, `P2-R3`, `P2-R4`, `FE-02` (ver filas de §4). Suite completa: 306/309 verdes; 3 fallos son `e2e-spec` no relacionados con submissions (auth rate-limit, escalada de privilegios, PATCH de actividades), los tres por timeout de 5000ms con dos servidores de desarrollo corriendo en paralelo en la misma máquina — mismo patrón de degradación bajo carga ya documentado en `CLAUDE.md`, no repetido en aislado por límite de tiempo de esta sesión. **Hallazgo nuevo real:** `DOC-V04` (Rendimiento) no funciona — desajuste de forma de datos entre `rendimiento.vue` y la respuesta real de `GET /analytics/class/:classId` (detalle en §4.6). **Corrección de récord:** la recomendación #5 del informe de Antigravity ("agregar middleware de rol") ya estaba resuelta antes de que empezara la Fase 14 (`middleware/auth.global.ts`) — verificado en navegador real. Ninguno de los dos informes de sesión se edita (regla de "nunca se editan después de escritos"); la corrección queda aquí. Se escribió `docs/antigravity/PLAN_IMPLEMENTACION.md` §15 a partir de esta auditoría. | Claude Code (Sonnet 5) |
 | 2026-09-15 | **Auditoría en vivo de la Fase 15 de Antigravity (commit `d6120ed`, informe `INFORME_2026-09-14_SESION_02.md`).** Verificado contra el código real de `rendimiento.vue`: el fix de `DOC-V04` es correcto (`metrics.metrics.avgClassMastery`, `metrics.studentRankings`, `st.fullName` — coincide exactamente con el contrato real del backend). §4.6 actualizado: `DOC-V04` cierra ✅. Dueño del proyecto indicó que Codex se reserva para trabajo de mayor complejidad, después de 2-3 planes más de Antigravity — **no se escribieron fases nuevas de Codex esta pasada** (corrige la fila anterior, que mencionaba fases de Codex que nunca llegaron a redactarse). Se identificó un gap real y verificado contra código (`topic.controller.ts:71`, `learning-unit.controller.ts:50`, `activities.controller.ts:50,60,69` — todos con `PATCH`/`DELETE` reales sin UI): falta editar/archivar contenido ya creado desde la UI docente, no solo crearlo. Se escribió `docs/antigravity/PLAN_IMPLEMENTACION.md` §16. | Claude Code (Sonnet 5) |
+| 2026-09-15 (2ª pasada) | **Reorganización y dos ampliaciones de libertad, pedidas por el dueño del proyecto.** (1) Se archivaron las Fases 1-15 de `docs/antigravity/PLAN_IMPLEMENTACION.md` a `docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md` (regla ya existente en `docs/_archivo/README.md`, no aplicada hasta ahora) — el plan vigente queda corto, solo con la Fase 16 en adelante; numeración no reiniciada para no romper citas. (2) Antigravity puede ahora hacer ediciones sencillas de backend (campo opcional, `GET` de solo lectura sobre datos ya calculados, fix aislado de forma de respuesta) sin esperar una fase de Codex — con límites explícitos (`src/submissions/`, `src/auth/`, `src/enrollment/`, migraciones y lógica de cálculo siguen fuera, sin excepción) — ver `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.0c. (3) Se corrige la fila anterior: no hay una cadencia fija de "2-3 rondas de Antigravity antes de Codex" — el dueño del proyecto delegó esa decisión al criterio de Claude Code, caso por caso (§6.2). | Claude Code (Sonnet 5) |
 
 ---
 
@@ -248,14 +263,18 @@ reemplazo de esos documentos.
 | §16.2 | Verificar el enlace "Ver detalle" de `DOC-V04` hacia `DOC-V05` (pendiente desde el informe de la propia Antigravity) | `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.2 |
 | §16.3 | Auditoría de accesibilidad (WCAG 2.1 AA) de las 7 ventanas nuevas — el pie de página lo declara, nadie lo verificó todavía | `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.3 |
 
-### 6.2 Codex — reservado para trabajo de mayor complejidad
+### 6.2 Codex — se invoca por criterio, no por cadencia fija
 
-**Decisión explícita del dueño del proyecto (15/09):** Codex se usa después de 2-3 planes más de
-Antigravity, o cuando aparezca trabajo que lo amerite por su complejidad — no en cada ronda. No hay
-fases nuevas de Codex escritas todavía. Candidatos ya identificados para cuando le toque turno (sin
-plan redactado, solo el gap real detectado): cobertura de tests para `src/message/` (no tiene ninguna
-hoy) y sembrar la progresión de 3 pasos para actividades de Nivel 2
-(`drag_drop`→`ordering`→`matching`, §4.4).
+**Decisión explícita del dueño del proyecto (15/09, ajustada el mismo día):** no hay un número fijo
+de rondas de Antigravity antes de Codex — queda a criterio de Claude Code, cuando aparece trabajo de
+backend que de verdad amerita la autonomía y el alcance de Codex (reglas de negocio nuevas,
+migraciones, algo que cruza varios módulos) y que no cabe en la libertad de ediciones sencillas que
+ahora tiene Antigravity (§3, "Libertad de backend ampliada"). No hay fases nuevas de Codex escritas
+todavía. Candidatos ya identificados para cuando el criterio de Claude Code determine que amerita una
+fase (sin plan redactado, solo el gap real detectado): cobertura de tests para `src/message/` (no
+tiene ninguna hoy) y sembrar la progresión de 3 pasos para actividades de Nivel 2
+(`drag_drop`→`ordering`→`matching`, §4.4) — ninguno de los dos es una "edición sencilla" porque
+tocan alcance más amplio que una sola pantalla.
 
 ### 6.3 Orden de ejecución recomendado
 

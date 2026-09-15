@@ -15,6 +15,13 @@ en el mismo archivo — no se archivan por eso. Se archiva completo, con fecha e
 [`docs/_archivo/`](../_archivo/) únicamente cuando se reemplaza de fondo (fases nuevas, no una
 corrección más) — ver la regla exacta ahí.
 
+**Archivado el 2026-09-15:** las Fases 1-15 (todo el trabajo hasta y con la Fase 15) se movieron
+completas a
+[`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md) —
+el archivo vigente ahora contiene solo la Fase 16 en adelante, para que quede corto y accionable en
+vez de un historial que hay que scrollear para encontrar qué sigue. La numeración de fases no se
+reinició (sigue en §16), para no romper citas ya hechas en `docs/PLAN_MAESTRO.md` e informes.
+
 ## Planes independientes
 
 Cuando una pieza de trabajo es lo bastante grande como para merecer su propio documento (no una
