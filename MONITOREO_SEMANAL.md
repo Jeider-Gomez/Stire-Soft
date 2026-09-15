@@ -18,7 +18,7 @@
 | Integrante | Rol principal y responsabilidades del Sprint | Horario de reunión individual | GitHub User |
 | :--- | :--- | :--- | :--- |
 | **Jeider Gómez** | **Líder Técnico:** frontend Nuxt, backend, integración y Tutor IA | **Miércoles 4:00–6:00 p. m.** | @Jeider-Gomez |
-| **Jorge Cervantes** | **Gestión + Calidad:** QA funcional, visual y de integración; revisión de entregables | **Jueves 10:00 a. m.–12:00 p. m.** | @IvanGoats |
+| **Jorge Cervantes** | **Gestión + Calidad:** QA general funcional, backend/API, integración, correcciones y resultado ejecutable | **Jueves 10:00 a. m.–12:00 p. m.** | @IvanGoats |
 | **José López** | **UI/UX + Comunicación:** validación visual y material de apoyo para sustentación | **Miércoles 2:00–4:00 p. m.** | @JoseTheGoat90 |
 | **Julio Galvis** | **Diseño Instruccional:** MODESEC, navegación y contenidos | **Jueves 4:00–6:00 p. m.** | @jcg0912 |
 | **Pedro Romero** | **Documentación + Bitácora:** Trello, evidencias, seguimiento y cierre documental | **Jueves 4:00–6:00 p. m.** | @pedrorm20 |
@@ -35,14 +35,16 @@
 
 Esta semana está dominada por la **sustentación del Reto 2 oficial** (15–17 de septiembre). Todo lo demás se organiza alrededor de llegar a esa sustentación con evidencia real.
 
-En paralelo, el QA de Jorge (12/09, `docs/ReportesQA/`) dejó una lista de brechas concretas. Dos ya se verificaron contra el código real y quedan para corregir esta semana (`P2-R4` Self-XSS, `FE-02` botón sin formulario); las otras cinco ya fueron revisadas por Claude Code y no deben repetirse como auditoría de código por Jorge.
+En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya se verificaron contra el código real y quedan para corregir esta semana (`P2-R4` Self-XSS, `FE-02` botón sin formulario); las otras ya fueron revisadas por Claude Code y no deben repetirse como auditoría de código.
 
 ### Resultados esperados
 
 1. Sustentación del Reto 2 realizada con evidencia real.
 2. Self-XSS del Tutor IA (`P2-R4`) y botón "Crear Nueva Clase" (`FE-02`) corregidos.
-3. Jorge realiza QA sobre el **resultado ejecutable** de los cambios, incluyendo funcionamiento, backend/API, interfaz y revisión visual.
+3. Jorge realiza **QA general del proyecto sobre el resultado ejecutable**, cubriendo los flujos funcionales principales, backend/API, integración y correcciones entregadas por los agentes.
 4. Bitácora cerrada el viernes, sin retraso.
+
+> **Alcance actualizado de Jorge:** esta semana se prioriza el QA general del proyecto. **No incluye MODESEC ni comparación con Figma.** Tampoco incluye repetir auditorías de código ya realizadas por Claude Code, Antigravity o Codex.
 
 ---
 
@@ -82,19 +84,22 @@ En paralelo, el QA de Jorge (12/09, `docs/ReportesQA/`) dejó una lista de brech
 ### Jorge Cervantes — Gestión + Calidad
 
 - [x] **S05-JOR01 · Re-verificar hallazgos propios sin confirmar.** Hecho por Claude Code el 14/09 para evitar duplicar una auditoría de código; el resultado quedó documentado en `docs/PLAN_MAESTRO.md` §5.
-- [ ] **S05-JOR02 · QA integral del sistema** — revisar el resultado real de los cambios de la semana, sin sustituir a Claude Code, Antigravity o Codex.
+- [ ] **S05-JOR02 · QA general del proyecto** — validar el sistema ejecutable de extremo a extremo, sin repetir auditorías de código de los agentes.
 
 **Qué debe hacer Jorge:**
 
 1. **Arrancar el proyecto:** backend y frontend actuales, sin modificar el frontend solo para probarlo.
-2. **QA funcional:** login, navegación y flujos principales disponibles.
-3. **QA backend/API:** comprobar desde el uso real los endpoints involucrados en clases, evaluaciones/submissions, estado de aprendizaje y Tutor IA.
-4. **QA de las correcciones de agentes:** probar en ejecución real los cambios entregados por Antigravity/Codex cuando estén disponibles.
-5. **QA visual:** revisar las vistas actuales contra Figma/MODESEC; registrar diferencias, sin rediseñar.
-6. **Responsive:** revisión rápida en escritorio, tablet y móvil.
-7. **Evidencia:** registrar capturas, pasos para reproducir, errores de consola/API cuando aplique y conclusión.
+2. **QA funcional general:** login, logout, navegación, dashboard y flujos principales disponibles.
+3. **Recorrer el flujo del estudiante:** contenido/unidades, actividades o evaluaciones, envío, resultados/progreso y Tutor IA, según lo que esté disponible.
+4. **QA backend/API desde el uso real:** comprobar las operaciones de Auth, Classes, Enrollments, Learning Units, Evaluations, Submissions, Learning State y Tutor que intervengan en los flujos probados.
+5. **QA de integración:** verificar que frontend, backend, base de datos y servicios necesarios intercambien correctamente los datos.
+6. **QA de las correcciones de agentes:** probar en ejecución real Self-XSS, "Crear Nueva Clase" y demás correcciones entregadas por Antigravity/Codex cuando estén disponibles.
+7. **Manejo de errores:** comprobar estados de error, datos vacíos, respuestas inválidas y fallos visibles para el usuario cuando aplique.
+8. **Evidencia:** registrar capturas, pasos para reproducir, errores de consola/API cuando sean relevantes y conclusión.
 
-> **Principio:** los agentes desarrollan/auditan el código; Jorge valida que el producto resultante **funcione, se vea correctamente y pueda demostrarse**.
+> **Fuera del alcance de Jorge esta semana:** MODESEC, Figma, rediseño visual, auditoría profunda de código, Trello, bitácora y corrección directa de errores.
+
+> **Principio:** los agentes desarrollan/auditan el código; Jorge valida que el producto resultante **funcione de forma general, esté correctamente integrado y pueda demostrarse**.
 
 ---
 
@@ -129,9 +134,9 @@ En paralelo, el QA de Jorge (12/09, `docs/ReportesQA/`) dejó una lista de brech
 ## ⚠️ 5. Riesgos vivos
 
 1. **Sustentación del Reto 2 esta semana (15–17/09)** — sin margen para moverla.
-2. **Cobertura real de frontend baja:** 9 de 19 pantallas con integración real (QA de Jorge, 12/09).
-3. **Self-XSS confirmado en el chat del Tutor IA (`P2-R4`)**, pendiente de corrección y posterior QA.
-4. **Botón "Crear Nueva Clase" sin formulario (`FE-02`)**, confirmado, pendiente de corrección y posterior QA.
+2. **Cobertura real de frontend baja:** 9 de 19 pantallas con integración real (QA previo de Jorge, 12/09).
+3. **Self-XSS confirmado en el chat del Tutor IA (`P2-R4`)**, pendiente de corrección y posterior QA general.
+4. **Botón "Crear Nueva Clase" sin formulario (`FE-02`)**, confirmado, pendiente de corrección y posterior QA general.
 5. **Hallazgos verificados el 14/09 contra el código real:** `P1-07` y `P2-R3` confirmados reales; `P1-08` matizado; `BE-01` ya conocido. Estos no se vuelven a auditar por Jorge como trabajo de código.
 6. **Contenido:** unidades de aprendizaje sin sembrar en `db:seed:demo`.
 7. **Sandbox:** tests intermitentes por timing bajo memoria reducida; repetir antes de declarar defecto.
@@ -182,7 +187,7 @@ En paralelo, el QA de Jorge (12/09, `docs/ReportesQA/`) dejó una lista de brech
 ### Jorge Cervantes
 
 - [x] Hallazgos re-verificados por Claude Code, sin duplicación de trabajo.
-- [ ] QA integral funcional, backend/API, visual y responsive de los entregables disponibles.
+- [ ] QA general funcional, backend/API, integración y validación de correcciones de agentes.
 - [ ] Resultado final comunicado con evidencia.
 
 > **Nota:** se marca solo con resultados verificables al cierre del viernes 18/09.
