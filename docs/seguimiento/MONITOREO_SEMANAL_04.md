@@ -18,13 +18,13 @@
 
 ## 👥 1. Estructura del equipo y roles
 
-| Integrante | Rol principal y responsabilidades del Sprint | GitHub User |
-| :--- | :--- | :--- |
-| **Jeider Gómez** | **Líder Técnico:** frontend Nuxt, backend, integración y Tutor IA | @Jeider-Gomez |
-| **Pedro Romero** | **Gestión + Documentación + Apoyo Técnico:** Trello, bitácora, evidencias y componentes frontend | @pedrorm20 |
-| **José López** | **UI/UX + Comunicación:** validación visual y Pitch de avances | @JoseTheGoat90 |
-| **Julio Galvis** | **Diseño Instruccional:** MODESEC, navegación y contenidos | @jcg0912 |
-| **Jorge Cervantes** | **Calidad y Pruebas:** validación funcional y revisión de entregables | @IvanGoats |
+| Integrante | Rol principal y responsabilidades del Sprint | Horario de trabajo/reunión | GitHub User |
+| :--- | :--- | :--- | :--- |
+| **Jeider Gómez** | **Líder Técnico:** frontend Nuxt, backend, integración y Tutor IA | **Miércoles, 4:00 – 6:00 p. m.** | @Jeider-Gomez |
+| **Pedro Romero** | **Gestión + Documentación + Apoyo Técnico:** Trello, bitácora, evidencias y componentes frontend | **Jueves, 4:00 – 6:00 p. m.** | @pedrorm20 |
+| **José López** | **UI/UX + Comunicación:** validación visual y Pitch de avances | **Miércoles, 2:00 – 4:00 p. m.** | @JoseTheGoat90 |
+| **Julio Galvis** | **Diseño Instruccional:** MODESEC, navegación y contenidos | **Jueves, 4:00 – 6:00 p. m.** | @jcg0912 |
+| **Jorge Cervantes** | **Calidad y Pruebas:** validación funcional y revisión de entregables | **Jueves, 10:00 a. m. – 12:00 m.** | @IvanGoats |
 
 **Reunión de equipo:** viernes 8:00 – 8:40 p. m.  
 **Reportes:** martes y jueves, máximo 8:00 p. m.  
@@ -138,9 +138,7 @@ jueves 10/09 (mismo horario, 23:00 UTC = tarde local): `S04-JO02`, `S04-JO03`, `
 `S04-JOR01`, `S04-JOR02`, `S04-JOR03`, `S04-P03`. `S04-J03 · Backend + Tutor IA` se marcó **Hecho**
 con la evidencia de arriba (commits `4eb2246`, `c44498e`, `81bbef9`, `f4f1cae`) y se movió a la
 lista `✅ Hecho`; `S04-J02 · Ventana Estándar` ya estaba en esa lista pero le faltaba marcarse como
-completada — corregido. **No se tocó el estado de ninguna tarjeta de Julio, José o Jorge más allá
-de la fecha** — no hay evidencia en este repositorio de su avance real; que cada quien marque lo
-propio cuando lo tenga listo.
+completada — corregido. **No se tocó el estado de ninguna tarjeta de Julio, José o Jorge más allá de la fecha** — no hay evidencia en este repositorio de su avance real; que cada quien marque lo propio cuando lo tenga listo.
 
 ### Pedro Romero — Gestión + Documentación + Apoyo Técnico
 
