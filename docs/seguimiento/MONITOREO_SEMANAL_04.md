@@ -352,6 +352,28 @@ no cierran son de Julio — contenidos (aplazado a la Semana 5, `S05-JL01`) y va
 
 ---
 
+## 🖼️ Evidencia visual del frontend (agregada 2026-09-15)
+
+> Capturas reales de `frontend-nuxt/` corriendo en `localhost` contra el backend NestJS real —no
+> son renders de Figma ni mockups. Se muestran 3 de las pantallas ya funcionando; no es el
+> inventario completo (9/19 vistas implementadas al cierre de esta bitácora, ver hallazgo de QA
+> de Jorge en §3). Archivos completos en
+> [`docs/seguimiento/evidencias/`](./evidencias/).
+
+**Estudiante — Inicio (`EST-V01`), sesión real con datos del backend:**
+
+![Estudiante — Inicio](./evidencias/2026-09-15_EST-V01_inicio.png)
+
+**Estudiante — Ejercicio de código con sandbox real (autoguardado, casos de prueba, Tutor IA):**
+
+![Estudiante — Ejercicio](./evidencias/2026-09-15_EST-V02_ejercicio_sandbox.png)
+
+**Docente — Contenidos y Temas Curriculares (`DOC-V02`), gestión real (editar/publicar/archivar):**
+
+![Docente — Contenidos](./evidencias/2026-09-15_DOC-V02_contenidos.png)
+
+---
+
 ## 🗂️ 8. Historial de bitácoras
 
 | N.º | Semana | Documento |
