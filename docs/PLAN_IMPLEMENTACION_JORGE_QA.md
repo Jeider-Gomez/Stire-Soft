@@ -1,293 +1,168 @@
-# STIRE — Plan de implementación para Jorge: Calidad y Pruebas
+# STIRE — Plan de implementación para Jorge: QA Semana 5
 
-**Sprint:** Semana 4  
+**Sprint:** Semana 5 · 14–18 de septiembre de 2026  
 **Responsable:** Jorge Cervantes  
-**Rol:** Calidad y Pruebas  
-**Propósito:** verificar que los avances de STIRE funcionen realmente, detectar errores y dejar evidencia suficiente para que el equipo pueda cerrar las tareas.
+**Rol:** Gestión + Calidad  
+**Objetivo:** comprobar que los avances reales del equipo funcionen, se puedan demostrar y mantengan coherencia visual y funcional.
 
-> **Importante:** Jorge no administra Trello durante este sprint. Pedro mantiene Trello y la bitácora. Jorge se concentra en pruebas, revisión visual/funcional y validación de entregables.
+> **Importante:** Jorge NO repite las auditorías de código que ya realizan Claude Code, Antigravity o Codex. Los agentes desarrollan/auditan; Jorge valida el **resultado ejecutable**.
 
----
+## 1. Qué debe hacer esta semana
 
-## 1. Objetivo del trabajo
+Jorge debe:
 
-Jorge debe actuar como la persona que **comprueba** que lo desarrollado por el equipo puede utilizarse y demostrarse.
+1. arrancar el proyecto actual;
+2. probar backend y frontend;
+3. recorrer los flujos principales;
+4. revisar las correcciones entregadas por los agentes;
+5. comprobar visualmente las vistas actuales contra Figma/MODESEC;
+6. hacer una revisión responsive básica;
+7. registrar errores con evidencia;
+8. comunicar un resultado final: **VALIDADO / CON OBSERVACIONES / NO VALIDADO**.
 
-Su trabajo no consiste en programar nuevas funcionalidades ni en rediseñar el sistema. Consiste en:
-
-1. arrancar el proyecto correctamente;
-2. comprobar que backend y frontend estén disponibles;
-3. probar los flujos principales como usuario;
-4. revisar visualmente las pantallas actuales;
-5. registrar errores concretos;
-6. comprobar que los entregables tengan evidencia en GitHub;
-7. comunicar al equipo qué está aprobado, qué necesita corrección y qué sigue pendiente.
-
----
-
-# 2. Regla de trabajo
-
-**No marcar algo como correcto solamente porque el código existe.**
-
-Para validar una funcionalidad debe comprobarse:
-
-```text
-Código existe
-      ↓
-Proyecto arranca
-      ↓
-Funcionalidad funciona
-      ↓
-Interfaz se puede utilizar
-      ↓
-No aparece un error crítico
-      ↓
-Existe evidencia
-      ↓
-VALIDADO
-```
-
-Si alguna parte falla, registrar el problema antes de darlo por terminado.
+No debe administrar Trello, mantener la bitácora, rediseñar Figma ni modificar código solo para corregir lo que encuentre.
 
 ---
 
-# 3. PASO 1 — Preparar el entorno
+# 2. Paso a paso
 
-Antes de probar funcionalidades, obtener la versión actual del repositorio y seguir las instrucciones oficiales del proyecto.
+## PASO 1 — Actualizar el proyecto
 
-### Checklist
+- [ ] Actualizar el repositorio.
+- [ ] Leer instrucciones de ejecución actuales.
+- [ ] Confirmar dependencias y servicios necesarios.
+- [ ] No compartir claves ni secretos.
 
-- [ ] Actualizar el repositorio local (`git pull` o equivalente).
-- [ ] Leer el `README.md` raíz.
-- [ ] Revisar las instrucciones de ejecución del backend.
-- [ ] Revisar las instrucciones de `frontend-nuxt/`.
-- [ ] Confirmar variables de entorno necesarias sin compartir secretos.
-- [ ] Confirmar que Docker/servicios requeridos estén disponibles, si el flujo actual los necesita.
+## PASO 2 — Arrancar backend
 
-**Recomendación:** no modificar código durante esta fase salvo que exista una corrección mínima necesaria para poder ejecutar una prueba. Primero registrar el problema.
-
----
-
-# 4. PASO 2 — Arrancar el backend
-
-Jorge debe comprobar primero que la API pueda ejecutarse.
-
-### Checklist
-
-- [ ] Instalar dependencias si es necesario.
 - [ ] Levantar los servicios requeridos.
-- [ ] Iniciar el backend siguiendo el README.
-- [ ] Confirmar que el servidor queda escuchando en el puerto esperado.
-- [ ] Comprobar que no existan errores críticos al iniciar.
-- [ ] Verificar que la base de datos/servicios requeridos estén disponibles.
-- [ ] Registrar cualquier error de arranque.
+- [ ] Iniciar el backend.
+- [ ] Confirmar que inicia sin errores críticos.
+- [ ] Confirmar conexión con base de datos/servicios necesarios.
 
-### Si falla
+Si falla, registrar el error antes de intentar solucionarlo.
 
-No intentar arreglar cinco cosas a la vez.
+## PASO 3 — Arrancar frontend
 
-Registrar:
+- [ ] Ejecutar el frontend Nuxt actual.
+- [ ] Abrirlo en el navegador.
+- [ ] Revisar consola del navegador.
+- [ ] Confirmar comunicación con backend cuando corresponda.
 
-```text
-ERROR
-Qué ocurrió:
-Dónde ocurrió:
-Cómo reproducirlo:
-Mensaje del error:
-Qué se esperaba:
-Qué ocurrió realmente:
-```
+**No modificar el frontend únicamente para que pase la prueba.**
 
-Comunicar el bloqueo a Jeider/Pedro.
+## PASO 4 — QA funcional
 
----
-
-# 5. PASO 3 — Arrancar el frontend actual
-
-**No modificar el frontend Nuxt como parte de esta tarea.**
-
-El frontend actual debe probarse tal como se encuentra.
-
-### Checklist
-
-- [ ] Entrar en `frontend-nuxt/`.
-- [ ] Instalar dependencias si corresponde.
-- [ ] Ejecutar el comando oficial de desarrollo.
-- [ ] Confirmar que Nuxt inicia.
-- [ ] Abrir la aplicación en el navegador.
-- [ ] Comprobar que no existen errores críticos de consola.
-- [ ] Confirmar que puede comunicarse con el backend cuando corresponda.
-
----
-
-# 6. PASO 4 — Prueba funcional básica
-
-Probar primero como usuario real, no mirando únicamente el código.
-
-## Autenticación
-
-- [ ] Abrir login.
-- [ ] Probar credenciales válidas.
-- [ ] Confirmar entrada al sistema.
-- [ ] Probar credenciales inválidas.
-- [ ] Confirmar mensaje de error adecuado.
-- [ ] Probar logout.
-- [ ] Confirmar que una ruta protegida no quede accesible después de cerrar sesión.
-
-## Navegación
-
-- [ ] Probar menú principal.
-- [ ] Probar enlaces internos.
-- [ ] Confirmar que las rutas carguen correctamente.
-- [ ] Confirmar que no existan enlaces rotos.
-- [ ] Confirmar que el botón volver/regresar funcione cuando corresponda.
-
----
-
-# 7. PASO 5 — Probar flujo del estudiante
-
-El estudiante es el flujo prioritario para la validación.
-
-### Recorrido recomendado
+Recorrer como usuario:
 
 ```text
 Login
  ↓
+Navegación
+ ↓
 Dashboard
  ↓
-Unidad de aprendizaje
+Contenido / unidad
  ↓
-Contenido
+Actividad / evaluación
  ↓
-Actividad / ejercicio
+Resultado / progreso
  ↓
-Evaluación
- ↓
-Envío
- ↓
-Resultado
- ↓
-Progreso
+Tutor IA
 ```
 
-### Checklist
+Comprobar:
 
-- [ ] Dashboard carga correctamente.
-- [ ] Las unidades visibles corresponden a los datos disponibles.
-- [ ] Se puede abrir una unidad.
-- [ ] El contenido se visualiza correctamente.
-- [ ] El ejercicio puede utilizarse.
-- [ ] La evaluación inicia correctamente.
-- [ ] Los datos se guardan cuando corresponda.
-- [ ] El envío funciona.
-- [ ] El resultado se muestra correctamente.
-- [ ] El progreso se actualiza cuando corresponda.
+- [ ] Login correcto e incorrecto.
+- [ ] Logout.
+- [ ] Rutas principales.
+- [ ] Carga de datos.
+- [ ] Formularios.
+- [ ] Estados de carga/error/vacío.
+- [ ] Evaluación y envío cuando esté disponible.
+- [ ] Tutor IA.
 
-Registrar cualquier comportamiento inesperado.
+## PASO 5 — QA del backend/API
 
----
+No hacer una auditoría completa del código. Revisar las APIs que realmente utiliza el flujo:
 
-# 8. PASO 6 — Probar Tutor IA
+- [ ] Auth.
+- [ ] Classes.
+- [ ] Enrollments.
+- [ ] Learning Units.
+- [ ] Evaluations.
+- [ ] Submissions.
+- [ ] Learning State.
+- [ ] Tutor.
 
-El objetivo es comprobar el flujo completo, no evaluar si la respuesta del modelo es perfecta desde el punto de vista científico.
+La pregunta es:
 
-### Checklist
+> **¿La operación que necesita el usuario realmente funciona?**
 
-- [ ] Abrir Tutor IA.
-- [ ] Enviar una pregunta relacionada con el contenido.
-- [ ] Confirmar que la petición llega al backend.
-- [ ] Confirmar que se recibe una respuesta.
-- [ ] Comprobar estado de carga.
-- [ ] Comprobar comportamiento ante error de conexión.
-- [ ] Comprobar que no se exponga una API key en el navegador.
-- [ ] Registrar resultado.
+Cuando sea relevante, revisar respuesta HTTP, datos recibidos y errores de API.
 
-Si el Tutor falla, indicar si el problema parece estar en frontend, backend, proveedor o configuración.
+## PASO 6 — QA de correcciones de Antigravity/Codex
 
----
+Cuando estén entregadas las correcciones:
 
-# 9. PASO 7 — Revisión visual
+- [ ] Probar Self-XSS del Tutor con entrada HTML/script.
+- [ ] Probar creación real de una clase como docente.
+- [ ] Revisar las nuevas vistas de Docente/Administrador.
+- [ ] Probar los casos relacionados con intentos duplicados.
+- [ ] Probar que un estudiante no matriculado no pueda iniciar una actividad ajena.
+- [ ] Registrar resultado y evidencia.
 
-Después de comprobar que el flujo funciona, revisar visualmente las pantallas.
+**No basta con que el agente diga “corregido”. Debe comprobarse en ejecución.**
 
-La referencia es:
+## PASO 7 — QA visual
+
+Comparar las vistas disponibles con:
 
 ```text
 MODESEC + Figma
 ```
 
-### Revisar
+Revisar:
 
 - [ ] Jerarquía visual.
-- [ ] Títulos y textos.
+- [ ] Tipografía.
 - [ ] Espaciado.
 - [ ] Botones.
 - [ ] Formularios.
 - [ ] Cards.
 - [ ] Navegación.
-- [ ] Estados de carga.
-- [ ] Mensajes de error.
-- [ ] Estados vacíos.
-- [ ] Responsive.
+- [ ] Estados.
+- [ ] Coherencia entre pantallas.
 
-### Prueba rápida responsive
+Si encuentra una diferencia, **registrarla; no rediseñarla**.
 
-Abrir las vistas en:
+## PASO 8 — Responsive
+
+Probar al menos:
 
 - [ ] Escritorio.
 - [ ] Tablet.
 - [ ] Móvil.
 
-Buscar especialmente:
+Buscar:
 
 - contenido cortado;
 - botones fuera de pantalla;
 - textos superpuestos;
 - scroll horizontal innecesario;
-- sidebar que impida utilizar el contenido.
+- navegación inutilizable.
 
-**Jorge no debe rediseñar.** Si encuentra una diferencia, debe registrarla como observación para José/Jeider.
+## PASO 9 — Registrar hallazgos
 
----
-
-# 10. PASO 8 — Revisar backend desde la perspectiva funcional
-
-Jorge debe comprobar que las operaciones principales realmente respondan.
-
-Priorizar las rutas que participan en los flujos actuales:
+Usar este formato:
 
 ```text
-Auth
-Classes
-Enrollments
-Learning Units
-Evaluations
-Submissions
-Learning State
-Tutor
-```
-
-No es necesario hacer una auditoría completa del backend.
-
-La prueba debe responder:
-
-> “¿La funcionalidad que el usuario necesita realmente funciona?”
-
----
-
-# 11. PASO 9 — Registrar errores correctamente
-
-Cada error debe convertirse en una observación accionable.
-
-### Formato recomendado
-
-```text
-🔴 ERROR: [título corto]
+🔴 ERROR: [título]
 
 Dónde:
 [ventana / flujo]
 
-Pasos para reproducir:
+Pasos:
 1. ...
 2. ...
 3. ...
@@ -299,197 +174,81 @@ Actual:
 ...
 
 Evidencia:
-[captura / consola / endpoint]
+[captura / consola / respuesta API]
 
 Prioridad:
 CRÍTICA / ALTA / MEDIA / BAJA
 ```
 
-### Prioridades
+## PASO 10 — Revisar evidencia
 
-**CRÍTICA:** impide usar el sistema o bloquea una demostración principal.
+- [ ] El cambio probado existe en GitHub.
+- [ ] Existe commit identificable cuando corresponde.
+- [ ] La evidencia corresponde al estado actual.
+- [ ] Los errores importantes fueron comunicados.
 
-**ALTA:** una función importante no funciona correctamente.
+## PASO 11 — Cierre
 
-**MEDIA:** existe un problema, pero el flujo principal puede continuar.
-
-**BAJA:** detalle visual o mejora menor.
-
----
-
-# 12. PASO 10 — Revisar evidencia en GitHub
-
-Antes del cierre, comprobar que los resultados importantes tengan respaldo.
-
-### Checklist
-
-- [ ] El código está en GitHub.
-- [ ] Los cambios tienen commits identificables.
-- [ ] Las funcionalidades probadas corresponden al estado actual del repositorio.
-- [ ] Las capturas/evidencias necesarias están disponibles.
-- [ ] Los problemas encontrados están comunicados.
-- [ ] Los entregables evaluables pueden mostrarse.
-
-Recordar la regla del proyecto:
-
-> **Lo que no está respaldado en GitHub no puede considerarse terminado.**
-
----
-
-# 13. PASO 11 — Comunicación con Pedro y Jeider
-
-Jorge debe informar resultados, no solamente decir “ya revisé”.
-
-### Reporte de martes
-
-```text
-📊 MARTES · Jorge
-
-1. Terminé:
-- ...
-
-2. Estoy probando:
-- ...
-
-3. Encontré:
-- ...
-
-4. Me bloquea:
-- ... / nada
-```
-
-### Reporte de jueves
-
-```text
-⚠️ JUEVES · Jorge
-
-1. ¿Llego al viernes? → SÍ / EN RIESGO / NO
-2. Me falta probar: ...
-3. Encontré estos problemas: ...
-4. Necesito apoyo de: ... / nada
-```
-
----
-
-# 14. PASO 12 — Validación final
-
-Antes de mover una tarjeta a `✅ Hecho`, Jorge debe comprobar:
-
-```text
-☑ El entregable existe en GitHub.
-☑ Está completo.
-☑ Se puede ejecutar o mostrar.
-☑ El flujo principal funciona.
-☑ No tiene errores críticos conocidos.
-☑ Las observaciones importantes fueron comunicadas.
-☑ Existe evidencia suficiente.
-```
-
-Si falta una condición, **no aprobar todavía**.
-
----
-
-# 15. Relación con las tarjetas actuales de Jorge
-
-Las tareas de calidad de esta semana se agrupan así:
-
-### S04-JOR01 — Pruebas funcionales
-
-Objetivo: probar los flujos principales.
-
-Orden recomendado:
-
-1. Arranque backend.
-2. Arranque frontend.
-3. Login.
-4. Navegación.
-5. Flujo estudiante.
-6. Evaluación.
-7. Tutor IA.
-8. Registro de errores.
-
-### S04-JOR02 — Revisar calidad frontend
-
-Objetivo: comprobar funcionamiento y presentación del frontend actual.
-
-Orden recomendado:
-
-1. Abrir vistas.
-2. Revisar navegación.
-3. Revisar formularios.
-4. Revisar mensajes.
-5. Revisar responsive.
-6. Comparar con Figma/MODESEC.
-7. Registrar observaciones.
-
-### S04-JOR03 — Revisión final
-
-Objetivo: verificar que los entregables tengan evidencia suficiente para el cierre.
-
-Orden recomendado:
-
-1. Revisar GitHub.
-2. Revisar resultados de pruebas.
-3. Revisar evidencias.
-4. Identificar pendientes.
-5. Comunicar a Pedro.
-6. Confirmar qué puede pasar a `✅ Hecho`.
-
----
-
-# 16. Qué NO debe hacer Jorge
-
-Para evitar que el trabajo se mezcle:
-
-- ❌ No administrar Trello.
-- ❌ No mantener la bitácora.
-- ❌ No modificar el frontend Nuxt para “mejorarlo”.
-- ❌ No rediseñar Figma.
-- ❌ No implementar funcionalidades nuevas como parte de QA.
-- ❌ No cambiar el backend solo porque una prueba falle.
-- ❌ No marcar una tarea como terminada sin comprobarla.
-
-Si encuentra un problema de código, **lo reporta con evidencia al responsable**.
-
----
-
-# 17. Definition of Done para Jorge
-
-La responsabilidad de Jorge se considera cumplida cuando:
-
-- [ ] El proyecto fue ejecutado.
-- [ ] Backend y frontend fueron comprobados.
-- [ ] Los flujos principales fueron probados.
-- [ ] Tutor IA fue probado cuando esté disponible.
-- [ ] La interfaz fue revisada visualmente.
-- [ ] Se realizaron pruebas responsive básicas.
-- [ ] Los errores fueron registrados claramente.
-- [ ] Las evidencias fueron revisadas.
-- [ ] Pedro y Jeider recibieron el resultado.
-
----
-
-# 18. Resultado esperado
-
-Al finalizar, Jorge debe poder entregar una conclusión sencilla:
+Jorge entrega una conclusión:
 
 ```text
 🟢 VALIDADO
-El flujo principal funciona y puede demostrarse.
+Funciona y puede demostrarse.
 
 🟡 VALIDADO CON OBSERVACIONES
-Funciona, pero existen problemas menores pendientes.
+Funciona, pero quedan problemas menores.
 
 🔴 NO VALIDADO
-Existe un problema que impide considerar terminado el entregable.
+Existe un problema que impide cerrar el entregable.
 ```
-
-La finalidad de este proceso no es encontrar errores por encontrar errores. Es **reducir el riesgo antes de la demostración y proporcionar evidencia objetiva del estado real del proyecto**.
 
 ---
 
-**Documento operativo para el Sprint Semana 4.**  
-**Responsable:** Jorge Cervantes · Calidad y Pruebas  
-**Gestión de Trello:** Pedro Romero  
-**Bitácora:** Pedro Romero  
-**Desarrollo técnico:** Jeider Gómez / Pedro Romero
+# 3. Relación con Trello
+
+### S05-JOR01
+
+Ya fue cerrada mediante verificación de Claude Code para evitar duplicación de trabajo. Jorge no necesita repetir esa auditoría.
+
+### S05-JOR02
+
+Es la tarea principal de Jorge esta semana:
+
+> **QA integral del sistema: funcional + backend/API + visual + responsive + validación de correcciones de agentes.**
+
+Debe terminar con evidencia y resultado comunicado al equipo.
+
+---
+
+# 4. Seguimiento
+
+**Martes, máximo 8:00 p. m.:** informar qué probó, qué encontró y si existe bloqueo.
+
+**Jueves, máximo 8:00 p. m.:** informar qué queda por probar, riesgos y si puede cerrar el viernes.
+
+**Viernes:** entregar resultado final de QA y comunicar qué puede considerarse validado.
+
+---
+
+# 5. Regla final
+
+Jorge no tiene que demostrar que sabe programar arreglando todos los errores.
+
+Su valor en el equipo es demostrar, con evidencia:
+
+```text
+¿Arranca?
+¿Funciona?
+¿La API responde?
+¿El usuario puede completar el flujo?
+¿La interfaz se ve correctamente?
+¿Respeta Figma/MODESEC?
+¿La corrección realmente quedó funcionando?
+¿Hay evidencia?
+```
+
+Si la respuesta es sí, el entregable puede validarse. Si no, se reporta exactamente qué falta.
+
+---
+
+**Documento operativo · Semana 5 · STIRE-Soft**
