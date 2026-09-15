@@ -84,6 +84,13 @@ Este proyecto usa **tres herramientas de IA con roles distintos**, no intercambi
   `PLAN_TIPOS_DE_ACTIVIDAD.md`).
 - Deja su propio informe de sesión en `docs/antigravity/informes/` — registro de punto en el tiempo,
   nunca editado después.
+- **Libertad ampliada desde la Fase 16 (decisión del dueño del proyecto, 15/09):** cuando una ficha
+  de diseño (`docs/modesec/ventanas/3.3.1_FICHAS_VENTANAS.md` o un README de `docs/modesec/usuarios/`)
+  especifica en texto un formulario/pantalla que nadie dibujó como frame de Figma, Antigravity puede
+  diseñarlo directamente — reutilizando tokens (`tailwind.config.ts`) y el patrón de componente más
+  parecido que ya funcione, nunca inventando ambos a la vez. Sigue sin poder inventar contenido que
+  ni la ficha ni el README especifican — ver `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.0b para el
+  criterio completo y su justificación (mismo patrón que ya funcionó con `DOC-V03`/`DOC-V04`).
 
 ### Codex — fases delegadas de backend + frontend
 

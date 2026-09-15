@@ -849,6 +849,39 @@ La Fase 15 se ejecutó y se cerró (commit `d6120ed`, informe
 decidió reservarlo para trabajo de mayor complejidad más adelante, así que esta fase es
 exclusivamente tuya, sin coordinación de frontera con otra herramienta corriendo en paralelo.
 
+### 16.0b Más libertad a partir de esta fase — leer antes de empezar
+
+Hasta la Fase 15, este plan te pedía replicar **exactamente** lo ya dibujado en Figma, sin decidir
+nada de diseño por tu cuenta (§9: "No rediseña ninguna vista ni propone un token o color nuevo").
+Eso seguía teniendo sentido mientras existía un frame de Figma específico que copiar. **A partir de
+aquí, para lo que la ficha de diseño ya especifica en texto pero nadie dibujó como frame, tienes
+permiso explícito de diseñar tú la pantalla/modal/formulario** — no es una excepción a la regla, es
+la regla aplicada al mismo caso que ya se resolvió así con éxito en `DOC-V03` y `DOC-V04`: ninguna de
+las dos tenía ficha en formato de 7 categorías tampoco, y se construyeron bien igual, verificado en
+vivo.
+
+**Ejemplo concreto que motiva esto — la ficha de `DOC-V02`** (`docs/modesec/ventanas/
+3.3.1_FICHAS_VENTANAS.md:191,195`) ya dice, en texto, exactamente qué construir para editar una
+unidad: *"Formularios de edición para título, descripción, nivel de dificultad, orden y
+prerrequisitos de cada unidad"*, con el endpoint real `[PATCH /learning-unit/:id]`. Nadie dibujó ese
+formulario como frame en Figma — pero no hace falta que alguien lo dibuje antes de que tú lo
+construyas, porque el contenido (qué campos, qué endpoint, qué reglas) ya está decidido por escrito.
+Eso es exactamente lo que estabas pidiendo permiso para hacer en §16.1.
+
+**Los límites siguen firmes, no se relajan:**
+- **Reutiliza, nunca inventes, los tokens de diseño** (`tailwind.config.ts`: color, tipografía,
+  espaciado, radio, sombra) — cero hex nuevos, cero tamaños de fuente nuevos.
+- **Reutiliza el patrón de componente más parecido que ya existe y funciona** — para un modal de
+  edición, el patrón es el mismo que "Crear Nueva Clase" (`docente/index.vue`) o "Redactar Mensaje"
+  (`docente/mensajes.vue`), no un layout nuevo desde cero.
+- Sigue **sin tocar `src/`** (zona de Codex) y sin tocar vistas fuera del alcance de esta fase.
+- Si la ficha/README **no** dice qué campos o qué comportamiento tiene algo (a diferencia de
+  `DOC-V02`, que sí lo dice completo), no lo inventes — declara el vacío en tu informe en vez de
+  rellenarlo a criterio propio. La libertad es para *construir lo ya decidido sin frame*, no para
+  *decidir tú qué construir*.
+- Todo sigue verificándose en navegador real contra datos reales antes de darlo por cerrado — eso no
+  cambia.
+
 ### 16.1 Editar y archivar contenido ya creado — la pieza de mayor valor de esta fase
 
 **El gap, con evidencia exacta:** el backend ya expone edición completa, pero ninguna pantalla la usa
