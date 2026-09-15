@@ -30,6 +30,14 @@ Para el índice completo de documentación: [`docs/README.md`](./docs/README.md)
 
 ---
 
+## 🎨 Diseño (Figma)
+
+**`STIRE-Soft — Sistema Visual`** — sistema de diseño y prototipo interactivo, fuente de verdad para el frontend (`frontend-nuxt/`):
+
+<https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft-%E2%80%94-Sistema-Visual?m=auto&t=sehRLC79tLkTXYx3-1>
+
+---
+
 ## 👥 Gestión del Proyecto
 
 El equipo trabaja con **Sprint Semanal y Kanban en Trello**. Hay solo dos documentos de gestión:

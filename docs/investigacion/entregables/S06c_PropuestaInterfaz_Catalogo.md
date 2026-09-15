@@ -199,7 +199,8 @@ donde correspondan, y verificar el conteo final de palabras tras insertar los pi
 
 > Referencia completa a incluir en el capítulo de Referencias (ver `PLAN_ENTREGABLES_INFORME.md`
 > §6.1): `STIRE (2026). STIRE Soft — Sistema Visual [Archivo de diseño]. Figma.
-> https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m`. El número de figura exacto depende de
+> https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft-%E2%80%94-Sistema-Visual?m=auto&t=sehRLC79tLkTXYx3-1`.
+> El número de figura exacto depende de
 > resolver primero el arreglo 5 de `CONTEXTO_STIRE.md` §7 (numeración de figuras) — se deja
 > `[N]` como marcador.
 

@@ -324,7 +324,7 @@ las capturas del archivo de Figma son la fuente más fiel.
 **Sobre citar el archivo de Figma en el informe:** las reglas de redacción (`CONTEXTO_STIRE.md`
 §6) prohíben hipervínculos en el cuerpo del texto. La forma correcta en APA 7.ª ed. es una entrada
 en el capítulo de Referencias — por ejemplo: `STIRE (2026). STIRE Soft — Sistema Visual [Archivo de
-diseño]. Figma. https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m` — citada en el cuerpo como
+diseño]. Figma. https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft-%E2%80%94-Sistema-Visual?m=auto&t=sehRLC79tLkTXYx3-1` — citada en el cuerpo como
 "(ver Figura N, elaborada en el archivo de diseño del proyecto)", sin el enlace inline. El enlace
 completo también puede ir en el Anexo que reúna el catálogo completo de pantallas (ya previsto para
 el entregable 04).

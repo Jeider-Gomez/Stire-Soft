@@ -172,7 +172,7 @@ cobertura — 10 filas `cubierto`, 3 `pendiente` (huecos reales, declarados uno 
 ## 🔗 Prototipo interactivo (FASE CC-07 Parte A + FASE CC-08 Parte A)
 
 **Archivo Figma:** `STIRE-Soft — Sistema Visual` · fileKey `1MjKiDrjU65ezO3ztO0v4m`
-**Enlace de presentación:** https://www.figma.com/proto/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft?node-id=11-2&starting-point-node-id=11-2
+**Enlace de presentación (público):** https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft-%E2%80%94-Sistema-Visual?m=auto&t=sehRLC79tLkTXYx3-1
 
 Arranca en `COMP-V00`. **38 conexiones** en total (17 de CC-07 + 21 nuevas en CC-08: Menú lateral
 completo en las 6 vistas, control de trazado en `EST-V02`, "Probar código" con resultado de casos,

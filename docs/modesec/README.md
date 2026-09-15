@@ -14,7 +14,8 @@ Carpeta de trabajo del modelo **MODESEC-ISO/IEC 12207** aplicado al proyecto **S
 **Norma de la asignatura:** presentación `DDS3-01.pdf` §3 · **Fuente base:** Caro, Toscano, Hernández y David (2012), *MODESEC*.
 
 **Archivo Figma (FASE CC-06):** `STIRE-Soft — Sistema Visual` · fileKey `1MjKiDrjU65ezO3ztO0v4m` ·
-<https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m> — fundaciones (Color/Tipo/Espacio/Radio/Borde/Icono),
+enlace público: <https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft-%E2%80%94-Sistema-Visual?m=auto&t=sehRLC79tLkTXYx3-1> —
+fundaciones (Color/Tipo/Espacio/Radio/Borde/Icono),
 12 iconos D-01, componente `Ventana Estándar` (variante `Rol=Estudiante` diseñada; Docente/Admin
 placeholder para CC-07/CC-08), y `COMP-V00` + `EST-V01..V06` en 4 estados cada una.
 

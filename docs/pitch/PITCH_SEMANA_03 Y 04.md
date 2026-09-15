@@ -84,7 +84,7 @@ There is still work to do, but these two weeks helped us build a stronger founda
   real, no contra lo que decía la documentación anterior.
 
 ### Qué se puede ver funcionando hoy
-- Prototipo interactivo en Figma: `https://www.figma.com/proto/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft?node-id=11-2&starting-point-node-id=11-2`
+- Prototipo interactivo en Figma (enlace público): `https://www.figma.com/design/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft-%E2%80%94-Sistema-Visual?m=auto&t=sehRLC79tLkTXYx3-1`
   — 38 conexiones, 0 rotas, borde de afordancia en todo elemento clicable.
 - Fundaciones de diseño: 6 colecciones de variables (Color, Tipo, Espacio, Radio, Borde, Icono),
   contraste WCAG 2.1 AA medido y corregido donde fallaba — no declarado sin más.
