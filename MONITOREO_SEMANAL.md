@@ -15,13 +15,15 @@
 
 ## 👥 1. Estructura del equipo y roles
 
-| Integrante | Rol principal y responsabilidades del Sprint | GitHub User |
-| :--- | :--- | :--- |
-| **Jeider Gómez** | **Líder Técnico:** frontend Nuxt, backend, integración y Tutor IA | @Jeider-Gomez |
-| **Pedro Romero** | **Gestión + Documentación + Apoyo Técnico:** Trello, bitácora, evidencias y componentes frontend | @pedrorm20 |
-| **José López** | **UI/UX + Comunicación:** validación visual y Pitch de avances | @JoseTheGoat90 |
-| **Julio Galvis** | **Diseño Instruccional:** MODESEC, navegación y contenidos | @jcg0912 |
-| **Jorge Cervantes** | **Calidad y Pruebas:** validación funcional y revisión de entregables | @IvanGoats |
+| Integrante | Rol principal y responsabilidades del Sprint | Horario de reunión individual | GitHub User |
+| :--- | :--- | :--- | :--- |
+| **Jeider Gómez** | **Líder Técnico:** frontend Nuxt, backend, integración y Tutor IA | **Miércoles 4:00–6:00 p. m.** | @Jeider-Gomez |
+| **Jorge Cervantes** | **Gestión + Calidad:** QA funcional, visual y de integración; revisión de entregables | **Jueves 10:00 a. m.–12:00 p. m.** | @IvanGoats |
+| **José López** | **UI/UX + Comunicación:** validación visual y material de apoyo para sustentación | **Miércoles 2:00–4:00 p. m.** | @JoseTheGoat90 |
+| **Julio Galvis** | **Diseño Instruccional:** MODESEC, navegación y contenidos | **Jueves 4:00–6:00 p. m.** | @jcg0912 |
+| **Pedro Romero** | **Documentación + Bitácora:** Trello, evidencias, seguimiento y cierre documental | **Jueves 4:00–6:00 p. m.** | @pedrorm20 |
+
+> **Horarios mantenidos de la estructura de equipo definida en la Semana 3.** Esta semana se conservan para dar continuidad y evitar cambios innecesarios en la coordinación.
 
 **Reunión de equipo:** viernes 8:00 – 8:40 p. m.  
 **Reportes:** martes y jueves, máximo 8:00 p. m.  
@@ -31,18 +33,15 @@
 
 ## 🎯 2. Objetivo del Sprint
 
-Esta semana está dominada por la **sustentación del Reto 2 oficial** (15–17 de septiembre). Todo lo
-demás se organiza alrededor de llegar a esa sustentación con evidencia real.
+Esta semana está dominada por la **sustentación del Reto 2 oficial** (15–17 de septiembre). Todo lo demás se organiza alrededor de llegar a esa sustentación con evidencia real.
 
-En paralelo, el QA de Jorge (12/09, `docs/ReportesQA/`) dejó una lista de brechas concretas. Dos ya
-se verificaron contra el código real y quedan para corregir esta semana (`P2-R4` Self-XSS, `FE-02`
-botón sin formulario); las otras cinco quedan por verificar.
+En paralelo, el QA de Jorge (12/09, `docs/ReportesQA/`) dejó una lista de brechas concretas. Dos ya se verificaron contra el código real y quedan para corregir esta semana (`P2-R4` Self-XSS, `FE-02` botón sin formulario); las otras cinco ya fueron revisadas por Claude Code y no deben repetirse como auditoría de código por Jorge.
 
 ### Resultados esperados
 
 1. Sustentación del Reto 2 realizada con evidencia real.
 2. Self-XSS del Tutor IA (`P2-R4`) y botón "Crear Nueva Clase" (`FE-02`) corregidos.
-3. Los otros 5 hallazgos del QA (`P1-07`, `P1-08`, `P2-R3`, `FE-03`, `BE-01`) verificados en frío.
+3. Jorge realiza QA sobre el **resultado ejecutable** de los cambios, incluyendo funcionamiento, backend/API, interfaz y revisión visual.
 4. Bitácora cerrada el viernes, sin retraso.
 
 ---
@@ -71,29 +70,31 @@ botón sin formulario); las otras cinco quedan por verificar.
 ### Julio Galvis — Diseño Instruccional
 
 **Esta semana:**
-- [ ] **S05-JL01 · Organizar la estructura de dos cursos de contenido**, siguiendo el formato de
-  STIRE (unidades de aprendizaje, ejercicios, actividades) — no escribir el contenido completo
-  todavía, solo la estructura:
-  - **Curso 1 — complejo:** sigue el plan oficial de 3er semestre de Fundamentos de Algoritmia, que
-    ya trabaja HTML5, CSS y JavaScript.
-  - **Curso 2 — general:** para la enseñanza de algoritmia en general, pensado según la plataforma
-    STIRE, sus funciones y su propia organización.
+- [ ] **S05-JL01 · Organizar la estructura de dos cursos de contenido**, siguiendo el formato de STIRE (unidades de aprendizaje, ejercicios, actividades) — no escribir el contenido completo todavía, solo la estructura:
+  - **Curso 1 — complejo:** sigue el plan oficial de 3er semestre de Fundamentos de Algoritmia, que ya trabaja HTML5, CSS y JavaScript.
+  - **Curso 2 — general:** para la enseñanza de algoritmia en general, pensado según la plataforma STIRE, sus funciones y su propia organización.
 
 **En Backlog** (no se pueden terminar esta semana; sin fecha fija):
-- [ ] **S05-JL05 · Escribir el contenido completo de los dos cursos y probarlos en el programa** —
-  depende de que `S05-JL01` (la estructura) esté lista primero.
+- [ ] **S05-JL05 · Escribir el contenido completo de los dos cursos y probarlos en el programa** — depende de que `S05-JL01` (la estructura) esté lista primero.
 - [ ] **S05-JL03 · Validación pedagógica en vivo** — aplazada hasta que el proyecto se despliegue en la nube.
 - [ ] **S05-JL04 · Probar las funciones de docente en la creación/gestión de contenido de unidades** — también aplazada hasta el despliegue; Julio queda a cargo.
 
-### Jorge Cervantes — Calidad y Pruebas
+### Jorge Cervantes — Gestión + Calidad
 
-- [x] **S05-JOR01 · Re-verificar `P1-07`, `P1-08`, `P2-R3`, `FE-03`, `BE-01`.** Hecho por Claude
-  Code el 14/09 contra el código real (no repetido por Jorge para no duplicar el trabajo):
-  `P1-07`/`P2-R3` confirmados reales, `P1-08` matizado, `BE-01` ya era conocido, `FE-03` refutado
-  (ya resuelto desde antes del propio reporte). Detalle completo en `docs/PLAN_MAESTRO.md` §5
-  (checkpoint 2026-09-14).
-- [ ] **S05-JOR02 · QA de las correcciones que entreguen Antigravity (§14) y Codex (Fases D/E/F)** —
-  no solo de Jeider; el trabajo se ejecuta vía esos dos planes, ver arriba.
+- [x] **S05-JOR01 · Re-verificar hallazgos propios sin confirmar.** Hecho por Claude Code el 14/09 para evitar duplicar una auditoría de código; el resultado quedó documentado en `docs/PLAN_MAESTRO.md` §5.
+- [ ] **S05-JOR02 · QA integral del sistema** — revisar el resultado real de los cambios de la semana, sin sustituir a Claude Code, Antigravity o Codex.
+
+**Qué debe hacer Jorge:**
+
+1. **Arrancar el proyecto:** backend y frontend actuales, sin modificar el frontend solo para probarlo.
+2. **QA funcional:** login, navegación y flujos principales disponibles.
+3. **QA backend/API:** comprobar desde el uso real los endpoints involucrados en clases, evaluaciones/submissions, estado de aprendizaje y Tutor IA.
+4. **QA de las correcciones de agentes:** probar en ejecución real los cambios entregados por Antigravity/Codex cuando estén disponibles.
+5. **QA visual:** revisar las vistas actuales contra Figma/MODESEC; registrar diferencias, sin rediseñar.
+6. **Responsive:** revisión rápida en escritorio, tablet y móvil.
+7. **Evidencia:** registrar capturas, pasos para reproducir, errores de consola/API cuando aplique y conclusión.
+
+> **Principio:** los agentes desarrollan/auditan el código; Jorge valida que el producto resultante **funcione, se vea correctamente y pueda demostrarse**.
 
 ---
 
@@ -129,22 +130,12 @@ botón sin formulario); las otras cinco quedan por verificar.
 
 1. **Sustentación del Reto 2 esta semana (15–17/09)** — sin margen para moverla.
 2. **Cobertura real de frontend baja:** 9 de 19 pantallas con integración real (QA de Jorge, 12/09).
-3. **Self-XSS confirmado en el chat del Tutor IA (`P2-R4`)**, sin corregir.
-4. **Botón "Crear Nueva Clase" sin formulario (`FE-02`)**, confirmado, sin corregir.
-5. **Hallazgos del QA verificados el 14/09 contra el código real:** `P1-07` (sin restricción real
-   contra intentos duplicados) y `P2-R3` (`/submissions/start` sin verificar matrícula) —
-   **confirmados reales**, van a `docs/codex/PLAN_IMPLEMENTACION.md` Fases D/E. `P1-08` —
-   matizado, ver `PLAN_MAESTRO.md` §4.1 (Fase F). `BE-01` ya era conocido. **`FE-01` y `FE-03` —
-   refutados:** ya estaban resueltos desde el 09-10/09, antes de la fecha del propio reporte de
-   Jorge — no son trabajo pendiente, no se reabren.
-7. **Contenido:** unidades de aprendizaje sin sembrar en `db:seed:demo`.
-8. **Sandbox:** tests intermitentes por timing bajo memoria reducida; repetir antes de declarar defecto.
-9. **Decisión de contenido (14/09):** el contenido real de Fundamentos de Algoritmia incluye
-   HTML5/CSS/JavaScript — más complejo que algoritmia "pura" para público general. Se decide
-   organizar dos cursos con la estructura de STIRE (unidades, ejercicios, actividades): uno
-   complejo (plan oficial, HTML/CSS/JS) y uno general (pensado para la plataforma), y probar cuál
-   es más útil. Organizar la estructura es tarea de esta semana (`S05-JL01`); escribir el contenido
-   completo y probarlo va a Backlog (`S05-JL05`).
+3. **Self-XSS confirmado en el chat del Tutor IA (`P2-R4`)**, pendiente de corrección y posterior QA.
+4. **Botón "Crear Nueva Clase" sin formulario (`FE-02`)**, confirmado, pendiente de corrección y posterior QA.
+5. **Hallazgos verificados el 14/09 contra el código real:** `P1-07` y `P2-R3` confirmados reales; `P1-08` matizado; `BE-01` ya conocido. Estos no se vuelven a auditar por Jorge como trabajo de código.
+6. **Contenido:** unidades de aprendizaje sin sembrar en `db:seed:demo`.
+7. **Sandbox:** tests intermitentes por timing bajo memoria reducida; repetir antes de declarar defecto.
+8. **Decisión de contenido (14/09):** el contenido real de Fundamentos de Algoritmia incluye HTML5/CSS/JavaScript — más complejo que algoritmia "pura" para público general. Se decide organizar dos cursos con la estructura de STIRE (unidades, ejercicios, actividades): uno complejo (plan oficial, HTML/CSS/JS) y uno general (pensado para la plataforma), y probar cuál es más útil. Organizar la estructura es tarea de esta semana (`S05-JL01`); escribir el contenido completo y probarlo va a Backlog (`S05-JL05`).
 
 ---
 
@@ -186,13 +177,13 @@ botón sin formulario); las otras cinco quedan por verificar.
 ### Julio Galvis
 
 - [ ] Estructura de los dos cursos organizada (`S05-JL01`).
-- [ ] *(Escribir el contenido completo, la validación en vivo y las funciones de docente quedan en
-  Backlog — no aplican esta semana, ver §3.)*
+- [ ] *(Escribir el contenido completo, la validación en vivo y las funciones de docente quedan en Backlog — no aplican esta semana, ver §3.)*
 
 ### Jorge Cervantes
 
-- [ ] Hallazgos re-verificados.
-- [ ] QA de las correcciones de Jeider.
+- [x] Hallazgos re-verificados por Claude Code, sin duplicación de trabajo.
+- [ ] QA integral funcional, backend/API, visual y responsive de los entregables disponibles.
+- [ ] Resultado final comunicado con evidencia.
 
 > **Nota:** se marca solo con resultados verificables al cierre del viernes 18/09.
 
