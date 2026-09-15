@@ -94,9 +94,9 @@
             <select
               v-model="form.difficulty"
               class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none">
-              <option value="BASICO">Básico</option>
-              <option value="INTERMEDIO">Intermedio</option>
-              <option value="AVANZADO">Avanzado</option>
+              <option value="basico">Básico</option>
+              <option value="intermedio">Intermedio</option>
+              <option value="avanzado">Avanzado</option>
             </select>
           </div>
         </div>
@@ -300,7 +300,7 @@ const successCreatedId = ref<number | null>(null)
 const form = reactive({
   learningUnitId: null as number | null,
   title: '',
-  difficulty: 'BASICO',
+  difficulty: 'basico',
   totalPoints: 25,
   attemptsAllowed: 3,
   adaptiveWeight: 0.4,
@@ -377,7 +377,7 @@ async function fetchInitialData() {
       await onClassChange()
     }
 
-    const typesList = Array.isArray(typesRes) ? typesRes : typesRes?.items || []
+    const typesList = Array.isArray(typesRes) ? typesRes : (typesRes?.data || typesRes?.items || [])
     if (typesList.length > 0) {
       activityTypeId.value = typesList[0].id
     }

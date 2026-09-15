@@ -66,73 +66,66 @@
       <button
         @click="fetchMessages"
         class="px-4 py-2 rounded-md bg-base-bg-secundario border border-base-borde-fuerte font-semibold hover:bg-base-borde-sutil transition-colors">
-        Reintentar sincronización
+        Reintentar
       </button>
     </div>
 
     <!-- ESTADO 3: Vacío -->
     <div
-      v-else-if="(activeTab === 'inbox' && inboxMessages.length === 0) || (activeTab === 'sent' && sentMessages.length === 0)"
+      v-else-if="activeMessages.length === 0"
       class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
-      <span class="text-3xl">{{ activeTab === 'inbox' ? '📭' : '✉️' }}</span>
+      <span class="text-3xl">📭</span>
       <h3 class="font-bold text-base-texto-primario text-sm">
-        {{ activeTab === 'inbox' ? 'Tu bandeja de entrada está vacía' : 'No has enviado mensajes aún' }}
+        {{ activeTab === 'inbox' ? 'Bandeja de entrada vacía' : 'Sin mensajes enviados' }}
       </h3>
-      <p class="text-base-texto-secundario max-w-sm mx-auto">
+      <p class="text-base-texto-secundario max-w-md mx-auto">
         {{ activeTab === 'inbox'
-          ? 'Aquí aparecerán las consultas académicas que envíen tus alumnos.'
-          : 'Puedes iniciar una conversación con cualquier estudiante de tus clases.' }}
+          ? 'No has recibido mensajes todavía. Los estudiantes pueden escribirte desde su panel.'
+          : 'Aún no has enviado ningún mensaje. Usa "Redactar Mensaje" para iniciar una conversación.' }}
       </p>
-      <button
-        v-if="activeTab === 'sent'"
-        @click="openNewMessageModal"
-        class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors">
-        Enviar primer mensaje
-      </button>
     </div>
 
-    <!-- ESTADO 4: Lista de Mensajes -->
-    <div v-else class="space-y-3">
+    <!-- ESTADO 4: Lista de mensajes -->
+    <div v-else class="space-y-2">
       <div
-        v-for="msg in (activeTab === 'inbox' ? inboxMessages : sentMessages)"
+        v-for="msg in activeMessages"
         :key="msg.id"
-        class="p-4 rounded-xl border bg-base-blanco shadow-xs transition-colors space-y-2 hover:border-acento-ambar-fuerte"
-        :class="!msg.isRead && activeTab === 'inbox' ? 'border-acento-ambar-fuerte bg-acento-ambar/5' : 'border-base-borde-sutil'">
-        <div class="flex items-center justify-between gap-2 text-xs">
-          <div class="flex items-center gap-2">
-            <span class="font-bold text-base-texto-primario">
-              {{ activeTab === 'inbox' ? (msg.sender?.name || 'Estudiante') : (msg.receiver?.name || 'Destinatario') }}
+        class="bg-base-blanco rounded-xl border p-4 shadow-sm flex flex-col sm:flex-row sm:items-start gap-3 text-xs transition-colors hover:bg-base-bg-secundario/30"
+        :class="activeTab === 'inbox' && !msg.isRead ? 'border-acento-ambar/50 bg-acento-ambar/5' : 'border-base-borde-sutil'">
+
+        <!-- Avatar inicial -->
+        <div class="flex-shrink-0 w-9 h-9 rounded-full bg-acento-ambar/15 flex items-center justify-center font-bold text-acento-ambar-fuerte text-sm">
+          {{ getInitial(activeTab === 'inbox' ? msg.sender?.name : msg.receiver?.name) }}
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-bold text-base-texto-primario truncate">
+              {{ activeTab === 'inbox'
+                ? (msg.sender?.name || `Usuario #${msg.senderId}`)
+                : (msg.receiver?.name || `Usuario #${msg.receiverId}`) }}
             </span>
-            <span class="text-[11px] text-base-texto-secundario font-mono">
-              ({{ activeTab === 'inbox' ? msg.sender?.email : msg.receiver?.email }})
-            </span>
-            <span
-              v-if="!msg.isRead && activeTab === 'inbox'"
-              class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-semantico-falla/15 text-semantico-falla">
+            <span v-if="activeTab === 'inbox' && !msg.isRead" class="px-1.5 py-0.5 rounded-full bg-semantico-info/15 text-semantico-info text-[10px] font-bold flex-shrink-0">
               Nuevo
             </span>
+            <span class="ml-auto text-[10px] text-base-texto-secundario flex-shrink-0">
+              {{ formatDate(msg.createdAt) }}
+            </span>
           </div>
-          <span class="text-[10px] text-base-texto-secundario">
-            {{ new Date(msg.createdAt).toLocaleString() }}
-          </span>
+          <p class="text-base-texto-secundario line-clamp-2">{{ msg.content }}</p>
         </div>
 
-        <p class="text-xs text-base-texto-primario whitespace-pre-wrap leading-relaxed">
-          {{ msg.content }}
-        </p>
-
-        <div v-if="activeTab === 'inbox'" class="pt-2 flex justify-end">
-          <button
-            @click="replyToUser(msg.senderId, msg.sender?.name)"
-            class="borde-afordancia px-2.5 py-1 rounded text-[11px] font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1">
-            <span>↩</span>
-            <span>Responder</span>
-          </button>
-        </div>
+        <!-- Botón responder (solo en inbox) -->
+        <button
+          v-if="activeTab === 'inbox'"
+          @click="replyToUser(msg.senderId, msg.sender?.name)"
+          class="borde-afordancia px-3 py-1.5 rounded text-[11px] font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 whitespace-nowrap self-start">
+          ↩ Responder
+        </button>
       </div>
     </div>
 
-    <!-- Modal para Enviar Mensaje -->
+    <!-- Modal para Redactar Mensaje -->
     <div
       v-if="isComposeOpen"
       class="fixed inset-0 bg-base-texto-primario/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
@@ -150,21 +143,51 @@
         </div>
 
         <form @submit.prevent="sendMessage" class="space-y-3">
+          <!-- Selector de Clase (para filtrar estudiantes) -->
           <div>
             <label class="block font-semibold text-base-texto-primario mb-1">
-              ID del Estudiante Destinatario *
+              Clase
             </label>
-            <input
-              v-model.number="composeForm.receiverId"
-              type="number"
+            <select
+              v-model="composeClassId"
+              @change="loadStudentsForClass"
+              class="w-full px-3 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none">
+              <option value="" disabled>Selecciona una clase</option>
+              <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
+                {{ c.name }} ({{ c.code }})
+              </option>
+            </select>
+          </div>
+
+          <!-- Selector de Estudiante (poblado dinámicamente) -->
+          <div>
+            <label class="block font-semibold text-base-texto-primario mb-1">
+              Estudiante Destinatario *
+            </label>
+            <div v-if="isLoadingStudents" class="text-base-texto-secundario py-1.5 text-[11px]">
+              <span class="animate-spin inline-block mr-1">⏳</span> Cargando estudiantes...
+            </div>
+            <select
+              v-else
+              v-model="composeForm.receiverId"
               required
-              placeholder="Ej: 29 (Pedro Estudiante)"
-              class="w-full px-3 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
+              :disabled="enrolledStudents.length === 0"
+              class="w-full px-3 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none disabled:opacity-50">
+              <option :value="0" disabled>
+                {{ enrolledStudents.length === 0
+                  ? (composeClassId ? 'Sin estudiantes en esta clase' : 'Selecciona una clase primero')
+                  : 'Elige un estudiante' }}
+              </option>
+              <option v-for="s in enrolledStudents" :key="s.studentId" :value="s.studentId">
+                {{ s.fullName }} — {{ s.email }}
+              </option>
+            </select>
             <p v-if="replyName" class="text-[10px] text-semantico-pasa font-semibold mt-0.5">
               Respondiendo a: {{ replyName }}
             </p>
           </div>
 
+          <!-- Contenido del Mensaje -->
           <div>
             <label class="block font-semibold text-base-texto-primario mb-1">
               Contenido del Mensaje *
@@ -209,6 +232,18 @@ definePageMeta({
   layout: 'teacher'
 })
 
+interface TeacherClass {
+  id: number
+  code: string
+  name: string
+}
+
+interface EnrolledStudent {
+  studentId: number
+  fullName: string
+  email: string
+}
+
 interface MessageUser {
   id: number
   name: string
@@ -235,6 +270,12 @@ const unreadCount = ref(0)
 const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
 
+// Clases del docente (para filtrar destinatarios)
+const teacherClasses = ref<TeacherClass[]>([])
+const composeClassId = ref<number | ''>('')
+const enrolledStudents = ref<EnrolledStudent[]>([])
+const isLoadingStudents = ref(false)
+
 // Modal de redacción
 const isComposeOpen = ref(false)
 const isSending = ref(false)
@@ -245,20 +286,73 @@ const composeForm = reactive({
   content: ''
 })
 
-function openNewMessageModal() {
+const activeMessages = computed(() =>
+  activeTab.value === 'inbox' ? inboxMessages.value : sentMessages.value
+)
+
+function getInitial(name?: string): string {
+  if (!name) return '?'
+  return name.charAt(0).toUpperCase()
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr)
+  const now = new Date()
+  const diffMs = now.getTime() - d.getTime()
+  const diffHrs = diffMs / (1000 * 60 * 60)
+  if (diffHrs < 24) {
+    return d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+  }
+  return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })
+}
+
+async function openNewMessageModal() {
   replyName.value = null
   composeForm.receiverId = 0
   composeForm.content = ''
   composeError.value = null
+  enrolledStudents.value = []
+
+  // Cargar clases del docente si no están cargadas aún
+  if (teacherClasses.value.length === 0) {
+    try {
+      const classes = await api.get<TeacherClass[]>('/class/my-classes')
+      teacherClasses.value = Array.isArray(classes) ? classes : []
+    } catch { /* silencio — el usuario verá el select vacío */ }
+  }
+
+  // Pre-seleccionar primera clase y cargar sus alumnos
+  if (teacherClasses.value.length > 0) {
+    composeClassId.value = teacherClasses.value[0].id
+    await loadStudentsForClass()
+  }
+
   isComposeOpen.value = true
 }
 
-function replyToUser(senderId: number, name?: string) {
+async function replyToUser(senderId: number, name?: string) {
   replyName.value = name || `Usuario #${senderId}`
   composeForm.receiverId = senderId
   composeForm.content = ''
   composeError.value = null
   isComposeOpen.value = true
+}
+
+async function loadStudentsForClass() {
+  if (!composeClassId.value) return
+  isLoadingStudents.value = true
+  enrolledStudents.value = []
+  composeForm.receiverId = 0
+
+  try {
+    // GET /enrollment/class/:classId — mismo endpoint que DOC-V04
+    const res = await api.get<EnrolledStudent[]>(`/enrollment/class/${composeClassId.value}`)
+    enrolledStudents.value = Array.isArray(res) ? res : []
+  } catch {
+    enrolledStudents.value = []
+  } finally {
+    isLoadingStudents.value = false
+  }
 }
 
 async function fetchMessages() {

@@ -50,7 +50,7 @@
     </div>
 
     <!-- ESTADO 3: Vacío (Sin alumnos matriculados) -->
-    <div v-else-if="metrics && (!metrics.students || metrics.students.length === 0)" class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
+    <div v-else-if="metrics && (!metrics.studentRankings || metrics.studentRankings.length === 0)" class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
       <span class="text-3xl">👥</span>
       <h3 class="font-bold text-base-texto-primario text-sm">Sin estudiantes matriculados</h3>
       <p class="text-base-texto-secundario max-w-md mx-auto">
@@ -75,16 +75,16 @@
             Dominio Promedio
           </span>
           <div class="flex items-baseline gap-2">
-            <span class="text-2xl font-bold font-mono" :class="metrics.summary.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
-              {{ metrics.summary.avgMastery }}%
+            <span class="text-2xl font-bold font-mono" :class="metrics.metrics.avgClassMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
+              {{ metrics.metrics.avgClassMastery }}%
             </span>
             <span class="text-[11px] text-base-texto-secundario">del curso</span>
           </div>
           <div class="w-full bg-base-bg-secundario rounded-full h-1.5 mt-2 overflow-hidden">
             <div
               class="h-full rounded-full transition-all"
-              :class="metrics.summary.avgMastery >= 60 ? 'bg-semantico-pasa' : 'bg-acento-ambar-fuerte'"
-              :style="{ width: `${Math.min(100, metrics.summary.avgMastery)}%` }"></div>
+              :class="metrics.metrics.avgClassMastery >= 60 ? 'bg-semantico-pasa' : 'bg-acento-ambar-fuerte'"
+              :style="{ width: `${Math.min(100, metrics.metrics.avgClassMastery)}%` }"></div>
           </div>
         </div>
 
@@ -95,12 +95,12 @@
           </span>
           <div class="flex items-baseline gap-2">
             <span class="text-2xl font-bold font-mono text-base-texto-primario">
-              {{ metrics.summary.avgSuccessRate }}%
+              {{ metrics.metrics.avgClassSuccessRate }}%
             </span>
             <span class="text-[11px] text-base-texto-secundario">en envíos</span>
           </div>
           <p class="text-[10px] text-base-texto-secundario mt-2">
-            {{ metrics.summary.totalAttempts }} intentos de código evaluados
+            {{ metrics.metrics.totalSubmissions }} envíos de código evaluados
           </p>
         </div>
 
@@ -113,7 +113,7 @@
             <span class="text-2xl font-bold font-mono" :class="atRiskCount > 0 ? 'text-semantico-falla' : 'text-semantico-pasa'">
               {{ atRiskCount }}
             </span>
-            <span class="text-[11px] text-base-texto-secundario">de {{ metrics.students.length }} alumnos</span>
+            <span class="text-[11px] text-base-texto-secundario">de {{ metrics.metrics.totalStudents }} alumnos</span>
           </div>
           <p class="text-[10px]" :class="atRiskCount > 0 ? 'text-semantico-falla font-semibold' : 'text-semantico-pasa'">
             {{ atRiskCount > 0 ? 'Requieren refuerzo pedagógico' : 'Sin alertas de rezago' }}
@@ -127,7 +127,7 @@
           </span>
           <div class="flex items-baseline gap-2">
             <span class="text-2xl font-bold font-mono text-acento-ambar-fuerte">
-              {{ metrics.students.length }}
+              {{ metrics.metrics.totalStudents }}
             </span>
             <span class="text-[11px] text-base-texto-secundario">matriculados</span>
           </div>
@@ -182,29 +182,29 @@
                 :key="st.studentId"
                 class="hover:bg-base-bg-secundario/50 transition-colors">
                 <td class="p-3 font-semibold text-base-texto-primario">
-                  {{ st.name }}
+                  {{ st.fullName }}
                 </td>
                 <td class="p-3 font-mono text-[11px] text-base-texto-secundario">
                   {{ st.email }}
                 </td>
-                <td class="p-3 text-center font-mono font-bold" :class="st.mastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
-                  {{ st.mastery }}%
+                <td class="p-3 text-center font-mono font-bold" :class="st.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
+                  {{ st.avgMastery }}%
                 </td>
                 <td class="p-3 text-center font-mono text-base-texto-primario">
                   {{ st.successRate }}%
                 </td>
                 <td class="p-3 text-center font-mono text-base-texto-secundario">
-                  {{ st.attempts }}
+                  {{ st.submissionsCount }}
                 </td>
                 <td class="p-3 text-center">
                   <span
                     class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-                    :class="st.mastery < 50
+                    :class="st.avgMastery < 50
                       ? 'bg-semantico-falla/15 text-semantico-falla'
-                      : st.mastery >= 80
+                      : st.avgMastery >= 80
                         ? 'bg-semantico-pasa/15 text-semantico-pasa'
                         : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
-                    {{ st.mastery < 50 ? 'Rezago Crítico' : st.mastery >= 80 ? 'Sobresaliente' : 'En Progreso' }}
+                    {{ st.avgMastery < 50 ? 'Rezago Crítico' : st.avgMastery >= 80 ? 'Sobresaliente' : 'En Progreso' }}
                   </span>
                 </td>
                 <td class="p-3 text-right">
@@ -237,24 +237,29 @@ interface TeacherClass {
   name: string
 }
 
-interface StudentMetric {
+// Contrato real de GET /analytics/class/:classId (verificado 2026-09-14 contra backend)
+interface StudentRanking {
   studentId: number
-  name: string
+  fullName: string
   email: string
-  mastery: number
+  avgMastery: number
   successRate: number
-  attempts: number
-  lastActivity?: string
+  submissionsCount: number
+}
+
+interface ClassMetrics {
+  totalStudents: number
+  avgClassMastery: number
+  avgClassSuccessRate: number
+  totalSubmissions: number
 }
 
 interface ClassMetricsResponse {
   classId: number
-  summary: {
-    avgMastery: number
-    avgSuccessRate: number
-    totalAttempts: number
-  }
-  students: StudentMetric[]
+  className: string
+  classCode: string
+  metrics: ClassMetrics
+  studentRankings: StudentRanking[]
 }
 
 const api = useApi()
@@ -272,16 +277,16 @@ const selectedClass = computed(() => {
 })
 
 const atRiskCount = computed(() => {
-  if (!metrics.value || !metrics.value.students) return 0
-  return metrics.value.students.filter(s => s.mastery < 50).length
+  if (!metrics.value?.studentRankings) return 0
+  return metrics.value.studentRankings.filter(s => s.avgMastery < 50).length
 })
 
 const filteredStudents = computed(() => {
-  if (!metrics.value || !metrics.value.students) return []
+  if (!metrics.value?.studentRankings) return []
   if (onlyAtRisk.value) {
-    return metrics.value.students.filter(s => s.mastery < 50)
+    return metrics.value.studentRankings.filter(s => s.avgMastery < 50)
   }
-  return metrics.value.students
+  return metrics.value.studentRankings
 })
 
 async function fetchClassesAndMetrics() {
