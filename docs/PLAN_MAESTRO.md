@@ -1,6 +1,6 @@
 # STIRE — Plan Maestro de Implementación y Seguimiento
 
-**Documento vivo. Última actualización: 2026-09-14.**
+**Documento vivo. Última actualización: 2026-09-15.**
 
 > ## ⚠️ Regla de edición — leer antes de tocar este archivo
 >
@@ -139,8 +139,8 @@ propósito (decisión del dueño del proyecto, no olvido).
 | Sandbox soporta lenguajes más allá de JavaScript | ❌ | `docs/00_VISION_FUNCIONAL.md` §9.2, punto 4 — sin resolver |
 | Gamificación (badges, puntos, tablas de clasificación) | 🕐 | En pausa, decisión de alcance — `docs/00_VISION_FUNCIONAL.md` §8, Fase 3 |
 | Bancos de preguntas reutilizables entre clases | 🕐 | En pausa, decisión de alcance — `docs/00_VISION_FUNCIONAL.md` §8, Fase 4 |
-| Restricción real contra intentos activos duplicados (`submissions`) | ❌ | `startSubmission` (`src/submissions/submissions.service.ts:38-62`) solo comprueba en aplicación (`findActiveSubmission`) antes de crear — es un *check-then-act*, no hay índice único condicional en BD. `submission.entity.ts` solo tiene `@Index(['studentId','activityId'])`, no `@Unique`. Hallazgo `P1-07` del QA de Jorge (`docs/ReportesQA/`, 12/09) — verificado contra el código real el 14/09, es real. Plan: `docs/codex/PLAN_IMPLEMENTACION.md` Fase D |
-| Emisión de `submission.graded` tras commit — orden correcto, sin outbox/retry | ⚠️ | `submitAnswers` (`submissions.service.ts:140-163`) ya comita la transacción **antes** de emitir el evento (comentario en código: "COMMIT PRIMERO"), así que el hallazgo `P1-08` del QA de Jorge ("se pierde si la transacción falla") describe el problema al revés de como está el código hoy. El riesgo real y más angosto que sigue abierto: si `emitAsync` falla o el proceso cae justo después del commit, no hay outbox/reintento — la submission queda `GRADED` en BD pero mastery/repasos pueden no haberse recalculado. Mitigación ligera (no outbox completo): `docs/codex/PLAN_IMPLEMENTACION.md` Fase F |
+| Restricción real contra intentos activos duplicados (`submissions`) | ✅ | **Cerrado por Codex, 14/09** (Fase D). Migración `1789100000000-AddActiveSubmissionConstraint.ts` — columna generada + índice único condicional sobre `(studentId, activityId)` solo para `in_progress`. `startSubmission` captura `ER_DUP_ENTRY`/`23000` y relee el intento activo real en vez de fallar. Verificado por Claude Code el 14/09: código real presente, migración aplicada (`migration:show` la lista), suite de `submissions.service.spec.ts` en verde (24/24) — cierra `P1-07`. Commit `d5a481e` |
+| Emisión de `submission.graded` — orden correcto + aislada de fallos de listeners | ✅ | **Cerrado por Codex, 14/09** (Fase F, mitigación ligera). `submitAnswers` (`submissions.service.ts`) ya comita la transacción antes de emitir (orden correcto — el hallazgo `P1-08` del QA de Jorge lo describía al revés); ahora además el `emitAsync` está en `try/catch` con logging, así que un listener que falle no convierte una calificación ya persistida en un error 500 para el estudiante. No implementa un outbox completo (decisión explícita, documentada en el propio código). Commit `d5a481e` |
 
 ### 4.2 Tipos de Actividad y Evaluación
 
@@ -158,7 +158,7 @@ propósito (decisión del dueño del proyecto, no olvido).
 | Código de clase, unirse por código (`POST /enrollment/join`) | ✅ | `src/enrollment/` |
 | Currículo real sembrado para las 3 clases (Toscano, Castro, Ali) | ✅ | `src/seeds/seed-runner.ts`, `docs/claude-code/informes/INFORME_2026-09-11_SESION_01.md` §3.1 |
 | Moderación de matrícula: `PENDING` + aprobar/rechazar + remover estudiante | ✅ | `EnrollmentStatus.PENDING`, `Class.requiresApproval`, endpoints en `enrollment.controller.ts`, UI en `/docente/clase/[classId].vue` |
-| Pantalla de creación de clase para el docente (con toggle de `requiresApproval`) | ❌ | El botón "+ Crear Nueva Clase" en `/docente/index.vue` no tiene acción — no existe el formulario. El toggle de `requiresApproval` hoy solo se puede activar desde la página de gestión, sobre una clase ya creada por seed/API |
+| Pantalla de creación de clase para el docente | ✅ | **Cerrado por Antigravity, 14/09** (Fase 14). Modal en `pages/docente/index.vue` conectado a `POST /class` real. Verificado por Claude Code el 14/09 en navegador real (login docente, abrir modal, campos presentes) — cierra `FE-02`. El toggle `requiresApproval` sigue solo en la pantalla de gestión de una clase ya creada, no en el formulario de creación — no bloqueante. Commit `71360b7` |
 | Cerrar/terminar un curso | ✅ | `PATCH /class/:id` con `isActive:false` |
 
 ### 4.4 Motor de Recomendación por Dominio
@@ -177,8 +177,8 @@ propósito (decisión del dueño del proyecto, no olvido).
 | Selector de rol solo en modo demo, blindado a nivel de función (no solo de plantilla) | ✅ | `docs/claude-code/informes/INFORME_2026-09-10_SESION_01.md` §3.4 |
 | BOLA en matrícula, progreso, y actividades por unidad | ✅ | `AuthorizationService.assertTeacherOwnsClass` / `assertEnrolledInClass`, usado consistentemente |
 | `GET /learning-unit/:id` verifica matrícula/propiedad antes de responder | ✅ | `src/learning-unit/learning-unit.service.ts` (`findOne`/`assertCanReadClass`, mismo patrón que `ContentService`), cubierto por `learning-unit.service.spec.ts` — commit `b1bc096` |
-| `POST /submissions/start` verifica matrícula activa antes de crear el intento | ❌ | `startSubmission` (`submissions.service.ts:38-62`) solo verifica que la actividad exista y el límite de intentos — nunca llama a `assertEnrolledInClass` ni equivalente. Un estudiante no matriculado que conozca un `activityId` puede iniciar un intento. Hallazgo `P2-R3` del QA de Jorge — verificado contra el código real el 14/09, es real. Plan: `docs/codex/PLAN_IMPLEMENTACION.md` Fase E |
-| Chat del Tutor IA sanitiza el contenido antes de renderizarlo | ❌ | `TutorChatDrawer.vue:81` usa `v-html="formatMessage(msg.text)"`; `formatMessage` (líneas 176-182) solo hace reemplazos de markdown, nunca escapa el texto original — Self-XSS real. Hallazgo `P2-R4` del QA de Jorge — verificado contra el código real el 14/09. Plan: `docs/antigravity/PLAN_IMPLEMENTACION.md` §14 |
+| `POST /submissions/start` verifica matrícula activa antes de crear el intento | ✅ | **Cerrado por Codex, 14/09** (Fase E). `assertActiveEnrollment()` (`submissions.service.ts:358-365`) resuelve `activity→learningUnit→topic→section→classId` y exige `EnrollmentStatus.ACTIVE`; aplicado tanto en `startSubmission` (línea 51) como en el ensayo de código (línea 231). Verificado por Claude Code el 14/09 leyendo el código real (no solo el informe) — cierra `P2-R3`. Commit `d5a481e` |
+| Chat del Tutor IA sanitiza el contenido antes de renderizarlo | ✅ | **Cerrado por Antigravity, 14/09** (Fase 14). `escapeHtml()` (`TutorChatDrawer.vue:176-183`) corre primero dentro de `formatMessage`, antes de los reemplazos de markdown. Verificado por Claude Code el 14/09 leyendo el código real — cierra `P2-R4`. Commit `71360b7` |
 | Repositorio público — sin secretos en el historial | ✅ | `CLAUDE.md`, sección Seguridad y Datos |
 
 ### 4.6 Frontend
@@ -189,8 +189,10 @@ propósito (decisión del dueño del proyecto, no olvido).
 | "Probar código" y "Entregar solución" usan el sandbox/backend real, sin simulación en cliente | ✅ | `frontend-nuxt/stores/workspace.ts` — `runIsolatedCode()` llama a `POST /submissions/:id/run` real vía `useApi()`, `submitSolution()` a `POST /submissions/:id/submit` con `pollSubmissionStatus()` para calificación asíncrona real. **Nota (14/09):** el QA de Jorge (`docs/ReportesQA/`, 12/09) reportó `FE-01` (usa `new Function()`) y `FE-03` (sin polling) como abiertos — verificado contra el código real el 14/09, **ambos ya estaban resueltos desde el 09-10/09/2026** (commits `715b43b`, `29575e6`, `5310967`), antes de la fecha del propio reporte. Probablemente auditado contra un ZIP desactualizado, no contra `main`. Se corrige acá para que no se reabra por error. |
 | Pantalla de Inicio del estudiante conectada a datos reales | ✅ | `frontend-nuxt/pages/estudiante/index.vue` |
 | Pantalla de unidad conectada a datos reales (contenido + recomendación) | ✅ | `docs/claude-code/informes/INFORME_2026-09-11_SESION_01.md` §4.2 |
-| Panel de docente | ⚠️ | `DOC-V01` (`pages/docente/index.vue`) y la gestión de matrícula (`pages/docente/clase/[classId].vue`, Fase B de Codex) reales. Falta: creación de clase vía UI (ver 4.3, `FE-02`) y el resto de las ventanas ya diseñadas en Figma (`DOC-V02..V06`) — sin código todavía. Plan: `docs/antigravity/PLAN_IMPLEMENTACION.md` §14 |
-| Panel de administrador | ⚠️ | Solo `ADM-V02` (`pages/admin/index.vue`, gestión de usuarios real, `GET /users`). `ADM-V01`/`ADM-V03` ya diseñadas en Figma, sin código. Plan: `docs/antigravity/PLAN_IMPLEMENTACION.md` §14 |
+| Panel de docente — 7 ventanas nuevas construidas | ⚠️ | **Antigravity** construyó `DOC-V02` (contenidos), `DOC-V03` (crear ejercicio), `DOC-V04` (rendimiento), `DOC-V05` (detalle de estudiante), `DOC-V06` (mensajes) (Fase 14, commit `71360b7`), y corrigió el bug de `DOC-V04` + auditó `DOC-V03`/`ADM-V03` con escritura real + selector de estudiante real en `DOC-V06` (Fase 15, commit `d6120ed`). Verificado en navegador real por Claude Code (14 y 15/09): `DOC-V02`, `DOC-V04`, `DOC-V05`, `DOC-V06` funcionan end-to-end con datos/mutaciones reales. `DOC-V03` verificado por el propio informe de Antigravity con creación real (`POST /activities` → 201 #60) — no re-verificado en navegador por Claude Code todavía. Sigue ⚠️ (no ✅) porque falta **edición** de contenido/actividades ya creadas — ver fila siguiente. |
+| Editar (no solo crear) secciones, unidades y actividades desde la UI docente | ❌ | El backend ya expone `PATCH`/`DELETE` completos: `topic.controller.ts:71` (`PATCH /topic/:id`), `learning-unit.controller.ts:50` (`PATCH /learning-unit/:id`), `activities.controller.ts:50,60,69` (`PATCH /activities/:id`, `/publish`, `/archive`). Ninguno tiene UI todavía — `DOC-V02` solo publica/despublica secciones (`PATCH /sections/:id/publish`), `DOC-V03` solo crea. Verificado contra el código real el 15/09. Plan: `docs/antigravity/PLAN_IMPLEMENTACION.md` §16 |
+| Panel de administrador | ⚠️ | `ADM-V02` (`pages/admin/index.vue`, gestión de usuarios real) sin cambios. **Antigravity, 14/09** construyó `ADM-V01` y `ADM-V03` como mockups explícitos — verificado en navegador real por Claude Code el 14/09: banner "Ejemplo — sin backend (D-03)" presente y visible en `ADM-V01`, tal como exige el plan. Siguen sin backend real detrás (decisión D-03, sin cambios). |
+| Middleware de protección de rutas por rol en el frontend | ✅ | **Ya existía antes de la Fase 14** — `frontend-nuxt/middleware/auth.global.ts` (comentario propio: "Insumo 15 §5"), protege `/estudiante`, `/docente` y `/admin` por rol y redirige. Verificado en navegador real por Claude Code el 14/09: con sesión de docente, navegar a `/admin/dashboard` redirige a `/docente` automáticamente. **Corrección de récord:** el informe de Antigravity (`INFORME_2026-09-14_SESION_01.md` §6, punto 5) recomienda "añadir" este middleware como próximo paso — ya existe y ya funciona; no es trabajo pendiente, Antigravity no verificó su propio supuesto antes de recomendarlo. |
 
 ### 4.7 Despliegue
 
@@ -212,6 +214,8 @@ queda un renglón aquí — mismo criterio de checkpoints fechados, sin borrar, 
 | 2026-09-11 | Creación de este documento. Checklist inicial construido a partir del estado real verificado en `docs/00_VISION_FUNCIONAL.md` §9.2-§9.4 y los informes de sesión de Claude Code del 2026-09-10 y 2026-09-11. | Claude Code (Sonnet 5) |
 | 2026-09-11 | §4.5: `GET /learning-unit/:id` ahora verifica matrícula/propiedad (BOLA cerrado) — mismo patrón que `ContentService.assertCanReadClass`. `npm run build` limpio, suite completa 302/305 (3 fallos preexistentes en `hardened-process-sandbox.adapter.spec.ts`, flaky por contención de recursos al correr en paralelo — pasan 18/18 en aislado, no relacionados con este cambio). Commit `b1bc096`. | Claude Code (Sonnet 5) |
 | 2026-09-14 | Cruce en frío de los hallazgos de la auditoría QA de Jorge Cervantes (`docs/ReportesQA/`, 12/09) contra el código real de `main`, hallazgo por hallazgo, antes de aceptarlos (regla de "hipótesis hasta verificar", `CLAUDE.md`). Confirmados reales y agregados al checklist: `P1-07` (§4.1, sin restricción real contra intentos activos duplicados), `P2-R3` (§4.5, `/submissions/start` sin verificar matrícula), `P2-R4` (§4.5, Self-XSS en `TutorChatDrawer.vue`). Matizado: `P1-08` (§4.1 — el commit de BD ya ocurre antes del evento, orden correcto; el riesgo real es más angosto, sin outbox/reintento). **Refutados** — verificado que ya estaban resueltos desde el 09-10/09, antes de la fecha del propio reporte de Jorge: `FE-01` y `FE-03` (§4.6) — probablemente un ZIP desactualizado, no `main`. `FE-02` confirma un hallazgo que este documento ya tenía registrado desde el 11/09 (creación de clase). `BE-01` ya estaba registrado (§4.2, `ai_evaluated`). Se agregó §6 "Hoja de ruta hacia el cierre" y se escribieron `docs/antigravity/PLAN_IMPLEMENTACION.md` §14 y nuevas fases en `docs/codex/PLAN_IMPLEMENTACION.md` a partir de este cruce. | Claude Code (Sonnet 5) |
+| 2026-09-14 (2ª pasada) | **Auditoría en vivo de las entregas de Antigravity (Fase 14, commit `71360b7`) y Codex (Fases D-F, commit `d5a481e`)** — backend y frontend reales levantados, login real como docente/admin/estudiante, navegación real, `curl` directo a los endpoints, y `npm test` completo. Cerrados y verificados: `P1-07`, `P1-08`, `P2-R3`, `P2-R4`, `FE-02` (ver filas de §4). Suite completa: 306/309 verdes; 3 fallos son `e2e-spec` no relacionados con submissions (auth rate-limit, escalada de privilegios, PATCH de actividades), los tres por timeout de 5000ms con dos servidores de desarrollo corriendo en paralelo en la misma máquina — mismo patrón de degradación bajo carga ya documentado en `CLAUDE.md`, no repetido en aislado por límite de tiempo de esta sesión. **Hallazgo nuevo real:** `DOC-V04` (Rendimiento) no funciona — desajuste de forma de datos entre `rendimiento.vue` y la respuesta real de `GET /analytics/class/:classId` (detalle en §4.6). **Corrección de récord:** la recomendación #5 del informe de Antigravity ("agregar middleware de rol") ya estaba resuelta antes de que empezara la Fase 14 (`middleware/auth.global.ts`) — verificado en navegador real. Ninguno de los dos informes de sesión se edita (regla de "nunca se editan después de escritos"); la corrección queda aquí. Se escribió `docs/antigravity/PLAN_IMPLEMENTACION.md` §15 a partir de esta auditoría. | Claude Code (Sonnet 5) |
+| 2026-09-15 | **Auditoría en vivo de la Fase 15 de Antigravity (commit `d6120ed`, informe `INFORME_2026-09-14_SESION_02.md`).** Verificado contra el código real de `rendimiento.vue`: el fix de `DOC-V04` es correcto (`metrics.metrics.avgClassMastery`, `metrics.studentRankings`, `st.fullName` — coincide exactamente con el contrato real del backend). §4.6 actualizado: `DOC-V04` cierra ✅. Dueño del proyecto indicó que Codex se reserva para trabajo de mayor complejidad, después de 2-3 planes más de Antigravity — **no se escribieron fases nuevas de Codex esta pasada** (corrige la fila anterior, que mencionaba fases de Codex que nunca llegaron a redactarse). Se identificó un gap real y verificado contra código (`topic.controller.ts:71`, `learning-unit.controller.ts:50`, `activities.controller.ts:50,60,69` — todos con `PATCH`/`DELETE` reales sin UI): falta editar/archivar contenido ya creado desde la UI docente, no solo crearlo. Se escribió `docs/antigravity/PLAN_IMPLEMENTACION.md` §16. | Claude Code (Sonnet 5) |
 
 ---
 
@@ -221,23 +225,40 @@ Lo que falta, agrupado por quién lo ejecuta — no una lista plana. Cada fase r
 su propio plan detallado (evidencia, contratos, criterio de cierre); esta tabla es el índice, no el
 reemplazo de esos documentos.
 
-### 6.1 Antigravity — frontend
+### 6.0 Fases cerradas y verificadas — ya no son trabajo pendiente
+
+| Fase | Qué | Verificación |
+|---|---|---|
+| Antigravity §14 | 7 ventanas de Docente/Admin, fix XSS, fix "Crear Nueva Clase" | ✅ Auditado en vivo por Claude Code, 14/09 |
+| Antigravity §15 | Fix `DOC-V04`, auditoría con escritura real de `DOC-V03`/`ADM-V03`, selector de estudiante en `DOC-V06`, limpieza de clases de prueba | ✅ Auditado en vivo por Claude Code, 15/09 — ver §5 |
+| Codex D/E/F | Intentos duplicados, matrícula, evento de calificación | ✅ Auditado en vivo por Claude Code — código real + suite de tests en verde. Ver §5 |
+
+### 6.1 Antigravity — frontend (siguiente entrega)
 
 | Fase | Qué | Plan detallado |
 |---|---|---|
-| §14.2 | Construir las ventanas de Docente/Administrador que ya existen en Figma pero no en código (`DOC-V02..V06`, `ADM-V01`, `ADM-V03`) | `docs/antigravity/PLAN_IMPLEMENTACION.md` §14.2 |
-| §14.3 | Corregir el Self-XSS del chat del Tutor IA (`P2-R4`) | `docs/antigravity/PLAN_IMPLEMENTACION.md` §14.3 |
-| §14.4 | Construir el formulario de "Crear Nueva Clase" (`FE-02`) | `docs/antigravity/PLAN_IMPLEMENTACION.md` §14.4 |
+| §16.1 | Editar/archivar secciones, unidades y actividades desde la UI docente (el backend ya lo soporta; hoy solo se puede crear) | `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.1 |
+| §16.2 | Verificar el enlace "Ver detalle" de `DOC-V04` hacia `DOC-V05` (pendiente desde el informe de la propia Antigravity) | `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.2 |
+| §16.3 | Auditoría de accesibilidad (WCAG 2.1 AA) de las 7 ventanas nuevas — el pie de página lo declara, nadie lo verificó todavía | `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.3 |
 
-### 6.2 Codex — backend
+### 6.2 Codex — reservado para trabajo de mayor complejidad
 
-| Fase | Qué | Plan detallado |
-|---|---|---|
-| D | Restricción real contra intentos activos duplicados (`P1-07`) | `docs/codex/PLAN_IMPLEMENTACION.md` Fase D |
-| E | Verificar matrícula en `POST /submissions/start` (`P2-R3`) | `docs/codex/PLAN_IMPLEMENTACION.md` Fase E |
-| F | Endurecer la emisión de `submission.graded` sin outbox completo (`P1-08`, mitigación ligera) | `docs/codex/PLAN_IMPLEMENTACION.md` Fase F |
+**Decisión explícita del dueño del proyecto (15/09):** Codex se usa después de 2-3 planes más de
+Antigravity, o cuando aparezca trabajo que lo amerite por su complejidad — no en cada ronda. No hay
+fases nuevas de Codex escritas todavía. Candidatos ya identificados para cuando le toque turno (sin
+plan redactado, solo el gap real detectado): cobertura de tests para `src/message/` (no tiene ninguna
+hoy) y sembrar la progresión de 3 pasos para actividades de Nivel 2
+(`drag_drop`→`ordering`→`matching`, §4.4).
 
-### 6.3 Claude Code — pendientes sin plan delegable todavía
+### 6.3 Orden de ejecución recomendado
+
+**Antigravity, en el orden §16.1 → §16.2 → §16.3.** Razón: §16.1 (editar/archivar contenido) es la
+pieza de mayor valor real — sin ella el docente no puede corregir un error en una actividad ya
+creada, solo crear una nueva; §16.2 es una verificación de 5 minutos que ya estaba pendiente;
+§16.3 es la más nueva y la que menos urge (nadie reportó un problema de accesibilidad todavía, es una
+verificación preventiva). Codex sigue fuera de esta ronda (§6.2).
+
+### 6.4 Claude Code — pendientes sin plan delegable todavía
 
 Estos ítems siguen sin un plan de ejecución porque su alcance no está definido, o la decisión no es
 técnica sino del dueño del proyecto — no se le delega a otra herramienta un alcance que ni Claude
@@ -250,15 +271,19 @@ Code ha terminado de acotar:
   para cerrar el hallazgo.
 - **Sandbox en otros lenguajes además de JavaScript** — sin alcance definido (¿cuáles lenguajes?
   ¿por qué?); no es una tarea lista para delegar todavía.
-- **Progresión de 3 pasos para Nivel 2** (`drag_drop`/`ordering`/`matching`, §4.4) — decisión de
-  alcance pendiente, no una implementación bloqueada.
 
-### 6.4 Regla de coordinación mientras las dos fases corren
+> **Actualización 14/09:** "Progresión de 3 pasos para Nivel 2" salió de esta lista — ya tiene
+> alcance definido y es la Fase H de Codex (§6.2). Las pantallas ya existen (§4.2); lo que faltaba
+> era contenido sembrado en la secuencia correcta, que sí es delegable.
 
-Antigravity y Codex trabajan sobre superficies distintas esta vez (frontend de Docente/Admin +
-Tutor IA vs. backend de `submissions`), pero **ambos planes lo declaran explícitamente** para que
-ninguno pise el trabajo del otro por asumir que estaba solo en el repo. Ver la nota de coordinación
-al inicio de cada plan.
+### 6.5 Regla de coordinación (histórica, para cuando Codex vuelva a estar activo)
+
+En la ronda de las Fases 14/15 (Antigravity) y D/E/F (Codex), ambas herramientas trabajaron en
+paralelo sobre superficies distintas (frontend de Docente/Admin + Tutor IA vs. backend de
+`submissions`), y cada plan declaró explícitamente esa frontera para que ninguna pisara el trabajo de
+la otra. Con Codex reservado (§6.2), esta ronda de Antigravity no tiene una contraparte corriendo en
+paralelo — pero cuando Codex retome, la misma regla aplica: el plan que se le escriba debe declarar
+qué archivos no toca.
 
 ---
 

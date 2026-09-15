@@ -582,7 +582,7 @@ falta que Antigravity toque nada de esa lógica — solo que las pantallas de de
 
 ---
 
-## 14. Fase siguiente — Docente/Administrador en Nuxt + 2 correcciones verificadas (2026-09-14)
+## 14. Fase — Docente/Administrador en Nuxt + 2 correcciones verificadas (2026-09-14)
 
 ### 14.0 Coordinación con Codex — leer antes de empezar
 
@@ -694,3 +694,237 @@ ventana nueva es una página que llena `[C]`, igual que ya se hizo para `DOC-V01
   `informes/TEMPLATE_INFORME.md`, con fila agregada al índice de `docs/antigravity/README.md` — sin
   este informe, esta fase no se considera cerrada aunque el código ya esté en el repositorio (mismo
   criterio de todas las fases anteriores).
+
+---
+
+## 15. Fase siguiente — corregir DOC-V04, terminar de auditar §14, y limpieza (2026-09-14, 2ª pasada)
+
+### 15.0 Contexto — qué encontró Claude Code al auditar §14 en vivo
+
+La Fase 14 se ejecutó y se cerró (commit `71360b7`, informe
+`docs/antigravity/informes/INFORME_2026-09-14_SESION_01.md`). Antes de dar la fase por buena, Claude
+Code la auditó en navegador real (backend + frontend + BD reales, login real como docente/admin) —
+regla de este proyecto: nunca se confía en un informe propio de la herramienta que lo escribió. Esto
+encontró:
+
+- **Un bug real** en `DOC-V04` — ver §15.1. El `nuxi typecheck` en verde de la Fase 14 no lo detectó
+  porque TypeScript no valida la forma real de una respuesta HTTP en tiempo de ejecución; hace falta
+  probar contra datos reales, no solo compilar.
+- **Una recomendación tuya que ya estaba resuelta.** Tu informe (§6, punto 5) recomienda "añadir"
+  middleware de protección de rutas por rol. Ya existe:
+  `frontend-nuxt/middleware/auth.global.ts` (comentario propio: "Insumo 15 §5") — verificado en vivo,
+  con sesión de docente, navegar a `/admin/dashboard` redirige automáticamente a `/docente`. No lo
+  reconstruyas ni lo toques; esto es solo para que sepas que ya estaba ahí antes de que empezaras
+  §14 — revisa el árbol real antes de recomendar algo como pendiente.
+- **Confirmado que sí funciona:** `DOC-V02` (incluida la mutación `PATCH /sections/:id/publish`,
+  probada en vivo), `DOC-V05`, `DOC-V06` (incluido enviar un mensaje real, `POST /message` → 201) y
+  `ADM-V01` (banner "Ejemplo — sin backend (D-03)" presente, tal como exige el plan). Buen trabajo en
+  esas cuatro — el problema es puntual a `DOC-V04`, no sistémico.
+
+### 15.0 Coordinación con Codex — leer antes de empezar
+
+Codex está trabajando en paralelo en `src/message/` (tests, Fase G) y en sembrar contenido de Nivel 2
+(Fase H) — no en frontend. Esta fase no toca `src/`. Si algo pareciera requerir tocar backend, es una
+señal de que el alcance se está saliendo de lo descrito abajo.
+
+### 15.1 🐛 Arreglar `DOC-V04` (Rendimiento) — prioridad más alta de esta fase
+
+**El bug, con evidencia exacta:**
+
+`frontend-nuxt/pages/docente/rendimiento.vue` declara esta interfaz y la usa para decidir qué mostrar:
+
+```ts
+interface ClassMetricsResponse {
+  classId: number
+  summary: { avgMastery: number; avgSuccessRate: number; totalAttempts: number }
+  students: StudentMetric[]
+}
+```
+
+Pero `GET /analytics/class/:classId` (`src/analytics/analytics.service.ts`, método `getClassMetrics`)
+devuelve, de verdad, esto — verificado con `curl` directo contra el backend real:
+
+```json
+{
+  "classId": 14,
+  "className": "Algoritmos Básicos con HTML5, CSS y JavaScript",
+  "classCode": "ALGO-WEB-T01",
+  "metrics": { "totalStudents": 3, "avgClassMastery": 32.11, "avgClassSuccessRate": 29.63, "totalSubmissions": 26 },
+  "studentRankings": [
+    { "studentId": 29, "fullName": "Pedro Romero", "email": "...", "avgMastery": 38, "successRate": 27.78, "submissionsCount": 21 }
+  ]
+}
+```
+
+Como el componente busca `metrics.value.students` (que nunca existe en la respuesta real —
+el campo real es `studentRankings`, y los números están bajo `metrics`, no bajo `summary`), la
+condición del **ESTADO 3: Vacío** (`!metrics.students || metrics.students.length === 0`) es
+**siempre verdadera**, sin importar cuántos estudiantes reales tenga la clase. Verificado en vivo: la
+clase `ALGO-WEB-T01` (id 14) tiene 3 estudiantes reales con dominio y envíos reales, y la vista
+muestra "Sin estudiantes matriculados".
+
+**Corrección:** ajustar la interfaz `ClassMetricsResponse` y todas las referencias en el `<template>`
+al contrato real:
+- `summary.avgMastery` → `metrics.avgClassMastery`
+- `summary.avgSuccessRate` → `metrics.avgClassSuccessRate`
+- `summary.totalAttempts` → `metrics.totalSubmissions`
+- `students` → `studentRankings`, y dentro de cada elemento: `name` → `fullName`, `mastery` →
+  `avgMastery`, `successRate` → `successRate` (igual), `attempts` → `submissionsCount`
+
+No cambies el backend — `getClassMetrics` es correcto y ya lo usa/expone así; el contrato real es el
+de arriba, no el que asumió el componente.
+
+**Criterio de cierre de este punto:** con la clase `ALGO-WEB-T01` (id 14) seleccionada, la vista
+muestra las 4 tarjetas KPI con números reales (no ceros) y la tabla de roster con los 3 estudiantes
+reales — verificado en navegador real, no solo compilación. Repite la prueba con una clase realmente
+vacía (por ejemplo una de las clases de prueba, ver §15.4) para confirmar que el ESTADO 3 sigue
+funcionando cuando de verdad no hay estudiantes.
+
+### 15.2 Terminar de auditar lo que §14 no probó completo
+
+Dos ventanas de §14 se verificaron por inspección de código y `typecheck`, pero no se probó su flujo
+completo en navegador real con una acción de escritura:
+- `DOC-V03` (Crear Ejercicio, `pages/docente/ejercicios/crear.vue`) — completar el formulario
+  multi-step y confirmar que `POST /activities` + `POST /activity-questions` crean una actividad real,
+  visible después en `DOC-V02` o en la lista de actividades de la unidad correspondiente.
+- `ADM-V03` (Logs y Sistema) — confirmar que el botón de `POST /maintenance/cleanup` (ya probado por
+  ti como 201 en tu propio informe) no rompe nada real al ejecutarse dos veces seguidas, y que el
+  resto de la vista (fuera del botón real) mantiene su banner D-03 visible.
+
+Si encuentras un bug igual de real que el de §15.1 en cualquiera de las dos, corrígelo con la misma
+evidencia (contrato esperado vs. contrato real) antes de cerrar esta fase — no lo dejes para una
+fase futura si ya lo encontraste ahora.
+
+### 15.3 Selector de estudiante real en "Redactar Mensaje" (`DOC-V06`)
+
+Hoy el formulario de composición en `pages/docente/mensajes.vue` pide un **ID numérico** de estudiante
+escrito a mano (placeholder "Ej: 29 (Pedro Estudiante)") — funciona, pero el docente no tiene forma de
+saber esos IDs sin ir a otra pantalla. Reemplázalo por un selector real: usa
+`GET /enrollment/class/:classId` (ya integrado en `DOC-V04`, mismo patrón) para poblar un `<select>`
+con nombre + correo de los estudiantes matriculados en la clase activa del docente, y envía el
+`studentId` real al hacer submit — el contrato de `POST /message` no cambia.
+
+### 15.4 Limpieza — quitar tus propias clases de prueba de la cuenta real de Toscano
+
+Tu propia verificación E2E de §14 (`scratch/test-fase14.js`) creó 2 clases reales
+("Clase QA Automatizada Antigravity", códigos `QA-1590` y `QA-8870`) usando la cuenta real de
+`roberto.toscano@unicor.edu.co` — quedaron en la base de datos de desarrollo mezcladas con sus clases
+reales (aparecen en su selector de clase en `DOC-V04`, por ejemplo). `PATCH /class/:id` no acepta
+`isActive` directamente (verificado: devuelve 400 "property isActive should not exist") — revisa si
+existe un endpoint de cierre de curso distinto, o bórralas directamente en la BD de desarrollo. Para
+sesiones E2E futuras, usa una cuenta de docente dedicada a pruebas (o bórrala al final del script) en
+vez de la cuenta real que el equipo usa para las demos.
+
+### 15.5 Explícitamente fuera de esta fase
+
+- Cualquier cambio a `src/` — es de Codex (§15.0).
+- `DOC-V01` — no está en el alcance de ninguna fase todavía; no la toques sin que se te pida.
+- WebSockets para mensajería en tiempo real — tu propia recomendación #4, sigue siendo opcional y
+  fuera de alcance hasta que se pida explícitamente.
+
+### 15.6 Criterio de cierre de esta fase
+
+- `DOC-V04` muestra datos reales para una clase con estudiantes reales, verificado en navegador real
+  (§15.1).
+- `DOC-V03` y `ADM-V03` confirmados funcionando (o corregidos si se encontró un bug) con una acción
+  de escritura real, no solo lectura (§15.2).
+- El formulario de mensajes usa un selector real de estudiante, no un ID a mano (§15.3).
+- Las 2 clases de prueba salieron de la cuenta real de Toscano, o quedó documentado por qué no se
+  pudieron quitar en este entorno (§15.4).
+- **Informe de sesión obligatorio** en `docs/antigravity/informes/`, siguiendo
+  `informes/TEMPLATE_INFORME.md`, con fila nueva en `docs/antigravity/README.md`. Como en esta fase
+  ya hubo un caso real de "typecheck verde pero la vista no funciona", el informe debe incluir
+  evidencia de verificación **en navegador real contra datos reales** para cada punto de esta lista —
+  no alcanza con reportar `nuxi typecheck: exit code 0`.
+
+---
+
+## 16. Fase siguiente — editar/archivar contenido, enlace pendiente y accesibilidad (2026-09-15)
+
+### 16.0 Contexto
+
+La Fase 15 se ejecutó y se cerró (commit `d6120ed`, informe
+`docs/antigravity/informes/INFORME_2026-09-14_SESION_02.md`) — auditada en vivo por Claude Code el
+15/09, el fix de `DOC-V04` es correcto. **Codex no participa en esta ronda**: el dueño del proyecto
+decidió reservarlo para trabajo de mayor complejidad más adelante, así que esta fase es
+exclusivamente tuya, sin coordinación de frontera con otra herramienta corriendo en paralelo.
+
+### 16.1 Editar y archivar contenido ya creado — la pieza de mayor valor de esta fase
+
+**El gap, con evidencia exacta:** el backend ya expone edición completa, pero ninguna pantalla la usa
+todavía. Hoy `DOC-V02`/`DOC-V03` solo *crean* contenido — si un docente comete un error en una
+actividad o quiere archivar una unidad vieja, no tiene cómo hacerlo desde la interfaz.
+
+| Recurso | Endpoint real, ya existente | Rol requerido |
+|---|---|---|
+| Topic | `PATCH /topic/:id` (`topic.controller.ts:71`) | docente, admin |
+| Topic | `DELETE /topic/:id` — soft delete (`topic.controller.ts:87`) | docente, admin |
+| Unidad de aprendizaje | `PATCH /learning-unit/:id` (`learning-unit.controller.ts:65`) | docente, admin |
+| Unidad de aprendizaje | `DELETE /learning-unit/:id` (`learning-unit.controller.ts:75`) | **solo admin** — no lo expongas como acción de docente |
+| Actividad | `PATCH /activities/:id` (`activities.controller.ts:50`) | docente, admin |
+| Actividad | `PATCH /activities/:id/publish` (`activities.controller.ts:60`) | docente, admin |
+| Actividad | `PATCH /activities/:id/archive` (`activities.controller.ts:69`) | docente, admin |
+| Actividad | `DELETE /activities/:id` (`activities.controller.ts:78`) | docente, admin |
+
+**Qué construir en `DOC-V02` (`contenidos.vue`):**
+- Cada topic del árbol ya renderizado: agregar acciones "Editar" (abre un formulario/modal con
+  título/descripción/orden, `PATCH /topic/:id`) y "Archivar" (`DELETE /topic/:id` — es soft delete,
+  no destructivo; confirma con el usuario antes de llamarlo, mismo patrón que ya usarías para
+  cualquier acción irreversible en la UI).
+- Cada unidad de aprendizaje listada: acción "Editar" (`PATCH /learning-unit/:id`). **No** agregues
+  un botón de eliminar para unidades — el endpoint es solo-admin, no la expongas al docente
+  (mostrarla y que el backend la rechace con 403 es peor UX que no mostrarla).
+
+**Qué construir en `DOC-V03` (`ejercicios/crear.vue`) o una vista hermana:**
+- Falta una forma de listar y editar actividades ya creadas de una unidad (hoy la página solo tiene
+  el flujo de creación). Puede ser una pestaña/sección nueva en la misma vista, o una tabla que
+  aparezca al elegir una unidad: por cada actividad, "Editar" (`PATCH /activities/:id`),
+  "Publicar/Despublicar" (`PATCH /activities/:id/publish`), "Archivar"
+  (`PATCH /activities/:id/archive`). No dupliques el formulario de creación entero para editar si el
+  cambio es solo de metadatos — confirma primero, contra `GET /activities/:id`, qué campos trae la
+  actividad real antes de decidir cuánto del formulario de creación reutilizar.
+
+**Antes de escribir código:** confirma contra `GET /activities/:id` real (no contra el DTO de
+creación) qué forma tiene una actividad ya creada, igual que hiciste en §15.2 con `activity-types` —
+ahí fue donde apareció el bug de `data` vs. `items`, mismo tipo de descuido es fácil de repetir aquí.
+
+### 16.2 Verificar el enlace `DOC-V04` → `DOC-V05`
+
+Tu propio informe de la Fase 15 (§6, punto 2) señaló esto como pendiente: confirmar que la columna
+"Acción → Ver detalle" del roster de `rendimiento.vue` navega correctamente a
+`pages/docente/estudiante/[studentId].vue` con el `studentId` correcto, y que esa vista carga los
+datos reales de ese estudiante (ya verificado funcionando por Claude Code para un acceso directo por
+URL — falta confirmar el enlace en sí). Si ya funciona, esto es una verificación de 5 minutos, no una
+construcción nueva.
+
+### 16.3 Auditoría de accesibilidad (WCAG 2.1 AA) de las 7 ventanas nuevas
+
+El pie de página de la aplicación declara "Accesibilidad WCAG 2.1 AA ✔" en todas las vistas,
+incluidas las 7 que construiste en la Fase 14 — nadie verificó ese punto específicamente para ellas
+todavía. Revisa, para cada una de `DOC-V02` a `DOC-V06`, `ADM-V01` y `ADM-V03`:
+- Contraste real de texto/fondo (mismo criterio que ya se aplicó en Figma para `texto-secundario` y
+  `ambar-fuerte` — no repitas un color que ya falló contraste antes en este proyecto).
+- Navegación por teclado: cada acción (editar, publicar, archivar, enviar mensaje, toggle) debe ser
+  alcanzable y operable sin mouse.
+- Los formularios/modales nuevos (crear clase, redactar mensaje, y los que agregues en §16.1) tienen
+  `label` asociado a cada campo, no solo `placeholder`.
+
+Si encuentras una falla real, corrígela con la misma referencia de tokens que usa el resto del
+proyecto (`tailwind.config.ts`) — no un color nuevo inventado para el caso.
+
+### 16.4 Explícitamente fuera de esta fase
+
+- Cualquier cambio a `src/` — sigue sin ser tu superficie, aunque Codex no esté activo esta ronda.
+- `DELETE /learning-unit/:id` no se expone al docente (§16.1) — es una restricción real del backend,
+  no un olvido a corregir.
+- Backend nuevo para `ADM-V01`/`ADM-V03` — sigue "pendiente de backend (D-03)", sin cambios.
+
+### 16.5 Criterio de cierre de esta fase
+
+- Un docente puede editar y archivar un topic, una unidad y una actividad ya existentes, verificado
+  en navegador real contra datos reales (no solo `typecheck`) — mismo estándar que dejó la Fase 15.
+- El enlace `DOC-V04` → `DOC-V05` confirmado funcionando con un `studentId` real.
+- Auditoría de accesibilidad completada para las 7 ventanas, con hallazgos corregidos o declarados
+  explícitamente si no se alcanzan a corregir en esta fase.
+- **Informe de sesión obligatorio**, mismo criterio que las fases anteriores — evidencia en navegador
+  real, no solo compilación.
