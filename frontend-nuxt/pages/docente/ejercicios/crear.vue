@@ -65,6 +65,7 @@
           <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil font-semibold">
             <tr>
               <th scope="col" class="p-2.5">Título</th>
+              <th scope="col" class="p-2.5">Categoría / Peso</th>
               <th scope="col" class="p-2.5">Dificultad</th>
               <th scope="col" class="p-2.5 text-center">Pts</th>
               <th scope="col" class="p-2.5 text-center">Estado</th>
@@ -77,6 +78,12 @@
               :key="act.id"
               class="hover:bg-base-bg-secundario/40 transition-colors">
               <td class="p-2.5 font-medium text-base-texto-primario max-w-[200px] truncate">{{ act.title }}</td>
+              <td class="p-2.5 text-base-texto-secundario whitespace-nowrap">
+                <span class="inline-flex items-center gap-1 font-semibold px-2 py-0.5 rounded text-[11px] bg-base-bg-secundario border border-base-borde-sutil">
+                  {{ act.activityType?.name || 'Práctica Formativa' }}
+                  <span class="text-acento-ambar-fuerte font-mono text-[10px]">({{ act.activityType?.baseWeight || 1 }}×)</span>
+                </span>
+              </td>
               <td class="p-2.5 text-base-texto-secundario font-mono">{{ act.difficulty }}</td>
               <td class="p-2.5 text-center font-mono text-base-texto-secundario">{{ act.totalPoints }}</td>
               <td class="p-2.5 text-center">
@@ -195,6 +202,25 @@
               <option value="avanzado">Avanzado</option>
             </select>
           </div>
+        </div>
+
+        <!-- Categoría de Actividad y Ponderación (§17) -->
+        <div class="text-xs">
+          <label for="create-activity-type" class="block font-semibold text-base-texto-primario mb-1">
+            Categoría Pedagógica / Tipo de Actividad *
+          </label>
+          <select
+            id="create-activity-type"
+            v-model="activityTypeId"
+            required
+            class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario">
+            <option v-for="t in activityTypes" :key="t.id" :value="t.id">
+              {{ t.name }} (peso {{ t.baseWeight }}×)
+            </option>
+          </select>
+          <p class="text-[11px] text-base-texto-secundario mt-1 leading-normal">
+            Los talleres y parciales pesan más en el dominio del estudiante que la práctica libre — úsalo para reflejar evaluaciones reales, no para inflar el Mastery.
+          </p>
         </div>
 
         <div class="grid grid-cols-3 gap-4 text-xs">
@@ -429,6 +455,22 @@
               </div>
             </div>
 
+            <div>
+              <label for="act-type" class="block font-semibold text-base-texto-primario mb-1">Categoría Pedagógica *</label>
+              <select
+                id="act-type"
+                v-model="editActivityModal.form.activityTypeId"
+                required
+                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario">
+                <option v-for="t in activityTypes" :key="t.id" :value="t.id">
+                  {{ t.name }} (peso {{ t.baseWeight }}×)
+                </option>
+              </select>
+              <p class="text-[10px] text-base-texto-secundario mt-0.5">
+                Recategorizar la actividad recalcula el impacto en el dominio (Mastery) de los envíos de los estudiantes.
+              </p>
+            </div>
+
             <p v-if="editActivityModal.error" role="alert" class="text-semantico-falla text-[11px]">{{ editActivityModal.error }}</p>
 
             <div class="flex items-center justify-end gap-3 pt-1">
@@ -514,6 +556,13 @@ interface SectionItem {
   }>
 }
 
+interface ActivityTypeOption {
+  id: number
+  name: string
+  code: string
+  baseWeight: number
+}
+
 // Actividad ya existente en la unidad (contrato real de GET /activities?learningUnitId=X)
 interface ActivityItem {
   id: number
@@ -522,6 +571,13 @@ interface ActivityItem {
   difficulty: string
   totalPoints: number
   status: string  // 'draft' | 'published' | 'archived'
+  activityTypeId?: number
+  activityType?: {
+    id: number
+    name: string
+    code?: string
+    baseWeight: number
+  }
 }
 
 const api = useApi()
@@ -529,6 +585,7 @@ const api = useApi()
 const teacherClasses = ref<TeacherClass[]>([])
 const selectedClassId = ref<number | null>(null)
 const units = ref<LearningUnitItem[]>([])
+const activityTypes = ref<ActivityTypeOption[]>([])
 const activityTypeId = ref<number>(1)
 
 const isSubmitting = ref(false)
@@ -603,7 +660,13 @@ const editActTitleRef = ref<HTMLInputElement | null>(null)
 const editActivityModal = reactive({
   open: false,
   activityId: null as number | null,
-  form: { title: '', description: '', difficulty: 'basico', totalPoints: 25 },
+  form: {
+    title: '',
+    description: '',
+    difficulty: 'basico',
+    totalPoints: 25,
+    activityTypeId: null as number | null
+  },
   saving: false,
   error: null as string | null
 })
@@ -614,6 +677,7 @@ function openEditActivityModal(act: ActivityItem) {
   editActivityModal.form.description = act.description || ''
   editActivityModal.form.difficulty = act.difficulty || 'basico'
   editActivityModal.form.totalPoints = act.totalPoints
+  editActivityModal.form.activityTypeId = act.activityTypeId || act.activityType?.id || (activityTypes.value[0]?.id ?? 1)
   editActivityModal.error = null
   editActivityModal.open = true
   nextTick(() => editActTitleRef.value?.focus())
@@ -635,7 +699,8 @@ async function submitEditActivity() {
       title: editActivityModal.form.title.trim(),
       description: editActivityModal.form.description.trim() || undefined,
       difficulty: editActivityModal.form.difficulty,
-      totalPoints: editActivityModal.form.totalPoints
+      totalPoints: editActivityModal.form.totalPoints,
+      activityTypeId: editActivityModal.form.activityTypeId
     })
     // Actualizar en memoria
     const act = unitActivities.value.find(a => a.id === editActivityModal.activityId)
@@ -644,6 +709,13 @@ async function submitEditActivity() {
       act.description = editActivityModal.form.description.trim()
       act.difficulty = editActivityModal.form.difficulty
       act.totalPoints = editActivityModal.form.totalPoints
+      if (editActivityModal.form.activityTypeId) {
+        act.activityTypeId = editActivityModal.form.activityTypeId
+        const matched = activityTypes.value.find(t => t.id === editActivityModal.form.activityTypeId)
+        if (matched) {
+          act.activityType = { id: matched.id, name: matched.name, baseWeight: matched.baseWeight }
+        }
+      }
     }
     actionFeedback.value = `Ejercicio "${editActivityModal.form.title}" actualizado correctamente.`
     closeEditActivityModal()
@@ -754,8 +826,10 @@ async function fetchInitialData() {
     }
 
     const typesList = Array.isArray(typesRes) ? typesRes : (typesRes?.data || typesRes?.items || [])
+    activityTypes.value = typesList
     if (typesList.length > 0) {
-      activityTypeId.value = typesList[0].id
+      const defaultType = typesList.find((t: any) => t.code === 'AUTO-EVAL') || typesList[0]
+      activityTypeId.value = defaultType.id
     }
   } catch (err: any) {
     console.error('Error al inicializar diseñador:', err)

@@ -1,5 +1,5 @@
 ---
-estado:     vigente — Fase 17 en curso
+estado:     vigente — Fase 17 completada
 verificado: 2026-09-16
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    COMP-V00 · EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03

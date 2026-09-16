@@ -223,12 +223,34 @@ export async function runMasterSeed() {
     actTypeRepo,
     { code: 'AUTO-EVAL' },
     () => ({
-      name: 'Evaluación Interactiva Autocalificable',
+      name: 'Práctica Formativa',
       code: 'AUTO-EVAL',
       autoGradable: true,
       baseWeight: 1.0,
     }),
     'Tipo de Actividad: AUTO-EVAL',
+  );
+  const tallerType = await findOrCreate(
+    actTypeRepo,
+    { code: 'TALLER' },
+    () => ({
+      name: 'Taller de Código',
+      code: 'TALLER',
+      autoGradable: true,
+      baseWeight: 1.5,
+    }),
+    'Tipo de Actividad: TALLER',
+  );
+  const parcialType = await findOrCreate(
+    actTypeRepo,
+    { code: 'PARCIAL' },
+    () => ({
+      name: 'Parcial / Evaluación',
+      code: 'PARCIAL',
+      autoGradable: true,
+      baseWeight: 3.0,
+    }),
+    'Tipo de Actividad: PARCIAL',
   );
 
   // 6. Estructura Curricular de la Clase Principal (Toscano)

@@ -140,10 +140,15 @@ export class ActivitiesService {
     }
 
     this.activitiesRepo.merge(activity, updateActivityDto);
+    if (updateActivityDto.activityTypeId) {
+      activity.activityTypeId = updateActivityDto.activityTypeId;
+      delete (activity as any).activityType;
+    }
     if (updateActivityDto.description) {
       activity.description = this.contentRenderingService.sanitizeRichText(updateActivityDto.description);
     }
-    return this.activitiesRepo.save(activity);
+    await this.activitiesRepo.save(activity);
+    return this.findOne(id);
   }
 
   async changeStatus(id: number, status: PublicationStatus, user: User): Promise<Activity> {
