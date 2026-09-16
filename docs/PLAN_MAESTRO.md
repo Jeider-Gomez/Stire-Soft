@@ -1,6 +1,6 @@
 # STIRE — Plan Maestro de Implementación y Seguimiento
 
-**Documento vivo. Última actualización: 2026-09-15 (segunda pasada del día).**
+**Documento vivo. Última actualización: 2026-09-15 (tercera pasada del día).**
 
 > ## ⚠️ Regla de edición — leer antes de tocar este archivo
 >
@@ -211,7 +211,9 @@ propósito (decisión del dueño del proyecto, no olvido).
 | Pantalla de Inicio del estudiante conectada a datos reales | ✅ | `frontend-nuxt/pages/estudiante/index.vue` |
 | Pantalla de unidad conectada a datos reales (contenido + recomendación) | ✅ | `docs/claude-code/informes/INFORME_2026-09-11_SESION_01.md` §4.2 |
 | Panel de docente — 7 ventanas nuevas construidas | ⚠️ | **Antigravity** construyó `DOC-V02` (contenidos), `DOC-V03` (crear ejercicio), `DOC-V04` (rendimiento), `DOC-V05` (detalle de estudiante), `DOC-V06` (mensajes) (Fase 14, commit `71360b7`), y corrigió el bug de `DOC-V04` + auditó `DOC-V03`/`ADM-V03` con escritura real + selector de estudiante real en `DOC-V06` (Fase 15, commit `d6120ed`). Verificado en navegador real por Claude Code (14 y 15/09): `DOC-V02`, `DOC-V04`, `DOC-V05`, `DOC-V06` funcionan end-to-end con datos/mutaciones reales. `DOC-V03` verificado por el propio informe de Antigravity con creación real (`POST /activities` → 201 #60) — no re-verificado en navegador por Claude Code todavía. Sigue ⚠️ (no ✅) porque falta **edición** de contenido/actividades ya creadas — ver fila siguiente. |
-| Editar (no solo crear) secciones, unidades y actividades desde la UI docente | ❌ | El backend ya expone `PATCH`/`DELETE` completos: `topic.controller.ts:71` (`PATCH /topic/:id`), `learning-unit.controller.ts:50` (`PATCH /learning-unit/:id`), `activities.controller.ts:50,60,69` (`PATCH /activities/:id`, `/publish`, `/archive`). Ninguno tiene UI todavía — `DOC-V02` solo publica/despublica secciones (`PATCH /sections/:id/publish`), `DOC-V03` solo crea. Verificado contra el código real el 15/09. Plan: `docs/antigravity/PLAN_IMPLEMENTACION.md` §16 |
+| Editar (no solo crear) secciones, unidades y actividades desde la UI docente | ✅ | **Cerrado por Antigravity, 15/09** (Fase 16, commit `04c9911`). `DOC-V02` (`contenidos.vue`): modales de edición de Topic (`PATCH /topic/:id`) y LearningUnit (`PATCH /learning-unit/:id`), archivar Topic (`DELETE /topic/:id`) con confirmación — `DELETE /learning-unit/:id` deliberadamente no expuesto (solo admin). `DOC-V03` (`ejercicios/crear.vue`): tabla de actividades existentes con Editar/Publicar/Archivar (`PATCH /activities/:id`, `/publish`, `/archive`). Verificado por Claude Code el 15/09: `grep` confirma las llamadas reales a `api.patch`/`api.del` en ambos archivos (líneas 465, 508 de `contenidos.vue`; 592, 634, 676 de `crear.vue`), `npx nuxi typecheck` exit code 0 reproducido de forma independiente. No re-verificado en navegador por Claude Code (el informe de Antigravity sí lo hizo, con capturas de los banners de confirmación reales) — grep + typecheck fue suficiente porque el patrón (llamada a `api.patch`/`api.del` con el endpoint correcto) es el mismo que ya se verificó en navegador para Fases 14/15. |
+| Enlace `DOC-V04` → `DOC-V05` con `studentId` real | ✅ | **Cerrado por Antigravity, 15/09** (Fase 16, commit `04c9911`). Verificado por Claude Code: `rendimiento.vue:213` usa `:to="\`/docente/estudiante/${st.studentId}\`"`, consistente con `[studentId].vue` consumiendo `GET /analytics/student/:studentId`. |
+| Accesibilidad WCAG 2.1 AA en las 7 ventanas nuevas de Docente/Admin | ✅ | **Auditado y corregido por Antigravity, 15/09** (Fase 16, commit `04c9911`). Hallazgos y correcciones documentados en `docs/antigravity/informes/INFORME_2026-09-15_SESION_03.md` §3 (labels sin `for`/`id`, modales sin `role="dialog"`/`aria-modal`, botones sin `aria-label`, tablas sin `scope="col"`). Verificado por Claude Code con grep dirigido sobre 2 de los 8 hallazgos reportados (`role="dialog"`/`aria-modal`/`aria-labelledby` en los 3 modales de `contenidos.vue`, `for`/`id` del selector de clase en `rendimiento.vue`) — coinciden exactamente con lo declarado. Los otros 6 hallazgos (DOC-V06, ADM-V01, ADM-V03, DOC-V01) no se re-verificaron línea por línea, solo se aceptó el patrón por consistencia con los verificados. |
 | Panel de administrador | ⚠️ | `ADM-V02` (`pages/admin/index.vue`, gestión de usuarios real) sin cambios. **Antigravity, 14/09** construyó `ADM-V01` y `ADM-V03` como mockups explícitos — verificado en navegador real por Claude Code el 14/09: banner "Ejemplo — sin backend (D-03)" presente y visible en `ADM-V01`, tal como exige el plan. Siguen sin backend real detrás (decisión D-03, sin cambios). |
 | Middleware de protección de rutas por rol en el frontend | ✅ | **Ya existía antes de la Fase 14** — `frontend-nuxt/middleware/auth.global.ts` (comentario propio: "Insumo 15 §5"), protege `/estudiante`, `/docente` y `/admin` por rol y redirige. Verificado en navegador real por Claude Code el 14/09: con sesión de docente, navegar a `/admin/dashboard` redirige a `/docente` automáticamente. **Corrección de récord:** el informe de Antigravity (`INFORME_2026-09-14_SESION_01.md` §6, punto 5) recomienda "añadir" este middleware como próximo paso — ya existe y ya funciona; no es trabajo pendiente, Antigravity no verificó su propio supuesto antes de recomendarlo. |
 
@@ -238,6 +240,17 @@ queda un renglón aquí — mismo criterio de checkpoints fechados, sin borrar, 
 | 2026-09-14 (2ª pasada) | **Auditoría en vivo de las entregas de Antigravity (Fase 14, commit `71360b7`) y Codex (Fases D-F, commit `d5a481e`)** — backend y frontend reales levantados, login real como docente/admin/estudiante, navegación real, `curl` directo a los endpoints, y `npm test` completo. Cerrados y verificados: `P1-07`, `P1-08`, `P2-R3`, `P2-R4`, `FE-02` (ver filas de §4). Suite completa: 306/309 verdes; 3 fallos son `e2e-spec` no relacionados con submissions (auth rate-limit, escalada de privilegios, PATCH de actividades), los tres por timeout de 5000ms con dos servidores de desarrollo corriendo en paralelo en la misma máquina — mismo patrón de degradación bajo carga ya documentado en `CLAUDE.md`, no repetido en aislado por límite de tiempo de esta sesión. **Hallazgo nuevo real:** `DOC-V04` (Rendimiento) no funciona — desajuste de forma de datos entre `rendimiento.vue` y la respuesta real de `GET /analytics/class/:classId` (detalle en §4.6). **Corrección de récord:** la recomendación #5 del informe de Antigravity ("agregar middleware de rol") ya estaba resuelta antes de que empezara la Fase 14 (`middleware/auth.global.ts`) — verificado en navegador real. Ninguno de los dos informes de sesión se edita (regla de "nunca se editan después de escritos"); la corrección queda aquí. Se escribió `docs/antigravity/PLAN_IMPLEMENTACION.md` §15 a partir de esta auditoría. | Claude Code (Sonnet 5) |
 | 2026-09-15 | **Auditoría en vivo de la Fase 15 de Antigravity (commit `d6120ed`, informe `INFORME_2026-09-14_SESION_02.md`).** Verificado contra el código real de `rendimiento.vue`: el fix de `DOC-V04` es correcto (`metrics.metrics.avgClassMastery`, `metrics.studentRankings`, `st.fullName` — coincide exactamente con el contrato real del backend). §4.6 actualizado: `DOC-V04` cierra ✅. Dueño del proyecto indicó que Codex se reserva para trabajo de mayor complejidad, después de 2-3 planes más de Antigravity — **no se escribieron fases nuevas de Codex esta pasada** (corrige la fila anterior, que mencionaba fases de Codex que nunca llegaron a redactarse). Se identificó un gap real y verificado contra código (`topic.controller.ts:71`, `learning-unit.controller.ts:50`, `activities.controller.ts:50,60,69` — todos con `PATCH`/`DELETE` reales sin UI): falta editar/archivar contenido ya creado desde la UI docente, no solo crearlo. Se escribió `docs/antigravity/PLAN_IMPLEMENTACION.md` §16. | Claude Code (Sonnet 5) |
 | 2026-09-15 (2ª pasada) | **Reorganización y dos ampliaciones de libertad, pedidas por el dueño del proyecto.** (1) Se archivaron las Fases 1-15 de `docs/antigravity/PLAN_IMPLEMENTACION.md` a `docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md` (regla ya existente en `docs/_archivo/README.md`, no aplicada hasta ahora) — el plan vigente queda corto, solo con la Fase 16 en adelante; numeración no reiniciada para no romper citas. (2) Antigravity puede ahora hacer ediciones sencillas de backend (campo opcional, `GET` de solo lectura sobre datos ya calculados, fix aislado de forma de respuesta) sin esperar una fase de Codex — con límites explícitos (`src/submissions/`, `src/auth/`, `src/enrollment/`, migraciones y lógica de cálculo siguen fuera, sin excepción) — ver `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.0c. (3) Se corrige la fila anterior: no hay una cadencia fija de "2-3 rondas de Antigravity antes de Codex" — el dueño del proyecto delegó esa decisión al criterio de Claude Code, caso por caso (§6.2). | Claude Code (Sonnet 5) |
+| 2026-09-15 (3ª pasada) | **Auditoría de la Fase 16 de Antigravity (commit `04c9911`, informe `INFORME_2026-09-15_SESION_03.md`) y decisión de invocar Codex.** Verificado contra código real: llamadas `api.patch`/`api.del` reales en `contenidos.vue` (líneas 465, 508) y `crear.vue` (líneas 592, 634, 676), enlace `DOC-V04`→`DOC-V05` con `studentId` real (`rendimiento.vue:213`), `npx nuxi typecheck` exit 0 reproducido de forma independiente, y spot-check de 2 de 8 hallazgos WCAG declarados (coinciden). §4.6 actualizado: la fila "editar contenido" cierra ✅, se agregan filas para el enlace y la auditoría WCAG. **Hallazgo de proceso:** el commit de Antigravity incluyó `src/message/message.service.spec.ts` — un borrador que Claude Code había escrito antes de que se pidiera reservar Codex, nunca comiteado a propósito; quedó dentro del commit de Antigravity de todas formas (probablemente un `git add` amplio de su parte). El archivo en sí es correcto (7/7 tests en verde, verificado con `npx jest`), así que no se revierte, pero deja sin efecto uno de los dos candidatos de Codex que este documento tenía pendientes ("cobertura de tests de `src/message/`" ya no es un gap). Se investigó también el otro candidato (progresión de 3 pasos de Nivel 2, §4.4) hasta el fondo: las
+3 actividades existentes no están sueltas al azar, cada una vive en la unidad de su propio tema
+(arreglos/bucles/funciones) — una secuencia real de 3 pasos exige una decisión de diseño
+instruccional (mezclar contenido que no encaja, o escribir contenido nuevo para 3 unidades), no una
+tarea de ingeniería lista para Codex. Se exploró de paso un tercer candidato no listado antes,
+`ADM-V01`/`ADM-V03` (D-03, "REQUERIDO — PENDIENTE DE BACKEND"): tampoco está listo — falta una
+fuente de datos para "ejecuciones en sandbox hoy" y no existe ninguna infraestructura de logging
+técnico persistente para el visor de logs de `ADM-V03`. **Conclusión: ninguna fase nueva se escribe
+hoy, ni para Antigravity ni para Codex** — los tres candidatos existentes necesitan una decisión de
+alcance (instruccional o de arquitectura) antes de convertirse en un plan, no una ejecución
+inmediata. Ver §6.2/§6.3 para el detalle completo de cada uno. | Claude Code (Sonnet 5) |
 
 ---
 
@@ -253,36 +266,76 @@ reemplazo de esos documentos.
 |---|---|---|
 | Antigravity §14 | 7 ventanas de Docente/Admin, fix XSS, fix "Crear Nueva Clase" | ✅ Auditado en vivo por Claude Code, 14/09 |
 | Antigravity §15 | Fix `DOC-V04`, auditoría con escritura real de `DOC-V03`/`ADM-V03`, selector de estudiante en `DOC-V06`, limpieza de clases de prueba | ✅ Auditado en vivo por Claude Code, 15/09 — ver §5 |
+| Antigravity §16 | Editar/archivar contenido (`DOC-V02`/`DOC-V03`), enlace `DOC-V04`→`DOC-V05`, auditoría WCAG 2.1 AA | ✅ Auditado por Claude Code, 15/09 (grep + typecheck) — ver §5 |
 | Codex D/E/F | Intentos duplicados, matrícula, evento de calificación | ✅ Auditado en vivo por Claude Code — código real + suite de tests en verde. Ver §5 |
 
-### 6.1 Antigravity — frontend (siguiente entrega)
+### 6.1 Antigravity — sin fase nueva pendiente por ahora
 
-| Fase | Qué | Plan detallado |
-|---|---|---|
-| §16.1 | Editar/archivar secciones, unidades y actividades desde la UI docente (el backend ya lo soporta; hoy solo se puede crear) | `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.1 |
-| §16.2 | Verificar el enlace "Ver detalle" de `DOC-V04` hacia `DOC-V05` (pendiente desde el informe de la propia Antigravity) | `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.2 |
-| §16.3 | Auditoría de accesibilidad (WCAG 2.1 AA) de las 7 ventanas nuevas — el pie de página lo declara, nadie lo verificó todavía | `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.3 |
+Las tres fases que tenía asignadas (§16.1, §16.2, §16.3) están cerradas (§6.0). No hay un gap de
+frontend nuevo, verificado contra código, que amerite otra fase todavía — ver §6.3 sobre por qué el
+turno pasa a Codex en vez de escribir una Fase 17 por escribirla.
 
-### 6.2 Codex — se invoca por criterio, no por cadencia fija
+### 6.2 Codex — dos candidatos revisados el 15/09; ninguno está listo para delegar todavía
 
-**Decisión explícita del dueño del proyecto (15/09, ajustada el mismo día):** no hay un número fijo
-de rondas de Antigravity antes de Codex — queda a criterio de Claude Code, cuando aparece trabajo de
-backend que de verdad amerita la autonomía y el alcance de Codex (reglas de negocio nuevas,
-migraciones, algo que cruza varios módulos) y que no cabe en la libertad de ediciones sencillas que
-ahora tiene Antigravity (§3, "Libertad de backend ampliada"). No hay fases nuevas de Codex escritas
-todavía. Candidatos ya identificados para cuando el criterio de Claude Code determine que amerita una
-fase (sin plan redactado, solo el gap real detectado): cobertura de tests para `src/message/` (no
-tiene ninguna hoy) y sembrar la progresión de 3 pasos para actividades de Nivel 2
-(`drag_drop`→`ordering`→`matching`, §4.4) — ninguno de los dos es una "edición sencilla" porque
-tocan alcance más amplio que una sola pantalla.
+**Decisión explícita del dueño del proyecto (15/09):** no hay un número fijo de rondas de
+Antigravity antes de Codex — queda a criterio de Claude Code, cuando aparece trabajo de backend que
+de verdad amerita la autonomía y el alcance de Codex (reglas de negocio nuevas, migraciones, algo que
+cruza varios módulos) y que no cabe en la libertad de ediciones sencillas que ahora tiene Antigravity
+(§3, "Libertad de backend ampliada").
 
-### 6.3 Orden de ejecución recomendado
+**Candidato 1 — cerrado sin fase (hallazgo, no trabajo pendiente):** "cobertura de tests para
+`src/message/`" ya no es un gap. Verificado el 15/09: `src/message/message.service.spec.ts` existe
+(100 líneas, 7 casos: `create`, `getInbox`, `getSent`, `getConversation`, `markAsRead` con sus dos
+ramas, `getUnreadCount`) y pasa 7/7 (`npx jest src/message/message.service.spec.ts`). **Nota de
+proceso:** este archivo lo escribió Claude Code como borrador exploratorio antes de que el dueño del
+proyecto pidiera reservar Codex — quedó sin comitear a propósito. El commit `04c9911` de Antigravity
+(Fase 16) lo incluyó de todas formas (`git log --all -- src/message/message.service.spec.ts` lo
+confirma), probablemente por un `git add` amplio de su parte — no es un cambio de backend que
+Antigravity haya escrito, y no contradice su declaración de "zona Codex respetada" en cuanto a
+código nuevo, pero sí significa que un archivo ajeno a su fase terminó en su commit sin que nadie lo
+revisara antes. No bloqueante (el archivo es correcto y pasa), pero queda registrado como el tipo de
+cosa a vigilar si vuelve a pasar. `message.controller.ts` (68 líneas, solo enrutamiento con
+`@Roles`/`@Req`) sigue sin test — no amerita una fase de Codex por sí solo, es trabajo menor que
+Claude Code puede hacer directo si hace falta.
 
-**Antigravity, en el orden §16.1 → §16.2 → §16.3.** Razón: §16.1 (editar/archivar contenido) es la
-pieza de mayor valor real — sin ella el docente no puede corregir un error en una actividad ya
-creada, solo crear una nueva; §16.2 es una verificación de 5 minutos que ya estaba pendiente;
-§16.3 es la más nueva y la que menos urge (nadie reportó un problema de accesibilidad todavía, es una
-verificación preventiva). Codex sigue fuera de esta ronda (§6.2).
+**Candidato 2 — progresión de 3 pasos para Nivel 2 (§4.4): investigado a fondo, resultó ser una
+decisión de contenido, no de ingeniería.** Verificado el 15/09 contra `src/seeds/seed-runner.ts`
+(líneas 1045-1196): las 3 actividades (`DRAG_DROP`, `ORDERING`, `MATCHING`) no están sueltas al
+azar — cada una vive en la unidad cuyo tema le corresponde: `DRAG_DROP` (métodos de arreglos) en
+`unit4` ("Arreglos y Búsqueda de Información"), `ORDERING` (fases de un bucle `for`) en `unit3`
+("Bucles for y while"), `MATCHING` (conceptos de funciones) en `unit5` ("Funciones Puras"). Una
+secuencia real de 3 pasos dentro de una sola unidad, al estilo Nivel 1, exigiría una de dos cosas:
+mover contenido de un tema a otro sin que encaje (p. ej. una pregunta sobre bucles dentro de la
+unidad de arreglos), o escribir contenido pedagógico nuevo para que las 3 unidades tengan su propia
+secuencia completa — que es trabajo de diseño instruccional (rol de Julio Galvis en el equipo, ver
+`docs/seguimiento/MONITOREO_SEMANAL_04.md` §1), no una tarea de ingeniería que Codex pueda resolver
+solo con el contrato de datos. **No se escribe una fase todavía** — falta que el equipo decida la
+forma pedagógica antes de que valga la pena convertirlo en un plan de implementación.
+
+**Hallazgo nuevo explorado el 15/09, tampoco listo:** `ADM-V01`/`ADM-V03` (§4.6) siguen como
+mockups explícitos por decisión D-03 ("REQUERIDO — PENDIENTE DE BACKEND", no en pausa como
+Gamificación). Se investigó qué tan cerca está de ser delegable: 2 de las 3 KPI de `ADM-V01`
+(total de usuarios por rol, total de clases activas) son consultas triviales sobre tablas que ya
+existen; pero la tercera ("Ejecuciones en Sandbox Hoy") no tiene fuente de datos — `POST
+/submissions/:id/run` ("Probar código") deliberadamente no crea una fila de `Submission` (no
+consume intento), así que hoy no hay ningún conteo de esas ejecuciones en ningún lado. `ADM-V03`
+(visor de logs técnicos) es más grande de lo que parecía: `src/activity-log/` existe pero es un log
+**pedagógico** para el Tutor IA (acciones del estudiante), no un log técnico con niveles
+`INFO`/`WARN`/`ERROR` y módulo emisor — no hay ninguna infraestructura de logging persistente hoy.
+Construir eso es una decisión de arquitectura (¿se persiste en BD? ¿qué volumen/retención?), no una
+edición de backend acotada. **Tampoco se escribe una fase todavía** — falta decidir si vale la pena
+la infraestructura nueva solo para un panel de administrador que el propio D-03 ya marcó como de
+menor prioridad.
+
+### 6.3 Conclusión: ninguna herramienta tiene una fase nueva lista ahora mismo
+
+Con §16 cerrado, no hay un gap de frontend verificado que amerite una Fase 17 de Antigravity, y los
+dos candidatos de Codex investigados resultaron ser decisiones de alcance (contenido pedagógico o
+arquitectura de logging), no tareas listas para redactar como plan. Escribirle una fase a cualquiera
+de las dos herramientas "porque toca" sin ese gap real sería exactamente lo que el dueño del
+proyecto ya señaló como no escalable (ver checkpoint 2026-09-15, 2ª pasada). Cuando el equipo decida
+la forma de la progresión de Nivel 2, o si se decide construir el backend real del panel de admin,
+se escribe la fase correspondiente con esa decisión ya tomada — no antes.
 
 ### 6.4 Claude Code — pendientes sin plan delegable todavía
 
@@ -297,10 +350,18 @@ Code ha terminado de acotar:
   para cerrar el hallazgo.
 - **Sandbox en otros lenguajes además de JavaScript** — sin alcance definido (¿cuáles lenguajes?
   ¿por qué?); no es una tarea lista para delegar todavía.
-
-> **Actualización 14/09:** "Progresión de 3 pasos para Nivel 2" salió de esta lista — ya tiene
-> alcance definido y es la Fase H de Codex (§6.2). Las pantallas ya existen (§4.2); lo que faltaba
-> era contenido sembrado en la secuencia correcta, que sí es delegable.
+- **Progresión de 3 pasos para Nivel 2** (§4.4, `drag_drop`/`ordering`/`matching`) — de vuelta en
+  esta lista el 15/09: se creía lista para delegar (ver checkpoint 14/09), pero al investigar el
+  contenido real (`src/seeds/seed-runner.ts:1045-1196`) resultó que cada actividad pertenece al
+  tema de una unidad distinta (arreglos/bucles/funciones) — una secuencia real de 3 pasos es una
+  decisión de diseño instruccional, no una tarea de ingeniería. Falta que el equipo (Julio Galvis,
+  rol de Diseño Instruccional) decida la forma antes de escribirle un plan a Codex. Ver §6.2.
+- **`ADM-V01`/`ADM-V03` con backend real** (§4.6, decisión D-03: "REQUERIDO", no en pausa) —
+  2 de 3 KPI de `ADM-V01` son triviales, pero "ejecuciones en sandbox hoy" no tiene fuente de datos
+  (`POST /submissions/:id/run` no persiste nada), y `ADM-V03` (visor de logs técnicos) no tiene
+  ninguna infraestructura de logging persistente detrás — `src/activity-log/` es un log pedagógico
+  para el Tutor IA, no un log técnico. Decisión de arquitectura pendiente, no una edición acotada.
+  Ver §6.2.
 
 ### 6.5 Regla de coordinación (histórica, para cuando Codex vuelva a estar activo)
 
