@@ -41,6 +41,7 @@ export class TutorController {
     };
   }
 
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Get('greeting')
   @UseGuards(RolesGuard)
   @Roles('estudiante')
