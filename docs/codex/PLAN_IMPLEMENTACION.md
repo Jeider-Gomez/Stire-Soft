@@ -1,13 +1,14 @@
 # Plan de implementación para Codex — pendientes reales de STIRE-Soft
 
-**Fecha:** 2026-09-11 (Fases A-C) · **actualizado 2026-09-14** (Fases D-F)
+**Fecha:** 2026-09-11 (Fases A-C) · **actualizado 2026-09-14** (Fases D-F) · **actualizado 2026-09-16** (Fase G)
 **Herramienta objetivo:** Codex (CLI / IDE)
 **Autor del plan:** Claude Code, tras verificar en vivo (backend real, MariaDB real, navegador
 real) el estado del proyecto en la misma sesión que lo redactó.
 
 **Documento vivo, mismo criterio que `docs/antigravity/PLAN_IMPLEMENTACION.md`:** las Fases A-C ya
 se ejecutaron y verificaron (ver `docs/antigravity/INFORME_CODEX_PENDIENTES_2026-09-11.md` y
-`docs/PLAN_MAESTRO.md` §4.3/§4.4). Las Fases D-F, agregadas el 14/09, son la siguiente entrega.
+`docs/PLAN_MAESTRO.md` §4.3/§4.4). Las Fases D-F (14/09) también, ver checkpoint 2026-09-14 (2ª
+pasada) de `docs/PLAN_MAESTRO.md` §5. La Fase G (16/09) es la siguiente entrega.
 
 > **Coordinación con Antigravity (leer antes de empezar las Fases D-F):** Antigravity trabaja en
 > paralelo sobre `frontend-nuxt/pages/docente/`, `frontend-nuxt/pages/admin/` y
@@ -399,6 +400,90 @@ usa `classToscano` (Module → Topic → LearningUnit → Activity → ActivityQ
   que el método de todas formas retorna la submission ya calificada (no relanza el error al
   controller) y que se registró el error.
 - `npm run build`, `npm test` en verde.
+
+---
+
+## Fase G — Auditoría sistemática de BOLA y de rate-limiting (2026-09-16)
+
+**Contexto:** Jorge Cervantes (QA) hace una nueva auditoría pronto (ver
+`docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md`). Esta fase existe para que su auditoría encuentre
+menos — no para competir con ella, sino para hacer el trabajo de código que un QA manual no puede
+hacer bien (leer cada servicio, no solo probar la app por fuera). No depende de que Jorge termine
+primero; son complementarias.
+
+**Por qué esta fase y no otra:** varios módulos ya tuvieron un hallazgo real de BOLA (autorización
+que revisa el rol pero no la propiedad del recurso específico) — `learning-unit.service.ts`
+(`assertCanReadClass`), `submissions.service.ts` (`assertActiveEnrollment`),
+`enrollment.service.ts` (`assertTeacherOwnsClass`). Esos ya están cerrados. Lo que nadie ha hecho es
+el mismo ejercicio, sistemático, sobre **todos** los módulos restantes — algunos ya se revisaron en
+esta misma sesión y salieron limpios (`message`, `review-schedules`, `learning-progress`), quedan
+sin revisar: `activities`, `activity-questions`, `activity-types`, `analytics`, `class`, `content`,
+`institution`, `notifications`, `section`, `topic`, `user`.
+
+### G.1 Qué existe hoy (evidencia, verificada 2026-09-16)
+
+El patrón correcto ya existe en el código y hay que replicarlo, no inventarlo:
+- `AuthorizationService.assertTeacherOwnsClass(user, classId)` (`src/common/authorization/`) —
+  usado por `enrollment.service.ts:95,103,116`.
+- `AuthorizationService.assertCanReadClass(...)` — usado por `learning-unit.service.ts`.
+- `AuthorizationService.assertTeacherSharesClassWithStudent(...)` — usado por
+  `learning-progress.controller.ts:46,71,90`.
+- `SubmissionsService.assertActiveEnrollment()` (`submissions.service.ts:358-365`).
+
+**Ya verificado limpio en esta sesión (no lo repitas, es evidencia real):** `message.controller.ts`
+(todo se filtra por `user.id` del JWT, sin parámetro de ID ajeno explotable),
+`review-schedules.controller.ts` (`/due` solo devuelve lo del usuario autenticado),
+`learning-progress.controller.ts` (ya usa `assertTeacherSharesClassWithStudent` en sus 3 endpoints
+con `:studentId`), `enrollment.controller.ts`/`enrollment.service.ts` (ya usa
+`assertTeacherOwnsClass` en las 5 mutaciones/consultas por clase).
+
+### G.2 Qué construir
+
+Para cada uno de los módulos sin revisar (`activities`, `activity-questions`, `analytics`, `class`,
+`content`, `institution`, `notifications`, `section`, `topic`, `user`):
+
+1. Lista cada endpoint que recibe un `:id` de un recurso específico (no una lista general) y que un
+   estudiante o docente autenticado de **otra** clase podría intentar leer o mutar.
+2. Para cada uno, confirma si el service que lo maneja verifica que el recurso pertenece a una clase
+   que el usuario autenticado enseña (docente) o donde está matriculado (estudiante) — no solo que
+   el usuario tenga el rol correcto.
+3. Si encuentras un hueco real: ciérralo con el mismo patrón que ya usa el proyecto (reutiliza
+   `AuthorizationService` si el chequeo es genérico, o un método `assertXxx` dedicado en el propio
+   service si es específico al módulo — mismo estilo que `assertActiveEnrollment`). No inventes un
+   mecanismo nuevo de autorización.
+4. `activity-types` es la única excepción deliberada — es un catálogo de referencia sin concepto de
+   dueño, documentado así en el propio código (`activity-types.controller.ts:17-20,31-34`). No le
+   agregues un chequeo de propiedad que no le corresponde.
+5. Documenta cada módulo revisado en tu informe, **incluidos los que salen limpios** — "revisado,
+   sin hallazgo" es tan valioso como un fix, evita que se vuelva a revisar sin necesidad.
+
+**Rate-limiting, mismo criterio:** revisa cada controller y confirma que los endpoints que disparan
+trabajo real (llamadas a LLM, escritura en BD con lógica de negocio, ejecución de sandbox) tienen
+`@Throttle` acorde a su costo, no solo el límite global de 100 req/min. Ya se corrigió `GET
+/tutor/greeting` (sin `@Throttle`, cerrado el 16/09) — revisa si queda algún caso similar,
+especialmente en `maintenance.controller.ts` (`POST /maintenance/cleanup`, admin-only pero
+destructivo).
+
+### G.3 Explícitamente fuera de esta fase
+
+- No toques `mastery.calculator.ts`, `tutor-recommendation.service.ts`, ni ningún archivo de
+  `src/tutor/` o `frontend-nuxt/` — es una auditoría de autorización de backend, no una fase de
+  frontend ni de lógica pedagógica.
+- No le agregues un mecanismo de "propiedad" a `activity-types` (G.2, punto 4) — es una decisión de
+  diseño ya tomada, no un hallazgo.
+- No inventes un framework de autorización nuevo (decoradores custom, guards genéricos) si el hueco
+  se puede cerrar con el mismo patrón `assertXxx` que ya usa el resto del proyecto — consistencia
+  sobre elegancia.
+
+### G.4 Criterio de cierre
+
+- Los 11 módulos listados en G.2 quedan revisados, cada uno con su resultado documentado en el
+  informe (limpio, o hallazgo + fix + test).
+- Cada hallazgo real cerrado tiene su propio test de regresión (mismo criterio que `D.4`/`E.4`/`F.4`
+  de este documento) probando que el usuario sin permiso recibe `403`/`404` y que el usuario correcto
+  sigue funcionando igual.
+- Barrido de `@Throttle` completado, con cualquier gap real corregido y declarado.
+- `npm run build`, `npm test` en verde — pega la salida completa, no un resumen.
 
 ---
 

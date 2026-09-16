@@ -1,6 +1,6 @@
 # STIRE — Plan Maestro de Implementación y Seguimiento
 
-**Documento vivo. Última actualización: 2026-09-16.**
+**Documento vivo. Última actualización: 2026-09-16 (2ª pasada).**
 
 > ## ⚠️ Regla de edición — leer antes de tocar este archivo
 >
@@ -171,7 +171,7 @@ propósito (decisión del dueño del proyecto, no olvido).
 | `mcq`, `fill_code`, `coding` — evaluador + pantalla real | ✅ | `src/evaluation-engine/strategies/`, `frontend-nuxt/components/exercise/` |
 | `drag_drop`, `ordering`, `matching` — evaluador + pantalla real | ✅ | Construido por Antigravity, `docs/antigravity/PLAN_TIPOS_DE_ACTIVIDAD.md` |
 | `ai_evaluated` — evaluador backend | ❌ | Sin evaluador registrado (`EvaluationEngineService` lanza `BadRequestException`); explícitamente fuera de alcance hasta que exista uno real |
-| Categorías reales de peso examen vs. práctica (`ActivityType.baseWeight` distinto por tipo) | ❌ | Un solo `ActivityType` existe hoy (`AUTO-EVAL`, `baseWeight: 1.0`) — el ejemplo de 3 categorías de `03_MOTOR_Y_TUTOR.md` §3.2 nunca se implementó. Identificado en la pausa técnica del 16/09 (`docs/00_VISION_FUNCIONAL.md` §9.5). Plan: `docs/antigravity/PLAN_IMPLEMENTACION.md` §17 |
+| Categorías reales de peso examen vs. práctica (`ActivityType.baseWeight` distinto por tipo) | ✅ | **Cerrado por Antigravity, 16/09** (Fase 17, commit `4f02b4d`). `TALLER` (1.5×) y `PARCIAL` (3.0×) sembrados de forma aditiva junto a `AUTO-EVAL` (1.0×, renombrado cosméticamente a "Práctica Formativa"); selector visible en crear/editar actividad (`crear.vue`). Verificado por Claude Code: diff real del seed confirma que las 15 actividades preexistentes no fueron reasignadas; fix necesario en `activities.service.ts` (TypeORM priorizaba `activity.activityType` cacheado sobre el `activityTypeId` nuevo en `PATCH`) es real y correcto, 32/32 tests reproducidos de forma independiente. |
 | UX de resultado: puntaje real (`maxScore`) + dominio antes/después | ✅ | `docs/claude-code/informes/INFORME_2026-09-10_SESION_02.md` |
 
 ### 4.3 Multi-Docente y Matrícula
@@ -244,6 +244,7 @@ queda un renglón aquí — mismo criterio de checkpoints fechados, sin borrar, 
 | 2026-09-15 (2ª pasada) | **Reorganización y dos ampliaciones de libertad, pedidas por el dueño del proyecto.** (1) Se archivaron las Fases 1-15 de `docs/antigravity/PLAN_IMPLEMENTACION.md` a `docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md` (regla ya existente en `docs/_archivo/README.md`, no aplicada hasta ahora) — el plan vigente queda corto, solo con la Fase 16 en adelante; numeración no reiniciada para no romper citas. (2) Antigravity puede ahora hacer ediciones sencillas de backend (campo opcional, `GET` de solo lectura sobre datos ya calculados, fix aislado de forma de respuesta) sin esperar una fase de Codex — con límites explícitos (`src/submissions/`, `src/auth/`, `src/enrollment/`, migraciones y lógica de cálculo siguen fuera, sin excepción) — ver `docs/antigravity/PLAN_IMPLEMENTACION.md` §16.0c. (3) Se corrige la fila anterior: no hay una cadencia fija de "2-3 rondas de Antigravity antes de Codex" — el dueño del proyecto delegó esa decisión al criterio de Claude Code, caso por caso (§6.2). | Claude Code (Sonnet 5) |
 | 2026-09-15 (3ª pasada) | **Auditoría de la Fase 16 de Antigravity (commit `04c9911`, informe `INFORME_2026-09-15_SESION_03.md`) y decisión de invocar Codex.** Verificado contra código real: llamadas `api.patch`/`api.del` reales en `contenidos.vue` (líneas 465, 508) y `crear.vue` (líneas 592, 634, 676), enlace `DOC-V04`→`DOC-V05` con `studentId` real (`rendimiento.vue:213`), `npx nuxi typecheck` exit 0 reproducido de forma independiente, y spot-check de 2 de 8 hallazgos WCAG declarados (coinciden). §4.6 actualizado: la fila "editar contenido" cierra ✅, se agregan filas para el enlace y la auditoría WCAG. **Hallazgo de proceso:** el commit de Antigravity incluyó `src/message/message.service.spec.ts` — un borrador que Claude Code había escrito antes de que se pidiera reservar Codex, nunca comiteado a propósito; quedó dentro del commit de Antigravity de todas formas (probablemente un `git add` amplio de su parte). El archivo en sí es correcto (7/7 tests en verde, verificado con `npx jest`), así que no se revierte, pero deja sin efecto uno de los dos candidatos de Codex que este documento tenía pendientes ("cobertura de tests de `src/message/`" ya no es un gap). Se investigó también el otro candidato (progresión de 3 pasos de Nivel 2, §4.4) hasta el fondo: las 3 actividades existentes no están sueltas al azar, cada una vive en la unidad de su propio tema (arreglos/bucles/funciones) — una secuencia real de 3 pasos exige una decisión de diseño instruccional (mezclar contenido que no encaja, o escribir contenido nuevo para 3 unidades), no una tarea de ingeniería lista para Codex. Se exploró de paso un tercer candidato no listado antes, `ADM-V01`/`ADM-V03` (D-03, "REQUERIDO — PENDIENTE DE BACKEND"): tampoco está listo — falta una fuente de datos para "ejecuciones en sandbox hoy" y no existe ninguna infraestructura de logging técnico persistente para el visor de logs de `ADM-V03`. **Conclusión: ninguna fase nueva se escribe hoy, ni para Antigravity ni para Codex** — los tres candidatos existentes necesitan una decisión de alcance (instruccional o de arquitectura) antes de convertirse en un plan, no una ejecución inmediata. Ver §6.2/§6.3 para el detalle completo de cada uno. | Claude Code (Sonnet 5) |
 | 2026-09-16 | **Pausa técnica del Tutor IA, pedida por el dueño del proyecto — investigación, implementación y ajuste tras feedback, todo en la misma sesión.** Contraste completo de la visión (`docs/00_VISION_FUNCIONAL.md` §9.5, nueva) contra el código real: el Tutor no tenía ningún camino hacia el banco de actividades (solo texto libre), y `mastery.calculator.ts` no penalizaba repetir una actividad fácil. Implementado y verificado en navegador real: `TutorRecommendationService` (nuevo), `GET /tutor/greeting` (saludo proactivo con datos reales), detección de intención de práctica en `POST /tutor/chat`, y decaimiento de score por repetición de actividades `BASICO` en `mastery.calculator.ts`. **Ajustado tras feedback del dueño del proyecto en la misma sesión:** se descartó el diseño inicial (marcador oculto `[[LISTO_PARA_PRACTICAR]]`) por sentirse rígido y gastar tokens de más — la oferta de practicar ahora es conversacional (el propio LLM la ofrece con palabras, sin parsing), y se quitó la tarjeta automática que se adjuntaba en cada respuesta dentro de una unidad de mastery bajo (saturaba). 31/31 tests, build y typecheck limpios. §4.1 actualizado con 2 filas nuevas. Se identificó un gap real y bien acotado que sí es delegable (categorías reales de `ActivityType` con peso examen/práctica, §4.2) y se escribió `docs/antigravity/PLAN_IMPLEMENTACION.md` §17. **Nota de mantenimiento:** la fila anterior (3ª pasada, 2026-09-15) tenía su celda partida en varias líneas físicas por un error de edición previo — se corrigió a una sola línea en este mismo checkpoint para que la tabla renderice bien en Markdown; el contenido no cambió. | Claude Code (Sonnet 5) |
+| 2026-09-16 (2ª pasada) | **Auditoría de la Fase 17 de Antigravity (commit `4f02b4d`) + 2 documentos nuevos pedidos por el dueño del proyecto: guía de auditoría para Jorge y plan de implementación para Codex.** Fase 17 verificada real: diff de `seed-runner.ts` confirma `findOrCreate` aditivo (`TALLER` 1.5×, `PARCIAL` 3.0×) sin reasignar las 15 actividades existentes; el fix de `activities.service.ts` (TypeORM priorizaba la relación cacheada sobre el `activityTypeId` nuevo en `PATCH`) es real, 32/32 tests reproducidos. §6.1 cierra Fase 17. Hallazgo propio, no de Antigravity: `GET /tutor/greeting` (agregado el 16/09 en la pausa técnica) había quedado sin `@Throttle` — corregido, commit `1faf230`. Se escribió `docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md` (qué no repetir de la auditoría anterior de Jorge, qué es genuinamente nuevo desde el 12/09, y ángulos que normalmente no se cubren: BOLA sistemático, adversarial contra el Tutor/Mastery nuevos, concurrencia, accesibilidad real, `verify:clean` desde cero, estados de error). Se investigó y verificó a mano que 4 módulos (`message`, `review-schedules`, `learning-progress`, `enrollment`) ya están bien guardados contra BOLA — con esa evidencia se escribió `docs/codex/PLAN_IMPLEMENTACION.md` Fase G (auditoría sistemática de los ~11 módulos restantes + barrido de rate-limiting), la primera fase de Codex que sí estaba lista para delegar desde la pasada del 15/09. | Claude Code (Sonnet 5) |
 
 ---
 
@@ -262,16 +263,19 @@ reemplazo de esos documentos.
 | Antigravity §16 | Editar/archivar contenido (`DOC-V02`/`DOC-V03`), enlace `DOC-V04`→`DOC-V05`, auditoría WCAG 2.1 AA | ✅ Auditado por Claude Code, 15/09 (grep + typecheck) — ver §5 |
 | Codex D/E/F | Intentos duplicados, matrícula, evento de calificación | ✅ Auditado en vivo por Claude Code — código real + suite de tests en verde. Ver §5 |
 
-### 6.1 Antigravity — Fase 17 (siguiente entrega)
+### 6.1 Antigravity — Fase 17 cerrada; sin fase nueva pendiente por ahora
 
-Tras la pausa técnica del Tutor (16/09, ver `docs/00_VISION_FUNCIONAL.md` §9.5), quedó un gap real
-y bien acotado que sí es de Antigravity: no existen categorías reales de `ActivityType` con peso
-distinto (examen vs. práctica) — un solo tipo (`AUTO-EVAL`, `baseWeight: 1.0`) sirve para todo, y el
-formulario de crear actividad ni siquiera tiene un selector visible. Plan completo:
-`docs/antigravity/PLAN_IMPLEMENTACION.md` §17 (seed aditivo de 2 tipos nuevos + selector en
-crear/editar actividad, sin tocar ninguna actividad ya sembrada ni la lógica de `mastery.calculator.ts`).
+**Cerrada y auditada, 16/09** (commit `4f02b4d`, informe `INFORME_2026-09-16_SESION_01.md`):
+categorías reales de `ActivityType` (`TALLER` 1.5×, `PARCIAL` 3.0×, aditivo, `AUTO-EVAL` intacto) +
+selector visible en crear/editar actividad. Verificado por Claude Code: diff real de
+`seed-runner.ts` confirma el patrón `findOrCreate` correcto sin reasignar las 15 actividades
+existentes; el fix declarado en `activities.service.ts` (TypeORM priorizaba la relación
+`activity.activityType` en caché sobre el `activityTypeId` nuevo al hacer `PATCH`) es real y
+correcto — 32/32 tests (`src/activities`, `src/tutor`) en verde, reproducidos de forma
+independiente. No hay un gap de frontend nuevo, verificado contra código, que amerite otra fase
+todavía.
 
-### 6.2 Codex — dos candidatos revisados el 15/09; ninguno está listo para delegar todavía
+### 6.2 Codex — Fase G escrita el 16/09; los dos candidatos anteriores siguen sin estar listos
 
 **Decisión explícita del dueño del proyecto (15/09):** no hay un número fijo de rondas de
 Antigravity antes de Codex — queda a criterio de Claude Code, cuando aparece trabajo de backend que
@@ -323,13 +327,27 @@ edición de backend acotada. **Tampoco se escribe una fase todavía** — falta 
 la infraestructura nueva solo para un panel de administrador que el propio D-03 ya marcó como de
 menor prioridad.
 
-### 6.3 Por qué Antigravity y no Codex esta ronda
+**Candidato 3 — sí está listo, es el que se escribe ahora: auditoría sistemática de BOLA +
+rate-limiting.** A diferencia de los dos anteriores, este no dependía de una decisión de alcance de
+nadie fuera del equipo técnico — es trabajo de código puro. Motivado por la próxima auditoría de
+Jorge Cervantes (`docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md`): en vez de que Codex y Jorge
+encuentren lo mismo por separado, Codex hace la revisión de código (leer cada service, no solo
+probar la app por fuera) que un QA manual no puede hacer bien. Se verificó primero a mano, esta
+misma sesión, que 4 de los ~15 módulos del proyecto (`message`, `review-schedules`,
+`learning-progress`, `enrollment`) ya están bien guardados — quedan ~11 sin revisar
+sistemáticamente. De paso se encontró y cerró un hallazgo real chico (`GET /tutor/greeting` sin
+`@Throttle`, commit `1faf230`). Plan: `docs/codex/PLAN_IMPLEMENTACION.md` Fase G.
 
-La Fase 17 (§6.1) es aditiva y de frontend con un toque de seed — encaja en el perfil de Antigravity,
-no necesita la autonomía de Codex ni cruza módulos de integridad de datos. Los dos candidatos de
-Codex (§6.2) siguen sin estar listos por las mismas razones de fondo (decisión de alcance pendiente,
-no de ingeniería) — no cambiaron desde la pasada anterior. Cuando el equipo decida la forma de la
-progresión de Nivel 2, o si se decide construir el backend real del panel de admin, se escribe la
+### 6.3 Qué hace cada herramienta esta ronda y por qué
+
+La Fase 17 de Antigravity (§6.1) ya cerró — fue aditiva y de frontend con un toque de seed, encajaba
+en su perfil. La Fase G de Codex (§6.2) es la siguiente entrega activa: cruza ~11 módulos y es
+trabajo de autorización/seguridad — exactamente el tipo de alcance que amerita la autonomía de
+Codex, no una edición sencilla de Antigravity. Los otros dos candidatos de Codex (progresión de
+Nivel 2, backend del panel de admin) siguen sin estar listos por las mismas razones de fondo
+(decisión de alcance pendiente, no de ingeniería) — no cambiaron desde la pasada anterior. Cuando el
+equipo decida la forma de la progresión de Nivel 2, o si se decide construir el backend real del
+panel de admin, se escribe la
 fase de Codex correspondiente con esa decisión ya tomada — no antes.
 
 ### 6.4 Claude Code — pendientes sin plan delegable todavía
