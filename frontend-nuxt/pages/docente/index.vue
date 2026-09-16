@@ -133,49 +133,52 @@
 
         <form @submit.prevent="submitCreateClass" class="space-y-4 text-xs">
           <div>
-            <label class="block font-semibold text-base-texto-primario mb-1">
+            <label for="new-class-name" class="block font-semibold text-base-texto-primario mb-1">
               Nombre de la Asignatura / Clase *
             </label>
             <input
+              id="new-class-name"
               v-model="newClass.name"
               type="text"
               required
               placeholder="Ej: Algoritmos y Lógica de Programación"
-              class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
+              class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
           </div>
 
           <div>
             <div class="flex items-center justify-between mb-1">
-              <label class="font-semibold text-base-texto-primario">
+              <label for="new-class-code" class="font-semibold text-base-texto-primario">
                 Código de Clase Único *
               </label>
               <button
                 type="button"
                 @click="generateRandomCode"
-                class="text-[11px] text-acento-ambar-fuerte hover:underline">
+                class="text-[11px] text-acento-ambar-fuerte hover:underline focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded">
                 Generar código sugerido
               </button>
             </div>
             <input
+              id="new-class-code"
               v-model="newClass.code"
               type="text"
               required
               placeholder="Ej: ALGO-2026-1"
-              class="w-full px-3 py-2 font-mono uppercase rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
+              class="w-full px-3 py-2 font-mono uppercase rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
             <p class="text-[10px] text-base-texto-secundario mt-0.5">
               Los estudiantes ingresarán este código al matricularse.
             </p>
           </div>
 
           <div>
-            <label class="block font-semibold text-base-texto-primario mb-1">
+            <label for="new-class-desc" class="block font-semibold text-base-texto-primario mb-1">
               Descripción o Competencias
             </label>
             <textarea
+              id="new-class-desc"
               v-model="newClass.description"
               rows="2"
               placeholder="Objetivos de aprendizaje del curso..."
-              class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-sutil focus:border-acento-ambar-fuerte outline-none resize-none"></textarea>
+              class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-sutil focus:border-acento-ambar-fuerte outline-none resize-none focus:ring-2 focus:ring-acento-ambar-fuerte/30"></textarea>
           </div>
 
           <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil flex items-center justify-between">

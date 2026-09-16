@@ -28,7 +28,7 @@
       <button
         @click="runCleanup"
         :disabled="isCleaning"
-        class="px-4 py-2 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:bg-semantico-falla/90 transition-colors shadow-sm self-start sm:self-auto flex items-center gap-1.5 cursor-pointer disabled:opacity-50">
+        class="px-4 py-2 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:bg-semantico-falla/90 transition-colors shadow-sm self-start sm:self-auto flex items-center gap-1.5 cursor-pointer disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-semantico-falla">
         <span v-if="isCleaning" class="animate-spin">⚙️</span>
         <span v-else>🧹</span>
         <span>{{ isCleaning ? 'Ejecutando limpieza...' : 'Ejecutar Limpieza de Mantenimiento' }}</span>
@@ -36,9 +36,9 @@
     </header>
 
     <!-- Feedback de Limpieza -->
-    <div v-if="cleanupFeedback" class="p-3 bg-semantico-pasa/10 border border-semantico-pasa/40 text-semantico-pasa rounded-xl text-xs flex items-center justify-between">
+    <div v-if="cleanupFeedback" role="status" aria-live="polite" class="p-3 bg-semantico-pasa/10 border border-semantico-pasa/40 text-semantico-pasa rounded-xl text-xs flex items-center justify-between">
       <span>✔ {{ cleanupFeedback }}</span>
-      <button @click="cleanupFeedback = null" class="text-[11px] underline">Cerrar</button>
+      <button @click="cleanupFeedback = null" aria-label="Cerrar notificación de limpieza" class="text-[11px] underline focus:outline-none focus:ring-2 focus:ring-semantico-pasa rounded">Cerrar</button>
     </div>
 
     <!-- Parámetros del Sandbox -->

@@ -128,16 +128,20 @@
     <!-- Modal para Redactar Mensaje -->
     <div
       v-if="isComposeOpen"
-      class="fixed inset-0 bg-base-texto-primario/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+      class="fixed inset-0 bg-base-texto-primario/50 backdrop-blur-xs flex items-center justify-center p-4 z-50"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="compose-modal-title">
       <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-xs">
         <div class="flex items-center justify-between pb-2 border-b border-base-borde-sutil">
-          <h3 class="font-bold text-base-texto-primario flex items-center gap-1.5">
+          <h3 id="compose-modal-title" class="font-bold text-base-texto-primario flex items-center gap-1.5">
             <span>✉️</span>
             <span>Redactar Mensaje Académico</span>
           </h3>
           <button
             @click="isComposeOpen = false"
-            class="text-base-texto-secundario hover:text-base-texto-primario text-sm font-bold">
+            aria-label="Cerrar modal de redacción"
+            class="text-base-texto-secundario hover:text-base-texto-primario text-sm font-bold focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded">
             ✕
           </button>
         </div>
@@ -145,13 +149,14 @@
         <form @submit.prevent="sendMessage" class="space-y-3">
           <!-- Selector de Clase (para filtrar estudiantes) -->
           <div>
-            <label class="block font-semibold text-base-texto-primario mb-1">
+            <label for="compose-class" class="block font-semibold text-base-texto-primario mb-1">
               Clase
             </label>
             <select
+              id="compose-class"
               v-model="composeClassId"
               @change="loadStudentsForClass"
-              class="w-full px-3 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none">
+              class="w-full px-3 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30">
               <option value="" disabled>Selecciona una clase</option>
               <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
                 {{ c.name }} ({{ c.code }})
@@ -161,7 +166,7 @@
 
           <!-- Selector de Estudiante (poblado dinámicamente) -->
           <div>
-            <label class="block font-semibold text-base-texto-primario mb-1">
+            <label for="compose-student" class="block font-semibold text-base-texto-primario mb-1">
               Estudiante Destinatario *
             </label>
             <div v-if="isLoadingStudents" class="text-base-texto-secundario py-1.5 text-[11px]">
@@ -169,10 +174,11 @@
             </div>
             <select
               v-else
+              id="compose-student"
               v-model="composeForm.receiverId"
               required
               :disabled="enrolledStudents.length === 0"
-              class="w-full px-3 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none disabled:opacity-50">
+              class="w-full px-3 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none disabled:opacity-50 focus:ring-2 focus:ring-acento-ambar-fuerte/30">
               <option :value="0" disabled>
                 {{ enrolledStudents.length === 0
                   ? (composeClassId ? 'Sin estudiantes en esta clase' : 'Selecciona una clase primero')
@@ -189,18 +195,19 @@
 
           <!-- Contenido del Mensaje -->
           <div>
-            <label class="block font-semibold text-base-texto-primario mb-1">
+            <label for="compose-content" class="block font-semibold text-base-texto-primario mb-1">
               Contenido del Mensaje *
             </label>
             <textarea
+              id="compose-content"
               v-model="composeForm.content"
               required
               rows="4"
               placeholder="Escribe aquí las orientaciones o retroalimentación..."
-              class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-sutil focus:border-acento-ambar-fuerte outline-none resize-none"></textarea>
+              class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-sutil focus:border-acento-ambar-fuerte outline-none resize-none focus:ring-2 focus:ring-acento-ambar-fuerte/30"></textarea>
           </div>
 
-          <div v-if="composeError" class="p-2 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded text-[11px]">
+          <div v-if="composeError" role="alert" aria-live="assertive" class="p-2 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded text-[11px]">
             {{ composeError }}
           </div>
 
@@ -208,13 +215,13 @@
             <button
               type="button"
               @click="isComposeOpen = false"
-              class="px-3 py-1.5 rounded-md borde-afordancia text-base-texto-primario font-semibold hover:bg-base-bg-secundario">
+              class="px-3 py-1.5 rounded-md borde-afordancia text-base-texto-primario font-semibold hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-base-borde-fuerte">
               Cancelar
             </button>
             <button
               type="submit"
               :disabled="isSending"
-              class="px-4 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-1">
+              class="px-4 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
               <span v-if="isSending" class="animate-spin">⚙️</span>
               <span>{{ isSending ? 'Enviando...' : 'Enviar Mensaje' }}</span>
             </button>

@@ -21,11 +21,12 @@
 
       <!-- Selector de Clase -->
       <div class="flex items-center gap-2">
-        <label class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
+        <label for="rendimiento-class-selector" class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
         <select
+          id="rendimiento-class-selector"
           v-model="selectedClassId"
           @change="loadClassMetrics"
-          class="text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte">
+          class="text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30">
           <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
             {{ c.name }} ({{ c.code }})
           </option>

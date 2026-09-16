@@ -25,18 +25,21 @@
     <!-- Filtros y Búsqueda -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
       <div class="w-full sm:w-72">
+        <label for="user-search" class="sr-only">Buscar usuario por nombre o correo</label>
         <input
+          id="user-search"
           v-model="searchQuery"
           type="text"
           placeholder="Buscar por nombre o correo..."
-          class="w-full px-3 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
+          class="w-full px-3 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
       </div>
 
       <div class="flex items-center gap-2 w-full sm:w-auto">
-        <span class="text-base-texto-secundario text-xs">Filtrar por rol:</span>
+        <label for="role-filter" class="text-base-texto-secundario text-xs">Filtrar por rol:</label>
         <select
+          id="role-filter"
           v-model="roleFilter"
-          class="px-2.5 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte text-xs outline-none">
+          class="px-2.5 py-1.5 rounded-md bg-base-blanco border border-base-borde-fuerte text-xs outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 focus:border-acento-ambar-fuerte">
           <option value="todos">Todos los roles</option>
           <option value="estudiante">Estudiantes</option>
           <option value="docente">Docentes</option>
@@ -51,11 +54,11 @@
         <table class="w-full text-xs text-left">
           <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil">
             <tr>
-              <th class="p-3 font-semibold">Usuario</th>
-              <th class="p-3 font-semibold">Correo Institucional</th>
-              <th class="p-3 font-semibold">Rol Asignado</th>
-              <th class="p-3 font-semibold">Estado</th>
-              <th class="p-3 font-semibold text-right">Acciones</th>
+              <th scope="col" class="p-3 font-semibold">Usuario</th>
+              <th scope="col" class="p-3 font-semibold">Correo Institucional</th>
+              <th scope="col" class="p-3 font-semibold">Rol Asignado</th>
+              <th scope="col" class="p-3 font-semibold">Estado</th>
+              <th scope="col" class="p-3 font-semibold text-right">Acciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-base-borde-sutil">

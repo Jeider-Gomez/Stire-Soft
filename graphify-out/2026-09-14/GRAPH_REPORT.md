@@ -1,56 +1,55 @@
-# Graph Report - stire  (2026-09-14)
+# Graph Report - stire  (2026-09-09)
 
 ## Corpus Check
-- 457 files · ~351,724 words
-- Verdict: corpus is large enough that graph structure adds value.
+- cluster-only mode — file stats not available
 
 ## Summary
-- 3928 nodes · 6463 edges · 335 communities (251 shown, 69 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 190 edges (avg confidence: 0.8)
+- 3235 nodes · 5569 edges · 272 communities (191 shown, 67 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 176 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d5a481e8`
+- Built from commit: `548922b3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- JudgeJobData
-- CreateLearningUnitDto
+- judge-execution.service.ts
+- learning-unit.entity.ts
 - PaginationQueryDto
 - Section
-- Content
-- Class
+- content.service.ts
+- ClassService
 - Program
 - v0.5.0 — Cierre de Ola 3 de Remediacion · 26 de Agosto de 2026
 - evaluation-engine.service.ts
 - Message
 - dependencies
-- JwtAuthGuard
+- Roles
 - user.entity.ts
-- ActivityLogService
-- user.service.ts
+- content.controller.ts
+- UserRole
 - scripts
 - compilerOptions
 - Topic
-- 1.1 Casos de Uso Principales
-- 🚀 Bitácora de Monitoreo y Control N.º 5 — Proyecto: STIRE-Soft
+- 📚 Matriz de Artículos Ampliada — Fundamento Bibliográfico Extendido
+- 🚀 Bitácora de Monitoreo y Control N.º 4 — Proyecto: STIRE-Soft
 - User
 - ActivityQuestionsController
-- PLAN_IMPLEMENTACION_JORGE_QA.md
-- LearningUnitService
+- QuestionType
+- LearningUnitController
 - STIRE — Cómo trabaja el equipo
-- student.ts
-- SubmissionsRepository
-- ActivitiesController
-- learning-progress.module.ts
-- auth.module.ts
-- NotificationsService
+- index.ts
 - submissions.service.ts
+- ActivitiesController
+- authorization.module.ts
+- app.module.ts
+- NotificationsService
+- submissions.module.ts
 - devDependencies
-- 🚀 Bitácora de Monitoreo y Control N.º 4 — Proyecto: STIRE-Soft
 - Activity
-- UserController
+- activities.service.ts
+- .changePassword
 - FASE_II_DISENO_MULTIMEDIAL.md
 - 2. Los 10 Principios UX + Pedagógicos de STIRE-Soft
 - GetUser
@@ -58,22 +57,22 @@
 - 🎓 PARTE 1: VISTAS DEL ESTUDIANTE
 - 🎓 VISTAS DEL ESTUDIANTE
 - 🎓 PARTE 1: VISTAS DEL ESTUDIANTE (Núcleo de Práctica)
-- LearningProgressService
+- Prerequisite
 - auth.controller.ts
-- learning-progress.service.ts
+- notifications.service.spec.ts
 - 2. Guión técnico — Formato 11
 - 🎓 PARTE 1: VISTAS DEL ESTUDIANTE (Núcleo de Práctica)
 - 2. Guión técnico — Formato 11
 - stire-seeder-v3.ts
 - 🗓️ REPORTES Y CEREMONIAS — Formatos oficiales del equipo
 - § 3.1 · Diagrama de Contenidos — STIRE
-- Local Storage
-- Enrollment
+- Cookies
+- Class
 - stire-seeder-v2.ts
 - REPORTE FINAL DE ESTABILIDAD — STIRE Platform
 - TutorChatDrawer.vue
 - ExecutionResult
-- tutor.module.ts
+- ContentRenderingService
 - docs/README.md
 - 1. Convenciones de Desarrollo Backend (NestJS + TypeORM)
 - 2. Catálogo Detallado de Entidades Principales
@@ -84,11 +83,11 @@
 - STIRE — Visión Funcional y Pedagógica del Sistema
 - ADR 06 — Aislamiento de ejecución de código sin Docker
 - 📘 CUADERNO DE INVESTIGACIÓN PROFUNDA: TUTORES INTELIGENTES DE PROGRAMACIÓN, REPETICIÓN ESPACIADA Y EDTECH — STIRE-SOFT
-- seed-runner.ts
+- LearningUnit
 - SubmitAnswersDto
 - verify-clean.js
 - NotificationsController
-- 4. Checklist Maestro
+- ChatDto
 - 🧭 ¿Qué es MODESEC? — el modelo explicado, fase por fase
 - 🔐 Insumo 04 — Matriz de Permisos y Control de Acceso (RBAC + BOLA)
 - 🏷️ Guía Oficial de Naming y Lenguaje de Producto — STIRE-Soft (v1.0)
@@ -102,10 +101,10 @@
 - AppModule
 - 📋 Informe de Saneamiento Bibliográfico — STIRE-Soft
 - 2.1 Entregables y avances registrados
-- [activityId].vue
+- workspace.ts
 - get-route-exceptions.spec.ts
-- QuestionType
-- RegisterDto
+- activity-questions.service.ts
+- CreateUserDto
 - Tracing
 - STIRE — Estado del proyecto y punto de continuación
 - Fichas complementarias — Eje 3: GUI, UX y Usabilidad
@@ -113,17 +112,17 @@
 - 🚀 Bitácora de Monitoreo y Control N.º 3 — Proyecto: STIRE-Soft
 - STIRE — Sistema Tutor Inteligente con Repetición Espaciada
 - Browser Session Management
-- SubmissionGradedEvent
+- learning-progress.module.ts
 - backend-audit.md
 - Clasificación de confiabilidad — 97 fuentes vivas en "STIRE — Segundo Cerebro UX/Pedagogía"
 - 2. Semáforo completo del modelo
 - Browser Automation with playwright-cli
-- Public
+- public.decorator.ts
 - stire-seeder-destructivo.ts
 - 🕐 DISPONIBILIDAD DEL EQUIPO
 - 🗂️ TABLERO KANBAN — STIRE-Soft
 - Running Custom Playwright Code
-- Prompt entregado a Codex — 2026-09-11
+- prompts/README.md
 - Fichas complementarias — Eje 1: Pedagógico y Cognitivo
 - Fichas complementarias — Eje 2: Arquitectura de Software
 - 📖 `EST-V02` · Unidad de Aprendizaje (Teoría & Trazados)
@@ -132,7 +131,7 @@
 - ⏰ `EST-V05` · Repasos (Repaso Espaciado SM-2)
 - 📊 `EST-V06` · Mi Progreso (Progreso, Maestría & Analítica)
 - 🏠 `EST-V01` · Inicio (Dashboard & Orientación)
-- useApi.ts
+- useAuthStore
 - exclude
 - dependencies
 - CLAUDE.md — reglas de trabajo de este proyecto
@@ -147,12 +146,12 @@
 - 📋 Insumo 13 — Backlog Funcional y Priorización
 - 📐 PLANTILLAS — MODESEC Fase II (Diseño Multimedial)
 - 🔑 `COMP-V00` · Iniciar Sesión (Autenticación y Registro)
-- Roles
+- Estructura de respaldo (para preguntas del jurado)
 - SidebarNav.vue
 - [id].vue
 - verify-clean-server-check.js
 - PermissionsGuard
-- crear.vue
+- CreateActivityDto
 - § 3.3.2 · Guía de Metáforas — STIRE
 - § 3.3.2 · Guía de Metáforas — STIRE
 - § 3.3 · Ventana Estándar — STIRE
@@ -161,7 +160,7 @@
 - Pitch Reto 01 — English Script (60s)
 - package.json
 - gamification.module.ts
-- mensajes.vue
+- judge-queue.interface.ts
 - stire-simulator.ts
 - STIRE — 01. Arquitectura y Diseño de Base de Datos
 - 6.2 Estructura y Jerarquía Académica
@@ -173,7 +172,7 @@
 - nest-cli.json
 - Commands
 - validate-security.spec.ts
-- CreateAffiliationDto
+- UserService
 - stire-qa-tester.ts
 - 6.1 Identidad y Estructura Organizativa
 - 6.3 Contenido, Actividades y Preguntas
@@ -200,7 +199,7 @@
 - § 3.3.3 · Mapa de Navegación Multi-Rol — STIRE
 - AuditInterceptor
 - InitialSchema1779000000000
-- app.module.ts
+- HeaderNav.vue
 - Ficha: Learning for Mastery
 - Ficha: Distributed practice in verbal recall tasks: A review and quantitative synthesis
 - Ficha: The Relative Effectiveness of Human Tutoring, Intelligent Tutoring Systems, and Other Tutoring Systems
@@ -220,7 +219,7 @@
 - Advanced Mocking with run-code
 - .getDueReviews
 - 3. Heal
-- 📊 INFORME DE AUDITORÍA Y EVALUACIÓN QA — STIRE-SOFT
+- Attaching to a Running Browser
 - stire-tester.ts
 - bullmq
 - cache-manager
@@ -231,7 +230,7 @@
 - AddEaseFactorToReviewSchedules1788999128282
 - dompurify
 - @eslint/eslintrc
-- rendimiento.vue
+- eslint-plugin-prettier
 - docente/index.vue
 - globals
 - jsdom
@@ -246,7 +245,7 @@
 - @nestjs/mapped-types
 - @nestjs/passport
 - @nestjs/platform-express
-- 📊 REPORTE DE AUDITORÍA DE CALIDAD Y PRUEBAS QA — STIRE-SOFT
+- @nestjs/schematics
 - @nestjs/swagger
 - @nestjs/testing
 - @nestjs/throttler
@@ -260,138 +259,76 @@
 - typeorm
 - @types/marked
 - source-map-support
-- contenidos.vue
+- supertest
 - ts-jest
 - ts-loader
 - @types/express
-- 📚 Matriz de Artículos Ampliada — Fundamento Bibliográfico Extendido
-- clases.vue
+- @types/jest
+- @types/jsdom
 - @types/passport-jwt
-- topic.service.ts
+- @types/supertest
 - typescript
 - typescript-eslint
-- 3. Hallazgos Nuevos, Causa Raíz y Corrección
-- STIRE — Informe de Sesión Antigravity
-- ContentRenderingService
+- FakeJwtAuthGuard
+- Content
 - judge-engine.module.ts
-- STIRE — Informe de Sesión Claude Code
-- Producto 1 — Catálogo de pantallas, argumento de los tokens y estado del recorrido
-- LearningProgressController
-- FillCodeExercise.vue
-- [classId].vue
-- judge.worker.spec.ts
-- Plan de Implementación — Pantallas de Tipos de Actividad
-- Bloque de contexto reutilizable — Proyecto de investigación STIRE
-- Informe Codex — pendientes STIRE-Soft
-- STIRE — Informe de Sesión Claude Code
-- STIRE — Informe de sesión Codex
-- PLAN_ENTREGABLES_INFORME.md
-- Plan de producción de los entregables del §5.4 del informe
-- DragDropExercise.vue
-- register.vue
-- ActivityLogController
-- Cookies
-- STIRE — Formato de Informe de Sesión Antigravity
-- Producto 1 — Especificación en ocho apartados
-- Estructura de respaldo (para preguntas del jurado)
-- MatchingExercise.vue
-- OrderingExercise.vue
-- Informe de Auditoría — STIRE Consolidación v2
-- STIRE — Formato de Informe de Sesión Antigravity
-- codex/README.md
-- STIRE — Formato de Informe de Sesión Codex
-- Plan de implementación para Codex — pendientes reales de STIRE-Soft
-- S05a — Matriz de trazabilidad de las características del tutor inteligente
-- Producto 1 — Especificación en siete apartados
-- S06b — Especificación de la arquitectura funcional preliminar
-- [studentId].vue
-- ChangePasswordDto
-- CreateClassDto
-- 2. Cómo funciona el sistema de tipos de pregunta hoy (arquitectura real, verificada)
-- McqExercise.vue
-- LearningProgress
-- docs/antigravity/ — Plan de implementación e informes de sesión
-- Fase A — Motor de selección de actividad por dominio
-- Fase B — Moderación de matrícula por el docente
-- Fase D — Restricción real contra intentos activos duplicados
-- Fase E — Verificar matrícula activa en `POST /submissions/start`
-- Fase F — Endurecer la emisión de `submission.graded` (mitigación ligera, no outbox completo)
-- 5. La propuesta, tal como está definida
-- 4. Los cuatro entregables
-- § 3.3.3 · Mapa de Navegación Multi-Rol — STIRE
-- STIRE — Índice de Documentación Técnica
-- UpdateProfileDto
-- RunCodeDto
-- Storage State
-- 5. Nivel 2 — `drag_drop`, `ordering`, `matching` (backend listo, sin contenido sembrado todavía)
-- AddApprovalToClasses1789000000000
-- AddActiveSubmissionConstraint1789100000000
-- dashboard.vue
-- analitica.vue
-- AffiliationRoleType
-- @faker-js/faker
-- usuarios.vue
-- jest
-- prettier
-- tsconfig-paths
-- @types/bcrypt
 
 ## God Nodes (most connected - your core abstractions)
-1. `User` - 170 edges
-2. `Roles()` - 83 edges
-3. `GetUser` - 77 edges
-4. `LearningUnit` - 41 edges
-5. `Activity` - 37 edges
-6. `AuthorizationService` - 36 edges
-7. `UserRole` - 35 edges
-8. `Enrollment` - 32 edges
-9. `scripts` - 31 edges
-10. `Class` - 30 edges
+1. `User` - 159 edges
+2. `Roles()` - 76 edges
+3. `GetUser` - 71 edges
+4. `LearningUnit` - 39 edges
+5. `AuthorizationService` - 35 edges
+6. `Activity` - 33 edges
+7. `UserRole` - 32 edges
+8. `Class` - 29 edges
+9. `StireBaseEntity` - 29 edges
+10. `scripts` - 29 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `useTutorStore` --indirect_call--> `sendMessage()`  [INFERRED]
-  frontend-nuxt/stores/tutor.ts → frontend-nuxt/pages/docente/mensajes.vue
-- `useApi()` --calls--> `useAuthStore`  [EXTRACTED]
-  frontend-nuxt/composables/useApi.ts → frontend-nuxt/stores/auth.ts
-- `useStudentStore` --calls--> `useApi()`  [EXTRACTED]
-  frontend-nuxt/stores/student.ts → frontend-nuxt/composables/useApi.ts
-- `useTutorStore` --calls--> `useApi()`  [EXTRACTED]
-  frontend-nuxt/stores/tutor.ts → frontend-nuxt/composables/useApi.ts
-- `useWorkspaceStore` --calls--> `useApi()`  [EXTRACTED]
-  frontend-nuxt/stores/workspace.ts → frontend-nuxt/composables/useApi.ts
+- `InlineJudgeQueueAdapter` --implements--> `JudgeQueue`  [EXTRACTED]
+  src/judge-engine/adapters/inline-judge-queue.adapter.ts → src/judge-engine/judge-queue.interface.ts
+- `CreateActivityDto` --references--> `Difficulty`  [EXTRACTED]
+  src/activities/dto/create-activity.dto.ts → src/common/enums/difficulty.enum.ts
+- `Activity` --references--> `Difficulty`  [EXTRACTED]
+  src/activities/entities/activity.entity.ts → src/common/enums/difficulty.enum.ts
+- `LearningUnit` --references--> `Difficulty`  [EXTRACTED]
+  src/learning-unit/entities/learning-unit.entity.ts → src/common/enums/difficulty.enum.ts
+- `Enrollment` --references--> `EnrollmentStatus`  [EXTRACTED]
+  src/enrollment/entities/enrollment.entity.ts → src/enrollment/enums/enrollment-status.enum.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (335 total, 69 thin omitted)
+## Communities (272 total, 67 thin omitted)
 
-### Community 0 - "JudgeJobData"
-Cohesion: 0.12
-Nodes (10): OnWorkerEvent, Processor, BullJudgeQueueAdapter, ADR-0008, Injectable, InlineJudgeQueueAdapter, Injectable, JudgeJobData (+2 more)
+### Community 0 - "judge-execution.service.ts"
+Cohesion: 0.08
+Nodes (20): OnWorkerEvent, Processor, JudgeAnswerFailedEvent, JudgeAnswerGradedEvent, InlineJudgeQueueAdapter, ADR-0008, Injectable, JudgeExecutionService (+12 more)
 
-### Community 1 - "CreateLearningUnitDto"
-Cohesion: 0.20
-Nodes (9): CreateLearningUnitDto, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsBoolean, IsOptional (+1 more)
+### Community 1 - "learning-unit.entity.ts"
+Cohesion: 0.14
+Nodes (13): Difficulty, AVANZADO, BASICO, INTERMEDIO, CreateLearningUnitDto, IsEnum, IsNotEmpty, IsNumber (+5 more)
 
 ### Community 2 - "PaginationQueryDto"
 Cohesion: 0.06
-Nodes (41): IsIn, Max, FindActivitiesQueryDto, IsInt, IsOptional, Min, Type, ActivityTypesController (+33 more)
+Nodes (41): IsIn, Max, ActivityTypesController, ApiOperation, ApiQuery, ApiResponse, ApiTags, Body (+33 more)
 
 ### Community 3 - "Section"
-Cohesion: 0.09
-Nodes (23): CreateSectionDto, ApiProperty, ApiPropertyOptional, IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString (+15 more)
-
-### Community 4 - "Content"
 Cohesion: 0.07
-Nodes (29): ContentType, CODE, IMAGE, MARKDOWN, PDF, VIDEO, ContentRepository, Injectable (+21 more)
+Nodes (36): CreateSectionDto, ApiProperty, ApiPropertyOptional, IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString (+28 more)
 
-### Community 5 - "Class"
-Cohesion: 0.09
-Nodes (23): ClassController, Body, Controller, Delete, Get, Param, Patch, Post (+15 more)
+### Community 4 - "content.service.ts"
+Cohesion: 0.11
+Nodes (18): ContentType, CODE, IMAGE, MARKDOWN, PDF, VIDEO, ADR-0007, CreateContentDto (+10 more)
+
+### Community 5 - "ClassService"
+Cohesion: 0.12
+Nodes (16): ClassController, Body, Controller, Delete, Get, Param, Patch, Post (+8 more)
 
 ### Community 6 - "Program"
-Cohesion: 0.07
-Nodes (29): Institution, Column, Entity, OneToMany, PrimaryGeneratedColumn, Program, Column, Entity (+21 more)
+Cohesion: 0.08
+Nodes (24): Institution, Column, Entity, OneToMany, PrimaryGeneratedColumn, Program, Column, Entity (+16 more)
 
 ### Community 7 - "v0.5.0 — Cierre de Ola 3 de Remediacion · 26 de Agosto de 2026"
 Cohesion: 0.05
@@ -399,7 +336,7 @@ Nodes (42): 1. Hardening de Seguridad (Bloqueadores P0 Resueltos), 2. Patron Ada
 
 ### Community 8 - "evaluation-engine.service.ts"
 Cohesion: 0.13
-Nodes (17): CodingConfig, DragDropConfig, FillCodeConfig, MatchingConfig, McqConfig, OrderingConfig, QuestionConfig, EvaluationEngineService (+9 more)
+Nodes (18): CodingConfig, DragDropConfig, FillCodeConfig, MatchingConfig, McqConfig, OrderingConfig, EvaluationEngineModule, Module (+10 more)
 
 ### Community 9 - "Message"
 Cohesion: 0.08
@@ -409,109 +346,109 @@ Nodes (24): CreateMessageDto, IsNotEmpty, IsNumber, IsString, Message, Column, C
 Cohesion: 0.05
 Nodes (37): autoprefixer, dependencies, lucide-vue-next, nuxt, pinia, @pinia/nuxt, vue, vue-router (+29 more)
 
-### Community 11 - "JwtAuthGuard"
-Cohesion: 0.19
-Nodes (7): FakeJwtAuthGuard, IS_PUBLIC_KEY, JwtAuthGuard, Injectable, RolesGuard, Injectable, ADR-0007
+### Community 11 - "Roles"
+Cohesion: 0.28
+Nodes (5): Roles(), JwtAuthGuard, Injectable, RolesGuard, Injectable
 
 ### Community 12 - "user.entity.ts"
-Cohesion: 0.20
-Nodes (12): AuthorizationService, Injectable, EnrollmentStatus, ACTIVE, COMPLETED, INACTIVE, PENDING, WITHDRAWN (+4 more)
+Cohesion: 0.16
+Nodes (12): AuthorizationService, Injectable, AppDataSource, EnrollmentService, Injectable, EnrollmentStatus, ACTIVE, COMPLETED (+4 more)
 
-### Community 13 - "ActivityLogService"
-Cohesion: 0.13
-Nodes (16): ActivityLogModule, Module, ActivityLogService, LogEventDto, Injectable, ActivityLog, ActivityLogAction, ACTIVITY_STARTED (+8 more)
+### Community 13 - "content.controller.ts"
+Cohesion: 0.09
+Nodes (22): ActivityLogController, ApiOperation, ApiTags, Controller, Get, Param, UseGuards, ActivityLogService (+14 more)
 
-### Community 14 - "user.service.ts"
-Cohesion: 0.17
-Nodes (9): JwtStrategy, Injectable, AdminUpdateUserDto, IsBoolean, IsEnum, IsOptional, FakeJwtAuthGuard, Injectable (+1 more)
+### Community 14 - "UserRole"
+Cohesion: 0.08
+Nodes (30): MaxLength, AdminUpdateUserDto, IsBoolean, IsEnum, IsOptional, ChangePasswordDto, IsNotEmpty, IsString (+22 more)
 
 ### Community 15 - "scripts"
-Cohesion: 0.06
-Nodes (31): scripts, build, db:seed, db:seed:demo, db:seed-destructivo, db:seed-qa, db:seed-v2, db:seed-v3 (+23 more)
+Cohesion: 0.07
+Nodes (29): scripts, build, db:seed:demo, db:seed-destructivo, db:seed-qa, db:seed-v2, db:seed-v3, db:simulate (+21 more)
 
 ### Community 16 - "compilerOptions"
 Cohesion: 0.07
 Nodes (28): src/**/*.ts, compilerOptions, allowSyntheticDefaultImports, declaration, emitDecoratorMetadata, esModuleInterop, experimentalDecorators, forceConsistentCasingInFileNames (+20 more)
 
 ### Community 17 - "Topic"
-Cohesion: 0.10
-Nodes (23): Topic, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn (+15 more)
-
-### Community 18 - "1.1 Casos de Uso Principales"
 Cohesion: 0.07
-Nodes (27): 1.1 Casos de Uso Principales, 1. Creación del Estudiante de Prueba, 1. Flujo del Estudiante (Ciclo de Vida Cognitivo), 2.1 Casos de Uso Principales, 2. Flujo del Docente (Creación Académica y Monitoreo), 2. Inicio de Sesión (Obtención de Credencial JWT), 3.1 Peticiones HTTP del Flujo E2E, 3.2 Trazabilidad de Consola durante el Test de Integración (+19 more)
+Nodes (35): CreateTopicDto, ApiProperty, ApiPropertyOptional, IsNotEmpty, IsNumber, IsOptional, IsString, IsBoolean (+27 more)
 
-### Community 19 - "🚀 Bitácora de Monitoreo y Control N.º 5 — Proyecto: STIRE-Soft"
+### Community 18 - "📚 Matriz de Artículos Ampliada — Fundamento Bibliográfico Extendido"
+Cohesion: 0.05
+Nodes (42): 1.1 Casos de Uso Principales, 1. Creación del Estudiante de Prueba, 1. Flujo del Estudiante (Ciclo de Vida Cognitivo), 2.1 Casos de Uso Principales, 2. Flujo del Docente (Creación Académica y Monitoreo), 2. Inicio de Sesión (Obtención de Credencial JWT), 3.1 Peticiones HTTP del Flujo E2E, 3.2 Trazabilidad de Consola durante el Test de Integración (+34 more)
+
+### Community 19 - "🚀 Bitácora de Monitoreo y Control N.º 4 — Proyecto: STIRE-Soft"
 Cohesion: 0.08
-Nodes (25): 👥 1. Estructura del equipo y roles, 🎯 2. Objetivo del Sprint, 📋 3. Plan de trabajo semanal, 🔄 4. Flujo Kanban del Sprint, ⚠️ 5. Riesgos vivos, 📅 6. Seguimiento, 🧾 7. Resultado del Sprint — completar al cierre, 🗂️ 8. Historial de bitácoras (+17 more)
+Nodes (25): 👥 1. Estructura del equipo y roles, 🎯 2. Objetivo del Sprint, 📋 3. Plan de trabajo semanal, 🔄 4. Flujo Kanban del Sprint, ⚠️ 5. Riesgos y pendientes heredados, 📅 6. Seguimiento, 🧾 7. Resultado del Sprint — completar al cierre, 🗂️ 8. Historial de bitácoras (+17 more)
 
 ### Community 20 - "User"
-Cohesion: 0.13
-Nodes (12): ActivitiesService, Injectable, ContentService, Injectable, Column, CreateDateColumn, DeleteDateColumn, Entity (+4 more)
+Cohesion: 0.19
+Nodes (11): ContentService, Injectable, UpdateContentDto, Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany (+3 more)
 
 ### Community 21 - "ActivityQuestionsController"
-Cohesion: 0.12
+Cohesion: 0.11
 Nodes (16): ActivityQuestionsController, ApiOperation, ApiTags, Body, Controller, Get, Param, Post (+8 more)
 
-### Community 22 - "PLAN_IMPLEMENTACION_JORGE_QA.md"
-Cohesion: 0.05
-Nodes (38): 10. PASO 8 — Revisar backend desde la perspectiva funcional, 11. PASO 9 — Registrar errores correctamente, 12. PASO 10 — Revisar evidencia en GitHub, 13. PASO 11 — Comunicación con Pedro y Jeider, 14. PASO 12 — Validación final, 15. Relación con las tarjetas actuales de Jorge, 16. Qué NO debe hacer Jorge, 17. Definition of Done para Jorge (+30 more)
+### Community 22 - "QuestionType"
+Cohesion: 0.18
+Nodes (9): StudentQuestionDto, QuestionType, AI_EVALUATED, CODING, DRAG_DROP, FILL_CODE, MATCHING, MCQ (+1 more)
 
-### Community 23 - "LearningUnitService"
-Cohesion: 0.12
-Nodes (12): LearningUnitController, Body, Controller, Delete, Get, Param, Patch, Post (+4 more)
+### Community 23 - "LearningUnitController"
+Cohesion: 0.16
+Nodes (9): LearningUnitController, Body, Controller, Delete, Get, Param, Patch, Post (+1 more)
 
 ### Community 24 - "STIRE — Cómo trabaja el equipo"
 Cohesion: 0.08
 Nodes (24): 1. En una frase, 2. Reglas del equipo, 3. Ritmo semanal, 4. El tablero — Trello, 5. Quién hace qué, 6. Trello, GitHub y bitácora, 7. Bitácora semanal, 8. Mejora continua (+16 more)
 
-### Community 25 - "student.ts"
-Cohesion: 0.09
-Nodes (18): api, authStore, recommendedExerciseId, studentStore, studentStore, studentStore, EnrolledClassInfo, CourseModule (+10 more)
+### Community 25 - "index.ts"
+Cohesion: 0.11
+Nodes (14): studentStore, studentStore, studentStore, useStudentStore, CourseModule, LearningUnit, ReviewUrgency, Role (+6 more)
 
-### Community 26 - "SubmissionsRepository"
-Cohesion: 0.17
-Nodes (6): StartSubmissionDto, ApiProperty, IsInt, IsNotEmpty, SubmissionsRepository, Injectable
+### Community 26 - "submissions.service.ts"
+Cohesion: 0.08
+Nodes (15): SubmissionAnswersRepository, Injectable, RunCodeDto, ApiProperty, IsNotEmpty, IsString, StartSubmissionDto, ApiProperty (+7 more)
 
 ### Community 27 - "ActivitiesController"
 Cohesion: 0.19
 Nodes (15): ActivitiesController, ApiOperation, ApiQuery, ApiResponse, ApiTags, Body, Controller, Delete (+7 more)
 
-### Community 28 - "learning-progress.module.ts"
-Cohesion: 0.16
-Nodes (14): AnalyticsModule, Module, AuthorizationModule, Module, LearningProgressModule, Module, LearningUnitModule, Module (+6 more)
+### Community 28 - "authorization.module.ts"
+Cohesion: 0.15
+Nodes (13): ClassModule, Module, AuthorizationModule, Module, Column, Entity, JoinColumn, ManyToOne (+5 more)
 
-### Community 29 - "auth.module.ts"
-Cohesion: 0.17
-Nodes (14): AuthModule, Module, ClassModule, Module, EnrollmentModule, Module, InstitutionModule, Module (+6 more)
+### Community 29 - "app.module.ts"
+Cohesion: 0.14
+Nodes (18): ActivityLogModule, Module, AnalyticsModule, Module, AuthModule, Module, EnrollmentModule, Module (+10 more)
 
 ### Community 30 - "NotificationsService"
-Cohesion: 0.14
-Nodes (13): Notification, Column, Entity, JoinColumn, ManyToOne, SubmissionGradedListener, Injectable, OnEvent (+5 more)
+Cohesion: 0.12
+Nodes (17): NotificationType, GRADE, INFO, REVIEW_SCHEDULE, Notification, Column, Entity, JoinColumn (+9 more)
 
-### Community 31 - "submissions.service.ts"
-Cohesion: 0.10
-Nodes (18): SubmissionStatus, EXPIRED, GRADED, IN_PROGRESS, SUBMITTED, Submission, Column, CreateDateColumn (+10 more)
+### Community 31 - "submissions.module.ts"
+Cohesion: 0.08
+Nodes (31): ActivityQuestionsModule, Module, SubmissionStatus, EXPIRED, GRADED, IN_PROGRESS, SUBMITTED, MaintenanceModule (+23 more)
 
 ### Community 32 - "devDependencies"
-Cohesion: 0.08
-Nodes (25): eslint, eslint-config-prettier, @eslint/js, eslint-plugin-prettier, @nestjs/schematics, devDependencies, eslint, eslint-config-prettier (+17 more)
+Cohesion: 0.09
+Nodes (23): eslint, eslint-config-prettier, @eslint/js, @faker-js/faker, jest, devDependencies, eslint, eslint-config-prettier (+15 more)
 
-### Community 33 - "🚀 Bitácora de Monitoreo y Control N.º 4 — Proyecto: STIRE-Soft"
-Cohesion: 0.08
-Nodes (25): 👥 1. Estructura del equipo y roles, 🎯 2. Objetivo del Sprint, 📋 3. Plan de trabajo semanal, 🔄 4. Flujo Kanban del Sprint, ⚠️ 5. Riesgos y pendientes heredados, 📅 6. Seguimiento, 🧾 7. Resultado del Sprint — verificado contra Trello real el 14/09/2026, 🗂️ 8. Historial de bitácoras (+17 more)
+### Community 33 - "Activity"
+Cohesion: 0.18
+Nodes (8): ActivitiesService, Injectable, Activity, Column, Entity, Index, JoinColumn, ManyToOne
 
-### Community 34 - "Activity"
-Cohesion: 0.08
-Nodes (26): ActivitiesRepository, Injectable, ADR-0007, CreateActivityDto, ApiProperty, ApiPropertyOptional, IsBoolean, IsEnum (+18 more)
+### Community 34 - "activities.service.ts"
+Cohesion: 0.18
+Nodes (11): ActivitiesModule, Module, ActivitiesRepository, Injectable, ADR-0007, UpdateActivityDto, PublicationStatus, ARCHIVED (+3 more)
 
-### Community 35 - "UserController"
-Cohesion: 0.13
-Nodes (8): UserResponseDto, Body, Controller, Delete, Get, Param, Patch, UserController
+### Community 35 - ".changePassword"
+Cohesion: 0.20
+Nodes (6): Body, Delete, Param, Patch, Post, Throttle
 
 ### Community 36 - "FASE_II_DISENO_MULTIMEDIAL.md"
-Cohesion: 0.19
-Nodes (5): 1. Árbol de Rutas y Naming Visible en Frontend, 2. Matriz de Rutas, Permisos y Middleware Nuxt, 🗺️ Insumo 09 — Mapa Completo de Navegación y Sitemap Nuxt, FASE II — DISEÑO MULTIMEDIAL (MODESEC), STIRE-Soft · Sistema Tutor Inteligente para la Resolución de Ejercicios
+Cohesion: 0.14
+Nodes (10): 1. Árbol de Rutas y Naming Visible en Frontend, 2. Matriz de Rutas, Permisos y Middleware Nuxt, 🗺️ Insumo 09 — Mapa Completo de Navegación y Sitemap Nuxt, 1. Esquema de Navegación Global y por Roles, 2. Tabla de Transiciones Multi-Rol, § 3.3.3 · Mapa de Navegación Multi-Rol — STIRE, 3. Reglas de Calidad y Ergonomía Cognitiva, FASE II — DISEÑO MULTIMEDIAL (MODESEC) (+2 more)
 
 ### Community 37 - "2. Los 10 Principios UX + Pedagógicos de STIRE-Soft"
 Cohesion: 0.09
@@ -537,17 +474,17 @@ Nodes (21): 1. Asignación de Vistas y Especificación de Trabajo por Rol, `ADM-
 Cohesion: 0.10
 Nodes (21): § 3.3.1 · Fichas de Descripción de Ventanas Multi-Rol — STIRE, Ficha ADM-V01 · Panel de Control de la Plataforma — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03), Ficha ADM-V02 · Gestión Global de Usuarios y Roles, Ficha ADM-V03 · Supervisión y Parámetros del Sistema — ⚠️ REQUERIDO — PENDIENTE DE BACKEND (D-03), Ficha COMP-V00 · Autenticación y Acceso al Sistema, Ficha DOC-V01 · Mis Clases, Ficha DOC-V02 · Contenidos y Temas, Ficha DOC-V05 · Detalle de Estudiante (+13 more)
 
-### Community 43 - "LearningProgressService"
-Cohesion: 0.14
-Nodes (8): PrerequisitesGuard, Injectable, isSubmissionPassed(), LearningProgressService, Injectable, PrerequisitesService, Injectable, InjectRepository
+### Community 43 - "Prerequisite"
+Cohesion: 0.15
+Nodes (11): PrerequisitesGuard, Injectable, Prerequisite, Column, Entity, Index, JoinColumn, ManyToOne (+3 more)
 
 ### Community 44 - "auth.controller.ts"
-Cohesion: 0.14
-Nodes (12): AuthController, Body, Controller, Post, Throttle, AuthService, Injectable, LoginDto (+4 more)
+Cohesion: 0.09
+Nodes (17): AuthController, Body, Controller, Post, Throttle, AuthService, Injectable, LoginDto (+9 more)
 
-### Community 45 - "learning-progress.service.ts"
-Cohesion: 0.17
-Nodes (11): LearningStatus, COMPRENSION_PARCIAL, DOMINADO, EN_PRACTICA, EXPLORADO, NO_VISTO, LearningStatusChangedEvent, NextActivityRecommendation (+3 more)
+### Community 45 - "notifications.service.spec.ts"
+Cohesion: 0.18
+Nodes (10): LearningStatus, COMPRENSION_PARCIAL, DOMINADO, EN_PRACTICA, EXPLORADO, NO_VISTO, LearningStatusChangedEvent, LearningStatusChangedListener (+2 more)
 
 ### Community 46 - "2. Guión técnico — Formato 11"
 Cohesion: 0.11
@@ -573,13 +510,13 @@ Nodes (16): Acta del viernes (se pega en la bitácora), 🎯 ACTA · Sprint 1 ·
 Cohesion: 0.12
 Nodes (14): 1. Representación elegida y por qué, 2. Diagrama (Gráfico 1), § 3.1 · Diagrama de Contenidos — STIRE, 3. Correspondencia con la estructura de datos de STIRE, 4. Tabla de contenidos y resultados de aprendizaje, 5. Reglas de progresión (enlace con el motor de dominio), 6.1 Qué cubre STIRE, y por qué la herramienta aporta ahí, 6.2 Qué queda fuera, y por qué se dicta por otros medios (+6 more)
 
-### Community 52 - "Local Storage"
-Cohesion: 0.09
-Nodes (22): Advanced: Multiple Operations, Authentication State Reuse, Clear All localStorage, Clear sessionStorage, Common Patterns, Delete Database, Delete Single Item, Delete Single Item (+14 more)
+### Community 52 - "Cookies"
+Cohesion: 0.06
+Nodes (35): Advanced: Multiple Cookies or Custom Options, Advanced: Multiple Operations, Authentication State Reuse, Clear All Cookies, Clear All localStorage, Clear sessionStorage, Common Patterns, Cookies (+27 more)
 
-### Community 53 - "Enrollment"
-Cohesion: 0.12
-Nodes (12): InjectRepository, EnrollmentService, Injectable, InjectRepository, Enrollment, Column, CreateDateColumn, Entity (+4 more)
+### Community 53 - "Class"
+Cohesion: 0.08
+Nodes (20): Class, Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany (+12 more)
 
 ### Community 54 - "stire-seeder-v2.ts"
 Cohesion: 0.37
@@ -590,20 +527,20 @@ Cohesion: 0.12
 Nodes (16): 📁 Archivos Modificados en Esta Fase, Build de Producción, 🚀 Checklist de Despliegue a Producción, 🏗️ Estabilidad de Infraestructura, Estado de servicios en entorno local, Happy Path E2E (`npm run test:flow`), Problema: BullMQ / Redis sin Docker activo, Problema: Puerto 3000 en uso (EADDRINUSE) (+8 more)
 
 ### Community 56 - "TutorChatDrawer.vue"
-Cohesion: 0.22
-Nodes (10): activeContextLabel, escapeHtml(), formatMessage(), handleSend(), inputQuery, messagesContainer, scrollToBottom(), studentStore (+2 more)
+Cohesion: 0.19
+Nodes (9): handleSend(), inputQuery, messagesContainer, scrollToBottom(), tutorStore, tutorStore, workspaceStore, useTutorStore (+1 more)
 
 ### Community 57 - "ExecutionResult"
-Cohesion: 0.08
-Nodes (27): ExecutionResult, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn (+19 more)
+Cohesion: 0.12
+Nodes (14): ExecutionResult, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn (+6 more)
 
-### Community 58 - "tutor.module.ts"
-Cohesion: 0.06
-Nodes (30): calculateUnitMastery(), LearningProgressRepository, Injectable, ChatContextDto, ChatDto, IsNotEmpty, IsOptional, IsString (+22 more)
+### Community 58 - "ContentRenderingService"
+Cohesion: 0.05
+Nodes (37): calculateUnitMastery(), ContentRenderingModule, Module, ALLOWED_IFRAME_HOSTS, ContentRenderingService, PLAIN_CONFIG, RICH_CONFIG, SanitizationProfile (+29 more)
 
 ### Community 59 - "docs/README.md"
-Cohesion: 0.27
-Nodes (3): docs/claude-code/ — Informes de sesión de Claude Code, Historial de sesiones ejecutadas, Prompts que iniciaron estas sesiones
+Cohesion: 0.14
+Nodes (8): docs/antigravity/ — Plan de implementación e informes de sesión, El plan vigente, Historial de sesiones ejecutadas, Prompts usados para arrancar estas sesiones, 🧭 Guía de Lectura para una IA, 📚 Mapa de Documentos, 🗂️ Otros archivos en esta carpeta, STIRE — Índice de Documentación Técnica
 
 ### Community 60 - "1. Convenciones de Desarrollo Backend (NestJS + TypeORM)"
 Cohesion: 0.12
@@ -626,12 +563,12 @@ Cohesion: 0.10
 Nodes (23): StireBaseEntity, CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Achievement, Column, Entity (+15 more)
 
 ### Community 65 - "🚀 Insumo 15 — Plan de Implementación en Nuxt para Google Antigravity"
-Cohesion: 0.05
-Nodes (41): 10. Criterio de cierre de esta fase, 11.1 Reconciliación de tokens (Figma ← código) — HECHO, 11.2 Los otros cuatro criterios de §10 — NO se cumplen todavía, declarado sin maquillar, 11.3 Qué queda cerrado y qué no, 11. Verificación en frío de este criterio de cierre (2026-09-09), 12.1 Qué se desbloqueó, 12.2 Hallazgo nuevo, no buscado en el cierre original: `workspace.ts` tiene su propio "fallo, 12.3 Alcance de la próxima sesión (+33 more)
+Cohesion: 0.09
+Nodes (22): 10. Criterio de cierre de esta fase, 11.1 Reconciliación de tokens (Figma ← código) — HECHO, 11.2 Los otros cuatro criterios de §10 — NO se cumplen todavía, declarado sin maquillar, 11.3 Qué queda cerrado y qué no, 11. Verificación en frío de este criterio de cierre (2026-09-09), 1. Alcance exacto — qué SÍ se replica y qué NO, 2. Lectura obligatoria antes de escribir código (no se re-deriva nada de esto), 3. Paso 0 — Scaffold del proyecto (+14 more)
 
 ### Community 66 - "STIRE — Visión Funcional y Pedagógica del Sistema"
-Cohesion: 0.10
-Nodes (20): 1.1 La Brecha de Retroalimentación, 1.2 El Olvido Acelerado (Curva de Ebbinghaus), 1.3 La Talla Única en el Aprendizaje, 1. El Problema Pedagógico que Resuelve STIRE, 2.1 Pilar 1: Evaluación Adaptativa y Seguimiento de Dominio (Mastery), 2.2 Pilar 2: Repetición Espaciada Algorítmica (SM-2), 2.3 Pilar 3: Tutor IA Socrático y Contextualizado, 2. La Propuesta de Valor de STIRE (+12 more)
+Cohesion: 0.13
+Nodes (15): 1.1 La Brecha de Retroalimentación, 1.2 El Olvido Acelerado (Curva de Ebbinghaus), 1.3 La Talla Única en el Aprendizaje, 1. El Problema Pedagógico que Resuelve STIRE, 2.1 Pilar 1: Evaluación Adaptativa y Seguimiento de Dominio (Mastery), 2.2 Pilar 2: Repetición Espaciada Algorítmica (SM-2), 2.3 Pilar 3: Tutor IA Socrático y Contextualizado, 2. La Propuesta de Valor de STIRE (+7 more)
 
 ### Community 67 - "ADR 06 — Aislamiento de ejecución de código sin Docker"
 Cohesion: 0.13
@@ -641,13 +578,13 @@ Nodes (14): ADR 06 — Aislamiento de ejecución de código sin Docker, ADR 07 �
 Cohesion: 0.13
 Nodes (14): 1.1 Evolución y Arquitectura de los ITS en Ciencias de la Computación, 1.2 Modelos de Diagnóstico Cognitivo (Knowledge Tracing), 1.3 Método Socrático con LLMs (Chen et al., 2023 ⚠️ [CITA FABRICADA — DOI 10.1007/s40593-023-00342-1 no existe, ver MATRIZ_ARTICULOS.md]), 1. 🧠 INVESTIGACIÓN PROFUNDA SOBRE TUTORES INTELIGENTES EN PROGRAMACIÓN (ITS), 2.1 Fundamento Neurocognitivo: La Curva del Olvido, 2.2 Algoritmo SuperMemo-2 (SM-2) Implementado, 2.3 Comparativa de Sistemas Repetitivos (Anki, SuperMemo, Duolingo, STIRE), 2. ⏳ REPETICIÓN ESPACIADA APLICADA A PROGRAMACIÓN (SRS & SM-2) (+6 more)
 
-### Community 69 - "seed-runner.ts"
-Cohesion: 0.09
-Nodes (29): ActivityType, Column, Entity, Difficulty, AVANZADO, BASICO, INTERMEDIO, AppDataSource (+21 more)
+### Community 69 - "LearningUnit"
+Cohesion: 0.14
+Nodes (13): InjectRepository, LearningUnit, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany (+5 more)
 
 ### Community 70 - "SubmitAnswersDto"
-Cohesion: 0.11
-Nodes (21): IsArray, Put, AnswerItemDto, SubmitAnswersDto, ApiProperty, IsInt, IsNotEmpty, IsObject (+13 more)
+Cohesion: 0.13
+Nodes (20): IsArray, Put, AnswerItemDto, SubmitAnswersDto, ApiProperty, IsInt, IsNotEmpty, IsObject (+12 more)
 
 ### Community 71 - "verify-clean.js"
 Cohesion: 0.19
@@ -657,9 +594,9 @@ Nodes (12): createEmptyDatabase(), dbEnv, { existsSync, rmSync, readFileSync }, 
 Cohesion: 0.17
 Nodes (9): NotificationsController, ApiBearerAuth, ApiOperation, ApiTags, Controller, Get, Param, Patch (+1 more)
 
-### Community 73 - "4. Checklist Maestro"
-Cohesion: 0.08
-Nodes (23): 1. Qué es este documento y para qué sirve, 2. La visión, en una página, 3. Modelo de colaboración multi-IA, 4.1 Backend Core, 4.2 Tipos de Actividad y Evaluación, 4.3 Multi-Docente y Matrícula, 4.4 Motor de Recomendación por Dominio, 4.5 Seguridad (+15 more)
+### Community 73 - "ChatDto"
+Cohesion: 0.50
+Nodes (3): ChatDto, IsNotEmpty, IsString
 
 ### Community 74 - "🧭 ¿Qué es MODESEC? — el modelo explicado, fase por fase"
 Cohesion: 0.14
@@ -682,20 +619,20 @@ Cohesion: 0.14
 Nodes (13): 👥 1. Estructura del Equipo y Roles, 2.1 Entregables Cumplidos, 2.2 Evidencia de Ingeniería de Prompts (ROCAS + MOCAVI / MODESEC), 🎯 2. Avances del Sprint / Semana Actual, ⚠️ 3. Cuellos de Botella y Apoyo Requerido, 📌 4. Compromisos para la Semana Siguiente (24 – 28 de agosto), 🎯 5. Acta del Cierre — viernes 21 de agosto, 8:00 p.m., 🚀 Bitácora de Monitoreo y Control N.º 1 — Proyecto: STIRE-Soft (+5 more)
 
 ### Community 79 - "SubmissionsService"
-Cohesion: 0.14
-Nodes (7): JudgeAnswerFailedEvent, JudgeAnswerGradedEvent, JudgeGradedListener, Injectable, OnEvent, SubmissionsService, Injectable
+Cohesion: 0.18
+Nodes (5): JudgeGradedListener, Injectable, OnEvent, SubmissionsService, Injectable
 
 ### Community 80 - "route-role-metadata.spec.ts"
 Cohesion: 0.18
 Nodes (12): ControllerClass, Exception, findControllerFiles(), GetException, JUSTIFIED_EXCEPTIONS, JUSTIFIED_GET_EXCEPTIONS, MUTANT_METHODS, scanGetRoutes() (+4 more)
 
 ### Community 81 - "ReviewSchedule"
-Cohesion: 0.10
-Nodes (17): NotificationType, GRADE, INFO, REVIEW_SCHEDULE, calculateNextReview(), NotificationsModule, Module, ReviewSchedule (+9 more)
+Cohesion: 0.12
+Nodes (13): calculateNextReview(), NotificationsModule, Module, ReviewSchedule, Column, Entity, Index, JoinColumn (+5 more)
 
 ### Community 82 - "EnrollmentController"
-Cohesion: 0.16
-Nodes (11): EnrollmentController, ApiOperation, ApiTags, Body, Controller, Delete, Get, Param (+3 more)
+Cohesion: 0.20
+Nodes (9): EnrollmentController, ApiOperation, ApiTags, Body, Controller, Get, Param, Post (+1 more)
 
 ### Community 83 - "Test generation (plan → generate → heal)"
 Cohesion: 0.12
@@ -713,21 +650,21 @@ Nodes (13): 1. Resumen en tres frases, 2. El hallazgo, 3. Cómo se detectó, 4. 
 Cohesion: 0.15
 Nodes (12): 👥 1. Estructura del Equipo y Roles, 2.1 Entregables y avances registrados, 🎯 2. Avances del Sprint / Semana Cerrada, ⚠️ 3. Hallazgos que cambian el siguiente sprint, 📌 4. Compromisos de continuidad, 🎯 5. Acta del Cierre, 🚀 Bitácora de Monitoreo y Control N.º 2 — Proyecto: STIRE-Soft, 🔧 Jeider Gómez · Líder Técnico (+4 more)
 
-### Community 87 - "[activityId].vue"
-Cohesion: 0.15
-Nodes (10): isCodingActivity, isSuccessResult, leftTab, lineCount, masteryDelta, passedCount, resultMaxScore, route (+2 more)
+### Community 87 - "workspace.ts"
+Cohesion: 0.22
+Nodes (7): leftTab, lineCount, passedCount, workspaceStore, useWorkspaceStore, SubmissionResult, TestCase
 
 ### Community 88 - "get-route-exceptions.spec.ts"
+Cohesion: 0.09
+Nodes (18): Req, Request, AnalyticsController, ApiBearerAuth, ApiTags, Controller, Get, Param (+10 more)
+
+### Community 89 - "activity-questions.service.ts"
 Cohesion: 0.15
-Nodes (10): Req, AnalyticsController, ApiBearerAuth, ApiTags, Controller, Get, Param, UseGuards (+2 more)
+Nodes (12): ActivityQuestionsRepository, Injectable, ActivityQuestionsService, ADR-0007, Injectable, InjectRepository, ActivityQuestion, Column (+4 more)
 
-### Community 89 - "QuestionType"
-Cohesion: 0.10
-Nodes (20): ActivityQuestionsRepository, Injectable, ActivityQuestionsService, ADR-0007, Injectable, InjectRepository, StudentQuestionDto, ActivityQuestion (+12 more)
-
-### Community 90 - "RegisterDto"
-Cohesion: 0.13
-Nodes (14): RegisterDto, IsEmail, IsNotEmpty, IsString, Matches, MinLength, PASSWORD_COMPLEXITY_MESSAGE, PASSWORD_COMPLEXITY_REGEX (+6 more)
+### Community 90 - "CreateUserDto"
+Cohesion: 0.25
+Nodes (8): PASSWORD_COMPLEXITY_MESSAGE, PASSWORD_COMPLEXITY_REGEX, CreateUserDto, IsEmail, IsNotEmpty, IsString, Matches, MinLength
 
 ### Community 91 - "Tracing"
 Cohesion: 0.12
@@ -754,12 +691,12 @@ Cohesion: 0.17
 Nodes (12): 📖 Base de Conocimiento — Los 5 Documentos Fundamentales, 🤝 Contribución, 📁 Estructura del Repositorio, 👥 Gestión del Proyecto, 🚀 Inicio Rápido (de cero, verificado), 📄 Licencia, 🎯 Resumen Ejecutivo, 🗺️ Roadmap (+4 more)
 
 ### Community 97 - "Browser Session Management"
-Cohesion: 0.10
-Nodes (20): 1. Name Browser Sessions Semantically, 2. Always Clean Up, 3. Delete Stale Browser Data, A/B Testing Sessions, Attach by channel name, Attach via browser extension, Attach via CDP endpoint, Attaching to a Running Browser (+12 more)
+Cohesion: 0.13
+Nodes (15): 1. Name Browser Sessions Semantically, 2. Always Clean Up, 3. Delete Stale Browser Data, A/B Testing Sessions, Best Practices, Browser Session Commands, Browser Session Configuration, Browser Session Isolation Properties (+7 more)
 
-### Community 98 - "SubmissionGradedEvent"
-Cohesion: 0.28
-Nodes (4): SubmissionGradedEvent, SubmissionGradedListener, Injectable, OnEvent
+### Community 98 - "learning-progress.module.ts"
+Cohesion: 0.09
+Nodes (18): SubmissionGradedEvent, LearningProgress, Column, Entity, Index, JoinColumn, ManyToOne, LearningProgressRepository (+10 more)
 
 ### Community 99 - "backend-audit.md"
 Cohesion: 0.18
@@ -777,9 +714,9 @@ Nodes (11): 1. Resumen en tres frases, 2. Semáforo completo del modelo, 3. Lo q
 Cohesion: 0.14
 Nodes (14): Browser Automation with playwright-cli, Browser Sessions, Example: Debugging with DevTools, Example: Form submission, Example: Interactive session, Example: Multi-tab workflow, Installation, Open parameters (+6 more)
 
-### Community 103 - "Public"
-Cohesion: 0.25
-Nodes (6): AppController, Controller, Get, AppService, Injectable, Public()
+### Community 103 - "public.decorator.ts"
+Cohesion: 0.22
+Nodes (7): AppController, Controller, Get, AppService, Injectable, IS_PUBLIC_KEY, Public()
 
 ### Community 104 - "stire-seeder-destructivo.ts"
 Cohesion: 0.31
@@ -797,9 +734,9 @@ Nodes (9): 📥 Backlog, Carril académico — Sprint 3 (29 ago – 4 sep) y sig
 Cohesion: 0.15
 Nodes (13): Clipboard, Complex Workflows, Error Handling, File Downloads, Frames and Iframes, Geolocation, JavaScript Execution, Media Emulation (+5 more)
 
-### Community 108 - "Prompt entregado a Codex — 2026-09-11"
-Cohesion: 0.10
-Nodes (15): Prompt para Claude Code — Página web: recorrido del proyecto y semana 1, Instrucción para Claude Code — Documento de presentación del Reto 1, Prompt entregado a Claude Code — FASE CC-09, Qué pasó después de entregarlo (no forma parte del prompt, es el registro de ejecución), Prompt de trabajo — Documento de presentación de avances (Reto 1), Approval Boundaries, Constraints, Context (+7 more)
+### Community 108 - "prompts/README.md"
+Cohesion: 0.15
+Nodes (8): Prompt para Claude Code — Página web: recorrido del proyecto y semana 1, Instrucción para Claude Code — Documento de presentación del Reto 1, Prompt entregado a Claude Code — FASE CC-09, Qué pasó después de entregarlo (no forma parte del prompt, es el registro de ejecución), Prompt de trabajo — Documento de presentación de avances (Reto 1), Convención, docs/prompts/ — Registro de prompts entregados a Claude Code y Antigravity, Índice
 
 ### Community 109 - "Fichas complementarias — Eje 1: Pedagógico y Cognitivo"
 Cohesion: 0.20
@@ -833,9 +770,9 @@ Nodes (10): A. Propósito y Objetivo, B. Intención Pedagógica, C. Experiencia 
 Cohesion: 0.20
 Nodes (10): A. Propósito y Objetivo, B. Intención Pedagógica, C. Experiencia del Usuario, D. Jerarquía de Información, E. Estructura de la Pantalla, 🏠 `EST-V01` · Inicio (Dashboard & Orientación), F. Flujo de Interacción, G. Estados Relevantes (+2 more)
 
-### Community 117 - "useApi.ts"
-Cohesion: 0.10
-Nodes (22): authStore, roleLabel, studentStore, tutorStore, userInitials, ApiError, HttpMethod, canSubmit (+14 more)
+### Community 117 - "useAuthStore"
+Cohesion: 0.29
+Nodes (4): ApiError, HttpMethod, authStore, useAuthStore
 
 ### Community 118 - "exclude"
 Cohesion: 0.20
@@ -893,17 +830,17 @@ Nodes (7): § 3.1 · Diagrama de Contenidos, § 3.3.1 · Ficha de Descripción d
 Cohesion: 0.25
 Nodes (8): A. Propósito y Objetivo, B. Experiencia del Usuario, C. Jerarquía de Información, 🔑 `COMP-V00` · Iniciar Sesión (Autenticación y Registro), D. Estructura de la Pantalla, E. Flujo de Interacción, F. Estados Relevantes, G. Debe Quedar Resuelto en Figma
 
-### Community 132 - "Roles"
-Cohesion: 0.21
-Nodes (14): Roles(), SectionController, ApiOperation, ApiResponse, ApiTags, Body, Controller, Delete (+6 more)
+### Community 132 - "Estructura de respaldo (para preguntas del jurado)"
+Cohesion: 0.25
+Nodes (7): Estructura de respaldo (para preguntas del jurado), Guion de 60 segundos, Pitch — Bitácora N.º 3 (31 ago – 4 sep 2026), Qué encontramos, Qué hicimos, Qué NO está (dicho sin maquillar), Qué se puede ver funcionando hoy
 
 ### Community 133 - "SidebarNav.vue"
 Cohesion: 0.25
 Nodes (4): authStore, openModules, route, studentStore
 
 ### Community 134 - "[id].vue"
-Cohesion: 0.11
-Nodes (15): ActivitySummary, api, authStore, chooseManually, ContentBlock, isLoading, isLoadingActivities, loadError (+7 more)
+Cohesion: 0.25
+Nodes (5): currentStep, route, studentStore, traceSteps, unitData
 
 ### Community 135 - "verify-clean-server-check.js"
 Cohesion: 0.29
@@ -913,9 +850,9 @@ Nodes (5): main(), path, ROOT, { spawn }, waitForServer()
 Cohesion: 0.29
 Nodes (3): PERMISSIONS_KEY, PermissionsGuard, Injectable
 
-### Community 137 - "crear.vue"
-Cohesion: 0.12
-Nodes (16): activityTypeId, api, fetchInitialData(), form, isSubmitting, LearningUnitItem, onClassChange(), resetForm() (+8 more)
+### Community 137 - "CreateActivityDto"
+Cohesion: 0.18
+Nodes (11): CreateActivityDto, ApiProperty, ApiPropertyOptional, IsBoolean, IsEnum, IsInt, IsNotEmpty, IsNumber (+3 more)
 
 ### Community 138 - "§ 3.3.2 · Guía de Metáforas — STIRE"
 Cohesion: 0.29
@@ -949,9 +886,9 @@ Nodes (6): author, description, license, name, private, version
 Cohesion: 0.33
 Nodes (5): GamificationModule, Module, GamificationService, TODO: Reactivar en Sprint de Gamificación (Fase 3 del roadmap)., Injectable
 
-### Community 146 - "mensajes.vue"
-Cohesion: 0.11
-Nodes (16): activeTab, api, composeError, composeForm, errorMessage, fetchMessages(), inboxMessages, isComposeOpen (+8 more)
+### Community 146 - "judge-queue.interface.ts"
+Cohesion: 0.22
+Nodes (6): BullJudgeQueueAdapter, ADR-0008, Injectable, JUDGE_QUEUE, JudgeQueue, ADR-0008
 
 ### Community 147 - "stire-simulator.ts"
 Cohesion: 0.62
@@ -997,9 +934,9 @@ Nodes (10): Commands, Core, DevTools, Keyboard, Mouse, Navigation, Network, Save
 Cohesion: 0.53
 Nodes (4): connectDb(), get(), post(), runValidation()
 
-### Community 159 - "CreateAffiliationDto"
-Cohesion: 0.33
-Nodes (5): CreateAffiliationDto, IsEnum, IsInt, IsOptional, Post
+### Community 159 - "UserService"
+Cohesion: 0.15
+Nodes (6): JwtPayload, JwtStrategy, Injectable, InjectRepository, Injectable, UserService
 
 ### Community 160 - "stire-qa-tester.ts"
 Cohesion: 0.53
@@ -1034,12 +971,12 @@ Cohesion: 0.40
 Nodes (5): 1. Filosofía de la Experiencia y Marco Pedagógico, 2. Especificación UX y Pedagógica por Pantalla, 3. Matriz Resumen de Interacciones y Componentes (Rol Estudiante), 🎓 Insumo Maestro UX + Pedagógico: Rol Estudiante (STIRE-Soft), Principios Directores de la Experiencia:
 
 ### Community 168 - "useApi"
-Cohesion: 0.20
-Nodes (11): useApi(), apiFetch(), del(), get(), patch(), post(), put(), api (+3 more)
+Cohesion: 0.70
+Nodes (5): useApi(), apiFetch(), get(), post(), put()
 
 ### Community 169 - "admin/index.vue"
-Cohesion: 0.20
-Nodes (8): api, BackendUser, errorMessage, filteredUsers, isLoading, roleFilter, searchQuery, users
+Cohesion: 0.40
+Nodes (4): filteredUsers, roleFilter, searchQuery, users
 
 ### Community 170 - "Nuxt Minimal Starter"
 Cohesion: 0.40
@@ -1097,9 +1034,9 @@ Nodes (3): 1. Matriz de Patrones UX Analizados, 2. Síntesis de la Identidad Vis
 Cohesion: 0.50
 Nodes (4): 1. Esquema de Navegación Global y por Roles, 2. Tabla de Transiciones Multi-Rol, § 3.3.3 · Mapa de Navegación Multi-Rol — STIRE, 3. Reglas de Calidad y Ergonomía Cognitiva
 
-### Community 186 - "app.module.ts"
-Cohesion: 0.15
-Nodes (16): ActivitiesModule, Module, ActivityQuestionsModule, Module, ActivityTypesModule, Module, ContentModule, Module (+8 more)
+### Community 186 - "HeaderNav.vue"
+Cohesion: 0.22
+Nodes (6): authStore, config, roleLabel, studentStore, tutorStore, userInitials
 
 ### Community 203 - "Advanced Mocking with run-code"
 Cohesion: 0.25
@@ -1113,281 +1050,41 @@ Nodes (6): ReviewSchedulesController, ApiOperation, ApiTags, Controller, Get, Us
 Cohesion: 0.33
 Nodes (6): 3.1 Find failing tests, 3.2 Debug one failure, 3.3 Apply the fix, 3.4 Reconcile with the spec, 3.5 Iteration and giving up, 3. Heal
 
-### Community 206 - "📊 INFORME DE AUDITORÍA Y EVALUACIÓN QA — STIRE-SOFT"
-Cohesion: 0.12
-Nodes (16): 📋 1. FICHA TÉCNICA Y RESUMEN EJECUTIVO, 📈 2. PANEL DE MÉTRICAS DE CALIDAD, 📑 3. MATRIZ DE CUMPLIMIENTO POR MÓDULO, 4.1 Flujo de Autenticación (Login / Registro), 4.2 Flujo de Navegación y Estructura Académica (RBAC), 4.3 Flujo de Ejercicios y Sandbox de Código, 4.4 Flujo de Tutoría Inteligente y Repetición Espaciada (SM-2), 🔍 4. AUDITORÍA DETALLADA POR FLUJO PRINCIPAL (+8 more)
+### Community 206 - "Attaching to a Running Browser"
+Cohesion: 0.40
+Nodes (5): Attach by channel name, Attach via browser extension, Attach via CDP endpoint, Attaching to a Running Browser, Detach
 
 ### Community 213 - "👥 MODESEC — Especificación Funcional por Rol de Usuario"
 Cohesion: 0.50
 Nodes (4): 1. Propósito de este Directorio, 2. Documentación Compartida (Fuentes Globales de Verdad), 3. Matriz General de Pantallas por Actor (Nombres Visibles Oficiales), 👥 MODESEC — Especificación Funcional por Rol de Usuario
 
-### Community 217 - "rendimiento.vue"
-Cohesion: 0.12
-Nodes (16): api, atRiskCount, ClassMetricsResponse, errorMessage, fetchClassesAndMetrics(), filteredStudents, isLoading, loadClassMetrics() (+8 more)
-
-### Community 218 - "docente/index.vue"
-Cohesion: 0.14
-Nodes (14): api, classes, copiedCode, errorMessage, fetchClasses(), generateRandomCode(), isLoading, isModalOpen (+6 more)
-
-### Community 232 - "📊 REPORTE DE AUDITORÍA DE CALIDAD Y PRUEBAS QA — STIRE-SOFT"
-Cohesion: 0.12
-Nodes (15): 📈 1. Panel Principal de Métricas (Dashboard QA), 📑 2. Matriz General de Evaluación por Módulo y Capa, 🔍 3. Auditoría Detallada de los 4 Flujos Principales, 🐛 4. Registro Consolidado de Vulnerabilidades y Errores (Findings Report), 🏁 5. Conclusión, Dictamen y Recomendaciones, 🔑 Flujo 1: Autenticación y Registro (`Login`), 🏫 Flujo 2: Jerarquía Académica y Roles (`Navegación & RBAC`), 🧪 Flujo 3: Evaluación y Sandbox (`Ejercicio y Envío`) (+7 more)
-
-### Community 246 - "contenidos.vue"
-Cohesion: 0.13
-Nodes (14): actionFeedback, api, errorMessage, fetchClasses(), isLoading, LearningUnitItem, loadSections(), SectionItem (+6 more)
-
-### Community 250 - "📚 Matriz de Artículos Ampliada — Fundamento Bibliográfico Extendido"
-Cohesion: 0.13
-Nodes (15): Apéndice: Registro de Verificación, Artículos indexados, Candidatos descartados sin sustituto (no se rellena), Criterio de verificación (corregido en FASE CC-03), 📌 Decisiones de STIRE sin respaldo en literatura, 🧠 EJE 1: Pedagógico y Cognitivo (8 obras verificadas), 🏗️ EJE 2: Arquitectura de Software (9 obras verificadas), 🎨 EJE 3: GUI, UX y Usabilidad Educativa (12 obras verificadas: 9 artículos + 3 libros académicos) (+7 more)
-
-### Community 251 - "clases.vue"
-Cohesion: 0.14
-Nodes (11): api, enrolledClasses, EnrollmentItem, feedbackIsError, feedbackMessage, fetchEnrollments(), handleJoinClass(), isJoining (+3 more)
-
-### Community 253 - "topic.service.ts"
+### Community 258 - "Content"
 Cohesion: 0.15
-Nodes (12): CreateTopicDto, ApiProperty, ApiPropertyOptional, IsNotEmpty, IsNumber, IsOptional, IsString, IsBoolean (+4 more)
-
-### Community 256 - "3. Hallazgos Nuevos, Causa Raíz y Corrección"
-Cohesion: 0.14
-Nodes (13): 1. Resumen Ejecutivo, 2. Verificación Ejecutada (contra código real, no contra informes), 3.1. Bug de enrutamiento FILL_CODE → sandbox de CODING, 3.2. Calificación asíncrona de CODING nunca llegaba al estudiante, 3.3. Regresión pedagógica en el Tutor IA (no reportada por nadie hasta esta sesión), 3.4. Selector de rol en el header — hallazgo de seguridad señalado por el dueño del proyecto, 3.5. Latencia del Tutor IA (~95s), reportada por el dueño del proyecto, 3.6. Regla de Oro: 2 tests preexistentes en rojo, no causados por esta sesión (+5 more)
-
-### Community 257 - "STIRE — Informe de Sesión Antigravity"
-Cohesion: 0.15
-Nodes (12): 1. Resumen Ejecutivo, 2. Plan de Implementación Ejecutado, 3.1. Corrección de Seguridad — Self-XSS en Tutor IA (P2-R4), 3.2. Composable `useApi.ts` — Métodos Faltantes, 3. Auditoría Técnica Realizada, 4. Estado de Conectividad y Endpoints Verificados, 5.1. Verificación Automatizada, 5.2. Verificación por Inspección de Código (+4 more)
-
-### Community 258 - "ContentRenderingService"
-Cohesion: 0.10
-Nodes (14): InjectRepository, InjectRepository, ALLOWED_IFRAME_HOSTS, ContentRenderingService, PLAIN_CONFIG, RICH_CONFIG, SanitizationProfile, PLAIN (+6 more)
+Nodes (11): ContentModule, Module, ContentRepository, Injectable, InjectRepository, Content, Column, Entity (+3 more)
 
 ### Community 259 - "judge-engine.module.ts"
-Cohesion: 0.11
-Nodes (17): ADR-0008, HardenedProcessSandboxAdapter, ADR-0006, ADR-0006, Injectable, ADR-0008, ExecutionResultsRepository, Injectable (+9 more)
-
-### Community 260 - "STIRE — Informe de Sesión Claude Code"
-Cohesion: 0.15
-Nodes (12): 1. Resumen Ejecutivo, 2. Auditoría de las 3 Fases de Codex (3 subagentes en paralelo), 3.1 Fase C — currículo real, no relleno, 3.2 Fase B — conectar la UI y cubrir la regresión, 3. Correcciones de los 3 Hallazgos, 4.1 `GET /activities?learningUnitId=` devolvía 400 pese a estar documentado, 4.2 `/estudiante/unidad/[id].vue`: crash 500 y contenido fabricado, 4. Hallazgos Nuevos, Encontrados Verificando lo Anterior (+4 more)
-
-### Community 274 - "Producto 1 — Catálogo de pantallas, argumento de los tokens y estado del recorrido"
-Cohesion: 0.15
-Nodes (12): 1. Corrección de alcance aplicada antes de fichar (2026-09-14), 2. Ficha por pantalla (vistas base; estudiante y docente), 3. Argumento sobre los tokens visuales (≈230 palabras), 4. Estado del recorrido de navegación (actualizado 2026-09-14 — ya no es un pendiente), 5. Capturas — producidas (2026-09-14), Pendientes de este entregable, Pies de figura APA (7.ª ed.) para las cuatro figuras seleccionadas, Producto 1 — Catálogo de pantallas, argumento de los tokens y estado del recorrido (+4 more)
-
-### Community 275 - "LearningProgressController"
-Cohesion: 0.28
-Nodes (8): Request, LearningProgressController, ApiOperation, ApiTags, Controller, Get, Param, UseGuards
-
-### Community 276 - "FillCodeExercise.vue"
-Cohesion: 0.17
-Nodes (11): allBlanksFilled, blankAnswers, BlankConfig, blanks, codeTemplate, expectedBlankIds, filledCount, parsedLines (+3 more)
-
-### Community 277 - "[classId].vue"
-Cohesion: 0.18
-Nodes (10): active, api, change(), classId, ClassInfo, EnrollmentItem, isSavingApproval, load() (+2 more)
-
-### Community 278 - "judge.worker.spec.ts"
-Cohesion: 0.18
-Nodes (8): TestExecutionResult, TestExecutionResultsRepository, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, createTestDataSource()
-
-### Community 279 - "Plan de Implementación — Pantallas de Tipos de Actividad"
-Cohesion: 0.18
-Nodes (11): 10. Entregables y criterio de cierre, 1. Por qué existe este documento, 3. Estado real por tipo de pregunta — la tabla que ordena el trabajo, 4.1 `mcq` (Quiz), 4.2 `fill_code` (Completar Código), 4. Nivel 1 — `mcq` y `fill_code` (contenido real, prioridad inmediata), 6. Explícitamente excluido de esta fase: `ai_evaluated`, 7. Mecanismo de enrutamiento a implementar (+3 more)
-
-### Community 280 - "Bloque de contexto reutilizable — Proyecto de investigación STIRE"
-Cohesion: 0.18
-Nodes (11): 1. Identificación, 2. Restricción de alcance, 3. Hallazgos del diagnóstico, 4. Análisis de referentes, 6. Reglas de redacción, 7. Estado estructural del informe, 8. Ubicación de los archivos fuente, Bloque de contexto reutilizable — Proyecto de investigación STIRE (+3 more)
-
-### Community 281 - "Informe Codex — pendientes STIRE-Soft"
-Cohesion: 0.20
-Nodes (9): Cambios principales, Evidencia automatizada, Fase A, Fase B, Fase C, Informe Codex — pendientes STIRE-Soft, Publicación, Resultado (+1 more)
-
-### Community 282 - "STIRE — Informe de Sesión Claude Code"
-Cohesion: 0.20
-Nodes (9): 1. Resumen Ejecutivo, 2.1 Síntoma, 2.2 Investigación y causa raíz, 2.3 Corrección, 2. Hallazgo Principal: `passingScore` sin normalizar, 3. Plan de Implementación para Codex, 4. Commits de la Sesión (todos locales — sin push, sin autorización pedida en este punto), 5. Próximos Pasos (+1 more)
-
-### Community 283 - "STIRE — Informe de sesión Codex"
-Cohesion: 0.20
-Nodes (10): 1. Resultado, 2. Evidencia automatizada, 3. Cambios principales por fase, 4. Verificación en navegador real, 5. Verificación manual pendiente, 6. Publicación, Fase D, Fase E (+2 more)
-
-### Community 284 - "PLAN_ENTREGABLES_INFORME.md"
-Cohesion: 0.20
-Nodes (6): Gráfico A — El ciclo de las tres etapas, Gráfico B — Progresión de intervalos de repaso, Pendientes de este entregable, Producto 2 — Texto para el informe (§5.4.2), Producto 3 — Especificación de los dos gráficos, S05b — Especificación del modelo pedagógico preliminar
-
-### Community 285 - "Plan de producción de los entregables del §5.4 del informe"
-Cohesion: 0.20
-Nodes (10): 1. Qué cambió en el informe (13 sep. vs. 24 ago. 2026), 2. Cinco arreglos de estructura, previos a añadir contenido nuevo, 3. La cadena de trazabilidad (orden obligatorio de producción), 5. Sobre el Figma — inventario y pendientes, 6.1 Página de documentación en Figma (construida 2026-09-14, no es un entregable numerado), 6.2 Gráficos de los entregables 01-03, producidos en Figma (2026-09-14), 6. Orden de ejecución completo, 7. Documentos legibles (Google Docs) y cómo insertarlos en el informe (+2 more)
-
-### Community 286 - "DragDropExercise.vue"
-Cohesion: 0.20
-Nodes (9): allAssigned, assignedCount, DragItem, DropTarget, items, mappings, Props, targets (+1 more)
-
-### Community 287 - "register.vue"
-Cohesion: 0.20
-Nodes (8): authStore, classCode, confirmPassword, email, errorMessage, fullName, isLoading, password
-
-### Community 288 - "ActivityLogController"
-Cohesion: 0.22
-Nodes (7): ActivityLogController, ApiOperation, ApiTags, Controller, Get, Param, UseGuards
-
-### Community 289 - "Cookies"
-Cohesion: 0.22
-Nodes (9): Advanced: Multiple Cookies or Custom Options, Clear All Cookies, Cookies, Delete a Cookie, Filter Cookies by Domain, Filter Cookies by Path, Get Specific Cookie, List All Cookies (+1 more)
-
-### Community 290 - "STIRE — Formato de Informe de Sesión Antigravity"
-Cohesion: 0.22
-Nodes (9): 1. Resumen Ejecutivo, 2. Plan de Implementación Ejecutado, 3.1. Auditoría UX del Sandbox de Programación (`EST-V03` — Fase E), 3.2. Auditoría del Tutor IA y Tipos de Actividad (Fase F), 3. Auditorías Técnicas y de Experiencia Realizadas, 4. Estado de Conectividad y Endpoints Verificados, 5. Pruebas de Calidad (QA) y Verificación de Cierre (§12.4), 6. Próximos Pasos & Recomendaciones (+1 more)
-
-### Community 291 - "Producto 1 — Especificación en ocho apartados"
-Cohesion: 0.22
-Nodes (9): 1. Propósito y alcance, 2. Los cuatro componentes, 3. Tabla de entradas, 4. Tabla de salidas, 5. Flujo principal, 6. Modelo de información conceptual, 7. Correspondencia característica → componente, 8. Supuestos, restricciones y fuera de alcance (+1 more)
-
-### Community 292 - "Estructura de respaldo (para preguntas del jurado)"
-Cohesion: 0.22
-Nodes (8): Estructura de respaldo (para preguntas del jurado), Guion de 60 segundos Español, Guion de 60 segundos Inglés, Pitch — Bitácora N.º 3 (31 ago – 11 sep 2026), Qué encontramos, Qué hicimos, Qué NO está (dicho sin maquillar), Qué se puede ver funcionando hoy
-
-### Community 293 - "MatchingExercise.vue"
-Cohesion: 0.22
-Nodes (8): allPaired, ColumnItem, leftColumn, pairedCount, pairs, Props, rightColumn, workspaceStore
-
-### Community 294 - "OrderingExercise.vue"
-Cohesion: 0.28
-Nodes (8): BlockItem, blocks, moveDown(), moveUp(), orderedBlocks, Props, syncPendingAnswer(), workspaceStore
-
-### Community 295 - "Informe de Auditoría — STIRE Consolidación v2"
-Cohesion: 0.25
-Nodes (7): Bugs Críticos, Contexto, Estado, Hallazgos, Informe de Auditoría — STIRE Consolidación v2, Plan Propuesto, Problemas de Diseño
-
-### Community 296 - "STIRE — Formato de Informe de Sesión Antigravity"
-Cohesion: 0.25
-Nodes (8): 1. Resumen Ejecutivo, 2. Plan de Implementación Ejecutado, 3.1. Estado de `workspace.ts` y Layout `workspace.vue`, 3.2. Regresión Cero en Rama `CODING`, 3. Auditoría Técnica Realizada, 4. Actividades y Tipos Verificados contra el Backend Real, 5. Pruebas de Calidad (QA) y Verificación, STIRE — Formato de Informe de Sesión Antigravity
-
-### Community 297 - "codex/README.md"
-Cohesion: 0.25
-Nodes (4): docs/codex/ — Plan de implementación e informes de sesión, El plan vigente, Historial de sesiones ejecutadas, Regla de edición
-
-### Community 298 - "STIRE — Formato de Informe de Sesión Codex"
-Cohesion: 0.25
-Nodes (8): 1. Resultado, 2. Evidencia automatizada, 3. Cambios principales por fase, 4. Verificación en navegador real, 5. Verificación manual pendiente (si aplica), 6. Publicación, Fase [letra], STIRE — Formato de Informe de Sesión Codex
-
-### Community 299 - "Plan de implementación para Codex — pendientes reales de STIRE-Soft"
-Cohesion: 0.25
-Nodes (8): 0. Cómo usar este documento, 1. Verificación final (todas las fases, si se hacen todas), C.1 Qué existe hoy (evidencia), C.2 Qué construir, C.3 Explícitamente fuera de esta fase, C.4 Criterio de cierre, Fase C — Contenido curricular real para las clases de Castro y Ali, Plan de implementación para Codex — pendientes reales de STIRE-Soft
-
-### Community 300 - "S05a — Matriz de trazabilidad de las características del tutor inteligente"
-Cohesion: 0.25
-Nodes (8): Pendientes de este entregable, Producto 1 — Matriz de trazabilidad, Producto 2 — Texto para el informe, Producto 3 — Especificación del gráfico, Párrafo de cierre (posterior a la tabla), Párrafo de presentación (previo a la tabla), Respaldo bibliográfico añadido en esta sesión (2026-09-14), S05a — Matriz de trazabilidad de las características del tutor inteligente
-
-### Community 301 - "Producto 1 — Especificación en siete apartados"
-Cohesion: 0.25
-Nodes (8): 1. Fundamento teórico, 2. Objetivos de aprendizaje del tutor, 3. Las tres etapas, con criterio de salida, 4. Especificación de la repetición espaciada, 5. Escalamiento de la ayuda, 6. Indicadores de seguimiento, 7. Supuestos y limitaciones, Producto 1 — Especificación en siete apartados
-
-### Community 302 - "S06b — Especificación de la arquitectura funcional preliminar"
-Cohesion: 0.25
-Nodes (7): Cómo esto actualiza el entregable 01, Gráfico A — Diagrama de componentes y flujo, Gráfico B — Diagrama de secuencia simplificado (opcional), Pendientes de este entregable, Producto 2 — Texto para el informe (§5.4.3), Producto 3 — Especificación de los dos gráficos, S06b — Especificación de la arquitectura funcional preliminar
-
-### Community 303 - "[studentId].vue"
-Cohesion: 0.25
-Nodes (6): api, dashboard, errorMessage, isLoading, route, StudentDashboardData
-
-### Community 304 - "ChangePasswordDto"
-Cohesion: 0.29
-Nodes (6): ChangePasswordDto, IsNotEmpty, IsString, Matches, MinLength, Throttle
-
-### Community 305 - "CreateClassDto"
-Cohesion: 0.33
-Nodes (5): CreateClassDto, IsBoolean, IsNotEmpty, IsOptional, IsString
-
-### Community 307 - "2. Cómo funciona el sistema de tipos de pregunta hoy (arquitectura real, verificada)"
-Cohesion: 0.33
-Nodes (6): 2.1 Modelo de datos, 2.2 Contrato de API — ya existe, no hay que tocarlo, 2.3 Seguridad ya resuelta: nunca se sanea "quitando el campo", se sanea por tipo, 2.4 Motor de calificación — Strategy Pattern, ya completo para 5 de 6 tipos, 2.5 El punto de extensión ya existe en el frontend — no es un layout nuevo desde cero, 2. Cómo funciona el sistema de tipos de pregunta hoy (arquitectura real, verificada)
-
-### Community 308 - "McqExercise.vue"
-Cohesion: 0.33
-Nodes (5): McqOption, options, Props, selectedId, workspaceStore
-
-### Community 309 - "LearningProgress"
-Cohesion: 0.33
-Nodes (6): LearningProgress, Column, Entity, Index, JoinColumn, ManyToOne
-
-### Community 310 - "docs/antigravity/ — Plan de implementación e informes de sesión"
-Cohesion: 0.40
-Nodes (5): docs/antigravity/ — Plan de implementación e informes de sesión, El plan vigente, Historial de sesiones ejecutadas, Planes independientes, Prompts usados para arrancar estas sesiones
-
-### Community 311 - "Fase A — Motor de selección de actividad por dominio"
-Cohesion: 0.40
-Nodes (5): A.1 Qué existe hoy (evidencia), A.2 Qué construir, A.3 Explícitamente fuera de esta fase, A.4 Criterio de cierre, Fase A — Motor de selección de actividad por dominio
-
-### Community 312 - "Fase B — Moderación de matrícula por el docente"
-Cohesion: 0.40
-Nodes (5): B.1 Qué existe hoy (evidencia), B.2 Qué construir, B.3 Explícitamente fuera de esta fase, B.4 Criterio de cierre, Fase B — Moderación de matrícula por el docente
-
-### Community 313 - "Fase D — Restricción real contra intentos activos duplicados"
-Cohesion: 0.40
-Nodes (5): D.1 Qué existe hoy (evidencia, verificada 2026-09-14), D.2 Qué construir, D.3 Explícitamente fuera de esta fase, D.4 Criterio de cierre, Fase D — Restricción real contra intentos activos duplicados
-
-### Community 314 - "Fase E — Verificar matrícula activa en `POST /submissions/start`"
-Cohesion: 0.40
-Nodes (5): E.1 Qué existe hoy (evidencia, verificada 2026-09-14), E.2 Qué construir, E.3 Explícitamente fuera de esta fase, E.4 Criterio de cierre, Fase E — Verificar matrícula activa en `POST /submissions/start`
-
-### Community 315 - "Fase F — Endurecer la emisión de `submission.graded` (mitigación ligera, no outbox completo)"
-Cohesion: 0.40
-Nodes (5): F.1 Qué existe hoy (evidencia, verificada 2026-09-14), F.2 Qué construir (mitigación acotada, no un patrón Outbox completo), F.3 Explícitamente fuera de esta fase, F.4 Criterio de cierre, Fase F — Endurecer la emisión de `submission.graded` (mitigación ligera, no outbox completo)
-
-### Community 316 - "5. La propuesta, tal como está definida"
-Cohesion: 0.40
-Nodes (5): 5. La propuesta, tal como está definida, Arquitectura funcional (§5.4.3), Características (§5.4.1), Modelo pedagógico (§5.4.2), Propuesta de interfaz (§5.4.4, apartado nuevo)
-
-### Community 317 - "4. Los cuatro entregables"
-Cohesion: 0.40
-Nodes (5): 01 — Matriz de trazabilidad de características, 02 — Especificación del modelo pedagógico, 03 — Especificación de la arquitectura funcional, 04 — Catálogo de la propuesta de interfaz, 4. Los cuatro entregables
-
-### Community 318 - "§ 3.3.3 · Mapa de Navegación Multi-Rol — STIRE"
-Cohesion: 0.40
-Nodes (5): 1. Esquema de Navegación Global y por Roles, 2. Tabla de Transiciones Multi-Rol, § 3.3.3 · Mapa de Navegación Multi-Rol — STIRE, 3. Reglas de Calidad y Ergonomía Cognitiva, Fuentes
-
-### Community 319 - "STIRE — Índice de Documentación Técnica"
-Cohesion: 0.40
-Nodes (5): 🧭 Guía de Lectura para una IA, 📚 Mapa de Documentos, 🗂️ Otros archivos en esta carpeta, 🗺️ Plan Maestro, STIRE — Índice de Documentación Técnica
-
-### Community 320 - "UpdateProfileDto"
-Cohesion: 0.40
-Nodes (5): MaxLength, IsNotEmpty, IsOptional, IsString, UpdateProfileDto
-
-### Community 321 - "RunCodeDto"
-Cohesion: 0.40
-Nodes (4): RunCodeDto, ApiProperty, IsNotEmpty, IsString
-
-### Community 322 - "Storage State"
-Cohesion: 0.50
-Nodes (4): Restore Storage State, Save Storage State, Storage State, Storage State File Format
-
-### Community 323 - "5. Nivel 2 — `drag_drop`, `ordering`, `matching` (backend listo, sin contenido sembrado todavía)"
-Cohesion: 0.50
-Nodes (4): 5.1 `drag_drop`, 5.2 `ordering`, 5.3 `matching`, 5. Nivel 2 — `drag_drop`, `ordering`, `matching` (backend listo, sin contenido sembrado todavía)
-
-### Community 328 - "AffiliationRoleType"
-Cohesion: 0.67
-Nodes (3): AffiliationRoleType, DOCENTE, ESTUDIANTE
+Cohesion: 0.13
+Nodes (13): HardenedProcessSandboxAdapter, ADR-0006, ADR-0006, Injectable, JudgeEngineModule, ADR-0008, Module, ExecutionResultsRepository (+5 more)
 
 ## Knowledge Gaps
-- **1695 isolated node(s):** `DragItem`, `DropTarget`, `Props`, `workspaceStore`, `items` (+1690 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2358 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **69 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **1220 isolated node(s):** `Conn`, `ApiError`, `HttpMethod`, `LearningUnit`, `Role` (+1215 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1847 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **67 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `User` connect `User` to `Section`, `Content`, `Class`, `Roles`, `Program`, `Message`, `JwtAuthGuard`, `user.entity.ts`, `user.service.ts`, `Topic`, `LearningProgressController`, `ActivityQuestionsController`, `LearningUnitService`, `ActivitiesController`, `auth.module.ts`, `NotificationsService`, `submissions.service.ts`, `CreateAffiliationDto`, `Activity`, `UserController`, `GetUser`, `auth.controller.ts`, `ChangePasswordDto`, `Enrollment`, `LearningProgress`, `tutor.module.ts`, `StireBaseEntity`, `seed-runner.ts`, `SubmitAnswersDto`, `NotificationsController`, `.getDueReviews`, `ReviewSchedule`, `EnrollmentController`, `QuestionType`, `RegisterDto`, `topic.service.ts`?**
-  _High betweenness centrality (0.045) - this node is a cross-community bridge._
-- **Why does `Roles()` connect `Roles` to `PaginationQueryDto`, `Section`, `Class`, `Program`, `JwtAuthGuard`, `user.service.ts`, `Topic`, `LearningProgressController`, `ActivityQuestionsController`, `LearningUnitService`, `ActivitiesController`, `ActivityLogController`, `UserController`, `GetUser`, `ExecutionResult`, `tutor.module.ts`, `SubmitAnswersDto`, `.getDueReviews`, `EnrollmentController`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **Why does `🎓 Insumo Maestro UX + Pedagógico: Rol Estudiante (STIRE-Soft)` connect `2. Especificación UX y Pedagógica por Pantalla` to `FASE_II_DISENO_MULTIMEDIAL.md`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `DragItem`, `DropTarget`, `Props` to the rest of the system?**
-  _1695 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `JudgeJobData` be split into smaller, more focused modules?**
-  _Cohesion score 0.12380952380952381 - nodes in this community are weakly interconnected._
+- **Why does `User` connect `User` to `Section`, `content.service.ts`, `ClassService`, `Message`, `Roles`, `user.entity.ts`, `content.controller.ts`, `UserRole`, `Topic`, `ActivityQuestionsController`, `LearningUnitController`, `ActivitiesController`, `authorization.module.ts`, `NotificationsService`, `UserService`, `submissions.module.ts`, `Activity`, `activities.service.ts`, `.changePassword`, `GetUser`, `auth.controller.ts`, `Class`, `ContentRenderingService`, `StireBaseEntity`, `LearningUnit`, `SubmitAnswersDto`, `NotificationsController`, `.getDueReviews`, `ReviewSchedule`, `EnrollmentController`, `get-route-exceptions.spec.ts`, `activity-questions.service.ts`, `learning-progress.module.ts`?**
+  _High betweenness centrality (0.075) - this node is a cross-community bridge._
+- **Why does `useTutorStore` connect `TutorChatDrawer.vue` to `HeaderNav.vue`, `ContentRenderingService`, `useAuthStore`?**
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+- **Why does `Roles()` connect `Roles` to `PaginationQueryDto`, `Section`, `.changePassword`, `ClassService`, `GetUser`, `Program`, `SubmitAnswersDto`, `.getDueReviews`, `content.controller.ts`, `UserRole`, `Topic`, `EnrollmentController`, `ActivityQuestionsController`, `LearningUnitController`, `ExecutionResult`, `ContentRenderingService`, `ActivitiesController`?**
+  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+- **What connects `Conn`, `ApiError`, `HttpMethod` to the rest of the system?**
+  _1220 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `judge-execution.service.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.08205128205128205 - nodes in this community are weakly interconnected._
+- **Should `learning-unit.entity.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.1437908496732026 - nodes in this community are weakly interconnected._
 - **Should `PaginationQueryDto` be split into smaller, more focused modules?**
-  _Cohesion score 0.05632360471070148 - nodes in this community are weakly interconnected._
-- **Should `Section` be split into smaller, more focused modules?**
-  _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06057692307692308 - nodes in this community are weakly interconnected._
