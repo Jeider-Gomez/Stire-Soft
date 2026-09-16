@@ -1,6 +1,6 @@
 ---
-estado:     vigente — Fase 16 en curso
-verificado: 2026-09-15
+estado:     vigente — Fase 17 en curso
+verificado: 2026-09-16
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    COMP-V00 · EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03
 ---
@@ -192,3 +192,94 @@ proyecto (`tailwind.config.ts`) — no un color nuevo inventado para el caso.
   con su propio test y con `npm run build`/`npm test` en verde.
 - **Informe de sesión obligatorio**, mismo criterio que las fases anteriores — evidencia en navegador
   real, no solo compilación.
+
+---
+
+## 17. Categorías reales de tipo de actividad — peso examen vs. práctica (2026-09-16)
+
+### 17.0 Contexto
+
+Pausa técnica del dueño del proyecto (15-16/09, documentada completa en
+`docs/00_VISION_FUNCIONAL.md` §9.5): el Tutor se estaba pareciendo a un chat genérico. Claude Code
+ya cerró la parte de backend pedagógico de esa pausa (penalización de Mastery por repetición trivial,
+`TutorRecommendationService`, saludo proactivo) — eso **no es tuyo, no lo toques**. Lo que queda
+abierto de esa misma conversación, y que sí es tuyo, es el punto 5 de la visión: *"control de pesos:
+las actividades evaluativas deben valer más que los ejercicios de práctica formativa"*.
+
+**El gap, con evidencia exacta:** en todo el sistema existe un solo `ActivityType`
+(`AUTO-EVAL`, `baseWeight: 1.0`, sembrado en `src/seeds/seed-runner.ts` líneas 222-232). El ejemplo
+de tres categorías con peso distinto que ya documenta `docs/03_MOTOR_Y_TUTOR.md` §3.2 (Quiz=1.0,
+Taller=1.5, Parcial=3.0) es un ejemplo aspiracional — **nunca se implementó como categorías reales**.
+Peor: el formulario de crear actividad (`frontend-nuxt/pages/docente/ejercicios/crear.vue:532,758`)
+ni siquiera tiene un `<select>` visible — asigna `activityTypeId` en silencio al primer tipo que
+devuelve `GET /activity-types`, sin que el docente sepa que existe ese concepto.
+
+### 17.1 Backend — 2 tipos nuevos, aditivo, sin tocar los 15 existentes
+
+El endpoint ya existe completo (`src/activity-types/activity-types.controller.ts`):
+`GET /activity-types` (cualquier rol autenticado), `POST /activity-types` (docente/admin). No hace
+falta escribir ningún endpoint nuevo — solo sembrar 2 tipos adicionales, mismo patrón `findOrCreate`
+que ya usa el seed para `AUTO-EVAL` (`src/seeds/seed-runner.ts:222-232`):
+
+```ts
+const tallerType = await findOrCreate(
+  actTypeRepo,
+  { code: 'TALLER' },
+  () => ({ name: 'Taller de Código', code: 'TALLER', autoGradable: true, baseWeight: 1.5 }),
+  'Tipo de Actividad: TALLER',
+);
+const parcialType = await findOrCreate(
+  actTypeRepo,
+  { code: 'PARCIAL' },
+  () => ({ name: 'Parcial / Evaluación', code: 'PARCIAL', autoGradable: true, baseWeight: 3.0 }),
+  'Tipo de Actividad: PARCIAL',
+);
+```
+
+**No reasignes el `activityTypeId` de ninguna de las ~15 actividades ya sembradas** — se quedan en
+`AUTO-EVAL` (equivalente a "Práctica", `baseWeight: 1.0`). Esto es aditivo puro: cero riesgo sobre el
+Mastery ya calculado de cualquier estudiante con datos reales. Si quieres renombrar internamente
+`AUTO-EVAL` como "Práctica" en su campo `name` (no en `code`, eso rompería el `findOrCreate` de
+sesiones futuras), puedes hacerlo — es cosmético, no reasigna nada.
+
+### 17.2 Frontend — el selector que hoy no existe
+
+**En `docente/ejercicios/crear.vue`** (formulario de creación): agrega un `<select>` visible
+enlazado a `activityTypeId` (ya existe la variable, `crear.vue:532`), poblado desde `typesList`
+(ya se obtiene, `crear.vue:756-758` — no agregues una llamada nueva). Junto a cada opción, muestra
+el peso para que el docente entienda la implicación real, no solo un nombre — por ejemplo:
+`"Taller de Código (peso 1.5×)"`, usando el `baseWeight` real de cada tipo devuelto por
+`GET /activity-types`, nunca un número inventado en el frontend.
+
+Agrega debajo del selector un texto de ayuda corto y honesto, en la línea de: *"Los talleres y
+parciales pesan más en el dominio del estudiante que la práctica libre — úsalo para reflejar
+evaluaciones reales, no para inflar el Mastery."* — cita el mecanismo real, no una promesa vaga.
+
+**En el modal de editar actividad** (`crear.vue`, construido en la Fase 16, `PATCH /activities/:id`):
+confirma primero contra el DTO real (`UpdateActivityDto` extiende `CreateActivityDto` con
+`PartialType`, así que `activityTypeId` ya es un campo válido para `PATCH`) y agrega el mismo
+selector ahí — un docente debe poder recategorizar una actividad ya creada, no solo elegir la
+categoría al crearla.
+
+### 17.3 Explícitamente fuera de esta fase
+
+- No toques `mastery.calculator.ts`, `tutor-recommendation.service.ts`, ni ningún archivo de
+  `src/tutor/` — la lógica que consume `activityType.baseWeight` ya existe y ya funciona
+  (`mastery.calculator.ts:14`), esta fase solo le da datos reales que consumir, no cambia cómo se
+  usan.
+- No reasignes el tipo de ninguna actividad ya sembrada (§17.1) — solo las que se creen o editen a
+  partir de ahora usan un tipo distinto de `AUTO-EVAL`.
+- No inventes una cuarta categoría ni pesos distintos a 1.0/1.5/3.0 — son los mismos que ya
+  documenta `03_MOTOR_Y_TUTOR.md` §3.2, no una decisión nueva tuya.
+
+### 17.4 Criterio de cierre
+
+- `GET /activity-types` devuelve 3 tipos reales (`AUTO-EVAL`, `TALLER`, `PARCIAL`) con sus
+  `baseWeight` correctos — verificado con `curl`/Swagger, no solo leyendo el seed.
+- Un docente puede elegir la categoría al crear una actividad nueva, y cambiarla al editar una
+  existente — verificado en navegador real, con el peso visible en el selector.
+- Las ~15 actividades sembradas previamente conservan su `activityTypeId` original — verificado
+  contra la base de datos real, no asumido.
+- `npx nuxi typecheck` exit code 0; si tocaste el seed, `npm run build` y `npm test` (backend) en
+  verde, pegados en el informe (mismo criterio que exige §16.0c para cualquier cambio de `src/`).
+- **Informe de sesión obligatorio**, mismo criterio que las fases anteriores.
