@@ -83,6 +83,16 @@
             <span class="text-[10px] text-base-texto-secundario mt-1 px-1">
               {{ msg.sender === 'student' ? 'Tú' : 'Tutor IA' }} • {{ msg.timestamp }}
             </span>
+
+            <!-- Sugerencia de ejercicio del banco, basada en tu seguimiento real -->
+            <button
+              v-if="msg.suggestedActivity"
+              @click="tutorStore.goToSuggestedActivity(msg.suggestedActivity)"
+              class="borde-afordancia mt-1.5 max-w-[85%] text-left px-3 py-2 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 hover:bg-acento-ambar/20 transition-colors">
+              <span class="block text-[10px] font-semibold text-acento-ambar-fuerte uppercase tracking-wide">🎯 Practica esto</span>
+              <span class="block text-xs font-medium text-base-texto-primario mt-0.5">{{ msg.suggestedActivity.activityTitle }}</span>
+              <span class="block text-[11px] text-base-texto-secundario mt-0.5">{{ msg.suggestedActivity.learningUnitTitle }}</span>
+            </button>
           </div>
 
           <!-- Indicador de pensamiento IA -->

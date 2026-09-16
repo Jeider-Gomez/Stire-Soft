@@ -5,6 +5,20 @@ import type { ChatCompletionMessageParam } from 'openai/resources/chat/completio
 import { TutorConversationsRepository } from './tutor-conversations.repository';
 import { TutorContextService } from './tutor-context.service';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
+import { TutorRecommendationService, SuggestedActivity } from './tutor-recommendation.service';
+
+const PRACTICE_INTENT_PATTERN =
+  /\b(quiero|puedo|deseo|dame|necesito|hazme|ponme)\b[^.!?]{0,40}\b(practicar|estudiar|ejercitar|un ejercicio|ejercicios|repasar)\b/i;
+
+// Varias frases para el saludo proactivo -- server-side, sin costo de LLM -- para que no suene
+// siempre exactamente igual (docs/00_VISION_FUNCIONAL.md, pausa técnica 2026-09-15).
+const GREETING_PREFIXES = ['Oye,', 'Mira,', 'Antes de seguir,', 'Una cosa,'];
+const SUGGESTION_CLOSERS = ['¿Le damos con', '¿Practicamos', '¿Te animas con', '¿Vamos con'];
+
+export interface TutorReply {
+  message: string;
+  suggestedActivity: SuggestedActivity | null;
+}
 
 @Injectable()
 export class TutorService {
@@ -20,6 +34,7 @@ export class TutorService {
     private readonly contextService: TutorContextService,
     private readonly configService: ConfigService,
     private readonly contentRenderingService: ContentRenderingService,
+    private readonly recommendationService: TutorRecommendationService,
   ) {
     const rawApiKey = this.configService.get<string>('OPENAI_API_KEY');
     this.apiKey = rawApiKey ? rawApiKey.trim() : '';
@@ -43,7 +58,9 @@ export class TutorService {
     }
   }
 
-  async sendMessage(studentId: number, message: string, context?: any): Promise<string> {
+  async sendMessage(studentId: number, message: string, context?: any): Promise<TutorReply> {
+    const practiceIntent = PRACTICE_INTENT_PATTERN.test(message);
+
     // ADR 07, perfil PLAIN: texto de estudiante, sin HTML.
     await this.convRepo.save({
       studentId,
@@ -125,7 +142,49 @@ export class TutorService {
       content: sanitizedAiResponse,
     });
 
-    return sanitizedAiResponse;
+    // Solo se adjunta una tarjeta de ejercicio cuando el estudiante lo pidió explícitamente --
+    // el "¿ya entendiste, practicamos?" se dejó como pregunta natural del propio LLM (ver
+    // tutor-context.service.ts regla 6), no como un marcador oculto que el backend interpreta:
+    // menos tokens por llamada y no satura cada respuesta con una tarjeta.
+    const suggestedActivity = practiceIntent ? await this.resolveExplicitSuggestion(studentId, context) : null;
+
+    return { message: sanitizedAiResponse, suggestedActivity };
+  }
+
+  private async resolveExplicitSuggestion(studentId: number, context: any): Promise<SuggestedActivity | null> {
+    const learningUnitId = context?.learningUnitId;
+    if (learningUnitId) {
+      const reasonMessage = `Aquí tienes el siguiente ejercicio de "${context.unitTitle ?? 'tu unidad actual'}".`;
+      return this.recommendationService.suggestForUnit(studentId, learningUnitId, 'contexto_actual', reasonMessage);
+    }
+    return this.recommendationService.suggestAmbient(studentId);
+  }
+
+  /**
+   * Mensaje de apertura cuando el estudiante abre el Tutor -- no espera a que él hable primero.
+   * Es plantilla (no generado por el LLM, para no gastar una llamada extra y ser 100% fiel a
+   * datos reales: fecha de repaso, % de mastery), pero con variedad de frases para no sonar
+   * siempre igual -- varía por día, no por request, así que dentro del mismo día es consistente.
+   */
+  async getProactiveGreeting(studentId: number): Promise<TutorReply> {
+    const suggestedActivity = await this.recommendationService.suggestAmbient(studentId);
+    const variant = new Date().getDate() % GREETING_PREFIXES.length;
+    const timeOfDayGreeting = this.timeOfDayGreeting();
+
+    const message = suggestedActivity
+      ? `${timeOfDayGreeting} ${GREETING_PREFIXES[variant]} ${suggestedActivity.reasonMessage} ${SUGGESTION_CLOSERS[variant]} "${suggestedActivity.activityTitle}"?`
+      : `${timeOfDayGreeting} Vas al día con tus repasos y tu dominio está en buen nivel en todas tus unidades. ¿En qué quieres que te ayude hoy?`;
+
+    await this.convRepo.save({ studentId, role: 'assistant', content: message });
+
+    return { message, suggestedActivity };
+  }
+
+  private timeOfDayGreeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return '¡Buenos días!';
+    if (hour < 19) return '¡Buenas tardes!';
+    return '¡Buenas noches!';
   }
 
   private async callGeminiApi(

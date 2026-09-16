@@ -254,16 +254,26 @@ describe('VALIDACIÓN INTEGRAL PRE-FRONTEND — STIRE', () => {
         get: jest.fn().mockReturnValue(''),
       };
       const renderingService = new ContentRenderingService();
+      const recommendationService = {
+        suggestForUnit: jest.fn().mockResolvedValue(null),
+        suggestAmbient: jest.fn().mockResolvedValue(null),
+      };
 
-      const tutor = new TutorService(convRepo as any, contextService as any, configService as any, renderingService);
+      const tutor = new TutorService(
+        convRepo as any,
+        contextService as any,
+        configService as any,
+        renderingService,
+        recommendationService as any,
+      );
 
       const resBucle = await tutor.sendMessage(1, '¿Cómo hago un bucle for en JavaScript?');
-      expect(resBucle).toContain('Un ciclo te ayuda a ejecutar un bloque de instrucciones múltiples veces');
-      expect(resBucle).toContain('¿Cuál de estos tres elementos crees que requiere atención');
+      expect(resBucle.message).toContain('Un ciclo te ayuda a ejecutar un bloque de instrucciones múltiples veces');
+      expect(resBucle.message).toContain('¿Cuál de estos tres elementos crees que requiere atención');
 
       const resVar = await tutor.sendMessage(1, '¿Qué es una variable y qué tipos de datos hay?');
-      expect(resVar).toContain('una variable es un contenedor con nombre');
-      expect(resVar).toContain('¿Qué tipo de información necesitas guardar');
+      expect(resVar.message).toContain('una variable es un contenedor con nombre');
+      expect(resVar.message).toContain('¿Qué tipo de información necesitas guardar');
     });
   });
 });

@@ -60,7 +60,17 @@ describe('TutorService E2E', () => {
     };
 
     const contentRenderingService = { escapePlainText: jest.fn((s: string) => s) };
-    service = new TutorService(convRepo as any, contextService, configService as any, contentRenderingService as any);
+    const recommendationService = {
+      suggestForUnit: jest.fn().mockResolvedValue(null),
+      suggestAmbient: jest.fn().mockResolvedValue(null),
+    };
+    service = new TutorService(
+      convRepo as any,
+      contextService,
+      configService as any,
+      contentRenderingService as any,
+      recommendationService as any,
+    );
 
     openaiCreateSpy = jest
       .fn()
@@ -81,7 +91,7 @@ describe('TutorService E2E', () => {
   it('should build a system prompt with RAG context, retry on 429, and return AI content', async () => {
     const response = await service.sendMessage(1, '¿Qué modelo debo usar para resolver esto?');
 
-    expect(response).toBe('Este es tu consejo de tutor.');
+    expect(response.message).toBe('Este es tu consejo de tutor.');
     expect(openaiCreateSpy).toHaveBeenCalledTimes(2);
 
     const call = openaiCreateSpy.mock.calls[0][0];

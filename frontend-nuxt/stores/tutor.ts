@@ -1,9 +1,13 @@
 import { defineStore } from 'pinia'
-import type { TutorMessage } from '~/types'
+import type { TutorMessage, TutorSuggestedActivity } from '~/types'
 import { useAuthStore } from './auth'
 import { useWorkspaceStore } from './workspace'
 import { useStudentStore } from './student'
 import { useApi } from '~/composables/useApi'
+
+function nowLabel() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
 
 export const useTutorStore = defineStore('tutor', () => {
   const api = useApi()
@@ -15,18 +19,43 @@ export const useTutorStore = defineStore('tutor', () => {
   const isOpen = ref(false)
   const isThinking = ref(false)
   const activeScaffoldingLevel = ref<1 | 2 | 3>(1)
+  const hasGreeted = ref(false)
 
-  const messages = ref<TutorMessage[]>([
-    {
-      id: 'msg-0',
-      sender: 'tutor',
-      text: '¡Hola! Soy tu Tutor IA de STIRE. Estoy aquí para acompañar tu razonamiento pedagógico paso a paso. ¿En qué parte del algoritmo o ejercicio necesitas orientación?',
-      timestamp: 'Ahora'
+  const messages = ref<TutorMessage[]>([])
+
+  // El saludo real (con tu seguimiento: repasos vencidos, mastery bajo) se pide al backend la
+  // primera vez que abres el Tutor -- antes había un texto genérico fijo aquí mismo, que nunca
+  // sabía nada de ti. Se pide una sola vez por sesión, no cada apertura del drawer.
+  async function fetchGreeting() {
+    if (hasGreeted.value) return
+    hasGreeted.value = true
+    isThinking.value = true
+
+    try {
+      const res = await api.get<{ success: boolean; message: string; suggestedActivity: TutorSuggestedActivity | null }>('/tutor/greeting')
+      messages.value.push({
+        id: `msg-${Date.now()}-greeting`,
+        sender: 'tutor',
+        text: res?.message || '¡Hola! Soy tu Tutor IA de STIRE. ¿En qué necesitas orientación hoy?',
+        timestamp: nowLabel(),
+        suggestedActivity: res?.suggestedActivity ?? null
+      })
+    } catch (err) {
+      console.warn('[STIRE Tutor] No se pudo obtener el saludo proactivo:', err)
+      messages.value.push({
+        id: `msg-${Date.now()}-greeting`,
+        sender: 'tutor',
+        text: '¡Hola! Soy tu Tutor IA de STIRE. ¿En qué necesitas orientación hoy?',
+        timestamp: nowLabel()
+      })
+    } finally {
+      isThinking.value = false
     }
-  ])
+  }
 
   function openDrawer() {
     isOpen.value = true
+    fetchGreeting()
   }
 
   function closeDrawer() {
@@ -35,6 +64,7 @@ export const useTutorStore = defineStore('tutor', () => {
 
   function toggleDrawer() {
     isOpen.value = !isOpen.value
+    if (isOpen.value) fetchGreeting()
   }
 
   async function sendMessage(userText: string, levelOverride?: 1 | 2 | 3) {
@@ -53,7 +83,7 @@ export const useTutorStore = defineStore('tutor', () => {
 
     try {
       // Petición HTTP con contexto completo de pantalla
-      const res = await api.post<{ success: boolean; message: string }>('/tutor/chat', {
+      const res = await api.post<{ success: boolean; message: string; suggestedActivity: TutorSuggestedActivity | null }>('/tutor/chat', {
         message: userText,
         context: {
           currentRoute: route.path,
@@ -71,7 +101,8 @@ export const useTutorStore = defineStore('tutor', () => {
           sender: 'tutor',
           text: res.message,
           scaffoldingLevel: level,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          timestamp: nowLabel(),
+          suggestedActivity: res.suggestedActivity ?? null
         })
         return
       }
@@ -103,6 +134,11 @@ export const useTutorStore = defineStore('tutor', () => {
     }
   }
 
+  function goToSuggestedActivity(activity: TutorSuggestedActivity) {
+    closeDrawer()
+    navigateTo(`/estudiante/evaluacion/${activity.activityId}`)
+  }
+
   return {
     isOpen,
     isThinking,
@@ -112,6 +148,7 @@ export const useTutorStore = defineStore('tutor', () => {
     closeDrawer,
     toggleDrawer,
     sendMessage,
-    requestQuickHint
+    requestQuickHint,
+    goToSuggestedActivity
   }
 })

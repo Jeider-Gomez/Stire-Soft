@@ -1,4 +1,4 @@
-import { Controller, Post, Body, BadRequestException, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, BadRequestException, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { GetUser } from '../auth/decorators/get-user.decorator';
@@ -31,12 +31,27 @@ export class TutorController {
 
     const studentId = user.id;
     const context = typeof body === 'object' ? body?.context : undefined;
-    const response = await this.tutorService.sendMessage(studentId, rawMessage.trim(), context);
+    const { message, suggestedActivity } = await this.tutorService.sendMessage(studentId, rawMessage.trim(), context);
 
     return {
       success: true,
-      message: response,
-      response: response,
+      message,
+      response: message,
+      suggestedActivity,
+    };
+  }
+
+  @Get('greeting')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
+  @ApiOperation({ summary: 'Saludo proactivo del Tutor IA basado en el seguimiento real del estudiante (repasos vencidos, mastery bajo)' })
+  async greeting(@GetUser() user: User) {
+    const { message, suggestedActivity } = await this.tutorService.getProactiveGreeting(user.id);
+
+    return {
+      success: true,
+      message,
+      suggestedActivity,
     };
   }
 }

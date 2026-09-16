@@ -108,10 +108,20 @@ export interface SubmissionResult {
   }>
 }
 
+export interface TutorSuggestedActivity {
+  activityId: number
+  activityTitle: string
+  learningUnitId: number
+  learningUnitTitle: string
+  reason: 'repaso_vencido' | 'mastery_bajo' | 'contexto_actual'
+  reasonMessage: string
+}
+
 export interface TutorMessage {
   id: string
   sender: 'student' | 'tutor'
   text: string
   scaffoldingLevel?: 1 | 2 | 3 // 1: Pista conceptual, 2: Pregunta guía, 3: Localización falla
   timestamp: string
+  suggestedActivity?: TutorSuggestedActivity | null
 }
