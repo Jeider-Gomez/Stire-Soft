@@ -9,7 +9,7 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 
 > **Proyecto:** STIRE-Soft  
 > **Norma:** MODESEC §3.3 / Especificación Técnica de Pantallas  
-> **Nomenclatura Oficial:** Estandarizada según [NAMING_STIRE.md](./NAMING_STIRE.md) (Código Técnico $\to$ Nombre Documental $\to$ Nombre Visible)  
+> **Nomenclatura Oficial:** Estandarizada según [NAMING_STIRE.md](../NAMING_STIRE.md) (Código Técnico $\to$ Nombre Documental $\to$ Nombre Visible)  
 > **Total de Ventanas:** 15 (1 Común + 6 Estudiante + 5 Docente + 3 Administrador)  
 > **Fecha de Actualización:** 2 de septiembre de 2026 | **Versión:** 2.0 Multi-Rol
 

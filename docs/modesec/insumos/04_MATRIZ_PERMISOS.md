@@ -30,7 +30,7 @@ Cada fila dice **el mecanismo real**, no el que "debería" existir:
   controller. Cualquier usuario autenticado, de cualquier rol, puede llamarla.
 
 Las rutas 🟢 y algunas 🔴 están en la lista de excepciones de
-[`route-role-metadata.spec.ts`](../../src/common/authorization/route-role-metadata.spec.ts)
+[`route-role-metadata.spec.ts`](../../../src/common/authorization/route-role-metadata.spec.ts)
 (`JUSTIFIED_EXCEPTIONS` para mutaciones, `JUSTIFIED_GET_EXCEPTIONS` para lecturas) — ese test
 falla si alguien agrega una ruta mutante sin `@Roles` y sin registrarla ahí, así que la ausencia
 de `@Roles` en las rutas de abajo es intencional y está bajo control de CI, no es un descuido.

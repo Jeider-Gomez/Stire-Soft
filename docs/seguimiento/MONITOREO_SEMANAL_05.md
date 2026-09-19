@@ -211,7 +211,7 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 
 - [x] Hallazgos re-verificados por Claude Code, sin duplicación de trabajo. *(14/09, ver
   `docs/PLAN_MAESTRO.md` §5.)*
-- [x] QA general del sistema entregado. *(`docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE_18-09`, 18/09
+- [x] QA general del sistema entregado. *(`docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE_18-09.md`, 18/09
   — commit `83593cb` auditado, 331/331 tests, build backend/frontend en verde, `P2-R4`/`FE-02`
   re-confirmados, veredicto **"APTO CON CONDICIONES", 80.0% de avance**. Cubre los 12 pasos de la
   tarjeta `S05-JOR02` (login, navegación, flujo de estudiante, Tutor IA, API, integración, estados

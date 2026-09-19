@@ -23,7 +23,7 @@
 
 **Reunión de equipo:** viernes 8:00 – 8:40 p.m., videollamada, con los cinco integrantes.
 **Reportes escritos:** martes y jueves, 8:00 p.m., en el grupo del equipo.
-**Metodología:** [`docs/05_METODOLOGIA_Y_EQUIPO.md`](./docs/05_METODOLOGIA_Y_EQUIPO.md)
+**Metodología:** [`docs/05_METODOLOGIA_Y_EQUIPO.md`](../05_METODOLOGIA_Y_EQUIPO.md)
 
 ---
 
@@ -56,7 +56,7 @@ En paralelo, se busca cerrar los componentes fundamentales del backend que ya pu
 > 3.1: esos son la forma en que el equipo organiza su propio trabajo, no la numeración oficial del
 > curso — ver la nota de corrección justo debajo.
 >
-> **Entrada a MODESEC:** [`docs/modesec/README.md`](docs/modesec/README.md).
+> **Entrada a MODESEC:** [`docs/modesec/README.md`](../modesec/README.md).
 
 **OBJETIVO 1 · Diseñar los mockups de alta fidelidad y el mapa de navegación fundamentados en
 Pressman y MODESEC.**
@@ -64,18 +64,18 @@ Pressman y MODESEC.**
 conexiones**, ruta más larga de 3 clics a contenido formativo (2 clics para el contenido formativo
 en sí — `EST-V02`/`EST-V03` —, 3 solo para estados secundarios como error/completado/tutor).
 Fundamentación en las tres reglas de oro de Mandel (Mandel 1997; Pressman & Maxim, cap. 12) con
-auditoría de 3 clics y 7±2 en [`MARCO_UX_PEDAGOGICO_STIRE.md` §2.5](docs/modesec/MARCO_UX_PEDAGOGICO_STIRE.md).
-Mapa normativo en [`contenidos/3.3.3_MAPA_NAVEGACION.md`](docs/modesec/contenidos/3.3.3_MAPA_NAVEGACION.md).
+auditoría de 3 clics y 7±2 en [`MARCO_UX_PEDAGOGICO_STIRE.md` §2.5](../modesec/MARCO_UX_PEDAGOGICO_STIRE.md).
+Mapa normativo en [`contenidos/3.3.3_MAPA_NAVEGACION.md`](../modesec/contenidos/3.3.3_MAPA_NAVEGACION.md).
 **PARCIAL** en docente y administrador: la ventana estándar ya tiene sus 3 variantes de rol
 demostradas con una vista real cada una donde aplica (`DOC-V01 · Mis Clases`, `ADM-V02 · Usuarios y
 Roles`, FASE CC-08 Parte B) — mismas 5 zonas, misma paleta, mismo lenguaje visual que Estudiante.
 Las 10 vistas restantes de esos dos roles quedan para la próxima semana.
 
 **OBJETIVO 2 · Consolidar el reto de los 15 artículos científicos.**
-→ **CUMPLIDO Y SUPERADO.** [`docs/investigacion/MATRIZ_ARTICULOS.md`](docs/investigacion/MATRIZ_ARTICULOS.md)
+→ **CUMPLIDO Y SUPERADO.** [`docs/investigacion/MATRIZ_ARTICULOS.md`](../investigacion/MATRIZ_ARTICULOS.md)
 con los 15 verificados 15/15 contra Crossref, ERIC e ISBN. Además
-[`MATRIZ_ARTICULOS_AMPLIADA.md`](docs/investigacion/MATRIZ_ARTICULOS_AMPLIADA.md) con 24 obras de
-fundamento y [`INFORME_SANEAMIENTO_BIBLIOGRAFICO.md`](docs/investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md)
+[`MATRIZ_ARTICULOS_AMPLIADA.md`](../investigacion/MATRIZ_ARTICULOS_AMPLIADA.md) con 24 obras de
+fundamento y [`INFORME_SANEAMIENTO_BIBLIOGRAFICO.md`](../investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md)
 con la auditoría que detectó que las 15 referencias originales estaban fabricadas (11 DOI
 inexistentes, 4 resolviendo a obra distinta) antes de reconstruirlas.
 
@@ -203,12 +203,12 @@ de Figma pero no se inventaron hotspots falsos para forzar su alcance por clic.
 
 | # | Decisión | Enlace |
 |---|---|---|
-| D-01 | La metáfora del "taller" se conserva solo como marco de ícono/paleta, nunca como texto visible en la UI | [`NAMING_STIRE.md`](docs/modesec/NAMING_STIRE.md) |
-| D-02 | Códigos de ventana docente unificados: 6 ventanas exactas, resolviendo un conflicto de dos numeraciones incompatibles | [`ventanas/3.3.1_FICHAS_VENTANAS.md`](docs/modesec/ventanas/3.3.1_FICHAS_VENTANAS.md) |
-| D-03 | `review-schedules` solo se construye si hay tiempo; `ADM-V01`/`ADM-V03` quedan REQUERIDO-PENDIENTE-DE-BACKEND porque su único endpoint referenciado no existe | [`13_BACKLOG_FUNCIONAL.md`](docs/modesec/13_BACKLOG_FUNCIONAL.md) |
-| D-04 | La rederivación de §3.1 desde `COMP-203413` se difiere a cuando exista el Formato 5 real, no se fuerza antes | [`contenidos/3.1_DIAGRAMA_CONTENIDOS.md`](docs/modesec/contenidos/3.1_DIAGRAMA_CONTENIDOS.md) |
-| D-05 | `GamificationModule` se retira del backlog activo por decisión de producto; el código no se borra en esta fase | [`13_BACKLOG_FUNCIONAL.md` §4](docs/modesec/13_BACKLOG_FUNCIONAL.md) |
-| D-06 | STIRE es una herramienta de apoyo docente, no la plataforma del curso — cubre razonamiento algorítmico y estructuras de control, no `COMP-203413` completa | [`contenidos/3.1_DIAGRAMA_CONTENIDOS.md` §6](docs/modesec/contenidos/3.1_DIAGRAMA_CONTENIDOS.md) |
+| D-01 | La metáfora del "taller" se conserva solo como marco de ícono/paleta, nunca como texto visible en la UI | [`NAMING_STIRE.md`](../modesec/NAMING_STIRE.md) |
+| D-02 | Códigos de ventana docente unificados: 6 ventanas exactas, resolviendo un conflicto de dos numeraciones incompatibles | [`ventanas/3.3.1_FICHAS_VENTANAS.md`](../modesec/ventanas/3.3.1_FICHAS_VENTANAS.md) |
+| D-03 | `review-schedules` solo se construye si hay tiempo; `ADM-V01`/`ADM-V03` quedan REQUERIDO-PENDIENTE-DE-BACKEND porque su único endpoint referenciado no existe | [`13_BACKLOG_FUNCIONAL.md`](../modesec/insumos/13_BACKLOG_FUNCIONAL.md) |
+| D-04 | La rederivación de §3.1 desde `COMP-203413` se difiere a cuando exista el Formato 5 real, no se fuerza antes | [`contenidos/3.1_DIAGRAMA_CONTENIDOS.md`](../modesec/contenidos/3.1_DIAGRAMA_CONTENIDOS.md) |
+| D-05 | `GamificationModule` se retira del backlog activo por decisión de producto; el código no se borra en esta fase | [`13_BACKLOG_FUNCIONAL.md` §4](../modesec/insumos/13_BACKLOG_FUNCIONAL.md) |
+| D-06 | STIRE es una herramienta de apoyo docente, no la plataforma del curso — cubre razonamiento algorítmico y estructuras de control, no `COMP-203413` completa | [`contenidos/3.1_DIAGRAMA_CONTENIDOS.md` §6](../modesec/contenidos/3.1_DIAGRAMA_CONTENIDOS.md) |
 
 ---
 
@@ -248,8 +248,8 @@ de Figma pero no se inventaron hotspots falsos para forzar su alcance por clic.
 
 | N.º | Semana | Documento |
 |---|---|---|
-| 1 | 17 – 21 de agosto de 2026 | [`MONITOREO_SEMANAL_01.md`](./seguimiento/MONITOREO_SEMANAL_01.md) |
-| 2 | 24 – 28 de agosto de 2026 | [`MONITOREO_SEMANAL_02.md`](./seguimiento/MONITOREO_SEMANAL_02.md) |
+| 1 | 17 – 21 de agosto de 2026 | [`MONITOREO_SEMANAL_01.md`](./MONITOREO_SEMANAL_01.md) |
+| 2 | 24 – 28 de agosto de 2026 | [`MONITOREO_SEMANAL_02.md`](./MONITOREO_SEMANAL_02.md) |
 
 Los documentos anteriores se conservan como historial. La semana en curso siempre vive en `MONITOREO_SEMANAL.md` en la raíz.
 

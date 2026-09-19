@@ -69,7 +69,7 @@ There is still work to do, but these two weeks helped us build a stronger founda
   resolviendo a obra distinta). Ver `docs/investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md`.
 - 4 rutas del backend (`submissions/start`, `submissions/:id/submit`, `submissions/:id/autosave`,
   `tutor/chat`) sin `@Roles` y sin chequeo de rol a nivel de servicio. Ver
-  `docs/modesec/13_BACKLOG_FUNCIONAL.md` §6.
+  `docs/modesec/insumos/13_BACKLOG_FUNCIONAL.md` §6.
 - Zona `[B] Menú` de la ventana estándar en el límite exacto de 7±2 (9 elementos con 2 módulos
   expandidos simultáneamente) y una transición de navegación sin documentar. Ambos ya resueltos en
   FASE CC-06 — ver más abajo.
@@ -80,7 +80,7 @@ There is still work to do, but these two weeks helped us build a stronger founda
 - Rediseño del Menú: 6 elementos persistentes fijos (nunca crece con el contenido), navegación a
   unidad específica vía flyout de módulo — resuelve el 7±2 y registra la transición que faltaba
   (`docs/modesec/contenidos/3.3.3_MAPA_NAVEGACION.md`, filas 23-25).
-- Matriz de permisos (`docs/modesec/04_MATRIZ_PERMISOS.md`) reescrita desde cero contra el código
+- Matriz de permisos (`docs/modesec/insumos/04_MATRIZ_PERMISOS.md`) reescrita desde cero contra el código
   real, no contra lo que decía la documentación anterior.
 
 ### Qué se puede ver funcionando hoy

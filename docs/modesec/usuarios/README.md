@@ -36,12 +36,12 @@ Para evitar duplicación y discrepancias, los siguientes aspectos transversales 
 | **Marco UX + Pedagógico** | [`docs/modesec/MARCO_UX_PEDAGOGICO_STIRE.md`](../MARCO_UX_PEDAGOGICO_STIRE.md) | 10 Principios Rectores P01–P10, trazabilidad científica y flujo coherente. |
 | **Nomenclatura Oficial** | [`docs/modesec/NAMING_STIRE.md`](../NAMING_STIRE.md) | Guía de lenguaje, microcopy UX y separación en 3 capas. |
 | **Arquitectura Global** | [`docs/01_ARQUITECTURA_Y_DISENO.md`](../../01_ARQUITECTURA_Y_DISENO.md) | Módulos DDD, eventos de dominio, ADR 01 a ADR 08. |
-| **Mapa Funcional** | [`docs/modesec/00_MAPA_FUNCIONAL_STIRE.md`](../00_MAPA_FUNCIONAL_STIRE.md) | Pilares del sistema, actores y ciclo conceptual. |
-| **Catálogo de APIs** | [`docs/modesec/02_CATALOGO_ENDPOINTS.md`](../02_CATALOGO_ENDPOINTS.md) | Matriz completa de rutas HTTP, métodos y parámetros. |
-| **Seguridad y Permisos** | [`docs/modesec/04_MATRIZ_PERMISOS.md`](../04_MATRIZ_PERMISOS.md) | Políticas RBAC y aislamiento de objetos (BOLA). |
+| **Mapa Funcional** | [`docs/modesec/insumos/00_MAPA_FUNCIONAL_STIRE.md`](../insumos/00_MAPA_FUNCIONAL_STIRE.md) | Pilares del sistema, actores y ciclo conceptual. |
+| **Catálogo de APIs** | [`docs/modesec/insumos/02_CATALOGO_ENDPOINTS.md`](../insumos/02_CATALOGO_ENDPOINTS.md) | Matriz completa de rutas HTTP, métodos y parámetros. |
+| **Seguridad y Permisos** | [`docs/modesec/insumos/04_MATRIZ_PERMISOS.md`](../insumos/04_MATRIZ_PERMISOS.md) | Políticas RBAC y aislamiento de objetos (BOLA). |
 | **Estructura de UI Base** | [`docs/modesec/ventanas/3.3_VENTANA_ESTANDAR.md`](../ventanas/3.3_VENTANA_ESTANDAR.md) | Zonas A–E, navegación, barra de estado y tipografía. |
-| **Sitemap y Guardias** | [`docs/modesec/09_MAPA_NAVEGACION.md`](../09_MAPA_NAVEGACION.md) | Rutas Nuxt y middlewares de navegación por rol. |
-| **Componentes Base** | [`docs/modesec/11_COMPONENTES_REUTILIZABLES.md`](../11_COMPONENTES_REUTILIZABLES.md) | Catálogo de componentes Vue 3 reutilizables. |
+| **Sitemap y Guardias** | [`docs/modesec/insumos/09_MAPA_NAVEGACION.md`](../insumos/09_MAPA_NAVEGACION.md) | Rutas Nuxt y middlewares de navegación por rol. |
+| **Componentes Base** | [`docs/modesec/insumos/11_COMPONENTES_REUTILIZABLES.md`](../insumos/11_COMPONENTES_REUTILIZABLES.md) | Catálogo de componentes Vue 3 reutilizables. |
 
 ---
 

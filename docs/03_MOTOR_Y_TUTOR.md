@@ -98,7 +98,7 @@ flowchart LR
 ```
 1.  **Iteración:** se recorren los `testCases` del `config` de la pregunta (array plano; no existe distinción `publicTestCases`/`hiddenTestCases` en el dato real — ver §5).
 2.  **Aislamiento por proceso, no por contexto de JS:** cada test case se ejecuta en un proceso hijo real de Node (`child_process.spawn`), con cuatro barreras independientes:
-    *   **Entorno mínimo:** el proceso hijo no hereda las variables del proceso padre (`JWT_SECRET`, `DB_PASSWORD`, `OPENAI_API_KEY` no están disponibles). En Windows se declaran a mano las variables que `libuv` inyectaría igualmente si faltaran (`SystemRoot`, `TEMP`, etc.), neutralizadas.
+    *   **Entorno mínimo:** el proceso hijo no hereda las variables del proceso padre (`JWT_SECRET`, `DB_PASSWORD`, `TUTOR_KEY_ENCRYPTION_SECRET` no están disponibles). En Windows se declaran a mano las variables que `libuv` inyectaría igualmente si faltaran (`SystemRoot`, `TEMP`, etc.), neutralizadas.
     *   **Modelo de permisos de Node (`--permission`):** sin `--allow-fs-write`, `--allow-child-process`, `--allow-worker` — bloquea escritura en disco, RCE vía procesos hijos anidados e hilos.
     *   **Sin generación de código (`--disallow-code-generation-from-strings`):** neutraliza el vector exacto del hallazgo P0-01.
     *   **Cortafuegos de red en el preludio:** un script `--require` anula `net.connect`, `http.request`, `fetch`, y toda la resolución DNS (incluidos `dns.promises` y `dns.Resolver`, que evadían el cortafuegos original — corregido en Ola 2) antes de que el código del estudiante se ejecute.
@@ -122,31 +122,41 @@ sequenceDiagram
     participant E as Estudiante
     participant TC as TutorController
     participant TS as TutorService
+    participant CS as TutorCredentialService
     participant TCS as TutorContextService
-    participant PR as LearningProgressRepo
     participant CR as TutorConversationsRepo
-    participant LLM as API Externa (OpenAI/Claude)
+    participant G as Google Gemini (clave del estudiante)
     participant DB as MySQL
 
-    E->>TC: POST /tutor/chat { message: "¿Qué es recursividad?" }
-    TC->>TS: sendMessage(studentId, message)
-    TS->>DB: save({ studentId, role: 'user', content: message })
-
-    par Construcción de Contexto
-        TS->>TCS: buildSystemPrompt(studentId)
-        TCS->>PR: find({ where: { studentId } })
-        PR-->>TCS: LearningProgress[] (todos los registros de mastery)
-        TCS-->>TS: systemPrompt (string con nivel y reglas pedagógicas)
-    and Historial de Conversación
-        TS->>CR: getRecentContext(studentId, limit=6)
-        CR-->>TS: TutorConversation[] (últimos 6 mensajes)
+    E->>TC: POST /tutor/chat { message, context }
+    TC->>TS: sendMessage(user, message, context)
+    TS->>CS: getDecryptedKey(studentId)
+    CS->>DB: tutor_credentials (AES-256-GCM)
+    alt Sin clave configurada
+        TS-->>E: 428 — configura tu clave gratuita de Google AI Studio
     end
 
-    TS->>TS: Construye payload:[ {role:'system', content: systemPrompt}, ...history ]
-    TS->>LLM: POST api.openai.com/chat/completions (Mock/Real API Key)
-    LLM-->>TS: aiResponseContent (string)
-    TS->>DB: save({ studentId, role: 'assistant', content: aiResponseContent })
-    TS-->>E: aiResponseContent
+    TS->>TS: Verifica que el estudiante puede leer learningUnitId (misma regla que GET /learning-unit/:id)
+    par Construcción de Contexto
+        TS->>TCS: buildSystemPrompt(studentId, context)
+        TCS-->>TS: systemPrompt (nivel + reglas pedagógicas)
+    and Historial de Conversación
+        TS->>CR: getRecentContext(studentId, limit=6) — ANTES de guardar el mensaje nuevo
+        CR-->>TS: últimos 6 mensajes
+    end
+
+    TS->>G: POST models/{modelo}:generateContent (cabecera x-goog-api-key)
+    alt Clave rechazada
+        TS-->>E: 422
+    else Cuota gratuita agotada
+        TS-->>E: 429
+    else Google no disponible
+        TS-->>E: 503
+    else Respuesta
+        G-->>TS: aiResponseContent
+        TS->>DB: save(user) + save(assistant) — solo tras una respuesta exitosa
+        TS-->>E: { message, suggestedActivity }
+    end
 ```
 
 #### Construcción del System Prompt Adaptativo
@@ -165,7 +175,9 @@ El prompt inyectado al LLM no es plano, sino que se recalcula bajo la siguiente 
 El historial conversacional recuperado mediante `TutorConversationsRepository.getRecentContext()` está restringido a los últimos **6 mensajes** (3 interacciones del usuario y 3 de la IA). Esto previene la saturación del límite de tokens en los LLMs comerciales y optimiza las consultas SQL indexando las tablas por `(studentId, createdAt DESC)`.
 
 #### Estado del LLM en el Código
-Actualmente, el sistema utiliza un método placeholder (`mockLlmInference()`) en `tutor.service.ts` para las pruebas de Happy Path. La conexión real con la API del LLM se encuentra preparada en la base del código, requiriendo únicamente descomentar la petición HTTP a la pasarela de la IA e incorporar la variable `OPENAI_API_KEY` en el archivo de configuración `.env`.
+El Tutor usa **Google Gemini con la clave gratuita de Google AI Studio que aporta cada estudiante** (decisión del dueño del proyecto, 2026-09-19 — ver `docs/ADR_DECISIONES_ARQUITECTURA.md`, ADR 10). No existe clave global del servidor, ni respuesta simulada de reserva: sin clave propia, el Tutor pide configurarla (`428`); si Google rechaza la clave responde `422`, si la cuota gratuita se agota `429` y si no está disponible `503`. La clave se guarda cifrada (AES-256-GCM, secreto `TUTOR_KEY_ENCRYPTION_SECRET`), nunca se devuelve completa al cliente y viaja a Google en la cabecera `x-goog-api-key`, no en la URL. Endpoints: `GET/PUT/DELETE /tutor/api-key` y `GET /tutor/history`.
+
+**Nivel de ayuda, configuración del docente y barrera anti-solución (ADR 11).** La ayuda escala sola con los intentos fallidos del estudiante en la actividad (1 pista conceptual, 2 pregunta guía, 3 localizar la falla, nunca la solución). El docente puede activar o desactivar el Tutor, fijar un tope de ayuda y elegir un estilo cerrado por clase, unidad o actividad (`GET/PUT /tutor/settings/:scopeType/:scopeId`; el más específico manda). Dentro de una actividad, una barrera en código sustituye por un aviso los volcados de código larguísimos y los programas con forma de solución del ejercicio, sin gastar una llamada extra al LLM y sin bloquear explicaciones del propio código del estudiante.
 
 ---
 

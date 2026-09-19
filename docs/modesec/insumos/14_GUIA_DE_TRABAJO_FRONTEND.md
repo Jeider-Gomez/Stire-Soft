@@ -10,7 +10,7 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 > **Proyecto:** STIRE-Soft Frontend  
 > **Destinatarios:** Equipo de Desarrollo (José López, Pedro Romero, Julio Galvis, Jeider Gómez, Jorge Cervantes)  
 > **Stack Oficial:** Nuxt 3 (SSR/SSG Híbrido) + Vue 3 (Composition API `<script setup>`) + TypeScript + Pinia + Vanilla / Tailwind CSS  
-> **Nomenclatura Oficial:** Sincronizada con [NAMING_STIRE.md](./NAMING_STIRE.md) y [MARCO_UX_PEDAGOGICO_STIRE.md](./MARCO_UX_PEDAGOGICO_STIRE.md)  
+> **Nomenclatura Oficial:** Sincronizada con [NAMING_STIRE.md](../NAMING_STIRE.md) y [MARCO_UX_PEDAGOGICO_STIRE.md](../MARCO_UX_PEDAGOGICO_STIRE.md)  
 > **Fecha de Actualización:** 2 de septiembre de 2026 | **Versión:** 2.0 Multi-Rol
 
 ---

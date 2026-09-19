@@ -94,7 +94,7 @@ graph TD
     subgraph "Persistencia"
         DB[(MySQL · TypeORM)]
         Redis[(Redis · BullMQ Broker)]
-        ExtAI["API Externa LLM<br/>(OpenAI / Anthropic — Gateway)"]
+        ExtAI["Google Gemini<br/>(clave gratuita del estudiante)"]
     end
 
     Client --> Auth

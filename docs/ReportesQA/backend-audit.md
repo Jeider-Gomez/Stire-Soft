@@ -97,7 +97,7 @@ Contratos API:          ✅ Verificados contra 12_CONTRATO_FRONTEND_BACKEND.md
    * En producción: `QUEUE_DRIVER=redis` con BullMQ.
 3. **API Keys:**
    * Para el MVP: La clave reside exclusivamente en el servidor (`.env`), nunca en el frontend.
-   * Modo BYOK queda documentado formalmente como funcionalidad futura en `docs/modesec/08_TUTOR_IA.md` y `docs/modesec/13_BACKLOG_FUNCIONAL.md`.
+   * Modo BYOK queda documentado formalmente como funcionalidad futura en `docs/modesec/insumos/08_TUTOR_IA.md` y `docs/modesec/insumos/13_BACKLOG_FUNCIONAL.md`.
 
 ---
 
@@ -108,4 +108,4 @@ Contratos API:          ✅ Verificados contra 12_CONTRATO_FRONTEND_BACKEND.md
 ### ✅ **SÍ, TOTALMENTE PREPARADO**
 
 **Justificación:**
-El backend de STIRE-Soft compila limpiamente, cuenta con una cobertura de pruebas automatizadas del 100% (272/272 tests PASS), implementa los controles de aislamiento por rol y BOLA exigidos por la arquitectura, y sus contratos de datos coinciden de forma exacta con la especificación de las 15 ventanas de MODESEC y la guía de trabajo en `docs/modesec/14_GUIA_DE_TRABAJO_FRONTEND.md`.
+El backend de STIRE-Soft compila limpiamente, cuenta con una cobertura de pruebas automatizadas del 100% (272/272 tests PASS), implementa los controles de aislamiento por rol y BOLA exigidos por la arquitectura, y sus contratos de datos coinciden de forma exacta con la especificación de las 15 ventanas de MODESEC y la guía de trabajo en `docs/modesec/insumos/14_GUIA_DE_TRABAJO_FRONTEND.md`.

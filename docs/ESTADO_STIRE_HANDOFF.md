@@ -1,4 +1,10 @@
 # STIRE — Estado del proyecto y punto de continuación
+
+> **Nota (2026-09-19):** este documento es el traspaso de la Ola 2 y no se ha actualizado desde
+> entonces. Para el estado vigente (qué está hecho, a medias o pendiente, verificado contra el código)
+> ver [`PLAN_MAESTRO.md`](./PLAN_MAESTRO.md) §4 y §5; para las decisiones de arquitectura, 
+> [`ADR_DECISIONES_ARQUITECTURA.md`](./ADR_DECISIONES_ARQUITECTURA.md).
+
 **Última actualización:** 2026-08-26 · **Commit actual:** `83593cb` (rama `main`, repo público)
 **Propósito:** documento de traspaso. Leer esto basta para retomar el trabajo sin releer el histórico.
 

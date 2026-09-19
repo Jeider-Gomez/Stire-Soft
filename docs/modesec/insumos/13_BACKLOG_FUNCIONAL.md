@@ -38,7 +38,7 @@ codigos:    EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03 · COMP-V00
 
 ## 3. Nivel Futuro (Largo Plazo / Post-Proyecto)
 
-* [ ] **BYOK (Bring Your Own Key):** Interfaz para que estudiantes avanzados ingresen su propia clave de OpenAI/Gemini con almacenamiento cifrado AES-256 (`EST-V04`).
+* [~] **BYOK (Bring Your Own Key):** ~~Interfaz para que estudiantes avanzados ingresen su propia clave~~ — **adelantado a núcleo del Tutor el 2026-09-19** (ADR 10): backend implementado (`/tutor/api-key`, AES-256-GCM); la interfaz (registro con opción de omitir + panel en el chat) está en `docs/antigravity/PLAN_IMPLEMENTACION.md` §19.
 * [ ] **Soporte Multi-Lenguaje en Sandbox:** Incorporación de Python, C++ y Java en el motor de ejecución aislado.
 * [ ] **Integración LTI con Moodle / Canvas:** Sincronización automática de notas y matrículas con el LMS institucional.
 

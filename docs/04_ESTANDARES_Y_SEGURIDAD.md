@@ -93,7 +93,7 @@ El sistema resguarda los endpoints sensibles mediante políticas restrictivas de
                       |   |     Proceso hijo (child_process.spawn)  | |
                       |   |                                          | |
                       |   |  - Entorno minimo (sin JWT_SECRET,       | |
-                      |   |    DB_PASSWORD, OPENAI_API_KEY)          | |
+                      |   |    DB_PASSWORD, TUTOR_KEY_ENCRYPTION_SECRET)          | |
                       |   |  - --permission (sin fs-write,           | |
                       |   |    child-process, worker)                | |
                       |   |  - --disallow-code-generation-from-strings| |

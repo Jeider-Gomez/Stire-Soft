@@ -61,6 +61,15 @@ REGLAS ESTRÍCTAS:
 
 ---
 
+> **Actualización 2026-09-19 — el Modo B (BYOK) descrito en §5 es ahora la única arquitectura, y ya está
+> implementado.** El Modo A (clave del sistema en `.env`) y OpenAI se retiraron: cada estudiante usa su
+> propia clave gratuita de Google AI Studio (`PUT /tutor/api-key`, cifrada con AES-256-GCM en la tabla
+> `tutor_credentials`), y la clave viaja en la cabecera `x-goog-api-key`. Las variables `OPENAI_*` ya no
+> existen; el modelo se configura con `GEMINI_MODEL` y el secreto de cifrado con
+> `TUTOR_KEY_ENCRYPTION_SECRET`. Los nombres de endpoint de §5 (`/users/api-key`) quedaron como
+> `/tutor/api-key`. Detalle: `docs/ADR_DECISIONES_ARQUITECTURA.md`, ADR 10. Las secciones 4 y 5.1 se
+> conservan como registro histórico del diseño.
+
 ## 4. Actualización del Modelo Google Gemini (2026)
 
 * **Antecedente:** Tras la auditoría técnica y de acuerdo con el boletín oficial de Google AI, los modelos `gemini-2.0-flash` y `gemini-2.0-flash-001` fueron discontinuados en junio de 2026.

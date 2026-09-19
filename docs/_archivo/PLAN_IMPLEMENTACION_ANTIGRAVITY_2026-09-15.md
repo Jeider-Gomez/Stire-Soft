@@ -65,21 +65,21 @@ un flyout flotante — hasta que exista una referencia visual real.
 
 ## 2. Lectura obligatoria antes de escribir código (no se re-deriva nada de esto)
 
-1. [`14_GUIA_DE_TRABAJO_FRONTEND.md`](14_GUIA_DE_TRABAJO_FRONTEND.md) — stack oficial, rutas Nuxt,
+1. [`14_GUIA_DE_TRABAJO_FRONTEND.md`](../modesec/insumos/14_GUIA_DE_TRABAJO_FRONTEND.md) — stack oficial, rutas Nuxt,
    nombres de componente y endpoints por ventana. **Fuente de verdad de rutas y componentes.**
-2. [`12_CONTRATO_FRONTEND_BACKEND.md`](12_CONTRATO_FRONTEND_BACKEND.md) — payloads de request/response
+2. [`12_CONTRATO_FRONTEND_BACKEND.md`](../modesec/insumos/12_CONTRATO_FRONTEND_BACKEND.md) — payloads de request/response
    reales por ventana. **Fuente de verdad de contratos de datos.**
-3. [`ventanas/3.3_VENTANA_ESTANDAR.md`](ventanas/3.3_VENTANA_ESTANDAR.md) — las 5 zonas A-E y cuáles
+3. [`ventanas/3.3_VENTANA_ESTANDAR.md`](../modesec/ventanas/3.3_VENTANA_ESTANDAR.md) — las 5 zonas A-E y cuáles
    son invariantes.
-4. [`contenidos/3.3.3_MAPA_NAVEGACION.md`](contenidos/3.3.3_MAPA_NAVEGACION.md) — mapa de navegación
+4. [`contenidos/3.3.3_MAPA_NAVEGACION.md`](../modesec/contenidos/3.3.3_MAPA_NAVEGACION.md) — mapa de navegación
    normativo (3 clics máx., 7±2 en el Menú).
-5. [`NAMING_STIRE.md`](NAMING_STIRE.md) — **única fuente de etiquetas visibles.** Ningún texto de UI
+5. [`NAMING_STIRE.md`](../modesec/NAMING_STIRE.md) — **única fuente de etiquetas visibles.** Ningún texto de UI
    se escribe a mano sin consultar este archivo primero (esta misma semana se encontró y corrigió un
    caso: un botón etiquetado "▶ Ejecutar" en vez de "▶ Probar código").
 6. Prototipo navegable en Figma:
    `https://www.figma.com/proto/1MjKiDrjU65ezO3ztO0v4m/STIRE-Soft?node-id=11-2&starting-point-node-id=11-2`
    — úsese como referencia visual y de interacción real, no solo las fichas de texto.
-7. [`04_MATRIZ_PERMISOS.md`](04_MATRIZ_PERMISOS.md) — antes de cablear cualquier llamada autenticada,
+7. [`04_MATRIZ_PERMISOS.md`](../modesec/insumos/04_MATRIZ_PERMISOS.md) — antes de cablear cualquier llamada autenticada,
    qué rol puede pegarle a qué endpoint.
 
 ---
