@@ -7,9 +7,15 @@
 **Cierre:** viernes 18 de septiembre, 8:00 p. m.  
 **Tablero Kanban:** https://trello.com/b/sdy0VdLm/stire-kanban-desarrollo-semana-05-14-18-sep-2026
 
+> **Bitácora archivada.** Esta semana ya terminó. El documento de trabajo de la semana siguiente
+> vive en `MONITOREO_SEMANAL.md` en la raíz cuando el equipo defina el alcance de la Semana 6 — no
+> se generó automáticamente al cerrar esta, para no fijar objetivos de otra persona sin que el
+> equipo los decida. Cierre verificado el 18/09 contra Trello real y contra el código/informes
+> reales del repositorio, no solo contra lo que esta bitácora ya declaraba.
+
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
-> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_04.md`](./docs/seguimiento/MONITOREO_SEMANAL_04.md) — ahí queda el cierre completo de la Semana 4.
+> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_04.md`](./MONITOREO_SEMANAL_04.md) — ahí queda el cierre completo de la Semana 4.
 
 ---
 
@@ -27,7 +33,7 @@
 
 **Reunión de equipo:** viernes 8:00 – 8:40 p. m.  
 **Reportes:** martes y jueves, máximo 8:00 p. m.  
-**Metodología:** [`docs/05_METODOLOGIA_Y_EQUIPO.md`](./docs/05_METODOLOGIA_Y_EQUIPO.md)
+**Metodología:** [`docs/05_METODOLOGIA_Y_EQUIPO.md`](../05_METODOLOGIA_Y_EQUIPO.md)
 
 ---
 
@@ -160,37 +166,69 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 
 ---
 
-## 🧾 7. Resultado del Sprint — completar al cierre
+## 🧾 7. Resultado del Sprint — verificado contra Trello y el repositorio real el 18/09/2026
+
+> Regla aplicada, misma que cerró la Semana 4: **solo se marca `[x]` lo que tiene una tarjeta
+> `✅ Hecho` en Trello o un archivo/commit real detrás.** Lo demás queda `[ ]` con su razón — no se
+> asume que algo se hizo solo porque venció la fecha.
 
 ### Jeider Gómez
 
-- [ ] Sustentación realizada.
-- [ ] Self-XSS corregido.
-- [ ] Formulario de "Crear Nueva Clase" conectado.
+- [ ] Sustentación realizada. *(Sin evidencia en este repositorio de que haya ocurrido o de su
+  resultado — evento externo, no deja rastro en GitHub/Trello. Que quede confirmado por quien
+  estuvo presente.)*
+- [x] Self-XSS del Tutor IA corregido (`P2-R4`). *(Ya estaba resuelto desde la Fase 14, commit
+  `71360b7` — `escapeHtml()` en `TutorChatDrawer.vue` antes del markdown. Tarjeta `S05-J02` movida a
+  `✅ Hecho` el 18/09 por Claude Code, verificado contra el código real, no solo contra el commit.)*
+- [x] Formulario de "Crear Nueva Clase" conectado (`FE-02`). *(Mismo commit `71360b7` — modal real
+  conectado a `POST /class`. Tarjeta `S05-J03` movida a `✅ Hecho` el 18/09, mismo criterio.)*
 
 ### Pedro Romero
 
 - [x] Tablero de la Semana 5 creado. *(14/09.)*
-- [ ] Apoyo a la sustentación.
-- [ ] Bitácora cerrada el viernes, sin retraso.
+- [ ] Apoyo a la sustentación. *(Sin evidencia en este repositorio — depende de `S05-J01`.)*
+- [x] Bitácora cerrada el viernes 18/09, verificada contra Trello real.
 
 ### José López
 
-- [ ] Material de la sustentación listo.
-- [ ] 9 vistas validadas contra Figma.
+- [ ] Material de la sustentación listo. *(Sin evidencia en este repositorio.)*
+- [ ] 9 vistas validadas contra Figma. *(Sin evidencia en este repositorio — la tarjeta `S05-JO02`
+  sigue en `Esta semana`, no se movió a `Hecho`.)*
 
 ### Julio Galvis
 
-- [ ] Estructura de los dos cursos organizada (`S05-JL01`).
+- [ ] Estructura de los dos cursos organizada (`S05-JL01`). *(Sin evidencia en este repositorio —
+  no hay archivos de estructura de curso nuevos; la tarjeta sigue en `Esta semana`.)*
 - [ ] *(Escribir el contenido completo, la validación en vivo y las funciones de docente quedan en Backlog — no aplican esta semana, ver §3.)*
 
 ### Jorge Cervantes
 
-- [x] Hallazgos re-verificados por Claude Code, sin duplicación de trabajo.
-- [ ] QA general funcional, backend/API, integración y validación de correcciones de agentes.
-- [ ] Resultado final comunicado con evidencia.
+- [x] Hallazgos re-verificados por Claude Code, sin duplicación de trabajo. *(14/09, ver
+  `docs/PLAN_MAESTRO.md` §5.)*
+- [x] QA general del sistema entregado. *(`docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE_18-09`, 18/09
+  — commit `83593cb` auditado, 331/331 tests, build backend/frontend en verde, `P2-R4`/`FE-02`
+  re-confirmados, veredicto **"APTO CON CONDICIONES", 80.0% de avance**. Cubre los 12 pasos de la
+  tarjeta `S05-JOR02` (login, navegación, flujo de estudiante, Tutor IA, API, integración, estados
+  de error, correcciones de agentes, conclusión) — tarjeta movida a `✅ Hecho`.)*
 
-> **Nota:** se marca solo con resultados verificables al cierre del viernes 18/09.
+**Nota de verificación (18/09, Claude Code):** el reporte de Jorge se tomó como hallazgo a
+verificar, no como hecho consumado — regla vigente de este proyecto. Dos precisiones reales:
+1. `VERIFY-01` ("`verify:clean` falla, requiere MySQL en :3306") no es un defecto de código — es el
+   comportamiento **esperado** del script: `verify:clean` existe exactamente para exigir una base de
+   datos real, no para pasar con SQLite en memoria (`CLAUDE.md`, sección `verify:clean`). El hallazgo
+   real es "no había un MySQL corriendo en la máquina donde se auditó", no un problema de STIRE.
+2. El reporte no cubrió los puntos específicos pedidos en
+   `docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md` (barrido sistemático de BOLA, pruebas
+   adversariales contra el Tutor/Mastery nuevos, auditoría de las Fases 16/17, accesibilidad con
+   lector de pantalla, concurrencia) — cubre en cambio el checklist base de la tarjeta `S05-JOR02`,
+   que sí completa. La guía queda vigente para una próxima pasada si el equipo la considera
+   necesaria; no bloquea el cierre de esta bitácora.
+
+**Resumen real de cierre:** 6 de 12 ítems de sprint cerrados con evidencia verificable. Los 6 que no
+cierran son: la sustentación y su apoyo (evento externo, sin rastro en el repositorio), el material
+de sustentación de José, la validación de las 9 vistas contra Figma, y la estructura de los dos
+cursos de Julio — ninguno tiene evidencia real en Trello/GitHub a la fecha de cierre. No se marcan
+como fallidos, quedan como pendientes reales para que el equipo los retome.
 
 ---
 
@@ -198,13 +236,14 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 
 | N.º | Semana | Documento |
 |---|---|---|
-| 1 | 17 – 21 de agosto de 2026 | [`MONITOREO_SEMANAL_01.md`](./docs/seguimiento/MONITOREO_SEMANAL_01.md) |
-| 2 | 24 – 28 de agosto de 2026 | [`MONITOREO_SEMANAL_02.md`](./docs/seguimiento/MONITOREO_SEMANAL_02.md) |
-| 3 | 31 de agosto – 4 de septiembre de 2026 | [`MONITOREO_SEMANAL_03.md`](./docs/seguimiento/MONITOREO_SEMANAL_03.md) |
-| 4 | 7 – 11 de septiembre de 2026 | [`MONITOREO_SEMANAL_04.md`](./docs/seguimiento/MONITOREO_SEMANAL_04.md) |
-| 5 | 14 – 18 de septiembre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
+| 1 | 17 – 21 de agosto de 2026 | [`MONITOREO_SEMANAL_01.md`](./MONITOREO_SEMANAL_01.md) |
+| 2 | 24 – 28 de agosto de 2026 | [`MONITOREO_SEMANAL_02.md`](./MONITOREO_SEMANAL_02.md) |
+| 3 | 31 de agosto – 4 de septiembre de 2026 | [`MONITOREO_SEMANAL_03.md`](./MONITOREO_SEMANAL_03.md) |
+| 4 | 7 – 11 de septiembre de 2026 | [`MONITOREO_SEMANAL_04.md`](./MONITOREO_SEMANAL_04.md) |
+| 5 | 14 – 18 de septiembre de 2026 | [`MONITOREO_SEMANAL_05.md`](./MONITOREO_SEMANAL_05.md) |
 
 ---
 
 *Bitácora N.º 5 · Semana del 14 al 18 de septiembre de 2026.*  
-*Responsable de seguimiento y cierre documental: Pedro Romero.*
+*Responsable de seguimiento y cierre documental: Pedro Romero.*  
+*Cerrada y archivada el 18 de septiembre de 2026, con verificación cruzada contra Trello real.*

@@ -44,7 +44,7 @@ El equipo trabaja con **Sprint Semanal y Kanban en Trello**. Hay solo dos docume
 
 | Documento | Contenido |
 |-----------|-----------|
-| [`MONITOREO_SEMANAL.md`](./MONITOREO_SEMANAL.md) | Bitácora oficial del curso: avances, cuellos de botella y compromisos de la semana. |
+| [`docs/seguimiento/MONITOREO_SEMANAL_05.md`](./docs/seguimiento/MONITOREO_SEMANAL_05.md) | Última bitácora cerrada (Semana 5, 14-18 sep). `MONITOREO_SEMANAL.md` en la raíz es la bitácora **en curso**; no existe hasta que el equipo abra la Semana 6. |
 | [`docs/05_METODOLOGIA_Y_EQUIPO.md`](./docs/05_METODOLOGIA_Y_EQUIPO.md) | Cómo trabaja el equipo: cadencia semanal, roles, tablero de Trello y entregables. |
 
 ---

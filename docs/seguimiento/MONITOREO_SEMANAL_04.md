@@ -8,7 +8,8 @@
 **Tablero Kanban:** https://trello.com/b/WW9nWXQ5/stire-kanban-desarrollo-semana-04
 
 > **Bitácora archivada.** Esta semana ya terminó. El documento de trabajo de la semana siguiente
-> vive en `MONITOREO_SEMANAL.md` en la raíz (Bitácora N.º 5, semana del 14 al 18 de septiembre de
+> vivió en `MONITOREO_SEMANAL.md` en la raíz y ya se cerró y archivó como
+> [`MONITOREO_SEMANAL_05.md`](./MONITOREO_SEMANAL_05.md) (Bitácora N.º 5, semana del 14 al 18 de septiembre de
 > 2026). Cierre verificado el 14/09 contra el tablero Trello real (no solo contra lo que esta
 > bitácora ya declaraba) — ver §7 abajo, actualizada con esa verificación.
 
@@ -382,7 +383,7 @@ no cierran son de Julio — contenidos (aplazado a la Semana 5, `S05-JL01`) y va
 | 2 | 24 – 28 de agosto de 2026 | [`MONITOREO_SEMANAL_02.md`](./docs/seguimiento/MONITOREO_SEMANAL_02.md) |
 | 3 | 31 de agosto – 4 de septiembre de 2026 | [`MONITOREO_SEMANAL_03.md`](./docs/seguimiento/MONITOREO_SEMANAL_03.md) |
 | 4 | 7 – 11 de septiembre de 2026 | Este documento |
-| 5 | 14 – 18 de septiembre de 2026 | `MONITOREO_SEMANAL.md` en la raíz |
+| 5 | 14 – 18 de septiembre de 2026 | [`MONITOREO_SEMANAL_05.md`](./MONITOREO_SEMANAL_05.md) |
 
 ---
 
