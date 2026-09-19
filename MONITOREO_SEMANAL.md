@@ -19,7 +19,7 @@
 | :--- | :--- | :--- | :--- |
 | **Jeider Gómez** | **Líder Técnico:** frontend Nuxt, backend, integración y Tutor IA | **Miércoles 4:00–6:00 p. m.** | @Jeider-Gomez |
 | **Jorge Cervantes** | **Gestión + Calidad:** QA general funcional, backend/API, integración, correcciones y resultado ejecutable | **Jueves 10:00 a. m.–12:00 p. m.** | @IvanGoats |
-| **José López** | **UI/UX + Comunicación:** pruebas de usuario real, verificación de UI/UX y documentación visual del proyecto *(redefinido 19/09 — ya no incluye validación contra Figma)* | **Miércoles 2:00–4:00 p. m.** | @JoseTheGoat90 |
+| **José López** | **UI/UX + Comunicación:** pruebas de usuario real, verificación de UI/UX y documentación visual del proyecto  | **Miércoles 2:00–4:00 p. m.** | @JoseTheGoat90 |
 | **Julio Galvis** | **Diseño Instruccional:** MODESEC, navegación y contenidos | **Jueves 4:00–6:00 p. m.** | @jcg0912 |
 | **Pedro Romero** | **Documentación + Bitácora:** Trello, evidencias, seguimiento y cierre documental | **Jueves 4:00–6:00 p. m.** | @pedrorm20 |
 
