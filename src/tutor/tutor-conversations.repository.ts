@@ -15,4 +15,16 @@ export class TutorConversationsRepository extends Repository<TutorConversation> 
       take: limit,
     }).then(msgs => msgs.reverse()); // Devolver en orden cronológico
   }
+
+  /** Últimos mensajes visibles (user/assistant) del estudiante, del más antiguo al más reciente. */
+  async getHistory(studentId: number, limit: number): Promise<TutorConversation[]> {
+    return this.createQueryBuilder('c')
+      .where('c.studentId = :studentId', { studentId })
+      .andWhere('c.role IN (:...roles)', { roles: ['user', 'assistant'] })
+      .orderBy('c.createdAt', 'DESC')
+      .addOrderBy('c.id', 'DESC')
+      .take(limit)
+      .getMany()
+      .then(msgs => msgs.reverse());
+  }
 }

@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { LearningProgressRepository } from '../learning-progress/learning-progress.repository';
+import { GuidanceLevel, guidanceInstruction } from './tutor-guidance';
+import { TutorStyle, styleInstruction } from './tutor-settings';
 
 @Injectable()
 export class TutorContextService {
   constructor(private readonly progressRepo: LearningProgressRepository) {}
 
-  async buildSystemPrompt(studentId: number, context?: any): Promise<string> {
+  async buildSystemPrompt(
+    studentId: number,
+    context?: any,
+    guidanceLevel?: GuidanceLevel | null,
+    style?: TutorStyle,
+  ): Promise<string> {
     const progressRecords = await this.progressRepo.find({ where: { studentId } });
 
     let avgMastery = 0;
@@ -43,11 +50,21 @@ export class TutorContextService {
       ? `\nÚLTIMOS PROGRESOS DEL ESTUDIANTE:\n${recentProgress}\n`
       : '';
 
+    const guidanceSection = guidanceLevel
+      ? `
+NIVEL DE AYUDA ACTUAL (sube solo con los intentos fallidos del estudiante en esta actividad; no lo menciones como número):
+${guidanceInstruction(guidanceLevel)}
+`
+      : '';
+
+    const styleLine = style ? styleInstruction(style) : null;
+    const styleSection = styleLine ? `\n${styleLine}\n` : '';
+
     return `
 Eres el Tutor Inteligente de STIRE (Smart Tutor for Interactive & Responsive Education), para el curso de Algoritmos Básicos con HTML5, CSS y JavaScript para Desarrollo Web.
 Actualmente estás orientando a un estudiante de nivel ${level} (Maestría Global: ${Math.round(avgMastery)}%).
 ${locationContext}
-${recentProgressSection}
+${recentProgressSection}${guidanceSection}${styleSection}
 REGLAS PEDAGÓGICAS ESTRICTAS:
 1. NUNCA resuelvas el ejercicio directamente ni des la respuesta o el código completo.
 2. Utiliza el Método Socrático: responde con una pregunta orientadora, pista conceptual o metáfora según su código.

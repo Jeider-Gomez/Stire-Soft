@@ -106,7 +106,7 @@ const JUSTIFIED_EXCEPTIONS: Exception[] = [
   {
     controller: TutorController,
     method: 'chat',
-    reason: 'tutorService.sendMessage(user.id, message) — siempre conversa con el propio usuario.',
+    reason: 'tutorService.sendMessage(user, message, context) — siempre conversa con el propio usuario.',
   },
   {
     controller: SubmissionsController,

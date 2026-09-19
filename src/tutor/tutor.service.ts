@@ -1,11 +1,25 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  NotFoundException,
+  ServiceUnavailableException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import OpenAI from 'openai';
-import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { TutorConversationsRepository } from './tutor-conversations.repository';
 import { TutorContextService } from './tutor-context.service';
+import { TutorCredentialService } from './tutor-credential.service';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
 import { TutorRecommendationService, SuggestedActivity } from './tutor-recommendation.service';
+import { LearningUnitService } from '../learning-unit/learning-unit.service';
+import { LearningProgressService } from '../learning-progress/learning-progress.service';
+import { GuidanceLevel, guidanceLevelForFailedAttempts } from './tutor-guidance';
+import { TutorSettingsService } from './tutor-settings.service';
+import { limitCodeBlocks } from './tutor-solution-guard';
+import { User } from '../user/entities/user.entity';
 
 const PRACTICE_INTENT_PATTERN =
   /\b(quiero|puedo|deseo|dame|necesito|hazme|ponme)\b[^.!?]{0,40}\b(practicar|estudiar|ejercitar|un ejercicio|ejercicios|repasar)\b/i;
@@ -15,19 +29,37 @@ const PRACTICE_INTENT_PATTERN =
 const GREETING_PREFIXES = ['Oye,', 'Mira,', 'Antes de seguir,', 'Una cosa,'];
 const SUGGESTION_CLOSERS = ['¿Le damos con', '¿Practicamos', '¿Te animas con', '¿Vamos con'];
 
+const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
+const GEMINI_TIMEOUT_MS = 15000;
+const HISTORY_WINDOW = 6;
+
+export const HISTORY_DEFAULT_LIMIT = 20;
+export const HISTORY_MAX_LIMIT = 50;
+
 export interface TutorReply {
   message: string;
   suggestedActivity: SuggestedActivity | null;
+  /** Nivel de ayuda con el que se respondió (null si el estudiante no está en una actividad). */
+  guidanceLevel: GuidanceLevel | null;
+}
+
+export interface TutorHistoryMessage {
+  id: number;
+  role: 'user' | 'assistant';
+  content: string;
+  createdAt: Date;
+}
+
+type GeminiRole = 'user' | 'model';
+interface GeminiContent {
+  role: GeminiRole;
+  parts: Array<{ text: string }>;
 }
 
 @Injectable()
 export class TutorService {
   private readonly logger = new Logger(TutorService.name);
-  private readonly openai?: OpenAI;
-  private readonly apiKey: string;
-  private readonly openAiModel: string;
-  private readonly openAiRetryCount: number;
-  private readonly isGemini: boolean;
+  private readonly geminiModel: string;
 
   constructor(
     private readonly convRepo: TutorConversationsRepository,
@@ -35,127 +67,140 @@ export class TutorService {
     private readonly configService: ConfigService,
     private readonly contentRenderingService: ContentRenderingService,
     private readonly recommendationService: TutorRecommendationService,
+    private readonly credentialService: TutorCredentialService,
+    private readonly learningUnitService: LearningUnitService,
+    private readonly learningProgressService: LearningProgressService,
+    private readonly settingsService: TutorSettingsService,
   ) {
-    const rawApiKey = this.configService.get<string>('OPENAI_API_KEY');
-    this.apiKey = rawApiKey ? rawApiKey.trim() : '';
-    this.openAiModel = this.configService.get<string>('OPENAI_MODEL', 'gemini-flash-latest');
-    this.openAiRetryCount = this.configService.get<number>('OPENAI_RETRY_COUNT', 3);
-    const rawBaseURL = this.configService.get<string>('OPENAI_API_URL', '');
-
-    this.isGemini =
-      this.apiKey.startsWith('AQ.') ||
-      this.apiKey.startsWith('AIza') ||
-      (typeof rawBaseURL === 'string' && rawBaseURL.includes('generativelanguage.googleapis.com'));
-
-    if (this.apiKey && !this.isGemini) {
-      const baseURL = (rawBaseURL || 'https://api.openai.com/v1')
-        .trim()
-        .replace(/\/chat\/completions\/?$/, '');
-      this.openai = new OpenAI({ apiKey: this.apiKey, baseURL });
-      this.logger.log(`Tutor IA inicializado con LLM (${this.openAiModel}) en ${baseURL}`);
-    } else if (this.apiKey && this.isGemini) {
-      this.logger.log(`Tutor IA inicializado con Google Gemini AI Studio (${this.openAiModel})`);
-    }
+    this.geminiModel = this.configService.get<string>('GEMINI_MODEL', 'gemini-flash-latest');
   }
 
-  async sendMessage(studentId: number, message: string, context?: any): Promise<TutorReply> {
-    const practiceIntent = PRACTICE_INTENT_PATTERN.test(message);
+  async sendMessage(user: User, message: string, context?: any): Promise<TutorReply> {
+    const studentId = user.id;
+    const unit = await this.resolveAccessibleUnit(user, context);
 
-    // ADR 07, perfil PLAIN: texto de estudiante, sin HTML.
+    // El docente manda: si desactivó el Tutor para esta clase, unidad o actividad, no se gasta ni la
+    // cuota del estudiante ni se le pide la clave.
+    const settings = await this.settingsService.resolveForStudent(user, { activityId: context?.activityId, unitId: unit?.id });
+    if (!settings.enabled) {
+      throw new ForbiddenException('Tu docente desactivó el Tutor en esta parte del curso.');
+    }
+
+    // Sin clave propia del estudiante no hay Tutor (cada estudiante usa su capa gratuita de Google
+    // AI Studio). Se comprueba antes de tocar el historial para que un intento sin clave no lo ensucie.
+    const apiKey = await this.credentialService.getDecryptedKey(studentId);
+    if (!apiKey) {
+      throw new HttpException(
+        'Para usar el Tutor necesitas configurar tu clave gratuita de Google AI Studio.',
+        HttpStatus.PRECONDITION_REQUIRED,
+      );
+    }
+
+    const practiceIntent = PRACTICE_INTENT_PATTERN.test(message);
+    const promptContext = this.sanitizeContext(context, unit);
+
+    const guidanceLevel = this.capLevel(await this.resolveGuidanceLevel(studentId, context?.activityId), settings.maxGuideLevel);
+    const systemPrompt = await this.contextService.buildSystemPrompt(studentId, promptContext, guidanceLevel, settings.style);
+    // El historial se lee ANTES de guardar el mensaje nuevo: si no, el LLM lo recibe dos veces.
+    const history = await this.convRepo.getRecentContext(studentId, HISTORY_WINDOW);
+
+    const rawReply = await this.callGemini(apiKey, systemPrompt, history, message);
+
+    // Dentro de una actividad, un bloque de código largo se sustituye por un aviso (barrera en código
+    // contra dar la solución completa; ver tutor-solution-guard.ts).
+    let replyText = rawReply;
+    if (guidanceLevel !== null) {
+      const guarded = limitCodeBlocks(rawReply, {
+        studentCode: typeof context?.currentCode === 'string' ? context.currentCode : undefined,
+        studentMessage: message,
+      });
+      replyText = guarded.text;
+      if (guarded.redactedBlocks > 0) {
+        this.logger.warn(`Se omitieron ${guarded.redactedBlocks} bloque(s) de código largo en la respuesta del Tutor (barrera anti-solución).`);
+      }
+    }
+
+    // ADR 07, perfil PLAIN: texto de estudiante y salida del LLM se guardan saneados. Ambos se
+    // guardan solo tras una respuesta exitosa, así "Reintentar" tras un fallo no deja mensajes huérfanos.
+    const sanitizedAiResponse = this.contentRenderingService.escapePlainText(replyText);
     await this.convRepo.save({
       studentId,
       role: 'user',
       content: this.contentRenderingService.escapePlainText(message),
     });
-
-    const systemPrompt = await this.contextService.buildSystemPrompt(studentId, context);
-    const history = await this.convRepo.getRecentContext(studentId, 6);
-    const payload = this.buildMessages(systemPrompt, history, message);
-
-    this.logger.log(`LLM Payload preparado con ${payload.length} mensajes. Ejecutando inferencia...`);
-
-    let aiResponseContent: string;
-
-    if (!this.apiKey) {
-      this.logger.warn('OPENAI_API_KEY no configurada. Usando inferencia local mock.');
-      aiResponseContent = this.mockLlmInference(message, context);
-    } else if (this.isGemini) {
-      try {
-        // callGeminiApi ya prueba hasta 4 modelos candidatos internamente
-        // (con 4s de timeout cada uno) -- envolverla con el mismo
-        // openAiRetryCount (3) multiplicaba la espera del estudiante a ~90s+
-        // en la práctica (retries 2s/4s/8s x 4 modelos c/u), sin que reintentar
-        // ayude contra un 429 real de cuota agotada. Un solo reintento del
-        // ciclo completo es suficiente para cubrir fallos transitorios de red.
-        aiResponseContent = await this.callWithRetry(
-          () => this.callGeminiApi(systemPrompt, history, message),
-          1,
-        );
-      } catch (err: any) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        this.logger.error(`Error en Google Gemini: ${errorMessage}`);
-        aiResponseContent = this.mockLlmInference(message, context);
-      }
-    } else if (this.openai) {
-      const client = this.openai;
-      try {
-        const response = await this.callWithRetry(() =>
-          client.chat.completions.create({
-            model: this.openAiModel,
-            messages: payload,
-            max_tokens: 500,
-            temperature: 0.7,
-          }),
-          this.openAiRetryCount,
-        );
-
-        aiResponseContent = response.choices?.[0]?.message?.content?.trim() ?? '';
-        if (!aiResponseContent) {
-          throw new Error('OpenAI returned empty response content');
-        }
-      } catch (err: any) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-
-        if (errorMessage.includes('429')) {
-          this.logger.warn('OpenAI rate limit exceeded.');
-          throw new Error('OpenAI rate limit exceeded. Por favor intenta de nuevo en unos segundos.');
-        }
-
-        if (/timeout|timed out|ETIMEDOUT/i.test(errorMessage)) {
-          this.logger.warn('OpenAI request timed out.');
-          throw new Error('OpenAI request timeout. Intenta de nuevo.');
-        }
-
-        this.logger.error(`Error en OpenAI: ${errorMessage}`);
-        aiResponseContent = this.mockLlmInference(message);
-      }
-    } else {
-      aiResponseContent = this.mockLlmInference(message);
-    }
-
-    // ADR 07, perfil PLAIN: la salida del LLM no es HTML de confianza aunque
-    // no venga de un usuario humano — se guarda saneada.
-    const sanitizedAiResponse = this.contentRenderingService.escapePlainText(aiResponseContent);
-    await this.convRepo.save({
-      studentId,
-      role: 'assistant',
-      content: sanitizedAiResponse,
-    });
+    await this.convRepo.save({ studentId, role: 'assistant', content: sanitizedAiResponse });
 
     // Solo se adjunta una tarjeta de ejercicio cuando el estudiante lo pidió explícitamente --
-    // el "¿ya entendiste, practicamos?" se dejó como pregunta natural del propio LLM (ver
-    // tutor-context.service.ts regla 6), no como un marcador oculto que el backend interpreta:
-    // menos tokens por llamada y no satura cada respuesta con una tarjeta.
-    const suggestedActivity = practiceIntent ? await this.resolveExplicitSuggestion(studentId, context) : null;
+    // el "¿ya entendiste, practicamos?" es pregunta natural del propio LLM (tutor-context.service.ts
+    // regla 6), no un marcador oculto: menos tokens por llamada y sin saturar cada respuesta.
+    const suggestedActivity = practiceIntent ? await this.resolveExplicitSuggestion(studentId, unit) : null;
 
-    return { message: sanitizedAiResponse, suggestedActivity };
+    return { message: sanitizedAiResponse, suggestedActivity, guidanceLevel };
   }
 
-  private async resolveExplicitSuggestion(studentId: number, context: any): Promise<SuggestedActivity | null> {
-    const learningUnitId = context?.learningUnitId;
-    if (learningUnitId) {
-      const reasonMessage = `Aquí tienes el siguiente ejercicio de "${context.unitTitle ?? 'tu unidad actual'}".`;
-      return this.recommendationService.suggestForUnit(studentId, learningUnitId, 'contexto_actual', reasonMessage);
+  /** Nivel de ayuda actual y estado del Tutor para una actividad (lo que la interfaz muestra antes del primer mensaje). */
+  async getGuidance(
+    user: User,
+    activityId?: number,
+  ): Promise<{ guidanceLevel: GuidanceLevel | null; tutorEnabled: boolean; maxGuideLevel: GuidanceLevel }> {
+    const settings = await this.settingsService.resolveForStudent(user, { activityId });
+    const level = this.capLevel(await this.resolveGuidanceLevel(user.id, activityId), settings.maxGuideLevel);
+    return { guidanceLevel: level, tutorEnabled: settings.enabled, maxGuideLevel: settings.maxGuideLevel };
+  }
+
+  private capLevel(level: GuidanceLevel | null, max: GuidanceLevel): GuidanceLevel | null {
+    return level === null ? null : (Math.min(level, max) as GuidanceLevel);
+  }
+
+  private async resolveGuidanceLevel(studentId: number, rawActivityId: unknown): Promise<GuidanceLevel | null> {
+    const activityId = Number(rawActivityId);
+    if (!Number.isInteger(activityId) || activityId <= 0) return null;
+    const failedAttempts = await this.learningProgressService.countFailedAttempts(studentId, activityId);
+    return guidanceLevelForFailedAttempts(failedAttempts);
+  }
+
+  async getHistory(studentId: number, limit?: number): Promise<TutorHistoryMessage[]> {
+    const safeLimit = Math.min(Math.max(Math.trunc(limit ?? HISTORY_DEFAULT_LIMIT) || HISTORY_DEFAULT_LIMIT, 1), HISTORY_MAX_LIMIT);
+    const rows = await this.convRepo.getHistory(studentId, safeLimit);
+    return rows.map(row => ({
+      id: row.id,
+      role: row.role === 'assistant' ? 'assistant' : 'user',
+      content: row.content,
+      createdAt: row.createdAt,
+    }));
+  }
+
+  /**
+   * `learningUnitId` viene del cliente: solo se usa si el estudiante realmente puede leer esa unidad
+   * (misma regla que `GET /learning-unit/:id`). Si no, se ignora en silencio — el chat no falla.
+   */
+  private async resolveAccessibleUnit(user: User, context: any): Promise<{ id: number; title: string } | null> {
+    const id = Number(context?.learningUnitId);
+    if (!Number.isInteger(id) || id <= 0) return null;
+    try {
+      const unit = await this.learningUnitService.findOne(id, user);
+      return { id: unit.id, title: unit.title };
+    } catch (err) {
+      if (err instanceof ForbiddenException || err instanceof NotFoundException) return null;
+      throw err;
+    }
+  }
+
+  private sanitizeContext(context: any, unit: { id: number; title: string } | null): any {
+    if (!context || typeof context !== 'object') return context;
+    const rest = { ...context };
+    delete rest.learningUnitId;
+    delete rest.unitTitle;
+    return unit ? { ...rest, learningUnitId: unit.id, unitTitle: unit.title } : rest;
+  }
+
+  private async resolveExplicitSuggestion(
+    studentId: number,
+    unit: { id: number; title: string } | null,
+  ): Promise<SuggestedActivity | null> {
+    if (unit) {
+      const reasonMessage = `Aquí tienes el siguiente ejercicio de "${unit.title}".`;
+      return this.recommendationService.suggestForUnit(studentId, unit.id, 'contexto_actual', reasonMessage);
     }
     return this.recommendationService.suggestAmbient(studentId);
   }
@@ -177,7 +222,7 @@ export class TutorService {
 
     await this.convRepo.save({ studentId, role: 'assistant', content: message });
 
-    return { message, suggestedActivity };
+    return { message, suggestedActivity, guidanceLevel: null };
   }
 
   private timeOfDayGreeting(): string {
@@ -187,165 +232,89 @@ export class TutorService {
     return '¡Buenas noches!';
   }
 
-  private async callGeminiApi(
+  /**
+   * Llama a Google Gemini con la clave del propio estudiante (cabecera `x-goog-api-key`, nunca en la
+   * URL). Prueba varios modelos candidatos y traduce el fallo a un código HTTP con sentido:
+   * 422 clave inválida/revocada, 429 cuota gratuita agotada, 503 servicio no disponible.
+   */
+  private async callGemini(
+    apiKey: string,
     systemPrompt: string,
     history: Array<{ role: string; content: string }>,
     userMessage: string,
   ): Promise<string> {
-    const primaryModel = this.openAiModel || 'gemini-flash-latest';
-    const fallbackModels = [
-      primaryModel,
-      'gemini-flash-latest',
-      'gemini-3.8-flash',
-      'gemini-3.5-flash-lite',
-    ].map(m => m.replace(/^models\//, ''));
-    // Desduplicar manteniendo orden
-    const candidateModels = Array.from(new Set(fallbackModels));
-
-    const contents = [
-      ...history.map(msg => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }],
-      })),
-      { role: 'user', parts: [{ text: userMessage }] },
-    ];
-
     const body = {
-      system_instruction: {
-        parts: [{ text: systemPrompt }],
-      },
-      contents,
-      generationConfig: {
-        maxOutputTokens: 2048,
-        temperature: 0.7,
-      },
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: this.toGeminiContents(history, userMessage),
+      generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
     };
 
-    let lastError: Error | null = null;
-    for (const cleanModel of candidateModels) {
+    const candidateModels = Array.from(
+      new Set([this.geminiModel, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'].map(m => m.replace(/^models\//, ''))),
+    );
+
+    let sawQuota = false;
+    for (const model of candidateModels) {
+      let res: Awaited<ReturnType<typeof fetch>>;
       try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${cleanModel}:generateContent?key=${this.apiKey}`;
-        const res = await fetch(url, {
+        res = await fetch(`${GEMINI_BASE_URL}/${model}:generateContent`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
           body: JSON.stringify(body),
-          signal: AbortSignal.timeout(4000),
+          signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
         });
-
-        if (!res.ok) {
-          const errText = await res.text();
-          this.logger.warn(`Modelo ${cleanModel} devolvió ${res.status}: ${errText.slice(0, 100)}... Probando siguiente candidato.`);
-          lastError = new Error(`Google Gemini Error ${res.status}: ${errText}`);
-          continue;
-        }
-
-        const data: any = await res.json();
-        const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-        if (candidateText) {
-          this.logger.log(`Inferencia exitosa con Google Gemini (${cleanModel})`);
-          return candidateText;
-        }
       } catch (err: any) {
-        lastError = err;
-        this.logger.warn(`Fallo al llamar a ${cleanModel}: ${err.message}. Probando siguiente modelo.`);
-      }
-    }
-
-    throw lastError || new Error('Google Gemini: ningún modelo candidato estuvo disponible');
-  }
-
-  private async callWithRetry<T>(fn: () => Promise<T>, retries: number, attempt = 1): Promise<T> {
-    try {
-      return await fn();
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      const status = (error as any)?.status ?? (error as any)?.statusCode;
-      const isRetryable =
-        status === 429 ||
-        status === 503 ||
-        /timeout|timed out|ETIMEDOUT|ECONNRESET|EAI_AGAIN/i.test(errorMessage);
-
-      if (retries > 0 && isRetryable) {
-        const delayMs = 2000 * Math.pow(2, attempt - 1);
-        this.logger.warn(`Retry ${attempt} para OpenAI (${status ?? errorMessage}), esperando ${delayMs}ms`);
-        await new Promise(resolve => setTimeout(resolve, delayMs));
-        return this.callWithRetry(fn, retries - 1, attempt + 1);
+        this.logger.warn(`Fallo de red o timeout con ${model} (${err?.name ?? 'error'}). Probando siguiente modelo.`);
+        continue;
       }
 
-      throw error;
-    }
-  }
-
-  private normalizeRole(role: string): 'system' | 'user' | 'assistant' {
-    return role === 'system' || role === 'assistant' ? role : 'user';
-  }
-
-  private buildMessages(
-    systemPrompt: string,
-    history: Array<{ role: string; content: string }>,
-    userMessage: string,
-  ): ChatCompletionMessageParam[] {
-    return [
-      { role: 'system', content: systemPrompt },
-      ...history.map(msg => ({
-        role: this.normalizeRole(msg.role),
-        content: msg.content,
-      })),
-      { role: 'user', content: userMessage },
-    ];
-  }
-
-  private mockLlmInference(userMessage: string, context?: any): string {
-    const text = userMessage.toLowerCase().trim();
-
-    // 1. Saludos contextuales
-    if (/^(hola|buenas|buen[oa]s d[ií]as|buenas tardes|buenas noches|saludos|hi|hello|hey)/i.test(text)) {
-      if (context?.activityTitle) {
-        return `¡Hola! Soy tu Tutor Inteligente de STIRE. Veo que estás trabajando en la actividad "${context.activityTitle}". ¿Qué parte del planteamiento o lógica quisieras que examinemos juntos?`;
+      if (res.ok) {
+        const data: any = await res.json().catch(() => null);
+        const text = (data?.candidates?.[0]?.content?.parts ?? [])
+          .map((p: any) => p?.text)
+          .filter(Boolean)
+          .join('')
+          .trim();
+        if (text) return text;
+        this.logger.warn(`Modelo ${model} respondió sin texto (finishReason: ${data?.candidates?.[0]?.finishReason ?? 'desconocido'}).`);
+        continue;
       }
-      return '¡Hola! Soy tu Tutor Inteligente de STIRE. Estoy aquí para acompañarte en tu aprendizaje de Algoritmos Web con HTML5, CSS y JavaScript. ¿Qué concepto, ejercicio o duda te gustaría que analicemos juntos hoy?';
-    }
 
-    // 2. Bloques de código explícito o código en el editor
-    const isCode = userMessage.includes('{') || userMessage.includes('}') || userMessage.includes('function') || userMessage.includes('def ') || userMessage.includes('return ') || userMessage.includes('console.log');
-    if (isCode || context?.currentCode) {
-      if (context?.activityTitle) {
-        return `Observo tu avance en "${context.activityTitle}". Revisa con cuidado cómo estás leyendo los valores de entrada y la condición de decisión. ¿Qué resultado esperas obtener frente al que observas en la consola?`;
+      const errText = await res.text().catch(() => '');
+      if (res.status === 401 || res.status === 403 || (res.status === 400 && /API_KEY_INVALID|API key not valid/i.test(errText))) {
+        this.logger.warn(`Google rechazó la clave de un estudiante (${res.status}).`);
+        throw new UnprocessableEntityException(
+          'Tu clave de Google AI Studio no es válida o fue revocada. Configura una nueva para seguir usando el Tutor.',
+        );
       }
-      return 'Veo que estás analizando código. Recuerda revisar la condición de parada de tu bucle y los tipos de tus variables. ¿Qué resultado esperas obtener y qué salida estás observando actualmente?';
+      if (res.status === 429) sawQuota = true;
+      this.logger.warn(`Modelo ${model} devolvió ${res.status}. Probando siguiente modelo.`);
     }
 
-    // 3. Variables y tipos de datos
-    if (text.includes('variable') || text.includes('tipo de dato') || text.includes('declarar') || text.includes('string') || text.includes('int') || text.includes('boolean')) {
-      return 'En algoritmia, una variable es un contenedor con nombre que almacena un dato en memoria. Dependiendo de lo que guardes (números, texto, booleanos), cambia su tipo. ¿Qué tipo de información necesitas guardar en tu algoritmo y cómo planeas nombrarla?';
+    if (sawQuota) {
+      throw new HttpException(
+        'Alcanzaste el límite gratuito de tu clave de Google AI Studio por ahora. Espera un momento e inténtalo de nuevo.',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
     }
+    throw new ServiceUnavailableException('El tutor no está disponible en este momento. Inténtalo de nuevo en un minuto.');
+  }
 
-    // 4. Condicionales (if / else / switch)
-    if (text.includes('condicional') || text.includes(' if') || text.includes('else') || text.includes('switch') || text.includes('decisi')) {
-      return 'Las estructuras condicionales permiten que tu algoritmo tome caminos diferentes según se cumpla o no una condición booleana. ¿Cuál es la condición lógica exacta (verdadero o falso) que debe evaluarse en este paso?';
+  /** Gemini exige turnos que empiecen por el usuario y alternen: se descartan los `system`, los turnos iniciales del modelo y se fusionan los consecutivos. */
+  private toGeminiContents(history: Array<{ role: string; content: string }>, userMessage: string): GeminiContent[] {
+    const turns: GeminiContent[] = [];
+    const push = (role: GeminiRole, text: string) => {
+      const last = turns[turns.length - 1];
+      if (last && last.role === role) last.parts[0].text += `\n\n${text}`;
+      else turns.push({ role, parts: [{ text }] });
+    };
+    for (const msg of history) {
+      if (msg.role === 'system') continue;
+      const role: GeminiRole = msg.role === 'assistant' ? 'model' : 'user';
+      if (turns.length === 0 && role === 'model') continue;
+      push(role, msg.content);
     }
-
-    // 5. Bucles / Ciclos (for / while)
-    if (text.includes('bucle') || text.includes('ciclo') || text.includes(' for') || text.includes('while') || text.includes('iterar') || text.includes('repetir')) {
-      return 'Un ciclo te ayuda a ejecutar un bloque de instrucciones múltiples veces. Todo bucle requiere: (1) un punto de inicio, (2) una condición de parada y (3) un paso o incremento. ¿Cuál de estos tres elementos crees que requiere atención en tu ejercicio?';
-    }
-
-    // 6. Funciones / Métodos
-    if (text.includes('funcion') || text.includes('función') || text.includes('metodo') || text.includes('método') || text.includes('parametro') || text.includes('parámetro')) {
-      return 'Una función es una subrutina reutilizable que resuelve una tarea específica. Recibe parámetros de entrada y puede retornar un resultado. ¿Qué datos de entrada necesita tu función y qué valor debería devolver?';
-    }
-
-    // 7. Arreglos / Vectores / Matrices
-    if (text.includes('arreglo') || text.includes('vector') || text.includes('array') || text.includes('matriz') || text.includes('lista') || text.includes('indice') || text.includes('índice')) {
-      return 'Un arreglo es una estructura de datos secuencial donde cada elemento se accede por su índice (comenzando en 0). ¿Cómo estás pensando recorrer las posiciones del arreglo para acceder o modificar los datos?';
-    }
-
-    // 8. Recursividad
-    if (text.includes('recursiv') || text.includes('recursión') || text.includes('recursivo')) {
-      return 'La recursividad ocurre cuando una función se invoca a sí misma para resolver un subproblema más pequeño. Todo algoritmo recursivo necesita un caso base para no caer en un bucle infinito. ¿Identificas cuál es el caso base de tu problema?';
-    }
-
-    // 9. Fallback socrático general (mantiene "Entiendo tu duda" para compatibilidad de tests)
-    return 'Entiendo tu duda. Piensa en esto descomponiendo el problema en partes más simples: ¿cuál es el estado inicial, qué transformación paso a paso debes realizar y cuál es el resultado esperado?';
+    push('user', userMessage);
+    return turns;
   }
 }

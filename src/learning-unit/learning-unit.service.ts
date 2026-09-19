@@ -105,6 +105,11 @@ export class LearningUnitService {
     return unit;
   }
 
+  /** Clase a la que pertenece una unidad (Topic → Section → Class), sin comprobar permisos: el llamador autoriza. */
+  async getClassIdForUnit(unitId: number): Promise<number> {
+    return this.resolveClassId(await this.findOneRaw(unitId));
+  }
+
   private async assertCanReadClass(user: User, classId: number): Promise<void> {
     if (user.role === UserRole.DOCENTE) {
       await this.authorizationService.assertTeacherOwnsClass(user, classId);

@@ -242,7 +242,7 @@ describe('VALIDACIÓN INTEGRAL PRE-FRONTEND — STIRE', () => {
       expect(prompt3).toContain('Big O Notation');
     });
 
-    it('El mock socrático del Tutor responde con preguntas orientadoras y no entrega código completo', async () => {
+    it('Sin clave propia de Google AI Studio el Tutor no inventa respuestas: exige configurarla (428) y no toca el historial', async () => {
       const convRepo = {
         save: jest.fn().mockResolvedValue(undefined),
         getRecentContext: jest.fn().mockResolvedValue([]),
@@ -250,30 +250,30 @@ describe('VALIDACIÓN INTEGRAL PRE-FRONTEND — STIRE', () => {
       const contextService = {
         buildSystemPrompt: jest.fn().mockResolvedValue('System prompt test'),
       };
-      const configService = {
-        get: jest.fn().mockReturnValue(''),
-      };
       const renderingService = new ContentRenderingService();
       const recommendationService = {
         suggestForUnit: jest.fn().mockResolvedValue(null),
         suggestAmbient: jest.fn().mockResolvedValue(null),
       };
+      const credentialService = { getDecryptedKey: jest.fn().mockResolvedValue(null) };
+      const learningUnitService = { findOne: jest.fn() };
 
       const tutor = new TutorService(
         convRepo as any,
         contextService as any,
-        configService as any,
+        { get: jest.fn().mockReturnValue('gemini-flash-latest') } as any,
         renderingService,
         recommendationService as any,
+        credentialService as any,
+        learningUnitService as any,
+        { countFailedAttempts: jest.fn() } as any,
+        { resolveForStudent: jest.fn().mockResolvedValue({ enabled: true, maxGuideLevel: 3, style: 'equilibrado' }) } as any,
       );
 
-      const resBucle = await tutor.sendMessage(1, '¿Cómo hago un bucle for en JavaScript?');
-      expect(resBucle.message).toContain('Un ciclo te ayuda a ejecutar un bloque de instrucciones múltiples veces');
-      expect(resBucle.message).toContain('¿Cuál de estos tres elementos crees que requiere atención');
-
-      const resVar = await tutor.sendMessage(1, '¿Qué es una variable y qué tipos de datos hay?');
-      expect(resVar.message).toContain('una variable es un contenedor con nombre');
-      expect(resVar.message).toContain('¿Qué tipo de información necesitas guardar');
+      await expect(tutor.sendMessage({ id: 1 } as any, '¿Cómo hago un bucle for en JavaScript?')).rejects.toMatchObject({
+        status: 428,
+      });
+      expect(convRepo.save).not.toHaveBeenCalled();
     });
   });
 });
