@@ -87,10 +87,6 @@ el 19/09; la validación Figma quedó retirada como responsabilidad — ver nota
 
 ### José López — UI/UX + Comunicación
 
-**Cambio de responsabilidad (19/09):** se retira permanentemente la validación contra Figma — no se
-vuelve a mencionar. La nueva responsabilidad, explícita y semana por semana en Trello para no
-saturarlo (una sola área del proyecto por semana):
-
 - [ ] **S06-JO01 · Probar el proyecto como usuario y documentar visualmente — Tutor IA esta semana**
   — iniciar sesión como estudiante, usar el Tutor de punta a punta (saludo proactivo, preguntas
   reales, pedir practicar, tarjeta de sugerencia), registrar hallazgos de UX y guardar capturas
