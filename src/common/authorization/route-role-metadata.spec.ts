@@ -269,7 +269,7 @@ const JUSTIFIED_GET_EXCEPTIONS: GetException[] = [
   {
     controller: ActivityQuestionsController,
     method: 'findByActivity',
-    reason: 'P1-R2 (Ola 3): docente ajeno recibe 403 (assertTeacherOwnsClass); estudiante recibe la versión redactada (StudentQuestionDto) en el controller, sin ground truth.',
+    reason: 'P1-R2 (Ola 3) y Fase G: docente ajeno recibe 403 (assertTeacherOwnsClass); estudiante solo recibe la versión redactada si está matriculado en la clase y la actividad está publicada.',
     testFile: 'activity-questions/activity-questions.service.spec.ts',
   },
   {

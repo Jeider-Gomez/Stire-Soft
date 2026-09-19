@@ -13,6 +13,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  // El alta de cuentas escribe credenciales y puede ser abusada para llenar
+  // la base de datos; no debe depender solo del límite global.
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     return await this.authService.register(registerDto);

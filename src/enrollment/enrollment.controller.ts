@@ -7,6 +7,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { EnrollmentStatus } from './enums/enrollment-status.enum';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Enrollment')
 @Controller('enrollment')
@@ -18,6 +19,9 @@ export class EnrollmentController {
    * POST /enrollment/join
    * El estudiante se matricula en una clase usando su código.
    */
+  // Valida código y crea/modifica una matrícula: acotado para evitar fuerza
+  // bruta de códigos e intentos repetidos de inscripción.
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post('join')
   @UseGuards(RolesGuard)
   @Roles('estudiante')

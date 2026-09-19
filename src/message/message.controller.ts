@@ -7,6 +7,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -21,6 +22,9 @@ export class MessageController {
   /**
    * Enviar un mensaje
    */
+  // La mensajería es una escritura directa entre usuarios; limita spam sin
+  // interferir con una conversación normal.
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Post()
   create(@Body() createMessageDto: CreateMessageDto, @GetUser() user: User) {
     return this.messageService.create(createMessageDto, user.id);

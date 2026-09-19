@@ -487,6 +487,26 @@ destructivo).
 
 ---
 
+### G.5 Ejecución registrada (2026-09-16)
+
+- **Hallazgo corregido:** `GET /activity-questions/activity/:activityId` redactaba las respuestas
+  correctas para estudiantes, pero no comprobaba que el estudiante estuviera matriculado en la clase
+  propietaria de la actividad. `ActivityQuestionsService.findByActivity` ahora exige matrícula activa
+  y solo sirve preguntas de actividades `PUBLISHED`; un acceso ajeno recibe `403` y un borrador se
+  comporta como recurso inexistente (`404`). La regresión quedó en
+  `src/activity-questions/activity-questions.service.spec.ts`.
+- **Rate-limiting específico añadido:** registro público (5/min), matrícula por código (10/min),
+  envío de mensajes (30/min), inicio de submission (20/min), ejecución de sandbox (20/min) y
+  limpieza administrativa (3/min). Los límites complementan, no sustituyen, el global de 100/min.
+- **Módulos sin hallazgo BOLA nuevo:** `activities`, `analytics`, `class`, `content`, `institution`,
+  `notifications`, `section`, `topic` y `user`. Los catálogos de clase, sección, tema, institución y
+  programa son deliberadamente visibles para usuarios autenticados; las operaciones sobre recursos
+  de clase o datos personales conservan las comprobaciones de propiedad/matrícula existentes.
+- La evidencia automatizada y la verificación manual pendiente se registran en
+  `docs/codex/informes/INFORME_2026-09-16_SESION_01.md`.
+
+---
+
 ## 1. Verificación final (todas las fases, si se hacen todas)
 
 Corre, en este orden, y pega la salida real (no un resumen) como evidencia de cierre:

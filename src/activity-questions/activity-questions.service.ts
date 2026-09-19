@@ -8,6 +8,7 @@ import { QuestionType } from '../common/enums/question-type.enum';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
+import { PublicationStatus } from '../common/enums/status.enum';
 
 import { IsInt, IsEnum, IsString, IsNumber, IsOptional, IsObject } from 'class-validator';
 
@@ -76,8 +77,19 @@ export class ActivityQuestionsService {
    * en el controller) sin cambios — no forma parte de este hallazgo.
    */
   async findByActivity(activityId: number, user: User): Promise<ActivityQuestion[]> {
+    const { activity, classId } = await this.findActivityWithClass(activityId);
+
     if (user.role === UserRole.DOCENTE) {
-      await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(activityId));
+      await this.authorizationService.assertTeacherOwnsClass(user, classId);
+    } else if (user.role === UserRole.ESTUDIANTE) {
+      // La redacción de StudentQuestionDto evita exponer la respuesta correcta,
+      // pero no sustituye la autorización: sin esta comprobación cualquier
+      // estudiante autenticado podía enumerar preguntas de una clase ajena.
+      await this.authorizationService.assertEnrolledInClass(user, classId);
+
+      if (activity.status !== PublicationStatus.PUBLISHED) {
+        throw new NotFoundException(`Actividad con ID ${activityId} no encontrada`);
+      }
     }
     return this.questionsRepo.findByActivityId(activityId);
   }
@@ -108,16 +120,21 @@ export class ActivityQuestionsService {
    * `ActivitiesService.resolveClassId`.
    */
   private async resolveClassId(activityId: number): Promise<number> {
+    const { classId } = await this.findActivityWithClass(activityId);
+    return classId;
+  }
+
+  private async findActivityWithClass(activityId: number): Promise<{ activity: Activity; classId: number }> {
     const activity = await this.activitiesRepository.findOne({
       where: { id: activityId },
       relations: ['learningUnit', 'learningUnit.topic', 'learningUnit.topic.section'],
     });
     const classId = activity?.learningUnit?.topic?.section?.classId;
-    if (!classId) {
+    if (!activity || !classId) {
       throw new NotFoundException(
         `No se pudo resolver la clase de la actividad ${activityId} (actividad inexistente o sin unidad/topic/sección asociado).`,
       );
     }
-    return classId;
+    return { activity, classId };
   }
 }

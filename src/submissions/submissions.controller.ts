@@ -17,6 +17,9 @@ import { User } from '../user/entities/user.entity';
 export class SubmissionsController {
   constructor(private readonly submissionsService: SubmissionsService) {}
 
+  // Crea o recupera un intento activo y consulta límites de intentos; evita
+  // ráfagas de escrituras contra una misma actividad.
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @Post('start')
   @UseGuards(RolesGuard)
   @Roles('estudiante')
@@ -36,6 +39,9 @@ export class SubmissionsController {
     return this.submissionsService.submitAnswers(id, dto, user.id);
   }
 
+  // Ejecuta el sandbox de código; es más costoso que un autoguardado o una
+  // lectura y por eso no depende solo del límite global de 100 req/min.
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @Post(':id/run')
   @UseGuards(RolesGuard)
   @Roles('estudiante')

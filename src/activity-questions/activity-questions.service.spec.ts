@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { ActivityQuestionsService } from './activity-questions.service';
 import { QuestionType } from '../common/enums/question-type.enum';
 import { UserRole } from '../user/entities/user.entity';
+import { PublicationStatus } from '../common/enums/status.enum';
 
 // Regresión del punto 6 del Bloque 4: una pregunta CODING sin ningún
 // testCase público deja al estudiante programando a ciegas.
@@ -21,20 +22,24 @@ describe('ActivityQuestionsService.create', () => {
   const mockActivitiesRepository = {
     findOne: jest.fn().mockResolvedValue({
       id: 1,
+      status: PublicationStatus.PUBLISHED,
       learningUnit: { topic: { section: { classId: 42 } } },
     }),
   };
   const mockAuthorizationService = {
     assertTeacherOwnsClass: jest.fn().mockResolvedValue(undefined),
+    assertEnrolledInClass: jest.fn().mockResolvedValue(undefined),
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockActivitiesRepository.findOne.mockResolvedValue({
       id: 1,
+      status: PublicationStatus.PUBLISHED,
       learningUnit: { topic: { section: { classId: 42 } } },
     });
     mockAuthorizationService.assertTeacherOwnsClass.mockResolvedValue(undefined);
+    mockAuthorizationService.assertEnrolledInClass.mockResolvedValue(undefined);
     const mockContentRenderingService = { sanitizeRichText: jest.fn((s: string) => s) };
     service = new ActivityQuestionsService(
       mockRepo as any,
@@ -154,12 +159,38 @@ describe('ActivityQuestionsService.create', () => {
       expect(mockAuthorizationService.assertTeacherOwnsClass).toHaveBeenCalledWith(docenteDueño, 42);
     });
 
-    it('estudiante: no se verifica ownership de docente (el controller ya redacta la respuesta)', async () => {
+    it('estudiante matriculado: valida la matrícula antes de devolver preguntas redactadas', async () => {
       (mockRepo as any).findByActivityId = jest.fn().mockResolvedValue([{ id: 1 }]);
       const estudiante = { id: 20, role: UserRole.ESTUDIANTE } as any;
 
       await service.findByActivity(1, estudiante);
       expect(mockAuthorizationService.assertTeacherOwnsClass).not.toHaveBeenCalled();
+      expect(mockAuthorizationService.assertEnrolledInClass).toHaveBeenCalledWith(estudiante, 42);
+      expect((mockRepo as any).findByActivityId).toHaveBeenCalledWith(1);
+    });
+
+    it('estudiante no matriculado → 403 y nunca consulta las preguntas', async () => {
+      (mockRepo as any).findByActivityId = jest.fn();
+      const estudianteAjeno = { id: 20, role: UserRole.ESTUDIANTE } as any;
+      mockAuthorizationService.assertEnrolledInClass.mockRejectedValueOnce(
+        new ForbiddenException('No estás matriculado en esta clase'),
+      );
+
+      await expect(service.findByActivity(1, estudianteAjeno)).rejects.toThrow(ForbiddenException);
+      expect((mockRepo as any).findByActivityId).not.toHaveBeenCalled();
+    });
+
+    it('estudiante matriculado no puede leer preguntas de una actividad no publicada', async () => {
+      (mockRepo as any).findByActivityId = jest.fn();
+      const estudiante = { id: 20, role: UserRole.ESTUDIANTE } as any;
+      mockActivitiesRepository.findOne.mockResolvedValueOnce({
+        id: 1,
+        status: PublicationStatus.DRAFT,
+        learningUnit: { topic: { section: { classId: 42 } } },
+      });
+
+      await expect(service.findByActivity(1, estudiante)).rejects.toThrow(NotFoundException);
+      expect((mockRepo as any).findByActivityId).not.toHaveBeenCalled();
     });
   });
 });
