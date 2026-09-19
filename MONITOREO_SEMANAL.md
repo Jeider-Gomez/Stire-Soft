@@ -9,7 +9,7 @@
 
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
-> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_05.md`](./docs/seguimiento/MONITOREO_SEMANAL_05.md) — cerrada el 18/09, actualizada el 19/09: el dueño del proyecto confirmó que la sustentación del Reto 2 sí se realizó (vía WhatsApp), lo que cierra 3 de los 4 pendientes (sustentación, apoyo de Pedro, material de José) — quedan 9 de 12 ítems con evidencia real. Los 2 que siguen sin evidencia (validación Figma de José, estructura de cursos de Julio) se trasladan a esta semana en la §3.
+> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_05.md`](./docs/seguimiento/MONITOREO_SEMANAL_05.md) — cerrada el 18/09, actualizada el 19/09: el dueño del proyecto confirmó que la sustentación del Reto 2 sí se realizó (vía WhatsApp), lo que cierra 3 de los 4 pendientes (sustentación, apoyo de Pedro, material de José) — quedan 9 de 12 ítems con evidencia real. El único pendiente real que se traslada a esta semana en la §3 es la estructura de cursos de Julio.
 
 ---
 
@@ -19,7 +19,7 @@
 | :--- | :--- | :--- | :--- |
 | **Jeider Gómez** | **Líder Técnico:** frontend Nuxt, backend, integración y Tutor IA | **Miércoles 4:00–6:00 p. m.** | @Jeider-Gomez |
 | **Jorge Cervantes** | **Gestión + Calidad:** QA general funcional, backend/API, integración, correcciones y resultado ejecutable | **Jueves 10:00 a. m.–12:00 p. m.** | @IvanGoats |
-| **José López** | **UI/UX + Comunicación:** pruebas de usuario real, verificación de UI/UX y documentación visual del proyecto  | **Miércoles 2:00–4:00 p. m.** | @JoseTheGoat90 |
+| **José López** | **UI/UX + Comunicación:** pruebas de usuario real, verificación de UI/UX y documentación visual del proyecto | **Miércoles 2:00–4:00 p. m.** | @JoseTheGoat90 |
 | **Julio Galvis** | **Diseño Instruccional:** MODESEC, navegación y contenidos | **Jueves 4:00–6:00 p. m.** | @jcg0912 |
 | **Pedro Romero** | **Documentación + Bitácora:** Trello, evidencias, seguimiento y cierre documental | **Jueves 4:00–6:00 p. m.** | @pedrorm20 |
 
@@ -27,11 +27,10 @@
 **Reportes:** martes y jueves, máximo 8:00 p. m.  
 **Metodología:** [`docs/05_METODOLOGIA_Y_EQUIPO.md`](./docs/05_METODOLOGIA_Y_EQUIPO.md)
 
-> **Nuevo en el Reto 3 (19/09):** además de avanzar el proyecto, el equipo practica y registra "Los
-> 7 Hábitos de la Gente Altamente Efectiva" (Covey) semana a semana — ver §3.1 abajo. Y se retira
-> permanentemente la validación contra Figma como responsabilidad de José — su tarea de la Semana 5
-> asociada (`S05-JO02`) no continúa como tal; se reemplaza por la nueva responsabilidad descrita en
-> `S06-JO01`.
+> **Nuevo en el Reto 3 (19/09):** además de avanzar el proyecto, el equipo practica y registra —de
+> forma libre, sin exigir cubrir los 7 cada semana— "Los 7 Hábitos de la Gente Altamente Efectiva"
+> (Covey), con checklist real en cada tarjeta de Trello — ver §3.1 abajo. Además, se tomó la
+> decisión de arquitectura de despliegue del backend (ADR 09) — ver `S06-J03` en §3.
 
 ---
 
@@ -41,7 +40,7 @@ Según el cronograma oficial (`docs/investigacion/fuentes-institucionales/cronog
 ya se lanzó el viernes 18/09 (indicaciones entregadas al cierre de la Semana 5) y esta semana
 (21–25/09) es **Semana B — trabajo autónomo**, dedicada a avanzar el Reto 3. En paralelo, el equipo
 cierra el único pendiente real que la Semana 5 dejó sin evidencia (los otros 3 se confirmaron hechos
-el 19/09; la validación Figma quedó retirada como responsabilidad — ver nota abajo).
+el 19/09 vía WhatsApp).
 
 ### Resultados esperados
 
@@ -49,11 +48,12 @@ el 19/09; la validación Figma quedó retirada como responsabilidad — ver nota
    indicaciones del 18/09 no quedaron claras para todo el equipo).
 2. Verificación manual del hallazgo BOLA cerrado por Codex el 16/09 (`activity-questions`) —
    quedó explícitamente pendiente en su propio informe (`docs/codex/informes/INFORME_2026-09-16_SESION_01.md` §5).
-3. Estructura de los dos cursos organizada por Julio (único pendiente real que sigue de la Semana 5
-   — la validación Figma quedó retirada como responsabilidad, ver nota arriba).
+3. Estructura de los dos cursos organizada por Julio (único pendiente real que sigue de la Semana 5).
 4. Pitch de sustentación del Reto 3 preparado (`S06-P04`).
 5. Primer registro real de los 7 Hábitos por cada integrante (`S06-H-*`, ver §3.1).
-6. Tablero Trello de la Semana 6 creado y bitácora cerrada el viernes, sin retraso.
+6. Decisión de arquitectura de despliegue ejecutada: backend real accesible fuera de local
+   (`S06-J03`, ver ADR 09).
+7. Tablero Trello de la Semana 6 creado y bitácora cerrada el viernes, sin retraso.
 
 > **Actualización 19/09:** el dueño del proyecto confirmó que la sustentación del Reto 2 sí se
 > realizó, vía WhatsApp — ver `docs/seguimiento/MONITOREO_SEMANAL_05.md` §7. No queda pendiente de
@@ -73,19 +73,26 @@ el 19/09; la validación Figma quedó retirada como responsabilidad — ver nota
   y frontend reales levantados: un estudiante NO matriculado en la clase debe recibir `403` al pedir
   `GET /activity-questions/activity/:activityId`; uno matriculado con actividad publicada debe recibir
   las preguntas normalmente. Pasos exactos en `docs/codex/informes/INFORME_2026-09-16_SESION_01.md` §5.
+- [ ] **S06-J03 · Ejecutar la decisión de despliegue** — frontend sin cambios en Vercel; backend +
+  MariaDB a una plataforma con proceso persistente real (Railway recomendado, o una VM gratuita con
+  el `docker-compose.yml` existente); el sandbox de ejecución se mantiene local, sin cambios de
+  arquitectura. Detalle completo de la decisión y su justificación en
+  `docs/ADR_DECISIONES_ARQUITECTURA.md` (ADR 09).
 
 ### Pedro Romero — Gestión + Documentación
 
 - [x] **S06-P01 · Tablero Trello de la Semana 6** — creado y poblado. *(19/09.)*
 - [x] **S06-P02 · Bitácora** — mantenerla al día y cerrarla el viernes contra Trello **y Git**
   reales. Dar seguimiento a lo único que queda pendiente de la Semana 5 (estructura de cursos de
-  Julio — los otros 3 ya se confirmaron hechos vía WhatsApp el 19/09, y la validación Figma quedó
-  retirada como responsabilidad) es parte de esta misma tarea de mantener la bitácora al día, no una
-  tarea aparte.
+  Julio — los otros 3 ya se confirmaron hechos vía WhatsApp el 19/09) es parte de esta misma tarea
+  de mantener la bitácora al día, no una tarea aparte.
 - [x] **S06-P04 · Desarrollar el pitch de sustentación del Reto 3** — mismo formato que
   `docs/pitch/PITCH_SEMANA_03 Y 04.md`, actualizado con lo avanzado en las Semanas 5 y 6.
 
 ### José López — UI/UX + Comunicación
+
+Responsabilidad explícita y semana por semana en Trello, para no saturarlo (una sola área del
+proyecto por semana):
 
 - [ ] **S06-JO01 · Probar el proyecto como usuario y documentar visualmente — Tutor IA esta semana**
   — iniciar sesión como estudiante, usar el Tutor de punta a punta (saludo proactivo, preguntas
@@ -122,7 +129,9 @@ el 19/09; la validación Figma quedó retirada como responsabilidad — ver nota
 ### 3.1 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (nuevo, Reto 3)
 
 Además del proyecto, el Reto 3 pide que el equipo practique y registre "Los 7 Hábitos de la Gente
-Altamente Efectiva" (Covey) — no leerlos, aplicarlos y dejar evidencia real:
+Altamente Efectiva" (Covey) — no leerlos, aplicarlos y dejar evidencia real. Es un registro libre:
+no hay que cubrir los 7 hábitos todas las semanas, solo marcar los que de verdad se vivieron y
+contar la historia real detrás.
 
 **I. Victoria Privada** (autoconocimiento y disciplina personal): Hábito 1 · Ser Proactivo, Hábito 2
 · Empezar con Fin en Mente, Hábito 3 · Poner Primero lo Primero.
@@ -130,8 +139,9 @@ Altamente Efectiva" (Covey) — no leerlos, aplicarlos y dejar evidencia real:
 Entender (Luego Ser Entendido), Hábito 6 · Sinergizar.
 **III. Renovación**: Hábito 7 · Afilar la Sierra (Física, Mental, Espiritual, Social/Emocional).
 
-Cada integrante tiene su propia tarjeta de registro en Trello (una entrada real y específica por
-hábito, no una definición copiada) — se repite cada semana mientras dure el Reto 3:
+Cada integrante tiene su propia tarjeta de registro en Trello, con un checklist real de los 7
+hábitos — se marcan los que se practicaron y se cuenta la anécdota real en un comentario de la
+tarjeta. Se repite cada semana mientras dure el Reto 3:
 
 - [ ] **S06-H-JEIDER** · [`S06-H-JEIDER`](https://trello.com/c/cal309Mo)
 - [ ] **S06-H-PEDRO** · [`S06-H-PEDRO`](https://trello.com/c/uA68ykbF)
@@ -173,19 +183,23 @@ hábito, no una definición copiada) — se repite cada semana mientras dure el 
 
 1. **1 pendiente de la Semana 5 sin evidencia** (estructura de cursos de Julio) — se traslada como
    tarea real de esta semana (§3). Los otros 3 (sustentación, apoyo, material de José) se
-   confirmaron hechos el 19/09 vía WhatsApp; la validación Figma quedó retirada como responsabilidad
-   (no aplica, no es un pendiente).
+   confirmaron hechos el 19/09 vía WhatsApp.
 2. **Progresión de Nivel 2 y backend del panel de administrador** siguen bloqueados esperando
    decisiones del equipo (instruccional y de arquitectura respectivamente) — `docs/PLAN_MAESTRO.md`
    §6.2. Ninguna de las dos se resuelve sola con más tiempo; necesitan que alguien decida.
 3. **Cobertura de auditoría QA parcial:** la pasada de Jorge del 18/09 no cubrió BOLA sistemático
    manual, pruebas adversariales del Tutor/Mastery, ni accesibilidad real — parte de eso ya se cerró
    por código (Fase G de Codex), pero la verificación manual/adversarial sigue abierta (`S06-JOR02`).
-4. **Sandbox:** tests intermitentes por timing bajo memoria reducida; repetir antes de declarar defecto.
+4. **Sandbox de tests:** fallos intermitentes por timing bajo memoria reducida en la máquina de
+   desarrollo; repetir en aislado antes de declarar defecto. Distinto del sandbox de ejecución de
+   código de estudiantes (`HardenedProcessSandboxAdapter`), que no tiene hallazgos abiertos — ver
+   punto 6.
 5. **Contenido:** unidades de aprendizaje sin sembrar más allá del currículo de demostración —
    depende de que Julio cierre `S06-JL01`.
-6. **Despliegue real:** sigue bloqueado en autorización OAuth del dueño del proyecto (conector
-   Vercel) — sin cambios desde `docs/PLAN_MAESTRO.md` §6.4.
+6. **Despliegue real:** arquitectura ya decidida (ADR 09, 19/09) — backend + MariaDB fuera de
+   Vercel, sandbox de ejecución se mantiene local. Lo que queda es la ejecución (`S06-J03`): crear
+   la cuenta en la plataforma elegida y desplegar. La autorización OAuth del conector de Vercel
+   sigue pendiente, ahora acotada solo al frontend.
 
 ---
 
@@ -211,6 +225,7 @@ hábito, no una definición copiada) — se repite cada semana mientras dure el 
 
 - [ ] Avance del Reto 3 documentado.
 - [ ] Fix de Fase G verificado manualmente.
+- [ ] Backend real desplegado fuera de local, login probado contra el entorno desplegado (ADR 09).
 
 ### Pedro Romero
 

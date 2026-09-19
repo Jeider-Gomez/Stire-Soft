@@ -106,3 +106,30 @@ El sistema debía poder arrancar y calificar código real sin depender de infrae
 ## Consecuencia
 
 El pipeline de calificación funciona de forma idéntica desde la perspectiva del resto del sistema, sin importar cuál de los dos adaptadores está activo — el mismo patrón de Puerto/Adaptador que ADR 06 aplica al sandbox de ejecución.
+
+# ADR 09 — Arquitectura de despliegue: hosting del backend y continuidad del sandbox local
+
+## Contexto
+
+El diagnóstico de §4.7 (`docs/PLAN_MAESTRO.md`) ya había identificado que el frontend (Nuxt) puede vivir en Vercel sin problema, pero el backend no: `HardenedProcessSandboxAdapter` (ADR 06) spawnea procesos hijo reales del sistema operativo con `child_process.spawn`, y NestJS corre un proceso persistente (`app.listen()`), no handlers serverless. Ninguna función serverless típica (Vercel Functions incluidas) da permiso para spawnear procesos hijo arbitrarios ni garantiza que ese proceso siga vivo entre invocaciones — es una incompatibilidad estructural, no de configuración.
+
+Faltaba decidir dos cosas concretas para poder ejecutar un despliegue real: dónde corre el backend, y si el sandbox de ejecución de código debía cambiar de arquitectura para encajar en esa decisión (por ejemplo, delegarlo a una API externa de terceros en vez de mantenerlo local).
+
+## Decisión
+
+1. **Frontend:** sin cambios — Nuxt sigue desplegado en Vercel.
+2. **Backend + base de datos:** se despliegan en una plataforma que ofrezca proceso persistente real y permita `child_process.spawn` sin restricciones — no en una función serverless. Opción recomendada: Railway (soporta Node como servicio persistente, MySQL/MariaDB gestionado en la misma plataforma, y no impone las restricciones de sandboxing de FaaS sobre el proceso de la app). Alternativa sin costo si el equipo prefiere no pagar: una VM en la capa gratuita de algún proveedor cloud, corriendo el mismo `docker-compose.yml` que ya existe en el repo (MariaDB + Redis) más el proceso de NestJS — mismo resultado técnico, más trabajo operativo de configuración y mantenimiento.
+3. **Sandbox de ejecución de código:** se mantiene `HardenedProcessSandboxAdapter` (child process local del propio backend) como única implementación de `SandboxAdapter`. No se sustituye por una API externa de ejecución de código de terceros (tipo Judge0 o Piston).
+4. **Cola de calificación (Redis/BullMQ):** no se activa en producción. `InlineJudgeQueueAdapter` (ADR 08) sigue siendo el adaptador por defecto — el sistema no depende de Redis para funcionar.
+
+## Justificación
+
+El punto 2 es la única incompatibilidad real con Vercel para el backend, y una plataforma con proceso persistente la resuelve directamente sin tocar código de aplicación.
+
+El punto 3 se decide explícitamente en contra de una API externa de ejecución de código porque el sandbox actual ya pasó varias rondas de auditoría real (el escape de `node:vm` que motivó ADR 06 en primer lugar, más los hallazgos P2-R1 de la Reauditoría de Ola 2 sobre sockets de escucha, y el endurecimiento de `dns`/`dns.promises`) — es un componente propio, ya auditado, con un modelo de amenazas conocido. Moverlo a un servicio de terceros para resolver un problema de *hosting* (no de seguridad del sandbox en sí) cambiaría ese modelo de confianza por uno externo sin auditar, agregaría latencia de red y una dependencia de disponibilidad/costo por ejecución, sin resolver ningún bloqueo real de despliegue — la plataforma elegida en el punto 2 ya permite que el sandbox actual corra tal cual está.
+
+El soporte a lenguajes distintos de JavaScript (`docs/00_VISION_FUNCIONAL.md` §9.1 punto 4) sigue siendo una decisión aparte y sin alcance definido (`docs/PLAN_MAESTRO.md` §6.4) — no se resuelve con esta ADR. Si en el futuro el equipo decide soportar más lenguajes, ahí sí una API externa tipo Judge0 (que ya trae decenas de lenguajes sandboxeados) sería la opción más rápida frente a escribir y auditar un adaptador propio por cada lenguaje nuevo — pero es una decisión de alcance de producto, no la que resuelve esta ADR.
+
+## Consecuencia
+
+El despliegue real deja de estar bloqueado solo por la autorización OAuth de un conector de Vercel — esa autorización ahora solo aplica al frontend. La ejecución concreta (crear la cuenta, configurar variables de entorno, desplegar y verificar contra `npm run verify:clean` equivalente en el entorno real) queda como tarea de esta semana (`S06-J03`, ver `MONITOREO_SEMANAL.md`). Las condiciones de precio/capa gratuita de cualquier proveedor cambian con frecuencia — se verifican al momento de crear la cuenta, no se asumen fijas por esta ADR.
