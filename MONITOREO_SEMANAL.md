@@ -19,13 +19,19 @@
 | :--- | :--- | :--- | :--- |
 | **Jeider Gómez** | **Líder Técnico:** frontend Nuxt, backend, integración y Tutor IA | **Miércoles 4:00–6:00 p. m.** | @Jeider-Gomez |
 | **Jorge Cervantes** | **Gestión + Calidad:** QA general funcional, backend/API, integración, correcciones y resultado ejecutable | **Jueves 10:00 a. m.–12:00 p. m.** | @IvanGoats |
-| **José López** | **UI/UX + Comunicación:** validación visual y material de apoyo para sustentación | **Miércoles 2:00–4:00 p. m.** | @JoseTheGoat90 |
+| **José López** | **UI/UX + Comunicación:** pruebas de usuario real, verificación de UI/UX y documentación visual del proyecto *(redefinido 19/09 — ya no incluye validación contra Figma)* | **Miércoles 2:00–4:00 p. m.** | @JoseTheGoat90 |
 | **Julio Galvis** | **Diseño Instruccional:** MODESEC, navegación y contenidos | **Jueves 4:00–6:00 p. m.** | @jcg0912 |
 | **Pedro Romero** | **Documentación + Bitácora:** Trello, evidencias, seguimiento y cierre documental | **Jueves 4:00–6:00 p. m.** | @pedrorm20 |
 
 **Reunión de equipo:** viernes 8:00 – 8:40 p. m.  
 **Reportes:** martes y jueves, máximo 8:00 p. m.  
 **Metodología:** [`docs/05_METODOLOGIA_Y_EQUIPO.md`](./docs/05_METODOLOGIA_Y_EQUIPO.md)
+
+> **Nuevo en el Reto 3 (19/09):** además de avanzar el proyecto, el equipo practica y registra "Los
+> 7 Hábitos de la Gente Altamente Efectiva" (Covey) semana a semana — ver §3.1 abajo. Y se retira
+> permanentemente la validación contra Figma como responsabilidad de José — su tarea de la Semana 5
+> asociada (`S05-JO02`) no continúa como tal; se reemplaza por la nueva responsabilidad descrita en
+> `S06-JO01`.
 
 ---
 
@@ -34,8 +40,8 @@
 Según el cronograma oficial (`docs/investigacion/fuentes-institucionales/cronograma.docx`), el Reto 3
 ya se lanzó el viernes 18/09 (indicaciones entregadas al cierre de la Semana 5) y esta semana
 (21–25/09) es **Semana B — trabajo autónomo**, dedicada a avanzar el Reto 3. En paralelo, el equipo
-cierra los 2 pendientes reales que la Semana 5 dejó sin evidencia (los otros 3 se confirmaron hechos
-el 19/09, ver nota abajo).
+cierra el único pendiente real que la Semana 5 dejó sin evidencia (los otros 3 se confirmaron hechos
+el 19/09; la validación Figma quedó retirada como responsabilidad — ver nota abajo).
 
 ### Resultados esperados
 
@@ -43,9 +49,11 @@ el 19/09, ver nota abajo).
    indicaciones del 18/09 no quedaron claras para todo el equipo).
 2. Verificación manual del hallazgo BOLA cerrado por Codex el 16/09 (`activity-questions`) —
    quedó explícitamente pendiente en su propio informe (`docs/codex/informes/INFORME_2026-09-16_SESION_01.md` §5).
-3. Cierre real de los 2 pendientes que quedan de la Semana 5 (validación Figma, estructura de cursos).
+3. Estructura de los dos cursos organizada por Julio (único pendiente real que sigue de la Semana 5
+   — la validación Figma quedó retirada como responsabilidad, ver nota arriba).
 4. Pitch de sustentación del Reto 3 preparado (`S06-P04`).
-5. Tablero Trello de la Semana 6 creado y bitácora cerrada el viernes, sin retraso.
+5. Primer registro real de los 7 Hábitos por cada integrante (`S06-H-*`, ver §3.1).
+6. Tablero Trello de la Semana 6 creado y bitácora cerrada el viernes, sin retraso.
 
 > **Actualización 19/09:** el dueño del proyecto confirmó que la sustentación del Reto 2 sí se
 > realizó, vía WhatsApp — ver `docs/seguimiento/MONITOREO_SEMANAL_05.md` §7. No queda pendiente de
@@ -70,20 +78,24 @@ el 19/09, ver nota abajo).
 
 - [x] **S06-P01 · Tablero Trello de la Semana 6** — creado y poblado. *(19/09.)*
 - [ ] **S06-P02 · Bitácora** — mantenerla al día y cerrarla el viernes contra Trello **y Git**
-  reales. Dar seguimiento a lo que queda pendiente de la Semana 5 (validación Figma de José,
-  estructura de cursos de Julio — los otros 3 ya se confirmaron hechos vía WhatsApp el 19/09) es
-  parte de esta misma tarea de mantener la bitácora al día, no una tarea aparte.
+  reales. Dar seguimiento a lo único que queda pendiente de la Semana 5 (estructura de cursos de
+  Julio — los otros 3 ya se confirmaron hechos vía WhatsApp el 19/09, y la validación Figma quedó
+  retirada como responsabilidad) es parte de esta misma tarea de mantener la bitácora al día, no una
+  tarea aparte.
 - [ ] **S06-P04 · Desarrollar el pitch de sustentación del Reto 3** — mismo formato que
   `docs/pitch/PITCH_SEMANA_03 Y 04.md`, actualizado con lo avanzado en las Semanas 5 y 6.
 
 ### José López — UI/UX + Comunicación
 
-- [ ] **S06-JO01 · Validar las 9 vistas reales de Nuxt contra Figma** *(trasladada de `S05-JO02`, sin
-  evidencia de haberse hecho)*.
-- [ ] **S06-JO02 · (a definir)** — el material de sustentación del Reto 2 (`S05-JO01`) ya se
-  confirmó hecho el 19/09, así que José tiene lugar para una segunda tarea real esta semana; el
-  equipo puede elegir entre las opciones que Claude Code propuso para su rol (UI/UX + Comunicación),
-  registradas fuera de esta bitácora — no se asigna una por decisión unilateral.
+**Cambio de responsabilidad (19/09):** se retira permanentemente la validación contra Figma — no se
+vuelve a mencionar. La nueva responsabilidad, explícita y semana por semana en Trello para no
+saturarlo (una sola área del proyecto por semana):
+
+- [ ] **S06-JO01 · Probar el proyecto como usuario y documentar visualmente — Tutor IA esta semana**
+  — iniciar sesión como estudiante, usar el Tutor de punta a punta (saludo proactivo, preguntas
+  reales, pedir practicar, tarjeta de sugerencia), registrar hallazgos de UX y guardar capturas
+  organizadas en `docs/material-visual/01-tutor-ia/`. Plan completo (Semanas 7-9: Estudiante,
+  Docente, Admin) en la tarjeta de Trello.
 
 ### Julio Galvis — Diseño Instruccional
 
@@ -110,6 +122,26 @@ el 19/09, ver nota abajo).
 
 > **Principio, sin cambios:** los agentes desarrollan/auditan el código; Jorge valida que el
 > producto resultante funcione de forma general, esté correctamente integrado y pueda demostrarse.
+
+### 3.1 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (nuevo, Reto 3)
+
+Además del proyecto, el Reto 3 pide que el equipo practique y registre "Los 7 Hábitos de la Gente
+Altamente Efectiva" (Covey) — no leerlos, aplicarlos y dejar evidencia real:
+
+**I. Victoria Privada** (autoconocimiento y disciplina personal): Hábito 1 · Ser Proactivo, Hábito 2
+· Empezar con Fin en Mente, Hábito 3 · Poner Primero lo Primero.
+**II. Victoria Pública** (cooperación efectiva): Hábito 4 · Pensar Ganar-Ganar, Hábito 5 · Primero
+Entender (Luego Ser Entendido), Hábito 6 · Sinergizar.
+**III. Renovación**: Hábito 7 · Afilar la Sierra (Física, Mental, Espiritual, Social/Emocional).
+
+Cada integrante tiene su propia tarjeta de registro en Trello (una entrada real y específica por
+hábito, no una definición copiada) — se repite cada semana mientras dure el Reto 3:
+
+- [ ] **S06-H-JEIDER** · [`S06-H-JEIDER`](https://trello.com/c/cal309Mo)
+- [ ] **S06-H-PEDRO** · [`S06-H-PEDRO`](https://trello.com/c/uA68ykbF)
+- [ ] **S06-H-JOSE** · [`S06-H-JOSE`](https://trello.com/c/p30mm5MI)
+- [ ] **S06-H-JULIO** · [`S06-H-JULIO`](https://trello.com/c/3oWs5vXe)
+- [ ] **S06-H-JORGE** · [`S06-H-JORGE`](https://trello.com/c/QprA4Kd2)
 
 ---
 
@@ -143,9 +175,10 @@ el 19/09, ver nota abajo).
 
 ## ⚠️ 5. Riesgos vivos
 
-1. **2 pendientes de la Semana 5 sin evidencia** (validación Figma de José, estructura de cursos de
-   Julio) — se trasladan como tareas reales de esta semana (§3). Los otros 2 (sustentación, material
-   de José) se confirmaron hechos el 19/09 vía WhatsApp.
+1. **1 pendiente de la Semana 5 sin evidencia** (estructura de cursos de Julio) — se traslada como
+   tarea real de esta semana (§3). Los otros 3 (sustentación, apoyo, material de José) se
+   confirmaron hechos el 19/09 vía WhatsApp; la validación Figma quedó retirada como responsabilidad
+   (no aplica, no es un pendiente).
 2. **Progresión de Nivel 2 y backend del panel de administrador** siguen bloqueados esperando
    decisiones del equipo (instruccional y de arquitectura respectivamente) — `docs/PLAN_MAESTRO.md`
    §6.2. Ninguna de las dos se resuelve sola con más tiempo; necesitan que alguien decida.
@@ -186,13 +219,14 @@ el 19/09, ver nota abajo).
 ### Pedro Romero
 
 - [x] Tablero de la Semana 6 creado. *(19/09.)*
-- [ ] Bitácora cerrada el viernes, sin retraso (incluye seguimiento a los 2 pendientes de la Semana 5).
+- [ ] Bitácora cerrada el viernes, sin retraso (incluye seguimiento al pendiente de la Semana 5:
+  estructura de cursos de Julio).
 - [ ] Pitch de sustentación del Reto 3 desarrollado.
 
 ### José López
 
-- [ ] 9 vistas validadas contra Figma.
-- [ ] Material/evidencia de la sustentación del Reto 2 confirmado.
+- [ ] Tutor IA probado como usuario, con hallazgos de UX registrados.
+- [ ] `docs/material-visual/01-tutor-ia/` con capturas reales, comiteado.
 
 ### Julio Galvis
 
@@ -202,6 +236,10 @@ el 19/09, ver nota abajo).
 
 - [ ] Fix de Fase G verificado manualmente (QA).
 - [ ] Al menos un ángulo adicional de `GUIA_AUDITORIA_2026-09-16.md` cubierto.
+
+### Todo el equipo
+
+- [ ] Registro de los 7 Hábitos completado por cada integrante (`S06-H-*`, §3.1).
 
 > **Nota:** se marca solo con resultados verificables al cierre del viernes 25/09 — mismo criterio
 > que cerró las Semanas 4 y 5.
