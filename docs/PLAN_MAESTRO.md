@@ -1,6 +1,6 @@
 # STIRE — Plan Maestro de Implementación y Seguimiento
 
-**Documento vivo. Última actualización: 2026-09-16 (2ª pasada).**
+**Documento vivo. Última actualización: 2026-09-18 (2ª pasada).**
 
 > ## ⚠️ Regla de edición — leer antes de tocar este archivo
 >
@@ -203,6 +203,7 @@ propósito (decisión del dueño del proyecto, no olvido).
 | `POST /submissions/start` verifica matrícula activa antes de crear el intento | ✅ | **Cerrado por Codex, 14/09** (Fase E). `assertActiveEnrollment()` (`submissions.service.ts:358-365`) resuelve `activity→learningUnit→topic→section→classId` y exige `EnrollmentStatus.ACTIVE`; aplicado tanto en `startSubmission` (línea 51) como en el ensayo de código (línea 231). Verificado por Claude Code el 14/09 leyendo el código real (no solo el informe) — cierra `P2-R3`. Commit `d5a481e` |
 | Chat del Tutor IA sanitiza el contenido antes de renderizarlo | ✅ | **Cerrado por Antigravity, 14/09** (Fase 14). `escapeHtml()` (`TutorChatDrawer.vue:176-183`) corre primero dentro de `formatMessage`, antes de los reemplazos de markdown. Verificado por Claude Code el 14/09 leyendo el código real — cierra `P2-R4`. Commit `71360b7` |
 | Repositorio público — sin secretos en el historial | ✅ | `CLAUDE.md`, sección Seguridad y Datos |
+| BOLA sistemático en los ~11 módulos backend restantes + rate-limiting específico | ✅ | **Cerrado por Codex, 16/09** (Fase G, commit `899b2e0`). Hallazgo real cerrado: `GET /activity-questions/activity/:id` no exigía matrícula activa del estudiante — cualquier autenticado podía enumerar preguntas de una clase ajena (redactadas, pero visibles). Ahora exige `assertEnrolledInClass` + actividad `PUBLISHED` (403/404 según corresponda). Rate-limiting específico agregado en registro, matrícula por código, mensajería, inicio de submission, sandbox y limpieza admin. 9 módulos restantes revisados sin hallazgo nuevo (documentado, no repetir). Verificado por Claude Code: diff real revisado, build limpio, 49/49 tests reproducidos de forma independiente. |
 
 ### 4.6 Frontend
 
@@ -245,6 +246,7 @@ queda un renglón aquí — mismo criterio de checkpoints fechados, sin borrar, 
 | 2026-09-15 (3ª pasada) | **Auditoría de la Fase 16 de Antigravity (commit `04c9911`, informe `INFORME_2026-09-15_SESION_03.md`) y decisión de invocar Codex.** Verificado contra código real: llamadas `api.patch`/`api.del` reales en `contenidos.vue` (líneas 465, 508) y `crear.vue` (líneas 592, 634, 676), enlace `DOC-V04`→`DOC-V05` con `studentId` real (`rendimiento.vue:213`), `npx nuxi typecheck` exit 0 reproducido de forma independiente, y spot-check de 2 de 8 hallazgos WCAG declarados (coinciden). §4.6 actualizado: la fila "editar contenido" cierra ✅, se agregan filas para el enlace y la auditoría WCAG. **Hallazgo de proceso:** el commit de Antigravity incluyó `src/message/message.service.spec.ts` — un borrador que Claude Code había escrito antes de que se pidiera reservar Codex, nunca comiteado a propósito; quedó dentro del commit de Antigravity de todas formas (probablemente un `git add` amplio de su parte). El archivo en sí es correcto (7/7 tests en verde, verificado con `npx jest`), así que no se revierte, pero deja sin efecto uno de los dos candidatos de Codex que este documento tenía pendientes ("cobertura de tests de `src/message/`" ya no es un gap). Se investigó también el otro candidato (progresión de 3 pasos de Nivel 2, §4.4) hasta el fondo: las 3 actividades existentes no están sueltas al azar, cada una vive en la unidad de su propio tema (arreglos/bucles/funciones) — una secuencia real de 3 pasos exige una decisión de diseño instruccional (mezclar contenido que no encaja, o escribir contenido nuevo para 3 unidades), no una tarea de ingeniería lista para Codex. Se exploró de paso un tercer candidato no listado antes, `ADM-V01`/`ADM-V03` (D-03, "REQUERIDO — PENDIENTE DE BACKEND"): tampoco está listo — falta una fuente de datos para "ejecuciones en sandbox hoy" y no existe ninguna infraestructura de logging técnico persistente para el visor de logs de `ADM-V03`. **Conclusión: ninguna fase nueva se escribe hoy, ni para Antigravity ni para Codex** — los tres candidatos existentes necesitan una decisión de alcance (instruccional o de arquitectura) antes de convertirse en un plan, no una ejecución inmediata. Ver §6.2/§6.3 para el detalle completo de cada uno. | Claude Code (Sonnet 5) |
 | 2026-09-16 | **Pausa técnica del Tutor IA, pedida por el dueño del proyecto — investigación, implementación y ajuste tras feedback, todo en la misma sesión.** Contraste completo de la visión (`docs/00_VISION_FUNCIONAL.md` §9.5, nueva) contra el código real: el Tutor no tenía ningún camino hacia el banco de actividades (solo texto libre), y `mastery.calculator.ts` no penalizaba repetir una actividad fácil. Implementado y verificado en navegador real: `TutorRecommendationService` (nuevo), `GET /tutor/greeting` (saludo proactivo con datos reales), detección de intención de práctica en `POST /tutor/chat`, y decaimiento de score por repetición de actividades `BASICO` en `mastery.calculator.ts`. **Ajustado tras feedback del dueño del proyecto en la misma sesión:** se descartó el diseño inicial (marcador oculto `[[LISTO_PARA_PRACTICAR]]`) por sentirse rígido y gastar tokens de más — la oferta de practicar ahora es conversacional (el propio LLM la ofrece con palabras, sin parsing), y se quitó la tarjeta automática que se adjuntaba en cada respuesta dentro de una unidad de mastery bajo (saturaba). 31/31 tests, build y typecheck limpios. §4.1 actualizado con 2 filas nuevas. Se identificó un gap real y bien acotado que sí es delegable (categorías reales de `ActivityType` con peso examen/práctica, §4.2) y se escribió `docs/antigravity/PLAN_IMPLEMENTACION.md` §17. **Nota de mantenimiento:** la fila anterior (3ª pasada, 2026-09-15) tenía su celda partida en varias líneas físicas por un error de edición previo — se corrigió a una sola línea en este mismo checkpoint para que la tabla renderice bien en Markdown; el contenido no cambió. | Claude Code (Sonnet 5) |
 | 2026-09-16 (2ª pasada) | **Auditoría de la Fase 17 de Antigravity (commit `4f02b4d`) + 2 documentos nuevos pedidos por el dueño del proyecto: guía de auditoría para Jorge y plan de implementación para Codex.** Fase 17 verificada real: diff de `seed-runner.ts` confirma `findOrCreate` aditivo (`TALLER` 1.5×, `PARCIAL` 3.0×) sin reasignar las 15 actividades existentes; el fix de `activities.service.ts` (TypeORM priorizaba la relación cacheada sobre el `activityTypeId` nuevo en `PATCH`) es real, 32/32 tests reproducidos. §6.1 cierra Fase 17. Hallazgo propio, no de Antigravity: `GET /tutor/greeting` (agregado el 16/09 en la pausa técnica) había quedado sin `@Throttle` — corregido, commit `1faf230`. Se escribió `docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md` (qué no repetir de la auditoría anterior de Jorge, qué es genuinamente nuevo desde el 12/09, y ángulos que normalmente no se cubren: BOLA sistemático, adversarial contra el Tutor/Mastery nuevos, concurrencia, accesibilidad real, `verify:clean` desde cero, estados de error). Se investigó y verificó a mano que 4 módulos (`message`, `review-schedules`, `learning-progress`, `enrollment`) ya están bien guardados contra BOLA — con esa evidencia se escribió `docs/codex/PLAN_IMPLEMENTACION.md` Fase G (auditoría sistemática de los ~11 módulos restantes + barrido de rate-limiting), la primera fase de Codex que sí estaba lista para delegar desde la pasada del 15/09. | Claude Code (Sonnet 5) |
+| 2026-09-18 (2ª pasada) | **Auditoría y cierre de la Fase G de Codex (commit `899b2e0`).** Verificado contra código real antes de comitear: diff de `activity-questions.service.ts` confirma un hallazgo BOLA real y bien cerrado (`assertEnrolledInClass` + chequeo de `PublicationStatus.PUBLISHED`, con regresión en su spec); 5 rate-limits específicos agregados con justificación explícita en comentario; 9 módulos restantes revisados sin hallazgo, documentados para no re-auditar. Build limpio, 49/49 tests (`activity-questions` + `authorization`) reproducidos de forma independiente antes de comitear — no se confió en el informe de Codex. §4.5 y §6 actualizados. También se cerró la Bitácora N.5 (`docs/seguimiento/MONITOREO_SEMANAL_05.md`) contra Trello real y el QA entregado por Jorge (`docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE_18-09`: 331/331 tests, "APTO CON CONDICIONES", 80% de avance) — con dos precisiones registradas ahí: el fallo de `verify:clean` que reportó es un MySQL local ausente, no un defecto de STIRE, y el reporte no cubrió los ángulos específicos de `GUIA_AUDITORIA_2026-09-16.md` (BOLA sistemático, adversarial Tutor/Mastery, Fases 16/17, accesibilidad real) aunque sí completa el checklist base de su propia tarjeta de Trello. | Claude Code (Sonnet 5) |
 
 ---
 
@@ -262,6 +264,7 @@ reemplazo de esos documentos.
 | Antigravity §15 | Fix `DOC-V04`, auditoría con escritura real de `DOC-V03`/`ADM-V03`, selector de estudiante en `DOC-V06`, limpieza de clases de prueba | ✅ Auditado en vivo por Claude Code, 15/09 — ver §5 |
 | Antigravity §16 | Editar/archivar contenido (`DOC-V02`/`DOC-V03`), enlace `DOC-V04`→`DOC-V05`, auditoría WCAG 2.1 AA | ✅ Auditado por Claude Code, 15/09 (grep + typecheck) — ver §5 |
 | Codex D/E/F | Intentos duplicados, matrícula, evento de calificación | ✅ Auditado en vivo por Claude Code — código real + suite de tests en verde. Ver §5 |
+| Codex G | Auditoría BOLA sistemática + rate-limiting específico | ✅ Auditado por Claude Code, 16/09 — código real + 49/49 tests reproducidos. Ver §5 |
 
 ### 6.1 Antigravity — Fase 17 cerrada; sin fase nueva pendiente por ahora
 
@@ -275,7 +278,7 @@ correcto — 32/32 tests (`src/activities`, `src/tutor`) en verde, reproducidos 
 independiente. No hay un gap de frontend nuevo, verificado contra código, que amerite otra fase
 todavía.
 
-### 6.2 Codex — Fase G escrita el 16/09; los dos candidatos anteriores siguen sin estar listos
+### 6.2 Codex — Fase G cerrada el 16/09; los dos candidatos anteriores siguen sin estar listos
 
 **Decisión explícita del dueño del proyecto (15/09):** no hay un número fijo de rondas de
 Antigravity antes de Codex — queda a criterio de Claude Code, cuando aparece trabajo de backend que
@@ -327,8 +330,8 @@ edición de backend acotada. **Tampoco se escribe una fase todavía** — falta 
 la infraestructura nueva solo para un panel de administrador que el propio D-03 ya marcó como de
 menor prioridad.
 
-**Candidato 3 — sí está listo, es el que se escribe ahora: auditoría sistemática de BOLA +
-rate-limiting.** A diferencia de los dos anteriores, este no dependía de una decisión de alcance de
+**Candidato 3 — cerrado, 16/09: auditoría sistemática de BOLA + rate-limiting (Fase G).** A
+diferencia de los dos anteriores, este no dependía de una decisión de alcance de
 nadie fuera del equipo técnico — es trabajo de código puro. Motivado por la próxima auditoría de
 Jorge Cervantes (`docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md`): en vez de que Codex y Jorge
 encuentren lo mismo por separado, Codex hace la revisión de código (leer cada service, no solo
@@ -336,7 +339,11 @@ probar la app por fuera) que un QA manual no puede hacer bien. Se verificó prim
 misma sesión, que 4 de los ~15 módulos del proyecto (`message`, `review-schedules`,
 `learning-progress`, `enrollment`) ya están bien guardados — quedan ~11 sin revisar
 sistemáticamente. De paso se encontró y cerró un hallazgo real chico (`GET /tutor/greeting` sin
-`@Throttle`, commit `1faf230`). Plan: `docs/codex/PLAN_IMPLEMENTACION.md` Fase G.
+`@Throttle`, commit `1faf230`). Plan: `docs/codex/PLAN_IMPLEMENTACION.md` Fase G. **Ejecutada y
+cerrada el 16/09** (commit `899b2e0`): de los ~11 módulos restantes, 9 salieron limpios y 1
+(`activity-questions`) tenía un hallazgo BOLA real — un estudiante autenticado podía enumerar
+preguntas de una actividad de otra clase (redactadas, pero visibles sin estar matriculado). Cerrado
+con `assertEnrolledInClass` + chequeo de publicación, con test de regresión. Ver §4.5 y §5.
 
 ### 6.3 Qué hace cada herramienta esta ronda y por qué
 
