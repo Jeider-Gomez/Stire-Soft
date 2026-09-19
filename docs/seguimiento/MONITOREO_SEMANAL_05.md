@@ -172,11 +172,15 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 > `✅ Hecho` en Trello o un archivo/commit real detrás.** Lo demás queda `[ ]` con su razón — no se
 > asume que algo se hizo solo porque venció la fecha.
 
+> **Corrección (19/09):** el dueño del proyecto confirmó que la sustentación del Reto 2 sí se
+> realizó — vía WhatsApp, no como demo en vivo presencial. Con esa confirmación explícita (no
+> evidencia de repositorio, pero sí del dueño del proyecto, mismo criterio de "confirmado por quien
+> estuvo presente" que esta bitácora ya pedía), se cierran `S05-J01`, `S05-P02` y `S05-JO01`.
+
 ### Jeider Gómez
 
-- [ ] Sustentación realizada. *(Sin evidencia en este repositorio de que haya ocurrido o de su
-  resultado — evento externo, no deja rastro en GitHub/Trello. Que quede confirmado por quien
-  estuvo presente.)*
+- [x] Sustentación realizada. *(Vía WhatsApp — confirmado por el dueño del proyecto el 19/09.
+  Tarjeta `S05-J01` movida a `✅ Hecho`.)*
 - [x] Self-XSS del Tutor IA corregido (`P2-R4`). *(Ya estaba resuelto desde la Fase 14, commit
   `71360b7` — `escapeHtml()` en `TutorChatDrawer.vue` antes del markdown. Tarjeta `S05-J02` movida a
   `✅ Hecho` el 18/09 por Claude Code, verificado contra el código real, no solo contra el commit.)*
@@ -186,14 +190,16 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 ### Pedro Romero
 
 - [x] Tablero de la Semana 5 creado. *(14/09.)*
-- [ ] Apoyo a la sustentación. *(Sin evidencia en este repositorio — depende de `S05-J01`.)*
+- [x] Apoyo a la sustentación. *(La sustentación se realizó vía WhatsApp — confirmado por el dueño
+  del proyecto el 19/09. Tarjeta `S05-P02` movida a `✅ Hecho`.)*
 - [x] Bitácora cerrada el viernes 18/09, verificada contra Trello real.
 
 ### José López
 
-- [ ] Material de la sustentación listo. *(Sin evidencia en este repositorio.)*
+- [x] Material de la sustentación listo. *(Usado en la sustentación vía WhatsApp — confirmado por
+  el dueño del proyecto el 19/09. Tarjeta `S05-JO01` movida a `✅ Hecho`.)*
 - [ ] 9 vistas validadas contra Figma. *(Sin evidencia en este repositorio — la tarjeta `S05-JO02`
-  sigue en `Esta semana`, no se movió a `Hecho`.)*
+  sigue en `Esta semana`, no se movió a `Hecho`. Trasladada a la Semana 6 como `S06-JO01`.)*
 
 ### Julio Galvis
 
@@ -224,11 +230,12 @@ verificar, no como hecho consumado — regla vigente de este proyecto. Dos preci
    que sí completa. La guía queda vigente para una próxima pasada si el equipo la considera
    necesaria; no bloquea el cierre de esta bitácora.
 
-**Resumen real de cierre:** 6 de 12 ítems de sprint cerrados con evidencia verificable. Los 6 que no
-cierran son: la sustentación y su apoyo (evento externo, sin rastro en el repositorio), el material
-de sustentación de José, la validación de las 9 vistas contra Figma, y la estructura de los dos
-cursos de Julio — ninguno tiene evidencia real en Trello/GitHub a la fecha de cierre. No se marcan
-como fallidos, quedan como pendientes reales para que el equipo los retome.
+**Resumen real de cierre (actualizado 19/09):** 9 de 12 ítems de sprint cerrados con evidencia
+verificable — la sustentación, su apoyo y el material de José cerraron tras confirmación explícita
+del dueño del proyecto (se realizó vía WhatsApp). Los 3 que no cierran son: la validación de las 9
+vistas contra Figma y la estructura de los dos cursos de Julio — sin evidencia real en Trello/GitHub
+a la fecha de cierre, trasladados a la Semana 6 (`S06-JO01`, `S06-JL01`). No se marcan como
+fallidos, quedan como pendientes reales para que el equipo los retome.
 
 ---
 

@@ -9,7 +9,7 @@
 
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
-> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_05.md`](./docs/seguimiento/MONITOREO_SEMANAL_05.md) — cerrada el 18/09, 6 de 12 ítems con evidencia real; 4 quedaron pendientes sin evidencia (sustentación, material de José, validación Figma, estructura de cursos de Julio) y se trasladan a esta semana en la §3.
+> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_05.md`](./docs/seguimiento/MONITOREO_SEMANAL_05.md) — cerrada el 18/09, actualizada el 19/09: el dueño del proyecto confirmó que la sustentación del Reto 2 sí se realizó (vía WhatsApp), lo que cierra 3 de los 4 pendientes (sustentación, apoyo de Pedro, material de José) — quedan 9 de 12 ítems con evidencia real. Los 2 que siguen sin evidencia (validación Figma de José, estructura de cursos de Julio) se trasladan a esta semana en la §3.
 
 ---
 
@@ -34,7 +34,8 @@
 Según el cronograma oficial (`docs/investigacion/fuentes-institucionales/cronograma.docx`), el Reto 3
 ya se lanzó el viernes 18/09 (indicaciones entregadas al cierre de la Semana 5) y esta semana
 (21–25/09) es **Semana B — trabajo autónomo**, dedicada a avanzar el Reto 3. En paralelo, el equipo
-cierra los 4 pendientes reales que la Semana 5 dejó sin evidencia.
+cierra los 2 pendientes reales que la Semana 5 dejó sin evidencia (los otros 3 se confirmaron hechos
+el 19/09, ver nota abajo).
 
 ### Resultados esperados
 
@@ -42,12 +43,13 @@ cierra los 4 pendientes reales que la Semana 5 dejó sin evidencia.
    indicaciones del 18/09 no quedaron claras para todo el equipo).
 2. Verificación manual del hallazgo BOLA cerrado por Codex el 16/09 (`activity-questions`) —
    quedó explícitamente pendiente en su propio informe (`docs/codex/informes/INFORME_2026-09-16_SESION_01.md` §5).
-3. Cierre real de los 4 pendientes trasladados de la Semana 5 (§3 abajo).
-4. Tablero Trello de la Semana 6 creado y bitácora cerrada el viernes, sin retraso.
+3. Cierre real de los 2 pendientes que quedan de la Semana 5 (validación Figma, estructura de cursos).
+4. Pitch de sustentación del Reto 3 preparado (`S06-P04`).
+5. Tablero Trello de la Semana 6 creado y bitácora cerrada el viernes, sin retraso.
 
-> **Nota:** esta bitácora no asume que la sustentación del Reto 2 (17/09) salió bien o mal — no hay
-> evidencia de su resultado en este repositorio (evento externo). Se pide confirmación explícita en
-> `S06-P03`.
+> **Actualización 19/09:** el dueño del proyecto confirmó que la sustentación del Reto 2 sí se
+> realizó, vía WhatsApp — ver `docs/seguimiento/MONITOREO_SEMANAL_05.md` §7. No queda pendiente de
+> esta semana.
 
 ---
 
@@ -67,18 +69,21 @@ cierra los 4 pendientes reales que la Semana 5 dejó sin evidencia.
 ### Pedro Romero — Gestión + Documentación
 
 - [x] **S06-P01 · Tablero Trello de la Semana 6** — creado y poblado. *(19/09.)*
-- [ ] **S06-P02 · Bitácora** — mantenerla al día, cerrarla el viernes contra Trello real.
-- [ ] **S06-P03 · Dar seguimiento a los 4 pendientes de la Semana 5**: confirmar con Jeider/José el
-  resultado real de la sustentación del Reto 2 (17/09); confirmar con José si el material de
-  sustentación (`S05-JO01`) y la validación de las 9 vistas contra Figma (`S05-JO02`) se completaron;
-  confirmar con Julio el estado de la estructura de los dos cursos (`S05-JL01`).
+- [ ] **S06-P02 · Bitácora** — mantenerla al día y cerrarla el viernes contra Trello **y Git**
+  reales. Dar seguimiento a lo que queda pendiente de la Semana 5 (validación Figma de José,
+  estructura de cursos de Julio — los otros 3 ya se confirmaron hechos vía WhatsApp el 19/09) es
+  parte de esta misma tarea de mantener la bitácora al día, no una tarea aparte.
+- [ ] **S06-P04 · Desarrollar el pitch de sustentación del Reto 3** — mismo formato que
+  `docs/pitch/PITCH_SEMANA_03 Y 04.md`, actualizado con lo avanzado en las Semanas 5 y 6.
 
 ### José López — UI/UX + Comunicación
 
 - [ ] **S06-JO01 · Validar las 9 vistas reales de Nuxt contra Figma** *(trasladada de `S05-JO02`, sin
   evidencia de haberse hecho)*.
-- [ ] **S06-JO02 · Confirmar/cerrar el material de la sustentación del Reto 2** *(trasladada de
-  `S05-JO01`)* — si ya se usó el 17/09, esta tarea es solo dejar la evidencia; si no, completarla.
+- [ ] **S06-JO02 · (a definir)** — el material de sustentación del Reto 2 (`S05-JO01`) ya se
+  confirmó hecho el 19/09, así que José tiene lugar para una segunda tarea real esta semana; el
+  equipo puede elegir entre las opciones que Claude Code propuso para su rol (UI/UX + Comunicación),
+  registradas fuera de esta bitácora — no se asigna una por decisión unilateral.
 
 ### Julio Galvis — Diseño Instruccional
 
@@ -138,9 +143,9 @@ cierra los 4 pendientes reales que la Semana 5 dejó sin evidencia.
 
 ## ⚠️ 5. Riesgos vivos
 
-1. **4 pendientes de la Semana 5 sin evidencia** (sustentación, material de José, validación Figma,
-   estructura de cursos de Julio) — se trasladan como tareas reales de esta semana (§3), no se dan
-   por hechos.
+1. **2 pendientes de la Semana 5 sin evidencia** (validación Figma de José, estructura de cursos de
+   Julio) — se trasladan como tareas reales de esta semana (§3). Los otros 2 (sustentación, material
+   de José) se confirmaron hechos el 19/09 vía WhatsApp.
 2. **Progresión de Nivel 2 y backend del panel de administrador** siguen bloqueados esperando
    decisiones del equipo (instruccional y de arquitectura respectivamente) — `docs/PLAN_MAESTRO.md`
    §6.2. Ninguna de las dos se resuelve sola con más tiempo; necesitan que alguien decida.
@@ -181,8 +186,8 @@ cierra los 4 pendientes reales que la Semana 5 dejó sin evidencia.
 ### Pedro Romero
 
 - [x] Tablero de la Semana 6 creado. *(19/09.)*
-- [ ] Seguimiento de los 4 pendientes de la Semana 5 completado.
-- [ ] Bitácora cerrada el viernes, sin retraso.
+- [ ] Bitácora cerrada el viernes, sin retraso (incluye seguimiento a los 2 pendientes de la Semana 5).
+- [ ] Pitch de sustentación del Reto 3 desarrollado.
 
 ### José López
 
