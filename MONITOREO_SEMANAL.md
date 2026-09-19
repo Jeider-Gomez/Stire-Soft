@@ -82,11 +82,11 @@ el 19/09 vía WhatsApp).
 ### Pedro Romero — Gestión + Documentación
 
 - [x] **S06-P01 · Tablero Trello de la Semana 6** — creado y poblado. *(19/09.)*
-- [ ] **S06-P02 · Bitácora** — mantenerla al día y cerrarla el viernes contra Trello **y Git**
+- [x] **S06-P02 · Bitácora** — mantenerla al día y cerrarla el viernes contra Trello **y Git**
   reales. Dar seguimiento a lo único que queda pendiente de la Semana 5 (estructura de cursos de
   Julio — los otros 3 ya se confirmaron hechos vía WhatsApp el 19/09) es parte de esta misma tarea
   de mantener la bitácora al día, no una tarea aparte.
-- [ ] **S06-P04 · Desarrollar el pitch de sustentación del Reto 3** — mismo formato que
+- [x] **S06-P04 · Desarrollar el pitch de sustentación del Reto 3** — mismo formato que
   `docs/pitch/PITCH_SEMANA_03 Y 04.md`, actualizado con lo avanzado en las Semanas 5 y 6.
 
 ### José López — UI/UX + Comunicación
