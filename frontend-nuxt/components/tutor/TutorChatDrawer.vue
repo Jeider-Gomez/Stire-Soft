@@ -107,6 +107,28 @@
             Tu docente desactivó el Tutor en esta parte del curso.
           </div>
 
+          <!-- Aviso de repasos vencidos (§21.2 T4c) -->
+          <div
+            v-if="tutorStore.tutorEnabled && overdueNotice"
+            class="mx-4 mt-3 p-3 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 text-xs text-base-texto-primario flex items-center justify-between gap-2 shadow-xs shrink-0"
+            role="status"
+            aria-live="polite"
+          >
+            <div class="flex items-start gap-2">
+              <span class="text-base leading-none" aria-hidden="true">⏰</span>
+              <p class="text-[11px] leading-relaxed">
+                {{ overdueNotice }}
+              </p>
+            </div>
+            <button
+              @click="navigateWithAutosaveCheck('/estudiante/repasos')"
+              class="px-2.5 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold text-[11px] hover:bg-acento-ambar transition-colors shrink-0 shadow-xs"
+              aria-label="Ir a mis repasos pendientes"
+            >
+              Ir a mis repasos
+            </button>
+          </div>
+
           <!-- Mensajes del Chat (§18.2 — scroll automático) -->
           <div
             class="flex-1 overflow-y-auto p-4 space-y-3.5"
@@ -196,6 +218,16 @@
               >
                 <span aria-hidden="true">🔍</span> Ubicar condición de parada
               </button>
+
+              <!-- Botón Ir al contenido de la unidad (§21.2 T4c) -->
+              <button
+                v-if="tutorStore.tutorEnabled && tutorStore.contentLink"
+                @click="navigateWithAutosaveCheck(`/estudiante/unidad/${tutorStore.contentLink.learningUnitId}`)"
+                class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1"
+                :aria-label="`Ir al contenido de la unidad: ${tutorStore.contentLink.title}`"
+              >
+                <span aria-hidden="true">📖</span> Ir al contenido de la unidad
+              </button>
             </div>
 
             <!-- Input de Pregunta Libre (§18.6 — font-size ≥16px para evitar zoom iOS) -->
@@ -256,6 +288,42 @@ const activeContextLabel = computed(() => {
   }
   return null
 })
+
+// ─── Aviso de repasos vencidos (§21.2 T4c) ──────────────────────────────────
+const overdueNotice = computed(() => {
+  const reviews = tutorStore.dueReviews
+  if (!reviews || reviews.overdueCount <= 0) return null
+
+  const countText = reviews.overdueCount === 1
+    ? 'Tienes 1 repaso vencido.'
+    : `Tienes ${reviews.overdueCount} repasos vencidos.`
+
+  let oldestText = ''
+  if (reviews.oldest) {
+    const days = reviews.oldest.daysOverdue
+    const timeText = days === 0 ? 'toca hoy' : `hace ${days} ${days === 1 ? 'día' : 'días'}`
+    if (reviews.oldest.learningUnitTitle) {
+      oldestText = ` El más atrasado: «${reviews.oldest.learningUnitTitle}» (${timeText}).`
+    } else {
+      oldestText = ` El más atrasado: ${timeText}.`
+    }
+  }
+
+  return `${countText}${oldestText}`
+})
+
+// ─── Navegación segura con verificación de autoguardado (§21.2 T4c) ─────────
+function navigateWithAutosaveCheck(url: string) {
+  if (workspaceStore.currentExercise?.activityId) {
+    const isSynced = (workspaceStore.lastAutosave || '').toLowerCase().includes('sincronizado')
+    if (!isSynced) {
+      const ok = confirm('Tienes cambios en el código que podrían no haberse sincronizado aún. ¿Deseas salir de todas formas?')
+      if (!ok) return
+    }
+  }
+  tutorStore.closeDrawer()
+  navigateTo(url)
+}
 
 // ─── Texto del indicador de pensamiento escalado (§18.6) ────────────────────
 const thinkingText = computed(() => {

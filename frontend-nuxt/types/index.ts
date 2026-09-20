@@ -138,12 +138,25 @@ export interface TutorApiKey {
   last4: string | null
 }
 
-/** Respuesta de GET /tutor/guidance */
+/** Respuesta de GET /tutor/guidance (§21.2) */
 export interface TutorGuidance {
   success: boolean
   guidanceLevel: 1 | 2 | 3 | null
   tutorEnabled: boolean
   maxGuideLevel: 1 | 2 | 3 | null
+  dueReviews: {
+    overdueCount: number
+    scheduledCount: number
+    oldest: {
+      learningUnitId: number
+      learningUnitTitle: string | null
+      daysOverdue: number
+    } | null
+  } | null
+  contentLink: {
+    learningUnitId: number
+    title: string
+  } | null
 }
 
 export type TutorStyle = 'equilibrado' | 'motivador' | 'tecnico' | 'breve'

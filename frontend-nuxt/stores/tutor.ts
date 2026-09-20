@@ -33,10 +33,12 @@ export const useTutorStore = defineStore('tutor', () => {
   /** true mientras el panel de clave está abierto por un 428/422 pendiente de reintento. */
   const pendingRetryAfterKey = ref(false)
 
-  // ─── Nivel de guía (§18.4) ──────────────────────────────────────────────────
+  // ─── Nivel de guía y orientación (§18.4, §21.2) ───────────────────────────
   /** null = no hay actividad activa (chips ocultos) */
   const guidanceLevel = ref<1 | 2 | 3 | null>(null)
   const tutorEnabled = ref(true)
+  const dueReviews = ref<TutorGuidance['dueReviews']>(null)
+  const contentLink = ref<TutorGuidance['contentLink']>(null)
 
   // ─── Clave de Google AI Studio (§19) ────────────────────────────────────────
   const hasLoadedHistory = ref(false)
@@ -135,22 +137,22 @@ export const useTutorStore = defineStore('tutor', () => {
     }
   }
 
-  // ─── Nivel de guía (§18.4) ──────────────────────────────────────────────────
+  // ─── Nivel de guía y orientación (§18.4, §21.2 T4a) ─────────────────────────
   async function fetchGuidanceLevel(activityId?: number) {
     const id = activityId ?? workspaceStore.currentExercise?.activityId
-    if (!id) {
-      guidanceLevel.value = null
-      tutorEnabled.value = true
-      return
-    }
+    const endpoint = id ? `/tutor/guidance?activityId=${id}` : '/tutor/guidance'
     try {
-      const res = await api.get<TutorGuidance>(`/tutor/guidance?activityId=${id}`)
+      const res = await api.get<TutorGuidance>(endpoint)
       guidanceLevel.value = res?.guidanceLevel ?? null
       tutorEnabled.value = res?.tutorEnabled ?? true
+      dueReviews.value = res?.dueReviews ?? null
+      contentLink.value = res?.contentLink ?? null
     } catch {
-      // Si falla, no mostramos los chips (null) y permitimos el chat
+      // Si la llamada falla, dueReviews y contentLink quedan null y el chat sigue funcionando
       guidanceLevel.value = null
       tutorEnabled.value = true
+      dueReviews.value = null
+      contentLink.value = null
     }
   }
 
@@ -319,6 +321,8 @@ export const useTutorStore = defineStore('tutor', () => {
     messages,
     guidanceLevel,
     tutorEnabled,
+    dueReviews,
+    contentLink,
     hasKey,
     last4,
     showKeyPanel,
