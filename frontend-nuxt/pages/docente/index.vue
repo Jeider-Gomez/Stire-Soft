@@ -111,8 +111,19 @@
             </NuxtLink>
           </div>
         </div>
+
+        <!-- Sección plegable: Tutor IA de esta clase (§20.1) -->
+        <details class="border-t border-base-borde-sutil pt-3">
+          <summary class="text-[11px] font-semibold text-base-texto-secundario cursor-pointer hover:text-base-texto-primario select-none flex items-center gap-1.5">
+            <span aria-hidden="true">🤖</span> Tutor IA de esta clase
+          </summary>
+          <div class="mt-3">
+            <DocenteTutorSettingsPanel scope-type="class" :scope-id="cls.id" />
+          </div>
+        </details>
       </div>
     </section>
+
 
     <!-- Modal Formulario: Crear Nueva Clase (FE-02) -->
     <div

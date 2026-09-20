@@ -5,18 +5,26 @@
       <div
         v-if="tutorStore.isOpen"
         @click="tutorStore.closeDrawer()"
-        class="fixed inset-0 bg-base-texto-primario/30 backdrop-blur-[1px] z-40 transition-opacity"></div>
+        class="fixed inset-0 bg-base-texto-primario/30 backdrop-blur-[1px] z-40 transition-opacity"
+        aria-hidden="true"
+      ></div>
     </Transition>
 
-    <!-- Drawer Lateral 400px -->
+    <!-- Drawer Lateral 400px (§18.3 — role dialog, aria-modal, trampa de foco) -->
     <Transition name="slide-right">
       <div
         v-if="tutorStore.isOpen"
-        class="fixed top-0 right-0 h-full w-full max-w-drawer bg-base-blanco border-l border-base-borde-sutil shadow-2xl z-50 flex flex-col justify-between">
+        ref="drawerRef"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Tutor IA"
+        class="fixed top-0 right-0 h-full w-full max-w-drawer bg-base-blanco border-l border-base-borde-sutil shadow-2xl z-50 flex flex-col justify-between"
+        @keydown="handleKeydown"
+      >
         <!-- Header del Tutor IA -->
         <div class="p-4 border-b border-base-borde-sutil flex items-center justify-between bg-base-bg-secundario">
           <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-acento-ambar-fuerte text-base-blanco flex items-center justify-center font-bold text-sm shadow-sm">
+            <div class="w-8 h-8 rounded-lg bg-acento-ambar-fuerte text-base-blanco flex items-center justify-center font-bold text-sm shadow-sm" aria-hidden="true">
               ✨
             </div>
             <div>
@@ -25,40 +33,56 @@
             </div>
           </div>
 
-          <button
-            @click="tutorStore.closeDrawer()"
-            class="p-1.5 rounded-md hover:bg-base-borde-sutil text-base-texto-secundario hover:text-base-texto-primario transition-colors"
-            title="Cerrar Tutor (Esc)">
-            ✕
-          </button>
+          <div class="flex items-center gap-2">
+            <!-- Enlace discreto "Mi clave" (§19.2 — solo cuando ya tiene clave) -->
+            <button
+              v-if="tutorStore.hasKey"
+              @click="tutorStore.showKeyPanel = !tutorStore.showKeyPanel"
+              class="text-[10px] text-base-texto-secundario hover:text-acento-ambar-fuerte underline transition-colors"
+              :aria-label="tutorStore.showKeyPanel ? 'Ocultar panel de clave' : 'Gestionar mi clave de Google AI Studio'"
+            >
+              Mi clave
+            </button>
+
+            <button
+              ref="closeButtonRef"
+              @click="tutorStore.closeDrawer()"
+              class="p-1.5 rounded-md hover:bg-base-borde-sutil text-base-texto-secundario hover:text-base-texto-primario transition-colors"
+              aria-label="Cerrar Tutor"
+            >
+              <span aria-hidden="true">✕</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Indicador de Nivel de Andamiaje Activo -->
-        <div class="px-4 py-2 bg-acento-ambar/10 border-b border-acento-ambar/20 flex items-center justify-between text-xs">
+        <!-- Indicador de Nivel de Guía real del backend (§18.4) — oculto si guidanceLevel es null -->
+        <div
+          v-if="tutorStore.guidanceLevel !== null"
+          class="px-4 py-2 bg-acento-ambar/10 border-b border-acento-ambar/20 flex items-center justify-between text-xs"
+          role="status"
+          :aria-label="`Nivel de ayuda actual: ${tutorStore.guidanceLevel} de 3 — ${guidanceLevelLabel}`"
+        >
           <span class="text-acento-ambar-fuerte font-medium">Nivel de Guía:</span>
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1" aria-hidden="true">
             <span
               class="px-2 py-0.5 rounded text-[10px] font-semibold"
-              :class="tutorStore.activeScaffoldingLevel === 1 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'">
-              1. Pista
-            </span>
+              :class="tutorStore.guidanceLevel === 1 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'"
+            >1. Pista</span>
             <span
               class="px-2 py-0.5 rounded text-[10px] font-semibold"
-              :class="tutorStore.activeScaffoldingLevel === 2 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'">
-              2. Pregunta
-            </span>
+              :class="tutorStore.guidanceLevel === 2 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'"
+            >2. Pregunta</span>
             <span
               class="px-2 py-0.5 rounded text-[10px] font-semibold"
-              :class="tutorStore.activeScaffoldingLevel === 3 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'">
-              3. Falla
-            </span>
+              :class="tutorStore.guidanceLevel === 3 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'"
+            >3. Falla</span>
           </div>
         </div>
 
         <!-- Indicador de Contexto Activo de Aprendizaje -->
         <div v-if="activeContextLabel" class="px-4 py-1.5 bg-base-bg-secundario border-b border-base-borde-sutil flex items-center justify-between text-[11px] text-base-texto-secundario">
           <div class="flex items-center gap-1.5 truncate">
-            <span>📍</span>
+            <span aria-hidden="true">📍</span>
             <span class="truncate font-medium text-base-texto-primario">{{ activeContextLabel }}</span>
           </div>
           <span class="text-[10px] px-1.5 py-0.2 rounded bg-semantico-pasa/15 text-semantico-pasa font-semibold flex-shrink-0">
@@ -66,79 +90,137 @@
           </span>
         </div>
 
-        <!-- Mensajes del Chat -->
-        <div class="flex-1 overflow-y-auto p-4 space-y-3.5" ref="messagesContainer">
+        <!-- Panel de clave de API (§19.2) -->
+        <div v-if="tutorStore.showKeyPanel" class="flex-1 overflow-y-auto">
+          <TutorKeyPanel ref="keyPanelRef" />
+        </div>
+
+        <!-- Chat normal (cuando no se muestra el panel de clave) -->
+        <template v-else>
+          <!-- Aviso: Tutor desactivado por docente (§20.3) -->
           <div
-            v-for="msg in tutorStore.messages"
-            :key="msg.id"
-            class="flex flex-col"
-            :class="msg.sender === 'student' ? 'items-end' : 'items-start'">
+            v-if="!tutorStore.tutorEnabled"
+            class="mx-4 mt-4 p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil text-xs text-base-texto-secundario"
+            role="status"
+          >
+            <span aria-hidden="true">🚫</span>
+            Tu docente desactivó el Tutor en esta parte del curso.
+          </div>
+
+          <!-- Mensajes del Chat (§18.2 — scroll automático) -->
+          <div
+            class="flex-1 overflow-y-auto p-4 space-y-3.5"
+            ref="messagesContainer"
+            aria-live="polite"
+            aria-label="Mensajes del Tutor"
+          >
             <div
-              class="max-w-[85%] rounded-lg p-3 text-xs leading-relaxed shadow-sm"
-              :class="msg.sender === 'student'
-                ? 'bg-acento-ambar text-base-blanco rounded-br-none'
-                : 'bg-base-bg-secundario border border-base-borde-sutil text-base-texto-primario rounded-bl-none'">
-              <div class="prose prose-xs" v-html="formatMessage(msg.text)"></div>
+              v-for="msg in tutorStore.messages"
+              :key="msg.id"
+              class="flex flex-col"
+              :class="msg.sender === 'student' ? 'items-end' : 'items-start'"
+            >
+              <!-- Burbuja de mensaje -->
+              <div
+                class="max-w-[85%] rounded-lg p-3 text-xs leading-relaxed shadow-sm"
+                :class="msg.isError
+                  ? 'bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-bl-none'
+                  : msg.sender === 'student'
+                    ? 'bg-acento-ambar text-base-blanco rounded-br-none'
+                    : 'bg-base-bg-secundario border border-base-borde-sutil text-base-texto-primario rounded-bl-none'"
+                :role="msg.isError ? 'alert' : undefined"
+              >
+                <div class="prose prose-xs" v-html="formatTutorMessage(msg.text)"></div>
+              </div>
+
+              <!-- Timestamp -->
+              <span class="text-[10px] text-base-texto-secundario mt-1 px-1">
+                {{ msg.sender === 'student' ? 'Tú' : 'Tutor IA' }} • {{ msg.timestamp }}
+              </span>
+
+              <!-- Botón Reintentar (§18.1 — solo en errores que no sean 403) -->
+              <button
+                v-if="msg.isError && !msg.is403"
+                @click="tutorStore.retryLastMessage()"
+                :disabled="tutorStore.isThinking"
+                class="borde-afordancia mt-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 transition-colors disabled:opacity-50"
+              >
+                🔄 Reintentar
+              </button>
+
+              <!-- Sugerencia de ejercicio del banco -->
+              <button
+                v-if="msg.suggestedActivity"
+                @click="tutorStore.goToSuggestedActivity(msg.suggestedActivity)"
+                class="borde-afordancia mt-1.5 max-w-[85%] text-left px-3 py-2 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 hover:bg-acento-ambar/20 transition-colors"
+              >
+                <span class="block text-[10px] font-semibold text-acento-ambar-fuerte uppercase tracking-wide" aria-hidden="true">🎯 Practica esto</span>
+                <span class="block text-xs font-medium text-base-texto-primario mt-0.5">{{ msg.suggestedActivity.activityTitle }}</span>
+                <span class="block text-[11px] text-base-texto-secundario mt-0.5">{{ msg.suggestedActivity.learningUnitTitle }}</span>
+              </button>
             </div>
-            <span class="text-[10px] text-base-texto-secundario mt-1 px-1">
-              {{ msg.sender === 'student' ? 'Tú' : 'Tutor IA' }} • {{ msg.timestamp }}
-            </span>
 
-            <!-- Sugerencia de ejercicio del banco, basada en tu seguimiento real -->
-            <button
-              v-if="msg.suggestedActivity"
-              @click="tutorStore.goToSuggestedActivity(msg.suggestedActivity)"
-              class="borde-afordancia mt-1.5 max-w-[85%] text-left px-3 py-2 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 hover:bg-acento-ambar/20 transition-colors">
-              <span class="block text-[10px] font-semibold text-acento-ambar-fuerte uppercase tracking-wide">🎯 Practica esto</span>
-              <span class="block text-xs font-medium text-base-texto-primario mt-0.5">{{ msg.suggestedActivity.activityTitle }}</span>
-              <span class="block text-[11px] text-base-texto-secundario mt-0.5">{{ msg.suggestedActivity.learningUnitTitle }}</span>
-            </button>
+            <!-- Indicador de pensamiento IA (§18.6 — texto escalado) -->
+            <div v-if="tutorStore.isThinking" class="flex items-center gap-2 text-xs text-base-texto-secundario p-2" role="status">
+              <span class="animate-spin text-acento-ambar" aria-hidden="true">⚙️</span>
+              <span>{{ thinkingText }}</span>
+            </div>
           </div>
 
-          <!-- Indicador de pensamiento IA -->
-          <div v-if="tutorStore.isThinking" class="flex items-center gap-2 text-xs text-base-texto-secundario p-2">
-            <span class="animate-spin text-acento-ambar">⚙️</span>
-            <span>El tutor está analizando tu contexto de código...</span>
-          </div>
-        </div>
+          <!-- Atajos y campo de pregunta -->
+          <div class="p-3 border-t border-base-borde-sutil bg-base-bg-secundario/50 space-y-2">
+            <!-- Atajos de texto (§18.4 — ya no cambian el nivel) -->
+            <p class="text-[11px] font-semibold text-base-texto-secundario">Atajos:</p>
+            <div class="flex flex-wrap gap-1.5">
+              <button
+                @click="tutorStore.requestQuickHint('conceptual')"
+                :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
+                class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-base-texto-primario hover:text-acento-ambar-fuerte disabled:opacity-40"
+                aria-label="Pedir pista conceptual al Tutor"
+              >
+                <span aria-hidden="true">💡</span> Pista conceptual
+              </button>
+              <button
+                @click="tutorStore.requestQuickHint('borde')"
+                :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
+                class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-base-texto-primario hover:text-acento-ambar-fuerte disabled:opacity-40"
+                aria-label="Preguntar sobre casos de borde"
+              >
+                <span aria-hidden="true">🧭</span> Revisar caso borde
+              </button>
+              <button
+                @click="tutorStore.requestQuickHint('parada')"
+                :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
+                class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-base-texto-primario hover:text-acento-ambar-fuerte disabled:opacity-40"
+                aria-label="Preguntar sobre condición de parada"
+              >
+                <span aria-hidden="true">🔍</span> Ubicar condición de parada
+              </button>
+            </div>
 
-        <!-- Botones de Intención Rápida (Pistas Socráticas) -->
-        <div class="p-3 border-t border-base-borde-sutil bg-base-bg-secundario/50 space-y-2">
-          <p class="text-[11px] font-semibold text-base-texto-secundario">Solicitudes rápidas de andamiaje:</p>
-          <div class="flex flex-wrap gap-1.5">
-            <button
-              @click="tutorStore.requestQuickHint('conceptual')"
-              class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-base-texto-primario hover:text-acento-ambar-fuerte">
-              💡 Pista conceptual
-            </button>
-            <button
-              @click="tutorStore.requestQuickHint('borde')"
-              class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-base-texto-primario hover:text-acento-ambar-fuerte">
-              🧭 Revisar caso borde
-            </button>
-            <button
-              @click="tutorStore.requestQuickHint('parada')"
-              class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-base-texto-primario hover:text-acento-ambar-fuerte">
-              🔍 Ubicar condición de parada
-            </button>
+            <!-- Input de Pregunta Libre (§18.6 — font-size ≥16px para evitar zoom iOS) -->
+            <div class="flex items-center gap-2 pt-1">
+              <input
+                ref="inputRef"
+                v-model="inputQuery"
+                @keydown.enter="handleSend"
+                type="text"
+                :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
+                placeholder="Haz una pregunta sobre tu lógica..."
+                aria-label="Pregunta al Tutor IA"
+                style="font-size: 16px;"
+                class="flex-1 px-3 py-2.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none disabled:opacity-50" />
+              <button
+                @click="handleSend"
+                :disabled="!inputQuery.trim() || tutorStore.isThinking || !tutorStore.tutorEnabled"
+                class="px-3 py-2.5 min-h-[44px] rounded-md bg-acento-ambar-fuerte text-base-blanco font-semibold text-xs disabled:opacity-50 hover:bg-acento-ambar transition-colors"
+                aria-label="Enviar pregunta"
+              >
+                Enviar
+              </button>
+            </div>
           </div>
-
-          <!-- Input de Pregunta Libre -->
-          <div class="flex items-center gap-2 pt-1">
-            <input
-              v-model="inputQuery"
-              @keydown.enter="handleSend"
-              type="text"
-              placeholder="Haz una pregunta sobre tu lógica..."
-              class="flex-1 text-xs px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
-            <button
-              @click="handleSend"
-              :disabled="!inputQuery.trim() || tutorStore.isThinking"
-              class="px-3 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-semibold text-xs disabled:opacity-50 hover:bg-acento-ambar transition-colors">
-              Enviar
-            </button>
-          </div>
-        </div>
+        </template>
       </div>
     </Transition>
   </div>
@@ -148,6 +230,7 @@
 import { useTutorStore } from '~/stores/tutor'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useStudentStore } from '~/stores/student'
+import { formatTutorMessage } from '~/utils/formatTutorMessage'
 
 const tutorStore = useTutorStore()
 const workspaceStore = useWorkspaceStore()
@@ -155,10 +238,17 @@ const studentStore = useStudentStore()
 
 const inputQuery = ref('')
 const messagesContainer = ref<HTMLElement | null>(null)
+const drawerRef = ref<HTMLElement | null>(null)
+const inputRef = ref<HTMLElement | null>(null)
+const closeButtonRef = ref<HTMLElement | null>(null)
+const keyPanelRef = ref<HTMLElement | null>(null)
 
+// ─── Contexto de aprendizaje activo ─────────────────────────────────────────
 const activeContextLabel = computed(() => {
   if (workspaceStore.currentExercise?.title && workspaceStore.currentExercise?.activityId) {
-    const unitPrefix = workspaceStore.currentExercise.unitTitle ? `${workspaceStore.currentExercise.unitTitle} • ` : ''
+    const unitPrefix = workspaceStore.currentExercise.unitTitle
+      ? `${workspaceStore.currentExercise.unitTitle} • `
+      : ''
     return `${unitPrefix}${workspaceStore.currentExercise.title}`
   }
   if (studentStore.activeUnit?.title) {
@@ -167,13 +257,29 @@ const activeContextLabel = computed(() => {
   return null
 })
 
-function handleSend() {
-  if (!inputQuery.value.trim()) return
-  const text = inputQuery.value
-  inputQuery.value = ''
-  tutorStore.sendMessage(text)
-  scrollToBottom()
-}
+// ─── Texto del indicador de pensamiento escalado (§18.6) ────────────────────
+const thinkingText = computed(() => {
+  const s = tutorStore.thinkingSeconds
+  if (s >= 20) return 'Está tardando más de lo normal. Puedes seguir esperando.'
+  if (s >= 8) return 'Sigo trabajando en tu respuesta…'
+  return 'El tutor está analizando tu contexto de código...'
+})
+
+// ─── Texto accesible del nivel de guía ──────────────────────────────────────
+const guidanceLevelLabel = computed(() => {
+  const labels: Record<number, string> = {
+    1: 'pista conceptual',
+    2: 'pregunta guía',
+    3: 'localizar la falla'
+  }
+  return labels[tutorStore.guidanceLevel ?? 0] || ''
+})
+
+// ─── Scroll automático (§18.2) ───────────────────────────────────────────────
+watch(
+  () => [tutorStore.messages.length, tutorStore.isThinking],
+  () => scrollToBottom()
+)
 
 function scrollToBottom() {
   nextTick(() => {
@@ -183,23 +289,77 @@ function scrollToBottom() {
   })
 }
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
+// ─── Foco al abrir (§18.3) ──────────────────────────────────────────────────
+watch(
+  () => tutorStore.isOpen,
+  (open) => {
+    if (open) {
+      nextTick(() => {
+        if (tutorStore.showKeyPanel) {
+          // Foco al primer input del panel de clave
+          const kp = drawerRef.value?.querySelector('#tutor-api-key') as HTMLElement | null
+          kp?.focus()
+        } else {
+          inputRef.value?.focus()
+        }
+      })
+    }
+  }
+)
+
+// ─── Foco ref del botón que abrió el drawer ──────────────────────────────────
+let openerElement: HTMLElement | null = null
+onMounted(() => {
+  // Capturar el elemento activo antes de que el drawer se abra
+  watch(() => tutorStore.isOpen, (open) => {
+    if (open) {
+      openerElement = document.activeElement as HTMLElement | null
+    } else {
+      // Al cerrar, devolver foco al elemento que lo abrió (§18.3)
+      nextTick(() => openerElement?.focus())
+    }
+  })
+})
+
+// ─── Escape cierra el drawer + trampa de foco (§18.3) ────────────────────────
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    tutorStore.closeDrawer()
+    return
+  }
+  if (event.key === 'Tab') {
+    trapFocus(event)
+  }
 }
 
-function formatMessage(rawText: string) {
-  if (!rawText) return ''
-  // Sanitizar HTML primero contra inyecciones XSS, luego formatear markdown seguro
-  const safeText = escapeHtml(rawText)
-  return safeText
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`(.*?)`/g, '<code class="bg-base-blanco px-1 py-0.5 rounded text-acento-ambar-fuerte font-codigo text-[11px]">$1</code>')
-    .replace(/\n/g, '<br/>')
+function trapFocus(event: KeyboardEvent) {
+  if (!drawerRef.value) return
+  const focusable = Array.from(
+    drawerRef.value.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((el) => !el.closest('[aria-hidden="true"]'))
+
+  if (!focusable.length) return
+
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault()
+    last.focus()
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault()
+    first.focus()
+  }
+}
+
+// ─── Enviar mensaje ──────────────────────────────────────────────────────────
+function handleSend() {
+  if (!inputQuery.value.trim() || tutorStore.isThinking) return
+  const text = inputQuery.value
+  inputQuery.value = ''
+  tutorStore.sendMessage(text)
 }
 </script>
 

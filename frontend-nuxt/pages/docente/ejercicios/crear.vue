@@ -471,6 +471,16 @@
               </p>
             </div>
 
+            <!-- Sección plegable: Tutor IA en esta actividad (§20.1) -->
+            <details v-if="editActivityModal.activityId" class="border-t border-base-borde-sutil pt-3">
+              <summary class="text-[11px] font-semibold text-base-texto-secundario cursor-pointer hover:text-base-texto-primario select-none flex items-center gap-1.5">
+                <span aria-hidden="true">🤖</span> Tutor IA en esta actividad
+              </summary>
+              <div class="mt-3">
+                <DocenteTutorSettingsPanel scope-type="activity" :scope-id="editActivityModal.activityId" />
+              </div>
+            </details>
+
             <p v-if="editActivityModal.error" role="alert" class="text-semantico-falla text-[11px]">{{ editActivityModal.error }}</p>
 
             <div class="flex items-center justify-end gap-3 pt-1">

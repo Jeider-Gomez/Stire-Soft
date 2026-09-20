@@ -1,5 +1,5 @@
 ---
-estado:     vigente — Fases 18, 19 y 20 (Tutor IA: experiencia de chat, clave de Google AI Studio y configuración del docente) pendientes; Fase 17 completada
+estado:     completado — Fases 18, 19 y 20 (Tutor IA: experiencia de chat, clave de Google AI Studio y configuración del docente) completadas y verificadas; Fase 17 completada
 verificado: 2026-09-19
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    COMP-V00 · EST-V01..V06 · DOC-V01..V06 · ADM-V01..V03

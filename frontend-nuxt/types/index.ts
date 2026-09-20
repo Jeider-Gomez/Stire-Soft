@@ -121,7 +121,46 @@ export interface TutorMessage {
   id: string
   sender: 'student' | 'tutor'
   text: string
-  scaffoldingLevel?: 1 | 2 | 3 // 1: Pista conceptual, 2: Pregunta guía, 3: Localización falla
+  /** Nivel de guía real del backend (§18.4). null = fuera de una actividad. */
+  guidanceLevel?: 1 | 2 | 3 | null
   timestamp: string
   suggestedActivity?: TutorSuggestedActivity | null
+  /** true si este mensaje es un error de red/HTTP — muestra botón Reintentar. */
+  isError?: boolean
+  /** true si el error fue 403 (docente desactivó Tutor) — NO mostrar Reintentar. */
+  is403?: boolean
 }
+
+/** Respuesta de GET /tutor/api-key */
+export interface TutorApiKey {
+  success: boolean
+  hasKey: boolean
+  last4: string | null
+}
+
+/** Respuesta de GET /tutor/guidance */
+export interface TutorGuidance {
+  success: boolean
+  guidanceLevel: 1 | 2 | 3 | null
+  tutorEnabled: boolean
+  maxGuideLevel: 1 | 2 | 3 | null
+}
+
+export type TutorStyle = 'equilibrado' | 'motivador' | 'tecnico' | 'breve'
+
+/** Respuesta de GET /PUT /tutor/settings/:scopeType/:scopeId */
+export interface TutorSettings {
+  scopeType: 'class' | 'unit' | 'activity'
+  scopeId: number
+  own: {
+    enabled: boolean | null
+    maxGuideLevel: 1 | 2 | 3 | null
+    style: TutorStyle | null
+  }
+  effective: {
+    enabled: boolean
+    maxGuideLevel: 1 | 2 | 3
+    style: TutorStyle
+  }
+}
+
