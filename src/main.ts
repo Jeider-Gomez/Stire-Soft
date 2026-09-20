@@ -4,9 +4,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { applyHttpSecurity, isSwaggerEnabled } from './common/http-security';
+import { BufferedLogger } from './admin-system/buffered-logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: new BufferedLogger() });
   const swaggerEnabled = isSwaggerEnabled();
 
   applyHttpSecurity(app, swaggerEnabled);

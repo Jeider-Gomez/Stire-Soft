@@ -16,6 +16,13 @@ const TIMEOUT_MS = 2000;
 const MAX_OUTPUT_BYTES = 64 * 1024;
 const MAX_HEAP_MB = 128;
 
+/** Límites reales del sandbox, para que el panel de administración muestre el valor verdadero. */
+export const SANDBOX_LIMITS = {
+  timeoutMs: TIMEOUT_MS,
+  maxOutputBytes: MAX_OUTPUT_BYTES,
+  maxHeapMb: MAX_HEAP_MB,
+} as const;
+
 const NETWORK_GUARD = `
 const deny = (w) => { throw new Error('SandboxViolation: red bloqueada (' + w + ')'); };
 const patch = (mod, keys) => { let m; try { m = require(mod); } catch { return; }

@@ -19,7 +19,7 @@ import { JudgeWorker } from './judge.worker';
 // los decoradores de modulo se evaluan antes de que exista el contenedor de
 // DI. 'dotenv/config' arriba garantiza que .env ya este cargado en este punto
 // sin importar el orden de imports del resto de la app.
-const QUEUE_DRIVER = process.env.QUEUE_DRIVER === 'redis' ? 'redis' : 'inline';
+export const QUEUE_DRIVER: 'redis' | 'inline' = process.env.QUEUE_DRIVER === 'redis' ? 'redis' : 'inline';
 
 // Nota de diseño: este modulo NO importa SubmissionsModule. JudgeExecutionService
 // reporta el resultado de la calificacion emitiendo 'judge.answer-graded' /
