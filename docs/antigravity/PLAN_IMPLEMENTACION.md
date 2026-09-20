@@ -1,245 +1,120 @@
 ---
-estado:     completado — Fase 21 completada y verificada
-verificado: 2026-09-20 contra frontend-nuxt/ y src/ reales
+estado:     vigente — Fase 22 lista para ejecutar
+verificado: 2026-09-20 contra frontend-nuxt/ y src/ reales, en navegador real
 fuente:     normativo (insumo de arranque para Google Antigravity)
-codigos:    ADM-V01 · ADM-V03 · EST-V01 · EST-V02 · Tutor IA (chat)
+codigos:    Tutor IA (chat) · ADM-V01
 ---
 
-# Plan de implementación para Antigravity — Fase 21
+# Plan de implementación para Antigravity — Fase 22
 
-**Este archivo solo dice qué hay que hacer.** Las Fases 1 a 20 ya están hechas y se archivaron
-completas en
-[`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md)
-(§16 a §20) y en
-[`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md)
-(Fases 1 a 15). **No las leas para ejecutar esta fase**: nada de lo que dicen hay que rehacerlo.
-La numeración continúa en 21 para no romper citas.
+**Este archivo solo dice qué hay que hacer.** Las Fases 1 a 21 ya están hechas y archivadas en
+[`docs/_archivo/`](../_archivo/) (`PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md`: Fases 1 a 15;
+`PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md`: Fases 16 a 21). **No las leas para ejecutar esta
+fase.** La numeración continúa en 22 para no romper citas.
 
 ---
 
-## 21. Fase 21 — datos reales en el panel de administración, "Ir al contenido" y repasos en el chat
+## 22. Fase 22 — cuatro correcciones que salieron de auditar la Fase 21
 
-### 21.0 En una línea
+### 22.0 En una línea
 
-Cuatro tareas (T1 a T4), **solo en `frontend-nuxt/`**. El backend ya está terminado y verificado: los endpoints
-de esta fase existen y responden. **No lo toques.** Si un endpoint no responde como dice este
-documento, para y repórtalo en el informe; no lo compenses inventando datos en el frontend.
+Cuatro tareas (T1 a T4), **solo en `frontend-nuxt/`**. Son defectos que Claude Code encontró probando
+la Fase 21 en un navegador real. El backend está terminado; no lo toques.
 
-### 21.1 Reglas de esta fase
+### 22.1 Reglas
 
-1. **No inventes datos.** Si el backend devuelve `null`, muestra "—" o "Sin datos". Nunca `0`, nunca
-   un valor de ejemplo. El motivo de toda la fase es que dos pantallas mostraban cifras falsas.
-2. **No cambies estilos.** No edites `tailwind.config.ts` ni `assets/css/main.css`, y usa las clases y
-   tokens que ya existen. Otra persona rediseñará la identidad visual en una rama aparte; tus cambios
-   de estilo chocarían con los suyos.
-3. **Un commit por tarea** (T1 a T4), mensaje en español, sin `--no-verify`. No agrupes tareas.
-4. Verifica en **navegador real** con el backend levantado, no solo con `npx nuxi typecheck`.
-5. Cuentas de prueba: solo las demo del [`README.md`](../../README.md) raíz.
-
-### 21.2 Contrato del backend (ya implementado)
-
-Todas las rutas usan el token de sesión de siempre (`useApi()`).
-
-**`GET /admin/system/status`** — solo rol `admin` (docente y estudiante reciben 403). Límite:
-30 peticiones por minuto por usuario.
-
-```ts
-interface SystemStatus {
-  generatedAt: string                       // ISO
-  api: {
-    version: string; nodeVersion: string; environment: string
-    uptimeSeconds: number
-    memory: { rssMb: number; heapUsedMb: number }
-    requests: {                             // últimas 500 peticiones del servidor
-      sampled: number; windowSeconds: number | null
-      p50Ms: number | null; p95Ms: number | null
-      serverErrorRatePct: number | null     // solo respuestas 5xx
-    }
-  }
-  database: { ok: boolean; latencyMs: number | null }
-  sandbox: {
-    adapter: string; timeoutMs: number; maxHeapMb: number; maxOutputKb: number
-    executionsLast24h: number | null; avgExecutionMs: number | null
-  }
-  judgeQueue: { driver: 'inline' | 'redis'; submissionsInProgress: number | null }
-  tutor: {
-    provider: string; model: string
-    studentsWithKey: number | null; studentMessagesLast24h: number | null
-  }
-  users: { total: number; byRole: Record<string, number> } | null
-  submissionsLast24h: number | null
-}
-```
-
-Si la base de datos está caída, `database.ok` es `false` y todo lo que dependía de ella llega `null`;
-el endpoint igual responde 200.
-
-**`GET /admin/system/logs?level=todos|error|warn|info&limit=1..500`** — solo `admin`.
-
-```ts
-interface SystemLogs {
-  entries: Array<{ timestamp: string; level: 'error' | 'warn' | 'log' | 'debug' | 'verbose' | 'fatal';
-                   context: string | null; message: string }>   // más recientes primero
-  capacity: number                           // 500
-  note: string                               // "…se vacía al reiniciar el servidor."
-}
-```
-
-Un `level` o `limit` fuera de rango responde 400.
-
-**`GET /tutor/guidance?activityId=`** — solo `estudiante`. `activityId` es opcional. **Cambió:** ahora
-trae dos campos más.
-
-```ts
-interface TutorGuidance {
-  success: boolean
-  guidanceLevel: 1 | 2 | 3 | null           // null sin actividad
-  tutorEnabled: boolean
-  maxGuideLevel: 1 | 2 | 3
-  dueReviews: {                             // null si el docente desactivó el Tutor
-    overdueCount: number                    // repasos que tocan hoy o están atrasados
-    scheduledCount: number
-    oldest: { learningUnitId: number; learningUnitTitle: string | null; daysOverdue: number } | null
-  } | null
-  contentLink: { learningUnitId: number; title: string } | null
-                                            // unidad de la actividad actual; null sin actividad
-                                            // o si el estudiante no puede leerla
-}
-```
-
-`daysOverdue` vale `0` cuando el repaso toca hoy.
-
-**Ya existe y no cambia:** `POST /maintenance/cleanup` (solo admin).
+1. **No inventes datos:** un `null` se muestra «—», nunca `0` ni un estado positivo.
+2. **No cambies estilos:** no edites `tailwind.config.ts` ni `assets/css/main.css`; usa las clases y
+   tokens que ya existen (otra persona rediseñará la identidad visual en una rama aparte).
+3. **Un commit por tarea**, en español, sin `--no-verify`.
+4. **Verifica en navegador real con el backend levantado**, no solo con `npx nuxi typecheck`. Cada
+   tarea trae su prueba en §22.3.
+5. **En tu informe, cuenta solo lo que viste.** Cita únicamente endpoints que hayas visto en la pestaña
+   Red, y no copies ejemplos de este plan como si fueran salida observada. (El informe de la Fase 21
+   citó `GET /class/my-enrollments`, que no existe, y repitió un ejemplo del plan como resultado.)
+6. Cuentas de prueba: solo las demo del [`README.md`](../../README.md) raíz. La cuenta
+   `pedro.estudiante@unicor.edu.co` **no tiene clave de Google guardada**, y eso importa en T1.
 
 ---
 
-### T1 — ADM-V01 «Estado del Sistema» con datos reales
+### T1 — Aviso de repasos y botón «Ir al contenido» también para quien no tiene clave
 
-Archivo: `pages/admin/dashboard.vue`.
+**Defecto.** En `components/tutor/TutorChatDrawer.vue`, el aviso de repasos y el botón «Ir al contenido
+de la unidad» están dentro de `<template v-else>` (el «chat normal», línea ~99). Mientras
+`tutorStore.showKeyPanel` es `true`, ese bloque **no se dibuja**. Un estudiante sin clave (el estado
+inicial de todos, porque la clave es opcional) solo ve el formulario de la clave y nunca ve sus repasos
+vencidos ni el acceso al contenido, aunque ninguno de los dos necesita al LLM.
 
-- **Quita** el aviso «Ejemplo — sin backend (D-03)» (líneas 3 a 9), el botón «Simular Estado Error»
-  con su estado `isSimulatedError`, y **todos los valores escritos a mano**.
-- Llama a `GET /admin/system/status` al entrar y **cada 30 s** mientras la pestaña esté visible
-  (`document.visibilityState`); limpia el intervalo al salir de la página. No bajes de 15 s: el
-  servidor limita a 30 peticiones por minuto.
-- **Cuatro tarjetas**, con este mapeo:
+**Reprodúcelo:** entra como Pedro (sin clave), abre el Tutor en `/estudiante`: solo aparece el formulario.
+La interfaz sí recibe los datos (`GET /tutor/guidance` devuelve `dueReviews.overdueCount: 7`); no se
+pintan.
 
-| Tarjeta | Valor principal | Detalle |
-|---|---|---|
-| API | `api.requests.p95Ms` en ms | `p50Ms`, `serverErrorRatePct` % y «sobre las últimas `sampled` peticiones». Si `sampled` es 0: «Sin peticiones aún» |
-| Sandbox | `sandbox.avgExecutionMs` en ms | `executionsLast24h` ejecuciones en 24 h. Si es `null`: «Sin ejecuciones en 24 h» |
-| Base de datos | `database.latencyMs` en ms | Si `database.ok` es `false`: estado de error visible y «Sin conexión» |
-| Tutor | `tutor.model` | `studentsWithKey` estudiantes con clave y `studentMessagesLast24h` mensajes en 24 h |
+**Qué hacer.**
+- Mueve el **aviso de repasos** fuera del `v-if`/`v-else` del panel de la clave, encima de ambos, para que se vea sobre el
+  formulario de la clave y sobre el chat. Sin cambios en su texto, plural ni condiciones.
+- Mueve el botón **«Ir al contenido de la unidad»** a la franja de contexto del panel (donde dice
+  «Unidad activa: …», línea ~82), que no depende del campo de pregunta. Debe verse con clave y sin clave.
+- Mantén la condición `tutorEnabled` en ambos: con el Tutor desactivado por el docente siguen ocultos.
 
-- **Tabla «Subsistemas»** con filas reales: API (versión, entorno, tiempo activo legible, memoria
-  `rssMb`), Base de datos, Sandbox (`adapter`, `timeoutMs`, `maxHeapMb`), Cola del juez (`driver` y
-  `submissionsInProgress` en curso) y Tutor. Elimina la columna «Último latido»; en su lugar muestra
-  «Actualizado a las HH:MM:SS» con `generatedAt`.
-- Agrega una línea con `users.byRole` (por ejemplo «18 estudiantes · 12 docentes · 2 administradores»)
-  y `submissionsLast24h`.
-- Estados: cargando, error de red o 403 (mensaje claro y botón «Reintentar») y datos parciales
-  (cada `null` se pinta «—»). El estado de cada tarjeta se distingue por texto o ícono, no solo por
-  color.
+### T2 — Escape y foco (panel del Tutor y diálogo de limpieza)
 
-### T2 — ADM-V03 «Logs y Mantenimiento» con datos reales
+**Defecto.** La Fase 18 prometió «(Esc)» y foco atrapado, pero en la prueba: al abrir el panel del Tutor
+y pulsar `Escape`, **el panel siguió abierto** (causa probable: el foco no se mueve dentro del panel y
+el evento no le llega; no lo comprobé directamente). En el diálogo de confirmación de
+`pages/admin/sistema.vue` (`role="dialog" aria-modal="true"`) sí lo comprobé: al abrirse, el foco queda en
+`<body>` (no entra al diálogo) y `Escape` no lo cierra.
 
-Archivo: `pages/admin/sistema.vue`.
+**Qué hacer.**
+- **Panel del Tutor:** al abrirse, mueve el foco a un elemento dentro (el botón «Cerrar Tutor» o el
+  campo de pregunta); `Escape` lo cierra; al cerrarse, el foco vuelve al botón «Tutor IA» que lo abrió.
+- **Diálogo de `sistema.vue`:** al abrirse, foco en «Cancelar» (la opción segura); `Escape` cierra sin
+  ejecutar; al cerrarse, el foco vuelve al botón «Ejecutar Limpieza de Mantenimiento». Tab no debe
+  salir del diálogo mientras está abierto.
 
-- **Quita** el aviso «Ejemplo — sin backend (D-03)» (líneas 3 a 9), el arreglo fijo `systemLogs`, el
-  «Gemini 1.5 Flash» escrito a mano (línea ~65) y la frase «cola BullMQ, caché Redis» del subtítulo
-  (línea ~24; no es cierto). Subtítulo nuevo: «Parámetros del sandbox y eventos recientes del
-  servidor».
-- **Parámetros globales, solo lectura**, desde `GET /admin/system/status`: `sandbox.timeoutMs`,
-  `sandbox.maxHeapMb`, `sandbox.maxOutputKb` y `tutor.model`. Indica que los fija el servidor y no se
-  editan aquí.
-- **Visor de eventos** con `GET /admin/system/logs`:
-  - Filtro «Todos / Errores / Advertencias / Info» (`level`) y `limit=100`.
-  - Botón «Actualizar» y refresco cada 30 s mientras la pestaña esté visible.
-  - Cada fila: hora local, nivel (**con texto**, no solo color), `context` y `message`.
-  - Muestra el `note` que devuelve el servidor, visible, para que quede claro que es una ventana en
-    memoria.
-  - Sin resultados: «Sin eventos con este filtro».
-  - Contenedor con `role="log"` y `aria-live="off"` (que no interrumpa a un lector de pantalla cada
-    30 s).
-  - **Quita** el enlace «Limpiar visor»: no existe endpoint para borrar eventos.
-- **Mantenimiento** (`POST /maintenance/cleanup`, ya conectado): quita el mensaje de éxito
-  «(simulación completada)» que se muestra cuando la llamada **falla** (línea ~136): si falla, muestra
-  el error real. Quita también el evento falso que se agrega al visor tras ejecutarlo (línea ~133).
-  Antes de ejecutarlo, pide **confirmación** (es una escritura masiva).
+### T3 — El contenido de una actividad anterior se arrastra al inicio
 
-### T3 — Dos defectos visibles del estudiante
+**Defecto.** `stores/tutor.ts`, `fetchGuidanceLevel()`, toma `workspaceStore.currentExercise?.activityId`
+como respaldo, y ese valor **sigue guardado al salir de la actividad**. Si el estudiante va de la
+actividad 44 a `/estudiante` navegando dentro de la app (sin recargar) y abre el Tutor, se pide
+`GET /tutor/guidance?activityId=44`: aparece el botón «Ir al contenido de la unidad» (unidad 24) y el
+nivel de guía se calcula para la actividad 44, aunque ya no está en ninguna actividad.
 
-**3a. «Inscrito el fecha reciente».** `pages/estudiante/clases.vue` (líneas ~125, ~153 y ~238). La
-fecha de matrícula llega del backend como **`joinedAt`**, no como `createdAt` ni `enrolledAt` (esos
-campos no existen). Lee `item.joinedAt`, tipa `joinedAt?: string` en `EnrollmentItem`, y muestra
-«Inscrito el 12 sep 2026». Si de verdad falta, no muestres la frase (en vez del texto «fecha
-reciente»).
+**Qué hacer.** Usa `workspaceStore.currentExercise` solo cuando la ruta actual sea una actividad
+(`/estudiante/evaluacion/:id`); en cualquier otra ruta, no envíes `activityId`. (Alternativa válida:
+limpiar `currentExercise` al salir del espacio de trabajo. Elige una y déjala escrita en el commit.)
 
-**3b. Píldora vacía «•» en la cabecera.** En `/estudiante/clases` y en `/estudiante/unidad/:id`, el
-centro de `components/layout/HeaderNav.vue` (líneas ~28 a 30) muestra un punto sin nombre de clase ni
-docente. Causa: `studentStore.currentClassName` y `currentTeacher` solo se llenan cuando se ejecuta
-`fetchStudentData()`, y hoy solo la llama `pages/estudiante/index.vue`. Cárgalos desde
-`layouts/student.vue` cuando el store esté vacío (una sola vez, sin repetir peticiones). Si aun así no
-hay clase, no dibujes la píldora.
+### T4 — Estados «✔» escritos a mano en ADM-V01
 
-### T4 — Tutor: «Ir al contenido» y repasos vencidos dentro del chat
+**Defecto.** En `pages/admin/dashboard.vue` hay insignias positivas fijas que no dependen de ningún
+dato: la fila de la cola dice «✔ Listo» y «Calificación activa», la del sandbox «✔ Aislado», la del
+Tutor «✔ Adaptativo». Con la base de datos caída (`database.ok: false`) siguen diciendo que todo va bien.
 
-**4a. `stores/tutor.ts`, `fetchGuidanceLevel()`.** Hoy sale sin llamar al servidor cuando no hay
-actividad (`if (!id)`, líneas ~140 a 145). Cámbialo: **siempre** llama a `GET /tutor/guidance` al
-abrir el chat, con `?activityId=` solo si hay actividad. Guarda `dueReviews` y `contentLink` en el
-store, además de lo que ya guarda. Sin actividad, `guidanceLevel` sigue siendo `null`, como hoy. Si la
-llamada falla, `dueReviews` y `contentLink` quedan `null` y el chat sigue funcionando, como hoy.
-No uses `GET /tutor/greeting` para esto: **escribe un mensaje en el historial cada vez que se llama**.
-
-**4b. `types/index.ts`.** Actualiza `TutorGuidance` con la forma de §21.2.
-
-**4c. `components/tutor/TutorChatDrawer.vue`.** Nada de esto se muestra si `tutorEnabled` es `false`.
-
-- **Aviso de repasos.** Si `dueReviews.overdueCount > 0`, un bloque **encima del área de mensajes**
-  (no dentro del historial): «Tienes N repaso(s) vencido(s)» con el plural correcto. Si hay `oldest`,
-  agrega «El más atrasado: «{learningUnitTitle}» ({`toca hoy` si `daysOverdue` es 0, o `hace N
-  día(s)`})»; si `learningUnitTitle` es `null`, omite el nombre. Botón «Ir a mis repasos» que cierra el
-  chat y navega a `/estudiante/repasos`.
-- **Botón «Ir al contenido».** Si `contentLink` no es `null`, un botón junto a las acciones rápidas del
-  chat (las de «Pedir pista conceptual…»): «Ir al contenido de la unidad», con el `title` de la unidad
-  en su `aria-label`. Cierra el chat y navega a `/estudiante/unidad/{learningUnitId}`. Si
-  `contentLink` es `null`, **no lo muestres** (ni deshabilitado).
-- Accesibilidad: ambos son controles reales (`button` o `NuxtLink`), alcanzables con teclado, y el
-  aviso de repasos **no roba el foco** al abrirse el chat.
-- Al salir de una actividad, comprueba que el código quedó guardado (el editor muestra
-  «Autoguardado sincronizado»). Si hay cambios sin sincronizar, pide confirmación antes de navegar.
+**Qué hacer.** Deriva cada una de datos reales, o quítala si no hay dato que la respalde. Como mínimo:
+cuando `database.ok` sea `false`, las filas de la cola, el sandbox y el Tutor no muestran «✔»; muestran
+«—» o «Sin datos». No inventes estados nuevos: si un subsistema no tiene un campo que diga si está
+sano, deja solo su detalle (adaptador, límites, modelo) sin insignia de estado.
 
 ---
 
-### 21.3 Cómo verificar
-
-Levanta el backend y el frontend como siempre. Para el Tutor no necesitas una clave de Google:
-`guidance` no llama a Google.
+### 22.3 Cómo verificar
 
 | Tarea | Prueba |
 |---|---|
-| T1 | Entra como `admin.sistema@unicor.edu.co`. Compara cada cifra de la pantalla con la salida de `GET /admin/system/status` (que puedes ver en la pestaña Red). Interceptando la respuesta con `database.ok: false`, la tarjeta muestra «Sin conexión» y la página no falla. Como docente, `/admin/dashboard` sigue redirigiendo a `/docente`. |
-| T2 | Filtra por Errores y por Advertencias. Ejecuta el mantenimiento: pide confirmación y muestra el resultado real. Detén el backend y vuelve a pulsar «Actualizar»: se ve un error, no un éxito falso. |
-| T3 | Como `pedro.estudiante@unicor.edu.co`, `/estudiante/clases` muestra fechas reales; recarga `/estudiante/unidad/24` con F5 y la cabecera muestra la clase y el docente. |
-| T4 | Con Pedro, abre el chat en `/estudiante`: aparece el aviso de repasos (hoy tiene 7 vencidos; el número varía con la fecha) y **no** hay botón de contenido. Abre el chat dentro de la actividad `44` («Máximo de una Lista»): aparece el botón y lleva a `/estudiante/unidad/24`. Como docente, desactiva el Tutor de la clase en el panel de Fase 20: en el chat del estudiante desaparecen aviso y botón (devuélvelo a su estado). |
+| T1 | Como Pedro (sin clave), abre el Tutor en `/estudiante`: el aviso «Tienes N repasos vencidos…» se ve **encima del formulario de la clave**. Abre una actividad (la 44) y el Tutor: se ve «Ir al contenido de la unidad» y lleva a `/estudiante/unidad/24`. Repite guardando una clave: se ve igual, sin duplicados. Como docente, desactiva el Tutor de la clase: desaparecen aviso y botón (devuélvelo). |
+| T2 | Solo con teclado: abre el Tutor con Enter, pulsa `Escape` y se cierra; el foco vuelve al botón «Tutor IA». En `/admin/sistema`, abre el diálogo, comprueba que el foco está en «Cancelar», que Tab no sale y que `Escape` cierra **sin** enviar `POST /maintenance/cleanup` (míralo en la pestaña Red). |
+| T3 | Como Pedro: `/estudiante` → actividad 44 → pulsa «Inicio» (sin recargar) → abre el Tutor. **No** debe haber «Ir al contenido» ni chips de nivel de la 44, y la petición debe ser `GET /tutor/guidance` sin `activityId`. |
+| T4 | En `/admin/dashboard`, intercepta `GET /admin/system/status` y devuelve la respuesta real con `database: { ok: false, latencyMs: null }`: las filas de cola, sandbox y Tutor no muestran «✔». Con la respuesta real, el resto de la pantalla no cambia. |
 
-**Búsqueda final, debe dar cero resultados:**
-`grep -rnE "99\.98|1\.5 Flash|BullMQ|Simular Estado|systemLogs|fecha reciente" frontend-nuxt/pages frontend-nuxt/components`
+`npx nuxi typecheck` debe terminar en código 0 tras cada tarea.
 
-### 21.4 Criterios de cierre
+### 22.4 Criterios de cierre
 
-- [ ] `npx nuxi typecheck` termina con código 0.
-- [ ] La búsqueda final no encuentra nada.
-- [ ] Las tablas de §21.3 se probaron en navegador real, con lo observado anotado en el informe.
+- [ ] Las pruebas de §22.3 hechas en navegador real, con lo observado anotado en el informe.
+- [ ] `npx nuxi typecheck` en código 0.
 - [ ] Cuatro commits, uno por tarea.
-- [ ] Informe en `docs/antigravity/informes/` siguiendo `TEMPLATE_INFORME.md`, **solo con lo que hiciste y
-      verificaste**. Si algo no se pudo probar, dilo.
-- [ ] Capturas nuevas (opcionales) en `docs/material-visual/` con la convención de su README, **sin
-      datos personales**: usa solo cuentas demo y evita las pantallas del docente que listan a todos
-      los estudiantes matriculados.
+- [ ] Informe en `docs/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
 
-### 21.5 Fuera de alcance
+### 22.5 Fuera de alcance
 
-Cambios en el backend · rediseño visual · editar los parámetros del sandbox desde la pantalla ·
-gráficas históricas · logs persistentes · iniciar un repaso directamente desde el chat · nuevos
-endpoints.
+Cambios en el backend · rediseño visual · nuevas pantallas · el aviso de repasos con un botón para
+iniciar el repaso desde el chat.

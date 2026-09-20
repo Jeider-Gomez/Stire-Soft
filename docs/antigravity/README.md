@@ -15,11 +15,12 @@ en el mismo archivo — no se archivan por eso. Se archiva completo, con fecha e
 [`docs/_archivo/`](../_archivo/) únicamente cuando se reemplaza de fondo (fases nuevas, no una
 corrección más) — ver la regla exacta ahí.
 
-**Archivado el 2026-09-20:** las Fases 16-20 se movieron completas a
-[`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md).
-El archivo vigente ahora contiene **solo la Fase 21** (lo que hay que hacer, sin contexto de lo ya hecho);
-la numeración sigue en 21. Regla que se aplicó: un plan vigente lista únicamente trabajo pendiente, y lo
-ejecutado se archiva.
+**Archivado el 2026-09-20:** las Fases 16-21 se movieron completas a
+[`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md)
+(la Fase 21 lleva al inicio la nota de la auditoría de Claude Code). El archivo vigente contiene **solo la
+Fase 22** (cuatro correcciones que salieron de esa auditoría; lo que hay que hacer, sin contexto de lo ya
+hecho); la numeración sigue en 22. Regla que se aplicó: un plan vigente lista únicamente trabajo pendiente,
+y lo ejecutado se archiva.
 
 **Archivado el 2026-09-15:** las Fases 1-15 (todo el trabajo hasta y con la Fase 15) se movieron
 completas a
