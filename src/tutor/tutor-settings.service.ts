@@ -63,6 +63,15 @@ export class TutorSettingsService {
     return this.strictestAcrossClasses(user.id);
   }
 
+  /**
+   * Unidad de una actividad, decidida en el servidor y solo si el estudiante está matriculado en
+   * su clase. Sirve para ofrecer "Ir al contenido" sin confiar en ningún id que mande el cliente.
+   */
+  async findAccessibleUnitId(user: User, activityId: unknown): Promise<number | null> {
+    const scope = await this.locateStudentScope(user, { activityId });
+    return scope?.unitId ?? null;
+  }
+
   private async locateStudentScope(
     user: User,
     target: { activityId?: unknown; unitId?: number | null },

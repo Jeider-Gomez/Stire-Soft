@@ -13,7 +13,7 @@ import { TutorConversationsRepository } from './tutor-conversations.repository';
 import { TutorContextService } from './tutor-context.service';
 import { TutorCredentialService } from './tutor-credential.service';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
-import { TutorRecommendationService, SuggestedActivity } from './tutor-recommendation.service';
+import { TutorRecommendationService, SuggestedActivity, DueReviewsSummary } from './tutor-recommendation.service';
 import { LearningUnitService } from '../learning-unit/learning-unit.service';
 import { LearningProgressService } from '../learning-progress/learning-progress.service';
 import { GuidanceLevel, guidanceLevelForFailedAttempts } from './tutor-guidance';
@@ -41,6 +41,22 @@ export interface TutorReply {
   suggestedActivity: SuggestedActivity | null;
   /** Nivel de ayuda con el que se respondió (null si el estudiante no está en una actividad). */
   guidanceLevel: GuidanceLevel | null;
+}
+
+/** Unidad a la que el estudiante puede volver desde el chat ("Ir al contenido"). */
+export interface ContentLink {
+  learningUnitId: number;
+  title: string;
+}
+
+export interface TutorGuidanceState {
+  guidanceLevel: GuidanceLevel | null;
+  tutorEnabled: boolean;
+  maxGuideLevel: GuidanceLevel;
+  /** Repasos vencidos del estudiante; null si el Tutor está desactivado para él. */
+  dueReviews: DueReviewsSummary | null;
+  /** Contenido de la unidad de la actividad actual; null fuera de una actividad o si no puede leerla. */
+  contentLink: ContentLink | null;
 }
 
 export interface TutorHistoryMessage {
@@ -138,14 +154,29 @@ export class TutorService {
     return { message: sanitizedAiResponse, suggestedActivity, guidanceLevel };
   }
 
-  /** Nivel de ayuda actual y estado del Tutor para una actividad (lo que la interfaz muestra antes del primer mensaje). */
-  async getGuidance(
-    user: User,
-    activityId?: number,
-  ): Promise<{ guidanceLevel: GuidanceLevel | null; tutorEnabled: boolean; maxGuideLevel: GuidanceLevel }> {
+  /**
+   * Estado del Tutor para el estudiante, lo que la interfaz pide al abrir el chat (no escribe nada,
+   * a diferencia del saludo): nivel de ayuda de la actividad, si el docente lo tiene activo, el tope,
+   * los repasos vencidos y el enlace al contenido de la unidad de la actividad.
+   */
+  async getGuidance(user: User, activityId?: number): Promise<TutorGuidanceState> {
     const settings = await this.settingsService.resolveForStudent(user, { activityId });
     const level = this.capLevel(await this.resolveGuidanceLevel(user.id, activityId), settings.maxGuideLevel);
-    return { guidanceLevel: level, tutorEnabled: settings.enabled, maxGuideLevel: settings.maxGuideLevel };
+    const base = { guidanceLevel: level, tutorEnabled: settings.enabled, maxGuideLevel: settings.maxGuideLevel };
+    if (!settings.enabled) return { ...base, dueReviews: null, contentLink: null };
+
+    const [dueReviews, contentLink] = await Promise.all([
+      this.recommendationService.summarizeDueReviews(user.id),
+      this.resolveContentLink(user, activityId),
+    ]);
+    return { ...base, dueReviews, contentLink };
+  }
+
+  private async resolveContentLink(user: User, activityId: unknown): Promise<ContentLink | null> {
+    const unitId = await this.settingsService.findAccessibleUnitId(user, activityId);
+    if (!unitId) return null;
+    const unit = await this.resolveAccessibleUnit(user, { learningUnitId: unitId });
+    return unit ? { learningUnitId: unit.id, title: unit.title } : null;
   }
 
   private capLevel(level: GuidanceLevel | null, max: GuidanceLevel): GuidanceLevel | null {

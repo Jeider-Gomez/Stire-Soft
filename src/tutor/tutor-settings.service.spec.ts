@@ -141,6 +141,27 @@ describe('TutorSettingsService', () => {
     });
   });
 
+  describe('findAccessibleUnitId (base de "Ir al contenido")', () => {
+    it('devuelve la unidad de la actividad, decidida por el servidor', async () => {
+      await expect(service.findAccessibleUnitId(STUDENT, 20)).resolves.toBe(7);
+      expect(activityRepo.findOne).toHaveBeenCalledWith({ where: { id: 20 } });
+    });
+
+    it('null si el estudiante no está matriculado en la clase de esa unidad', async () => {
+      authorizationService.assertEnrolledInClass.mockRejectedValue(new ForbiddenException());
+
+      await expect(service.findAccessibleUnitId(STUDENT, 20)).resolves.toBeNull();
+    });
+
+    it('null si no hay actividad o el id no es válido', async () => {
+      activityRepo.findOne.mockResolvedValue(null);
+
+      await expect(service.findAccessibleUnitId(STUDENT, 999)).resolves.toBeNull();
+      await expect(service.findAccessibleUnitId(STUDENT, undefined)).resolves.toBeNull();
+      await expect(service.findAccessibleUnitId(STUDENT, 'abc')).resolves.toBeNull();
+    });
+  });
+
   describe('lado del docente', () => {
     it('exige que el docente dicte la clase del ámbito (clase, unidad y actividad)', async () => {
       await service.updateForTeacher(TEACHER, 'class', 3, { enabled: false });

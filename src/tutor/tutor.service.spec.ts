@@ -35,10 +35,14 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
     credentialService = { getDecryptedKey: jest.fn().mockResolvedValue('AIzaFAKEKEYFORTESTS1234567890abcdefgh') };
     learningUnitService = { findOne: jest.fn().mockResolvedValue({ id: 7, title: 'Bucles' }) };
     learningProgressService = { countFailedAttempts: jest.fn().mockResolvedValue(0) };
-    settingsService = { resolveForStudent: jest.fn().mockResolvedValue({ enabled: true, maxGuideLevel: 3, style: 'equilibrado' }) };
+    settingsService = {
+      resolveForStudent: jest.fn().mockResolvedValue({ enabled: true, maxGuideLevel: 3, style: 'equilibrado' }),
+      findAccessibleUnitId: jest.fn().mockResolvedValue(null),
+    };
     recommendationService = {
       suggestForUnit: jest.fn().mockResolvedValue(null),
       suggestAmbient: jest.fn().mockResolvedValue(null),
+      summarizeDueReviews: jest.fn().mockResolvedValue({ overdueCount: 0, scheduledCount: 0, oldest: null }),
     };
     const contentRenderingService = { escapePlainText: jest.fn((s: string) => s) };
     const configService = { get: jest.fn((key: string, def?: any) => (key === 'GEMINI_MODEL' ? 'gemini-flash-latest' : def)) };
@@ -243,8 +247,59 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
       learningProgressService.countFailedAttempts.mockResolvedValue(9);
       settingsService.resolveForStudent.mockResolvedValue({ enabled: true, maxGuideLevel: 2, style: 'equilibrado' });
 
-      await expect(service.getGuidance(STUDENT, 20)).resolves.toEqual({ guidanceLevel: 2, tutorEnabled: true, maxGuideLevel: 2 });
-      await expect(service.getGuidance(STUDENT, undefined)).resolves.toEqual({ guidanceLevel: null, tutorEnabled: true, maxGuideLevel: 2 });
+      await expect(service.getGuidance(STUDENT, 20)).resolves.toMatchObject({ guidanceLevel: 2, tutorEnabled: true, maxGuideLevel: 2 });
+      await expect(service.getGuidance(STUDENT, undefined)).resolves.toMatchObject({ guidanceLevel: null, tutorEnabled: true, maxGuideLevel: 2 });
+    });
+  });
+
+  describe('getGuidance: repasos vencidos e "Ir al contenido"', () => {
+    const overdue = { overdueCount: 3, scheduledCount: 7, oldest: { learningUnitId: 5, learningUnitTitle: 'Arreglos', daysOverdue: 2 } };
+
+    it('incluye el resumen de repasos aunque el estudiante no esté en una actividad, y no hay enlace al contenido', async () => {
+      recommendationService.summarizeDueReviews.mockResolvedValue(overdue);
+
+      const res = await service.getGuidance(STUDENT, undefined);
+
+      expect(res.dueReviews).toEqual(overdue);
+      expect(res.contentLink).toBeNull();
+      expect(settingsService.findAccessibleUnitId).toHaveBeenCalledWith(STUDENT, undefined);
+    });
+
+    it('en una actividad ofrece la unidad de esa actividad, con título leído del servidor', async () => {
+      settingsService.findAccessibleUnitId.mockResolvedValue(7);
+      learningUnitService.findOne.mockResolvedValue({ id: 7, title: 'Bucles' });
+
+      const res = await service.getGuidance(STUDENT, 20);
+
+      expect(settingsService.findAccessibleUnitId).toHaveBeenCalledWith(STUDENT, 20);
+      expect(learningUnitService.findOne).toHaveBeenCalledWith(7, STUDENT);
+      expect(res.contentLink).toEqual({ learningUnitId: 7, title: 'Bucles' });
+    });
+
+    it('si el estudiante no puede leer esa unidad, no hay enlace (y no falla)', async () => {
+      settingsService.findAccessibleUnitId.mockResolvedValue(7);
+      learningUnitService.findOne.mockRejectedValue(new ForbiddenException());
+
+      await expect(service.getGuidance(STUDENT, 20)).resolves.toMatchObject({ contentLink: null });
+    });
+
+    it('si el activityId no corresponde a ninguna actividad accesible, no hay enlace', async () => {
+      settingsService.findAccessibleUnitId.mockResolvedValue(null);
+
+      const res = await service.getGuidance(STUDENT, 999);
+
+      expect(res.contentLink).toBeNull();
+      expect(learningUnitService.findOne).not.toHaveBeenCalled();
+    });
+
+    it('con el Tutor desactivado por el docente no consulta repasos ni contenido', async () => {
+      settingsService.resolveForStudent.mockResolvedValue({ enabled: false, maxGuideLevel: 3, style: 'equilibrado' });
+
+      const res = await service.getGuidance(STUDENT, 20);
+
+      expect(res).toMatchObject({ tutorEnabled: false, dueReviews: null, contentLink: null });
+      expect(recommendationService.summarizeDueReviews).not.toHaveBeenCalled();
+      expect(settingsService.findAccessibleUnitId).not.toHaveBeenCalled();
     });
   });
 
