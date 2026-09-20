@@ -12,6 +12,150 @@ entry to the oldest.
 
 ---
 
+## Ola del 20 de Septiembre — endurecimiento previo al despliegue y datos reales de administracion (posterior a v1.0.0-beta.1) · 20 de Septiembre de 2026
+
+El tag `v1.0.0-beta.1` (commit `83b4a49`) marca la primera version con la identidad visual original. Esta ola es **posterior** a ese tag: cierra lo que impedia mostrar el sistema desplegado. **Este documento tampoco declara un veredicto de aptitud para produccion**: el despliegue en si (`S06-J03`) no se ha ejecutado.
+
+### Puntos
+
+| Punto | Commit | Resumen |
+|---|---|---|
+| Cabeceras de seguridad y Swagger | `0ab0f0f` | `helmet` y `/docs` apagado con `NODE_ENV=production` (`SWAGGER_ENABLED` lo fuerza). Verificado en vivo con el backend en modo produccion: `/docs` 404, cabeceras presentes, CORS intacto. 6 tests. |
+| Dependencia `openai` | `5c464fc` | Retirada (14 paquetes); el Tutor usa solo Gemini (ADR 10). |
+| Estado real del sistema para administracion | `4627e65` | `GET /admin/system/status` y `GET /admin/system/logs` (solo admin, 30/min): latencia p50/p95 de las ultimas 500 peticiones, ping a la BD, limites reales del sandbox, cola, Tutor, usuarios; ventana de 500 eventos con secretos redactados. Reemplaza las cifras inventadas de `ADM-V01`/`ADM-V03`. 27 tests. En vivo: 401 sin token, 403 a estudiante y docente, 200 con datos reales. |
+| Repasos vencidos y enlace al contenido en el Tutor | `df840bb` | `GET /tutor/guidance` devuelve `dueReviews` y `contentLink` (unidad decidida en el servidor y solo si el estudiante puede leerla). 10 tests. En vivo: unidad ajena, ids basura y Tutor desactivado devuelven `null` sin error. |
+| Tiempo de espera del arranque en `verify:clean` | `e79d4db` | `VERIFY_START_TIMEOUT_MS` (por defecto 60000, sin cambio). Ver la nota siguiente. |
+
+Build limpio. **57 suites, 478 tests, todos en verde** (antes: 52 y 432).
+
+### Nota de transparencia: la primera corrida de `verify:clean` de esta ola FALLO
+
+La primera corrida completa termino en la fase de arranque: `el servidor no respondio en http://localhost:3097/docs dentro de 60000ms`, con el proceso del servidor sin escribir nada. **No se acepto como "problema del entorno" sin medirlo**, porque en esta ola se cambio justo `/docs`. Se comprobo:
+
+- `waitForServer` acepta cualquier respuesta HTTP (`status !== null`), incluido un 404: apagar Swagger no puede provocar ese timeout.
+- El mismo `dist/main.js`, recien reconstruido, abrio el puerto a los **73,9 s** en su primer arranque y a los **8,1 s** en el segundo, con la cache caliente (el rango de 8-13 s que `CLAUDE.md` ya documentaba como sano). El primer log de Nest aparece recien a los 73,7 s: el tiempo se va cargando modulos, antes de que Nest escriba nada.
+- Causa mas respaldada: el repositorio vive dentro de OneDrive y `npm ci` acababa de recrear ~955 paquetes, que OneDrive y el antivirus escanean. No es un defecto del codigo, pero **una corrida que fallo no cierra la ola**.
+
+Como `scripts/verify-clean-server-check.js` es un script de arranque, se hizo configurable el tiempo de espera (`e79d4db`) y `verify:clean` se repitio **completo** despues de ese commit, con `VERIFY_START_TIMEOUT_MS=180000`. Resultado literal de esa corrida (exit code 0). Se omitieron unicamente las 198 lineas `query:` de la traza SQL de TypeORM de `migration:run` y `db:seed:demo`; todo lo demas esta tal cual:
+
+```
+
+> stire@0.0.1 verify:clean
+> node scripts/verify-clean.js && node scripts/verify-clean-server-check.js
+
+
+[verify:clean 1] rm -rf node_modules dist
+
+[verify:clean 2] npm ci (instalacion exacta desde package-lock.json)
+
+added 955 packages, and audited 956 packages in 1m
+
+186 packages are looking for funding
+  run `npm fund` for details
+
+25 vulnerabilities (2 low, 3 moderate, 19 high, 1 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+[verify:clean 3] crear base de datos vacia de verificacion: stire_verify_clean
+
+[verify:clean 4] migration:run contra la base de datos vacia
+
+> stire@0.0.1 migration:run
+> npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts
+
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+0 migrations are already loaded in the database.
+6 migrations were found in the source code.
+6 migrations are new migrations must be executed.
+Migration InitialSchema1779000000000 has been executed successfully.
+Migration AddEaseFactorToReviewSchedules1788999128282 has been executed successfully.
+Migration AddApprovalToClasses1789000000000 has been executed successfully.
+Migration AddActiveSubmissionConstraint1789100000000 has been executed successfully.
+Migration CreateTutorCredentials1789200000000 has been executed successfully.
+Migration CreateTutorSettings1789300000000 has been executed successfully.
+
+[verify:clean 5] db:seed:demo contra la base de datos vacia
+
+> stire@0.0.1 db:seed:demo
+> ts-node -r tsconfig-paths/register stire-seeder-demo.ts
+
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Conectado a la base de datos. Sembrando datos de demo (idempotente)...
+
+Institución y programa
+  + creado: Universidad de Córdoba (Demo)
+  + creado: Ingeniería de Sistemas (Demo)
+
+Usuarios
+  + creado: docente.demo@stire.local
+  + creado: estudiante1.demo@stire.local
+  + creado: estudiante2.demo@stire.local
+  + creado: estudiante3.demo@stire.local
+
+Clase y matrículas
+  + creado: Fundamentos de Algoritmia — Demo (DEMO-STIRE-01)
+  + creado: estudiante1.demo@stire.local matriculado en DEMO-STIRE-01
+  + creado: estudiante2.demo@stire.local matriculado en DEMO-STIRE-01
+  + creado: estudiante3.demo@stire.local matriculado en DEMO-STIRE-01
+
+Sección, topic y unidades de aprendizaje (con prerrequisito)
+  + creado: Módulo 1: Fundamentos
+  + creado: Tema 1: Bases de la programación
+  + creado: Unidad 1: Variables y tipos de datos
+  + creado: Unidad 2: Estructuras de control
+  + creado: Unidad 2 requiere Unidad 1 (mastery ≥ 60%)
+
+Contenido teórico
+  + creado: Introducción a las variables (Unidad 1)
+  + creado: Condicionales if/else (Unidad 2)
+
+Tipo de actividad y actividades (MCQ, CODING, FILL_CODE)
+  + creado: Ejercicio Autocalificable (Demo)
+  + creado: Quiz: ¿Qué es una variable? (MCQ)
+  + creado: pregunta MCQ de la actividad
+  + creado: Ejercicio: Suma de dos números (CODING)
+  + creado: pregunta CODING de la actividad (con testCase público)
+  + creado: Completa el condicional (FILL_CODE)
+  + creado: pregunta FILL_CODE de la actividad
+
+✅ Seed de demo completo. Credenciales:
+   docente.demo@stire.local       / Demo1234!
+   estudiante1.demo@stire.local   / Demo1234!
+   estudiante2.demo@stire.local   / Demo1234!
+   estudiante3.demo@stire.local   / Demo1234!
+   Clase: Fundamentos de Algoritmia — Demo (código DEMO-STIRE-01)
+
+[verify:clean 6] npm run build
+
+> stire@0.0.1 build
+> nest build
+
+
+[verify:clean] setup completo. Base de datos de verificacion: stire_verify_clean (puerto 3097). Continua scripts/verify-clean-server-check.js.
+◇ injected env (19) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+login real contra el servidor recien levantado (docente de demo)
+  login OK para docente.demo@stire.local (token recibido)
+verificacion de datos sembrados via GET /enrollment/my
+  OK, status 200
+apagado del servidor
+
+[verify:clean:server-check] limpieza: eliminar base de datos de verificacion stire_verify_clean
+
+[verify:clean] TODO EN VERDE: npm ci -> migration:run -> db:seed:demo -> build -> start -> login real -> apagado.
+CODIGO_SALIDA=0
+```
+
+En una maquina donde el arranque en frio cabe en 60 s no hace falta la variable.
+
+---
+
 ## v0.5.0 — Cierre de Ola 3 de Remediacion · 26 de Agosto de 2026
 
 Base: `docs/REAUDITORIA_OLA2.md` (reauditoria independiente sobre el commit final de Ola 2, `6fc50b3`) — la primera reauditoria de este proyecto que **bajo** la calificacion (5.1/10 -> ~4.4/10) en vez de subirla, por un build roto en checkout limpio y dos P0 nuevos de autorizacion en lectura. Ejecutado en 7 puntos.
