@@ -25,6 +25,7 @@ El tag `v1.0.0-beta.1` (commit `83b4a49`) marca la primera version con la identi
 | Estado real del sistema para administracion | `4627e65` | `GET /admin/system/status` y `GET /admin/system/logs` (solo admin, 30/min): latencia p50/p95 de las ultimas 500 peticiones, ping a la BD, limites reales del sandbox, cola, Tutor, usuarios; ventana de 500 eventos con secretos redactados. Reemplaza las cifras inventadas de `ADM-V01`/`ADM-V03`. 27 tests. En vivo: 401 sin token, 403 a estudiante y docente, 200 con datos reales. |
 | Repasos vencidos y enlace al contenido en el Tutor | `df840bb` | `GET /tutor/guidance` devuelve `dueReviews` y `contentLink` (unidad decidida en el servidor y solo si el estudiante puede leerla). 10 tests. En vivo: unidad ajena, ids basura y Tutor desactivado devuelven `null` sin error. |
 | Tiempo de espera del arranque en `verify:clean` | `e79d4db` | `VERIFY_START_TIMEOUT_MS` (por defecto 60000, sin cambio). Ver la nota siguiente. |
+| Subida de `mysql2` 3.19.1 -> 3.24.4 | `b369243` | Cierra los dos avisos de `npm audit` sobre `mysql2` (degradacion del plugin de autenticacion a `mysql_clear_password` y bomba de descompresion zlib). Subida menor dentro de `^3`, compatible con `typeorm` 0.3.31. `npm audit --omit=dev`: 19 -> 18 vulnerabilidades; el resto son herramientas de compilacion (`tar` via `sqlite3`, solo desarrollo), `multer` (instalado, pero la app no recibe archivos) y paquetes de `@nestjs/*` que solo se arreglan con Nest 12. |
 
 Build limpio. **57 suites, 478 tests, todos en verde** (antes: 52 y 432).
 
@@ -36,7 +37,7 @@ La primera corrida completa termino en la fase de arranque: `el servidor no resp
 - El mismo `dist/main.js`, recien reconstruido, abrio el puerto a los **73,9 s** en su primer arranque y a los **8,1 s** en el segundo, con la cache caliente (el rango de 8-13 s que `CLAUDE.md` ya documentaba como sano). El primer log de Nest aparece recien a los 73,7 s: el tiempo se va cargando modulos, antes de que Nest escriba nada.
 - Causa mas respaldada: el repositorio vive dentro de OneDrive y `npm ci` acababa de recrear ~955 paquetes, que OneDrive y el antivirus escanean. No es un defecto del codigo, pero **una corrida que fallo no cierra la ola**.
 
-Como `scripts/verify-clean-server-check.js` es un script de arranque, se hizo configurable el tiempo de espera (`e79d4db`) y `verify:clean` se repitio **completo** despues de ese commit, con `VERIFY_START_TIMEOUT_MS=180000`. Resultado literal de esa corrida (exit code 0). Se omitieron unicamente las 198 lineas `query:` de la traza SQL de TypeORM de `migration:run` y `db:seed:demo`; todo lo demas esta tal cual:
+Como `scripts/verify-clean-server-check.js` es un script de arranque, se hizo configurable el tiempo de espera (`e79d4db`) y `verify:clean` se repitio **completo** despues de ese commit, con `VERIFY_START_TIMEOUT_MS=180000`: paso con exit code 0. Como despues cambio `package-lock.json` (subida de `mysql2`, `b369243`), la regla de `CLAUDE.md` exige repetirlo otra vez: **la corrida de cierre valida es la siguiente**, tercera de la ola y posterior al ultimo cambio del lockfile. Resultado literal (exit code 0). Se omitieron unicamente las 198 lineas `query:` de la traza SQL de TypeORM de `migration:run` y `db:seed:demo`; todo lo demas esta tal cual:
 
 ```
 
@@ -53,7 +54,7 @@ added 955 packages, and audited 956 packages in 1m
 186 packages are looking for funding
   run `npm fund` for details
 
-25 vulnerabilities (2 low, 3 moderate, 19 high, 1 critical)
+24 vulnerabilities (2 low, 3 moderate, 18 high, 1 critical)
 
 To address issues that do not require attention, run:
   npm audit fix
@@ -70,7 +71,7 @@ Run `npm audit` for details.
 > stire@0.0.1 migration:run
 > npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts
 
-◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
 0 migrations are already loaded in the database.
 6 migrations were found in the source code.
 6 migrations are new migrations must be executed.
@@ -86,7 +87,7 @@ Migration CreateTutorSettings1789300000000 has been executed successfully.
 > stire@0.0.1 db:seed:demo
 > ts-node -r tsconfig-paths/register stire-seeder-demo.ts
 
-◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
 Conectado a la base de datos. Sembrando datos de demo (idempotente)...
 
 Institución y programa
@@ -139,7 +140,7 @@ Tipo de actividad y actividades (MCQ, CODING, FILL_CODE)
 
 
 [verify:clean] setup completo. Base de datos de verificacion: stire_verify_clean (puerto 3097). Continua scripts/verify-clean-server-check.js.
-◇ injected env (19) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (19) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
 login real contra el servidor recien levantado (docente de demo)
   login OK para docente.demo@stire.local (token recibido)
 verificacion de datos sembrados via GET /enrollment/my
