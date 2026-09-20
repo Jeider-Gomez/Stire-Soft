@@ -63,7 +63,6 @@
     "jsdom": "^29.1.1",
     "marked": "^18.0.3",
     "mysql2": "^3.19.1",
-    "openai": "^4.5.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
