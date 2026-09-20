@@ -16,6 +16,7 @@
 | Ver la semana en curso | [`../MONITOREO_SEMANAL.md`](../MONITOREO_SEMANAL.md) (bitácora vigente, en la raíz del repositorio) |
 | Ver el entregable de MODESEC | [`modesec/README.md`](./modesec/README.md) |
 | Ver las reglas de ingeniería | [`../CLAUDE.md`](../CLAUDE.md) y [`04_ESTANDARES_Y_SEGURIDAD.md`](./04_ESTANDARES_Y_SEGURIDAD.md) |
+| Subir cambios sin pisarnos (ramas, Pull Requests, versiones) | [`FLUJO_GIT.md`](./FLUJO_GIT.md) |
 
 ---
 
