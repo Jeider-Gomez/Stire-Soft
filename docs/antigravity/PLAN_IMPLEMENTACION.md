@@ -1,5 +1,5 @@
 ---
-estado:     vigente — Fase 21 lista para ejecutar
+estado:     completado — Fase 21 completada y verificada
 verificado: 2026-09-20 contra frontend-nuxt/ y src/ reales
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    ADM-V01 · ADM-V03 · EST-V01 · EST-V02 · Tutor IA (chat)
