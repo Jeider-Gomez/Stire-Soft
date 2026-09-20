@@ -165,7 +165,7 @@ El Tutor funcionaba con una clave global del servidor (`OPENAI_API_KEY`, que en 
 - **Cuota:** la capa gratuita está limitada por minuto y por día; con muchos estudiantes cada uno consume la suya, pero un estudiante activo puede toparse con `429`. La interfaz debe explicarlo, no mostrarlo como una falla del sistema.
 - **Demos:** ya no hay Tutor "de fábrica" para una demostración; las cuentas de demo necesitan una clave configurada antes de presentar.
 - **Pendiente de limpieza:** la dependencia `openai` sigue en `package.json` sin usarse. Quitarla modifica `package-lock.json`, así que debe hacerse al cierre de una ola, seguida de `npm run verify:clean` (regla de `CLAUDE.md`).
-- **Interfaz:** registro con opción de omitir, panel de la clave en el chat, y estados de error — `docs/antigravity/PLAN_IMPLEMENTACION.md` §19.
+- **Interfaz:** registro con opción de omitir, panel de la clave en el chat, y estados de error — `docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md` §19.
 
 
 # ADR 11 — Configuración del Tutor por el docente, nivel de ayuda automático y barrera anti-solución
@@ -193,4 +193,4 @@ Con el Tutor funcionando sobre la clave de cada estudiante (ADR 10) faltaban tre
 - **La barrera es una heurística, no una garantía.** No detecta una solución dada en prosa, ni en un lenguaje o forma distintos a un programa de entrada y salida estándar, y puede omitir un ejemplo legítimo que se parezca a una solución (el aviso le indica al estudiante cómo pedir algo más corto). La instrucción del prompt sigue siendo la primera línea de defensa.
 - **Los umbrales de nivel de ayuda (2 y 4 intentos fallidos) y los 20 renglones** se fijaron sin datos de uso real; conviene revisarlos con la primera prueba en clase.
 - **Desactivar el Tutor a nivel de unidad no bloquea el chat general** mientras las demás clases del estudiante lo permitan (es lo esperado: el chat general no pertenece a una unidad).
-- **Interfaz del docente y del estudiante:** `docs/antigravity/PLAN_IMPLEMENTACION.md` §18.4 y §20.
+- **Interfaz del docente y del estudiante:** `docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md` §18.4 y §20.
