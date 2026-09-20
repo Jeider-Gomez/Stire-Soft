@@ -164,3 +164,52 @@ export interface TutorSettings {
   }
 }
 
+/** Respuesta de GET /admin/system/status (§21.2) */
+export interface SystemStatus {
+  generatedAt: string
+  api: {
+    version: string
+    nodeVersion: string
+    environment: string
+    uptimeSeconds: number
+    memory: { rssMb: number; heapUsedMb: number }
+    requests: {
+      sampled: number
+      windowSeconds: number | null
+      p50Ms: number | null
+      p95Ms: number | null
+      serverErrorRatePct: number | null
+    }
+  }
+  database: { ok: boolean; latencyMs: number | null }
+  sandbox: {
+    adapter: string
+    timeoutMs: number
+    maxHeapMb: number
+    maxOutputKb: number
+    executionsLast24h: number | null
+    avgExecutionMs: number | null
+  }
+  judgeQueue: { driver: 'inline' | 'redis'; submissionsInProgress: number | null }
+  tutor: {
+    provider: string
+    model: string
+    studentsWithKey: number | null
+    studentMessagesLast24h: number | null
+  }
+  users: { total: number; byRole: Record<string, number> } | null
+  submissionsLast24h: number | null
+}
+
+/** Respuesta de GET /admin/system/logs (§21.2) */
+export interface SystemLogs {
+  entries: Array<{
+    timestamp: string
+    level: 'error' | 'warn' | 'log' | 'debug' | 'verbose' | 'fatal'
+    context: string | null
+    message: string
+  }>
+  capacity: number
+  note: string
+}
+
