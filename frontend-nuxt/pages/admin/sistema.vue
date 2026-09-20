@@ -190,7 +190,7 @@
             <span>Confirmar Limpieza de Mantenimiento</span>
           </h2>
           <p class="text-xs text-base-texto-secundario leading-relaxed">
-            Esta operación ejecuta una limpieza masiva de datos temporales, sesiones obsoletas y archivos residuales del sistema. ¿Deseas continuar?
+            Esta operación <strong>modifica resultados de estudiantes</strong>: marca como incorrectas (nota 0) las respuestas que quedaron sin calificar y cierra con nota 0 las entregas que llevan más de 10 minutos esperando calificación, para que puedan reintentar. No se puede deshacer desde aquí. ¿Deseas continuar?
           </p>
           <div class="flex items-center justify-end gap-2 pt-2">
             <button
