@@ -8,6 +8,7 @@
             Administración del Sistema • ADM-V01
           </span>
           <span
+            v-if="statusData"
             class="px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1.5"
             :class="isSystemHealthy ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
             <span aria-hidden="true">{{ isSystemHealthy ? '●' : '▲' }}</span>
@@ -149,7 +150,7 @@
         </div>
         <div class="flex items-center gap-2 text-base-texto-secundario">
           <span aria-hidden="true">⚡</span>
-          <span>Envíos evaluados (24 h):</span>
+          <span>Envíos iniciados (24 h):</span>
           <strong class="font-mono text-base-texto-primario">{{ statusData.submissionsLast24h != null ? statusData.submissionsLast24h : '—' }}</strong>
         </div>
       </section>
@@ -244,7 +245,7 @@
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
-                  En progreso: {{ statusData.judgeQueue.submissionsInProgress != null ? statusData.judgeQueue.submissionsInProgress : '0' }}
+                  En progreso: {{ statusData.judgeQueue.submissionsInProgress != null ? statusData.judgeQueue.submissionsInProgress : '—' }}
                 </td>
                 <td class="p-3 text-right font-sans text-base-texto-secundario">
                   Calificación activa
