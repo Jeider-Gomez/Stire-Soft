@@ -10,6 +10,7 @@ Una carpeta por módulo, en el orden en que se van probando:
 
 | Carpeta | Módulo | Semana |
 |---|---|---|
+| [`00-primera-version/`](./00-primera-version/) | Recorrido completo de la primera versión (identidad visual original), tomado con script | — |
 | [`01-tutor-ia/`](./01-tutor-ia/) | Tutor IA | 6 |
 | [`02-estudiante/`](./02-estudiante/) | Flujo del estudiante | 7 |
 | [`03-docente/`](./03-docente/) | Flujo del docente | 8 |
