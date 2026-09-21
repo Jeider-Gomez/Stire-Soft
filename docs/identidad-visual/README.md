@@ -31,7 +31,7 @@ Tienes libertad total sobre **cómo se ve**. Lo que no cambia es **lo que hace**
 | La parte visible de cada pantalla: el bloque `<template>` (clases, estructura, iconos, disposición) | `frontend-nuxt/layouts/`, `components/`, `pages/` |
 | Tu propuesta, referencias y capturas | `docs/identidad-visual/` |
 
-### Con cuidado — avísale a Pedro antes
+### Con cuidado — avisa al dueño del proyecto antes
 
 - **`nuxt.config.ts`**: mezcla marca (título, `<head>`) con configuración de conexión al backend. Toca solo lo de marca.
 - **Dependencias nuevas** (`package.json` de `frontend-nuxt`): pregunta antes. Ya tienes instalado **`lucide-vue-next`** (iconos) y Tailwind 3; con eso se puede hacer casi todo.
@@ -47,7 +47,7 @@ Tienes libertad total sobre **cómo se ve**. Lo que no cambia es **lo que hace**
 | `docs/PLAN_MAESTRO.md` y demás documentación fuera de esta carpeta | Solo la edita quien integra |
 
 Si para tu diseño **necesitas** cambiar algo de esa lista (por ejemplo, un dato que hoy no llega a
-la pantalla), no lo hagas tú: descríbelo en tu propuesta o avísale a Pedro y se resuelve aparte.
+la pantalla), no lo hagas tú: descríbelo en tu propuesta o avisa al dueño del proyecto y se resuelve aparte.
 Eso es más rápido que arreglar una funcionalidad rota después.
 
 ### Cosas que parecen de estilo pero no lo son
@@ -65,7 +65,7 @@ Mantenlas aunque muevas todo lo demás:
 
 Es un trabajo universitario: no hace falta más ceremonia que esta.
 
-**Una rama por etapa, no una rama gigante.** Así Pedro puede aprobar por partes y `main` nunca queda
+**Una rama por etapa, no una rama gigante.** Así el dueño del proyecto puede aprobar por partes y `main` nunca queda
 a medias.
 
 | Etapa | Rama | Qué entra | Se aprueba mirando |
@@ -121,14 +121,14 @@ modifiques para que arranque.**
    npm run check:identidad
    ```
    - `✖ FUERA de tu territorio`: hay archivos que no deberían ir en tu rama. Sácalos (`git restore <archivo>`) o pregunta.
-   - `⚠ Para mirar`: no es un error. Te avisa si cambió el `<script>` de un `.vue`, si desapareció una directiva de comportamiento (`v-if`, `@click`…) o un `id`/`aria-label`. Casi siempre es porque reorganizaste algo; confírmalo con Pedro.
+   - `⚠ Para mirar`: no es un error. Te avisa si cambió el `<script>` de un `.vue`, si desapareció una directiva de comportamiento (`v-if`, `@click`…) o un `id`/`aria-label`. Casi siempre es porque reorganizaste algo; confírmalo con el dueño del proyecto.
 2. **Que compile:** `cd frontend-nuxt && npx nuxi typecheck` debe terminar sin errores.
 3. **Recorrido rápido con las tres cuentas.** Abre, en cada rol, lo que sale en la lista de pantallas de [`01_PRIMEROS_PASOS.md`](./01_PRIMEROS_PASOS.md) §5, y mira **estos estados** en cada una (son los que casi siempre se olvidan): cargando, vacío, error, botón deshabilitado, foco con teclado (Tab) y ancho de teléfono (375 px).
 4. **Capturas de antes y después** de las pantallas que cambiaste, en `docs/identidad-visual/capturas/etapa-N/` con nombres como `01_login_antes.png` / `01_login_despues.png`.
 
 ### Quién aprueba
 
-- **Pedro** decide si el resultado le gusta (es el dueño del producto).
+- **El dueño del proyecto** decide si el resultado le gusta (es el dueño del producto).
 - **Claude Code** hace la revisión técnica del PR: territorio, que `typecheck` pase, que lo funcional siga funcionando en navegador real y que el contraste cumpla. Si algo funcional se rompe, se devuelve con el detalle exacto; no hace falta que lo descubras tú.
 
 Si algo sale mal después de unir, se deshace con `git revert` del merge, y la versión original sigue
@@ -145,3 +145,27 @@ en la etiqueta `v1.0.0-beta.1`.
 | «`check:identidad` me marca un archivo que no toqué» | Probablemente tu rama está desactualizada: `git fetch origin && git merge origin/main` y vuelve a correrlo |
 | «Se ve roto y no sé por qué» | No sigas encima: `git stash` o `git restore .` y pregunta; con la etiqueta `v1.0.0-beta.1` se compara |
 | «Quiero cambiar mucho más de lo previsto» | Perfecto en `<template>` y estilos; solo avisa si afecta el flujo (por ejemplo, mover el Tutor a otra pantalla) |
+
+---
+
+## 5. Revisión de tu primer avance (21/09)
+
+Subiste a `main` el refactor de paleta, `HeaderNav` y el panel `DOC-V01` (`7e9f314`). Se integró tal cual
+(no rompe nada al compilar), y esto es lo que se vio al revisarlo con las reglas de arriba. Sirve de
+ejemplo de cómo se revisan las etapas siguientes.
+
+**Lo que está bien:** la paleta `stire-*` se agregó **en `tailwind.config.ts`**, que es donde debe vivir;
+`Poppins` se carga desde `main.css`; el cambio de fondo en los layouts es solo de clases.
+
+**Lo que hay que corregir:**
+
+| # | Qué pasó | Qué hacer |
+|---|---|---|
+| 1 | Se subió directo a `main`, sin rama | La próxima vez, rama `feat/identidad-…` y Pull Request (§2). Así `check:identidad` corre antes de que llegue a todos |
+| 2 | `frontend-nuxt/src/index.css` usa sintaxis de **Tailwind 4** (`@import "tailwindcss"`, `@theme`), pero el proyecto usa Tailwind 3 con `tailwind.config.ts`: ese archivo **no se carga** y los mismos valores ya están en la configuración | Borrarlo, para que no haya dos «fuentes de verdad» de la paleta |
+| 3 | Dependencia nueva `qrcode` (y `@types/qrcode`) | Es un modal de QR con el código de la clase: **es una funcionalidad nueva, no estilo**. Se acepta esta vez; la próxima, pregunta antes (§1, «Con cuidado») |
+| 4 | Cambió el `<script>` de `HeaderNav.vue`, `layouts/teacher.vue` y `pages/docente/index.vue` (búsqueda de clases, QR, botón de menú móvil) | Igual que el punto 3: lo que cambia comportamiento se acuerda antes. Aquí `check:identidad` te lo habría avisado |
+| 5 | Las tarjetas del panel docente muestran **0 estudiantes, 0 % de maestría y 0 en riesgo**, pero el backend (`/class/my-classes`) no devuelve `enrollmentCount` ni `avgMastery`, y «en riesgo» es un `computed(() => 0)` fijo | Un dato que no existe **no se muestra como 0**: muestra «—» o quita la tarjeta. Anota en tu propuesta (§4 de `PROPUESTA_IDENTIDAD.md`) qué dato necesitas para que se agregue en el backend |
+| 6 | 46 usos de clases de color por defecto de Tailwind (`text-slate-800`, etc.) en `pages/docente/index.vue` | Pasarlas a tokens (`text-base-texto-primario` o uno nuevo de tu paleta). Las clases por defecto no siguen a `tailwind.config.ts`: si cambias la paleta, esas quedan como estaban |
+| 7 | Conviven dos paletas: `base-*` / `acento-*` (las de antes) y `stire-*` (las tuyas) | Es normal a mitad de camino. Al terminar la etapa 1, decide si `stire-*` **reemplaza** a las anteriores (mejor: se cambian los valores de `base-*`/`acento-*` y las pantallas heredan) o se migran las pantallas una por una |
+

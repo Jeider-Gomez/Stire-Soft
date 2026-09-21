@@ -110,7 +110,7 @@ Adjunta o enlaza las tres (ver `01_PRIMEROS_PASOS.md` §3):
 
 ## 4. Cosas que tu diseño necesita y hoy no existen
 
-Anota aquí, sin implementarlas, las que dependan de lógica o de datos que no están: un dato que hoy no llega a la pantalla, una pantalla nueva, un comportamiento distinto. Se resuelven aparte, con Pedro.
+Anota aquí, sin implementarlas, las que dependan de lógica o de datos que no están: un dato que hoy no llega a la pantalla, una pantalla nueva, un comportamiento distinto. Se resuelven aparte, con el dueño del proyecto.
 
 - _…_
 
