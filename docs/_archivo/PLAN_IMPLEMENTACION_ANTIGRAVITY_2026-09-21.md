@@ -1,8 +1,7 @@
----
-estado:     completada y verificada — Fase 22 cerrada
-verificado: 2026-09-21 contra frontend-nuxt/ y src/ reales, en navegador real
-fuente:     normativo (insumo de arranque para Google Antigravity)
-codigos:    Tutor IA (chat) · ADM-V01
+> **DOCUMENTO HISTORICO — no vigente.** Fase 22 de `docs/antigravity/PLAN_IMPLEMENTACION.md`, ejecutada por
+> Antigravity el 2026-09-21 y auditada por Claude Code el mismo día en navegador real (ver la nota
+> al inicio de §22). Estado actual: `docs/antigravity/PLAN_IMPLEMENTACION.md`. Archivado el 2026-09-21.
+
 ---
 
 # Plan de implementación para Antigravity — Fase 22
@@ -15,6 +14,21 @@ fase.** La numeración continúa en 22 para no romper citas.
 ---
 
 ## 22. Fase 22 — cuatro correcciones que salieron de auditar la Fase 21
+
+> **Nota de auditoría (Claude Code, 2026-09-21, navegador real con backend y base reales).**
+> T1, T3 y T4 funcionan como pedía el plan. **T2 tenía un defecto en el panel del Tutor** que el informe
+> de la fase da por resuelto: para un estudiante **sin clave guardada** (el estado inicial de todos), el foco
+> se ponía en el campo del chat al abrir, pero cuando llegaba el estado de la clave ese campo se desmontaba,
+> el foco caía al `<body>` y `Escape` dejaba de llegar al panel (su `@keydown` solo recibe teclas si el foco
+> está dentro). Corregido por Claude Code: `Escape` se escucha en el documento y el foco se reasigna al
+> cambiar el panel de la clave. Comprobado: al abrir con Enter el foco entra en el campo de la clave,
+> `Escape` cierra y el foco vuelve al botón «Tutor IA». El diálogo de `sistema.vue` estaba bien (foco en
+> «Cancelar», Tab atrapado, `Escape` sin enviar `POST /maintenance/cleanup`).
+> **Imprecisiones del informe** (`INFORME_2026-09-21_SESION_01.md`, no se edita): afirma que `Escape` cierra el
+> panel y devuelve el foco (falso sin clave, antes de la corrección); dice que la ruta se valida con
+> `/^\/estudiante\/evaluacion\/\d+$/` y el código usa la misma expresión sin `$` final (equivalente en la
+> práctica); y lista `POST /maintenance/cleanup → 200 OK` como verificado cuando el propio informe dice que
+> Escape cancela sin invocarlo.
 
 ### 22.0 En una línea
 

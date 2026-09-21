@@ -15,12 +15,15 @@ en el mismo archivo — no se archivan por eso. Se archiva completo, con fecha e
 [`docs/_archivo/`](../_archivo/) únicamente cuando se reemplaza de fondo (fases nuevas, no una
 corrección más) — ver la regla exacta ahí.
 
+**Archivado el 2026-09-21:** la Fase 22 (cuatro correcciones que salieron de auditar la Fase 21) se movió a
+[`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-21.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-21.md),
+con la nota de la auditoría de Claude Code. **El archivo vigente no tiene ninguna fase pendiente**; cuando haya
+trabajo nuevo, la numeración sigue en 23. Regla que se aplicó: un plan vigente lista únicamente trabajo
+pendiente, y lo ejecutado se archiva.
+
 **Archivado el 2026-09-20:** las Fases 16-21 se movieron completas a
 [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md)
-(la Fase 21 lleva al inicio la nota de la auditoría de Claude Code). El archivo vigente contiene **solo la
-Fase 22** (cuatro correcciones que salieron de esa auditoría; lo que hay que hacer, sin contexto de lo ya
-hecho); la numeración sigue en 22. Regla que se aplicó: un plan vigente lista únicamente trabajo pendiente,
-y lo ejecutado se archiva.
+(la Fase 21 lleva al inicio la nota de la auditoría de Claude Code).
 
 **Archivado el 2026-09-15:** las Fases 1-15 (todo el trabajo hasta y con la Fase 15) se movieron
 completas a
@@ -56,6 +59,10 @@ que reportan queda desactualizado, el informe siguiente lo señala, no se reescr
 | 05 | 2026-09-14 | [`informes/INFORME_2026-09-14_SESION_02.md`](./informes/INFORME_2026-09-14_SESION_02.md) | Fase 15 (§15 `PLAN_IMPLEMENTACION.md`): corrección de contrato y datos reales en `DOC-V04` (verificado en navegador con captura), auditoría de escritura real en `DOC-V03` (`POST /activities` + `/activity-questions` 201) y `ADM-V03` (`POST /maintenance/cleanup` x2 201), selector real de estudiantes en `DOC-V06`, y limpieza de clases QA de Toscano. |
 | 06 | 2026-09-15 | [`informes/INFORME_2026-09-15_SESION_03.md`](./informes/INFORME_2026-09-15_SESION_03.md) | Fase 16 (§16 `PLAN_IMPLEMENTACION.md`): modales de edición/archivo en `DOC-V02` (Topics y LearningUnits) y `DOC-V03` (actividades existentes), verificación E2E `DOC-V04` → `DOC-V05`, auditoría WCAG 2.1 AA en 7 vistas y verificación en navegador real con grabación. |
 | 07 | 2026-09-16 | [`informes/INFORME_2026-09-16_SESION_01.md`](./informes/INFORME_2026-09-16_SESION_01.md) | Fase 17 (§17 `PLAN_IMPLEMENTACION.md`): categorías reales de tipo de actividad (`AUTO-EVAL` 1.0x, `TALLER` 1.5x, `PARCIAL` 3.0x), selectores con pesos reales y textos de ayuda en `crear.vue` (creación y edición), columna "Categoría / Peso" en tabla de actividades, fix backend en `ActivitiesService.update()`, y verificación de preservación de actividades previas. |
+
+| 08 | 2026-09-19 | [`informes/INFORME_2026-09-19_SESION_01.md`](./informes/INFORME_2026-09-19_SESION_01.md) | Fases 18, 19 y 20: experiencia de chat del Tutor, panel de la clave de Google AI Studio y configuración del Tutor por el docente. |
+| 09 | 2026-09-20 | [`informes/INFORME_2026-09-20_SESION_01.md`](./informes/INFORME_2026-09-20_SESION_01.md) | Fase 21: datos reales en `ADM-V01`/`ADM-V03`, «Ir al contenido» y repasos vencidos en el chat. Auditada por Claude Code (imprecisiones anotadas en `PLAN_MAESTRO.md` §6.1). |
+| 10 | 2026-09-21 | [`informes/INFORME_2026-09-21_SESION_01.md`](./informes/INFORME_2026-09-21_SESION_01.md) | Fase 22: aviso de repasos sin clave, foco y Escape, contexto de actividad y estados de `ADM-V01`. Auditada por Claude Code (defecto de foco en el Tutor sin clave, ya corregido). |
 
 Para agregar una sesión nueva: copiar `informes/TEMPLATE_INFORME.md`, completar, renombrar como
 `informes/INFORME_YYYY-MM-DD_SESION_NN.md` (`NN` reinicia en `01` cada día si hay más de una
