@@ -75,7 +75,8 @@ describe('JudgeWorker integration', () => {
     );
 
     worker = new JudgeWorker(executionService);
-  });
+    // Arrancar SQLite en memoria tarda más de los 5 s por defecto con el equipo cargado (falló 2 de 3 corridas completas); no es un defecto del worker.
+  }, 30000);
 
   afterAll(async () => {
     if (dataSource?.isInitialized) {
