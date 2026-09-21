@@ -85,9 +85,42 @@
             <span aria-hidden="true">📍</span>
             <span class="truncate font-medium text-base-texto-primario">{{ activeContextLabel }}</span>
           </div>
-          <span class="text-[10px] px-1.5 py-0.2 rounded bg-semantico-pasa/15 text-semantico-pasa font-semibold flex-shrink-0">
-            Contexto en vivo
-          </span>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <!-- Botón Ir al contenido de la unidad (§22 T1 — visible con clave y sin clave) -->
+            <button
+              v-if="tutorStore.tutorEnabled && tutorStore.contentLink"
+              @click="navigateWithAutosaveCheck(`/estudiante/unidad/${tutorStore.contentLink.learningUnitId}`)"
+              class="borde-afordancia px-2 py-0.5 rounded bg-base-blanco text-[10px] font-medium text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1 border border-acento-ambar/30"
+              :aria-label="`Ir al contenido de la unidad: ${tutorStore.contentLink.title}`"
+            >
+              <span aria-hidden="true">📖</span> Ver unidad
+            </button>
+            <span class="text-[10px] px-1.5 py-0.2 rounded bg-semantico-pasa/15 text-semantico-pasa font-semibold">
+              Contexto en vivo
+            </span>
+          </div>
+        </div>
+
+        <!-- Aviso de repasos vencidos (§22 T1 — fuera del v-else, visible con clave y sin clave) -->
+        <div
+          v-if="tutorStore.tutorEnabled && overdueNotice"
+          class="mx-4 mt-3 p-3 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 text-xs text-base-texto-primario flex items-center justify-between gap-2 shadow-xs shrink-0"
+          role="status"
+          aria-live="polite"
+        >
+          <div class="flex items-start gap-2">
+            <span class="text-base leading-none" aria-hidden="true">⏰</span>
+            <p class="text-[11px] leading-relaxed">
+              {{ overdueNotice }}
+            </p>
+          </div>
+          <button
+            @click="navigateWithAutosaveCheck('/estudiante/repasos')"
+            class="px-2.5 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold text-[11px] hover:bg-acento-ambar transition-colors shrink-0 shadow-xs"
+            aria-label="Ir a mis repasos pendientes"
+          >
+            Ir a mis repasos
+          </button>
         </div>
 
         <!-- Panel de clave de API (§19.2) -->
@@ -105,28 +138,6 @@
           >
             <span aria-hidden="true">🚫</span>
             Tu docente desactivó el Tutor en esta parte del curso.
-          </div>
-
-          <!-- Aviso de repasos vencidos (§21.2 T4c) -->
-          <div
-            v-if="tutorStore.tutorEnabled && overdueNotice"
-            class="mx-4 mt-3 p-3 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 text-xs text-base-texto-primario flex items-center justify-between gap-2 shadow-xs shrink-0"
-            role="status"
-            aria-live="polite"
-          >
-            <div class="flex items-start gap-2">
-              <span class="text-base leading-none" aria-hidden="true">⏰</span>
-              <p class="text-[11px] leading-relaxed">
-                {{ overdueNotice }}
-              </p>
-            </div>
-            <button
-              @click="navigateWithAutosaveCheck('/estudiante/repasos')"
-              class="px-2.5 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold text-[11px] hover:bg-acento-ambar transition-colors shrink-0 shadow-xs"
-              aria-label="Ir a mis repasos pendientes"
-            >
-              Ir a mis repasos
-            </button>
           </div>
 
           <!-- Mensajes del Chat (§18.2 — scroll automático) -->
@@ -219,15 +230,7 @@
                 <span aria-hidden="true">🔍</span> Ubicar condición de parada
               </button>
 
-              <!-- Botón Ir al contenido de la unidad (§21.2 T4c) -->
-              <button
-                v-if="tutorStore.tutorEnabled && tutorStore.contentLink"
-                @click="navigateWithAutosaveCheck(`/estudiante/unidad/${tutorStore.contentLink.learningUnitId}`)"
-                class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1"
-                :aria-label="`Ir al contenido de la unidad: ${tutorStore.contentLink.title}`"
-              >
-                <span aria-hidden="true">📖</span> Ir al contenido de la unidad
-              </button>
+              <!-- Botón Ir al contenido eliminado de aquí (§22 T1 — movido al bloque de contexto) -->
             </div>
 
             <!-- Input de Pregunta Libre (§18.6 — font-size ≥16px para evitar zoom iOS) -->
