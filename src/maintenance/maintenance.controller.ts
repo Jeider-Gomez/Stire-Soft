@@ -1,6 +1,6 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, InternalServerErrorException, Post, UseGuards } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { MaintenanceService } from './maintenance.service';
+import { CleanupSummary, MaintenanceService } from './maintenance.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -16,7 +16,20 @@ export class MaintenanceController {
   @Throttle({ default: { limit: 3, ttl: 60000 } })
   @Post('cleanup')
   async triggerCleanup() {
-    await this.maintenanceService.handleDeadlockCleanup();
-    return { message: 'Limpieza de base de datos ejecutada exitosamente.' };
+    let summary: CleanupSummary;
+    try {
+      summary = await this.maintenanceService.runCleanup();
+    } catch {
+      // El detalle ya quedó en el registro del servidor; al cliente no se le filtran mensajes internos.
+      throw new InternalServerErrorException(
+        'La limpieza no se completó por un error interno. Revisa el registro de eventos del servidor.',
+      );
+    }
+    return {
+      message:
+        `Limpieza ejecutada: ${summary.orphanedAnswersFixed} respuestas en limbo corregidas ` +
+        `y ${summary.staleSubmissionsClosed} entregas atascadas cerradas con nota 0.`,
+      ...summary,
+    };
   }
 }

@@ -7,6 +7,11 @@ import { Submission } from '../submissions/entities/submission.entity';
 import { ExecutionResult } from '../judge-engine/entities/execution-result.entity';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
 
+export interface CleanupSummary {
+  orphanedAnswersFixed: number;
+  staleSubmissionsClosed: number;
+}
+
 @Injectable()
 export class MaintenanceService {
   private readonly logger = new Logger(MaintenanceService.name);
@@ -18,14 +23,29 @@ export class MaintenanceService {
   ) {}
 
   /**
-   * Ejecuta a medianoche para limpiar respuestas atascadas en limbo (isCorrect = null)
-   * donde el intento general ya no está en estado 'submitted' o en cola.
+   * Ejecuta a medianoche. Un error no debe tumbar el planificador: se registra y se sigue.
+   * La versión que informa el resultado (y lanza si falla) es `runCleanup`.
    */
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async handleDeadlockCleanup() {
-    this.logger.log('🧹 Iniciando limpieza automática de respuestas en limbo y submissions timeout/limbo...');
+  async handleDeadlockCleanup(): Promise<void> {
+    try {
+      await this.runCleanup();
+    } catch {
+      // runCleanup ya dejó el error en el registro.
+    }
+  }
+
+  /**
+   * Limpia respuestas atascadas en limbo (isCorrect = null) cuyo intento ya no está en 'submitted',
+   * y cierra con nota 0 los intentos que llevan más de 10 minutos esperando calificación.
+   * Devuelve cuántos registros tocó; si algo falla, lo registra y VUELVE A LANZAR el error
+   * para que quien llame (el endpoint de administración) no informe un éxito falso.
+   */
+  async runCleanup(): Promise<CleanupSummary> {
+    this.logger.log('🧹 Iniciando limpieza de respuestas en limbo y submissions timeout/limbo...');
     const LIMBO_TIMEOUT_MINUTES = 10;
-    
+    const summary: CleanupSummary = { orphanedAnswersFixed: 0, staleSubmissionsClosed: 0 };
+
     try {
       // 1️⃣ Limpieza de respuestas huérfanas (isCorrect null) cuyo submission no está en estado 'submitted'
       const orphanedAnswers = await this.answersRepo.createQueryBuilder('sa')
@@ -42,6 +62,7 @@ export class MaintenanceService {
           answer.feedback = 'Limpieza automática: Evaluación huérfana detectada.';
           await this.answersRepo.save(answer);
           this.logger.warn(`✔ Respuesta ID ${answer.id} de la entrega ${answer.submission.id} corregida automáticamente.`);
+          summary.orphanedAnswersFixed++;
         }
       } else {
         this.logger.log('✅ No se encontraron respuestas en limbo.');
@@ -80,14 +101,17 @@ export class MaintenanceService {
           sub.status = SubmissionStatus.GRADED;
           await this.submissionsRepo.save(sub);
           this.logger.warn(`✔ Submission ID ${sub.id} corregida y marcada como graded.`);
+          summary.staleSubmissionsClosed++;
         }
       } else {
         this.logger.log('✅ No se encontraron submissions SUBMITTED antiguos.');
       }
 
       this.logger.log('✅ Limpieza completa de limbo y timeout/limbo.');
+      return summary;
     } catch (error: any) {
       this.logger.error(`❌ Error durante la limpieza de limbo/timeout: ${error.message}`, error.stack);
+      throw error;
     }
   }
 }
