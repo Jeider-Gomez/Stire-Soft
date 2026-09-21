@@ -17,8 +17,8 @@ corrección más) — ver la regla exacta ahí.
 
 **Archivado el 2026-09-21:** la Fase 22 (cuatro correcciones que salieron de auditar la Fase 21) se movió a
 [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-21.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-21.md),
-con la nota de la auditoría de Claude Code. **El archivo vigente no tiene ninguna fase pendiente**; cuando haya
-trabajo nuevo, la numeración sigue en 23. Regla que se aplicó: un plan vigente lista únicamente trabajo
+con la nota de la auditoría de Claude Code. **El archivo vigente contiene solo la Fase 23** (repasos que funcionan, roles de usuario
+y solicitud de rol docente; escrita el 21/09). Regla que se aplicó: un plan vigente lista únicamente trabajo
 pendiente, y lo ejecutado se archiva.
 
 **Archivado el 2026-09-20:** las Fases 16-21 se movieron completas a
