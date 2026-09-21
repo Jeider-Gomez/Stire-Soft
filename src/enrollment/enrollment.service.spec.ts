@@ -42,6 +42,20 @@ describe('EnrollmentService.findByClass — P1-06', () => {
   });
 });
 
+// GET /enrollment/my se documenta como «matrículas activas», pero devolvía también las retiradas y
+// pendientes: la interfaz las mostraba como clases del estudiante y su contenido respondía 403.
+describe('EnrollmentService.findByStudent — solo matrículas activas', () => {
+  it('consulta solo las del propio estudiante y con estado ACTIVE', async () => {
+    const repo = { find: jest.fn().mockResolvedValue([{ id: 'a' }]) };
+    const service = new EnrollmentService(repo as any, {} as any, {} as any, {} as any);
+
+    await expect(service.findByStudent(29)).resolves.toEqual([{ id: 'a' }]);
+
+    const where = repo.find.mock.calls[0][0].where;
+    expect(where).toEqual({ studentId: 29, status: EnrollmentStatus.ACTIVE });
+  });
+});
+
 describe('EnrollmentService — moderación de matrícula', () => {
   const repository = {
     findOne: jest.fn(),

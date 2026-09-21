@@ -84,9 +84,14 @@ export class EnrollmentService {
     return await this.enrollmentRepository.save(enrollment);
   }
 
+  /**
+   * Solo matrículas activas: una clase retirada, pendiente de aprobación o completada ya no da acceso
+   * a su contenido (assertEnrolledInClass exige ACTIVE), así que listarla en la interfaz como si
+   * siguiera matriculado solo lleva a errores 403.
+   */
   async findByStudent(studentId: number): Promise<Enrollment[]> {
     return await this.enrollmentRepository.find({
-      where: { studentId },
+      where: { studentId, status: EnrollmentStatus.ACTIVE },
       relations: ['class', 'class.teacher'],
     });
   }
