@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserService } from './user.service';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { UserAffiliation } from './entities/user-affiliation.entity';
 import { InstitutionService } from '../institution/institution.service';
 
@@ -53,6 +53,40 @@ describe('UserService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('cambio de rol por un admin — nadie se cambia a sí mismo', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockUserRepository.findOne.mockImplementation(async ({ where }: any) => ({ id: where.id, role: UserRole.ESTUDIANTE, isActive: true }));
+      mockUserRepository.save.mockImplementation(async (u: any) => u);
+    });
+
+    it('updateRole sobre otro usuario cambia el rol', async () => {
+      await service.updateRole(5, UserRole.DOCENTE, 1);
+      expect(mockUserRepository.save).toHaveBeenCalledWith(expect.objectContaining({ id: 5, role: UserRole.DOCENTE }));
+    });
+
+    it('updateRole sobre la propia cuenta responde 403 y no guarda', async () => {
+      await expect(service.updateRole(1, UserRole.ESTUDIANTE, 1)).rejects.toThrow(ForbiddenException);
+      expect(mockUserRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('PATCH /users/:id con role o isActive=false sobre uno mismo también se bloquea', async () => {
+      await expect(service.update(1, { role: UserRole.ESTUDIANTE } as any, 1)).rejects.toThrow(ForbiddenException);
+      await expect(service.update(1, { isActive: false } as any, 1)).rejects.toThrow(ForbiddenException);
+      expect(mockUserRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('editar el nombre de uno mismo (sin tocar rol ni estado) sigue permitido', async () => {
+      await expect(service.update(1, { fullName: 'Nuevo Nombre' } as any, 1)).resolves.toBeDefined();
+    });
+
+    it('un admin no puede eliminar su propia cuenta, pero sí la de otro', async () => {
+      mockUserRepository.softRemove.mockResolvedValue(undefined);
+      await expect(service.remove(1, 1)).rejects.toThrow(ForbiddenException);
+      await expect(service.remove(2, 1)).resolves.toBeUndefined();
+    });
   });
 
   describe('changePassword — regresion bloqueante de la revision del Sub-bloque 2.1', () => {

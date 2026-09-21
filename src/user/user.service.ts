@@ -1,6 +1,7 @@
 import {
   Injectable,
   ConflictException,
+  ForbiddenException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -88,8 +89,13 @@ export class UserService {
    * Actualizar un usuario (uso exclusivo de administradores sobre terceros).
    * Ver updateProfile/changePassword para la auto-edición del propio usuario.
    */
-  async update(id: number, adminUpdateUserDto: AdminUpdateUserDto): Promise<User> {
+  async update(id: number, adminUpdateUserDto: AdminUpdateUserDto, actorId?: number): Promise<User> {
     const user = await this.findOne(id);
+
+    // Un admin no puede quitarse el rol ni desactivar su propia cuenta (así nunca se queda sin admins).
+    if (actorId !== undefined && (adminUpdateUserDto.role !== undefined || adminUpdateUserDto.isActive === false)) {
+      this.assertNotSelf(actorId, id);
+    }
 
     // Si se actualiza la contraseña, encriptarla
     if (adminUpdateUserDto.password) {
@@ -143,10 +149,11 @@ export class UserService {
   /**
    * Actualizar el rol de un usuario
    */
-  async updateRole(id: number, role: string): Promise<{ message: string }> {
+  async updateRole(id: number, role: UserRole, actorId?: number): Promise<{ message: string }> {
+    if (actorId !== undefined) this.assertNotSelf(actorId, id);
     const user = await this.findOne(id);
-    
-    user.role = role as UserRole;
+
+    user.role = role;
     await this.userRepository.save(user);
 
     return { message: 'Rol de usuario actualizado con éxito' };
@@ -172,7 +179,15 @@ export class UserService {
   /**
    * Eliminar un usuario (soft delete)
    */
-  async remove(id: number): Promise<void> {
+  /** Regla común: sobre la propia cuenta el admin no cambia rol, no la desactiva ni la elimina. */
+  private assertNotSelf(actorId: number, targetId: number): void {
+    if (actorId === targetId) {
+      throw new ForbiddenException('No puedes cambiar tu propio rol ni desactivar o eliminar tu propia cuenta');
+    }
+  }
+
+  async remove(id: number, actorId?: number): Promise<void> {
+    if (actorId !== undefined) this.assertNotSelf(actorId, id);
     const user = await this.findOne(id);
     await this.userRepository.softRemove(user);
   }

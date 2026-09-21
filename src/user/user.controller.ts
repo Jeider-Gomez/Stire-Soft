@@ -13,6 +13,7 @@ import { Throttle } from '@nestjs/throttler';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAffiliationDto } from './dto/create-affiliation.dto';
@@ -79,18 +80,18 @@ export class UserController {
   // propio solicitante (para eso estan PATCH /users/me y /users/me/password).
   @Roles('admin')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() adminUpdateUserDto: AdminUpdateUserDto) {
-    return this.userService.update(+id, adminUpdateUserDto);
+  update(@Param('id') id: string, @Body() adminUpdateUserDto: AdminUpdateUserDto, @GetUser() admin: User) {
+    return this.userService.update(+id, adminUpdateUserDto, admin.id);
   }
 
   @Roles('admin')
   @Patch(':id/role')
-  updateRole(@Param('id') id: string, @Body('role') role: string) {
-    return this.userService.updateRole(+id, role);
+  updateRole(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateRoleDto, @GetUser() admin: User) {
+    return this.userService.updateRole(id, dto.role, admin.id);
   }
   @Roles('admin')
   @Delete(':id')
-  remove(@Param('id') id: string, @GetUser() user: User) {
-    return this.userService.remove(+id);
+  remove(@Param('id') id: string, @GetUser() admin: User) {
+    return this.userService.remove(+id, admin.id);
   }
 }

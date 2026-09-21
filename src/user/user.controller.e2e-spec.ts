@@ -126,7 +126,25 @@ describe('UserController (e2e) — P0-02 escalada de privilegios', () => {
       .send({ role: 'docente' })
       .expect(200);
 
-    expect(mockUserService.update).toHaveBeenCalledWith(999, { role: 'docente' });
+    // El tercer argumento es quién lo pide: el servicio lo usa para impedir que un admin se cambie a sí mismo.
+    expect(mockUserService.update).toHaveBeenCalledWith(999, { role: 'docente' }, 5);
+  });
+
+  it('PATCH /users/:id/role valida el rol: un valor inventado devuelve 400 y no llega al servicio', async () => {
+    currentUser = { id: 5, email: 'admin@stire.local', role: UserRole.ADMIN };
+
+    await request(app.getHttpServer()).patch('/users/999/role').send({ role: 'superadmin' }).expect(400);
+    await request(app.getHttpServer()).patch('/users/999/role').send({}).expect(400);
+
+    expect(mockUserService.updateRole).not.toHaveBeenCalled();
+  });
+
+  it('PATCH /users/:id/role con un rol válido pasa el id del admin que lo pide', async () => {
+    currentUser = { id: 5, email: 'admin@stire.local', role: UserRole.ADMIN };
+
+    await request(app.getHttpServer()).patch('/users/999/role').send({ role: 'docente' }).expect(200);
+
+    expect(mockUserService.updateRole).toHaveBeenCalledWith(999, 'docente', 5);
   });
 
   it('PATCH /users/:id como docente también devuelve 403 — la ruta es exclusiva de admin', async () => {
