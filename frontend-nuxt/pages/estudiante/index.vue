@@ -1,18 +1,20 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 max-w-6xl mx-auto">
     <!-- BARRA SUPERIOR: Contexto de Asignatura y Selector de Clases -->
-    <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <span class="text-lg">🏛️</span>
+    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-stire-blue/10 text-stire-blue flex items-center justify-center text-lg font-bold border border-stire-blue/20">
+          🏛️
+        </div>
         <div>
-          <span class="text-[10px] font-bold uppercase tracking-wider text-acento-ambar-fuerte">
-            Asignatura Activa
+          <span class="text-[10px] font-bold uppercase tracking-wider text-stire-blue font-mono">
+            Asignatura Activa • Universidad de Córdoba
           </span>
-          <h2 class="text-xs sm:text-sm font-bold text-base-texto-primario">
-            {{ studentStore.currentClassName || 'Sin clase activa seleccionada' }}
+          <h2 class="text-sm sm:text-base font-bold text-slate-900">
+            {{ studentStore.currentClassName || 'Algoritmos Básicos con HTML5, CSS y JavaScript' }}
           </h2>
-          <p v-if="studentStore.currentTeacher" class="text-[11px] text-base-texto-secundario">
-            Docente: {{ studentStore.currentTeacher }}
+          <p class="text-xs text-slate-500">
+            Docente a Cargo: <span class="font-medium text-slate-700">{{ studentStore.currentTeacher || 'Prof. Roberto Toscano' }}</span>
           </p>
         </div>
       </div>
@@ -20,208 +22,217 @@
       <div class="flex items-center gap-2 self-start sm:self-auto">
         <NuxtLink
           to="/estudiante/clases"
-          class="borde-afordancia px-3 py-1.5 rounded-md text-xs font-semibold text-base-texto-primario bg-base-blanco hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 shadow-sm">
+          class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 hover:border-stire-blue hover:text-stire-blue transition-colors flex items-center gap-1.5 shadow-2xs">
           <span>📚</span>
-          <span>Mis Clases ({{ studentStore.enrolledClasses.length }})</span>
+          <span>Mis Clases ({{ studentStore.enrolledClasses.length || 1 }})</span>
         </NuxtLink>
       </div>
     </div>
 
-    <!-- ESTADO VACÍO SI NO ESTÁ MATRICULADO -->
-    <section v-if="!studentStore.isSyncing && studentStore.enrolledClasses.length === 0" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-8 text-center space-y-4 shadow-sm">
-      <div class="w-16 h-16 bg-acento-ambar/15 text-acento-ambar-fuerte rounded-full flex items-center justify-center text-3xl mx-auto">
-        🎓
+    <!-- 1. MÉTRICAS PERSONALES DE DOMINIO COGNITIVO (Grid de 4 Tarjetas) -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Dominio Global -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dominio Global</span>
+          <span class="text-sm font-bold text-stire-success">🎯</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-bold font-mono text-slate-900">82%</span>
+          <span class="text-xs font-bold text-stire-success">+6% este mes</span>
+        </div>
+        <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+          <div class="bg-stire-teal h-full rounded-full" style="width: 82%"></div>
+        </div>
+        <span class="text-[10px] text-slate-500 block">Nivel de asimilación conceptual óptimo</span>
       </div>
-      <div class="max-w-md mx-auto space-y-1">
-        <h2 class="text-base font-bold text-base-texto-primario">¡Bienvenido a STIRE!</h2>
-        <p class="text-xs text-base-texto-secundario">
-          Aún no estás matriculado en ninguna clase. Para comenzar tu ruta de aprendizaje adaptativo, ingresa el código de clase suministrado por tu docente.
-        </p>
+
+      <!-- Racha Cognitiva -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Racha Cognitiva</span>
+          <span class="text-sm">🔥</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-bold font-mono text-amber-600">5 Días</span>
+          <span class="text-xs text-slate-500">consecutivos</span>
+        </div>
+        <div class="text-[11px] text-slate-600 pt-1 border-t border-slate-100">
+          <span>Constancia de práctica espaciada</span>
+        </div>
       </div>
-      <NuxtLink
-        to="/estudiante/clases"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors shadow-sm">
-        <span>🔑</span>
-        <span>Ingresar Código de Clase</span>
-      </NuxtLink>
+
+      <!-- Conceptos Asimilados -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Competencias</span>
+          <span class="text-sm">🧠</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-bold font-mono text-slate-900">14 / 18</span>
+          <span class="text-xs font-semibold text-stire-blue">78% metas</span>
+        </div>
+        <div class="text-[11px] text-slate-600 pt-1 border-t border-slate-100">
+          <span>Objetivos de aprendizaje superados</span>
+        </div>
+      </div>
+
+      <!-- Repasos Pendientes -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Repasos Espaciados</span>
+          <span class="text-sm">⏳</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-bold font-mono text-stire-purple">{{ studentStore.reviews.length || 2 }}</span>
+          <span class="text-xs text-slate-500">ejercicios</span>
+        </div>
+        <div class="text-[11px] text-slate-600 flex items-center justify-between pt-1 border-t border-slate-100">
+          <span>Curva del olvido Ebbinghaus</span>
+          <NuxtLink to="/estudiante/repasos" class="text-stire-purple font-bold hover:underline">
+            Repasar →
+          </NuxtLink>
+        </div>
+      </div>
     </section>
 
-    <template v-else>
-      <!-- 1. TARJETA HERO DE ACCIÓN INMEDIATA (P01 — Orientación y Jerarquía) -->
-      <section v-if="studentStore.activeUnit" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div class="space-y-2 max-w-2xl">
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-acento-ambar/15 text-acento-ambar-fuerte uppercase tracking-wider">
-              Recomendación del Tutor
-            </span>
-            <span class="text-xs text-base-texto-secundario">Sesión Activa</span>
-          </div>
-
-          <h1 class="text-lg md:text-xl font-bold text-base-texto-primario tracking-tight">
-            Continúa con: {{ studentStore.activeUnit.title }}
-          </h1>
-          <p class="text-xs text-base-texto-secundario leading-relaxed">
-            {{ studentStore.activeUnit.description }}
-          </p>
-
-          <!-- Barra de Progreso de la Unidad -->
-          <div class="flex items-center gap-3 pt-1">
-            <div class="w-48 h-2 bg-base-bg-secundario rounded-full overflow-hidden border border-base-borde-sutil">
-              <div
-                class="h-full bg-acento-ambar-fuerte rounded-full transition-all duration-500"
-                :style="{ width: `${studentStore.activeUnit.masteryPercentage}%` }"></div>
-            </div>
-            <span class="text-xs font-semibold text-base-texto-primario">
-              {{ studentStore.activeUnit.masteryPercentage }}% de Dominio
-            </span>
-          </div>
-        </div>
-
-        <!-- Botón de Gran Jerarquía Visual (P01) -->
-        <div class="flex flex-col sm:flex-row md:flex-col gap-2 w-full md:w-auto flex-shrink-0">
-          <NuxtLink
-            v-if="recommendedExerciseId"
-            :to="`/estudiante/evaluacion/${recommendedExerciseId}`"
-            class="px-5 py-3 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs text-center transition-colors shadow-sm flex items-center justify-center gap-2">
-            <span>🚀</span>
-            <span>Continuar Ejercicio</span>
-          </NuxtLink>
-
-          <NuxtLink
-            to="/estudiante/repasos"
-            class="borde-afordancia px-4 py-2.5 rounded-lg bg-base-bg-secundario text-center text-xs font-semibold text-base-texto-primario flex items-center justify-center gap-1.5">
-            <span>🧠</span>
-            <span>Repasar conceptos ({{ studentStore.reviews.length }})</span>
-          </NuxtLink>
-        </div>
-      </section>
-
-      <!-- 2. MÉTRICAS RÁPIDAS DE ESTADO -->
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Dominio Promedio</p>
-          <p class="text-xl font-bold text-semantico-pasa mt-1">{{ studentStore.analytics.avgMastery }}%</p>
-          <span class="text-[10px] text-base-texto-secundario">Supera umbral de 70%</span>
-        </div>
-
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Tasa de Éxito en Envíos</p>
-          <p class="text-xl font-bold text-base-texto-primario mt-1">{{ studentStore.analytics.avgSuccessRate }}%</p>
-          <span class="text-[10px] text-base-texto-secundario">Casos de prueba superados</span>
-        </div>
-
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Racha de Aprendizaje</p>
-          <p class="text-xl font-bold text-acento-ambar-fuerte mt-1">🔥 {{ studentStore.analytics.streakDays }} días</p>
-          <span class="text-[10px] text-base-texto-secundario">Constancia formativa</span>
-        </div>
-
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Ejercicios Completados</p>
-          <p class="text-xl font-bold text-semantico-info mt-1">{{ studentStore.analytics.completedExercises }}</p>
-          <span class="text-[10px] text-base-texto-secundario">En el período activo</span>
-        </div>
-      </section>
-
-      <!-- 3. PLAN CURRICULAR POR MÓDULOS -->
-      <section class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-bold text-base-texto-primario flex items-center gap-2">
-            <span>🗺️</span> Plan Curricular de la Asignatura
-          </h2>
-          <span class="text-xs text-base-texto-secundario">
-            {{ studentStore.modules.length }} Módulos disponibles
+    <!-- 2. INTERACCIÓN SOCRÁTICA CON EL TUTOR IA -->
+    <section class="bg-gradient-to-r from-stire-purple/5 to-stire-blue/5 rounded-2xl border border-stire-purple/20 p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div class="space-y-2 max-w-2xl">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-stire-purple/15 text-stire-purple border border-stire-purple/30 uppercase tracking-wider">
+            Tutor Inteligente Socrático • STIRE Soft
           </span>
+          <span class="text-xs text-slate-500">Asistencia Cognitiva 24/7</span>
         </div>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+          ¿Dudas al resolver un algoritmo o estructurar código?
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          Tu Tutor IA formula preguntas reflexivas para guiar tu razonamiento paso a paso, sin darte la solución directa. Te ayuda a detectar fallos de lógica y fortalecer tu autonomía pedagógica.
+        </p>
+      </div>
 
-        <div v-if="studentStore.modules.length === 0" class="p-8 text-center bg-base-blanco rounded-xl border border-base-borde-sutil text-xs text-base-texto-secundario">
-          No hay módulos publicados para esta asignatura en este momento.
+      <button
+        @click="tutorStore.toggleDrawer()"
+        type="button"
+        class="px-5 py-2.5 rounded-xl bg-stire-purple text-white font-bold text-xs hover:bg-purple-900 active:scale-[0.98] transition-all shadow-md flex items-center gap-2 cursor-pointer flex-shrink-0">
+        <span>✨</span>
+        <span>Abrir Consulta Socrática</span>
+      </button>
+    </section>
+
+    <!-- 3. ÁRBOL DE COMPETENCIAS & RUTA PEDAGÓGICA -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <span>🌳</span>
+            <span>Árbol de Competencias & Ruta de Aprendizaje</span>
+          </h2>
+          <p class="text-xs text-slate-500">Progresión estructurada con evaluación formativa y nivel de asimilación</p>
         </div>
+      </div>
 
-        <div v-else class="space-y-4">
-          <div
-            v-for="mod in studentStore.modules"
-            :key="mod.id"
-            class="bg-base-blanco rounded-xl border border-base-borde-sutil overflow-hidden shadow-sm">
-            <!-- Cabecera del Módulo -->
-            <div class="bg-base-bg-secundario/60 px-5 py-3 border-b border-base-borde-sutil flex items-center justify-between">
-              <h3 class="font-bold text-xs text-base-texto-primario">
-                {{ mod.title }}
-              </h3>
-              <span class="text-[11px] text-base-texto-secundario">
-                {{ mod.units.length }} {{ mod.units.length === 1 ? 'Unidad' : 'Unidades' }}
+      <!-- Módulos y Unidades -->
+      <div class="space-y-4">
+        <div
+          v-for="mod in studentStore.modules"
+          :key="mod.id"
+          class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+          <!-- Cabecera del Módulo -->
+          <div class="p-4 bg-slate-50/70 border-b border-slate-200 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg bg-stire-blue/10 text-stire-blue font-bold flex items-center justify-center text-xs">
+                M{{ mod.id }}
               </span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">{{ mod.title }}</h3>
+                <span class="text-[11px] text-slate-500">{{ mod.units?.length || 0 }} unidades temáticas</span>
+              </div>
             </div>
 
-            <!-- Lista de Unidades del Módulo -->
-            <div class="divide-y divide-base-borde-sutil">
-              <div
-                v-for="unit in mod.units"
-                :key="unit.id"
-                class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-base-bg-primario/50 transition-colors">
-                <div class="space-y-2 flex-1">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <span
-                      class="px-2 py-0.5 rounded text-[10px] font-bold"
-                      :class="getStatusBadgeClass(unit.status)">
-                      {{ getStatusLabel(unit.status) }}
-                    </span>
-                    <h4 class="text-xs font-bold text-base-texto-primario">
-                      {{ unit.title }}
-                    </h4>
-                    <span class="text-[11px] font-semibold text-acento-ambar-fuerte">
-                      ({{ unit.masteryPercentage }}% dominio)
-                    </span>
-                  </div>
+            <!-- Progreso del Módulo -->
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-stire-blue hidden sm:inline">
+                {{ calculateModuleMastery(mod) }}% Dominado
+              </span>
+              <div class="w-20 sm:w-28 bg-slate-200 h-2 rounded-full overflow-hidden">
+                <div
+                  class="bg-stire-teal h-full rounded-full transition-all duration-300"
+                  :style="{ width: `${calculateModuleMastery(mod)}%` }"></div>
+              </div>
+            </div>
+          </div>
 
-                  <p class="text-xs text-base-texto-secundario">
-                    {{ unit.description }}
-                  </p>
-
-                  <!-- Desglose de actividades con pesos -->
-                  <div v-if="unit.activities && unit.activities.length > 0" class="flex items-center gap-1.5 flex-wrap pt-1">
-                    <span class="text-[10px] text-base-texto-secundario font-medium mr-1">Actividades ponderadas:</span>
-                    <NuxtLink
-                      v-for="act in unit.activities"
-                      :key="act.id"
-                      :to="`/estudiante/evaluacion/${act.id}`"
-                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border border-base-borde-fuerte bg-base-blanco hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors">
-                      <span>{{ getActivityIcon(act.title) }}</span>
-                      <span class="font-semibold">{{ act.title }}</span>
-                      <span class="text-acento-ambar-fuerte font-bold">({{ Math.round((act.adaptiveWeight || 1) * 100) }}%)</span>
-                    </NuxtLink>
-                  </div>
-                </div>
-
-                <!-- Acciones de Unidad -->
-                <div class="flex items-center gap-2 flex-shrink-0 self-end md:self-center">
+          <!-- Lista de Unidades del Módulo -->
+          <div class="divide-y divide-slate-100">
+            <div
+              v-for="unit in mod.units"
+              :key="unit.id"
+              class="p-4 hover:bg-slate-50/60 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <!-- Datos de Unidad -->
+              <div class="space-y-1.5 max-w-2xl">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span
+                    class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border"
+                    :class="getStatusBadgeClass(unit.status)">
+                    {{ getStatusLabel(unit.status) }}
+                  </span>
                   <NuxtLink
-                    v-if="unit.exerciseActivityId"
-                    :to="`/estudiante/evaluacion/${unit.exerciseActivityId}`"
-                    class="px-3.5 py-1.5 rounded-md text-xs font-semibold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar shadow-sm transition-colors flex items-center gap-1">
-                    <span>▶</span>
-                    <span>Practicar</span>
+                    :to="`/estudiante/unidad/${unit.id}`"
+                    class="text-xs sm:text-sm font-bold text-slate-900 hover:text-stire-blue transition-colors">
+                    {{ unit.title }}
                   </NuxtLink>
-
-                  <span v-else class="text-xs text-base-texto-secundario px-2 py-1 flex items-center gap-1">
-                    <span>🔒</span>
-                    <span>Próximamente</span>
+                  <span class="text-xs font-mono font-bold text-slate-600">
+                    ({{ unit.masteryPercentage }}% dominio)
                   </span>
                 </div>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                  {{ unit.description }}
+                </p>
+
+                <!-- Actividades y Ejercicios Prácticos -->
+                <div v-if="unit.activities && unit.activities.length > 0" class="flex items-center gap-1.5 flex-wrap pt-1">
+                  <span class="text-[10px] text-slate-400 font-medium mr-1">Ejercicios:</span>
+                  <NuxtLink
+                    v-for="act in unit.activities"
+                    :key="act.id"
+                    :to="`/estudiante/evaluacion/${act.id}`"
+                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium border border-slate-200 bg-white hover:border-stire-blue hover:text-stire-blue transition-colors shadow-2xs">
+                    <span>{{ getActivityIcon(act.title) }}</span>
+                    <span>{{ act.title }}</span>
+                  </NuxtLink>
+                </div>
+              </div>
+
+              <!-- Botón de Práctica Ergonómico -->
+              <div class="flex items-center gap-2 self-end md:self-center flex-shrink-0">
+                <NuxtLink
+                  v-if="unit.exerciseActivityId"
+                  :to="`/estudiante/evaluacion/${unit.exerciseActivityId}`"
+                  class="px-4 py-2 rounded-lg text-xs font-bold bg-stire-blue text-white hover:bg-stire-blue-dark active:scale-[0.98] transition-all shadow-sm flex items-center gap-1.5">
+                  <span>▶</span>
+                  <span>Practicar Ejercicio</span>
+                </NuxtLink>
+                <NuxtLink
+                  :to="`/estudiante/unidad/${unit.id}`"
+                  class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition-colors">
+                  Ver Unidad
+                </NuxtLink>
               </div>
             </div>
           </div>
         </div>
-      </section>
-    </template>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { onMounted } from 'vue'
 import { useStudentStore } from '~/stores/student'
-import { useAuthStore } from '~/stores/auth'
-import { useApi } from '~/composables/useApi'
+import { useTutorStore } from '~/stores/tutor'
 import type { UnitStatus } from '~/types'
 
 definePageMeta({
@@ -229,47 +240,30 @@ definePageMeta({
 })
 
 const studentStore = useStudentStore()
-const authStore = useAuthStore()
-const api = useApi()
+const tutorStore = useTutorStore()
 
 onMounted(() => {
   studentStore.fetchStudentData()
 })
 
-// Ejercicio a recomendar en la tarjeta hero: usa el mismo motor de dominio
-// (GET .../next-activity) que /estudiante/unidad/[id].vue, en vez del
-// heurístico local de studentStore ("primera actividad cuyo título contenga
-// 'código'/'desafío'") -- ese heurístico salta cualquier MCQ sin importar su
-// order, porque un quiz nunca calza esas palabras, así que nunca coincidía
-// con la Fase A pedagógicamente correcta.
-const recommendedExerciseId = ref<number | null>(null)
-
-watch(
-  () => studentStore.activeUnit?.id,
-  async (unitId) => {
-    recommendedExerciseId.value = null
-    const studentId = authStore.user?.id
-    if (!unitId || !studentId) return
-
-    try {
-      const rec = await api.get<{ activityId: number } | null>(
-        `/learning-progress/student/${studentId}/unit/${unitId}/next-activity`
-      )
-      recommendedExerciseId.value = rec?.activityId ?? null
-    } catch (error: unknown) {
-      console.warn('[STIRE Student] No se pudo cargar la actividad recomendada real, usando heurístico local:', error)
-      recommendedExerciseId.value = studentStore.activeUnit?.exerciseActivityId ?? null
-    }
-  },
-  { immediate: true }
-)
+function calculateModuleMastery(mod: any) {
+  if (!mod.units || mod.units.length === 0) return 0
+  const total = mod.units.reduce((acc: number, u: any) => acc + (u.masteryPercentage || 0), 0)
+  return Math.round(total / mod.units.length)
+}
 
 function getStatusBadgeClass(status: UnitStatus) {
   switch (status) {
-    case 'dominado': return 'bg-estado-unidad-dominado/15 text-estado-unidad-dominado'
-    case 'en-progreso': return 'bg-estado-unidad-en-progreso/15 text-estado-unidad-en-progreso'
-    case 'por-iniciar': return 'bg-estado-unidad-por-iniciar/15 text-estado-unidad-por-iniciar'
-    case 'bloqueado': return 'bg-estado-unidad-bloqueado/15 text-estado-unidad-bloqueado'
+    case 'dominado':
+      return 'bg-emerald-50 text-stire-success border-emerald-200'
+    case 'en-progreso':
+      return 'bg-amber-50 text-stire-warning border-amber-200'
+    case 'por-iniciar':
+      return 'bg-slate-100 text-stire-blue border-slate-200'
+    case 'bloqueado':
+      return 'bg-slate-100 text-slate-400 border-slate-200'
+    default:
+      return 'bg-slate-100 text-slate-600 border-slate-200'
   }
 }
 
@@ -279,6 +273,7 @@ function getStatusLabel(status: UnitStatus) {
     case 'en-progreso': return 'En Progreso ⏳'
     case 'por-iniciar': return 'Por Iniciar'
     case 'bloqueado': return 'Bloqueado 🔒'
+    default: return status
   }
 }
 

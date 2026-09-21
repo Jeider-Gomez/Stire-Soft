@@ -1,166 +1,167 @@
 <template>
-  <aside class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] p-4 flex flex-col justify-between">
-    <!-- Navegación según Rol Activo -->
-    <div class="space-y-4">
-      <!-- 🎓 NAVEGACIÓN ESTUDIANTE (6 Ítems Persistentes - Insumo 15 §5) -->
-      <nav v-if="authStore.currentRole === 'estudiante'" class="space-y-1.5 text-sm font-medium">
-        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Navegación</p>
+  <aside class="w-64 bg-white border-r border-slate-200 min-h-[calc(100vh-4rem)] p-4 flex flex-col justify-between hidden md:flex flex-shrink-0">
+    <div class="space-y-6">
+      <!-- 🎓 NAVEGACIÓN ESTUDIANTE -->
+      <nav v-if="authStore.currentRole === 'estudiante'" class="space-y-1.5 text-xs font-medium">
+        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-3 py-1">Ruta Formativa</p>
 
-        <!-- 1. Inicio (EST-V01) -->
+        <!-- 1. Inicio / Ruta -->
         <NuxtLink
           to="/estudiante"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="isCurrentRoute('/estudiante') && route.path === '/estudiante' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>🏠</span>
-          <span>Inicio</span>
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/estudiante' ? 'bg-stire-blue/10 text-stire-blue font-bold border border-stire-blue/20' : 'text-slate-700 hover:bg-slate-50'">
+          <span>🗺️</span>
+          <span>Ruta de Aprendizaje</span>
         </NuxtLink>
 
-        <!-- 2, 3, 4: Los 3 Módulos con acordeón interno sin flyout -->
+        <!-- Módulos temáticos -->
         <div class="pt-2 pb-1">
-          <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Plan de Estudio</p>
+          <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-3 py-1">Módulos Temáticos</p>
           <div v-for="mod in studentStore.modules" :key="mod.id" class="mb-1">
             <button
               @click="toggleModule(mod.id)"
-              class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-md hover:bg-base-bg-secundario text-base-texto-primario transition-colors">
+              type="button"
+              class="w-full flex items-center justify-between px-3 py-1.5 text-xs font-semibold rounded-lg hover:bg-slate-50 text-slate-700 transition-colors">
               <span class="truncate">{{ mod.title.split(':')[0] }}</span>
-              <span class="text-base-texto-secundario text-[10px]">{{ openModules.includes(mod.id) ? '▼' : '▶' }}</span>
+              <span class="text-slate-400 text-[10px]">{{ openModules.includes(mod.id) ? '▼' : '▶' }}</span>
             </button>
 
             <!-- Unidades del Módulo -->
-            <div v-if="openModules.includes(mod.id)" class="pl-3 pr-1 py-1 space-y-1">
+            <div v-if="openModules.includes(mod.id)" class="pl-3 pr-1 py-1 space-y-0.5">
               <NuxtLink
                 v-for="unit in mod.units"
                 :key="unit.id"
                 :to="`/estudiante/unidad/${unit.id}`"
-                class="flex items-center justify-between text-xs px-2.5 py-1.5 rounded transition-colors"
-                :class="route.path === `/estudiante/unidad/${unit.id}` ? 'bg-base-bg-secundario font-semibold text-acento-ambar-fuerte' : 'text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario/60'">
+                class="flex items-center justify-between text-[11px] px-2.5 py-1.5 rounded-md transition-colors"
+                :class="route.path === `/estudiante/unidad/${unit.id}` ? 'bg-stire-blue/10 font-bold text-stire-blue' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'">
                 <div class="flex items-center gap-1.5 truncate">
-                  <span :class="getStatusDotClass(unit.status)">●</span>
+                  <span class="text-[8px]" :class="getStatusDotClass(unit.status)">●</span>
                   <span class="truncate">{{ unit.title }}</span>
                 </div>
-                <span v-if="unit.status === 'dominado'" class="text-[10px] text-semantico-pasa font-bold">✔</span>
+                <span v-if="unit.status === 'dominado'" class="text-[10px] text-stire-success font-bold">✔</span>
               </NuxtLink>
             </div>
           </div>
         </div>
 
-        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 pt-2">Consolidación</p>
+        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-3 pt-2">Consolidación</p>
 
-        <!-- 5. Repasos (EST-V05) -->
+        <!-- Repasos -->
         <NuxtLink
           to="/estudiante/repasos"
-          class="flex items-center justify-between px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/estudiante/repasos' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          class="flex items-center justify-between px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/estudiante/repasos' ? 'bg-stire-purple/10 text-stire-purple font-bold border border-stire-purple/20' : 'text-slate-700 hover:bg-slate-50'">
           <div class="flex items-center gap-2.5">
             <span>🧠</span>
-            <span>Repasos</span>
+            <span>Repasos Espaciados</span>
           </div>
           <span
             v-if="studentStore.reviews.length > 0"
-            class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-semantico-falla/15 text-semantico-falla">
+            class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-rose-50 text-stire-danger border border-rose-200">
             {{ studentStore.reviews.length }}
           </span>
         </NuxtLink>
 
-        <!-- 6. Mi Progreso (EST-V06) -->
+        <!-- Mi Progreso -->
         <NuxtLink
           to="/estudiante/progreso"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/estudiante/progreso' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/estudiante/progreso' ? 'bg-stire-teal/10 text-stire-teal-dark font-bold border border-stire-teal/20' : 'text-slate-700 hover:bg-slate-50'">
           <span>📊</span>
-          <span>Mi Progreso</span>
+          <span>Progreso Cognitivo</span>
         </NuxtLink>
       </nav>
 
-      <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
-      <nav v-else-if="authStore.currentRole === 'docente'" class="space-y-1.5 text-sm font-medium">
-        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Gestión Docente</p>
+      <!-- 👨‍🏫 NAVEGACIÓN DOCENTE -->
+      <nav v-else-if="authStore.currentRole === 'docente'" class="space-y-1.5 text-xs font-medium">
+        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-3 py-1">Control Pedagógico</p>
 
         <NuxtLink
           to="/docente"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/docente' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/docente' ? 'bg-stire-purple/10 text-stire-purple font-bold border border-stire-purple/20' : 'text-slate-700 hover:bg-slate-50'">
           <span>👥</span>
           <span>Mis Clases (DOC-V01)</span>
         </NuxtLink>
 
         <NuxtLink
           to="/docente/contenidos"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/docente/contenidos' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/docente/contenidos' ? 'bg-stire-purple/10 text-stire-purple font-bold border border-stire-purple/20' : 'text-slate-700 hover:bg-slate-50'">
           <span>📚</span>
           <span>Contenidos (DOC-V02)</span>
         </NuxtLink>
 
         <NuxtLink
           to="/docente/ejercicios/crear"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/docente/ejercicios/crear' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/docente/ejercicios/crear' ? 'bg-stire-purple/10 text-stire-purple font-bold border border-stire-purple/20' : 'text-slate-700 hover:bg-slate-50'">
           <span>✍️</span>
           <span>Crear Ejercicio (DOC-V03)</span>
         </NuxtLink>
 
         <NuxtLink
           to="/docente/rendimiento"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path.startsWith('/docente/rendimiento') || route.path.startsWith('/docente/estudiante') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path.startsWith('/docente/rendimiento') || route.path.startsWith('/docente/estudiante') ? 'bg-stire-purple/10 text-stire-purple font-bold border border-stire-purple/20' : 'text-slate-700 hover:bg-slate-50'">
           <span>📊</span>
-          <span>Rendimiento (DOC-V04)</span>
+          <span>Rendimiento Aula (DOC-V04)</span>
         </NuxtLink>
 
         <NuxtLink
           to="/docente/mensajes"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/docente/mensajes' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/docente/mensajes' ? 'bg-stire-purple/10 text-stire-purple font-bold border border-stire-purple/20' : 'text-slate-700 hover:bg-slate-50'">
           <span>✉️</span>
           <span>Mensajes (DOC-V06)</span>
         </NuxtLink>
       </nav>
 
-      <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR (ADM-V01..V03) -->
-      <nav v-else class="space-y-1.5 text-sm font-medium">
-        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Administración</p>
+      <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR -->
+      <nav v-else class="space-y-1.5 text-xs font-medium">
+        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-3 py-1">Gobernanza STIRE</p>
 
         <NuxtLink
           to="/admin/dashboard"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin/dashboard' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>📊</span>
-          <span>Estado del Sistema (ADM-V01)</span>
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/admin/dashboard' ? 'bg-stire-blue/10 text-stire-blue font-bold border border-stire-blue/20' : 'text-slate-700 hover:bg-slate-50'">
+          <span>🖥️</span>
+          <span>Telemetría & Nodos (ADM-V01)</span>
         </NuxtLink>
 
         <NuxtLink
           to="/admin"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin' || route.path === '/admin/usuarios' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/admin' || route.path === '/admin/usuarios' ? 'bg-stire-blue/10 text-stire-blue font-bold border border-stire-blue/20' : 'text-slate-700 hover:bg-slate-50'">
           <span>🛡️</span>
-          <span>Usuarios y Roles (ADM-V02)</span>
+          <span>Usuarios & Roles (ADM-V02)</span>
         </NuxtLink>
 
         <NuxtLink
           to="/admin/sistema"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin/sistema' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors"
+          :class="route.path === '/admin/sistema' ? 'bg-stire-blue/10 text-stire-blue font-bold border border-stire-blue/20' : 'text-slate-700 hover:bg-slate-50'">
           <span>⚙️</span>
-          <span>Logs y Mantenimiento (ADM-V03)</span>
+          <span>Logs & Auditoría (ADM-V03)</span>
         </NuxtLink>
       </nav>
     </div>
 
-    <!-- Banner Inferior de Ayuda Rápida -->
-    <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil text-xs space-y-1">
-      <div class="flex items-center gap-1.5 font-semibold text-base-texto-primario">
-        <span>📌</span>
-        <span>Atajo Rápido</span>
+    <!-- Banner Inferior Institucional -->
+    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] space-y-1">
+      <div class="flex items-center gap-1.5 font-bold text-slate-800">
+        <span class="w-2 h-2 rounded-full bg-stire-teal"></span>
+        <span>STIRE Soft v2.4</span>
       </div>
-      <p class="text-base-texto-secundario">
-        Regla de los 3 clics: todo el contenido clave está a 1 clic de distancia.
+      <p class="text-slate-500 text-[10px] leading-tight">
+        Universidad de Córdoba • Sistema de Tutoría Inteligente
       </p>
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 
@@ -178,17 +179,13 @@ function toggleModule(id: number) {
   }
 }
 
-function isCurrentRoute(path: string) {
-  return route.path.startsWith(path)
-}
-
 function getStatusDotClass(status: string) {
   switch (status) {
-    case 'dominado': return 'text-estado-unidad-dominado'
-    case 'en-progreso': return 'text-estado-unidad-en-progreso'
-    case 'por-iniciar': return 'text-estado-unidad-por-iniciar'
-    case 'bloqueado': return 'text-estado-unidad-bloqueado'
-    default: return 'text-base-texto-secundario'
+    case 'dominado': return 'text-stire-success'
+    case 'en-progreso': return 'text-stire-warning'
+    case 'por-iniciar': return 'text-stire-blue'
+    case 'bloqueado': return 'text-slate-400'
+    default: return 'text-slate-400'
   }
 }
 </script>

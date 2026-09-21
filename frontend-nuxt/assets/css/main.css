@@ -1,30 +1,75 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
+/* ==========================================================================
+   DIRECTIVA @theme - PALETA OFICIAL STIRE SOFT (Tailwind Design Tokens)
+   ========================================================================== */
+/*
+@theme {
+  --color-stire-blue: #0B3D91;
+  --color-stire-blue-dark: #07275e;
+  --color-stire-purple: #7B2FBF;
+  --color-stire-purple-light: #f3e8ff;
+  --color-stire-teal: #00C2A8;
+  --color-stire-teal-dark: #009985;
+  --color-stire-success: #10B981;
+  --color-stire-warning: #F59E0B;
+  --color-stire-danger: #EF4444;
+  --color-stire-canvas: #F7F9FC;
+  --color-stire-dark-canvas: #050C1F;
+  --color-stire-dark-card: #0A1435;
+}
+*/
+
+:root {
+  /* Paleta Oficial STIRE Soft */
+  --color-stire-blue: #0B3D91;        /* Azul Tecnológico (Institucional / Primario) */
+  --color-stire-blue-dark: #07275e;   /* Azul Hover / Contraste */
+  --color-stire-purple: #7B2FBF;      /* Morado Innovación (Tutor IA / Rol Docente) */
+  --color-stire-purple-light: #f3e8ff;/* Púrpura suave para badges */
+  --color-stire-teal: #00C2A8;        /* Turquesa Acción (Éxito / Acentos / CTA) */
+  --color-stire-teal-dark: #009985;   /* Turquesa Hover */
+
+  /* Semáforo Pedagógico Cognitivo */
+  --color-stire-success: #10B981;     /* Dominio Alto / Aprobado */
+  --color-stire-warning: #F59E0B;     /* Rezago Detectado / Refuerzo Necesario */
+  --color-stire-danger: #EF4444;      /* Alerta Crítica */
+
+  /* Fondos de Superficie */
+  --color-stire-canvas: #F7F9FC;      /* Fondo base Modo Claro (Anti-fatiga) */
+  --color-stire-dark-canvas: #050C1F; /* Fondo base Modo Oscuro */
+  --color-stire-dark-card: #0A1435;   /* Superficie de tarjeta Modo Oscuro */
+}
+
+.dark {
+  --color-stire-canvas: #050C1F;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-base-bg-primario text-base-texto-primario font-interfaz antialiased min-h-screen selection:bg-acento-ambar/20;
+    background-color: var(--color-stire-canvas, #F7F9FC);
+    color: #0F172A;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
   }
 
   code, pre, kbd {
-    @apply font-codigo;
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
 @layer utilities {
-  /* Borde de afordancia normativo de Figma (Parte A3, CC-08 / Insumo 15 §5) */
   .borde-afordancia {
-    @apply border border-base-borde-fuerte transition-colors duration-150;
+    @apply border border-slate-200 transition-colors duration-150;
   }
-
   .borde-afordancia:hover {
-    @apply border-acento-ambar-fuerte bg-base-bg-secundario;
+    @apply border-stire-blue/40 bg-slate-50;
   }
-
   .borde-afordancia-focus {
-    @apply outline-none ring-2 ring-acento-ambar-fuerte ring-offset-2 ring-offset-base-bg-primario;
+    @apply outline-none ring-2 ring-stire-blue ring-offset-2 ring-offset-stire-canvas;
   }
 }

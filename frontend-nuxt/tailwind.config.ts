@@ -13,44 +13,63 @@ export default <Partial<Config>>{
   theme: {
     extend: {
       colors: {
+        /* Paleta Oficial STIRE Soft */
+        stire: {
+          blue: '#0B3D91',         /* Azul Tecnológico (Institucional / Primario) */
+          'blue-dark': '#07275e',    /* Azul Hover / Contraste */
+          purple: '#7B2FBF',       /* Morado Innovación (Tutor IA / Rol Docente) */
+          'purple-light': '#f3e8ff', /* Púrpura suave para badges */
+          teal: '#00C2A8',         /* Turquesa Acción (Éxito / Acentos / CTA) */
+          'teal-dark': '#009985',    /* Turquesa Hover */
+
+          /* Semáforo Pedagógico Cognitivo */
+          success: '#10B981',      /* Dominio Alto / Aprobado */
+          warning: '#F59E0B',      /* Rezago Detectado / Refuerzo Necesario */
+          danger: '#EF4444',       /* Alerta Crítica */
+
+          /* Fondos de Superficie */
+          canvas: '#F7F9FC',       /* Fondo base Modo Claro (Anti-fatiga) */
+          'dark-canvas': '#050C1F',  /* Fondo base Modo Oscuro */
+          'dark-card': '#0A1435',    /* Superficie de tarjeta Modo Oscuro */
+        },
         base: {
           blanco: '#FFFFFF',
-          'bg-primario': '#F6F3EF',
-          'bg-secundario': '#EDE8E1',
-          'borde-sutil': '#C9C1B8',
-          'borde-fuerte': '#998878',
-          'texto-secundario': '#6F6761',
-          'texto-primario': '#2B2622'
+          'bg-primario': '#F7F9FC',
+          'bg-secundario': '#EEF2F6',
+          'borde-sutil': '#E2E8F0',
+          'borde-fuerte': '#CBD5E1',
+          'texto-secundario': '#64748B',
+          'texto-primario': '#0F172A'
         },
         acento: {
-          ambar: '#C87B1E',
-          'ambar-fuerte': '#A76719'
+          ambar: '#0B3D91',
+          'ambar-fuerte': '#07275e'
         },
         semantico: {
-          pasa: '#2F7D4F',
-          falla: '#B3261E',
-          info: '#2B5D8A'
+          pasa: '#10B981',
+          falla: '#EF4444',
+          info: '#0B3D91'
         },
         'estado-unidad': {
-          dominado: '#2F7D4F',
-          'en-progreso': '#A76719',
-          'por-iniciar': '#2B5D8A',
-          bloqueado: '#6F6761'
+          dominado: '#10B981',
+          'en-progreso': '#F59E0B',
+          'por-iniciar': '#0B3D91',
+          bloqueado: '#94A3B8'
         },
         'urgencia-repaso': {
-          'al-dia': '#2F7D4F',
-          manana: '#A76719',
-          vencido: '#A85A1E',
-          critico: '#B3261E'
+          'al-dia': '#10B981',
+          manana: '#F59E0B',
+          vencido: '#F97316',
+          critico: '#EF4444'
         },
         editor: {
-          bg: '#1E1E1E',
-          header: '#252526',
-          border: '#333333',
-          line: '#2D2D2D',
-          text: '#D4D4D4',
-          muted: '#858585',
-          status: '#007ACC'
+          bg: '#0A1435',
+          header: '#050C1F',
+          border: '#1E293B',
+          line: '#1E293B',
+          text: '#F1F5F9',
+          muted: '#94A3B8',
+          status: '#00C2A8'
         }
       },
       fontFamily: {
@@ -96,9 +115,9 @@ export default <Partial<Config>>{
         grueso: '4px'
       },
       boxShadow: {
-        sm: '0 1px 2px 0 rgba(43,38,34,0.08)',
-        md: '0 4px 8px -2px rgba(43,38,34,0.10)',
-        lg: '0 12px 24px -4px rgba(43,38,34,0.14)'
+        sm: '0 1px 2px 0 rgba(11,61,145,0.05)',
+        md: '0 4px 8px -2px rgba(11,61,145,0.08)',
+        lg: '0 12px 24px -4px rgba(11,61,145,0.12)'
       }
     }
   }

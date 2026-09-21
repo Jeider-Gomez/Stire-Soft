@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  /* Paleta Oficial STIRE Soft */
+  --color-stire-blue: #0B3D91;        /* Azul Tecnológico (Institucional / Primario) */
+  --color-stire-blue-dark: #07275e;   /* Azul Hover / Contraste */
+  --color-stire-purple: #7B2FBF;      /* Morado Innovación (Tutor IA / Rol Docente) */
+  --color-stire-purple-light: #f3e8ff;/* Púrpura suave para badges */
+  --color-stire-teal: #00C2A8;        /* Turquesa Acción (Éxito / Acentos / CTA) */
+  --color-stire-teal-dark: #009985;   /* Turquesa Hover */
+
+  /* Semáforo Pedagógico Cognitivo */
+  --color-stire-success: #10B981;     /* Dominio Alto / Aprobado */
+  --color-stire-warning: #F59E0B;     /* Rezago Detectado / Refuerzo Necesario */
+  --color-stire-danger: #EF4444;      /* Alerta Crítica */
+
+  /* Fondos de Superficie */
+  --color-stire-canvas: #F7F9FC;      /* Fondo base Modo Claro (Anti-fatiga) */
+  --color-stire-dark-canvas: #050C1F; /* Fondo base Modo Oscuro */
+  --color-stire-dark-card: #0A1435;   /* Superficie de tarjeta Modo Oscuro */
+}
+
+:root {
+  --color-stire-blue: #0B3D91;
+  --color-stire-blue-dark: #07275e;
+  --color-stire-purple: #7B2FBF;
+  --color-stire-purple-light: #f3e8ff;
+  --color-stire-teal: #00C2A8;
+  --color-stire-teal-dark: #009985;
+  --color-stire-success: #10B981;
+  --color-stire-warning: #F59E0B;
+  --color-stire-danger: #EF4444;
+  --color-stire-canvas: #F7F9FC;
+  --color-stire-dark-canvas: #050C1F;
+  --color-stire-dark-card: #0A1435;
+}

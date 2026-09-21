@@ -172,6 +172,11 @@ app.get(['/class', '/api/class'], (req, res) => {
 // Serve frontend static output
 const publicDir = path.join(__dirname, 'frontend-nuxt/.output/public');
 if (fs.existsSync(publicDir)) {
+  // If requesting root /, redirect directly to /auth/login
+  app.get('/', (req, res) => {
+    return res.redirect('/auth/login');
+  });
+
   app.use(express.static(publicDir));
 
   // SPA fallback for non-API routes

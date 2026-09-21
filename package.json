@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "npm --prefix frontend-nuxt run generate",
+    "build": "if [ -f \"frontend-nuxt/node_modules/.bin/nuxt\" ]; then npm --prefix frontend-nuxt run generate; elif [ -d \"frontend-nuxt/.output/public\" ]; then echo \"Frontend static build ready in frontend-nuxt/.output/public\"; else npm --prefix frontend-nuxt install && npm --prefix frontend-nuxt run generate; fi",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node server.js",
     "dev": "node server.js",
