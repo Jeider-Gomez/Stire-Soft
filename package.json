@@ -35,7 +35,8 @@
     "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
     "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d src/data-source.ts",
     "migration:show": "npx typeorm-ts-node-commonjs migration:show -d src/data-source.ts",
-    "verify:clean": "node scripts/verify-clean.js && node scripts/verify-clean-server-check.js"
+    "verify:clean": "node scripts/verify-clean.js && node scripts/verify-clean-server-check.js",
+    "check:identidad": "node scripts/check-identidad-visual.js"
   },
   "dependencies": {
     "@nestjs/bullmq": "^11.0.4",

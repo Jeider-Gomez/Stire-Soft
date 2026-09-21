@@ -17,6 +17,7 @@
 | Ver el entregable de MODESEC | [`modesec/README.md`](./modesec/README.md) |
 | Ver las reglas de ingeniería | [`../CLAUDE.md`](../CLAUDE.md) y [`04_ESTANDARES_Y_SEGURIDAD.md`](./04_ESTANDARES_Y_SEGURIDAD.md) |
 | Subir cambios sin pisarnos (ramas, Pull Requests, versiones) | [`FLUJO_GIT.md`](./FLUJO_GIT.md) |
+| Rediseñar la identidad visual sin romper funcionalidad (guía para José) | [`identidad-visual/README.md`](./identidad-visual/README.md) |
 
 ---
 
@@ -48,6 +49,7 @@
 | [pitch/](./pitch/) | Guiones del pitch por reto. |
 | [presentacion/](./presentacion/) | Documentos de presentación de avances ya generados (HTML). |
 | [material-visual/](./material-visual/) | Material gráfico del proyecto probado como usuario real (capturas y hallazgos de UX), organizado por módulo. |
+| [identidad-visual/](./identidad-visual/) | **Guía de trabajo para el rediseño visual** (José): territorio permitido, decisiones globales para la coherencia, plantilla de propuesta y cómo entregar por etapas. Es autónomo: no es un plan de implementación. |
 | [investigacion/](./investigacion/) | **Pista de tesis** (reglas de alcance propias, distintas del software): contexto, matriz bibliográfica verificada, fichas y borradores de entregables. Ver [`investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md`](./investigacion/INFORME_SANEAMIENTO_BIBLIOGRAFICO.md) y [`investigacion/MATRIZ_ARTICULOS.md`](./investigacion/MATRIZ_ARTICULOS.md). |
 
 ## 🤖 4. Colaboración con las IA

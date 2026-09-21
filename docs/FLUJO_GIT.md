@@ -70,6 +70,7 @@ repartiendo el territorio, no con más procesos.
 | `src/` (backend) y `test/` | Backend / Claude Code / Codex | Rama propia o directo a `main` si es pequeño |
 | `frontend-nuxt/` funcionalidad (componentes, stores, composables) | Frontend funcional / Antigravity | No reestilar componentes mientras haya una rama de identidad visual abierta |
 | `frontend-nuxt/tailwind.config.ts` y `assets/css/main.css` | Identidad visual | Es el único punto de entrada del estilo: cambiar **tokens** (colores, tipografías, espaciados) primero, componentes después |
+| `<template>` de `layouts/`, `components/` y `pages/` | Identidad visual, con la regla de no tocar el `<script>` ni lo que hace cada botón | Ver [`identidad-visual/`](./identidad-visual/README.md); `npm run check:identidad` lo comprueba |
 | `docs/ReportesQA/` | QA | Los archivos nuevos casi nunca chocan; ir directo a `main` sirve |
 | `MONITOREO_SEMANAL.md` | Todos | Es donde ya hubo que resolver conflictos a mano al integrar ediciones hechas desde la web de GitHub. Cada quien edita solo su bloque, hace `git pull` antes de abrirlo y sube apenas termine |
 
@@ -83,16 +84,22 @@ Otras costumbres que ayudan:
 ## Cambiar la identidad visual sin romper lo que ya funciona
 
 Es el caso donde más se puede chocar: reestilar toca muchos archivos `.vue`, y la parte
-funcional del frontend también los toca.
+funcional del frontend también los toca. La guía completa para quien lo hace (José) está en
+[`identidad-visual/`](./identidad-visual/README.md); aquí, lo que importa para Git:
 
 1. La versión actual queda marcada con el tag `v1.0.0-beta.1` (ver abajo). Pase lo que pase con la
    rama, la identidad original siempre se puede volver a ver y comparar.
-2. La identidad visual trabaja en `feat/identidad-visual`, partiendo de ese punto.
-3. Orden dentro de la rama: primero `tailwind.config.ts` y `assets/css/main.css` (tokens), luego
-   componentes compartidos (`components/`), y al final cada página.
-4. Mientras esa rama esté abierta, el trabajo funcional del frontend se acuerda antes de empezar
-   para no editar los mismos componentes a la vez. Las Fases 18 a 20 del Tutor ya están en `main`,
-   así que hoy el terreno está despejado.
+2. **Ramas cortas por etapa, no una rama gigante:** `feat/identidad-tokens` (solo
+   `tailwind.config.ts`, `main.css` y `public/`), luego `feat/identidad-componentes` (`layouts/` y
+   `components/`) y al final `feat/identidad-paginas` (`pages/`). Cada una entra a `main` con su
+   propio Pull Request, así se aprueba por partes y `main` nunca queda a medias.
+3. Antes de abrir el Pull Request se corre `npm run check:identidad`: compara la rama contra `main`
+   y falla si toca algo fuera del estilo y las plantillas de `frontend-nuxt/` (backend, `stores/`,
+   `composables/`, dependencias…). Avisa, sin bloquear, si cambió el `<script>` de un `.vue` o si
+   desapareció una directiva de comportamiento (`v-if`, `@click`…) o un `id`/`aria-label`.
+4. Mientras una de esas ramas esté abierta, el trabajo funcional del frontend se acuerda antes de
+   empezar para no editar los mismos componentes a la vez. Hoy Antigravity no tiene ninguna fase
+   pendiente, así que el terreno está despejado.
 5. Se une a `main` con Pull Request. Si algo sale mal, `git revert` del merge devuelve todo.
 
 ## Versiones: registrar la primera

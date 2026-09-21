@@ -84,6 +84,8 @@ código.
   independientes en un solo commit ni dividir uno solo en varios sin que se pida.
 - Ramas, Pull Requests, versiones (tags) y cómo evitar conflictos entre personas e IA:
   `docs/FLUJO_GIT.md`. No hay rama `dev`; `main` siempre funciona.
+- Rediseño visual (José): su territorio y su forma de entregar están en `docs/identidad-visual/`;
+  `npm run check:identidad` comprueba antes de cada Pull Request que no salió de él.
 
 ## Hallazgos e hipótesis
 
