@@ -17,6 +17,8 @@
       </div>
 
       <button
+        ref="cleanupBtnRef"
+        id="run-cleanup-btn"
         @click="confirmAndRunCleanup"
         :disabled="isCleaning"
         class="px-4 py-2 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:bg-semantico-falla/90 transition-colors shadow-sm self-start sm:self-auto flex items-center gap-1.5 cursor-pointer disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-semantico-falla">
@@ -178,11 +180,14 @@
     <Teleport to="body">
       <div
         v-if="showConfirmModal"
+        ref="dialogRef"
         class="fixed inset-0 z-50 flex items-center justify-center p-4"
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-cleanup-title"
-        @click.self="showConfirmModal = false">
+        tabindex="-1"
+        @keydown="handleDialogKeydown"
+        @click.self="cancelCleanup">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
         <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4">
           <h2 id="confirm-cleanup-title" class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
@@ -194,7 +199,8 @@
           </p>
           <div class="flex items-center justify-end gap-2 pt-2">
             <button
-              @click="showConfirmModal = false"
+              ref="cancelBtnRef"
+              @click="cancelCleanup"
               :disabled="isCleaning"
               class="px-3 py-1.5 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario">
               Cancelar
@@ -236,6 +242,11 @@ const isCleaning = ref(false)
 const cleanupFeedback = ref<string | null>(null)
 const cleanupError = ref<string | null>(null)
 const showConfirmModal = ref(false)
+
+// Refs para trampa de foco en el diálogo (§22 T2)
+const dialogRef = ref<HTMLElement | null>(null)
+const cancelBtnRef = ref<HTMLElement | null>(null)
+const cleanupBtnRef = ref<HTMLElement | null>(null)
 
 let refreshInterval: ReturnType<typeof setInterval> | null = null
 
@@ -289,6 +300,47 @@ function confirmAndRunCleanup() {
   cleanupFeedback.value = null
   cleanupError.value = null
   showConfirmModal.value = true
+}
+
+// Cierra el diálogo sin ejecutar (Escape o clic en Cancelar) (§22 T2)
+function cancelCleanup() {
+  if (isCleaning.value) return
+  showConfirmModal.value = false
+}
+
+// Foco en «Cancelar» al abrir; devolver foco al botón opener al cerrar (§22 T2)
+watch(showConfirmModal, (open) => {
+  if (open) {
+    nextTick(() => cancelBtnRef.value?.focus())
+  } else {
+    nextTick(() => cleanupBtnRef.value?.focus())
+  }
+})
+
+// Escape cierra el diálogo + trampa de Tab (§22 T2)
+function handleDialogKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    cancelCleanup()
+    return
+  }
+  if (event.key === 'Tab') {
+    if (!dialogRef.value) return
+    const focusable = Array.from(
+      dialogRef.value.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    )
+    if (!focusable.length) return
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }
 }
 
 async function executeCleanup() {

@@ -18,7 +18,8 @@
         role="dialog"
         aria-modal="true"
         aria-label="Tutor IA"
-        class="fixed top-0 right-0 h-full w-full max-w-drawer bg-base-blanco border-l border-base-borde-sutil shadow-2xl z-50 flex flex-col justify-between"
+        tabindex="-1"
+        class="fixed top-0 right-0 h-full w-full max-w-drawer bg-base-blanco border-l border-base-borde-sutil shadow-2xl z-50 flex flex-col justify-between focus:outline-none"
         @keydown="handleKeydown"
       >
         <!-- Header del Tutor IA -->
@@ -360,37 +361,31 @@ function scrollToBottom() {
   })
 }
 
-// ─── Foco al abrir (§18.3) ──────────────────────────────────────────────────
+// ─── Foco al abrir / devolver foco al cerrar (§18.3 + §22 T2) ───────────────
+// El openerElement se guarda ANTES de nextTick: en ese instante
+// document.activeElement todavía es el botón que disparó la apertura.
+let openerElement: HTMLElement | null = null
+
 watch(
   () => tutorStore.isOpen,
   (open) => {
     if (open) {
+      openerElement = document.activeElement as HTMLElement | null
       nextTick(() => {
         if (tutorStore.showKeyPanel) {
-          // Foco al primer input del panel de clave
           const kp = drawerRef.value?.querySelector('#tutor-api-key') as HTMLElement | null
-          kp?.focus()
+          if (kp) { kp.focus() } else { closeButtonRef.value?.focus() }
+        } else if (inputRef.value) {
+          inputRef.value.focus()
         } else {
-          inputRef.value?.focus()
+          closeButtonRef.value?.focus()
         }
       })
+    } else {
+      nextTick(() => openerElement?.focus())
     }
   }
 )
-
-// ─── Foco ref del botón que abrió el drawer ──────────────────────────────────
-let openerElement: HTMLElement | null = null
-onMounted(() => {
-  // Capturar el elemento activo antes de que el drawer se abra
-  watch(() => tutorStore.isOpen, (open) => {
-    if (open) {
-      openerElement = document.activeElement as HTMLElement | null
-    } else {
-      // Al cerrar, devolver foco al elemento que lo abrió (§18.3)
-      nextTick(() => openerElement?.focus())
-    }
-  })
-})
 
 // ─── Escape cierra el drawer + trampa de foco (§18.3) ────────────────────────
 function handleKeydown(event: KeyboardEvent) {
