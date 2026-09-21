@@ -366,33 +366,54 @@ function scrollToBottom() {
 // document.activeElement todavía es el botón que disparó la apertura.
 let openerElement: HTMLElement | null = null
 
+// El foco debe quedar SIEMPRE dentro del panel. Al abrir, el estado de la clave aún no llegó: se
+// enfoca el campo del chat, y cuando llega (sin clave) ese campo se desmonta y el foco caería al
+// <body>. Por eso se vuelve a llamar cuando cambia showKeyPanel.
+function focusInsideDrawer() {
+  nextTick(() => {
+    const drawer = drawerRef.value
+    if (!drawer) return
+    if (drawer.contains(document.activeElement) && document.activeElement !== drawer) return
+    const target = tutorStore.showKeyPanel
+      ? (drawer.querySelector('#tutor-api-key') as HTMLElement | null)
+      : inputRef.value
+    ;(target ?? closeButtonRef.value ?? drawer).focus()
+  })
+}
+
 watch(
   () => tutorStore.isOpen,
   (open) => {
     if (open) {
       openerElement = document.activeElement as HTMLElement | null
-      nextTick(() => {
-        if (tutorStore.showKeyPanel) {
-          const kp = drawerRef.value?.querySelector('#tutor-api-key') as HTMLElement | null
-          if (kp) { kp.focus() } else { closeButtonRef.value?.focus() }
-        } else if (inputRef.value) {
-          inputRef.value.focus()
-        } else {
-          closeButtonRef.value?.focus()
-        }
-      })
+      focusInsideDrawer()
     } else {
       nextTick(() => openerElement?.focus())
     }
   }
 )
 
-// ─── Escape cierra el drawer + trampa de foco (§18.3) ────────────────────────
-function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    tutorStore.closeDrawer()
-    return
+watch(
+  () => tutorStore.showKeyPanel,
+  () => {
+    if (tutorStore.isOpen) focusInsideDrawer()
   }
+)
+
+// ─── Escape cierra el drawer (§18.3) ─────────────────────────────────────────
+// Va en el documento y no en el panel: si el foco cae fuera del panel, un @keydown del panel
+// nunca recibiría la tecla y Escape parecería no hacer nada.
+function handleDocumentKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && tutorStore.isOpen) {
+    tutorStore.closeDrawer()
+  }
+}
+
+onMounted(() => document.addEventListener('keydown', handleDocumentKeydown))
+onBeforeUnmount(() => document.removeEventListener('keydown', handleDocumentKeydown))
+
+// Trampa de foco dentro del panel (Tab / Shift+Tab)
+function handleKeydown(event: KeyboardEvent) {
   if (event.key === 'Tab') {
     trapFocus(event)
   }
