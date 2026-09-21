@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-base-bg-primario flex flex-col">
+  <div class="min-h-screen bg-stire-canvas flex flex-col">
     <!-- Zona A: Header Invariante -->
     <LayoutHeaderNav />
 

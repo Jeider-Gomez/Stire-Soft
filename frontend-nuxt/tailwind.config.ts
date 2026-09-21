@@ -13,6 +13,18 @@ export default <Partial<Config>>{
   theme: {
     extend: {
       colors: {
+        'stire-blue': '#0B3D91',
+        'stire-blue-dark': '#082A66',
+        'stire-purple': '#7B2FBF',
+        'stire-purple-light': '#F3E8FF',
+        'stire-teal': '#00C2A8',
+        'stire-teal-dark': '#009985',
+        'stire-success': '#10B981',
+        'stire-warning': '#F59E0B',
+        'stire-danger': '#EF4444',
+        'stire-canvas': '#F7F9FC',
+        'stire-dark-canvas': '#050C1F',
+        'stire-dark-card': '#0A1435',
         base: {
           blanco: '#FFFFFF',
           'bg-primario': '#F6F3EF',
@@ -55,6 +67,7 @@ export default <Partial<Config>>{
       },
       fontFamily: {
         interfaz: ['Inter', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
         codigo: ['"JetBrains Mono"', 'monospace']
       },
       fontSize: {
