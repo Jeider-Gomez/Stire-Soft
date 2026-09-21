@@ -10,6 +10,8 @@ qué debes dejar quieto y cómo entregar** para que nadie tenga que deshacer nad
 | **este README** | Reglas del juego: territorio, ramas, cómo probar y cómo entregar |
 | [`01_PRIMEROS_PASOS.md`](./01_PRIMEROS_PASOS.md) | Lo que hay que decidir **antes de tocar código**, para que toda la página quede coherente |
 | [`PROPUESTA_IDENTIDAD.md`](./PROPUESTA_IDENTIDAD.md) | Plantilla que llenas con tus decisiones. Es el insumo con el que se afina el resto |
+| [`02_MEJORAR_UX_UI.md`](./02_MEJORAR_UX_UI.md) | Cómo mejorar la experiencia y la interfaz más allá de la paleta: método, lista de revisión y errores reales del proyecto |
+| [`BITACORA.md`](./BITACORA.md) | Tu registro de cambios: una fila por cambio, con su commit, y la lista de archivos que estás tocando ahora |
 
 Cómo se ve el sistema hoy (antes de tu cambio): [`../material-visual/00-primera-version/`](../material-visual/00-primera-version/)
 (20 capturas de estudiante, docente, admin y Tutor). Está marcado en git con la etiqueta
@@ -169,3 +171,38 @@ ejemplo de cómo se revisan las etapas siguientes.
 | 6 | 46 usos de clases de color por defecto de Tailwind (`text-slate-800`, etc.) en `pages/docente/index.vue` | Pasarlas a tokens (`text-base-texto-primario` o uno nuevo de tu paleta). Las clases por defecto no siguen a `tailwind.config.ts`: si cambias la paleta, esas quedan como estaban |
 | 7 | Conviven dos paletas: `base-*` / `acento-*` (las de antes) y `stire-*` (las tuyas) | Es normal a mitad de camino. Al terminar la etapa 1, decide si `stire-*` **reemplaza** a las anteriores (mejor: se cambian los valores de `base-*`/`acento-*` y las pantallas heredan) o se migran las pantallas una por una |
 
+---
+
+## 6. Trabajar en paralelo sin conflictos
+
+Es normal que alguien agregue funcionalidad **mientras tú cambias lo visual**, incluso en la misma pantalla.
+
+**Cuándo hay conflicto y cuándo no.** Git une solo los cambios que tocan **líneas distintas**, aunque sean del
+mismo archivo: si tú cambias las clases de un botón y otra persona cambia el `<script>`, se unen solos. Hay
+conflicto únicamente cuando **dos personas editan las mismas líneas**; por ejemplo, tú reescribes el `<template>`
+de una página entera y otra persona le agrega un botón dentro de ese mismo `<template>`.
+
+**Reglas para que no pase:**
+
+1. **Cada quien en su capa.** Tú: clases, estructura visual y `<template>`. Los demás: `<script>`, stores y backend.
+2. **Si lo funcional necesita un elemento nuevo en pantalla**, quien lo hace lo agrega con clases mínimas ya
+   existentes y lo anota en tu bitácora como «pendiente de estilo». Tú lo estilizas después; no se inventa un diseño a medias.
+3. **«Archivos en obra».** Antes de reestilar una pantalla la anotas en [`BITACORA.md`](./BITACORA.md); quien vaya a
+   tocar ese archivo avisa antes. Es una nota, no un candado: sirve para hablar a tiempo.
+4. **Ramas cortas y `main` a diario.** Cada mañana `git fetch origin && git merge origin/main` en tu rama. Cuanto
+   menos se separe tu rama de `main`, más pequeño es cualquier conflicto.
+5. **Reescrituras grandes (una página entera) se anuncian antes y se hacen de una sentada**, en su propia rama.
+6. **Un cambio de formato masivo no va mezclado con cambios reales** en el mismo commit.
+
+**Si aun así hay conflicto.** Lo resuelve quien une **segundo**, con calma:
+
+```bash
+git fetch origin && git merge origin/main      # git marca los archivos en conflicto
+# abre cada archivo, busca <<<<<<< ======= >>>>>>> y conserva AMBAS intenciones:
+#   lo visual (clases) de la versión de José, lo funcional (script, directivas) de main
+npx nuxi typecheck                             # debe pasar
+git add <archivos> && git commit               # cierra la unión
+```
+
+Nunca se resuelve escogiendo «todo el archivo mío» o «todo el archivo de ellos»: se pierde el trabajo del otro.
+Si no está claro qué conservar, se pregunta a quien hizo el otro cambio antes de decidir.
