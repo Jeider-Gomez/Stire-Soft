@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
+import { RoleRequestsService } from '../role-requests/role-requests.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
@@ -11,13 +12,22 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly roleRequests: RoleRequestsService,
   ) {}
 
   /**
    * Registrar un nuevo usuario
    */
   async register(registerDto: RegisterDto) {
-    const user = await this.userService.create(registerDto);
+    const { requestedRole, roleRequestReason, ...accountData } = registerDto;
+    const wantsTeacher = requestedRole === 'docente';
+
+    // Se valida el correo ANTES de crear la cuenta: un rechazo no deja un usuario a medias.
+    if (wantsTeacher) this.roleRequests.assertEmailAllowedForTeacher(accountData.email);
+
+    // Siempre estudiante: el rol no viene del cliente (ValidationPipe rechaza un campo `role`).
+    const user = await this.userService.create(accountData);
+    const roleRequest = wantsTeacher ? await this.roleRequests.create(user.id, roleRequestReason) : null;
 
     const token = await this.generateToken(user.id, user.email, user.role);
 
@@ -28,6 +38,7 @@ export class AuthService {
       user: userWithoutPassword,
       token,
       access_token: token,
+      roleRequest,
     };
   }
 

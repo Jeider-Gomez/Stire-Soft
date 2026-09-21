@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, Matches } from 'class-validator';
+import { IsEmail, IsIn, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength, Matches } from 'class-validator';
 import {
   PASSWORD_COMPLEXITY_REGEX,
   PASSWORD_COMPLEXITY_MESSAGE,
@@ -18,4 +18,15 @@ export class RegisterDto {
   @IsString({ message: 'El nombre completo debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'El nombre completo es obligatorio' })
   fullName: string;
+
+  // El registro público SIEMPRE crea un estudiante. 'docente' solo deja una solicitud pendiente
+  // que un administrador debe aprobar; nunca concede el rol por sí mismo.
+  @IsOptional()
+  @IsIn(['estudiante', 'docente'], { message: 'El rol solicitado debe ser estudiante o docente' })
+  requestedRole?: 'estudiante' | 'docente';
+
+  @IsOptional()
+  @IsString({ message: 'El motivo debe ser texto' })
+  @MaxLength(300, { message: 'El motivo no puede superar 300 caracteres' })
+  roleRequestReason?: string;
 }

@@ -10,10 +10,11 @@ describe('AuthService', () => {
   let service: AuthService;
   const mockUserService = { findOneByEmail: jest.fn(), create: jest.fn() };
   const mockJwtService = { signAsync: jest.fn().mockResolvedValue('fake-jwt-token') };
+  const mockRoleRequests = { assertEmailAllowedForTeacher: jest.fn(), create: jest.fn() };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new AuthService(mockUserService as any, mockJwtService as any);
+    service = new AuthService(mockUserService as any, mockJwtService as any, mockRoleRequests as any);
   });
 
   describe('login', () => {
@@ -89,6 +90,47 @@ describe('AuthService', () => {
 
       expect(result.token).toBe('fake-jwt-token');
       expect(result.user).not.toHaveProperty('password');
+    });
+
+    it('sin pedir rol: no crea solicitud y la respuesta lo dice (roleRequest null)', async () => {
+      mockUserService.create.mockResolvedValue({ id: 1, email: 'a@x.com', password: 'h', role: UserRole.ESTUDIANTE });
+
+      const result = await service.register({ email: 'a@x.com', password: 'Segura1!', fullName: 'A' } as any);
+
+      expect(result.roleRequest).toBeNull();
+      expect(mockRoleRequests.create).not.toHaveBeenCalled();
+    });
+
+    it('pidiendo docente: la cuenta nace ESTUDIANTE (el rol no viaja a create) y queda una solicitud pendiente', async () => {
+      mockUserService.create.mockResolvedValue({ id: 7, email: 'p@unicor.edu.co', password: 'h', role: UserRole.ESTUDIANTE });
+      mockRoleRequests.create.mockResolvedValue({ id: 3, status: 'pending' });
+
+      const result = await service.register({
+        email: 'p@unicor.edu.co',
+        password: 'Segura1!',
+        fullName: 'Profe',
+        requestedRole: 'docente',
+        roleRequestReason: 'Cátedra de Algoritmos',
+      } as any);
+
+      const created = mockUserService.create.mock.calls[0][0];
+      expect(created).not.toHaveProperty('requestedRole');
+      expect(created).not.toHaveProperty('roleRequestReason');
+      expect(mockRoleRequests.create).toHaveBeenCalledWith(7, 'Cátedra de Algoritmos');
+      expect(result.roleRequest).toEqual({ id: 3, status: 'pending' });
+      expect(result.user.role).toBe(UserRole.ESTUDIANTE);
+    });
+
+    it('correo no institucional pidiendo docente: falla ANTES de crear la cuenta', async () => {
+      mockRoleRequests.assertEmailAllowedForTeacher.mockImplementation(() => {
+        throw new Error('correo no permitido');
+      });
+
+      await expect(
+        service.register({ email: 'x@gmail.com', password: 'Segura1!', fullName: 'X', requestedRole: 'docente' } as any),
+      ).rejects.toThrow('correo no permitido');
+      expect(mockUserService.create).not.toHaveBeenCalled();
+      mockRoleRequests.assertEmailAllowedForTeacher.mockReset();
     });
 
     it('email duplicado → 409 (propagado desde UserService.create)', async () => {
