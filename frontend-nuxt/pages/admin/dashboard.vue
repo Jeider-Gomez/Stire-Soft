@@ -87,9 +87,11 @@
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm space-y-2">
           <div class="flex items-center justify-between text-xs">
             <span class="font-semibold text-base-texto-secundario">Sandbox (Promedio)</span>
-            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa flex items-center gap-1">
-              <span aria-hidden="true">✔</span>
-              <span>{{ statusData.sandbox.adapter || 'Activo' }}</span>
+            <span
+              class="px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
+              :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario border border-base-borde-sutil'">
+              <span aria-hidden="true">{{ statusData.database.ok ? '✔' : '—' }}</span>
+              <span>{{ statusData.database.ok ? (statusData.sandbox.adapter || 'Activo') : 'Sin datos' }}</span>
             </span>
           </div>
           <p class="text-2xl font-bold font-mono text-base-texto-primario">
@@ -221,8 +223,10 @@
                   Adapter: {{ statusData.sandbox.adapter || '—' }} · Timeout: {{ statusData.sandbox.timeoutMs }} ms
                 </td>
                 <td class="p-3 text-center">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa">
-                    ✔ Aislado
+                  <span
+                    class="px-2 py-0.5 rounded text-[10px] font-bold"
+                    :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario border border-base-borde-sutil'">
+                    {{ statusData.database.ok ? '✔ Aislado' : '— Sin datos' }}
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
@@ -240,15 +244,17 @@
                   Driver: {{ statusData.judgeQueue.driver || 'inline' }}
                 </td>
                 <td class="p-3 text-center">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa">
-                    ✔ Listo
+                  <span
+                    class="px-2 py-0.5 rounded text-[10px] font-bold"
+                    :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario border border-base-borde-sutil'">
+                    {{ statusData.database.ok ? '✔ Listo' : '— Sin datos' }}
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
                   En progreso: {{ statusData.judgeQueue.submissionsInProgress != null ? statusData.judgeQueue.submissionsInProgress : '—' }}
                 </td>
                 <td class="p-3 text-right font-sans text-base-texto-secundario">
-                  Calificación activa
+                  {{ statusData.database.ok ? 'Calificación activa' : '—' }}
                 </td>
               </tr>
 
@@ -259,8 +265,10 @@
                   {{ statusData.tutor.provider || 'Gemini' }} · {{ statusData.tutor.model || '—' }}
                 </td>
                 <td class="p-3 text-center">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa">
-                    ✔ Adaptativo
+                  <span
+                    class="px-2 py-0.5 rounded text-[10px] font-bold"
+                    :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario border border-base-borde-sutil'">
+                    {{ statusData.database.ok ? '✔ Adaptativo' : '— Sin datos' }}
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
