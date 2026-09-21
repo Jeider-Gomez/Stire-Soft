@@ -1,6 +1,6 @@
 ---
-estado:     vigente — Fase 22 lista para ejecutar
-verificado: 2026-09-20 contra frontend-nuxt/ y src/ reales, en navegador real
+estado:     completada y verificada — Fase 22 cerrada
+verificado: 2026-09-21 contra frontend-nuxt/ y src/ reales, en navegador real
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    Tutor IA (chat) · ADM-V01
 ---
@@ -109,10 +109,10 @@ sano, deja solo su detalle (adaptador, límites, modelo) sin insignia de estado.
 
 ### 22.4 Criterios de cierre
 
-- [ ] Las pruebas de §22.3 hechas en navegador real, con lo observado anotado en el informe.
-- [ ] `npx nuxi typecheck` en código 0.
-- [ ] Cuatro commits, uno por tarea.
-- [ ] Informe en `docs/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
+- [x] Las pruebas de §22.3 hechas en navegador real, con lo observado anotado en el informe.
+- [x] `npx nuxi typecheck` en código 0.
+- [x] Cuatro commits, uno por tarea.
+- [x] Informe en `docs/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
 
 ### 22.5 Fuera de alcance
 
