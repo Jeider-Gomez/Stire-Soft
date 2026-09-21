@@ -13,8 +13,8 @@
       </div>
     </div>
 
-    <!-- Contenedor Central para la Tarjeta de Login -->
-    <main class="flex-1 flex items-center justify-center py-10">
+    <!-- Contenedor Central para la Tarjeta de Login y Guía -->
+    <main class="flex-1 flex flex-col items-center justify-center py-4 w-full">
       <slot />
     </main>
 

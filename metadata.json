@@ -1,0 +1,6 @@
+{
+  "name": "STIRE - Sistema Tutor Inteligente",
+  "description": "Sistema de tutoría inteligente y evaluación automática para la enseñanza y práctica de algoritmos y programación",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

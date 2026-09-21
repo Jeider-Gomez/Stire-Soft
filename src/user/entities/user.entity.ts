@@ -1,12 +1,11 @@
-import { 
-  Entity, 
-  Column, 
-  PrimaryGeneratedColumn, 
-  CreateDateColumn, 
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
-  OneToOne
 } from 'typeorm';
 import { Enrollment } from '../../enrollment/entities/enrollment.entity';
 import { UserAffiliation } from './user-affiliation.entity';
@@ -19,7 +18,6 @@ export enum UserRole {
 
 @Entity('users')
 export class User {
-
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -54,6 +52,6 @@ export class User {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  @DeleteDateColumn({ nullable: true })
   deletedAt?: Date;
 }

@@ -12,8 +12,8 @@ export function useApi() {
   const config = useRuntimeConfig()
   const authStore = useAuthStore()
 
-  // Backend NestJS siempre en puerto 3001 (Nuxt corre en 3000)
-  const baseUrl = config.public.apiBase || 'http://localhost:3001'
+  // Backend NestJS en mismo host/puerto (relativo) o configurado por apiBase
+  const baseUrl = config.public.apiBase !== undefined ? config.public.apiBase : ''
 
   async function apiFetch<T>(
     endpoint: string,

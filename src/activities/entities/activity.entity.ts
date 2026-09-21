@@ -63,6 +63,6 @@ export class Activity extends StireBaseEntity {
   @Column({ type: 'float', default: 1.0 })
   adaptiveWeight: number;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   publishedAt: Date;
 }

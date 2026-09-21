@@ -20,7 +20,7 @@ export class ReviewSchedule extends StireBaseEntity {
   @Column({ nullable: false })
   learningUnitId: number;
 
-  @Column({ type: 'timestamp', nullable: false })
+  @Column({ type: 'datetime', nullable: false })
   nextReviewDate: Date;
 
   @Column({ type: 'int', default: 0 })
@@ -39,6 +39,6 @@ export class ReviewSchedule extends StireBaseEntity {
   @Column({ type: 'float', default: 2.5 })
   easeFactor: number;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   lastReviewedAt: Date;
 }

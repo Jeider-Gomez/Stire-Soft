@@ -21,10 +21,10 @@ export class Enrollment {
   @CreateDateColumn({ name: 'joined_at' })
   joinedAt!: Date;
 
-  @Column({ name: 'left_at', type: 'timestamp', nullable: true })
+  @Column({ name: 'left_at', type: 'datetime', nullable: true })
   leftAt?: Date;
 
-  @Column({ name: 'last_activity_at', type: 'timestamp', nullable: true })
+  @Column({ name: 'last_activity_at', type: 'datetime', nullable: true })
   lastActivityAt?: Date;
 
   @ManyToOne(() => Class, (cls) => cls.enrollments, { onDelete: 'CASCADE' })

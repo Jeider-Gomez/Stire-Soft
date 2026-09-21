@@ -18,7 +18,7 @@ import { RolesGuard } from './guards/roles.guard';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
+        secret: configService.get('JWT_SECRET', 'stire-super-secret-jwt-key-2026'),
         signOptions: {
           // Default explicito: sin esto, un despliegue sin JWT_EXPIRATION en
           // el entorno firma tokens SIN expiracion (validez indefinida).

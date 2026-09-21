@@ -10,6 +10,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 
+import { normalizeSqliteMetadata } from './data-source';
+import * as path from 'path';
+
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ClassModule } from './class/class.module';
@@ -68,16 +71,33 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
 
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get('DB_HOST'),
-        port: +configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: false,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const dbType = configService.get<string>('DB_TYPE');
+        const dbHost = configService.get<string>('DB_HOST');
+        const useMysql = dbType === 'mysql' && !!dbHost;
+
+        if (!useMysql) {
+          normalizeSqliteMetadata();
+          return {
+            type: 'sqlite',
+            database: configService.get<string>('DB_DATABASE') || path.join(process.cwd(), 'stire.sqlite'),
+            entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            synchronize: true,
+            logging: false,
+          };
+        }
+
+        return {
+          type: 'mysql',
+          host: dbHost,
+          port: +configService.get('DB_PORT', 3306),
+          username: configService.get('DB_USERNAME', 'root'),
+          password: configService.get('DB_PASSWORD', 'root'),
+          database: configService.get('DB_DATABASE', 'basestire'),
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: false,
+        };
+      },
       inject: [ConfigService],
     }),
 

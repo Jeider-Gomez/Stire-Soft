@@ -1,0 +1,1 @@
+import{g as n,I as t,k as a,c as s,b as c,o as r,J as _}from"./j9R5JGig.js";const d=n({__name:"usuarios",setup(u){const e=t();return a(()=>{e.replace("/admin")}),(p,m)=>{const o=_;return r(),s("div",null,[c(o)])}}});export{d as default};
