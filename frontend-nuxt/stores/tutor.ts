@@ -118,7 +118,9 @@ export const useTutorStore = defineStore('tutor', () => {
       const errTexts: Record<number, string> = {
         400: detail || 'Formato de clave inválido.',
         422: 'Google no reconoce esa clave. Revisa que la copiaste completa.',
-        503: 'No pude verificar la clave ahora. Inténtalo de nuevo en un minuto.',
+        // El 503 puede ser «Google no responde» (reintentar sirve) o «el servidor no tiene el cifrado
+        // configurado» (reintentar no sirve): el backend distingue cuál es en `error`.
+        503: detail || 'No pude verificar la clave ahora. Inténtalo de nuevo en un minuto.',
         429: 'Demasiados intentos. Espera un minuto.'
       }
       return { ok: false, error: errTexts[status] || 'Error al guardar la clave.' }

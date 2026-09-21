@@ -30,6 +30,34 @@ describe('TutorKeyCryptoService', () => {
     expect(() => build('z'.repeat(64)).encrypt('x')).toThrow(ServiceUnavailableException);
   });
 
+  it('sin secreto, el mensaje al estudiante no menciona variables de entorno y el detalle queda en el registro', () => {
+    const crypto = build(undefined);
+    const errorLog = jest.spyOn((crypto as any).logger, 'error').mockImplementation(() => undefined);
+
+    let message = '';
+    try {
+      crypto.encrypt('x');
+    } catch (e: any) {
+      message = e.message;
+    }
+
+    expect(message).not.toContain('TUTOR_KEY_ENCRYPTION_SECRET');
+    expect(message).toMatch(/reintentar no lo arregla/i);
+    expect(errorLog).toHaveBeenCalledWith(expect.stringContaining('TUTOR_KEY_ENCRYPTION_SECRET'));
+  });
+
+  it('avisa al arrancar si falta el secreto y calla si es válido', () => {
+    const sinSecreto = build(undefined);
+    const warn = jest.spyOn((sinSecreto as any).logger, 'warn').mockImplementation(() => undefined);
+    sinSecreto.onModuleInit();
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('TUTOR_KEY_ENCRYPTION_SECRET'));
+
+    const conSecreto = build(SECRET);
+    const warn2 = jest.spyOn((conSecreto as any).logger, 'warn').mockImplementation(() => undefined);
+    conSecreto.onModuleInit();
+    expect(warn2).not.toHaveBeenCalled();
+  });
+
   it('no descifra un payload manipulado ni uno cifrado con otro secreto', () => {
     const payload = build(SECRET).encrypt('AIzaSyFAKE-KEY_1234567890abcdefghijklmno');
     const tampered = payload.slice(0, -2) + (payload.endsWith('A') ? 'B=' : 'A=');

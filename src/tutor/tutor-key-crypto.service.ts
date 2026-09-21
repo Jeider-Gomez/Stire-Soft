@@ -1,4 +1,4 @@
-import { Injectable, ServiceUnavailableException } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 
@@ -11,8 +11,20 @@ const TAG_BYTES = 16;
  * Falla cerrado: sin `TUTOR_KEY_ENCRYPTION_SECRET` válido no se guarda ni se lee ninguna clave.
  */
 @Injectable()
-export class TutorKeyCryptoService {
+export class TutorKeyCryptoService implements OnModuleInit {
+  private readonly logger = new Logger(TutorKeyCryptoService.name);
+
   constructor(private readonly configService: ConfigService) {}
+
+  /** Avisa al arrancar (no al primer estudiante que lo intente) si falta el secreto. */
+  onModuleInit(): void {
+    if (!this.hasValidSecret()) {
+      this.logger.warn(
+        'TUTOR_KEY_ENCRYPTION_SECRET falta o no tiene 64 caracteres hexadecimales: ningún estudiante podrá guardar su clave del Tutor. ' +
+          `Genera uno con: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`,
+      );
+    }
+  }
 
   encrypt(plain: string): string {
     const iv = randomBytes(IV_BYTES);
@@ -40,13 +52,18 @@ export class TutorKeyCryptoService {
     }
   }
 
+  private hasValidSecret(): boolean {
+    return /^[0-9a-fA-F]{64}$/.test(this.configService.get<string>('TUTOR_KEY_ENCRYPTION_SECRET')?.trim() ?? '');
+  }
+
   private secret(): Buffer {
-    const hex = this.configService.get<string>('TUTOR_KEY_ENCRYPTION_SECRET')?.trim() ?? '';
-    if (!/^[0-9a-fA-F]{64}$/.test(hex)) {
+    if (!this.hasValidSecret()) {
+      // El estudiante no puede arreglar esto: el mensaje va sin nombres de variables y el detalle queda en el registro.
+      this.logger.error('Falta TUTOR_KEY_ENCRYPTION_SECRET (64 caracteres hexadecimales): no se puede guardar ni leer la clave del Tutor.');
       throw new ServiceUnavailableException(
-        'El servidor no tiene configurado el cifrado de claves del Tutor (TUTOR_KEY_ENCRYPTION_SECRET, 64 caracteres hexadecimales).',
+        'El Tutor no está listo en el servidor todavía (falta configurar el cifrado de claves). Avisa a tu docente o al administrador; reintentar no lo arregla.',
       );
     }
-    return Buffer.from(hex, 'hex');
+    return Buffer.from(this.configService.get<string>('TUTOR_KEY_ENCRYPTION_SECRET')!.trim(), 'hex');
   }
 }
