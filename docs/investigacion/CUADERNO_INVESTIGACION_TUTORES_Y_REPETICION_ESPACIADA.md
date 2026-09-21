@@ -162,4 +162,4 @@ quadrantChart
 
 1. **Fundamentación Científica Sólida:** STIRE-Soft no es una propuesta empírica; combina el rigor algorítmico de SM-2 con la potencia generativa de Gemini 1.5 y patrones consolidados de la industria EdTech.
 2. **Backend 100% Verificado:** Toda la lógica descrita en esta investigación cuenta con respaldo en el código NestJS, probado con 272 tests automatizados al 100% PASS.
-3. **Paso Siguiente:** Desarrollo del frontend Vue 3 + Nuxt conectando los contratos de datos establecidos en `docs/modesec/12_CONTRATO_FRONTEND_BACKEND.md`.
+3. **Paso Siguiente:** Desarrollo del frontend Vue 3 + Nuxt conectando los contratos de datos establecidos en `docs/modesec/insumos/12_CONTRATO_FRONTEND_BACKEND.md`.

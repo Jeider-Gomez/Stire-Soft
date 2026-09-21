@@ -21,3 +21,17 @@
     <TutorChatDrawer />
   </div>
 </template>
+
+<script setup lang="ts">
+import { useStudentStore } from '~/stores/student'
+
+const studentStore = useStudentStore()
+
+onMounted(async () => {
+  // Cargar datos de estudiante cuando el store esté vacío (§21.2 T3b), una sola vez
+  // `isSyncing` es el indicador que fetchStudentData() realmente activa (`isLoading` nunca se pone en true)
+  if (!studentStore.currentClassName && !studentStore.isSyncing) {
+    await studentStore.fetchStudentData()
+  }
+})
+</script>

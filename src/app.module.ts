@@ -42,6 +42,7 @@ import { ContentModule } from './content/content.module';
 import { ActivityLogModule } from './activity-log/activity-log.module';
 import { PrerequisitesModule } from './prerequisites/prerequisites.module';
 import { MaintenanceModule } from './maintenance/maintenance.module';
+import { AdminSystemModule } from './admin-system/admin-system.module';
 
 @Module({
   imports: [
@@ -111,6 +112,7 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
     ContentModule,
     ActivityLogModule,
     MaintenanceModule,
+    AdminSystemModule,
   ],
   providers: [
     {

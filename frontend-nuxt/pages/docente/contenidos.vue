@@ -350,6 +350,16 @@
                 class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario" />
             </div>
 
+            <!-- Sección plegable: Tutor IA en esta unidad (§20.1) -->
+            <details v-if="editUnitModal.unitId" class="border-t border-base-borde-sutil pt-3">
+              <summary class="text-[11px] font-semibold text-base-texto-secundario cursor-pointer hover:text-base-texto-primario select-none flex items-center gap-1.5">
+                <span aria-hidden="true">🤖</span> Tutor IA en esta unidad
+              </summary>
+              <div class="mt-3">
+                <DocenteTutorSettingsPanel scope-type="unit" :scope-id="editUnitModal.unitId" />
+              </div>
+            </details>
+
             <p v-if="editUnitModal.error" role="alert" class="text-semantico-falla text-[11px]">{{ editUnitModal.error }}</p>
 
             <div class="flex items-center justify-end gap-3 pt-1">

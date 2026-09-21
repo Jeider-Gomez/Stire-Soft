@@ -31,7 +31,9 @@ placeholder para CC-07/CC-08), y `COMP-V00` + `EST-V01..V06` en 4 estados cada u
 | Entender qué es MODESEC y qué se hace en cada fase | [`00_QUE_ES_MODESEC.md`](00_QUE_ES_MODESEC.md) |
 | Saber qué nos falta y quién lo hace | [`01_GAP_Y_PLAN.md`](01_GAP_Y_PLAN.md) |
 | Leer la Fase II completa de un tirón (entrega al docente) | [`FASE_II_DISENO_MULTIMEDIAL.md`](FASE_II_DISENO_MULTIMEDIAL.md) |
-| Presentar en clase | [`entregables/STIRE_MODESEC_FASE_II.pptx`](entregables/) |
+| Presentar en clase | [`entregables/STIRE_MODESEC_FASE_II.pptx`](entregables/) (versión PDF en la misma carpeta) |
+| Ver la evidencia de la Fase I (competencias y trazabilidad) | [`fase1/`](fase1/) |
+| Consultar las especificaciones técnicas y funcionales de base (mapa funcional, ER, endpoints, permisos, contrato front-back…) | [`insumos/`](insumos/) — 15 documentos numerados 00–14 |
 | Implementar en Nuxt lo ya cableado en Figma (guía para Antigravity) | [`../antigravity/PLAN_IMPLEMENTACION.md`](../antigravity/PLAN_IMPLEMENTACION.md) — sigue siendo "Insumo 15" en las citas, reubicado el 2026-09-10 fuera de esta carpeta porque es un plan operativo que cambia seguido, no una especificación de diseño estable como el resto de los insumos 00-14 |
 
 ---
@@ -41,24 +43,35 @@ placeholder para CC-07/CC-08), y `COMP-V00` + `EST-V01..V06` en 4 estados cada u
 ```
 docs/modesec/
 ├── README.md                          ← este índice: estado y responsables
-├── usuarios/                          ← INSUMOS POR ROL (Estudiante, Docente, Administrador)
-│   ├── README.md                      ← índice de especificaciones por actor
-│   ├── estudiante/README.md           ← insumo maestro rol estudiante (EST-V01..V06)
-│   ├── docente/README.md              ← insumo maestro rol docente (DOC-V01..V05)
-│   └── administrador/README.md        ← insumo maestro rol administrador (ADM-V01..V03)
-├── 00_QUE_ES_MODESEC.md               ← el modelo explicado (las 5 fases, los 17 formatos)
-├── 01_GAP_Y_PLAN.md                   ← qué falta, quién lo hace, en qué orden
-├── PLANTILLAS_MODESEC_FASE2.md        ← plantillas vacías (no se edita: se copia)
-├── FASE_II_DISENO_MULTIMEDIAL.md      ← documento consolidado de la Fase II
 │
+│  ── Qué es MODESEC y dónde estamos ──
+├── 00_QUE_ES_MODESEC.md               ← el modelo explicado (las 5 fases, los 17 formatos)
+├── 01_GAP_Y_PLAN.md                   ← qué falta, quién lo hace, en qué orden (semáforo por fase)
+├── PLANTILLAS_MODESEC_FASE2.md        ← plantillas vacías (no se edita: se copia)
+├── MARCO_UX_PEDAGOGICO_STIRE.md       ← marco UX + pedagógico (10 principios rectores)
+├── NAMING_STIRE.md                    ← vocabulario oficial y microcopy
+│
+│  ── Fase I · Diseño educativo ──
+├── fase1/                             ← §2.4 sistema de competencias + trazabilidad
+│
+│  ── Fase II · Diseño multimedial (lo que se entrega al docente) ──
+├── FASE_II_DISENO_MULTIMEDIAL.md      ← documento consolidado de la Fase II
 ├── contenidos/     (dueño: Julio)     ← §3.1 · §3.3.2 · §3.3.3
 ├── guiones/        (dueño: por asignar)← §3.2 guión didáctico + guión técnico
 ├── ventanas/       (dueño: José)      ← §3.3 · §3.3.1
-├── assets/                            ← TODOS los gráficos (.svg fuente + .png render)
-└── entregables/                       ← lo que se entrega o se presenta (.pptx)
+├── assets/                            ← TODOS los gráficos (.svg fuente + .png render + iconos)
+├── entregables/                       ← lo que se entrega o se presenta (.pptx y .pdf)
+│
+│  ── Especificaciones de base ──
+├── usuarios/                          ← INSUMOS POR ROL (Estudiante, Docente, Administrador)
+│   ├── README.md                      ← índice de especificaciones por actor
+│   ├── estudiante/README.md           ← insumo maestro rol estudiante (EST-V01..V06)
+│   ├── docente/README.md             ← insumo maestro rol docente (DOC-V01..V05)
+│   └── administrador/README.md        ← insumo maestro rol administrador (ADM-V01..V03)
+└── insumos/                           ← 15 especificaciones técnicas/funcionales numeradas 00–14
 ```
 
-**Cuatro decisiones de organización, y la razón de cada una:**
+**Cinco decisiones de organización, y la razón de cada una:**
 
 1. **Una carpeta por tipo de pieza, no una por persona.** Las carpetas siguen la numeración de
    MODESEC (`3.1`, `3.2`, `3.3`…), no los nombres del equipo. Si alguien cambia de rol o entra
@@ -76,6 +89,11 @@ docs/modesec/
 4. **`entregables/` separado del trabajo.** Lo que se le entrega al docente (el .pptx) no se mezcla
    con el material de trabajo. Se regenera desde los documentos, nunca al revés: **la fuente de
    verdad es el Markdown**.
+5. **Las especificaciones de base viven en `insumos/`, no sueltas en la raíz.** Los 15 documentos
+   numerados 00–14 compartían prefijo con `00_QUE_ES_MODESEC.md` y `01_GAP_Y_PLAN.md`, lo que
+   hacía ambigua la numeración. Reubicados el 2026-09-19 sin renombrarlos: los formatos oficiales de
+   MODESEC (`contenidos/`, `guiones/`, `ventanas/`, `entregables/`) conservan exactamente las mismas
+   rutas que ya tenía la entrega.
 
 > **Regla del equipo:** un cambio en una sección se hace en su archivo `.md`. El documento
 > consolidado y el .pptx se actualizan *después*, a partir de él. Nunca al contrario.

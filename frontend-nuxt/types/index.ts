@@ -121,7 +121,108 @@ export interface TutorMessage {
   id: string
   sender: 'student' | 'tutor'
   text: string
-  scaffoldingLevel?: 1 | 2 | 3 // 1: Pista conceptual, 2: Pregunta guía, 3: Localización falla
+  /** Nivel de guía real del backend (§18.4). null = fuera de una actividad. */
+  guidanceLevel?: 1 | 2 | 3 | null
   timestamp: string
   suggestedActivity?: TutorSuggestedActivity | null
+  /** true si este mensaje es un error de red/HTTP — muestra botón Reintentar. */
+  isError?: boolean
+  /** true si el error fue 403 (docente desactivó Tutor) — NO mostrar Reintentar. */
+  is403?: boolean
 }
+
+/** Respuesta de GET /tutor/api-key */
+export interface TutorApiKey {
+  success: boolean
+  hasKey: boolean
+  last4: string | null
+}
+
+/** Respuesta de GET /tutor/guidance (§21.2) */
+export interface TutorGuidance {
+  success: boolean
+  guidanceLevel: 1 | 2 | 3 | null
+  tutorEnabled: boolean
+  maxGuideLevel: 1 | 2 | 3 | null
+  dueReviews: {
+    overdueCount: number
+    scheduledCount: number
+    oldest: {
+      learningUnitId: number
+      learningUnitTitle: string | null
+      daysOverdue: number
+    } | null
+  } | null
+  contentLink: {
+    learningUnitId: number
+    title: string
+  } | null
+}
+
+export type TutorStyle = 'equilibrado' | 'motivador' | 'tecnico' | 'breve'
+
+/** Respuesta de GET /PUT /tutor/settings/:scopeType/:scopeId */
+export interface TutorSettings {
+  scopeType: 'class' | 'unit' | 'activity'
+  scopeId: number
+  own: {
+    enabled: boolean | null
+    maxGuideLevel: 1 | 2 | 3 | null
+    style: TutorStyle | null
+  }
+  effective: {
+    enabled: boolean
+    maxGuideLevel: 1 | 2 | 3
+    style: TutorStyle
+  }
+}
+
+/** Respuesta de GET /admin/system/status (§21.2) */
+export interface SystemStatus {
+  generatedAt: string
+  api: {
+    version: string
+    nodeVersion: string
+    environment: string
+    uptimeSeconds: number
+    memory: { rssMb: number; heapUsedMb: number }
+    requests: {
+      sampled: number
+      windowSeconds: number | null
+      p50Ms: number | null
+      p95Ms: number | null
+      serverErrorRatePct: number | null
+    }
+  }
+  database: { ok: boolean; latencyMs: number | null }
+  sandbox: {
+    adapter: string
+    timeoutMs: number
+    maxHeapMb: number
+    maxOutputKb: number
+    executionsLast24h: number | null
+    avgExecutionMs: number | null
+  }
+  judgeQueue: { driver: 'inline' | 'redis'; submissionsInProgress: number | null }
+  tutor: {
+    provider: string
+    model: string
+    studentsWithKey: number | null
+    studentMessagesLast24h: number | null
+  }
+  users: { total: number; byRole: Record<string, number> } | null
+  submissionsLast24h: number | null
+}
+
+/** Respuesta de GET /admin/system/logs (§21.2) */
+export interface SystemLogs {
+  entries: Array<{
+    timestamp: string
+    level: 'error' | 'warn' | 'log' | 'debug' | 'verbose' | 'fatal'
+    context: string | null
+    message: string
+  }>
+  capacity: number
+  note: string
+}
+

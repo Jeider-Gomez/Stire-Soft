@@ -307,8 +307,8 @@ estático tabulado** y se documenta en `RELEASE_NOTES.md`. No se elimina en sile
 ## 4. Trazabilidad
 
 Cada ventana de este guión tiene su ficha de 7 categorías en
-[`../ventanas/3.3.1_FICHAS_VENTANAS.md`](../ventanas/3.3.1_FICHAS_VENTANAS.md) y su posición en el
-sistema en [`../contenidos/3.3.3_MAPA_NAVEGACION.md`](../contenidos/3.3.3_MAPA_NAVEGACION.md).
+[`../ventanas/3.3.1_FICHAS_VENTANAS.md`](ventanas/3.3.1_FICHAS_VENTANAS.md) y su posición en el
+sistema en [`../contenidos/3.3.3_MAPA_NAVEGACION.md`](contenidos/3.3.3_MAPA_NAVEGACION.md).
 
 ---
 
@@ -407,7 +407,7 @@ La Ventana Estándar mantiene la misma estructura espacial de 5 zonas (A–E) pa
 ## 6. Ventanas derivadas del modelo
 
 El inventario completo de las **16 ventanas** que heredan de este modelo está especificado en:
-👉 [`3.3.1_FICHAS_VENTANAS.md`](3.3.1_FICHAS_VENTANAS.md)
+👉 [`3.3.1_FICHAS_VENTANAS.md`](ventanas/3.3.1_FICHAS_VENTANAS.md)
 
 - **Común (1):** `COMP-V00` (Autenticación y Acceso)
 - **Estudiante (6):** `EST-V01` (Inicio), `EST-V02` (Teoría), `EST-V03` (Resolución de ejercicio), `EST-V04` (Tutor IA), `EST-V05` (Repasos SM-2), `EST-V06` (Mi Progreso)
@@ -422,7 +422,7 @@ El inventario completo de las **16 ventanas** que heredan de este modelo está e
 **Autores:** José López (UI/UX), Julio Galvis (Diseño Instruccional), Jeider Gómez (Líder Técnico)  
 **Estado:** ⚠️ 6 Estudiante + 1 Común + 4 Docente completas + 2 Docente pendientes + 3 Administrador · **Última actualización:** 2026-09-03 (FASE CC-04, códigos unificados según D-02)
 
-> **Regla del formato MODESEC:** Cada ventana se describe obligatoriamente en **siete categorías**: (1) Imagen, (2) Nombre de ventana, (3) Texto, (4) Audio, (5) Video, (6) Animación y (7) Acciones. Cuando una categoría no aplica, se fundamenta su **motivo pedagógico o funcional**. Todas las ventanas derivan de la [Ventana Estándar](3.3_VENTANA_ESTANDAR.md).
+> **Regla del formato MODESEC:** Cada ventana se describe obligatoriamente en **siete categorías**: (1) Imagen, (2) Nombre de ventana, (3) Texto, (4) Audio, (5) Video, (6) Animación y (7) Acciones. Cuando una categoría no aplica, se fundamenta su **motivo pedagógico o funcional**. Todas las ventanas derivan de la [Ventana Estándar](ventanas/3.3_VENTANA_ESTANDAR.md).
 
 ---
 
@@ -592,8 +592,8 @@ que **no existe** en `src/` — corregido en el Paso 5 de esta fase.
 > **NOTA:** `DOC-V03 · Crear Ejercicio` y `DOC-V04 · Rendimiento del Grupo` (analítica de cohorte,
 > no individual) no tienen ficha en el formato de siete categorías de este documento — pero **sí
 > están completamente especificadas**, con endpoints reales, en
-> [`usuarios/docente/README.md`](../usuarios/docente/README.md) (secciones `DOC-V03` y `DOC-V04`)
-> y en [`06_ARQUITECTURA_VENTANAS.md`](../06_ARQUITECTURA_VENTANAS.md). No se duplica aquí ese
+> [`usuarios/docente/README.md`](usuarios/docente/README.md) (secciones `DOC-V03` y `DOC-V04`)
+> y en [`06_ARQUITECTURA_VENTANAS.md`](insumos/06_ARQUITECTURA_VENTANAS.md). No se duplica aquí ese
 > contenido para no generar dos fuentes que puedan divergir — este documento remite a la fuente
 > existente en vez de redactar una ficha paralela.
 
@@ -659,7 +659,7 @@ que **no existe** en `src/` — corregido en el Paso 5 de esta fase.
 
 > **La metáfora del taller gobierna la ICONOGRAFÍA, la paleta y el marco conceptual — nunca las
 > etiquetas visibles de la interfaz.** Las etiquetas que el estudiante lee en pantalla son las de
-> [`NAMING_STIRE.md`](../NAMING_STIRE.md) (Inicio, Lección, Ejercicio, Tutor IA, Repasos, Mi
+> [`NAMING_STIRE.md`](NAMING_STIRE.md) (Inicio, Lección, Ejercicio, Tutor IA, Repasos, Mi
 > Progreso), sin excepción.
 
 `NAMING_STIRE.md` §2 documentó por qué "Mi Banco de Trabajo", "Maestro de Taller",
@@ -697,7 +697,7 @@ herramental**.
 > **Lectura de la tabla (D-01):** la columna *"Concepto en la metáfora"* es marco conceptual e
 > iconografía — se conserva. La columna *"Etiqueta visible (naming)"* es lo único que el
 > estudiante lee en pantalla, y es la que manda en cualquier conflicto. Ver
-> [`NAMING_STIRE.md` §8](../NAMING_STIRE.md#8-trazabilidad-completa-código-→-documental-→-visible).
+> [`NAMING_STIRE.md` §8](NAMING_STIRE.md#8-trazabilidad-completa-código-→-documental-→-visible).
 
 | Elemento de la interfaz | Concepto en la metáfora (se conserva) | Etiqueta visible (naming, manda) | Qué comunica el concepto |
 |---|---|---|---|
@@ -776,7 +776,7 @@ renombrado y se regenerará en CC-06/CC-08 desde Figma (ver Paso 10, estado `der
 **Estado:** ⚠️ Códigos de Docente unificados según D-02 (FASE CC-04); DOC-V03 y DOC-V04 pendientes de ventana · **Última actualización:** 2026-09-03
 
 > **Este documento es el NORMATIVO (Gráfico 2 de MODESEC, FASE CC-04, Paso 7).** Cualquier
-> diferencia con [`09_MAPA_NAVEGACION.md`](../09_MAPA_NAVEGACION.md) (la traducción a rutas Nuxt,
+> diferencia con [`09_MAPA_NAVEGACION.md`](insumos/09_MAPA_NAVEGACION.md) (la traducción a rutas Nuxt,
 > que es derivada) se resuelve a favor de este documento — 09 no manda sobre este.
 
 > **Propósito MODESEC:** El mapa de navegación define formalmente las rutas de transición entre pantallas, los disparadores de interacción y la reversibilidad de cada cambio de estado, garantizando que no existan ventanas huérfanas ni caminos ciegos en la plataforma.
@@ -854,7 +854,7 @@ stateDiagram-v2
 > **REQUERIDO-PENDIENTE (FASE CC-04, D-02):** `DOC-V03 · Crear Ejercicio` y
 > `DOC-V04 · Rendimiento del Grupo` (analítica de cohorte) no tienen ventana ni ficha todavía, por
 > lo que no aparecen en este mapa. No se inventan aquí — ver la misma nota en
-> [`ventanas/3.3.1_FICHAS_VENTANAS.md`](../ventanas/3.3.1_FICHAS_VENTANAS.md).
+> [`ventanas/3.3.1_FICHAS_VENTANAS.md`](ventanas/3.3.1_FICHAS_VENTANAS.md).
 
 ---
 

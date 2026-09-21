@@ -46,6 +46,55 @@ describe('TutorRecommendationService', () => {
     });
   });
 
+  describe('summarizeDueReviews', () => {
+    const daysAgo = (n: number) => new Date(Date.now() - n * 86400000);
+
+    it('cuenta como vencidos el de hoy y los atrasados, y nombra el más antiguo', async () => {
+      reviewSchedulesService.getDueReviews.mockResolvedValue([
+        { learningUnitId: 3, learningUnitTitle: 'Funciones', urgency: 'manana', nextReviewDate: new Date(Date.now() + 86400000) },
+        { learningUnitId: 5, learningUnitTitle: 'Arreglos', urgency: 'vencido', nextReviewDate: new Date() },
+        { learningUnitId: 7, learningUnitTitle: 'Bucles', urgency: 'critico', nextReviewDate: daysAgo(4) },
+        { learningUnitId: 9, learningUnitTitle: 'Variables', urgency: 'al-dia', nextReviewDate: new Date(Date.now() + 5 * 86400000) },
+      ]);
+
+      const summary = await service.summarizeDueReviews(1);
+
+      expect(summary.overdueCount).toBe(2);
+      expect(summary.scheduledCount).toBe(4);
+      expect(summary.oldest).toEqual({ learningUnitId: 7, learningUnitTitle: 'Bucles', daysOverdue: 4 });
+    });
+
+    it('un repaso que toca hoy tiene 0 días de atraso (no 1)', async () => {
+      reviewSchedulesService.getDueReviews.mockResolvedValue([
+        { learningUnitId: 5, learningUnitTitle: 'Arreglos', urgency: 'vencido', nextReviewDate: new Date() },
+      ]);
+
+      expect((await service.summarizeDueReviews(1)).oldest?.daysOverdue).toBe(0);
+    });
+
+    it('sin repasos vencidos no hay "más antiguo" y el conteo es 0', async () => {
+      reviewSchedulesService.getDueReviews.mockResolvedValue([
+        { learningUnitId: 3, learningUnitTitle: 'Funciones', urgency: 'manana', nextReviewDate: new Date(Date.now() + 86400000) },
+      ]);
+
+      expect(await service.summarizeDueReviews(1)).toEqual({ overdueCount: 0, scheduledCount: 1, oldest: null });
+    });
+
+    it('sin ningún repaso programado devuelve ceros', async () => {
+      reviewSchedulesService.getDueReviews.mockResolvedValue([]);
+
+      expect(await service.summarizeDueReviews(1)).toEqual({ overdueCount: 0, scheduledCount: 0, oldest: null });
+    });
+
+    it('el título puede ser null (unidad sin título cargado) y no rompe el resumen', async () => {
+      reviewSchedulesService.getDueReviews.mockResolvedValue([
+        { learningUnitId: 7, learningUnitTitle: null, urgency: 'critico', nextReviewDate: daysAgo(1) },
+      ]);
+
+      expect((await service.summarizeDueReviews(1)).oldest).toEqual({ learningUnitId: 7, learningUnitTitle: null, daysOverdue: 1 });
+    });
+  });
+
   describe('suggestAmbient', () => {
     it('prioritizes the oldest overdue review over a weak unit', async () => {
       reviewSchedulesService.getDueReviews.mockResolvedValue([

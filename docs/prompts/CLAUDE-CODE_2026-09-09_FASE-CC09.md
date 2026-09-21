@@ -62,7 +62,7 @@ aparece en la respuesta.
 mañana · vencido · crítico), `@Roles('estudiante')`, alcance al propio estudiante. Persiste
 `easeFactor` (hoy se calcula y no se guarda). Test: un estudiante no puede ver los repasos de otro.
 
-Actualiza `docs/modesec/02_CATALOGO_ENDPOINTS.md`, `07_REPETICION_ESPACIADA.md` y
+Actualiza `docs/modesec/insumos/02_CATALOGO_ENDPOINTS.md`, `07_REPETICION_ESPACIADA.md` y
 `12_CONTRATO_FRONTEND_BACKEND.md` — retira `PROPUESTO — NO IMPLEMENTADO` de lo que ahora existe.
 Documenta la forma exacta de respuesta con precisión — Antigravity la consume literal.
 

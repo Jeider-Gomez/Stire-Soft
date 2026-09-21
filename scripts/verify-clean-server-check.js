@@ -37,7 +37,12 @@ const VERIFY_DB = process.env.VERIFY_DB_DATABASE || 'stire_verify_clean';
 const VERIFY_PORT = process.env.VERIFY_PORT || '3097';
 const DEMO_EMAIL = 'docente.demo@stire.local';
 const DEMO_PASSWORD = 'Demo1234!';
-const START_TIMEOUT_MS = 60000;
+// 60 s por defecto. Tras `npm ci` los ~950 paquetes recien creados estan en frio (y, si el repo
+// vive en una carpeta sincronizada como OneDrive, ademas los escanean el sincronizador y el
+// antivirus): medido el 2026-09-20, el primer arranque tardo 73,9 s y el segundo, con la cache
+// caliente, 8,1 s. `VERIFY_START_TIMEOUT_MS` permite darle margen a una maquina asi sin tocar el
+// script; en una maquina normal no hace falta.
+const START_TIMEOUT_MS = Number(process.env.VERIFY_START_TIMEOUT_MS) || 60000;
 
 // Este proceso es el ULTIMO de la cadena (ver package.json: `verify:clean`
 // encadena este script tras verify-clean.js con `&&`), asi que la limpieza

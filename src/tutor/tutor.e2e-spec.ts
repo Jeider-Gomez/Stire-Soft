@@ -1,16 +1,13 @@
-import { ConfigService } from '@nestjs/config';
 import { TutorService } from './tutor.service';
 import { TutorContextService } from './tutor-context.service';
 
 describe('TutorService E2E', () => {
   let service: TutorService;
-  let convRepo: any;
-  let contextService: TutorContextService;
-  let configService: any;
-  let openaiCreateSpy: jest.Mock;
+  let fetchMock: jest.Mock;
+  const realFetch = global.fetch;
 
   beforeEach(() => {
-    convRepo = {
+    const convRepo = {
       save: jest.fn().mockResolvedValue(undefined),
       getRecentContext: jest.fn().mockResolvedValue([
         { role: 'user', content: '¿Cómo configuro una función?' },
@@ -20,87 +17,67 @@ describe('TutorService E2E', () => {
 
     const progressRepo = {
       find: jest.fn().mockResolvedValue([
-        {
-          studentId: 1,
-          learningUnitId: 101,
-          mastery: 90,
-          successRate: 95,
-          completedActivities: 5,
-          updatedAt: new Date('2026-05-20T10:00:00Z'),
-        },
-        {
-          studentId: 1,
-          learningUnitId: 102,
-          mastery: 75,
-          successRate: 80,
-          completedActivities: 4,
-          updatedAt: new Date('2026-05-21T10:00:00Z'),
-        },
-        {
-          studentId: 1,
-          learningUnitId: 103,
-          mastery: 60,
-          successRate: 70,
-          completedActivities: 3,
-          updatedAt: new Date('2026-05-22T10:00:00Z'),
-        },
+        { studentId: 1, learningUnitId: 101, mastery: 90, successRate: 95, completedActivities: 5, updatedAt: new Date('2026-05-20T10:00:00Z') },
+        { studentId: 1, learningUnitId: 102, mastery: 75, successRate: 80, completedActivities: 4, updatedAt: new Date('2026-05-21T10:00:00Z') },
+        { studentId: 1, learningUnitId: 103, mastery: 60, successRate: 70, completedActivities: 3, updatedAt: new Date('2026-05-22T10:00:00Z') },
       ]),
     };
 
-    contextService = new TutorContextService(progressRepo as any);
-
-    configService = {
-      get: jest.fn().mockImplementation((key: string, defaultValue?: any) => {
-        if (key === 'OPENAI_API_KEY') return 'fake-key';
-        if (key === 'OPENAI_MODEL') return 'gpt-4o-mini';
-        if (key === 'OPENAI_API_URL') return 'https://api.openai.com/v1';
-        if (key === 'OPENAI_RETRY_COUNT') return 2;
-        return defaultValue;
-      }),
-    };
-
+    const configService = { get: jest.fn((key: string, def?: any) => (key === 'GEMINI_MODEL' ? 'gemini-flash-latest' : def)) };
     const contentRenderingService = { escapePlainText: jest.fn((s: string) => s) };
     const recommendationService = {
       suggestForUnit: jest.fn().mockResolvedValue(null),
       suggestAmbient: jest.fn().mockResolvedValue(null),
     };
+    const credentialService = { getDecryptedKey: jest.fn().mockResolvedValue('AIzaFAKEKEYFORTESTS1234567890abcdefgh') };
+    const learningUnitService = { findOne: jest.fn() };
+
     service = new TutorService(
       convRepo as any,
-      contextService,
+      new TutorContextService(progressRepo as any),
       configService as any,
       contentRenderingService as any,
       recommendationService as any,
+      credentialService as any,
+      learningUnitService as any,
+      { countFailedAttempts: jest.fn().mockResolvedValue(0) } as any,
+      { resolveForStudent: jest.fn().mockResolvedValue({ enabled: true, maxGuideLevel: 3, style: 'equilibrado' }) } as any,
     );
 
-    openaiCreateSpy = jest
+    fetchMock = jest
       .fn()
-      .mockRejectedValueOnce(Object.assign(new Error('429 Too Many Requests'), { status: 429 }))
+      .mockResolvedValueOnce({ ok: false, status: 429, json: async () => ({}), text: async () => '' })
       .mockResolvedValueOnce({
-        choices: [{ message: { content: 'Este es tu consejo de tutor.' } }],
+        ok: true,
+        status: 200,
+        json: async () => ({ candidates: [{ content: { parts: [{ text: 'Este es tu consejo de tutor.' }] } }] }),
+        text: async () => '',
       });
-
-    (service as any).openai = {
-      chat: {
-        completions: {
-          create: openaiCreateSpy,
-        },
-      },
-    };
+    (global as any).fetch = fetchMock;
   });
 
-  it('should build a system prompt with RAG context, retry on 429, and return AI content', async () => {
-    const response = await service.sendMessage(1, '¿Qué modelo debo usar para resolver esto?');
+  afterEach(() => {
+    (global as any).fetch = realFetch;
+  });
+
+  it('arma el system prompt con contexto real del estudiante, salta al siguiente modelo ante un 429 y devuelve el contenido de la IA', async () => {
+    const response = await service.sendMessage({ id: 1, role: 'estudiante' } as any, '¿Qué modelo debo usar para resolver esto?');
 
     expect(response.message).toBe('Este es tu consejo de tutor.');
-    expect(openaiCreateSpy).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
 
-    const call = openaiCreateSpy.mock.calls[0][0];
-    expect(call.model).toBe('gpt-4o-mini');
-    expect(call.messages[0]).toEqual({ role: 'system', content: expect.any(String) });
-    expect(call.messages[0].content).toContain('Eres el Tutor Inteligente de STIRE');
-    expect(call.messages[0].content).toContain('Maestría Global: 75%');
-    expect(call.messages[0].content).toContain('ÚLTIMOS PROGRESOS DEL ESTUDIANTE:');
-    expect(call.messages).toContainEqual({ role: 'assistant', content: 'Primero define los parámetros y luego llama a la función.' });
-    expect(call.messages[call.messages.length - 1]).toEqual({ role: 'user', content: '¿Qué modelo debo usar para resolver esto?' });
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    const systemPrompt = body.system_instruction.parts[0].text;
+    expect(systemPrompt).toContain('Eres el Tutor Inteligente de STIRE');
+    expect(systemPrompt).toContain('Maestría Global: 75%');
+    expect(systemPrompt).toContain('ÚLTIMOS PROGRESOS DEL ESTUDIANTE:');
+    expect(body.contents).toContainEqual({
+      role: 'model',
+      parts: [{ text: 'Primero define los parámetros y luego llama a la función.' }],
+    });
+    expect(body.contents[body.contents.length - 1]).toEqual({
+      role: 'user',
+      parts: [{ text: '¿Qué modelo debo usar para resolver esto?' }],
+    });
   });
 });

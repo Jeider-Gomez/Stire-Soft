@@ -17,6 +17,15 @@ export interface SuggestedActivity {
   reasonMessage: string;
 }
 
+export interface DueReviewsSummary {
+  /** Repasos que ya tocan hoy o están atrasados (los mismos que la pantalla de Repasos marca como vencidos/críticos). */
+  overdueCount: number;
+  /** Repasos programados en total, incluidos los de mañana y los que van al día. */
+  scheduledCount: number;
+  /** El repaso más atrasado, para poder nombrarlo; null si no hay ninguno vencido. */
+  oldest: { learningUnitId: number; learningUnitTitle: string | null; daysOverdue: number } | null;
+}
+
 /**
  * Convierte el seguimiento real del estudiante (repasos vencidos, mastery por unidad,
  * recomendador de siguiente actividad ya existente) en UNA sugerencia concreta que el Tutor
@@ -30,6 +39,34 @@ export class TutorRecommendationService {
     private readonly progressRepo: LearningProgressRepository,
     private readonly reviewSchedulesService: ReviewSchedulesService,
   ) {}
+
+  /**
+   * Resumen de repasos vencidos para mostrarlo dentro del chat sin generar texto con el LLM.
+   * "Vencido" incluye el que toca hoy (`vencido`) y el ya pasado (`critico`): mismo criterio que
+   * usa `suggestAmbient` y la pantalla de Repasos.
+   */
+  async summarizeDueReviews(studentId: number): Promise<DueReviewsSummary> {
+    const reviews = await this.reviewSchedulesService.getDueReviews(studentId);
+    const overdue = reviews
+      .filter(r => URGENCY_RANK[r.urgency] >= URGENCY_RANK['vencido'])
+      .sort((a, b) => new Date(a.nextReviewDate).getTime() - new Date(b.nextReviewDate).getTime());
+
+    let oldest: DueReviewsSummary['oldest'] = null;
+    if (overdue.length > 0) {
+      const first = overdue[0];
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+      const reviewDay = new Date(first.nextReviewDate);
+      reviewDay.setHours(0, 0, 0, 0);
+      oldest = {
+        learningUnitId: first.learningUnitId,
+        learningUnitTitle: first.learningUnitTitle,
+        daysOverdue: Math.max(0, Math.round((startOfToday.getTime() - reviewDay.getTime()) / 86400000)),
+      };
+    }
+
+    return { overdueCount: overdue.length, scheduledCount: reviews.length, oldest };
+  }
 
   /** Sugerencia dentro de una unidad ya identificada (el estudiante está ahí, o se decidió que esa es la unidad relevante). */
   async suggestForUnit(

@@ -121,9 +121,10 @@
           </div>
 
           <div class="pt-3 border-t border-base-borde-sutil flex items-center justify-between gap-2">
-            <span class="text-[11px] text-base-texto-secundario">
-              Inscrito el {{ formatDate(item.createdAt || item.enrolledAt) }}
+            <span v-if="formatDate(item.joinedAt)" class="text-[11px] text-base-texto-secundario">
+              Inscrito el {{ formatDate(item.joinedAt) }}
             </span>
+            <span v-else class="text-[11px] text-base-texto-secundario"></span>
 
             <button
               @click="selectActiveClass(item)"
@@ -150,8 +151,7 @@ interface EnrollmentItem {
   id: number
   classId: number
   status: string
-  createdAt?: string
-  enrolledAt?: string
+  joinedAt?: string
   class?: {
     id: number
     name: string
@@ -235,16 +235,18 @@ function selectActiveClass(item: EnrollmentItem) {
   }
 }
 
-function formatDate(dateStr?: string): string {
-  if (!dateStr) return 'fecha reciente'
+function formatDate(dateStr?: string): string | null {
+  if (!dateStr) return null
   try {
-    return new Date(dateStr).toLocaleDateString('es-CO', {
+    const d = new Date(dateStr)
+    if (isNaN(d.getTime())) return null
+    return d.toLocaleDateString('es-CO', {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
     })
   } catch {
-    return dateStr
+    return null
   }
 }
 

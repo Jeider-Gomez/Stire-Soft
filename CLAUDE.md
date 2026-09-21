@@ -82,6 +82,8 @@ código.
 - **Sin commit sin mensaje aprobado. Sin push sin confirmación explícita del dueño del proyecto.**
 - Un commit por punto de la instrucción recibida, cuando así se indique — no agrupar puntos
   independientes en un solo commit ni dividir uno solo en varios sin que se pida.
+- Ramas, Pull Requests, versiones (tags) y cómo evitar conflictos entre personas e IA:
+  `docs/FLUJO_GIT.md`. No hay rama `dev`; `main` siempre funciona.
 
 ## Hallazgos e hipótesis
 

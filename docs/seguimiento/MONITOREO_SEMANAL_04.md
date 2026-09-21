@@ -29,7 +29,7 @@
 
 **Reunión de equipo:** viernes 8:00 – 8:40 p. m.  
 **Reportes:** martes y jueves, máximo 8:00 p. m.  
-**Metodología:** [`docs/05_METODOLOGIA_Y_EQUIPO.md`](./docs/05_METODOLOGIA_Y_EQUIPO.md)
+**Metodología:** [`docs/05_METODOLOGIA_Y_EQUIPO.md`](../05_METODOLOGIA_Y_EQUIPO.md)
 
 ---
 
@@ -62,14 +62,14 @@ El alcance inicial de frontend se mantiene limitado a las vistas ya diseñadas: 
 - [x] **S04-J03 · Backend + Tutor IA** — objetivo 11/09. *(Completado anticipadamente 07/09: Auditoría auth, token JWT real y Google Gemini LLM activo)*
 
 **Dependencias:** S04-J02 depende de S04-J01. S04-J03 puede ejecutarse en paralelo.  
-**Evidencias:** Ver informe oficial [`docs/antigravity/informes/INFORME_2026-09-07_SESION_01.md`](./docs/antigravity/informes/INFORME_2026-09-07_SESION_01.md).  
+**Evidencias:** Ver informe oficial [`docs/antigravity/informes/INFORME_2026-09-07_SESION_01.md`](../antigravity/informes/INFORME_2026-09-07_SESION_01.md).  
 **Verificación en frío (09/09):** los tokens de `tailwind.config.ts` se compararon variable por
 variable contra el Figma real — coincidían todos salvo 9 (paleta del editor de código y dos anchos
 con nombre), ya agregados a Figma para que quede completo. El resto de los criterios de cierre del
-[Insumo 15 §10](docs/antigravity/PLAN_IMPLEMENTACION.md#10-criterio-de-cierre-de-esta-fase)
+[Insumo 15 §10](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md#10-criterio-de-cierre-de-esta-fase)
 **no** se cumplen todavía (capturas contra Figma, valores literales fuera del token system en 2
 archivos, y el punto de "Probar código" — ver riesgo #6 abajo). Detalle completo en
-[Insumo 15 §11](docs/antigravity/PLAN_IMPLEMENTACION.md#11-verificación-en-frío-de-este-criterio-de-cierre-2026-09-09).
+[Insumo 15 §11](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md#11-verificación-en-frío-de-este-criterio-de-cierre-2026-09-09).
 "Ventana Estándar implementada" (arriba) es cierto para las 9 vistas construidas — no significa que
 las 10 restantes de Docente/Administrador existan.
 
@@ -253,7 +253,7 @@ explícitamente eliminarlo; se borró (`git rm`) sin esperar a que Jorge lo hici
    `frontend-nuxt/stores/workspace.ts` todavía ejecuta con `new Function(...)` en el navegador en vez
    de llamar al endpoint real — migrarlo es trabajo de Antigravity (Fase 4/6 del plan de
    implementación), no un hallazgo de backend nuevo. Ver
-   [Insumo 15 §11.2](docs/antigravity/PLAN_IMPLEMENTACION.md#112-los-otros-cuatro-criterios-de-10-no-se-cumplen-todavía-declarado-sin-maquillar)
+   [Insumo 15 §11.2](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md#112-los-otros-cuatro-criterios-de-10-no-se-cumplen-todavía-declarado-sin-maquillar)
    (desactualizado en este punto específico, no se reescribe aquí para no duplicar mantenimiento).
    **Corroborado independientemente (14/09) por el QA de Jorge** como hallazgo `FE-01`.
 7. **Vulnerabilidad Self-XSS en el chat del Tutor IA (nuevo, 14/09, QA de Jorge, verificado por
@@ -379,9 +379,9 @@ no cierran son de Julio — contenidos (aplazado a la Semana 5, `S05-JL01`) y va
 
 | N.º | Semana | Documento |
 |---|---|---|
-| 1 | 17 – 21 de agosto de 2026 | [`MONITOREO_SEMANAL_01.md`](./docs/seguimiento/MONITOREO_SEMANAL_01.md) |
-| 2 | 24 – 28 de agosto de 2026 | [`MONITOREO_SEMANAL_02.md`](./docs/seguimiento/MONITOREO_SEMANAL_02.md) |
-| 3 | 31 de agosto – 4 de septiembre de 2026 | [`MONITOREO_SEMANAL_03.md`](./docs/seguimiento/MONITOREO_SEMANAL_03.md) |
+| 1 | 17 – 21 de agosto de 2026 | [`MONITOREO_SEMANAL_01.md`](./MONITOREO_SEMANAL_01.md) |
+| 2 | 24 – 28 de agosto de 2026 | [`MONITOREO_SEMANAL_02.md`](./MONITOREO_SEMANAL_02.md) |
+| 3 | 31 de agosto – 4 de septiembre de 2026 | [`MONITOREO_SEMANAL_03.md`](./MONITOREO_SEMANAL_03.md) |
 | 4 | 7 – 11 de septiembre de 2026 | Este documento |
 | 5 | 14 – 18 de septiembre de 2026 | [`MONITOREO_SEMANAL_05.md`](./MONITOREO_SEMANAL_05.md) |
 

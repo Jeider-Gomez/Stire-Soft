@@ -10,6 +10,7 @@ import { LearningStatusChangedEvent } from '../common/events/learning-status-cha
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Activity } from '../activities/entities/activity.entity';
 import { Submission } from '../submissions/entities/submission.entity';
+import { SubmissionStatus } from '../common/enums/submission-status.enum';
 
 export interface NextActivityRecommendation {
   activityId: number;
@@ -131,6 +132,22 @@ export class LearningProgressService {
         learningUnitId: In(unitIds),
       },
     });
+  }
+
+  /**
+   * Intentos ya calificados de esta actividad que NO alcanzaron el puntaje de aprobación. Es la señal
+   * real con la que el Tutor decide cuánta ayuda dar (andamiaje progresivo, P03): solo cuenta datos
+   * propios del estudiante, así que un `activityId` inventado por el cliente devuelve 0.
+   */
+  async countFailedAttempts(studentId: number, activityId: number): Promise<number> {
+    const activity = await this.activitiesRepo.findOne({ where: { id: activityId } });
+    if (!activity) return 0;
+
+    const submissions = await this.submissionsRepo.find({ where: { studentId, activityId } });
+    return submissions.filter(
+      submission =>
+        submission.status !== SubmissionStatus.IN_PROGRESS && !isSubmissionPassed(submission, activity),
+    ).length;
   }
 
   async getNextActivity(studentId: number, learningUnitId: number): Promise<NextActivityRecommendation | null> {
