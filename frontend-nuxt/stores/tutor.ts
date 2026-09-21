@@ -137,9 +137,13 @@ export const useTutorStore = defineStore('tutor', () => {
     }
   }
 
-  // ─── Nivel de guía y orientación (§18.4, §21.2 T4a) ─────────────────────────
+  // ─── Nivel de guía y orientación (§18.4, §21.2 T4a, §22 T3) ─────────────────
   async function fetchGuidanceLevel(activityId?: number) {
-    const id = activityId ?? workspaceStore.currentExercise?.activityId
+    // §22 T3: usar activityId del workspace SOLO cuando la ruta activa es una
+    // evaluación. Si el estudiante navega a /estudiante sin recargar, el store
+    // conserva currentExercise de la actividad anterior; no debemos enviarlo.
+    const isEvaluacionRoute = /^\/estudiante\/evaluacion\/\d+/.test(route.path)
+    const id = activityId ?? (isEvaluacionRoute ? workspaceStore.currentExercise?.activityId : undefined)
     const endpoint = id ? `/tutor/guidance?activityId=${id}` : '/tutor/guidance'
     try {
       const res = await api.get<TutorGuidance>(endpoint)
