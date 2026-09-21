@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 @layer base {
   body {
-    @apply bg-base-bg-primario text-base-texto-primario font-interfaz antialiased min-h-screen selection:bg-acento-ambar/20;
+    @apply bg-stire-canvas text-slate-800 font-interfaz antialiased min-h-screen;
   }
 
   code, pre, kbd {
@@ -14,17 +14,104 @@
   }
 }
 
+@layer components {
+  /* Botón primario institucional */
+  .btn-stire-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-stire-blue text-white font-semibold text-sm
+           hover:-translate-y-0.5 hover:shadow-lg hover:bg-stire-blue-dark
+           active:scale-95 transition-all duration-200 whitespace-nowrap cursor-pointer;
+  }
+
+  /* Botón secundario */
+  .btn-stire-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-sm
+           hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300
+           active:scale-95 transition-all duration-200 whitespace-nowrap cursor-pointer;
+  }
+
+  /* Botón teal (CTA / Éxito) */
+  .btn-stire-teal {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-stire-teal text-white font-semibold text-sm
+           hover:-translate-y-0.5 hover:shadow-lg hover:bg-stire-teal-dark
+           active:scale-95 transition-all duration-200 whitespace-nowrap cursor-pointer;
+  }
+
+  /* Tarjeta de analítica */
+  .metric-card {
+    @apply bg-white border border-slate-200 rounded-2xl p-5 shadow-sm
+           hover:shadow-md hover:-translate-y-0.5 transition-all duration-200;
+  }
+
+  /* Tarjeta de clase docente */
+  .class-card {
+    @apply bg-white border border-slate-200 rounded-2xl p-6 shadow-sm
+           hover:shadow-md hover:border-stire-blue/30 transition-all duration-200;
+  }
+
+  /* Badge de rol */
+  .badge-docente {
+    @apply px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-stire-purple/10 text-stire-purple border border-stire-purple/30;
+  }
+
+  .badge-estudiante {
+    @apply px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-stire-teal/10 text-stire-teal-dark border border-stire-teal/30;
+  }
+
+  .badge-admin {
+    @apply px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-stire-blue/10 text-stire-blue border border-stire-blue/30;
+  }
+
+  /* Input institucional */
+  .input-stire {
+    @apply w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200
+           focus:border-stire-blue focus:ring-2 focus:ring-stire-blue/20 outline-none
+           text-sm text-slate-800 placeholder:text-slate-400 transition-all duration-150;
+  }
+}
+
 @layer utilities {
-  /* Borde de afordancia normativo de Figma (Parte A3, CC-08 / Insumo 15 §5) */
+  /* Punto de pulso activo */
+  .pulse-dot {
+    @apply w-2 h-2 rounded-full bg-stire-success animate-pulse inline-block;
+  }
+
+  /* Gradiente institucional */
+  .gradient-stire {
+    background: linear-gradient(135deg, #0B3D91 0%, #7B2FBF 100%);
+  }
+
+  /* Glassmorphism sutil para header */
+  .glass-header {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Compatibilidad con clases de la paleta anterior */
+  .bg-base-blanco { @apply bg-white; }
+  .bg-base-bg-primario { @apply bg-stire-canvas; }
+  .bg-base-bg-secundario { @apply bg-slate-100; }
+  .border-base-borde-sutil { @apply border-slate-200; }
+  .border-base-borde-fuerte { @apply border-slate-300; }
+  .text-base-texto-primario { @apply text-slate-800; }
+  .text-base-texto-secundario { @apply text-slate-500; }
+  .text-acento-ambar-fuerte { @apply text-stire-blue; }
+  .bg-acento-ambar-fuerte { @apply bg-stire-blue; }
+  .bg-acento-ambar { @apply bg-stire-teal; }
+  .text-semantico-pasa { @apply text-stire-success; }
+  .text-semantico-falla { @apply text-stire-danger; }
+  .text-semantico-info { @apply text-stire-blue; }
+  .bg-semantico-info { @apply bg-stire-blue; }
+  .hover\:bg-acento-ambar\/10:hover { background-color: rgb(0 194 168 / 0.1); }
   .borde-afordancia {
-    @apply border border-base-borde-fuerte transition-colors duration-150;
+    @apply border border-slate-200 transition-colors duration-150;
   }
-
   .borde-afordancia:hover {
-    @apply border-acento-ambar-fuerte bg-base-bg-secundario;
+    @apply border-stire-blue/40 bg-stire-blue/5;
   }
-
   .borde-afordancia-focus {
-    @apply outline-none ring-2 ring-acento-ambar-fuerte ring-offset-2 ring-offset-base-bg-primario;
+    @apply outline-none ring-2 ring-stire-blue ring-offset-2;
   }
 }

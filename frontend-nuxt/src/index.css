@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  /* Paleta Oficial STIRE Soft */
+  --color-stire-blue: #0B3D91;        /* Azul Tecnológico (Primario / Institucional) */
+  --color-stire-blue-dark: #082A66;   /* Azul Hover / Enfoque */
+  --color-stire-purple: #7B2FBF;      /* Morado Innovación (Tutor IA / Rol Docente) */
+  --color-stire-purple-light: #F3E8FF;/* Morado pastel para badges */
+  --color-stire-teal: #00C2A8;        /* Turquesa Acción (Acentos / CTA / Éxito) */
+  --color-stire-teal-dark: #009985;   /* Turquesa Hover */
+
+  /* Semáforo Cognitivo Pedagógico */
+  --color-stire-success: #10B981;     /* Dominio Alto (>80%) */
+  --color-stire-warning: #F59E0B;     /* Rezago / Alerta de apoyo (<60%) */
+  --color-stire-danger: #EF4444;      /* Error crítico */
+
+  /* Superficies y Fondos */
+  --color-stire-canvas: #F7F9FC;      /* Fondo base Modo Claro (Anti-fatiga) */
+  --color-stire-dark-canvas: #050C1F; /* Fondo base Modo Oscuro */
+  --color-stire-dark-card: #0A1435;   /* Superficie de tarjetas Modo Oscuro */
+}
