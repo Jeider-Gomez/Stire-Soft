@@ -70,6 +70,15 @@
           <span>📊</span>
           <span>Mi Progreso</span>
         </NuxtLink>
+
+        <!-- 7. Mensajes -->
+        <NuxtLink
+          to="/estudiante/mensajes"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path === '/estudiante/mensajes' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <span>✉️</span>
+          <span>Mensajes</span>
+        </NuxtLink>
       </nav>
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
