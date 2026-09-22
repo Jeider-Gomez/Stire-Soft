@@ -95,15 +95,15 @@
 
         <!-- Avatar inicial -->
         <div class="flex-shrink-0 w-9 h-9 rounded-full bg-acento-ambar/15 flex items-center justify-center font-bold text-acento-ambar-fuerte text-sm">
-          {{ getInitial(activeTab === 'inbox' ? msg.sender?.name : msg.receiver?.name) }}
+          {{ getInitial(activeTab === 'inbox' ? msg.sender?.fullName : msg.receiver?.fullName) }}
         </div>
 
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1">
             <span class="font-bold text-base-texto-primario truncate">
               {{ activeTab === 'inbox'
-                ? (msg.sender?.name || `Usuario #${msg.senderId}`)
-                : (msg.receiver?.name || `Usuario #${msg.receiverId}`) }}
+                ? (msg.sender?.fullName || `Usuario #${msg.senderId}`)
+                : (msg.receiver?.fullName || `Usuario #${msg.receiverId}`) }}
             </span>
             <span v-if="activeTab === 'inbox' && !msg.isRead" class="px-1.5 py-0.5 rounded-full bg-semantico-info/15 text-semantico-info text-[10px] font-bold flex-shrink-0">
               Nuevo
@@ -118,7 +118,7 @@
         <!-- Botón responder (solo en inbox) -->
         <button
           v-if="activeTab === 'inbox'"
-          @click="replyToUser(msg.senderId, msg.sender?.name)"
+          @click="replyToUser(msg.senderId, msg.sender?.fullName)"
           class="borde-afordancia px-3 py-1.5 rounded text-[11px] font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 whitespace-nowrap self-start">
           ↩ Responder
         </button>
@@ -251,9 +251,15 @@ interface EnrolledStudent {
   email: string
 }
 
+interface EnrollmentRow {
+  studentId: number
+  status: string
+  student?: { fullName?: string; email?: string }
+}
+
 interface MessageUser {
   id: number
-  name: string
+  fullName: string
   email: string
 }
 
@@ -352,9 +358,19 @@ async function loadStudentsForClass() {
   composeForm.receiverId = 0
 
   try {
-    // GET /enrollment/class/:classId — mismo endpoint que DOC-V04
-    const res = await api.get<EnrolledStudent[]>(`/enrollment/class/${composeClassId.value}`)
-    enrolledStudents.value = Array.isArray(res) ? res : []
+    // GET /enrollment/class/:classId — mismo endpoint que DOC-V04. Devuelve
+    // matrículas (Enrollment[]), no estudiantes planos: el nombre y el correo
+    // viven en `student.fullName`/`student.email`, no en el nivel superior.
+    const res = await api.get<EnrollmentRow[]>(`/enrollment/class/${composeClassId.value}`)
+    enrolledStudents.value = Array.isArray(res)
+      ? res
+          .filter((e) => e.status === 'active' && e.student)
+          .map((e) => ({
+            studentId: e.studentId,
+            fullName: e.student?.fullName || `Estudiante #${e.studentId}`,
+            email: e.student?.email || ''
+          }))
+      : []
   } catch {
     enrolledStudents.value = []
   } finally {
