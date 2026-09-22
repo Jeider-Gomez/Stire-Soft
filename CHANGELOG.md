@@ -14,7 +14,7 @@ entry to the oldest.
 
 ## Ola del 21 de Septiembre — auditoria de la Fase 22, clave del Tutor con Gemini real y guia para el rediseño visual · 21 de Septiembre de 2026
 
-Posterior a la ola del 20 de Septiembre. Toca backend (tres correcciones), un componente del frontend y la documentacion; **no modifica `package-lock.json`** (solo agrega el script `check:identidad` a `package.json`).
+Posterior a la ola del 20 de Septiembre. Toca backend, un componente del frontend y la documentacion; **no modifica `package-lock.json`** (solo agrega el script `check:identidad` a `package.json`).
 
 ### Puntos
 
@@ -31,7 +31,24 @@ Build limpio. **59 suites, 512 tests, todos en verde** (antes: 57 y 478). En la 
 
 Verificacion en navegador real (backend y base reales, Chrome con guion propio, clave de Google de prueba que no se guardo en ningun archivo y se borro al terminar): recorrido completo de la clave del Tutor (clave inventada rechazada, clave demasiado corta, clave real guardada, conversacion con Gemini, "Mi clave" y "Quitar mi clave") y auditoria de las cuatro tareas de la Fase 22.
 
-### `verify:clean` — salida literal de cierre de la ola
+### Segunda tanda del 21/09 — roles, registro con solicitud de docente y guias del equipo
+
+Pedida por el dueño tras probar el sistema: «Iniciar Refuerzo» no lleva a ninguna parte, el admin no puede editar roles y el registro no permite elegir docente sin que cualquiera lo sea.
+
+| Punto | Commit | Resumen |
+|---|---|---|
+| Registro con solicitud de docente | `2a06a7e` | La cuenta siempre nace estudiante; pedir docente deja una solicitud `pending` (tabla `role_requests`, migracion `1789400000000`) que solo un admin aprueba o rechaza, con quien y cuando. `TEACHER_EMAIL_DOMAINS` (opcional) limita que correos pueden pedirlo. 18 tests nuevos. |
+| Validacion del rol y cuenta propia | `44b1162` | `PATCH /users/:id/role` aceptaba cualquier texto y un admin podia quitarse su propio rol, desactivarse o eliminarse. Ahora `400` si el rol no es valido y `403` sobre la propia cuenta. Tests de servicio y e2e. |
+| Margen de tiempo en un test | `7bee209` | `judge.worker.spec` fallo por el temporizador de 5 s de su `beforeAll` en 2 de 3 corridas completas con el equipo cargado; pasa siempre al repetirlo solo. |
+| Guias y plan | `e60fddb`, `8919b47`, `b463141` | Bitacora, guia de UX/UI y reglas de trabajo en paralelo para José; guia de auditoria de la Semana 6 para Jorge; Fase 23 para Antigravity. |
+
+Build limpio. **60 suites, 537 tests**: en la corrida completa pasaron 536 y fallo solo el `beforeAll` de `judge.worker.spec` mencionado arriba (con el margen nuevo y aislado pasa; los suites tocados por esta tanda, 14 suites y 105 tests, pasan).
+
+**Verificacion de la migracion (contra una base vacia desechable, luego eliminada):** `migration:run` ejecuto todas las migraciones desde cero, incluida `CreateRoleRequests1789400000000`, con la tabla, sus 11 columnas y la clave foranea `FK_role_requests_user`; `migration:revert` la elimino limpiamente.
+
+**`verify:clean` NO se repitio despues de esta segunda tanda.** El intento fallo en el paso 1 con `EPERM` porque los servidores de desarrollo del dueño (`nest start --watch` y `nuxt dev`) tenian abiertos archivos de `node_modules`; el borrado alcanzo a eliminar parte de esa carpeta antes de fallar y se repuso con `npm install` (sin cambios en `package-lock.json`; build y 105 tests posteriores en verde). La salida literal de abajo corresponde a la primera tanda, previa a estos cambios. **Pendiente:** correr `npm run verify:clean` completo con los servidores de desarrollo cerrados, antes de declarar cerrada la ola. Tambien falta aplicar la migracion en la base local del dueño (`npm run migration:run`); su base `basestire` todavia no tiene `role_requests`.
+
+### `verify:clean` — salida literal de cierre de la ola (primera tanda, previa a los cambios de roles)
 
 Ejecutado despues del ultimo commit y con `VERIFY_START_TIMEOUT_MS=180000` (ver la nota de la ola anterior sobre el arranque en frio dentro de OneDrive). La salida se pego completa, sin omitir ninguna linea.
 
