@@ -278,6 +278,7 @@ export const useStudentStore = defineStore('student', () => {
         if (Array.isArray(dueReviews)) {
           reviews.value = dueReviews.map(r => ({
             id: r.id,
+            learningUnitId: r.learningUnitId,
             conceptTitle: r.learningUnitTitle || `Conceptos de Unidad #${r.learningUnitId}`,
             moduleTitle: currentClassName.value || 'Asignatura Actual',
             urgency: r.urgency,

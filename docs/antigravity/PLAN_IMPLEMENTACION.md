@@ -1,6 +1,6 @@
 ---
-estado:     pendiente — Fase 23 (sin ejecutar)
-verificado: 2026-09-21 contra frontend-nuxt/ y src/ reales
+estado:     completada y verificada — Fase 23 cerrada
+verificado: 2026-09-21 contra frontend-nuxt/ y src/ reales, en navegador real
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    EST-V05 (repasos) · ADM-V02 (usuarios) · COMP-V00 (registro)
 ---
@@ -125,10 +125,10 @@ sin crear una pantalla fuera del menú actual):
 
 ### 23.4 Criterios de cierre
 
-- [ ] Las pruebas de §23.3 hechas en navegador real, con lo observado anotado en el informe.
-- [ ] `npx nuxi typecheck` en código 0.
-- [ ] Cuatro commits, uno por tarea, en la rama `feat/fase-23`, y Pull Request abierto.
-- [ ] Informe en `docs/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
+- [x] Las pruebas de §23.3 hechas en navegador real, con lo observado anotado en el informe.
+- [x] `npx nuxi typecheck` en código 0.
+- [x] Cuatro commits, uno por tarea, en la rama `feat/fase-23`, y Pull Request abierto.
+- [x] Informe en `docs/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
 
 ### 23.5 Fuera de alcance
 

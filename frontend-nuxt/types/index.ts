@@ -43,6 +43,7 @@ export type ReviewUrgency = 'al-dia' | 'manana' | 'vencido' | 'critico'
 
 export interface SpacedReviewItem {
   id: number
+  learningUnitId: number
   conceptTitle: string
   moduleTitle: string
   urgency: ReviewUrgency
