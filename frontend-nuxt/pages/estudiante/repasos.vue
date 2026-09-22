@@ -81,14 +81,14 @@
               ⏱ ~{{ item.estimatedTimeMin }} min
             </span>
 
-            <button
-              @click="completeReview(item.id)"
-              class="px-4 py-2 rounded-md font-bold text-xs transition-colors shadow-sm"
+            <NuxtLink
+              :to="`/estudiante/unidad/${item.learningUnitId}`"
+              class="px-4 py-2 rounded-md font-bold text-xs transition-colors shadow-sm inline-block text-center"
               :class="item.urgency === 'critico'
                 ? 'bg-semantico-falla hover:opacity-90 text-base-blanco'
                 : 'bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco'">
               Iniciar Refuerzo
-            </button>
+            </NuxtLink>
           </div>
         </div>
 
@@ -150,9 +150,5 @@ function getUrgencyShape(urgency: ReviewUrgency) {
     case 'manana': return '▲'
     case 'al-dia': return '⬤'
   }
-}
-
-function completeReview(id: number) {
-  studentStore.reviews = studentStore.reviews.filter(r => r.id !== id)
 }
 </script>
