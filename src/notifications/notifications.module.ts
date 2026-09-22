@@ -6,6 +6,7 @@ import { NotificationsService } from './notifications.service';
 import { NotificationsController } from './notifications.controller';
 import { SubmissionGradedListener } from './listeners/submission-graded.listener';
 import { LearningStatusChangedListener } from './listeners/learning-status-changed.listener';
+import { MessageCreatedListener } from './listeners/message-created.listener';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Notification])],
@@ -15,6 +16,7 @@ import { LearningStatusChangedListener } from './listeners/learning-status-chang
     NotificationsService,
     SubmissionGradedListener,
     LearningStatusChangedListener,
+    MessageCreatedListener,
   ],
   exports: [NotificationsService, NotificationsRepository],
 })

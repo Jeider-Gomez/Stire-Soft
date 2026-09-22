@@ -27,7 +27,7 @@ export class MessageController {
   @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Post()
   create(@Body() createMessageDto: CreateMessageDto, @GetUser() user: User) {
-    return this.messageService.create(createMessageDto, user.id);
+    return this.messageService.create(createMessageDto, user.id, user.fullName);
   }
 
   /**

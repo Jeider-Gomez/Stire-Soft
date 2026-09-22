@@ -1,26 +1,42 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Repository } from 'typeorm';
 import { Message } from './entities/message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
+import { MessageCreatedEvent } from '../common/events/message-created.event';
 
 @Injectable()
 export class MessageService {
   constructor(
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
-   * Enviar un mensaje
+   * Enviar un mensaje. `senderName` viene del JWT del controlador (no del
+   * DTO): se usa solo para el título de la notificación al destinatario, sin
+   * disparar una consulta aparte al usuario.
    */
-  async create(createMessageDto: CreateMessageDto, senderId: number): Promise<Message> {
+  async create(
+    createMessageDto: CreateMessageDto,
+    senderId: number,
+    senderName: string,
+  ): Promise<Message> {
     const message = this.messageRepository.create({
       ...createMessageDto,
       senderId,
     });
 
-    return await this.messageRepository.save(message);
+    const saved = await this.messageRepository.save(message);
+
+    await this.eventEmitter.emitAsync(
+      'message.created',
+      new MessageCreatedEvent(saved.id, senderId, senderName, saved.receiverId, saved.content),
+    );
+
+    return saved;
   }
 
   /**

@@ -12,6 +12,7 @@ describe('MessageService', () => {
     count: jest.Mock;
     createQueryBuilder: jest.Mock;
   };
+  let eventEmitter: { emitAsync: jest.Mock };
 
   beforeEach(() => {
     messageRepository = {
@@ -22,7 +23,8 @@ describe('MessageService', () => {
       count: jest.fn(),
       createQueryBuilder: jest.fn(),
     };
-    service = new MessageService(messageRepository as never);
+    eventEmitter = { emitAsync: jest.fn().mockResolvedValue(undefined) };
+    service = new MessageService(messageRepository as never, eventEmitter as never);
   });
 
   it('crea un mensaje con el remitente autenticado, sin confiar en el DTO', async () => {
@@ -30,9 +32,28 @@ describe('MessageService', () => {
     messageRepository.create.mockReturnValue(message);
     messageRepository.save.mockResolvedValue(message);
 
-    await expect(service.create({ receiverId: 12, content: 'Hola' }, 7)).resolves.toBe(message);
+    await expect(service.create({ receiverId: 12, content: 'Hola' }, 7, 'Ana Pérez')).resolves.toBe(message);
     expect(messageRepository.create).toHaveBeenCalledWith({ receiverId: 12, content: 'Hola', senderId: 7 });
     expect(messageRepository.save).toHaveBeenCalledWith(message);
+  });
+
+  it('al crear un mensaje, emite message.created con los datos para notificar al destinatario', async () => {
+    const message = { id: 1, senderId: 7, receiverId: 12, content: 'Hola' } as Message;
+    messageRepository.create.mockReturnValue(message);
+    messageRepository.save.mockResolvedValue(message);
+
+    await service.create({ receiverId: 12, content: 'Hola' }, 7, 'Ana Pérez');
+
+    expect(eventEmitter.emitAsync).toHaveBeenCalledWith(
+      'message.created',
+      expect.objectContaining({
+        messageId: 1,
+        senderId: 7,
+        senderName: 'Ana Pérez',
+        receiverId: 12,
+        content: 'Hola',
+      }),
+    );
   });
 
   it('obtiene la bandeja de entrada con remitente y mensajes más recientes primero', async () => {
