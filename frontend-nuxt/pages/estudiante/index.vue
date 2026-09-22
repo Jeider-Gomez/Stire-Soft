@@ -27,6 +27,40 @@
       </div>
     </div>
 
+    <!-- Aviso discreto de solicitud de rol docente (§23 T4) -->
+    <div
+      v-if="myRoleRequest"
+      class="p-3 rounded-lg border text-xs flex items-center justify-between gap-3 shadow-sm"
+      :class="{
+        'bg-semantico-info/10 border-semantico-info/30 text-semantico-info': myRoleRequest.status === 'pending',
+        'bg-semantico-pasa/10 border-semantico-pasa/30 text-semantico-pasa': myRoleRequest.status === 'approved',
+        'bg-semantico-falla/10 border-semantico-falla/30 text-semantico-falla': myRoleRequest.status === 'rejected'
+      }">
+      <div class="flex items-center gap-2">
+        <span v-if="myRoleRequest.status === 'pending'">⏳</span>
+        <span v-else-if="myRoleRequest.status === 'approved'">🎉</span>
+        <span v-else>⚠️</span>
+
+        <span v-if="myRoleRequest.status === 'pending'" class="font-medium">
+          Tu solicitud para ser docente está pendiente
+        </span>
+        <span v-else-if="myRoleRequest.status === 'approved'" class="font-medium">
+          Aprobada: cierra sesión y vuelve a entrar para usar el rol docente
+        </span>
+        <span v-else class="font-medium">
+          Tu solicitud para ser docente fue rechazada<span v-if="myRoleRequest.reviewNote">: «{{ myRoleRequest.reviewNote }}»</span>
+        </span>
+      </div>
+
+      <button
+        v-if="myRoleRequest.status === 'approved'"
+        type="button"
+        @click="authStore.logout()"
+        class="text-xs underline font-bold hover:opacity-80">
+        Cerrar sesión
+      </button>
+    </div>
+
     <!-- ESTADO VACÍO SI NO ESTÁ MATRICULADO -->
     <section v-if="!studentStore.isSyncing && studentStore.enrolledClasses.length === 0" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-8 text-center space-y-4 shadow-sm">
       <div class="w-16 h-16 bg-acento-ambar/15 text-acento-ambar-fuerte rounded-full flex items-center justify-center text-3xl mx-auto">
@@ -232,8 +266,28 @@ const studentStore = useStudentStore()
 const authStore = useAuthStore()
 const api = useApi()
 
+// Estado de solicitud de rol docente del estudiante (§23 T4)
+const myRoleRequest = ref<{
+  id: number
+  status: 'pending' | 'approved' | 'rejected'
+  reason?: string | null
+  reviewNote?: string | null
+} | null>(null)
+
+async function fetchMyRoleRequest() {
+  try {
+    const res = await api.get<{ request: any } | null>('/role-requests/me')
+    if (res?.request) {
+      myRoleRequest.value = res.request
+    }
+  } catch (err) {
+    // Si falla o no está disponible, no bloquea el dashboard del estudiante
+  }
+}
+
 onMounted(() => {
   studentStore.fetchStudentData()
+  fetchMyRoleRequest()
 })
 
 // Ejercicio a recomendar en la tarjeta hero: usa el mismo motor de dominio
