@@ -12,6 +12,34 @@ entry to the oldest.
 
 ---
 
+## Ola del 22 de Septiembre (2ª pasada) — dashboard docente, mensajería estudiante y notificaciones · 22 de Septiembre de 2026
+
+A pedido del dueño ("los KPI del dashboard" y "al seleccionar a un estudiante no aparecen sus
+nombres... tampoco veo el panel donde el estudiante recibe el mensaje del profe... coloca anuncios
+tipo notificaciones"). Cuatro commits:
+
+- **`fix(docente)`** — `GET /class/my-classes` nunca calculaba `enrollmentCount` ni `avgMastery`;
+  los tres KPI del dashboard docente (estudiantes, maestría, en riesgo) mostraban 0 fijo con datos
+  reales. `ClassService.findByTeacher` ahora los calcula (en riesgo = maestría < 50, mismo umbral
+  que `rendimiento.vue`). Con tests.
+- **`fix(mensajes)`** — dos desajustes de contrato en la bandeja del docente: el selector de
+  estudiante leía `GET /enrollment/class/:classId` como estudiantes planos cuando en realidad
+  devuelve matrículas con el estudiante anidado en `.student.fullName`; y la lista de mensajes leía
+  `sender.name`/`receiver.name` cuando el backend siempre devuelve `fullName`. Ambos causaban
+  nombres vacíos o "Usuario #id".
+- **`feat(mensajes)`** — no existía ningún panel para que el estudiante viera mensajes de su
+  docente, aunque el backend siempre soportó cualquier rol. `pages/estudiante/mensajes.vue` nuevo,
+  con selector de docentes armado desde `GET /enrollment/my`.
+- **`feat(notifications)`** — el sistema de notificaciones (`grade`, `review_schedule`) existía
+  desde hace semanas sin ninguna interfaz. Nuevo `NotificationType.MESSAGE` (migración verificada
+  en una base desechable), `MessageService` emite `message.created` al guardar un mensaje (mismo
+  patrón que `submission.graded`), nuevo listener en `NotificationsModule` sin acoplar los dos
+  módulos. `NotificationBell.vue` nueva en el header, visible para los tres roles.
+
+Build limpio, suite completa 62/62 suites y 546/546 tests, `npx nuxi typecheck` en 0 errores.
+
+---
+
 ## Ola del 22 de Septiembre — Fase 23 fusionada a main y primer admin real · 22 de Septiembre de 2026
 
 El dueño preguntó si el proyecto ya estaba listo para desplegar. Se verificó Fase 23 (entregada
