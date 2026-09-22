@@ -30,6 +30,7 @@
     "db:seed-destructivo": "npx tsx stire-seeder-destructivo.ts",
     "db:seed-qa": "npx tsx src/seeds/qa-destructivo.seeder.ts",
     "db:seed:demo": "ts-node -r tsconfig-paths/register stire-seeder-demo.ts",
+    "admin:create-first": "ts-node -r tsconfig-paths/register src/scripts/create-first-admin.ts",
     "test:qa": "npx tsx stire-qa-tester.ts",
     "migration:generate": "npx typeorm-ts-node-commonjs migration:generate -d src/data-source.ts",
     "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
