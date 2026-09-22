@@ -12,6 +12,50 @@ entry to the oldest.
 
 ---
 
+## Ola del 22 de Septiembre — Fase 23 fusionada a main y primer admin real · 22 de Septiembre de 2026
+
+El dueño preguntó si el proyecto ya estaba listo para desplegar. Se verificó Fase 23 (entregada
+por Antigravity el 21/09) contra el código real, se fusionó a `main`, y se resolvió el único
+bloqueador de seguridad que quedaba pendiente para un despliegue real.
+
+- **Fase 23 auditada y fusionada.** Verificado contra `frontend-nuxt/` real, no solo contra el
+  informe de Antigravity: `pages/estudiante/repasos.vue` navega a la unidad y ya no tiene
+  `completeReview`; `pages/admin/index.vue` llama `PATCH /users/:id/role` con bloqueo de la
+  propia cuenta; `pages/auth/register.vue` solo permite `estudiante`/`docente` y no quedó rastro
+  de restricción de dominio de correo; el panel de solicitudes de rol llama `GET`/`PATCH
+  /role-requests`. Diff acotado a 9 archivos de `frontend-nuxt/`, sin tocar backend ni estilos
+  globales. Squash-merge a `main` (`0397d02`), con confirmación explícita del dueño. Rama
+  `feat/fase-23` borrada (local y remota) tras confirmar diff idéntico.
+- **`validate-pre-frontend.spec.ts` explicado.** La falla suelta que había quedado sin
+  diagnosticar en la ola anterior (apareció en la corrida completa justo después del commit
+  `edfa56e`) se reprodujo: pasa en aislado (13/13, ~50s) y pasa dentro de la corrida completa
+  repetida (61/61 suites, 539/539 tests). Mismo patrón de flakiness bajo carga ya documentado
+  con `judge.worker.spec.ts` — no es una regresión de código, no requirió cambios.
+- **Primer admin real, por script de variable de entorno.** Hasta ahora la única cuenta admin
+  era la semilla de demo (`admin.sistema@unicor.edu.co`) con contraseña pública en el repo —
+  cualquiera con acceso al repo podía entrar como admin en un despliegue real. Se agregó
+  `npm run admin:create-first` (`src/scripts/create-first-admin.ts`): lee
+  `ADMIN_EMAIL`/`ADMIN_PASSWORD`/`ADMIN_FULL_NAME` del entorno real del servidor (nunca del
+  repo), exige la misma política de contraseña que el registro público, y es idempotente por
+  email (si ya existe, no crea ni modifica nada — evita que una segunda corrida accidental pise
+  una cuenta real). Con test propio (`create-first-admin.spec.ts`). **Bug propio detectado y
+  corregido en la misma sesión, antes de comitear:** el archivo llamaba a `bootstrap()` en el
+  nivel superior sin guarda — el solo hecho de importar `validateAdminInput` desde el spec para
+  probarlo ejecutaba el script completo y dejaba `process.exitCode = 1` en cualquier `npm test`.
+  Corregido con `if (require.main === module)`.
+- **Documentación.** `docs/PLAN_MAESTRO.md` §4.7, §6.1 y checkpoint del 22/09 actualizados.
+  Fase 23 archivada (`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-22.md`,
+  `docs/_archivo/README.md` indexado); `docs/antigravity/PLAN_IMPLEMENTACION.md` queda sin fase
+  pendiente.
+- **Build limpio, suite completa 61/61 suites y 539/539 tests, `npx nuxi typecheck` en 0
+  errores** (backend build + full suite corridos antes y después de agregar el script de admin).
+- **Pendientes reales que siguen abiertos, sin cambios en esta ola:** el panel docente con
+  `atRiskCount` fijo en 0 (`pages/docente/index.vue:590`, territorio de José); el reporte de la
+  auditoría de Jorge de la semana (`GUIA_AUDITORIA_2026-09-21.md`, entrega prevista 25/09); la
+  ejecución del despliegue en sí (`S06-J03`).
+
+---
+
 ## Ola del 21 de Septiembre — auditoria de la Fase 22, clave del Tutor con Gemini real y guia para el rediseño visual · 21 de Septiembre de 2026
 
 Posterior a la ola del 20 de Septiembre. Toca backend, un componente del frontend y la documentacion; **no modifica `package-lock.json`** (solo agrega el script `check:identidad` a `package.json`).
