@@ -554,6 +554,7 @@ interface TeacherClass {
   requiresApproval?: boolean
   enrollmentCount?: number
   avgMastery?: number
+  atRiskCount?: number
 }
 
 const api = useApi()
@@ -587,7 +588,9 @@ const avgMastery = computed(() => {
   if (!withMastery.length) return 0
   return Math.round(withMastery.reduce((acc, c) => acc + (c.avgMastery ?? 0), 0) / withMastery.length)
 })
-const atRiskCount = computed(() => 0) // placeholder — requiere datos del backend
+const atRiskCount = computed(() =>
+  classes.value.reduce((acc, c) => acc + (c.atRiskCount ?? 0), 0)
+)
 
 // Búsqueda
 const filteredClasses = computed(() => {
