@@ -6,9 +6,9 @@
         <div class="inline-flex w-12 h-12 rounded-xl bg-acento-ambar items-center justify-center text-base-blanco font-bold text-lg mb-3 shadow-sm">
           ST
         </div>
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Crear Cuenta de Estudiante</h1>
+        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Crear Cuenta</h1>
         <p class="text-xs text-base-texto-secundario mt-1">
-          Regístrate para acceder al entorno de tutoría inteligente de STIRE
+          Regístrate para acceder al entorno de aprendizaje y tutoría inteligente de STIRE
         </p>
       </div>
 
@@ -16,6 +16,20 @@
       <div v-if="errorMessage" role="alert" class="mb-4 p-3 rounded-md bg-semantico-falla/10 border border-semantico-falla/30 text-xs text-semantico-falla flex items-center gap-2">
         <span aria-hidden="true">⚠</span>
         <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Aviso de solicitud de rol docente pendiente (§23 T3) -->
+      <div v-if="roleRequestSuccessNotice" role="status" class="mb-4 p-3 rounded-md bg-semantico-info/15 border border-semantico-info/40 text-xs text-semantico-info space-y-2">
+        <div class="flex items-start gap-2">
+          <span aria-hidden="true">📋</span>
+          <p>{{ roleRequestSuccessNotice }}</p>
+        </div>
+        <button
+          type="button"
+          @click="navigateTo('/estudiante')"
+          class="w-full py-1.5 px-3 rounded bg-semantico-info text-base-blanco font-semibold text-xs hover:opacity-90 transition-opacity">
+          Ir al Inicio del Estudiante →
+        </button>
       </div>
 
       <!-- Aviso no bloqueante de clave no guardada (§19.1) -->
@@ -41,14 +55,14 @@
 
         <div>
           <label for="email" class="block text-xs font-semibold text-base-texto-primario mb-1">
-            Correo Institucional
+            Correo Electrónico
           </label>
           <input
             id="email"
             v-model="email"
             type="email"
             required
-            placeholder="usuario@unicor.edu.co"
+            placeholder="usuario@ejemplo.com"
             class="w-full px-3 py-2 text-xs rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
         </div>
 
@@ -81,7 +95,67 @@
             class="w-full px-3 py-2 text-xs rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
         </div>
 
-        <div>
+        <!-- Selección de Perfil / Rol (§23 T3) -->
+        <fieldset class="space-y-1.5">
+          <legend class="text-xs font-semibold text-base-texto-primario mb-1">
+            Tipo de Cuenta
+          </legend>
+          <div class="grid grid-cols-2 gap-3">
+            <label
+              class="flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer transition-colors"
+              :class="selectedRole === 'estudiante'
+                ? 'border-acento-ambar-fuerte bg-acento-ambar/5 font-semibold text-base-texto-primario'
+                : 'border-base-borde-fuerte bg-base-blanco text-base-texto-secundario'">
+              <input
+                type="radio"
+                name="accountType"
+                value="estudiante"
+                v-model="selectedRole"
+                class="text-acento-ambar-fuerte focus:ring-acento-ambar-fuerte" />
+              <span class="text-xs">Estudiante</span>
+            </label>
+
+            <label
+              class="flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer transition-colors"
+              :class="selectedRole === 'docente'
+                ? 'border-acento-ambar-fuerte bg-acento-ambar/5 font-semibold text-base-texto-primario'
+                : 'border-base-borde-fuerte bg-base-blanco text-base-texto-secundario'">
+              <input
+                type="radio"
+                name="accountType"
+                value="docente"
+                v-model="selectedRole"
+                class="text-acento-ambar-fuerte focus:ring-acento-ambar-fuerte" />
+              <span class="text-xs">Docente</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Bloque de solicitud de rol docente (§23 T3) -->
+        <div v-if="selectedRole === 'docente'" class="p-3 rounded-lg bg-semantico-info/10 border border-semantico-info/30 space-y-2 text-xs">
+          <p class="text-[11px] text-semantico-info font-medium">
+            ℹ️ Tu cuenta se crea como estudiante. Un administrador revisará tu solicitud y, si la aprueba, podrás iniciar sesión como docente.
+          </p>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="teacherReason" class="text-[11px] font-semibold text-base-texto-primario">
+                ¿Qué materia o dependencia? <span class="text-[10px] font-normal text-base-texto-secundario">(Opcional)</span>
+              </label>
+              <span class="text-[10px] text-base-texto-secundario font-mono">
+                {{ teacherReason.length }}/300
+              </span>
+            </div>
+            <textarea
+              id="teacherReason"
+              v-model="teacherReason"
+              maxlength="300"
+              rows="2"
+              placeholder="Ej: Docente de Algoritmia y Programación Web"
+              class="w-full px-3 py-1.5 text-xs rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none resize-none"></textarea>
+          </div>
+        </div>
+
+        <div v-if="selectedRole === 'estudiante'">
           <label for="classCode" class="block text-xs font-semibold text-base-texto-primario mb-1">
             Código de Clase <span class="text-[10px] font-normal text-base-texto-secundario">(Opcional)</span>
           </label>
@@ -184,12 +258,15 @@ const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const classCode = ref('')
+const selectedRole = ref<'estudiante' | 'docente'>('estudiante')
+const teacherReason = ref('')
 const apiKey = ref('')
 const skipApiKey = ref(true)
 const showApiKey = ref(false)
 const isLoading = ref(false)
 const errorMessage = ref('')
 const tutorKeyWarning = ref('')
+const roleRequestSuccessNotice = ref('')
 
 async function handleRegister() {
   if (password.value !== confirmPassword.value) {
@@ -200,12 +277,16 @@ async function handleRegister() {
   isLoading.value = true
   errorMessage.value = ''
   tutorKeyWarning.value = ''
+  roleRequestSuccessNotice.value = ''
 
+  // §23 T3: enviar requestedRole solo si eligió docente; nunca enviar campo role
   const result = await authStore.register(
     fullName.value,
     email.value,
     password.value,
-    classCode.value
+    selectedRole.value === 'estudiante' ? classCode.value : undefined,
+    selectedRole.value === 'docente' ? 'docente' : undefined,
+    selectedRole.value === 'docente' ? teacherReason.value : undefined
   )
 
   isLoading.value = false
@@ -218,10 +299,15 @@ async function handleRegister() {
       } catch {
         // Error no bloqueante: el registro ya fue exitoso
         tutorKeyWarning.value = 'Tu cuenta se creó, pero no pude guardar tu clave: puedes configurarla luego desde el Tutor.'
-        // Dar un momento para que el usuario vea el aviso antes de navegar
-        await new Promise((r) => setTimeout(r, 2000))
+        await new Promise((r) => setTimeout(r, 1500))
       }
     }
+
+    if (result.roleRequest) {
+      roleRequestSuccessNotice.value = 'Tu cuenta se creó con éxito como estudiante. Tu solicitud para ser docente quedó registrada como pendiente y un administrador la revisará. Redirigiendo a tu espacio de aprendizaje...'
+      await new Promise((r) => setTimeout(r, 2500))
+    }
+
     navigateTo('/estudiante')
   } else {
     errorMessage.value = result.error || 'Error al procesar el registro.'

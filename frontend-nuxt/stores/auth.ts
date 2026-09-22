@@ -59,17 +59,29 @@ export const useAuthStore = defineStore('auth', () => {
    * Registro real contra el backend NestJS (POST /auth/register).
    * Al registrarse con éxito, guarda el token y el perfil y autentica la sesión.
    * Si se proporciona un código de clase, inscribe automáticamente al estudiante.
+   * §23 T3: permite solicitar rol docente opcionalmente (requestedRole, roleRequestReason).
    */
   async function register(
     fullName: string,
     email: string,
     password: string,
-    classCode?: string
-  ): Promise<{ ok: boolean; error?: string; enrollmentWarning?: string }> {
+    classCode?: string,
+    requestedRole?: 'estudiante' | 'docente',
+    roleRequestReason?: string
+  ): Promise<{ ok: boolean; error?: string; enrollmentWarning?: string; roleRequest?: any }> {
     try {
-      const response = await $fetch<{ user: User; token?: string; access_token?: string }>(`${apiBase}/auth/register`, {
+      const payload: Record<string, any> = { fullName, email, password }
+      // §23 T3: enviar requestedRole solo si eligió docente; nunca enviar campo role
+      if (requestedRole === 'docente') {
+        payload.requestedRole = 'docente'
+        if (roleRequestReason && roleRequestReason.trim()) {
+          payload.roleRequestReason = roleRequestReason.trim()
+        }
+      }
+
+      const response = await $fetch<{ user: User; token?: string; access_token?: string; roleRequest?: any }>(`${apiBase}/auth/register`, {
         method: 'POST',
-        body: { fullName, email, password }
+        body: payload
       })
 
       const jwt = response?.token || response?.access_token
@@ -96,7 +108,7 @@ export const useAuthStore = defineStore('auth', () => {
           }
         }
 
-        return { ok: true, enrollmentWarning }
+        return { ok: true, enrollmentWarning, roleRequest: response?.roleRequest }
       }
       return { ok: false, error: 'Respuesta inesperada del servidor tras el registro' }
     } catch (err: any) {
