@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserRole } from '../user/entities/user.entity';
@@ -7,7 +7,7 @@ import { RoleRequestsController } from './role-requests.controller';
 import { RoleRequestsService } from './role-requests.service';
 import { RegisterDto } from '../auth/dto/register.dto';
 
-function build(domains?: string) {
+function build() {
   const store: any = { request: null, saved: [] as any[], savedUsers: [] as any[] };
   const manager = {
     findOne: jest.fn().mockImplementation(async () => store.request),
@@ -23,8 +23,7 @@ function build(domains?: string) {
     save: jest.fn(async (row: any) => row),
     manager: { transaction: (fn: any) => fn(manager) },
   };
-  const config: any = { get: () => domains };
-  const service = new RoleRequestsService(repo, config);
+  const service = new RoleRequestsService(repo);
   jest.spyOn((service as any).logger, 'log').mockImplementation(() => undefined);
   return { service, repo, manager, store };
 }
@@ -41,20 +40,6 @@ const pendingRequest = (role: UserRole = UserRole.ESTUDIANTE) => ({
 });
 
 describe('RoleRequestsService', () => {
-  describe('correo institucional para pedir el rol docente', () => {
-    it('sin TEACHER_EMAIL_DOMAINS no restringe', () => {
-      expect(() => build(undefined).service.assertEmailAllowedForTeacher('x@gmail.com')).not.toThrow();
-      expect(() => build('  ').service.assertEmailAllowedForTeacher('x@gmail.com')).not.toThrow();
-    });
-
-    it('con dominios configurados, solo deja pasar esos (sin distinguir mayúsculas)', () => {
-      const { service } = build('unicor.edu.co, otra.edu.co');
-      expect(() => service.assertEmailAllowedForTeacher('Ana@UNICOR.edu.co')).not.toThrow();
-      expect(() => service.assertEmailAllowedForTeacher('ana@gmail.com')).toThrow(BadRequestException);
-      expect(() => service.assertEmailAllowedForTeacher('ana@unicor.edu.co.evil.com')).toThrow(BadRequestException);
-    });
-  });
-
   describe('create', () => {
     it('crea la solicitud pendiente con el motivo recortado', async () => {
       const { service, repo } = build();
@@ -68,6 +53,11 @@ describe('RoleRequestsService', () => {
       repo.findOne.mockResolvedValue({ id: 1, status: 'pending' });
       await expect(service.create(9)).rejects.toThrow(ConflictException);
       expect(repo.save).not.toHaveBeenCalled();
+    });
+
+    it('cualquier correo puede pedir el rol docente, sin restricción de dominio', async () => {
+      const { service } = build();
+      await expect(service.create(9)).resolves.toMatchObject({ status: 'pending' });
     });
   });
 

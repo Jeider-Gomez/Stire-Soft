@@ -13,7 +13,7 @@ aparece: está por prioridad. **No hace falta cubrirlo todo**: lo que no llegues
   → `npm run db:seed:demo` → `npm run start:dev`, y el frontend con `cd frontend-nuxt && npm ci && npm run dev`.
   Si algo de ese camino falla, **ese es tu primer hallazgo**.
 - En el `.env` del backend deben estar `TUTOR_KEY_ENCRYPTION_SECRET` (64 caracteres hexadecimales; se genera con el
-  comando de `.env.example`) y `TEACHER_EMAIL_DOMAINS=unicor.edu.co`.
+  comando de `.env.example`).
 - Tu propia clave gratuita de Google AI Studio (https://aistudio.google.com/apikey), para el Tutor. **No la pegues en ningún archivo ni en el reporte.**
 - Cuentas de demostración: las del `README.md` raíz.
 
@@ -26,7 +26,7 @@ Cambió esta semana quién puede ser docente. **Intenta romperlo**; cada fila es
 | 1.1 | `POST /auth/register` con un campo `"role": "admin"` en el cuerpo | `400` (el servidor rechaza el campo) y **no** se crea la cuenta |
 | 1.2 | Registro con `"requestedRole": "admin"` | `400` |
 | 1.3 | Registro con `"requestedRole": "docente"` y correo `@unicor.edu.co` | `201`; la cuenta nace **estudiante**; la respuesta trae `roleRequest` con `status: "pending"` |
-| 1.4 | Lo mismo con un correo `@gmail.com` | `400` con el mensaje del correo institucional y **no se crea la cuenta** (comprueba que no puedes iniciar sesión con ella) |
+| 1.4 | Lo mismo con un correo `@gmail.com` | `201`, igual que con `@unicor.edu.co`: no hay restricción de dominio, por decisión explícita del dueño |
 | 1.5 | Con la cuenta de 1.3 (aún pendiente): entrar a endpoints de docente (`POST /class`, crear contenido) | `403` en todos: pedir el rol no da el rol |
 | 1.6 | Esa misma cuenta llama `GET /role-requests` y `PATCH /role-requests/:id` | `403` (solo admin) |
 | 1.7 | Como admin, `PATCH /role-requests/:id` con `{"decision":"approve"}` | `200`; el usuario pasa a docente **sin volver a iniciar sesión**: su token anterior ya funciona como docente (el rol se lee de la base en cada petición) |

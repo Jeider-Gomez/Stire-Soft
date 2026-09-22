@@ -10,7 +10,7 @@ describe('AuthService', () => {
   let service: AuthService;
   const mockUserService = { findOneByEmail: jest.fn(), create: jest.fn() };
   const mockJwtService = { signAsync: jest.fn().mockResolvedValue('fake-jwt-token') };
-  const mockRoleRequests = { assertEmailAllowedForTeacher: jest.fn(), create: jest.fn() };
+  const mockRoleRequests = { create: jest.fn() };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -121,16 +121,20 @@ describe('AuthService', () => {
       expect(result.user.role).toBe(UserRole.ESTUDIANTE);
     });
 
-    it('correo no institucional pidiendo docente: falla ANTES de crear la cuenta', async () => {
-      mockRoleRequests.assertEmailAllowedForTeacher.mockImplementation(() => {
-        throw new Error('correo no permitido');
-      });
+    it('pidiendo docente con cualquier correo (no solo institucional): la solicitud se crea igual', async () => {
+      mockUserService.create.mockResolvedValue({ id: 8, email: 'x@gmail.com', password: 'h', role: UserRole.ESTUDIANTE });
+      mockRoleRequests.create.mockResolvedValue({ id: 4, status: 'pending' });
 
-      await expect(
-        service.register({ email: 'x@gmail.com', password: 'Segura1!', fullName: 'X', requestedRole: 'docente' } as any),
-      ).rejects.toThrow('correo no permitido');
-      expect(mockUserService.create).not.toHaveBeenCalled();
-      mockRoleRequests.assertEmailAllowedForTeacher.mockReset();
+      const result = await service.register({
+        email: 'x@gmail.com',
+        password: 'Segura1!',
+        fullName: 'X',
+        requestedRole: 'docente',
+      } as any);
+
+      expect(mockUserService.create).toHaveBeenCalled();
+      expect(mockRoleRequests.create).toHaveBeenCalledWith(8, undefined);
+      expect(result.roleRequest).toEqual({ id: 4, status: 'pending' });
     });
 
     it('email duplicado → 409 (propagado desde UserService.create)', async () => {

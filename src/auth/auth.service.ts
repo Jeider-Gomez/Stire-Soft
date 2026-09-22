@@ -22,9 +22,6 @@ export class AuthService {
     const { requestedRole, roleRequestReason, ...accountData } = registerDto;
     const wantsTeacher = requestedRole === 'docente';
 
-    // Se valida el correo ANTES de crear la cuenta: un rechazo no deja un usuario a medias.
-    if (wantsTeacher) this.roleRequests.assertEmailAllowedForTeacher(accountData.email);
-
     // Siempre estudiante: el rol no viene del cliente (ValidationPipe rechaza un campo `role`).
     const user = await this.userService.create(accountData);
     const roleRequest = wantsTeacher ? await this.roleRequests.create(user.id, roleRequestReason) : null;

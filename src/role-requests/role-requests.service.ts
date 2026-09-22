@@ -1,5 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from '../user/entities/user.entity';
@@ -21,29 +20,7 @@ export interface RoleRequestView {
 export class RoleRequestsService {
   private readonly logger = new Logger(RoleRequestsService.name);
 
-  constructor(
-    @InjectRepository(RoleRequest) private readonly repo: Repository<RoleRequest>,
-    private readonly config: ConfigService,
-  ) {}
-
-  /**
-   * Restringe quién puede PEDIR el rol docente por dominio de correo. `TEACHER_EMAIL_DOMAINS` es una
-   * lista separada por comas (por ejemplo `unicor.edu.co`); vacía o ausente = sin restricción. Se evalúa
-   * antes de crear la cuenta, para que un rechazo no deje un usuario a medias.
-   */
-  assertEmailAllowedForTeacher(email: string): void {
-    const allowed = (this.config.get<string>('TEACHER_EMAIL_DOMAINS') ?? '')
-      .split(',')
-      .map((d) => d.trim().toLowerCase())
-      .filter(Boolean);
-    if (allowed.length === 0) return;
-    const domain = email.split('@').pop()?.toLowerCase() ?? '';
-    if (!allowed.includes(domain)) {
-      throw new BadRequestException(
-        `Para solicitar el rol docente usa tu correo institucional (${allowed.map((d) => '@' + d).join(', ')}).`,
-      );
-    }
-  }
+  constructor(@InjectRepository(RoleRequest) private readonly repo: Repository<RoleRequest>) {}
 
   async create(userId: number, reason?: string | null): Promise<RoleRequestView> {
     const pending = await this.repo.findOne({ where: { userId, status: 'pending' } });

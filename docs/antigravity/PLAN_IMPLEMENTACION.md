@@ -75,8 +75,8 @@ El repaso se reprograma **solo**, cuando el estudiante resuelve una actividad de
 campos **opcionales**: `requestedRole` (`"estudiante"` o `"docente"`) y `roleRequestReason` (texto, máximo 300).
 - La cuenta **siempre** nace como estudiante. Pedir `"docente"` solo crea una **solicitud pendiente**; un
   administrador debe aprobarla. La respuesta trae `roleRequest` (`null` si no pidió docente, o `{ id, status: "pending", … }`).
-- `400` con un mensaje claro si el correo no es institucional («Para solicitar el rol docente usa tu correo
-  institucional (@unicor.edu.co).»). En ese caso **no se crea la cuenta**.
+- **Sin restricción de dominio de correo:** cualquier correo puede pedir el rol docente (decisión explícita del dueño); lo único
+  que evita un abuso masivo es que solo un admin puede aprobar cada solicitud, una por una.
 - Un valor distinto de `estudiante`/`docente` (por ejemplo `admin`) da `400`. Nunca envíes un campo `role`: el servidor lo rechaza.
 
 **Qué hacer** en `pages/auth/register.vue`:
@@ -84,7 +84,7 @@ campos **opcionales**: `requestedRole` (`"estudiante"` o `"docente"`) y `roleReq
 - Si elige Docente: un campo opcional «¿Qué materia o dependencia?» (máximo 300 caracteres, con contador) y un aviso
   claro: «Tu cuenta se crea como estudiante. Un administrador revisará tu solicitud y, si la aprueba, podrás
   iniciar sesión como docente.»
-- Envía `requestedRole` solo si eligió Docente. Muestra el mensaje `400` del servidor tal cual si el correo no es institucional.
+- Envía `requestedRole` solo si eligió Docente.
 - Tras registrarse con solicitud, muestra un aviso persistente (no un `alert`) de que la solicitud quedó pendiente, y sigue el flujo normal de estudiante.
 - Deja intacto el flujo actual de la clave opcional de Google.
 
@@ -116,13 +116,12 @@ sin crear una pantalla fuera del menú actual):
 |---|---|
 | T1 | Como Pedro Romero (`pedro.estudiante@unicor.edu.co`), abre `/estudiante/repasos` y pulsa «Iniciar Refuerzo» en un repaso: llega a `/estudiante/unidad/<id>` de esa unidad. Vuelve a `/estudiante/repasos` y recarga: el repaso **sigue ahí** (nadie lo marcó como hecho). En la pestaña Red no debe haber ninguna petición de «completar». |
 | T2 | Como administrador, en `/admin`: cambia el rol de un usuario de prueba a docente y confírmalo (fila actualizada; `PATCH /users/<id>/role` → 200 en Red). Cancela otro cambio: no hay petición. La fila del propio admin tiene el control deshabilitado. Fuerza un 403 llamando al endpoint sobre tu propio id desde la consola y comprueba que la pantalla muestra el mensaje del servidor. |
-| T3 | Registra `prueba-agy-1@unicor.edu.co` como **Estudiante**: la respuesta trae `roleRequest: null`. Registra `prueba-agy-2@unicor.edu.co` como **Docente** con un motivo: cuenta creada como estudiante, aviso de solicitud pendiente y en Red `POST /auth/register` con `requestedRole: "docente"`. Intenta con un correo `@gmail.com` como Docente: aparece el mensaje del servidor y no se crea la cuenta (solo si `TEACHER_EMAIL_DOMAINS` está definido en el `.env`). |
+| T3 | Registra `prueba-agy-1@unicor.edu.co` como **Estudiante**: la respuesta trae `roleRequest: null`. Registra `prueba-agy-2@unicor.edu.co` como **Docente** con un motivo: cuenta creada como estudiante, aviso de solicitud pendiente y en Red `POST /auth/register` con `requestedRole: "docente"`. Repite con un correo `@gmail.com` como Docente: se comporta igual que con `@unicor.edu.co` (sin restricción de dominio). |
 | T4 | Como administrador, la solicitud de `prueba-agy-2` aparece en pendientes con su motivo. Apruébala con una nota: sale de pendientes, y el usuario pasa a docente en la lista de usuarios. Repite con otra solicitud y recházala: su rol sigue siendo estudiante. Intenta resolver dos veces la misma (dos pestañas): la segunda muestra el `409`. Inicia sesión con `prueba-agy-2` tras aprobarla: entra como docente. |
 
 `npx nuxi typecheck` debe terminar en código 0 tras cada tarea.
 
-**Antes de empezar:** la base de datos necesita la migración nueva (`npm run migration:run`, tabla `role_requests`) y,
-para probar el correo institucional, `TEACHER_EMAIL_DOMAINS=unicor.edu.co` en el `.env` con el backend reiniciado.
+**Antes de empezar:** la base de datos necesita la migración nueva (`npm run migration:run`, tabla `role_requests`).
 
 ### 23.4 Criterios de cierre
 
