@@ -38,7 +38,7 @@
             <label for="password" class="block text-xs font-semibold text-base-texto-primario">
               Contraseña
             </label>
-            <a href="#" class="text-[11px] text-acento-ambar-fuerte hover:underline">¿Olvidaste tu clave?</a>
+            <NuxtLink to="/auth/forgot-password" class="text-[11px] text-acento-ambar-fuerte hover:underline">¿Olvidaste tu clave?</NuxtLink>
           </div>
           <input
             id="password"
