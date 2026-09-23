@@ -285,6 +285,10 @@ reemplazo de esos documentos.
 | Codex D/E/F | Intentos duplicados, matrícula, evento de calificación | ✅ Auditado en vivo por Claude Code — código real + suite de tests en verde. Ver §5 |
 | Codex G | Auditoría BOLA sistemática + rate-limiting específico | ✅ Auditado por Claude Code, 16/09 — código real + 49/49 tests reproducidos. Ver §5 |
 
+### 6.0.1 Alcance de lenguajes (ADR 13, 23/09) — D-06 reabierta
+
+**HTML/CSS/JS entra en el alcance** (el curso lo exige). Hoja de ruta: **Fase 25** — tipo de pregunta `html_css` calificado por reglas con jsdom (backend: nuevo valor de `QuestionType` con migración, evaluador, redacción para el estudiante; frontend: vista previa en `iframe sandbox` y formulario en el creador), 4 a 6 días; **Fase 26** — editor con resaltado (CodeMirror 6 bajo demanda) y selector de lenguaje, 3 a 4 días; **Python** opcional después del MVP con Pyodide dentro del sandbox actual (3 a 5 días); **C, C++ y Java se sacrifican** en la versión gratuita. Fase 25 y 26 se escriben para Antigravity cuando termine la Fase 24.
+
 ### 6.1 Antigravity — Fase 24 vigente; Fases 21, 22 y 23 entregadas y auditadas; Fases 18 a 20 con auditoría parcial
 
 **Vigente: Fase 24**, escrita el 23/09 en `docs/antigravity/PLAN_IMPLEMENTACION.md` con los contratos del backend verificados: **T1** constructor del curso (módulos, temas, unidades y lecciones; hoy una clase creada desde la interfaz queda vacía), **T2** creador de ejercicios de los 6 tipos (hoy solo código), **T5** gestión de la clase, **T4** perfil y contraseña, **T3** administración de usuarios (registrar, desactivar, restablecer contraseña). Rama `feat/fase-24`, sin ejecutar.

@@ -6,6 +6,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import type { SandboxAdapter, RunResult } from './sandbox-adapter.interface';
 import { SANDBOX_TIMEOUT_MS } from './sandbox-limits';
+import { Semaphore } from './semaphore';
 
 // ADR 06 — aislamiento por proceso hijo del sistema operativo, no por
 // contexto de JavaScript (node:vm nunca fue una frontera de seguridad:
@@ -80,7 +81,14 @@ try { globalThis.fetch = () => deny('fetch'); } catch {}
 export class HardenedProcessSandboxAdapter implements SandboxAdapter {
   private readonly logger = new Logger(HardenedProcessSandboxAdapter.name);
 
-  async executeIsolated(
+  // Ejecuciones simultáneas máximas (SANDBOX_MAX_CONCURRENT, por defecto 3): cada una ocupa ~170 MB.
+  private readonly semaphore = new Semaphore(Number(process.env.SANDBOX_MAX_CONCURRENT) || 3);
+
+  executeIsolated(code: string, language: string, testCase: any): Promise<RunResult> {
+    return this.semaphore.run(() => this.runOne(code, language, testCase));
+  }
+
+  private async runOne(
     code: string,
     language: string,
     testCase: any,

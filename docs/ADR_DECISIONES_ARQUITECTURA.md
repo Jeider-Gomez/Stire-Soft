@@ -1,4 +1,4 @@
-# STIRE — ADR 06 a ADR 12
+# STIRE — ADR 06 a ADR 13
 
 **Decisiones de arquitectura del sandbox de ejecución, la sanitización de contenido, la cola
 de calificación, el despliegue y el Tutor IA (clave por estudiante, configuración del docente y barrera anti-solución).**
@@ -236,3 +236,46 @@ gratuita, cómo recuperar contraseñas por correo, y si usar Google para autenti
 - Se despliega con `docs/DESPLIEGUE.md`; lo que se probó con Docker real y lo que hace falta probar en Oracle/Vercel está declarado ahí.
 - Riesgo aceptado: una sola máquina, sin alta disponibilidad; mitigado con copias diarias (`deploy/backup-db.sh`) y monitoreo externo.
 - Los datos de capas gratuitas cambian con frecuencia: se verifican al crear la cuenta.
+
+
+# ADR 13 — Infraestructura final gratuita, lenguajes y calificación (cierra la discusión de despliegue)
+
+## Contexto
+
+El dueño pidió cerrar el despliegue: todo en la nube, gratis (tope de un dólar), para un MVP con pocos estudiantes simultáneos (un salón de ~40) pero con el
+mejor rendimiento posible, y decidir si enseñar y calificar otros lenguajes «como los grandes referentes» y HTML/CSS/JS como pide el plan de estudio.
+Se investigó en tres frentes con fuentes de 2026 (calificación multi-lenguaje, hosting y bases de datos gratuitos, y el plan de estudio frente al código).
+
+## Decisión (dueño del proyecto, 2026-09-23)
+
+1. **Infraestructura final ($0):** frontend en Vercel Hobby; backend + MariaDB + Caddy en **una VM de Oracle Cloud Always Free** (Ampere A1, arm64, 2 núcleos/12 GB)
+   con `docker-compose.prod.yml`; correo por Gmail SMTP; dominio y HTTPS con DuckDNS o nip.io. **Plan B:** cuenta gratuita de Azure (12 meses: VM + MySQL
+   Flexible B1ms gestionado; pide tarjeta y después cuesta) o Azure for Students ($100 sin tarjeta si el correo institucional califica: sin verificar).
+2. **No se migra la base de datos.** Verificado: TiDB Cloud gratis **no soporta** `ALTER TABLE … ADD … STORED` (falla la migración `AddActiveSubmissionConstraint`); Postgres
+   (Neon/Supabase) exige reescribir 9 migraciones, 12 enums y la columna generada, y no elimina la necesidad de un servidor persistente; Aiven se apaga por inactividad.
+   Opción futura sin migrar: MySQL HeatWave Always Free de Oracle (MySQL 8 gestionado, 50 GB) para liberar RAM de la VM.
+3. **Calificación siempre en el servidor** (como Exercism, LeetCode y HackerRank, que ejecutan cada envío en un contenedor aislado). Lo que corre en el navegador (freeCodeCamp
+   prueba el front-end en un iframe) sirve solo como retroalimentación inmediata, nunca como nota.
+4. **Se reabre D-06: HTML/CSS/JS entra en el alcance de STIRE**, porque el curso lo exige (competencia oficial HTML5, CSS y JavaScript; `docs/modesec/fase1/2.4_SISTEMA_COMPETENCIAS.md`).
+   D-06 lo había excluido porque un juez por salida evalúa mal el marcado; se resuelve con un tipo de pregunta distinto (`html_css`) calificado **por reglas**:
+   presencia y jerarquía de etiquetas, atributos, textos, propiedades CSS (jsdom en el servidor, sin ejecutar JavaScript del estudiante) y accesibilidad básica; vista previa en un
+   `iframe sandbox` en el cliente. **Lo que no se califica sin un navegador real** (posiciones, tamaños, responsive, animaciones) queda como criterio del docente.
+5. **Lenguajes:** ahora JavaScript + HTML/CSS. **Python después del MVP**, dentro del sandbox actual con Pyodide (WebAssembly dentro del proceso Node ya endurecido: funciona en
+   arm64 y no requiere contenedores privilegiados). **C, C++ y Java se sacrifican en la versión gratuita:** Judge0 CE solo publica imágenes `linux/amd64`, exige contenedores
+   privilegiados y cgroups v1 y sus versiones ≤ 1.13.0 tuvieron un escape del sandbox; Piston no tiene soporte arm64 (issues abiertos) y su instancia pública es solo por lista blanca
+   desde el 15/feb/2026. Ninguna de esas herramientas cabe en la VM gratuita sin compilar y auditar. Ninguno de esos lenguajes aparece en los documentos del curso.
+6. **Rendimiento (aplicado):** tope de ejecuciones simultáneas del sandbox (`SANDBOX_MAX_CONCURRENT`, por defecto 3; cada una usa ~170 MB y hasta 2 s, con 40 estudiantes el pico
+   teórico es ~5 por segundo) y `mem_limit` del backend en 3 GB para la VM de 12 GB. Mejora opcional: «Probar código» de JavaScript en un Web Worker del navegador para descargar el servidor.
+
+## Riesgos declarados
+
+- **Oracle** recortó la capa gratuita a la mitad en junio de 2026 sin aviso y puede reclamar instancias con menos del 20 % de uso durante 7 días. Mitigación reportada (sin verificar):
+  pasar la cuenta a pago por uso, que no cobra dentro de lo gratuito. Plan B documentado.
+- **arm64:** la imagen del backend se verificó con Docker en x86; en la VM se construye en arm64 (`node:24-slim`, MariaDB y Caddy son multi-arquitectura) pero **no se ha probado**.
+- **Una sola máquina** comparte kernel con el sandbox y la base: por eso `mem_limit`, `pids_limit`, base sin puerto público y copias diarias.
+- Los datos de capas gratuitas cambian con frecuencia: se verifican al crear cada cuenta.
+
+## Consecuencias
+
+- `docs/DESPLIEGUE.md` es la guía vigente. Fase 25 (HTML/CSS por reglas) y Fase 26 (editor con resaltado y selector de lenguaje) quedan en la hoja de ruta (`docs/PLAN_MAESTRO.md` §6.4);
+  Python es una fase opcional posterior al despliegue.

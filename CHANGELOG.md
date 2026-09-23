@@ -12,6 +12,15 @@ entry to the oldest.
 
 ---
 
+## Ola del 23 de Septiembre (4ª pasada) — infraestructura final y alcance de lenguajes (ADR 13) · 23 de Septiembre de 2026
+
+Tras una investigación en tres frentes con fuentes de 2026, el dueño cerró: Vercel + VM Oracle Always Free con MariaDB en Docker + Gmail + DuckDNS ($0),
+**sin migrar la base**; calificación siempre en el servidor; **D-06 reabierta** (HTML/CSS/JS entra al alcance, calificado por reglas con jsdom); Python después del MVP;
+C, C++ y Java se sacrifican en la versión gratuita. Código: tope de ejecuciones simultáneas del sandbox (`SANDBOX_MAX_CONCURRENT`, por defecto 3) con `Semaphore` y tests;
+`mem_limit` del backend en 3 GB para la VM de 12 GB. Nada cambia en dependencias ni migraciones.
+
+---
+
 ## Ola del 23 de Septiembre (3ª pasada) — despliegue gratuito y recuperación de contraseña · 23 de Septiembre de 2026
 
 Acordado con el dueño (ADR 12): la base sigue en MySQL/MariaDB (no se migra a Supabase), el sandbox sigue en el servidor,

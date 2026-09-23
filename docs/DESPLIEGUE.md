@@ -11,6 +11,9 @@ Decisiones y motivos: `docs/ADR_DECISIONES_ARQUITECTURA.md` (ADR 09 y ADR 12). E
 > de migración y del primer admin funcionan desde la imagen, y la recuperación de contraseña completa (correo real por SMTP →
 > enlace → cambio → sesión anterior cerrada). **No** se ha probado en Oracle ni en Vercel: esos pasos los haces tú con tus cuentas.
 
+> **Decisión cerrada (ADR 13):** frontend en Vercel, backend + MariaDB en la VM de Oracle, Gmail para el correo y DuckDNS para el dominio. Costo $0. La base **no** se migra.
+> **Sin probar:** la imagen se verificó en x86; la VM de Oracle es **arm64**, así que el primer `docker compose … up --build` la construye en arm64 (tarda ~10 min). Si algo falla ahí, avísame con el error.
+
 ## 0. Qué necesitas (una sola vez)
 
 | Cuenta | Para qué | Costo |
