@@ -78,20 +78,20 @@
         </div>
       </Transition>
 
-      <!-- 3. Tutor IA Interacciones -->
+      <!-- 3. Mensajes sin leer (dato real; antes era un "92 % adopción del Tutor" inventado) -->
       <Transition appear enter-active-class="transition duration-300 ease-out delay-150"
         enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
-        <div class="metric-card">
+        <NuxtLink to="/docente/mensajes" class="metric-card block hover:shadow-md transition-shadow">
           <div class="flex items-start justify-between mb-3">
             <div class="p-2 rounded-xl bg-stire-purple/10">
-              <Sparkles :size="18" class="text-stire-purple" />
+              <Mail :size="18" class="text-stire-purple" />
             </div>
-            <span class="text-[10px] font-bold text-stire-purple">IA</span>
+            <span class="text-[10px] font-bold text-stire-purple">Bandeja</span>
           </div>
-          <p class="text-2xl font-poppins font-bold text-stire-purple">92%</p>
-          <p class="text-xs text-slate-400 mt-0.5">Tutor IA · Adopción</p>
-          <p class="text-[11px] text-slate-500 mt-1">Dudas resueltas automáticamente</p>
-        </div>
+          <p class="text-2xl font-poppins font-bold text-stire-purple">{{ unreadMessages ?? '—' }}</p>
+          <p class="text-xs text-slate-400 mt-0.5">Mensajes sin leer</p>
+          <p class="text-[11px] text-slate-500 mt-1">De tus estudiantes</p>
+        </NuxtLink>
       </Transition>
 
       <!-- 4. Alumnos en Rezago -->
@@ -105,14 +105,15 @@
             <button
               class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stire-warning/15 text-stire-warning
                      hover:bg-stire-warning/25 transition-colors whitespace-nowrap"
-              title="Enviar material de refuerzo"
+              title="Ver quiénes están en rezago"
+              @click="navigateTo('/docente/rendimiento')"
             >
-              Refuerzo →
+              Ver alumnos →
             </button>
           </div>
           <p class="text-2xl font-poppins font-bold text-stire-warning">{{ atRiskCount }}</p>
           <p class="text-xs text-slate-400 mt-0.5">Alumnos en Rezago</p>
-          <p class="text-[11px] text-slate-500 mt-1">Dominio &lt; 60 %</p>
+          <p class="text-[11px] text-slate-500 mt-1">Dominio &lt; 50 %</p>
         </div>
       </Transition>
     </div>
@@ -539,7 +540,7 @@
 <script setup lang="ts">
 import {
   Plus, Users, TrendingUp, BookOpen, AlertTriangle,
-  Sparkles, Check, Copy, QrCode, UserCheck
+  Mail, Check, Copy, QrCode, UserCheck
 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 
@@ -684,5 +685,16 @@ async function openQrModal(cls: TeacherClass) {
   }
 }
 
-onMounted(fetchClasses)
+const unreadMessages = ref<number | null>(null)
+async function fetchUnreadMessages() {
+  try {
+    const res = await api.get<{ count: number }>('/message/unread-count')
+    unreadMessages.value = res?.count ?? 0
+  } catch { /* sin dato: la tarjeta muestra «—», nunca un número inventado */ }
+}
+
+onMounted(() => {
+  fetchClasses()
+  fetchUnreadMessages()
+})
 </script>
