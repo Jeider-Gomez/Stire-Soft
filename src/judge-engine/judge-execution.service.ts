@@ -32,9 +32,10 @@ export class JudgeExecutionService {
   ) {}
 
   async gradeAnswer(data: JudgeJobData): Promise<{ success: boolean; score: number }> {
-    const { submissionAnswerId, code, language, testCases } = data;
+    const { submissionAnswerId, code, language, testCases, maxPoints } = data;
 
-    let totalScore = 0;
+    let passedWeight = 0;
+    let totalWeight = 0;
     let allAccepted = true;
     let statusSummary = 'accepted';
 
@@ -53,13 +54,21 @@ export class JudgeExecutionService {
         testCaseLabel: testCase.label,
       });
 
+      const weight = testCase.weight || 10;
+      totalWeight += weight;
       if (runResult.status === 'accepted') {
-        totalScore += testCase.weight || 10;
+        passedWeight += weight;
       } else {
         allAccepted = false;
         statusSummary = runResult.status;
       }
     }
+
+    // La nota se escala a los puntos de la pregunta: antes era la suma de pesos
+    // (10 por caso por defecto), así que un ejercicio de 25 puntos con 2 casos
+    // valía como máximo 20 y podía no llegar nunca al puntaje de aprobación.
+    const totalScore =
+      maxPoints && totalWeight > 0 ? Math.round((passedWeight / totalWeight) * maxPoints) : passedWeight;
 
     const feedback = allAccepted
       ? '¡Excelente! Todos los casos pasaron.'

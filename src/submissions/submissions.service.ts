@@ -183,6 +183,7 @@ export class SubmissionsService {
             code: job.answerDto.answer.code,
             language: job.question.config.language || 'javascript',
             testCases: job.question.config.testCases || [],
+            maxPoints: job.question.points,
           });
         } catch (queueError: any) {
           console.warn(

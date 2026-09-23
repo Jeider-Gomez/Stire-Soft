@@ -5,6 +5,8 @@ export interface JudgeJobData {
   code: string;
   language: string;
   testCases: any[];
+  // Puntos de la pregunta: la nota se escala a este máximo (ver gradeAnswer).
+  maxPoints?: number;
 }
 
 // Puerto del pipeline de calificacion asincrona. SubmissionsService depende
