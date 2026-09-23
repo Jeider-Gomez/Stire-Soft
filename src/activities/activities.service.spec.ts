@@ -91,6 +91,24 @@ describe('ActivitiesService — P0-04', () => {
     expect(mockClassRepo.findOne).not.toHaveBeenCalled();
   });
 
+  it('docente que NO dicta la clase → GET actividad → 403 (ni siquiera borradores ajenos)', async () => {
+    mockActivitiesRepo.findOne.mockResolvedValue(draftActivityClass5);
+    mockClassRepo.findOne.mockResolvedValue({ id: 5, teacherId: 10 });
+
+    const docenteAjeno = { id: 99, role: UserRole.DOCENTE } as any;
+
+    await expect(service.findOneForRequester(2, docenteAjeno)).rejects.toThrow(ForbiddenException);
+  });
+
+  it('el docente dueño → GET actividad (también borrador) → sí la ve', async () => {
+    mockActivitiesRepo.findOne.mockResolvedValue(draftActivityClass5);
+    mockClassRepo.findOne.mockResolvedValue({ id: 5, teacherId: 10 });
+
+    const docenteDueño = { id: 10, role: UserRole.DOCENTE } as any;
+
+    await expect(service.findOneForRequester(2, docenteDueño)).resolves.toBe(draftActivityClass5);
+  });
+
   it('estudiante NO matriculado en la clase → GET actividad → 403 (aunque esté publicada)', async () => {
     mockActivitiesRepo.findOne.mockResolvedValue(publishedActivityClass5);
     mockEnrollmentRepo.findOne.mockResolvedValue(null);

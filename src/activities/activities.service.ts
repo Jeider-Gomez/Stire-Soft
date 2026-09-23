@@ -128,6 +128,12 @@ export class ActivitiesService {
       }
     }
 
+    // Un docente solo ve (incluidos borradores) las actividades de SUS clases:
+    // GET /activity-questions ya exigía esto, GET /activities/:id no.
+    if (user.role === UserRole.DOCENTE) {
+      await this.authorizationService.assertTeacherOwnsClass(user, this.resolveClassId(activity));
+    }
+
     return activity;
   }
 
