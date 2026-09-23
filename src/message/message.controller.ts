@@ -51,8 +51,10 @@ export class MessageController {
    * Obtener cantidad de mensajes no leídos
    */
   @Get('unread-count')
-  getUnreadCount(@GetUser() user: User) {
-    return this.messageService.getUnreadCount(user.id);
+  async getUnreadCount(@GetUser() user: User) {
+    // Objeto y no número suelto: es el contrato que leen las bandejas
+    // (`res.count`); con un número, el contador «N no leídos» siempre valía 0.
+    return { count: await this.messageService.getUnreadCount(user.id) };
   }
 
   /**
