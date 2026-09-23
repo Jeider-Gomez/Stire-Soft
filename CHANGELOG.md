@@ -25,7 +25,22 @@ correo por SMTP configurable (Gmail), y «Continuar con Google» queda para desp
   `TRUST_PROXY`, `DB_SSL`, `docs/DESPLIEGUE.md`. Login 5→20/min por IP para no bloquear un salón.
 - **Verificado con Docker real:** imagen compilada; arranque en producción contra MariaDB 11.4 (9 migraciones + seed); sandbox dentro
   del contenedor; ciclo completo de recuperación con correo real por SMTP de prueba; pantallas en Chrome real.
-- Agrega la dependencia `nodemailer` (cambia `package-lock.json`).
+- Agrega la dependencia `nodemailer` (cambia `package-lock.json`). **`npm run verify:clean` en código 0 tras ese cambio.** Nota honesta: la
+  primera corrida fue detenida por el sistema por poca memoria (Docker Desktop, que yo había arrancado para probar la imagen, ocupaba RAM) mientras
+  hacía `npm ci`; se repitió con memoria liberada. Salida final literal:
+
+```
+[verify:clean 6] npm run build
+> nest build
+[verify:clean] setup completo. Base de datos de verificacion: stire_verify_clean (puerto 3097). Continua scripts/verify-clean-server-check.js.
+login real contra el servidor recien levantado (docente de demo)
+  login OK para docente.demo@stire.local (token recibido)
+verificacion de datos sembrados via GET /enrollment/my
+  OK, status 200
+apagado del servidor
+[verify:clean:server-check] limpieza: eliminar base de datos de verificacion stire_verify_clean
+[verify:clean] TODO EN VERDE: npm ci -> migration:run -> db:seed:demo -> build -> start -> login real -> apagado.
+```
 
 ---
 
