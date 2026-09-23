@@ -101,6 +101,12 @@ describe('ActivityQuestionsService.create', () => {
 
       await expect(service.create(dto, teacher)).resolves.toBeDefined();
     });
+
+    it('BE-01: ai_evaluated se rechaza al crearla (no hay evaluador que la califique) y no se guarda', async () => {
+      const dto = { activityId: 1, type: QuestionType.AI_EVALUATED, question: 'Explica…', config: {} } as any;
+
+      await expect(service.create(dto, teacher)).rejects.toThrow(/ai_evaluated/);
+    });
   });
 
   // OLA 2 P2: sin esto, un docente podía inyectar preguntas (con su

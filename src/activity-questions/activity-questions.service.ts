@@ -101,6 +101,13 @@ export class ActivityQuestionsService {
    * servirse al estudiante).
    */
   private validateConfig(type: QuestionType, config: Record<string, any>): void {
+    // BE-01: el enum existe pero no hay evaluador registrado; una pregunta así
+    // haría fallar con 400 la entrega de CADA estudiante. Se rechaza al crearla.
+    if (type === QuestionType.AI_EVALUATED) {
+      throw new BadRequestException(
+        'El tipo ai_evaluated todavía no está disponible: no hay un evaluador que lo califique.',
+      );
+    }
     if (type !== QuestionType.CODING) return;
 
     const testCases = Array.isArray(config?.testCases) ? config.testCases : [];

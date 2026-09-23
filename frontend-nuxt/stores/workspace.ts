@@ -216,18 +216,27 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   /**
    * Asegura que exista un intento activo de la actividad en el backend NestJS.
    */
+  // Una sola petición en vuelo: si dos acciones piden el intento a la vez (p. ej. al
+  // cargar y al autoguardar) no se llama dos veces a POST /submissions/start.
+  let pendingStart: Promise<string> | null = null
+
   async function ensureActiveSubmission(): Promise<string> {
     if (currentSubmissionId.value) {
       return currentSubmissionId.value
     }
-    const res = await api.post<{ id: string }>('/submissions/start', {
-      activityId: currentExercise.value.activityId
-    })
-    if (!res?.id) {
-      throw new Error('No se pudo obtener el identificador del intento')
+    if (!pendingStart) {
+      pendingStart = (async () => {
+        const res = await api.post<{ id: string }>('/submissions/start', {
+          activityId: currentExercise.value.activityId
+        })
+        if (!res?.id) {
+          throw new Error('No se pudo obtener el identificador del intento')
+        }
+        currentSubmissionId.value = res.id
+        return res.id
+      })().finally(() => { pendingStart = null })
     }
-    currentSubmissionId.value = res.id
-    return res.id
+    return pendingStart
   }
 
   // Acción 1: "▶ Probar código" — Evaluación en sandbox libre sin consumir intento
