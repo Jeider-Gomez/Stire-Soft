@@ -198,12 +198,30 @@ onMounted(async () => {
   }
 })
 
+function escapeHtml(t: string) {
+  return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+// Mini-formateador de la lección (el contenido ya viene saneado del backend al guardarse):
+// títulos, negrita, cursiva, código en línea, bloques de código ``` y listas con guion.
 function formatMarkdown(raw: string) {
   if (!raw) return ''
-  return raw
+  const codeBlocks: string[] = []
+  const text = raw
+    .replace(/```[\w-]*\n?([\s\S]*?)```/g, (_m, code: string) => {
+      codeBlocks.push(
+        `<pre class="bg-base-bg-secundario border border-base-borde-sutil rounded-md p-3 overflow-x-auto"><code class="font-codigo text-[11px] text-base-texto-primario">${escapeHtml(code.replace(/\n$/, ''))}</code></pre>`
+      )
+      return `\u0000${codeBlocks.length - 1}\u0000`
+    })
     .replace(/^## (.*?)$/gm, '<h4 class="font-bold text-sm text-base-texto-primario mt-3 mb-1">$1</h4>')
     .replace(/^# (.*?)$/gm, '<h3 class="font-bold text-base text-base-texto-primario mt-1 mb-2">$1</h3>')
+    .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*\w])\*([^*\n]+)\*(?![*\w])/g, '$1<em>$2</em>')
     .replace(/`([^`]+)`/g, '<code class="bg-base-bg-secundario px-1.5 py-0.5 rounded text-acento-ambar-fuerte font-codigo text-[11px] border border-base-borde-sutil">$1</code>')
+    .replace(/^[-*] (.*)$/gm, '<li>$1</li>')
+    .replace(/(?:<li>.*<\/li>\n?)+/g, (list) => `<ul class="list-disc pl-5 space-y-1">${list.replace(/\n/g, '')}</ul>`)
     .replace(/\n\n/g, '<br/><br/>')
+  return text.replace(/\u0000(\d+)\u0000/g, (_m, i: string) => codeBlocks[Number(i)])
 }
 </script>
