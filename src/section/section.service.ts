@@ -6,7 +6,8 @@ import { CreateSectionDto } from './dto/create-section.dto';
 import { UpdateSectionDto } from './dto/update-section.dto';
 import { ClassService } from '../class/class.service';
 import { AuthorizationService } from '../common/authorization/authorization.service';
-import { User } from '../user/entities/user.entity';
+import { User, UserRole } from '../user/entities/user.entity';
+import { PublicationStatus } from '../common/enums/status.enum';
 
 @Injectable()
 export class SectionService {
@@ -53,6 +54,50 @@ export class SectionService {
       .addOrderBy('learningUnit.order', 'ASC')
       .addOrderBy('activity.order', 'ASC')
       .getMany();
+  }
+
+  /**
+   * Estructura de una clase según quién pregunta: admin y docente dueño ven todo
+   * (borradores incluidos); un estudiante solo si está matriculado y únicamente
+   * lo publicado (módulo publicado, tema/unidad activos, actividad publicada).
+   * Antes cualquier autenticado —también sin matrícula— recibía todo, incluidos
+   * los módulos que el docente aún no publicaba.
+   */
+  async findByClassFor(classId: number, user: User): Promise<Section[]> {
+    const sections = await this.findByClass(classId);
+    return this.filterForRequester(sections, classId, user);
+  }
+
+  async findOneFor(id: number, user: User): Promise<Section> {
+    const section = await this.findOne(id);
+    const [visible] = await this.filterForRequester([section], section.classId, user);
+    if (!visible) throw new NotFoundException(`Sección con ID ${id} no encontrada`);
+    return visible;
+  }
+
+  private async filterForRequester(sections: Section[], classId: number, user: User): Promise<Section[]> {
+    if (user.role === UserRole.ADMIN) return sections;
+    if (user.role === UserRole.DOCENTE) {
+      await this.authorizationService.assertTeacherOwnsClass(user, classId);
+      return sections;
+    }
+    await this.authorizationService.assertEnrolledInClass(user, classId);
+    return sections
+      .filter((s) => s.isPublished)
+      .map((s) => ({
+        ...s,
+        topics: (s.topics ?? [])
+          .filter((t) => t.isActive)
+          .map((t) => ({
+            ...t,
+            learningUnits: (t.learningUnits ?? [])
+              .filter((u) => u.isActive)
+              .map((u) => ({
+                ...u,
+                activities: (u.activities ?? []).filter((a) => a.status === PublicationStatus.PUBLISHED),
+              })),
+          })),
+      })) as Section[];
   }
 
   /**

@@ -1,8 +1,8 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { CreateLearningUnitDto } from './create-learning-unit.dto';
 import { IsBoolean, IsOptional } from 'class-validator';
 
-export class UpdateLearningUnitDto extends PartialType(CreateLearningUnitDto) {
+export class UpdateLearningUnitDto extends PartialType(OmitType(CreateLearningUnitDto, ['topicId'] as const)) {
   @IsBoolean({ message: 'isActive debe ser un valor booleano' })
   @IsOptional()
   isActive?: boolean;
