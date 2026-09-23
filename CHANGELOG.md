@@ -12,6 +12,29 @@ entry to the oldest.
 
 ---
 
+## Ola del 23 de Septiembre — simulación de usuario, verificación del reporte de Jorge y 11 correcciones · 23 de Septiembre de 2026
+
+A pedido del dueño: auditoría exhaustiva actuando como usuario (Chrome real contra una base desechable) y
+verificación del reporte de Jorge. El detalle de hallazgos vive en un documento privado (`.gitignore`);
+aquí solo lo público.
+
+- **Reporte de Jorge (23/09):** sus citas de código son correctas, pero auditó `ef88916` (15+ commits atrás:
+  no vio roles, solicitudes, Fase 23, mensajería ni notificaciones), no ejecutó las pruebas de roles de la guía,
+  su suma de §8 da 93,7 % y no 91,5 %, y su veredicto «0 P0 / APTO» omite los módulos donde estaban los defectos.
+- **Corregido (cada punto con tests):** `POST /enrollment/join` matriculaba en la primera clase si faltaba el
+  código; `GET /class` filtraba el código de ingreso a cualquier usuario; `activity-log` y `GET /activities/:id`
+  sin control de propiedad; `GET /users` abierto a docentes; `POST /message` sin restricción de destinatario;
+  ids no numéricos → 500; `unread-count` con contrato roto (contador siempre 0) y mensajes que nunca se marcaban
+  leídos; detalle del estudiante con «N / 100» fijo; lecciones sin negrita ni bloques de código; KPI «92 % adopción
+  del Tutor» inventado.
+- **Verificado en vivo sin hallazgos:** sandbox (fs, procesos, red, memoria), saneo de HTML del contenido docente,
+  flujo completo de roles y solicitudes, JWT forjado, `admin:create-first`.
+- **Abierto:** sidebar del estudiante no colapsa en móvil (José), límite de login 5/min por IP (decisión del
+  dueño), `AI_EVALUATED` (BE-01), textos fijos en la pantalla de ejercicio, página `analitica` inalcanzable.
+- Build limpio; **65/65 suites, 575/575 tests**; `npx nuxi typecheck` en 0.
+
+---
+
 ## Ola del 22 de Septiembre (2ª pasada) — dashboard docente, mensajería estudiante y notificaciones · 22 de Septiembre de 2026
 
 A pedido del dueño ("los KPI del dashboard" y "al seleccionar a un estudiante no aparecen sus
