@@ -4,11 +4,13 @@ import { ActivityLog } from './entities/activity-log.entity';
 import { ActivityLogService } from './activity-log.service';
 import { ActivityLogController } from './activity-log.controller';
 import { AuthModule } from '../auth/auth.module';
+import { AuthorizationModule } from '../common/authorization/authorization.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ActivityLog]),
     AuthModule,
+    AuthorizationModule,
   ],
   controllers: [ActivityLogController],
   providers: [ActivityLogService],
