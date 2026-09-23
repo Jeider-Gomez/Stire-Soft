@@ -118,6 +118,13 @@ export class AnalyticsService {
         activityId: s.activityId,
         activityTitle: s.activity?.title || 'Actividad Desconocida',
         score: s.score,
+        // Puntaje máximo real de la actividad y si aprobó: la pantalla del docente
+        // mostraba "N / 100" fijo y pintaba de rojo un 20/20.
+        maxScore: s.activity?.totalPoints ?? null,
+        passed:
+          s.status === 'graded' && s.activity?.totalPoints
+            ? (s.score / s.activity.totalPoints) * 100 >= s.activity.passingScore
+            : null,
         status: s.status,
         submittedAt: s.submittedAt,
         createdAt: s.createdAt,

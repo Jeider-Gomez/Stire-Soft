@@ -178,11 +178,14 @@
                   <span
                     class="px-2 py-0.5 rounded text-[10px] font-bold"
                     :class="sub.status === 'graded' ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
-                    {{ sub.status === 'graded' ? 'Calificado' : 'Procesando' }}
+                    {{ statusLabel(sub.status) }}
                   </span>
                 </td>
-                <td class="p-2.5 text-right font-mono font-bold" :class="sub.score >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
-                  {{ sub.score }} / 100
+                <td
+                  class="p-2.5 text-right font-mono font-bold"
+                  :class="sub.passed === true ? 'text-semantico-pasa' : sub.passed === false ? 'text-semantico-falla' : 'text-base-texto-secundario'">
+                  <template v-if="sub.status === 'graded'">{{ sub.score }} / {{ sub.maxScore ?? '—' }}</template>
+                  <template v-else>—</template>
                 </td>
               </tr>
             </tbody>
@@ -199,6 +202,16 @@ import { useApi } from '~/composables/useApi'
 definePageMeta({
   layout: 'teacher'
 })
+
+function statusLabel(status: string): string {
+  switch (status) {
+    case 'graded': return 'Calificado'
+    case 'in_progress': return 'En curso'
+    case 'submitted': return 'Calificando'
+    case 'expired': return 'Expirado'
+    default: return 'Sin entregar'
+  }
+}
 
 interface StudentDashboardData {
   studentId: number
@@ -219,6 +232,8 @@ interface StudentDashboardData {
     activityId: number
     activityTitle: string
     score: number
+    maxScore: number | null
+    passed: boolean | null
     status: string
     createdAt: string
   }>
