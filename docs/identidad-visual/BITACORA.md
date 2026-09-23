@@ -32,6 +32,7 @@ editan las mismas líneas. Ver «Trabajar en paralelo» en el [`README`](./READM
 | Fecha | Rama | Commit | Qué cambió | Pantallas | Por qué | Estado |
 |---|---|---|---|---|---|---|
 | 21/09 | `main` (directo) | `7e9f314` | Paleta `stire-*` en `tailwind.config.ts`; encabezado (`HeaderNav.vue`, con botón «Tutor IA» y menú de usuario) y panel docente `DOC-V01` | Encabezado de todos los roles; `/docente` | Primer avance de la identidad institucional | `listo para revisar` (observaciones en el README §5; el dueño indicó que algunos cambios en la parte del Tutor no le gustaron, probablemente el botón «Tutor IA» del encabezado: por confirmar) |
+| 23/09 | `main` (dueño, funcional) | _(ver commit «menu lateral movil»)_ | **Cambio funcional en archivos de tu territorio, para que lo tengas al hacer `git merge origin/main`:** los tres `layouts/*.vue` ahora usan `composables/useMobileSidebar.ts` (menú lateral como cajón en pantallas < 768 px, con fondo, Escape y cierre al navegar); `FooterBar.vue` se parte en dos líneas en móvil; en `HeaderNav.vue` el botón «Tutor IA» queda visible en móvil (solo el icono). No se tocaron colores ni tokens. | Todos los roles en móvil | El menú del estudiante ocupaba ~60 % de un celular de 375 px y la pantalla se desbordaba | `aprobado` (hecho por el dueño; conserva el cajón al rediseñar) |
 | | | | | | | |
 
 ### Modelo para una fila nueva

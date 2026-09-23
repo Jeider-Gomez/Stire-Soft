@@ -24,7 +24,11 @@
 
       <!-- Estado de Autoguardado e Intentos -->
       <div class="hidden sm:flex items-center gap-4 text-xs">
-        <span class="text-semantico-pasa font-medium text-[11px] flex items-center gap-1">
+        <span
+          v-if="isCodingActivity"
+          class="font-medium text-[11px] flex items-center gap-1"
+          :class="workspaceStore.autosaveState === 'error' ? 'text-semantico-falla' : workspaceStore.autosaveState === 'saved' ? 'text-semantico-pasa' : 'text-base-texto-secundario'"
+          aria-live="polite">
           <span>☁️</span>
           <span>{{ workspaceStore.lastAutosave }}</span>
         </span>

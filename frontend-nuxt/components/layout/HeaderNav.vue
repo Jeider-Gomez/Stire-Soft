@@ -70,13 +70,14 @@
       <button
         v-if="authStore.currentRole === 'estudiante'"
         @click="tutorStore.toggleDrawer()"
-        class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg
+        aria-label="Abrir el Tutor IA"
+        class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg
                bg-stire-purple/10 text-stire-purple border border-stire-purple/25
                hover:bg-stire-purple/15 hover:-translate-y-0.5 hover:shadow-md
                active:scale-95 transition-all duration-200 text-xs font-semibold whitespace-nowrap"
       >
         <Sparkles :size="13" />
-        <span>Tutor IA</span>
+        <span class="hidden sm:inline">Tutor IA</span>
         <span class="pulse-dot ml-0.5" />
       </button>
 
