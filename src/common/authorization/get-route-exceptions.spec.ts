@@ -49,7 +49,7 @@ describe('Excepciones GET justificadas (Ola 3, Punto 2) — respaldo real', () =
     controller.getInbox(user);
     controller.getSent(user);
     controller.getUnreadCount(user);
-    controller.getConversation(user, '99');
+    controller.getConversation(user, 99);
 
     expect(mockService.getInbox).toHaveBeenCalledWith(5);
     expect(mockService.getSent).toHaveBeenCalledWith(5);

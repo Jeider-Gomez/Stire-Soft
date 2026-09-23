@@ -4,6 +4,7 @@ import {
   Post,
   Patch,
   Param,
+  ParseIntPipe,
   Body,
   UseGuards,
 } from '@nestjs/common';
@@ -27,7 +28,7 @@ export class MessageController {
   @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Post()
   create(@Body() createMessageDto: CreateMessageDto, @GetUser() user: User) {
-    return this.messageService.create(createMessageDto, user.id, user.fullName);
+    return this.messageService.create(createMessageDto, user);
   }
 
   /**
@@ -58,15 +59,15 @@ export class MessageController {
    * Obtener conversación con un usuario
    */
   @Get('conversation/:userId')
-  getConversation(@GetUser() user: User, @Param('userId') otherUserId: string) {
-    return this.messageService.getConversation(user.id, +otherUserId);
+  getConversation(@GetUser() user: User, @Param('userId', ParseIntPipe) otherUserId: number) {
+    return this.messageService.getConversation(user.id, otherUserId);
   }
 
   /**
    * Marcar un mensaje como leído
    */
   @Patch(':id/read')
-  markAsRead(@Param('id') id: string, @GetUser() user: User) {
-    return this.messageService.markAsRead(+id, user.id);
+  markAsRead(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.messageService.markAsRead(id, user.id);
   }
 }

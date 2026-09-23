@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Repository } from 'typeorm';
 import { Message } from './entities/message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { MessageCreatedEvent } from '../common/events/message-created.event';
+import { AuthorizationService } from '../common/authorization/authorization.service';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class MessageService {
@@ -12,18 +14,26 @@ export class MessageService {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
     private readonly eventEmitter: EventEmitter2,
+    private readonly authorizationService: AuthorizationService,
   ) {}
 
   /**
-   * Enviar un mensaje. `senderName` viene del JWT del controlador (no del
-   * DTO): se usa solo para el título de la notificación al destinatario, sin
-   * disparar una consulta aparte al usuario.
+   * Enviar un mensaje. `sender` viene del JWT (no del DTO): su nombre se usa
+   * para el título de la notificación al destinatario sin consulta aparte.
    */
-  async create(
-    createMessageDto: CreateMessageDto,
-    senderId: number,
-    senderName: string,
-  ): Promise<Message> {
+  async create(createMessageDto: CreateMessageDto, sender: User): Promise<Message> {
+    const senderId = sender.id;
+    const senderName = sender.fullName;
+    if (createMessageDto.receiverId === senderId) {
+      throw new BadRequestException('No puedes enviarte un mensaje a ti mismo');
+    }
+    await this.authorizationService.assertCanMessage(sender, createMessageDto.receiverId);
+    // Un admin puede escribir a cualquiera, pero el destinatario debe existir
+    // (si no, la llave foránea termina en un 500).
+    if (!(await this.messageRepository.manager.count(User, { where: { id: createMessageDto.receiverId } }))) {
+      throw new NotFoundException('Destinatario no encontrado');
+    }
+
     const message = this.messageRepository.create({
       ...createMessageDto,
       senderId,

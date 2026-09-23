@@ -61,4 +61,31 @@ export class AuthorizationService {
       throw new ForbiddenException('No tienes ninguna clase en común con este estudiante');
     }
   }
+
+  /**
+   * Quién puede escribirle a quién (simulación 23/09: `POST /message` aceptaba
+   * cualquier receiverId — un estudiante podía escribirle a otro estudiante, a
+   * un admin, y un id inexistente terminaba en un 500 por la llave foránea):
+   * - admin: a cualquiera.
+   * - docente: a estudiantes de alguna de sus clases.
+   * - estudiante: a docentes de las clases donde tiene matrícula activa.
+   * Las relaciones que no existen responden 403 (no se revela si el id existe).
+   */
+  async assertCanMessage(sender: User, receiverId: number): Promise<void> {
+    if (sender.role === UserRole.ADMIN) return;
+    if (sender.role === UserRole.DOCENTE) {
+      await this.assertTeacherSharesClassWithStudent(sender, receiverId);
+      return;
+    }
+    const shared = await this.enrollmentRepo
+      .createQueryBuilder('e')
+      .innerJoin(Class, 'c', 'c.id = e.classId')
+      .where('e.studentId = :studentId', { studentId: sender.id })
+      .andWhere('e.status = :status', { status: EnrollmentStatus.ACTIVE })
+      .andWhere('c.teacherId = :teacherId', { teacherId: receiverId })
+      .getCount();
+    if (shared === 0) {
+      throw new ForbiddenException('Solo puedes escribirle a los docentes de tus clases');
+    }
+  }
 }
