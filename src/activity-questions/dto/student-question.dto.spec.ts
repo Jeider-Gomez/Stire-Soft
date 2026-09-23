@@ -38,6 +38,22 @@ describe('StudentQuestionDto.fromEntity', () => {
     expect(dto.config.testCases[0].label).toBe('pub');
   });
 
+  it('CODING: informa CUÁNTOS casos hay ocultos y el límite de tiempo, sin exponer su contenido', () => {
+    const q = makeQuestion(QuestionType.CODING, {
+      language: 'javascript',
+      hiddenTestCases: [{ input: 'SECRETO', expected: 'SECRETO' }],
+      testCases: [
+        { input: '1', expected: '1', isPublic: true },
+        { input: '2', expected: '2' },
+        { input: '3', expected: '3', isPublic: false },
+      ],
+    });
+    const dto = StudentQuestionDto.fromEntity(q);
+    expect(dto.config.hiddenTestCaseCount).toBe(3);
+    expect(dto.config.timeLimitMs).toBe(2000);
+    expect(JSON.stringify(dto.config)).not.toContain('SECRETO');
+  });
+
   it('FILL_CODE: quita answer de cada blank, conserva id', () => {
     const q = makeQuestion(QuestionType.FILL_CODE, {
       codeTemplate: 'for i in ___:',

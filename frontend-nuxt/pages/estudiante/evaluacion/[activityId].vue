@@ -43,9 +43,12 @@
           <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil space-y-1">
             <span class="font-bold text-base-texto-primario block">Criterio de Evaluación:</span>
             <ul v-if="isCodingActivity" class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">
-              <li>3 Casos de prueba públicos visibles.</li>
-              <li>2 Casos de prueba privados de validación ciega.</li>
-              <li>Límite de tiempo por ejecución: 1000 ms.</li>
+              <li>{{ workspaceStore.publicTestCases.length }} caso(s) de prueba público(s), visibles en la pestaña «Casos de Prueba».</li>
+              <li v-if="workspaceStore.hiddenTestCaseCount > 0">
+                {{ workspaceStore.hiddenTestCaseCount }} caso(s) privado(s) de validación ciega, que solo se evalúan al entregar.
+              </li>
+              <li v-else>Este ejercicio no tiene casos privados.</li>
+              <li v-if="workspaceStore.timeLimitMs">Límite de tiempo por ejecución: {{ workspaceStore.timeLimitMs }} ms.</li>
             </ul>
             <ul v-else class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">
               <li>Evaluación formal inmediata al entregar.</li>
@@ -100,14 +103,22 @@
                   <span :class="tc.passed ? 'text-semantico-pasa font-bold' : tc.passed === false ? 'text-semantico-falla font-bold' : 'text-base-texto-secundario'">
                     {{ tc.actualOutput || '—' }}
                   </span>
+                  <span
+                    v-if="tc.passed === false && !tc.actualOutput"
+                    class="block mt-1 font-sans text-[10px] text-base-texto-secundario">
+                    Tu código no imprimió nada: revisa que escribas el resultado con console.log
+                    <template v-if="workspaceStore.timeLimitMs">y que no tarde más de {{ workspaceStore.timeLimitMs }} ms (un bucle infinito se corta).</template>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="p-3 bg-base-bg-secundario rounded border border-base-borde-sutil text-[11px] text-base-texto-secundario flex items-center gap-2">
+          <div
+            v-if="workspaceStore.hiddenTestCaseCount > 0"
+            class="p-3 bg-base-bg-secundario rounded border border-base-borde-sutil text-[11px] text-base-texto-secundario flex items-center gap-2">
             <span>🔒</span>
-            <span>2 Casos privados permanecen ocultos para evaluar generalización de la solución.</span>
+            <span>{{ workspaceStore.hiddenTestCaseCount }} caso(s) privado(s) permanecen ocultos para evaluar la generalización de la solución.</span>
           </div>
         </div>
 
@@ -310,6 +321,13 @@ definePageMeta({
 const route = useRoute()
 const workspaceStore = useWorkspaceStore()
 const leftTab = ref<'enunciado' | 'casos' | 'consola'>('enunciado')
+
+// Al pulsar «Probar código» el resultado aparece en «Casos de Prueba»; antes el
+// store cambiaba SU pestaña y esta pantalla se quedaba en «Enunciado»: parecía
+// que no pasaba nada.
+watch(() => workspaceStore.isRunning, (running) => {
+  if (running && isCodingActivity.value) leftTab.value = 'casos'
+})
 
 const isCodingActivity = computed(() => workspaceStore.currentExercise.questionType === 'coding')
 

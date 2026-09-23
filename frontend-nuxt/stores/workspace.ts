@@ -60,7 +60,24 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const isRunning = ref(false)
   const isSubmitting = ref(false)
   const isLoadingExercise = ref(false)
-  const lastAutosave = ref<string>('Autoguardado sincronizado ✔')
+  // Estado REAL del autoguardado (antes era un texto fijo «sincronizado ✔» desde
+  // antes de escribir nada). Solo aplica a actividades de código.
+  const autosaveState = ref<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const autosavedAt = ref<string>('')
+  const lastAutosave = computed(() => {
+    switch (autosaveState.value) {
+      case 'saving': return 'Guardando cambios…'
+      case 'saved': return `Autoguardado a las ${autosavedAt.value} ✔`
+      case 'error': return 'No se pudo autoguardar'
+      default: return 'Sin cambios por guardar'
+    }
+  })
+  // Hay cambios que todavía no llegaron al servidor (guardando o con error)
+  const hasUnsavedChanges = computed(() => autosaveState.value === 'saving' || autosaveState.value === 'error')
+  let autosaveTimer: ReturnType<typeof setTimeout> | undefined
+  // Datos reales del ejercicio de código que muestra el panel «Enunciado»
+  const hiddenTestCaseCount = ref(0)
+  const timeLimitMs = ref<number | null>(null)
   const activeTab = ref<'consola' | 'casos' | 'tutor'>('casos')
   const currentSubmissionId = ref<string | null>(null)
   const publicTestCases = ref<TestCase[]>([])
@@ -176,10 +193,14 @@ export const useWorkspaceStore = defineStore('workspace', () => {
             isPublic: true,
             passed: undefined
           }))
+          hiddenTestCaseCount.value = Number(config.hiddenTestCaseCount ?? 0)
+          timeLimitMs.value = typeof config.timeLimitMs === 'number' ? config.timeLimitMs : null
           consoleLog.value.push(`✔ Actividad "${activity.title}" cargada exitosamente.`)
           consoleLog.value.push(`  → ${publicTestCases.value.length} caso(s) de prueba público(s) disponible(s).`)
         } else {
           publicTestCases.value = []
+          hiddenTestCaseCount.value = 0
+          timeLimitMs.value = null
           consoleLog.value.push(`✔ Actividad "${activity.title}" cargada (tipo: ${primaryQuestion.type}).`)
           consoleLog.value.push(`  → Completa la respuesta en el panel izquierdo y presiona "Entregar solución".`)
         }
@@ -358,11 +379,16 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
-  // Autosave: PUT /submissions/:id/autosave (solo aplica a coding)
-  async function triggerAutosave() {
+  // Autosave: PUT /submissions/:id/autosave (solo aplica a coding). Con debounce:
+  // antes se enviaba un PUT por cada tecla.
+  function triggerAutosave() {
     if (currentExercise.value.questionType !== 'coding') return
-    lastAutosave.value = `Autoguardando...`
+    autosaveState.value = 'saving'
+    if (autosaveTimer) clearTimeout(autosaveTimer)
+    autosaveTimer = setTimeout(saveNow, 800)
+  }
 
+  async function saveNow() {
     try {
       const subId = await ensureActiveSubmission()
       await api.put(`/submissions/${subId}/autosave`, {
@@ -373,9 +399,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           }
         ]
       })
-      lastAutosave.value = `Autoguardado a las ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ✔`
+      autosavedAt.value = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      autosaveState.value = 'saved'
     } catch (err: any) {
-      lastAutosave.value = `Error al autoguardar`
+      autosaveState.value = 'error'
       console.warn('[STIRE Autosave] No se pudo autoguardar:', err?.message)
     }
   }
@@ -389,6 +416,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     isSubmitting,
     isLoadingExercise,
     lastAutosave,
+    autosaveState,
+    hasUnsavedChanges,
+    hiddenTestCaseCount,
+    timeLimitMs,
     activeTab,
     currentSubmissionId,
     publicTestCases,

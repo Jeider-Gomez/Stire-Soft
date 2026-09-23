@@ -319,8 +319,7 @@ const overdueNotice = computed(() => {
 // ─── Navegación segura con verificación de autoguardado (§21.2 T4c) ─────────
 function navigateWithAutosaveCheck(url: string) {
   if (workspaceStore.currentExercise?.activityId) {
-    const isSynced = (workspaceStore.lastAutosave || '').toLowerCase().includes('sincronizado')
-    if (!isSynced) {
+    if (workspaceStore.hasUnsavedChanges) {
       const ok = confirm('Tienes cambios en el código que podrían no haberse sincronizado aún. ¿Deseas salir de todas formas?')
       if (!ok) return
     }

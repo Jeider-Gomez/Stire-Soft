@@ -1,5 +1,6 @@
 import { ActivityQuestion } from '../entities/activity-question.entity';
 import { QuestionType } from '../../common/enums/question-type.enum';
+import { SANDBOX_TIMEOUT_MS } from '../../judge-engine/sandbox-limits';
 
 // P0-03 — vista de una pregunta para el estudiante: nunca la entidad cruda.
 // El campo `config` contiene la "ground truth" de evaluación (respuesta
@@ -52,11 +53,18 @@ export class StudentQuestionDto {
       case QuestionType.CODING: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hiddenTestCases, testCases, ...rest } = config;
+        const all: any[] = Array.isArray(testCases) ? testCases : [];
+        const hiddenCount =
+          all.filter((tc: any) => tc?.isPublic !== true).length +
+          (Array.isArray(hiddenTestCases) ? hiddenTestCases.length : 0);
         return {
           ...rest,
-          testCases: Array.isArray(testCases)
-            ? testCases.filter((tc: any) => tc?.isPublic === true)
-            : [],
+          testCases: all.filter((tc: any) => tc?.isPublic === true),
+          // Solo CUÁNTOS hay ocultos (nunca su contenido) y el límite real de
+          // tiempo: la pantalla del ejercicio mostraba «3 públicos / 2 privados /
+          // 1000 ms» fijos.
+          hiddenTestCaseCount: hiddenCount,
+          timeLimitMs: SANDBOX_TIMEOUT_MS,
         };
       }
 

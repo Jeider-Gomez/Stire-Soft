@@ -5,6 +5,7 @@ import { mkdtempSync, writeFileSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import type { SandboxAdapter, RunResult } from './sandbox-adapter.interface';
+import { SANDBOX_TIMEOUT_MS } from './sandbox-limits';
 
 // ADR 06 — aislamiento por proceso hijo del sistema operativo, no por
 // contexto de JavaScript (node:vm nunca fue una frontera de seguridad:
@@ -12,7 +13,7 @@ import type { SandboxAdapter, RunResult } from './sandbox-adapter.interface';
 // independientes: entorno vacío, --permission de Node, sin generacion de
 // codigo desde strings, y cortafuegos de red en el preludio del hijo.
 
-const TIMEOUT_MS = 2000;
+const TIMEOUT_MS = SANDBOX_TIMEOUT_MS;
 const MAX_OUTPUT_BYTES = 64 * 1024;
 const MAX_HEAP_MB = 128;
 
