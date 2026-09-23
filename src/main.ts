@@ -10,6 +10,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { logger: new BufferedLogger() });
   const swaggerEnabled = isSwaggerEnabled();
 
+  // Detrás de un proxy inverso (Caddy, Railway, etc.) la IP real llega en X-Forwarded-For; sin esto
+  // TODAS las peticiones parecen venir del proxy y comparten el mismo límite de peticiones.
+  // TRUST_PROXY = número de proxies de confianza delante del backend (0 = ninguno).
+  const trustProxy = Number(process.env.TRUST_PROXY ?? 0);
+  if (trustProxy > 0) app.getHttpAdapter().getInstance().set('trust proxy', trustProxy);
+
   applyHttpSecurity(app, swaggerEnabled);
 
   app.useGlobalPipes(

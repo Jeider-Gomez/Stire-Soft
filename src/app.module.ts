@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { HealthModule } from './health/health.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -79,9 +80,13 @@ import { RoleRequestsModule } from './role-requests/role-requests.module';
         database: configService.get('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: false,
+        // Bases gestionadas (Aiven, TiDB, etc.) exigen TLS: DB_SSL=true.
+        ssl: configService.get('DB_SSL') === 'true' ? { rejectUnauthorized: true } : undefined,
       }),
       inject: [ConfigService],
     }),
+
+    HealthModule,
 
     // Legacy Modules
     UserModule,
