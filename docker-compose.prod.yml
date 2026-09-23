@@ -1,0 +1,72 @@
+# Producción en una sola máquina (p. ej. la VM gratuita de Oracle): MariaDB + backend + Caddy (HTTPS).
+# Uso: copia deploy/prod.env.example a .env.prod, complétalo y ejecuta
+#   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+# Guía completa: docs/DESPLIEGUE.md
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE:-basestire}
+      MARIADB_USER: ${DB_USERNAME:-stire}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - stire_db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # Sin "ports": la base solo es alcanzable desde el backend, nunca desde internet.
+
+  backend:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-basestire}
+      DB_USERNAME: ${DB_USERNAME:-stire}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-8h}
+      TUTOR_KEY_ENCRYPTION_SECRET: ${TUTOR_KEY_ENCRYPTION_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      FRONTEND_URL: ${FRONTEND_URL}
+      TRUST_PROXY: 1
+      SANDBOX_TYPE: hardened
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-flash-latest}
+    # Límites para que un ejercicio malicioso no tumbe la máquina completa.
+    mem_limit: 768m
+    pids_limit: 256
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  stire_db:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,6 @@
+# HTTPS automático (Let's Encrypt) para el dominio del backend. Definir API_DOMAIN en .env.prod,
+# p. ej. stire-api.duckdns.org o 129-153-10-20.nip.io (nip.io no requiere registrar nada).
+{$API_DOMAIN} {
+	encode gzip
+	reverse_proxy backend:3001
+}
