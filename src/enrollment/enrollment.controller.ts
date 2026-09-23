@@ -7,6 +7,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { EnrollmentStatus } from './enums/enrollment-status.enum';
+import { JoinClassDto } from './dto/join-class.dto';
 import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Enrollment')
@@ -26,8 +27,8 @@ export class EnrollmentController {
   @UseGuards(RolesGuard)
   @Roles('estudiante')
   @ApiOperation({ summary: 'Matricular estudiante en una clase por código' })
-  joinClass(@Body('code') code: string, @GetUser() user: User) {
-    return this.enrollmentService.joinClass(user.id, code);
+  joinClass(@Body() dto: JoinClassDto, @GetUser() user: User) {
+    return this.enrollmentService.joinClass(user.id, dto.code);
   }
 
   /**

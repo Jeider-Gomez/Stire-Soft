@@ -119,6 +119,9 @@ export class ClassService {
   }
 
   async findByCode(code: string): Promise<Class | null> {
+    // TypeORM ignora un `where` con valor undefined y devuelve la PRIMERA fila:
+    // sin este guard, un código ausente matriculaba en la clase de menor id.
+    if (typeof code !== 'string' || code.trim() === '') return null;
     return await this.classRepository.findOne({
       where: { code },
     });

@@ -41,6 +41,23 @@ describe('ClassService.remove — P1-06', () => {
   });
 });
 
+describe('ClassService.findByCode — un código ausente no puede devolver "la primera clase"', () => {
+  const mockClassRepo = { findOne: jest.fn().mockResolvedValue({ id: 1, code: 'X' }) };
+  const service = new ClassService(mockClassRepo as any, {} as any, {} as any, {} as any, {} as any);
+
+  beforeEach(() => mockClassRepo.findOne.mockClear());
+
+  it.each([undefined, null, '', '   ', 42])('código %p → null y sin consultar la base', async (code) => {
+    await expect(service.findByCode(code as any)).resolves.toBeNull();
+    expect(mockClassRepo.findOne).not.toHaveBeenCalled();
+  });
+
+  it('un código real sí consulta', async () => {
+    await expect(service.findByCode('X')).resolves.toMatchObject({ id: 1 });
+    expect(mockClassRepo.findOne).toHaveBeenCalledWith({ where: { code: 'X' } });
+  });
+});
+
 // El dashboard docente (docente/index.vue) mostraba "0" fijo en estudiantes,
 // maestría y "en riesgo" porque /class/my-classes nunca calculaba estos
 // datos — encontrado al investigar el pendiente de KPIs inventados.
