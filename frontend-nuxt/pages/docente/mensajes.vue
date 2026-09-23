@@ -27,6 +27,14 @@
       </button>
     </header>
 
+    <div v-if="unreadCount > 0" class="flex justify-end -mb-3">
+      <button
+        @click="markAllAsRead"
+        class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline">
+        Marcar todos como leídos
+      </button>
+    </div>
+
     <!-- Pestañas de la Bandeja -->
     <div class="flex items-center gap-2 border-b border-base-borde-sutil pb-1 text-xs">
       <button
@@ -90,8 +98,9 @@
       <div
         v-for="msg in activeMessages"
         :key="msg.id"
+        @click="markAsRead(msg)"
         class="bg-base-blanco rounded-xl border p-4 shadow-sm flex flex-col sm:flex-row sm:items-start gap-3 text-xs transition-colors hover:bg-base-bg-secundario/30"
-        :class="activeTab === 'inbox' && !msg.isRead ? 'border-acento-ambar/50 bg-acento-ambar/5' : 'border-base-borde-sutil'">
+        :class="activeTab === 'inbox' && !msg.isRead ? 'border-acento-ambar/50 bg-acento-ambar/5 cursor-pointer' : 'border-base-borde-sutil'">
 
         <!-- Avatar inicial -->
         <div class="flex-shrink-0 w-9 h-9 rounded-full bg-acento-ambar/15 flex items-center justify-center font-bold text-acento-ambar-fuerte text-sm">
@@ -397,6 +406,19 @@ async function fetchMessages() {
   } finally {
     isLoading.value = false
   }
+}
+
+async function markAsRead(msg: MessageItem) {
+  if (activeTab.value !== 'inbox' || msg.isRead) return
+  try {
+    await api.patch(`/message/${msg.id}/read`)
+    msg.isRead = true
+    unreadCount.value = Math.max(0, unreadCount.value - 1)
+  } catch { /* se reintenta al volver a tocar el mensaje */ }
+}
+
+async function markAllAsRead() {
+  await Promise.all(inboxMessages.value.filter((m) => !m.isRead).map((m) => markAsRead(m)))
 }
 
 async function sendMessage() {
