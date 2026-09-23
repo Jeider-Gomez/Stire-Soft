@@ -1,4 +1,4 @@
-# STIRE — ADR 06 a ADR 11
+# STIRE — ADR 06 a ADR 12
 
 **Decisiones de arquitectura del sandbox de ejecución, la sanitización de contenido, la cola
 de calificación, el despliegue y el Tutor IA (clave por estudiante, configuración del docente y barrera anti-solución).**
@@ -194,3 +194,45 @@ Con el Tutor funcionando sobre la clave de cada estudiante (ADR 10) faltaban tre
 - **Los umbrales de nivel de ayuda (2 y 4 intentos fallidos) y los 20 renglones** se fijaron sin datos de uso real; conviene revisarlos con la primera prueba en clase.
 - **Desactivar el Tutor a nivel de unidad no bloquea el chat general** mientras las demás clases del estudiante lo permitan (es lo esperado: el chat general no pertenece a una unidad).
 - **Interfaz del docente y del estudiante:** `docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-20.md` §18.4 y §20.
+
+
+# ADR 12 — Despliegue gratuito completo: base de datos, sandbox, correo y autenticación
+
+## Contexto
+
+El dueño pidió acordar cómo desplegar con todas las funciones (incluido el Tutor con Gemini) usando planes gratuitos, y planteó
+cuatro dudas: si MariaDB nos limita (¿migrar a Supabase?), si el sandbox de código podría ejecutarse en el navegador o en una API
+gratuita, cómo recuperar contraseñas por correo, y si usar Google para autenticarse. Datos verificados el 23/09/2026.
+
+## Decisión (dueño del proyecto, 2026-09-23)
+
+1. **La base de datos sigue siendo MySQL/MariaDB.** Se verifica MariaDB 11.4 (las 9 migraciones y el seed pasan; la base de desarrollo
+   local es en realidad `mysql:8.0` en Docker). No se migra a Postgres/Supabase: el proyecto tiene 9 migraciones en SQL MySQL
+   (incluida una columna generada con índice único), 12 enums nativos y consultas propias — migrar es más de un día de reescritura
+   y de revalidación completa sin ganar nada, porque el backend **no puede** ser serverless (el sandbox lanza procesos hijo y hay
+   tareas programadas con `@Cron`), y en un servidor propio una base MariaDB en Docker es gratis. Supabase gratis, además, se pausa
+   tras una semana sin actividad y su conexión directa es solo IPv6 (con el *pooler* compartido IPv4 hay que cuidar las transacciones).
+2. **Hosting:** frontend en Vercel Hobby; backend + MariaDB + Caddy (HTTPS) en una VM con Docker (`docker-compose.prod.yml`).
+   Recomendada: Oracle Cloud Always Free (Ampere A1, 2 núcleos/12 GB desde el 15/jun/2026: recorte sin aviso, riesgo declarado);
+   alternativas con los mismos archivos: Railway Hobby (~$5/mes) o Azure for Students ($100 de crédito). Descartadas: Render gratis
+   (se duerme a los 15 min y bloquea SMTP), Railway gratis ($1/mes no alcanza para backend + base), DigitalOcean estudiantes (terminó el 1/ago/2026),
+   Koyeb (instancia gratuita de 0,1 vCPU que se duerme a la hora) y Aiven/TiDB como base gestionada (se apaga por inactividad / compatibilidad de la columna generada sin probar).
+3. **El sandbox de código sigue en el servidor** (ADR 06 y 09). Ejecutar en el navegador (Web Worker, QuickJS) es válido para *practicar*,
+   pero **no para calificar**: el estudiante controla su navegador (podría fabricar el resultado) y los casos ocultos tendrían que viajar
+   al cliente. Las APIs externas gratuitas no sirven a un curso: la instancia pública de Piston es solo por lista blanca desde el 15/feb/2026
+   y Judge0 en RapidAPI ronda 50 ejecuciones/día. Mejora opcional futura, no bloqueante: «Probar código» (solo casos públicos, sin nota) en el navegador
+   para descargar al servidor. Si algún día se añade Python: Pyodide para practicar y Judge0/Piston autoalojado en la misma VM para calificar.
+4. **Correo de recuperación:** SMTP configurable por variables de entorno (nodemailer), por defecto una cuenta Gmail dedicada con clave de
+   aplicación (~500/día, sin dominio propio). Cambiar a Brevo (300/día) o Resend (exige dominio propio) no toca código. Se usa SMTP y no una
+   API propia porque funciona igual en cualquier proveedor salvo Render gratis. El enlace vale 30 min, es de un solo uso, solo se guarda su hash
+   y cambiar la contraseña cierra las sesiones anteriores (`passwordChangedAt`).
+5. **Autenticación con Google: diferida.** Con correo + contraseña + recuperación por correo el sistema está completo; «Continuar con Google»
+   (gratis) suma cuenta de Google Cloud, pantalla de consentimiento y vínculo de cuentas, y queda como mejora posterior.
+6. **Cambios de código que exige el despliegue:** `GET /health`, `TRUST_PROXY` (sin él, tras el proxy todas las personas comparten el mismo
+   límite de peticiones), `DB_SSL` opcional, límite de login 5→20/min por IP (un salón entero tras la misma red no debe bloquearse).
+
+## Consecuencias
+
+- Se despliega con `docs/DESPLIEGUE.md`; lo que se probó con Docker real y lo que hace falta probar en Oracle/Vercel está declarado ahí.
+- Riesgo aceptado: una sola máquina, sin alta disponibilidad; mitigado con copias diarias (`deploy/backup-db.sh`) y monitoreo externo.
+- Los datos de capas gratuitas cambian con frecuencia: se verifican al crear la cuenta.

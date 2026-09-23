@@ -12,6 +12,23 @@ entry to the oldest.
 
 ---
 
+## Ola del 23 de Septiembre (3ª pasada) — despliegue gratuito y recuperación de contraseña · 23 de Septiembre de 2026
+
+Acordado con el dueño (ADR 12): la base sigue en MySQL/MariaDB (no se migra a Supabase), el sandbox sigue en el servidor,
+el frontend va en Vercel y el backend + base en una VM con Docker (Oracle Always Free recomendada; Railway o Azure Students como plan B),
+correo por SMTP configurable (Gmail), y «Continuar con Google» queda para después.
+
+- **Recuperación de contraseña:** `POST /auth/forgot-password` (respuesta idéntica exista o no la cuenta) y `POST /auth/reset-password`;
+  enlace de 30 min y un solo uso con solo el hash en la base; cambiar la contraseña cierra las sesiones anteriores (`passwordChangedAt`);
+  `MailService` con nodemailer; pantallas nuevas y página 404. El enlace «¿Olvidaste tu clave?» del login era `href="#"`.
+- **Despliegue:** `Dockerfile`, `docker-compose.prod.yml` (MariaDB + backend + Caddy con HTTPS), respaldo diario, `GET /health`,
+  `TRUST_PROXY`, `DB_SSL`, `docs/DESPLIEGUE.md`. Login 5→20/min por IP para no bloquear un salón.
+- **Verificado con Docker real:** imagen compilada; arranque en producción contra MariaDB 11.4 (9 migraciones + seed); sandbox dentro
+  del contenedor; ciclo completo de recuperación con correo real por SMTP de prueba; pantallas en Chrome real.
+- Agrega la dependencia `nodemailer` (cambia `package-lock.json`).
+
+---
+
 ## Ola del 23 de Septiembre (2ª pasada) — móvil, ejercicio, todos los tipos de actividad y Fase 24 · 23 de Septiembre de 2026
 
 - **Móvil:** el menú lateral es un cajón en pantallas < 768 px (`useMobileSidebar`) en los tres layouts; sin desborde a 375 px.
