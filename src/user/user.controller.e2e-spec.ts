@@ -200,8 +200,14 @@ describe('UserController (e2e) — P0-02 escalada de privilegios', () => {
       expect(mockUserService.findAll).not.toHaveBeenCalled();
     });
 
-    it('docente SÍ puede listar, y la respuesta usa el DTO de salida (sin password)', async () => {
+    it('docente NO puede enumerar todas las cuentas de la institución (403)', async () => {
       currentUser = { id: 2, email: 'docente@stire.local', role: UserRole.DOCENTE };
+      await request(app.getHttpServer()).get('/users').expect(403);
+      expect(mockUserService.findAll).not.toHaveBeenCalled();
+    });
+
+    it('admin SÍ puede listar, y la respuesta usa el DTO de salida (sin password)', async () => {
+      currentUser = { id: 1, email: 'admin@stire.local', role: UserRole.ADMIN };
       mockUserService.findAll.mockResolvedValue(rawUsers);
 
       const res = await request(app.getHttpServer()).get('/users').expect(200);

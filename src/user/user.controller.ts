@@ -55,8 +55,10 @@ export class UserController {
     return this.userService.changePassword(user.id, changePasswordDto);
   }
 
-  // Listado completo: solo admin y docente pueden enumerar la institucion.
-  @Roles('admin', 'docente')
+  // Listado completo de la institución: solo admin. Un docente ve a sus
+  // estudiantes por GET /enrollment/class/:id, no enumerando todas las cuentas
+  // (correos de estudiantes de otras clases, de otros docentes y de admins).
+  @Roles('admin')
   @Get()
   async findAll(): Promise<UserResponseDto[]> {
     const users = await this.userService.findAll();
@@ -80,8 +82,8 @@ export class UserController {
   // propio solicitante (para eso estan PATCH /users/me y /users/me/password).
   @Roles('admin')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() adminUpdateUserDto: AdminUpdateUserDto, @GetUser() admin: User) {
-    return this.userService.update(+id, adminUpdateUserDto, admin.id);
+  update(@Param('id', ParseIntPipe) id: number, @Body() adminUpdateUserDto: AdminUpdateUserDto, @GetUser() admin: User) {
+    return this.userService.update(id, adminUpdateUserDto, admin.id);
   }
 
   @Roles('admin')
@@ -91,7 +93,7 @@ export class UserController {
   }
   @Roles('admin')
   @Delete(':id')
-  remove(@Param('id') id: string, @GetUser() admin: User) {
-    return this.userService.remove(+id, admin.id);
+  remove(@Param('id', ParseIntPipe) id: number, @GetUser() admin: User) {
+    return this.userService.remove(id, admin.id);
   }
 }
