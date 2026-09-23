@@ -1,0 +1,6 @@
+# Los archivos que se ejecutan en Linux (servidor) siempre con saltos de linea LF
+*.sh text eol=lf
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+deploy/* text eol=lf
+docker-compose*.yml text eol=lf
