@@ -21,6 +21,12 @@ export interface ClassWithStats extends Class {
   avgMastery?: number;
 }
 
+// Vista de catálogo: lo que puede ver quien NO es dueño, admin ni matriculado.
+// Sin `code` (es el secreto de ingreso) ni el correo del docente.
+export type PublicClass = Omit<Class, 'code' | 'teacher' | 'enrollments' | 'sections' | 'students'> & {
+  teacher?: { id: number; fullName: string };
+};
+
 @Injectable()
 export class ClassService {
   constructor(
@@ -55,6 +61,39 @@ export class ClassService {
     return await this.classRepository.find({
       relations: ['teacher'],
     });
+  }
+
+  toPublicView(cls: Class): PublicClass {
+    const { code, teacher, enrollments, sections, students, ...rest } = cls;
+    return { ...rest, teacher: teacher ? { id: teacher.id, fullName: teacher.fullName } : undefined };
+  }
+
+  async findCatalogue(): Promise<PublicClass[]> {
+    return (await this.findAll()).map((c) => this.toPublicView(c));
+  }
+
+  async findByStudent(studentId: number): Promise<Class[]> {
+    const enrollments = await this.enrollmentRepository.find({
+      where: { studentId, status: EnrollmentStatus.ACTIVE },
+    });
+    if (enrollments.length === 0) return [];
+    return await this.classRepository.find({
+      where: { id: In(enrollments.map((e) => e.classId)) },
+      relations: ['teacher'],
+    });
+  }
+
+  /** Vista completa para admin, docente dueño y estudiante matriculado; catálogo (sin código) para el resto. */
+  async findOneFor(id: number, user: User): Promise<Class | PublicClass> {
+    const cls = await this.findOne(id);
+    if (user.role === UserRole.ADMIN || cls.teacherId === user.id) return cls;
+    if (user.role === UserRole.ESTUDIANTE) {
+      const enrolled = await this.enrollmentRepository.findOne({
+        where: { classId: id, studentId: user.id, status: EnrollmentStatus.ACTIVE },
+      });
+      if (enrolled) return cls;
+    }
+    return this.toPublicView(cls);
   }
 
   /**

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
 import { ClassService } from './class.service';
@@ -32,13 +33,14 @@ export class ClassController {
   }
 
   // OLA 3 - PUNTO 2: catálogo de clases disponibles — abierto a cualquier
-  // rol autenticado de forma deliberada (ver `findMyClasses` más abajo,
-  // que ya trataba esto como catálogo público para estudiantes).
+  // rol autenticado de forma deliberada, pero SIN el código de ingreso ni el
+  // correo del docente (el código es el secreto que da acceso a la clase).
+  // Solo el admin ve la vista completa.
   @Get()
   @UseGuards(RolesGuard)
   @Roles('estudiante', 'docente', 'admin')
-  findAll() {
-    return this.classService.findAll();
+  findAll(@GetUser() user: User) {
+    return user.role === 'admin' ? this.classService.findAll() : this.classService.findCatalogue();
   }
 
   @Get('my-classes')
@@ -48,14 +50,14 @@ export class ClassController {
     if (user.role === 'docente') {
       return this.classService.findByTeacher(user.id);
     }
-    return this.classService.findAll(); // Estudiante: ver clases disponibles
+    return this.classService.findByStudent(user.id); // Estudiante: solo sus clases activas
   }
 
   @Get(':id')
   @UseGuards(RolesGuard)
   @Roles('estudiante', 'docente', 'admin')
-  findOne(@Param('id') id: string) {
-    return this.classService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.classService.findOneFor(id, user);
   }
 
   @Patch(':id')

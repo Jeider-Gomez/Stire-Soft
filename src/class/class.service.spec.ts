@@ -41,6 +41,55 @@ describe('ClassService.remove — P1-06', () => {
   });
 });
 
+// Regresión de la simulación del 23/09: GET /class y GET /class/:id devolvían
+// el `code` (secreto de ingreso) y el correo del docente a CUALQUIER usuario
+// autenticado — cualquier estudiante podía listar los códigos de todas las clases.
+describe('ClassService — el código de ingreso solo lo ven admin, dueño y matriculados', () => {
+  const cls = { id: 1, name: 'A', code: 'SECRETO-1', teacherId: 10, teacher: { id: 10, fullName: 'Prof', email: 'prof@x.com' } };
+  const classRepo = { findOne: jest.fn(), find: jest.fn() };
+  const enrollmentRepo = { findOne: jest.fn(), find: jest.fn() };
+  const service = new ClassService(classRepo as any, enrollmentRepo as any, {} as any, {} as any, {} as any);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    classRepo.findOne.mockResolvedValue(cls);
+    classRepo.find.mockResolvedValue([cls]);
+  });
+
+  it('el catálogo no trae code ni el correo del docente', async () => {
+    const [entry] = await service.findCatalogue();
+    expect(entry).not.toHaveProperty('code');
+    expect(entry.teacher).toEqual({ id: 10, fullName: 'Prof' });
+    expect(JSON.stringify(entry)).not.toContain('prof@x.com');
+  });
+
+  it.each([
+    ['admin', { id: 1, role: UserRole.ADMIN }, false],
+    ['docente dueño', { id: 10, role: UserRole.DOCENTE }, false],
+  ])('%s ve la clase completa', async (_n, user, _e) => {
+    await expect(service.findOneFor(1, user as any)).resolves.toHaveProperty('code', 'SECRETO-1');
+  });
+
+  it('estudiante matriculado ve el código; no matriculado no', async () => {
+    enrollmentRepo.findOne.mockResolvedValueOnce({ id: 'e1' });
+    await expect(service.findOneFor(1, { id: 5, role: UserRole.ESTUDIANTE } as any)).resolves.toHaveProperty('code');
+    enrollmentRepo.findOne.mockResolvedValueOnce(null);
+    await expect(service.findOneFor(1, { id: 6, role: UserRole.ESTUDIANTE } as any)).resolves.not.toHaveProperty('code');
+  });
+
+  it('un docente que no es dueño recibe la vista de catálogo', async () => {
+    await expect(service.findOneFor(1, { id: 99, role: UserRole.DOCENTE } as any)).resolves.not.toHaveProperty('code');
+  });
+
+  it('findByStudent solo consulta clases de matrículas activas', async () => {
+    enrollmentRepo.find.mockResolvedValue([{ classId: 1 }]);
+    await service.findByStudent(5);
+    expect(enrollmentRepo.find.mock.calls[0][0].where).toMatchObject({ studentId: 5, status: 'active' });
+    enrollmentRepo.find.mockResolvedValue([]);
+    await expect(service.findByStudent(5)).resolves.toEqual([]);
+  });
+});
+
 describe('ClassService.findByCode — un código ausente no puede devolver "la primera clase"', () => {
   const mockClassRepo = { findOne: jest.fn().mockResolvedValue({ id: 1, code: 'X' }) };
   const service = new ClassService(mockClassRepo as any, {} as any, {} as any, {} as any, {} as any);
