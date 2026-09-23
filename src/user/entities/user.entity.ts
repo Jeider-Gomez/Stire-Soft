@@ -42,6 +42,11 @@ export class User {
   @Column({ default: true })
   isActive!: boolean;
 
+  // Último cambio de contraseña por recuperación o por un admin: los JWT emitidos
+  // antes de este momento se rechazan (JwtStrategy).
+  @Column({ type: 'timestamp', nullable: true })
+  passwordChangedAt?: Date | null;
+
   @OneToMany(() => UserAffiliation, (affiliation) => affiliation.user)
   affiliations!: UserAffiliation[];
 

@@ -6,6 +6,9 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module';
 import { RoleRequestsModule } from '../role-requests/role-requests.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailModule } from '../mail/mail.module';
+import { PasswordResetToken } from './entities/password-reset-token.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
@@ -15,6 +18,8 @@ import { RolesGuard } from './guards/roles.guard';
     // Importar UserModule para acceder a UserService
     UserModule,
     RoleRequestsModule,
+    MailModule,
+    TypeOrmModule.forFeature([PasswordResetToken]),
     
     // Configurar JWT
     JwtModule.registerAsync({

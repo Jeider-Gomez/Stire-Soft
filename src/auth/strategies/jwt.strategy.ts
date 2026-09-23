@@ -32,6 +32,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Usuario inválido o inactivo');
     }
 
+    // Un cambio de contraseña (recuperación o por un admin) invalida las sesiones anteriores.
+    const changedAt: Date | null | undefined = user.passwordChangedAt;
+    if (changedAt && typeof payload.iat === 'number' && payload.iat < Math.floor(new Date(changedAt).getTime() / 1000)) {
+      throw new UnauthorizedException('La sesión venció porque la contraseña cambió. Inicia sesión de nuevo.');
+    }
+
     return user as User;
   }
 }

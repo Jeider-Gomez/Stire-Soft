@@ -100,6 +100,7 @@ export class UserService {
     // Si se actualiza la contraseña, encriptarla
     if (adminUpdateUserDto.password) {
       adminUpdateUserDto.password = await bcrypt.hash(adminUpdateUserDto.password, 10);
+      user.passwordChangedAt = new Date();
     }
 
     // Actualizar los campos
@@ -144,6 +145,15 @@ export class UserService {
     await this.userRepository.save(user);
 
     return { message: 'Contraseña actualizada con éxito' };
+  }
+
+  /**
+   * Restablece la contraseña (recuperación por correo). Marca `passwordChangedAt`
+   * para que los JWT anteriores dejen de valer.
+   */
+  async resetPassword(id: number, newPassword: string): Promise<void> {
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await this.userRepository.update({ id }, { password: hashed, passwordChangedAt: new Date() });
   }
 
   /**

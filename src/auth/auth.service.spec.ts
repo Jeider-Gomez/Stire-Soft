@@ -14,7 +14,7 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new AuthService(mockUserService as any, mockJwtService as any, mockRoleRequests as any);
+    service = new AuthService(mockUserService as any, mockJwtService as any, mockRoleRequests as any, {} as any, {} as any, { get: jest.fn() } as any);
   });
 
   describe('login', () => {
