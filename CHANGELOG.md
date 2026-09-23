@@ -12,6 +12,23 @@ entry to the oldest.
 
 ---
 
+## Ola del 23 de Septiembre (2ª pasada) — móvil, ejercicio, todos los tipos de actividad y Fase 24 · 23 de Septiembre de 2026
+
+- **Móvil:** el menú lateral es un cajón en pantallas < 768 px (`useMobileSidebar`) en los tres layouts; sin desborde a 375 px.
+- **Pantalla de ejercicio:** casos públicos/privados, límite de tiempo y autoguardado salen de datos reales; el resultado de
+  «Probar código» se ve; autoguardado con debounce; una sola llamada a `/submissions/start`.
+- **Backend:** `ai_evaluated` se rechaza al crearla (BE-01); el estudiante solo ve módulos publicados y actividades
+  publicadas de SU clase; los PATCH de sección/lección/unidad ya no mueven contenido a otra clase; la nota de código se
+  escala a los puntos de la pregunta (antes un ejercicio de 25 puntos valía 20 como máximo).
+- **Probado en Chrome real:** el estudiante resuelve los 6 tipos (opción múltiple, código, completar código, arrastrar,
+  emparejar, ordenar) con respuesta incorrecta y correcta.
+- **Brechas funcionales, para la Fase 24 de Antigravity** (`docs/antigravity/PLAN_IMPLEMENTACION.md`): el docente no puede
+  crear módulos/temas/unidades/lecciones ni ejercicios que no sean de código; falta el registro de usuarios y desactivar
+  cuentas para el admin; no hay pantalla de perfil/contraseña; falta editar la clase.
+- Build limpio; **65/65 suites, 586/586 tests**; typecheck en 0.
+
+---
+
 ## Ola del 23 de Septiembre — simulación de usuario, verificación del reporte de Jorge y 11 correcciones · 23 de Septiembre de 2026
 
 A pedido del dueño: auditoría exhaustiva actuando como usuario (Chrome real contra una base desechable) y
