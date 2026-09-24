@@ -19,18 +19,29 @@
         </p>
       </div>
 
-      <!-- Selector de Clase -->
-      <div class="flex items-center gap-2">
-        <label for="class-selector" class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
-        <select
-          id="class-selector"
-          v-model="selectedClassId"
-          @change="loadSections"
-          class="text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte">
-          <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
-            {{ c.name }} ({{ c.code }})
-          </option>
-        </select>
+      <!-- Selector de Clase y Botón Nuevo Módulo -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <label for="class-selector" class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
+          <select
+            id="class-selector"
+            v-model="selectedClassId"
+            @change="loadSections"
+            class="text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte">
+            <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
+              {{ c.name }} ({{ c.code }})
+            </option>
+          </select>
+        </div>
+
+        <button
+          v-if="selectedClassId"
+          @click="openNewModuleModal"
+          class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
+          aria-label="Crear nuevo módulo curricular">
+          <span>+</span>
+          <span>Nuevo módulo</span>
+        </button>
       </div>
     </header>
 
@@ -63,12 +74,23 @@
     </div>
 
     <!-- ESTADO 3: Vacío -->
-    <div v-else-if="sections.length === 0" class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
-      <span class="text-3xl">📚</span>
-      <h3 class="font-bold text-base-texto-primario text-sm">Sin módulos curriculares</h3>
-      <p class="text-base-texto-secundario max-w-md mx-auto">
-        Esta clase aún no cuenta con secciones temáticas configuradas en el sistema.
-      </p>
+    <div v-else-if="sections.length === 0" class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-4">
+      <span class="text-3xl block">📚</span>
+      <div>
+        <h3 class="font-bold text-base-texto-primario text-sm">Sin módulos curriculares</h3>
+        <p class="text-base-texto-secundario max-w-md mx-auto mt-1">
+          Esta clase aún no cuenta con secciones temáticas configuradas en el sistema.
+        </p>
+      </div>
+      <div>
+        <button
+          v-if="selectedClassId"
+          @click="openNewModuleModal"
+          class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm">
+          <span>+</span>
+          <span>Crear primer módulo</span>
+        </button>
+      </div>
     </div>
 
     <!-- ESTADO 4: Defecto (Árbol Curricular) -->
@@ -94,6 +116,9 @@
           </div>
 
           <div class="flex items-center gap-2">
+            <span v-if="!sec.isPublished" class="text-[11px] text-base-texto-secundario italic hidden md:inline">
+              Los estudiantes no lo verán hasta que lo publiques
+            </span>
             <button
               @click="toggleSectionPublish(sec)"
               class="px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
@@ -101,6 +126,13 @@
                 ? 'bg-semantico-pasa/15 text-semantico-pasa border-semantico-pasa/40 hover:bg-semantico-pasa/25'
                 : 'bg-base-blanco text-base-texto-secundario border-base-borde-fuerte hover:text-base-texto-primario'">
               {{ sec.isPublished ? '✔ Publicado' : '○ Borrador' }}
+            </button>
+            <button
+              @click="openNewTopicModal(sec)"
+              class="px-2.5 py-1 rounded text-[11px] font-bold bg-base-blanco border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte flex items-center gap-1"
+              :aria-label="`Crear nuevo tema en módulo ${sec.title}`">
+              <span>+</span>
+              <span>Nuevo tema</span>
             </button>
           </div>
         </div>
@@ -115,7 +147,7 @@
             v-for="topic in sec.topics"
             :key="topic.id"
             class="rounded-lg border border-base-borde-sutil p-3 bg-base-blanco space-y-2">
-            <!-- Cabecera del Topic con acciones Editar / Archivar -->
+            <!-- Cabecera del Topic con acciones Editar / Archivar / Nueva unidad -->
             <div class="flex items-center justify-between text-xs">
               <span class="font-bold text-base-texto-primario flex items-center gap-1.5">
                 <span class="text-acento-ambar-fuerte">📁</span>
@@ -125,6 +157,12 @@
                 <span class="text-[10px] text-base-texto-secundario font-mono">
                   Orden: {{ topic.order }}
                 </span>
+                <button
+                  @click="openNewUnitModal(sec, topic)"
+                  class="px-2 py-0.5 rounded text-[11px] font-semibold bg-acento-ambar-fuerte/10 border border-acento-ambar-fuerte/30 text-acento-ambar-fuerte hover:bg-acento-ambar/20 transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                  :aria-label="`Nueva unidad en tema ${topic.title}`">
+                  + Nueva unidad
+                </button>
                 <button
                   @click="openEditTopicModal(topic)"
                   class="px-2 py-0.5 rounded text-[11px] font-semibold bg-base-bg-secundario border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
@@ -160,6 +198,12 @@
                     :class="unit.isActive !== false ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-texto-secundario/15 text-base-texto-secundario'">
                     {{ unit.isActive !== false ? 'Activa' : 'Inactiva' }}
                   </span>
+                  <button
+                    @click="openLessonsModal(unit)"
+                    class="px-2 py-0.5 rounded text-[11px] font-semibold bg-acento-ambar/10 border border-acento-ambar-fuerte/30 text-acento-ambar-fuerte hover:bg-acento-ambar/20 transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                    :aria-label="`Gestionar lecciones de la unidad ${unit.title}`">
+                    📖 Lecciones
+                  </button>
                   <button
                     @click="openEditUnitModal(unit)"
                     class="px-2 py-0.5 rounded text-[11px] font-semibold bg-base-blanco border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
@@ -381,11 +425,26 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Modales para construir currículo (Módulo, Tema, Unidad) -->
+    <CurriculumBuilderModals
+      ref="builderModalsRef"
+      @section-created="onSectionCreated"
+      @topic-created="onTopicCreated"
+      @unit-created="onUnitCreated"
+      @feedback="msg => actionFeedback = msg" />
+
+    <!-- Modal para gestionar Lecciones de una unidad -->
+    <UnitLessonsModal
+      ref="lessonsModalRef"
+      :unit="selectedUnitForLessons" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
+import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
+import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 
 definePageMeta({
   layout: 'teacher'
@@ -432,6 +491,64 @@ const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
 const actionFeedback = ref<string | null>(null)
 const actionError = ref<string | null>(null)
+
+// Refs para modales de construcción y lecciones
+const builderModalsRef = ref<InstanceType<typeof CurriculumBuilderModals> | null>(null)
+const lessonsModalRef = ref<InstanceType<typeof UnitLessonsModal> | null>(null)
+const selectedUnitForLessons = ref<{ id: number; title: string } | null>(null)
+
+function openNewModuleModal() {
+  if (!selectedClassId.value) return
+  const maxOrder = sections.value.reduce((max, s) => Math.max(max, s.order || 0), 0)
+  builderModalsRef.value?.openCreateModule(selectedClassId.value, maxOrder)
+}
+
+function openNewTopicModal(sec: SectionItem) {
+  const maxOrder = (sec.topics || []).reduce((max, t) => Math.max(max, t.order || 0), 0)
+  builderModalsRef.value?.openCreateTopic(sec.id, maxOrder)
+}
+
+function openNewUnitModal(sec: SectionItem, topic: TopicItem) {
+  const maxOrder = (topic.learningUnits || []).reduce((max, u) => Math.max(max, u.order || 0), 0)
+  builderModalsRef.value?.openCreateUnit(sec.id, topic.id, maxOrder)
+}
+
+function openLessonsModal(unit: LearningUnitItem) {
+  selectedUnitForLessons.value = { id: unit.id, title: unit.title }
+  nextTick(() => {
+    lessonsModalRef.value?.openModal()
+  })
+}
+
+function onSectionCreated(newSec: any) {
+  sections.value.push({
+    ...newSec,
+    isPublished: newSec.isPublished ?? false,
+    topics: []
+  })
+}
+
+function onTopicCreated(payload: { sectionId: number; topic: any }) {
+  const sec = sections.value.find(s => s.id === payload.sectionId)
+  if (sec) {
+    if (!sec.topics) sec.topics = []
+    sec.topics.push({
+      ...payload.topic,
+      learningUnits: []
+    })
+  }
+}
+
+function onUnitCreated(payload: { sectionId: number; topicId: number; unit: any }) {
+  const sec = sections.value.find(s => s.id === payload.sectionId)
+  if (sec) {
+    const topic = sec.topics?.find(t => t.id === payload.topicId)
+    if (topic) {
+      if (!topic.learningUnits) topic.learningUnits = []
+      topic.learningUnits.push(payload.unit)
+    }
+  }
+}
 
 // Refs para autofocus en modales
 const editTopicTitleRef = ref<HTMLInputElement | null>(null)

@@ -188,15 +188,18 @@ export const useStudentStore = defineStore('student', () => {
               title: string
               description?: string
               order: number
+              isActive?: boolean
               learningUnits?: Array<{
                 id: number
                 title: string
                 description?: string
                 order: number
                 difficulty: string
+                isActive?: boolean
                 activities?: Array<{
                   id: number
                   title: string
+                  status?: string
                   adaptiveWeight?: number
                   totalPoints?: number
                   activityType?: { code: string; name?: string }
@@ -206,13 +209,17 @@ export const useStudentStore = defineStore('student', () => {
           }>>(`/sections/class/${currentClassId.value}`)
 
           if (Array.isArray(sections) && sections.length > 0) {
-            modules.value = sections.map((sec, secIdx) => {
+            modules.value = sections
+              .filter(sec => sec.isPublished !== false)
+              .map((sec, secIdx) => {
               const allUnits: LearningUnit[] = []
 
               if (Array.isArray(sec.topics)) {
                 for (const top of sec.topics) {
+                  if (top.isActive === false) continue
                   if (Array.isArray(top.learningUnits)) {
                     for (const u of top.learningUnits) {
+                      if (u.isActive === false) continue
                       const tracked = masteryMap.get(u.id)
                       const mastery = tracked ? tracked.mastery : 0
 
@@ -225,12 +232,14 @@ export const useStudentStore = defineStore('student', () => {
                         status = 'por-iniciar'
                       }
 
+                      const validActivities = (u.activities || []).filter(a => !a.status || a.status === 'published')
+
                       // Encontrar la primera actividad de código para el botón rápido de ejercicio, o la primera actividad disponible
-                      const codingAct = (u.activities || []).find(a =>
+                      const codingAct = validActivities.find(a =>
                         (a.activityType?.code || '').toLowerCase().includes('code') ||
                         a.title.toLowerCase().includes('código') ||
                         a.title.toLowerCase().includes('desafío')
-                      ) || (u.activities || [])[0]
+                      ) || validActivities[0]
 
                       allUnits.push({
                         id: u.id,
@@ -242,7 +251,7 @@ export const useStudentStore = defineStore('student', () => {
                         status,
                         masteryPercentage: Math.round(mastery),
                         exerciseActivityId: codingAct?.id,
-                        activities: u.activities || []
+                        activities: validActivities
                       })
                     }
                   }
