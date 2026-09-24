@@ -3,6 +3,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },
 
+  // Aplicación de una sola página: no hay rutas de servidor ni useFetch, la sesión vive en una
+  // cookie leída en el navegador y todas las peticiones salen del cliente. Sin SSR se publica
+  // como archivos estáticos (`nuxi generate`) en cualquier hosting gratuito con ancho de banda
+  // ilimitado, sin funciones serverless ni desajustes de hidratación entre servidor y cliente.
+  ssr: false,
+
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt'

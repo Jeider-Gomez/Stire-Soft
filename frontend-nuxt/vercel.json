@@ -1,0 +1,6 @@
+{
+  "framework": null,
+  "buildCommand": "npm run generate",
+  "outputDirectory": ".output/public",
+  "rewrites": [{ "source": "/(.*)", "destination": "/200.html" }]
+}

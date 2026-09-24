@@ -1,0 +1,3 @@
+# Reescritura para aplicación de una sola página (Cloudflare Pages y Netlify): cualquier ruta que no sea
+# un archivo real sirve la app y el router de Nuxt decide. Sin esto, recargar /estudiante/unidad/5 da 404.
+/*  /200.html  200

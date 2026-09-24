@@ -248,7 +248,7 @@ Se investigó en tres frentes con fuentes de 2026 (calificación multi-lenguaje,
 
 ## Decisión (dueño del proyecto, 2026-09-23)
 
-1. **Infraestructura final ($0):** frontend en Vercel Hobby; backend + MariaDB + Caddy en **una VM de Oracle Cloud Always Free** (Ampere A1, arm64, 2 núcleos/12 GB)
+1. **Infraestructura final ($0):** frontend estático en **Cloudflare Pages** (Vercel Hobby como alternativa; decisión del 23/09 tras verificar que el frontend es una SPA: `ssr: false`, sin rutas de servidor); backend + MariaDB + Caddy en **una VM de Oracle Cloud Always Free** (Ampere A1, arm64, 2 núcleos/12 GB)
    con `docker-compose.prod.yml`; correo por Gmail SMTP; dominio y HTTPS con DuckDNS o nip.io. **Plan B:** cuenta gratuita de Azure (12 meses: VM + MySQL
    Flexible B1ms gestionado; pide tarjeta y después cuesta) o Azure for Students ($100 sin tarjeta si el correo institucional califica: sin verificar).
 2. **No se migra la base de datos.** Verificado: TiDB Cloud gratis **no soporta** `ALTER TABLE … ADD … STORED` (falla la migración `AddActiveSubmissionConstraint`); Postgres

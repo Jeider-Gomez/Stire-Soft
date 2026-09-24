@@ -12,6 +12,15 @@ entry to the oldest.
 
 ---
 
+## Ola del 23 de Septiembre (5ª pasada) — frontend estático · 23 de Septiembre de 2026
+
+El frontend no usaba SSR (sin rutas de servidor ni `useFetch`; sesión en cookie leída en el navegador), así que se pasa a **SPA estática** (`ssr: false`, `nuxt generate`, ~1 MB):
+puede alojarse gratis en Cloudflare Pages (ancho de banda ilimitado, sin cláusula de uso no comercial), Vercel u otro hosting estático. Se añaden `public/_redirects` y
+`vercel.json` con la reescritura de rutas profundas. Verificado con una compilación real servida con la misma regla de reescritura: recargas duras en rutas con parámetro,
+protección por rol, 404, ruta pública de recuperación, ejercicio de código y entrega. **Sin probar en Cloudflare ni Vercel reales.** Nota: `NUXT_PUBLIC_API_BASE` se fija al compilar.
+
+---
+
 ## Ola del 23 de Septiembre (4ª pasada) — infraestructura final y alcance de lenguajes (ADR 13) · 23 de Septiembre de 2026
 
 Tras una investigación en tres frentes con fuentes de 2026, el dueño cerró: Vercel + VM Oracle Always Free con MariaDB en Docker + Gmail + DuckDNS ($0),

@@ -2,7 +2,7 @@
 
 Decisiones y motivos: `docs/ADR_DECISIONES_ARQUITECTURA.md` (ADR 09 y ADR 12). Esta guía es solo el paso a paso.
 
-**Arquitectura:** frontend en **Vercel** (gratis) · backend + base de datos + HTTPS en **una máquina virtual** con Docker
+**Arquitectura:** frontend estático en **Cloudflare Pages** (gratis; Vercel como alternativa) · backend + base de datos + HTTPS en **una máquina virtual** con Docker
 (`docker-compose.prod.yml`) · correo de recuperación por **SMTP** (Gmail) · Tutor con la clave de Gemini de cada estudiante
 (no cuesta nada al servidor).
 
@@ -19,7 +19,7 @@ Decisiones y motivos: `docs/ADR_DECISIONES_ARQUITECTURA.md` (ADR 09 y ADR 12). E
 | Cuenta | Para qué | Costo |
 |---|---|---|
 | GitHub (ya tienes el repo) | Vercel despliega desde ahí | $0 |
-| Vercel (Hobby) | Frontend | $0 (solo uso no comercial: un proyecto universitario califica) |
+| Cloudflare Pages (o Vercel Hobby) | Frontend estático | $0 |
 | Oracle Cloud (Always Free) | La máquina del backend y la base | $0 (pide tarjeta solo para verificar la identidad) |
 | Gmail dedicada (ej. `stire.notificaciones@gmail.com`) | Enviar correos de recuperación | $0 |
 | Un nombre de dominio para la API | HTTPS | $0: DuckDNS (`stire-api.duckdns.org`) o `nip.io` |
@@ -66,18 +66,31 @@ curl https://TU-DOMINIO/health        # {"status":"ok"}
 - Actualizar más adelante: `git pull && docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build`, y si hay
   migraciones nuevas, el comando `migration:run` de arriba.
 
-## 3. Frontend en Vercel
+## 3. Frontend (sitio estático, gratis)
 
-1. vercel.com → *Add New → Project* → importa el repositorio de GitHub.
-2. **Root Directory:** `frontend-nuxt` (Vercel detecta Nuxt solo).
-3. *Environment Variables:* `NUXT_PUBLIC_API_BASE` = `https://TU-DOMINIO` (el del paso 1, con https y sin barra final).
-   No pongas `NUXT_PUBLIC_DEMO_MODE`.
-4. Deploy. Copia la URL (`https://algo.vercel.app`) a `FRONTEND_URL` y `CORS_ORIGIN` en `.env.prod` y reinicia el backend:
-   `docker compose -f docker-compose.prod.yml --env-file .env.prod up -d`.
+El frontend se publica como **archivos estáticos** (`nuxt generate`, ~1 MB): no hay servidor de Nuxt que mantener. Se verificó con una
+compilación real y un servidor con la regla de reescritura: recargas en rutas profundas (`/estudiante/unidad/5`), protección por rol, 404,
+`/auth/reset-password?token=…`, ejercicio de código y entrega.
 
-**Con Claude por MCP:** en Claude Code escribe `/mcp`, elige *claude.ai Vercel* y autoriza en el navegador. Con eso Claude puede
-ver tus proyectos, despliegues y registros en Vercel para diagnosticar. Crear el proyecto conviene hacerlo una vez en el panel
-(pasos 1-4): es lo más simple y deja el despliegue automático en cada `git push`.
+**Recomendado: Cloudflare Pages** (ancho de banda ilimitado y sin cláusula de «solo uso no comercial» como la de Vercel Hobby):
+1. dash.cloudflare.com → *Workers & Pages* → *Create* → *Pages* → conecta el repositorio de GitHub.
+2. *Root directory:* `frontend-nuxt` · *Build command:* `npm run generate` · *Build output directory:* `.output/public`.
+3. *Environment variables (de **compilación**):* `NUXT_PUBLIC_API_BASE` = `https://TU-DOMINIO` (con https y sin barra final). **Importante:** en un sitio
+   estático esta variable se «hornea» al compilar; si cambias la URL del backend, vuelve a desplegar. No pongas `NUXT_PUBLIC_DEMO_MODE`.
+4. El archivo `frontend-nuxt/public/_redirects` ya hace que las rutas profundas funcionen. Copia la URL (`https://algo.pages.dev`) a `FRONTEND_URL` y
+   `CORS_ORIGIN` en `.env.prod` y reinicia el backend.
+
+**Alternativa: Vercel Hobby** (mismos pasos: proyecto nuevo, *Root Directory* `frontend-nuxt`; `frontend-nuxt/vercel.json` ya trae el comando, la carpeta de
+salida y la reescritura). Límites: uso no comercial, ~100 GB/mes de transferencia como guía de uso justo.
+
+**Alternativa sin cuenta extra: servirlo desde la propia VM.** Compila con `npm run generate` y añade a `deploy/Caddyfile` un sitio que sirva
+`.output/public` con `try_files {path} /200.html`. Ventajas: un solo dominio y cero problemas de CORS. Desventajas: sin CDN y ocupa la VM.
+
+No conviene: Netlify gratis (desde sep-2025 son 300 créditos/mes, ≈15 GB, y se pausa al agotarlos), Firebase Hosting Spark (360 MB/día de transferencia),
+ni GitHub Pages (límite blando de 100 GB y sin reescritura de rutas para una SPA).
+
+**Con Claude por MCP (Vercel):** en Claude Code escribe `/mcp`, elige *claude.ai Vercel* y autoriza; solo sirve si eliges Vercel. Cloudflare Pages se
+configura una vez en su panel y luego despliega solo con cada `git push`.
 
 ## 4. Correo de recuperación de contraseña (Gmail)
 
