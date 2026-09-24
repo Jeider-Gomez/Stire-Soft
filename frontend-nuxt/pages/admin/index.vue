@@ -17,6 +17,8 @@
       </div>
 
       <button
+        id="open-register-user-btn"
+        @click="openRegisterModal"
         class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors shadow-sm self-start sm:self-auto">
         + Registrar Usuario
       </button>
@@ -158,12 +160,18 @@
                 </span>
               </td>
               <td class="p-3 text-right">
-                <div v-if="user.id === authStore.user?.id" class="text-right">
+                <div v-if="user.id === authStore.user?.id" class="flex items-center justify-end gap-2">
                   <span class="inline-block px-2 py-1 rounded bg-base-bg-secundario border border-base-borde-sutil text-[10px] text-base-texto-secundario font-medium">
-                    Tu propia cuenta (rol bloqueado)
+                    Tu propia cuenta (protegida)
                   </span>
+                  <button
+                    disabled
+                    title="No puedes desactivar tu propia cuenta"
+                    class="px-2 py-1 rounded border border-base-borde-sutil text-[11px] text-base-texto-secundario opacity-40 cursor-not-allowed">
+                    Desactivar
+                  </button>
                 </div>
-                <div v-else class="flex items-center justify-end gap-2">
+                <div v-else class="flex items-center justify-end gap-1.5 flex-wrap">
                   <label :for="`role-select-${user.id}`" class="sr-only">Cambiar rol de {{ user.fullName || user.email }}</label>
                   <select
                     :id="`role-select-${user.id}`"
@@ -178,8 +186,23 @@
                     :id="`change-role-btn-${user.id}`"
                     @click="openChangeRoleModal(user, userSelectedRoles[user.id])"
                     :disabled="isUpdatingRole && targetUser?.id === user.id"
-                    class="borde-afordancia px-2.5 py-1 rounded text-[11px] font-semibold text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-50 transition-colors">
-                    Cambiar rol
+                    class="borde-afordancia px-2 py-1 rounded text-[11px] font-semibold text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-50 transition-colors">
+                    Rol
+                  </button>
+                  <button
+                    :id="`reset-pwd-btn-${user.id}`"
+                    @click="openResetPwdModal(user)"
+                    class="px-2 py-1 rounded border border-base-borde-fuerte text-[11px] font-semibold text-base-texto-primario hover:bg-base-bg-secundario transition-colors">
+                    Clave
+                  </button>
+                  <button
+                    :id="`toggle-active-btn-${user.id}`"
+                    @click="openToggleActiveModal(user)"
+                    class="px-2 py-1 rounded text-[11px] font-semibold transition-colors"
+                    :class="user.isActive !== false
+                      ? 'border border-semantico-falla/30 text-semantico-falla hover:bg-semantico-falla/10'
+                      : 'border border-semantico-pasa/30 text-semantico-pasa hover:bg-semantico-pasa/10'">
+                    {{ user.isActive !== false ? 'Desactivar' : 'Reactivar' }}
                   </button>
                 </div>
               </td>
@@ -435,11 +458,345 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal accesible: Registrar Usuario (T3) -->
+    <div
+      v-if="showRegisterModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"
+      @click.self="cancelRegister">
+      <div
+        ref="registerDialogRef"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="register-modal-title"
+        tabindex="-1"
+        @keydown="handleRegisterKeydown"
+        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte flex items-center justify-center text-lg font-bold flex-shrink-0">
+            ➕
+          </div>
+          <div>
+            <h3 id="register-modal-title" class="font-bold text-sm text-base-texto-primario">
+              Registrar nuevo usuario
+            </h3>
+            <p class="text-xs text-base-texto-secundario">
+              Creación administrativa de cuenta en la plataforma
+            </p>
+          </div>
+        </div>
+
+        <div v-if="regError" role="alert" class="p-2.5 rounded-lg bg-semantico-falla/10 border border-semantico-falla/30 text-xs text-semantico-falla">
+          {{ regError }}
+        </div>
+
+        <form @submit.prevent="executeRegisterUser" class="space-y-3 text-xs">
+          <div>
+            <label for="reg-fullname" class="block font-semibold text-base-texto-primario mb-1">
+              Nombre completo <span class="text-semantico-falla">*</span>
+            </label>
+            <input
+              id="reg-fullname"
+              ref="regFullNameInputRef"
+              v-model="regForm.fullName"
+              type="text"
+              required
+              placeholder="Ej. Laura Gómez"
+              class="w-full px-3 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-base-texto-primario outline-none focus:ring-1 focus:ring-acento-ambar-fuerte"
+            />
+          </div>
+
+          <div>
+            <label for="reg-email" class="block font-semibold text-base-texto-primario mb-1">
+              Correo electrónico <span class="text-semantico-falla">*</span>
+            </label>
+            <input
+              id="reg-email"
+              v-model="regForm.email"
+              type="email"
+              required
+              placeholder="correo@ejemplo.com"
+              class="w-full px-3 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-base-texto-primario outline-none focus:ring-1 focus:ring-acento-ambar-fuerte"
+            />
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="reg-pwd" class="font-semibold text-base-texto-primario">
+                Contraseña inicial <span class="text-semantico-falla">*</span>
+              </label>
+              <button
+                type="button"
+                @click="regForm.password = generateCompliantPassword()"
+                class="text-[11px] text-acento-ambar-fuerte hover:underline font-medium">
+                Generar aleatoria
+              </button>
+            </div>
+            <div class="relative">
+              <input
+                id="reg-pwd"
+                v-model="regForm.password"
+                :type="showRegPwd ? 'text' : 'password'"
+                required
+                placeholder="Mín. 6 car., mayúscula, minúscula y número/símbolo"
+                class="w-full px-3 py-1.5 pr-8 rounded-md border border-base-borde-fuerte bg-base-blanco text-base-texto-primario outline-none focus:ring-1 focus:ring-acento-ambar-fuerte"
+              />
+              <button
+                type="button"
+                @click="showRegPwd = !showRegPwd"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                :title="showRegPwd ? 'Ocultar contraseña' : 'Ver contraseña'">
+                <EyeOff v-if="showRegPwd" :size="14" />
+                <Eye v-else :size="14" />
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label for="reg-role" class="block font-semibold text-base-texto-primario mb-1">
+              Rol inicial
+            </label>
+            <select
+              id="reg-role"
+              v-model="regForm.role"
+              class="w-full px-3 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-base-texto-primario outline-none focus:ring-1 focus:ring-acento-ambar-fuerte">
+              <option value="estudiante">Estudiante</option>
+              <option value="docente">Docente</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-borde-sutil">
+            <button
+              type="button"
+              @click="cancelRegister"
+              :disabled="isRegistering"
+              class="px-4 py-2 rounded-md border border-base-borde-fuerte text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-50 transition-colors">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              :disabled="isRegistering"
+              class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold hover:bg-acento-ambar disabled:opacity-50 transition-colors flex items-center gap-2">
+              <span v-if="isRegistering" class="inline-block animate-spin">⏳</span>
+              <span>{{ isRegistering ? 'Registrando...' : 'Registrar usuario' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal accesible: Desactivar / Reactivar Usuario (T3) -->
+    <div
+      v-if="showToggleActiveModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"
+      @click.self="cancelToggleActive">
+      <div
+        ref="toggleActiveDialogRef"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="toggle-active-title"
+        tabindex="-1"
+        @keydown="handleToggleActiveKeydown"
+        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none">
+        
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0"
+            :class="targetActiveUser?.isActive !== false ? 'bg-semantico-falla/15 text-semantico-falla' : 'bg-semantico-pasa/15 text-semantico-pasa'">
+            {{ targetActiveUser?.isActive !== false ? '⏸' : '▶' }}
+          </div>
+          <div>
+            <h3 id="toggle-active-title" class="font-bold text-sm text-base-texto-primario">
+              {{ targetActiveUser?.isActive !== false ? 'Desactivar usuario' : 'Reactivar usuario' }}
+            </h3>
+            <p class="text-xs text-base-texto-secundario">
+              Control de acceso a la plataforma
+            </p>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil text-xs space-y-2">
+          <p class="text-base-texto-primario">
+            <span class="font-semibold">{{ targetActiveUser?.fullName || 'Usuario' }}</span>
+            <span class="text-base-texto-secundario block font-mono text-[11px]">{{ targetActiveUser?.email }}</span>
+          </p>
+          <p :class="targetActiveUser?.isActive !== false ? 'text-semantico-falla font-medium' : 'text-semantico-pasa font-medium'">
+            {{ targetActiveUser?.isActive !== false
+              ? 'El usuario no podrá iniciar sesión en la plataforma y cualquier sesión abierta se cerrará de inmediato.'
+              : 'El usuario podrá volver a iniciar sesión y acceder a sus actividades con normalidad.' }}
+          </p>
+        </div>
+
+        <div v-if="toggleActiveError" role="alert" class="p-2.5 rounded-lg bg-semantico-falla/10 border border-semantico-falla/30 text-xs text-semantico-falla">
+          {{ toggleActiveError }}
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-base-borde-sutil">
+          <button
+            ref="cancelToggleActiveBtnRef"
+            type="button"
+            @click="cancelToggleActive"
+            :disabled="isTogglingActive"
+            class="px-4 py-2 rounded-md border border-base-borde-fuerte text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-50 transition-colors">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            @click="executeToggleActive"
+            :disabled="isTogglingActive"
+            class="px-4 py-2 rounded-md text-base-blanco text-xs font-bold disabled:opacity-50 transition-colors flex items-center gap-2"
+            :class="targetActiveUser?.isActive !== false ? 'bg-semantico-falla hover:opacity-90' : 'bg-semantico-pasa hover:opacity-90'">
+            <span v-if="isTogglingActive" class="inline-block animate-spin">⏳</span>
+            <span>{{ isTogglingActive ? 'Procesando...' : (targetActiveUser?.isActive !== false ? 'Desactivar cuenta' : 'Reactivar cuenta') }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal accesible: Restablecer Contraseña (T3) -->
+    <div
+      v-if="showResetPwdModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"
+      @click.self="closeResetPwdModal">
+      <div
+        ref="resetPwdDialogRef"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reset-pwd-title"
+        tabindex="-1"
+        @keydown="handleResetPwdKeydown"
+        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte flex items-center justify-center text-lg font-bold flex-shrink-0">
+            🔑
+          </div>
+          <div>
+            <h3 id="reset-pwd-title" class="font-bold text-sm text-base-texto-primario">
+              Restablecer contraseña
+            </h3>
+            <p class="text-xs text-base-texto-secundario">
+              Generar nueva clave de acceso para el usuario
+            </p>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil text-xs">
+          <p class="font-semibold text-base-texto-primario">{{ targetResetUser?.fullName || 'Usuario' }}</p>
+          <p class="text-base-texto-secundario font-mono text-[11px]">{{ targetResetUser?.email }}</p>
+        </div>
+
+        <!-- Paso 1: Formulario antes de guardar -->
+        <template v-if="!resetSuccessPassword">
+          <div v-if="resetPwdError" role="alert" class="p-2.5 rounded-lg bg-semantico-falla/10 border border-semantico-falla/30 text-xs text-semantico-falla">
+            {{ resetPwdError }}
+          </div>
+
+          <form @submit.prevent="executeResetPassword" class="space-y-3 text-xs">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label for="reset-pwd-input" class="font-semibold text-base-texto-primario">
+                  Nueva contraseña <span class="text-semantico-falla">*</span>
+                </label>
+                <button
+                  type="button"
+                  @click="resetNewPassword = generateCompliantPassword()"
+                  class="text-[11px] text-acento-ambar-fuerte hover:underline font-medium">
+                  Generar aleatoria
+                </button>
+              </div>
+              <div class="relative">
+                <input
+                  id="reset-pwd-input"
+                  ref="resetPwdInputRef"
+                  v-model="resetNewPassword"
+                  :type="showResetPwd ? 'text' : 'password'"
+                  required
+                  placeholder="Escribe o pulsa Generar aleatoria..."
+                  class="w-full px-3 py-1.5 pr-8 rounded-md border border-base-borde-fuerte bg-base-blanco text-base-texto-primario outline-none focus:ring-1 focus:ring-acento-ambar-fuerte font-mono text-xs"
+                />
+                <button
+                  type="button"
+                  @click="showResetPwd = !showResetPwd"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  :title="showResetPwd ? 'Ocultar contraseña' : 'Ver contraseña'">
+                  <EyeOff v-if="showResetPwd" :size="14" />
+                  <Eye v-else :size="14" />
+                </button>
+              </div>
+              <p class="text-[11px] text-base-texto-secundario mt-1">
+                Mínimo 6 caracteres con mayúscula, minúscula y número o símbolo.
+              </p>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-borde-sutil">
+              <button
+                type="button"
+                @click="closeResetPwdModal"
+                :disabled="isResettingPwd"
+                class="px-4 py-2 rounded-md border border-base-borde-fuerte text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-50 transition-colors">
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                :disabled="isResettingPwd || !resetNewPassword"
+                class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold hover:bg-acento-ambar disabled:opacity-50 transition-colors flex items-center gap-2">
+                <span v-if="isResettingPwd" class="inline-block animate-spin">⏳</span>
+                <span>{{ isResettingPwd ? 'Guardando...' : 'Restablecer contraseña' }}</span>
+              </button>
+            </div>
+          </form>
+        </template>
+
+        <!-- Paso 2: Contraseña generada mostrada UNA SOLA VEZ -->
+        <template v-else>
+          <div role="status" class="p-3 rounded-lg bg-semantico-pasa/10 border border-semantico-pasa/30 text-xs text-semantico-pasa font-semibold flex items-center gap-1.5">
+            <span>✔</span> Contraseña restablecida exitosamente.
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <p class="text-base-texto-primario font-medium">Contraseña temporal asignada:</p>
+            <div class="flex items-center gap-2">
+              <div class="flex-1 p-2.5 rounded-md bg-base-bg-secundario border border-base-borde-fuerte font-mono text-sm text-base-texto-primario font-bold tracking-wider select-all">
+                {{ resetSuccessPassword }}
+              </div>
+              <button
+                type="button"
+                @click="copyResetPassword"
+                class="px-3 py-2.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold hover:bg-acento-ambar transition-colors flex items-center gap-1.5 text-xs">
+                <Check v-if="copiedResetPwd" :size="14" />
+                <Copy v-else :size="14" />
+                <span>{{ copiedResetPwd ? 'Copiada' : 'Copiar' }}</span>
+              </button>
+            </div>
+            <div class="p-3 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 text-xs text-base-texto-primario space-y-1">
+              <p class="font-bold text-acento-ambar-fuerte">⚠ Información importante:</p>
+              <p>Entrégasela por un canal seguro; la persona debe cambiarla en Mi perfil.</p>
+              <p class="text-base-texto-secundario text-[11px]">Por seguridad, esta contraseña no se volverá a mostrar tras cerrar esta ventana.</p>
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-3 border-t border-base-borde-sutil">
+            <button
+              ref="closeResetPwdBtnRef"
+              type="button"
+              @click="closeResetPwdModal"
+              class="px-4 py-2 rounded-md bg-base-bg-secundario border border-base-borde-fuerte text-xs font-bold text-base-texto-primario hover:bg-base-borde-sutil transition-colors">
+              Entendido y cerrar
+            </button>
+          </div>
+        </template>
+
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onMounted } from 'vue'
+import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
+import { Eye, EyeOff, Copy, Check } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 
@@ -785,4 +1142,312 @@ const filteredUsers = computed(() => {
     return matchesSearch && matchesRole
   })
 })
+
+// ─── T3: Utilidad para generar contraseña que cumpla con la política institucional ─────────
+function generateCompliantPassword(): string {
+  const upper = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
+  const lower = 'abcdefghijkmnopqrstuvwxyz'
+  const numbers = '23456789'
+  const symbols = '!@#$%&*'
+  let pwd = 'S!'
+  for (let i = 0; i < 3; i++) pwd += upper[Math.floor(Math.random() * upper.length)]
+  for (let i = 0; i < 3; i++) pwd += lower[Math.floor(Math.random() * lower.length)]
+  for (let i = 0; i < 2; i++) pwd += numbers[Math.floor(Math.random() * numbers.length)]
+  for (let i = 0; i < 1; i++) pwd += symbols[Math.floor(Math.random() * symbols.length)]
+  return pwd
+}
+
+// ─── T3: Registro administrativo de usuarios (POST /users) ─────────────────
+const showRegisterModal = ref(false)
+const isRegistering = ref(false)
+const regError = ref('')
+const showRegPwd = ref(false)
+const registerDialogRef = ref<HTMLElement | null>(null)
+const regFullNameInputRef = ref<HTMLInputElement | null>(null)
+
+const regForm = reactive({
+  fullName: '',
+  email: '',
+  password: '',
+  role: 'estudiante'
+})
+
+function resetRegForm() {
+  regForm.fullName = ''
+  regForm.email = ''
+  regForm.password = ''
+  regForm.role = 'estudiante'
+  showRegPwd.value = false
+  regError.value = ''
+}
+
+function openRegisterModal() {
+  resetRegForm()
+  showRegisterModal.value = true
+}
+
+function cancelRegister() {
+  if (isRegistering.value) return
+  showRegisterModal.value = false
+  resetRegForm()
+}
+
+watch(showRegisterModal, (open) => {
+  if (open) {
+    nextTick(() => regFullNameInputRef.value?.focus())
+  }
+})
+
+function handleRegisterKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    cancelRegister()
+    return
+  }
+  if (event.key === 'Tab') {
+    if (!registerDialogRef.value) return
+    const focusable = Array.from(
+      registerDialogRef.value.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    )
+    if (!focusable.length) return
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }
+}
+
+async function executeRegisterUser() {
+  if (!regForm.fullName.trim() || !regForm.email.trim() || !regForm.password) {
+    regError.value = 'Completa todos los campos obligatorios.'
+    return
+  }
+  isRegistering.value = true
+  regError.value = ''
+
+  try {
+    const newUser = await api.post<BackendUser>('/users', {
+      fullName: regForm.fullName.trim(),
+      email: regForm.email.trim(),
+      password: regForm.password
+    })
+
+    if (regForm.role && regForm.role !== 'estudiante') {
+      await api.patch(`/users/${newUser.id}/role`, {
+        role: regForm.role
+      })
+      newUser.role = regForm.role
+    }
+
+    newUser.isActive = true
+    users.value.unshift(newUser)
+    userSelectedRoles.value[newUser.id] = newUser.role === 'administrador' ? 'admin' : newUser.role
+
+    successMessage.value = `Usuario ${newUser.fullName} (${newUser.email}) registrado exitosamente.`
+    showRegisterModal.value = false
+    resetRegForm()
+  } catch (err: any) {
+    const serverMsg = err?.data?.message || err?.message || 'Error al registrar el usuario.'
+    regError.value = Array.isArray(serverMsg) ? serverMsg.join('. ') : serverMsg
+  } finally {
+    isRegistering.value = false
+  }
+}
+
+// ─── T3: Desactivar / Reactivar cuenta (PATCH /users/:id { isActive }) ──────
+const showToggleActiveModal = ref(false)
+const targetActiveUser = ref<BackendUser | null>(null)
+const isTogglingActive = ref(false)
+const toggleActiveError = ref('')
+const toggleActiveDialogRef = ref<HTMLElement | null>(null)
+const cancelToggleActiveBtnRef = ref<HTMLButtonElement | null>(null)
+const lastActiveBtnId = ref<string | null>(null)
+
+function openToggleActiveModal(user: BackendUser) {
+  targetActiveUser.value = user
+  toggleActiveError.value = ''
+  lastActiveBtnId.value = `toggle-active-btn-${user.id}`
+  showToggleActiveModal.value = true
+}
+
+function cancelToggleActive() {
+  if (isTogglingActive.value) return
+  showToggleActiveModal.value = false
+  if (lastActiveBtnId.value) {
+    nextTick(() => document.getElementById(lastActiveBtnId.value!)?.focus())
+  }
+}
+
+watch(showToggleActiveModal, (open) => {
+  if (open) {
+    nextTick(() => cancelToggleActiveBtnRef.value?.focus())
+  }
+})
+
+function handleToggleActiveKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    cancelToggleActive()
+    return
+  }
+  if (event.key === 'Tab') {
+    if (!toggleActiveDialogRef.value) return
+    const focusable = Array.from(
+      toggleActiveDialogRef.value.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    )
+    if (!focusable.length) return
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }
+}
+
+async function executeToggleActive() {
+  if (!targetActiveUser.value) return
+  isTogglingActive.value = true
+  toggleActiveError.value = ''
+
+  const newActiveState = targetActiveUser.value.isActive === false
+  try {
+    await api.patch(`/users/${targetActiveUser.value.id}`, {
+      isActive: newActiveState
+    })
+
+    targetActiveUser.value.isActive = newActiveState
+    const u = users.value.find(item => item.id === targetActiveUser.value!.id)
+    if (u) {
+      u.isActive = newActiveState
+    }
+
+    successMessage.value = `Usuario ${targetActiveUser.value.fullName || targetActiveUser.value.email} ${newActiveState ? 'reactivado' : 'desactivado'} exitosamente.`
+    showToggleActiveModal.value = false
+    if (lastActiveBtnId.value) {
+      nextTick(() => document.getElementById(lastActiveBtnId.value!)?.focus())
+    }
+  } catch (err: any) {
+    const serverMsg = err?.data?.message || err?.message || 'Error al actualizar el estado del usuario.'
+    toggleActiveError.value = Array.isArray(serverMsg) ? serverMsg.join('. ') : serverMsg
+  } finally {
+    isTogglingActive.value = false
+  }
+}
+
+// ─── T3: Restablecer contraseña (PATCH /users/:id { password }) ─────────────
+const showResetPwdModal = ref(false)
+const targetResetUser = ref<BackendUser | null>(null)
+const resetNewPassword = ref('')
+const resetSuccessPassword = ref('')
+const showResetPwd = ref(false)
+const isResettingPwd = ref(false)
+const resetPwdError = ref('')
+const copiedResetPwd = ref(false)
+const resetPwdDialogRef = ref<HTMLElement | null>(null)
+const resetPwdInputRef = ref<HTMLInputElement | null>(null)
+const closeResetPwdBtnRef = ref<HTMLButtonElement | null>(null)
+const lastResetBtnId = ref<string | null>(null)
+
+function openResetPwdModal(user: BackendUser) {
+  targetResetUser.value = user
+  resetNewPassword.value = ''
+  resetSuccessPassword.value = ''
+  showResetPwd.value = false
+  resetPwdError.value = ''
+  copiedResetPwd.value = false
+  lastResetBtnId.value = `reset-pwd-btn-${user.id}`
+  showResetPwdModal.value = true
+}
+
+function closeResetPwdModal() {
+  if (isResettingPwd.value) return
+  showResetPwdModal.value = false
+  // Limpiar contraseña del estado inmediatamente tras cerrar (§24.1 Regla 1 / T3)
+  resetNewPassword.value = ''
+  resetSuccessPassword.value = ''
+  targetResetUser.value = null
+  if (lastResetBtnId.value) {
+    nextTick(() => document.getElementById(lastResetBtnId.value!)?.focus())
+  }
+}
+
+watch(showResetPwdModal, (open) => {
+  if (open) {
+    nextTick(() => {
+      if (resetSuccessPassword.value) {
+        closeResetPwdBtnRef.value?.focus()
+      } else {
+        resetPwdInputRef.value?.focus()
+      }
+    })
+  }
+})
+
+function handleResetPwdKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    closeResetPwdModal()
+    return
+  }
+  if (event.key === 'Tab') {
+    if (!resetPwdDialogRef.value) return
+    const focusable = Array.from(
+      resetPwdDialogRef.value.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    )
+    if (!focusable.length) return
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }
+}
+
+async function executeResetPassword() {
+  if (!targetResetUser.value || !resetNewPassword.value) return
+  isResettingPwd.value = true
+  resetPwdError.value = ''
+
+  try {
+    await api.patch(`/users/${targetResetUser.value.id}`, {
+      password: resetNewPassword.value
+    })
+
+    resetSuccessPassword.value = resetNewPassword.value
+    resetNewPassword.value = ''
+    nextTick(() => closeResetPwdBtnRef.value?.focus())
+  } catch (err: any) {
+    const serverMsg = err?.data?.message || err?.message || 'Error al restablecer la contraseña.'
+    resetPwdError.value = Array.isArray(serverMsg) ? serverMsg.join('. ') : serverMsg
+  } finally {
+    isResettingPwd.value = false
+  }
+}
+
+async function copyResetPassword() {
+  if (!resetSuccessPassword.value) return
+  try {
+    await navigator.clipboard.writeText(resetSuccessPassword.value)
+    copiedResetPwd.value = true
+    setTimeout(() => { copiedResetPwd.value = false }, 2500)
+  } catch {
+    // Fallback if clipboard fails
+  }
+}
 </script>

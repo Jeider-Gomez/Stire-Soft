@@ -34,12 +34,9 @@
         </div>
 
         <div>
-          <div class="flex items-center justify-between mb-1">
-            <label for="password" class="block text-xs font-semibold text-base-texto-primario">
-              Contraseña
-            </label>
-            <NuxtLink to="/auth/forgot-password" class="text-[11px] text-acento-ambar-fuerte hover:underline">¿Olvidaste tu clave?</NuxtLink>
-          </div>
+          <label for="password" class="block text-xs font-semibold text-base-texto-primario mb-1">
+            Contraseña
+          </label>
           <input
             id="password"
             v-model="password"
@@ -56,6 +53,10 @@
           <span v-if="isLoading">Verificando credenciales...</span>
           <span v-else>Ingresar a la plataforma</span>
         </button>
+
+        <p class="text-[11px] text-base-texto-secundario text-center mt-2 leading-relaxed">
+          ¿Olvidaste tu contraseña? Pídele a tu docente o al administrador que la restablezca.
+        </p>
       </form>
 
       <!-- Enlace hacia Registro -->
