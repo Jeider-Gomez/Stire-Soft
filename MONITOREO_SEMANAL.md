@@ -10,9 +10,9 @@
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
 > **Cierre (25/09):** la bitácora se cerró contra el Trello real y contra Git. El resultado está en la §7 y las
-> evidencias de la reunión en la §6.1. En resumen: la aplicación **está a punto de desplegarse**, José entregó el
-> primer avance visual (paleta de colores), Jorge entregó su auditoría y la estructura de cursos de Julio pasa a la
-> Semana 7.
+> evidencias de la reunión en la §6.1. En resumen: **ya se decidió cómo se despliega la aplicación, pero el
+> despliegue no se hizo esta semana: pasa a la Semana 7**. José entregó el primer avance visual (paleta de colores),
+> Jorge entregó su auditoría y la estructura de cursos de Julio también pasa a la Semana 7.
 
 > **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_05.md`](./docs/seguimiento/MONITOREO_SEMANAL_05.md) — cerrada el 18/09, actualizada el 19/09: el dueño del proyecto confirmó que la sustentación del Reto 2 sí se realizó (vía WhatsApp), lo que cierra 3 de los 4 pendientes (sustentación, apoyo de Pedro, material de José) — quedan 9 de 12 ítems con evidencia real. El único pendiente real que se traslada a esta semana en la §3 es la estructura de cursos de Julio.
 
@@ -152,8 +152,8 @@ Cada integrante tiene su propia tarjeta de registro en Trello, con un checklist 
 hábitos — se marcan los que se practicaron y se cuenta la anécdota real en un comentario de la
 tarjeta. Se repite cada semana mientras dure el Reto 3:
 
-- [ ] **S06-H-JEIDER** · [`S06-H-JEIDER`](https://trello.com/c/cal309Mo)
-- [x] **S06-H-PEDRO** · [`S06-H-PEDRO`](https://trello.com/c/uA68ykbF) — hábitos 1, 5, 6 y 7, con su historia en la tarjeta.
+- [x] **S06-H-JEIDER** · [`S06-H-JEIDER`](https://trello.com/c/cal309Mo) — hábitos 1, 5, 6 y 7, con su historia en la tarjeta.
+- [ ] **S06-H-PEDRO** · [`S06-H-PEDRO`](https://trello.com/c/uA68ykbF)
 - [ ] **S06-H-JOSE** · [`S06-H-JOSE`](https://trello.com/c/p30mm5MI)
 - [ ] **S06-H-JULIO** · [`S06-H-JULIO`](https://trello.com/c/3oWs5vXe)
 - [ ] **S06-H-JORGE** · [`S06-H-JORGE`](https://trello.com/c/QprA4Kd2)
@@ -209,10 +209,10 @@ tarjeta. Se repite cada semana mientras dure el Reto 3:
    Vercel, sandbox de ejecución se mantiene local. Lo que queda es la ejecución (`S06-J03`): crear
    la cuenta en la plataforma elegida y desplegar. La autorización OAuth del conector de Vercel
    sigue pendiente, ahora acotada solo al frontend.
-   *(Al cierre, 25/09: estamos a punto de desplegar. La decisión final es el ADR 13, a $0 y sin Pay As You Go.
-   Todo lo técnico está listo y verificado con Docker real: Dockerfile, `docker-compose.prod.yml`, `/health`,
-   copia diaria, frontend estático y la guía `docs/DESPLIEGUE.md`. Solo falta crear las cuentas y seguir la
-   guía. Riesgo aceptado: Oracle puede reclamar una máquina gratuita con poco uso. Por eso la copia semanal
+   *(Al cierre, 25/09: **la forma de desplegar ya está decidida** en el ADR 13, a $0 y sin Pay As You Go, pero **el
+   despliegue no se hizo esta semana y pasa a la Semana 7**. Lo técnico ya está preparado y verificado con Docker
+   real: Dockerfile, `docker-compose.prod.yml`, `/health`, copia diaria, frontend estático y la guía
+   `docs/DESPLIEGUE.md`. Falta crear las cuentas y seguir la guía. Riesgo aceptado: Oracle puede reclamar una máquina gratuita con poco uso. Por eso la copia semanal
    fuera de la máquina es obligatoria.)*
 
 ---
@@ -263,9 +263,15 @@ Semana 6. Las dos capturas son de ese día, **18/09**, no del 25/09.
   desechable, migraciones y seed de demo) y peticiones HTTP reales a `GET /activity-questions/activity/2`. Resultados:
   estudiante matriculado **200** con la pregunta, sin los casos ocultos; estudiante registrado pero no matriculado
   **403** «No estás matriculado en esta clase»; sin sesión **401**. Detalle en el comentario de la tarjeta.)*
-- [ ] Backend real desplegado fuera de local. *(**A punto de desplegar:** todo lo técnico está listo y verificado con
-  Docker real, y la guía `docs/DESPLIEGUE.md` está escrita. Falta crear las cuentas (Oracle, Cloudflare/Vercel,
-  Gmail, DuckDNS) y ejecutar la guía. `S06-J03` queda `En curso` y pasa a la Semana 7.)*
+- [x] Decisión de cómo desplegar. *(ADR 13, 23/09: frontend estático en Cloudflare Pages o Vercel, backend y MariaDB
+  en una VM de Oracle Always Free y correo por Gmail. Costo $0 y sin Pay As You Go, por decisión del 25/09.)*
+- [ ] Backend real desplegado fuera de local. ***No se desplegó esta semana: aplazado a la Semana 7.*** *(Lo técnico
+  ya está preparado y verificado con Docker real, y la guía `docs/DESPLIEGUE.md` está escrita. Falta crear las
+  cuentas (Oracle, Cloudflare/Vercel, Gmail, DuckDNS) y ejecutar la guía. `S06-J03` queda `En curso`.)*
+- [x] Registro de sus 7 Hábitos (`S06-H-JEIDER`, Reto 3). *(Hábitos 1, 5, 6 y 7. Esta semana trató de ser más
+  proactivo con el proyecto y más empático con el equipo. Además de la reunión de cierre, tuvo reuniones aparte con
+  algunos integrantes para explicarles temas del proyecto, y estuvo viendo videos de programación. La historia completa
+  está en su tarjeta.)*
 
 ### Pedro Romero
 
@@ -275,10 +281,6 @@ Semana 6. Las dos capturas son de ese día, **18/09**, no del 25/09.
 - [x] Pitch de sustentación del Reto 3. *(Se marca hecho al cierre: el pitch se desarrolla después de la reunión de
   cierre, así que el archivo se agrega a `docs/pitch/` y se edita cuando esté listo. El Reto 3 es el de los 7 Hábitos
   que pidió el profesor.)*
-- [x] Registro de sus 7 Hábitos (`S06-H-PEDRO`). *(Hábitos 1, 5, 6 y 7. Esta semana trató de ser más proactivo con el
-  proyecto y más empático con el equipo. Además de la reunión de cierre, tuvo reuniones aparte con algunos integrantes
-  para explicarles temas del proyecto, y estuvo viendo videos de programación. La historia completa está en la
-  tarjeta.)*
 
 ### José López
 
@@ -291,8 +293,8 @@ Semana 6. Las dos capturas son de ese día, **18/09**, no del 25/09.
 ### Julio Galvis
 
 - [ ] Estructura de los dos cursos organizada. ***Aplazada a la Semana 7*** *(decisión del equipo, 25/09). Aviso
-  para Julio: **la aplicación ya está a punto de desplegarse**. Con eso se desbloquean también sus dos tareas que
-  esperaban el despliegue: la validación pedagógica en vivo (`S06-JL03`) y probar las funciones de docente
+  para Julio: **ya se decidió cómo desplegar la aplicación y el despliegue se hace la Semana 7**. Con eso se
+  desbloquean también sus dos tareas que esperaban el despliegue: la validación pedagógica en vivo (`S06-JL03`) y probar las funciones de docente
   (`S06-JL04`).*
 
 ### Jorge Cervantes
@@ -308,11 +310,12 @@ Semana 6. Las dos capturas son de ese día, **18/09**, no del 25/09.
 
 ### Todo el equipo
 
-- [ ] Registro de los 7 Hábitos por cada integrante (`S06-H-*`, §3.1). *(Al cierre, Pedro ya tiene el suyo. A Jeider,
-  José, Julio y Jorge les falta marcar sus hábitos y contar su historia en su tarjeta.)*
+- [ ] Registro de los 7 Hábitos por cada integrante (`S06-H-*`, §3.1). *(Al cierre solo Jeider tiene el suyo, ver
+  arriba. A Pedro, José, Julio y Jorge les falta marcar sus hábitos y contar su historia en su tarjeta.)*
 
-**Resumen de cierre:** 9 de 12 ítems cerrados. El despliegue queda a punto, sin ejecutar todavía. La estructura de
-cursos de Julio pasa a la Semana 7 por decisión del equipo. Faltan los registros de 7 Hábitos de 4 integrantes.
+**Resumen de cierre:** 10 de 13 ítems cerrados. La forma de desplegar ya está decidida, pero el despliegue se aplazó a
+la Semana 7. La estructura de cursos de Julio también pasa a la Semana 7 por decisión del equipo. Faltan los registros
+de 7 Hábitos de 4 integrantes.
 
 **Para la Semana 7:** ejecutar el despliegue (`S06-J03`); estructura de cursos de Julio y, ya con la app desplegada,
 sus pruebas en vivo; prueba del Tutor IA como usuario (José); subir el archivo del pitch del Reto 3 a `docs/pitch/`;
