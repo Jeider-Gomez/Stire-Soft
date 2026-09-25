@@ -244,6 +244,7 @@
             <option value="drag_drop">Arrastrar y Soltar (Categorías / Destinos)</option>
             <option value="matching">Emparejar (Pares de Conceptos Izq ↔ Der)</option>
             <option value="ordering">Ordenar Bloques (Secuencia de Pasos)</option>
+            <option value="html_css">HTML y CSS (Calificado por Reglas)</option>
           </select>
           <p class="text-[11px] text-base-texto-secundario mt-1">
             {{ currentTypeDescription }}
@@ -318,6 +319,7 @@
           <DragDropExerciseBuilder v-show="exerciseType === 'drag_drop'" ref="dragDropBuilderRef" />
           <MatchingExerciseBuilder v-show="exerciseType === 'matching'" ref="matchingBuilderRef" />
           <OrderingExerciseBuilder v-show="exerciseType === 'ordering'" ref="orderingBuilderRef" />
+          <HtmlCssExerciseBuilder v-show="exerciseType === 'html_css'" ref="htmlCssBuilderRef" />
         </div>
       </section>
 
@@ -570,6 +572,7 @@ import FillCodeExerciseBuilder from '~/components/docente/exercise-builders/Fill
 import DragDropExerciseBuilder from '~/components/docente/exercise-builders/DragDropExerciseBuilder.vue'
 import MatchingExerciseBuilder from '~/components/docente/exercise-builders/MatchingExerciseBuilder.vue'
 import OrderingExerciseBuilder from '~/components/docente/exercise-builders/OrderingExerciseBuilder.vue'
+import HtmlCssExerciseBuilder from '~/components/docente/exercise-builders/HtmlCssExerciseBuilder.vue'
 
 const api = useApi()
 const { messageOf } = useApiErrorMessage()
@@ -580,7 +583,7 @@ const units = ref<LearningUnitItem[]>([])
 const activityTypes = ref<ActivityTypeOption[]>([])
 const activityTypeId = ref<number>(1)
 
-const exerciseType = ref<'coding' | 'mcq' | 'fill_code' | 'drag_drop' | 'matching' | 'ordering'>('coding')
+const exerciseType = ref<'coding' | 'mcq' | 'fill_code' | 'drag_drop' | 'matching' | 'ordering' | 'html_css'>('coding')
 const publishImmediately = ref(true)
 
 // Builder refs
@@ -590,6 +593,7 @@ const fillCodeBuilderRef = ref<InstanceType<typeof FillCodeExerciseBuilder> | nu
 const dragDropBuilderRef = ref<InstanceType<typeof DragDropExerciseBuilder> | null>(null)
 const matchingBuilderRef = ref<InstanceType<typeof MatchingExerciseBuilder> | null>(null)
 const orderingBuilderRef = ref<InstanceType<typeof OrderingExerciseBuilder> | null>(null)
+const htmlCssBuilderRef = ref<InstanceType<typeof HtmlCssExerciseBuilder> | null>(null)
 
 const currentTypeName = computed(() => {
   switch (exerciseType.value) {
@@ -599,6 +603,7 @@ const currentTypeName = computed(() => {
     case 'drag_drop': return 'Arrastrar y Soltar'
     case 'matching': return 'Emparejar'
     case 'ordering': return 'Ordenar Bloques'
+    case 'html_css': return 'HTML y CSS'
     default: return 'Ejercicio'
   }
 })
@@ -611,6 +616,7 @@ const currentTypeDescription = computed(() => {
     case 'drag_drop': return 'Clasificar elementos en categorías o destinos correspondientes (calificación proporcional).'
     case 'matching': return 'Asociar parejas de conceptos en dos columnas (calificación proporcional).'
     case 'ordering': return 'Reordenar bloques de código o pasos en la secuencia correcta (todo o nada).'
+    case 'html_css': return 'El estudiante escribe HTML y CSS calificados automáticamente por reglas que define el docente.'
     default: return ''
   }
 })
@@ -790,6 +796,7 @@ function resetForm() {
   dragDropBuilderRef.value?.reset()
   matchingBuilderRef.value?.reset()
   orderingBuilderRef.value?.reset()
+  htmlCssBuilderRef.value?.reset()
 }
 
 function getActiveBuilderConfig(): { valid: boolean; error?: string; config?: any } {
@@ -806,6 +813,8 @@ function getActiveBuilderConfig(): { valid: boolean; error?: string; config?: an
       return matchingBuilderRef.value?.validateAndGetConfig(form.totalPoints) || { valid: false, error: 'Configurador de emparejar no disponible.' }
     case 'ordering':
       return orderingBuilderRef.value?.validateAndGetConfig(form.totalPoints) || { valid: false, error: 'Configurador de ordenamiento no disponible.' }
+    case 'html_css':
+      return htmlCssBuilderRef.value?.validateAndGetConfig(form.totalPoints) || { valid: false, error: 'Configurador de HTML y CSS no disponible.' }
     default:
       return { valid: false, error: 'Tipo de ejercicio desconocido.' }
   }
