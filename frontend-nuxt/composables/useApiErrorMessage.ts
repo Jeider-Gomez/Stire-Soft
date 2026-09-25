@@ -26,6 +26,17 @@ export function useApiErrorMessage() {
   }
 
   /**
+   * Texto para mostrar cuando falla una acción: el motivo que dio el servidor (`error`/`message`) o, si no
+   * hay, `fallback`. Nunca devuelve el texto crudo de ofetch (`[POST] "http://…": 409 Conflict`).
+   */
+  function messageOf(err: any, fallback: string): string {
+    const { status, detail } = extract(err)
+    if (detail) return detail
+    if (status === 0) return 'No pude conectarme con el servidor. Revisa tu conexión e inténtalo de nuevo.'
+    return fallback
+  }
+
+  /**
    * Devuelve el mensaje amigable para el estudiante según el código HTTP.
    * Los textos para 422, 428, 429 y 503 vienen del backend (field `error`);
    * si no existen, se usa el texto de la tabla del §18.1.
@@ -71,5 +82,5 @@ export function useApiErrorMessage() {
     return { status, text, needsKey, is403 }
   }
 
-  return { extract, friendlyTutorError }
+  return { extract, messageOf, friendlyTutorError }
 }

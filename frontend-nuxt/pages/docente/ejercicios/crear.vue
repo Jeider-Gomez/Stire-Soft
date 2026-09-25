@@ -134,7 +134,13 @@
     </section>
 
     <!-- ── Sección B: Crear nuevo ejercicio ──────────────────────────────── -->
-    <form @submit.prevent="submitExercise" class="space-y-6">
+    <!--
+      novalidate: los constructores de los 6 tipos viven a la vez en el DOM (v-show) y cada uno tiene campos
+      `required`. Los de los tipos no elegidos están ocultos y vacíos, y el navegador bloqueaba el envío
+      ("invalid form control is not focusable"). La validación real la hace submitExercise() (unidad, título,
+      enunciado) y validateAndGetConfig() de cada constructor, con mensajes propios.
+    -->
+    <form novalidate @submit.prevent="submitExercise" class="space-y-6">
       <!-- Sección 1: Asociación Curricular -->
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider flex items-center gap-2">
@@ -223,6 +229,27 @@
           </p>
         </div>
 
+        <!-- Selector de Tipo de Ejercicio (§T2) -->
+        <div class="text-xs">
+          <label for="create-exercise-type" class="block font-semibold text-base-texto-primario mb-1">
+            Tipo de Ejercicio *
+          </label>
+          <select
+            id="create-exercise-type"
+            v-model="exerciseType"
+            class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario font-semibold">
+            <option value="coding">Código en JavaScript (Evaluación en Sandbox)</option>
+            <option value="mcq">Opción Múltiple (Selección Única)</option>
+            <option value="fill_code">Completar Código (Rellenar Huecos ___id___)</option>
+            <option value="drag_drop">Arrastrar y Soltar (Categorías / Destinos)</option>
+            <option value="matching">Emparejar (Pares de Conceptos Izq ↔ Der)</option>
+            <option value="ordering">Ordenar Bloques (Secuencia de Pasos)</option>
+          </select>
+          <p class="text-[11px] text-base-texto-secundario mt-1">
+            {{ currentTypeDescription }}
+          </p>
+        </div>
+
         <div class="grid grid-cols-3 gap-4 text-xs">
           <!-- Puntos -->
           <div>
@@ -263,104 +290,34 @@
         </div>
       </section>
 
-      <!-- Sección 2: Enunciado y Código Inicial -->
+      <!-- Sección 2: Enunciado y Configuración del Ejercicio -->
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider flex items-center gap-2">
           <span>2.</span>
-          <span>Enunciado y Plantilla de Código (JavaScript)</span>
+          <span>Enunciado y Contenido ({{ currentTypeName }})</span>
         </h2>
 
         <div class="text-xs">
           <label for="create-question" class="block font-semibold text-base-texto-primario mb-1">
-            Enunciado Pedagógico del Problema *
+            Enunciado Pedagógico del Problema / Pregunta *
           </label>
           <textarea
             id="create-question"
             v-model="form.questionText"
             required
             rows="4"
-            placeholder="Describe con claridad las entradas esperadas por stdin, las condiciones lógicas y la salida requerida..."
+            placeholder="Describe con claridad las instrucciones del ejercicio, condiciones pedagógicas y lo que el estudiante debe resolver..."
             class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none resize-y focus:ring-2 focus:ring-acento-ambar-fuerte/30"></textarea>
         </div>
 
-        <div class="text-xs">
-          <label for="create-starter" class="block font-semibold text-base-texto-primario mb-1">
-            Código Plantilla Inicial (<code>starterCode</code>)
-          </label>
-          <textarea
-            id="create-starter"
-            v-model="form.starterCode"
-            rows="5"
-            spellcheck="false"
-            class="w-full px-3 py-2 rounded-md bg-[#1e1e1e] text-[#d4d4d4] font-mono text-xs outline-none resize-y border border-[#333]"></textarea>
-        </div>
-      </section>
-
-      <!-- Sección 3: Casos de Prueba -->
-      <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider flex items-center gap-2">
-            <span>3.</span>
-            <span>Rúbrica: Casos de Prueba para Evaluación</span>
-          </h2>
-
-          <button
-            type="button"
-            @click="addTestCase"
-            class="px-3 py-1 rounded text-xs font-bold bg-acento-ambar/15 text-acento-ambar-fuerte hover:bg-acento-ambar/25 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-            <span>+</span>
-            <span>Agregar Caso</span>
-          </button>
-        </div>
-
-        <div class="space-y-3">
-          <div
-            v-for="(tc, idx) in form.testCases"
-            :key="idx"
-            class="p-3 rounded-lg border border-base-borde-sutil bg-base-bg-secundario/40 space-y-3">
-            <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-base-texto-primario">Caso #{{ idx + 1 }}</span>
-              <div class="flex items-center gap-3">
-                <label :for="`tc-public-${idx}`" class="flex items-center gap-1.5 cursor-pointer text-[11px] select-none">
-                  <input :id="`tc-public-${idx}`" type="checkbox" v-model="tc.isPublic" class="accent-acento-ambar-fuerte" />
-                  <span :class="tc.isPublic ? 'text-semantico-pasa font-bold' : 'text-base-texto-secundario'">
-                    {{ tc.isPublic ? '👁 Público (visible)' : '🔒 Privado (ciego)' }}
-                  </span>
-                </label>
-
-                <button
-                  v-if="form.testCases.length > 1"
-                  type="button"
-                  @click="removeTestCase(idx)"
-                  class="text-semantico-falla text-[11px] hover:underline focus:outline-none focus:ring-2 focus:ring-semantico-falla rounded"
-                  :aria-label="`Eliminar caso ${idx + 1}`">
-                  Eliminar
-                </button>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div>
-                <label :for="`tc-input-${idx}`" class="block text-[11px] text-base-texto-secundario mb-1">Entrada (<code>stdin</code>)</label>
-                <input
-                  :id="`tc-input-${idx}`"
-                  v-model="tc.input"
-                  type="text"
-                  placeholder="Ej: 15"
-                  class="w-full px-2.5 py-1.5 font-mono text-xs rounded bg-base-blanco border border-base-borde-sutil focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
-              </div>
-
-              <div>
-                <label :for="`tc-expected-${idx}`" class="block text-[11px] text-base-texto-secundario mb-1">Salida Esperada (<code>stdout</code>)</label>
-                <input
-                  :id="`tc-expected-${idx}`"
-                  v-model="tc.expected"
-                  type="text"
-                  placeholder="Ej: Acceso denegado"
-                  class="w-full px-2.5 py-1.5 font-mono text-xs rounded bg-base-blanco border border-base-borde-sutil focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
-              </div>
-            </div>
-          </div>
+        <!-- Formulario modular según el tipo de ejercicio seleccionado -->
+        <div class="pt-2 border-t border-base-borde-sutil">
+          <CodingExerciseBuilder v-show="exerciseType === 'coding'" ref="codingBuilderRef" />
+          <McqExerciseBuilder v-show="exerciseType === 'mcq'" ref="mcqBuilderRef" />
+          <FillCodeExerciseBuilder v-show="exerciseType === 'fill_code'" ref="fillCodeBuilderRef" />
+          <DragDropExerciseBuilder v-show="exerciseType === 'drag_drop'" ref="dragDropBuilderRef" />
+          <MatchingExerciseBuilder v-show="exerciseType === 'matching'" ref="matchingBuilderRef" />
+          <OrderingExerciseBuilder v-show="exerciseType === 'ordering'" ref="orderingBuilderRef" />
         </div>
       </section>
 
@@ -370,21 +327,38 @@
       </div>
 
       <!-- Barra de Acciones de Envío -->
-      <div class="flex items-center justify-end gap-3 pt-2">
-        <button
-          type="button"
-          @click="resetForm"
-          class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-base-borde-fuerte">
-          Restablecer Formulario
-        </button>
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-2">
+        <label for="publish-checkbox" class="flex items-center gap-2 cursor-pointer select-none text-xs">
+          <input
+            id="publish-checkbox"
+            type="checkbox"
+            v-model="publishImmediately"
+            class="accent-acento-ambar-fuerte h-4 w-4 rounded" />
+          <span class="font-semibold text-base-texto-primario">
+            Publicar ahora (visible inmediatamente para los estudiantes)
+          </span>
+        </label>
 
-        <button
-          type="submit"
-          :disabled="isSubmitting"
-          class="px-6 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-          <span v-if="isSubmitting" class="animate-spin">⚙️</span>
-          <span>{{ isSubmitting ? 'Guardando Ejercicio...' : '🚀 Guardar y Publicar Ejercicio' }}</span>
-        </button>
+        <div class="flex items-center justify-end gap-3">
+          <button
+            type="button"
+            @click="resetForm"
+            class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-base-borde-fuerte">
+            Restablecer Formulario
+          </button>
+
+          <button
+            type="submit"
+            :disabled="isSubmitting"
+            class="px-6 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+            <span v-if="isSubmitting" class="animate-spin">⚙️</span>
+            <span>
+              {{ isSubmitting
+                ? 'Guardando Ejercicio...'
+                : (publishImmediately ? '🚀 Guardar y Publicar Ejercicio' : '💾 Guardar Borrador') }}
+            </span>
+          </button>
+        </div>
       </div>
     </form>
 
@@ -590,13 +564,56 @@ interface ActivityItem {
   }
 }
 
+import CodingExerciseBuilder from '~/components/docente/exercise-builders/CodingExerciseBuilder.vue'
+import McqExerciseBuilder from '~/components/docente/exercise-builders/McqExerciseBuilder.vue'
+import FillCodeExerciseBuilder from '~/components/docente/exercise-builders/FillCodeExerciseBuilder.vue'
+import DragDropExerciseBuilder from '~/components/docente/exercise-builders/DragDropExerciseBuilder.vue'
+import MatchingExerciseBuilder from '~/components/docente/exercise-builders/MatchingExerciseBuilder.vue'
+import OrderingExerciseBuilder from '~/components/docente/exercise-builders/OrderingExerciseBuilder.vue'
+
 const api = useApi()
+const { messageOf } = useApiErrorMessage()
 
 const teacherClasses = ref<TeacherClass[]>([])
 const selectedClassId = ref<number | null>(null)
 const units = ref<LearningUnitItem[]>([])
 const activityTypes = ref<ActivityTypeOption[]>([])
 const activityTypeId = ref<number>(1)
+
+const exerciseType = ref<'coding' | 'mcq' | 'fill_code' | 'drag_drop' | 'matching' | 'ordering'>('coding')
+const publishImmediately = ref(true)
+
+// Builder refs
+const codingBuilderRef = ref<InstanceType<typeof CodingExerciseBuilder> | null>(null)
+const mcqBuilderRef = ref<InstanceType<typeof McqExerciseBuilder> | null>(null)
+const fillCodeBuilderRef = ref<InstanceType<typeof FillCodeExerciseBuilder> | null>(null)
+const dragDropBuilderRef = ref<InstanceType<typeof DragDropExerciseBuilder> | null>(null)
+const matchingBuilderRef = ref<InstanceType<typeof MatchingExerciseBuilder> | null>(null)
+const orderingBuilderRef = ref<InstanceType<typeof OrderingExerciseBuilder> | null>(null)
+
+const currentTypeName = computed(() => {
+  switch (exerciseType.value) {
+    case 'coding': return 'Código en JavaScript'
+    case 'mcq': return 'Opción Múltiple'
+    case 'fill_code': return 'Completar Código'
+    case 'drag_drop': return 'Arrastrar y Soltar'
+    case 'matching': return 'Emparejar'
+    case 'ordering': return 'Ordenar Bloques'
+    default: return 'Ejercicio'
+  }
+})
+
+const currentTypeDescription = computed(() => {
+  switch (exerciseType.value) {
+    case 'coding': return 'El estudiante escribe código evaluado por casos de prueba en un sandbox.'
+    case 'mcq': return 'Pregunta de opción única con selección radial (todo o nada).'
+    case 'fill_code': return 'El estudiante rellena huecos dentro de una plantilla de código (calificación proporcional).'
+    case 'drag_drop': return 'Clasificar elementos en categorías o destinos correspondientes (calificación proporcional).'
+    case 'matching': return 'Asociar parejas de conceptos en dos columnas (calificación proporcional).'
+    case 'ordering': return 'Reordenar bloques de código o pasos en la secuencia correcta (todo o nada).'
+    default: return ''
+  }
+})
 
 const isSubmitting = ref(false)
 const submitError = ref<string | null>(null)
@@ -612,15 +629,10 @@ const form = reactive({
   learningUnitId: null as number | null,
   title: '',
   difficulty: 'basico',
-  totalPoints: 25,
+  totalPoints: 20,
   attemptsAllowed: 3,
   adaptiveWeight: 0.4,
-  questionText: '',
-  starterCode: `const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\n\n// Escribe tu solución aquí\n`,
-  testCases: [
-    { label: 'Caso 1', input: '10', expected: '10', isPublic: true },
-    { label: 'Caso Oculto', input: '20', expected: '20', isPublic: false }
-  ]
+  questionText: ''
 })
 
 // ─── Actividades existentes ───────────────────────────────────────────────────
@@ -660,7 +672,7 @@ async function togglePublish(act: ActivityItem) {
     act.status = 'published'
     actionFeedback.value = `Ejercicio "${act.title}" publicado correctamente.`
   } catch (err: any) {
-    actionError.value = err?.data?.message || 'Error al publicar el ejercicio.'
+    actionError.value = messageOf(err, 'Error al publicar el ejercicio.')
   }
 }
 
@@ -730,7 +742,7 @@ async function submitEditActivity() {
     actionFeedback.value = `Ejercicio "${editActivityModal.form.title}" actualizado correctamente.`
     closeEditActivityModal()
   } catch (err: any) {
-    editActivityModal.error = err?.data?.message || 'Error al actualizar el ejercicio.'
+    editActivityModal.error = messageOf(err, 'Error al actualizar el ejercicio.')
   } finally {
     editActivityModal.saving = false
   }
@@ -761,34 +773,42 @@ async function submitArchiveActivity() {
     actionFeedback.value = `Ejercicio "${archiveActivityModal.activity.title}" archivado correctamente.`
     archiveActivityModal.open = false
   } catch (err: any) {
-    archiveActivityModal.error = err?.data?.message || 'Error al archivar el ejercicio.'
+    archiveActivityModal.error = messageOf(err, 'Error al archivar el ejercicio.')
   } finally {
     archiveActivityModal.saving = false
   }
 }
 
 // ─── Helpers formulario de creación ───────────────────────────────────────────
-function addTestCase() {
-  form.testCases.push({
-    label: `Caso ${form.testCases.length + 1}`,
-    input: '',
-    expected: '',
-    isPublic: true
-  })
-}
-
-function removeTestCase(index: number) {
-  form.testCases.splice(index, 1)
-}
-
 function resetForm() {
   form.title = ''
   form.questionText = ''
-  form.testCases = [
-    { label: 'Caso 1', input: '10', expected: '10', isPublic: true },
-    { label: 'Caso Oculto', input: '20', expected: '20', isPublic: false }
-  ]
   submitError.value = null
+  codingBuilderRef.value?.reset()
+  mcqBuilderRef.value?.reset()
+  fillCodeBuilderRef.value?.reset()
+  dragDropBuilderRef.value?.reset()
+  matchingBuilderRef.value?.reset()
+  orderingBuilderRef.value?.reset()
+}
+
+function getActiveBuilderConfig(): { valid: boolean; error?: string; config?: any } {
+  switch (exerciseType.value) {
+    case 'coding':
+      return codingBuilderRef.value?.validateAndGetConfig(form.totalPoints) || { valid: false, error: 'Configurador de código no disponible.' }
+    case 'mcq':
+      return mcqBuilderRef.value?.validateAndGetConfig(form.totalPoints) || { valid: false, error: 'Configurador de opción múltiple no disponible.' }
+    case 'fill_code':
+      return fillCodeBuilderRef.value?.validateAndGetConfig(form.totalPoints) || { valid: false, error: 'Configurador de completar código no disponible.' }
+    case 'drag_drop':
+      return dragDropBuilderRef.value?.validateAndGetConfig(form.totalPoints) || { valid: false, error: 'Configurador de arrastrar y soltar no disponible.' }
+    case 'matching':
+      return matchingBuilderRef.value?.validateAndGetConfig(form.totalPoints) || { valid: false, error: 'Configurador de emparejar no disponible.' }
+    case 'ordering':
+      return orderingBuilderRef.value?.validateAndGetConfig(form.totalPoints) || { valid: false, error: 'Configurador de ordenamiento no disponible.' }
+    default:
+      return { valid: false, error: 'Tipo de ejercicio desconocido.' }
+  }
 }
 
 async function onClassChange() {
@@ -847,16 +867,33 @@ async function fetchInitialData() {
 }
 
 async function submitExercise() {
-  if (!form.learningUnitId || !form.title.trim() || !form.questionText.trim()) {
-    submitError.value = 'Completa los campos obligatorios del ejercicio.'
+  if (!form.learningUnitId) {
+    submitError.value = 'Selecciona una unidad de aprendizaje.'
+    return
+  }
+  if (!form.title.trim()) {
+    submitError.value = 'El título del ejercicio es obligatorio.'
+    return
+  }
+  if (!form.questionText.trim()) {
+    submitError.value = 'El enunciado de la pregunta es obligatorio.'
+    return
+  }
+
+  // Validar campos específicos del tipo de ejercicio antes de enviar
+  const builderResult = getActiveBuilderConfig()
+  if (!builderResult.valid) {
+    submitError.value = builderResult.error || 'La configuración del ejercicio no es válida.'
     return
   }
 
   isSubmitting.value = true
   submitError.value = null
 
+  let createdActivityId: number | null = null
+
   try {
-    // 1. Crear Activity
+    // 1. Crear Activity en estado borrador (draft)
     const actRes = await api.post<any>('/activities', {
       learningUnitId: form.learningUnitId,
       activityTypeId: activityTypeId.value,
@@ -870,33 +907,53 @@ async function submitExercise() {
       adaptiveWeight: form.adaptiveWeight
     })
 
-    if (actRes && actRes.id) {
-      // 2. Crear ActivityQuestion asociada
+    if (!actRes || !actRes.id) {
+      throw new Error('No se pudo crear la actividad en el servidor.')
+    }
+    createdActivityId = actRes.id
+
+    // 2. Crear ActivityQuestion con points = totalPoints y el config validado
+    try {
       await api.post('/activity-questions', {
-        activityId: actRes.id,
-        type: 'coding',
+        activityId: createdActivityId,
+        type: exerciseType.value,
         question: form.questionText.trim(),
         points: form.totalPoints,
         order: 0,
-        config: {
-          language: 'javascript',
-          starterCode: form.starterCode,
-          testCases: form.testCases.map((tc, i) => ({
-            label: `Caso ${i + 1}`,
-            input: tc.input,
-            expected: tc.expected,
-            isPublic: tc.isPublic
-          }))
-        }
+        config: builderResult.config
       })
-
-      successCreatedId.value = actRes.id
-      // Recargar actividades de la unidad
-      await loadUnitActivities(form.learningUnitId)
-      resetForm()
+    } catch (questionErr: any) {
+      // Regla atómica T2: si falla la creación de la pregunta, eliminar la actividad creada
+      // para no dejar un borrador huérfano en la base de datos
+      if (createdActivityId) {
+        try {
+          await api.del(`/activities/${createdActivityId}`)
+        } catch (delErr) {
+          console.error('Error al limpiar actividad huérfana tras fallo:', delErr)
+        }
+      }
+      throw questionErr
     }
+
+    // 3. Si la casilla «Publicar ahora» está activa, publicar inmediatamente
+    if (publishImmediately.value && createdActivityId) {
+      try {
+        await api.patch(`/activities/${createdActivityId}/publish`)
+      } catch (pubErr: any) {
+        console.warn('La actividad se guardó como borrador pero falló la publicación inmediata:', pubErr)
+      }
+    }
+
+    successCreatedId.value = createdActivityId
+    actionFeedback.value = publishImmediately.value
+      ? `Ejercicio "${form.title.trim()}" guardado y publicado exitosamente.`
+      : `Ejercicio "${form.title.trim()}" guardado como borrador exitosamente.`
+
+    // Recargar actividades de la unidad
+    await loadUnitActivities(form.learningUnitId)
+    resetForm()
   } catch (err: any) {
-    const msg = err?.data?.message || err?.message || 'Error al guardar el ejercicio'
+    const msg = messageOf(err, 'Error al guardar el ejercicio')
     submitError.value = Array.isArray(msg) ? msg.join(', ') : msg
   } finally {
     isSubmitting.value = false
@@ -906,4 +963,8 @@ async function submitExercise() {
 onMounted(() => {
   fetchInitialData()
 })
+
+// Escape cierra el diálogo abierto aunque el foco se haya perdido.
+useEscapeToClose(() => editActivityModal.open, closeEditActivityModal)
+useEscapeToClose(() => archiveActivityModal.open, () => { archiveActivityModal.open = false })
 </script>

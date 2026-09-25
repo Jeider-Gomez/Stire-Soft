@@ -12,6 +12,31 @@ entry to the oldest.
 
 ---
 
+## Fase 24 — auditoría y correcciones (24b) · 24 de Septiembre de 2026
+
+Antigravity entregó la Fase 24 en `feat/fase-24` (5 commits de funciones + informe). Claude Code la auditó en Chrome real contra una base
+desechable (`docs/ReportesQA/REPORTE_AUDITORIA_QA_FASE24_2026-09-23.md`) y encontró cuatro fallos que impedían fusionarla; se corrigieron en la
+misma rama (solo frontend, `src/` no cambió):
+
+- **F24-01 (crítico):** el creador de ejercicios no enviaba ningún tipo desde un navegador real: los constructores de los otros tipos siguen en el DOM
+  (ocultos) con campos `required` vacíos y el navegador bloqueaba el envío. `novalidate` en el formulario (la validación real la hacen
+  `submitExercise()` y `validateAndGetConfig()`).
+- **F24-02:** reordenar lecciones nunca funcionaba: `moveLesson` enviaba siempre el orden anterior (numeraba un arreglo que no había intercambiado).
+- **F24-03:** los errores del servidor no se mostraban (26 sitios leían `data.message`; el backend responde en `error`): el usuario veía
+  `[POST] "http://…": 409 Conflict`. Nuevo `messageOf()` en `useApiErrorMessage` y se usa en todas las pantallas de la fase.
+- **F24-04:** el login había perdido «¿Olvidaste tu clave?» (la recuperación por correo quedó inalcanzable). Defecto del plan de la fase, escrito antes de
+  construir esa función. Enlace restaurado; el texto de «pídeselo a tu docente o al administrador» queda como alternativa.
+- **F24-05:** Escape no cerraba el modal de lecciones (no recibía el foco) ni el diálogo de registro tras un error (que además seguía absorbiendo los
+  clics). Nuevo `useEscapeToClose` (escuchador en `document`) en los 14 diálogos de la fase; el modal de lecciones toma el foco al abrir.
+- **F24-06:** la vista previa de lecciones ejecutaba el HTML del borrador del propio autor; ahora lo escapa (`formatMarkdown(…, { escapeHtml: true })`).
+
+**Verificación (24/09, Chrome real, base desechable):** 25/25 comprobaciones (los 6 tipos se crean desde la pantalla sin atajos, ▼/▲ persisten en la base,
+el motivo del servidor se ve, Escape cierra tras un error y los clics vuelven a llegar, la vista previa no ejecuta nada); `npx nuxi typecheck` exit 0;
+`nuxt generate` sin errores. **Pendientes (no bloquean):** F24-07 (el saneado del servidor altera bloques de código con HTML: hacerlo después de convertir el
+Markdown; recomendable antes de la Fase 25), F24-08 (dos copias de `formatMarkdown`), F24-09 y F24-10 (backend, ya conocidos).
+
+---
+
 ## Ola del 23 de Septiembre (5ª pasada) — frontend estático · 23 de Septiembre de 2026
 
 El frontend no usaba SSR (sin rutas de servidor ni `useFetch`; sesión en cookie leída en el navegador), así que se pasa a **SPA estática** (`ssr: false`, `nuxt generate`, ~1 MB):
