@@ -17,6 +17,8 @@ import { SubmissionGradedEvent } from '../common/events/submission-graded.event'
 import { JUDGE_QUEUE } from '../judge-engine/judge-queue.interface';
 import type { JudgeQueue } from '../judge-engine/judge-queue.interface';
 import { JudgeExecutionService } from '../judge-engine/judge-execution.service';
+import { runPublicHtmlCssRules } from '../evaluation-engine/html-css/html-css.checker';
+import type { HtmlCssConfig } from '../activity-questions/interfaces/question-configs.interface';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
 import { Enrollment } from '../enrollment/entities/enrollment.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
@@ -232,9 +234,23 @@ export class SubmissionsService {
     await this.assertActiveEnrollment(activity, studentId);
 
     const questions = await this.questionsRepo.findByActivityId(submission.activityId);
+
+    // Fase 25: HTML y CSS por reglas. Solo se evalúan las reglas PÚBLICAS; no hay sandbox ni intento consumido.
+    const htmlCssQuestion = questions.find((q) => q.type === QuestionType.HTML_CSS);
+    if (htmlCssQuestion) {
+      if (typeof dto.html !== 'string' || !dto.html.trim()) {
+        throw new BadRequestException('Falta el HTML a ensayar');
+      }
+      const run = runPublicHtmlCssRules(dto.html, dto.css ?? '', htmlCssQuestion.config as HtmlCssConfig);
+      return { submissionId: submission.id, ...run };
+    }
+
     const codingQuestion = questions.find((q) => q.type === QuestionType.CODING);
     if (!codingQuestion) {
       throw new BadRequestException('Esta actividad no tiene una pregunta de código para ensayar');
+    }
+    if (typeof dto.code !== 'string' || !dto.code) {
+      throw new BadRequestException('Falta el código a ensayar');
     }
 
     const config = codingQuestion.config || {};

@@ -1,5 +1,5 @@
 ---
-estado:     pendiente — Fase 25 (Parte A backend: Claude Code, primero · Parte B frontend: Antigravity, después)
+estado:     Fase 25 — Parte A (backend) ENTREGADA el 24/09 salvo A7, que espera a B0 · Parte B (frontend, Antigravity): PENDIENTE, ya puede empezar
 verificado: 2026-09-24 contra src/ y frontend-nuxt/ reales (rutas y líneas citadas comprobadas en esa fecha)
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    DOC-V03 (crear ejercicio) · EST-V03 (ejercicio del estudiante)
@@ -29,7 +29,7 @@ marcado. Esta fase agrega un tipo de pregunta nuevo, **`html_css`**: el estudian
 | **A — Backend** | **Claude Code** (no la hagas tú) | Tipo `html_css`, migración, evaluador con jsdom, vista del estudiante, «probar» sin gastar intento, arreglo del saneado de bloques de código | 2 a 3 días |
 | **B — Frontend** | **Antigravity** | Constructor de reglas del docente, pantalla del estudiante con editor + vista previa + reglas, mejoras al renderizador de Markdown | 3 días |
 
-**Antigravity empieza la Parte B cuando Claude Code cierre la Parte A** (avisará con el commit y con `/docs-json` funcionando). Antes de empezar, comprueba en
+**Estado (24/09): la Parte A está hecha y verificada** (excepto A7, ver 25.4), así que **Antigravity ya puede empezar la Parte B**. Antes de empezar, comprueba en
 `http://localhost:3001/docs-json` que existe `html_css` en el enum de tipos de `POST /activity-questions`. Si algo del contrato de abajo difiere de lo que
 responde el backend, **manda el backend**: avisa y no lo «arregles» en el frontend.
 
@@ -58,7 +58,7 @@ responde el backend, **manda el backend**: avisa y no lo «arregles» en el fron
 | Componentes de ejercicios interactivos | `components/exercise/*.vue` (auto-importados como `ExerciseNombre`) |
 | Helpers | `useApiErrorMessage().messageOf`, `useEscapeToClose`, `utils/formatMarkdown.ts` |
 
-### 25.3 Contrato (lo construye Claude Code en la Parte A; verifícalo en `/docs-json`)
+### 25.3 Contrato (construido y verificado en la Parte A; compruébalo en `/docs-json`)
 
 **Pregunta** — `POST /activity-questions` con `type: "html_css"` (solo docente dueño de la clase; el resto de campos como los otros tipos):
 
@@ -120,17 +120,25 @@ Y reglas» y lista las etiquetas de las públicas que fallaron y **cuántas** oc
 **Alcance de lo que se puede calificar** (ADR 13): presencia y jerarquía de etiquetas, atributos, textos, propiedades CSS declaradas y accesibilidad básica.
 **No** se califica posición, tamaño renderizado, `@media`/responsive ni animaciones: eso queda como criterio del docente. Díselo al docente en el constructor (B1).
 
-### 25.4 Parte A — Backend (Claude Code; NO la hagas tú)
+### 25.4 Parte A — Backend (Claude Code): estado
 
-| # | Tarea | Cierre |
+| # | Tarea | Estado |
 |---|---|---|
-| A1 | `QuestionType.HTML_CSS = 'html_css'` + migración `AddHtmlCssQuestionType` (`ALTER TABLE activity_questions MODIFY type enum(…, 'html_css')`; buscar con `grep` si otra tabla repite el enum) | `migration:run` y `migration:revert` en una base vacía; `verify:clean` en verde (cambia una migración) |
-| A2 | Validación de `config` en `activity-questions.service.ts:validateConfig` (esquema de 25.3, límites, selectores válidos con jsdom, solución modelo al 100 %) | tests con cada causa de rechazo |
-| A3 | `HtmlCssEvaluator` (`src/evaluation-engine/strategies/`) con jsdom **sin ejecutar scripts ni cargar recursos**; nota proporcional; registrado en `EvaluationEngineService` | tests: cada `kind`, HTML mal formado, `<script>` sin efecto, entradas gigantes rechazadas, sin regex del usuario |
-| A4 | `StudentQuestionDto` (`student-question.dto.ts`): `HtmlCssStudentConfig`, barajar no aplica | test: ni `check`, ni reglas ocultas, ni `modelSolution` salen |
-| A5 | `POST /submissions/:id/run` acepta `{ html, css }` cuando la pregunta es `html_css` (`runPublicCases`, hoy solo CODING) | test de ruta y de «no consume intento» |
-| A6 | Ejercicio de demostración `html_css` en `stire-seeder-demo.ts` (idempotente) | `db:seed:demo` dos veces sin duplicar |
-| A7 | **Saneado de bloques de código** (F24-07): `ContentRenderingService.sanitizeRichText` deja intactos los bloques ``` y el código en línea (el frontend los escapa), en `content.body`, `activity.description` y `activity_question.question`. Hoy elimina `<script>` y `<button>` de los ejemplos y añade cierres de etiqueta | test con ejemplos HTML dentro de bloques; el texto fuera de los bloques se sigue saneando |
+| A1 | `QuestionType.HTML_CSS` + migración `1789700000000-AddHtmlCssQuestionType` (**las dos tablas** que repiten el enum: `activity_questions` y `bank_questions`) | ✅ `migration:run` y `migration:revert` probados en una base vacía; `verify:clean` en verde |
+| A2 | Validación de `config` al crear (`src/evaluation-engine/html-css/html-css.validator.ts`): esquema de 25.3, límites, selectores válidos, y **la solución modelo debe cumplir todas las reglas** (públicas y ocultas) | ✅ 400 con el motivo en `error` |
+| A3 | `HtmlCssEvaluator` + verificador jsdom sin ejecutar scripts ni cargar recursos (`html-css.checker.ts`); nota proporcional al peso | ✅ 41 pruebas de reglas y validador + 9 del evaluador |
+| A4 | `StudentQuestionDto`: solo `starterHtml`, `starterCss`, `publicRules`, `hiddenRuleCount` | ✅ probado que ni `check`, ni ocultas, ni solución modelo salen |
+| A5 | `POST /submissions/:id/run` acepta `{ html, css }` (y `code` sigue siendo obligatorio solo para código) | ✅ probado que no consume intento ni cambia el estado |
+| A6 | Ejercicio de demostración «Página de bienvenida (HTML y CSS)» en el seed (2 públicas, 3 ocultas) | ✅ idempotente (2 pasadas = 1 actividad) |
+| **A7** | **Saneado de bloques de código** (F24-07): `ContentRenderingService.sanitizeRichText` deja intactos los bloques ``` (y luego el código en línea) en `content.body`, `activity.description` y `activity_question.question` | ⏳ **NO se hace hasta que B0 esté en `main`.** Motivo de seguridad: hoy la pantalla del ejercicio (`evaluacion/[activityId].vue`) tiene su propia copia de `formatMarkdown` que **no escapa nada**; si el servidor dejara de sanear los bloques antes, un `<img onerror>` dentro de un bloque llegaría sin filtro al estudiante. Claude Code lo hace justo después de B0 |
+
+**Verificado de punta a punta por la API (24/09, base desechable):** 25/25 comprobaciones, incluidas: pregunta válida → 201; solución modelo que incumple una regla → 400 que nombra la regla; sin regla pública / selector inválido / config vacía / HTML de más de 50 000 caracteres → 400 (nunca 500); el estudiante recibe la config sin criterios ni ocultas; «probar» no gasta intento; notas 8/20 (parcial), 20/20 (solución con color `#FF0000`), 0 (vacío o excedido); un `<script>` o un `onerror` no cuentan. Una entrega con 32 000 caracteres de HTML tarda ~0,6 s.
+
+**Cosas que Antigravity debe saber del backend ya construido:**
+- **`a11y` sobre algo que no existe pasa** (sin imágenes, `img_alt` se cumple; sin campos, `form_labels`). Para exigir imágenes el docente combina una regla `element_exists` sobre `img` con `img_alt`. El constructor (B1) debe decirlo junto al selector de `a11y`.
+- **`html_lang` y `document_title` solo pueden cumplirse con un documento completo** (`<!doctype html><html lang="es"><head><title>…`); con un fragmento fallan. Díselo al docente en B1.
+- **Colores:** `#F00`, `red` y `rgb(255,0,0)` se consideran iguales; para otras propiedades (`margin`, `padding`) el docente lista las variantes que acepta en `oneOf` (`0 auto`, `0px auto`).
+- **Requiere Node ≥ 22.12** (jsdom carga un módulo ESM con `require()`); el proyecto usa Node 24 (`Dockerfile`). `docs/testing/html-css-color-check.cjs` lo comprueba en Node real.
 
 ### 25.5 Parte B — Frontend (Antigravity; empieza cuando la Parte A esté cerrada)
 
@@ -139,7 +147,8 @@ Y reglas» y lista las etiquetas de las públicas que fallaron y **cuántas** oc
   (`function formatMarkdown`, esta última no aplica negrita en el enunciado). Deja **solo** la de `utils/` y bórralas de las páginas.
 - En `utils/formatMarkdown.ts` el código **en línea** (`` `x` ``) se inserta sin escapar: escapa su contenido igual que los bloques ```. (Es lo que permite que la Parte A7
   deje pasar `<b>` dentro de un ejemplo.) Conserva la opción `{ escapeHtml: true }` de la vista previa.
-- **Cierre:** una lección con `` `<div>` `` y un bloque ```html con `<script>` se ve como texto, en la vista del estudiante y en la vista previa del docente.
+- La copia de `pages/estudiante/evaluacion/[activityId].vue` **no escapa nada ni reconoce bloques ```** (hoy toda la seguridad de ese texto depende del saneado del servidor): al dejar la de `utils/` queda cubierto, y es lo que permite que Claude Code haga después la tarea A7.
+- **Cierre:** una lección **y un enunciado de ejercicio** con `` `<div>` `` y un bloque ```html con `<script>` se ven como texto, en la vista del estudiante y en la vista previa del docente. **Avisa a Claude Code cuando B0 esté en `main`** para que haga A7.
 
 #### B1 — Constructor del docente: `HtmlCssExerciseBuilder.vue`
 - Archivo nuevo `components/docente/exercise-builders/HtmlCssExerciseBuilder.vue` con la estructura de `OrderingExerciseBuilder.vue` (`defineExpose({ validateAndGetConfig, reset })`).
@@ -147,7 +156,7 @@ Y reglas» y lista las etiquetas de las públicas que fallaron y **cuántas** oc
   `exerciseType`, su `ref`, el `switch` de `getActiveBuilderConfig()` y `reset()`, y el `v-show` junto a los otros constructores.
 - Contenido: (1) **Código inicial** HTML y CSS (dos `<textarea>` monoespaciados); (2) **Solución modelo** HTML y CSS (dos `<textarea>`; aviso: «no se muestra al estudiante; el
   sistema comprueba que cumple todas tus reglas»); (3) **Lista de reglas** (agregar, quitar, reordenar ▲▼): etiqueta, pista, interruptor público/oculta, peso, y un `<select>`
-  de tipo (`kind`) que muestra solo los campos de ese tipo (25.3); `a11y` muestra un `<select>` con las 5 comprobaciones; `css_property` pide propiedad y valores aceptados separados por
+  de tipo (`kind`) que muestra solo los campos de ese tipo (25.3); `a11y` muestra un `<select>` con las 5 comprobaciones y una nota: «sobre algo que no existe se cumple (sin imágenes, `img_alt` pasa): combínala con «existe `img`»; `html_lang` y `document_title` exigen un documento completo»; `css_property` pide propiedad y valores aceptados separados por
   coma (`oneOf`). (4) Un aviso fijo con el **alcance** de 25.3 («no se califica posición, tamaño ni responsive»).
 - `validateAndGetConfig`: exige ≥ 1 regla pública, etiqueta y selector no vacíos, peso 1–100, ≤ 30 reglas, solución modelo no vacía; devuelve `config` con la forma **exacta** de `HtmlCssConfig`.
   Los errores del servidor (p. ej. «La solución modelo no cumple la regla…») se muestran con `messageOf` en el `submitError` que ya existe.

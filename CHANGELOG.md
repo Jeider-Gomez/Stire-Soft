@@ -12,6 +12,68 @@ entry to the oldest.
 
 ---
 
+## Fase 25, Parte A (backend) — ejercicios de HTML y CSS calificados por reglas · 24 de Septiembre de 2026
+
+Nuevo tipo de pregunta **`html_css`** (ADR 13): el estudiante escribe HTML y CSS y el **servidor** lo califica con reglas del docente usando jsdom, **sin ejecutar
+nunca JavaScript del estudiante**. Plan y contrato en `docs/antigravity/PLAN_IMPLEMENTACION.md`; la Parte B (frontend) es de Antigravity.
+
+- **Migración `AddHtmlCssQuestionType` (1789700000000):** amplía el enum de **las dos tablas** que lo repiten, `activity_questions` y `bank_questions`
+  (probada con `migration:run`, `migration:revert` y `migration:run` otra vez).
+- **Verificador de reglas** (`src/evaluation-engine/html-css/html-css.checker.ts`): 6 tipos de regla (existe/cuenta elementos, texto, atributo, propiedad CSS
+  calculada, accesibilidad básica). Sin `runScripts` ni `resources` (nada se ejecuta ni sale a la red), sin expresiones regulares del docente (sin ReDoS), tope de
+  50 000 caracteres y de 500 elementos por regla. jsdom aplica la cascada con especificidad y herencia; **no** evalúa `@media` ni calcula posiciones o tamaños.
+- **Validación al crear** (`html-css.validator.ts`): esquema, límites, selectores válidos y **solución modelo obligatoria que debe cumplir el 100 % de las reglas**
+  (una regla imposible se detecta al crear el ejercicio, no cuando un estudiante lo resuelve). Errores en 400 con el motivo en `error`.
+- **Evaluador** con nota proporcional al peso; el feedback lista las etiquetas de las reglas públicas que fallaron y solo **cuántas** ocultas (sin `<` ni `>`, que el
+  saneado PLAIN volvería entidades).
+- **Vista del estudiante:** solo `starterHtml`, `starterCss`, `publicRules` y `hiddenRuleCount`; nunca los criterios, las reglas ocultas ni la solución modelo.
+- **«Probar» sin gastar intento:** `POST /submissions/:id/run` acepta `{ html, css }` y evalúa solo las reglas públicas (el DTO ahora admite `code`, `html` o `css`; el
+  servicio exige el campo del tipo de la pregunta).
+- Ejercicio de demostración «Página de bienvenida (HTML y CSS)» en el seed (idempotente).
+- **Descubierto al construirlo:** `jest.config.js` sustituye `@asamuzakjp/css-color` por un stub inerte (es ESM puro), así que Jest solo ve colores por nombre;
+  `docs/testing/html-css-color-check.cjs` comprueba en **Node real** que `#F00`, `red` y `rgb(255,0,0)` son equivalentes (36 combinaciones). Requiere Node ≥ 22.12.
+- **Pendiente A7 (a propósito):** dejar de sanear los bloques de código en el servidor (F24-07) **solo después de que B0 esté en `main`**: la pantalla del ejercicio del
+  estudiante tiene su propia copia de `formatMarkdown` que no escapa nada, y hacerlo antes abriría un XSS.
+
+**Verificación (24/09):** Jest **71 suites, 662 tests** en verde (antes 67/600; una corrida intermedia falló una prueba del sandbox por carga del equipo, pasa sola y en
+la repetición); prueba de punta a punta por la API contra una base desechable **25/25** (incluida una nota 20/20 con color `#FF0000` y una entrega de 32 000 caracteres
+en ~0,6 s); `migration:revert` y `migration:run` en ambas tablas; seed en dos pasadas = 1 actividad. `npm run verify:clean` desde un árbol nuevo sin enlaces
+(`VERIFY_START_TIMEOUT_MS=180000`; el primer intento falló solo porque ese árbol no tenía `.env` y el servidor intentó entrar con el usuario de Windows; con `.env` de prueba):
+
+```
+[verify:clean 1] rm -rf node_modules dist
+[verify:clean 2] npm ci (instalacion exacta desde package-lock.json)
+added 957 packages, and audited 958 packages in 2m
+[verify:clean 3] crear base de datos vacia de verificacion: stire_verify_clean
+[verify:clean 4] migration:run contra la base de datos vacia
+Migration InitialSchema1779000000000 has been executed successfully.
+Migration AddEaseFactorToReviewSchedules1788999128282 has been executed successfully.
+Migration AddApprovalToClasses1789000000000 has been executed successfully.
+Migration AddActiveSubmissionConstraint1789100000000 has been executed successfully.
+Migration CreateTutorCredentials1789200000000 has been executed successfully.
+Migration CreateTutorSettings1789300000000 has been executed successfully.
+Migration CreateRoleRequests1789400000000 has been executed successfully.
+Migration AddMessageNotificationType1789500000000 has been executed successfully.
+Migration AddPasswordReset1789600000000 has been executed successfully.
+Migration AddHtmlCssQuestionType1789700000000 has been executed successfully.
+[verify:clean 5] db:seed:demo contra la base de datos vacia
+[verify:clean 6] npm run build
+[verify:clean] setup completo. Base de datos de verificacion: stire_verify_clean (puerto 3097). Continua scripts/verify-clean-server-check.js.
+login real contra el servidor recien levantado (docente de demo)
+  login OK para docente.demo@stire.local (token recibido)
+verificacion de datos sembrados via GET /enrollment/my
+  OK, status 200
+apagado del servidor
+[verify:clean:server-check] limpieza: eliminar base de datos de verificacion stire_verify_clean
+[verify:clean] TODO EN VERDE: npm ci -> migration:run -> db:seed:demo -> build -> start -> login real -> apagado.
+```
+
+**Observación de `verify:clean` (no corregida):** la segunda mitad (`verify-clean-server-check.js`) arranca el servidor con `process.env` **sin** los valores por defecto
+`root/root` que la primera mitad sí usa para su propia conexión; sin un `.env` el servidor intenta entrar con el usuario del sistema operativo. En un checkout normal
+existe `.env`, por eso no se había visto.
+
+---
+
 ## Fase 24 — auditoría y correcciones (24b) · 24 de Septiembre de 2026
 
 Antigravity entregó la Fase 24 en `feat/fase-24` (5 commits de funciones + informe). Claude Code la auditó en Chrome real contra una base

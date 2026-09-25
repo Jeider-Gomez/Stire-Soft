@@ -68,6 +68,23 @@ export class StudentQuestionDto {
         };
       }
 
+      case QuestionType.HTML_CSS: {
+        // Fase 25: la pregunta guarda las reglas con su criterio (`check`) y la SOLUCIÓN MODELO. El estudiante recibe solo
+        // el código inicial y la etiqueta/pista de las reglas PÚBLICAS; de las ocultas, únicamente cuántas hay.
+        const rules: any[] = Array.isArray(config.rules) ? config.rules : [];
+        const publicRules = rules.filter((r) => r?.isPublic === true);
+        return {
+          starterHtml: typeof config.starterHtml === 'string' ? config.starterHtml : '',
+          starterCss: typeof config.starterCss === 'string' ? config.starterCss : '',
+          publicRules: publicRules.map((r) => ({
+            id: r.id,
+            label: r.label,
+            ...(typeof r.hint === 'string' && r.hint ? { hint: r.hint } : {}),
+          })),
+          hiddenRuleCount: rules.length - publicRules.length,
+        };
+      }
+
       case QuestionType.FILL_CODE: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { blanks, ...rest } = config;

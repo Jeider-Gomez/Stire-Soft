@@ -104,6 +104,38 @@ describe('StudentQuestionDto.fromEntity', () => {
     expect(dto.config.blocks.map((b: any) => b.id).sort()).toEqual(blocks.map((b) => b.id).sort());
   });
 
+  it('HTML_CSS (Fase 25): entrega código inicial y reglas públicas; nunca `check`, reglas ocultas ni la solución modelo', () => {
+    const config = {
+  starterHtml: '<h1></h1>',
+  starterCss: '',
+  modelSolution: { html: '<h1>Hola</h1><ul><li>a</li></ul>', css: 'h1{color:red}' },
+  rules: [
+    { id: 'titulo', label: 'Hay un h1 con «Hola»', hint: 'Escribe Hola', isPublic: true, weight: 10, check: { kind: 'text', selector: 'h1', mode: 'contains', value: 'Hola' } },
+    { id: 'lista', label: 'Hay una lista', isPublic: true, weight: 10, check: { kind: 'element_exists', selector: 'ul' } },
+    { id: 'secreta', label: 'ETIQUETA-SECRETA', isPublic: false, weight: 30, check: { kind: 'css_property', selector: 'h1', property: 'color', oneOf: ['red'] } },
+  ],
+};
+    const dto = StudentQuestionDto.fromEntity(makeQuestion(QuestionType.HTML_CSS, config));
+    expect(dto.config).toEqual({
+      starterHtml: '<h1></h1>',
+      starterCss: '',
+      publicRules: [
+        { id: 'titulo', label: 'Hay un h1 con «Hola»', hint: 'Escribe Hola' },
+        { id: 'lista', label: 'Hay una lista' },
+      ],
+      hiddenRuleCount: 1,
+    });
+    const serialized = JSON.stringify(dto);
+    for (const secret of ['modelSolution', 'check', 'secreta', 'ETIQUETA-SECRETA', 'h1{color:red}', 'oneOf']) {
+      expect(serialized).not.toContain(secret);
+    }
+  });
+
+  it('HTML_CSS: una configuración dañada no rompe la vista del estudiante', () => {
+    const dto = StudentQuestionDto.fromEntity(makeQuestion(QuestionType.HTML_CSS, { rules: 'no-es-un-arreglo' }));
+    expect(dto.config).toEqual({ starterHtml: '', starterCss: '', publicRules: [], hiddenRuleCount: 0 });
+  });
+
   it('DRAG_DROP/MATCHING/ORDERING: el barajado realmente cambia el orden (no es un no-op)', () => {
     // Prueba estadística: con 12 elementos, la probabilidad de que un
     // shuffle real produzca el mismo orden es ~1/12! — si falla alguna vez

@@ -398,6 +398,58 @@ async function main() {
     'pregunta FILL_CODE de la actividad',
   );
 
+  // Fase 25: ejercicio de HTML y CSS calificado por reglas (2 públicas, 3 ocultas). La solución modelo cumple las 5.
+  const htmlCssActivity = await findOrCreate(
+    activityRepo,
+    { learningUnitId: unit2.id, title: 'Página de bienvenida (HTML y CSS)' },
+    () => ({
+      learningUnitId: unit2.id,
+      activityTypeId: activityType.id,
+      createdBy: teacher.id,
+      title: 'Página de bienvenida (HTML y CSS)',
+      description: 'Escribe el HTML y el CSS de una página de bienvenida.',
+      difficulty: Difficulty.BASICO,
+      totalPoints: 20,
+      passingScore: 60,
+      attemptsAllowed: 3,
+      order: 2,
+      status: PublicationStatus.PUBLISHED,
+      isRequired: false,
+      adaptiveWeight: 1.0,
+      publishedAt: new Date(),
+    }),
+    'Página de bienvenida (HTML_CSS)',
+  );
+  await findOrCreate(
+    questionRepo,
+    { activityId: htmlCssActivity.id },
+    () => ({
+      activityId: htmlCssActivity.id,
+      type: QuestionType.HTML_CSS,
+      question:
+        'Crea una página de bienvenida: un título principal (h1) con el texto «Hola», una lista con al menos dos elementos, ' +
+        'una imagen con su texto alternativo, y el título en color rojo.',
+      points: 20,
+      order: 0,
+      config: {
+        starterHtml: '<h1></h1>\n',
+        starterCss: '',
+        rules: [
+          { id: 'titulo', label: 'Hay un h1 con el texto «Hola»', hint: 'Escribe Hola dentro del h1', isPublic: true, weight: 20, check: { kind: 'text', selector: 'h1', mode: 'contains', value: 'Hola' } },
+          { id: 'lista', label: 'Hay una lista (ul) con al menos 2 elementos', isPublic: true, weight: 20, check: { kind: 'element_count', selector: 'ul > li', min: 2 } },
+          { id: 'imagen', label: 'Hay una imagen', isPublic: false, weight: 20, check: { kind: 'element_exists', selector: 'img' } },
+          { id: 'alt', label: 'Todas las imágenes tienen alt', isPublic: false, weight: 20, check: { kind: 'a11y', check: 'img_alt' } },
+          { id: 'color', label: 'El título es rojo', isPublic: false, weight: 20, check: { kind: 'css_property', selector: 'h1', property: 'color', oneOf: ['red', '#ff0000'] } },
+        ],
+        modelSolution: {
+          html: '<h1>Hola</h1>\n<ul>\n  <li>Uno</li>\n  <li>Dos</li>\n</ul>\n<img src="logo.png" alt="Logo de STIRE">\n',
+          css: 'h1 { color: red; }\n',
+        },
+      },
+    }),
+    'pregunta HTML_CSS de la actividad',
+  );
+
   console.log('\n✅ Seed de demo completo. Credenciales:');
   console.log('   docente.demo@stire.local       / ' + DEMO_PASSWORD);
   console.log('   estudiante1.demo@stire.local   / ' + DEMO_PASSWORD);

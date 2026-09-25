@@ -324,6 +324,70 @@ describe('SubmissionsService', () => {
       expect(submission.status).toBe(SubmissionStatus.IN_PROGRESS);
     });
 
+    it('coding sin `code` → 400 (el DTO ahora admite html/css, así que el servicio exige el campo del tipo)', async () => {
+      submissionsRepo.findOne.mockResolvedValue(makeSubmission());
+      questionsRepo.findByActivityId.mockResolvedValue([makeCodingQuestion()]);
+
+      await expect(service.runPublicCases(submissionId, { html: '<h1>x</h1>' }, studentId))
+        .rejects.toThrow('Falta el código a ensayar');
+      expect(judgeExecutionService.runPublicCases).not.toHaveBeenCalled();
+    });
+
+    describe('html_css (Fase 25)', () => {
+      function makeHtmlCssQuestion() {
+        return {
+          id: 5,
+          activityId: 1,
+          type: QuestionType.HTML_CSS,
+          config: {
+            starterHtml: '',
+            starterCss: '',
+            modelSolution: { html: '<h1>Hola</h1>', css: '' },
+            rules: [
+              { id: 'titulo', label: 'Hay un h1 con «Hola»', isPublic: true, weight: 10, check: { kind: 'text', selector: 'h1', mode: 'contains', value: 'Hola' } },
+              { id: 'secreta', label: 'ETIQUETA-SECRETA', isPublic: false, weight: 30, check: { kind: 'element_exists', selector: 'footer' } },
+            ],
+          },
+        };
+      }
+
+      it('evalúa solo las reglas públicas, sin sandbox, sin intento consumido y sin revelar las ocultas', async () => {
+        const submission = makeSubmission({ attemptNumber: 1, status: SubmissionStatus.IN_PROGRESS });
+        submissionsRepo.findOne.mockResolvedValue(submission);
+        questionsRepo.findByActivityId.mockResolvedValue([makeHtmlCssQuestion()]);
+
+        const result: any = await service.runPublicCases(submissionId, { html: '<h1>Hola</h1>', css: '' }, studentId);
+
+        expect(result.results).toEqual([{ id: 'titulo', label: 'Hay un h1 con «Hola»', passed: true }]);
+        expect(result.allPassed).toBe(true);
+        expect(result.passedWeight).toBe(10);
+        expect(result.totalWeight).toBe(10);
+        expect(JSON.stringify(result)).not.toContain('SECRETA');
+        expect(judgeExecutionService.runPublicCases).not.toHaveBeenCalled();
+        expect(submissionsRepo.save).not.toHaveBeenCalled();
+        expect(submissionsRepo.create).not.toHaveBeenCalled();
+        expect(eventEmitter.emit).not.toHaveBeenCalled();
+        expect(submission.attemptNumber).toBe(1);
+        expect(submission.status).toBe(SubmissionStatus.IN_PROGRESS);
+      });
+
+      it('rechaza con 400 si falta el HTML', async () => {
+        submissionsRepo.findOne.mockResolvedValue(makeSubmission());
+        questionsRepo.findByActivityId.mockResolvedValue([makeHtmlCssQuestion()]);
+
+        await expect(service.runPublicCases(submissionId, { css: 'h1{}' }, studentId)).rejects.toThrow('Falta el HTML a ensayar');
+        await expect(service.runPublicCases(submissionId, { html: '   ' }, studentId)).rejects.toThrow(BadRequestException);
+      });
+
+      it('exige matrícula activa igual que el resto de «probar»', async () => {
+        submissionsRepo.findOne.mockResolvedValue(makeSubmission());
+        enrollmentRepo.findOne.mockResolvedValue(null);
+        questionsRepo.findByActivityId.mockResolvedValue([makeHtmlCssQuestion()]);
+
+        await expect(service.runPublicCases(submissionId, { html: '<h1>Hola</h1>' }, studentId)).rejects.toThrow(ForbiddenException);
+      });
+    });
+
     it('un estudiante no puede ejecutar sobre la submission de otro (ownership por where studentId)', async () => {
       submissionsRepo.findOne.mockResolvedValue(null); // findOne con {id, studentId} no matchea
 

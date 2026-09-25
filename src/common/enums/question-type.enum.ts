@@ -6,4 +6,5 @@ export enum QuestionType {
   FILL_CODE = 'fill_code',
   ORDERING = 'ordering',
   AI_EVALUATED = 'ai_evaluated',
+  HTML_CSS = 'html_css',
 }
