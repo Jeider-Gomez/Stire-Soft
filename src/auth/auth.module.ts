@@ -23,6 +23,8 @@ import { RolesGuard } from './guards/roles.guard';
     
     // Configurar JWT
     JwtModule.registerAsync({
+      // Global: UserController también firma un token nuevo al cambiar la clave (F24-10) sin importar AuthModule (sería circular).
+      global: true,
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),

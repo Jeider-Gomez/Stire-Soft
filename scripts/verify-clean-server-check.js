@@ -85,7 +85,18 @@ function waitForServer(url, timeoutMs, isAlive) {
 }
 
 async function main() {
-  const serverEnv = { ...process.env, DB_DATABASE: VERIFY_DB, PORT: VERIFY_PORT };
+  // Los mismos valores por defecto que usa verify-clean.js (y dropDatabase() arriba) para migrar y sembrar: sin un `.env` (p. ej. un
+  // `git worktree` recien creado) el servidor arrancaba SIN usuario ni clave y MariaDB respondia «unknown plugin auth_gssapi_client»,
+  // aunque la base ya estuviera migrada con root/root.
+  const serverEnv = {
+    ...process.env,
+    DB_HOST: process.env.DB_HOST || 'localhost',
+    DB_PORT: process.env.DB_PORT || '3306',
+    DB_USERNAME: process.env.DB_USERNAME || 'root',
+    DB_PASSWORD: process.env.DB_PASSWORD || 'root',
+    DB_DATABASE: VERIFY_DB,
+    PORT: VERIFY_PORT,
+  };
   const server = spawn('node', ['dist/main.js'], { cwd: ROOT, env: serverEnv, stdio: 'pipe' });
 
   let serverOutput = '';

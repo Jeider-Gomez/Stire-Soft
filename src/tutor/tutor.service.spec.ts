@@ -357,6 +357,16 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
       expect(convRepo.save).toHaveBeenNthCalledWith(2, expect.objectContaining({ role: 'assistant', content: expect.stringContaining('Bloque de código omitido') }));
     });
 
+    it('Fase 26: en un ejercicio de HTML y CSS omite una página completa (context.codeLanguage = html)', async () => {
+      const page = Array.from({ length: 12 }, (_, i) => `<p>linea ${i}</p>`).join('\n');
+      fetchMock.mockResolvedValue(geminiOk('Toma:\n```html\n' + page + '\n```'));
+
+      const result = await service.sendMessage(STUDENT, 'no me sale', { activityId: 20, currentCode: '<h1></h1>', codeLanguage: 'html' });
+
+      expect(result.message).toContain('Bloque de código omitido');
+      expect(result.message).not.toContain('linea 5');
+    });
+
     it('fuera de una actividad (estudiando teoría) no aplica la barrera', async () => {
       fetchMock.mockResolvedValue(geminiOk('Ejemplo:\n```javascript\n' + LONG_PROGRAM + '\n```'));
 

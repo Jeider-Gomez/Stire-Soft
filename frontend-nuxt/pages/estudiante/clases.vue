@@ -142,6 +142,7 @@
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
 import { useStudentStore } from '~/stores/student'
+const { messageOf } = useApiErrorMessage()
 
 definePageMeta({
   layout: 'student'
@@ -208,7 +209,6 @@ async function handleJoinClass() {
     await studentStore.fetchStudentData()
   } catch (err: any) {
     const status = err?.response?.status || err?.statusCode
-    const msg = err?.data?.message || err?.message
 
     feedbackIsError.value = true
     if (status === 409) {
@@ -216,7 +216,7 @@ async function handleJoinClass() {
     } else if (status === 404) {
       feedbackMessage.value = 'Código de clase inválido o no encontrado. Verifica con tu docente.'
     } else {
-      feedbackMessage.value = typeof msg === 'string' ? msg : 'No fue posible unirse a la clase.'
+      feedbackMessage.value = messageOf(err, 'No fue posible unirse a la clase.')
     }
   } finally {
     isJoining.value = false

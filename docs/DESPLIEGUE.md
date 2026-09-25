@@ -41,8 +41,14 @@ ni las tareas programadas).
 3. Instala Docker: `curl -fsSL https://get.docker.com | sudo sh && sudo usermod -aG docker $USER` (cierra y abre la sesión SSH).
 4. Reserva una IP pública fija (Oracle la da) y crea el nombre: en duckdns.org registra `stire-api` apuntando a esa IP
    (o usa `IP-con-guiones.nip.io`, p. ej. `129-153-10-20.nip.io`).
-5. **Que Oracle no la considere inactiva:** Oracle puede reclamar máquinas gratuitas con uso muy bajo durante 7 días. Pasa la cuenta
-   a *Pay As You Go* (sigue sin cobrar mientras no excedas lo gratuito) y monitorea la API con UptimeRobot (paso 6).
+5. **Deja la cuenta en Always Free y NO la pases a *Pay As You Go* (decisión del dueño, 25/09/2026: el proyecto no puede generar ningún
+   cobro).** Con PAYG hay tarjeta y un presupuesto de Oracle que solo *avisa*, no frena el gasto; en Always Free puro no existe
+   ese riesgo. **Riesgo que se acepta a cambio:** Oracle puede reclamar una máquina gratuita cuyo uso (percentil 95 de CPU, red y
+   memoria) sea inferior al 20 % durante 7 días, y una aplicación de un curso pequeño puede quedar por debajo. No hay forma gratuita y
+   garantizada de evitarlo (el monitor del paso 6 avisa, pero sus peticiones son casi con seguridad demasiado pequeñas para cambiar la medición). Por eso:
+   - **La copia de seguridad fuera de la máquina es obligatoria** (sección 5), no opcional.
+   - Si la máquina se detiene, arráncala desde la consola de Oracle; si se pierde, crea otra y sigue la sección 7.
+   - Antes de cada corte de evaluación importante, comprueba que `/health` responde.
 
 ## 2. Backend
 
@@ -105,8 +111,9 @@ Cambiar de proveedor (Brevo, Resend…) es cambiar estas 5 variables, sin tocar 
 ## 5. Copias de seguridad
 
 `deploy/backup-db.sh` guarda un `.sql.gz` diario y conserva 14 días. Actívalo: `crontab -e` →
-`0 3 * * * /home/ubuntu/stire/deploy/backup-db.sh`. Descarga una copia a tu computador de vez en cuando
-(`scp ubuntu@TU-IP:stire/backups/stire-AAAA-MM-DD.sql.gz .`); si la máquina se pierde, las copias locales no sirven de nada.
+`0 3 * * * /home/ubuntu/stire/deploy/backup-db.sh`. **Descarga una copia a tu computador cada semana**
+(`scp ubuntu@TU-IP:stire/backups/stire-AAAA-MM-DD.sql.gz .`); si la máquina se pierde, las copias que están en ella se pierden con
+ella y solo sirve la que tengas fuera (deja una recurrente en tu calendario).
 
 ## 6. Comprobación final (10 minutos)
 
@@ -118,8 +125,18 @@ Cambiar de proveedor (Brevo, Resend…) es cambiar estas 5 variables, sin tocar 
 - [ ] Un estudiante guarda su clave de Google AI Studio en el Tutor y recibe respuesta.
 - [ ] UptimeRobot (uptimerobot.com, gratis): monitor HTTPS a `/health` cada 5 min con aviso a tu correo.
 
+## 7. Si la máquina se detiene o se pierde
+
+1. **Se detuvo (reclamada por inactividad):** en la consola de Oracle → Instancias → *Iniciar*. Según la documentación de Oracle la instancia se detiene, no se borra (compruébalo en tu consola); espera un par de
+   minutos y comprueba `https://TU-DOMINIO/health`. Si la IP pública no es fija, cambió: actualiza el nombre en DuckDNS.
+2. **Se perdió o no arranca:** crea otra instancia con los pasos 1 a 3, clona el repositorio, vuelve a crear `.env.prod` (guárdalo también fuera
+   de la máquina, en un gestor de contraseñas: sin `TUTOR_KEY_ENCRYPTION_SECRET` las claves de los estudiantes no se pueden descifrar), levanta
+   el `docker compose` y las migraciones (sección 2) y restaura la copia que descargaste:
+   `gunzip -c stire-AAAA-MM-DD.sql.gz | docker compose -f docker-compose.prod.yml --env-file .env.prod exec -T db mariadb -uroot -p"$DB_ROOT_PASSWORD" basestire`.
+3. Los datos posteriores a la última copia se pierden: por eso la copia semanal (sección 5).
+
 ## Riesgos que conviene conocer
 
 - **Una sola máquina:** si cae, cae todo. Para una sustentación o un curso de un semestre es aceptable; las copias diarias son tu red de seguridad.
-- **Oracle:** la capa gratuita se recortó a la mitad en junio de 2026 sin aviso; si cambia de nuevo, el plan B (Railway Hobby o Azure) usa los mismos archivos.
+- **Oracle:** la capa gratuita se recortó a la mitad en junio de 2026 sin aviso y puede reclamar la máquina por inactividad (paso 5 de la sección 1). Si cambia de nuevo, el plan B (Railway Hobby o Azure) usa los mismos archivos, pero **cuesta dinero**: solo se toma si el dueño lo decide.
 - **Tutor:** cada estudiante usa su propia cuota gratuita de Gemini; la interfaz ya explica el límite y la privacidad.

@@ -6,6 +6,7 @@ import { ActivityQuestion } from './entities/activity-question.entity';
 import { Activity } from '../activities/entities/activity.entity';
 import { QuestionType } from '../common/enums/question-type.enum';
 import { validateHtmlCssConfig } from '../evaluation-engine/html-css/html-css.validator';
+import { HIGHLIGHT_LANGUAGES, isExecutableLanguage, isHighlightLanguage } from '../common/code-languages';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
@@ -115,7 +116,23 @@ export class ActivityQuestionsService {
       if (problems.length > 0) throw new BadRequestException(problems.join(' '));
       return;
     }
+    // Fase 26: el lenguaje con el que el editor resalta la plantilla. Es opcional (sin él se muestra sin colores).
+    if (type === QuestionType.FILL_CODE) {
+      if (config?.language !== undefined && !isHighlightLanguage(config.language)) {
+        throw new BadRequestException(
+          `El lenguaje «${String(config.language)}» no es válido para resaltar la plantilla. Usa uno de: ${HIGHLIGHT_LANGUAGES.join(', ')}.`,
+        );
+      }
+      return;
+    }
     if (type !== QuestionType.CODING) return;
+
+    // Fase 26: el juez solo ejecuta JavaScript. Otro lenguaje haría fallar cada intento de cada estudiante con «solo JavaScript».
+    if (config?.language !== undefined && !isExecutableLanguage(config.language)) {
+      throw new BadRequestException(
+        `El juez solo ejecuta JavaScript por ahora (lenguaje recibido: «${String(config.language)}»). Usa language: "javascript" o crea una pregunta de otro tipo.`,
+      );
+    }
 
     const testCases = Array.isArray(config?.testCases) ? config.testCases : [];
     const hasPublicCase = testCases.some((tc: any) => tc?.isPublic === true);

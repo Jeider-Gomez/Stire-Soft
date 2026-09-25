@@ -269,8 +269,9 @@ Se investigó en tres frentes con fuentes de 2026 (calificación multi-lenguaje,
 
 ## Riesgos declarados
 
-- **Oracle** recortó la capa gratuita a la mitad en junio de 2026 sin aviso y puede reclamar instancias con menos del 20 % de uso durante 7 días. Mitigación reportada (sin verificar):
-  pasar la cuenta a pago por uso, que no cobra dentro de lo gratuito. Plan B documentado.
+- **Oracle** recortó la capa gratuita a la mitad en junio de 2026 sin aviso y puede reclamar instancias con menos del 20 % de uso durante 7 días. **Enmienda del 25/09/2026:** el dueño decidió **no** pasar la
+  cuenta a pago por uso (la mitigación que se había reportado): el proyecto no puede generar cobros, y un presupuesto de Oracle solo avisa, no frena el gasto. El riesgo de reclamación **se acepta**;
+  se mitiga con copia de seguridad semanal fuera de la máquina y el procedimiento de recuperación de `docs/DESPLIEGUE.md` §7. Plan B documentado (cuesta dinero: solo por decisión del dueño).
 - **arm64:** la imagen del backend se verificó con Docker en x86; en la VM se construye en arm64 (`node:24-slim`, MariaDB y Caddy son multi-arquitectura) pero **no se ha probado**.
 - **Una sola máquina** comparte kernel con el sandbox y la base: por eso `mem_limit`, `pids_limit`, base sin puerto público y copias diarias.
 - Los datos de capas gratuitas cambian con frecuencia: se verifican al crear cada cuenta.

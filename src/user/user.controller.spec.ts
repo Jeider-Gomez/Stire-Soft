@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { JwtService } from '@nestjs/jwt';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -23,6 +24,7 @@ describe('UserController', () => {
           provide: UserService,
           useValue: mockUserService,
         },
+        { provide: JwtService, useValue: { signAsync: jest.fn() } },
       ],
     }).compile();
 

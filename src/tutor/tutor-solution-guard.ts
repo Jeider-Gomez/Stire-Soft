@@ -14,6 +14,11 @@
  */
 export const MAX_CODE_BLOCK_LINES = 20;
 export const MIN_SOLUTION_LIKE_LINES = 5;
+/**
+ * Ejercicios de HTML y CSS (Fase 26): no son programas stdin → stdout, y una página completa cabe en 10-20 líneas, por debajo del tope
+ * general. Un bloque de este tamaño que no sea el propio código del estudiante se trata como la solución.
+ */
+export const MIN_MARKUP_SOLUTION_LINES = 10;
 const QUOTED_SHARE_THRESHOLD = 0.7;
 
 export const REDACTED_CODE_NOTICE =
@@ -24,6 +29,8 @@ export interface GuardOptions {
   studentCode?: string;
   /** Mensaje del estudiante que originó la respuesta. */
   studentMessage?: string;
+  /** El ejercicio es de HTML y CSS: se aplica el umbral de MIN_MARKUP_SOLUTION_LINES en vez de buscar un programa stdin → stdout. */
+  markup?: boolean;
 }
 
 export interface GuardResult {
@@ -66,10 +73,10 @@ export function limitCodeBlocks(text: string, options: GuardOptions = {}): Guard
   const guarded = text.replace(FENCE, (block: string, body: string) => {
     const lines = meaningfulLines(body);
     const tooLong = lines.length > MAX_CODE_BLOCK_LINES;
-    const looksLikeSolution =
-      isCompleteExerciseProgram(body, lines.length) &&
-      !explainingOwnCode &&
-      !isMostlyStudentsOwnCode(lines, options.studentCode);
+    const solutionShaped = options.markup
+      ? lines.length >= MIN_MARKUP_SOLUTION_LINES
+      : isCompleteExerciseProgram(body, lines.length);
+    const looksLikeSolution = solutionShaped && !explainingOwnCode && !isMostlyStudentsOwnCode(lines, options.studentCode);
 
     if (!tooLong && !looksLikeSolution) return block;
     redactedBlocks++;

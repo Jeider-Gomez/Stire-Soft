@@ -36,9 +36,9 @@ export function useApi() {
         body: options.body as Record<string, unknown> | BodyInit | null | undefined
       })
     } catch (error: unknown) {
-      const err = error as { response?: { status?: number }; statusCode?: number; data?: { message?: string }; message?: string }
+      const err = error as { response?: { status?: number }; statusCode?: number; data?: { error?: string | string[]; message?: string }; message?: string }
       const status = err?.response?.status || err?.statusCode
-      const msg = err?.data?.message || err?.message || 'Error desconocido'
+      const msg = err?.data?.error || err?.data?.message || err?.message || 'Error desconocido'
       console.warn(`[STIRE API] ${options.method || 'GET'} ${endpoint} → ${status || 'sin respuesta'}: ${msg}`)
       throw error
     }

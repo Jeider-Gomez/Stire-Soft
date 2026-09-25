@@ -10,6 +10,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import { JwtService } from '@nestjs/jwt';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
@@ -21,10 +22,14 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User, UserRole } from './entities/user.entity';
+import { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   // Solo admin: crear cuentas de terceros fuera del auto-registro publico.
   @Roles('admin')
@@ -51,8 +56,13 @@ export class UserController {
   // P1-03: verificacion de credenciales, fuerza-brutable igual que el login.
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Patch('me/password')
-  changePassword(@GetUser() user: User, @Body() changePasswordDto: ChangePasswordDto) {
-    return this.userService.changePassword(user.id, changePasswordDto);
+  async changePassword(@GetUser() user: User, @Body() changePasswordDto: ChangePasswordDto) {
+    const result = await this.userService.changePassword(user.id, changePasswordDto);
+    // F24-10: cambiar la clave cierra las OTRAS sesiones (sus tokens quedan anteriores a `passwordChangedAt`). La sesión que hizo el
+    // cambio recibe un token nuevo para no quedarse fuera. (Se firma aquí con el JwtService global de AuthModule; mismo payload que el login.)
+    const payload: JwtPayload = { sub: user.id, email: user.email, role: user.role };
+    const access_token = await this.jwtService.signAsync(payload);
+    return { ...result, token: access_token, access_token };
   }
 
   // Listado completo de la institución: solo admin. Un docente ve a sus

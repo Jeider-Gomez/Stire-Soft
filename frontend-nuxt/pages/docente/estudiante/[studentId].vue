@@ -198,6 +198,7 @@
 
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
+const { messageOf } = useApiErrorMessage()
 
 definePageMeta({
   layout: 'teacher'
@@ -266,7 +267,7 @@ async function fetchStudentDashboard() {
     const res = await api.get<StudentDashboardData>(`/analytics/student/${studentId}`)
     dashboard.value = res
   } catch (err: any) {
-    errorMessage.value = err?.data?.message || 'No tienes permiso o no se pudo cargar el seguimiento del alumno'
+    errorMessage.value = messageOf(err, 'No tienes permiso o no se pudo cargar el seguimiento del alumno')
   } finally {
     isLoading.value = false
   }

@@ -123,5 +123,18 @@ describe('UserService', () => {
       expect(savedUser.password).toMatch(/^\$2[aby]\$/);
       expect(await bcrypt.compare('NuevaClave1!', savedUser.password)).toBe(true);
     });
+
+    it('F24-10: marca passwordChangedAt para que los tokens anteriores dejen de valer', async () => {
+      const hashedOld = await bcrypt.hash('ViejaClave1!', 10);
+      mockUserRepository.findOne.mockResolvedValue({ id: 1, password: hashedOld });
+      mockUserRepository.save.mockImplementation((u: unknown) => Promise.resolve(u));
+      const before = Date.now();
+
+      await service.changePassword(1, { currentPassword: 'ViejaClave1!', newPassword: 'NuevaClave1!' });
+
+      const savedUser = mockUserRepository.save.mock.calls[0][0];
+      expect(savedUser.passwordChangedAt).toBeInstanceOf(Date);
+      expect(savedUser.passwordChangedAt.getTime()).toBeGreaterThanOrEqual(before);
+    });
   });
 });

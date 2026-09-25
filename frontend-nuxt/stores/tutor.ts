@@ -249,7 +249,13 @@ export const useTutorStore = defineStore('tutor', () => {
           learningUnitId: studentStore.activeUnit?.id,
           activityTitle: workspaceStore.currentExercise?.title,
           activityId: workspaceStore.currentExercise?.activityId,
-          currentCode: workspaceStore.code
+          // En un ejercicio de HTML y CSS el código está en htmlCode/cssCode (`code` es el búfer del ejercicio de JavaScript).
+          ...(workspaceStore.currentExercise?.questionType === 'html_css'
+            ? {
+                currentCode: ['<!-- index.html -->', workspaceStore.htmlCode, '', '/* estilos.css */', workspaceStore.cssCode].join('\n'),
+                codeLanguage: 'html'
+              }
+            : { currentCode: workspaceStore.code })
         }
       })
 

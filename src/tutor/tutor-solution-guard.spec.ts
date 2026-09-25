@@ -94,3 +94,42 @@ describe('barrera anti-solución (tope de código inteligente)', () => {
     expect(limitCodeBlocks('Piensa en el caso base.')).toEqual({ text: 'Piensa en el caso base.', redactedBlocks: 0 });
   });
 });
+
+// Fase 26: en un ejercicio de HTML y CSS una página completa cabe en 10-20 líneas (por debajo del tope general) y no lee stdin.
+describe('barrera anti-solución — ejercicios de HTML y CSS', () => {
+  const htmlFence = (code: string) => '```html\n' + code + '\n```';
+  const PAGE = [
+    '<!doctype html>',
+    '<html lang="es">',
+    '<head>',
+    '  <title>Bienvenida</title>',
+    '  <style>h1 { color: red; }</style>',
+    '</head>',
+    '<body>',
+    '  <h1>Hola</h1>',
+    '  <ul><li>Uno</li><li>Dos</li></ul>',
+    '  <img src="a.png" alt="Logo">',
+    '</body>',
+    '</html>',
+  ].join('\n');
+
+  it('omite una página completa que no es el código del estudiante', () => {
+    const result = limitCodeBlocks('Así:\n' + htmlFence(PAGE), { markup: true, studentCode: '<h1></h1>', studentMessage: 'no me sale' });
+    expect(result.redactedBlocks).toBe(1);
+    expect(result.text).toContain(REDACTED_CODE_NOTICE);
+    expect(result.text).not.toContain('<!doctype html>');
+  });
+
+  it('deja pasar un ejemplo corto (por debajo del umbral)', () => {
+    const example = '<ul>\n  <li>Uno</li>\n  <li>Dos</li>\n</ul>';
+    expect(limitCodeBlocks(htmlFence(example), { markup: true, studentMessage: 'cómo hago una lista' }).redactedBlocks).toBe(0);
+  });
+
+  it('deja pasar la explicación del propio código del estudiante', () => {
+    expect(limitCodeBlocks(htmlFence(PAGE), { markup: true, studentCode: PAGE, studentMessage: 'explícame mi página' }).redactedBlocks).toBe(0);
+  });
+
+  it('sin `markup` el mismo bloque pasa (no es un programa stdin → stdout): la regla solo aplica a HTML y CSS', () => {
+    expect(limitCodeBlocks(htmlFence(PAGE), { studentMessage: 'no me sale' }).redactedBlocks).toBe(0);
+  });
+});

@@ -166,12 +166,11 @@ export class ClassService {
     });
   }
 
-  async update(id: number, updateClassDto: UpdateClassDto, teacherId: number): Promise<Class> {
+  async update(id: number, updateClassDto: UpdateClassDto, user: User): Promise<Class> {
     const classEntity = await this.findOne(id);
 
-    if (classEntity.teacherId !== teacherId) {
-      throw new ConflictException('No tienes permiso para modificar esta clase');
-    }
+    // F24-09: un docente ajeno recibía 409 (Conflict); es una falta de permiso → 403, igual que el resto de operaciones sobre la clase.
+    await this.authorizationService.assertTeacherOwnsClass(user, classEntity.id);
 
     Object.assign(classEntity, updateClassDto);
     return await this.classRepository.save(classEntity);

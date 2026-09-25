@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe, ExecutionContext, CanActivate } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { UserController } from './user.controller';
@@ -47,6 +48,7 @@ describe('UserController (e2e) — P0-02 escalada de privilegios', () => {
     currentUser = { id: 1, email: 'estudiante@stire.local', role: UserRole.ESTUDIANTE };
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [JwtModule.register({ secret: 'secreto-de-prueba', signOptions: { expiresIn: '1h' } })],
       controllers: [UserController],
       providers: [
         { provide: UserService, useValue: mockUserService },
@@ -71,6 +73,21 @@ describe('UserController (e2e) — P0-02 escalada de privilegios', () => {
   afterEach(async () => {
     jest.clearAllMocks();
     await app.close();
+  });
+
+  it('F24-10: cambiar la clave devuelve un token NUEVO para la sesión actual (las demás quedan cerradas por passwordChangedAt)', async () => {
+    mockUserService.changePassword.mockResolvedValue({ message: 'Contraseña actualizada con éxito' });
+
+    const res = await request(app.getHttpServer())
+      .patch('/users/me/password')
+      .send({ currentPassword: 'ViejaClave1!', newPassword: 'NuevaClave1!' })
+      .expect(200);
+
+    expect(res.body.message).toBe('Contraseña actualizada con éxito');
+    expect(res.body.access_token).toEqual(expect.any(String));
+    expect(res.body.token).toBe(res.body.access_token);
+    const payload = app.get(JwtService).verify(res.body.access_token);
+    expect(payload).toMatchObject({ sub: 1, email: 'estudiante@stire.local', role: 'estudiante' });
   });
 
   it('PATCH /users/me con {"role":"admin"} es rechazado con 400 y el servicio NUNCA se invoca con ese campo', async () => {

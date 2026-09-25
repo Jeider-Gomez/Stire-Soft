@@ -6,6 +6,8 @@ export class ChatContextDto {
   activityId?: number;
   activityTitle?: string;
   currentCode?: string;
+  /** Lenguaje de `currentCode` (Fase 26): `html` en los ejercicios de HTML y CSS; sin él se asume javascript. */
+  codeLanguage?: string;
   currentRoute?: string;
 }
 

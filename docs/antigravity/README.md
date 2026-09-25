@@ -15,6 +15,10 @@ en el mismo archivo — no se archivan por eso. Se archiva completo, con fecha e
 [`docs/_archivo/`](../_archivo/) únicamente cuando se reemplaza de fondo (fases nuevas, no una
 corrección más) — ver la regla exacta ahí.
 
+**Archivado el 2026-09-25:** la Fase 25 (ejercicios de HTML y CSS calificados por reglas, `html_css`) se movió a [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-25.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-25.md), con la nota de
+la auditoría de Claude Code (dos fallos corregidos el mismo día y un defecto de seguridad anterior a la fase, cerrado con DOMPurify). **El archivo vigente contiene solo la Fase 26** (editor de código con
+CodeMirror 6, resaltado y selector de lenguaje; escrita el 25/09): la Parte A es backend de Claude Code y **ya está entregada**; la Parte B es de Antigravity.
+
 **Archivado el 2026-09-24:** la Fase 24 (constructor del curso, creador de los 6 tipos de ejercicio, gestión de clase, «Mi perfil» y administración de usuarios) se
 movió a [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-24.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-24.md), con la nota de la auditoría de Claude Code
 (cuatro fallos corregidos el mismo día, uno de ellos un defecto del propio plan). **El archivo vigente contiene solo la Fase 25** (ejercicios de HTML y CSS calificados por

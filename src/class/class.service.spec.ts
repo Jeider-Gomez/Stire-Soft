@@ -2,6 +2,9 @@ import { ForbiddenException } from '@nestjs/common';
 import { ClassService } from './class.service';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { UserRole } from '../user/entities/user.entity';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { UpdateClassDto } from './dto/update-class.dto';
 
 // Regresión de P1-06: DELETE /class/:id solo era validado el UPDATE, no el
 // remove. Usa un AuthorizationService real (con repos falsos).
@@ -166,5 +169,36 @@ describe('ClassService.findByTeacher — enrollmentCount, avgMastery, atRiskCoun
 
     expect(result[0]).toMatchObject({ enrollmentCount: 0, atRiskCount: 0 });
     expect(result[0].avgMastery).toBeUndefined();
+  });
+});
+
+// F24-09 (auditoría de la Fase 24): PATCH /class/:id respondía 409 al docente ajeno y dejaba cambiar el código por API (duplicado → 500).
+describe('ClassService.update — F24-09', () => {
+  const classRepo = { findOne: jest.fn(), save: jest.fn((c: unknown) => Promise.resolve(c)) };
+  const auth = new AuthorizationService(classRepo as any, { findOne: jest.fn() } as any);
+  const service = new ClassService(classRepo as any, {} as any, {} as any, {} as any, auth);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    classRepo.findOne.mockResolvedValue({ id: 5, name: 'Vieja', code: 'ABC', teacherId: 10, teacher: {} });
+  });
+
+  it('un docente ajeno recibe 403 (no 409) y no se guarda nada', async () => {
+    await expect(service.update(5, { name: 'Nueva' }, { id: 99, role: UserRole.DOCENTE } as any)).rejects.toThrow(ForbiddenException);
+    expect(classRepo.save).not.toHaveBeenCalled();
+  });
+
+  it('el docente dueño actualiza el nombre', async () => {
+    const out = await service.update(5, { name: 'Nueva' }, { id: 10, role: UserRole.DOCENTE } as any);
+    expect(out.name).toBe('Nueva');
+    expect(classRepo.save).toHaveBeenCalledTimes(1);
+  });
+
+  it('el DTO de actualización rechaza el campo `code` (el código de ingreso no se edita) y acepta el resto', async () => {
+    const check = (body: object) =>
+      validate(plainToInstance(UpdateClassDto, body), { whitelist: true, forbidNonWhitelisted: true });
+    const withCode = await check({ name: 'X', code: 'OTRO' });
+    expect(withCode.some((e) => e.property === 'code')).toBe(true);
+    expect(await check({ name: 'X', description: 'y' })).toHaveLength(0);
   });
 });

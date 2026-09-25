@@ -543,6 +543,7 @@ import {
   Mail, Check, Copy, QrCode, UserCheck
 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
+const { messageOf } = useApiErrorMessage()
 
 definePageMeta({ layout: 'teacher' })
 
@@ -637,8 +638,7 @@ async function submitCreateClass() {
       await fetchClasses()
     }
   } catch (err: any) {
-    const msg = err?.data?.message || err?.message || 'Error al crear la clase'
-    errorMessage.value = Array.isArray(msg) ? msg.join(', ') : msg
+    errorMessage.value = messageOf(err, 'Error al crear la clase')
   } finally {
     isSubmitting.value = false
   }

@@ -64,11 +64,11 @@ export class ClassController {
   @UseGuards(RolesGuard)
   @Roles('docente')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateClassDto: UpdateClassDto,
     @GetUser() user: User,
   ) {
-    return this.classService.update(+id, updateClassDto, user.id);
+    return this.classService.update(id, updateClassDto, user);
   }
 
   @Delete(':id')

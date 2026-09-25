@@ -129,6 +129,7 @@ export class TutorService {
       const guarded = limitCodeBlocks(rawReply, {
         studentCode: typeof context?.currentCode === 'string' ? context.currentCode : undefined,
         studentMessage: message,
+        markup: context?.codeLanguage === 'html' || context?.codeLanguage === 'css',
       });
       replyText = guarded.text;
       if (guarded.redactedBlocks > 0) {

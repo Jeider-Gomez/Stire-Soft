@@ -50,8 +50,8 @@ Severidad: **Crítico** / **Alto** / **Medio** / **Bajo**. Todos reproducidos ho
 | F24-06 | Bajo | Vista previa de lección (docente) | Escribir `<img src=x onerror=…>` y pulsar «Vista Previa» | HTML escapado | **Se ejecuta** (solo en el navegador del propio autor) | `formatMarkdown` no escapa el texto fuera de bloques de código y se usa con `v-html` sobre el borrador. El servidor **sí sanea al guardar** y la vista del estudiante no ejecutó nada |
 | F24-07 | Medio (preexistente) | Guardado de lecciones | Lección con un bloque ```html que contenga `<script>` y `<button onclick>` | Se conserva el ejemplo | El servidor elimina `<script>…</script>`, deja `<button …>` como texto suelto y añade un `</b>` de cierre. **Estropea las lecciones de HTML** | El saneado se aplica al texto Markdown completo como si fuera HTML. Relevante para el curso de HTML/CSS y para la Fase 25 |
 | F24-08 | Bajo | Ejercicio del estudiante | Abrir un ejercicio cuyo enunciado tenga `**negrita**` | Negrita en ambos paneles | El panel izquierdo la muestra con asteriscos | Hay **dos copias** de `formatMarkdown` (página y `utils/`) |
-| F24-09 | Bajo (preexistente) | `PATCH /class/:id` | Docente ajeno; o cambiar `code` a uno repetido | 403; 409 | Docente ajeno → **409**; el `code` sí se puede cambiar por API aunque la pantalla lo declara solo lectura; duplicado → **500** con el texto SQL (solo en desarrollo) | Ya estaba en la lista de pendientes |
-| F24-10 | Medio (preexistente, ahora expuesto en pantalla) | «Mi perfil» → Cambiar contraseña | Cambiar la propia clave con otra sesión abierta | Las demás sesiones se cierran | El token anterior **sigue válido (200)**. (La recuperación por correo y el restablecimiento por admin sí cierran sesiones) | `changePassword` no marca `passwordChangedAt`. Hacerlo cerraría también la sesión actual: habría que emitir un token nuevo |
+| F24-09 | Bajo (preexistente, **corregido el 25/09**) | `PATCH /class/:id` | Docente ajeno; o cambiar `code` a uno repetido | 403; 409 | Docente ajeno → **409**; el `code` sí se puede cambiar por API aunque la pantalla lo declara solo lectura; duplicado → **500** con el texto SQL (solo en desarrollo) | Ya estaba en la lista de pendientes |
+| F24-10 | Medio (preexistente, ahora expuesto en pantalla; **corregido el 25/09**) | «Mi perfil» → Cambiar contraseña | Cambiar la propia clave con otra sesión abierta | Las demás sesiones se cierran | El token anterior **sigue válido (200)**. (La recuperación por correo y el restablecimiento por admin sí cierran sesiones) | `changePassword` no marca `passwordChangedAt`. Hacerlo cerraría también la sesión actual: habría que emitir un token nuevo |
 
 **Sin hallazgos de seguridad graves.** Nada de esta fase permite acceso indebido; por eso este reporte se puede publicar en el repositorio.
 
@@ -85,7 +85,7 @@ Corregidos en `feat/fase-24` y **verificados en Chrome real** contra una base de
 | F24-05 | El modal de lecciones toma el foco; Escape cierra primero la confirmación de borrar y luego el modal; tras un error de registro Escape cierra y los clics llegan a la tabla; un diálogo recién abierto sigue cerrándose con Escape |
 | F24-06 | La vista previa no ejecuta el HTML del borrador, formatea el Markdown y muestra el HTML como texto |
 
-**Sin corregir (no bloquean la fusión):** F24-07 (saneado del servidor sobre bloques de código con HTML; **hacerlo antes de la Fase 25**), F24-08, F24-09, F24-10.
+**Sin corregir (no bloquean la fusión):** F24-07 (saneado del servidor sobre bloques de código con HTML; **hacerlo antes de la Fase 25**), F24-08, F24-09, F24-10. **Actualización 25/09:** F24-07 se cerró con la Fase 25 (A7), F24-09 y F24-10 se corrigieron después (ver `CHANGELOG.md`, «Pendientes posteriores a la Fase 25»); F24-08 se cerró con B0 de la Fase 25 (una sola copia de `formatMarkdown`). **Ningún hallazgo de esta auditoría queda abierto.**
 
 ## Corrección propuesta (Fase 24b, frontend, cambios pequeños) — ya aplicada
 

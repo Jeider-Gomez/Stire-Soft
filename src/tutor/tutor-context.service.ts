@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { LearningProgressRepository } from '../learning-progress/learning-progress.repository';
 import { GuidanceLevel, guidanceInstruction } from './tutor-guidance';
 import { TutorStyle, styleInstruction } from './tutor-settings';
+import { isHighlightLanguage } from '../common/code-languages';
 
 @Injectable()
 export class TutorContextService {
@@ -30,7 +31,9 @@ export class TutorContextService {
       if (context.activityTitle) parts.push(`Actividad / Ejercicio actual: "${context.activityTitle}" (ID: ${context.activityId || 'N/A'})`);
       if (context.currentCode && typeof context.currentCode === 'string' && context.currentCode.trim()) {
         const truncatedCode = context.currentCode.trim().slice(0, 1500);
-        parts.push(`Código actual en el editor del estudiante:\n\`\`\`javascript\n${truncatedCode}\n\`\`\``);
+        // Fase 26: en un ejercicio de HTML y CSS el código es HTML/CSS, no JavaScript (lista blanca: el cliente no puede colar texto en la valla).
+        const codeLanguage = isHighlightLanguage(context.codeLanguage) ? context.codeLanguage : 'javascript';
+        parts.push(`Código actual en el editor del estudiante:\n\`\`\`${codeLanguage}\n${truncatedCode}\n\`\`\``);
       }
       if (parts.length > 0) {
         locationContext = `\nCONTEXTO ACTIVO DEL ESTUDIANTE EN PANTALLA:\n${parts.join('\n')}\n`;

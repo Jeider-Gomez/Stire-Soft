@@ -142,6 +142,9 @@ export class UserService {
     }
 
     user.password = await bcrypt.hash(changePasswordDto.newPassword, 10);
+    // F24-10: marca el cambio para que los tokens emitidos ANTES dejen de valer (JwtStrategy compara `iat` con esta fecha).
+    // El controlador emite un token nuevo para la sesión que hizo el cambio.
+    user.passwordChangedAt = new Date();
     await this.userRepository.save(user);
 
     return { message: 'Contraseña actualizada con éxito' };

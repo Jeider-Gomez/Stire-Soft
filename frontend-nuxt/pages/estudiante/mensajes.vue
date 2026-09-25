@@ -224,6 +224,7 @@
 
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
+const { messageOf } = useApiErrorMessage()
 
 definePageMeta({
   layout: 'student'
@@ -362,7 +363,7 @@ async function fetchMessages() {
     sentMessages.value = Array.isArray(sentRes) ? sentRes : []
     unreadCount.value = countRes?.count || 0
   } catch (err: any) {
-    errorMessage.value = err?.data?.message || 'Error al conectar con el servidor de mensajería'
+    errorMessage.value = messageOf(err, 'Error al conectar con el servidor de mensajería')
   } finally {
     isLoading.value = false
   }
@@ -399,7 +400,7 @@ async function sendMessage() {
     await fetchMessages()
     activeTab.value = 'sent'
   } catch (err: any) {
-    composeError.value = err?.data?.message || 'Error al enviar el mensaje'
+    composeError.value = messageOf(err, 'Error al enviar el mensaje')
   } finally {
     isSending.value = false
   }

@@ -22,6 +22,7 @@ export interface DragDropConfig {
 
 export interface FillCodeConfig {
   codeTemplate: string; // e.g., "for i in ___:" where ___ are blanks
+  language?: string; // Fase 26: lenguaje con el que el editor resalta la plantilla (HIGHLIGHT_LANGUAGES); no se ejecuta
   blanks: Array<{ id: string; answer: string; regexMode?: boolean }>;
 }
 

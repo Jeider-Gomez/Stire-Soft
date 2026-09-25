@@ -113,7 +113,7 @@ export const useAuthStore = defineStore('auth', () => {
       return { ok: false, error: 'Respuesta inesperada del servidor tras el registro' }
     } catch (err: any) {
       const status = err?.response?.status || err?.statusCode
-      const msg = err?.data?.message || err?.message || 'Error de conexión'
+      const msg = err?.data?.error || err?.data?.message || err?.message || 'Error de conexión'
 
       if (status === 409) {
         return { ok: false, error: 'Ya existe una cuenta registrada con este correo institucional.' }

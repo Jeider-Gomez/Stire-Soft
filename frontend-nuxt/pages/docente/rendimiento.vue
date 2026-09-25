@@ -227,6 +227,7 @@
 
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
+const { messageOf } = useApiErrorMessage()
 
 definePageMeta({
   layout: 'teacher'
@@ -311,7 +312,7 @@ async function fetchClassesAndMetrics() {
       isLoading.value = false
     }
   } catch (err: any) {
-    errorMessage.value = err?.data?.message || 'Error al cargar las clases del docente'
+    errorMessage.value = messageOf(err, 'Error al cargar las clases del docente')
     isLoading.value = false
   }
 }
@@ -325,7 +326,7 @@ async function loadClassMetrics() {
     const res = await api.get<ClassMetricsResponse>(`/analytics/class/${selectedClassId.value}`)
     metrics.value = res
   } catch (err: any) {
-    errorMessage.value = err?.data?.message || 'Error al obtener las analíticas de la clase seleccionada'
+    errorMessage.value = messageOf(err, 'Error al obtener las analíticas de la clase seleccionada')
   } finally {
     isLoading.value = false
   }

@@ -91,6 +91,34 @@ describe('ActivityQuestionsService.create', () => {
       expect(mockRepo.save).toHaveBeenCalled();
     });
 
+    it('Fase 26: CODING en un lenguaje que el juez no ejecuta (python) → 400 y no se guarda', async () => {
+      const dto = {
+        activityId: 1,
+        type: QuestionType.CODING,
+        question: 'Suma',
+        config: { language: 'python', testCases: [{ label: 'p', isPublic: true, expected: '3' }] },
+      } as any;
+      await expect(service.create(dto, teacher)).rejects.toThrow(/solo ejecuta JavaScript/);
+      expect(mockRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('Fase 26: CODING sin language (usa JavaScript por defecto) o con "js" → se crea', async () => {
+      const base = { activityId: 1, type: QuestionType.CODING, question: 'Suma' } as any;
+      await service.create({ ...base, config: { testCases: [{ isPublic: true, expected: '3' }] } }, teacher);
+      await service.create({ ...base, config: { language: 'js', testCases: [{ isPublic: true, expected: '3' }] } }, teacher);
+      expect(mockRepo.save).toHaveBeenCalledTimes(2);
+    });
+
+    it('Fase 26: FILL_CODE acepta un lenguaje de resaltado válido o ninguno, y rechaza uno desconocido', async () => {
+      const base = { activityId: 1, type: QuestionType.FILL_CODE, question: 'Completa' } as any;
+      const cfg = { codeTemplate: 'for i in ___:', blanks: [{ id: 'b1', answer: 'range(3)' }] };
+      await service.create({ ...base, config: { ...cfg, language: 'python' } }, teacher);
+      await service.create({ ...base, config: cfg }, teacher);
+      expect(mockRepo.save).toHaveBeenCalledTimes(2);
+      await expect(service.create({ ...base, config: { ...cfg, language: 'brainfuck' } }, teacher)).rejects.toThrow(/no es válido para resaltar/);
+      expect(mockRepo.save).toHaveBeenCalledTimes(2);
+    });
+
     it('otros tipos de pregunta (MCQ) no exigen testCases', async () => {
       const dto = {
         activityId: 1,

@@ -257,13 +257,16 @@ async function savePassword() {
 
   isSavingPwd.value = true
   try {
-    await api.apiFetch('/users/me/password', {
+    const res = await api.apiFetch<{ access_token?: string; token?: string }>('/users/me/password', {
       method: 'PATCH',
       body: {
         currentPassword: pwdForm.currentPassword,
         newPassword: pwdForm.newPassword
       }
     })
+    // Cambiar la clave cierra las demás sesiones (F24-10): el servidor entrega un token nuevo a esta para que no se quede fuera.
+    const freshToken = res?.access_token || res?.token
+    if (freshToken) authStore.token = freshToken
     pwdForm.currentPassword = ''
     pwdForm.newPassword = ''
     pwdForm.confirmPassword = ''
