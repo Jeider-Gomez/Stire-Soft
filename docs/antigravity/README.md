@@ -15,6 +15,11 @@ en el mismo archivo — no se archivan por eso. Se archiva completo, con fecha e
 [`docs/_archivo/`](../_archivo/) únicamente cuando se reemplaza de fondo (fases nuevas, no una
 corrección más) — ver la regla exacta ahí.
 
+**Archivado el 2026-09-24:** la Fase 24 (constructor del curso, creador de los 6 tipos de ejercicio, gestión de clase, «Mi perfil» y administración de usuarios) se
+movió a [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-24.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-24.md), con la nota de la auditoría de Claude Code
+(cuatro fallos corregidos el mismo día, uno de ellos un defecto del propio plan). **El archivo vigente contiene solo la Fase 25** (ejercicios de HTML y CSS calificados por
+reglas; escrita el 24/09): la Parte A es backend de Claude Code y la Parte B es de Antigravity, en ese orden.
+
 **Archivado el 2026-09-21:** la Fase 22 (cuatro correcciones que salieron de auditar la Fase 21) se movió a
 [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-21.md`](../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-21.md),
 con la nota de la auditoría de Claude Code. **El archivo vigente contiene solo la Fase 23** (repasos que funcionan, roles de usuario

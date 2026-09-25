@@ -56,6 +56,10 @@
           <span v-if="isLoading">Verificando credenciales...</span>
           <span v-else>Ingresar a la plataforma</span>
         </button>
+
+        <p class="text-[11px] text-base-texto-secundario text-center mt-2 leading-relaxed">
+          ¿No te llega el correo de recuperación? Pídele a tu docente o al administrador que restablezca tu contraseña.
+        </p>
       </form>
 
       <!-- Enlace hacia Registro -->

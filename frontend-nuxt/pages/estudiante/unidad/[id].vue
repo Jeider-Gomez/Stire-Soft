@@ -44,7 +44,12 @@
       <article
         v-if="unitContent.length > 0"
         class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 md:p-8 shadow-sm space-y-6 text-xs text-base-texto-primario leading-relaxed">
-        <section v-for="content in unitContent" :key="content.id" class="prose prose-xs space-y-3" v-html="formatMarkdown(content.body)" />
+        <section v-for="content in unitContent" :key="content.id" class="space-y-2">
+          <h2 v-if="content.title" class="text-sm font-bold text-base-texto-primario">
+            {{ content.title }}
+          </h2>
+          <div class="prose prose-xs space-y-3" v-html="formatMarkdown(content.body)" />
+        </section>
       </article>
       <article v-else class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 text-xs text-base-texto-secundario">
         Esta unidad todavía no tiene material de lectura publicado. Pasa directamente al ejercicio práctico.

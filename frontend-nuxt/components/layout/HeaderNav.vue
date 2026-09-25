@@ -130,6 +130,17 @@
               <p class="text-[11px] text-slate-400 mt-0.5">{{ authStore.user?.email }}</p>
             </div>
 
+            <!-- Enlace Mi perfil -->
+            <NuxtLink
+              :to="`${homeRoute}/perfil`"
+              @click="showUserMenu = false"
+              class="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-slate-700
+                     hover:bg-slate-50 transition-colors duration-150 font-medium"
+            >
+              <UserCircle :size="14" />
+              <span>Mi perfil</span>
+            </NuxtLink>
+
             <!-- Opción cerrar sesión -->
             <button
               @click="handleLogout"
@@ -147,7 +158,7 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, Sparkles, LogOut, GraduationCap } from 'lucide-vue-next'
+import { Menu, Sparkles, LogOut, GraduationCap, UserCircle } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { useTutorStore } from '~/stores/tutor'
