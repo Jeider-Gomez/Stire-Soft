@@ -1,5 +1,5 @@
 ---
-estado:     Fase 25 — Parte A (backend) ENTREGADA el 24/09 salvo A7, que espera a B0 · Parte B (frontend, Antigravity): PENDIENTE, ya puede empezar
+estado:     Fase 25 CERRADA el 25/09 — Parte A (backend, 24/09), Parte B (frontend, auditada y corregida 25/09) y A7 (25/09) en main. Sin fase nueva escrita: la Fase 26 (editor con resaltado) se escribe aparte
 verificado: 2026-09-24 contra src/ y frontend-nuxt/ reales (rutas y líneas citadas comprobadas en esa fecha)
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    DOC-V03 (crear ejercicio) · EST-V03 (ejercicio del estudiante)
@@ -130,7 +130,7 @@ Y reglas» y lista las etiquetas de las públicas que fallaron y **cuántas** oc
 | A4 | `StudentQuestionDto`: solo `starterHtml`, `starterCss`, `publicRules`, `hiddenRuleCount` | ✅ probado que ni `check`, ni ocultas, ni solución modelo salen |
 | A5 | `POST /submissions/:id/run` acepta `{ html, css }` (y `code` sigue siendo obligatorio solo para código) | ✅ probado que no consume intento ni cambia el estado |
 | A6 | Ejercicio de demostración «Página de bienvenida (HTML y CSS)» en el seed (2 públicas, 3 ocultas) | ✅ idempotente (2 pasadas = 1 actividad) |
-| **A7** | **Saneado de bloques de código** (F24-07): `ContentRenderingService.sanitizeRichText` deja intactos los bloques ``` (y luego el código en línea) en `content.body`, `activity.description` y `activity_question.question` | ⏳ **NO se hace hasta que B0 esté en `main`.** Motivo de seguridad: hoy la pantalla del ejercicio (`evaluacion/[activityId].vue`) tiene su propia copia de `formatMarkdown` que **no escapa nada**; si el servidor dejara de sanear los bloques antes, un `<img onerror>` dentro de un bloque llegaría sin filtro al estudiante. Claude Code lo hace justo después de B0 |
+| **A7** | **Saneado de bloques de código** (F24-07): `ContentRenderingService.sanitizeRichText` deja intactos los bloques ``` (y luego el código en línea) en `content.body`, `activity.description` y `activity_question.question` | ✅ **Hecha el 25/09, después de B0** (motivo: la pantalla del ejercicio tenía su propia copia de `formatMarkdown` que no escapaba nada). Además del servidor (`code-segments.ts`), el HTML final del navegador pasa ahora por DOMPurify (`sanitizeRenderedHtml.ts`): las pruebas adversariales mostraron que `formatMarkdown` podía colar atributos en HTML ya saneado. Ver `CHANGELOG.md` |
 
 **Verificado de punta a punta por la API (24/09, base desechable):** 25/25 comprobaciones, incluidas: pregunta válida → 201; solución modelo que incumple una regla → 400 que nombra la regla; sin regla pública / selector inválido / config vacía / HTML de más de 50 000 caracteres → 400 (nunca 500); el estudiante recibe la config sin criterios ni ocultas; «probar» no gasta intento; notas 8/20 (parcial), 20/20 (solución con color `#FF0000`), 0 (vacío o excedido); un `<script>` o un `onerror` no cuentan. Una entrega con 32 000 caracteres de HTML tarda ~0,6 s.
 
