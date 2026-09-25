@@ -237,6 +237,14 @@ vistas contra Figma y la estructura de los dos cursos de Julio — sin evidencia
 a la fecha de cierre, trasladados a la Semana 6 (`S06-JO01`, `S06-JL01`). No se marcan como
 fallidos, quedan como pendientes reales para que el equipo los retome.
 
+### Evidencia de la reunión de cierre (viernes 18/09, Google Meet) — agregada el 25/09
+
+Esta reunión cerró la Semana 5 y arrancó la Semana 6.
+- **8:28 p. m.:** revisión del Trello de la Semana 5 →
+  [`2026-09-18_reunion_2028_revision_trello_semana5.webp`](./evidencias/2026-09-18_reunion_2028_revision_trello_semana5.webp)
+- **8:38 p. m.:** revisión de la bitácora y de sus capturas en GitHub →
+  [`2026-09-18_reunion_2038_revision_bitacora_y_evidencias.webp`](./evidencias/2026-09-18_reunion_2038_revision_bitacora_y_evidencias.webp)
+
 ---
 
 ## 🗂️ 8. Historial de bitácoras

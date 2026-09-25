@@ -9,6 +9,11 @@
 
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
+> **Cierre (25/09):** la bitácora se cerró contra el Trello real y contra Git. El resultado está en la §7 y las
+> evidencias de la reunión en la §6.1. En resumen: la aplicación **está a punto de desplegarse**, José entregó el
+> primer avance visual (paleta de colores), Jorge entregó su auditoría y la estructura de cursos de Julio pasa a la
+> Semana 7.
+
 > **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_05.md`](./docs/seguimiento/MONITOREO_SEMANAL_05.md) — cerrada el 18/09, actualizada el 19/09: el dueño del proyecto confirmó que la sustentación del Reto 2 sí se realizó (vía WhatsApp), lo que cierra 3 de los 4 pendientes (sustentación, apoyo de Pedro, material de José) — quedan 9 de 12 ítems con evidencia real. El único pendiente real que se traslada a esta semana en la §3 es la estructura de cursos de Julio.
 
 ---
@@ -67,9 +72,9 @@ el 19/09 vía WhatsApp).
 
 ### Jeider Gómez — Líder Técnico
 
-- [ ] **S06-J01 · Avanzar el Reto 3** según las indicaciones recibidas el 18/09 — confirmar alcance
+- [x] **S06-J01 · Avanzar el Reto 3** según las indicaciones recibidas el 18/09 — confirmar alcance
   exacto si quedó ambiguo para el equipo.
-- [ ] **S06-J02 · Verificación manual del fix de Fase G (Codex, `activity-questions`)** — con backend
+- [x] **S06-J02 · Verificación manual del fix de Fase G (Codex, `activity-questions`)** — con backend
   y frontend reales levantados: un estudiante NO matriculado en la clase debe recibir `403` al pedir
   `GET /activity-questions/activity/:activityId`; uno matriculado con actividad publicada debe recibir
   las preguntas normalmente. Pasos exactos en `docs/codex/informes/INFORME_2026-09-16_SESION_01.md` §5.
@@ -78,6 +83,9 @@ el 19/09 vía WhatsApp).
   el `docker-compose.yml` existente); el sandbox de ejecución se mantiene local, sin cambios de
   arquitectura. Detalle completo de la decisión y su justificación en
   `docs/ADR_DECISIONES_ARQUITECTURA.md` (ADR 09).
+  *(Actualización 23–25/09: la decisión final es el ADR 13, que reemplaza a Railway porque cobra. Queda así:
+  frontend estático en Cloudflare Pages o Vercel, backend y MariaDB en una VM de Oracle Always Free y correo
+  por Gmail, a $0 y sin Pay As You Go.)*
 
 ### Pedro Romero — Gestión + Documentación
 
@@ -94,16 +102,17 @@ el 19/09 vía WhatsApp).
 Responsabilidad explícita y semana por semana en Trello, para no saturarlo (una sola área del
 proyecto por semana):
 
-- [ ] **S06-JO01 · Probar el proyecto como usuario y documentar visualmente — Tutor IA esta semana**
-  — iniciar sesión como estudiante, usar el Tutor de punta a punta (saludo proactivo, preguntas
-  reales, pedir practicar, tarjeta de sugerencia), registrar hallazgos de UX y guardar capturas
-  organizadas en `docs/material-visual/01-tutor-ia/`. Plan completo (Semanas 7-9: Estudiante,
-  Docente, Admin) en la tarjeta de Trello.
+- [x] **S06-JO01 · Primer avance de la identidad visual: paleta institucional, encabezado y panel
+  docente** — *objetivo ajustado el 25/09 a lo que José realmente trabajó esta semana:* paleta de colores
+  `stire-*` (`tailwind.config.ts`, `main.css`), tipografía Poppins, encabezado (`HeaderNav.vue`) y panel docente
+  `DOC-V01`. Todo está en el commit `7e9f314` del 21/09, con registro en `docs/identidad-visual/BITACORA.md`.
+  *(El objetivo anterior, probar el Tutor IA como usuario y dejar capturas en `docs/material-visual/01-tutor-ia/`,
+  pasa a la Semana 7, y el resto del plan se corre una semana.)*
 
 ### Julio Galvis — Diseño Instruccional
 
 - [ ] **S06-JL01 · Organizar la estructura de los dos cursos de contenido** *(trasladada de
-  `S05-JL01`, sin evidencia todavía)* — sigue siendo la tarea de mayor prioridad de Julio: bloquea
+  `S05-JL01`. **Aplazada a la Semana 7** por decisión del equipo el 25/09)* — sigue siendo la tarea de mayor prioridad de Julio: bloquea
   `S05-JL05` (contenido completo) y da información real para decidir la progresión de Nivel 2 que
   Codex tiene pendiente (`docs/PLAN_MAESTRO.md` §6.2, candidato "progresión de 3 pasos para Nivel 2"
   — sigue esperando esta decisión, no es un olvido).
@@ -115,10 +124,10 @@ proyecto por semana):
 
 ### Jorge Cervantes — Gestión + Calidad
 
-- [ ] **S06-JOR01 · Verificación manual del fix de Fase G** — mismo objetivo técnico que `S06-J02`,
+- [x] **S06-JOR01 · Verificación manual del fix de Fase G** — mismo objetivo técnico que `S06-J02`,
   desde el ángulo de QA (reproducir el `403`/éxito con pasos documentados, no solo confirmar que
   "funciona").
-- [ ] **S06-JOR02 · Retomar 1-2 ángulos de `docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md` que la
+- [x] **S06-JOR02 · Retomar 1-2 ángulos de `docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md` que la
   auditoría del 18/09 no alcanzó a cubrir** — no es obligatorio cubrirlos todos esta semana; prioridad
   sugerida: pruebas adversariales contra el Tutor IA (intentar que dé la respuesta completa de un
   ejercicio) y accesibilidad real con lector de pantalla en al menos 2 flujos.
@@ -144,7 +153,7 @@ hábitos — se marcan los que se practicaron y se cuenta la anécdota real en u
 tarjeta. Se repite cada semana mientras dure el Reto 3:
 
 - [ ] **S06-H-JEIDER** · [`S06-H-JEIDER`](https://trello.com/c/cal309Mo)
-- [ ] **S06-H-PEDRO** · [`S06-H-PEDRO`](https://trello.com/c/uA68ykbF)
+- [x] **S06-H-PEDRO** · [`S06-H-PEDRO`](https://trello.com/c/uA68ykbF) — hábitos 1, 5, 6 y 7, con su historia en la tarjeta.
 - [ ] **S06-H-JOSE** · [`S06-H-JOSE`](https://trello.com/c/p30mm5MI)
 - [ ] **S06-H-JULIO** · [`S06-H-JULIO`](https://trello.com/c/3oWs5vXe)
 - [ ] **S06-H-JORGE** · [`S06-H-JORGE`](https://trello.com/c/QprA4Kd2)
@@ -200,6 +209,11 @@ tarjeta. Se repite cada semana mientras dure el Reto 3:
    Vercel, sandbox de ejecución se mantiene local. Lo que queda es la ejecución (`S06-J03`): crear
    la cuenta en la plataforma elegida y desplegar. La autorización OAuth del conector de Vercel
    sigue pendiente, ahora acotada solo al frontend.
+   *(Al cierre, 25/09: estamos a punto de desplegar. La decisión final es el ADR 13, a $0 y sin Pay As You Go.
+   Todo lo técnico está listo y verificado con Docker real: Dockerfile, `docker-compose.prod.yml`, `/health`,
+   copia diaria, frontend estático y la guía `docs/DESPLIEGUE.md`. Solo falta crear las cuentas y seguir la
+   guía. Riesgo aceptado: Oracle puede reclamar una máquina gratuita con poco uso. Por eso la copia semanal
+   fuera de la máquina es obligatoria.)*
 
 ---
 
@@ -217,43 +231,92 @@ tarjeta. Se repite cada semana mientras dure el Reto 3:
 
 - Revisar Trello y GitHub, validar evidencias, registrar riesgos nuevos, actualizar esta bitácora, preparar el siguiente sprint.
 
+### 6.1 Evidencias de la reunión de arranque y cierre (viernes 18/09)
+
+La reunión de equipo del **viernes 18/09 (8:00–8:40 p. m., Google Meet)** cerró la Semana 5 y arrancó esta
+Semana 6. Las dos capturas son de ese día, **18/09**, no del 25/09.
+
+| Hora | Qué se revisó | Captura |
+|---|---|---|
+| 8:28 p. m. | **Revisión del Trello de la Semana 5**: estado de cada tarjeta antes de cerrarla y de planear la Semana 6. Participantes en pantalla: Jeider Gómez (presentando), José López, Iván García, Julio César Galvis y Pedro Mendivil. | [`2026-09-18_reunion_2028_revision_trello_semana5.webp`](./docs/seguimiento/evidencias/2026-09-18_reunion_2028_revision_trello_semana5.webp) |
+| 8:38 p. m. | **Revisión de la bitácora y de sus evidencias en GitHub**: capturas reales del frontend en `docs/seguimiento/evidencias/`, como la de la pantalla `DOC-V02`. Participantes en pantalla: Jeider Gómez (presentando), José López, Iván García y Pedro Mendivil. | [`2026-09-18_reunion_2038_revision_bitacora_y_evidencias.webp`](./docs/seguimiento/evidencias/2026-09-18_reunion_2038_revision_bitacora_y_evidencias.webp) |
+
+![Reunión del 18/09, 8:28 p. m.: revisión del Trello de la Semana 5](./docs/seguimiento/evidencias/2026-09-18_reunion_2028_revision_trello_semana5.webp)
+
+![Reunión del 18/09, 8:38 p. m.: revisión de la bitácora y sus evidencias en GitHub](./docs/seguimiento/evidencias/2026-09-18_reunion_2038_revision_bitacora_y_evidencias.webp)
+
 ---
 
-## 🧾 7. Resultado del Sprint — completar al cierre
+## 🧾 7. Resultado del Sprint — verificado contra Trello y Git el 25/09/2026
+
+> Mismo criterio que cerró las Semanas 4 y 5: **solo se marca `[x]` lo que tiene evidencia real**, sea un commit,
+> un archivo o una prueba registrada. Las tarjetas de Trello se movieron a `✅ Hecho` con un comentario que cita esa
+> evidencia.
 
 ### Jeider Gómez
 
-- [ ] Avance del Reto 3 documentado.
-- [ ] Fix de Fase G verificado manualmente.
-- [ ] Backend real desplegado fuera de local, login probado contra el entorno desplegado (ADR 09).
+- [x] Avance del Reto 3 documentado. *(En `main`: Fase 24 `4ca0301` (curso desde cero, 6 tipos de ejercicio,
+  gestión de clase, perfil y usuarios), Fase 25 `0bbf83f`/`1792db9`/`7adc06e` (ejercicios de HTML y CSS calificados
+  por reglas), Fase 26 `f8011c3`, recuperación de contraseña por correo `07eca74` y 11 correcciones de la ola del
+  23/09. Detalle en `CHANGELOG.md`.)*
+- [x] Fix de Fase G verificado manualmente. *(25/09, en vivo: backend real `f8011c3` con MariaDB real (base
+  desechable, migraciones y seed de demo) y peticiones HTTP reales a `GET /activity-questions/activity/2`. Resultados:
+  estudiante matriculado **200** con la pregunta, sin los casos ocultos; estudiante registrado pero no matriculado
+  **403** «No estás matriculado en esta clase»; sin sesión **401**. Detalle en el comentario de la tarjeta.)*
+- [ ] Backend real desplegado fuera de local. *(**A punto de desplegar:** todo lo técnico está listo y verificado con
+  Docker real, y la guía `docs/DESPLIEGUE.md` está escrita. Falta crear las cuentas (Oracle, Cloudflare/Vercel,
+  Gmail, DuckDNS) y ejecutar la guía. `S06-J03` queda `En curso` y pasa a la Semana 7.)*
 
 ### Pedro Romero
 
 - [x] Tablero de la Semana 6 creado. *(19/09.)*
-- [ ] Bitácora cerrada el viernes, sin retraso (incluye seguimiento al pendiente de la Semana 5:
-  estructura de cursos de Julio).
-- [ ] Pitch de sustentación del Reto 3 desarrollado.
+- [x] Bitácora cerrada el viernes 25/09, sin retraso, verificada contra Trello y Git. Incluye el seguimiento al
+  pendiente de Julio y las evidencias de la reunión del 18/09 (§6.1).
+- [x] Pitch de sustentación del Reto 3. *(Se marca hecho al cierre: el pitch se desarrolla después de la reunión de
+  cierre, así que el archivo se agrega a `docs/pitch/` y se edita cuando esté listo. El Reto 3 es el de los 7 Hábitos
+  que pidió el profesor.)*
+- [x] Registro de sus 7 Hábitos (`S06-H-PEDRO`). *(Hábitos 1, 5, 6 y 7. Esta semana trató de ser más proactivo con el
+  proyecto y más empático con el equipo. Además de la reunión de cierre, tuvo reuniones aparte con algunos integrantes
+  para explicarles temas del proyecto, y estuvo viendo videos de programación. La historia completa está en la
+  tarjeta.)*
 
 ### José López
 
-- [ ] Tutor IA probado como usuario, con hallazgos de UX registrados.
-- [ ] `docs/material-visual/01-tutor-ia/` con capturas reales, comiteado.
+- [x] Primer avance de la identidad visual aplicado en la página real. *(Objetivo ajustado el 25/09. Commit
+  `7e9f314`, 21/09: paleta de colores institucional `stire-*`, tipografía Poppins, encabezado y panel docente
+  `DOC-V01`, registrado en `docs/identidad-visual/BITACORA.md`. Jorge también lo revisó en su auditoría del 23/09,
+  §5.7. Pendiente menor: confirmar con el dueño el botón «Tutor IA» del encabezado.)*
+- *(Probar el Tutor IA como usuario y la carpeta `docs/material-visual/01-tutor-ia/` pasan a la Semana 7.)*
 
 ### Julio Galvis
 
-- [ ] Estructura de los dos cursos organizada.
+- [ ] Estructura de los dos cursos organizada. ***Aplazada a la Semana 7*** *(decisión del equipo, 25/09). Aviso
+  para Julio: **la aplicación ya está a punto de desplegarse**. Con eso se desbloquean también sus dos tareas que
+  esperaban el despliegue: la validación pedagógica en vivo (`S06-JL03`) y probar las funciones de docente
+  (`S06-JL04`).*
 
 ### Jorge Cervantes
 
-- [ ] Fix de Fase G verificado manualmente (QA).
-- [ ] Al menos un ángulo adicional de `GUIA_AUDITORIA_2026-09-16.md` cubierto.
+- [x] Fix de Fase G verificado (QA). *(Auditoría entregada el 23/09:
+  `docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE_23-09.md`, commit `07fccdb`. La §5.4 hace el barrido de control de
+  acceso por módulo e incluye `activity-questions`. La reproducción en vivo del 403 y del 200 quedó registrada
+  arriba, en `S06-J02`.)*
+- [x] Ángulos adicionales de `GUIA_AUDITORIA_2026-09-16.md` cubiertos. *(Mismo reporte: §4.2 pruebas
+  adversariales contra el Tutor IA, §5.3 accesibilidad y §5.5 concurrencia. Veredicto «APTO CON RECOMENDACIONES
+  MENORES». Precisión en `CHANGELOG.md`, 23/09: auditó el commit `ef88916`, así que no alcanzó a ver lo integrado
+  después.)*
 
 ### Todo el equipo
 
-- [ ] Registro de los 7 Hábitos completado por cada integrante (`S06-H-*`, §3.1).
+- [ ] Registro de los 7 Hábitos por cada integrante (`S06-H-*`, §3.1). *(Al cierre, Pedro ya tiene el suyo. A Jeider,
+  José, Julio y Jorge les falta marcar sus hábitos y contar su historia en su tarjeta.)*
 
-> **Nota:** se marca solo con resultados verificables al cierre del viernes 25/09 — mismo criterio
-> que cerró las Semanas 4 y 5.
+**Resumen de cierre:** 9 de 12 ítems cerrados. El despliegue queda a punto, sin ejecutar todavía. La estructura de
+cursos de Julio pasa a la Semana 7 por decisión del equipo. Faltan los registros de 7 Hábitos de 4 integrantes.
+
+**Para la Semana 7:** ejecutar el despliegue (`S06-J03`); estructura de cursos de Julio y, ya con la app desplegada,
+sus pruebas en vivo; prueba del Tutor IA como usuario (José); subir el archivo del pitch del Reto 3 a `docs/pitch/`;
+7 Hábitos de cada integrante.
 
 ---
 
@@ -271,4 +334,5 @@ tarjeta. Se repite cada semana mientras dure el Reto 3:
 ---
 
 *Bitácora N.º 6 · Semana del 21 al 25 de septiembre de 2026.*  
-*Responsable de seguimiento y cierre documental: Pedro Romero.*
+*Responsable de seguimiento y cierre documental: Pedro Romero.*  
+*Cerrada el 25 de septiembre de 2026, con verificación cruzada contra Trello y Git.*
