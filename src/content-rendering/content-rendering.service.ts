@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { marked } from 'marked';
 import { JSDOM } from 'jsdom';
 import createDOMPurify = require('dompurify');
+import { sanitizeAroundCode } from './code-segments';
 
 export enum SanitizationProfile {
   /**
@@ -85,7 +86,11 @@ export class ContentRenderingService {
    */
   sanitizeRichText(markdown: string): string {
     if (!markdown) return markdown;
-    return this.purify.sanitize(markdown, RICH_CONFIG) as unknown as string;
+    const sanitize = (text: string) => this.purify.sanitize(text, RICH_CONFIG) as unknown as string;
+    // Fase 25 (A7): el código (bloques ``` y código en línea) se conserva TAL CUAL y solo se sanea el resto; el frontend escapa esos
+    // segmentos al pintarlos. Ver code-segments.ts (por qué es seguro y qué hay que cuidar). Si no se puede garantizar que el
+    // frontend segmentará el resultado igual, se sanea el texto completo como antes.
+    return sanitizeAroundCode(markdown, sanitize) ?? sanitize(markdown);
   }
 
   /**

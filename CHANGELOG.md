@@ -12,6 +12,29 @@ entry to the oldest.
 
 ---
 
+## Fase 25, A7 — el código de las lecciones se conserva y se cierra una vía de inyección en el renderizador · 25 de Septiembre de 2026
+
+- **A7 (F24-07, F25-04):** el servidor dejaba de conservar los ejemplos de código de las lecciones (borraba `<script>` y `<button>`, codificaba `<`, `>` y `&` y añadía
+  cierres de etiqueta), y con B0 el código se veía con entidades (`a &lt; b`). Ahora `sanitizeRichText` guarda los bloques ``` y el código en línea **tal cual** y solo
+  sanea el resto (`src/content-rendering/code-segments.ts`). Es seguro porque los segmentos que el servidor no sanea son exactamente los que el frontend escapa: usa las
+  mismas expresiones regulares y el mismo orden de dos pasadas que `formatMarkdown`, y **comprueba** después que el frontend segmentaría el resultado igual (si no, cae al
+  saneado completo de antes).
+- **Seguridad (hallazgo del fuzzing de A7, corregido):** `formatMarkdown` aplica reemplazos de texto (código en línea, títulos, listas) sobre HTML **ya saneado** y esos
+  reemplazos insertan HTML con comillas; si caían dentro del valor de un atributo (por ejemplo un `title` con comillas invertidas) abrían el atributo y colaban otros
+  (`onclick`, `onload`…). Un docente podía usarlo contra sus estudiantes. Era anterior a esta fase y afectaba también a los datos ya guardados. Corrección: el HTML **final**
+  pasa siempre por DOMPurify en el navegador (`frontend-nuxt/utils/sanitizeRenderedHtml.ts`, misma lista blanca que el servidor, nueva dependencia `dompurify`), lo que protege
+  también lo guardado antes. El renderizador del Tutor no tenía el problema (escapa todo, comillas incluidas, antes de dar formato).
+- **Pruebas:** `code-segments.spec.ts` (unitarias) y `code-segments.consistency.spec.ts`, que carga los **archivos reales** del frontend y comprueba, con 24 entradas adversariales
+  y 4000 aleatorias (semilla fija), que el HTML final solo tiene etiquetas y atributos de la lista blanca. Sin la defensa del navegador esa prueba **falla**; con ella pasa, incluso
+  con A7 desactivado (datos antiguos).
+
+**Verificación (25/09):** Jest **73 suites, 702 tests** en verde; Chrome real **9/9** (los ejemplos de código se ven literales, un `<script>` o `<button onclick>` dentro de un bloque
+es texto, seis lecciones hostiles no dejan ningún atributo ni etiqueta fuera de la lista blanca ni ejecutan nada al disparar `mouseover`/`click`/`load`/`error` en todo);
+`npx nuxi typecheck` exit 0; `npm ci --dry-run` del frontend consistente. No cambia el `package-lock.json` de la raíz, migraciones ni scripts de arranque (`verify:clean` no aplica).
+**Datos antiguos:** las lecciones guardadas antes de A7 conservan las entidades que el servidor les puso (`&lt;`): se ven así hasta que el docente las vuelva a guardar.
+
+---
+
 ## Fase 25, Parte B — auditoría y correcciones · 25 de Septiembre de 2026
 
 Antigravity entregó la Parte B (B0 a B3) en `feat/fase-25`. Claude Code la auditó en Chrome real contra una base desechable
