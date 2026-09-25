@@ -61,6 +61,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const htmlCode = ref('')
   const cssCode = ref('')
   const htmlCssResults = ref<HtmlCssRunResult | null>(null)
+  // Error de «Probar» (429 u otro). Vive aquí, no en el componente, porque «Probar» se puede pulsar desde la barra superior
+  // (layouts/workspace.vue) y desde el panel de reglas: antes solo el del panel lo capturaba.
+  const htmlCssRunError = ref<string | null>(null)
+  const htmlCssRateLimited = ref(false)
   const isRunning = ref(false)
   const isSubmitting = ref(false)
   const isLoadingExercise = ref(false)
@@ -133,6 +137,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     htmlCode.value = ''
     cssCode.value = ''
     htmlCssResults.value = null
+    htmlCssRunError.value = null
+    htmlCssRateLimited.value = false
 
     consoleLog.value = [
       'STIRE Sandbox v2.0 — Conectado a la plataforma STIRE.',
@@ -332,6 +338,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
 
     isRunning.value = true
+    htmlCssRunError.value = null
+    htmlCssRateLimited.value = false
     consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Solicitando evaluación de reglas públicas (POST /submissions/:id/run)...`)
 
     try {
@@ -363,7 +371,11 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const { status } = extract(err)
       const msg = messageOf(err, 'Error de conexión con el evaluador del backend')
       consoleLog.value.push(`⚠ Error al evaluar reglas (${status || 'red'}): ${msg}`)
-      throw err
+      htmlCssRateLimited.value = status === 429
+      htmlCssRunError.value = status === 429
+        ? 'Has superado el límite de intentos por minuto para probar. Espera un momento antes de volver a intentar.'
+        : messageOf(err, 'Ocurrió un error al evaluar tu HTML y CSS.')
+      return null
     } finally {
       isRunning.value = false
     }
@@ -508,6 +520,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     htmlCode,
     cssCode,
     htmlCssResults,
+    htmlCssRunError,
+    htmlCssRateLimited,
     isRunning,
     isSubmitting,
     isLoadingExercise,

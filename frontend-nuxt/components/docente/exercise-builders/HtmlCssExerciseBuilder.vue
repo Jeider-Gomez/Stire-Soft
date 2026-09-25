@@ -196,11 +196,11 @@
               class="w-full px-2 py-1.5 text-[11px] rounded bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none"
             >
               <option value="element_exists">element_exists — existe el selector (min. 1)</option>
-              <option value="element_count">element_count — numero exacto o rango de elementos</option>
+              <option value="element_count">element_count — número exacto o rango de elementos</option>
               <option value="text">text — texto de un elemento (contiene / igual)</option>
               <option value="attribute">attribute — atributo de un elemento</option>
               <option value="css_property">css_property — propiedad CSS calculada</option>
-              <option value="a11y">a11y — comprobacion de accesibilidad</option>
+              <option value="a11y">a11y — comprobación de accesibilidad</option>
             </select>
           </div>
 
@@ -333,12 +333,12 @@
           <!-- a11y -->
           <div v-else-if="rule.kind === 'a11y'" class="space-y-2">
             <p class="text-[10px] text-base-texto-secundario leading-relaxed">
-              <strong>Si el elemento no existe la comprobacion pasa</strong> (sin imagenes, img_alt se cumple).
-              Para exigir imagenes combina con element_exists sobre img.
+              <strong>Si el elemento no existe, la comprobación pasa</strong> (sin imágenes, img_alt se cumple).
+              Para exigir imágenes combina con element_exists sobre img.
               html_lang y document_title exigen un documento completo (doctype html); con un fragmento fallan.
             </p>
             <div>
-              <label :for="`hc-rule-a11y-${idx}`" class="block text-[10px] font-semibold text-base-texto-secundario mb-0.5">Comprobacion *</label>
+              <label :for="`hc-rule-a11y-${idx}`" class="block text-[10px] font-semibold text-base-texto-secundario mb-0.5">Comprobación *</label>
               <select :id="`hc-rule-a11y-${idx}`" v-model="rule.a11yCheck"
                 class="w-full px-2 py-1.5 text-[11px] rounded bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none">
                 <option value="img_alt">img_alt — todas las img tienen alt</option>
@@ -498,7 +498,7 @@ function reset() {
 
 function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: string; config?: unknown } {
   if (!modelHtml.value.trim()) {
-    return { valid: false, error: 'La solucion modelo (HTML) es obligatoria.' }
+    return { valid: false, error: 'La solución modelo (HTML) es obligatoria.' }
   }
   if (rules.value.length === 0) {
     return { valid: false, error: 'Debes agregar al menos una regla.' }

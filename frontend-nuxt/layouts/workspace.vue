@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen bg-base-bg-primario flex flex-col overflow-hidden">
+  <div class="min-h-screen md:h-screen bg-base-bg-primario flex flex-col md:overflow-hidden">
     <!-- Header del Workspace (Sin sidebar para concentración máxima) -->
-    <header class="h-14 bg-base-blanco border-b border-base-borde-sutil px-4 flex items-center justify-between z-30 shadow-sm flex-shrink-0">
+    <header class="min-h-14 md:h-14 py-2 md:py-0 gap-y-2 flex-wrap md:flex-nowrap bg-base-blanco border-b border-base-borde-sutil px-4 flex items-center justify-between z-30 shadow-sm flex-shrink-0">
       <div class="flex items-center gap-3">
         <NuxtLink
           to="/estudiante"
@@ -84,7 +84,7 @@
     </div>
 
     <!-- Contenido Workspace -->
-    <main class="flex-1 overflow-hidden">
+    <main class="flex-1 md:overflow-hidden">
       <slot />
     </main>
 

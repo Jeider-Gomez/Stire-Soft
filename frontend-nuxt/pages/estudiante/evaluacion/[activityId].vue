@@ -1,7 +1,7 @@
 <template>
-  <div class="h-full flex flex-col md:flex-row overflow-hidden bg-base-bg-primario">
+  <div class="md:h-full flex flex-col md:flex-row md:overflow-hidden bg-base-bg-primario">
     <!-- COLUMNA IZQUIERDA: Enunciado, Casos de Prueba (solo coding) y Consola -->
-    <div class="w-full md:w-[45%] lg:w-[40%] flex flex-col border-r border-base-borde-sutil bg-base-blanco h-full overflow-hidden">
+    <div class="w-full md:w-[45%] lg:w-[40%] flex flex-col border-r border-base-borde-sutil bg-base-blanco md:h-full max-h-[55vh] md:max-h-none overflow-hidden">
       <!-- Pestañas de Navegación del Panel Izquierdo -->
       <div class="flex items-center border-b border-base-borde-sutil bg-base-bg-secundario text-xs font-semibold px-2 pt-2 gap-1 flex-shrink-0">
         <button
@@ -153,7 +153,7 @@
     <!-- COLUMNA DERECHA: Renderizado Reactivo según questionType -->
 
     <!-- CASO A: Coding (Monaco textarea tradicional) -->
-    <div v-if="isCodingActivity" class="flex-1 flex flex-col h-full bg-[#1e1e1e] text-[#d4d4d4] overflow-hidden">
+    <div v-if="isCodingActivity" class="flex-1 flex flex-col md:h-full min-h-[70vh] md:min-h-0 bg-[#1e1e1e] text-[#d4d4d4] overflow-hidden">
       <!-- Barra Superior del Editor -->
       <div class="h-9 bg-[#252526] border-b border-[#333333] px-4 flex items-center justify-between text-xs text-[#858585] flex-shrink-0">
         <div class="flex items-center gap-2">
@@ -199,12 +199,12 @@
     </div>
 
     <!-- CASO B: HTML / CSS por Reglas (Fase 25 - ocupa toda la altura) -->
-    <div v-else-if="isHtmlCssActivity" class="flex-1 flex flex-col h-full overflow-hidden">
+    <div v-else-if="isHtmlCssActivity" class="flex-1 flex flex-col md:h-full md:overflow-hidden">
       <ExerciseHtmlCssExercise :question="workspaceStore.currentQuestion" />
     </div>
 
     <!-- CASO C: Tipos Interactivos de Actividad (MCQ, FillCode, DragDrop, Ordering, Matching) -->
-    <div v-else class="flex-1 flex flex-col h-full bg-base-blanco overflow-hidden">
+    <div v-else class="flex-1 flex flex-col md:h-full min-h-[60vh] md:min-h-0 bg-base-blanco overflow-hidden">
       <!-- Barra Superior de Actividad Interactiva -->
       <div class="h-9 bg-base-bg-secundario border-b border-base-borde-sutil px-4 flex items-center justify-between text-xs text-base-texto-secundario flex-shrink-0">
         <div class="flex items-center gap-2">

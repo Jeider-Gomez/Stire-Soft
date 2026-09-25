@@ -1,7 +1,7 @@
 <template>
-  <div class="flex-1 flex flex-col lg:flex-row h-full w-full overflow-hidden bg-base-bg-primario">
+  <div class="flex-1 flex flex-col lg:flex-row lg:h-full w-full lg:overflow-hidden bg-base-bg-primario">
     <!-- COLUMNA IZQUIERDA: Editor de pestañas HTML y CSS -->
-    <div class="w-full lg:w-1/2 flex flex-col h-1/2 lg:h-full border-b lg:border-b-0 lg:border-r border-base-borde-sutil bg-[#1e1e1e] text-[#d4d4d4] overflow-hidden">
+    <div class="w-full lg:w-1/2 flex flex-col h-[60vh] lg:h-full border-b lg:border-b-0 lg:border-r border-base-borde-sutil bg-[#1e1e1e] text-[#d4d4d4] overflow-hidden">
       <!-- Barra superior con pestañas -->
       <div class="h-10 bg-[#252526] border-b border-[#333333] px-3 flex items-center justify-between text-xs flex-shrink-0">
         <div class="flex items-center gap-1">
@@ -70,9 +70,9 @@
     </div>
 
     <!-- COLUMNA DERECHA: Vista previa arriba y Reglas abajo -->
-    <div class="w-full lg:w-1/2 flex flex-col h-1/2 lg:h-full bg-base-blanco overflow-hidden">
+    <div class="w-full lg:w-1/2 flex flex-col lg:h-full bg-base-blanco lg:overflow-hidden">
       <!-- PANEL SUPERIOR: Vista previa (Iframe aislado) -->
-      <div class="flex-1 flex flex-col min-h-[180px] lg:h-1/2 border-b border-base-borde-sutil overflow-hidden">
+      <div class="flex-1 flex flex-col min-h-[260px] lg:min-h-0 lg:h-1/2 border-b border-base-borde-sutil overflow-hidden">
         <div class="h-9 bg-base-bg-secundario border-b border-base-borde-sutil px-3 flex items-center justify-between text-xs font-semibold text-base-texto-primario flex-shrink-0">
           <div class="flex items-center gap-2">
             <span>🌐</span>
@@ -115,11 +115,11 @@
         <!-- Lista de Reglas -->
         <div class="flex-1 overflow-y-auto p-4 space-y-2.5 text-xs">
           <!-- Alerta de Error (429 u otros) -->
-          <div v-if="runErrorMessage" class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 rounded-lg text-semantico-falla text-xs flex items-start gap-2">
+          <div v-if="workspaceStore.htmlCssRunError" class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 rounded-lg text-semantico-falla text-xs flex items-start gap-2">
             <span class="font-bold text-sm">⚠</span>
             <div class="flex-1 leading-snug">
-              <p class="font-semibold">{{ isRateLimitError ? 'Límite alcanzado' : 'No se pudo probar' }}</p>
-              <p class="text-[11px] mt-0.5">{{ runErrorMessage }}</p>
+              <p class="font-semibold">{{ workspaceStore.htmlCssRateLimited ? 'Límite alcanzado' : 'No se pudo probar' }}</p>
+              <p class="text-[11px] mt-0.5">{{ workspaceStore.htmlCssRunError }}</p>
             </div>
           </div>
 
@@ -193,7 +193,6 @@
 
 <script setup lang="ts">
 import { useWorkspaceStore } from '~/stores/workspace'
-import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import type { WorkspaceQuestion } from '~/stores/workspace'
 
 const props = defineProps<{
@@ -201,11 +200,8 @@ const props = defineProps<{
 }>()
 
 const workspaceStore = useWorkspaceStore()
-const { messageOf, extract } = useApiErrorMessage()
 
 const activeEditorTab = ref<'html' | 'css'>('html')
-const runErrorMessage = ref<string | null>(null)
-const isRateLimitError = ref(false)
 
 // Config de la pregunta
 const questionConfig = computed(() => {
@@ -327,24 +323,11 @@ function getRuleDetail(ruleId: string): string | null {
   return result?.detail || null
 }
 
-// Acción: Probar reglas públicas
+// Acción: Probar reglas públicas. El error (429 u otro) queda en el store y se muestra en el panel de reglas,
+// se pulse «Probar» aquí o en la barra superior.
 async function handleRun() {
   if (isHtmlEmpty.value) return
-  runErrorMessage.value = null
-  isRateLimitError.value = false
-
-  try {
-    await workspaceStore.runHtmlCss()
-  } catch (err: any) {
-    const { status } = extract(err)
-    if (status === 429) {
-      isRateLimitError.value = true
-      runErrorMessage.value = 'Has superado el límite de intentos por minuto para probar. Espera un momento antes de volver a intentar.'
-    } else {
-      isRateLimitError.value = false
-      runErrorMessage.value = messageOf(err, 'Ocurrió un error al evaluar tu HTML y CSS.')
-    }
-  }
+  await workspaceStore.runHtmlCss()
 }
 
 // Acción: Entregar solución definitiva
