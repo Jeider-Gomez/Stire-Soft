@@ -1,278 +1,199 @@
 ---
-estado:     pendiente — Fase 24 (sin ejecutar)
-verificado: 2026-09-23 contra src/ y frontend-nuxt/ reales, con el backend en marcha (/docs-json)
+estado:     pendiente — Fase 25 (Parte A backend: Claude Code, primero · Parte B frontend: Antigravity, después)
+verificado: 2026-09-24 contra src/ y frontend-nuxt/ reales (rutas y líneas citadas comprobadas en esa fecha)
 fuente:     normativo (insumo de arranque para Google Antigravity)
-codigos:    DOC-V01 (clase) · DOC-V02 (contenidos) · DOC-V03 (ejercicios) · ADM-V02 (usuarios) · perfil
+codigos:    DOC-V03 (crear ejercicio) · EST-V03 (ejercicio del estudiante)
 ---
 
-# Plan de implementación para Antigravity — Fase 24
+# Plan de implementación para Antigravity — Fase 25
 
-**Este archivo solo dice qué hay que hacer.** Las Fases 1 a 23 ya están hechas y archivadas en
-[`docs/_archivo/`](../_archivo/). **No las leas para ejecutar esta fase.** La numeración continúa en 24.
-
----
-
-## 24. Fase 24 — que un docente pueda armar un curso de cero, y las funciones de cuenta que faltan
-
-### 24.0 En una línea
-
-Cinco tareas (T1 a T5), **solo en `frontend-nuxt/`**. Hoy un docente que crea una clase desde la interfaz la deja
-**vacía para siempre** (no puede crear módulos, temas, unidades ni lecciones), solo puede crear ejercicios de
-código, y ni el admin ni ningún usuario tienen pantallas de cuenta. El backend de las cinco tareas **ya existe**
-y está probado; no lo toques. José rediseña la identidad visual en ramas aparte: **no edites
-`tailwind.config.ts` ni `assets/css/main.css`** y usa clases y tokens que ya existen.
-
-### 24.1 Reglas
-
-1. **No inventes datos:** un dato que no llega se muestra «—», nunca `0` ni un estado positivo. Un texto que
-   describe el sistema («3 casos privados», «guardado») sale de un dato real o no se escribe.
-2. **Un commit por tarea**, en español, sin `--no-verify`. Rama `feat/fase-24`; no subas a `main` hasta terminar;
-   se une con Pull Request.
-3. **Cambios mínimos en cada archivo:** José también toca `pages/` y `components/`. Cambia solo lo que la tarea
-   pide; no reformatees ni reordenes lo demás. Reutiliza el patrón de diálogo que ya usan `contenidos.vue`,
-   `crear.vue` y `admin/index.vue` (`role="dialog"`, `aria-modal`, foco inicial, `Escape` cierra sin enviar nada,
-   botón deshabilitado mientras la petición está en curso, mensaje real del servidor si falla).
-4. **En las actualizaciones (`PATCH`) envía solo los campos que el usuario cambió.** Nunca reenvíes el objeto
-   completo ni campos de relación (`classId`, `sectionId`, `topicId`, `learningUnitId`): el servidor los acepta en
-   el cuerpo, pero moverlos de padre no es una función de esta fase.
-5. **Verifica en navegador real con el backend levantado**, no solo con `npx nuxi typecheck`. Cada tarea trae su
-   prueba en §24.3.
-6. **En tu informe cuenta solo lo que viste.** Cita únicamente endpoints que hayas visto en la pestaña Red.
-7. Cuentas de prueba: las demo del [`README.md`](../../README.md) raíz. Las pruebas de T3 y T4 crean usuarios
-   nuevos: usa correos con un sufijo tuyo (por ejemplo `prueba-agy-24a@unicor.edu.co`). Antes de empezar, la base
-   debe tener todas las migraciones (`npm run migration:run`).
-8. **Orden recomendado:** T1 → T2 → T5 → T4 → T3. La prueba de T2 necesita una unidad donde publicar, que T1 permite
-   crear.
-
-### 24.2 Lo que ya existe y NO debes rehacer
-
-- `pages/docente/contenidos.vue`: modales de **editar/archivar tema** (`PATCH`/`DELETE /topic/:id`), de **editar
-  unidad** (`PATCH /learning-unit/:id`, con `DocenteTutorSettingsPanel`) y el interruptor de **publicar módulo**
-  (`PATCH /sections/:id/publish`). T1 se suma a esto, no lo sustituye.
-- `pages/docente/ejercicios/crear.vue`: lista de actividades de la unidad, **editar / publicar / archivar** actividad
-  y el formulario de ejercicio de **código** (T2 lo extiende).
-- `pages/admin/index.vue`: cambio de rol con diálogo y bloqueo de la propia fila, y las solicitudes de rol docente.
-- `pages/docente/clase/[classId].vue`: matrículas pendientes/activas, aprobar/rechazar/remover y el interruptor
-  «exigir aprobación».
-- `components/exercise/*` (`McqExercise`, `FillCodeExercise`, `DragDropExercise`, `MatchingExercise`,
-  `OrderingExercise`): **lo que ve y responde el estudiante ya funciona** para esos cinco tipos; T2 solo crea el
-  contenido que esos componentes ya saben mostrar.
+**Este archivo solo dice qué hay que hacer.** Las Fases 1 a 24 ya están hechas y archivadas en
+[`docs/_archivo/`](../_archivo/). **No las leas para ejecutar esta fase.** La numeración continúa en 25.
+Decisión de fondo (ADR 13, ya tomada, no se reabre): [`docs/ADR_DECISIONES_ARQUITECTURA.md`](../ADR_DECISIONES_ARQUITECTURA.md).
 
 ---
 
-### T1 — Constructor del curso: crear módulos, temas, unidades y lecciones
+## 25. Fase 25 — ejercicios de HTML y CSS calificados por reglas
 
-**Defecto.** En `/docente/contenidos` el docente solo puede editar, archivar y publicar lo que ya existe; no hay
-ningún botón para **crear** un módulo, un tema, una unidad ni una lección, ni para editar el texto de una lección.
-Una clase creada desde `/docente` aparece con «Sin módulos curriculares» y no hay salida desde la interfaz (además
-`crear.vue` necesita una unidad existente).
+### 25.0 En una línea
 
-**Contrato del backend (ya hecho).** Todas las rutas exigen rol `docente` (o `admin`) y que la clase sea del
-docente; en otro caso `403`. Los ids son números.
+El curso enseña HTML5, CSS y JavaScript, pero hoy solo se puede crear y calificar **código JavaScript por entrada/salida**, que evalúa mal el
+marcado. Esta fase agrega un tipo de pregunta nuevo, **`html_css`**: el estudiante escribe HTML y CSS, ve una **vista previa** en el navegador y el
+**servidor** lo califica con **reglas** que define el docente («hay un `<h1>` con el texto…», «los `<img>` tienen `alt`», «`.tarjeta` tiene
+`display: flex`»). Nunca se ejecuta JavaScript del estudiante.
 
-| Acción | Endpoint | Cuerpo | Notas |
+**Son dos partes y van en orden:**
+
+| Parte | Quién | Qué | Duración |
 |---|---|---|---|
-| Crear módulo | `POST /sections` | `{ classId, title, description?, order? }` | `title` obligatorio, `order` entero ≥ 0. **Nace despublicado** (`isPublished:false`). Devuelve la sección con su `id`. |
-| Editar módulo | `PATCH /sections/:id` | `{ title?, description?, order? }` | |
-| Publicar / despublicar | `PATCH /sections/:id/publish` | sin cuerpo | Alterna; ya usado en `contenidos.vue`. |
-| Crear tema | `POST /topic` | `{ sectionId, title, description?, order? }` | `title` obligatorio. |
-| Crear unidad | `POST /learning-unit` | `{ title, description?, difficulty?, order?, topicId }` | `difficulty`: `basico` \| `intermedio` \| `avanzado`. **Envía siempre `topicId`**: el servidor lo trata como opcional, pero una unidad sin tema queda huérfana e invisible. |
-| Listar lecciones (docente) | `GET /content/unit/:unitId/all` | — | Incluye las ocultas. |
-| Crear lección | `POST /content` | `{ learningUnitId, title, type:"markdown", body, order?, isVisible? }` | `title` y `type` obligatorios; `order` entero ≥ 0; `isVisible` por defecto `true`. |
-| Editar lección | `PATCH /content/:id` | `{ title?, body?, order? }` | Un `body` vacío **no** borra el texto: exige cuerpo no vacío en el formulario. |
-| Ocultar / mostrar | `PATCH /content/:id/visibility` | sin cuerpo | Alterna. |
-| Reordenar | `POST /content/reorder` | **arreglo** `[{ id, order }, …]` | Todas las lecciones del arreglo deben ser de una clase del docente. |
-| Borrar lección | `DELETE /content/:id` | — | Borrado definitivo. |
+| **A — Backend** | **Claude Code** (no la hagas tú) | Tipo `html_css`, migración, evaluador con jsdom, vista del estudiante, «probar» sin gastar intento, arreglo del saneado de bloques de código | 2 a 3 días |
+| **B — Frontend** | **Antigravity** | Constructor de reglas del docente, pantalla del estudiante con editor + vista previa + reglas, mejoras al renderizador de Markdown | 3 días |
 
-- El servidor **sanea el HTML del cuerpo al guardar** (quita `<script>`, manejadores `on…`, iframes, etc.): tras
-  guardar, muestra lo que devuelve el servidor, no lo que se escribió.
-- El visor del estudiante (`pages/estudiante/unidad/[id].vue`, `formatMarkdown`) muestra **solo el `body`** de cada
-  bloque (no el título ni el tipo) y entiende: `#`, `##`, `**negrita**`, `*cursiva*`, `` `código` ``, bloques
-  ```` ``` ````, y listas con `- `. Por eso la interfaz **solo ofrece el tipo `markdown`** (video/pdf/imagen/código
-  no se ven en el visor).
-- Un módulo nuevo **no lo debe ver el estudiante** hasta publicarlo, y un tema/unidad archivados (`isActive:false`)
-  tampoco. Hoy `GET /sections/class/:id` devuelve todo y `stores/student.ts` no filtra.
-- **Ningún borrado definitivo de módulo, tema o unidad se expone** (`DELETE /sections/:id` es definitivo y arrastra
-  a sus temas; `DELETE /learning-unit/:id` es solo de admin). Para retirar un tema o una unidad se usa
-  «archivar» (`isActive:false`), que ya existe para temas y unidades.
+**Antigravity empieza la Parte B cuando Claude Code cierre la Parte A** (avisará con el commit y con `/docs-json` funcionando). Antes de empezar, comprueba en
+`http://localhost:3001/docs-json` que existe `html_css` en el enum de tipos de `POST /activity-questions`. Si algo del contrato de abajo difiere de lo que
+responde el backend, **manda el backend**: avisa y no lo «arregles» en el frontend.
 
-**Qué hacer** en `pages/docente/contenidos.vue`:
-- Botón **«Nuevo módulo»** en la cabecera y en el estado vacío. Diálogo con título (obligatorio), descripción
-  opcional. `order` = mayor `order` existente + 1 (no lo pidas al usuario). Al crear muestra el módulo con la marca
-  «Borrador» y el aviso «Los estudiantes no lo verán hasta que lo publiques», junto al interruptor de publicar que ya
-  existe.
-- En cada módulo, **«Nuevo tema»**; en cada tema, **«Nueva unidad»** (título obligatorio, dificultad, descripción).
-  Mismo cálculo de `order`. Al crear se actualiza el árbol sin recargar la página.
-- En cada unidad, un panel/diálogo **«Lecciones»** que lista los bloques (`GET /content/unit/:id/all`) con: crear,
-  editar (título + cuerpo en un `textarea`, con vista previa opcional usando la misma función de formato del
-  estudiante), ocultar/mostrar, subir/bajar (`POST /content/reorder`) y borrar con confirmación.
-- En `stores/student.ts`, al armar los módulos, **omite** las secciones con `isPublished === false`, los temas y
-  unidades con `isActive === false` y las actividades cuyo `status` no sea `published`. Es un filtro de una línea por
-  nivel; si el dueño ya corrigió el backend para que `GET /sections/class/:id` filtre por rol, omite este punto.
-- En `pages/estudiante/unidad/[id].vue` muestra el `title` del bloque como encabezado sobre su texto (hoy no se ve).
-- **No** ofrezcas borrar módulos/temas/unidades, cambiar de padre un elemento, ni tipos distintos de `markdown`.
+### 25.1 Reglas (aprendidas de auditar la Fase 24)
 
-**Riesgo:** medio (mucha interfaz nueva en un archivo que José también toca). Trabaja en componentes nuevos bajo
-`components/docente/` y deja en `contenidos.vue` solo los botones, los `ref` y las llamadas.
+1. **No inventes datos:** un dato que no llega se muestra «—», nunca `0` ni un estado positivo. Un texto que describe el sistema («2 reglas ocultas»)
+   sale de un dato real (`hiddenRuleCount`) o no se escribe.
+2. **La vista previa NUNCA ejecuta código del estudiante:** `<iframe sandbox="">` **vacío** (sin `allow-scripts`, sin `allow-same-origin`, sin `allow-forms`,
+   sin `allow-top-navigation`). Es un requisito de seguridad, no de estilo.
+3. **Errores del servidor:** siempre `const { messageOf } = useApiErrorMessage()`; el backend responde el motivo en `error`, no en `message`.
+4. **Diálogos:** cierran con `useEscapeToClose` y el foco entra al abrirlos (`composables/useEscapeToClose.ts`).
+5. **Formularios con constructores ocultos (`v-show`): sin `required`** en los campos del constructor y con `novalidate` en el `<form>`; la validación va en
+   `validateAndGetConfig()`. (El creador de ejercicios ya tiene `novalidate`; no lo quites.)
+6. **Un commit por tarea**, en español, sin `--no-verify`. Rama `feat/fase-25`; no subas a `main` hasta terminar; se une con Pull Request (Squash and merge).
+7. **No edites `tailwind.config.ts` ni `assets/css/main.css`** (identidad visual de José): usa clases y tokens que ya existen.
+8. **«Verificado» = probado en Chrome real** (25.6), no «el endpoint responde 200». Corre `npx nuxi typecheck` (exit 0) antes de cada commit.
 
----
+### 25.2 Lo que ya existe y NO debes rehacer
 
-### T2 — Creador de ejercicios con todos los tipos
-
-**Defecto.** `pages/docente/ejercicios/crear.vue` solo crea ejercicios de **código**; el backend califica además
-opción múltiple, completar código, arrastrar y soltar, emparejar y ordenar, y los cinco componentes del estudiante
-ya existen, pero sin una pantalla que los cree el docente no puede usarlos. Además: el botón dice «Guardar y
-Publicar» pero solo guarda un **borrador** (el estudiante no lo ve), los casos de código no llevan `weight` (el juez
-suma `weight || 10` por caso: con otro total de puntos la nota máxima no coincide con el puntaje de la actividad), y
-si falla la creación de la pregunta queda una actividad huérfana.
-
-**Contrato del backend (ya hecho).**
-- `POST /activities`: `{ learningUnitId, activityTypeId, title, description?, difficulty?, totalPoints?, passingScore?,
-  attemptsAllowed?, order?, isRequired?, adaptiveWeight? }`. Nace en **borrador**. `passingScore` es un
-  **porcentaje** (defecto 60) del `totalPoints`. Dueño de la clase o `403`.
-- `POST /activity-questions`: `{ activityId, type, question, points?, order?, config }`. `type` ∈ `mcq`, `coding`,
-  `fill_code`, `drag_drop`, `matching`, `ordering`. **No ofrezcas `ai_evaluated`** (el servidor lo rechaza con 400:
-  no tiene evaluador). `question` y `description` se sanean como texto enriquecido.
-- `PATCH /activities/:id/publish` (borrador → publicada); `DELETE /activities/:id` (retira la actividad).
-- **El estudiante solo renderiza UNA pregunta por actividad** (`stores/workspace.ts` toma la de tipo `coding` o, si
-  no hay, la primera). Crea siempre **una sola pregunta** y con **`points` = `totalPoints`** de la actividad
-  (si difieren, la nota máxima alcanzable no coincide con lo que se muestra y se puede quedar sin poder aprobar).
-- `config` por tipo (forma exacta que leen los evaluadores y los componentes del estudiante):
-
-| Tipo | `config` | Respuesta del estudiante | Nota |
-|---|---|---|---|
-| `mcq` | `{ options:[{id,text}…], correctAnswerId:"<id>", isMultipleChoice:false, explanation? }` | `{ selectedId }` | Todo o nada. **Solo respuesta única**: el componente del estudiante es de una sola opción; no ofrezcas «varias correctas». Mínimo 2 opciones con texto, exactamente 1 correcta. |
-| `fill_code` | `{ codeTemplate:"…___b1___…", blanks:[{id:"b1", answer:"…", regexMode?}…] }` | `{ blanks:{ b1:"…" } }` | Cada hueco se marca en la plantilla como `___<id>___` (id con letras, números, `_` o `-`). Cada marcador debe tener su entrada en `blanks` y viceversa. Compara texto exacto (sin espacios de los extremos). Proporcional: `round(aciertos/huecos × points)`. `regexMode` déjalo apagado. |
-| `drag_drop` | `{ items:[{id,content}…], targets:[{id,label}…], mappings:{ "<itemId>":"<targetId>" } }` | `{ mappings:{…} }` | `mappings` cubre **todos** los ítems. Proporcional. El servidor baraja `items` y `targets` al servirlos. |
-| `matching` | `{ leftColumn:[{id,content}…], rightColumn:[{id,content}…], pairs:{ "<leftId>":"<rightId>" } }` | `{ pairs:{…} }` | Formulario natural: filas «izquierda ↔ derecha»; cada fila crea un `left_i`, un `right_i` y su par. Mínimo 2 filas. Proporcional. El servidor baraja `rightColumn`. |
-| `ordering` | `{ blocks:[{id,content}…], correctOrder:["<id>",…] }` | `{ order:[ids…] }` | El docente los escribe **en el orden correcto** (`correctOrder` = esos ids en ese orden; `blocks` la misma lista). Mínimo 2. Todo o nada. El servidor baraja `blocks` al servirlos. |
-| `coding` | `{ language:"javascript", starterCode, testCases:[{label,input,expected,isPublic,weight}…] }` | `{ code }` | Al menos **un caso con `isPublic:true`** (el servidor lo exige). Envía además **`weight`** por caso de modo que la **suma sea igual a `points`** (reparte `points / n` y deja el resto en el último). El estudiante ve los casos públicos y solo cuántos hay ocultos. |
-
-Genera los `id` en el cliente (`a`, `b`, `c`… o `opt1`, `b1`, `left1`…), únicos dentro de la pregunta.
-
-**Qué hacer** en `crear.vue` (y componentes nuevos bajo `components/docente/exercise-builders/`, uno por tipo):
-- Un selector **«Tipo de ejercicio»** con los seis tipos; al cambiar, se muestra el formulario mínimo de ese tipo
-  (tabla de arriba) y se conservan clase, unidad, título, dificultad, puntos, intentos y enunciado.
-- Validación en el cliente **antes** de enviar, con mensajes concretos («Marca cuál es la opción correcta», «El
-  hueco b2 no aparece en el código», «Une todos los ítems con un destino»).
-- Envío en este orden: `POST /activities` → `POST /activity-questions` (con `points` = `totalPoints`). Si la segunda
-  falla, **`DELETE /activities/:id`** para no dejar un borrador huérfano y muestra el error real. Solo si ambas
-  salen bien, y con la casilla **«Publicar ahora» (activada por defecto)**, `PATCH /activities/:id/publish`. El botón
-  debe decir lo que hace («Guardar borrador» / «Guardar y publicar»).
-- Tras crear, la lista de actividades de la unidad se recarga (ya existe) y el formulario vuelve a su estado inicial.
-- **No** edites preguntas de actividades ya creadas ni ofrezcas varias preguntas por actividad.
-
-**Riesgo:** medio-alto (seis formularios y una regla de puntaje). Mantén cada formulario como componente aparte y
-cubre con la prueba de §24.3 los seis tipos.
-
----
-
-### T3 — Administración de usuarios: registrar, desactivar y restablecer contraseña
-
-**Defecto.** En `/admin` el botón **«+ Registrar Usuario»** no tiene acción; no hay forma de **desactivar o
-reactivar** una cuenta ni de **restablecer una contraseña**. No existe «olvidé mi contraseña» (el sistema no envía
-correos): el camino es que el admin la restablezca.
-
-**Contrato del backend (ya hecho).** Todo con rol `admin`.
-- `POST /users` `{ email, password, fullName }` → crea la cuenta **siempre como estudiante**, activa. Contraseña:
-  mínimo 6 caracteres con mayúscula, minúscula y número o símbolo (mismo mensaje del registro). Correo repetido →
-  `409`. Para otro rol, después `PATCH /users/:id/role` `{ role }` (ya integrado en el panel).
-- `PATCH /users/:id` `{ isActive?, password?, fullName?, email?, role? }` (parcial). En esta tarea usa **solo
-  `isActive` y `password`**. La contraseña nueva se guarda cifrada. `isActive:false` cierra las sesiones de esa
-  cuenta **de inmediato** (se revalida en cada petición) y el login responde «Usuario inactivo».
-- **Autoprotección:** un admin **no** puede desactivar su propia cuenta ni cambiar su propio rol (`403`, mensaje
-  «No puedes cambiar tu propio rol ni desactivar o eliminar tu propia cuenta»).
-- `GET /users` ya devuelve `isActive` por usuario (la columna «Estado» existe).
-- **No expongas `DELETE /users/:id`**: para retirar a alguien se desactiva.
-
-**Qué hacer** en `pages/admin/index.vue` (pestaña «Gestión de Usuarios»):
-- **«+ Registrar Usuario»** abre un diálogo (nombre, correo, contraseña con ver/ocultar) y opcionalmente el rol
-  inicial: crear con `POST /users` y, si eligió docente o admin, `PATCH /users/:id/role`. Cuenta nueva aparece en la
-  lista sin recargar. Muestra los errores reales (`409`, contraseña débil).
-- Por fila: **«Desactivar» / «Reactivar»** con diálogo de confirmación que diga qué pasa («X no podrá iniciar
-  sesión»). En la fila del propio admin, el control va deshabilitado con explicación visible.
-- Por fila: **«Restablecer contraseña»**: diálogo con campo de contraseña nueva y botón «Generar» (aleatoria que
-  cumpla la política). Tras el `200`, **muestra la contraseña una sola vez** con botón «Copiar» y el aviso
-  «Entrégasela por un canal seguro; la persona debe cambiarla en Mi perfil». No la guardes en el estado tras cerrar.
-- En `pages/auth/login.vue`, bajo el botón de entrar, el texto fijo «¿Olvidaste tu contraseña? Pídele a tu docente o
-  al administrador que la restablezca.» (sin enlace ni formulario).
-
-**Riesgo:** bajo-medio. **No** muestres nunca contraseñas existentes ni prometas correos.
-
----
-
-### T4 — «Mi perfil» para los tres roles
-
-**Defecto.** Ningún usuario puede cambiar su nombre ni su contraseña: no hay pantalla.
-
-**Contrato del backend (ya hecho).** Cualquier usuario autenticado; el id sale del token, nunca de la URL.
-- `PATCH /users/me` `{ fullName }` (texto no vacío, máx. 150). Solo `fullName`: correo, rol y estado no se editan.
-- `PATCH /users/me/password` `{ currentPassword, newPassword }` → `{ message }`. `newPassword`: mínimo 6 con
-  mayúscula, minúscula y número o símbolo. Contraseña actual incorrecta → `401` («La contraseña actual es
-  incorrecta»). No cierra otras sesiones abiertas.
-
-**Qué hacer:**
-- Un componente compartido `components/perfil/Form.vue` (se usa como `<PerfilForm />`) con dos tarjetas: **Datos**
-  (nombre editable; correo y rol solo lectura) y **Cambiar contraseña** (actual, nueva, confirmar; coincidencia
-  validada en el cliente; ver/ocultar).
-- Tres páginas delgadas que solo eligen el layout: `pages/estudiante/perfil.vue` (`layout: 'student'`),
-  `pages/docente/perfil.vue` (`'teacher'`) y `pages/admin/perfil.vue` (`'admin'`). Así **`middleware/auth.global.ts`
-  no cambia** (ya deja pasar `/<rol>/…` a su rol).
-- En `components/layout/HeaderNav.vue`, dentro del menú del avatar y antes de «Cerrar sesión», un enlace **«Mi
-  perfil»** a `` `${homeRoute}/perfil` `` (`homeRoute` ya existe en el componente).
-- Tras guardar el nombre, actualiza el usuario del store de sesión (`authStore.user.fullName`, o `hydrateUser()`)
-  para que el encabezado muestre el nombre nuevo sin recargar. Tras cambiar la contraseña, limpia los tres campos y
-  muestra confirmación persistente (no un `alert`).
-
-**Riesgo:** bajo.
-
----
-
-### T5 — Gestión de la clase por el docente
-
-**Defecto.** En `/docente/clase/:id` solo hay «exigir aprobación» y las matrículas; el docente no puede corregir el
-nombre ni la descripción de su clase.
-
-**Contrato del backend (ya hecho).**
-- `PATCH /class/:id` con cualquiera de `{ name?, description?, code?, requiresApproval? }`. **No acepta** `isActive`,
-  fechas ni cupo (el servidor responde `400` por campo no permitido): esta fase no puede archivar una clase ni
-  fijarle cupo. Solo la dueña; si no, `409` («No tienes permiso para modificar esta clase»).
-- `DELETE /class/:id` es un **borrado definitivo** que arrastra módulos, temas y matrículas: **no lo expongas**.
-
-**Qué hacer** en `pages/docente/clase/[classId].vue`:
-- Una tarjeta **«Datos de la clase»** con nombre y descripción editables (envía solo lo cambiado; nombre no vacío),
-  botón «Guardar» deshabilitado sin cambios o en curso, y confirmación visible.
-- El **código de ingreso** se muestra de solo lectura con botón «Copiar» (cambiarlo dejaría inservible el código que
-  el docente ya repartió, y el servidor no comprueba que siga siendo único).
-- Al volver a `/docente` la lista debe mostrar el nombre nuevo (vuelve a pedir `GET /class/my-classes`).
-
-**Riesgo:** bajo.
-
----
-
-### 24.3 Cómo verificar
-
-| Tarea | Prueba |
+| Qué | Dónde |
 |---|---|
-| T1 | Como docente con una clase **nueva** (créala en `/docente`): en `/docente/contenidos` aparece «Nuevo módulo»; crea módulo → tema → unidad → dos lecciones (una con `**negrita**` y un bloque ```` ``` ````). El módulo sale como «Borrador»; como estudiante matriculado en esa clase **no aparece** en el menú. Publica el módulo: aparece; abre la unidad y se ve el título y el texto formateado. Oculta una lección: el estudiante ya no la ve. Sube/baja una lección y recarga: el orden se conserva. Pega `<script>alert(1)</script>` en una lección: al guardar desaparece del texto devuelto y no se ejecuta. En Red: `POST /sections`, `/topic`, `/learning-unit`, `/content`, `PATCH /content/:id`, `POST /content/reorder`. |
-| T2 | Para **cada uno de los seis tipos**: como docente crea el ejercicio (marca «Publicar ahora») y como estudiante matriculado ábrelo en `/estudiante/evaluacion/<id>`; entrega **correcto** y **incorrecto** (usa dos intentos). Esperado con 20 puntos: `mcq` correcto **20/20** aprobado, incorrecto **0/20**; `fill_code` con 2 huecos, ambos bien **20/20**, uno bien **10/20**; `drag_drop` y `matching` con 4 elementos, 3 bien **15/20**; `ordering` exacto **20/20**, cualquier otro **0/20**; `coding` con 2 casos de peso 10, correcto **20/20**. Con `coding`, el estudiante ve solo los casos públicos y «N caso(s) privado(s)». Fuerza un fallo de `POST /activity-questions` (por ejemplo un `mcq` sin opción correcta saltando la validación desde la consola): la actividad no queda en la lista (hubo `DELETE /activities/:id`). Sin marcar «Publicar ahora»: el ejercicio queda en borrador y el estudiante no lo ve. |
-| T3 | Como admin: «Registrar Usuario» crea una cuenta y aparece en la lista; el mismo correo otra vez muestra el `409`. Desactívala: en otra ventana esa persona ya no entra («Usuario inactivo»); reactívala: entra. En la fila del propio admin, desactivar está deshabilitado. Restablece su contraseña: se muestra una vez, la persona entra con ella y tras cerrar el diálogo ya no se puede ver de nuevo. |
-| T4 | Con un usuario de cada rol: «Mi perfil» en el menú del avatar. Cambia el nombre: el encabezado lo muestra sin recargar. Contraseña actual equivocada → mensaje del servidor (`401`); contraseña nueva débil → mensaje de política; correcta → confirmación y, al cerrar sesión, entra con la nueva. Las tres rutas `/estudiante/perfil`, `/docente/perfil`, `/admin/perfil` cargan con su layout; una ruta ajena (`/docente/perfil` como estudiante) redirige a su inicio. |
-| T5 | Como docente dueño: cambia nombre y descripción de la clase, guarda y recarga: se conservan; en `/docente` se ve el nombre nuevo. El código no se puede editar y «Copiar» funciona. En Red solo viaja lo que cambió (`PATCH /class/:id` con un campo). |
+| Patrón de constructor del docente (`defineExpose({ validateAndGetConfig, reset })`) | `components/docente/exercise-builders/OrderingExerciseBuilder.vue` (copia su estructura) |
+| Creador de ejercicios, selector de tipo `#create-exercise-type`, `getActiveBuilderConfig()` y flujo atómico (crea actividad → crea pregunta → si falla, borra la actividad) | `pages/docente/ejercicios/crear.vue` |
+| Pantalla del ejercicio: rama de código (`isCodingActivity`, editor + «Casos de Prueba» + «Registro») y rama de tipos interactivos (`ExerciseMcqExercise`, etc.) | `pages/estudiante/evaluacion/[activityId].vue` |
+| Store: carga del ejercicio, `pendingAnswer`, `submit()`, `runPublicCases`, autoguardado con debounce (`PUT /submissions/:id/autosave`, guarda `answers` de forma genérica) | `stores/workspace.ts` |
+| Componentes de ejercicios interactivos | `components/exercise/*.vue` (auto-importados como `ExerciseNombre`) |
+| Helpers | `useApiErrorMessage().messageOf`, `useEscapeToClose`, `utils/formatMarkdown.ts` |
 
-`npx nuxi typecheck` debe terminar en código 0 tras cada tarea.
+### 25.3 Contrato (lo construye Claude Code en la Parte A; verifícalo en `/docs-json`)
 
-### 24.4 Criterios de cierre
+**Pregunta** — `POST /activity-questions` con `type: "html_css"` (solo docente dueño de la clase; el resto de campos como los otros tipos):
 
-- [ ] Las pruebas de §24.3 hechas en navegador real, con lo observado anotado en el informe (incluida la nota
-      obtenida en cada uno de los seis tipos de T2).
-- [ ] `npx nuxi typecheck` en código 0.
-- [ ] Cinco commits, uno por tarea, en la rama `feat/fase-24`, y Pull Request abierto.
-- [ ] Informe en `docs/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
+```ts
+type HtmlCssCheck =
+  | { kind: 'element_exists'; selector: string; min?: number }                          // por defecto min = 1
+  | { kind: 'element_count';  selector: string; equals?: number; min?: number; max?: number }
+  | { kind: 'text';           selector: string; mode: 'contains' | 'equals'; value: string; caseSensitive?: boolean } // algún elemento que coincida
+  | { kind: 'attribute';      selector: string; name: string; mode: 'exists' | 'equals' | 'contains'; value?: string }
+  | { kind: 'css_property';   selector: string; property: string; oneOf: string[] }    // valor calculado, normalizado
+  | { kind: 'a11y';           check: 'img_alt' | 'form_labels' | 'html_lang' | 'document_title' | 'single_h1' }
 
-### 24.5 Fuera de alcance
+interface HtmlCssRule {
+  id: string            // ^[a-z0-9_-]{1,40}$, único dentro de la pregunta
+  label: string         // ≤ 160 caracteres; lo que ve el estudiante («Hay un <h1> con el texto "Hola"»)
+  hint?: string         // ≤ 240; pista opcional
+  isPublic: boolean     // pública: el estudiante ve su etiqueta y si pasa; oculta: solo cuántas hay
+  weight: number        // entero 1..100
+  check: HtmlCssCheck
+}
 
-Cambios en el backend · rediseño visual · tipo `ai_evaluated` · varias preguntas por actividad · editar preguntas de
-actividades ya creadas · lecciones de video, PDF o imagen · borrar módulos, temas, unidades, clases o usuarios ·
-archivar una clase, fijarle cupo o fechas · cambiar de padre un módulo, tema, unidad o lección · «olvidé mi
-contraseña» por correo · edición del correo o del rol desde «Mi perfil» · la página `docente/clase/:id/analitica`.
+interface HtmlCssConfig {                       // = body.config de POST /activity-questions
+  starterHtml: string                           // ≤ 50 000 caracteres
+  starterCss: string                            // ≤ 50 000
+  rules: HtmlCssRule[]                          // 1..30, al menos una isPublic
+  modelSolution: { html: string; css: string }  // OBLIGATORIA; el servidor comprueba que cumple el 100 % de las reglas
+}
+```
+
+Al crear, el backend responde `400` con el motivo en `error` si: falta una regla pública, un `selector` no es válido, hay ids repetidos, se pasa algún límite, o
+**la solución modelo no cumple una regla** (el mensaje nombra la regla: «La solución modelo no cumple la regla "titulo": …»).
+
+**Lo que recibe el estudiante** — `GET /activity-questions/activity/:activityId` (nunca `rules[].check`, ni reglas ocultas, ni `modelSolution`):
+
+```ts
+interface HtmlCssStudentConfig {
+  starterHtml: string
+  starterCss: string
+  publicRules: { id: string; label: string; hint?: string }[]
+  hiddenRuleCount: number
+}
+```
+
+**Respuesta del estudiante** (en `POST /submissions/:id/submit` y en `PUT /submissions/:id/autosave`): `answer: { html: string, css: string }` (cada uno ≤ 50 000).
+
+**«Probar» sin gastar intento** — `POST /submissions/:id/run` con `{ html, css }` (mismo límite de 20/min). Solo evalúa las reglas **públicas**:
+
+```ts
+interface HtmlCssRunResult {
+  results: { id: string; label: string; passed: boolean; detail?: string }[]  // solo públicas
+  allPassed: boolean                 // todas las públicas
+  passedWeight: number; totalWeight: number   // solo de las públicas
+}
+```
+
+**Al entregar**, la nota es proporcional al peso de las reglas que pasan (públicas y ocultas), sobre los puntos de la pregunta; el `feedback` dice «Cumpliste X de
+Y reglas» y lista las etiquetas de las públicas que fallaron y **cuántas** ocultas fallaron (nunca cuáles).
+
+**Alcance de lo que se puede calificar** (ADR 13): presencia y jerarquía de etiquetas, atributos, textos, propiedades CSS declaradas y accesibilidad básica.
+**No** se califica posición, tamaño renderizado, `@media`/responsive ni animaciones: eso queda como criterio del docente. Díselo al docente en el constructor (B1).
+
+### 25.4 Parte A — Backend (Claude Code; NO la hagas tú)
+
+| # | Tarea | Cierre |
+|---|---|---|
+| A1 | `QuestionType.HTML_CSS = 'html_css'` + migración `AddHtmlCssQuestionType` (`ALTER TABLE activity_questions MODIFY type enum(…, 'html_css')`; buscar con `grep` si otra tabla repite el enum) | `migration:run` y `migration:revert` en una base vacía; `verify:clean` en verde (cambia una migración) |
+| A2 | Validación de `config` en `activity-questions.service.ts:validateConfig` (esquema de 25.3, límites, selectores válidos con jsdom, solución modelo al 100 %) | tests con cada causa de rechazo |
+| A3 | `HtmlCssEvaluator` (`src/evaluation-engine/strategies/`) con jsdom **sin ejecutar scripts ni cargar recursos**; nota proporcional; registrado en `EvaluationEngineService` | tests: cada `kind`, HTML mal formado, `<script>` sin efecto, entradas gigantes rechazadas, sin regex del usuario |
+| A4 | `StudentQuestionDto` (`student-question.dto.ts`): `HtmlCssStudentConfig`, barajar no aplica | test: ni `check`, ni reglas ocultas, ni `modelSolution` salen |
+| A5 | `POST /submissions/:id/run` acepta `{ html, css }` cuando la pregunta es `html_css` (`runPublicCases`, hoy solo CODING) | test de ruta y de «no consume intento» |
+| A6 | Ejercicio de demostración `html_css` en `stire-seeder-demo.ts` (idempotente) | `db:seed:demo` dos veces sin duplicar |
+| A7 | **Saneado de bloques de código** (F24-07): `ContentRenderingService.sanitizeRichText` deja intactos los bloques ``` y el código en línea (el frontend los escapa), en `content.body`, `activity.description` y `activity_question.question`. Hoy elimina `<script>` y `<button>` de los ejemplos y añade cierres de etiqueta | test con ejemplos HTML dentro de bloques; el texto fuera de los bloques se sigue saneando |
+
+### 25.5 Parte B — Frontend (Antigravity; empieza cuando la Parte A esté cerrada)
+
+#### B0 — Renderizador de Markdown: una sola copia y código en línea escapado
+- Hoy hay **tres** `formatMarkdown`: `utils/formatMarkdown.ts` y copias locales en `pages/estudiante/unidad/[id].vue` y `pages/estudiante/evaluacion/[activityId].vue`
+  (`function formatMarkdown`, esta última no aplica negrita en el enunciado). Deja **solo** la de `utils/` y bórralas de las páginas.
+- En `utils/formatMarkdown.ts` el código **en línea** (`` `x` ``) se inserta sin escapar: escapa su contenido igual que los bloques ```. (Es lo que permite que la Parte A7
+  deje pasar `<b>` dentro de un ejemplo.) Conserva la opción `{ escapeHtml: true }` de la vista previa.
+- **Cierre:** una lección con `` `<div>` `` y un bloque ```html con `<script>` se ve como texto, en la vista del estudiante y en la vista previa del docente.
+
+#### B1 — Constructor del docente: `HtmlCssExerciseBuilder.vue`
+- Archivo nuevo `components/docente/exercise-builders/HtmlCssExerciseBuilder.vue` con la estructura de `OrderingExerciseBuilder.vue` (`defineExpose({ validateAndGetConfig, reset })`).
+- En `pages/docente/ejercicios/crear.vue`: opción **`html_css` — «HTML y CSS (calificado por reglas)»** en `#create-exercise-type` (línea ~241), el tipo en la unión de
+  `exerciseType`, su `ref`, el `switch` de `getActiveBuilderConfig()` y `reset()`, y el `v-show` junto a los otros constructores.
+- Contenido: (1) **Código inicial** HTML y CSS (dos `<textarea>` monoespaciados); (2) **Solución modelo** HTML y CSS (dos `<textarea>`; aviso: «no se muestra al estudiante; el
+  sistema comprueba que cumple todas tus reglas»); (3) **Lista de reglas** (agregar, quitar, reordenar ▲▼): etiqueta, pista, interruptor público/oculta, peso, y un `<select>`
+  de tipo (`kind`) que muestra solo los campos de ese tipo (25.3); `a11y` muestra un `<select>` con las 5 comprobaciones; `css_property` pide propiedad y valores aceptados separados por
+  coma (`oneOf`). (4) Un aviso fijo con el **alcance** de 25.3 («no se califica posición, tamaño ni responsive»).
+- `validateAndGetConfig`: exige ≥ 1 regla pública, etiqueta y selector no vacíos, peso 1–100, ≤ 30 reglas, solución modelo no vacía; devuelve `config` con la forma **exacta** de `HtmlCssConfig`.
+  Los errores del servidor (p. ej. «La solución modelo no cumple la regla…») se muestran con `messageOf` en el `submitError` que ya existe.
+- **Sin `required`** en los campos (regla 5).
+
+#### B2 — Pantalla del estudiante: editor, vista previa y reglas
+- Componente nuevo `components/exercise/HtmlCssExercise.vue`. En `pages/estudiante/evaluacion/[activityId].vue` agrega una **tercera rama** `isHtmlCssActivity`
+  (`questionType === 'html_css'`) que ocupa toda la altura, como la de código (no en el contenedor angosto de los interactivos). `typeBadgeLabel`: «HTML / CSS».
+- Distribución (escritorio): izquierda, **pestañas «HTML» y «CSS»** con un `<textarea>` cada una (monoespaciado; el editor con resaltado es la Fase 26, no lo hagas);
+  derecha, **«Vista previa»** arriba y **«Reglas»** abajo. En móvil (375 px) se apilan: editor, vista previa, reglas.
+- **Vista previa:** `<iframe sandbox="" title="Vista previa del ejercicio" :srcdoc="previewDoc">` con actualización con debounce de ~300 ms. `previewDoc` = documento con
+  `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:">`, el `<style>` con el CSS del
+  estudiante y su HTML (si ya trae `<head>`, inserta ahí; si no, envuélvelo). Nada de `allow-*`.
+- **Reglas:** lista de `publicRules` (etiqueta y pista); antes de probar, marca neutra «—»; tras «▶ Probar», ✔ / ✘ por regla con `detail` si viene; debajo, «N reglas ocultas
+  se evalúan al entregar» solo si `hiddenRuleCount` es un número (si no, «—»).
+- **Botones:** «▶ Probar» llama `POST /submissions/:id/run` con `{ html, css }` (no gasta intento; si falta el intento activo usa el mismo `ensureActiveSubmission()` que el código) y
+  «🚀 Entregar solución» usa el `submit()` de siempre con `answer = { html, css }`. Autoguardado con el mismo debounce que el código.
+- Errores con `messageOf`; el 429 del límite de «probar» se explica en pantalla; un HTML vacío no se envía.
+
+#### B3 — Store: `stores/workspace.ts`
+- `questionType` acepta `'html_css'`; el cargador (`loadExercise`, hoy elige `questions.find(q => q.type === 'coding') || questions[0]`) toma `starterHtml`/`starterCss` de `config`
+  en dos `ref` nuevos (`htmlCode`, `cssCode`); `runHtmlCss()` y `htmlCssResults`; `submit()` (línea ~317) arma `answer = { html, css }` para este tipo; el autoguardado (línea ~391, hoy
+  «solo aplica a coding») también lo cubre. **No cambies el comportamiento de los otros tipos.**
+
+### 25.6 Cómo verificar (Chrome real, base desechable — método de `docs/ReportesQA/GUIA_AUDITORIA_MAESTRA.md`)
+
+1. **Docente, desde la pantalla, sin atajos:** crear un ejercicio `html_css` con 5 reglas (3 públicas, 2 ocultas; una de cada `kind` relevante) y solución modelo correcta → aparece «creado». Con una solución
+   modelo que incumple una regla → se ve el motivo del servidor, no se crea nada (sin actividad huérfana).
+2. **Estudiante:** abrir el ejercicio, escribir HTML/CSS; la vista previa se actualiza; «Probar» marca ✔/✘ solo las públicas; entregar da una nota proporcional; con la solución modelo da el máximo.
+3. **Seguridad:** en el HTML del estudiante escribir `<script>alert(1)</script>`, `<img src=x onerror=alert(1)>` y `<a href="javascript:alert(1)">`: **nada se ejecuta** en la vista previa; el nodo `<iframe>`
+   tiene `sandbox=""`; un `<img src="https://…">` no hace petición externa (CSP). El estudiante **no** ve `modelSolution` ni las reglas ocultas en ninguna respuesta de red (pestaña Network).
+4. **Móvil 375 px:** editor, vista previa y reglas apilados, sin desborde horizontal de la página.
+5. **Regresión:** los otros 6 tipos de ejercicio se siguen creando y resolviendo; el modal de lecciones y las lecciones con código HTML se ven bien (B0).
+6. `npx nuxi typecheck` exit 0 y `npm run generate` sin errores.
+
+### 25.7 Criterios de cierre
+
+1. Los puntos 1 a 6 de 25.6, con capturas o salida literal en el informe de sesión.
+2. Búsquedas finales que deben dar **cero** resultados (excluye `node_modules`, `.nuxt`, `.output`):
+   `grep -rn "allow-scripts\|allow-same-origin" frontend-nuxt/components frontend-nuxt/pages` · `grep -rn "err?.data?.message" frontend-nuxt` · `grep -rn "function formatMarkdown" frontend-nuxt/pages`.
+3. Un commit por tarea (B0 a B3), informe en `docs/antigravity/informes/` con el `TEMPLATE_INFORME.md`, y Pull Request de `feat/fase-25` a `main`.
+4. Claude Code audita antes de fusionar (Chrome real); no se fusiona sin ese reporte.
+
+### 25.8 Fuera de alcance
+
+- Ejecutar **JavaScript del estudiante** en HTML/CSS (el curso de JS sigue en los ejercicios de código por entrada/salida).
+- Editor con resaltado de sintaxis y selector de lenguaje → **Fase 26** (CodeMirror 6). Python → después del MVP.
+- Calificar posición, tamaño renderizado, `@media`/responsive o animaciones (criterio del docente).
+- Cambiar estilos globales, tokens o el `tailwind.config.ts`.
