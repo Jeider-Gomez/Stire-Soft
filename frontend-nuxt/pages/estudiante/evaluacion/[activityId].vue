@@ -50,6 +50,11 @@
               <li v-else>Este ejercicio no tiene casos privados.</li>
               <li v-if="workspaceStore.timeLimitMs">Límite de tiempo por ejecución: {{ workspaceStore.timeLimitMs }} ms.</li>
             </ul>
+            <ul v-else-if="isHtmlCssActivity" class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">
+              <li>Reglas públicas visibles en el panel de evaluación.</li>
+              <li>Puntaje proporcional al peso de las reglas cumplidas (públicas y ocultas).</li>
+              <li>Puntaje sobre {{ workspaceStore.currentExercise.maxScore }} puntos según tu código HTML y CSS.</li>
+            </ul>
             <ul v-else class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">
               <li>Evaluación formal inmediata al entregar.</li>
               <li>Consumo de intento al enviar solución definitiva.</li>
@@ -193,7 +198,12 @@
       </div>
     </div>
 
-    <!-- CASO B: Tipos Interactivos de Actividad (MCQ, FillCode, DragDrop, Ordering, Matching) -->
+    <!-- CASO B: HTML / CSS por Reglas (Fase 25 - ocupa toda la altura) -->
+    <div v-else-if="isHtmlCssActivity" class="flex-1 flex flex-col h-full overflow-hidden">
+      <ExerciseHtmlCssExercise :question="workspaceStore.currentQuestion" />
+    </div>
+
+    <!-- CASO C: Tipos Interactivos de Actividad (MCQ, FillCode, DragDrop, Ordering, Matching) -->
     <div v-else class="flex-1 flex flex-col h-full bg-base-blanco overflow-hidden">
       <!-- Barra Superior de Actividad Interactiva -->
       <div class="h-9 bg-base-bg-secundario border-b border-base-borde-sutil px-4 flex items-center justify-between text-xs text-base-texto-secundario flex-shrink-0">
@@ -274,6 +284,9 @@
           <p v-if="isCodingActivity" class="text-xs text-base-texto-secundario mt-1">
             Superaste {{ workspaceStore.submissionResult?.passedCount ?? 0 }} de {{ workspaceStore.submissionResult?.totalCount ?? 0 }} casos de prueba.
           </p>
+          <p v-else-if="isHtmlCssActivity" class="text-xs text-base-texto-secundario mt-1">
+            Solución HTML y CSS evaluada contra las reglas del docente.
+          </p>
           <p v-else class="text-xs text-base-texto-secundario mt-1">
             Evaluación registrada formalmente en tu progreso STIRE.
           </p>
@@ -331,9 +344,12 @@ watch(() => workspaceStore.isRunning, (running) => {
 })
 
 const isCodingActivity = computed(() => workspaceStore.currentExercise.questionType === 'coding')
+const isHtmlCssActivity = computed(() => workspaceStore.currentExercise.questionType === 'html_css')
 
 const typeBadgeLabel = computed(() => {
   const typeMap: Record<string, string> = {
+    coding: 'Programación',
+    html_css: 'HTML / CSS',
     mcq: 'Quiz Conceptual (MCQ)',
     fill_code: 'Completar Código',
     drag_drop: 'Clasificación Drag & Drop',
