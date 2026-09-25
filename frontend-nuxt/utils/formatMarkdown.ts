@@ -1,3 +1,5 @@
+import { sanitizeRenderedHtml } from './sanitizeRenderedHtml'
+
 function escapeHtml(t: string) {
   return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
@@ -40,5 +42,7 @@ export function formatMarkdown(raw: string, options: { escapeHtml?: boolean } = 
     .replace(/(?:<li>.*<\/li>\n?)+/g, (list) => `<ul class="list-disc pl-5 space-y-1">${list.replace(/\n/g, '')}</ul>`)
     .replace(/\n\n/g, '<br/><br/>')
 
-  return text.replace(/\u0000(\d+)\u0000/g, (_m, i: string) => codeBlocks[Number(i)])
+  // El HTML final pasa siempre por DOMPurify: los reemplazos de arriba trabajan sobre texto y podían insertar comillas dentro de un
+  // atributo del HTML ya saneado por el servidor (ver sanitizeRenderedHtml.ts).
+  return sanitizeRenderedHtml(text.replace(/\u0000(\d+)\u0000/g, (_m, i: string) => codeBlocks[Number(i)]))
 }
