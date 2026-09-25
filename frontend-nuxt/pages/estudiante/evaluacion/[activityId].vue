@@ -313,6 +313,7 @@
 
 <script setup lang="ts">
 import { useWorkspaceStore } from '~/stores/workspace'
+import { formatMarkdown } from '~/utils/formatMarkdown'
 
 definePageMeta({
   layout: 'workspace'
@@ -376,15 +377,6 @@ const masteryDelta = computed(() => {
 const lineCount = computed(() => {
   return Math.max(workspaceStore.code.split('\n').length, 18)
 })
-
-function formatMarkdown(raw: string) {
-  if (!raw) return ''
-  return raw
-    .replace(/### (.*?)\n/g, '<h4 class="font-bold text-xs text-base-texto-primario mt-2 mb-1">$1</h4>')
-    .replace(/#### (.*?)\n/g, '<h5 class="font-bold text-xs text-base-texto-primario mt-2 mb-1">$1</h5>')
-    .replace(/`([^`]+)`/g, '<code class="bg-base-bg-secundario px-1.5 py-0.5 rounded text-acento-ambar-fuerte font-codigo text-[11px] border border-base-borde-sutil">$1</code>')
-    .replace(/\n\n/g, '<br/><br/>')
-}
 
 async function initActivity() {
   const actId = Number(route.params.activityId)
