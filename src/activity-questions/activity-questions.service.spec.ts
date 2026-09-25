@@ -102,6 +102,63 @@ describe('ActivityQuestionsService.create', () => {
       await expect(service.create(dto, teacher)).resolves.toBeDefined();
     });
 
+    it('Fase 25: HTML_CSS válida (con solución modelo que cumple todas las reglas) → se crea', async () => {
+      const dto = {
+        activityId: 1,
+        type: QuestionType.HTML_CSS,
+        question: 'Crea una página',
+        points: 20,
+        order: 0,
+        config: {
+  starterHtml: '<h1></h1>',
+  starterCss: '',
+  modelSolution: { html: '<h1>Hola</h1><ul><li>a</li></ul>', css: 'h1{color:red}' },
+  rules: [
+    { id: 'titulo', label: 'Hay un h1 con «Hola»', hint: 'Escribe Hola', isPublic: true, weight: 10, check: { kind: 'text', selector: 'h1', mode: 'contains', value: 'Hola' } },
+    { id: 'lista', label: 'Hay una lista', isPublic: true, weight: 10, check: { kind: 'element_exists', selector: 'ul' } },
+    { id: 'secreta', label: 'ETIQUETA-SECRETA', isPublic: false, weight: 30, check: { kind: 'css_property', selector: 'h1', property: 'color', oneOf: ['red'] } },
+  ],
+},
+      } as any;
+      await service.create(dto, teacher);
+      expect(mockRepo.save).toHaveBeenCalledTimes(1);
+    });
+
+    it('Fase 25: HTML_CSS cuya solución modelo NO cumple una regla → 400 que nombra la regla, y no se guarda', async () => {
+      const config = {
+  starterHtml: '<h1></h1>',
+  starterCss: '',
+  modelSolution: { html: '<h1>Hola</h1><ul><li>a</li></ul>', css: 'h1{color:red}' },
+  rules: [
+    { id: 'titulo', label: 'Hay un h1 con «Hola»', hint: 'Escribe Hola', isPublic: true, weight: 10, check: { kind: 'text', selector: 'h1', mode: 'contains', value: 'Hola' } },
+    { id: 'lista', label: 'Hay una lista', isPublic: true, weight: 10, check: { kind: 'element_exists', selector: 'ul' } },
+    { id: 'secreta', label: 'ETIQUETA-SECRETA', isPublic: false, weight: 30, check: { kind: 'css_property', selector: 'h1', property: 'color', oneOf: ['red'] } },
+  ],
+};
+      config.rules.push({ id: 'imposible', label: 'Hay una tabla', isPublic: true, weight: 10, check: { kind: 'element_exists', selector: 'table' } });
+      const dto = { activityId: 1, type: QuestionType.HTML_CSS, question: 'x', points: 20, order: 0, config } as any;
+      await expect(service.create(dto, teacher)).rejects.toThrow(BadRequestException);
+      await expect(service.create(dto, teacher)).rejects.toThrow(/"imposible"/);
+      expect(mockRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('Fase 25: HTML_CSS sin ninguna regla pública → 400', async () => {
+      const config = {
+  starterHtml: '<h1></h1>',
+  starterCss: '',
+  modelSolution: { html: '<h1>Hola</h1><ul><li>a</li></ul>', css: 'h1{color:red}' },
+  rules: [
+    { id: 'titulo', label: 'Hay un h1 con «Hola»', hint: 'Escribe Hola', isPublic: true, weight: 10, check: { kind: 'text', selector: 'h1', mode: 'contains', value: 'Hola' } },
+    { id: 'lista', label: 'Hay una lista', isPublic: true, weight: 10, check: { kind: 'element_exists', selector: 'ul' } },
+    { id: 'secreta', label: 'ETIQUETA-SECRETA', isPublic: false, weight: 30, check: { kind: 'css_property', selector: 'h1', property: 'color', oneOf: ['red'] } },
+  ],
+};
+      config.rules = config.rules.map((r: any) => ({ ...r, isPublic: false }));
+      const dto = { activityId: 1, type: QuestionType.HTML_CSS, question: 'x', points: 20, order: 0, config } as any;
+      await expect(service.create(dto, teacher)).rejects.toThrow(/al menos una regla pública/);
+      expect(mockRepo.save).not.toHaveBeenCalled();
+    });
+
     it('BE-01: ai_evaluated se rechaza al crearla (no hay evaluador que la califique) y no se guarda', async () => {
       const dto = { activityId: 1, type: QuestionType.AI_EVALUATED, question: 'Explica…', config: {} } as any;
 

@@ -6,6 +6,7 @@ import { DragDropEvaluator } from './strategies/drag-drop.evaluator';
 import { FillCodeEvaluator } from './strategies/fill-code.evaluator';
 import { OrderingEvaluator } from './strategies/ordering.evaluator';
 import { MatchingEvaluator } from './strategies/matching.evaluator';
+import { HtmlCssEvaluator } from './strategies/html-css.evaluator';
 import { QuestionType } from '../common/enums/question-type.enum';
 
 @Injectable()
@@ -19,6 +20,7 @@ export class EvaluationEngineService {
     this.strategies.set(QuestionType.FILL_CODE, new FillCodeEvaluator());
     this.strategies.set(QuestionType.ORDERING, new OrderingEvaluator());
     this.strategies.set(QuestionType.MATCHING, new MatchingEvaluator());
+    this.strategies.set(QuestionType.HTML_CSS, new HtmlCssEvaluator());
   }
 
   evaluateAnswer(questionType: QuestionType, studentAnswer: any, config: any, maxPoints: number): EvaluationResult {

@@ -5,6 +5,7 @@ import { ActivityQuestionsRepository } from './activity-questions.repository';
 import { ActivityQuestion } from './entities/activity-question.entity';
 import { Activity } from '../activities/entities/activity.entity';
 import { QuestionType } from '../common/enums/question-type.enum';
+import { validateHtmlCssConfig } from '../evaluation-engine/html-css/html-css.validator';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
@@ -107,6 +108,12 @@ export class ActivityQuestionsService {
       throw new BadRequestException(
         'El tipo ai_evaluated todavía no está disponible: no hay un evaluador que lo califique.',
       );
+    }
+    // Fase 25: HTML y CSS por reglas. La forma, los selectores y que la solución modelo cumpla todas las reglas.
+    if (type === QuestionType.HTML_CSS) {
+      const problems = validateHtmlCssConfig(config);
+      if (problems.length > 0) throw new BadRequestException(problems.join(' '));
+      return;
     }
     if (type !== QuestionType.CODING) return;
 
