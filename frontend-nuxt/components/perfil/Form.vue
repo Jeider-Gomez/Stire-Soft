@@ -171,6 +171,7 @@ import { useApi } from '~/composables/useApi'
 
 const authStore = useAuthStore()
 const api = useApi()
+const { messageOf } = useApiErrorMessage()
 
 // Visibilidad de contraseñas
 const showCurrentPwd = ref(false)
@@ -220,7 +221,7 @@ async function saveName() {
     nameSuccess.value = true
     setTimeout(() => { nameSuccess.value = false }, 3000)
   } catch (err: any) {
-    nameError.value = err?.data?.message || err?.message || 'Error al guardar el nombre.'
+    nameError.value = messageOf(err, 'Error al guardar el nombre.')
   } finally {
     isSavingName.value = false
   }
@@ -268,7 +269,7 @@ async function savePassword() {
     pwdForm.confirmPassword = ''
     pwdSuccess.value = true
   } catch (err: any) {
-    const msg = err?.data?.message || err?.message || 'Error al cambiar la contraseña.'
+    const msg = messageOf(err, 'Error al cambiar la contraseña.')
     pwdError.value = Array.isArray(msg) ? msg.join('. ') : msg
   } finally {
     isSavingPwd.value = false

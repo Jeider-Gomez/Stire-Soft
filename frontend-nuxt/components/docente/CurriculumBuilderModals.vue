@@ -256,6 +256,7 @@ const emit = defineEmits<{
 }>()
 
 const api = useApi()
+const { messageOf } = useApiErrorMessage()
 
 // Autofocus refs
 const moduleTitleRef = ref<HTMLInputElement | null>(null)
@@ -304,7 +305,7 @@ async function submitCreateModule() {
     emit('feedback', `Módulo "${moduleModal.form.title.trim()}" creado correctamente.`)
     closeModuleModal()
   } catch (err: any) {
-    moduleModal.error = err?.data?.message || 'Error al crear el módulo.'
+    moduleModal.error = messageOf(err, 'Error al crear el módulo.')
   } finally {
     moduleModal.saving = false
   }
@@ -352,7 +353,7 @@ async function submitCreateTopic() {
     emit('feedback', `Tema "${topicModal.form.title.trim()}" creado correctamente.`)
     closeTopicModal()
   } catch (err: any) {
-    topicModal.error = err?.data?.message || 'Error al crear el tema.'
+    topicModal.error = messageOf(err, 'Error al crear el tema.')
   } finally {
     topicModal.saving = false
   }
@@ -408,7 +409,7 @@ async function submitCreateUnit() {
     emit('feedback', `Unidad "${unitModal.form.title.trim()}" creada correctamente.`)
     closeUnitModal()
   } catch (err: any) {
-    unitModal.error = err?.data?.message || 'Error al crear la unidad.'
+    unitModal.error = messageOf(err, 'Error al crear la unidad.')
   } finally {
     unitModal.saving = false
   }
@@ -419,4 +420,9 @@ defineExpose({
   openCreateTopic,
   openCreateUnit
 })
+
+// Escape cierra el diálogo abierto aunque el foco se haya perdido.
+useEscapeToClose(() => moduleModal.open, closeModuleModal)
+useEscapeToClose(() => topicModal.open, closeTopicModal)
+useEscapeToClose(() => unitModal.open, closeUnitModal)
 </script>

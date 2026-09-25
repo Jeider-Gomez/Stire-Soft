@@ -134,7 +134,13 @@
     </section>
 
     <!-- ── Sección B: Crear nuevo ejercicio ──────────────────────────────── -->
-    <form @submit.prevent="submitExercise" class="space-y-6">
+    <!--
+      novalidate: los constructores de los 6 tipos viven a la vez en el DOM (v-show) y cada uno tiene campos
+      `required`. Los de los tipos no elegidos están ocultos y vacíos, y el navegador bloqueaba el envío
+      ("invalid form control is not focusable"). La validación real la hace submitExercise() (unidad, título,
+      enunciado) y validateAndGetConfig() de cada constructor, con mensajes propios.
+    -->
+    <form novalidate @submit.prevent="submitExercise" class="space-y-6">
       <!-- Sección 1: Asociación Curricular -->
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider flex items-center gap-2">
@@ -566,6 +572,7 @@ import MatchingExerciseBuilder from '~/components/docente/exercise-builders/Matc
 import OrderingExerciseBuilder from '~/components/docente/exercise-builders/OrderingExerciseBuilder.vue'
 
 const api = useApi()
+const { messageOf } = useApiErrorMessage()
 
 const teacherClasses = ref<TeacherClass[]>([])
 const selectedClassId = ref<number | null>(null)
@@ -665,7 +672,7 @@ async function togglePublish(act: ActivityItem) {
     act.status = 'published'
     actionFeedback.value = `Ejercicio "${act.title}" publicado correctamente.`
   } catch (err: any) {
-    actionError.value = err?.data?.message || 'Error al publicar el ejercicio.'
+    actionError.value = messageOf(err, 'Error al publicar el ejercicio.')
   }
 }
 
@@ -735,7 +742,7 @@ async function submitEditActivity() {
     actionFeedback.value = `Ejercicio "${editActivityModal.form.title}" actualizado correctamente.`
     closeEditActivityModal()
   } catch (err: any) {
-    editActivityModal.error = err?.data?.message || 'Error al actualizar el ejercicio.'
+    editActivityModal.error = messageOf(err, 'Error al actualizar el ejercicio.')
   } finally {
     editActivityModal.saving = false
   }
@@ -766,7 +773,7 @@ async function submitArchiveActivity() {
     actionFeedback.value = `Ejercicio "${archiveActivityModal.activity.title}" archivado correctamente.`
     archiveActivityModal.open = false
   } catch (err: any) {
-    archiveActivityModal.error = err?.data?.message || 'Error al archivar el ejercicio.'
+    archiveActivityModal.error = messageOf(err, 'Error al archivar el ejercicio.')
   } finally {
     archiveActivityModal.saving = false
   }
@@ -946,7 +953,7 @@ async function submitExercise() {
     await loadUnitActivities(form.learningUnitId)
     resetForm()
   } catch (err: any) {
-    const msg = err?.data?.message || err?.message || 'Error al guardar el ejercicio'
+    const msg = messageOf(err, 'Error al guardar el ejercicio')
     submitError.value = Array.isArray(msg) ? msg.join(', ') : msg
   } finally {
     isSubmitting.value = false
@@ -956,4 +963,8 @@ async function submitExercise() {
 onMounted(() => {
   fetchInitialData()
 })
+
+// Escape cierra el diálogo abierto aunque el foco se haya perdido.
+useEscapeToClose(() => editActivityModal.open, closeEditActivityModal)
+useEscapeToClose(() => archiveActivityModal.open, () => { archiveActivityModal.open = false })
 </script>

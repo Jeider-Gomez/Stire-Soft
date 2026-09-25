@@ -5,17 +5,21 @@ function escapeHtml(t: string) {
 /**
  * Formateador ligero de lecciones Markdown en STIRE
  * Compatible con pages/estudiante/unidad/[id].vue
+ *
+ * `escapeHtml: true` escapa también el texto fuera de los bloques de código. Se usa con texto que TODAVÍA no pasó
+ * por el saneado del servidor (la vista previa del docente, que se pinta con v-html sobre el borrador); el texto ya
+ * guardado se sigue mostrando como antes.
  */
-export function formatMarkdown(raw: string): string {
+export function formatMarkdown(raw: string, options: { escapeHtml?: boolean } = {}): string {
   if (!raw) return ''
   const codeBlocks: string[] = []
-  const text = raw
-    .replace(/```[\w-]*\n?([\s\S]*?)```/g, (_m, code: string) => {
-      codeBlocks.push(
-        `<pre class="bg-base-bg-secundario border border-base-borde-sutil rounded-md p-3 overflow-x-auto"><code class="font-codigo text-[11px] text-base-texto-primario">${escapeHtml(code.replace(/\n$/, ''))}</code></pre>`
-      )
-      return `\u0000${codeBlocks.length - 1}\u0000`
-    })
+  const withoutCode = raw.replace(/```[\w-]*\n?([\s\S]*?)```/g, (_m, code: string) => {
+    codeBlocks.push(
+      `<pre class="bg-base-bg-secundario border border-base-borde-sutil rounded-md p-3 overflow-x-auto"><code class="font-codigo text-[11px] text-base-texto-primario">${escapeHtml(code.replace(/\n$/, ''))}</code></pre>`
+    )
+    return `\u0000${codeBlocks.length - 1}\u0000`
+  })
+  const text = (options.escapeHtml ? escapeHtml(withoutCode) : withoutCode)
     .replace(/^## (.*?)$/gm, '<h4 class="font-bold text-sm text-base-texto-primario mt-3 mb-1">$1</h4>')
     .replace(/^# (.*?)$/gm, '<h3 class="font-bold text-base text-base-texto-primario mt-1 mb-2">$1</h3>')
     .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')

@@ -483,6 +483,7 @@ interface SectionItem {
 }
 
 const api = useApi()
+const { messageOf } = useApiErrorMessage()
 
 const teacherClasses = ref<TeacherClass[]>([])
 const selectedClassId = ref<number | null>(null)
@@ -607,7 +608,7 @@ async function submitEditTopic() {
     actionFeedback.value = `Tema "${editTopicModal.form.title}" actualizado correctamente.`
     closeEditTopicModal()
   } catch (err: any) {
-    editTopicModal.error = err?.data?.message || 'Error al actualizar el tema.'
+    editTopicModal.error = messageOf(err, 'Error al actualizar el tema.')
   } finally {
     editTopicModal.saving = false
   }
@@ -646,7 +647,7 @@ async function submitArchiveTopic() {
     actionFeedback.value = `Tema "${archiveTopicModal.topic.title}" archivado correctamente.`
     archiveTopicModal.open = false
   } catch (err: any) {
-    archiveTopicModal.error = err?.data?.message || 'Error al archivar el tema.'
+    archiveTopicModal.error = messageOf(err, 'Error al archivar el tema.')
   } finally {
     archiveTopicModal.saving = false
   }
@@ -706,7 +707,7 @@ async function submitEditUnit() {
     actionFeedback.value = `Unidad "${editUnitModal.form.title}" actualizada correctamente.`
     closeEditUnitModal()
   } catch (err: any) {
-    editUnitModal.error = err?.data?.message || 'Error al actualizar la unidad.'
+    editUnitModal.error = messageOf(err, 'Error al actualizar la unidad.')
   } finally {
     editUnitModal.saving = false
   }
@@ -728,7 +729,7 @@ async function fetchClasses() {
       isLoading.value = false
     }
   } catch (err: any) {
-    errorMessage.value = err?.data?.message || 'Error al cargar las clases del docente'
+    errorMessage.value = messageOf(err, 'Error al cargar las clases del docente')
     isLoading.value = false
   }
 }
@@ -758,7 +759,7 @@ async function loadSections() {
       sections.value = []
     }
   } catch (err: any) {
-    errorMessage.value = err?.data?.message || 'Error al cargar los contenidos de la clase'
+    errorMessage.value = messageOf(err, 'Error al cargar los contenidos de la clase')
   } finally {
     isLoading.value = false
   }
@@ -778,4 +779,9 @@ async function toggleSectionPublish(sec: SectionItem) {
 onMounted(() => {
   fetchClasses()
 })
+
+// Escape cierra el diálogo abierto aunque el foco se haya perdido.
+useEscapeToClose(() => editTopicModal.open, closeEditTopicModal)
+useEscapeToClose(() => archiveTopicModal.open, () => { archiveTopicModal.open = false })
+useEscapeToClose(() => editUnitModal.open, closeEditUnitModal)
 </script>

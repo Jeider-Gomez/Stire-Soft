@@ -3,10 +3,11 @@
     <div
       v-if="isOpen"
       class="fixed inset-0 z-50 flex items-center justify-center p-4"
+      ref="dialogRef"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-lessons-title"
-      @keydown.esc="handleClose"
+      tabindex="-1"
       @click.self="handleClose">
       <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
 
@@ -207,7 +208,7 @@
               <div
                 v-if="formState.body"
                 class="prose prose-xs space-y-2 text-xs text-base-texto-primario"
-                v-html="formatMarkdown(formState.body)" />
+                v-html="formatMarkdown(formState.body, { escapeHtml: true })" />
               <p v-else class="text-xs text-base-texto-secundario italic">
                 Escribe algo en el cuerpo para ver la vista previa.
               </p>
@@ -299,6 +300,7 @@ const emit = defineEmits<{
 }>()
 
 const api = useApi()
+const { messageOf } = useApiErrorMessage()
 
 const isOpen = ref(false)
 const isLoading = ref(false)
@@ -330,14 +332,27 @@ const sortedLessons = computed(() => {
   return [...lessons.value].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
 })
 
+const dialogRef = ref<HTMLElement | null>(null)
+
 async function openModal() {
   isOpen.value = true
   showForm.value = false
   feedbackMsg.value = null
   errorMsg.value = null
   lessonToDelete.value = null
+  // El foco entra al diálogo (antes se quedaba en el botón de atrás y Escape no llegaba a cerrarlo).
+  nextTick(() => dialogRef.value?.focus())
   await fetchLessons()
 }
+
+// Escape: si hay una confirmación de borrar abierta se cierra primero; si no, el modal.
+useEscapeToClose(
+  () => isOpen.value,
+  () => {
+    if (lessonToDelete.value) lessonToDelete.value = null
+    else handleClose()
+  }
+)
 
 function handleClose() {
   isOpen.value = false
@@ -352,7 +367,7 @@ async function fetchLessons() {
     const res = await api.get<LessonItem[]>(`/content/unit/${props.unit.id}/all`)
     lessons.value = Array.isArray(res) ? res : []
   } catch (err: any) {
-    errorMsg.value = err?.data?.message || 'Error al cargar las lecciones de la unidad.'
+    errorMsg.value = messageOf(err, 'Error al cargar las lecciones de la unidad.')
   } finally {
     isLoading.value = false
   }
@@ -427,7 +442,7 @@ async function submitLessonForm() {
     }
     showForm.value = false
   } catch (err: any) {
-    formError.value = err?.data?.message || 'Error al guardar la lección.'
+    formError.value = messageOf(err, 'Error al guardar la lección.')
   } finally {
     isSaving.value = false
   }
@@ -441,7 +456,7 @@ async function toggleLessonVisibility(lesson: LessonItem) {
     lesson.isVisible = res.isVisible
     feedbackMsg.value = `Visibilidad de "${lesson.title}" actualizada a ${lesson.isVisible ? 'Visible' : 'Oculta'}.`
   } catch (err: any) {
-    errorMsg.value = err?.data?.message || 'No se pudo cambiar la visibilidad de la lección.'
+    errorMsg.value = messageOf(err, 'No se pudo cambiar la visibilidad de la lección.')
   } finally {
     togglingId.value = null
   }
@@ -455,12 +470,10 @@ async function moveLesson(index: number, direction: -1 | 1) {
   isReordering.value = true
   errorMsg.value = null
 
-  // Swap order values
-  const current = list[index]
-  const target = list[targetIndex]
-  const tempOrder = current.order
-  current.order = target.order
-  target.order = tempOrder
+  // Intercambia las posiciones EN EL ARREGLO y numera de 1 a n según el nuevo orden. (Antes solo se
+  // intercambiaba el campo `order` y luego se numeraba el arreglo sin mover: se enviaba siempre el orden
+  // anterior y reordenar no hacía nada.)
+  ;[list[index], list[targetIndex]] = [list[targetIndex], list[index]]
 
   const reorderPayload = list.map((item, idx) => ({
     id: item.id,
@@ -476,7 +489,7 @@ async function moveLesson(index: number, direction: -1 | 1) {
     }
     feedbackMsg.value = 'Orden de lecciones actualizado.'
   } catch (err: any) {
-    errorMsg.value = err?.data?.message || 'Error al reordenar las lecciones.'
+    errorMsg.value = messageOf(err, 'Error al reordenar las lecciones.')
     await fetchLessons() // restaurar orden real
   } finally {
     isReordering.value = false
@@ -497,7 +510,7 @@ async function executeDelete() {
     feedbackMsg.value = `Lección "${lessonToDelete.value.title}" eliminada.`
     lessonToDelete.value = null
   } catch (err: any) {
-    errorMsg.value = err?.data?.message || 'Error al eliminar la lección.'
+    errorMsg.value = messageOf(err, 'Error al eliminar la lección.')
   } finally {
     isDeleting.value = false
   }

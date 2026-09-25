@@ -830,6 +830,7 @@ interface RoleRequestItem {
 }
 
 const api = useApi()
+const { messageOf } = useApiErrorMessage()
 const authStore = useAuthStore()
 
 // Pestaña activa (§23 T4)
@@ -960,7 +961,7 @@ async function executeChangeRole() {
       })
     }
   } catch (err: any) {
-    const serverMsg = err?.data?.message || err?.message || 'Error al actualizar el rol del usuario.'
+    const serverMsg = messageOf(err, 'Error al actualizar el rol del usuario.')
     errorMessage.value = Array.isArray(serverMsg) ? serverMsg.join('. ') : serverMsg
     showRoleModal.value = false
     if (lastFocusedBtnId.value) {
@@ -1013,7 +1014,7 @@ async function fetchRoleRequests() {
     }
   } catch (err: any) {
     console.error('[STIRE Admin] Error cargando solicitudes:', err)
-    const serverMsg = err?.data?.message || err?.message || 'Error al cargar las solicitudes de rol docente.'
+    const serverMsg = messageOf(err, 'Error al cargar las solicitudes de rol docente.')
     errorMessage.value = Array.isArray(serverMsg) ? serverMsg.join('. ') : serverMsg
   } finally {
     isLoadingRequests.value = false
@@ -1109,7 +1110,7 @@ async function executeDecision() {
       })
     }
   } catch (err: any) {
-    const serverMsg = err?.data?.message || err?.message || 'Error al procesar la decisión sobre la solicitud.'
+    const serverMsg = messageOf(err, 'Error al procesar la decisión sobre la solicitud.')
     errorMessage.value = Array.isArray(serverMsg) ? serverMsg.join('. ') : serverMsg
     showDecisionModal.value = false
     if (lastDecisionBtnId.value) {
@@ -1253,7 +1254,7 @@ async function executeRegisterUser() {
     showRegisterModal.value = false
     resetRegForm()
   } catch (err: any) {
-    const serverMsg = err?.data?.message || err?.message || 'Error al registrar el usuario.'
+    const serverMsg = messageOf(err, 'Error al registrar el usuario.')
     regError.value = Array.isArray(serverMsg) ? serverMsg.join('. ') : serverMsg
   } finally {
     isRegistering.value = false
@@ -1338,7 +1339,7 @@ async function executeToggleActive() {
       nextTick(() => document.getElementById(lastActiveBtnId.value!)?.focus())
     }
   } catch (err: any) {
-    const serverMsg = err?.data?.message || err?.message || 'Error al actualizar el estado del usuario.'
+    const serverMsg = messageOf(err, 'Error al actualizar el estado del usuario.')
     toggleActiveError.value = Array.isArray(serverMsg) ? serverMsg.join('. ') : serverMsg
   } finally {
     isTogglingActive.value = false
@@ -1433,7 +1434,7 @@ async function executeResetPassword() {
     resetNewPassword.value = ''
     nextTick(() => closeResetPwdBtnRef.value?.focus())
   } catch (err: any) {
-    const serverMsg = err?.data?.message || err?.message || 'Error al restablecer la contraseña.'
+    const serverMsg = messageOf(err, 'Error al restablecer la contraseña.')
     resetPwdError.value = Array.isArray(serverMsg) ? serverMsg.join('. ') : serverMsg
   } finally {
     isResettingPwd.value = false
@@ -1450,4 +1451,10 @@ async function copyResetPassword() {
     // Fallback if clipboard fails
   }
 }
+// Escape cierra el diálogo abierto aunque el foco se haya perdido (p. ej. tras un error al enviar).
+useEscapeToClose(() => showRoleModal.value, cancelChangeRole)
+useEscapeToClose(() => showDecisionModal.value, cancelDecision)
+useEscapeToClose(() => showRegisterModal.value, cancelRegister)
+useEscapeToClose(() => showToggleActiveModal.value, cancelToggleActive)
+useEscapeToClose(() => showResetPwdModal.value, closeResetPwdModal)
 </script>

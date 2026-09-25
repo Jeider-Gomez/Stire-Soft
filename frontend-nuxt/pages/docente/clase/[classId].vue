@@ -146,6 +146,7 @@ interface ClassInfo {
 
 const route = useRoute()
 const api = useApi()
+const { messageOf } = useApiErrorMessage()
 const pending = ref<EnrollmentItem[]>([])
 const active = ref<EnrollmentItem[]>([])
 const classInfo = ref<ClassInfo | null>(null)
@@ -225,7 +226,7 @@ async function saveData() {
     saveSuccess.value = true
     setTimeout(() => { saveSuccess.value = false }, 3000)
   } catch (err: any) {
-    saveError.value = err?.data?.message || err?.message || 'Error al guardar los cambios.'
+    saveError.value = messageOf(err, 'Error al guardar los cambios.')
   } finally {
     isSavingData.value = false
   }
