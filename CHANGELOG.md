@@ -12,6 +12,28 @@ entry to the oldest.
 
 ---
 
+## Fase 25, Parte B — auditoría y correcciones · 25 de Septiembre de 2026
+
+Antigravity entregó la Parte B (B0 a B3) en `feat/fase-25`. Claude Code la auditó en Chrome real contra una base desechable
+(`docs/ReportesQA/REPORTE_AUDITORIA_QA_FASE25B_2026-09-25.md`): la seguridad de la vista previa (`sandbox=""` + CSP), el flujo del docente y el del estudiante
+estaban bien; dos fallos reales se corrigieron en la misma rama (solo frontend):
+
+- **F25-02 (alto): el ejercicio no se podía usar en un celular.** La página del ejercicio tenía alto fijo y `overflow-hidden`: en 375 px el editor quedaba fuera de
+  pantalla (y de 24 px de alto) y «Entregar solución» cortado a la derecha. Afectaba también a la pantalla de código (que ya existía). Ahora, en móvil, la página se
+  desplaza, el editor ocupa el 60 % de la pantalla y la barra superior se ajusta; el escritorio no cambia.
+- **F25-01 (medio): «Probar» de la barra superior fallaba en silencio** (sin mensaje y con un error sin capturar) ante un 429 u otro error; solo el botón del panel
+  lo explicaba. El error queda ahora en el store (`htmlCssRunError`) y el panel lo muestra sea cual sea el botón.
+- F25-03: textos del constructor sin tildes.
+- **F25-04 (pendiente, backend):** el código con `<`, `>` o `&` se ve con entidades (`a &lt; b`) porque el servidor lo codifica al guardar y B0 lo escapa otra vez;
+  se resuelve con A7 (dejar de sanear los segmentos de código), ya seguro porque B0 está en `main`.
+- El control del plan §25.7 «`err?.data?.message` debe dar cero» estaba mal planteado (es del plan): dan 15, todos anteriores a la Fase 25 y ya en `main`.
+
+**Verificación (25/09):** Chrome real, 14 de 16 comprobaciones del flujo del estudiante (las otras dos son artefactos de la prueba: el símbolo ✖ y las Google Fonts de la
+propia aplicación), 4 de 4 del móvil tras corregir, 9 de 10 del docente (la otra contaba peticiones `OPTIONS`); regresión de mcq, coding y fill_code en escritorio y móvil;
+`npx nuxi typecheck` y `nuxt generate` en exit 0.
+
+---
+
 ## Fase 25, Parte A (backend) — ejercicios de HTML y CSS calificados por reglas · 24 de Septiembre de 2026
 
 Nuevo tipo de pregunta **`html_css`** (ADR 13): el estudiante escribe HTML y CSS y el **servidor** lo califica con reglas del docente usando jsdom, **sin ejecutar
