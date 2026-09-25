@@ -226,4 +226,17 @@ export interface SystemLogs {
   capacity: number
   note: string
 }
+export interface HtmlCssRuleResult {
+  id: string
+  label: string
+  passed: boolean
+  detail?: string
+}
 
+export interface HtmlCssRunResult {
+  submissionId?: string
+  results: HtmlCssRuleResult[]
+  allPassed: boolean
+  passedWeight: number
+  totalWeight: number
+}

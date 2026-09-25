@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen bg-base-bg-primario flex flex-col overflow-hidden">
+  <div class="min-h-screen md:h-screen bg-base-bg-primario flex flex-col md:overflow-hidden">
     <!-- Header del Workspace (Sin sidebar para concentración máxima) -->
-    <header class="h-14 bg-base-blanco border-b border-base-borde-sutil px-4 flex items-center justify-between z-30 shadow-sm flex-shrink-0">
+    <header class="min-h-14 md:h-14 py-2 md:py-0 gap-y-2 flex-wrap md:flex-nowrap bg-base-blanco border-b border-base-borde-sutil px-4 flex items-center justify-between z-30 shadow-sm flex-shrink-0">
       <div class="flex items-center gap-3">
         <NuxtLink
           to="/estudiante"
@@ -25,7 +25,7 @@
       <!-- Estado de Autoguardado e Intentos -->
       <div class="hidden sm:flex items-center gap-4 text-xs">
         <span
-          v-if="isCodingActivity"
+          v-if="isCodingActivity || isHtmlCssActivity"
           class="font-medium text-[11px] flex items-center gap-1"
           :class="workspaceStore.autosaveState === 'error' ? 'text-semantico-falla' : workspaceStore.autosaveState === 'saved' ? 'text-semantico-pasa' : 'text-base-texto-secundario'"
           aria-live="polite">
@@ -48,15 +48,15 @@
           <span class="hidden md:inline">Tutor IA</span>
         </button>
 
-        <!-- Acción 1: "▶ Probar código" (Solo para coding - Insumo 15 §7.1) -->
+        <!-- Acción 1: "▶ Probar" (Solo para coding y html_css) -->
         <button
-          @click="workspaceStore.runIsolatedCode()"
-          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting || !isCodingActivity"
+          @click="handleRun"
+          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting || (!isCodingActivity && !isHtmlCssActivity)"
           class="borde-afordancia px-3 py-1.5 rounded text-xs font-bold text-base-texto-primario bg-base-bg-secundario hover:bg-base-borde-sutil transition-colors flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
-          :title="isCodingActivity ? 'Evalúa contra casos de prueba públicos sin consumir intentos' : 'Esta actividad se califica directamente al entregar'">
+          :title="isCodingActivity || isHtmlCssActivity ? 'Evalúa contra casos de prueba/reglas públicas sin consumir intentos' : 'Esta actividad se califica directamente al entregar'">
           <span v-if="workspaceStore.isRunning" class="animate-spin">⚙️</span>
           <span v-else>▶</span>
-          <span>Probar código</span>
+          <span>{{ isHtmlCssActivity ? 'Probar' : 'Probar código' }}</span>
         </button>
 
         <!-- Acción 2: "🚀 Entregar solución" (Calificación formal definitiva para todos los tipos) -->
@@ -84,7 +84,7 @@
     </div>
 
     <!-- Contenido Workspace -->
-    <main class="flex-1 overflow-hidden">
+    <main class="flex-1 md:overflow-hidden">
       <slot />
     </main>
 
@@ -100,15 +100,26 @@ import { useTutorStore } from '~/stores/tutor'
 const workspaceStore = useWorkspaceStore()
 const tutorStore = useTutorStore()
 
-const supportedTypes = ['coding', 'mcq', 'fill_code', 'drag_drop', 'ordering', 'matching']
+const supportedTypes = ['coding', 'mcq', 'fill_code', 'drag_drop', 'ordering', 'matching', 'html_css']
 
 const isCodingActivity = computed(() => workspaceStore.currentExercise.questionType === 'coding')
+const isHtmlCssActivity = computed(() => workspaceStore.currentExercise.questionType === 'html_css')
+
+function handleRun() {
+  if (isHtmlCssActivity.value) {
+    workspaceStore.runHtmlCss()
+  } else if (isCodingActivity.value) {
+    workspaceStore.runIsolatedCode()
+  }
+}
+
 const isUnsupportedType = computed(() => !supportedTypes.includes(workspaceStore.currentExercise.questionType))
 
 const canSubmit = computed(() => {
   if (workspaceStore.isRunning || workspaceStore.isSubmitting) return false
   if (isUnsupportedType.value) return false
   if (isCodingActivity.value) return true
+  if (isHtmlCssActivity.value) return Boolean(workspaceStore.htmlCode && workspaceStore.htmlCode.trim())
   return Boolean(workspaceStore.pendingAnswer)
 })
 </script>

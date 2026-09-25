@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
-import type { TestCase, SubmissionResult } from '~/types'
+import type { TestCase, SubmissionResult, HtmlCssRunResult } from '~/types'
 import { useAuthStore } from './auth'
 import { useApi } from '~/composables/useApi'
+import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 
 export interface WorkspaceExercise {
   activityId: number
@@ -57,6 +58,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const pendingAnswer = ref<Record<string, any> | null>(null)
 
   const code = ref(currentExercise.value.initialCode)
+  const htmlCode = ref('')
+  const cssCode = ref('')
+  const htmlCssResults = ref<HtmlCssRunResult | null>(null)
+  // Error de «Probar» (429 u otro). Vive aquí, no en el componente, porque «Probar» se puede pulsar desde la barra superior
+  // (layouts/workspace.vue) y desde el panel de reglas: antes solo el del panel lo capturaba.
+  const htmlCssRunError = ref<string | null>(null)
+  const htmlCssRateLimited = ref(false)
   const isRunning = ref(false)
   const isSubmitting = ref(false)
   const isLoadingExercise = ref(false)
@@ -126,6 +134,11 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     currentQuestion.value = null
     masteryBefore.value = null
     masteryAfter.value = null
+    htmlCode.value = ''
+    cssCode.value = ''
+    htmlCssResults.value = null
+    htmlCssRunError.value = null
+    htmlCssRateLimited.value = false
 
     consoleLog.value = [
       'STIRE Sandbox v2.0 — Conectado a la plataforma STIRE.',
@@ -140,18 +153,23 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const questions = await api.get<any[]>(`/activity-questions/activity/${activityId}`)
       
       if (activity && Array.isArray(questions) && questions.length > 0) {
-        // La actividad puede tener preguntas de distintos tipos (CODING, FILL_CODE,
-        // MCQ, DRAG_DROP, MATCHING...). Este editor solo sabe operar sobre CODING —
-        // si no hay ninguna, se registra el tipo real de la primera pregunta en vez
-        // de fingir que es código libre (eso producía un starter JS falso y un 400
-        // real al intentar "Probar código" contra un tipo que no lo soporta).
-        const primaryQuestion = questions.find(q => q.type === 'coding') || questions[0]
+        // La actividad puede tener preguntas de distintos tipos (CODING, HTML_CSS,
+        // FILL_CODE, MCQ, DRAG_DROP, MATCHING...).
+        const primaryQuestion = questions.find(q => q.type === 'coding' || q.type === 'html_css') || questions[0]
         const isCoding = primaryQuestion.type === 'coding'
+        const isHtmlCss = primaryQuestion.type === 'html_css'
         const config = primaryQuestion.config || {}
 
-        const starter = isCoding
-          ? (config.starterCode || `const fs = require('fs');\n\n// Leer entrada estándar\nconst input = fs.readFileSync(0, 'utf-8').trim();\n\n// Escribe tu algoritmo aquí:\n`)
-          : `// Esta actividad es de tipo "${primaryQuestion.type}", no de código libre.\n// Usa el panel izquierdo para responder.\n`
+        let starter = ''
+        if (isCoding) {
+          starter = config.starterCode || `const fs = require('fs');\n\n// Leer entrada estándar\nconst input = fs.readFileSync(0, 'utf-8').trim();\n\n// Escribe tu algoritmo aquí:\n`
+        } else if (isHtmlCss) {
+          starter = '<!-- HTML y CSS calificado por reglas -->'
+          htmlCode.value = typeof config.starterHtml === 'string' ? config.starterHtml : ''
+          cssCode.value = typeof config.starterCss === 'string' ? config.starterCss : ''
+        } else {
+          starter = `// Esta actividad es de tipo "${primaryQuestion.type}", no de código libre.\n// Usa el panel izquierdo para responder.\n`
+        }
 
         currentExercise.value = {
           activityId: activity.id,
@@ -197,6 +215,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           timeLimitMs.value = typeof config.timeLimitMs === 'number' ? config.timeLimitMs : null
           consoleLog.value.push(`✔ Actividad "${activity.title}" cargada exitosamente.`)
           consoleLog.value.push(`  → ${publicTestCases.value.length} caso(s) de prueba público(s) disponible(s).`)
+        } else if (isHtmlCss) {
+          publicTestCases.value = []
+          hiddenTestCaseCount.value = Number(config.hiddenRuleCount ?? 0)
+          timeLimitMs.value = null
+          const pubCount = Array.isArray(config.publicRules) ? config.publicRules.length : 0
+          consoleLog.value.push(`✔ Actividad "${activity.title}" cargada (tipo: html_css).`)
+          consoleLog.value.push(`  → ${pubCount} regla(s) pública(s) disponible(s).`)
         } else {
           publicTestCases.value = []
           hiddenTestCaseCount.value = 0
@@ -207,7 +232,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       }
     } catch (err: any) {
       console.error('[STIRE Workspace] Error cargando actividad:', err)
-      consoleLog.value.push(`⚠ Error al cargar actividad #${activityId}: ${err?.data?.message || err?.message}`)
+      const { messageOf } = useApiErrorMessage()
+      const msg = messageOf(err, 'Error al cargar actividad')
+      consoleLog.value.push(`⚠ Error al cargar actividad #${activityId}: ${msg}`)
     } finally {
       isLoadingExercise.value = false
     }
@@ -286,13 +313,69 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         }
       }
     } catch (err: any) {
-      const status = err?.response?.status || err?.statusCode
-      const msg = err?.data?.message || err?.message || 'Error de conexión con el sandbox del backend'
+      const { messageOf, extract } = useApiErrorMessage()
+      const { status } = extract(err)
+      const msg = messageOf(err, 'Error de conexión con el sandbox del backend')
       consoleLog.value.push(`⚠ Error al ensayar código (${status || 'red'}): ${msg}`)
       publicTestCases.value.forEach(tc => {
         tc.actualOutput = 'Error de ejecución'
         tc.passed = false
       })
+    } finally {
+      isRunning.value = false
+    }
+  }
+
+  // Acción: "▶ Probar" para HTML y CSS — Evaluación de reglas públicas sin consumir intento
+  async function runHtmlCss(): Promise<HtmlCssRunResult | null> {
+    if (currentExercise.value.questionType !== 'html_css') {
+      consoleLog.value.push(`⚠ "Probar" no aplica: esta actividad no es de tipo html_css.`)
+      return null
+    }
+    if (!htmlCode.value || !htmlCode.value.trim()) {
+      consoleLog.value.push('⚠ El HTML no puede estar vacío para probar.')
+      return null
+    }
+
+    isRunning.value = true
+    htmlCssRunError.value = null
+    htmlCssRateLimited.value = false
+    consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Solicitando evaluación de reglas públicas (POST /submissions/:id/run)...`)
+
+    try {
+      const subId = await ensureActiveSubmission()
+      consoleLog.value.push(`  → Evaluando reglas públicas en el servidor (Intento #${subId})...`)
+
+      const res = await api.post<HtmlCssRunResult & { submissionId?: string }>(`/submissions/${subId}/run`, {
+        html: htmlCode.value,
+        css: cssCode.value
+      })
+
+      if (res && Array.isArray(res.results)) {
+        htmlCssResults.value = {
+          results: res.results,
+          allPassed: res.allPassed,
+          passedWeight: res.passedWeight,
+          totalWeight: res.totalWeight
+        }
+        if (res.allPassed) {
+          consoleLog.value.push(`✔ Todas las reglas públicas aprobadas (${res.results.length}/${res.results.length}).`)
+        } else {
+          const passedCount = res.results.filter(r => r.passed).length
+          consoleLog.value.push(`✖ Discrepancias encontradas: ${passedCount}/${res.results.length} reglas públicas aprobadas.`)
+        }
+      }
+      return htmlCssResults.value
+    } catch (err: any) {
+      const { messageOf, extract } = useApiErrorMessage()
+      const { status } = extract(err)
+      const msg = messageOf(err, 'Error de conexión con el evaluador del backend')
+      consoleLog.value.push(`⚠ Error al evaluar reglas (${status || 'red'}): ${msg}`)
+      htmlCssRateLimited.value = status === 429
+      htmlCssRunError.value = status === 429
+        ? 'Has superado el límite de intentos por minuto para probar. Espera un momento antes de volver a intentar.'
+        : messageOf(err, 'Ocurrió un error al evaluar tu HTML y CSS.')
+      return null
     } finally {
       isRunning.value = false
     }
@@ -314,11 +397,16 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   }
 
   // Acción 2: "🚀 Entregar solución" — Calificación formal contra el backend NestJS
-  // Para CODING: usa code.value. Para el resto: usa pendingAnswer.value.
+  // Para CODING: usa code.value. Para HTML_CSS: usa { html, css }. Para el resto: usa pendingAnswer.value.
   async function submitSolution() {
     const qType = currentExercise.value.questionType
 
-    if (qType !== 'coding' && !pendingAnswer.value) {
+    if (qType === 'html_css') {
+      if (!htmlCode.value || !htmlCode.value.trim()) {
+        consoleLog.value.push(`⚠ El HTML no puede estar vacío para entregar.`)
+        return
+      }
+    } else if (qType !== 'coding' && !pendingAnswer.value) {
       consoleLog.value.push(`⚠ Completa la respuesta antes de entregar.`)
       return
     }
@@ -334,7 +422,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       // Construir el answer según el tipo
       const answer = qType === 'coding'
         ? { code: code.value }
-        : pendingAnswer.value!
+        : qType === 'html_css'
+          ? { html: htmlCode.value, css: cssCode.value }
+          : pendingAnswer.value!
 
       const submitRes = await api.post<SubmissionResult>(`/submissions/${subId}/submit`, {
         answers: [
@@ -374,8 +464,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         }
       }
     } catch (err: any) {
-      const status = err?.response?.status || err?.statusCode
-      const msg = err?.data?.message || err?.message || 'Error de red o backend no disponible'
+      const { messageOf, extract } = useApiErrorMessage()
+      const { status } = extract(err)
+      const msg = messageOf(err, 'Error de red o backend no disponible')
       console.warn('[STIRE Submissions] Error al calificar solución:', msg)
 
       if (status === 403 || status === 409) {
@@ -388,10 +479,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
-  // Autosave: PUT /submissions/:id/autosave (solo aplica a coding). Con debounce:
-  // antes se enviaba un PUT por cada tecla.
+  // Autosave: PUT /submissions/:id/autosave (aplica a coding y html_css). Con debounce.
   function triggerAutosave() {
-    if (currentExercise.value.questionType !== 'coding') return
+    const qType = currentExercise.value.questionType
+    if (qType !== 'coding' && qType !== 'html_css') return
     autosaveState.value = 'saving'
     if (autosaveTimer) clearTimeout(autosaveTimer)
     autosaveTimer = setTimeout(saveNow, 800)
@@ -400,11 +491,16 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   async function saveNow() {
     try {
       const subId = await ensureActiveSubmission()
+      const qType = currentExercise.value.questionType
+      const answer = qType === 'coding'
+        ? { code: code.value }
+        : { html: htmlCode.value, css: cssCode.value }
+
       await api.put(`/submissions/${subId}/autosave`, {
         answers: [
           {
             questionId: currentExercise.value.questionId,
-            answer: { code: code.value }
+            answer
           }
         ]
       })
@@ -421,6 +517,11 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     currentQuestion,
     pendingAnswer,
     code,
+    htmlCode,
+    cssCode,
+    htmlCssResults,
+    htmlCssRunError,
+    htmlCssRateLimited,
     isRunning,
     isSubmitting,
     isLoadingExercise,
@@ -438,6 +539,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     masteryAfter,
     loadActivity,
     runIsolatedCode,
+    runHtmlCss,
     submitSolution,
     triggerAutosave
   }
