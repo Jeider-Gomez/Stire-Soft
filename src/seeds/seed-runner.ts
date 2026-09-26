@@ -22,6 +22,7 @@ import { Prerequisite } from '../prerequisites/entities/prerequisite.entity';
 import { Content } from '../content/entities/content.entity';
 import { ContentType } from '../common/enums/content-type.enum';
 import { ActivityType } from '../activity-types/entities/activity-type.entity';
+import { ACTIVITY_TYPE_CATALOG } from '../activity-types/activity-type-catalog';
 import { Activity } from '../activities/entities/activity.entity';
 import { PublicationStatus } from '../common/enums/status.enum';
 import { ActivityQuestion } from '../activity-questions/entities/activity-question.entity';
@@ -219,37 +220,28 @@ export async function runMasterSeed() {
   // 5. Tipo de Actividad autocalificable
   console.log('\n5. Verificando Tipos de Actividad...');
   const actTypeRepo = AppDataSource.getRepository(ActivityType);
+  // Mismo catálogo que crea la migración SeedActivityTypeCatalog: aquí findOrCreate ya los encuentra.
+  const catalogType = (code: string) => {
+    const t = ACTIVITY_TYPE_CATALOG.find((c) => c.code === code);
+    if (!t) throw new Error(`Tipo de actividad ${code} fuera del catálogo`);
+    return t;
+  };
   const autoType = await findOrCreate(
     actTypeRepo,
     { code: 'AUTO-EVAL' },
-    () => ({
-      name: 'Práctica Formativa',
-      code: 'AUTO-EVAL',
-      autoGradable: true,
-      baseWeight: 1.0,
-    }),
+    () => ({ ...catalogType('AUTO-EVAL') }),
     'Tipo de Actividad: AUTO-EVAL',
   );
   const tallerType = await findOrCreate(
     actTypeRepo,
     { code: 'TALLER' },
-    () => ({
-      name: 'Taller de Código',
-      code: 'TALLER',
-      autoGradable: true,
-      baseWeight: 1.5,
-    }),
+    () => ({ ...catalogType('TALLER') }),
     'Tipo de Actividad: TALLER',
   );
   const parcialType = await findOrCreate(
     actTypeRepo,
     { code: 'PARCIAL' },
-    () => ({
-      name: 'Parcial / Evaluación',
-      code: 'PARCIAL',
-      autoGradable: true,
-      baseWeight: 3.0,
-    }),
+    () => ({ ...catalogType('PARCIAL') }),
     'Tipo de Actividad: PARCIAL',
   );
 
