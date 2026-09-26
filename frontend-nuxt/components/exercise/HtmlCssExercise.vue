@@ -30,30 +30,28 @@
         </div>
       </div>
 
-      <!-- Área de Edición: Pestaña HTML -->
-      <div v-show="activeEditorTab === 'html'" class="flex-1 relative flex overflow-hidden">
-        <div class="w-10 bg-[#1e1e1e] py-3 text-right pr-2 text-[#5a5a5a] font-mono text-xs select-none border-r border-[#2d2d2d] flex flex-col flex-shrink-0">
-          <span v-for="n in htmlLineCount" :key="n">{{ n }}</span>
-        </div>
-        <textarea
+      <!-- Área de Edición: Pestaña HTML (CodeMirror 6) -->
+      <div v-if="activeEditorTab === 'html'" class="flex-1 relative overflow-hidden">
+        <CodeEditor
           v-model="workspaceStore.htmlCode"
-          @input="onCodeInput"
-          spellcheck="false"
-          class="flex-1 h-full bg-transparent text-[#d4d4d4] font-mono text-xs p-3 leading-relaxed outline-none resize-none selection:bg-[#264f78]"
-          placeholder="<!-- Escribe aquí tu estructura HTML -->"></textarea>
+          language="html"
+          aria-label="Editor HTML"
+          placeholder="<!-- Escribe aquí tu estructura HTML -->"
+          class="w-full h-full"
+          @update:model-value="onCodeInput"
+        />
       </div>
 
-      <!-- Área de Edición: Pestaña CSS -->
-      <div v-show="activeEditorTab === 'css'" class="flex-1 relative flex overflow-hidden">
-        <div class="w-10 bg-[#1e1e1e] py-3 text-right pr-2 text-[#5a5a5a] font-mono text-xs select-none border-r border-[#2d2d2d] flex flex-col flex-shrink-0">
-          <span v-for="n in cssLineCount" :key="n">{{ n }}</span>
-        </div>
-        <textarea
+      <!-- Área de Edición: Pestaña CSS (CodeMirror 6) -->
+      <div v-if="activeEditorTab === 'css'" class="flex-1 relative overflow-hidden">
+        <CodeEditor
           v-model="workspaceStore.cssCode"
-          @input="onCodeInput"
-          spellcheck="false"
-          class="flex-1 h-full bg-transparent text-[#d4d4d4] font-mono text-xs p-3 leading-relaxed outline-none resize-none selection:bg-[#264f78]"
-          placeholder="/* Escribe aquí tus estilos CSS */"></textarea>
+          language="css"
+          aria-label="Editor CSS"
+          placeholder="/* Escribe aquí tus estilos CSS */"
+          class="w-full h-full"
+          @update:model-value="onCodeInput"
+        />
       </div>
 
       <!-- Barra de estado del editor -->
@@ -62,7 +60,7 @@
           <span>{{ workspaceStore.lastAutosave }}</span>
         </div>
         <div class="flex items-center gap-2">
-          <span>Líneas: {{ activeEditorTab === 'html' ? htmlLineCount : cssLineCount }}</span>
+          <span>Líneas: {{ (activeEditorTab === 'html' ? workspaceStore.htmlCode : workspaceStore.cssCode).split('\n').length }}</span>
           <span>•</span>
           <span>Caracteres: {{ (activeEditorTab === 'html' ? workspaceStore.htmlCode : workspaceStore.cssCode).length }}</span>
         </div>
@@ -222,13 +220,6 @@ const isHtmlEmpty = computed(() => {
   return !workspaceStore.htmlCode || !workspaceStore.htmlCode.trim()
 })
 
-const htmlLineCount = computed(() => {
-  return Math.max(workspaceStore.htmlCode.split('\n').length, 12)
-})
-
-const cssLineCount = computed(() => {
-  return Math.max(workspaceStore.cssCode.split('\n').length, 12)
-})
 
 // Vista previa con debounce ~300ms
 const debouncedHtml = ref(workspaceStore.htmlCode)

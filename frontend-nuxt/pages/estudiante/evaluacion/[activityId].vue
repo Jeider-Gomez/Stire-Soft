@@ -152,7 +152,7 @@
 
     <!-- COLUMNA DERECHA: Renderizado Reactivo según questionType -->
 
-    <!-- CASO A: Coding (Monaco textarea tradicional) -->
+    <!-- CASO A: Coding — CodeEditor (CodeMirror 6) -->
     <div v-if="isCodingActivity" class="flex-1 flex flex-col md:h-full min-h-[70vh] md:min-h-0 bg-[#1e1e1e] text-[#d4d4d4] overflow-hidden">
       <!-- Barra Superior del Editor -->
       <div class="h-9 bg-[#252526] border-b border-[#333333] px-4 flex items-center justify-between text-xs text-[#858585] flex-shrink-0">
@@ -168,18 +168,16 @@
         </div>
       </div>
 
-      <!-- Área de Edición de Código -->
-      <div class="flex-1 relative flex">
-        <div class="w-10 bg-[#1e1e1e] py-3 text-right pr-2 text-[#5a5a5a] font-codigo text-xs select-none border-r border-[#2d2d2d] flex flex-col">
-          <span v-for="n in lineCount" :key="n">{{ n }}</span>
-        </div>
-
-        <textarea
+      <!-- Área de Edición de Código (CodeMirror 6) -->
+      <div class="flex-1 relative overflow-hidden">
+        <CodeEditor
           v-model="workspaceStore.code"
-          @input="workspaceStore.triggerAutosave"
-          spellcheck="false"
-          class="flex-1 h-full bg-transparent text-[#d4d4d4] font-codigo text-xs p-3 leading-relaxed outline-none resize-none selection:bg-[#264f78]"
-          placeholder="// Escribe tu solución aquí..."></textarea>
+          language="javascript"
+          aria-label="Editor de código para tu solución"
+          placeholder="// Escribe tu solución aquí..."
+          class="w-full h-full"
+          @update:model-value="workspaceStore.triggerAutosave"
+        />
       </div>
 
       <!-- Barra de Estado Inferior del Editor -->
@@ -390,9 +388,9 @@ const masteryDelta = computed(() => {
   return { before, after, diff: Math.max(0, after - before) }
 })
 
-const lineCount = computed(() => {
-  return Math.max(workspaceStore.code.split('\n').length, 18)
-})
+// Fase 26: el mínimo de 18 servía para pintar el margen de números del textarea anterior; CodeMirror ya los dibuja,
+// así que la barra de estado muestra las líneas reales.
+const lineCount = computed(() => workspaceStore.code.split('\n').length)
 
 async function initActivity() {
   const actId = Number(route.params.activityId)

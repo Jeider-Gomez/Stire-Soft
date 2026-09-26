@@ -14,8 +14,14 @@
     <div class="bg-[#1e1e1e] text-[#d4d4d4] rounded-lg p-4 font-mono text-xs overflow-x-auto shadow-inner border border-[#333]">
       <div v-for="(line, lineIdx) in parsedLines" :key="lineIdx" class="leading-7 min-h-[1.75rem] flex flex-wrap items-center">
         <template v-for="(token, tokenIdx) in line" :key="tokenIdx">
-          <!-- Fragmento de código normal -->
-          <span v-if="token.type === 'text'" class="whitespace-pre text-gray-300">{{ token.value }}</span>
+          <!-- Fragmento de código normal (resaltado con fallback a texto plano) -->
+          <template v-if="token.type === 'text'">
+            <span
+              v-for="(span, sIdx) in (highlightedTokens[`${lineIdx}-${tokenIdx}`] || [{ text: token.value, cls: '' }])"
+              :key="sIdx"
+              :class="['whitespace-pre', span.cls || 'text-gray-300']"
+            >{{ span.text }}</span>
+          </template>
 
           <!-- Input para el blank correspondiente -->
           <span v-else-if="token.type === 'blank'" class="inline-flex items-center mx-1 my-0.5">
@@ -46,6 +52,7 @@
 
 <script setup lang="ts">
 import { useWorkspaceStore } from '~/stores/workspace'
+import { highlightCode, type HighlightedSpan } from '~/utils/highlightCode'
 
 interface BlankConfig {
   id: string
@@ -109,6 +116,33 @@ const parsedLines = computed<Token[][]>(() => {
     return tokens
   })
 })
+
+const language = computed<string>(() => props.question.config?.language || 'text')
+const highlightedTokens = ref<Record<string, HighlightedSpan[]>>({})
+
+watch(
+  [parsedLines, language],
+  async ([lines, lang]) => {
+    if (!lang || lang === 'text') {
+      highlightedTokens.value = {}
+      return
+    }
+    const newTokens: Record<string, HighlightedSpan[]> = {}
+    await Promise.all(
+      lines.flatMap((line, lineIdx) =>
+        line.map(async (token, tokenIdx) => {
+          if (token.type === 'text') {
+            const key = `${lineIdx}-${tokenIdx}`
+            const spans = await highlightCode(token.value, lang)
+            newTokens[key] = spans
+          }
+        })
+      )
+    )
+    highlightedTokens.value = newTokens
+  },
+  { immediate: true }
+)
 
 const filledCount = computed(() => {
   return expectedBlankIds.value.filter(id => (blankAnswers[id] || '').trim().length > 0).length

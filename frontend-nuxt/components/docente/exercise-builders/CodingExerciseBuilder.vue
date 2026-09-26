@@ -8,13 +8,21 @@
       <p class="text-[11px] text-base-texto-secundario mb-1">
         Código base con el que arrancará el editor del estudiante (opcional).
       </p>
-      <textarea
-        id="coding-starter"
-        v-model="starterCode"
-        rows="5"
-        spellcheck="false"
-        placeholder="// Código base con el que arrancará el editor del estudiante.&#10;// El sandbox lee la entrada por process.stdin:&#10;process.stdin.resume();&#10;process.stdin.setEncoding('utf8');&#10;let datos = '';&#10;process.stdin.on('data', c => datos += c);&#10;process.stdin.on('end', () => {&#10;  // Tu lógica aquí&#10;  console.log(parseInt(datos.trim()) * 2);&#10;});"
-        class="w-full px-3 py-2 rounded-md bg-[#1e1e1e] text-[#d4d4d4] font-mono text-xs outline-none resize-y border border-[#333] focus:border-acento-ambar-fuerte"></textarea>
+      <div class="rounded-md overflow-hidden border border-[#333] focus-within:border-acento-ambar-fuerte" style="min-height:10rem">
+        <CodeEditor
+          id="coding-starter"
+          v-model="starterCode"
+          language="javascript"
+          aria-label="Código plantilla inicial"
+          placeholder="// Código base con el que arrancará el editor del estudiante."
+          min-height="10rem"
+          class="w-full"
+        />
+      </div>
+      <!-- Nota fija: el juez solo ejecuta JavaScript -->
+      <p class="mt-1.5 text-[11px] text-base-texto-secundario">
+        ℹ El juez ejecuta solo <strong>JavaScript</strong>; otros lenguajes se ofrecerán cuando el juez los soporte.
+      </p>
     </div>
 
     <!-- Casos de prueba -->
