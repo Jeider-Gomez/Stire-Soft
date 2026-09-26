@@ -11,6 +11,10 @@ Decisiones y motivos: `docs/ADR_DECISIONES_ARQUITECTURA.md` (ADR 09 y ADR 12). E
 > de migración y del primer admin funcionan desde la imagen, y la recuperación de contraseña completa (correo real por SMTP →
 > enlace → cambio → sesión anterior cerrada). **No** se ha probado en Oracle ni en Vercel: esos pasos los haces tú con tus cuentas.
 
+> **Desplegado el 26/09/2026 — dónde está hoy:** página en **https://stire-soft.vercel.app** (Vercel) y backend en
+> **https://stire-unicor.duckdns.org**, en una VM de **Azure for Students** (Oracle no tuvo capacidad). Cómo se hizo, qué
+> cambia respecto a Oracle y cómo operarlo: **§8**. Las secciones 1 a 7 siguen valiendo para Oracle o cualquier VM.
+
 > **Decisión cerrada (ADR 13):** frontend en Vercel, backend + MariaDB en la VM de Oracle, Gmail para el correo y DuckDNS para el dominio. Costo $0. La base **no** se migra.
 > **Sin probar:** la imagen se verificó en x86; la VM de Oracle es **arm64**, así que el primer `docker compose … up --build` la construye en arm64 (tarda ~10 min). Si algo falla ahí, avísame con el error.
 
@@ -134,6 +138,60 @@ ella y solo sirve la que tengas fuera (deja una recurrente en tu calendario).
    el `docker compose` y las migraciones (sección 2) y restaura la copia que descargaste:
    `gunzip -c stire-AAAA-MM-DD.sql.gz | docker compose -f docker-compose.prod.yml --env-file .env.prod exec -T db mariadb -uroot -p"$DB_ROOT_PASSWORD" basestire`.
 3. Los datos posteriores a la última copia se pierden: por eso la copia semanal (sección 5).
+
+## 8. El despliegue real: Azure for Students + Vercel (26/09/2026)
+
+Oracle no tuvo capacidad Ampere en Bogotá (la única región de la cuenta), así que se usó el plan B del ADR 13. Estos son los
+valores reales y las trampas que aparecieron; si hay que repetirlo (otra cuenta, otro semestre), sigue esto.
+
+**Máquina (portal.azure.com → Virtual machines → Create):**
+- **Región: solo las que tu cuenta permite.** Azure for Students deja crear recursos en ~5 regiones, distintas para cada
+  estudiante; fuera de ellas todo falla con «tamaño no disponible» o `RequestDisallowedByAzure`, y soporte no las amplía. Para
+  saber cuáles son y qué tamaños admite cada una: Cloud Shell (Bash, «No storage account required», no crea nada que cobre) →
+  `az policy assignment list` (asignación «Allowed resource deployment regions») y `az vm list-skus -l <región>` (los que no
+  tienen `restrictions`). En esta cuenta: belgiumcentral, brazilsouth, canadacentral, chilecentral y **northcentralus**.
+- **Tamaño: `Standard_B2als_v2`** (x64, 2 vCPU, 4 GB; ~27,45 USD/mes encendida 24/7, precio oficial de la API
+  `prices.azure.com`). B1s/B1ms no estaban disponibles; los de 1 GB (B2ats/B2pts v2) no alcanzan para compilar y ejecutar código.
+  Se prefirió x64 frente a la B2pls_v2 (ARM, ~3 USD menos) porque es la arquitectura ya probada y Azure no permite cambiar de
+  ARM a x64 sin crear otra máquina.
+- Imagen **Ubuntu Server 24.04 LTS x64**; usuario `stire`; **llave SSH existente** (la pública; la privada se queda en el PC);
+  puertos 22, 80 y 443; **sin Spot**.
+- **Disco: Premium SSD de 64 GiB (P6)**, el que entra gratis los 12 primeros meses. Otro tipo o tamaño se cobra.
+- **IP pública: ~3,65 USD/mes** (la Basic gratuita se retiró); se cobra aunque la máquina esté apagada, igual que el disco.
+- **Apagado automático 23:00 (Bogotá)** y **presupuesto de 100 USD** con alertas al 50 %, 80 % y 100 % pronosticado. Sin
+  tarjeta no hay cobros: si el crédito se acaba, la máquina se apaga (antes, descarga la copia de la base).
+
+**Servidor (por SSH: `ssh -i ~/.ssh/<llave> stire@<IP>`):**
+1. Docker con `curl -fsSL https://get.docker.com | sudo sh`, `sudo usermod -aG docker stire` y 2 GB de swap
+   (`fallocate -l 2G /swapfile`, `mkswap`, `swapon` y línea en `/etc/fstab`).
+2. `git clone` en `~/stire` y `.env.prod` con los secretos **generados en el servidor** (`openssl rand -hex 32`), permisos
+   600 y `SANDBOX_MAX_CONCURRENT=2`. **Guarda una copia en un gestor de contraseñas** (no en OneDrive ni en un chat): sin
+   `TUTOR_KEY_ENCRYPTION_SECRET` las claves de Gemini de los estudiantes quedan ilegibles.
+3. `docker compose -f docker-compose.prod.yml --env-file .env.prod build backend` (unos 5 minutos con 2 vCPU), luego
+   `up -d`, las migraciones (§2) y el primer admin con una clave temporal que se cambia al entrar.
+4. **Zona horaria:** `sudo timedatectl set-timezone America/Bogota`. La copia diaria va a las **22:30**
+   (`30 22 * * * /home/stire/stire/deploy/backup-db.sh`), **antes** del apagado de las 23:00: a las 3 a. m. de la §5 la
+   máquina está apagada.
+5. Docker arranca solo con la máquina (`restart: unless-stopped`): al pulsar «Iniciar» en Azure, STIRE vuelve en 1–2 minutos.
+
+**Dominio:** DuckDNS (`stire-unicor`) apuntando a la IP; Caddy sacó el certificado de Let's Encrypt en segundos.
+
+**Frontend en Vercel (Add New → Project → importar el repositorio):** Vercel detecta Nuxt y además **copia como variables
+de entorno todos los nombres del `.env.example` del backend** (`DB_PASSWORD`, `JWT_SECRET`…): **bórralos todos**, el
+frontend se publica para que cualquiera lo descargue. Deja solo `NUXT_PUBLIC_API_BASE=https://<dominio-del-backend>`.
+Application Preset **Other**, Root Directory `frontend-nuxt`, Build `npm run generate`, Output `.output/public`. Después pon
+la URL de Vercel en `FRONTEND_URL` y `CORS_ORIGIN` de `.env.prod` y `docker compose … up -d backend`.
+
+**Correo:** la contraseña de aplicación de Gmail ya no aparece en el menú de «Verificación en 2 pasos»; se entra directo en
+https://myaccount.google.com/apppasswords (con la verificación en 2 pasos activada y una cuenta `@gmail.com`). En el servidor,
+`deploy/configurar-correo.sh` la pide sin mostrarla y reinicia el backend. Los primeros correos de una cuenta nueva llegan a Spam:
+márcalos «No es spam».
+
+**Operación diaria:** para las pruebas, Azure → `stire-servidor` → **Iniciar**; al terminar, **Detener** (o el apagado de
+las 23:00). **Actualizar:** `cd ~/stire && git pull && docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build`
+y las migraciones si hay nuevas. **Si un secreto se filtra** (se pegó en un chat, un documento…): se cambia en el servidor
+(`ALTER USER` para las dos de MariaDB, `JWT_SECRET` cierra todas las sesiones y `TUTOR_KEY_ENCRYPTION_SECRET` solo mientras
+no haya claves de Gemini guardadas) y la de Gmail se revoca en su página y se crea otra.
 
 ## Riesgos que conviene conocer
 

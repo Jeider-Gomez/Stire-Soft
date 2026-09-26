@@ -272,6 +272,13 @@ Se investigó en tres frentes con fuentes de 2026 (calificación multi-lenguaje,
 - **Oracle** recortó la capa gratuita a la mitad en junio de 2026 sin aviso y puede reclamar instancias con menos del 20 % de uso durante 7 días. **Enmienda del 25/09/2026:** el dueño decidió **no** pasar la
   cuenta a pago por uso (la mitigación que se había reportado): el proyecto no puede generar cobros, y un presupuesto de Oracle solo avisa, no frena el gasto. El riesgo de reclamación **se acepta**;
   se mitiga con copia de seguridad semanal fuera de la máquina y el procedimiento de recuperación de `docs/DESPLIEGUE.md` §7. Plan B documentado (cuesta dinero: solo por decisión del dueño).
+- **Enmienda del 26/09/2026 — despliegue real en el plan B, sin cobros:** Oracle no tuvo capacidad Ampere en Bogotá (la
+  única región de la cuenta) tras decenas de intentos, así que el backend se desplegó en **Azure for Students** (crédito de
+  100 dólares sin tarjeta: no puede generar cobros; se activó con el correo institucional): VM `Standard_B2als_v2`
+  (x64, 2 vCPU/4 GB) en North Central US, disco Premium SSD P6 de 64 GB (gratis 12 meses), IP pública ~3,65 dólares/mes,
+  apagado automático a las 23:00 y presupuesto con alertas. El frontend quedó en **Vercel Hobby** por decisión del dueño.
+  El reintento automático de Oracle sigue por cuenta del dueño; si consigue la máquina gratuita, se puede mudar con la
+  misma guía. Detalle y lecciones: `docs/DESPLIEGUE.md` §8.
 - **arm64:** la imagen del backend se verificó con Docker en x86; en la VM se construye en arm64 (`node:24-slim`, MariaDB y Caddy son multi-arquitectura) pero **no se ha probado**.
 - **Una sola máquina** comparte kernel con el sandbox y la base: por eso `mem_limit`, `pids_limit`, base sin puerto público y copias diarias.
 - Los datos de capas gratuitas cambian con frecuencia: se verifican al crear cada cuenta.

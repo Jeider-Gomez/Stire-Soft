@@ -12,6 +12,25 @@ entry to the oldest.
 
 ---
 
+## Despliegue real y rechazo limpio de CORS · 26 de Septiembre de 2026
+
+- **STIRE quedó desplegado:** página en https://stire-soft.vercel.app (Vercel Hobby) y backend en
+  https://stire-unicor.duckdns.org, en una VM de Azure for Students (North Central US, `Standard_B2als_v2`, Ubuntu 24.04).
+  Oracle no tuvo capacidad; el crédito de estudiante no tiene tarjeta, así que no hay cobros. Verificado desde internet:
+  certificado de Let's Encrypt emitido, `/health` responde, `/docs` da 404, las 10 migraciones corrieron, el login real del
+  administrador desde la página llega a `/admin` sin errores de consola, el correo de recuperación llega (a Spam por ser una
+  cuenta nueva) y el cambio de contraseña por enlace funciona. Copia diaria a las 22:30, antes del apagado automático de las
+  23:00. Los secretos se generaron en el servidor y, tras quedar expuestos en un chat, se cambiaron todos (las dos claves de
+  MariaDB con `ALTER USER`, JWT y cifrado del Tutor, sin claves de Gemini guardadas todavía, y la de Gmail revocada y creada
+  de nuevo). Guía y lecciones en `docs/DESPLIEGUE.md` §8; enmienda en el ADR 13; `deploy/configurar-correo.sh` nuevo.
+- **Corregido: un origen ajeno recibía 500.** El rechazo se hacía pasando un `Error` a la librería `cors`, y terminaba como
+  «error interno». Ahora `src/common/cors-options.ts` responde **403** antes de llegar a los controladores (un POST directo
+  tampoco se ejecuta); el frontend permitido y las peticiones sin cabecera `Origin` no cambian. La prueba nueva usa HTTP real
+  (`cors-options.spec.ts`, 6 casos); el primer intento, que solo le ponía `status: 403` al error, seguía dando 500 y la prueba
+  lo detectó. Build limpio; **75/75 suites, 725/725 tests**.
+
+---
+
 ## Fase 26, Parte B — auditoría y correcciones del editor de código · 26 de Septiembre de 2026
 
 Antigravity entregó la Parte B en `feat/fase-26` (`7e222b9`…`ec48c67`): `CodeEditor.vue` (CodeMirror 6 bajo demanda) en

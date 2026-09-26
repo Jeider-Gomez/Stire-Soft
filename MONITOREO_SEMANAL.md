@@ -57,9 +57,9 @@ aplicación en una URL pública, se desbloquean las pruebas en vivo que venían 
 ### Jeider Gómez — Líder Técnico
 
 - [ ] **S07-J01 · Desplegar STIRE en Azure** *(viene de `S06-J03`)*
-  - Backend y MariaDB: máquina de Azure for Students (B2als v2, 2 vCPU / 4 GB, East US, Ubuntu 24.04), con el mismo
+  - Backend y MariaDB: máquina de Azure for Students (B2als v2, 2 vCPU / 4 GB, North Central US, Ubuntu 24.04), con el mismo
     `docker-compose.prod.yml`.
-  - Frontend: Cloudflare Pages. Dominio: DuckDNS, con HTTPS de Caddy.
+  - Frontend: Vercel (decisión del 26/09). Dominio: DuckDNS, con HTTPS de Caddy.
   - Costo para el equipo: $0. El crédito de estudiante no tiene tarjeta, y la máquina se apaga cuando no se usa para
     estirar el crédito.
   - El reintento automático de Oracle (máquina gratuita sin límite de tiempo) sigue corriendo. Si la consigue, se
@@ -167,6 +167,10 @@ real. No hace falta cubrir los 7.
 ### Jeider Gómez
 
 - [ ] STIRE desplegado: `/health` por la URL pública, frontend abierto, login real y un ejercicio de código resuelto.
+  *(Avance del 26/09, antes de empezar la semana: desplegado en https://stire-soft.vercel.app con backend en
+  https://stire-unicor.duckdns.org (Azure for Students). `/health` responde con HTTPS válido, el login real del administrador
+  llega a su panel y el correo de recuperación funciona. **Falta el último criterio:** que un estudiante resuelva un ejercicio de
+  código en el entorno desplegado. Detalle en `docs/DESPLIEGUE.md` §8 y `CHANGELOG.md`.)*
 
 ### Pedro Romero
 
