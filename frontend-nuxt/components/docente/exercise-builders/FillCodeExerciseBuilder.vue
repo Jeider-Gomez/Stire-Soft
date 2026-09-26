@@ -15,14 +15,29 @@
       <p class="text-[11px] text-base-texto-secundario mb-1.5">
         Define cada espacio en blanco usando el formato <code class="text-acento-ambar-fuerte font-bold">___identificador___</code> (tres guiones bajos al inicio y al final).
       </p>
-      <textarea
-        id="fillcode-template"
-        ref="templateTextareaRef"
-        v-model="codeTemplate"
-        rows="6"
-        spellcheck="false"
-        placeholder="const ___b1___ = 42;&#10;if (___b1___ > 10) {&#10;  console.log(___b2___);&#10;}"
-        class="w-full px-3 py-2 rounded-md bg-[#1e1e1e] text-[#d4d4d4] font-mono text-xs outline-none resize-y border border-[#333] focus:border-acento-ambar-fuerte"></textarea>
+      <!-- Selector de lenguaje para resaltado -->
+      <div class="flex items-center gap-2 mb-2">
+        <label for="fillcode-language" class="text-[11px] font-semibold text-base-texto-secundario shrink-0">Lenguaje de resaltado:</label>
+        <select
+          id="fillcode-language"
+          v-model="language"
+          class="px-2 py-1 text-[11px] rounded bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none"
+        >
+          <option v-for="lang in HIGHLIGHT_LANGUAGES" :key="lang" :value="lang">{{ LANGUAGE_LABELS[lang] }}</option>
+        </select>
+        <span class="text-[10px] text-base-texto-secundario">Solo para resaltado visual, no se ejecuta.</span>
+      </div>
+      <div class="rounded-md overflow-hidden border border-[#333] focus-within:border-acento-ambar-fuerte" style="min-height:8rem">
+        <CodeEditor
+          id="fillcode-template"
+          v-model="codeTemplate"
+          :language="language"
+          aria-label="Plantilla de código con huecos"
+          placeholder="const ___b1___ = 42;"
+          min-height="8rem"
+          class="w-full"
+        />
+      </div>
     </div>
 
     <!-- Lista de respuestas esperadas para cada hueco -->
@@ -83,12 +98,14 @@
 </template>
 
 <script setup lang="ts">
+import { HIGHLIGHT_LANGUAGES, LANGUAGE_LABELS, type HighlightLanguage } from '~/utils/codeLanguages'
+
 interface BlankItem {
   id: string
   answer: string
 }
 
-const templateTextareaRef = ref<HTMLTextAreaElement | null>(null)
+const language = ref<HighlightLanguage>('text')
 const codeTemplate = ref('function suma(a, b) {\n  return ___b1___ + ___b2___;\n}')
 const blanks = ref<BlankItem[]>([
   { id: 'b1', answer: 'a' },
@@ -121,6 +138,7 @@ function insertBlankAtCursor() {
 
 function reset() {
   codeTemplate.value = 'function suma(a, b) {\n  return ___b1___ + ___b2___;\n}'
+  language.value = 'text'
   blanks.value = [
     { id: 'b1', answer: 'a' },
     { id: 'b2', answer: 'b' }
@@ -177,17 +195,19 @@ function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: s
     }
   }
 
-  return {
-    valid: true,
-    config: {
-      codeTemplate: codeTemplate.value,
-      blanks: blanks.value.map(b => ({
-        id: b.id.trim(),
-        answer: b.answer.trim(),
-        regexMode: false
-      }))
-    }
+  const config: Record<string, unknown> = {
+    codeTemplate: codeTemplate.value,
+    blanks: blanks.value.map(b => ({
+      id: b.id.trim(),
+      answer: b.answer.trim(),
+      regexMode: false
+    }))
   }
+  // Solo incluir language si no es 'text' (el backend lo trata como sin resaltado)
+  if (language.value && language.value !== 'text') {
+    config.language = language.value
+  }
+  return { valid: true, config }
 }
 
 defineExpose({

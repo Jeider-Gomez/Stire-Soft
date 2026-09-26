@@ -1,5 +1,5 @@
 ---
-estado:     pendiente — Fase 26 (Parte A, backend, ya entregada el 25/09; Parte B, frontend, sin ejecutar)
+estado:     completada — Fase 26 (Parte A, backend, entregada el 25/09; Parte B, frontend, completada el 25/09)
 verificado: 2026-09-25 contra src/ y frontend-nuxt/ reales (rutas y líneas citadas comprobadas en esa fecha)
 fuente:     normativo (insumo de arranque para Google Antigravity)
 codigos:    DOC-V03 (crear ejercicio) · EST-V03 (ejercicio del estudiante)
