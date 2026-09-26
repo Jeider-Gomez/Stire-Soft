@@ -158,7 +158,7 @@ tarjeta. Se repite cada semana mientras dure el Reto 3:
 - [x] **S06-H-JEIDER** · [`S06-H-JEIDER`](https://trello.com/c/cal309Mo) — hábitos 1, 5, 6 y 7, con su historia en la tarjeta.
 - [x] **S06-H-PEDRO** · [`S06-H-PEDRO`](https://trello.com/c/uA68ykbF) — hábitos 1, 2, 3 y 5.
 - [x] **S06-H-JOSE** · [`S06-H-JOSE`](https://trello.com/c/p30mm5MI) — hábitos 1, 2, 3 y 5.
-- [ ] **S06-H-JULIO** · [`S06-H-JULIO`](https://trello.com/c/3oWs5vXe) — sin registro al cierre.
+- [x] **S06-H-JULIO** · [`S06-H-JULIO`](https://trello.com/c/3oWs5vXe) — hábitos 1, 2, 3 y 5 marcados en la lista, sin el comentario con la historia.
 - [x] **S06-H-JORGE** · [`S06-H-JORGE`](https://trello.com/c/QprA4Kd2) — hábitos 2, 3, 4 y 6 (publicado desde la cuenta de Trello «Iván García»).
 
 ---
@@ -313,13 +313,13 @@ Semana 6. Las dos capturas son de ese día, **18/09**, no del 25/09.
 
 ### Todo el equipo
 
-- [ ] Registro de los 7 Hábitos por cada integrante (`S06-H-*`, §3.1). *(4 de 5 al cierre, cada uno con
-  su historia en su tarjeta: Jeider (1, 5, 6 y 7), Pedro (1, 2, 3 y 5), José (1, 2, 3 y 5) y Jorge (2, 3, 4 y 6).
-  Falta Julio.)*
+- [x] Registro de los 7 Hábitos por cada integrante (`S06-H-*`, §3.1). *(5 de 5 al cierre. Con su historia en la
+  tarjeta: Jeider (1, 5, 6 y 7), Pedro (1, 2, 3 y 5), José (1, 2, 3 y 5) y Jorge (2, 3, 4 y 6). Julio marcó
+  1, 2, 3 y 5 en la lista, pero sin explicar la situación de cada uno.)*
 
-**Resumen de cierre:** 10 de 13 ítems cerrados. La forma de desplegar ya está decidida, pero el despliegue se aplazó a
+**Resumen de cierre:** 11 de 13 ítems cerrados. La forma de desplegar ya está decidida, pero el despliegue se aplazó a
 la Semana 7. La estructura de cursos de Julio también pasa a la Semana 7 por decisión del equipo. Los 7 Hábitos quedaron
-registrados por 4 de 5 integrantes; falta Julio.
+registrados por los 5 integrantes (Julio sin la explicación de cada hábito).
 
 **Para la Semana 7:** ejecutar el despliegue (`S06-J03`); estructura de cursos de Julio y, ya con la app desplegada,
 sus pruebas en vivo; prueba del Tutor IA como usuario (José); subir el archivo del pitch del Reto 3 a `docs/pitch/`;

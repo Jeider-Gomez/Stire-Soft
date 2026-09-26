@@ -10,9 +10,9 @@
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
 > **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_06.md`](./docs/seguimiento/MONITOREO_SEMANAL_06.md), cerrada el 25/09 y
-> archivada el 26/09 con 10 de 13 ítems cumplidos. Pasan a esta semana: el despliegue (ya decidido, sin ejecutar),
-> la estructura de cursos de Julio y la prueba del Tutor IA de José. Los 7 Hábitos quedaron registrados por 4 de 5
-> integrantes (faltó Julio).
+> archivada el 26/09 con 11 de 13 ítems cumplidos. Pasan a esta semana: el despliegue (ya decidido, sin ejecutar),
+> la estructura de cursos de Julio y la prueba del Tutor IA de José. Los 7 Hábitos los registraron los 5 integrantes
+> (Julio marcó sus hábitos sin explicar la situación de cada uno).
 
 ---
 
@@ -108,7 +108,7 @@ real. No hace falta cubrir los 7.
 - [ ] **S07-H-JEIDER** · [`S07-H-JEIDER`](https://trello.com/c/OHRa7ycm)
 - [ ] **S07-H-PEDRO** · [`S07-H-PEDRO`](https://trello.com/c/sYxeSTAQ)
 - [ ] **S07-H-JOSE** · [`S07-H-JOSE`](https://trello.com/c/BTjgtpG9)
-- [ ] **S07-H-JULIO** · [`S07-H-JULIO`](https://trello.com/c/e3IWN3gj) — la Semana 6 le quedó sin registro.
+- [ ] **S07-H-JULIO** · [`S07-H-JULIO`](https://trello.com/c/e3IWN3gj) — en la Semana 6 marcó sus hábitos pero no contó la historia; esta vez, con su comentario.
 - [ ] **S07-H-JORGE** · [`S07-H-JORGE`](https://trello.com/c/JqsVAkIy)
 
 ---
