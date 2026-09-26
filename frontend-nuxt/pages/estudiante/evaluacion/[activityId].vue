@@ -280,7 +280,9 @@
             {{ workspaceStore.submissionResult?.totalScore ?? 0 }} / {{ resultMaxScore }} pts
           </p>
           <p v-if="isCodingActivity" class="text-xs text-base-texto-secundario mt-1">
-            Superaste {{ workspaceStore.submissionResult?.passedCount ?? 0 }} de {{ workspaceStore.submissionResult?.totalCount ?? 0 }} casos de prueba.
+            <!-- passedCount/totalCount cuentan preguntas (respuestas correctas), no casos de prueba: una pregunta de código con
+                 2 casos (1 oculto) mostraba «1 de 1 casos». -->
+            Resolviste bien {{ workspaceStore.submissionResult?.passedCount ?? 0 }} de {{ workspaceStore.submissionResult?.totalCount ?? 0 }} {{ (workspaceStore.submissionResult?.totalCount ?? 0) === 1 ? 'ejercicio' : 'ejercicios' }} (cada uno se califica con todos sus casos de prueba, también los ocultos).
           </p>
           <p v-else-if="isHtmlCssActivity" class="text-xs text-base-texto-secundario mt-1">
             Solución HTML y CSS evaluada contra las reglas del docente.
