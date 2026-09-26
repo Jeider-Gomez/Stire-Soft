@@ -12,7 +12,7 @@ lista de lo que se vio en esta pasada para trabajar en esa versión 2.
 | **Identidad visual** | La paleta nueva de José (semana 6) |
 | **Cómo se tomaron** | Sitio real en producción, con un script en Chrome sin ventana, no a mano. Escritorio 1440 × 900; celular 390 × 844 |
 | **Cuentas usadas** | Las cuentas de prueba del despliegue (`*.simulacion.*@example.com`), con la clase de ejemplo «Algoritmia — prueba de docente (Claude)» y sus 7 tipos de ejercicio |
-| **Qué no está** | El panel de administrador: no se entró con la cuenta del admin (es la personal de Jeider). Él puede añadir esas capturas |
+| **Administrador** | Jeider inició sesión él mismo en una ventana de Chrome y el script tomó las capturas; la contraseña no pasó por el script. Falta «Estado del Sistema» (`/admin/dashboard`): el script no pasó por esa ruta |
 
 ## Las capturas
 
@@ -64,6 +64,14 @@ lista de lo que se vio en esta pasada para trabajar en esa versión 2.
 | [`27_movil-ejercicio-codigo.png`](./27_movil-ejercicio-codigo.png) | Ejercicio de código |
 | [`28_movil-docente-inicio.png`](./28_movil-docente-inicio.png) | Inicio del docente |
 
+### Administrador
+
+| Captura | Muestra |
+|---|---|
+| [`29_admin-usuarios-y-roles.png`](./29_admin-usuarios-y-roles.png) | Usuarios y roles (es también la página de entrada del admin): cambiar rol, «Clave» para dar una contraseña nueva, desactivar, y la pestaña de solicitudes de docente |
+| [`30_admin-logs-y-mantenimiento.png`](./30_admin-logs-y-mantenimiento.png) | Parámetros del sandbox, modelo del Tutor y registro de eventos del servidor |
+| [`31_admin-perfil.png`](./31_admin-perfil.png) | Perfil y cambio de contraseña |
+
 ## Para la versión 2 (UX y UI): qué se vio
 
 Lo que se notó mirando las capturas. Las marcadas **(confirmado en el código)** se revisaron en el
@@ -100,6 +108,15 @@ repositorio; las demás son observaciones de pantalla y hay que comprobarlas ant
   el usuario.
 - Varias etiquetas técnicas en los encabezados («MOTOR SM-2», «METACOGNICIÓN ACCIONABLE», «Sandbox
   endurecido»): suenan a documento técnico, no a una plataforma para estudiantes.
+
+**Administrador** (29–31)
+- Los mismos códigos internos en el menú: «Estado del Sistema (ADM-V01)», «Usuarios y Roles
+  (ADM-V02)», «Logs y Mantenimiento (ADM-V03)».
+- La tabla de usuarios titula la columna «Correo Institucional», pero acepta cualquier correo.
+- Cada fila apila tres botones y un desplegable (rol, «Rol», «Clave», «Desactivar»): se ve cargado.
+  En la versión 2 se puede agrupar en un menú de acciones.
+- El registro de eventos muestra mensajes técnicos («SubmissionGradedListener», «estudiante 4»): útil
+  para el equipo, pero se podría traducir a frases con nombres.
 
 **Celular** (26–28)
 - El ejercicio de código en celular apila el enunciado arriba y el editor abajo; el código se sale
