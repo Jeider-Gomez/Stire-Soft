@@ -56,7 +56,7 @@ aplicación en una URL pública, se desbloquean las pruebas en vivo que venían 
 
 ### Jeider Gómez — Líder Técnico
 
-- [ ] **S07-J01 · Desplegar STIRE en Azure** *(viene de `S06-J03`)*
+- [x] **S07-J01 · Desplegar STIRE en Azure** *(viene de `S06-J03`)*
   - Backend y MariaDB: máquina de Azure for Students (B2als v2, 2 vCPU / 4 GB, North Central US, Ubuntu 24.04), con el mismo
     `docker-compose.prod.yml`.
   - Frontend: Vercel (decisión del 26/09). Dominio: DuckDNS, con HTTPS de Caddy.
@@ -84,9 +84,11 @@ aplicación en una URL pública, se desbloquean las pruebas en vivo que venían 
 - [ ] **S07-JL01 · Organizar la estructura de los dos cursos de contenido** *(viene de `S06-JL01`)* — Curso 1
   (complejo, plan oficial HTML/CSS/JS) y Curso 2 (general, según la plataforma).
 
+**Desbloqueadas el 26/09 (el despliegue ya está), pasan a «Esta semana»:**
+- [ ] **S07-JL03 · Validación pedagógica en vivo** — sobre https://stire-soft.vercel.app.
+- [ ] **S07-JL04 · Probar las funciones de docente en la creación de contenido** — se registra, pide el rol de docente y Jeider lo aprueba.
+
 **En Backlog:**
-- [ ] **S07-JL03 · Validación pedagógica en vivo** — se desbloquea en cuanto `S07-J01` tenga la URL pública.
-- [ ] **S07-JL04 · Probar las funciones de docente en la creación de contenido** — igual, depende del despliegue.
 - [ ] **S07-JL05 · Escribir el contenido completo de los dos cursos** — depende de `S07-JL01`.
 
 ### Jorge Cervantes — Gestión + Calidad
@@ -166,11 +168,13 @@ real. No hace falta cubrir los 7.
 
 ### Jeider Gómez
 
-- [ ] STIRE desplegado: `/health` por la URL pública, frontend abierto, login real y un ejercicio de código resuelto.
-  *(Avance del 26/09, antes de empezar la semana: desplegado en https://stire-soft.vercel.app con backend en
-  https://stire-unicor.duckdns.org (Azure for Students). `/health` responde con HTTPS válido, el login real del administrador
-  llega a su panel y el correo de recuperación funciona. **Falta el último criterio:** que un estudiante resuelva un ejercicio de
-  código en el entorno desplegado. Detalle en `docs/DESPLIEGUE.md` §8 y `CHANGELOG.md`.)*
+- [x] STIRE desplegado: `/health` por la URL pública, frontend abierto, login real y un ejercicio de código resuelto.
+  *(26/09, antes de empezar la semana. Página https://stire-soft.vercel.app y backend https://stire-unicor.duckdns.org
+  (Azure for Students). Simulación de punta a punta en producción: un estudiante de prueba, en un navegador real, se
+  registró, se unió a la clase con su código, resolvió un ejercicio de código en el editor nuevo y obtuvo 20/20. Los 2 casos,
+  uno de ellos oculto, se ejecutaron en el sandbox del servidor. En el camino se corrigieron dos fallos: la tabla de tipos
+  de actividad estaba vacía en producción y ningún docente podía crear ejercicios (`b139b27`), y un texto del resultado
+  (`4f08edf`). Detalle en `CHANGELOG.md` y `docs/DESPLIEGUE.md` §8.)*
 
 ### Pedro Romero
 

@@ -12,6 +12,404 @@ entry to the oldest.
 
 ---
 
+## Simulación de punta a punta en producción y catálogo de tipos de actividad · 26 de Septiembre de 2026
+
+A pedido del dueño, Claude Code simuló en el sitio real el recorrido completo de un docente y un estudiante.
+
+- **Recorrido:**
+  1. Un docente de prueba se registró por la API y pidió el rol. La aprobación se hizo en la base, anotada en la solicitud:
+     es el único paso que requiere la clave del admin.
+  2. El docente creó y publicó una clase con un ejercicio de código de 2 casos (1 oculto).
+  3. Un estudiante de prueba, **en un navegador real sobre https://stire-soft.vercel.app**, se registró, se unió con el
+     código, escribió la solución en el editor de la Fase 26, «Probar código» respondió «Superado» y al entregar obtuvo
+     **20/20**, con su dominio en aumento.
+  4. En la base, los 2 casos se ejecutaron en el sandbox del servidor y pasaron. Todas las llamadas respondieron 2xx, sin
+     errores de consola.
+
+  Datos de prueba que quedan en producción: el docente y el estudiante `*.simulacion.*@example.com` y la clase `SIM-6V738W`.
+- **Corregido (grave): los tipos de actividad solo los creaba el seed de demostración.** En producción la tabla quedó vacía y
+  **ningún docente podía crear un ejercicio**. Ahora hay una migración (`1789800000000-SeedActivityTypeCatalog`,
+  `INSERT IGNORE`, idempotente) y el seed usa el mismo catálogo (`src/activity-types/activity-type-catalog.ts`).
+  Verificado contra una base desechable:
+  - corren las 11 migraciones;
+  - la segunda corrida no tiene nada pendiente;
+  - el seed de demo funciona encima;
+  - al revertir solo se borran los tipos sin actividades.
+
+  Ya aplicada en producción. La prueba (`activity-type-catalog.spec.ts`) vive fuera de `src/migrations/`, porque TypeORM
+  carga como migración todo archivo de esa carpeta.
+- **Corregido: el resultado de la entrega decía «Superaste 1 de 1 casos de prueba»** con un ejercicio de 2 casos: el
+  contador es de ejercicios resueltos, no de casos. Ahora dice «Resolviste bien 1 de 1 ejercicio (cada uno se califica
+  con todos sus casos de prueba, también los ocultos)».
+- **Recuperación de contraseña (decisión del dueño):** todos siguen recuperando la suya por correo. Si alguien perdió
+  también el acceso a su correo, el admin le asigna una contraseña temporal con el botón «Clave» de «Usuarios y Roles»
+  (ya existía: `PATCH /users/:id`, cierra sus sesiones y conserva su progreso). No hubo que programar nada.
+- Build limpio; **76/76 suites, 727/727 tests**; `nuxi typecheck` 0.
+- **`npm run verify:clean`** (obligatorio por la migración nueva; con `VERIFY_START_TIMEOUT_MS=180000`, por OneDrive).
+  Salida literal:
+
+```
+
+> stire@0.0.1 verify:clean
+> node scripts/verify-clean.js && node scripts/verify-clean-server-check.js
+
+
+[verify:clean 1] rm -rf node_modules dist
+
+[verify:clean 2] npm ci (instalacion exacta desde package-lock.json)
+
+added 957 packages, and audited 958 packages in 1m
+
+186 packages are looking for funding
+  run `npm fund` for details
+
+16 vulnerabilities (2 low, 3 moderate, 10 high, 1 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated @npmcli/move-file@1.1.2: This functionality has been moved to @npmcli/fs
+npm warn deprecated npmlog@6.0.2: This package is no longer supported.
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated are-we-there-yet@3.0.1: This package is no longer supported.
+npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+npm warn deprecated gauge@4.0.4: This package is no longer supported.
+npm warn deprecated tar@6.2.1: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+[verify:clean 3] crear base de datos vacia de verificacion: stire_verify_clean
+(node:16472) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[verify:clean 4] migration:run contra la base de datos vacia
+
+> stire@0.0.1 migration:run
+> npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts
+
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+query: SELECT version()
+query: SELECT * FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = 'stire_verify_clean' AND `TABLE_NAME` = 'migrations'
+query: CREATE TABLE `migrations` (`id` int NOT NULL AUTO_INCREMENT, `timestamp` bigint NOT NULL, `name` varchar(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: SELECT * FROM `stire_verify_clean`.`migrations` `migrations` ORDER BY `id` DESC
+0 migrations are already loaded in the database.
+11 migrations were found in the source code.
+11 migrations are new migrations must be executed.
+query: START TRANSACTION
+query: CREATE TABLE `activity_types` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `name` varchar(100) NOT NULL, `code` varchar(50) NOT NULL, `autoGradable` tinyint NOT NULL DEFAULT 1, `baseWeight` float NOT NULL DEFAULT '1', `configSchema` json NULL, UNIQUE INDEX `IDX_ce7823da2e27674fbd0392e867` (`code`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `activities` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `learningUnitId` int NOT NULL, `activityTypeId` int NOT NULL, `createdBy` int NOT NULL, `title` varchar(200) NOT NULL, `description` text NULL, `difficulty` enum ('basico', 'intermedio', 'avanzado') NOT NULL DEFAULT 'basico', `totalPoints` int NOT NULL DEFAULT '100', `passingScore` int NOT NULL DEFAULT '60', `attemptsAllowed` int NOT NULL DEFAULT '3', `timeLimit` int NULL, `order` int NOT NULL DEFAULT '0', `status` enum ('draft', 'review', 'published', 'archived') NOT NULL DEFAULT 'draft', `isRequired` tinyint NOT NULL DEFAULT 0, `adaptiveWeight` float NOT NULL DEFAULT '1', `publishedAt` timestamp NULL, INDEX `IDX_bd3144edc073063648e4efbb1f` (`learningUnitId`, `status`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `contents` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `learningUnitId` int NOT NULL, `title` varchar(255) NOT NULL, `type` enum ('video', 'markdown', 'code', 'pdf', 'image') NOT NULL, `body` longtext NULL, `metadata` json NULL, `order` int NOT NULL DEFAULT '0', `isVisible` tinyint NOT NULL DEFAULT 1, INDEX `IDX_58754b2430201454bffc79cec6` (`learningUnitId`, `order`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `learning_units` (`id` int NOT NULL AUTO_INCREMENT, `title` varchar(255) NOT NULL, `description` text NULL, `difficulty` enum ('basico', 'intermedio', 'avanzado') NOT NULL DEFAULT 'basico', `order` int NOT NULL DEFAULT '0', `isActive` tinyint NOT NULL DEFAULT 1, `topicId` int NULL, `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `topics` (`id` int NOT NULL AUTO_INCREMENT, `title` varchar(255) NOT NULL, `description` text NULL, `order` int NOT NULL DEFAULT '0', `isActive` tinyint NOT NULL DEFAULT 1, `sectionId` int NOT NULL, `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `sections` (`id` int NOT NULL AUTO_INCREMENT, `title` varchar(255) NOT NULL, `description` text NULL, `order` int NOT NULL DEFAULT '0', `isPublished` tinyint NOT NULL DEFAULT 0, `classId` int NOT NULL, `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), INDEX `IDX_f0881122b5efd7b004f082c084` (`classId`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `classes` (`id` int NOT NULL AUTO_INCREMENT, `name` varchar(255) NOT NULL, `description` text NULL, `code` varchar(255) NOT NULL, `teacherId` int NOT NULL, `isActive` tinyint NOT NULL DEFAULT 1, `startDate` date NULL, `endDate` date NULL, `maxStudents` int NULL, `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), INDEX `IDX_4b7ac7a7eb91f3e04229c7c0b6` (`teacherId`), UNIQUE INDEX `IDX_cf7491878e0fca859943862998` (`code`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `enrollments` (`id` varchar(36) NOT NULL, `classId` int NOT NULL, `studentId` int NOT NULL, `status` enum ('active', 'inactive', 'withdrawn', 'completed') NOT NULL DEFAULT 'active', `joined_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `left_at` timestamp NULL, `last_activity_at` timestamp NULL, UNIQUE INDEX `IDX_43599c2329cb145ee8ba57079b` (`classId`, `studentId`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `institutions` (`id` int NOT NULL AUTO_INCREMENT, `name` varchar(255) NOT NULL, UNIQUE INDEX `IDX_15c98649276025998cd1acaf61` (`name`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `programs` (`id` int NOT NULL AUTO_INCREMENT, `name` varchar(255) NOT NULL, `maxSemesters` int NOT NULL, `institutionId` int NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `user_affiliations` (`id` int NOT NULL AUTO_INCREMENT, `userId` int NOT NULL, `programId` int NOT NULL, `roleType` varchar(255) NOT NULL, `currentSemester` int NULL, `isActive` tinyint NOT NULL DEFAULT 1, PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `users` (`id` int NOT NULL AUTO_INCREMENT, `email` varchar(255) NOT NULL, `password` varchar(255) NOT NULL, `fullName` varchar(255) NOT NULL, `role` enum ('admin', 'docente', 'estudiante') NOT NULL DEFAULT 'estudiante', `isActive` tinyint NOT NULL DEFAULT 1, `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), `deletedAt` timestamp(6) NULL, UNIQUE INDEX `IDX_97672ac88f789774dd47f7c8be` (`email`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `tutor_conversations` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `studentId` int NOT NULL, `role` varchar(50) NOT NULL, `content` text NOT NULL, `metadata` json NULL, INDEX `IDX_56c5533282e9ec141a9369081c` (`studentId`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `activity_questions` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `activityId` int NOT NULL, `type` enum ('mcq', 'coding', 'drag_drop', 'matching', 'fill_code', 'ordering', 'ai_evaluated') NOT NULL, `question` text NOT NULL, `points` int NOT NULL DEFAULT '10', `order` int NOT NULL DEFAULT '0', `config` json NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `submission_answers` (`id` int NOT NULL AUTO_INCREMENT, `submissionId` varchar(255) NOT NULL, `questionId` int NOT NULL, `answer` json NOT NULL, `isCorrect` tinyint NULL, `score` float NOT NULL DEFAULT '0', `feedback` text NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `submissions` (`id` varchar(36) NOT NULL, `activityId` int NOT NULL, `studentId` int NOT NULL, `score` float NOT NULL DEFAULT '0', `feedback` text NULL, `attemptNumber` int NOT NULL DEFAULT '1', `status` enum ('in_progress', 'submitted', 'graded', 'expired') NOT NULL DEFAULT 'in_progress', `startedAt` timestamp NULL, `submittedAt` timestamp NULL, `timeSpentSeconds` int NOT NULL DEFAULT '0', `lastSavedAt` timestamp NULL, `autosaveData` json NULL, `isAbandoned` tinyint NOT NULL DEFAULT 0, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, INDEX `IDX_a3a94d0cb86c82e1f221100a44` (`studentId`, `status`), INDEX `IDX_03e1c1ddb6b33421fe8935a73f` (`studentId`, `activityId`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `review_schedules` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `studentId` int NOT NULL, `learningUnitId` int NOT NULL, `nextReviewDate` timestamp NOT NULL, `urgencyLevel` int NOT NULL DEFAULT '0', `intervalDays` int NOT NULL DEFAULT '1', `repetitions` int NOT NULL DEFAULT '0', `lastReviewedAt` timestamp NULL, UNIQUE INDEX `IDX_7e969b53fac069d54b248bf537` (`studentId`, `learningUnitId`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `bank_questions` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `bankId` int NOT NULL, `type` enum ('mcq', 'coding', 'drag_drop', 'matching', 'fill_code', 'ordering', 'ai_evaluated') NOT NULL, `question` text NOT NULL, `config` json NOT NULL, `tags` text NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `question_banks` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `name` varchar(255) NOT NULL, `description` text NULL, `authorId` int NOT NULL, `isPublic` tinyint NOT NULL DEFAULT 0, PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `prerequisites` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `targetUnitId` int NOT NULL, `requiredUnitId` int NOT NULL, `minMasteryRequired` float NOT NULL DEFAULT '60', UNIQUE INDEX `IDX_e55545b98f91f6a5da8b004833` (`targetUnitId`, `requiredUnitId`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `notifications` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `userId` int NOT NULL, `title` varchar(255) NOT NULL, `message` text NOT NULL, `isRead` tinyint NOT NULL DEFAULT 0, `type` enum ('grade', 'review_schedule', 'info') NOT NULL DEFAULT 'info', PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `messages` (`id` int NOT NULL AUTO_INCREMENT, `senderId` int NOT NULL, `receiverId` int NOT NULL, `content` text NOT NULL, `isRead` tinyint NOT NULL DEFAULT 0, `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `learning_progress` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `studentId` int NOT NULL, `learningUnitId` int NOT NULL, `mastery` float NOT NULL DEFAULT '0', `status` enum ('no_visto', 'explorado', 'en_practica', 'comprension_parcial', 'dominado') NOT NULL DEFAULT 'no_visto', `priority` int NOT NULL DEFAULT '0', `successRate` float NOT NULL DEFAULT '0', `attemptsCount` int NOT NULL DEFAULT '0', `completedActivities` int NOT NULL DEFAULT '0', `lastActivityId` int NULL, UNIQUE INDEX `IDX_21d1790565894696c13f099ce9` (`studentId`, `learningUnitId`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `execution_results` (`id` varchar(36) NOT NULL, `submissionAnswerId` int NOT NULL, `status` varchar(50) NOT NULL, `stdout` text NULL, `stderr` text NULL, `executionTimeMs` int NOT NULL DEFAULT '0', `memoryUsedKB` int NOT NULL DEFAULT '0', `testCaseLabel` varchar(255) NULL, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `achievements` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `name` varchar(255) NOT NULL, `description` text NULL, `iconUrl` varchar(255) NOT NULL, `points` int NOT NULL DEFAULT '10', `unlockedById` int NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: CREATE TABLE `activity_logs` (`id` varchar(36) NOT NULL, `studentId` int NOT NULL, `action` enum ('content_read', 'activity_started', 'submission_graded', 'unit_completed') NOT NULL, `referenceId` varchar(100) NOT NULL, `referenceType` varchar(50) NOT NULL, `metadata` json NULL, `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), INDEX `IDX_78666521e99d2bbe69f2ea830a` (`referenceId`, `action`), INDEX `IDX_8befb5d0b0f799f6b6a1af46b5` (`studentId`, `action`), INDEX `IDX_0239ac3be75a977a71ae9cf8e0` (`studentId`, `createdAt`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: ALTER TABLE `activities` ADD CONSTRAINT `FK_cc686d463a463786129e1de1cea` FOREIGN KEY (`learningUnitId`) REFERENCES `learning_units`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `activities` ADD CONSTRAINT `FK_3689e28651a4b078af91952bed8` FOREIGN KEY (`activityTypeId`) REFERENCES `activity_types`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `activities` ADD CONSTRAINT `FK_dc4b610a410beaee2dca89e7536` FOREIGN KEY (`createdBy`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `contents` ADD CONSTRAINT `FK_03bf08d52358f58f07787fc6b8f` FOREIGN KEY (`learningUnitId`) REFERENCES `learning_units`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `learning_units` ADD CONSTRAINT `FK_cb4ada233555d57c4f6e50609ad` FOREIGN KEY (`topicId`) REFERENCES `topics`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `topics` ADD CONSTRAINT `FK_36089054397b6db8da2fd67a073` FOREIGN KEY (`sectionId`) REFERENCES `sections`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `sections` ADD CONSTRAINT `FK_f0881122b5efd7b004f082c084c` FOREIGN KEY (`classId`) REFERENCES `classes`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `classes` ADD CONSTRAINT `FK_4b7ac7a7eb91f3e04229c7c0b6f` FOREIGN KEY (`teacherId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `enrollments` ADD CONSTRAINT `FK_470304681bce2933d3cbb680db8` FOREIGN KEY (`classId`) REFERENCES `classes`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `enrollments` ADD CONSTRAINT `FK_bf3ba3dfa95e2df7388eb4589fd` FOREIGN KEY (`studentId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `programs` ADD CONSTRAINT `FK_82f9404fa3d1a3e1cc2c8f2d22a` FOREIGN KEY (`institutionId`) REFERENCES `institutions`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `user_affiliations` ADD CONSTRAINT `FK_be5b7060fa1c8a8ba2a8504e746` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `user_affiliations` ADD CONSTRAINT `FK_f6200ccffc5064f1be2e329a245` FOREIGN KEY (`programId`) REFERENCES `programs`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `tutor_conversations` ADD CONSTRAINT `FK_56c5533282e9ec141a9369081ca` FOREIGN KEY (`studentId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `activity_questions` ADD CONSTRAINT `FK_a20191ae2559a453d0bba75da9b` FOREIGN KEY (`activityId`) REFERENCES `activities`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `submission_answers` ADD CONSTRAINT `FK_7e0d6cf6173772c12089cf97474` FOREIGN KEY (`submissionId`) REFERENCES `submissions`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `submission_answers` ADD CONSTRAINT `FK_49b240a1fb2de5d9308d2125597` FOREIGN KEY (`questionId`) REFERENCES `activity_questions`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `submissions` ADD CONSTRAINT `FK_5ddeb5fb4f6c38b0439ec52bff2` FOREIGN KEY (`activityId`) REFERENCES `activities`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `submissions` ADD CONSTRAINT `FK_4fc99318a291abd7e2a50f50851` FOREIGN KEY (`studentId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `review_schedules` ADD CONSTRAINT `FK_c76dfbe4d695e9eb548d0826c7e` FOREIGN KEY (`studentId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `review_schedules` ADD CONSTRAINT `FK_bc8f68cc5d9a235438a767fd5a0` FOREIGN KEY (`learningUnitId`) REFERENCES `learning_units`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `bank_questions` ADD CONSTRAINT `FK_916010c09855614e142d71f72a2` FOREIGN KEY (`bankId`) REFERENCES `question_banks`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `question_banks` ADD CONSTRAINT `FK_6f408c9e6d742703af93a98083f` FOREIGN KEY (`authorId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `prerequisites` ADD CONSTRAINT `FK_f205de314c224ec276293924105` FOREIGN KEY (`targetUnitId`) REFERENCES `learning_units`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `prerequisites` ADD CONSTRAINT `FK_b616443e090e940951cc2fbaf94` FOREIGN KEY (`requiredUnitId`) REFERENCES `learning_units`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `notifications` ADD CONSTRAINT `FK_692a909ee0fa9383e7859f9b406` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `messages` ADD CONSTRAINT `FK_2db9cf2b3ca111742793f6c37ce` FOREIGN KEY (`senderId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `messages` ADD CONSTRAINT `FK_acf951a58e3b9611dd96ce89042` FOREIGN KEY (`receiverId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `learning_progress` ADD CONSTRAINT `FK_ff1936e29305b9f0e52eb1fde30` FOREIGN KEY (`studentId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `learning_progress` ADD CONSTRAINT `FK_2d86a96d67fe2848ec0d39560ba` FOREIGN KEY (`learningUnitId`) REFERENCES `learning_units`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `learning_progress` ADD CONSTRAINT `FK_c4ba35959dbdc57dde97ceb7473` FOREIGN KEY (`lastActivityId`) REFERENCES `activities`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: ALTER TABLE `execution_results` ADD CONSTRAINT `FK_35b26782b11673f9510ecf7a69e` FOREIGN KEY (`submissionAnswerId`) REFERENCES `submission_answers`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: ALTER TABLE `achievements` ADD CONSTRAINT `FK_d090264a2b478a21cc8f52552b9` FOREIGN KEY (`unlockedById`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1779000000000,"InitialSchema1779000000000"]
+Migration InitialSchema1779000000000 has been executed successfully.
+query: ALTER TABLE `review_schedules` ADD `easeFactor` float NOT NULL DEFAULT '2.5'
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1788999128282,"AddEaseFactorToReviewSchedules1788999128282"]
+Migration AddEaseFactorToReviewSchedules1788999128282 has been executed successfully.
+query: ALTER TABLE `classes` ADD `requiresApproval` tinyint NOT NULL DEFAULT '0'
+query: ALTER TABLE `enrollments` MODIFY `status` enum ('active','inactive','withdrawn','completed','pending') NOT NULL DEFAULT 'active'
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1789000000000,"AddApprovalToClasses1789000000000"]
+Migration AddApprovalToClasses1789000000000 has been executed successfully.
+query: ALTER TABLE `submissions` ADD `activeAttemptKey` tinyint GENERATED ALWAYS AS (CASE WHEN `status` = 'in_progress' THEN 1 ELSE NULL END) STORED
+query: CREATE UNIQUE INDEX `UQ_submissions_active_attempt` ON `submissions` (`studentId`, `activityId`, `activeAttemptKey`)
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1789100000000,"AddActiveSubmissionConstraint1789100000000"]
+Migration AddActiveSubmissionConstraint1789100000000 has been executed successfully.
+query: CREATE TABLE `tutor_credentials` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `studentId` int NOT NULL, `encryptedKey` text NOT NULL, `keyLast4` varchar(4) NOT NULL, UNIQUE INDEX `IDX_tutor_credentials_studentId` (`studentId`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: ALTER TABLE `tutor_credentials` ADD CONSTRAINT `FK_tutor_credentials_studentId` FOREIGN KEY (`studentId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1789200000000,"CreateTutorCredentials1789200000000"]
+Migration CreateTutorCredentials1789200000000 has been executed successfully.
+query: CREATE TABLE `tutor_settings` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp(6) NULL, `scopeType` varchar(20) NOT NULL, `scopeId` int NOT NULL, `enabled` tinyint(1) NULL, `maxGuideLevel` tinyint NULL, `style` varchar(20) NULL, UNIQUE INDEX `IDX_tutor_settings_scope` (`scopeType`, `scopeId`), PRIMARY KEY (`id`)) ENGINE=InnoDB
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1789300000000,"CreateTutorSettings1789300000000"]
+Migration CreateTutorSettings1789300000000 has been executed successfully.
+query: CREATE TABLE `role_requests` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deletedAt` timestamp NULL, `userId` int NOT NULL, `requestedRole` varchar(20) NOT NULL DEFAULT 'docente', `status` varchar(20) NOT NULL DEFAULT 'pending', `reason` varchar(300) NULL, `reviewedById` int NULL, `reviewedAt` timestamp NULL, `reviewNote` varchar(300) NULL, INDEX `IDX_role_requests_status` (`status`), INDEX `IDX_role_requests_user` (`userId`), PRIMARY KEY (`id`), CONSTRAINT `FK_role_requests_user` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION) ENGINE=InnoDB
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1789400000000,"CreateRoleRequests1789400000000"]
+Migration CreateRoleRequests1789400000000 has been executed successfully.
+query: ALTER TABLE `notifications` MODIFY COLUMN `type` enum ('grade', 'review_schedule', 'message', 'info') NOT NULL DEFAULT 'info'
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1789500000000,"AddMessageNotificationType1789500000000"]
+Migration AddMessageNotificationType1789500000000 has been executed successfully.
+query: ALTER TABLE `users` ADD `passwordChangedAt` timestamp NULL
+query: CREATE TABLE `password_reset_tokens` (`id` int NOT NULL AUTO_INCREMENT, `userId` int NOT NULL, `tokenHash` char(64) NOT NULL, `expiresAt` timestamp NOT NULL, `usedAt` timestamp NULL, `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, UNIQUE INDEX `IDX_password_reset_tokenHash` (`tokenHash`), INDEX `IDX_password_reset_userId` (`userId`), PRIMARY KEY (`id`), CONSTRAINT `FK_password_reset_user` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE) ENGINE=InnoDB
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1789600000000,"AddPasswordReset1789600000000"]
+Migration AddPasswordReset1789600000000 has been executed successfully.
+query: ALTER TABLE `activity_questions` MODIFY COLUMN `type` enum ('mcq', 'coding', 'drag_drop', 'matching', 'fill_code', 'ordering', 'ai_evaluated', 'html_css') NOT NULL
+query: ALTER TABLE `bank_questions` MODIFY COLUMN `type` enum ('mcq', 'coding', 'drag_drop', 'matching', 'fill_code', 'ordering', 'ai_evaluated', 'html_css') NOT NULL
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1789700000000,"AddHtmlCssQuestionType1789700000000"]
+Migration AddHtmlCssQuestionType1789700000000 has been executed successfully.
+query: INSERT IGNORE INTO `activity_types` (`name`, `code`, `autoGradable`, `baseWeight`) VALUES (?, ?, ?, ?) -- PARAMETERS: ["Práctica Formativa","AUTO-EVAL",1,1]
+query: INSERT IGNORE INTO `activity_types` (`name`, `code`, `autoGradable`, `baseWeight`) VALUES (?, ?, ?, ?) -- PARAMETERS: ["Taller de Código","TALLER",1,1.5]
+query: INSERT IGNORE INTO `activity_types` (`name`, `code`, `autoGradable`, `baseWeight`) VALUES (?, ?, ?, ?) -- PARAMETERS: ["Parcial / Evaluación","PARCIAL",1,3]
+query: INSERT INTO `stire_verify_clean`.`migrations`(`timestamp`, `name`) VALUES (?, ?) -- PARAMETERS: [1789800000000,"SeedActivityTypeCatalog1789800000000"]
+Migration SeedActivityTypeCatalog1789800000000 has been executed successfully.
+query: COMMIT
+
+[verify:clean 5] db:seed:demo contra la base de datos vacia
+
+> stire@0.0.1 db:seed:demo
+> ts-node -r tsconfig-paths/register stire-seeder-demo.ts
+
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+query: SELECT version()
+Conectado a la base de datos. Sembrando datos de demo (idempotente)...
+
+Institución y programa
+query: SELECT `Institution`.`id` AS `Institution_id`, `Institution`.`name` AS `Institution_name` FROM `institutions` `Institution` WHERE ((`Institution`.`name` = ?)) LIMIT 1 -- PARAMETERS: ["Universidad de Córdoba (Demo)"]
+query: START TRANSACTION
+query: INSERT INTO `institutions`(`id`, `name`) VALUES (DEFAULT, ?) -- PARAMETERS: ["Universidad de Córdoba (Demo)"]
+query: COMMIT
+  + creado: Universidad de Córdoba (Demo)
+query: SELECT `Program`.`id` AS `Program_id`, `Program`.`name` AS `Program_name`, `Program`.`maxSemesters` AS `Program_maxSemesters`, `Program`.`institutionId` AS `Program_institutionId` FROM `programs` `Program` WHERE ((`Program`.`name` = ?) AND (`Program`.`institutionId` = ?)) LIMIT 1 -- PARAMETERS: ["Ingeniería de Sistemas (Demo)",1]
+query: START TRANSACTION
+query: INSERT INTO `programs`(`id`, `name`, `maxSemesters`, `institutionId`) VALUES (DEFAULT, ?, ?, ?) -- PARAMETERS: ["Ingeniería de Sistemas (Demo)",10,1]
+query: COMMIT
+  + creado: Ingeniería de Sistemas (Demo)
+
+Usuarios
+query: SELECT `User`.`id` AS `User_id`, `User`.`email` AS `User_email`, `User`.`fullName` AS `User_fullName`, `User`.`role` AS `User_role`, `User`.`isActive` AS `User_isActive`, `User`.`passwordChangedAt` AS `User_passwordChangedAt`, `User`.`createdAt` AS `User_createdAt`, `User`.`updatedAt` AS `User_updatedAt`, `User`.`deletedAt` AS `User_deletedAt` FROM `users` `User` WHERE ( ((`User`.`email` = ?)) ) AND ( `User`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: ["docente.demo@stire.local"]
+query: START TRANSACTION
+query: INSERT INTO `users`(`id`, `email`, `password`, `fullName`, `role`, `isActive`, `passwordChangedAt`, `createdAt`, `updatedAt`, `deletedAt`) VALUES (DEFAULT, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT, DEFAULT) -- PARAMETERS: ["docente.demo@stire.local","$2b$10$KAxNa.oEDyywX91YjhYSK./tVtWs2nWsrvyZdME9h1B62J2bLVByu","Docente Demo","docente",1]
+query: SELECT `User`.`id` AS `User_id`, `User`.`role` AS `User_role`, `User`.`isActive` AS `User_isActive`, `User`.`createdAt` AS `User_createdAt`, `User`.`updatedAt` AS `User_updatedAt`, `User`.`deletedAt` AS `User_deletedAt` FROM `users` `User` WHERE ( `User`.`id` = ? ) AND ( `User`.`deletedAt` IS NULL ) -- PARAMETERS: [1]
+query: COMMIT
+  + creado: docente.demo@stire.local
+query: SELECT `User`.`id` AS `User_id`, `User`.`email` AS `User_email`, `User`.`fullName` AS `User_fullName`, `User`.`role` AS `User_role`, `User`.`isActive` AS `User_isActive`, `User`.`passwordChangedAt` AS `User_passwordChangedAt`, `User`.`createdAt` AS `User_createdAt`, `User`.`updatedAt` AS `User_updatedAt`, `User`.`deletedAt` AS `User_deletedAt` FROM `users` `User` WHERE ( ((`User`.`email` = ?)) ) AND ( `User`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: ["estudiante1.demo@stire.local"]
+query: START TRANSACTION
+query: INSERT INTO `users`(`id`, `email`, `password`, `fullName`, `role`, `isActive`, `passwordChangedAt`, `createdAt`, `updatedAt`, `deletedAt`) VALUES (DEFAULT, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT, DEFAULT) -- PARAMETERS: ["estudiante1.demo@stire.local","$2b$10$KAxNa.oEDyywX91YjhYSK./tVtWs2nWsrvyZdME9h1B62J2bLVByu","Estudiante Demo 1","estudiante",1]
+query: SELECT `User`.`id` AS `User_id`, `User`.`role` AS `User_role`, `User`.`isActive` AS `User_isActive`, `User`.`createdAt` AS `User_createdAt`, `User`.`updatedAt` AS `User_updatedAt`, `User`.`deletedAt` AS `User_deletedAt` FROM `users` `User` WHERE ( `User`.`id` = ? ) AND ( `User`.`deletedAt` IS NULL ) -- PARAMETERS: [2]
+query: COMMIT
+  + creado: estudiante1.demo@stire.local
+query: SELECT `User`.`id` AS `User_id`, `User`.`email` AS `User_email`, `User`.`fullName` AS `User_fullName`, `User`.`role` AS `User_role`, `User`.`isActive` AS `User_isActive`, `User`.`passwordChangedAt` AS `User_passwordChangedAt`, `User`.`createdAt` AS `User_createdAt`, `User`.`updatedAt` AS `User_updatedAt`, `User`.`deletedAt` AS `User_deletedAt` FROM `users` `User` WHERE ( ((`User`.`email` = ?)) ) AND ( `User`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: ["estudiante2.demo@stire.local"]
+query: START TRANSACTION
+query: INSERT INTO `users`(`id`, `email`, `password`, `fullName`, `role`, `isActive`, `passwordChangedAt`, `createdAt`, `updatedAt`, `deletedAt`) VALUES (DEFAULT, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT, DEFAULT) -- PARAMETERS: ["estudiante2.demo@stire.local","$2b$10$KAxNa.oEDyywX91YjhYSK./tVtWs2nWsrvyZdME9h1B62J2bLVByu","Estudiante Demo 2","estudiante",1]
+query: SELECT `User`.`id` AS `User_id`, `User`.`role` AS `User_role`, `User`.`isActive` AS `User_isActive`, `User`.`createdAt` AS `User_createdAt`, `User`.`updatedAt` AS `User_updatedAt`, `User`.`deletedAt` AS `User_deletedAt` FROM `users` `User` WHERE ( `User`.`id` = ? ) AND ( `User`.`deletedAt` IS NULL ) -- PARAMETERS: [3]
+query: COMMIT
+  + creado: estudiante2.demo@stire.local
+query: SELECT `User`.`id` AS `User_id`, `User`.`email` AS `User_email`, `User`.`fullName` AS `User_fullName`, `User`.`role` AS `User_role`, `User`.`isActive` AS `User_isActive`, `User`.`passwordChangedAt` AS `User_passwordChangedAt`, `User`.`createdAt` AS `User_createdAt`, `User`.`updatedAt` AS `User_updatedAt`, `User`.`deletedAt` AS `User_deletedAt` FROM `users` `User` WHERE ( ((`User`.`email` = ?)) ) AND ( `User`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: ["estudiante3.demo@stire.local"]
+query: START TRANSACTION
+query: INSERT INTO `users`(`id`, `email`, `password`, `fullName`, `role`, `isActive`, `passwordChangedAt`, `createdAt`, `updatedAt`, `deletedAt`) VALUES (DEFAULT, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT, DEFAULT) -- PARAMETERS: ["estudiante3.demo@stire.local","$2b$10$KAxNa.oEDyywX91YjhYSK./tVtWs2nWsrvyZdME9h1B62J2bLVByu","Estudiante Demo 3","estudiante",1]
+query: SELECT `User`.`id` AS `User_id`, `User`.`role` AS `User_role`, `User`.`isActive` AS `User_isActive`, `User`.`createdAt` AS `User_createdAt`, `User`.`updatedAt` AS `User_updatedAt`, `User`.`deletedAt` AS `User_deletedAt` FROM `users` `User` WHERE ( `User`.`id` = ? ) AND ( `User`.`deletedAt` IS NULL ) -- PARAMETERS: [4]
+query: COMMIT
+  + creado: estudiante3.demo@stire.local
+
+Clase y matrículas
+query: SELECT DISTINCT `distinctAlias`.`Class_id` AS `ids_Class_id` FROM (SELECT `Class`.`id` AS `Class_id`, `Class`.`name` AS `Class_name`, `Class`.`description` AS `Class_description`, `Class`.`code` AS `Class_code`, `Class`.`teacherId` AS `Class_teacherId`, `Class`.`isActive` AS `Class_isActive`, `Class`.`requiresApproval` AS `Class_requiresApproval`, `Class`.`startDate` AS `Class_startDate`, `Class`.`endDate` AS `Class_endDate`, `Class`.`maxStudents` AS `Class_maxStudents`, `Class`.`createdAt` AS `Class_createdAt`, `Class`.`updatedAt` AS `Class_updatedAt`, `Class__teacher`.`id` AS `Class__teacher_id`, `Class__teacher`.`email` AS `Class__teacher_email`, `Class__teacher`.`fullName` AS `Class__teacher_fullName`, `Class__teacher`.`role` AS `Class__teacher_role`, `Class__teacher`.`isActive` AS `Class__teacher_isActive`, `Class__teacher`.`passwordChangedAt` AS `Class__teacher_passwordChangedAt`, `Class__teacher`.`createdAt` AS `Class__teacher_createdAt`, `Class__teacher`.`updatedAt` AS `Class__teacher_updatedAt`, `Class__teacher`.`deletedAt` AS `Class__teacher_deletedAt` FROM `classes` `Class` LEFT JOIN `users` `Class__teacher` ON `Class__teacher`.`id`=`Class`.`teacherId` AND (`Class__teacher`.`deletedAt` IS NULL) WHERE ((`Class`.`code` = ?))) `distinctAlias` ORDER BY `Class_id` ASC LIMIT 1 -- PARAMETERS: ["DEMO-STIRE-01"]
+query: START TRANSACTION
+query: INSERT INTO `classes`(`id`, `name`, `description`, `code`, `teacherId`, `isActive`, `requiresApproval`, `startDate`, `endDate`, `maxStudents`, `createdAt`, `updatedAt`) VALUES (DEFAULT, ?, ?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT) -- PARAMETERS: ["Fundamentos de Algoritmia — Demo","Clase de demostración generada por db:seed:demo.","DEMO-STIRE-01",1,1]
+query: SELECT `Class`.`id` AS `Class_id`, `Class`.`isActive` AS `Class_isActive`, `Class`.`requiresApproval` AS `Class_requiresApproval`, `Class`.`createdAt` AS `Class_createdAt`, `Class`.`updatedAt` AS `Class_updatedAt` FROM `classes` `Class` WHERE `Class`.`id` = ? -- PARAMETERS: [1]
+query: COMMIT
+  + creado: Fundamentos de Algoritmia — Demo (DEMO-STIRE-01)
+query: SELECT `Enrollment`.`id` AS `Enrollment_id`, `Enrollment`.`classId` AS `Enrollment_classId`, `Enrollment`.`studentId` AS `Enrollment_studentId`, `Enrollment`.`status` AS `Enrollment_status`, `Enrollment`.`joined_at` AS `Enrollment_joined_at`, `Enrollment`.`left_at` AS `Enrollment_left_at`, `Enrollment`.`last_activity_at` AS `Enrollment_last_activity_at` FROM `enrollments` `Enrollment` WHERE ((`Enrollment`.`classId` = ?) AND (`Enrollment`.`studentId` = ?)) LIMIT 1 -- PARAMETERS: [1,2]
+query: START TRANSACTION
+query: INSERT INTO `enrollments`(`id`, `classId`, `studentId`, `status`, `joined_at`, `left_at`, `last_activity_at`) VALUES (?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT) -- PARAMETERS: ["b2c93aab-b4a0-4d01-b930-db7114afdef7",1,2,"active"]
+query: SELECT `Enrollment`.`id` AS `Enrollment_id`, `Enrollment`.`status` AS `Enrollment_status`, `Enrollment`.`joined_at` AS `Enrollment_joined_at` FROM `enrollments` `Enrollment` WHERE `Enrollment`.`id` = ? -- PARAMETERS: ["b2c93aab-b4a0-4d01-b930-db7114afdef7"]
+query: COMMIT
+  + creado: estudiante1.demo@stire.local matriculado en DEMO-STIRE-01
+query: SELECT `Enrollment`.`id` AS `Enrollment_id`, `Enrollment`.`classId` AS `Enrollment_classId`, `Enrollment`.`studentId` AS `Enrollment_studentId`, `Enrollment`.`status` AS `Enrollment_status`, `Enrollment`.`joined_at` AS `Enrollment_joined_at`, `Enrollment`.`left_at` AS `Enrollment_left_at`, `Enrollment`.`last_activity_at` AS `Enrollment_last_activity_at` FROM `enrollments` `Enrollment` WHERE ((`Enrollment`.`classId` = ?) AND (`Enrollment`.`studentId` = ?)) LIMIT 1 -- PARAMETERS: [1,3]
+query: START TRANSACTION
+query: INSERT INTO `enrollments`(`id`, `classId`, `studentId`, `status`, `joined_at`, `left_at`, `last_activity_at`) VALUES (?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT) -- PARAMETERS: ["c9a49d77-d7e7-4ab3-a61e-9bc9c93062e7",1,3,"active"]
+query: SELECT `Enrollment`.`id` AS `Enrollment_id`, `Enrollment`.`status` AS `Enrollment_status`, `Enrollment`.`joined_at` AS `Enrollment_joined_at` FROM `enrollments` `Enrollment` WHERE `Enrollment`.`id` = ? -- PARAMETERS: ["c9a49d77-d7e7-4ab3-a61e-9bc9c93062e7"]
+query: COMMIT
+  + creado: estudiante2.demo@stire.local matriculado en DEMO-STIRE-01
+query: SELECT `Enrollment`.`id` AS `Enrollment_id`, `Enrollment`.`classId` AS `Enrollment_classId`, `Enrollment`.`studentId` AS `Enrollment_studentId`, `Enrollment`.`status` AS `Enrollment_status`, `Enrollment`.`joined_at` AS `Enrollment_joined_at`, `Enrollment`.`left_at` AS `Enrollment_left_at`, `Enrollment`.`last_activity_at` AS `Enrollment_last_activity_at` FROM `enrollments` `Enrollment` WHERE ((`Enrollment`.`classId` = ?) AND (`Enrollment`.`studentId` = ?)) LIMIT 1 -- PARAMETERS: [1,4]
+query: START TRANSACTION
+query: INSERT INTO `enrollments`(`id`, `classId`, `studentId`, `status`, `joined_at`, `left_at`, `last_activity_at`) VALUES (?, ?, ?, ?, DEFAULT, DEFAULT, DEFAULT) -- PARAMETERS: ["b1720a60-6e05-4992-acbe-9bc66bdd7a5d",1,4,"active"]
+query: SELECT `Enrollment`.`id` AS `Enrollment_id`, `Enrollment`.`status` AS `Enrollment_status`, `Enrollment`.`joined_at` AS `Enrollment_joined_at` FROM `enrollments` `Enrollment` WHERE `Enrollment`.`id` = ? -- PARAMETERS: ["b1720a60-6e05-4992-acbe-9bc66bdd7a5d"]
+query: COMMIT
+  + creado: estudiante3.demo@stire.local matriculado en DEMO-STIRE-01
+
+Sección, topic y unidades de aprendizaje (con prerrequisito)
+query: SELECT `Section`.`id` AS `Section_id`, `Section`.`title` AS `Section_title`, `Section`.`description` AS `Section_description`, `Section`.`order` AS `Section_order`, `Section`.`isPublished` AS `Section_isPublished`, `Section`.`classId` AS `Section_classId`, `Section`.`createdAt` AS `Section_createdAt`, `Section`.`updatedAt` AS `Section_updatedAt` FROM `sections` `Section` WHERE ((`Section`.`classId` = ?) AND (`Section`.`title` = ?)) LIMIT 1 -- PARAMETERS: [1,"Módulo 1: Fundamentos"]
+query: START TRANSACTION
+query: INSERT INTO `sections`(`id`, `title`, `description`, `order`, `isPublished`, `classId`, `createdAt`, `updatedAt`) VALUES (DEFAULT, ?, ?, ?, ?, ?, DEFAULT, DEFAULT) -- PARAMETERS: ["Módulo 1: Fundamentos","Primer módulo de la clase de demo.",0,1,1]
+query: SELECT `Section`.`id` AS `Section_id`, `Section`.`order` AS `Section_order`, `Section`.`isPublished` AS `Section_isPublished`, `Section`.`createdAt` AS `Section_createdAt`, `Section`.`updatedAt` AS `Section_updatedAt` FROM `sections` `Section` WHERE `Section`.`id` = ? -- PARAMETERS: [1]
+query: COMMIT
+  + creado: Módulo 1: Fundamentos
+query: SELECT `Topic`.`id` AS `Topic_id`, `Topic`.`title` AS `Topic_title`, `Topic`.`description` AS `Topic_description`, `Topic`.`order` AS `Topic_order`, `Topic`.`isActive` AS `Topic_isActive`, `Topic`.`sectionId` AS `Topic_sectionId`, `Topic`.`createdAt` AS `Topic_createdAt`, `Topic`.`updatedAt` AS `Topic_updatedAt` FROM `topics` `Topic` WHERE ((`Topic`.`sectionId` = ?) AND (`Topic`.`title` = ?)) LIMIT 1 -- PARAMETERS: [1,"Tema 1: Bases de la programación"]
+query: START TRANSACTION
+query: INSERT INTO `topics`(`id`, `title`, `description`, `order`, `isActive`, `sectionId`, `createdAt`, `updatedAt`) VALUES (DEFAULT, ?, ?, ?, ?, ?, DEFAULT, DEFAULT) -- PARAMETERS: ["Tema 1: Bases de la programación","Variables, tipos de datos y estructuras de control.",0,1,1]
+query: SELECT `Topic`.`id` AS `Topic_id`, `Topic`.`order` AS `Topic_order`, `Topic`.`isActive` AS `Topic_isActive`, `Topic`.`createdAt` AS `Topic_createdAt`, `Topic`.`updatedAt` AS `Topic_updatedAt` FROM `topics` `Topic` WHERE `Topic`.`id` = ? -- PARAMETERS: [1]
+query: COMMIT
+  + creado: Tema 1: Bases de la programación
+query: SELECT `LearningUnit`.`id` AS `LearningUnit_id`, `LearningUnit`.`title` AS `LearningUnit_title`, `LearningUnit`.`description` AS `LearningUnit_description`, `LearningUnit`.`difficulty` AS `LearningUnit_difficulty`, `LearningUnit`.`order` AS `LearningUnit_order`, `LearningUnit`.`isActive` AS `LearningUnit_isActive`, `LearningUnit`.`topicId` AS `LearningUnit_topicId`, `LearningUnit`.`createdAt` AS `LearningUnit_createdAt`, `LearningUnit`.`updatedAt` AS `LearningUnit_updatedAt` FROM `learning_units` `LearningUnit` WHERE ((`LearningUnit`.`topicId` = ?) AND (`LearningUnit`.`title` = ?)) LIMIT 1 -- PARAMETERS: [1,"Unidad 1: Variables y tipos de datos"]
+query: START TRANSACTION
+query: INSERT INTO `learning_units`(`id`, `title`, `description`, `difficulty`, `order`, `isActive`, `topicId`, `createdAt`, `updatedAt`) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT) -- PARAMETERS: ["Unidad 1: Variables y tipos de datos","Declaración, asignación y tipos primitivos.","basico",0,1,1]
+query: SELECT `LearningUnit`.`id` AS `LearningUnit_id`, `LearningUnit`.`difficulty` AS `LearningUnit_difficulty`, `LearningUnit`.`order` AS `LearningUnit_order`, `LearningUnit`.`isActive` AS `LearningUnit_isActive`, `LearningUnit`.`createdAt` AS `LearningUnit_createdAt`, `LearningUnit`.`updatedAt` AS `LearningUnit_updatedAt` FROM `learning_units` `LearningUnit` WHERE `LearningUnit`.`id` = ? -- PARAMETERS: [1]
+query: COMMIT
+  + creado: Unidad 1: Variables y tipos de datos
+query: SELECT `LearningUnit`.`id` AS `LearningUnit_id`, `LearningUnit`.`title` AS `LearningUnit_title`, `LearningUnit`.`description` AS `LearningUnit_description`, `LearningUnit`.`difficulty` AS `LearningUnit_difficulty`, `LearningUnit`.`order` AS `LearningUnit_order`, `LearningUnit`.`isActive` AS `LearningUnit_isActive`, `LearningUnit`.`topicId` AS `LearningUnit_topicId`, `LearningUnit`.`createdAt` AS `LearningUnit_createdAt`, `LearningUnit`.`updatedAt` AS `LearningUnit_updatedAt` FROM `learning_units` `LearningUnit` WHERE ((`LearningUnit`.`topicId` = ?) AND (`LearningUnit`.`title` = ?)) LIMIT 1 -- PARAMETERS: [1,"Unidad 2: Estructuras de control"]
+query: START TRANSACTION
+query: INSERT INTO `learning_units`(`id`, `title`, `description`, `difficulty`, `order`, `isActive`, `topicId`, `createdAt`, `updatedAt`) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT) -- PARAMETERS: ["Unidad 2: Estructuras de control","Condicionales if/else y su lógica de decisión.","basico",1,1,1]
+query: SELECT `LearningUnit`.`id` AS `LearningUnit_id`, `LearningUnit`.`difficulty` AS `LearningUnit_difficulty`, `LearningUnit`.`order` AS `LearningUnit_order`, `LearningUnit`.`isActive` AS `LearningUnit_isActive`, `LearningUnit`.`createdAt` AS `LearningUnit_createdAt`, `LearningUnit`.`updatedAt` AS `LearningUnit_updatedAt` FROM `learning_units` `LearningUnit` WHERE `LearningUnit`.`id` = ? -- PARAMETERS: [2]
+query: COMMIT
+  + creado: Unidad 2: Estructuras de control
+query: SELECT `Prerequisite`.`id` AS `Prerequisite_id`, `Prerequisite`.`createdAt` AS `Prerequisite_createdAt`, `Prerequisite`.`updatedAt` AS `Prerequisite_updatedAt`, `Prerequisite`.`deletedAt` AS `Prerequisite_deletedAt`, `Prerequisite`.`targetUnitId` AS `Prerequisite_targetUnitId`, `Prerequisite`.`requiredUnitId` AS `Prerequisite_requiredUnitId`, `Prerequisite`.`minMasteryRequired` AS `Prerequisite_minMasteryRequired` FROM `prerequisites` `Prerequisite` WHERE ( ((`Prerequisite`.`targetUnitId` = ?) AND (`Prerequisite`.`requiredUnitId` = ?)) ) AND ( `Prerequisite`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: [2,1]
+query: START TRANSACTION
+query: INSERT INTO `prerequisites`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `targetUnitId`, `requiredUnitId`, `minMasteryRequired`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?) -- PARAMETERS: [2,1,60]
+query: SELECT `Prerequisite`.`id` AS `Prerequisite_id`, `Prerequisite`.`createdAt` AS `Prerequisite_createdAt`, `Prerequisite`.`updatedAt` AS `Prerequisite_updatedAt`, `Prerequisite`.`deletedAt` AS `Prerequisite_deletedAt`, `Prerequisite`.`minMasteryRequired` AS `Prerequisite_minMasteryRequired` FROM `prerequisites` `Prerequisite` WHERE ( `Prerequisite`.`id` = ? ) AND ( `Prerequisite`.`deletedAt` IS NULL ) -- PARAMETERS: [1]
+query: COMMIT
+  + creado: Unidad 2 requiere Unidad 1 (mastery ≥ 60%)
+
+Contenido teórico
+query: SELECT `Content`.`id` AS `Content_id`, `Content`.`createdAt` AS `Content_createdAt`, `Content`.`updatedAt` AS `Content_updatedAt`, `Content`.`deletedAt` AS `Content_deletedAt`, `Content`.`learningUnitId` AS `Content_learningUnitId`, `Content`.`title` AS `Content_title`, `Content`.`type` AS `Content_type`, `Content`.`body` AS `Content_body`, `Content`.`metadata` AS `Content_metadata`, `Content`.`order` AS `Content_order`, `Content`.`isVisible` AS `Content_isVisible` FROM `contents` `Content` WHERE ( ((`Content`.`learningUnitId` = ?) AND (`Content`.`title` = ?)) ) AND ( `Content`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: [1,"Introducción a las variables"]
+query: START TRANSACTION
+query: INSERT INTO `contents`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `learningUnitId`, `title`, `type`, `body`, `metadata`, `order`, `isVisible`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, DEFAULT, ?, ?) -- PARAMETERS: [1,"Introducción a las variables","markdown","# Variables\n\nUna **variable** es un espacio de memoria con un nombre, donde se guarda un valor que puede cambiar durante la ejecución del programa.\n\n```javascript\nlet edad = 20;\nconst nombre = \"Ana\";\n```\n\n`let` declara una variable que puede reasignarse; `const` declara una que no.",0,1]
+query: SELECT `Content`.`id` AS `Content_id`, `Content`.`createdAt` AS `Content_createdAt`, `Content`.`updatedAt` AS `Content_updatedAt`, `Content`.`deletedAt` AS `Content_deletedAt`, `Content`.`order` AS `Content_order`, `Content`.`isVisible` AS `Content_isVisible` FROM `contents` `Content` WHERE ( `Content`.`id` = ? ) AND ( `Content`.`deletedAt` IS NULL ) -- PARAMETERS: [1]
+query: COMMIT
+  + creado: Introducción a las variables (Unidad 1)
+query: SELECT `Content`.`id` AS `Content_id`, `Content`.`createdAt` AS `Content_createdAt`, `Content`.`updatedAt` AS `Content_updatedAt`, `Content`.`deletedAt` AS `Content_deletedAt`, `Content`.`learningUnitId` AS `Content_learningUnitId`, `Content`.`title` AS `Content_title`, `Content`.`type` AS `Content_type`, `Content`.`body` AS `Content_body`, `Content`.`metadata` AS `Content_metadata`, `Content`.`order` AS `Content_order`, `Content`.`isVisible` AS `Content_isVisible` FROM `contents` `Content` WHERE ( ((`Content`.`learningUnitId` = ?) AND (`Content`.`title` = ?)) ) AND ( `Content`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: [2,"Condicionales if/else"]
+query: START TRANSACTION
+query: INSERT INTO `contents`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `learningUnitId`, `title`, `type`, `body`, `metadata`, `order`, `isVisible`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, DEFAULT, ?, ?) -- PARAMETERS: [2,"Condicionales if/else","markdown","# Condicionales\n\nUn condicional ejecuta un bloque de código solo si una condición es verdadera.\n\n```javascript\nif (edad >= 18) {\n  console.log(\"mayor de edad\");\n} else {\n  console.log(\"menor de edad\");\n}\n```",0,1]
+query: SELECT `Content`.`id` AS `Content_id`, `Content`.`createdAt` AS `Content_createdAt`, `Content`.`updatedAt` AS `Content_updatedAt`, `Content`.`deletedAt` AS `Content_deletedAt`, `Content`.`order` AS `Content_order`, `Content`.`isVisible` AS `Content_isVisible` FROM `contents` `Content` WHERE ( `Content`.`id` = ? ) AND ( `Content`.`deletedAt` IS NULL ) -- PARAMETERS: [2]
+query: COMMIT
+  + creado: Condicionales if/else (Unidad 2)
+
+Tipo de actividad y actividades (MCQ, CODING, FILL_CODE)
+query: SELECT `ActivityType`.`id` AS `ActivityType_id`, `ActivityType`.`createdAt` AS `ActivityType_createdAt`, `ActivityType`.`updatedAt` AS `ActivityType_updatedAt`, `ActivityType`.`deletedAt` AS `ActivityType_deletedAt`, `ActivityType`.`name` AS `ActivityType_name`, `ActivityType`.`code` AS `ActivityType_code`, `ActivityType`.`autoGradable` AS `ActivityType_autoGradable`, `ActivityType`.`baseWeight` AS `ActivityType_baseWeight`, `ActivityType`.`configSchema` AS `ActivityType_configSchema` FROM `activity_types` `ActivityType` WHERE ( ((`ActivityType`.`code` = ?)) ) AND ( `ActivityType`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: ["DEMO-AUTO"]
+query: START TRANSACTION
+query: INSERT INTO `activity_types`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `name`, `code`, `autoGradable`, `baseWeight`, `configSchema`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, DEFAULT) -- PARAMETERS: ["Ejercicio Autocalificable (Demo)","DEMO-AUTO",true,1]
+query: SELECT `ActivityType`.`id` AS `ActivityType_id`, `ActivityType`.`createdAt` AS `ActivityType_createdAt`, `ActivityType`.`updatedAt` AS `ActivityType_updatedAt`, `ActivityType`.`deletedAt` AS `ActivityType_deletedAt`, `ActivityType`.`autoGradable` AS `ActivityType_autoGradable`, `ActivityType`.`baseWeight` AS `ActivityType_baseWeight` FROM `activity_types` `ActivityType` WHERE ( `ActivityType`.`id` = ? ) AND ( `ActivityType`.`deletedAt` IS NULL ) -- PARAMETERS: [4]
+query: COMMIT
+  + creado: Ejercicio Autocalificable (Demo)
+query: SELECT DISTINCT `distinctAlias`.`Activity_id` AS `ids_Activity_id` FROM (SELECT `Activity`.`id` AS `Activity_id`, `Activity`.`createdAt` AS `Activity_createdAt`, `Activity`.`updatedAt` AS `Activity_updatedAt`, `Activity`.`deletedAt` AS `Activity_deletedAt`, `Activity`.`learningUnitId` AS `Activity_learningUnitId`, `Activity`.`activityTypeId` AS `Activity_activityTypeId`, `Activity`.`createdBy` AS `Activity_createdBy`, `Activity`.`title` AS `Activity_title`, `Activity`.`description` AS `Activity_description`, `Activity`.`difficulty` AS `Activity_difficulty`, `Activity`.`totalPoints` AS `Activity_totalPoints`, `Activity`.`passingScore` AS `Activity_passingScore`, `Activity`.`attemptsAllowed` AS `Activity_attemptsAllowed`, `Activity`.`timeLimit` AS `Activity_timeLimit`, `Activity`.`order` AS `Activity_order`, `Activity`.`status` AS `Activity_status`, `Activity`.`isRequired` AS `Activity_isRequired`, `Activity`.`adaptiveWeight` AS `Activity_adaptiveWeight`, `Activity`.`publishedAt` AS `Activity_publishedAt`, `Activity__activityType`.`id` AS `Activity__activityType_id`, `Activity__activityType`.`createdAt` AS `Activity__activityType_createdAt`, `Activity__activityType`.`updatedAt` AS `Activity__activityType_updatedAt`, `Activity__activityType`.`deletedAt` AS `Activity__activityType_deletedAt`, `Activity__activityType`.`name` AS `Activity__activityType_name`, `Activity__activityType`.`code` AS `Activity__activityType_code`, `Activity__activityType`.`autoGradable` AS `Activity__activityType_autoGradable`, `Activity__activityType`.`baseWeight` AS `Activity__activityType_baseWeight`, `Activity__activityType`.`configSchema` AS `Activity__activityType_configSchema` FROM `activities` `Activity` LEFT JOIN `activity_types` `Activity__activityType` ON `Activity__activityType`.`id`=`Activity`.`activityTypeId` AND (`Activity__activityType`.`deletedAt` IS NULL) WHERE ( ((`Activity`.`learningUnitId` = ?) AND (`Activity`.`title` = ?)) ) AND ( `Activity`.`deletedAt` IS NULL )) `distinctAlias` ORDER BY `Activity_id` ASC LIMIT 1 -- PARAMETERS: [1,"Quiz: ¿Qué es una variable?"]
+query: START TRANSACTION
+query: INSERT INTO `activities`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `learningUnitId`, `activityTypeId`, `createdBy`, `title`, `description`, `difficulty`, `totalPoints`, `passingScore`, `attemptsAllowed`, `timeLimit`, `order`, `status`, `isRequired`, `adaptiveWeight`, `publishedAt`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, ?, ?, ?, ?, ?) -- PARAMETERS: [1,4,1,"Quiz: ¿Qué es una variable?","Pregunta de opción múltiple sobre declaración de variables.","basico",10,60,3,0,"published",false,1,"2026-09-26T17:29:56.147Z"]
+query: SELECT `Activity`.`id` AS `Activity_id`, `Activity`.`createdAt` AS `Activity_createdAt`, `Activity`.`updatedAt` AS `Activity_updatedAt`, `Activity`.`deletedAt` AS `Activity_deletedAt`, `Activity`.`difficulty` AS `Activity_difficulty`, `Activity`.`totalPoints` AS `Activity_totalPoints`, `Activity`.`passingScore` AS `Activity_passingScore`, `Activity`.`attemptsAllowed` AS `Activity_attemptsAllowed`, `Activity`.`order` AS `Activity_order`, `Activity`.`status` AS `Activity_status`, `Activity`.`isRequired` AS `Activity_isRequired`, `Activity`.`adaptiveWeight` AS `Activity_adaptiveWeight` FROM `activities` `Activity` WHERE ( `Activity`.`id` = ? ) AND ( `Activity`.`deletedAt` IS NULL ) -- PARAMETERS: [1]
+query: COMMIT
+  + creado: Quiz: ¿Qué es una variable? (MCQ)
+query: SELECT `ActivityQuestion`.`id` AS `ActivityQuestion_id`, `ActivityQuestion`.`createdAt` AS `ActivityQuestion_createdAt`, `ActivityQuestion`.`updatedAt` AS `ActivityQuestion_updatedAt`, `ActivityQuestion`.`deletedAt` AS `ActivityQuestion_deletedAt`, `ActivityQuestion`.`activityId` AS `ActivityQuestion_activityId`, `ActivityQuestion`.`type` AS `ActivityQuestion_type`, `ActivityQuestion`.`question` AS `ActivityQuestion_question`, `ActivityQuestion`.`points` AS `ActivityQuestion_points`, `ActivityQuestion`.`order` AS `ActivityQuestion_order`, `ActivityQuestion`.`config` AS `ActivityQuestion_config` FROM `activity_questions` `ActivityQuestion` WHERE ( ((`ActivityQuestion`.`activityId` = ?)) ) AND ( `ActivityQuestion`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: [1]
+query: START TRANSACTION
+query: INSERT INTO `activity_questions`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `activityId`, `type`, `question`, `points`, `order`, `config`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, ?, ?) -- PARAMETERS: [1,"mcq","¿Cuál de las siguientes es una declaración válida de variable en JavaScript?",10,0,"{\"options\":[{\"id\":\"a\",\"text\":\"let x = 5;\"},{\"id\":\"b\",\"text\":\"variable x = 5\"},{\"id\":\"c\",\"text\":\"int x = 5;\"},{\"id\":\"d\",\"text\":\"5 = x;\"}],\"correctAnswerId\":\"a\",\"explanation\":\"\\\"let\\\" es la forma correcta de declarar una variable reasignable en JavaScript.\"}"]
+query: SELECT `ActivityQuestion`.`id` AS `ActivityQuestion_id`, `ActivityQuestion`.`createdAt` AS `ActivityQuestion_createdAt`, `ActivityQuestion`.`updatedAt` AS `ActivityQuestion_updatedAt`, `ActivityQuestion`.`deletedAt` AS `ActivityQuestion_deletedAt`, `ActivityQuestion`.`points` AS `ActivityQuestion_points`, `ActivityQuestion`.`order` AS `ActivityQuestion_order` FROM `activity_questions` `ActivityQuestion` WHERE ( `ActivityQuestion`.`id` = ? ) AND ( `ActivityQuestion`.`deletedAt` IS NULL ) -- PARAMETERS: [1]
+query: COMMIT
+  + creado: pregunta MCQ de la actividad
+query: SELECT DISTINCT `distinctAlias`.`Activity_id` AS `ids_Activity_id` FROM (SELECT `Activity`.`id` AS `Activity_id`, `Activity`.`createdAt` AS `Activity_createdAt`, `Activity`.`updatedAt` AS `Activity_updatedAt`, `Activity`.`deletedAt` AS `Activity_deletedAt`, `Activity`.`learningUnitId` AS `Activity_learningUnitId`, `Activity`.`activityTypeId` AS `Activity_activityTypeId`, `Activity`.`createdBy` AS `Activity_createdBy`, `Activity`.`title` AS `Activity_title`, `Activity`.`description` AS `Activity_description`, `Activity`.`difficulty` AS `Activity_difficulty`, `Activity`.`totalPoints` AS `Activity_totalPoints`, `Activity`.`passingScore` AS `Activity_passingScore`, `Activity`.`attemptsAllowed` AS `Activity_attemptsAllowed`, `Activity`.`timeLimit` AS `Activity_timeLimit`, `Activity`.`order` AS `Activity_order`, `Activity`.`status` AS `Activity_status`, `Activity`.`isRequired` AS `Activity_isRequired`, `Activity`.`adaptiveWeight` AS `Activity_adaptiveWeight`, `Activity`.`publishedAt` AS `Activity_publishedAt`, `Activity__activityType`.`id` AS `Activity__activityType_id`, `Activity__activityType`.`createdAt` AS `Activity__activityType_createdAt`, `Activity__activityType`.`updatedAt` AS `Activity__activityType_updatedAt`, `Activity__activityType`.`deletedAt` AS `Activity__activityType_deletedAt`, `Activity__activityType`.`name` AS `Activity__activityType_name`, `Activity__activityType`.`code` AS `Activity__activityType_code`, `Activity__activityType`.`autoGradable` AS `Activity__activityType_autoGradable`, `Activity__activityType`.`baseWeight` AS `Activity__activityType_baseWeight`, `Activity__activityType`.`configSchema` AS `Activity__activityType_configSchema` FROM `activities` `Activity` LEFT JOIN `activity_types` `Activity__activityType` ON `Activity__activityType`.`id`=`Activity`.`activityTypeId` AND (`Activity__activityType`.`deletedAt` IS NULL) WHERE ( ((`Activity`.`learningUnitId` = ?) AND (`Activity`.`title` = ?)) ) AND ( `Activity`.`deletedAt` IS NULL )) `distinctAlias` ORDER BY `Activity_id` ASC LIMIT 1 -- PARAMETERS: [1,"Ejercicio: Suma de dos números"]
+query: START TRANSACTION
+query: INSERT INTO `activities`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `learningUnitId`, `activityTypeId`, `createdBy`, `title`, `description`, `difficulty`, `totalPoints`, `passingScore`, `attemptsAllowed`, `timeLimit`, `order`, `status`, `isRequired`, `adaptiveWeight`, `publishedAt`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, ?, ?, ?, ?, ?) -- PARAMETERS: [1,4,1,"Ejercicio: Suma de dos números","Lee dos números desde la entrada estándar (uno por línea) e imprime su suma.","basico",20,60,3,1,"published",false,1,"2026-09-26T17:29:56.188Z"]
+query: SELECT `Activity`.`id` AS `Activity_id`, `Activity`.`createdAt` AS `Activity_createdAt`, `Activity`.`updatedAt` AS `Activity_updatedAt`, `Activity`.`deletedAt` AS `Activity_deletedAt`, `Activity`.`difficulty` AS `Activity_difficulty`, `Activity`.`totalPoints` AS `Activity_totalPoints`, `Activity`.`passingScore` AS `Activity_passingScore`, `Activity`.`attemptsAllowed` AS `Activity_attemptsAllowed`, `Activity`.`order` AS `Activity_order`, `Activity`.`status` AS `Activity_status`, `Activity`.`isRequired` AS `Activity_isRequired`, `Activity`.`adaptiveWeight` AS `Activity_adaptiveWeight` FROM `activities` `Activity` WHERE ( `Activity`.`id` = ? ) AND ( `Activity`.`deletedAt` IS NULL ) -- PARAMETERS: [2]
+query: COMMIT
+  + creado: Ejercicio: Suma de dos números (CODING)
+query: SELECT `ActivityQuestion`.`id` AS `ActivityQuestion_id`, `ActivityQuestion`.`createdAt` AS `ActivityQuestion_createdAt`, `ActivityQuestion`.`updatedAt` AS `ActivityQuestion_updatedAt`, `ActivityQuestion`.`deletedAt` AS `ActivityQuestion_deletedAt`, `ActivityQuestion`.`activityId` AS `ActivityQuestion_activityId`, `ActivityQuestion`.`type` AS `ActivityQuestion_type`, `ActivityQuestion`.`question` AS `ActivityQuestion_question`, `ActivityQuestion`.`points` AS `ActivityQuestion_points`, `ActivityQuestion`.`order` AS `ActivityQuestion_order`, `ActivityQuestion`.`config` AS `ActivityQuestion_config` FROM `activity_questions` `ActivityQuestion` WHERE ( ((`ActivityQuestion`.`activityId` = ?)) ) AND ( `ActivityQuestion`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: [2]
+query: START TRANSACTION
+query: INSERT INTO `activity_questions`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `activityId`, `type`, `question`, `points`, `order`, `config`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, ?, ?) -- PARAMETERS: [2,"coding","Escribe un programa en JavaScript que lea dos números (uno por línea) desde la entrada estándar e imprima su suma.",20,0,"{\"language\":\"javascript\",\"testCases\":[{\"label\":\"público\",\"input\":\"5\\n3\",\"expected\":\"8\",\"isPublic\":true},{\"label\":\"oculto\",\"input\":\"10\\n20\",\"expected\":\"30\",\"isPublic\":false}]}"]
+query: SELECT `ActivityQuestion`.`id` AS `ActivityQuestion_id`, `ActivityQuestion`.`createdAt` AS `ActivityQuestion_createdAt`, `ActivityQuestion`.`updatedAt` AS `ActivityQuestion_updatedAt`, `ActivityQuestion`.`deletedAt` AS `ActivityQuestion_deletedAt`, `ActivityQuestion`.`points` AS `ActivityQuestion_points`, `ActivityQuestion`.`order` AS `ActivityQuestion_order` FROM `activity_questions` `ActivityQuestion` WHERE ( `ActivityQuestion`.`id` = ? ) AND ( `ActivityQuestion`.`deletedAt` IS NULL ) -- PARAMETERS: [2]
+query: COMMIT
+  + creado: pregunta CODING de la actividad (con testCase público)
+query: SELECT DISTINCT `distinctAlias`.`Activity_id` AS `ids_Activity_id` FROM (SELECT `Activity`.`id` AS `Activity_id`, `Activity`.`createdAt` AS `Activity_createdAt`, `Activity`.`updatedAt` AS `Activity_updatedAt`, `Activity`.`deletedAt` AS `Activity_deletedAt`, `Activity`.`learningUnitId` AS `Activity_learningUnitId`, `Activity`.`activityTypeId` AS `Activity_activityTypeId`, `Activity`.`createdBy` AS `Activity_createdBy`, `Activity`.`title` AS `Activity_title`, `Activity`.`description` AS `Activity_description`, `Activity`.`difficulty` AS `Activity_difficulty`, `Activity`.`totalPoints` AS `Activity_totalPoints`, `Activity`.`passingScore` AS `Activity_passingScore`, `Activity`.`attemptsAllowed` AS `Activity_attemptsAllowed`, `Activity`.`timeLimit` AS `Activity_timeLimit`, `Activity`.`order` AS `Activity_order`, `Activity`.`status` AS `Activity_status`, `Activity`.`isRequired` AS `Activity_isRequired`, `Activity`.`adaptiveWeight` AS `Activity_adaptiveWeight`, `Activity`.`publishedAt` AS `Activity_publishedAt`, `Activity__activityType`.`id` AS `Activity__activityType_id`, `Activity__activityType`.`createdAt` AS `Activity__activityType_createdAt`, `Activity__activityType`.`updatedAt` AS `Activity__activityType_updatedAt`, `Activity__activityType`.`deletedAt` AS `Activity__activityType_deletedAt`, `Activity__activityType`.`name` AS `Activity__activityType_name`, `Activity__activityType`.`code` AS `Activity__activityType_code`, `Activity__activityType`.`autoGradable` AS `Activity__activityType_autoGradable`, `Activity__activityType`.`baseWeight` AS `Activity__activityType_baseWeight`, `Activity__activityType`.`configSchema` AS `Activity__activityType_configSchema` FROM `activities` `Activity` LEFT JOIN `activity_types` `Activity__activityType` ON `Activity__activityType`.`id`=`Activity`.`activityTypeId` AND (`Activity__activityType`.`deletedAt` IS NULL) WHERE ( ((`Activity`.`learningUnitId` = ?) AND (`Activity`.`title` = ?)) ) AND ( `Activity`.`deletedAt` IS NULL )) `distinctAlias` ORDER BY `Activity_id` ASC LIMIT 1 -- PARAMETERS: [2,"Completa el condicional"]
+query: START TRANSACTION
+query: INSERT INTO `activities`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `learningUnitId`, `activityTypeId`, `createdBy`, `title`, `description`, `difficulty`, `totalPoints`, `passingScore`, `attemptsAllowed`, `timeLimit`, `order`, `status`, `isRequired`, `adaptiveWeight`, `publishedAt`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, ?, ?, ?, ?, ?) -- PARAMETERS: [2,4,1,"Completa el condicional","Rellena los espacios en blanco del código para que la lógica sea correcta.","basico",10,60,3,0,"published",false,1,"2026-09-26T17:29:56.225Z"]
+query: SELECT `Activity`.`id` AS `Activity_id`, `Activity`.`createdAt` AS `Activity_createdAt`, `Activity`.`updatedAt` AS `Activity_updatedAt`, `Activity`.`deletedAt` AS `Activity_deletedAt`, `Activity`.`difficulty` AS `Activity_difficulty`, `Activity`.`totalPoints` AS `Activity_totalPoints`, `Activity`.`passingScore` AS `Activity_passingScore`, `Activity`.`attemptsAllowed` AS `Activity_attemptsAllowed`, `Activity`.`order` AS `Activity_order`, `Activity`.`status` AS `Activity_status`, `Activity`.`isRequired` AS `Activity_isRequired`, `Activity`.`adaptiveWeight` AS `Activity_adaptiveWeight` FROM `activities` `Activity` WHERE ( `Activity`.`id` = ? ) AND ( `Activity`.`deletedAt` IS NULL ) -- PARAMETERS: [3]
+query: COMMIT
+  + creado: Completa el condicional (FILL_CODE)
+query: SELECT `ActivityQuestion`.`id` AS `ActivityQuestion_id`, `ActivityQuestion`.`createdAt` AS `ActivityQuestion_createdAt`, `ActivityQuestion`.`updatedAt` AS `ActivityQuestion_updatedAt`, `ActivityQuestion`.`deletedAt` AS `ActivityQuestion_deletedAt`, `ActivityQuestion`.`activityId` AS `ActivityQuestion_activityId`, `ActivityQuestion`.`type` AS `ActivityQuestion_type`, `ActivityQuestion`.`question` AS `ActivityQuestion_question`, `ActivityQuestion`.`points` AS `ActivityQuestion_points`, `ActivityQuestion`.`order` AS `ActivityQuestion_order`, `ActivityQuestion`.`config` AS `ActivityQuestion_config` FROM `activity_questions` `ActivityQuestion` WHERE ( ((`ActivityQuestion`.`activityId` = ?)) ) AND ( `ActivityQuestion`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: [3]
+query: START TRANSACTION
+query: INSERT INTO `activity_questions`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `activityId`, `type`, `question`, `points`, `order`, `config`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, ?, ?) -- PARAMETERS: [3,"fill_code","Completa el condicional para que imprima \"mayor de edad\" cuando edad sea 18 o más.",10,0,"{\"codeTemplate\":\"if (edad ___b1___ 18) {\\n  console.log(\\\"mayor de edad\\\");\\n} ___b2___ {\\n  console.log(\\\"menor de edad\\\");\\n}\",\"blanks\":[{\"id\":\"b1\",\"answer\":\">=\"},{\"id\":\"b2\",\"answer\":\"else\"}]}"]
+query: SELECT `ActivityQuestion`.`id` AS `ActivityQuestion_id`, `ActivityQuestion`.`createdAt` AS `ActivityQuestion_createdAt`, `ActivityQuestion`.`updatedAt` AS `ActivityQuestion_updatedAt`, `ActivityQuestion`.`deletedAt` AS `ActivityQuestion_deletedAt`, `ActivityQuestion`.`points` AS `ActivityQuestion_points`, `ActivityQuestion`.`order` AS `ActivityQuestion_order` FROM `activity_questions` `ActivityQuestion` WHERE ( `ActivityQuestion`.`id` = ? ) AND ( `ActivityQuestion`.`deletedAt` IS NULL ) -- PARAMETERS: [3]
+query: COMMIT
+  + creado: pregunta FILL_CODE de la actividad
+query: SELECT DISTINCT `distinctAlias`.`Activity_id` AS `ids_Activity_id` FROM (SELECT `Activity`.`id` AS `Activity_id`, `Activity`.`createdAt` AS `Activity_createdAt`, `Activity`.`updatedAt` AS `Activity_updatedAt`, `Activity`.`deletedAt` AS `Activity_deletedAt`, `Activity`.`learningUnitId` AS `Activity_learningUnitId`, `Activity`.`activityTypeId` AS `Activity_activityTypeId`, `Activity`.`createdBy` AS `Activity_createdBy`, `Activity`.`title` AS `Activity_title`, `Activity`.`description` AS `Activity_description`, `Activity`.`difficulty` AS `Activity_difficulty`, `Activity`.`totalPoints` AS `Activity_totalPoints`, `Activity`.`passingScore` AS `Activity_passingScore`, `Activity`.`attemptsAllowed` AS `Activity_attemptsAllowed`, `Activity`.`timeLimit` AS `Activity_timeLimit`, `Activity`.`order` AS `Activity_order`, `Activity`.`status` AS `Activity_status`, `Activity`.`isRequired` AS `Activity_isRequired`, `Activity`.`adaptiveWeight` AS `Activity_adaptiveWeight`, `Activity`.`publishedAt` AS `Activity_publishedAt`, `Activity__activityType`.`id` AS `Activity__activityType_id`, `Activity__activityType`.`createdAt` AS `Activity__activityType_createdAt`, `Activity__activityType`.`updatedAt` AS `Activity__activityType_updatedAt`, `Activity__activityType`.`deletedAt` AS `Activity__activityType_deletedAt`, `Activity__activityType`.`name` AS `Activity__activityType_name`, `Activity__activityType`.`code` AS `Activity__activityType_code`, `Activity__activityType`.`autoGradable` AS `Activity__activityType_autoGradable`, `Activity__activityType`.`baseWeight` AS `Activity__activityType_baseWeight`, `Activity__activityType`.`configSchema` AS `Activity__activityType_configSchema` FROM `activities` `Activity` LEFT JOIN `activity_types` `Activity__activityType` ON `Activity__activityType`.`id`=`Activity`.`activityTypeId` AND (`Activity__activityType`.`deletedAt` IS NULL) WHERE ( ((`Activity`.`learningUnitId` = ?) AND (`Activity`.`title` = ?)) ) AND ( `Activity`.`deletedAt` IS NULL )) `distinctAlias` ORDER BY `Activity_id` ASC LIMIT 1 -- PARAMETERS: [2,"Página de bienvenida (HTML y CSS)"]
+query: START TRANSACTION
+query: INSERT INTO `activities`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `learningUnitId`, `activityTypeId`, `createdBy`, `title`, `description`, `difficulty`, `totalPoints`, `passingScore`, `attemptsAllowed`, `timeLimit`, `order`, `status`, `isRequired`, `adaptiveWeight`, `publishedAt`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, ?, ?, ?, ?, ?) -- PARAMETERS: [2,4,1,"Página de bienvenida (HTML y CSS)","Escribe el HTML y el CSS de una página de bienvenida.","basico",20,60,3,2,"published",false,1,"2026-09-26T17:29:56.266Z"]
+query: SELECT `Activity`.`id` AS `Activity_id`, `Activity`.`createdAt` AS `Activity_createdAt`, `Activity`.`updatedAt` AS `Activity_updatedAt`, `Activity`.`deletedAt` AS `Activity_deletedAt`, `Activity`.`difficulty` AS `Activity_difficulty`, `Activity`.`totalPoints` AS `Activity_totalPoints`, `Activity`.`passingScore` AS `Activity_passingScore`, `Activity`.`attemptsAllowed` AS `Activity_attemptsAllowed`, `Activity`.`order` AS `Activity_order`, `Activity`.`status` AS `Activity_status`, `Activity`.`isRequired` AS `Activity_isRequired`, `Activity`.`adaptiveWeight` AS `Activity_adaptiveWeight` FROM `activities` `Activity` WHERE ( `Activity`.`id` = ? ) AND ( `Activity`.`deletedAt` IS NULL ) -- PARAMETERS: [4]
+query: COMMIT
+  + creado: Página de bienvenida (HTML_CSS)
+query: SELECT `ActivityQuestion`.`id` AS `ActivityQuestion_id`, `ActivityQuestion`.`createdAt` AS `ActivityQuestion_createdAt`, `ActivityQuestion`.`updatedAt` AS `ActivityQuestion_updatedAt`, `ActivityQuestion`.`deletedAt` AS `ActivityQuestion_deletedAt`, `ActivityQuestion`.`activityId` AS `ActivityQuestion_activityId`, `ActivityQuestion`.`type` AS `ActivityQuestion_type`, `ActivityQuestion`.`question` AS `ActivityQuestion_question`, `ActivityQuestion`.`points` AS `ActivityQuestion_points`, `ActivityQuestion`.`order` AS `ActivityQuestion_order`, `ActivityQuestion`.`config` AS `ActivityQuestion_config` FROM `activity_questions` `ActivityQuestion` WHERE ( ((`ActivityQuestion`.`activityId` = ?)) ) AND ( `ActivityQuestion`.`deletedAt` IS NULL ) LIMIT 1 -- PARAMETERS: [4]
+query: START TRANSACTION
+query: INSERT INTO `activity_questions`(`id`, `createdAt`, `updatedAt`, `deletedAt`, `activityId`, `type`, `question`, `points`, `order`, `config`) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, ?, ?) -- PARAMETERS: [4,"html_css","Crea una página de bienvenida: un título principal (h1) con el texto «Hola», una lista con al menos dos elementos, una imagen con su texto alternativo, y el título en color rojo.",20,0,"{\"starterHtml\":\"<h1></h1>\\n\",\"starterCss\":\"\",\"rules\":[{\"id\":\"titulo\",\"label\":\"Hay un h1 con el texto «Hola»\",\"hint\":\"Escribe Hola dentro del h1\",\"isPublic\":true,\"weight\":20,\"check\":{\"kind\":\"text\",\"selector\":\"h1\",\"mode\":\"contains\",\"value\":\"Hola\"}},{\"id\":\"lista\",\"label\":\"Hay una lista (ul) con al menos 2 elementos\",\"isPublic\":true,\"weight\":20,\"check\":{\"kind\":\"element_count\",\"selector\":\"ul > li\",\"min\":2}},{\"id\":\"imagen\",\"label\":\"Hay una imagen\",\"isPublic\":false,\"weight\":20,\"check\":{\"kind\":\"element_exists\",\"selector\":\"img\"}},{\"id\":\"alt\",\"label\":\"Todas las imágenes tienen alt\",\"isPublic\":false,\"weight\":20,\"check\":{\"kind\":\"a11y\",\"check\":\"img_alt\"}},{\"id\":\"color\",\"label\":\"El título es rojo\",\"isPublic\":false,\"weight\":20,\"check\":{\"kind\":\"css_property\",\"selector\":\"h1\",\"property\":\"color\",\"oneOf\":[\"red\",\"#ff0000\"]}}],\"modelSolution\":{\"html\":\"<h1>Hola</h1>\\n<ul>\\n  <li>Uno</li>\\n  <li>Dos</li>\\n</ul>\\n<img src=\\\"logo.png\\\" alt=\\\"Logo de STIRE\\\">\\n\",\"css\":\"h1 { color: red; }\\n\"}}"]
+query: SELECT `ActivityQuestion`.`id` AS `ActivityQuestion_id`, `ActivityQuestion`.`createdAt` AS `ActivityQuestion_createdAt`, `ActivityQuestion`.`updatedAt` AS `ActivityQuestion_updatedAt`, `ActivityQuestion`.`deletedAt` AS `ActivityQuestion_deletedAt`, `ActivityQuestion`.`points` AS `ActivityQuestion_points`, `ActivityQuestion`.`order` AS `ActivityQuestion_order` FROM `activity_questions` `ActivityQuestion` WHERE ( `ActivityQuestion`.`id` = ? ) AND ( `ActivityQuestion`.`deletedAt` IS NULL ) -- PARAMETERS: [4]
+query: COMMIT
+  + creado: pregunta HTML_CSS de la actividad
+
+✅ Seed de demo completo. Credenciales:
+   docente.demo@stire.local       / Demo1234!
+   estudiante1.demo@stire.local   / Demo1234!
+   estudiante2.demo@stire.local   / Demo1234!
+   estudiante3.demo@stire.local   / Demo1234!
+   Clase: Fundamentos de Algoritmia — Demo (código DEMO-STIRE-01)
+
+[verify:clean 6] npm run build
+
+> stire@0.0.1 build
+> nest build
+
+
+[verify:clean] setup completo. Base de datos de verificacion: stire_verify_clean (puerto 3097). Continua scripts/verify-clean-server-check.js.
+◇ injected env (20) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+login real contra el servidor recien levantado (docente de demo)
+  login OK para docente.demo@stire.local (token recibido)
+verificacion de datos sembrados via GET /enrollment/my
+  OK, status 200
+apagado del servidor
+
+[verify:clean:server-check] limpieza: eliminar base de datos de verificacion stire_verify_clean
+
+[verify:clean] TODO EN VERDE: npm ci -> migration:run -> db:seed:demo -> build -> start -> login real -> apagado.
+```
+
+---
+
 ## Despliegue real y rechazo limpio de CORS · 26 de Septiembre de 2026
 
 - **STIRE quedó desplegado:** página en https://stire-soft.vercel.app (Vercel Hobby) y backend en
