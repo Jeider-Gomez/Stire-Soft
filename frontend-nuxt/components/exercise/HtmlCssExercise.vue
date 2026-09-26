@@ -60,9 +60,7 @@
           <span>{{ workspaceStore.lastAutosave }}</span>
         </div>
         <div class="flex items-center gap-2">
-          <span>Líneas: {{ activeEditorTab === 'html'
-            ? Math.max(workspaceStore.htmlCode.split('\n').length, 12)
-            : Math.max(workspaceStore.cssCode.split('\n').length, 12) }}</span>
+          <span>Líneas: {{ (activeEditorTab === 'html' ? workspaceStore.htmlCode : workspaceStore.cssCode).split('\n').length }}</span>
           <span>•</span>
           <span>Caracteres: {{ (activeEditorTab === 'html' ? workspaceStore.htmlCode : workspaceStore.cssCode).length }}</span>
         </div>

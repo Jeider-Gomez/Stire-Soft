@@ -388,9 +388,9 @@ const masteryDelta = computed(() => {
   return { before, after, diff: Math.max(0, after - before) }
 })
 
-const lineCount = computed(() => {
-  return Math.max(workspaceStore.code.split('\n').length, 18)
-})
+// Fase 26: el mínimo de 18 servía para pintar el margen de números del textarea anterior; CodeMirror ya los dibuja,
+// así que la barra de estado muestra las líneas reales.
+const lineCount = computed(() => workspaceStore.code.split('\n').length)
 
 async function initActivity() {
   const actId = Number(route.params.activityId)

@@ -7,7 +7,7 @@
     <div
       v-show="isLoaded && !isFallback"
       ref="editorContainer"
-      class="cm-host-container flex-1 w-full h-full overflow-hidden"
+      class="cm-host-container flex-1 w-full flex flex-col overflow-hidden"
     ></div>
 
     <!-- Fallback Funcional: textarea mientras carga o ante fallo de red -->
@@ -26,6 +26,8 @@
 </template>
 
 <script setup lang="ts">
+import type { Compartment, Extension } from '@codemirror/state'
+import type { EditorView } from '@codemirror/view'
 import type { HighlightLanguage } from '~/utils/codeLanguages'
 
 const props = withDefaults(
@@ -57,17 +59,20 @@ const editorContainer = ref<HTMLDivElement | null>(null)
 const isLoaded = ref(false)
 const isFallback = ref(false)
 
-let view: any = null
-let languageCompartment: any = null
-let readOnlyCompartment: any = null
+// Solo tipos: CodeMirror se sigue cargando bajo demanda con import() dentro de onMounted.
+let view: EditorView | null = null
+let languageCompartment: Compartment | null = null
+let readOnlyCompartment: Compartment | null = null
 let tabTrapDisabled = false
+// Teclas que no cancelan el «Esc»: sin esto, soltar Esc y pulsar Shift+Tab nunca salía del editor hacia atrás.
+const MODIFIER_KEYS = new Set(['Escape', 'Tab', 'Shift', 'Control', 'Alt', 'Meta'])
 
 function onFallbackInput(event: Event) {
   const target = event.target as HTMLTextAreaElement
   emit('update:modelValue', target.value)
 }
 
-async function loadLanguageExtension(lang: string) {
+async function loadLanguageExtension(lang: string): Promise<Extension> {
   switch (lang) {
     case 'javascript': {
       const { javascript } = await import('@codemirror/lang-javascript')
@@ -237,14 +242,14 @@ onMounted(async () => {
       },
       {
         key: 'Tab',
-        run: (targetView: any) => {
+        run: (targetView: EditorView) => {
           if (tabTrapDisabled) {
             tabTrapDisabled = false
             return false // Deja que el navegador mueva el foco
           }
           return indentMore(targetView)
         },
-        shift: (targetView: any) => {
+        shift: (targetView: EditorView) => {
           if (tabTrapDisabled) {
             tabTrapDisabled = false
             return false // Deja que el navegador mueva el foco hacia atrás
@@ -257,7 +262,7 @@ onMounted(async () => {
     // Resetear tabTrapDisabled si se presiona cualquier otra tecla o se pierde el foco
     const resetTabTrapExtension = EditorView.domEventHandlers({
       keydown: (event) => {
-        if (event.key !== 'Escape' && event.key !== 'Tab') {
+        if (!MODIFIER_KEYS.has(event.key)) {
           tabTrapDisabled = false
         }
       },
@@ -388,8 +393,11 @@ defineExpose({
 </script>
 
 <style scoped>
+/* El editor crece hasta llenar su recuadro (flex), no con height:100%: en los constructores del docente el
+   contenedor no tiene una altura definida y el 100% se resolvía como una sola línea, con el resto en blanco. */
 .code-editor-root :deep(.cm-editor) {
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 .code-editor-root :deep(.cm-scroller) {
   font-family: inherit;
