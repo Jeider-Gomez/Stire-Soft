@@ -32,7 +32,7 @@ const props = withDefaults(
   defineProps<{
     modelValue?: string
     language?: HighlightLanguage | string
-    ariaLabel: string
+    ariaLabel?: string
     placeholder?: string
     readOnly?: boolean
     minHeight?: string
@@ -41,6 +41,7 @@ const props = withDefaults(
   {
     modelValue: '',
     language: 'text',
+    ariaLabel: 'Editor de código',
     placeholder: '',
     readOnly: false,
     minHeight: '12rem',
