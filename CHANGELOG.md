@@ -12,6 +12,37 @@ entry to the oldest.
 
 ---
 
+## Fase 26, Parte B — auditoría y correcciones del editor de código · 26 de Septiembre de 2026
+
+Antigravity entregó la Parte B en `feat/fase-26` (`7e222b9`…`ec48c67`): `CodeEditor.vue` (CodeMirror 6 bajo demanda) en
+el ejercicio de código, en HTML/CSS y en los constructores del docente, selector de lenguaje en «Completar código» y
+resaltado de su plantilla sin `v-html`. Se auditó compilando (`nuxi typecheck` 0, `generate` 0, `npm ci --dry-run` 0)
+y en vivo con Chrome contra una base desechable (backend sin cambios en la rama).
+
+- **Verificado en vivo, sin hallazgos:** el editor carga y reemplaza todos los `<textarea>` (0 visibles); Tab sangra
+  y el foco sigue dentro; Esc + Tab sale; cierre de llaves automático; el autoguardado llega al servidor desde el
+  editor nuevo (`autosaveData` con el código y con el HTML/CSS); «Completar código» con `language: javascript` se
+  pinta con 7 colores y sin `<script>` inyectado; la vista previa HTML/CSS recibe el CSS escrito y conserva
+  `sandbox=""`; el selector del docente ofrece los 6 lenguajes y colorea al elegir JavaScript; «insertar hueco»
+  sigue funcionando; los 6 `<label for>` apuntan al editor; sin errores de consola.
+- **Corregido:**
+  1. **Esc + Shift+Tab no salía del editor** (WCAG 2.1.2 hacia atrás): pulsar Shift cancelaba el «Esc». Las teclas
+     modificadoras ya no lo cancelan.
+  2. **En los constructores del docente el editor medía una línea (43 px)** y el resto del recuadro quedaba en blanco:
+     `height: 100%` no se resolvía sin una altura definida. Ahora el editor crece con flex y llena el recuadro
+     (128–160 px); la pantalla del estudiante no cambia (676 px).
+  3. **La barra de estado decía «Líneas: 18» (código) y «Líneas: 12» (HTML/CSS)** con 7 y 2 líneas reales: el mínimo
+     solo servía para el margen de números del textarea anterior. Ahora muestra las líneas reales.
+  4. `CodeEditor.vue` importaba `@codemirror/autocomplete` sin declararlo (llegaba como dependencia transitiva): ahora
+     es dependencia directa; y las variables del editor dejan de ser `any` (tipos importados con `import type`, sin
+     cambiar la carga bajo demanda).
+- **No es regresión:** al recargar la página el ejercicio vuelve al código inicial; ya era así antes (el borrador se
+  guarda en el servidor pero la pantalla no lo restaura). Queda anotado como mejora.
+- **Precisión sobre el informe de Antigravity:** menciona un panel de enunciado plegable guardado en `localStorage`
+  (B2) que no está en el diff de la rama.
+
+---
+
 ## Pendientes posteriores a la Fase 25 · 25 de Septiembre de 2026
 
 - **Errores del servidor visibles en las páginas antiguas:** 11 sitios (mensajes del docente y del estudiante, rendimiento, seguimiento del alumno, crear clase, unirse a una clase) leían
