@@ -12,6 +12,29 @@ entry to the oldest.
 
 ---
 
+## Funciones del administrador verificadas en producción · 26 de Septiembre de 2026
+
+Con una **cuenta de admin solo para pruebas** (`admin.simulacion@example.com`, creada por el registro y subida a
+Administrador por Jeider desde su panel; su cuenta personal no se usó), se recorrió en el sitio real el panel de
+administración. Solo se actuó sobre usuarios creados en la misma pasada. **Todo funcionó**, sin respuestas ≥ 400 del
+backend ni errores de consola.
+
+- **Aprobar una solicitud de docente:** un usuario nuevo se registró pidiendo el rol (entra como estudiante); el admin lo
+  aprobó en «Solicitudes de Docente» con una nota, y su siguiente inicio de sesión ya es docente. Cierra el pendiente de la
+  simulación anterior, donde la aprobación se hizo en la base.
+- **Cambiar rol:** docente → estudiante → docente desde la tabla; cada inicio de sesión posterior trae el rol nuevo.
+- **«Clave»:** con «Generar aleatoria» el panel muestra la contraseña una sola vez; la anterior deja de servir (401) y la
+  nueva entra.
+- **Desactivar y reactivar:** desactivada, la cuenta no puede iniciar sesión (401); reactivada, vuelve a entrar.
+- **Registrar usuario desde el panel:** la cuenta creada con contraseña generada inicia sesión como estudiante.
+- **Cuenta propia protegida:** la fila del admin dice «Tu propia cuenta (protegida)» y no deja desactivarse.
+- **Estado del sistema y logs** cargan con datos reales; el registro de eventos muestra la aprobación.
+
+Datos de prueba que quedan: `docente.solicitud.6529e5@example.com` (docente) y `creado.por.admin.f39b5c@example.com`
+(estudiante).
+
+---
+
 ## Funciones del docente verificadas en producción · 26 de Septiembre de 2026
 
 A pedido del dueño, para que Julio pueda armar sus cursos, se recorrió en el sitio real (Chrome sobre
