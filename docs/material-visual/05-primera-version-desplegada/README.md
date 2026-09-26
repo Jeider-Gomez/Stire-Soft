@@ -12,7 +12,7 @@ lista de lo que se vio en esta pasada para trabajar en esa versión 2.
 | **Identidad visual** | La paleta nueva de José (semana 6) |
 | **Cómo se tomaron** | Sitio real en producción, con un script en Chrome sin ventana, no a mano. Escritorio 1440 × 900; celular 390 × 844 |
 | **Cuentas usadas** | Las cuentas de prueba del despliegue (`*.simulacion.*@example.com`), con la clase de ejemplo «Algoritmia — prueba de docente (Claude)» y sus 7 tipos de ejercicio |
-| **Administrador** | Jeider inició sesión él mismo en una ventana de Chrome y el script tomó las capturas; la contraseña no pasó por el script. Falta «Estado del Sistema» (`/admin/dashboard`): el script no pasó por esa ruta |
+| **Administrador** | Jeider inició sesión él mismo en una ventana de Chrome y el script tomó las capturas; la contraseña no pasó por el script. |
 
 ## Las capturas
 
@@ -71,6 +71,7 @@ lista de lo que se vio en esta pasada para trabajar en esa versión 2.
 | [`29_admin-usuarios-y-roles.png`](./29_admin-usuarios-y-roles.png) | Usuarios y roles (es también la página de entrada del admin): cambiar rol, «Clave» para dar una contraseña nueva, desactivar, y la pestaña de solicitudes de docente |
 | [`30_admin-logs-y-mantenimiento.png`](./30_admin-logs-y-mantenimiento.png) | Parámetros del sandbox, modelo del Tutor y registro de eventos del servidor |
 | [`31_admin-perfil.png`](./31_admin-perfil.png) | Perfil y cambio de contraseña |
+| [`32_admin-estado-del-sistema.png`](./32_admin-estado-del-sistema.png) | Estado del sistema con datos reales del servidor: latencia de la API, sandbox, base de datos, Tutor y usuarios registrados (ya no es la maqueta de la primera versión) |
 
 ## Para la versión 2 (UX y UI): qué se vio
 
@@ -112,6 +113,8 @@ repositorio; las demás son observaciones de pantalla y hay que comprobarlas ant
 **Administrador** (29–31)
 - Los mismos códigos internos en el menú: «Estado del Sistema (ADM-V01)», «Usuarios y Roles
   (ADM-V02)», «Logs y Mantenimiento (ADM-V03)».
+- Estado del sistema (32) ya muestra datos reales, pero con lenguaje de ingeniería («API Gateway
+  p95», «RSS / Heap», «hardened»); y dice «1 administradores».
 - La tabla de usuarios titula la columna «Correo Institucional», pero acepta cualquier correo.
 - Cada fila apila tres botones y un desplegable (rol, «Rol», «Clave», «Desactivar»): se ve cargado.
   En la versión 2 se puede agrupar en un menú de acciones.
