@@ -12,6 +12,30 @@ entry to the oldest.
 
 ---
 
+## Funciones del docente verificadas en producción · 26 de Septiembre de 2026
+
+A pedido del dueño, para que Julio pueda armar sus cursos, se recorrió en el sitio real (Chrome sobre
+https://stire-soft.vercel.app) todo lo que usa un docente, con la cuenta de prueba. **Todo funcionó**, sin respuestas ≥ 400
+del backend ni errores de consola.
+
+- **Armar el curso:**
+  - crear una clase desde «Crear Nueva Clase» (código `DOC-B7FO`);
+  - en Contenidos: módulo, tema y unidad, y una lección en Markdown con negrita, bloque de código y lista;
+  - publicar el módulo.
+- **Crear ejercicios:** uno de **cada uno de los 7 tipos** desde «Crear ejercicio»: código JS, opción múltiple, completar
+  código, arrastrar y soltar, emparejar, ordenar bloques y HTML/CSS. Todos se guardaron y publicaron (IDs 2 a 8). El
+  selector ofrece los 3 tipos de actividad del catálogo nuevo.
+- **Como estudiante:** se une con el código, la unidad muestra la lección bien formateada y recomienda el siguiente
+  ejercicio («Elegir yo mismo» para los demás), **los 7 ejercicios abren** y una opción múltiple se entrega y se califica.
+- **Seguimiento:** la gestión de la clase muestra al estudiante; rendimiento, mensajes y el panel (KPI: 2 estudiantes, dominio
+  57 %) cargan. El detalle del estudiante trae sus datos reales, pero muestra «ID: #4» en vez del nombre (el endpoint
+  `/analytics/student/:id` no lo devuelve): **mejora pendiente**, no bloquea.
+- **Permisos (misma pasada):** 9 intentos contra el servidor real de un docente o un estudiante sobre acciones de admin
+  (cambiar la clave, el correo, el rol o el estado de otro; listar usuarios; borrar; aprobar solicitudes) devolvieron **403**.
+  El docente que abre `/admin` vuelve a su panel y no ve el botón «Clave».
+
+---
+
 ## Simulación de punta a punta en producción y catálogo de tipos de actividad · 26 de Septiembre de 2026
 
 A pedido del dueño, Claude Code simuló en el sitio real el recorrido completo de un docente y un estudiante.
