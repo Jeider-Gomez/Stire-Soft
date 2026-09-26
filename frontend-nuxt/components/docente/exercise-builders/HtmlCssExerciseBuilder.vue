@@ -17,23 +17,31 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label for="hc-starter-html" class="block font-semibold text-base-texto-primario mb-1">HTML inicial</label>
-          <textarea
-            id="hc-starter-html"
-            v-model="starterHtml"
-            rows="8"
-            placeholder="HTML de partida, puede estar vacío"
-            class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none resize-y focus:ring-2 focus:ring-acento-ambar-fuerte/30 font-mono text-[11px] leading-relaxed"
-          ></textarea>
+          <div class="rounded-md overflow-hidden border border-base-borde-fuerte focus-within:border-acento-ambar-fuerte" style="min-height:8rem">
+            <CodeEditor
+              id="hc-starter-html"
+              v-model="starterHtml"
+              language="html"
+              aria-label="HTML inicial"
+              placeholder="HTML de partida, puede estar vacío"
+              min-height="8rem"
+              class="w-full"
+            />
+          </div>
         </div>
         <div>
           <label for="hc-starter-css" class="block font-semibold text-base-texto-primario mb-1">CSS inicial</label>
-          <textarea
-            id="hc-starter-css"
-            v-model="starterCss"
-            rows="8"
-            placeholder="CSS de partida, puede estar vacío"
-            class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none resize-y focus:ring-2 focus:ring-acento-ambar-fuerte/30 font-mono text-[11px] leading-relaxed"
-          ></textarea>
+          <div class="rounded-md overflow-hidden border border-base-borde-fuerte focus-within:border-acento-ambar-fuerte" style="min-height:8rem">
+            <CodeEditor
+              id="hc-starter-css"
+              v-model="starterCss"
+              language="css"
+              aria-label="CSS inicial"
+              placeholder="CSS de partida, puede estar vacío"
+              min-height="8rem"
+              class="w-full"
+            />
+          </div>
         </div>
       </div>
     </fieldset>
@@ -47,23 +55,31 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label for="hc-model-html" class="block font-semibold text-base-texto-primario mb-1">HTML de la solución *</label>
-          <textarea
-            id="hc-model-html"
-            v-model="modelHtml"
-            rows="8"
-            placeholder="HTML que cumple el 100% de las reglas"
-            class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none resize-y focus:ring-2 focus:ring-acento-ambar-fuerte/30 font-mono text-[11px] leading-relaxed"
-          ></textarea>
+          <div class="rounded-md overflow-hidden border border-base-borde-fuerte focus-within:border-acento-ambar-fuerte" style="min-height:8rem">
+            <CodeEditor
+              id="hc-model-html"
+              v-model="modelHtml"
+              language="html"
+              aria-label="HTML de la solución"
+              placeholder="HTML que cumple el 100% de las reglas"
+              min-height="8rem"
+              class="w-full"
+            />
+          </div>
         </div>
         <div>
           <label for="hc-model-css" class="block font-semibold text-base-texto-primario mb-1">CSS de la solución</label>
-          <textarea
-            id="hc-model-css"
-            v-model="modelCss"
-            rows="8"
-            placeholder="CSS que cumple el 100% de las reglas"
-            class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none resize-y focus:ring-2 focus:ring-acento-ambar-fuerte/30 font-mono text-[11px] leading-relaxed"
-          ></textarea>
+          <div class="rounded-md overflow-hidden border border-base-borde-fuerte focus-within:border-acento-ambar-fuerte" style="min-height:8rem">
+            <CodeEditor
+              id="hc-model-css"
+              v-model="modelCss"
+              language="css"
+              aria-label="CSS de la solución"
+              placeholder="CSS que cumple el 100% de las reglas"
+              min-height="8rem"
+              class="w-full"
+            />
+          </div>
         </div>
       </div>
     </fieldset>
