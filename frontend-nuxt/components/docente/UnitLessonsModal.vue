@@ -12,274 +12,121 @@
       <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
 
       <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
-        <!-- Encabezado del diálogo -->
-        <header class="p-5 border-b border-base-borde-sutil flex items-center justify-between gap-4 bg-base-bg-secundario">
-          <div>
-            <div class="flex items-center gap-2 mb-0.5">
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-acento-ambar/15 text-acento-ambar-fuerte uppercase tracking-wider">
-                Lecciones Teóricas
-              </span>
-              <span v-if="unit" class="text-xs font-semibold text-base-texto-secundario">
-                Unidad {{ unit.id }}
-              </span>
-            </div>
-            <h2 id="modal-lessons-title" class="text-sm font-bold text-base-texto-primario">
-              {{ unit?.title }}
-            </h2>
+        <header class="p-5 border-b border-base-borde-sutil flex items-center justify-between gap-4">
+          <div class="min-w-0">
+            <p class="text-[11px] font-semibold text-base-texto-secundario">Lecciones</p>
+            <h2 id="modal-lessons-title" class="text-sm font-bold text-base-texto-primario truncate">{{ unit?.title }}</h2>
           </div>
-
-          <button
-            @click="handleClose"
-            class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded p-1"
-            aria-label="Cerrar panel de lecciones">
-            ✕
-          </button>
+          <div class="flex items-center gap-2">
+            <button
+              @click="openCreateForm"
+              class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar inline-flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+              <Plus :size="14" aria-hidden="true" /> Nueva lección
+            </button>
+            <button
+              @click="handleClose"
+              class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+              aria-label="Cerrar lecciones">
+              <X :size="18" aria-hidden="true" />
+            </button>
+          </div>
         </header>
 
-        <!-- Mensajes de feedback / error -->
-        <div v-if="feedbackMsg" role="status" class="mx-5 mt-4 p-2.5 bg-semantico-pasa/10 border border-semantico-pasa/40 text-semantico-pasa rounded-lg text-xs flex items-center justify-between">
-          <span>✔ {{ feedbackMsg }}</span>
-          <button @click="feedbackMsg = null" class="text-[11px] underline">Cerrar</button>
+        <div v-if="feedbackMsg" role="status" class="mx-5 mt-4 p-2.5 bg-semantico-pasa/10 border border-semantico-pasa/40 text-semantico-pasa rounded-lg text-xs">
+          {{ feedbackMsg }}
         </div>
-        <div v-if="errorMsg" role="alert" class="mx-5 mt-4 p-2.5 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-lg text-xs flex items-center justify-between">
-          <span>✖ {{ errorMsg }}</span>
-          <button @click="errorMsg = null" class="text-[11px] underline">Cerrar</button>
+        <div v-if="errorMsg" role="alert" class="mx-5 mt-4 p-2.5 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-lg text-xs">
+          {{ errorMsg }}
         </div>
 
-        <!-- Contenido principal con scroll -->
-        <div class="p-5 overflow-y-auto space-y-4 flex-1 text-xs">
-          <!-- VISTA 1: Lista de Lecciones -->
-          <div v-if="!showForm" class="space-y-4">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-base-texto-secundario">
-                Bloques de lectura (tipo Markdown)
-              </span>
-              <button
-                @click="openCreateForm"
-                class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <span>+</span>
-                <span>Nueva lección</span>
-              </button>
-            </div>
+        <div class="p-5 overflow-y-auto space-y-3 flex-1 text-xs">
+          <p v-if="isLoading" class="p-8 text-center text-base-texto-secundario animate-pulse">Cargando lecciones…</p>
 
-            <!-- Cargando -->
-            <div v-if="isLoading" class="p-8 text-center text-xs text-base-texto-secundario">
-              <span class="inline-block animate-spin mr-2">⏳</span> Cargando lecciones...
-            </div>
-
-            <!-- Sin lecciones -->
-            <div v-else-if="lessons.length === 0" class="p-8 text-center bg-base-bg-secundario rounded-xl border border-base-borde-sutil space-y-2">
-              <span class="text-2xl">📝</span>
-              <p class="font-semibold text-base-texto-primario">Sin lecciones teóricas aún</p>
-              <p class="text-base-texto-secundario max-w-sm mx-auto text-[11px]">
-                Esta unidad no tiene material de lectura. Agrega lecciones en Markdown para que los estudiantes aprendan los conceptos.
-              </p>
-            </div>
-
-            <!-- Lista de lecciones ordenadas -->
-            <div v-else class="space-y-2">
-              <div
-                v-for="(item, idx) in sortedLessons"
-                :key="item.id"
-                class="p-3 rounded-lg border border-base-borde-sutil bg-base-blanco flex items-start justify-between gap-3 hover:border-base-borde-fuerte transition-colors">
-                <div class="flex-1 min-w-0 space-y-1">
-                  <div class="flex items-center gap-2">
-                    <span class="w-5 h-5 rounded bg-base-bg-secundario font-mono text-[10px] font-bold text-base-texto-secundario flex items-center justify-center">
-                      {{ item.order ?? (idx + 1) }}
-                    </span>
-                    <h3 class="font-bold text-base-texto-primario truncate">
-                      {{ item.title }}
-                    </h3>
-                    <span
-                      class="px-1.5 py-0.5 rounded text-[10px] font-bold"
-                      :class="item.isVisible !== false ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-texto-secundario/20 text-base-texto-secundario'">
-                      {{ item.isVisible !== false ? 'Visible' : 'Oculta' }}
-                    </span>
-                  </div>
-
-                  <p v-if="item.body" class="text-base-texto-secundario text-[11px] line-clamp-2 font-mono bg-base-bg-secundario p-1.5 rounded">
-                    {{ item.body }}
-                  </p>
-                </div>
-
-                <div class="flex items-center gap-1.5 shrink-0 pt-0.5">
-                  <!-- Reordenar subir/bajar -->
-                  <div class="flex items-center gap-1">
-                    <button
-                      :disabled="idx === 0 || isReordering"
-                      @click="moveLesson(idx, -1)"
-                      title="Subir lección"
-                      class="p-1 rounded text-xs text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none transition-colors"
-                      aria-label="Subir lección">
-                      ▲
-                    </button>
-                    <button
-                      :disabled="idx === sortedLessons.length - 1 || isReordering"
-                      @click="moveLesson(idx, 1)"
-                      title="Bajar lección"
-                      class="p-1 rounded text-xs text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none transition-colors"
-                      aria-label="Bajar lección">
-                      ▼
-                    </button>
-                  </div>
-
-                  <!-- Alternar visibilidad -->
-                  <button
-                    :disabled="togglingId === item.id"
-                    @click="toggleLessonVisibility(item)"
-                    class="px-2 py-1 rounded text-[11px] font-semibold border border-base-borde-fuerte bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
-                    :title="item.isVisible !== false ? 'Ocultar lección' : 'Mostrar lección'">
-                    {{ item.isVisible !== false ? '👁 Ocultar' : '👁‍🗨 Mostrar' }}
-                  </button>
-
-                  <!-- Editar -->
-                  <button
-                    @click="openEditForm(item)"
-                    class="px-2 py-1 rounded text-[11px] font-semibold border border-base-borde-fuerte bg-base-blanco text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                    ✏ Editar
-                  </button>
-
-                  <!-- Borrar -->
-                  <button
-                    @click="confirmDelete(item)"
-                    class="px-2 py-1 rounded text-[11px] font-semibold border border-semantico-falla/30 text-semantico-falla hover:bg-semantico-falla/10 transition-colors focus:outline-none focus:ring-2 focus:ring-semantico-falla">
-                    🗑
-                  </button>
-                </div>
-              </div>
-            </div>
+          <div v-else-if="lessons.length === 0" class="p-8 text-center bg-base-bg-secundario rounded-xl border border-base-borde-sutil space-y-2">
+            <FileText :size="28" class="mx-auto text-base-texto-secundario" aria-hidden="true" />
+            <p class="font-semibold text-base-texto-primario">Esta unidad todavía no tiene lecciones</p>
+            <p class="text-base-texto-secundario max-w-sm mx-auto text-[11px]">
+              Una lección corta (la idea, un ejemplo y un error común) prepara al estudiante antes de los ejercicios.
+            </p>
           </div>
 
-          <!-- VISTA 2: Formulario Crear / Editar Lección -->
-          <form v-else @submit.prevent="submitLessonForm" class="space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-base-borde-sutil">
-              <h3 class="font-bold text-base-texto-primario">
-                {{ formState.isEditing ? 'Editar Lección' : 'Nueva Lección' }}
-              </h3>
-              <div class="flex items-center gap-2">
-                <button
-                  type="button"
-                  @click="previewActive = !previewActive"
-                  class="px-2.5 py-1 rounded text-[11px] font-semibold border transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
-                  :class="previewActive ? 'bg-acento-ambar/20 border-acento-ambar-fuerte text-acento-ambar-fuerte' : 'bg-base-blanco border-base-borde-fuerte text-base-texto-primario'">
-                  {{ previewActive ? 'Ocultar Vista Previa' : '👁 Vista Previa' }}
+          <ul v-else class="space-y-2">
+            <li
+              v-for="(item, idx) in sortedLessons"
+              :key="item.id"
+              class="p-3 rounded-lg border border-base-borde-sutil flex items-center justify-between gap-3 hover:border-base-borde-fuerte transition-colors">
+              <button type="button" @click="openEditForm(item)" class="flex-1 min-w-0 text-left rounded focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+                <span class="flex items-center gap-2">
+                  <span class="font-bold text-base-texto-primario truncate">{{ item.title }}</span>
+                  <span v-if="item.isVisible === false" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-base-texto-secundario/20 text-base-texto-secundario">Oculta</span>
+                </span>
+                <span v-if="item.body" class="block text-base-texto-secundario text-[11px] truncate mt-0.5">{{ excerpt(item.body) }}</span>
+              </button>
+
+              <div class="flex items-center gap-0.5 shrink-0">
+                <button :disabled="idx === 0 || isReordering" @click="moveLesson(idx, -1)"
+                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none"
+                  aria-label="Subir lección" title="Subir">
+                  <ChevronUp :size="16" aria-hidden="true" />
+                </button>
+                <button :disabled="idx === sortedLessons.length - 1 || isReordering" @click="moveLesson(idx, 1)"
+                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none"
+                  aria-label="Bajar lección" title="Bajar">
+                  <ChevronDown :size="16" aria-hidden="true" />
+                </button>
+                <button :disabled="togglingId === item.id" @click="toggleLessonVisibility(item)"
+                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                  :aria-label="item.isVisible !== false ? `Ocultar ${item.title}` : `Mostrar ${item.title}`"
+                  :title="item.isVisible !== false ? 'Ocultar a los estudiantes' : 'Mostrar a los estudiantes'">
+                  <Eye v-if="item.isVisible !== false" :size="16" aria-hidden="true" />
+                  <EyeOff v-else :size="16" aria-hidden="true" />
+                </button>
+                <button @click="openEditForm(item)"
+                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                  :aria-label="`Editar ${item.title}`" title="Editar">
+                  <Pencil :size="16" aria-hidden="true" />
+                </button>
+                <button @click="confirmDelete(item)"
+                  class="p-1.5 rounded text-base-texto-secundario hover:text-semantico-falla hover:bg-semantico-falla/10 focus:outline-none focus:ring-2 focus:ring-semantico-falla"
+                  :aria-label="`Eliminar ${item.title}`" title="Eliminar">
+                  <Trash2 :size="16" aria-hidden="true" />
                 </button>
               </div>
-            </div>
+            </li>
+          </ul>
 
-            <div>
-              <label for="lesson-title-input" class="block font-semibold text-base-texto-primario mb-1">
-                Título de la lección *
-              </label>
-              <input
-                id="lesson-title-input"
-                ref="lessonTitleRef"
-                v-model="formState.title"
-                type="text"
-                required
-                placeholder="Ej. Introducción a los condicionales en JavaScript"
-                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario" />
-            </div>
-
-            <div>
-              <label for="lesson-body-input" class="block font-semibold text-base-texto-primario mb-1">
-                Contenido Markdown *
-              </label>
-              <p class="text-[11px] text-base-texto-secundario mb-1.5">
-                Soporta # Encabezados, **negrita**, *cursiva*, `código`, bloques ``` y listas con guion -.
-              </p>
-              <textarea
-                id="lesson-body-input"
-                v-model="formState.body"
-                required
-                rows="8"
-                placeholder="# Título de la lección&#10;&#10;Escribe aquí la explicación teórica...&#10;&#10;```javascript&#10;const x = 10;&#10;```"
-                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 resize-y font-mono text-xs text-base-texto-primario"></textarea>
-            </div>
-
-            <!-- Vista previa condicional -->
-            <div v-if="previewActive" class="p-4 rounded-lg bg-base-bg-secundario border border-base-borde-sutil space-y-2">
-              <span class="text-[10px] font-bold text-base-texto-secundario uppercase tracking-wider block">
-                Vista Previa del Estudiante
-              </span>
-              <h2 v-if="formState.title" class="text-sm font-bold text-base-texto-primario">
-                {{ formState.title }}
-              </h2>
-              <div
-                v-if="formState.body"
-                class="prose prose-xs space-y-2 text-xs text-base-texto-primario"
-                v-html="formatMarkdown(formState.body, { escapeHtml: true })" />
-              <p v-else class="text-xs text-base-texto-secundario italic">
-                Escribe algo en el cuerpo para ver la vista previa.
-              </p>
-            </div>
-
-            <p v-if="formError" role="alert" class="text-semantico-falla text-[11px]">
-              {{ formError }}
-            </p>
-
-            <div class="flex items-center justify-end gap-3 pt-2">
-              <button
-                type="button"
-                @click="cancelForm"
-                class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-base-borde-fuerte">
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                :disabled="isSaving"
-                class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <span v-if="isSaving" class="animate-spin">⚙️</span>
-                <span>{{ isSaving ? 'Guardando…' : (formState.isEditing ? '✔ Guardar cambios' : '✔ Crear lección') }}</span>
-              </button>
-            </div>
-          </form>
-
-          <!-- Diálogo de confirmación para borrar -->
-          <div
-            v-if="lessonToDelete"
-            class="p-4 rounded-xl border border-semantico-falla/30 bg-semantico-falla/5 space-y-3">
-            <p class="font-bold text-semantico-falla">
-              ¿Eliminar definitivamente la lección "{{ lessonToDelete.title }}"?
-            </p>
-            <p class="text-base-texto-secundario text-[11px]">
-              Esta acción no se puede deshacer.
-            </p>
+          <div v-if="lessonToDelete" class="p-4 rounded-xl border border-semantico-falla/30 bg-semantico-falla/5 space-y-3">
+            <p class="font-bold text-semantico-falla">¿Eliminar la lección «{{ lessonToDelete.title }}»?</p>
+            <p class="text-base-texto-secundario text-[11px]">No se puede deshacer. Si solo quieres que los estudiantes no la vean, usa el ojo para ocultarla.</p>
             <div class="flex items-center justify-end gap-2">
-              <button
-                type="button"
-                @click="lessonToDelete = null"
-                class="px-3 py-1.5 rounded-md borde-afordancia text-xs font-semibold bg-base-blanco">
-                Cancelar
-              </button>
-              <button
-                type="button"
-                :disabled="isDeleting"
-                @click="executeDelete"
+              <button type="button" @click="lessonToDelete = null" class="px-3 py-1.5 rounded-md borde-afordancia text-xs font-semibold bg-base-blanco">Cancelar</button>
+              <button type="button" :disabled="isDeleting" @click="executeDelete"
                 class="px-4 py-1.5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50">
-                {{ isDeleting ? 'Eliminando…' : 'Confirmar eliminación' }}
+                {{ isDeleting ? 'Eliminando…' : 'Eliminar' }}
               </button>
             </div>
           </div>
         </div>
-
-        <!-- Pie del modal -->
-        <footer class="p-4 border-t border-base-borde-sutil bg-base-bg-secundario flex items-center justify-end">
-          <button
-            type="button"
-            @click="handleClose"
-            class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario bg-base-blanco hover:bg-base-bg-secundario">
-            Cerrar
-          </button>
-        </footer>
       </div>
     </div>
   </Teleport>
+
+  <!-- Editor a pantalla completa (fase C) -->
+  <DocenteLessonEditor
+    v-if="showForm"
+    :unit-title="unit?.title || ''"
+    :is-editing="formState.isEditing"
+    :initial-title="formState.title"
+    :initial-body="formState.body"
+    :saving="isSaving"
+    :error="formError"
+    @cancel="cancelForm"
+    @save="onEditorSave" />
 </template>
 
 <script setup lang="ts">
+import { Plus, X, FileText, ChevronUp, ChevronDown, Eye, EyeOff, Pencil, Trash2 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
-import { formatMarkdown } from '~/utils/formatMarkdown'
 
 interface LessonItem {
   id: number
@@ -308,48 +155,50 @@ const lessons = ref<LessonItem[]>([])
 const feedbackMsg = ref<string | null>(null)
 const errorMsg = ref<string | null>(null)
 
-// Form state
 const showForm = ref(false)
-const previewActive = ref(false)
 const isSaving = ref(false)
 const formError = ref<string | null>(null)
-const lessonTitleRef = ref<HTMLInputElement | null>(null)
-const formState = reactive({
-  isEditing: false,
-  id: 0,
-  title: '',
-  body: '',
-  order: 0
-})
+const formState = reactive({ isEditing: false, id: 0, title: '', body: '', order: 0 })
 
-// Acciones en curso
 const togglingId = ref<number | null>(null)
 const isReordering = ref(false)
 const lessonToDelete = ref<LessonItem | null>(null)
 const isDeleting = ref(false)
 
-const sortedLessons = computed(() => {
-  return [...lessons.value].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-})
-
+const sortedLessons = computed(() => [...lessons.value].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
 const dialogRef = ref<HTMLElement | null>(null)
 
-async function openModal() {
+/** Primera línea con texto, sin marcas de Markdown: para reconocer la lección en la lista. */
+function excerpt(body: string) {
+  const line = body.split('\n').map((l) => l.replace(/[#*`>-]/g, '').trim()).find((l) => l.length > 0) ?? ''
+  return line.length > 110 ? line.slice(0, 110) + '…' : line
+}
+
+/**
+ * Abre el panel. `create` va directo a escribir una lección nueva y `editId` a editar una existente
+ * (los usa el constructor del curso para no pasar por la lista).
+ */
+async function openModal(opts: { create?: boolean; editId?: number } = {}) {
   isOpen.value = true
   showForm.value = false
   feedbackMsg.value = null
   errorMsg.value = null
   lessonToDelete.value = null
-  // El foco entra al diálogo (antes se quedaba en el botón de atrás y Escape no llegaba a cerrarlo).
   nextTick(() => dialogRef.value?.focus())
   await fetchLessons()
+  if (opts.create) openCreateForm()
+  else if (opts.editId) {
+    const found = lessons.value.find((l) => l.id === opts.editId)
+    if (found) openEditForm(found)
+  }
 }
 
-// Escape: si hay una confirmación de borrar abierta se cierra primero; si no, el modal.
+// Escape: primero cierra el editor o la confirmación de borrar; si no hay nada encima, el panel.
 useEscapeToClose(
   () => isOpen.value,
   () => {
-    if (lessonToDelete.value) lessonToDelete.value = null
+    if (showForm.value) cancelForm()
+    else if (lessonToDelete.value) lessonToDelete.value = null
     else handleClose()
   }
 )
@@ -366,8 +215,8 @@ async function fetchLessons() {
   try {
     const res = await api.get<LessonItem[]>(`/content/unit/${props.unit.id}/all`)
     lessons.value = Array.isArray(res) ? res : []
-  } catch (err: any) {
-    errorMsg.value = messageOf(err, 'Error al cargar las lecciones de la unidad.')
+  } catch (err) {
+    errorMsg.value = messageOf(err, 'No se pudieron cargar las lecciones de la unidad.')
   } finally {
     isLoading.value = false
   }
@@ -375,27 +224,15 @@ async function fetchLessons() {
 
 function openCreateForm() {
   const maxOrder = lessons.value.reduce((max, l) => Math.max(max, l.order ?? 0), 0)
-  formState.isEditing = false
-  formState.id = 0
-  formState.title = ''
-  formState.body = ''
-  formState.order = maxOrder + 1
+  Object.assign(formState, { isEditing: false, id: 0, title: '', body: '', order: maxOrder + 1 })
   formError.value = null
-  previewActive.value = false
   showForm.value = true
-  nextTick(() => lessonTitleRef.value?.focus())
 }
 
 function openEditForm(lesson: LessonItem) {
-  formState.isEditing = true
-  formState.id = lesson.id
-  formState.title = lesson.title
-  formState.body = lesson.body || ''
-  formState.order = lesson.order
+  Object.assign(formState, { isEditing: true, id: lesson.id, title: lesson.title, body: lesson.body || '', order: lesson.order })
   formError.value = null
-  previewActive.value = false
   showForm.value = true
-  nextTick(() => lessonTitleRef.value?.focus())
 }
 
 function cancelForm() {
@@ -403,46 +240,33 @@ function cancelForm() {
   formError.value = null
 }
 
-async function submitLessonForm() {
+async function onEditorSave(payload: { title: string; body: string }) {
   if (!props.unit) return
-  if (!formState.title.trim()) {
-    formError.value = 'El título de la lección es obligatorio.'
-    return
-  }
-  if (!formState.body.trim()) {
-    formError.value = 'El contenido de la lección no puede estar vacío.'
-    return
-  }
-
+  if (!payload.title) { formError.value = 'Ponle un título a la lección.'; return }
+  if (!payload.body) { formError.value = 'La lección está vacía.'; return }
   isSaving.value = true
   formError.value = null
   try {
     if (formState.isEditing) {
-      const updated = await api.patch<LessonItem>(`/content/${formState.id}`, {
-        title: formState.title.trim(),
-        body: formState.body.trim(),
-        order: formState.order
-      })
-      const idx = lessons.value.findIndex(l => l.id === formState.id)
-      if (idx !== -1) {
-        lessons.value[idx] = updated
-      }
-      feedbackMsg.value = `Lección "${updated.title}" actualizada correctamente.`
+      const updated = await api.patch<LessonItem>(`/content/${formState.id}`, { title: payload.title, body: payload.body, order: formState.order })
+      const idx = lessons.value.findIndex((l) => l.id === formState.id)
+      if (idx !== -1) lessons.value[idx] = updated
+      feedbackMsg.value = `Lección «${updated.title}» guardada.`
     } else {
       const created = await api.post<LessonItem>('/content', {
         learningUnitId: props.unit.id,
-        title: formState.title.trim(),
+        title: payload.title,
         type: 'markdown',
-        body: formState.body.trim(),
+        body: payload.body,
         order: formState.order,
         isVisible: true
       })
       lessons.value.push(created)
-      feedbackMsg.value = `Lección "${created.title}" creada correctamente.`
+      feedbackMsg.value = `Lección «${created.title}» creada. Ya la ven tus estudiantes.`
     }
     showForm.value = false
-  } catch (err: any) {
-    formError.value = messageOf(err, 'Error al guardar la lección.')
+  } catch (err) {
+    formError.value = messageOf(err, 'No se pudo guardar la lección.')
   } finally {
     isSaving.value = false
   }
@@ -454,8 +278,8 @@ async function toggleLessonVisibility(lesson: LessonItem) {
   try {
     const res = await api.patch<LessonItem>(`/content/${lesson.id}/visibility`)
     lesson.isVisible = res.isVisible
-    feedbackMsg.value = `Visibilidad de "${lesson.title}" actualizada a ${lesson.isVisible ? 'Visible' : 'Oculta'}.`
-  } catch (err: any) {
+    feedbackMsg.value = lesson.isVisible ? `«${lesson.title}» ya es visible.` : `«${lesson.title}» quedó oculta para los estudiantes.`
+  } catch (err) {
     errorMsg.value = messageOf(err, 'No se pudo cambiar la visibilidad de la lección.')
   } finally {
     togglingId.value = null
@@ -466,31 +290,20 @@ async function moveLesson(index: number, direction: -1 | 1) {
   const targetIndex = index + direction
   const list = [...sortedLessons.value]
   if (targetIndex < 0 || targetIndex >= list.length) return
-
   isReordering.value = true
   errorMsg.value = null
-
-  // Intercambia las posiciones EN EL ARREGLO y numera de 1 a n según el nuevo orden. (Antes solo se
-  // intercambiaba el campo `order` y luego se numeraba el arreglo sin mover: se enviaba siempre el orden
-  // anterior y reordenar no hacía nada.)
+  // Se intercambian las posiciones en el arreglo y se numera de 1 a n según el nuevo orden.
   ;[list[index], list[targetIndex]] = [list[targetIndex], list[index]]
-
-  const reorderPayload = list.map((item, idx) => ({
-    id: item.id,
-    order: idx + 1
-  }))
-
+  const reorderPayload = list.map((item, idx) => ({ id: item.id, order: idx + 1 }))
   try {
     await api.post('/content/reorder', reorderPayload)
-    // Update local orders
     for (const r of reorderPayload) {
-      const found = lessons.value.find(l => l.id === r.id)
+      const found = lessons.value.find((l) => l.id === r.id)
       if (found) found.order = r.order
     }
-    feedbackMsg.value = 'Orden de lecciones actualizado.'
-  } catch (err: any) {
-    errorMsg.value = messageOf(err, 'Error al reordenar las lecciones.')
-    await fetchLessons() // restaurar orden real
+  } catch (err) {
+    errorMsg.value = messageOf(err, 'No se pudo cambiar el orden de las lecciones.')
+    await fetchLessons()
   } finally {
     isReordering.value = false
   }
@@ -506,17 +319,15 @@ async function executeDelete() {
   errorMsg.value = null
   try {
     await api.del(`/content/${lessonToDelete.value.id}`)
-    lessons.value = lessons.value.filter(l => l.id !== lessonToDelete.value!.id)
-    feedbackMsg.value = `Lección "${lessonToDelete.value.title}" eliminada.`
+    lessons.value = lessons.value.filter((l) => l.id !== lessonToDelete.value!.id)
+    feedbackMsg.value = `Lección «${lessonToDelete.value.title}» eliminada.`
     lessonToDelete.value = null
-  } catch (err: any) {
-    errorMsg.value = messageOf(err, 'Error al eliminar la lección.')
+  } catch (err) {
+    errorMsg.value = messageOf(err, 'No se pudo eliminar la lección.')
   } finally {
     isDeleting.value = false
   }
 }
 
-defineExpose({
-  openModal
-})
+defineExpose({ openModal })
 </script>

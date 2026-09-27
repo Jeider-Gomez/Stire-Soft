@@ -207,7 +207,7 @@
                         Lecciones <span v-if="lessonsByUnit[unit.id]">({{ lessonsByUnit[unit.id].length }})</span>
                       </h4>
                       <button
-                        @click="openLessonsModal(unit)"
+                        @click="openLessonsModal(unit, lessonsByUnit[unit.id]?.length ? {} : { create: true })"
                         class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar inline-flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                         :aria-label="`Gestionar lecciones de la unidad ${unit.title}`">
                         <BookOpen :size="14" aria-hidden="true" /> {{ lessonsByUnit[unit.id]?.length ? 'Lecciones' : 'Escribir lección' }}
@@ -218,12 +218,18 @@
                       Sin lecciones. Una lección corta con un ejemplo prepara al estudiante antes de los ejercicios.
                     </p>
                     <ul v-else class="divide-y divide-base-borde-sutil rounded-lg border border-base-borde-sutil bg-base-blanco">
-                      <li v-for="l in lessonsByUnit[unit.id]" :key="l.id" class="flex items-center justify-between gap-2 px-3 py-2">
-                        <span class="flex items-center gap-2 min-w-0">
-                          <FileText :size="14" class="shrink-0 text-base-texto-secundario" aria-hidden="true" />
-                          <span class="truncate text-base-texto-primario">{{ l.title }}</span>
-                        </span>
-                        <span v-if="l.isVisible === false" class="text-[10px] font-bold text-base-texto-secundario">Oculta</span>
+                      <li v-for="l in lessonsByUnit[unit.id]" :key="l.id">
+                        <button
+                          type="button"
+                          @click="openLessonsModal(unit, { editId: l.id })"
+                          class="w-full flex items-center justify-between gap-2 px-3 py-2 text-left hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded-lg"
+                          :aria-label="`Editar la lección ${l.title}`">
+                          <span class="flex items-center gap-2 min-w-0">
+                            <FileText :size="14" class="shrink-0 text-base-texto-secundario" aria-hidden="true" />
+                            <span class="truncate text-base-texto-primario">{{ l.title }}</span>
+                          </span>
+                          <span v-if="l.isVisible === false" class="text-[10px] font-bold text-base-texto-secundario">Oculta</span>
+                        </button>
                       </li>
                     </ul>
                   </div>
@@ -539,10 +545,10 @@ function openNewUnitModal(sec: SectionItem, topic: TopicItem) {
   builderModalsRef.value?.openCreateUnit(sec.id, topic.id, maxOrder)
 }
 
-function openLessonsModal(unit: LearningUnitItem) {
+function openLessonsModal(unit: LearningUnitItem, opts: { create?: boolean; editId?: number } = {}) {
   selectedUnitForLessons.value = { id: unit.id, title: unit.title }
   nextTick(() => {
-    lessonsModalRef.value?.openModal()
+    lessonsModalRef.value?.openModal(opts)
   })
 }
 
