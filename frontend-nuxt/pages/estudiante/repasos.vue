@@ -3,17 +3,11 @@
     <!-- Cabecera de Repasos SM-2 (EST-V05) -->
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-acento-ambar/15 text-acento-ambar-fuerte uppercase tracking-wider">
-            Memoria Activa • Motor SM-2
-          </span>
-          <span class="text-xs text-base-texto-secundario">Sesión Preventiva</span>
-        </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
           Repasos Diarios de Algoritmia
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
-          Consolidación de conceptos antes de que decaiga la curva del olvido
+          Repasa justo antes de olvidar: unos minutos hoy te ahorran volver a estudiar desde cero.
         </p>
       </div>
 

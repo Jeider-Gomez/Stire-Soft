@@ -2,13 +2,8 @@
   <div class="max-w-5xl mx-auto space-y-6">
     <!-- Cabecera de Mi Progreso (EST-V06) -->
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
-      <div class="flex items-center gap-2 mb-1">
-        <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-          Analítica Formativa • Metacognición Accionable
-        </span>
-      </div>
       <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-        Mi Progreso y Nivel de Dominio Cognitivo
+        Mi progreso
       </h1>
       <p class="text-xs text-base-texto-secundario mt-0.5">
         Cómo vas en cada unidad que has trabajado
@@ -18,8 +13,8 @@
     <!-- Resumen de Métricas Clave -->
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
-        <span class="text-xs text-base-texto-secundario block font-medium">Dominio General Ponderado</span>
-        <span class="text-2xl font-bold text-semantico-pasa mt-1 block">{{ studentStore.analytics.avgMastery }}%</span>
+        <span class="text-xs text-base-texto-secundario block font-medium">Dominio general</span>
+        <span class="text-2xl font-bold mt-1 block" :class="masteryColor(studentStore.analytics.avgMastery)">{{ studentStore.analytics.avgMastery }}%</span>
         <span class="text-[10px] text-base-texto-secundario">{{ getMasteryLevelName(studentStore.analytics.avgMastery) }}</span>
       </div>
 
@@ -32,7 +27,7 @@
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
         <span class="text-xs text-base-texto-secundario block font-medium">Repasos Pendientes</span>
         <span class="text-2xl font-bold text-acento-ambar-fuerte mt-1 block">{{ studentStore.reviews.length }}</span>
-        <span class="text-[10px] text-base-texto-secundario">Listos para consolidar</span>
+        <span class="text-[10px] text-base-texto-secundario">Para hoy</span>
       </div>
     </section>
 
@@ -41,7 +36,7 @@
       <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
         <div>
           <h2 class="text-sm font-bold text-base-texto-primario">
-            Estado de Dominio Cualitativo por Unidad
+            Cómo vas en cada unidad
           </h2>
           <p class="text-[11px] text-base-texto-secundario">
             Estados: No visto → Explorado → En práctica → Comprensión parcial → Dominado
@@ -54,6 +49,10 @@
       </div>
 
       <div class="space-y-4 pt-2">
+        <p v-if="studentStore.analytics.masteryByUnit.length === 0" class="text-xs text-base-texto-secundario italic">
+          Todavía no has practicado ninguna unidad. Empieza por la primera desde el
+          <NuxtLink to="/estudiante" class="underline">inicio</NuxtLink>: aquí verás cómo avanzas.
+        </p>
         <div
           v-for="item in studentStore.analytics.masteryByUnit"
           :key="item.unitId"
@@ -161,6 +160,12 @@ function resultLabel(sub: { status: string; passed: boolean | null }) {
   if (sub.passed === true) return 'Aprobado'
   if (sub.passed === false) return 'No aprobado'
   return 'Calificado'
+}
+
+function masteryColor(p: number) {
+  if (p >= 70) return 'text-semantico-pasa'
+  if (p >= 40) return 'text-acento-ambar-fuerte'
+  return 'text-base-texto-primario'
 }
 
 function getMasteryLevelName(percentage: number) {

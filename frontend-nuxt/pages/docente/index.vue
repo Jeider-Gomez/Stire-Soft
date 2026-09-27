@@ -263,26 +263,10 @@
             </span>
           </div>
 
-          <!-- ─── Fila de datos de la clase ─── -->
-          <div class="grid grid-cols-3 gap-3 p-4 bg-stire-canvas rounded-xl border border-slate-100 mb-5">
-            <div class="text-center">
-              <p class="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Código de Ingreso</p>
-              <p class="text-sm font-mono font-bold text-stire-blue">{{ cls.code }}</p>
-            </div>
-            <div class="text-center border-x border-slate-200">
-              <p class="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Estado</p>
-              <p class="text-sm font-semibold flex items-center justify-center gap-1.5">
-                <Check :size="13" class="text-stire-success" />
-                <span class="text-stire-success">Habilitada</span>
-              </p>
-            </div>
-            <div class="text-center">
-              <p class="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Matrícula</p>
-              <p class="text-sm font-semibold text-slate-700">
-                {{ cls.requiresApproval ? 'Con aprobación' : 'Directa' }}
-              </p>
-            </div>
-          </div>
+          <!-- Cómo entran los estudiantes (el código ya está arriba, con Copiar y QR) -->
+          <p class="text-xs text-slate-500 mb-5">
+            Matrícula {{ cls.requiresApproval ? 'con aprobación: apruebas a cada estudiante en «Matrícula».' : 'directa: entra quien tenga el código.' }}
+          </p>
 
           <!-- ─── ZONA DE ACCIONES (espaciosa) ─── -->
           <div class="flex flex-wrap gap-2.5 pt-4 border-t border-slate-100">

@@ -6,12 +6,10 @@
         <span>Servicios Conectados</span>
       </span>
       <span>•</span>
-      <span>STIRE-Soft v1.0 Oficial (MODESEC)</span>
+      <span>STIRE-Soft</span>
     </div>
 
     <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5">
-      <span>Accesibilidad WCAG 2.1 AA ✔</span>
-      <span>•</span>
       <span>Universidad de Córdoba</span>
     </div>
   </footer>

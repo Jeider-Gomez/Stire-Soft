@@ -29,8 +29,8 @@
               ✨
             </div>
             <div>
-              <h3 class="font-bold text-sm text-base-texto-primario">Tutor Socrático Adaptativo</h3>
-              <p class="text-[11px] text-base-texto-secundario">Andamiaje progresivo sin soluciones directas</p>
+              <h3 class="font-bold text-sm text-base-texto-primario">Tutor IA</h3>
+              <p class="text-[11px] text-base-texto-secundario">Te guía con preguntas y pistas; no te da la solución</p>
             </div>
           </div>
 
@@ -63,20 +63,20 @@
           role="status"
           :aria-label="`Nivel de ayuda actual: ${tutorStore.guidanceLevel} de 3 — ${guidanceLevelLabel}`"
         >
-          <span class="text-acento-ambar-fuerte font-medium">Nivel de Guía:</span>
+          <span class="text-acento-ambar-fuerte font-medium">Ayuda:</span>
           <div class="flex items-center gap-1" aria-hidden="true">
             <span
               class="px-2 py-0.5 rounded text-[10px] font-semibold"
               :class="tutorStore.guidanceLevel === 1 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'"
-            >1. Pista</span>
+            >Pista</span>
             <span
               class="px-2 py-0.5 rounded text-[10px] font-semibold"
               :class="tutorStore.guidanceLevel === 2 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'"
-            >2. Pregunta</span>
+            >Pregunta guía</span>
             <span
               class="px-2 py-0.5 rounded text-[10px] font-semibold"
               :class="tutorStore.guidanceLevel === 3 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'"
-            >3. Falla</span>
+            >Dónde está el error</span>
           </div>
         </div>
 
@@ -96,9 +96,6 @@
             >
               <span aria-hidden="true">📖</span> Ver unidad
             </button>
-            <span class="text-[10px] px-1.5 py-0.2 rounded bg-semantico-pasa/15 text-semantico-pasa font-semibold">
-              Contexto en vivo
-            </span>
           </div>
         </div>
 

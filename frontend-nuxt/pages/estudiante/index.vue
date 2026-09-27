@@ -88,7 +88,6 @@
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-acento-ambar/15 text-acento-ambar-fuerte uppercase tracking-wider">
               Recomendación del Tutor
             </span>
-            <span class="text-xs text-base-texto-secundario">Sesión Activa</span>
           </div>
 
           <h1 class="text-lg md:text-xl font-bold text-base-texto-primario tracking-tight">
@@ -133,15 +132,16 @@
       <!-- 2. MÉTRICAS RÁPIDAS DE ESTADO -->
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Dominio Promedio</p>
-          <p class="text-xl font-bold text-semantico-pasa mt-1">{{ studentStore.analytics.avgMastery }}%</p>
-          <span class="text-[10px] text-base-texto-secundario">Supera umbral de 70%</span>
+          <p class="text-[11px] text-base-texto-secundario font-medium">Dominio</p>
+          <p class="text-xl font-bold mt-1" :class="studentStore.analytics.avgMastery >= 70 ? 'text-semantico-pasa' : studentStore.analytics.avgMastery >= 40 ? 'text-acento-ambar-fuerte' : 'text-base-texto-primario'">{{ studentStore.analytics.avgMastery }}%</p>
+          <!-- Antes decía «Supera umbral de 70%» siempre, también con 0 %. -->
+          <span class="text-[10px] text-base-texto-secundario">{{ studentStore.analytics.avgMastery >= 70 ? 'Ya dominas lo que llevas' : 'La meta es llegar al 70 %' }}</span>
         </div>
 
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Tasa de Éxito en Envíos</p>
+          <p class="text-[11px] text-base-texto-secundario font-medium">Éxito en tus entregas</p>
           <p class="text-xl font-bold text-base-texto-primario mt-1">{{ studentStore.analytics.avgSuccessRate }}%</p>
-          <span class="text-[10px] text-base-texto-secundario">Casos de prueba superados</span>
+          <span class="text-[10px] text-base-texto-secundario">De tus entregas</span>
         </div>
 
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">

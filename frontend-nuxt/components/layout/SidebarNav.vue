@@ -11,7 +11,7 @@
           to="/estudiante"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="isCurrentRoute('/estudiante') && route.path === '/estudiante' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>🏠</span>
+          <House :size="18" aria-hidden="true" class="shrink-0" />
           <span>Inicio</span>
         </NuxtLink>
 
@@ -23,7 +23,8 @@
               @click="toggleModule(mod.id)"
               class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-md hover:bg-base-bg-secundario text-base-texto-primario transition-colors">
               <span class="truncate">{{ mod.title.split(':')[0] }}</span>
-              <span class="text-base-texto-secundario text-[10px]">{{ openModules.includes(mod.id) ? '▼' : '▶' }}</span>
+              <ChevronDown v-if="openModules.includes(mod.id)" :size="14" class="text-base-texto-secundario" aria-hidden="true" />
+              <ChevronRight v-else :size="14" class="text-base-texto-secundario" aria-hidden="true" />
             </button>
 
             <!-- Unidades del Módulo -->
@@ -38,7 +39,7 @@
                   <span :class="getStatusDotClass(unit.status)">●</span>
                   <span class="truncate">{{ unit.title }}</span>
                 </div>
-                <span v-if="unit.status === 'dominado'" class="text-[10px] text-semantico-pasa font-bold">✔</span>
+                <Check v-if="unit.status === 'dominado'" :size="14" class="text-semantico-pasa" aria-label="Dominada" />
               </NuxtLink>
             </div>
           </div>
@@ -52,7 +53,7 @@
           class="flex items-center justify-between px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/repasos' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <div class="flex items-center gap-2.5">
-            <span>🧠</span>
+            <Repeat :size="18" aria-hidden="true" class="shrink-0" />
             <span>Repasos</span>
           </div>
           <span
@@ -67,7 +68,7 @@
           to="/estudiante/progreso"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/progreso' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>📊</span>
+          <TrendingUp :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mi Progreso</span>
         </NuxtLink>
 
@@ -76,7 +77,7 @@
           to="/estudiante/mensajes"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/mensajes' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>✉️</span>
+          <Mail :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
         </NuxtLink>
       </nav>
@@ -89,7 +90,7 @@
           to="/docente"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>👥</span>
+          <Users :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mis Clases</span>
         </NuxtLink>
 
@@ -97,7 +98,7 @@
           to="/docente/contenidos"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/contenidos' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>📚</span>
+          <BookOpen :size="18" aria-hidden="true" class="shrink-0" />
           <span>Contenidos</span>
         </NuxtLink>
 
@@ -105,7 +106,7 @@
           to="/docente/ejercicios/crear"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/ejercicios/crear' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>✍️</span>
+          <SquarePen :size="18" aria-hidden="true" class="shrink-0" />
           <span>Crear Ejercicio</span>
         </NuxtLink>
 
@@ -113,7 +114,7 @@
           to="/docente/rendimiento"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path.startsWith('/docente/rendimiento') || route.path.startsWith('/docente/estudiante') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>📊</span>
+          <BarChart3 :size="18" aria-hidden="true" class="shrink-0" />
           <span>Rendimiento</span>
         </NuxtLink>
 
@@ -121,7 +122,7 @@
           to="/docente/mensajes"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/mensajes' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>✉️</span>
+          <Mail :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
         </NuxtLink>
       </nav>
@@ -134,7 +135,7 @@
           to="/admin/dashboard"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/dashboard' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>📊</span>
+          <Activity :size="18" aria-hidden="true" class="shrink-0" />
           <span>Estado del Sistema</span>
         </NuxtLink>
 
@@ -142,7 +143,7 @@
           to="/admin"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin' || route.path === '/admin/usuarios' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>🛡️</span>
+          <ShieldCheck :size="18" aria-hidden="true" class="shrink-0" />
           <span>Usuarios y Roles</span>
         </NuxtLink>
 
@@ -150,26 +151,17 @@
           to="/admin/sistema"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/sistema' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <span>⚙️</span>
+          <Settings :size="18" aria-hidden="true" class="shrink-0" />
           <span>Logs y Mantenimiento</span>
         </NuxtLink>
       </nav>
     </div>
 
-    <!-- Banner Inferior de Ayuda Rápida -->
-    <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil text-xs space-y-1">
-      <div class="flex items-center gap-1.5 font-semibold text-base-texto-primario">
-        <span>📌</span>
-        <span>Atajo Rápido</span>
-      </div>
-      <p class="text-base-texto-secundario">
-        Regla de los 3 clics: todo el contenido clave está a 1 clic de distancia.
-      </p>
-    </div>
   </aside>
 </template>
 
 <script setup lang="ts">
+import { House, Repeat, TrendingUp, Mail, Users, BookOpen, SquarePen, BarChart3, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 

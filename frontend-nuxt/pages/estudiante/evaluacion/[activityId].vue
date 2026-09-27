@@ -183,7 +183,7 @@
       <!-- Barra de Estado Inferior del Editor -->
       <div class="h-7 bg-[#007acc] text-white px-4 flex items-center justify-between text-[11px] flex-shrink-0 font-medium">
         <div class="flex items-center gap-3">
-          <span>STIRE Sandbox Endurecido</span>
+          <span>Tu código se ejecuta en un entorno seguro</span>
           <span>•</span>
           <span>{{ workspaceStore.lastAutosave }}</span>
         </div>
