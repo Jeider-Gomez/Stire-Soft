@@ -3,19 +3,11 @@
     <!-- Cabecera DOC-V02 -->
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Gestor Curricular
-          </span>
-          <span v-if="selectedClass" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-acento-ambar/15 text-acento-ambar-fuerte">
-            {{ selectedClass.code }}
-          </span>
-        </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Contenidos y Temas Curriculares
+          Contenidos del curso
         </h1>
-        <p class="text-xs text-base-texto-secundario mt-0.5">
-          Organización del árbol de aprendizaje: Módulos, Temas y Unidades didácticas
+        <p class="text-xs text-base-texto-secundario mt-0.5 max-w-md">
+          Organiza el curso en módulos, temas y unidades. Abre una unidad para escribir sus lecciones y crear sus ejercicios.
         </p>
       </div>
 
@@ -154,9 +146,6 @@
                 <span>{{ topic.title }}</span>
               </span>
               <div class="flex items-center gap-2">
-                <span class="text-[10px] text-base-texto-secundario font-mono">
-                  Orden: {{ topic.order }}
-                </span>
                 <button
                   @click="openNewUnitModal(sec, topic)"
                   class="px-2 py-0.5 rounded text-[11px] font-semibold bg-acento-ambar-fuerte/10 border border-acento-ambar-fuerte/30 text-acento-ambar-fuerte hover:bg-acento-ambar/20 transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
@@ -178,38 +167,72 @@
               </div>
             </div>
 
-            <!-- Lista de Unidades de Aprendizaje dentro del Topic -->
+            <!-- Unidades: cada una se abre y muestra sus lecciones y sus ejercicios -->
             <div v-if="topic.learningUnits && topic.learningUnits.length > 0" class="pl-4 space-y-1.5 pt-1">
               <div
                 v-for="unit in topic.learningUnits"
                 :key="unit.id"
-                class="flex items-center justify-between p-2 rounded bg-base-bg-secundario text-xs">
-                <div class="flex items-center gap-2">
-                  <span class="text-acento-ambar-fuerte font-bold">📄</span>
-                  <span class="text-base-texto-primario font-medium">{{ unit.title }}</span>
-                  <span class="text-[10px] text-base-texto-secundario px-1.5 py-0.5 rounded bg-base-blanco border border-base-borde-sutil">
-                    {{ unit.difficulty }}
-                  </span>
+                :id="`unidad-${unit.id}`"
+                class="rounded-lg border text-xs transition-colors"
+                :class="expandedUnitId === unit.id ? 'border-acento-ambar-fuerte/50 bg-base-blanco' : 'border-transparent bg-base-bg-secundario'">
+                <div class="flex items-center justify-between gap-2 p-2">
+                  <button
+                    type="button"
+                    @click="toggleUnit(unit)"
+                    :aria-expanded="expandedUnitId === unit.id"
+                    :aria-controls="`unidad-panel-${unit.id}`"
+                    class="flex items-center gap-2 text-left flex-1 min-w-0 rounded focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+                    <ChevronRight :size="16" class="shrink-0 text-base-texto-secundario transition-transform" :class="expandedUnitId === unit.id ? 'rotate-90' : ''" aria-hidden="true" />
+                    <span class="text-base-texto-primario font-semibold truncate">{{ unit.title }}</span>
+                    <span v-if="unitSummary[unit.id]" class="text-[10px] text-base-texto-secundario whitespace-nowrap">
+                      {{ unitSummary[unit.id] }}
+                    </span>
+                  </button>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span v-if="unit.isActive === false" class="text-[10px] font-bold px-2 py-0.5 rounded bg-base-texto-secundario/15 text-base-texto-secundario">Inactiva</span>
+                    <button
+                      @click="openEditUnitModal(unit)"
+                      class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-blanco focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                      :aria-label="`Editar unidad ${unit.title}`" title="Editar unidad">
+                      <Pencil :size="14" aria-hidden="true" />
+                    </button>
+                  </div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                  <span
-                    class="text-[10px] font-bold px-2 py-0.5 rounded"
-                    :class="unit.isActive !== false ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-texto-secundario/15 text-base-texto-secundario'">
-                    {{ unit.isActive !== false ? 'Activa' : 'Inactiva' }}
-                  </span>
-                  <button
-                    @click="openLessonsModal(unit)"
-                    class="px-2 py-0.5 rounded text-[11px] font-semibold bg-acento-ambar/10 border border-acento-ambar-fuerte/30 text-acento-ambar-fuerte hover:bg-acento-ambar/20 transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
-                    :aria-label="`Gestionar lecciones de la unidad ${unit.title}`">
-                    📖 Lecciones
-                  </button>
-                  <button
-                    @click="openEditUnitModal(unit)"
-                    class="px-2 py-0.5 rounded text-[11px] font-semibold bg-base-blanco border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
-                    :aria-label="`Editar unidad ${unit.title}`">
-                    ✏ Editar
-                  </button>
+                <div v-if="expandedUnitId === unit.id" :id="`unidad-panel-${unit.id}`" class="grid grid-cols-1 md:grid-cols-2 gap-4 p-3 pt-3 border-t border-base-borde-sutil">
+                  <!-- Lecciones -->
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                      <h4 class="text-[11px] font-bold uppercase tracking-wider text-base-texto-secundario">
+                        Lecciones <span v-if="lessonsByUnit[unit.id]">({{ lessonsByUnit[unit.id].length }})</span>
+                      </h4>
+                      <button
+                        @click="openLessonsModal(unit)"
+                        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar inline-flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                        :aria-label="`Gestionar lecciones de la unidad ${unit.title}`">
+                        <BookOpen :size="14" aria-hidden="true" /> {{ lessonsByUnit[unit.id]?.length ? 'Lecciones' : 'Escribir lección' }}
+                      </button>
+                    </div>
+                    <p v-if="!lessonsByUnit[unit.id]" class="text-[11px] text-base-texto-secundario animate-pulse">Cargando lecciones…</p>
+                    <p v-else-if="lessonsByUnit[unit.id].length === 0" class="text-[11px] text-base-texto-secundario italic">
+                      Sin lecciones. Una lección corta con un ejemplo prepara al estudiante antes de los ejercicios.
+                    </p>
+                    <ul v-else class="divide-y divide-base-borde-sutil rounded-lg border border-base-borde-sutil bg-base-blanco">
+                      <li v-for="l in lessonsByUnit[unit.id]" :key="l.id" class="flex items-center justify-between gap-2 px-3 py-2">
+                        <span class="flex items-center gap-2 min-w-0">
+                          <FileText :size="14" class="shrink-0 text-base-texto-secundario" aria-hidden="true" />
+                          <span class="truncate text-base-texto-primario">{{ l.title }}</span>
+                        </span>
+                        <span v-if="l.isVisible === false" class="text-[10px] font-bold text-base-texto-secundario">Oculta</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Ejercicios -->
+                  <DocenteUnitExercisesPanel
+                    :unit-id="unit.id"
+                    :class-id="selectedClassId!"
+                    @count="(n: number) => setExerciseCount(unit.id, n)" />
                 </div>
               </div>
             </div>
@@ -437,11 +460,13 @@
     <!-- Modal para gestionar Lecciones de una unidad -->
     <UnitLessonsModal
       ref="lessonsModalRef"
-      :unit="selectedUnitForLessons" />
+      :unit="selectedUnitForLessons"
+      @close="onLessonsModalClosed" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ChevronRight, Pencil, BookOpen, FileText } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
@@ -519,6 +544,47 @@ function openLessonsModal(unit: LearningUnitItem) {
   nextTick(() => {
     lessonsModalRef.value?.openModal()
   })
+}
+
+// ─── Unidad abierta: sus lecciones y ejercicios ─────────────────────────────────
+interface LessonSummary { id: number; title: string; isVisible?: boolean }
+const route = useRoute()
+const expandedUnitId = ref<number | null>(null)
+const lessonsByUnit = reactive<Record<number, LessonSummary[]>>({})
+const exerciseCountByUnit = reactive<Record<number, number>>({})
+
+const unitSummary = computed(() => {
+  const out: Record<number, string> = {}
+  const ids = new Set([...Object.keys(lessonsByUnit), ...Object.keys(exerciseCountByUnit)].map(Number))
+  for (const id of ids) {
+    const parts: string[] = []
+    if (lessonsByUnit[id] !== undefined) parts.push(plural(lessonsByUnit[id].length, 'lección', 'lecciones'))
+    if (exerciseCountByUnit[id] !== undefined) parts.push(plural(exerciseCountByUnit[id], 'ejercicio', 'ejercicios'))
+    out[id] = parts.join(' · ')
+  }
+  return out
+})
+
+async function loadLessons(unitId: number) {
+  try {
+    const list = await api.get<LessonSummary[]>(`/content/unit/${unitId}/all`)
+    lessonsByUnit[unitId] = Array.isArray(list) ? list : []
+  } catch {
+    lessonsByUnit[unitId] = []
+  }
+}
+
+function toggleUnit(unit: LearningUnitItem) {
+  expandedUnitId.value = expandedUnitId.value === unit.id ? null : unit.id
+  if (expandedUnitId.value) loadLessons(unit.id)
+}
+
+function setExerciseCount(unitId: number, n: number) {
+  exerciseCountByUnit[unitId] = n
+}
+
+function onLessonsModalClosed() {
+  if (selectedUnitForLessons.value) loadLessons(selectedUnitForLessons.value.id)
 }
 
 function onSectionCreated(newSec: any) {
@@ -722,8 +788,15 @@ async function fetchClasses() {
     const cls = await api.get<TeacherClass[]>('/class/my-classes')
     if (Array.isArray(cls) && cls.length > 0) {
       teacherClasses.value = cls
-      selectedClassId.value = cls[0].id
+      const qClass = Number(route.query.classId)
+      selectedClassId.value = cls.find(c => c.id === qClass)?.id ?? cls[0].id
       await loadSections()
+      const qUnit = Number(route.query.unitId)
+      if (qUnit) {
+        expandedUnitId.value = qUnit
+        loadLessons(qUnit)
+        nextTick(() => document.getElementById(`unidad-${qUnit}`)?.scrollIntoView({ block: 'center' }))
+      }
     } else {
       teacherClasses.value = []
       isLoading.value = false
