@@ -34,7 +34,7 @@ placeholder para CC-07/CC-08), y `COMP-V00` + `EST-V01..V06` en 4 estados cada u
 | Presentar en clase | [`entregables/STIRE_MODESEC_FASE_II.pptx`](entregables/) (versión PDF en la misma carpeta) |
 | Ver la evidencia de la Fase I (competencias y trazabilidad) | [`fase1/`](fase1/) |
 | Consultar las especificaciones técnicas y funcionales de base (mapa funcional, ER, endpoints, permisos, contrato front-back…) | [`insumos/`](insumos/) — 15 documentos numerados 00–14 |
-| Implementar en Nuxt lo ya cableado en Figma (guía para Antigravity) | [`../antigravity/PLAN_IMPLEMENTACION.md`](../antigravity/PLAN_IMPLEMENTACION.md) — sigue siendo "Insumo 15" en las citas, reubicado el 2026-09-10 fuera de esta carpeta porque es un plan operativo que cambia seguido, no una especificación de diseño estable como el resto de los insumos 00-14 |
+| Implementar en Nuxt lo ya cableado en Figma (guía para Antigravity) | [`../antigravity/PLAN_IMPLEMENTACION.md`](../agentes-ia/antigravity/PLAN_IMPLEMENTACION.md) — sigue siendo "Insumo 15" en las citas, reubicado el 2026-09-10 fuera de esta carpeta porque es un plan operativo que cambia seguido, no una especificación de diseño estable como el resto de los insumos 00-14 |
 
 ---
 

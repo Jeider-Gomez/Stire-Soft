@@ -1,10 +1,10 @@
 > **DOCUMENTO HISTORICO — no vigente.** Conservado como evidencia del proceso de ingenieria.
-> Fases 16-21 de `docs/antigravity/PLAN_IMPLEMENTACION.md` (Insumo 15), todas ejecutadas:
+> Fases 16-21 de `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md` (Insumo 15), todas ejecutadas:
 > editar/archivar contenido y accesibilidad (16), categorias de peso examen/practica (17),
 > experiencia de chat del Tutor (18), clave de Google AI Studio (19), configuracion del Tutor por
 > el docente (20) y datos reales en el panel de administracion, "Ir al contenido" y repasos en el
 > chat (21, auditada por Claude Code el 2026-09-20: ver la nota al inicio de §21). Estado actual y
-> fase vigente: `docs/antigravity/PLAN_IMPLEMENTACION.md` §22 en adelante. Archivado el 2026-09-20.
+> fase vigente: `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md` §22 en adelante. Archivado el 2026-09-20.
 
 ---
 ---
@@ -23,7 +23,7 @@ en [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-15.md`](../_archivo/P
 — regla de archivado en [`docs/_archivo/README.md`](../_archivo/README.md#regla-para-archivar-versiones-del-plan-de-antigravity).
 Para el panorama completo del proyecto (qué está hecho, qué falta, quién lo hace), ver
 [`docs/PLAN_MAESTRO.md`](../PLAN_MAESTRO.md). Para el historial de sesiones ejecutadas, ver
-[`docs/antigravity/README.md`](./README.md).
+[`docs/agentes-ia/antigravity/README.md`](./README.md).
 
 **Se sigue numerando a partir de §16** (no se reinicia en §1) para que las citas ya hechas en
 `PLAN_MAESTRO.md` y en informes de sesión sigan apuntando al lugar correcto.
@@ -35,7 +35,7 @@ Para el panorama completo del proyecto (qué está hecho, qué falta, quién lo 
 ### 16.0 Contexto
 
 La Fase 15 se ejecutó y se cerró (commit `d6120ed`, informe
-`docs/antigravity/informes/INFORME_2026-09-14_SESION_02.md`) — auditada en vivo por Claude Code el
+`docs/agentes-ia/antigravity/informes/INFORME_2026-09-14_SESION_02.md`) — auditada en vivo por Claude Code el
 15/09, el fix de `DOC-V04` es correcto. **Codex no participa en esta ronda por ahora** — el dueño del
 proyecto decidió que Codex se invoca por criterio de complejidad, no en cada ronda (ver
 `docs/PLAN_MAESTRO.md` §3 y §6.2). Si en el curso de esta fase encuentras algo que de verdad requiere
@@ -499,7 +499,7 @@ Todo verificado en navegador real contra backend y base de datos reales, no leye
 - Recargar la página (F5) con una conversación previa muestra el historial al abrir el drawer.
 - A 375 px no hay desborde horizontal ni zoom al enfocar el campo.
 - `npx nuxi typecheck` con exit code 0, pegado en el informe.
-- **Informe de sesión obligatorio** (`docs/antigravity/informes/`), con lo declarado en §18.1 (archivos
+- **Informe de sesión obligatorio** (`docs/agentes-ia/antigravity/informes/`), con lo declarado en §18.1 (archivos
   con el mismo patrón `err.data.message`).
 
 ---
@@ -904,7 +904,7 @@ Levanta el backend y el frontend como siempre. Para el Tutor no necesitas una cl
 - [ ] La búsqueda final no encuentra nada.
 - [ ] Las tablas de §21.3 se probaron en navegador real, con lo observado anotado en el informe.
 - [ ] Cuatro commits, uno por tarea.
-- [ ] Informe en `docs/antigravity/informes/` siguiendo `TEMPLATE_INFORME.md`, **solo con lo que hiciste y
+- [ ] Informe en `docs/agentes-ia/antigravity/informes/` siguiendo `TEMPLATE_INFORME.md`, **solo con lo que hiciste y
       verificaste**. Si algo no se pudo probar, dilo.
 - [ ] Capturas nuevas (opcionales) en `docs/material-visual/` con la convención de su README, **sin
       datos personales**: usa solo cuentas demo y evita las pantallas del docente que listan a todos

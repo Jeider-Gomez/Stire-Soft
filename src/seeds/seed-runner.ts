@@ -1214,7 +1214,7 @@ console.log(slug);
   // Cada unidad mantiene la progresión MCQ -> FILL_CODE -> CODING ya usada en
   // toda la clase de Toscano, con preguntas y desafíos propios de cada
   // dominio (no una plantilla genérica con el nombre de la materia
-  // interpolado) -- ver docs/codex/PLAN_IMPLEMENTACION.md §C.2. findOrCreate
+  // interpolado) -- ver docs/agentes-ia/codex/PLAN_IMPLEMENTACION.md §C.2. findOrCreate
   // en cada entidad para que las corridas repetidas sean idempotentes.
   interface CurriculumActivityDef {
     type: QuestionType;

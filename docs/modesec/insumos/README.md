@@ -35,4 +35,4 @@ son la base sobre la que esos formatos se construyeron y se verifican.
 | 14 | [`14_GUIA_DE_TRABAJO_FRONTEND.md`](14_GUIA_DE_TRABAJO_FRONTEND.md) | Guía maestra de implementación del frontend (Vue 3 + Nuxt 3). |
 
 > El "Insumo 15" (plan de implementación para Antigravity) no vive aquí: es un documento operativo que
-> cambia seguido, así que está en [`../../antigravity/PLAN_IMPLEMENTACION.md`](../../antigravity/PLAN_IMPLEMENTACION.md).
+> cambia seguido, así que está en [`../../antigravity/PLAN_IMPLEMENTACION.md`](../../agentes-ia/antigravity/PLAN_IMPLEMENTACION.md).

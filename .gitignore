@@ -74,3 +74,10 @@ docs/testing/poc-sandbox-endurecido.cjs
 .playwright-cli/
 backups/
 .env.prod
+
+# Mapa del código generado por graphify (se regenera con /graphify; se desactualiza con cada cambio)
+graphify-out/
+
+# Configuración local de Claude Code (propia de cada PC). Las skills del proyecto sí se versionan.
+.claude/settings.local.json
+.claude/launch.json

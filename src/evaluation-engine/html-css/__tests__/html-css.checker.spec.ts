@@ -84,7 +84,7 @@ describe('html-css.checker — reglas', () => {
 
     // OJO: jest.config.js sustituye @asamuzakjp/css-color por un stub inerte (es ESM puro y Jest no puede cargarlo), así que
     // aquí solo se prueban colores por NOMBRE. La equivalencia #F00 = red = rgb(255,0,0) se verifica en Node real con
-    // docs/testing/html-css-color-check.cjs (ver el CHANGELOG de la Fase 25).
+    // scripts/html-css-color-check.cjs (ver el CHANGELOG de la Fase 25).
     it('un color por nombre se compara con su valor calculado', () => {
       const html = '<h1>t</h1>';
       expect(passes(html, 'h1{color:red}', { kind: 'css_property', selector: 'h1', property: 'color', oneOf: ['red'] })).toBe(true);

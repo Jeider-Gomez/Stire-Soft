@@ -90,7 +90,7 @@ export class LearningUnitService {
 
   /**
    * OLA 3 (pendiente identificado en
-   * `docs/claude-code/informes/INFORME_2026-09-11_SESION_01.md` §7, punto 2):
+   * `docs/agentes-ia/claude-code/informes/INFORME_2026-09-11_SESION_01.md` §7, punto 2):
    * este endpoint no verificaba NADA — a diferencia de
    * `ContentService.findOne`/`findByUnit`, cualquier usuario autenticado
    * (estudiante o docente) podía leer título/descripción de una unidad de

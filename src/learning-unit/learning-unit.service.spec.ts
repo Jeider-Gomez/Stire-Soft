@@ -5,7 +5,7 @@ import { UserRole } from '../user/entities/user.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 
 // Pendiente identificado en
-// docs/claude-code/informes/INFORME_2026-09-11_SESION_01.md §7, punto 2:
+// docs/agentes-ia/claude-code/informes/INFORME_2026-09-11_SESION_01.md §7, punto 2:
 // GET /learning-unit/:id no verificaba matrícula/propiedad de clase, a
 // diferencia de ContentService.findOne, que sí lo hace. Mismo patrón de
 // prueba que content.service.spec.ts — AuthorizationService REAL con repos

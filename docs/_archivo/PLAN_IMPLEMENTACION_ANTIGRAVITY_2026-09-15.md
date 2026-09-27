@@ -1,6 +1,6 @@
 > **DOCUMENTO HISTORICO — no vigente.** Conservado como evidencia del proceso de ingenieria.
-> Fases 1-15 de `docs/antigravity/PLAN_IMPLEMENTACION.md` (Insumo 15), todas ejecutadas y
-> verificadas. Estado actual y fase vigente: `docs/antigravity/PLAN_IMPLEMENTACION.md` §16 en
+> Fases 1-15 de `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md` (Insumo 15), todas ejecutadas y
+> verificadas. Estado actual y fase vigente: `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md` §16 en
 > adelante. Archivado el 2026-09-15.
 
 ---
@@ -338,7 +338,7 @@ seguir siendo cierta en la app real.
 
 ## 11. Verificación en frío de este criterio de cierre (2026-09-09)
 
-Antigravity ya construyó `frontend-nuxt/` (ver `docs/antigravity/informes/INFORME_2026-09-07_SESION_01.md`
+Antigravity ya construyó `frontend-nuxt/` (ver `docs/agentes-ia/antigravity/informes/INFORME_2026-09-07_SESION_01.md`
 y la Bitácora N.º 4). Antes de declarar cerrada esta fase se volvió a comprobar cada punto de §10
 contra el código real y contra el archivo Figma real — no se acepta el informe de Antigravity como
 evidencia por sí solo, sección 7 del `CLAUDE.md` del proyecto lo exige.
@@ -490,15 +490,15 @@ Docente/Administrador (§1, §7.3 — siguen fuera por prioridad, no por falta d
 - Ningún camino de error en `workspace.ts` (ni, si Fase F lo confirma necesario, en `tutor.ts`)
   fabrica un resultado exitoso — un `network offline` forzado debe mostrar un error real en la UI,
   no una calificación ni una respuesta que finge venir del backend.
-- Informe de sesión nuevo en `docs/antigravity/informes/`, siguiendo `TEMPLATE_INFORME.md`, con fila
-  agregada al índice de `docs/antigravity/README.md`.
+- Informe de sesión nuevo en `docs/agentes-ia/antigravity/informes/`, siguiendo `TEMPLATE_INFORME.md`, con fila
+  agregada al índice de `docs/agentes-ia/antigravity/README.md`.
 
 ---
 
 ## 13. Fase siguiente — pantallas de tipos de actividad (MCQ, FILL_CODE), 2026-09-10
 
 Las Fases A-F de §12 ya se ejecutaron (ver
-`docs/antigravity/informes/INFORME_2026-09-10_SESION_01.md`). Después de eso, en la misma tarde,
+`docs/agentes-ia/antigravity/informes/INFORME_2026-09-10_SESION_01.md`). Después de eso, en la misma tarde,
 Claude Code investigó el pedido del dueño del proyecto de "calcular o dejar elegir la actividad
 según el dominio del estudiante" — antes de construir nada, verificó qué tan armado está esto
 contra `src/seeds/seed-runner.ts` línea por línea. Lo que encontró cambia el alcance real de esa
@@ -583,7 +583,7 @@ falta que Antigravity toque nada de esa lógica — solo que las pantallas de de
   actividad de cada tipo ya sembrada, no solo compilación.
 - `workspace.ts` en su rama `coding` no cambia de comportamiento (regresión cero, verificable
   reproduciendo el flujo de `docs/00_VISION_FUNCIONAL.md` §9.3 sin diferencias).
-- Informe de sesión nuevo en `docs/antigravity/informes/`, mismo criterio que el resto.
+- Informe de sesión nuevo en `docs/agentes-ia/antigravity/informes/`, mismo criterio que el resto.
 
 ---
 
@@ -591,7 +591,7 @@ falta que Antigravity toque nada de esa lógica — solo que las pantallas de de
 
 ### 14.0 Coordinación con Codex — leer antes de empezar
 
-**Codex está trabajando en paralelo sobre backend de `submissions`** (`docs/codex/PLAN_IMPLEMENTACION.md`
+**Codex está trabajando en paralelo sobre backend de `submissions`** (`docs/agentes-ia/codex/PLAN_IMPLEMENTACION.md`
 Fases D/E/F: restricción contra intentos duplicados, verificación de matrícula en
 `POST /submissions/start`, endurecimiento de `submission.graded`). Esta fase de Antigravity **no
 toca `src/submissions/` ni `frontend-nuxt/stores/workspace.ts`** — son de Codex. Si algo de esta fase
@@ -601,7 +601,7 @@ descrito abajo; deténte y avisa antes de continuar.
 ### 14.1 Qué motiva esta fase — verificación en frío contra el código real (14/09)
 
 Jorge Cervantes (Calidad y Pruebas del equipo) entregó una auditoría QA completa el 12/09
-(`docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE2VERSION.md`). Antes de convertir sus hallazgos de
+(`docs/calidad/REPORTE_AUDITORIA_QA_STIRE2VERSION.md`). Antes de convertir sus hallazgos de
 frontend en trabajo para esta fase, Claude Code los verificó uno por uno contra `frontend-nuxt/`
 real, siguiendo la regla de este proyecto de tratar todo hallazgo como hipótesis hasta comprobarlo:
 
@@ -669,7 +669,7 @@ ventana nueva es una página que llena `[C]`, igual que ya se hizo para `DOC-V01
 ### 14.4 Construir el formulario de "Crear Nueva Clase" (`FE-02`)
 
 - Archivo: `frontend-nuxt/pages/docente/index.vue`, botón en líneas 19-22 (sin `@click`).
-- Backend ya existe y funciona: `POST /class` (ver `docs/codex/PLAN_IMPLEMENTACION.md` Fase B,
+- Backend ya existe y funciona: `POST /class` (ver `docs/agentes-ia/codex/PLAN_IMPLEMENTACION.md` Fase B,
   commit `7aa51e8`, incluye `requiresApproval`).
 - Construir un modal/formulario simple (nombre de la clase, y el toggle `requiresApproval` que hoy
   solo existe en la pantalla de gestión de una clase ya creada) que, al enviarse, llame a `POST
@@ -695,8 +695,8 @@ ventana nueva es una página que llena `[C]`, igual que ya se hizo para `DOC-V01
 - Un docente puede crear una clase real desde la interfaz y la ve aparecer en su lista sin recargar
   (§14.4), verificado en navegador real.
 - `npx nuxi typecheck` y `npm run build` (frontend) en verde.
-- **Informe de sesión obligatorio** en `docs/antigravity/informes/`, siguiendo
-  `informes/TEMPLATE_INFORME.md`, con fila agregada al índice de `docs/antigravity/README.md` — sin
+- **Informe de sesión obligatorio** en `docs/agentes-ia/antigravity/informes/`, siguiendo
+  `informes/TEMPLATE_INFORME.md`, con fila agregada al índice de `docs/agentes-ia/antigravity/README.md` — sin
   este informe, esta fase no se considera cerrada aunque el código ya esté en el repositorio (mismo
   criterio de todas las fases anteriores).
 
@@ -707,7 +707,7 @@ ventana nueva es una página que llena `[C]`, igual que ya se hizo para `DOC-V01
 ### 15.0 Contexto — qué encontró Claude Code al auditar §14 en vivo
 
 La Fase 14 se ejecutó y se cerró (commit `71360b7`, informe
-`docs/antigravity/informes/INFORME_2026-09-14_SESION_01.md`). Antes de dar la fase por buena, Claude
+`docs/agentes-ia/antigravity/informes/INFORME_2026-09-14_SESION_01.md`). Antes de dar la fase por buena, Claude
 Code la auditó en navegador real (backend + frontend + BD reales, login real como docente/admin) —
 regla de este proyecto: nunca se confía en un informe propio de la herramienta que lo escribió. Esto
 encontró:
@@ -836,8 +836,8 @@ vez de la cuenta real que el equipo usa para las demos.
 - El formulario de mensajes usa un selector real de estudiante, no un ID a mano (§15.3).
 - Las 2 clases de prueba salieron de la cuenta real de Toscano, o quedó documentado por qué no se
   pudieron quitar en este entorno (§15.4).
-- **Informe de sesión obligatorio** en `docs/antigravity/informes/`, siguiendo
-  `informes/TEMPLATE_INFORME.md`, con fila nueva en `docs/antigravity/README.md`. Como en esta fase
+- **Informe de sesión obligatorio** en `docs/agentes-ia/antigravity/informes/`, siguiendo
+  `informes/TEMPLATE_INFORME.md`, con fila nueva en `docs/agentes-ia/antigravity/README.md`. Como en esta fase
   ya hubo un caso real de "typecheck verde pero la vista no funciona", el informe debe incluir
   evidencia de verificación **en navegador real contra datos reales** para cada punto de esta lista —
   no alcanza con reportar `nuxi typecheck: exit code 0`.

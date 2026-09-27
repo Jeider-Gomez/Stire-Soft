@@ -1,6 +1,6 @@
 > **ARCHIVADO el 2026-09-25 — Fase 25 ejecutada (Parte A: Claude Code; Parte B: Antigravity), auditada y corregida por Claude Code.**
-> Es un documento histórico; el plan vigente es `docs/antigravity/PLAN_IMPLEMENTACION.md` (Fase 26).
-> **Resultado de la auditoría** (`docs/ReportesQA/REPORTE_AUDITORIA_QA_FASE25B_2026-09-25.md`): la seguridad de la vista previa y los flujos del docente y del estudiante
+> Es un documento histórico; el plan vigente es `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md` (Fase 26).
+> **Resultado de la auditoría** (`docs/calidad/REPORTE_AUDITORIA_QA_FASE25B_2026-09-25.md`): la seguridad de la vista previa y los flujos del docente y del estudiante
 > estaban bien. Dos fallos reales, corregidos el mismo día: (1) la pantalla del ejercicio tenía alto fijo y en un celular el editor quedaba fuera de pantalla y «Entregar»
 > cortado; (2) «Probar» de la barra superior fallaba en silencio ante un 429. Además, al hacer A7 el fuzzing destapó un defecto **anterior a la fase**: `formatMarkdown`
 > podía colar atributos (`onclick`…) en HTML ya saneado; se cerró pasando el HTML final por DOMPurify en el navegador (`utils/sanitizeRenderedHtml.ts`).
@@ -149,7 +149,7 @@ Y reglas» y lista las etiquetas de las públicas que fallaron y **cuántas** oc
 - **`a11y` sobre algo que no existe pasa** (sin imágenes, `img_alt` se cumple; sin campos, `form_labels`). Para exigir imágenes el docente combina una regla `element_exists` sobre `img` con `img_alt`. El constructor (B1) debe decirlo junto al selector de `a11y`.
 - **`html_lang` y `document_title` solo pueden cumplirse con un documento completo** (`<!doctype html><html lang="es"><head><title>…`); con un fragmento fallan. Díselo al docente en B1.
 - **Colores:** `#F00`, `red` y `rgb(255,0,0)` se consideran iguales; para otras propiedades (`margin`, `padding`) el docente lista las variantes que acepta en `oneOf` (`0 auto`, `0px auto`).
-- **Requiere Node ≥ 22.12** (jsdom carga un módulo ESM con `require()`); el proyecto usa Node 24 (`Dockerfile`). `docs/testing/html-css-color-check.cjs` lo comprueba en Node real.
+- **Requiere Node ≥ 22.12** (jsdom carga un módulo ESM con `require()`); el proyecto usa Node 24 (`Dockerfile`). `scripts/html-css-color-check.cjs` lo comprueba en Node real.
 
 ### 25.5 Parte B — Frontend (Antigravity; empieza cuando la Parte A esté cerrada)
 
@@ -192,7 +192,7 @@ Y reglas» y lista las etiquetas de las públicas que fallaron y **cuántas** oc
   en dos `ref` nuevos (`htmlCode`, `cssCode`); `runHtmlCss()` y `htmlCssResults`; `submit()` (línea ~317) arma `answer = { html, css }` para este tipo; el autoguardado (línea ~391, hoy
   «solo aplica a coding») también lo cubre. **No cambies el comportamiento de los otros tipos.**
 
-### 25.6 Cómo verificar (Chrome real, base desechable — método de `docs/ReportesQA/GUIA_AUDITORIA_MAESTRA.md`)
+### 25.6 Cómo verificar (Chrome real, base desechable — método de `docs/calidad/GUIA_AUDITORIA_MAESTRA.md`)
 
 1. **Docente, desde la pantalla, sin atajos:** crear un ejercicio `html_css` con 5 reglas (3 públicas, 2 ocultas; una de cada `kind` relevante) y solución modelo correcta → aparece «creado». Con una solución
    modelo que incumple una regla → se ve el motivo del servidor, no se crea nada (sin actividad huérfana).
@@ -208,7 +208,7 @@ Y reglas» y lista las etiquetas de las públicas que fallaron y **cuántas** oc
 1. Los puntos 1 a 6 de 25.6, con capturas o salida literal en el informe de sesión.
 2. Búsquedas finales que deben dar **cero** resultados (excluye `node_modules`, `.nuxt`, `.output`):
    `grep -rn "allow-scripts\|allow-same-origin" frontend-nuxt/components frontend-nuxt/pages` · `grep -rn "err?.data?.message" frontend-nuxt` · `grep -rn "function formatMarkdown" frontend-nuxt/pages`.
-3. Un commit por tarea (B0 a B3), informe en `docs/antigravity/informes/` con el `TEMPLATE_INFORME.md`, y Pull Request de `feat/fase-25` a `main`.
+3. Un commit por tarea (B0 a B3), informe en `docs/agentes-ia/antigravity/informes/` con el `TEMPLATE_INFORME.md`, y Pull Request de `feat/fase-25` a `main`.
 4. Claude Code audita antes de fusionar (Chrome real); no se fusiona sin ese reporte.
 
 ### 25.8 Fuera de alcance

@@ -50,7 +50,7 @@ En paralelo, se busca cerrar los componentes fundamentales del backend que ya pu
 
 ## 🎓 3.0 Objetivos Oficiales de la Semana 03 (fuente: el docente)
 
-> Leídos directamente de `docs/investigacion/fuentes-institucionales/Guia_Estudiante_semana_03.docx`
+> Leídos directamente de `docs/curso-ddse3/guias/Guia_Estudiante_Semana_03.docx`
 > y `cronograma.docx` (FASE CC-08, Parte C1) — no parafraseados de memoria. Estos son los objetivos
 > del **docente** para esta semana. Son una lista distinta de los "Retos internos" de la sección
 > 3.1: esos son la forma en que el equipo organiza su propio trabajo, no la numeración oficial del

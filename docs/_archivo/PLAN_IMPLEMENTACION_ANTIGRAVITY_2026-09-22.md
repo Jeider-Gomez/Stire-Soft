@@ -7,7 +7,7 @@ codigos:    EST-V05 (repasos) · ADM-V02 (usuarios) · COMP-V00 (registro)
 
 > **Documento histórico.** Este plan ya se ejecutó y se fusionó a `main`. Para el estado vigente
 > del proyecto, ver `docs/ESTADO_STIRE_HANDOFF.md` y `docs/PLAN_MAESTRO.md` §6.1. El plan vigente
-> de Antigravity (si lo hay) está en `docs/antigravity/PLAN_IMPLEMENTACION.md`.
+> de Antigravity (si lo hay) está en `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md`.
 
 # Plan de implementación para Antigravity — Fase 23 (archivado)
 
@@ -132,7 +132,7 @@ sin crear una pantalla fuera del menú actual):
 - [x] Las pruebas de §23.3 hechas en navegador real, con lo observado anotado en el informe.
 - [x] `npx nuxi typecheck` en código 0.
 - [x] Cuatro commits, uno por tarea, en la rama `feat/fase-23`, y Pull Request abierto.
-- [x] Informe en `docs/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
+- [x] Informe en `docs/agentes-ia/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
 
 ### 23.5 Fuera de alcance
 

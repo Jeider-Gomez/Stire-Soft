@@ -112,6 +112,9 @@ código.
 
 ## Dónde está cada cosa
 
+- `README.md` y `docs/README.md` — presentación del proyecto e índice de toda la documentación.
+- `docs/curso-ddse3/` — entregas del curso: cada requisito del docente con el archivo que lo cumple.
+  Cuando llegue una guía nueva, se guarda en `guias/` y se agregan sus requisitos a la tabla.
 - `docs/ESTADO_STIRE_HANDOFF.md` — estado del proyecto, qué se cerró, qué queda abierto.
 - `CHANGELOG.md` — historial de olas de remediación, punto por punto, con commits.
 - `docs/REAUDITORIA_OLA2.md` (gitignorado) — última reauditoría independiente, hallazgos con

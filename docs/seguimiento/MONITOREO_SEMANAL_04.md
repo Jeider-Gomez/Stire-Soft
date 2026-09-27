@@ -62,7 +62,7 @@ El alcance inicial de frontend se mantiene limitado a las vistas ya diseñadas: 
 - [x] **S04-J03 · Backend + Tutor IA** — objetivo 11/09. *(Completado anticipadamente 07/09: Auditoría auth, token JWT real y Google Gemini LLM activo)*
 
 **Dependencias:** S04-J02 depende de S04-J01. S04-J03 puede ejecutarse en paralelo.  
-**Evidencias:** Ver informe oficial [`docs/antigravity/informes/INFORME_2026-09-07_SESION_01.md`](../antigravity/informes/INFORME_2026-09-07_SESION_01.md).  
+**Evidencias:** Ver informe oficial [`docs/agentes-ia/antigravity/informes/INFORME_2026-09-07_SESION_01.md`](../agentes-ia/antigravity/informes/INFORME_2026-09-07_SESION_01.md).  
 **Verificación en frío (09/09):** los tokens de `tailwind.config.ts` se compararon variable por
 variable contra el Figma real — coincidían todos salvo 9 (paleta del editor de código y dos anchos
 con nombre), ya agregados a Figma para que quede completo. El resto de los criterios de cierre del
@@ -155,7 +155,7 @@ completada — corregido. **No se tocó el estado de ninguna tarjeta de Julio, J
 
 - [x] **S04-JO01 · Validar UI contra Figma** — objetivo 10/09. *(Hecho — tarjeta cerrada en Trello 10/09.)*
 - [x] **S04-JO02 · Pitch de avances** — objetivo 11/09. *(Completado — evidencia real:
-  `docs/pitch/PITCH_SEMANA_03 Y 04.md`, guion de 60s en español e inglés, cabecera `estado: hecho`.
+  `docs/pitch/PITCH_RETO_02.md`, guion de 60s en español e inglés, cabecera `estado: hecho`.
   Tarjeta de Trello movida a `✅ Hecho` el 14/09.)*
 - [x] **S04-JO03 · Material visual** — objetivo 11/09. *(Hecho — tarjeta cerrada en Trello 10/09.)*
 
@@ -177,7 +177,7 @@ completada — corregido. **No se tocó el estado de ninguna tarjeta de Julio, J
 ### Jorge Cervantes — Calidad y Pruebas
 
 - [x] **S04-JOR01 · Pruebas funcionales** — objetivo 11/09. *(Cerrado 14/09 por Pedro contra evidencia
-  real: `docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE2VERSION.md`, subido por Jorge el 14/09 — login,
+  real: `docs/calidad/REPORTE_AUDITORIA_QA_STIRE2VERSION.md`, subido por Jorge el 14/09 — login,
   navegación, ejercicio/envío y Tutor IA probados con resultado documentado por flujo. La tarjeta de
   Trello se movió a `✅ Hecho` retroactivamente; no estaba movida cuando Jorge subió el reporte.)*
 - [x] **S04-JOR02 · Revisar calidad frontend** — objetivo 11/09. *(Cerrado 14/09 por Pedro contra la
@@ -199,7 +199,7 @@ reemplazos de markdown, sin escapar ni sanitizar el HTML original antes de inyec
 P2-R3, FE-01, FE-03, BE-01) no se reverificaron en esta sesión — quedan como hallazgos reportados,
 pendientes de verificación en frío, trasladados a la Bitácora N.º 5.
 
-**Nota adicional:** junto con los dos reportes reales, la carpeta `docs/ReportesQA/` contenía un
+**Nota adicional:** junto con los dos reportes reales, la carpeta `docs/calidad/` contenía un
 archivo `generico` con contenido de prueba sin valor (`jjjjjjjjjadsafdoewds`) — un residuo de la
 subida, no un entregable. **Actualización (mismo día, 14/09):** el dueño del proyecto pidió
 explícitamente eliminarlo; se borró (`git rm`) sin esperar a que Jorge lo hiciera.
@@ -266,7 +266,7 @@ explícitamente eliminarlo; se borró (`git rm`) sin esperar a que Jorge lo hici
 9. **Hallazgos del QA de Jorge sin verificación cruzada todavía (14/09):** `P1-07` (sin `UNIQUE` para
    entregas activas), `P1-08` (evento `submission.graded` sin patrón Outbox), `P2-R3` (`/submissions
    /start` sin verificar matrícula), `FE-03` (sin polling para notas asíncronas), `BE-01`
-   (`ai_evaluated` sin evaluador registrado). Reportados en `docs/ReportesQA/`, tratados como
+   (`ai_evaluated` sin evaluador registrado). Reportados en `docs/calidad/`, tratados como
    hipótesis hasta que alguien los reproduzca contra el árbol real — regla vigente de este proyecto.
 
 ---
@@ -329,7 +329,7 @@ Se realiza el cierre del sprint:
 ### José López
 
 - [x] UI validada contra Figma. *(Trello: S04-JO01 Hecho.)*
-- [x] Pitch preparado. *(Completado — `docs/pitch/PITCH_SEMANA_03 Y 04.md`. Trello: S04-JO02 Hecho.)*
+- [x] Pitch preparado. *(Completado — `docs/pitch/PITCH_RETO_02.md`. Trello: S04-JO02 Hecho.)*
 - [x] Material visual organizado. *(Trello: S04-JO03 Hecho.)*
 
 ### Julio Galvis
@@ -341,7 +341,7 @@ Se realiza el cierre del sprint:
 
 ### Jorge Cervantes
 
-- [x] Pruebas funcionales realizadas. *(Evidencia real: `docs/ReportesQA/`, tarjetas movidas a Hecho
+- [x] Pruebas funcionales realizadas. *(Evidencia real: `docs/calidad/`, tarjetas movidas a Hecho
   por Pedro el 14/09 — ver nota en §3.)*
 - [x] Calidad del frontend revisada. *(Misma evidencia.)*
 - [x] Entregables revisados. *(Misma evidencia; dictamen del propio reporte: 🔴 no apto para

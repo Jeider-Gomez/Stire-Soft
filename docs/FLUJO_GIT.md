@@ -71,7 +71,7 @@ repartiendo el territorio, no con más procesos.
 | `frontend-nuxt/` funcionalidad (componentes, stores, composables) | Frontend funcional / Antigravity | No reestilar componentes mientras haya una rama de identidad visual abierta |
 | `frontend-nuxt/tailwind.config.ts` y `assets/css/main.css` | Identidad visual | Es el único punto de entrada del estilo: cambiar **tokens** (colores, tipografías, espaciados) primero, componentes después |
 | `<template>` de `layouts/`, `components/` y `pages/` | Identidad visual, con la regla de no tocar el `<script>` ni lo que hace cada botón | Ver [`identidad-visual/`](./identidad-visual/README.md); `npm run check:identidad` lo comprueba |
-| `docs/ReportesQA/` | QA | Los archivos nuevos casi nunca chocan; ir directo a `main` sirve |
+| `docs/calidad/` | QA | Los archivos nuevos casi nunca chocan; ir directo a `main` sirve |
 | `MONITOREO_SEMANAL.md` | Todos | Es donde ya hubo que resolver conflictos a mano al integrar ediciones hechas desde la web de GitHub. Cada quien edita solo su bloque, hace `git pull` antes de abrirlo y sube apenas termine |
 
 Otras costumbres que ayudan:

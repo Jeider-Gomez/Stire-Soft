@@ -117,7 +117,7 @@ La **Unidad de Aprendizaje** es la unidad mínima evaluable del sistema: es el g
 Esta sección registra, con fecha, los problemas reales reportados por el dueño del proyecto al usar la
 plataforma y el estado verificado contra el código (no contra lo que dice un informe) el mismo día. Se
 actualiza por checkpoints fechados, sin borrar los anteriores — mismo criterio que
-`docs/antigravity/PLAN_IMPLEMENTACION.md`.
+`docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md`.
 
 ### 9.1 Reportado por el dueño del proyecto, 2026-09-10 (uso real de la plataforma)
 
@@ -209,9 +209,9 @@ reprodujo el flujo exacto del punto 1 de la §9.1 con el navegador, no solo leye
 
 Los tres puntos que §9.2 dejaba en ⚠️/❌ quedaron resueltos y verificados en vivo (navegador real,
 no solo lectura de código) entre el 2026-09-10 (tarde) y el 2026-09-11. Detalle completo en
-`docs/claude-code/informes/INFORME_2026-09-10_SESION_02.md` y
+`docs/agentes-ia/claude-code/informes/INFORME_2026-09-10_SESION_02.md` y
 `INFORME_2026-09-11_SESION_01.md`; el plan que gobernó la ejecución de los puntos 9 y 10 (delegados
-a Codex) está en `docs/codex/PLAN_IMPLEMENTACION.md`.
+a Codex) está en `docs/agentes-ia/codex/PLAN_IMPLEMENTACION.md`.
 
 | # (ver 9.1) | Estado (era en §9.2) | Estado ahora | Evidencia |
 |---|---|---|---|
@@ -224,7 +224,7 @@ un bug real de `passingScore` — se comparaba como puntaje crudo contra un umbr
 importar el `totalPoints` de cada actividad (10-30 según el tipo), así que ninguna actividad de
 bajo puntaje total podía "aprobarse" nunca, sin importar qué tan bien la resolviera el estudiante.
 Ahora es un porcentaje del `totalPoints` de cada actividad, en los 3 sitios que lo comparaban
-(commit `741b18f`, `docs/claude-code/informes/INFORME_2026-09-10_SESION_02.md`).
+(commit `741b18f`, `docs/agentes-ia/claude-code/informes/INFORME_2026-09-10_SESION_02.md`).
 
 ### 9.5 Checkpoint 2026-09-15/16 — Pausa técnica: el Tutor se estaba volviendo un chat genérico
 

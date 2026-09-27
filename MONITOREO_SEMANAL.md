@@ -100,7 +100,7 @@ aplicación en una URL pública, se desbloquean las pruebas en vivo que venían 
   - recuperación de contraseña por correo;
   - Tutor IA con una clave propia.
 
-  Resultado en un reporte en `docs/ReportesQA/`.
+  Resultado en un reporte en `docs/calidad/`.
 
 ### 3.1 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
 

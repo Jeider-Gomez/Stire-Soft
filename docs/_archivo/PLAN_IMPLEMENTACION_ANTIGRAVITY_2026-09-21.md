@@ -1,6 +1,6 @@
-> **DOCUMENTO HISTORICO — no vigente.** Fase 22 de `docs/antigravity/PLAN_IMPLEMENTACION.md`, ejecutada por
+> **DOCUMENTO HISTORICO — no vigente.** Fase 22 de `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md`, ejecutada por
 > Antigravity el 2026-09-21 y auditada por Claude Code el mismo día en navegador real (ver la nota
-> al inicio de §22). Estado actual: `docs/antigravity/PLAN_IMPLEMENTACION.md`. Archivado el 2026-09-21.
+> al inicio de §22). Estado actual: `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md`. Archivado el 2026-09-21.
 
 ---
 
@@ -126,7 +126,7 @@ sano, deja solo su detalle (adaptador, límites, modelo) sin insignia de estado.
 - [x] Las pruebas de §22.3 hechas en navegador real, con lo observado anotado en el informe.
 - [x] `npx nuxi typecheck` en código 0.
 - [x] Cuatro commits, uno por tarea.
-- [x] Informe en `docs/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
+- [x] Informe en `docs/agentes-ia/antigravity/informes/` con `TEMPLATE_INFORME.md`, **solo con lo que hiciste y viste**.
 
 ### 22.5 Fuera de alcance
 

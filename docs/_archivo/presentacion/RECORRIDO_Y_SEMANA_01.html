@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STIRE-Soft — Recorrido del proyecto y Semana 1 del Reto 1</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-alt: #f5f6f8;
+    --text: #1f2430;
+    --text-muted: #5b6472;
+    --border: #d8dce3;
+    --accent: #2c5f8a;
+    --accent-soft: #e3edf5;
+    --warn-bg: #fdf3e6;
+    --warn-border: #e2a640;
+    --warn-text: #7a4b06;
+    --link: #1f5c99;
+    --table-stripe: #f2f4f7;
+    --code-bg: #eef0f3;
+    --bar-before: #b7c3cf;
+    --bar-after: #2c5f8a;
+    --shadow: rgba(20, 30, 45, 0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181f;
+      --bg-alt: #1b2028;
+      --text: #e6e9ee;
+      --text-muted: #a3acb9;
+      --border: #303846;
+      --accent: #7db4e6;
+      --accent-soft: #1f3548;
+      --warn-bg: #3a2c12;
+      --warn-border: #c98a2c;
+      --warn-text: #f0c987;
+      --link: #8fc0ea;
+      --table-stripe: #1c222b;
+      --code-bg: #1c222b;
+      --bar-before: #46505f;
+      --bar-after: #7db4e6;
+      --shadow: rgba(0, 0, 0, 0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181f;
+    --bg-alt: #1b2028;
+    --text: #e6e9ee;
+    --text-muted: #a3acb9;
+    --border: #303846;
+    --accent: #7db4e6;
+    --accent-soft: #1f3548;
+    --warn-bg: #3a2c12;
+    --warn-border: #c98a2c;
+    --warn-text: #f0c987;
+    --link: #8fc0ea;
+    --table-stripe: #1c222b;
+    --code-bg: #1c222b;
+    --bar-before: #46505f;
+    --bar-after: #7db4e6;
+    --shadow: rgba(0, 0, 0, 0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    font-size: 16px;
+  }
+  main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+  h1, h2, h3, h4 { font-weight: 600; line-height: 1.3; }
+  h1 { font-size: 1.7rem; margin: 0 0 6px; }
+  h2 {
+    font-size: 1.35rem;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    color: var(--accent);
+  }
+  h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+  h4 { font-size: 1rem; margin: 18px 0 6px; color: var(--accent); }
+  p { margin: 0 0 12px; }
+  a { color: var(--link); }
+  a:hover { text-decoration: none; }
+  code {
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.92em;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    overflow-wrap: anywhere;
+  }
+  p, li, dd { overflow-wrap: anywhere; }
+
+  /* Navegación fija */
+  nav.topnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+  nav.topnav .inner {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    align-items: center;
+  }
+  nav.topnav strong { color: var(--accent); margin-right: 6px; white-space: nowrap; }
+  nav.topnav a {
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.88rem;
+    padding: 4px 2px;
+    white-space: nowrap;
+  }
+  nav.topnav a:hover { color: var(--accent); }
+  .print-btn {
+    margin-left: auto;
+    border: 1px solid var(--border);
+    background: var(--bg-alt);
+    color: var(--text);
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .print-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  section { padding: 46px 0 10px; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+
+  .back-to-top {
+    display: inline-block;
+    margin-top: 22px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .back-to-top:hover { color: var(--accent); }
+
+  .cover {
+    text-align: center;
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .cover h1 { font-size: 2.1rem; }
+  .cover .sub { color: var(--text-muted); margin-bottom: 26px; }
+  .cover-meta {
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    gap: 6px 16px;
+    text-align: left;
+    font-size: 0.95rem;
+    margin: 0 auto;
+  }
+  .cover-meta dt { color: var(--text-muted); }
+  .cover-meta dd { margin: 0; }
+  .team-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 22px 0 10px;
+    list-style: none;
+    padding: 0;
+  }
+  .team-list li {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.88rem;
+  }
+
+  .callout {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 0.94rem;
+  }
+  .callout.warn {
+    background: var(--warn-bg);
+    border-left-color: var(--warn-border);
+    color: var(--warn-text);
+  }
+  .callout.warn a { color: var(--warn-text); text-decoration: underline; }
+  .callout strong { color: inherit; }
+
+  .doc-card {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+  .doc-card h4 { margin-top: 0; }
+  .doc-card .filename {
+    display: inline-block;
+    font-family: monospace;
+    background: var(--code-bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+  }
+
+  .person-block {
+    margin: 22px 0;
+    padding-left: 16px;
+    border-left: 3px solid var(--accent-soft);
+  }
+  .person-block h4 { margin-top: 0; color: var(--text); }
+  .person-block .rol { color: var(--text-muted); font-size: 0.88rem; margin: -4px 0 8px; }
+  .person-block ul { margin: 0; padding-left: 20px; }
+  .person-block li { margin-bottom: 6px; }
+
+  .table-wrap { overflow-x: auto; margin: 14px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; min-width: 480px; }
+  th, td { border: 1px solid var(--border); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-alt); font-weight: 600; }
+  tr:nth-child(even) td { background: var(--table-stripe); }
+
+  figure { margin: 22px 0; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; text-align: center; }
+
+  .bars-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    justify-content: center;
+  }
+  .bars-row > div { flex: 1 1 200px; max-width: 230px; }
+
+  ul.plain { padding-left: 20px; }
+  ul.plain li { margin-bottom: 6px; }
+
+  .ext-link::after { content: " ↗"; font-size: 0.8em; color: var(--text-muted); }
+
+  @media print {
+    nav.topnav { display: none; }
+    .back-to-top { display: none; }
+    body { font-size: 12.5px; }
+    section { break-inside: avoid; border-bottom: none; padding: 18px 0; }
+    figure { break-inside: avoid; }
+    .doc-card, .person-block, .callout { break-inside: avoid; }
+    main { max-width: 100%; }
+    a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: 0.75em;
+      color: #555;
+      word-break: break-all;
+    }
+    .ext-link::after { content: ""; }
+    @page { size: A4; margin: 16mm 14mm; }
+  }
+
+  @media (max-width: 640px) {
+    .cover-meta { grid-template-columns: 1fr; text-align: center; }
+    nav.topnav .inner { gap: 4px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav" id="top">
+  <div class="inner">
+    <strong>STIRE-Soft</strong>
+    <a href="#linea-tiempo">Línea de tiempo</a>
+    <a href="#doc-maestro">Documento maestro</a>
+    <a href="#backend-docs">Backend y documentación</a>
+    <a href="#semana-1">Semana 1</a>
+    <a href="#referencias">Referencias</a>
+    <button class="print-btn" onclick="window.print()">Imprimir / Guardar como PDF</button>
+  </div>
+</nav>
+
+<main>
+
+<section class="cover" id="portada">
+  <div class="kicker">Universidad de Córdoba · DDSE3 2026-2 · Reto 1</div>
+  <h1>STIRE-Soft</h1>
+  <p class="sub">De dónde viene el proyecto y qué se hizo en la Semana 1 del Reto 1</p>
+  <dl class="cover-meta">
+    <dt>Grupo</dt><dd>PLAN B</dd>
+    <dt>Docente actual</dt><dd>Dr. Raúl Emiro Toscano Miranda</dd>
+    <dt>Repositorio</dt><dd><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft" target="_blank" rel="noopener">github.com/Jeider-Gomez/Stire-Soft</a></dd>
+    <dt>Fecha del documento</dt><dd>28 de agosto de 2026</dd>
+  </dl>
+  <ul class="team-list">
+    <li>Jeider Gómez</li>
+    <li>Jorge Cervantes</li>
+    <li>José López</li>
+    <li>Julio Galvis</li>
+    <li>Pedro Romero</li>
+  </ul>
+</section>
+
+<section id="linea-tiempo">
+  <h2>1 · Tres semestres, un solo proyecto</h2>
+  <p>La Semana 1 del Reto 1 (17 al 21 de agosto de 2026) no es el punto de partida de STIRE-Soft:
+  es la continuación de dos semestres de trabajo previo, en dos asignaturas distintas y con dos
+  docentes distintos. Lo que se explica en las siguientes secciones — el documento maestro y el
+  backend con su documentación — es la base sobre la que se construye todo lo que el equipo hace
+  ahora mismo.</p>
+
+  <figure>
+    <svg viewBox="0 0 960 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="g1-title g1-desc">
+      <title id="g1-title">Línea de tiempo de los tres semestres de STIRE-Soft</title>
+      <desc id="g1-desc">Tres semestres consecutivos: 2025-2 con Diseño y Desarrollo de Software Educativo I y el docente Víctor Castro, produciendo el documento maestro con un equipo de dos personas; 2026-1 con Diseño y Desarrollo de Software Educativo II y el docente Alí, produciendo el backend y su documentación; y 2026-2 con Diseño y Desarrollo de Software Educativo III y el docente Raúl Emiro Toscano Miranda, donde el equipo crece de dos a cinco integrantes para el Reto 1.</desc>
+      <line x1="60" y1="130" x2="900" y2="130" stroke="var(--border)" stroke-width="3"/>
+      <!-- Semestre 1 -->
+      <circle cx="150" cy="130" r="9" fill="var(--accent)"/>
+      <text x="150" y="95" text-anchor="middle" font-size="13" font-weight="600" fill="var(--text)">2025-2</text>
+      <text x="150" y="113" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">DDS Educativo I</text>
+      <text x="150" y="156" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Docente: Víctor Castro</text>
+      <text x="150" y="172" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Entregable: documento maestro (SRS)</text>
+      <text x="150" y="188" text-anchor="middle" font-size="10.5" fill="var(--text)" font-weight="600">Equipo: 2 personas</text>
+      <!-- Semestre 2 -->
+      <circle cx="480" cy="130" r="9" fill="var(--accent)"/>
+      <text x="480" y="95" text-anchor="middle" font-size="13" font-weight="600" fill="var(--text)">2026-1</text>
+      <text x="480" y="113" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">DDS Educativo II</text>
+      <text x="480" y="156" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Docente: Alí</text>
+      <text x="480" y="172" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Entregable: backend + docs/</text>
+      <text x="480" y="188" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Equipo: 2 personas</text>
+      <!-- Semestre 3 -->
+      <circle cx="810" cy="130" r="10" fill="var(--accent)" stroke="var(--warn-border)" stroke-width="2.5"/>
+      <text x="810" y="95" text-anchor="middle" font-size="13" font-weight="600" fill="var(--text)">2026-2</text>
+      <text x="810" y="113" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">DDS Educativo III</text>
+      <text x="810" y="156" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Docente: Raúl E. Toscano Miranda</text>
+      <text x="810" y="172" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Entregable: Reto 1 (MODESEC + pitch)</text>
+      <text x="810" y="188" text-anchor="middle" font-size="10.5" fill="var(--warn-text)" font-weight="700">Equipo: 2 → 5 personas</text>
+      <path d="M 780 205 L 810 220 L 840 205" fill="none" stroke="var(--warn-border)" stroke-width="2"/>
+      <text x="810" y="238" text-anchor="middle" font-size="9.5" fill="var(--warn-text)">se suman Jorge, José y Julio</text>
+    </svg>
+    <figcaption>Gráfico G1 — línea de tiempo de los tres semestres. Datos: Bloques 1, 2 y 3 de esta misma página, con su fuente citada en cada uno.</figcaption>
+  </figure>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Semestre</th><th>Asignatura</th><th>Docente</th><th>Entregable principal</th><th>Tamaño del equipo</th></tr></thead>
+      <tbody>
+        <tr><td>2025-2</td><td>Diseño y Desarrollo de Software Educativo I</td><td>Víctor Fabián Castro Pérez</td><td>Documento maestro (especificación de requisitos)</td><td>2</td></tr>
+        <tr><td>2026-1</td><td>Diseño y Desarrollo de Software Educativo II</td><td>Alí</td><td>Backend y documentación técnica (<code>docs/</code>)</td><td>2</td></tr>
+        <tr><td>2026-2</td><td>Diseño y Desarrollo de Software Educativo III</td><td>Dr. Raúl Emiro Toscano Miranda</td><td>Reto 1: MODESEC Fase II, bitácora y pitch</td><td>2 → 5</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <a class="back-to-top" href="#top">↑ Volver arriba</a>
+</section>
+
+<section id="doc-maestro">
+  <h2>2 · El documento maestro (2025-2)</h2>
+  <p><strong>Asignatura:</strong> Diseño y Desarrollo de Software Educativo I &middot;
+  <strong>Docente:</strong> Víctor Fabián Castro Pérez &middot;
+  <strong>Grupo:</strong> PLAN B &middot;
+  <strong>Equipo en ese momento:</strong> Jeider Jair Gómez Oviedo y Pedro Gabriel Romero Mendivil.</p>
+
+  <p>Documento: <a class="ext-link" href="https://docs.google.com/document/d/1is6pF5pIh8tOdCeNybMl5ZvnVq7Y_aj6rSmjbYVRmQk/edit" target="_blank" rel="noopener">Especificación de Requisitos de Software (SRS) de STIRE</a></p>
+
+  <p>Es el documento donde el proyecto se definió por primera vez de forma formal: contiene la
+  reseña del proyecto, la descripción de la propuesta, el propósito y alcance, las definiciones y
+  acrónimos, y los requisitos funcionales y no funcionales del sistema. Todo lo que el backend
+  construye desde entonces es una implementación de lo que este documento especificó.</p>
+
+  <h3>Lo que definió y sigue vigente hoy</h3>
+  <ul class="plain">
+    <li><strong>STIRE</strong> = Sistema Tutor Inteligente con Repetición Espaciada.</li>
+    <li>Asignatura objetivo del sistema: Fundamentos de Algoritmia.</li>
+    <li>Un tutor conversacional que explica conceptos, resuelve dudas, sugiere ejercicios de
+      práctica, recomienda qué repasar y orienta el estudio — no reemplaza al docente, acompaña el
+      aprendizaje autónomo fuera del aula.</li>
+    <li>Los cinco estados de aprendizaje por unidad, mostrados en el Gráfico G2 más abajo.</li>
+    <li>La lógica de repetición espaciada para priorizar qué se repasa primero.</li>
+    <li>Las unidades de aprendizaje del curso: Variables, Tipos de datos, Condicionales, Ciclos,
+      Arreglos.</li>
+  </ul>
+
+  <figure>
+    <svg viewBox="0 0 960 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="g2-title g2-desc">
+      <title id="g2-title">Cadena de los cinco estados de aprendizaje de STIRE</title>
+      <desc id="g2-desc">Cinco estados en secuencia, unidos por flechas: No visto, Explorado, En práctica, Comprensión parcial, y Dominado. Cada unidad de aprendizaje de un estudiante avanza por estos estados a medida que practica.</desc>
+      <g font-size="12.5" text-anchor="middle">
+        <!-- boxes -->
+        <g>
+          <rect x="10" y="45" width="160" height="50" rx="7" fill="var(--bg-alt)" stroke="var(--border)"/>
+          <text x="90" y="75" fill="var(--text)">No visto</text>
+        </g>
+        <path d="M175 70 L200 70" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/>
+        <g>
+          <rect x="205" y="45" width="160" height="50" rx="7" fill="var(--bg-alt)" stroke="var(--border)"/>
+          <text x="285" y="75" fill="var(--text)">Explorado</text>
+        </g>
+        <path d="M370 70 L395 70" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/>
+        <g>
+          <rect x="400" y="45" width="160" height="50" rx="7" fill="var(--bg-alt)" stroke="var(--border)"/>
+          <text x="480" y="75" fill="var(--text)">En práctica</text>
+        </g>
+        <path d="M565 70 L590 70" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/>
+        <g>
+          <rect x="595" y="45" width="175" height="50" rx="7" fill="var(--bg-alt)" stroke="var(--border)"/>
+          <text x="682" y="75" fill="var(--text)">Comprensión parcial</text>
+        </g>
+        <path d="M775 70 L800 70" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/>
+        <g>
+          <rect x="805" y="45" width="150" height="50" rx="7" fill="var(--accent-soft)" stroke="var(--accent)"/>
+          <text x="880" y="75" fill="var(--text)" font-weight="700">Dominado</text>
+        </g>
+      </g>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>Gráfico G2 — los cinco estados de aprendizaje por unidad. Fuente: documento maestro (2025-2), enlace arriba.</figcaption>
+  </figure>
+  <a class="back-to-top" href="#top">↑ Volver arriba</a>
+</section>
+
+<section id="backend-docs">
+  <h2>3 · El backend y su documentación (2026-1)</h2>
+  <p><strong>Asignatura:</strong> Diseño y Desarrollo de Software Educativo II &middot;
+  <strong>Docente:</strong> Alí</p>
+
+  <p>El profesor probaba el proyecto apoyándose en Claude, revisaba el modelo entidad-relación y le
+  señalaba al equipo qué debía mejorar. El equipo llevaba esas observaciones al código y
+  documentaba el sistema en la carpeta <code>docs/</code> del repositorio — la misma carpeta que
+  hoy contiene, además, toda la documentación de las olas de remediación de seguridad y las
+  auditorías técnicas del proyecto.</p>
+
+  <p>Carpeta completa: <a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/tree/main/docs" target="_blank" rel="noopener">github.com/Jeider-Gomez/Stire-Soft/tree/main/docs</a></p>
+
+  <div class="callout warn">
+    <strong>Nota de precisión.</strong> Tres de los cinco documentos de abajo (01, 02 y 04)
+    contienen hoy afirmaciones desactualizadas que dicen que el sistema ejecuta el código del
+    estudiante en contenedores Docker. Es falso: el sistema usa un sandbox propio, con aislamiento
+    de proceso del sistema operativo, sin Docker. El hallazgo — 12 afirmaciones falsas y un log de
+    ejemplo fabricado en <code>02_FLUJOS_Y_OPERACIONES.md</code> — ya está registrado con corrección
+    programada para el 31 de agosto (ver <a href="../../seguimiento/MONITOREO_SEMANAL_01.md">bitácora</a>
+    y <a href="../../../MONITOREO_SEMANAL.md">MONITOREO_SEMANAL.md</a>, sección 3). Las descripciones de
+    abajo describen la arquitectura real del sandbox, no lo que esos documentos afirman todavía.
+  </div>
+
+  <div class="doc-card">
+    <span class="filename">00_VISION_FUNCIONAL.md</span>
+    <h4>¿Por qué existe STIRE?</h4>
+    <p>La visión pedagógica del proyecto: el problema que resuelve, la propuesta de valor, los
+    actores del sistema (estudiante, docente, tutor IA) y el ciclo cognitivo del estudiante a
+    través de los cinco estados de aprendizaje. Es el primer documento a leer — para cualquiera,
+    técnico o no, que necesite entender el propósito del sistema antes que su implementación.</p>
+    <p><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/00_VISION_FUNCIONAL.md" target="_blank" rel="noopener">Ver en GitHub</a></p>
+  </div>
+
+  <div class="doc-card">
+    <span class="filename">01_ARQUITECTURA_Y_DISENO.md</span>
+    <h4>¿Qué es STIRE técnicamente?</h4>
+    <p>La arquitectura del sistema: el patrón de diseño orientado al dominio (DDD), el registro de
+    decisiones de arquitectura (ADR) y el esquema relacional completo de la base de datos — el
+    mismo modelo entidad-relación que el docente Alí revisaba semestre a semestre. El sandbox de
+    ejecución de código que describe hoy como basado en Docker en realidad corre por aislamiento de
+    proceso del sistema operativo, sin Docker.</p>
+    <p><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/01_ARQUITECTURA_Y_DISENO.md" target="_blank" rel="noopener">Ver en GitHub</a></p>
+  </div>
+
+  <div class="doc-card">
+    <span class="filename">02_FLUJOS_Y_OPERACIONES.md</span>
+    <h4>¿Cómo funciona STIRE?</h4>
+    <p>El recorrido operativo del sistema: qué hace un estudiante paso a paso, qué hace un docente
+    paso a paso, y cómo se puede seguir la traza de lo que ocurre en el sistema de principio a fin.
+    La calificación de código, aunque este documento la describa hoy con un ejemplo de un
+    contenedor Docker, corre en realidad sobre el mismo sandbox de proceso del sistema operativo
+    mencionado arriba — ese ejemplo de log no corresponde a una ejecución real del sistema.</p>
+    <p><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/02_FLUJOS_Y_OPERACIONES.md" target="_blank" rel="noopener">Ver en GitHub</a></p>
+  </div>
+
+  <div class="doc-card">
+    <span class="filename">03_MOTOR_Y_TUTOR.md</span>
+    <h4>¿Cuál es el cerebro de STIRE?</h4>
+    <p>El motor de evaluación de respuestas, el motor que ejecuta y califica el código que entrega
+    el estudiante, el cálculo de dominio (mastery), el algoritmo de repetición espaciada SM-2, y el
+    tutor con inteligencia artificial. Es el documento más denso técnicamente — para quien necesite
+    entender los algoritmos, no solo la arquitectura general.</p>
+    <p><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/03_MOTOR_Y_TUTOR.md" target="_blank" rel="noopener">Ver en GitHub</a></p>
+  </div>
+
+  <div class="doc-card">
+    <span class="filename">04_ESTANDARES_Y_SEGURIDAD.md</span>
+    <h4>¿Cuáles son las reglas del juego?</h4>
+    <p>Las convenciones de código del proyecto, el modelo de seguridad (autenticación, protección
+    contra XSS, aislamiento del sandbox de ejecución), consideraciones de escalabilidad, y la deuda
+    técnica que el propio equipo reconoce abierta. Aquí también aparecen, todavía sin corregir,
+    algunas de las menciones a Docker señaladas en la nota de arriba.</p>
+    <p><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/04_ESTANDARES_Y_SEGURIDAD.md" target="_blank" rel="noopener">Ver en GitHub</a></p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="g3-title g3-desc">
+      <title id="g3-title">Mapa de los cinco documentos técnicos de docs/</title>
+      <desc id="g3-desc">Orden de lectura recomendado de los cinco documentos numerados 00 a 04: Visión Funcional responde por qué existe STIRE; Arquitectura y Diseño responde qué es técnicamente; Flujos y Operaciones responde cómo funciona; Motor y Tutor responde cuál es el cerebro del sistema; y Estándares y Seguridad responde cuáles son las reglas del juego.</desc>
+      <g font-size="11.5" text-anchor="middle">
+        <g>
+          <rect x="5" y="60" width="178" height="70" rx="7" fill="var(--accent-soft)" stroke="var(--accent)"/>
+          <text x="94" y="82" font-weight="700" fill="var(--text)">00 · Visión Funcional</text>
+          <text x="94" y="100" fill="var(--text-muted)" font-size="10">¿Por qué existe</text>
+          <text x="94" y="113" fill="var(--text-muted)" font-size="10">STIRE?</text>
+        </g>
+        <path d="M186 95 L206 95" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow3)"/>
+        <g>
+          <rect x="210" y="60" width="178" height="70" rx="7" fill="var(--bg-alt)" stroke="var(--border)"/>
+          <text x="299" y="82" font-weight="700" fill="var(--text)">01 · Arquitectura</text>
+          <text x="299" y="100" fill="var(--text-muted)" font-size="10">¿Qué es STIRE</text>
+          <text x="299" y="113" fill="var(--text-muted)" font-size="10">técnicamente?</text>
+        </g>
+        <path d="M391 95 L411 95" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow3)"/>
+        <g>
+          <rect x="415" y="60" width="178" height="70" rx="7" fill="var(--bg-alt)" stroke="var(--border)"/>
+          <text x="504" y="82" font-weight="700" fill="var(--text)">02 · Flujos</text>
+          <text x="504" y="100" fill="var(--text-muted)" font-size="10">¿Cómo funciona</text>
+          <text x="504" y="113" fill="var(--text-muted)" font-size="10">STIRE?</text>
+        </g>
+        <path d="M596 95 L616 95" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow3)"/>
+        <g>
+          <rect x="620" y="60" width="178" height="70" rx="7" fill="var(--bg-alt)" stroke="var(--border)"/>
+          <text x="709" y="82" font-weight="700" fill="var(--text)">03 · Motor y Tutor</text>
+          <text x="709" y="100" fill="var(--text-muted)" font-size="10">¿Cuál es el</text>
+          <text x="709" y="113" fill="var(--text-muted)" font-size="10">cerebro?</text>
+        </g>
+        <path d="M801 95 L821 95" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow3)"/>
+        <g>
+          <rect x="825" y="60" width="130" height="70" rx="7" fill="var(--bg-alt)" stroke="var(--border)"/>
+          <text x="890" y="82" font-weight="700" fill="var(--text)" font-size="10.5">04 · Estándares</text>
+          <text x="890" y="100" fill="var(--text-muted)" font-size="10">¿Reglas del</text>
+          <text x="890" y="113" fill="var(--text-muted)" font-size="10">juego?</text>
+        </g>
+      </g>
+      <defs>
+        <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>Gráfico G3 — orden de lectura de los cinco documentos técnicos. Fuente: <code>docs/README.md</code> y contenido de cada documento, citado arriba.</figcaption>
+  </figure>
+  <a class="back-to-top" href="#top">↑ Volver arriba</a>
+</section>
+
+<section id="semana-1">
+  <h2>4 · Semana 1 del Reto 1 (17 – 21 de agosto de 2026)</h2>
+  <p><strong>Asignatura:</strong> Diseño y Desarrollo de Software Educativo III, 2026-2 &middot;
+  <strong>Docente:</strong> Dr. Raúl Emiro Toscano Miranda &middot;
+  <strong>Equipo:</strong> creció de 2 a 5 integrantes — Jeider Gómez, Jorge Cervantes, José López,
+  Julio Galvis y Pedro Romero.</p>
+
+  <p>Todo lo que sigue en esta sección viene de una sola fuente:
+  <a href="../../seguimiento/MONITOREO_SEMANAL_01.md"><code>docs/seguimiento/MONITOREO_SEMANAL_01.md</code></a>,
+  la Bitácora de Monitoreo y Control N.º 1, cerrada el viernes 21 de agosto a las 8:00 p.m.</p>
+
+  <h3>Entregables cumplidos, por persona</h3>
+
+  <div class="person-block">
+    <h4>Jeider Gómez</h4>
+    <p class="rol">Líder Técnico</p>
+    <ul>
+      <li>Definió el marco de trabajo del equipo: comparó Scrum completo, Kanban, Shape Up y XP
+        contra las restricciones reales del grupo, y el equipo adoptó <strong>Sprint Semanal con
+        tablero Kanban</strong>, con reunión de cierre y arranque los viernes a las 8:00 p.m. y dos
+        reportes escritos entre semana.</li>
+      <li>Ejecutó una auditoría técnica del backend y una primera ola de remediación, con estos
+        resultados medidos (ver Gráfico G4 más abajo).</li>
+      <li>Endureció el entorno de ejecución de código del estudiante: corre aislado del sistema
+        operativo, sin acceso a archivos, red ni procesos. Se probaron y bloquearon 10 vectores de
+        ataque, y se validó el flujo completo contra la base de datos real.</li>
+    </ul>
+  </div>
+
+  <div class="person-block">
+    <h4>Jorge Cervantes</h4>
+    <p class="rol">Calidad y Tablero</p>
+    <ul>
+      <li>Leyó la normativa del reto (Guía de Trabajo del Estudiante, Clase 02, y la presentación
+        <code>DDS3-01.pdf</code>) y extrajo los criterios de aceptación de los tres entregables del
+        Reto 1 — la lista que el equipo usa para revisar cada pieza antes de darla por buena.</li>
+      <li>Participó en la comparación de marcos de trabajo y en la decisión de usar sprint semanal
+        con tablero Kanban.</li>
+    </ul>
+  </div>
+
+  <div class="person-block">
+    <h4>José López</h4>
+    <p class="rol">Diseño UI/UX — Ventana Estándar</p>
+    <ul>
+      <li>Produjo la primera maqueta de la Ventana Estándar (§3.3), dividida en sus secciones
+        funcionales: Header, Menú, Zona de Contenido, Zona de Acciones y Footer.</li>
+    </ul>
+  </div>
+
+  <div class="person-block">
+    <h4>Julio Galvis</h4>
+    <p class="rol">Diseño Instruccional — Contenidos y Navegación</p>
+    <ul>
+      <li>Produjo el borrador del Diagrama de Contenidos (§3.1): estructura de tres módulos con sus
+        temas, como punto de partida del diseño instruccional.</li>
+    </ul>
+  </div>
+
+  <div class="person-block">
+    <h4>Pedro Romero</h4>
+    <p class="rol">Documentación, Bitácora y Pitch</p>
+    <ul>
+      <li>Creó y publicó la bitácora del equipo en el repositorio, con la plantilla oficial del
+        curso.</li>
+      <li>Escribió la primera versión del guión del pitch en inglés, en los cuatro bloques exigidos
+        (Hook · Problem · Solution &amp; Value Prop · Tech Stack &amp; CTA), con guía de
+        pronunciación fonética.</li>
+      <li>Registró el prompt ROCAS usado para generar el guión, con sus iteraciones.</li>
+    </ul>
+  </div>
+
+  <h3>Cifras de la remediación del backend (Semana 1)</h3>
+  <figure>
+    <div class="bars-row">
+      <div>
+        <svg viewBox="0 0 200 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="g4a-title">
+          <title id="g4a-title">Suites de prueba: de 19 a 33</title>
+          <text x="100" y="16" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--text)">Suites de prueba</text>
+          <rect x="45" y="130" width="40" height="0" fill="var(--bar-before)"/>
+          <rect x="45" y="130" width="40" height="1" fill="var(--bar-before)"/>
+          <rect x="45" y="35" width="40" height="95" fill="var(--bar-before)"><title>Antes: 19 suites</title></rect>
+          <rect x="115" y="16" width="40" height="114" fill="var(--bar-after)"><title>Después: 33 suites</title></rect>
+          <text x="65" y="26" text-anchor="middle" font-size="12" fill="var(--text)">19</text>
+          <text x="135" y="10" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">33</text>
+          <line x1="30" y1="130" x2="170" y2="130" stroke="var(--border)" stroke-width="1.5"/>
+          <text x="65" y="148" text-anchor="middle" font-size="10" fill="var(--text-muted)">antes</text>
+          <text x="135" y="148" text-anchor="middle" font-size="10" fill="var(--text-muted)">después</text>
+        </svg>
+      </div>
+      <div>
+        <svg viewBox="0 0 200 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="g4b-title">
+          <title id="g4b-title">Pruebas automatizadas: de 105 a 183</title>
+          <text x="100" y="16" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--text)">Pruebas</text>
+          <rect x="45" y="53" width="40" height="77" fill="var(--bar-before)"><title>Antes: 105 pruebas</title></rect>
+          <rect x="115" y="16" width="40" height="114" fill="var(--bar-after)"><title>Después: 183 pruebas</title></rect>
+          <text x="65" y="45" text-anchor="middle" font-size="12" fill="var(--text)">105</text>
+          <text x="135" y="10" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">183</text>
+          <line x1="30" y1="130" x2="170" y2="130" stroke="var(--border)" stroke-width="1.5"/>
+          <text x="65" y="148" text-anchor="middle" font-size="10" fill="var(--text-muted)">antes</text>
+          <text x="135" y="148" text-anchor="middle" font-size="10" fill="var(--text-muted)">después</text>
+        </svg>
+      </div>
+      <div>
+        <svg viewBox="0 0 200 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="g4c-title">
+          <title id="g4c-title">Cobertura del servicio de autenticación: de 0% a 79%</title>
+          <text x="100" y="16" text-anchor="middle" font-size="10.8" font-weight="600" fill="var(--text)">Cobertura · servicio auth</text>
+          <rect x="45" y="129" width="40" height="1" fill="var(--bar-before)"><title>Antes: 0%</title></rect>
+          <rect x="115" y="40" width="40" height="90" fill="var(--bar-after)"><title>Después: 79%</title></rect>
+          <text x="65" y="126" text-anchor="middle" font-size="12" fill="var(--text)">0%</text>
+          <text x="135" y="34" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">79%</text>
+          <line x1="30" y1="130" x2="170" y2="130" stroke="var(--border)" stroke-width="1.5"/>
+          <text x="65" y="148" text-anchor="middle" font-size="10" fill="var(--text-muted)">antes</text>
+          <text x="135" y="148" text-anchor="middle" font-size="10" fill="var(--text-muted)">después</text>
+        </svg>
+      </div>
+      <div>
+        <svg viewBox="0 0 200 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="g4d-title">
+          <title id="g4d-title">Cobertura del controlador de autenticación: de 0% a 100%</title>
+          <text x="100" y="16" text-anchor="middle" font-size="10.8" font-weight="600" fill="var(--text)">Cobertura · controlador auth</text>
+          <rect x="45" y="129" width="40" height="1" fill="var(--bar-before)"><title>Antes: 0%</title></rect>
+          <rect x="115" y="16" width="40" height="114" fill="var(--bar-after)"><title>Después: 100%</title></rect>
+          <text x="65" y="126" text-anchor="middle" font-size="12" fill="var(--text)">0%</text>
+          <text x="135" y="10" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">100%</text>
+          <line x1="30" y1="130" x2="170" y2="130" stroke="var(--border)" stroke-width="1.5"/>
+          <text x="65" y="148" text-anchor="middle" font-size="10" fill="var(--text-muted)">antes</text>
+          <text x="135" y="148" text-anchor="middle" font-size="10" fill="var(--text-muted)">después</text>
+        </svg>
+      </div>
+    </div>
+    <figcaption>Gráfico G4 — resultados de la primera ola de remediación del backend, medidos durante la Semana 1.</figcaption>
+  </figure>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Aspecto evaluado</th><th>Antes</th><th>Después</th></tr></thead>
+      <tbody>
+        <tr><td>Compilación del proyecto</td><td>6 errores de TypeScript</td><td>Compila sin errores</td></tr>
+        <tr><td>Suites de prueba</td><td>19</td><td>33</td></tr>
+        <tr><td>Pruebas automatizadas</td><td>105</td><td>183</td></tr>
+        <tr><td>Cobertura del servicio de autenticación</td><td>0%</td><td>79%</td></tr>
+        <tr><td>Cobertura del controlador de autenticación</td><td>0%</td><td>100%</td></tr>
+        <tr><td>Arranque sin Docker ni Redis</td><td>El proceso se caía</td><td>Arranca y responde</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:0.85rem; color:var(--text-muted)">Fuente de esta tabla y del Gráfico G4:
+  <a href="../../seguimiento/MONITOREO_SEMANAL_01.md"><code>docs/seguimiento/MONITOREO_SEMANAL_01.md</code></a>, sección 2.1.</p>
+
+  <h3>Cuellos de botella y decisiones tomadas</h3>
+  <ul class="plain">
+    <li><strong>Las fichas de las 7 categorías de MODESEC no se iniciaron esta semana.</strong>
+      Primero había que cerrar el inventario definitivo de ventanas del sistema; sin él, las fichas
+      habrían quedado desalineadas con el Mapa de Navegación. Se pasaron a la semana siguiente por
+      decisión de orden de trabajo, no por retraso.</li>
+    <li><strong>Niveles muy distintos de manejo de Git dentro del equipo</strong> estaban frenando el
+      trabajo de diseño. El equipo decidió eliminar las reglas estrictas de control de versiones
+      (ramas, revisiones cruzadas, convenciones de mensajes): basta con que el archivo esté subido
+      al repositorio antes del viernes, y quien no maneje Git le entrega el archivo a un compañero
+      para que lo suba. Se conserva solo el mensaje de commit que exige la guía del curso.</li>
+  </ul>
+
+  <h3>Ayuda solicitada al docente</h3>
+  <ul class="plain">
+    <li>La Ventana Estándar: ¿se espera una única maqueta modelo que represente el estándar visual
+      del sistema, o una maqueta por cada tipo de ventana?</li>
+    <li>En las 7 categorías (Imagen, Nombre de ventana, Texto, Audio, Video, Animación, Acciones):
+      ¿es válido declarar "No aplica" con justificación pedagógica cuando la ventana no contempla
+      audio o video?</li>
+    <li>El pitch de 60 segundos: ¿lo sustenta un solo integrante o se espera que los cinco
+      intervengan repartiéndose los cuatro bloques?</li>
+  </ul>
+
+  <h3>Compromisos para la semana siguiente (24 – 28 de agosto)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Compromiso</th><th>Quién</th><th>Fecha</th></tr></thead>
+      <tbody>
+        <tr><td>§3.1 Diagrama de Contenidos, versión final con resultados de aprendizaje observables</td><td>Julio Galvis</td><td>mié 26 ago</td></tr>
+        <tr><td>§3.3 Ventana Estándar, versión final por secciones funcionales</td><td>José López</td><td>mié 26 ago</td></tr>
+        <tr><td>§3.3.1 Fichas de Descripción de Ventana con las 7 categorías</td><td>José López</td><td>jue 27 ago</td></tr>
+        <tr><td>§3.3.2 Guía de Metáforas</td><td>Julio Galvis</td><td>jue 27 ago</td></tr>
+        <tr><td>§3.3.3 Mapa de Navegación</td><td>Julio Galvis</td><td>vie 28 ago</td></tr>
+        <tr><td>Verificar contra el código los endpoints que citan las fichas</td><td>Jeider Gómez</td><td>jue 27 ago</td></tr>
+        <tr><td>Montar el tablero Kanban en Trello y repartir las tarjetas</td><td>Jorge Cervantes</td><td>mar 25 ago</td></tr>
+        <tr><td>Revisar los documentos de MODESEC contra la rúbrica</td><td>Jorge Cervantes</td><td>vie 28 ago</td></tr>
+        <tr><td>Ensayo cronometrado del pitch, primera pasada</td><td>Los 5</td><td>vie 28 ago</td></tr>
+        <tr><td>Actualizar la bitácora</td><td>Pedro Romero</td><td>vie 28 ago</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Acta del cierre — viernes 21 de agosto, 8:00 p.m.</h3>
+  <p><strong>Cerradas:</strong> marco metodológico · auditoría y primera ola de remediación del
+  backend · bitácora publicada · guión del pitch con su tabla fonética · evidencia ROCAS · borrador
+  del Diagrama de Contenidos · primera maqueta de la Ventana Estándar · criterios de aceptación
+  extraídos de la guía del docente.</p>
+  <p><strong>No cerradas:</strong> las fichas de las 7 categorías — pasan a la semana del 24 al 28.</p>
+  <p><strong>Acuerdo de la retrospectiva:</strong> fijar la reunión de cierre y arranque los viernes
+  a las 8:00 p.m. con los cinco integrantes, avisando con tiempo si alguien no puede; e incorporar
+  reportes escritos los martes y jueves para dejar de descubrir los bloqueos el mismo viernes.</p>
+
+  <a class="back-to-top" href="#top">↑ Volver arriba</a>
+</section>
+
+<section id="referencias">
+  <h2>5 · Referencias</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Qué es</th><th>Quién lo produjo</th><th>Semestre</th><th>Enlace</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Documento maestro (SRS de STIRE)</td>
+          <td>Jeider Gómez y Pedro Romero</td>
+          <td>2025-2</td>
+          <td><a class="ext-link" href="https://docs.google.com/document/d/1is6pF5pIh8tOdCeNybMl5ZvnVq7Y_aj6rSmjbYVRmQk/edit" target="_blank" rel="noopener">Google Docs</a></td>
+        </tr>
+        <tr>
+          <td>Repositorio del proyecto</td>
+          <td>Equipo STIRE-Soft</td>
+          <td>2026-1 en adelante</td>
+          <td><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft" target="_blank" rel="noopener">GitHub</a></td>
+        </tr>
+        <tr>
+          <td>Carpeta de documentación técnica</td>
+          <td>Equipo STIRE-Soft</td>
+          <td>2026-1 en adelante</td>
+          <td><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/tree/main/docs" target="_blank" rel="noopener">GitHub · docs/</a></td>
+        </tr>
+        <tr>
+          <td><code>00_VISION_FUNCIONAL.md</code></td>
+          <td>Equipo STIRE-Soft</td>
+          <td>2026-1</td>
+          <td><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/00_VISION_FUNCIONAL.md" target="_blank" rel="noopener">GitHub</a></td>
+        </tr>
+        <tr>
+          <td><code>01_ARQUITECTURA_Y_DISENO.md</code></td>
+          <td>Equipo STIRE-Soft</td>
+          <td>2026-1</td>
+          <td><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/01_ARQUITECTURA_Y_DISENO.md" target="_blank" rel="noopener">GitHub</a></td>
+        </tr>
+        <tr>
+          <td><code>02_FLUJOS_Y_OPERACIONES.md</code></td>
+          <td>Equipo STIRE-Soft</td>
+          <td>2026-1</td>
+          <td><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/02_FLUJOS_Y_OPERACIONES.md" target="_blank" rel="noopener">GitHub</a></td>
+        </tr>
+        <tr>
+          <td><code>03_MOTOR_Y_TUTOR.md</code></td>
+          <td>Equipo STIRE-Soft</td>
+          <td>2026-1</td>
+          <td><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/03_MOTOR_Y_TUTOR.md" target="_blank" rel="noopener">GitHub</a></td>
+        </tr>
+        <tr>
+          <td><code>04_ESTANDARES_Y_SEGURIDAD.md</code></td>
+          <td>Equipo STIRE-Soft</td>
+          <td>2026-1</td>
+          <td><a class="ext-link" href="https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/04_ESTANDARES_Y_SEGURIDAD.md" target="_blank" rel="noopener">GitHub</a></td>
+        </tr>
+        <tr>
+          <td>Bitácora de Monitoreo N.º 1 (Semana 1, 17–21 ago)</td>
+          <td>Pedro Romero</td>
+          <td>2026-2</td>
+          <td><a href="../../seguimiento/MONITOREO_SEMANAL_01.md"><code>docs/seguimiento/MONITOREO_SEMANAL_01.md</code></a></td>
+        </tr>
+        <tr>
+          <td>Bitácora de Monitoreo vigente</td>
+          <td>Pedro Romero</td>
+          <td>2026-2</td>
+          <td><a href="../../../MONITOREO_SEMANAL.md"><code>MONITOREO_SEMANAL.md</code></a></td>
+        </tr>
+        <tr>
+          <td>Metodología del equipo</td>
+          <td>Jeider Gómez</td>
+          <td>2026-2</td>
+          <td><a href="../../05_METODOLOGIA_Y_EQUIPO.md"><code>docs/05_METODOLOGIA_Y_EQUIPO.md</code></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <a class="back-to-top" href="#top">↑ Volver arriba</a>
+</section>
+
+</main>
+</body>
+</html>

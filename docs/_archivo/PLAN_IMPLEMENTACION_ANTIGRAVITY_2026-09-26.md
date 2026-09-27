@@ -145,7 +145,7 @@ Lista de lenguajes en un solo lugar del frontend: `utils/codeLanguages.ts` con `
 | Diseño responsive de la pantalla del ejercicio (`min-h-screen md:h-screen`…) | `layouts/workspace.vue` y `pages/estudiante/evaluacion/[activityId].vue` — **no lo rompas**: en 375 px el editor sigue apilado con altura razonable |
 | `useApiErrorMessage`, `useEscapeToClose` | `composables/` |
 
-### 26.6 Cómo verificar (Chrome real, base desechable — método de `docs/ReportesQA/GUIA_AUDITORIA_MAESTRA.md`)
+### 26.6 Cómo verificar (Chrome real, base desechable — método de `docs/calidad/GUIA_AUDITORIA_MAESTRA.md`)
 
 1. **Resaltado y sangría, estudiante (código):** abrir un ejercicio de código; escribir `function f(a) {` + Enter → la línea siguiente queda sangrada y se cierra `}`; palabras clave, cadenas y comentarios con colores distintos; los números
    de línea **no se desalinean** al desplazar un archivo de 200 líneas; `Tab` sangra; `Esc` y `Tab` saca el foco.
@@ -165,7 +165,7 @@ Lista de lenguajes en un solo lugar del frontend: `utils/codeLanguages.ts` con `
 2. Búsquedas finales que deben dar **cero** resultados (excluye `node_modules`, `.nuxt`, `.output`):
    `grep -rn "<textarea" frontend-nuxt/components/exercise frontend-nuxt/components/docente/exercise-builders` (todos los editores de código pasan a `CodeEditor`; el `<textarea>` de reserva está **dentro** de `CodeEditor.vue`, que no cuenta)
    · `grep -rn "v-html" frontend-nuxt/components/CodeEditor.vue frontend-nuxt/components/exercise/FillCodeExercise.vue` · `grep -rn "allow-scripts\|allow-same-origin" frontend-nuxt/components frontend-nuxt/pages`.
-3. Un commit por tarea (B0 a B5), informe en `docs/antigravity/informes/` con el `TEMPLATE_INFORME.md`, y Pull Request de `feat/fase-26` a `main`.
+3. Un commit por tarea (B0 a B5), informe en `docs/agentes-ia/antigravity/informes/` con el `TEMPLATE_INFORME.md`, y Pull Request de `feat/fase-26` a `main`.
 4. Claude Code audita antes de fusionar (Chrome real); no se fusiona sin ese reporte.
 
 ### 26.8 Fuera de alcance

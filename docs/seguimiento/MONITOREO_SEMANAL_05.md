@@ -61,7 +61,7 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 ### Jeider Gómez — Líder Técnico
 
 - [ ] **S05-J01 · Preparar y ejecutar la sustentación del Reto 2** (15–17/09).
-- [ ] **S05-J02 · Corregir el Self-XSS del Tutor IA (`P2-R4`)** — `TutorChatDrawer.vue`, reemplazar `v-html` sin sanitizar. Ejecutado vía Antigravity (`docs/antigravity/PLAN_IMPLEMENTACION.md` §14.3).
+- [ ] **S05-J02 · Corregir el Self-XSS del Tutor IA (`P2-R4`)** — `TutorChatDrawer.vue`, reemplazar `v-html` sin sanitizar. Ejecutado vía Antigravity (`docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md` §14.3).
 - [ ] **S05-J03 · Conectar "Crear Nueva Clase" a `POST /class` (`FE-02`)**. Ejecutado vía Antigravity (§14.4), junto con las 7 ventanas de Docente/Administrador que faltan en código (§14.2).
 
 ### Pedro Romero — Gestión + Documentación
@@ -211,7 +211,7 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 
 - [x] Hallazgos re-verificados por Claude Code, sin duplicación de trabajo. *(14/09, ver
   `docs/PLAN_MAESTRO.md` §5.)*
-- [x] QA general del sistema entregado. *(`docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE_18-09.md`, 18/09
+- [x] QA general del sistema entregado. *(`docs/calidad/REPORTE_AUDITORIA_QA_STIRE_18-09.md`, 18/09
   — commit `83593cb` auditado, 331/331 tests, build backend/frontend en verde, `P2-R4`/`FE-02`
   re-confirmados, veredicto **"APTO CON CONDICIONES", 80.0% de avance**. Cubre los 12 pasos de la
   tarjeta `S05-JOR02` (login, navegación, flujo de estudiante, Tutor IA, API, integración, estados
@@ -224,7 +224,7 @@ verificar, no como hecho consumado — regla vigente de este proyecto. Dos preci
    datos real, no para pasar con SQLite en memoria (`CLAUDE.md`, sección `verify:clean`). El hallazgo
    real es "no había un MySQL corriendo en la máquina donde se auditó", no un problema de STIRE.
 2. El reporte no cubrió los puntos específicos pedidos en
-   `docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md` (barrido sistemático de BOLA, pruebas
+   `docs/calidad/GUIA_AUDITORIA_2026-09-16.md` (barrido sistemático de BOLA, pruebas
    adversariales contra el Tutor/Mastery nuevos, auditoría de las Fases 16/17, accesibilidad con
    lector de pantalla, concurrencia) — cubre en cambio el checklist base de la tarjeta `S05-JOR02`,
    que sí completa. La guía queda vigente para una próxima pasada si el equipo la considera

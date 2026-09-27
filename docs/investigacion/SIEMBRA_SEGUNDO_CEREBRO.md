@@ -54,9 +54,9 @@
 | Fuente | Archivo |
 |---|---|
 | MOCAVI — Modelo Pedagógico para la Educación Virtual | `docs/investigacion/fuentes-institucionales/2023 05 01 Modelo pedagógico Educación virtual - MOCAVI.pdf` |
-| Guía de Semana 03 | `docs/investigacion/fuentes-institucionales/Guia_Estudiante_semana_03.docx` |
-| GUI (mockups y mapa de navegación) | `docs/investigacion/fuentes-institucionales/GUI.docx` |
-| Cronograma 2026-2 | `docs/investigacion/fuentes-institucionales/cronograma.docx` |
+| Guía de Semana 03 | `docs/curso-ddse3/guias/Guia_Estudiante_Semana_03.docx` |
+| GUI (mockups y mapa de navegación) | `docs/curso-ddse3/guias/Guia_Semana_03_GUI_Mockups.docx` |
+| Cronograma 2026-2 | `docs/curso-ddse3/guias/Cronograma_DDSE3_2026-2.docx` |
 
 ## Nota sobre las fichas
 

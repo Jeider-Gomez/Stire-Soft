@@ -44,7 +44,7 @@
 
 ## 🎯 2. Objetivo del Sprint
 
-Según el cronograma oficial (`docs/investigacion/fuentes-institucionales/cronograma.docx`), el Reto 3
+Según el cronograma oficial (`docs/curso-ddse3/guias/Cronograma_DDSE3_2026-2.docx`), el Reto 3
 ya se lanzó el viernes 18/09 (indicaciones entregadas al cierre de la Semana 5) y esta semana
 (21–25/09) es **Semana B — trabajo autónomo**, dedicada a avanzar el Reto 3. En paralelo, el equipo
 cierra el único pendiente real que la Semana 5 dejó sin evidencia (los otros 3 se confirmaron hechos
@@ -55,7 +55,7 @@ el 19/09 vía WhatsApp).
 1. Avance real y verificable del Reto 3 (alcance exacto a confirmar con el docente si las
    indicaciones del 18/09 no quedaron claras para todo el equipo).
 2. Verificación manual del hallazgo BOLA cerrado por Codex el 16/09 (`activity-questions`) —
-   quedó explícitamente pendiente en su propio informe (`docs/codex/informes/INFORME_2026-09-16_SESION_01.md` §5).
+   quedó explícitamente pendiente en su propio informe (`docs/agentes-ia/codex/informes/INFORME_2026-09-16_SESION_01.md` §5).
 3. Estructura de los dos cursos organizada por Julio (único pendiente real que sigue de la Semana 5).
 4. Pitch de sustentación del Reto 3 preparado (`S06-P04`).
 5. Primer registro real de los 7 Hábitos por cada integrante (`S06-H-*`, ver §3.1).
@@ -80,7 +80,7 @@ el 19/09 vía WhatsApp).
 - [x] **S06-J02 · Verificación manual del fix de Fase G (Codex, `activity-questions`)** — con backend
   y frontend reales levantados: un estudiante NO matriculado en la clase debe recibir `403` al pedir
   `GET /activity-questions/activity/:activityId`; uno matriculado con actividad publicada debe recibir
-  las preguntas normalmente. Pasos exactos en `docs/codex/informes/INFORME_2026-09-16_SESION_01.md` §5.
+  las preguntas normalmente. Pasos exactos en `docs/agentes-ia/codex/informes/INFORME_2026-09-16_SESION_01.md` §5.
 - [ ] **S06-J03 · Ejecutar la decisión de despliegue** — frontend sin cambios en Vercel; backend +
   MariaDB a una plataforma con proceso persistente real (Railway recomendado, o una VM gratuita con
   el `docker-compose.yml` existente); el sandbox de ejecución se mantiene local, sin cambios de
@@ -98,7 +98,7 @@ el 19/09 vía WhatsApp).
   Julio — los otros 3 ya se confirmaron hechos vía WhatsApp el 19/09) es parte de esta misma tarea
   de mantener la bitácora al día, no una tarea aparte.
 - [x] **S06-P04 · Desarrollar el pitch de sustentación del Reto 3** — mismo formato que
-  `docs/pitch/PITCH_SEMANA_03 Y 04.md`, actualizado con lo avanzado en las Semanas 5 y 6.
+  `docs/pitch/PITCH_RETO_02.md`, actualizado con lo avanzado en las Semanas 5 y 6.
 
 ### José López — UI/UX + Comunicación
 
@@ -130,7 +130,7 @@ proyecto por semana):
 - [x] **S06-JOR01 · Verificación manual del fix de Fase G** — mismo objetivo técnico que `S06-J02`,
   desde el ángulo de QA (reproducir el `403`/éxito con pasos documentados, no solo confirmar que
   "funciona").
-- [x] **S06-JOR02 · Retomar 1-2 ángulos de `docs/ReportesQA/GUIA_AUDITORIA_2026-09-16.md` que la
+- [x] **S06-JOR02 · Retomar 1-2 ángulos de `docs/calidad/GUIA_AUDITORIA_2026-09-16.md` que la
   auditoría del 18/09 no alcanzó a cubrir** — no es obligatorio cubrirlos todos esta semana; prioridad
   sugerida: pruebas adversariales contra el Tutor IA (intentar que dé la respuesta completa de un
   ejercicio) y accesibilidad real con lector de pantalla en al menos 2 flujos.
@@ -303,7 +303,7 @@ Semana 6. Las dos capturas son de ese día, **18/09**, no del 25/09.
 ### Jorge Cervantes
 
 - [x] Fix de Fase G verificado (QA). *(Auditoría entregada el 23/09:
-  `docs/ReportesQA/REPORTE_AUDITORIA_QA_STIRE_23-09.md`, commit `07fccdb`. La §5.4 hace el barrido de control de
+  `docs/calidad/REPORTE_AUDITORIA_QA_STIRE_23-09.md`, commit `07fccdb`. La §5.4 hace el barrido de control de
   acceso por módulo e incluye `activity-questions`. La reproducción en vivo del 403 y del 200 quedó registrada
   arriba, en `S06-J02`.)*
 - [x] Ángulos adicionales de `GUIA_AUDITORIA_2026-09-16.md` cubiertos. *(Mismo reporte: §4.2 pruebas
