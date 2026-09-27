@@ -5,7 +5,7 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Analítica de Cohorte • DOC-V04
+            Analítica de Cohorte
           </span>
           <span v-if="selectedClass" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-acento-ambar/15 text-acento-ambar-fuerte">
             {{ selectedClass.code }}
@@ -146,7 +146,7 @@
               Roster de Estudiantes y Nivel de Dominio
             </h2>
             <p class="text-base-texto-secundario text-[11px]">
-              Haz clic en cualquier estudiante para inspeccionar su trazabilidad individual (DOC-V05)
+              Haz clic en cualquier estudiante para inspeccionar su trazabilidad individual
             </p>
           </div>
 

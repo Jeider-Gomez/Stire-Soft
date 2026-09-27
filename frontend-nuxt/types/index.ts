@@ -70,6 +70,15 @@ export interface StudentAnalytics {
     mastery: number
     status: UnitStatus
   }>
+  recentSubmissions: Array<{
+    id: string
+    activityTitle: string
+    score: number
+    maxScore: number | null
+    passed: boolean | null
+    status: string
+    createdAt: string
+  }>
 }
 
 export interface TestCase {

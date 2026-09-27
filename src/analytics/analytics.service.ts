@@ -5,6 +5,7 @@ import { Submission } from '../submissions/entities/submission.entity';
 import { ReviewSchedule } from '../review-schedules/entities/review-schedule.entity';
 import { Class } from '../class/entities/class.entity';
 import { Enrollment } from '../enrollment/entities/enrollment.entity';
+import { User } from '../user/entities/user.entity';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 
 @Injectable()
@@ -99,8 +100,15 @@ export class AnalyticsService {
       take: 5,
     });
 
+    // Nombre para la cabecera del detalle del docente, que mostraba «ID: #4».
+    const student = await this.dataSource.getRepository(User).findOne({
+      where: { id: studentId },
+      select: ['id', 'fullName'],
+    });
+
     return {
       studentId,
+      studentName: student?.fullName ?? null,
       summary: {
         avgMastery: Math.round(avgMastery * 100) / 100,
         avgSuccessRate: Math.round(avgSuccessRate * 100) / 100,

@@ -12,6 +12,27 @@ entry to the oldest.
 
 ---
 
+## Versión 2 (UX/UI) — primeros arreglos rápidos · 26 de Septiembre de 2026
+
+Los cuatro arreglos fáciles de la lista de `docs/material-visual/05-primera-version-desplegada/README.md`:
+
+- **«Mi progreso» ya no inventa datos:** el subtítulo decía «las 6 unidades del curso», la tarjeta «8 / 10 ejercicios
+  aprobados» y el historial traía tres entregas fijas («Sumatoria de Pares 100/100»…). Ahora muestra los ejercicios
+  completados y la tasa de éxito reales, el nivel según el dominio y las **últimas entregas reales** del estudiante (las
+  mismas que ve el docente, con su puntaje máximo y si aprobó), o «Todavía no has entregado ejercicios».
+- **Sin códigos internos a la vista:** se quitaron «DOC-V01…V06» y «ADM-V01…V03» del menú, los encabezados y los
+  textos (quedan solo en comentarios del código).
+- **El detalle del estudiante muestra su nombre** en vez de «ID: #4»: `GET /analytics/student/:id` devuelve ahora
+  `studentName` (prueba en `analytics.service.spec.ts`).
+- **Plurales:** «1 día», «1 administrador», «1 intento», «1 ejecución»… con `frontend-nuxt/utils/plural.ts` (prueba en
+  `src/content-rendering/__tests__/plural.frontend.spec.ts`).
+
+Verificación: `npm run build` sin errores, `nuxi typecheck` sin errores, `nuxt generate` correcto y la suite completa
+**77/77 suites, 730/730 pruebas**. (En una primera corrida completa falló una prueba del sandbox por tiempo —abrir un
+servidor HTTP— y pasó sola y en la segunda corrida completa: es sensible a la carga de la máquina, no a estos cambios.)
+
+---
+
 ## Funciones del administrador verificadas en producción · 26 de Septiembre de 2026
 
 Con una **cuenta de admin solo para pruebas** (`admin.simulacion@example.com`, creada por el registro y subida a

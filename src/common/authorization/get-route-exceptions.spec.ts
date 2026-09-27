@@ -154,6 +154,7 @@ describe('Excepciones GET justificadas (Ola 3, Punto 2) — respaldo real', () =
       const mockDataSource = {
         getRepository: jest.fn().mockReturnValue({
           find: jest.fn().mockResolvedValue([]),
+          findOne: jest.fn().mockResolvedValue(null),
         }),
       };
       const service = new AnalyticsService(mockDataSource as any, authService);

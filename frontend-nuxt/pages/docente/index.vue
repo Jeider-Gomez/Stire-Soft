@@ -10,7 +10,7 @@
           <div class="flex items-center gap-2 mb-1.5">
             <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold tracking-wider uppercase
                          bg-stire-blue/10 text-stire-blue border border-stire-blue/20">
-              Panel Docente · DOC-V01
+              Panel Docente
             </span>
           </div>
           <h1 class="text-2xl font-poppins font-bold text-slate-800 tracking-tight">

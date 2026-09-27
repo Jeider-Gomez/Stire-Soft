@@ -5,7 +5,7 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa uppercase tracking-wider">
-            Administración del Sistema • ADM-V01
+            Administración del Sistema
           </span>
           <span
             v-if="statusData"
@@ -98,7 +98,7 @@
             {{ statusData.sandbox.avgExecutionMs != null ? `${statusData.sandbox.avgExecutionMs} ms` : '—' }}
           </p>
           <p class="text-[10px] text-base-texto-secundario leading-relaxed">
-            {{ statusData.sandbox.executionsLast24h != null ? `${statusData.sandbox.executionsLast24h} ejecuciones en 24 h` : 'Sin ejecuciones en 24 h' }}
+            {{ statusData.sandbox.executionsLast24h != null ? `${plural(statusData.sandbox.executionsLast24h, 'ejecución', 'ejecuciones')} en 24 h` : 'Sin ejecuciones en 24 h' }}
           </p>
         </div>
 
@@ -326,7 +326,7 @@ const formattedUserRoles = computed(() => {
   const est = roles.estudiante ?? 0
   const doc = roles.docente ?? 0
   const adm = roles.admin ?? 0
-  return `${est} estudiantes · ${doc} docentes · ${adm} administradores`
+  return `${plural(est, 'estudiante', 'estudiantes')} · ${plural(doc, 'docente', 'docentes')} · ${plural(adm, 'administrador', 'administradores')}`
 })
 
 function formatUptime(seconds: number): string {

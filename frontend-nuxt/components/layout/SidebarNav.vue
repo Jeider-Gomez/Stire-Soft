@@ -90,7 +90,7 @@
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <span>👥</span>
-          <span>Mis Clases (DOC-V01)</span>
+          <span>Mis Clases</span>
         </NuxtLink>
 
         <NuxtLink
@@ -98,7 +98,7 @@
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/contenidos' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <span>📚</span>
-          <span>Contenidos (DOC-V02)</span>
+          <span>Contenidos</span>
         </NuxtLink>
 
         <NuxtLink
@@ -106,7 +106,7 @@
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/ejercicios/crear' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <span>✍️</span>
-          <span>Crear Ejercicio (DOC-V03)</span>
+          <span>Crear Ejercicio</span>
         </NuxtLink>
 
         <NuxtLink
@@ -114,7 +114,7 @@
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path.startsWith('/docente/rendimiento') || route.path.startsWith('/docente/estudiante') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <span>📊</span>
-          <span>Rendimiento (DOC-V04)</span>
+          <span>Rendimiento</span>
         </NuxtLink>
 
         <NuxtLink
@@ -122,7 +122,7 @@
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/mensajes' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <span>✉️</span>
-          <span>Mensajes (DOC-V06)</span>
+          <span>Mensajes</span>
         </NuxtLink>
       </nav>
 
@@ -135,7 +135,7 @@
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/dashboard' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <span>📊</span>
-          <span>Estado del Sistema (ADM-V01)</span>
+          <span>Estado del Sistema</span>
         </NuxtLink>
 
         <NuxtLink
@@ -143,7 +143,7 @@
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin' || route.path === '/admin/usuarios' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <span>🛡️</span>
-          <span>Usuarios y Roles (ADM-V02)</span>
+          <span>Usuarios y Roles</span>
         </NuxtLink>
 
         <NuxtLink
@@ -151,7 +151,7 @@
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/sistema' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <span>⚙️</span>
-          <span>Logs y Mantenimiento (ADM-V03)</span>
+          <span>Logs y Mantenimiento</span>
         </NuxtLink>
       </nav>
     </div>

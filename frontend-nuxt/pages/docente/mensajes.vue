@@ -5,7 +5,7 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Comunicación Directa • DOC-V06
+            Comunicación Directa
           </span>
           <span v-if="unreadCount > 0" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-semantico-falla/15 text-semantico-falla">
             {{ unreadCount }} no leídos

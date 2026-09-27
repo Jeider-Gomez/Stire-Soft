@@ -2,6 +2,7 @@ import { AnalyticsService } from './analytics.service';
 import { LearningProgress } from '../learning-progress/entities/learning-progress.entity';
 import { Submission } from '../submissions/entities/submission.entity';
 import { ReviewSchedule } from '../review-schedules/entities/review-schedule.entity';
+import { User } from '../user/entities/user.entity';
 
 // Regresión de la simulación del 23/09: la pantalla del docente mostraba
 // "20 / 100" en rojo para un 20/20 porque el backend no enviaba el máximo.
@@ -15,6 +16,7 @@ describe('AnalyticsService.getStudentDashboard — puntaje máximo y aprobación
     [LearningProgress, { find: jest.fn().mockResolvedValue([]) }],
     [Submission, { find: jest.fn().mockResolvedValue(submissions) }],
     [ReviewSchedule, { find: jest.fn().mockResolvedValue([]) }],
+    [User, { findOne: jest.fn().mockResolvedValue({ id: 2, fullName: 'Ana Pérez' }) }],
   ]);
   const dataSource = { getRepository: (e: unknown) => repos.get(e) };
   const authorization = { assertTeacherSharesClassWithStudent: jest.fn().mockResolvedValue(undefined) };
@@ -27,5 +29,11 @@ describe('AnalyticsService.getStudentDashboard — puntaje máximo y aprobación
     expect(by.a).toMatchObject({ score: 20, maxScore: 20, passed: true });
     expect(by.b).toMatchObject({ score: 5, maxScore: 20, passed: false });
     expect(by.c).toMatchObject({ maxScore: 20, passed: null });
+  });
+
+  // La cabecera del detalle del docente mostraba «ID: #4» porque no llegaba el nombre.
+  it('trae el nombre del estudiante', async () => {
+    const res = await service.getStudentDashboard(2, { id: 10, role: 'docente' });
+    expect(res.studentName).toBe('Ana Pérez');
   });
 });

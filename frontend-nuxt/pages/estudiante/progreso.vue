@@ -11,7 +11,7 @@
         Mi Progreso y Nivel de Dominio Cognitivo
       </h1>
       <p class="text-xs text-base-texto-secundario mt-0.5">
-        Diagnóstico en tiempo real sobre las 6 unidades del curso
+        Cómo vas en cada unidad que has trabajado
       </p>
     </header>
 
@@ -20,13 +20,13 @@
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
         <span class="text-xs text-base-texto-secundario block font-medium">Dominio General Ponderado</span>
         <span class="text-2xl font-bold text-semantico-pasa mt-1 block">{{ studentStore.analytics.avgMastery }}%</span>
-        <span class="text-[10px] text-base-texto-secundario">Nivel Competente</span>
+        <span class="text-[10px] text-base-texto-secundario">{{ getMasteryLevelName(studentStore.analytics.avgMastery) }}</span>
       </div>
 
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
-        <span class="text-xs text-base-texto-secundario block font-medium">Ejercicios Aprobados</span>
-        <span class="text-2xl font-bold text-base-texto-primario mt-1 block">8 / 10</span>
-        <span class="text-[10px] text-base-texto-secundario">80% de cobertura práctica</span>
+        <span class="text-xs text-base-texto-secundario block font-medium">Ejercicios Completados</span>
+        <span class="text-2xl font-bold text-base-texto-primario mt-1 block">{{ studentStore.analytics.completedExercises }}</span>
+        <span class="text-[10px] text-base-texto-secundario">{{ Math.round(studentStore.analytics.avgSuccessRate) }}% de éxito en tus envíos</span>
       </div>
 
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
@@ -100,37 +100,40 @@
     <!-- Historial Reciente de Evaluaciones -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 shadow-sm space-y-3">
       <h2 class="text-sm font-bold text-base-texto-primario">
-        Historial Reciente de Envíos en Sandbox
+        Tus Últimas Entregas
       </h2>
 
-      <div class="overflow-x-auto">
+      <p v-if="studentStore.analytics.recentSubmissions.length === 0" class="text-xs text-base-texto-secundario italic py-2">
+        Todavía no has entregado ejercicios.
+      </p>
+
+      <div v-else class="overflow-x-auto">
         <table class="w-full text-xs text-left">
           <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil">
             <tr>
               <th class="p-2.5 font-semibold">Ejercicio</th>
               <th class="p-2.5 font-semibold">Fecha y Hora</th>
               <th class="p-2.5 font-semibold">Puntaje</th>
-              <th class="p-2.5 font-semibold">Veredicto</th>
+              <th class="p-2.5 font-semibold">Resultado</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-base-borde-sutil">
-            <tr>
-              <td class="p-2.5 font-medium text-base-texto-primario">Sumatoria de Pares</td>
-              <td class="p-2.5 text-base-texto-secundario">Hoy, 15:45</td>
-              <td class="p-2.5 font-bold text-semantico-pasa">100 / 100</td>
-              <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa">Accepted ✔</span></td>
-            </tr>
-            <tr>
-              <td class="p-2.5 font-medium text-base-texto-primario">Condicionales Anidados</td>
-              <td class="p-2.5 text-base-texto-secundario">Ayer, 11:20</td>
-              <td class="p-2.5 font-bold text-semantico-pasa">90 / 100</td>
-              <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa">Accepted ✔</span></td>
-            </tr>
-            <tr>
-              <td class="p-2.5 font-medium text-base-texto-primario">Declaración de Variables</td>
-              <td class="p-2.5 text-base-texto-secundario">Hace 3 días</td>
-              <td class="p-2.5 font-bold text-semantico-pasa">100 / 100</td>
-              <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa">Accepted ✔</span></td>
+            <tr v-for="sub in studentStore.analytics.recentSubmissions" :key="sub.id">
+              <td class="p-2.5 font-medium text-base-texto-primario">{{ sub.activityTitle }}</td>
+              <td class="p-2.5 text-base-texto-secundario">{{ new Date(sub.createdAt).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' }) }}</td>
+              <td
+                class="p-2.5 font-bold"
+                :class="sub.passed === true ? 'text-semantico-pasa' : sub.passed === false ? 'text-semantico-falla' : 'text-base-texto-secundario'">
+                <template v-if="sub.status === 'graded'">{{ sub.score }} / {{ sub.maxScore ?? '—' }}</template>
+                <template v-else>—</template>
+              </td>
+              <td class="p-2.5">
+                <span
+                  class="px-2 py-0.5 rounded text-[10px] font-bold"
+                  :class="sub.passed === true ? 'bg-semantico-pasa/15 text-semantico-pasa' : sub.passed === false ? 'bg-semantico-falla/15 text-semantico-falla' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+                  {{ resultLabel(sub) }}
+                </span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -152,6 +155,13 @@ const studentStore = useStudentStore()
 onMounted(() => {
   studentStore.fetchStudentData()
 })
+
+function resultLabel(sub: { status: string; passed: boolean | null }) {
+  if (sub.status !== 'graded') return 'En curso'
+  if (sub.passed === true) return 'Aprobado'
+  if (sub.passed === false) return 'No aprobado'
+  return 'Calificado'
+}
 
 function getMasteryLevelName(percentage: number) {
   if (percentage >= 85) return 'Dominado'

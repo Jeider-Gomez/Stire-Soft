@@ -42,7 +42,8 @@ export const useStudentStore = defineStore('student', () => {
       total: 0,
       critical: 0
     },
-    masteryByUnit: []
+    masteryByUnit: [],
+    recentSubmissions: []
   })
 
   // Unidad recomendada o activa
@@ -143,6 +144,7 @@ export const useStudentStore = defineStore('student', () => {
               status?: string
               successRate: number
             }>
+            recentSubmissions?: StudentAnalytics['recentSubmissions']
           }>(`/analytics/student/${studentId}`)
 
           if (analyticsData?.summary) {
@@ -166,7 +168,8 @@ export const useStudentStore = defineStore('student', () => {
                   mastery: m.mastery,
                   status: calculatedStatus
                 }
-              })
+              }),
+              recentSubmissions: analyticsData.recentSubmissions || []
             }
           }
         } catch (err: any) {

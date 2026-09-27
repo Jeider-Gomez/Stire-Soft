@@ -5,7 +5,7 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa uppercase tracking-wider">
-            Administración del Sistema • ADM-V02
+            Administración del Sistema
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">

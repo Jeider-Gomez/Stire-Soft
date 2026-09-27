@@ -6,7 +6,7 @@
         to="/docente/rendimiento"
         class="borde-afordancia px-2.5 py-1 rounded text-base-texto-secundario hover:text-base-texto-primario flex items-center gap-1">
         <span>◀</span>
-        <span>Volver a Rendimiento del Grupo (DOC-V04)</span>
+        <span>Volver a Rendimiento del Grupo</span>
       </NuxtLink>
     </div>
 
@@ -15,14 +15,11 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Trazabilidad Individual • DOC-V05
-          </span>
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-base-bg-secundario text-base-texto-secundario">
-            ID: #{{ route.params.studentId }}
+            Trazabilidad Individual
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Seguimiento y Diagnóstico de Estudiante
+          {{ dashboard?.studentName || 'Seguimiento y Diagnóstico de Estudiante' }}
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
           Universidad de Córdoba • Sistema de Tutoría Inteligente STIRE
@@ -83,7 +80,7 @@
               {{ dashboard.summary.avgSuccessRate }}%
             </span>
           </div>
-          <p class="text-[10px] text-base-texto-secundario mt-1">{{ dashboard.summary.totalAttempts }} intentos en total</p>
+          <p class="text-[10px] text-base-texto-secundario mt-1">{{ plural(dashboard.summary.totalAttempts, 'intento', 'intentos') }} en total</p>
         </div>
 
         <!-- Racha Real -->
@@ -93,7 +90,7 @@
             <span class="text-2xl font-bold font-mono text-acento-ambar-fuerte">
               {{ dashboard.summary.streakDays }}
             </span>
-            <span class="text-[11px] text-base-texto-secundario">días seguidos</span>
+            <span class="text-[11px] text-base-texto-secundario">{{ dashboard.summary.streakDays === 1 ? 'día seguido' : 'días seguidos' }}</span>
           </div>
           <p class="text-[10px] text-base-texto-secundario mt-1">Práctica continuada</p>
         </div>
@@ -107,7 +104,7 @@
             </span>
             <span class="text-[11px] text-base-texto-secundario">pendientes</span>
           </div>
-          <p class="text-[10px] text-base-texto-secundario mt-1">{{ dashboard.summary.reviewStats.total }} programados</p>
+          <p class="text-[10px] text-base-texto-secundario mt-1">{{ plural(dashboard.summary.reviewStats.total, 'programado', 'programados') }}</p>
         </div>
       </section>
 
@@ -216,6 +213,7 @@ function statusLabel(status: string): string {
 
 interface StudentDashboardData {
   studentId: number
+  studentName: string | null
   summary: {
     avgMastery: number
     avgSuccessRate: number

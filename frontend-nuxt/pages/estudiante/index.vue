@@ -146,7 +146,7 @@
 
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
           <p class="text-[11px] text-base-texto-secundario font-medium">Racha de Aprendizaje</p>
-          <p class="text-xl font-bold text-acento-ambar-fuerte mt-1">🔥 {{ studentStore.analytics.streakDays }} días</p>
+          <p class="text-xl font-bold text-acento-ambar-fuerte mt-1">🔥 {{ plural(studentStore.analytics.streakDays, 'día', 'días') }}</p>
           <span class="text-[10px] text-base-texto-secundario">Constancia formativa</span>
         </div>
 
