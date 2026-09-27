@@ -171,39 +171,51 @@
                     Desactivar
                   </button>
                 </div>
-                <div v-else class="flex items-center justify-end gap-1.5 flex-wrap">
-                  <label :for="`role-select-${user.id}`" class="sr-only">Cambiar rol de {{ user.fullName || user.email }}</label>
-                  <select
-                    :id="`role-select-${user.id}`"
-                    v-model="userSelectedRoles[user.id]"
-                    :disabled="isUpdatingRole && targetUser?.id === user.id"
-                    class="px-2 py-1 rounded border border-base-borde-fuerte bg-base-blanco text-[11px] text-base-texto-primario outline-none focus:ring-1 focus:ring-acento-ambar-fuerte">
-                    <option value="estudiante">Estudiante</option>
-                    <option value="docente">Docente</option>
-                    <option value="admin">Administrador</option>
-                  </select>
+                <div v-else class="inline-block text-left">
                   <button
-                    :id="`change-role-btn-${user.id}`"
-                    @click="openChangeRoleModal(user, userSelectedRoles[user.id])"
-                    :disabled="isUpdatingRole && targetUser?.id === user.id"
-                    class="borde-afordancia px-2 py-1 rounded text-[11px] font-semibold text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-50 transition-colors">
-                    Rol
+                    :id="`acciones-btn-${user.id}`"
+                    type="button"
+                    @click.stop="toggleActionsMenu(user.id, $event)"
+                    :aria-expanded="openActionsId === user.id"
+                    aria-haspopup="menu"
+                    :aria-label="`Acciones para ${user.fullName || user.email}`"
+                    class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-base-borde-fuerte text-[11px] font-semibold text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+                    Acciones <ChevronDown :size="14" aria-hidden="true" />
                   </button>
-                  <button
-                    :id="`reset-pwd-btn-${user.id}`"
-                    @click="openResetPwdModal(user)"
-                    class="px-2 py-1 rounded border border-base-borde-fuerte text-[11px] font-semibold text-base-texto-primario hover:bg-base-bg-secundario transition-colors">
-                    Clave
-                  </button>
-                  <button
-                    :id="`toggle-active-btn-${user.id}`"
-                    @click="openToggleActiveModal(user)"
-                    class="px-2 py-1 rounded text-[11px] font-semibold transition-colors"
-                    :class="user.isActive !== false
-                      ? 'border border-semantico-falla/30 text-semantico-falla hover:bg-semantico-falla/10'
-                      : 'border border-semantico-pasa/30 text-semantico-pasa hover:bg-semantico-pasa/10'">
-                    {{ user.isActive !== false ? 'Desactivar' : 'Reactivar' }}
-                  </button>
+                  <div
+                    v-if="openActionsId === user.id"
+                    role="menu"
+                    @click.stop
+                    :style="menuStyle"
+                    class="fixed z-50 w-56 rounded-lg border border-base-borde-sutil bg-base-blanco shadow-lg py-1 text-left text-xs">
+                    <p class="px-3 pt-1.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-base-texto-secundario">Cambiar rol</p>
+                    <button
+                      v-for="r in otherRoles(user)"
+                      :key="r.value"
+                      type="button"
+                      role="menuitem"
+                      @click="closeActionsMenu(); openChangeRoleModal(user, r.value)"
+                      class="w-full flex items-center gap-2 px-3 py-2 hover:bg-base-bg-secundario text-base-texto-primario">
+                      <UserCog :size="14" aria-hidden="true" /> Cambiar a {{ r.label }}
+                    </button>
+                    <div class="my-1 border-t border-base-borde-sutil"></div>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      @click="closeActionsMenu(); openResetPwdModal(user)"
+                      class="w-full flex items-center gap-2 px-3 py-2 hover:bg-base-bg-secundario text-base-texto-primario">
+                      <KeyRound :size="14" aria-hidden="true" /> Restablecer contraseña
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      @click="closeActionsMenu(); openToggleActiveModal(user)"
+                      class="w-full flex items-center gap-2 px-3 py-2 hover:bg-base-bg-secundario"
+                      :class="user.isActive !== false ? 'text-semantico-falla' : 'text-semantico-pasa'">
+                      <component :is="user.isActive !== false ? UserX : UserCheck" :size="14" aria-hidden="true" />
+                      {{ user.isActive !== false ? 'Desactivar cuenta' : 'Reactivar cuenta' }}
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -795,8 +807,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
-import { Eye, EyeOff, Copy, Check } from 'lucide-vue-next'
+import { ref, reactive, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { Eye, EyeOff, Copy, Check, ChevronDown, UserCog, KeyRound, UserX, UserCheck } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 
@@ -886,12 +898,46 @@ const roleChangeExplanation = computed(() => {
   }
 })
 
+// ─── Menú «Acciones» de cada usuario ──────────────────────────────────────────
+const openActionsId = ref<number | null>(null)
+const ROLE_OPTIONS = [
+  { value: 'estudiante', label: 'estudiante' },
+  { value: 'docente', label: 'docente' },
+  { value: 'admin', label: 'administrador' }
+]
+function otherRoles(user: BackendUser) {
+  const current = user.role === 'administrador' ? 'admin' : user.role
+  return ROLE_OPTIONS.filter((r) => r.value !== current)
+}
+// Posición fija junto al botón: la tabla tiene desplazamiento horizontal y recortaría un menú absoluto.
+const menuStyle = ref<Record<string, string>>({})
+function toggleActionsMenu(id: number, event: MouseEvent) {
+  if (openActionsId.value === id) { openActionsId.value = null; return }
+  const r = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  const right = `${window.innerWidth - r.right}px`
+  menuStyle.value = r.bottom + 230 > window.innerHeight
+    ? { right, bottom: `${window.innerHeight - r.top + 4}px` }
+    : { right, top: `${r.bottom + 4}px` }
+  openActionsId.value = id
+}
+function closeActionsMenu() {
+  openActionsId.value = null
+}
+onMounted(() => {
+  document.addEventListener('click', closeActionsMenu)
+  window.addEventListener('scroll', closeActionsMenu, true)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('click', closeActionsMenu)
+  window.removeEventListener('scroll', closeActionsMenu, true)
+})
+
 function openChangeRoleModal(user: BackendUser, newRole: string) {
   targetUser.value = user
   targetRole.value = (newRole === 'administrador' ? 'admin' : newRole) as 'estudiante' | 'docente' | 'admin'
   errorMessage.value = ''
   successMessage.value = ''
-  lastFocusedBtnId.value = `change-role-btn-${user.id}`
+  lastFocusedBtnId.value = `acciones-btn-${user.id}`
   showRoleModal.value = true
 }
 
@@ -1273,7 +1319,7 @@ const lastActiveBtnId = ref<string | null>(null)
 function openToggleActiveModal(user: BackendUser) {
   targetActiveUser.value = user
   toggleActiveError.value = ''
-  lastActiveBtnId.value = `toggle-active-btn-${user.id}`
+  lastActiveBtnId.value = `acciones-btn-${user.id}`
   showToggleActiveModal.value = true
 }
 
@@ -1367,7 +1413,7 @@ function openResetPwdModal(user: BackendUser) {
   showResetPwd.value = false
   resetPwdError.value = ''
   copiedResetPwd.value = false
-  lastResetBtnId.value = `reset-pwd-btn-${user.id}`
+  lastResetBtnId.value = `acciones-btn-${user.id}`
   showResetPwdModal.value = true
 }
 
@@ -1452,6 +1498,7 @@ async function copyResetPassword() {
   }
 }
 // Escape cierra el diálogo abierto aunque el foco se haya perdido (p. ej. tras un error al enviar).
+useEscapeToClose(() => openActionsId.value !== null, closeActionsMenu)
 useEscapeToClose(() => showRoleModal.value, cancelChangeRole)
 useEscapeToClose(() => showDecisionModal.value, cancelDecision)
 useEscapeToClose(() => showRegisterModal.value, cancelRegister)

@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Class } from './entities/class.entity';
+import { Section } from '../section/entities/section.entity';
 import { Enrollment } from '../enrollment/entities/enrollment.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { LearningProgress } from '../learning-progress/entities/learning-progress.entity';
@@ -179,6 +180,14 @@ export class ClassService {
   async remove(id: number, user: User): Promise<void> {
     const classEntity = await this.findOne(id);
     await this.authorizationService.assertTeacherOwnsClass(user, classEntity.id);
+    // Con contenido, borrar fallaba con 500 (las unidades no se borran en cascada con sus temas) y, de lograrse,
+    // se perderían entregas y el progreso de los estudiantes.
+    const secciones = await this.classRepository.manager.count(Section, { where: { classId: classEntity.id } });
+    if (secciones > 0) {
+      throw new ConflictException(
+        'Esta clase ya tiene contenido y no se puede eliminar: se perderían las entregas y el progreso de tus estudiantes.',
+      );
+    }
     await this.classRepository.remove(classEntity);
   }
 }

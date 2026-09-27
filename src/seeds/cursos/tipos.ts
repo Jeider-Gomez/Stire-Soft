@@ -145,8 +145,8 @@ export function aConfig(e: Ejercicio): Record<string, unknown> {
       const pairs: Record<string, string> = {};
       e.parejas.forEach((_, i) => (pairs[`left_${i + 1}`] = `right_${i + 1}`));
       return {
-        leftColumn: e.parejas.map(([text], i) => ({ id: `left_${i + 1}`, text })),
-        rightColumn: e.parejas.map(([, text], i) => ({ id: `right_${i + 1}`, text })),
+        leftColumn: e.parejas.map(([content], i) => ({ id: `left_${i + 1}`, content })),
+        rightColumn: e.parejas.map(([, content], i) => ({ id: `right_${i + 1}`, content })),
         pairs,
       };
     }

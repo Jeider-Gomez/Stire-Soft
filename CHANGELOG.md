@@ -12,6 +12,22 @@ entry to the oldest.
 
 ---
 
+## Pendientes del frente 3: «Emparejar» en blanco, borrar clases y acciones del admin · 28 de Septiembre de 2026
+
+- **«Emparejar» salía en blanco en los cursos nuevos.** El constructor del docente guarda los elementos con `content`
+  y los cursos se generaron con `text`. `src/seeds/cursos/tipos.ts` usa `content`; `MatchingExercise.vue` acepta las
+  dos claves, así que los 9 ejercicios ya publicados se ven sin tocar la base de datos. Nueva prueba en
+  `cursos-pedagogicos.spec.ts`: cada ejercicio trae las claves que pinta la pantalla del estudiante (falla sin el arreglo).
+- **`DELETE /class/:id` respondía 500** con una clase con contenido (las unidades no se borran en cascada). Ahora es
+  un 409 que explica que se perderían entregas y progreso (prueba en `class.service.spec.ts`).
+- **Admin:** los cinco controles de cada fila (selector de rol, «Rol», «Clave», «Desactivar») pasan a un menú
+  «Acciones» con «Cambiar a …», «Restablecer contraseña» y «Desactivar cuenta»; cada uno sigue abriendo su
+  confirmación.
+
+Verificación: `npm run build` sin errores, **80/80 suites, 774/774 pruebas**, `nuxi typecheck` sin errores.
+
+---
+
 ## Dos cursos pedagógicos, creados y resueltos dentro de la app · 27 de Septiembre de 2026
 
 Frente 2 del plan del dueño: datos reales para la aplicación, pensados como los diseñaría un docente de programación,

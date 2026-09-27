@@ -21,7 +21,7 @@
         <div class="flex items-center gap-2 flex-1">
           <span class="w-2 h-2 rounded-full bg-acento-ambar-fuerte flex-shrink-0"></span>
           <span class="text-xs text-base-texto-primario font-mono bg-base-bg-secundario px-2.5 py-1.5 rounded border border-base-borde-sutil flex-1">
-            {{ leftItem.content }}
+            {{ itemText(leftItem) }}
           </span>
         </div>
 
@@ -42,7 +42,7 @@
               :key="rightItem.id"
               :value="rightItem.id"
             >
-              {{ rightItem.content }}
+              {{ itemText(rightItem) }}
             </option>
           </select>
         </div>
@@ -66,8 +66,12 @@ import { useWorkspaceStore } from '~/stores/workspace'
 
 interface ColumnItem {
   id: string
-  content: string
+  content?: string
+  /** Algunos ejercicios guardados antes del 28-sep-2026 usan `text` en lugar de `content`. */
+  text?: string
 }
+
+const itemText = (item: ColumnItem) => item.content ?? item.text ?? ''
 
 interface Props {
   question: { id: number; type: string; question: string; config: Record<string, any> }

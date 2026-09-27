@@ -87,6 +87,25 @@ describe.each(CURSOS.map((c) => [c.nombre, c] as const))('Curso «%s»', (_nombr
     }
   });
 
+  // Las claves que pintan los componentes del estudiante (frontend-nuxt/components/exercise/*) y que guardan los
+  // constructores del docente. Se escribieron «Emparejar» con `text` en vez de `content` y salían en blanco.
+  it('cada ejercicio trae las claves que pinta la pantalla del estudiante', () => {
+    const CLAVES: Record<string, Array<[string, string]>> = {
+      mcq: [['options', 'text']],
+      matching: [['leftColumn', 'content'], ['rightColumn', 'content']],
+      drag_drop: [['items', 'content'], ['targets', 'label']],
+      ordering: [['blocks', 'content']],
+    };
+    for (const { ruta, ejercicio: e } of ejercicios) {
+      const config = aConfig(e);
+      for (const [lista, clave] of CLAVES[e.tipo] ?? []) {
+        const elementos = config[lista] as Array<Record<string, unknown>>;
+        const ok = elementos.length > 0 && elementos.every((x) => typeof x[clave] === 'string' && (x[clave] as string).trim() !== '');
+        expect({ ruta, lista, clave, ok }).toEqual({ ruta, lista, clave, ok: true });
+      }
+    }
+  });
+
   it('los ejercicios de HTML y CSS pasan la validación que hace la app al crearlos', () => {
     for (const { ruta, ejercicio: e } of ejercicios) {
       if (e.tipo !== 'html_css') continue;

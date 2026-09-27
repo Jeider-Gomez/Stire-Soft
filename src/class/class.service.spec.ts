@@ -1,4 +1,4 @@
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, ConflictException } from '@nestjs/common';
 import { ClassService } from './class.service';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { UserRole } from '../user/entities/user.entity';
@@ -10,7 +10,7 @@ import { UpdateClassDto } from './dto/update-class.dto';
 // remove. Usa un AuthorizationService real (con repos falsos).
 describe('ClassService.remove — P1-06', () => {
   let service: ClassService;
-  const mockClassRepo = { findOne: jest.fn(), remove: jest.fn().mockResolvedValue(undefined) };
+  const mockClassRepo = { findOne: jest.fn(), remove: jest.fn().mockResolvedValue(undefined), manager: { count: jest.fn() } };
   const mockEnrollmentRepo = { findOne: jest.fn() };
   const mockProgressRepo = { find: jest.fn() };
   const mockUserService = {};
@@ -37,10 +37,22 @@ describe('ClassService.remove — P1-06', () => {
 
   it('el docente dueño sí puede eliminar su propia clase', async () => {
     mockClassRepo.findOne.mockResolvedValue({ id: 5, teacherId: 10, teacher: {} });
+    mockClassRepo.manager.count.mockResolvedValue(0);
     const docenteDueño = { id: 10, role: UserRole.DOCENTE } as any;
 
     await expect(service.remove(5, docenteDueño)).resolves.toBeUndefined();
     expect(mockClassRepo.remove).toHaveBeenCalled();
+  });
+
+  // Antes respondía 500 («Cannot delete or update a parent row»): las unidades no se borran en cascada con sus temas.
+  it('una clase con contenido no se borra: 409 con un mensaje que explica por qué', async () => {
+    mockClassRepo.findOne.mockResolvedValue({ id: 5, teacherId: 10, teacher: {} });
+    mockClassRepo.manager.count.mockResolvedValue(3);
+    const docenteDueño = { id: 10, role: UserRole.DOCENTE } as any;
+
+    await expect(service.remove(5, docenteDueño)).rejects.toThrow(ConflictException);
+    await expect(service.remove(5, docenteDueño)).rejects.toThrow(/tiene contenido/);
+    expect(mockClassRepo.remove).not.toHaveBeenCalled();
   });
 });
 
