@@ -116,7 +116,6 @@
             v-if="recommendedExerciseId"
             :to="`/estudiante/evaluacion/${recommendedExerciseId}`"
             class="px-5 py-3 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs text-center transition-colors shadow-sm flex items-center justify-center gap-2">
-            <span>🚀</span>
             <span>Continuar Ejercicio</span>
           </NuxtLink>
 

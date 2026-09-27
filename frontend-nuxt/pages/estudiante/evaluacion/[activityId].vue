@@ -41,13 +41,13 @@
           <div class="prose prose-xs" v-html="formatMarkdown(workspaceStore.currentExercise.description)"></div>
 
           <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil space-y-1">
-            <span class="font-bold text-base-texto-primario block">Criterio de Evaluación:</span>
+            <span class="font-bold text-base-texto-primario block">Cómo se califica</span>
             <ul v-if="isCodingActivity" class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">
-              <li>{{ workspaceStore.publicTestCases.length }} caso(s) de prueba público(s), visibles en la pestaña «Casos de Prueba».</li>
+              <li>{{ workspaceStore.publicTestCases.length }} {{ workspaceStore.publicTestCases.length === 1 ? 'ejemplo que puedes ver' : 'ejemplos que puedes ver' }} en la pestaña «Casos de prueba» y probar con «Probar código».</li>
               <li v-if="workspaceStore.hiddenTestCaseCount > 0">
-                {{ workspaceStore.hiddenTestCaseCount }} caso(s) privado(s) de validación ciega, que solo se evalúan al entregar.
+                {{ workspaceStore.hiddenTestCaseCount }} {{ workspaceStore.hiddenTestCaseCount === 1 ? 'caso oculto' : 'casos ocultos' }} más, que se revisan al entregar (por ejemplo, los valores límite).
               </li>
-              <li v-else>Este ejercicio no tiene casos privados.</li>
+              <li v-else>No hay casos ocultos: lo que ves es lo que se revisa.</li>
               <li v-if="workspaceStore.timeLimitMs">Límite de tiempo por ejecución: {{ workspaceStore.timeLimitMs }} ms.</li>
             </ul>
             <ul v-else-if="isHtmlCssActivity" class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">

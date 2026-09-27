@@ -12,6 +12,42 @@ entry to the oldest.
 
 ---
 
+## Dos cursos pedagógicos, creados y resueltos dentro de la app · 27 de Septiembre de 2026
+
+Frente 2 del plan del dueño: datos reales para la aplicación, pensados como los diseñaría un docente de programación,
+creados por una docente con las mismas peticiones que usa la web y resueltos por estudiantes de verdad (nada se inyecta
+en la base de datos). Detalle en [`docs/cursos/`](docs/cursos/README.md).
+
+- **Fundamentos de Algoritmia (203413)** (`ALGO-203413`): alineado con el plan de curso FDOC-088 (sus tres unidades,
+  resultados de aprendizaje y evidencias U1-E1, U1-E3, U2-E1, U2-E2 y U3-E1). 17 unidades y 65 ejercicios con JavaScript,
+  HTML y CSS. **Pensamiento algorítmico desde cero** (`PENSAR-ALGO`): 10 unidades y 40 ejercicios solo con pseudocódigo
+  (PSeInt), diagramas de flujo y pruebas de escritorio. Cada lección sigue la plantilla del editor (idea · ejemplo · error
+  común · pruébalo) y cada ejercicio declara el error común de un principiante.
+- **Contenido como datos** en `src/seeds/cursos/`, con la prueba `src/seeds/__tests__/cursos-pedagogicos.spec.ts`: con el
+  motor de evaluación y el juez reales, la respuesta correcta saca todos los puntos, el error común no, la solución de
+  cada ejercicio de programar pasa todos sus casos y el código inicial no; los de HTML y CSS pasan la validación de la
+  app; ninguna respuesta llega al estudiante.
+- **Carga y simulación por la API** (`scripts/cursos/`): la docente pide el rol y un administrador lo aprueba; ella crea
+  clase, secciones, temas, unidades, lecciones y ejercicios y los publica (se puede retomar, `--actualizar` sincroniza
+  textos); cinco estudiantes con perfiles distintos se unen con el código y resuelven con «Probar», entregas y reintentos.
+- **Lo que la simulación destapó y se corrigió:**
+  - Las lecciones no mostraban **tablas** ni **listas numeradas** (salían como texto con barras y un párrafo corrido) y
+    dejaban huecos grandes tras cada subtítulo: `utils/formatMarkdown.ts` las pinta y quita los saltos vacíos junto a
+    títulos, tablas, listas y bloques de código (prueba `format-markdown.frontend.spec.ts`, incluida inyección en celdas).
+  - La fuente convertía `>=` en ≥, `===` en ≡ y `<-` en ←: sin ligaduras en código ni en el texto.
+  - Un estudiante con dos clases que abría una unidad de la otra veía el encabezado y el plan de la clase equivocada:
+    `GET /learning-unit/:id` devuelve `classId` y la página cambia de clase (prueba en `learning-unit.service.spec.ts`).
+  - Opción múltiple y ordenar decían «Presiona 🚀 Entregar solución en la barra superior», botón que ya no existe ahí.
+  - El docente no podía corregir el **enunciado** de un ejercicio ya creado: ahora se edita con vista previa.
+  - Fuera la «UNIDAD 46» (un id interno), la «validación ciega» y los cohetes.
+- **Anotado, sin corregir:** `DELETE /class/:id` responde 500 si la clase tiene contenido (la interfaz no ofrece borrar
+  clases; el camino de la app es archivar).
+
+Verificación: `npm run build` sin errores, **80/80 suites, 771/771 pruebas**, `nuxi typecheck` sin errores. No se tocó
+`package-lock.json`, `tsconfig.json` ni scripts de arranque, migración o seed existentes, así que no aplica `verify:clean`.
+
+---
+
 ## Versión 2 (UX/UI) — crear un curso y resolver ejercicios sin «cabina de avión» · 27 de Septiembre de 2026
 
 Auditoría de 20 pantallas del sitio real y cinco fases, cada una probada en local con Chrome (docente creando y

@@ -7,6 +7,14 @@
 @layer base {
   body {
     @apply bg-stire-canvas text-slate-800 font-interfaz antialiased min-h-screen;
+    /* Inter convierte «<-» y «->» en flechas: en opciones y pasos de pseudocódigo el estudiante debe ver lo que escribe. */
+    font-feature-settings: "calt" 0;
+  }
+
+  /* Sin ligaduras: quien aprende debe ver los caracteres que escribe (>= y no ≥, <- y no ←, === y no ≡). */
+  code, pre, kbd, .font-codigo, textarea, .cm-editor {
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
   }
 
   code, pre, kbd {

@@ -73,7 +73,6 @@
             <NuxtLink
               :to="`/estudiante/unidad/${item.unitId}`"
               class="borde-afordancia px-3 py-1 rounded text-xs font-semibold bg-base-blanco text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1.5 self-start sm:self-auto">
-              <span>🚀</span>
               <span>Reforzar este tema</span>
             </NuxtLink>
           </div>

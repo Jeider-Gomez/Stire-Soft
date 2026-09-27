@@ -63,12 +63,28 @@
         role="dialog" aria-modal="true" aria-labelledby="edit-exercise-title"
         @click.self="edit.open = false">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <form @submit.prevent="saveEdit" class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 text-xs">
+        <form @submit.prevent="saveEdit" class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-4 text-xs">
           <h2 id="edit-exercise-title" class="text-sm font-bold text-base-texto-primario">Editar ejercicio</h2>
           <div>
             <label for="edit-ex-title" class="block font-semibold text-base-texto-primario mb-1">Título</label>
             <input id="edit-ex-title" ref="editTitleRef" v-model="edit.form.title" type="text" required
               class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="edit-ex-statement" class="font-semibold text-base-texto-primario">Enunciado</label>
+              <button type="button" @click="edit.preview = !edit.preview" :aria-pressed="edit.preview"
+                class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline">
+                {{ edit.preview ? 'Editar texto' : 'Ver como el estudiante' }}
+              </button>
+            </div>
+            <textarea v-if="!edit.preview" id="edit-ex-statement" v-model="edit.form.description" rows="8"
+              class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte font-codigo text-[11px] leading-relaxed focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30"></textarea>
+            <div v-else class="rounded-md border border-base-borde-sutil bg-base-bg-secundario/40 p-3 text-xs leading-relaxed text-base-texto-primario"
+              v-html="formatMarkdown(edit.form.description, { escapeHtml: true })"></div>
+            <p class="text-[10px] text-base-texto-secundario mt-1">
+              Admite **negrita**, `código`, bloques de código entre ```, listas y tablas. Los estudiantes ven el cambio al abrir el ejercicio.
+            </p>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -133,6 +149,7 @@
 <script setup lang="ts">
 import { Plus, Pencil, Archive } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
+import { formatMarkdown } from '~/utils/formatMarkdown'
 
 const props = defineProps<{ unitId: number; classId: number }>()
 const emit = defineEmits<{ (e: 'count', n: number): void }>()
@@ -143,6 +160,7 @@ interface ActivityItem {
   title: string
   difficulty: string
   totalPoints: number
+  description?: string | null
   status: 'draft' | 'published' | 'archived'
   activityTypeId?: number
   activityType?: { id: number; name: string; baseWeight: number }
@@ -196,7 +214,8 @@ const editTitleRef = ref<HTMLInputElement | null>(null)
 const edit = reactive({
   open: false,
   id: null as number | null,
-  form: { title: '', difficulty: 'basico', totalPoints: 20, activityTypeId: null as number | null },
+  form: { title: '', description: '', difficulty: 'basico', totalPoints: 20, activityTypeId: null as number | null },
+  preview: false,
   saving: false,
   error: null as string | null
 })
@@ -205,22 +224,26 @@ function openEdit(act: ActivityItem) {
   edit.id = act.id
   edit.form = {
     title: act.title,
+    description: act.description ?? '',
     difficulty: act.difficulty || 'basico',
     totalPoints: act.totalPoints,
     activityTypeId: act.activityTypeId ?? act.activityType?.id ?? activityTypes.value[0]?.id ?? null
   }
   edit.error = null
+  edit.preview = false
   edit.open = true
   nextTick(() => editTitleRef.value?.focus())
 }
 
 async function saveEdit() {
   if (!edit.form.title.trim()) { edit.error = 'El título es obligatorio.'; return }
+  if (!edit.form.description.trim()) { edit.error = 'El enunciado no puede quedar vacío.'; return }
   edit.saving = true
   edit.error = null
   try {
     await api.patch(`/activities/${edit.id}`, {
       title: edit.form.title.trim(),
+      description: edit.form.description.trim(),
       difficulty: edit.form.difficulty,
       totalPoints: edit.form.totalPoints,
       activityTypeId: edit.form.activityTypeId
@@ -228,6 +251,7 @@ async function saveEdit() {
     const act = activities.value.find((a) => a.id === edit.id)
     if (act) {
       act.title = edit.form.title.trim()
+      act.description = edit.form.description.trim()
       act.difficulty = edit.form.difficulty
       act.totalPoints = edit.form.totalPoints
       const t = activityTypes.value.find((x) => x.id === edit.form.activityTypeId)

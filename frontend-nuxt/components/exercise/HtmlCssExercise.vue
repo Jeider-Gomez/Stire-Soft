@@ -180,7 +180,6 @@
             class="px-3.5 py-1.5 rounded text-xs font-bold text-base-blanco bg-acento-ambar-fuerte hover:bg-acento-ambar transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
             :title="isHtmlEmpty ? 'El HTML no puede estar vacío' : 'Envía tu solución definitiva para calificación'">
             <span v-if="workspaceStore.isSubmitting" class="animate-spin">⏳</span>
-            <span v-else>🚀</span>
             <span>Entregar solución</span>
           </button>
         </div>

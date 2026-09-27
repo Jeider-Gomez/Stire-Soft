@@ -63,6 +63,12 @@ describe('LearningUnitService.findOne — BOLA fix', () => {
     await expect(service.findOne(unitId, estudianteMatriculado)).resolves.toMatchObject({ id: unitId });
   });
 
+  it('la respuesta dice a qué clase pertenece la unidad (para que la app cambie a esa clase)', async () => {
+    mockEnrollmentRepo.findOne.mockResolvedValue({ classId, studentId: 20, status: EnrollmentStatus.ACTIVE });
+    const estudiante = { id: 20, role: UserRole.ESTUDIANTE } as any;
+    await expect(service.findOne(unitId, estudiante)).resolves.toMatchObject({ id: unitId, classId });
+  });
+
   it('admin: ve cualquier unidad sin verificación de propiedad', async () => {
     const admin = { id: 1, role: UserRole.ADMIN } as any;
     await expect(service.findOne(unitId, admin)).resolves.toMatchObject({ id: unitId });

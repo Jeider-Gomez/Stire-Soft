@@ -99,10 +99,13 @@ export class LearningUnitService {
    * propia clase (403 si es ajena); estudiante solo si está matriculado
    * (403 si no).
    */
-  async findOne(id: number, user: User): Promise<LearningUnit> {
+  async findOne(id: number, user: User): Promise<LearningUnit & { classId: number }> {
     const unit = await this.findOneRaw(id);
-    await this.assertCanReadClass(user, await this.resolveClassId(unit));
-    return unit;
+    const classId = await this.resolveClassId(unit);
+    await this.assertCanReadClass(user, classId);
+    // La clase va en la respuesta: un estudiante inscrito en varias clases que abre una unidad desde un enlace
+    // (repasos, notificaciones) necesita que la aplicación cambie a la clase de esa unidad.
+    return Object.assign(unit, { classId });
   }
 
   /** Clase a la que pertenece una unidad (Topic → Section → Class), sin comprobar permisos: el llamador autoriza. */

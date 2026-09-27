@@ -59,7 +59,7 @@
         ✔ {{ orderedBlocks.length }} bloques ordenados. Puedes ajustar el orden o entregar.
       </span>
       <span>
-        Presiona <strong>🚀 Entregar solución</strong> en la barra superior para evaluar.
+        Cuando estés seguro, pulsa <strong>Entregar respuesta</strong>.
       </span>
     </div>
   </div>

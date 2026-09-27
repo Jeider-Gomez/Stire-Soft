@@ -28,12 +28,12 @@
       <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
         <div class="flex items-center gap-2 mb-2">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Lección Teórica • Unidad {{ unitData.id }}
+            Lección
           </span>
         </div>
 
         <h1 class="text-xl md:text-2xl font-bold text-base-texto-primario tracking-tight">
-          Lección: {{ unitData.title }}
+          {{ unitData.title }}
         </h1>
         <p class="text-xs text-base-texto-secundario mt-1">
           {{ unitData.description }}
@@ -109,6 +109,7 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
+import { useStudentStore } from '~/stores/student'
 import { useApi } from '~/composables/useApi'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 
@@ -118,6 +119,7 @@ definePageMeta({
 
 const route = useRoute()
 const authStore = useAuthStore()
+const studentStore = useStudentStore()
 const api = useApi()
 
 const unitId = Number(route.params.id) || 0
@@ -126,6 +128,8 @@ interface UnitDetail {
   id: number
   title: string
   description: string
+  /** Clase a la que pertenece la unidad. */
+  classId?: number
 }
 
 interface ContentBlock {
@@ -185,6 +189,11 @@ onMounted(async () => {
     ])
     unitData.value = unit
     unitContent.value = contents || []
+    // Si la unidad es de otra de sus clases (llegó desde un repaso o una notificación), el encabezado y el
+    // plan de estudio pasan a esa clase.
+    if (unit?.classId && unit.classId !== studentStore.currentClassId) {
+      studentStore.selectClass(unit.classId).catch(() => undefined)
+    }
   } catch (error: unknown) {
     console.warn('[STIRE Student] No se pudo cargar la unidad:', error)
     loadError.value = true
