@@ -12,6 +12,35 @@ entry to the oldest.
 
 ---
 
+## Versión 2 (UX/UI) — crear un curso y resolver ejercicios sin «cabina de avión» · 27 de Septiembre de 2026
+
+Auditoría de 20 pantallas del sitio real y cinco fases, cada una probada en local con Chrome (docente creando y
+estudiante resolviendo, sin errores de API ni de consola):
+
+- **A · Constructor del curso** (`3a67ff7`): en Contenidos cada unidad se abre y muestra sus lecciones y sus ejercicios,
+  con «Escribir lección» y «+ Ejercicio» ahí mismo; publicar, editar y archivar ejercicios pasó a
+  `components/docente/UnitExercisesPanel.vue`. Ya no hay que volver a elegir clase y unidad.
+- **B · Crear ejercicio en 3 pasos** (`3a67ff7`): tipo en tarjetas con «Ideal para…», contenido, y **vista previa «así lo
+  verá el estudiante»** con los mismos componentes del estudiante; puntos, intentos, dificultad y peso quedan en
+  «Ajustes» con valores por defecto. La vista previa quita las respuestas igual que el backend
+  (`utils/exercisePreview.ts`, prueba `exercise-preview.frontend.spec.ts` que la compara con `StudentQuestionDto`).
+- **C · Editor de lecciones** (`3a22918`): pantalla completa con barra de formato, atajos (Ctrl+B/I/E, Tab), vista previa
+  en vivo y plantilla pedagógica (idea · ejemplo · error común · pruébalo).
+- **D · Pantalla del estudiante** (`f3cc69c`): los tipos que no son de código van en una columna centrada con el enunciado
+  con formato y «Entregar respuesta» al final; «Probar código» ya no aparece apagado donde no aplica; **Clasificar se
+  arrastra de verdad** y también se toca elemento → categoría (teclado y celular). **Corregido: «Intentos: 0 / 3» aunque
+  ya se hubiera entregado** — `GET /activities/:id` devuelve `attemptsUsed` al estudiante (prueba en
+  `activities.service.spec.ts`).
+- **E · Detalles** (`8eb4c87`): iconos de línea en el menú de los tres roles; fuera «Atajo rápido», «Metacognición
+  accionable», «Motor SM-2», «Sesión activa» y el «WCAG 2.1 AA ✓» del pie (no está comprobado); el Tutor habla claro
+  («Pista · Pregunta guía · Dónde está el error»). **Datos que mentían:** el inicio decía «Supera umbral de 70 %» con 0 %
+  y en verde, y cada clase mostraba «Habilitada» fijo.
+
+Verificación: `npm run build` sin errores, **78/78 suites, 746/746 pruebas**, `nuxi typecheck` y `nuxt generate` sin
+errores. No se tocó `package-lock.json`, `tsconfig.json` ni scripts de arranque/seed, así que no aplica `verify:clean`.
+
+---
+
 ## Orden del repositorio y carpeta de entregas del curso · 26 de Septiembre de 2026
 
 A pedido del dueño: repositorio coherente, sin lo que ya cumplió su función, y una puerta de entrada
