@@ -35,6 +35,7 @@ tabla de abajo.
 | Carpeta | Qué contiene |
 |---|---|
 | [`curso-ddse3/`](curso-ddse3/README.md) | **Puerta de entrada del docente:** cada requisito de las guías y del cronograma, con el archivo que lo cumple. Incluye las guías originales |
+| [`cursos/`](cursos/README.md) | Los dos cursos pedagógicos (Fundamentos de Algoritmia 203413 y Pensamiento algorítmico desde cero): diseño, alineación con el plan de curso y cómo se cargan y simulan |
 | [`modesec/`](modesec/README.md) | Diseño educativo y multimedial con MODESEC (Fase I para el alcance del MVP y Fase II completa) |
 | [`seguimiento/`](seguimiento/) | Bitácoras de semanas cerradas y evidencias de las reuniones |
 | [`pitch/`](pitch/) | Guiones del pitch en inglés por reto y guía de pronunciación |
