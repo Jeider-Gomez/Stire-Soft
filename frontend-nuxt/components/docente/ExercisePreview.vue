@@ -48,11 +48,12 @@
 
       <!-- Los demás tipos: el mismo componente que usa el estudiante -->
       <template v-else>
-        <ExerciseMcqExercise v-if="type === 'mcq'" :question="question" />
-        <ExerciseFillCodeExercise v-else-if="type === 'fill_code'" :question="question" />
-        <ExerciseDragDropExercise v-else-if="type === 'drag_drop'" :question="question" />
-        <ExerciseOrderingExercise v-else-if="type === 'ordering'" :question="question" />
-        <ExerciseMatchingExercise v-else-if="type === 'matching'" :question="question" />
+        <div class="prose prose-sm max-w-none text-base-texto-primario mb-4" v-html="statementHtml"></div>
+        <ExerciseMcqExercise v-if="type === 'mcq'" :question="question" :show-statement="false" />
+        <ExerciseFillCodeExercise v-else-if="type === 'fill_code'" :question="question" :show-statement="false" />
+        <ExerciseDragDropExercise v-else-if="type === 'drag_drop'" :question="question" :show-statement="false" />
+        <ExerciseOrderingExercise v-else-if="type === 'ordering'" :question="question" :show-statement="false" />
+        <ExerciseMatchingExercise v-else-if="type === 'matching'" :question="question" :show-statement="false" />
       </template>
     </div>
   </div>

@@ -4,6 +4,8 @@ import { AuthorizationService } from '../common/authorization/authorization.serv
 import { PublicationStatus } from '../common/enums/status.enum';
 import { UserRole } from '../user/entities/user.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
+import { SubmissionStatus } from '../common/enums/submission-status.enum';
+import { Not } from 'typeorm';
 
 // Regresión de P0-04: CRUD de actividades sin control de acceso. Usa un
 // AuthorizationService REAL (con repos falsos) — no mockeado — para probar
@@ -20,6 +22,7 @@ describe('ActivitiesService — P0-04', () => {
     softRemove: jest.fn().mockResolvedValue(undefined),
     updateStatus: jest.fn().mockResolvedValue(undefined),
     findWithPagination: jest.fn().mockResolvedValue([[], 0]),
+    manager: { count: jest.fn().mockResolvedValue(0) },
   };
   const mockClassRepo = { findOne: jest.fn() };
   const mockEnrollmentRepo = { findOne: jest.fn() };
@@ -252,6 +255,20 @@ describe('ActivitiesService — P0-04', () => {
 
       expect(mockClassRepo.findOne).not.toHaveBeenCalled();
       expect(mockActivitiesRepo.findWithPagination).toHaveBeenCalledWith(0, 10, undefined, undefined, docente);
+    });
+  });
+
+  // La pantalla del ejercicio decía «Intentos: 0 / 3» aunque ya se hubiera entregado.
+  it('estudiante matriculado → GET actividad trae cuántos intentos terminados lleva', async () => {
+    mockActivitiesRepo.findOne.mockResolvedValue({ ...publishedActivityClass5 });
+    mockEnrollmentRepo.findOne.mockResolvedValue({ classId: 5, studentId: 20, status: EnrollmentStatus.ACTIVE });
+    mockActivitiesRepo.manager.count.mockResolvedValue(2);
+
+    const res = await service.findOneForRequester(1, { id: 20, role: UserRole.ESTUDIANTE } as any);
+
+    expect(res).toMatchObject({ attemptsUsed: 2 });
+    expect(mockActivitiesRepo.manager.count).toHaveBeenCalledWith(expect.anything(), {
+      where: { studentId: 20, activityId: 1, status: Not(SubmissionStatus.IN_PROGRESS) },
     });
   });
 });

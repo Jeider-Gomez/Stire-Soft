@@ -1,126 +1,147 @@
 <template>
   <div class="space-y-5">
-    <!-- Enunciado de la pregunta -->
-    <div class="prose prose-xs text-base-texto-primario">
-      <p class="text-xs leading-relaxed whitespace-pre-wrap">{{ question.question }}</p>
-    </div>
+    <p v-if="showStatement" class="text-sm leading-relaxed whitespace-pre-wrap text-base-texto-primario">{{ question.question }}</p>
 
-    <!-- Instrucciones -->
-    <div class="text-[11px] text-base-texto-secundario bg-base-bg-secundario px-3 py-2 rounded border border-base-borde-sutil">
-      Asigna cada elemento a su categoría o zona correspondiente:
-    </div>
+    <p class="text-xs text-base-texto-secundario">
+      Arrastra cada elemento a su categoría, o tócalo y luego toca la categoría.
+    </p>
 
-    <!-- Lista de elementos y sus zonas de destino -->
-    <div class="space-y-3">
-      <div
-        v-for="item in items"
+    <!-- Elementos sin ubicar -->
+    <div
+      class="min-h-[3.5rem] rounded-xl border-2 border-dashed p-3 flex flex-wrap gap-2 transition-colors"
+      :class="dragOver === TRAY ? 'border-acento-ambar-fuerte bg-acento-ambar/5' : 'border-base-borde-sutil bg-base-bg-secundario/50'"
+      @dragover.prevent="dragOver = TRAY"
+      @dragleave="dragOver = null"
+      @drop.prevent="dropOn(null)"
+      aria-label="Elementos por ubicar">
+      <button
+        v-for="item in unplaced"
         :key="item.id"
-        class="p-3 rounded-lg border border-base-borde-sutil bg-base-blanco flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs transition-all hover:border-acento-ambar/50"
-      >
-        <!-- Contenido del elemento -->
-        <div class="flex items-center gap-2 flex-1">
-          <span class="w-2 h-2 rounded-full bg-acento-ambar-fuerte flex-shrink-0"></span>
-          <span class="text-xs text-base-texto-primario font-mono bg-base-bg-secundario px-2 py-1 rounded border border-base-borde-sutil">
-            {{ item.content }}
-          </span>
-        </div>
+        type="button"
+        draggable="true"
+        @dragstart="onDragStart(item.id)"
+        @dragend="dragOver = null"
+        @click="toggleSelect(item.id)"
+        :aria-pressed="selected === item.id"
+        class="px-3 py-1.5 rounded-lg border text-xs font-mono cursor-grab active:cursor-grabbing shadow-xs transition focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+        :class="selected === item.id ? 'bg-acento-ambar-fuerte text-base-blanco border-acento-ambar-fuerte' : 'bg-base-blanco text-base-texto-primario border-base-borde-fuerte hover:border-acento-ambar-fuerte'">
+        {{ item.content }}
+      </button>
+      <p v-if="unplaced.length === 0" class="text-xs text-semantico-pasa self-center">Ubicaste todos los elementos. Revisa y entrega cuando quieras.</p>
+    </div>
 
-        <!-- Selector de destino -->
-        <div class="flex items-center gap-2">
-          <span class="text-[11px] text-base-texto-secundario font-medium">Asignar a:</span>
-          <select
-            :id="`select-${item.id}`"
-            v-model="mappings[item.id]"
-            class="text-xs bg-base-blanco text-base-texto-primario border border-base-borde-sutil rounded px-2.5 py-1.5 focus:border-acento-ambar-fuerte focus:outline-none focus:ring-1 focus:ring-acento-ambar-fuerte transition-colors"
-            :class="mappings[item.id] ? 'border-acento-ambar-fuerte text-acento-ambar-fuerte font-semibold' : 'text-base-texto-secundario'"
-          >
-            <option value="" disabled>-- Selecciona destino --</option>
-            <option
-              v-for="target in targets"
-              :key="target.id"
-              :value="target.id"
-            >
-              {{ target.label }}
-            </option>
-          </select>
+    <!-- Categorías -->
+    <div class="grid gap-3" :class="targets.length > 2 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'">
+      <div
+        v-for="target in targets"
+        :key="target.id"
+        class="rounded-xl border-2 p-3 min-h-[7rem] flex flex-col gap-2 transition-colors"
+        :class="dragOver === target.id ? 'border-acento-ambar-fuerte bg-acento-ambar/5' : 'border-base-borde-sutil bg-base-blanco'"
+        @dragover.prevent="dragOver = target.id"
+        @dragleave="dragOver = null"
+        @drop.prevent="dropOn(target.id)">
+        <button
+          type="button"
+          @click="placeSelected(target.id)"
+          :disabled="!selected"
+          class="text-left text-xs font-bold text-base-texto-primario rounded focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte disabled:cursor-default"
+          :aria-label="selected ? `Poner el elemento seleccionado en ${target.label}` : target.label">
+          {{ target.label }}
+          <span v-if="selected" class="block text-[10px] font-normal text-acento-ambar-fuerte">Toca aquí para ponerlo</span>
+        </button>
+        <div class="flex flex-wrap gap-1.5">
+          <button
+            v-for="item in placedIn(target.id)"
+            :key="item.id"
+            type="button"
+            draggable="true"
+            @dragstart="onDragStart(item.id)"
+            @dragend="dragOver = null"
+            @click="unplace(item.id)"
+            class="px-2.5 py-1 rounded-md border border-acento-ambar-fuerte/40 bg-acento-ambar/10 text-xs font-mono text-base-texto-primario hover:bg-acento-ambar/20 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+            :aria-label="`${item.content}, en ${target.label}. Toca para devolverlo`"
+            title="Toca para devolverlo">
+            {{ item.content }}
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Estado de completitud -->
-    <div class="text-[11px] text-base-texto-secundario flex items-center justify-between pt-1">
-      <span v-if="allAssigned" class="text-semantico-pasa">
-        ✔ Todos los elementos han sido asignados ({{ Object.keys(mappings).length }}/{{ items.length }}).
-      </span>
-      <span v-else class="text-acento-ambar-fuerte">
-        ⚠ Asigna todos los elementos antes de entregar ({{ assignedCount }}/{{ items.length }} asignados).
-      </span>
-    </div>
+    <p class="text-[11px]" :class="allAssigned ? 'text-semantico-pasa' : 'text-base-texto-secundario'" aria-live="polite">
+      {{ assignedCount }} de {{ items.length }} ubicados
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useWorkspaceStore } from '~/stores/workspace'
 
-interface DragItem {
-  id: string
-  content: string
-}
+interface DragItem { id: string; content: string }
+interface DropTarget { id: string; label: string }
 
-interface DropTarget {
-  id: string
-  label: string
-}
-
-interface Props {
+const props = withDefaults(defineProps<{
   question: { id: number; type: string; question: string; config: Record<string, any> }
-}
+  /** La pantalla del ejercicio ya muestra el enunciado con formato arriba. */
+  showStatement?: boolean
+}>(), { showStatement: true })
 
-const props = defineProps<Props>()
 const workspaceStore = useWorkspaceStore()
+const TRAY = '__bandeja__'
 
 const items = computed<DragItem[]>(() => props.question.config?.items || [])
 const targets = computed<DropTarget[]>(() => props.question.config?.targets || [])
 
 const mappings = reactive<Record<string, string>>({})
+const selected = ref<string | null>(null)
+const dragging = ref<string | null>(null)
+const dragOver = ref<string | null>(null)
 
-watch(
-  items,
-  (newItems) => {
-    Object.keys(mappings).forEach(k => delete mappings[k])
-    newItems.forEach(item => {
-      mappings[item.id] = ''
-    })
-  },
-  { immediate: true }
-)
+watch(items, (newItems) => {
+  Object.keys(mappings).forEach((k) => delete mappings[k])
+  newItems.forEach((item) => { mappings[item.id] = '' })
+  selected.value = null
+}, { immediate: true })
 
-const assignedCount = computed(() => {
-  return items.value.filter(item => Boolean(mappings[item.id])).length
-})
+const unplaced = computed(() => items.value.filter((i) => !mappings[i.id]))
+const placedIn = (targetId: string) => items.value.filter((i) => mappings[i.id] === targetId)
+const assignedCount = computed(() => items.value.filter((i) => Boolean(mappings[i.id])).length)
+const allAssigned = computed(() => items.value.length > 0 && assignedCount.value === items.value.length)
 
-const allAssigned = computed(() => {
-  return items.value.length > 0 && assignedCount.value === items.value.length
-})
+function toggleSelect(id: string) {
+  selected.value = selected.value === id ? null : id
+}
 
-// Sincronizar con pendingAnswer del store: { mappings: { item_1: "zone_a" } }
-watch(
-  mappings,
-  () => {
-    if (allAssigned.value) {
-      const cleanMappings: Record<string, string> = {}
-      items.value.forEach(item => {
-        cleanMappings[item.id] = mappings[item.id]
-      })
-      workspaceStore.pendingAnswer = { mappings: cleanMappings }
-    } else {
-      workspaceStore.pendingAnswer = null
-    }
-  },
-  { deep: true }
-)
+function placeSelected(targetId: string) {
+  if (!selected.value) return
+  mappings[selected.value] = targetId
+  selected.value = null
+}
 
-onMounted(() => {
-  workspaceStore.pendingAnswer = null
-})
+function unplace(id: string) {
+  mappings[id] = ''
+}
+
+function onDragStart(id: string) {
+  dragging.value = id
+  selected.value = null
+}
+
+function dropOn(targetId: string | null) {
+  if (dragging.value) mappings[dragging.value] = targetId ?? ''
+  dragging.value = null
+  dragOver.value = null
+}
+
+// Respuesta para el servidor: { mappings: { item_1: "zona_a" } }, solo cuando todo está ubicado.
+watch(mappings, () => {
+  if (allAssigned.value) {
+    const clean: Record<string, string> = {}
+    items.value.forEach((item) => { clean[item.id] = mappings[item.id] })
+    workspaceStore.pendingAnswer = { mappings: clean }
+  } else {
+    workspaceStore.pendingAnswer = null
+  }
+}, { deep: true })
+
+onMounted(() => { workspaceStore.pendingAnswer = null })
 </script>

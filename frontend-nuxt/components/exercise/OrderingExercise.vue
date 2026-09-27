@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-5">
     <!-- Enunciado de la pregunta -->
-    <div class="prose prose-xs text-base-texto-primario">
+    <div v-if="showStatement" class="prose prose-xs text-base-texto-primario">
       <p class="text-xs leading-relaxed whitespace-pre-wrap">{{ question.question }}</p>
     </div>
 
@@ -75,9 +75,11 @@ interface BlockItem {
 
 interface Props {
   question: { id: number; type: string; question: string; config: Record<string, any> }
+  /** La pantalla del ejercicio ya muestra el enunciado con formato arriba. */
+  showStatement?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { showStatement: true })
 const workspaceStore = useWorkspaceStore()
 
 const blocks = computed<BlockItem[]>(() => props.question.config?.blocks || [])

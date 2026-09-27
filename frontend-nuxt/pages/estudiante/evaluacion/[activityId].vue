@@ -1,14 +1,14 @@
 <template>
   <div class="md:h-full flex flex-col md:flex-row md:overflow-hidden bg-base-bg-primario">
-    <!-- COLUMNA IZQUIERDA: Enunciado, Casos de Prueba (solo coding) y Consola -->
-    <div class="w-full md:w-[45%] lg:w-[40%] flex flex-col border-r border-base-borde-sutil bg-base-blanco md:h-full max-h-[55vh] md:max-h-none overflow-hidden">
+    <!-- COLUMNA IZQUIERDA: Enunciado, Casos de Prueba (solo coding) y Consola. Los demás tipos usan una sola columna. -->
+    <div v-if="isCodingActivity || isHtmlCssActivity" class="w-full md:w-[45%] lg:w-[40%] flex flex-col border-r border-base-borde-sutil bg-base-blanco md:h-full max-h-[55vh] md:max-h-none overflow-hidden">
       <!-- Pestañas de Navegación del Panel Izquierdo -->
       <div class="flex items-center border-b border-base-borde-sutil bg-base-bg-secundario text-xs font-semibold px-2 pt-2 gap-1 flex-shrink-0">
         <button
           @click="leftTab = 'enunciado'"
           class="px-3 py-2 rounded-t-md transition-colors"
           :class="leftTab === 'enunciado' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:text-base-texto-primario'">
-          📖 Enunciado
+          <span class="inline-flex items-center gap-1.5"><BookOpen :size="14" aria-hidden="true" /> Enunciado</span>
         </button>
 
         <!-- Pestaña Casos de Prueba: Solo visible para coding -->
@@ -17,7 +17,7 @@
           @click="leftTab = 'casos'"
           class="px-3 py-2 rounded-t-md transition-colors flex items-center gap-1.5"
           :class="leftTab === 'casos' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:text-base-texto-primario'">
-          <span>🧪 Casos de Prueba</span>
+          <span class="inline-flex items-center gap-1.5"><FlaskConical :size="14" aria-hidden="true" /> Casos de prueba</span>
           <span
             v-if="passedCount > 0"
             class="px-1.5 py-0.2 rounded-full text-[10px]"
@@ -30,7 +30,7 @@
           @click="leftTab = 'consola'"
           class="px-3 py-2 rounded-t-md transition-colors"
           :class="leftTab === 'consola' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:text-base-texto-primario'">
-          💻 Registro
+          <span class="inline-flex items-center gap-1.5"><Terminal :size="14" aria-hidden="true" /> Registro</span>
         </button>
       </div>
 
@@ -122,7 +122,7 @@
           <div
             v-if="workspaceStore.hiddenTestCaseCount > 0"
             class="p-3 bg-base-bg-secundario rounded border border-base-borde-sutil text-[11px] text-base-texto-secundario flex items-center gap-2">
-            <span>🔒</span>
+            <Lock :size="14" aria-hidden="true" />
             <span>{{ workspaceStore.hiddenTestCaseCount }} caso(s) privado(s) permanecen ocultos para evaluar la generalización de la solución.</span>
           </div>
         </div>
@@ -201,61 +201,62 @@
       <ExerciseHtmlCssExercise :question="workspaceStore.currentQuestion" />
     </div>
 
-    <!-- CASO C: Tipos Interactivos de Actividad (MCQ, FillCode, DragDrop, Ordering, Matching) -->
-    <div v-else class="flex-1 flex flex-col md:h-full min-h-[60vh] md:min-h-0 bg-base-blanco overflow-hidden">
-      <!-- Barra Superior de Actividad Interactiva -->
-      <div class="h-9 bg-base-bg-secundario border-b border-base-borde-sutil px-4 flex items-center justify-between text-xs text-base-texto-secundario flex-shrink-0">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-acento-ambar/15 text-acento-ambar-fuerte">
-            {{ typeBadgeLabel }}
-          </span>
-          <span class="text-base-texto-primario font-semibold">{{ workspaceStore.currentExercise.title }}</span>
-        </div>
+    <!-- CASO C: opción múltiple, completar código, clasificar, ordenar y emparejar — una sola columna centrada -->
+    <div v-else class="flex-1 md:h-full overflow-y-auto bg-base-bg-primario">
+      <div class="max-w-2xl mx-auto px-4 py-8 space-y-4">
+        <p v-if="typeInfo" class="text-[11px] font-semibold text-acento-ambar-fuerte flex items-center gap-1.5">
+          <DocenteExerciseTypeIcon :type="typeInfo.id" :size="14" /> {{ typeInfo.name }}
+        </p>
 
-        <div class="text-[11px] text-base-texto-secundario">
-          Responde en este panel y usa <strong>🚀 Entregar solución</strong>
-        </div>
-      </div>
+        <section class="bg-base-blanco rounded-2xl border border-base-borde-sutil shadow-sm p-6 space-y-5">
+          <div
+            v-if="workspaceStore.currentExercise.description"
+            class="prose prose-sm max-w-none text-base-texto-primario"
+            v-html="statementHtml"></div>
 
-      <!-- Contenedor del Componente Específico -->
-      <div class="flex-1 overflow-y-auto p-6 max-w-3xl w-full mx-auto">
-        <!-- MCQ -->
-        <ExerciseMcqExercise
-          v-if="workspaceStore.currentExercise.questionType === 'mcq' && workspaceStore.currentQuestion"
-          :question="workspaceStore.currentQuestion"
-        />
+          <template v-if="workspaceStore.currentQuestion">
+            <ExerciseMcqExercise
+              v-if="workspaceStore.currentExercise.questionType === 'mcq'"
+              :question="workspaceStore.currentQuestion"
+              :show-statement="!workspaceStore.currentExercise.description" />
+            <ExerciseFillCodeExercise
+              v-else-if="workspaceStore.currentExercise.questionType === 'fill_code'"
+              :question="workspaceStore.currentQuestion"
+              :show-statement="!workspaceStore.currentExercise.description" />
+            <ExerciseDragDropExercise
+              v-else-if="workspaceStore.currentExercise.questionType === 'drag_drop'"
+              :question="workspaceStore.currentQuestion"
+              :show-statement="!workspaceStore.currentExercise.description" />
+            <ExerciseOrderingExercise
+              v-else-if="workspaceStore.currentExercise.questionType === 'ordering'"
+              :question="workspaceStore.currentQuestion"
+              :show-statement="!workspaceStore.currentExercise.description" />
+            <ExerciseMatchingExercise
+              v-else-if="workspaceStore.currentExercise.questionType === 'matching'"
+              :question="workspaceStore.currentQuestion"
+              :show-statement="!workspaceStore.currentExercise.description" />
+          </template>
 
-        <!-- Fill Code -->
-        <ExerciseFillCodeExercise
-          v-else-if="workspaceStore.currentExercise.questionType === 'fill_code' && workspaceStore.currentQuestion"
-          :question="workspaceStore.currentQuestion"
-        />
-
-        <!-- Drag & Drop -->
-        <ExerciseDragDropExercise
-          v-else-if="workspaceStore.currentExercise.questionType === 'drag_drop' && workspaceStore.currentQuestion"
-          :question="workspaceStore.currentQuestion"
-        />
-
-        <!-- Ordering -->
-        <ExerciseOrderingExercise
-          v-else-if="workspaceStore.currentExercise.questionType === 'ordering' && workspaceStore.currentQuestion"
-          :question="workspaceStore.currentQuestion"
-        />
-
-        <!-- Matching -->
-        <ExerciseMatchingExercise
-          v-else-if="workspaceStore.currentExercise.questionType === 'matching' && workspaceStore.currentQuestion"
-          :question="workspaceStore.currentQuestion"
-        />
-
-        <!-- Fallback si la pregunta aún no cargó -->
-        <div v-else class="py-12 text-center text-base-texto-secundario">
-          <div class="animate-pulse space-y-3">
-            <div class="h-4 bg-base-bg-secundario rounded w-3/4 mx-auto"></div>
-            <div class="h-20 bg-base-bg-secundario rounded w-full"></div>
-            <p class="text-xs">Cargando datos interactivos de la pregunta...</p>
+          <div v-else class="animate-pulse space-y-3 py-6" aria-label="Cargando el ejercicio">
+            <div class="h-4 bg-base-bg-secundario rounded w-3/4"></div>
+            <div class="h-20 bg-base-bg-secundario rounded"></div>
           </div>
+        </section>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <p class="text-[11px] text-base-texto-secundario">
+            <span v-if="typeInfo">{{ typeInfo.grading }} · </span>
+            <template v-if="remainingAttempts > 0">Te {{ remainingAttempts === 1 ? 'queda 1 intento' : `quedan ${remainingAttempts} intentos` }}.</template>
+            <template v-else>Ya usaste todos tus intentos.</template>
+          </p>
+          <button
+            type="button"
+            @click="workspaceStore.submitSolution()"
+            :disabled="!canSubmitAnswer"
+            class="px-5 py-2.5 rounded-lg bg-acento-ambar-fuerte text-base-blanco text-sm font-bold hover:bg-acento-ambar inline-flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+            <Send :size="16" aria-hidden="true" />
+            {{ workspaceStore.isSubmitting ? 'Calificando…' : 'Entregar respuesta' }}
+          </button>
         </div>
       </div>
     </div>
@@ -268,11 +269,12 @@
         <div
           class="w-14 h-14 rounded-full flex items-center justify-center text-2xl mx-auto font-bold"
           :class="isSuccessResult ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
-          {{ isSuccessResult ? '🎉' : '📋' }}
+          <PartyPopper v-if="isSuccessResult" :size="28" aria-hidden="true" />
+          <ClipboardCheck v-else :size="28" aria-hidden="true" />
         </div>
 
         <h3 class="text-lg font-bold text-base-texto-primario">
-          {{ isSuccessResult ? '¡Actividad Completada con Éxito!' : 'Intento Calificado' }}
+          {{ isSuccessResult ? '¡Bien hecho!' : 'Tu intento ya tiene nota' }}
         </h3>
 
         <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
@@ -288,7 +290,7 @@
             Solución HTML y CSS evaluada contra las reglas del docente.
           </p>
           <p v-else class="text-xs text-base-texto-secundario mt-1">
-            Evaluación registrada formalmente en tu progreso STIRE.
+            Tu resultado ya cuenta en tu progreso.
           </p>
         </div>
 
@@ -296,7 +298,7 @@
              estudiante, más allá del puntaje crudo de un solo intento. -->
         <div v-if="masteryDelta" class="p-3 bg-acento-ambar/10 rounded-lg border border-acento-ambar/30">
           <p class="text-sm font-semibold text-base-texto-primario">
-            📈 Tu dominio de esta unidad {{ masteryDelta.diff > 0 ? 'subió' : 'se mantiene' }} en
+            Tu dominio de esta unidad {{ masteryDelta.diff > 0 ? 'subió a' : 'se mantiene en' }}
             <span class="text-acento-ambar-fuerte">{{ masteryDelta.after }}%</span>
             <span v-if="masteryDelta.diff > 0" class="text-semantico-pasa"> (+{{ masteryDelta.diff }}%)</span>
           </p>
@@ -325,8 +327,10 @@
 </template>
 
 <script setup lang="ts">
+import { BookOpen, FlaskConical, Terminal, Lock, PartyPopper, ClipboardCheck, Send } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { formatMarkdown } from '~/utils/formatMarkdown'
+import { exerciseTypeInfo } from '~/utils/exerciseTypes'
 
 definePageMeta({
   layout: 'workspace'
@@ -346,18 +350,10 @@ watch(() => workspaceStore.isRunning, (running) => {
 const isCodingActivity = computed(() => workspaceStore.currentExercise.questionType === 'coding')
 const isHtmlCssActivity = computed(() => workspaceStore.currentExercise.questionType === 'html_css')
 
-const typeBadgeLabel = computed(() => {
-  const typeMap: Record<string, string> = {
-    coding: 'Programación',
-    html_css: 'HTML / CSS',
-    mcq: 'Quiz Conceptual (MCQ)',
-    fill_code: 'Completar Código',
-    drag_drop: 'Clasificación Drag & Drop',
-    ordering: 'Secuencia / Ordenamiento',
-    matching: 'Emparejamiento de Conceptos'
-  }
-  return typeMap[workspaceStore.currentExercise.questionType] || workspaceStore.currentExercise.questionType
-})
+const typeInfo = computed(() => exerciseTypeInfo(workspaceStore.currentExercise.questionType))
+const statementHtml = computed(() => formatMarkdown(workspaceStore.currentExercise.description || ''))
+const remainingAttempts = computed(() => Math.max(0, (workspaceStore.currentExercise.maxAttempts ?? 0) - (workspaceStore.currentExercise.usedAttempts ?? 0)))
+const canSubmitAnswer = computed(() => Boolean(workspaceStore.pendingAnswer) && !workspaceStore.isSubmitting && remainingAttempts.value > 0)
 
 const passedCount = computed(() => {
   return workspaceStore.publicTestCases.filter(tc => tc.passed === true).length

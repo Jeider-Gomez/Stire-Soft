@@ -180,7 +180,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           learningUnitId: activity.learningUnitId,
           difficulty: activity.difficulty || 'Básico',
           maxAttempts: activity.attemptsAllowed || 3,
-          usedAttempts: 0,
+          usedAttempts: Number(activity.attemptsUsed ?? 0),
           description: activity.description || primaryQuestion.question || 'Sin enunciado disponible.',
           initialCode: starter,
           maxScore: activity.totalPoints ?? 100

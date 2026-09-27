@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { ActivitiesRepository } from './activities.repository';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
@@ -11,6 +11,8 @@ import { PublicationStatus } from '../common/enums/status.enum';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
+import { Submission } from '../submissions/entities/submission.entity';
+import { SubmissionStatus } from '../common/enums/submission-status.enum';
 
 @Injectable()
 export class ActivitiesService {
@@ -126,6 +128,13 @@ export class ActivitiesService {
         // no existe todavía desde la perspectiva del estudiante.
         throw new NotFoundException(`Actividad con id ${id} no encontrada`);
       }
+
+      // Intentos ya terminados (sin contar el que esté en curso): la pantalla del ejercicio decía
+      // «Intentos: 0 / 3» aunque el estudiante ya hubiera entregado.
+      const attemptsUsed = await this.activitiesRepo.manager.count(Submission, {
+        where: { studentId: user.id, activityId: activity.id, status: Not(SubmissionStatus.IN_PROGRESS) },
+      });
+      return Object.assign(activity, { attemptsUsed });
     }
 
     // Un docente solo ve (incluidos borradores) las actividades de SUS clases:

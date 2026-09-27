@@ -4,10 +4,10 @@
     <header class="min-h-14 md:h-14 py-2 md:py-0 gap-y-2 flex-wrap md:flex-nowrap bg-base-blanco border-b border-base-borde-sutil px-4 flex items-center justify-between z-30 shadow-sm flex-shrink-0">
       <div class="flex items-center gap-3">
         <NuxtLink
-          to="/estudiante"
+          :to="backLink"
           class="borde-afordancia px-2.5 py-1 rounded text-xs font-medium text-base-texto-secundario hover:text-base-texto-primario flex items-center gap-1">
-          <span>◀</span>
-          <span>Volver al curso</span>
+          <ArrowLeft :size="14" aria-hidden="true" />
+          <span>Volver a la unidad</span>
         </NuxtLink>
 
         <div class="h-4 w-[1px] bg-base-borde-sutil"></div>
@@ -17,7 +17,7 @@
             {{ workspaceStore.currentExercise.title }}
           </h1>
           <p class="text-[10px] text-base-texto-secundario">
-            {{ workspaceStore.currentExercise.unitTitle }} • Dificultad: {{ workspaceStore.currentExercise.difficulty }}
+            {{ workspaceStore.currentExercise.unitTitle }} · {{ difficultyLabel }}
           </p>
         </div>
       </div>
@@ -29,7 +29,7 @@
           class="font-medium text-[11px] flex items-center gap-1"
           :class="workspaceStore.autosaveState === 'error' ? 'text-semantico-falla' : workspaceStore.autosaveState === 'saved' ? 'text-semantico-pasa' : 'text-base-texto-secundario'"
           aria-live="polite">
-          <span>☁️</span>
+          <Cloud :size="14" aria-hidden="true" />
           <span>{{ workspaceStore.lastAutosave }}</span>
         </span>
 
@@ -44,29 +44,31 @@
         <button
           @click="tutorStore.toggleDrawer()"
           class="borde-afordancia px-2.5 py-1.5 rounded text-xs font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1">
-          <span>✨</span>
+          <Sparkles :size="14" aria-hidden="true" />
           <span class="hidden md:inline">Tutor IA</span>
         </button>
 
-        <!-- Acción 1: "▶ Probar" (Solo para coding y html_css) -->
+        <!-- Acción 1: «Probar» (solo código y HTML/CSS) -->
         <button
+          v-if="isCodingActivity || isHtmlCssActivity"
           @click="handleRun"
-          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting || (!isCodingActivity && !isHtmlCssActivity)"
+          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting"
           class="borde-afordancia px-3 py-1.5 rounded text-xs font-bold text-base-texto-primario bg-base-bg-secundario hover:bg-base-borde-sutil transition-colors flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
           :title="isCodingActivity || isHtmlCssActivity ? 'Evalúa contra casos de prueba/reglas públicas sin consumir intentos' : 'Esta actividad se califica directamente al entregar'">
-          <span v-if="workspaceStore.isRunning" class="animate-spin">⚙️</span>
-          <span v-else>▶</span>
+          <Loader2 v-if="workspaceStore.isRunning" :size="14" class="animate-spin" aria-hidden="true" />
+          <Play v-else :size="14" aria-hidden="true" />
           <span>{{ isHtmlCssActivity ? 'Probar' : 'Probar código' }}</span>
         </button>
 
-        <!-- Acción 2: "🚀 Entregar solución" (Calificación formal definitiva para todos los tipos) -->
+        <!-- Acción 2: «Entregar» arriba solo en código y HTML/CSS; los demás tipos lo tienen al final de su columna -->
         <button
+          v-if="isCodingActivity || isHtmlCssActivity"
           @click="workspaceStore.submitSolution()"
           :disabled="!canSubmit"
           class="px-3.5 py-1.5 rounded text-xs font-bold text-base-blanco bg-acento-ambar-fuerte hover:bg-acento-ambar transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
           :title="canSubmit ? 'Envía tu solución formalmente para calificación' : 'Completa la respuesta antes de entregar'">
-          <span v-if="workspaceStore.isSubmitting" class="animate-spin">⏳</span>
-          <span v-else>🚀</span>
+          <Loader2 v-if="workspaceStore.isSubmitting" :size="14" class="animate-spin" aria-hidden="true" />
+          <Send v-else :size="14" aria-hidden="true" />
           <span>Entregar solución</span>
         </button>
       </div>
@@ -94,6 +96,7 @@
 </template>
 
 <script setup lang="ts">
+import { ArrowLeft, Cloud, Sparkles, Play, Send, Loader2 } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
 
@@ -101,6 +104,16 @@ const workspaceStore = useWorkspaceStore()
 const tutorStore = useTutorStore()
 
 const supportedTypes = ['coding', 'mcq', 'fill_code', 'drag_drop', 'ordering', 'matching', 'html_css']
+
+const backLink = computed(() => {
+  const unitId = workspaceStore.currentExercise.learningUnitId
+  return unitId ? `/estudiante/unidad/${unitId}` : '/estudiante'
+})
+
+const difficultyLabel = computed(() => {
+  const d = workspaceStore.currentExercise.difficulty
+  return d === 'intermedio' ? 'Intermedio' : d === 'avanzado' ? 'Avanzado' : 'Básico'
+})
 
 const isCodingActivity = computed(() => workspaceStore.currentExercise.questionType === 'coding')
 const isHtmlCssActivity = computed(() => workspaceStore.currentExercise.questionType === 'html_css')
