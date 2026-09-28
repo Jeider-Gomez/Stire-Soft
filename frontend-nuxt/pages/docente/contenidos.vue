@@ -34,6 +34,17 @@
           <span>+</span>
           <span>Nuevo módulo</span>
         </button>
+
+        <!-- Botón Traer de otra clase (T3) -->
+        <button
+          v-if="selectedClassId && otherClasses.length > 0"
+          type="button"
+          @click="openImportModal"
+          class="px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
+          aria-label="Traer contenidos de otra clase">
+          <CopyPlus :size="14" class="text-acento-ambar-fuerte" />
+          <span>Traer de otra clase</span>
+        </button>
       </div>
     </header>
 
@@ -74,13 +85,21 @@
           Esta clase aún no cuenta con secciones temáticas configuradas en el sistema.
         </p>
       </div>
-      <div>
+      <div class="flex items-center justify-center gap-3">
         <button
           v-if="selectedClassId"
           @click="openNewModuleModal"
           class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm">
           <span>+</span>
           <span>Crear primer módulo</span>
+        </button>
+        <button
+          v-if="selectedClassId && otherClasses.length > 0"
+          type="button"
+          @click="openImportModal"
+          class="px-4 py-2 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm">
+          <CopyPlus :size="14" class="text-acento-ambar-fuerte" />
+          <span>Traer de otra clase</span>
         </button>
       </div>
     </div>
@@ -455,6 +474,123 @@
       </div>
     </Teleport>
 
+    <!-- Modal Traer de otra clase (T3) -->
+    <Teleport to="body">
+      <div
+        v-if="importModal.open"
+        class="fixed inset-0 bg-base-texto-primario/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        @click.self="closeImportModal">
+        <div
+          role="dialog"
+          aria-labelledby="modal-import-title"
+          class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-xl p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
+          <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
+            <div class="flex items-center gap-2">
+              <CopyPlus :size="18" class="text-acento-ambar-fuerte" />
+              <h2 id="modal-import-title" class="text-sm font-bold text-base-texto-primario">
+                Traer contenido de otra clase
+              </h2>
+            </div>
+            <button
+              type="button"
+              @click="closeImportModal"
+              class="text-base-texto-secundario hover:text-base-texto-primario text-xs p-1"
+              aria-label="Cerrar modal">
+              ✕
+            </button>
+          </div>
+
+          <p class="text-xs text-base-texto-secundario">
+            Se copian lecciones y ejercicios <strong>sin publicar</strong>. No se copian estudiantes ni notas.
+          </p>
+
+          <!-- Selector de clase origen -->
+          <div class="space-y-1">
+            <label for="import-source-class" class="text-xs font-semibold text-base-texto-primario block">
+              Clase de origen:
+            </label>
+            <select
+              id="import-source-class"
+              v-model="importModal.sourceClassId"
+              @change="onSourceClassChange"
+              class="w-full text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-2 outline-none focus:border-acento-ambar-fuerte">
+              <option v-for="c in otherClasses" :key="c.id" :value="c.id">
+                {{ c.name }} ({{ c.code }})
+              </option>
+            </select>
+          </div>
+
+          <!-- Secciones disponibles -->
+          <div class="space-y-2 flex-1 overflow-y-auto min-h-[140px] max-h-[260px] border border-base-borde-sutil rounded-lg p-3 bg-base-bg-secundario/30">
+            <div class="flex items-center justify-between pb-2 border-b border-base-borde-sutil text-[11px] font-semibold text-base-texto-secundario">
+              <span>Secciones a copiar ({{ importModal.selectedSectionIds.length }}/{{ importModal.sections.length }})</span>
+              <div class="space-x-2">
+                <button
+                  type="button"
+                  @click="selectAllSections"
+                  class="text-acento-ambar-fuerte hover:underline">
+                  Todas
+                </button>
+                <span>·</span>
+                <button
+                  type="button"
+                  @click="deselectAllSections"
+                  class="text-base-texto-secundario hover:underline">
+                  Ninguna
+                </button>
+              </div>
+            </div>
+
+            <div v-if="importModal.isLoadingSections" class="p-6 text-center text-xs text-base-texto-secundario">
+              <span class="inline-block animate-spin mr-2">⏳</span> Cargando secciones de la clase...
+            </div>
+
+            <div v-else-if="importModal.sections.length === 0" class="p-6 text-center text-xs text-base-texto-secundario italic">
+              Esta clase no tiene secciones para copiar.
+            </div>
+
+            <div v-else class="space-y-1.5 pt-1">
+              <label
+                v-for="sec in importModal.sections"
+                :key="sec.id"
+                class="flex items-center gap-2.5 p-2 rounded hover:bg-base-blanco cursor-pointer text-xs transition-colors border border-transparent hover:border-base-borde-sutil">
+                <input
+                  type="checkbox"
+                  :value="sec.id"
+                  v-model="importModal.selectedSectionIds"
+                  class="rounded border-base-borde-fuerte text-acento-ambar-fuerte focus:ring-acento-ambar-fuerte" />
+                <span class="font-medium text-base-texto-primario">
+                  Módulo {{ sec.order || '—' }}: {{ sec.title }}
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <p v-if="importModal.error" role="alert" class="text-semantico-falla text-xs">
+            {{ importModal.error }}
+          </p>
+
+          <div class="flex items-center justify-end gap-3 pt-2 border-t border-base-borde-sutil">
+            <button
+              type="button"
+              @click="closeImportModal"
+              :disabled="importModal.isImporting"
+              class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-50">
+              Cancelar
+            </button>
+            <button
+              type="button"
+              @click="submitImport"
+              :disabled="importModal.isImporting || !importModal.sourceClassId || importModal.selectedSectionIds.length === 0"
+              class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2">
+              <span v-if="importModal.isImporting" class="inline-block animate-spin">⏳</span>
+              <span>{{ importModal.isImporting ? 'Copiando…' : 'Traer contenido' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- Modales para construir currículo (Módulo, Tema, Unidad) -->
     <CurriculumBuilderModals
       ref="builderModalsRef"
@@ -472,7 +608,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronRight, Pencil, BookOpen, FileText } from 'lucide-vue-next'
+import { ChevronRight, Pencil, BookOpen, FileText, CopyPlus } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
@@ -859,8 +995,104 @@ onMounted(() => {
   fetchClasses()
 })
 
+// ─── T3: Traer de otra clase ───────────────────────────────────────────────
+interface ResumenImportacion {
+  sections: number
+  topics: number
+  learningUnits: number
+  contents: number
+  activities: number
+  questions: number
+}
+
+const otherClasses = computed(() => {
+  return teacherClasses.value.filter(c => c.id !== selectedClassId.value)
+})
+
+const importModal = reactive({
+  open: false,
+  sourceClassId: null as number | null,
+  sections: [] as Array<{ id: number; title: string; order: number }>,
+  selectedSectionIds: [] as number[],
+  isLoadingSections: false,
+  isImporting: false,
+  error: null as string | null
+})
+
+function openImportModal() {
+  importModal.open = true
+  importModal.error = null
+  if (otherClasses.value.length > 0) {
+    importModal.sourceClassId = otherClasses.value[0].id
+    onSourceClassChange()
+  } else {
+    importModal.sourceClassId = null
+    importModal.sections = []
+    importModal.selectedSectionIds = []
+  }
+}
+
+function closeImportModal() {
+  if (importModal.isImporting) return
+  importModal.open = false
+}
+
+async function onSourceClassChange() {
+  if (!importModal.sourceClassId) {
+    importModal.sections = []
+    importModal.selectedSectionIds = []
+    return
+  }
+  importModal.isLoadingSections = true
+  importModal.error = null
+  try {
+    const res = await api.get<Array<{ id: number; title: string; order: number }>>(`/sections/class/${importModal.sourceClassId}`)
+    importModal.sections = Array.isArray(res) ? res : []
+    importModal.selectedSectionIds = importModal.sections.map(s => s.id)
+  } catch (err: any) {
+    importModal.error = messageOf(err, 'Error al cargar las secciones de la clase de origen')
+    importModal.sections = []
+    importModal.selectedSectionIds = []
+  } finally {
+    importModal.isLoadingSections = false
+  }
+}
+
+function selectAllSections() {
+  importModal.selectedSectionIds = importModal.sections.map(s => s.id)
+}
+
+function deselectAllSections() {
+  importModal.selectedSectionIds = []
+}
+
+async function submitImport() {
+  if (!selectedClassId.value || !importModal.sourceClassId || importModal.selectedSectionIds.length === 0) return
+  importModal.isImporting = true
+  importModal.error = null
+
+  try {
+    const payload: { sourceClassId: number; sectionIds?: number[] } = {
+      sourceClassId: importModal.sourceClassId
+    }
+    if (importModal.selectedSectionIds.length !== importModal.sections.length) {
+      payload.sectionIds = importModal.selectedSectionIds
+    }
+
+    const res = await api.post<ResumenImportacion>(`/reuse/classes/${selectedClassId.value}/import`, payload)
+    importModal.open = false
+    actionFeedback.value = `Se trajeron ${plural(res.sections, 'sección', 'secciones')}, ${plural(res.learningUnits, 'unidad', 'unidades')} y ${plural(res.activities, 'ejercicio', 'ejercicios')}. Revísalas y publícalas cuando quieras.`
+    await loadSections()
+  } catch (err: any) {
+    importModal.error = messageOf(err, 'Error al traer contenidos de la clase')
+  } finally {
+    importModal.isImporting = false
+  }
+}
+
 // Escape cierra el diálogo abierto aunque el foco se haya perdido.
 useEscapeToClose(() => editTopicModal.open, closeEditTopicModal)
 useEscapeToClose(() => archiveTopicModal.open, () => { archiveTopicModal.open = false })
 useEscapeToClose(() => editUnitModal.open, closeEditUnitModal)
+useEscapeToClose(() => importModal.open, closeImportModal)
 </script>
