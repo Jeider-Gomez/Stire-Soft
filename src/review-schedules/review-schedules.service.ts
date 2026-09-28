@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { LessThanOrEqual, LessThan } from 'typeorm';
 import { ReviewSchedulesRepository } from './review-schedules.repository';
-import { calculateNextReview } from '../common/utils/spaced-repetition';
+import { calculateNextReview, CalidadRepaso } from '../common/utils/spaced-repetition';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../common/enums/notification-type.enum';
 
@@ -15,25 +15,45 @@ export class ReviewSchedulesService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  async updateSchedule(studentId: number, learningUnitId: number, currentMastery: number) {
-    const schedule = await this.reviewRepo.findOrCreate(studentId, learningUnitId);
-    
-    // Si mastery > 60, consideramos éxito y avanzamos el intervalo
-    if (currentMastery >= 60) {
-      schedule.repetitions += 1;
-    } else {
-      schedule.repetitions = 0; // Reseteamos si le va mal
-    }
+  /** ¿La unidad tiene un repaso que ya tocaba? Un intento calificado ahora cuenta como repaso. */
+  async estaVencido(studentId: number, learningUnitId: number, ahora: Date = new Date()): Promise<boolean> {
+    const schedule = await this.reviewRepo.findOne({ where: { studentId, learningUnitId } });
+    return !!schedule && schedule.nextReviewDate.getTime() <= ahora.getTime();
+  }
 
-    const { nextReviewDate, intervalDays, easeFactor } = calculateNextReview(schedule.repetitions, currentMastery);
+  /**
+   * Registra el resultado de un intento calificado en el calendario de repasos de la unidad.
+   * - Primer intento de la unidad: crea el calendario (primer repaso al día siguiente si le fue bien).
+   * - Repaso vencido: un paso de SM-2 con la calidad del resultado; si falló, el intervalo vuelve a empezar.
+   * - Práctica antes de la fecha: no mueve el calendario. Antes cada ejercicio del mismo día contaba como un repaso
+   *   más y el intervalo crecía sin que el estudiante hubiera dejado pasar tiempo.
+   */
+  async registrarResultado(
+    studentId: number,
+    learningUnitId: number,
+    calidad: CalidadRepaso,
+    ahora: Date = new Date(),
+  ): Promise<{ esRepaso: boolean }> {
+    const existente = await this.reviewRepo.findOne({ where: { studentId, learningUnitId } });
+    if (existente && existente.nextReviewDate.getTime() > ahora.getTime()) return { esRepaso: false };
 
-    schedule.nextReviewDate = nextReviewDate;
-    schedule.intervalDays = intervalDays;
-    schedule.easeFactor = easeFactor;
-    schedule.lastReviewedAt = new Date();
-    schedule.urgencyLevel = 0; // Reseteado al repasar
+    const schedule =
+      existente ?? this.reviewRepo.create({ studentId, learningUnitId, repetitions: 0, intervalDays: 1, easeFactor: 2.5 });
+    const siguiente = calculateNextReview(
+      { repetitions: schedule.repetitions, intervalDays: schedule.intervalDays, easeFactor: schedule.easeFactor },
+      calidad,
+      ahora,
+    );
+
+    schedule.repetitions = siguiente.repetitions;
+    schedule.intervalDays = siguiente.intervalDays;
+    schedule.easeFactor = siguiente.easeFactor;
+    schedule.nextReviewDate = siguiente.nextReviewDate;
+    schedule.lastReviewedAt = ahora;
+    schedule.urgencyLevel = 0;
 
     await this.reviewRepo.save(schedule);
+    return { esRepaso: !!existente };
   }
 
   /**

@@ -32,7 +32,8 @@ describe('ReviewSchedulesService Unit Tests', () => {
 
   beforeEach(() => {
     reviewRepo = {
-      findOrCreate: jest.fn(),
+      findOne: jest.fn(),
+      create: jest.fn((datos) => ({ ...datos })),
       save: jest.fn(async (s) => s),
       find: jest.fn(),
       findDueForStudent: jest.fn(),
@@ -43,40 +44,71 @@ describe('ReviewSchedulesService Unit Tests', () => {
     service = new ReviewSchedulesService(reviewRepo, notificationsService);
   });
 
-  describe('updateSchedule', () => {
-    it('should increment repetitions and schedule next review if mastery >= 60', async () => {
-      const schedule = makeReviewSchedule({ repetitions: 1 });
-      reviewRepo.findOrCreate.mockResolvedValue(schedule);
+  describe('registrarResultado', () => {
+    const AHORA = new Date(2026, 8, 27, 10, 0);
 
-      await service.updateSchedule(42, 10, 75.0);
+    it('el primer intento de la unidad crea el calendario y no cuenta como repaso', async () => {
+      reviewRepo.findOne.mockResolvedValue(null);
 
-      expect(reviewRepo.findOrCreate).toHaveBeenCalledWith(42, 10);
+      const r = await service.registrarResultado(42, 10, 4, AHORA);
+
+      expect(r.esRepaso).toBe(false);
+      expect(reviewRepo.create).toHaveBeenCalledWith(expect.objectContaining({ studentId: 42, learningUnitId: 10 }));
+      const guardado = reviewRepo.save.mock.calls[0][0];
+      expect(guardado).toEqual(expect.objectContaining({ repetitions: 1, intervalDays: 1 }));
+    });
+
+    it('practicar antes de la fecha no mueve el calendario (antes cada ejercicio del día contaba como repaso)', async () => {
+      const schedule = makeReviewSchedule({ repetitions: 2, intervalDays: 3, nextReviewDate: new Date(2026, 8, 29) });
+      reviewRepo.findOne.mockResolvedValue(schedule);
+
+      const r = await service.registrarResultado(42, 10, 5, AHORA);
+
+      expect(r.esRepaso).toBe(false);
+      expect(reviewRepo.save).not.toHaveBeenCalled();
       expect(schedule.repetitions).toBe(2);
-      expect(schedule.urgencyLevel).toBe(0);
-      expect(schedule.lastReviewedAt).toBeInstanceOf(Date);
-      expect(reviewRepo.save).toHaveBeenCalledWith(schedule);
     });
 
-    it('should reset repetitions to 0 if mastery < 60', async () => {
-      const schedule = makeReviewSchedule({ repetitions: 3 });
-      reviewRepo.findOrCreate.mockResolvedValue(schedule);
+    it('un repaso vencido acertado avanza el intervalo', async () => {
+      const schedule = makeReviewSchedule({ repetitions: 1, intervalDays: 1, nextReviewDate: new Date(2026, 8, 26) });
+      reviewRepo.findOne.mockResolvedValue(schedule);
 
-      await service.updateSchedule(42, 10, 45.0);
+      const r = await service.registrarResultado(42, 10, 4, AHORA);
 
-      expect(schedule.repetitions).toBe(0);
-      expect(reviewRepo.save).toHaveBeenCalledWith(schedule);
+      expect(r.esRepaso).toBe(true);
+      expect(schedule).toEqual(expect.objectContaining({ repetitions: 2, intervalDays: 3, urgencyLevel: 0 }));
+      expect(schedule.lastReviewedAt).toEqual(AHORA);
     });
 
-    it('[FASE CC-09] persiste el easeFactor calculado — antes se calculaba y se descartaba', async () => {
-      const schedule = makeReviewSchedule({ repetitions: 3, easeFactor: 2.5 });
-      reviewRepo.findOrCreate.mockResolvedValue(schedule);
+    it('un repaso vencido fallado reinicia el intervalo aunque viniera de muchos aciertos', async () => {
+      const schedule = makeReviewSchedule({ repetitions: 5, intervalDays: 30, nextReviewDate: new Date(2026, 8, 26) });
+      reviewRepo.findOne.mockResolvedValue(schedule);
 
-      await service.updateSchedule(42, 10, 90.0);
+      await service.registrarResultado(42, 10, 1, AHORA);
 
-      // repetitions pasa a 4 (>=2) => rama que calcula un easeFactor propio, distinto del default 2.5
-      expect(schedule.easeFactor).not.toBe(2.5);
+      expect(schedule).toEqual(expect.objectContaining({ repetitions: 0, intervalDays: 1 }));
+    });
+
+    it('persiste el factor de facilidad calculado', async () => {
+      const schedule = makeReviewSchedule({ repetitions: 3, intervalDays: 8, easeFactor: 2.5, nextReviewDate: new Date(2026, 8, 26) });
+      reviewRepo.findOne.mockResolvedValue(schedule);
+
+      await service.registrarResultado(42, 10, 3, AHORA);
+
+      expect(schedule.easeFactor).toBeLessThan(2.5);
       expect(schedule.easeFactor).toBeGreaterThanOrEqual(1.3);
-      expect(schedule.easeFactor).toBeLessThanOrEqual(2.5);
+    });
+  });
+
+  describe('estaVencido', () => {
+    it('es verdadero solo si hay calendario y su fecha ya pasó', async () => {
+      const ahora = new Date(2026, 8, 27);
+      reviewRepo.findOne.mockResolvedValueOnce(null);
+      expect(await service.estaVencido(42, 10, ahora)).toBe(false);
+      reviewRepo.findOne.mockResolvedValueOnce(makeReviewSchedule({ nextReviewDate: new Date(2026, 8, 28) }));
+      expect(await service.estaVencido(42, 10, ahora)).toBe(false);
+      reviewRepo.findOne.mockResolvedValueOnce(makeReviewSchedule({ nextReviewDate: new Date(2026, 8, 26) }));
+      expect(await service.estaVencido(42, 10, ahora)).toBe(true);
     });
   });
 

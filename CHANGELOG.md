@@ -12,7 +12,43 @@ entry to the oldest.
 
 ---
 
-## Pendientes del frente 3: «Emparejar» en blanco, borrar clases y acciones del admin · 28 de Septiembre de 2026
+## Práctica adaptativa, paso 1: recomendador por casillas, confianza y repasos por resultado · 27 de Septiembre de 2026
+
+Diseño aprobado por el dueño: `docs/DISENO_PRACTICA_ADAPTATIVA.md` (visión y referentes en
+`docs/investigacion/REFERENTES_PLATAFORMAS_Y_STI.md`).
+
+- **Recomendador nuevo** (`src/learning-progress/recommendation/recomendar-siguiente.ts`, función pura, 23 pruebas).
+  - Recorre la unidad por casillas: nivel (básico → intermedio → avanzado) y tipo (predecir → ordenar/emparejar →
+    completar → programar). Dos actividades del mismo tipo y nivel son hermanas.
+  - Tras un fallo ofrece una hermana nueva en vez de la misma respuesta.
+  - Dos aciertos seguidos al primer intento suben de nivel; dos fallos seguidos bajan uno.
+  - «Me siento seguro» abre con un reto, y acertarlo al primer intento salta lo básico.
+  - Con el repaso vencido, el siguiente paso es un repaso.
+  - Cada recomendación trae nivel, motivo y un mensaje de una línea, que la pantalla de la unidad ya muestra.
+- **«¿Cómo te sientes con este tema?»** Nuevo endpoint `PUT /learning-progress/unit/:unitId/confidence`, que acepta
+  1, 2 o 3; solo el propio estudiante, en clases donde está matriculado. Nunca sube el dominio.
+- **Repasos (SM-2) por resultado.** La calidad sale del resultado, como los botones de Anki: fallo, acierto tras
+  varios intentos, al primer intento, o al primer intento sintiéndose seguro.
+  - **Antes:** la calidad salía del dominio, que nunca baja, y cada ejercicio del mismo día contaba como un repaso
+    más. Ahora practicar antes de la fecha no mueve el calendario, y un repaso fallado lo reinicia.
+- **Dominio por casillas.** Agregar variantes a una unidad ya no baja el dominio de nadie, y resolver varias hermanas
+  no lo infla. Si lo último en una casilla fue un repaso fallado, el dominio baja.
+- **Migración** `1789900000000-AddPracticaAdaptativa`: `learning_progress.entryConfidence` y `submissions.isReview`.
+- **Hallazgo cerrado:** `GET .../next-activity` mostraba títulos de actividades de clases donde el estudiante no está
+  matriculado (bastaba pedir su propio `studentId`). Ahora responde 403, con prueba.
+
+Verificación:
+- `npm run build` sin errores, **83/83 suites, 826/826 pruebas**, `nuxi typecheck` sin errores.
+- Contra la API y la base locales:
+  - sin confianza, el recomendador empieza por lo básico;
+  - con «seguro», ofrece un reto intermedio;
+  - una confianza inválida responde 400 y una clase ajena 403;
+  - un repaso vencido pasa a ser el siguiente paso;
+  - una entrega real crea el calendario sin marcarse como repaso.
+
+---
+
+## Pendientes del frente 3: «Emparejar» en blanco, borrar clases y acciones del admin · 27 de Septiembre de 2026
 
 - **«Emparejar» salía en blanco en los cursos nuevos.** El constructor del docente guarda los elementos con `content`
   y los cursos se generaron con `text`. `src/seeds/cursos/tipos.ts` usa `content`; `MatchingExercise.vue` acepta las

@@ -55,6 +55,8 @@ function buildMocks() {
 
   const activitiesRepo: any = {
     find: jest.fn(),
+    // Preguntas de las actividades, progreso (confianza) y calendario de repasos se leen por el manager.
+    manager: { find: jest.fn().mockResolvedValue([]), findOne: jest.fn().mockResolvedValue(null) },
   };
 
   return { progressRepo, submissionsRepo, activitiesRepo };
@@ -334,6 +336,85 @@ describe('LearningProgressService', () => {
       const result = await service.getNextActivity(42, 10);
 
       expect(result).toEqual(expect.objectContaining({ activityId: 2, order: 2, allCompleted: true }));
+    });
+  });
+
+  describe('getNextActivity con práctica adaptativa', () => {
+    function mockIntentos(submissions: any[]) {
+      submissionsRepo.createQueryBuilder.mockReturnValue({
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue(submissions),
+      });
+    }
+    const UNIDAD = [
+      makeActivity({ id: 1, order: 1, difficulty: 'basico', title: 'Predecir' }),
+      makeActivity({ id: 2, order: 2, difficulty: 'intermedio', title: 'Completar' }),
+    ];
+    const PREGUNTAS = [
+      { activityId: 1, type: 'mcq', order: 0 },
+      { activityId: 2, type: 'fill_code', order: 0 },
+    ];
+
+    it('usa el tipo de la pregunta y devuelve nivel y motivo en una línea', async () => {
+      activitiesRepo.find.mockResolvedValue(UNIDAD);
+      activitiesRepo.manager.find.mockResolvedValue(PREGUNTAS);
+      mockIntentos([]);
+
+      const r = await service.getNextActivity(42, 10);
+
+      expect(r).toEqual(expect.objectContaining({ activityId: 1, questionType: 'mcq', level: 'basico', reason: 'siguiente' }));
+      expect(r!.reasonMessage.length).toBeGreaterThan(10);
+    });
+
+    it('«Me siento seguro» guardado en el progreso abre con un reto', async () => {
+      activitiesRepo.find.mockResolvedValue(UNIDAD);
+      activitiesRepo.manager.find.mockResolvedValue(PREGUNTAS);
+      activitiesRepo.manager.findOne.mockImplementation(async (entidad: any) =>
+        entidad.name === 'LearningProgress' ? { entryConfidence: 3 } : null,
+      );
+      mockIntentos([]);
+
+      const r = await service.getNextActivity(42, 10);
+
+      expect(r).toEqual(expect.objectContaining({ activityId: 2, reason: 'reto' }));
+    });
+
+    it('con el repaso de la unidad vencido, recomienda repasar', async () => {
+      activitiesRepo.find.mockResolvedValue([...UNIDAD, makeActivity({ id: 3, order: 3, difficulty: 'basico' })]);
+      activitiesRepo.manager.find.mockResolvedValue([...PREGUNTAS, { activityId: 3, type: 'mcq', order: 0 }]);
+      activitiesRepo.manager.findOne.mockImplementation(async (entidad: any) =>
+        entidad.name === 'ReviewSchedule' ? { nextReviewDate: new Date(Date.now() - 86400000) } : null,
+      );
+      mockIntentos([makeSubmission({ activityId: 1, score: 100, submittedAt: new Date() })]);
+
+      const r = await service.getNextActivity(42, 10);
+
+      expect(r).toEqual(expect.objectContaining({ activityId: 3, reason: 'repaso' }));
+    });
+  });
+
+  describe('setEntryConfidence', () => {
+    it('guarda 1, 2 o 3 en el progreso del estudiante', async () => {
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress());
+
+      const r = await service.setEntryConfidence(42, 10, 3);
+
+      expect(progressRepo.findOrCreate).toHaveBeenCalledWith(42, 10);
+      expect(r.entryConfidence).toBe(3);
+    });
+
+    it.each([0, 4, 2.5, NaN])('rechaza %p', async (valor) => {
+      await expect(service.setEntryConfidence(42, 10, valor)).rejects.toThrow('La confianza debe ser');
+      expect(progressRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('la confianza sola no sube el dominio', async () => {
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress({ mastery: 0 }));
+
+      const r = await service.setEntryConfidence(42, 10, 3);
+
+      expect(r.mastery).toBe(0);
     });
   });
 

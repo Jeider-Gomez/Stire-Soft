@@ -55,6 +55,10 @@ export class Submission {
   @Column({ type: 'boolean', default: false })
   isAbandoned: boolean;
 
+  /** Se calificó cuando la unidad tenía un repaso vencido. Un repaso fallado baja el dominio de su casilla. */
+  @Column({ type: 'boolean', default: false })
+  isReview: boolean;
+
   @OneToMany(() => SubmissionAnswer, (answer) => answer.submission)
   answers: SubmissionAnswer[];
 

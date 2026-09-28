@@ -50,4 +50,12 @@ export class LearningProgress extends StireBaseEntity {
 
   @Column({ nullable: true })
   lastActivityId: number;
+
+  /**
+   * Respuesta a «¿Cómo te sientes con este tema?» (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.1): 1 = Es nuevo para mí,
+   * 2 = Tengo dudas, 3 = Me siento seguro. null = no respondió. Decide por dónde empieza y cuándo repasar; nunca sube
+   * el dominio por sí sola.
+   */
+  @Column({ type: 'tinyint', nullable: true })
+  entryConfidence: number | null;
 }

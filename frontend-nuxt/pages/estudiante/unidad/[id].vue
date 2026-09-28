@@ -61,7 +61,7 @@
           <div>
             <h2 class="text-sm font-bold text-base-texto-primario">Tu siguiente paso</h2>
             <p class="text-xs text-base-texto-secundario">
-              {{ recommendedActivity?.allCompleted ? 'Completaste la unidad. Puedes seguir practicando.' : 'Te recomendamos continuar con esta actividad.' }}
+              {{ recommendedActivity?.reasonMessage ?? 'Te recomendamos continuar con esta actividad.' }}
             </p>
           </div>
           <button
@@ -77,7 +77,7 @@
           v-if="recommendedActivity && !chooseManually"
           :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
           class="inline-flex px-4 py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors">
-          Continuar donde quedaste: {{ recommendedActivity.title }}
+          Continuar: {{ recommendedActivity.title }}
         </NuxtLink>
 
         <div v-else-if="chooseManually" class="flex flex-col gap-2">
@@ -146,9 +146,13 @@ interface ActivitySummary {
 interface NextActivityRecommendation {
   activityId: number
   title: string
-  questionType: string
+  questionType: string | null
   order: number
   allCompleted: boolean
+  level: string
+  reason: string
+  /** Por qué se recomienda, en una línea (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.3). */
+  reasonMessage: string
 }
 
 const isLoading = ref(true)

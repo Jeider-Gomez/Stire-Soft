@@ -1,4 +1,5 @@
 import { Difficulty } from '../enums/difficulty.enum';
+import { claveCasilla } from './casilla';
 
 // Visión funcional (docs/00_VISION_FUNCIONAL.md, pausa técnica 2026-09-15): el avance debe ser
 // proporcional al esfuerzo y la complejidad, no a la cantidad de clics. Repetir un ejercicio BASICO
@@ -15,23 +16,55 @@ function easyRepeatDecayFactor(activity: any, attemptsOnActivity: number): numbe
   return Math.max(EASY_REPEAT_MIN_FACTOR, 1 - excessAttempts * EASY_REPEAT_DECAY_STEP);
 }
 
+function momento(submission: any): number {
+  const fecha = submission.submittedAt ?? submission.createdAt;
+  return fecha ? new Date(fecha).getTime() : 0;
+}
+
+/**
+ * Dominio de la unidad, por casillas (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.2 y §3.4):
+ * - Las actividades hermanas (mismo tipo de pregunta y dificultad) son una sola casilla: cuenta la mejor de ellas.
+ *   Si contaran por separado, agregar variantes para los repasos bajaría el dominio de todos.
+ * - Si lo último que pasó en una casilla fue un repaso fallado, la casilla cuenta con esa nota: el dominio baja,
+ *   como el nivel de una habilidad en Khan Academy.
+ * Las actividades sin tipo de pregunta conocido son cada una su propia casilla (comportamiento anterior).
+ */
 export function calculateUnitMastery(
   allSubmissions: any[],
   activities: any[]
 ): number {
+  const casillas = new Map<string, any[]>();
+  for (const activity of activities) {
+    const clave = claveCasilla(activity);
+    casillas.set(clave, [...(casillas.get(clave) ?? []), activity]);
+  }
+
   let totalAchieved = 0;
   let totalMaxWeight = 0;
 
-  for (const activity of activities) {
-    const actSubmissions = allSubmissions.filter(s => s.activityId === activity.id);
-    const bestScore = actSubmissions.length > 0
-      ? Math.max(...actSubmissions.map(s => s.score))
-      : 0;
+  for (const hermanas of casillas.values()) {
+    let ratio = 0;
+    let weight = 0;
+    const enCasilla: any[] = [];
 
-    const weight = activity.adaptiveWeight * (activity.activityType?.baseWeight || 1);
-    const decayFactor = easyRepeatDecayFactor(activity, actSubmissions.length);
+    for (const activity of hermanas) {
+      const actSubmissions = allSubmissions.filter(s => s.activityId === activity.id);
+      enCasilla.push(...actSubmissions.map(s => ({ s, activity })));
+      const bestScore = actSubmissions.length > 0
+        ? Math.max(...actSubmissions.map(s => s.score))
+        : 0;
+      const decayFactor = easyRepeatDecayFactor(activity, actSubmissions.length);
+      ratio = Math.max(ratio, (bestScore / activity.totalPoints) * decayFactor);
+      weight = Math.max(weight, activity.adaptiveWeight * (activity.activityType?.baseWeight || 1));
+    }
 
-    totalAchieved += (bestScore / activity.totalPoints) * weight * decayFactor;
+    const ultimo = enCasilla.sort((a, b) => momento(a.s) - momento(b.s))[enCasilla.length - 1];
+    if (ultimo?.s.isReview) {
+      const notaRepaso = ultimo.s.score / ultimo.activity.totalPoints;
+      if (notaRepaso * 100 < ultimo.activity.passingScore) ratio = Math.min(ratio, notaRepaso);
+    }
+
+    totalAchieved += ratio * weight;
     totalMaxWeight += weight;
   }
 

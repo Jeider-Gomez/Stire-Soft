@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { In } from 'typeorm';
 import { LearningProgressRepository } from './learning-progress.repository';
 import { SubmissionsRepository } from '../submissions/submissions.repository';
@@ -11,14 +11,31 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Activity } from '../activities/entities/activity.entity';
 import { Submission } from '../submissions/entities/submission.entity';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
+import { ActivityQuestion } from '../activity-questions/entities/activity-question.entity';
+import { QuestionType } from '../common/enums/question-type.enum';
+import { ReviewSchedule } from '../review-schedules/entities/review-schedule.entity';
+import { LearningUnit } from '../learning-unit/entities/learning-unit.entity';
+import { Topic } from '../topic/entities/topic.entity';
+import { Section } from '../section/entities/section.entity';
+import { LearningProgress } from './entities/learning-progress.entity';
+import { Confianza, MotivoRecomendacion, recomendarSiguiente } from './recommendation/recomendar-siguiente';
 
 export interface NextActivityRecommendation {
   activityId: number;
   title: string;
-  questionType: string;
+  /** Tipo de pregunta de la actividad (mcq, coding…); null si no tiene preguntas. */
+  questionType: string | null;
   order: number;
   allCompleted: boolean;
+  /** Nivel de la actividad recomendada: basico, intermedio o avanzado. */
+  level: string;
+  /** Por qué se recomienda (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.3). */
+  reason: MotivoRecomendacion;
+  /** El motivo en una línea, para mostrarlo al estudiante. */
+  reasonMessage: string;
 }
+
+type ActividadConTipo = Activity & { questionType: QuestionType | null };
 
 export function isSubmissionPassed(submission: Submission, activity: Activity | undefined): boolean {
   return !!activity && activity.totalPoints > 0
@@ -40,11 +57,8 @@ export class LearningProgressService {
     const progress = await this.progressRepo.findOrCreate(studentId, learningUnitId);
     const oldStatus = progress.status || LearningStatus.NO_VISTO;
     
-    // Todas las actividades de la unidad
-    const activities = await this.activitiesRepo.find({
-      where: { learningUnitId, status: PublicationStatus.PUBLISHED },
-      relations: ['activityType'],
-    });
+    // Todas las actividades de la unidad, con su tipo de pregunta (las hermanas forman una casilla)
+    const activities = await this.cargarActividadesConTipo(learningUnitId);
 
     // Todos los submissions del estudiante para estas actividades
     const activityIds = activities.map(a => a.id);
@@ -151,33 +165,104 @@ export class LearningProgressService {
   }
 
   async getNextActivity(studentId: number, learningUnitId: number): Promise<NextActivityRecommendation | null> {
+    const activities = await this.cargarActividadesConTipo(learningUnitId);
+    if (activities.length === 0) return null;
+
+    // Incluye los intentos en curso: gastan un intento aunque todavía no tengan resultado.
+    const submissions = await this.submissionsRepo.createQueryBuilder('sub')
+      .where('sub.studentId = :studentId', { studentId })
+      .andWhere('sub.activityId IN (:...activityIds)', { activityIds: activities.map(activity => activity.id) })
+      .getMany();
+    const progress = await this.activitiesRepo.manager.findOne(LearningProgress, { where: { studentId, learningUnitId } });
+    const schedule = await this.activitiesRepo.manager.findOne(ReviewSchedule, { where: { studentId, learningUnitId } });
+
+    const confianza = progress?.entryConfidence;
+    const recomendacion = recomendarSiguiente({
+      actividades: activities.map(activity => ({
+        id: activity.id,
+        title: activity.title,
+        order: activity.order,
+        difficulty: activity.difficulty,
+        questionType: activity.questionType,
+        totalPoints: activity.totalPoints,
+        passingScore: activity.passingScore,
+        attemptsAllowed: activity.attemptsAllowed,
+      })),
+      intentos: submissions.map(submission => ({
+        activityId: submission.activityId,
+        score: submission.score,
+        calificado: submission.status !== SubmissionStatus.IN_PROGRESS,
+        fecha: new Date(submission.submittedAt ?? submission.createdAt ?? 0),
+      })),
+      confianza: esConfianza(confianza) ? confianza : null,
+      repasoVencido: !!schedule && new Date(schedule.nextReviewDate).getTime() <= Date.now(),
+    });
+    if (!recomendacion) return null;
+
+    return {
+      activityId: recomendacion.actividad.id,
+      title: recomendacion.actividad.title,
+      questionType: recomendacion.actividad.questionType,
+      order: recomendacion.actividad.order,
+      allCompleted: recomendacion.completada,
+      level: recomendacion.nivel,
+      reason: recomendacion.motivo,
+      reasonMessage: recomendacion.mensaje,
+    };
+  }
+
+  /**
+   * Guarda la respuesta del estudiante a «¿Cómo te sientes con este tema?». Solo el propio estudiante, y solo en una
+   * unidad de una clase en la que está matriculado (la autorización la hace el controlador con `resolveClassId`).
+   */
+  async setEntryConfidence(studentId: number, learningUnitId: number, confianza: number): Promise<LearningProgress> {
+    if (!esConfianza(confianza)) {
+      throw new BadRequestException('La confianza debe ser 1 (Es nuevo para mí), 2 (Tengo dudas) o 3 (Me siento seguro).');
+    }
+    const progress = await this.progressRepo.findOrCreate(studentId, learningUnitId);
+    progress.entryConfidence = confianza;
+    return this.progressRepo.save(progress);
+  }
+
+  /** LearningUnit → Topic → Section → classId, para autorizar. Falla cerrado si la cadena está rota. */
+  async resolveClassId(learningUnitId: number): Promise<number> {
+    const manager = this.activitiesRepo.manager;
+    const unit = await manager.findOne(LearningUnit, { where: { id: learningUnitId } });
+    const topic = unit?.topicId != null ? await manager.findOne(Topic, { where: { id: unit.topicId } }) : null;
+    const section = topic ? await manager.findOne(Section, { where: { id: topic.sectionId } }) : null;
+    if (!section) throw new NotFoundException(`Unidad de aprendizaje ${learningUnitId} no encontrada`);
+    return section.classId;
+  }
+
+  /** Marca un intento como repaso: se calificó cuando la unidad tenía un repaso vencido. */
+  async marcarComoRepaso(submissionId: string): Promise<void> {
+    await this.submissionsRepo.update(submissionId, { isReview: true });
+  }
+
+  async esPrimerIntento(submissionId: string): Promise<boolean> {
+    const submission = await this.submissionsRepo.findOne({ where: { id: submissionId } });
+    return submission?.attemptNumber === 1;
+  }
+
+  /** Actividades publicadas de la unidad con el tipo de su primera pregunta (define la casilla de hermanas). */
+  private async cargarActividadesConTipo(learningUnitId: number): Promise<ActividadConTipo[]> {
     const activities = await this.activitiesRepo.find({
       where: { learningUnitId, status: PublicationStatus.PUBLISHED },
       relations: ['activityType'],
       order: { order: 'ASC', id: 'ASC' },
     });
+    if (activities.length === 0) return [];
 
-    if (activities.length === 0) return null;
-
-    const submissions = await this.submissionsRepo.createQueryBuilder('sub')
-      .where('sub.studentId = :studentId', { studentId })
-      .andWhere('sub.activityId IN (:...activityIds)', { activityIds: activities.map(activity => activity.id) })
-      .andWhere('sub.status != :status', { status: 'in_progress' })
-      .getMany();
-    const passedActivityIds = new Set(
-      submissions
-        .filter(submission => isSubmissionPassed(submission, activities.find(activity => activity.id === submission.activityId)))
-        .map(submission => submission.activityId),
+    const preguntas = await this.activitiesRepo.manager.find(ActivityQuestion, {
+      where: { activityId: In(activities.map(activity => activity.id)) },
+      order: { order: 'ASC', id: 'ASC' },
+    });
+    return activities.map(activity =>
+      Object.assign(activity, { questionType: preguntas.find(p => p.activityId === activity.id)?.type ?? null }),
     );
-    const nextActivity = activities.find(activity => !passedActivityIds.has(activity.id));
-    const selectedActivity = nextActivity ?? activities[activities.length - 1];
-
-    return {
-      activityId: selectedActivity.id,
-      title: selectedActivity.title,
-      questionType: selectedActivity.activityType.code,
-      order: selectedActivity.order,
-      allCompleted: nextActivity === undefined,
-    };
   }
+}
+
+function esConfianza(valor: number | null | undefined): valor is Confianza {
+  return valor === 1 || valor === 2 || valor === 3;
 }

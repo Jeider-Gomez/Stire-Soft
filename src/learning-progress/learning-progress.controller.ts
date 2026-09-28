@@ -1,6 +1,8 @@
 import {
+  Body,
   Controller,
   Get,
+  Put,
   Param,
   ParseIntPipe,
   UseGuards,
@@ -88,6 +90,29 @@ export class LearningProgressController {
       throw new ForbiddenException('No tienes permiso para ver el progreso de otro estudiante');
     }
     await this.authorizationService.assertTeacherSharesClassWithStudent(user, studentId);
+    // La recomendación muestra títulos de actividades: un estudiante solo la ve en unidades de sus clases. Antes bastaba
+    // con pedir su propio studentId para ver las de cualquier clase.
+    if (user.role === 'estudiante') {
+      await this.authorizationService.assertEnrolledInClass(user, await this.learningProgressService.resolveClassId(unitId));
+    }
     return this.learningProgressService.getNextActivity(studentId, unitId);
+  }
+
+  /**
+   * PUT /learning-progress/unit/:unitId/confidence — «¿Cómo te sientes con este tema?» (1, 2 o 3).
+   * Solo el propio estudiante, en una unidad de una clase donde está matriculado.
+   */
+  @Put('unit/:unitId/confidence')
+  @Roles('estudiante')
+  @ApiOperation({ summary: 'Guardar cómo se siente el estudiante con una unidad (1 = nuevo, 2 = dudas, 3 = seguro)' })
+  async setConfidence(
+    @Param('unitId', ParseIntPipe) unitId: number,
+    @Body('confianza') confianza: number,
+    @Request() req: any,
+  ) {
+    const classId = await this.learningProgressService.resolveClassId(unitId);
+    await this.authorizationService.assertEnrolledInClass(req.user, classId);
+    const progress = await this.learningProgressService.setEntryConfidence(req.user.id, unitId, confianza);
+    return { learningUnitId: unitId, entryConfidence: progress.entryConfidence };
   }
 }

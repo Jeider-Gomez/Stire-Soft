@@ -74,4 +74,56 @@ describe('calculateUnitMastery', () => {
 
     expect(calculateUnitMastery(submissions, activities)).toBe(75);
   });
+
+  describe('casillas y repasos (práctica adaptativa)', () => {
+    const base = { totalPoints: 100, passingScore: 60, adaptiveWeight: 1, activityType: { baseWeight: 1 } };
+    const mcq = (id: number) => ({ id, difficulty: Difficulty.INTERMEDIO, questionType: 'mcq', ...base });
+    const ordenar = (id: number) => ({ id, difficulty: Difficulty.INTERMEDIO, questionType: 'ordering', ...base });
+
+    it('agregar hermanas sin hacer no baja el dominio: la casilla cuenta con la mejor', () => {
+      const sinVariantes = calculateUnitMastery([{ activityId: 1, score: 100 }], [mcq(1)]);
+      const conVariantes = calculateUnitMastery([{ activityId: 1, score: 100 }], [mcq(1), mcq(2), mcq(3)]);
+      expect(sinVariantes).toBe(100);
+      expect(conVariantes).toBe(100);
+    });
+
+    it('resolver varias hermanas no infla el dominio más allá de su casilla', () => {
+      const submissions = [{ activityId: 1, score: 100 }, { activityId: 2, score: 100 }];
+      expect(calculateUnitMastery(submissions, [mcq(1), mcq(2), ordenar(3)])).toBe(50);
+    });
+
+    it('un repaso fallado, si es lo último de la casilla, baja el dominio', () => {
+      const submissions = [
+        { activityId: 1, score: 100, submittedAt: new Date(2026, 8, 1) },
+        { activityId: 2, score: 20, isReview: true, submittedAt: new Date(2026, 8, 10) },
+      ];
+      expect(calculateUnitMastery(submissions, [mcq(1), mcq(2)])).toBe(20);
+    });
+
+    it('recuperarse en un repaso posterior devuelve el dominio', () => {
+      const submissions = [
+        { activityId: 1, score: 100, submittedAt: new Date(2026, 8, 1) },
+        { activityId: 2, score: 20, isReview: true, submittedAt: new Date(2026, 8, 10) },
+        { activityId: 2, score: 90, isReview: true, submittedAt: new Date(2026, 8, 11) },
+      ];
+      expect(calculateUnitMastery(submissions, [mcq(1), mcq(2)])).toBe(100);
+    });
+
+    it('un fallo que no es repaso (práctica normal) no baja el dominio ya ganado', () => {
+      const submissions = [
+        { activityId: 1, score: 100, submittedAt: new Date(2026, 8, 1) },
+        { activityId: 2, score: 20, submittedAt: new Date(2026, 8, 2) },
+      ];
+      expect(calculateUnitMastery(submissions, [mcq(1), mcq(2)])).toBe(100);
+    });
+
+    it('un repaso fallado solo afecta su casilla', () => {
+      const submissions = [
+        { activityId: 1, score: 100, submittedAt: new Date(2026, 8, 1) },
+        { activityId: 3, score: 100, submittedAt: new Date(2026, 8, 1) },
+        { activityId: 1, score: 0, isReview: true, submittedAt: new Date(2026, 8, 10) },
+      ];
+      expect(calculateUnitMastery(submissions, [mcq(1), ordenar(3)])).toBe(50);
+    });
+  });
 });
