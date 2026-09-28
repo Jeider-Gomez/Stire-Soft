@@ -12,6 +12,47 @@ entry to the oldest.
 
 ---
 
+## Fase 27 — pantallas de práctica adaptativa y reutilización (auditoría y correcciones) · 28 de Septiembre de 2026
+
+Antigravity construyó las seis tareas del plan:
+- T1: tarjeta «¿Cómo te sientes con este tema?»;
+- T2: motivo, nivel y «Se está olvidando»;
+- T3: «Traer de otra clase» y «Copiar el contenido de…» al crear una clase;
+- T4: «Mi banco»;
+- T5: «Duplicar como variante»;
+- T6: aviso de casillas con un solo ejercicio.
+
+Claude Code lo auditó en Chrome real, con backend y base reales.
+
+**Qué funcionaba:**
+- la tarjeta aparece solo si no hay respuesta, desaparece al responder, y «Continuar» funciona sin responder;
+- «Me siento seguro» abre con un reto intermedio;
+- «Se está olvidando» aparece en el inicio y en Progreso;
+- crear «Grupo 3» copiando ALGO-203413 dejó 3 secciones sin publicar y 0 matrículas;
+- «Traer» una sola sección funciona;
+- el banco filtra: 245 ejercicios en total, 23 de «ordenar» básicos;
+- «Agregar» deja el ejercicio en borrador, y «Duplicar» abre el editor;
+- a 375 px no hay desborde, y la consola quedó sin errores.
+
+**Corregido (`2bafeb5`):**
+- **La rama no compilaba.** Faltaba un `</Teleport>` en `UnitExercisesPanel.vue` y `npm run generate` fallaba; el
+  plan pedía correrlo antes de cada commit.
+- **Aviso de T6.** Cada panel descargaba el banco completo del docente, y el aviso ignoraba las variantes en borrador.
+  Nuevo filtro `learningUnitId` en `GET /reuse/bank`, con pruebas del servicio y del DTO.
+- **Diálogos.** En «Traer de otra clase» y «Mi banco», el foco ahora entra al abrir y vuelve al botón al cerrar.
+- **Crear una clase copiando otra.** Si la copia fallaba, el modal quedaba abierto y reintentar creaba otra clase.
+- **Detalles:** el botón del encabezado se partía en cuatro líneas, los spinners eran emojis y había `any` en el
+  código nuevo.
+
+**Pendiente, encontrado en la auditoría:** el editor que abre «Duplicar como variante» no permite cambiar los datos
+del ejercicio. Queda como paso 4b en el plan maestro, §6.00.
+
+Verificación:
+- `nuxi typecheck` y `npm run generate` sin errores;
+- `npm run build` sin errores, **85/85 suites, 848/848 pruebas**.
+
+---
+
 ## Práctica adaptativa, paso 3: ejercicios hermanos en los dos cursos · 27 de Septiembre de 2026
 
 - **91 variantes nuevas:** 57 en ALGO-203413 y 34 en PENSAR-ALGO, en `src/seeds/cursos/*/variantes.ts`.
