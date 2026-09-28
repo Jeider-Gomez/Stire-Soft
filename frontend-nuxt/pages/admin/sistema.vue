@@ -148,21 +148,21 @@
       <div
         role="log"
         aria-live="off"
-        class="bg-[#1e1e1e] text-[#d4d4d4] p-4 rounded-xl font-mono text-xs space-y-1.5 max-h-[350px] overflow-y-auto border border-base-borde-fuerte">
-        <div v-if="loadingLogs && logEntries.length === 0" class="text-center py-6 text-[#858585]">
+        class="bg-editor-bg text-editor-text p-4 rounded-xl font-mono text-xs space-y-1.5 max-h-[350px] overflow-y-auto border border-base-borde-fuerte">
+        <div v-if="loadingLogs && logEntries.length === 0" class="text-center py-6 text-editor-muted">
           Cargando eventos del servidor...
         </div>
 
-        <div v-else-if="logError" class="text-center py-6 text-semantico-falla">
+        <div v-else-if="logError" class="text-center py-6 text-[#f87171]">
           {{ logError }}
         </div>
 
-        <div v-else-if="logEntries.length === 0" class="text-center py-6 text-[#858585]">
+        <div v-else-if="logEntries.length === 0" class="text-center py-6 text-editor-muted">
           Sin eventos con este filtro
         </div>
 
         <div v-else v-for="(entry, idx) in logEntries" :key="idx" class="leading-relaxed flex items-start gap-2">
-          <span class="text-[#858585] shrink-0">[{{ formatLogTime(entry.timestamp) }}]</span>
+          <span class="text-editor-muted shrink-0">[{{ formatLogTime(entry.timestamp) }}]</span>
           <span
             class="font-bold shrink-0 text-[10px] uppercase px-1 rounded"
             :class="getLevelBadgeClass(entry.level)">

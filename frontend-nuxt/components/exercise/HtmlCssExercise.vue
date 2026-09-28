@@ -1,30 +1,30 @@
 <template>
   <div class="flex-1 flex flex-col lg:flex-row lg:h-full w-full lg:overflow-hidden bg-base-bg-primario">
     <!-- COLUMNA IZQUIERDA: Editor de pestañas HTML y CSS -->
-    <div class="w-full lg:w-1/2 flex flex-col h-[60vh] lg:h-full border-b lg:border-b-0 lg:border-r border-base-borde-sutil bg-[#1e1e1e] text-[#d4d4d4] overflow-hidden">
+    <div class="w-full lg:w-1/2 flex flex-col h-[60vh] lg:h-full border-b lg:border-b-0 lg:border-r border-base-borde-sutil bg-editor-bg text-editor-text overflow-hidden">
       <!-- Barra superior con pestañas -->
-      <div class="h-10 bg-[#252526] border-b border-[#333333] px-3 flex items-center justify-between text-xs flex-shrink-0">
+      <div class="h-10 bg-editor-header border-b border-editor-border px-3 flex items-center justify-between text-xs flex-shrink-0">
         <div class="flex items-center gap-1">
           <button
             type="button"
             @click="activeEditorTab = 'html'"
             class="px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition-colors"
-            :class="activeEditorTab === 'html' ? 'bg-[#1e1e1e] text-[#e34c26] border border-[#3e3e42] shadow-xs' : 'text-[#858585] hover:text-[#d4d4d4] hover:bg-[#2a2d2e]'">
+            :class="activeEditorTab === 'html' ? 'bg-editor-bg text-[#fb923c] border border-editor-border shadow-xs' : 'text-editor-muted hover:text-editor-text hover:bg-editor-line'">
             <span class="font-bold">HTML</span>
-            <span class="text-[10px] text-[#858585]">index.html</span>
+            <span class="text-[10px] text-editor-muted">index.html</span>
           </button>
 
           <button
             type="button"
             @click="activeEditorTab = 'css'"
             class="px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition-colors"
-            :class="activeEditorTab === 'css' ? 'bg-[#1e1e1e] text-[#264de4] border border-[#3e3e42] shadow-xs' : 'text-[#858585] hover:text-[#d4d4d4] hover:bg-[#2a2d2e]'">
+            :class="activeEditorTab === 'css' ? 'bg-editor-bg text-[#60a5fa] border border-editor-border shadow-xs' : 'text-editor-muted hover:text-editor-text hover:bg-editor-line'">
             <span class="font-bold">CSS</span>
-            <span class="text-[10px] text-[#858585]">estilos.css</span>
+            <span class="text-[10px] text-editor-muted">estilos.css</span>
           </button>
         </div>
 
-        <div class="flex items-center gap-3 text-[11px] text-[#858585]">
+        <div class="flex items-center gap-3 text-[11px] text-editor-muted">
           <span>{{ activeEditorTab === 'html' ? 'HTML5' : 'CSS3' }}</span>
           <span>UTF-8</span>
         </div>
@@ -55,7 +55,7 @@
       </div>
 
       <!-- Barra de estado del editor -->
-      <div class="h-7 bg-[#252526] border-t border-[#333333] px-3 flex items-center justify-between text-[11px] text-[#858585] flex-shrink-0">
+      <div class="h-7 bg-editor-header border-t border-editor-border px-3 flex items-center justify-between text-[11px] text-editor-muted flex-shrink-0">
         <div class="flex items-center gap-2">
           <span>{{ workspaceStore.lastAutosave }}</span>
         </div>

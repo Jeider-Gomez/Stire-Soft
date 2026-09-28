@@ -23,14 +23,17 @@
         @keydown="handleKeydown"
       >
         <!-- Header del Tutor IA -->
-        <div class="p-4 border-b border-base-borde-sutil flex items-center justify-between bg-base-bg-secundario">
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-acento-ambar-fuerte text-base-blanco flex items-center justify-center font-bold text-sm shadow-sm" aria-hidden="true">
-              ✨
+        <div class="p-4 flex items-center justify-between bg-gradient-to-r from-stire-blue via-[#0e48a8] to-stire-purple text-white select-none">
+          <div class="flex items-center gap-3">
+            <div class="relative" aria-hidden="true">
+              <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-inner">
+                <Bot :size="24" :stroke-width="2.2" class="text-stire-teal" />
+              </div>
+              <span v-if="tutorStore.tutorEnabled" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-stire-teal border-2 border-stire-blue rounded-full" />
             </div>
             <div>
-              <h3 class="font-bold text-sm text-base-texto-primario">Tutor IA</h3>
-              <p class="text-[11px] text-base-texto-secundario">Te guía con preguntas y pistas; no te da la solución</p>
+              <h3 class="font-bold text-sm font-poppins tracking-tight">Tutor IA STIRE</h3>
+              <p class="text-[11px] text-slate-200">Te guía con preguntas y pistas; no te da la solución</p>
             </div>
           </div>
 
@@ -39,7 +42,7 @@
             <button
               v-if="tutorStore.hasKey"
               @click="tutorStore.showKeyPanel = !tutorStore.showKeyPanel"
-              class="text-[10px] text-base-texto-secundario hover:text-acento-ambar-fuerte underline transition-colors"
+              class="text-[10px] text-slate-200 hover:text-white underline transition-colors"
               :aria-label="tutorStore.showKeyPanel ? 'Ocultar panel de clave' : 'Gestionar mi clave de Google AI Studio'"
             >
               Mi clave
@@ -48,10 +51,10 @@
             <button
               ref="closeButtonRef"
               @click="tutorStore.closeDrawer()"
-              class="p-1.5 rounded-md hover:bg-base-borde-sutil text-base-texto-secundario hover:text-base-texto-primario transition-colors"
+              class="p-1.5 rounded-lg text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
               aria-label="Cerrar Tutor"
             >
-              <span aria-hidden="true">✕</span>
+              <X :size="16" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -59,7 +62,7 @@
         <!-- Indicador de Nivel de Guía real del backend (§18.4) — oculto si guidanceLevel es null -->
         <div
           v-if="tutorStore.guidanceLevel !== null"
-          class="px-4 py-2 bg-acento-ambar/10 border-b border-acento-ambar/20 flex items-center justify-between text-xs"
+          class="px-4 py-2 bg-stire-teal/10 border-b border-stire-teal/25 flex items-center justify-between text-xs"
           role="status"
           :aria-label="`Nivel de ayuda actual: ${tutorStore.guidanceLevel} de 3 — ${guidanceLevelLabel}`"
         >
@@ -81,10 +84,10 @@
         </div>
 
         <!-- Indicador de Contexto Activo de Aprendizaje -->
-        <div v-if="activeContextLabel" class="px-4 py-1.5 bg-base-bg-secundario border-b border-base-borde-sutil flex items-center justify-between text-[11px] text-base-texto-secundario">
+        <div v-if="activeContextLabel" class="px-4 py-2 bg-stire-canvas border-b border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
           <div class="flex items-center gap-1.5 truncate">
-            <span aria-hidden="true">📍</span>
-            <span class="truncate font-medium text-base-texto-primario">{{ activeContextLabel }}</span>
+            <BookOpen :size="14" class="text-stire-teal shrink-0" aria-hidden="true" />
+            <span class="truncate font-medium font-poppins text-stire-blue">{{ activeContextLabel }}</span>
           </div>
           <div class="flex items-center gap-2 flex-shrink-0">
             <!-- Botón Ir al contenido de la unidad (§22 T1 — visible con clave y sin clave) -->
@@ -94,7 +97,7 @@
               class="borde-afordancia px-2 py-0.5 rounded bg-base-blanco text-[10px] font-medium text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1 border border-acento-ambar/30"
               :aria-label="`Ir al contenido de la unidad: ${tutorStore.contentLink.title}`"
             >
-              <span aria-hidden="true">📖</span> Ver unidad
+              <BookOpen :size="12" aria-hidden="true" /> Ver unidad
             </button>
           </div>
         </div>
@@ -107,7 +110,7 @@
           aria-live="polite"
         >
           <div class="flex items-start gap-2">
-            <span class="text-base leading-none" aria-hidden="true">⏰</span>
+            <Clock :size="16" class="shrink-0 text-stire-blue" aria-hidden="true" />
             <p class="text-[11px] leading-relaxed">
               {{ overdueNotice }}
             </p>
@@ -134,13 +137,13 @@
             class="mx-4 mt-4 p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil text-xs text-base-texto-secundario"
             role="status"
           >
-            <span aria-hidden="true">🚫</span>
+            <Ban :size="14" class="inline -mt-0.5 mr-1" aria-hidden="true" />
             Tu docente desactivó el Tutor en esta parte del curso.
           </div>
 
           <!-- Mensajes del Chat (§18.2 — scroll automático) -->
           <div
-            class="flex-1 overflow-y-auto p-4 space-y-3.5"
+            class="flex-1 overflow-y-auto p-4 space-y-3.5 bg-gradient-to-b from-stire-canvas/70 to-white"
             ref="messagesContainer"
             aria-live="polite"
             aria-label="Mensajes del Tutor"
@@ -151,17 +154,22 @@
               class="flex flex-col"
               :class="msg.sender === 'student' ? 'items-end' : 'items-start'"
             >
-              <!-- Burbuja de mensaje -->
-              <div
-                class="max-w-[85%] rounded-lg p-3 text-xs leading-relaxed shadow-sm"
-                :class="msg.isError
-                  ? 'bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-bl-none'
-                  : msg.sender === 'student'
-                    ? 'bg-acento-ambar text-base-blanco rounded-br-none'
-                    : 'bg-base-bg-secundario border border-base-borde-sutil text-base-texto-primario rounded-bl-none'"
-                :role="msg.isError ? 'alert' : undefined"
-              >
-                <div class="prose prose-xs" v-html="formatTutorMessage(msg.text)"></div>
+              <!-- Burbuja de mensaje (con el robot al lado cuando habla el Tutor) -->
+              <div class="flex items-end gap-1.5 max-w-[88%] mensaje-entrada">
+                <span v-if="msg.sender !== 'student'" class="w-6 h-6 mb-1 rounded-lg bg-stire-blue flex items-center justify-center shrink-0" aria-hidden="true">
+                  <Bot :size="16" :stroke-width="2.2" class="text-stire-teal" />
+                </span>
+                <div
+                  class="rounded-2xl p-3 text-xs leading-relaxed shadow-sm"
+                  :class="msg.isError
+                    ? 'bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-bl-none'
+                    : msg.sender === 'student'
+                      ? 'bg-stire-teal text-[#070e24] font-medium rounded-br-none'
+                      : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none'"
+                  :role="msg.isError ? 'alert' : undefined"
+                >
+                  <div class="prose prose-xs" v-html="formatTutorMessage(msg.text)"></div>
+                </div>
               </div>
 
               <!-- Timestamp -->
@@ -176,56 +184,65 @@
                 :disabled="tutorStore.isThinking"
                 class="borde-afordancia mt-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 transition-colors disabled:opacity-50"
               >
-                🔄 Reintentar
+                <RotateCcw :size="12" class="inline -mt-0.5 mr-1" aria-hidden="true" />Reintentar
               </button>
 
               <!-- Sugerencia de ejercicio del banco -->
               <button
                 v-if="msg.suggestedActivity"
                 @click="tutorStore.goToSuggestedActivity(msg.suggestedActivity)"
-                class="borde-afordancia mt-1.5 max-w-[85%] text-left px-3 py-2 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 hover:bg-acento-ambar/20 transition-colors"
+                class="borde-afordancia mt-1.5 max-w-[85%] text-left px-3 py-2 rounded-xl bg-stire-teal/10 border border-stire-teal/40 hover:bg-stire-teal/20 transition-colors"
               >
-                <span class="block text-[10px] font-semibold text-acento-ambar-fuerte uppercase tracking-wide" aria-hidden="true">🎯 Practica esto</span>
+                <span class="flex items-center gap-1 text-[10px] font-semibold text-stire-blue uppercase tracking-wide"><Target :size="12" aria-hidden="true" /> Practica esto</span>
                 <span class="block text-xs font-medium text-base-texto-primario mt-0.5">{{ msg.suggestedActivity.activityTitle }}</span>
                 <span class="block text-[11px] text-base-texto-secundario mt-0.5">{{ msg.suggestedActivity.learningUnitTitle }}</span>
               </button>
             </div>
 
             <!-- Indicador de pensamiento IA (§18.6 — texto escalado) -->
-            <div v-if="tutorStore.isThinking" class="flex items-center gap-2 text-xs text-base-texto-secundario p-2" role="status">
-              <span class="animate-spin text-acento-ambar" aria-hidden="true">⚙️</span>
-              <span>{{ thinkingText }}</span>
+            <div v-if="tutorStore.isThinking" class="flex items-center gap-2 text-xs text-slate-500 py-1" role="status">
+              <span class="w-6 h-6 rounded-lg bg-stire-blue flex items-center justify-center shrink-0" aria-hidden="true">
+                <Bot :size="14" class="text-stire-teal animate-pulse" />
+              </span>
+              <span class="flex items-center gap-1 bg-white px-3 py-2 rounded-2xl border border-slate-200 shadow-sm">
+                <span class="w-1.5 h-1.5 rounded-full bg-stire-teal animate-bounce" aria-hidden="true" />
+                <span class="w-1.5 h-1.5 rounded-full bg-stire-purple animate-bounce [animation-delay:0.2s]" aria-hidden="true" />
+                <span class="w-1.5 h-1.5 rounded-full bg-stire-blue animate-bounce [animation-delay:0.4s]" aria-hidden="true" />
+                <span class="text-[11px] text-slate-500 ml-1">{{ thinkingText }}</span>
+              </span>
             </div>
           </div>
 
           <!-- Atajos y campo de pregunta -->
-          <div class="p-3 border-t border-base-borde-sutil bg-base-bg-secundario/50 space-y-2">
+          <div class="p-3 border-t border-slate-200 bg-stire-canvas space-y-2">
             <!-- Atajos de texto (§18.4 — ya no cambian el nivel) -->
-            <p class="text-[11px] font-semibold text-base-texto-secundario">Atajos:</p>
+            <p class="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <Lightbulb :size="12" class="text-amber-500" aria-hidden="true" /> Atajos
+            </p>
             <div class="flex flex-wrap gap-1.5">
               <button
                 @click="tutorStore.requestQuickHint('conceptual')"
                 :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
-                class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-base-texto-primario hover:text-acento-ambar-fuerte disabled:opacity-40"
+                class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[11px] font-medium text-slate-700 hover:text-stire-blue hover:border-stire-teal/60 hover:bg-stire-teal/10 transition-colors shadow-sm disabled:opacity-40"
                 aria-label="Pedir pista conceptual al Tutor"
               >
-                <span aria-hidden="true">💡</span> Pista conceptual
+                <Lightbulb :size="12" class="inline -mt-0.5" aria-hidden="true" /> Pista conceptual
               </button>
               <button
                 @click="tutorStore.requestQuickHint('borde')"
                 :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
-                class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-base-texto-primario hover:text-acento-ambar-fuerte disabled:opacity-40"
+                class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[11px] font-medium text-slate-700 hover:text-stire-blue hover:border-stire-teal/60 hover:bg-stire-teal/10 transition-colors shadow-sm disabled:opacity-40"
                 aria-label="Preguntar sobre casos de borde"
               >
-                <span aria-hidden="true">🧭</span> Revisar caso borde
+                <Compass :size="12" class="inline -mt-0.5" aria-hidden="true" /> Revisar caso borde
               </button>
               <button
                 @click="tutorStore.requestQuickHint('parada')"
                 :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
-                class="borde-afordancia px-2.5 py-1 rounded bg-base-blanco text-[11px] font-medium text-base-texto-primario hover:text-acento-ambar-fuerte disabled:opacity-40"
+                class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[11px] font-medium text-slate-700 hover:text-stire-blue hover:border-stire-teal/60 hover:bg-stire-teal/10 transition-colors shadow-sm disabled:opacity-40"
                 aria-label="Preguntar sobre condición de parada"
               >
-                <span aria-hidden="true">🔍</span> Ubicar condición de parada
+                <Search :size="12" class="inline -mt-0.5" aria-hidden="true" /> Ubicar condición de parada
               </button>
 
               <!-- Botón Ir al contenido eliminado de aquí (§22 T1 — movido al bloque de contexto) -->
@@ -242,14 +259,14 @@
                 placeholder="Haz una pregunta sobre tu lógica..."
                 aria-label="Pregunta al Tutor IA"
                 style="font-size: 16px;"
-                class="flex-1 px-3 py-2.5 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none disabled:opacity-50" />
+                class="flex-1 px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-stire-teal focus:ring-2 focus:ring-stire-teal/20 text-slate-800 placeholder:text-slate-400 outline-none transition-all disabled:opacity-50" />
               <button
                 @click="handleSend"
                 :disabled="!inputQuery.trim() || tutorStore.isThinking || !tutorStore.tutorEnabled"
-                class="px-3 py-2.5 min-h-[44px] rounded-md bg-acento-ambar-fuerte text-base-blanco font-semibold text-xs disabled:opacity-50 hover:bg-acento-ambar transition-colors"
+                class="w-11 h-11 rounded-xl bg-stire-teal hover:bg-[#14e2c8] text-[#070e24] flex items-center justify-center shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                 aria-label="Enviar pregunta"
               >
-                Enviar
+                <Send :size="16" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -260,6 +277,7 @@
 </template>
 
 <script setup lang="ts">
+import { Ban, BookOpen, Bot, Clock, Compass, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useStudentStore } from '~/stores/student'
@@ -454,6 +472,13 @@ function handleSend() {
 .slide-right-enter-from,
 .slide-right-leave-to {
   transform: translateX(100%);
+}
+.mensaje-entrada {
+  animation: mensaje-entrada 0.25s ease-out both;
+}
+@keyframes mensaje-entrada {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
 }
 .fade-enter-active,
 .fade-leave-active {

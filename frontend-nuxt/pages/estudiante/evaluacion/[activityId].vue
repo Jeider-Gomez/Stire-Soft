@@ -138,12 +138,12 @@
             </button>
           </div>
 
-          <div class="bg-[#1e1e1e] text-[#d4d4d4] p-3 rounded-lg font-codigo text-xs space-y-1 min-h-[220px] max-h-[350px] overflow-y-auto">
+          <div class="bg-editor-bg text-editor-text p-3 rounded-lg font-codigo text-xs space-y-1 min-h-[220px] max-h-[350px] overflow-y-auto">
             <div v-for="(log, idx) in workspaceStore.consoleLog" :key="idx" class="leading-relaxed">
-              <span v-if="log.startsWith('✔')" class="text-[#4ec9b0]">{{ log }}</span>
-              <span v-else-if="log.startsWith('✖') || log.startsWith('⚠') || log.startsWith('⛔')" class="text-[#f14c4c]">{{ log }}</span>
-              <span v-else-if="log.startsWith('🎯')" class="text-[#dcdcaa] font-bold">{{ log }}</span>
-              <span v-else class="text-[#9cdcfe]">{{ log }}</span>
+              <span v-if="log.startsWith('✔')" class="text-[#5eead4]">{{ log }}</span>
+              <span v-else-if="log.startsWith('✖') || log.startsWith('⚠') || log.startsWith('⛔')" class="text-[#f87171]">{{ log }}</span>
+              <span v-else-if="log.startsWith('🎯')" class="text-[#fcd34d] font-bold">{{ log }}</span>
+              <span v-else class="text-[#7dd3fc]">{{ log }}</span>
             </div>
           </div>
         </div>
@@ -153,13 +153,13 @@
     <!-- COLUMNA DERECHA: Renderizado Reactivo según questionType -->
 
     <!-- CASO A: Coding — CodeEditor (CodeMirror 6) -->
-    <div v-if="isCodingActivity" class="flex-1 flex flex-col md:h-full min-h-[70vh] md:min-h-0 bg-[#1e1e1e] text-[#d4d4d4] overflow-hidden">
+    <div v-if="isCodingActivity" class="flex-1 flex flex-col md:h-full min-h-[70vh] md:min-h-0 bg-editor-bg text-editor-text overflow-hidden">
       <!-- Barra Superior del Editor -->
-      <div class="h-9 bg-[#252526] border-b border-[#333333] px-4 flex items-center justify-between text-xs text-[#858585] flex-shrink-0">
+      <div class="h-9 bg-editor-header border-b border-editor-border px-4 flex items-center justify-between text-xs text-editor-muted flex-shrink-0">
         <div class="flex items-center gap-2">
-          <span class="text-acento-ambar font-bold">JS</span>
+          <span class="text-stire-teal font-bold">JS</span>
           <span class="text-white font-medium">solucion.js</span>
-          <span class="text-[10px] text-[#858585]">• JavaScript (ES2024)</span>
+          <span class="text-[10px] text-editor-muted">• JavaScript (ES2024)</span>
         </div>
 
         <div class="flex items-center gap-3 text-[11px]">
