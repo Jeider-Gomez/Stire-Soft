@@ -12,7 +12,7 @@
       </div>
 
       <!-- Selector de Clase y Botón Nuevo Módulo -->
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3">
         <div class="flex items-center gap-2">
           <label for="class-selector" class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
           <select
@@ -40,9 +40,9 @@
           v-if="selectedClassId && otherClasses.length > 0"
           type="button"
           @click="openImportModal"
-          class="px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
+          class="px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
           aria-label="Traer contenidos de otra clase">
-          <CopyPlus :size="14" class="text-acento-ambar-fuerte" />
+          <CopyPlus :size="14" class="text-acento-ambar-fuerte" aria-hidden="true" />
           <span>Traer de otra clase</span>
         </button>
       </div>
@@ -482,6 +482,7 @@
         @click.self="closeImportModal">
         <div
           role="dialog"
+          aria-modal="true"
           aria-labelledby="modal-import-title"
           class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-xl p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
@@ -511,6 +512,7 @@
             </label>
             <select
               id="import-source-class"
+              ref="importSourceRef"
               v-model="importModal.sourceClassId"
               @change="onSourceClassChange"
               class="w-full text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-2 outline-none focus:border-acento-ambar-fuerte">
@@ -542,7 +544,7 @@
             </div>
 
             <div v-if="importModal.isLoadingSections" class="p-6 text-center text-xs text-base-texto-secundario">
-              <span class="inline-block animate-spin mr-2">⏳</span> Cargando secciones de la clase...
+              <Loader2 :size="14" class="inline-block animate-spin mr-2 align-middle" aria-hidden="true" /> Cargando secciones de la clase...
             </div>
 
             <div v-else-if="importModal.sections.length === 0" class="p-6 text-center text-xs text-base-texto-secundario italic">
@@ -583,7 +585,7 @@
               @click="submitImport"
               :disabled="importModal.isImporting || !importModal.sourceClassId || importModal.selectedSectionIds.length === 0"
               class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2">
-              <span v-if="importModal.isImporting" class="inline-block animate-spin">⏳</span>
+              <Loader2 v-if="importModal.isImporting" :size="14" class="animate-spin" aria-hidden="true" />
               <span>{{ importModal.isImporting ? 'Copiando…' : 'Traer contenido' }}</span>
             </button>
           </div>
@@ -608,7 +610,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronRight, Pencil, BookOpen, FileText, CopyPlus } from 'lucide-vue-next'
+import { ChevronRight, Pencil, BookOpen, FileText, CopyPlus, Loader2 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
@@ -1019,9 +1021,15 @@ const importModal = reactive({
   error: null as string | null
 })
 
+// El foco entra al diálogo al abrirlo y vuelve al botón que lo abrió al cerrarlo.
+const importSourceRef = ref<HTMLSelectElement | null>(null)
+let importOpener: HTMLElement | null = null
+
 function openImportModal() {
+  importOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null
   importModal.open = true
   importModal.error = null
+  nextTick(() => importSourceRef.value?.focus())
   if (otherClasses.value.length > 0) {
     importModal.sourceClassId = otherClasses.value[0].id
     onSourceClassChange()
@@ -1035,6 +1043,7 @@ function openImportModal() {
 function closeImportModal() {
   if (importModal.isImporting) return
   importModal.open = false
+  nextTick(() => importOpener?.focus())
 }
 
 async function onSourceClassChange() {
@@ -1049,7 +1058,7 @@ async function onSourceClassChange() {
     const res = await api.get<Array<{ id: number; title: string; order: number }>>(`/sections/class/${importModal.sourceClassId}`)
     importModal.sections = Array.isArray(res) ? res : []
     importModal.selectedSectionIds = importModal.sections.map(s => s.id)
-  } catch (err: any) {
+  } catch (err: unknown) {
     importModal.error = messageOf(err, 'Error al cargar las secciones de la clase de origen')
     importModal.sections = []
     importModal.selectedSectionIds = []
@@ -1083,7 +1092,7 @@ async function submitImport() {
     importModal.open = false
     actionFeedback.value = `Se trajeron ${plural(res.sections, 'sección', 'secciones')}, ${plural(res.learningUnits, 'unidad', 'unidades')} y ${plural(res.activities, 'ejercicio', 'ejercicios')}. Revísalas y publícalas cuando quieras.`
     await loadSections()
-  } catch (err: any) {
+  } catch (err: unknown) {
     importModal.error = messageOf(err, 'Error al traer contenidos de la clase')
   } finally {
     importModal.isImporting = false

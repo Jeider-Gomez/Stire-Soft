@@ -39,7 +39,7 @@
           @click="duplicateVariant(slot.activityId, slot.title)"
           :disabled="isDuplicating"
           class="shrink-0 font-bold text-acento-ambar-fuerte hover:underline flex items-center gap-1 disabled:opacity-50">
-          <Copy :size="12" />
+          <Copy :size="12" aria-hidden="true" />
           <span>Crear variante</span>
         </button>
       </div>
@@ -185,6 +185,8 @@
           </div>
         </div>
       </div>
+    </Teleport>
+
     <!-- Modal Mi banco (T4) -->
     <Teleport to="body">
       <div
@@ -197,7 +199,7 @@
           <!-- Encabezado del diálogo -->
           <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
             <div class="flex items-center gap-2">
-              <Library :size="18" class="text-acento-ambar-fuerte" />
+              <Library :size="18" class="text-acento-ambar-fuerte" aria-hidden="true" />
               <h2 id="bank-dialog-title" class="text-sm font-bold text-base-texto-primario">
                 Mi banco de ejercicios
               </h2>
@@ -250,11 +252,12 @@
               <div class="relative">
                 <input
                   id="bank-filter-q"
+                  ref="bankSearchRef"
                   v-model="bankQuery.q"
                   type="text"
                   placeholder="Título o unidad…"
                   class="w-full pl-8 pr-2.5 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-xs outline-none focus:border-acento-ambar-fuerte" />
-                <Search :size="13" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base-texto-secundario" />
+                <Search :size="13" aria-hidden="true" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base-texto-secundario" />
               </div>
             </div>
           </div>
@@ -267,7 +270,7 @@
           <!-- Lista de ejercicios -->
           <div class="flex-1 overflow-y-auto border border-base-borde-sutil rounded-lg divide-y divide-base-borde-sutil min-h-[220px] max-h-[380px]">
             <div v-if="bankModal.loading" class="p-8 text-center text-xs text-base-texto-secundario">
-              <span class="inline-block animate-spin mr-2">⏳</span> Buscando en el banco…
+              <Loader2 :size="14" class="inline-block animate-spin mr-2 align-middle" aria-hidden="true" /> Buscando en el banco…
             </div>
 
             <div v-else-if="bankModal.items.length === 0" class="p-8 text-center text-xs text-base-texto-secundario italic">
@@ -306,7 +309,7 @@
                 @click="copyFromBank(item)"
                 :disabled="bankModal.copyingId === item.activityId"
                 class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 shrink-0 self-end sm:self-auto flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <span v-if="bankModal.copyingId === item.activityId" class="inline-block animate-spin text-[10px]">⏳</span>
+                <Loader2 v-if="bankModal.copyingId === item.activityId" :size="12" class="animate-spin" aria-hidden="true" />
                 <span>{{ bankModal.copyingId === item.activityId ? 'Agregando…' : 'Agregar a esta unidad' }}</span>
               </button>
             </div>
@@ -332,7 +335,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
-import { Plus, Pencil, Archive, Copy, Library, Search } from 'lucide-vue-next'
+import { Plus, Pencil, Archive, Copy, Library, Search, Loader2 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import { EXERCISE_TYPES, exerciseTypeInfo, type ExerciseTypeId } from '~/utils/exerciseTypes'
@@ -526,12 +529,10 @@ const bankExercisesForUnit = ref<EjercicioDelBanco[]>([])
 
 async function checkSingleExerciseSlots() {
   try {
-    const res = await api.get<EjercicioDelBanco[]>('/reuse/bank')
-    if (Array.isArray(res)) {
-      bankExercisesForUnit.value = res.filter(
-        e => e.learningUnitId === props.unitId && e.status === 'published'
-      )
-    }
+    // Solo los de esta unidad (el banco ya excluye los archivados). Cuentan también los borradores: una variante recién
+    // duplicada ya resuelve el aviso aunque el docente todavía no la publique.
+    const res = await api.get<EjercicioDelBanco[]>(`/reuse/bank?learningUnitId=${props.unitId}`)
+    bankExercisesForUnit.value = Array.isArray(res) ? res : []
   } catch {
     bankExercisesForUnit.value = []
   }
@@ -582,19 +583,25 @@ const bankQuery = reactive({
   q: ''
 })
 
-let debounceTimer: any = null
+let debounceTimer: ReturnType<typeof setTimeout> | undefined
+
+const bankSearchRef = ref<HTMLInputElement | null>(null)
+let bankOpener: HTMLElement | null = null
 
 function openBankModal() {
+  bankOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null
   bankModal.open = true
   bankModal.error = null
   bankQuery.type = ''
   bankQuery.difficulty = ''
   bankQuery.q = ''
+  nextTick(() => bankSearchRef.value?.focus())
   fetchBank()
 }
 
 function closeBankModal() {
   bankModal.open = false
+  nextTick(() => bankOpener?.focus())
 }
 
 async function fetchBank() {

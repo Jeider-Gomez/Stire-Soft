@@ -641,8 +641,11 @@ async function submitCreateClass() {
           await api.post(`/reuse/classes/${res.id}/import`, {
             sourceClassId: newClass.sourceClassId
           })
-        } catch (importErr: any) {
-          errorMessage.value = `${messageOf(importErr, 'Error al copiar el contenido')}. La clase se creó vacía; puedes usar «Traer de otra clase» desde Contenidos.`
+        } catch (importErr: unknown) {
+          // La clase ya quedó creada: se cierra el modal, porque volver a pulsar «Crear» crearía otra clase.
+          isModalOpen.value = false
+          successMessage.value = `Clase "${res.name}" creada con código ${res.code}, pero no se pudo copiar el contenido (${messageOf(importErr, 'error del servidor')}). Tráelo desde Contenidos con «Traer de otra clase».`
+          setTimeout(() => { successMessage.value = null }, 10000)
           await fetchClasses()
           return
         }
