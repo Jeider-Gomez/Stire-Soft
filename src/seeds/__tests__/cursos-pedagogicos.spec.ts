@@ -58,6 +58,19 @@ describe.each(CURSOS.map((c) => [c.nombre, c] as const))('Curso «%s»', (_nombr
         }
   });
 
+  // Práctica adaptativa (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.2): cada casilla (tipo × nivel) de una unidad tiene al
+  // menos dos ejercicios, para que el recomendador ofrezca otro distinto en reintentos y repasos.
+  it('ninguna casilla (tipo × nivel) de una unidad tiene un solo ejercicio', () => {
+    for (const s of curso.secciones)
+      for (const t of s.temas)
+        for (const u of t.unidades) {
+          const casillas = new Map<string, number>();
+          for (const e of u.ejercicios) casillas.set(`${e.dificultad}|${e.tipo}`, (casillas.get(`${e.dificultad}|${e.tipo}`) ?? 0) + 1);
+          const solas = [...casillas].filter(([, n]) => n < 2).map(([k]) => k);
+          expect({ unidad: u.titulo, solas }).toEqual({ unidad: u.titulo, solas: [] });
+        }
+  });
+
   it('los títulos caben en la base de datos (200 caracteres)', () => {
     for (const { ruta, ejercicio } of ejercicios) expect({ ruta, largo: ejercicio.titulo.length <= 200 }).toEqual({ ruta, largo: true });
   });

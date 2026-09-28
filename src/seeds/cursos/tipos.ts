@@ -119,6 +119,27 @@ export interface Curso {
   secciones: Seccion[];
 }
 
+/**
+ * Agrega a cada unidad sus ejercicios hermanos (variantes del mismo tipo y nivel, ver
+ * docs/DISENO_PRACTICA_ADAPTATIVA.md §3.2), buscándola por título. Falla si una clave no corresponde a ninguna unidad:
+ * un título mal escrito dejaría las variantes por fuera sin que nadie lo note.
+ */
+export function conVariantes(curso: Curso, variantes: Record<string, Ejercicio[]>): Curso {
+  const titulos = new Set(curso.secciones.flatMap((s) => s.temas.flatMap((t) => t.unidades.map((u) => u.titulo))));
+  const sinUnidad = Object.keys(variantes).filter((k) => !titulos.has(k));
+  if (sinUnidad.length > 0) throw new Error(`Variantes para unidades que no existen: ${sinUnidad.join(', ')}`);
+  return {
+    ...curso,
+    secciones: curso.secciones.map((s) => ({
+      ...s,
+      temas: s.temas.map((t) => ({
+        ...t,
+        unidades: t.unidades.map((u) => ({ ...u, ejercicios: [...u.ejercicios, ...(variantes[u.titulo] ?? [])] })),
+      })),
+    })),
+  };
+}
+
 /** Lectura de la entrada estándar que se da hecha en los ejercicios de programar. */
 export const LEER_ENTRADA =
   "// Lee la entrada: cada línea es un texto (no cambies esta línea)\n" +

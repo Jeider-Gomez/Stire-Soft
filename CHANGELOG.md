@@ -12,6 +12,30 @@ entry to the oldest.
 
 ---
 
+## Práctica adaptativa, paso 3: ejercicios hermanos en los dos cursos · 27 de Septiembre de 2026
+
+- **91 variantes nuevas:** 57 en ALGO-203413 y 34 en PENSAR-ALGO, en `src/seeds/cursos/*/variantes.ts`.
+  - Cada una es del mismo tipo, nivel y concepto que un ejercicio que estaba solo en su casilla, pero con otros datos
+    y con su propio error común.
+  - Ejemplos: «¿Mayor o menor de edad?» junto a «¿Aprobó o reprobó?»; «¿Qué triángulo es?» junto a «¿El año es
+    bisiesto?»; «La tabla de verdad de O» junto a la de Y.
+  - Se cuidó que ningún ejercicio de ordenar admita dos órdenes válidos y que ningún hueco tenga dos respuestas
+    correctas (como `a * b` y `b * a`), porque el motor calificaría mal al estudiante que acierta.
+- **`conVariantes`** (`src/seeds/cursos/tipos.ts`) une las variantes a su unidad por el título, y falla si un título
+  no existe.
+- **Nueva prueba** en `cursos-pedagogicos.spec.ts`: ninguna casilla de una unidad puede tener un solo ejercicio.
+  Además, cada variante pasa las mismas comprobaciones que los originales con el motor y el juez reales: la solución
+  obtiene todos los puntos, el error común no, el código inicial no resuelve, y ninguna respuesta llega al estudiante.
+- **Cargadas en producción** con `scripts/cursos/crear-cursos.ts`, como la docente: 57 y 34 ejercicios nuevos, sin
+  tocar lo existente.
+  - ALGO-203413 queda con 122 ejercicios y PENSAR-ALGO con 74.
+  - El banco de Laura muestra 196.
+  - El recomendador ya ofrece las variantes como práctica extra en las unidades completadas.
+
+Verificación: `npm run build` sin errores, **84/84 suites, 841/841 pruebas**.
+
+---
+
 ## Práctica adaptativa, paso 2: reutilizar contenido entre clases, banco del docente y variantes · 27 de Septiembre de 2026
 
 Nuevo módulo `src/reuse/` (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.5), solo para docentes y administradores:

@@ -41,7 +41,7 @@ aprendizaje (RA) y las evidencias del plan que trabaja.
 | **Unidad 2 · Diseño e implementación de algoritmos** (RA-203413-U2) | Analizar el problema · Condicionales · Ciclos · Funciones · JavaScript en la página web | Entradas, proceso y salidas · Decidir con if y else · Varios caminos con else if · Repetir con for y while · Contadores y acumuladores · Crear y usar funciones · El DOM y los eventos · Dar estilo con CSS | U2-E1 (presentación de tres diapositivas) |
 | **Unidad 3 · Algoritmos para crear OVA y REDA** (RA-203413-U3) | OVA y REDA · Construir un OVA interactivo | ¿Qué es un OVA y qué lo hace bueno? · La lógica de un cuestionario · Estructura y navegación de un OVA | U2-E2 (módulo con navegación), U3-E1 (creación del OVA) |
 
-**Total:** 3 secciones, 10 temas, 17 unidades y 65 ejercicios: 16 de programar, 4 de HTML y CSS, 7 de completar código y 38 de opción múltiple, ordenar, emparejar y clasificar.
+**Total:** 3 secciones, 10 temas, 17 unidades y 122 ejercicios: 28 de programar, 8 de HTML y CSS, 14 de completar código y 72 de opción múltiple, ordenar, emparejar y clasificar. Son 65 originales más 57 variantes (ver abajo).
 
 ## Curso 2 · Pensamiento algorítmico desde cero
 
@@ -52,7 +52,7 @@ aprendizaje (RA) y las evidencias del plan que trabaja.
 | **Estructuras de control** | Si, SiNo y condiciones compuestas · Para, Mientras y Repetir · Contadores, acumuladores y banderas |
 | **Problemas clásicos** | Mayor, menor y promedio · Buscar en una lista (lineal y binaria) |
 
-**Total:** 4 secciones, 10 temas, 10 unidades y 40 ejercicios (8 de completar pseudocódigo), sin depender de ningún lenguaje de programación.
+**Total:** 4 secciones, 10 temas, 10 unidades y 74 ejercicios (16 de completar pseudocódigo), sin depender de ningún lenguaje de programación. Son 40 originales más 34 variantes.
 
 ## Cómo se garantiza la calidad de los ejercicios
 
@@ -66,6 +66,11 @@ corre con `npm test` y revisa los dos cursos con el **motor de evaluación y el 
 - Los de HTML y CSS pasan la misma validación que hace la app al crearlos.
 - Ninguna respuesta llega al estudiante.
 - Cada lección tiene las cuatro partes de la plantilla y cada unidad tiene al menos tres ejercicios.
+- **Ejercicios hermanos (27/09).** Cada casilla de una unidad (tipo de ejercicio × nivel) tiene al menos dos
+  ejercicios: el original y una variante del mismo concepto con otros datos (`variantes.ts` en la carpeta de cada
+  curso). El recomendador las usa para reintentos y repasos, así el estudiante no repite la respuesta que ya memorizó
+  (`docs/DISENO_PRACTICA_ADAPTATIVA.md` §3.2). La prueba falla si alguna casilla queda con un solo ejercicio, y cada
+  variante se califica con el motor y el juez reales, igual que los originales.
 
 Una limitación honesta: la prueba no puede detectar una clave de opción múltiple que sea
 conceptualmente incorrecta pero coherente con sus opciones. Esas claves se revisaron a mano.
