@@ -65,4 +65,8 @@ export class Activity extends StireBaseEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   publishedAt: Date;
+
+  /** Actividad de la que se copió (otra clase, el banco o «duplicar como variante»); null si se creó desde cero. */
+  @Column({ type: 'int', nullable: true })
+  copiedFromId: number | null;
 }

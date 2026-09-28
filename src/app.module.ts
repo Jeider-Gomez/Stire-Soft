@@ -45,6 +45,7 @@ import { PrerequisitesModule } from './prerequisites/prerequisites.module';
 import { MaintenanceModule } from './maintenance/maintenance.module';
 import { AdminSystemModule } from './admin-system/admin-system.module';
 import { RoleRequestsModule } from './role-requests/role-requests.module';
+import { ReuseModule } from './reuse/reuse.module';
 
 @Module({
   imports: [
@@ -120,6 +121,7 @@ import { RoleRequestsModule } from './role-requests/role-requests.module';
     MaintenanceModule,
     AdminSystemModule,
     RoleRequestsModule,
+    ReuseModule,
   ],
   providers: [
     {

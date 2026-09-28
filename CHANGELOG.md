@@ -12,6 +12,41 @@ entry to the oldest.
 
 ---
 
+## Práctica adaptativa, paso 2: reutilizar contenido entre clases, banco del docente y variantes · 27 de Septiembre de 2026
+
+Nuevo módulo `src/reuse/` (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.5), solo para docentes y administradores:
+
+- **`POST /reuse/classes/:classId/import`** trae a una clase las secciones de otra clase propia, con sus temas,
+  unidades, lecciones y ejercicios. Recibe `sourceClassId` y, si se quiere traer solo parte, `sectionIds`.
+  - Todo va en una transacción y se agrega después de lo que ya había.
+  - Las secciones llegan sin publicar y los ejercicios archivados no se copian.
+  - Nunca copia estudiantes, matrículas, entregas ni progreso.
+  - Pensado para dos salones de la misma materia o para el semestre siguiente.
+- **`GET /reuse/bank`** es el banco del docente: los ejercicios de todas sus clases, con filtros de tipo, nivel y
+  texto. Es una vista y no una copia aparte, así que siempre está al día.
+- **`POST /reuse/activities/:activityId/copy`** copia un ejercicio propio a una unidad propia, en borrador. Con
+  `variant: true` es «Duplicar como variante»: queda en la misma unidad y con «(variante)» en el título.
+- **Siempre copia, nunca enlaza:** la configuración se clona, así que editar la copia no cambia el original.
+  Migración `1790000000000`: `activities.copiedFromId` guarda de dónde salió cada copia.
+- **Autorización:** el docente debe dictar la clase de origen y la de destino.
+
+Verificación:
+- 13 pruebas nuevas con una base en memoria que ejecuta la copia real.
+- `npm run build` sin errores, **84/84 suites, 839/839 pruebas**.
+- De paso se corrigió una prueba intermitente que ya existía (`tutor-key-crypto.service.spec.ts`, más o menos 1 de
+  cada 6 corridas). Su «payload manipulado» a veces no cambiaba ningún byte; ahora invierte un bit real (12/12
+  corridas en verde).
+- Contra la API local:
+  - Laura creó «Grupo 2» y trajo ALGO-203413 completo: 3 secciones sin publicar, 10 temas, 17 unidades,
+    17 lecciones, 65 ejercicios y 0 matrículas;
+  - el banco filtra por tipo y nivel;
+  - la variante queda en borrador;
+  - otra docente recibe 403 al importar o copiar desde la clase de Laura, o hacia ella, y no ve sus ejercicios
+    en su banco;
+  - un estudiante recibe 403 en el banco.
+
+---
+
 ## Práctica adaptativa, paso 1: recomendador por casillas, confianza y repasos por resultado · 27 de Septiembre de 2026
 
 Diseño aprobado por el dueño: `docs/DISENO_PRACTICA_ADAPTATIVA.md` (visión y referentes en

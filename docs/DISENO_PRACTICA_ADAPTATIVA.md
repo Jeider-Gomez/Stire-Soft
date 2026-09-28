@@ -1,6 +1,6 @@
 # Práctica adaptativa y reutilización: confianza, ejercicios hermanos, dominio vivo y banco del docente
 
-**Estado:** propuesta del 2026-09-27, pendiente de aprobación del dueño del proyecto.
+**Estado:** aprobado por el dueño del proyecto el 2026-09-27. Pasos 1 y 2 del backend hechos (ver `PLAN_MAESTRO.md` §6.00).
 **Relación con otros documentos:**
 - Desarrolla los pilares 1, 2 y 3 de la visión y el punto 6 de la hoja de ruta de
   `investigacion/REFERENTES_PLATAFORMAS_Y_STI.md`.
@@ -203,7 +203,7 @@ volver a crear nada. Las plataformas grandes lo resuelven así:
 |---|---|---|---|
 | R1 | **Crear una clase a partir de otra** | Al crear una clase: «Empezar vacía» o «Copiar el contenido de…» (lista de sus clases) | Copia secciones, temas, unidades, lecciones y ejercicios **como borrador**. No copia estudiantes, entregas ni progreso. Código de clase nuevo |
 | R2 | **Importar partes de otra clase** | En Contenidos: «Traer de otra clase» y marcar las secciones, temas o unidades que quiere | La misma copia, pero parcial y dentro de una clase existente |
-| R3 | **Mi banco de ejercicios** | Pestaña «Mi banco» con todos los ejercicios que ha creado, con filtros por tipo, nivel y etiqueta (tema) | **Cada ejercicio nuevo se guarda solo en el banco**, sin trabajo extra. Se usan las entidades `QuestionBank` y `BankQuestion` que ya existen (tipo, enunciado, configuración, etiquetas) |
+| R3 | **Mi banco de ejercicios** | Pestaña «Mi banco» con todos los ejercicios de sus clases, con filtros por tipo, nivel y texto | **Implementado (27/09) como una vista** de los ejercicios de todas sus clases, no como una copia aparte: siempre está al día con lo que el docente edita y no hay que «guardar en el banco». `QuestionBank` y `BankQuestion` quedan para compartir entre docentes (R6) |
 | R4 | **Agregar desde el banco** | En una unidad: «Agregar ejercicio» → «Desde mi banco» | Copia el ejercicio del banco a la unidad |
 | R5 | **Duplicar como variante** | En cada ejercicio: «Duplicar como variante», que copia tipo, nivel y configuración para cambiar solo los datos | Crea la hermana en la misma unidad y en el banco |
 | R6 | **Compartir con colegas** (después) | «Hacer público» un banco; otros docentes lo ven y copian | `QuestionBank.isPublic` ya existe |
@@ -223,7 +223,7 @@ seguro. Cada copia guarda de dónde salió, para poder decir «este ejercicio vi
 | Backend: recomendador | Función pura `recomendarSiguiente(actividades, entregas, confianza, repasoVencido)` que devuelve actividad y motivo. `getNextActivity` la usa |
 | Backend: repasos | `calculateNextReview` recibe la **calidad** (§3.4) en lugar del dominio; la casilla repasada cuenta con su nota más reciente |
 | Backend: reutilización | Servicio de copia de clase y de partes de clase (en una transacción, todo como borrador); servicio y API del banco (`src/question-banks/`) con guardado automático; «duplicar como variante» |
-| API | `PUT /learning-progress/:unitId/confidence`; `POST /class/:id/copy-from/:sourceId`; `GET/POST /question-banks/...` |
+| API (implementada) | `PUT /learning-progress/unit/:unitId/confidence`; `POST /reuse/classes/:classId/import` (`sourceClassId`, `sectionIds` opcional); `GET /reuse/bank` (`type`, `difficulty`, `q`); `POST /reuse/activities/:activityId/copy` (`learningUnitId`, `variant`) |
 | Frontend (estudiante) | Tarjeta de confianza de tres opciones; «Continuar» con el motivo en una línea; «Dominio» y «Memoria» por unidad; repaso mixto dentro de la ruta; calibración en Progreso |
 | Frontend (docente) | «Copiar el contenido de…» al crear una clase; «Traer de otra clase»; pestaña «Mi banco»; «Desde mi banco»; «Duplicar como variante»; aviso de casillas con una sola hermana |
 | Contenido | ALGO-203413 y PENSAR-ALGO con **al menos 2 hermanas por casilla**; la prueba `cursos-pedagogicos.spec.ts` lo exige y califica cada variante con el motor real |

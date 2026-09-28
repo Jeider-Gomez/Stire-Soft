@@ -60,7 +60,12 @@ describe('TutorKeyCryptoService', () => {
 
   it('no descifra un payload manipulado ni uno cifrado con otro secreto', () => {
     const payload = build(SECRET).encrypt('AIzaSyFAKE-KEY_1234567890abcdefghijklmno');
-    const tampered = payload.slice(0, -2) + (payload.endsWith('A') ? 'B=' : 'A=');
+    // Se invierte un bit del último byte del texto cifrado. Antes se cambiaban los dos últimos caracteres del base64,
+    // que a veces quedaban iguales o solo tocaban bits de relleno: el payload no cambiaba y la prueba fallaba al azar.
+    const [version, encoded] = payload.split(':');
+    const bytes = Buffer.from(encoded, 'base64');
+    bytes[bytes.length - 1] ^= 0x01;
+    const tampered = `${version}:${bytes.toString('base64')}`;
 
     expect(() => build(SECRET).decrypt(tampered)).toThrow(ServiceUnavailableException);
     expect(() => build('b'.repeat(64)).decrypt(payload)).toThrow(ServiceUnavailableException);
