@@ -123,12 +123,34 @@
           </button>
         </div>
 
-        <NuxtLink
-          v-if="recommendedActivity && !chooseManually"
-          :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
-          class="inline-flex px-4 py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors">
-          Continuar: {{ recommendedActivity.title }}
-        </NuxtLink>
+        <div v-if="recommendedActivity && !chooseManually" class="flex items-center gap-2 flex-wrap">
+          <!-- Icono de motivo (T2) -->
+          <RotateCcw
+            v-if="recommendedActivity.reason === 'repaso'"
+            :size="14"
+            class="text-semantico-info shrink-0"
+            aria-label="Repaso"
+          />
+          <TrendingUp
+            v-else-if="recommendedActivity.reason === 'reto' || recommendedActivity.reason === 'sube_nivel'"
+            :size="14"
+            class="text-semantico-pasa shrink-0"
+            aria-label="Subir nivel"
+          />
+          <NuxtLink
+            :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors"
+          >
+            Continuar: {{ recommendedActivity.title }}
+          </NuxtLink>
+          <!-- Nivel del ejercicio (T2) -->
+          <span
+            v-if="recommendedActivity.level"
+            class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-blanco border border-base-borde-fuerte text-base-texto-secundario capitalize"
+          >
+            {{ levelLabel(recommendedActivity.level) }}
+          </span>
+        </div>
 
         <div v-else-if="chooseManually" class="flex flex-col gap-2">
           <p v-if="isLoadingActivities" class="text-xs text-base-texto-secundario">Cargando actividades...</p>
@@ -158,6 +180,7 @@
 </template>
 
 <script setup lang="ts">
+import { RotateCcw, TrendingUp } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { useApi } from '~/composables/useApi'
@@ -302,4 +325,11 @@ onMounted(async () => {
     console.warn('[STIRE Student] No se pudo cargar el progreso o la actividad recomendada:', error)
   }
 })
+
+function levelLabel(level: string) {
+  if (level === 'basico') return 'Básico'
+  if (level === 'intermedio') return 'Intermedio'
+  if (level === 'avanzado') return 'Avanzado'
+  return level
+}
 </script>

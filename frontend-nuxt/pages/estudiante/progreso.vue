@@ -67,6 +67,14 @@
               <h3 class="text-xs font-bold text-base-texto-primario">
                 {{ item.unitTitle }}
               </h3>
+              <!-- Memoria: Se está olvidando (T2) -->
+              <span
+                v-if="forgettingUnitIds.has(item.unitId)"
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-estado-unidad-bloqueado/15 text-estado-unidad-bloqueado"
+              >
+                <AlertTriangle :size="10" />
+                Se está olvidando
+              </span>
             </div>
 
             <!-- Botón de Refuerzo Directo Accionable (P05 — Insumo 15 §8) -->
@@ -141,7 +149,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { AlertTriangle } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
 
 definePageMeta({
@@ -149,6 +158,17 @@ definePageMeta({
 })
 
 const studentStore = useStudentStore()
+
+// Unidades con repaso vencido o crítico para «Se está olvidando» (T2)
+const forgettingUnitIds = computed(() => {
+  const ids = new Set<number>()
+  for (const r of studentStore.reviews) {
+    if (r.urgency === 'vencido' || r.urgency === 'critico') {
+      ids.add(r.learningUnitId)
+    }
+  }
+  return ids
+})
 
 onMounted(() => {
   studentStore.fetchStudentData()
