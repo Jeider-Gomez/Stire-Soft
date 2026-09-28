@@ -39,7 +39,7 @@ tabla de abajo.
 | [`modesec/`](modesec/README.md) | Diseño educativo y multimedial con MODESEC (Fase I para el alcance del MVP y Fase II completa) |
 | [`seguimiento/`](seguimiento/) | Bitácoras de semanas cerradas y evidencias de las reuniones |
 | [`pitch/`](pitch/) | Guiones del pitch en inglés por reto y guía de pronunciación |
-| [`investigacion/`](investigacion/) | Tesis de pregrado (reglas de alcance propias): contexto, matriz bibliográfica verificada, fichas y entregables |
+| [`investigacion/`](investigacion/) | Tesis de pregrado (reglas de alcance propias): contexto, matriz bibliográfica verificada, fichas y entregables. Además, [`REFERENTES_PLATAFORMAS_Y_STI.md`](investigacion/REFERENTES_PLATAFORMAS_Y_STI.md): referentes de producto (Moodle, Open edX, Coursera, Udemy, Platzi, Duolingo, Khan, Codecademy, CS50), qué es un STI, IA generativa en educación y hoja de ruta para STIRE |
 
 ## 3. Diseño y experiencia de uso
 
