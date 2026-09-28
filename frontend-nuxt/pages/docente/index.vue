@@ -431,6 +431,24 @@
                   />
                 </div>
 
+                <!-- Copiar contenido de otra clase (T3) -->
+                <div>
+                  <label for="new-class-source" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Copiar el contenido de
+                  </label>
+                  <select
+                    id="new-class-source"
+                    v-model="newClass.sourceClassId"
+                    class="input-stire text-xs"
+                  >
+                    <option :value="null">Empezar vacía</option>
+                    <option v-for="c in classes" :key="c.id" :value="c.id">
+                      {{ c.name }} ({{ c.code }})
+                    </option>
+                  </select>
+                  <p class="text-[11px] text-slate-400 mt-1">Opcional. Se copiarán lecciones y ejercicios en borrador.</p>
+                </div>
+
                 <!-- Toggle aprobación -->
                 <div class="p-4 bg-stire-canvas rounded-xl border border-slate-200 flex items-center justify-between gap-4">
                   <div>
@@ -558,7 +576,8 @@ const newClass = reactive({
   name: '',
   code: '',
   description: '',
-  requiresApproval: false
+  requiresApproval: false,
+  sourceClassId: null as number | null
 })
 
 // Modal QR
@@ -591,6 +610,7 @@ function openCreateModal() {
   newClass.name = ''
   newClass.description = ''
   newClass.requiresApproval = false
+  newClass.sourceClassId = null
   generateRandomCode()
   errorMessage.value = null
   isModalOpen.value = true
@@ -616,6 +636,20 @@ async function submitCreateClass() {
       requiresApproval: newClass.requiresApproval
     })
     if (res && res.id) {
+      if (newClass.sourceClassId) {
+        try {
+          await api.post(`/reuse/classes/${res.id}/import`, {
+            sourceClassId: newClass.sourceClassId
+          })
+        } catch (importErr: unknown) {
+          // La clase ya quedó creada: se cierra el modal, porque volver a pulsar «Crear» crearía otra clase.
+          isModalOpen.value = false
+          successMessage.value = `Clase "${res.name}" creada con código ${res.code}, pero no se pudo copiar el contenido (${messageOf(importErr, 'error del servidor')}). Tráelo desde Contenidos con «Traer de otra clase».`
+          setTimeout(() => { successMessage.value = null }, 10000)
+          await fetchClasses()
+          return
+        }
+      }
       isModalOpen.value = false
       successMessage.value = `Clase "${res.name}" creada con código ${res.code}.`
       setTimeout(() => { successMessage.value = null }, 4000)

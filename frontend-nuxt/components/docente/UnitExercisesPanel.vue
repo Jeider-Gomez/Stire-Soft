@@ -1,14 +1,48 @@
 <template>
   <div class="space-y-2">
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between gap-2 flex-wrap">
       <h4 class="text-[11px] font-bold uppercase tracking-wider text-base-texto-secundario">
         Ejercicios <span v-if="!loading">({{ activities.length }})</span>
       </h4>
-      <NuxtLink
-        :to="`/docente/ejercicios/crear?classId=${classId}&unitId=${unitId}`"
-        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar transition-colors inline-flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-        <Plus :size="14" aria-hidden="true" /> Ejercicio
-      </NuxtLink>
+      <div class="flex items-center gap-1.5">
+        <!-- Botón Mi banco (T4) -->
+        <button
+          type="button"
+          @click="openBankModal"
+          class="px-2.5 py-1 rounded-md text-[11px] font-semibold borde-afordancia bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario transition-colors inline-flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+          aria-label="Agregar desde mi banco">
+          <Library :size="14" class="text-acento-ambar-fuerte" aria-hidden="true" />
+          <span>Mi banco</span>
+        </button>
+        <NuxtLink
+          :to="`/docente/ejercicios/crear?classId=${classId}&unitId=${unitId}`"
+          class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar transition-colors inline-flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+          <Plus :size="14" aria-hidden="true" /> Ejercicio
+        </NuxtLink>
+      </div>
+    </div>
+
+    <!-- Texto de ayuda variantes (T5) -->
+    <p class="text-[11px] text-base-texto-secundario">
+      Las variantes son otro ejercicio del mismo tipo y nivel. STIRE las usa para reintentos y repasos, para que el estudiante no repita la misma respuesta.
+    </p>
+
+    <!-- Avisos de casillas con 1 solo ejercicio (T6) -->
+    <div v-if="singleExerciseSlots.length > 0" class="space-y-1.5 pt-1">
+      <div
+        v-for="slot in singleExerciseSlots"
+        :key="slot.activityId"
+        class="p-2.5 rounded-md bg-acento-ambar/10 border border-acento-ambar/30 text-[11px] flex items-center justify-between gap-3 text-base-texto-primario">
+        <span>El nivel {{ slot.level }} de {{ slot.typeName }} tiene 1 ejercicio; una variante ayuda en los repasos.</span>
+        <button
+          type="button"
+          @click="duplicateVariant(slot.activityId, slot.title)"
+          :disabled="isDuplicating"
+          class="shrink-0 font-bold text-acento-ambar-fuerte hover:underline flex items-center gap-1 disabled:opacity-50">
+          <Copy :size="12" aria-hidden="true" />
+          <span>Crear variante</span>
+        </button>
+      </div>
     </div>
 
     <p v-if="loading" class="text-[11px] text-base-texto-secundario animate-pulse">Cargando ejercicios…</p>
@@ -43,6 +77,15 @@
             class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
             :aria-label="`Editar ${act.title}`" title="Editar">
             <Pencil :size="14" aria-hidden="true" />
+          </button>
+          <!-- Duplicar como variante (T5) -->
+          <button
+            @click="duplicateVariant(act.id, act.title)"
+            :disabled="isDuplicating"
+            class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte disabled:opacity-50"
+            :aria-label="`Duplicar como variante ${act.title}`"
+            title="Duplicar como variante">
+            <Copy :size="14" aria-hidden="true" />
           </button>
           <button
             @click="askArchive(act)"
@@ -143,13 +186,159 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Modal Mi banco (T4) -->
+    <Teleport to="body">
+      <div
+        v-if="bankModal.open"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        role="dialog" aria-modal="true" aria-labelledby="bank-dialog-title"
+        @click.self="closeBankModal">
+        <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
+        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col p-6 space-y-4 text-xs">
+          <!-- Encabezado del diálogo -->
+          <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
+            <div class="flex items-center gap-2">
+              <Library :size="18" class="text-acento-ambar-fuerte" aria-hidden="true" />
+              <h2 id="bank-dialog-title" class="text-sm font-bold text-base-texto-primario">
+                Mi banco de ejercicios
+              </h2>
+            </div>
+            <button
+              type="button"
+              @click="closeBankModal"
+              class="text-base-texto-secundario hover:text-base-texto-primario p-1"
+              aria-label="Cerrar modal">
+              ✕
+            </button>
+          </div>
+
+          <!-- Filtros -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div>
+              <label for="bank-filter-type" class="block font-semibold text-base-texto-primario text-[11px] mb-1">
+                Tipo
+              </label>
+              <select
+                id="bank-filter-type"
+                v-model="bankQuery.type"
+                class="w-full px-2.5 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-xs outline-none focus:border-acento-ambar-fuerte">
+                <option value="">Todos los tipos</option>
+                <option v-for="t in EXERCISE_TYPES" :key="t.id" :value="t.id">
+                  {{ t.name }}
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label for="bank-filter-difficulty" class="block font-semibold text-base-texto-primario text-[11px] mb-1">
+                Nivel
+              </label>
+              <select
+                id="bank-filter-difficulty"
+                v-model="bankQuery.difficulty"
+                class="w-full px-2.5 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-xs outline-none focus:border-acento-ambar-fuerte">
+                <option value="">Todos los niveles</option>
+                <option value="basico">Básico</option>
+                <option value="intermedio">Intermedio</option>
+                <option value="avanzado">Avanzado</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="bank-filter-q" class="block font-semibold text-base-texto-primario text-[11px] mb-1">
+                Buscar
+              </label>
+              <div class="relative">
+                <input
+                  id="bank-filter-q"
+                  ref="bankSearchRef"
+                  v-model="bankQuery.q"
+                  type="text"
+                  placeholder="Título o unidad…"
+                  class="w-full pl-8 pr-2.5 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-xs outline-none focus:border-acento-ambar-fuerte" />
+                <Search :size="13" aria-hidden="true" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base-texto-secundario" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Error si ocurre -->
+          <p v-if="bankModal.error" role="alert" class="text-semantico-falla text-[11px]">
+            {{ bankModal.error }}
+          </p>
+
+          <!-- Lista de ejercicios -->
+          <div class="flex-1 overflow-y-auto border border-base-borde-sutil rounded-lg divide-y divide-base-borde-sutil min-h-[220px] max-h-[380px]">
+            <div v-if="bankModal.loading" class="p-8 text-center text-xs text-base-texto-secundario">
+              <Loader2 :size="14" class="inline-block animate-spin mr-2 align-middle" aria-hidden="true" /> Buscando en el banco…
+            </div>
+
+            <div v-else-if="bankModal.items.length === 0" class="p-8 text-center text-xs text-base-texto-secundario italic">
+              {{ (!bankQuery.type && !bankQuery.difficulty && !bankQuery.q.trim())
+                ? 'Todavía no tienes ejercicios en otras unidades'
+                : 'Ningún ejercicio coincide con los filtros' }}
+            </div>
+
+            <div
+              v-else
+              v-for="item in bankModal.items"
+              :key="item.activityId"
+              class="p-3 hover:bg-base-bg-secundario/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors">
+              <div class="min-w-0 space-y-1 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-bold text-base-texto-primario text-xs">
+                    {{ item.title }}
+                  </span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-bg-secundario border border-base-borde-sutil text-base-texto-secundario">
+                    {{ questionTypeName(item.questionType) }}
+                  </span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-bg-secundario border border-base-borde-sutil text-base-texto-secundario">
+                    {{ difficultyLabel(item.difficulty) }}
+                  </span>
+                </div>
+                <p class="text-[11px] text-acento-ambar-fuerte font-medium">
+                  {{ item.className }} · {{ item.learningUnitTitle }}
+                </p>
+                <p v-if="item.questionPreview" class="text-[11px] text-base-texto-secundario truncate max-w-xl">
+                  {{ item.questionPreview }}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                @click="copyFromBank(item)"
+                :disabled="bankModal.copyingId === item.activityId"
+                class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 shrink-0 self-end sm:self-auto flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+                <Loader2 v-if="bankModal.copyingId === item.activityId" :size="12" class="animate-spin" aria-hidden="true" />
+                <span>{{ bankModal.copyingId === item.activityId ? 'Agregando…' : 'Agregar a esta unidad' }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pie del modal -->
+          <div class="flex items-center justify-between pt-2 border-t border-base-borde-sutil">
+            <span class="text-[11px] text-base-texto-secundario">
+              {{ bankModal.items.length }} ejercicio{{ bankModal.items.length !== 1 ? 's' : '' }} encontrado{{ bankModal.items.length !== 1 ? 's' : '' }}
+            </span>
+            <button
+              type="button"
+              @click="closeBankModal"
+              class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Plus, Pencil, Archive } from 'lucide-vue-next'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+import { Plus, Pencil, Archive, Copy, Library, Search, Loader2 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { formatMarkdown } from '~/utils/formatMarkdown'
+import { EXERCISE_TYPES, exerciseTypeInfo, type ExerciseTypeId } from '~/utils/exerciseTypes'
 
 const props = defineProps<{ unitId: number; classId: number }>()
 const emit = defineEmits<{ (e: 'count', n: number): void }>()
@@ -181,13 +370,33 @@ function difficultyLabel(d: string) {
   return d === 'intermedio' ? 'Intermedio' : d === 'avanzado' ? 'Avanzado' : 'Básico'
 }
 
+interface EjercicioDelBanco {
+  activityId: number
+  title: string
+  difficulty: string
+  questionType: string | null
+  status: string
+  questionPreview: string
+  learningUnitId: number
+  learningUnitTitle: string
+  classId: number
+  className: string
+}
+
+function questionTypeName(type: string | null | undefined): string {
+  if (!type) return 'Práctica'
+  const info = exerciseTypeInfo(type as ExerciseTypeId)
+  return info?.name || type
+}
+
 async function load() {
   loading.value = true
   loadError.value = null
   try {
     const [res, types] = await Promise.all([
       api.get<{ data?: ActivityItem[] } | ActivityItem[]>(`/activities?learningUnitId=${props.unitId}&limit=50`),
-      activityTypes.value.length ? Promise.resolve(activityTypes.value) : api.get<ActivityTypeOption[] | { data?: ActivityTypeOption[] }>('/activity-types')
+      activityTypes.value.length ? Promise.resolve(activityTypes.value) : api.get<ActivityTypeOption[] | { data?: ActivityTypeOption[] }>('/activity-types'),
+      checkSingleExerciseSlots()
     ])
     activities.value = Array.isArray(res) ? res : (res?.data ?? [])
     activityTypes.value = Array.isArray(types) ? types : (types?.data ?? [])
@@ -291,8 +500,160 @@ async function confirmArchive() {
   }
 }
 
+// ─── T5: Duplicar como variante ───────────────────────────────────────────
+const isDuplicating = ref(false)
+
+async function duplicateVariant(activityId: number, title?: string) {
+  isDuplicating.value = true
+  feedback.value = null
+  try {
+    const res = await api.post<{ id: number; title: string; status: string }>(`/reuse/activities/${activityId}/copy`, {
+      learningUnitId: props.unitId,
+      variant: true
+    })
+    feedback.value = 'Variante creada en borrador.'
+    await load()
+    const nueva = activities.value.find(a => a.id === res.id)
+    if (nueva) {
+      openEdit(nueva)
+    }
+  } catch (err) {
+    loadError.value = messageOf(err, 'No se pudo duplicar el ejercicio como variante.')
+  } finally {
+    isDuplicating.value = false
+  }
+}
+
+// ─── T6: Aviso de casillas con un solo ejercicio ───────────────────────────
+const bankExercisesForUnit = ref<EjercicioDelBanco[]>([])
+
+async function checkSingleExerciseSlots() {
+  try {
+    // Solo los de esta unidad (el banco ya excluye los archivados). Cuentan también los borradores: una variante recién
+    // duplicada ya resuelve el aviso aunque el docente todavía no la publique.
+    const res = await api.get<EjercicioDelBanco[]>(`/reuse/bank?learningUnitId=${props.unitId}`)
+    bankExercisesForUnit.value = Array.isArray(res) ? res : []
+  } catch {
+    bankExercisesForUnit.value = []
+  }
+}
+
+const singleExerciseSlots = computed(() => {
+  const groups = new Map<string, EjercicioDelBanco[]>()
+  for (const ej of bankExercisesForUnit.value) {
+    const key = `${ej.questionType || 'unknown'}_${ej.difficulty || 'basico'}`
+    const list = groups.get(key) || []
+    list.push(ej)
+    groups.set(key, list)
+  }
+
+  const result: Array<{
+    level: string
+    typeName: string
+    activityId: number
+    title: string
+  }> = []
+
+  for (const [, list] of groups) {
+    if (list.length === 1) {
+      const ej = list[0]
+      result.push({
+        level: difficultyLabel(ej.difficulty).toLowerCase(),
+        typeName: questionTypeName(ej.questionType),
+        activityId: ej.activityId,
+        title: ej.title
+      })
+    }
+  }
+  return result
+})
+
+// ─── T4: Mi banco de ejercicios ────────────────────────────────────────────
+const bankModal = reactive({
+  open: false,
+  loading: false,
+  copyingId: null as number | null,
+  error: null as string | null,
+  items: [] as EjercicioDelBanco[]
+})
+
+const bankQuery = reactive({
+  type: '' as string,
+  difficulty: '' as string,
+  q: ''
+})
+
+let debounceTimer: ReturnType<typeof setTimeout> | undefined
+
+const bankSearchRef = ref<HTMLInputElement | null>(null)
+let bankOpener: HTMLElement | null = null
+
+function openBankModal() {
+  bankOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null
+  bankModal.open = true
+  bankModal.error = null
+  bankQuery.type = ''
+  bankQuery.difficulty = ''
+  bankQuery.q = ''
+  nextTick(() => bankSearchRef.value?.focus())
+  fetchBank()
+}
+
+function closeBankModal() {
+  bankModal.open = false
+  nextTick(() => bankOpener?.focus())
+}
+
+async function fetchBank() {
+  bankModal.loading = true
+  bankModal.error = null
+  try {
+    const params = new URLSearchParams()
+    if (bankQuery.type) params.append('type', bankQuery.type)
+    if (bankQuery.difficulty) params.append('difficulty', bankQuery.difficulty)
+    if (bankQuery.q.trim()) params.append('q', bankQuery.q.trim())
+
+    const queryStr = params.toString() ? `?${params.toString()}` : ''
+    const res = await api.get<EjercicioDelBanco[]>(`/reuse/bank${queryStr}`)
+    bankModal.items = Array.isArray(res) ? res : []
+  } catch (err) {
+    bankModal.error = messageOf(err, 'No se pudieron cargar los ejercicios del banco.')
+    bankModal.items = []
+  } finally {
+    bankModal.loading = false
+  }
+}
+
+watch(
+  () => [bankQuery.type, bankQuery.difficulty, bankQuery.q],
+  () => {
+    clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => {
+      fetchBank()
+    }, 300)
+  }
+)
+
+async function copyFromBank(item: EjercicioDelBanco) {
+  bankModal.copyingId = item.activityId
+  bankModal.error = null
+  try {
+    await api.post(`/reuse/activities/${item.activityId}/copy`, {
+      learningUnitId: props.unitId
+    })
+    feedback.value = 'Agregado como borrador. Revísalo y publícalo.'
+    bankModal.open = false
+    await load()
+  } catch (err) {
+    bankModal.error = messageOf(err, 'No se pudo agregar el ejercicio a esta unidad.')
+  } finally {
+    bankModal.copyingId = null
+  }
+}
+
 useEscapeToClose(() => edit.open, () => { edit.open = false })
 useEscapeToClose(() => archive.open, () => { archive.open = false })
+useEscapeToClose(() => bankModal.open, closeBankModal)
 
 onMounted(load)
 defineExpose({ reload: load })

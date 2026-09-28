@@ -93,7 +93,11 @@
           <h1 class="text-lg md:text-xl font-bold text-base-texto-primario tracking-tight">
             Continúa con: {{ studentStore.activeUnit.title }}
           </h1>
-          <p class="text-xs text-base-texto-secundario leading-relaxed">
+          <!-- Motivo del recomendador (T2) -->
+          <p v-if="recommendedReasonMessage" class="text-xs text-base-texto-secundario leading-relaxed">
+            {{ recommendedReasonMessage }}
+          </p>
+          <p v-else class="text-xs text-base-texto-secundario leading-relaxed">
             {{ studentStore.activeUnit.description }}
           </p>
 
@@ -112,12 +116,34 @@
 
         <!-- Botón de Gran Jerarquía Visual (P01) -->
         <div class="flex flex-col sm:flex-row md:flex-col gap-2 w-full md:w-auto flex-shrink-0">
-          <NuxtLink
-            v-if="recommendedExerciseId"
-            :to="`/estudiante/evaluacion/${recommendedExerciseId}`"
-            class="px-5 py-3 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs text-center transition-colors shadow-sm flex items-center justify-center gap-2">
-            <span>Continuar Ejercicio</span>
-          </NuxtLink>
+          <div v-if="recommendedExerciseId" class="flex items-center gap-2 flex-wrap">
+            <!-- Icono motivo (T2) -->
+            <RotateCcw
+              v-if="recommendedReason === 'repaso'"
+              :size="14"
+              class="text-semantico-info shrink-0"
+              aria-label="Repaso"
+            />
+            <TrendingUp
+              v-else-if="recommendedReason === 'reto' || recommendedReason === 'sube_nivel'"
+              :size="14"
+              class="text-semantico-pasa shrink-0"
+              aria-label="Subir nivel"
+            />
+            <NuxtLink
+              :to="`/estudiante/evaluacion/${recommendedExerciseId}`"
+              class="px-5 py-3 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs text-center transition-colors shadow-sm flex items-center justify-center gap-2"
+            >
+              <span>Continuar Ejercicio</span>
+            </NuxtLink>
+            <!-- Nivel (T2) -->
+            <span
+              v-if="recommendedLevel"
+              class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-blanco border border-base-borde-fuerte text-base-texto-secundario capitalize"
+            >
+              {{ recommendedLevel === 'basico' ? 'Básico' : recommendedLevel === 'intermedio' ? 'Intermedio' : recommendedLevel === 'avanzado' ? 'Avanzado' : recommendedLevel }}
+            </span>
+          </div>
 
           <NuxtLink
             to="/estudiante/repasos"
@@ -205,6 +231,14 @@
                     <span class="text-[11px] font-semibold text-acento-ambar-fuerte">
                       ({{ unit.masteryPercentage }}% dominio)
                     </span>
+                    <!-- Badge «Se está olvidando» (T2) -->
+                    <span
+                      v-if="forgettingUnitIds.has(unit.id)"
+                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-estado-unidad-bloqueado/15 text-estado-unidad-bloqueado"
+                    >
+                      <AlertTriangle :size="10" />
+                      Se está olvidando
+                    </span>
                   </div>
 
                   <p class="text-xs text-base-texto-secundario">
@@ -251,7 +285,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { RotateCcw, TrendingUp, AlertTriangle } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
@@ -296,19 +331,28 @@ onMounted(() => {
 // order, porque un quiz nunca calza esas palabras, así que nunca coincidía
 // con la Fase A pedagógicamente correcta.
 const recommendedExerciseId = ref<number | null>(null)
+const recommendedReason = ref<string | null>(null)
+const recommendedReasonMessage = ref<string | null>(null)
+const recommendedLevel = ref<string | null>(null)
 
 watch(
   () => studentStore.activeUnit?.id,
   async (unitId) => {
     recommendedExerciseId.value = null
+    recommendedReason.value = null
+    recommendedReasonMessage.value = null
+    recommendedLevel.value = null
     const studentId = authStore.user?.id
     if (!unitId || !studentId) return
 
     try {
-      const rec = await api.get<{ activityId: number } | null>(
+      const rec = await api.get<{ activityId: number; reason?: string; reasonMessage?: string; level?: string } | null>(
         `/learning-progress/student/${studentId}/unit/${unitId}/next-activity`
       )
       recommendedExerciseId.value = rec?.activityId ?? null
+      recommendedReason.value = rec?.reason ?? null
+      recommendedReasonMessage.value = rec?.reasonMessage ?? null
+      recommendedLevel.value = rec?.level ?? null
     } catch (error: unknown) {
       console.warn('[STIRE Student] No se pudo cargar la actividad recomendada real, usando heurístico local:', error)
       recommendedExerciseId.value = studentStore.activeUnit?.exerciseActivityId ?? null
@@ -316,6 +360,17 @@ watch(
   },
   { immediate: true }
 )
+
+// Unidades con repaso vencido o crítico para el badge «Se está olvidando» (T2)
+const forgettingUnitIds = computed(() => {
+  const ids = new Set<number>()
+  for (const r of studentStore.reviews) {
+    if (r.urgency === 'vencido' || r.urgency === 'critico') {
+      ids.add(r.learningUnitId)
+    }
+  }
+  return ids
+})
 
 function getStatusBadgeClass(status: UnitStatus) {
   switch (status) {

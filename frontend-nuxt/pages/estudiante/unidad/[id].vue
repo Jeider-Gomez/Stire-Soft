@@ -55,6 +55,56 @@
         Esta unidad todavía no tiene material de lectura publicado. Pasa directamente al ejercicio práctico.
       </article>
 
+      <!-- Tarjeta de Confianza Inicial (T1 — ¿Cómo te sientes con este tema?) -->
+      <section
+        v-if="showConfidenceCard"
+        class="bg-base-blanco rounded-xl border border-acento-ambar-fuerte/40 p-5 shadow-sm space-y-3"
+      >
+        <div>
+          <h2 id="confidence-title" class="text-sm font-bold text-base-texto-primario">
+            ¿Cómo te sientes con «{{ unitData.title }}»?
+          </h2>
+          <p class="text-[11px] text-base-texto-secundario mt-0.5">
+            Nos ayuda a proponerte por dónde empezar. Puedes saltarla.
+          </p>
+        </div>
+
+        <div
+          role="group"
+          aria-labelledby="confidence-title"
+          class="flex flex-wrap items-center gap-2.5 pt-1"
+        >
+          <button
+            type="button"
+            :disabled="isSubmittingConfidence"
+            @click="submitConfidence(1)"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-base-borde-fuerte bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario hover:border-acento-ambar-fuerte transition-colors disabled:opacity-50"
+          >
+            Es nuevo para mí
+          </button>
+          <button
+            type="button"
+            :disabled="isSubmittingConfidence"
+            @click="submitConfidence(2)"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-base-borde-fuerte bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario hover:border-acento-ambar-fuerte transition-colors disabled:opacity-50"
+          >
+            Tengo dudas
+          </button>
+          <button
+            type="button"
+            :disabled="isSubmittingConfidence"
+            @click="submitConfidence(3)"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-base-borde-fuerte bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario hover:border-acento-ambar-fuerte transition-colors disabled:opacity-50"
+          >
+            Me siento seguro
+          </button>
+        </div>
+
+        <p v-if="confidenceError" role="alert" class="text-xs text-semantico-falla pt-1">
+          {{ confidenceError }}
+        </p>
+      </section>
+
       <!-- Botón de Navegación al Ejercicio Práctico -->
       <section class="rounded-lg border border-acento-ambar-fuerte/30 bg-acento-ambar/10 p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -73,12 +123,34 @@
           </button>
         </div>
 
-        <NuxtLink
-          v-if="recommendedActivity && !chooseManually"
-          :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
-          class="inline-flex px-4 py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors">
-          Continuar: {{ recommendedActivity.title }}
-        </NuxtLink>
+        <div v-if="recommendedActivity && !chooseManually" class="flex items-center gap-2 flex-wrap">
+          <!-- Icono de motivo (T2) -->
+          <RotateCcw
+            v-if="recommendedActivity.reason === 'repaso'"
+            :size="14"
+            class="text-semantico-info shrink-0"
+            aria-label="Repaso"
+          />
+          <TrendingUp
+            v-else-if="recommendedActivity.reason === 'reto' || recommendedActivity.reason === 'sube_nivel'"
+            :size="14"
+            class="text-semantico-pasa shrink-0"
+            aria-label="Subir nivel"
+          />
+          <NuxtLink
+            :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors"
+          >
+            Continuar: {{ recommendedActivity.title }}
+          </NuxtLink>
+          <!-- Nivel del ejercicio (T2) -->
+          <span
+            v-if="recommendedActivity.level"
+            class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-blanco border border-base-borde-fuerte text-base-texto-secundario capitalize"
+          >
+            {{ levelLabel(recommendedActivity.level) }}
+          </span>
+        </div>
 
         <div v-else-if="chooseManually" class="flex flex-col gap-2">
           <p v-if="isLoadingActivities" class="text-xs text-base-texto-secundario">Cargando actividades...</p>
@@ -108,6 +180,7 @@
 </template>
 
 <script setup lang="ts">
+import { RotateCcw, TrendingUp } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { useApi } from '~/composables/useApi'
@@ -164,6 +237,32 @@ const chooseManually = ref(false)
 const unitActivities = ref<ActivitySummary[]>([])
 const isLoadingActivities = ref(false)
 
+// T1 — «¿Cómo te sientes con este tema?»
+const { messageOf } = useApiErrorMessage()
+const showConfidenceCard = ref(false)
+const isSubmittingConfidence = ref(false)
+const confidenceError = ref<string | null>(null)
+
+async function submitConfidence(valor: 1 | 2 | 3) {
+  isSubmittingConfidence.value = true
+  confidenceError.value = null
+  try {
+    await api.put(`/learning-progress/unit/${unitId}/confidence`, { confianza: valor })
+    showConfidenceCard.value = false
+    // Se vuelve a pedir la recomendación: con «Me siento seguro» cambia a un reto y el motivo se ve al instante
+    const studentId = authStore.user?.id
+    if (studentId) {
+      recommendedActivity.value = await api.get<NextActivityRecommendation | null>(
+        `/learning-progress/student/${studentId}/unit/${unitId}/next-activity`
+      )
+    }
+  } catch (error: unknown) {
+    confidenceError.value = messageOf(error, 'No se pudo guardar tu nivel de confianza.')
+  } finally {
+    isSubmittingConfidence.value = false
+  }
+}
+
 async function toggleManualChoice() {
   chooseManually.value = !chooseManually.value
   if (chooseManually.value && unitActivities.value.length === 0) {
@@ -209,11 +308,28 @@ onMounted(async () => {
   if (!studentId) return
 
   try {
-    recommendedActivity.value = await api.get<NextActivityRecommendation | null>(
-      `/learning-progress/student/${studentId}/unit/${unitId}/next-activity`
-    )
+    const [progress, rec] = await Promise.all([
+      api.get<{ entryConfidence: number | null } | null>(
+        `/learning-progress/student/${studentId}/unit/${unitId}`
+      ),
+      api.get<NextActivityRecommendation | null>(
+        `/learning-progress/student/${studentId}/unit/${unitId}/next-activity`
+      )
+    ])
+    recommendedActivity.value = rec
+    // Si el progreso de la unidad no tiene entryConfidence (es null o no hay progreso), muestra la tarjeta
+    if (!progress || progress.entryConfidence === null || progress.entryConfidence === undefined) {
+      showConfidenceCard.value = true
+    }
   } catch (error: unknown) {
-    console.warn('[STIRE Student] No se pudo cargar la actividad recomendada:', error)
+    console.warn('[STIRE Student] No se pudo cargar el progreso o la actividad recomendada:', error)
   }
 })
+
+function levelLabel(level: string) {
+  if (level === 'basico') return 'Básico'
+  if (level === 'intermedio') return 'Intermedio'
+  if (level === 'avanzado') return 'Avanzado'
+  return level
+}
 </script>

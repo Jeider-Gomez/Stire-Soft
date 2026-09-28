@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { ArrayMaxSize, IsArray, IsBoolean, IsEnum, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 import { Difficulty } from '../../common/enums/difficulty.enum';
 import { QuestionType } from '../../common/enums/question-type.enum';
@@ -39,4 +40,11 @@ export class BankQueryDto {
   @IsString()
   @MaxLength(100)
   q?: string;
+
+  /** Solo los ejercicios de esta unidad (el panel de la unidad cuenta sus casillas con esto). */
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  learningUnitId?: number;
 }

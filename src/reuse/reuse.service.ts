@@ -172,6 +172,7 @@ export class ReuseService {
       .addOrderBy('a.order', 'ASC')
       .limit(MAXIMO_BANCO);
     if (query.difficulty) qb.andWhere('a.difficulty = :difficulty', { difficulty: query.difficulty });
+    if (query.learningUnitId) qb.andWhere('u.id = :learningUnitId', { learningUnitId: query.learningUnitId });
     if (query.q) qb.andWhere('(a.title LIKE :q OR u.title LIKE :q)', { q: `%${escaparLike(query.q)}%` });
 
     const filas: Array<Record<string, unknown>> = await qb.getRawMany();

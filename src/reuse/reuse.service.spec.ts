@@ -169,4 +169,41 @@ describe('ReuseService', () => {
       await expect(service.copyActivity(DOCENTE, 999, { learningUnitId: 31 })).rejects.toThrow('Ejercicio no encontrado');
     });
   });
+
+  describe('bank', () => {
+    function servicioConConsulta(filas: Array<Record<string, unknown>>) {
+      const llamadas: Array<[string, Record<string, unknown> | undefined]> = [];
+      const qb: Record<string, jest.Mock> = {};
+      for (const m of ['innerJoin', 'select', 'orderBy', 'addOrderBy', 'limit']) qb[m] = jest.fn(() => qb);
+      qb.where = jest.fn((cond: string, params?: Record<string, unknown>) => { llamadas.push([cond, params]); return qb; });
+      qb.andWhere = jest.fn((cond: string, params?: Record<string, unknown>) => { llamadas.push([cond, params]); return qb; });
+      qb.getRawMany = jest.fn().mockResolvedValue(filas);
+      const dataSource = {
+        getRepository: (entidad: { name: string }) =>
+          entidad.name === 'Activity'
+            ? { createQueryBuilder: () => qb }
+            : { find: jest.fn().mockResolvedValue([{ activityId: 5, type: 'mcq', question: '¿Qué  imprime?' + String.fromCharCode(10) + ' x', order: 0 }]) },
+      };
+      return { servicio: new ReuseService(dataSource as never, authorization as never), llamadas };
+    }
+
+    it('solo busca en las clases del docente y filtra por unidad cuando se pide', async () => {
+      const { servicio, llamadas } = servicioConConsulta([]);
+      await servicio.bank(DOCENTE, { learningUnitId: 30 });
+      expect(llamadas).toContainEqual(['c.teacherId = :teacherId', { teacherId: 7 }]);
+      expect(llamadas).toContainEqual(['u.id = :learningUnitId', { learningUnitId: 30 }]);
+    });
+
+    it('sin unidad no filtra por unidad', async () => {
+      const { servicio, llamadas } = servicioConConsulta([]);
+      await servicio.bank(DOCENTE, {});
+      expect(llamadas.some(([c]) => c.includes('learningUnitId'))).toBe(false);
+    });
+
+    it('agrega el tipo de la primera pregunta y un resumen del enunciado en una línea', async () => {
+      const { servicio } = servicioConConsulta([{ activityId: 5, title: 'A', difficulty: 'basico', status: 'draft', learningUnitId: 30, learningUnitTitle: 'U', classId: 1, className: 'C' }]);
+      const r = await servicio.bank(DOCENTE, {});
+      expect(r[0]).toEqual(expect.objectContaining({ activityId: 5, questionType: 'mcq', questionPreview: '¿Qué imprime? x', status: 'draft' }));
+    });
+  });
 });
