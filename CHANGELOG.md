@@ -12,6 +12,25 @@ entry to the oldest.
 
 ---
 
+## Animaciones del login sin pausas · 29 de Septiembre de 2026
+
+El dueño notó que la animación del login «se pausa o se corta». Se midió en producción: 60 cuadros por segundo, así
+que no era rendimiento sino el diseño de la animación.
+
+- **Destello del botón** (inicio de sesión y registro): pasaba en 1,5 s y quedaba 1 s quieto. Ahora es una franja con
+  dos copias del destello que avanza sin tramos muertos: cuando uno sale, el siguiente ya está entrando.
+- **Resplandores del fondo:** iban y venían frenando hasta detenerse en cada extremo. Ahora recorren una órbita pequeña a
+  velocidad constante y «respiran» por dentro. El `filter: blur(120–160px)` se cambió por degradados radiales con el
+  mismo perfil: se ve igual y el navegador no recalcula un desenfoque enorme en cada cuadro.
+- **Bug corregido de paso:** con «reducir movimiento» activado, los resplandores quedaban a opacidad completa (una mancha
+  azul fuerte). Ahora quedan quietos y tenues, y el destello se oculta.
+
+Medición local (Chrome 1440×900, 15 s): 0 cuadros perdidos; cuadro más lento 17,6 ms (antes 33,4 ms).
+Prueba: `src/content-rendering/__tests__/animaciones-login.frontend.spec.ts` (8 casos; los 8 fallan con el código
+anterior). `npm run build` + `npm test`: 86/86 suites, 856/856 pruebas.
+
+---
+
 ## Identidad visual: lo mejor del prototipo de José en la app · 28 de Septiembre de 2026
 
 Por pedido del dueño, se tomó del prototipo `JoseTheGoat90/STIRE-FRONEND` (React con Vite) lo que mejor se veía y se
