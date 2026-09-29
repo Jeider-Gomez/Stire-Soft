@@ -25,44 +25,49 @@ export default <Partial<Config>>{
         'stire-canvas': '#F7F9FC',
         'stire-dark-canvas': '#050C1F',
         'stire-dark-card': '#0A1435',
+        // Tokens semánticos con la paleta de la identidad de José (prototipo STIRE-FRONEND, 28/09). Los nombres
+        // «acento-ambar» se conservan porque los usan cientos de clases; sus valores ya son los azules de la guía.
+        // Todos los colores de texto pasan WCAG AA (4.5:1) sobre blanco y sobre stire-canvas.
         base: {
           blanco: '#FFFFFF',
-          'bg-primario': '#F6F3EF',
-          'bg-secundario': '#EDE8E1',
-          'borde-sutil': '#C9C1B8',
-          'borde-fuerte': '#998878',
-          'texto-secundario': '#6F6761',
-          'texto-primario': '#2B2622'
+          'bg-primario': '#F7F9FC',
+          'bg-secundario': '#F1F5F9',
+          'borde-sutil': '#E2E8F0',
+          'borde-fuerte': '#CBD5E1',
+          'texto-secundario': '#64748B',
+          'texto-primario': '#1E293B'
         },
         acento: {
-          ambar: '#C87B1E',
-          'ambar-fuerte': '#A76719'
+          // Antes ámbar. «ambar-fuerte» es el azul tecnológico (botones, enlaces); «ambar» su tono de hover.
+          ambar: '#082A66',
+          'ambar-fuerte': '#0B3D91'
         },
         semantico: {
-          pasa: '#2F7D4F',
-          falla: '#B3261E',
-          info: '#2B5D8A'
+          pasa: '#047857',
+          falla: '#B91C1C',
+          info: '#0B3D91'
         },
         'estado-unidad': {
-          dominado: '#2F7D4F',
-          'en-progreso': '#A76719',
-          'por-iniciar': '#2B5D8A',
-          bloqueado: '#6F6761'
+          dominado: '#047857',
+          'en-progreso': '#7B2FBF',
+          'por-iniciar': '#0B3D91',
+          bloqueado: '#64748B'
         },
         'urgencia-repaso': {
-          'al-dia': '#2F7D4F',
-          manana: '#A76719',
-          vencido: '#A85A1E',
-          critico: '#B3261E'
+          'al-dia': '#047857',
+          manana: '#7B2FBF',
+          vencido: '#B45309',
+          critico: '#B91C1C'
         },
+        // Editor de código con los colores del prototipo: fondo pizarra, palabras clave moradas, números ámbar.
         editor: {
-          bg: '#1E1E1E',
-          header: '#252526',
-          border: '#333333',
-          line: '#2D2D2D',
-          text: '#D4D4D4',
-          muted: '#858585',
-          status: '#007ACC'
+          bg: '#0F172A',
+          header: '#111C33',
+          border: '#1E293B',
+          line: '#16213A',
+          text: '#E2E8F0',
+          muted: '#94A3B8',
+          status: '#00C2A8'
         }
       },
       fontFamily: {

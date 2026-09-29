@@ -81,6 +81,19 @@
 }
 
 @layer utilities {
+  /* Entrada suave de tarjetas y paneles (prototipo de José). */
+  .animar-entrada {
+    animation: stire-entrada 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  /* Barrido de luz sobre el botón principal. */
+  .brillo-barrido {
+    animation: stire-brillo 2.6s linear 1.2s infinite;
+  }
+  /* Línea con los tres colores de la marca (borde superior de tarjetas). */
+  .linea-marca {
+    background: linear-gradient(90deg, #0B3D91 0%, #7B2FBF 50%, #00C2A8 100%);
+  }
+
   /* Punto de pulso activo */
   .pulse-dot {
     @apply w-2 h-2 rounded-full bg-stire-success animate-pulse inline-block;
@@ -97,22 +110,8 @@
     -webkit-backdrop-filter: blur(12px);
   }
 
-  /* Compatibilidad con clases de la paleta anterior */
-  .bg-base-blanco { @apply bg-white; }
-  .bg-base-bg-primario { @apply bg-stire-canvas; }
-  .bg-base-bg-secundario { @apply bg-slate-100; }
-  .border-base-borde-sutil { @apply border-slate-200; }
-  .border-base-borde-fuerte { @apply border-slate-300; }
-  .text-base-texto-primario { @apply text-slate-800; }
-  .text-base-texto-secundario { @apply text-slate-500; }
-  .text-acento-ambar-fuerte { @apply text-stire-blue; }
-  .bg-acento-ambar-fuerte { @apply bg-stire-blue; }
-  .bg-acento-ambar { @apply bg-stire-teal; }
-  .text-semantico-pasa { @apply text-stire-success; }
-  .text-semantico-falla { @apply text-stire-danger; }
-  .text-semantico-info { @apply text-stire-blue; }
-  .bg-semantico-info { @apply bg-stire-blue; }
-  .hover\:bg-acento-ambar\/10:hover { background-color: rgb(0 194 168 / 0.1); }
+  /* Las clases de la paleta anterior (base-*, acento-*, semantico-*) ya toman sus valores de tailwind.config.ts.
+     Antes se reasignaban aquí una por una y los estados (hover:, /10) seguían saliendo en ámbar. */
   .borde-afordancia {
     @apply border border-slate-200 transition-colors duration-150;
   }
@@ -121,5 +120,25 @@
   }
   .borde-afordancia-focus {
     @apply outline-none ring-2 ring-stire-blue ring-offset-2;
+  }
+}
+
+@keyframes stire-entrada {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes stire-brillo {
+  0% { transform: translateX(-120%) skewX(-12deg); }
+  60%, 100% { transform: translateX(320%) skewX(-12deg); }
+}
+
+/* Quien pide menos movimiento en su sistema no ve animaciones decorativas (WCAG 2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

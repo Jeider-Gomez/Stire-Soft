@@ -19,7 +19,7 @@
       :readonly="readOnly"
       :aria-label="ariaLabel"
       spellcheck="false"
-      class="flex-1 w-full h-full bg-[#1e1e1e] text-[#d4d4d4] font-codigo text-xs p-3 leading-relaxed outline-none resize-none selection:bg-[#264f78]"
+      class="flex-1 w-full h-full bg-[#0f172a] text-[#e2e8f0] font-codigo text-xs p-3 leading-relaxed outline-none resize-none selection:bg-[#1e3a8a]"
       @input="onFallbackInput"
     ></textarea>
   </div>
@@ -140,12 +140,12 @@ onMounted(async () => {
     languageCompartment = new Compartment()
     readOnlyCompartment = new Compartment()
 
-    // Tema visual oscuro integrado con la estética de STIRE (#1e1e1e)
+    // Tema oscuro con los colores del prototipo de José: fondo pizarra, palabras clave moradas, números ámbar, cursor turquesa
     const stireTheme = EditorView.theme(
       {
         '&': {
-          color: '#d4d4d4',
-          backgroundColor: '#1e1e1e',
+          color: '#e2e8f0',
+          backgroundColor: '#0f172a',
           height: '100%',
           fontSize: '12px',
           fontFamily: 'var(--font-codigo, monospace)'
@@ -156,7 +156,7 @@ onMounted(async () => {
           fontFamily: 'var(--font-codigo, monospace)'
         },
         '.cm-content': {
-          caretColor: '#d4d4d4',
+          caretColor: '#00c2a8',
           padding: '12px 4px',
           fontFamily: 'var(--font-codigo, monospace)'
         },
@@ -164,33 +164,33 @@ onMounted(async () => {
           outline: 'none'
         },
         '.cm-cursor, .cm-dropCursor': {
-          borderLeftColor: '#d4d4d4'
+          borderLeftColor: '#00c2a8'
         },
         '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': {
-          backgroundColor: '#264f78 !important'
+          backgroundColor: '#1e3a8a !important'
         },
         '.cm-panels': {
-          backgroundColor: '#252526',
-          color: '#d4d4d4'
+          backgroundColor: '#111c33',
+          color: '#e2e8f0'
         },
         '.cm-panels.cm-panels-top': {
-          borderBottom: '1px solid #333333'
+          borderBottom: '1px solid #1e293b'
         },
         '.cm-panels.cm-panels-bottom': {
-          borderTop: '1px solid #333333'
+          borderTop: '1px solid #1e293b'
         },
         '.cm-activeLine': {
-          backgroundColor: '#28282840'
+          backgroundColor: '#1e293b66'
         },
         '.cm-gutters': {
-          backgroundColor: '#1e1e1e',
-          color: '#5a5a5a',
-          borderRight: '1px solid #2d2d2d',
+          backgroundColor: '#0f172a',
+          color: '#64748b',
+          borderRight: '1px solid #1e293b',
           userSelect: 'none'
         },
         '.cm-activeLineGutter': {
-          backgroundColor: '#28282860',
-          color: '#d4d4d4'
+          backgroundColor: '#1e293b99',
+          color: '#e2e8f0'
         },
         '.cm-lineNumbers .cm-gutterElement': {
           padding: '0 8px 0 12px',
@@ -208,7 +208,7 @@ onMounted(async () => {
           color: '#ffffff'
         },
         '.cm-placeholder': {
-          color: '#6e7681',
+          color: '#94a3b8',
           fontStyle: 'italic'
         }
       },
@@ -217,17 +217,17 @@ onMounted(async () => {
 
     // Resaltado de sintaxis coherente
     const stireHighlightStyle = HighlightStyle.define([
-      { tag: [t.keyword, t.operatorKeyword, t.modifier], color: '#569cd6' },
-      { tag: [t.string, t.special(t.string)], color: '#ce9178' },
-      { tag: [t.number, t.integer, t.float], color: '#b5cea8' },
-      { tag: [t.comment, t.lineComment, t.blockComment], color: '#6a9955', fontStyle: 'italic' },
-      { tag: [t.function(t.variableName), t.function(t.propertyName)], color: '#dcdcaa' },
-      { tag: [t.tagName], color: '#569cd6' },
-      { tag: [t.attributeName], color: '#9cdcfe' },
-      { tag: [t.variableName, t.propertyName], color: '#9cdcfe' },
-      { tag: [t.className, t.typeName], color: '#4ec9b0' },
-      { tag: [t.operator], color: '#d4d4d4' },
-      { tag: [t.punctuation, t.bracket], color: '#d4d4d4' }
+      { tag: [t.keyword, t.operatorKeyword, t.modifier], color: '#c084fc' },
+      { tag: [t.string, t.special(t.string)], color: '#34d399' },
+      { tag: [t.number, t.integer, t.float], color: '#fcd34d' },
+      { tag: [t.comment, t.lineComment, t.blockComment], color: '#94a3b8', fontStyle: 'italic' },
+      { tag: [t.function(t.variableName), t.function(t.propertyName)], color: '#5eead4' },
+      { tag: [t.tagName], color: '#c084fc' },
+      { tag: [t.attributeName], color: '#7dd3fc' },
+      { tag: [t.variableName, t.propertyName], color: '#e2e8f0' },
+      { tag: [t.className, t.typeName], color: '#5eead4' },
+      { tag: [t.operator], color: '#cbd5e1' },
+      { tag: [t.punctuation, t.bracket], color: '#cbd5e1' }
     ])
 
     // Keymap accesible: WCAG 2.1.2 (sin trampa de foco)

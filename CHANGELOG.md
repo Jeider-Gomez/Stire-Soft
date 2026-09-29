@@ -12,6 +12,47 @@ entry to the oldest.
 
 ---
 
+## Identidad visual: lo mejor del prototipo de José en la app · 28 de Septiembre de 2026
+
+Por pedido del dueño, se tomó del prototipo `JoseTheGoat90/STIRE-FRONEND` (React con Vite) lo que mejor se veía y se
+rehízo en Nuxt/Vue, sin dependencias nuevas.
+
+**Qué se trajo:**
+- **Pantallas de entrada** (inicio de sesión, registro y recuperación de clave):
+  - fondo animado con tres resplandores de la marca y una retícula de puntos, solo con CSS;
+  - distintivo «ST» con degradado, que cambia a un escudo al escribir la clave;
+  - tarjeta con línea tricolor y entrada suave;
+  - íconos en los campos, botón para ver la clave, aviso de Bloq Mayús e insignia «Dominio Unicor»;
+  - en el registro, medidor de fuerza con las reglas **reales** del servidor (el texto anterior pedía más de lo que
+    exige el servidor);
+  - botón turquesa con barrido de luz y «¡Acceso concedido!» antes de entrar.
+- **Tutor:** cabecera con degradado azul→morado y robot, burbujas nuevas, «escribiendo» con los tres puntos de la
+  marca, atajos en forma de pastilla, e íconos en lugar de emojis.
+- **Editor de código:** fondo pizarra y la sintaxis del prototipo (palabras clave moradas, números ámbar, textos
+  verdes, cursor turquesa). Es el mismo tema en los ejercicios de programar, en completar código, en HTML y CSS, y
+  en el visor de registros del admin.
+
+**Colores:**
+- Los tokens `base-*`, `acento-*`, `semantico-*`, `estado-unidad-*`, `urgencia-repaso-*` y `editor-*` de
+  `tailwind.config.ts` toman la paleta de la guía.
+- Antes, `main.css` los reasignaba uno por uno, y los `hover:` y las transparencias seguían en ámbar: los botones
+  se veían ámbar al pasar el mouse.
+- Todos los textos cumplen AA. El turquesa lleva texto azul noche; con texto blanco no alcanzaba 3:1.
+- En zonas oscuras (huecos de completar código, etiqueta «JS», errores del registro del admin) se usan colores
+  claros, porque el azul de la marca no se leía sobre el fondo oscuro.
+- Con «reducir movimiento» del sistema no hay animaciones.
+
+**Qué no se trajo:** la tarjeta oscura y el selector de paleta, que en el prototipo son de demostración, y las
+respuestas simuladas de su Tutor (el nuestro usa Gemini de verdad).
+
+Verificación:
+- `nuxi typecheck` y `npm run generate` sin errores, **85/85 suites, 848/848 pruebas**;
+- capturas en Chrome de inicio de sesión (escritorio y 375 px), registro, editor, Tutor, completar código y paneles
+  del docente;
+- la consola quedó sin errores.
+
+---
+
 ## Fase 27 — pantallas de práctica adaptativa y reutilización (auditoría y correcciones) · 28 de Septiembre de 2026
 
 Antigravity construyó las seis tareas del plan:

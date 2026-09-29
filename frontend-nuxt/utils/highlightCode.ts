@@ -58,19 +58,19 @@ async function getHighlighter() {
     import('@lezer/highlight')
   ])
 
-  // Colores idénticos a CodeEditor.vue (#1e1e1e oscuro)
+  // Colores idénticos a CodeEditor.vue (tema del prototipo de José)
   highlightStyleInstance = HighlightStyle.define([
-    { tag: [t.keyword, t.operatorKeyword, t.modifier], class: 'text-[#569cd6]' },
-    { tag: [t.string, t.special(t.string)], class: 'text-[#ce9178]' },
-    { tag: [t.number, t.integer, t.float], class: 'text-[#b5cea8]' },
-    { tag: [t.comment, t.lineComment, t.blockComment], class: 'text-[#6a9955] italic' },
-    { tag: [t.function(t.variableName), t.function(t.propertyName)], class: 'text-[#dcdcaa]' },
-    { tag: [t.tagName], class: 'text-[#569cd6]' },
-    { tag: [t.attributeName], class: 'text-[#9cdcfe]' },
-    { tag: [t.variableName, t.propertyName], class: 'text-[#9cdcfe]' },
-    { tag: [t.className, t.typeName], class: 'text-[#4ec9b0]' },
-    { tag: [t.operator], class: 'text-[#d4d4d4]' },
-    { tag: [t.punctuation, t.bracket], class: 'text-[#d4d4d4]' }
+    { tag: [t.keyword, t.operatorKeyword, t.modifier], class: 'text-[#c084fc]' },
+    { tag: [t.string, t.special(t.string)], class: 'text-[#34d399]' },
+    { tag: [t.number, t.integer, t.float], class: 'text-[#fcd34d]' },
+    { tag: [t.comment, t.lineComment, t.blockComment], class: 'text-[#94a3b8] italic' },
+    { tag: [t.function(t.variableName), t.function(t.propertyName)], class: 'text-[#5eead4]' },
+    { tag: [t.tagName], class: 'text-[#c084fc]' },
+    { tag: [t.attributeName], class: 'text-[#7dd3fc]' },
+    { tag: [t.variableName, t.propertyName], class: 'text-[#e2e8f0]' },
+    { tag: [t.className, t.typeName], class: 'text-[#5eead4]' },
+    { tag: [t.operator], class: 'text-[#cbd5e1]' },
+    { tag: [t.punctuation, t.bracket], class: 'text-[#cbd5e1]' }
   ])
   highlightTreeFn = highlightTree
 

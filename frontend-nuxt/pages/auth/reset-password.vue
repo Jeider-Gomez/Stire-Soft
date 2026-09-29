@@ -1,10 +1,9 @@
 <template>
   <div class="w-full max-w-md">
-    <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-8 shadow-md">
+    <div class="relative bg-white/95 rounded-3xl border border-slate-200/90 p-8 shadow-xl shadow-stire-blue/10 backdrop-blur-2xl overflow-hidden animar-entrada">
+      <div class="absolute top-0 inset-x-0 h-[3px] linea-marca" aria-hidden="true" />
       <div class="text-center mb-6">
-        <div class="inline-flex w-12 h-12 rounded-xl bg-acento-ambar items-center justify-center text-base-blanco font-bold text-lg mb-3 shadow-sm">
-          ST
-        </div>
+        <LayoutMarcaST tamano="grande" class="mx-auto mb-3.5" />
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Elige tu contraseña nueva</h1>
       </div>
 
