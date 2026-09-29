@@ -85,9 +85,21 @@
   .animar-entrada {
     animation: stire-entrada 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
-  /* Barrido de luz sobre el botón principal. */
+  /* Barrido de luz continuo sobre el botón principal. Una franja de 200 % de ancho con dos copias del mismo
+     destello (una por cada mitad) que se desplaza exactamente una mitad por ciclo: cuando un destello sale por la
+     derecha el siguiente ya viene entrando por la izquierda, así que nunca hay un tramo quieto ni un salto. */
   .brillo-barrido {
-    animation: stire-brillo 2.6s linear 1.2s infinite;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 200%;
+    pointer-events: none;
+    background-image: linear-gradient(100deg, transparent 38%, rgb(255 255 255 / 0.38) 50%, transparent 62%);
+    background-size: 50% 100%;
+    background-repeat: repeat-x;
+    will-change: transform;
+    animation: stire-brillo 3.2s linear infinite;
   }
   /* Línea con los tres colores de la marca (borde superior de tarjetas). */
   .linea-marca {
@@ -129,8 +141,8 @@
 }
 
 @keyframes stire-brillo {
-  0% { transform: translateX(-120%) skewX(-12deg); }
-  60%, 100% { transform: translateX(320%) skewX(-12deg); }
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
 }
 
 /* Quien pide menos movimiento en su sistema no ve animaciones decorativas (WCAG 2.3.3). */
@@ -140,5 +152,9 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* Quieto, el destello quedaría pintado a mitad del botón: se oculta. */
+  .brillo-barrido {
+    display: none;
   }
 }

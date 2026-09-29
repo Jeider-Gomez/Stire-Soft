@@ -244,7 +244,7 @@
           type="submit"
           :disabled="isLoading"
           class="boton-acceso relative w-full mt-2 py-3 px-4 rounded-xl font-bold text-sm font-poppins text-[#070e24] bg-stire-teal hover:bg-[#14e2c8] focus:outline-none focus-visible:ring-4 focus-visible:ring-stire-teal/40 shadow-lg shadow-stire-teal/20 transition-all flex items-center justify-center gap-2 overflow-hidden disabled:cursor-wait">
-          <span class="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent brillo-barrido pointer-events-none" aria-hidden="true" />
+          <span class="brillo-barrido" aria-hidden="true" />
           <template v-if="isLoading">
             <span class="w-4 h-4 rounded-full border-2 border-[#070e24] border-t-transparent animate-spin" aria-hidden="true" />
             <span>Registrando cuenta…</span>
