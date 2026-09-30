@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Content } from './entities/content.entity';
@@ -9,6 +9,19 @@ import { UpdateContentDto } from './dto/update-content.dto';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { ContentRenderingService, SanitizationProfile } from '../content-rendering/content-rendering.service';
+import { ContentType } from '../common/enums/content-type.enum';
+import { metadatosDeRecurso } from './recursos/metadatos-recurso';
+import { RecursoInvalidoError } from './recursos/normalizar-recurso';
+
+/** Reconstruye el metadata de una lección multimedia; un recurso inválido es un 400 con el motivo. */
+function metadatosValidos(tipo: ContentType, metadata: Record<string, unknown> | undefined | null) {
+  try {
+    return metadatosDeRecurso(tipo, metadata);
+  } catch (e) {
+    if (e instanceof RecursoInvalidoError) throw new BadRequestException(e.message);
+    throw e;
+  }
+}
 
 @Injectable()
 export class ContentService {
@@ -32,6 +45,7 @@ export class ContentService {
 
     const content = this.contentRepo.create({
       ...dto,
+      metadata: metadatosValidos(dto.type, dto.metadata),
       // ADR 07, perfil RICH: content.body es autoría docente. Se sanea al
       // escribir conservando el Markdown, además del saneamiento al
       // renderizar en la capa de lectura.
@@ -130,7 +144,11 @@ export class ContentService {
       user,
       await this.resolveClassIdFromUnitId(content.learningUnitId),
     );
+    const tipoCambia = dto.type !== undefined && dto.type !== content.type;
     Object.assign(content, dto);
+    if (dto.metadata !== undefined || tipoCambia) {
+      content.metadata = metadatosValidos(content.type, dto.metadata ?? content.metadata);
+    }
     if (dto.body) {
       content.body = this.contentRenderingService.sanitizeRichText(dto.body);
     }

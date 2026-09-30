@@ -1,4 +1,5 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { ContentType } from '../common/enums/content-type.enum';
 import { ContentService } from './content.service';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { UserRole } from '../user/entities/user.entity';
@@ -40,6 +41,31 @@ describe('ContentService — P0-R2 (Ola 3)', () => {
     );
     mockLearningUnitRepo.findOne.mockResolvedValue({ id: learningUnitId, topic: { section: { classId: 5 } } });
     mockClassRepo.findOne.mockResolvedValue({ id: 5, teacherId: 10 });
+  });
+
+  // Paso 6, multimedia: el metadata de un recurso se reconstruye en el servidor, no se guarda tal como llega.
+  describe('create / update con recursos multimedia', () => {
+    const docenteDueño = { id: 10, role: UserRole.DOCENTE } as never;
+
+    it('un recurso de Genially se guarda con la dirección armada por el servidor', async () => {
+      const r = await service.create(
+        { learningUnitId, title: 'Presentación', type: ContentType.EMBED, metadata: { url: 'https://view.genial.ly/64f0a1b2c3d4e5f6a7b8c9d0', embedUrl: 'javascript:alert(1)' } },
+        docenteDueño,
+      );
+      expect(r.metadata).toEqual({ url: 'https://view.genial.ly/64f0a1b2c3d4e5f6a7b8c9d0', provider: 'genially', embedUrl: 'https://view.genial.ly/64f0a1b2c3d4e5f6a7b8c9d0' });
+    });
+
+    it('un recurso inválido es un 400 con el motivo y no se guarda', async () => {
+      await expect(
+        service.create({ learningUnitId, title: 'x', type: ContentType.EMBED, metadata: { url: 'http://youtu.be/abc' } }, docenteDueño),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockContentRepo.save).not.toHaveBeenCalled();
+    });
+
+    it('al editar el enlace de una imagen se valida otra vez (sin descripción: 400)', async () => {
+      mockContentRepo.findOne.mockResolvedValue({ id: 3, learningUnitId, type: ContentType.IMAGE, metadata: { url: 'https://x.org/a.png', alt: 'A' } });
+      await expect(service.update(3, { metadata: { url: 'https://x.org/b.png' } }, docenteDueño)).rejects.toThrow(BadRequestException);
+    });
   });
 
   describe('findByUnit', () => {

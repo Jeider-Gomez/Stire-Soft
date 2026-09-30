@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { MediaModule } from './media/media.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
@@ -122,6 +123,7 @@ import { ReuseModule } from './reuse/reuse.module';
     AdminSystemModule,
     RoleRequestsModule,
     ReuseModule,
+    MediaModule,
   ],
   providers: [
     {
