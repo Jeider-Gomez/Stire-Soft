@@ -56,10 +56,12 @@
             <Repeat :size="18" aria-hidden="true" class="shrink-0" />
             <span>Repasos</span>
           </div>
+          <!-- Insignia roja = repasos que tocan HOY (vencidos o críticos); los de mañana no son urgentes. -->
           <span
-            v-if="studentStore.reviews.length > 0"
-            class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-semantico-falla/15 text-semantico-falla">
-            {{ studentStore.reviews.length }}
+            v-if="studentStore.reviewsDueToday.length > 0"
+            class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-semantico-falla/15 text-semantico-falla"
+            :aria-label="`${studentStore.reviewsDueToday.length} para hoy`">
+            {{ studentStore.reviewsDueToday.length }}
           </span>
         </NuxtLink>
 
