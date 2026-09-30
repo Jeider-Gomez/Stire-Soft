@@ -85,6 +85,19 @@ describe('construirMapaDeCalor', () => {
     expect(m.listosParaMas.map((l) => l.fullName)).toEqual(['Ana']);
   });
 
+  it('listos para más: quien llegó al dominio reintentando no está listo (más del 90 % al primer intento)', () => {
+    const progresos = [10, 11, 12].flatMap((u) => [progreso(1, u, 100), progreso(2, u, 100)]);
+    const entregas = [
+      ...[10, 11, 12].map((u) => entrega(1, u, u, true)),
+      // Beto: falla el primer intento de dos ejercicios y los aprueba después (dominio 100 igual)
+      entrega(2, 10, 10, false), entrega(2, 10, 10, true),
+      entrega(2, 11, 11, false), entrega(2, 11, 11, true),
+      entrega(2, 12, 12, true),
+    ];
+    const m = mapa(progresos, entregas);
+    expect(m.listosParaMas.map((l) => [l.fullName, l.aciertoAlPrimerIntento])).toEqual([['Ana', 100]]);
+  });
+
   it('seguros que fallan: dijo «Me siento seguro» y falló el primer intento de un ejercicio', () => {
     const m = mapa(
       [progreso(1, 12, 60, 3), progreso(2, 12, 60, 1), progreso(3, 12, 100, 3)],

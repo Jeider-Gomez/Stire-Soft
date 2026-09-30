@@ -35,8 +35,12 @@ export interface MapaDeCalor {
   bloqueados: Array<{ studentId: number; fullName: string; unitId: number; unitTitle: string; fallosSeguidos: number }>;
   /** Unidades con menor dominio promedio (entre quienes ya las trabajaron); desempate: más entregas por acierto. */
   temasDificiles: Array<{ unitId: number; unitTitle: string; dominioPromedio: number; entregasPorAcierto: number | null; estudiantes: number }>;
-  /** Dominio de 85 % o más en todas las unidades que ya trabajó, y al menos 3 unidades trabajadas. */
-  listosParaMas: Array<{ studentId: number; fullName: string; unidades: number; dominioMinimo: number }>;
+  /**
+   * Dominio de 85 % o más en todas las unidades que ya trabajó (al menos 3) y más del 90 % de sus ejercicios acertados al
+   * primer intento (la «zona justa» del recomendador, docs/DISENO_PRACTICA_ADAPTATIVA.md §3.3 regla 6). Sin lo segundo,
+   * quien reintenta hasta aprobar también salía «listo»: el dominio cuenta la mejor nota.
+   */
+  listosParaMas: Array<{ studentId: number; fullName: string; unidades: number; dominioMinimo: number; aciertoAlPrimerIntento: number }>;
   /** Dijo «Me siento seguro» y falló el primer intento de algún ejercicio de esa unidad: posible idea equivocada. */
   segurosQueFallan: Array<{ studentId: number; fullName: string; unitId: number; unitTitle: string; fallosAlPrimerIntento: number }>;
 }
@@ -45,6 +49,8 @@ export const FALLOS_PARA_BLOQUEO = 3;
 export const DIAS_BLOQUEO = 7;
 export const DOMINIO_LISTO = 85;
 export const UNIDADES_MINIMAS_LISTO = 3;
+/** Porcentaje de ejercicios acertados al primer intento por encima del cual está «listo para más». */
+export const PRIMER_INTENTO_LISTO = 90;
 const CONFIANZA_SEGURO = 3;
 const MAX_TEMAS_DIFICILES = 3;
 
@@ -129,9 +135,12 @@ export function construirMapaDeCalor(entrada: {
     .map((e) => {
       const suyas = celdas.filter((c) => c.studentId === e.id && c.entregas > 0);
       const minimo = suyas.length > 0 ? Math.min(...suyas.map((c) => c.mastery)) : 0;
-      return { studentId: e.id, fullName: e.fullName, unidades: suyas.length, dominioMinimo: minimo };
+      const primeros = new Map<number, boolean>();
+      for (const en of entregas) if (en.studentId === e.id && !primeros.has(en.activityId)) primeros.set(en.activityId, en.aprobada);
+      const acierto = primeros.size > 0 ? Math.round(([...primeros.values()].filter(Boolean).length / primeros.size) * 100) : 0;
+      return { studentId: e.id, fullName: e.fullName, unidades: suyas.length, dominioMinimo: minimo, aciertoAlPrimerIntento: acierto };
     })
-    .filter((l) => l.unidades >= UNIDADES_MINIMAS_LISTO && l.dominioMinimo >= DOMINIO_LISTO)
+    .filter((l) => l.unidades >= UNIDADES_MINIMAS_LISTO && l.dominioMinimo >= DOMINIO_LISTO && l.aciertoAlPrimerIntento > PRIMER_INTENTO_LISTO)
     .sort((a, b) => b.unidades - a.unidades || b.dominioMinimo - a.dominioMinimo);
 
   return { unidades, estudiantes, celdas, bloqueados, temasDificiles, listosParaMas, segurosQueFallan };
