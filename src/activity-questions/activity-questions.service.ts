@@ -1,6 +1,6 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ActivityQuestionsRepository } from './activity-questions.repository';
 import { ActivityQuestion } from './entities/activity-question.entity';
 import { Activity } from '../activities/entities/activity.entity';
@@ -11,6 +11,8 @@ import { AuthorizationService } from '../common/authorization/authorization.serv
 import { User, UserRole } from '../user/entities/user.entity';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
 import { PublicationStatus } from '../common/enums/status.enum';
+import { Submission } from '../submissions/entities/submission.entity';
+import { SubmissionStatus } from '../common/enums/submission-status.enum';
 
 import { IsInt, IsEnum, IsString, IsNumber, IsOptional, IsObject } from 'class-validator';
 
@@ -36,6 +38,24 @@ export class CreateActivityQuestionDto {
   config: Record<string, any>;
 }
 
+/** Paso 4b: qué se puede cambiar de una pregunta. El tipo no cambia (sería otro ejercicio) y la actividad tampoco. */
+export class UpdateActivityQuestionDto {
+  @IsString()
+  @IsOptional()
+  question?: string;
+
+  @IsNumber()
+  @IsOptional()
+  points?: number;
+
+  @IsObject()
+  @IsOptional()
+  config?: Record<string, any>;
+}
+
+/** Entregas que ya se calificaron con las respuestas actuales: con ellas, cambiar la pregunta cambiaría notas puestas. */
+const ESTADOS_ENTREGADOS = [SubmissionStatus.SUBMITTED, SubmissionStatus.GRADED];
+
 @Injectable()
 export class ActivityQuestionsService {
   constructor(
@@ -44,6 +64,8 @@ export class ActivityQuestionsService {
     private readonly activitiesRepository: Repository<Activity>,
     private readonly authorizationService: AuthorizationService,
     private readonly contentRenderingService: ContentRenderingService,
+    @InjectRepository(Submission)
+    private readonly submissionsRepository: Repository<Submission>,
   ) {}
 
   /**
@@ -94,6 +116,51 @@ export class ActivityQuestionsService {
       }
     }
     return this.questionsRepo.findByActivityId(activityId);
+  }
+
+  /**
+   * Paso 4b: editar el enunciado, los puntos o los datos (opciones, casos, plantilla) de una pregunta. Así «Duplicar
+   * como variante» sirve de verdad: la copia se edita en vez de quedar idéntica. Solo el docente de la clase (o admin),
+   * y solo mientras nadie haya entregado: una entrega calificada con las respuestas viejas quedaría con otra nota que
+   * la que vería el docente. En ese caso se responde 409 y el camino es duplicar como variante.
+   */
+  async update(id: number, dto: UpdateActivityQuestionDto, user: User): Promise<ActivityQuestion> {
+    const question = await this.questionsRepo.findOne({ where: { id } });
+    if (!question) throw new NotFoundException(`Pregunta con ID ${id} no encontrada`);
+    await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(question.activityId));
+
+    const entregas = await this.contarEntregas(question.activityId);
+    if (entregas > 0) {
+      throw new ConflictException(
+        `Este ejercicio ya tiene ${entregas} ${entregas === 1 ? 'entrega' : 'entregas'} de estudiantes: cambiar sus respuestas ` +
+          'cambiaría notas ya puestas. Duplícalo como variante y edita la copia.',
+      );
+    }
+
+    if (dto.config !== undefined) {
+      this.validateConfig(question.type, dto.config);
+      question.config = dto.config;
+    }
+    if (dto.question !== undefined) {
+      if (!dto.question.trim()) throw new BadRequestException('El enunciado no puede quedar vacío.');
+      question.question = this.contentRenderingService.sanitizeRichText(dto.question);
+    }
+    if (dto.points !== undefined) {
+      if (!(dto.points > 0)) throw new BadRequestException('Los puntos deben ser mayores que 0.');
+      question.points = dto.points;
+    }
+    return this.questionsRepo.save(question);
+  }
+
+  /** Paso 4b: para que la pantalla sepa, antes de abrir el editor, si las preguntas de una actividad se pueden editar. */
+  async getEditability(activityId: number, user: User): Promise<{ activityId: number; editable: boolean; submissions: number }> {
+    await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(activityId));
+    const submissions = await this.contarEntregas(activityId);
+    return { activityId, editable: submissions === 0, submissions };
+  }
+
+  private contarEntregas(activityId: number): Promise<number> {
+    return this.submissionsRepository.count({ where: { activityId, status: In(ESTADOS_ENTREGADOS) } });
   }
 
   /**

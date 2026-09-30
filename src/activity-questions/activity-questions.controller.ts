@@ -1,6 +1,6 @@
-import { Controller, Post, Get, Body, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Body, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { ActivityQuestionsService, CreateActivityQuestionDto } from './activity-questions.service';
+import { ActivityQuestionsService, CreateActivityQuestionDto, UpdateActivityQuestionDto } from './activity-questions.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -25,6 +25,30 @@ export class ActivityQuestionsController {
   @ApiOperation({ summary: 'Crear pregunta para una actividad (incluye respuesta correcta en config)' })
   create(@Body() dto: CreateActivityQuestionDto, @GetUser() user: User) {
     return this.questionsService.create(dto, user);
+  }
+
+  /**
+   * PATCH /activity-questions/:id — paso 4b.
+   * Edita enunciado, puntos o datos de la pregunta. 409 si la actividad ya tiene entregas enviadas o calificadas.
+   */
+  @Patch(':id')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Editar una pregunta (solo si la actividad no tiene entregas)' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateActivityQuestionDto, @GetUser() user: User) {
+    return this.questionsService.update(id, dto, user);
+  }
+
+  /**
+   * GET /activity-questions/activity/:activityId/editable — paso 4b.
+   * { activityId, editable, submissions }: la pantalla lo consulta antes de abrir el editor.
+   */
+  @Get('activity/:activityId/editable')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: '¿Se pueden editar las preguntas de esta actividad?' })
+  getEditability(@Param('activityId', ParseIntPipe) activityId: number, @GetUser() user: User) {
+    return this.questionsService.getEditability(activityId, user);
   }
 
   /**

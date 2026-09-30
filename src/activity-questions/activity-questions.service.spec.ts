@@ -46,6 +46,7 @@ describe('ActivityQuestionsService.create', () => {
       mockActivitiesRepository as any,
       mockAuthorizationService as any,
       mockContentRenderingService as any,
+      { count: jest.fn().mockResolvedValue(0) } as unknown as ConstructorParameters<typeof ActivityQuestionsService>[4],
     );
   });
 
