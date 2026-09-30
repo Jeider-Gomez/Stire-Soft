@@ -114,9 +114,9 @@ Cambiar de proveedor (Brevo, Resend…) es cambiar estas 5 variables, sin tocar 
 
 ## 5. Copias de seguridad
 
-`deploy/backup-db.sh` guarda un `.sql.gz` diario y conserva 14 días. Actívalo: `crontab -e` →
+`deploy/backup-db.sh` guarda un `.sql.gz` con fecha y hora (una copia manual antes de desplegar no pisa la diaria) y conserva 14 días. Actívalo: `crontab -e` →
 `0 3 * * * /home/ubuntu/stire/deploy/backup-db.sh`. **Descarga una copia a tu computador cada semana**
-(`scp ubuntu@TU-IP:stire/backups/stire-AAAA-MM-DD.sql.gz .`); si la máquina se pierde, las copias que están en ella se pierden con
+(`scp ubuntu@TU-IP:stire/backups/stire-AAAA-MM-DD-HHMM.sql.gz .`); si la máquina se pierde, las copias que están en ella se pierden con
 ella y solo sirve la que tengas fuera (deja una recurrente en tu calendario).
 
 ## 6. Comprobación final (10 minutos)
@@ -136,7 +136,7 @@ ella y solo sirve la que tengas fuera (deja una recurrente en tu calendario).
 2. **Se perdió o no arranca:** crea otra instancia con los pasos 1 a 3, clona el repositorio, vuelve a crear `.env.prod` (guárdalo también fuera
    de la máquina, en un gestor de contraseñas: sin `TUTOR_KEY_ENCRYPTION_SECRET` las claves de los estudiantes no se pueden descifrar), levanta
    el `docker compose` y las migraciones (sección 2) y restaura la copia que descargaste:
-   `gunzip -c stire-AAAA-MM-DD.sql.gz | docker compose -f docker-compose.prod.yml --env-file .env.prod exec -T db mariadb -uroot -p"$DB_ROOT_PASSWORD" basestire`.
+   `gunzip -c stire-AAAA-MM-DD-HHMM.sql.gz | docker compose -f docker-compose.prod.yml --env-file .env.prod exec -T db mariadb -uroot -p"$DB_ROOT_PASSWORD" basestire`.
 3. Los datos posteriores a la última copia se pierden: por eso la copia semanal (sección 5).
 
 ## 8. El despliegue real: Azure for Students + Vercel (26/09/2026)
