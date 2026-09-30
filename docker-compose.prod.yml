@@ -41,16 +41,19 @@ services:
       FRONTEND_URL: ${FRONTEND_URL}
       TRUST_PROXY: 1
       SANDBOX_TYPE: hardened
-      SANDBOX_MAX_CONCURRENT: ${SANDBOX_MAX_CONCURRENT:-3}
+      # Una ejecución por procesador: el juez corta a los 2 s de RELOJ, así que con más ejecuciones que procesadores una
+      # solución correcta pero pesada puede cortarse por tiempo. La VM de Azure (B2als_v2) tiene 2; .env.prod lo fija en 2.
+      SANDBOX_MAX_CONCURRENT: ${SANDBOX_MAX_CONCURRENT:-2}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}
       MAIL_FROM: ${MAIL_FROM:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-flash-latest}
-    # Límites para que un ejercicio malicioso no tumbe la máquina completa.
-    # Con 12 GB (Oracle A1) hay margen; en una máquina de 1-2 GB baja a 768m y SANDBOX_MAX_CONCURRENT a 2.
-    mem_limit: 3g
+    # Límites para que un ejercicio malicioso no tumbe la máquina completa. La VM de Azure tiene 4 GB y la comparte con
+    # MariaDB y Caddy. Medido el 30/09: backend en reposo 143 MB y una ejecución del juez ~70 MB (hasta ~170 MB en el peor
+    # caso, con 2 a la vez); 1,5 GB deja margen al backend y garantiza memoria a la base. En una máquina de 1-2 GB, 768m.
+    mem_limit: 1536m
     pids_limit: 256
 
   caddy:
