@@ -10,76 +10,14 @@
  * Uso:
  *   STIRE_API=... npx ts-node -r tsconfig-paths/register scripts/cursos/simular-estudiantes.ts
  */
-import { Api, esperar, requerida } from './api';
+import { Api, requerida } from './api';
 import { cursoFundamentos203413 } from '../../src/seeds/cursos/fundamentos-203413';
 import { cursoPensamientoAlgoritmico } from '../../src/seeds/cursos/pensamiento-algoritmico';
 import { ESTUDIANTES, Estudiante, PASSWORD_PRUEBAS } from './personas';
-import { Curso, Ejercicio, respuestaConError, respuestaCorrecta } from '../../src/seeds/cursos/tipos';
+import { Curso } from '../../src/seeds/cursos/tipos';
+import { ActividadVista, SeccionVista, ejercicioDelCurso, resolver } from './simulacion';
 
 const CURSOS: Curso[] = [cursoFundamentos203413, cursoPensamientoAlgoritmico];
-
-interface SeccionVista { topics?: Array<{ learningUnits?: Array<{ id: number; title: string }> }> }
-interface ActividadVista { id: number; title: string; attemptsAllowed: number; attemptsUsed?: number }
-interface Entrega { status: string; totalScore?: number; maxScore?: number; passed?: boolean | null }
-
-/** Generador pseudoaleatorio con semilla (mulberry32): la simulación es reproducible. */
-function azar(semilla: string): () => number {
-  let h = 1779033703 ^ semilla.length;
-  for (let i = 0; i < semilla.length; i++) h = Math.imul(h ^ semilla.charCodeAt(i), 3432918353);
-  let a = h >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function ejercicioDelCurso(curso: Curso, unidad: string, titulo: string): Ejercicio | undefined {
-  for (const s of curso.secciones)
-    for (const t of s.temas)
-      for (const u of t.unidades) if (u.titulo === unidad) return u.ejercicios.find((e) => e.titulo === titulo);
-  return undefined;
-}
-
-async function esperarCalificacion(api: Api, id: string): Promise<Entrega> {
-  for (let i = 0; i < 30; i++) {
-    const r = await api.get<Entrega>(`/submissions/${id}`);
-    if (r.status === 'graded') return r;
-    await esperar(1000);
-  }
-  throw new Error(`La entrega ${id} no se calificó a tiempo.`);
-}
-
-async function resolver(api: Api, est: Estudiante, act: ActividadVista, e: Ejercicio): Promise<string> {
-  await api.get(`/activities/${act.id}`);
-  const preguntas = await api.get<Array<{ id: number }>>(`/activity-questions/activity/${act.id}`);
-  const preguntaId = preguntas[0].id;
-  const r = azar(`${est.email}|${act.title}`);
-  const intentosPermitidos = act.attemptsAllowed ?? 3;
-  const intentosUsados = act.attemptsUsed ?? 0;
-  let p = est.perfil.primerIntento[e.dificultad];
-  const bitacora: string[] = [];
-
-  for (let intento = intentosUsados + 1; intento <= intentosPermitidos; intento++) {
-    const acierta = r() < p;
-    const respuesta = acierta ? respuestaCorrecta(e) : respuestaConError(e);
-    const { id } = await api.post<{ id: string }>('/submissions/start', { activityId: act.id });
-    if ((e.tipo === 'coding' || e.tipo === 'html_css') && r() < est.perfil.pruebaAntes) {
-      await api.post(`/submissions/${id}/run`, e.tipo === 'coding' ? { code: respuesta.code } : respuesta);
-    }
-    let resultado = await api.post<Entrega>(`/submissions/${id}/submit`, {
-      answers: [{ questionId: preguntaId, answer: respuesta }],
-      timeSpentSeconds: Math.round(60 + r() * (e.tipo === 'coding' ? 900 : 240)),
-    });
-    if (resultado.status !== 'graded') resultado = await esperarCalificacion(api, id);
-    bitacora.push(`${resultado.totalScore ?? 0}/${resultado.maxScore ?? '?'}`);
-    if (resultado.passed) break;
-    p = Math.min(0.95, p + est.perfil.mejoraPorIntento);
-  }
-  return bitacora.join(' → ');
-}
 
 async function estudiar(est: Estudiante, base: string): Promise<void> {
   const api = new Api(base);
@@ -102,6 +40,7 @@ async function estudiar(est: Estudiante, base: string): Promise<void> {
     const unidades = secciones.flatMap((s) => (s.topics ?? []).flatMap((t) => t.learningUnits ?? [])).slice(0, limite);
     for (const u of unidades) {
       await api.get(`/learning-unit/${u.id}`);
+      if (est.perfil.confianza) await api.put(`/learning-progress/unit/${u.id}/confidence`, { confianza: est.perfil.confianza });
       await api.get(`/content/unit/${u.id}`); // lee la lección
       const res = await api.get<{ data: ActividadVista[] } | ActividadVista[]>(`/activities?learningUnitId=${u.id}`);
       const actividades = Array.isArray(res) ? res : res.data;

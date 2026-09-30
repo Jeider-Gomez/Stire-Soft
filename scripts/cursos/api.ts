@@ -29,6 +29,10 @@ export class Api {
     return this.request<T>('POST', ruta, body);
   }
 
+  put<T>(ruta: string, body?: unknown): Promise<T> {
+    return this.request<T>('PUT', ruta, body);
+  }
+
   patch<T>(ruta: string, body?: unknown): Promise<T> {
     return this.request<T>('PATCH', ruta, body);
   }

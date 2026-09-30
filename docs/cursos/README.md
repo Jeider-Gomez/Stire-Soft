@@ -91,6 +91,10 @@ STIRE_API=https://... DOCENTE_EMAIL=laura.martinez.docente@example.com DOCENTE_P
 
 # 3. Los estudiantes se unen con el código y resuelven los ejercicios
 STIRE_API=https://... npx ts-node -r tsconfig-paths/register scripts/cursos/simular-estudiantes.ts
+
+# 4. Segundo salón de Laura (ALGO-203413-G2): lo crea copiando ALGO-203413 con «Traer de otra clase», publica las
+#    secciones, y cuatro estudiantes responden la pregunta de confianza y siguen lo que recomienda «Continuar»
+STIRE_API=https://... npx ts-node -r tsconfig-paths/register scripts/cursos/segundo-salon.ts
 ```
 
 Si alguna corrida se interrumpe, se puede repetir: lo que ya existe no se duplica. Después de cambiar el
@@ -106,10 +110,21 @@ Son ficticias y sus correos usan el dominio reservado `example.com`
 |---|---|---|
 | Laura Martínez Petro | Docente de ambos cursos | Crea y publica todo |
 | Valentina Pérez Hoyos | Aplicada: casi siempre acierta | Todo el curso 1 y todo el curso 2 |
-| Andrés Felipe Montes | Promedio: en lo intermedio necesita un segundo intento | 8 de 17 unidades del curso 1 y 7 de 10 del curso 2 |
-| Camila Díaz Ortega | Le cuesta: se equivoca con frecuencia y reintenta | 5 unidades del curso 1 y 4 del curso 2 |
+| Andrés Felipe Montes | Promedio y **sobreconfiado** (responde «Me siento seguro»): en lo intermedio necesita un segundo intento | 8 de 17 unidades del curso 1 y 7 de 10 del curso 2 |
+| Camila Díaz Ortega | Le cuesta y se siente **insegura** (responde «Es nuevo para mí»): se equivoca con frecuencia y reintenta | 5 unidades del curso 1 y 4 del curso 2 |
 | Santiago Ruiz Galván | Llegó tarde al curso | 3 unidades del curso 1 y 2 del curso 2 |
 | Mariana Suárez Lora | Constante, solo en el curso 1 | 9 unidades del curso 1 |
+
+**Segundo salón (`ALGO-203413-G2`, «Fundamentos de Algoritmia — grupo 2»).** Laura lo crea copiando ALGO-203413 con
+«Traer de otra clase». Sus estudiantes siguen lo que recomienda «Continuar» en lugar del orden de la lista, y cada uno
+tiene una relación distinta entre lo que dice (la pregunta de confianza) y lo que hace:
+
+| Persona | Responde | Cómo le va | Unidades |
+|---|---|---|---|
+| Julián Ortega Ríos | «Me siento seguro» | Sobreconfiado: acierta poco lo intermedio y lo avanzado | 5 |
+| Daniela Castro Mejía | «Es nuevo para mí» | Insegura pero capaz: casi siempre acierta | 5 |
+| Sebastián Vargas Peña | «Tengo dudas» | Calibrado | 5 |
+| Luisa Fernanda Rojas | Salta la pregunta | Promedio | 5 |
 
 Cada intento sale del perfil: la probabilidad de acertar depende de la dificultad y sube con cada nuevo
 intento, como le pasa a quien aprende de su error. Cuando falla, entrega el error común del ejercicio,

@@ -22,7 +22,7 @@ const mcq = () => ({
   config: { options: [{ id: 'a', text: 'A' }, { id: 'b', text: 'B' }], correctAnswerId: 'a' },
 });
 
-function crear(opciones: { entregas?: number; pregunta?: ReturnType<typeof mcq> | null; dueno?: boolean } = {}) {
+function crear(opciones: { entregas?: number; pregunta?: object | null; dueno?: boolean } = {}) {
   const questionsRepo = {
     findOne: jest.fn().mockResolvedValue(opciones.pregunta === undefined ? mcq() : opciones.pregunta),
     save: jest.fn((q: unknown) => Promise.resolve(q)),
