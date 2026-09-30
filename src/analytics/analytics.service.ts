@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { LearningProgress } from '../learning-progress/entities/learning-progress.entity';
 import { Submission } from '../submissions/entities/submission.entity';
@@ -7,6 +7,13 @@ import { Class } from '../class/entities/class.entity';
 import { Enrollment } from '../enrollment/entities/enrollment.entity';
 import { User } from '../user/entities/user.entity';
 import { AuthorizationService } from '../common/authorization/authorization.service';
+import { LearningUnit } from '../learning-unit/entities/learning-unit.entity';
+import { Topic } from '../topic/entities/topic.entity';
+import { Section } from '../section/entities/section.entity';
+import { Activity } from '../activities/entities/activity.entity';
+import { SubmissionStatus } from '../common/enums/submission-status.enum';
+import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
+import { construirMapaDeCalor, MapaDeCalor } from './mapa-de-calor';
 
 @Injectable()
 export class AnalyticsService {
@@ -246,5 +253,81 @@ export class AnalyticsService {
       },
       studentRankings: studentMetrics,
     };
+  }
+
+  /**
+   * GET /analytics/class/:classId/heatmap — mapa de calor del docente (paso 6). Solo el docente de la clase o un admin.
+   * Unidades de las secciones publicadas, en el orden del curso; estudiantes con matrícula activa.
+   */
+  async getClassHeatmap(classId: number, requestingUser: { id: number; role: string }, ahora = new Date()): Promise<MapaDeCalor> {
+    const cls = await this.dataSource.getRepository(Class).findOne({ where: { id: classId } });
+    if (!cls) throw new NotFoundException('La clase no existe.');
+    if (requestingUser.role === 'estudiante') {
+      throw new ForbiddenException('Los estudiantes no tienen permiso para ver métricas de clase.');
+    }
+    if (requestingUser.role === 'docente' && cls.teacherId !== requestingUser.id) {
+      throw new ForbiddenException('No tienes acceso a las métricas de esta clase.');
+    }
+
+    const filasUnidad = await this.dataSource.getRepository(LearningUnit).createQueryBuilder('u')
+      .innerJoin(Topic, 't', 't.id = u.topicId')
+      .innerJoin(Section, 's', 's.id = t.sectionId')
+      .where('s.classId = :classId', { classId })
+      .andWhere('s.isPublished = :pub', { pub: true })
+      .select(['u.id AS id', 'u.title AS title', 's.title AS sectionTitle'])
+      .orderBy('s.order', 'ASC').addOrderBy('t.order', 'ASC').addOrderBy('u.order', 'ASC').addOrderBy('u.id', 'ASC')
+      .getRawMany<{ id: number; title: string; sectionTitle: string }>();
+    const unidades = filasUnidad.map((u) => ({ id: Number(u.id), title: u.title, sectionTitle: u.sectionTitle }));
+
+    const matriculas = await this.dataSource.getRepository(Enrollment).find({
+      where: { classId, status: EnrollmentStatus.ACTIVE },
+      relations: ['student'],
+    });
+    const estudiantes = matriculas
+      .map((m) => ({ id: m.studentId, fullName: m.student?.fullName ?? '—' }))
+      .sort((a, b) => a.fullName.localeCompare(b.fullName, 'es'));
+
+    const idsUnidad = unidades.map((u) => u.id);
+    const idsEstudiante = estudiantes.map((e) => e.id);
+    if (idsUnidad.length === 0 || idsEstudiante.length === 0) {
+      return construirMapaDeCalor({ unidades, estudiantes, progresos: [], entregas: [], ahora });
+    }
+
+    const progresos = await this.dataSource.getRepository(LearningProgress).createQueryBuilder('p')
+      .where('p.studentId IN (:...idsEstudiante)', { idsEstudiante })
+      .andWhere('p.learningUnitId IN (:...idsUnidad)', { idsUnidad })
+      .getMany();
+
+    const filasEntrega = await this.dataSource.getRepository(Submission).createQueryBuilder('sub')
+      .innerJoin(Activity, 'a', 'a.id = sub.activityId')
+      .where('sub.studentId IN (:...idsEstudiante)', { idsEstudiante })
+      .andWhere('a.learningUnitId IN (:...idsUnidad)', { idsUnidad })
+      .andWhere('sub.status = :calificada', { calificada: SubmissionStatus.GRADED })
+      .select([
+        'sub.studentId AS studentId', 'sub.activityId AS activityId', 'sub.score AS score',
+        'sub.submittedAt AS submittedAt', 'sub.createdAt AS createdAt',
+        'a.learningUnitId AS learningUnitId', 'a.totalPoints AS totalPoints', 'a.passingScore AS passingScore',
+      ])
+      .getRawMany<Record<string, string | number | Date | null>>();
+
+    return construirMapaDeCalor({
+      unidades,
+      estudiantes,
+      progresos: progresos.map((p) => ({
+        studentId: p.studentId, learningUnitId: p.learningUnitId, mastery: p.mastery, status: p.status, entryConfidence: p.entryConfidence ?? null,
+      })),
+      entregas: filasEntrega.map((f) => {
+        const total = Number(f.totalPoints);
+        return {
+          studentId: Number(f.studentId),
+          activityId: Number(f.activityId),
+          learningUnitId: Number(f.learningUnitId),
+          // Mismo criterio que isSubmissionPassed: el puntaje de aprobación es un porcentaje del total.
+          aprobada: total > 0 && (Number(f.score) / total) * 100 >= Number(f.passingScore),
+          fecha: new Date((f.submittedAt ?? f.createdAt) as string | Date),
+        };
+      }),
+      ahora,
+    });
   }
 }

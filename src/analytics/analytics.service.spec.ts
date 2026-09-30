@@ -37,3 +37,36 @@ describe('AnalyticsService.getStudentDashboard — puntaje máximo y aprobación
     expect(res.studentName).toBe('Ana Pérez');
   });
 });
+
+// Paso 6: el mapa de calor muestra datos de todos los estudiantes de la clase; solo su docente o un admin lo ven.
+describe('AnalyticsService.getClassHeatmap — permisos', () => {
+  type Deps = ConstructorParameters<typeof AnalyticsService>;
+  const clases = { findOne: jest.fn(({ where }: { where: { id: number } }) => Promise.resolve(where.id === 7 ? { id: 7, teacherId: 10 } : null)) };
+  const vacio = {
+    createQueryBuilder: () => {
+      const qb = { innerJoin: () => qb, where: () => qb, andWhere: () => qb, select: () => qb, orderBy: () => qb, addOrderBy: () => qb, getRawMany: () => Promise.resolve([]), getMany: () => Promise.resolve([]) };
+      return qb;
+    },
+    find: () => Promise.resolve([]),
+    findOne: clases.findOne,
+  };
+  const dataSource = { getRepository: () => vacio };
+  const service = new AnalyticsService(dataSource as unknown as Deps[0], {} as unknown as Deps[1]);
+
+  it('el docente de la clase lo ve (una clase sin unidades da un mapa vacío)', async () => {
+    const m = await service.getClassHeatmap(7, { id: 10, role: 'docente' });
+    expect(m).toMatchObject({ unidades: [], celdas: [], bloqueados: [] });
+  });
+
+  it('otro docente recibe 403', async () => {
+    await expect(service.getClassHeatmap(7, { id: 11, role: 'docente' })).rejects.toThrow('No tienes acceso');
+  });
+
+  it('un estudiante recibe 403', async () => {
+    await expect(service.getClassHeatmap(7, { id: 3, role: 'estudiante' })).rejects.toThrow('Los estudiantes no tienen permiso');
+  });
+
+  it('una clase que no existe: 404', async () => {
+    await expect(service.getClassHeatmap(99, { id: 10, role: 'admin' })).rejects.toThrow('La clase no existe');
+  });
+});
