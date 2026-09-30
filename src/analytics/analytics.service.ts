@@ -194,15 +194,19 @@ export class AnalyticsService {
       };
     }
 
-    // Promedio de mastery de los estudiantes
-    // Use a JOIN to fetch learning progress directly linked to enrollments of this class
-    const progressList = await progressRepo.createQueryBuilder('p')
-      .innerJoin(Enrollment, 'e', 'e.studentId = p.studentId')
-      .where('e.classId = :classId', { classId })
+    // Solo el progreso y las entregas de las unidades de ESTA clase. Antes se unía el progreso por la matrícula y se
+    // contaban todas las entregas del estudiante: quien está en dos clases salía con el mismo dominio y las mismas
+    // entregas en ambas (Andrés: 96,8 % y 77 entregas en ALGO-203413 y en PENSAR-ALGO; evaluación heurística del 30/09).
+    const idsUnidad = await this.idsUnidadesDeClase(classId, false);
+    const progressList = idsUnidad.length === 0 ? [] : await progressRepo.createQueryBuilder('p')
+      .where('p.studentId IN (:...studentIds)', { studentIds })
+      .andWhere('p.learningUnitId IN (:...idsUnidad)', { idsUnidad })
       .getMany();
 
-    const submissions = await submissionRepo.createQueryBuilder('s')
+    const submissions = idsUnidad.length === 0 ? [] : await submissionRepo.createQueryBuilder('s')
+      .innerJoin(Activity, 'a', 'a.id = s.activityId')
       .where('s.studentId IN (:...studentIds)', { studentIds })
+      .andWhere('a.learningUnitId IN (:...idsUnidad)', { idsUnidad })
       .andWhere('s.status = :status', { status: 'graded' })
       .getMany();
 
@@ -269,15 +273,7 @@ export class AnalyticsService {
       throw new ForbiddenException('No tienes acceso a las métricas de esta clase.');
     }
 
-    const filasUnidad = await this.dataSource.getRepository(LearningUnit).createQueryBuilder('u')
-      .innerJoin(Topic, 't', 't.id = u.topicId')
-      .innerJoin(Section, 's', 's.id = t.sectionId')
-      .where('s.classId = :classId', { classId })
-      .andWhere('s.isPublished = :pub', { pub: true })
-      .select(['u.id AS id', 'u.title AS title', 's.title AS sectionTitle'])
-      .orderBy('s.order', 'ASC').addOrderBy('t.order', 'ASC').addOrderBy('u.order', 'ASC').addOrderBy('u.id', 'ASC')
-      .getRawMany<{ id: number; title: string; sectionTitle: string }>();
-    const unidades = filasUnidad.map((u) => ({ id: Number(u.id), title: u.title, sectionTitle: u.sectionTitle }));
+    const unidades = await this.unidadesDeClase(classId, true);
 
     const matriculas = await this.dataSource.getRepository(Enrollment).find({
       where: { classId, status: EnrollmentStatus.ACTIVE },
@@ -329,5 +325,23 @@ export class AnalyticsService {
       }),
       ahora,
     });
+  }
+
+  /** Unidades de una clase en el orden del curso; con `soloPublicadas`, solo las de secciones publicadas. */
+  private async unidadesDeClase(classId: number, soloPublicadas: boolean): Promise<Array<{ id: number; title: string; sectionTitle: string }>> {
+    const qb = this.dataSource.getRepository(LearningUnit).createQueryBuilder('u')
+      .innerJoin(Topic, 't', 't.id = u.topicId')
+      .innerJoin(Section, 's', 's.id = t.sectionId')
+      .where('s.classId = :classId', { classId });
+    if (soloPublicadas) qb.andWhere('s.isPublished = :pub', { pub: true });
+    const filas = await qb
+      .select(['u.id AS id', 'u.title AS title', 's.title AS sectionTitle'])
+      .orderBy('s.order', 'ASC').addOrderBy('t.order', 'ASC').addOrderBy('u.order', 'ASC').addOrderBy('u.id', 'ASC')
+      .getRawMany<{ id: number; title: string; sectionTitle: string }>();
+    return filas.map((u) => ({ id: Number(u.id), title: u.title, sectionTitle: u.sectionTitle }));
+  }
+
+  private async idsUnidadesDeClase(classId: number, soloPublicadas: boolean): Promise<number[]> {
+    return (await this.unidadesDeClase(classId, soloPublicadas)).map((u) => u.id);
   }
 }

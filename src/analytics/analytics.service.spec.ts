@@ -3,6 +3,9 @@ import { LearningProgress } from '../learning-progress/entities/learning-progres
 import { Submission } from '../submissions/entities/submission.entity';
 import { ReviewSchedule } from '../review-schedules/entities/review-schedule.entity';
 import { User } from '../user/entities/user.entity';
+import { Class } from '../class/entities/class.entity';
+import { Enrollment } from '../enrollment/entities/enrollment.entity';
+import { LearningUnit } from '../learning-unit/entities/learning-unit.entity';
 
 // Regresión de la simulación del 23/09: la pantalla del docente mostraba
 // "20 / 100" en rojo para un 20/20 porque el backend no enviaba el máximo.
@@ -68,5 +71,50 @@ describe('AnalyticsService.getClassHeatmap — permisos', () => {
 
   it('una clase que no existe: 404', async () => {
     await expect(service.getClassHeatmap(99, { id: 10, role: 'admin' })).rejects.toThrow('La clase no existe');
+  });
+});
+
+// Evaluación heurística del 30/09: un estudiante en dos clases salía con el mismo dominio y las mismas entregas en ambas,
+// porque las métricas de la clase leían todo su progreso. Ahora solo lo de las unidades de esa clase.
+describe('AnalyticsService.getClassMetrics — solo las unidades de la clase', () => {
+  type Deps = ConstructorParameters<typeof AnalyticsService>;
+
+  function crear(unidadesDeLaClase: number[]) {
+    const llamadas: Array<{ repo: string; metodo: string; args: unknown[] }> = [];
+    const qb = (repo: string, filas: unknown[], raw: unknown[] = []) => {
+      const q: Record<string, unknown> = {};
+      for (const m of ['innerJoin', 'where', 'andWhere', 'select', 'orderBy', 'addOrderBy']) {
+        q[m] = (...args: unknown[]) => { llamadas.push({ repo, metodo: m, args }); return q; };
+      }
+      q.getMany = () => Promise.resolve(filas);
+      q.getRawMany = () => Promise.resolve(raw);
+      return q;
+    };
+    const progreso = [{ studentId: 7, learningUnitId: 1, mastery: 80, successRate: 50 }];
+    const entregas = [{ studentId: 7, status: 'graded' }];
+    const repos = new Map<unknown, unknown>([
+      [Class, { findOne: () => Promise.resolve({ id: 3, name: 'ALGO', code: 'ALGO', teacherId: 10 }) }],
+      [Enrollment, { find: () => Promise.resolve([{ studentId: 7, student: { fullName: 'Andrés', email: 'a@x' } }]) }],
+      [LearningProgress, { createQueryBuilder: () => qb('progreso', progreso) }],
+      [Submission, { createQueryBuilder: () => qb('entregas', entregas) }],
+      [LearningUnit, { createQueryBuilder: () => qb('unidades', [], unidadesDeLaClase.map((id) => ({ id, title: 'U', sectionTitle: 'S' }))) }],
+    ]);
+    const service = new AnalyticsService({ getRepository: (e: unknown) => repos.get(e) } as unknown as Deps[0], {} as unknown as Deps[1]);
+    return { service, llamadas };
+  }
+
+  it('el progreso y las entregas se filtran por las unidades de la clase', async () => {
+    const { service, llamadas } = crear([1, 2]);
+    const r = await service.getClassMetrics(3, { id: 10, role: 'docente' });
+    expect(llamadas).toContainEqual({ repo: 'progreso', metodo: 'andWhere', args: ['p.learningUnitId IN (:...idsUnidad)', { idsUnidad: [1, 2] }] });
+    expect(llamadas).toContainEqual({ repo: 'entregas', metodo: 'andWhere', args: ['a.learningUnitId IN (:...idsUnidad)', { idsUnidad: [1, 2] }] });
+    expect(r?.studentRankings[0]).toMatchObject({ studentId: 7, avgMastery: 80, submissionsCount: 1 });
+  });
+
+  it('una clase sin unidades no lee progreso de otras clases: todo en cero', async () => {
+    const { service, llamadas } = crear([]);
+    const r = await service.getClassMetrics(3, { id: 10, role: 'docente' });
+    expect(llamadas.some((l) => l.repo === 'progreso' || l.repo === 'entregas')).toBe(false);
+    expect(r?.studentRankings[0]).toMatchObject({ avgMastery: 0, submissionsCount: 0 });
   });
 });
