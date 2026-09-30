@@ -12,6 +12,19 @@ entry to the oldest.
 
 ---
 
+## Multimedia en las lecciones (paso 6) · 30 de Septiembre de 2026
+
+- **Recursos:** en el panel de lecciones, «Recurso» agrega un video, documento, presentación o actividad pegando su enlace o su
+  código para insertar: YouTube, Vimeo, Google Drive (PDF, Word, PowerPoint, videos), Google Docs, Slides, Sheets y Forms, Genially,
+  Canva, Scratch, PhET y Word/PowerPoint públicos (visor de Office). El servidor reconoce el sitio y **arma** la dirección de
+  inserción; el HTML pegado nunca se guarda y otro sitio queda como enlace. La pantalla vuelve a comprobar la lista antes del iframe.
+- **Imágenes:** subidas (PNG, JPG, GIF o WebP por su firma, 1 MB cada una, 50 MB por docente; en la base, entran en la copia
+  diaria) o por enlace https, con descripción obligatoria para lectores de pantalla.
+- **Verificado** en Chrome sobre la web real (docente agrega 4 recursos, el estudiante los ve; enlace `javascript:` rechazado;
+  un HTML disfrazado de PNG rechazado; un estudiante no puede subir). Pruebas: 934/934 (96 suites). Migración 1790100000000.
+- **Documentos:** `docs/ANALISIS_DECISIONES_2026-09-30.md` (revisión de las decisiones del proyecto) y `docs/DISENO_PROYECTOS.md`
+  (el espacio de programación del estudiante, pendiente de aprobación).
+
 ## Mapa de calor del docente (paso 6) · 30 de Septiembre de 2026
 
 «¿A quién ayudo ahora?» en **Rendimiento**: una matriz de estudiantes × unidades con el dominio y el estado de cada
