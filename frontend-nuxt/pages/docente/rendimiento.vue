@@ -77,7 +77,7 @@
           </span>
           <div class="flex items-baseline gap-2">
             <span class="text-2xl font-bold font-mono" :class="metrics.metrics.avgClassMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
-              {{ metrics.metrics.avgClassMastery }}%
+              {{ porcentaje(metrics.metrics.avgClassMastery) }}
             </span>
             <span class="text-[11px] text-base-texto-secundario">del curso</span>
           </div>
@@ -96,7 +96,7 @@
           </span>
           <div class="flex items-baseline gap-2">
             <span class="text-2xl font-bold font-mono text-base-texto-primario">
-              {{ metrics.metrics.avgClassSuccessRate }}%
+              {{ porcentaje(metrics.metrics.avgClassSuccessRate) }}
             </span>
             <span class="text-[11px] text-base-texto-secundario">en envíos</span>
           </div>
@@ -192,10 +192,10 @@
                   {{ st.email }}
                 </td>
                 <td class="p-3 text-center font-mono font-bold" :class="st.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
-                  {{ st.avgMastery }}%
+                  {{ porcentaje(st.avgMastery) }}
                 </td>
                 <td class="p-3 text-center font-mono text-base-texto-primario">
-                  {{ st.successRate }}%
+                  {{ porcentaje(st.successRate) }}
                 </td>
                 <td class="p-3 text-center font-mono text-base-texto-secundario">
                   {{ st.submissionsCount }}
@@ -229,6 +229,7 @@
 </template>
 
 <script setup lang="ts">
+import { porcentaje } from '~/utils/porcentaje'
 import { useApi } from '~/composables/useApi'
 const { messageOf } = useApiErrorMessage()
 

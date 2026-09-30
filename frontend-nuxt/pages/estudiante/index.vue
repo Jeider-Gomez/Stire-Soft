@@ -3,7 +3,7 @@
     <!-- BARRA SUPERIOR: Contexto de Asignatura y Selector de Clases -->
     <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
       <div class="flex items-center gap-2">
-        <span class="text-lg">🏛️</span>
+        <Landmark :size="20" class="text-acento-ambar-fuerte shrink-0" aria-hidden="true" />
         <div>
           <span class="text-[10px] font-bold uppercase tracking-wider text-acento-ambar-fuerte">
             Asignatura Activa
@@ -21,7 +21,7 @@
         <NuxtLink
           to="/estudiante/clases"
           class="borde-afordancia px-3 py-1.5 rounded-md text-xs font-semibold text-base-texto-primario bg-base-blanco hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 shadow-sm">
-          <span>📚</span>
+          <Library :size="14" aria-hidden="true" />
           <span>Mis Clases ({{ studentStore.enrolledClasses.length }})</span>
         </NuxtLink>
       </div>
@@ -37,9 +37,9 @@
         'bg-semantico-falla/10 border-semantico-falla/30 text-semantico-falla': myRoleRequest.status === 'rejected'
       }">
       <div class="flex items-center gap-2">
-        <span v-if="myRoleRequest.status === 'pending'">⏳</span>
-        <span v-else-if="myRoleRequest.status === 'approved'">🎉</span>
-        <span v-else>⚠️</span>
+        <Clock v-if="myRoleRequest.status === 'pending'" :size="14" aria-hidden="true" />
+        <PartyPopper v-else-if="myRoleRequest.status === 'approved'" :size="14" aria-hidden="true" />
+        <AlertTriangle v-else :size="14" aria-hidden="true" />
 
         <span v-if="myRoleRequest.status === 'pending'" class="font-medium">
           Tu solicitud para ser docente está pendiente
@@ -63,8 +63,8 @@
 
     <!-- ESTADO VACÍO SI NO ESTÁ MATRICULADO -->
     <section v-if="!studentStore.isSyncing && studentStore.enrolledClasses.length === 0" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-8 text-center space-y-4 shadow-sm">
-      <div class="w-16 h-16 bg-acento-ambar/15 text-acento-ambar-fuerte rounded-full flex items-center justify-center text-3xl mx-auto">
-        🎓
+      <div class="w-16 h-16 bg-acento-ambar/15 text-acento-ambar-fuerte rounded-full flex items-center justify-center mx-auto">
+        <GraduationCap :size="30" aria-hidden="true" />
       </div>
       <div class="max-w-md mx-auto space-y-1">
         <h2 class="text-base font-bold text-base-texto-primario">¡Bienvenido a STIRE!</h2>
@@ -75,7 +75,7 @@
       <NuxtLink
         to="/estudiante/clases"
         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors shadow-sm">
-        <span>🔑</span>
+        <KeyRound :size="14" aria-hidden="true" />
         <span>Ingresar Código de Clase</span>
       </NuxtLink>
     </section>
@@ -109,7 +109,7 @@
                 :style="{ width: `${studentStore.activeUnit.masteryPercentage}%` }"></div>
             </div>
             <span class="text-xs font-semibold text-base-texto-primario">
-              {{ studentStore.activeUnit.masteryPercentage }}% de Dominio
+              {{ studentStore.activeUnit.masteryPercentage }} % de dominio en esta unidad
             </span>
           </div>
         </div>
@@ -148,8 +148,10 @@
           <NuxtLink
             to="/estudiante/repasos"
             class="borde-afordancia px-4 py-2.5 rounded-lg bg-base-bg-secundario text-center text-xs font-semibold text-base-texto-primario flex items-center justify-center gap-1.5">
-            <span>🧠</span>
-            <span>Repasar conceptos ({{ studentStore.reviews.length }})</span>
+            <Brain :size="14" aria-hidden="true" />
+            <span v-if="!studentStore.hasLoaded">Repasos</span>
+            <span v-else-if="studentStore.reviewsDueToday.length">Repasar ({{ studentStore.reviewsDueToday.length }} para hoy)</span>
+            <span v-else>Repasos: ninguno para hoy</span>
           </NuxtLink>
         </div>
       </section>
@@ -158,27 +160,27 @@
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
           <p class="text-[11px] text-base-texto-secundario font-medium">Dominio</p>
-          <p class="text-xl font-bold mt-1" :class="studentStore.analytics.avgMastery >= 70 ? 'text-semantico-pasa' : studentStore.analytics.avgMastery >= 40 ? 'text-acento-ambar-fuerte' : 'text-base-texto-primario'">{{ studentStore.analytics.avgMastery }}%</p>
-          <!-- Antes decía «Supera umbral de 70%» siempre, también con 0 %. -->
-          <span class="text-[10px] text-base-texto-secundario">{{ studentStore.analytics.avgMastery >= 70 ? 'Ya dominas lo que llevas' : 'La meta es llegar al 70 %' }}</span>
+          <p class="text-xl font-bold mt-1" :class="studentStore.analytics.avgMastery >= DOMINADO ? 'text-semantico-pasa' : studentStore.analytics.avgMastery >= 40 ? 'text-acento-ambar-fuerte' : 'text-base-texto-primario'">{{ studentStore.hasLoaded ? `${studentStore.analytics.avgMastery} %` : '—' }}</p>
+          <!-- El umbral es el mismo del servidor: una unidad está «Dominada» desde el 85 % (antes aquí decía 70 %). -->
+          <span class="text-[10px] text-base-texto-secundario">{{ studentStore.analytics.avgMastery >= DOMINADO ? 'Ya dominas lo que llevas' : `La meta es llegar al ${DOMINADO} %` }}</span>
         </div>
 
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
           <p class="text-[11px] text-base-texto-secundario font-medium">Éxito en tus entregas</p>
-          <p class="text-xl font-bold text-base-texto-primario mt-1">{{ studentStore.analytics.avgSuccessRate }}%</p>
+          <p class="text-xl font-bold text-base-texto-primario mt-1">{{ studentStore.hasLoaded ? `${studentStore.analytics.avgSuccessRate} %` : '—' }}</p>
           <span class="text-[10px] text-base-texto-secundario">De tus entregas</span>
         </div>
 
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
           <p class="text-[11px] text-base-texto-secundario font-medium">Racha de Aprendizaje</p>
-          <p class="text-xl font-bold text-acento-ambar-fuerte mt-1">🔥 {{ plural(studentStore.analytics.streakDays, 'día', 'días') }}</p>
+          <p class="text-xl font-bold text-acento-ambar-fuerte mt-1 flex items-center gap-1.5"><Flame :size="18" aria-hidden="true" /> {{ studentStore.hasLoaded ? plural(studentStore.analytics.streakDays, 'día', 'días') : '—' }}</p>
           <span class="text-[10px] text-base-texto-secundario">Constancia formativa</span>
         </div>
 
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
           <p class="text-[11px] text-base-texto-secundario font-medium">Ejercicios Completados</p>
-          <p class="text-xl font-bold text-semantico-info mt-1">{{ studentStore.analytics.completedExercises }}</p>
-          <span class="text-[10px] text-base-texto-secundario">En el período activo</span>
+          <p class="text-xl font-bold text-semantico-info mt-1">{{ studentStore.hasLoaded ? studentStore.analytics.completedExercises : '—' }}</p>
+          <span class="text-[10px] text-base-texto-secundario">Desde que empezaste</span>
         </div>
       </section>
 
@@ -186,7 +188,7 @@
       <section class="space-y-4">
         <div class="flex items-center justify-between">
           <h2 class="text-base font-bold text-base-texto-primario flex items-center gap-2">
-            <span>🗺️</span> Plan Curricular de la Asignatura
+            <MapIcon :size="18" class="text-acento-ambar-fuerte" aria-hidden="true" /> Plan de la asignatura
           </h2>
           <span class="text-xs text-base-texto-secundario">
             {{ studentStore.modules.length }} Módulos disponibles
@@ -245,19 +247,21 @@
                     {{ unit.description }}
                   </p>
 
-                  <!-- Desglose de actividades con pesos -->
-                  <div v-if="unit.activities && unit.activities.length > 0" class="flex items-center gap-1.5 flex-wrap pt-1">
-                    <span class="text-[10px] text-base-texto-secundario font-medium mr-1">Actividades ponderadas:</span>
-                    <NuxtLink
-                      v-for="act in unit.activities"
-                      :key="act.id"
-                      :to="`/estudiante/evaluacion/${act.id}`"
-                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border border-base-borde-fuerte bg-base-blanco hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors">
-                      <span>{{ getActivityIcon(act.title) }}</span>
-                      <span class="font-semibold">{{ act.title }}</span>
-                      <span class="text-acento-ambar-fuerte font-bold">({{ Math.round((act.adaptiveWeight || 1) * 100) }}%)</span>
-                    </NuxtLink>
-                  </div>
+                  <!-- Ejercicios de la unidad, plegados: con todos abiertos la página medía ~7800 px en un teléfono. -->
+                  <details v-if="unit.activities && unit.activities.length > 0" class="pt-1 group">
+                    <summary class="text-[11px] font-semibold text-acento-ambar-fuerte cursor-pointer select-none w-fit">
+                      Ver {{ plural(unit.activities.length, 'ejercicio', 'ejercicios') }}
+                    </summary>
+                    <ul class="flex items-center gap-1.5 flex-wrap pt-2">
+                      <li v-for="act in unit.activities" :key="act.id">
+                        <NuxtLink
+                          :to="`/estudiante/evaluacion/${act.id}`"
+                          class="inline-flex items-center px-2 py-1 rounded text-[11px] border border-base-borde-fuerte bg-base-blanco hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors">
+                          {{ act.title }}
+                        </NuxtLink>
+                      </li>
+                    </ul>
+                  </details>
                 </div>
 
                 <!-- Acciones de Unidad -->
@@ -266,12 +270,12 @@
                     v-if="unit.exerciseActivityId"
                     :to="`/estudiante/evaluacion/${unit.exerciseActivityId}`"
                     class="px-3.5 py-1.5 rounded-md text-xs font-semibold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar shadow-sm transition-colors flex items-center gap-1">
-                    <span>▶</span>
+                    <Play :size="12" aria-hidden="true" />
                     <span>Practicar</span>
                   </NuxtLink>
 
                   <span v-else class="text-xs text-base-texto-secundario px-2 py-1 flex items-center gap-1">
-                    <span>🔒</span>
+                    <Lock :size="12" aria-hidden="true" />
                     <span>Próximamente</span>
                   </span>
                 </div>
@@ -286,7 +290,10 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { RotateCcw, TrendingUp, AlertTriangle } from 'lucide-vue-next'
+import { RotateCcw, TrendingUp, AlertTriangle, Landmark, Library, Clock, PartyPopper, GraduationCap, KeyRound, Brain, Flame, Map as MapIcon, Play, Lock } from 'lucide-vue-next'
+
+/** Una unidad está «Dominada» desde este porcentaje; es el mismo umbral del servidor (learning-progress.service.ts). */
+const DOMINADO = 85
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
@@ -388,13 +395,5 @@ function getStatusLabel(status: UnitStatus) {
     case 'por-iniciar': return 'Por Iniciar'
     case 'bloqueado': return 'Bloqueado 🔒'
   }
-}
-
-function getActivityIcon(title: string): string {
-  const t = title.toLowerCase()
-  if (t.includes('quiz') || t.includes('mcq')) return '📝'
-  if (t.includes('completar') || t.includes('fill')) return '🧩'
-  if (t.includes('código') || t.includes('desafío') || t.includes('coding')) return '💻'
-  return '⚡'
 }
 </script>

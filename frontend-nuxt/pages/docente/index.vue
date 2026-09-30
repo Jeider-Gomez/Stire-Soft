@@ -66,7 +66,7 @@
             </div>
             <span class="text-[10px] font-bold text-stire-teal-dark">Dominio</span>
           </div>
-          <p class="text-2xl font-poppins font-bold text-slate-800">{{ avgMastery }}%</p>
+          <p class="text-2xl font-poppins font-bold text-slate-800">{{ porcentaje(avgMastery) }}</p>
           <!-- Micro barra de progreso -->
           <div class="mt-2 h-1.5 bg-slate-100 rounded-full overflow-hidden">
             <div
@@ -298,7 +298,7 @@
                 class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
                 :class="cls.avgMastery >= 70 ? 'bg-stire-success/10 text-stire-success' : 'bg-stire-warning/10 text-stire-warning'"
               >
-                {{ cls.avgMastery }}%
+                {{ porcentaje(cls.avgMastery) }}
               </span>
             </NuxtLink>
 
@@ -540,6 +540,7 @@
 </template>
 
 <script setup lang="ts">
+import { porcentaje } from '~/utils/porcentaje'
 import {
   Plus, Users, TrendingUp, BookOpen, AlertTriangle,
   Mail, Check, Copy, QrCode, UserCheck

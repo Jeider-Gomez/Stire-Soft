@@ -14,20 +14,20 @@
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
         <span class="text-xs text-base-texto-secundario block font-medium">Dominio general</span>
-        <span class="text-2xl font-bold mt-1 block" :class="masteryColor(studentStore.analytics.avgMastery)">{{ studentStore.analytics.avgMastery }}%</span>
-        <span class="text-[10px] text-base-texto-secundario">{{ getMasteryLevelName(studentStore.analytics.avgMastery) }}</span>
+        <span class="text-2xl font-bold mt-1 block" :class="masteryColor(studentStore.analytics.avgMastery)">{{ studentStore.hasLoaded ? `${studentStore.analytics.avgMastery} %` : '—' }}</span>
+        <span class="text-[10px] text-base-texto-secundario">{{ studentStore.hasLoaded ? getMasteryLevelName(studentStore.analytics.avgMastery) : 'Cargando…' }}</span>
       </div>
 
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
         <span class="text-xs text-base-texto-secundario block font-medium">Ejercicios Completados</span>
-        <span class="text-2xl font-bold text-base-texto-primario mt-1 block">{{ studentStore.analytics.completedExercises }}</span>
-        <span class="text-[10px] text-base-texto-secundario">{{ Math.round(studentStore.analytics.avgSuccessRate) }}% de éxito en tus envíos</span>
+        <span class="text-2xl font-bold text-base-texto-primario mt-1 block">{{ studentStore.hasLoaded ? studentStore.analytics.completedExercises : '—' }}</span>
+        <span class="text-[10px] text-base-texto-secundario">{{ studentStore.hasLoaded ? `${Math.round(studentStore.analytics.avgSuccessRate)} % de éxito en tus envíos` : 'Cargando…' }}</span>
       </div>
 
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
-        <span class="text-xs text-base-texto-secundario block font-medium">Repasos Pendientes</span>
-        <span class="text-2xl font-bold text-acento-ambar-fuerte mt-1 block">{{ studentStore.reviews.length }}</span>
-        <span class="text-[10px] text-base-texto-secundario">Para hoy</span>
+        <span class="text-xs text-base-texto-secundario block font-medium">Repasos para hoy</span>
+        <span class="text-2xl font-bold text-acento-ambar-fuerte mt-1 block">{{ studentStore.hasLoaded ? studentStore.reviewsDueToday.length : '—' }}</span>
+        <span class="text-[10px] text-base-texto-secundario">{{ !studentStore.hasLoaded ? 'Cargando…' : studentStore.reviews.length > studentStore.reviewsDueToday.length ? `${studentStore.reviews.length - studentStore.reviewsDueToday.length} más en los próximos días` : 'Vencidos o de hoy' }}</span>
       </div>
     </section>
 
@@ -44,7 +44,7 @@
         </div>
 
         <span class="text-xs text-base-texto-secundario font-medium">
-          Umbral de maestría: 70%
+          Dominado: 85 % o más
         </span>
       </div>
 
@@ -187,12 +187,14 @@ function masteryColor(p: number) {
   return 'text-base-texto-primario'
 }
 
+// Mismos cortes que el servidor (learning-progress.service.ts: <20 explorado, <60 en práctica, <85 comprensión
+// parcial, si no dominado). Antes esta pantalla usaba 70 y 40 y podía nombrar distinto el estado de una unidad.
 function getMasteryLevelName(percentage: number) {
   if (percentage >= 85) return 'Dominado'
-  if (percentage >= 70) return 'Comprensión Parcial'
-  if (percentage >= 40) return 'En Práctica'
+  if (percentage >= 60) return 'Comprensión parcial'
+  if (percentage >= 20) return 'En práctica'
   if (percentage > 0) return 'Explorado'
-  return 'No Visto'
+  return 'No visto'
 }
 </script>
 

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { computed } from 'vue'
 import type { CourseModule, LearningUnit, SpacedReviewItem, StudentAnalytics, UnitStatus } from '~/types'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from './auth'
@@ -30,6 +31,10 @@ export const useStudentStore = defineStore('student', () => {
 
   // Repasos de repetición espaciada: cargados en vivo desde GET /review-schedules/due (SM-2)
   const reviews = ref<SpacedReviewItem[]>([])
+  /** Solo los repasos que tocan hoy (vencidos o críticos): los de mañana o al día no son «pendientes para hoy». */
+  const reviewsDueToday = computed(() => reviews.value.filter((r) => r.urgency === 'vencido' || r.urgency === 'critico'))
+  /** false hasta la primera carga completa: mientras tanto las pantallas muestran «—», no un 0 que parece real. */
+  const hasLoaded = ref(false)
 
   // Analítica real: cargada en vivo desde GET /analytics/student/:id
   const analytics = ref<StudentAnalytics>({
@@ -323,6 +328,7 @@ export const useStudentStore = defineStore('student', () => {
       lastSyncTime.value = `Sincronizado ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
     } finally {
       isSyncing.value = false
+      hasLoaded.value = true
     }
   }
 
@@ -336,6 +342,8 @@ export const useStudentStore = defineStore('student', () => {
     lastSyncTime,
     modules,
     reviews,
+    reviewsDueToday,
+    hasLoaded,
     analytics,
     activeUnit,
     selectClass,
