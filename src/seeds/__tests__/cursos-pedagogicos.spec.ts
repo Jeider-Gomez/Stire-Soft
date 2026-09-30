@@ -1,6 +1,6 @@
 import { EvaluationEngineService } from '../../evaluation-engine/evaluation-engine.service';
 import { validateHtmlCssConfig } from '../../evaluation-engine/html-css/html-css.validator';
-import { HardenedProcessSandboxAdapter } from '../../judge-engine/hardened-process-sandbox.adapter';
+import { HardenedProcessSandboxAdapter, SANDBOX_LIMITS } from '../../judge-engine/hardened-process-sandbox.adapter';
 import { StudentQuestionDto } from '../../activity-questions/dto/student-question.dto';
 import { QuestionType } from '../../common/enums/question-type.enum';
 import { HIGHLIGHT_LANGUAGES } from '../../common/code-languages';
@@ -21,6 +21,12 @@ import {
 // puntos, el error común no, y ninguna respuesta llega al estudiante. Un ejercicio mal planteado frustra a un
 // estudiante real; por eso se prueba antes de crearlo.
 jest.setTimeout(120_000);
+
+// Esta prueba comprueba que cada ejercicio está bien planteado, no la velocidad de la máquina. Con la suite completa
+// en paralelo, arrancar Node tardó más de los 2000 ms del juez y una solución correcta salió «time_limit (2032 ms)»
+// (30/09; «Tabla de multiplicar», la misma falla intermitente del 29/09, ya con su causa a la vista). Aquí el juez tiene
+// 10 s; en la aplicación sigue con su límite real.
+jest.mock('../../judge-engine/sandbox-limits', () => ({ SANDBOX_TIMEOUT_MS: 10_000 }));
 
 const CURSOS: Curso[] = [cursoFundamentos203413, cursoPensamientoAlgoritmico];
 const PUNTOS = 100;
@@ -47,6 +53,10 @@ async function casosQuePasan(e: Programar, codigo: string, hastaFallar = false):
   }
   return resultados;
 }
+
+it('el juez de esta prueba usa el límite ampliado (si no, la falla intermitente vuelve)', () => {
+  expect(SANDBOX_LIMITS.timeoutMs).toBe(10_000);
+});
 
 describe.each(CURSOS.map((c) => [c.nombre, c] as const))('Curso «%s»', (_nombre, curso) => {
   const ejercicios = todosLosEjercicios(curso);
