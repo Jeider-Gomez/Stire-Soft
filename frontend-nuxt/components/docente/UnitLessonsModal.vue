@@ -24,6 +24,11 @@
               <Plus :size="14" aria-hidden="true" /> Nueva lección
             </button>
             <button
+              @click="abrirRecurso(null)"
+              class="px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-acento-ambar-fuerte font-bold text-xs hover:bg-acento-ambar/10 inline-flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+              <ImagePlus :size="14" aria-hidden="true" /> Recurso
+            </button>
+            <button
               @click="handleClose"
               class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
               aria-label="Cerrar lecciones">
@@ -54,13 +59,17 @@
             <li
               v-for="(item, idx) in sortedLessons"
               :key="item.id"
-              class="p-3 rounded-lg border border-base-borde-sutil flex items-center justify-between gap-3 hover:border-base-borde-fuerte transition-colors">
+              class="p-3 rounded-lg border border-base-borde-sutil hover:border-base-borde-fuerte transition-colors space-y-3">
+              <div class="flex items-center justify-between gap-3">
               <button type="button" @click="openEditForm(item)" class="flex-1 min-w-0 text-left rounded focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
                 <span class="flex items-center gap-2">
                   <span class="font-bold text-base-texto-primario truncate">{{ item.title }}</span>
                   <span v-if="item.isVisible === false" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-base-texto-secundario/20 text-base-texto-secundario">Oculta</span>
                 </span>
-                <span v-if="item.body" class="block text-base-texto-secundario text-[11px] truncate mt-0.5">{{ excerpt(item.body) }}</span>
+                <span v-if="esRecurso(item.type)" class="block text-base-texto-secundario text-[11px] truncate mt-0.5">
+                  {{ item.type === 'image' ? 'Imagen' : (NOMBRE_PROVEEDOR[String(item.metadata?.provider)] ?? 'Recurso') }}
+                </span>
+                <span v-else-if="item.body" class="block text-base-texto-secundario text-[11px] truncate mt-0.5">{{ excerpt(item.body) }}</span>
               </button>
 
               <div class="flex items-center gap-0.5 shrink-0">
@@ -81,6 +90,12 @@
                   <Eye v-if="item.isVisible !== false" :size="16" aria-hidden="true" />
                   <EyeOff v-else :size="16" aria-hidden="true" />
                 </button>
+                <button v-if="esRecurso(item.type)" @click="vistaPreviaId = vistaPreviaId === item.id ? null : item.id"
+                  :aria-expanded="vistaPreviaId === item.id"
+                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                  :aria-label="`Vista previa de ${item.title}`" title="Vista previa">
+                  <ScanEye :size="16" aria-hidden="true" />
+                </button>
                 <button @click="openEditForm(item)"
                   class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                   :aria-label="`Editar ${item.title}`" title="Editar">
@@ -92,6 +107,8 @@
                   <Trash2 :size="16" aria-hidden="true" />
                 </button>
               </div>
+              </div>
+              <LessonResource v-if="vistaPreviaId === item.id" :type="item.type" :title="item.title" :metadata="item.metadata" />
             </li>
           </ul>
 
@@ -122,10 +139,19 @@
     :error="formError"
     @cancel="cancelForm"
     @save="onEditorSave" />
+
+  <DocenteResourceForm
+    v-if="recursoForm.open && unit"
+    :unit-id="unit.id"
+    :order="recursoForm.order"
+    :recurso="recursoForm.recurso"
+    @cancel="recursoForm.open = false"
+    @saved="onRecursoGuardado" />
 </template>
 
 <script setup lang="ts">
-import { Plus, X, FileText, ChevronUp, ChevronDown, Eye, EyeOff, Pencil, Trash2 } from 'lucide-vue-next'
+import { Plus, X, FileText, ChevronUp, ChevronDown, Eye, EyeOff, Pencil, Trash2, ImagePlus, ScanEye } from 'lucide-vue-next'
+import { NOMBRE_PROVEEDOR } from '~/utils/recursoSeguro'
 import { useApi } from '~/composables/useApi'
 
 interface LessonItem {
@@ -134,9 +160,15 @@ interface LessonItem {
   title: string
   type: string
   body: string
+  metadata?: Record<string, unknown> | null
   order: number
   isVisible: boolean
 }
+
+/** Video, PDF, imagen o recurso insertado (paso 6): se editan con su propio formulario, no con el editor de texto. */
+const esRecurso = (type: string) => ['video', 'pdf', 'image', 'embed'].includes(type)
+const vistaPreviaId = ref<number | null>(null)
+const recursoForm = reactive({ open: false, order: 0, recurso: null as LessonItem | null })
 
 const props = defineProps<{
   unit: { id: number; title: string } | null
@@ -197,7 +229,8 @@ async function openModal(opts: { create?: boolean; editId?: number } = {}) {
 useEscapeToClose(
   () => isOpen.value,
   () => {
-    if (showForm.value) cancelForm()
+    if (recursoForm.open) recursoForm.open = false
+    else if (showForm.value) cancelForm()
     else if (lessonToDelete.value) lessonToDelete.value = null
     else handleClose()
   }
@@ -229,7 +262,24 @@ function openCreateForm() {
   showForm.value = true
 }
 
+function abrirRecurso(recurso: LessonItem | null) {
+  const maxOrder = lessons.value.reduce((max, l) => Math.max(max, l.order ?? 0), 0)
+  Object.assign(recursoForm, { open: true, order: recurso?.order ?? maxOrder + 1, recurso })
+}
+
+function onRecursoGuardado(guardado: Pick<LessonItem, 'id' | 'title' | 'type' | 'metadata' | 'order'>, creado: boolean) {
+  const previo = lessons.value.find((l) => l.id === guardado.id)
+  const recurso: LessonItem = { learningUnitId: props.unit?.id ?? 0, body: '', isVisible: previo?.isVisible ?? true, ...previo, ...guardado }
+  const idx = lessons.value.findIndex((l) => l.id === recurso.id)
+  if (idx === -1) lessons.value.push(recurso)
+  else lessons.value[idx] = recurso
+  feedbackMsg.value = creado ? `Recurso «${recurso.title}» agregado. Ya lo ven tus estudiantes.` : `Recurso «${recurso.title}» guardado.`
+  recursoForm.open = false
+  vistaPreviaId.value = recurso.id
+}
+
 function openEditForm(lesson: LessonItem) {
+  if (esRecurso(lesson.type)) { abrirRecurso(lesson); return }
   Object.assign(formState, { isEditing: true, id: lesson.id, title: lesson.title, body: lesson.body || '', order: lesson.order })
   formError.value = null
   showForm.value = true

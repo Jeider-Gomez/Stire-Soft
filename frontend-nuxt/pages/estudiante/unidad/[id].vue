@@ -48,7 +48,8 @@
           <h2 v-if="content.title" class="text-sm font-bold text-base-texto-primario">
             {{ content.title }}
           </h2>
-          <div class="prose prose-xs space-y-3" v-html="formatMarkdown(content.body)" />
+          <LessonResource v-if="esRecurso(content.type)" :type="content.type ?? ''" :title="content.title" :metadata="content.metadata" />
+          <div v-else class="prose prose-xs space-y-3" v-html="formatMarkdown(content.body)" />
         </section>
       </article>
       <article v-else class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 text-xs text-base-texto-secundario">
@@ -209,7 +210,12 @@ interface ContentBlock {
   id: number
   title: string
   body: string
+  type?: string
+  metadata?: Record<string, unknown> | null
 }
+
+/** Video, PDF, imagen o recurso insertado (paso 6); el resto es texto en Markdown. */
+const esRecurso = (type?: string) => ['video', 'pdf', 'image', 'embed'].includes(type ?? '')
 
 interface ActivitySummary {
   id: number

@@ -23,8 +23,10 @@ export function useApi() {
       headers?: Record<string, string>
     } = {}
   ): Promise<T> {
+    // Con un archivo (FormData) el navegador pone el Content-Type con su «boundary»; forzar JSON rompería la subida.
+    const esArchivo = typeof FormData !== 'undefined' && options.body instanceof FormData
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      ...(esArchivo ? {} : { 'Content-Type': 'application/json' }),
       ...(options.headers || {}),
       ...(authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {})
     }
