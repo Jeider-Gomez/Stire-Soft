@@ -50,6 +50,9 @@ services:
       SMTP_PASS: ${SMTP_PASS:-}
       MAIL_FROM: ${MAIL_FROM:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-flash-latest}
+      # Proyectos (docs/DISENO_PROYECTOS.md): «piloto» = solo docentes, admins y estudiantes de las clases piloto.
+      PROYECTOS_MODO: ${PROYECTOS_MODO:-piloto}
+      PROYECTOS_CLASES_PILOTO: ${PROYECTOS_CLASES_PILOTO:-ALGO-203413-G2,SIM-6V738W}
     # Límites para que un ejercicio malicioso no tumbe la máquina completa. La VM de Azure tiene 4 GB y la comparte con
     # MariaDB y Caddy. Medido el 30/09: backend en reposo 143 MB y una ejecución del juez ~70 MB (hasta ~170 MB en el peor
     # caso, con 2 a la vez); 1,5 GB deja margen al backend y garantiza memoria a la base. En una máquina de 1-2 GB, 768m.

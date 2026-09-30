@@ -1,4 +1,6 @@
 import { NestFactory } from '@nestjs/core';
+import type { NestExpressApplication } from '@nestjs/platform-express';
+import { LIMITE_CUERPO_JSON } from './common/limite-cuerpo';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -8,7 +10,9 @@ import { applyCors, parseAllowedOrigins } from './common/cors-options';
 import { BufferedLogger } from './admin-system/buffered-logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { logger: new BufferedLogger() });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: new BufferedLogger() });
+  // Un proyecto puede pesar 200 KB (docs/DISENO_PROYECTOS.md); el límite por defecto de Express es 100 KB.
+  app.useBodyParser('json', { limit: LIMITE_CUERPO_JSON });
   const swaggerEnabled = isSwaggerEnabled();
 
   // Detrás de un proxy inverso (Caddy, Railway, etc.) la IP real llega en X-Forwarded-For; sin esto
