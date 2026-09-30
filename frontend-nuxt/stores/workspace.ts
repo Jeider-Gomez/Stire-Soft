@@ -32,10 +32,12 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const api = useApi()
   const authStore = useAuthStore()
 
+  // Sin tipo mientras carga: con 'coding' por defecto (o el tipo del ejercicio anterior) la pantalla pintaba el
+  // editor de código un instante antes del ejercicio real.
   const currentExercise = ref<WorkspaceExercise>({
     activityId: 0,
     questionId: 0,
-    questionType: 'coding',
+    questionType: '',
     title: 'Cargando ejercicio...',
     unitTitle: '',
     learningUnitId: 0,
@@ -56,6 +58,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
    * submitSolution() la consume al entregar.
    */
   const pendingAnswer = ref<Record<string, any> | null>(null)
+
+  /** Motivo por el que no se pudo cargar el ejercicio (se muestra en pantalla, no solo en la consola del sandbox). */
+  const loadError = ref<string | null>(null)
 
   const code = ref(currentExercise.value.initialCode)
   const htmlCode = ref('')
@@ -128,6 +133,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   async function loadActivity(activityId: number) {
     if (!activityId) return
     isLoadingExercise.value = true
+    loadError.value = null
+    currentExercise.value = { ...currentExercise.value, activityId, questionType: '', title: 'Cargando ejercicio...', description: '' }
     currentSubmissionId.value = null
     submissionResult.value = null
     pendingAnswer.value = null
@@ -235,6 +242,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const { messageOf } = useApiErrorMessage()
       const msg = messageOf(err, 'Error al cargar actividad')
       consoleLog.value.push(`⚠ Error al cargar actividad #${activityId}: ${msg}`)
+      loadError.value = msg
     } finally {
       isLoadingExercise.value = false
     }
@@ -515,6 +523,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   return {
     currentExercise,
     currentQuestion,
+    loadError,
     pendingAnswer,
     code,
     htmlCode,
