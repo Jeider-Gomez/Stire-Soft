@@ -4,6 +4,7 @@ import {
   ActividadParaRecomendar,
   Confianza,
   IntentoParaRecomendar,
+  nivelSaltadoHasta,
   recomendarSiguiente,
 } from './recomendar-siguiente';
 
@@ -179,3 +180,23 @@ describe('recomendarSiguiente', () => {
     expect(r.mensaje).not.toContain('\n');
   });
 });
+
+// El dominio usa el mismo cálculo que el recomendador para saber qué casillas se saltaron (mastery.calculator.ts).
+describe('nivelSaltadoHasta', () => {
+  const unidad = [act(1, B, QuestionType.MCQ), act(2, I, QuestionType.CODING), act(3, A, QuestionType.CODING)];
+
+  it('sin «Me siento seguro» no se salta nada, aunque acierte arriba', () => {
+    expect(nivelSaltadoHasta(unidad, [intento(2, 100)], 2)).toBe(-1);
+    expect(nivelSaltadoHasta(unidad, [intento(2, 100)], null)).toBe(-1);
+  });
+
+  it('con «Me siento seguro», el nivel más alto acertado al primer intento', () => {
+    expect(nivelSaltadoHasta(unidad, [intento(2, 100)], 3)).toBe(1);
+    expect(nivelSaltadoHasta(unidad, [intento(2, 100), intento(3, 80)], 3)).toBe(2);
+  });
+
+  it('acertar después de fallar no cuenta como salto', () => {
+    expect(nivelSaltadoHasta(unidad, [intento(2, 10), intento(2, 100)], 3)).toBe(-1);
+  });
+});
+

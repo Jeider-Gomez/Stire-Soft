@@ -126,4 +126,27 @@ describe('calculateUnitMastery', () => {
       expect(calculateUnitMastery(submissions, [mcq(1), ordenar(3)])).toBe(50);
     });
   });
+
+  // Reto de salto (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.3). En la simulación del segundo salón (30/09), Julián dijo
+  // «Me siento seguro», acertó el reto intermedio y el recomendador dio la unidad por completa; el dominio quedó en 30 %
+  // porque contaba como pendientes las tres casillas básicas que ya no se le exigían.
+  describe('reto de salto', () => {
+    const base = { totalPoints: 100, adaptiveWeight: 1, activityType: { baseWeight: 1 } };
+    const basico = (id: number, questionType: string) => ({ id, difficulty: Difficulty.BASICO, questionType, ...base });
+    const intermedio = (id: number) => ({ id, difficulty: Difficulty.INTERMEDIO, questionType: 'coding', ...base });
+    const unidad = [basico(1, 'mcq'), basico(2, 'matching'), basico(3, 'coding'), intermedio(4)];
+
+    it('sin salto, las casillas básicas sin hacer cuentan como pendientes', () => {
+      expect(calculateUnitMastery([{ activityId: 4, score: 100 }], unidad)).toBe(25);
+    });
+
+    it('con el nivel básico saltado, las casillas básicas que nunca intentó no cuentan', () => {
+      expect(calculateUnitMastery([{ activityId: 4, score: 100 }], unidad, 1)).toBe(100);
+    });
+
+    it('una casilla saltada que sí intentó cuenta con su nota: el salto no borra evidencia', () => {
+      const submissions = [{ activityId: 4, score: 100 }, { activityId: 1, score: 0 }];
+      expect(calculateUnitMastery(submissions, unidad, 1)).toBe(50);
+    });
+  });
 });

@@ -1,5 +1,5 @@
 import { Difficulty } from '../enums/difficulty.enum';
-import { claveCasilla } from './casilla';
+import { claveCasilla, rangoNivel } from './casilla';
 
 // Visión funcional (docs/00_VISION_FUNCIONAL.md, pausa técnica 2026-09-15): el avance debe ser
 // proporcional al esfuerzo y la complejidad, no a la cantidad de clics. Repetir un ejercicio BASICO
@@ -28,10 +28,14 @@ function momento(submission: any): number {
  * - Si lo último que pasó en una casilla fue un repaso fallado, la casilla cuenta con esa nota: el dominio baja,
  *   como el nivel de una habilidad en Khan Academy.
  * Las actividades sin tipo de pregunta conocido son cada una su propia casilla (comportamiento anterior).
+ * - `nivelSaltadoHasta` (reto de salto, §3.3): las casillas de niveles inferiores que el estudiante nunca intentó no
+ *   cuentan, porque el recomendador ya no las exige. Sin esto, acertar el reto daba «Completaste la unidad» con un
+ *   dominio del 30 % (simulación del segundo salón, 30/09). Las que sí intentó cuentan con su nota, como siempre.
  */
 export function calculateUnitMastery(
   allSubmissions: any[],
-  activities: any[]
+  activities: any[],
+  nivelSaltadoHasta = -1,
 ): number {
   const casillas = new Map<string, any[]>();
   for (const activity of activities) {
@@ -57,6 +61,8 @@ export function calculateUnitMastery(
       ratio = Math.max(ratio, (bestScore / activity.totalPoints) * decayFactor);
       weight = Math.max(weight, activity.adaptiveWeight * (activity.activityType?.baseWeight || 1));
     }
+
+    if (enCasilla.length === 0 && rangoNivel(hermanas[0].difficulty) < nivelSaltadoHasta) continue;
 
     const ultimo = enCasilla.sort((a, b) => momento(a.s) - momento(b.s))[enCasilla.length - 1];
     if (ultimo?.s.isReview) {

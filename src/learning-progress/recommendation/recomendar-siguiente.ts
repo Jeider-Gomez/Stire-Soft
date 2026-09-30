@@ -97,6 +97,28 @@ function aprueba(actividad: ActividadParaRecomendar, score: number): boolean {
   return actividad.totalPoints > 0 && (score / actividad.totalPoints) * 100 >= actividad.passingScore;
 }
 
+/**
+ * Reto de salto: con «Me siento seguro», acertar al primer intento una actividad de un nivel superior hace que los
+ * niveles de abajo dejen de exigirse (siguen disponibles). Devuelve el nivel (0 básico, 1 intermedio, 2 avanzado) desde
+ * el que se exige; -1 si no se saltó nada. Lo usan el recomendador y el cálculo del dominio, para que la unidad no diga
+ * «completada» con un dominio que todavía cuenta como pendientes las casillas saltadas.
+ */
+export function nivelSaltadoHasta(
+  actividades: Array<Pick<ActividadParaRecomendar, 'id' | 'difficulty' | 'totalPoints' | 'passingScore'>>,
+  intentos: IntentoParaRecomendar[],
+  confianza: Confianza | null,
+): number {
+  if (confianza !== CONFIANZA_SEGURO) return -1;
+  const calificados = intentos.filter((i) => i.calificado).sort((a, b) => a.fecha.getTime() - b.fecha.getTime());
+  const niveles = actividades
+    .filter((a) => {
+      const primero = calificados.find((i) => i.activityId === a.id);
+      return !!primero && a.totalPoints > 0 && (primero.score / a.totalPoints) * 100 >= a.passingScore;
+    })
+    .map((a) => rangoNivel(a.difficulty));
+  return Math.max(-1, ...niveles);
+}
+
 interface Casilla {
   clave: string;
   nivel: number;
@@ -124,10 +146,6 @@ export function recomendarSiguiente(entrada: EntradaRecomendador): Recomendacion
   // Misma regla que SubmissionsService.start: solo un límite positivo restringe.
   const quedanIntentos = (a: ActividadParaRecomendar) =>
     !(a.attemptsAllowed > 0) || intentos.filter((i) => i.activityId === a.id).length < a.attemptsAllowed;
-  const primerIntentoAprobado = (a: ActividadParaRecomendar) => {
-    const primero = calificados.find((i) => i.activityId === a.id);
-    return !!primero && aprueba(a, primero.score);
-  };
 
   // Casillas en orden pedagógico: nivel, luego tipo.
   const casillas: Casilla[] = [];
@@ -141,11 +159,8 @@ export function recomendarSiguiente(entrada: EntradaRecomendador): Recomendacion
 
   // Reto de salto: con «Me siento seguro», acertar al primer intento una actividad de un nivel superior hace que los
   // niveles de abajo dejen de exigirse (siguen disponibles).
-  const nivelSaltadoHasta =
-    entrada.confianza === CONFIANZA_SEGURO
-      ? Math.max(-1, ...actividades.filter(primerIntentoAprobado).map((a) => rangoNivel(a.difficulty)))
-      : -1;
-  const exigida = (c: Casilla) => c.nivel >= nivelSaltadoHasta;
+  const saltadoHasta = nivelSaltadoHasta(actividades, intentos, entrada.confianza);
+  const exigida = (c: Casilla) => c.nivel >= saltadoHasta;
   const pendientes = casillas.filter((c) => exigida(c) && !casillaAprobada(c));
   const completada = pendientes.length === 0;
   const nivelesConPendientes = [...new Set(pendientes.map((c) => c.nivel))].sort((a, b) => a - b);

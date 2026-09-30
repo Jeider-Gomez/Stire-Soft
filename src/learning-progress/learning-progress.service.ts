@@ -18,7 +18,7 @@ import { LearningUnit } from '../learning-unit/entities/learning-unit.entity';
 import { Topic } from '../topic/entities/topic.entity';
 import { Section } from '../section/entities/section.entity';
 import { LearningProgress } from './entities/learning-progress.entity';
-import { Confianza, MotivoRecomendacion, recomendarSiguiente } from './recommendation/recomendar-siguiente';
+import { Confianza, MotivoRecomendacion, nivelSaltadoHasta, recomendarSiguiente } from './recommendation/recomendar-siguiente';
 
 export interface NextActivityRecommendation {
   activityId: number;
@@ -70,7 +70,13 @@ export class LearningProgressService {
           .getMany()
       : [];
 
-    progress.mastery = calculateUnitMastery(submissions, activities);
+    // Con «Me siento seguro» y el reto acertado, las casillas saltadas que nunca intentó no cuentan (§3.3).
+    const saltadoHasta = nivelSaltadoHasta(
+      activities,
+      submissions.map((s) => ({ activityId: s.activityId, score: s.score, calificado: true, fecha: new Date(s.submittedAt ?? s.createdAt ?? 0) })),
+      esConfianza(progress.entryConfidence) ? progress.entryConfidence : null,
+    );
+    progress.mastery = calculateUnitMastery(submissions, activities, saltadoHasta);
     
     progress.attemptsCount += 1;
 
