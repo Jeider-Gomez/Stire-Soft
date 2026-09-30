@@ -12,6 +12,21 @@ entry to the oldest.
 
 ---
 
+## Segundo salón y un defecto del dominio (paso 5) · 30 de Septiembre de 2026
+
+- **Simulación del segundo salón:** Laura creó `ALGO-203413-G2` copiando ALGO-203413 con «Traer de otra clase» (122
+  ejercicios en una petición) y cuatro estudiantes con perfiles de confianza distintos siguieron «Continuar» en
+  producción. Andrés y Camila también tienen perfil de confianza. Informe:
+  `docs/cursos/SIMULACION_SEGUNDO_SALON_2026-09-30.md`.
+- **Defecto corregido:** con «Me siento seguro», acertar el reto hacía que el recomendador dijera «Completaste la unidad»
+  mientras el dominio seguía contando como pendientes las casillas básicas saltadas (Julián: 30 %). Ahora las casillas
+  saltadas que nunca intentó no cuentan. 9 pruebas nuevas.
+- **Pantalla del ejercicio:** ya no muestra un instante el editor de código antes de un ejercicio de otro tipo; si la
+  carga falla, lo dice en pantalla. 3 pruebas nuevas.
+- **Pruebas:** 884/884 (90 suites).
+
+---
+
 ## Editar las respuestas de un ejercicio (paso 4b y Fase 28) · 30 de Septiembre de 2026
 
 «Duplicar como variante» dejaba una copia idéntica: un ejercicio no se podía editar más que en título, enunciado,
