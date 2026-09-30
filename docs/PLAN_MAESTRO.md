@@ -293,6 +293,7 @@ Diseño: `docs/DISENO_PRACTICA_ADAPTATIVA.md`. Visión y referentes: `docs/inves
 | 5 | Simulación: segundo salón de Laura copiando ALGO-203413; personas con perfil de confianza | Claude Code | ✅ 30/09: `ALGO-203413-G2` creado copiando ALGO-203413 (122 ejercicios); 4 estudiantes siguen «Continuar» con perfiles de confianza distintos. Encontró y corrigió un defecto: el reto de salto dejaba «completada» con dominio bajo (`7121dc4`). Informe: `docs/cursos/SIMULACION_SEGUNDO_SALON_2026-09-30.md` |
 | 6 | Siguiente ola: mapa de calor del docente (bloqueados, tema difícil, listos para más, errores con seguridad) y multimedia en la unidad | Claude Code | ✅ 30/09: **mapa de calor** en Rendimiento y **multimedia en la unidad**: recursos por enlace o código para insertar (YouTube, Drive, Genially, Canva, Office, Scratch, PhET…) armados por el servidor desde una lista cerrada, e imágenes subidas (1 MB c/u, 50 MB por docente) o por enlace. Probado en Chrome sobre la web real. Queda para después: en el mapa, el nivel de ayuda del tutor |
 | 7 | **Proyectos**: espacio de programación propio del estudiante, con envío al docente como copia congelada | Claude Code | ⬜ diseño aprobado el 30/09 en `docs/DISENO_PROYECTOS.md` |
+| 8 | **Validación con el equipo**: rondas de 3 o 4 personas pensando en voz alta (guía en `docs/calidad/GUIA_RONDA_1_EQUIPO.md`) | Equipo | ⏸ pospuesta por decisión del dueño (30/09) hasta terminar el STI, para probarlo completo |
 
 ### 6.0 Fases cerradas y verificadas — ya no son trabajo pendiente
 
