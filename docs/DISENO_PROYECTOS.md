@@ -1,5 +1,5 @@
 ---
-estado:     propuesta — pendiente de aprobación del dueño del proyecto
+estado:     aprobado por el dueño del proyecto el 2026-09-30 (decisiones en §9)
 fecha:      2026-09-30
 ---
 
@@ -18,7 +18,7 @@ borra aunque el estudiante siga editando o borre el proyecto.
 | Curso | Tipo de proyecto | Cómo se ve |
 |---|---|---|
 | Con código (Fundamentos de Algoritmia) | **Página web** (HTML, CSS y JavaScript) | Vista previa en vivo en un `iframe` aislado, como la de los ejercicios HTML/CSS |
-| Con código | **Programa JavaScript** | «Ejecutar» con una entrada; lo corre el juez de siempre (2 s, sin red) |
+| Con código | **Programa JavaScript** | «Ejecutar» con una entrada, **en el navegador del estudiante** (Web Worker con límite de tiempo): no ocupa el servidor |
 | Sin tanto código (Pensamiento algorítmico) | **Algoritmo en pseudocódigo** | Texto paso a paso con resaltado |
 | Sin tanto código | **Diagrama de flujo** | Editor de diagramas (fase posterior: es lo más trabajoso) |
 
@@ -28,7 +28,7 @@ El editor es el mismo de toda la aplicación (CodeMirror 6).
 
 1. El estudiante pulsa **«Enviar al docente»** y elige una de sus clases (solo las que aceptan envíos).
 2. STIRE guarda una **copia congelada** del proyecto con fecha y hora. Cada reenvío es una versión nueva y queda el historial.
-3. El docente la abre en modo lectura, la ejecuta en su vista previa y deja un **comentario**.
+3. El docente la abre en modo lectura, la ejecuta en su vista previa y deja un **comentario**, una **nota** o ambos.
 4. Estudiante y docente pueden **descargar** cualquier versión: `.zip` con los archivos (o `.html` si es una página).
 
 ## 4. Límites
@@ -39,7 +39,7 @@ El editor es el mismo de toda la aplicación (CodeMirror 6).
 | Archivos por proyecto | 10 (texto: HTML, CSS, JS, pseudocódigo) | Sin imágenes ni binarios: el código pesa muy poco |
 | Tamaño por proyecto | 200 KB | 100 estudiantes × 20 proyectos llenos = 0,4 GB, en un disco de 61 GB con 13 % usado |
 | Versiones enviadas | 5 por proyecto y clase | Historial sin crecer sin límite |
-| Ejecución | 2 s, sin red (juez de siempre) | Seguridad y servidor compartido |
+| Ejecución | En el navegador, con tiempo límite | No se califica: no hace falta el juez del servidor, y así Proyectos no suma carga sin importar cuántos lo usen |
 | Guardado automático | Cada pocos segundos al dejar de escribir | No saturar el servidor |
 
 ## 5. Control del docente
@@ -69,8 +69,10 @@ y las clases de prueba de Laura). Siempre disponible para probarlo; nadie más l
 3. **Tutor IA en Proyectos**, en modo guía.
 4. **Pseudocódigo y diagramas de flujo** para el curso sin código.
 
-## 9. Preguntas para el dueño antes de construir
+## 9. Decisiones del dueño (2026-09-30)
 
-1. ¿Los límites de §4 están bien?
-2. ¿El docente puede calificar un envío (nota) o solo comentarlo?
-3. ¿Se podrá compartir un proyecto con compañeros (solo lectura), o solo con el docente?
+1. **Límites de §4:** aprobados; la idea es que sean prácticos para los estudiantes.
+2. **Nota y comentario:** el docente puede poner una nota, un comentario o ambos a cada envío.
+3. **Sin compartir entre compañeros:** un proyecto solo se envía al docente. Compartirlo con compañeros facilitaría copiarlo.
+4. **Ejecución en el navegador** para los programas de JavaScript: lo más práctico y escalable (medido el 30/09: el juez del servidor
+   atiende ~17 ejecuciones por segundo y queda para los ejercicios calificados).
