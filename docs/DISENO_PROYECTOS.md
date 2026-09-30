@@ -64,7 +64,7 @@ y las clases de prueba de Laura). Siempre disponible para probarlo; nadie más l
 
 ## 8. Por fases
 
-1. **Versión mínima:** proyectos web y JavaScript propios, guardado, descarga, límites, interruptor de prueba.
+1. **Versión mínima:** proyectos web y JavaScript propios, guardado, descarga, límites, interruptor de prueba. **✅ En producción el 30/09.** El interruptor es de configuración del servidor (`PROYECTOS_MODO` = piloto | todos | apagado y `PROYECTOS_CLASES_PILOTO`), no una pantalla del administrador.
 2. **Enviar al docente:** copia congelada, versiones, comentario, activación por clase.
 3. **Tutor IA en Proyectos**, en modo guía.
 4. **Pseudocódigo y diagramas de flujo** para el curso sin código.

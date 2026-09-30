@@ -105,7 +105,7 @@ const creando = ref(false)
 const errorCrear = ref<string | null>(null)
 const porBorrar = ref<number | null>(null)
 
-const kb = (bytes: number) => `${Math.max(1, Math.round(bytes / 1024))} KB`
+const kb = (bytes: number) => (bytes < 1024 ? 'menos de 1 KB' : `${Math.round(bytes / 1024)} KB`)
 const fecha = (iso: string) => new Date(iso).toLocaleString('es-CO', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
 
 onMounted(async () => {

@@ -12,6 +12,21 @@ entry to the oldest.
 
 ---
 
+## Proyectos, fase 1 · 30 de Septiembre de 2026
+
+El espacio de programación propio del estudiante (`docs/DISENO_PROYECTOS.md`), en «Mis proyectos»:
+
+- Proyectos de **página web** (HTML, CSS y JS) y de **JavaScript**; hasta 20 por estudiante, 10 archivos y 200 KB cada uno.
+  Solo su dueño los ve.
+- **Editor** con pestañas por archivo y guardado automático; **vista previa** de la página en un iframe aislado, con su
+  consola; los programas de JavaScript **se ejecutan en el navegador** (Web Worker, 3 s de límite), así que no ocupan el
+  servidor. Descarga en **.zip** o **.html**.
+- **Fase de prueba:** solo docentes, admins y estudiantes de las clases piloto (`ALGO-203413-G2` y `SIM-6V738W`).
+- Verificado en Chrome sobre la web real a 1440 y 375 px (16/16 y 15/15): guardado y recarga, vista previa, código de la
+  página sin acceso a STIRE, bucle infinito cortado a los 3 s, `.zip` íntegro, y una estudiante fuera del piloto sin acceso.
+- **Pruebas:** 974/974 (100 suites). Migración 1790200000000. El cuerpo JSON admite 464 KB (un proyecto lleno, escapado
+  como JSON, pasaba de 300 KB: lo encontró una prueba).
+
 ## Evaluación heurística y rendimiento del servidor · 30 de Septiembre de 2026
 
 - **Evaluación heurística y recorrido cognitivo** de las pantallas del estudiante y del docente en la web real

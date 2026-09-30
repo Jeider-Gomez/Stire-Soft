@@ -136,7 +136,7 @@ const consolaWeb = ref<Array<{ tipo: string; texto: string }>>([])
 
 const archivoActual = computed(() => proyecto.value!.archivos[Math.min(actual.value, proyecto.value!.archivos.length - 1)]!)
 const bytes = computed(() => new TextEncoder().encode(JSON.stringify(proyecto.value?.archivos ?? [])).length)
-const kb = (n: number) => `${Math.round(n / 1024)} KB`
+const kb = (n: number) => (n < 1024 ? 'menos de 1 KB' : `${Math.round(n / 1024)} KB`)
 const textoGuardado = computed(() => ({ guardado: 'Guardado', pendiente: 'Cambios sin guardar', guardando: 'Guardando…', error: 'No se pudo guardar' })[estadoGuardado.value])
 
 function lenguaje(nombre: string) {
