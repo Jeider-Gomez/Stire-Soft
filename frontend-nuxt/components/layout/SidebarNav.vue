@@ -74,6 +74,16 @@
           <span>Mi Progreso</span>
         </NuxtLink>
 
+        <!-- Proyectos (docs/DISENO_PROYECTOS.md): solo si está disponible para esta cuenta (fase de prueba) -->
+        <NuxtLink
+          v-if="proyectosDisponible"
+          to="/estudiante/proyectos"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path.startsWith('/estudiante/proyectos') ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <FolderCode :size="18" aria-hidden="true" class="shrink-0" />
+          <span>Mis proyectos</span>
+        </NuxtLink>
+
         <!-- 7. Mensajes -->
         <NuxtLink
           to="/estudiante/mensajes"
@@ -163,13 +173,24 @@
 </template>
 
 <script setup lang="ts">
-import { House, Repeat, TrendingUp, Mail, Users, BookOpen, SquarePen, BarChart3, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
+import { FolderCode, House, Repeat, TrendingUp, Mail, Users, BookOpen, SquarePen, BarChart3, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
 const route = useRoute()
+
+// Proyectos está en prueba: el menú solo lo muestra si el servidor dice que esta cuenta puede usarlo.
+const proyectosDisponible = ref(false)
+onMounted(async () => {
+  if (authStore.currentRole !== 'estudiante') return
+  try {
+    proyectosDisponible.value = (await useApi().get<{ disponible: boolean }>('/proyectos/estado')).disponible
+  } catch {
+    proyectosDisponible.value = false
+  }
+})
 
 const openModules = ref<number[]>([1, 2])
 
