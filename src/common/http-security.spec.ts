@@ -34,6 +34,10 @@ describe('isSwaggerEnabled', () => {
 });
 
 describe('applyHttpSecurity', () => {
+  // Cada caso levanta una app de Nest real (con Swagger en algunos). Con la suite completa en paralelo, el primero pasó de
+  // los 5 s por defecto de Jest el 29/09 (solo, tarda ~1 s): el margen es para la carga de la máquina, no para la prueba.
+  jest.setTimeout(30_000);
+
   async function buildApp(swaggerEnabled: boolean): Promise<INestApplication> {
     const moduleRef = await Test.createTestingModule({ controllers: [PingController] }).compile();
     const app = moduleRef.createNestApplication();

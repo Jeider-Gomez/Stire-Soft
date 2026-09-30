@@ -31,12 +31,18 @@ function puntaje(e: Ejercicio, respuesta: Record<string, unknown>): number {
   return motor.evaluateAnswer(e.tipo as QuestionType, respuesta, aConfig(e), PUNTOS).score;
 }
 
-/** Cada caso lanza un proceso real de Node; con `hastaFallar` se detiene en el primero que falla. */
-async function casosQuePasan(e: Programar, codigo: string, hastaFallar = false): Promise<boolean[]> {
-  const resultados: boolean[] = [];
+/**
+ * Cada caso lanza un proceso real de Node; con `hastaFallar` se detiene en el primero que falla. Devuelve «accepted» o
+ * el estado del juez con lo que imprimió, para que un fallo diga su causa: la solución de «Puntos en el torneo» falló
+ * de forma intermitente el 29/09 y el resultado solo decía `false`.
+ */
+async function casosQuePasan(e: Programar, codigo: string, hastaFallar = false): Promise<string[]> {
+  const resultados: string[] = [];
   for (const c of e.casos) {
     const r = await juez.executeIsolated(codigo, 'javascript', { input: c.entrada, expected: c.salida });
-    resultados.push(r.status === 'accepted');
+    resultados.push(
+      r.status === 'accepted' ? 'accepted' : `${r.status} (${r.timeMs} ms): ${(r.stderr || r.stdout || '').slice(0, 200)}`,
+    );
     if (hastaFallar && r.status !== 'accepted') break;
   }
   return resultados;
@@ -142,11 +148,12 @@ describe.each(CURSOS.map((c) => [c.nombre, c] as const))('Curso «%s»', (_nombr
       if (e.tipo !== 'coding') continue;
       expect({ ruta, publico: e.casos.some((c) => c.publico) }).toEqual({ ruta, publico: true });
       const conSolucion = await casosQuePasan(e, e.solucion);
-      expect({ ruta, pasan: conSolucion }).toEqual({ ruta, pasan: e.casos.map(() => true) });
+      expect({ ruta, pasan: conSolucion }).toEqual({ ruta, pasan: e.casos.map(() => 'accepted') });
       const conError = await casosQuePasan(e, e.errorComun, true);
-      expect({ ruta, fallaAlguno: conError.includes(false) }).toEqual({ ruta, fallaAlguno: true });
+      expect({ ruta, fallaAlguno: conError.some((r) => r !== 'accepted') }).toEqual({ ruta, fallaAlguno: true });
       const conInicial = await casosQuePasan(e, e.inicial, true);
-      expect({ ruta, inicialNoResuelve: conInicial.includes(false) }).toEqual({ ruta, inicialNoResuelve: true });
+      expect({ ruta, inicialNoResuelve: conInicial.some((r) => r !== 'accepted') }).toEqual({ ruta, inicialNoResuelve: true });
     }
   });
 });
+
