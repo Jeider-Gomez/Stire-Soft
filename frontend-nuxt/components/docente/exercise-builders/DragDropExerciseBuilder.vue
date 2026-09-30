@@ -182,6 +182,22 @@ function reset() {
   ]
 }
 
+// Inversa de validateAndGetConfig: `mappings` dice a qué destino va cada elemento.
+function load(config: unknown) {
+  const c = asRecord(config)
+  const destinos = asRecordList(c.targets).map(t => ({ id: asText(t.id), label: asText(t.label) })).filter(t => t.id)
+  if (destinos.length < 2) return
+  const mapa = asRecord(c.mappings)
+  const elementos = asRecordList(c.items)
+    .map(it => ({ id: asText(it.id), content: asText(it.content), targetId: asText(mapa[asText(it.id)], destinos[0]!.id) }))
+    .filter(it => it.id)
+  if (elementos.length < 2) return
+  targets.value = destinos
+  items.value = elementos
+  targetCounter = Math.max(destinos.length, ...destinos.map(t => trailingNumber(t.id)))
+  itemCounter = Math.max(elementos.length, ...elementos.map(it => trailingNumber(it.id)))
+}
+
 function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: string; config?: any } {
   if (targets.value.length < 2) {
     return { valid: false, error: 'Debes definir al menos 2 destinos (targets).' }
@@ -221,6 +237,7 @@ function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: s
 
 defineExpose({
   validateAndGetConfig,
-  reset
+  reset,
+  load
 })
 </script>

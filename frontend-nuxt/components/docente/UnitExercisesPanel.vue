@@ -75,6 +75,7 @@
           <button
             @click="openEdit(act)"
             class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+            :data-editar-id="act.id"
             :aria-label="`Editar ${act.title}`" title="Editar">
             <Pencil :size="14" aria-hidden="true" />
           </button>
@@ -97,6 +98,7 @@
       </li>
     </ul>
     <p v-if="feedback" role="status" class="text-[11px] text-semantico-pasa">{{ feedback }}</p>
+    <p v-if="feedbackAviso" role="status" class="text-[11px] text-acento-ambar-fuerte font-semibold">{{ feedbackAviso }}</p>
 
     <!-- Editar datos del ejercicio -->
     <Teleport to="body">
@@ -118,7 +120,7 @@
               <label for="edit-ex-statement" class="font-semibold text-base-texto-primario">Enunciado</label>
               <button type="button" @click="edit.preview = !edit.preview" :aria-pressed="edit.preview"
                 class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline">
-                {{ edit.preview ? 'Editar texto' : 'Ver como el estudiante' }}
+                {{ edit.preview ? 'Editar texto' : 'Vista previa del enunciado' }}
               </button>
             </div>
             <textarea v-if="!edit.preview" id="edit-ex-statement" v-model="edit.form.description" rows="8"
@@ -150,6 +152,60 @@
             </select>
             <p class="text-[10px] text-base-texto-secundario mt-1">Un taller o un parcial cuentan más en el dominio del estudiante que una práctica.</p>
           </div>
+          <!-- Respuestas del ejercicio (Fase 28): el editor de su tipo, ya cargado -->
+          <section
+            ref="respuestasRef" tabindex="-1" aria-labelledby="edit-ex-answers-title"
+            class="border-t border-base-borde-sutil pt-3 space-y-3 focus:outline-none">
+            <div class="flex items-center justify-between gap-2">
+              <h3 id="edit-ex-answers-title" class="font-semibold text-base-texto-primario">Respuestas del ejercicio</h3>
+              <button
+                v-if="respuestas.estado === 'editable'"
+                type="button" @click="alternarVistaPrevia" :aria-pressed="respuestas.vistaPrevia"
+                class="inline-flex items-center gap-1 text-[11px] font-semibold text-acento-ambar-fuerte hover:underline">
+                <Eye :size="12" aria-hidden="true" />
+                {{ respuestas.vistaPrevia ? 'Volver al editor' : 'Ver como el estudiante' }}
+              </button>
+            </div>
+
+            <p v-if="edit.esVariante && respuestas.estado === 'editable'" role="note"
+              class="rounded-md bg-acento-ambar/10 border border-acento-ambar/30 p-2 text-[11px] text-base-texto-primario">
+              Esta es una copia. Cambia los datos (números, opciones, casos) para que sea un ejercicio distinto del original.
+            </p>
+
+            <p v-if="respuestas.estado === 'cargando'" role="status" class="flex items-center gap-2 text-base-texto-secundario">
+              <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando respuestas…
+            </p>
+            <p v-else-if="respuestas.estado === 'error'" role="alert" class="text-semantico-falla text-[11px]">{{ respuestas.error }}</p>
+            <p v-else-if="respuestas.estado === 'sin-editor'" class="text-base-texto-secundario text-[11px]">
+              Las respuestas de este tipo de ejercicio no se editan desde aquí.
+            </p>
+            <div v-else-if="respuestas.estado === 'bloqueado'"
+              class="rounded-md border border-base-borde-fuerte bg-base-bg-secundario/40 p-3 space-y-2">
+              <p class="text-[11px] text-base-texto-primario">
+                Este ejercicio ya tiene {{ plural(respuestas.submissions, 'entrega', 'entregas') }}: sus respuestas no se pueden cambiar sin alterar notas ya puestas.
+              </p>
+              <button type="button" @click="edit.id && duplicateVariant(edit.id)" :disabled="isDuplicating"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-acento-ambar-fuerte text-acento-ambar-fuerte font-semibold hover:bg-acento-ambar/10 disabled:opacity-50">
+                <Copy :size="13" aria-hidden="true" /> Duplicar como variante
+              </button>
+            </div>
+
+            <!-- Solo se monta el editor del tipo de este ejercicio: los demás, ocultos, tendrían campos `required` vacíos
+                 que el navegador no puede enfocar y bloquearían el envío del formulario. -->
+            <div v-if="respuestas.estado === 'editable'" v-show="!respuestas.vistaPrevia">
+              <CodingExerciseBuilder v-if="respuestas.tipo === 'coding'" ref="codingBuilderRef" />
+              <McqExerciseBuilder v-else-if="respuestas.tipo === 'mcq'" ref="mcqBuilderRef" />
+              <FillCodeExerciseBuilder v-else-if="respuestas.tipo === 'fill_code'" ref="fillCodeBuilderRef" />
+              <DragDropExerciseBuilder v-else-if="respuestas.tipo === 'drag_drop'" ref="dragDropBuilderRef" />
+              <MatchingExerciseBuilder v-else-if="respuestas.tipo === 'matching'" ref="matchingBuilderRef" />
+              <OrderingExerciseBuilder v-else-if="respuestas.tipo === 'ordering'" ref="orderingBuilderRef" />
+              <HtmlCssExerciseBuilder v-else-if="respuestas.tipo === 'html_css'" ref="htmlCssBuilderRef" />
+            </div>
+            <DocenteExercisePreview
+              v-if="respuestas.vistaPrevia && respuestas.vistaConfig && respuestas.tipo"
+              :type="respuestas.tipo" :title="edit.form.title" :statement="edit.form.description" :config="respuestas.vistaConfig" />
+            <p v-if="respuestas.errorEditor" role="alert" class="text-semantico-falla text-[11px]">{{ respuestas.errorEditor }}</p>
+          </section>
           <details class="border-t border-base-borde-sutil pt-3">
             <summary class="text-[11px] font-semibold text-base-texto-secundario cursor-pointer select-none">Tutor IA en este ejercicio</summary>
             <div class="mt-3"><DocenteTutorSettingsPanel scope-type="activity" :scope-id="edit.id!" /></div>
@@ -335,10 +391,18 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
-import { Plus, Pencil, Archive, Copy, Library, Search, Loader2 } from 'lucide-vue-next'
+import { Plus, Pencil, Archive, Copy, Library, Search, Loader2, Eye } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import { EXERCISE_TYPES, exerciseTypeInfo, type ExerciseTypeId } from '~/utils/exerciseTypes'
+import { stableJson } from '~/utils/exerciseConfig'
+import CodingExerciseBuilder from '~/components/docente/exercise-builders/CodingExerciseBuilder.vue'
+import McqExerciseBuilder from '~/components/docente/exercise-builders/McqExerciseBuilder.vue'
+import FillCodeExerciseBuilder from '~/components/docente/exercise-builders/FillCodeExerciseBuilder.vue'
+import DragDropExerciseBuilder from '~/components/docente/exercise-builders/DragDropExerciseBuilder.vue'
+import MatchingExerciseBuilder from '~/components/docente/exercise-builders/MatchingExerciseBuilder.vue'
+import OrderingExerciseBuilder from '~/components/docente/exercise-builders/OrderingExerciseBuilder.vue'
+import HtmlCssExerciseBuilder from '~/components/docente/exercise-builders/HtmlCssExerciseBuilder.vue'
 
 const props = defineProps<{ unitId: number; classId: number }>()
 const emit = defineEmits<{ (e: 'count', n: number): void }>()
@@ -363,6 +427,7 @@ const activityTypes = ref<ActivityTypeOption[]>([])
 const loading = ref(false)
 const loadError = ref<string | null>(null)
 const feedback = ref<string | null>(null)
+const feedbackAviso = ref<string | null>(null)
 
 const visibleActivities = computed(() => activities.value.filter((a) => a.status !== 'archived'))
 
@@ -426,10 +491,117 @@ const edit = reactive({
   form: { title: '', description: '', difficulty: 'basico', totalPoints: 20, activityTypeId: null as number | null },
   preview: false,
   saving: false,
-  error: null as string | null
+  error: null as string | null,
+  /** Viene de «Duplicar como variante»: el diálogo invita a cambiar las respuestas. */
+  esVariante: false
 })
 
-function openEdit(act: ActivityItem) {
+// Las respuestas del ejercicio (Fase 28): el editor de su tipo, cargado con el config guardado.
+type BuilderResult = { valid: boolean; error?: string; config?: unknown }
+interface BuilderHandle { validateAndGetConfig: (puntos: number) => BuilderResult; load: (config: unknown) => void }
+interface PreguntaDelDocente { id: number; type: string; config: unknown }
+
+const respuestasRef = ref<HTMLElement | null>(null)
+const codingBuilderRef = ref<InstanceType<typeof CodingExerciseBuilder> | null>(null)
+const mcqBuilderRef = ref<InstanceType<typeof McqExerciseBuilder> | null>(null)
+const fillCodeBuilderRef = ref<InstanceType<typeof FillCodeExerciseBuilder> | null>(null)
+const dragDropBuilderRef = ref<InstanceType<typeof DragDropExerciseBuilder> | null>(null)
+const matchingBuilderRef = ref<InstanceType<typeof MatchingExerciseBuilder> | null>(null)
+const orderingBuilderRef = ref<InstanceType<typeof OrderingExerciseBuilder> | null>(null)
+const htmlCssBuilderRef = ref<InstanceType<typeof HtmlCssExerciseBuilder> | null>(null)
+
+const respuestas = reactive({
+  estado: 'cargando' as 'cargando' | 'editable' | 'bloqueado' | 'sin-editor' | 'error',
+  questionId: null as number | null,
+  tipo: null as ExerciseTypeId | null,
+  submissions: 0,
+  error: null as string | null,
+  errorEditor: null as string | null,
+  /** El config tal como lo dejó el editor al cargar: sirve para saber si una variante quedó igual al original. */
+  base: '',
+  vistaPrevia: false,
+  vistaConfig: null as Record<string, unknown> | null
+})
+
+function constructorActivo(): BuilderHandle | null {
+  switch (respuestas.tipo) {
+    case 'coding': return codingBuilderRef.value
+    case 'mcq': return mcqBuilderRef.value
+    case 'fill_code': return fillCodeBuilderRef.value
+    case 'drag_drop': return dragDropBuilderRef.value
+    case 'matching': return matchingBuilderRef.value
+    case 'ordering': return orderingBuilderRef.value
+    case 'html_css': return htmlCssBuilderRef.value
+    default: return null
+  }
+}
+
+function esTipoEditable(tipo: string): tipo is ExerciseTypeId {
+  return EXERCISE_TYPES.some((t) => t.id === tipo)
+}
+
+async function cargarRespuestas(activityId: number) {
+  Object.assign(respuestas, {
+    estado: 'cargando', questionId: null, tipo: null, submissions: 0, error: null, errorEditor: null,
+    base: '', vistaPrevia: false, vistaConfig: null
+  })
+  try {
+    const [preguntas, editable] = await Promise.all([
+      api.get<PreguntaDelDocente[]>(`/activity-questions/activity/${activityId}`),
+      api.get<{ editable: boolean; submissions: number }>(`/activity-questions/activity/${activityId}/editable`)
+    ])
+    if (!edit.open || edit.id !== activityId) return // el docente cerró el diálogo o abrió otro ejercicio
+    const pregunta = preguntas[0]
+    if (!pregunta || !esTipoEditable(pregunta.type)) { respuestas.estado = 'sin-editor'; return }
+    respuestas.questionId = pregunta.id
+    respuestas.tipo = pregunta.type
+    respuestas.submissions = editable.submissions
+    if (!editable.editable) { respuestas.estado = 'bloqueado'; return }
+    respuestas.estado = 'editable'
+    await nextTick()
+    const editor = constructorActivo()
+    if (!editor) { respuestas.estado = 'sin-editor'; return }
+    editor.load(pregunta.config)
+    const inicial = editor.validateAndGetConfig(edit.form.totalPoints)
+    respuestas.base = inicial.valid ? stableJson(inicial.config) : ''
+    if (edit.esVariante) respuestasRef.value?.focus()
+  } catch (err) {
+    if (edit.id !== activityId) return
+    respuestas.estado = 'error'
+    respuestas.error = messageOf(err, 'No se pudieron cargar las respuestas del ejercicio.')
+  }
+}
+
+function alternarVistaPrevia() {
+  respuestas.errorEditor = null
+  if (respuestas.vistaPrevia) { respuestas.vistaPrevia = false; return }
+  const res = constructorActivo()?.validateAndGetConfig(edit.form.totalPoints)
+  if (!res?.valid || typeof res.config !== 'object' || res.config === null) {
+    respuestas.errorEditor = res?.error || 'Revisa las respuestas del ejercicio antes de verlo como el estudiante.'
+    return
+  }
+  respuestas.vistaConfig = res.config as Record<string, unknown>
+  respuestas.vistaPrevia = true
+}
+
+// El foco vuelve al botón que abrió el diálogo; si la lista se recargó y ese botón ya no existe (p. ej. tras
+// «Duplicar como variante»), al botón «Editar» del ejercicio que se estaba editando.
+let abiertoDesde: HTMLElement | null = null
+
+watch(() => edit.open, (abierto) => {
+  if (abierto) return
+  const id = edit.id
+  nextTick(() => {
+    const destino = abiertoDesde?.isConnected ? abiertoDesde : document.querySelector<HTMLElement>(`[data-editar-id="${id}"]`)
+    destino?.focus()
+  })
+})
+
+function openEdit(act: ActivityItem, opciones: { variante?: boolean } = {}) {
+  const activo = document.activeElement
+  abiertoDesde = activo instanceof HTMLElement && activo !== document.body ? activo : null
+  edit.esVariante = opciones.variante === true
+  feedbackAviso.value = null
   edit.id = act.id
   edit.form = {
     title: act.title,
@@ -441,12 +613,21 @@ function openEdit(act: ActivityItem) {
   edit.error = null
   edit.preview = false
   edit.open = true
-  nextTick(() => editTitleRef.value?.focus())
+  nextTick(() => { if (!edit.esVariante) editTitleRef.value?.focus() })
+  cargarRespuestas(act.id)
 }
 
 async function saveEdit() {
   if (!edit.form.title.trim()) { edit.error = 'El título es obligatorio.'; return }
   if (!edit.form.description.trim()) { edit.error = 'El enunciado no puede quedar vacío.'; return }
+  // Se valida el editor de respuestas ANTES de guardar nada: si no valida, no se toca el ejercicio.
+  respuestas.errorEditor = null
+  let configNueva: unknown
+  if (respuestas.estado === 'editable') {
+    const res = constructorActivo()?.validateAndGetConfig(edit.form.totalPoints)
+    if (res && !res.valid) { respuestas.errorEditor = res.error || 'Revisa las respuestas del ejercicio.'; return }
+    configNueva = res?.config
+  }
   edit.saving = true
   edit.error = null
   try {
@@ -466,7 +647,18 @@ async function saveEdit() {
       const t = activityTypes.value.find((x) => x.id === edit.form.activityTypeId)
       if (t) { act.activityTypeId = t.id; act.activityType = t }
     }
+    if (configNueva !== undefined && respuestas.questionId !== null) {
+      // El enunciado y los puntos de la pregunta son los de la actividad (así los crea «Crear ejercicio»).
+      await api.patch(`/activity-questions/${respuestas.questionId}`, {
+        question: edit.form.description.trim(),
+        points: edit.form.totalPoints,
+        config: configNueva
+      })
+    }
     feedback.value = 'Cambios guardados.'
+    feedbackAviso.value = edit.esVariante && configNueva !== undefined && stableJson(configNueva) === respuestas.base
+      ? 'La variante quedó igual al original: en un reintento el estudiante verá las mismas respuestas.'
+      : null
     edit.open = false
   } catch (err) {
     edit.error = messageOf(err, 'No se pudieron guardar los cambios.')
@@ -515,7 +707,7 @@ async function duplicateVariant(activityId: number, title?: string) {
     await load()
     const nueva = activities.value.find(a => a.id === res.id)
     if (nueva) {
-      openEdit(nueva)
+      openEdit(nueva, { variante: true })
     }
   } catch (err) {
     loadError.value = messageOf(err, 'No se pudo duplicar el ejercicio como variante.')

@@ -118,6 +118,18 @@ function reset() {
   explanation.value = ''
 }
 
+// Inversa de validateAndGetConfig: deja el editor como si el docente hubiera escrito este `config` guardado.
+function load(config: unknown) {
+  const c = asRecord(config)
+  const cargadas = asRecordList(c.options).map(o => ({ id: asText(o.id), text: asText(o.text) })).filter(o => o.id)
+  if (cargadas.length < 2) return
+  options.value = cargadas
+  counter = Math.max(cargadas.length, ...cargadas.map(o => trailingNumber(o.id)))
+  const correcta = asText(c.correctAnswerId)
+  correctAnswerId.value = cargadas.some(o => o.id === correcta) ? correcta : cargadas[0]!.id
+  explanation.value = asText(c.explanation)
+}
+
 function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: string; config?: any } {
   if (options.value.length < 2) {
     return { valid: false, error: 'Debes proporcionar al menos 2 opciones de respuesta.' }
@@ -151,6 +163,7 @@ function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: s
 
 defineExpose({
   validateAndGetConfig,
-  reset
+  reset,
+  load
 })
 </script>

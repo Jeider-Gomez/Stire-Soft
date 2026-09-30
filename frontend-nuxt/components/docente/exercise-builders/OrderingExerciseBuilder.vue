@@ -114,6 +114,19 @@ function reset() {
   ]
 }
 
+// Inversa de validateAndGetConfig: los bloques se cargan en el orden correcto (`correctOrder`), que es como los escribe el docente.
+function load(config: unknown) {
+  const c = asRecord(config)
+  const porId = new Map(asRecordList(c.blocks).map(b => [asText(b.id), asText(b.content)]))
+  const orden = Array.isArray(c.correctOrder) ? c.correctOrder.map(id => asText(id)) : []
+  const cargados = orden
+    .filter(id => porId.has(id))
+    .map((id, idx) => ({ id: `b${idx + 1}`, content: porId.get(id) ?? '' }))
+  if (cargados.length < 2) return
+  blocks.value = cargados
+  counter = cargados.length
+}
+
 function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: string; config?: any } {
   if (blocks.value.length < 2) {
     return { valid: false, error: 'Debes definir al menos 2 bloques para ordenar.' }
@@ -143,6 +156,7 @@ function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: s
 
 defineExpose({
   validateAndGetConfig,
-  reset
+  reset,
+  load
 })
 </script>

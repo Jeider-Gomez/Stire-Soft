@@ -101,6 +101,20 @@ function reset() {
   ]
 }
 
+// Inversa de validateAndGetConfig: `pairs` une cada término de la izquierda con su definición de la derecha.
+function load(config: unknown) {
+  const c = asRecord(config)
+  const izquierda = asRecordList(c.leftColumn)
+  const derecha = new Map(asRecordList(c.rightColumn).map(r => [asText(r.id), asText(r.content)]))
+  const pares = asRecord(c.pairs)
+  const cargadas = izquierda
+    .map((l, idx) => ({ id: String(idx + 1), left: asText(l.content), right: derecha.get(asText(pares[asText(l.id)])) ?? '' }))
+    .filter(p => p.left !== '' || p.right !== '')
+  if (cargadas.length < 2) return
+  pairs.value = cargadas
+  counter = cargadas.length
+}
+
 function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: string; config?: any } {
   if (pairs.value.length < 2) {
     return { valid: false, error: 'Debes definir al menos 2 parejas para emparejar.' }
@@ -143,6 +157,7 @@ function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: s
 
 defineExpose({
   validateAndGetConfig,
-  reset
+  reset,
+  load
 })
 </script>

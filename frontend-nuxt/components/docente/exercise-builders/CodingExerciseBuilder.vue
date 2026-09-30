@@ -143,6 +143,19 @@ function reset() {
   ]
 }
 
+// Inversa de validateAndGetConfig. Los pesos no se cargan: se vuelven a repartir al validar, como al crear.
+function load(config: unknown) {
+  const c = asRecord(config)
+  starterCode.value = asText(c.starterCode)
+  const cargados = asRecordList(c.testCases).map((tc, idx) => ({
+    label: asText(tc.label, `Caso #${idx + 1}`),
+    input: asText(tc.input),
+    expected: asText(tc.expected),
+    isPublic: tc.isPublic === true
+  }))
+  if (cargados.length > 0) testCases.value = cargados
+}
+
 function validateAndGetConfig(totalPoints: number): { valid: boolean; error?: string; config?: any } {
   if (testCases.value.length === 0) {
     return { valid: false, error: 'Debes agregar al menos un caso de prueba.' }
@@ -184,6 +197,7 @@ function validateAndGetConfig(totalPoints: number): { valid: boolean; error?: st
 
 defineExpose({
   validateAndGetConfig,
-  reset
+  reset,
+  load
 })
 </script>

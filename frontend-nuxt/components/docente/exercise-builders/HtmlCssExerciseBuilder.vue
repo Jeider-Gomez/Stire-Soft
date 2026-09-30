@@ -504,6 +504,57 @@ function buildCheck(rule: RuleItem): object {
   }
 }
 
+// Inversa de buildCheck: rellena una regla del editor a partir de la `check` guardada.
+function ruleFromSaved(saved: ConfigRecord): RuleItem {
+  const rule = defaultRule()
+  rule.id = asText(saved.id)
+  rule.label = asText(saved.label)
+  rule.hint = asText(saved.hint)
+  rule.isPublic = saved.isPublic !== false
+  rule.weight = asNumber(saved.weight) ?? 10
+  const check = asRecord(saved.check)
+  const kind = asText(check.kind)
+  if (!['element_exists', 'element_count', 'text', 'attribute', 'css_property', 'a11y'].includes(kind)) return rule
+  rule.kind = kind as RuleKind
+  rule.selector = asText(check.selector)
+  rule.min = asNumber(check.min)
+  rule.equals = asNumber(check.equals)
+  rule.max = asNumber(check.max)
+  if (kind === 'text') {
+    rule.mode = check.mode === 'equals' ? 'equals' : 'contains'
+    rule.value = asText(check.value)
+    rule.caseSensitive = check.caseSensitive === true
+  }
+  if (kind === 'attribute') {
+    rule.name = asText(check.name)
+    rule.attrMode = check.mode === 'equals' || check.mode === 'contains' ? check.mode : 'exists'
+    rule.attrValue = asText(check.value)
+  }
+  if (kind === 'css_property') {
+    rule.property = asText(check.property)
+    rule.oneOfRaw = Array.isArray(check.oneOf) ? check.oneOf.map(v => asText(v)).join(', ') : ''
+  }
+  if (kind === 'a11y') {
+    const comprobacion = asText(check.check)
+    if (['img_alt', 'form_labels', 'html_lang', 'document_title', 'single_h1'].includes(comprobacion)) {
+      rule.a11yCheck = comprobacion as RuleItem['a11yCheck']
+    }
+  }
+  return rule
+}
+
+// Inversa de validateAndGetConfig.
+function load(config: unknown) {
+  const c = asRecord(config)
+  starterHtml.value = asText(c.starterHtml)
+  starterCss.value = asText(c.starterCss)
+  const modelo = asRecord(c.modelSolution)
+  modelHtml.value = asText(modelo.html)
+  modelCss.value = asText(modelo.css)
+  const cargadas = asRecordList(c.rules).map(ruleFromSaved)
+  if (cargadas.length > 0) rules.value = cargadas
+}
+
 function reset() {
   starterHtml.value = ''
   starterCss.value = ''
@@ -588,6 +639,6 @@ function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: s
   }
 }
 
-defineExpose({ validateAndGetConfig, reset })
+defineExpose({ validateAndGetConfig, reset, load })
 </script>
 

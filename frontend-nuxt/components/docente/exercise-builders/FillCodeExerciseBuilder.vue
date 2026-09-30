@@ -145,6 +145,16 @@ function reset() {
   ]
 }
 
+// Inversa de validateAndGetConfig. Sin `language` guardado el resaltado es «text», igual que al crear.
+function load(config: unknown) {
+  const c = asRecord(config)
+  codeTemplate.value = asText(c.codeTemplate)
+  const idioma = asText(c.language)
+  language.value = (HIGHLIGHT_LANGUAGES as readonly string[]).includes(idioma) ? (idioma as HighlightLanguage) : 'text'
+  const huecos = asRecordList(c.blanks).map(b => ({ id: asText(b.id), answer: asText(b.answer) })).filter(b => b.id)
+  if (huecos.length > 0) blanks.value = huecos
+}
+
 function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: string; config?: any } {
   if (!codeTemplate.value.trim()) {
     return { valid: false, error: 'La plantilla de código no puede estar vacía.' }
@@ -212,6 +222,7 @@ function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: s
 
 defineExpose({
   validateAndGetConfig,
-  reset
+  reset,
+  load
 })
 </script>

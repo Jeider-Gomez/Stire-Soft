@@ -12,6 +12,28 @@ entry to the oldest.
 
 ---
 
+## Editar las respuestas de un ejercicio (paso 4b y Fase 28) · 30 de Septiembre de 2026
+
+«Duplicar como variante» dejaba una copia idéntica: un ejercicio no se podía editar más que en título, enunciado,
+dificultad y puntos, así que en un reintento el estudiante veía las mismas respuestas.
+
+- **Backend (`1fcf212`):** `PATCH /activity-questions/:id` cambia enunciado, puntos y datos de la pregunta (el tipo no
+  cambia; los datos pasan por la misma validación que al crear) y `GET /activity-questions/activity/:id/editable` dice si
+  se puede. Solo mientras nadie haya entregado: con entregas enviadas o calificadas responde 409 y explica que hay que
+  duplicar como variante. 12 pruebas nuevas.
+- **Pantalla (Fase 28):** el diálogo «Editar ejercicio» tiene la sección «Respuestas del ejercicio» con el editor del
+  tipo del ejercicio, ya cargado (los 7 editores tienen `load(config)`). Con entregas muestra el aviso con el número y
+  «Duplicar como variante». Una variante recién duplicada lleva el foco a las respuestas, invita a cambiarlas y avisa si
+  se guarda igual. «Ver como el estudiante» usa lo que está en el editor.
+- **Bug corregido de paso:** los editores ocultos de los otros tipos tenían campos `required` vacíos que bloqueaban el
+  envío del formulario; ahora solo se monta el editor del tipo activo.
+- **Pruebas:** 875/875 (89 suites). Chrome real contra producción: 40/40 comprobaciones a 1440 y a 375 px, consola sin
+  errores. Informe: `docs/agentes-ia/antigravity/informes/INFORME_FASE_28.md`.
+- **Copia de la base de datos:** el archivo lleva fecha y hora (`stire-AAAA-MM-DD-HHMM.sql.gz`) y un volcado fallido ya
+  no deja un archivo a medias. Dos pruebas que fallaban a ratos con la suite completa se hicieron robustas.
+
+---
+
 ## Animaciones del login sin pausas · 29 de Septiembre de 2026
 
 El dueño notó que la animación del login «se pausa o se corta». Se midió en producción: 60 cuadros por segundo, así

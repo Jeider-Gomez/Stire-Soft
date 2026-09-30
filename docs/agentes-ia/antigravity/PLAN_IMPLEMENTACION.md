@@ -1,9 +1,9 @@
 ---
-estado:     sin fase pendiente — la Fase 27 se ejecutó y se archivó el 2026-09-28
+estado:     sin fase pendiente — la Fase 28 se ejecutó y se archivó el 2026-09-30
 fuente:     normativo (insumo de arranque para Google Antigravity)
 ---
 
 # Plan de implementación para Antigravity
 
-**No hay ninguna fase pendiente.** Las Fases 1 a 27 están hechas y archivadas en [`docs/_archivo/`](../../_archivo/);
-no las leas para trabajar. Cuando haya una fase nueva, se escribirá aquí y la numeración seguirá en 28.
+**No hay ninguna fase pendiente.** Las Fases 1 a 28 están hechas y archivadas en [`docs/_archivo/`](../../_archivo/);
+no las leas para trabajar. Cuando haya una fase nueva, se escribirá aquí y la numeración seguirá en 29.
