@@ -12,6 +12,22 @@ entry to the oldest.
 
 ---
 
+## Mapa de calor del docente (paso 6) · 30 de Septiembre de 2026
+
+«¿A quién ayudo ahora?» en **Rendimiento**: una matriz de estudiantes × unidades con el dominio y el estado de cada
+celda (con la respuesta a la pregunta de confianza al pasar el mouse) y cuatro listas encima:
+
+- **Bloqueados:** tres o más entregas falladas seguidas en una unidad, la última en los últimos 7 días.
+- **Temas más difíciles:** menor dominio promedio entre quienes ya los trabajaron; desempata con más entregas por acierto.
+- **Dijo «me siento seguro» y falló:** posible idea equivocada, los errores que mejor se corrigen si alguien los explica.
+- **Listos para más:** 85 % o más en todo lo trabajado (al menos 3 unidades) **y** más del 90 % al primer intento. Sin
+  lo segundo salían todos los estudiantes de la simulación, porque el dominio cuenta la mejor nota.
+
+Ruta `GET /analytics/class/:classId/heatmap` (solo el docente de la clase o un admin); la lógica es una función pura
+con una prueba por regla. De paso: el selector de clase de Rendimiento desbordaba en un teléfono, y la prueba de los
+cursos que fallaba a ratos tenía su causa a la vista (el juez cortaba a los 2000 ms con la suite completa en
+paralelo); ahora esa prueba usa 10 s. Pruebas: 901/901 (92 suites).
+
 ## Segundo salón y un defecto del dominio (paso 5) · 30 de Septiembre de 2026
 
 - **Simulación del segundo salón:** Laura creó `ALGO-203413-G2` copiando ALGO-203413 con «Traer de otra clase» (122

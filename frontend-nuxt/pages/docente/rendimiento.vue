@@ -20,13 +20,13 @@
       </div>
 
       <!-- Selector de Clase -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 min-w-0">
         <label for="rendimiento-class-selector" class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
         <select
           id="rendimiento-class-selector"
           v-model="selectedClassId"
           @change="loadClassMetrics"
-          class="text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30">
+          class="min-w-0 max-w-full w-full sm:w-auto text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30">
           <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
             {{ c.name }} ({{ c.code }})
           </option>
@@ -137,6 +137,9 @@
           </p>
         </div>
       </section>
+
+      <!-- Mapa de calor (paso 6): a quién ayudar ahora -->
+      <DocenteMapaDeCalor :class-id="selectedClassId" />
 
       <!-- Roster de Estudiantes con Filtros -->
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden space-y-4 p-5">
