@@ -4,11 +4,37 @@
 export type EstadoEntrega = 'sin_entregar' | 'por_revisar' | 'revisada'
 export type TipoEntrega = 'web' | 'javascript' | 'cualquiera'
 
+/** Un archivo de un proyecto o del código inicial de una entrega. */
+export interface ArchivoCodigo { nombre: string; contenido: string }
+
 /** Lo que el docente edita de una entrega (EntregaForm). */
 export interface EntregaEditable {
   id: number; titulo: string; consigna: string; learningUnitId: number | null; tipoProyecto: TipoEntrega
+  /** Código inicial: «Empezar desde la plantilla» le crea al estudiante un proyecto con estos archivos. */
+  plantilla?: ArchivoCodigo[] | null
   abreAt: string | null; cierraAt: string | null; aceptaTarde: boolean; maxVersiones: number; conNota: boolean
   cuentaParaDominio: boolean; dificultad: string; publicada: boolean; asignadaA: number[] | null
+}
+
+/**
+ * Punto de partida del código inicial, el mismo que crea el servidor para un proyecto nuevo
+ * (src/proyectos/proyecto-reglas.ts, plantillaInicial). El docente lo cambia a su gusto.
+ */
+export function codigoInicialPorDefecto(tipo: 'web' | 'javascript'): ArchivoCodigo[] {
+  if (tipo === 'javascript') {
+    return [{ nombre: 'main.js', contenido: '// Lee la entrada con leerEntrada() y muestra resultados con console.log().\nconst entrada = leerEntrada();\nconsole.log(entrada);\n' }]
+  }
+  return [
+    { nombre: 'index.html', contenido: '<!DOCTYPE html>\n<html lang="es">\n<head>\n  <meta charset="utf-8">\n  <link rel="stylesheet" href="estilos.css">\n  <title>Mi página</title>\n</head>\n<body>\n  <h1>Mi página</h1>\n  <script src="script.js"></script>\n</body>\n</html>\n' },
+    { nombre: 'estilos.css', contenido: 'body {\n  font-family: system-ui, sans-serif;\n  margin: 2rem;\n}\n' },
+    { nombre: 'script.js', contenido: '// Tu código aquí\n' },
+  ]
+}
+
+/** Lenguaje del editor según la extensión del archivo. */
+export function lenguajeDeArchivo(nombre: string): 'html' | 'css' | 'javascript' | 'text' {
+  const ext = nombre.split('.').pop()?.toLowerCase()
+  return ext === 'html' ? 'html' : ext === 'css' ? 'css' : ext === 'js' ? 'javascript' : 'text'
 }
 
 export const ESTADO_ENTREGA: Record<EstadoEntrega, string> = {

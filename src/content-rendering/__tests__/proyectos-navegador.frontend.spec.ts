@@ -133,6 +133,30 @@ describe('Historial de una entrega en palabras', () => {
   });
 });
 
+describe('Código inicial de una entrega', () => {
+  const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
+  const js = ts.transpileModule(readFileSync(path.join(raiz, 'utils', 'entregas.ts'), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
+  const mod = { exports: {} as Record<string, unknown> };
+  new Function('module', 'exports', js)(mod, mod.exports);
+  const { codigoInicialPorDefecto, lenguajeDeArchivo } = mod.exports as {
+    codigoInicialPorDefecto: (t: string) => Array<{ nombre: string; contenido: string }>;
+    lenguajeDeArchivo: (n: string) => string;
+  };
+
+  it('propone los mismos archivos que un proyecto nuevo de ese tipo, con el editor del lenguaje de cada uno', () => {
+    expect(codigoInicialPorDefecto('web').map((a) => a.nombre)).toEqual(['index.html', 'estilos.css', 'script.js']);
+    expect(codigoInicialPorDefecto('javascript').map((a) => a.nombre)).toEqual(['main.js']);
+    expect(codigoInicialPorDefecto('javascript')[0].contenido).toContain('leerEntrada()');
+    expect(['index.html', 'estilos.css', 'script.js', 'notas.txt'].map(lenguajeDeArchivo)).toEqual(['html', 'css', 'javascript', 'text']);
+  });
+
+  it('el docente lo activa en el formulario (solo web o JavaScript) y se manda como plantilla; sin activarlo va null', () => {
+    const form = readFileSync(path.join(raiz, 'components', 'docente', 'EntregaForm.vue'), 'utf8');
+    expect(form).toContain(`<fieldset v-if="f.tipoProyecto !== 'cualquiera'" class="space-y-2">`);
+    expect(form).toContain("plantilla: usarCodigoInicial.value && f.tipoProyecto !== 'cualquiera' ? codigoInicial.value : null,");
+  });
+});
+
 describe('Página web: un solo documento para la vista previa y la descarga', () => {
   const archivos = [
     { nombre: 'index.html', contenido: '<html><head><title>T</title></head><body><h1>Hola</h1></body></html>' },

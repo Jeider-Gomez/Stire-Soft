@@ -84,6 +84,26 @@
       </ul>
     </fieldset>
 
+    <!-- Código inicial (opcional): el estudiante empieza desde aquí con «Empezar desde la plantilla». -->
+    <fieldset v-if="f.tipoProyecto !== 'cualquiera'" class="space-y-2">
+      <legend class="font-semibold text-base-texto-primario">Código inicial <span class="font-normal text-base-texto-secundario">(opcional)</span></legend>
+      <label class="flex items-start gap-2 cursor-pointer">
+        <input v-model="usarCodigoInicial" type="checkbox" class="accent-acento-ambar-fuerte mt-0.5" @change="alCambiarCodigoInicial" />
+        <span>Darles un punto de partida: por ejemplo, una página a medio hacer o un programa con la estructura lista. Cada
+          estudiante recibe su propia copia y la entrega cuando quiera.</span>
+      </label>
+      <div v-if="usarCodigoInicial" class="space-y-2">
+        <div class="flex flex-wrap gap-1" role="tablist" aria-label="Archivos del código inicial">
+          <button v-for="(a, idx) in codigoInicial" :key="a.nombre" type="button" role="tab" :aria-selected="archivoAbierto === idx"
+            class="px-3 py-1.5 rounded-md font-mono text-[11px] border"
+            :class="archivoAbierto === idx ? 'border-acento-ambar-fuerte bg-acento-ambar/10 font-bold' : 'border-base-borde-fuerte'"
+            @click="archivoAbierto = idx">{{ a.nombre }}</button>
+        </div>
+        <CodeEditor v-if="codigoInicial[archivoAbierto]" v-model="codigoInicial[archivoAbierto].contenido" :language="lenguajeDeArchivo(codigoInicial[archivoAbierto].nombre)" :aria-label="`Código inicial: ${codigoInicial[archivoAbierto].nombre}`" />
+        <button type="button" class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline" @click="restaurarCodigoInicial">Volver al código de ejemplo</button>
+      </div>
+    </fieldset>
+
     <label class="flex items-center gap-2 cursor-pointer font-semibold text-base-texto-primario">
       <input v-model="f.publicada" type="checkbox" class="accent-acento-ambar-fuerte" /> Publicada (los estudiantes la ven)
     </label>
@@ -103,7 +123,7 @@
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import { Loader2, Save, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
-import { TIPO_ENTREGA, aFechaLocal, deFechaLocal, type EntregaEditable, type TipoEntrega } from '~/utils/entregas'
+import { TIPO_ENTREGA, aFechaLocal, deFechaLocal, type EntregaEditable, type TipoEntrega, codigoInicialPorDefecto, lenguajeDeArchivo, type ArchivoCodigo } from '~/utils/entregas'
 
 const props = defineProps<{ classId: number; inicial?: EntregaEditable | null }>()
 const emit = defineEmits<{ (e: 'guardada', entrega: { id: number }): void; (e: 'cancelar'): void }>()
@@ -133,6 +153,23 @@ const f = reactive({
   asignadaA: [...(i?.asignadaA ?? [])],
 })
 const paraTodos = ref(!i?.asignadaA?.length)
+
+// Código inicial: solo para web o JavaScript. Al cambiar el tipo se propone el ejemplo de ese tipo.
+const usarCodigoInicial = ref(!!i?.plantilla?.length)
+const codigoInicial = ref<ArchivoCodigo[]>(i?.plantilla?.length ? i.plantilla.map((a) => ({ ...a })) : [])
+const archivoAbierto = ref(0)
+function restaurarCodigoInicial() {
+  if (f.tipoProyecto === 'cualquiera') return
+  codigoInicial.value = codigoInicialPorDefecto(f.tipoProyecto)
+  archivoAbierto.value = 0
+}
+function alCambiarCodigoInicial() {
+  if (usarCodigoInicial.value && codigoInicial.value.length === 0) restaurarCodigoInicial()
+}
+watch(() => f.tipoProyecto, (tipo) => {
+  if (tipo === 'cualquiera') usarCodigoInicial.value = false
+  else if (usarCodigoInicial.value) restaurarCodigoInicial()
+})
 
 const puedeContar = computed(() => f.learningUnitId !== null && f.conNota)
 watch(puedeContar, (si) => { if (!si) f.cuentaParaDominio = false })
@@ -170,6 +207,7 @@ async function guardar() {
     dificultad: f.dificultad,
     publicada: f.publicada,
     asignadaA: paraTodos.value ? null : f.asignadaA,
+    plantilla: usarCodigoInicial.value && f.tipoProyecto !== 'cualquiera' ? codigoInicial.value : null,
   }
   try {
     const r = props.inicial
