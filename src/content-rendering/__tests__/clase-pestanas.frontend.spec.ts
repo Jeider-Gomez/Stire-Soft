@@ -161,6 +161,8 @@ describe('«Hoy» de la clase', () => {
     expect(lista[0].acciones[0]).toEqual({ texto: 'Escribirles', to: '/docente/mensajes' });
     // y la pantalla muestra la semana frente a la anterior
     expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain('api.get<SemanaHoy>(`/analytics/class/${classId}/semana`)');
+    // el espacio antes del total va dentro de la expresión: Vue recorta el de un <template> y salía «más.4 estudiantes»
+    expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain("totalEstudiantes === null ? '' : ` ${totalEstudiantes}");
   });
 
   it('una entrega en borrador, ya cerrada o que cierra en más de 3 días no aparece como «cierra pronto»', () => {

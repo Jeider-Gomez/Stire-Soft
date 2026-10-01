@@ -6,7 +6,7 @@
       <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Hoy en tu clase</h1>
       <p class="text-xs text-base-texto-secundario mt-1">
         Lo que conviene atender, en orden: primero quien no puede avanzar, luego lo que espera tu comentario y al final quien
-        está listo para más.<template v-if="totalEstudiantes !== null"> {{ totalEstudiantes }} {{ totalEstudiantes === 1 ? 'estudiante' : 'estudiantes' }} en la clase.</template>
+        está listo para más.{{ totalEstudiantes === null ? '' : ` ${totalEstudiantes} ${totalEstudiantes === 1 ? 'estudiante' : 'estudiantes'} en la clase.` }}
       </p>
       <!-- Resumen de la semana (estilo «Class Snapshot»): esta semana frente a la anterior. -->
       <dl v-if="semana" class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs" aria-label="Esta semana">
