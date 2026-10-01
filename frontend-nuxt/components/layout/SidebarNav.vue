@@ -122,7 +122,11 @@
             class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
             :class="claseActiva === c.id ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
             <BookOpen :size="18" aria-hidden="true" class="shrink-0" />
-            <span class="truncate">{{ c.name }}</span>
+            <!-- Dos grupos de la misma materia se cortan igual: el código los distingue. -->
+            <span class="min-w-0">
+              <span class="block truncate">{{ c.name }}</span>
+              <span v-if="c.code" class="block truncate font-mono text-[10px] font-normal text-base-texto-secundario">{{ c.code }}</span>
+            </span>
           </NuxtLink>
         </div>
 
@@ -190,12 +194,12 @@ onMounted(async () => {
 })
 
 // Las clases del docente para el menú; la activa sale de la dirección (ruta o consulta).
-const clasesDocente = ref<Array<{ id: number; name: string }>>([])
+const clasesDocente = ref<Array<{ id: number; name: string; code?: string }>>([])
 const claseActiva = computed(() => claseDeLaRuta(route.path, route.query))
 onMounted(async () => {
   if (authStore.currentRole !== 'docente') return
   try {
-    clasesDocente.value = await useApi().get<Array<{ id: number; name: string }>>('/class/my-classes')
+    clasesDocente.value = await useApi().get<Array<{ id: number; name: string; code?: string }>>('/class/my-classes')
   } catch {
     clasesDocente.value = []
   }

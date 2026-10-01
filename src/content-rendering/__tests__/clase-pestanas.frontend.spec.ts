@@ -69,6 +69,8 @@ describe('Pestañas de la clase', () => {
   it('el menú lleva a cada clase y ya no es un menú por herramienta', () => {
     const menu = leer('components', 'layout', 'SidebarNav.vue');
     expect(menu).toContain(':to="`/docente/clase/${c.id}`"');
+    // dos grupos de la misma materia se distinguen por el código
+    expect(menu).toContain('{{ c.code }}');
     for (const herramienta of ['to="/docente/contenidos"', 'to="/docente/rendimiento"', 'to="/docente/entregas"', 'to="/docente/refuerzos"']) {
       expect(menu).not.toContain(herramienta);
     }
