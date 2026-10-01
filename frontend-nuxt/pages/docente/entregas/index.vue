@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-6">
+    <DocentePestanasClase v-if="claseId !== null" :class-id="claseId" activa="entregas" :nombre="claseActual?.name" />
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
@@ -16,7 +17,7 @@
           <Plus :size="14" aria-hidden="true" /> Nueva entrega
         </button>
       </div>
-      <div v-if="clases.length" class="flex flex-col sm:flex-row sm:items-center gap-3 text-xs">
+      <div v-if="clases.length > 1" class="flex flex-col sm:flex-row sm:items-center gap-3 text-xs">
         <label for="entregas-clase" class="font-semibold text-base-texto-primario">Clase</label>
         <select id="entregas-clase" v-model="claseId" @change="cargar"
           class="min-w-0 max-w-full w-full sm:w-auto bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30">
@@ -65,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { Inbox, Loader2, Plus } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { TIPO_ENTREGA, fechaCorta, type EstadoEntrega, type TipoEntrega } from '~/utils/entregas'
@@ -88,6 +89,7 @@ const lecciones = ref(new Map<number, string>())
 const cargando = ref(true)
 const error = ref<string | null>(null)
 const formulario = ref(false)
+const claseActual = computed(() => clases.value.find((c) => c.id === claseId.value))
 
 const leccion = (id: number) => `Lección: ${lecciones.value.get(id) ?? '—'}`
 

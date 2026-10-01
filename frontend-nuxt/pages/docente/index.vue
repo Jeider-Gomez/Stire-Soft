@@ -273,7 +273,7 @@
 
             <!-- Matrícula -->
             <NuxtLink
-              :to="`/docente/clase/${cls.id}`"
+              :to="`/docente/clase/${cls.id}/ajustes`"
               class="btn-stire-secondary"
             >
               <Users :size="14" />
@@ -304,7 +304,7 @@
 
             <!-- Contenidos -->
             <NuxtLink
-              to="/docente/contenidos"
+              :to="`/docente/contenidos?classId=${cls.id}`"
               class="btn-stire-secondary"
             >
               <BookOpen :size="14" />
@@ -314,13 +314,13 @@
             <!-- Spacer -->
             <div class="flex-1" />
 
-            <!-- Ver detalle -->
+            <!-- La clase como lugar: «Hoy», con las pestañas de la clase (utils/pestanasClase.ts) -->
             <NuxtLink
               :to="`/docente/clase/${cls.id}`"
               class="btn-stire-teal"
             >
               <UserCheck :size="14" />
-              <span>Gestionar</span>
+              <span>Abrir la clase</span>
             </NuxtLink>
           </div>
         </div>

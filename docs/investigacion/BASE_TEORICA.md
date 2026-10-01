@@ -148,6 +148,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Los nombres viven en un solo archivo y cambian sin tocar la base de datos. |
 | **Trazabilidad** | `frontend-nuxt/utils/terminos.ts`. |
 
+## BT-13. La clase como lugar, y «Hoy»: lo pendiente en orden de urgencia, cada cosa con su acción
+
+| | |
+|---|---|
+| **Problema observado** | El menú del docente estaba organizado por herramienta (Contenidos, Rendimiento, Entregas, Refuerzos), y cada pantalla volvía a preguntar «¿de qué clase?». Para saber qué hacer hoy, el docente tenía que recorrer cuatro pantallas y armar la lista él mismo. |
+| **Decisión** | 1. El docente entra a **su clase** y ahí encuentra todo, en pestañas: Hoy · Contenido · Estudiantes · Entregas · Refuerzos · Ajustes.<br>2. La pestaña **Hoy** es una lista corta y ordenada: solicitudes para entrar, estudiantes bloqueados (agrupados por lección), entregas por revisar, quien falló un reto de salto, refuerzos sin empezar o vencidos, entregas que cierran pronto con estudiantes sin entregar y, al final, quienes están listos para un reto.<br>3. Cada elemento trae **su acción** (aprobar, asignar refuerzo, revisar, escribir). A quien ya tiene un refuerzo en curso en esa lección no se le propone otro: se muestra «ya tiene un refuerzo».<br>4. Si no hay nada, dice «Todo al día» y no inventa tareas. |
+| **Fundamento** | - Los docentes usan el tablero cuando lo que muestra se convierte en una acción concreta (Molenaar y Knoop-van Campen, 2019).<br>- Avisar quién está atascado ahora hizo que los docentes atendieran primero a quien más lo necesitaba, con mejor aprendizaje (Holstein, McLaren y Aleven, 2018). Por eso los bloqueados van arriba y los listos para más al final, sin dejarlos fuera.<br>- Una intervención basada en analítica se revisa después (Wise, 2014): los refuerzos sin empezar o vencidos vuelven a la lista.<br>- Repetir la elección de la clase en cada pantalla es carga que no aporta a la tarea (Sweller, van Merriënboer y Paas, 1998, matriz #14).<br>- Referentes de producto: Canvas (navegación dentro del curso) y Google Classroom (pestañas de la clase y lista «Por revisar»). |
+| **Cómo se materializa** | «Abrir la clase» desde «Mis clases»; el menú lateral lista las clases del docente. Las pestañas aparecen en todas las pantallas de la clase, también en la ficha del estudiante. |
+| **Trazabilidad** | `frontend-nuxt/utils/pestanasClase.ts`, `utils/hoyClase.ts` (`pendientesDeHoy`), `components/docente/PestanasClase.vue`, `pages/docente/clase/[classId]/index.vue` y `ajustes.vue`; prueba `src/content-rendering/__tests__/clase-pestanas.frontend.spec.ts`. |
+
 ---
 
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)

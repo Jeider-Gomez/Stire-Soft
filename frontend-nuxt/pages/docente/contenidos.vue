@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-5xl mx-auto space-y-6">
+    <DocentePestanasClase v-if="selectedClassId" :class-id="selectedClassId" activa="contenido" :nombre="selectedClass?.name" :codigo="selectedClass?.code" />
     <!-- Cabecera DOC-V02 -->
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
@@ -13,7 +14,7 @@
 
       <!-- Selector de Clase y Botón Nuevo Módulo -->
       <div class="flex flex-wrap items-center gap-3">
-        <div class="flex items-center gap-2">
+        <div v-if="teacherClasses.length > 1" class="flex items-center gap-2">
           <label for="class-selector" class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
           <select
             id="class-selector"

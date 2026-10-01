@@ -1,11 +1,58 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-6">
+    <DocentePestanasClase :class-id="classId" activa="ajustes" :nombre="classInfo?.name" :codigo="classInfo?.code" />
 
-    <!-- Tarjeta: Datos de la clase -->
+    <!-- Quién está en la clase: primero las solicitudes, porque el estudiante no ve el curso hasta que lo aceptas. -->
+    <section id="solicitudes" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
+      <h1 class="text-sm font-bold text-base-texto-primario">Solicitudes para entrar</h1>
+      <p v-if="pending.length === 0" class="text-xs text-base-texto-secundario">No hay solicitudes pendientes.</p>
+      <div v-for="enrollment in pending" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
+        <span class="text-xs min-w-0 truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span>
+        <div class="flex gap-2 shrink-0">
+          <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-exito hover:bg-semantico-exito/10" @click="change(enrollment.id, 'approve')">Aprobar</button>
+          <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10" @click="change(enrollment.id, 'reject')">Rechazar</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
+      <h2 class="text-sm font-bold text-base-texto-primario">Estudiantes en la clase ({{ active.length }})</h2>
+      <p v-if="active.length === 0" class="text-xs text-base-texto-secundario">Todavía no hay estudiantes. Comparte el código de la clase.</p>
+      <div v-for="enrollment in active" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
+        <span class="text-xs min-w-0 truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span>
+        <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10 shrink-0" @click="change(enrollment.id, 'remove')">Remover</button>
+      </div>
+    </section>
+
+    <!-- Cómo se entra a la clase -->
+    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-4">
+      <h2 class="text-sm font-bold text-base-texto-primario">Matrícula</h2>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
+        <div>
+          <p class="text-xs font-semibold text-base-texto-primario">Exigir aprobación para matricularse</p>
+          <p class="text-[11px] text-base-texto-secundario mt-0.5">
+            Si está activo, un estudiante que ingrese el código queda en «pendiente» hasta que lo apruebes aquí.
+          </p>
+        </div>
+        <button
+          @click="toggleRequiresApproval"
+          :disabled="isSavingApproval"
+          :aria-pressed="!!classInfo?.requiresApproval"
+          class="px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
+          :class="classInfo?.requiresApproval
+            ? 'bg-semantico-exito/15 text-semantico-exito'
+            : 'bg-base-borde-sutil text-base-texto-secundario'"
+        >
+          <Check v-if="classInfo?.requiresApproval" :size="12" aria-hidden="true" />
+          {{ classInfo?.requiresApproval ? 'Activado' : 'Desactivado' }}
+        </button>
+      </div>
+    </section>
+
+    <!-- Datos de la clase -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-4">
       <h2 class="text-sm font-bold text-base-texto-primario">Datos de la clase</h2>
 
-      <!-- Nombre -->
       <div>
         <label for="class-name" class="block text-xs font-semibold text-base-texto-primario mb-1">
           Nombre <span class="text-semantico-error">*</span>
@@ -20,7 +67,6 @@
         />
       </div>
 
-      <!-- Descripción -->
       <div>
         <label for="class-description" class="block text-xs font-semibold text-base-texto-primario mb-1">
           Descripción <span class="text-base-texto-secundario font-normal">(opcional)</span>
@@ -34,9 +80,8 @@
         />
       </div>
 
-      <!-- Código de ingreso (solo lectura) -->
       <div>
-        <label class="block text-xs font-semibold text-base-texto-primario mb-1">
+        <label for="class-code-display" class="block text-xs font-semibold text-base-texto-primario mb-1">
           Código de ingreso <span class="text-base-texto-secundario font-normal">(solo lectura)</span>
         </label>
         <div class="flex items-center gap-2">
@@ -45,7 +90,7 @@
             :value="classInfo?.code || ''"
             type="text"
             readonly
-            class="flex-1 px-3 py-2 text-sm font-mono rounded-md border border-base-borde-sutil bg-base-bg-secundario text-base-texto-primario outline-none cursor-not-allowed"
+            class="flex-1 min-w-0 px-3 py-2 text-sm font-mono rounded-md border border-base-borde-sutil bg-base-bg-secundario text-base-texto-primario outline-none cursor-not-allowed"
           />
           <button
             id="copy-class-code-btn"
@@ -53,13 +98,13 @@
             @click="copyCode"
             class="px-3 py-2 rounded-md text-xs font-bold bg-base-borde-sutil hover:bg-acento-ambar/20 text-base-texto-primario transition-colors flex-shrink-0 flex items-center gap-1"
           >
-            <span>{{ codeCopied ? '✔ Copiado' : 'Copiar' }}</span>
+            <Check v-if="codeCopied" :size="12" aria-hidden="true" />
+            <span>{{ codeCopied ? 'Copiado' : 'Copiar' }}</span>
           </button>
         </div>
       </div>
 
-      <!-- Acciones -->
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3">
         <button
           id="save-class-data-btn"
           type="button"
@@ -70,62 +115,16 @@
           {{ isSavingData ? 'Guardando...' : 'Guardar cambios' }}
         </button>
         <transition name="fade">
-          <span v-if="saveSuccess" class="text-xs text-semantico-exito font-semibold">✔ Cambios guardados.</span>
+          <span v-if="saveSuccess" role="status" class="text-xs text-semantico-exito font-semibold">Cambios guardados.</span>
         </transition>
-        <span v-if="saveError" class="text-xs text-semantico-error font-semibold">{{ saveError }}</span>
-      </div>
-    </section>
-
-    <!-- Tarjeta: Configuración de matrícula -->
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-4">
-      <div>
-        <h1 class="text-xl font-bold text-base-texto-primario">{{ classInfo?.name || 'Gestionar estudiantes' }}</h1>
-        <p class="text-xs text-base-texto-secundario mt-1">Aprueba solicitudes o remueve matrículas activas.</p>
-      </div>
-
-      <div class="flex items-center justify-between p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
-        <div>
-          <p class="text-xs font-semibold text-base-texto-primario">Exigir aprobación para matricularse</p>
-          <p class="text-[11px] text-base-texto-secundario mt-0.5">
-            Si está activo, un estudiante que ingrese el código queda en "pendiente" hasta que lo apruebes aquí.
-          </p>
-        </div>
-        <button
-          @click="toggleRequiresApproval"
-          :disabled="isSavingApproval"
-          class="px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex-shrink-0"
-          :class="classInfo?.requiresApproval
-            ? 'bg-semantico-exito/15 text-semantico-exito'
-            : 'bg-base-borde-sutil text-base-texto-secundario'"
-        >
-          {{ classInfo?.requiresApproval ? 'Activado ✔' : 'Desactivado' }}
-        </button>
-      </div>
-    </header>
-
-    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
-      <h2 class="text-sm font-bold">Solicitudes pendientes</h2>
-      <p v-if="pending.length === 0" class="text-xs text-base-texto-secundario">No hay solicitudes pendientes.</p>
-      <div v-for="enrollment in pending" :key="enrollment.id" class="flex items-center justify-between border-b border-base-borde-sutil py-3">
-        <span class="text-xs">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span>
-        <div class="flex gap-2">
-          <button class="text-xs font-semibold text-semantico-exito" @click="change(enrollment.id, 'approve')">Aprobar</button>
-          <button class="text-xs font-semibold text-semantico-error" @click="change(enrollment.id, 'reject')">Rechazar</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
-      <h2 class="text-sm font-bold">Estudiantes activos</h2>
-      <div v-for="enrollment in active" :key="enrollment.id" class="flex items-center justify-between border-b border-base-borde-sutil py-3">
-        <span class="text-xs">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span>
-        <button class="text-xs font-semibold text-semantico-error" @click="change(enrollment.id, 'remove')">Remover</button>
+        <span v-if="saveError" role="alert" class="text-xs text-semantico-error font-semibold">{{ saveError }}</span>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Check } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 
 definePageMeta({ layout: 'teacher' })
@@ -225,7 +224,7 @@ async function saveData() {
 
     saveSuccess.value = true
     setTimeout(() => { saveSuccess.value = false }, 3000)
-  } catch (err: any) {
+  } catch (err) {
     saveError.value = messageOf(err, 'Error al guardar los cambios.')
   } finally {
     isSavingData.value = false

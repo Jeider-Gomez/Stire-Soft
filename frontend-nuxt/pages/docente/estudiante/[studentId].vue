@@ -1,9 +1,10 @@
 <template>
   <div class="max-w-5xl mx-auto space-y-6">
+    <DocentePestanasClase v-if="claseDeLaFicha" :class-id="claseDeLaFicha" activa="estudiantes" />
     <!-- Navegación de retorno -->
     <div class="flex items-center gap-2 text-xs">
       <NuxtLink
-        to="/docente/rendimiento"
+        :to="volverAlGrupo"
         class="borde-afordancia px-2.5 py-1 rounded text-base-texto-secundario hover:text-base-texto-primario flex items-center gap-1">
         <span>◀</span>
         <span>Volver a Rendimiento del Grupo</span>
@@ -62,7 +63,7 @@
           Reintentar
         </button>
         <NuxtLink
-          to="/docente/rendimiento"
+          :to="volverAlGrupo"
           class="px-4 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold">
           Volver a Cohorte
         </NuxtLink>
@@ -264,6 +265,7 @@ interface StudentDashboardData {
 const route = useRoute()
 // Clase desde la que se abrió la ficha (Rendimiento o el mapa de calor): las estadísticas de lecciones son de esa clase.
 const claseDeLaFicha = computed(() => Number(route.query.clase) || null)
+const volverAlGrupo = computed(() => (claseDeLaFicha.value ? `/docente/rendimiento?classId=${claseDeLaFicha.value}` : '/docente/rendimiento'))
 const api = useApi()
 
 const dashboard = ref<StudentDashboardData | null>(null)

@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-6xl mx-auto space-y-6">
+    <DocentePestanasClase v-if="selectedClassId" :class-id="selectedClassId" activa="estudiantes" :nombre="selectedClass?.name" :codigo="selectedClass?.code" />
     <!-- Cabecera DOC-V04 -->
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>

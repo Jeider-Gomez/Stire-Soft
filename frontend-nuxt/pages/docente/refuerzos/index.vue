@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-5xl mx-auto space-y-5">
+    <DocentePestanasClase v-if="claseId" :class-id="claseId" activa="refuerzos" :nombre="claseActual?.name" />
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 shadow-sm space-y-3">
       <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
@@ -10,13 +11,13 @@
           <Plus :size="14" aria-hidden="true" /> Nuevo refuerzo o reto
         </NuxtLink>
       </div>
-      <div v-if="clases.length" class="flex flex-col sm:flex-row sm:items-center gap-3 text-xs">
+      <div v-if="clases.length > 1" class="flex flex-col sm:flex-row sm:items-center gap-3 text-xs">
         <label for="ref-lista-clase" class="font-semibold text-base-texto-primario">Clase</label>
         <select id="ref-lista-clase" v-model="claseId" @change="cargar" class="min-w-0 max-w-full w-full sm:w-auto bg-base-blanco border border-base-borde-fuerte rounded-md px-3 py-1.5">
           <option v-for="c in clases" :key="c.id" :value="c.id">{{ c.name }}</option>
         </select>
       </div>
-      <p class="text-[11px] text-base-texto-secundario">También puedes asignar desde <NuxtLink to="/docente/rendimiento" class="underline">Rendimiento</NuxtLink>: en «Bloqueados» y «Listos para más».</p>
+      <p class="text-[11px] text-base-texto-secundario">También puedes asignar desde <NuxtLink :to="claseId ? `/docente/clase/${claseId}` : '/docente'" class="underline">Hoy</NuxtLink> o desde el mapa de <NuxtLink :to="claseId ? `/docente/rendimiento?classId=${claseId}` : '/docente/rendimiento'" class="underline">Estudiantes</NuxtLink>: en «Bloqueados» y «Listos para más».</p>
     </header>
 
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario"><Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando…</p>
@@ -74,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { ArrowRight, LifeBuoy, Loader2, Plus } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { fechaCorta } from '~/utils/entregas'
@@ -93,6 +94,7 @@ const claseId = ref<number | null>(null)
 const lista = ref<Resumen[]>([])
 const cargando = ref(true)
 const error = ref<string | null>(null)
+const claseActual = computed(() => clases.value.find((c) => c.id === claseId.value))
 
 const tituloCorto = (r: Resumen, id: number) => (r.lecciones.find((l) => l.id === id)?.titulo ?? '').slice(0, 24)
 

@@ -109,45 +109,22 @@
           <span>Mis Clases</span>
         </NuxtLink>
 
-        <NuxtLink
-          to="/docente/contenidos"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/docente/contenidos' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <BookOpen :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Contenidos</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/docente/ejercicios/crear"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/docente/ejercicios/crear' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <SquarePen :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Crear Ejercicio</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/docente/rendimiento"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path.startsWith('/docente/rendimiento') || route.path.startsWith('/docente/estudiante') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <BarChart3 :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Rendimiento</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/docente/entregas"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path.startsWith('/docente/entregas') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Inbox :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Entregas</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/docente/refuerzos"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path.startsWith('/docente/refuerzos') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <LifeBuoy :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Refuerzos</span>
-        </NuxtLink>
+        <!-- La clase como lugar (utils/pestanasClase.ts): cada clase abre su «Hoy», y adentro están sus pestañas
+             (Contenido, Estudiantes, Entregas, Refuerzos, Ajustes). Antes el menú era por herramienta y cada pantalla
+             volvía a preguntar de qué clase. -->
+        <div v-if="clasesDocente.length" class="pt-2 pb-1">
+          <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Tus clases</p>
+          <NuxtLink
+            v-for="c in clasesDocente"
+            :key="c.id"
+            :to="`/docente/clase/${c.id}`"
+            :title="c.name"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+            :class="claseActiva === c.id ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+            <BookOpen :size="18" aria-hidden="true" class="shrink-0" />
+            <span class="truncate">{{ c.name }}</span>
+          </NuxtLink>
+        </div>
 
         <NuxtLink
           to="/docente/mensajes"
@@ -192,9 +169,10 @@
 </template>
 
 <script setup lang="ts">
-import { FolderCode, Inbox, LifeBuoy, House, Repeat, TrendingUp, Mail, Users, BookOpen, SquarePen, BarChart3, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
+import { FolderCode, House, Repeat, TrendingUp, Mail, Users, BookOpen, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
+import { claseDeLaRuta } from '~/utils/pestanasClase'
 
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
@@ -208,6 +186,18 @@ onMounted(async () => {
     proyectosDisponible.value = (await useApi().get<{ disponible: boolean }>('/proyectos/estado')).disponible
   } catch {
     proyectosDisponible.value = false
+  }
+})
+
+// Las clases del docente para el menú; la activa sale de la dirección (ruta o consulta).
+const clasesDocente = ref<Array<{ id: number; name: string }>>([])
+const claseActiva = computed(() => claseDeLaRuta(route.path, route.query))
+onMounted(async () => {
+  if (authStore.currentRole !== 'docente') return
+  try {
+    clasesDocente.value = await useApi().get<Array<{ id: number; name: string }>>('/class/my-classes')
+  } catch {
+    clasesDocente.value = []
   }
 })
 

@@ -92,8 +92,8 @@ describe('Entregas (docs/DISENO_INTERVENCION_DOCENTE.md §3)', () => {
     expect(leer('pages/estudiante/proyectos/[id].vue')).toContain(`<ProyectosEnviarAlDocente :proyecto-id="proyecto.id" :puede-enviar="estadoGuardado === 'guardado'" />`);
   });
 
-  it('el docente llega desde el menú «Entregas»', () => {
-    expect(leer('components/layout/SidebarNav.vue')).toContain('to="/docente/entregas"');
+  it('el docente llega desde la pestaña «Entregas» de su clase', () => {
+    expect(leer('utils/pestanasClase.ts')).toContain("case 'entregas': return `/docente/entregas?clase=${classId}`");
   });
 
   it('en la revisión, el comentario va antes que la nota, y la nota solo aparece si la entrega lleva nota', () => {
