@@ -1,5 +1,5 @@
 ---
-estado:     propuesta para el dueño del proyecto (decisiones en §8)
+estado:     aprobado con ajustes por el dueño el 2026-09-30 (§10); en construcción
 fecha:      2026-09-30
 ---
 
@@ -322,6 +322,111 @@ Es un trabajo universitario: lo mínimo que un docente use de verdad.
 
 ---
 
+## 10. Decisiones del dueño (30/09) y diseño que sale de ellas
+
+**Lo que decidió.**
+1. **Espacios de entrega:** sí, como tipo de actividad «Entrega».
+   - Asociarla a una lección (o a un módulo) es **opcional**: también puede ser una nota suelta de la materia.
+   - Máximo **3 versiones por defecto, editable**.
+   - Nota **opcional** en lo formativo.
+2. **STIRE es «un Moodle mejorado»:** el docente diseña un curso interactivo, no una página con material que el estudiante
+   no revisa. Exportar las notas a Moodle está bien, pero STIRE sí lleva las notas de la materia.
+3. **Refuerzos y retos** con impacto en **una o varias** lecciones, y con **más flexibilidad**: si el estudiante falla, la
+   actividad normal o el contenido no le está funcionando.
+4. **Estadísticas de dominio** al estilo de Anki y de las plataformas con repetición espaciada.
+5. **Nombres:** proponer una nomenclatura mejor. La estructura sigue siendo módulo → tema → unidad de aprendizaje, y un
+   tema puede tener una sola unidad. Hoy el estudiante **no ve** los temas.
+6. **Evaluación implícita:** el estudiante sabe que lo evalúan siempre. «¿Cómo te sientes con este tema?» no le dice que
+   viene un ejercicio para probar lo que sabe. Hay que mejorar la experiencia de avanzar y ser evaluado.
+7. José revisa por su cuenta y critica después: **no se le espera**.
+8. En lo demás, las recomendaciones de este documento (orden A → B → C → D, dominio como evidencia, comentario primero).
+
+### 10.1 Nomenclatura
+
+| Nivel (código) | Nombre para el estudiante y el docente | Por qué |
+|---|---|---|
+| Sección | **Módulo** (el docente puede llamarlo Corte, Semana o Unidad) | Es el nombre más común en Moodle, Coursera y Open edX. El título lo pone el docente: «Unidad 1 · …» del plan de curso sigue valiendo como título |
+| Tema | **Tema** | Agrupa lecciones. Si tiene **una sola**, el estudiante no lo ve y la lección aparece directo |
+| Unidad de aprendizaje | **Lección** | Es lo que se aprende de una sentada, como en Duolingo y Khan Academy. Deja de chocar con la «Unidad 1» del plan de curso |
+| Contenido de texto | **Explicación** | Antes «lección»: el material de la lección |
+| Video, PDF, imagen, inserción | **Recurso** | Igual que hoy |
+| Actividad | **Ejercicio** o **Entrega** | La entrega la califica el docente |
+
+Los nombres viven en un solo archivo del frontend (`utils/terminos.ts`), para cambiarlos sin buscar pantalla por pantalla.
+En el código y la base de datos no cambia nada.
+
+### 10.2 Avanzar y ser evaluado sin que se sienta examen
+
+- **Se quita la pregunta «¿Cómo te sientes?».** La lección muestra la explicación y luego **«Practicar»**.
+  - Practicar ya es evaluar: cada ejercicio mide el dominio, y el estudiante lo ve subir.
+- **Saltar con un reto**, como «¿Ya sabes esto?» de Duolingo. Debajo de «Practicar» va un enlace discreto: «¿Ya lo sabes?
+  Demuéstralo con un reto y avanza más rápido».
+  - Por dentro usa el mismo reto de salto de hoy (confianza = «seguro»).
+  - El docente ve «Intentó saltar con un reto y falló», que es más fiel que «dijo sentirse seguro».
+- **El camino lleva a la lección, no al ejercicio suelto.** Hoy «Practicar» y «Continuar ejercicio» se saltan la
+  explicación, que es justo el material que el estudiante no revisa.
+  - Una lección sin empezar abre la **lección**.
+  - Una empezada **sigue con la práctica**.
+- **Un solo siguiente paso destacado.** En el plan del curso solo la lección actual tiene botón.
+  - Las dominadas se ven completas y tenues.
+  - Las que tocan repaso llevan un icono, sin repetir el aviso en cada fila.
+- **Dominio honesto en el inicio:** «Avance del curso: 5 de 17 lecciones dominadas» y «Dominio en lo trabajado: 98 %».
+
+### 10.3 Estadísticas al estilo de Anki
+
+Anki muestra hoy:
+- repasos futuros (pronóstico) y calendario de actividad;
+- repasos por tipo de tarjeta y reparto de tarjetas: nuevas, jóvenes y maduras (maduras = intervalo de 21 días o más);
+- intervalos, facilidad, desglose por hora, botones de respuesta y retención real.
+
+Adaptado a STIRE, en «Mi progreso»:
+
+| Gráfica | Qué responde | Dato |
+|---|---|---|
+| **Calendario de actividad** (16 semanas) | ¿Soy constante? | Ejercicios entregados por día |
+| **Próximos repasos** (14 días) | ¿Qué me viene? | Fecha del próximo repaso de cada lección |
+| **Estado de las lecciones**: sin empezar, en práctica, dominada reciente, dominada firme (repaso a 21 días o más, como las maduras de Anki) | ¿Cuánto sé de verdad y cuánto está firme? | Dominio + intervalo del repaso |
+| **Retención** (últimos 30 días) | ¿Recuerdo lo que dominé? | % de repasos aprobados |
+| **Avance por módulo** | ¿Dónde estoy en el curso? | Lecciones dominadas / lecciones |
+
+El docente ve las mismas gráficas de cada estudiante en su ficha.
+
+### 10.4 Refuerzos y retos flexibles
+
+Bloom y Guskey (2007) insisten en que el correctivo presenta el concepto **de otra forma** y no repite la enseñanza inicial.
+Si el estudiante falla, otro ejercicio hermano no basta.
+
+Un refuerzo es una **secuencia corta de pasos** (1 a 5) que el docente arma con estas piezas:
+
+| Paso | Para qué |
+|---|---|
+| **Otra explicación**: texto propio del docente o un recurso (video, PDF, Genially) | Ver el concepto de otra forma |
+| **Ejemplo resuelto**: código con la solución comentada, para leer y ejecutar | Aprender de un ejemplo antes de resolver (Atkinson et al., 2000) |
+| **Ejercicio del banco**, de cualquiera de los 7 tipos | Practicar con un andamio. STIRE propone una hermana más fácil o de otro tipo, por ejemplo ordenar líneas en vez de escribir código |
+| **Ejercicio nuevo** creado para ese estudiante | Lo que el docente sabe y el sistema no |
+| **Entrega** calificada por el docente | Evidencia abierta (un proyecto pequeño) |
+| **Tutor IA con ayuda ampliada** durante el refuerzo | Pistas desde el primer intento, sin dar la respuesta |
+
+Se configura así:
+- **A quién:** estudiantes elegidos, un grupo sugerido (bloqueados, listos para más) o toda la clase.
+- **Lecciones en las que cuenta:** una o varias. Sus ejercicios y entregas son **evidencia** en esas lecciones.
+- **Fecha límite** opcional.
+- **Mensaje** al estudiante, redactado por STIRE y editable.
+
+El **reto** usa la misma estructura, con ejercicios de nivel superior o una entrega abierta. El resultado se ve en la ficha
+y en el mapa como en §4.3: dominio antes → después, y si está hecho, en curso o sin empezar.
+
+### 10.5 Orden de construcción
+
+1. **Camino del estudiante:** nombres, temas visibles, evaluación implícita, la lección antes del ejercicio y dominio
+   honesto (§10.1 y §10.2). Solo frontend.
+2. **Entregas** (§3 con los ajustes de §10).
+3. **Estadísticas** (§10.3).
+4. **Refuerzos y retos flexibles** (§10.4), con el cierre del ciclo (§4.3).
+5. Página de la clase con pestañas y formas de calificar (§6).
+
+---
+
 ## 9. Referencias
 
 ### Artículos (verificados en Crossref el 2026-09-30)
@@ -341,6 +446,7 @@ Es un trabajo universitario: lo mínimo que un docente use de verdad.
 - Roschelle, J., Feng, M., Murphy, R. F. y Mason, C. A. (2016). Online Mathematics Homework Increases Student Achievement. *AERA Open, 2*(4). https://doi.org/10.1177/2332858416673968
 - Shute, V. J. (2008). Focus on Formative Feedback. *Review of Educational Research, 78*(1), 153-189. https://doi.org/10.3102/0034654307313795
 - Verbert, K., Duval, E., Klerkx, J., Govaerts, S. y Santos, J. L. (2013). Learning Analytics Dashboard Applications. *American Behavioral Scientist, 57*(10). https://doi.org/10.1177/0002764213479363
+- Atkinson, R. K., Derry, S. J., Renkl, A. y Wortham, D. (2000). Learning from Examples: Instructional Principles from the Worked Examples Research. *Review of Educational Research, 70*(2), 181-214. https://doi.org/10.3102/00346543070002181
 - Wise, A. F. (2014). Designing pedagogical interventions to support student use of learning analytics. *LAK '14*, 203-211. https://doi.org/10.1145/2567574.2567588
 
 ### Plataformas (documentación oficial y guías, consultadas el 2026-09-30)
@@ -353,5 +459,6 @@ Es un trabajo universitario: lo mínimo que un docente use de verdad.
 - ASSISTments. Skill Builders: https://www.assistments.org/individual-resource/what-are-skill-builders-and-how-are-they-different-from-the-other-content-within-assistments
 - Carnegie Learning. Alerta de riesgo en LiveLab: https://support.carnegielearning.com/help-center/math/livelab/article/live-lab-at-risk-alert/
 - Brightspace. Agentes inteligentes: https://community.d2l.com/brightspace/kb/articles/3499-about-intelligent-agents
+- Anki. Estadísticas: https://docs.ankiweb.net/stats.html
 - Gradescope. Configuración de tareas: https://guides.gradescope.com/hc/en-us/articles/22242992536205-Assignment-Settings-Overview
 - Codio. Learning Insights: https://www.codio.com/features/learning-insights
