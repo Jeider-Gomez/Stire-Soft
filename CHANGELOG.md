@@ -23,6 +23,9 @@ entry to the oldest.
 - Solo el autor y el docente de la clase ven un envío; a cualquier otro le responde 404. Otro docente no puede calificarlo.
 - **Proyectos abierto a todos:** `PROYECTOS_MODO` pasa a `todos` por defecto (`piloto` y `apagado` siguen disponibles).
 - **Pruebas:** 992/992 (101 suites). Migración 1790300000000 (`proyecto_envios` y `classes.aceptaProyectos`).
+- Verificado en Chrome sobre la web real a 1440 y 375 px (24/24 en cada ancho): Laura activa la recepción, Luisa envía y
+  no puede reenviar sin cambios, Laura ejecuta la copia en solo lectura y pone 4,5 y un comentario, Luisa los ve; otro
+  docente y otra estudiante reciben 404/403, y si Luisa borra el proyecto Laura conserva la copia con su nota.
 
 ## Proyectos, fase 1 · 30 de Septiembre de 2026
 
