@@ -97,3 +97,11 @@ describe('Estadísticas al estilo de Anki en pantalla', () => {
     expect(comp).toMatch(/role="img" :aria-label="textoPronostico"/);
   });
 });
+
+describe('Mi progreso con avance honesto', () => {
+  it('ya no muestra «Dominio general 99.2 %»: muestra lecciones dominadas de todas', () => {
+    const progreso = plantilla(leer('pages', 'estudiante', 'progreso.vue'));
+    expect(progreso).not.toContain('Dominio general');
+    expect(progreso).toContain('studentStore.avanceCurso.dominadas} de ${studentStore.avanceCurso.total}');
+  });
+});

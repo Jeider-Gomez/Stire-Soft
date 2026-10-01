@@ -12,10 +12,13 @@
 
     <!-- Resumen de Métricas Clave -->
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <!-- Avance honesto (docs/DISENO_INTERVENCION_DOCENTE.md §10.2): antes mostraba un dominio general de 99 % con 5 de 17. -->
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
-        <span class="text-xs text-base-texto-secundario block font-medium">Dominio general</span>
-        <span class="text-2xl font-bold mt-1 block" :class="masteryColor(studentStore.analytics.avgMastery)">{{ studentStore.hasLoaded ? `${studentStore.analytics.avgMastery} %` : '—' }}</span>
-        <span class="text-[10px] text-base-texto-secundario">{{ studentStore.hasLoaded ? getMasteryLevelName(studentStore.analytics.avgMastery) : 'Cargando…' }}</span>
+        <span class="text-xs text-base-texto-secundario block font-medium">Avance del curso</span>
+        <span class="text-2xl font-bold mt-1 block text-base-texto-primario">{{ studentStore.hasLoaded ? `${studentStore.avanceCurso.dominadas} de ${studentStore.avanceCurso.total}` : '—' }}</span>
+        <span class="text-[10px] text-base-texto-secundario">
+          {{ !studentStore.hasLoaded ? 'Cargando…' : studentStore.avanceCurso.trabajadas ? `lecciones dominadas · ${studentStore.avanceCurso.dominioTrabajado} % de dominio en lo trabajado` : 'lecciones dominadas' }}
+        </span>
       </div>
 
       <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
@@ -84,7 +87,7 @@
             <NuxtLink
               :to="`/estudiante/unidad/${item.unitId}`"
               class="borde-afordancia px-3 py-1 rounded text-xs font-semibold bg-base-blanco text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1.5 self-start sm:self-auto">
-              <span>Reforzar este tema</span>
+              <span>Reforzar esta lección</span>
             </NuxtLink>
           </div>
 
@@ -184,12 +187,6 @@ function resultLabel(sub: { status: string; passed: boolean | null }) {
   if (sub.passed === true) return 'Aprobado'
   if (sub.passed === false) return 'No aprobado'
   return 'Calificado'
-}
-
-function masteryColor(p: number) {
-  if (p >= 70) return 'text-semantico-pasa'
-  if (p >= 40) return 'text-acento-ambar-fuerte'
-  return 'text-base-texto-primario'
 }
 
 // Mismos cortes que el servidor (learning-progress.service.ts: <20 explorado, <60 en práctica, <85 comprensión
