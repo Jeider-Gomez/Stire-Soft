@@ -26,12 +26,24 @@
         </p>
       </div>
 
-      <NuxtLink
-        to="/docente/mensajes"
-        class="px-3.5 py-2 rounded-md borde-afordancia text-xs font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 transition-colors flex items-center gap-1.5 self-start sm:self-auto">
-        <span>✉️</span>
-        <span>Enviar Mensaje Directo</span>
-      </NuxtLink>
+      <!-- La intervención individual (docs/DISENO_INTERVENCION_DOCENTE.md §4.2): refuerzo, reto o mensaje desde la ficha. -->
+      <div class="flex flex-wrap gap-2 self-start sm:self-auto">
+        <NuxtLink
+          :to="enlaceNuevoRefuerzo(claseDeLaFicha, 'refuerzo', [Number(route.params.studentId)])"
+          class="px-3.5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold flex items-center gap-1.5">
+          <LifeBuoy :size="14" aria-hidden="true" /> Asignar refuerzo
+        </NuxtLink>
+        <NuxtLink
+          :to="enlaceNuevoRefuerzo(claseDeLaFicha, 'reto', [Number(route.params.studentId)])"
+          class="px-3.5 py-2 rounded-md borde-afordancia text-xs font-semibold flex items-center gap-1.5">
+          <Rocket :size="14" aria-hidden="true" /> Reto
+        </NuxtLink>
+        <NuxtLink
+          to="/docente/mensajes"
+          class="px-3.5 py-2 rounded-md borde-afordancia text-xs font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 transition-colors flex items-center gap-1.5">
+          <Mail :size="14" aria-hidden="true" /> Mensaje
+        </NuxtLink>
+      </div>
     </header>
 
     <!-- ESTADO 1: Cargando -->
@@ -197,7 +209,9 @@
 </template>
 
 <script setup lang="ts">
+import { LifeBuoy, Mail, Rocket } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
+import { enlaceNuevoRefuerzo } from '~/utils/refuerzos'
 const { messageOf } = useApiErrorMessage()
 
 definePageMeta({

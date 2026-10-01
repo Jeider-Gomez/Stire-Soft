@@ -81,6 +81,22 @@
     </section>
 
     <template v-else>
+      <!-- Refuerzos y retos de su docente: lo primero, porque es lo que alguien preparó para él (§4.2) -->
+      <section v-for="r in refuerzos" :key="r.id" class="rounded-xl border p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        :class="r.tipo === 'reto' ? 'bg-semantico-pasa/5 border-semantico-pasa/30' : 'bg-acento-ambar/10 border-acento-ambar-fuerte/30'">
+        <div class="space-y-1 min-w-0">
+          <p class="text-[10px] font-bold uppercase tracking-wider" :class="r.tipo === 'reto' ? 'text-semantico-pasa' : 'text-acento-ambar-fuerte'">
+            {{ r.tipo === 'reto' ? 'Un reto de tu docente' : 'Tu docente te preparó un refuerzo' }}
+          </p>
+          <h2 class="text-sm font-bold text-base-texto-primario">{{ r.titulo }}</h2>
+          <p v-if="r.mensaje" class="text-xs text-base-texto-secundario line-clamp-2">{{ r.mensaje }}</p>
+          <p class="text-[11px] text-base-texto-secundario">{{ r.pasosHechos }} de {{ r.totalPasos }} pasos<template v-if="r.fechaLimite"> · hasta {{ fechaCorta(r.fechaLimite) }}</template></p>
+        </div>
+        <NuxtLink :to="`/estudiante/refuerzos/${r.id}`" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs text-center shrink-0">
+          {{ r.pasosHechos ? 'Continuar' : 'Empezar' }}
+        </NuxtLink>
+      </section>
+
       <!-- 1. EL SIGUIENTE PASO: una sola acción destacada (docs/DISENO_INTERVENCION_DOCENTE.md §10.2) -->
       <section v-if="studentStore.activeUnit" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="space-y-2 max-w-2xl min-w-0">
@@ -337,6 +353,18 @@ const forgettingUnitIds = computed(() => {
     }
   }
   return ids
+})
+
+// Refuerzos y retos sin terminar de la clase activa.
+interface MiRefuerzo { id: number; classId: number; tipo: 'refuerzo' | 'reto'; titulo: string; mensaje: string | null; fechaLimite: string | null; totalPasos: number; pasosHechos: number }
+const refuerzosTodos = ref<MiRefuerzo[]>([])
+const refuerzos = computed(() => refuerzosTodos.value.filter((r) => r.classId === studentStore.currentClassId && r.pasosHechos < r.totalPasos))
+onMounted(async () => {
+  try {
+    refuerzosTodos.value = await api.get<MiRefuerzo[]>('/refuerzos/mios')
+  } catch {
+    // Sin refuerzos o servidor sin esta función todavía: no se muestra nada.
+  }
 })
 
 // Entregas de la clase activa: primero las que faltan por entregar, luego las que tienen revisión nueva.

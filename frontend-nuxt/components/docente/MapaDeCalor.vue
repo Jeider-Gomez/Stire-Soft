@@ -29,6 +29,8 @@
             </li>
           </ul>
           <p v-else class="text-[11px] text-base-texto-secundario">Nadie está bloqueado ahora.</p>
+          <NuxtLink v-if="mapa.bloqueados.length" :to="enlaceNuevoRefuerzo(classId, 'refuerzo', mapa.bloqueados.map((b) => b.studentId), mapa.bloqueados.map((b) => b.unitId))"
+            class="inline-flex items-center gap-1 font-bold text-semantico-falla hover:underline"><LifeBuoy :size="13" aria-hidden="true" /> Asignar un refuerzo</NuxtLink>
         </article>
 
         <article class="bg-base-blanco rounded-xl border border-acento-ambar/40 p-4 space-y-2">
@@ -47,6 +49,8 @@
             </li>
           </ol>
           <p v-else class="text-[11px] text-base-texto-secundario">Todavía no hay entregas en esta clase.</p>
+          <NuxtLink v-if="mapa.temasDificiles.length" :to="enlaceNuevoRefuerzo(classId, 'refuerzo', mapa.estudiantes.map((e) => e.id), [mapa.temasDificiles[0]!.unitId])"
+            class="inline-flex items-center gap-1 font-bold text-acento-ambar-fuerte hover:underline"><LifeBuoy :size="13" aria-hidden="true" /> Reforzar «{{ mapa.temasDificiles[0]!.unitTitle }}» con todo el grupo</NuxtLink>
         </article>
 
         <article class="bg-base-blanco rounded-xl border border-semantico-info/30 p-4 space-y-2">
@@ -61,6 +65,8 @@
             </li>
           </ul>
           <p v-else class="text-[11px] text-base-texto-secundario">Nadie en esta situación.</p>
+          <NuxtLink v-if="mapa.segurosQueFallan.length" :to="enlaceNuevoRefuerzo(classId, 'refuerzo', mapa.segurosQueFallan.map((s) => s.studentId), mapa.segurosQueFallan.map((s) => s.unitId))"
+            class="inline-flex items-center gap-1 font-bold text-semantico-info hover:underline"><LifeBuoy :size="13" aria-hidden="true" /> Asignar un refuerzo</NuxtLink>
         </article>
 
         <article class="bg-base-blanco rounded-xl border border-semantico-pasa/30 p-4 space-y-2">
@@ -75,6 +81,8 @@
             </li>
           </ul>
           <p v-else class="text-[11px] text-base-texto-secundario">Todavía nadie.</p>
+          <NuxtLink v-if="mapa.listosParaMas.length" :to="enlaceNuevoRefuerzo(classId, 'reto', mapa.listosParaMas.map((l) => l.studentId))"
+            class="inline-flex items-center gap-1 font-bold text-semantico-pasa hover:underline"><Rocket :size="13" aria-hidden="true" /> Asignar un reto</NuxtLink>
         </article>
       </div>
 
@@ -144,7 +152,8 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { AlertTriangle, Flame, HelpCircle, Loader2, Rocket } from 'lucide-vue-next'
+import { AlertTriangle, Flame, HelpCircle, LifeBuoy, Loader2, Rocket } from 'lucide-vue-next'
+import { enlaceNuevoRefuerzo } from '~/utils/refuerzos'
 import { useApi } from '~/composables/useApi'
 import { plural } from '~/utils/plural'
 
