@@ -63,6 +63,40 @@ describe('JavaScript en el navegador (Worker)', () => {
   });
 });
 
+describe('Enviar al docente (fase 2)', () => {
+  const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
+  const leer = (archivo: string) => readFileSync(path.join(raiz, archivo), 'utf8');
+
+  it('el nombre de la descarga no lleva tildes ni caracteres raros', () => {
+    const file = path.join(raiz, 'utils', 'descargaProyecto.ts');
+    const js = ts.transpileModule(readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
+    const mod = { exports: {} as Record<string, unknown> };
+    new Function('module', 'exports', 'require', js)(mod, mod.exports, () => ({}));
+    const nombreDeArchivo = mod.exports.nombreDeArchivo as (t: string) => string;
+    expect(nombreDeArchivo('Luisa Rojas Calculadora v2')).toBe('Luisa-Rojas-Calculadora-v2');
+    expect(nombreDeArchivo('Diseño: ¿página?')).toBe('Diseno-pagina');
+    expect(nombreDeArchivo('¿¿??')).toBe('proyecto');
+  });
+
+  it('el docente ve el código en solo lectura y la vista previa en el mismo iframe aislado que el estudiante', () => {
+    const revision = leer('pages/docente/proyectos/[envioId].vue');
+    expect(revision).toMatch(/<CodeEditor[^>]*read-only/);
+    expect(revision).toContain('<ProyectosResultadoProyecto');
+    const resultado = leer('components/proyectos/ResultadoProyecto.vue');
+    expect(resultado).toContain('sandbox="allow-scripts allow-modals"');
+    expect(resultado).not.toMatch(/sandbox="[^"]*allow-same-origin/);
+    expect(resultado).toContain('e.source !== vistaRef.value?.contentWindow');
+  });
+
+  it('el estudiante envía desde su editor, y solo cuando sus cambios ya están guardados', () => {
+    expect(leer('pages/estudiante/proyectos/[id].vue')).toContain(`<ProyectosEnviarAlDocente :proyecto-id="proyecto.id" :puede-enviar="estadoGuardado === 'guardado'" />`);
+  });
+
+  it('el docente llega desde el menú', () => {
+    expect(leer('components/layout/SidebarNav.vue')).toContain('to="/docente/proyectos"');
+  });
+});
+
 describe('Página web: un solo documento para la vista previa y la descarga', () => {
   const archivos = [
     { nombre: 'index.html', contenido: '<html><head><title>T</title></head><body><h1>Hola</h1></body></html>' },

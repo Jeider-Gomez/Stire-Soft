@@ -131,6 +131,14 @@
         </NuxtLink>
 
         <NuxtLink
+          to="/docente/proyectos"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path.startsWith('/docente/proyectos') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <FolderCode :size="18" aria-hidden="true" class="shrink-0" />
+          <span>Proyectos</span>
+        </NuxtLink>
+
+        <NuxtLink
           to="/docente/mensajes"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/mensajes' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">

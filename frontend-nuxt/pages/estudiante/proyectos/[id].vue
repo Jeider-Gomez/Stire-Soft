@@ -68,48 +68,20 @@
           </div>
         </section>
 
-        <!-- Resultado -->
-        <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden flex flex-col min-h-[24rem]" aria-label="Resultado">
-          <template v-if="proyecto.tipo === 'web'">
-            <div class="px-3 py-2 border-b border-base-borde-sutil text-[11px] font-semibold text-base-texto-secundario">Vista previa (se actualiza sola)</div>
-            <!-- allow-scripts SIN allow-same-origin: el código corre en un origen aislado y no puede tocar STIRE. -->
-            <iframe :srcdoc="vistaPrevia" sandbox="allow-scripts allow-modals" title="Vista previa de tu página" class="flex-1 w-full min-h-[16rem] bg-white" ref="vistaRef" />
-            <div class="border-t border-base-borde-sutil bg-editor-bg text-editor-text font-mono text-[11px] p-2 h-28 overflow-y-auto" aria-live="polite" aria-label="Consola de la página">
-              <p v-if="consolaWeb.length === 0" class="opacity-60">La consola de tu página aparece aquí (console.log).</p>
-              <p v-for="(l, i) in consolaWeb" :key="i" :class="l.tipo === 'error' ? 'text-[#f87171]' : l.tipo === 'warn' ? 'text-[#fcd34d]' : ''">{{ l.texto }}</p>
-            </div>
-          </template>
-          <template v-else>
-            <div class="p-3 border-b border-base-borde-sutil space-y-2 text-xs">
-              <label for="proyecto-entrada" class="block font-semibold text-base-texto-primario">Entrada (la lee <code>leerEntrada()</code>)</label>
-              <textarea id="proyecto-entrada" v-model="entrada" rows="3" class="w-full px-2 py-1.5 rounded border border-base-borde-fuerte font-mono text-[11px]"></textarea>
-              <button type="button" @click="ejecutar" :disabled="ejecutando"
-                class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold inline-flex items-center gap-1.5 disabled:opacity-50">
-                <Loader2 v-if="ejecutando" :size="14" class="animate-spin" aria-hidden="true" /><Play v-else :size="14" aria-hidden="true" />
-                {{ ejecutando ? 'Ejecutando…' : 'Ejecutar' }}
-              </button>
-            </div>
-            <div class="flex-1 bg-editor-bg text-editor-text font-mono text-[11px] p-3 overflow-y-auto" aria-live="polite" aria-label="Salida del programa">
-              <p v-if="!resultado" class="opacity-60">Pulsa «Ejecutar». Tu programa corre en tu navegador, con un límite de 3 segundos.</p>
-              <template v-else>
-                <p v-for="(l, i) in resultado.lineas" :key="i" class="whitespace-pre-wrap" :class="l.tipo === 'error' ? 'text-[#f87171]' : l.tipo === 'warn' ? 'text-[#fcd34d]' : ''">{{ l.texto }}</p>
-                <p v-if="resultado.tiempoAgotado" class="text-[#f87171] mt-1">Se detuvo a los 3 segundos: revisa si hay un bucle que no termina.</p>
-                <p class="opacity-60 mt-1">— terminó en {{ resultado.ms }} ms</p>
-              </template>
-            </div>
-          </template>
-        </section>
+        <ProyectosResultadoProyecto :tipo="proyecto.tipo" :archivos="proyecto.archivos" titulo-vista="Vista previa de tu página" />
       </div>
+
+      <ProyectosEnviarAlDocente :proyecto-id="proyecto.id" :puede-enviar="estadoGuardado === 'guardado'" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { ArrowLeft, Check, Download, Loader2, Play, Plus, Trash2 } from 'lucide-vue-next'
+import { ArrowLeft, Check, Download, Loader2, Plus, Trash2 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
-import { crearZip } from '~/utils/zip'
-import { documentoWeb, ejecutarEnNavegador, type ArchivoProyecto, type ResultadoEjecucion } from '~/utils/proyectoNavegador'
+import { descargarHtml as bajarHtml, descargarZip as bajarZip } from '~/utils/descargaProyecto'
+import type { ArchivoProyecto } from '~/utils/proyectoNavegador'
 
 definePageMeta({ layout: 'student' })
 
@@ -127,12 +99,6 @@ const estadoGuardado = ref<'guardado' | 'pendiente' | 'guardando' | 'error'>('gu
 const agregando = ref(false)
 const nombreNuevo = ref('')
 const nuevoArchivoRef = ref<HTMLInputElement | null>(null)
-const entrada = ref('')
-const ejecutando = ref(false)
-const resultado = ref<ResultadoEjecucion | null>(null)
-const vistaPrevia = ref('')
-const vistaRef = ref<HTMLIFrameElement | null>(null)
-const consolaWeb = ref<Array<{ tipo: string; texto: string }>>([])
 
 const archivoActual = computed(() => proyecto.value!.archivos[Math.min(actual.value, proyecto.value!.archivos.length - 1)]!)
 const bytes = computed(() => new TextEncoder().encode(JSON.stringify(proyecto.value?.archivos ?? [])).length)
@@ -147,26 +113,21 @@ function lenguaje(nombre: string) {
 onMounted(async () => {
   try {
     proyecto.value = await api.get<Proyecto>(`/proyectos/${Number(route.params.id)}`)
-    actualizarVista()
   } catch (err) {
     error.value = messageOf(err, 'No se pudo abrir el proyecto.')
   } finally {
     cargando.value = false
   }
-  window.addEventListener('message', recibirConsola)
   window.addEventListener('beforeunload', avisarSinGuardar)
 })
 
 // Guardado automático: 2 s después de dejar de escribir. Las ediciones durante un guardado se guardan en el siguiente.
 let reloj: ReturnType<typeof setTimeout> | null = null
-let relojVista: ReturnType<typeof setTimeout> | null = null
 watch(() => proyecto.value && JSON.stringify(proyecto.value.archivos), (nuevo, viejo) => {
   if (!viejo || nuevo === viejo) return
   estadoGuardado.value = 'pendiente'
   if (reloj) clearTimeout(reloj)
   reloj = setTimeout(guardarArchivos, 2000)
-  if (relojVista) clearTimeout(relojVista)
-  relojVista = setTimeout(actualizarVista, 600)
 })
 
 async function guardarArchivos() {
@@ -197,34 +158,9 @@ function avisarSinGuardar(e: BeforeUnloadEvent) {
 }
 
 onBeforeUnmount(() => {
-  window.removeEventListener('message', recibirConsola)
   window.removeEventListener('beforeunload', avisarSinGuardar)
   if (reloj) { clearTimeout(reloj); if (estadoGuardado.value === 'pendiente') guardarArchivos() }
-  if (relojVista) clearTimeout(relojVista)
 })
-
-function actualizarVista() {
-  if (proyecto.value?.tipo !== 'web') return
-  consolaWeb.value = []
-  vistaPrevia.value = documentoWeb(proyecto.value.archivos, true)
-}
-
-/** Solo se aceptan mensajes del iframe de la vista previa (no de cualquier ventana). */
-function recibirConsola(e: MessageEvent) {
-  if (e.source !== vistaRef.value?.contentWindow) return
-  const datos = e.data as { stireProyecto?: boolean; tipo?: string; texto?: string }
-  if (!datos?.stireProyecto || consolaWeb.value.length >= 200) return
-  consolaWeb.value.push({ tipo: String(datos.tipo), texto: String(datos.texto ?? '').slice(0, 2000) })
-}
-
-async function ejecutar() {
-  if (!proyecto.value) return
-  ejecutando.value = true
-  // Todos los .js del proyecto, en orden: los demás archivos pueden definir funciones que usa main.js.
-  const codigo = proyecto.value.archivos.filter((a) => a.nombre.endsWith('.js')).map((a) => a.contenido).join('\n;\n')
-  resultado.value = await ejecutarEnNavegador(codigo, entrada.value)
-  ejecutando.value = false
-}
 
 function agregarArchivo() {
   if (!proyecto.value) return
@@ -247,19 +183,10 @@ function quitarArchivo() {
   actual.value = Math.max(0, actual.value - 1)
 }
 
-function descargar(nombre: string, datos: BlobPart, tipo: string) {
-  const url = URL.createObjectURL(new Blob([datos], { type: tipo }))
-  const a = document.createElement('a')
-  a.href = url
-  a.download = nombre
-  a.click()
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
-}
-const nombreArchivo = () => (proyecto.value?.titulo || 'proyecto').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9_-]+/g, '-').replace(/^-|-$/g, '') || 'proyecto'
 function descargarZip() {
-  if (proyecto.value) descargar(`${nombreArchivo()}.zip`, crearZip(proyecto.value.archivos), 'application/zip')
+  if (proyecto.value) bajarZip(proyecto.value.titulo, proyecto.value.archivos)
 }
 function descargarHtml() {
-  if (proyecto.value) descargar(`${nombreArchivo()}.html`, documentoWeb(proyecto.value.archivos, false), 'text/html')
+  if (proyecto.value) bajarHtml(proyecto.value.titulo, proyecto.value.archivos)
 }
 </script>
