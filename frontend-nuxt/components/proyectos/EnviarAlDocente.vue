@@ -38,7 +38,7 @@
               <span class="text-[11px] text-base-texto-secundario">{{ fecha(e.createdAt) }}</span>
             </div>
             <p v-if="!e.revisadoAt" class="text-[11px] text-base-texto-secundario">Sin revisar todavía.</p>
-            <p v-if="e.nota !== null" class="text-base-texto-primario">Nota: <strong>{{ e.nota.toFixed(1) }}</strong> de 5,0</p>
+            <p v-if="e.nota !== null" class="text-base-texto-primario">Nota: <strong>{{ e.nota.toFixed(1).replace(".", ",") }}</strong> de 5,0</p>
             <p v-if="e.comentario" class="text-base-texto-primario whitespace-pre-wrap bg-base-bg-secundario rounded p-2">{{ e.comentario }}</p>
             <button type="button" @click="descargarVersion(e.id)" class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1">
               <Download :size="12" aria-hidden="true" /> Descargar esta versión (.zip)

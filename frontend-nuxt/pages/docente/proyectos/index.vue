@@ -64,7 +64,7 @@
               <span class="text-[11px] text-base-texto-secundario">{{ e.estudiante }} · enviado {{ fecha(e.createdAt) }}</span>
             </span>
             <span class="shrink-0 font-semibold" :class="e.revisadoAt ? 'text-semantico-exito' : 'text-acento-ambar-fuerte'">
-              {{ e.revisadoAt ? (e.nota !== null ? `Nota ${e.nota.toFixed(1)}` : 'Comentado') : 'Sin revisar' }}
+              {{ e.revisadoAt ? (e.nota !== null ? `Nota ${e.nota.toFixed(1).replace('.', ',')}` : 'Comentado') : 'Sin revisar' }}
             </span>
           </NuxtLink>
         </li>
