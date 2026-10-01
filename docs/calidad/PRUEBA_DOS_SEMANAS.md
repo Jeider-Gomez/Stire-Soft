@@ -2,25 +2,44 @@
 estado: plan vigente (01/10/2026). Reemplaza a GUIA_RONDA_1_EQUIPO.md, que era de una versión anterior.
 ---
 
-# Prueba de STIRE con el equipo: dos semanas, dos cursos
+# Prueba de STIRE con el equipo: dos semanas, dos cursos, cruzados
 
-**Idea del dueño:** una semana con un curso y la siguiente con el otro. Quienes hacen de estudiantes pasan por **los dos
-cursos**. Dos integrantes hacen de **docentes**, uno por curso.
+**Decisión del dueño (01/10):** en vez de que todos hagan el mismo curso a la vez, el equipo se parte en dos grupos. Cada
+grupo empieza con un curso distinto y **en la segunda semana se cruzan**. Así cada semana hay resultados de los dos cursos
+(el doble de reportes) y cada persona termina habiendo probado los dos.
 
-## 1. Antes de empezar (una vez)
+Es un diseño **cruzado y contrabalanceado**: como la mitad empieza por cada curso, lo que cambia por *ya conocer la app*
+la segunda semana no se confunde con lo que cambia *por el curso*.
+
+## 1. Quién hace qué
+
+| Persona | Rol | Semana 1 | Semana 2 |
+|---|---|---|---|
+| Integrante 1 | **Docente A** de Fundamentos de Algoritmia | Dicta a su grupo | Dicta al otro grupo |
+| Integrante 2 | **Docente B** de Pensamiento algorítmico | Dicta a su grupo | Dicta al otro grupo |
+| Integrantes 3 y 4 | Estudiantes, **grupo 1** | Fundamentos de Algoritmia | Pensamiento algorítmico |
+| Integrante 5 (y quien quiera más) | Estudiantes, **grupo 2** | Pensamiento algorítmico | Fundamentos de Algoritmia |
+
+- Cada docente dicta su mismo curso las dos semanas, a un grupo distinto: así prueba la segunda vez con la experiencia de la
+  primera (por ejemplo, si «Hoy» le sirvió o si cambia cómo arma las notas).
+- Si un docente también quiere vivir el curso del otro como estudiante, usa **una segunda cuenta** con otro correo (una
+  cuenta es de docente o de estudiante).
+- Si son menos personas, el grupo 2 puede ser una sola persona más uno de los docentes con su segunda cuenta.
+
+## 2. Antes de empezar (una vez)
 
 | Quién | Qué |
 |---|---|
 | Jeider | Encender el servidor y comprobar https://stire-soft.vercel.app. Las dos plantillas ya están compartidas (ALGO-203413 y PENSAR-ALGO). |
-| Docente A y docente B | Crear su cuenta y pedir el rol de **docente**; el admin lo aprueba en «Usuarios y Roles». |
+| Docentes A y B | Crear su cuenta y pedir el rol de **docente**; el admin lo aprueba en «Usuarios y Roles». |
 | Docente A | «Crear Nueva Clase» → «Copiar el contenido de» → **Fundamentos de Algoritmia (ALGO-203413)**. En Contenido, publicar el **módulo 1**. |
 | Docente B | Lo mismo con **Pensamiento algorítmico (PENSAR-ALGO)**. Publicar el **módulo 1**. |
-| Estudiantes | Crear su cuenta con un correo propio y entrar a las **dos** clases con sus códigos (un estudiante puede estar en varias y cambia de clase arriba). |
+| Estudiantes | Crear su cuenta con un correo propio. Semana 1: entrar **solo** a la clase de su grupo. Semana 2: entrar a la otra (un estudiante puede estar en varias y cambia de clase arriba). |
 
-Consejo: cada docente publica un módulo por semana o por cada pocos días, como en un curso real. Así se prueba también el
-«Hoy», los avisos y el resumen de la semana.
+Consejo: cada docente publica un módulo por semana o cada pocos días, como en un curso real. Así se prueban también «Hoy»,
+los avisos y el resumen de la semana.
 
-## 2. Semana 1: Fundamentos de Algoritmia (docente A)
+## 3. Qué probar (las dos semanas, en el curso que toque)
 
 **Estudiantes** (unos 20 minutos al día, desde el celular al menos una vez):
 1. Entrar, leer la explicación de la lección que propone «Tu siguiente paso» y practicar.
@@ -30,18 +49,15 @@ Consejo: cada docente publica un módulo por semana o por cada pocos días, como
 5. Mirar «Mi progreso»: avance, repasos, estadísticas. ¿Se entiende qué significa cada cosa?
 6. Si el docente crea una entrega, enviarla y leer el comentario.
 
-**Docente A** (unos 15 minutos al día):
+**Docente** (unos 15 minutos al día):
 1. Abrir la clase y revisar «Hoy» todos los días: ¿lo que muestra le dice qué hacer?
 2. Crear una **entrega** (por ejemplo, un pequeño proyecto) y revisar lo que llegue: comentario primero, nota opcional.
 3. Asignar un **refuerzo** a quien aparezca bloqueado y un **reto** a quien esté listo para más; ver si «funcionó».
 4. Armar las **notas** a su manera (una sola nota, por módulo, con o sin porcentajes) y probar «Descargar para Moodle».
 5. Escribir mensajes a quien lleve días sin practicar.
 
-## 3. Semana 2: Pensamiento algorítmico (docente B)
-
-Lo mismo, con el otro curso. Los estudiantes ya conocen la app: fijarse en lo que **cambia** de un curso a otro (más
-fácil, más difícil, más claro) y en si la segunda vez se sienten más cómodos. El docente A puede seguir con su clase o
-hacer de estudiante en esta.
+**En la semana 2**, fijarse además en lo que **cambia** de un curso a otro (más fácil, más difícil, más claro) y en si la
+segunda vez se sienten más cómodos con la app.
 
 ## 4. Cómo reportar
 
@@ -57,7 +73,7 @@ quien reportó puede leer en «Ver lo que he reportado». El botón «Descargar 
 
 ## 5. Después de cada semana
 
-1. Descargar el CSV de reportes y juntar las respuestas de las tres preguntas en `docs/calidad/PRUEBA_SEMANA_N_RESULTADOS.md`.
+1. Descargar el CSV de reportes (dice quién, en qué **clase** y en qué pantalla, así se separan los dos cursos) y juntar las respuestas de las tres preguntas en `docs/calidad/PRUEBA_SEMANA_N_RESULTADOS.md`.
 2. Lo de gravedad 3 («No me dejó seguir») se corrige antes de la semana siguiente.
 3. Lo que se repite entre personas pesa más que lo que dice una sola.
 

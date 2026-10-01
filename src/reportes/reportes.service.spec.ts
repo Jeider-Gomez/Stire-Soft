@@ -42,14 +42,18 @@ function crear(enUnDia = 0) {
     findOne: jest.fn(({ where }: { where: { id: number } }) => Promise.resolve(where.id === 1 ? { id: 1, estado: 'nuevo', nota: null } : null)),
   };
   const usuarios = { find: jest.fn(() => Promise.resolve([{ id: 5, fullName: 'Luisa' }, { id: 6, fullName: 'Julián' }])) };
-  return { service: new ReportesService(reportes as unknown as Deps[0], usuarios as unknown as Deps[1]), guardados };
+  const clases = { findOne: jest.fn(({ where }: { where: { id: number } }) => Promise.resolve(where.id === 6 ? { name: 'Fundamentos de Algoritmia', code: 'ALGO-WEB-570' } : null)) };
+  return { service: new ReportesService(reportes as unknown as Deps[0], usuarios as unknown as Deps[1], clases as unknown as Deps[2]), guardados };
 }
 
 describe('ReportesService', () => {
   it('guarda el reporte con quién lo hizo y su rol, como «nuevo»', async () => {
     const { service, guardados } = crear();
     await service.crear(luisa, base);
-    expect(guardados[0]).toMatchObject({ ...base, userId: 5, rol: 'estudiante', estado: 'nuevo' });
+    expect(guardados[0]).toMatchObject({ ...base, userId: 5, rol: 'estudiante', estado: 'nuevo', clase: '' });
+    // con dos cursos cruzados, la clase separa los resultados
+    await service.crear(luisa, { ...base, classId: 6 });
+    expect(guardados[1].clase).toBe('Fundamentos de Algoritmia (ALGO-WEB-570)');
     await expect(service.crear(luisa, { ...base, texto: '' })).rejects.toThrow(BadRequestException);
   });
 

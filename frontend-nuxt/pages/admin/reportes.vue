@@ -34,6 +34,7 @@
           </span>
           <span class="font-semibold">{{ r.autor }}</span>
           <span class="text-base-texto-secundario">{{ r.rol }} · {{ fechaCorta(r.createdAt) }}</span>
+          <span v-if="r.clase" class="px-2 py-0.5 rounded bg-semantico-info/10 text-semantico-info font-semibold">{{ r.clase }}</span>
         </div>
         <p class="text-sm text-base-texto-primario whitespace-pre-line">{{ r.texto }}</p>
         <p class="text-[11px] text-base-texto-secundario break-all">
@@ -65,7 +66,7 @@ definePageMeta({ layout: 'admin' })
 type Estado = 'nuevo' | 'visto' | 'resuelto' | 'descartado'
 interface Reporte {
   id: number; autor: string; rol: string; tipo: 'problema' | 'confuso' | 'idea'; gravedad: number | null
-  texto: string; ruta: string; dispositivo: string; estado: Estado; nota: string | null; createdAt: string; notaEditada?: string
+  texto: string; ruta: string; dispositivo: string; clase: string; estado: Estado; nota: string | null; createdAt: string; notaEditada?: string
 }
 
 const TIPOS = { problema: 'Problema', confuso: 'Confuso', idea: 'Idea' }
@@ -112,8 +113,8 @@ async function guardar(r: Reporte) {
 /** Para pasar los hallazgos de la prueba a una tabla (docs/calidad/PRUEBA_DOS_SEMANAS.md). */
 function descargarCsv() {
   const celda = (v: string) => (/[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)
-  const filas = [['Fecha', 'Autor', 'Rol', 'Tipo', 'Gravedad', 'Texto', 'Pantalla', 'Dispositivo', 'Estado', 'Nota']]
-    .concat(lista.value.map((r) => [r.createdAt, r.autor, r.rol, TIPOS[r.tipo], r.gravedad ? String(r.gravedad) : '', r.texto, r.ruta, r.dispositivo, ESTADOS[r.estado], r.nota ?? '']))
+  const filas = [['Fecha', 'Autor', 'Rol', 'Clase', 'Tipo', 'Gravedad', 'Texto', 'Pantalla', 'Dispositivo', 'Estado', 'Nota']]
+    .concat(lista.value.map((r) => [r.createdAt, r.autor, r.rol, r.clase, TIPOS[r.tipo], r.gravedad ? String(r.gravedad) : '', r.texto, r.ruta, r.dispositivo, ESTADOS[r.estado], r.nota ?? '']))
   const url = URL.createObjectURL(new Blob(['﻿' + filas.map((f) => f.map(celda).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }))
   const a = document.createElement('a')
   a.href = url

@@ -10,6 +10,7 @@ describe('Reportar desde cualquier pantalla', () => {
     expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutBotonReportar />');
     const boton = leer('components', 'layout', 'BotonReportar.vue');
     expect(boton).toContain('ruta: route.fullPath');
+    expect(boton).toContain('classId: claseActual()');
     expect(boton).toContain('dispositivo: `${window.innerWidth}×${window.innerHeight} · ${navigator.userAgent}`');
     expect(boton).toContain("gravedad: f.tipo === 'idea' ? undefined : f.gravedad");
     expect(boton).toContain("api.get('/reportes/mios')");

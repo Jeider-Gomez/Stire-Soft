@@ -36,6 +36,10 @@ export class Reporte {
   @Column({ type: 'varchar', length: 300, default: '' })
   dispositivo!: string;
 
+  /** La clase en la que estaba («Fundamentos de Algoritmia (ALGO-WEB-570)»): con dos cursos cruzados, separa los resultados. */
+  @Column({ type: 'varchar', length: 160, default: '' })
+  clase!: string;
+
   @Column({ type: 'varchar', length: 10, default: 'nuevo' })
   estado!: EstadoReporte;
 

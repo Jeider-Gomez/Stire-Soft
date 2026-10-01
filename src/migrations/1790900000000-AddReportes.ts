@@ -15,6 +15,7 @@ export class AddReportes1790900000000 implements MigrationInterface {
         '`texto` text NOT NULL, ' +
         '`ruta` varchar(300) NOT NULL, ' +
         "`dispositivo` varchar(300) NOT NULL DEFAULT '', " +
+        "`clase` varchar(160) NOT NULL DEFAULT '', " +
         "`estado` varchar(10) NOT NULL DEFAULT 'nuevo', " +
         '`nota` text NULL, ' +
         '`createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, ' +

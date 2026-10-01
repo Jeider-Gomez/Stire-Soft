@@ -68,7 +68,7 @@
                 <p class="flex flex-wrap items-center gap-2">
                   <span class="font-semibold">{{ TIPOS[r.tipo] }}</span>
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-bold" :class="r.estado === 'resuelto' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario'">{{ ESTADOS[r.estado] }}</span>
-                  <span class="text-base-texto-secundario">{{ fechaCorta(r.createdAt) }}</span>
+                  <span class="text-base-texto-secundario">{{ fechaCorta(r.createdAt) }}{{ r.clase ? ` · ${r.clase}` : '' }}</span>
                 </p>
                 <p class="text-base-texto-primario whitespace-pre-line">{{ r.texto }}</p>
                 <p v-if="r.nota" class="text-semantico-info">Respuesta: {{ r.nota }}</p>
@@ -87,6 +87,9 @@ import { reactive, ref } from 'vue'
 import { MessageSquareWarning, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { fechaCorta } from '~/utils/entregas'
+import { claseDeLaRuta } from '~/utils/pestanasClase'
+import { useAuthStore } from '~/stores/auth'
+import { useStudentStore } from '~/stores/student'
 
 type Tipo = 'problema' | 'confuso' | 'idea'
 type Estado = 'nuevo' | 'visto' | 'resuelto' | 'descartado'
@@ -105,7 +108,15 @@ const error = ref<string | null>(null)
 const f = reactive<{ tipo: Tipo; gravedad: number; texto: string }>({ tipo: 'problema', gravedad: 2, texto: '' })
 const viendoMios = ref(false)
 const cargandoMios = ref(false)
-const mios = ref<Array<{ id: number; tipo: Tipo; estado: Estado; texto: string; nota: string | null; createdAt: string }>>([])
+const mios = ref<Array<{ id: number; tipo: Tipo; estado: Estado; texto: string; clase: string; nota: string | null; createdAt: string }>>([])
+
+const authStore = useAuthStore()
+const studentStore = useStudentStore()
+/** La clase en la que está: la elegida por el estudiante o la de la pantalla del docente. */
+function claseActual(): number | undefined {
+  const id = authStore.currentRole === 'estudiante' ? studentStore.currentClassId : claseDeLaRuta(route.path, route.query)
+  return id ?? undefined
+}
 
 function abrir() {
   abierto.value = true
@@ -129,6 +140,7 @@ async function enviar() {
       gravedad: f.tipo === 'idea' ? undefined : f.gravedad,
       texto: f.texto,
       ruta: route.fullPath,
+      classId: claseActual(),
       dispositivo: `${window.innerWidth}×${window.innerHeight} · ${navigator.userAgent}`,
     })
     enviado.value = true

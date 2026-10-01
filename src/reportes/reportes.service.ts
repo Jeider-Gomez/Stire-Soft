@@ -4,6 +4,7 @@ import { In, MoreThanOrEqual, Repository } from 'typeorm';
 import { Reporte } from './entities/reporte.entity';
 import { ESTADOS_REPORTE, LIMITES_REPORTE, ReporteInvalidoError, validarReporte, validarRevision, type EstadoReporte } from './reporte-reglas';
 import { User } from '../user/entities/user.entity';
+import { Class } from '../class/entities/class.entity';
 
 function reglas<T>(fn: () => T): T {
   try {
@@ -20,7 +21,16 @@ export class ReportesService {
   constructor(
     @InjectRepository(Reporte) private readonly reportes: Repository<Reporte>,
     @InjectRepository(User) private readonly usuarios: Repository<User>,
+    @InjectRepository(Class) private readonly clases: Repository<Class>,
   ) {}
+
+  /** Nombre y código de la clase en la que estaba, si la app lo mandó; solo es un rótulo para separar resultados. */
+  private async nombreDeClase(classId: unknown): Promise<string> {
+    const id = Number(classId);
+    if (!Number.isInteger(id) || id <= 0) return '';
+    const c = await this.clases.findOne({ where: { id } });
+    return c ? `${c.name} (${c.code})`.slice(0, 160) : '';
+  }
 
   async crear(user: User, datos: Record<string, unknown>) {
     const v = reglas(() => validarReporte(datos));
@@ -28,14 +38,15 @@ export class ReportesService {
     if (ultimoDia >= LIMITES_REPORTE.porDia) {
       throw new HttpException('Llegaste al máximo de reportes por hoy. ¡Gracias por tantos!', HttpStatus.TOO_MANY_REQUESTS);
     }
-    const r = await this.reportes.save(this.reportes.create({ ...v, userId: user.id, rol: user.role, estado: 'nuevo' }));
+    const clase = await this.nombreDeClase(datos.classId);
+    const r = await this.reportes.save(this.reportes.create({ ...v, clase, userId: user.id, rol: user.role, estado: 'nuevo' }));
     return { id: r.id };
   }
 
   /** Lo que yo reporté y en qué va (con la nota del admin, si dejó una). */
   async mios(user: User) {
     const lista = await this.reportes.find({ where: { userId: user.id }, order: { createdAt: 'DESC' }, take: 50 });
-    return lista.map((r) => ({ id: r.id, tipo: r.tipo, gravedad: r.gravedad, texto: r.texto, ruta: r.ruta, estado: r.estado, nota: r.nota, createdAt: r.createdAt }));
+    return lista.map((r) => ({ id: r.id, tipo: r.tipo, gravedad: r.gravedad, texto: r.texto, ruta: r.ruta, clase: r.clase, estado: r.estado, nota: r.nota, createdAt: r.createdAt }));
   }
 
   /** Bandeja del admin: lo más grave primero y, dentro de eso, lo más nuevo. */
