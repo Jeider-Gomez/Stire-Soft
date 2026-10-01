@@ -12,6 +12,27 @@ entry to the oldest.
 
 ---
 
+## Refuerzos y retos · 30 de Septiembre de 2026
+
+Cierra el plan de intervención (`docs/DISENO_INTERVENCION_DOCENTE.md` §4 y §10.4).
+
+- **Refuerzo o reto** para uno o varios estudiantes: una secuencia de 1 a 5 pasos (otra explicación, un recurso de
+  YouTube/Drive/Genially…, un ejercicio, una entrega) que cuenta en una o varias lecciones, con fecha límite opcional y un
+  mensaje que STIRE propone y el docente revisa; se envía como mensaje.
+- **Sugerencias:** los ejercicios de las lecciones elegidas, primero los que esos estudiantes aún no aprueban y los más
+  fáciles (en un reto, los más difíciles).
+- **Ejercicio a la medida:** un borrador sumado a un refuerzo se publica **solo** para esos estudiantes. Una actividad
+  asignada a algunos no existe para los demás: no la ven, no la pueden intentar y no cuenta en su dominio.
+- **¿Funcionó?:** «Refuerzos» muestra por estudiante los pasos hechos y el dominio antes → ahora en cada lección.
+- **La acción junto al dato:** «Asignar un refuerzo» en Bloqueados y en «Intentó saltar con un reto y falló»,
+  «Reforzar con todo el grupo» en el tema más difícil, «Asignar un reto» en Listos para más, y los dos botones en la
+  ficha del estudiante. El estudiante lo ve primero en su inicio, con sus pasos y «Ya lo vi».
+- **Arreglos:** antes un estudiante podía iniciar un intento en un ejercicio en borrador; los repasos «para hoy» se
+  cortaban en la hora del servidor (UTC) y desde las 7 p. m. mostraban los de mañana; «Mi progreso» decía «Dominio
+  general 99.2 %».
+- **Pruebas:** 1069/1069 (106 suites). Migración 1790500000000 (`activities.asignadaA`, `refuerzos`,
+  `refuerzo_pasos_hechos`).
+
 ## El docente que interviene: camino, entregas y estadísticas · 30 de Septiembre de 2026
 
 Diseño y decisiones del dueño en `docs/DISENO_INTERVENCION_DOCENTE.md` (investigación de 11 plataformas y 16 artículos
