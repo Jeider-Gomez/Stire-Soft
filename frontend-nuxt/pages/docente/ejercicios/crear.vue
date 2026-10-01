@@ -15,7 +15,7 @@
               Para <strong class="text-base-texto-primario">{{ selectedUnit.title }}</strong>
               <span v-if="selectedClass"> · {{ selectedClass.name }}</span>
             </template>
-            <template v-else>Elige la clase y la unidad donde irá.</template>
+            <template v-else>Elige la clase y la lección donde irá.</template>
           </p>
         </div>
         <button
@@ -23,7 +23,7 @@
           type="button"
           @click="showPlacement = true"
           class="self-start sm:self-auto text-xs font-semibold text-acento-ambar-fuerte hover:underline focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded">
-          Cambiar unidad
+          Cambiar lección
         </button>
       </div>
 
@@ -37,13 +37,13 @@
           </select>
         </div>
         <div>
-          <label for="create-unit" class="block font-semibold text-base-texto-primario mb-1">Unidad</label>
+          <label for="create-unit" class="block font-semibold text-base-texto-primario mb-1">Lección</label>
           <select id="create-unit" v-model="form.learningUnitId" :disabled="units.length === 0"
             class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none disabled:opacity-50">
             <option v-for="u in units" :key="u.id" :value="u.id">{{ u.title }}</option>
           </select>
           <p v-if="selectedClassId && units.length === 0 && !loadingUnits" class="text-[11px] text-base-texto-secundario mt-1">
-            Esta clase aún no tiene unidades. Créalas primero en <NuxtLink to="/docente/contenidos" class="underline">Contenidos</NuxtLink>.
+            Esta clase aún no tiene lecciones. Créalas primero en <NuxtLink to="/docente/contenidos" class="underline">Contenidos</NuxtLink>.
           </p>
         </div>
       </div>
@@ -53,10 +53,10 @@
     <section v-if="created" role="status" class="bg-base-blanco rounded-xl border border-semantico-pasa/40 p-6 text-center space-y-3">
       <CircleCheck :size="36" class="mx-auto text-semantico-pasa" aria-hidden="true" />
       <h2 class="text-base font-bold text-base-texto-primario">«{{ created.title }}» {{ created.published ? 'ya está visible para tus estudiantes' : 'quedó guardado como borrador' }}</h2>
-      <p class="text-xs text-base-texto-secundario">Lo encuentras en la unidad, dentro de Contenidos.</p>
+      <p class="text-xs text-base-texto-secundario">Lo encuentras en la lección, dentro de Contenidos.</p>
       <div class="flex flex-wrap justify-center gap-2 pt-1">
         <button type="button" @click="startAnother" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold hover:bg-acento-ambar focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-          Crear otro en esta unidad
+          Crear otro en esta lección
         </button>
         <NuxtLink :to="backToCourse" class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario">
           Volver al curso
@@ -417,7 +417,7 @@ async function onClassChange() {
     units.value = collected
     form.learningUnitId = collected[0]?.id ?? null
   } catch (err) {
-    stepError.value = messageOf(err, 'No se pudieron cargar las unidades de la clase.')
+    stepError.value = messageOf(err, 'No se pudieron cargar las lecciones de la clase.')
   } finally {
     loadingUnits.value = false
   }

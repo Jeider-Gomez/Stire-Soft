@@ -299,7 +299,7 @@
              estudiante, más allá del puntaje crudo de un solo intento. -->
         <div v-if="masteryDelta" class="p-3 bg-acento-ambar/10 rounded-lg border border-acento-ambar/30">
           <p class="text-sm font-semibold text-base-texto-primario">
-            Tu dominio de esta unidad {{ masteryDelta.diff > 0 ? 'subió a' : 'se mantiene en' }}
+            Tu dominio de esta lección {{ masteryDelta.diff > 0 ? 'subió a' : 'se mantiene en' }}
             <span class="text-acento-ambar-fuerte">{{ masteryDelta.after }}%</span>
             <span v-if="masteryDelta.diff > 0" class="text-semantico-pasa"> (+{{ masteryDelta.diff }}%)</span>
           </p>

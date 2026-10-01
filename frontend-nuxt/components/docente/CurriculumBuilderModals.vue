@@ -168,7 +168,7 @@
         <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4">
           <div class="flex items-center justify-between">
             <h2 id="modal-new-unit-title" class="text-sm font-bold text-base-texto-primario">
-              Nueva Unidad Didáctica
+              Nueva lección
             </h2>
             <button
               @click="closeUnitModal"
@@ -181,7 +181,7 @@
           <form @submit.prevent="submitCreateUnit" class="space-y-4 text-xs">
             <div>
               <label for="unit-new-title-input" class="block font-semibold text-base-texto-primario mb-1">
-                Título de la unidad *
+                Título de la lección *
               </label>
               <input
                 id="unit-new-title-input"
@@ -201,7 +201,7 @@
                 id="unit-new-desc-input"
                 v-model="unitModal.form.description"
                 rows="3"
-                placeholder="Objetivo o descripción de la unidad..."
+                placeholder="Qué aprende el estudiante en esta lección…"
                 class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 resize-y text-base-texto-primario"></textarea>
             </div>
 
@@ -235,7 +235,7 @@
                 :disabled="unitModal.saving"
                 class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
                 <span v-if="unitModal.saving" class="animate-spin">⚙️</span>
-                <span>{{ unitModal.saving ? 'Creando…' : '✔ Crear unidad' }}</span>
+                <span>{{ unitModal.saving ? 'Creando…' : 'Crear lección' }}</span>
               </button>
             </div>
           </form>
@@ -388,7 +388,7 @@ function closeUnitModal() {
 
 async function submitCreateUnit() {
   if (!unitModal.form.title.trim()) {
-    unitModal.error = 'El título de la unidad es obligatorio.'
+    unitModal.error = 'Ponle un título a la lección.'
     return
   }
   unitModal.saving = true
@@ -406,10 +406,10 @@ async function submitCreateUnit() {
       topicId: unitModal.topicId,
       unit: res
     })
-    emit('feedback', `Unidad "${unitModal.form.title.trim()}" creada correctamente.`)
+    emit('feedback', `Lección "${unitModal.form.title.trim()}" creada.`)
     closeUnitModal()
   } catch (err: any) {
-    unitModal.error = messageOf(err, 'Error al crear la unidad.')
+    unitModal.error = messageOf(err, 'No se pudo crear la lección.')
   } finally {
     unitModal.saving = false
   }

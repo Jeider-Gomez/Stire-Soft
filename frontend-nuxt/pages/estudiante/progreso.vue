@@ -6,7 +6,7 @@
         Mi progreso
       </h1>
       <p class="text-xs text-base-texto-secundario mt-0.5">
-        Cómo vas en cada unidad que has trabajado
+        Cómo vas en cada lección que has trabajado
       </p>
     </header>
 
@@ -36,7 +36,7 @@
       <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
         <div>
           <h2 class="text-sm font-bold text-base-texto-primario">
-            Cómo vas en cada unidad
+            Cómo vas en cada lección
           </h2>
           <p class="text-[11px] text-base-texto-secundario">
             Estados: No visto → Explorado → En práctica → Comprensión parcial → Dominado
@@ -50,7 +50,7 @@
 
       <div class="space-y-4 pt-2">
         <p v-if="studentStore.analytics.masteryByUnit.length === 0" class="text-xs text-base-texto-secundario italic">
-          Todavía no has practicado ninguna unidad. Empieza por la primera desde el
+          Todavía no has practicado ninguna lección. Empieza por la primera desde el
           <NuxtLink to="/estudiante" class="underline">inicio</NuxtLink>: aquí verás cómo avanzas.
         </p>
         <div

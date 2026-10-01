@@ -81,69 +81,46 @@
     </section>
 
     <template v-else>
-      <!-- 1. TARJETA HERO DE ACCIÓN INMEDIATA (P01 — Orientación y Jerarquía) -->
+      <!-- 1. EL SIGUIENTE PASO: una sola acción destacada (docs/DISENO_INTERVENCION_DOCENTE.md §10.2) -->
       <section v-if="studentStore.activeUnit" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div class="space-y-2 max-w-2xl">
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-acento-ambar/15 text-acento-ambar-fuerte uppercase tracking-wider">
-              Recomendación del Tutor
-            </span>
-          </div>
-
+        <div class="space-y-2 max-w-2xl min-w-0">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-acento-ambar/15 text-acento-ambar-fuerte uppercase tracking-wider">
+            Tu siguiente paso
+          </span>
           <h1 class="text-lg md:text-xl font-bold text-base-texto-primario tracking-tight">
-            Continúa con: {{ studentStore.activeUnit.title }}
+            {{ studentStore.activeUnit.title }}
           </h1>
-          <!-- Motivo del recomendador (T2) -->
-          <p v-if="recommendedReasonMessage" class="text-xs text-base-texto-secundario leading-relaxed">
-            {{ recommendedReasonMessage }}
+          <p class="text-[11px] text-base-texto-secundario">{{ ubicacion(studentStore.activeUnit) }}</p>
+          <p class="text-xs text-base-texto-secundario leading-relaxed">
+            {{ studentStore.activeUnit.empezada ? (recommendedReasonMessage || studentStore.activeUnit.description) : studentStore.activeUnit.description }}
           </p>
-          <p v-else class="text-xs text-base-texto-secundario leading-relaxed">
-            {{ studentStore.activeUnit.description }}
-          </p>
-
-          <!-- Barra de Progreso de la Unidad -->
-          <div class="flex items-center gap-3 pt-1">
-            <div class="w-48 h-2 bg-base-bg-secundario rounded-full overflow-hidden border border-base-borde-sutil">
-              <div
-                class="h-full bg-acento-ambar-fuerte rounded-full transition-all duration-500"
-                :style="{ width: `${studentStore.activeUnit.masteryPercentage}%` }"></div>
+          <div v-if="studentStore.activeUnit.empezada" class="flex items-center gap-3 pt-1">
+            <div class="w-48 h-2 bg-base-bg-secundario rounded-full overflow-hidden border border-base-borde-sutil" role="progressbar"
+              :aria-valuenow="studentStore.activeUnit.masteryPercentage" aria-valuemin="0" aria-valuemax="100" aria-label="Dominio de la lección">
+              <div class="h-full bg-acento-ambar-fuerte rounded-full transition-all duration-500" :style="{ width: `${studentStore.activeUnit.masteryPercentage}%` }"></div>
             </div>
-            <span class="text-xs font-semibold text-base-texto-primario">
-              {{ studentStore.activeUnit.masteryPercentage }} % de dominio en esta unidad
-            </span>
+            <span class="text-xs font-semibold text-base-texto-primario">{{ studentStore.activeUnit.masteryPercentage }} % de dominio</span>
           </div>
         </div>
 
-        <!-- Botón de Gran Jerarquía Visual (P01) -->
         <div class="flex flex-col sm:flex-row md:flex-col gap-2 w-full md:w-auto flex-shrink-0">
-          <div v-if="recommendedExerciseId" class="flex items-center gap-2 flex-wrap">
-            <!-- Icono motivo (T2) -->
-            <RotateCcw
-              v-if="recommendedReason === 'repaso'"
-              :size="14"
-              class="text-semantico-info shrink-0"
-              aria-label="Repaso"
-            />
-            <TrendingUp
-              v-else-if="recommendedReason === 'reto' || recommendedReason === 'sube_nivel'"
-              :size="14"
-              class="text-semantico-pasa shrink-0"
-              aria-label="Subir nivel"
-            />
-            <NuxtLink
-              :to="`/estudiante/evaluacion/${recommendedExerciseId}`"
-              class="px-5 py-3 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs text-center transition-colors shadow-sm flex items-center justify-center gap-2"
-            >
-              <span>Continuar Ejercicio</span>
+          <!-- Una lección sin empezar abre la lección (la explicación primero); una empezada sigue con la práctica. -->
+          <NuxtLink v-if="!studentStore.activeUnit.empezada || !recommendedExerciseId" :to="`/estudiante/unidad/${studentStore.activeUnit.id}`"
+            class="px-5 py-3 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs text-center transition-colors shadow-sm flex items-center justify-center gap-2">
+            <BookOpen :size="15" aria-hidden="true" /> {{ studentStore.activeUnit.empezada ? 'Abrir la lección' : 'Empezar la lección' }}
+          </NuxtLink>
+          <template v-else>
+            <NuxtLink :to="`/estudiante/evaluacion/${recommendedExerciseId}`"
+              class="px-5 py-3 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs text-center transition-colors shadow-sm flex items-center justify-center gap-2">
+              <RotateCcw v-if="recommendedReason === 'repaso'" :size="15" aria-hidden="true" />
+              <TrendingUp v-else-if="recommendedReason === 'reto' || recommendedReason === 'sube_nivel'" :size="15" aria-hidden="true" />
+              <Play v-else :size="15" aria-hidden="true" />
+              Seguir practicando
             </NuxtLink>
-            <!-- Nivel (T2) -->
-            <span
-              v-if="recommendedLevel"
-              class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-blanco border border-base-borde-fuerte text-base-texto-secundario capitalize"
-            >
-              {{ recommendedLevel === 'basico' ? 'Básico' : recommendedLevel === 'intermedio' ? 'Intermedio' : recommendedLevel === 'avanzado' ? 'Avanzado' : recommendedLevel }}
-            </span>
-          </div>
+            <NuxtLink :to="`/estudiante/unidad/${studentStore.activeUnit.id}`" class="text-xs font-semibold text-acento-ambar-fuerte hover:underline text-center">
+              Ver la explicación
+            </NuxtLink>
+          </template>
 
           <NuxtLink
             to="/estudiante/repasos"
@@ -156,132 +133,90 @@
         </div>
       </section>
 
-      <!-- 2. MÉTRICAS RÁPIDAS DE ESTADO -->
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- 2. AVANCE HONESTO: cuánto del curso, no solo de lo trabajado (antes decía «Dominio 100 %» con 5 de 17) -->
+      <section class="grid grid-cols-1 sm:grid-cols-3 gap-4" aria-label="Tu avance">
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Dominio</p>
-          <p class="text-xl font-bold mt-1" :class="studentStore.analytics.avgMastery >= DOMINADO ? 'text-semantico-pasa' : studentStore.analytics.avgMastery >= 40 ? 'text-acento-ambar-fuerte' : 'text-base-texto-primario'">{{ studentStore.hasLoaded ? `${studentStore.analytics.avgMastery} %` : '—' }}</p>
-          <!-- El umbral es el mismo del servidor: una unidad está «Dominada» desde el 85 % (antes aquí decía 70 %). -->
-          <span class="text-[10px] text-base-texto-secundario">{{ studentStore.analytics.avgMastery >= DOMINADO ? 'Ya dominas lo que llevas' : `La meta es llegar al ${DOMINADO} %` }}</span>
+          <p class="text-[11px] text-base-texto-secundario font-medium">Avance del curso</p>
+          <p class="text-xl font-bold mt-1 text-base-texto-primario">
+            <template v-if="studentStore.hasLoaded">{{ studentStore.avanceCurso.dominadas }} <span class="text-sm font-semibold text-base-texto-secundario">de {{ contar(studentStore.avanceCurso.total, 'leccion') }}</span></template>
+            <template v-else>—</template>
+          </p>
+          <div class="mt-2 h-1.5 bg-base-bg-secundario rounded-full overflow-hidden" aria-hidden="true">
+            <div class="h-full bg-semantico-pasa rounded-full" :style="{ width: `${porcentajeAvance}%` }"></div>
+          </div>
+          <span class="text-[10px] text-base-texto-secundario">lecciones dominadas</span>
         </div>
 
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Éxito en tus entregas</p>
-          <p class="text-xl font-bold text-base-texto-primario mt-1">{{ studentStore.hasLoaded ? `${studentStore.analytics.avgSuccessRate} %` : '—' }}</p>
-          <span class="text-[10px] text-base-texto-secundario">De tus entregas</span>
-        </div>
-
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Racha de Aprendizaje</p>
-          <p class="text-xl font-bold text-acento-ambar-fuerte mt-1 flex items-center gap-1.5"><Flame :size="18" aria-hidden="true" /> {{ studentStore.hasLoaded ? plural(studentStore.analytics.streakDays, 'día', 'días') : '—' }}</p>
-          <span class="text-[10px] text-base-texto-secundario">Constancia formativa</span>
-        </div>
-
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Ejercicios Completados</p>
-          <p class="text-xl font-bold text-semantico-info mt-1">{{ studentStore.hasLoaded ? studentStore.analytics.completedExercises : '—' }}</p>
-          <span class="text-[10px] text-base-texto-secundario">Desde que empezaste</span>
-        </div>
-      </section>
-
-      <!-- 3. PLAN CURRICULAR POR MÓDULOS -->
-      <section class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-bold text-base-texto-primario flex items-center gap-2">
-            <MapIcon :size="18" class="text-acento-ambar-fuerte" aria-hidden="true" /> Plan de la asignatura
-          </h2>
-          <span class="text-xs text-base-texto-secundario">
-            {{ studentStore.modules.length }} Módulos disponibles
+          <p class="text-[11px] text-base-texto-secundario font-medium">Dominio en lo que has trabajado</p>
+          <p class="text-xl font-bold mt-1" :class="studentStore.avanceCurso.dominioTrabajado >= DOMINADO ? 'text-semantico-pasa' : 'text-base-texto-primario'">
+            {{ studentStore.hasLoaded && studentStore.avanceCurso.trabajadas ? `${studentStore.avanceCurso.dominioTrabajado} %` : '—' }}
+          </p>
+          <span class="text-[10px] text-base-texto-secundario">
+            {{ studentStore.avanceCurso.trabajadas ? `en ${contar(studentStore.avanceCurso.trabajadas, 'leccion')} que ya empezaste` : 'Aún no empiezas ninguna lección' }}
           </span>
         </div>
 
+        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
+          <p class="text-[11px] text-base-texto-secundario font-medium">Racha de estudio</p>
+          <p class="text-xl font-bold text-acento-ambar-fuerte mt-1 flex items-center gap-1.5"><Flame :size="18" aria-hidden="true" /> {{ studentStore.hasLoaded ? plural(studentStore.analytics.streakDays, 'día', 'días') : '—' }}</p>
+          <NuxtLink to="/estudiante/progreso" class="text-[10px] font-semibold text-acento-ambar-fuerte hover:underline">Ver mis estadísticas</NuxtLink>
+        </div>
+      </section>
+
+      <!-- 3. EL PLAN DEL CURSO: módulos, temas (solo si agrupan más de una lección) y lecciones -->
+      <section class="space-y-4" aria-labelledby="plan-titulo">
+        <div class="flex items-center justify-between">
+          <h2 id="plan-titulo" class="text-base font-bold text-base-texto-primario flex items-center gap-2">
+            <MapIcon :size="18" class="text-acento-ambar-fuerte" aria-hidden="true" /> Plan del curso
+          </h2>
+          <span class="text-xs text-base-texto-secundario">{{ contar(studentStore.modules.length, 'modulo') }}</span>
+        </div>
+
         <div v-if="studentStore.modules.length === 0" class="p-8 text-center bg-base-blanco rounded-xl border border-base-borde-sutil text-xs text-base-texto-secundario">
-          No hay módulos publicados para esta asignatura en este momento.
+          Tu docente todavía no ha publicado el contenido de este curso.
         </div>
 
         <div v-else class="space-y-4">
-          <div
-            v-for="mod in studentStore.modules"
-            :key="mod.id"
-            class="bg-base-blanco rounded-xl border border-base-borde-sutil overflow-hidden shadow-sm">
-            <!-- Cabecera del Módulo -->
-            <div class="bg-base-bg-secundario/60 px-5 py-3 border-b border-base-borde-sutil flex items-center justify-between">
-              <h3 class="font-bold text-xs text-base-texto-primario">
-                {{ mod.title }}
-              </h3>
-              <span class="text-[11px] text-base-texto-secundario">
-                {{ mod.units.length }} {{ mod.units.length === 1 ? 'Unidad' : 'Unidades' }}
+          <section v-for="mod in studentStore.modules" :key="mod.id" class="bg-base-blanco rounded-xl border border-base-borde-sutil overflow-hidden shadow-sm" :aria-label="mod.title">
+            <div class="bg-base-bg-secundario/60 px-5 py-3 border-b border-base-borde-sutil flex flex-wrap items-center justify-between gap-2">
+              <h3 class="font-bold text-xs text-base-texto-primario">{{ mod.title }}</h3>
+              <span class="text-[11px] text-base-texto-secundario flex items-center gap-2">
+                <span class="w-16 h-1.5 bg-base-blanco rounded-full overflow-hidden border border-base-borde-sutil" aria-hidden="true">
+                  <span class="block h-full bg-semantico-pasa" :style="{ width: `${porcentajeModulo(mod)}%` }"></span>
+                </span>
+                {{ dominadasDe(mod) }} de {{ contar(mod.units.length, 'leccion') }} dominadas
               </span>
             </div>
 
-            <!-- Lista de Unidades del Módulo -->
-            <div class="divide-y divide-base-borde-sutil">
-              <div
-                v-for="unit in mod.units"
-                :key="unit.id"
-                class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-base-bg-primario/50 transition-colors">
-                <div class="space-y-2 flex-1">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <span
-                      class="px-2 py-0.5 rounded text-[10px] font-bold"
-                      :class="getStatusBadgeClass(unit.status)">
-                      {{ getStatusLabel(unit.status) }}
+            <div v-for="tema in mod.topics" :key="tema.id">
+              <p v-if="tema.units.length > 1" class="px-5 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-base-texto-secundario">
+                {{ tema.title }}
+              </p>
+              <ul class="divide-y divide-base-borde-sutil">
+                <li v-for="unit in tema.units" :key="unit.id">
+                  <NuxtLink :to="`/estudiante/unidad/${unit.id}`"
+                    class="px-5 py-3 flex items-center gap-3 hover:bg-base-bg-primario/60 transition-colors group"
+                    :class="unit.id === studentStore.activeUnit?.id ? 'bg-acento-ambar/5' : ''"
+                    :aria-label="`${unit.title}: ${estadoLeccion(unit)}`">
+                    <CheckCircle2 v-if="unit.status === 'dominado'" :size="18" class="text-semantico-pasa shrink-0" aria-hidden="true" />
+                    <CircleDot v-else-if="unit.status === 'en-progreso'" :size="18" class="text-acento-ambar-fuerte shrink-0" aria-hidden="true" />
+                    <Circle v-else :size="18" class="text-base-borde-fuerte shrink-0" aria-hidden="true" />
+                    <span class="flex-1 min-w-0">
+                      <span class="block text-xs font-semibold group-hover:underline" :class="unit.status === 'dominado' ? 'text-base-texto-secundario' : 'text-base-texto-primario'">{{ unit.title }}</span>
+                      <span v-if="unit.id === studentStore.activeUnit?.id" class="block text-[11px] text-base-texto-secundario truncate">{{ unit.description }}</span>
                     </span>
-                    <h4 class="text-xs font-bold text-base-texto-primario">
-                      {{ unit.title }}
-                    </h4>
-                    <span class="text-[11px] font-semibold text-acento-ambar-fuerte">
-                      ({{ unit.masteryPercentage }}% dominio)
+                    <span v-if="forgettingUnitIds.has(unit.id)" class="inline-flex items-center gap-1 text-[10px] font-semibold text-semantico-info shrink-0">
+                      <RotateCcw :size="12" aria-hidden="true" /> Repasar
                     </span>
-                    <!-- Badge «Se está olvidando» (T2) -->
-                    <span
-                      v-if="forgettingUnitIds.has(unit.id)"
-                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-estado-unidad-bloqueado/15 text-estado-unidad-bloqueado"
-                    >
-                      <AlertTriangle :size="10" />
-                      Se está olvidando
-                    </span>
-                  </div>
-
-                  <p class="text-xs text-base-texto-secundario">
-                    {{ unit.description }}
-                  </p>
-
-                  <!-- Ejercicios de la unidad, plegados: con todos abiertos la página medía ~7800 px en un teléfono. -->
-                  <details v-if="unit.activities && unit.activities.length > 0" class="pt-1 group">
-                    <summary class="text-[11px] font-semibold text-acento-ambar-fuerte cursor-pointer select-none w-fit">
-                      Ver {{ plural(unit.activities.length, 'ejercicio', 'ejercicios') }}
-                    </summary>
-                    <ul class="flex items-center gap-1.5 flex-wrap pt-2">
-                      <li v-for="act in unit.activities" :key="act.id">
-                        <NuxtLink
-                          :to="`/estudiante/evaluacion/${act.id}`"
-                          class="inline-flex items-center px-2 py-1 rounded text-[11px] border border-base-borde-fuerte bg-base-blanco hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors">
-                          {{ act.title }}
-                        </NuxtLink>
-                      </li>
-                    </ul>
-                  </details>
-                </div>
-
-                <!-- Acciones de Unidad -->
-                <div class="flex items-center gap-2 flex-shrink-0 self-end md:self-center">
-                  <NuxtLink
-                    v-if="unit.exerciseActivityId"
-                    :to="`/estudiante/evaluacion/${unit.exerciseActivityId}`"
-                    class="px-3.5 py-1.5 rounded-md text-xs font-semibold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar shadow-sm transition-colors flex items-center gap-1">
-                    <Play :size="12" aria-hidden="true" />
-                    <span>Practicar</span>
+                    <span v-if="unit.id === studentStore.activeUnit?.id"
+                      class="px-3 py-1 rounded-md text-[11px] font-bold bg-acento-ambar-fuerte text-base-blanco shrink-0">Continuar</span>
+                    <span v-else-if="unit.empezada" class="text-[11px] font-semibold text-base-texto-secundario shrink-0 w-10 text-right">{{ unit.masteryPercentage }} %</span>
                   </NuxtLink>
-
-                  <span v-else class="text-xs text-base-texto-secundario px-2 py-1 flex items-center gap-1">
-                    <Lock :size="12" aria-hidden="true" />
-                    <span>Próximamente</span>
-                  </span>
-                </div>
-              </div>
+                </li>
+              </ul>
             </div>
-          </div>
+          </section>
         </div>
       </section>
     </template>
@@ -290,14 +225,12 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { RotateCcw, TrendingUp, AlertTriangle, Landmark, Library, Clock, PartyPopper, GraduationCap, KeyRound, Brain, Flame, Map as MapIcon, Play, Lock } from 'lucide-vue-next'
-
-/** Una unidad está «Dominada» desde este porcentaje; es el mismo umbral del servidor (learning-progress.service.ts). */
-const DOMINADO = 85
+import { RotateCcw, TrendingUp, AlertTriangle, Landmark, Library, Clock, PartyPopper, GraduationCap, KeyRound, Brain, Flame, Map as MapIcon, Play, BookOpen, CheckCircle2, CircleDot, Circle } from 'lucide-vue-next'
+import { contar, DOMINADO } from '~/utils/terminos'
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
-import type { UnitStatus } from '~/types'
+import type { CourseModule, LearningUnit } from '~/types'
 
 definePageMeta({
   layout: 'student'
@@ -379,21 +312,23 @@ const forgettingUnitIds = computed(() => {
   return ids
 })
 
-function getStatusBadgeClass(status: UnitStatus) {
-  switch (status) {
-    case 'dominado': return 'bg-estado-unidad-dominado/15 text-estado-unidad-dominado'
-    case 'en-progreso': return 'bg-estado-unidad-en-progreso/15 text-estado-unidad-en-progreso'
-    case 'por-iniciar': return 'bg-estado-unidad-por-iniciar/15 text-estado-unidad-por-iniciar'
-    case 'bloqueado': return 'bg-estado-unidad-bloqueado/15 text-estado-unidad-bloqueado'
-  }
+const porcentajeAvance = computed(() => {
+  const { dominadas, total } = studentStore.avanceCurso
+  return total ? Math.round((dominadas / total) * 100) : 0
+})
+const dominadasDe = (mod: CourseModule) => mod.units.filter((u) => u.status === 'dominado').length
+const porcentajeModulo = (mod: CourseModule) => (mod.units.length ? Math.round((dominadasDe(mod) / mod.units.length) * 100) : 0)
+
+/** «Módulo · Tema»; el tema solo aparece si agrupa más de una lección (si tiene una, no aporta). */
+function ubicacion(unit: LearningUnit) {
+  const mod = studentStore.modules.find((m) => m.id === unit.moduleId)
+  const tema = mod?.topics.find((t) => t.id === unit.topicId)
+  return tema && tema.units.length > 1 ? `${unit.moduleTitle} · ${tema.title}` : unit.moduleTitle
 }
 
-function getStatusLabel(status: UnitStatus) {
-  switch (status) {
-    case 'dominado': return 'Dominado ✔'
-    case 'en-progreso': return 'En Progreso ⏳'
-    case 'por-iniciar': return 'Por Iniciar'
-    case 'bloqueado': return 'Bloqueado 🔒'
-  }
+function estadoLeccion(unit: LearningUnit) {
+  if (unit.status === 'dominado') return `dominada, ${unit.masteryPercentage} %`
+  if (unit.empezada) return `en práctica, ${unit.masteryPercentage} %`
+  return 'sin empezar'
 }
 </script>

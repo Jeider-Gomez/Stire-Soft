@@ -7,7 +7,7 @@
           :to="backLink"
           class="borde-afordancia px-2.5 py-1 rounded text-xs font-medium text-base-texto-secundario hover:text-base-texto-primario flex items-center gap-1">
           <ArrowLeft :size="14" aria-hidden="true" />
-          <span>Volver a la unidad</span>
+          <span>Volver a la lección</span>
         </NuxtLink>
 
         <div class="h-4 w-[1px] bg-base-borde-sutil"></div>

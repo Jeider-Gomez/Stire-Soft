@@ -4,7 +4,7 @@
       <div>
         <h2 id="mapa-calor-titulo" class="text-sm font-bold text-base-texto-primario">¿A quién ayudo ahora?</h2>
         <p class="text-[11px] text-base-texto-secundario">
-          Mapa de calor del grupo: cada fila es un estudiante y cada columna una unidad. Haz clic en una celda para ver su detalle.
+          Mapa de calor del grupo: cada fila es un estudiante y cada columna una lección. Haz clic en una celda para ver su detalle.
         </p>
       </div>
     </div>
@@ -21,7 +21,7 @@
           <h3 class="font-bold text-semantico-falla flex items-center gap-1.5">
             <AlertTriangle :size="14" aria-hidden="true" /> Bloqueados ({{ mapa.bloqueados.length }})
           </h3>
-          <p class="text-[11px] text-base-texto-secundario">Tres o más entregas falladas seguidas en una unidad, en los últimos 7 días.</p>
+          <p class="text-[11px] text-base-texto-secundario">Tres o más entregas falladas seguidas en una lección, en los últimos 7 días.</p>
           <ul v-if="mapa.bloqueados.length" class="space-y-1">
             <li v-for="b in mapa.bloqueados" :key="`${b.studentId}-${b.unitId}`">
               <NuxtLink :to="`/docente/estudiante/${b.studentId}`" class="font-semibold text-base-texto-primario hover:underline">{{ b.fullName }}</NuxtLink>
@@ -51,7 +51,7 @@
 
         <article class="bg-base-blanco rounded-xl border border-semantico-info/30 p-4 space-y-2">
           <h3 class="font-bold text-semantico-info flex items-center gap-1.5">
-            <HelpCircle :size="14" aria-hidden="true" /> Dijo «me siento seguro» y falló ({{ mapa.segurosQueFallan.length }})
+            <HelpCircle :size="14" aria-hidden="true" /> Intentó saltar con un reto y falló ({{ mapa.segurosQueFallan.length }})
           </h3>
           <p class="text-[11px] text-base-texto-secundario">Puede haber una idea equivocada: son los errores que mejor se corrigen si alguien los explica.</p>
           <ul v-if="mapa.segurosQueFallan.length" class="space-y-1">
@@ -67,11 +67,11 @@
           <h3 class="font-bold text-semantico-pasa flex items-center gap-1.5">
             <Rocket :size="14" aria-hidden="true" /> Listos para más ({{ mapa.listosParaMas.length }})
           </h3>
-          <p class="text-[11px] text-base-texto-secundario">85 % o más en todo lo que trabajaron (al menos 3 unidades) y más del 90 % de sus ejercicios acertados al primer intento.</p>
+          <p class="text-[11px] text-base-texto-secundario">85 % o más en todo lo que trabajaron (al menos 3 lecciones) y más del 90 % de sus ejercicios acertados al primer intento.</p>
           <ul v-if="mapa.listosParaMas.length" class="space-y-1">
             <li v-for="l in mapa.listosParaMas" :key="l.studentId">
               <NuxtLink :to="`/docente/estudiante/${l.studentId}`" class="font-semibold text-base-texto-primario hover:underline">{{ l.fullName }}</NuxtLink>
-              <span class="text-base-texto-secundario"> · {{ plural(l.unidades, 'unidad', 'unidades') }}, mínimo {{ l.dominioMinimo }} %, {{ l.aciertoAlPrimerIntento }} % al primer intento</span>
+              <span class="text-base-texto-secundario"> · {{ plural(l.unidades, 'lección', 'lecciones') }}, mínimo {{ l.dominioMinimo }} %, {{ l.aciertoAlPrimerIntento }} % al primer intento</span>
             </li>
           </ul>
           <p v-else class="text-[11px] text-base-texto-secundario">Todavía nadie.</p>
@@ -84,13 +84,13 @@
              desplazamiento de la tabla y daban a toda la página 942 px de ancho en un teléfono. -->
         <div class="relative overflow-x-auto">
           <table class="text-[11px] border-separate" style="border-spacing: 3px">
-            <caption class="sr-only">Dominio de cada estudiante en cada unidad</caption>
+            <caption class="sr-only">Dominio de cada estudiante en cada lección</caption>
             <thead>
               <tr>
                 <th scope="col" class="sticky left-0 z-10 bg-base-blanco text-left font-semibold text-base-texto-secundario pr-2">Estudiante</th>
                 <th v-for="(u, i) in mapa.unidades" :key="u.id" scope="col" :title="u.title"
                   class="w-11 min-w-[2.75rem] text-center font-mono font-semibold text-base-texto-secundario">
-                  <abbr :title="u.title" class="no-underline">U{{ i + 1 }}</abbr>
+                  <abbr :title="u.title" class="no-underline">L{{ i + 1 }}</abbr>
                 </th>
               </tr>
             </thead>
@@ -129,9 +129,9 @@
           </li>
         </ul>
         <details class="text-[11px] text-base-texto-secundario">
-          <summary class="cursor-pointer select-none font-semibold">Qué unidad es cada columna</summary>
+          <summary class="cursor-pointer select-none font-semibold">Qué lección es cada columna</summary>
           <ol class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-0.5">
-            <li v-for="(u, i) in mapa.unidades" :key="u.id"><span class="font-mono font-semibold">U{{ i + 1 }}</span> · {{ u.title }}</li>
+            <li v-for="(u, i) in mapa.unidades" :key="u.id"><span class="font-mono font-semibold">L{{ i + 1 }}</span> · {{ u.title }}</li>
           </ol>
         </details>
       </div>
@@ -184,7 +184,7 @@ const LEYENDA = [
   { estado: 'en_practica', texto: 'En práctica' },
   { estado: 'explorado', texto: 'Explorado (menos de 20 %)' }
 ]
-const CONFIANZA: Record<number, string> = { 1: 'respondió «Es nuevo para mí»', 2: 'respondió «Tengo dudas»', 3: 'respondió «Me siento seguro»' }
+const CONFIANZA: Record<number, string> = { 1: 'respondió «Es nuevo para mí»', 2: 'respondió «Tengo dudas»', 3: 'intentó saltar con un reto' }
 
 /** 1.2 → «1,2»: decimales con coma, como se escriben en español. */
 const decimal = (n: number) => n.toLocaleString('es-CO', { maximumFractionDigits: 1 })

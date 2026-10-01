@@ -69,7 +69,7 @@
               {{ dashboard.summary.avgMastery }}%
             </span>
           </div>
-          <p class="text-[10px] text-base-texto-secundario mt-1">En todas las unidades</p>
+          <p class="text-[10px] text-base-texto-secundario mt-1">En todas las lecciones</p>
         </div>
 
         <!-- Tasa de Éxito -->
@@ -111,11 +111,11 @@
       <!-- Dominio por Unidad de Aprendizaje -->
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
-          Dominio Conceptual por Unidad de Aprendizaje
+          Dominio por lección
         </h2>
 
         <div v-if="dashboard.masteryByUnit.length === 0" class="text-xs text-base-texto-secundario italic py-4">
-          Sin registros de progreso en unidades aún.
+          Todavía no ha practicado ninguna lección.
         </div>
 
         <div v-else class="space-y-3">

@@ -27,20 +27,23 @@
               <ChevronRight v-else :size="14" class="text-base-texto-secundario" aria-hidden="true" />
             </button>
 
-            <!-- Unidades del Módulo -->
+            <!-- Lecciones del módulo; el tema se muestra solo si agrupa más de una lección -->
             <div v-if="openModules.includes(mod.id)" class="pl-3 pr-1 py-1 space-y-1">
-              <NuxtLink
-                v-for="unit in mod.units"
-                :key="unit.id"
-                :to="`/estudiante/unidad/${unit.id}`"
-                class="flex items-center justify-between text-xs px-2.5 py-1.5 rounded transition-colors"
-                :class="route.path === `/estudiante/unidad/${unit.id}` ? 'bg-base-bg-secundario font-semibold text-acento-ambar-fuerte' : 'text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario/60'">
-                <div class="flex items-center gap-1.5 truncate">
-                  <span :class="getStatusDotClass(unit.status)">●</span>
-                  <span class="truncate">{{ unit.title }}</span>
-                </div>
-                <Check v-if="unit.status === 'dominado'" :size="14" class="text-semantico-pasa" aria-label="Dominada" />
-              </NuxtLink>
+              <template v-for="tema in mod.topics" :key="tema.id">
+                <p v-if="tema.units.length > 1" class="px-2.5 pt-1.5 text-[10px] font-bold uppercase tracking-wider text-base-texto-secundario truncate">{{ tema.title }}</p>
+                <NuxtLink
+                  v-for="unit in tema.units"
+                  :key="unit.id"
+                  :to="`/estudiante/unidad/${unit.id}`"
+                  class="flex items-center justify-between text-xs px-2.5 py-1.5 rounded transition-colors"
+                  :class="route.path === `/estudiante/unidad/${unit.id}` ? 'bg-base-bg-secundario font-semibold text-acento-ambar-fuerte' : 'text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario/60'">
+                  <div class="flex items-center gap-1.5 truncate">
+                    <span class="inline-block w-1.5 h-1.5 rounded-full shrink-0" :class="getStatusDotClass(unit.status)" aria-hidden="true"></span>
+                    <span class="truncate">{{ unit.title }}</span>
+                  </div>
+                  <Check v-if="unit.status === 'dominado'" :size="14" class="text-semantico-pasa" aria-label="Dominada" />
+                </NuxtLink>
+              </template>
             </div>
           </div>
         </div>
@@ -216,11 +219,11 @@ function isCurrentRoute(path: string) {
 
 function getStatusDotClass(status: string) {
   switch (status) {
-    case 'dominado': return 'text-estado-unidad-dominado'
-    case 'en-progreso': return 'text-estado-unidad-en-progreso'
-    case 'por-iniciar': return 'text-estado-unidad-por-iniciar'
-    case 'bloqueado': return 'text-estado-unidad-bloqueado'
-    default: return 'text-base-texto-secundario'
+    case 'dominado': return 'bg-estado-unidad-dominado'
+    case 'en-progreso': return 'bg-estado-unidad-en-progreso'
+    case 'por-iniciar': return 'bg-estado-unidad-por-iniciar'
+    case 'bloqueado': return 'bg-estado-unidad-bloqueado'
+    default: return 'bg-base-texto-secundario'
   }
 }
 </script>

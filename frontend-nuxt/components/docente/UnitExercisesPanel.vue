@@ -48,7 +48,7 @@
     <p v-if="loading" class="text-[11px] text-base-texto-secundario animate-pulse">Cargando ejercicios…</p>
     <p v-else-if="loadError" role="alert" class="text-[11px] text-semantico-falla">{{ loadError }}</p>
     <p v-else-if="activities.length === 0" class="text-[11px] text-base-texto-secundario italic">
-      Todavía no hay ejercicios. Empieza por uno sencillo: una pregunta de opción múltiple sobre la lección.
+      Todavía no hay ejercicios. Empieza por uno sencillo: una pregunta de opción múltiple sobre la explicación.
     </p>
 
     <ul v-else class="divide-y divide-base-borde-sutil rounded-lg border border-base-borde-sutil bg-base-blanco">
@@ -311,7 +311,7 @@
                   ref="bankSearchRef"
                   v-model="bankQuery.q"
                   type="text"
-                  placeholder="Título o unidad…"
+                  placeholder="Título o lección…"
                   class="w-full pl-8 pr-2.5 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-xs outline-none focus:border-acento-ambar-fuerte" />
                 <Search :size="13" aria-hidden="true" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-base-texto-secundario" />
               </div>
@@ -331,7 +331,7 @@
 
             <div v-else-if="bankModal.items.length === 0" class="p-8 text-center text-xs text-base-texto-secundario italic">
               {{ (!bankQuery.type && !bankQuery.difficulty && !bankQuery.q.trim())
-                ? 'Todavía no tienes ejercicios en otras unidades'
+                ? 'Todavía no tienes ejercicios en otras lecciones'
                 : 'Ningún ejercicio coincide con los filtros' }}
             </div>
 
@@ -366,7 +366,7 @@
                 :disabled="bankModal.copyingId === item.activityId"
                 class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 shrink-0 self-end sm:self-auto flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
                 <Loader2 v-if="bankModal.copyingId === item.activityId" :size="12" class="animate-spin" aria-hidden="true" />
-                <span>{{ bankModal.copyingId === item.activityId ? 'Agregando…' : 'Agregar a esta unidad' }}</span>
+                <span>{{ bankModal.copyingId === item.activityId ? 'Agregando…' : 'Agregar a esta lección' }}</span>
               </button>
             </div>
           </div>
@@ -837,7 +837,7 @@ async function copyFromBank(item: EjercicioDelBanco) {
     bankModal.open = false
     await load()
   } catch (err) {
-    bankModal.error = messageOf(err, 'No se pudo agregar el ejercicio a esta unidad.')
+    bankModal.error = messageOf(err, 'No se pudo agregar el ejercicio a esta lección.')
   } finally {
     bankModal.copyingId = null
   }

@@ -21,7 +21,7 @@
             <button
               @click="openCreateForm"
               class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar inline-flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-              <Plus :size="14" aria-hidden="true" /> Nueva lección
+              <Plus :size="14" aria-hidden="true" /> Nueva explicación
             </button>
             <button
               @click="abrirRecurso(null)"
@@ -31,7 +31,7 @@
             <button
               @click="handleClose"
               class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
-              aria-label="Cerrar lecciones">
+              aria-label="Cerrar la explicación">
               <X :size="18" aria-hidden="true" />
             </button>
           </div>
@@ -45,13 +45,13 @@
         </div>
 
         <div class="p-5 overflow-y-auto space-y-3 flex-1 text-xs">
-          <p v-if="isLoading" class="p-8 text-center text-base-texto-secundario animate-pulse">Cargando lecciones…</p>
+          <p v-if="isLoading" class="p-8 text-center text-base-texto-secundario animate-pulse">Cargando la explicación…</p>
 
           <div v-else-if="lessons.length === 0" class="p-8 text-center bg-base-bg-secundario rounded-xl border border-base-borde-sutil space-y-2">
             <FileText :size="28" class="mx-auto text-base-texto-secundario" aria-hidden="true" />
-            <p class="font-semibold text-base-texto-primario">Esta unidad todavía no tiene lecciones</p>
+            <p class="font-semibold text-base-texto-primario">Esta lección todavía no tiene explicación</p>
             <p class="text-base-texto-secundario max-w-sm mx-auto text-[11px]">
-              Una lección corta (la idea, un ejemplo y un error común) prepara al estudiante antes de los ejercicios.
+              Una explicación corta (la idea, un ejemplo y un error común) prepara al estudiante antes de los ejercicios.
             </p>
           </div>
 
@@ -75,12 +75,12 @@
               <div class="flex items-center gap-0.5 shrink-0">
                 <button :disabled="idx === 0 || isReordering" @click="moveLesson(idx, -1)"
                   class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none"
-                  aria-label="Subir lección" title="Subir">
+                  aria-label="Subir explicación" title="Subir">
                   <ChevronUp :size="16" aria-hidden="true" />
                 </button>
                 <button :disabled="idx === sortedLessons.length - 1 || isReordering" @click="moveLesson(idx, 1)"
                   class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none"
-                  aria-label="Bajar lección" title="Bajar">
+                  aria-label="Bajar explicación" title="Bajar">
                   <ChevronDown :size="16" aria-hidden="true" />
                 </button>
                 <button :disabled="togglingId === item.id" @click="toggleLessonVisibility(item)"
@@ -113,7 +113,7 @@
           </ul>
 
           <div v-if="lessonToDelete" class="p-4 rounded-xl border border-semantico-falla/30 bg-semantico-falla/5 space-y-3">
-            <p class="font-bold text-semantico-falla">¿Eliminar la lección «{{ lessonToDelete.title }}»?</p>
+            <p class="font-bold text-semantico-falla">¿Eliminar la explicación «{{ lessonToDelete.title }}»?</p>
             <p class="text-base-texto-secundario text-[11px]">No se puede deshacer. Si solo quieres que los estudiantes no la vean, usa el ojo para ocultarla.</p>
             <div class="flex items-center justify-end gap-2">
               <button type="button" @click="lessonToDelete = null" class="px-3 py-1.5 rounded-md borde-afordancia text-xs font-semibold bg-base-blanco">Cancelar</button>
@@ -249,7 +249,7 @@ async function fetchLessons() {
     const res = await api.get<LessonItem[]>(`/content/unit/${props.unit.id}/all`)
     lessons.value = Array.isArray(res) ? res : []
   } catch (err) {
-    errorMsg.value = messageOf(err, 'No se pudieron cargar las lecciones de la unidad.')
+    errorMsg.value = messageOf(err, 'No se pudo cargar la explicación de la lección.')
   } finally {
     isLoading.value = false
   }
@@ -292,8 +292,8 @@ function cancelForm() {
 
 async function onEditorSave(payload: { title: string; body: string }) {
   if (!props.unit) return
-  if (!payload.title) { formError.value = 'Ponle un título a la lección.'; return }
-  if (!payload.body) { formError.value = 'La lección está vacía.'; return }
+  if (!payload.title) { formError.value = 'Ponle un título a la explicación.'; return }
+  if (!payload.body) { formError.value = 'La explicación está vacía.'; return }
   isSaving.value = true
   formError.value = null
   try {
@@ -316,7 +316,7 @@ async function onEditorSave(payload: { title: string; body: string }) {
     }
     showForm.value = false
   } catch (err) {
-    formError.value = messageOf(err, 'No se pudo guardar la lección.')
+    formError.value = messageOf(err, 'No se pudo guardar la explicación.')
   } finally {
     isSaving.value = false
   }
@@ -330,7 +330,7 @@ async function toggleLessonVisibility(lesson: LessonItem) {
     lesson.isVisible = res.isVisible
     feedbackMsg.value = lesson.isVisible ? `«${lesson.title}» ya es visible.` : `«${lesson.title}» quedó oculta para los estudiantes.`
   } catch (err) {
-    errorMsg.value = messageOf(err, 'No se pudo cambiar la visibilidad de la lección.')
+    errorMsg.value = messageOf(err, 'No se pudo cambiar la visibilidad de la explicación.')
   } finally {
     togglingId.value = null
   }
@@ -352,7 +352,7 @@ async function moveLesson(index: number, direction: -1 | 1) {
       if (found) found.order = r.order
     }
   } catch (err) {
-    errorMsg.value = messageOf(err, 'No se pudo cambiar el orden de las lecciones.')
+    errorMsg.value = messageOf(err, 'No se pudo cambiar el orden de las explicaciones.')
     await fetchLessons()
   } finally {
     isReordering.value = false
@@ -373,7 +373,7 @@ async function executeDelete() {
     feedbackMsg.value = `Lección «${lessonToDelete.value.title}» eliminada.`
     lessonToDelete.value = null
   } catch (err) {
-    errorMsg.value = messageOf(err, 'No se pudo eliminar la lección.')
+    errorMsg.value = messageOf(err, 'No se pudo eliminar la explicación.')
   } finally {
     isDeleting.value = false
   }

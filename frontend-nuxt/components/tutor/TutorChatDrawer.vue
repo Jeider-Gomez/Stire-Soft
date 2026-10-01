@@ -95,9 +95,9 @@
               v-if="tutorStore.tutorEnabled && tutorStore.contentLink"
               @click="navigateWithAutosaveCheck(`/estudiante/unidad/${tutorStore.contentLink.learningUnitId}`)"
               class="borde-afordancia px-2 py-0.5 rounded bg-base-blanco text-[10px] font-medium text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1 border border-acento-ambar/30"
-              :aria-label="`Ir al contenido de la unidad: ${tutorStore.contentLink.title}`"
+              :aria-label="`Ir a la explicación de la lección: ${tutorStore.contentLink.title}`"
             >
-              <BookOpen :size="12" aria-hidden="true" /> Ver unidad
+              <BookOpen :size="12" aria-hidden="true" /> Ver la lección
             </button>
           </div>
         </div>
@@ -303,7 +303,7 @@ const activeContextLabel = computed(() => {
     return `${unitPrefix}${workspaceStore.currentExercise.title}`
   }
   if (studentStore.activeUnit?.title) {
-    return `Unidad activa: ${studentStore.activeUnit.title}`
+    return `Lección actual: ${studentStore.activeUnit.title}`
   }
   return null
 })

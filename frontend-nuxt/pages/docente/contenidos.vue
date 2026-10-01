@@ -7,7 +7,7 @@
           Contenidos del curso
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5 max-w-md">
-          Organiza el curso en módulos, temas y unidades. Abre una unidad para escribir sus lecciones y crear sus ejercicios.
+          Organiza el curso en módulos, temas y lecciones. Abre una lección para escribir su explicación y crear sus ejercicios.
         </p>
       </div>
 
@@ -168,8 +168,8 @@
                 <button
                   @click="openNewUnitModal(sec, topic)"
                   class="px-2 py-0.5 rounded text-[11px] font-semibold bg-acento-ambar-fuerte/10 border border-acento-ambar-fuerte/30 text-acento-ambar-fuerte hover:bg-acento-ambar/20 transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
-                  :aria-label="`Nueva unidad en tema ${topic.title}`">
-                  + Nueva unidad
+                  :aria-label="`Nueva lección en el tema ${topic.title}`">
+                  + Nueva lección
                 </button>
                 <button
                   @click="openEditTopicModal(topic)"
@@ -212,7 +212,7 @@
                     <button
                       @click="openEditUnitModal(unit)"
                       class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-blanco focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
-                      :aria-label="`Editar unidad ${unit.title}`" title="Editar unidad">
+                      :aria-label="`Editar la lección ${unit.title}`" title="Editar lección">
                       <Pencil :size="14" aria-hidden="true" />
                     </button>
                   </div>
@@ -228,13 +228,13 @@
                       <button
                         @click="openLessonsModal(unit, lessonsByUnit[unit.id]?.length ? {} : { create: true })"
                         class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar inline-flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
-                        :aria-label="`Gestionar lecciones de la unidad ${unit.title}`">
-                        <BookOpen :size="14" aria-hidden="true" /> {{ lessonsByUnit[unit.id]?.length ? 'Lecciones' : 'Escribir lección' }}
+                        :aria-label="`Explicación de la lección ${unit.title}`">
+                        <BookOpen :size="14" aria-hidden="true" /> {{ lessonsByUnit[unit.id]?.length ? 'Explicación' : 'Escribir la explicación' }}
                       </button>
                     </div>
-                    <p v-if="!lessonsByUnit[unit.id]" class="text-[11px] text-base-texto-secundario animate-pulse">Cargando lecciones…</p>
+                    <p v-if="!lessonsByUnit[unit.id]" class="text-[11px] text-base-texto-secundario animate-pulse">Cargando la explicación…</p>
                     <p v-else-if="lessonsByUnit[unit.id].length === 0" class="text-[11px] text-base-texto-secundario italic">
-                      Sin lecciones. Una lección corta con un ejemplo prepara al estudiante antes de los ejercicios.
+                      Sin explicación. Una explicación corta con un ejemplo prepara al estudiante antes de los ejercicios.
                     </p>
                     <ul v-else class="divide-y divide-base-borde-sutil rounded-lg border border-base-borde-sutil bg-base-blanco">
                       <li v-for="l in lessonsByUnit[unit.id]" :key="l.id">
@@ -242,7 +242,7 @@
                           type="button"
                           @click="openLessonsModal(unit, { editId: l.id })"
                           class="w-full flex items-center justify-between gap-2 px-3 py-2 text-left hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded-lg"
-                          :aria-label="`Editar la lección ${l.title}`">
+                          :aria-label="`Editar la explicación ${l.title}`">
                           <span class="flex items-center gap-2 min-w-0">
                             <FileText :size="14" class="shrink-0 text-base-texto-secundario" aria-hidden="true" />
                             <span class="truncate text-base-texto-primario">{{ l.title }}</span>
@@ -262,7 +262,7 @@
               </div>
             </div>
             <div v-else class="text-[11px] text-base-texto-secundario pl-4 italic">
-              Sin unidades asociadas aún.
+              Este tema todavía no tiene lecciones.
             </div>
           </div>
         </div>
@@ -390,11 +390,11 @@
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
         <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4">
           <div class="flex items-center justify-between">
-            <h2 id="modal-unit-title" class="text-sm font-bold text-base-texto-primario">Editar Unidad de Aprendizaje</h2>
+            <h2 id="modal-unit-title" class="text-sm font-bold text-base-texto-primario">Editar la lección</h2>
             <button
               @click="closeEditUnitModal"
               class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded"
-              aria-label="Cerrar modal de edición de unidad">
+              aria-label="Cerrar la edición de la lección">
               ✕
             </button>
           </div>
@@ -445,7 +445,7 @@
             <!-- Sección plegable: Tutor IA en esta unidad (§20.1) -->
             <details v-if="editUnitModal.unitId" class="border-t border-base-borde-sutil pt-3">
               <summary class="text-[11px] font-semibold text-base-texto-secundario cursor-pointer hover:text-base-texto-primario select-none flex items-center gap-1.5">
-                <span aria-hidden="true">🤖</span> Tutor IA en esta unidad
+                Tutor IA en esta lección
               </summary>
               <div class="mt-3">
                 <DocenteTutorSettingsPanel scope-type="unit" :scope-id="editUnitModal.unitId" />
@@ -502,7 +502,7 @@
           </div>
 
           <p class="text-xs text-base-texto-secundario">
-            Se copian lecciones y ejercicios <strong>sin publicar</strong>. No se copian estudiantes ni notas.
+            Se copian explicaciones y ejercicios <strong>sin publicar</strong>. No se copian estudiantes ni notas.
           </p>
 
           <!-- Selector de clase origen -->
@@ -702,7 +702,7 @@ const unitSummary = computed(() => {
   const ids = new Set([...Object.keys(lessonsByUnit), ...Object.keys(exerciseCountByUnit)].map(Number))
   for (const id of ids) {
     const parts: string[] = []
-    if (lessonsByUnit[id] !== undefined) parts.push(plural(lessonsByUnit[id].length, 'lección', 'lecciones'))
+    if (lessonsByUnit[id] !== undefined) parts.push(plural(lessonsByUnit[id].length, 'explicación', 'explicaciones'))
     if (exerciseCountByUnit[id] !== undefined) parts.push(plural(exerciseCountByUnit[id], 'ejercicio', 'ejercicios'))
     out[id] = parts.join(' · ')
   }
@@ -914,10 +914,10 @@ async function submitEditUnit() {
         }
       }
     }
-    actionFeedback.value = `Unidad "${editUnitModal.form.title}" actualizada correctamente.`
+    actionFeedback.value = `Lección "${editUnitModal.form.title}" actualizada.`
     closeEditUnitModal()
   } catch (err: any) {
-    editUnitModal.error = messageOf(err, 'Error al actualizar la unidad.')
+    editUnitModal.error = messageOf(err, 'No se pudo actualizar la lección.')
   } finally {
     editUnitModal.saving = false
   }
