@@ -118,9 +118,9 @@
         <div>
           <div class="flex items-center justify-between gap-2 mb-1">
             <label for="ref-mensaje" class="font-semibold text-base-texto-primario">Mensaje para {{ f.estudiantes.length === 1 ? 'el estudiante' : 'los estudiantes' }}</label>
-            <button type="button" @click="proponerMensaje" class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1"><Sparkles :size="12" aria-hidden="true" /> Proponer un mensaje</button>
+            <button type="button" @click="mensajeEditado = false; proponerMensaje()" class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1"><Sparkles :size="12" aria-hidden="true" /> Proponer un mensaje</button>
           </div>
-          <textarea id="ref-mensaje" v-model="f.mensaje" rows="3" maxlength="2000" class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte"></textarea>
+          <textarea id="ref-mensaje" v-model="f.mensaje" @input="mensajeEditado = true" rows="3" maxlength="2000" class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte"></textarea>
           <p class="text-[11px] text-base-texto-secundario">Le llega como mensaje y lo ve en su inicio. Corto y sobre la tarea, no sobre la persona.</p>
         </div>
         <div class="sm:w-64">
@@ -193,6 +193,10 @@ function mover(i: number, d: number) {
   const [p] = f.pasos.splice(i, 1)
   f.pasos.splice(i + d, 0, p!)
 }
+// El mensaje propuesto se rehace al cambiar lecciones, estudiantes o tipo, mientras el docente no lo haya escrito él.
+const mensajeEditado = ref(false)
+watch(() => [f.lecciones.join(), f.estudiantes.join(), f.tipo], () => { if (!mensajeEditado.value && estudiantes.value.length) proponerMensaje() })
+
 function proponerMensaje() {
   const nombres = estudiantes.value.filter((e) => f.estudiantes.includes(e.id)).map((e) => e.nombre)
   f.mensaje = mensajeSugerido(f.tipo, f.lecciones.map(nombreLeccion).filter(Boolean), nombres)

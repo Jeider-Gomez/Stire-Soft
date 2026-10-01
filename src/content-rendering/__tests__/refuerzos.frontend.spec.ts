@@ -56,5 +56,8 @@ describe('Refuerzos: la acción junto al dato', () => {
     const form = leer('pages', 'docente', 'refuerzos', 'nuevo.vue');
     expect(form).toContain('v-if="f.pasos.length < 5"');
     expect(form).toContain('se publicará solo para estos estudiantes');
+    // El mensaje propuesto sigue a la selección (lecciones, estudiantes, tipo) hasta que el docente lo escribe él.
+    expect(form).toContain('if (!mensajeEditado.value && estudiantes.value.length) proponerMensaje()');
+    expect(form).toContain('@input="mensajeEditado = true"');
   });
 });
