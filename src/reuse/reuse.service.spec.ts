@@ -7,6 +7,7 @@ import { Content } from '../content/entities/content.entity';
 import { Activity } from '../activities/entities/activity.entity';
 import { ActivityQuestion } from '../activity-questions/entities/activity-question.entity';
 import { PublicationStatus } from '../common/enums/status.enum';
+import { Class } from '../class/entities/class.entity';
 
 // Base en memoria con lo mínimo del EntityManager que usa ReuseService (create, save, find, findOne). Así la copia se
 // ejecuta de verdad y se puede comprobar el árbol resultante, no solo que se llamaron métodos.
@@ -72,7 +73,17 @@ describe('ReuseService', () => {
     sembrarClaseOrigen(db.insertar);
     db.insertar(Section, { id: 12, classId: DESTINO, title: 'Ya existía', order: 0, isPublished: true });
     authorization = { assertTeacherOwnsClass: jest.fn().mockResolvedValue(undefined) };
-    const dataSource = { transaction: (cb: (m: unknown) => unknown) => cb(db.manager) };
+    // ORIGEN es del docente 7; 3 es de otro docente y la compartió como plantilla; 4 es de otro docente y no.
+    db.insertar(Class, { id: ORIGEN, teacherId: 7, compartidaComoPlantilla: false });
+    db.insertar(Class, { id: 3, teacherId: 8, compartidaComoPlantilla: true });
+    db.insertar(Class, { id: 4, teacherId: 8, compartidaComoPlantilla: false });
+    db.insertar(Section, { id: 13, classId: 3, title: 'Módulo compartido', order: 0, isPublished: true });
+    db.insertar(Section, { id: 14, classId: 4, title: 'Módulo privado', order: 0, isPublished: true });
+    const dataSource = {
+      transaction: (cb: (m: unknown) => unknown) => cb(db.manager),
+      getRepository: (e: { name: string }) => ({ findOne: (o: { where: Record<string, unknown> }) => db.manager.findOne(e, o), find: (o: { where: Record<string, unknown> }) => db.manager.find(e, o) }),
+      query: jest.fn(() => Promise.resolve([{ classId: 3, nombre: 'ALGO', codigo: 'ALGO-1', docente: 'Laura', modulos: '1', lecciones: '6', ejercicios: '20' }])),
+    };
     service = new ReuseService(dataSource as never, authorization as never);
   });
 
@@ -125,15 +136,26 @@ describe('ReuseService', () => {
       await expect(service.importClassContent(DOCENTE, ORIGEN, { sourceClassId: ORIGEN })).rejects.toThrow(BadRequestException);
     });
 
-    it('exige que el docente dicte las dos clases: sin la de origen no copia nada', async () => {
-      authorization.assertTeacherOwnsClass.mockImplementation(async (_u: unknown, classId: number) => {
-        if (classId === ORIGEN) throw new ForbiddenException('No dictas esta clase');
-      });
+    it('de una clase ajena solo copia si su docente la compartió como plantilla; si no, no copia nada', async () => {
       const antes = db.tabla(Section).length;
-
-      await expect(service.importClassContent(DOCENTE, DESTINO, { sourceClassId: ORIGEN })).rejects.toThrow(ForbiddenException);
-      expect(authorization.assertTeacherOwnsClass).toHaveBeenCalledWith(DOCENTE, DESTINO);
+      await expect(service.importClassContent(DOCENTE, DESTINO, { sourceClassId: 4 })).rejects.toThrow('no la compartió como plantilla');
       expect(db.tabla(Section).length).toBe(antes);
+
+      const r = await service.importClassContent(DOCENTE, DESTINO, { sourceClassId: 3 });
+      expect(r.sections).toBe(1);
+      expect(db.tabla(Section).find((x) => x.classId === DESTINO && x.title === 'Módulo compartido')).toMatchObject({ isPublished: false });
+      // la clase destino sí tiene que ser propia
+      expect(authorization.assertTeacherOwnsClass).toHaveBeenCalledWith(DOCENTE, DESTINO);
+      await expect(service.importClassContent(DOCENTE, DESTINO, { sourceClassId: 99 })).rejects.toThrow('Clase no encontrada');
+    });
+
+    it('los módulos de una plantilla se pueden ver para elegir; los de una clase ajena sin compartir, no', async () => {
+      await expect(service.modulosParaCopiar(DOCENTE, 3)).resolves.toEqual([{ id: 13, title: 'Módulo compartido', order: 0 }]);
+      await expect(service.modulosParaCopiar(DOCENTE, 4)).rejects.toThrow(ForbiddenException);
+    });
+
+    it('lista las plantillas de otros docentes con cuánto contenido tienen', async () => {
+      await expect(service.plantillas(DOCENTE)).resolves.toEqual([{ classId: 3, nombre: 'ALGO', codigo: 'ALGO-1', docente: 'Laura', modulos: 1, lecciones: 6, ejercicios: 20 }]);
     });
   });
 

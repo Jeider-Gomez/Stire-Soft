@@ -49,6 +49,31 @@
       </div>
     </section>
 
+    <!-- Compartir el contenido con otros docentes (docs/DISENO_CLASES_Y_DOCENTES.md) -->
+    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
+      <h2 class="text-sm font-bold text-base-texto-primario">Compartir el contenido</h2>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
+        <div>
+          <p class="text-xs font-semibold text-base-texto-primario">Compartir como plantilla con otros docentes</p>
+          <p class="text-[11px] text-base-texto-secundario mt-0.5">
+            Otros docentes podrán copiar los módulos, explicaciones y ejercicios a sus propias clases. Reciben una copia: lo
+            que cambien no toca tu clase, y tus estudiantes, entregas y notas nunca se comparten.
+          </p>
+        </div>
+        <button
+          type="button"
+          :disabled="isSavingPlantilla"
+          :aria-pressed="!!classInfo?.compartidaComoPlantilla"
+          class="px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
+          :class="classInfo?.compartidaComoPlantilla ? 'bg-semantico-exito/15 text-semantico-exito' : 'bg-base-borde-sutil text-base-texto-secundario'"
+          @click="alternarPlantilla"
+        >
+          <Check v-if="classInfo?.compartidaComoPlantilla" :size="12" aria-hidden="true" />
+          {{ classInfo?.compartidaComoPlantilla ? 'Compartida' : 'No compartida' }}
+        </button>
+      </div>
+    </section>
+
     <!-- Datos de la clase -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-4">
       <h2 class="text-sm font-bold text-base-texto-primario">Datos de la clase</h2>
@@ -141,6 +166,7 @@ interface ClassInfo {
   code?: string
   description?: string
   requiresApproval?: boolean
+  compartidaComoPlantilla?: boolean
 }
 
 const route = useRoute()
@@ -252,6 +278,20 @@ async function change(id: string, action: 'approve' | 'reject' | 'remove') {
   const path = action === 'remove' ? `/enrollment/${id}` : `/enrollment/${id}/${action}`
   await api.apiFetch(path, { method })
   await load()
+}
+
+const isSavingPlantilla = ref(false)
+async function alternarPlantilla() {
+  if (!classInfo.value) return
+  isSavingPlantilla.value = true
+  try {
+    classInfo.value = await api.apiFetch<ClassInfo>(`/class/${classId}`, {
+      method: 'PATCH',
+      body: { compartidaComoPlantilla: !classInfo.value.compartidaComoPlantilla }
+    })
+  } finally {
+    isSavingPlantilla.value = false
+  }
 }
 
 async function toggleRequiresApproval() {

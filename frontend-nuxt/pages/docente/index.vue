@@ -442,11 +442,16 @@
                     class="input-stire text-xs"
                   >
                     <option :value="null">Empezar vacía</option>
-                    <option v-for="c in classes" :key="c.id" :value="c.id">
-                      {{ c.name }} ({{ c.code }})
-                    </option>
+                    <optgroup v-if="classes.length" label="Mis clases">
+                      <option v-for="c in classes" :key="c.id" :value="c.id">
+                        {{ c.name }} ({{ c.code }})
+                      </option>
+                    </optgroup>
+                    <optgroup v-if="plantillas.length" label="Plantillas de otros docentes">
+                      <option v-for="p in plantillas" :key="`p${p.classId}`" :value="p.classId">{{ textoPlantilla(p) }}</option>
+                    </optgroup>
                   </select>
-                  <p class="text-[11px] text-slate-400 mt-1">Opcional. Se copiarán lecciones y ejercicios en borrador.</p>
+                  <p class="text-[11px] text-slate-400 mt-1">Opcional. Se copian explicaciones y ejercicios en borrador; nunca estudiantes ni notas.</p>
                 </div>
 
                 <!-- Toggle aprobación -->
@@ -540,6 +545,7 @@
 </template>
 
 <script setup lang="ts">
+import { textoPlantilla, type Plantilla } from '~/utils/plantillas'
 import { porcentaje } from '~/utils/porcentaje'
 import {
   Plus, Users, TrendingUp, BookOpen, AlertTriangle,
@@ -564,6 +570,15 @@ interface TeacherClass {
 
 const api = useApi()
 const classes = ref<TeacherClass[]>([])
+// Contenido que otros docentes compartieron como plantilla, para empezar una clase con él.
+const plantillas = ref<Plantilla[]>([])
+async function fetchPlantillas() {
+  try {
+    plantillas.value = await api.get<Plantilla[]>('/reuse/plantillas')
+  } catch {
+    plantillas.value = []
+  }
+}
 const isLoading = ref(false)
 const copiedCode = ref<string | null>(null)
 const successMessage = ref<string | null>(null)
@@ -713,6 +728,7 @@ async function fetchUnreadMessages() {
 }
 
 onMounted(() => {
+  fetchPlantillas()
   fetchClasses()
   fetchUnreadMessages()
 })

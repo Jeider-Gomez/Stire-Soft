@@ -42,6 +42,13 @@ export class Class {
   @Column({ default: false })
   requiresApproval!: boolean;
 
+  /**
+   * El docente comparte el CONTENIDO de esta clase como plantilla: otros docentes pueden copiarlo a sus propias clases
+   * (docs/DISENO_CLASES_Y_DOCENTES.md). Se copia, nunca se enlaza; los estudiantes, entregas y notas no se comparten.
+   */
+  @Column({ default: false })
+  compartidaComoPlantilla!: boolean;
+
   @Column({ type: 'date', nullable: true })
   startDate?: Date;
 

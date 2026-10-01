@@ -198,6 +198,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Tres cifras bajo «Hoy en tu clase» y el pendiente «N estudiantes llevan una semana o más sin practicar». |
 | **Trazabilidad** | `src/analytics/resumen-semanal.ts` (`construirResumenSemanal`, `DIAS_SIN_ACTIVIDAD`), `GET /analytics/class/:id/semana`; `frontend-nuxt/utils/hoyClase.ts`; `pages/docente/clase/[classId]/index.vue`; pruebas `resumen-semanal.spec.ts` y `clase-pestanas.frontend.spec.ts`. |
 
+## BT-18. El contenido se comparte como plantilla y se copia; cada clase es de su docente
+
+| | |
+|---|---|
+| **Problema observado** | Para probar STIRE, dos integrantes del equipo debían ser docentes con los cursos ya diseñados. Un docente solo podía copiar contenido de sus propias clases, así que nadie más podía usar los cursos diseñados sin rehacerlos. |
+| **Decisión** | 1. Cada docente crea y es dueño de sus clases; el admin no interviene en el día a día.<br>2. Un docente puede **compartir el contenido de su clase como plantilla**; otros docentes lo **copian** al crear su clase o después. Llega en borrador y nunca incluye estudiantes, entregas, progreso ni notas.<br>3. Se **copia, no se enlaza**: si el autor cambia algo, no altera las clases (ni las notas) de los demás.<br>4. **Co-docentes** en una misma clase quedan para después, si la universidad los necesita (monitores, auxiliares). |
+| **Fundamento** | - Referentes de producto: todas las plataformas estudiadas separan el **contenido** (se diseña una vez y se reutiliza: «Importar» de Moodle, Commons y Blueprint de Canvas) de la **clase** (un grupo con su docente, sus estudiantes y sus notas). Google Classroom y Khan Academy dejan que cada docente cree sus clases; Moodle y Canvas lo hacen desde la administración porque se conectan al sistema académico.<br>- Para un trabajo universitario con poca administración, el modelo de Classroom (el docente crea, comparte y copia) es el más práctico; el de Moodle exigiría que el admin intervenga en cada curso.<br>- Copiar en vez de enlazar protege la validez de las notas de cada grupo (misma razón que en BT-11). |
+| **Cómo se materializa** | Ajustes → «Compartir como plantilla con otros docentes»; al crear una clase, «Copiar el contenido de → Plantillas de otros docentes»; en Contenido, «Traer de otra clase». |
+| **Trazabilidad** | `classes.compartidaComoPlantilla` (migración 1790800000000); `src/reuse/reuse.service.ts` (`plantillas`, `modulosParaCopiar`, `assertPuedeCopiarDe`); `frontend-nuxt/utils/plantillas.ts`; `docs/DISENO_CLASES_Y_DOCENTES.md`. |
+
 ---
 
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)

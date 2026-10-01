@@ -39,6 +39,9 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
   aviso, uno por racha (BT-16).
 - **Resumen de la semana en «Hoy»:** quiénes practicaron, ejercicios y aprobados frente a la semana anterior, y un
   pendiente con quien lleva 7 días o más sin practicar, con «Escribirles» (BT-17).
+- **Plantillas compartidas:** un docente comparte el contenido de su clase (Ajustes) y otros docentes lo copian al
+  crear su clase o con «Traer de otra clase». Se copia en borrador, nunca estudiantes ni notas. Migración 1790800000000.
+  Cómo lo hacen otras plataformas y cómo organizar la prueba con el equipo: `docs/DISENO_CLASES_Y_DOCENTES.md` (BT-18).
 - **Tutor con ayuda ampliada en un refuerzo:** en un ejercicio de un refuerzo, la ayuda empieza un nivel más arriba
   (pregunta guía desde el primer intento) y el Tutor explica la idea de otra forma; el tope del docente sigue mandando y
   la solución nunca se da. El chat avisa «Ayuda ampliada: este ejercicio es parte de tu refuerzo». Los retos no la

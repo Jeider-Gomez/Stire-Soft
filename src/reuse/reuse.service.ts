@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, EntityManager, In } from 'typeorm';
 import { AuthorizationService } from '../common/authorization/authorization.service';
@@ -27,6 +27,17 @@ export interface ResumenImportacion {
   questions: number;
 }
 
+/** Una clase cuyo docente compartió su contenido como plantilla. */
+export interface Plantilla {
+  classId: number;
+  nombre: string;
+  codigo: string;
+  docente: string;
+  modulos: number;
+  lecciones: number;
+  ejercicios: number;
+}
+
 export interface EjercicioDelBanco {
   activityId: number;
   title: string;
@@ -50,13 +61,50 @@ export class ReuseService {
     private readonly authorizationService: AuthorizationService,
   ) {}
 
-  /** Copia secciones (con temas, unidades, lecciones y ejercicios) de una clase propia a otra propia. */
+  /**
+   * El origen se puede leer si es una clase propia o si su docente la compartió como plantilla. Solo el contenido: los
+   * estudiantes, entregas, progreso y notas de esa clase nunca se copian.
+   */
+  private async assertPuedeCopiarDe(user: User, sourceClassId: number): Promise<void> {
+    const origen = await this.dataSource.getRepository(Class).findOne({ where: { id: sourceClassId } });
+    if (!origen) throw new NotFoundException('Clase no encontrada');
+    if (user.role === 'admin' || origen.teacherId === user.id || origen.compartidaComoPlantilla) return;
+    throw new ForbiddenException('Esa clase no es tuya y su docente no la compartió como plantilla.');
+  }
+
+  /**
+   * Plantillas de otros docentes: clases cuyo contenido su docente compartió. Las propias no aparecen aquí (ya están en
+   * «Mis clases»).
+   */
+  async plantillas(user: User): Promise<Plantilla[]> {
+    const filas: Array<Record<string, string | number>> = await this.dataSource.query(
+      'SELECT c.id AS classId, c.name AS nombre, c.code AS codigo, u.fullName AS docente, ' +
+        '(SELECT COUNT(*) FROM sections s WHERE s.classId = c.id) AS modulos, ' +
+        '(SELECT COUNT(*) FROM learning_units lu JOIN topics t ON lu.topicId = t.id JOIN sections s ON t.sectionId = s.id WHERE s.classId = c.id) AS lecciones, ' +
+        "(SELECT COUNT(*) FROM activities a JOIN learning_units lu ON a.learningUnitId = lu.id JOIN topics t ON lu.topicId = t.id JOIN sections s ON t.sectionId = s.id WHERE s.classId = c.id AND a.status != 'archived') AS ejercicios " +
+        'FROM classes c JOIN users u ON u.id = c.teacherId WHERE c.compartidaComoPlantilla = 1 AND c.teacherId != ? ORDER BY c.name',
+      [user.id],
+    );
+    return filas.map((f) => ({
+      classId: Number(f.classId), nombre: String(f.nombre), codigo: String(f.codigo), docente: String(f.docente),
+      modulos: Number(f.modulos), lecciones: Number(f.lecciones), ejercicios: Number(f.ejercicios),
+    }));
+  }
+
+  /** Los módulos de una clase propia o de una plantilla compartida, para elegir cuáles copiar. */
+  async modulosParaCopiar(user: User, sourceClassId: number): Promise<Array<{ id: number; title: string; order: number }>> {
+    await this.assertPuedeCopiarDe(user, sourceClassId);
+    const secciones = await this.dataSource.getRepository(Section).find({ where: { classId: sourceClassId }, order: { order: 'ASC', id: 'ASC' } });
+    return secciones.map((s) => ({ id: s.id, title: s.title, order: s.order }));
+  }
+
+  /** Copia secciones (con temas, unidades, lecciones y ejercicios) de una clase propia o de una plantilla compartida. */
   async importClassContent(user: User, targetClassId: number, dto: ImportClassContentDto): Promise<ResumenImportacion> {
     if (dto.sourceClassId === targetClassId) {
       throw new BadRequestException('Elige una clase distinta de esta para traer su contenido.');
     }
     await this.authorizationService.assertTeacherOwnsClass(user, targetClassId);
-    await this.authorizationService.assertTeacherOwnsClass(user, dto.sourceClassId);
+    await this.assertPuedeCopiarDe(user, dto.sourceClassId);
 
     return this.dataSource.transaction(async (manager) => {
       let secciones = await manager.find(Section, { where: { classId: dto.sourceClassId }, order: { order: 'ASC', id: 'ASC' } });

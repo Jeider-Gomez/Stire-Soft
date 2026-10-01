@@ -38,7 +38,7 @@
 
         <!-- Botón Traer de otra clase (T3) -->
         <button
-          v-if="selectedClassId && otherClasses.length > 0"
+          v-if="selectedClassId && (otherClasses.length > 0 || plantillas.length > 0)"
           type="button"
           @click="openImportModal"
           class="px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
@@ -95,7 +95,7 @@
           <span>Crear primer módulo</span>
         </button>
         <button
-          v-if="selectedClassId && otherClasses.length > 0"
+          v-if="selectedClassId && (otherClasses.length > 0 || plantillas.length > 0)"
           type="button"
           @click="openImportModal"
           class="px-4 py-2 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm">
@@ -517,9 +517,14 @@
               v-model="importModal.sourceClassId"
               @change="onSourceClassChange"
               class="w-full text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-2 outline-none focus:border-acento-ambar-fuerte">
-              <option v-for="c in otherClasses" :key="c.id" :value="c.id">
-                {{ c.name }} ({{ c.code }})
-              </option>
+              <optgroup v-if="otherClasses.length" label="Mis clases">
+                <option v-for="c in otherClasses" :key="c.id" :value="c.id">
+                  {{ c.name }} ({{ c.code }})
+                </option>
+              </optgroup>
+              <optgroup v-if="plantillas.length" label="Plantillas de otros docentes">
+                <option v-for="p in plantillas" :key="`p${p.classId}`" :value="p.classId">{{ textoPlantilla(p) }}</option>
+              </optgroup>
             </select>
           </div>
 
@@ -611,6 +616,7 @@
 </template>
 
 <script setup lang="ts">
+import { textoPlantilla, type Plantilla } from '~/utils/plantillas'
 import { ChevronRight, Pencil, BookOpen, FileText, CopyPlus, Loader2 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
@@ -1011,6 +1017,16 @@ interface ResumenImportacion {
 const otherClasses = computed(() => {
   return teacherClasses.value.filter(c => c.id !== selectedClassId.value)
 })
+// Contenido que otros docentes compartieron como plantilla (utils/plantillas.ts).
+const plantillas = ref<Plantilla[]>([])
+async function cargarPlantillas() {
+  try {
+    plantillas.value = await api.get<Plantilla[]>('/reuse/plantillas')
+  } catch {
+    plantillas.value = []
+  }
+}
+onMounted(cargarPlantillas)
 
 const importModal = reactive({
   open: false,
@@ -1031,8 +1047,9 @@ function openImportModal() {
   importModal.open = true
   importModal.error = null
   nextTick(() => importSourceRef.value?.focus())
-  if (otherClasses.value.length > 0) {
-    importModal.sourceClassId = otherClasses.value[0].id
+  const primera = otherClasses.value[0]?.id ?? plantillas.value[0]?.classId
+  if (primera) {
+    importModal.sourceClassId = primera
     onSourceClassChange()
   } else {
     importModal.sourceClassId = null
@@ -1056,7 +1073,8 @@ async function onSourceClassChange() {
   importModal.isLoadingSections = true
   importModal.error = null
   try {
-    const res = await api.get<Array<{ id: number; title: string; order: number }>>(`/sections/class/${importModal.sourceClassId}`)
+    // Sirve para una clase propia y para una plantilla de otro docente (cuyos módulos no se leen por /sections).
+    const res = await api.get<Array<{ id: number; title: string; order: number }>>(`/reuse/classes/${importModal.sourceClassId}/modulos`)
     importModal.sections = Array.isArray(res) ? res : []
     importModal.selectedSectionIds = importModal.sections.map(s => s.id)
   } catch (err: unknown) {

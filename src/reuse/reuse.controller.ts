@@ -15,13 +15,25 @@ export class ReuseController {
   constructor(private readonly reuseService: ReuseService) {}
 
   @Post('classes/:classId/import')
-  @ApiOperation({ summary: 'Traer a esta clase secciones de otra clase propia (como borrador, sin estudiantes ni notas)' })
+  @ApiOperation({ summary: 'Traer a esta clase secciones de otra clase propia o de una plantilla compartida (como borrador, sin estudiantes ni notas)' })
   importClassContent(
     @Param('classId', ParseIntPipe) classId: number,
     @Body() dto: ImportClassContentDto,
     @GetUser() user: User,
   ) {
     return this.reuseService.importClassContent(user, classId, dto);
+  }
+
+  @Get('plantillas')
+  @ApiOperation({ summary: 'Plantillas de otros docentes: clases cuyo contenido su docente compartió para copiarlo' })
+  plantillas(@GetUser() user: User) {
+    return this.reuseService.plantillas(user);
+  }
+
+  @Get('classes/:classId/modulos')
+  @ApiOperation({ summary: 'Módulos de una clase propia o de una plantilla compartida, para elegir cuáles copiar' })
+  modulosParaCopiar(@Param('classId', ParseIntPipe) classId: number, @GetUser() user: User) {
+    return this.reuseService.modulosParaCopiar(user, classId);
   }
 
   @Get('bank')
