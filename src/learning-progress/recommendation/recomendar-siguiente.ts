@@ -43,7 +43,8 @@ export type MotivoRecomendacion =
   | 'siguiente'
   | 'practica_extra'
   | 'completada'
-  | 'sin_intentos';
+  | 'sin_intentos'
+  | 'pausa';
 
 export interface Recomendacion {
   actividad: ActividadParaRecomendar;
@@ -89,7 +90,24 @@ function mensajePara(motivo: MotivoRecomendacion, nivel: Difficulty): string {
       return 'Completaste la lección. Puedes seguir practicando.';
     case 'sin_intentos':
       return 'Usaste todos los intentos de los ejercicios que faltan. Pídele ayuda al tutor o a tu docente.';
+    case 'pausa':
+      return 'Llevas varios intentos seguidos sin lograrlo. Para un momento: vuelve a la explicación o pídele una pista al tutor. Tu docente ya sabe que esta lección te está costando.';
   }
+}
+
+/**
+ * Tope estilo ASSISTments (docs/DISENO_INTERVENCION_DOCENTE.md §4.4; BASE_TEORICA.md BT-16): tras estos fallos
+ * seguidos en una lección, STIRE deja de empujar «otro ejercicio más», propone volver a la explicación o pedir una pista
+ * y avisa al docente. Es el mismo umbral con el que el mapa de calor marca a alguien como bloqueado.
+ */
+export const FALLOS_PARA_PAUSA = 3;
+
+/** Intentos calificados seguidos sin aprobar, contando desde el último hacia atrás (un aprobado corta la racha). */
+export function fallosSeguidos(intentos: Array<{ aprobado: boolean; fecha: Date }>): number {
+  const ordenados = [...intentos].sort((a, b) => a.fecha.getTime() - b.fecha.getTime());
+  let n = 0;
+  for (let i = ordenados.length - 1; i >= 0 && !ordenados[i].aprobado; i--) n++;
+  return n;
 }
 
 /** Mismo criterio que `isSubmissionPassed`: el puntaje de aprobación es un porcentaje del total de la actividad. */
@@ -125,7 +143,22 @@ interface Casilla {
   actividades: ActividadParaRecomendar[];
 }
 
+/**
+ * La siguiente actividad. Si el estudiante lleva FALLOS_PARA_PAUSA seguidos en la lección, la recomendación se vuelve
+ * una pausa: la misma actividad queda disponible, pero lo primero que se le propone es volver a la explicación.
+ */
 export function recomendarSiguiente(entrada: EntradaRecomendador): Recomendacion | null {
+  const recomendacion = recomendarSinTope(entrada);
+  if (!recomendacion || recomendacion.completada || recomendacion.motivo === 'sin_intentos') return recomendacion;
+  const porId = new Map(entrada.actividades.map((a) => [a.id, a]));
+  const calificados = entrada.intentos
+    .filter((i) => i.calificado && porId.has(i.activityId))
+    .map((i) => ({ aprobado: aprueba(porId.get(i.activityId)!, i.score), fecha: i.fecha }));
+  if (fallosSeguidos(calificados) < FALLOS_PARA_PAUSA) return recomendacion;
+  return { ...recomendacion, motivo: 'pausa', mensaje: mensajePara('pausa', recomendacion.nivel) };
+}
+
+function recomendarSinTope(entrada: EntradaRecomendador): Recomendacion | null {
   const actividades = [...entrada.actividades].sort(
     (a, b) =>
       rangoNivel(a.difficulty) - rangoNivel(b.difficulty) ||

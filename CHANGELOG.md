@@ -34,6 +34,9 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
   módulo, y cada módulo con notas tiene su nota de módulo; en cada nivel usa porcentajes (sin obligar a sumar 100: se
   reparten en proporción) o promedia; y puede no calcular final y solo registrar. «Dejar de usar notas» sin perder lo
   puesto. Migración 1790700000000 (`calculo`, `grupos`).
+- **Tope estilo ASSISTments:** con 3 fallos seguidos en una lección, STIRE deja de proponer «otro ejercicio» como
+  primer paso: propone volver a la explicación o pedir una pista (el ejercicio sigue disponible), y el docente recibe un
+  aviso, uno por racha (BT-16).
 - **Tutor con ayuda ampliada en un refuerzo:** en un ejercicio de un refuerzo, la ayuda empieza un nivel más arriba
   (pregunta guía desde el primer intento) y el Tutor explica la idea de otra forma; el tope del docente sigue mandando y
   la solución nunca se da. El chat avisa «Ayuda ampliada: este ejercicio es parte de tu refuerzo». Los retos no la

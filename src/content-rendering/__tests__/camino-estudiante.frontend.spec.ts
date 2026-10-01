@@ -65,7 +65,7 @@ describe('Nombres: módulo → tema → lección', () => {
 describe('La lección antes del ejercicio y la evaluación implícita', () => {
   it('una lección sin empezar abre la lección (la explicación), no un ejercicio suelto', () => {
     const inicio = plantilla(leer('pages', 'estudiante', 'index.vue'));
-    expect(inicio).toMatch(/v-if="!studentStore\.activeUnit\.empezada \|\| !recommendedExerciseId" :to="`\/estudiante\/unidad\/\$\{studentStore\.activeUnit\.id\}`"/);
+    expect(inicio).toMatch(/v-if="!studentStore\.activeUnit\.empezada \|\| !recommendedExerciseId \|\| recommendedReason === 'pausa'" :to="`\/estudiante\/unidad\/\$\{studentStore\.activeUnit\.id\}`"/);
     expect(inicio).toMatch(/<NuxtLink :to="`\/estudiante\/unidad\/\$\{unit\.id\}`"/);
   });
 

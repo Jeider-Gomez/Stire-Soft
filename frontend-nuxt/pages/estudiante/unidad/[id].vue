@@ -51,6 +51,8 @@
       <!-- La explicación y los recursos de la lección, tal como los publicó el docente -->
       <article
         v-if="unitContent.length > 0"
+        id="explicacion"
+        tabindex="-1"
         class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 md:p-8 shadow-sm space-y-6 text-xs text-base-texto-primario leading-relaxed">
         <section v-for="content in unitContent" :key="content.id" class="space-y-2">
           <h2 v-if="content.title" class="text-sm font-bold text-base-texto-primario">
@@ -82,15 +84,30 @@
           </button>
         </div>
 
+        <!-- Tope (docs/DISENO_INTERVENCION_DOCENTE.md §4.4): tras varios fallos seguidos, lo primero es parar y volver a la
+             explicación o pedir una pista; el ejercicio sigue ahí, pero ya no es el botón principal. -->
+        <div v-if="enPausa" class="flex items-center gap-2 flex-wrap">
+          <button type="button" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors" @click="volverALaExplicacion">
+            <BookOpen :size="14" aria-hidden="true" /> Volver a la explicación
+          </button>
+          <button type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-md borde-afordancia text-xs font-semibold" @click="tutorStore.openDrawer()">
+            <Lightbulb :size="14" aria-hidden="true" /> Pedir una pista al tutor
+          </button>
+        </div>
+
         <div v-if="recommendedActivity && !chooseManually" class="flex items-center gap-2 flex-wrap">
           <NuxtLink
             :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
-            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors"
+            class="inline-flex items-center gap-2 transition-colors text-xs"
+            :class="enPausa ? 'font-semibold text-acento-ambar-fuerte hover:underline' : 'px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold'"
           >
+            <template v-if="enPausa">Intentar otro ejercicio de todas formas</template>
+            <template v-else>
             <RotateCcw v-if="recommendedActivity.reason === 'repaso'" :size="14" aria-hidden="true" />
             <TrendingUp v-else-if="recommendedActivity.reason === 'reto' || recommendedActivity.reason === 'sube_nivel'" :size="14" aria-hidden="true" />
             <Play v-else :size="14" aria-hidden="true" />
             {{ dominio ? 'Seguir practicando' : 'Practicar' }}: {{ recommendedActivity.title }}
+            </template>
           </NuxtLink>
           <span
             v-if="recommendedActivity.level"
@@ -146,11 +163,12 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ChevronRight, Inbox, Loader2, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
+import { ArrowLeft, BookOpen, ChevronRight, Inbox, Lightbulb, Loader2, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
 import { fechaCorta } from '~/utils/entregas'
 import { DOMINADO, TERMINOS } from '~/utils/terminos'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
+import { useTutorStore } from '~/stores/tutor'
 import { useApi } from '~/composables/useApi'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 
@@ -206,6 +224,16 @@ const loadError = ref(false)
 const unitData = ref<UnitDetail | null>(null)
 const unitContent = ref<ContentBlock[]>([])
 const recommendedActivity = ref<NextActivityRecommendation | null>(null)
+const tutorStore = useTutorStore()
+const enPausa = computed(() => recommendedActivity.value?.reason === 'pausa')
+
+/** Lleva a la explicación de la lección y le pasa el foco, para que el lector de pantalla también llegue ahí. */
+function volverALaExplicacion() {
+  const el = document.getElementById('explicacion')
+  if (!el) return
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  el.focus({ preventScroll: true })
+}
 const chooseManually = ref(false)
 const unitActivities = ref<ActivitySummary[]>([])
 const isLoadingActivities = ref(false)

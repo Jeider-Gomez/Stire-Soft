@@ -178,6 +178,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | En el chat del Tutor, dentro de un ejercicio del refuerzo: nivel de ayuda más alto y el aviso de por qué. |
 | **Trazabilidad** | `src/tutor/tutor-guidance.ts` (`guidanceLevelForFailedAttempts(fallidos, ampliada)`), `tutor-settings.service.ts` (`refuerzoConLaActividad`), `tutor-context.service.ts`; `frontend-nuxt/components/tutor/TutorChatDrawer.vue`. |
 
+## BT-16. Tope: tras varios fallos seguidos, parar, volver a la explicación y avisar al docente
+
+| | |
+|---|---|
+| **Problema observado** | Después de cada fallo, el recomendador proponía otro ejercicio hermano o un reintento. Un estudiante podía encadenar fallos en la misma lección sin que nada cambiara, y el docente solo se enteraba si abría el mapa de calor. |
+| **Decisión** | Con **3 fallos seguidos** en una lección (el mismo umbral con que el docente ve a alguien «bloqueado»), la recomendación se vuelve una **pausa**: lo primero que se propone es **volver a la explicación** o **pedir una pista al tutor**; el ejercicio sigue disponible como opción secundaria («Intentar otro de todas formas»). En ese momento el docente recibe **un aviso**, uno por racha, que lo lleva a «Hoy» para asignar un refuerzo o escribir. Un ejercicio aprobado corta la racha. |
+| **Fundamento** | - ASSISTments: la práctica se detiene cuando el estudiante no alcanza el criterio tras varios intentos, y el caso pasa al docente; en un ensayo aleatorio con estudiantes de 7.º grado, la tarea en esa plataforma mejoró el rendimiento, más en quienes partían con bajo rendimiento (Roschelle, Feng, Murphy y Mason, 2016; Heffernan y Heffernan, 2014).<br>- Repetir más de lo mismo no corrige: el correctivo presenta la idea de otra forma (Bloom, 1968, matriz #1; Guskey, 2007).<br>- El aviso a tiempo de quién está atascado hace que el docente atienda primero a quien lo necesita (Holstein, McLaren y Aleven, 2018).<br>- El umbral de 3 es una decisión de diseño a validar con datos de uso, no un valor de la literatura. |
+| **Cómo se materializa** | En la lección y en el inicio del estudiante: «Volver a la explicación» y «Pedir una pista al tutor». Para el docente: la campana con «Luisa se atascó» y la lista de «Hoy». |
+| **Trazabilidad** | `src/learning-progress/recommendation/recomendar-siguiente.ts` (`FALLOS_PARA_PAUSA`, `fallosSeguidos`, motivo `pausa`); `src/notifications/listeners/atasco.listener.ts`; `pages/estudiante/unidad/[id].vue`, `pages/estudiante/index.vue`; pruebas `tope.spec.ts` y `tope.frontend.spec.ts`. |
+
 ---
 
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
@@ -204,6 +214,7 @@ trazabilidad (solo para el anexo técnico).
 - Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T. y Rohrer, D. (2006). Distributed practice in verbal recall tasks. *Psychological Bulletin, 132*(3), 354-380. — matriz #3
 - Fuchs, D. y Fuchs, L. S. (2006). Introduction to response to intervention: What, why, and how valid is it? *Reading Research Quarterly, 41*(1). https://doi.org/10.1598/rrq.41.1.4
 - Guskey, T. R. (2007). Closing Achievement Gaps: Revisiting Benjamin S. Bloom's "Learning for Mastery". *Journal of Advanced Academics, 19*(1). https://doi.org/10.4219/jaa-2007-704
+- Heffernan, N. T. y Heffernan, C. L. (2014). The ASSISTments Ecosystem. *International Journal of Artificial Intelligence in Education, 24*(4). https://doi.org/10.1007/s40593-014-0024-x
 - Hattie, J. y Timperley, H. (2007). The Power of Feedback. *Review of Educational Research, 77*(1), 81-112. — matriz #13
 - Holstein, K., McLaren, B. M. y Aleven, V. (2018). Student Learning Benefits of a Mixed-Reality Teacher Awareness Tool in AI-Enhanced Classrooms. En *AIED 2018*, LNCS, 154-168. https://doi.org/10.1007/978-3-319-93843-1_12
 - Holstein, K., McLaren, B. M. y Aleven, V. (2019). Co-Designing a Real-Time Classroom Orchestration Tool to Support Teacher–AI Complementarity. *Journal of Learning Analytics, 6*(2). https://doi.org/10.18608/jla.2019.62.3
@@ -214,6 +225,7 @@ trazabilidad (solo para el anexo técnico).
 - Mandel, T. (1997). *The Elements of User Interface Design*. Wiley. — matriz #22
 - Molenaar, I. y Knoop-van Campen, C. A. N. (2019). How Teachers Make Dashboard Information Actionable. *IEEE Transactions on Learning Technologies, 12*(3). https://doi.org/10.1109/tlt.2018.2851585
 - Nicol, D. J. y Macfarlane-Dick, D. (2006). Formative assessment and self-regulated learning: a model and seven principles of good feedback practice. *Studies in Higher Education, 31*(2). https://doi.org/10.1080/03075070600572090
+- Roschelle, J., Feng, M., Murphy, R. F. y Mason, C. A. (2016). Online Mathematics Homework Increases Student Achievement. *AERA Open, 2*(4). https://doi.org/10.1177/2332858416673968
 - Roediger, H. L. y Karpicke, J. D. (2006). Test-Enhanced Learning. *Psychological Science, 17*(3), 249-255. — matriz #4
 - Settles, B. y Meeder, B. (2016). A Trainable Spaced Repetition Model for Language Learning. En *Proc. ACL 2016*, 1848-1858. https://doi.org/10.18653/v1/P16-1174
 - Shute, V. J. (2008). Focus on Formative Feedback. *Review of Educational Research, 78*(1), 153-189. https://doi.org/10.3102/0034654307313795
