@@ -41,7 +41,7 @@ describe('TutorService E2E', () => {
       credentialService as any,
       learningUnitService as any,
       { countFailedAttempts: jest.fn().mockResolvedValue(0) } as any,
-      { resolveForStudent: jest.fn().mockResolvedValue({ enabled: true, maxGuideLevel: 3, style: 'equilibrado' }) } as any,
+      { resolveForStudent: jest.fn().mockResolvedValue({ enabled: true, maxGuideLevel: 3, style: 'equilibrado' }), refuerzoConLaActividad: jest.fn().mockResolvedValue(null) } as any,
     );
 
     fetchMock = jest

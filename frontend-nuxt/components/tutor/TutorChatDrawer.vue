@@ -82,6 +82,14 @@
             >Dónde está el error</span>
           </div>
         </div>
+        <!-- En un refuerzo la ayuda empieza un nivel más arriba (docs/DISENO_INTERVENCION_DOCENTE.md §10.4): se le dice
+             al estudiante por qué, para que no lo tome como que el Tutor «se rindió». -->
+        <p
+          v-if="tutorStore.guidanceLevel !== null && tutorStore.refuerzo"
+          class="px-4 py-1.5 bg-semantico-info/10 border-b border-semantico-info/20 text-[11px] text-base-texto-primario"
+        >
+          Ayuda ampliada: este ejercicio es parte de tu refuerzo «{{ tutorStore.refuerzo }}».
+        </p>
 
         <!-- Indicador de Contexto Activo de Aprendizaje -->
         <div v-if="activeContextLabel" class="px-4 py-2 bg-stire-canvas border-b border-slate-200 flex items-center justify-between text-[11px] text-slate-600">

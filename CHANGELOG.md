@@ -15,7 +15,7 @@ entry to the oldest.
 ## La clase como lugar y las formas de calificar · 1 de Octubre de 2026
 
 Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fundamento en
-`docs/investigacion/BASE_TEORICA.md` (BT-13 y BT-14).
+`docs/investigacion/BASE_TEORICA.md` (BT-13 a BT-15).
 
 - **La clase como lugar:** el docente entra a su clase y encuentra todo en pestañas (Hoy, Contenido, Estudiantes,
   Entregas, Refuerzos, Notas, Ajustes). El menú lateral lista sus clases en vez de las herramientas, y ninguna pantalla
@@ -29,7 +29,11 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
   que falta; el docente pone las notas manuales y ajusta la final con motivo obligatorio, con historial. «Descargar para
   Moodle (CSV)» para «Importar calificaciones». Si el docente lo activa, el estudiante ve «Tu nota en esta clase» en
   «Mi progreso», sin el motivo de los ajustes.
-- **Pruebas:** 1103/1103 (109 suites). Migración 1790600000000 (`esquemas_calificacion`, `notas_registradas`,
+- **Tutor con ayuda ampliada en un refuerzo:** en un ejercicio de un refuerzo, la ayuda empieza un nivel más arriba
+  (pregunta guía desde el primer intento) y el Tutor explica la idea de otra forma; el tope del docente sigue mandando y
+  la solución nunca se da. El chat avisa «Ayuda ampliada: este ejercicio es parte de tu refuerzo». Los retos no la
+  amplían (BT-15).
+- **Pruebas:** 1112/1112 (109 suites). Migración 1790600000000 (`esquemas_calificacion`, `notas_registradas`,
   `notas_historial`).
 
 ## Refuerzos y retos · 30 de Septiembre de 2026

@@ -9,8 +9,16 @@ export type GuidanceLevel = 1 | 2 | 3;
 
 export const MAX_GUIDANCE_LEVEL: GuidanceLevel = 3;
 
-/** Umbrales: 0-1 intentos fallidos → 1; 2-3 → 2; 4 o más → 3. */
-export function guidanceLevelForFailedAttempts(failedAttempts: number): GuidanceLevel {
+/**
+ * Umbrales: 0-1 intentos fallidos → 1; 2-3 → 2; 4 o más → 3.
+ *
+ * Con `ampliada` (la actividad es parte de un refuerzo que el docente le asignó; docs/DISENO_INTERVENCION_DOCENTE.md
+ * §10.4) la ayuda empieza un nivel más arriba: 0-1 → 2; 2 o más → 3. El docente ya vio que la práctica de siempre no le
+ * está funcionando, así que retener la ayuda cuesta más de lo que enseña (el «dilema de la asistencia», Koedinger y
+ * Aleven, 2007). Nunca pasa del nivel 3: la solución no se da.
+ */
+export function guidanceLevelForFailedAttempts(failedAttempts: number, ampliada = false): GuidanceLevel {
+  if (ampliada) return failedAttempts >= 2 ? 3 : 2;
   if (failedAttempts >= 4) return 3;
   if (failedAttempts >= 2) return 2;
   return 1;

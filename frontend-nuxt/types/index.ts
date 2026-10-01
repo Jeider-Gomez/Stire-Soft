@@ -180,6 +180,8 @@ export interface TutorGuidance {
     learningUnitId: number
     title: string
   } | null
+  /** Título del refuerzo que incluye esta actividad: la ayuda del Tutor está ampliada. */
+  refuerzo?: string | null
 }
 
 export type TutorStyle = 'equilibrado' | 'motivador' | 'tecnico' | 'breve'

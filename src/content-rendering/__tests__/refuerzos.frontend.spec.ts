@@ -52,6 +52,13 @@ describe('Refuerzos: la acción junto al dato', () => {
     expect(inicio.indexOf('v-for="r in refuerzos"')).toBeLessThan(inicio.indexOf('<!-- 1. EL SIGUIENTE PASO'));
   });
 
+  it('en un ejercicio del refuerzo, el chat del Tutor dice que la ayuda está ampliada y por qué', () => {
+    const chat = leer('components', 'tutor', 'TutorChatDrawer.vue');
+    expect(chat).toContain('v-if="tutorStore.guidanceLevel !== null && tutorStore.refuerzo"');
+    expect(chat).toContain('Ayuda ampliada: este ejercicio es parte de tu refuerzo');
+    expect(leer('stores', 'tutor.ts')).toContain('refuerzo.value = res?.refuerzo ?? null');
+  });
+
   it('el formulario limita a 5 pasos y avisa que un borrador se publicará solo para esos estudiantes', () => {
     const form = leer('pages', 'docente', 'refuerzos', 'nuevo.vue');
     expect(form).toContain('v-if="f.pasos.length < 5"');

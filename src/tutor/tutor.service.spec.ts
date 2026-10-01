@@ -38,6 +38,7 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
     settingsService = {
       resolveForStudent: jest.fn().mockResolvedValue({ enabled: true, maxGuideLevel: 3, style: 'equilibrado' }),
       findAccessibleUnitId: jest.fn().mockResolvedValue(null),
+      refuerzoConLaActividad: jest.fn().mockResolvedValue(null),
     };
     recommendationService = {
       suggestForUnit: jest.fn().mockResolvedValue(null),
@@ -337,6 +338,18 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
 
       expect(result.guidanceLevel).toBe(1);
       expect(contextService.buildSystemPrompt.mock.calls[0][2]).toBe(1);
+    });
+
+    it('en un refuerzo la ayuda empieza un nivel más arriba y el prompt lo sabe; el tope del docente sigue mandando', async () => {
+      settingsService.refuerzoConLaActividad.mockResolvedValue('Repasemos el else if');
+
+      const result = await service.sendMessage(STUDENT, 'no me sale', { activityId: 20 });
+      expect(result.guidanceLevel).toBe(2);
+      expect(contextService.buildSystemPrompt.mock.calls[0][4]).toBe('Repasemos el else if');
+      await expect(service.getGuidance(STUDENT, 20)).resolves.toMatchObject({ guidanceLevel: 2, refuerzo: 'Repasemos el else if' });
+
+      settingsService.resolveForStudent.mockResolvedValue({ enabled: true, maxGuideLevel: 1, style: 'equilibrado' });
+      expect((await service.sendMessage(STUDENT, 'no me sale', { activityId: 20 })).guidanceLevel).toBe(1);
     });
 
     it('pasa el estilo elegido por el docente al prompt', async () => {

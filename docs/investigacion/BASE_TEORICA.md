@@ -168,6 +168,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Pestaña «Notas» de la clase: esquema editable (el sugerido es Práctica 40 %, Entregas 30 %, Parcial 30 %), resumen de la clase, tabla con las notas, ajuste con historial y «Descargar para Moodle (CSV)». En «Mi progreso», la tarjeta «Tu nota en esta clase» si el docente la hizo visible. |
 | **Trazabilidad** | `src/calificaciones/` (`calificacion-reglas.ts`: `validarEsquema`, `construirLibro`, `notaPropuesta`); migración 1790600000000; `frontend-nuxt/utils/calificaciones.ts` (`csvParaMoodle`); `pages/docente/clase/[classId]/notas.vue`; `components/MiNota.vue`; pruebas `calificaciones.service.spec.ts` y `calificaciones.frontend.spec.ts`. |
 
+## BT-15. En un refuerzo, el Tutor amplía la ayuda (sin dar la solución)
+
+| | |
+|---|---|
+| **Problema observado** | El Tutor sube la ayuda solo con los intentos fallidos de la actividad (pista → pregunta guía → dónde está el error). En un refuerzo, el estudiante empezaba otra vez desde la pista mínima, aunque el docente ya había visto que la práctica de siempre no le funcionaba. |
+| **Decisión** | Si el ejercicio es parte de un **refuerzo** en curso para ese estudiante, la ayuda empieza **un nivel más arriba** (pregunta guía desde el primer intento; dónde está el error desde el segundo fallo) y el Tutor recibe la instrucción de explicar la idea **de otra forma** y en pasos más pequeños. El tope que fija el docente sigue mandando y la solución nunca se da. Un **reto** no amplía la ayuda. El chat le dice al estudiante por qué: «Ayuda ampliada: este ejercicio es parte de tu refuerzo». |
+| **Fundamento** | - El «dilema de la asistencia»: dar poca ayuda obliga a pensar, pero retenerla de más hace perder tiempo y frustra; el equilibrio depende del estudiante y de la evidencia que hay sobre él (Koedinger y Aleven, 2007, matriz #6). Un refuerzo es esa evidencia: el docente ya la vio.<br>- El correctivo del aprendizaje para el dominio presenta el concepto de otra forma (Bloom, 1968, matriz #1; Guskey, 2007).<br>- Sin barreras, la IA mejora la práctica y empeora el examen; un tutor con pistas mitiga el daño (Bastani et al., 2025). Por eso se amplía la ayuda, no se quita la barrera. |
+| **Cómo se materializa** | En el chat del Tutor, dentro de un ejercicio del refuerzo: nivel de ayuda más alto y el aviso de por qué. |
+| **Trazabilidad** | `src/tutor/tutor-guidance.ts` (`guidanceLevelForFailedAttempts(fallidos, ampliada)`), `tutor-settings.service.ts` (`refuerzoConLaActividad`), `tutor-context.service.ts`; `frontend-nuxt/components/tutor/TutorChatDrawer.vue`. |
+
 ---
 
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)

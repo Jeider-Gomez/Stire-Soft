@@ -13,6 +13,24 @@ describe('andamiaje progresivo — tutor-guidance', () => {
     expect(guidanceLevelForFailedAttempts(failed)).toBe(level);
   });
 
+  it.each([
+    [0, 2],
+    [1, 2],
+    [2, 3],
+    [9, 3],
+  ])('en un refuerzo (ayuda ampliada), %i intentos fallidos → nivel %i: empieza un nivel más arriba y nunca pasa de 3', (failed, level) => {
+    expect(guidanceLevelForFailedAttempts(failed, true)).toBe(level);
+  });
+
+  it('en un refuerzo, el prompt pide explicar la idea de otra forma, con el título en una sola línea', async () => {
+    const service = new TutorContextService({ find: jest.fn().mockResolvedValue([]) } as any);
+    const prompt = await service.buildSystemPrompt(1, {}, 2, undefined, 'Otra forma\nde ver el else if');
+    expect(prompt).toContain('EL ESTUDIANTE ESTÁ EN UN REFUERZO');
+    expect(prompt).toContain('«Otra forma de ver el else if»');
+    expect(prompt).toContain('Sigue sin dar la solución');
+    expect(await service.buildSystemPrompt(1, {}, 2)).not.toContain('REFUERZO');
+  });
+
   it('ningún nivel autoriza entregar la solución completa', () => {
     for (const level of [1, 2, 3] as const) {
       expect(guidanceInstruction(level)).toMatch(/No |NO /);

@@ -13,6 +13,7 @@ export class TutorContextService {
     context?: any,
     guidanceLevel?: GuidanceLevel | null,
     style?: TutorStyle,
+    refuerzo?: string | null,
   ): Promise<string> {
     const progressRecords = await this.progressRepo.find({ where: { studentId } });
 
@@ -60,6 +61,14 @@ ${guidanceInstruction(guidanceLevel)}
 `
       : '';
 
+    // Un refuerzo existe porque la explicación de siempre no le funcionó (Bloom: el correctivo presenta la idea de otra
+    // forma). El título lo escribe el docente: se pone en una sola línea y recortado.
+    const refuerzoSection = refuerzo
+      ? `
+EL ESTUDIANTE ESTÁ EN UN REFUERZO que le asignó su docente («${refuerzo.replace(/\s+/g, ' ').slice(0, 120)}») porque esta parte le está costando. Explica la idea de OTRA forma (otra analogía, un ejemplo distinto al de la lección) y en pasos más pequeños. Sigue sin dar la solución.
+`
+      : '';
+
     const styleLine = style ? styleInstruction(style) : null;
     const styleSection = styleLine ? `\n${styleLine}\n` : '';
 
@@ -67,7 +76,7 @@ ${guidanceInstruction(guidanceLevel)}
 Eres el Tutor Inteligente de STIRE (Smart Tutor for Interactive & Responsive Education), para el curso de Algoritmos Básicos con HTML5, CSS y JavaScript para Desarrollo Web.
 Actualmente estás orientando a un estudiante de nivel ${level} (Maestría Global: ${Math.round(avgMastery)}%).
 ${locationContext}
-${recentProgressSection}${guidanceSection}${styleSection}
+${recentProgressSection}${guidanceSection}${refuerzoSection}${styleSection}
 REGLAS PEDAGÓGICAS ESTRICTAS:
 1. NUNCA resuelvas el ejercicio directamente ni des la respuesta o el código completo.
 2. Utiliza el Método Socrático: responde con una pregunta orientadora, pista conceptual o metáfora según su código.

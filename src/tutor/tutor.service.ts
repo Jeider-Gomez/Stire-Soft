@@ -57,6 +57,8 @@ export interface TutorGuidanceState {
   dueReviews: DueReviewsSummary | null;
   /** Contenido de la unidad de la actividad actual; null fuera de una actividad o si no puede leerla. */
   contentLink: ContentLink | null;
+  /** Título del refuerzo que incluye esta actividad: el Tutor da ayuda ampliada. null si no hay. */
+  refuerzo: string | null;
 }
 
 export interface TutorHistoryMessage {
@@ -115,8 +117,10 @@ export class TutorService {
     const practiceIntent = PRACTICE_INTENT_PATTERN.test(message);
     const promptContext = this.sanitizeContext(context, unit);
 
-    const guidanceLevel = this.capLevel(await this.resolveGuidanceLevel(studentId, context?.activityId), settings.maxGuideLevel);
-    const systemPrompt = await this.contextService.buildSystemPrompt(studentId, promptContext, guidanceLevel, settings.style);
+    // En un refuerzo la ayuda empieza un nivel más arriba; el tope del docente sigue mandando.
+    const refuerzo = await this.settingsService.refuerzoConLaActividad(studentId, context?.activityId);
+    const guidanceLevel = this.capLevel(await this.resolveGuidanceLevel(studentId, context?.activityId, refuerzo !== null), settings.maxGuideLevel);
+    const systemPrompt = await this.contextService.buildSystemPrompt(studentId, promptContext, guidanceLevel, settings.style, refuerzo);
     // El historial se lee ANTES de guardar el mensaje nuevo: si no, el LLM lo recibe dos veces.
     const history = await this.convRepo.getRecentContext(studentId, HISTORY_WINDOW);
 
@@ -162,8 +166,9 @@ export class TutorService {
    */
   async getGuidance(user: User, activityId?: number): Promise<TutorGuidanceState> {
     const settings = await this.settingsService.resolveForStudent(user, { activityId });
-    const level = this.capLevel(await this.resolveGuidanceLevel(user.id, activityId), settings.maxGuideLevel);
-    const base = { guidanceLevel: level, tutorEnabled: settings.enabled, maxGuideLevel: settings.maxGuideLevel };
+    const refuerzo = settings.enabled ? await this.settingsService.refuerzoConLaActividad(user.id, activityId) : null;
+    const level = this.capLevel(await this.resolveGuidanceLevel(user.id, activityId, refuerzo !== null), settings.maxGuideLevel);
+    const base = { guidanceLevel: level, tutorEnabled: settings.enabled, maxGuideLevel: settings.maxGuideLevel, refuerzo };
     if (!settings.enabled) return { ...base, dueReviews: null, contentLink: null };
 
     const [dueReviews, contentLink] = await Promise.all([
@@ -184,11 +189,11 @@ export class TutorService {
     return level === null ? null : (Math.min(level, max) as GuidanceLevel);
   }
 
-  private async resolveGuidanceLevel(studentId: number, rawActivityId: unknown): Promise<GuidanceLevel | null> {
+  private async resolveGuidanceLevel(studentId: number, rawActivityId: unknown, ampliada = false): Promise<GuidanceLevel | null> {
     const activityId = Number(rawActivityId);
     if (!Number.isInteger(activityId) || activityId <= 0) return null;
     const failedAttempts = await this.learningProgressService.countFailedAttempts(studentId, activityId);
-    return guidanceLevelForFailedAttempts(failedAttempts);
+    return guidanceLevelForFailedAttempts(failedAttempts, ampliada);
   }
 
   async getHistory(studentId: number, limit?: number): Promise<TutorHistoryMessage[]> {

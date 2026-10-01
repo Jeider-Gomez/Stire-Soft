@@ -8,6 +8,7 @@ import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { LearningUnitService } from '../learning-unit/learning-unit.service';
 import { User } from '../user/entities/user.entity';
 import { TutorSetting } from './entities/tutor-setting.entity';
+import { Refuerzo } from '../refuerzos/entities/refuerzo.entity';
 import { GuidanceLevel } from './tutor-guidance';
 import {
   DEFAULT_TUTOR_SETTINGS,
@@ -49,6 +50,7 @@ export class TutorSettingsService {
     @InjectRepository(Enrollment) private readonly enrollmentRepo: Repository<Enrollment>,
     private readonly learningUnitService: LearningUnitService,
     private readonly authorizationService: AuthorizationService,
+    @InjectRepository(Refuerzo) private readonly refuerzoRepo: Repository<Refuerzo>,
   ) {}
 
   // Lado del estudiante
@@ -61,6 +63,22 @@ export class TutorSettingsService {
     const scope = await this.locateStudentScope(user, target);
     if (scope) return this.effectiveFor(scope);
     return this.strictestAcrossClasses(user.id);
+  }
+
+  /**
+   * Título del refuerzo en curso que incluye esta actividad para el estudiante, o null (docs/DISENO_INTERVENCION_DOCENTE.md
+   * §10.4). Con un refuerzo, el Tutor amplía la ayuda; un reto no la amplía, porque es para quien va adelante.
+   */
+  async refuerzoConLaActividad(studentId: number, activityId: unknown): Promise<string | null> {
+    const id = Number(activityId);
+    if (!Number.isInteger(id) || id <= 0) return null;
+    const refuerzos = await this.refuerzoRepo.createQueryBuilder('r')
+      .where('r.archivado = :no', { no: false })
+      .andWhere('r.tipo = :tipo', { tipo: 'refuerzo' })
+      .andWhere('JSON_CONTAINS(r.estudiantes, :sid)', { sid: JSON.stringify(studentId) })
+      .orderBy('r.createdAt', 'DESC')
+      .getMany();
+    return refuerzos.find((r) => r.pasos.some((p) => p.tipo === 'ejercicio' && p.activityId === id))?.titulo ?? null;
   }
 
   /**

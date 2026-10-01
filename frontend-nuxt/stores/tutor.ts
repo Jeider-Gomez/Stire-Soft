@@ -39,6 +39,8 @@ export const useTutorStore = defineStore('tutor', () => {
   const tutorEnabled = ref(true)
   const dueReviews = ref<TutorGuidance['dueReviews']>(null)
   const contentLink = ref<TutorGuidance['contentLink']>(null)
+  /** Refuerzo que incluye la actividad actual (ayuda ampliada); null si no hay. */
+  const refuerzo = ref<string | null>(null)
 
   // ─── Clave de Google AI Studio (§19) ────────────────────────────────────────
   const hasLoadedHistory = ref(false)
@@ -153,12 +155,14 @@ export const useTutorStore = defineStore('tutor', () => {
       tutorEnabled.value = res?.tutorEnabled ?? true
       dueReviews.value = res?.dueReviews ?? null
       contentLink.value = res?.contentLink ?? null
+      refuerzo.value = res?.refuerzo ?? null
     } catch {
       // Si la llamada falla, dueReviews y contentLink quedan null y el chat sigue funcionando
       guidanceLevel.value = null
       tutorEnabled.value = true
       dueReviews.value = null
       contentLink.value = null
+      refuerzo.value = null
     }
   }
 
@@ -335,6 +339,7 @@ export const useTutorStore = defineStore('tutor', () => {
     tutorEnabled,
     dueReviews,
     contentLink,
+    refuerzo,
     hasKey,
     last4,
     showKeyPanel,

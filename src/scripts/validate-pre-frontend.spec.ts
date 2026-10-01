@@ -267,7 +267,7 @@ describe('VALIDACIÓN INTEGRAL PRE-FRONTEND — STIRE', () => {
         credentialService as any,
         learningUnitService as any,
         { countFailedAttempts: jest.fn() } as any,
-        { resolveForStudent: jest.fn().mockResolvedValue({ enabled: true, maxGuideLevel: 3, style: 'equilibrado' }) } as any,
+        { resolveForStudent: jest.fn().mockResolvedValue({ enabled: true, maxGuideLevel: 3, style: 'equilibrado' }), refuerzoConLaActividad: jest.fn().mockResolvedValue(null) } as any,
       );
 
       await expect(tutor.sendMessage({ id: 1 } as any, '¿Cómo hago un bucle for en JavaScript?')).rejects.toMatchObject({

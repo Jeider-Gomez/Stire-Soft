@@ -65,7 +65,38 @@ describe('TutorSettingsService', () => {
       assertEnrolledInClass: jest.fn().mockResolvedValue(undefined),
       assertTeacherOwnsClass: jest.fn().mockResolvedValue(undefined),
     };
-    service = new TutorSettingsService(repo as any, activityRepo, enrollmentRepo, learningUnitService, authorizationService);
+    service = new TutorSettingsService(repo as any, activityRepo, enrollmentRepo, learningUnitService, authorizationService, refuerzoRepo);
+  });
+
+  const refuerzos: Array<{ titulo: string; pasos: Array<{ tipo: string; activityId?: number }> }> = [];
+  const consulta = { where: jest.fn(), andWhere: jest.fn(), orderBy: jest.fn(), getMany: jest.fn(() => Promise.resolve(refuerzos)) };
+  consulta.where.mockReturnValue(consulta);
+  consulta.andWhere.mockReturnValue(consulta);
+  consulta.orderBy.mockReturnValue(consulta);
+  const refuerzoRepo: any = { createQueryBuilder: jest.fn(() => consulta) };
+
+  describe('refuerzo en curso con la actividad (ayuda ampliada del Tutor)', () => {
+    beforeEach(() => {
+      refuerzos.length = 0;
+      refuerzos.push(
+        { titulo: 'Repasemos el else if', pasos: [{ tipo: 'explicacion' }, { tipo: 'ejercicio', activityId: 20 }] },
+        { titulo: 'Bucles', pasos: [{ tipo: 'ejercicio', activityId: 31 }] },
+      );
+    });
+
+    it('devuelve el título del refuerzo que incluye la actividad, solo refuerzos sin archivar y de ese estudiante', async () => {
+      await expect(service.refuerzoConLaActividad(5, 20)).resolves.toBe('Repasemos el else if');
+      expect(consulta.where).toHaveBeenCalledWith('r.archivado = :no', { no: false });
+      expect(consulta.andWhere).toHaveBeenCalledWith('r.tipo = :tipo', { tipo: 'refuerzo' });
+      expect(consulta.andWhere).toHaveBeenCalledWith('JSON_CONTAINS(r.estudiantes, :sid)', { sid: '5' });
+    });
+
+    it('sin refuerzo con esa actividad, o sin actividad válida, no hay ayuda ampliada', async () => {
+      await expect(service.refuerzoConLaActividad(5, 99)).resolves.toBeNull();
+      refuerzoRepo.createQueryBuilder.mockClear();
+      await expect(service.refuerzoConLaActividad(5, 'abc')).resolves.toBeNull();
+      expect(refuerzoRepo.createQueryBuilder).not.toHaveBeenCalled();
+    });
   });
 
   describe('lado del estudiante', () => {
