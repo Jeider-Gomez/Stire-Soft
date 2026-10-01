@@ -16,4 +16,8 @@ export class CreateClassDto {
   @IsBoolean()
   @IsOptional()
   requiresApproval?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  aceptaProyectos?: boolean;
 }

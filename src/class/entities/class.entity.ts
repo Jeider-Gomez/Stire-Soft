@@ -42,6 +42,10 @@ export class Class {
   @Column({ default: false })
   requiresApproval!: boolean;
 
+  /** Si los estudiantes pueden enviarle a esta clase sus Proyectos (docs/DISENO_PROYECTOS.md §5). */
+  @Column({ default: false })
+  aceptaProyectos!: boolean;
+
   @Column({ type: 'date', nullable: true })
   startDate?: Date;
 
