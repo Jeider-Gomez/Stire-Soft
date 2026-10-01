@@ -12,6 +12,18 @@ entry to the oldest.
 
 ---
 
+## Proyectos, fase 2: enviar al docente · 30 de Septiembre de 2026
+
+- El estudiante pulsa **«Enviar al docente»** en su editor y elige una clase: se guarda una **copia congelada** (título, tipo
+  y archivos). Hasta **5 versiones** por proyecto y clase; no se reenvía un proyecto sin cambios. Ve cada versión con su
+  nota y comentario y puede descargarla.
+- El docente tiene **«Proyectos»** en su menú: activa por clase si **recibe proyectos** (apagado por defecto), ve lo
+  recibido (primero lo sin revisar) y abre cada envío en **solo lectura**, con la misma vista previa aislada y ejecución en el
+  navegador, para poner **nota (0,0 a 5,0), comentario o ambos**.
+- Solo el autor y el docente de la clase ven un envío; a cualquier otro le responde 404. Otro docente no puede calificarlo.
+- **Proyectos abierto a todos:** `PROYECTOS_MODO` pasa a `todos` por defecto (`piloto` y `apagado` siguen disponibles).
+- **Pruebas:** 992/992 (101 suites). Migración 1790300000000 (`proyecto_envios` y `classes.aceptaProyectos`).
+
 ## Proyectos, fase 1 · 30 de Septiembre de 2026
 
 El espacio de programación propio del estudiante (`docs/DISENO_PROYECTOS.md`), en «Mis proyectos»:
