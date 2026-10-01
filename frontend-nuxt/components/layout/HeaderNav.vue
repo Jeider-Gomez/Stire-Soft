@@ -87,6 +87,9 @@
         {{ roleLabel }}
       </span>
 
+      <!-- Reportar un problema, algo confuso o una idea (docs/calidad/PRUEBA_DOS_SEMANAS.md) -->
+      <LayoutBotonReportar />
+
       <!-- Notificaciones -->
       <LayoutNotificationBell />
 

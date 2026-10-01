@@ -1,3 +1,6 @@
+> **Reemplazada el 01/10/2026 por [`PRUEBA_DOS_SEMANAS.md`](PRUEBA_DOS_SEMANAS.md).** Esta guía era de una versión anterior
+> (todavía preguntaba «¿Cómo te sientes con este tema?»).
+
 # Ronda 1 con el equipo — la ruta del estudiante
 
 **Quiénes:** 3 o 4 personas del equipo, cada una por separado. **Cuánto:** 30 minutos por persona. **Cuándo:** con el servidor

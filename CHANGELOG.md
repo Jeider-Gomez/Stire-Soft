@@ -39,6 +39,9 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
   aviso, uno por racha (BT-16).
 - **Resumen de la semana en «Hoy»:** quiénes practicaron, ejercicios y aprobados frente a la semana anterior, y un
   pendiente con quien lleva 7 días o más sin practicar, con «Escribirles» (BT-17).
+- **«Reportar» desde cualquier pantalla:** problema, algo confuso o idea, con la pantalla y el dispositivo anotados solos;
+  bandeja en Administración → Reportes (estado, nota visible para quien reportó, CSV). Migración 1790900000000. Plan de
+  la prueba con el equipo, dos semanas y dos cursos: `docs/calidad/PRUEBA_DOS_SEMANAS.md`.
 - **Plantillas compartidas:** un docente comparte el contenido de su clase (Ajustes) y otros docentes lo copian al
   crear su clase o con «Traer de otra clase». Se copia en borrador, nunca estudiantes ni notas. Migración 1790800000000.
   Cómo lo hacen otras plataformas y cómo organizar la prueba con el equipo: `docs/DISENO_CLASES_Y_DOCENTES.md` (BT-18).

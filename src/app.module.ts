@@ -3,6 +3,7 @@ import { MediaModule } from './media/media.module';
 import { ProyectosModule } from './proyectos/proyectos.module';
 import { RefuerzosModule } from './refuerzos/refuerzos.module';
 import { CalificacionesModule } from './calificaciones/calificaciones.module';
+import { ReportesModule } from './reportes/reportes.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
@@ -130,6 +131,7 @@ import { ReuseModule } from './reuse/reuse.module';
     ProyectosModule,
     RefuerzosModule,
     CalificacionesModule,
+    ReportesModule,
   ],
   providers: [
     {

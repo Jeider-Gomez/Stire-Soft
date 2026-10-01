@@ -35,6 +35,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/docente\/?$/, 'Mis clases'],
   [/^\/admin\/usuarios/, 'Usuarios'],
   [/^\/admin\/sistema/, 'Estado del sistema'],
+  [/^\/admin\/reportes/, 'Reportes'],
   [/^\/admin\/perfil/, 'Mi perfil'],
   [/^\/admin(\/dashboard)?\/?$/, 'Administración'],
 ]
