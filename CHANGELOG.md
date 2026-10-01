@@ -12,6 +12,26 @@ entry to the oldest.
 
 ---
 
+## La clase como lugar y las formas de calificar · 1 de Octubre de 2026
+
+Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fundamento en
+`docs/investigacion/BASE_TEORICA.md` (BT-13 y BT-14).
+
+- **La clase como lugar:** el docente entra a su clase y encuentra todo en pestañas (Hoy, Contenido, Estudiantes,
+  Entregas, Refuerzos, Notas, Ajustes). El menú lateral lista sus clases en vez de las herramientas, y ninguna pantalla
+  vuelve a preguntar «¿de qué clase?» si solo tiene una.
+- **Hoy:** lo pendiente en orden de urgencia, cada cosa con su acción: solicitudes para entrar (se aprueban ahí mismo),
+  bloqueados por lección, entregas por revisar, retos de salto fallidos, refuerzos sin empezar o vencidos, entregas que
+  cierran pronto y listos para un reto. A quien ya tiene un refuerzo en curso no se le propone otro. Sin pendientes,
+  «Todo al día».
+- **Notas:** esquema opcional por clase (dominio de las lecciones, entregas con nota y notas del docente, con pesos que
+  suman 100 %; escala 0,0–5,0; aprobatoria configurable). STIRE propone la nota de cada estudiante con su desglose y lo
+  que falta; el docente pone las notas manuales y ajusta la final con motivo obligatorio, con historial. «Descargar para
+  Moodle (CSV)» para «Importar calificaciones». Si el docente lo activa, el estudiante ve «Tu nota en esta clase» en
+  «Mi progreso», sin el motivo de los ajustes.
+- **Pruebas:** 1103/1103 (109 suites). Migración 1790600000000 (`esquemas_calificacion`, `notas_registradas`,
+  `notas_historial`).
+
 ## Refuerzos y retos · 30 de Septiembre de 2026
 
 Cierra el plan de intervención (`docs/DISENO_INTERVENCION_DOCENTE.md` §4 y §10.4).

@@ -61,6 +61,9 @@ describe('Pestañas de la clase', () => {
     }
     expect(existsSync(path.join(raiz, 'pages', 'docente', 'clase', '[classId].vue'))).toBe(false);
     expect(leer('components', 'docente', 'PestanasClase.vue')).toContain(`:aria-current="p.id === activa ? 'page' : undefined"`);
+    // El nombre de la clase (que en «Hoy» enlaza a la página actual) va fuera del <nav>: una sola pestaña actual.
+    const pestanasVue = leer('components', 'docente', 'PestanasClase.vue');
+    expect(pestanasVue.indexOf('{{ nombre }}')).toBeLessThan(pestanasVue.indexOf('<nav aria-label="Secciones de la clase">'));
   });
 
   it('el menú lleva a cada clase y ya no es un menú por herramienta', () => {
