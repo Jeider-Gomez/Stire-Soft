@@ -15,6 +15,7 @@ import { Submission } from '../submissions/entities/submission.entity';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
 
 import { IsInt, IsEnum, IsString, IsNumber, IsOptional, IsObject } from 'class-validator';
+import { actividadVisiblePara } from '../activities/visibilidad';
 
 export class CreateActivityQuestionDto {
   @IsInt()
@@ -111,7 +112,7 @@ export class ActivityQuestionsService {
       // estudiante autenticado podía enumerar preguntas de una clase ajena.
       await this.authorizationService.assertEnrolledInClass(user, classId);
 
-      if (activity.status !== PublicationStatus.PUBLISHED) {
+      if (!actividadVisiblePara(activity, user.id)) {
         throw new NotFoundException(`Actividad con ID ${activityId} no encontrada`);
       }
     }

@@ -13,6 +13,7 @@ import { User, UserRole } from '../user/entities/user.entity';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
 import { Submission } from '../submissions/entities/submission.entity';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
+import { actividadVisiblePara } from './visibilidad';
 
 @Injectable()
 export class ActivitiesService {
@@ -123,9 +124,9 @@ export class ActivitiesService {
       const classId = this.resolveClassId(activity);
       await this.authorizationService.assertEnrolledInClass(user, classId);
 
-      if (activity.status !== PublicationStatus.PUBLISHED) {
-        // Se responde como "no encontrada", no como "prohibida": un draft
-        // no existe todavía desde la perspectiva del estudiante.
+      if (!actividadVisiblePara(activity, user.id)) {
+        // Se responde como "no encontrada", no como "prohibida": un draft, o una actividad asignada a otros
+        // estudiantes, no existe desde la perspectiva de este estudiante.
         throw new NotFoundException(`Actividad con id ${id} no encontrada`);
       }
 

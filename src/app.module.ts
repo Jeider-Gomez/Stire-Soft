@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MediaModule } from './media/media.module';
 import { ProyectosModule } from './proyectos/proyectos.module';
+import { RefuerzosModule } from './refuerzos/refuerzos.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
@@ -126,6 +127,7 @@ import { ReuseModule } from './reuse/reuse.module';
     ReuseModule,
     MediaModule,
     ProyectosModule,
+    RefuerzosModule,
   ],
   providers: [
     {

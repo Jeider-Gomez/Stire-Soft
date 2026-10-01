@@ -12,6 +12,8 @@ function makeActivity(overrides: Partial<any> = {}): any {
     attemptsAllowed: 3,
     passingScore: 60,
     totalPoints: 100,
+    status: 'published',
+    asignadaA: null,
     learningUnit: { topic: { section: { classId: 7 } } },
     ...overrides,
   };
@@ -138,6 +140,14 @@ describe('SubmissionsService', () => {
   describe('startSubmission', () => {
     const dto = { activityId: 1 };
     const studentId = 42;
+
+    it('un borrador o una actividad asignada a otros estudiantes no se puede intentar (404)', async () => {
+      for (const activity of [makeActivity({ status: 'draft' }), makeActivity({ asignadaA: [7, 8] })]) {
+        activitiesRepo.findOne.mockResolvedValueOnce(activity);
+        await expect(service.startSubmission(dto, studentId)).rejects.toThrow('Actividad no encontrada');
+      }
+      expect(submissionsRepo.save).not.toHaveBeenCalled();
+    });
 
     it('lanza NotFoundException cuando la actividad no existe', async () => {
       activitiesRepo.findOne.mockResolvedValue(null);

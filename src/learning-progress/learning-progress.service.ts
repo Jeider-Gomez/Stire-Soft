@@ -20,6 +20,7 @@ import { Section } from '../section/entities/section.entity';
 import { LearningProgress } from './entities/learning-progress.entity';
 import { Confianza, MotivoRecomendacion, nivelSaltadoHasta, recomendarSiguiente } from './recommendation/recomendar-siguiente';
 import { construirEstadisticas, SEMANAS_CALENDARIO } from './estadisticas';
+import { actividadVisiblePara } from '../activities/visibilidad';
 
 export interface NextActivityRecommendation {
   activityId: number;
@@ -63,7 +64,7 @@ export class LearningProgressService {
     const oldStatus = progress.status || LearningStatus.NO_VISTO;
     
     // Todas las actividades de la unidad, con su tipo de pregunta (las hermanas forman una casilla)
-    const activities = await this.cargarActividadesConTipo(learningUnitId);
+    const activities = await this.cargarActividadesConTipo(learningUnitId, studentId);
 
     // Todos los submissions del estudiante para estas actividades
     const activityIds = activities.map(a => a.id);
@@ -177,7 +178,7 @@ export class LearningProgressService {
   }
 
   async getNextActivity(studentId: number, learningUnitId: number): Promise<NextActivityRecommendation | null> {
-    const activities = await this.cargarActividadesConTipo(learningUnitId);
+    const activities = await this.cargarActividadesConTipo(learningUnitId, studentId);
     if (activities.length === 0) return null;
 
     // Incluye los intentos en curso: gastan un intento aunque todavía no tengan resultado.
@@ -321,12 +322,13 @@ export class LearningProgressService {
     });
   }
 
-  private async cargarActividadesConTipo(learningUnitId: number): Promise<ActividadConTipo[]> {
-    const activities = await this.activitiesRepo.find({
+  /** Las actividades publicadas de la lección que este estudiante ve (sin las asignadas solo a otros, §4.1). */
+  private async cargarActividadesConTipo(learningUnitId: number, studentId: number): Promise<ActividadConTipo[]> {
+    const activities = (await this.activitiesRepo.find({
       where: { learningUnitId, status: PublicationStatus.PUBLISHED },
       relations: ['activityType'],
       order: { order: 'ASC', id: 'ASC' },
-    });
+    })).filter((a) => actividadVisiblePara(a, studentId));
     if (activities.length === 0) return [];
 
     const preguntas = await this.activitiesRepo.manager.find(ActivityQuestion, {

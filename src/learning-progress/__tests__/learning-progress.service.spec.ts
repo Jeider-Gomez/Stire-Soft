@@ -108,6 +108,18 @@ describe('LearningProgressService', () => {
       expect(result.attemptsCount).toBe(1);
     });
 
+    it('un ejercicio asignado solo a otros estudiantes (un refuerzo ajeno) no cuenta en el dominio (§4.1)', async () => {
+      const propio = makeActivity({ id: 1, totalPoints: 100, passingScore: 60 });
+      const ajeno = makeActivity({ id: 2, totalPoints: 100, passingScore: 60, asignadaA: [99] });
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress());
+      activitiesRepo.find.mockResolvedValue([propio, ajeno]);
+      mockQueryBuilder([makeSubmission({ activityId: 1, score: 100 })]);
+
+      const result = await service.recalculateMastery(42, 10, 1, 100, 60);
+
+      expect(result.mastery).toBe(100);
+    });
+
     it('una entrega revisada que cuenta para el dominio es evidencia: su nota entra como una casilla más (§5)', async () => {
       const activity = makeActivity({ id: 1, totalPoints: 100, passingScore: 60 });
       progressRepo.findOrCreate.mockResolvedValue(makeProgress({ attemptsCount: 3 }));

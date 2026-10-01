@@ -66,6 +66,13 @@ export class Activity extends StireBaseEntity {
   @Column({ type: 'timestamp', nullable: true })
   publishedAt: Date;
 
+  /**
+   * Solo para estos estudiantes (un refuerzo o un reto, docs/DISENO_INTERVENCION_DOCENTE.md §4.1); null = toda la clase.
+   * Para los demás no existe: no la ven y no cuenta en su dominio.
+   */
+  @Column({ type: 'json', nullable: true })
+  asignadaA: number[] | null;
+
   /** Actividad de la que se copió (otra clase, el banco o «duplicar como variante»); null si se creó desde cero. */
   @Column({ type: 'int', nullable: true })
   copiedFromId: number | null;

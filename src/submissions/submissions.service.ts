@@ -23,6 +23,7 @@ import { ContentRenderingService } from '../content-rendering/content-rendering.
 import { Enrollment } from '../enrollment/entities/enrollment.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { Activity } from '../activities/entities/activity.entity';
+import { actividadVisiblePara } from '../activities/visibilidad';
 
 @Injectable()
 export class SubmissionsService {
@@ -51,6 +52,8 @@ export class SubmissionsService {
     if (!activity) throw new NotFoundException('Actividad no encontrada');
 
     await this.assertActiveEnrollment(activity, studentId);
+    // Un borrador o una actividad asignada a otros estudiantes no se puede intentar (antes un borrador sí se podía).
+    if (!actividadVisiblePara(activity, studentId)) throw new NotFoundException('Actividad no encontrada');
 
     // Verificar si ya hay uno en progreso
     const active = await this.submissionsRepo.findActiveSubmission(studentId, activity.id);

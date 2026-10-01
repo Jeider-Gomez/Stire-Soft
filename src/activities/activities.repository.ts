@@ -61,7 +61,9 @@ export class ActivitiesRepository extends Repository<Activity> {
           'enr.classId = section.classId AND enr.studentId = :studentId AND enr.status = :active',
           { studentId: user.id, active: EnrollmentStatus.ACTIVE },
         )
-        .andWhere('activity.status = :published', { published: PublicationStatus.PUBLISHED });
+        .andWhere('activity.status = :published', { published: PublicationStatus.PUBLISHED })
+        // Una actividad asignada a algunos estudiantes (refuerzo o reto) no existe para los demás.
+        .andWhere('(activity.asignadaA IS NULL OR JSON_CONTAINS(activity.asignadaA, :sidJson))', { sidJson: JSON.stringify(user.id) });
     }
     // admin: sin filtro adicional.
 

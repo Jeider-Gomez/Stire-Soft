@@ -8,6 +8,7 @@ import { ClassService } from '../class/class.service';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { PublicationStatus } from '../common/enums/status.enum';
+import { actividadVisiblePara } from '../activities/visibilidad';
 
 @Injectable()
 export class SectionService {
@@ -94,7 +95,7 @@ export class SectionService {
               .filter((u) => u.isActive)
               .map((u) => ({
                 ...u,
-                activities: (u.activities ?? []).filter((a) => a.status === PublicationStatus.PUBLISHED),
+                activities: (u.activities ?? []).filter((a) => actividadVisiblePara(a, user.id)),
               })),
           })),
       })) as Section[];
