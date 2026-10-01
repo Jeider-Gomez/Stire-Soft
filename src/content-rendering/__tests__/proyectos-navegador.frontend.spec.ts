@@ -63,7 +63,7 @@ describe('JavaScript en el navegador (Worker)', () => {
   });
 });
 
-describe('Enviar al docente (fase 2)', () => {
+describe('Entregas (docs/DISENO_INTERVENCION_DOCENTE.md §3)', () => {
   const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
   const leer = (archivo: string) => readFileSync(path.join(raiz, archivo), 'utf8');
 
@@ -79,7 +79,7 @@ describe('Enviar al docente (fase 2)', () => {
   });
 
   it('el docente ve el código en solo lectura y la vista previa en el mismo iframe aislado que el estudiante', () => {
-    const revision = leer('pages/docente/proyectos/[envioId].vue');
+    const revision = leer('pages/docente/entregas/revision/[envioId].vue');
     expect(revision).toMatch(/<CodeEditor[^>]*read-only/);
     expect(revision).toContain('<ProyectosResultadoProyecto');
     const resultado = leer('components/proyectos/ResultadoProyecto.vue');
@@ -92,8 +92,44 @@ describe('Enviar al docente (fase 2)', () => {
     expect(leer('pages/estudiante/proyectos/[id].vue')).toContain(`<ProyectosEnviarAlDocente :proyecto-id="proyecto.id" :puede-enviar="estadoGuardado === 'guardado'" />`);
   });
 
-  it('el docente llega desde el menú', () => {
-    expect(leer('components/layout/SidebarNav.vue')).toContain('to="/docente/proyectos"');
+  it('el docente llega desde el menú «Entregas»', () => {
+    expect(leer('components/layout/SidebarNav.vue')).toContain('to="/docente/entregas"');
+  });
+
+  it('en la revisión, el comentario va antes que la nota, y la nota solo aparece si la entrega lleva nota', () => {
+    const revision = leer('pages/docente/entregas/revision/[envioId].vue');
+    expect(revision.indexOf('id="revision-comentario"')).toBeLessThan(revision.indexOf('id="revision-nota"'));
+    expect(revision).toMatch(/<div v-if="envio\.entrega\?\.conNota"/);
+    expect(revision).toContain('Siguiente sin revisar');
+    expect(revision).toContain('textoEvento(h)');
+  });
+
+  it('el estudiante ve el comentario antes que la nota en cada versión', () => {
+    const pagina = leer('pages/estudiante/entregas/[id].vue');
+    expect(pagina.indexOf('v.comentario }}')).toBeLessThan(pagina.indexOf('notaTexto(v.nota)'));
+  });
+
+  it('el formulario del docente: 3 versiones por defecto, sin nota por defecto y lección opcional', () => {
+    const form = leer('components/docente/EntregaForm.vue');
+    expect(form).toContain('maxVersiones: i?.maxVersiones ?? 3');
+    expect(form).toContain('conNota: i?.conNota ?? false');
+    expect(form).toContain('<option :value="null">Ninguna: es una entrega de la materia</option>');
+  });
+});
+
+describe('Historial de una entrega en palabras', () => {
+  const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
+  const js = ts.transpileModule(readFileSync(path.join(raiz, 'utils', 'entregas.ts'), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
+  const mod = { exports: {} as Record<string, unknown> };
+  new Function('module', 'exports', js)(mod, mod.exports);
+  const { textoEvento, notaTexto } = mod.exports as { textoEvento: (e: { tipo: string; detalle: Record<string, unknown> | null }) => string; notaTexto: (n: number | null) => string };
+
+  it('cada evento se lee como una frase, con la nota en coma decimal', () => {
+    expect(textoEvento({ tipo: 'enviada', detalle: { version: 2, tarde: true } })).toBe('Versión 2 enviada (tarde)');
+    expect(textoEvento({ tipo: 'nota_cambiada', detalle: { antes: 4, despues: 4.5 } })).toBe('Nota cambiada: 4,0 → 4,5');
+    expect(textoEvento({ tipo: 'revisada', detalle: { nota: null, comentario: 'Bien' } })).toBe('Revisada con comentario');
+    expect(textoEvento({ tipo: 'reabierta', detalle: null })).toBe('El docente dio una versión más');
+    expect(notaTexto(null)).toBe('');
   });
 });
 

@@ -134,11 +134,11 @@
         </NuxtLink>
 
         <NuxtLink
-          to="/docente/proyectos"
+          to="/docente/entregas"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path.startsWith('/docente/proyectos') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <FolderCode :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Proyectos</span>
+          :class="route.path.startsWith('/docente/entregas') ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <Inbox :size="18" aria-hidden="true" class="shrink-0" />
+          <span>Entregas</span>
         </NuxtLink>
 
         <NuxtLink
@@ -184,7 +184,7 @@
 </template>
 
 <script setup lang="ts">
-import { FolderCode, House, Repeat, TrendingUp, Mail, Users, BookOpen, SquarePen, BarChart3, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
+import { FolderCode, Inbox, House, Repeat, TrendingUp, Mail, Users, BookOpen, SquarePen, BarChart3, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 

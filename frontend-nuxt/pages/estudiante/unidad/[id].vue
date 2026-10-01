@@ -125,6 +125,15 @@
         </div>
       </section>
 
+      <!-- Entregas de esta lección: el docente las valora (docs/DISENO_INTERVENCION_DOCENTE.md §3) -->
+      <section v-if="entregas.length" class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 space-y-2 text-xs" aria-labelledby="entregas-leccion">
+        <h2 id="entregas-leccion" class="text-sm font-bold text-base-texto-primario flex items-center gap-1.5"><Inbox :size="15" class="text-acento-ambar-fuerte" aria-hidden="true" /> Entregas de esta lección</h2>
+        <NuxtLink v-for="e in entregas" :key="e.id" :to="`/estudiante/entregas/${e.id}`" class="flex flex-wrap items-center justify-between gap-2 rounded-md border border-base-borde-sutil px-3 py-2 hover:border-acento-ambar-fuerte">
+          <span class="font-semibold text-base-texto-primario">{{ e.titulo }}</span>
+          <span class="text-[11px] text-base-texto-secundario">{{ e.versionesUsadas }} de {{ e.limite }} versiones{{ e.cierraAt ? ` · cierra ${fechaCorta(e.cierraAt)}` : '' }}</span>
+        </NuxtLink>
+      </section>
+
       <div class="pt-4 border-t border-base-borde-sutil flex items-center justify-between">
         <NuxtLink
           to="/estudiante"
@@ -137,7 +146,8 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ChevronRight, Loader2, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
+import { ArrowLeft, ChevronRight, Inbox, Loader2, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
+import { fechaCorta } from '~/utils/entregas'
 import { DOMINADO, TERMINOS } from '~/utils/terminos'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
@@ -209,6 +219,7 @@ const dominio = ref<number | null>(null)
  * Por dentro es el mismo reto de salto (confianza 3): si lo resuelve al primer intento, se salta lo básico.
  */
 const puedeSaltar = ref(false)
+const entregas = ref<Array<{ id: number; titulo: string; learningUnitId: number | null; cierraAt: string | null; versionesUsadas: number; limite: number }>>([])
 const saltando = ref(false)
 const saltoError = ref<string | null>(null)
 
@@ -277,6 +288,11 @@ onMounted(async () => {
     unitContent.value = contents || []
     // Si la unidad es de otra de sus clases (llegó desde un repaso o una notificación), el encabezado y el
     // plan de estudio pasan a esa clase.
+    if (unit?.classId) {
+      api.get<typeof entregas.value>(`/entregas/mias?classId=${unit.classId}`)
+        .then((lista) => { entregas.value = lista.filter((e) => e.learningUnitId === unitId) })
+        .catch(() => undefined)
+    }
     if (unit?.classId && unit.classId !== studentStore.currentClassId) {
       studentStore.selectClass(unit.classId).catch(() => undefined)
     }

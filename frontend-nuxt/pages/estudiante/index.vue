@@ -164,6 +164,29 @@
         </div>
       </section>
 
+      <!-- Entregas que creó el docente: primero lo que falta entregar (docs/DISENO_INTERVENCION_DOCENTE.md §3.2) -->
+      <section v-if="entregas.length" class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm" aria-labelledby="entregas-titulo">
+        <h2 id="entregas-titulo" class="px-5 py-3 border-b border-base-borde-sutil text-sm font-bold text-base-texto-primario flex items-center gap-2">
+          <Inbox :size="16" class="text-acento-ambar-fuerte" aria-hidden="true" /> Entregas
+        </h2>
+        <ul class="divide-y divide-base-borde-sutil">
+          <li v-for="e in entregas" :key="e.id">
+            <NuxtLink :to="`/estudiante/entregas/${e.id}`" class="px-5 py-3 flex flex-wrap items-center justify-between gap-2 text-xs hover:bg-base-bg-primario/60 group">
+              <span class="min-w-0">
+                <span class="block font-semibold text-base-texto-primario group-hover:underline">{{ e.titulo }}</span>
+                <span class="block text-[11px] text-base-texto-secundario">
+                  {{ e.versionesUsadas }} de {{ e.limite }} {{ e.limite === 1 ? 'versión' : 'versiones' }}<template v-if="e.cierraAt"> · cierra {{ fechaCorta(e.cierraAt) }}</template>
+                </span>
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold shrink-0"
+                :class="e.estado === 'sin_entregar' ? 'bg-acento-ambar/15 text-acento-ambar-fuerte' : e.estado === 'revisada' ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario'">
+                {{ e.estado === 'revisada' ? (e.ultima?.nota != null ? `Revisada · ${notaTexto(e.ultima.nota)}` : 'Revisada') : e.estado === 'por_revisar' ? 'Entregada, sin revisar' : 'Por entregar' }}
+              </span>
+            </NuxtLink>
+          </li>
+        </ul>
+      </section>
+
       <!-- 3. EL PLAN DEL CURSO: módulos, temas (solo si agrupan más de una lección) y lecciones -->
       <section class="space-y-4" aria-labelledby="plan-titulo">
         <div class="flex items-center justify-between">
@@ -189,14 +212,16 @@
               </span>
             </div>
 
-            <div v-for="tema in mod.topics" :key="tema.id">
-              <p v-if="tema.units.length > 1" class="px-5 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-base-texto-secundario">
+            <!-- Cada tema es un grupo separado por una línea; el nombre solo aparece si agrupa más de una lección. -->
+            <div>
+            <div v-for="tema in mod.topics" :key="tema.id" class="border-t border-base-borde-sutil first:border-t-0 py-1">
+              <p v-if="tema.units.length > 1" class="px-5 pt-2 pb-0.5 text-[10px] font-bold uppercase tracking-wider text-base-texto-secundario">
                 {{ tema.title }}
               </p>
-              <ul class="divide-y divide-base-borde-sutil">
+              <ul>
                 <li v-for="unit in tema.units" :key="unit.id">
                   <NuxtLink :to="`/estudiante/unidad/${unit.id}`"
-                    class="px-5 py-3 flex items-center gap-3 hover:bg-base-bg-primario/60 transition-colors group"
+                    class="px-5 py-2.5 flex items-center gap-3 hover:bg-base-bg-primario/60 transition-colors group"
                     :class="unit.id === studentStore.activeUnit?.id ? 'bg-acento-ambar/5' : ''"
                     :aria-label="`${unit.title}: ${estadoLeccion(unit)}`">
                     <CheckCircle2 v-if="unit.status === 'dominado'" :size="18" class="text-semantico-pasa shrink-0" aria-hidden="true" />
@@ -216,6 +241,7 @@
                 </li>
               </ul>
             </div>
+            </div>
           </section>
         </div>
       </section>
@@ -225,8 +251,9 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { RotateCcw, TrendingUp, AlertTriangle, Landmark, Library, Clock, PartyPopper, GraduationCap, KeyRound, Brain, Flame, Map as MapIcon, Play, BookOpen, CheckCircle2, CircleDot, Circle } from 'lucide-vue-next'
+import { RotateCcw, TrendingUp, AlertTriangle, Landmark, Library, Clock, PartyPopper, GraduationCap, KeyRound, Brain, Flame, Map as MapIcon, Play, BookOpen, CheckCircle2, CircleDot, Circle, Inbox } from 'lucide-vue-next'
 import { contar, DOMINADO } from '~/utils/terminos'
+import { fechaCorta, notaTexto, type EstadoEntrega } from '~/utils/entregas'
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
@@ -311,6 +338,25 @@ const forgettingUnitIds = computed(() => {
   }
   return ids
 })
+
+// Entregas de la clase activa: primero las que faltan por entregar, luego las que tienen revisión nueva.
+interface MiEntrega { id: number; titulo: string; cierraAt: string | null; estado: EstadoEntrega; versionesUsadas: number; limite: number; ultima: { nota: number | null } | null }
+const entregas = ref<MiEntrega[]>([])
+const ORDEN_ESTADO: Record<EstadoEntrega, number> = { sin_entregar: 0, revisada: 1, por_revisar: 2 }
+watch(
+  () => studentStore.currentClassId,
+  async (classId) => {
+    entregas.value = []
+    if (!classId) return
+    try {
+      const lista = await api.get<MiEntrega[]>(`/entregas/mias?classId=${classId}`)
+      entregas.value = [...lista].sort((a, b) => ORDEN_ESTADO[a.estado] - ORDEN_ESTADO[b.estado])
+    } catch {
+      // Sin entregas o servidor sin esta función todavía: la sección no aparece.
+    }
+  },
+  { immediate: true },
+)
 
 const porcentajeAvance = computed(() => {
   const { dominadas, total } = studentStore.avanceCurso
