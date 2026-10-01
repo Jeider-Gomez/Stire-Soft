@@ -160,11 +160,11 @@
         </NuxtLink>
 
         <NuxtLink
-          to="/admin/reportes"
+          to="/admin/sugerencias"
           class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin/reportes' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <MessageSquareWarning :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Reportes</span>
+          :class="route.path === '/admin/sugerencias' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <MessageSquarePlus :size="18" aria-hidden="true" class="shrink-0" />
+          <span>Sugerencias</span>
         </NuxtLink>
 
         <NuxtLink
@@ -181,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { FolderCode, House, MessageSquareWarning, Repeat, TrendingUp, Mail, Users, BookOpen, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
+import { FolderCode, House, MessageSquarePlus, Repeat, TrendingUp, Mail, Users, BookOpen, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { claseDeLaRuta } from '~/utils/pestanasClase'

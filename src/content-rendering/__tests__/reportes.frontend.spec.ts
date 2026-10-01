@@ -1,14 +1,16 @@
 import { readFileSync } from 'fs';
 import * as path from 'path';
 
-// «Reportar» y la bandeja del admin (docs/calidad/PRUEBA_DOS_SEMANAS.md).
+// «Sugerencias» y la bandeja del admin (docs/calidad/PRUEBA_DOS_SEMANAS.md). El dueño pidió no decir «reportar».
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
 const leer = (...partes: string[]) => readFileSync(path.join(raiz, ...partes), 'utf8');
 
-describe('Reportar desde cualquier pantalla', () => {
+describe('Sugerencias desde cualquier pantalla', () => {
   it('el botón está en el encabezado de todos los roles y anota sola la pantalla y el dispositivo', () => {
-    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutBotonReportar />');
-    const boton = leer('components', 'layout', 'BotonReportar.vue');
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutBotonSugerencias />');
+    const boton = leer('components', 'layout', 'BotonSugerencias.vue');
+    expect(boton).toContain('<span class="hidden lg:inline">Sugerencias</span>');
+    expect(boton).not.toMatch(/>\s*Reportar/);
     expect(boton).toContain('ruta: route.fullPath');
     expect(boton).toContain('classId: claseActual()');
     expect(boton).toContain('dispositivo: `${window.innerWidth}×${window.innerHeight} · ${navigator.userAgent}`');
@@ -16,10 +18,10 @@ describe('Reportar desde cualquier pantalla', () => {
     expect(boton).toContain("api.get('/reportes/mios')");
   });
 
-  it('el admin los ve en «Reportes», los marca y los descarga en CSV', () => {
-    expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('to="/admin/reportes"');
-    const bandeja = leer('pages', 'admin', 'reportes.vue');
+  it('el admin los ve en «Sugerencias», los marca y los descarga en CSV', () => {
+    expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('to="/admin/sugerencias"');
+    const bandeja = leer('pages', 'admin', 'sugerencias.vue');
     expect(bandeja).toContain('api.patch(`/reportes/${r.id}`, { estado: r.estado, nota: r.notaEditada })');
-    expect(bandeja).toContain("a.download = 'reportes-stire.csv'");
+    expect(bandeja).toContain("a.download = 'sugerencias-stire.csv'");
   });
 });

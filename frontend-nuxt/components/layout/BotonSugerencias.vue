@@ -1,15 +1,16 @@
 <template>
-  <!-- «Reportar» desde cualquier pantalla (docs/calidad/PRUEBA_DOS_SEMANAS.md): quien prueba deja el hallazgo donde lo
-       encuentra, y la app anota sola la pantalla y el dispositivo. -->
+  <!-- «Sugerencias» desde cualquier pantalla (docs/calidad/PRUEBA_DOS_SEMANAS.md): quien prueba deja lo que encontró
+       donde lo encontró, y la app anota sola la pantalla, el dispositivo y la clase. El dueño pidió «sugerencias» en vez
+       de «reportar», que suena negativo (01/10). En el código y la API siguen llamándose «reportes». -->
   <div>
     <button
       type="button"
       class="flex items-center gap-1.5 px-2 py-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors text-xs font-semibold min-h-[40px]"
-      aria-label="Reportar un problema o una idea"
+      aria-label="Enviar una sugerencia o contar un problema"
       @click="abrir"
     >
-      <MessageSquareWarning :size="18" aria-hidden="true" />
-      <span class="hidden lg:inline">Reportar</span>
+      <MessageSquarePlus :size="18" aria-hidden="true" />
+      <span class="hidden lg:inline">Sugerencias</span>
     </button>
 
     <Teleport to="body">
@@ -17,7 +18,7 @@
         <div role="dialog" aria-modal="true" aria-labelledby="reportar-titulo" class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-5 space-y-4 text-xs">
           <div class="flex items-center justify-between gap-3">
             <h2 id="reportar-titulo" class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
-              <MessageSquareWarning :size="16" class="text-acento-ambar-fuerte" aria-hidden="true" /> {{ viendoMios ? 'Mis reportes' : 'Reportar' }}
+              <MessageSquarePlus :size="16" class="text-acento-ambar-fuerte" aria-hidden="true" /> {{ viendoMios ? 'Mis sugerencias' : 'Sugerencias' }}
             </h2>
             <button type="button" class="p-1 text-base-texto-secundario hover:text-base-texto-primario" aria-label="Cerrar" @click="cerrar">
               <X :size="16" aria-hidden="true" />
@@ -26,7 +27,7 @@
 
           <template v-if="!viendoMios">
             <p v-if="enviado" role="status" class="rounded-md bg-semantico-pasa/10 text-semantico-pasa p-3 font-semibold">
-              ¡Gracias! Quedó registrado con la pantalla donde estabas.
+              ¡Gracias! Quedó guardado con la pantalla donde estabas. Con esto mejoramos STIRE.
             </p>
             <form v-else class="space-y-4" @submit.prevent="enviar">
               <fieldset>
@@ -57,12 +58,12 @@
                 </button>
               </div>
             </form>
-            <button type="button" class="text-acento-ambar-fuerte font-semibold hover:underline" @click="verMios">Ver lo que he reportado</button>
+            <button type="button" class="text-acento-ambar-fuerte font-semibold hover:underline" @click="verMios">Ver lo que he enviado</button>
           </template>
 
           <template v-else>
             <p v-if="cargandoMios" role="status" class="text-base-texto-secundario">Cargando…</p>
-            <p v-else-if="mios.length === 0" class="text-base-texto-secundario">Todavía no has reportado nada.</p>
+            <p v-else-if="mios.length === 0" class="text-base-texto-secundario">Todavía no has enviado nada.</p>
             <ul v-else class="space-y-2">
               <li v-for="r in mios" :key="r.id" class="rounded-md border border-base-borde-sutil p-2.5 space-y-1">
                 <p class="flex flex-wrap items-center gap-2">
@@ -74,7 +75,7 @@
                 <p v-if="r.nota" class="text-semantico-info">Respuesta: {{ r.nota }}</p>
               </li>
             </ul>
-            <button type="button" class="text-acento-ambar-fuerte font-semibold hover:underline" @click="viendoMios = false">Reportar otra cosa</button>
+            <button type="button" class="text-acento-ambar-fuerte font-semibold hover:underline" @click="viendoMios = false">Enviar otra</button>
           </template>
         </div>
       </div>
@@ -84,7 +85,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { MessageSquareWarning, X } from 'lucide-vue-next'
+import { MessageSquarePlus, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { fechaCorta } from '~/utils/entregas'
 import { claseDeLaRuta } from '~/utils/pestanasClase'

@@ -6,7 +6,7 @@ estado: plan vigente (01/10/2026). Reemplaza a GUIA_RONDA_1_EQUIPO.md, que era d
 
 **Decisión del dueño (01/10):** en vez de que todos hagan el mismo curso a la vez, el equipo se parte en dos grupos. Cada
 grupo empieza con un curso distinto y **en la segunda semana se cruzan**. Así cada semana hay resultados de los dos cursos
-(el doble de reportes) y cada persona termina habiendo probado los dos.
+(el doble de sugerencias) y cada persona termina habiendo probado los dos.
 
 Es un diseño **cruzado y contrabalanceado**: como la mitad empieza por cada curso, lo que cambia por *ya conocer la app*
 la segunda semana no se confunde con lo que cambia *por el curso*.
@@ -59,21 +59,21 @@ los avisos y el resumen de la semana.
 **En la semana 2**, fijarse además en lo que **cambia** de un curso a otro (más fácil, más difícil, más claro) y en si la
 segunda vez se sienten más cómodos con la app.
 
-## 4. Cómo reportar
+## 4. Cómo enviar sugerencias
 
-- **Con el botón «Reportar»** (arriba, en cualquier pantalla): elegir *Un problema*, *Algo confuso* o *Una idea*, decir
+- **Con el botón «Sugerencias»** (arriba, en cualquier pantalla): elegir *Un problema*, *Algo confuso* o *Una idea*, decir
   qué tanto afectó y contar qué pasó y qué esperaba. La app guarda sola la pantalla y el tamaño del dispositivo.
 - **Al final de cada semana**, cada persona responde tres preguntas (en el grupo o en un documento):
   1. ¿Qué fue lo más confuso?
   2. ¿Qué cambiarías primero?
   3. ¿Lo usarías para estudiar (estudiante) o para tu clase (docente)? De 1 a 5, y por qué.
 
-Jeider ve todos los reportes en **Administración → Reportes**, los marca (visto, resuelto, descartado) y deja una nota que
-quien reportó puede leer en «Ver lo que he reportado». El botón «Descargar CSV» los pasa a una tabla para el informe.
+Jeider ve todas las sugerencias en **Administración → Sugerencias**, los marca (visto, resuelto, descartado) y deja una nota que
+quien la envió puede leer en «Ver lo que he enviado». El botón «Descargar CSV» los pasa a una tabla para el informe.
 
 ## 5. Después de cada semana
 
-1. Descargar el CSV de reportes (dice quién, en qué **clase** y en qué pantalla, así se separan los dos cursos) y juntar las respuestas de las tres preguntas en `docs/calidad/PRUEBA_SEMANA_N_RESULTADOS.md`.
+1. Descargar el CSV de sugerencias (dice quién, en qué **clase** y en qué pantalla, así se separan los dos cursos) y juntar las respuestas de las tres preguntas en `docs/calidad/PRUEBA_SEMANA_N_RESULTADOS.md`.
 2. Lo de gravedad 3 («No me dejó seguir») se corrige antes de la semana siguiente.
 3. Lo que se repite entre personas pesa más que lo que dice una sola.
 
