@@ -70,9 +70,9 @@ const NOMBRE_NIVEL: Record<Difficulty, string> = {
 function mensajePara(motivo: MotivoRecomendacion, nivel: Difficulty): string {
   switch (motivo) {
     case 'repaso':
-      return 'Toca repasar esta unidad: aquí tienes un ejercicio parecido a los que ya resolviste.';
+      return 'Toca repasar esta lección: aquí tienes un ejercicio parecido a los que ya resolviste.';
     case 'reto':
-      return 'Dijiste que te sientes seguro: prueba este reto. Si lo resuelves al primer intento, puedes saltarte lo básico.';
+      return 'Un reto: si lo resuelves al primer intento, te saltas lo básico de esta lección.';
     case 'sube_nivel':
       return `Vas muy bien: pasemos al nivel ${NOMBRE_NIVEL[nivel]}.`;
     case 'baja_nivel':
@@ -82,11 +82,11 @@ function mensajePara(motivo: MotivoRecomendacion, nivel: Difficulty): string {
     case 'reintento':
       return 'Inténtalo de nuevo; si te atascas, pídele una pista al tutor.';
     case 'siguiente':
-      return 'Sigue con el siguiente ejercicio de la unidad.';
+      return 'Sigue con el siguiente ejercicio de la lección.';
     case 'practica_extra':
-      return 'Completaste la unidad. Si quieres, practica con este ejercicio que aún no has hecho.';
+      return 'Completaste la lección. Si quieres, practica con este ejercicio que aún no has hecho.';
     case 'completada':
-      return 'Completaste la unidad. Puedes seguir practicando.';
+      return 'Completaste la lección. Puedes seguir practicando.';
     case 'sin_intentos':
       return 'Usaste todos los intentos de los ejercicios que faltan. Pídele ayuda al tutor o a tu docente.';
   }

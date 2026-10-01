@@ -56,7 +56,7 @@ function buildMocks() {
   const activitiesRepo: any = {
     find: jest.fn(),
     // Preguntas de las actividades, progreso (confianza) y calendario de repasos se leen por el manager.
-    manager: { find: jest.fn().mockResolvedValue([]), findOne: jest.fn().mockResolvedValue(null) },
+    manager: { find: jest.fn().mockResolvedValue([]), findOne: jest.fn().mockResolvedValue(null), query: jest.fn().mockResolvedValue([]) },
   };
 
   return { progressRepo, submissionsRepo, activitiesRepo };
@@ -106,6 +106,36 @@ describe('LearningProgressService', () => {
 
       expect(result.mastery).toBe(0);
       expect(result.attemptsCount).toBe(1);
+    });
+
+    it('una entrega revisada que cuenta para el dominio es evidencia: su nota entra como una casilla más (§5)', async () => {
+      const activity = makeActivity({ id: 1, totalPoints: 100, passingScore: 60 });
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress({ attemptsCount: 3 }));
+      activitiesRepo.find.mockResolvedValue([activity]);
+      mockQueryBuilder([makeSubmission({ activityId: 1, score: 100 })]);
+      // Dos versiones revisadas de la misma entrega: cuenta la última (version DESC), 2,5 de 5.
+      activitiesRepo.manager.query.mockResolvedValue([
+        { entregaId: 7, dificultad: 'basico', nota: '2.5', revisadoAt: new Date() },
+        { entregaId: 7, dificultad: 'basico', nota: '5.0', revisadoAt: new Date() },
+      ]);
+
+      const result = await service.recalculateMastery(42, 10, null, 0, 0, false);
+
+      expect(result.mastery).toBe(75);
+      expect(result.attemptsCount).toBe(3);
+      expect(activitiesRepo.manager.query.mock.calls[0][1]).toEqual([10, 42]);
+    });
+
+    it('sin intentos, una entrega bien calificada ya marca la lección como trabajada', async () => {
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress());
+      activitiesRepo.find.mockResolvedValue([]);
+      activitiesRepo.manager.query.mockResolvedValue([{ entregaId: 3, dificultad: 'intermedio', nota: 4.5, revisadoAt: new Date() }]);
+
+      const result = await service.recalculateMastery(42, 10, null, 0, 0, false);
+
+      expect(result.mastery).toBe(90);
+      expect(result.status).toBe('dominado');
+      expect(result.attemptsCount).toBe(0);
     });
 
     it('mastery>0 y completedActivities=1 cuando hay 1 submission aprobada', async () => {

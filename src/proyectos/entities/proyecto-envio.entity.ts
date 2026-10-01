@@ -2,12 +2,13 @@ import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 
 import type { ArchivoProyecto, TipoProyecto } from '../proyecto-reglas';
 
 /**
- * Copia congelada de un proyecto enviada a una clase (docs/DISENO_PROYECTOS.md §3). No guarda una referencia fuerte al
+ * Copia congelada de un proyecto enviada a una entrega del docente (docs/DISENO_INTERVENCION_DOCENTE.md §3). No guarda una referencia fuerte al
  * proyecto: si el estudiante sigue editando o lo borra, la copia que recibió el docente no cambia.
  */
 @Entity('proyecto_envios')
 @Index(['classId'])
 @Index(['proyectoId', 'classId'])
+@Index(['entregaId', 'studentId'])
 export class ProyectoEnvio {
   @PrimaryGeneratedColumn('increment')
   id!: number;
@@ -21,7 +22,15 @@ export class ProyectoEnvio {
   @Column({ type: 'int' })
   classId!: number;
 
-  /** 1, 2, … por proyecto y clase (hasta VERSIONES_POR_CLASE). */
+  /** La entrega del docente a la que pertenece (docs/DISENO_INTERVENCION_DOCENTE.md §3). */
+  @Column({ type: 'int' })
+  entregaId!: number;
+
+  /** Llegó después del cierre de la entrega (si la entrega lo aceptaba). */
+  @Column({ default: false })
+  tarde!: boolean;
+
+  /** 1, 2, … por estudiante y entrega (hasta el máximo de la entrega más las reaperturas). */
   @Column({ type: 'int' })
   version!: number;
 

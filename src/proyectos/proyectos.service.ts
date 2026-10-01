@@ -12,6 +12,8 @@ import {
   ProyectoInvalidoError,
   validarArchivos,
   validarTitulo,
+  type ArchivoProyecto,
+  type TipoProyecto,
 } from './proyecto-reglas';
 import { Enrollment } from '../enrollment/entities/enrollment.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
@@ -75,12 +77,18 @@ export class ProyectosService {
     await this.exigirAcceso(user);
     const titulo = this.reglas(() => validarTitulo(datos.titulo));
     if (!esTipoProyecto(datos.tipo)) throw new BadRequestException('Elige el tipo de proyecto: página web o JavaScript.');
-    const tipo = datos.tipo;
+    return this.crearConArchivos(user, titulo, datos.tipo, null);
+  }
+
+  /** Crea un proyecto propio con estos archivos (el código inicial de una entrega) o con la plantilla del tipo. */
+  async crearConArchivos(user: User, tituloPedido: string, tipo: TipoProyecto, archivos: ArchivoProyecto[] | null): Promise<Proyecto> {
+    await this.exigirAcceso(user);
+    const titulo = this.reglas(() => validarTitulo(tituloPedido.slice(0, LIMITES_PROYECTOS.largoTitulo)));
     const cuantos = await this.proyectos.count({ where: { ownerId: user.id } });
     if (cuantos >= LIMITES_PROYECTOS.proyectosPorUsuario) {
       throw new BadRequestException(`Tienes ${LIMITES_PROYECTOS.proyectosPorUsuario} proyectos, el máximo. Descarga y borra alguno que ya no uses.`);
     }
-    return this.proyectos.save(this.proyectos.create({ ownerId: user.id, titulo, tipo, archivos: plantillaInicial(tipo, titulo) }));
+    return this.proyectos.save(this.proyectos.create({ ownerId: user.id, titulo, tipo, archivos: archivos ?? plantillaInicial(tipo, titulo) }));
   }
 
   /** Un proyecto ajeno responde 404, igual que uno que no existe: no se revela que existe. */

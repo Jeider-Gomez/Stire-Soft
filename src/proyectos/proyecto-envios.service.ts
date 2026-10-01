@@ -1,154 +1,115 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Repository } from 'typeorm';
 import { ProyectoEnvio } from './entities/proyecto-envio.entity';
-import { ProyectosService } from './proyectos.service';
-import { siguienteVersion, validarRevision, VERSIONES_POR_CLASE } from './envio-reglas';
+import { Entrega } from './entities/entrega.entity';
+import { EntregaEvento } from './entities/entrega-evento.entity';
+import { EntregasService } from './entregas.service';
+import { eventosDeRevision, validarRevision, type Revision } from './envio-reglas';
 import { ProyectoInvalidoError } from './proyecto-reglas';
 import { Class } from '../class/entities/class.entity';
-import { Enrollment } from '../enrollment/entities/enrollment.entity';
-import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User, UserRole } from '../user/entities/user.entity';
 
-/** Un envío sin los archivos: lo que muestran las listas. */
-export interface ResumenEnvio {
-  id: number;
-  proyectoId: number;
-  classId: number;
-  version: number;
-  titulo: string;
-  tipo: string;
-  nota: number | null;
-  comentario: string | null;
-  revisadoAt: Date | null;
-  createdAt: Date;
+/** Una entrega revisada que cuenta para el dominio: el progreso de esa lección se recalcula (learning-progress). */
+export class EntregaRevisadaEvent {
+  constructor(
+    public readonly studentId: number,
+    public readonly learningUnitId: number,
+  ) {}
 }
 
-const resumen = (e: ProyectoEnvio): ResumenEnvio => ({
-  id: e.id,
-  proyectoId: e.proyectoId,
-  classId: e.classId,
-  version: e.version,
-  titulo: e.titulo,
-  tipo: e.tipo,
-  nota: e.nota,
-  comentario: e.comentario,
-  revisadoAt: e.revisadoAt,
-  createdAt: e.createdAt,
-});
-
+/** Un envío (una versión de un estudiante en una entrega): verlo y revisarlo (docs/DISENO_INTERVENCION_DOCENTE.md §3.3). */
 @Injectable()
 export class ProyectoEnviosService {
   constructor(
     @InjectRepository(ProyectoEnvio) private readonly envios: Repository<ProyectoEnvio>,
-    @InjectRepository(Enrollment) private readonly matriculas: Repository<Enrollment>,
+    @InjectRepository(Entrega) private readonly entregas: Repository<Entrega>,
+    @InjectRepository(EntregaEvento) private readonly eventos: Repository<EntregaEvento>,
     @InjectRepository(Class) private readonly clases: Repository<Class>,
     @InjectRepository(User) private readonly usuarios: Repository<User>,
-    private readonly proyectos: ProyectosService,
+    private readonly entregasService: EntregasService,
     private readonly autorizacion: AuthorizationService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  /** Las clases del estudiante que reciben proyectos, y lo que ya envió de este proyecto (con nota y comentario). */
-  async delProyecto(user: User, proyectoId: number) {
-    const proyecto = await this.proyectos.obtener(user, proyectoId);
-    const suyas = await this.matriculas.find({ where: { studentId: user.id, status: EnrollmentStatus.ACTIVE }, relations: ['class'] });
-    const destinos = suyas
-      .map((m) => m.class)
-      .filter((c): c is Class => !!c && c.aceptaProyectos && c.isActive)
-      .map((c) => ({ classId: c.id, nombre: c.name }));
-    const nombres = new Map(suyas.filter((m) => m.class).map((m) => [m.class.id, m.class.name]));
-    const enviados = await this.envios.find({ where: { proyectoId: proyecto.id, studentId: user.id }, order: { createdAt: 'DESC' } });
-    return {
-      destinos,
-      versionesPorClase: VERSIONES_POR_CLASE,
-      envios: enviados.map((e) => ({ ...resumen(e), clase: nombres.get(e.classId) ?? 'Clase' })),
-    };
-  }
-
-  /** Guarda una copia congelada del proyecto tal como está ahora en el servidor. */
-  async enviar(user: User, datos: { proyectoId?: unknown; classId?: unknown }): Promise<ResumenEnvio> {
-    const proyectoId = Number(datos.proyectoId);
-    const classId = Number(datos.classId);
-    if (!Number.isInteger(proyectoId) || !Number.isInteger(classId)) throw new BadRequestException('Elige el proyecto y la clase.');
-    const proyecto = await this.proyectos.obtener(user, proyectoId);
-    const matricula = await this.matriculas.findOne({ where: { studentId: user.id, classId, status: EnrollmentStatus.ACTIVE }, relations: ['class'] });
-    if (!matricula?.class) throw new ForbiddenException('No estás matriculado en esa clase.');
-    if (!matricula.class.aceptaProyectos || !matricula.class.isActive) throw new ForbiddenException('Esa clase no está recibiendo proyectos.');
-    const anteriores = await this.envios.find({ where: { proyectoId: proyecto.id, classId, studentId: user.id } });
-    let version: number;
-    try {
-      version = siguienteVersion(anteriores, proyecto);
-    } catch (e) {
-      if (e instanceof ProyectoInvalidoError) throw new BadRequestException(e.message);
-      throw e;
-    }
-    const copia = await this.envios.save(
-      this.envios.create({
-        proyectoId: proyecto.id,
-        studentId: user.id,
-        classId,
-        version,
-        titulo: proyecto.titulo,
-        tipo: proyecto.tipo,
-        archivos: proyecto.archivos,
-        nota: null,
-        comentario: null,
-        revisadoAt: null,
-      }),
-    );
-    return resumen(copia);
-  }
-
-  /** Lo que recibió una clase: solo su docente (o un administrador). */
-  async deLaClase(user: User, classId: number) {
-    await this.autorizacion.assertTeacherOwnsClass(user, classId);
-    const clase = await this.clases.findOne({ where: { id: classId } });
-    const lista = await this.envios.find({ where: { classId }, order: { createdAt: 'DESC' } });
-    const ids = [...new Set(lista.map((e) => e.studentId))];
-    const estudiantes = ids.length ? await this.usuarios.find({ where: { id: In(ids) } }) : [];
-    const nombre = new Map(estudiantes.map((u) => [u.id, u.fullName || u.email]));
-    return {
-      aceptaProyectos: clase?.aceptaProyectos ?? false,
-      envios: lista.map((e) => ({ ...resumen(e), estudiante: nombre.get(e.studentId) ?? 'Estudiante' })),
-    };
-  }
-
-  /** Un envío con sus archivos: su autor, el docente de la clase o un administrador. A cualquier otro, 404. */
+  /**
+   * Un envío con sus archivos: su autor, el docente de la clase o un administrador; a cualquier otro, 404. Trae también
+   * las otras versiones del estudiante en esa entrega, el historial y, para el docente, el siguiente sin revisar.
+   */
   async obtener(user: User, id: number) {
     const envio = await this.envios.findOne({ where: { id } });
     if (!envio) throw new NotFoundException('Envío no encontrado.');
-    if (user.role === UserRole.ESTUDIANTE) {
-      if (envio.studentId !== user.id) throw new NotFoundException('Envío no encontrado.');
-    } else if (user.role !== UserRole.ADMIN) {
-      const clase = await this.clases.findOne({ where: { id: envio.classId } });
-      if (!clase || clase.teacherId !== user.id) throw new NotFoundException('Envío no encontrado.');
-    }
-    const estudiante = await this.usuarios.findOne({ where: { id: envio.studentId } });
     const clase = await this.clases.findOne({ where: { id: envio.classId } });
+    const esDocente = user.role === UserRole.ADMIN || (user.role === UserRole.DOCENTE && clase?.teacherId === user.id);
+    if (!esDocente && !(user.role === UserRole.ESTUDIANTE && envio.studentId === user.id)) throw new NotFoundException('Envío no encontrado.');
+
+    const entrega = await this.entregas.findOne({ where: { id: envio.entregaId } });
+    const estudiante = await this.usuarios.findOne({ where: { id: envio.studentId } });
+    const versiones = await this.envios.find({ where: { entregaId: envio.entregaId, studentId: envio.studentId }, order: { version: 'DESC' } });
+    const historial = await this.eventos.find({ where: { entregaId: envio.entregaId, studentId: envio.studentId }, order: { createdAt: 'DESC', id: 'DESC' } });
+
+    let siguienteSinRevisar: number | null = null;
+    if (esDocente) {
+      // La última versión de cada estudiante que aún no tiene revisión, sin contar a este estudiante.
+      const todas = await this.envios.find({ where: { entregaId: envio.entregaId }, order: { version: 'DESC' } });
+      const ultimas = new Map<number, ProyectoEnvio>();
+      for (const v of todas) if (!ultimas.has(v.studentId)) ultimas.set(v.studentId, v);
+      const pendiente = [...ultimas.values()].filter((v) => !v.revisadoAt && v.studentId !== envio.studentId).sort((a, b) => a.id - b.id)[0];
+      siguienteSinRevisar = pendiente?.id ?? null;
+    }
+
     return {
-      ...resumen(envio),
+      id: envio.id,
+      entregaId: envio.entregaId,
+      classId: envio.classId,
+      version: envio.version,
+      titulo: envio.titulo,
+      tipo: envio.tipo,
+      tarde: envio.tarde,
       archivos: envio.archivos,
+      nota: envio.nota,
+      comentario: envio.comentario,
+      revisadoAt: envio.revisadoAt,
+      createdAt: envio.createdAt,
       estudiante: estudiante?.fullName || estudiante?.email || 'Estudiante',
       clase: clase?.name ?? '',
+      entrega: entrega ? { id: entrega.id, titulo: entrega.titulo, conNota: entrega.conNota, maxVersiones: entrega.maxVersiones, cierraAt: entrega.cierraAt } : null,
+      versiones: versiones.map((v) => ({ id: v.id, version: v.version, createdAt: v.createdAt, tarde: v.tarde, revisadoAt: v.revisadoAt, nota: v.nota })),
+      historial: await this.entregasService.conNombres(historial),
+      siguienteSinRevisar,
     };
   }
 
-  /** El docente pone nota, comentario o ambos. Dejar los dos vacíos lo vuelve a «sin revisar». */
-  async revisar(user: User, id: number, datos: { nota?: unknown; comentario?: unknown }): Promise<ResumenEnvio> {
+  /**
+   * El docente pone comentario y, si la entrega lleva nota, nota. Dejar ambos vacíos lo vuelve a «sin revisar». Cada
+   * cambio queda en el historial con el valor anterior. Si la entrega cuenta para el dominio, se recalcula la lección.
+   */
+  async revisar(user: User, id: number, datos: { nota?: unknown; comentario?: unknown }) {
     const envio = await this.envios.findOne({ where: { id } });
     if (!envio) throw new NotFoundException('Envío no encontrado.');
     await this.autorizacion.assertTeacherOwnsClass(user, envio.classId);
-    let revision;
+    const entrega = await this.entregas.findOne({ where: { id: envio.entregaId } });
+    let revision: Revision;
     try {
-      revision = validarRevision(datos);
+      revision = validarRevision(datos, entrega?.conNota ?? true);
     } catch (e) {
       if (e instanceof ProyectoInvalidoError) throw new BadRequestException(e.message);
       throw e;
     }
+    const cambios = eventosDeRevision({ nota: envio.nota, comentario: envio.comentario, revisadoAt: envio.revisadoAt }, revision);
     envio.nota = revision.nota;
     envio.comentario = revision.comentario;
-    envio.revisadoAt = revision.nota === null && revision.comentario === null ? null : new Date();
-    return resumen(await this.envios.save(envio));
+    if (revision.nota === null && revision.comentario === null) envio.revisadoAt = null;
+    else if (cambios.length) envio.revisadoAt = new Date();
+    const guardado = await this.envios.save(envio);
+    for (const c of cambios) {
+      await this.eventos.save(this.eventos.create({ entregaId: envio.entregaId, studentId: envio.studentId, envioId: envio.id, tipo: c.tipo, detalle: c.detalle, actorId: user.id }));
+    }
+    if (cambios.length && entrega?.cuentaParaDominio && entrega.learningUnitId) {
+      this.eventEmitter.emit('entrega.revisada', new EntregaRevisadaEvent(envio.studentId, entrega.learningUnitId));
+    }
+    return { id: guardado.id, nota: guardado.nota, comentario: guardado.comentario, revisadoAt: guardado.revisadoAt };
   }
 }

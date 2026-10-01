@@ -53,7 +53,11 @@ export class LearningProgressService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async recalculateMastery(studentId: number, learningUnitId: number, lastActivityId: number, score: number, passingScore: number) {
+  /**
+   * Recalcula el dominio de la lección. `contarIntento` es false cuando el cambio no viene de un intento del estudiante
+   * sino de la revisión del docente en una entrega que cuenta para el dominio (docs/DISENO_INTERVENCION_DOCENTE.md §5).
+   */
+  async recalculateMastery(studentId: number, learningUnitId: number, lastActivityId: number | null, score: number, passingScore: number, contarIntento = true) {
     const progress = await this.progressRepo.findOrCreate(studentId, learningUnitId);
     const oldStatus = progress.status || LearningStatus.NO_VISTO;
     
@@ -76,13 +80,14 @@ export class LearningProgressService {
       submissions.map((s) => ({ activityId: s.activityId, score: s.score, calificado: true, fecha: new Date(s.submittedAt ?? s.createdAt ?? 0) })),
       esConfianza(progress.entryConfidence) ? progress.entryConfidence : null,
     );
-    progress.mastery = calculateUnitMastery(submissions, activities, saltadoHasta);
-    
-    progress.attemptsCount += 1;
+    const evidencias = await this.evidenciasDeEntregas(studentId, learningUnitId);
+    progress.mastery = calculateUnitMastery([...submissions, ...evidencias.intentos], [...activities, ...evidencias.actividades], saltadoHasta);
+
+    if (contarIntento) progress.attemptsCount += 1;
 
     // Transición automática del estado cognitivo del estudiante
     let newStatus = LearningStatus.NO_VISTO;
-    if (progress.attemptsCount > 0) {
+    if (progress.attemptsCount > 0 || progress.mastery > 0) {
       if (progress.mastery < 20) {
         newStatus = LearningStatus.EXPLORADO;
       } else if (progress.mastery < 60) {
@@ -114,7 +119,7 @@ export class LearningProgressService {
     ).length;
     progress.successRate = submissions.length > 0 ? (passed / submissions.length) * 100 : 0;
     
-    progress.lastActivityId = lastActivityId;
+    if (lastActivityId !== null) progress.lastActivityId = lastActivityId;
 
     const savedProgress = await this.progressRepo.save(progress);
 
@@ -251,6 +256,32 @@ export class LearningProgressService {
   }
 
   /** Actividades publicadas de la unidad con el tipo de su primera pregunta (define la casilla de hermanas). */
+  /**
+   * Entregas revisadas que cuentan para el dominio de la lección (docs/DISENO_INTERVENCION_DOCENTE.md §5): cada una es
+   * una casilla propia, con la nota de la última versión revisada (0,0 a 5,0). La nota del docente es evidencia, no un
+   * valor del dominio escrito a mano. Las entregas sin revisar no cuentan: no bajan el dominio de quien no ha entregado.
+   */
+  async evidenciasDeEntregas(studentId: number, learningUnitId: number): Promise<{ actividades: Parameters<typeof calculateUnitMastery>[1]; intentos: Parameters<typeof calculateUnitMastery>[0] }> {
+    const filas: Array<{ entregaId: number; dificultad: string; nota: string | number; revisadoAt: Date }> = await this.activitiesRepo.manager.query(
+      'SELECT e.id AS entregaId, e.dificultad AS dificultad, pe.nota AS nota, pe.revisadoAt AS revisadoAt ' +
+        'FROM entregas e JOIN proyecto_envios pe ON pe.entregaId = e.id ' +
+        'WHERE e.learningUnitId = ? AND e.cuentaParaDominio = 1 AND pe.studentId = ? AND pe.nota IS NOT NULL ' +
+        'ORDER BY pe.version DESC',
+      [learningUnitId, studentId],
+    );
+    const vistas = new Set<number>();
+    const actividades: Parameters<typeof calculateUnitMastery>[1] = [];
+    const intentos: Parameters<typeof calculateUnitMastery>[0] = [];
+    for (const f of filas) {
+      if (vistas.has(f.entregaId)) continue;
+      vistas.add(f.entregaId);
+      const id = -Number(f.entregaId);
+      actividades.push({ id, difficulty: f.dificultad, questionType: null, totalPoints: 5, passingScore: 60, adaptiveWeight: 1, activityType: { baseWeight: 1 } });
+      intentos.push({ activityId: id, score: Number(f.nota), isReview: false, submittedAt: f.revisadoAt });
+    }
+    return { actividades, intentos };
+  }
+
   private async cargarActividadesConTipo(learningUnitId: number): Promise<ActividadConTipo[]> {
     const activities = await this.activitiesRepo.find({
       where: { learningUnitId, status: PublicationStatus.PUBLISHED },
