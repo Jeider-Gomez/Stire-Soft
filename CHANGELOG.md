@@ -12,6 +12,25 @@ entry to the oldest.
 
 ---
 
+## El docente que interviene: camino, entregas y estadísticas · 30 de Septiembre de 2026
+
+Diseño y decisiones del dueño en `docs/DISENO_INTERVENCION_DOCENTE.md` (investigación de 11 plataformas y 16 artículos
+verificados en Crossref).
+
+- **Camino del estudiante** (en producción): módulo → tema → **lección**; «Tu siguiente paso» abre la lección si no la
+  ha empezado (antes saltaba la explicación); **avance honesto** «5 de 17 lecciones dominadas» en vez de «Dominio
+  100 %»; temas visibles cuando agrupan varias lecciones; sin la pregunta «¿Cómo te sientes?»: practicar es medir, y
+  «¿Ya lo sabes? Demuéstralo con un reto» usa el mismo reto de salto. Verificado en Chrome sobre la web real (12 de 13; el
+  fallo fue de la prueba: el texto en mayúsculas por CSS).
+- **Entregas** (reemplazan «recibir proyectos»): el docente crea el espacio en una lección o en la materia, con consigna,
+  fechas, máximo de versiones (3 por defecto, editable), nota opcional, asignación a estudiantes, borrador y «+1
+  versión». Historial con fecha, hora y autor de cada envío y cada cambio de revisión. Si cuenta para el dominio, la nota
+  revisada entra como evidencia de la lección.
+- **Estadísticas al estilo de Anki** en «Mi progreso» y en la ficha del estudiante: constancia (16 semanas), próximos
+  repasos (14 días), lecciones dominadas firmes (repaso a 21 días o más) y retención de los últimos 30 días.
+- **Pruebas:** 1042/1042 (104 suites). Migración 1790400000000 (entregas, entrega_eventos, proyecto_envios.entregaId y
+  tarde; quita classes.aceptaProyectos y borra los 2 envíos de prueba).
+
 ## Proyectos, fase 2: enviar al docente · 30 de Septiembre de 2026
 
 - El estudiante pulsa **«Enviar al docente»** en su editor y elige una clase: se guarda una **copia congelada** (título, tipo
