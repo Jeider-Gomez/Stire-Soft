@@ -51,7 +51,7 @@
           </div>
           <form v-if="agregando" novalidate @submit.prevent="agregarArchivo" class="flex items-center gap-2 px-3 py-2 border-b border-base-borde-sutil text-[11px]">
             <label for="nuevo-archivo" class="font-semibold">Nombre</label>
-            <input id="nuevo-archivo" ref="nuevoArchivoRef" v-model="nombreNuevo" :placeholder="proyecto.tipo === 'web' ? 'otra.css' : 'util.js'"
+            <input id="nuevo-archivo" ref="nuevoArchivoRef" v-model="nombreNuevo" :placeholder="({ web: 'otra.css', javascript: 'util.js', pseudocodigo: 'notas.txt' })[proyecto.tipo]"
               class="flex-1 px-2 py-1 rounded border border-base-borde-fuerte font-mono" />
             <button type="submit" class="px-2 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold">Agregar</button>
             <button type="button" @click="agregando = false" class="px-2 py-1 rounded borde-afordancia">Cancelar</button>
@@ -82,11 +82,12 @@ import { ArrowLeft, Check, Download, Loader2, Plus, Trash2 } from 'lucide-vue-ne
 import { useApi } from '~/composables/useApi'
 import { useTutorStore } from '~/stores/tutor'
 import { descargarHtml as bajarHtml, descargarZip as bajarZip } from '~/utils/descargaProyecto'
-import type { ArchivoProyecto } from '~/utils/proyectoNavegador'
+import { EXTENSIONES_PROYECTO, type ArchivoProyecto, type TipoProyecto } from '~/utils/proyectoNavegador'
+import { lenguajeDeArchivo } from '~/utils/entregas'
 
 definePageMeta({ layout: 'student' })
 
-interface Proyecto { id: number; titulo: string; tipo: 'web' | 'javascript'; archivos: ArchivoProyecto[] }
+interface Proyecto { id: number; titulo: string; tipo: TipoProyecto; archivos: ArchivoProyecto[] }
 
 const route = useRoute()
 const api = useApi()
@@ -110,10 +111,7 @@ const bytes = computed(() => new TextEncoder().encode(JSON.stringify(proyecto.va
 const kb = (n: number) => (n < 1024 ? 'menos de 1 KB' : `${Math.round(n / 1024)} KB`)
 const textoGuardado = computed(() => ({ guardado: 'Guardado', pendiente: 'Cambios sin guardar', guardando: 'Guardando…', error: 'No se pudo guardar' })[estadoGuardado.value])
 
-function lenguaje(nombre: string) {
-  const ext = nombre.split('.').pop()
-  return ext === 'html' ? 'html' : ext === 'css' ? 'css' : ext === 'js' ? 'javascript' : 'text'
-}
+const lenguaje = lenguajeDeArchivo
 
 onMounted(async () => {
   try {
@@ -170,7 +168,7 @@ onBeforeUnmount(() => {
 function agregarArchivo() {
   if (!proyecto.value) return
   const nombre = nombreNuevo.value.trim()
-  const permitidas = proyecto.value.tipo === 'web' ? ['html', 'css', 'js', 'txt'] : ['js', 'txt']
+  const permitidas = EXTENSIONES_PROYECTO[proyecto.value.tipo]
   const m = /^[A-Za-z0-9_-]{1,40}\.([a-z]{1,4})$/.exec(nombre)
   if (!m || !permitidas.includes(m[1]!)) { error.value = `Usa un nombre como «otro.${permitidas[0]}» (letras, números, - o _, y extensión ${permitidas.map((e) => '.' + e).join(', ')}).`; return }
   if (proyecto.value.archivos.some((a) => a.nombre.toLowerCase() === nombre.toLowerCase())) { error.value = `Ya hay un archivo «${nombre}».`; return }

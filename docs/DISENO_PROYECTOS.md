@@ -71,7 +71,11 @@ y las clases de prueba de Laura). Siempre disponible para probarlo; nadie más l
 3. **Tutor IA en Proyectos**, en modo guía. **✅ Hecha el 01/10:** el Tutor ve el proyecto abierto (título, tipo y todos sus
    archivos), pregunta qué quiere lograr el estudiante, señala dónde está un problema y propone el siguiente paso; no escribe
    el proyecto (un bloque de código largo en su respuesta se sustituye por un aviso). Respeta si el docente lo desactivó.
-4. **Pseudocódigo y diagramas de flujo** para el curso sin código.
+4. **Pseudocódigo y diagramas de flujo** para el curso sin código. **Pseudocódigo ✅ hecho el 01/10:** tipo de proyecto
+   «Pseudocódigo» (`algoritmo.psc`) con colores y «Ejecutar» en el navegador: se traduce un subconjunto de PSeInt a
+   JavaScript (`frontend-nuxt/utils/pseudocodigo.ts`) y los errores dicen la línea. También es un tipo de Entrega, con
+   código inicial. No se separaron los tipos por curso: cualquier estudiante elige (herramienta flexible).
+   **Diagramas de flujo: pendiente** (editor visual; es lo más trabajoso).
 
 ## 9. Decisiones del dueño (2026-09-30)
 

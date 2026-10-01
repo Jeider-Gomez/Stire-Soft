@@ -11,7 +11,8 @@
     </template>
     <template v-else>
       <div class="p-3 border-b border-base-borde-sutil space-y-2 text-xs">
-        <label for="proyecto-entrada" class="block font-semibold text-base-texto-primario">Entrada (la lee <code>leerEntrada()</code>)</label>
+        <label v-if="tipo === 'pseudocodigo'" for="proyecto-entrada" class="block font-semibold text-base-texto-primario">Entrada: un dato por línea (cada <code>Leer</code> toma la siguiente)</label>
+        <label v-else for="proyecto-entrada" class="block font-semibold text-base-texto-primario">Entrada (la lee <code>leerEntrada()</code>)</label>
         <textarea id="proyecto-entrada" v-model="entrada" rows="3" class="w-full px-2 py-1.5 rounded border border-base-borde-fuerte font-mono text-[11px]"></textarea>
         <button type="button" @click="ejecutar" :disabled="ejecutando"
           class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold inline-flex items-center gap-1.5 disabled:opacity-50">
@@ -20,7 +21,7 @@
         </button>
       </div>
       <div class="flex-1 bg-editor-bg text-editor-text font-mono text-[11px] p-3 overflow-y-auto" aria-live="polite" aria-label="Salida del programa">
-        <p v-if="!resultado" class="opacity-60">Pulsa «Ejecutar». El programa corre en este navegador, con un límite de 3 segundos.</p>
+        <p v-if="!resultado" class="opacity-60">Pulsa «Ejecutar». {{ tipo === 'pseudocodigo' ? 'El algoritmo' : 'El programa' }} corre en este navegador, con un límite de 3 segundos.</p>
         <template v-else>
           <p v-for="(l, i) in resultado.lineas" :key="i" class="whitespace-pre-wrap" :class="l.tipo === 'error' ? 'text-[#f87171]' : l.tipo === 'warn' ? 'text-[#fcd34d]' : ''">{{ l.texto }}</p>
           <p v-if="resultado.tiempoAgotado" class="text-[#f87171] mt-1">Se detuvo a los 3 segundos: revisa si hay un bucle que no termina.</p>
@@ -37,8 +38,9 @@
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Loader2, Play } from 'lucide-vue-next'
 import { documentoWeb, ejecutarEnNavegador, type ArchivoProyecto, type ResultadoEjecucion } from '~/utils/proyectoNavegador'
+import { traducirPseudocodigo } from '~/utils/pseudocodigo'
 
-const props = withDefaults(defineProps<{ tipo: 'web' | 'javascript'; archivos: ArchivoProyecto[]; tituloVista?: string }>(), {
+const props = withDefaults(defineProps<{ tipo: 'web' | 'javascript' | 'pseudocodigo'; archivos: ArchivoProyecto[]; tituloVista?: string }>(), {
   tituloVista: 'Vista previa de la página',
 })
 
@@ -72,6 +74,16 @@ function recibirConsola(e: MessageEvent) {
 
 async function ejecutar() {
   ejecutando.value = true
+  if (props.tipo === 'pseudocodigo') {
+    // El algoritmo (el primer .psc) se traduce a JavaScript; si algo no se entiende, se dice la línea sin ejecutar.
+    const algoritmo = props.archivos.find((a) => a.nombre.endsWith('.psc')) ?? props.archivos[0]
+    const t = traducirPseudocodigo(algoritmo?.contenido ?? '')
+    resultado.value = t.ok
+      ? await ejecutarEnNavegador(t.js, entrada.value)
+      : { lineas: [{ tipo: 'error', texto: `Línea ${t.error.linea}: ${t.error.mensaje}` }], tiempoAgotado: false, ms: 0 }
+    ejecutando.value = false
+    return
+  }
   // Todos los .js del proyecto, en orden: los demás archivos pueden definir funciones que usa main.js.
   const codigo = props.archivos.filter((a) => a.nombre.endsWith('.js')).map((a) => a.contenido).join('\n;\n')
   resultado.value = await ejecutarEnNavegador(codigo, entrada.value)

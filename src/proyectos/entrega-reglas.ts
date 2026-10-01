@@ -98,11 +98,11 @@ export function validarEntrega(entrada: Record<string, unknown>, actual?: DatosE
     const v = entrada.plantilla;
     if (v === null || (Array.isArray(v) && v.length === 0)) r.plantilla = null;
     else {
-      if (r.tipoProyecto === 'cualquiera') throw new ProyectoInvalidoError('El código inicial necesita un tipo de proyecto (página web o JavaScript).');
+      if (r.tipoProyecto === 'cualquiera') throw new ProyectoInvalidoError('El código inicial necesita un tipo de proyecto (página web, JavaScript o pseudocódigo).');
       r.plantilla = validarArchivos(r.tipoProyecto as TipoProyecto, v);
     }
   }
-  if (r.plantilla && r.tipoProyecto === 'cualquiera') throw new ProyectoInvalidoError('El código inicial necesita un tipo de proyecto (página web o JavaScript).');
+  if (r.plantilla && r.tipoProyecto === 'cualquiera') throw new ProyectoInvalidoError('El código inicial necesita un tipo de proyecto (página web, JavaScript o pseudocódigo).');
   if (tiene('abreAt')) r.abreAt = fecha(entrada.abreAt, 'apertura');
   if (tiene('cierraAt')) r.cierraAt = fecha(entrada.cierraAt, 'cierre');
   if (r.abreAt && r.cierraAt && r.cierraAt <= r.abreAt) throw new ProyectoInvalidoError('La entrega debe cerrar después de abrir.');

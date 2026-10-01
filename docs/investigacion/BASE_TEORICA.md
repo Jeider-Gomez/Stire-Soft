@@ -218,6 +218,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | El chat del Tutor en la página de un proyecto. |
 | **Trazabilidad** | `frontend-nuxt/stores/tutor.ts` (`proyectoAbierto`), `pages/estudiante/proyectos/[id].vue`; `src/tutor/tutor-context.service.ts` (sección de proyecto), `tutor.service.ts` (barrera también en proyectos); pruebas `tutor-proyectos.frontend.spec.ts`, `tutor.service.spec.ts`, `tutor-guidance.spec.ts`. |
 
+## BT-20. El pseudocódigo se ejecuta: el estudiante ve qué hace su algoritmo
+
+| | |
+|---|---|
+| **Problema observado** | El curso «Pensamiento algorítmico» enseña con pseudocódigo al estilo PSeInt, pero en STIRE el pseudocódigo solo aparecía en ejercicios de ordenar o completar. En Proyectos solo había páginas web y JavaScript: quien está en el curso sin tanto código no tenía dónde escribir sus propios algoritmos ni forma de comprobar si hacen lo que cree. |
+| **Decisión** | Un tipo de proyecto «Pseudocódigo»: un archivo `algoritmo.psc` con colores para las palabras clave, y «Ejecutar» con una Entrada en la que cada `Leer` toma la siguiente línea. El algoritmo se traduce a JavaScript y corre en el navegador con el mismo límite de 3 segundos que los programas. Si algo no se entiende, o una variable se usa sin valor, el error dice la línea y qué pasó, en palabras del estudiante. Es un subconjunto de PSeInt: lo que usa el curso (Leer, Escribir, `<-`, Si, Mientras, Repetir, Para, Segun, Definir, arreglos y funciones comunes). También sirve de tipo para las Entregas y su código inicial. |
+| **Fundamento** | - Una dificultad central al aprender a programar es no tener un modelo de la «máquina» que ejecuta el programa: qué hace cada instrucción y en qué orden (du Boulay, 1986). Ejecutar el algoritmo hace visible ese comportamiento.<br>- La retroalimentación informa sobre la tarea y el proceso (Hattie y Timperley, 2007, matriz #13; Shute, 2008): un error con su línea y su causa señala qué revisar sin dar la solución. |
+| **Cómo se materializa** | En «Mis proyectos», el tipo «Pseudocódigo»; en las Entregas, «Algoritmo en pseudocódigo». |
+| **Trazabilidad** | `frontend-nuxt/utils/pseudocodigo.ts` (traducción), `components/proyectos/ResultadoProyecto.vue` (Ejecutar), `components/CodeEditor.vue` (colores); `src/proyectos/proyecto-reglas.ts` (tipo `pseudocodigo`); pruebas `pseudocodigo.frontend.spec.ts`, `proyecto-reglas.spec.ts`, `proyectos-navegador.frontend.spec.ts`. |
+
 ---
 
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
@@ -242,6 +252,7 @@ trazabilidad (solo para el anexo técnico).
 - Bloom, B. S. (1984). The 2 Sigma Problem. *Educational Researcher, 13*(6), 4-16. — matriz #30
 - Butler, R. (1988). Enhancing and undermining intrinsic motivation: the effects of task-involving and ego-involving evaluation on interest and performance. *British Journal of Educational Psychology, 58*(1), 1-14. https://doi.org/10.1111/j.2044-8279.1988.tb00874.x
 - Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T. y Rohrer, D. (2006). Distributed practice in verbal recall tasks. *Psychological Bulletin, 132*(3), 354-380. — matriz #3
+- du Boulay, B. (1986). Some Difficulties of Learning to Program. *Journal of Educational Computing Research, 2*(1), 57-73. https://doi.org/10.2190/3lfx-9rrf-67t8-uvk9
 - Fuchs, D. y Fuchs, L. S. (2006). Introduction to response to intervention: What, why, and how valid is it? *Reading Research Quarterly, 41*(1). https://doi.org/10.1598/rrq.41.1.4
 - Guskey, T. R. (2007). Closing Achievement Gaps: Revisiting Benjamin S. Bloom's "Learning for Mastery". *Journal of Advanced Academics, 19*(1). https://doi.org/10.4219/jaa-2007-704
 - Heffernan, N. T. y Heffernan, C. L. (2014). The ASSISTments Ecosystem. *International Journal of Artificial Intelligence in Education, 24*(4). https://doi.org/10.1007/s40593-014-0024-x

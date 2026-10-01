@@ -31,7 +31,9 @@ export class TutorContextService {
       if (context.unitTitle) parts.push(`Unidad actual: "${context.unitTitle}" (ID: ${context.learningUnitId || 'N/A'})`);
       if (context.activityTitle) parts.push(`Actividad / Ejercicio actual: "${context.activityTitle}" (ID: ${context.activityId || 'N/A'})`);
       if (typeof context.proyectoTitulo === 'string' && context.proyectoTitulo.trim()) {
-        const tipo = context.proyectoTipo === 'web' ? 'una página web (HTML, CSS y JavaScript)' : 'un programa de JavaScript';
+        const tipo = context.proyectoTipo === 'web' ? 'una página web (HTML, CSS y JavaScript)'
+          : context.proyectoTipo === 'pseudocodigo' ? 'un algoritmo en pseudocódigo (estilo PSeInt: Leer, Escribir, <-, Si, Mientras, Para)'
+          : 'un programa de JavaScript';
         parts.push(`Proyecto propio abierto: «${context.proyectoTitulo.replace(/\s+/g, ' ').slice(0, 100)}», ${tipo}`);
       }
       if (context.currentCode && typeof context.currentCode === 'string' && context.currentCode.trim()) {

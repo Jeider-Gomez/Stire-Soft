@@ -2,6 +2,12 @@
 
 export interface ArchivoProyecto { nombre: string; contenido: string }
 
+/** Tipos de proyecto (src/proyectos/proyecto-reglas.ts). «pseudocodigo» es para el curso sin tanto código (fase 4). */
+export type TipoProyecto = 'web' | 'javascript' | 'pseudocodigo'
+export const TIPO_PROYECTO: Record<TipoProyecto, string> = { web: 'Página web', javascript: 'JavaScript', pseudocodigo: 'Pseudocódigo' }
+/** Extensiones que admite cada tipo, en el orden en que se sugieren. */
+export const EXTENSIONES_PROYECTO: Record<TipoProyecto, string[]> = { web: ['html', 'css', 'js', 'txt'], javascript: ['js', 'txt'], pseudocodigo: ['psc', 'txt'] }
+
 /**
  * Código que corre dentro de un Web Worker: no ve la página, y si se cuelga, se termina el Worker. `leerEntrada()` y
  * `require('fs').readFileSync(0)` devuelven la entrada (así el código de los ejercicios de programar funciona igual).

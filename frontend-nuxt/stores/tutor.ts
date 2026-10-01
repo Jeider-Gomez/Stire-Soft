@@ -40,7 +40,7 @@ export const useTutorStore = defineStore('tutor', () => {
    * El proyecto propio abierto (docs/DISENO_PROYECTOS.md, fase 3): la página del proyecto lo pone y lo quita. Con él, el
    * Tutor guía en el proyecto en vez de en un ejercicio.
    */
-  const proyectoAbierto = ref<{ titulo: string; tipo: 'web' | 'javascript'; archivos: Array<{ nombre: string; contenido: string }> } | null>(null)
+  const proyectoAbierto = ref<{ titulo: string; tipo: 'web' | 'javascript' | 'pseudocodigo'; archivos: Array<{ nombre: string; contenido: string }> } | null>(null)
   function setProyectoAbierto(p: typeof proyectoAbierto.value) {
     proyectoAbierto.value = p
   }
@@ -262,7 +262,7 @@ export const useTutorStore = defineStore('tutor', () => {
               proyectoTipo: proyectoAbierto.value.tipo,
               // Todos los archivos, cada uno con su nombre, para que el Tutor vea el proyecto completo.
               currentCode: proyectoAbierto.value.archivos.map((a) => `/* ${a.nombre} */\n${a.contenido}`).join('\n\n'),
-              codeLanguage: proyectoAbierto.value.tipo === 'web' ? 'html' : 'javascript',
+              codeLanguage: ({ web: 'html', javascript: 'javascript', pseudocodigo: 'text' } as const)[proyectoAbierto.value.tipo],
             }
           : {
           currentRoute: route.path,

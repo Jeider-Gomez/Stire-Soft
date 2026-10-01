@@ -104,12 +104,12 @@ import { ArrowLeft, ArrowRight, Download, History, Loader2, Save } from 'lucide-
 import { useApi } from '~/composables/useApi'
 import { descargarHtml, descargarZip } from '~/utils/descargaProyecto'
 import { fechaCorta, notaTexto, textoEvento, type EventoHistorial } from '~/utils/entregas'
-import type { ArchivoProyecto } from '~/utils/proyectoNavegador'
+import type { ArchivoProyecto, TipoProyecto } from '~/utils/proyectoNavegador'
 
 definePageMeta({ layout: 'teacher' })
 
 interface Envio {
-  id: number; entregaId: number; classId: number; version: number; titulo: string; tipo: 'web' | 'javascript'; tarde: boolean
+  id: number; entregaId: number; classId: number; version: number; titulo: string; tipo: TipoProyecto; tarde: boolean
   archivos: ArchivoProyecto[]; estudiante: string; clase: string; nota: number | null; comentario: string | null
   revisadoAt: string | null; createdAt: string
   entrega: { id: number; titulo: string; conNota: boolean; maxVersiones: number } | null

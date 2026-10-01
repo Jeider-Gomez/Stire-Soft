@@ -11,7 +11,8 @@ export const LIMITES_PROYECTOS = {
   largoTitulo: 100,
 } as const;
 
-export const TIPOS_PROYECTO = ['web', 'javascript'] as const;
+// «pseudocodigo» (fase 4): un algoritmo estilo PSeInt para el curso sin tanto código; se ejecuta en el navegador.
+export const TIPOS_PROYECTO = ['web', 'javascript', 'pseudocodigo'] as const;
 export type TipoProyecto = (typeof TIPOS_PROYECTO)[number];
 
 export interface ArchivoProyecto {
@@ -23,7 +24,10 @@ export interface ArchivoProyecto {
 const EXTENSIONES: Record<TipoProyecto, string[]> = {
   web: ['html', 'css', 'js', 'txt'],
   javascript: ['js', 'txt'],
+  pseudocodigo: ['psc', 'txt'],
 };
+
+const NOMBRE_TIPO: Record<TipoProyecto, string> = { web: 'web', javascript: 'de JavaScript', pseudocodigo: 'de pseudocódigo' };
 
 const NOMBRE = /^[A-Za-z0-9_-]{1,40}\.([a-z]{1,4})$/;
 
@@ -62,7 +66,7 @@ export function validarArchivos(tipo: TipoProyecto, entrada: unknown): ArchivoPr
       throw new ProyectoInvalidoError(`«${nombre}» no es un nombre válido: usa letras, números, guion o guion bajo y una extensión (index.html).`);
     }
     if (!EXTENSIONES[tipo].includes(m[1])) {
-      throw new ProyectoInvalidoError(`Un proyecto ${tipo === 'web' ? 'web' : 'de JavaScript'} admite archivos ${EXTENSIONES[tipo].map((e) => '.' + e).join(', ')}.`);
+      throw new ProyectoInvalidoError(`Un proyecto ${NOMBRE_TIPO[tipo]} admite archivos ${EXTENSIONES[tipo].map((e) => '.' + e).join(', ')}.`);
     }
     if (vistos.has(nombre.toLowerCase())) throw new ProyectoInvalidoError(`Hay dos archivos llamados «${nombre}».`);
     vistos.add(nombre.toLowerCase());
@@ -76,6 +80,13 @@ export function validarArchivos(tipo: TipoProyecto, entrada: unknown): ArchivoPr
 
 /** Archivos con los que arranca un proyecto nuevo. */
 export function plantillaInicial(tipo: TipoProyecto, titulo: string): ArchivoProyecto[] {
+  if (tipo === 'pseudocodigo') {
+    // El mismo ejemplo que propone la pantalla (frontend-nuxt/utils/pseudocodigo.ts, algoritmoDeEjemplo).
+    const nombre = titulo.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, ' ').trim().split(' ').filter(Boolean)
+      .map((p) => p[0].toUpperCase() + p.slice(1)).join('') || 'MiAlgoritmo';
+    const contenido = `Algoritmo ${/^\d/.test(nombre) ? 'A' + nombre : nombre}\n    // Cada Leer toma una línea de la Entrada.\n    Leer nombre\n    Escribir "Hola, ", nombre\nFinAlgoritmo\n`;
+    return [{ nombre: 'algoritmo.psc', contenido }];
+  }
   if (tipo === 'javascript') {
     return [{ nombre: 'main.js', contenido: `// ${titulo}\n// Lee la entrada con leerEntrada() y muestra resultados con console.log().\nconst entrada = leerEntrada();\nconsole.log('Hola, ' + (entrada || 'mundo'));\n` }];
   }

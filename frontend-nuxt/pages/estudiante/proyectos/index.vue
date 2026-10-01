@@ -29,10 +29,11 @@
             <input id="proyecto-titulo" v-model="nuevo.titulo" type="text" maxlength="100" placeholder="Mi calculadora"
               class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
           </div>
-          <fieldset class="flex gap-4">
+          <fieldset class="flex flex-wrap gap-x-4 gap-y-2">
             <legend class="sr-only">Tipo de proyecto</legend>
-            <label class="flex items-center gap-1.5 cursor-pointer"><input v-model="nuevo.tipo" type="radio" value="web" name="tipo-proyecto" class="accent-acento-ambar-fuerte" /> Página web</label>
-            <label class="flex items-center gap-1.5 cursor-pointer"><input v-model="nuevo.tipo" type="radio" value="javascript" name="tipo-proyecto" class="accent-acento-ambar-fuerte" /> JavaScript</label>
+            <label v-for="(texto, valor) in TIPO_PROYECTO" :key="valor" class="flex items-center gap-1.5 cursor-pointer min-h-[44px] sm:min-h-0">
+              <input v-model="nuevo.tipo" type="radio" :value="valor" name="tipo-proyecto" class="accent-acento-ambar-fuerte" /> {{ texto }}
+            </label>
           </fieldset>
           <button type="submit" :disabled="creando || proyectos.length >= estado.limites.proyectosPorUsuario"
             class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold disabled:opacity-50 inline-flex items-center gap-1.5">
@@ -57,11 +58,11 @@
             class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <NuxtLink :to="`/estudiante/proyectos/${p.id}`" class="min-w-0 group">
               <span class="font-bold text-sm text-base-texto-primario group-hover:underline flex items-center gap-1.5">
-                <Globe v-if="p.tipo === 'web'" :size="14" aria-hidden="true" /><Braces v-else :size="14" aria-hidden="true" />
+                <Globe v-if="p.tipo === 'web'" :size="14" aria-hidden="true" /><ListOrdered v-else-if="p.tipo === 'pseudocodigo'" :size="14" aria-hidden="true" /><Braces v-else :size="14" aria-hidden="true" />
                 {{ p.titulo }}
               </span>
               <span class="text-[11px] text-base-texto-secundario">
-                {{ p.tipo === 'web' ? 'Página web' : 'JavaScript' }} · {{ kb(p.bytes) }} · editado {{ fecha(p.updatedAt) }}
+                {{ TIPO_PROYECTO[p.tipo] }} · {{ kb(p.bytes) }} · editado {{ fecha(p.updatedAt) }}
               </span>
             </NuxtLink>
             <div class="flex items-center gap-2 shrink-0">
@@ -86,13 +87,14 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { Braces, FolderCode, Globe, Loader2, Plus, Trash2 } from 'lucide-vue-next'
+import { Braces, FolderCode, Globe, ListOrdered, Loader2, Plus, Trash2 } from 'lucide-vue-next'
+import { TIPO_PROYECTO, type TipoProyecto } from '~/utils/proyectoNavegador'
 import { useApi } from '~/composables/useApi'
 
 definePageMeta({ layout: 'student' })
 
 interface Estado { disponible: boolean; limites: { proyectosPorUsuario: number; archivosPorProyecto: number; bytesPorProyecto: number } }
-interface Resumen { id: number; titulo: string; tipo: 'web' | 'javascript'; bytes: number; updatedAt: string }
+interface Resumen { id: number; titulo: string; tipo: TipoProyecto; bytes: number; updatedAt: string }
 
 const api = useApi()
 const { messageOf } = useApiErrorMessage()
@@ -100,7 +102,7 @@ const estado = ref<Estado | null>(null)
 const proyectos = ref<Resumen[]>([])
 const cargando = ref(true)
 const error = ref<string | null>(null)
-const nuevo = reactive({ titulo: '', tipo: 'web' as 'web' | 'javascript' })
+const nuevo = reactive({ titulo: '', tipo: 'web' as TipoProyecto })
 const creando = ref(false)
 const errorCrear = ref<string | null>(null)
 const porBorrar = ref<number | null>(null)

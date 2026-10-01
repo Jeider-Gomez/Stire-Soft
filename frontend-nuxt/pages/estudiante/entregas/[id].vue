@@ -91,6 +91,7 @@ import { computed, onMounted, ref } from 'vue'
 import { ArrowLeft, Download, FolderPlus, History, Loader2, Send } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { formatMarkdown } from '~/utils/formatMarkdown'
+import type { TipoProyecto } from '~/utils/proyectoNavegador'
 import { descargarZip } from '~/utils/descargaProyecto'
 import { TIPO_ENTREGA, fechaCorta, notaTexto, textoEvento, type EventoHistorial, type TipoEntrega } from '~/utils/entregas'
 import type { ArchivoProyecto } from '~/utils/proyectoNavegador'
@@ -103,7 +104,7 @@ interface Entrega {
   abreAt: string | null; cierraAt: string | null; aceptaTarde: boolean; conNota: boolean; limite: number
   versiones: Version[]; historial: EventoHistorial[]
 }
-interface Proyecto { id: number; titulo: string; tipo: 'web' | 'javascript'; updatedAt: string }
+interface Proyecto { id: number; titulo: string; tipo: TipoProyecto; updatedAt: string }
 
 const route = useRoute()
 const api = useApi()

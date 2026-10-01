@@ -1,8 +1,10 @@
 // Entregas (docs/DISENO_INTERVENCION_DOCENTE.md §3 y §10): textos y formatos compartidos por las pantallas del docente
 // y del estudiante.
+import { algoritmoDeEjemplo } from '~/utils/pseudocodigo'
 
 export type EstadoEntrega = 'sin_entregar' | 'por_revisar' | 'revisada'
-export type TipoEntrega = 'web' | 'javascript' | 'cualquiera'
+
+export type TipoEntrega = 'web' | 'javascript' | 'pseudocodigo' | 'cualquiera'
 
 /** Un archivo de un proyecto o del código inicial de una entrega. */
 export interface ArchivoCodigo { nombre: string; contenido: string }
@@ -20,7 +22,8 @@ export interface EntregaEditable {
  * Punto de partida del código inicial, el mismo que crea el servidor para un proyecto nuevo
  * (src/proyectos/proyecto-reglas.ts, plantillaInicial). El docente lo cambia a su gusto.
  */
-export function codigoInicialPorDefecto(tipo: 'web' | 'javascript'): ArchivoCodigo[] {
+export function codigoInicialPorDefecto(tipo: 'web' | 'javascript' | 'pseudocodigo'): ArchivoCodigo[] {
+  if (tipo === 'pseudocodigo') return [{ nombre: 'algoritmo.psc', contenido: algoritmoDeEjemplo() }]
   if (tipo === 'javascript') {
     return [{ nombre: 'main.js', contenido: '// Lee la entrada con leerEntrada() y muestra resultados con console.log().\nconst entrada = leerEntrada();\nconsole.log(entrada);\n' }]
   }
@@ -32,9 +35,9 @@ export function codigoInicialPorDefecto(tipo: 'web' | 'javascript'): ArchivoCodi
 }
 
 /** Lenguaje del editor según la extensión del archivo. */
-export function lenguajeDeArchivo(nombre: string): 'html' | 'css' | 'javascript' | 'text' {
+export function lenguajeDeArchivo(nombre: string): 'html' | 'css' | 'javascript' | 'pseudocodigo' | 'text' {
   const ext = nombre.split('.').pop()?.toLowerCase()
-  return ext === 'html' ? 'html' : ext === 'css' ? 'css' : ext === 'js' ? 'javascript' : 'text'
+  return ext === 'html' ? 'html' : ext === 'css' ? 'css' : ext === 'js' ? 'javascript' : ext === 'psc' ? 'pseudocodigo' : 'text'
 }
 
 export const ESTADO_ENTREGA: Record<EstadoEntrega, string> = {
@@ -47,6 +50,7 @@ export const TIPO_ENTREGA: Record<TipoEntrega, string> = {
   cualquiera: 'Cualquier proyecto',
   web: 'Página web',
   javascript: 'Programa de JavaScript',
+  pseudocodigo: 'Algoritmo en pseudocódigo',
 }
 
 /** «30 sept, 19:35» */

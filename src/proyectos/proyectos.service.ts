@@ -76,7 +76,7 @@ export class ProyectosService {
   async crear(user: User, datos: { titulo?: unknown; tipo?: unknown }): Promise<Proyecto> {
     await this.exigirAcceso(user);
     const titulo = this.reglas(() => validarTitulo(datos.titulo));
-    if (!esTipoProyecto(datos.tipo)) throw new BadRequestException('Elige el tipo de proyecto: página web o JavaScript.');
+    if (!esTipoProyecto(datos.tipo)) throw new BadRequestException('Elige el tipo de proyecto: página web, JavaScript o pseudocódigo.');
     return this.crearConArchivos(user, titulo, datos.tipo, null);
   }
 

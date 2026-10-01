@@ -38,6 +38,13 @@ describe('Proyectos: reglas (docs/DISENO_PROYECTOS.md §4)', () => {
     expect(validarArchivos('javascript', plantillaInicial('javascript', 'X'))).toHaveLength(1);
   });
 
+  it('un proyecto de pseudocódigo arranca con algoritmo.psc y solo admite .psc y .txt', () => {
+    const psc = plantillaInicial('pseudocodigo', 'Mi primer algoritmo');
+    expect(validarArchivos('pseudocodigo', psc)).toEqual([{ nombre: 'algoritmo.psc', contenido: expect.stringMatching(/^Algoritmo MiPrimerAlgoritmo\n[\s\S]*FinAlgoritmo\n$/) }]);
+    expect(plantillaInicial('pseudocodigo', '2 números')[0].contenido).toMatch(/^Algoritmo A2Numeros\n/);
+    expect(() => validarArchivos('pseudocodigo', [{ nombre: 'main.js', contenido: '' }])).toThrow('Un proyecto de pseudocódigo admite archivos .psc, .txt');
+  });
+
   describe('acceso en fase de prueba', () => {
     const base = { clasesPiloto: 'ALGO-203413-G2, SIM-6V738W' };
     it('en piloto: estudiante de una clase piloto sí; de otra clase no; docente y admin siempre', () => {

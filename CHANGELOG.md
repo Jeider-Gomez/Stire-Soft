@@ -41,6 +41,11 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
   pendiente con quien lleva 7 días o más sin practicar, con «Escribirles» (BT-17).
 - **Tutor en Proyectos (fase 3):** en «Mis proyectos» el Tutor ve el proyecto abierto y guía (pregunta, señala el
   problema, propone el siguiente paso) sin escribirlo; el código largo en su respuesta se omite (BT-19).
+- **Pseudocódigo en Proyectos (fase 4, primera parte):** un tipo de proyecto «Pseudocódigo» para el curso sin tanto
+  código, con colores y «Ejecutar»: el algoritmo estilo PSeInt (Leer, Escribir, `<-`, Si, Mientras, Repetir, Para,
+  Segun, Definir, arreglos) se traduce a JavaScript y corre en el navegador; cada `Leer` toma una línea de la Entrada y
+  los errores dicen la línea. También es tipo de Entrega, con código inicial. Sin migración (BT-20). Los diagramas de
+  flujo quedan pendientes. Pruebas: 1166/1166 (117 suites).
 - **Código inicial en las entregas:** el docente da un punto de partida (una página a medio hacer, un programa con la
   estructura lista) con el editor de código; cada estudiante recibe su copia con «Empezar desde la plantilla».
 - **«Sugerencias» desde cualquier pantalla** (antes «Reportar»; el dueño pidió un nombre sin carga negativa): problema,

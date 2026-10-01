@@ -7,7 +7,9 @@ function cargar<T>(archivo: string): T {
   const file = path.join(__dirname, '..', '..', '..', 'frontend-nuxt', 'utils', archivo);
   const js = ts.transpileModule(readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
   const mod = { exports: {} as Record<string, unknown> };
-  new Function('module', 'exports', js)(mod, mod.exports);
+  // Un util puede importar otro (`~/utils/pseudocodigo`): se carga igual, con el mismo transpilado.
+  const requerir = (ruta: string) => cargar(ruta.replace(/^~\/utils\//, '') + '.ts');
+  new Function('module', 'exports', 'require', js)(mod, mod.exports, requerir);
   return mod.exports as T;
 }
 
@@ -119,9 +121,7 @@ describe('Entregas (docs/DISENO_INTERVENCION_DOCENTE.md §3)', () => {
 
 describe('Historial de una entrega en palabras', () => {
   const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
-  const js = ts.transpileModule(readFileSync(path.join(raiz, 'utils', 'entregas.ts'), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
-  const mod = { exports: {} as Record<string, unknown> };
-  new Function('module', 'exports', js)(mod, mod.exports);
+  const mod = { exports: cargar<Record<string, unknown>>('entregas.ts') };
   const { textoEvento, notaTexto } = mod.exports as { textoEvento: (e: { tipo: string; detalle: Record<string, unknown> | null }) => string; notaTexto: (n: number | null) => string };
 
   it('cada evento se lee como una frase, con la nota en coma decimal', () => {
@@ -135,9 +135,7 @@ describe('Historial de una entrega en palabras', () => {
 
 describe('Código inicial de una entrega', () => {
   const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
-  const js = ts.transpileModule(readFileSync(path.join(raiz, 'utils', 'entregas.ts'), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
-  const mod = { exports: {} as Record<string, unknown> };
-  new Function('module', 'exports', js)(mod, mod.exports);
+  const mod = { exports: cargar<Record<string, unknown>>('entregas.ts') };
   const { codigoInicialPorDefecto, lenguajeDeArchivo } = mod.exports as {
     codigoInicialPorDefecto: (t: string) => Array<{ nombre: string; contenido: string }>;
     lenguajeDeArchivo: (n: string) => string;
@@ -148,6 +146,9 @@ describe('Código inicial de una entrega', () => {
     expect(codigoInicialPorDefecto('javascript').map((a) => a.nombre)).toEqual(['main.js']);
     expect(codigoInicialPorDefecto('javascript')[0].contenido).toContain('leerEntrada()');
     expect(['index.html', 'estilos.css', 'script.js', 'notas.txt'].map(lenguajeDeArchivo)).toEqual(['html', 'css', 'javascript', 'text']);
+    // Pseudocódigo (fase 4): un algoritmo.psc con el ejemplo, en el editor con colores de pseudocódigo.
+    expect(codigoInicialPorDefecto('pseudocodigo')).toEqual([{ nombre: 'algoritmo.psc', contenido: expect.stringMatching(/^Algoritmo MiAlgoritmo\n/) }]);
+    expect(lenguajeDeArchivo('algoritmo.psc')).toBe('pseudocodigo');
   });
 
   it('el docente lo activa en el formulario (solo web o JavaScript) y se manda como plantilla; sin activarlo va null', () => {

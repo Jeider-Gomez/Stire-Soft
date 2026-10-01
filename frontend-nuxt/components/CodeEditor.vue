@@ -94,6 +94,38 @@ async function loadLanguageExtension(lang: string): Promise<Extension> {
       const { sql } = await import('@codemirror/lang-sql')
       return sql()
     }
+    case 'pseudocodigo': {
+      // Pseudocódigo estilo PSeInt (Proyectos, fase 4): colores para palabras clave, textos, números y comentarios.
+      const [{ StreamLanguage }, { PALABRAS_CLAVE, OPERADORES_PALABRA, NOMBRES_FUNCIONES }] = await Promise.all([
+        import('@codemirror/language'),
+        import('~/utils/pseudocodigo'),
+      ])
+      const sinTildes = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+      const claves = new Set<string>(PALABRAS_CLAVE)
+      const operadores = new Set<string>(OPERADORES_PALABRA)
+      const funciones = new Set<string>(NOMBRES_FUNCIONES)
+      return StreamLanguage.define<null>({
+        name: 'pseudocodigo',
+        token(stream) {
+          if (stream.eatSpace()) return null
+          if (stream.match('//')) { stream.skipToEnd(); return 'comment' }
+          if (stream.match(/^"[^"]*"?/) || stream.match(/^'[^']*'?/)) return 'string'
+          if (stream.match(/^\d+(\.\d+)?/)) return 'number'
+          const palabra = stream.match(/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü_][A-Za-z0-9ÁÉÍÓÚáéíóúÑñÜü_]*/)
+          if (palabra && typeof palabra !== 'boolean') {
+            const c = sinTildes(palabra[0])
+            if (c === 'verdadero' || c === 'falso') return 'atom'
+            if (claves.has(c)) return 'keyword'
+            if (operadores.has(c)) return 'operator'
+            if (funciones.has(c)) return 'builtin'
+            return 'variableName'
+          }
+          if (stream.match('<-') || stream.match('←')) return 'operator'
+          stream.next()
+          return null
+        },
+      })
+    }
     case 'text':
     default:
       return []
