@@ -1,8 +1,9 @@
 /**
- * Formas de calificar (docs/DISENO_INTERVENCION_DOCENTE.md §6; BASE_TEORICA.md BT-14). El docente define un esquema
- * opcional para su clase («Práctica 40 %, Entregas 30 %, Parcial 30 %»), STIRE propone una nota por estudiante con su
- * desglose y el docente la ajusta con un motivo que queda en el historial. Escala de 0,0 a 5,0. Funciones puras: el
- * servicio las aplica.
+ * Formas de calificar (docs/DISENO_INTERVENCION_DOCENTE.md §6; BASE_TEORICA.md BT-14). Todo es OPCIONAL y lo arma el
+ * docente a su manera (decisión del dueño, 01/10: «una herramienta flexible que ayuda al profe, no que lo limita»):
+ * una sola nota que pone él, una nota por módulo, práctica + entregas + parcial, con porcentajes o sin ellos. STIRE
+ * calcula lo que puede (dominio, entregas), propone la final con su desglose y el docente la ajusta con un motivo que
+ * queda en el historial. Escala de 0,0 a 5,0. Funciones puras: el servicio las aplica.
  */
 
 export class CalificacionInvalidaError extends Error {}
@@ -19,7 +20,7 @@ export interface Componente {
   clave: string;
   nombre: string;
   tipo: TipoComponente;
-  /** Porcentaje entero; los del esquema suman 100. */
+  /** Porcentaje entero; con `usarPesos` los del esquema suman 100. Sin porcentajes es 0 y todos pesan igual. */
   peso: number;
   /** Solo `dominio`: lecciones que cuentan; null = todas las de módulos publicados. */
   lecciones: number[] | null;
@@ -29,6 +30,8 @@ export interface Componente {
 
 export interface Esquema {
   componentes: Componente[];
+  /** Con porcentajes (suman 100) o sin ellos: la final es el promedio simple de lo que tiene nota. */
+  usarPesos: boolean;
   notaAprobatoria: number;
   visibleParaEstudiantes: boolean;
 }
@@ -46,18 +49,6 @@ export const LIMITES_CALIFICACION = {
   notaAprobatoriaPorDefecto: 3,
 } as const;
 
-/** Lo que STIRE propone cuando la clase aún no tiene esquema; el docente lo cambia antes de guardar. */
-export function esquemaSugerido(): Esquema {
-  return {
-    componentes: [
-      { clave: 'practica', nombre: 'Práctica (dominio de las lecciones)', tipo: 'dominio', peso: 40, lecciones: null, entregas: null },
-      { clave: 'entregas', nombre: 'Entregas', tipo: 'entregas', peso: 30, lecciones: null, entregas: null },
-      { clave: 'parcial', nombre: 'Parcial', tipo: 'manual', peso: 30, lecciones: null, entregas: null },
-    ],
-    notaAprobatoria: LIMITES_CALIFICACION.notaAprobatoriaPorDefecto,
-    visibleParaEstudiantes: false,
-  };
-}
 
 /** Una cifra decimal, redondeando la mitad hacia arriba (4,25 → 4,3). */
 export function redondear(n: number): number {
@@ -93,6 +84,9 @@ export function validarEsquema(entrada: Record<string, unknown>): Esquema {
     throw new CalificacionInvalidaError(`Máximo ${LIMITES_CALIFICACION.componentesMaximos} componentes.`);
   }
 
+  if (entrada.usarPesos !== undefined && typeof entrada.usarPesos !== 'boolean') throw new CalificacionInvalidaError('«Usar porcentajes» debe ser sí o no.');
+  const usarPesos = entrada.usarPesos !== false;
+
   const usadas = new Set<string>();
   const componentes: Componente[] = crudos.map((c: unknown, i: number) => {
     if (typeof c !== 'object' || c === null) throw new CalificacionInvalidaError(`El componente ${i + 1} no es válido.`);
@@ -102,8 +96,8 @@ export function validarEsquema(entrada: Record<string, unknown>): Esquema {
     if (nombre.length > LIMITES_CALIFICACION.largoNombre) throw new CalificacionInvalidaError(`El nombre «${nombre.slice(0, 20)}…» es muy largo.`);
     const tipo = d.tipo as TipoComponente;
     if (!(TIPOS_COMPONENTE as readonly string[]).includes(tipo)) throw new CalificacionInvalidaError(`El tipo de «${nombre}» no es válido.`);
-    const peso = Number(d.peso);
-    if (!Number.isInteger(peso) || peso < 1 || peso > 100) throw new CalificacionInvalidaError(`El peso de «${nombre}» es un porcentaje entero de 1 a 100.`);
+    const peso = usarPesos ? Number(d.peso) : 0;
+    if (usarPesos && (!Number.isInteger(peso) || peso < 1 || peso > 100)) throw new CalificacionInvalidaError(`El peso de «${nombre}» es un porcentaje entero de 1 a 100.`);
 
     // La clave se conserva entre ediciones (las notas manuales se guardan con ella); si no viene, se crea una.
     let clave = typeof d.clave === 'string' && CLAVE_VALIDA.test(d.clave) && d.clave !== CLAVE_FINAL ? d.clave : '';
@@ -122,7 +116,7 @@ export function validarEsquema(entrada: Record<string, unknown>): Esquema {
   });
 
   const suma = componentes.reduce((s, c) => s + c.peso, 0);
-  if (suma !== 100) throw new CalificacionInvalidaError(`Los pesos suman ${suma} %; deben sumar 100 %.`);
+  if (usarPesos && suma !== 100) throw new CalificacionInvalidaError(`Los pesos suman ${suma} %; deben sumar 100 %, o quita los porcentajes.`);
 
   const aprobatoria = entrada.notaAprobatoria === undefined ? LIMITES_CALIFICACION.notaAprobatoriaPorDefecto : validarNota(entrada.notaAprobatoria);
   if (aprobatoria === null) throw new CalificacionInvalidaError('Indica la nota aprobatoria.');
@@ -130,7 +124,7 @@ export function validarEsquema(entrada: Record<string, unknown>): Esquema {
     throw new CalificacionInvalidaError('«Visible para los estudiantes» debe ser sí o no.');
   }
 
-  return { componentes, notaAprobatoria: aprobatoria, visibleParaEstudiantes: entrada.visibleParaEstudiantes === true };
+  return { componentes, usarPesos, notaAprobatoria: aprobatoria, visibleParaEstudiantes: entrada.visibleParaEstudiantes === true };
 }
 
 /** Motivo del ajuste de la nota final: obligatorio al poner una nota, para que el historial diga por qué. */
@@ -224,10 +218,16 @@ function notaManual(c: Componente, e: EntradaLibro, studentId: number): NotaComp
   return r ? { nota: r.nota, detalle: r.motivo ?? 'Nota del docente' } : { nota: null, detalle: 'Sin nota' };
 }
 
-/** Promedio ponderado con lo que ya tiene nota; los pesos se reparten entre esos componentes. */
-export function notaPropuesta(componentes: Componente[], notas: Record<string, NotaComponente>): { propuesta: number | null; faltan: string[] } {
+/**
+ * Con lo que ya tiene nota: promedio ponderado (los pesos se reparten entre esos componentes) o, sin porcentajes,
+ * promedio simple.
+ */
+export function notaPropuesta(componentes: Componente[], notas: Record<string, NotaComponente>, usarPesos = true): { propuesta: number | null; faltan: string[] } {
   const conNota = componentes.filter((c) => notas[c.clave]?.nota !== null && notas[c.clave]?.nota !== undefined);
   const faltan = componentes.filter((c) => !conNota.includes(c)).map((c) => c.nombre);
+  if (!usarPesos) {
+    return { propuesta: conNota.length ? redondear(conNota.reduce((s, c) => s + (notas[c.clave].nota as number), 0) / conNota.length) : null, faltan };
+  }
   const peso = conNota.reduce((s, c) => s + c.peso, 0);
   if (peso === 0) return { propuesta: null, faltan };
   return { propuesta: redondear(conNota.reduce((s, c) => s + c.peso * (notas[c.clave].nota as number), 0) / peso), faltan };
@@ -239,7 +239,7 @@ export function construirLibro(e: EntradaLibro): { filas: FilaLibro[]; resumen: 
     for (const c of e.esquema.componentes) {
       componentes[c.clave] = c.tipo === 'dominio' ? notaDominio(c, e, est.id) : c.tipo === 'entregas' ? notaEntregas(c, e, est.id) : notaManual(c, e, est.id);
     }
-    const { propuesta, faltan } = notaPropuesta(e.esquema.componentes, componentes);
+    const { propuesta, faltan } = notaPropuesta(e.esquema.componentes, componentes, e.esquema.usarPesos);
     const r = e.registradas.find((x) => x.studentId === est.id && x.clave === CLAVE_FINAL);
     const ajuste = r ? { nota: r.nota, motivo: r.motivo, fecha: r.updatedAt } : null;
     const final = ajuste ? ajuste.nota : propuesta;

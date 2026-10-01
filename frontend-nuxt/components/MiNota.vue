@@ -10,7 +10,7 @@
     </div>
     <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
       <li v-for="c in datos.componentes" :key="c.clave" class="rounded-lg border border-base-borde-sutil p-3">
-        <p class="font-semibold text-base-texto-primario">{{ c.nombre }} <span class="font-normal text-base-texto-secundario">· {{ c.peso }} %</span></p>
+        <p class="font-semibold text-base-texto-primario">{{ c.nombre }} <span v-if="datos.usarPesos" class="font-normal text-base-texto-secundario">· {{ c.peso }} %</span></p>
         <p class="text-lg font-bold mt-1" :class="c.nota === null ? 'text-base-texto-secundario' : 'text-base-texto-primario'">{{ c.nota === null ? 'Sin nota todavía' : notaComa(c.nota) }}</p>
         <p class="text-[11px] text-base-texto-secundario">{{ c.tipo === 'manual' ? (c.nota === null ? 'La pone tu docente.' : 'Puesta por tu docente.') : c.detalle }}</p>
       </li>
@@ -34,7 +34,7 @@ const props = defineProps<{ classId: number | null | undefined }>()
 type MiNota =
   | { visible: false }
   | {
-      visible: true; notaAprobatoria: number; propuesta: number | null; faltan: string[]; ajustada: boolean; final: number | null; aprueba: boolean | null
+      visible: true; notaAprobatoria: number; usarPesos: boolean; propuesta: number | null; faltan: string[]; ajustada: boolean; final: number | null; aprueba: boolean | null
       componentes: Array<{ clave: string; nombre: string; tipo: TipoComponente; peso: number; nota: number | null; detalle: string }>
     }
 

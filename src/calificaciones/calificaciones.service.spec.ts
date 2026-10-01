@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CalificacionesService } from './calificaciones.service';
 import { CalificacionesController } from './calificaciones.controller';
-import { construirLibro, esquemaSugerido, notaPropuesta, redondear, validarEsquema, validarMotivo, validarNota, type EntradaLibro } from './calificacion-reglas';
+import { construirLibro, notaPropuesta, redondear, validarEsquema, validarMotivo, validarNota, type Esquema, type EntradaLibro } from './calificacion-reglas';
 import { User, UserRole } from '../user/entities/user.entity';
 
 type Deps = ConstructorParameters<typeof CalificacionesService>;
@@ -13,6 +13,18 @@ const luisa = { id: 5, role: UserRole.ESTUDIANTE } as User;
 const ahora = new Date('2026-09-30T15:00:00Z');
 const ayer = new Date('2026-09-29T15:00:00Z');
 const manana = new Date('2026-10-01T15:00:00Z');
+
+/** Una de las formas que el docente puede armar: práctica + entregas + parcial, con porcentajes. */
+const esquemaSugerido = (): Esquema => ({
+  componentes: [
+    { clave: 'practica', nombre: 'Práctica (dominio de las lecciones)', tipo: 'dominio', peso: 40, lecciones: null, entregas: null },
+    { clave: 'entregas', nombre: 'Entregas', tipo: 'entregas', peso: 30, lecciones: null, entregas: null },
+    { clave: 'parcial', nombre: 'Parcial', tipo: 'manual', peso: 30, lecciones: null, entregas: null },
+  ],
+  usarPesos: true,
+  notaAprobatoria: 3,
+  visibleParaEstudiantes: false,
+});
 
 describe('Calificaciones: reglas', () => {
   it('la nota va de 0,0 a 5,0 con una cifra; acepta coma; vacía es «sin nota»', () => {
@@ -40,10 +52,21 @@ describe('Calificaciones: reglas', () => {
     expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'dominio', peso: 100, lecciones: [] }] })).toThrow('al menos una opción');
   });
 
-  it('el sugerido es Práctica 40, Entregas 30 y Parcial 30, y es válido', () => {
+  it('práctica + entregas + parcial con porcentajes es válido tal cual', () => {
     const s = esquemaSugerido();
-    expect(s.componentes.map((c) => [c.tipo, c.peso])).toEqual([['dominio', 40], ['entregas', 30], ['manual', 30]]);
     expect(validarEsquema({ ...s })).toEqual(s);
+  });
+
+  it('flexible: una sola nota del docente, o varias sin porcentajes (la final es el promedio simple)', () => {
+    expect(validarEsquema({ componentes: [{ nombre: 'Nota', tipo: 'manual' }], usarPesos: false }).componentes[0]).toMatchObject({ nombre: 'Nota', peso: 0 });
+    const porModulo = validarEsquema({ usarPesos: false, componentes: [
+      { nombre: 'Módulo 1', tipo: 'dominio', lecciones: [30] }, { nombre: 'Módulo 2', tipo: 'dominio', lecciones: [31] },
+    ] });
+    expect(porModulo.usarPesos).toBe(false);
+    expect(notaPropuesta(porModulo.componentes, { c1: { nota: 4, detalle: '' }, c2: { nota: 3, detalle: '' } }, false)).toEqual({ propuesta: 3.5, faltan: [] });
+    expect(notaPropuesta(porModulo.componentes, { c1: { nota: 4, detalle: '' }, c2: { nota: null, detalle: '' } }, false)).toEqual({ propuesta: 4, faltan: ['Módulo 2'] });
+    // con porcentajes sí deben sumar 100
+    expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'manual', peso: 50 }] })).toThrow('quita los porcentajes');
   });
 
   it('el ajuste de la final exige motivo; una nota manual no', () => {
@@ -119,7 +142,8 @@ function crear(opciones: { esquema?: Record<string, unknown> | null; registrada?
     findOne: jest.fn(() => Promise.resolve(guardado)),
     create: jest.fn((e: object) => e),
     save: jest.fn((e: object) => Promise.resolve(e)),
-    manager: { query: jest.fn(() => Promise.resolve([{ id: 30, title: 'Else if' }])) },
+    delete: jest.fn(() => Promise.resolve({})),
+    manager: { query: jest.fn(() => Promise.resolve([{ id: 30, title: 'Else if', moduloId: 2, modulo: 'Módulo 1' }])) },
   };
   const registradas = {
     find: jest.fn(() => Promise.resolve([])),
@@ -148,12 +172,22 @@ function crear(opciones: { esquema?: Record<string, unknown> | null; registrada?
 }
 
 describe('CalificacionesService', () => {
-  it('sin esquema guardado, el libro trae el sugerido y ya calcula con él', async () => {
+  it('las notas son opcionales: sin esquema no hay tabla, solo los módulos y entregas para armarlo', async () => {
     const libro = await crear({ esquema: null }).service.libro(docente, 3);
-    expect(libro.guardado).toBe(false);
-    expect(libro.esquema.componentes).toHaveLength(3);
-    expect(libro.filas[0]).toMatchObject({ nombre: 'Luisa', email: 'luisa@x.co', componentes: { practica: { nota: 4 } } });
+    expect(libro.esquema).toBeNull();
+    expect(libro.filas).toEqual([]);
+    expect(libro.modulos).toEqual([{ id: 2, titulo: 'Módulo 1', lecciones: [30] }]);
     expect(libro.entregas).toEqual([{ id: 7, titulo: 'Calculadora', publicada: true }]);
+  });
+
+  it('con esquema, calcula; y el docente puede dejar de usar notas (se borra el esquema, no las notas puestas)', async () => {
+    const { service, esquemas, registradas } = crear();
+    const libro = await service.libro(docente, 3);
+    expect(libro.filas[0]).toMatchObject({ nombre: 'Luisa', email: 'luisa@x.co', componentes: { practica: { nota: 4 } } });
+    await service.quitarEsquema(docente, 3);
+    expect(esquemas.delete).toHaveBeenCalledWith({ classId: 3 });
+    expect(registradas.delete).not.toHaveBeenCalled();
+    await expect(crear().service.quitarEsquema(otroDocente, 3)).rejects.toThrow(ForbiddenException);
   });
 
   it('solo el docente de la clase ve y cambia las notas', async () => {
@@ -204,6 +238,7 @@ describe('CalificacionesController: roles', () => {
   it.each([
     ['libro', ['docente', 'admin']],
     ['guardarEsquema', ['docente', 'admin']],
+    ['quitarEsquema', ['docente', 'admin']],
     ['registrarNota', ['docente', 'admin']],
     ['historial', ['docente', 'admin']],
     ['mia', ['estudiante']],

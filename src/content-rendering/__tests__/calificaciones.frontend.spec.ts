@@ -9,12 +9,13 @@ const leer = (...partes: string[]) => readFileSync(path.join(raiz, ...partes), '
 const js = ts.transpileModule(leer('utils', 'calificaciones.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
 const mod = { exports: {} as Record<string, unknown> };
 new Function('module', 'exports', js)(mod, mod.exports);
-const { csvParaMoodle, leerNota, notaComa, nombreArchivoNotas, sumaPesos } = mod.exports as {
+const { csvParaMoodle, formasDeEmpezar, leerNota, notaComa, nombreArchivoNotas, sumaPesos } = mod.exports as {
   csvParaMoodle: (l: unknown) => string;
   leerNota: (t: string) => number | null | undefined;
   notaComa: (n: number | null | undefined) => string;
   nombreArchivoNotas: (c: string, f: Date) => string;
   sumaPesos: (c: Array<{ peso: number }>) => number;
+  formasDeEmpezar: (m: Array<{ id: number; titulo: string; lecciones: number[] }>) => Array<{ id: string; esquema: { usarPesos: boolean; componentes: Array<{ tipo: string; peso: number; lecciones: number[] | null }> } }>;
 };
 
 describe('Calificaciones: utilidades', () => {
@@ -31,7 +32,7 @@ describe('Calificaciones: utilidades', () => {
 
   it('el CSV para Moodle identifica por correo, usa punto decimal, escapa comas y comillas, y deja vacío lo que no tiene nota', () => {
     const csv = csvParaMoodle({
-      esquema: { componentes: [{ clave: 'practica', nombre: 'Práctica', peso: 60 }, { clave: 'parcial', nombre: 'Parcial "1", corte', peso: 40 }] },
+      esquema: { usarPesos: true, componentes: [{ clave: 'practica', nombre: 'Práctica', peso: 60 }, { clave: 'parcial', nombre: 'Parcial "1", corte', peso: 40 }] },
       filas: [
         { email: 'luisa@x.co', nombre: 'Rojas, Luisa', componentes: { practica: { nota: 4 }, parcial: { nota: 3.8 } }, propuesta: 3.9, final: 4.2 },
         { email: 'julian@x.co', nombre: 'Julián', componentes: { practica: { nota: 0 }, parcial: { nota: null } }, propuesta: 0, final: 0 },
@@ -43,6 +44,33 @@ describe('Calificaciones: utilidades', () => {
     expect(lineas[1]).toBe('luisa@x.co,"Rojas, Luisa",4.0,3.8,3.9,4.2');
     expect(lineas[2]).toBe('julian@x.co,Julián,0.0,,0.0,0.0');
     expect(nombreArchivoNotas('Fundamentos de Algoritmia — grupo 2', new Date(2026, 8, 30))).toBe('notas-fundamentos-de-algoritmia-grupo-2-2026-09-30.csv');
+  });
+});
+
+describe('Calificaciones: flexibles y opcionales (decisión del dueño, 01/10)', () => {
+  it('formas de empezar: una sola nota sin porcentajes, una por módulo con sus lecciones, o práctica + entregas + parcial', () => {
+    const formas = formasDeEmpezar([{ id: 1, titulo: 'Módulo 1', lecciones: [30, 31] }, { id: 2, titulo: 'Módulo 2', lecciones: [40] }]);
+    expect(formas.map((f) => f.id)).toEqual(['una', 'modulos', 'mixta']);
+    expect(formas[0].esquema).toMatchObject({ usarPesos: false, componentes: [{ tipo: 'manual' }] });
+    expect(formas[1].esquema.usarPesos).toBe(false);
+    expect(formas[1].esquema.componentes.map((c) => c.lecciones)).toEqual([[30, 31], [40]]);
+    expect(sumaPesos(formas[2].esquema.componentes)).toBe(100);
+    // sin módulos publicados no se ofrece «una por módulo»
+    expect(formasDeEmpezar([]).map((f) => f.id)).toEqual(['una', 'mixta']);
+  });
+
+  it('sin porcentajes el CSV no inventa «(0 %)»', () => {
+    const csv = csvParaMoodle({ esquema: { usarPesos: false, componentes: [{ clave: 'nota', nombre: 'Nota', peso: 0 }] }, filas: [] });
+    expect(csv.slice(1).split(/\r?\n/)[0]).toBe('Correo electrónico,Nombre,Nota,Nota propuesta,Nota final');
+  });
+
+  it('la pantalla no impone nada: sin notas ofrece formas de empezar, permite quitar los porcentajes y dejar de usar notas', () => {
+    const notas = leer('pages', 'docente', 'clase', '[classId]', 'notas.vue');
+    expect(notas).toContain('Esta clase no lleva notas en STIRE');
+    expect(notas).toContain('v-model="borrador.usarPesos"');
+    expect(notas).toContain(':disabled="guardandoEsquema || (borrador.usarPesos && suma !== 100)"');
+    expect(notas).toContain('Dejar de usar notas en esta clase');
+    expect(notas).toContain('@change="alternarModulo(c, m.lecciones)"');
   });
 });
 

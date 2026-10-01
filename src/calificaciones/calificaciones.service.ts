@@ -5,7 +5,7 @@ import { EsquemaCalificacion } from './entities/esquema-calificacion.entity';
 import { NotaRegistrada } from './entities/nota-registrada.entity';
 import { NotaHistorial } from './entities/nota-historial.entity';
 import {
-  CalificacionInvalidaError, CLAVE_FINAL, construirLibro, esquemaSugerido, validarEsquema, validarMotivo, validarNota,
+  CalificacionInvalidaError, CLAVE_FINAL, construirLibro, validarEsquema, validarMotivo, validarNota,
   type Esquema, type EntradaLibro,
 } from './calificacion-reglas';
 import { Entrega } from '../proyectos/entities/entrega.entity';
@@ -43,14 +43,25 @@ export class CalificacionesService {
     private readonly autorizacion: AuthorizationService,
   ) {}
 
-  /** Lecciones de módulos publicados, en el orden del curso. */
-  private async leccionesPublicadas(classId: number): Promise<Array<{ id: number; titulo: string }>> {
-    const filas: Array<{ id: number; title: string }> = await this.esquemas.manager.query(
-      'SELECT lu.id AS id, lu.title AS title FROM learning_units lu JOIN topics t ON lu.topicId = t.id JOIN sections s ON t.sectionId = s.id ' +
+  /** Lecciones de módulos publicados, en el orden del curso, con su módulo (para armar una nota por módulo). */
+  private async leccionesPublicadas(classId: number): Promise<Array<{ id: number; titulo: string; moduloId: number; modulo: string }>> {
+    const filas: Array<{ id: number; title: string; moduloId: number; modulo: string }> = await this.esquemas.manager.query(
+      'SELECT lu.id AS id, lu.title AS title, s.id AS moduloId, s.title AS modulo FROM learning_units lu JOIN topics t ON lu.topicId = t.id JOIN sections s ON t.sectionId = s.id ' +
         'WHERE s.classId = ? AND s.isPublished = 1 ORDER BY s.`order`, t.`order`, lu.`order`, lu.id',
       [classId],
     );
-    return filas.map((f) => ({ id: Number(f.id), titulo: f.title }));
+    return filas.map((f) => ({ id: Number(f.id), titulo: f.title, moduloId: Number(f.moduloId), modulo: f.modulo }));
+  }
+
+  /** Módulos publicados con sus lecciones, en orden. */
+  private modulos(lecciones: Array<{ id: number; moduloId: number; modulo: string }>): Array<{ id: number; titulo: string; lecciones: number[] }> {
+    const mapa = new Map<number, { id: number; titulo: string; lecciones: number[] }>();
+    for (const l of lecciones) {
+      const m = mapa.get(l.moduloId) ?? { id: l.moduloId, titulo: l.modulo, lecciones: [] };
+      m.lecciones.push(l.id);
+      mapa.set(l.moduloId, m);
+    }
+    return [...mapa.values()];
   }
 
   private async todasLasLecciones(classId: number): Promise<Set<number>> {
@@ -72,11 +83,11 @@ export class CalificacionesService {
   }
 
   private aEsquema(e: EsquemaCalificacion): Esquema {
-    return { componentes: e.componentes, notaAprobatoria: e.notaAprobatoria, visibleParaEstudiantes: e.visibleParaEstudiantes };
+    return { componentes: e.componentes, usarPesos: e.usarPesos, notaAprobatoria: e.notaAprobatoria, visibleParaEstudiantes: e.visibleParaEstudiantes };
   }
 
   /** Los datos que necesita el cálculo, para toda la clase o para un estudiante. */
-  private async entrada(classId: number, esquema: Esquema, soloEstudiante?: number): Promise<{ entrada: EntradaLibro; lecciones: Array<{ id: number; titulo: string }> }> {
+  private async entrada(classId: number, esquema: Esquema, soloEstudiante?: number): Promise<{ entrada: EntradaLibro; lecciones: Array<{ id: number; titulo: string; moduloId: number; modulo: string }> }> {
     const [lecciones, estudiantes, entregas] = await Promise.all([
       this.leccionesPublicadas(classId),
       this.estudiantes(classId, soloEstudiante),
@@ -109,22 +120,35 @@ export class CalificacionesService {
 
   // ───────────────────────── Docente ─────────────────────────
 
-  /** El libro de la clase. Sin esquema, devuelve el sugerido para que el docente lo revise y lo guarde. */
+  /**
+   * El libro de la clase. Las notas son opcionales: sin esquema no hay tabla, solo lo que el docente necesita para
+   * armar el suyo (módulos con sus lecciones y entregas con nota).
+   */
   async libro(user: User, classId: number) {
     await this.autorizacion.assertTeacherOwnsClass(user, classId);
     const guardado = await this.esquemas.findOne({ where: { classId } });
-    const esquema = guardado ? this.aEsquema(guardado) : esquemaSugerido();
+    const esquema = guardado ? this.aEsquema(guardado) : { componentes: [], usarPesos: false, notaAprobatoria: 3, visibleParaEstudiantes: false };
     const { entrada, lecciones } = await this.entrada(classId, esquema);
-    const { filas, resumen } = construirLibro(entrada);
+    const { filas, resumen } = guardado ? construirLibro(entrada) : { filas: [], resumen: { promedio: null, aprueban: 0, reprueban: 0, sinNota: 0 } };
     return {
-      esquema,
-      guardado: !!guardado,
+      esquema: guardado ? esquema : null,
       actualizadoAt: guardado?.updatedAt ?? null,
-      lecciones,
+      modulos: this.modulos(lecciones),
+      lecciones: lecciones.map((l) => ({ id: l.id, titulo: l.titulo })),
       entregas: entrada.entregas.filter((e) => e.conNota).map((e) => ({ id: e.id, titulo: e.titulo, publicada: e.publicada })),
       filas,
       resumen,
     };
+  }
+
+  /**
+   * Dejar de usar notas en la clase: se quita el esquema. Las notas que el docente puso y su historial se conservan,
+   * por si lo vuelve a armar.
+   */
+  async quitarEsquema(user: User, classId: number) {
+    await this.autorizacion.assertTeacherOwnsClass(user, classId);
+    await this.esquemas.delete({ classId });
+    return this.libro(user, classId);
   }
 
   async guardarEsquema(user: User, classId: number, datos: Record<string, unknown>) {
@@ -195,6 +219,7 @@ export class CalificacionesService {
     return {
       visible: true as const,
       notaAprobatoria: esquema.notaAprobatoria,
+      usarPesos: esquema.usarPesos,
       componentes: esquema.componentes.map((c) => ({ clave: c.clave, nombre: c.nombre, tipo: c.tipo, peso: c.peso, ...fila.componentes[c.clave] })),
       propuesta: fila.propuesta,
       faltan: fila.faltan,

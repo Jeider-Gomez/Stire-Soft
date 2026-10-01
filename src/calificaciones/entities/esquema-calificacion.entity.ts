@@ -16,6 +16,10 @@ export class EsquemaCalificacion {
   @Column({ type: 'json' })
   componentes!: Componente[];
 
+  /** Con porcentajes que suman 100, o sin ellos (promedio simple). */
+  @Column({ default: true })
+  usarPesos!: boolean;
+
   @Column({ type: 'decimal', precision: 2, scale: 1, default: 3, transformer: decimal })
   notaAprobatoria!: number;
 

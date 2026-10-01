@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Put, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CalificacionesService } from './calificaciones.service';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -15,16 +15,23 @@ export class CalificacionesController {
 
   @Get('clase/:classId')
   @Roles('docente', 'admin')
-  @ApiOperation({ summary: 'Libro de la clase: esquema (o el sugerido), nota propuesta por estudiante con desglose y resumen' })
+  @ApiOperation({ summary: 'Libro de la clase: esquema (null si la clase no usa notas), módulos y entregas para armarlo, nota propuesta por estudiante con desglose y resumen' })
   libro(@Param('classId', ParseIntPipe) classId: number, @GetUser() user: User) {
     return this.calificaciones.libro(user, classId);
   }
 
   @Put('clase/:classId/esquema')
   @Roles('docente', 'admin')
-  @ApiOperation({ summary: 'Guardar el esquema: { componentes: [{ clave?, nombre, tipo, peso, lecciones?, entregas? }], notaAprobatoria, visibleParaEstudiantes }' })
+  @ApiOperation({ summary: 'Guardar el esquema: { componentes: [{ clave?, nombre, tipo, peso?, lecciones?, entregas? }], usarPesos, notaAprobatoria, visibleParaEstudiantes }' })
   guardarEsquema(@Param('classId', ParseIntPipe) classId: number, @Body() datos: Record<string, unknown>, @GetUser() user: User) {
     return this.calificaciones.guardarEsquema(user, classId, datos ?? {});
+  }
+
+  @Delete('clase/:classId/esquema')
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Dejar de usar notas en la clase (se conservan las notas puestas y su historial)' })
+  quitarEsquema(@Param('classId', ParseIntPipe) classId: number, @GetUser() user: User) {
+    return this.calificaciones.quitarEsquema(user, classId);
   }
 
   @Put('clase/:classId/estudiante/:studentId/nota')
