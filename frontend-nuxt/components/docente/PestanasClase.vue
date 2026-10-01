@@ -23,10 +23,10 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpen, CalendarCheck, Inbox, LifeBuoy, Settings, Users } from 'lucide-vue-next'
+import { BookOpen, CalendarCheck, GraduationCap, Inbox, LifeBuoy, Settings, Users } from 'lucide-vue-next'
 import { PESTANAS_CLASE, enlacePestana, type PestanaClase } from '~/utils/pestanasClase'
 
 defineProps<{ classId: number; activa: PestanaClase; nombre?: string; codigo?: string }>()
 
-const ICONOS = { hoy: CalendarCheck, contenido: BookOpen, estudiantes: Users, entregas: Inbox, refuerzos: LifeBuoy, ajustes: Settings }
+const ICONOS = { hoy: CalendarCheck, contenido: BookOpen, estudiantes: Users, entregas: Inbox, refuerzos: LifeBuoy, notas: GraduationCap, ajustes: Settings }
 </script>

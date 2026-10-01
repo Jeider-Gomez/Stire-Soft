@@ -37,6 +37,9 @@
     <!-- Estadísticas al estilo de Anki: constancia, próximos repasos, lecciones firmes y retención (§10.3) -->
     <EstadisticasEstudiante :student-id="authStore.user?.id" :class-id="studentStore.currentClassId" />
 
+    <!-- Su nota y de dónde sale, si el docente la hizo visible (§6) -->
+    <MiNota :class-id="studentStore.currentClassId" />
+
     <!-- Dominio por lección, con acceso a reforzar cada una -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 shadow-sm space-y-4">
       <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
