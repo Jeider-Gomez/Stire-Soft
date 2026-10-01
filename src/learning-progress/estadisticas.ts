@@ -3,6 +3,7 @@
  * próximos repasos, estado de las lecciones (con «dominio firme» como las tarjetas maduras de Anki) y retención.
  * Función pura: el servicio le pasa los datos ya leídos.
  */
+import { diaDe } from '../common/utils/dia-colombia';
 
 /** Umbral de «dominada», el mismo del cálculo de estados (learning-progress.service.ts). */
 export const DOMINADO = 85;
@@ -12,11 +13,7 @@ export const SEMANAS_CALENDARIO = 16;
 export const DIAS_PRONOSTICO = 14;
 export const DIAS_RETENCION = 30;
 /** Los días se cuentan en la hora de Colombia, no en la del servidor. */
-export const ZONA = 'America/Bogota';
-
-const formatoDia = new Intl.DateTimeFormat('en-CA', { timeZone: ZONA, year: 'numeric', month: '2-digit', day: '2-digit' });
-/** «2026-10-01» en la hora de Colombia. */
-export const diaDe = (fecha: Date): string => formatoDia.format(fecha);
+export { diaDe };
 
 function sumarDias(dia: string, n: number): string {
   const d = new Date(`${dia}T12:00:00Z`);

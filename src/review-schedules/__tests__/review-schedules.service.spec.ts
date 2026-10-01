@@ -138,6 +138,20 @@ describe('ReviewSchedulesService Unit Tests', () => {
       expect(result.find((r: any) => r.id === 4).urgency).toBe('critico');
     });
 
+    it('los días son los de Colombia: a las 10:18 p. m. del 30/09, un repaso del 1/10 es «mañana», no «para hoy»', async () => {
+      // 10:18 p. m. en Colombia = 03:18 del 1/10 en UTC, la hora del servidor.
+      const ahora = new Date('2026-10-01T03:18:00Z');
+      reviewRepo.findDueForStudent.mockResolvedValue([
+        makeReviewSchedule({ id: 1, nextReviewDate: new Date('2026-10-01T14:00:00Z') }),
+        makeReviewSchedule({ id: 2, nextReviewDate: new Date('2026-09-30T20:00:00Z') }),
+        makeReviewSchedule({ id: 3, nextReviewDate: new Date('2026-09-29T20:00:00Z') }),
+      ]);
+
+      const result = await service.getDueReviews(42, ahora);
+
+      expect(result.map((r: any) => r.urgency)).toEqual(['manana', 'vencido', 'critico']);
+    });
+
     it('incluye easeFactor persistido en cada repaso devuelto', async () => {
       reviewRepo.findDueForStudent.mockResolvedValue([
         makeReviewSchedule({ id: 1, easeFactor: 1.9, nextReviewDate: daysFromNow(0) }),

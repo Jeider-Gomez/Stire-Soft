@@ -5,6 +5,7 @@ import { ReviewSchedulesRepository } from './review-schedules.repository';
 import { calculateNextReview, CalidadRepaso } from '../common/utils/spaced-repetition';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../common/enums/notification-type.enum';
+import { diasEntre } from '../common/utils/dia-colombia';
 
 @Injectable()
 export class ReviewSchedulesService {
@@ -60,17 +61,13 @@ export class ReviewSchedulesService {
    * Repasos del estudiante con nivel de urgencia calculado en vivo a partir
    * de nextReviewDate (no del urgencyLevel persistido, que solo se
    * actualiza una vez al día vía checkOverdueReviews): >1 día antes → al-dia,
-   * mañana → manana, hoy → vencido, ya pasado → critico.
+   * mañana → manana, hoy → vencido, ya pasado → critico. Los días son los de Colombia, no los del servidor (UTC).
    */
-  async getDueReviews(studentId: number) {
+  async getDueReviews(studentId: number, ahora: Date = new Date()) {
     const schedules = await this.reviewRepo.findDueForStudent(studentId);
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
 
     return schedules.map((schedule) => {
-      const reviewDay = new Date(schedule.nextReviewDate);
-      reviewDay.setHours(0, 0, 0, 0);
-      const daysUntil = Math.round((reviewDay.getTime() - startOfToday.getTime()) / 86400000);
+      const daysUntil = diasEntre(ahora, new Date(schedule.nextReviewDate));
 
       let urgency: 'al-dia' | 'manana' | 'vencido' | 'critico';
       if (daysUntil < 0) urgency = 'critico';
