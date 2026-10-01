@@ -59,3 +59,26 @@ describe('LearningProgressController.getNextActivity', () => {
     await expect(controller.getNextActivity(42, 8, { user: { id: 42, role: 'estudiante' } })).resolves.toEqual({ activityId: 1 });
   });
 });
+
+describe('LearningProgressController.estadisticas', () => {
+  const crear = (comparte = true) => {
+    const authorizationService: any = {
+      assertTeacherSharesClassWithStudent: comparte ? jest.fn().mockResolvedValue(undefined) : jest.fn().mockRejectedValue(new ForbiddenException()),
+    };
+    const service: any = { estadisticas: jest.fn().mockResolvedValue({ hoy: '2026-10-01' }) };
+    return { controller: new LearningProgressController({} as never, authorizationService, service), service };
+  };
+
+  it('un estudiante solo ve sus propias estadísticas', async () => {
+    const { controller, service } = crear();
+    await expect(controller.estadisticas(43, '5', { user: { id: 42, role: 'estudiante' } })).rejects.toThrow(ForbiddenException);
+    await controller.estadisticas(42, '5', { user: { id: 42, role: 'estudiante' } });
+    expect(service.estadisticas).toHaveBeenCalledWith(42, 5);
+  });
+
+  it('un docente solo ve las de un estudiante con quien comparte clase', async () => {
+    const { controller, service } = crear(false);
+    await expect(controller.estadisticas(42, undefined, { user: { id: 9, role: 'docente' } })).rejects.toThrow(ForbiddenException);
+    expect(service.estadisticas).not.toHaveBeenCalled();
+  });
+});

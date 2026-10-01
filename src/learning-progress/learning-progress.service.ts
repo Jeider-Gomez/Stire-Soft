@@ -19,6 +19,7 @@ import { Topic } from '../topic/entities/topic.entity';
 import { Section } from '../section/entities/section.entity';
 import { LearningProgress } from './entities/learning-progress.entity';
 import { Confianza, MotivoRecomendacion, nivelSaltadoHasta, recomendarSiguiente } from './recommendation/recomendar-siguiente';
+import { construirEstadisticas, SEMANAS_CALENDARIO } from './estadisticas';
 
 export interface NextActivityRecommendation {
   activityId: number;
@@ -280,6 +281,44 @@ export class LearningProgressService {
       intentos.push({ activityId: id, score: Number(f.nota), isReview: false, submittedAt: f.revisadoAt });
     }
     return { actividades, intentos };
+  }
+
+  /**
+   * Estadísticas del estudiante al estilo de Anki (docs/DISENO_INTERVENCION_DOCENTE.md §10.3). El calendario y la
+   * retención cuentan todo lo que hizo; las lecciones y los repasos, solo los de la clase pedida.
+   */
+  async estadisticas(studentId: number, classId: number | null) {
+    const manager = this.activitiesRepo.manager;
+    const ahora = new Date();
+    const lecciones: number[] = classId
+      ? (
+          await manager.query(
+            'SELECT lu.id AS id FROM learning_units lu JOIN topics t ON lu.topicId = t.id JOIN sections s ON t.sectionId = s.id ' +
+              'WHERE s.classId = ? AND s.isPublished = 1 AND t.isActive = 1 AND lu.isActive = 1',
+            [classId],
+          )
+        ).map((f: { id: number }) => Number(f.id))
+      : [];
+    const desde = new Date(ahora.getTime() - (SEMANAS_CALENDARIO * 7 + 1) * 86_400_000);
+    const envios: Array<{ fecha: Date; score: number; isReview: number | boolean; totalPoints: number; passingScore: number }> = await manager.query(
+      'SELECT COALESCE(s.submittedAt, s.createdAt) AS fecha, s.score AS score, s.isReview AS isReview, a.totalPoints AS totalPoints, a.passingScore AS passingScore ' +
+        'FROM submissions s JOIN activities a ON a.id = s.activityId ' +
+        'WHERE s.studentId = ? AND s.status <> ? AND COALESCE(s.submittedAt, s.createdAt) >= ?',
+      [studentId, SubmissionStatus.IN_PROGRESS, desde],
+    );
+    const repasos = lecciones.length ? await manager.find(ReviewSchedule, { where: { studentId, learningUnitId: In(lecciones) } }) : [];
+    const progresos = lecciones.length ? await this.progressRepo.find({ where: { studentId, learningUnitId: In(lecciones) } }) : [];
+    return construirEstadisticas({
+      envios: envios.map((e) => ({
+        fecha: new Date(e.fecha),
+        esRepaso: !!Number(e.isReview),
+        aprobado: Number(e.totalPoints) > 0 && (Number(e.score) / Number(e.totalPoints)) * 100 >= Number(e.passingScore),
+      })),
+      repasos: repasos.map((r) => ({ learningUnitId: r.learningUnitId, nextReviewDate: new Date(r.nextReviewDate), intervalDays: r.intervalDays })),
+      progresos: progresos.map((p) => ({ learningUnitId: p.learningUnitId, mastery: p.mastery })),
+      lecciones,
+      ahora,
+    });
   }
 
   private async cargarActividadesConTipo(learningUnitId: number): Promise<ActividadConTipo[]> {

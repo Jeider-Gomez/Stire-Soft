@@ -8,6 +8,8 @@ import {
   UseGuards,
   Request,
   ForbiddenException,
+  BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { LearningProgressRepository } from './learning-progress.repository';
@@ -51,6 +53,28 @@ export class LearningProgressController {
       where: { studentId },
       order: { updatedAt: 'DESC' },
     });
+  }
+
+  /**
+   * GET /learning-progress/student/:studentId/estadisticas?classId= — calendario, próximos repasos, estado de las
+   * lecciones y retención (docs/DISENO_INTERVENCION_DOCENTE.md §10.3). Mismo control de acceso que la ruta raíz.
+   */
+  @Get('student/:studentId/estadisticas')
+  @Roles('estudiante', 'docente', 'admin')
+  @ApiOperation({ summary: 'Estadísticas de un estudiante al estilo de Anki' })
+  async estadisticas(
+    @Param('studentId', ParseIntPipe) studentId: number,
+    @Query('classId') classId: string | undefined,
+    @Request() req: any,
+  ) {
+    const user = req.user;
+    if (user.role === 'estudiante' && user.id !== studentId) {
+      throw new ForbiddenException('No tienes permiso para ver el progreso de otro estudiante');
+    }
+    await this.authorizationService.assertTeacherSharesClassWithStudent(user, studentId);
+    const clase = classId ? Number(classId) : null;
+    if (clase !== null && !Number.isInteger(clase)) throw new BadRequestException('La clase no es válida.');
+    return this.learningProgressService.estadisticas(studentId, clase);
   }
 
   /**

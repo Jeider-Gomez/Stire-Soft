@@ -82,3 +82,18 @@ describe('La lección antes del ejercicio y la evaluación implícita', () => {
     expect(mapa).not.toContain('Dijo «me siento seguro»');
   });
 });
+
+describe('Estadísticas al estilo de Anki en pantalla', () => {
+  it('las ve el estudiante en «Mi progreso» y el docente en la ficha, de la clase desde la que la abrió', () => {
+    expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('<EstadisticasEstudiante :student-id="authStore.user?.id" :class-id="studentStore.currentClassId" />');
+    const ficha = leer('pages', 'docente', 'estudiante', '[studentId].vue');
+    expect(ficha).toContain(':class-id="claseDeLaFicha"');
+    expect(leer('components', 'docente', 'MapaDeCalor.vue')).toContain('?clase=${classId}');
+  });
+
+  it('el calendario y el pronóstico tienen un texto para lectores de pantalla', () => {
+    const comp = leer('components', 'EstadisticasEstudiante.vue');
+    expect(comp).toMatch(/role="img" :aria-label="`Calendario de práctica/);
+    expect(comp).toMatch(/role="img" :aria-label="textoPronostico"/);
+  });
+});

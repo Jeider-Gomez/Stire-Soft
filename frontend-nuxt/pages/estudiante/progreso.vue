@@ -31,7 +31,10 @@
       </div>
     </section>
 
-    <!-- 📊 DOMINIO POR UNIDAD CON BOTONES DE REFUERZO ACCIONABLES (P05 & P10) -->
+    <!-- Estadísticas al estilo de Anki: constancia, próximos repasos, lecciones firmes y retención (§10.3) -->
+    <EstadisticasEstudiante :student-id="authStore.user?.id" :class-id="studentStore.currentClassId" />
+
+    <!-- Dominio por lección, con acceso a reforzar cada una -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 shadow-sm space-y-4">
       <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
         <div>
@@ -152,12 +155,14 @@
 import { computed, onMounted } from 'vue'
 import { AlertTriangle } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
+import { useAuthStore } from '~/stores/auth'
 
 definePageMeta({
   layout: 'student'
 })
 
 const studentStore = useStudentStore()
+const authStore = useAuthStore()
 
 // Unidades con repaso vencido o crítico para «Se está olvidando» (T2)
 const forgettingUnitIds = computed(() => {

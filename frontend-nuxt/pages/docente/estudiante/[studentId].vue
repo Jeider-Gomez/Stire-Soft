@@ -109,6 +109,9 @@
       </section>
 
       <!-- Dominio por Unidad de Aprendizaje -->
+      <!-- Las mismas estadísticas que ve el estudiante (docs/DISENO_INTERVENCION_DOCENTE.md §10.3) -->
+      <EstadisticasEstudiante :student-id="Number(route.params.studentId)" :class-id="claseDeLaFicha" titulo="Estadísticas del estudiante" />
+
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
           Dominio por lección
@@ -245,6 +248,8 @@ interface StudentDashboardData {
 }
 
 const route = useRoute()
+// Clase desde la que se abrió la ficha (Rendimiento o el mapa de calor): las estadísticas de lecciones son de esa clase.
+const claseDeLaFicha = computed(() => Number(route.query.clase) || null)
 const api = useApi()
 
 const dashboard = ref<StudentDashboardData | null>(null)

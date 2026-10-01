@@ -24,7 +24,7 @@
           <p class="text-[11px] text-base-texto-secundario">Tres o más entregas falladas seguidas en una lección, en los últimos 7 días.</p>
           <ul v-if="mapa.bloqueados.length" class="space-y-1">
             <li v-for="b in mapa.bloqueados" :key="`${b.studentId}-${b.unitId}`">
-              <NuxtLink :to="`/docente/estudiante/${b.studentId}`" class="font-semibold text-base-texto-primario hover:underline">{{ b.fullName }}</NuxtLink>
+              <NuxtLink :to="`/docente/estudiante/${b.studentId}?clase=${classId}`" class="font-semibold text-base-texto-primario hover:underline">{{ b.fullName }}</NuxtLink>
               <span class="text-base-texto-secundario"> · {{ b.unitTitle }} · {{ b.fallosSeguidos }} fallos seguidos</span>
             </li>
           </ul>
@@ -56,7 +56,7 @@
           <p class="text-[11px] text-base-texto-secundario">Puede haber una idea equivocada: son los errores que mejor se corrigen si alguien los explica.</p>
           <ul v-if="mapa.segurosQueFallan.length" class="space-y-1">
             <li v-for="s in mapa.segurosQueFallan" :key="`${s.studentId}-${s.unitId}`">
-              <NuxtLink :to="`/docente/estudiante/${s.studentId}`" class="font-semibold text-base-texto-primario hover:underline">{{ s.fullName }}</NuxtLink>
+              <NuxtLink :to="`/docente/estudiante/${s.studentId}?clase=${classId}`" class="font-semibold text-base-texto-primario hover:underline">{{ s.fullName }}</NuxtLink>
               <span class="text-base-texto-secundario"> · {{ s.unitTitle }} · {{ plural(s.fallosAlPrimerIntento, 'fallo', 'fallos') }} al primer intento</span>
             </li>
           </ul>
@@ -70,7 +70,7 @@
           <p class="text-[11px] text-base-texto-secundario">85 % o más en todo lo que trabajaron (al menos 3 lecciones) y más del 90 % de sus ejercicios acertados al primer intento.</p>
           <ul v-if="mapa.listosParaMas.length" class="space-y-1">
             <li v-for="l in mapa.listosParaMas" :key="l.studentId">
-              <NuxtLink :to="`/docente/estudiante/${l.studentId}`" class="font-semibold text-base-texto-primario hover:underline">{{ l.fullName }}</NuxtLink>
+              <NuxtLink :to="`/docente/estudiante/${l.studentId}?clase=${classId}`" class="font-semibold text-base-texto-primario hover:underline">{{ l.fullName }}</NuxtLink>
               <span class="text-base-texto-secundario"> · {{ plural(l.unidades, 'lección', 'lecciones') }}, mínimo {{ l.dominioMinimo }} %, {{ l.aciertoAlPrimerIntento }} % al primer intento</span>
             </li>
           </ul>
@@ -102,7 +102,7 @@
                 <td v-for="u in mapa.unidades" :key="u.id" class="p-0">
                   <NuxtLink
                     v-if="celda(e.id, u.id)"
-                    :to="`/docente/estudiante/${e.id}`"
+                    :to="`/docente/estudiante/${e.id}?clase=${classId}`"
                     :aria-label="etiquetaCelda(e.fullName, u.title, celda(e.id, u.id)!)"
                     :title="etiquetaCelda(e.fullName, u.title, celda(e.id, u.id)!)"
                     class="flex h-8 items-center justify-center rounded font-mono font-bold focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
