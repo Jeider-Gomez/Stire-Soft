@@ -25,6 +25,14 @@ export class AnalyticsController {
     return this.analyticsService.getClassHeatmap(classId, req.user);
   }
 
+  /** Resumen de la semana para «Hoy»: esta semana frente a la anterior y quién no ha practicado. */
+  @Get('class/:classId/semana')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  getResumenSemanal(@Param('classId', ParseIntPipe) classId: number, @Req() req: any) {
+    return this.analyticsService.getResumenSemanal(classId, req.user);
+  }
+
   @Get('class/:classId')
   getClassMetrics(@Param('classId') classId: string, @Req() req: any) {
     return this.analyticsService.getClassMetrics(+classId, req.user);

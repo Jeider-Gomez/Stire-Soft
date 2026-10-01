@@ -17,6 +17,13 @@ export interface RefuerzoHoy {
   id: number; tipo: 'refuerzo' | 'reto'; titulo: string; fechaLimite: string | null; archivado: boolean; createdAt: string
   totalPasos: number; lecciones: Array<{ id: number }>; estudiantes: Array<{ studentId: number; nombre: string; pasosHechos: number }>
 }
+/** GET /analytics/class/:id/semana (src/analytics/resumen-semanal.ts). */
+export interface SemanaHoy {
+  total: number
+  estaSemana: { estudiantesActivos: number; ejercicios: number; aprobados: number }
+  semanaAnterior: { estudiantesActivos: number; ejercicios: number; aprobados: number }
+  sinActividad: Array<{ studentId: number; nombre: string; dias: number | null }>
+}
 /** Lo que se cargó; `null` si esa fuente no respondió (la pantalla lo dice y muestra el resto). */
 export interface DatosHoy {
   classId: number
@@ -24,10 +31,12 @@ export interface DatosHoy {
   entregas: EntregaHoy[] | null
   mapa: MapaHoy | null
   refuerzos: RefuerzoHoy[] | null
+  /** Opcional: sin el resumen de la semana, «Hoy» sigue funcionando. */
+  semana?: SemanaHoy | null
   ahora: Date
 }
 
-export type TipoPendiente = 'solicitudes' | 'bloqueados' | 'revisar' | 'salto_fallido' | 'refuerzo_quieto' | 'entrega_cierra' | 'listos'
+export type TipoPendiente = 'solicitudes' | 'bloqueados' | 'revisar' | 'salto_fallido' | 'refuerzo_quieto' | 'sin_actividad' | 'entrega_cierra' | 'listos'
 
 export interface Pendiente {
   clave: string
@@ -154,7 +163,19 @@ export function pendientesDeHoy(d: DatosHoy): Pendiente[] {
   // 5. Refuerzos y retos que nadie empezó o que vencieron sin terminar: cerrar el ciclo.
   lista.push(...refuerzosQuietos(d))
 
-  // 6. Entregas que cierran pronto con estudiantes que no han entregado.
+  // 6. Quien lleva una semana o más sin practicar (o nunca ha practicado): nadie se entera si no se le pregunta.
+  const quietos = d.semana?.sinActividad ?? []
+  if (quietos.length) {
+    lista.push({
+      clave: 'sin_actividad', tipo: 'sin_actividad',
+      titulo: `${plural(quietos.length, 'estudiante lleva', 'estudiantes llevan')} una semana o más sin practicar`,
+      detalle: 'Un mensaje corto suele bastar para saber si es falta de tiempo o si algo no se entiende.',
+      personas: quietos.map((q) => ({ id: q.studentId, nombre: q.nombre, nota: q.dias === null ? 'aún no ha practicado' : `hace ${q.dias} días` })),
+      acciones: [{ texto: 'Escribirles', to: '/docente/mensajes' }],
+    })
+  }
+
+  // 7. Entregas que cierran pronto con estudiantes que no han entregado.
   for (const e of d.entregas ?? []) {
     if (!e.publicada || !e.cierraAt || !e.conteo.sin_entregar) continue
     const faltan = new Date(e.cierraAt).getTime() - d.ahora.getTime()
@@ -167,7 +188,7 @@ export function pendientesDeHoy(d: DatosHoy): Pendiente[] {
     })
   }
 
-  // 7. Los que van bien también merecen atención: un reto.
+  // 8. Los que van bien también merecen atención: un reto.
   const listos = d.mapa?.listosParaMas ?? []
   if (listos.length) {
     lista.push({

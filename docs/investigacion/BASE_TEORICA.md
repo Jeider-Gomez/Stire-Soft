@@ -188,6 +188,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | En la lección y en el inicio del estudiante: «Volver a la explicación» y «Pedir una pista al tutor». Para el docente: la campana con «Luisa se atascó» y la lista de «Hoy». |
 | **Trazabilidad** | `src/learning-progress/recommendation/recomendar-siguiente.ts` (`FALLOS_PARA_PAUSA`, `fallosSeguidos`, motivo `pausa`); `src/notifications/listeners/atasco.listener.ts`; `pages/estudiante/unidad/[id].vue`, `pages/estudiante/index.vue`; pruebas `tope.spec.ts` y `tope.frontend.spec.ts`. |
 
+## BT-17. Resumen de la semana y quién dejó de practicar, en «Hoy», sin correos automáticos
+
+| | |
+|---|---|
+| **Problema observado** | «Hoy» mostraba a quien se atasca, pero no a quien dejó de entrar: un estudiante que no practica no falla, así que no aparecía en ninguna lista. Y el docente no tenía con qué comparar si la semana fue mejor o peor que la anterior. |
+| **Decisión** | 1. En «Hoy», un **resumen de la semana**: cuántos practicaron, ejercicios entregados y aprobados, cada uno junto a la semana anterior.<br>2. Un pendiente nuevo: **quien lleva 7 días o más sin practicar** (o nunca ha practicado), con los días de cada uno y la acción «Escribirles».<br>3. Nada se envía solo: STIRE muestra y el docente decide si escribe (ver BT-09). Los días se cuentan en la hora de Colombia. |
+| **Fundamento** | - Una intervención basada en analítica debe llevar a que alguien actúe y decir qué se espera (Wise, 2014). Un estudiante que deja de entrar no falla ejercicios, así que solo la inactividad lo hace visible.<br>- Los tableros sirven cuando su información se vuelve acción (Molenaar y Knoop-van Campen, 2019): por eso cada número del resumen va acompañado de la lista con su botón.<br>- Comparar con la semana anterior da una referencia propia del grupo, en vez de una cifra suelta.<br>- Referente de producto: «Class Snapshot» y los resúmenes semanales de Khan Academy y Google Classroom. El umbral de 7 días es una decisión de diseño. |
+| **Cómo se materializa** | Tres cifras bajo «Hoy en tu clase» y el pendiente «N estudiantes llevan una semana o más sin practicar». |
+| **Trazabilidad** | `src/analytics/resumen-semanal.ts` (`construirResumenSemanal`, `DIAS_SIN_ACTIVIDAD`), `GET /analytics/class/:id/semana`; `frontend-nuxt/utils/hoyClase.ts`; `pages/docente/clase/[classId]/index.vue`; pruebas `resumen-semanal.spec.ts` y `clase-pestanas.frontend.spec.ts`. |
+
 ---
 
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)

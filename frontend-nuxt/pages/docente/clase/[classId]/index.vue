@@ -8,6 +8,21 @@
         Lo que conviene atender, en orden: primero quien no puede avanzar, luego lo que espera tu comentario y al final quien
         está listo para más.<template v-if="totalEstudiantes !== null"> {{ totalEstudiantes }} {{ totalEstudiantes === 1 ? 'estudiante' : 'estudiantes' }} en la clase.</template>
       </p>
+      <!-- Resumen de la semana (estilo «Class Snapshot»): esta semana frente a la anterior. -->
+      <dl v-if="semana" class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs" aria-label="Esta semana">
+        <div class="rounded-lg bg-base-bg-secundario px-3 py-2">
+          <dt class="text-[11px] text-base-texto-secundario">Practicaron esta semana</dt>
+          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.estudiantesActivos }} de {{ semana.total }} <span class="font-normal text-base-texto-secundario">· la anterior {{ semana.semanaAnterior.estudiantesActivos }}</span></dd>
+        </div>
+        <div class="rounded-lg bg-base-bg-secundario px-3 py-2">
+          <dt class="text-[11px] text-base-texto-secundario">Ejercicios entregados</dt>
+          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.ejercicios }} <span class="font-normal text-base-texto-secundario">· la anterior {{ semana.semanaAnterior.ejercicios }}</span></dd>
+        </div>
+        <div class="rounded-lg bg-base-bg-secundario px-3 py-2">
+          <dt class="text-[11px] text-base-texto-secundario">Aprobados</dt>
+          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.aprobados }} <span class="font-normal text-base-texto-secundario">· la anterior {{ semana.semanaAnterior.aprobados }}</span></dd>
+        </div>
+      </dl>
     </header>
 
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario">
@@ -74,10 +89,10 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, type Component } from 'vue'
-import { AlertTriangle, CheckCircle2, Clock, Inbox, Loader2, Rocket, Undo2, UserPlus } from 'lucide-vue-next'
+import { AlertTriangle, CheckCircle2, Clock, Inbox, Loader2, Moon, Rocket, Undo2, UserPlus } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { enlacePestana } from '~/utils/pestanasClase'
-import { pendientesDeHoy, type EntregaHoy, type MapaHoy, type RefuerzoHoy, type TipoPendiente } from '~/utils/hoyClase'
+import { pendientesDeHoy, type EntregaHoy, type MapaHoy, type RefuerzoHoy, type SemanaHoy, type TipoPendiente } from '~/utils/hoyClase'
 
 definePageMeta({ layout: 'teacher' })
 
@@ -94,6 +109,7 @@ const ESTILO: Record<TipoPendiente, { icono: Component; fondo: string }> = {
   revisar: { icono: Inbox, fondo: 'bg-acento-ambar/15 text-acento-ambar-fuerte' },
   salto_fallido: { icono: Undo2, fondo: 'bg-semantico-falla/10 text-semantico-falla' },
   refuerzo_quieto: { icono: Clock, fondo: 'bg-acento-ambar/15 text-acento-ambar-fuerte' },
+  sin_actividad: { icono: Moon, fondo: 'bg-base-bg-secundario text-base-texto-secundario' },
   entrega_cierra: { icono: Clock, fondo: 'bg-semantico-info/10 text-semantico-info' },
   listos: { icono: Rocket, fondo: 'bg-semantico-pasa/10 text-semantico-pasa' },
 }
@@ -103,6 +119,7 @@ const solicitudes = ref<Solicitud[]>([])
 const entregas = ref<EntregaHoy[] | null>(null)
 const mapa = ref<(MapaHoy & { estudiantes: unknown[] }) | null>(null)
 const refuerzos = ref<RefuerzoHoy[] | null>(null)
+const semana = ref<SemanaHoy | null>(null)
 const solicitudesCargadas = ref(false)
 const cargando = ref(true)
 
@@ -112,6 +129,7 @@ const pendientes = computed(() => pendientesDeHoy({
   entregas: entregas.value,
   mapa: mapa.value,
   refuerzos: refuerzos.value,
+  semana: semana.value,
   ahora: new Date(),
 }))
 const totalEstudiantes = computed(() => mapa.value?.estudiantes.length ?? null)
@@ -127,12 +145,13 @@ const valor = <T,>(r: PromiseSettledResult<T>): T | null => (r.status === 'fulfi
 
 async function cargar() {
   cargando.value = true
-  const [c, s, e, m, r] = await Promise.allSettled([
+  const [c, s, e, m, r, w] = await Promise.allSettled([
     api.get<{ id: number; name: string; code?: string }>(`/class/${classId}`),
     api.get<Solicitud[]>(`/enrollment/class/${classId}/pending`),
     api.get<EntregaHoy[]>(`/entregas/clase/${classId}`),
     api.get<MapaHoy & { estudiantes: unknown[] }>(`/analytics/class/${classId}/heatmap`),
     api.get<RefuerzoHoy[]>(`/refuerzos/clase/${classId}`),
+    api.get<SemanaHoy>(`/analytics/class/${classId}/semana`),
   ])
   clase.value = valor(c)
   solicitudes.value = valor(s) ?? []
@@ -140,6 +159,7 @@ async function cargar() {
   entregas.value = valor(e)
   mapa.value = valor(m)
   refuerzos.value = valor(r)
+  semana.value = valor(w)
   cargando.value = false
 }
 

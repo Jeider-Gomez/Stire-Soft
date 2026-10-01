@@ -151,6 +151,18 @@ describe('«Hoy» de la clase', () => {
     expect(p.personas).toEqual([{ id: 1, nombre: 'A', nota: '2 de 3 pasos' }]);
   });
 
+  it('quien lleva una semana sin practicar aparece después de los refuerzos quietos, con cuántos días, y «Escribirles»', () => {
+    const semana = { total: 4, estaSemana: { estudiantesActivos: 2, ejercicios: 5, aprobados: 3 }, semanaAnterior: { estudiantesActivos: 3, ejercicios: 8, aprobados: 5 },
+      sinActividad: [{ studentId: 3, nombre: 'Camila', dias: 9 }, { studentId: 4, nombre: 'Andrés', dias: null }] };
+    const lista = pendientesDeHoy({ ...vacio, semana, mapa: { ...vacio.mapa, listosParaMas: [{ studentId: 19, fullName: 'Daniela' }] } });
+    expect(lista.map((p) => p.tipo)).toEqual(['sin_actividad', 'listos']);
+    expect(lista[0].titulo).toBe('2 estudiantes llevan una semana o más sin practicar');
+    expect(lista[0].personas).toEqual([{ id: 3, nombre: 'Camila', nota: 'hace 9 días' }, { id: 4, nombre: 'Andrés', nota: 'aún no ha practicado' }]);
+    expect(lista[0].acciones[0]).toEqual({ texto: 'Escribirles', to: '/docente/mensajes' });
+    // y la pantalla muestra la semana frente a la anterior
+    expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain('api.get<SemanaHoy>(`/analytics/class/${classId}/semana`)');
+  });
+
   it('una entrega en borrador, ya cerrada o que cierra en más de 3 días no aparece como «cierra pronto»', () => {
     const base = { id: 1, titulo: 'E', publicada: true, estudiantes: 5, conteo: { sin_entregar: 2, por_revisar: 0, revisada: 0 } };
     const entregas = [

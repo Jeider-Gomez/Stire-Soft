@@ -37,6 +37,8 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
 - **Tope estilo ASSISTments:** con 3 fallos seguidos en una lección, STIRE deja de proponer «otro ejercicio» como
   primer paso: propone volver a la explicación o pedir una pista (el ejercicio sigue disponible), y el docente recibe un
   aviso, uno por racha (BT-16).
+- **Resumen de la semana en «Hoy»:** quiénes practicaron, ejercicios y aprobados frente a la semana anterior, y un
+  pendiente con quien lleva 7 días o más sin practicar, con «Escribirles» (BT-17).
 - **Tutor con ayuda ampliada en un refuerzo:** en un ejercicio de un refuerzo, la ayuda empieza un nivel más arriba
   (pregunta guía desde el primer intento) y el Tutor explica la idea de otra forma; el tope del docente sigue mandando y
   la solución nunca se da. El chat avisa «Ayuda ampliada: este ejercicio es parte de tu refuerzo». Los retos no la

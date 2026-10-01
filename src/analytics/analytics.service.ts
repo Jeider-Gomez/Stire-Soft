@@ -14,6 +14,7 @@ import { Activity } from '../activities/entities/activity.entity';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { construirMapaDeCalor, MapaDeCalor } from './mapa-de-calor';
+import { construirResumenSemanal, ResumenSemanal } from './resumen-semanal';
 
 @Injectable()
 export class AnalyticsService {
@@ -323,6 +324,56 @@ export class AnalyticsService {
           fecha: new Date((f.submittedAt ?? f.createdAt) as string | Date),
         };
       }),
+      ahora,
+    });
+  }
+
+  /**
+   * GET /analytics/class/:classId/semana — resumen de la semana para «Hoy» (docs/DISENO_INTERVENCION_DOCENTE.md §4.4):
+   * esta semana frente a la anterior y quién lleva 7 días o más sin practicar. Solo el docente de la clase o un admin.
+   */
+  async getResumenSemanal(classId: number, requestingUser: { id: number; role: string }, ahora = new Date()): Promise<ResumenSemanal> {
+    const cls = await this.dataSource.getRepository(Class).findOne({ where: { id: classId } });
+    if (!cls) throw new NotFoundException('La clase no existe.');
+    if (requestingUser.role === 'estudiante') throw new ForbiddenException('Los estudiantes no tienen permiso para ver métricas de clase.');
+    if (requestingUser.role === 'docente' && cls.teacherId !== requestingUser.id) throw new ForbiddenException('No tienes acceso a las métricas de esta clase.');
+
+    const matriculas = await this.dataSource.getRepository(Enrollment).find({ where: { classId, status: EnrollmentStatus.ACTIVE }, relations: ['student'] });
+    const estudiantes = matriculas.map((m) => ({ id: m.studentId, nombre: m.student?.fullName ?? '—' }));
+    const idsUnidad = await this.idsUnidadesDeClase(classId, false);
+    const idsEstudiante = estudiantes.map((e) => e.id);
+    if (idsUnidad.length === 0 || idsEstudiante.length === 0) {
+      return construirResumenSemanal({ estudiantes, intentos: [], ultimaActividad: new Map(), ahora });
+    }
+
+    const base = () => this.dataSource.getRepository(Submission).createQueryBuilder('sub')
+      .innerJoin(Activity, 'a', 'a.id = sub.activityId')
+      .where('sub.studentId IN (:...idsEstudiante)', { idsEstudiante })
+      .andWhere('a.learningUnitId IN (:...idsUnidad)', { idsUnidad })
+      .andWhere('sub.status = :calificada', { calificada: SubmissionStatus.GRADED });
+    // 15 días hacia atrás alcanzan para las dos semanas, contadas en días de Colombia.
+    const desde = new Date(ahora.getTime() - 15 * 24 * 60 * 60 * 1000);
+    const recientes = await base()
+      .andWhere('COALESCE(sub.submittedAt, sub.createdAt) >= :desde', { desde })
+      .select(['sub.studentId AS studentId', 'sub.score AS score', 'sub.submittedAt AS submittedAt', 'sub.createdAt AS createdAt', 'a.totalPoints AS totalPoints', 'a.passingScore AS passingScore'])
+      .getRawMany<Record<string, string | number | Date | null>>();
+    const ultimas = await base()
+      .select('sub.studentId', 'studentId')
+      .addSelect('MAX(COALESCE(sub.submittedAt, sub.createdAt))', 'ultima')
+      .groupBy('sub.studentId')
+      .getRawMany<{ studentId: number; ultima: string | Date }>();
+
+    return construirResumenSemanal({
+      estudiantes,
+      intentos: recientes.map((f) => {
+        const total = Number(f.totalPoints);
+        return {
+          studentId: Number(f.studentId),
+          aprobado: total > 0 && (Number(f.score) / total) * 100 >= Number(f.passingScore),
+          fecha: new Date((f.submittedAt ?? f.createdAt) as string | Date),
+        };
+      }),
+      ultimaActividad: new Map(ultimas.map((u) => [Number(u.studentId), new Date(u.ultima)])),
       ahora,
     });
   }
