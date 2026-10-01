@@ -31,6 +31,19 @@ describe('andamiaje progresivo — tutor-guidance', () => {
     expect(await service.buildSystemPrompt(1, {}, 2)).not.toContain('REFUERZO');
   });
 
+  it('en un proyecto propio el prompt dice cuál es, pide guiar sin escribir el proyecto y ve más código que en un ejercicio', async () => {
+    const service = new TutorContextService({ find: jest.fn().mockResolvedValue([]) } as any);
+    const codigo = 'x'.repeat(3000);
+    const prompt = await service.buildSystemPrompt(1, { proyectoTitulo: 'Mi\npágina', proyectoTipo: 'web', currentCode: codigo });
+    expect(prompt).toContain('Proyecto propio abierto: «Mi página», una página web');
+    expect(prompt).toContain('EL ESTUDIANTE ESTÁ EN SU PROYECTO PROPIO');
+    expect(prompt).toContain('NO escribas el proyecto por él');
+    expect(prompt).toContain('x'.repeat(3000));
+    // en un ejercicio, el código se sigue recortando a 1500
+    expect(await service.buildSystemPrompt(1, { currentCode: codigo })).not.toContain('x'.repeat(1501));
+    expect(await service.buildSystemPrompt(1, {})).not.toContain('PROYECTO PROPIO');
+  });
+
   it('ningún nivel autoriza entregar la solución completa', () => {
     for (const level of [1, 2, 3] as const) {
       expect(guidanceInstruction(level)).toMatch(/No |NO /);

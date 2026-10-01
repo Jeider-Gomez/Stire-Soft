@@ -80,6 +80,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { ArrowLeft, Check, Download, Loader2, Plus, Trash2 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
+import { useTutorStore } from '~/stores/tutor'
 import { descargarHtml as bajarHtml, descargarZip as bajarZip } from '~/utils/descargaProyecto'
 import type { ArchivoProyecto } from '~/utils/proyectoNavegador'
 
@@ -93,6 +94,10 @@ const { messageOf } = useApiErrorMessage()
 
 const proyecto = ref<Proyecto | null>(null)
 const cargando = ref(true)
+// El Tutor ve el proyecto abierto y guía en él (docs/DISENO_PROYECTOS.md, fase 3); al salir, deja de verlo.
+const tutorStore = useTutorStore()
+watch(proyecto, (p) => tutorStore.setProyectoAbierto(p ? { titulo: p.titulo, tipo: p.tipo, archivos: p.archivos } : null), { deep: true })
+onBeforeUnmount(() => tutorStore.setProyectoAbierto(null))
 const error = ref<string | null>(null)
 const actual = ref(0)
 const estadoGuardado = ref<'guardado' | 'pendiente' | 'guardando' | 'error'>('guardado')

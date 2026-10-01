@@ -68,7 +68,9 @@ y las clases de prueba de Laura). Siempre disponible para probarlo; nadie más l
 2. **Enviar al docente:** copia congelada, versiones, comentario, activación por clase. **✅ Hecha el 30/09** (`/proyecto-envios`,
    «Proyectos» en el menú del docente). El mismo día Proyectos se abrió a todos (`PROYECTOS_MODO=todos` por defecto): corre en el
    navegador y casi no gasta servidor.
-3. **Tutor IA en Proyectos**, en modo guía.
+3. **Tutor IA en Proyectos**, en modo guía. **✅ Hecha el 01/10:** el Tutor ve el proyecto abierto (título, tipo y todos sus
+   archivos), pregunta qué quiere lograr el estudiante, señala dónde está un problema y propone el siguiente paso; no escribe
+   el proyecto (un bloque de código largo en su respuesta se sustituye por un aviso). Respeta si el docente lo desactivó.
 4. **Pseudocódigo y diagramas de flujo** para el curso sin código.
 
 ## 9. Decisiones del dueño (2026-09-30)

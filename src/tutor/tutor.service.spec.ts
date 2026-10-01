@@ -360,6 +360,16 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
       expect(contextService.buildSystemPrompt.mock.calls[0][3]).toBe('breve');
     });
 
+    it('en un proyecto propio (sin actividad) también omite un programa completo: el Tutor guía, no escribe el proyecto', async () => {
+      fetchMock.mockResolvedValue(geminiOk('Prueba esto:\n```javascript\n' + LONG_PROGRAM + '\n```'));
+
+      const result = await service.sendMessage(STUDENT, 'hazme la calculadora', { proyectoTitulo: 'Mi calculadora', proyectoTipo: 'javascript', currentCode: '' });
+
+      expect(result.guidanceLevel).toBeNull();
+      expect(result.message).toContain('Bloque de código omitido');
+      expect(result.message).not.toContain('suma += i');
+    });
+
     it('dentro de una actividad omite un programa completo que sería la solución', async () => {
       fetchMock.mockResolvedValue(geminiOk('Prueba esto:\n```javascript\n' + LONG_PROGRAM + '\n```'));
 

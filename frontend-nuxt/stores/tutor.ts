@@ -36,6 +36,14 @@ export const useTutorStore = defineStore('tutor', () => {
   // ─── Nivel de guía y orientación (§18.4, §21.2) ───────────────────────────
   /** null = no hay actividad activa (chips ocultos) */
   const guidanceLevel = ref<1 | 2 | 3 | null>(null)
+  /**
+   * El proyecto propio abierto (docs/DISENO_PROYECTOS.md, fase 3): la página del proyecto lo pone y lo quita. Con él, el
+   * Tutor guía en el proyecto en vez de en un ejercicio.
+   */
+  const proyectoAbierto = ref<{ titulo: string; tipo: 'web' | 'javascript'; archivos: Array<{ nombre: string; contenido: string }> } | null>(null)
+  function setProyectoAbierto(p: typeof proyectoAbierto.value) {
+    proyectoAbierto.value = p
+  }
   const tutorEnabled = ref(true)
   const dueReviews = ref<TutorGuidance['dueReviews']>(null)
   const contentLink = ref<TutorGuidance['contentLink']>(null)
@@ -247,7 +255,16 @@ export const useTutorStore = defineStore('tutor', () => {
         guidanceLevel?: 1 | 2 | 3 | null
       }>('/tutor/chat', {
         message: userText,
-        context: {
+        context: proyectoAbierto.value && route.path.startsWith('/estudiante/proyectos/')
+          ? {
+              currentRoute: route.path,
+              proyectoTitulo: proyectoAbierto.value.titulo,
+              proyectoTipo: proyectoAbierto.value.tipo,
+              // Todos los archivos, cada uno con su nombre, para que el Tutor vea el proyecto completo.
+              currentCode: proyectoAbierto.value.archivos.map((a) => `/* ${a.nombre} */\n${a.contenido}`).join('\n\n'),
+              codeLanguage: proyectoAbierto.value.tipo === 'web' ? 'html' : 'javascript',
+            }
+          : {
           currentRoute: route.path,
           unitTitle: workspaceStore.currentExercise?.unitTitle || studentStore.activeUnit?.title,
           learningUnitId: studentStore.activeUnit?.id,
@@ -336,6 +353,8 @@ export const useTutorStore = defineStore('tutor', () => {
     thinkingSeconds,
     messages,
     guidanceLevel,
+    proyectoAbierto,
+    setProyectoAbierto,
     tutorEnabled,
     dueReviews,
     contentLink,

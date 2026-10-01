@@ -39,6 +39,8 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
   aviso, uno por racha (BT-16).
 - **Resumen de la semana en «Hoy»:** quiénes practicaron, ejercicios y aprobados frente a la semana anterior, y un
   pendiente con quien lleva 7 días o más sin practicar, con «Escribirles» (BT-17).
+- **Tutor en Proyectos (fase 3):** en «Mis proyectos» el Tutor ve el proyecto abierto y guía (pregunta, señala el
+  problema, propone el siguiente paso) sin escribirlo; el código largo en su respuesta se omite (BT-19).
 - **Código inicial en las entregas:** el docente da un punto de partida (una página a medio hacer, un programa con la
   estructura lista) con el editor de código; cada estudiante recibe su copia con «Empezar desde la plantilla».
 - **«Sugerencias» desde cualquier pantalla** (antes «Reportar»; el dueño pidió un nombre sin carga negativa): problema,

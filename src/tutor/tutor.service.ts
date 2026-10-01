@@ -126,10 +126,11 @@ export class TutorService {
 
     const rawReply = await this.callGemini(apiKey, systemPrompt, history, message);
 
-    // Dentro de una actividad, un bloque de código largo se sustituye por un aviso (barrera en código
-    // contra dar la solución completa; ver tutor-solution-guard.ts).
+    // Dentro de una actividad o de un proyecto propio, un bloque de código largo se sustituye por un aviso (barrera en
+    // código contra dar la solución o escribir el proyecto; ver tutor-solution-guard.ts).
     let replyText = rawReply;
-    if (guidanceLevel !== null) {
+    const enProyecto = typeof context?.proyectoTitulo === 'string' && context.proyectoTitulo.trim() !== '';
+    if (guidanceLevel !== null || enProyecto) {
       const guarded = limitCodeBlocks(rawReply, {
         studentCode: typeof context?.currentCode === 'string' ? context.currentCode : undefined,
         studentMessage: message,

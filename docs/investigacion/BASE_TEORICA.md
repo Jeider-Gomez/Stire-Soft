@@ -208,6 +208,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Ajustes → «Compartir como plantilla con otros docentes»; al crear una clase, «Copiar el contenido de → Plantillas de otros docentes»; en Contenido, «Traer de otra clase». |
 | **Trazabilidad** | `classes.compartidaComoPlantilla` (migración 1790800000000); `src/reuse/reuse.service.ts` (`plantillas`, `modulosParaCopiar`, `assertPuedeCopiarDe`); `frontend-nuxt/utils/plantillas.ts`; `docs/DISENO_CLASES_Y_DOCENTES.md`. |
 
+## BT-19. En un proyecto propio, el Tutor guía y no escribe el proyecto
+
+| | |
+|---|---|
+| **Problema observado** | En «Mis proyectos» el Tutor no sabía qué proyecto tenía abierto el estudiante ni veía su código, y fuera de un ejercicio no tenía la barrera contra entregar código completo: podía terminar escribiendo el proyecto. |
+| **Decisión** | En un proyecto, el Tutor recibe el título, el tipo y todos los archivos. Su instrucción es guiar: preguntar qué quiere lograr el estudiante, señalar dónde está un problema y por qué, y proponer el siguiente paso pequeño. Un bloque de código largo en su respuesta se sustituye por un aviso, igual que en los ejercicios. |
+| **Fundamento** | - Sin barreras, la IA mejora el desempeño mientras está disponible y lo empeora cuando se retira; un tutor diseñado para dar pistas mitiga ese daño (Bastani et al., 2025).<br>- El proyecto es práctica libre: el aprendizaje está en construirlo, y el andamiaje debe dar la ayuda mínima necesaria (Koedinger y Aleven, 2007, matriz #6). |
+| **Cómo se materializa** | El chat del Tutor en la página de un proyecto. |
+| **Trazabilidad** | `frontend-nuxt/stores/tutor.ts` (`proyectoAbierto`), `pages/estudiante/proyectos/[id].vue`; `src/tutor/tutor-context.service.ts` (sección de proyecto), `tutor.service.ts` (barrera también en proyectos); pruebas `tutor-proyectos.frontend.spec.ts`, `tutor.service.spec.ts`, `tutor-guidance.spec.ts`. |
+
 ---
 
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)

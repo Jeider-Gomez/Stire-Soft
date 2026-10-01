@@ -30,8 +30,13 @@ export class TutorContextService {
       if (context.currentRoute) parts.push(`Ubicación en la plataforma: ${context.currentRoute}`);
       if (context.unitTitle) parts.push(`Unidad actual: "${context.unitTitle}" (ID: ${context.learningUnitId || 'N/A'})`);
       if (context.activityTitle) parts.push(`Actividad / Ejercicio actual: "${context.activityTitle}" (ID: ${context.activityId || 'N/A'})`);
+      if (typeof context.proyectoTitulo === 'string' && context.proyectoTitulo.trim()) {
+        const tipo = context.proyectoTipo === 'web' ? 'una página web (HTML, CSS y JavaScript)' : 'un programa de JavaScript';
+        parts.push(`Proyecto propio abierto: «${context.proyectoTitulo.replace(/\s+/g, ' ').slice(0, 100)}», ${tipo}`);
+      }
       if (context.currentCode && typeof context.currentCode === 'string' && context.currentCode.trim()) {
-        const truncatedCode = context.currentCode.trim().slice(0, 1500);
+        // Un proyecto tiene varios archivos: se le da más espacio que a un ejercicio.
+        const truncatedCode = context.currentCode.trim().slice(0, context.proyectoTitulo ? 4000 : 1500);
         // Fase 26: en un ejercicio de HTML y CSS el código es HTML/CSS, no JavaScript (lista blanca: el cliente no puede colar texto en la valla).
         const codeLanguage = isHighlightLanguage(context.codeLanguage) ? context.codeLanguage : 'javascript';
         parts.push(`Código actual en el editor del estudiante:\n\`\`\`${codeLanguage}\n${truncatedCode}\n\`\`\``);
@@ -69,6 +74,13 @@ EL ESTUDIANTE ESTÁ EN UN REFUERZO que le asignó su docente («${refuerzo.repla
 `
       : '';
 
+    // Proyectos (docs/DISENO_PROYECTOS.md §5, fase 3): no se califican, pero son del estudiante. El Tutor GUÍA.
+    const proyectoSection = context && typeof context === 'object' && typeof context.proyectoTitulo === 'string' && context.proyectoTitulo.trim()
+      ? `
+EL ESTUDIANTE ESTÁ EN SU PROYECTO PROPIO (no es un ejercicio calificado). Modo guía: pregúntale qué quiere lograr, señala dónde está un problema y por qué, y propón el siguiente paso pequeño. NO escribas el proyecto por él ni bloques largos de código; como mucho, una o dos líneas de ejemplo de una idea.
+`
+      : '';
+
     const styleLine = style ? styleInstruction(style) : null;
     const styleSection = styleLine ? `\n${styleLine}\n` : '';
 
@@ -76,7 +88,7 @@ EL ESTUDIANTE ESTÁ EN UN REFUERZO que le asignó su docente («${refuerzo.repla
 Eres el Tutor Inteligente de STIRE (Smart Tutor for Interactive & Responsive Education), para el curso de Algoritmos Básicos con HTML5, CSS y JavaScript para Desarrollo Web.
 Actualmente estás orientando a un estudiante de nivel ${level} (Maestría Global: ${Math.round(avgMastery)}%).
 ${locationContext}
-${recentProgressSection}${guidanceSection}${refuerzoSection}${styleSection}
+${recentProgressSection}${guidanceSection}${refuerzoSection}${proyectoSection}${styleSection}
 REGLAS PEDAGÓGICAS ESTRICTAS:
 1. NUNCA resuelvas el ejercicio directamente ni des la respuesta o el código completo.
 2. Utiliza el Método Socrático: responde con una pregunta orientadora, pista conceptual o metáfora según su código.
