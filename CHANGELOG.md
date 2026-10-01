@@ -29,10 +29,11 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
   que falta; el docente pone las notas manuales y ajusta la final con motivo obligatorio, con historial. «Descargar para
   Moodle (CSV)» para «Importar calificaciones». Si el docente lo activa, el estudiante ve «Tu nota en esta clase» en
   «Mi progreso», sin el motivo de los ajustes.
-- **Notas flexibles y opcionales** (decisión del dueño): una clase puede no llevar notas; si las lleva, el docente
-  empieza con una sola nota, una por módulo o práctica + entregas + parcial, y cambia todo: con porcentajes o sin ellos
-  (promedio simple), lecciones elegidas por módulo entero, y «Dejar de usar notas» sin perder lo puesto. Migración
-  1790700000000 (`usarPesos`).
+- **Notas a la manera del docente** (decisión del dueño): una clase puede no llevar notas. Si las lleva, cada nota
+  sale de STIRE (dominio, entregas) o la pone el docente (también actividades presenciales); es del curso entero o de un
+  módulo, y cada módulo con notas tiene su nota de módulo; en cada nivel usa porcentajes (sin obligar a sumar 100: se
+  reparten en proporción) o promedia; y puede no calcular final y solo registrar. «Dejar de usar notas» sin perder lo
+  puesto. Migración 1790700000000 (`calculo`, `grupos`).
 - **Tutor con ayuda ampliada en un refuerzo:** en un ejercicio de un refuerzo, la ayuda empieza un nivel más arriba
   (pregunta guía desde el primer intento) y el Tutor explica la idea de otra forma; el tope del docente sigue mandando y
   la solución nunca se da. El chat avisa «Ayuda ampliada: este ejercicio es parte de tu refuerzo». Los retos no la

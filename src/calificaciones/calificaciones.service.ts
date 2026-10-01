@@ -5,7 +5,7 @@ import { EsquemaCalificacion } from './entities/esquema-calificacion.entity';
 import { NotaRegistrada } from './entities/nota-registrada.entity';
 import { NotaHistorial } from './entities/nota-historial.entity';
 import {
-  CalificacionInvalidaError, CLAVE_FINAL, construirLibro, validarEsquema, validarMotivo, validarNota,
+  CalificacionInvalidaError, CLAVE_FINAL, construirLibro, nombreNotaModulo, validarEsquema, validarMotivo, validarNota,
   type Esquema, type EntradaLibro,
 } from './calificacion-reglas';
 import { Entrega } from '../proyectos/entities/entrega.entity';
@@ -53,15 +53,16 @@ export class CalificacionesService {
     return filas.map((f) => ({ id: Number(f.id), titulo: f.title, moduloId: Number(f.moduloId), modulo: f.modulo }));
   }
 
-  /** Módulos publicados con sus lecciones, en orden. */
-  private modulos(lecciones: Array<{ id: number; moduloId: number; modulo: string }>): Array<{ id: number; titulo: string; lecciones: number[] }> {
-    const mapa = new Map<number, { id: number; titulo: string; lecciones: number[] }>();
-    for (const l of lecciones) {
-      const m = mapa.get(l.moduloId) ?? { id: l.moduloId, titulo: l.modulo, lecciones: [] };
-      m.lecciones.push(l.id);
-      mapa.set(l.moduloId, m);
-    }
-    return [...mapa.values()];
+  /**
+   * Todos los módulos de la clase, en orden, con sus lecciones publicadas. Un módulo aún sin publicar aparece (el docente
+   * puede preparar su nota, por ejemplo la de un corte que viene) pero sin lecciones: su dominio no cuenta todavía.
+   */
+  private async modulos(classId: number, lecciones: Array<{ id: number; moduloId: number }>): Promise<Array<{ id: number; titulo: string; lecciones: number[] }>> {
+    const filas: Array<{ id: number; title: string }> = await this.esquemas.manager.query(
+      'SELECT s.id AS id, s.title AS title FROM sections s WHERE s.classId = ? ORDER BY s.`order`, s.id',
+      [classId],
+    );
+    return filas.map((f) => ({ id: Number(f.id), titulo: f.title, lecciones: lecciones.filter((l) => l.moduloId === Number(f.id)).map((l) => l.id) }));
   }
 
   private async todasLasLecciones(classId: number): Promise<Set<number>> {
@@ -83,7 +84,7 @@ export class CalificacionesService {
   }
 
   private aEsquema(e: EsquemaCalificacion): Esquema {
-    return { componentes: e.componentes, usarPesos: e.usarPesos, notaAprobatoria: e.notaAprobatoria, visibleParaEstudiantes: e.visibleParaEstudiantes };
+    return { componentes: e.componentes, calculo: e.calculo, grupos: e.grupos ?? [], notaAprobatoria: e.notaAprobatoria, visibleParaEstudiantes: e.visibleParaEstudiantes };
   }
 
   /** Los datos que necesita el cálculo, para toda la clase o para un estudiante. */
@@ -93,6 +94,7 @@ export class CalificacionesService {
       this.estudiantes(classId, soloEstudiante),
       this.entregas.find({ where: { classId }, order: { createdAt: 'ASC' } }),
     ]);
+    const modulos = await this.modulos(classId, lecciones);
     const ids = estudiantes.map((e) => e.id);
     const idsLeccion = [...new Set([...lecciones.map((l) => l.id), ...esquema.componentes.flatMap((c) => c.lecciones ?? [])])];
     const [progresos, envios, registradas] = await Promise.all([
@@ -109,7 +111,7 @@ export class CalificacionesService {
     return {
       lecciones,
       entrada: {
-        esquema, estudiantes, dominio, ahora: new Date(),
+        esquema, estudiantes, dominio, modulos, ahora: new Date(),
         lecciones: lecciones.map((l) => l.id),
         entregas: entregas.map((e) => ({ id: e.id, titulo: e.titulo, conNota: e.conNota, publicada: e.publicada, asignadaA: e.asignadaA, cierraAt: e.cierraAt, aceptaTarde: e.aceptaTarde })),
         envios: envios.map((v) => ({ entregaId: v.entregaId, studentId: v.studentId, version: v.version, nota: v.nota, revisadoAt: v.revisadoAt })),
@@ -127,13 +129,13 @@ export class CalificacionesService {
   async libro(user: User, classId: number) {
     await this.autorizacion.assertTeacherOwnsClass(user, classId);
     const guardado = await this.esquemas.findOne({ where: { classId } });
-    const esquema = guardado ? this.aEsquema(guardado) : { componentes: [], usarPesos: false, notaAprobatoria: 3, visibleParaEstudiantes: false };
+    const esquema: Esquema = guardado ? this.aEsquema(guardado) : { componentes: [], calculo: 'promedio', grupos: [], notaAprobatoria: 3, visibleParaEstudiantes: false };
     const { entrada, lecciones } = await this.entrada(classId, esquema);
     const { filas, resumen } = guardado ? construirLibro(entrada) : { filas: [], resumen: { promedio: null, aprueban: 0, reprueban: 0, sinNota: 0 } };
     return {
       esquema: guardado ? esquema : null,
       actualizadoAt: guardado?.updatedAt ?? null,
-      modulos: this.modulos(lecciones),
+      modulos: entrada.modulos,
       lecciones: lecciones.map((l) => ({ id: l.id, titulo: l.titulo })),
       entregas: entrada.entregas.filter((e) => e.conNota).map((e) => ({ id: e.id, titulo: e.titulo, publicada: e.publicada })),
       filas,
@@ -161,6 +163,10 @@ export class CalificacionesService {
     const entregas = new Set((await this.entregas.find({ where: { classId } })).map((e) => e.id));
     if (esquema.componentes.some((c) => (c.entregas ?? []).some((id) => !entregas.has(id)))) {
       throw new BadRequestException('Alguna entrega elegida no es de esta clase.');
+    }
+    const modulos = new Set((await this.modulos(classId, [])).map((m) => m.id));
+    if (esquema.componentes.some((c) => c.moduloId !== null && !modulos.has(c.moduloId))) {
+      throw new BadRequestException('Algún módulo elegido no es de esta clase.');
     }
     const actual = await this.esquemas.findOne({ where: { classId } });
     await this.esquemas.save(this.esquemas.create({ ...(actual ?? {}), classId, ...esquema, updatedBy: user.id }));
@@ -219,8 +225,13 @@ export class CalificacionesService {
     return {
       visible: true as const,
       notaAprobatoria: esquema.notaAprobatoria,
-      usarPesos: esquema.usarPesos,
-      componentes: esquema.componentes.map((c) => ({ clave: c.clave, nombre: c.nombre, tipo: c.tipo, peso: c.peso, ...fila.componentes[c.clave] })),
+      calculo: esquema.calculo,
+      componentes: esquema.componentes.map((c) => ({
+        clave: c.clave, nombre: c.nombre, tipo: c.tipo, peso: c.peso, moduloId: c.moduloId, ...fila.componentes[c.clave],
+      })),
+      modulos: esquema.grupos.map((g) => ({
+        moduloId: g.moduloId, calculo: g.calculo, peso: g.peso, nombre: nombreNotaModulo(entrada, g.moduloId), nota: fila.modulos[String(g.moduloId)]?.nota ?? null,
+      })),
       propuesta: fila.propuesta,
       faltan: fila.faltan,
       ajustada: fila.ajuste !== null,

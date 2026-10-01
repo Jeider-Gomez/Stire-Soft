@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CalificacionesService } from './calificaciones.service';
 import { CalificacionesController } from './calificaciones.controller';
-import { construirLibro, notaPropuesta, redondear, validarEsquema, validarMotivo, validarNota, type Esquema, type EntradaLibro } from './calificacion-reglas';
+import { combinar, construirLibro, redondear, validarEsquema, validarMotivo, validarNota, type Esquema, type EntradaLibro } from './calificacion-reglas';
 import { User, UserRole } from '../user/entities/user.entity';
 
 type Deps = ConstructorParameters<typeof CalificacionesService>;
@@ -17,11 +17,12 @@ const manana = new Date('2026-10-01T15:00:00Z');
 /** Una de las formas que el docente puede armar: práctica + entregas + parcial, con porcentajes. */
 const esquemaSugerido = (): Esquema => ({
   componentes: [
-    { clave: 'practica', nombre: 'Práctica (dominio de las lecciones)', tipo: 'dominio', peso: 40, lecciones: null, entregas: null },
-    { clave: 'entregas', nombre: 'Entregas', tipo: 'entregas', peso: 30, lecciones: null, entregas: null },
-    { clave: 'parcial', nombre: 'Parcial', tipo: 'manual', peso: 30, lecciones: null, entregas: null },
+    { clave: 'practica', nombre: 'Práctica (dominio de las lecciones)', tipo: 'dominio', peso: 40, moduloId: null, lecciones: null, entregas: null },
+    { clave: 'entregas', nombre: 'Entregas', tipo: 'entregas', peso: 30, moduloId: null, lecciones: null, entregas: null },
+    { clave: 'parcial', nombre: 'Parcial', tipo: 'manual', peso: 30, moduloId: null, lecciones: null, entregas: null },
   ],
-  usarPesos: true,
+  calculo: 'porcentajes',
+  grupos: [],
   notaAprobatoria: 3,
   visibleParaEstudiantes: false,
 });
@@ -36,7 +37,7 @@ describe('Calificaciones: reglas', () => {
     expect(redondear(4.25)).toBe(4.3);
   });
 
-  it('el esquema suma 100 %, conserva las claves, crea las que faltan y no deja usar «final»', () => {
+  it('conserva las claves, crea las que faltan y no deja usar «final»; valida tipo, lecciones y porcentajes', () => {
     const e = validarEsquema({ componentes: [
       { clave: 'practica', nombre: 'Práctica', tipo: 'dominio', peso: 40 },
       { nombre: 'Entregas', tipo: 'entregas', peso: 30, entregas: [3, 3] },
@@ -44,12 +45,15 @@ describe('Calificaciones: reglas', () => {
     ] });
     expect(e.componentes.map((c) => c.clave)).toEqual(['practica', 'c2', 'c3']);
     expect(e.componentes[1].entregas).toEqual([3]);
-    expect(e.componentes[0].lecciones).toBeNull();
-    expect(e).toMatchObject({ notaAprobatoria: 3, visibleParaEstudiantes: false });
-    expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'manual', peso: 60 }, { nombre: 'B', tipo: 'manual', peso: 30 }] })).toThrow('suman 90 %');
-    expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'rubrica', peso: 100 }] })).toThrow('tipo');
-    expect(() => validarEsquema({ componentes: [] })).toThrow('al menos un componente');
-    expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'dominio', peso: 100, lecciones: [] }] })).toThrow('al menos una opción');
+    expect(e.componentes[0]).toMatchObject({ lecciones: null, moduloId: null });
+    expect(e).toMatchObject({ calculo: 'promedio', grupos: [], notaAprobatoria: 3, visibleParaEstudiantes: false });
+    expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'rubrica' }] })).toThrow('tipo');
+    expect(() => validarEsquema({ componentes: [] })).toThrow('al menos una nota');
+    expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'dominio', lecciones: [] }] })).toThrow('al menos una opción');
+    expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'manual', peso: 120 }] })).toThrow('0 a 100');
+    expect(() => validarEsquema({ calculo: 'magia', componentes: [{ nombre: 'A', tipo: 'manual' }] })).toThrow('cómo se calcula');
+    // la primera versión mandaba usarPesos
+    expect(validarEsquema({ usarPesos: true, componentes: [{ nombre: 'A', tipo: 'manual', peso: 100 }] }).calculo).toBe('porcentajes');
   });
 
   it('práctica + entregas + parcial con porcentajes es válido tal cual', () => {
@@ -57,16 +61,26 @@ describe('Calificaciones: reglas', () => {
     expect(validarEsquema({ ...s })).toEqual(s);
   });
 
-  it('flexible: una sola nota del docente, o varias sin porcentajes (la final es el promedio simple)', () => {
-    expect(validarEsquema({ componentes: [{ nombre: 'Nota', tipo: 'manual' }], usarPesos: false }).componentes[0]).toMatchObject({ nombre: 'Nota', peso: 0 });
-    const porModulo = validarEsquema({ usarPesos: false, componentes: [
-      { nombre: 'Módulo 1', tipo: 'dominio', lecciones: [30] }, { nombre: 'Módulo 2', tipo: 'dominio', lecciones: [31] },
-    ] });
-    expect(porModulo.usarPesos).toBe(false);
-    expect(notaPropuesta(porModulo.componentes, { c1: { nota: 4, detalle: '' }, c2: { nota: 3, detalle: '' } }, false)).toEqual({ propuesta: 3.5, faltan: [] });
-    expect(notaPropuesta(porModulo.componentes, { c1: { nota: 4, detalle: '' }, c2: { nota: null, detalle: '' } }, false)).toEqual({ propuesta: 4, faltan: ['Módulo 2'] });
-    // con porcentajes sí deben sumar 100
-    expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'manual', peso: 50 }] })).toThrow('quita los porcentajes');
+  it('a su manera: los porcentajes no tienen que sumar 100 (se reparten en proporción) y 0 = se registra pero no cuenta', () => {
+    expect(combinar([{ nombre: 'A', nota: 4, peso: 20 }, { nombre: 'B', nota: 2, peso: 20 }], 'porcentajes')).toEqual({ nota: 3, faltan: [] });
+    expect(combinar([{ nombre: 'A', nota: 4, peso: 30 }, { nombre: 'Asistencia', nota: 1, peso: 0 }], 'porcentajes')).toEqual({ nota: 4, faltan: [] });
+    expect(combinar([{ nombre: 'A', nota: 4, peso: 0 }, { nombre: 'B', nota: 3, peso: 90 }], 'promedio')).toEqual({ nota: 3.5, faltan: [] });
+    expect(combinar([{ nombre: 'A', nota: null, peso: 50 }], 'porcentajes')).toEqual({ nota: null, faltan: ['A'] });
+  });
+
+  it('cada nota es del curso o de un módulo; cada módulo con notas tiene su grupo (por defecto promedia y no pesa)', () => {
+    const e = validarEsquema({
+      calculo: 'porcentajes',
+      componentes: [
+        { nombre: 'Quiz en clase', tipo: 'manual', moduloId: 2, peso: 40 },
+        { nombre: 'Taller', tipo: 'manual', moduloId: 2, peso: 60 },
+        { nombre: 'Práctica', tipo: 'dominio', moduloId: 3 },
+        { nombre: 'Final', tipo: 'manual', moduloId: null, peso: 40 },
+      ],
+      grupos: [{ moduloId: 2, calculo: 'porcentajes', peso: 30 }, { moduloId: 99, calculo: 'promedio', peso: 50 }],
+    });
+    expect(e.grupos).toEqual([{ moduloId: 2, calculo: 'porcentajes', peso: 30 }, { moduloId: 3, calculo: 'promedio', peso: 0 }]);
+    expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'manual', moduloId: -1 }] })).toThrow('módulo');
   });
 
   it('el ajuste de la final exige motivo; una nota manual no', () => {
@@ -75,13 +89,6 @@ describe('Calificaciones: reglas', () => {
     expect(validarMotivo('  Presentó el supletorio  ', true)).toBe('Presentó el supletorio');
     expect(validarMotivo('', false)).toBeNull();
   });
-
-  it('la propuesta reparte el peso entre lo que ya tiene nota y dice qué falta', () => {
-    const { componentes } = esquemaSugerido();
-    expect(notaPropuesta(componentes, { practica: { nota: 4, detalle: '' }, entregas: { nota: 3, detalle: '' }, parcial: { nota: null, detalle: '' } }))
-      .toEqual({ propuesta: 3.6, faltan: ['Parcial'] }); // (40·4 + 30·3) / 70 = 3,57
-    expect(notaPropuesta(componentes, {})).toEqual({ propuesta: null, faltan: ['Práctica (dominio de las lecciones)', 'Entregas', 'Parcial'] });
-  });
 });
 
 describe('Calificaciones: el libro', () => {
@@ -89,6 +96,7 @@ describe('Calificaciones: el libro', () => {
     esquema: esquemaSugerido(),
     estudiantes: [{ id: 5, nombre: 'Luisa', email: 'luisa@x.co' }, { id: 6, nombre: 'Julián', email: 'julian@x.co' }],
     lecciones: [30, 31],
+    modulos: [{ id: 2, titulo: 'Módulo 1', lecciones: [30] }, { id: 3, titulo: 'Módulo 2', lecciones: [31] }],
     dominio: new Map([[5, new Map([[30, 90], [31, 70]])]]),
     entregas: [
       { id: 1, titulo: 'Calculadora', conNota: true, publicada: true, asignadaA: null, cierraAt: ayer, aceptaTarde: false },
@@ -131,8 +139,40 @@ describe('Calificaciones: el libro', () => {
   });
 
   it('un componente de dominio con lecciones elegidas solo mira esas', () => {
-    const esquema = { ...esquemaSugerido(), componentes: [{ clave: 'corte1', nombre: 'Corte 1', tipo: 'dominio' as const, peso: 100, lecciones: [31], entregas: null }] };
+    const esquema = { ...esquemaSugerido(), componentes: [{ clave: 'corte1', nombre: 'Corte 1', tipo: 'dominio' as const, peso: 100, moduloId: null, lecciones: [31], entregas: null }] };
     expect(construirLibro(entrada({ esquema })).filas[0].componentes.corte1.nota).toBe(3.5);
+  });
+
+  it('notas por módulo: el dominio de un módulo mira sus lecciones, el módulo tiene su nota y la final combina módulos y notas del curso', () => {
+    const esquema: Esquema = {
+      calculo: 'porcentajes',
+      componentes: [
+        { clave: 'dom1', nombre: 'Práctica', tipo: 'dominio', peso: 50, moduloId: 2, lecciones: null, entregas: null },
+        { clave: 'quiz1', nombre: 'Quiz en el salón', tipo: 'manual', peso: 50, moduloId: 2, lecciones: null, entregas: null },
+        { clave: 'parcial', nombre: 'Parcial', tipo: 'manual', peso: 40, moduloId: null, lecciones: null, entregas: null },
+      ],
+      grupos: [{ moduloId: 2, calculo: 'porcentajes', peso: 60 }],
+      notaAprobatoria: 3,
+      visibleParaEstudiantes: false,
+    };
+    const registradas = [
+      { studentId: 5, clave: 'quiz1', nota: 4, motivo: null, updatedAt: ahora },
+      { studentId: 5, clave: 'parcial', nota: 3, motivo: null, updatedAt: ahora },
+    ];
+    const [l, j] = construirLibro(entrada({ esquema, registradas })).filas;
+    expect(l.componentes.dom1).toMatchObject({ nota: 4.5, detalle: '90 % de dominio en 1 lección · 1 dominadas' }); // solo la lección 30 del módulo
+    expect(l.modulos['2']).toEqual({ nota: 4.3, faltan: [] }); // (50·4,5 + 50·4) / 100 = 4,25
+    expect(l.propuesta).toBe(3.8); // el módulo entra con la nota que se muestra (4,3): (60·4,3 + 40·3) / 100 = 3,78
+    expect(j).toMatchObject({ modulos: { 2: { nota: 0, faltan: ['Quiz en el salón'] } }, faltan: ['Parcial'] });
+  });
+
+  it('sin nota final: solo se registran las notas; el docente igual puede poner la final a mano', () => {
+    const esquema: Esquema = { ...esquemaSugerido(), calculo: 'ninguno' };
+    const [l] = construirLibro(entrada({ esquema })).filas;
+    expect(l).toMatchObject({ propuesta: null, faltan: [], final: null, aprueba: null });
+    expect(l.componentes.parcial.nota).toBe(3.8);
+    const conFinal = construirLibro(entrada({ esquema, registradas: [{ studentId: 5, clave: 'final', nota: 4, motivo: 'Nota del semestre', updatedAt: ahora }] })).filas[0];
+    expect(conFinal).toMatchObject({ final: 4, aprueba: true });
   });
 });
 
@@ -143,7 +183,7 @@ function crear(opciones: { esquema?: Record<string, unknown> | null; registrada?
     create: jest.fn((e: object) => e),
     save: jest.fn((e: object) => Promise.resolve(e)),
     delete: jest.fn(() => Promise.resolve({})),
-    manager: { query: jest.fn(() => Promise.resolve([{ id: 30, title: 'Else if', moduloId: 2, modulo: 'Módulo 1' }])) },
+    manager: { query: jest.fn((sql: string) => Promise.resolve(sql.startsWith('SELECT s.id') ? [{ id: 2, title: 'Módulo 1' }] : [{ id: 30, title: 'Else if', moduloId: 2, modulo: 'Módulo 1' }])) },
   };
   const registradas = {
     find: jest.fn(() => Promise.resolve([])),
@@ -199,6 +239,7 @@ describe('CalificacionesService', () => {
     const { service, esquemas } = crear();
     await expect(service.guardarEsquema(docente, 3, { componentes: [{ nombre: 'P', tipo: 'dominio', peso: 100, lecciones: [99] }] })).rejects.toThrow('lección');
     await expect(service.guardarEsquema(docente, 3, { componentes: [{ nombre: 'E', tipo: 'entregas', peso: 100, entregas: [8] }] })).rejects.toThrow('entrega');
+    await expect(service.guardarEsquema(docente, 3, { componentes: [{ nombre: 'Q', tipo: 'manual', moduloId: 77 }] })).rejects.toThrow('módulo');
     await service.guardarEsquema(docente, 3, { componentes: [{ nombre: 'P', tipo: 'dominio', peso: 100, lecciones: [30] }], notaAprobatoria: '3,5' });
     expect(esquemas.save).toHaveBeenCalledWith(expect.objectContaining({ classId: 3, notaAprobatoria: 3.5, updatedBy: 9 }));
   });
