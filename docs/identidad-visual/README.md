@@ -7,9 +7,10 @@ qué debes dejar quieto y cómo entregar** para que nadie tenga que deshacer nad
 
 | Archivo | Para qué |
 |---|---|
+| **[`GUIA_IDENTIDAD.md`](./GUIA_IDENTIDAD.md)** | **La identidad vigente**: paleta, contraste, tipografía, forma, iconos y tono, con lo que aún falta |
 | **este README** | Reglas del juego: territorio, ramas, cómo probar y cómo entregar |
 | [`01_PRIMEROS_PASOS.md`](./01_PRIMEROS_PASOS.md) | Lo que hay que decidir **antes de tocar código**, para que toda la página quede coherente |
-| [`PROPUESTA_IDENTIDAD.md`](./PROPUESTA_IDENTIDAD.md) | Plantilla que llenas con tus decisiones. Es el insumo con el que se afina el resto |
+| [`PROPUESTA_IDENTIDAD.md`](./PROPUESTA_IDENTIDAD.md) | La plantilla original (con los valores ámbar de antes). Sus decisiones ya están en `GUIA_IDENTIDAD.md` |
 | [`02_MEJORAR_UX_UI.md`](./02_MEJORAR_UX_UI.md) | Cómo mejorar la experiencia y la interfaz más allá de la paleta: método, lista de revisión y errores reales del proyecto |
 | [`BITACORA.md`](./BITACORA.md) | Tu registro de cambios: una fila por cambio, con su commit, y la lista de archivos que estás tocando ahora |
 

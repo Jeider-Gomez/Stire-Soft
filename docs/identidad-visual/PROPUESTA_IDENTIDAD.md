@@ -1,5 +1,5 @@
 ---
-estado: por llenar (plantilla)
+estado: reemplazada por GUIA_IDENTIDAD.md (2 de octubre de 2026): los valores «hoy» de esta plantilla son los ámbar anteriores
 autor: José
 fuente: propuesta de diseño — insumo para afinar la guía de trabajo
 ---
