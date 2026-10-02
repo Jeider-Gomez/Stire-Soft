@@ -6,10 +6,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User, UserRole } from './entities/user.entity';
 import { UserAffiliation } from './entities/user-affiliation.entity';
+import { CambioDeRol } from './entities/cambio-de-rol.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -24,6 +25,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(UserAffiliation)
     private readonly affiliationRepository: Repository<UserAffiliation>,
+    @InjectRepository(CambioDeRol)
+    private readonly cambiosDeRol: Repository<CambioDeRol>,
     private readonly institutionService: InstitutionService,
   ) {}
   /**
@@ -103,10 +106,13 @@ export class UserService {
       user.passwordChangedAt = new Date();
     }
 
+    const rolAnterior = user.role;
     // Actualizar los campos
     Object.assign(user, adminUpdateUserDto);
 
-    return await this.userRepository.save(user);
+    const guardado = await this.userRepository.save(user);
+    await this.registrarCambioDeRol(id, rolAnterior, user.role, actorId);
+    return guardado;
   }
 
   /**
@@ -166,10 +172,42 @@ export class UserService {
     if (actorId !== undefined) this.assertNotSelf(actorId, id);
     const user = await this.findOne(id);
 
+    const rolAnterior = user.role;
     user.role = role;
     await this.userRepository.save(user);
+    await this.registrarCambioDeRol(id, rolAnterior, role, actorId);
 
     return { message: 'Rol de usuario actualizado con éxito' };
+  }
+
+  /** Deja constancia de un cambio de rol hecho desde el panel del admin (si el rol de verdad cambió). */
+  private async registrarCambioDeRol(userId: number, rolAnterior: UserRole, rolNuevo: UserRole, actorId?: number): Promise<void> {
+    if (rolAnterior === rolNuevo) return;
+    await this.cambiosDeRol.save(
+      this.cambiosDeRol.create({ userId, rolAnterior, rolNuevo, cambiadoPorId: actorId ?? null, origen: 'panel_admin' }),
+    );
+  }
+
+  /** Los últimos cambios de rol, del más reciente al más antiguo, con el nombre de la cuenta y de quien lo hizo. */
+  async historialDeRoles(limite = 200): Promise<Array<{
+    id: number; fecha: Date; rolAnterior: UserRole; rolNuevo: UserRole; origen: string;
+    usuario: { id: number; email: string; fullName: string } | null;
+    cambiadoPor: { id: number; email: string; fullName: string } | null;
+  }>> {
+    const cambios = await this.cambiosDeRol.find({ order: { createdAt: 'DESC', id: 'DESC' }, take: limite });
+    const ids = [...new Set(cambios.flatMap((c) => [c.userId, c.cambiadoPorId]).filter((x): x is number => x !== null))];
+    // withDeleted: una cuenta eliminada después del cambio sigue teniendo nombre en el historial.
+    const usuarios = ids.length ? await this.userRepository.find({ where: { id: In(ids) }, withDeleted: true }) : [];
+    const porId = new Map(usuarios.map((u) => [u.id, { id: u.id, email: u.email, fullName: u.fullName }]));
+    return cambios.map((c) => ({
+      id: c.id,
+      fecha: c.createdAt,
+      rolAnterior: c.rolAnterior,
+      rolNuevo: c.rolNuevo,
+      origen: c.origen,
+      usuario: porId.get(c.userId) ?? null,
+      cambiadoPor: c.cambiadoPorId !== null ? porId.get(c.cambiadoPorId) ?? null : null,
+    }));
   }
 
   /**

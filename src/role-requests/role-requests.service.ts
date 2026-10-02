@@ -2,6 +2,7 @@ import { ConflictException, Injectable, Logger, NotFoundException } from '@nestj
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from '../user/entities/user.entity';
+import { CambioDeRol } from '../user/entities/cambio-de-rol.entity';
 import { DecideRoleRequestDto } from './dto/role-request.dto';
 import { RoleRequest, RoleRequestStatus } from './entities/role-request.entity';
 
@@ -62,6 +63,9 @@ export class RoleRequestsService {
       if (approve && request.user.role === UserRole.ESTUDIANTE) {
         request.user.role = UserRole.DOCENTE;
         await manager.save(User, request.user);
+        await manager.save(CambioDeRol, manager.create(CambioDeRol, {
+          userId: request.user.id, rolAnterior: UserRole.ESTUDIANTE, rolNuevo: UserRole.DOCENTE, cambiadoPorId: adminId, origen: 'solicitud_docente',
+        }));
       }
       await manager.save(RoleRequest, request);
       this.logger.log(`Solicitud ${id} de rol docente ${approve ? 'aprobada' : 'rechazada'} por el admin ${adminId}.`);

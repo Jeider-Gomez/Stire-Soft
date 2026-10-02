@@ -10,6 +10,7 @@ import { RegisterDto } from '../auth/dto/register.dto';
 function build() {
   const store: any = { request: null, saved: [] as any[], savedUsers: [] as any[] };
   const manager = {
+    create: jest.fn((_entity: any, row: any) => ({ ...row })),
     findOne: jest.fn().mockImplementation(async () => store.request),
     save: jest.fn().mockImplementation(async (entity: any, row?: any) => {
       (row?.email !== undefined ? store.savedUsers : store.saved).push(row ?? entity);
@@ -72,6 +73,19 @@ describe('RoleRequestsService', () => {
       expect(view).toMatchObject({ status: 'approved', reviewNote: 'ok' });
       expect(store.request.reviewedById).toBe(1);
       expect(store.request.reviewedAt).toBeInstanceOf(Date);
+    });
+
+    it('aprobar deja el cambio en el registro de roles; rechazar no registra nada', async () => {
+      const { service, store, manager } = build();
+      store.request = pendingRequest();
+      await service.decide(5, { decision: 'approve' }, 1);
+      expect(store.saved).toContainEqual({ userId: 9, rolAnterior: UserRole.ESTUDIANTE, rolNuevo: UserRole.DOCENTE, cambiadoPorId: 1, origen: 'solicitud_docente' });
+
+      const otro = build();
+      otro.store.request = pendingRequest();
+      await otro.service.decide(5, { decision: 'reject' }, 1);
+      expect(otro.manager.create).not.toHaveBeenCalled();
+      expect(manager.create).toHaveBeenCalledTimes(1);
     });
 
     it('rechazar NO cambia el rol', async () => {

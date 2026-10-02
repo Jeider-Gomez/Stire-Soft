@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from './user.service';
 import { User, UserRole } from './entities/user.entity';
 import { UserAffiliation } from './entities/user-affiliation.entity';
+import { CambioDeRol } from './entities/cambio-de-rol.entity';
 import { InstitutionService } from '../institution/institution.service';
 
 describe('UserService', () => {
@@ -25,6 +26,12 @@ describe('UserService', () => {
     save: jest.fn(),
   };
 
+  const mockCambiosDeRol = {
+    find: jest.fn(),
+    create: jest.fn((row: any) => row),
+    save: jest.fn(async (row: any) => row),
+  };
+
   const mockInstitutionService = {
     findProgramById: jest.fn(),
   };
@@ -40,6 +47,10 @@ describe('UserService', () => {
         {
           provide: getRepositoryToken(UserAffiliation),
           useValue: mockUserAffiliationRepository,
+        },
+        {
+          provide: getRepositoryToken(CambioDeRol),
+          useValue: mockCambiosDeRol,
         },
         {
           provide: InstitutionService,
@@ -80,6 +91,37 @@ describe('UserService', () => {
 
     it('editar el nombre de uno mismo (sin tocar rol ni estado) sigue permitido', async () => {
       await expect(service.update(1, { fullName: 'Nuevo Nombre' } as any, 1)).resolves.toBeDefined();
+    });
+
+    it('cada cambio de rol queda registrado: a quién, de qué rol a cuál, quién y por dónde', async () => {
+      await service.updateRole(5, UserRole.DOCENTE, 1);
+      await service.update(7, { role: UserRole.ADMIN } as any, 1);
+      expect(mockCambiosDeRol.save.mock.calls.map(([c]) => c)).toEqual([
+        { userId: 5, rolAnterior: UserRole.ESTUDIANTE, rolNuevo: UserRole.DOCENTE, cambiadoPorId: 1, origen: 'panel_admin' },
+        { userId: 7, rolAnterior: UserRole.ESTUDIANTE, rolNuevo: UserRole.ADMIN, cambiadoPorId: 1, origen: 'panel_admin' },
+      ]);
+    });
+
+    it('si el rol no cambia (o solo se edita el nombre), no se registra nada', async () => {
+      await service.updateRole(5, UserRole.ESTUDIANTE, 1);
+      await service.update(5, { fullName: 'Otro' } as any, 1);
+      expect(mockCambiosDeRol.save).not.toHaveBeenCalled();
+    });
+
+    it('el historial trae el nombre de la cuenta y de quien hizo el cambio, aunque una ya no exista', async () => {
+      const fecha = new Date('2026-10-01T15:00:00Z');
+      mockCambiosDeRol.find.mockResolvedValue([
+        { id: 2, userId: 9, rolAnterior: 'docente', rolNuevo: 'estudiante', cambiadoPorId: 6, origen: 'panel_admin', createdAt: fecha },
+        { id: 1, userId: 9, rolAnterior: 'estudiante', rolNuevo: 'docente', cambiadoPorId: null, origen: 'solicitud_docente', createdAt: fecha },
+      ]);
+      mockUserRepository.find.mockResolvedValue([
+        { id: 9, email: 'laura@example.com', fullName: 'Laura' },
+        { id: 6, email: 'admin@example.com', fullName: 'Admin' },
+      ]);
+      const h = await service.historialDeRoles();
+      expect(mockUserRepository.find).toHaveBeenCalledWith(expect.objectContaining({ withDeleted: true }));
+      expect(h[0]).toMatchObject({ rolAnterior: 'docente', rolNuevo: 'estudiante', usuario: { fullName: 'Laura' }, cambiadoPor: { fullName: 'Admin' } });
+      expect(h[1].cambiadoPor).toBeNull();
     });
 
     it('un admin no puede eliminar su propia cuenta, pero sí la de otro', async () => {
