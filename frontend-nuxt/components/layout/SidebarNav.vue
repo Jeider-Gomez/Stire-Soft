@@ -77,6 +77,15 @@
           <span>Mi Progreso</span>
         </NuxtLink>
 
+        <!-- Asistencia con QR (src/asistencia): el código que el estudiante le muestra al docente -->
+        <NuxtLink
+          to="/estudiante/asistencia"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          :class="route.path === '/estudiante/asistencia' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <QrCode :size="18" aria-hidden="true" class="shrink-0" />
+          <span>Mi asistencia</span>
+        </NuxtLink>
+
         <!-- Proyectos (docs/DISENO_PROYECTOS.md): solo si está disponible para esta cuenta (fase de prueba) -->
         <NuxtLink
           v-if="proyectosDisponible"
@@ -181,7 +190,7 @@
 </template>
 
 <script setup lang="ts">
-import { FolderCode, House, MessageSquarePlus, Repeat, TrendingUp, Mail, Users, BookOpen, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
+import { FolderCode, House, QrCode, MessageSquarePlus, Repeat, TrendingUp, Mail, Users, BookOpen, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { claseDeLaRuta } from '~/utils/pestanasClase'

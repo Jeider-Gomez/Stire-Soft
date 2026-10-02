@@ -13,10 +13,7 @@
           </div>
 
           <template v-if="modo === 'camara'">
-            <div class="relative rounded-xl overflow-hidden bg-black aspect-square">
-              <video ref="videoRef" class="w-full h-full object-cover" playsinline muted />
-              <div class="absolute inset-8 border-4 border-stire-teal rounded-xl pointer-events-none" aria-hidden="true" />
-            </div>
+            <CamaraQr @leido="alLeer" @fallo="modo = 'sin-permiso'" />
             <p role="status" class="text-base-texto-secundario">Apunta la cámara al QR que proyecta tu docente.</p>
           </template>
 
@@ -32,53 +29,32 @@
 </template>
 
 <script setup lang="ts">
-// Escanea el QR de la clase con el lector del propio navegador (BarcodeDetector: Chrome y Android), sin dependencias.
-// Donde no existe (iPhone, algunos computadores) explica cómo usar la cámara del celular, que abre el enlace sola.
+// Escanea el QR de la clase dentro de la app (utils/lectorQr.ts: lector del navegador o jsQR). Si no hay cámara o no
+// dan permiso, explica cómo usar la cámara del celular, que abre el enlace sola.
 import { ScanLine, X } from 'lucide-vue-next'
 import { codigoDesdeQr } from '~/utils/codigoClase'
+import { hayCamara } from '~/utils/lectorQr'
 
 const emit = defineEmits<{ (e: 'codigo', codigo: string): void }>()
 
-interface Detector { detect(fuente: HTMLVideoElement): Promise<Array<{ rawValue: string }>> }
-type ConstructorDetector = new (opciones: { formats: string[] }) => Detector
-
 const abierto = ref(false)
 const modo = ref<'camara' | 'sin-lector' | 'sin-permiso'>('sin-lector')
-const videoRef = ref<HTMLVideoElement | null>(null)
 const cerrarRef = ref<HTMLButtonElement | null>(null)
-let flujo: MediaStream | null = null
-let activo = false
 
 async function abrir() {
   abierto.value = true
-  const Lector = (globalThis as unknown as { BarcodeDetector?: ConstructorDetector }).BarcodeDetector
-  if (!Lector || !navigator.mediaDevices?.getUserMedia) { modo.value = 'sin-lector'; await nextTick(); cerrarRef.value?.focus(); return }
-  modo.value = 'camara'
-  try {
-    flujo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-    await nextTick()
-    if (!videoRef.value) return
-    videoRef.value.srcObject = flujo
-    await videoRef.value.play()
-    const lector = new Lector({ formats: ['qr_code'] })
-    activo = true
-    while (activo && videoRef.value) {
-      const hallados = await lector.detect(videoRef.value).catch(() => [])
-      const codigo = hallados.map((h) => codigoDesdeQr(h.rawValue)).find(Boolean)
-      if (codigo) { emit('codigo', codigo); cerrar(); return }
-      await new Promise((r) => setTimeout(r, 250))
-    }
-  } catch {
-    modo.value = 'sin-permiso'
-  }
+  modo.value = hayCamara() ? 'camara' : 'sin-lector'
+  await nextTick()
+  cerrarRef.value?.focus()
 }
 
+function alLeer(texto: string) {
+  const codigo = codigoDesdeQr(texto)
+  if (codigo) { emit('codigo', codigo); cerrar() }
+}
+
+// Cerrar desmonta <CamaraQr>, que apaga la cámara.
 function cerrar() {
-  activo = false
-  flujo?.getTracks().forEach((t) => t.stop())
-  flujo = null
   abierto.value = false
 }
-
-onBeforeUnmount(cerrar)
 </script>

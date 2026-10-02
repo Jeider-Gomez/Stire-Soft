@@ -4,6 +4,7 @@ import { ProyectosModule } from './proyectos/proyectos.module';
 import { RefuerzosModule } from './refuerzos/refuerzos.module';
 import { CalificacionesModule } from './calificaciones/calificaciones.module';
 import { ReportesModule } from './reportes/reportes.module';
+import { AsistenciaModule } from './asistencia/asistencia.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
@@ -132,6 +133,7 @@ import { ReuseModule } from './reuse/reuse.module';
     RefuerzosModule,
     CalificacionesModule,
     ReportesModule,
+    AsistenciaModule,
   ],
   providers: [
     {

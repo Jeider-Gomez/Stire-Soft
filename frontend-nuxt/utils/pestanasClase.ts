@@ -2,12 +2,13 @@
 // todo, en pestañas, como en Canvas o Google Classroom, en vez de un menú por herramienta donde cada pantalla le
 // vuelve a preguntar «¿de qué clase?». Las pestañas son enlaces a las pantallas de siempre, con la clase ya elegida.
 
-export type PestanaClase = 'hoy' | 'contenido' | 'estudiantes' | 'entregas' | 'refuerzos' | 'notas' | 'ajustes'
+export type PestanaClase = 'hoy' | 'contenido' | 'estudiantes' | 'asistencia' | 'entregas' | 'refuerzos' | 'notas' | 'ajustes'
 
 export const PESTANAS_CLASE: Array<{ id: PestanaClase; texto: string }> = [
   { id: 'hoy', texto: 'Hoy' },
   { id: 'contenido', texto: 'Contenido' },
   { id: 'estudiantes', texto: 'Estudiantes' },
+  { id: 'asistencia', texto: 'Asistencia' },
   { id: 'entregas', texto: 'Entregas' },
   { id: 'refuerzos', texto: 'Refuerzos' },
   { id: 'notas', texto: 'Notas' },
@@ -20,6 +21,7 @@ export function enlacePestana(pestana: PestanaClase, classId: number): string {
     case 'hoy': return `/docente/clase/${classId}`
     case 'contenido': return `/docente/contenidos?classId=${classId}`
     case 'estudiantes': return `/docente/rendimiento?classId=${classId}`
+    case 'asistencia': return `/docente/clase/${classId}/asistencia`
     case 'entregas': return `/docente/entregas?clase=${classId}`
     case 'refuerzos': return `/docente/refuerzos?clase=${classId}`
     case 'notas': return `/docente/clase/${classId}/notas`

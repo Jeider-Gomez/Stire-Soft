@@ -25,13 +25,14 @@ const { pendientesDeHoy } = cargar('hoyClase.ts', { './refuerzos': cargar('refue
 
 describe('Pestañas de la clase', () => {
   it('cada pestaña lleva a su pantalla con la clase ya elegida', () => {
-    expect(pestanas.PESTANAS_CLASE.map((p) => p.id)).toEqual(['hoy', 'contenido', 'estudiantes', 'entregas', 'refuerzos', 'notas', 'ajustes']);
+    expect(pestanas.PESTANAS_CLASE.map((p) => p.id)).toEqual(['hoy', 'contenido', 'estudiantes', 'asistencia', 'entregas', 'refuerzos', 'notas', 'ajustes']);
     expect(pestanas.enlacePestana('hoy', 5)).toBe('/docente/clase/5');
     expect(pestanas.enlacePestana('contenido', 5)).toBe('/docente/contenidos?classId=5');
     expect(pestanas.enlacePestana('estudiantes', 5)).toBe('/docente/rendimiento?classId=5');
     expect(pestanas.enlacePestana('entregas', 5)).toBe('/docente/entregas?clase=5');
     expect(pestanas.enlacePestana('refuerzos', 5)).toBe('/docente/refuerzos?clase=5');
     expect(pestanas.enlacePestana('notas', 5)).toBe('/docente/clase/5/notas');
+    expect(pestanas.enlacePestana('asistencia', 5)).toBe('/docente/clase/5/asistencia');
     expect(pestanas.enlacePestana('ajustes', 5)).toBe('/docente/clase/5/ajustes');
   });
 
@@ -52,6 +53,7 @@ describe('Pestañas de la clase', () => {
       [['pages', 'docente', 'entregas', 'index.vue'], 'activa="entregas"'],
       [['pages', 'docente', 'refuerzos', 'index.vue'], 'activa="refuerzos"'],
       [['pages', 'docente', 'clase', '[classId]', 'notas.vue'], 'activa="notas"'],
+      [['pages', 'docente', 'clase', '[classId]', 'asistencia.vue'], 'activa="asistencia"'],
       [['pages', 'docente', 'clase', '[classId]', 'ajustes.vue'], 'activa="ajustes"'],
     ];
     for (const [archivo, activa] of esperado) {

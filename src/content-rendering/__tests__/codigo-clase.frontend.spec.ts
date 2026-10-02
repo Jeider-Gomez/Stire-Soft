@@ -60,8 +60,13 @@ describe('Código y QR de la clase (frontend)', () => {
     const clases = leer('pages', 'estudiante', 'clases.vue');
     expect(clases).toContain('<EscanerQrClase @codigo=');
     const escaner = leer('components', 'EscanerQrClase.vue');
-    expect(escaner).toContain("new Lector({ formats: ['qr_code'] })");
+    expect(escaner).toContain('<CamaraQr @leido="alLeer"');
     expect(escaner).toContain('cámara de tu celular');
-    expect(escaner).toContain('flujo?.getTracks().forEach((t) => t.stop())');
+    // lector del navegador si existe; si no (Chrome en Windows, iPhone), jsQR
+    const lector = leer('utils', 'lectorQr.ts');
+    expect(lector).toContain("new Nativo({ formats: ['qr_code'] })");
+    expect(lector).toContain("await import('jsqr')");
+    // la cámara se apaga al cerrar
+    expect(leer('components', 'CamaraQr.vue')).toContain('flujo?.getTracks().forEach((t) => t.stop())');
   });
 });
