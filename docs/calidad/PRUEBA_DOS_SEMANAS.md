@@ -53,6 +53,7 @@ los avisos y el resumen de la semana.
 7. En **Proyectos**, crear uno y ejecutarlo; abrir **«Ampliar»** para verlo en grande (celular, tableta, completo).
    Pensamiento algorítmico: un **diagrama de flujo** (arrastrar figuras, unirlas con flechas) o un algoritmo en
    **pseudocódigo**. Fundamentos de Algoritmia: un programa de **JavaScript** o una **página web** de varias páginas.
+8. Cuando el docente tome asistencia, abrir **«Mi asistencia»** en el celular y mostrarle el código (cambia cada 20 s).
 
 **Docente** (unos 15 minutos al día):
 1. Abrir la clase y revisar «Hoy» todos los días: ¿lo que muestra le dice qué hacer?
@@ -64,6 +65,10 @@ los avisos y el resumen de la semana.
 6. Editar una lección y, con **«Insertar»**, poner dentro del texto una imagen o un **ejemplo en vivo** (HTML, CSS y
    JavaScript) que el estudiante pueda modificar.
 7. Ver la ficha de un estudiante: avance, racha y repasos.
+8. Tomar **asistencia** en la pestaña «Asistencia» de la clase: «Tomar asistencia de hoy», «Escanear códigos» con la
+   cámara del celular o del computador (los estudiantes muestran su QR desde «Mi asistencia»), corregir a mano,
+   «Llamar a 3 al azar», cerrar y descargar la planilla. Probar a propósito: que alguien marque a un compañero desde
+   su propio celular (debe aparecer la alerta «Mismo celular que…»).
 
 **En la semana 2**, fijarse además en lo que **cambia** de un curso a otro (más fácil, más difícil, más claro) y en si la
 segunda vez se sienten más cómodos con la app.
