@@ -20,6 +20,13 @@ import { GuidanceLevel, guidanceLevelForFailedAttempts } from './tutor-guidance'
 import { TutorSettingsService } from './tutor-settings.service';
 import { limitCodeBlocks } from './tutor-solution-guard';
 import { User } from '../user/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Content } from '../content/entities/content.entity';
+import { ContentType } from '../common/enums/content-type.enum';
+
+/** Cuánto de la lección se le da al Tutor: lo suficiente para hablar con las mismas palabras y ejemplos. */
+export const MAX_LECCION_PARA_TUTOR = 3000;
 
 const PRACTICE_INTENT_PATTERN =
   /\b(quiero|puedo|deseo|dame|necesito|hazme|ponme)\b[^.!?]{0,40}\b(practicar|estudiar|ejercitar|un ejercicio|ejercicios|repasar)\b/i;
@@ -89,6 +96,7 @@ export class TutorService {
     private readonly learningUnitService: LearningUnitService,
     private readonly learningProgressService: LearningProgressService,
     private readonly settingsService: TutorSettingsService,
+    @InjectRepository(Content) private readonly contenidos: Repository<Content>,
   ) {
     this.geminiModel = this.configService.get<string>('GEMINI_MODEL', 'gemini-flash-latest');
   }
@@ -115,7 +123,7 @@ export class TutorService {
     }
 
     const practiceIntent = PRACTICE_INTENT_PATTERN.test(message);
-    const promptContext = this.sanitizeContext(context, unit);
+    const promptContext = { ...this.sanitizeContext(context, unit), ...(unit ? await this.leccionDeLaUnidad(unit.id) : {}) };
 
     // En un refuerzo la ayuda empieza un nivel más arriba; el tope del docente sigue mandando.
     const refuerzo = await this.settingsService.refuerzoConLaActividad(studentId, context?.activityId);
@@ -224,11 +232,32 @@ export class TutorService {
     }
   }
 
+  /**
+   * La lección de la unidad (texto Markdown visible, en orden), para que el Tutor sepa qué está leyendo o qué estudió el
+   * estudiante. La busca el servidor con la unidad ya autorizada: nunca se usa un texto de lección que mande el cliente.
+   */
+  private async leccionDeLaUnidad(unitId: number): Promise<{ lessonTitle?: string; lessonText?: string }> {
+    const bloques = await this.contenidos.find({
+      where: { learningUnitId: unitId, isVisible: true, type: ContentType.MARKDOWN },
+      order: { order: 'ASC' },
+      take: 5,
+    });
+    const texto = bloques.map((b) => b.body ?? '').join('\n\n').trim();
+    if (!texto) return {};
+    return {
+      lessonTitle: bloques[0]?.title,
+      lessonText: texto.length > MAX_LECCION_PARA_TUTOR ? `${texto.slice(0, MAX_LECCION_PARA_TUTOR)}\n[…]` : texto,
+    };
+  }
+
   private sanitizeContext(context: any, unit: { id: number; title: string } | null): any {
     if (!context || typeof context !== 'object') return context;
     const rest = { ...context };
     delete rest.learningUnitId;
     delete rest.unitTitle;
+    // La lección la pone el servidor (leccionDeLaUnidad), no el navegador.
+    delete rest.lessonTitle;
+    delete rest.lessonText;
     return unit ? { ...rest, learningUnitId: unit.id, unitTitle: unit.title } : rest;
   }
 

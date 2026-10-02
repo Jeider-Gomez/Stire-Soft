@@ -1,8 +1,8 @@
+import { contextoSegunPantalla } from '~/utils/contextoTutor'
 import { defineStore } from 'pinia'
 import type { TutorMessage, TutorSuggestedActivity, TutorApiKey, TutorGuidance } from '~/types'
 import { useAuthStore } from './auth'
 import { useWorkspaceStore } from './workspace'
-import { useStudentStore } from './student'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 
@@ -15,7 +15,6 @@ export const useTutorStore = defineStore('tutor', () => {
   const { friendlyTutorError } = useApiErrorMessage()
   const authStore = useAuthStore()
   const workspaceStore = useWorkspaceStore()
-  const studentStore = useStudentStore()
   const route = useRoute()
 
   // ─── Estado del drawer ──────────────────────────────────────────────────────
@@ -264,20 +263,9 @@ export const useTutorStore = defineStore('tutor', () => {
               currentCode: proyectoAbierto.value.archivos.map((a) => `/* ${a.nombre} */\n${a.contenido}`).join('\n\n'),
               codeLanguage: ({ web: 'html', javascript: 'javascript', pseudocodigo: 'text', diagrama: 'text' } as const)[proyectoAbierto.value.tipo],
             }
-          : {
-          currentRoute: route.path,
-          unitTitle: workspaceStore.currentExercise?.unitTitle || studentStore.activeUnit?.title,
-          learningUnitId: studentStore.activeUnit?.id,
-          activityTitle: workspaceStore.currentExercise?.title,
-          activityId: workspaceStore.currentExercise?.activityId,
-          // En un ejercicio de HTML y CSS el código está en htmlCode/cssCode (`code` es el búfer del ejercicio de JavaScript).
-          ...(workspaceStore.currentExercise?.questionType === 'html_css'
-            ? {
-                currentCode: ['<!-- index.html -->', workspaceStore.htmlCode, '', '/* estilos.css */', workspaceStore.cssCode].join('\n'),
-                codeLanguage: 'html'
-              }
-            : { currentCode: workspaceStore.code })
-        }
+          : contextoSegunPantalla(route.path, workspaceStore.currentExercise ?? null, {
+              js: workspaceStore.code, html: workspaceStore.htmlCode, css: workspaceStore.cssCode,
+            })
       })
 
       // Actualizar nivel de guía con la respuesta del backend

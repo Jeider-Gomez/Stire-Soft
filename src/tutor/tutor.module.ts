@@ -4,6 +4,7 @@ import { TutorConversation } from './entities/tutor-conversation.entity';
 import { TutorCredential } from './entities/tutor-credential.entity';
 import { TutorSetting } from './entities/tutor-setting.entity';
 import { Refuerzo } from '../refuerzos/entities/refuerzo.entity';
+import { Content } from '../content/entities/content.entity';
 import { TutorSettingsService } from './tutor-settings.service';
 import { TutorSettingsController } from './tutor-settings.controller';
 import { Activity } from '../activities/entities/activity.entity';
@@ -23,7 +24,7 @@ import { LearningUnitModule } from '../learning-unit/learning-unit.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TutorConversation, TutorCredential, TutorSetting, Activity, Enrollment, Refuerzo]),
+    TypeOrmModule.forFeature([TutorConversation, TutorCredential, TutorSetting, Activity, Enrollment, Refuerzo, Content]),
     LearningProgressModule,
     ContentRenderingModule,
     ReviewSchedulesModule,
