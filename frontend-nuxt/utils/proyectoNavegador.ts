@@ -6,10 +6,9 @@ export interface ArchivoProyecto { nombre: string; contenido: string }
 export type TipoProyecto = 'web' | 'javascript' | 'pseudocodigo' | 'diagrama'
 export const TIPO_PROYECTO: Record<TipoProyecto, string> = { web: 'Página web', javascript: 'JavaScript', pseudocodigo: 'Pseudocódigo', diagrama: 'Diagrama de flujo' }
 /**
- * Los tipos que se ofrecen al crear un proyecto. «diagrama» ya se guarda y se ejecuta, pero su editor visual está en
- * construcción (docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md, fase 29): se agrega aquí cuando esté.
+ * Los tipos que se ofrecen al crear un proyecto.
  */
-export const TIPOS_QUE_SE_CREAN: TipoProyecto[] = ['web', 'javascript', 'pseudocodigo']
+export const TIPOS_QUE_SE_CREAN: TipoProyecto[] = ['web', 'javascript', 'pseudocodigo', 'diagrama']
 /** Extensiones que admite cada tipo, en el orden en que se sugieren. */
 export const EXTENSIONES_PROYECTO: Record<TipoProyecto, string[]> = { web: ['html', 'css', 'js', 'txt'], javascript: ['js', 'txt'], pseudocodigo: ['psc', 'txt'], diagrama: ['json', 'txt'] }
 

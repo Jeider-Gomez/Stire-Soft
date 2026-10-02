@@ -99,7 +99,16 @@
             :class="archivoAbierto === idx ? 'border-acento-ambar-fuerte bg-acento-ambar/10 font-bold' : 'border-base-borde-fuerte'"
             @click="archivoAbierto = idx">{{ a.nombre }}</button>
         </div>
-        <CodeEditor v-if="codigoInicial[archivoAbierto]" v-model="codigoInicial[archivoAbierto].contenido" :language="lenguajeDeArchivo(codigoInicial[archivoAbierto].nombre)" :aria-label="`Código inicial: ${codigoInicial[archivoAbierto].nombre}`" />
+        <ProyectosEditorDiagrama
+          v-if="f.tipoProyecto === 'diagrama' && codigoInicial[archivoAbierto]"
+          v-model="codigoInicial[archivoAbierto].contenido"
+        />
+        <CodeEditor
+          v-else-if="codigoInicial[archivoAbierto]"
+          v-model="codigoInicial[archivoAbierto].contenido"
+          :language="lenguajeDeArchivo(codigoInicial[archivoAbierto].nombre)"
+          :aria-label="`Código inicial: ${codigoInicial[archivoAbierto].nombre}`"
+        />
         <button type="button" class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline" @click="restaurarCodigoInicial">Volver al código de ejemplo</button>
       </div>
     </fieldset>
@@ -154,7 +163,7 @@ const f = reactive({
 })
 const paraTodos = ref(!i?.asignadaA?.length)
 
-// Código inicial: solo para web o JavaScript. Al cambiar el tipo se propone el ejemplo de ese tipo.
+// Código inicial: al cambiar el tipo se propone el ejemplo de ese tipo.
 const usarCodigoInicial = ref(!!i?.plantilla?.length)
 const codigoInicial = ref<ArchivoCodigo[]>(i?.plantilla?.length ? i.plantilla.map((a) => ({ ...a })) : [])
 const archivoAbierto = ref(0)

@@ -1,10 +1,11 @@
 // Entregas (docs/DISENO_INTERVENCION_DOCENTE.md §3 y §10): textos y formatos compartidos por las pantallas del docente
 // y del estudiante.
 import { algoritmoDeEjemplo } from '~/utils/pseudocodigo'
+import { diagramaInicial } from '~/utils/diagramaFlujo'
 
 export type EstadoEntrega = 'sin_entregar' | 'por_revisar' | 'revisada'
 
-export type TipoEntrega = 'web' | 'javascript' | 'pseudocodigo' | 'cualquiera'
+export type TipoEntrega = 'web' | 'javascript' | 'pseudocodigo' | 'diagrama' | 'cualquiera'
 
 /** Un archivo de un proyecto o del código inicial de una entrega. */
 export interface ArchivoCodigo { nombre: string; contenido: string }
@@ -22,7 +23,10 @@ export interface EntregaEditable {
  * Punto de partida del código inicial, el mismo que crea el servidor para un proyecto nuevo
  * (src/proyectos/proyecto-reglas.ts, plantillaInicial). El docente lo cambia a su gusto.
  */
-export function codigoInicialPorDefecto(tipo: 'web' | 'javascript' | 'pseudocodigo'): ArchivoCodigo[] {
+export function codigoInicialPorDefecto(tipo: 'web' | 'javascript' | 'pseudocodigo' | 'diagrama'): ArchivoCodigo[] {
+  if (tipo === 'diagrama') {
+    return [{ nombre: 'diagrama.json', contenido: JSON.stringify(diagramaInicial(), null, 2) }]
+  }
   if (tipo === 'pseudocodigo') return [{ nombre: 'algoritmo.psc', contenido: algoritmoDeEjemplo() }]
   if (tipo === 'javascript') {
     return [{ nombre: 'main.js', contenido: '// Lee la entrada con leerEntrada() y muestra resultados con console.log().\nconst entrada = leerEntrada();\nconsole.log(entrada);\n' }]
@@ -51,6 +55,7 @@ export const TIPO_ENTREGA: Record<TipoEntrega, string> = {
   web: 'Página web',
   javascript: 'Programa de JavaScript',
   pseudocodigo: 'Algoritmo en pseudocódigo',
+  diagrama: 'Diagrama de flujo',
 }
 
 /** «30 sept, 19:35» */
