@@ -25,7 +25,7 @@ function texto(valor: unknown, campo: string, obligatorio: boolean): string | un
   return limpio || undefined;
 }
 
-function direccionDeImagen(valor: unknown): string {
+export function direccionDeImagen(valor: unknown): string {
   const url = texto(valor, 'la dirección de la imagen', true) as string;
   if (IMAGEN_SUBIDA.test(url)) return url;
   let parsed: URL;

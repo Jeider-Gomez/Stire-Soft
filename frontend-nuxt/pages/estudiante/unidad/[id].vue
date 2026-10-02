@@ -59,7 +59,7 @@
             {{ content.title }}
           </h2>
           <LessonResource v-if="esRecurso(content.type)" :type="content.type ?? ''" :title="content.title" :metadata="content.metadata" />
-          <div v-else class="prose prose-xs space-y-3" v-html="formatMarkdown(content.body)" />
+          <ContenidoLeccion v-else :texto="content.body" :insertados="insertadosDe(content.metadata)" />
         </section>
       </article>
       <article v-else class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 text-xs text-base-texto-secundario">
@@ -170,7 +170,7 @@ import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { useTutorStore } from '~/stores/tutor'
 import { useApi } from '~/composables/useApi'
-import { formatMarkdown } from '~/utils/formatMarkdown'
+import { insertadosDe } from '~/utils/contenidoLeccion'
 
 definePageMeta({
   layout: 'student'

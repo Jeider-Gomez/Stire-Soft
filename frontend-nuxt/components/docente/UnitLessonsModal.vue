@@ -135,6 +135,7 @@
     :is-editing="formState.isEditing"
     :initial-title="formState.title"
     :initial-body="formState.body"
+    :initial-insertados="formState.insertados"
     :saving="isSaving"
     :error="formError"
     @cancel="cancelForm"
@@ -152,6 +153,7 @@
 <script setup lang="ts">
 import { Plus, X, FileText, ChevronUp, ChevronDown, Eye, EyeOff, Pencil, Trash2, ImagePlus, ScanEye } from 'lucide-vue-next'
 import { NOMBRE_PROVEEDOR } from '~/utils/recursoSeguro'
+import { insertadosDe, type Insertados } from '~/utils/contenidoLeccion'
 import { useApi } from '~/composables/useApi'
 
 interface LessonItem {
@@ -190,7 +192,7 @@ const errorMsg = ref<string | null>(null)
 const showForm = ref(false)
 const isSaving = ref(false)
 const formError = ref<string | null>(null)
-const formState = reactive({ isEditing: false, id: 0, title: '', body: '', order: 0 })
+const formState = reactive({ isEditing: false, id: 0, title: '', body: '', order: 0, insertados: null as Insertados | null })
 
 const togglingId = ref<number | null>(null)
 const isReordering = ref(false)
@@ -257,7 +259,7 @@ async function fetchLessons() {
 
 function openCreateForm() {
   const maxOrder = lessons.value.reduce((max, l) => Math.max(max, l.order ?? 0), 0)
-  Object.assign(formState, { isEditing: false, id: 0, title: '', body: '', order: maxOrder + 1 })
+  Object.assign(formState, { isEditing: false, id: 0, title: '', body: '', order: maxOrder + 1, insertados: null })
   formError.value = null
   showForm.value = true
 }
@@ -280,7 +282,7 @@ function onRecursoGuardado(guardado: Pick<LessonItem, 'id' | 'title' | 'type' | 
 
 function openEditForm(lesson: LessonItem) {
   if (esRecurso(lesson.type)) { abrirRecurso(lesson); return }
-  Object.assign(formState, { isEditing: true, id: lesson.id, title: lesson.title, body: lesson.body || '', order: lesson.order })
+  Object.assign(formState, { isEditing: true, id: lesson.id, title: lesson.title, body: lesson.body || '', order: lesson.order, insertados: insertadosDe(lesson.metadata) })
   formError.value = null
   showForm.value = true
 }

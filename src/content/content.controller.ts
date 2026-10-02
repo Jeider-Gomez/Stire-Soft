@@ -33,6 +33,15 @@ export class ContentController {
     return this.contentService.create(dto, user);
   }
 
+  /** POST /content/recursos/vista-previa — cómo se verá un enlace dentro del texto de una lección (no guarda nada). */
+  @Post('recursos/vista-previa')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Vista previa de un recurso para insertarlo en el texto de una lección' })
+  vistaPreviaDeRecurso(@Body() datos: { url?: unknown }) {
+    return this.contentService.vistaPreviaDeRecurso(datos?.url);
+  }
+
   /**
    * GET /content/unit/:unitId
    * El estudiante ve los bloques visibles de la unidad.

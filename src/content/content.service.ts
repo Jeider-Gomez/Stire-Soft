@@ -11,7 +11,8 @@ import { User, UserRole } from '../user/entities/user.entity';
 import { ContentRenderingService, SanitizationProfile } from '../content-rendering/content-rendering.service';
 import { ContentType } from '../common/enums/content-type.enum';
 import { metadatosDeRecurso } from './recursos/metadatos-recurso';
-import { RecursoInvalidoError } from './recursos/normalizar-recurso';
+import { normalizarRecurso, RecursoInvalidoError, type RecursoNormalizado } from './recursos/normalizar-recurso';
+import { insertadosDelTexto } from './recursos/insertados';
 
 /** Reconstruye el metadata de una lección multimedia; un recurso inválido es un 400 con el motivo. */
 function metadatosValidos(tipo: ContentType, metadata: Record<string, unknown> | undefined | null) {
@@ -21,6 +22,23 @@ function metadatosValidos(tipo: ContentType, metadata: Record<string, unknown> |
     if (e instanceof RecursoInvalidoError) throw new BadRequestException(e.message);
     throw e;
   }
+}
+
+/**
+ * El texto de una lección puede llevar imágenes y recursos en su lugar (recursos/insertados.ts). Cómo se inserta cada
+ * recurso lo arma SIEMPRE el servidor desde el texto: un `insertados` que llegue del navegador se descarta.
+ */
+function metadatosDelTexto(body: string | undefined | null, metadata: Record<string, unknown> | undefined | null) {
+  const { insertados: _descartado, ...resto } = metadata ?? {};
+  let insertados: ReturnType<typeof insertadosDelTexto>;
+  try {
+    insertados = insertadosDelTexto(body ?? '');
+  } catch (e) {
+    if (e instanceof RecursoInvalidoError) throw new BadRequestException(e.message);
+    throw e;
+  }
+  const conResto = Object.keys(resto).length ? resto : null;
+  return Object.keys(insertados).length ? { ...resto, insertados } : conResto;
 }
 
 @Injectable()
@@ -43,13 +61,13 @@ export class ContentService {
       await this.resolveClassIdFromUnitId(dto.learningUnitId),
     );
 
+    // ADR 07, perfil RICH: content.body es autoría docente. Se sanea al escribir conservando el Markdown, además del
+    // saneamiento al renderizar en la capa de lectura. Los recursos del texto se leen del texto YA saneado.
+    const body = dto.body ? this.contentRenderingService.sanitizeRichText(dto.body) : dto.body;
     const content = this.contentRepo.create({
       ...dto,
-      metadata: metadatosValidos(dto.type, dto.metadata),
-      // ADR 07, perfil RICH: content.body es autoría docente. Se sanea al
-      // escribir conservando el Markdown, además del saneamiento al
-      // renderizar en la capa de lectura.
-      body: dto.body ? this.contentRenderingService.sanitizeRichText(dto.body) : dto.body,
+      metadata: dto.type === ContentType.MARKDOWN ? metadatosDelTexto(body, dto.metadata) ?? undefined : metadatosValidos(dto.type, dto.metadata),
+      body,
       order: dto.order ?? 0,
       isVisible: dto.isVisible ?? true,
     });
@@ -152,7 +170,23 @@ export class ContentService {
     if (dto.body) {
       content.body = this.contentRenderingService.sanitizeRichText(dto.body);
     }
+    if (content.type === ContentType.MARKDOWN && (dto.body !== undefined || dto.metadata !== undefined || tipoCambia)) {
+      content.metadata = metadatosDelTexto(content.body, content.metadata) ?? undefined;
+    }
     return this.contentRepo.save(content);
+  }
+
+  /**
+   * Vista previa de un recurso para el editor de la lección: cómo se va a ver un enlace antes de guardarlo. No guarda
+   * nada; aplica las mismas reglas que al guardar.
+   */
+  vistaPreviaDeRecurso(url: unknown): RecursoNormalizado {
+    try {
+      return normalizarRecurso(typeof url === 'string' ? url : '');
+    } catch (e) {
+      if (e instanceof RecursoInvalidoError) throw new BadRequestException(e.message);
+      throw e;
+    }
   }
 
   /** Solo el docente dueño de la clase del bloque (o admin). */

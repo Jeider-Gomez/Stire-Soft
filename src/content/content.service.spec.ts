@@ -66,6 +66,38 @@ describe('ContentService — P0-R2 (Ola 3)', () => {
       mockContentRepo.findOne.mockResolvedValue({ id: 3, learningUnitId, type: ContentType.IMAGE, metadata: { url: 'https://x.org/a.png', alt: 'A' } });
       await expect(service.update(3, { metadata: { url: 'https://x.org/b.png' } }, docenteDueño)).rejects.toThrow(BadRequestException);
     });
+
+    it('en el texto de una lección, cómo se inserta cada recurso lo arma el servidor; lo que mande el navegador se descarta', async () => {
+      const body = 'Mira el video:\n\n@[Variables](https://youtu.be/dQw4w9WgXcQ)';
+      const r = await service.create(
+        { learningUnitId, title: 'Lección', type: ContentType.MARKDOWN, body, metadata: { insertados: { 'https://youtu.be/dQw4w9WgXcQ': { embedUrl: 'javascript:alert(1)' } } } },
+        docenteDueño,
+      );
+      expect(r.metadata).toEqual({ insertados: { 'https://youtu.be/dQw4w9WgXcQ': { url: 'https://youtu.be/dQw4w9WgXcQ', provider: 'youtube', embedUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ' } } });
+    });
+
+    it('al editar el texto se recalcula: sin recursos, no queda nada; un enlace inválido es un 400 con la línea', async () => {
+      mockContentRepo.findOne.mockResolvedValue({ id: 4, learningUnitId, type: ContentType.MARKDOWN, body: 'x', metadata: { insertados: { a: {} } } });
+      const r = await service.update(4, { body: 'Solo texto' }, docenteDueño);
+      expect(r.metadata).toBeUndefined();
+      mockContentRepo.findOne.mockResolvedValue({ id: 4, learningUnitId, type: ContentType.MARKDOWN, body: 'x', metadata: null });
+      await expect(service.update(4, { body: 'Hola\n@[v](http://a.co)' }, docenteDueño)).rejects.toThrow('Línea 2');
+    });
+
+    it('los recursos se leen del texto ya saneado: un «&» guardado como «&amp;» sigue encontrando su recurso', async () => {
+      mockContentRenderingService.sanitizeRichText.mockImplementationOnce((s: string) => s.replace(/&/g, '&amp;'));
+      const r = await service.create(
+        { learningUnitId, title: 'L', type: ContentType.MARKDOWN, body: '@[V](https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=10)' },
+        docenteDueño,
+      );
+      expect(r.body).toBe('@[V](https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=10)');
+      expect(Object.keys(r.metadata?.insertados ?? {})).toEqual(['https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=10']);
+    });
+
+    it('vista previa de un recurso para el editor: mismas reglas, sin guardar', () => {
+      expect(service.vistaPreviaDeRecurso('https://youtu.be/dQw4w9WgXcQ').embedUrl).toBe('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ');
+      expect(() => service.vistaPreviaDeRecurso('ftp://x')).toThrow(BadRequestException);
+    });
   });
 
   describe('findByUnit', () => {
