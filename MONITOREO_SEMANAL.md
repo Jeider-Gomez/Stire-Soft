@@ -197,7 +197,7 @@ real. No hace falta cubrir los 7.
 | Reubicar el Tutor | Se abre como un panel a la derecha que oscurece la pantalla: mientras se usa no se puede leer la lección. | **Se adopta** (`S08-J01`): en computador, panel lateral sin oscurecer que deja ver la lección; en celular sigue igual. |
 | Menú lateral retráctil | En celular ya se oculta; en computador ocupa siempre 260 px. | **Se adopta** (`S08-J02`): botón para dejarlo solo con íconos, recordado por usuario. |
 | Cajas de texto expandibles | 19 cajas de texto; se estiran desde la esquina, pero no crecen solas. | **Se adopta** (`S08-J03`): crecen solas mientras se escribe. |
-| Registro en dos columnas o en pasos | 8 campos, ya con partes en dos columnas, 490 px de ancho. | **En parte** (`S08-J04`): no se harán pasos (más clics, más abandono); se comprueba que en un portátil de 1366×768 el botón «Crear cuenta» se vea sin bajar. |
+| Registro en dos columnas o en pasos | 8 campos, ya con partes en dos columnas, 490 px de ancho. | **En parte** (`S08-J04`): no se harán pasos (más clics, más abandono); lo obligatorio arriba y lo opcional agrupado debajo (idea de Jeider, 02/10), y el botón «Crear cuenta» visible sin bajar en 1366×768. |
 
 ### Julio Galvis
 
@@ -224,7 +224,10 @@ la app en la prueba de dos semanas, y van a su tablero cuando se cree:
 - [ ] **S08-J01 · Tutor como panel lateral** que deja ver la lección (computador); en celular sigue como cajón.
 - [ ] **S08-J02 · Menú lateral retráctil** en computador, solo íconos al colapsarlo.
 - [ ] **S08-J03 · Cajas de texto que crecen solas** (mensajes, comentarios, Tutor).
-- [ ] **S08-J04 · Registro en un portátil de 1366×768**: el botón «Crear cuenta» visible sin bajar.
+- [ ] **S08-J04 · Registro más corto:** el botón «Crear cuenta» visible sin bajar en un portátil de 1366×768; lo
+  obligatorio arriba y lo opcional (código de clase, materia del docente, clave de Google) agrupado debajo bajo
+  «Opcional»; y la clave de Google **solo para estudiantes**, porque hoy el formulario se la pide también a quien
+  elige «Docente» y el Tutor solo lo usan los estudiantes (`src/tutor/tutor.controller.ts`).
 
 José revisa el resultado visual de las cuatro.
 
