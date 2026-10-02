@@ -118,15 +118,8 @@ const nombreNuevo = ref('')
 const nuevoArchivoRef = ref<HTMLInputElement | null>(null)
 
 const archivoActual = computed(() => proyecto.value!.archivos[Math.min(actual.value, proyecto.value!.archivos.length - 1)]!)
-const archivoDiagrama = computed(() => {
-  if (!proyecto.value) return null
-  let arch = proyecto.value.archivos.find((a) => a.nombre === 'diagrama.json')
-  if (!arch) {
-    arch = { nombre: 'diagrama.json', contenido: JSON.stringify(diagramaInicial(), null, 2) }
-    proyecto.value.archivos.push(arch)
-  }
-  return arch
-})
+// Un diagrama vive en diagrama.json (se crea al cargar si faltara; un computed no debe cambiar el proyecto).
+const archivoDiagrama = computed(() => proyecto.value?.archivos.find((a) => a.nombre === 'diagrama.json') ?? null)
 const bytes = computed(() => new TextEncoder().encode(JSON.stringify(proyecto.value?.archivos ?? [])).length)
 const kb = (n: number) => (n < 1024 ? 'menos de 1 KB' : `${Math.round(n / 1024)} KB`)
 const textoGuardado = computed(() => ({ guardado: 'Guardado', pendiente: 'Cambios sin guardar', guardando: 'Guardando…', error: 'No se pudo guardar' })[estadoGuardado.value])
@@ -135,7 +128,11 @@ const lenguaje = lenguajeDeArchivo
 
 onMounted(async () => {
   try {
-    proyecto.value = await api.get<Proyecto>(`/proyectos/${Number(route.params.id)}`)
+    const p = await api.get<Proyecto>(`/proyectos/${Number(route.params.id)}`)
+    if (p.tipo === 'diagrama' && !p.archivos.some((a) => a.nombre === 'diagrama.json')) {
+      p.archivos.push({ nombre: 'diagrama.json', contenido: JSON.stringify(diagramaInicial(), null, 2) })
+    }
+    proyecto.value = p
   } catch (err) {
     error.value = messageOf(err, 'No se pudo abrir el proyecto.')
   } finally {

@@ -281,6 +281,7 @@
               :transform="`translate(${fig.x}, ${fig.y})`"
               :tabindex="soloLectura ? -1 : 0"
               role="button"
+              :style="soloLectura ? undefined : 'touch-action: none'"
               :aria-label="ariaLabelFigura(fig)"
               :class="[
                 'outline-none focus:ring-2 focus:ring-acento-ambar-fuerte',
@@ -383,6 +384,7 @@
                   v-if="fig.tipo !== 'decision' && fig.tipo !== 'fin'"
                   :transform="`translate(${geometriaFigura(fig).w / 2}, ${geometriaFigura(fig).h})`"
                   class="cursor-crosshair group"
+                  style="touch-action: none"
                   @pointerdown.stop="onPuertoPointerDown(fig, 'siguiente', $event)"
                 >
                   <circle r="12" fill="transparent" />
@@ -401,6 +403,7 @@
                   <g
                     :transform="`translate(${geometriaFigura(fig).w / 2}, ${geometriaFigura(fig).h})`"
                     class="cursor-crosshair group"
+                    style="touch-action: none"
                     @pointerdown.stop="onPuertoPointerDown(fig, 'si', $event)"
                   >
                     <circle r="12" fill="transparent" />
@@ -418,6 +421,7 @@
                   <g
                     :transform="`translate(${geometriaFigura(fig).w}, ${geometriaFigura(fig).h / 2})`"
                     class="cursor-crosshair group"
+                    style="touch-action: none"
                     @pointerdown.stop="onPuertoPointerDown(fig, 'no', $event)"
                   >
                     <circle r="12" fill="transparent" />
@@ -790,7 +794,23 @@ function ejecutarValidacionEnVivo() {
   }, 400)
 }
 
+// Esc cancela «Unir con…» (o quita la selección); Supr quita la flecha elegida. Las flechas no reciben foco, por eso se
+// escucha en la ventana, sin tocar lo que se escribe en un campo de texto.
+function onTeclaGlobal(e: KeyboardEvent) {
+  if (props.soloLectura) return
+  const t = e.target as HTMLElement | null
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
+  if (e.key === 'Escape' && (modoUnion.value || flechaSeleccionada.value)) {
+    deseleccionarTodo()
+  } else if ((e.key === 'Delete' || e.key === 'Backspace') && flechaSeleccionada.value) {
+    e.preventDefault()
+    quitarFlechaSeleccionada()
+  }
+}
+onMounted(() => window.addEventListener('keydown', onTeclaGlobal))
+
 onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onTeclaGlobal)
   if (timerValidacion) clearTimeout(timerValidacion)
 })
 

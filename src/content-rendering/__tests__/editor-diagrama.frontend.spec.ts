@@ -21,6 +21,27 @@ describe('Fase 29: Editor visual de diagramas de flujo', () => {
       expect(existsSync(rutaComponente)).toBe(true);
     });
 
+    it('en celular el dedo mueve la figura y no el lienzo (touch-action: none en figuras y puntos de salida)', () => {
+      const contenido = readFileSync(rutaComponente, 'utf8');
+      expect(contenido).toContain(":style=\"soloLectura ? undefined : 'touch-action: none'\"");
+      expect(contenido.match(/style="touch-action: none"/g)).toHaveLength(3);
+    });
+
+    it('Esc cancela «Unir con…» y Supr quita la flecha elegida, sin interferir al escribir', () => {
+      const contenido = readFileSync(rutaComponente, 'utf8');
+      expect(contenido).toMatch(/e\.key === 'Escape' && \(modoUnion\.value/);
+      expect(contenido).toMatch(/\(e\.key === 'Delete' \|\| e\.key === 'Backspace'\) && flechaSeleccionada\.value/);
+      expect(contenido).toContain("t.tagName === 'INPUT' || t.tagName === 'TEXTAREA'");
+      expect(contenido).toContain("window.removeEventListener('keydown', onTeclaGlobal)");
+    });
+
+    it('la página del proyecto no modifica el proyecto dentro de un computed', () => {
+      const pagina = readFileSync(path.join(raizNuxt, 'pages', 'estudiante', 'proyectos', '[id].vue'), 'utf8');
+      const computedDiagrama = /const archivoDiagrama = computed\(([^\n]*)\)\r?\n/.exec(pagina)?.[1] ?? '';
+      expect(computedDiagrama).toContain("find((a) => a.nombre === 'diagrama.json')");
+      expect(computedDiagrama).not.toContain('push');
+    });
+
     it('no contiene ningún "as any" ni "@ts-ignore"', () => {
       const contenido = readFileSync(rutaComponente, 'utf8');
       expect(contenido).not.toContain('as any');
