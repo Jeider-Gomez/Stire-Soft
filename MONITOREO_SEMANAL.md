@@ -75,9 +75,11 @@ aplicación en una URL pública, se desbloquean las pruebas en vivo que venían 
 
 ### José López — UI/UX + Comunicación
 
-- [ ] **S07-JO01 · Probar el Tutor IA como usuario y documentarlo visualmente** *(viene de la Semana 6)* — capturas y
-  una nota con los hallazgos en `docs/material-visual/01-tutor-ia/`. Si el despliegue ya está listo, sobre la URL
-  pública.
+- [x] **S07-JO01 · Probar el Tutor IA como usuario y documentarlo visualmente** *(viene de la Semana 6)* — se
+  planeó con capturas y una nota en `docs/material-visual/01-tutor-ia/`. **Lo que hizo José:** amplió la prueba del
+  Tutor a toda la interfaz y entregó el 02/10, como comentario en la tarjeta, un reporte de uso con 4 recomendaciones
+  de UX/UI (detalle y respuesta en §7). El reporte quedó transcrito en
+  [`docs/material-visual/01-tutor-ia/HALLAZGOS_JOSE.md`](./docs/material-visual/01-tutor-ia/HALLAZGOS_JOSE.md).
 
 ### Julio Galvis — Diseño Instruccional
 
@@ -184,7 +186,18 @@ real. No hace falta cubrir los 7.
 
 ### José López
 
-- [ ] Tutor IA probado como usuario, con capturas y hallazgos en `docs/material-visual/01-tutor-ia/`.
+- [x] Prueba como usuario y reporte de UX/UI. *(02/10, comentario en `S07-JO01`. José recorrió la interfaz completa,
+  no solo el Tutor, y propuso 4 mejoras. Las capturas que pedía la tarjeta no se subieron: el reporte es escrito.)*
+- [x] 7 Hábitos registrados (hábitos 1, 2, 3 y 5, con la situación de cada uno). *(02/10, `S07-H-JOSE`.)*
+
+**Respuesta a sus 4 recomendaciones** (revisadas contra el código el 02/10):
+
+| Recomendación | Qué hay hoy | Decisión |
+|---|---|---|
+| Reubicar el Tutor | Se abre como un panel a la derecha que oscurece la pantalla: mientras se usa no se puede leer la lección. | **Se adopta** (`S08-J01`): en computador, panel lateral sin oscurecer que deja ver la lección; en celular sigue igual. |
+| Menú lateral retráctil | En celular ya se oculta; en computador ocupa siempre 260 px. | **Se adopta** (`S08-J02`): botón para dejarlo solo con íconos, recordado por usuario. |
+| Cajas de texto expandibles | 19 cajas de texto; se estiran desde la esquina, pero no crecen solas. | **Se adopta** (`S08-J03`): crecen solas mientras se escribe. |
+| Registro en dos columnas o en pasos | 8 campos, ya con partes en dos columnas, 490 px de ancho. | **En parte** (`S08-J04`): no se harán pasos (más clics, más abandono); se comprueba que en un portátil de 1366×768 el botón «Crear cuenta» se vea sin bajar. |
 
 ### Julio Galvis
 
@@ -200,6 +213,20 @@ real. No hace falta cubrir los 7.
 
 > **Nota:** se marca solo con resultados verificables al cierre del viernes 02/10, con el mismo criterio de las
 > semanas anteriores.
+
+---
+
+## ➡️ Pasa a la Semana 8 (5 – 9 de octubre)
+
+Tareas nuevas de Jeider que salen del reporte de José (§7). Se planean para la Semana 8, antes de que el equipo use
+la app en la prueba de dos semanas, y van a su tablero cuando se cree:
+
+- [ ] **S08-J01 · Tutor como panel lateral** que deja ver la lección (computador); en celular sigue como cajón.
+- [ ] **S08-J02 · Menú lateral retráctil** en computador, solo íconos al colapsarlo.
+- [ ] **S08-J03 · Cajas de texto que crecen solas** (mensajes, comentarios, Tutor).
+- [ ] **S08-J04 · Registro en un portátil de 1366×768**: el botón «Crear cuenta» visible sin bajar.
+
+José revisa el resultado visual de las cuatro.
 
 ---
 
