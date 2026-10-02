@@ -47,6 +47,11 @@ export function saludoSegunHora(ahora: Date = new Date()): string {
   return SALUDOS_SEGUN_HORA[2];
 }
 
+/** «Antes de seguir, Tienes…» → «Antes de seguir, tienes…». Una sigla al inicio («HTML …») se deja igual. */
+export function trasComa(texto: string): string {
+  return /^\p{Lu}\p{Ll}/u.test(texto) ? texto[0].toLowerCase() + texto.slice(1) : texto;
+}
+
 export function esSaludo(texto: string): boolean {
   return SALUDOS_SEGUN_HORA.some((s) => texto.startsWith(s));
 }
@@ -300,7 +305,7 @@ export class TutorService {
     const timeOfDayGreeting = saludoSegunHora();
 
     const message = suggestedActivity
-      ? `${timeOfDayGreeting} ${GREETING_PREFIXES[variant]} ${suggestedActivity.reasonMessage} ${SUGGESTION_CLOSERS[variant]} "${suggestedActivity.activityTitle}"?`
+      ? `${timeOfDayGreeting} ${GREETING_PREFIXES[variant]} ${trasComa(suggestedActivity.reasonMessage)} ${SUGGESTION_CLOSERS[variant]} "${suggestedActivity.activityTitle}"?`
       : `${timeOfDayGreeting} Vas al día con tus repasos y tu dominio está en buen nivel en todas tus unidades. ¿En qué quieres que te ayude hoy?`;
 
     // Si lo último de la conversación ya es un saludo (abrió el Tutor, no escribió nada y volvió a entrar), se cambia

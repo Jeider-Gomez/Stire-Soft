@@ -1,5 +1,5 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { TutorService, esSaludo, saludoSegunHora } from './tutor.service';
+import { TutorService, esSaludo, saludoSegunHora, trasComa } from './tutor.service';
 
 const STUDENT: any = { id: 1, role: 'estudiante' };
 
@@ -467,6 +467,9 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
       expect(saludoSegunHora(new Date('2026-10-03T01:00:00Z'))).toBe('¡Buenas noches!'); // 8:00 p. m.
       expect(esSaludo('¡Buenas tardes! Oye, …')).toBe(true);
       expect(esSaludo('Buena pregunta: …')).toBe(false);
+      // después de «Antes de seguir,» la frase sigue en minúscula; una sigla no se toca
+      expect(trasComa('Tienes pendiente repasar')).toBe('tienes pendiente repasar');
+      expect(trasComa('HTML y CSS te esperan')).toBe('HTML y CSS te esperan');
     });
 
     it('si lo último ya era un saludo, lo cambia por el nuevo en vez de sumar otro', async () => {
