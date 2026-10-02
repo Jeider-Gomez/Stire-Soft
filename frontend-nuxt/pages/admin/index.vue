@@ -25,7 +25,7 @@
     </header>
 
     <!-- Pestañas de Navegación (§23 T4) -->
-    <nav class="flex items-center gap-4 border-b border-base-borde-sutil text-xs font-semibold" aria-label="Secciones de administración">
+    <nav class="flex items-center gap-4 border-b border-base-borde-sutil text-xs font-semibold overflow-x-auto whitespace-nowrap" aria-label="Secciones de administración">
       <button
         type="button"
         @click="activeTab = 'usuarios'"
@@ -33,7 +33,7 @@
         :class="activeTab === 'usuarios'
           ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold'
           : 'text-base-texto-secundario hover:text-base-texto-primario'">
-        <span>👥 Gestión de Usuarios</span>
+        <Users :size="14" aria-hidden="true" /><span>Gestión de Usuarios</span>
         <span class="px-1.5 py-0.5 rounded-full bg-base-bg-secundario text-[10px] text-base-texto-secundario font-normal">
           {{ users.length }}
         </span>
@@ -46,12 +46,22 @@
         :class="activeTab === 'solicitudes'
           ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold'
           : 'text-base-texto-secundario hover:text-base-texto-primario'">
-        <span>📋 Solicitudes de Docente</span>
+        <ClipboardList :size="14" aria-hidden="true" /><span>Solicitudes de Docente</span>
         <span
           class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
           :class="pendingRequestsCount > 0 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-bg-secundario text-base-texto-secundario font-normal'">
           {{ pendingRequestsCount }}
         </span>
+      </button>
+
+      <button
+        type="button"
+        @click="activeTab = 'roles'"
+        class="pb-2.5 px-3 -mb-px transition-colors flex items-center gap-1.5"
+        :class="activeTab === 'roles'
+          ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold'
+          : 'text-base-texto-secundario hover:text-base-texto-primario'">
+        <History :size="14" aria-hidden="true" /><span>Cambios de rol</span>
       </button>
     </nav>
 
@@ -331,6 +341,9 @@
         </div>
       </section>
     </template>
+
+    <!-- PESTAÑA 3: Registro de cambios de rol -->
+    <AdminHistorialRoles v-else-if="activeTab === 'roles'" />
 
     <!-- Modal accesible de Confirmación de Cambio de Rol (§23 T2) -->
     <div
@@ -808,7 +821,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
-import { Eye, EyeOff, Copy, Check, ChevronDown, UserCog, KeyRound, UserX, UserCheck } from 'lucide-vue-next'
+import { Eye, EyeOff, Copy, Check, ChevronDown, UserCog, KeyRound, UserX, UserCheck, Users, ClipboardList, History } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 
@@ -846,7 +859,7 @@ const { messageOf } = useApiErrorMessage()
 const authStore = useAuthStore()
 
 // Pestaña activa (§23 T4)
-const activeTab = ref<'usuarios' | 'solicitudes'>('usuarios')
+const activeTab = ref<'usuarios' | 'solicitudes' | 'roles'>('usuarios')
 
 const searchQuery = ref('')
 const roleFilter = ref('todos')

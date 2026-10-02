@@ -4,11 +4,12 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { User } from './entities/user.entity';
 import { UserAffiliation } from './entities/user-affiliation.entity';
+import { CambioDeRol } from './entities/cambio-de-rol.entity';
 import { InstitutionModule } from '../institution/institution.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserAffiliation]),
+    TypeOrmModule.forFeature([User, UserAffiliation, CambioDeRol]),
     InstitutionModule,
   ],
   controllers: [UserController],

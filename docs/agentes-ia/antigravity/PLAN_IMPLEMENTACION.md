@@ -1,6 +1,6 @@
 ---
-estado:     pendiente — Fase 29 (escrita el 2026-10-01)
-verificado: 2026-10-01 contra src/ y frontend-nuxt/ reales
+estado:     completada — Fase 29 (2026-10-02)
+verificado: 2026-10-02 contra src/ y frontend-nuxt/ reales
 fuente:     normativo (insumo de arranque para Google Antigravity)
 ---
 

@@ -30,7 +30,7 @@ la segunda semana no se confunde con lo que cambia *por el curso*.
 
 | Quién | Qué |
 |---|---|
-| Jeider | Encender el servidor y comprobar https://stire-soft.vercel.app. Las dos plantillas ya están compartidas (ALGO-203413 y PENSAR-ALGO). |
+| Jeider | Encender el servidor y comprobar https://stire-soft.vercel.app. Las dos plantillas ya están compartidas (ALGO-203413 y PENSAR-ALGO). **El servidor se apaga solo a las 23:00 y no se enciende solo:** encenderlo cada mañana de la prueba (Azure → `stire-servidor` → Iniciar, también desde la app del celular) y avisar al grupo si se cae. |
 | Docentes A y B | Crear su cuenta y pedir el rol de **docente**; el admin lo aprueba en «Usuarios y Roles». |
 | Docente A | «Crear Nueva Clase» → «Copiar el contenido de» → **Fundamentos de Algoritmia (ALGO-203413)**. En Contenido, publicar el **módulo 1**. |
 | Docente B | Lo mismo con **Pensamiento algorítmico (PENSAR-ALGO)**. Publicar el **módulo 1**. |
@@ -48,13 +48,20 @@ los avisos y el resumen de la semana.
 4. Pedirle una pista al tutor (con clave de Google AI Studio).
 5. Mirar «Mi progreso»: avance, repasos, estadísticas. ¿Se entiende qué significa cada cosa?
 6. Si el docente crea una entrega, enviarla y leer el comentario.
+7. En **Proyectos**, crear uno y ejecutarlo; abrir **«Ampliar»** para verlo en grande (celular, tableta, completo).
+   Pensamiento algorítmico: un **diagrama de flujo** (arrastrar figuras, unirlas con flechas) o un algoritmo en
+   **pseudocódigo**. Fundamentos de Algoritmia: un programa de **JavaScript** o una **página web** de varias páginas.
 
 **Docente** (unos 15 minutos al día):
 1. Abrir la clase y revisar «Hoy» todos los días: ¿lo que muestra le dice qué hacer?
-2. Crear una **entrega** (por ejemplo, un pequeño proyecto) y revisar lo que llegue: comentario primero, nota opcional.
+2. Crear una **entrega** (un diagrama de flujo en Pensamiento algorítmico, un programa en Fundamentos) y revisar lo que
+   llegue: ejecutarlo, comentario primero, nota opcional.
 3. Asignar un **refuerzo** a quien aparezca bloqueado y un **reto** a quien esté listo para más; ver si «funcionó».
 4. Armar las **notas** a su manera (una sola nota, por módulo, con o sin porcentajes) y probar «Descargar para Moodle».
 5. Escribir mensajes a quien lleve días sin practicar.
+6. Editar una lección y, con **«Insertar»**, poner dentro del texto una imagen o un **ejemplo en vivo** (HTML, CSS y
+   JavaScript) que el estudiante pueda modificar.
+7. Ver la ficha de un estudiante: avance, racha y repasos.
 
 **En la semana 2**, fijarse además en lo que **cambia** de un curso a otro (más fácil, más difícil, más claro) y en si la
 segunda vez se sienten más cómodos con la app.

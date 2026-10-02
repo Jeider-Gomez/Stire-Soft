@@ -75,6 +75,13 @@ export class UserController {
     return users.map((u) => UserResponseDto.fromEntity(u));
   }
 
+  // Historial de cambios de rol (quién, cuándo, de qué rol a cuál). Declarada antes de :id.
+  @Roles('admin')
+  @Get('cambios-de-rol')
+  historialDeRoles() {
+    return this.userService.historialDeRoles();
+  }
+
   // Lectura individual: admin, o el propio usuario. Nunca enumeracion libre.
   @Get(':id')
   async findOne(

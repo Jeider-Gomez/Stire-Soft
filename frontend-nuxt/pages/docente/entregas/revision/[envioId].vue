@@ -39,17 +39,27 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden flex flex-col min-h-[24rem]" aria-label="Código">
-          <div class="flex items-center gap-1 border-b border-base-borde-sutil px-2 py-1.5 overflow-x-auto text-[11px]" role="tablist" aria-label="Archivos">
-            <button v-for="(a, i) in envio.archivos" :key="a.nombre" type="button" role="tab" :aria-selected="i === actual" @click="actual = i"
-              class="px-2.5 py-1 rounded font-mono whitespace-nowrap"
-              :class="i === actual ? 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:bg-base-bg-secundario'">
-              {{ a.nombre }}
-            </button>
-          </div>
-          <div class="flex-1 min-h-0">
-            <CodeEditor :key="`${envio.id}-${archivoActual.nombre}`" :model-value="archivoActual.contenido" read-only :language="lenguaje(archivoActual.nombre)"
-              :aria-label="`Código de ${archivoActual.nombre} (solo lectura)`" min-height="22rem" class="w-full h-full" />
-          </div>
+          <template v-if="envio.tipo === 'diagrama'">
+            <div class="p-3 flex-1 flex flex-col min-h-0">
+              <ProyectosEditorDiagrama
+                :model-value="archivoDiagrama?.contenido || ''"
+                solo-lectura
+              />
+            </div>
+          </template>
+          <template v-else>
+            <div class="flex items-center gap-1 border-b border-base-borde-sutil px-2 py-1.5 overflow-x-auto text-[11px]" role="tablist" aria-label="Archivos">
+              <button v-for="(a, i) in envio.archivos" :key="a.nombre" type="button" role="tab" :aria-selected="i === actual" @click="actual = i"
+                class="px-2.5 py-1 rounded font-mono whitespace-nowrap"
+                :class="i === actual ? 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:bg-base-bg-secundario'">
+                {{ a.nombre }}
+              </button>
+            </div>
+            <div class="flex-1 min-h-0">
+              <CodeEditor :key="`${envio.id}-${archivoActual.nombre}`" :model-value="archivoActual.contenido" read-only :language="lenguaje(archivoActual.nombre)"
+                :aria-label="`Código de ${archivoActual.nombre} (solo lectura)`" min-height="22rem" class="w-full h-full" />
+            </div>
+          </template>
         </section>
 
         <ProyectosResultadoProyecto :key="envio.id" :tipo="envio.tipo" :archivos="envio.archivos" titulo-vista="Vista previa de la página del estudiante" />
@@ -132,6 +142,10 @@ const guardando = ref(false)
 const mensaje = ref<string | null>(null)
 
 const archivoActual = computed(() => envio.value!.archivos[Math.min(actual.value, envio.value!.archivos.length - 1)]!)
+const archivoDiagrama = computed(() => {
+  if (!envio.value) return null
+  return envio.value.archivos.find((a) => a.nombre === 'diagrama.json') ?? envio.value.archivos[0] ?? null
+})
 const nombre = computed(() => (envio.value ? `${envio.value.estudiante} ${envio.value.titulo} v${envio.value.version}` : 'proyecto'))
 
 function lenguaje(n: string) {

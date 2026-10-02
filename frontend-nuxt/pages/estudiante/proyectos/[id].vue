@@ -37,35 +37,45 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <!-- Archivos y editor -->
         <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden flex flex-col min-h-[24rem]" aria-label="Código">
-          <div class="flex items-center gap-1 border-b border-base-borde-sutil px-2 py-1.5 overflow-x-auto text-[11px]" role="tablist" aria-label="Archivos">
-            <button v-for="(a, i) in proyecto.archivos" :key="a.nombre" type="button" role="tab" :aria-selected="i === actual"
-              @click="actual = i"
-              class="px-2.5 py-1 rounded font-mono whitespace-nowrap"
-              :class="i === actual ? 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:bg-base-bg-secundario'">
-              {{ a.nombre }}
-            </button>
-            <button v-if="proyecto.archivos.length < 10" type="button" @click="agregando = true"
-              class="p-1 rounded text-base-texto-secundario hover:bg-base-bg-secundario" aria-label="Agregar archivo" title="Agregar archivo">
-              <Plus :size="14" aria-hidden="true" />
-            </button>
-          </div>
-          <form v-if="agregando" novalidate @submit.prevent="agregarArchivo" class="flex items-center gap-2 px-3 py-2 border-b border-base-borde-sutil text-[11px]">
-            <label for="nuevo-archivo" class="font-semibold">Nombre</label>
-            <input id="nuevo-archivo" ref="nuevoArchivoRef" v-model="nombreNuevo" :placeholder="({ web: 'otra.css', javascript: 'util.js', pseudocodigo: 'notas.txt', diagrama: 'notas.txt' })[proyecto.tipo]"
-              class="flex-1 px-2 py-1 rounded border border-base-borde-fuerte font-mono" />
-            <button type="submit" class="px-2 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold">Agregar</button>
-            <button type="button" @click="agregando = false" class="px-2 py-1 rounded borde-afordancia">Cancelar</button>
-          </form>
-          <div class="flex-1 min-h-0">
-            <CodeEditor :key="archivoActual.nombre" v-model="archivoActual.contenido" :language="lenguaje(archivoActual.nombre)"
-              :aria-label="`Código de ${archivoActual.nombre}`" min-height="22rem" class="w-full h-full" />
-          </div>
-          <div class="flex items-center justify-between px-3 py-1.5 border-t border-base-borde-sutil text-[11px] text-base-texto-secundario">
-            <span>Esc y luego Tab para salir del editor.</span>
-            <button v-if="proyecto.archivos.length > 1" type="button" @click="quitarArchivo" class="hover:text-semantico-falla inline-flex items-center gap-1">
-              <Trash2 :size="12" aria-hidden="true" /> Quitar {{ archivoActual.nombre }}
-            </button>
-          </div>
+          <template v-if="proyecto.tipo === 'diagrama'">
+            <div class="p-3 flex-1 flex flex-col min-h-0">
+              <ProyectosEditorDiagrama
+                v-if="archivoDiagrama"
+                v-model="archivoDiagrama.contenido"
+              />
+            </div>
+          </template>
+          <template v-else>
+            <div class="flex items-center gap-1 border-b border-base-borde-sutil px-2 py-1.5 overflow-x-auto text-[11px]" role="tablist" aria-label="Archivos">
+              <button v-for="(a, i) in proyecto.archivos" :key="a.nombre" type="button" role="tab" :aria-selected="i === actual"
+                @click="actual = i"
+                class="px-2.5 py-1 rounded font-mono whitespace-nowrap"
+                :class="i === actual ? 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:bg-base-bg-secundario'">
+                {{ a.nombre }}
+              </button>
+              <button v-if="proyecto.archivos.length < 10" type="button" @click="agregando = true"
+                class="p-1 rounded text-base-texto-secundario hover:bg-base-bg-secundario" aria-label="Agregar archivo" title="Agregar archivo">
+                <Plus :size="14" aria-hidden="true" />
+              </button>
+            </div>
+            <form v-if="agregando" novalidate @submit.prevent="agregarArchivo" class="flex items-center gap-2 px-3 py-2 border-b border-base-borde-sutil text-[11px]">
+              <label for="nuevo-archivo" class="font-semibold">Nombre</label>
+              <input id="nuevo-archivo" ref="nuevoArchivoRef" v-model="nombreNuevo" :placeholder="({ web: 'otra.css', javascript: 'util.js', pseudocodigo: 'notas.txt', diagrama: 'notas.txt' })[proyecto.tipo]"
+                class="flex-1 px-2 py-1 rounded border border-base-borde-fuerte font-mono" />
+              <button type="submit" class="px-2 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold">Agregar</button>
+              <button type="button" @click="agregando = false" class="px-2 py-1 rounded borde-afordancia">Cancelar</button>
+            </form>
+            <div class="flex-1 min-h-0">
+              <CodeEditor :key="archivoActual.nombre" v-model="archivoActual.contenido" :language="lenguaje(archivoActual.nombre)"
+                :aria-label="`Código de ${archivoActual.nombre}`" min-height="22rem" class="w-full h-full" />
+            </div>
+            <div class="flex items-center justify-between px-3 py-1.5 border-t border-base-borde-sutil text-[11px] text-base-texto-secundario">
+              <span>Esc y luego Tab para salir del editor.</span>
+              <button v-if="proyecto.archivos.length > 1" type="button" @click="quitarArchivo" class="hover:text-semantico-falla inline-flex items-center gap-1">
+                <Trash2 :size="12" aria-hidden="true" /> Quitar {{ archivoActual.nombre }}
+              </button>
+            </div>
+          </template>
         </section>
 
         <ProyectosResultadoProyecto :tipo="proyecto.tipo" :archivos="proyecto.archivos" titulo-vista="Vista previa de tu página" />
@@ -84,6 +94,7 @@ import { useTutorStore } from '~/stores/tutor'
 import { descargarHtml as bajarHtml, descargarZip as bajarZip } from '~/utils/descargaProyecto'
 import { EXTENSIONES_PROYECTO, type ArchivoProyecto, type TipoProyecto } from '~/utils/proyectoNavegador'
 import { lenguajeDeArchivo } from '~/utils/entregas'
+import { diagramaInicial } from '~/utils/diagramaFlujo'
 
 definePageMeta({ layout: 'student' })
 
@@ -107,6 +118,8 @@ const nombreNuevo = ref('')
 const nuevoArchivoRef = ref<HTMLInputElement | null>(null)
 
 const archivoActual = computed(() => proyecto.value!.archivos[Math.min(actual.value, proyecto.value!.archivos.length - 1)]!)
+// Un diagrama vive en diagrama.json (se crea al cargar si faltara; un computed no debe cambiar el proyecto).
+const archivoDiagrama = computed(() => proyecto.value?.archivos.find((a) => a.nombre === 'diagrama.json') ?? null)
 const bytes = computed(() => new TextEncoder().encode(JSON.stringify(proyecto.value?.archivos ?? [])).length)
 const kb = (n: number) => (n < 1024 ? 'menos de 1 KB' : `${Math.round(n / 1024)} KB`)
 const textoGuardado = computed(() => ({ guardado: 'Guardado', pendiente: 'Cambios sin guardar', guardando: 'Guardando…', error: 'No se pudo guardar' })[estadoGuardado.value])
@@ -115,7 +128,11 @@ const lenguaje = lenguajeDeArchivo
 
 onMounted(async () => {
   try {
-    proyecto.value = await api.get<Proyecto>(`/proyectos/${Number(route.params.id)}`)
+    const p = await api.get<Proyecto>(`/proyectos/${Number(route.params.id)}`)
+    if (p.tipo === 'diagrama' && !p.archivos.some((a) => a.nombre === 'diagrama.json')) {
+      p.archivos.push({ nombre: 'diagrama.json', contenido: JSON.stringify(diagramaInicial(), null, 2) })
+    }
+    proyecto.value = p
   } catch (err) {
     error.value = messageOf(err, 'No se pudo abrir el proyecto.')
   } finally {
