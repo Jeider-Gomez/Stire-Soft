@@ -12,6 +12,22 @@ entry to the oldest.
 
 ---
 
+## v1.1.0 — multimedia en los cursos y foto de perfil · 2 de Octubre de 2026
+
+La versión con la que **empieza** la prueba del equipo (dos funciones nuevas sobre `v1.0.0`, por eso cambia el número
+del medio).
+- **Multimedia dentro de las lecciones de los dos cursos:** 5 videos en español (comprobados: existen y se dejan
+  insertar), 2 diagramas de flujo de Wikimedia Commons (dominio público y CC0, con autor y licencia en el pie) y 3
+  ejemplos en vivo de HTML, JavaScript y CSS. Sincronizado con las plantillas ALGO-203413 y PENSAR-ALGO; verificado en
+  Chrome como estudiante (9/9).
+- **Foto de perfil opcional** en «Mi perfil»: se recorta y reduce a 256 px en el navegador, el servidor la valida por
+  su firma, la anterior se borra y sin foto se ven las iniciales. Se ve en la cabecera y en las listas del docente.
+  Migración `1791100000000-AddFotoPerfil`. Verificado en producción (subir, recargar, verla como docente, rechazar un
+  HTML disfrazado de .png, quitarla y comprobar que la imagen se borró).
+- Pantallas actualizadas en `docs/material-visual/vistas/` (40, sin errores).
+
+---
+
 ## v1.0.0 — la versión que prueba el equipo · 2 de Octubre de 2026
 
 Primera versión estable: la que el equipo prueba durante dos semanas con los dos cursos

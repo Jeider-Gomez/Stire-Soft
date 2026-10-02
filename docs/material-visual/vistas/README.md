@@ -5,7 +5,7 @@ de una versión a otra. Al actualizar las capturas en una versión nueva, Git gu
 GitHub muestra el cambio de cada pantalla lado a lado (en el commit o en el Pull Request:
 *2-up*, *Swipe* u *Onion skin*). Así se ve cómo va cambiando la app sin carpetas por versión.
 
-- **Versión de estas capturas:** `v1.0.0` (2 de octubre de 2026), la que prueba el equipo.
+- **Versión de estas capturas:** `v1.1.0` (2 de octubre de 2026), con la que empieza la prueba del equipo.
 - **Cuándo se actualizan:** en el mismo commit que la entrada del `CHANGELOG.md` de cada versión
   (ver `docs/FLUJO_GIT.md`, «Versiones»).
 - **Cómo se toman:** las toma Claude Code con un recorrido automático en Chrome (1440 px; las `3x`

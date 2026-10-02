@@ -129,6 +129,7 @@ git push origin v1.0.1
 | `v0.1.0-READY` | Primera marca, del 23 de mayo |
 | `v1.0.0-beta.1` | Primera versión completa: backend, frontend y Tutor con clave de Google AI Studio, con la identidad visual original |
 | `v1.0.0` | La versión que prueba el equipo (2 de octubre): dos cursos, proyectos con diagramas de flujo, entregas, notas, refuerzos y registro de cambios de rol. Desplegada en Vercel + Azure |
+| `v1.1.0` | Con la que empieza la prueba: multimedia dentro de las lecciones de los dos cursos y foto de perfil opcional |
 
 `v1.0.0-beta.1` llevaba `beta` porque el Tutor con una clave real de Google no se había verificado. `v1.0.0` se marcó
 por decisión del dueño al empezar la prueba con el equipo; esa verificación queda dentro de la prueba (estudiantes,
