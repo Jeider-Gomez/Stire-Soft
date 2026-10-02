@@ -737,6 +737,9 @@ const dimensionesLienzo = computed(() => {
   return { ancho: maxX, alto: maxY }
 })
 
+// Declarado antes del watch inmediato de abajo: ese watch valida al cargar y usa este reloj durante el setup.
+let timerValidacion: ReturnType<typeof setTimeout> | null = null
+
 // Cargar modelValue inicial o cuando cambie externamente
 watch(
   () => props.modelValue,
@@ -777,7 +780,6 @@ function restablecerDiagrama() {
 }
 
 // ─── Validación en vivo con debounce de 400 ms ──────────────────────────────
-let timerValidacion: ReturnType<typeof setTimeout> | null = null
 function ejecutarValidacionEnVivo() {
   if (props.soloLectura) {
     errorTraduccion.value = null

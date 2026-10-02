@@ -42,6 +42,14 @@ describe('Fase 29: Editor visual de diagramas de flujo', () => {
       expect(computedDiagrama).not.toContain('push');
     });
 
+    it('el reloj de la validación se declara antes del watch inmediato que lo usa al cargar (sin error de inicialización)', () => {
+      const contenido = readFileSync(rutaComponente, 'utf8');
+      const reloj = contenido.indexOf('let timerValidacion');
+      const watchInmediato = contenido.indexOf('{ immediate: true }');
+      expect(reloj).toBeGreaterThan(-1);
+      expect(reloj).toBeLessThan(watchInmediato);
+    });
+
     it('no contiene ningún "as any" ni "@ts-ignore"', () => {
       const contenido = readFileSync(rutaComponente, 'utf8');
       expect(contenido).not.toContain('as any');
