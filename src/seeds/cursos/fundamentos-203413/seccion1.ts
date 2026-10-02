@@ -47,6 +47,12 @@ Algoritmo para preparar un tinto:
 
 Fíjate en que el **orden importa**: si cuelas antes de agregar el café, sirves agua caliente.
 
+## En video
+
+@[¿Qué es un algoritmo? En 5 minutos (Javi Niguez)](https://www.youtube.com/watch?v=YWWwrcpv9qg)
+
+Mientras lo ves, piensa en un algoritmo de tu día que el video no mencione.
+
 ## Error común
 
 Escribir pasos **ambiguos**: «echa un poquito de azúcar», «espera un rato», «camina hasta que te canses».
@@ -165,6 +171,10 @@ cada valor en una tabla.
 | nota1 | nota2 | nota3 | promedio |
 |---|---|---|---|
 | 3.0 | 4.0 | 5.0 | 4.0 |
+
+Así se ve un diagrama completo: calcula el factorial de N (N × (N − 1) × … × 1) y repite hasta que M llega a N.
+
+![Diagrama de flujo del factorial de N: inicio, leer N, dos procesos, una decisión «¿Es M = N?» y escribir F](https://upload.wikimedia.org/wikipedia/commons/7/71/Diagrama_de_flujo_de_factorial.png "Factorial de N. Imagen: Kuco, Wikimedia Commons, dominio público.")
 
 ## Error común
 
@@ -580,6 +590,19 @@ Toda página tiene el mismo esqueleto, y su orden importa tanto como el de un al
   <li>Condicionales</li>
 </ul>
 <a href="https://developer.mozilla.org/es/docs/Learn">Aprende más en MDN</a>
+\`\`\`
+
+## Pruébalo aquí mismo
+
+Cambia el título, agrega otro elemento a la lista y mira el resultado al lado.
+
+\`\`\`vivo
+<h1>Mi primera página</h1>
+<p>Estoy aprendiendo <strong>HTML</strong> en STIRE.</p>
+<ul>
+  <li>Algoritmos</li>
+  <li>HTML</li>
+</ul>
 \`\`\`
 
 ## Error común

@@ -36,6 +36,14 @@ Tiene cuatro pilares:
 - **Abstraer:** para el bus importa **cuántos** estudiantes van, no el color de su maleta.
 - **Algoritmo:** 1) contar estudiantes con permiso, 2) calcular cuántos buses se necesitan, 3) reservar, 4) confirmar la hora.
 
+## En video
+
+Dos videos cortos sobre los pilares: partir un problema grande en partes pequeñas y encontrar lo que se repite.
+
+@[Descomposición de problemas (Educatic Uruguay)](https://www.youtube.com/watch?v=KAXaLZimk5Q)
+
+@[Pensamiento computacional: reconocer patrones (Rutatec)](https://www.youtube.com/watch?v=0FcBoRLkZ40)
+
 ## Error común
 
 Saltar directo al algoritmo sin descomponer. Los problemas grandes abruman; los pequeños se resuelven uno por uno.

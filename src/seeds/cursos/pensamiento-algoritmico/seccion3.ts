@@ -53,6 +53,12 @@ FinSi
 Escribir precio
 \`\`\`
 
+## Una decisión en la vida real
+
+Así decide una aplicación si te deja entrar. Cada rombo es una pregunta de sí o no; fíjate qué pasa con el «No».
+
+![Diagrama de flujo del inicio de sesión: ingresar usuario y contraseña, «¿Datos correctos?» y «¿Olvidó contraseña?»](https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/Diagrama_de_flujo_sobre_inicio_de_sesi%C3%B3n.png/960px-Diagrama_de_flujo_sobre_inicio_de_sesi%C3%B3n.png "Inicio de sesión en una aplicación. Imagen: FerLez, Wikimedia Commons, CC0.")
+
 ## Error común
 
 **Confundir Y con O.** \`edad <= 12 Y edad >= 60\` nunca es verdadero: nadie tiene a la vez 12 años o menos y 60 o más.

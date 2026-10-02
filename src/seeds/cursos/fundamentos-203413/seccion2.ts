@@ -1021,6 +1021,23 @@ Un contador de clics, la base de muchos juegos educativos:
 **Validar un formulario** es un algoritmo con condicionales: si el dato no es válido, se detiene el envío con
 \`evento.preventDefault()\` y se muestra un aviso.
 
+## Pruébalo aquí mismo
+
+Un contador: cada clic suma 1. Cambia el código para que cuente de 2 en 2, o para que al llegar a 10 vuelva a 0.
+
+\`\`\`vivo
+<button id="sumar">Sumar</button>
+<p>Llevas <strong id="cuenta">0</strong> clics.</p>
+
+<script>
+  let cuenta = 0;
+  document.getElementById('sumar').addEventListener('click', () => {
+    cuenta = cuenta + 1;
+    document.getElementById('cuenta').textContent = cuenta;
+  });
+</script>
+\`\`\`
+
 ## Error común
 
 1. **Olvidar convertir:** \`campo.value\` es texto; \`"5" + 3\` da \`"53"\`. Usa \`Number(campo.value)\`.
@@ -1131,6 +1148,26 @@ Una presentación sencilla: cada diapositiva es una \`<section class="diapositiv
   <h2>¿Qué es un algoritmo?</h2>
   <p>Una secuencia finita de pasos precisos.</p>
 </section>
+\`\`\`
+
+## Pruébalo aquí mismo
+
+Cada caja tiene **relleno** (\`padding\`, por dentro del borde), **borde** (\`border\`) y **margen** (\`margin\`, por fuera).
+Cambia los números y mira cómo se mueve la tarjeta.
+
+\`\`\`vivo
+<div class="tarjeta">Soy una tarjeta</div>
+
+<style>
+  body { background: #F7F9FC; font-family: sans-serif; }
+  .tarjeta {
+    padding: 16px;
+    border: 4px solid #0B3D91;
+    margin: 24px;
+    background: white;
+    border-radius: 8px;
+  }
+</style>
 \`\`\`
 
 ## Error común

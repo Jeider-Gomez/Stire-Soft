@@ -174,6 +174,16 @@ Algoritmo Votar
 FinAlgoritmo
 \`\`\`
 
+## Un diagrama de verdad
+
+Este diagrama calcula el factorial de N. Sigue las flechas con N = 3: ¿cuántas veces pasa por el rombo?
+
+![Diagrama de flujo del factorial de N: inicio, leer N, dos procesos, una decisión «¿Es M = N?» y escribir F](https://upload.wikimedia.org/wikipedia/commons/7/71/Diagrama_de_flujo_de_factorial.png "Factorial de N. Imagen: Kuco, Wikimedia Commons, dominio público.")
+
+@[Ejemplo de diagrama de flujo en 3 minutos (GestionPro)](https://www.youtube.com/watch?v=xOOvgSpH8hM)
+
+En **Mis proyectos → Diagrama de flujo** puedes dibujar el tuyo arrastrando figuras y ejecutarlo.
+
 ## Error común
 
 Confundir el **paralelogramo** con el **rectángulo**. Si el paso **pide** o **muestra** un dato, es entrada o salida
