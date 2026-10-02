@@ -1,5 +1,5 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { TutorService } from './tutor.service';
+import { TutorService, esSaludo, saludoSegunHora } from './tutor.service';
 
 const STUDENT: any = { id: 1, role: 'estudiante' };
 
@@ -26,6 +26,7 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
   beforeEach(() => {
     convRepo = {
       save: jest.fn().mockResolvedValue(undefined),
+      delete: jest.fn().mockResolvedValue(undefined),
       getRecentContext: jest.fn().mockResolvedValue([
         { role: 'user', content: 'Hola tutor' },
         { role: 'assistant', content: 'Respuesta previa' },
@@ -456,6 +457,32 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
 
       expect(convRepo.getHistory).toHaveBeenNthCalledWith(1, 1, 20);
       expect(convRepo.getHistory).toHaveBeenNthCalledWith(2, 1, 1);
+    });
+  });
+
+  describe('saludo al abrir el Tutor (02/10)', () => {
+    it('buenos días, tardes o noches según la hora de Colombia, no la del servidor (UTC)', () => {
+      expect(saludoSegunHora(new Date('2026-10-02T13:00:00Z'))).toBe('¡Buenos días!'); // 8:00 a. m.
+      expect(saludoSegunHora(new Date('2026-10-02T19:10:00Z'))).toBe('¡Buenas tardes!'); // 2:10 p. m. (decía «noches»)
+      expect(saludoSegunHora(new Date('2026-10-03T01:00:00Z'))).toBe('¡Buenas noches!'); // 8:00 p. m.
+      expect(esSaludo('¡Buenas tardes! Oye, …')).toBe(true);
+      expect(esSaludo('Buena pregunta: …')).toBe(false);
+    });
+
+    it('si lo último ya era un saludo, lo cambia por el nuevo en vez de sumar otro', async () => {
+      convRepo.getRecentContext.mockResolvedValue([{ id: 40, role: 'assistant', content: '¡Buenas noches! Vas al día…' }]);
+      const r = await service.getProactiveGreeting(1);
+      expect(convRepo.getRecentContext).toHaveBeenCalledWith(1, 1);
+      expect(convRepo.delete).toHaveBeenCalledWith({ id: 40 });
+      expect(convRepo.save).toHaveBeenCalledTimes(1);
+      expect(r.reemplazaAnterior).toBe(true);
+    });
+
+    it('si el estudiante habló después del último saludo, el nuevo saludo se agrega y no se borra nada', async () => {
+      convRepo.getRecentContext.mockResolvedValue([{ id: 41, role: 'user', content: '¡Buenas tardes! tengo una duda' }]);
+      const r = await service.getProactiveGreeting(1);
+      expect(convRepo.delete).not.toHaveBeenCalled();
+      expect(r.reemplazaAnterior).toBe(false);
     });
   });
 });

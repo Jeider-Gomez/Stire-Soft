@@ -52,12 +52,13 @@ export class TutorController {
   @Roles('estudiante')
   @ApiOperation({ summary: 'Saludo proactivo del Tutor IA basado en el seguimiento real del estudiante (repasos vencidos, mastery bajo)' })
   async greeting(@GetUser() user: User) {
-    const { message, suggestedActivity } = await this.tutorService.getProactiveGreeting(user.id);
+    const { message, suggestedActivity, reemplazaAnterior } = await this.tutorService.getProactiveGreeting(user.id);
 
     return {
       success: true,
       message,
       suggestedActivity,
+      reemplazaAnterior,
     };
   }
 

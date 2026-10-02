@@ -34,6 +34,22 @@ const PRACTICE_INTENT_PATTERN =
 // Varias frases para el saludo proactivo -- server-side, sin costo de LLM -- para que no suene
 // siempre exactamente igual (docs/00_VISION_FUNCIONAL.md, pausa técnica 2026-09-15).
 const GREETING_PREFIXES = ['Oye,', 'Mira,', 'Antes de seguir,', 'Una cosa,'];
+const SALUDOS_SEGUN_HORA = ['¡Buenos días!', '¡Buenas tardes!', '¡Buenas noches!'] as const;
+
+/**
+ * Buenos días, tardes o noches según la hora de Colombia. El servidor corre en UTC: a las 2 p. m. de Colombia son las
+ * 7 p. m. en UTC y el Tutor decía «¡Buenas noches!» (02/10).
+ */
+export function saludoSegunHora(ahora: Date = new Date()): string {
+  const hora = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Bogota', hour: 'numeric', hourCycle: 'h23' }).format(ahora));
+  if (hora < 12) return SALUDOS_SEGUN_HORA[0];
+  if (hora < 19) return SALUDOS_SEGUN_HORA[1];
+  return SALUDOS_SEGUN_HORA[2];
+}
+
+export function esSaludo(texto: string): boolean {
+  return SALUDOS_SEGUN_HORA.some((s) => texto.startsWith(s));
+}
 const SUGGESTION_CLOSERS = ['¿Le damos con', '¿Practicamos', '¿Te animas con', '¿Vamos con'];
 
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
@@ -278,25 +294,23 @@ export class TutorService {
    * datos reales: fecha de repaso, % de mastery), pero con variedad de frases para no sonar
    * siempre igual -- varía por día, no por request, así que dentro del mismo día es consistente.
    */
-  async getProactiveGreeting(studentId: number): Promise<TutorReply> {
+  async getProactiveGreeting(studentId: number): Promise<TutorReply & { reemplazaAnterior: boolean }> {
     const suggestedActivity = await this.recommendationService.suggestAmbient(studentId);
     const variant = new Date().getDate() % GREETING_PREFIXES.length;
-    const timeOfDayGreeting = this.timeOfDayGreeting();
+    const timeOfDayGreeting = saludoSegunHora();
 
     const message = suggestedActivity
       ? `${timeOfDayGreeting} ${GREETING_PREFIXES[variant]} ${suggestedActivity.reasonMessage} ${SUGGESTION_CLOSERS[variant]} "${suggestedActivity.activityTitle}"?`
       : `${timeOfDayGreeting} Vas al día con tus repasos y tu dominio está en buen nivel en todas tus unidades. ¿En qué quieres que te ayude hoy?`;
 
+    // Si lo último de la conversación ya es un saludo (abrió el Tutor, no escribió nada y volvió a entrar), se cambia
+    // por el nuevo en vez de sumar otro: el historial mostraba tres saludos seguidos (02/10).
+    const [ultimo] = await this.convRepo.getRecentContext(studentId, 1);
+    const reemplazaAnterior = !!ultimo && ultimo.role === 'assistant' && esSaludo(ultimo.content);
+    if (reemplazaAnterior) await this.convRepo.delete({ id: ultimo.id });
     await this.convRepo.save({ studentId, role: 'assistant', content: message });
 
-    return { message, suggestedActivity, guidanceLevel: null };
-  }
-
-  private timeOfDayGreeting(): string {
-    const hour = new Date().getHours();
-    if (hour < 12) return '¡Buenos días!';
-    if (hour < 19) return '¡Buenas tardes!';
-    return '¡Buenas noches!';
+    return { message, suggestedActivity, guidanceLevel: null, reemplazaAnterior };
   }
 
   /**

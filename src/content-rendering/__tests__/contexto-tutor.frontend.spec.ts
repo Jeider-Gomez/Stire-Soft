@@ -45,3 +45,10 @@ describe('Contexto que la pantalla le manda al Tutor', () => {
     expect(store).not.toContain('studentStore.activeUnit');
   });
 });
+
+describe('Saludo del Tutor (02/10)', () => {
+  it('cuando el servidor reemplaza el saludo anterior, la pantalla quita el viejo antes de mostrar el nuevo', () => {
+    const store = require('fs').readFileSync(require('path').join(__dirname, '..', '..', '..', 'frontend-nuxt', 'stores', 'tutor.ts'), 'utf8');
+    expect(store).toContain("if (res?.reemplazaAnterior && ultimo?.sender === 'tutor' && /^¡Buen(os días|as tardes|as noches)!/.test(ultimo.text)) messages.value.pop()");
+  });
+});

@@ -181,7 +181,10 @@ export const useTutorStore = defineStore('tutor', () => {
     startThinkingTimer()
 
     try {
-      const res = await api.get<{ success: boolean; message: string; suggestedActivity: TutorSuggestedActivity | null }>('/tutor/greeting')
+      const res = await api.get<{ success: boolean; message: string; suggestedActivity: TutorSuggestedActivity | null; reemplazaAnterior?: boolean }>('/tutor/greeting')
+      // El servidor cambió el saludo anterior por este: se quita el viejo que trajo el historial.
+      const ultimo = messages.value[messages.value.length - 1]
+      if (res?.reemplazaAnterior && ultimo?.sender === 'tutor' && /^¡Buen(os días|as tardes|as noches)!/.test(ultimo.text)) messages.value.pop()
       messages.value.push({
         id: `msg-${Date.now()}-greeting`,
         sender: 'tutor',
