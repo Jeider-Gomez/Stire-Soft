@@ -17,11 +17,27 @@
  *   formatTutorMessage('<script>alert(1)</script>')   // debe salir como texto inerte
  *   formatTutorMessage('<img onerror="alert(1)">')    // ídem
  */
+/**
+ * El servidor guarda y devuelve el texto del Tutor ya escapado (ADR 07, perfil PLAIN: «<» llega como «&lt;»). Si se
+ * escapara otra vez, el estudiante leería «&lt;-» en vez de «<-» (y «&lt;h1&gt;» en vez de «<h1>»). Se deshace ese
+ * escape primero y el texto se vuelve a escapar UNA vez abajo, así que sigue siendo inerte. «&amp;» va al final para no
+ * convertir «&amp;lt;» (un «&lt;» escrito a propósito) en «<».
+ */
+export function desescaparDelServidor(texto: string): string {
+  return texto
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+}
+
 export function formatTutorMessage(rawText: string): string {
   if (!rawText) return ''
 
-  // 1. Escapar HTML (protección XSS)
-  const escaped = rawText
+  // 1. Escapar HTML (protección XSS), una sola vez sobre el texto original
+  const escaped = desescaparDelServidor(rawText)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
