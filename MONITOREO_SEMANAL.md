@@ -75,11 +75,10 @@ aplicación en una URL pública, se desbloquean las pruebas en vivo que venían 
 
 ### José López — UI/UX + Comunicación
 
-- [x] **S07-JO01 · Probar el Tutor IA como usuario y documentarlo visualmente** *(viene de la Semana 6)* — se
-  planeó con capturas y una nota en `docs/material-visual/01-tutor-ia/`. **Lo que hizo José:** amplió la prueba del
-  Tutor a toda la interfaz y entregó el 02/10, como comentario en la tarjeta, un reporte de uso con 4 recomendaciones
-  de UX/UI (detalle y respuesta en §7). El reporte quedó transcrito en
-  [`docs/material-visual/01-tutor-ia/HALLAZGOS_JOSE.md`](./docs/material-visual/01-tutor-ia/HALLAZGOS_JOSE.md).
+- [x] **S07-JO01 · Probar el Tutor IA como usuario y documentarlo visualmente** *(viene de la Semana 6)* — José
+  revisó el Tutor dentro de un recorrido completo por la interfaz y entregó el 02/10, en la tarjeta, su reporte de uso
+  con 4 recomendaciones de UX/UI, entre ellas reubicar el Tutor para poder leer y conversar a la vez (detalle y
+  respuesta en §7).
 
 ### Julio Galvis — Diseño Instruccional
 
@@ -186,8 +185,9 @@ real. No hace falta cubrir los 7.
 
 ### José López
 
-- [x] Prueba como usuario y reporte de UX/UI. *(02/10, comentario en `S07-JO01`. José recorrió la interfaz completa,
-  no solo el Tutor, y propuso 4 mejoras. Las capturas que pedía la tarjeta no se subieron: el reporte es escrito.)*
+- [x] Tutor IA revisado como usuario, con reporte de uso y recomendaciones de UX/UI. *(02/10, en `S07-JO01`. Revisó
+  el Tutor en el contexto de toda la interfaz; su hallazgo sobre el Tutor —que el panel tapa la lección mientras se
+  conversa— es la mejora de mayor impacto de la lista y pasa a la Semana 8.)*
 - [x] 7 Hábitos registrados (hábitos 1, 2, 3 y 5, con la situación de cada uno). *(02/10, `S07-H-JOSE`.)*
 
 **Respuesta a sus 4 recomendaciones** (revisadas contra el código el 02/10):
