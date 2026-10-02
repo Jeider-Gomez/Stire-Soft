@@ -195,9 +195,9 @@ real. No hace falta cubrir los 7.
 | Recomendación | Qué hay hoy | Decisión |
 |---|---|---|
 | Reubicar el Tutor | Se abre como un panel a la derecha que oscurece la pantalla: mientras se usa no se puede leer la lección. | **Se adopta** (`S08-J01`): en computador, panel lateral sin oscurecer que deja ver la lección; en celular sigue igual. |
-| Menú lateral retráctil | En celular ya se oculta; en computador ocupa siempre 260 px. | **Se adopta** (`S08-J02`): botón para dejarlo solo con íconos, recordado por usuario. |
-| Cajas de texto expandibles | 19 cajas de texto; se estiran desde la esquina, pero no crecen solas. | **Se adopta** (`S08-J03`): crecen solas mientras se escribe. |
-| Registro en dos columnas o en pasos | 8 campos, ya con partes en dos columnas, 490 px de ancho. | **En parte** (`S08-J04`): no se harán pasos (más clics, más abandono); lo obligatorio arriba y lo opcional agrupado debajo (idea de Jeider, 02/10), y el botón «Crear cuenta» visible sin bajar en 1366×768. |
+| Menú lateral retráctil | En celular ya se oculta; en computador ocupa siempre 260 px. | **Se adopta** (`S08-J01`): botón para dejarlo solo con íconos, recordado por usuario. |
+| Cajas de texto expandibles | 19 cajas de texto; se estiran desde la esquina, pero no crecen solas. | **Se adopta** (`S08-J01`): crecen solas mientras se escribe. |
+| Registro en dos columnas o en pasos | 8 campos, ya con partes en dos columnas, 490 px de ancho. | **En parte** (`S08-J01`): no se harán pasos (más clics, más abandono); lo obligatorio arriba y lo opcional agrupado debajo (idea de Jeider, 02/10), y el botón «Crear cuenta» visible sin bajar en 1366×768. |
 
 ### Julio Galvis
 
@@ -218,18 +218,19 @@ real. No hace falta cubrir los 7.
 
 ## ➡️ Pasa a la Semana 8 (5 – 9 de octubre)
 
-Tareas nuevas de Jeider que salen del reporte de José (§7). Se planean para la Semana 8, antes de que el equipo use
-la app en la prueba de dos semanas, y van a su tablero cuando se cree:
+Una tarea de Jeider que sale del reporte de José (§7). Se planea para la Semana 8, antes de que el equipo use la app
+en la prueba de dos semanas, y va a su tablero cuando se cree:
 
-- [ ] **S08-J01 · Tutor como panel lateral** que deja ver la lección (computador); en celular sigue como cajón.
-- [ ] **S08-J02 · Menú lateral retráctil** en computador, solo íconos al colapsarlo.
-- [ ] **S08-J03 · Cajas de texto que crecen solas** (mensajes, comentarios, Tutor).
-- [ ] **S08-J04 · Registro más corto:** el botón «Crear cuenta» visible sin bajar en un portátil de 1366×768; lo
-  obligatorio arriba y lo opcional (código de clase, materia del docente, clave de Google) agrupado debajo bajo
-  «Opcional»; y la clave de Google **solo para estudiantes**, porque hoy el formulario se la pide también a quien
-  elige «Docente» y el Tutor solo lo usan los estudiantes (`src/tutor/tutor.controller.ts`).
+- [ ] **S08-J01 · Ajustes de UI/UX según las recomendaciones de José**
+  - Tutor como panel lateral que deja ver la lección (computador); en celular sigue como cajón.
+  - Menú lateral retráctil en computador, solo íconos al colapsarlo.
+  - Cajas de texto que crecen solas (mensajes, comentarios, Tutor).
+  - Registro más corto: lo obligatorio arriba y lo opcional (código de clase, materia del docente, clave de Google)
+    agrupado debajo bajo «Opcional»; la clave de Google solo para estudiantes, porque hoy se le pide también a quien
+    elige «Docente» y el Tutor solo lo usan los estudiantes (`src/tutor/tutor.controller.ts`); y el botón «Crear
+    cuenta» visible sin bajar en un portátil de 1366×768.
 
-José revisa el resultado visual de las cuatro.
+  **Hecho cuando:** los cuatro ajustes están en `main` con sus pruebas y José revisó el resultado visual.
 
 ---
 
