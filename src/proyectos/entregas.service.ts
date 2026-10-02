@@ -256,7 +256,7 @@ export class EntregasService {
     const entrega = await this.entregaDelEstudiante(user, id);
     const proyecto = await this.proyectos.obtener(user, Number(proyectoId));
     if (entrega.tipoProyecto !== 'cualquiera' && proyecto.tipo !== entrega.tipoProyecto) {
-      throw new BadRequestException(`Esta entrega pide un proyecto de ${({ web: 'página web', javascript: 'JavaScript', pseudocodigo: 'pseudocódigo' } as Record<string, string>)[entrega.tipoProyecto] ?? entrega.tipoProyecto}.`);
+      throw new BadRequestException(`Esta entrega pide un proyecto de ${({ web: 'página web', javascript: 'JavaScript', pseudocodigo: 'pseudocódigo', diagrama: 'diagrama de flujo' } as Record<string, string>)[entrega.tipoProyecto] ?? entrega.tipoProyecto}.`);
     }
     const anteriores = await this.envios.find({ where: { entregaId: id, studentId: user.id } });
     const { reaperturas } = await this.limiteDe(entrega, user.id);

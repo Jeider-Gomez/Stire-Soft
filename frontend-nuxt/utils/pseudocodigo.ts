@@ -31,7 +31,7 @@ const TIPOS: Record<string, 'numero' | 'entero' | 'texto' | 'logico'> = {
 const sinTildes = (t: string) => t.normalize('NFD').replace(/[̀-ͯ]/g, '')
 const clave = (t: string) => sinTildes(t).toLowerCase()
 
-class FallaDeTraduccion extends Error {
+export class FallaDeTraduccion extends Error {
   constructor(public linea: number, mensaje: string) { super(mensaje) }
 }
 
@@ -245,32 +245,8 @@ function traducir(fuente: string): string {
     const c = clave(l)
     let m: RegExpExecArray | null
 
-    if ((m = /^definir\s+(.+?)\s+como\s+(\S+)$/i.exec(sinTildes(l)))) {
-      const tipo = TIPOS[clave(m[2])]
-      if (!tipo) throw new FallaDeTraduccion(n, `«${m[2]}» no es un tipo. Usa Entero, Real, Caracter o Logico.`)
-      return `__def(${JSON.stringify(Object.fromEntries(partirPorComas(m[1]).map((v) => [destino(v, n).nombre, tipo])))});`
-    }
-    if ((m = /^dimension\s+(.+)$/i.exec(sinTildes(l)))) {
-      return partirPorComas(m[1]).map((d) => {
-        const dst = destino(d, n)
-        if (!dst.indices) throw new FallaDeTraduccion(n, 'Indica el tamaño del arreglo: Dimension notas[10].')
-        return `__dim(${JSON.stringify(dst.nombre)}, [${dst.indices}]);`
-      }).join(' ')
-    }
-    if ((m = /^leer\s+(.+)$/i.exec(l))) {
-      return partirPorComas(m[1]).map((d) => {
-        const dst = destino(d, n)
-        const valor = `__leer(${JSON.stringify(dst.nombre)})`
-        return dst.indices ? `__set(${JSON.stringify(dst.nombre)}, [${dst.indices}], ${valor});` : `__v[${JSON.stringify(dst.nombre)}] = ${valor};`
-      }).join(' ')
-    }
-    if ((m = /^(escribir|mostrar|imprimir)\b\s*(.*)$/i.exec(l))) {
-      let resto = m[2]
-      const sinSaltar = /\s*\bsin\s+(saltar|bajar)\s*$/i.exec(sinTildes(resto))
-      if (sinSaltar) resto = resto.slice(0, sinSaltar.index)
-      const partes = resto.trim() ? partirPorComas(resto).map((e) => expresion(e, n)) : []
-      return `__escribir([${partes.join(', ')}], ${sinSaltar ? 'false' : 'true'});`
-    }
+    const simple = instruccionSimple(l, n)
+    if (simple !== null) return simple
     if ((m = /^si\s+(.+)$/i.exec(l))) {
       const e = /^(.+?)\s+entonces$/i.exec(m[1])
       if (!e) throw new FallaDeTraduccion(n, 'Falta «Entonces» al final del Si: Si condición Entonces.')
@@ -317,11 +293,8 @@ function traducir(fuente: string): string {
       const b = cierre(['segun'], 'FinSegun', n)
       return b.casos ? '}}' : '}'
     }
-    if ((m = ASIGNA.exec(l)) || (m = /^([A-Za-zÁÉÍÓÚáéíóúÑñÜü_][\wÁÉÍÓÚáéíóúÑñÜü]*(?:\s*\[[^\]]*\])?)\s*(=)\s*(.+)$/.exec(l))) {
-      const dst = destino(m[1], n)
-      const valor = expresion(m[3], n)
-      return dst.indices ? `__set(${JSON.stringify(dst.nombre)}, [${dst.indices}], ${valor});` : `__asignar(${JSON.stringify(dst.nombre)}, ${valor});`
-    }
+    const asignada = asignacion(l, n)
+    if (asignada !== null) return asignada
     if (/^(finalgoritmo|finproceso)$/.test(c)) throw new FallaDeTraduccion(n, '«FinAlgoritmo» va al final.')
     throw new FallaDeTraduccion(n, `No entiendo esta instrucción: «${l.slice(0, 60)}». Revisa cómo se escribe (Leer, Escribir, x <- valor, Si, Mientras, Para…).`)
   }
@@ -329,8 +302,59 @@ function traducir(fuente: string): string {
   return armar(js)
 }
 
+/**
+ * Definir, Dimension, Leer y Escribir: instrucciones de una línea, sin bloque. Las usa el algoritmo y también cada figura
+ * del diagrama de flujo (diagramaFlujo.ts). null si la línea no es ninguna de ellas.
+ */
+export function instruccionSimple(l: string, n: number): string | null {
+  let m: RegExpExecArray | null
+  if ((m = /^definir\s+(.+?)\s+como\s+(\S+)$/i.exec(sinTildes(l)))) {
+    const tipo = TIPOS[clave(m[2])]
+    if (!tipo) throw new FallaDeTraduccion(n, `«${m[2]}» no es un tipo. Usa Entero, Real, Caracter o Logico.`)
+    return `__def(${JSON.stringify(Object.fromEntries(partirPorComas(m[1]).map((v) => [destino(v, n).nombre, tipo])))});`
+  }
+  if ((m = /^dimension\s+(.+)$/i.exec(sinTildes(l)))) {
+    return partirPorComas(m[1]).map((d) => {
+      const dst = destino(d, n)
+      if (!dst.indices) throw new FallaDeTraduccion(n, 'Indica el tamaño del arreglo: Dimension notas[10].')
+      return `__dim(${JSON.stringify(dst.nombre)}, [${dst.indices}]);`
+    }).join(' ')
+  }
+  if ((m = /^leer\s+(.+)$/i.exec(l))) {
+    return partirPorComas(m[1]).map((d) => {
+      const dst = destino(d, n)
+      const valor = `__leer(${JSON.stringify(dst.nombre)})`
+      return dst.indices ? `__set(${JSON.stringify(dst.nombre)}, [${dst.indices}], ${valor});` : `__v[${JSON.stringify(dst.nombre)}] = ${valor};`
+    }).join(' ')
+  }
+  if ((m = /^(escribir|mostrar|imprimir)\b\s*(.*)$/i.exec(l))) {
+    let resto = m[2]
+    const sinSaltar = /\s*\bsin\s+(saltar|bajar)\s*$/i.exec(sinTildes(resto))
+    if (sinSaltar) resto = resto.slice(0, sinSaltar.index)
+    const partes = resto.trim() ? partirPorComas(resto).map((e) => expresion(e, n)) : []
+    return `__escribir([${partes.join(', ')}], ${sinSaltar ? 'false' : 'true'});`
+  }
+  return null
+}
+
+/** «x <- valor» (o «x = valor» como instrucción). null si la línea no es una asignación. */
+export function asignacion(l: string, n: number): string | null {
+  let m: RegExpExecArray | null
+  if ((m = ASIGNA.exec(l)) || (m = /^([A-Za-zÁÉÍÓÚáéíóúÑñÜü_][\wÁÉÍÓÚáéíóúÑñÜü]*(?:\s*\[[^\]]*\])?)\s*(=)\s*(.+)$/.exec(l))) {
+    const dst = destino(m[1], n)
+    const valor = expresion(m[3], n)
+    return dst.indices ? `__set(${JSON.stringify(dst.nombre)}, [${dst.indices}], ${valor});` : `__asignar(${JSON.stringify(dst.nombre)}, ${valor});`
+  }
+  return null
+}
+
+/** Una condición (la de un Si, un Mientras o un rombo del diagrama) como JavaScript que exige verdadero o falso. */
+export function condicion(texto: string, n: number): string {
+  return `__cond(${expresion(texto, n)})`
+}
+
 /** Arma el programa: el ambiente (variables, lectura, escritura) y las instrucciones traducidas. */
-function armar(js: string[]): string {
+export function armar(js: string[], dondeFallo = "'Error en la línea ' + __l"): string {
   return `${AMBIENTE}
 let __l = 0;
 try {
@@ -339,7 +363,7 @@ __terminar();
 } catch (e) {
   __terminar();
   const err = new Error(e && e.message ? e.message : String(e));
-  err.name = 'Error en la línea ' + __l;
+  err.name = ${dondeFallo};
   throw err;
 }`
 }

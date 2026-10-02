@@ -38,6 +38,17 @@ describe('Proyectos: reglas (docs/DISENO_PROYECTOS.md §4)', () => {
     expect(validarArchivos('javascript', plantillaInicial('javascript', 'X'))).toHaveLength(1);
   });
 
+  it('un diagrama de flujo arranca con diagrama.json y solo acepta el JSON de un diagrama', () => {
+    const d = plantillaInicial('diagrama', 'X');
+    expect(validarArchivos('diagrama', d)).toHaveLength(1);
+    expect(JSON.parse(d[0].contenido).figuras.map((f: { tipo: string }) => f.tipo)).toEqual(['inicio', 'entrada', 'salida', 'fin']);
+    expect(() => validarArchivos('diagrama', [{ nombre: 'diagrama.json', contenido: '{roto' }])).toThrow('no es un diagrama válido');
+    expect(() => validarArchivos('diagrama', [{ nombre: 'diagrama.json', contenido: '{"version":2}' }])).toThrow('no es un diagrama de flujo de STIRE');
+    const muchas = JSON.stringify({ version: 1, figuras: Array.from({ length: 81 }, (_, i) => ({ id: `f${i}`, tipo: 'proceso' })) });
+    expect(() => validarArchivos('diagrama', [{ nombre: 'diagrama.json', contenido: muchas }])).toThrow('80 figuras');
+    expect(() => validarArchivos('diagrama', [{ nombre: 'main.js', contenido: '' }])).toThrow('Un proyecto de diagrama de flujo admite archivos .json, .txt');
+  });
+
   it('un proyecto de pseudocódigo arranca con algoritmo.psc y solo admite .psc y .txt', () => {
     const psc = plantillaInicial('pseudocodigo', 'Mi primer algoritmo');
     expect(validarArchivos('pseudocodigo', psc)).toEqual([{ nombre: 'algoritmo.psc', contenido: expect.stringMatching(/^Algoritmo MiPrimerAlgoritmo\n[\s\S]*FinAlgoritmo\n$/) }]);

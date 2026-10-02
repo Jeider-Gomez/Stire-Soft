@@ -12,7 +12,8 @@ export const LIMITES_PROYECTOS = {
 } as const;
 
 // «pseudocodigo» (fase 4): un algoritmo estilo PSeInt para el curso sin tanto código; se ejecuta en el navegador.
-export const TIPOS_PROYECTO = ['web', 'javascript', 'pseudocodigo'] as const;
+// «diagrama» (fase 4): un diagrama de flujo en diagrama.json (frontend-nuxt/utils/diagramaFlujo.ts), también ejecutable.
+export const TIPOS_PROYECTO = ['web', 'javascript', 'pseudocodigo', 'diagrama'] as const;
 export type TipoProyecto = (typeof TIPOS_PROYECTO)[number];
 
 export interface ArchivoProyecto {
@@ -25,9 +26,24 @@ const EXTENSIONES: Record<TipoProyecto, string[]> = {
   web: ['html', 'css', 'js', 'txt'],
   javascript: ['js', 'txt'],
   pseudocodigo: ['psc', 'txt'],
+  diagrama: ['json', 'txt'],
 };
 
-const NOMBRE_TIPO: Record<TipoProyecto, string> = { web: 'web', javascript: 'de JavaScript', pseudocodigo: 'de pseudocódigo' };
+const NOMBRE_TIPO: Record<TipoProyecto, string> = { web: 'web', javascript: 'de JavaScript', pseudocodigo: 'de pseudocódigo', diagrama: 'de diagrama de flujo' };
+
+/** Un diagrama guardado debe ser el JSON de un diagrama (version 1 y hasta 80 figuras); el resto lo valida la pantalla. */
+const MAX_FIGURAS = 80;
+function validarDiagramaJson(nombre: string, contenido: string): void {
+  let datos: unknown;
+  try {
+    datos = JSON.parse(contenido);
+  } catch {
+    throw new ProyectoInvalidoError(`«${nombre}» no es un diagrama válido.`);
+  }
+  const d = datos as { version?: unknown; figuras?: unknown };
+  if (!d || d.version !== 1 || !Array.isArray(d.figuras)) throw new ProyectoInvalidoError(`«${nombre}» no es un diagrama de flujo de STIRE.`);
+  if (d.figuras.length > MAX_FIGURAS) throw new ProyectoInvalidoError(`Un diagrama admite como máximo ${MAX_FIGURAS} figuras.`);
+}
 
 const NOMBRE = /^[A-Za-z0-9_-]{1,40}\.([a-z]{1,4})$/;
 
@@ -70,6 +86,7 @@ export function validarArchivos(tipo: TipoProyecto, entrada: unknown): ArchivoPr
     }
     if (vistos.has(nombre.toLowerCase())) throw new ProyectoInvalidoError(`Hay dos archivos llamados «${nombre}».`);
     vistos.add(nombre.toLowerCase());
+    if (tipo === 'diagrama' && m[1] === 'json') validarDiagramaJson(nombre, contenido);
     return { nombre, contenido };
   });
   if (bytesDeArchivos(archivos) > LIMITES_PROYECTOS.bytesPorProyecto) {
@@ -80,6 +97,16 @@ export function validarArchivos(tipo: TipoProyecto, entrada: unknown): ArchivoPr
 
 /** Archivos con los que arranca un proyecto nuevo. */
 export function plantillaInicial(tipo: TipoProyecto, titulo: string): ArchivoProyecto[] {
+  if (tipo === 'diagrama') {
+    // El mismo diagrama que propone la pantalla (frontend-nuxt/utils/diagramaFlujo.ts, diagramaInicial).
+    const figuras = [
+      { id: 'inicio', tipo: 'inicio', texto: 'Inicio', x: 160, y: 20, siguiente: 'leer' },
+      { id: 'leer', tipo: 'entrada', texto: 'nombre', x: 160, y: 110, siguiente: 'saludo' },
+      { id: 'saludo', tipo: 'salida', texto: '"Hola, ", nombre', x: 160, y: 200, siguiente: 'fin' },
+      { id: 'fin', tipo: 'fin', texto: 'Fin', x: 160, y: 290 },
+    ];
+    return [{ nombre: 'diagrama.json', contenido: JSON.stringify({ version: 1, figuras }, null, 2) }];
+  }
   if (tipo === 'pseudocodigo') {
     // El mismo ejemplo que propone la pantalla (frontend-nuxt/utils/pseudocodigo.ts, algoritmoDeEjemplo).
     const nombre = titulo.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, ' ').trim().split(' ').filter(Boolean)

@@ -3,10 +3,15 @@
 export interface ArchivoProyecto { nombre: string; contenido: string }
 
 /** Tipos de proyecto (src/proyectos/proyecto-reglas.ts). «pseudocodigo» es para el curso sin tanto código (fase 4). */
-export type TipoProyecto = 'web' | 'javascript' | 'pseudocodigo'
-export const TIPO_PROYECTO: Record<TipoProyecto, string> = { web: 'Página web', javascript: 'JavaScript', pseudocodigo: 'Pseudocódigo' }
+export type TipoProyecto = 'web' | 'javascript' | 'pseudocodigo' | 'diagrama'
+export const TIPO_PROYECTO: Record<TipoProyecto, string> = { web: 'Página web', javascript: 'JavaScript', pseudocodigo: 'Pseudocódigo', diagrama: 'Diagrama de flujo' }
+/**
+ * Los tipos que se ofrecen al crear un proyecto. «diagrama» ya se guarda y se ejecuta, pero su editor visual está en
+ * construcción (docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md, fase 29): se agrega aquí cuando esté.
+ */
+export const TIPOS_QUE_SE_CREAN: TipoProyecto[] = ['web', 'javascript', 'pseudocodigo']
 /** Extensiones que admite cada tipo, en el orden en que se sugieren. */
-export const EXTENSIONES_PROYECTO: Record<TipoProyecto, string[]> = { web: ['html', 'css', 'js', 'txt'], javascript: ['js', 'txt'], pseudocodigo: ['psc', 'txt'] }
+export const EXTENSIONES_PROYECTO: Record<TipoProyecto, string[]> = { web: ['html', 'css', 'js', 'txt'], javascript: ['js', 'txt'], pseudocodigo: ['psc', 'txt'], diagrama: ['json', 'txt'] }
 
 /**
  * Código que corre dentro de un Web Worker: no ve la página, y si se cuelga, se termina el Worker. `leerEntrada()` y

@@ -41,6 +41,12 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
   pendiente con quien lleva 7 días o más sin practicar, con «Escribirles» (BT-17).
 - **Tutor en Proyectos (fase 3):** en «Mis proyectos» el Tutor ve el proyecto abierto y guía (pregunta, señala el
   problema, propone el siguiente paso) sin escribirlo; el código largo en su respuesta se omite (BT-19).
+- **Vista previa de Proyectos que sí funciona:** un enlace a otra página del proyecto (un OVA de varias páginas) la
+  abre en la vista previa (antes cargaba STIRE dentro del marco); `localStorage` existe (en memoria, se conserva entre
+  páginas); los formularios se envían sin recargar; cada `<link>`/`<script src>` carga su archivo. Sigue aislada (sin
+  allow-same-origin). **«Ampliar»**: el resultado a pantalla completa con anchos de celular, tableta y computador.
+- **Diagramas de flujo (base):** formato `diagrama.json`, validación con mensajes por figura y ejecución con las mismas
+  instrucciones del pseudocódigo; el backend acepta el tipo `diagrama`. El editor visual es la Fase 29 de Antigravity.
 - **Recursos dentro del texto de la lección:** en el editor, «Insertar aquí» pone una imagen, un video o recurso, o un
   ejemplo en vivo de HTML, CSS y JavaScript en el punto del texto donde está el cursor. El servidor valida cada enlace y
   arma la dirección de inserción (`metadata.insertados`); el ejemplo corre aislado. Sin migración (BT-22).

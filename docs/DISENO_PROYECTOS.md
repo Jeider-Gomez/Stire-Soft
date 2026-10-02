@@ -75,7 +75,10 @@ y las clases de prueba de Laura). Siempre disponible para probarlo; nadie más l
    «Pseudocódigo» (`algoritmo.psc`) con colores y «Ejecutar» en el navegador: se traduce un subconjunto de PSeInt a
    JavaScript (`frontend-nuxt/utils/pseudocodigo.ts`) y los errores dicen la línea. También es un tipo de Entrega, con
    código inicial. No se separaron los tipos por curso: cualquier estudiante elige (herramienta flexible).
-   **Diagramas de flujo: pendiente** (editor visual; es lo más trabajoso).
+   **Diagramas de flujo:** el formato (`diagrama.json`), la validación con mensajes por figura y la ejecución
+   (`frontend-nuxt/utils/diagramaFlujo.ts`, con las mismas instrucciones del pseudocódigo) y el tipo en el backend
+   están hechos el 01/10. **El editor visual está delegado a Antigravity** (Fase 29, `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md`);
+   hasta entonces el tipo no se ofrece al crear un proyecto.
 
 ## 9. Decisiones del dueño (2026-09-30)
 

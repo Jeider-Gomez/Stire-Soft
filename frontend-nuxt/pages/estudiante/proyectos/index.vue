@@ -31,8 +31,8 @@
           </div>
           <fieldset class="flex flex-wrap gap-x-4 gap-y-2">
             <legend class="sr-only">Tipo de proyecto</legend>
-            <label v-for="(texto, valor) in TIPO_PROYECTO" :key="valor" class="flex items-center gap-1.5 cursor-pointer min-h-[44px] sm:min-h-0">
-              <input v-model="nuevo.tipo" type="radio" :value="valor" name="tipo-proyecto" class="accent-acento-ambar-fuerte" /> {{ texto }}
+            <label v-for="valor in TIPOS_QUE_SE_CREAN" :key="valor" class="flex items-center gap-1.5 cursor-pointer min-h-[44px] sm:min-h-0">
+              <input v-model="nuevo.tipo" type="radio" :value="valor" name="tipo-proyecto" class="accent-acento-ambar-fuerte" /> {{ TIPO_PROYECTO[valor] }}
             </label>
           </fieldset>
           <button type="submit" :disabled="creando || proyectos.length >= estado.limites.proyectosPorUsuario"
@@ -58,7 +58,7 @@
             class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <NuxtLink :to="`/estudiante/proyectos/${p.id}`" class="min-w-0 group">
               <span class="font-bold text-sm text-base-texto-primario group-hover:underline flex items-center gap-1.5">
-                <Globe v-if="p.tipo === 'web'" :size="14" aria-hidden="true" /><ListOrdered v-else-if="p.tipo === 'pseudocodigo'" :size="14" aria-hidden="true" /><Braces v-else :size="14" aria-hidden="true" />
+                <Globe v-if="p.tipo === 'web'" :size="14" aria-hidden="true" /><ListOrdered v-else-if="p.tipo === 'pseudocodigo'" :size="14" aria-hidden="true" /><Workflow v-else-if="p.tipo === 'diagrama'" :size="14" aria-hidden="true" /><Braces v-else :size="14" aria-hidden="true" />
                 {{ p.titulo }}
               </span>
               <span class="text-[11px] text-base-texto-secundario">
@@ -87,8 +87,8 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { Braces, FolderCode, Globe, ListOrdered, Loader2, Plus, Trash2 } from 'lucide-vue-next'
-import { TIPO_PROYECTO, type TipoProyecto } from '~/utils/proyectoNavegador'
+import { Braces, FolderCode, Globe, ListOrdered, Loader2, Plus, Trash2, Workflow } from 'lucide-vue-next'
+import { TIPO_PROYECTO, TIPOS_QUE_SE_CREAN, type TipoProyecto } from '~/utils/proyectoNavegador'
 import { useApi } from '~/composables/useApi'
 
 definePageMeta({ layout: 'student' })

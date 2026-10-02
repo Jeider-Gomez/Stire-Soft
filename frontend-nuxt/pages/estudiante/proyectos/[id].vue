@@ -51,7 +51,7 @@
           </div>
           <form v-if="agregando" novalidate @submit.prevent="agregarArchivo" class="flex items-center gap-2 px-3 py-2 border-b border-base-borde-sutil text-[11px]">
             <label for="nuevo-archivo" class="font-semibold">Nombre</label>
-            <input id="nuevo-archivo" ref="nuevoArchivoRef" v-model="nombreNuevo" :placeholder="({ web: 'otra.css', javascript: 'util.js', pseudocodigo: 'notas.txt' })[proyecto.tipo]"
+            <input id="nuevo-archivo" ref="nuevoArchivoRef" v-model="nombreNuevo" :placeholder="({ web: 'otra.css', javascript: 'util.js', pseudocodigo: 'notas.txt', diagrama: 'notas.txt' })[proyecto.tipo]"
               class="flex-1 px-2 py-1 rounded border border-base-borde-fuerte font-mono" />
             <button type="submit" class="px-2 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold">Agregar</button>
             <button type="button" @click="agregando = false" class="px-2 py-1 rounded borde-afordancia">Cancelar</button>

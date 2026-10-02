@@ -33,6 +33,7 @@ export class TutorContextService {
       if (typeof context.proyectoTitulo === 'string' && context.proyectoTitulo.trim()) {
         const tipo = context.proyectoTipo === 'web' ? 'una página web (HTML, CSS y JavaScript)'
           : context.proyectoTipo === 'pseudocodigo' ? 'un algoritmo en pseudocódigo (estilo PSeInt: Leer, Escribir, <-, Si, Mientras, Para)'
+          : context.proyectoTipo === 'diagrama' ? 'un diagrama de flujo (figuras de inicio, entrada, proceso, decisión, salida y fin unidas por flechas)'
           : 'un programa de JavaScript';
         parts.push(`Proyecto propio abierto: «${context.proyectoTitulo.replace(/\s+/g, ' ').slice(0, 100)}», ${tipo}`);
       }

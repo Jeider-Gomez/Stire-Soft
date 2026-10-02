@@ -51,7 +51,7 @@
     </template>
     <template v-else>
       <div class="p-3 border-b border-base-borde-sutil space-y-2 text-xs">
-        <label v-if="tipo === 'pseudocodigo'" for="proyecto-entrada" class="block font-semibold text-base-texto-primario">Entrada: un dato por línea (cada <code>Leer</code> toma la siguiente)</label>
+        <label v-if="tipo === 'pseudocodigo' || tipo === 'diagrama'" for="proyecto-entrada" class="block font-semibold text-base-texto-primario">Entrada: un dato por línea (cada <code>Leer</code> toma la siguiente)</label>
         <label v-else for="proyecto-entrada" class="block font-semibold text-base-texto-primario">Entrada (la lee <code>leerEntrada()</code>)</label>
         <textarea id="proyecto-entrada" v-model="entrada" :rows="ampliado ? 6 : 3" class="w-full px-2 py-1.5 rounded border border-base-borde-fuerte font-mono text-[11px]"></textarea>
         <button type="button" @click="ejecutar" :disabled="ejecutando"
@@ -61,7 +61,7 @@
         </button>
       </div>
       <div class="flex-1 bg-editor-bg text-editor-text font-mono p-3 overflow-y-auto" :class="ampliado ? 'text-sm' : 'text-[11px]'" aria-live="polite" aria-label="Salida del programa">
-        <p v-if="!resultado" class="opacity-60">Pulsa «Ejecutar». {{ tipo === 'pseudocodigo' ? 'El algoritmo' : 'El programa' }} corre en este navegador, con un límite de 3 segundos.</p>
+        <p v-if="!resultado" class="opacity-60">Pulsa «Ejecutar». {{ tipo === 'javascript' ? 'El programa' : 'El algoritmo' }} corre en este navegador, con un límite de 3 segundos.</p>
         <template v-else>
           <p v-for="(l, i) in resultado.lineas" :key="i" class="whitespace-pre-wrap" :class="l.tipo === 'error' ? 'text-[#f87171]' : l.tipo === 'warn' ? 'text-[#fcd34d]' : ''">{{ l.texto }}</p>
           <p v-if="resultado.tiempoAgotado" class="text-[#f87171] mt-1">Se detuvo a los 3 segundos: revisa si hay un bucle que no termina.</p>
@@ -79,8 +79,9 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Laptop, Loader2, Maximize2, Minimize2, Play, RotateCcw, Smartphone, Tablet } from 'lucide-vue-next'
 import { archivoReferido, documentoWeb, ejecutarEnNavegador, paginasHtml, type ArchivoProyecto, type ResultadoEjecucion } from '~/utils/proyectoNavegador'
 import { traducirPseudocodigo } from '~/utils/pseudocodigo'
+import { leerDiagrama, traducirDiagrama } from '~/utils/diagramaFlujo'
 
-const props = withDefaults(defineProps<{ tipo: 'web' | 'javascript' | 'pseudocodigo'; archivos: ArchivoProyecto[]; tituloVista?: string }>(), {
+const props = withDefaults(defineProps<{ tipo: 'web' | 'javascript' | 'pseudocodigo' | 'diagrama'; archivos: ArchivoProyecto[]; tituloVista?: string }>(), {
   tituloVista: 'Vista previa de la página',
 })
 
@@ -164,6 +165,17 @@ async function ejecutar() {
     resultado.value = t.ok
       ? await ejecutarEnNavegador(t.js, entrada.value)
       : { lineas: [{ tipo: 'error', texto: `Línea ${t.error.linea}: ${t.error.mensaje}` }], tiempoAgotado: false, ms: 0 }
+    ejecutando.value = false
+    return
+  }
+  if (props.tipo === 'diagrama') {
+    // El diagrama (diagrama.json) se recorre figura por figura; un error dice en qué figura está.
+    const archivo = props.archivos.find((a) => a.nombre.endsWith('.json'))
+    const lectura = leerDiagrama(archivo?.contenido ?? '')
+    const t = lectura.ok ? traducirDiagrama(lectura.diagrama) : null
+    resultado.value = t?.ok
+      ? await ejecutarEnNavegador(t.js, entrada.value)
+      : { lineas: [{ tipo: 'error', texto: !lectura.ok ? lectura.mensaje : t && !t.ok ? `Figura ${t.error.figura}: ${t.error.mensaje}` : '' }], tiempoAgotado: false, ms: 0 }
     ejecutando.value = false
     return
   }
