@@ -31,15 +31,21 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
-            <span>🔑</span> ¿Tienes un código de clase?
+            <KeyRound :size="16" class="text-acento-ambar-fuerte" aria-hidden="true" /> ¿Tienes un código de clase?
           </h2>
           <p class="text-xs text-base-texto-secundario mt-0.5">
-            Ingresa el código proporcionado por tu docente (ej. ALGO-WEB-T01) para inscribirte al curso
+            Escríbelo o escanea con la cámara del celular el QR que proyecta tu docente.
+          </p>
+          <p v-if="desdeQr" role="status" class="text-xs font-semibold text-acento-ambar-fuerte mt-1.5">
+            Escaneaste el código de una clase: pulsa «Unirse» para entrar.
           </p>
         </div>
 
         <form @submit.prevent="handleJoinClass" class="flex items-center gap-2 w-full sm:w-auto">
+          <label for="codigo-clase" class="sr-only">Código de clase</label>
           <input
+            id="codigo-clase"
+            ref="codigoRef"
             v-model="joinCode"
             type="text"
             required
@@ -142,6 +148,8 @@
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
 import { useStudentStore } from '~/stores/student'
+import { KeyRound } from 'lucide-vue-next'
+import { normalizarCodigo } from '~/utils/codigoClase'
 const { messageOf } = useApiErrorMessage()
 
 definePageMeta({
@@ -170,6 +178,9 @@ const studentStore = useStudentStore()
 const enrolledClasses = ref<EnrollmentItem[]>([])
 const isLoading = ref(false)
 const joinCode = ref('')
+const route = useRoute()
+const desdeQr = ref(false)
+const codigoRef = ref<HTMLInputElement | null>(null)
 const isJoining = ref(false)
 const feedbackMessage = ref('')
 const feedbackIsError = ref(false)
@@ -197,12 +208,13 @@ async function handleJoinClass() {
 
   try {
     const res = await api.post<any>('/enrollment/join', {
-      code: joinCode.value.trim().toUpperCase()
+      code: normalizarCodigo(joinCode.value)
     })
 
     feedbackMessage.value = '¡Te has matriculado exitosamente en la clase!'
     feedbackIsError.value = false
     joinCode.value = ''
+    desdeQr.value = false
     
     // Recargar matrículas y actualizar store
     await fetchEnrollments()
@@ -252,5 +264,12 @@ function formatDate(dateStr?: string): string | null {
 
 onMounted(() => {
   fetchEnrollments()
+  // Llegó escaneando el QR de la clase (…/estudiante/clases?codigo=ALGO-7KQ2): el código ya queda escrito.
+  const codigo = typeof route.query.codigo === 'string' ? normalizarCodigo(route.query.codigo) : ''
+  if (codigo) {
+    joinCode.value = codigo
+    desdeQr.value = true
+    nextTick(() => codigoRef.value?.focus())
+  }
 })
 </script>

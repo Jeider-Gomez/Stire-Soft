@@ -111,7 +111,7 @@
 
       <p class="mt-4 text-center text-xs text-slate-600">
         ¿No tienes una cuenta aún?
-        <NuxtLink to="/auth/register" class="font-semibold text-stire-blue hover:text-stire-purple hover:underline transition-colors">
+        <NuxtLink :to="{ path: '/auth/register', query: route.query }" class="font-semibold text-stire-blue hover:text-stire-purple hover:underline transition-colors">
           Regístrate aquí
         </NuxtLink>
       </p>
@@ -150,6 +150,7 @@
 <script setup lang="ts">
 import { AlertCircle, AlertTriangle, ArrowRight, Check, CheckCircle2, Eye, EyeOff, GraduationCap, Lock, Mail, Settings, UserCheck } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
+import { rutaDeVuelta } from '~/utils/codigoClase'
 
 definePageMeta({
   layout: 'auth'
@@ -180,6 +181,8 @@ const accesosDemo = [
   { rol: 'administrador' as const, titulo: 'Admin', nombre: 'Gestión', componente: Settings, icono: 'bg-stire-blue/15 text-stire-blue group-hover:bg-stire-blue', hover: 'hover:border-stire-blue hover:bg-stire-blue/10' },
 ]
 
+const route = useRoute()
+
 function rutaDelRol(role: string | null | undefined) {
   if (role === 'docente') return '/docente'
   if (role === 'administrador') return '/admin'
@@ -203,8 +206,8 @@ async function handleLogin() {
   isLoading.value = false
 
   if (result.ok) {
-    // Redirigir al dashboard según el rol que devolvió el backend
-    await entrar(rutaDelRol(authStore.currentRole))
+    // Volver a donde iba (p. ej. el QR de una clase) o al inicio de su rol
+    await entrar(rutaDeVuelta(route.query.volver) ?? rutaDelRol(authStore.currentRole))
   } else {
     errorMessage.value = result.error || 'Error al iniciar sesión. Verifica tus credenciales.'
   }

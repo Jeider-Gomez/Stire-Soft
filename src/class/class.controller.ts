@@ -7,8 +7,10 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ClassService } from './class.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
@@ -41,6 +43,15 @@ export class ClassController {
   @Roles('estudiante', 'docente', 'admin')
   findAll(@GetUser() user: User) {
     return user.role === 'admin' ? this.classService.findAll() : this.classService.findCatalogue();
+  }
+
+  // Declarada antes de :id. Limitada para que no sirva para adivinar códigos de otras clases.
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
+  @Get('codigo-disponible')
+  @UseGuards(RolesGuard)
+  @Roles('docente')
+  codigoDisponible(@Query('codigo') codigo: string) {
+    return this.classService.codigoDisponible(codigo);
   }
 
   @Get('my-classes')

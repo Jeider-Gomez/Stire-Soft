@@ -16,7 +16,7 @@
 
     <ul v-else class="divide-y divide-base-borde-sutil">
       <li v-for="c in cambios" :key="c.id" class="p-3 sm:px-4 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-        <time :datetime="c.fecha" class="text-base-texto-secundario whitespace-nowrap sm:w-36 shrink-0">{{ fecha(c.fecha) }}</time>
+        <time :datetime="c.fecha" class="text-base-texto-secundario whitespace-nowrap sm:w-52 shrink-0">{{ fecha(c.fecha) }}</time>
         <div class="flex-1 min-w-0">
           <p class="font-semibold text-base-texto-primario truncate">
             {{ c.usuario?.fullName || c.usuario?.email || 'Cuenta eliminada' }}

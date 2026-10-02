@@ -257,7 +257,7 @@
 
       <p class="mt-5 pt-4 border-t border-slate-200 text-center text-xs text-slate-600">
         ¿Ya tienes una cuenta registrada?
-        <NuxtLink to="/auth/login" class="font-semibold text-stire-blue hover:text-stire-purple hover:underline transition-colors">
+        <NuxtLink :to="{ path: '/auth/login', query: route.query }" class="font-semibold text-stire-blue hover:text-stire-purple hover:underline transition-colors">
           Inicia sesión aquí
         </NuxtLink>
       </p>
@@ -269,6 +269,9 @@
 import { AlertCircle, AlertTriangle, ArrowRight, BookOpen, Bot, Check, CheckCircle2, ClipboardCheck, Eye, EyeOff, GraduationCap, Info, KeyRound, Lock, Mail, ShieldCheck, User } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
+import { rutaDeVuelta } from '~/utils/codigoClase'
+
+const route = useRoute()
 
 definePageMeta({
   layout: 'auth'
@@ -352,7 +355,7 @@ async function handleRegister() {
       await new Promise((r) => setTimeout(r, 2500))
     }
 
-    navigateTo('/estudiante')
+    navigateTo(rutaDeVuelta(route.query.volver) ?? '/estudiante')
   } else {
     errorMessage.value = result.error || 'Error al procesar el registro.'
   }

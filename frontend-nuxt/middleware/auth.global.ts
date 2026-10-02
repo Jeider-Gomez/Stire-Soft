@@ -36,8 +36,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   // 2. Sin token → redirigir al login
+  // (guarda a dónde iba: el QR de una clase lleva a /estudiante/clases?codigo=…, y tras entrar debe volver ahí)
   if (!authStore.isAuthenticated) {
-    return navigateTo('/auth/login')
+    return navigateTo(to.fullPath === '/' ? '/auth/login' : { path: '/auth/login', query: { volver: to.fullPath } })
   }
 
   const role = authStore.currentRole

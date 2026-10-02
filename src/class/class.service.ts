@@ -16,6 +16,7 @@ import { UpdateClassDto } from './dto/update-class.dto';
 import { UserService } from '../user/user.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { AuthorizationService } from '../common/authorization/authorization.service';
+import { normalizarCodigo, problemaDelCodigo } from './codigo-clase';
 
 export interface ClassWithStats extends Class {
   enrollmentCount: number;
@@ -42,20 +43,31 @@ export class ClassService {
   ) {}
 
   async create(createClassDto: CreateClassDto, teacherId: number): Promise<Class> {
-    const existing = await this.classRepository.findOne({
-      where: { code: createClassDto.code },
-    });
-
-    if (existing) {
-      throw new ConflictException('Ya existe una clase con ese código');
+    // Un solo código por clase, sin importar cómo se escriba: «algo web» y «ALGO-WEB» son el mismo.
+    const code = normalizarCodigo(createClassDto.code);
+    const problema = problemaDelCodigo(code);
+    if (problema) throw new BadRequestException(problema);
+    if (await this.classRepository.findOne({ where: { code } })) {
+      throw new ConflictException('Ya existe una clase con ese código. Elige otro.');
     }
 
-    const classEntity = this.classRepository.create({
-      ...createClassDto,
-      teacherId,
-    });
+    const classEntity = this.classRepository.create({ ...createClassDto, code, teacherId });
+    try {
+      return await this.classRepository.save(classEntity);
+    } catch (err) {
+      // Dos docentes creando el mismo código a la vez: el índice único de la base de datos decide.
+      if ((err as { code?: string })?.code === 'ER_DUP_ENTRY') throw new ConflictException('Ya existe una clase con ese código. Elige otro.');
+      throw err;
+    }
+  }
 
-    return await this.classRepository.save(classEntity);
+  /** Para el formulario del docente: si el código sirve y está libre (no dice de qué clase es si está ocupado). */
+  async codigoDisponible(texto: unknown): Promise<{ codigo: string; disponible: boolean; motivo: string | null }> {
+    const codigo = normalizarCodigo(texto);
+    const problema = problemaDelCodigo(codigo);
+    if (problema) return { codigo, disponible: false, motivo: problema };
+    const ocupado = !!(await this.classRepository.findOne({ where: { code: codigo }, select: ['id'] }));
+    return { codigo, disponible: !ocupado, motivo: ocupado ? 'Ya existe una clase con ese código.' : null };
   }
 
   async findAll(): Promise<Class[]> {
@@ -162,8 +174,11 @@ export class ClassService {
     // TypeORM ignora un `where` con valor undefined y devuelve la PRIMERA fila:
     // sin este guard, un código ausente matriculaba en la clase de menor id.
     if (typeof code !== 'string' || code.trim() === '') return null;
+    // El estudiante puede escribirlo con minúsculas, tildes o espacios: se busca en la misma forma en que se guardó.
+    const normalizado = normalizarCodigo(code);
+    if (!normalizado) return null;
     return await this.classRepository.findOne({
-      where: { code },
+      where: { code: normalizado },
     });
   }
 
