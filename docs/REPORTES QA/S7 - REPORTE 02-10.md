@@ -313,41 +313,15 @@
     dispositivos se cerraron"**, ofreciendo el botón *"Ir a iniciar
     sesión"* para ingresar con la nueva clave.
 
-## 7. Tabla Resumen de Hallazgos y Registro de QA
+# 7\. Tabla Resumen de Hallazgos y Registro de QA
 
-  --------------------------------------------------------------------------------------------------
-  **ID**      **Componente /   **Comportamiento Observado**                      **Clasificación**
-              Módulo**                                                           
-  ----------- ---------------- ------------------------------------------------- -------------------
-  **QA-01**   Editor JS        Retroalimentación de "Falla en salida: Se         **Funcional
-              (Sandbox)        esperaba 8 y se mostró 53" en códigos 1 a 4,      (Evaluación
-                               aprobación en verde con `console.log(8);` y       Precisa)**
-                               entrega de 10/20 pts (50%).                       
-
-  **QA-02**   Editor HTML/CSS  Vista previa interactiva en vivo activa sin       **Funcional (UX
-                               necesidad de pulsar "Probar", prueba de regla     Excelente)**
-                               `1/1` y entrega perfecta de 20/20 pts (100%).     
-                               `<br>`{=html}                                     
-
-  **QA-03**   Teclado /        `Tab` aplica sangría; `Esc + Tab` activa el       **Funcional (UX
-              Accesibilidad    anillo de enfoque (*focus ring*) recorriendo la   Excelente)**
-                               interfaz.                                         
-
-  **QA-04**   Notificaciones   Registro cronológico con marcas de tiempo e       **Funcional (UX
-                               indicador en la campana (`7 sin leer`).           Excelente)**
-
-  **QA-05**   Tutor IA (Core)  Integración exitosa con API Key de Google AI      **Funcional (UX
-                               Studio y explicaciones socráticas mediante        Excelente)**
-                               analogías. `<br>`{=html}                          
-
-  **QA-06**   Tutor IA (UI)    Los botones de acción rápida (`Pista`,            **Bug de Usabilidad
-                               `Pregunta guía`, `Dónde está el error`) son       (UI)**
-                               estáticos y no reaccionan al clic.                
-
-  **QA-07**   Autoguardado     Alerta transitoria *"No se pudo autoguardar"*     **Observación
-                               ante pequeñas intermitencias de sincronización.   Transitoria**
-
-  **QA-08**   Recuperación /   Correo inmediato, token de 30 min y **cierre      **Funcional
-              Seguridad        automático de sesiones concurrentes** al cambiar  (Seguridad
-                               la clave.                                         Robusta)**
-  --------------------------------------------------------------------------------------------------
+|ID|Componente / Módulo|Comportamiento Observado|Clasificación|
+|-|-|-|-|
+|**QA-01**|Editor JS (Sandbox)|Retroalimentación de "Falla en salida: Se esperaba 8 y se mostró 53" en códigos 1 a 4, aprobación en verde con `console.log(8);` y entrega de 10/20 pts (50%).|Funcional (Evaluación Precisa)|
+|**QA-02**|Editor HTML/CSS|Vista previa interactiva en vivo activa sin necesidad de pulsar "Probar", prueba de regla 1/1 y entrega perfecta de 20/20 pts (100%).|Funcional (UX Excelente)|
+|**QA-03**|Teclado / Accesibilidad|Tab aplica sangría; Esc + Tab activa el anillo de enfoque (*focus ring*) recorriendo la interfaz.|Funcional (UX Excelente)|
+|**QA-04**|Notificaciones|Registro cronológico con marcas de tiempo e indicador en la campana (7 sin leer).|Funcional (UX Excelente)|
+|**QA-05**|Tutor IA (Core)|Integración exitosa con API Key de Google AI Studio y explicaciones socráticas mediante analogías.|Funcional (UX Excelente)|
+|**QA-06**|Tutor IA (UI)|Los botones de acción rápida (Pista, Pregunta guía, Dónde está el error) son estáticos y no reaccionan al clic.|Bug de Usabilidad (UI)|
+|**QA-07**|Autoguardado|Alerta transitoria "No se pudo autoguardar" ante pequeñas intermitencias de sincronización.|Observación Transitoria|
+|**QA-08**|Recuperación / Seguridad|Correo inmediato, token de 30 min y cierre automático de sesiones concurrentes al cambiar la clave.|Funcional (Seguridad Robusta)|
