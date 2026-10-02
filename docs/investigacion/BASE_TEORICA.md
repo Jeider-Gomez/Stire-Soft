@@ -228,6 +228,26 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | En «Mis proyectos», el tipo «Pseudocódigo»; en las Entregas, «Algoritmo en pseudocódigo». |
 | **Trazabilidad** | `frontend-nuxt/utils/pseudocodigo.ts` (traducción), `components/proyectos/ResultadoProyecto.vue` (Ejecutar), `components/CodeEditor.vue` (colores); `src/proyectos/proyecto-reglas.ts` (tipo `pseudocodigo`); pruebas `pseudocodigo.frontend.spec.ts`, `proyecto-reglas.spec.ts`, `proyectos-navegador.frontend.spec.ts`. |
 
+## BT-21. Estadísticas sin abrumar: la racha a la vista, el resto plegado
+
+| | |
+|---|---|
+| **Problema observado** | «Mi progreso» y la ficha del estudiante mostraban a la vez tres indicadores, cuatro tarjetas de estadísticas (un calendario de 16 semanas casi vacío para quien empieza, un gráfico de repasos que repetía «Repasos para hoy», el estado de las lecciones y una retención vacía con un «—»), una tarjeta por lección con su propio botón y una tabla. El dueño lo resumió: «otra vez volvemos a un panel de avión». Había además incoherencias: el color de una lección usaba otros cortes que su nombre, la racha del docente contaba días en UTC y sus «repasos pendientes» decían 0 cuando el estudiante veía 5 para hoy. |
+| **Decisión** | A la vista, solo lo que motiva y orienta: avance del curso, repasos para hoy con «Repasar ahora», y la **racha** con los siete días de la semana. Lo demás (calendario, pronóstico, estado de las lecciones, retención) queda en «Ver más estadísticas», plegado; cada tarjeta vacía explica cuándo aparecerá. Cada lección es una fila con su estado, su barra y una sola acción cuando hace falta («Repasar» o «Practicar»). La racha y los repasos pendientes se cuentan por día en hora de Colombia, iguales para el estudiante y el docente; si hoy aún no practicó, la racha de ayer sigue viva y se avisa sin regañar. |
+| **Fundamento** | - Cada elemento en pantalla consume memoria de trabajo; lo que no ayuda a la tarea es carga extraña (Sweller, van Merriënboer y Paas, 1998, matriz #14).<br>- La retroalimentación que mejora el desempeño informa sobre la tarea, no compara ni juzga a la persona (Kluger y DeNisi, 1996; Hattie y Timperley, 2007, matriz #13): por eso el aviso de la racha anima en vez de culpar.<br>- La racha y la semana en siete puntos son una decisión de producto tomada de los referentes (Duolingo, Anki), no una conclusión de investigación. |
+| **Cómo se materializa** | «Mi progreso» del estudiante y la ficha del estudiante del docente. |
+| **Trazabilidad** | `frontend-nuxt/components/EstadisticasEstudiante.vue`, `utils/racha.ts`, `pages/estudiante/progreso.vue`, `pages/docente/estudiante/[studentId].vue`; `src/learning-progress/estadisticas.ts` (racha), `src/analytics/racha-y-repasos.ts`; pruebas `racha.frontend.spec.ts`, `estadisticas.spec.ts`, `racha-y-repasos.spec.ts`. |
+
+## BT-22. Imágenes, recursos y ejemplos en vivo dentro del texto de la lección
+
+| | |
+|---|---|
+| **Problema observado** | Una imagen o un video de la lección era un bloque aparte, con su propio título, que se ordenaba arriba o abajo del texto. El docente no podía poner la imagen junto al párrafo que la explica, ni un ejemplo de HTML, CSS y JavaScript que el estudiante viera funcionar ahí mismo. |
+| **Decisión** | En el editor de la lección, «Insertar aquí»: **Imagen** (subida o enlace, con descripción obligatoria), **Video o recurso** (YouTube, Genially, Canva, Drive, Scratch, PhET…) y **Ejemplo en vivo** (HTML, CSS y JavaScript que corre en un marco aislado, con «Ver el código»). Cada uno queda en su propia línea del texto, donde está el cursor, y la vista previa lo muestra igual que lo verá el estudiante. El servidor valida cada enlace con las mismas reglas de los recursos sueltos y arma él mismo la dirección de inserción. |
+| **Fundamento** | - Separar una figura del texto que la explica obliga a integrarlos mentalmente (efecto de atención dividida); integrarlos reduce la carga extraña (Sweller, van Merriënboer y Paas, 1998, matriz #14).<br>- Un ejemplo que se ejecuta deja ver qué hace el código (du Boulay, 1986), igual que el pseudocódigo ejecutable (BT-20). |
+| **Cómo se materializa** | El editor de lecciones del docente y la lección del estudiante. |
+| **Trazabilidad** | `src/content/recursos/insertados.ts`, `content.service.ts` (`metadata.insertados`, vista previa); `frontend-nuxt/utils/contenidoLeccion.ts`, `components/ContenidoLeccion.vue`, `EjemploEnVivo.vue`, `docente/LessonEditor.vue`; pruebas `insertados.spec.ts`, `content.service.spec.ts`, `contenido-leccion.frontend.spec.ts`. |
+
 ---
 
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)

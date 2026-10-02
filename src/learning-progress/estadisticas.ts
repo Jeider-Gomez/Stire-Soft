@@ -50,6 +50,19 @@ export function construirEstadisticas(d: DatosEstadisticas) {
   });
   const diasActivos = calendario.filter((c) => c.ejercicios > 0).length;
 
+  // Racha: días seguidos con práctica, en hora de Colombia. Si hoy aún no practicó, la racha de ayer sigue viva
+  // (se pierde mañana): así el estudiante ve «practica hoy para no perderla» en vez de un 0 injusto a media tarde.
+  const activo = (i: number) => (calendario[i]?.ejercicios ?? 0) > 0;
+  const practicoHoy = activo(totalDias - 1);
+  let racha = 0;
+  for (let i = practicoHoy ? totalDias - 1 : totalDias - 2; i >= 0 && activo(i); i--) racha++;
+  let rachaMaxima = 0;
+  let seguidos = 0;
+  for (let i = 0; i < totalDias; i++) {
+    seguidos = activo(i) ? seguidos + 1 : 0;
+    rachaMaxima = Math.max(rachaMaxima, seguidos);
+  }
+
   // Pronóstico: cuántos repasos tocan cada uno de los próximos 14 días; lo vencido se suma a hoy.
   const lecciones = new Set(d.lecciones);
   const repasos = d.repasos.filter((r) => lecciones.has(r.learningUnitId));
@@ -87,6 +100,9 @@ export function construirEstadisticas(d: DatosEstadisticas) {
     hoy,
     calendario,
     diasActivos,
+    racha,
+    rachaMaxima,
+    practicoHoy,
     pronostico,
     vencidos,
     lecciones: { total: lecciones.size, ...estado },

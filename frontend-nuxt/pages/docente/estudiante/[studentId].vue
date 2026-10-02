@@ -73,46 +73,34 @@
     <!-- ESTADO 3: Con Datos -->
     <div v-else-if="dashboard" class="space-y-6">
       <!-- Tarjetas KPI -->
-      <section class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <section class="grid grid-cols-3 gap-2 sm:gap-4">
         <!-- Dominio Promedio -->
-        <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm">
-          <span class="text-[10px] font-semibold text-base-texto-secundario uppercase block">Dominio Promedio</span>
+        <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-3 sm:p-4 shadow-sm min-w-0">
+          <span class="text-[10px] font-semibold text-base-texto-secundario block">Dominio en lo trabajado</span>
           <div class="flex items-baseline gap-1 mt-1">
-            <span class="text-2xl font-bold font-mono" :class="dashboard.summary.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
+            <span class="text-xl sm:text-2xl font-bold" :class="dashboard.summary.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
               {{ dashboard.summary.avgMastery }}%
             </span>
           </div>
-          <p class="text-[10px] text-base-texto-secundario mt-1">En todas las lecciones</p>
+          <p class="text-[10px] text-base-texto-secundario mt-1">Solo las lecciones que ya practicó</p>
         </div>
 
         <!-- Tasa de Éxito -->
-        <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm">
-          <span class="text-[10px] font-semibold text-base-texto-secundario uppercase block">Tasa de Aprobación</span>
+        <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-3 sm:p-4 shadow-sm min-w-0">
+          <span class="text-[10px] font-semibold text-base-texto-secundario block">Ejercicios aprobados</span>
           <div class="flex items-baseline gap-1 mt-1">
-            <span class="text-2xl font-bold font-mono text-base-texto-primario">
+            <span class="text-xl sm:text-2xl font-bold text-base-texto-primario">
               {{ dashboard.summary.avgSuccessRate }}%
             </span>
           </div>
           <p class="text-[10px] text-base-texto-secundario mt-1">{{ plural(dashboard.summary.totalAttempts, 'intento', 'intentos') }} en total</p>
         </div>
 
-        <!-- Racha Real -->
-        <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm">
-          <span class="text-[10px] font-semibold text-base-texto-secundario uppercase block">Racha Activa</span>
-          <div class="flex items-baseline gap-1 mt-1">
-            <span class="text-2xl font-bold font-mono text-acento-ambar-fuerte">
-              {{ dashboard.summary.streakDays }}
-            </span>
-            <span class="text-[11px] text-base-texto-secundario">{{ dashboard.summary.streakDays === 1 ? 'día seguido' : 'días seguidos' }}</span>
-          </div>
-          <p class="text-[10px] text-base-texto-secundario mt-1">Práctica continuada</p>
-        </div>
-
         <!-- Repasos Pendientes -->
-        <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm">
-          <span class="text-[10px] font-semibold text-base-texto-secundario uppercase block">Repasos SM-2</span>
+        <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-3 sm:p-4 shadow-sm min-w-0">
+          <span class="text-[10px] font-semibold text-base-texto-secundario block">Repasos</span>
           <div class="flex items-baseline gap-1 mt-1">
-            <span class="text-2xl font-bold font-mono" :class="dashboard.summary.reviewStats.pending > 0 ? 'text-acento-ambar-fuerte' : 'text-semantico-pasa'">
+            <span class="text-xl sm:text-2xl font-bold" :class="dashboard.summary.reviewStats.pending > 0 ? 'text-acento-ambar-fuerte' : 'text-semantico-pasa'">
               {{ dashboard.summary.reviewStats.pending }}
             </span>
             <span class="text-[11px] text-base-texto-secundario">pendientes</span>
@@ -123,7 +111,8 @@
 
       <!-- Dominio por Unidad de Aprendizaje -->
       <!-- Las mismas estadísticas que ve el estudiante (docs/DISENO_INTERVENCION_DOCENTE.md §10.3) -->
-      <EstadisticasEstudiante :student-id="Number(route.params.studentId)" :class-id="claseDeLaFicha" titulo="Estadísticas del estudiante" />
+      <!-- Racha y semana a la vista; lo demás plegado (BT-21). La racha ya cuenta los días en hora de Colombia. -->
+      <EstadisticasEstudiante :student-id="Number(route.params.studentId)" :class-id="claseDeLaFicha" vista="docente" />
 
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
@@ -174,8 +163,8 @@
             <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil font-semibold">
               <tr>
                 <th class="p-2.5">Actividad</th>
-                <th class="p-2.5">Fecha y Hora</th>
-                <th class="p-2.5 text-center">Estado</th>
+                <th class="p-2.5 hidden sm:table-cell">Fecha</th>
+                <th class="p-2.5 text-center hidden sm:table-cell">Estado</th>
                 <th class="p-2.5 text-right">Puntaje</th>
               </tr>
             </thead>
@@ -184,10 +173,10 @@
                 <td class="p-2.5 font-semibold text-base-texto-primario">
                   {{ sub.activityTitle }}
                 </td>
-                <td class="p-2.5 text-[11px] text-base-texto-secundario">
+                <td class="p-2.5 text-[11px] text-base-texto-secundario hidden sm:table-cell">
                   {{ new Date(sub.createdAt).toLocaleString() }}
                 </td>
-                <td class="p-2.5 text-center">
+                <td class="p-2.5 text-center hidden sm:table-cell">
                   <span
                     class="px-2 py-0.5 rounded text-[10px] font-bold"
                     :class="sub.status === 'graded' ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
@@ -195,7 +184,7 @@
                   </span>
                 </td>
                 <td
-                  class="p-2.5 text-right font-mono font-bold"
+                  class="p-2.5 text-right font-bold"
                   :class="sub.passed === true ? 'text-semantico-pasa' : sub.passed === false ? 'text-semantico-falla' : 'text-base-texto-secundario'">
                   <template v-if="sub.status === 'graded'">{{ sub.score }} / {{ sub.maxScore ?? '—' }}</template>
                   <template v-else>—</template>

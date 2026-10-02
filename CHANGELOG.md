@@ -41,6 +41,13 @@ Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fund
   pendiente con quien lleva 7 días o más sin practicar, con «Escribirles» (BT-17).
 - **Tutor en Proyectos (fase 3):** en «Mis proyectos» el Tutor ve el proyecto abierto y guía (pregunta, señala el
   problema, propone el siguiente paso) sin escribirlo; el código largo en su respuesta se omite (BT-19).
+- **Recursos dentro del texto de la lección:** en el editor, «Insertar aquí» pone una imagen, un video o recurso, o un
+  ejemplo en vivo de HTML, CSS y JavaScript en el punto del texto donde está el cursor. El servidor valida cada enlace y
+  arma la dirección de inserción (`metadata.insertados`); el ejemplo corre aislado. Sin migración (BT-22).
+- **Estadísticas sin abrumar:** «Mi progreso» y la ficha del estudiante muestran avance, repasos para hoy («Repasar
+  ahora») y la racha con la semana; el resto queda en «Ver más estadísticas». Una fila por lección con una sola acción.
+  Racha y repasos pendientes por día en hora de Colombia (antes UTC, y el docente veía 0 pendientes con 5 para hoy).
+  Sin migración (BT-21).
 - **Pseudocódigo en Proyectos (fase 4, primera parte):** un tipo de proyecto «Pseudocódigo» para el curso sin tanto
   código, con colores y «Ejecutar»: el algoritmo estilo PSeInt (Leer, Escribir, `<-`, Si, Mientras, Repetir, Para,
   Segun, Definir, arreglos) se traduce a JavaScript y corre en el navegador; cada `Leer` toma una línea de la Entrada y

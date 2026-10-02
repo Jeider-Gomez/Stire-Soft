@@ -15,6 +15,7 @@ import { SubmissionStatus } from '../common/enums/submission-status.enum';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { construirMapaDeCalor, MapaDeCalor } from './mapa-de-calor';
 import { construirResumenSemanal, ResumenSemanal } from './resumen-semanal';
+import { rachaDeDias, repasosPendientes } from './racha-y-repasos';
 
 @Injectable()
 export class AnalyticsService {
@@ -65,7 +66,7 @@ export class AnalyticsService {
     });
     
     const totalReviews = reviews.length;
-    const pendingReviews = reviews.filter(r => r.nextReviewDate <= now).length;
+    const pendingReviews = repasosPendientes(reviews.map((r) => r.nextReviewDate), now);
 
     // 3. Racha real calculada desde las entregas
     const allSubs = await submissionRepo.find({
@@ -74,31 +75,8 @@ export class AnalyticsService {
       select: ['createdAt'],
     });
 
-    let streakDays = 0;
-    if (allSubs.length > 0) {
-      const distinctDays = Array.from(
-        new Set(allSubs.map(s => new Date(s.createdAt).toISOString().slice(0, 10)))
-      ).sort().reverse();
-
-      const todayStr = new Date().toISOString().slice(0, 10);
-      const yesterdayStr = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-
-      const startsToday = distinctDays.includes(todayStr);
-      const startsYesterday = distinctDays.includes(yesterdayStr);
-
-      if (startsToday || startsYesterday) {
-        let cursor = startsToday ? new Date() : new Date(Date.now() - 86400000);
-        while (true) {
-          const cursorStr = cursor.toISOString().slice(0, 10);
-          if (distinctDays.includes(cursorStr)) {
-            streakDays++;
-            cursor = new Date(cursor.getTime() - 86400000);
-          } else {
-            break;
-          }
-        }
-      }
-    }
+    // Días en hora de Colombia (racha-y-repasos.ts), los mismos de las estadísticas del estudiante.
+    const streakDays = rachaDeDias(allSubs.map((sub) => new Date(sub.createdAt)), now);
 
     // 4. Recent submissions
     const recentSubmissions = await submissionRepo.find({
