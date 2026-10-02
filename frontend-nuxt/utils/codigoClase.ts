@@ -40,3 +40,20 @@ export function rutaDeVuelta(valor: unknown): string | null {
   if (!valor.startsWith('/') || valor.startsWith('//') || valor.startsWith('/\\') || valor.startsWith('/auth')) return null
   return valor
 }
+
+/**
+ * El código que trae un QR escaneado dentro de la app: el enlace de STIRE (…/estudiante/clases?codigo=X) o, en un QR
+ * antiguo, el código suelto. Cualquier otro enlace se ignora (no se sigue un QR ajeno).
+ */
+export function codigoDesdeQr(texto: string): string | null {
+  const limpio = texto.trim()
+  try {
+    const url = new URL(limpio)
+    if (!url.pathname.endsWith('/estudiante/clases')) return null
+    const codigo = normalizarCodigo(url.searchParams.get('codigo') ?? '')
+    return codigo || null
+  } catch {
+    const codigo = normalizarCodigo(limpio)
+    return /^[A-Z0-9-]{3,30}$/.test(codigo) ? codigo : null
+  }
+}

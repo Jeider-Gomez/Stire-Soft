@@ -41,7 +41,7 @@
           </p>
         </div>
 
-        <form @submit.prevent="handleJoinClass" class="flex items-center gap-2 w-full sm:w-auto">
+        <form @submit.prevent="handleJoinClass" class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <label for="codigo-clase" class="sr-only">Código de clase</label>
           <input
             id="codigo-clase"
@@ -58,6 +58,7 @@
             <span v-if="isJoining">Inscribiendo...</span>
             <span v-else>Unirse</span>
           </button>
+          <EscanerQrClase @codigo="(c) => { joinCode = c; desdeQr = true }" />
         </form>
       </div>
 

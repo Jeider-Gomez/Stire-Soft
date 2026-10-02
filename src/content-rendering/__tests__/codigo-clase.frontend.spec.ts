@@ -15,6 +15,7 @@ const u = cargar<{
   sugerirCodigo: (n: string, azar?: () => number) => string;
   urlDeIngreso: (o: string, c: string) => string;
   rutaDeVuelta: (v: unknown) => string | null;
+  codigoDesdeQr: (t: string) => string | null;
 }>();
 const leer = (...p: string[]) => readFileSync(path.join(raiz, ...p), 'utf8');
 
@@ -49,5 +50,18 @@ describe('Código y QR de la clase (frontend)', () => {
     expect(clases).toContain("normalizarCodigo(route.query.codigo)");
     expect(clases).toContain('Escaneaste el código de una clase');
     expect(leer('pages', 'docente', 'index.vue')).toContain('/class/codigo-disponible?codigo=');
+  });
+
+  it('el escáner dentro de la app toma el código del QR de STIRE y no sigue un QR ajeno', () => {
+    expect(u.codigoDesdeQr('https://stire-soft.vercel.app/estudiante/clases?codigo=prueba-j5x4')).toBe('PRUEBA-J5X4');
+    expect(u.codigoDesdeQr('  ALGO-203413 ')).toBe('ALGO-203413');
+    expect(u.codigoDesdeQr('https://evil.com/robar?codigo=ALGO')).toBeNull();
+    expect(u.codigoDesdeQr('hola mundo, esto no es un código!!')).toBeNull();
+    const clases = leer('pages', 'estudiante', 'clases.vue');
+    expect(clases).toContain('<EscanerQrClase @codigo=');
+    const escaner = leer('components', 'EscanerQrClase.vue');
+    expect(escaner).toContain("new Lector({ formats: ['qr_code'] })");
+    expect(escaner).toContain('cámara de tu celular');
+    expect(escaner).toContain('flujo?.getTracks().forEach((t) => t.stop())');
   });
 });
