@@ -42,7 +42,9 @@ los avisos y el resumen de la semana.
 ## 3. Qué probar (las dos semanas, en el curso que toque)
 
 **Estudiantes** (unos 20 minutos al día, desde el celular al menos una vez):
-1. Entrar, leer la explicación de la lección que propone «Tu siguiente paso» y practicar.
+1. Entrar (escaneando el QR que proyecta el docente o escribiendo el código), leer la explicación de la lección que
+   propone «Tu siguiente paso» y practicar. Algunas lecciones traen videos, diagramas y **ejemplos en vivo** que se
+   pueden modificar: probarlos. Opcional: poner una foto en «Mi perfil».
 2. Equivocarse a propósito tres veces seguidas en una lección: ¿qué propone la app? ¿Llega a entender por qué?
 3. Probar «¿Ya lo sabes? Demuéstralo con un reto» en una lección que ya conozca.
 4. Pedirle una pista al tutor (con clave de Google AI Studio).
