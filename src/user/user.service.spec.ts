@@ -8,6 +8,8 @@ import { UserAffiliation } from './entities/user-affiliation.entity';
 import { CambioDeRol } from './entities/cambio-de-rol.entity';
 import { InstitutionService } from '../institution/institution.service';
 import { MediaService } from '../media/media.service';
+import { plainToInstance } from 'class-transformer';
+import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 
 describe('UserService', () => {
   let service: UserService;
@@ -147,6 +149,17 @@ describe('UserService', () => {
     it('si el rol no cambia (o solo se edita el nombre), no se registra nada', async () => {
       await service.updateRole(5, UserRole.ESTUDIANTE, 1);
       await service.update(5, { fullName: 'Otro' } as any, 1);
+      expect(mockCambiosDeRol.save).not.toHaveBeenCalled();
+    });
+
+    it('restablecer la contraseña de un docente con el DTO real no le toca el rol ni falla (reporte de Jorge, 02/10)', async () => {
+      // El ValidationPipe entrega una instancia con `role: undefined` e `isActive: undefined` aunque no se manden.
+      const dto = plainToInstance(AdminUpdateUserDto, { password: 'Nueva123.' }, { enableImplicitConversion: true });
+      expect(Object.keys(dto)).toEqual(expect.arrayContaining(['role', 'isActive']));
+      mockUserRepository.findOne.mockResolvedValue({ id: 9, role: UserRole.DOCENTE, isActive: true });
+      const guardado = await service.update(9, dto, 1);
+      expect(guardado).toMatchObject({ id: 9, role: UserRole.DOCENTE, isActive: true });
+      expect(guardado.password).not.toBe('Nueva123.');
       expect(mockCambiosDeRol.save).not.toHaveBeenCalled();
     });
 

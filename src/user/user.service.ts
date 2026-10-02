@@ -127,8 +127,11 @@ export class UserService {
     }
 
     const rolAnterior = user.role;
-    // Actualizar los campos
-    Object.assign(user, adminUpdateUserDto);
+    // Solo los campos que llegaron: el DTO trae `role: undefined` e `isActive: undefined` cuando no se mandan
+    // (campos de clase en ES2022+). Copiarlos dejaba el rol vacío y el registro de cambios de rol fallaba con un 500
+    // después de guardar la contraseña (reporte de Jorge, 02/10).
+    const cambios = Object.fromEntries(Object.entries(adminUpdateUserDto).filter(([, v]) => v !== undefined));
+    Object.assign(user, cambios);
 
     const guardado = await this.userRepository.save(user);
     await this.registrarCambioDeRol(id, rolAnterior, user.role, actorId);

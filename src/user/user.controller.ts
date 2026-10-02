@@ -119,8 +119,9 @@ export class UserController {
   // propio solicitante (para eso estan PATCH /users/me y /users/me/password).
   @Roles('admin')
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() adminUpdateUserDto: AdminUpdateUserDto, @GetUser() admin: User) {
-    return this.userService.update(id, adminUpdateUserDto, admin.id);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() adminUpdateUserDto: AdminUpdateUserDto, @GetUser() admin: User): Promise<UserResponseDto> {
+    // Sin la contraseña cifrada en la respuesta (la entidad guardada la trae si se acaba de cambiar).
+    return UserResponseDto.fromEntity(await this.userService.update(id, adminUpdateUserDto, admin.id));
   }
 
   @Roles('admin')

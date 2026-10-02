@@ -62,3 +62,19 @@ describe('Ajustes de UI/UX de José', () => {
     expect(r).toContain("if (selectedRole.value === 'estudiante' && !skipApiKey.value && apiKey.value.trim())");
   });
 });
+
+describe('Admin: restablecer contraseña (reporte de Jorge, 02/10)', () => {
+  const admin = readFileSync(path.join(raiz, 'pages', 'admin', 'index.vue'), 'utf8');
+
+  it('los paneles se cierran por el fondo solo si el clic empezó en el fondo (no al soltar una selección fuera)', () => {
+    expect(admin).not.toMatch(/@click\.self="\w+">/);
+    expect(admin.match(/@mousedown="inicioClic = \$event\.target" @click\.self="inicioClic === \$event\.currentTarget && /g)).toHaveLength(5);
+    // con la contraseña ya generada, el fondo no cierra: se perdería para siempre
+    expect(admin).toContain('!resetSuccessPassword && closeResetPwdModal()');
+  });
+
+  it('la contraseña generada va en un campo de solo lectura que se selecciona entera, sin espacios alrededor', () => {
+    expect(admin).toMatch(/id="reset-pwd-generada"\s+:value="resetSuccessPassword"\s+readonly/);
+    expect(admin).toContain("document.getElementById('reset-pwd-generada')");
+  });
+});

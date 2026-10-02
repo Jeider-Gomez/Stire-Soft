@@ -349,7 +349,7 @@
     <div
       v-if="showRoleModal"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"
-      @click.self="cancelChangeRole">
+      @mousedown="inicioClic = $event.target" @click.self="inicioClic === $event.currentTarget && cancelChangeRole()">
       <div
         ref="roleDialogRef"
         role="dialog"
@@ -405,7 +405,7 @@
     <div
       v-if="showDecisionModal"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"
-      @click.self="cancelDecision">
+      @mousedown="inicioClic = $event.target" @click.self="inicioClic === $event.currentTarget && cancelDecision()">
       <div
         ref="decisionDialogRef"
         role="dialog"
@@ -488,7 +488,7 @@
     <div
       v-if="showRegisterModal"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"
-      @click.self="cancelRegister">
+      @mousedown="inicioClic = $event.target" @click.self="inicioClic === $event.currentTarget && cancelRegister()">
       <div
         ref="registerDialogRef"
         role="dialog"
@@ -616,7 +616,7 @@
     <div
       v-if="showToggleActiveModal"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"
-      @click.self="cancelToggleActive">
+      @mousedown="inicioClic = $event.target" @click.self="inicioClic === $event.currentTarget && cancelToggleActive()">
       <div
         ref="toggleActiveDialogRef"
         role="dialog"
@@ -684,7 +684,7 @@
     <div
       v-if="showResetPwdModal"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"
-      @click.self="closeResetPwdModal">
+      @mousedown="inicioClic = $event.target" @click.self="inicioClic === $event.currentTarget && !resetSuccessPassword && closeResetPwdModal()">
       <div
         ref="resetPwdDialogRef"
         role="dialog"
@@ -695,8 +695,8 @@
         class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none">
         
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte flex items-center justify-center text-lg font-bold flex-shrink-0">
-            🔑
+          <div class="w-10 h-10 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte flex items-center justify-center flex-shrink-0">
+            <KeyRound :size="18" aria-hidden="true" />
           </div>
           <div>
             <h3 id="reset-pwd-title" class="font-bold text-sm text-base-texto-primario">
@@ -768,7 +768,7 @@
                 type="submit"
                 :disabled="isResettingPwd || !resetNewPassword"
                 class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold hover:bg-acento-ambar disabled:opacity-50 transition-colors flex items-center gap-2">
-                <span v-if="isResettingPwd" class="inline-block animate-spin">⏳</span>
+                <Loader2 v-if="isResettingPwd" :size="14" class="animate-spin" aria-hidden="true" />
                 <span>{{ isResettingPwd ? 'Guardando...' : 'Restablecer contraseña' }}</span>
               </button>
             </div>
@@ -778,15 +778,20 @@
         <!-- Paso 2: Contraseña generada mostrada UNA SOLA VEZ -->
         <template v-else>
           <div role="status" class="p-3 rounded-lg bg-semantico-pasa/10 border border-semantico-pasa/30 text-xs text-semantico-pasa font-semibold flex items-center gap-1.5">
-            <span>✔</span> Contraseña restablecida exitosamente.
+            <Check :size="14" aria-hidden="true" /> Contraseña restablecida. Cópiala antes de cerrar.
           </div>
 
           <div class="space-y-2 text-xs">
             <p class="text-base-texto-primario font-medium">Contraseña temporal asignada:</p>
             <div class="flex items-center gap-2">
-              <div class="flex-1 p-2.5 rounded-md bg-base-bg-secundario border border-base-borde-fuerte font-mono text-sm text-base-texto-primario font-bold tracking-wider select-all">
-                {{ resetSuccessPassword }}
-              </div>
+              <label for="reset-pwd-generada" class="sr-only">Contraseña temporal</label>
+              <input
+                id="reset-pwd-generada"
+                :value="resetSuccessPassword"
+                readonly
+                class="flex-1 min-w-0 p-2.5 rounded-md bg-base-bg-secundario border border-base-borde-fuerte font-mono text-sm text-base-texto-primario font-bold tracking-wider"
+                @focus="($event.target as HTMLInputElement).select()"
+                @click="($event.target as HTMLInputElement).select()" />
               <button
                 type="button"
                 @click="copyResetPassword"
@@ -797,7 +802,7 @@
               </button>
             </div>
             <div class="p-3 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 text-xs text-base-texto-primario space-y-1">
-              <p class="font-bold text-acento-ambar-fuerte">⚠ Información importante:</p>
+              <p class="font-bold text-acento-ambar-fuerte flex items-center gap-1"><TriangleAlert :size="14" aria-hidden="true" /> Información importante:</p>
               <p>Entrégasela por un canal seguro; la persona debe cambiarla en Mi perfil.</p>
               <p class="text-base-texto-secundario text-[11px]">Por seguridad, esta contraseña no se volverá a mostrar tras cerrar esta ventana.</p>
             </div>
@@ -821,7 +826,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
-import { Eye, EyeOff, Copy, Check, ChevronDown, UserCog, KeyRound, UserX, UserCheck, Users, ClipboardList, History } from 'lucide-vue-next'
+import { Eye, EyeOff, Copy, Check, ChevronDown, UserCog, KeyRound, Loader2, TriangleAlert, UserX, UserCheck, Users, ClipboardList, History } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 
@@ -1407,6 +1412,10 @@ async function executeToggleActive() {
 
 // ─── T3: Restablecer contraseña (PATCH /users/:id { password }) ─────────────
 const showResetPwdModal = ref(false)
+// Dónde empezó el último clic: un panel se cierra por el fondo solo si el clic empezó en el fondo. Al seleccionar
+// la contraseña arrastrando y soltar fuera del panel, el navegador lo contaba como clic en el fondo y lo cerraba,
+// y la contraseña generada ya no se volvía a ver (reporte de Jorge, 02/10).
+const inicioClic = ref<EventTarget | null>(null)
 const targetResetUser = ref<BackendUser | null>(null)
 const resetNewPassword = ref('')
 const resetSuccessPassword = ref('')
@@ -1507,7 +1516,10 @@ async function copyResetPassword() {
     copiedResetPwd.value = true
     setTimeout(() => { copiedResetPwd.value = false }, 2500)
   } catch {
-    // Fallback if clipboard fails
+    // Sin permiso de portapapeles (http, navegador viejo): se deja seleccionada para copiar con Ctrl+C.
+    const campo = document.getElementById('reset-pwd-generada') as HTMLInputElement | null
+    campo?.focus()
+    campo?.select()
   }
 }
 // Escape cierra el diálogo abierto aunque el foco se haya perdido (p. ej. tras un error al enviar).

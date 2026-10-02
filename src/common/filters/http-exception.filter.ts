@@ -1,8 +1,10 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger('Errores');
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -21,7 +23,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    // Unknown exception -> hide details in production
+    // Unknown exception -> hide details in production, pero dejarlo en el registro: antes se perdía sin rastro y un
+    // 500 no se podía diagnosticar desde el servidor (reporte de Jorge, 02/10).
+    this.logger.error(`${request.method} ${request.url}: ${(exception as Error)?.message ?? String(exception)}`, (exception as Error)?.stack);
     const status = HttpStatus.INTERNAL_SERVER_ERROR;
     const isProd = process.env.NODE_ENV === 'production';
     response.status(status).json({
