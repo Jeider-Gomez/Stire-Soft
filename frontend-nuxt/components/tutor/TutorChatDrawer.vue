@@ -1,9 +1,10 @@
 <template>
   <div>
-    <!-- Backdrop oscuro tenue (cierre con clic fuera) -->
+    <!-- Fondo oscuro solo en celular y tableta. En computador el Tutor es un panel al lado de la página: la lección
+         sigue visible y se puede leer mientras se conversa (recomendación de José, 02/10). -->
     <Transition name="fade">
       <div
-        v-if="tutorStore.isOpen"
+        v-if="tutorStore.isOpen && !pantallaAncha"
         @click="tutorStore.closeDrawer()"
         class="fixed inset-0 bg-base-texto-primario/30 backdrop-blur-[1px] z-40 transition-opacity"
         aria-hidden="true"
@@ -15,11 +16,11 @@
       <div
         v-if="tutorStore.isOpen"
         ref="drawerRef"
-        role="dialog"
-        aria-modal="true"
+        :role="pantallaAncha ? 'complementary' : 'dialog'"
+        :aria-modal="pantallaAncha ? undefined : 'true'"
         aria-label="Tutor IA"
         tabindex="-1"
-        class="fixed top-0 right-0 h-full w-full max-w-drawer bg-base-blanco border-l border-base-borde-sutil shadow-2xl z-50 flex flex-col justify-between focus:outline-none"
+        class="fixed top-0 right-0 h-full w-full max-w-drawer bg-base-blanco border-l border-base-borde-sutil shadow-2xl lg:shadow-lg z-50 flex flex-col justify-between focus:outline-none"
         @keydown="handleKeydown"
       >
         <!-- Header del Tutor IA -->
@@ -295,6 +296,7 @@ const tutorStore = useTutorStore()
 const workspaceStore = useWorkspaceStore()
 const studentStore = useStudentStore()
 
+const pantallaAncha = usePantallaAncha()
 const inputQuery = ref('')
 const messagesContainer = ref<HTMLElement | null>(null)
 const drawerRef = ref<HTMLElement | null>(null)
@@ -436,7 +438,8 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleDocumentKeyd
 
 // Trampa de foco dentro del panel (Tab / Shift+Tab)
 function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Tab') {
+  // En computador el panel convive con la página: Tab puede salir a la lección.
+  if (event.key === 'Tab' && !pantallaAncha.value) {
     trapFocus(event)
   }
 }

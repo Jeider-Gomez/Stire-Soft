@@ -43,7 +43,7 @@
               <label for="module-desc-input" class="block font-semibold text-base-texto-primario mb-1">
                 Descripción (opcional)
               </label>
-              <textarea
+              <textarea v-crece
                 id="module-desc-input"
                 v-model="moduleModal.form.description"
                 rows="3"
@@ -122,7 +122,7 @@
               <label for="topic-desc-input" class="block font-semibold text-base-texto-primario mb-1">
                 Descripción (opcional)
               </label>
-              <textarea
+              <textarea v-crece
                 id="topic-desc-input"
                 v-model="topicModal.form.description"
                 rows="3"
@@ -197,7 +197,7 @@
               <label for="unit-new-desc-input" class="block font-semibold text-base-texto-primario mb-1">
                 Descripción (opcional)
               </label>
-              <textarea
+              <textarea v-crece
                 id="unit-new-desc-input"
                 v-model="unitModal.form.description"
                 rows="3"

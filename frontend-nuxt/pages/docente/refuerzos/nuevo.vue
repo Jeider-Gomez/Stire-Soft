@@ -88,7 +88,7 @@
             </template>
             <template v-if="p.tipo === 'explicacion'">
               <label :for="`paso-texto-${i}`" class="sr-only">Texto del paso {{ i + 1 }}</label>
-              <textarea :id="`paso-texto-${i}`" v-model="p.texto" rows="4" placeholder="Explícalo de otra forma: una analogía, un ejemplo resuelto paso a paso, el error común. Admite Markdown y código."
+              <textarea v-crece :id="`paso-texto-${i}`" v-model="p.texto" rows="4" placeholder="Explícalo de otra forma: una analogía, un ejemplo resuelto paso a paso, el error común. Admite Markdown y código."
                 class="w-full px-2 py-1.5 rounded-md border border-base-borde-fuerte font-mono text-[11px]"></textarea>
             </template>
             <template v-else-if="p.tipo === 'recurso'">
@@ -120,7 +120,7 @@
             <label for="ref-mensaje" class="font-semibold text-base-texto-primario">Mensaje para {{ f.estudiantes.length === 1 ? 'el estudiante' : 'los estudiantes' }}</label>
             <button type="button" @click="mensajeEditado = false; proponerMensaje()" class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1"><Sparkles :size="12" aria-hidden="true" /> Proponer un mensaje</button>
           </div>
-          <textarea id="ref-mensaje" v-model="f.mensaje" @input="mensajeEditado = true" rows="3" maxlength="2000" class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte"></textarea>
+          <textarea v-crece id="ref-mensaje" v-model="f.mensaje" @input="mensajeEditado = true" rows="3" maxlength="2000" class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte"></textarea>
           <p class="text-[11px] text-base-texto-secundario">Le llega como mensaje y lo ve en su inicio. Corto y sobre la tarea, no sobre la persona.</p>
         </div>
         <div class="sm:w-64">

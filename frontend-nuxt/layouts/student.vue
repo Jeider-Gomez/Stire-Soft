@@ -1,5 +1,6 @@
 <template>
-  <div class="min-h-screen bg-stire-canvas flex flex-col">
+  <!-- Con el Tutor abierto en computador, la página entera (encabezado incluido) deja su espacio al panel. -->
+  <div class="min-h-screen bg-stire-canvas flex flex-col transition-[padding] duration-300" :class="{ 'lg:pr-[400px]': tutorStore.isOpen }">
     <!-- Zona A: Header Invariante -->
     <LayoutHeaderNav @toggle-sidebar="toggleSidebar" />
 
@@ -30,8 +31,10 @@
 
 <script setup lang="ts">
 import { useStudentStore } from '~/stores/student'
+import { useTutorStore } from '~/stores/tutor'
 
 const studentStore = useStudentStore()
+const tutorStore = useTutorStore()
 const { sidebarOpen, sidebarClass, close: closeSidebar, toggle: toggleSidebar } = useMobileSidebar()
 
 onMounted(async () => {

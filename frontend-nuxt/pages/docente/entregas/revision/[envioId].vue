@@ -70,7 +70,7 @@
           <h2 id="revision-titulo" class="text-sm font-bold text-base-texto-primario">Tu revisión de la versión {{ envio.version }}</h2>
           <div>
             <label for="revision-comentario" class="block font-semibold text-base-texto-primario mb-1">Comentario</label>
-            <textarea id="revision-comentario" v-model="comentario" rows="4" maxlength="2000" placeholder="Qué está bien y qué mejorar…"
+            <textarea v-crece id="revision-comentario" v-model="comentario" rows="4" maxlength="2000" placeholder="Qué está bien y qué mejorar…"
               class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30"></textarea>
             <p class="text-[11px] text-base-texto-secundario text-right">{{ comentario.length }} / 2000</p>
           </div>

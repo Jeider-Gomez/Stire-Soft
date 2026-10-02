@@ -13,7 +13,7 @@
 
     <div>
       <label for="entrega-consigna" class="block font-semibold text-base-texto-primario mb-1">Consigna</label>
-      <textarea id="entrega-consigna" v-model="f.consigna" rows="5" placeholder="Qué hay que hacer y cómo se va a valorar. Admite Markdown."
+      <textarea v-crece id="entrega-consigna" v-model="f.consigna" rows="5" placeholder="Qué hay que hacer y cómo se va a valorar. Admite Markdown."
         class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 font-mono text-[11px]"></textarea>
     </div>
 

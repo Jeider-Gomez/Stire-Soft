@@ -452,7 +452,7 @@
             </label>
             <span class="text-[10px] text-base-texto-secundario font-mono">{{ decisionNote.length }}/300</span>
           </div>
-          <textarea
+          <textarea v-crece
             id="decision-note"
             v-model="decisionNote"
             maxlength="300"

@@ -305,7 +305,7 @@
 
             <div>
               <label for="topic-desc" class="block font-semibold text-base-texto-primario mb-1">Descripción</label>
-              <textarea
+              <textarea v-crece
                 id="topic-desc"
                 v-model="editTopicModal.form.description"
                 rows="3"
@@ -414,7 +414,7 @@
 
             <div>
               <label for="unit-desc" class="block font-semibold text-base-texto-primario mb-1">Descripción</label>
-              <textarea
+              <textarea v-crece
                 id="unit-desc"
                 v-model="editUnitModal.form.description"
                 rows="3"

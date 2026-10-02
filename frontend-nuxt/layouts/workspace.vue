@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen md:h-screen bg-base-bg-primario flex flex-col md:overflow-hidden">
+  <div class="min-h-screen md:h-screen bg-base-bg-primario flex flex-col md:overflow-hidden transition-[padding] duration-300" :class="{ 'lg:pr-[400px]': tutorStore.isOpen }">
     <!-- Header del Workspace (Sin sidebar para concentración máxima) -->
     <header class="min-h-14 md:h-14 py-2 md:py-0 gap-y-2 flex-wrap md:flex-nowrap bg-base-blanco border-b border-base-borde-sutil px-4 flex items-center justify-between z-30 shadow-sm flex-shrink-0">
       <div class="flex items-center gap-3">

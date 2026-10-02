@@ -96,7 +96,7 @@
         <label for="class-description" class="block text-xs font-semibold text-base-texto-primario mb-1">
           Descripción <span class="text-base-texto-secundario font-normal">(opcional)</span>
         </label>
-        <textarea
+        <textarea v-crece
           id="class-description"
           v-model="editForm.description"
           rows="3"

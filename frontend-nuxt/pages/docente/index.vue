@@ -427,7 +427,7 @@
                   <label for="new-class-desc" class="block text-xs font-semibold text-slate-700 mb-1.5">
                     Descripción / Competencias
                   </label>
-                  <textarea
+                  <textarea v-crece
                     id="new-class-desc"
                     v-model="newClass.description"
                     rows="2"

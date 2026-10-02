@@ -1,15 +1,18 @@
 <template>
-  <div class="w-full max-w-[490px] mx-auto">
+  <div class="w-full max-w-[490px] lg:max-w-[760px] mx-auto">
     <!-- Tarjeta del prototipo de José (misma que el inicio de sesión) -->
     <div class="tarjeta-auth relative rounded-3xl p-7 sm:p-9 bg-white/95 border border-slate-200/90 backdrop-blur-2xl overflow-hidden animar-entrada">
       <div class="absolute top-0 inset-x-0 h-[3px] linea-marca" aria-hidden="true" />
 
-      <div class="flex flex-col items-center text-center mb-5">
-        <LayoutMarcaST tamano="grande" :escudo="campoEnFoco === 'password'" class="mb-3.5" />
-        <h1 class="text-2xl font-bold tracking-tight font-poppins text-slate-900">Crear Cuenta</h1>
-        <p class="text-xs mt-1 max-w-[360px] leading-relaxed text-slate-500">
-          Regístrate para acceder al entorno de aprendizaje y tutoría inteligente de STIRE
-        </p>
+      <!-- En computador la marca va al lado del título: el formulario cabe sin bajar en un portátil. -->
+      <div class="flex flex-col lg:flex-row items-center lg:gap-4 text-center lg:text-left mb-5">
+        <LayoutMarcaST tamano="grande" :escudo="campoEnFoco === 'password'" class="mb-3.5 lg:mb-0 shrink-0" />
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight font-poppins text-slate-900">Crear Cuenta</h1>
+          <p class="text-xs mt-1 max-w-[360px] lg:max-w-none leading-relaxed text-slate-500">
+            Regístrate para acceder al entorno de aprendizaje y tutoría inteligente de STIRE
+          </p>
+        </div>
       </div>
 
       <!-- Error -->
@@ -40,7 +43,8 @@
         <span>{{ tutorKeyWarning }}</span>
       </div>
 
-      <form @submit.prevent="handleRegister" class="space-y-4">
+      <!-- En computador, dos columnas: nombre y correo, contraseña y confirmación (recomendación de José, 02/10). -->
+      <form @submit.prevent="handleRegister" class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-4 items-start">
         <div class="space-y-1.5">
           <label for="fullName" class="block text-xs font-semibold text-slate-700">Nombre Completo</label>
           <div class="relative">
@@ -49,8 +53,16 @@
           </div>
         </div>
 
+        <div class="space-y-1.5">
+          <label for="email" class="block text-xs font-semibold text-slate-700">Correo Electrónico</label>
+          <div class="relative">
+            <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
+            <input id="email" v-model="email" type="email" required autocomplete="email" placeholder="usuario@ejemplo.com" class="campo-auth pl-10 pr-3.5" />
+          </div>
+        </div>
+
         <!-- Tipo de cuenta (§23 T3): radios reales, con la forma de las tarjetas del prototipo -->
-        <fieldset class="space-y-1.5">
+        <fieldset class="space-y-1.5 lg:col-span-2">
           <legend class="text-xs font-semibold text-slate-700 mb-1.5">Tipo de Cuenta</legend>
           <div class="grid grid-cols-2 gap-2">
             <label
@@ -71,14 +83,6 @@
             </label>
           </div>
         </fieldset>
-
-        <div class="space-y-1.5">
-          <label for="email" class="block text-xs font-semibold text-slate-700">Correo Electrónico</label>
-          <div class="relative">
-            <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
-            <input id="email" v-model="email" type="email" required autocomplete="email" placeholder="usuario@ejemplo.com" class="campo-auth pl-10 pr-3.5" />
-          </div>
-        </div>
 
         <div class="space-y-1.5">
           <label for="password" class="block text-xs font-semibold text-slate-700">Contraseña</label>
@@ -144,33 +148,36 @@
           </div>
         </div>
 
-        <!-- Bloque de solicitud de rol docente (§23 T3) -->
-        <div v-if="selectedRole === 'docente'" class="p-3 rounded-xl bg-stire-purple/5 border border-stire-purple/25 space-y-2 text-xs">
-          <p class="flex items-start gap-1.5 text-[11px] text-stire-purple font-medium">
-            <Info :size="14" class="shrink-0 mt-px" aria-hidden="true" />
-            Tu cuenta se crea como estudiante. Un administrador revisará tu solicitud y, si la aprueba, podrás iniciar sesión como docente.
-          </p>
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label for="teacherReason" class="text-[11px] font-semibold text-slate-700">
-                ¿Qué materia o dependencia? <span class="text-[10px] font-normal text-slate-500">(Opcional)</span>
-              </label>
-              <span class="text-[10px] text-slate-500 font-mono">{{ teacherReason.length }}/300</span>
-            </div>
-            <textarea
-              id="teacherReason"
-              v-model="teacherReason"
-              maxlength="300"
-              rows="2"
-              placeholder="Ej: Docente de Algoritmia y Programación Web"
-              class="campo-auth px-3 py-1.5 text-xs resize-none"></textarea>
+        <!-- Docente: qué pasa con la solicitud (§23 T3). No es un campo: va con lo obligatorio. -->
+        <p v-if="selectedRole === 'docente'" class="lg:col-span-2 flex items-start gap-1.5 p-3 rounded-xl bg-stire-purple/5 border border-stire-purple/25 text-[11px] text-stire-purple font-medium">
+          <Info :size="14" class="shrink-0 mt-px" aria-hidden="true" />
+          Tu cuenta se crea como estudiante. Un administrador revisará tu solicitud y, si la aprueba, podrás iniciar sesión como docente.
+        </p>
+
+        <!-- Lo opcional, debajo de lo obligatorio y plegado: el formulario se ve corto (recomendación de José, 02/10). -->
+        <details class="grupo-opcional lg:col-span-2 rounded-xl border border-slate-200 bg-stire-canvas/60">
+          <summary class="cursor-pointer select-none list-none px-3 py-2.5 min-h-[44px] text-xs font-semibold text-slate-700 flex items-center justify-between gap-2 rounded-xl focus-visible:ring-2 focus-visible:ring-stire-teal/40 outline-none">
+            <span>Opcional <span class="font-normal text-slate-500">· {{ selectedRole === 'docente' ? 'la materia que dictas' : 'código de clase y clave del Tutor' }}</span></span>
+            <ChevronDown :size="14" class="flecha-opcional text-slate-400 shrink-0 transition-transform" aria-hidden="true" />
+          </summary>
+          <div class="px-3 pb-3 space-y-4">
+        <div v-if="selectedRole === 'docente'">
+          <div class="flex items-center justify-between mb-1">
+            <label for="teacherReason" class="text-[11px] font-semibold text-slate-700">¿Qué materia o dependencia?</label>
+            <span class="text-[10px] text-slate-500 font-mono">{{ teacherReason.length }}/300</span>
           </div>
+          <textarea
+            id="teacherReason"
+            v-model="teacherReason"
+            v-crece
+            maxlength="300"
+            rows="2"
+            placeholder="Ej: Docente de Algoritmia y Programación Web"
+            class="campo-auth px-3 py-1.5 text-xs resize-none"></textarea>
         </div>
 
         <div v-if="selectedRole === 'estudiante'" class="space-y-1.5">
-          <label for="classCode" class="block text-xs font-semibold text-slate-700">
-            Código de Clase <span class="text-[10px] font-normal text-slate-500">(Opcional)</span>
-          </label>
+          <label for="classCode" class="block text-xs font-semibold text-slate-700">Código de clase</label>
           <div class="relative">
             <KeyRound :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
             <input id="classCode" v-model="classCode" type="text" placeholder="Ej: WEB-ALGO-T01" class="campo-auth pl-10 pr-3.5 uppercase tracking-wider font-mono" />
@@ -180,8 +187,8 @@
           </p>
         </div>
 
-        <!-- Clave de Google AI Studio (opcional, §19.1) -->
-        <div class="border border-slate-200 rounded-xl p-3 space-y-2 bg-stire-canvas/60">
+        <!-- Clave de Google AI Studio (§19.1): solo estudiantes, el Tutor es solo para ellos (src/tutor/tutor.controller.ts). -->
+        <div v-if="selectedRole === 'estudiante'" class="border border-slate-200 rounded-xl p-3 space-y-2 bg-white">
           <div class="flex items-center justify-between gap-2">
             <span class="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
               <Bot :size="14" class="text-stire-purple" aria-hidden="true" />
@@ -239,11 +246,13 @@
             Podrás configurarla en cualquier momento desde el Tutor.
           </p>
         </div>
+          </div>
+        </details>
 
         <button
           type="submit"
           :disabled="isLoading"
-          class="boton-acceso relative w-full mt-2 py-3 px-4 rounded-xl font-bold text-sm font-poppins text-[#070e24] bg-stire-teal hover:bg-[#14e2c8] focus:outline-none focus-visible:ring-4 focus-visible:ring-stire-teal/40 shadow-lg shadow-stire-teal/20 transition-all flex items-center justify-center gap-2 overflow-hidden disabled:cursor-wait">
+          class="boton-acceso lg:col-span-2 relative w-full mt-2 py-3 px-4 rounded-xl font-bold text-sm font-poppins text-[#070e24] bg-stire-teal hover:bg-[#14e2c8] focus:outline-none focus-visible:ring-4 focus-visible:ring-stire-teal/40 shadow-lg shadow-stire-teal/20 transition-all flex items-center justify-center gap-2 overflow-hidden disabled:cursor-wait">
           <span class="brillo-barrido" aria-hidden="true" />
           <template v-if="isLoading">
             <span class="w-4 h-4 rounded-full border-2 border-[#070e24] border-t-transparent animate-spin" aria-hidden="true" />
@@ -266,7 +275,7 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle, AlertTriangle, ArrowRight, BookOpen, Bot, Check, CheckCircle2, ClipboardCheck, Eye, EyeOff, GraduationCap, Info, KeyRound, Lock, Mail, ShieldCheck, User } from 'lucide-vue-next'
+import { AlertCircle, AlertTriangle, ArrowRight, BookOpen, Bot, Check, CheckCircle2, ChevronDown, ClipboardCheck, Eye, EyeOff, GraduationCap, Info, KeyRound, Lock, Mail, ShieldCheck, User } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
 import { rutaDeVuelta } from '~/utils/codigoClase'
@@ -340,7 +349,7 @@ async function handleRegister() {
 
   if (result.ok) {
     // Si el estudiante ingresó una clave, guardarla (no bloqueante — §19.1)
-    if (!skipApiKey.value && apiKey.value.trim()) {
+    if (selectedRole.value === 'estudiante' && !skipApiKey.value && apiKey.value.trim()) {
       try {
         await api.put('/tutor/api-key', { apiKey: apiKey.value.trim() })
       } catch {
@@ -363,6 +372,8 @@ async function handleRegister() {
 </script>
 
 <style scoped>
+.grupo-opcional[open] .flecha-opcional { transform: rotate(180deg); }
+.grupo-opcional summary::-webkit-details-marker { display: none; }
 .tarjeta-auth {
   box-shadow: 0 24px 48px -12px rgba(11, 61, 145, 0.1), 0 12px 24px -8px rgba(123, 47, 191, 0.07), 0 0 0 1px rgba(11, 61, 145, 0.05);
 }

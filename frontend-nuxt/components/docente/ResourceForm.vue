@@ -30,7 +30,7 @@
         <!-- Enlace o código para insertar -->
         <div v-if="tipo !== 'image'" class="space-y-1">
           <label for="resource-url" class="block font-semibold text-base-texto-primario">Enlace o código para insertar</label>
-          <textarea id="resource-url" v-model="enlace" rows="3" aria-describedby="resource-url-ayuda"
+          <textarea v-crece id="resource-url" v-model="enlace" rows="3" aria-describedby="resource-url-ayuda"
             placeholder="https://view.genial.ly/…  o  <iframe src=&quot;…&quot;></iframe>"
             class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte font-codigo text-[11px] focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30"></textarea>
           <p id="resource-url-ayuda" class="text-[11px] text-base-texto-secundario">

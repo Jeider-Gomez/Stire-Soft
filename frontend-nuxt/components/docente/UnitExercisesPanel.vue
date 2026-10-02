@@ -123,7 +123,7 @@
                 {{ edit.preview ? 'Editar texto' : 'Vista previa del enunciado' }}
               </button>
             </div>
-            <textarea v-if="!edit.preview" id="edit-ex-statement" v-model="edit.form.description" rows="8"
+            <textarea v-crece v-if="!edit.preview" id="edit-ex-statement" v-model="edit.form.description" rows="8"
               class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte font-codigo text-[11px] leading-relaxed focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30"></textarea>
             <div v-else class="rounded-md border border-base-borde-sutil bg-base-bg-secundario/40 p-3 text-xs leading-relaxed text-base-texto-primario"
               v-html="formatMarkdown(edit.form.description, { escapeHtml: true })"></div>

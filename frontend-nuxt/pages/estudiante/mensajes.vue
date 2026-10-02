@@ -188,7 +188,7 @@
             <label for="compose-content" class="block font-semibold text-base-texto-primario mb-1">
               Tu Mensaje *
             </label>
-            <textarea
+            <textarea v-crece
               id="compose-content"
               v-model="composeForm.content"
               required

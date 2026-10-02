@@ -48,7 +48,7 @@
               </fieldset>
               <div>
                 <label for="reporte-texto" class="block font-semibold text-base-texto-primario mb-1">{{ f.tipo === 'idea' ? '¿Qué se te ocurre?' : '¿Qué pasó? ¿Qué esperabas que pasara?' }}</label>
-                <textarea id="reporte-texto" v-model="f.texto" rows="4" maxlength="2000" required class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte bg-base-blanco resize-y" />
+                <textarea v-crece id="reporte-texto" v-model="f.texto" rows="4" maxlength="2000" required class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte bg-base-blanco resize-y" />
               </div>
               <p class="text-[11px] text-base-texto-secundario">Se guarda la pantalla donde estás (<span class="font-mono">{{ route.fullPath }}</span>) y el tamaño de tu pantalla.</p>
               <p v-if="error" role="alert" class="text-semantico-falla">{{ error }}</p>

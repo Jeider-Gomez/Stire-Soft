@@ -1,5 +1,5 @@
 <template>
-  <aside class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] p-4 flex flex-col justify-between">
+  <aside ref="menuRef" class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] p-4 flex flex-col justify-between transition-[width] duration-200" :class="{ 'menu-colapsado md:w-16 md:px-2': colapsado }">
     <!-- Navegación según Rol Activo -->
     <div class="space-y-4">
       <!-- 🎓 NAVEGACIÓN ESTUDIANTE (6 Ítems Persistentes - Insumo 15 §5) -->
@@ -16,7 +16,7 @@
         </NuxtLink>
 
         <!-- 2, 3, 4: Los 3 Módulos con acordeón interno sin flyout -->
-        <div class="pt-2 pb-1">
+        <div class="pt-2 pb-1 ocultar-colapsado">
           <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Plan de Estudio</p>
           <div v-for="mod in studentStore.modules" :key="mod.id" class="mb-1">
             <button
@@ -186,11 +186,24 @@
       </nav>
     </div>
 
+
+    <!-- Ocultar el menú en computador para ganar espacio (recomendación de José, 02/10). Queda solo con íconos y se
+         recuerda en este navegador. En celular el menú ya es un cajón que se abre con la hamburguesa. -->
+    <button
+      type="button"
+      class="hidden md:flex items-center gap-2.5 mt-4 px-3 py-2 rounded-md text-xs font-medium text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario"
+      :aria-expanded="!colapsado"
+      :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
+      @click="alternarMenu">
+      <PanelLeftOpen v-if="colapsado" :size="18" aria-hidden="true" class="shrink-0" />
+      <PanelLeftClose v-else :size="18" aria-hidden="true" class="shrink-0" />
+      <span>{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
+    </button>
   </aside>
 </template>
 
 <script setup lang="ts">
-import { FolderCode, House, QrCode, MessageSquarePlus, Repeat, TrendingUp, Mail, Users, BookOpen, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
+import { FolderCode, House, PanelLeftClose, PanelLeftOpen, QrCode, MessageSquarePlus, Repeat, TrendingUp, Mail, Users, BookOpen, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { claseDeLaRuta } from '~/utils/pestanasClase'
@@ -198,6 +211,24 @@ import { claseDeLaRuta } from '~/utils/pestanasClase'
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
 const route = useRoute()
+
+// ─── Menú colapsado (solo computador) ───
+const CLAVE_MENU = 'stire-menu-colapsado'
+const colapsado = useState('menu-colapsado', () => false)
+const menuRef = ref<HTMLElement | null>(null)
+onMounted(() => {
+  try { colapsado.value = localStorage.getItem(CLAVE_MENU) === '1' } catch { /* sin almacenamiento */ }
+})
+function alternarMenu() {
+  colapsado.value = !colapsado.value
+  try { localStorage.setItem(CLAVE_MENU, colapsado.value ? '1' : '0') } catch { /* se usa sin recordar */ }
+}
+// Con solo íconos, cada enlace muestra su nombre al pasar el mouse (el lector de pantalla ya lo lee del texto oculto).
+watch([colapsado, () => route.path], () => nextTick(() => {
+  for (const a of menuRef.value?.querySelectorAll<HTMLAnchorElement>('a') ?? []) {
+    if (colapsado.value) a.title = a.title || (a.textContent ?? '').replace(/\s+/g, ' ').trim()
+  }
+}), { immediate: true })
 
 // Proyectos está en prueba: el menú solo lo muestra si el servidor dice que esta cuenta puede usarlo.
 const proyectosDisponible = ref(false)
@@ -246,3 +277,29 @@ function getStatusDotClass(status: string) {
   }
 }
 </script>
+
+<style scoped>
+/* Solo íconos: el texto queda para el lector de pantalla y los títulos de sección se ocultan. */
+@media (min-width: 768px) {
+  .menu-colapsado .ocultar-colapsado,
+  .menu-colapsado nav > p,
+  .menu-colapsado nav > div > p {
+    display: none;
+  }
+  .menu-colapsado a,
+  .menu-colapsado button {
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .menu-colapsado a span,
+  .menu-colapsado button span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+</style>

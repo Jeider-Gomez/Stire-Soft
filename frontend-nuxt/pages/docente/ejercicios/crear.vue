@@ -125,7 +125,7 @@
           <div>
             <label for="create-question" class="block font-semibold text-base-texto-primario mb-1">Enunciado</label>
             <p class="text-[11px] text-base-texto-secundario mb-1">Lo que el estudiante lee antes de responder. Escríbelo como se lo dirías en clase: corto y con un ejemplo si hace falta.</p>
-            <textarea id="create-question" v-model="form.questionText" rows="4" :placeholder="statementPlaceholder"
+            <textarea v-crece id="create-question" v-model="form.questionText" rows="4" :placeholder="statementPlaceholder"
               class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none resize-y focus:ring-2 focus:ring-acento-ambar-fuerte/30"></textarea>
           </div>
 
