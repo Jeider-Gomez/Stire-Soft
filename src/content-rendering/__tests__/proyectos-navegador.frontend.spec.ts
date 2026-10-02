@@ -14,7 +14,7 @@ function cargar<T>(archivo: string): T {
 }
 
 const { crc32, crearZip } = cargar<{ crc32: (d: Uint8Array) => number; crearZip: (a: Array<{ nombre: string; contenido: string }>) => Uint8Array }>('zip.ts');
-const { fuenteDelWorker, documentoWeb } = cargar<{ fuenteDelWorker: (c: string, e: string) => string; documentoWeb: (a: Array<{ nombre: string; contenido: string }>, c?: boolean) => string }>('proyectoNavegador.ts');
+const { fuenteDelWorker, documentoWeb } = cargar<{ fuenteDelWorker: (c: string, e: string) => string; documentoWeb: (a: Array<{ nombre: string; contenido: string }>, c?: boolean, o?: { pagina?: string; almacen?: Record<string, string>; ancla?: string }) => string }>('proyectoNavegador.ts');
 
 describe('zip: descargar el proyecto', () => {
   it('CRC-32 con el vector de prueba estándar («123456789» → cbf43926)', () => {
@@ -85,7 +85,7 @@ describe('Entregas (docs/DISENO_INTERVENCION_DOCENTE.md §3)', () => {
     expect(revision).toMatch(/<CodeEditor[^>]*read-only/);
     expect(revision).toContain('<ProyectosResultadoProyecto');
     const resultado = leer('components/proyectos/ResultadoProyecto.vue');
-    expect(resultado).toContain('sandbox="allow-scripts allow-modals"');
+    expect(resultado).toContain('sandbox="allow-scripts allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox"');
     expect(resultado).not.toMatch(/sandbox="[^"]*allow-same-origin/);
     expect(resultado).toContain('e.source !== vistaRef.value?.contentWindow');
   });
@@ -179,5 +179,72 @@ describe('Página web: un solo documento para la vista previa y la descarga', ()
   it('la consola solo se engancha en la vista previa, no en la descarga', () => {
     expect(documentoWeb(archivos, true)).toContain('stireProyecto');
     expect(documentoWeb(archivos, false)).not.toContain('stireProyecto');
+  });
+});
+
+// Lo que antes fallaba en la vista previa (aislada): enlaces entre páginas, localStorage y formularios.
+describe('Vista previa de un sitio de varias páginas (un OVA)', () => {
+  const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
+  const sitio = [
+    { nombre: 'index.html', contenido: '<html><head><link rel="stylesheet" href="./estilos.css"><script src="menu.js" defer></script></head><body><h1>Inicio</h1><a href="tema1.html#parte2">Tema 1</a><script src="index.js"></script></body></html>' },
+    { nombre: 'tema1.html', contenido: '<html><head><link rel="stylesheet" href="estilos.css"></head><body><h1>Tema 1</h1></body></html>' },
+    { nombre: 'estilos.css', contenido: 'h1 { color: green }' },
+    { nombre: 'menu.js', contenido: 'console.log("menu")' },
+    { nombre: 'index.js', contenido: 'console.log("index")' },
+    { nombre: 'tema1.js', contenido: 'console.log("solo del tema")' },
+  ];
+
+  it('cada <link> y <script src> del proyecto se reemplaza por su archivo, en su lugar; defer va al final', () => {
+    const doc = documentoWeb(sitio);
+    expect(doc).not.toMatch(/<link[^>]*estilos\.css/);
+    expect(doc.indexOf('h1 { color: green }')).toBeLessThan(doc.indexOf('</head>'));
+    expect(doc.indexOf('console.log("index")')).toBeLessThan(doc.indexOf('console.log("menu")'));
+    expect(doc.indexOf('console.log("menu")')).toBeGreaterThan(doc.indexOf('<h1>Inicio</h1>'));
+    // La página ya nombra sus scripts: no se le meten los demás (tema1.js no corre en el inicio).
+    expect(doc).not.toContain('solo del tema');
+  });
+
+  it('se puede pedir otra página; una que no nombra scripts recibe todos, como antes', () => {
+    const tema = documentoWeb(sitio, false, { pagina: './Tema1.html' });
+    expect(tema).toContain('<h1>Tema 1</h1>');
+    expect(tema).toContain('solo del tema');
+  });
+
+  it('el arranque va antes que cualquier script del estudiante y repone localStorage, los enlaces y los formularios', () => {
+    const doc = documentoWeb(sitio, true, { almacen: { visitas: '3' }, ancla: 'parte2' });
+    const arranque = doc.indexOf('stireProyecto');
+    expect(arranque).toBeGreaterThan(-1);
+    expect(arranque).toBeLessThan(doc.indexOf('h1 { color: green }'));
+    expect(doc).toContain("Object.defineProperty(window,'localStorage'");
+    expect(doc).toContain('var datos={"visitas":"3"}');
+    expect(doc).toContain("tipo:'navegar'");
+    expect(doc).toContain("window.addEventListener('submit'");
+    expect(doc).toContain('var ancla="parte2"');
+  });
+
+  it('el arranque es JavaScript válido (un escape mal hecho en la plantilla lo rompía entero)', () => {
+    const doc = documentoWeb(sitio, true);
+    const i = doc.indexOf('<script>(function(){');
+    const codigo = doc.slice(i + '<script>'.length, doc.indexOf('</script>', i));
+    expect(() => new Function(codigo)).not.toThrow();
+  });
+
+  it('lo guardado no puede cerrar el <script> del arranque', () => {
+    expect(documentoWeb(sitio, true, { almacen: { x: '</script><img src=x onerror=alert(1)>' } })).not.toContain('</script><img');
+  });
+
+  it('el marco deja enviar formularios y abrir enlaces externos, pero sigue sin allow-same-origin', () => {
+    const c = readFileSync(path.join(raiz, 'components', 'proyectos', 'ResultadoProyecto.vue'), 'utf8');
+    const sandbox = /sandbox="([^"]*)"/.exec(c)?.[1] ?? '';
+    expect(sandbox.split(' ')).toEqual(expect.arrayContaining(['allow-scripts', 'allow-forms', 'allow-popups']));
+    expect(sandbox).not.toContain('allow-same-origin');
+    expect(c).toContain("if (e.source !== vistaRef.value?.contentWindow) return");
+  });
+
+  it('«Ampliar» pone el resultado a pantalla completa, con anchos de celular y tableta, y Esc sale', () => {
+    const c = readFileSync(path.join(raiz, 'components', 'proyectos', 'ResultadoProyecto.vue'), 'utf8');
+    expect(c).toContain("{{ ampliado ? 'Salir (Esc)' : 'Ampliar' }}");
+    expect(c).toContain("width: ancho === 'celular' ? '375px' : '768px'");
+    expect(c).toContain("if (e.key === 'Escape' && ampliado.value) alternarAmpliado()");
   });
 });
