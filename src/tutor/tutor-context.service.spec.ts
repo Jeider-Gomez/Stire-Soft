@@ -27,3 +27,30 @@ describe('TutorContextService.buildSystemPrompt — código actual del estudiant
     expect(await build({ currentCode: '   ', codeLanguage: 'html' })).not.toContain('Código actual en el editor');
   });
 });
+
+// Prueba con Gemini real (02/10/2026, cuenta santiago.ruiz): el Tutor decía «como estudiante de nivel intermedio» y
+// «la Unidad 17», contestaba el fútbol y explicaba pseudocódigo con JavaScript.
+describe('TutorContextService.buildSystemPrompt — lo que vio la prueba con Gemini real', () => {
+  const progressRepo = { find: jest.fn() };
+  const service = new TutorContextService(progressRepo as any);
+
+  it('el progreso llega con el título de la unidad, no con su número', async () => {
+    progressRepo.find.mockResolvedValue([
+      { learningUnitId: 17, learningUnit: { title: 'Operadores y expresiones' }, mastery: 60, successRate: 50, completedActivities: 2, updatedAt: new Date() },
+    ]);
+    const prompt = await service.buildSystemPrompt(1, {}, null);
+    expect(progressRepo.find).toHaveBeenCalledWith({ where: { studentId: 1 }, relations: ['learningUnit'] });
+    expect(prompt).toContain('«Operadores y expresiones»');
+    expect(prompt).not.toContain('Unidad 17');
+  });
+
+  it('las reglas piden no mostrar datos internos, no contestar fuera de tema, respetar el pseudocódigo y no inventar un ejercicio', async () => {
+    progressRepo.find.mockResolvedValue([]);
+    const prompt = await service.buildSystemPrompt(1, {}, null);
+    expect(prompt).toContain('No menciones datos internos: ni su nivel');
+    expect(prompt).toContain('no la respondas: dilo con amabilidad');
+    expect(prompt).toContain('responde en pseudocódigo y no lo traduzcas a JavaScript');
+    expect(prompt).toContain('no supongas que el estudiante está resolviendo uno');
+    expect(prompt).not.toContain('el curso de Algoritmos Básicos con HTML5');
+  });
+});

@@ -15,7 +15,8 @@ export class TutorContextService {
     style?: TutorStyle,
     refuerzo?: string | null,
   ): Promise<string> {
-    const progressRecords = await this.progressRepo.find({ where: { studentId } });
+    // Con el título de la unidad: un número interno («Unidad 17») no le dice nada al estudiante y el modelo lo repetía.
+    const progressRecords = await this.progressRepo.find({ where: { studentId }, relations: ['learningUnit'] });
 
     let avgMastery = 0;
     if (progressRecords.length > 0) {
@@ -54,7 +55,7 @@ export class TutorContextService {
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
       .slice(0, 3)
       .map((record, index) =>
-        `- Progreso ${index + 1}: Unidad ${record.learningUnitId}, mastery ${Math.round(record.mastery)}%, successRate ${Math.round(record.successRate)}%, actividades completadas ${record.completedActivities}`,
+        `- «${record.learningUnit?.title ?? 'una unidad del curso'}»: dominio ${Math.round(record.mastery)}%, aciertos ${Math.round(record.successRate)}%, actividades completadas ${record.completedActivities}`,
       )
       .join('\n');
 
@@ -88,7 +89,7 @@ EL ESTUDIANTE ESTÁ EN SU PROYECTO PROPIO (no es un ejercicio calificado). Modo 
     const styleSection = styleLine ? `\n${styleLine}\n` : '';
 
     return `
-Eres el Tutor Inteligente de STIRE (Smart Tutor for Interactive & Responsive Education), para el curso de Algoritmos Básicos con HTML5, CSS y JavaScript para Desarrollo Web.
+Eres el Tutor Inteligente de STIRE (Smart Tutor for Interactive & Responsive Education), para los cursos de algoritmos y programación de la Universidad de Córdoba: pseudocódigo (estilo PSeInt), diagramas de flujo, y HTML, CSS y JavaScript.
 Actualmente estás orientando a un estudiante de nivel ${level} (Maestría Global: ${Math.round(avgMastery)}%).
 ${locationContext}
 ${recentProgressSection}${guidanceSection}${refuerzoSection}${proyectoSection}${styleSection}
@@ -100,7 +101,11 @@ REGLAS PEDAGÓGICAS ESTRICTAS:
    - Si es avanzado: enfócate en eficiencia, Big O Notation, y buenas prácticas de ingeniería de software.
 4. Si el estudiante te consulta sobre su ejercicio o código, apóyate en el contexto activo de pantalla que tienes arriba.
 5. Mantén tus respuestas claras, motivadoras y concisas (menos de 130 palabras).
-6. Cuando sientas que un concepto ya quedó claro, puedes preguntarle de forma natural y con tus propias palabras si quiere practicarlo con un ejercicio o si prefiere repasar primero el contenido teórico de la unidad — es una sugerencia conversacional tuya, no un formulario: no la ofrezcas en cada respuesta, solo cuando de verdad aporte.
+6. Usa el lenguaje de lo que el estudiante tiene en pantalla o pregunta: si es pseudocódigo (Leer, Escribir, <-, Si, Mientras, Repetir…Hasta Que, Para), responde en pseudocódigo y no lo traduzcas a JavaScript; si es un diagrama de flujo, habla de figuras y flechas.
+7. No menciones datos internos: ni su nivel, ni porcentajes de dominio, ni números de unidad o de actividad. Úsalos solo para ajustar cómo explicas.
+8. Si la pregunta no tiene que ver con programación ni con el curso, no la respondas: dilo con amabilidad en una frase y vuelve al tema.
+9. Si arriba no hay un CONTEXTO ACTIVO con un ejercicio o un proyecto, no supongas que el estudiante está resolviendo uno: responde su pregunta tal como la hizo.
+10. Cuando sientas que un concepto ya quedó claro, puedes preguntarle de forma natural y con tus propias palabras si quiere practicarlo con un ejercicio o si prefiere repasar primero el contenido teórico de la unidad — es una sugerencia conversacional tuya, no un formulario: no la ofrezcas en cada respuesta, solo cuando de verdad aporte.
 `;
   }
 }
