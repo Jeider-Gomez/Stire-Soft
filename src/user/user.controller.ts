@@ -8,7 +8,14 @@ import {
   ParseIntPipe,
   Delete,
   ForbiddenException,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MAX_BYTES_IMAGEN } from '../media/imagen-subida';
 import { Throttle } from '@nestjs/throttler';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './user.service';
@@ -51,6 +58,19 @@ export class UserController {
   @Patch('me')
   updateProfile(@GetUser() user: User, @Body() updateProfileDto: UpdateProfileDto) {
     return this.userService.updateProfile(user.id, updateProfileDto);
+  }
+
+  // Foto de perfil opcional, de uno mismo (campo `archivo`; la pantalla la reduce a 256 px antes de subirla).
+  @Put('me/foto')
+  @UseInterceptors(FileInterceptor('archivo', { limits: { fileSize: MAX_BYTES_IMAGEN + 1, files: 1 } }))
+  cambiarFoto(@GetUser() user: User, @UploadedFile() archivo: { buffer: Buffer } | undefined) {
+    return this.userService.cambiarFoto(user, archivo?.buffer);
+  }
+
+  @Delete('me/foto')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  quitarFoto(@GetUser() user: User) {
+    return this.userService.quitarFoto(user);
   }
 
   // P1-03: verificacion de credenciales, fuerza-brutable igual que el login.

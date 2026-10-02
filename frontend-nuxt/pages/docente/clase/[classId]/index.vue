@@ -66,7 +66,7 @@
           <!-- Las solicitudes se resuelven aquí mismo, sin cambiar de pantalla. -->
           <ul v-if="p.tipo === 'solicitudes'" class="divide-y divide-base-borde-sutil text-xs">
             <li v-for="s in solicitudes" :key="s.id" class="flex items-center justify-between gap-3 py-2">
-              <span class="min-w-0 truncate">{{ s.student?.fullName || s.student?.email || 'Estudiante' }}</span>
+              <span class="min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="s.student?.fullName" :foto-id="s.student?.fotoId" decorativo /><span class="truncate">{{ s.student?.fullName || s.student?.email || 'Estudiante' }}</span></span>
               <span class="flex gap-2 shrink-0">
                 <button type="button" class="px-3 py-1.5 rounded-md font-semibold text-semantico-exito hover:bg-semantico-exito/10" @click="resolverSolicitud(s.id, 'approve')">Aprobar</button>
                 <button type="button" class="px-3 py-1.5 rounded-md font-semibold text-semantico-error hover:bg-semantico-error/10" @click="resolverSolicitud(s.id, 'reject')">Rechazar</button>
@@ -96,7 +96,7 @@ import { pendientesDeHoy, type EntregaHoy, type MapaHoy, type RefuerzoHoy, type 
 
 definePageMeta({ layout: 'teacher' })
 
-interface Solicitud { id: string; student?: { fullName?: string; email?: string } }
+interface Solicitud { id: string; student?: { fullName?: string; email?: string; fotoId?: string | null } }
 
 const route = useRoute()
 const api = useApi()

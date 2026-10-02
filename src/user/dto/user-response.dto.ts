@@ -10,6 +10,7 @@ export class UserResponseDto {
   fullName: string;
   role: UserRole;
   isActive: boolean;
+  fotoId: string | null;
   createdAt: Date;
 
   static fromEntity(user: User): UserResponseDto {
@@ -19,6 +20,7 @@ export class UserResponseDto {
     dto.fullName = user.fullName;
     dto.role = user.role;
     dto.isActive = user.isActive;
+    dto.fotoId = user.fotoId ?? null;
     dto.createdAt = user.createdAt;
     return dto;
   }

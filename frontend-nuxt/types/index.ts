@@ -5,6 +5,8 @@ export interface User {
   email: string
   fullName: string
   role: Role
+  /** Foto de perfil opcional (imagen en /media/<fotoId>); sin foto se muestran las iniciales. */
+  fotoId?: string | null
 }
 
 export type UnitStatus = 'dominado' | 'en-progreso' | 'por-iniciar' | 'bloqueado'

@@ -7,7 +7,7 @@
       <h1 class="text-sm font-bold text-base-texto-primario">Solicitudes para entrar</h1>
       <p v-if="pending.length === 0" class="text-xs text-base-texto-secundario">No hay solicitudes pendientes.</p>
       <div v-for="enrollment in pending" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
-        <span class="text-xs min-w-0 truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span>
+        <span class="text-xs min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="enrollment.student?.fullName" :foto-id="enrollment.student?.fotoId" decorativo /><span class="truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span></span>
         <div class="flex gap-2 shrink-0">
           <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-exito hover:bg-semantico-exito/10" @click="change(enrollment.id, 'approve')">Aprobar</button>
           <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10" @click="change(enrollment.id, 'reject')">Rechazar</button>
@@ -19,7 +19,7 @@
       <h2 class="text-sm font-bold text-base-texto-primario">Estudiantes en la clase ({{ active.length }})</h2>
       <p v-if="active.length === 0" class="text-xs text-base-texto-secundario">Todavía no hay estudiantes. Comparte el código de la clase.</p>
       <div v-for="enrollment in active" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
-        <span class="text-xs min-w-0 truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span>
+        <span class="text-xs min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="enrollment.student?.fullName" :foto-id="enrollment.student?.fotoId" decorativo /><span class="truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span></span>
         <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10 shrink-0" @click="change(enrollment.id, 'remove')">Remover</button>
       </div>
     </section>
@@ -157,7 +157,7 @@ definePageMeta({ layout: 'teacher' })
 interface EnrollmentItem {
   id: string
   status: string
-  student?: { fullName?: string; email?: string }
+  student?: { fullName?: string; email?: string; fotoId?: string | null }
 }
 
 interface ClassInfo {

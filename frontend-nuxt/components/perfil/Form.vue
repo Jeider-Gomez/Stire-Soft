@@ -1,6 +1,30 @@
 <template>
   <div class="max-w-xl mx-auto space-y-6">
 
+    <!-- Tarjeta: Foto de perfil (opcional) -->
+    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6" aria-labelledby="perfil-foto-titulo">
+      <div class="flex items-center gap-4">
+        <AvatarUsuario :nombre="authStore.user?.fullName" :foto-id="authStore.user?.fotoId" tamano="w-20 h-20 text-2xl" />
+        <div class="min-w-0 space-y-2">
+          <h2 id="perfil-foto-titulo" class="text-sm font-bold text-base-texto-primario">Foto de perfil <span class="font-normal text-base-texto-secundario">(opcional)</span></h2>
+          <p class="text-xs text-base-texto-secundario">Ayuda a tu docente a reconocerte. Si no pones una, se ven tus iniciales.</p>
+          <div class="flex flex-wrap items-center gap-2">
+            <label class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-bold bg-acento-ambar-fuerte text-white hover:bg-acento-ambar cursor-pointer inline-flex items-center gap-1.5 focus-within:ring-2 focus-within:ring-acento-ambar-fuerte/40">
+              <Camera :size="14" aria-hidden="true" />
+              {{ subiendoFoto ? 'Subiendo…' : authStore.user?.fotoId ? 'Cambiar foto' : 'Elegir foto' }}
+              <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="sr-only" :disabled="subiendoFoto" @change="elegirFoto" />
+            </label>
+            <button v-if="authStore.user?.fotoId" type="button" :disabled="subiendoFoto"
+              class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-falla hover:bg-semantico-falla/10 inline-flex items-center gap-1.5"
+              @click="quitarFoto">
+              <Trash2 :size="14" aria-hidden="true" /> Quitar foto
+            </button>
+          </div>
+          <p v-if="mensajeFoto" role="status" class="text-xs" :class="errorFoto ? 'text-semantico-falla' : 'text-semantico-pasa'">{{ mensajeFoto }}</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Tarjeta: Datos del perfil -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-4">
       <h2 class="text-sm font-bold text-base-texto-primario">Datos del perfil</h2>
@@ -165,13 +189,57 @@
 </template>
 
 <script setup lang="ts">
-import { Eye, EyeOff } from 'lucide-vue-next'
+import { Camera, Eye, EyeOff, Trash2 } from 'lucide-vue-next'
+import { reducirFoto } from '~/utils/fotoPerfil'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
 
 const authStore = useAuthStore()
 const api = useApi()
 const { messageOf } = useApiErrorMessage()
+
+// --- Foto de perfil (opcional) ---
+const subiendoFoto = ref(false)
+const mensajeFoto = ref('')
+const errorFoto = ref(false)
+
+async function elegirFoto(evento: Event) {
+  const entrada = evento.target as HTMLInputElement
+  const archivo = entrada.files?.[0]
+  entrada.value = ''
+  if (!archivo) return
+  subiendoFoto.value = true
+  mensajeFoto.value = ''
+  try {
+    // Se recorta y reduce aquí (256 px, JPEG): sube rápido aunque sea una foto pesada del celular.
+    const datos = new FormData()
+    datos.append('archivo', await reducirFoto(archivo), 'foto.jpg')
+    const r = await api.put<{ fotoId: string }>('/users/me/foto', datos)
+    if (authStore.user) authStore.user.fotoId = r.fotoId
+    errorFoto.value = false
+    mensajeFoto.value = 'Foto actualizada.'
+  } catch (err) {
+    errorFoto.value = true
+    mensajeFoto.value = messageOf(err, 'No se pudo subir la foto. Prueba con una imagen PNG o JPG.')
+  } finally {
+    subiendoFoto.value = false
+  }
+}
+
+async function quitarFoto() {
+  subiendoFoto.value = true
+  try {
+    await api.del('/users/me/foto')
+    if (authStore.user) authStore.user.fotoId = null
+    errorFoto.value = false
+    mensajeFoto.value = 'Quitaste tu foto: se ven tus iniciales.'
+  } catch (err) {
+    errorFoto.value = true
+    mensajeFoto.value = messageOf(err, 'No se pudo quitar la foto.')
+  } finally {
+    subiendoFoto.value = false
+  }
+}
 
 // Visibilidad de contraseñas
 const showCurrentPwd = ref(false)

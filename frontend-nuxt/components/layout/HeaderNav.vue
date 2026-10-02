@@ -103,12 +103,8 @@
           class="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 transition-colors duration-150 group"
           :aria-label="`Menú de ${authStore.user?.fullName || 'usuario'}`"
         >
-          <div
-            class="w-8 h-8 rounded-xl gradient-stire flex items-center justify-center
-                   text-white font-bold text-xs shadow-sm group-hover:shadow-md transition-shadow"
-          >
-            {{ userInitials }}
-          </div>
+          <AvatarUsuario :nombre="authStore.user?.fullName" :foto-id="authStore.user?.fotoId" decorativo
+            class="shadow-sm group-hover:shadow-md transition-shadow" />
           <span class="hidden md:block text-xs font-medium text-slate-700 max-w-[120px] truncate">
             {{ authStore.user?.fullName?.split(' ')[0] }}
           </span>
@@ -214,11 +210,6 @@ const roleBadgeClass = computed(() => {
     default:
       return 'badge-estudiante'
   }
-})
-
-const userInitials = computed(() => {
-  if (!authStore.user?.fullName) return 'U'
-  return authStore.user.fullName.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()
 })
 
 function handleLogout() {

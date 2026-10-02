@@ -153,6 +153,16 @@ const JUSTIFIED_EXCEPTIONS: Exception[] = [
     method: 'changePassword',
     reason: 'changePassword(user.id, dto) — nunca acepta un id de otro usuario.',
   },
+  {
+    controller: UserController,
+    method: 'cambiarFoto',
+    reason: 'cambiarFoto(user, archivo) — la foto de perfil propia; nunca acepta un id de otro usuario.',
+  },
+  {
+    controller: UserController,
+    method: 'quitarFoto',
+    reason: 'quitarFoto(user) — la foto de perfil propia; nunca acepta un id de otro usuario.',
+  },
 ];
 
 interface GetException {

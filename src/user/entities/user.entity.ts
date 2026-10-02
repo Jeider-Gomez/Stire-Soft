@@ -42,6 +42,10 @@ export class User {
   @Column({ default: true })
   isActive!: boolean;
 
+  /** Foto de perfil opcional: una imagen de media_files (se ve en /media/<fotoId>). */
+  @Column({ type: 'varchar', length: 36, nullable: true })
+  fotoId?: string | null;
+
   // Último cambio de contraseña por recuperación o por un admin: los JWT emitidos
   // antes de este momento se rechazan (JwtStrategy).
   @Column({ type: 'timestamp', nullable: true })

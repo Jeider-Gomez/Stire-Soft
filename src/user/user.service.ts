@@ -17,6 +17,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAffiliationDto } from './dto/create-affiliation.dto';
 import { InstitutionService } from '../institution/institution.service';
+import { MediaService } from '../media/media.service';
 
 @Injectable()
 export class UserService {
@@ -28,7 +29,26 @@ export class UserService {
     @InjectRepository(CambioDeRol)
     private readonly cambiosDeRol: Repository<CambioDeRol>,
     private readonly institutionService: InstitutionService,
+    private readonly media: MediaService,
   ) {}
+
+  /**
+   * Foto de perfil opcional. Se guarda como cualquier imagen subida (mismas reglas: PNG, JPG, GIF o WebP por su firma,
+   * máx. 1 MB) y la anterior se borra, para no dejar fotos viejas guardadas.
+   */
+  async cambiarFoto(user: User, datos: Buffer | undefined): Promise<{ fotoId: string }> {
+    const nueva = await this.media.subirImagen(user, datos);
+    const anterior = (await this.userRepository.findOne({ where: { id: user.id } }))?.fotoId ?? null;
+    await this.userRepository.update({ id: user.id }, { fotoId: nueva.id });
+    if (anterior) await this.media.eliminar(user, anterior).catch(() => undefined);
+    return { fotoId: nueva.id };
+  }
+
+  async quitarFoto(user: User): Promise<void> {
+    const anterior = (await this.userRepository.findOne({ where: { id: user.id } }))?.fotoId ?? null;
+    await this.userRepository.update({ id: user.id }, { fotoId: null });
+    if (anterior) await this.media.eliminar(user, anterior).catch(() => undefined);
+  }
   /**
    * Crear un nuevo usuario
    * Encripta la contraseña antes de guardarla
@@ -84,7 +104,7 @@ export class UserService {
   async findOneByEmail(email: string): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'password', 'fullName', 'role', 'isActive'],
+      select: ['id', 'email', 'password', 'fullName', 'role', 'isActive', 'fotoId'],
     });
   }
 

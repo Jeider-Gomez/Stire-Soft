@@ -7,6 +7,7 @@ import { User, UserRole } from './entities/user.entity';
 import { UserAffiliation } from './entities/user-affiliation.entity';
 import { CambioDeRol } from './entities/cambio-de-rol.entity';
 import { InstitutionService } from '../institution/institution.service';
+import { MediaService } from '../media/media.service';
 
 describe('UserService', () => {
   let service: UserService;
@@ -32,6 +33,11 @@ describe('UserService', () => {
     save: jest.fn(async (row: any) => row),
   };
 
+  const mockMedia = {
+    subirImagen: jest.fn(),
+    eliminar: jest.fn(),
+  };
+
   const mockInstitutionService = {
     findProgramById: jest.fn(),
   };
@@ -53,6 +59,10 @@ describe('UserService', () => {
           useValue: mockCambiosDeRol,
         },
         {
+          provide: MediaService,
+          useValue: mockMedia,
+        },
+        {
           provide: InstitutionService,
           useValue: mockInstitutionService,
         },
@@ -64,6 +74,38 @@ describe('UserService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('foto de perfil (opcional)', () => {
+    const yo = { id: 18, role: UserRole.ESTUDIANTE } as User;
+    beforeEach(() => {
+      jest.clearAllMocks();
+      (mockUserRepository as any).update = jest.fn();
+      mockMedia.eliminar.mockResolvedValue(undefined);
+    });
+
+    it('subir una foto la guarda como imagen validada y borra la anterior', async () => {
+      mockMedia.subirImagen.mockResolvedValue({ id: 'nueva-uuid' });
+      mockUserRepository.findOne.mockResolvedValue({ id: 18, fotoId: 'vieja-uuid' });
+      const png = Buffer.from('x');
+      await expect(service.cambiarFoto(yo, png)).resolves.toEqual({ fotoId: 'nueva-uuid' });
+      expect(mockMedia.subirImagen).toHaveBeenCalledWith(yo, png);
+      expect((mockUserRepository as any).update).toHaveBeenCalledWith({ id: 18 }, { fotoId: 'nueva-uuid' });
+      expect(mockMedia.eliminar).toHaveBeenCalledWith(yo, 'vieja-uuid');
+    });
+
+    it('si la imagen no sirve (tipo o tamaño), no se toca la foto que ya tenía', async () => {
+      mockMedia.subirImagen.mockRejectedValue(new Error('Solo se aceptan imágenes PNG, JPG, GIF o WebP.'));
+      await expect(service.cambiarFoto(yo, Buffer.from('<html>'))).rejects.toThrow('PNG');
+      expect((mockUserRepository as any).update).not.toHaveBeenCalled();
+    });
+
+    it('quitar la foto la borra y deja al usuario con sus iniciales', async () => {
+      mockUserRepository.findOne.mockResolvedValue({ id: 18, fotoId: 'vieja-uuid' });
+      await service.quitarFoto(yo);
+      expect((mockUserRepository as any).update).toHaveBeenCalledWith({ id: 18 }, { fotoId: null });
+      expect(mockMedia.eliminar).toHaveBeenCalledWith(yo, 'vieja-uuid');
+    });
   });
 
   describe('cambio de rol por un admin — nadie se cambia a sí mismo', () => {
