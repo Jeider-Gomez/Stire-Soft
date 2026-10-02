@@ -809,7 +809,15 @@ function onTeclaGlobal(e: KeyboardEvent) {
     quitarFlechaSeleccionada()
   }
 }
-onMounted(() => window.addEventListener('keydown', onTeclaGlobal))
+onMounted(() => {
+  window.addEventListener('keydown', onTeclaGlobal)
+  // En un celular el lienzo es más angosto que el diagrama: se abre desplazado hasta la primera figura, no cortado.
+  nextTick(() => {
+    const c = lienzoContenedorRef.value
+    if (!c || !diagrama.value.figuras.length || c.scrollWidth <= c.clientWidth) return
+    c.scrollLeft = Math.max(0, Math.min(...diagrama.value.figuras.map((f) => f.x)) - 16)
+  })
+})
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onTeclaGlobal)

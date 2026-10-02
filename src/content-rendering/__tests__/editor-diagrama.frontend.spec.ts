@@ -50,6 +50,12 @@ describe('Fase 29: Editor visual de diagramas de flujo', () => {
       expect(reloj).toBeLessThan(watchInmediato);
     });
 
+    it('en un lienzo más angosto que el diagrama (celular) se abre desplazado hasta la primera figura', () => {
+      const contenido = readFileSync(rutaComponente, 'utf8');
+      expect(contenido).toContain('c.scrollWidth <= c.clientWidth');
+      expect(contenido).toContain('c.scrollLeft = Math.max(0, Math.min(...diagrama.value.figuras.map((f) => f.x)) - 16)');
+    });
+
     it('no contiene ningún "as any" ni "@ts-ignore"', () => {
       const contenido = readFileSync(rutaComponente, 'utf8');
       expect(contenido).not.toContain('as any');
