@@ -15,7 +15,7 @@ en el mismo archivo — no se archivan por eso. Se archiva completo, con fecha e
 [`docs/_archivo/`](../../_archivo/) únicamente cuando se reemplaza de fondo (fases nuevas, no una
 corrección más) — ver la regla exacta ahí.
 
-**Vigente desde el 2026-10-01: Fase 29** — el editor visual de diagramas de flujo. Claude Code ya dejó hecho el formato, la validación, la ejecución y el backend; Antigravity hace el editor y lo conecta.
+**Archivado el 2026-10-02:** la Fase 29 (editor visual de diagramas de flujo) se movió a [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-10-02.md`](../../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-10-02.md), con la nota de la auditoría de Claude Code (verificación en Chrome 41/41 y 5 defectos corregidos). **El archivo vigente no tiene ninguna fase pendiente**: la siguiente sale de la prueba con el equipo.
 
 **Archivado el 2026-09-26:** la Fase 26 (editor de código con CodeMirror 6, resaltado y selector de lenguaje) se movió a [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-26.md`](../../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-09-26.md), con la nota de la auditoría de Claude Code (3 defectos corregidos). **El archivo vigente no tiene ninguna fase pendiente.**
 

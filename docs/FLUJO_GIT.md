@@ -102,18 +102,37 @@ funcional del frontend también los toca. La guía completa para quien lo hace (
    pendiente, así que el terreno está despejado.
 5. Se une a `main` con Pull Request. Si algo sale mal, `git revert` del merge devuelve todo.
 
-## Versiones: registrar la primera
+## Versiones
 
 Un **tag** es una etiqueta permanente sobre un commit. Sirve para decir "así estaba el sistema
 en este momento" sin crear una rama que haya que mantener.
+
+**Cómo se numera** (`vMAYOR.MENOR.CORRECCIÓN`):
+
+| Cambia | Cuándo | Ejemplo |
+|---|---|---|
+| CORRECCIÓN | Se arregla algo sin cambiar cómo se usa (lo que sale de la prueba con el equipo) | `v1.0.0` → `v1.0.1` |
+| MENOR | Llega una función nueva y lo de antes sigue igual | `v1.0.3` → `v1.1.0` |
+| MAYOR | Cambia a fondo cómo se usa (lo que se rediseñe después de la prueba) | `v1.4.0` → `v2.0.0` |
+
+**Cada versión, tres pasos:** (1) una entrada en `CHANGELOG.md` con su número, (2) las capturas
+de `docs/material-visual/vistas/` actualizadas en el mismo commit (mismos nombres de archivo: así
+GitHub muestra el antes y el después de cada pantalla) y (3) el tag:
+
+```bash
+git tag -a v1.0.1 -m "v1.0.1: correcciones de la semana 1 de la prueba"
+git push origin v1.0.1
+```
 
 | Tag | Qué marca |
 |---|---|
 | `v0.1.0-READY` | Primera marca, del 23 de mayo |
 | `v1.0.0-beta.1` | Primera versión completa: backend, frontend y Tutor con clave de Google AI Studio, con la identidad visual original |
+| `v1.0.0` | La versión que prueba el equipo (2 de octubre): dos cursos, proyectos con diagramas de flujo, entregas, notas, refuerzos y registro de cambios de rol. Desplegada en Vercel + Azure |
 
-Se usa `beta` a propósito: las funciones están completas, pero el camino feliz del Tutor con una
-clave real de Google todavía no se ha verificado. Cuando eso se cierre, la versión pasa a `v1.0.0`.
+`v1.0.0-beta.1` llevaba `beta` porque el Tutor con una clave real de Google no se había verificado. `v1.0.0` se marcó
+por decisión del dueño al empezar la prueba con el equipo; esa verificación queda dentro de la prueba (estudiantes,
+punto 4).
 
 ```bash
 git tag -a v1.0.0-beta.1 -m "Primera version completa (identidad visual original)"

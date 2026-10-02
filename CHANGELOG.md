@@ -12,6 +12,28 @@ entry to the oldest.
 
 ---
 
+## v1.0.0 — la versión que prueba el equipo · 2 de Octubre de 2026
+
+Primera versión estable: la que el equipo prueba durante dos semanas con los dos cursos
+(`docs/calidad/PRUEBA_DOS_SEMANAS.md`). Reúne todo lo de las entradas de abajo, desde
+`v1.0.0-beta.1`. Las pantallas de esta versión están en `docs/material-visual/vistas/`.
+
+Lo último que entró:
+- **Editor visual de diagramas de flujo** (Fase 29, Antigravity): arrastrar figuras, unirlas con
+  flechas (también con «Unir con…» en el celular y con el teclado), avisos en vivo que marcan la
+  figura con el problema, y el diagrama en solo lectura en la revisión del docente. Proyectos y
+  entregas de tipo «Diagrama de flujo». La revisión de Claude Code corrigió: el arrastre con el
+  dedo, Esc y Supr, un error al abrir el diagrama (no se validaba lo cargado), el diagrama cortado
+  en el celular y un computed que modificaba el proyecto. Probado en Chrome contra producción:
+  41/41 (los 7 pasos del plan, a 1440 y 375 px).
+- **Registro de cambios de rol:** quién cambió el rol de qué cuenta, de cuál a cuál, por dónde y
+  cuándo (Administración → «Cambios de rol»). Migración `1791000000000-AddCambiosDeRol`.
+
+Desde aquí: las correcciones durante la prueba son `v1.0.1`, `v1.0.2`…; lo que cambie a fondo
+después de la prueba será `v2.0.0` (ver `docs/FLUJO_GIT.md`, «Versiones»).
+
+---
+
 ## La clase como lugar y las formas de calificar · 1 de Octubre de 2026
 
 Cierra el plan de `docs/DISENO_INTERVENCION_DOCENTE.md` (fases E y F, §6). Fundamento en
