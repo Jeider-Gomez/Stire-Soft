@@ -28,6 +28,11 @@ Lo último que entró:
   41/41 (los 7 pasos del plan, a 1440 y 375 px).
 - **Registro de cambios de rol:** quién cambió el rol de qué cuenta, de cuál a cuál, por dónde y
   cuándo (Administración → «Cambios de rol»). Migración `1791000000000-AddCambiosDeRol`.
+- **Código de clase único y QR que se escanea:** el código se guarda en una sola forma (no puede haber «algo web» y
+  «ALGO-WEB»), el formulario dice mientras se escribe si está libre, y el QR abre STIRE con el código escrito; sin
+  sesión, el estudiante entra o se registra y vuelve ahí. Probado en producción: 15/15.
+- **Guía de identidad vigente** (`docs/identidad-visual/GUIA_IDENTIDAD.md`) y las 40 pantallas de esta versión en
+  `docs/material-visual/vistas/` (recorrido sin errores de consola, sin respuestas fallidas y sin desborde).
 
 Desde aquí: las correcciones durante la prueba son `v1.0.1`, `v1.0.2`…; lo que cambie a fondo
 después de la prueba será `v2.0.0` (ver `docs/FLUJO_GIT.md`, «Versiones»).
