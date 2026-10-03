@@ -2,7 +2,7 @@
 estado: plan vigente (01/10/2026). Reemplaza a GUIA_RONDA_1_EQUIPO.md, que era de una versión anterior.
 ---
 
-# Prueba de STIRE con el equipo: dos semanas, dos cursos, cruzados
+# Prueba de STIRE con el equipo: dos semanas (y una tercera si hace falta), dos cursos, cruzados
 
 **Decisión del dueño (01/10):** en vez de que todos hagan el mismo curso a la vez, el equipo se parte en dos grupos. Cada
 grupo empieza con un curso distinto y **en la segunda semana se cruzan**. Así cada semana hay resultados de los dos cursos
@@ -13,28 +13,49 @@ la segunda semana no se confunde con lo que cambia *por el curso*.
 
 ## 1. Quién hace qué
 
-| Persona | Rol | Semana 1 | Semana 2 |
-|---|---|---|---|
-| Integrante 1 | **Docente A** de Fundamentos de Algoritmia | Dicta a su grupo | Dicta al otro grupo |
-| Integrante 2 | **Docente B** de Pensamiento algorítmico | Dicta a su grupo | Dicta al otro grupo |
-| Integrantes 3 y 4 | Estudiantes, **grupo 1** | Fundamentos de Algoritmia | Pensamiento algorítmico |
-| Integrante 5 (y quien quiera más) | Estudiantes, **grupo 2** | Pensamiento algorítmico | Fundamentos de Algoritmia |
+**Plan acordado (02/10).** Cada docente dicta un curso a dos estudiantes, y los dos docentes también son estudiantes del
+curso del otro, con una segunda cuenta. Validación cruzada: quien enseña un curso aprende el otro. José y Jorge
+empiezan en cursos distintos y cambian en la segunda semana.
 
-- Cada docente dicta su mismo curso las dos semanas, a un grupo distinto: así prueba la segunda vez con la experiencia de la
-  primera (por ejemplo, si «Hoy» le sirvió o si cambia cómo arma las notas).
-- Si un docente también quiere vivir el curso del otro como estudiante, usa **una segunda cuenta** con otro correo (una
-  cuenta es de docente o de estudiante).
-- Si son menos personas, el grupo 2 puede ser una sola persona más uno de los docentes con su segunda cuenta.
+| Persona | Rol | Semana 8 (5 – 9 oct) | Semana 9 (12 – 16 oct) | Semana 10, solo si hace falta |
+|---|---|---|---|---|
+| **Pedro** | Docente de **Fundamentos de Algoritmia** (`ALGO-203413`) | Dicta; publica la Unidad 1 | Publica la Unidad 2 | Publica la Unidad 3 |
+| **Julio** | Docente de **Pensamiento algorítmico** (`PENSAR-ALGO`) | Dicta; publica las secciones 1 y 2 | Publica las secciones 3 y 4 | — |
+| **Julio** (segunda cuenta) | Estudiante de Fundamentos | Unidad 1 | Unidad 2 | Unidad 3 |
+| **Pedro** (segunda cuenta) | Estudiante de Pensamiento | Secciones 1 y 2 | Secciones 3 y 4 | — |
+| **José** | Estudiante | **Fundamentos:** Unidad 1 | **Pensamiento:** secciones 1 y 2 | Avanzar en lo que le falte |
+| **Jorge** | Estudiante | **Pensamiento:** secciones 1 y 2 | **Fundamentos:** Unidad 1 | Avanzar en lo que le falte |
+| **Jeider** | Admin y estudiante en las dos clases, sin obligación de terminar | Opera la prueba | Corrige entre semanas | Versión con lo corregido |
+
+Así cada clase tiene dos estudiantes, cada curso lo recorre completo un estudiante (Julio en Fundamentos, Pedro en
+Pensamiento) y los dos cursos los empiezan dos personas distintas, una en cada semana.
+
+- Una cuenta es de docente o de estudiante: Julio y Pedro crean **una segunda cuenta** con otro correo para ser estudiantes.
+- La semana 10 existe solo si las metas no se alcanzan en dos semanas; se decide al cierre de la Semana 9.
+
+### 1.1 Metas por semana
+
+| Curso | Contenido | Meta |
+|---|---|---|
+| Fundamentos de Algoritmia | **Unidad 1** · Introducción a la algoritmia (6 lecciones: algoritmos, pseudocódigo y diagramas, variables, operadores, primera página HTML, reparar una página) | Semana 8 |
+| | **Unidad 2** · Diseño e implementación (8 lecciones: entradas y salidas, if y else, else if, ciclos, contadores, funciones, DOM y eventos, CSS) | Semana 9 |
+| | **Unidad 3** · Algoritmos para crear OVA (3 lecciones) | Semana 10, si hace falta |
+| Pensamiento algorítmico | **Secciones 1 y 2** · Pensar antes de programar y Representar algoritmos (5 lecciones) | Semana 8 |
+| | **Secciones 3 y 4** · Estructuras de control y Problemas clásicos (5 lecciones) | Semana 9 |
+
+Cada lección son unos 15 a 20 minutos: leerla y resolver sus ejercicios hasta dominarla. Una meta se cumple cuando
+todas sus lecciones aparecen como dominadas en «Mi progreso». Lo que no se alcance no es un fallo: se anota por qué
+(«me trabé en…», «no tuve tiempo») y eso también es resultado de la prueba.
 
 ## 2. Antes de empezar (una vez)
 
 | Quién | Qué |
 |---|---|
 | Jeider | Encender el servidor y comprobar https://stire-soft.vercel.app. Las dos plantillas ya están compartidas (ALGO-203413 y PENSAR-ALGO). **El servidor se apaga solo a las 23:00 y no se enciende solo:** encenderlo cada mañana de la prueba (Azure → `stire-servidor` → Iniciar, también desde la app del celular) y avisar al grupo si se cae. |
-| Docentes A y B | Crear su cuenta y pedir el rol de **docente**; el admin lo aprueba en «Usuarios y Roles». |
-| Docente A | «Crear Nueva Clase» → «Copiar el contenido de» → **Fundamentos de Algoritmia (ALGO-203413)**. En Contenido, publicar el **módulo 1**. |
-| Docente B | Lo mismo con **Pensamiento algorítmico (PENSAR-ALGO)**. Publicar el **módulo 1**. |
-| Estudiantes | Crear su cuenta con un correo propio. Semana 1: entrar **solo** a la clase de su grupo. Semana 2: entrar a la otra (un estudiante puede estar en varias y cambia de clase arriba). |
+| Pedro y Julio | Crear su cuenta de docente y pedir el rol (el admin lo aprueba en «Usuarios y Roles»), y una **segunda cuenta** de estudiante con otro correo. |
+| Pedro (docente) | «Crear Nueva Clase» → «Copiar el contenido de» → **Fundamentos de Algoritmia (ALGO-203413)**. En Contenido, publicar la **Unidad 1**. Compartir el código o el QR de la clase. |
+| Julio (docente) | Lo mismo con **Pensamiento algorítmico (PENSAR-ALGO)**. Publicar las **secciones 1 y 2**. |
+| Estudiantes | Crear su cuenta con un correo propio y unirse a la clase que le toca (tabla de arriba). En la Semana 9, José y Jorge se unen a la otra clase (un estudiante puede estar en varias y cambia de clase arriba). |
 
 Consejo: cada docente publica un módulo por semana o cada pocos días, como en un curso real. Así se prueban también «Hoy»,
 los avisos y el resumen de la semana.

@@ -39,26 +39,30 @@
 semana siguiente. Todos usan la app como docente o como estudiante y envían sugerencias con el botón «Sugerencias».
 Lo que bloquee el uso se corrige en el día.
 
-### Roles en la prueba *(propuesta; se confirma el lunes 05/10)*
+### Roles en la prueba *(acordados el 02/10)*
 
-| Rol | Quién | Semana 8 | Semana 9 |
+Cada docente dicta un curso a dos estudiantes y es estudiante del curso del otro con una segunda cuenta (validación
+cruzada). José y Jorge cambian de curso en la Semana 9. Detalle en `PRUEBA_DOS_SEMANAS.md` §1.
+
+| Clase | Docente | Estudiantes en la Semana 8 | Meta de la Semana 8 |
 |---|---|---|---|
-| Docente A · Fundamentos de Algoritmia | Julio | Dicta al grupo 1 | Dicta al grupo 2 |
-| Docente B · Pensamiento algorítmico | Pedro | Dicta al grupo 2 | Dicta al grupo 1 |
-| Estudiantes · grupo 1 | Jorge, José | Fundamentos de Algoritmia | Pensamiento algorítmico |
-| Estudiantes · grupo 2 | Jeider (cuenta de estudiante) | Pensamiento algorítmico | Fundamentos de Algoritmia |
+| Fundamentos de Algoritmia (`ALGO-203413`) | Pedro | José y Julio (segunda cuenta) | **Unidad 1** completa (6 lecciones) |
+| Pensamiento algorítmico (`PENSAR-ALGO`) | Julio | Jorge y Pedro (segunda cuenta) | **Secciones 1 y 2** completas (5 lecciones) |
 
-Jeider además administra: enciende el servidor cada mañana, aprueba a los docentes y atiende las sugerencias.
+Jeider entra como estudiante en las dos clases, sin obligación de terminar, y administra: enciende el servidor cada
+mañana, aprueba a los docentes y atiende las sugerencias.
 
 ### Resultados esperados
 
-1. La prueba arranca el lunes con los dos docentes aprobados y las dos clases creadas desde las plantillas.
-2. Julio revisa el rol de docente con los cursos reales y deja su reporte (`S08-JL01`).
-3. Jorge audita las funciones nuevas en producción (`S08-JOR01`).
-4. José revisa los ajustes visuales y observa a los compañeros durante la prueba (`S08-JO02`).
-5. Resultados de la semana 1 de la prueba: sugerencias y las tres preguntas de cada persona (`S08-P03`).
-6. Registro de los 7 Hábitos de los 5 integrantes (`S08-H-*`).
-7. Bitácora cerrada el viernes, sin retraso.
+1. La prueba arranca el lunes con Pedro y Julio aprobados como docentes, las dos clases creadas desde las plantillas y
+   los cuatro estudiantes unidos a su clase.
+2. Los estudiantes alcanzan la meta de la semana: Unidad 1 de Fundamentos y secciones 1 y 2 de Pensamiento (`S08-E01`, `S08-E02`).
+3. Pedro y Julio usan el rol de docente con su curso y dejan su revisión (`S08-P04`, `S08-JL01`).
+4. Jorge audita las funciones nuevas en producción (`S08-JOR01`).
+5. José revisa los ajustes visuales y observa a los compañeros durante la prueba (`S08-JO02`).
+6. Resultados de la semana 1 de la prueba: sugerencias y las tres preguntas de cada persona (`S08-P03`).
+7. Registro de los 7 Hábitos de los 5 integrantes (`S08-H-*`).
+8. Bitácora cerrada el viernes, sin retraso.
 
 ---
 
@@ -90,21 +94,24 @@ Jeider además administra: enciende el servidor cada mañana, aprueba a los doce
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] **S08-JL01 · Revisar el rol de docente con los cursos reales** *(viene de `S07-JL03` y `S07-JL04`)*. Como
-  docente A de la prueba:
-  - crear su clase desde la plantilla de Fundamentos de Algoritmia y publicar el módulo 1;
-  - revisar pedagógicamente las lecciones y ejercicios: coherencia, dificultad, instrucciones claras (en el QA de la
-    Semana 7, un enunciado no se entendió);
-  - crear una lección y un ejercicio propios, asignar un refuerzo y tomar la asistencia una vez;
-  - reporte de hallazgos en `docs/cursos/REVISION_DOCENTE_S8.md`.
+- [ ] **S08-JL01 · Docente de Pensamiento algorítmico: revisar el rol de docente con el curso real** *(viene de
+  `S07-JL03` y `S07-JL04`)*
+  - Crear su cuenta de docente (Jeider aprueba el rol) y la clase desde la plantilla `PENSAR-ALGO`; publicar las
+    secciones 1 y 2 y compartir el código o el QR con Jorge y Pedro.
+  - Revisar «Hoy» cada día; crear una entrega y comentar lo que llegue; asignar un refuerzo; tomar la asistencia una vez.
+  - Revisión pedagógica de las 5 lecciones de la semana: coherencia, dificultad e instrucciones claras.
+  - Reporte en `docs/cursos/REVISION_DOCENTE_PENSAR_S8.md`.
+- [ ] **S08-E01 · Estudiante de Fundamentos** (segunda cuenta), con José — meta: Unidad 1 completa.
 
 ### José López — UI/UX + Comunicación
 
+- [ ] **S08-E01 · Estudiante de Fundamentos**, con Julio — meta: Unidad 1 completa.
 - [ ] **S08-JO02 · Revisión visual de los ajustes de UI/UX y observación durante la prueba** — revisar `S08-J01` y anotar
   en [`docs/identidad-visual/BITACORA.md`](./docs/identidad-visual/BITACORA.md) lo que vea en los compañeros mientras usan la app.
 
 ### Jorge Cervantes — Gestión + Calidad
 
+- [ ] **S08-E02 · Estudiante de Pensamiento**, con Pedro — meta: secciones 1 y 2 completas.
 - [ ] **S08-JOR01 · QA de las funciones nuevas en producción** — con la
   [guía maestra](./docs/calidad/GUIA_AUDITORIA_MAESTRA.md): asistencia con QR, unirse a una clase escaneando el QR,
   proyectos, entregas, notas, foto de perfil, ajustes de UI/UX y una nueva prueba del Tutor. Reporte en
@@ -114,6 +121,12 @@ Jeider además administra: enciende el servidor cada mañana, aprueba a los doce
 
 - [x] **S08-P01 · Tablero Trello de la Semana 8** — creado el 02/10.
 - [ ] **S08-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 09/10, contrastada con Trello y Git.
+- [ ] **S08-P04 · Docente de Fundamentos de Algoritmia**
+  - Crear su cuenta de docente (Jeider aprueba el rol) y la clase desde la plantilla `ALGO-203413`; publicar la Unidad 1
+    y compartir el código o el QR con José y Julio.
+  - Revisar «Hoy» cada día; crear una entrega y comentar lo que llegue; asignar un refuerzo; tomar la asistencia una vez.
+  - Nota corta de cómo le fue como docente en `docs/cursos/REVISION_DOCENTE_FUNDAMENTOS_S8.md`.
+- [ ] **S08-E02 · Estudiante de Pensamiento** (segunda cuenta), con Jorge — meta: secciones 1 y 2 completas.
 - [ ] **S08-P03 · Resultados de la semana 1 de la prueba** — descargar el CSV de sugerencias y juntar las respuestas de
   las tres preguntas en `docs/calidad/resultados-prueba/PRUEBA_SEMANA_1_RESULTADOS.md`.
 
@@ -165,21 +178,25 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 
 ---
 
-## 🔭 8. Proyección de la Semana 9 (12 – 16 de octubre) — semana 2 de la prueba
+## 🔭 8. Proyección de las semanas 9 y 10
 
-Los grupos se cruzan: cada estudiante pasa al otro curso y cada docente dicta su curso al otro grupo.
+**Semana 9 (12 – 16 de octubre), semana 2 de la prueba.** José pasa a Pensamiento y Jorge a Fundamentos; Julio y Pedro
+siguen en el curso del otro.
 
 | Quién | Qué |
 |---|---|
-| Jeider | Antes del lunes 12, corregir lo de gravedad 3 de la semana 1. Operar la prueba. Al final, versión **v1.2.0** con lo corregido y una propuesta de qué entra en la v2.0, a partir de los resultados. |
-| Julio | Dictar su curso por segunda vez, al otro grupo, y comparar con la primera; completar la revisión pedagógica de los dos cursos. |
-| José | Informe de UX de la prueba: lo que más confundió y propuestas visuales para la v2.0. |
-| Jorge | QA de regresión sobre lo corregido entre semanas y verificación de que nada se rompió. |
-| Pedro | Resultados de la semana 2 y el informe consolidado de la prueba (`docs/calidad/resultados-prueba/`). |
+| Pedro | Docente: publica la Unidad 2 de Fundamentos. Estudiante: secciones 3 y 4 de Pensamiento (termina el curso). Resultados de la semana 2. |
+| Julio | Docente: publica las secciones 3 y 4 de Pensamiento y compara con la primera semana. Estudiante: Unidad 2 de Fundamentos. |
+| José | Estudiante de Pensamiento: secciones 1 y 2. UX: informe de lo que más confundió y propuestas visuales para la v2.0. |
+| Jorge | Estudiante de Fundamentos: Unidad 1. QA de regresión sobre lo corregido entre semanas. |
+| Jeider | Antes del lunes 12, corregir lo que haya bloqueado la prueba en la semana 1. Operar la prueba. |
 | Todos | Las tres preguntas del final de la semana y los 7 Hábitos. |
 
-**Al cierre de la Semana 9:** resultados de las dos semanas comparados (qué cambió de un curso a otro y si la segunda vez
-fue más fácil), decisión del alcance de la v2.0 y tablero de la Semana 10.
+**Semana 10 (19 – 23 de octubre), solo si hace falta.** Pedro publica la Unidad 3 de Fundamentos y Julio (estudiante) la
+termina; José y Jorge avanzan en lo que les falte. Al cierre: informe consolidado de la prueba, versión v1.2.0 con lo
+corregido y decisión del alcance de la v2.0.
+
+Se decide al cierre de la Semana 9 si hace falta la Semana 10, según cuánto del curso alcanzaron.
 
 ---
 
