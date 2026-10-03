@@ -43,10 +43,10 @@
             <button
               v-if="tutorStore.hasKey"
               @click="tutorStore.showKeyPanel = !tutorStore.showKeyPanel"
-              class="text-[10px] text-slate-200 hover:text-white underline transition-colors"
+              class="inline-flex items-center gap-1 whitespace-nowrap px-2 py-1 rounded-lg text-[11px] text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
               :aria-label="tutorStore.showKeyPanel ? 'Ocultar panel de clave' : 'Gestionar mi clave de Google AI Studio'"
             >
-              Mi clave
+              <KeyRound :size="12" aria-hidden="true" /> Mi clave
             </button>
 
             <button
@@ -111,25 +111,32 @@
           </div>
         </div>
 
-        <!-- Aviso de repasos vencidos (§22 T1 — fuera del v-else, visible con clave y sin clave) -->
+        <!-- Aviso de repasos vencidos (§22 T1 — fuera del v-else, visible con clave y sin clave). Una franja de una línea
+             pegada al encabezado y que se puede descartar: como tarjeta flotante ocupaba ~80 px del chat y los mensajes
+             parecían quedar debajo (pedido de Jeider, 03/10). El detalle del más atrasado va en el título. -->
         <div
-          v-if="tutorStore.tutorEnabled && overdueNotice"
-          class="mx-4 mt-3 p-3 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 text-xs text-base-texto-primario flex items-center justify-between gap-2 shadow-xs shrink-0"
+          v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado"
+          id="aviso-repasos-tutor"
+          class="px-4 py-1.5 bg-acento-ambar/10 border-b border-acento-ambar/30 text-[11px] text-base-texto-primario flex items-center gap-2 shrink-0"
           role="status"
           aria-live="polite"
+          :title="overdueNotice"
         >
-          <div class="flex items-start gap-2">
-            <Clock :size="16" class="shrink-0 text-stire-blue" aria-hidden="true" />
-            <p class="text-[11px] leading-relaxed">
-              {{ overdueNotice }}
-            </p>
-          </div>
+          <Clock :size="14" class="shrink-0 text-acento-ambar-fuerte" aria-hidden="true" />
+          <p class="flex-1 min-w-0 truncate font-semibold">{{ avisoRepasosCorto }}<span class="sr-only"> {{ overdueNotice }}</span></p>
           <button
             @click="navigateWithAutosaveCheck('/estudiante/repasos')"
-            class="px-2.5 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold text-[11px] hover:bg-acento-ambar transition-colors shrink-0 shadow-xs"
-            aria-label="Ir a mis repasos pendientes"
+            class="shrink-0 font-bold text-acento-ambar-fuerte underline hover:no-underline"
           >
-            Ir a mis repasos
+            Ir a repasar
+          </button>
+          <button
+            type="button"
+            class="shrink-0 p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-acento-ambar/15"
+            aria-label="Ocultar el aviso de repasos"
+            @click="avisoRepasosDescartado = true"
+          >
+            <X :size="12" aria-hidden="true" />
           </button>
         </div>
 
@@ -286,7 +293,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ban, BookOpen, Bot, Clock, Compass, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
+import { Ban, BookOpen, Bot, Clock, Compass, KeyRound, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { atajosASimpleVista, atajosDisponibles, preguntasNuevas, type Atajo } from '~/utils/atajosTutor'
@@ -340,6 +347,12 @@ const activeContextLabel = computed(() => {
 })
 
 // ─── Aviso de repasos vencidos (§21.2 T4c) ──────────────────────────────────
+// Descartado, no vuelve en esta sesión (useState: sobrevive al cambiar de página).
+const avisoRepasosDescartado = useState('tutor-aviso-repasos-descartado', () => false)
+const avisoRepasosCorto = computed(() => {
+  const n = tutorStore.dueReviews?.overdueCount ?? 0
+  return n === 1 ? 'Tienes 1 repaso vencido' : `Tienes ${n} repasos vencidos`
+})
 const overdueNotice = computed(() => {
   const reviews = tutorStore.dueReviews
   if (!reviews || reviews.overdueCount <= 0) return null

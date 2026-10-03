@@ -258,3 +258,18 @@ describe('Atajos del Tutor: solos al empezar un ejercicio; si no, detrás del bo
     expect(d).toContain('v-if="atajosVisibles"');
   });
 });
+
+describe('Tutor: aviso de repasos compacto y «Mi clave» en una línea (pedido de Jeider, 03/10)', () => {
+  const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
+
+  it('el aviso de repasos es una franja de una línea que se puede descartar, no una tarjeta flotante', () => {
+    expect(d).toContain('v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado"');
+    expect(d).toContain('aria-label="Ocultar el aviso de repasos"');
+    expect(d).toContain("useState('tutor-aviso-repasos-descartado'");
+    expect(d).not.toContain('mx-4 mt-3 p-3 rounded-lg bg-acento-ambar/10');
+  });
+
+  it('«Mi clave» no se parte en dos líneas', () => {
+    expect(d).toMatch(/whitespace-nowrap[^"]*"[\s\S]{0,200}?<KeyRound :size="12" aria-hidden="true" \/> Mi clave/);
+  });
+});
