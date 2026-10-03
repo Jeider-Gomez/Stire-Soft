@@ -203,6 +203,10 @@ real. No hace falta cubrir los 7.
 - [x] Tutor IA revisado como usuario, con reporte de uso y recomendaciones de UX/UI. *(02/10, en `S07-JO01`. Revisó
   el Tutor en el contexto de toda la interfaz; su hallazgo sobre el Tutor —que el panel tapa la lección mientras se
   conversa— es la mejora de mayor impacto de la lista y pasa a la Semana 8.)*
+- [x] Tutor probado como chatbot: nota con sus hallazgos en
+  [`docs/material-visual/01-tutor-ia/HALLAZGOS.md`](../material-visual/01-tutor-ia/HALLAZGOS.md) (el tono se siente
+  como un acompañante y pide detalles en vez de dar la respuesta; el saludo puede dejar dudas sobre si preguntar ya; las
+  tarjetas de sugerencia necesitan más contraste para verse como botones). *(02/10.)*
 - [x] 11 capturas de la interfaz en `docs/material-visual/01-tutor-ia/` (registro, panel del admin, panel docente,
   crear clase, módulo y lección, y «Mis clases» del estudiante). *(Subidas el 02/10.)*
 - [x] 7 Hábitos registrados (hábitos 1, 2, 3 y 5, con la situación de cada uno). *(02/10, `S07-H-JOSE`.)*
@@ -262,7 +266,7 @@ registraron sus hábitos con la historia de cada uno, Julio incluido por primera
 Empieza la prueba de dos semanas con el equipo (`docs/calidad/PRUEBA_DOS_SEMANAS.md`). Pasan:
 - **Julio:** revisar el rol de docente con los cursos reales (`S07-JL03` y `S07-JL04`, unidas en `S08-JL01`).
 - **Jeider:** los ajustes de UI/UX que propuso José (`S08-J01`) y los hallazgos QA-06 y QA-07 de Jorge (`S08-J02`).
-- **José:** probar el Tutor como chatbot (saludo, preguntas sobre un ejercicio, «quiero practicar»).
+- **José:** revisar visualmente los ajustes de UI/UX y observar a los compañeros durante la prueba.
 
 Plan completo: bitácora N.º 8.
 

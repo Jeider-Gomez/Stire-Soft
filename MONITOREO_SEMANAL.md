@@ -55,7 +55,7 @@ Jeider además administra: enciende el servidor cada mañana, aprueba a los doce
 1. La prueba arranca el lunes con los dos docentes aprobados y las dos clases creadas desde las plantillas.
 2. Julio revisa el rol de docente con los cursos reales y deja su reporte (`S08-JL01`).
 3. Jorge audita las funciones nuevas en producción (`S08-JOR01`).
-4. José prueba el Tutor como chatbot y revisa los ajustes visuales (`S08-JO01`, `S08-JO02`).
+4. José revisa los ajustes visuales y observa a los compañeros durante la prueba (`S08-JO02`).
 5. Resultados de la semana 1 de la prueba: sugerencias y las tres preguntas de cada persona (`S08-P03`).
 6. Registro de los 7 Hábitos de los 5 integrantes (`S08-H-*`).
 7. Bitácora cerrada el viernes, sin retraso.
@@ -79,6 +79,8 @@ Jeider además administra: enciende el servidor cada mañana, aprueba a los doce
   - QA-06: el indicador del nivel de ayuda del Tutor (Pista, Pregunta guía, Dónde está el error) parece un grupo de
     botones; rediseñarlo para que se lea como indicador.
   - QA-07: «No se pudo autoguardar» aparece a ratos; buscar la causa y que reintente solo.
+  - Del reporte del Tutor de José (`HALLAZGOS.md`): las tarjetas de sugerencia necesitan más contraste para verse como
+    botones.
 - [ ] **S08-J03 · Operar la prueba**
   - Encender el servidor cada mañana (se apaga solo a las 23:00).
   - Aprobar a los docentes y revisar las sugerencias cada día.
@@ -98,8 +100,6 @@ Jeider además administra: enciende el servidor cada mañana, aprueba a los doce
 
 ### José López — UI/UX + Comunicación
 
-- [ ] **S08-JO01 · Probar el Tutor como chatbot** *(lo que faltó de `S07-JO01`)* — saludo, 2 o 3 preguntas sobre un
-  ejercicio, «quiero practicar» y la tarjeta de sugerencia. Capturas y una nota corta en `docs/material-visual/01-tutor-ia/`.
 - [ ] **S08-JO02 · Revisión visual de los ajustes de UI/UX y observación durante la prueba** — revisar `S08-J01` y anotar
   en [`docs/identidad-visual/BITACORA.md`](./docs/identidad-visual/BITACORA.md) lo que vea en los compañeros mientras usan la app.
 
