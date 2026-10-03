@@ -4,7 +4,7 @@
 **Grupo:** [G1 / G2]  
 **Repositorio GitHub:** https://github.com/Jeider-Gomez/Stire-Soft  
 **Semana:** 5 – 9 de octubre de 2026  
-**Cierre:** viernes 9 de octubre, 8:00 p. m.  
+**Entrega de las tareas:** jueves 8 de octubre, 8:00 p. m. · **Cierre de la bitácora:** viernes 9 de octubre, 8:00 p. m.  
 **Tablero Kanban:** https://trello.com/b/UtgkXyv2/stire-kanban-desarrollo-semana-08-5-9-oct-2026
 
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
@@ -68,6 +68,9 @@ mañana, aprueba a los docentes y atiende las sugerencias.
 
 ## 📋 3. Plan de trabajo semanal
 
+> **Fecha máxima de todas las tareas: jueves 08/10, 8:00 p. m.** Solo la bitácora se cierra el viernes 09/10. Cada
+> tarjeta de Trello tiene su lista de verificación.
+
 > Tablero: https://trello.com/b/UtgkXyv2/stire-kanban-desarrollo-semana-08-5-9-oct-2026
 
 ### Jeider Gómez — Líder Técnico
@@ -106,8 +109,16 @@ mañana, aprueba a los docentes y atiende las sugerencias.
 ### José López — UI/UX + Comunicación
 
 - [ ] **S08-E01 · Estudiante de Fundamentos**, con Julio — meta: Unidad 1 completa.
-- [ ] **S08-JO02 · Revisión visual de los ajustes de UI/UX y observación durante la prueba** — revisar `S08-J01` y anotar
-  en [`docs/identidad-visual/BITACORA.md`](./docs/identidad-visual/BITACORA.md) lo que vea en los compañeros mientras usan la app.
+- [ ] **S08-JO02 · Revisión de UX de la plataforma: heurísticas y observación de compañeros** — para tener sugerencias
+  concretas para la v2.0:
+  - revisar cómo quedaron sus recomendaciones ya aplicadas (`S08-J01`);
+  - recorrido con las 10 heurísticas de Nielsen, en computador y en celular (375 px). Como estudiante: Inicio, una
+    lección, un ejercicio de código, el Tutor, Mi progreso, Repasos, Mis proyectos y Mi asistencia. Como docente: Hoy,
+    Contenido, Notas y Asistencia;
+  - observar a 2 compañeros, 10 minutos cada uno, haciendo una tarea sin ayudarles;
+  - cada hallazgo con pantalla, qué pasa, por qué molesta (heurística), propuesta concreta, captura y prioridad. Meta:
+    al menos 10, 3 prioritarios y 3 vistos en el celular;
+  - entrega en `docs/identidad-visual/REVISION_UX_S8.md`, con capturas en `docs/identidad-visual/capturas-s8/`.
 
 ### Jorge Cervantes — Gestión + Calidad
 
@@ -115,12 +126,12 @@ mañana, aprueba a los docentes y atiende las sugerencias.
 - [ ] **S08-JOR01 · QA de las funciones nuevas en producción** — con la
   [guía maestra](./docs/calidad/GUIA_AUDITORIA_MAESTRA.md): asistencia con QR, unirse a una clase escaneando el QR,
   proyectos, entregas, notas, foto de perfil, ajustes de UI/UX y una nueva prueba del Tutor. Reporte en
-  `docs/calidad/reportes-qa/REPORTE_QA_S8_2026-10-09.md`.
+  `docs/calidad/reportes-qa/REPORTE_QA_S8_2026-10-08.md`.
 
 ### Pedro Romero — Documentación + Bitácora
 
 - [x] **S08-P01 · Tablero Trello de la Semana 8** — creado el 02/10.
-- [ ] **S08-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 09/10, contrastada con Trello y Git.
+- [ ] **S08-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 09/10 (la única tarea con fecha del viernes), contrastada con Trello y Git.
 - [ ] **S08-P04 · Docente de Fundamentos de Algoritmia**
   - Crear su cuenta de docente (Jeider aprueba el rol) y la clase desde la plantilla `ALGO-203413`; publicar la Unidad 1
     y compartir el código o el QR con José y Julio.
