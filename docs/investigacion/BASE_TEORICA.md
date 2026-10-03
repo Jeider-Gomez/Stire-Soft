@@ -250,6 +250,58 @@ trazabilidad (solo para el anexo técnico).
 
 ---
 
+## BT-23. La navegación y el tutor siempre a la vista
+
+| | |
+|---|---|
+| **Problema observado** | Medido en producción el 03/10/2026:<br>- En computador, la barra lateral se iba con el scroll (subía más de 1100 px).<br>- En el celular, dentro de un ejercicio, el encabezado desaparecía al bajar y con él «Probar», «Entregar» y el botón del Tutor.<br>- En el celular, el Tutor era un ícono sin nombre.<br>El dueño del proyecto lo resumió: «a veces no se encuentra ese botón». |
+| **Decisión** | - Encabezado fijo y semitransparente.<br>- Barra lateral fija con su propio scroll, que se contrae con un solo ícono.<br>- En el ejercicio, las acciones principales fijas también en el celular.<br>- El Tutor siempre a la vista: en computador, en el encabezado con su nombre; en el celular, un botón flotante «Tutor» abajo a la derecha. |
+| **Fundamento** | - Reconocer es más fácil que recordar, y el estado del sistema debe estar a la vista (Nielsen, 1994). Una herramienta que hay que buscar exige recordar dónde estaba.<br>- Cada búsqueda de un control es carga extraña que compite con la tarea de aprender (Sweller, van Merriënboer y Paas, 1998, matriz #14; Mandel, 1997, matriz #22: «reducir la carga de memoria»).<br>- Referentes de producto (no evidencia científica): Coursera y LeetCode ponen el asistente en la barra superior; Platzi y Coursera dejan fija la navegación del curso; la esquina inferior derecha es donde la mayoría espera un chat. Khanmigo casi no se usaba cuando había que buscarlo en una esquina. Detalle en `referentes/PATRONES_DE_INTERFAZ.md` (P-UI-01 a P-UI-05). |
+| **Cómo se materializa** | Todas las pantallas del estudiante y el espacio de ejercicios. |
+| **Trazabilidad** | `frontend-nuxt/composables/useMobileSidebar.ts`, `components/layout/SidebarNav.vue`, `components/layout/HeaderNav.vue`, `components/tutor/LanzadorTutor.vue`, `layouts/workspace.vue`; commits `f785dd7`, `455cb12`; mediciones en `referentes/OBSERVACION_2026-10-03.md`. |
+
+## BT-24. El tutor habla al nivel del estudiante en el tema que tiene abierto
+
+| | |
+|---|---|
+| **Problema observado** | En la prueba con Gemini real (03/10/2026), un estudiante con dos lecciones del principio dominadas quedó «avanzado» por el promedio de sus unidades. En un ejercicio básico, el Tutor le habló de «deserializar» y «stdout» y le dijo «dado tu perfil avanzado». La instrucción para el nivel avanzado pedía hablar de eficiencia y Big O. |
+| **Decisión** | - El nivel se mide en la unidad abierta; una unidad sin empezar cuenta como principiante.<br>- Todos los niveles reciben lenguaje sencillo, y un término técnico se explica en la misma frase.<br>- Al avanzado se le propone un reto, no jerga.<br>- El Tutor nunca menciona el perfil ni el nivel del estudiante. |
+| **Fundamento** | - **Efecto de reversión de la experticia:** la guía que ayuda al novato estorba al experto y al revés. La experticia es por dominio, no global (Kalyuga, Ayres, Chandler y Sweller, 2003).<br>- **El diseño socrático puro tiene costo:** con Khanmigo, los estudiantes de bajo desempeño se confundían más y muchos abandonaban (referente de producto, reportado por prensa). |
+| **Cómo se materializa** | El Tutor de IA del estudiante. |
+| **Trazabilidad** | `src/tutor/tutor-context.service.ts` (`nivelDelEstudiante`, reglas 3 y 7); pruebas `tutor-context.service.spec.ts`, `validate-pre-frontend.spec.ts`; commit `386ef8d`. |
+
+## BT-25. El tutor se ofrece cuando el estudiante falla, sin imponerse
+
+| | |
+|---|---|
+| **Problema observado** | El Tutor solo se abría desde un botón. Khan Academy encontró que los estudiantes casi no abrían a Khanmigo desde un ícono en la esquina. |
+| **Decisión** | - Al fallar un caso de prueba aparece «¿No te sale lo esperado?», con «Pedir una pista al Tutor» y «Ahora no».<br>- Al no aprobar un intento, «Repasar lo que falló con el Tutor».<br>- La pista se pide con el código del estudiante como contexto.<br>- La oferta se puede cerrar y vuelve en la siguiente prueba fallida. |
+| **Fundamento** | - **El dilema de la asistencia:** la ayuda sirve cuando hay evidencia de dificultad y a pedido; dada antes de tiempo reemplaza el esfuerzo que produce el aprendizaje (Koedinger y Aleven, 2007, matriz #6).<br>- **Diseño frente a acceso libre:** un tutor de IA con diseño pedagógico explícito superó a una clase activa (Kestin et al., 2025); sin barreras, la IA empeora el examen (Bastani et al., 2025).<br>- **Referentes de producto:** Duolingo Max explica la respuesta tras el error; Codecademy explica el error del código. Ver `referentes/IA_EDUCATIVA.md`. |
+| **Cómo se materializa** | El espacio de ejercicios. |
+| **Trazabilidad** | `frontend-nuxt/utils/ofertaTutor.ts`, `pages/estudiante/evaluacion/[activityId].vue`; commit `47cce51`. |
+
+## BT-26. Las sugerencias para el tutor aparecen al empezar, no siempre
+
+| | |
+|---|---|
+| **Problema observado** | Tres atajos con título ocupaban dos líneas fijas debajo del chat del Tutor, también en lecciones donde dos de ellos («caso borde», «condición de parada») no tenían sentido. El dueño del proyecto: «estorban». |
+| **Decisión** | - En un ejercicio, los atajos se ven solos hasta la primera pregunta.<br>- Después quedan detrás de un bombillo junto al campo de escribir.<br>- Los de código solo aparecen en ejercicios de código. |
+| **Fundamento** | - **Carga extraña:** lo que no sirve para la tarea en ese momento compite por la memoria de trabajo (Sweller et al., 1998, matriz #14).<br>- **Quitar lo accesorio:** una de las formas de reducir la carga en el aprendizaje multimedia (Mayer y Moreno, 2003).<br>- **Referentes de producto:** Coursera Coach, ChatGPT y Gemini muestran sugerencias solo al iniciar la conversación. |
+| **Cómo se materializa** | El panel del Tutor. |
+| **Trazabilidad** | `frontend-nuxt/utils/atajosTutor.ts`, `components/tutor/TutorChatDrawer.vue`; commit `84fbf44`. |
+
+## BT-27. Registro en dos pasos: lo obligatorio primero, lo opcional aparte
+
+| | |
+|---|---|
+| **Problema observado** | Para registrarse había que bajar. Lo opcional (código de clase, clave del Tutor) se mezclaba con lo obligatorio y había un campo «confirmar contraseña». |
+| **Decisión** | - **Paso 1:** tipo de cuenta, nombre, correo y una contraseña con el botón para verla; «Crear cuenta» a la vista sin bajar.<br>- **Paso 2, opcional:** al que se llega con un botón aparte.<br>- **Errores:** un mensaje por campo y el cursor en el primero que falta. |
+| **Fundamento** | - **Divulgación progresiva:** mostrar al principio solo lo necesario reduce la carga (Sweller et al., 1998, matriz #14; Mayer y Moreno, 2003).<br>- **Prevención de errores** y mensajes que digan cómo recuperarse (Nielsen, 1994).<br>- **Guías de UX (no evidencia científica):** para pocos campos, una página; lo largo, en pasos (NN/g). Quitar «confirmar contraseña» y dar el ojo para verla reduce errores y abandono. |
+| **Cómo se materializa** | El registro. |
+| **Trazabilidad** | `frontend-nuxt/pages/auth/register.vue`, `utils/registro.ts`; commit `00e383b`. |
+
+---
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |
@@ -279,13 +331,18 @@ trazabilidad (solo para el anexo técnico).
 - Hattie, J. y Timperley, H. (2007). The Power of Feedback. *Review of Educational Research, 77*(1), 81-112. — matriz #13
 - Holstein, K., McLaren, B. M. y Aleven, V. (2018). Student Learning Benefits of a Mixed-Reality Teacher Awareness Tool in AI-Enhanced Classrooms. En *AIED 2018*, LNCS, 154-168. https://doi.org/10.1007/978-3-319-93843-1_12
 - Holstein, K., McLaren, B. M. y Aleven, V. (2019). Co-Designing a Real-Time Classroom Orchestration Tool to Support Teacher–AI Complementarity. *Journal of Learning Analytics, 6*(2). https://doi.org/10.18608/jla.2019.62.3
+- Kalyuga, S., Ayres, P., Chandler, P. y Sweller, J. (2003). The Expertise Reversal Effect. *Educational Psychologist, 38*(1), 23-31. https://doi.org/10.1207/S15326985EP3801_4
+- Kestin, G., Miller, K., Klales, A., Milbourne, T. y Ponti, G. (2025). AI tutoring outperforms in-class active learning: an RCT introducing a novel research-based design in an authentic educational setting. *Scientific Reports, 15*, 17458. https://doi.org/10.1038/s41598-025-97652-6
 - Kluger, A. N. y DeNisi, A. (1996). The effects of feedback interventions on performance. *Psychological Bulletin, 119*(2), 254-284. https://doi.org/10.1037/0033-2909.119.2.254
 - Knoop-van Campen, C. A. N. y Molenaar, I. (2020). How Teachers Integrate Dashboards into Their Feedback Practices. *Frontline Learning Research, 8*(4), 37-51. — matriz #20
 - Koedinger, K. R. y Aleven, V. (2007). Exploring the Assistance Dilemma in Experiments with Cognitive Tutors. *Educational Psychology Review, 19*(3), 239-264. — matriz #6
 - Kulik, C.-L. C., Kulik, J. A. y Bangert-Drowns, R. L. (1990). Effectiveness of Mastery Learning Programs: A Meta-Analysis. *Review of Educational Research, 60*(2). https://doi.org/10.2307/1170612
+- Liu, R., Zenke, C., Liu, C., Holmes, A., Thornton, P. y Malan, D. J. (2024). Teaching CS50 with AI: Leveraging Generative Artificial Intelligence in Computer Science Education. En *Proc. SIGCSE 2024*, 750-756. https://doi.org/10.1145/3626252.3630938
 - Mandel, T. (1997). *The Elements of User Interface Design*. Wiley. — matriz #22
+- Mayer, R. E. y Moreno, R. (2003). Nine Ways to Reduce Cognitive Load in Multimedia Learning. *Educational Psychologist, 38*(1), 43-52. https://doi.org/10.1207/S15326985EP3801_6
 - Molenaar, I. y Knoop-van Campen, C. A. N. (2019). How Teachers Make Dashboard Information Actionable. *IEEE Transactions on Learning Technologies, 12*(3). https://doi.org/10.1109/tlt.2018.2851585
 - Nicol, D. J. y Macfarlane-Dick, D. (2006). Formative assessment and self-regulated learning: a model and seven principles of good feedback practice. *Studies in Higher Education, 31*(2). https://doi.org/10.1080/03075070600572090
+- Nielsen, J. (1994). Enhancing the explanatory power of usability heuristics. En *Proc. CHI '94*, 152-158. https://doi.org/10.1145/191666.191729
 - Roschelle, J., Feng, M., Murphy, R. F. y Mason, C. A. (2016). Online Mathematics Homework Increases Student Achievement. *AERA Open, 2*(4). https://doi.org/10.1177/2332858416673968
 - Roediger, H. L. y Karpicke, J. D. (2006). Test-Enhanced Learning. *Psychological Science, 17*(3), 249-255. — matriz #4
 - Settles, B. y Meeder, B. (2016). A Trainable Spaced Repetition Model for Language Learning. En *Proc. ACL 2016*, 1848-1858. https://doi.org/10.18653/v1/P16-1174
@@ -299,7 +356,10 @@ trazabilidad (solo para el anexo técnico).
 - Ye, J., Su, J. y Cao, Y. (2022). A Stochastic Shortest Path Algorithm for Optimizing Spaced Repetition Scheduling. En *Proc. KDD 2022*, 4381-4390. https://doi.org/10.1145/3534678.3539081
 - Zimmerman, B. J. (2002). Becoming a Self-Regulated Learner: An Overview. *Theory Into Practice, 41*(2), 64-70. — matriz #31
 
-**Referentes de producto** (documentación oficial consultada el 30/09/2026; no son evidencia científica): Google Classroom,
+**Referentes de producto** (no son evidencia científica). Desde el 03/10/2026 se estudian con un método propio
+(pedagogía, UX y UI; cada hallazgo con decisión y estado) en `referentes/`: Coursera, Platzi, LeetCode, Codecademy,
+freeCodeCamp, Exercism, Khan Academy, CS50, Brilliant, Khanmigo, Coursera Coach, Duolingo Max, el modo de estudio de
+ChatGPT, Guided Learning de Gemini, Anki (SM-2 y FSRS), Duolingo y Quizlet. Los anteriores (documentación oficial consultada el 30/09/2026): Google Classroom,
 Canvas (SpeedGrader, Mastery Paths, «Message Students Who»), Moodle (Tarea, intentos), Khan Academy (metas de dominio),
 IXL (Trouble Spots), ASSISTments (Skill Builders), MATHia LiveLab, Brightspace (agentes inteligentes), Gradescope, Codio,
 Khanmigo, Duolingo y Anki. Enlaces en `docs/DISENO_INTERVENCION_DOCENTE.md` §9.

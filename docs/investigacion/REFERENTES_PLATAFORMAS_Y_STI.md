@@ -6,6 +6,12 @@ enseñan programación las más usadas (Codecademy, Sololearn, Duolingo, Khan Ac
 Sistema Tutor Inteligente (STI) y qué dice la investigación sobre STI de programación y sobre la IA
 generativa en educación. Al final hay una propuesta priorizada para STIRE.
 
+**Continúa en [`referentes/`](referentes/README.md) (03/10/2026).** Este documento estudió funciones y pedagogía con
+documentación de segunda mano y terminó en una lista de ideas sin estado; nada miraba la disposición de la pantalla.
+La carpeta `referentes/` usa un método con tres lentes (pedagogía, UX y UI), observación propia medida y un catálogo
+de patrones donde cada hallazgo tiene decisión y estado (hecho con su commit, propuesto o descartado). Lo de aquí sigue
+valiendo como fondo (qué es un STI, la evidencia sobre IA generativa, gamificación) y las fichas lo citan.
+
 **Qué no es.** No es la matriz bibliográfica de la tesis (`MATRIZ_ARTICULOS_AMPLIADA.md`) ni texto para el
 informe de tesis. Si algo de aquí pasa al informe, se redacta allá con sus reglas (modo prospectivo, sin
 tecnologías concretas). Cuando una obra ya está en la matriz, se cita con su número (p. ej. «matriz #5»).

@@ -39,7 +39,7 @@ tabla de abajo.
 | [`modesec/`](modesec/README.md) | Diseño educativo y multimedial con MODESEC (Fase I para el alcance del MVP y Fase II completa) |
 | [`seguimiento/`](seguimiento/) | Bitácoras de semanas cerradas y evidencias de las reuniones |
 | [`pitch/`](pitch/) | Guiones del pitch en inglés por reto y guía de pronunciación |
-| [`investigacion/`](investigacion/) | Tesis de pregrado (reglas de alcance propias): contexto, matriz bibliográfica verificada, fichas y entregables. Además, [`REFERENTES_PLATAFORMAS_Y_STI.md`](investigacion/REFERENTES_PLATAFORMAS_Y_STI.md): referentes de producto (Moodle, Open edX, Coursera, Udemy, Platzi, Duolingo, Khan, Codecademy, CS50), qué es un STI, IA generativa en educación y hoja de ruta para STIRE |
+| [`investigacion/`](investigacion/) | Tesis de pregrado (reglas de alcance propias): contexto, matriz bibliográfica verificada, fichas y entregables. Además, [`REFERENTES_PLATAFORMAS_Y_STI.md`](investigacion/REFERENTES_PLATAFORMAS_Y_STI.md): referentes de producto (Moodle, Open edX, Coursera, Udemy, Platzi, Duolingo, Khan, Codecademy, CS50), qué es un STI, IA generativa en educación y hoja de ruta para STIRE. Desde el 03/10, [`referentes/`](investigacion/referentes/): método (pedagogía, UX y UI), catálogos de patrones con decisión y estado, fichas de enseñanza de programación, IA educativa y repetición espaciada; y [`BASE_TEORICA.md`](investigacion/BASE_TEORICA.md): por qué STIRE está diseñado así |
 
 ## 3. Diseño y experiencia de uso
 
