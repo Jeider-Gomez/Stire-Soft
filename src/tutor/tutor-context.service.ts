@@ -4,6 +4,28 @@ import { GuidanceLevel, guidanceInstruction } from './tutor-guidance';
 import { TutorStyle, styleInstruction } from './tutor-settings';
 import { isHighlightLanguage } from '../common/code-languages';
 
+export type NivelTutor = 'PRINCIPIANTE' | 'INTERMEDIO' | 'AVANZADO';
+
+/**
+ * Nivel con el que el Tutor ajusta cómo explica. Se mide en el TEMA que el estudiante tiene abierto: con el promedio
+ * de todas las unidades empezadas, quien dominó dos lecciones del principio quedaba «avanzado» y en un ejercicio básico
+ * recibía jerga (prueba con Gemini real, 03/10/2026, cuenta de prueba de un estudiante). En una unidad que aún no
+ * empieza es principiante; sin unidad en pantalla se usa el promedio.
+ */
+export function nivelDelEstudiante(
+  registros: ReadonlyArray<{ learningUnitId: number; mastery: number }>,
+  unidadActualId?: number | null,
+): { nivel: NivelTutor; dominio: number } {
+  let dominio = 0;
+  if (unidadActualId) {
+    dominio = registros.find((r) => r.learningUnitId === unidadActualId)?.mastery ?? 0;
+  } else if (registros.length > 0) {
+    dominio = registros.reduce((suma, r) => suma + r.mastery, 0) / registros.length;
+  }
+  const nivel: NivelTutor = dominio > 80 ? 'AVANZADO' : dominio > 50 ? 'INTERMEDIO' : 'PRINCIPIANTE';
+  return { nivel, dominio };
+}
+
 @Injectable()
 export class TutorContextService {
   constructor(private readonly progressRepo: LearningProgressRepository) {}
@@ -18,12 +40,9 @@ export class TutorContextService {
     // Con el título de la unidad: un número interno («Unidad 17») no le dice nada al estudiante y el modelo lo repetía.
     const progressRecords = await this.progressRepo.find({ where: { studentId }, relations: ['learningUnit'] });
 
-    let avgMastery = 0;
-    if (progressRecords.length > 0) {
-      avgMastery = progressRecords.reduce((sum, p) => sum + p.mastery, 0) / progressRecords.length;
-    }
-
-    const level = avgMastery > 80 ? 'AVANZADO' : avgMastery > 50 ? 'INTERMEDIO' : 'PRINCIPIANTE';
+    // learningUnitId lo valida el servidor (tutor.service.ts) antes de llegar aquí.
+    const unidadActualId = context && typeof context === 'object' && Number.isInteger(context.learningUnitId) ? context.learningUnitId : null;
+    const { nivel: level, dominio } = nivelDelEstudiante(progressRecords, unidadActualId);
 
     let locationContext = '';
     if (context && typeof context === 'object') {
@@ -98,19 +117,20 @@ EL ESTUDIANTE ESTÁ EN SU PROYECTO PROPIO (no es un ejercicio calificado). Modo 
 
     return `
 Eres el Tutor Inteligente de STIRE (Smart Tutor for Interactive & Responsive Education), para los cursos de algoritmos y programación de la Universidad de Córdoba: pseudocódigo (estilo PSeInt), diagramas de flujo, y HTML, CSS y JavaScript.
-Actualmente estás orientando a un estudiante de nivel ${level} (Maestría Global: ${Math.round(avgMastery)}%).
+Actualmente estás orientando a un estudiante de nivel ${level} en este tema (dominio: ${Math.round(dominio)}%). Es un curso de introducción: casi todos están empezando a programar.
 ${locationContext}
 ${recentProgressSection}${guidanceSection}${refuerzoSection}${proyectoSection}${styleSection}
 REGLAS PEDAGÓGICAS ESTRICTAS:
 1. NUNCA resuelvas el ejercicio directamente ni des la respuesta o el código completo.
 2. Utiliza el Método Socrático: responde con una pregunta orientadora, pista conceptual o metáfora según su código.
-3. Como el estudiante es nivel ${level}, ajusta tu complejidad:
-   - Si es principiante: usa metáforas del mundo real y sé muy motivador.
-   - Si es avanzado: enfócate en eficiencia, Big O Notation, y buenas prácticas de ingeniería de software.
+3. Habla siempre en lenguaje sencillo y cotidiano, en cualquier nivel. Si necesitas un término técnico, explícalo en la misma frase. Como el estudiante es nivel ${level} en este tema, ajusta la profundidad:
+   - Si es principiante: usa metáforas del mundo real, pasos pequeños y sé muy motivador.
+   - Si es intermedio: hazle preguntas que lo lleven a razonar sobre su propio código.
+   - Si es avanzado: puedes proponerle un reto extra o una forma más clara de escribirlo, sin jerga y sin hablar de complejidad algorítmica (Big O) salvo que él lo pregunte.
 4. Si el estudiante te consulta sobre su ejercicio o código, apóyate en el contexto activo de pantalla que tienes arriba.
 5. Mantén tus respuestas claras, motivadoras y concisas (menos de 130 palabras).
 6. Usa el lenguaje de lo que el estudiante tiene en pantalla o pregunta: si es pseudocódigo (Leer, Escribir, <-, Si, Mientras, Repetir…Hasta Que, Para), responde en pseudocódigo y no lo traduzcas a JavaScript; si es un diagrama de flujo, habla de figuras y flechas.
-7. No menciones datos internos: ni su nivel, ni porcentajes de dominio, ni números de unidad o de actividad. Úsalos solo para ajustar cómo explicas.
+7. No menciones datos internos: ni su nivel, ni porcentajes de dominio, ni números de unidad o de actividad. Úsalos solo para ajustar cómo explicas. Nunca digas «tu perfil», «tu nivel», «como eres avanzado» ni «como principiante», ni nada parecido.
 8. Si la pregunta no tiene que ver con programación ni con el curso, no la respondas: dilo con amabilidad en una frase y vuelve al tema.
 9. Si arriba no hay un CONTEXTO ACTIVO con un ejercicio o un proyecto, no supongas que el estudiante está resolviendo uno: responde su pregunta tal como la hizo.
 10. Cuando sientas que un concepto ya quedó claro, puedes preguntarle de forma natural y con tus propias palabras si quiere practicarlo con un ejercicio o si prefiere repasar primero el contenido teórico de la unidad — es una sugerencia conversacional tuya, no un formulario: no la ofrezcas en cada respuesta, solo cuando de verdad aporte.

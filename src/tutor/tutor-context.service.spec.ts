@@ -1,4 +1,4 @@
-import { TutorContextService } from './tutor-context.service';
+import { TutorContextService, nivelDelEstudiante } from './tutor-context.service';
 
 // Fase 26: el Tutor recibe el HTML y CSS del estudiante en los ejercicios de HTML y CSS, con la valla de código del lenguaje correcto.
 describe('TutorContextService.buildSystemPrompt — código actual del estudiante', () => {
@@ -75,5 +75,32 @@ describe('TutorContextService.buildSystemPrompt — la lección abierta', () => 
     }, null);
     expect(prompt).toContain('Ejercicio que está resolviendo: «Saludo personalizado»');
     expect(prompt).not.toContain('está LEYENDO');
+  });
+});
+
+// Prueba con Gemini real (03/10/2026): un estudiante con dos lecciones del principio dominadas quedaba «avanzado» por el
+// promedio y en un ejercicio básico el Tutor le hablaba de «deserializar» y le decía «dado tu perfil avanzado».
+describe('TutorContextService — nivel por tema y lenguaje sencillo', () => {
+  const registros = [
+    { learningUnitId: 1, learningUnit: { title: 'Algoritmos en la vida diaria' }, mastery: 99, successRate: 100, completedActivities: 3, updatedAt: new Date() },
+    { learningUnitId: 2, learningUnit: { title: 'Variables y tipos de datos' }, mastery: 30, successRate: 40, completedActivities: 1, updatedAt: new Date() },
+  ];
+
+  it('el nivel se mide en la unidad abierta; una unidad sin empezar es principiante; sin unidad, el promedio', () => {
+    expect(nivelDelEstudiante(registros, 1).nivel).toBe('AVANZADO');
+    expect(nivelDelEstudiante(registros, 2).nivel).toBe('PRINCIPIANTE');
+    expect(nivelDelEstudiante(registros, 99)).toEqual({ nivel: 'PRINCIPIANTE', dominio: 0 });
+    expect(nivelDelEstudiante(registros).nivel).toBe('INTERMEDIO');
+    expect(nivelDelEstudiante([]).nivel).toBe('PRINCIPIANTE');
+  });
+
+  it('el prompt usa el nivel de la unidad abierta, pide lenguaje sencillo y ya no pide Big O ni ingeniería de software', async () => {
+    const service = new TutorContextService({ find: jest.fn().mockResolvedValue(registros) } as unknown as ConstructorParameters<typeof TutorContextService>[0]);
+    const prompt = await service.buildSystemPrompt(1, { learningUnitId: 2, unitTitle: 'Variables y tipos de datos' }, null);
+    expect(prompt).toContain('estudiante de nivel PRINCIPIANTE en este tema');
+    expect(prompt).toContain('Habla siempre en lenguaje sencillo y cotidiano, en cualquier nivel');
+    expect(prompt).not.toContain('Big O Notation');
+    expect(prompt).not.toContain('ingeniería de software');
+    expect(prompt).toContain('Nunca digas «tu perfil», «tu nivel»');
   });
 });

@@ -69,7 +69,7 @@ describe('TutorService E2E', () => {
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     const systemPrompt = body.system_instruction.parts[0].text;
     expect(systemPrompt).toContain('Eres el Tutor Inteligente de STIRE');
-    expect(systemPrompt).toContain('Maestría Global: 75%');
+    expect(systemPrompt).toContain('en este tema (dominio: 75%)');
     expect(systemPrompt).toContain('ÚLTIMOS PROGRESOS DEL ESTUDIANTE:');
     expect(body.contents).toContainEqual({
       role: 'model',

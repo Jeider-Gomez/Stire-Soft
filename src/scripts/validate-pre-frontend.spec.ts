@@ -239,7 +239,10 @@ describe('VALIDACIÓN INTEGRAL PRE-FRONTEND — STIRE', () => {
       const contextService3 = new TutorContextService(repoAvanzado as any);
       const prompt3 = await contextService3.buildSystemPrompt(3);
       expect(prompt3).toContain('nivel AVANZADO');
-      expect(prompt3).toContain('Big O Notation');
+      // 03/10/2026: es un curso de introducción. Al avanzado se le propone un reto, en lenguaje sencillo; ya no se le pide
+      // al modelo hablar de Big O (en la prueba real respondía con jerga a un ejercicio básico).
+      expect(prompt3).toContain('proponerle un reto extra');
+      expect(prompt3).not.toContain('Big O Notation');
     });
 
     it('Sin clave propia de Google AI Studio el Tutor no inventa respuestas: exige configurarla (428) y no toca el historial', async () => {
