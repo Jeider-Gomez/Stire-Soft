@@ -81,6 +81,10 @@ arriba (sin apagado automático durante la prueba), aprueba a los docentes y ati
   - Cajas de texto que crecen solas.
   - Registro: lo obligatorio arriba y lo opcional plegado debajo; la clave de Google solo para estudiantes; dos
     columnas en computador y el botón visible sin bajar en un portátil de 1366×768.
+  - Segunda ronda (revisión propia, 03/10): todas las ventanas emergentes con scroll (al crear un curso con una
+    descripción larga no se llegaba al botón); aviso en rojo cuando el admin aún no cambia el rol a docente; botón del
+    menú arriba y fijo; login que cabe en un portátil, con foco y mensaje de error útiles; el Tutor se ofrece cuando
+    falla un caso de prueba o un intento (como hace Khan Academy con Khanmigo).
   - Pendiente: la revisión visual de José (`S08-JO02`).
 - [ ] **S08-J02 · Hallazgos del QA de Jorge** *(de su reporte del 02/10)*
   - QA-06: el indicador del nivel de ayuda del Tutor (Pista, Pregunta guía, Dónde está el error) parece un grupo de
