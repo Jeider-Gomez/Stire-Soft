@@ -88,10 +88,10 @@ arriba (sin apagado automático durante la prueba), aprueba a los docentes y ati
   - QA-07: «No se pudo autoguardar» aparece a ratos; buscar la causa y que reintente solo.
   - Del reporte del Tutor de José (`HALLAZGOS.md`): las tarjetas de sugerencia necesitan más contraste para verse como
     botones.
-- [ ] **S08-J03 · Operar la prueba**
-  - Comprobar cada mañana que la app responde (el apagado automático está quitado durante la prueba).
-  - Aprobar a los docentes y revisar las sugerencias cada día.
-  - Corregir en el día lo de gravedad 3 («no me dejó seguir»).
+- [ ] **S08-J03 · Operar la prueba** *(el servidor está encendido 24/7 durante la prueba)*
+  - Comprobar cada día que la app responde; aprobar a Pedro y a Julio como docentes.
+  - Revisar las sugerencias cada día (ahora con pantallazo) y corregir en el día lo de gravedad 3.
+  - Revisar el consumo del crédito de Azure el martes y el jueves.
 - [ ] **S08-J04 · Asistencia en el salón con cámaras reales** — probar el escáner con un celular Android, un iPhone y la
   cámara de un portátil.
 
@@ -170,7 +170,8 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 2. **Clave del Tutor:** cada estudiante necesita su propia clave gratuita de Google AI Studio; sin ella no puede usar el
    Tutor.
 3. **Tiempo de respuesta del Tutor:** entre 3 y 29 segundos según la carga de Google; se avisa en pantalla.
-4. **Crédito de Azure:** 100 dólares; con el apagado nocturno alcanza para el semestre. Hay alertas al 50 % y al 80 %.
+4. **Crédito de Azure:** 100 dólares. Con el servidor encendido 24/7 durante la prueba se gasta más rápido que con el
+   apagado nocturno: Jeider lo revisa martes y jueves (alertas al 50 % y al 80 %) y reactiva el apagado al terminar.
 5. **Pocas personas:** con 5 integrantes la prueba encuentra la mayoría de problemas de uso, pero cada ausencia pesa.
 
 ---
@@ -207,7 +208,8 @@ siguen en el curso del otro.
 termina; José y Jorge avanzan en lo que les falte. Al cierre: informe consolidado de la prueba, versión v1.2.0 con lo
 corregido y decisión del alcance de la v2.0.
 
-Se decide al cierre de la Semana 9 si hace falta la Semana 10, según cuánto del curso alcanzaron.
+Se decide al cierre de la Semana 9 si hace falta la Semana 10, según cuánto del curso alcanzaron. **Al terminar la
+prueba, Jeider vuelve a activar el apagado automático de las 23:00** para cuidar el crédito de Azure.
 
 ---
 
