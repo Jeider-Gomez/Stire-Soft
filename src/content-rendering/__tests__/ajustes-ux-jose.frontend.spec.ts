@@ -61,14 +61,25 @@ describe('Ajustes de UI/UX de José', () => {
     expect(menu).not.toMatch(/<Settings[^>]*\/>\s*<Settings/);
   });
 
-  it('registro: lo opcional va debajo y plegado, y la clave de Google es solo para estudiantes', () => {
+  it('registro en dos pasos: lo obligatorio primero; lo opcional en otro paso y la clave de Google solo para estudiantes', () => {
     const r = leer('pages', 'auth', 'register.vue');
-    const opcional = r.indexOf('<details class="grupo-opcional');
-    expect(opcional).toBeGreaterThan(r.indexOf('id="confirmPassword"'));
-    expect(r.indexOf('id="classCode"')).toBeGreaterThan(opcional);
-    expect(r.indexOf('id="teacherReason"')).toBeGreaterThan(opcional);
+    const p1 = r.indexOf('id="paso-obligatorio"');
+    const p2 = r.indexOf('id="paso-opcional"');
+    expect(p1).toBeGreaterThan(-1);
+    expect(p2).toBeGreaterThan(p1);
+    for (const id of ['fullName', 'email', 'password']) expect(r.indexOf(`id="${id}"`)).toBeGreaterThan(p1);
+    for (const id of ['classCode', 'teacherReason', 'apiKey']) expect(r.indexOf(`id="${id}"`)).toBeGreaterThan(p2);
+    // sin «confirmar contraseña»: el ojo para ver la clave cumple esa función
+    expect(r).not.toContain('confirmPassword');
     expect(r).toContain(`<div v-if="selectedRole === 'estudiante'" class="border border-slate-200 rounded-xl p-3 space-y-2 bg-white">`);
-    expect(r).toContain("if (selectedRole.value === 'estudiante' && !skipApiKey.value && apiKey.value.trim())");
+    expect(r).toContain("if (selectedRole.value === 'estudiante' && apiKey.value.trim())");
+    // «Crear cuenta» se puede pulsar desde el paso 1; ir a lo opcional valida primero
+    expect(r).toMatch(/type="submit"[\s\S]*?Crear cuenta/);
+    expect(r).toContain('id="ir-opcional"');
+    expect(r).toContain('if (Object.keys(validar()).length) { enfocarPrimerFaltante(); return }');
+    // el borde rojo debe ganarle al estilo del campo (.campo-auth es scoped y pisaba «border-red-400»)
+    expect(r).toContain("'!border-red-400 !ring-1 !ring-red-300'");
+    expect(leer('pages', 'auth', 'login.vue')).not.toMatch(/'border-red-400'/);
   });
 });
 
@@ -174,5 +185,36 @@ describe('El Tutor se ofrece al fallar (como Khan Academy con Khanmigo)', () => 
     expect(p).toContain('@click="ofertaCerrada = true"');
     expect(p).toMatch(/v-if="!isSuccessResult"\s+id="oferta-tutor-resultado"/);
     expect(p).toContain('tutorStore.requestQuickHint(pistaSegunTipo(');
+  });
+});
+
+describe('Registro: validación del paso 1 con mensajes que dicen qué arreglar', () => {
+  const { faltantesDelRegistro, claveCumple } = (() => {
+    const js = ts.transpileModule(leer('utils', 'registro.ts'), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+    }).outputText;
+    const mod = { exports: {} as Record<string, unknown> };
+    new Function('module', 'exports', js)(mod, mod.exports);
+    return mod.exports as {
+      faltantesDelRegistro: (n: string, c: string, k: string) => Record<string, string>;
+      claveCumple: (k: string) => boolean;
+    };
+  })();
+
+  it('la contraseña sigue las reglas del servidor', () => {
+    expect(claveCumple('Test123.')).toBe(true);
+    expect(claveCumple('Abc12')).toBe(false);
+    expect(claveCumple('abcdef1')).toBe(false);
+    expect(claveCumple('ABCDEF1')).toBe(false);
+    expect(claveCumple('Abcdefg')).toBe(false);
+    expect(claveCumple('Abcdef!')).toBe(true);
+  });
+
+  it('marca solo lo que falta, con un mensaje por campo', () => {
+    expect(faltantesDelRegistro('Ana Ruiz', 'ana@unicor.edu.co', 'Test123.')).toEqual({});
+    const f = faltantesDelRegistro('  ', 'ana@', 'abc');
+    expect(Object.keys(f).sort()).toEqual(['email', 'fullName', 'password']);
+    expect(f.email).toContain('nombre@dominio.com');
+    expect(faltantesDelRegistro('Ana', '', 'Test123.')).toEqual({ email: 'Escribe tu correo.' });
   });
 });

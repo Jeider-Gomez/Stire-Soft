@@ -3,7 +3,7 @@
     <LayoutFondoTecnologico />
 
     <!-- Encabezado: marca «ST» con degradado y el nombre de la institución (prototipo de José) -->
-    <header class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-8 pt-6 pb-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <header class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-8 pt-4 pb-2 sm:pt-6 sm:pb-3 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <LayoutMarcaST />
         <div class="flex items-baseline gap-1 font-poppins">
@@ -19,7 +19,7 @@
     </header>
 
     <!-- Contenedor central de la tarjeta -->
-    <main class="relative z-10 flex-1 flex items-center justify-center px-4 py-6 sm:py-10">
+    <main class="relative z-10 flex-1 flex items-center justify-center px-4 py-3 sm:py-6">
       <slot />
     </main>
 

@@ -51,7 +51,7 @@
               @focus="campoEnFoco = 'email'"
               @blur="campoEnFoco = null"
               class="campo-auth pl-10 pr-10"
-              :class="errorMessage ? 'border-red-400' : esCorreoUnicor ? 'border-stire-teal ring-1 ring-stire-teal/30' : ''" />
+              :class="errorMessage ? '!border-red-400 !ring-1 !ring-red-300' : esCorreoUnicor ? 'border-stire-teal ring-1 ring-stire-teal/30' : ''" />
             <CheckCircle2 v-if="esCorreoUnicor" :size="16" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-stire-teal pointer-events-none" aria-hidden="true" />
           </div>
         </div>
@@ -79,7 +79,7 @@
               @keydown="detectarBloqMayus"
               @keyup="detectarBloqMayus"
               class="campo-auth pl-10 pr-11 focus:border-stire-purple focus:ring-stire-purple/20"
-              :class="errorMessage ? 'border-red-400' : ''" />
+              :class="errorMessage ? '!border-red-400 !ring-1 !ring-red-300' : ''" />
             <button
               type="button"
               @click="verClave = !verClave"
