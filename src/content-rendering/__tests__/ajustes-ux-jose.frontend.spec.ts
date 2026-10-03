@@ -140,3 +140,39 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
     expect(f).not.toContain('⚠');
   });
 });
+
+describe('El Tutor se ofrece al fallar (como Khan Academy con Khanmigo)', () => {
+  const { debeOfrecerTutor, pistaSegunTipo } = (() => {
+    const js = ts.transpileModule(leer('utils', 'ofertaTutor.ts'), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+    }).outputText;
+    const mod = { exports: {} as Record<string, unknown> };
+    new Function('module', 'exports', js)(mod, mod.exports);
+    return mod.exports as {
+      debeOfrecerTutor: (c: Array<{ passed?: boolean }>, corriendo: boolean, cerrada: boolean) => boolean;
+      pistaSegunTipo: (t: string | undefined) => string;
+    };
+  })();
+
+  it('solo cuando terminó de correr, algún caso falló y el estudiante no cerró la oferta', () => {
+    expect(debeOfrecerTutor([{ passed: true }, { passed: false }], false, false)).toBe(true);
+    expect(debeOfrecerTutor([{ passed: true }, { passed: true }], false, false)).toBe(false);
+    expect(debeOfrecerTutor([{}, {}], false, false)).toBe(false);
+    expect(debeOfrecerTutor([{ passed: false }], true, false)).toBe(false);
+    expect(debeOfrecerTutor([{ passed: false }], false, true)).toBe(false);
+  });
+
+  it('en código pide «por qué no sale lo esperado»; en lo demás, la idea de fondo', () => {
+    expect(pistaSegunTipo('coding')).toBe('parada');
+    expect(pistaSegunTipo('html_css')).toBe('parada');
+    expect(pistaSegunTipo('multiple_choice')).toBe('conceptual');
+  });
+
+  it('la pantalla del ejercicio la muestra en los casos de prueba y en el resultado no aprobado, y se puede cerrar', () => {
+    const p = leer('pages', 'estudiante', 'evaluacion', '[activityId].vue');
+    expect(p).toContain('v-if="ofrecerTutor"');
+    expect(p).toContain('@click="ofertaCerrada = true"');
+    expect(p).toMatch(/v-if="!isSuccessResult"\s+id="oferta-tutor-resultado"/);
+    expect(p).toContain('tutorStore.requestQuickHint(pistaSegunTipo(');
+  });
+});

@@ -119,6 +119,26 @@
             </div>
           </div>
 
+          <!-- Algún caso falló: se ofrece el Tutor en ese momento (utils/ofertaTutor.ts). Se puede cerrar. -->
+          <div
+            v-if="ofrecerTutor"
+            id="oferta-tutor"
+            role="status"
+            class="p-3 rounded-lg border-2 border-stire-purple/40 bg-stire-purple/5 text-xs space-y-2">
+            <p class="flex items-start gap-2 font-semibold text-base-texto-primario">
+              <Sparkles :size="16" class="shrink-0 text-stire-purple" aria-hidden="true" />
+              ¿No te sale lo esperado? El Tutor puede darte una pista mirando tu código, sin darte la respuesta.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="px-3 py-1.5 rounded-md bg-stire-purple text-white font-bold hover:opacity-90" @click="pedirAyudaAlTutor">
+                Pedir una pista al Tutor
+              </button>
+              <button type="button" class="px-3 py-1.5 rounded-md font-semibold text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario" @click="ofertaCerrada = true">
+                Ahora no
+              </button>
+            </div>
+          </div>
+
           <div
             v-if="workspaceStore.hiddenTestCaseCount > 0"
             class="p-3 bg-base-bg-secundario rounded border border-base-borde-sutil text-[11px] text-base-texto-secundario flex items-center gap-2">
@@ -309,6 +329,15 @@
           {{ workspaceStore.submissionResult.feedback }}
         </p>
 
+        <button
+          v-if="!isSuccessResult"
+          id="oferta-tutor-resultado"
+          type="button"
+          class="w-full py-2 rounded-md bg-stire-purple text-white text-xs font-bold hover:opacity-90 inline-flex items-center justify-center gap-1.5"
+          @click="pedirAyudaAlTutor">
+          <Sparkles :size="14" aria-hidden="true" /> Repasar lo que falló con el Tutor
+        </button>
+
         <div class="flex items-center gap-2 pt-2">
           <button
             @click="workspaceStore.submissionResult = null"
@@ -328,8 +357,10 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpen, FlaskConical, Terminal, Lock, PartyPopper, ClipboardCheck, Send } from 'lucide-vue-next'
+import { BookOpen, FlaskConical, Terminal, Lock, PartyPopper, ClipboardCheck, Send, Sparkles } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
+import { useTutorStore } from '~/stores/tutor'
+import { debeOfrecerTutor, pistaSegunTipo } from '~/utils/ofertaTutor'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import { exerciseTypeInfo } from '~/utils/exerciseTypes'
 
@@ -340,6 +371,20 @@ definePageMeta({
 const route = useRoute()
 const workspaceStore = useWorkspaceStore()
 const leftTab = ref<'enunciado' | 'casos' | 'consola'>('enunciado')
+const tutorStore = useTutorStore()
+
+// Oferta del Tutor al fallar: vuelve a aparecer en cada nueva prueba, salvo que el Tutor ya esté abierto.
+const ofertaCerrada = ref(false)
+watch(() => workspaceStore.isRunning, (corriendo) => { if (corriendo) ofertaCerrada.value = false })
+const ofrecerTutor = computed(() =>
+  !tutorStore.isOpen && debeOfrecerTutor(workspaceStore.publicTestCases, workspaceStore.isRunning, ofertaCerrada.value))
+
+async function pedirAyudaAlTutor() {
+  workspaceStore.submissionResult = null
+  ofertaCerrada.value = true
+  await tutorStore.openDrawer()
+  tutorStore.requestQuickHint(pistaSegunTipo(workspaceStore.currentExercise.questionType))
+}
 
 // Al pulsar «Probar código» el resultado aparece en «Casos de Prueba»; antes el
 // store cambiaba SU pestaña y esta pantalla se quedaba en «Enunciado»: parecía
