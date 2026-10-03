@@ -1,7 +1,7 @@
 <template>
   <!-- ===== HEADER INSTITUCIONAL STIRE SOFT ===== -->
   <header
-    class="h-16 bg-white/95 glass-header border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-40 shadow-sm"
+    class="h-16 bg-white/80 glass-header border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-40 shadow-sm"
   >
     <!-- ── IZQUIERDA: Isotipo + Logotipo + Contexto Institucional ── -->
     <div class="flex items-center gap-3 min-w-0">
@@ -67,17 +67,18 @@
     <!-- ── DERECHA: Badge de rol + Avatar + Salir ── -->
     <div class="flex items-center gap-2 flex-shrink-0">
       <!-- Botón Tutor IA (solo estudiante) -->
+      <!-- En el celular el Tutor se abre con el lanzador flotante de abajo (components/tutor/LanzadorTutor.vue). -->
       <button
         v-if="authStore.currentRole === 'estudiante'"
         @click="tutorStore.toggleDrawer()"
         aria-label="Abrir el Tutor IA"
-        class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg
+        class="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg
                bg-stire-purple/10 text-stire-purple border border-stire-purple/25
                hover:bg-stire-purple/15 hover:-translate-y-0.5 hover:shadow-md
                active:scale-95 transition-all duration-200 text-xs font-semibold whitespace-nowrap"
       >
         <Sparkles :size="13" />
-        <span class="hidden sm:inline">Tutor IA</span>
+        <span>Tutor IA</span>
         <span class="pulse-dot ml-0.5" />
       </button>
 

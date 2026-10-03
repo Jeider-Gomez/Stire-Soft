@@ -1,13 +1,13 @@
 <template>
-  <aside ref="menuRef" class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] p-4 flex flex-col transition-[width] duration-200" :class="{ 'menu-colapsado md:w-16 md:px-2': colapsado }">
+  <aside ref="menuRef" class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] md:min-h-0 p-4 flex flex-col transition-[width] duration-200" :class="{ 'menu-colapsado md:w-16 md:px-2': colapsado }">
     <!-- Ocultar el menú en computador para ganar espacio (recomendación de José, 02/10). Queda solo con íconos y se
          recuerda en este navegador. En celular el menú ya es un cajón que se abre con la hamburguesa.
-         Arriba y fijo al bajar (pedido de Jeider, 02/10): abajo quedaba fuera de la vista. Es donde lo ponen ChatGPT,
-         Claude, Gemini o GitLab. -->
+         Arriba (pedido de Jeider, 02/10) y solo un ícono que no estorba (03/10), como en Platzi, ChatGPT o Claude
+         (P-UI-03). Toda la barra queda fija al bajar, así que el ícono siempre está a mano. -->
     <button
       id="boton-menu"
       type="button"
-      class="hidden md:flex sticky top-16 z-10 -mt-1 mb-3 items-center gap-2.5 px-3 py-2 rounded-md bg-base-blanco border border-base-borde-sutil text-xs font-semibold text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario"
+      class="boton-menu hidden md:flex self-end -mt-1 -mr-1 mb-2 w-9 h-9 items-center justify-center rounded-lg text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario"
       :aria-expanded="!colapsado"
       :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
       @click="alternarMenu">
@@ -287,6 +287,10 @@ function getStatusDotClass(status: string) {
   .menu-colapsado nav > p,
   .menu-colapsado nav > div > p {
     display: none;
+  }
+  .menu-colapsado .boton-menu {
+    align-self: center;
+    margin-right: 0;
   }
   .menu-colapsado a,
   .menu-colapsado button {

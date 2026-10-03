@@ -12,11 +12,13 @@ export function useMobileSidebar() {
   onMounted(() => document.addEventListener('keydown', onKeydown))
   onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 
-  // En móvil el menú se superpone como cajón; desde md en adelante es una columna fija.
+  // En móvil el menú se superpone como cajón. Desde md es una columna que se queda fija al bajar, con su propio scroll,
+  // como el índice de Platzi, Coursera o Udemy (P-UI-02 en docs/investigacion/referentes/PATRONES_DE_INTERFAZ.md).
+  const FIJA = 'md:sticky md:top-16 md:self-start md:h-[calc(100vh-4rem)] md:overflow-y-auto'
   const sidebarClass = computed(() =>
     sidebarOpen.value
-      ? 'fixed inset-y-0 left-0 z-50 flex overflow-y-auto shadow-2xl md:static md:z-auto md:shadow-none'
-      : 'hidden md:flex'
+      ? `fixed inset-y-0 left-0 z-50 flex overflow-y-auto shadow-2xl md:z-auto md:shadow-none ${FIJA}`
+      : `hidden md:flex ${FIJA}`
   )
 
   return { sidebarOpen, sidebarClass, close, toggle }

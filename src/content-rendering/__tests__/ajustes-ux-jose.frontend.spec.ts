@@ -132,12 +132,16 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
     expect(r).toMatch(/v-if="selectedRole === 'docente'"[^>]*text-semantico-falla/);
   });
 
-  it('el botón para ocultar el menú va arriba de la barra lateral y queda fijo al bajar', () => {
+  it('el botón para ocultar el menú va arriba de la barra lateral, solo con ícono, y toda la barra queda fija al bajar', () => {
     const menu = leer('components', 'layout', 'SidebarNav.vue');
     const boton = menu.indexOf('id="boton-menu"');
     expect(boton).toBeGreaterThan(-1);
     expect(boton).toBeLessThan(menu.indexOf('<nav'));
-    expect(menu).toMatch(/id="boton-menu"[\s\S]*?class="[^"]*sticky top-16/);
+    // un ícono de 36 px, sin borde ni fondo fijo (P-UI-03)
+    expect(menu).toMatch(/id="boton-menu"[\s\S]*?class="boton-menu hidden md:flex self-end[^"]*w-9 h-9/);
+    expect(menu).not.toMatch(/id="boton-menu"[\s\S]*?class="[^"]*border border-base-borde-sutil/);
+    // la barra entera es la que queda fija (P-UI-02)
+    expect(leer('composables', 'useMobileSidebar.ts')).toContain("const FIJA = 'md:sticky md:top-16 md:self-start md:h-[calc(100vh-4rem)] md:overflow-y-auto'");
   });
 
   it('login: marca al lado del título en computador, foco tras un error y ayuda de recuperación en su página', () => {
@@ -272,5 +276,24 @@ describe('Tutor: aviso de repasos compacto y «Mi clave» en una línea (pedido 
 
   it('«Mi clave» no se parte en dos líneas', () => {
     expect(d).toMatch(/whitespace-nowrap[^"]*"[\s\S]{0,200}?<KeyRound :size="12" aria-hidden="true" \/> Mi clave/);
+  });
+});
+
+describe('Patrones de interfaz tomados de los referentes (docs/investigacion/referentes/PATRONES_DE_INTERFAZ.md)', () => {
+  it('P-UI-01: el encabezado queda fijo y es semitransparente con desenfoque', () => {
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toMatch(/class="h-16 bg-white\/80 glass-header[^"]*sticky top-0/);
+  });
+
+  it('P-UI-04: en el celular el Tutor se abre con un lanzador flotante con texto; el del encabezado es para sm en adelante', () => {
+    const lanzador = leer('components', 'tutor', 'LanzadorTutor.vue');
+    expect(lanzador).toContain('v-if="!tutorStore.isOpen"');
+    expect(lanzador).toMatch(/class="sm:hidden fixed right-4/);
+    expect(lanzador).toMatch(/<Sparkles[^>]*\/>\s*Tutor\s*<\/button>/);
+    for (const layout of ['student.vue', 'workspace.vue']) expect(leer('layouts', layout)).toContain('<TutorLanzadorTutor />');
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toMatch(/aria-label="Abrir el Tutor IA"\s*class="hidden sm:inline-flex/);
+  });
+
+  it('P-UI-05: en el celular la barra del ejercicio (Probar, Entregar) queda fija arriba', () => {
+    expect(leer('layouts', 'workspace.vue')).toMatch(/<header class="sticky top-0 md:static/);
   });
 });

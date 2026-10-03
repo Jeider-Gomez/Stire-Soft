@@ -1,7 +1,8 @@
 <template>
   <div class="min-h-screen md:h-screen bg-base-bg-primario flex flex-col md:overflow-hidden transition-[padding] duration-300" :class="{ 'lg:pr-[400px]': tutorStore.isOpen }">
-    <!-- Header del Workspace (Sin sidebar para concentración máxima) -->
-    <header class="min-h-14 md:h-14 py-2 md:py-0 gap-y-2 flex-wrap md:flex-nowrap bg-base-blanco border-b border-base-borde-sutil px-4 flex items-center justify-between z-30 shadow-sm flex-shrink-0">
+    <!-- Header del Workspace (Sin sidebar para concentración máxima). En el celular queda fijo arriba: al bajar al
+         editor se perdían «Probar código» y «Entregar» (P-UI-05). -->
+    <header class="sticky top-0 md:static min-h-14 md:h-14 py-2 md:py-0 gap-y-2 flex-wrap md:flex-nowrap bg-base-blanco/90 md:bg-base-blanco glass-header border-b border-base-borde-sutil px-4 flex items-center justify-between z-30 shadow-sm flex-shrink-0">
       <div class="flex items-center gap-3">
         <NuxtLink
           :to="backLink"
@@ -40,13 +41,12 @@
 
       <!-- Acciones Principales (Zona D Integrada) -->
       <div class="flex items-center gap-2">
-        <!-- Tutor IA Trigger -->
-        <!-- En el teléfono solo se ve el ícono: el nombre accesible dice qué hace (el lector de pantalla no leía nada). -->
+        <!-- Tutor IA Trigger. En el celular el Tutor se abre con el lanzador flotante (LanzadorTutor.vue). -->
         <button
           @click="tutorStore.toggleDrawer()"
           aria-label="Abrir el Tutor IA"
           title="Tutor IA"
-          class="borde-afordancia px-2.5 py-1.5 rounded text-xs font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1">
+          class="hidden sm:flex borde-afordancia px-2.5 py-1.5 rounded text-xs font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 items-center gap-1">
           <Sparkles :size="14" aria-hidden="true" />
           <span class="hidden md:inline">Tutor IA</span>
         </button>
@@ -95,6 +95,7 @@
 
     <!-- Tutor IA Overlay -->
     <TutorChatDrawer />
+    <TutorLanzadorTutor />
   </div>
 </template>
 

@@ -26,6 +26,7 @@
 
     <!-- EST-V04: Tutor IA Drawer Global -->
     <TutorChatDrawer />
+    <TutorLanzadorTutor />
   </div>
 </template>
 
