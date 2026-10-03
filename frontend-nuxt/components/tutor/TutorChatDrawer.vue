@@ -222,43 +222,43 @@
             </div>
           </div>
 
-          <!-- Atajos y campo de pregunta -->
-          <div class="p-3 border-t border-slate-200 bg-stire-canvas space-y-2">
-            <!-- Atajos de texto (§18.4 — ya no cambian el nivel) -->
-            <p class="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-              <Lightbulb :size="12" class="text-amber-500" aria-hidden="true" /> Atajos
-            </p>
-            <div class="flex flex-wrap gap-1.5">
+          <!-- Atajos y campo de pregunta. Los atajos se ven solos solo al empezar en un ejercicio; después, con el
+               bombillo junto al campo (utils/atajosTutor.ts). -->
+          <div class="relative p-3 border-t border-slate-200 bg-stire-canvas space-y-2">
+            <div
+              v-if="atajosVisibles"
+              id="atajos-tutor"
+              class="flex flex-wrap gap-1.5"
+              :class="verAtajos && !atajosSolos ? 'absolute bottom-full left-3 right-3 mb-1 p-2 rounded-xl bg-white border border-slate-200 shadow-lg z-10' : ''"
+              role="group"
+              aria-label="Atajos para pedir ayuda al Tutor">
               <button
-                @click="tutorStore.requestQuickHint('conceptual')"
+                v-for="a in atajos"
+                :key="a.tipo"
+                type="button"
+                @click="usarAtajo(a.tipo)"
                 :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
                 class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[11px] font-medium text-slate-700 hover:text-stire-blue hover:border-stire-teal/60 hover:bg-stire-teal/10 transition-colors shadow-sm disabled:opacity-40"
-                aria-label="Pedir pista conceptual al Tutor"
-              >
-                <Lightbulb :size="12" class="inline -mt-0.5" aria-hidden="true" /> Pista conceptual
+                :aria-label="a.etiqueta">
+                <component :is="a.icono" :size="12" class="inline -mt-0.5" aria-hidden="true" /> {{ a.texto }}
               </button>
-              <button
-                @click="tutorStore.requestQuickHint('borde')"
-                :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
-                class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[11px] font-medium text-slate-700 hover:text-stire-blue hover:border-stire-teal/60 hover:bg-stire-teal/10 transition-colors shadow-sm disabled:opacity-40"
-                aria-label="Preguntar sobre casos de borde"
-              >
-                <Compass :size="12" class="inline -mt-0.5" aria-hidden="true" /> Revisar caso borde
-              </button>
-              <button
-                @click="tutorStore.requestQuickHint('parada')"
-                :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
-                class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[11px] font-medium text-slate-700 hover:text-stire-blue hover:border-stire-teal/60 hover:bg-stire-teal/10 transition-colors shadow-sm disabled:opacity-40"
-                aria-label="Preguntar sobre condición de parada"
-              >
-                <Search :size="12" class="inline -mt-0.5" aria-hidden="true" /> Ubicar condición de parada
-              </button>
-
-              <!-- Botón Ir al contenido eliminado de aquí (§22 T1 — movido al bloque de contexto) -->
             </div>
 
             <!-- Input de Pregunta Libre (§18.6 — font-size ≥16px para evitar zoom iOS) -->
-            <div class="flex items-center gap-2 pt-1">
+            <div class="flex items-center gap-2">
+              <button
+                v-if="!atajosSolos"
+                id="boton-atajos"
+                type="button"
+                class="w-11 h-11 rounded-xl border flex items-center justify-center shrink-0 transition-colors"
+                :class="verAtajos ? 'bg-amber-50 border-amber-300 text-amber-600' : 'bg-white border-slate-200 text-slate-500 hover:text-amber-600'"
+                :aria-expanded="verAtajos"
+                aria-controls="atajos-tutor"
+                title="Atajos para pedir ayuda"
+                aria-label="Atajos para pedir ayuda"
+                @click="verAtajos = !verAtajos">
+                <Lightbulb :size="18" aria-hidden="true" />
+              </button>
               <input
                 ref="inputRef"
                 v-model="inputQuery"
@@ -289,6 +289,7 @@
 import { Ban, BookOpen, Bot, Clock, Compass, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
 import { useWorkspaceStore } from '~/stores/workspace'
+import { atajosASimpleVista, atajosDisponibles, preguntasNuevas, type Atajo } from '~/utils/atajosTutor'
 import { useStudentStore } from '~/stores/student'
 import { formatTutorMessage } from '~/utils/formatTutorMessage'
 
@@ -303,6 +304,26 @@ const drawerRef = ref<HTMLElement | null>(null)
 const inputRef = ref<HTMLElement | null>(null)
 const closeButtonRef = ref<HTMLElement | null>(null)
 const keyPanelRef = ref<HTMLElement | null>(null)
+
+// ─── Atajos: solos al empezar un ejercicio; si no, detrás del bombillo ───────
+const route = useRoute()
+const verAtajos = ref(false)
+const TEXTOS: Record<Atajo, { texto: string; etiqueta: string; icono: typeof Lightbulb }> = {
+  conceptual: { texto: 'Pista conceptual', etiqueta: 'Pedir pista conceptual al Tutor', icono: Lightbulb },
+  borde: { texto: 'Revisar caso borde', etiqueta: 'Preguntar sobre casos de borde', icono: Compass },
+  parada: { texto: 'Por qué no sale lo esperado', etiqueta: 'Preguntar por qué el código no produce la salida esperada', icono: Search },
+}
+const atajos = computed(() =>
+  atajosDisponibles(route.path, workspaceStore.currentExercise?.questionType).map((tipo) => ({ tipo, ...TEXTOS[tipo] })))
+// Al cambiar de ejercicio vuelven a verse: cuentan solo las preguntas hechas desde que se entró a este.
+const preguntasAlEntrar = ref(0)
+watch(() => route.path, () => { preguntasAlEntrar.value = preguntasNuevas(tutorStore.messages) }, { immediate: true })
+const atajosSolos = computed(() => atajosASimpleVista(route.path, tutorStore.messages, preguntasAlEntrar.value))
+const atajosVisibles = computed(() => atajosSolos.value || verAtajos.value)
+function usarAtajo(tipo: Atajo) {
+  verAtajos.value = false
+  tutorStore.requestQuickHint(tipo)
+}
 
 // ─── Contexto de aprendizaje activo ─────────────────────────────────────────
 const activeContextLabel = computed(() => {

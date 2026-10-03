@@ -218,3 +218,43 @@ describe('Registro: validación del paso 1 con mensajes que dicen qué arreglar'
     expect(faltantesDelRegistro('Ana', '', 'Test123.')).toEqual({ email: 'Escribe tu correo.' });
   });
 });
+
+describe('Atajos del Tutor: solos al empezar un ejercicio; si no, detrás del bombillo (pedido de Jeider, 03/10)', () => {
+  const { atajosDisponibles, atajosASimpleVista } = (() => {
+    const js = ts.transpileModule(leer('utils', 'atajosTutor.ts'), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+    }).outputText;
+    const mod = { exports: {} as Record<string, unknown> };
+    new Function('module', 'exports', js)(mod, mod.exports);
+    return mod.exports as {
+      atajosDisponibles: (r: string, t: string | null) => string[];
+      atajosASimpleVista: (r: string, m: Array<{ id: string; sender: string }>, alEntrar: number) => boolean;
+    };
+  })();
+
+  it('«caso borde» y «por qué no sale» solo con un ejercicio de código abierto; en lecciones, solo la pista conceptual', () => {
+    expect(atajosDisponibles('/estudiante/evaluacion/236', 'coding')).toEqual(['conceptual', 'borde', 'parada']);
+    expect(atajosDisponibles('/estudiante/evaluacion/236', 'multiple_choice')).toEqual(['conceptual']);
+    expect(atajosDisponibles('/estudiante/unidad/12', 'coding')).toEqual(['conceptual']);
+  });
+
+  it('se muestran solos en un ejercicio hasta que el estudiante pregunta algo en él; el historial no cuenta', () => {
+    const e = '/estudiante/evaluacion/236';
+    expect(atajosASimpleVista(e, [{ id: 'msg-1-tutor', sender: 'tutor' }], 0)).toBe(true);
+    // preguntas viejas cargadas del historial: siguen visibles
+    expect(atajosASimpleVista(e, [{ id: 'hist-9', sender: 'student' }, { id: 'hist-10', sender: 'tutor' }], 0)).toBe(true);
+    expect(atajosASimpleVista(e, [{ id: 'msg-2-user', sender: 'student' }], 0)).toBe(false);
+    // en el ejercicio siguiente vuelven: ya llevaba 1 pregunta al entrar
+    expect(atajosASimpleVista(e, [{ id: 'msg-2-user', sender: 'student' }], 1)).toBe(true);
+    expect(atajosASimpleVista('/estudiante/unidad/12', [], 0)).toBe(false);
+  });
+
+  it('el Tutor ya no tiene la fila fija «Atajos»: usa el bombillo junto al campo', () => {
+    const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
+    expect(d).not.toContain('</Lightbulb> Atajos');
+    expect(d).not.toMatch(/uppercase tracking-wider text-slate-500">\s*<Lightbulb[^>]*\/> Atajos/);
+    expect(d).toContain('id="boton-atajos"');
+    expect(d).toContain(':aria-expanded="verAtajos"');
+    expect(d).toContain('v-if="atajosVisibles"');
+  });
+});
