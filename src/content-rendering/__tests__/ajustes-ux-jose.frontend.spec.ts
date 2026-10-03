@@ -140,6 +140,8 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
     // un ícono de 36 px, sin borde ni fondo fijo (P-UI-03)
     expect(menu).toMatch(/id="boton-menu"[\s\S]*?class="boton-menu hidden md:flex self-end[^"]*w-9 h-9/);
     expect(menu).not.toMatch(/id="boton-menu"[\s\S]*?class="[^"]*border border-base-borde-sutil/);
+    // el nombre queda para el lector de pantalla; a la vista, solo el ícono
+    expect(menu).toContain(`<span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>`);
     // la barra entera es la que queda fija (P-UI-02)
     expect(leer('composables', 'useMobileSidebar.ts')).toContain("const FIJA = 'md:sticky md:top-16 md:self-start md:h-[calc(100vh-4rem)] md:overflow-y-auto'");
   });

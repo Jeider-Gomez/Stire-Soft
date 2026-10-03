@@ -13,7 +13,7 @@
       @click="alternarMenu">
       <PanelLeftOpen v-if="colapsado" :size="18" aria-hidden="true" class="shrink-0" />
       <PanelLeftClose v-else :size="18" aria-hidden="true" class="shrink-0" />
-      <span>{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
+      <span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
     </button>
     <!-- Navegación según Rol Activo -->
     <div class="space-y-4">
