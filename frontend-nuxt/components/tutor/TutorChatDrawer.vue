@@ -347,8 +347,15 @@ const activeContextLabel = computed(() => {
 })
 
 // ─── Aviso de repasos vencidos (§21.2 T4c) ──────────────────────────────────
-// Descartado, no vuelve en esta sesión (useState: sobrevive al cambiar de página).
+// Descartado, no vuelve en esta sesión del navegador (useState entre páginas; sessionStorage si recarga).
+const CLAVE_AVISO_REPASOS = 'stire-aviso-repasos-oculto'
 const avisoRepasosDescartado = useState('tutor-aviso-repasos-descartado', () => false)
+onMounted(() => {
+  try { if (sessionStorage.getItem(CLAVE_AVISO_REPASOS) === '1') avisoRepasosDescartado.value = true } catch { /* sin almacenamiento */ }
+})
+watch(avisoRepasosDescartado, (oculto) => {
+  try { if (oculto) sessionStorage.setItem(CLAVE_AVISO_REPASOS, '1') } catch { /* se usa sin recordar */ }
+})
 const avisoRepasosCorto = computed(() => {
   const n = tutorStore.dueReviews?.overdueCount ?? 0
   return n === 1 ? 'Tienes 1 repaso vencido' : `Tienes ${n} repasos vencidos`

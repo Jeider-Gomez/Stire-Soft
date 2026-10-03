@@ -266,6 +266,7 @@ describe('Tutor: aviso de repasos compacto y «Mi clave» en una línea (pedido 
     expect(d).toContain('v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado"');
     expect(d).toContain('aria-label="Ocultar el aviso de repasos"');
     expect(d).toContain("useState('tutor-aviso-repasos-descartado'");
+    expect(d).toContain("sessionStorage.setItem(CLAVE_AVISO_REPASOS, '1')");
     expect(d).not.toContain('mx-4 mt-3 p-3 rounded-lg bg-acento-ambar/10');
   });
 
