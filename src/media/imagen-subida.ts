@@ -5,6 +5,8 @@
 
 export const MAX_BYTES_IMAGEN = 1024 * 1024; // 1 MB
 export const MAX_BYTES_POR_DOCENTE = 50 * 1024 * 1024; // 50 MB
+/** Un pantallazo adjunto a una sugerencia: la app lo reduce antes de subirlo, pero uno grande sin reducir también cabe. */
+export const MAX_BYTES_CAPTURA = 3 * 1024 * 1024; // 3 MB
 
 export type TipoImagen = 'image/png' | 'image/jpeg' | 'image/gif' | 'image/webp';
 
@@ -21,10 +23,11 @@ export function detectarTipoImagen(datos: Buffer): TipoImagen | null {
 export class ImagenRechazadaError extends Error {}
 
 /** Devuelve el tipo real de la imagen o lanza con el motivo, en palabras del docente. */
-export function validarImagen(datos: Buffer, usadoPorDocente: number): TipoImagen {
+export function validarImagen(datos: Buffer, usadoPorDocente: number, maxBytes: number = MAX_BYTES_IMAGEN): TipoImagen {
   if (datos.length === 0) throw new ImagenRechazadaError('El archivo está vacío.');
-  if (datos.length > MAX_BYTES_IMAGEN) {
-    throw new ImagenRechazadaError('La imagen pesa más de 1 MB. Redúcela (por ejemplo, guárdala como JPG o WebP) o enlázala desde la web.');
+  if (datos.length > maxBytes) {
+    const mb = Math.round(maxBytes / (1024 * 1024));
+    throw new ImagenRechazadaError(`La imagen pesa más de ${mb} MB. Redúcela (por ejemplo, guárdala como JPG o WebP) o enlázala desde la web.`);
   }
   const tipo = detectarTipoImagen(datos);
   if (!tipo) throw new ImagenRechazadaError('Solo se aceptan imágenes PNG, JPG, GIF o WebP.');

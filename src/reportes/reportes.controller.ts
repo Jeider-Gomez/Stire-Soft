@@ -1,4 +1,8 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Throttle } from '@nestjs/throttler';
+import type { Response } from 'express';
+import { MAX_BYTES_CAPTURA } from '../media/imagen-subida';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReportesService } from './reportes.service';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -25,6 +29,31 @@ export class ReportesController {
   @ApiOperation({ summary: 'Mis reportes y en qué van' })
   mios(@GetUser() user: User) {
     return this.reportes.mios(user);
+  }
+
+  // Una captura por sugerencia; el límite diario de sugerencias ya acota cuántas se suben.
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
+  @Put(':id/captura')
+  @Roles('estudiante', 'docente', 'admin')
+  @UseInterceptors(FileInterceptor('captura', { limits: { fileSize: MAX_BYTES_CAPTURA + 1, files: 1 } }))
+  @ApiOperation({ summary: 'Adjuntar un pantallazo (PNG, JPG, GIF o WebP, hasta 3 MB) a una sugerencia propia' })
+  adjuntarCaptura(@Param('id', ParseIntPipe) id: number, @UploadedFile() archivo: { buffer: Buffer } | undefined, @GetUser() user: User) {
+    return this.reportes.adjuntarCaptura(user, id, archivo?.buffer);
+  }
+
+  @Get(':id/captura')
+  @Roles('estudiante', 'docente', 'admin')
+  @ApiOperation({ summary: 'Ver el pantallazo de una sugerencia (quien la envió o el admin)' })
+  async verCaptura(@Param('id', ParseIntPipe) id: number, @GetUser() user: User, @Res() res: Response) {
+    const { mimeType, data } = await this.reportes.captura(user, id);
+    res.set({
+      'Content-Type': mimeType,
+      'Content-Length': String(data.length),
+      'X-Content-Type-Options': 'nosniff',
+      'Content-Security-Policy': "default-src 'none'; sandbox",
+      'Cache-Control': 'private, no-store',
+    });
+    res.send(data);
   }
 
   @Get()

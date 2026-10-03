@@ -21,6 +21,8 @@ export function useApi() {
       method?: HttpMethod
       body?: unknown
       headers?: Record<string, string>
+      /** «blob» para pedir una imagen con el token (p. ej. el pantallazo de una sugerencia). */
+      responseType?: 'blob'
     } = {}
   ): Promise<T> {
     // Con un archivo (FormData) el navegador pone el Content-Type con su «boundary»; forzar JSON rompería la subida.
@@ -35,7 +37,8 @@ export function useApi() {
       return await $fetch<T>(`${baseUrl}${endpoint}`, {
         method: options.method || 'GET',
         headers,
-        body: options.body as Record<string, unknown> | BodyInit | null | undefined
+        body: options.body as Record<string, unknown> | BodyInit | null | undefined,
+        ...(options.responseType ? { responseType: options.responseType } : {})
       })
     } catch (error: unknown) {
       const err = error as { response?: { status?: number }; statusCode?: number; data?: { error?: string | string[]; message?: string }; message?: string }

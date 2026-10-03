@@ -43,6 +43,13 @@ export class Reporte {
   @Column({ type: 'varchar', length: 10, default: 'nuevo' })
   estado!: EstadoReporte;
 
+  /**
+   * Pantallazo opcional (una imagen de media_files). El id no sale del servidor: solo quien envió la sugerencia y el
+   * admin lo ven, por GET /reportes/:id/captura.
+   */
+  @Column({ type: 'varchar', length: 36, nullable: true })
+  capturaId!: string | null;
+
   /** Nota del admin al revisarlo («arreglado», «no se reproduce»); la ve quien lo reportó. */
   @Column({ type: 'text', nullable: true })
   nota!: string | null;

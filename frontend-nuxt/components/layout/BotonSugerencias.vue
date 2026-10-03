@@ -14,7 +14,8 @@
     </button>
 
     <Teleport to="body">
-      <div v-if="abierto" class="fixed inset-0 z-50 bg-base-texto-primario/40 flex items-center justify-center p-4" @click.self="cerrar">
+      <!-- Se cierra por el fondo solo si el clic empezó en el fondo: al seleccionar texto y soltar afuera no se pierde lo escrito. -->
+      <div v-if="abierto" class="fixed inset-0 z-50 bg-base-texto-primario/40 flex items-center justify-center p-4" @mousedown="inicioClic = $event.target" @click.self="inicioClic === $event.currentTarget && cerrar()">
         <div role="dialog" aria-modal="true" aria-labelledby="reportar-titulo" class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-5 space-y-4 text-xs">
           <div class="flex items-center justify-between gap-3">
             <h2 id="reportar-titulo" class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
@@ -27,8 +28,9 @@
 
           <template v-if="!viendoMios">
             <p v-if="enviado" role="status" class="rounded-md bg-semantico-pasa/10 text-semantico-pasa p-3 font-semibold">
-              ¡Gracias! Quedó guardado con la pantalla donde estabas. Con esto mejoramos STIRE.
+              ¡Gracias! Quedó guardado con la pantalla donde estabas{{ capturaSubida ? ' y tu pantallazo' : '' }}. Con esto mejoramos STIRE.
             </p>
+            <p v-if="enviado && avisoCaptura" role="alert" class="rounded-md bg-acento-ambar/10 text-acento-ambar-fuerte p-3 font-semibold">{{ avisoCaptura }}</p>
             <form v-else class="space-y-4" @submit.prevent="enviar">
               <fieldset>
                 <legend class="font-semibold text-base-texto-primario mb-1.5">¿Qué es?</legend>
@@ -48,8 +50,9 @@
               </fieldset>
               <div>
                 <label for="reporte-texto" class="block font-semibold text-base-texto-primario mb-1">{{ f.tipo === 'idea' ? '¿Qué se te ocurre?' : '¿Qué pasó? ¿Qué esperabas que pasara?' }}</label>
-                <textarea v-crece id="reporte-texto" v-model="f.texto" rows="4" maxlength="2000" required class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte bg-base-blanco resize-y" />
+                <textarea v-crece id="reporte-texto" v-model="f.texto" rows="4" maxlength="2000" required class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte bg-base-blanco resize-y" @paste="pegarEnTexto" />
               </div>
+              <ZonaPantallazo ref="zonaRef" v-model="captura" />
               <p class="text-[11px] text-base-texto-secundario">Se guarda la pantalla donde estás (<span class="font-mono">{{ route.fullPath }}</span>) y el tamaño de tu pantalla.</p>
               <p v-if="error" role="alert" class="text-semantico-falla">{{ error }}</p>
               <div class="flex flex-wrap items-center gap-3">
@@ -70,6 +73,7 @@
                   <span class="font-semibold">{{ TIPOS[r.tipo] }}</span>
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-bold" :class="r.estado === 'resuelto' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario'">{{ ESTADOS[r.estado] }}</span>
                   <span class="text-base-texto-secundario">{{ fechaCorta(r.createdAt) }}{{ r.clase ? ` · ${r.clase}` : '' }}</span>
+                  <span v-if="r.tieneCaptura" class="inline-flex items-center gap-1 text-base-texto-secundario"><ImageIcon :size="12" aria-hidden="true" /> con pantallazo</span>
                 </p>
                 <p class="text-base-texto-primario whitespace-pre-line">{{ r.texto }}</p>
                 <p v-if="r.nota" class="text-semantico-info">Respuesta: {{ r.nota }}</p>
@@ -85,7 +89,8 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { MessageSquarePlus, X } from 'lucide-vue-next'
+import { Image as ImageIcon, MessageSquarePlus, X } from 'lucide-vue-next'
+import { imagenDe } from '~/utils/captura'
 import { useApi } from '~/composables/useApi'
 import { fechaCorta } from '~/utils/entregas'
 import { claseDeLaRuta } from '~/utils/pestanasClase'
@@ -109,7 +114,20 @@ const error = ref<string | null>(null)
 const f = reactive<{ tipo: Tipo; gravedad: number; texto: string }>({ tipo: 'problema', gravedad: 2, texto: '' })
 const viendoMios = ref(false)
 const cargandoMios = ref(false)
-const mios = ref<Array<{ id: number; tipo: Tipo; estado: Estado; texto: string; clase: string; nota: string | null; createdAt: string }>>([])
+const mios = ref<Array<{ id: number; tipo: Tipo; estado: Estado; texto: string; clase: string; nota: string | null; tieneCaptura?: boolean; createdAt: string }>>([])
+const captura = ref<Blob | null>(null)
+const capturaSubida = ref(false)
+const avisoCaptura = ref<string | null>(null)
+const zonaRef = ref<{ usar: (archivo: File | null) => void } | null>(null)
+const inicioClic = ref<EventTarget | null>(null)
+
+/** Si pegan un pantallazo en el cuadro de texto, va a la zona del pantallazo en vez de perderse. */
+function pegarEnTexto(e: ClipboardEvent) {
+  const imagen = imagenDe(e.clipboardData)
+  if (!imagen) return
+  e.preventDefault()
+  zonaRef.value?.usar(imagen)
+}
 
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
@@ -127,6 +145,9 @@ function abrir() {
   f.tipo = 'problema'
   f.gravedad = 2
   f.texto = ''
+  captura.value = null
+  capturaSubida.value = false
+  avisoCaptura.value = null
 }
 function cerrar() {
   abierto.value = false
@@ -136,7 +157,7 @@ async function enviar() {
   enviando.value = true
   error.value = null
   try {
-    await api.post('/reportes', {
+    const creado = await api.post<{ id: number }>('/reportes', {
       tipo: f.tipo,
       gravedad: f.tipo === 'idea' ? undefined : f.gravedad,
       texto: f.texto,
@@ -144,6 +165,17 @@ async function enviar() {
       classId: claseActual(),
       dispositivo: `${window.innerWidth}×${window.innerHeight} · ${navigator.userAgent}`,
     })
+    // El pantallazo va aparte: si falla, la sugerencia ya quedó guardada y se avisa.
+    if (captura.value) {
+      try {
+        const datos = new FormData()
+        datos.append('captura', captura.value, 'pantallazo.jpg')
+        await api.put(`/reportes/${creado.id}/captura`, datos)
+        capturaSubida.value = true
+      } catch (err) {
+        avisoCaptura.value = `La sugerencia se guardó, pero el pantallazo no: ${messageOf(err, 'error al subirlo')}.`
+      }
+    }
     enviado.value = true
   } catch (err) {
     error.value = messageOf(err, 'No se pudo enviar. Inténtalo de nuevo.')

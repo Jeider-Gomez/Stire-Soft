@@ -40,6 +40,15 @@
         <p class="text-[11px] text-base-texto-secundario break-all">
           <span class="font-mono">{{ r.ruta }}</span> · {{ r.dispositivo }}
         </p>
+        <!-- Pantallazo: se pide con el token (no es una imagen pública) y se muestra al pedirlo. -->
+        <div v-if="r.tieneCaptura">
+          <a v-if="capturas[r.id]" :href="capturas[r.id]" target="_blank" rel="noopener" class="block w-fit" title="Abrir el pantallazo en grande">
+            <img :src="capturas[r.id]" :alt="`Pantallazo de la sugerencia de ${r.autor}`" class="max-h-64 rounded-md border border-base-borde-fuerte" />
+          </a>
+          <button v-else type="button" :disabled="cargandoCaptura === r.id" class="px-3 py-1.5 rounded-md borde-afordancia font-semibold inline-flex items-center gap-1.5 disabled:opacity-50" @click="verCaptura(r)">
+            <ImageIcon :size="14" aria-hidden="true" /> {{ cargandoCaptura === r.id ? 'Cargando…' : 'Ver pantallazo' }}
+          </button>
+        </div>
         <div class="flex flex-col sm:flex-row sm:items-center gap-2 pt-1">
           <label class="sr-only" :for="`estado-${r.id}`">Estado</label>
           <select :id="`estado-${r.id}`" v-model="r.estado" class="px-2 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco">
@@ -56,8 +65,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { Download, MessageSquarePlus } from 'lucide-vue-next'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { Download, Image as ImageIcon, MessageSquarePlus } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { fechaCorta } from '~/utils/entregas'
 
@@ -67,6 +76,7 @@ type Estado = 'nuevo' | 'visto' | 'resuelto' | 'descartado'
 interface Reporte {
   id: number; autor: string; rol: string; tipo: 'problema' | 'confuso' | 'idea'; gravedad: number | null
   texto: string; ruta: string; dispositivo: string; clase: string; estado: Estado; nota: string | null; createdAt: string; notaEditada?: string
+  tieneCaptura?: boolean
 }
 
 const TIPOS = { problema: 'Problema', confuso: 'Confuso', idea: 'Idea' }
@@ -81,6 +91,21 @@ const filtro = ref<'todos' | Estado>('nuevo')
 const cargando = ref(true)
 const error = ref<string | null>(null)
 const guardado = ref<number | null>(null)
+const capturas = ref<Record<number, string>>({})
+const cargandoCaptura = ref<number | null>(null)
+
+async function verCaptura(r: Reporte) {
+  cargandoCaptura.value = r.id
+  try {
+    const blob = await api.apiFetch<Blob>(`/reportes/${r.id}/captura`, { responseType: 'blob' })
+    capturas.value = { ...capturas.value, [r.id]: URL.createObjectURL(blob) }
+  } catch (err) {
+    error.value = messageOf(err, 'No se pudo cargar el pantallazo.')
+  } finally {
+    cargandoCaptura.value = null
+  }
+}
+onBeforeUnmount(() => Object.values(capturas.value).forEach((u) => URL.revokeObjectURL(u)))
 
 async function cargar() {
   cargando.value = true
@@ -113,8 +138,8 @@ async function guardar(r: Reporte) {
 /** Para pasar los hallazgos de la prueba a una tabla (docs/calidad/PRUEBA_DOS_SEMANAS.md). */
 function descargarCsv() {
   const celda = (v: string) => (/[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)
-  const filas = [['Fecha', 'Autor', 'Rol', 'Clase', 'Tipo', 'Gravedad', 'Texto', 'Pantalla', 'Dispositivo', 'Estado', 'Nota']]
-    .concat(lista.value.map((r) => [r.createdAt, r.autor, r.rol, r.clase, TIPOS[r.tipo], r.gravedad ? String(r.gravedad) : '', r.texto, r.ruta, r.dispositivo, ESTADOS[r.estado], r.nota ?? '']))
+  const filas = [['Fecha', 'Autor', 'Rol', 'Clase', 'Tipo', 'Gravedad', 'Texto', 'Pantalla', 'Dispositivo', 'Estado', 'Nota', 'Pantallazo']]
+    .concat(lista.value.map((r) => [r.createdAt, r.autor, r.rol, r.clase, TIPOS[r.tipo], r.gravedad ? String(r.gravedad) : '', r.texto, r.ruta, r.dispositivo, ESTADOS[r.estado], r.nota ?? '', r.tieneCaptura ? 'sí' : '']))
   const url = URL.createObjectURL(new Blob(['﻿' + filas.map((f) => f.map(celda).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }))
   const a = document.createElement('a')
   a.href = url

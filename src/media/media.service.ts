@@ -29,11 +29,11 @@ export class MediaService {
     return Number(fila?.total ?? 0);
   }
 
-  async subirImagen(user: User, datos: Buffer | undefined): Promise<ImagenGuardada> {
+  async subirImagen(user: User, datos: Buffer | undefined, maxBytes?: number): Promise<ImagenGuardada> {
     if (!datos) throw new BadRequestException('Adjunta una imagen.');
     let mimeType: string;
     try {
-      mimeType = validarImagen(datos, await this.usado(user.id));
+      mimeType = validarImagen(datos, await this.usado(user.id), maxBytes);
     } catch (e) {
       if (e instanceof ImagenRechazadaError) throw new BadRequestException(e.message);
       throw e;
