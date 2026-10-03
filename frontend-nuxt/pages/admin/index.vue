@@ -358,7 +358,7 @@
         aria-describedby="role-modal-desc"
         tabindex="-1"
         @keydown="handleDialogKeydown"
-        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none">
+        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none max-h-[90dvh] overflow-y-auto">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte flex items-center justify-center text-lg font-bold flex-shrink-0">
             👤
@@ -414,7 +414,7 @@
         aria-describedby="decision-modal-desc"
         tabindex="-1"
         @keydown="handleDecisionDialogKeydown"
-        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none">
+        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none max-h-[90dvh] overflow-y-auto">
         <div class="flex items-center gap-3">
           <div
             class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0"
@@ -496,7 +496,7 @@
         aria-labelledby="register-modal-title"
         tabindex="-1"
         @keydown="handleRegisterKeydown"
-        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none">
+        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none max-h-[90dvh] overflow-y-auto">
         
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte flex items-center justify-center text-lg font-bold flex-shrink-0">
@@ -624,7 +624,7 @@
         aria-labelledby="toggle-active-title"
         tabindex="-1"
         @keydown="handleToggleActiveKeydown"
-        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none">
+        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none max-h-[90dvh] overflow-y-auto">
         
         <div class="flex items-center gap-3">
           <div
@@ -692,7 +692,7 @@
         aria-labelledby="reset-pwd-title"
         tabindex="-1"
         @keydown="handleResetPwdKeydown"
-        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none">
+        class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none max-h-[90dvh] overflow-y-auto">
         
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte flex items-center justify-center flex-shrink-0">

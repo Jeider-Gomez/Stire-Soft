@@ -5,18 +5,22 @@
     <div class="tarjeta-auth relative rounded-3xl p-7 sm:p-9 bg-white/95 border border-slate-200/90 backdrop-blur-2xl overflow-hidden animar-entrada">
       <div class="absolute top-0 inset-x-0 h-[3px] linea-marca" aria-hidden="true" />
 
-      <div class="flex flex-col items-center text-center mb-5">
-        <LayoutMarcaST tamano="grande" :escudo="campoEnFoco === 'password'" class="mb-3.5" />
-        <h1 class="text-2xl font-bold tracking-tight font-poppins text-slate-900">Iniciar Sesión</h1>
-        <p class="text-xs mt-1 max-w-[340px] leading-relaxed text-slate-500">
-          Ingresa a tu entorno de aprendizaje y tutoría inteligente
-        </p>
+      <!-- En computador la marca va al lado del título, como en el registro: en un portátil (657 px de alto)
+           «Regístrate aquí» quedaba debajo del borde de la pantalla. -->
+      <div class="flex flex-col lg:flex-row items-center lg:gap-4 text-center lg:text-left mb-5">
+        <LayoutMarcaST tamano="grande" :escudo="campoEnFoco === 'password'" class="mb-3.5 lg:mb-0 shrink-0" />
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight font-poppins text-slate-900">Iniciar Sesión</h1>
+          <p class="text-sm mt-1 max-w-[340px] leading-relaxed text-slate-600">
+            Ingresa a tu entorno de aprendizaje y tutoría inteligente
+          </p>
+        </div>
       </div>
 
       <!-- Error -->
       <Transition name="aviso">
-        <div v-if="errorMessage" role="alert" class="mb-4 flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs border bg-red-50 border-red-200 text-red-700">
-          <AlertCircle :size="16" class="shrink-0 text-red-500" aria-hidden="true" />
+        <div v-if="errorMessage" id="login-error" role="alert" class="mb-4 flex items-start gap-2 px-3.5 py-2.5 rounded-xl text-sm border-2 bg-red-50 border-red-300 text-red-700 font-semibold">
+          <AlertCircle :size="18" class="shrink-0 mt-px text-red-600" aria-hidden="true" />
           <span>{{ errorMessage }}</span>
         </div>
       </Transition>
@@ -25,7 +29,7 @@
         <!-- Correo -->
         <div class="space-y-1.5">
           <div class="flex items-center justify-between gap-2">
-            <label for="email" class="block text-xs font-semibold text-slate-700">Correo Institucional</label>
+            <label for="email" class="block text-sm font-semibold text-slate-700">Correo</label>
             <Transition name="aviso">
               <span v-if="esCorreoUnicor" class="inline-flex items-center gap-1 text-[10px] font-bold text-[#00705f] bg-stire-teal/15 px-2 py-0.5 rounded-full">
                 <Check :size="12" aria-hidden="true" /> Dominio Unicor
@@ -36,15 +40,18 @@
             <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
             <input
               id="email"
+              ref="emailRef"
               v-model="email"
               type="email"
               required
               autocomplete="email"
+              :aria-invalid="!!errorMessage || undefined"
+              :aria-describedby="errorMessage ? 'login-error' : undefined"
               placeholder="usuario@unicor.edu.co"
               @focus="campoEnFoco = 'email'"
               @blur="campoEnFoco = null"
               class="campo-auth pl-10 pr-10"
-              :class="esCorreoUnicor ? 'border-stire-teal ring-1 ring-stire-teal/30' : ''" />
+              :class="errorMessage ? 'border-red-400' : esCorreoUnicor ? 'border-stire-teal ring-1 ring-stire-teal/30' : ''" />
             <CheckCircle2 v-if="esCorreoUnicor" :size="16" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-stire-teal pointer-events-none" aria-hidden="true" />
           </div>
         </div>
@@ -52,14 +59,17 @@
         <!-- Contraseña -->
         <div class="space-y-1.5">
           <div class="flex items-center justify-between">
-            <label for="password" class="block text-xs font-semibold text-slate-700">Contraseña</label>
-            <NuxtLink to="/auth/forgot-password" class="text-xs text-slate-500 hover:text-stire-blue transition-colors">¿Olvidaste tu clave?</NuxtLink>
+            <label for="password" class="block text-sm font-semibold text-slate-700">Contraseña</label>
+            <NuxtLink to="/auth/forgot-password" class="py-1 text-sm font-medium text-stire-blue hover:underline">¿Olvidaste tu clave?</NuxtLink>
           </div>
           <div class="relative">
             <Lock :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
             <input
               id="password"
+              ref="passwordRef"
               v-model="password"
+              :aria-invalid="!!errorMessage || undefined"
+              :aria-describedby="errorMessage ? 'login-error' : undefined"
               :type="verClave ? 'text' : 'password'"
               required
               autocomplete="current-password"
@@ -68,7 +78,8 @@
               @blur="campoEnFoco = null; bloqMayus = false"
               @keydown="detectarBloqMayus"
               @keyup="detectarBloqMayus"
-              class="campo-auth pl-10 pr-11 focus:border-stire-purple focus:ring-stire-purple/20" />
+              class="campo-auth pl-10 pr-11 focus:border-stire-purple focus:ring-stire-purple/20"
+              :class="errorMessage ? 'border-red-400' : ''" />
             <button
               type="button"
               @click="verClave = !verClave"
@@ -103,13 +114,9 @@
             <span>Ingresar a la plataforma</span> <ArrowRight :size="16" aria-hidden="true" />
           </template>
         </button>
-
-        <p class="text-[11px] text-slate-500 text-center leading-relaxed">
-          ¿No te llega el correo de recuperación? Pídele a tu docente o al administrador que restablezca tu contraseña.
-        </p>
       </form>
 
-      <p class="mt-4 text-center text-xs text-slate-600">
+      <p class="mt-5 text-center text-sm text-slate-600">
         ¿No tienes una cuenta aún?
         <NuxtLink :to="{ path: '/auth/register', query: route.query }" class="font-semibold text-stire-blue hover:text-stire-purple hover:underline transition-colors">
           Regístrate aquí
@@ -163,6 +170,13 @@ const email = ref('')
 const password = ref('')
 const isLoading = ref(false)
 const errorMessage = ref('')
+const emailRef = ref<HTMLInputElement | null>(null)
+const passwordRef = ref<HTMLInputElement | null>(null)
+
+// En computador el cursor queda listo en el correo; en el celular no, para no abrir el teclado encima de la página.
+onMounted(() => {
+  if (window.matchMedia?.('(pointer: fine)').matches) emailRef.value?.focus()
+})
 
 // Solo presentación (prototipo de José): foco, ver la clave, Bloq Mayús y confirmación antes de entrar.
 const campoEnFoco = ref<'email' | 'password' | null>(null)
@@ -209,8 +223,19 @@ async function handleLogin() {
     // Volver a donde iba (p. ej. el QR de una clase) o al inicio de su rol
     await entrar(rutaDeVuelta(route.query.volver) ?? rutaDelRol(authStore.currentRole))
   } else {
-    errorMessage.value = result.error || 'Error al iniciar sesión. Verifica tus credenciales.'
+    errorMessage.value = mensajeDeError(result.error)
+    // Tras un error, el cursor vuelve a la contraseña (lo más probable de corregir) con el texto seleccionado.
+    await nextTick()
+    passwordRef.value?.focus()
+    passwordRef.value?.select()
   }
+}
+
+/** «Correo o contraseña incorrectos» solo no dice qué hacer: se agrega el siguiente paso. */
+function mensajeDeError(error: string | undefined): string {
+  const texto = error || 'No se pudo iniciar sesión.'
+  if (/incorrect/i.test(texto)) return `${texto}. Revisa que el correo esté bien escrito y que Bloq Mayús esté apagado, o usa «¿Olvidaste tu clave?».`
+  return texto
 }
 
 async function quickDemoLogin(role: 'estudiante' | 'docente' | 'administrador') {

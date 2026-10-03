@@ -141,7 +141,7 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="compose-modal-title">
-      <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-xs">
+      <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-xs max-h-[90dvh] overflow-y-auto">
         <div class="flex items-center justify-between pb-2 border-b border-base-borde-sutil">
           <h3 id="compose-modal-title" class="font-bold text-base-texto-primario flex items-center gap-1.5">
             <span>✉️</span>

@@ -27,36 +27,44 @@
       </div>
     </div>
 
-    <!-- Aviso discreto de solicitud de rol docente (§23 T4) -->
+    <!-- Solicitud de rol docente (§23 T4). Pedido de Jeider (02/10): que se note. Quien pidió ser docente y entra
+         como estudiante puede creer que la app falló; el aviso dice en rojo que el admin aún no cambia su rol. -->
     <div
       v-if="myRoleRequest"
-      class="p-3 rounded-lg border text-xs flex items-center justify-between gap-3 shadow-sm"
+      id="aviso-rol-docente"
+      role="status"
+      class="p-4 rounded-xl border-2 border-l-8 flex items-start justify-between gap-3 shadow-sm"
       :class="{
-        'bg-semantico-info/10 border-semantico-info/30 text-semantico-info': myRoleRequest.status === 'pending',
-        'bg-semantico-pasa/10 border-semantico-pasa/30 text-semantico-pasa': myRoleRequest.status === 'approved',
-        'bg-semantico-falla/10 border-semantico-falla/30 text-semantico-falla': myRoleRequest.status === 'rejected'
+        'bg-semantico-falla/10 border-semantico-falla text-semantico-falla': myRoleRequest.status !== 'approved',
+        'bg-semantico-pasa/10 border-semantico-pasa text-semantico-pasa': myRoleRequest.status === 'approved'
       }">
-      <div class="flex items-center gap-2">
-        <Clock v-if="myRoleRequest.status === 'pending'" :size="14" aria-hidden="true" />
-        <PartyPopper v-else-if="myRoleRequest.status === 'approved'" :size="14" aria-hidden="true" />
-        <AlertTriangle v-else :size="14" aria-hidden="true" />
+      <div class="flex items-start gap-3">
+        <ShieldAlert v-if="myRoleRequest.status === 'pending'" :size="22" class="shrink-0" aria-hidden="true" />
+        <BadgeCheck v-else-if="myRoleRequest.status === 'approved'" :size="22" class="shrink-0" aria-hidden="true" />
+        <AlertTriangle v-else :size="22" class="shrink-0" aria-hidden="true" />
 
-        <span v-if="myRoleRequest.status === 'pending'" class="font-medium">
-          Tu solicitud para ser docente está pendiente
-        </span>
-        <span v-else-if="myRoleRequest.status === 'approved'" class="font-medium">
-          Aprobada: cierra sesión y vuelve a entrar para usar el rol docente
-        </span>
-        <span v-else class="font-medium">
-          Tu solicitud para ser docente fue rechazada<span v-if="myRoleRequest.reviewNote">: «{{ myRoleRequest.reviewNote }}»</span>
-        </span>
+        <div v-if="myRoleRequest.status === 'pending'" class="space-y-0.5">
+          <p class="text-sm font-bold">El administrador todavía no ha cambiado tu rol a docente</p>
+          <p class="text-xs font-medium text-base-texto-primario">
+            Por ahora entras como estudiante. Cuando aprueben tu solicitud, cierra sesión y vuelve a entrar para ver el panel docente.
+            Si te urge, avísale al administrador.
+          </p>
+        </div>
+        <div v-else-if="myRoleRequest.status === 'approved'" class="space-y-0.5">
+          <p class="text-sm font-bold">Ya eres docente</p>
+          <p class="text-xs font-medium text-base-texto-primario">Cierra sesión y vuelve a entrar para usar el panel docente.</p>
+        </div>
+        <div v-else class="space-y-0.5">
+          <p class="text-sm font-bold">Tu solicitud para ser docente fue rechazada</p>
+          <p v-if="myRoleRequest.reviewNote" class="text-xs font-medium text-base-texto-primario">«{{ myRoleRequest.reviewNote }}»</p>
+        </div>
       </div>
 
       <button
         v-if="myRoleRequest.status === 'approved'"
         type="button"
         @click="authStore.logout()"
-        class="text-xs underline font-bold hover:opacity-80">
+        class="shrink-0 px-3 py-1.5 rounded-lg bg-semantico-pasa text-white text-xs font-bold hover:opacity-90">
         Cerrar sesión
       </button>
     </div>
@@ -268,7 +276,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { RotateCcw, TrendingUp, AlertTriangle, Landmark, Library, Clock, PartyPopper, GraduationCap, KeyRound, Brain, Flame, Map as MapIcon, Play, BookOpen, CheckCircle2, CircleDot, Circle, Inbox } from 'lucide-vue-next'
+import { RotateCcw, TrendingUp, AlertTriangle, BadgeCheck, ShieldAlert, Landmark, Library, GraduationCap, KeyRound, Brain, Flame, Map as MapIcon, Play, BookOpen, CheckCircle2, CircleDot, Circle, Inbox } from 'lucide-vue-next'
 import { contar, DOMINADO } from '~/utils/terminos'
 import { fechaCorta, notaTexto, type EstadoEntrega } from '~/utils/entregas'
 import { useStudentStore } from '~/stores/student'

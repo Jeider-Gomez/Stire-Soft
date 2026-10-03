@@ -24,10 +24,13 @@
       </Transition>
 
       <!-- Aviso de solicitud de rol docente pendiente (§23 T3) -->
-      <div v-if="roleRequestSuccessNotice" role="status" class="mb-4 p-3 rounded-xl bg-stire-blue/10 border border-stire-blue/30 text-xs text-stire-blue space-y-2">
+      <div v-if="roleRequestSuccessNotice" role="alert" class="mb-4 p-3 rounded-xl bg-semantico-falla/10 border-2 border-l-8 border-semantico-falla text-xs text-semantico-falla space-y-2">
         <div class="flex items-start gap-2">
-          <ClipboardCheck :size="16" class="shrink-0" aria-hidden="true" />
-          <p>{{ roleRequestSuccessNotice }}</p>
+          <ShieldAlert :size="18" class="shrink-0" aria-hidden="true" />
+          <div>
+            <p class="text-sm font-bold">Todavía no eres docente</p>
+            <p class="text-base-texto-primario">{{ roleRequestSuccessNotice }}</p>
+          </div>
         </div>
         <button
           type="button"
@@ -149,9 +152,9 @@
         </div>
 
         <!-- Docente: qué pasa con la solicitud (§23 T3). No es un campo: va con lo obligatorio. -->
-        <p v-if="selectedRole === 'docente'" class="lg:col-span-2 flex items-start gap-1.5 p-3 rounded-xl bg-stire-purple/5 border border-stire-purple/25 text-[11px] text-stire-purple font-medium">
-          <Info :size="14" class="shrink-0 mt-px" aria-hidden="true" />
-          Tu cuenta se crea como estudiante. Un administrador revisará tu solicitud y, si la aprueba, podrás iniciar sesión como docente.
+        <p v-if="selectedRole === 'docente'" class="lg:col-span-2 flex items-start gap-1.5 p-3 rounded-xl bg-semantico-falla/10 border border-semantico-falla/40 text-[11px] text-semantico-falla font-semibold">
+          <ShieldAlert :size="14" class="shrink-0 mt-px" aria-hidden="true" />
+          Importante: tu cuenta se crea como estudiante. Un administrador debe aprobar tu solicitud; hasta entonces no verás el panel docente.
         </p>
 
         <!-- Lo opcional, debajo de lo obligatorio y plegado: el formulario se ve corto (recomendación de José, 02/10). -->
@@ -275,7 +278,7 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle, AlertTriangle, ArrowRight, BookOpen, Bot, Check, CheckCircle2, ChevronDown, ClipboardCheck, Eye, EyeOff, GraduationCap, Info, KeyRound, Lock, Mail, ShieldCheck, User } from 'lucide-vue-next'
+import { AlertCircle, AlertTriangle, ArrowRight, BookOpen, Bot, Check, CheckCircle2, ChevronDown, Eye, EyeOff, GraduationCap, KeyRound, Lock, Mail, ShieldAlert, ShieldCheck, User } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
 import { rutaDeVuelta } from '~/utils/codigoClase'

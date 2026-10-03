@@ -6,7 +6,7 @@
 
     <Teleport to="body">
       <div v-if="abierto" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="escaner-titulo" @keydown.esc="cerrar">
-        <div class="bg-base-blanco rounded-2xl p-5 w-full max-w-sm space-y-3 text-xs">
+        <div class="bg-base-blanco rounded-2xl p-5 w-full max-w-sm space-y-3 text-xs max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h2 id="escaner-titulo" class="text-sm font-bold text-base-texto-primario">Escanear el QR de la clase</h2>
             <button ref="cerrarRef" type="button" class="p-2 rounded-md hover:bg-base-bg-secundario" aria-label="Cerrar" @click="cerrar"><X :size="16" aria-hidden="true" /></button>

@@ -280,7 +280,7 @@
         aria-labelledby="modal-topic-title"
         @click.self="closeEditTopicModal">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4">
+        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h2 id="modal-topic-title" class="text-sm font-bold text-base-texto-primario">Editar Tema Curricular</h2>
             <button
@@ -354,7 +354,7 @@
         aria-labelledby="modal-archive-title"
         @click.self="archiveTopicModal.open = false">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4">
+        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <h2 id="modal-archive-title" class="text-sm font-bold text-base-texto-primario">¿Archivar este tema?</h2>
           <p class="text-xs text-base-texto-secundario">
             El tema <strong class="text-base-texto-primario">{{ archiveTopicModal.topic?.title }}</strong>
@@ -389,7 +389,7 @@
         aria-labelledby="modal-unit-title"
         @click.self="closeEditUnitModal">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4">
+        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h2 id="modal-unit-title" class="text-sm font-bold text-base-texto-primario">Editar la lección</h2>
             <button

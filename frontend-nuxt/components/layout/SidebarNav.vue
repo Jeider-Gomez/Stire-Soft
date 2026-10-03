@@ -1,5 +1,20 @@
 <template>
-  <aside ref="menuRef" class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] p-4 flex flex-col justify-between transition-[width] duration-200" :class="{ 'menu-colapsado md:w-16 md:px-2': colapsado }">
+  <aside ref="menuRef" class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] p-4 flex flex-col transition-[width] duration-200" :class="{ 'menu-colapsado md:w-16 md:px-2': colapsado }">
+    <!-- Ocultar el menú en computador para ganar espacio (recomendación de José, 02/10). Queda solo con íconos y se
+         recuerda en este navegador. En celular el menú ya es un cajón que se abre con la hamburguesa.
+         Arriba y fijo al bajar (pedido de Jeider, 02/10): abajo quedaba fuera de la vista. Es donde lo ponen ChatGPT,
+         Claude, Gemini o GitLab. -->
+    <button
+      id="boton-menu"
+      type="button"
+      class="hidden md:flex sticky top-16 z-10 -mt-1 mb-3 items-center gap-2.5 px-3 py-2 rounded-md bg-base-blanco border border-base-borde-sutil text-xs font-semibold text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario"
+      :aria-expanded="!colapsado"
+      :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
+      @click="alternarMenu">
+      <PanelLeftOpen v-if="colapsado" :size="18" aria-hidden="true" class="shrink-0" />
+      <PanelLeftClose v-else :size="18" aria-hidden="true" class="shrink-0" />
+      <span>{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
+    </button>
     <!-- Navegación según Rol Activo -->
     <div class="space-y-4">
       <!-- 🎓 NAVEGACIÓN ESTUDIANTE (6 Ítems Persistentes - Insumo 15 §5) -->
@@ -186,19 +201,6 @@
       </nav>
     </div>
 
-
-    <!-- Ocultar el menú en computador para ganar espacio (recomendación de José, 02/10). Queda solo con íconos y se
-         recuerda en este navegador. En celular el menú ya es un cajón que se abre con la hamburguesa. -->
-    <button
-      type="button"
-      class="hidden md:flex items-center gap-2.5 mt-4 px-3 py-2 rounded-md text-xs font-medium text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario"
-      :aria-expanded="!colapsado"
-      :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
-      @click="alternarMenu">
-      <PanelLeftOpen v-if="colapsado" :size="18" aria-hidden="true" class="shrink-0" />
-      <PanelLeftClose v-else :size="18" aria-hidden="true" class="shrink-0" />
-      <span>{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
-    </button>
   </aside>
 </template>
 

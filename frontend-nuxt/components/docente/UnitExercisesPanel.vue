@@ -229,7 +229,7 @@
         role="dialog" aria-modal="true" aria-labelledby="archive-exercise-title"
         @click.self="archive.open = false">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4 text-xs">
+        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4 text-xs max-h-[90dvh] overflow-y-auto">
           <h2 id="archive-exercise-title" class="text-sm font-bold text-base-texto-primario">¿Archivar «{{ archive.activity?.title }}»?</h2>
           <p class="text-base-texto-secundario">Los estudiantes dejarán de verlo. Sus entregas anteriores se conservan.</p>
           <p v-if="archive.error" role="alert" class="text-semantico-falla text-[11px]">{{ archive.error }}</p>

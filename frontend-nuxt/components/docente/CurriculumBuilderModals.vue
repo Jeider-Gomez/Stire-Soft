@@ -11,7 +11,7 @@
         @keydown.esc="closeModuleModal"
         @click.self="closeModuleModal">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4">
+        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h2 id="modal-new-module-title" class="text-sm font-bold text-base-texto-primario">
               Nuevo Módulo Curricular
@@ -90,7 +90,7 @@
         @keydown.esc="closeTopicModal"
         @click.self="closeTopicModal">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4">
+        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h2 id="modal-new-topic-title" class="text-sm font-bold text-base-texto-primario">
               Nuevo Tema Curricular
@@ -165,7 +165,7 @@
         @keydown.esc="closeUnitModal"
         @click.self="closeUnitModal">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4">
+        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h2 id="modal-new-unit-title" class="text-sm font-bold text-base-texto-primario">
               Nueva lección

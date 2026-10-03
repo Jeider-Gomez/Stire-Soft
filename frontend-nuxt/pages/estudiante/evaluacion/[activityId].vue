@@ -266,7 +266,7 @@
     <div
       v-if="workspaceStore.submissionResult"
       class="fixed inset-0 bg-base-texto-primario/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-center">
+      <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-center max-h-[90dvh] overflow-y-auto">
         <div
           class="w-14 h-14 rounded-full flex items-center justify-center text-2xl mx-auto font-bold"
           :class="isSuccessResult ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">

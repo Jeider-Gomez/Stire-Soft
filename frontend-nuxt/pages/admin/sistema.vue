@@ -189,7 +189,7 @@
         @keydown="handleDialogKeydown"
         @click.self="cancelCleanup">
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4">
+        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <h2 id="confirm-cleanup-title" class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
             <span class="text-semantico-falla" aria-hidden="true">⚠</span>
             <span>Confirmar Limpieza de Mantenimiento</span>

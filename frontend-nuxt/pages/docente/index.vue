@@ -342,7 +342,11 @@
         <div
           v-if="isModalOpen"
           class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-          @click.self="isModalOpen = false"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="crear-clase-titulo"
+          @mousedown="inicioClic = $event.target"
+          @click.self="inicioClic === $event.currentTarget && (isModalOpen = false)"
         >
           <Transition
             enter-active-class="transition duration-200 ease-out"
@@ -354,7 +358,7 @@
           >
             <div
               v-if="isModalOpen"
-              class="bg-white rounded-2xl border border-slate-200 p-7 max-w-md w-full shadow-2xl space-y-5"
+              class="bg-white rounded-2xl border border-slate-200 p-7 max-w-md w-full shadow-2xl space-y-5 max-h-[90dvh] overflow-y-auto"
             >
               <!-- Header modal -->
               <div class="flex items-center justify-between">
@@ -363,15 +367,17 @@
                     <BookOpen :size="18" class="text-white" />
                   </div>
                   <div>
-                    <h3 class="font-poppins font-bold text-slate-800">Crear Nueva Clase</h3>
+                    <h3 id="crear-clase-titulo" class="font-poppins font-bold text-slate-800">Crear Nueva Clase</h3>
                     <p class="text-[11px] text-slate-400">Universidad de Córdoba</p>
                   </div>
                 </div>
                 <button
+                  type="button"
+                  aria-label="Cerrar"
                   @click="isModalOpen = false"
                   class="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
                 >
-                  ✕
+                  <X :size="16" aria-hidden="true" />
                 </button>
               </div>
 
@@ -523,7 +529,7 @@
           class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
           @click.self="qrModal.open = false"
         >
-          <div class="bg-white rounded-3xl p-10 max-w-sm w-full text-center shadow-2xl space-y-6">
+          <div class="bg-white rounded-3xl p-10 max-w-sm w-full text-center shadow-2xl space-y-6 max-h-[90dvh] overflow-y-auto">
             <div>
               <h3 class="font-poppins font-bold text-xl text-slate-800">Código de Clase</h3>
               <p class="text-sm text-slate-400 mt-1">{{ qrModal.className }}</p>
@@ -593,6 +599,9 @@ const searchQuery = ref('')
 
 // Modal crear clase
 const isModalOpen = ref(false)
+// Se cierra por el fondo solo si el clic empezó en el fondo: seleccionar texto de la descripción y soltar afuera no
+// debe borrar lo escrito.
+const inicioClic = ref<EventTarget | null>(null)
 const isSubmitting = ref(false)
 const errorMessage = ref<string | null>(null)
 const newClass = reactive({

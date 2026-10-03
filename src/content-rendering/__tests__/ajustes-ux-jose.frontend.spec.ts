@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 import * as path from 'path';
 import * as ts from 'typescript';
 
@@ -16,7 +16,10 @@ const { ajustarAltura } = (() => {
   return mod.exports as { ajustarAltura: (el: unknown, alto: number) => void };
 })();
 
-const caja = (scrollHeight: number) => ({ style: { height: '', overflowY: '' }, offsetHeight: 42, clientHeight: 40, scrollHeight });
+const caja = (scrollHeight: number, enVentana = false) => ({
+  style: { height: '', overflowY: '' }, offsetHeight: 42, clientHeight: 40, scrollHeight,
+  closest: () => (enVentana ? {} : null),
+});
 
 describe('Ajustes de UI/UX de José', () => {
   it('la caja de texto crece con el contenido hasta el 60 % de la pantalla y luego se desplaza', () => {
@@ -26,6 +29,12 @@ describe('Ajustes de UI/UX de José', () => {
     const larga = caja(900);
     ajustarAltura(larga, 1000);
     expect(larga.style).toEqual({ height: '600px', overflowY: 'auto' });
+  });
+
+  it('dentro de una ventana emergente la caja crece solo hasta el 35 %, para no tapar el botón de guardar (reporte de Jeider)', () => {
+    const larga = caja(900, true);
+    ajustarAltura(larga, 1000);
+    expect(larga.style).toEqual({ height: '350px', overflowY: 'auto' });
   });
 
   it('las cajas para textos largos usan v-crece; los editores de código no', () => {
@@ -76,5 +85,58 @@ describe('Admin: restablecer contraseña (reporte de Jorge, 02/10)', () => {
   it('la contraseña generada va en un campo de solo lectura que se selecciona entera, sin espacios alrededor', () => {
     expect(admin).toMatch(/id="reset-pwd-generada"\s+:value="resetSuccessPassword"\s+readonly/);
     expect(admin).toContain("document.getElementById('reset-pwd-generada')");
+  });
+});
+
+describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y login', () => {
+  const vues = (dir: string): string[] =>
+    readdirSync(path.join(raiz, dir), { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? vues(path.join(dir, e.name)) : e.name.endsWith('.vue') ? [path.join(dir, e.name)] : []);
+
+  it('toda ventana emergente centrada tiene alto máximo y se puede desplazar hasta el botón de guardar', () => {
+    const sinTope: string[] = [];
+    for (const f of [...vues('pages'), ...vues('components')]) {
+      const lineas = leer(f).split('\n');
+      lineas.forEach((l, i) => {
+        if (!/fixed inset-0.*items-center/.test(l)) return;
+        const panel = lineas.slice(i, i + 22).find((x) => /class="[^"]*max-w-/.test(x)) ?? '';
+        if (!/max-h-/.test(panel)) sinTope.push(`${f}:${i + 1}`);
+      });
+    }
+    expect(sinTope).toEqual([]);
+  });
+
+  it('crear clase: la ventana no se cierra al soltar una selección afuera y la X es un ícono con nombre', () => {
+    const d = leer('pages', 'docente', 'index.vue');
+    expect(d).toContain('@click.self="inicioClic === $event.currentTarget && (isModalOpen = false)"');
+    expect(d).not.toContain('✕');
+  });
+
+  it('la solicitud de docente pendiente se avisa en rojo y dice que el admin aún no cambia el rol', () => {
+    const e = leer('pages', 'estudiante', 'index.vue');
+    expect(e).toContain("'bg-semantico-falla/10 border-semantico-falla text-semantico-falla': myRoleRequest.status !== 'approved'");
+    expect(e).toContain('El administrador todavía no ha cambiado tu rol a docente');
+    const r = leer('pages', 'auth', 'register.vue');
+    expect(r).toContain('Todavía no eres docente');
+    expect(r).toMatch(/v-if="selectedRole === 'docente'"[^>]*text-semantico-falla/);
+  });
+
+  it('el botón para ocultar el menú va arriba de la barra lateral y queda fijo al bajar', () => {
+    const menu = leer('components', 'layout', 'SidebarNav.vue');
+    const boton = menu.indexOf('id="boton-menu"');
+    expect(boton).toBeGreaterThan(-1);
+    expect(boton).toBeLessThan(menu.indexOf('<nav'));
+    expect(menu).toMatch(/id="boton-menu"[\s\S]*?class="[^"]*sticky top-16/);
+  });
+
+  it('login: marca al lado del título en computador, foco tras un error y ayuda de recuperación en su página', () => {
+    const l = leer('pages', 'auth', 'login.vue');
+    expect(l).toContain('flex flex-col lg:flex-row items-center');
+    expect(l).toContain('passwordRef.value?.focus()');
+    expect(l).toContain(":aria-describedby=\"errorMessage ? 'login-error' : undefined\"");
+    expect(l).not.toContain('No te llega el correo de recuperación');
+    const f = leer('pages', 'auth', 'forgot-password.vue');
+    expect(f).toContain('¿No te llega el correo?');
+    expect(f).not.toContain('⚠');
   });
 });
