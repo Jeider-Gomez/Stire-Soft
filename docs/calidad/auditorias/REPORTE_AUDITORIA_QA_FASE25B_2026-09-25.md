@@ -1,6 +1,6 @@
 # Reporte de auditoría QA — Fase 25, Parte B (frontend de Antigravity) · 25/09/2026
 
-**Auditor:** Claude Code · **Método:** [`GUIA_AUDITORIA_MAESTRA.md`](GUIA_AUDITORIA_MAESTRA.md) (Chrome real, base desechable, todo ejecutado hoy).
+**Auditor:** Claude Code · **Método:** [`GUIA_AUDITORIA_MAESTRA.md`](../GUIA_AUDITORIA_MAESTRA.md) (Chrome real, base desechable, todo ejecutado hoy).
 **Alcance:** las tareas B0 a B3 del plan de la Fase 25 (`feat/fase-25`, commits `6bfd086`, `e5e6b6a`, `0e7bc56`, `7437042`), sobre el backend de la Parte A ya en `main`.
 **No cubre:** el Tutor con este tipo de ejercicio, otros navegadores, lector de pantalla.
 

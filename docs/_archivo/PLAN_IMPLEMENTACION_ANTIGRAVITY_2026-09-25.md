@@ -1,6 +1,6 @@
 > **ARCHIVADO el 2026-09-25 — Fase 25 ejecutada (Parte A: Claude Code; Parte B: Antigravity), auditada y corregida por Claude Code.**
 > Es un documento histórico; el plan vigente es `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md` (Fase 26).
-> **Resultado de la auditoría** (`docs/calidad/REPORTE_AUDITORIA_QA_FASE25B_2026-09-25.md`): la seguridad de la vista previa y los flujos del docente y del estudiante
+> **Resultado de la auditoría** (`docs/calidad/auditorias/REPORTE_AUDITORIA_QA_FASE25B_2026-09-25.md`): la seguridad de la vista previa y los flujos del docente y del estudiante
 > estaban bien. Dos fallos reales, corregidos el mismo día: (1) la pantalla del ejercicio tenía alto fijo y en un celular el editor quedaba fuera de pantalla y «Entregar»
 > cortado; (2) «Probar» de la barra superior fallaba en silencio ante un 429. Además, al hacer A7 el fuzzing destapó un defecto **anterior a la fase**: `formatMarkdown`
 > podía colar atributos (`onclick`…) en HTML ya saneado; se cerró pasando el HTML final por DOMPurify en el navegador (`utils/sanitizeRenderedHtml.ts`).

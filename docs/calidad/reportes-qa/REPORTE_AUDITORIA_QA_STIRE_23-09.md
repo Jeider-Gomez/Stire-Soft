@@ -4,7 +4,7 @@
 **Auditor Responsable:** Jorge Cervantes (QA & Calidad)  
 **Fecha de Evaluación:** 23 de septiembre de 2026  
 **Rama Auditada:** `main` (commit `ef88916`, árbol limpio sincronizado con `origin/main`)  
-**Guía Normativa:** [`GUIA_AUDITORIA_2026-09-16.md`](GUIA_AUDITORIA_2026-09-16.md) (actualizada al 21/09)  
+**Guía Normativa:** [`GUIA_AUDITORIA_2026-09-16.md`](../guias-anteriores/GUIA_AUDITORIA_2026-09-16.md) (actualizada al 21/09)  
 **Ruta del Proyecto:** `c:\Users\Asus\Documents\10mo semestre\DDSE3\GITHUB\Stire-Soft`
 
 ---

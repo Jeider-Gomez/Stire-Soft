@@ -130,7 +130,7 @@ proyecto por semana):
 - [x] **S06-JOR01 · Verificación manual del fix de Fase G** — mismo objetivo técnico que `S06-J02`,
   desde el ángulo de QA (reproducir el `403`/éxito con pasos documentados, no solo confirmar que
   "funciona").
-- [x] **S06-JOR02 · Retomar 1-2 ángulos de `docs/calidad/GUIA_AUDITORIA_2026-09-16.md` que la
+- [x] **S06-JOR02 · Retomar 1-2 ángulos de `docs/calidad/guias-anteriores/GUIA_AUDITORIA_2026-09-16.md` que la
   auditoría del 18/09 no alcanzó a cubrir** — no es obligatorio cubrirlos todos esta semana; prioridad
   sugerida: pruebas adversariales contra el Tutor IA (intentar que dé la respuesta completa de un
   ejercicio) y accesibilidad real con lector de pantalla en al menos 2 flujos.
@@ -303,7 +303,7 @@ Semana 6. Las dos capturas son de ese día, **18/09**, no del 25/09.
 ### Jorge Cervantes
 
 - [x] Fix de Fase G verificado (QA). *(Auditoría entregada el 23/09:
-  `docs/calidad/REPORTE_AUDITORIA_QA_STIRE_23-09.md`, commit `07fccdb`. La §5.4 hace el barrido de control de
+  `docs/calidad/reportes-qa/REPORTE_AUDITORIA_QA_STIRE_23-09.md`, commit `07fccdb`. La §5.4 hace el barrido de control de
   acceso por módulo e incluye `activity-questions`. La reproducción en vivo del 403 y del 200 quedó registrada
   arriba, en `S06-J02`.)*
 - [x] Ángulos adicionales de `GUIA_AUDITORIA_2026-09-16.md` cubiertos. *(Mismo reporte: §4.2 pruebas

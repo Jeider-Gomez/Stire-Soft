@@ -406,7 +406,7 @@ usa `classToscano` (Module → Topic → LearningUnit → Activity → ActivityQ
 ## Fase G — Auditoría sistemática de BOLA y de rate-limiting (2026-09-16)
 
 **Contexto:** Jorge Cervantes (QA) hace una nueva auditoría pronto (ver
-`docs/calidad/GUIA_AUDITORIA_2026-09-16.md`). Esta fase existe para que su auditoría encuentre
+`docs/calidad/guias-anteriores/GUIA_AUDITORIA_2026-09-16.md`). Esta fase existe para que su auditoría encuentre
 menos — no para competir con ella, sino para hacer el trabajo de código que un QA manual no puede
 hacer bien (leer cada servicio, no solo probar la app por fuera). No depende de que Jorge termine
 primero; son complementarias.

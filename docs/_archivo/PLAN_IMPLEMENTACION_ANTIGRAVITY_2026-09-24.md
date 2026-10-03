@@ -1,6 +1,6 @@
 > **ARCHIVADO el 2026-09-24 — Fase 24 ejecutada por Antigravity, auditada por Claude Code y corregida (24b).**
 > Es un documento histórico; el plan vigente es `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md` (Fase 25).
-> **Resultado de la auditoría** (`docs/calidad/REPORTE_AUDITORIA_QA_FASE24_2026-09-23.md`): T1 a T5 entregadas. Cuatro fallos impedían fusionar la rama y se
+> **Resultado de la auditoría** (`docs/calidad/auditorias/REPORTE_AUDITORIA_QA_FASE24_2026-09-23.md`): T1 a T5 entregadas. Cuatro fallos impedían fusionar la rama y se
 > corrigieron el mismo día: (1) el creador de ejercicios no enviaba ningún tipo (campos `required` ocultos), (2) reordenar lecciones no funcionaba,
 > (3) los errores del servidor no se veían (leían `data.message`; el backend responde en `error`), (4) el login había perdido «¿Olvidaste tu clave?» —
 > **defecto de este plan (§T3, «texto fijo bajo el botón»), escrito antes de construir la recuperación por correo**; no repetirlo. Escape en 14 diálogos y la

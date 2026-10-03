@@ -190,11 +190,11 @@ El espacio de programación propio del estudiante (`docs/DISENO_PROYECTOS.md`), 
 ## Evaluación heurística y rendimiento del servidor · 30 de Septiembre de 2026
 
 - **Evaluación heurística y recorrido cognitivo** de las pantallas del estudiante y del docente en la web real
-  (`docs/calidad/EVALUACION_HEURISTICA_2026-09-30.md`): 11 hallazgos corregidos, 3 de gravedad alta. Las métricas de
+  (`docs/calidad/auditorias/EVALUACION_HEURISTICA_2026-09-30.md`): 11 hallazgos corregidos, 3 de gravedad alta. Las métricas de
   una clase mezclaban el progreso de otras clases; «5 repasos para hoy» cuando eran de mañana (también la insignia
   roja del menú); un 0 mientras cargaba; tres umbrales de dominio distintos; inicio de 7865 px en un teléfono;
   todas las pestañas con el mismo título; botón del tutor sin nombre accesible; emojis como íconos.
-- **Guía de la ronda 1** con el equipo: `docs/calidad/GUIA_RONDA_1_EQUIPO.md`.
+- **Guía de la ronda 1** con el equipo: `docs/calidad/guias-anteriores/GUIA_RONDA_1_EQUIPO.md`.
 - **Servidor:** el backend pasa de 3 GB a 1,5 GB de memoria (la VM tiene 4 GB y la comparte con MariaDB) y el juez
   queda en una ejecución por procesador. Medido en producción: 40 ejecuciones simultáneas responden en 2,3 s como
   máximo; 100, en 5,9 s.
@@ -1886,7 +1886,7 @@ es texto, seis lecciones hostiles no dejan ningún atributo ni etiqueta fuera de
 ## Fase 25, Parte B — auditoría y correcciones · 25 de Septiembre de 2026
 
 Antigravity entregó la Parte B (B0 a B3) en `feat/fase-25`. Claude Code la auditó en Chrome real contra una base desechable
-(`docs/calidad/REPORTE_AUDITORIA_QA_FASE25B_2026-09-25.md`): la seguridad de la vista previa (`sandbox=""` + CSP), el flujo del docente y el del estudiante
+(`docs/calidad/auditorias/REPORTE_AUDITORIA_QA_FASE25B_2026-09-25.md`): la seguridad de la vista previa (`sandbox=""` + CSP), el flujo del docente y el del estudiante
 estaban bien; dos fallos reales se corrigieron en la misma rama (solo frontend):
 
 - **F25-02 (alto): el ejercicio no se podía usar en un celular.** La página del ejercicio tenía alto fijo y `overflow-hidden`: en 375 px el editor quedaba fuera de
@@ -1970,7 +1970,7 @@ existe `.env`, por eso no se había visto.
 ## Fase 24 — auditoría y correcciones (24b) · 24 de Septiembre de 2026
 
 Antigravity entregó la Fase 24 en `feat/fase-24` (5 commits de funciones + informe). Claude Code la auditó en Chrome real contra una base
-desechable (`docs/calidad/REPORTE_AUDITORIA_QA_FASE24_2026-09-23.md`) y encontró cuatro fallos que impedían fusionarla; se corrigieron en la
+desechable (`docs/calidad/auditorias/REPORTE_AUDITORIA_QA_FASE24_2026-09-23.md`) y encontró cuatro fallos que impedían fusionarla; se corrigieron en la
 misma rama (solo frontend, `src/` no cambió):
 
 - **F24-01 (crítico):** el creador de ejercicios no enviaba ningún tipo desde un navegador real: los constructores de los otros tipos siguen en el DOM

@@ -1,7 +1,7 @@
 # Guía de la auditoría QA de la Semana 6 (21–25 de septiembre)
 
 **Para:** Jorge Cervantes · **Escrita por:** Claude Code, 21/09/2026 · **Entrega:** viernes 25/09.
-Continúa la [guía del 16/09](GUIA_AUDITORIA_2026-09-16.md) y tu [reporte del 18/09](REPORTE_AUDITORIA_QA_STIRE_18-09.md);
+Continúa la [guía del 16/09](GUIA_AUDITORIA_2026-09-16.md) y tu [reporte del 18/09](../reportes-qa/REPORTE_AUDITORIA_QA_STIRE_18-09.md);
 cubre las tareas `S06-JOR01` y `S06-JOR02` de la bitácora y agrega lo que cambió esta semana. Hazla en el orden en que
 aparece: está por prioridad. **No hace falta cubrirlo todo**: lo que no llegues a probar, dilo (eso también es información).
 

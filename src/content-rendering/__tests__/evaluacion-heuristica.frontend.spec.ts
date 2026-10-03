@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import * as path from 'path';
 import * as ts from 'typescript';
 
-// Hallazgos de la evaluación heurística del 30/09 (docs/calidad/EVALUACION_HEURISTICA_2026-09-30.md). Jest no compila
+// Hallazgos de la evaluación heurística del 30/09 (docs/calidad/auditorias/EVALUACION_HEURISTICA_2026-09-30.md). Jest no compila
 // frontend-nuxt/: se transpila la función de títulos y se leen las pantallas reales.
 const FRONT = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
 const leer = (...r: string[]) => readFileSync(path.join(FRONT, ...r), 'utf8');

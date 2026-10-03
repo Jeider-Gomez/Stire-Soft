@@ -1,6 +1,6 @@
 # Reporte de auditoría QA — Fase 24 (Antigravity) · 23/09/2026
 
-**Auditor:** Claude Code · **Método:** [`GUIA_AUDITORIA_MAESTRA.md`](GUIA_AUDITORIA_MAESTRA.md) (navegador real, base desechable, todo ejecutado hoy).
+**Auditor:** Claude Code · **Método:** [`GUIA_AUDITORIA_MAESTRA.md`](../GUIA_AUDITORIA_MAESTRA.md) (navegador real, base desechable, todo ejecutado hoy).
 **Alcance:** las 5 tareas de la Fase 24 (T1 currículo, T2 creador de ejercicios, T3 administración de usuarios, T4 «Mi perfil», T5 clase) y la
 autorización de los endpoints que ahora usa la interfaz. **No** cubre el resto de la aplicación ni el Tutor.
 
