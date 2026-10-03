@@ -82,15 +82,15 @@ aplicación en una URL pública, se desbloquean las pruebas en vivo que venían 
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] **S07-JL01 · Organizar la estructura de los dos cursos de contenido** *(viene de `S06-JL01`)* — Curso 1
-  (complejo, plan oficial HTML/CSS/JS) y Curso 2 (general, según la plataforma).
+- [x] **S07-JL01 · Organizar la estructura de los dos cursos de contenido** *(viene de `S06-JL01`)* — Curso 1
+  (complejo, plan oficial HTML/CSS/JS) y Curso 2 (general, según la plataforma). Trabajo conjunto con Jeider.
+- [x] **S07-JL05 · Escribir el contenido completo de los dos cursos** — trabajo conjunto con Jeider; cargados en la
+  plataforma.
 
-**Desbloqueadas el 26/09 (el despliegue ya está), pasan a «Esta semana»:**
-- [ ] **S07-JL03 · Validación pedagógica en vivo** — sobre https://stire-soft.vercel.app.
-- [ ] **S07-JL04 · Probar las funciones de docente en la creación de contenido** — se registra, pide el rol de docente y Jeider lo aprueba.
-
-**En Backlog:**
-- [ ] **S07-JL05 · Escribir el contenido completo de los dos cursos** — depende de `S07-JL01`.
+**Pasan a la Semana 8 (una sola tarea de Julio):**
+- [ ] **S07-JL03 · Validación pedagógica en vivo** y **S07-JL04 · Probar las funciones de docente** → revisar el rol
+  de docente con los cursos reales: coherencia entre lecciones, ejercicios e instrucciones; crear una lección y un
+  ejercicio; asignar un refuerzo; reporte de hallazgos en el repositorio.
 
 ### Jorge Cervantes — Gestión + Calidad
 
@@ -201,7 +201,11 @@ real. No hace falta cubrir los 7.
 
 ### Julio Galvis
 
-- [ ] Estructura de los dos cursos organizada.
+- [x] Estructura de los dos cursos organizada, y contenido completo escrito y cargado en la plataforma: Fundamentos de
+  Algoritmia (`ALGO-203413`) y Pensamiento algorítmico (`PENSAR-ALGO`). *(Trabajo conjunto de Julio y Jeider; evidencia en
+  `docs/cursos/` y `src/seeds/cursos/`; cerradas en Trello el 02/10.)*
+- [ ] Validación pedagógica en vivo y funciones de docente (`S07-JL03`, `S07-JL04`): pasan a la Semana 8 como una sola
+  tarea, revisar el rol de docente con los cursos reales.
 
 ### Jorge Cervantes
 
