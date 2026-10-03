@@ -51,7 +51,7 @@ todas sus lecciones aparecen como dominadas en «Mi progreso». Lo que no se alc
 
 | Quién | Qué |
 |---|---|
-| Jeider | Encender el servidor y comprobar https://stire-soft.vercel.app. Las dos plantillas ya están compartidas (ALGO-203413 y PENSAR-ALGO). **El servidor se apaga solo a las 23:00 y no se enciende solo:** encenderlo cada mañana de la prueba (Azure → `stire-servidor` → Iniciar, también desde la app del celular) y avisar al grupo si se cae. |
+| Jeider | Encender el servidor y comprobar https://stire-soft.vercel.app. Las dos plantillas ya están compartidas (ALGO-203413 y PENSAR-ALGO). **Durante la prueba el servidor no se apaga solo** (Jeider quitó el apagado de las 23:00 el 02/10; se reactiva al terminar). Si se cae: Azure → `stire-servidor` → Iniciar, también desde la app del celular, y avisar al grupo. |
 | Pedro y Julio | Crear su cuenta de docente y pedir el rol (el admin lo aprueba en «Usuarios y Roles»), y una **segunda cuenta** de estudiante con otro correo. |
 | Pedro (docente) | «Crear Nueva Clase» → «Copiar el contenido de» → **Fundamentos de Algoritmia (ALGO-203413)**. En Contenido, publicar la **Unidad 1**. Compartir el código o el QR de la clase. |
 | Julio (docente) | Lo mismo con **Pensamiento algorítmico (PENSAR-ALGO)**. Publicar las **secciones 1 y 2**. |

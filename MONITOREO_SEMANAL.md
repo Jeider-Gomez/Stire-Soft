@@ -49,8 +49,8 @@ cruzada). José y Jorge cambian de curso en la Semana 9. Detalle en `PRUEBA_DOS_
 | Fundamentos de Algoritmia (`ALGO-203413`) | Pedro | José y Julio (segunda cuenta) | **Unidad 1** completa (6 lecciones) |
 | Pensamiento algorítmico (`PENSAR-ALGO`) | Julio | Jorge y Pedro (segunda cuenta) | **Secciones 1 y 2** completas (5 lecciones) |
 
-Jeider entra como estudiante en las dos clases, sin obligación de terminar, y administra: enciende el servidor cada
-mañana, aprueba a los docentes y atiende las sugerencias.
+Jeider entra como estudiante en las dos clases, sin obligación de terminar, y administra: vigila que el servidor esté
+arriba (sin apagado automático durante la prueba), aprueba a los docentes y atiende las sugerencias.
 
 ### Resultados esperados
 
@@ -89,7 +89,7 @@ mañana, aprueba a los docentes y atiende las sugerencias.
   - Del reporte del Tutor de José (`HALLAZGOS.md`): las tarjetas de sugerencia necesitan más contraste para verse como
     botones.
 - [ ] **S08-J03 · Operar la prueba**
-  - Encender el servidor cada mañana (se apaga solo a las 23:00).
+  - Comprobar cada mañana que la app responde (el apagado automático está quitado durante la prueba).
   - Aprobar a los docentes y revisar las sugerencias cada día.
   - Corregir en el día lo de gravedad 3 («no me dejó seguir»).
 - [ ] **S08-J04 · Asistencia en el salón con cámaras reales** — probar el escáner con un celular Android, un iPhone y la
@@ -165,8 +165,8 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 
 ## ⚠️ 5. Riesgos vivos
 
-1. **Servidor apagado:** se apaga solo a las 23:00 y no se enciende solo. Si nadie lo enciende en la mañana, la prueba
-   se detiene ese día.
+1. **Servidor apagado:** *(mitigado el 02/10)* Jeider quitó el apagado automático de las 23:00 durante la prueba, para
+   que la app esté disponible a cualquier hora. Se vuelve a activar al terminar, para cuidar el crédito de Azure.
 2. **Clave del Tutor:** cada estudiante necesita su propia clave gratuita de Google AI Studio; sin ella no puede usar el
    Tutor.
 3. **Tiempo de respuesta del Tutor:** entre 3 y 29 segundos según la carga de Google; se avisa en pantalla.
