@@ -66,7 +66,7 @@
         <!-- 2. Pestaña Casos de Prueba (P02 — Solo coding) -->
         <div v-else-if="leftTab === 'casos' && isCodingActivity" class="space-y-4">
           <div class="flex items-center justify-between pb-2 border-b border-base-borde-sutil">
-            <h3 class="font-bold text-xs text-base-texto-primario">Casos Públicos de Verificación</h3>
+            <h3 class="font-bold text-xs text-base-texto-primario">Casos públicos de verificación</h3>
             <span class="text-[11px] text-base-texto-secundario">
               Evaluados con [▶ Probar código]
             </span>
@@ -156,7 +156,7 @@
         <!-- 3. Pestaña Consola / Registro de Ejecución -->
         <div v-else class="space-y-2">
           <div class="flex items-center justify-between pb-1 border-b border-base-borde-sutil">
-            <span class="font-bold text-xs">Historial de Calificación</span>
+            <span class="font-bold text-xs">Historial de calificación</span>
             <button
               @click="workspaceStore.consoleLog = ['Historial limpiado.']"
               class="text-[11px] text-base-texto-secundario hover:text-base-texto-primario underline">
@@ -365,7 +365,7 @@
           <NuxtLink
             to="/estudiante"
             class="flex-1 py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco text-xs font-bold transition-colors">
-            Volver al Inicio
+            Volver al inicio
           </NuxtLink>
         </div>
       </div>

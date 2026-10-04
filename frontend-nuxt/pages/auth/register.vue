@@ -37,7 +37,7 @@
           type="button"
           @click="navigateTo('/estudiante')"
           class="w-full py-1.5 px-3 rounded-lg bg-stire-blue text-white font-semibold text-xs hover:bg-stire-blue-dark transition-colors">
-          Ir al Inicio del Estudiante →
+          Ir al inicio del estudiante →
         </button>
       </div>
 

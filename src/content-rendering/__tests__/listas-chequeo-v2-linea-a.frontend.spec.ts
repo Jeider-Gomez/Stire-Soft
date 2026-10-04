@@ -55,7 +55,7 @@ describe('UX-02 · confirmar con un diálogo propio, no con window.confirm()', (
 });
 
 describe('UX-04 · consistencia: íconos de una sola familia y títulos en estilo de oración', () => {
-  const EMOJI = /[\u{1F300}-\u{1FAFF}✅❌⚠✔⏳ℹ⚙⬆⬇]/u;
+  const EMOJI = /[\u{1F300}-\u{1FAFF}✅❌⚠✔⏳ℹ⚙⬆⬇✏↩]/u;
 
   it('ninguna plantilla usa emojis como íconos (salvo los símbolos del registro de consola del ejercicio)', () => {
     const con = PANTALLAS.flatMap((f) =>
@@ -71,6 +71,26 @@ describe('UX-04 · consistencia: íconos de una sola familia y títulos en estil
     const viejos = ['Iniciar Sesión', 'Crear Cuenta', 'Mi Perfil', 'Mis Clases y Grupos', 'Repasos Diarios de Algoritmia', 'Gestión Global de Usuarios', 'Volver al Dashboard'];
     const con = PANTALLAS.filter((f) => viejos.some((v) => plantilla(f).includes(v)));
     expect(con).toEqual([]);
+  });
+
+  // La revisión del «después» encontró 138 rótulos más con mayúscula en cada palabra: menú, docente, administración y
+  // constructores de ejercicios. Una muestra de cada pantalla, para que no vuelvan.
+  it.each([
+    ['components/layout/SidebarNav.vue', ['Mi Progreso', 'Mis Clases', 'Plan de Estudio', 'Gestión Docente', 'Logs y Mantenimiento']],
+    ['pages/docente/index.vue', ['Crear Nueva Clase', 'Panel Docente', 'Total Estudiantes', 'Código de Clase']],
+    ['pages/docente/rendimiento.vue', ['Alumnos en Rezago', 'Roster de Estudiantes', 'Tasa Éxito']],
+    ['pages/docente/mensajes.vue', ['Enviar Mensaje', 'Redactar Mensaje']],
+    ['pages/estudiante/mensajes.vue', ['Enviar Mensaje', 'Escribir a un Docente']],
+    ['pages/estudiante/index.vue', ['Mis Clases', 'Asignatura Activa']],
+    ['pages/estudiante/repasos.vue', ['Volver al Inicio', 'Iniciar Refuerzo']],
+    ['pages/estudiante/evaluacion/[activityId].vue', ['Volver al Inicio', 'Historial de Calificación']],
+    ['pages/admin/index.vue', ['Gestión de Usuarios', 'Aprobar Solicitud']],
+    ['pages/admin/sistema.vue', ['Auditoría y Mantenimiento']],
+    ['components/docente/exercise-builders/McqExerciseBuilder.vue', ['Agregar Opción']],
+    ['components/docente/exercise-builders/CodingExerciseBuilder.vue', ['Agregar Caso', 'Casos de Prueba']],
+  ])('%s usa estilo de oración', (rel, viejos) => {
+    const s = leer(...(rel as string).split('/'));
+    expect((viejos as string[]).filter((v) => s.includes(v))).toEqual([]);
   });
 });
 

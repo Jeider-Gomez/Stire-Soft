@@ -20,11 +20,11 @@
 
     <!-- Leyenda de Triple Codificación Accesible (P06 — WCAG 2.1 AA) -->
     <section class="bg-base-blanco rounded-lg border border-base-borde-sutil p-3 flex flex-wrap items-center justify-between gap-3 text-xs text-base-texto-secundario">
-      <span class="font-bold text-base-texto-primario text-[11px]">Niveles de Urgencia Accesible:</span>
+      <span class="font-bold text-base-texto-primario text-[11px]">Niveles de urgencia:</span>
       <div class="flex items-center gap-4 text-[11px]">
         <span class="flex items-center gap-1.5 font-medium text-semantico-falla">
           <span>■</span>
-          <span>Crítico (Repasar hoy)</span>
+          <span>Crítico (repasar hoy)</span>
         </span>
         <span class="flex items-center gap-1.5 font-medium text-acento-ambar-fuerte">
           <span>▲</span>
@@ -32,7 +32,7 @@
         </span>
         <span class="flex items-center gap-1.5 font-medium text-semantico-pasa">
           <span>⬤</span>
-          <span>Al día (Retención alta)</span>
+          <span>Al día (retención alta)</span>
         </span>
       </div>
     </section>
@@ -81,7 +81,7 @@
               :class="item.urgency === 'critico'
                 ? 'bg-semantico-falla hover:opacity-90 text-base-blanco'
                 : 'bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco'">
-              Iniciar Refuerzo
+              Iniciar refuerzo
             </NuxtLink>
           </div>
         </div>
@@ -107,7 +107,7 @@
       <NuxtLink
         to="/estudiante"
         class="inline-block px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs">
-        Volver al Inicio
+        Volver al inicio
       </NuxtLink>
     </div>
   </div>

@@ -97,7 +97,7 @@
           @click="addRule"
           class="px-2.5 py-1 rounded text-xs font-bold bg-acento-ambar/15 text-acento-ambar-fuerte hover:bg-acento-ambar/25 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte disabled:opacity-40"
         >
-          <span>+</span><span>Agregar Regla</span>
+          <span>+</span><span>Agregar regla</span>
         </button>
       </div>
 

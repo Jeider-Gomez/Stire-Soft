@@ -5,7 +5,7 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Comunicación Directa
+            Comunicación directa
           </span>
           <span v-if="unreadCount > 0" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-semantico-falla/15 text-semantico-falla">
             {{ unreadCount }} no leídos
@@ -23,7 +23,7 @@
         @click="openNewMessageModal"
         class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors shadow-sm self-start sm:self-auto cursor-pointer flex items-center gap-1.5">
         <span>✉️</span>
-        <span>Redactar Mensaje</span>
+        <span>Redactar mensaje</span>
       </button>
     </header>
 
@@ -89,7 +89,7 @@
       <p class="text-base-texto-secundario max-w-md mx-auto">
         {{ activeTab === 'inbox'
           ? 'No has recibido mensajes todavía. Tus docentes pueden escribirte desde su panel.'
-          : 'Aún no le has escrito a ningún docente. Usa "Redactar Mensaje" para iniciar la conversación.' }}
+          : 'Aún no le has escrito a ningún docente. Usa "Redactar mensaje" para iniciar la conversación.' }}
       </p>
     </div>
 
@@ -129,12 +129,12 @@
           v-if="activeTab === 'inbox'"
           @click="replyToUser(msg.senderId, msg.sender?.fullName)"
           class="borde-afordancia px-3 py-1.5 rounded text-[11px] font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 whitespace-nowrap self-start">
-          ↩ Responder
+          Responder
         </button>
       </div>
     </div>
 
-    <!-- Modal para Redactar Mensaje -->
+    <!-- Modal para Redactar mensaje -->
     <div
       v-if="isComposeOpen"
       class="fixed inset-0 bg-base-texto-primario/50 backdrop-blur-xs flex items-center justify-center p-4 z-50"
@@ -145,7 +145,7 @@
         <div class="flex items-center justify-between pb-2 border-b border-base-borde-sutil">
           <h3 id="compose-modal-title" class="font-bold text-base-texto-primario flex items-center gap-1.5">
             <span>✉️</span>
-            <span>Escribir a un Docente</span>
+            <span>Escribir a un docente</span>
           </h3>
           <button
             @click="isComposeOpen = false"
@@ -159,7 +159,7 @@
           <!-- Selector de Docente -->
           <div>
             <label for="compose-teacher" class="block font-semibold text-base-texto-primario mb-1">
-              Docente Destinatario *
+              Docente destinatario *
             </label>
             <div v-if="isLoadingTeachers" class="text-base-texto-secundario py-1.5 text-[11px]">
               <Loader2 :size="14" class="animate-spin inline-block mr-1" aria-hidden="true" /> Cargando tus docentes...
@@ -186,7 +186,7 @@
           <!-- Contenido del Mensaje -->
           <div>
             <label for="compose-content" class="block font-semibold text-base-texto-primario mb-1">
-              Tu Mensaje *
+              Tu mensaje *
             </label>
             <textarea v-crece
               id="compose-content"
@@ -213,7 +213,7 @@
               :disabled="isSending"
               class="px-4 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
               <Loader2 :size="14" v-if="isSending" class="animate-spin" aria-hidden="true" />
-              <span>{{ isSending ? 'Enviando...' : 'Enviar Mensaje' }}</span>
+              <span>{{ isSending ? 'Enviando...' : 'Enviar mensaje' }}</span>
             </button>
           </div>
         </form>

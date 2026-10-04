@@ -2,7 +2,7 @@
   <div class="space-y-4 text-xs">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="font-bold text-base-texto-primario">Pares para Emparejar (Izquierda ↔ Derecha)</h3>
+        <h3 class="font-bold text-base-texto-primario">Pares para emparejar (izquierda ↔ derecha)</h3>
         <p class="text-[11px] text-base-texto-secundario">
           Escribe las parejas correctas en cada fila. El sistema barajará la columna derecha al estudiante (mínimo 2 parejas).
         </p>
@@ -12,7 +12,7 @@
         @click="addPair"
         class="px-2.5 py-1 rounded text-xs font-bold bg-acento-ambar/15 text-acento-ambar-fuerte hover:bg-acento-ambar/25 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
         <span>+</span>
-        <span>Agregar Pareja</span>
+        <span>Agregar pareja</span>
       </button>
     </div>
 

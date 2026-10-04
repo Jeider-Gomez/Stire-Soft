@@ -3,7 +3,7 @@
     <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-0.5">
       <span class="flex items-center gap-1.5">
         <span class="w-2 h-2 rounded-full bg-semantico-pasa"></span>
-        <span>Servicios Conectados</span>
+        <span>Servicios conectados</span>
       </span>
       <span>•</span>
       <span>STIRE-Soft</span>

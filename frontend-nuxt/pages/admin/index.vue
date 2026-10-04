@@ -5,7 +5,7 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/10 text-semantico-pasa uppercase tracking-wider">
-            Administración del Sistema
+            Administración del sistema
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
@@ -20,7 +20,7 @@
         id="open-register-user-btn"
         @click="openRegisterModal"
         class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors shadow-sm self-start sm:self-auto">
-        + Registrar Usuario
+        + Registrar usuario
       </button>
     </header>
 
@@ -33,7 +33,7 @@
         :class="activeTab === 'usuarios'
           ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold'
           : 'text-base-texto-secundario hover:text-base-texto-primario'">
-        <Users :size="14" aria-hidden="true" /><span>Gestión de Usuarios</span>
+        <Users :size="14" aria-hidden="true" /><span>Gestión de usuarios</span>
         <span class="px-1.5 py-0.5 rounded-full bg-base-bg-secundario text-[10px] text-slate-600 font-normal">
           {{ users.length }}
         </span>
@@ -46,7 +46,7 @@
         :class="activeTab === 'solicitudes'
           ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold'
           : 'text-base-texto-secundario hover:text-base-texto-primario'">
-        <ClipboardList :size="14" aria-hidden="true" /><span>Solicitudes de Docente</span>
+        <ClipboardList :size="14" aria-hidden="true" /><span>Solicitudes de docente</span>
         <span
           class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
           :class="pendingRequestsCount > 0 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-bg-secundario text-slate-600 font-normal'">
@@ -88,7 +88,7 @@
       <button @click="successMessage = ''" class="text-xs hover:underline">Cerrar</button>
     </div>
 
-    <!-- PESTAÑA 1: Gestión de Usuarios -->
+    <!-- PESTAÑA 1: Gestión de usuarios -->
     <template v-if="activeTab === 'usuarios'">
       <!-- Filtros y Búsqueda -->
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
@@ -123,8 +123,8 @@
           <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil">
             <tr>
               <th scope="col" class="p-3 font-semibold">Usuario</th>
-              <th scope="col" class="p-3 font-semibold">Correo Institucional</th>
-              <th scope="col" class="p-3 font-semibold">Rol Asignado</th>
+              <th scope="col" class="p-3 font-semibold">Correo institucional</th>
+              <th scope="col" class="p-3 font-semibold">Rol asignado</th>
               <th scope="col" class="p-3 font-semibold">Estado</th>
               <th scope="col" class="p-3 font-semibold text-right">Acciones</th>
             </tr>
@@ -262,7 +262,7 @@
             <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil">
               <tr>
                 <th scope="col" class="p-3 font-semibold">Solicitante</th>
-                <th scope="col" class="p-3 font-semibold">Materia o Dependencia</th>
+                <th scope="col" class="p-3 font-semibold">Materia o dependencia</th>
                 <th scope="col" class="p-3 font-semibold">Fecha</th>
                 <th scope="col" class="p-3 font-semibold">Estado</th>
                 <th scope="col" class="p-3 font-semibold text-right">Acciones / Resolución</th>
@@ -478,13 +478,13 @@
             class="px-4 py-2 rounded-md text-base-blanco text-xs font-bold disabled:opacity-50 transition-opacity flex items-center gap-2"
             :class="targetDecision === 'approve' ? 'bg-semantico-pasa hover:opacity-90' : 'bg-semantico-falla hover:opacity-90'">
             <Loader2 :size="14" v-if="isSubmittingDecision" class="inline-block animate-spin" aria-hidden="true" />
-            <span>{{ isSubmittingDecision ? 'Procesando...' : (targetDecision === 'approve' ? 'Aprobar Solicitud' : 'Rechazar Solicitud') }}</span>
+            <span>{{ isSubmittingDecision ? 'Procesando...' : (targetDecision === 'approve' ? 'Aprobar solicitud' : 'Rechazar solicitud') }}</span>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Modal accesible: Registrar Usuario (T3) -->
+    <!-- Modal accesible: Registrar usuario (T3) -->
     <div
       v-if="showRegisterModal"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"

@@ -5,14 +5,14 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/10 text-semantico-pasa uppercase tracking-wider">
-            Administración del Sistema
+            Administración del sistema
           </span>
           <span
             v-if="statusData"
             class="px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1.5"
             :class="isSystemHealthy ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
             <span aria-hidden="true">{{ isSystemHealthy ? '●' : '▲' }}</span>
-            <span>{{ isSystemHealthy ? 'Servicios Operacionales' : 'Degradación Detectada' }}</span>
+            <span>{{ isSystemHealthy ? 'Servicios operacionales' : 'Degradación detectada' }}</span>
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
@@ -44,7 +44,7 @@
     <!-- ESTADO: Error de red o 403 -->
     <div v-else-if="errorMessage" role="alert" class="p-8 text-center bg-base-blanco rounded-xl border border-semantico-falla/30 text-xs space-y-3">
       <TriangleAlert :size="28" class="text-3xl" aria-hidden="true" />
-      <h3 class="font-bold text-semantico-falla text-sm">Fallo al Obtener Telemetría</h3>
+      <h3 class="font-bold text-semantico-falla text-sm">No se pudo obtener la telemetría</h3>
       <p class="text-base-texto-secundario max-w-md mx-auto">
         {{ errorMessage }}
       </p>
@@ -86,7 +86,7 @@
         <!-- 2. Sandbox Aislado -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm space-y-2">
           <div class="flex items-center justify-between text-xs">
-            <span class="font-semibold text-base-texto-secundario">Sandbox (Promedio)</span>
+            <span class="font-semibold text-base-texto-secundario">Sandbox (promedio)</span>
             <span
               class="px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
               :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600 border border-base-borde-sutil'">
@@ -102,10 +102,10 @@
           </p>
         </div>
 
-        <!-- 3. Base de Datos MariaDB -->
+        <!-- 3. Base de datos MariaDB -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm space-y-2">
           <div class="flex items-center justify-between text-xs">
-            <span class="font-semibold text-base-texto-secundario">Base de Datos</span>
+            <span class="font-semibold text-base-texto-secundario">Base de datos</span>
             <span
               class="px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
               :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
@@ -161,7 +161,7 @@
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
-            Estado Detallado de Subsistemas STIRE
+            Estado detallado de los subsistemas de STIRE
           </h2>
           <span class="text-[11px] text-base-texto-secundario font-mono">
             Actualizado a las {{ formattedGeneratedAt }}
@@ -176,7 +176,7 @@
                 <th scope="col" class="p-3">Detalle / Configuración</th>
                 <th scope="col" class="p-3 text-center">Estado</th>
                 <th scope="col" class="p-3 text-center">Recursos / Rendimiento</th>
-                <th scope="col" class="p-3 text-right">Tiempo Activo / Métrica</th>
+                <th scope="col" class="p-3 text-right">Tiempo activo / métrica</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-base-borde-sutil font-mono text-[11px]">
@@ -197,9 +197,9 @@
                 </td>
               </tr>
 
-              <!-- 2. Base de Datos MariaDB -->
+              <!-- 2. Base de datos MariaDB -->
               <tr class="hover:bg-base-bg-secundario/40 transition-colors">
-                <td class="p-3 font-bold font-sans text-base-texto-primario">Base de Datos</td>
+                <td class="p-3 font-bold font-sans text-base-texto-primario">Base de datos</td>
                 <td class="p-3 text-base-texto-secundario">MariaDB / TypeORM Pool</td>
                 <td class="p-3 text-center">
                   <span
@@ -216,9 +216,9 @@
                 </td>
               </tr>
 
-              <!-- 3. Sandbox de Código -->
+              <!-- 3. Sandbox de código -->
               <tr class="hover:bg-base-bg-secundario/40 transition-colors">
-                <td class="p-3 font-bold font-sans text-base-texto-primario">Sandbox de Código</td>
+                <td class="p-3 font-bold font-sans text-base-texto-primario">Sandbox de código</td>
                 <td class="p-3 text-base-texto-secundario">
                   Adapter: {{ statusData.sandbox.adapter || '—' }} · Timeout: {{ statusData.sandbox.timeoutMs }} ms
                 </td>
@@ -237,9 +237,9 @@
                 </td>
               </tr>
 
-              <!-- 4. Cola de Calificación (Judge Queue) -->
+              <!-- 4. Cola de calificación (Judge Queue) -->
               <tr class="hover:bg-base-bg-secundario/40 transition-colors">
-                <td class="p-3 font-bold font-sans text-base-texto-primario">Cola de Calificación</td>
+                <td class="p-3 font-bold font-sans text-base-texto-primario">Cola de calificación</td>
                 <td class="p-3 text-base-texto-secundario">
                   Driver: {{ statusData.judgeQueue.driver || 'inline' }}
                 </td>
@@ -258,9 +258,9 @@
                 </td>
               </tr>
 
-              <!-- 5. Tutor Socrático IA -->
+              <!-- 5. Tutor socrático IA -->
               <tr class="hover:bg-base-bg-secundario/40 transition-colors">
-                <td class="p-3 font-bold font-sans text-base-texto-primario">Tutor Socrático IA</td>
+                <td class="p-3 font-bold font-sans text-base-texto-primario">Tutor socrático IA</td>
                 <td class="p-3 text-base-texto-secundario">
                   {{ statusData.tutor.provider || 'Gemini' }} · {{ statusData.tutor.model || '—' }}
                 </td>

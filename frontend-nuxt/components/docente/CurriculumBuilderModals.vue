@@ -14,7 +14,7 @@
         <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h2 id="modal-new-module-title" class="text-sm font-bold text-base-texto-primario">
-              Nuevo Módulo Curricular
+              Nuevo módulo curricular
             </h2>
             <button
               @click="closeModuleModal"
@@ -35,7 +35,7 @@
                 v-model="moduleModal.form.title"
                 type="text"
                 required
-                placeholder="Ej. Módulo 1: Fundamentos de Programación"
+                placeholder="Ej. Módulo 1: Fundamentos de programación"
                 class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario" />
             </div>
 
@@ -93,7 +93,7 @@
         <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h2 id="modal-new-topic-title" class="text-sm font-bold text-base-texto-primario">
-              Nuevo Tema Curricular
+              Nuevo tema curricular
             </h2>
             <button
               @click="closeTopicModal"
@@ -114,7 +114,7 @@
                 v-model="topicModal.form.title"
                 type="text"
                 required
-                placeholder="Ej. Variables, Tipos y Operadores"
+                placeholder="Ej. Variables, tipos y operadores"
                 class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario" />
             </div>
 

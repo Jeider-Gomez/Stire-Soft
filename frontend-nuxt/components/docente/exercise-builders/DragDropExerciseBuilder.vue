@@ -4,7 +4,7 @@
     <div class="space-y-3">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="font-bold text-base-texto-primario">1. Destinos o Categorías (Targets)</h3>
+          <h3 class="font-bold text-base-texto-primario">1. Destinos o categorías</h3>
           <p class="text-[11px] text-base-texto-secundario">
             Zonas donde el estudiante arrastrará los elementos (mínimo 2).
           </p>
@@ -14,7 +14,7 @@
           @click="addTarget"
           class="px-2.5 py-1 rounded text-xs font-bold bg-acento-ambar/15 text-acento-ambar-fuerte hover:bg-acento-ambar/25 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
           <span>+</span>
-          <span>Agregar Destino</span>
+          <span>Agregar destino</span>
         </button>
       </div>
 
@@ -49,7 +49,7 @@
     <div class="space-y-3">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="font-bold text-base-texto-primario">2. Elementos e Indicación de Destino Correcto (Items)</h3>
+          <h3 class="font-bold text-base-texto-primario">2. Elementos y su destino correcto</h3>
           <p class="text-[11px] text-base-texto-secundario">
             Cada elemento debe estar asignado a su destino correcto (mínimo 2).
           </p>
@@ -59,7 +59,7 @@
           @click="addItem"
           class="px-2.5 py-1 rounded text-xs font-bold bg-acento-ambar/15 text-acento-ambar-fuerte hover:bg-acento-ambar/25 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
           <span>+</span>
-          <span>Agregar Elemento</span>
+          <span>Agregar elemento</span>
         </button>
       </div>
 
@@ -122,7 +122,7 @@ let targetCounter = 2
 let itemCounter = 4
 
 const targets = ref<TargetItem[]>([
-  { id: 'target1', label: 'Tipos Primitivos' },
+  { id: 'target1', label: 'Tipos primitivos' },
   { id: 'target2', label: 'Tipos de Referencia' }
 ])
 
@@ -171,7 +171,7 @@ function reset() {
   targetCounter = 2
   itemCounter = 4
   targets.value = [
-    { id: 'target1', label: 'Tipos Primitivos' },
+    { id: 'target1', label: 'Tipos primitivos' },
     { id: 'target2', label: 'Tipos de Referencia' }
   ]
   items.value = [

@@ -6,7 +6,7 @@
         <Landmark :size="20" class="text-acento-ambar-fuerte shrink-0" aria-hidden="true" />
         <div>
           <span class="text-[10px] font-bold uppercase tracking-wider text-acento-ambar-fuerte">
-            Asignatura Activa
+            Asignatura activa
           </span>
           <h2 class="text-xs sm:text-sm font-bold text-base-texto-primario">
             {{ studentStore.currentClassName || 'Sin clase activa seleccionada' }}
@@ -22,7 +22,7 @@
           to="/estudiante/clases"
           class="borde-afordancia min-h-[44px] px-3 py-1.5 rounded-md text-xs font-semibold text-base-texto-primario bg-base-blanco hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 shadow-sm">
           <Library :size="14" aria-hidden="true" />
-          <span>Mis Clases ({{ studentStore.enrolledClasses.length }})</span>
+          <span>Mis clases ({{ studentStore.enrolledClasses.length }})</span>
         </NuxtLink>
       </div>
     </div>
@@ -84,7 +84,7 @@
         to="/estudiante/clases"
         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors shadow-sm">
         <KeyRound :size="14" aria-hidden="true" />
-        <span>Ingresar Código de Clase</span>
+        <span>Ingresar código de clase</span>
       </NuxtLink>
     </section>
 

@@ -5,7 +5,7 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Auditoría y Mantenimiento
+            Auditoría y mantenimiento
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
@@ -24,7 +24,7 @@
         class="px-4 py-2 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:bg-semantico-falla/90 transition-colors shadow-sm self-start sm:self-auto flex items-center gap-1.5 cursor-pointer disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-semantico-falla">
         <Loader2 :size="14" v-if="isCleaning" class="animate-spin" aria-hidden="true" />
         <Eraser :size="16" v-else aria-hidden="true" />
-        <span>{{ isCleaning ? 'Ejecutando limpieza...' : 'Ejecutar Limpieza de Mantenimiento' }}</span>
+        <span>{{ isCleaning ? 'Ejecutando limpieza...' : 'Ejecutar limpieza de mantenimiento' }}</span>
       </button>
     </header>
 
@@ -61,7 +61,7 @@
     <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
-          Parámetros Globales del Sandbox de Ejecución (Solo Lectura)
+          Parámetros globales del sandbox de ejecución (solo lectura)
         </h2>
         <span class="text-[11px] text-base-texto-secundario">
           Fijados por el servidor backend
@@ -71,7 +71,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
         <!-- Timeout -->
         <div class="p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil space-y-1">
-          <span class="text-base-texto-secundario text-[11px] block">Límite de Tiempo (Timeout)</span>
+          <span class="text-base-texto-secundario text-[11px] block">Límite de tiempo (timeout)</span>
           <span class="font-mono font-bold text-base-texto-primario text-sm">
             {{ systemStatus?.sandbox.timeoutMs != null ? `${systemStatus.sandbox.timeoutMs} ms` : '—' }}
           </span>
@@ -80,7 +80,7 @@
 
         <!-- Memoria Max Heap -->
         <div class="p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil space-y-1">
-          <span class="text-base-texto-secundario text-[11px] block">Memoria Máxima (Heap)</span>
+          <span class="text-base-texto-secundario text-[11px] block">Memoria máxima (heap)</span>
           <span class="font-mono font-bold text-base-texto-primario text-sm">
             {{ systemStatus?.sandbox.maxHeapMb != null ? `${systemStatus.sandbox.maxHeapMb} MB` : '—' }}
           </span>
@@ -89,7 +89,7 @@
 
         <!-- Salida Máxima -->
         <div class="p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil space-y-1">
-          <span class="text-base-texto-secundario text-[11px] block">Salida Máxima (Stdout)</span>
+          <span class="text-base-texto-secundario text-[11px] block">Salida máxima (stdout)</span>
           <span class="font-mono font-bold text-base-texto-primario text-sm">
             {{ systemStatus?.sandbox.maxOutputKb != null ? `${systemStatus.sandbox.maxOutputKb} KB` : '—' }}
           </span>
@@ -112,7 +112,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-base-borde-sutil">
         <div>
           <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
-            Visor de Eventos y Registro Técnico
+            Visor de eventos y registro técnico
           </h2>
           <p v-if="logsNote" class="text-[10px] text-base-texto-secundario mt-0.5">
             {{ logsNote }}
@@ -192,7 +192,7 @@
         <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <h2 id="confirm-cleanup-title" class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
             <TriangleAlert :size="16" class="text-semantico-falla" aria-hidden="true" />
-            <span>Confirmar Limpieza de Mantenimiento</span>
+            <span>Confirmar limpieza de mantenimiento</span>
           </h2>
           <p class="text-xs text-base-texto-secundario leading-relaxed">
             Esta operación <strong>modifica resultados de estudiantes</strong>: marca como incorrectas (nota 0) las respuestas que quedaron sin calificar y cierra con nota 0 las entregas que llevan más de 10 minutos esperando calificación, para que puedan reintentar. No se puede deshacer desde aquí. ¿Deseas continuar?

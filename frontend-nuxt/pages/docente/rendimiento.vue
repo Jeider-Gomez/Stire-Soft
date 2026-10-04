@@ -63,7 +63,7 @@
       <NuxtLink
         to="/docente"
         class="inline-block px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors">
-        Volver a Mis Clases
+        Volver a mis clases
       </NuxtLink>
     </div>
 
@@ -71,10 +71,10 @@
     <div v-else-if="metrics" class="space-y-6">
       <!-- Tarjetas KPI -->
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- KPI 1: Dominio Promedio -->
+        <!-- KPI 1: Dominio promedio -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-1">
           <span class="text-[11px] font-semibold text-base-texto-secundario uppercase tracking-wider block">
-            Dominio Promedio
+            Dominio promedio
           </span>
           <div class="flex items-baseline gap-2">
             <span class="text-2xl font-bold font-mono" :class="metrics.metrics.avgClassMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
@@ -90,10 +90,10 @@
           </div>
         </div>
 
-        <!-- KPI 2: Tasa de Aprobación -->
+        <!-- KPI 2: Tasa de aprobación -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-1">
           <span class="text-[11px] font-semibold text-base-texto-secundario uppercase tracking-wider block">
-            Tasa de Aprobación
+            Tasa de aprobación
           </span>
           <div class="flex items-baseline gap-2">
             <span class="text-2xl font-bold font-mono text-base-texto-primario">
@@ -109,7 +109,7 @@
         <!-- KPI 3: Alumnos en Riesgo -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-1">
           <span class="text-[11px] font-semibold text-base-texto-secundario uppercase tracking-wider block">
-            Alumnos en Rezago
+            Alumnos en rezago
           </span>
           <div class="flex items-baseline gap-2">
             <span class="text-2xl font-bold font-mono" :class="atRiskCount > 0 ? 'text-semantico-falla' : 'text-semantico-pasa'">
@@ -125,7 +125,7 @@
         <!-- KPI 4: Total Alumnos Activos -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-1">
           <span class="text-[11px] font-semibold text-base-texto-secundario uppercase tracking-wider block">
-            Cohorte Activa
+            Cohorte activa
           </span>
           <div class="flex items-baseline gap-2">
             <span class="text-2xl font-bold font-mono text-acento-ambar-fuerte">
@@ -142,12 +142,12 @@
       <!-- Mapa de calor (paso 6): a quién ayudar ahora -->
       <DocenteMapaDeCalor :class-id="selectedClassId" />
 
-      <!-- Roster de Estudiantes con Filtros -->
+      <!-- Lista de estudiantes con filtros -->
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden space-y-4 p-5">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-base-borde-sutil text-xs">
           <div>
             <h2 class="text-sm font-bold text-base-texto-primario">
-              Roster de Estudiantes y Nivel de Dominio
+              Estudiantes y nivel de dominio
             </h2>
             <p class="text-base-texto-secundario text-[11px]">
               Haz clic en cualquier estudiante para inspeccionar su trazabilidad individual
@@ -175,7 +175,7 @@
                 <th class="p-3">Estudiante</th>
                 <th class="p-3">Correo</th>
                 <th class="p-3 text-center">Dominio</th>
-                <th class="p-3 text-center">Tasa Éxito</th>
+                <th class="p-3 text-center">Tasa de éxito</th>
                 <th class="p-3 text-center">Envíos</th>
                 <th class="p-3 text-center">Diagnóstico</th>
                 <th class="p-3 text-right">Acción</th>
@@ -209,7 +209,7 @@
                       : st.avgMastery >= 80
                         ? 'bg-semantico-pasa/10 text-semantico-pasa'
                         : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
-                    {{ st.avgMastery < 50 ? 'Rezago Crítico' : st.avgMastery >= 80 ? 'Sobresaliente' : 'En Progreso' }}
+                    {{ st.avgMastery < 50 ? 'Rezago crítico' : st.avgMastery >= 80 ? 'Sobresaliente' : 'En progreso' }}
                   </span>
                 </td>
                 <td class="p-3 text-right">

@@ -176,7 +176,7 @@
                   @click="openEditTopicModal(topic)"
                   class="px-2 py-0.5 rounded text-[11px] font-semibold bg-base-bg-secundario border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                   :aria-label="`Editar tema ${topic.title}`">
-                  ✏ Editar
+                  Editar
                 </button>
                 <button
                   @click="confirmArchiveTopic(topic)"
@@ -422,7 +422,7 @@
             </div>
 
             <div>
-              <label for="unit-difficulty" class="block font-semibold text-base-texto-primario mb-1">Nivel de Dificultad</label>
+              <label for="unit-difficulty" class="block font-semibold text-base-texto-primario mb-1">Nivel de dificultad</label>
               <select
                 id="unit-difficulty"
                 v-model="editUnitModal.form.difficulty"

@@ -3,7 +3,7 @@
     <!-- Código inicial -->
     <div>
       <label for="coding-starter" class="block font-semibold text-base-texto-primario mb-1">
-        Código Plantilla Inicial (<code>starterCode</code>)
+        Código plantilla inicial (<code>starterCode</code>)
       </label>
       <p class="text-[11px] text-base-texto-secundario mb-1">
         Código base con el que arrancará el editor del estudiante (opcional).
@@ -29,7 +29,7 @@
     <div class="space-y-3">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="font-bold text-base-texto-primario">Casos de Prueba (Rúbrica de Evaluación)</h3>
+          <h3 class="font-bold text-base-texto-primario">Casos de prueba (rúbrica de evaluación)</h3>
           <p class="text-[11px] text-base-texto-secundario">
             El juez distribuirá automáticamente el puntaje total entre los casos de prueba.
           </p>
@@ -39,7 +39,7 @@
           @click="addTestCase"
           class="px-2.5 py-1 rounded text-xs font-bold bg-acento-ambar/15 text-acento-ambar-fuerte hover:bg-acento-ambar/25 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
           <span>+</span>
-          <span>Agregar Caso</span>
+          <span>Agregar caso</span>
         </button>
       </div>
 
@@ -88,7 +88,7 @@
 
             <div>
               <label :for="`tc-expected-${idx}`" class="block text-[11px] text-base-texto-secundario mb-1">
-                Salida Esperada (<code>stdout</code>) *
+                Salida esperada (<code>stdout</code>) *
               </label>
               <input
                 :id="`tc-expected-${idx}`"
@@ -115,8 +115,8 @@ interface TestCaseItem {
 
 const starterCode = ref('')
 const testCases = ref<TestCaseItem[]>([
-  { label: 'Caso Público 1', input: '', expected: '', isPublic: true },
-  { label: 'Caso Oculto 2', input: '', expected: '', isPublic: false }
+  { label: 'Caso público 1', input: '', expected: '', isPublic: true },
+  { label: 'Caso oculto 2', input: '', expected: '', isPublic: false }
 ])
 
 function addTestCase() {
@@ -138,8 +138,8 @@ function removeTestCase(index: number) {
 function reset() {
   starterCode.value = ''
   testCases.value = [
-    { label: 'Caso Público 1', input: '', expected: '', isPublic: true },
-    { label: 'Caso Oculto 2', input: '', expected: '', isPublic: false }
+    { label: 'Caso público 1', input: '', expected: '', isPublic: true },
+    { label: 'Caso oculto 2', input: '', expected: '', isPublic: false }
   ]
 }
 

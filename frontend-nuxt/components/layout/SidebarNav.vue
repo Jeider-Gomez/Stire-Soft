@@ -32,7 +32,7 @@
 
         <!-- 2, 3, 4: Los 3 Módulos con acordeón interno sin flyout -->
         <div class="pt-2 pb-1 ocultar-colapsado">
-          <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Plan de Estudio</p>
+          <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Plan de estudio</p>
           <div v-for="mod in studentStore.modules" :key="mod.id" class="mb-1">
             <button
               @click="toggleModule(mod.id)"
@@ -91,13 +91,13 @@
           </span>
         </NuxtLink>
 
-        <!-- 6. Mi Progreso (EST-V06) -->
+        <!-- 6. Mi progreso (EST-V06) -->
         <NuxtLink
           to="/estudiante/progreso"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/progreso' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <TrendingUp :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Mi Progreso</span>
+          <span>Mi progreso</span>
         </NuxtLink>
 
         <!-- Asistencia con QR (src/asistencia): el código que el estudiante le muestra al docente -->
@@ -131,14 +131,14 @@
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
       <nav v-else-if="authStore.currentRole === 'docente'" class="space-y-1.5 text-sm font-medium">
-        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Gestión Docente</p>
+        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Gestión docente</p>
 
         <NuxtLink
           to="/docente"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <Users :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Mis Clases</span>
+          <span>Mis clases</span>
         </NuxtLink>
 
         <!-- La clase como lugar (utils/pestanasClase.ts): cada clase abre su «Hoy», y adentro están sus pestañas
@@ -180,7 +180,7 @@
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/dashboard' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <Activity :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Estado del Sistema</span>
+          <span>Estado del sistema</span>
         </NuxtLink>
 
         <NuxtLink
@@ -188,7 +188,7 @@
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin' || route.path === '/admin/usuarios' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <ShieldCheck :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Usuarios y Roles</span>
+          <span>Usuarios y roles</span>
         </NuxtLink>
 
         <NuxtLink
@@ -204,7 +204,7 @@
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/sistema' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <Settings :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Logs y Mantenimiento</span>
+          <span>Registros y mantenimiento</span>
         </NuxtLink>
       </nav>
     </div>

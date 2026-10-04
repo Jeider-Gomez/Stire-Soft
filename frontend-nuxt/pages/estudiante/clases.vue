@@ -5,7 +5,7 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-acento-ambar/15 text-acento-ambar-fuerte uppercase tracking-wider">
-            Portal Estudiantil • Mis Clases
+            Portal estudiantil • Mis clases
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
@@ -142,7 +142,7 @@
               @click="selectActiveClass(item)"
               class="px-3.5 py-1.5 rounded-md font-bold text-xs transition-colors"
               :class="isActiveClass(item.class?.id) ? 'bg-base-bg-secundario text-base-texto-primario hover:bg-base-borde-fuerte' : 'bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco shadow-sm'">
-              {{ isActiveClass(item.class?.id) ? 'Ver Contenido' : 'Cambiar a esta clase' }}
+              {{ isActiveClass(item.class?.id) ? 'Ver contenido' : 'Cambiar a esta clase' }}
             </button>
           </div>
         </div>

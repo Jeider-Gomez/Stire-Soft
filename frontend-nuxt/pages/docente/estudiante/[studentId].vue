@@ -7,7 +7,7 @@
         :to="volverAlGrupo"
         class="borde-afordancia px-2.5 py-1 rounded text-base-texto-secundario hover:text-base-texto-primario flex items-center gap-1">
         <span>◀</span>
-        <span>Volver a Rendimiento del Grupo</span>
+        <span>Volver al rendimiento del grupo</span>
       </NuxtLink>
     </div>
 
@@ -20,7 +20,7 @@
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          {{ dashboard?.studentName || 'Seguimiento y Diagnóstico de Estudiante' }}
+          {{ dashboard?.studentName || 'Seguimiento y diagnóstico del estudiante' }}
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
           Universidad de Córdoba • Sistema de Tutoría Inteligente STIRE
@@ -65,7 +65,7 @@
         <NuxtLink
           :to="volverAlGrupo"
           class="px-4 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold">
-          Volver a Cohorte
+          Volver a la cohorte
         </NuxtLink>
       </div>
     </div>
@@ -151,7 +151,7 @@
       <!-- Historial de Entregas Recientes -->
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
-          Historial de Soluciones y Entregas
+          Historial de soluciones y entregas
         </h2>
 
         <div v-if="dashboard.recentSubmissions.length === 0" class="text-xs text-base-texto-secundario italic py-4">

@@ -2,7 +2,7 @@
   <div class="space-y-4 text-xs">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="font-bold text-base-texto-primario">Opciones de Respuesta (Selección Única)</h3>
+        <h3 class="font-bold text-base-texto-primario">Opciones de respuesta (selección única)</h3>
         <p class="text-[11px] text-base-texto-secundario">
           Agrega las opciones y marca cuál es la respuesta correcta con el botón radial.
         </p>
@@ -12,7 +12,7 @@
         @click="addOption"
         class="px-2.5 py-1 rounded text-xs font-bold bg-acento-ambar/15 text-acento-ambar-fuerte hover:bg-acento-ambar/25 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
         <span>+</span>
-        <span>Agregar Opción</span>
+        <span>Agregar opción</span>
       </button>
     </div>
 
@@ -63,7 +63,7 @@
     <!-- Explicación pedagógica opcional -->
     <div>
       <label for="mcq-explanation" class="block font-semibold text-base-texto-primario mb-1">
-        Explicación de Retroalimentación (opcional)
+        Explicación de retroalimentación (opcional)
       </label>
       <input
         id="mcq-explanation"

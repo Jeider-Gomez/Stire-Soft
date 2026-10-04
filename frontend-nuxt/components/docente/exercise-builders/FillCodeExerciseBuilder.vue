@@ -3,7 +3,7 @@
     <div>
       <div class="flex items-center justify-between mb-1">
         <label for="fillcode-template" class="block font-semibold text-base-texto-primario">
-          Plantilla de Código con Huecos (<code>codeTemplate</code>) *
+          Plantilla de código con huecos (<code>codeTemplate</code>) *
         </label>
         <button
           type="button"
@@ -44,7 +44,7 @@
     <div class="space-y-3">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="font-bold text-base-texto-primario">Respuestas Correctas para los Huecos</h3>
+          <h3 class="font-bold text-base-texto-primario">Respuestas correctas para los huecos</h3>
           <p class="text-[11px] text-base-texto-secundario">
             Texto exacto que el estudiante debe escribir en cada hueco.
           </p>
@@ -54,7 +54,7 @@
           @click="addBlank"
           class="px-2.5 py-1 rounded text-xs font-bold bg-acento-ambar/15 text-acento-ambar-fuerte hover:bg-acento-ambar/25 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
           <span>+</span>
-          <span>Agregar Hueco</span>
+          <span>Agregar hueco</span>
         </button>
       </div>
 

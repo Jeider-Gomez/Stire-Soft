@@ -10,7 +10,7 @@
           <div class="flex items-center gap-2 mb-1.5">
             <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold tracking-wider uppercase
                          bg-stire-blue/10 text-stire-blue border border-stire-blue/20">
-              Panel Docente
+              Panel docente
             </span>
           </div>
           <h1 class="text-2xl font-poppins font-bold text-slate-800 tracking-tight">
@@ -27,7 +27,7 @@
           class="btn-stire-primary self-start sm:self-auto min-h-[44px]"
         >
           <Plus :size="15" />
-          Crear Nueva Clase
+          Crear nueva clase
         </button>
       </div>
     </header>
@@ -37,7 +37,7 @@
     ═══════════════════════════════════════════════════════ -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-      <!-- 1. Total Estudiantes -->
+      <!-- 1. Total de estudiantes -->
       <Transition appear enter-active-class="transition duration-300 ease-out"
         enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
         <div class="metric-card">
@@ -51,12 +51,12 @@
             </span>
           </div>
           <p class="text-2xl font-poppins font-bold text-slate-800">{{ totalStudents }}</p>
-          <p class="text-xs text-slate-500 mt-0.5">Total Estudiantes</p>
+          <p class="text-xs text-slate-500 mt-0.5">Total de estudiantes</p>
           <p class="text-[11px] text-slate-500 mt-1">En {{ classes.length }} grupo{{ classes.length !== 1 ? 's' : '' }} habilitado{{ classes.length !== 1 ? 's' : '' }}</p>
         </div>
       </Transition>
 
-      <!-- 2. Dominio Promedio -->
+      <!-- 2. Dominio promedio -->
       <Transition appear enter-active-class="transition duration-300 ease-out delay-75"
         enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
         <div class="metric-card">
@@ -74,7 +74,7 @@
               :style="{ width: `${avgMastery}%` }"
             />
           </div>
-          <p class="text-xs text-slate-500 mt-1.5">Dominio Promedio</p>
+          <p class="text-xs text-slate-500 mt-1.5">Dominio promedio</p>
         </div>
       </Transition>
 
@@ -94,7 +94,7 @@
         </NuxtLink>
       </Transition>
 
-      <!-- 4. Alumnos en Rezago -->
+      <!-- 4. Alumnos en rezago -->
       <Transition appear enter-active-class="transition duration-300 ease-out delay-200"
         enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
         <div class="metric-card border-l-4 border-stire-warning">
@@ -112,7 +112,7 @@
             </button>
           </div>
           <p class="text-2xl font-poppins font-bold text-amber-700">{{ atRiskCount }}</p>
-          <p class="text-xs text-slate-500 mt-0.5">Alumnos en Rezago</p>
+          <p class="text-xs text-slate-500 mt-0.5">Alumnos en rezago</p>
           <p class="text-[11px] text-slate-500 mt-1">Dominio &lt; 50 %</p>
         </div>
       </Transition>
@@ -367,7 +367,7 @@
                     <BookOpen :size="18" class="text-white" />
                   </div>
                   <div>
-                    <h3 id="crear-clase-titulo" class="font-poppins font-bold text-slate-800">Crear Nueva Clase</h3>
+                    <h3 id="crear-clase-titulo" class="font-poppins font-bold text-slate-800">Crear nueva clase</h3>
                     <p class="text-[11px] text-slate-500">Universidad de Córdoba</p>
                   </div>
                 </div>
@@ -386,7 +386,7 @@
                 <!-- Nombre -->
                 <div>
                   <label for="new-class-name" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Nombre de la Asignatura *
+                    Nombre de la asignatura *
                   </label>
                   <input
                     id="new-class-name"
@@ -402,7 +402,7 @@
                 <div>
                   <div class="flex items-center justify-between mb-1.5">
                     <label for="new-class-code" class="text-xs font-semibold text-slate-700">
-                      Código Único de Clase *
+                      Código único de clase *
                     </label>
                     <button
                       type="button"
@@ -468,7 +468,7 @@
                 <!-- Toggle aprobación -->
                 <div class="p-4 bg-stire-canvas rounded-xl border border-slate-200 flex items-center justify-between gap-4">
                   <div>
-                    <p class="text-xs font-semibold text-slate-800">Requiere Aprobación</p>
+                    <p class="text-xs font-semibold text-slate-800">Requiere aprobación</p>
                     <p class="text-[11px] text-slate-500 mt-0.5">El docente aprueba manualmente cada ingreso.</p>
                   </div>
                   <input
@@ -502,7 +502,7 @@
                   >
                     <span v-if="isSubmitting" class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <Plus v-else :size="14" />
-                    {{ isSubmitting ? 'Guardando…' : 'Crear Clase' }}
+                    {{ isSubmitting ? 'Guardando…' : 'Crear clase' }}
                   </button>
                 </div>
               </form>
@@ -531,7 +531,7 @@
         >
           <div class="bg-white rounded-3xl p-10 max-w-sm w-full text-center shadow-2xl space-y-6 max-h-[90dvh] overflow-y-auto">
             <div>
-              <h3 class="font-poppins font-bold text-xl text-slate-800">Código de Clase</h3>
+              <h3 class="font-poppins font-bold text-xl text-slate-800">Código de clase</h3>
               <p class="text-sm text-slate-500 mt-1">{{ qrModal.className }}</p>
               <p class="text-xs text-slate-500 mt-2">Que lo escaneen con la cámara del celular: se abre STIRE con el código ya escrito.</p>
             </div>
