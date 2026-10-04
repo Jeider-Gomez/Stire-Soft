@@ -33,7 +33,7 @@
             STIRE <span class="text-stire-blue">Soft</span>
           </span>
           <p class="text-[10px] text-slate-500 font-interfaz tracking-wide leading-tight mt-0.5">
-            Unicor · Ing. Sistemas
+            Unicórdoba · Lic. en Informática
           </p>
         </div>
       </NuxtLink>
@@ -53,14 +53,15 @@
         </span>
       </div>
 
-      <!-- Contexto institucional docente/admin -->
+      <!-- Contexto institucional docente/admin. Fijo mientras STIRE sirve a un solo programa; cuando las clases tengan su
+           asignatura y programa (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md) saldrá de la clase activa. -->
       <div
         v-else-if="authStore.currentRole !== 'estudiante'"
         class="hidden lg:flex items-center gap-1.5 ml-2 pl-3 border-l border-slate-200 text-xs text-slate-500"
       >
         <span>Universidad de Córdoba</span>
         <span class="text-slate-500">•</span>
-        <span>Facultad de Ingeniería de Sistemas</span>
+        <span>Licenciatura en Informática</span>
       </div>
     </div>
 

@@ -187,3 +187,16 @@ describe('UX-06 y MOB-04 · el código no se pierde con un F5 ni sin red', () =>
     expect(leer('components', 'AvisoSinConexion.vue')).toMatch(/v-if="!enLinea"[\s\S]*role="status"/);
   });
 });
+
+describe('Veracidad · el encabezado dice el programa real (Licenciatura en Informática, Facultad de Educación)', () => {
+  // Decía «Unicor · Ing. Sistemas» y «Facultad de Ingeniería de Sistemas»: STIRE se hace para la Licenciatura en
+  // Informática de la Facultad de Educación y Ciencias Humanas de la Universidad de Córdoba.
+  const header = leer('components', 'layout', 'HeaderNav.vue');
+  it('no nombra un programa o una facultad que no es', () => {
+    expect(header).not.toMatch(/Ing\. Sistemas|Ingeniería de Sistemas/);
+  });
+  it('nombra la Licenciatura en Informática', () => {
+    expect(header).toContain('Lic. en Informática');
+    expect(header).toContain('Licenciatura en Informática');
+  });
+});
