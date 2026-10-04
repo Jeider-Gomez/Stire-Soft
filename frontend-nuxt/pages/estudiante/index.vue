@@ -198,13 +198,8 @@
           </span>
         </div>
 
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <!-- Racha de SEMANAS y esfuerzo de la semana, sin puntos ni medallas (REFERENTES_PLATAFORMAS_Y_STI.md §10) -->
-          <p class="text-[11px] text-base-texto-secundario font-medium">Racha de estudio</p>
-          <p class="text-xl font-bold text-acento-ambar-fuerte mt-1 flex items-center gap-1.5"><Flame :size="18" aria-hidden="true" /> {{ studentStore.hasLoaded ? textoRachaSemanas(studentStore.analytics.streakWeeks) : '—' }}</p>
-          <p v-if="studentStore.hasLoaded" class="text-[11px] text-base-texto-secundario mt-0.5">{{ textoEsfuerzo(studentStore.analytics.esfuerzoSemana) }}</p>
-          <NuxtLink to="/estudiante/progreso" class="text-[10px] font-semibold text-acento-ambar-fuerte hover:underline">Ver mis estadísticas</NuxtLink>
-        </div>
+        <!-- Logros y medallas (utils/logros.ts; BT-29): la nueva o la última, y la meta más cercana -->
+        <EstudianteLogrosInicio />
       </section>
 
       <!-- Entregas que creó el docente: primero lo que falta entregar (docs/DISENO_INTERVENCION_DOCENTE.md §3.2) -->
@@ -317,7 +312,6 @@
 
 <script setup lang="ts">
 import { tocaRepasar } from '~/utils/progresoLeccion'
-import { textoEsfuerzo, textoRachaSemanas } from '~/utils/racha'
 import { computed, onMounted, ref, watch } from 'vue'
 import { AlertTriangle, BadgeCheck, BookOpen, Brain, CheckCircle2, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, ShieldAlert, TrendingUp } from 'lucide-vue-next'
 import { contar, DOMINADO } from '~/utils/terminos'

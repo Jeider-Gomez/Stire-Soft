@@ -222,7 +222,6 @@ describe('Fase 3 — práctico, escalable y sin abrumar', () => {
     programasDeLasClases: (c: unknown[]) => Array<{ id: number; nombre: string }>;
     organizarClases: (c: unknown[], f: { texto: string; programaId: number | null; verAnteriores: boolean }, ahora?: Date) => { visibles: Array<{ id: number }>; anteriores: number; vigente: string | null };
   }>('organizarClases');
-  const R = cargar<{ textoEsfuerzo: (e: { dias: number; avanzados: number; repasos: number } | null) => string; textoRachaSemanas: (n: number) => string }>('racha');
   const HOY = new Date(2026, 9, 4);
   const MATE: Prog = { id: 8, name: 'Licenciatura en Matemáticas' };
   const clase = (id: number, periodo: string | null, asignatura: Asig | null = ALGO, name = `Clase ${id}`) => ({ id, name, code: `C-${id}`, periodo, asignatura });
@@ -260,15 +259,6 @@ describe('Fase 3 — práctico, escalable y sin abrumar', () => {
     expect(O.organizarClases(dos, { texto: '', programaId: 8, verAnteriores: false }, HOY).visibles.map((c) => c.id)).toEqual([2]);
   });
 
-  it('gamificación sobria: racha de semanas y el esfuerzo de la semana, sin regaño', () => {
-    expect(R.textoRachaSemanas(0)).toBe('Empieza esta semana');
-    expect(R.textoRachaSemanas(1)).toBe('1 semana');
-    expect(R.textoRachaSemanas(4)).toBe('4 semanas seguidas');
-    expect(R.textoEsfuerzo({ dias: 2, avanzados: 1, repasos: 3 })).toBe('2 días de estudio · 1 ejercicio avanzado · 3 repasos');
-    expect(R.textoEsfuerzo({ dias: 1, avanzados: 0, repasos: 0 })).toBe('1 día de estudio');
-    expect(R.textoEsfuerzo(null)).toBe('Esta semana aún no practicas. Un rato basta para empezar.');
-  });
-
   it('las pantallas lo usan', () => {
     for (const rol of ['docente', 'estudiante']) expect(leer('pages', rol, 'perfil.vue')).toContain('<PerfilVinculos');
     const vinc = leer('components', 'perfil', 'Vinculos.vue');
@@ -277,6 +267,48 @@ describe('Fase 3 — práctico, escalable y sin abrumar', () => {
     const index = leer('pages', 'docente', 'index.vue');
     expect(index).toContain('v-if="!isLoading && programasDelDocente.length > 1"');
     expect(index).toContain('de periodos anteriores');
-    expect(leer('pages', 'estudiante', 'index.vue')).toContain('textoRachaSemanas(studentStore.analytics.streakWeeks)');
+  });
+});
+
+// Logros y medallas (utils/logros.ts; BT-29): privados, sin ranking, por aprendizaje real.
+describe('Logros y medallas', () => {
+  const L = cargar<{
+    agruparLogros: (l: unknown[]) => Array<{ categoria: string; obtenidos: number; logros: Array<{ clave: string }> }>;
+    ultimoLogro: (l: unknown[]) => { clave: string } | null;
+    textoNuevos: (l: Array<{ titulo: string }>) => string;
+    textoProgreso: (l: { progreso: { actual: number; meta: number } }) => string;
+    porcentajeLogro: (l: { progreso: { actual: number; meta: number } }) => number;
+  }>('logros');
+  const logro = (clave: string, categoria: string, nivel: string | null, obtenido: string | null, actual = 0, meta = 3) =>
+    ({ clave, categoria, titulo: clave, descripcion: '', nivel, obtenido, progreso: { actual, meta } });
+  const lista = [
+    logro('practica-plata', 'practica', 'plata', null, 3, 5),
+    logro('constancia-bronce', 'constancia', 'bronce', '2026-10-02T15:00:00Z', 1, 1),
+    logro('practica-bronce', 'practica', 'bronce', '2026-10-03T15:00:00Z', 3, 3),
+    logro('modulo-7', 'dominio', null, null, 2, 4),
+  ];
+  it('agrupa por categoría en orden (constancia primero) y dentro, lo obtenido primero', () => {
+    const g = L.agruparLogros(lista);
+    expect(g.map((x) => x.categoria)).toEqual(['constancia', 'practica', 'dominio']);
+    expect(g[1].logros.map((l) => l.clave)).toEqual(['practica-bronce', 'practica-plata']);
+    expect(g[1].obtenidos).toBe(1);
+  });
+  it('la más reciente, el avance y el texto de las nuevas', () => {
+    expect(L.ultimoLogro(lista)?.clave).toBe('practica-bronce');
+    expect(L.textoProgreso({ progreso: { actual: 2, meta: 3 } })).toBe('2 de 3');
+    expect(L.porcentajeLogro({ progreso: { actual: 2, meta: 4 } })).toBe(50);
+    expect(L.porcentajeLogro({ progreso: { actual: 9, meta: 4 } })).toBe(100);
+    expect(L.textoNuevos([{ titulo: 'Semana de estudio' }])).toBe('¡Nueva medalla: Semana de estudio!');
+    expect(L.textoNuevos([{ titulo: 'a' }, { titulo: 'b' }])).toBe('¡2 medallas nuevas!');
+  });
+  it('el inicio celebra lo nuevo una vez y muestra una meta; «Mi progreso» tiene todas; sin ranking', () => {
+    const inicio = leer('components', 'estudiante', 'LogrosInicio.vue');
+    expect(inicio).toContain("api.post('/analytics/logros/vistos'");
+    expect(inicio).toContain('datos.siguiente');
+    expect(leer('pages', 'estudiante', 'index.vue')).toContain('<EstudianteLogrosInicio />');
+    expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('<EstudianteMisLogros />');
+    // lo que ve el estudiante (sin los comentarios del código, que explican por qué no hay ranking)
+    const sinComentarios = (t: string) => t.replace(/<!--[\s\S]*?-->/g, '').replace(/\/\/.*$/gm, '');
+    for (const f of [inicio, leer('components', 'estudiante', 'MisLogros.vue')]) expect(sinComentarios(f).toLowerCase()).not.toMatch(/ranking|clasificaci[oó]n|posici[oó]n/);
   });
 });

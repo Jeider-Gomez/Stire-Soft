@@ -35,6 +35,9 @@
     <!-- Racha y semana a la vista; el resto de estadísticas, plegado (BT-21) -->
     <EstadisticasEstudiante :student-id="authStore.user?.id" :class-id="studentStore.currentClassId" />
 
+    <!-- Logros y medallas, por categoría (utils/logros.ts; BT-29). «Ver todos mis logros» del inicio llega aquí. -->
+    <EstudianteMisLogros />
+
     <!-- Su nota y de dónde sale, si el docente la hizo visible (§6) -->
     <MiNota :class-id="studentStore.currentClassId" />
 

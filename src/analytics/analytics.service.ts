@@ -1,5 +1,5 @@
 import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { DataSource, MoreThan } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Difficulty } from '../common/enums/difficulty.enum';
 import { LearningProgress } from '../learning-progress/entities/learning-progress.entity';
 import { Submission } from '../submissions/entities/submission.entity';
@@ -16,7 +16,8 @@ import { SubmissionStatus } from '../common/enums/submission-status.enum';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { construirMapaDeCalor, MapaDeCalor } from './mapa-de-calor';
 import { construirResumenSemanal, ResumenSemanal } from './resumen-semanal';
-import { esfuerzoDeLaSemana, rachaDeDias, rachaDeSemanas, repasosPendientes } from './racha-y-repasos';
+import { rachaDeDias, repasosPendientes } from './racha-y-repasos';
+import { evaluarLogros, siguienteLogro, type Logro } from './logros';
 
 @Injectable()
 export class AnalyticsService {
@@ -84,30 +85,6 @@ export class AnalyticsService {
       now,
     );
 
-    // Gamificación sobria (racha-y-repasos.ts): racha de semanas y el esfuerzo de esta semana, sin puntos ni medallas.
-    const fechasDePractica = allSubs.filter((sub) => sub.status !== SubmissionStatus.IN_PROGRESS).map((sub) => new Date(sub.submittedAt ?? sub.createdAt));
-    const streakWeeks = rachaDeSemanas(fechasDePractica, now);
-    const haceOchoDias = new Date(now.getTime() - 8 * 86_400_000);
-    const entregasRecientes = await submissionRepo.find({
-      where: { studentId, createdAt: MoreThan(haceOchoDias) },
-      relations: ['activity'],
-    });
-    const esfuerzoSemana = esfuerzoDeLaSemana(
-      entregasRecientes
-        .filter((sub) => sub.status !== SubmissionStatus.IN_PROGRESS)
-        .map((sub) => ({
-          fecha: new Date(sub.submittedAt ?? sub.createdAt),
-          activityId: sub.activityId,
-          avanzadoAprobado:
-            sub.activity?.difficulty === Difficulty.AVANZADO &&
-            sub.status === SubmissionStatus.GRADED &&
-            !!sub.activity.totalPoints &&
-            (sub.score / sub.activity.totalPoints) * 100 >= sub.activity.passingScore,
-        })),
-      reviews.map((r) => r.lastReviewedAt).filter((d): d is Date => !!d),
-      now,
-    );
-
     // 4. Recent submissions
     const recentSubmissions = await submissionRepo.find({
       where: { studentId },
@@ -132,8 +109,6 @@ export class AnalyticsService {
         totalAttempts,
         completedActivitiesCount,
         streakDays,
-        streakWeeks,
-        esfuerzoSemana,
         reviewStats: {
           total: totalReviews,
           pending: pendingReviews,
@@ -162,6 +137,69 @@ export class AnalyticsService {
         successRate: p.successRate,
       })),
     };
+  }
+
+  /**
+   * Logros y medallas (logros.ts; BT-29): el catálogo completo con lo obtenido, el avance de lo que falta, los nuevos
+   * que el estudiante no ha visto y la meta más cercana. Lo obtenido se guarda una vez con su fecha.
+   */
+  async getLogros(studentId: number, requestingUser: User): Promise<{ logros: Logro[]; nuevos: string[]; siguiente: Logro | null }> {
+    if (requestingUser.role === 'estudiante' && requestingUser.id !== studentId) {
+      throw new ForbiddenException('No tienes acceso a los logros de otro estudiante.');
+    }
+    await this.authorizationService.assertTeacherSharesClassWithStudent(requestingUser, studentId);
+
+    const filas: Array<{ activityId: number; learningUnitId: number; attemptNumber: number; score: number; isReview: number; status: string; fecha: Date; difficulty: string; totalPoints: number; passingScore: number }> =
+      await this.dataSource.query(
+        'SELECT s.activityId, a.learningUnitId, s.attemptNumber, s.score, s.isReview, s.status, COALESCE(s.submittedAt, s.createdAt) AS fecha, ' +
+          "a.difficulty, a.totalPoints, a.passingScore FROM submissions s JOIN activities a ON a.id = s.activityId WHERE s.studentId = ? AND s.status <> 'in_progress'",
+        [studentId],
+      );
+    const entregas = filas.map((e) => ({
+      activityId: Number(e.activityId),
+      learningUnitId: Number(e.learningUnitId),
+      aprobada: e.status === 'graded' && Number(e.totalPoints) > 0 && (Number(e.score) / Number(e.totalPoints)) * 100 >= Number(e.passingScore),
+      avanzado: e.difficulty === Difficulty.AVANZADO,
+      intento: Number(e.attemptNumber) || 1,
+      fecha: new Date(e.fecha),
+      repaso: !!Number(e.isReview),
+    }));
+    const lecciones: Array<{ unitId: number; moduloId: number; moduloTitulo: string; mastery: number | null; fecha: Date | null }> = await this.dataSource.query(
+      'SELECT lu.id AS unitId, s.id AS moduloId, s.title AS moduloTitulo, lp.mastery AS mastery, lp.updatedAt AS fecha FROM learning_units lu ' +
+        'JOIN topics t ON t.id = lu.topicId JOIN sections s ON s.id = t.sectionId JOIN enrollments e ON e.classId = s.classId ' +
+        'LEFT JOIN learning_progress lp ON lp.learningUnitId = lu.id AND lp.studentId = e.studentId ' +
+        "WHERE e.studentId = ? AND e.status = 'active' AND s.isPublished = 1 AND t.isActive = 1 AND lu.isActive = 1",
+      [studentId],
+    );
+    const logros = evaluarLogros(
+      entregas,
+      lecciones.map((l) => ({
+        learningUnitId: Number(l.unitId), moduloId: Number(l.moduloId), moduloTitulo: l.moduloTitulo,
+        mastery: Number(l.mastery ?? 0), fecha: l.fecha ? new Date(l.fecha) : null,
+      })),
+      entregas.filter((e) => e.repaso).map((e) => e.fecha),
+      entregas.map((e) => e.fecha),
+    );
+
+    // Guardar lo obtenido (una vez) y saber qué no ha visto: así se celebra una sola vez, con su fecha estable.
+    const obtenidos = logros.filter((l) => l.obtenido);
+    for (const l of obtenidos) {
+      await this.dataSource.query('INSERT IGNORE INTO `logros_estudiante` (`studentId`, `clave`, `obtenidoEn`) VALUES (?, ?, ?)', [studentId, l.clave, new Date(l.obtenido!)]);
+    }
+    const guardados: Array<{ clave: string; visto: number }> = obtenidos.length
+      ? await this.dataSource.query('SELECT `clave`, `visto` FROM `logros_estudiante` WHERE `studentId` = ?', [studentId])
+      : [];
+    return {
+      logros,
+      nuevos: guardados.filter((g) => !Number(g.visto)).map((g) => g.clave),
+      siguiente: siguienteLogro(logros),
+    };
+  }
+
+  /** El estudiante ya vio sus logros nuevos: no se vuelven a celebrar. */
+  async marcarLogrosVistos(studentId: number): Promise<{ ok: true }> {
+    await this.dataSource.query('UPDATE `logros_estudiante` SET `visto` = 1 WHERE `studentId` = ? AND `visto` = 0', [studentId]);
+    return { ok: true };
   }
 
   async getClassMetrics(classId: number, requestingUser: any) {

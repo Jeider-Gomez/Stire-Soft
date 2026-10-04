@@ -352,8 +352,8 @@ Al hacer clic en una celda se abre el historial de entregas de ese estudiante en
     más de dos veces reduce su peso un 15 % por intento extra, hasta un mínimo del 50 %. Los ejercicios
     difíciles no se penalizan (`src/common/utils/mastery.calculator.ts`).
   - **Gamificación.** El módulo de medallas que estaba en pausa se **quitó** el 04/10/2026 (código muerto, con un diseño que
-    no servía). En su lugar se hizo la propuesta de abajo: **racha de semanas** y **esfuerzo de la semana** en el inicio del
-    estudiante (`src/analytics/racha-y-repasos.ts`; BASE_TEORICA.md BT-29).
+    no servía). En su lugar hay **logros y medallas** privadas, por aprendizaje real y sin ranking
+    (`docs/DISENO_LOGROS.md`; BASE_TEORICA.md BT-29). La racha de semanas se probó y se descartó: a Jeider le pareció excesiva.
 - **Propuesta.** Antes que medallas:
   - **Racha de estudio semanal**, no diaria: en la universidad la racha diaria castiga a quien estudia
     tres días fijos.
