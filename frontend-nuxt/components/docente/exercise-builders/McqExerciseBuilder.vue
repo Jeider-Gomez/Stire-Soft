@@ -34,7 +34,7 @@
             class="accent-acento-ambar-fuerte" />
           <span
             class="text-[10px] font-bold px-1.5 py-0.5 rounded"
-            :class="correctAnswerId === opt.id ? 'bg-semantico-pasa/20 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario'">
+            :class="correctAnswerId === opt.id ? 'bg-semantico-pasa/20 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600'">
             {{ correctAnswerId === opt.id ? 'Correcta' : 'Opción' }}
           </span>
         </label>

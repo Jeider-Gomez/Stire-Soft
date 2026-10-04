@@ -7,6 +7,8 @@
 //
 // Lo que está dentro de otro bloque de código no se toca: es un ejemplo para leer.
 
+import { esPseudocodigo } from './algoritmoMultiformato'
+
 export const IMAGEN_EN_LINEA = /^!\[([^\]\n]*)\]\(\s*(\S+?)(?:\s+"([^"\n]*)")?\s*\)$/
 export const RECURSO_EN_LINEA = /^@\[([^\]\n]*)\]\(\s*(\S+?)\s*\)$/
 
@@ -15,6 +17,8 @@ export type Segmento =
   | { tipo: 'imagen'; alt: string; url: string; pie: string | null }
   | { tipo: 'recurso'; titulo: string; url: string }
   | { tipo: 'vivo'; codigo: string }
+  /** Un algoritmo en pseudocódigo (empieza con «Algoritmo» o «Proceso»): se puede ver como texto, diagrama o pasos (UI-01). */
+  | { tipo: 'algoritmo'; codigo: string }
 
 /** Cómo se inserta cada recurso, armado por el servidor al guardar (`metadata.insertados`). */
 export type Insertados = Record<string, { url: string; provider: string; embedUrl: string | null }>
@@ -34,9 +38,14 @@ export function partirContenido(texto: string): Segmento[] {
       // Un bloque de código entero, hasta su cierre: «vivo» se ejecuta; cualquier otro se muestra como texto.
       let fin = i + 1
       while (fin < lineas.length && !/^\s*```/.test(lineas[fin])) fin++
-      if (valla[1].toLowerCase() === 'vivo') {
+      const cuerpo = lineas.slice(i + 1, fin).join('\n')
+      const lenguaje = valla[1].toLowerCase()
+      if (lenguaje === 'vivo') {
         cerrarTexto()
-        segmentos.push({ tipo: 'vivo', codigo: lineas.slice(i + 1, fin).join('\n') })
+        segmentos.push({ tipo: 'vivo', codigo: cuerpo })
+      } else if ((lenguaje === '' || lenguaje === 'pseudocodigo' || lenguaje === 'psc') && esPseudocodigo(cuerpo)) {
+        cerrarTexto()
+        segmentos.push({ tipo: 'algoritmo', codigo: cuerpo })
       } else {
         parrafo.push(...lineas.slice(i, fin + 1))
       }

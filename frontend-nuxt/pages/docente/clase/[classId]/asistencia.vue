@@ -31,7 +31,7 @@
         <div class="min-w-0">
           <h2 id="sesion-titulo" class="text-sm font-bold text-base-texto-primario flex items-center gap-2 flex-wrap">
             {{ fechaSesion(detalle.sesion.fecha) }}
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" :class="detalle.sesion.abierta ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario'">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" :class="detalle.sesion.abierta ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600'">
               {{ detalle.sesion.abierta ? 'Abierta' : 'Cerrada' }}
             </span>
           </h2>
@@ -121,6 +121,7 @@ import {
   ESTADOS, csvAsistencia, elegirAlAzar, fechaSesion, textoEstado,
   type EstadoAsistencia, type ResultadoEscaneo, type ResumenAsistencia,
 } from '~/utils/asistencia'
+const { confirmar } = useConfirmar()
 
 definePageMeta({ layout: 'teacher' })
 
@@ -264,7 +265,7 @@ const guardarTema = () => actualizar({ tema: tema.value })
 
 async function borrarSesion() {
   if (!detalle.value) return
-  if (!confirm(`¿Borrar la asistencia del ${fechaSesion(detalle.value.sesion.fecha)}? Se pierden sus marcas.`)) return
+  if (!(await confirmar({ titulo: `¿Borrar la asistencia del ${fechaSesion(detalle.value.sesion.fecha)}?`, mensaje: 'Se pierden las marcas de esa sesión y no se pueden recuperar.', accion: 'Borrar la asistencia', peligro: true }))) return
   try {
     await api.del(`/asistencia/sesiones/${detalle.value.sesion.id}`)
     detalle.value = null

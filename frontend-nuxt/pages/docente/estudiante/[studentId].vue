@@ -49,12 +49,12 @@
 
     <!-- ESTADO 1: Cargando -->
     <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
-      <span class="inline-block animate-spin mr-2">⏳</span> Obteniendo métricas y registros de actividad del alumno...
+      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Obteniendo métricas y registros de actividad del alumno...
     </div>
 
     <!-- ESTADO 2: Error -->
     <div v-else-if="errorMessage" class="p-8 text-center bg-base-blanco rounded-xl border border-semantico-falla/30 text-xs space-y-3">
-      <span class="text-2xl">⚠</span>
+      <TriangleAlert :size="22" class="text-2xl" aria-hidden="true" />
       <p class="font-bold text-semantico-falla">{{ errorMessage }}</p>
       <div class="flex items-center justify-center gap-2">
         <button
@@ -160,7 +160,7 @@
 
         <div v-else class="overflow-x-auto">
           <table class="w-full text-xs text-left">
-            <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil font-semibold">
+            <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil font-semibold">
               <tr>
                 <th class="p-2.5">Actividad</th>
                 <th class="p-2.5 hidden sm:table-cell">Fecha</th>
@@ -179,7 +179,7 @@
                 <td class="p-2.5 text-center hidden sm:table-cell">
                   <span
                     class="px-2 py-0.5 rounded text-[10px] font-bold"
-                    :class="sub.status === 'graded' ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+                    :class="sub.status === 'graded' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
                     {{ statusLabel(sub.status) }}
                   </span>
                 </td>
@@ -199,7 +199,7 @@
 </template>
 
 <script setup lang="ts">
-import { LifeBuoy, Mail, Rocket } from 'lucide-vue-next'
+import { LifeBuoy, Loader2, Mail, Rocket, TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { enlaceNuevoRefuerzo } from '~/utils/refuerzos'
 const { messageOf } = useApiErrorMessage()

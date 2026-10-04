@@ -4,12 +4,12 @@
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa uppercase tracking-wider">
+          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/10 text-semantico-pasa uppercase tracking-wider">
             Administración del Sistema
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Gestión Global de Usuarios y Roles
+          Usuarios y roles
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
           Control de acceso y permisos según la matriz institucional
@@ -34,7 +34,7 @@
           ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold'
           : 'text-base-texto-secundario hover:text-base-texto-primario'">
         <Users :size="14" aria-hidden="true" /><span>Gestión de Usuarios</span>
-        <span class="px-1.5 py-0.5 rounded-full bg-base-bg-secundario text-[10px] text-base-texto-secundario font-normal">
+        <span class="px-1.5 py-0.5 rounded-full bg-base-bg-secundario text-[10px] text-slate-600 font-normal">
           {{ users.length }}
         </span>
       </button>
@@ -49,7 +49,7 @@
         <ClipboardList :size="14" aria-hidden="true" /><span>Solicitudes de Docente</span>
         <span
           class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
-          :class="pendingRequestsCount > 0 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-bg-secundario text-base-texto-secundario font-normal'">
+          :class="pendingRequestsCount > 0 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-bg-secundario text-slate-600 font-normal'">
           {{ pendingRequestsCount }}
         </span>
       </button>
@@ -71,7 +71,7 @@
       role="alert"
       class="p-3 rounded-lg bg-semantico-falla/10 border border-semantico-falla/30 text-xs text-semantico-falla flex items-center justify-between gap-2">
       <div class="flex items-center gap-2">
-        <span aria-hidden="true">⚠</span>
+        <TriangleAlert :size="16" aria-hidden="true" />
         <span>{{ errorMessage }}</span>
       </div>
       <button @click="errorMessage = ''" class="text-xs hover:underline">Cerrar</button>
@@ -120,7 +120,7 @@
     <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-xs text-left">
-          <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil">
+          <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil">
             <tr>
               <th scope="col" class="p-3 font-semibold">Usuario</th>
               <th scope="col" class="p-3 font-semibold">Correo Institucional</th>
@@ -132,7 +132,7 @@
           <tbody class="divide-y divide-base-borde-sutil">
             <tr v-if="isLoading">
               <td colspan="5" class="p-8 text-center text-base-texto-secundario">
-                <span class="inline-block animate-spin mr-2">⏳</span> Cargando usuarios desde la base de datos...
+                <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Cargando usuarios desde la base de datos...
               </td>
             </tr>
             <tr v-else-if="filteredUsers.length === 0">
@@ -154,7 +154,7 @@
                   :class="{
                     'bg-acento-ambar/15 text-acento-ambar-fuerte': user.role === 'estudiante',
                     'bg-semantico-info/15 text-semantico-info': user.role === 'docente',
-                    'bg-semantico-pasa/15 text-semantico-pasa': user.role === 'admin' || user.role === 'administrador'
+                    'bg-semantico-pasa/10 text-semantico-pasa': user.role === 'admin' || user.role === 'administrador'
                   }">
                   {{ user.role }}
                 </span>
@@ -171,7 +171,7 @@
               </td>
               <td class="p-3 text-right">
                 <div v-if="user.id === authStore.user?.id" class="flex items-center justify-end gap-2">
-                  <span class="inline-block px-2 py-1 rounded bg-base-bg-secundario border border-base-borde-sutil text-[10px] text-base-texto-secundario font-medium">
+                  <span class="inline-block px-2 py-1 rounded bg-base-bg-secundario border border-base-borde-sutil text-[10px] text-slate-600 font-medium">
                     Tu propia cuenta (protegida)
                   </span>
                   <button
@@ -259,7 +259,7 @@
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-left">
-            <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil">
+            <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil">
               <tr>
                 <th scope="col" class="p-3 font-semibold">Solicitante</th>
                 <th scope="col" class="p-3 font-semibold">Materia o Dependencia</th>
@@ -271,7 +271,7 @@
             <tbody class="divide-y divide-base-borde-sutil">
               <tr v-if="isLoadingRequests">
                 <td colspan="5" class="p-8 text-center text-base-texto-secundario">
-                  <span class="inline-block animate-spin mr-2">⏳</span> Cargando solicitudes desde la base de datos...
+                  <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Cargando solicitudes desde la base de datos...
                 </td>
               </tr>
               <tr v-else-if="displayedRequests.length === 0">
@@ -303,7 +303,7 @@
                     class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
                     :class="{
                       'bg-acento-ambar/15 text-acento-ambar-fuerte': req.status === 'pending',
-                      'bg-semantico-pasa/15 text-semantico-pasa': req.status === 'approved',
+                      'bg-semantico-pasa/10 text-semantico-pasa': req.status === 'approved',
                       'bg-semantico-falla/15 text-semantico-falla': req.status === 'rejected'
                     }">
                     {{ req.status === 'pending' ? 'Pendiente' : req.status === 'approved' ? 'Aprobada' : 'Rechazada' }}
@@ -361,7 +361,7 @@
         class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none max-h-[90dvh] overflow-y-auto">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte flex items-center justify-center text-lg font-bold flex-shrink-0">
-            👤
+            <User :size="16" aria-hidden="true" />
           </div>
           <div>
             <h3 id="role-modal-title" class="font-bold text-sm text-base-texto-primario">
@@ -394,7 +394,7 @@
             @click="executeChangeRole"
             :disabled="isUpdatingRole"
             class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold hover:bg-acento-ambar disabled:opacity-50 transition-colors flex items-center gap-2">
-            <span v-if="isUpdatingRole" class="inline-block animate-spin">⏳</span>
+            <Loader2 :size="14" v-if="isUpdatingRole" class="inline-block animate-spin" aria-hidden="true" />
             <span>{{ isUpdatingRole ? 'Cambiando rol...' : 'Confirmar cambio' }}</span>
           </button>
         </div>
@@ -418,7 +418,7 @@
         <div class="flex items-center gap-3">
           <div
             class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0"
-            :class="targetDecision === 'approve' ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
+            :class="targetDecision === 'approve' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
             {{ targetDecision === 'approve' ? '✓' : '✕' }}
           </div>
           <div>
@@ -477,7 +477,7 @@
             :disabled="isSubmittingDecision"
             class="px-4 py-2 rounded-md text-base-blanco text-xs font-bold disabled:opacity-50 transition-opacity flex items-center gap-2"
             :class="targetDecision === 'approve' ? 'bg-semantico-pasa hover:opacity-90' : 'bg-semantico-falla hover:opacity-90'">
-            <span v-if="isSubmittingDecision" class="inline-block animate-spin">⏳</span>
+            <Loader2 :size="14" v-if="isSubmittingDecision" class="inline-block animate-spin" aria-hidden="true" />
             <span>{{ isSubmittingDecision ? 'Procesando...' : (targetDecision === 'approve' ? 'Aprobar Solicitud' : 'Rechazar Solicitud') }}</span>
           </button>
         </div>
@@ -570,7 +570,7 @@
               <button
                 type="button"
                 @click="showRegPwd = !showRegPwd"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
                 :title="showRegPwd ? 'Ocultar contraseña' : 'Ver contraseña'">
                 <EyeOff v-if="showRegPwd" :size="14" />
                 <Eye v-else :size="14" />
@@ -604,7 +604,7 @@
               type="submit"
               :disabled="isRegistering"
               class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold hover:bg-acento-ambar disabled:opacity-50 transition-colors flex items-center gap-2">
-              <span v-if="isRegistering" class="inline-block animate-spin">⏳</span>
+              <Loader2 :size="14" v-if="isRegistering" class="inline-block animate-spin" aria-hidden="true" />
               <span>{{ isRegistering ? 'Registrando...' : 'Registrar usuario' }}</span>
             </button>
           </div>
@@ -629,7 +629,7 @@
         <div class="flex items-center gap-3">
           <div
             class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0"
-            :class="targetActiveUser?.isActive !== false ? 'bg-semantico-falla/15 text-semantico-falla' : 'bg-semantico-pasa/15 text-semantico-pasa'">
+            :class="targetActiveUser?.isActive !== false ? 'bg-semantico-falla/15 text-semantico-falla' : 'bg-semantico-pasa/10 text-semantico-pasa'">
             {{ targetActiveUser?.isActive !== false ? '⏸' : '▶' }}
           </div>
           <div>
@@ -673,7 +673,7 @@
             :disabled="isTogglingActive"
             class="px-4 py-2 rounded-md text-base-blanco text-xs font-bold disabled:opacity-50 transition-colors flex items-center gap-2"
             :class="targetActiveUser?.isActive !== false ? 'bg-semantico-falla hover:opacity-90' : 'bg-semantico-pasa hover:opacity-90'">
-            <span v-if="isTogglingActive" class="inline-block animate-spin">⏳</span>
+            <Loader2 :size="14" v-if="isTogglingActive" class="inline-block animate-spin" aria-hidden="true" />
             <span>{{ isTogglingActive ? 'Procesando...' : (targetActiveUser?.isActive !== false ? 'Desactivar cuenta' : 'Reactivar cuenta') }}</span>
           </button>
         </div>
@@ -745,7 +745,7 @@
                 <button
                   type="button"
                   @click="showResetPwd = !showResetPwd"
-                  class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
                   :title="showResetPwd ? 'Ocultar contraseña' : 'Ver contraseña'">
                   <EyeOff v-if="showResetPwd" :size="14" />
                   <Eye v-else :size="14" />
@@ -804,7 +804,7 @@
             <div class="p-3 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 text-xs text-base-texto-primario space-y-1">
               <p class="font-bold text-acento-ambar-fuerte flex items-center gap-1"><TriangleAlert :size="14" aria-hidden="true" /> Información importante:</p>
               <p>Entrégasela por un canal seguro; la persona debe cambiarla en Mi perfil.</p>
-              <p class="text-base-texto-secundario text-[11px]">Por seguridad, esta contraseña no se volverá a mostrar tras cerrar esta ventana.</p>
+              <p class="text-slate-700 text-[11px]">Por seguridad, esta contraseña no se volverá a mostrar tras cerrar esta ventana.</p>
             </div>
           </div>
 
@@ -826,7 +826,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
-import { Eye, EyeOff, Copy, Check, ChevronDown, UserCog, KeyRound, Loader2, TriangleAlert, UserX, UserCheck, Users, ClipboardList, History } from 'lucide-vue-next'
+import { Check, ChevronDown, ClipboardList, Copy, Eye, EyeOff, History, KeyRound, Loader2, TriangleAlert, User, UserCheck, UserCog, UserX, Users } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 

@@ -58,6 +58,14 @@ export class Class {
   @Column({ type: 'int', nullable: true })
   maxStudents?: number;
 
+  /**
+   * Bloqueo suave por módulo (MOD-01 y UI-02 de la lista de chequeo de Sistemas Tutores): el módulo siguiente se abre
+   * cuando el dominio promedio del anterior llega a este porcentaje. 0 = sin bloqueo. Lo que el estudiante ya empezó
+   * nunca se bloquea. El docente lo cambia en Ajustes de la clase.
+   */
+  @Column({ type: 'int', default: 50 })
+  dominioParaAvanzar!: number;
+
   // Relación OneToMany: Una clase tiene muchas inscripciones (Enrollment)
   @OneToMany(() => Enrollment, (enrollment) => enrollment.class, { eager: false })
   enrollments!: Enrollment[];

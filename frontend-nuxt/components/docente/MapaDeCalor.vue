@@ -117,7 +117,7 @@
                     :class="colorEstado(celda(e.id, u.id)!.status)">
                     {{ celda(e.id, u.id)!.mastery }}
                   </NuxtLink>
-                  <span v-else class="flex h-8 items-center justify-center rounded bg-base-bg-secundario text-base-texto-secundario"
+                  <span v-else class="flex h-8 items-center justify-center rounded bg-base-bg-secundario text-slate-600"
                     :title="`${e.fullName} · ${u.title}: sin empezar`">
                     <span aria-hidden="true">—</span><span class="sr-only">{{ e.fullName }}, {{ u.title }}: sin empezar</span>
                   </span>
@@ -204,7 +204,7 @@ function colorEstado(estado: string): string {
     case 'comprension_parcial': return 'bg-semantico-pasa/30 text-base-texto-primario'
     case 'en_practica': return 'bg-acento-ambar/40 text-base-texto-primario'
     case 'explorado': return 'bg-semantico-falla/25 text-base-texto-primario'
-    default: return 'bg-base-bg-secundario text-base-texto-secundario'
+    default: return 'bg-base-bg-secundario text-slate-600'
   }
 }
 

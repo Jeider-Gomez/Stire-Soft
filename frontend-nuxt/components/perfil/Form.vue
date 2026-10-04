@@ -46,27 +46,29 @@
 
       <!-- Correo (solo lectura) -->
       <div>
-        <label class="block text-xs font-semibold text-base-texto-primario mb-1">
+        <label for="perfil-correo" class="block text-xs font-semibold text-base-texto-primario mb-1">
           Correo electrónico <span class="text-base-texto-secundario font-normal">(no editable)</span>
         </label>
         <input
+          id="perfil-correo"
           :value="authStore.user?.email || ''"
           type="email"
           readonly
-          class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-bg-secundario text-base-texto-secundario outline-none cursor-not-allowed"
+          class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-bg-secundario text-slate-600 outline-none cursor-not-allowed"
         />
       </div>
 
       <!-- Rol (solo lectura) -->
       <div>
-        <label class="block text-xs font-semibold text-base-texto-primario mb-1">
+        <label for="perfil-rol" class="block text-xs font-semibold text-base-texto-primario mb-1">
           Rol <span class="text-base-texto-secundario font-normal">(no editable)</span>
         </label>
         <input
+          id="perfil-rol"
           :value="roleLabel"
           type="text"
           readonly
-          class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-bg-secundario text-base-texto-secundario outline-none cursor-not-allowed"
+          class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-bg-secundario text-slate-600 outline-none cursor-not-allowed"
         />
       </div>
 
@@ -82,7 +84,7 @@
           {{ isSavingName ? 'Guardando...' : 'Guardar nombre' }}
         </button>
         <transition name="fade">
-          <span v-if="nameSuccess" class="text-xs text-semantico-exito font-semibold">✔ Nombre actualizado.</span>
+          <span v-if="nameSuccess" class="text-xs text-semantico-exito font-semibold">Nombre actualizado.</span>
         </transition>
         <span v-if="nameError" class="text-xs text-semantico-error">{{ nameError }}</span>
       </div>
@@ -108,7 +110,7 @@
           <button
             type="button"
             @click="showCurrentPwd = !showCurrentPwd"
-            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 p-1"
             :title="showCurrentPwd ? 'Ocultar contraseña' : 'Ver contraseña'"
           >
             <EyeOff v-if="showCurrentPwd" :size="16" />
@@ -133,7 +135,7 @@
           <button
             type="button"
             @click="showNewPwd = !showNewPwd"
-            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 p-1"
             :title="showNewPwd ? 'Ocultar contraseña' : 'Ver contraseña'"
           >
             <EyeOff v-if="showNewPwd" :size="16" />
@@ -158,7 +160,7 @@
           <button
             type="button"
             @click="showConfirmPwd = !showConfirmPwd"
-            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 p-1"
             :title="showConfirmPwd ? 'Ocultar contraseña' : 'Ver contraseña'"
           >
             <EyeOff v-if="showConfirmPwd" :size="16" />
@@ -179,7 +181,7 @@
           {{ isSavingPwd ? 'Guardando...' : 'Cambiar contraseña' }}
         </button>
         <transition name="fade">
-          <span v-if="pwdSuccess" class="text-xs text-semantico-exito font-semibold">✔ Contraseña actualizada exitosamente.</span>
+          <span v-if="pwdSuccess" class="text-xs text-semantico-exito font-semibold">Contraseña actualizada exitosamente.</span>
         </transition>
         <span v-if="pwdError" class="text-xs text-semantico-error">{{ pwdError }}</span>
       </div>

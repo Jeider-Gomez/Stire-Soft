@@ -10,7 +10,7 @@
       <div class="flex flex-col lg:flex-row items-center lg:gap-4 text-center lg:text-left mb-5">
         <LayoutMarcaST tamano="grande" :escudo="campoEnFoco === 'password'" class="mb-3.5 lg:mb-0 shrink-0" />
         <div>
-          <h1 class="text-2xl font-bold tracking-tight font-poppins text-slate-900">Iniciar Sesión</h1>
+          <h1 class="text-2xl font-bold tracking-tight font-poppins text-slate-900">Iniciar sesión</h1>
           <p class="text-sm mt-1 max-w-[340px] leading-relaxed text-slate-600">
             Ingresa a tu entorno de aprendizaje y tutoría inteligente
           </p>
@@ -25,7 +25,7 @@
         </div>
       </Transition>
 
-      <form @submit.prevent="handleLogin" class="space-y-4">
+      <form novalidate @submit.prevent="handleLogin" class="space-y-4">
         <!-- Correo -->
         <div class="space-y-1.5">
           <div class="flex items-center justify-between gap-2">
@@ -37,7 +37,7 @@
             </Transition>
           </div>
           <div class="relative">
-            <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
+            <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
             <input
               id="email"
               ref="emailRef"
@@ -45,15 +45,17 @@
               type="email"
               required
               autocomplete="email"
-              :aria-invalid="!!errorMessage || undefined"
-              :aria-describedby="errorMessage ? 'login-error' : undefined"
+              :aria-invalid="!!(errorMessage || faltan.email) || undefined"
+              :aria-describedby="faltan.email ? 'email-falta' : errorMessage ? 'login-error' : undefined"
               placeholder="usuario@unicor.edu.co"
               @focus="campoEnFoco = 'email'"
               @blur="campoEnFoco = null"
               class="campo-auth pl-10 pr-10"
-              :class="errorMessage ? '!border-red-400 !ring-1 !ring-red-300' : esCorreoUnicor ? 'border-stire-teal ring-1 ring-stire-teal/30' : ''" />
-            <CheckCircle2 v-if="esCorreoUnicor" :size="16" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-stire-teal pointer-events-none" aria-hidden="true" />
+              :class="errorMessage || faltan.email ? '!border-red-400 !ring-1 !ring-red-300' : esCorreoUnicor ? 'border-stire-teal ring-1 ring-stire-teal/30' : ''"
+              @input="faltan.email = undefined" />
+            <CheckCircle2 v-if="esCorreoUnicor" :size="16" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-teal-700 pointer-events-none" aria-hidden="true" />
           </div>
+          <p v-if="faltan.email" id="email-falta" class="text-xs font-semibold text-red-700">{{ faltan.email }}</p>
         </div>
 
         <!-- Contraseña -->
@@ -63,13 +65,13 @@
             <NuxtLink to="/auth/forgot-password" class="py-1 text-sm font-medium text-stire-blue hover:underline">¿Olvidaste tu clave?</NuxtLink>
           </div>
           <div class="relative">
-            <Lock :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
+            <Lock :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
             <input
               id="password"
               ref="passwordRef"
               v-model="password"
-              :aria-invalid="!!errorMessage || undefined"
-              :aria-describedby="errorMessage ? 'login-error' : undefined"
+              :aria-invalid="!!(errorMessage || faltan.password) || undefined"
+              :aria-describedby="faltan.password ? 'clave-falta' : errorMessage ? 'login-error' : undefined"
               :type="verClave ? 'text' : 'password'"
               required
               autocomplete="current-password"
@@ -79,17 +81,19 @@
               @keydown="detectarBloqMayus"
               @keyup="detectarBloqMayus"
               class="campo-auth pl-10 pr-11 focus:border-stire-purple focus:ring-stire-purple/20"
-              :class="errorMessage ? '!border-red-400 !ring-1 !ring-red-300' : ''" />
+              :class="errorMessage || faltan.password ? '!border-red-400 !ring-1 !ring-red-300' : ''"
+              @input="faltan.password = undefined" />
             <button
               type="button"
               @click="verClave = !verClave"
-              class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-400 hover:text-slate-700 transition-colors"
+              class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-slate-700 transition-colors"
               :aria-label="verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'"
               :aria-pressed="verClave">
               <EyeOff v-if="verClave" :size="16" aria-hidden="true" />
               <Eye v-else :size="16" aria-hidden="true" />
             </button>
           </div>
+          <p v-if="faltan.password" id="clave-falta" class="text-xs font-semibold text-red-700">{{ faltan.password }}</p>
           <Transition name="aviso">
             <p v-if="bloqMayus" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 text-[11px] font-medium">
               <AlertTriangle :size="14" class="text-amber-600" aria-hidden="true" /> Bloq Mayús está activado
@@ -155,6 +159,7 @@
 </template>
 
 <script setup lang="ts">
+import { faltantesDelIngreso } from '~/utils/registro'
 import { AlertCircle, AlertTriangle, ArrowRight, Check, CheckCircle2, Eye, EyeOff, GraduationCap, Lock, Mail, Settings, UserCheck } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { rutaDeVuelta } from '~/utils/codigoClase'
@@ -170,6 +175,7 @@ const email = ref('')
 const password = ref('')
 const isLoading = ref(false)
 const errorMessage = ref('')
+const faltan = ref<Partial<Record<'email' | 'password', string>>>({})
 const emailRef = ref<HTMLInputElement | null>(null)
 const passwordRef = ref<HTMLInputElement | null>(null)
 
@@ -212,8 +218,15 @@ async function entrar(ruta: string) {
 }
 
 async function handleLogin() {
-  isLoading.value = true
   errorMessage.value = ''
+  // Validación campo a campo antes de ir al servidor: el error se ve bajo el campo y el cursor va a ese campo.
+  faltan.value = faltantesDelIngreso(email.value, password.value)
+  if (faltan.value.email || faltan.value.password) {
+    await nextTick()
+    ;(faltan.value.email ? emailRef : passwordRef).value?.focus()
+    return
+  }
+  isLoading.value = true
 
   const result = await authStore.login(email.value, password.value)
 

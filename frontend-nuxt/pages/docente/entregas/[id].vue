@@ -15,7 +15,7 @@
             <div class="min-w-0">
               <h1 class="text-lg font-bold text-base-texto-primario flex items-center gap-2 flex-wrap">
                 {{ entrega.titulo }}
-                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold" :class="entrega.publicada ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario'">
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold" :class="entrega.publicada ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600'">
                   {{ entrega.publicada ? 'Publicada' : 'Borrador' }}
                 </span>
               </h1>
@@ -105,7 +105,7 @@ const FILTROS: Array<{ valor: EstadoEntrega | 'todos'; texto: string }> = [
   { valor: 'todos', texto: 'Todos' },
 ]
 const CLASE_ESTADO: Record<EstadoEntrega, string> = {
-  sin_entregar: 'bg-base-bg-secundario text-base-texto-secundario',
+  sin_entregar: 'bg-base-bg-secundario text-slate-600',
   por_revisar: 'bg-acento-ambar/15 text-acento-ambar-fuerte',
   revisada: 'bg-semantico-pasa/15 text-semantico-pasa',
 }

@@ -4,19 +4,19 @@
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa uppercase tracking-wider">
+          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/10 text-semantico-pasa uppercase tracking-wider">
             Administración del Sistema
           </span>
           <span
             v-if="statusData"
             class="px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1.5"
-            :class="isSystemHealthy ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
+            :class="isSystemHealthy ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
             <span aria-hidden="true">{{ isSystemHealthy ? '●' : '▲' }}</span>
             <span>{{ isSystemHealthy ? 'Servicios Operacionales' : 'Degradación Detectada' }}</span>
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Panel de Control y Salud del Sistema
+          Panel de control y salud del sistema
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
           Monitoreo de infraestructura, latencia de sandboxes y telemetría de carga
@@ -27,9 +27,9 @@
         <button
           @click="fetchStatus"
           :disabled="isLoading"
-          class="borde-afordancia px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-base-bg-secundario text-base-texto-secundario flex items-center gap-1.5 transition-colors disabled:opacity-50"
+          class="borde-afordancia px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-base-bg-secundario text-slate-600 flex items-center gap-1.5 transition-colors disabled:opacity-50"
           aria-label="Actualizar métricas del sistema">
-          <span :class="{ 'animate-spin': isLoading }" aria-hidden="true">🔄</span>
+          <Loader2 :size="14" :class="{ 'animate-spin': isLoading }" aria-hidden="true" />
           <span>Actualizar</span>
         </button>
       </div>
@@ -37,13 +37,13 @@
 
     <!-- ESTADO: Cargando inicial -->
     <div v-if="isLoading && !statusData" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
-      <span class="inline-block animate-spin mr-2" aria-hidden="true">⏳</span>
+      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" />
       <span>Cargando telemetría del sistema...</span>
     </div>
 
     <!-- ESTADO: Error de red o 403 -->
     <div v-else-if="errorMessage" role="alert" class="p-8 text-center bg-base-blanco rounded-xl border border-semantico-falla/30 text-xs space-y-3">
-      <span class="text-3xl" aria-hidden="true">⚠</span>
+      <TriangleAlert :size="28" class="text-3xl" aria-hidden="true" />
       <h3 class="font-bold text-semantico-falla text-sm">Fallo al Obtener Telemetría</h3>
       <p class="text-base-texto-secundario max-w-md mx-auto">
         {{ errorMessage }}
@@ -65,8 +65,8 @@
             <span class="font-semibold text-base-texto-secundario">API Gateway (p95)</span>
             <span
               class="px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
-              :class="(statusData.api.requests.serverErrorRatePct ?? 0) > 5 ? 'bg-semantico-falla/15 text-semantico-falla' : 'bg-semantico-pasa/15 text-semantico-pasa'">
-              <span aria-hidden="true">{{ (statusData.api.requests.serverErrorRatePct ?? 0) > 5 ? '▲' : '✔' }}</span>
+              :class="(statusData.api.requests.serverErrorRatePct ?? 0) > 5 ? 'bg-semantico-falla/15 text-semantico-falla' : 'bg-semantico-pasa/10 text-semantico-pasa'">
+              <span aria-hidden="true">{{ (statusData.api.requests.serverErrorRatePct ?? 0) > 5 ? '▲' : '✓' }}</span>
               <span>{{ (statusData.api.requests.serverErrorRatePct ?? 0) > 5 ? 'Degradado' : 'Normal' }}</span>
             </span>
           </div>
@@ -89,8 +89,8 @@
             <span class="font-semibold text-base-texto-secundario">Sandbox (Promedio)</span>
             <span
               class="px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
-              :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario border border-base-borde-sutil'">
-              <span aria-hidden="true">{{ statusData.database.ok ? '✔' : '—' }}</span>
+              :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600 border border-base-borde-sutil'">
+              <span aria-hidden="true">{{ statusData.database.ok ? '✓' : '—' }}</span>
               <span>{{ statusData.database.ok ? (statusData.sandbox.adapter || 'Activo') : 'Sin datos' }}</span>
             </span>
           </div>
@@ -108,8 +108,8 @@
             <span class="font-semibold text-base-texto-secundario">Base de Datos</span>
             <span
               class="px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
-              :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
-              <span aria-hidden="true">{{ statusData.database.ok ? '✔' : '✖' }}</span>
+              :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
+              <span aria-hidden="true">{{ statusData.database.ok ? '✓' : '✕' }}</span>
               <span>{{ statusData.database.ok ? 'Conectada' : 'Sin conexión' }}</span>
             </span>
           </div>
@@ -128,7 +128,7 @@
           <div class="flex items-center justify-between text-xs">
             <span class="font-semibold text-base-texto-secundario">Tutor IA (LLM)</span>
             <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-acento-ambar/15 text-acento-ambar-fuerte flex items-center gap-1">
-              <span aria-hidden="true">🤖</span>
+              <Bot :size="16" aria-hidden="true" />
               <span>{{ statusData.tutor.provider || 'Gemini' }}</span>
             </span>
           </div>
@@ -144,14 +144,14 @@
       <!-- Resumen de Población y Actividad Global -->
       <section class="p-3 bg-base-blanco rounded-xl border border-base-borde-sutil shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs gap-2">
         <div class="flex items-center gap-2 text-base-texto-primario">
-          <span aria-hidden="true">👥</span>
+          <Users :size="16" aria-hidden="true" />
           <span class="font-semibold">Usuarios registrados:</span>
           <span class="text-base-texto-secundario">
             {{ formattedUserRoles }}
           </span>
         </div>
         <div class="flex items-center gap-2 text-base-texto-secundario">
-          <span aria-hidden="true">⚡</span>
+          <Zap :size="16" aria-hidden="true" />
           <span>Envíos iniciados (24 h):</span>
           <strong class="font-mono text-base-texto-primario">{{ statusData.submissionsLast24h != null ? statusData.submissionsLast24h : '—' }}</strong>
         </div>
@@ -170,7 +170,7 @@
 
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-left">
-            <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil font-semibold">
+            <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil font-semibold">
               <tr>
                 <th scope="col" class="p-3">Subsistema</th>
                 <th scope="col" class="p-3">Detalle / Configuración</th>
@@ -185,8 +185,8 @@
                 <td class="p-3 font-bold font-sans text-base-texto-primario">API NestJS Core</td>
                 <td class="p-3 text-base-texto-secundario">v{{ statusData.api.version || '—' }} (Node {{ statusData.api.nodeVersion || '—' }}, {{ statusData.api.environment || '—' }})</td>
                 <td class="p-3 text-center">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa">
-                    ✔ Activo
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/10 text-semantico-pasa">
+                    Activo
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
@@ -204,8 +204,8 @@
                 <td class="p-3 text-center">
                   <span
                     class="px-2 py-0.5 rounded text-[10px] font-bold"
-                    :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
-                    {{ statusData.database.ok ? '✔ Conectada' : '✖ Sin conexión' }}
+                    :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
+                    {{ statusData.database.ok ? 'Conectada' : 'Sin conexión' }}
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
@@ -225,8 +225,8 @@
                 <td class="p-3 text-center">
                   <span
                     class="px-2 py-0.5 rounded text-[10px] font-bold"
-                    :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario border border-base-borde-sutil'">
-                    {{ statusData.database.ok ? '✔ Aislado' : '— Sin datos' }}
+                    :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600 border border-base-borde-sutil'">
+                    {{ statusData.database.ok ? 'Aislado' : '— Sin datos' }}
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
@@ -246,8 +246,8 @@
                 <td class="p-3 text-center">
                   <span
                     class="px-2 py-0.5 rounded text-[10px] font-bold"
-                    :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario border border-base-borde-sutil'">
-                    {{ statusData.database.ok ? '✔ Listo' : '— Sin datos' }}
+                    :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600 border border-base-borde-sutil'">
+                    {{ statusData.database.ok ? 'Listo' : '— Sin datos' }}
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
@@ -267,8 +267,8 @@
                 <td class="p-3 text-center">
                   <span
                     class="px-2 py-0.5 rounded text-[10px] font-bold"
-                    :class="statusData.database.ok ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario border border-base-borde-sutil'">
-                    {{ statusData.database.ok ? '✔ Adaptativo' : '— Sin datos' }}
+                    :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600 border border-base-borde-sutil'">
+                    {{ statusData.database.ok ? 'Adaptativo' : '— Sin datos' }}
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
@@ -287,6 +287,7 @@
 </template>
 
 <script setup lang="ts">
+import { Bot, Loader2, TriangleAlert, Users, Zap } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import type { SystemStatus } from '~/types'

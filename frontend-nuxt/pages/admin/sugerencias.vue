@@ -29,7 +29,7 @@
     <ul class="space-y-3">
       <li v-for="r in lista" :key="r.id" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 space-y-2 text-xs">
         <div class="flex flex-wrap items-center gap-2">
-          <span class="px-2 py-0.5 rounded font-bold" :class="r.gravedad === 3 ? 'bg-semantico-falla/10 text-semantico-falla' : r.gravedad === 2 ? 'bg-acento-ambar/15 text-acento-ambar-fuerte' : 'bg-base-bg-secundario text-base-texto-secundario'">
+          <span class="px-2 py-0.5 rounded font-bold" :class="r.gravedad === 3 ? 'bg-semantico-falla/10 text-semantico-falla' : r.gravedad === 2 ? 'bg-acento-ambar/15 text-acento-ambar-fuerte' : 'bg-base-bg-secundario text-slate-600'">
             {{ TIPOS[r.tipo] }}{{ r.gravedad ? ` · ${GRAVEDADES[r.gravedad]}` : '' }}
           </span>
           <span class="font-semibold">{{ r.autor }}</span>

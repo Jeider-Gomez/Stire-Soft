@@ -45,7 +45,7 @@
             <span class="min-w-0">
               <span class="font-bold text-sm text-base-texto-primario group-hover:underline flex items-center gap-2 flex-wrap">
                 {{ e.titulo }}
-                <span v-if="!e.publicada" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-base-bg-secundario text-base-texto-secundario">Borrador</span>
+                <span v-if="!e.publicada" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-base-bg-secundario text-slate-600">Borrador</span>
                 <span v-if="e.asignadaA?.length" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info">Para {{ e.asignadaA.length }}</span>
               </span>
               <span class="text-[11px] text-base-texto-secundario">

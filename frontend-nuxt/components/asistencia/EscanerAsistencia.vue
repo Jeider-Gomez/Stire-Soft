@@ -24,7 +24,7 @@
             <AvatarUsuario :nombre="ultimo.nombre" :foto-id="ultimo.fotoId" tamano="w-16 h-16 text-xl" />
             <div class="min-w-0 space-y-0.5">
               <p class="text-base font-bold text-base-texto-primario truncate">{{ ultimo.nombre }}</p>
-              <p class="font-semibold" :class="ultimo.yaEstaba ? 'text-base-texto-secundario' : 'text-semantico-pasa'">{{ ultimo.yaEstaba ? 'Ya estaba marcado' : 'Presente' }}</p>
+              <p class="font-semibold" :class="ultimo.yaEstaba ? 'text-slate-700' : 'text-semantico-pasa'">{{ ultimo.yaEstaba ? 'Ya estaba marcado' : 'Presente' }}</p>
               <p v-if="ultimo.alerta" class="font-semibold text-acento-ambar-fuerte flex items-center gap-1"><TriangleAlert :size="14" aria-hidden="true" /> {{ ultimo.alerta }}</p>
             </div>
           </div>

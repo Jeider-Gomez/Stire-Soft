@@ -51,7 +51,7 @@
 
     <!-- Feedback de guardado -->
     <div v-if="actionFeedback" role="status" aria-live="polite" class="p-3 bg-semantico-pasa/10 border border-semantico-pasa/40 text-semantico-pasa rounded-lg text-xs flex items-center justify-between">
-      <span>✔ {{ actionFeedback }}</span>
+      <span>{{ actionFeedback }}</span>
       <button @click="actionFeedback = null" class="text-[11px] underline focus:outline-none focus:ring-2 focus:ring-semantico-pasa rounded">Cerrar</button>
     </div>
 
@@ -63,12 +63,12 @@
 
     <!-- ESTADO 1: Cargando -->
     <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
-      <span class="inline-block animate-spin mr-2">⏳</span> Cargando estructura curricular...
+      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Cargando estructura curricular...
     </div>
 
     <!-- ESTADO 2: Error -->
     <div v-else-if="errorMessage" class="p-8 text-center bg-base-blanco rounded-xl border border-semantico-falla/30 text-xs space-y-3">
-      <span class="text-2xl">⚠</span>
+      <TriangleAlert :size="22" class="text-2xl" aria-hidden="true" />
       <p class="font-bold text-semantico-falla">{{ errorMessage }}</p>
       <button
         @click="loadSections"
@@ -79,7 +79,7 @@
 
     <!-- ESTADO 3: Vacío -->
     <div v-else-if="sections.length === 0" class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-4">
-      <span class="text-3xl block">📚</span>
+      <BookOpen :size="28" class="text-3xl block" aria-hidden="true" />
       <div>
         <h3 class="font-bold text-base-texto-primario text-sm">Sin módulos curriculares</h3>
         <p class="text-base-texto-secundario max-w-md mx-auto mt-1">
@@ -135,9 +135,9 @@
               @click="toggleSectionPublish(sec)"
               class="px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
               :class="sec.isPublished
-                ? 'bg-semantico-pasa/15 text-semantico-pasa border-semantico-pasa/40 hover:bg-semantico-pasa/25'
+                ? 'bg-semantico-pasa/10 text-semantico-pasa border-semantico-pasa/40 hover:bg-semantico-pasa/25'
                 : 'bg-base-blanco text-base-texto-secundario border-base-borde-fuerte hover:text-base-texto-primario'">
-              {{ sec.isPublished ? '✔ Publicado' : '○ Borrador' }}
+              {{ sec.isPublished ? 'Publicado' : '○ Borrador' }}
             </button>
             <button
               @click="openNewTopicModal(sec)"
@@ -162,7 +162,7 @@
             <!-- Cabecera del Topic con acciones Editar / Archivar / Nueva unidad -->
             <div class="flex items-center justify-between text-xs">
               <span class="font-bold text-base-texto-primario flex items-center gap-1.5">
-                <span class="text-acento-ambar-fuerte">📁</span>
+                <Folder :size="16" class="text-acento-ambar-fuerte" aria-hidden="true" />
                 <span>{{ topic.title }}</span>
               </span>
               <div class="flex items-center gap-2">
@@ -182,7 +182,7 @@
                   @click="confirmArchiveTopic(topic)"
                   class="px-2 py-0.5 rounded text-[11px] font-semibold border border-semantico-falla/30 text-semantico-falla hover:bg-semantico-falla/10 transition-colors focus:outline-none focus:ring-2 focus:ring-semantico-falla"
                   :aria-label="`Archivar tema ${topic.title}`">
-                  🗄 Archivar
+                  Archivar
                 </button>
               </div>
             </div>
@@ -282,7 +282,7 @@
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
         <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
-            <h2 id="modal-topic-title" class="text-sm font-bold text-base-texto-primario">Editar Tema Curricular</h2>
+            <h2 id="modal-topic-title" class="text-sm font-bold text-base-texto-primario">Editar tema</h2>
             <button
               @click="closeEditTopicModal"
               class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded"
@@ -335,8 +335,8 @@
                 type="submit"
                 :disabled="editTopicModal.saving"
                 class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <span v-if="editTopicModal.saving" class="animate-spin">⚙️</span>
-                <span>{{ editTopicModal.saving ? 'Guardando…' : '✔ Guardar cambios' }}</span>
+                <Loader2 :size="14" v-if="editTopicModal.saving" class="animate-spin" aria-hidden="true" />
+                <span>{{ editTopicModal.saving ? 'Guardando…' : 'Guardar cambios' }}</span>
               </button>
             </div>
           </form>
@@ -371,8 +371,8 @@
               @click="submitArchiveTopic"
               :disabled="archiveTopicModal.saving"
               class="px-5 py-2 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-semantico-falla">
-              <span v-if="archiveTopicModal.saving" class="animate-spin">⚙️</span>
-              <span>{{ archiveTopicModal.saving ? 'Archivando…' : '🗄 Confirmar Archivo' }}</span>
+              <Loader2 :size="14" v-if="archiveTopicModal.saving" class="animate-spin" aria-hidden="true" />
+              <span>{{ archiveTopicModal.saving ? 'Archivando…' : 'Archivar tema' }}</span>
             </button>
           </div>
         </div>
@@ -466,8 +466,8 @@
                 type="submit"
                 :disabled="editUnitModal.saving"
                 class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <span v-if="editUnitModal.saving" class="animate-spin">⚙️</span>
-                <span>{{ editUnitModal.saving ? 'Guardando…' : '✔ Guardar cambios' }}</span>
+                <Loader2 :size="14" v-if="editUnitModal.saving" class="animate-spin" aria-hidden="true" />
+                <span>{{ editUnitModal.saving ? 'Guardando…' : 'Guardar cambios' }}</span>
               </button>
             </div>
           </form>
@@ -617,7 +617,7 @@
 
 <script setup lang="ts">
 import { textoPlantilla, type Plantilla } from '~/utils/plantillas'
-import { ChevronRight, Pencil, BookOpen, FileText, CopyPlus, Loader2 } from 'lucide-vue-next'
+import { BookOpen, ChevronRight, CopyPlus, FileText, Folder, Loader2, Pencil, TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'

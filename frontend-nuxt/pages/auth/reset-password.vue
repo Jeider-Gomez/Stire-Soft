@@ -27,7 +27,7 @@
 
       <template v-else>
         <div v-if="errorMessage" role="alert" class="mb-4 p-3 rounded-md bg-semantico-falla/10 border border-semantico-falla/30 text-xs text-semantico-falla space-y-1">
-          <p class="flex items-center gap-2"><span>⚠</span><span>{{ errorMessage }}</span></p>
+          <p class="flex items-center gap-2"><TriangleAlert :size="16" aria-hidden="true" /><span>{{ errorMessage }}</span></p>
           <NuxtLink v-if="linkExpired" to="/auth/forgot-password" class="inline-block font-semibold underline">
             Solicitar un enlace nuevo
           </NuxtLink>
@@ -74,6 +74,7 @@
 </template>
 
 <script setup lang="ts">
+import { TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 
 definePageMeta({ layout: 'auth' })

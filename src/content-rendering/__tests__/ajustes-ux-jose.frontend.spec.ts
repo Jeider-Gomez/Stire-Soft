@@ -150,7 +150,8 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
     const l = leer('pages', 'auth', 'login.vue');
     expect(l).toContain('flex flex-col lg:flex-row items-center');
     expect(l).toContain('passwordRef.value?.focus()');
-    expect(l).toContain(":aria-describedby=\"errorMessage ? 'login-error' : undefined\"");
+    // v2.0.0 (PAT-03): el error de cada campo va primero; si no hay, el error general del servidor
+    expect(l).toContain(":aria-describedby=\"faltan.email ? 'email-falta' : errorMessage ? 'login-error' : undefined\"");
     expect(l).not.toContain('No te llega el correo de recuperación');
     const f = leer('pages', 'auth', 'forgot-password.vue');
     expect(f).toContain('¿No te llega el correo?');
@@ -292,13 +293,13 @@ describe('Patrones de interfaz tomados de los referentes (docs/investigacion/ref
     expect(lanzador).toMatch(/class="lanzador-tutor fixed right-4 sm:right-6/);
     expect(lanzador).not.toContain('sm:hidden');
     expect(lanzador).toMatch(/<Sparkles[^>]*\/>\s*Tutor\s*<\/button>/);
-    for (const layout of ['student.vue', 'workspace.vue']) expect(leer('layouts', layout)).toContain('<TutorLanzadorTutor />');
+    for (const layout of ['student.vue', 'workspace.vue']) expect(leer('layouts', layout)).toMatch(/<TutorLanzadorTutor( [^>]*)?\/>/);
     // un solo acceso: ni el encabezado general ni el del ejercicio tienen otro botón del Tutor
     expect(leer('components', 'layout', 'HeaderNav.vue')).not.toContain('Abrir el Tutor IA');
     expect(leer('layouts', 'workspace.vue')).not.toContain('tutorStore.toggleDrawer()');
   });
 
-  it('P-UI-05: en el celular la barra del ejercicio (Probar, Entregar) queda fija arriba', () => {
+  it('P-UI-05: en el celular el encabezado del ejercicio queda fijo arriba (Probar y Entregar bajan a la zona del pulgar, MOB-02)', () => {
     expect(leer('layouts', 'workspace.vue')).toMatch(/<header class="sticky top-0 md:static/);
   });
 });

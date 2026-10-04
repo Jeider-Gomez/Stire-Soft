@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MediaModule } from './media/media.module';
 import { ProyectosModule } from './proyectos/proyectos.module';
 import { RefuerzosModule } from './refuerzos/refuerzos.module';
+import { ValoracionesModule } from './valoraciones/valoraciones.module';
 import { CalificacionesModule } from './calificaciones/calificaciones.module';
 import { ReportesModule } from './reportes/reportes.module';
 import { AsistenciaModule } from './asistencia/asistencia.module';
@@ -131,6 +132,7 @@ import { ReuseModule } from './reuse/reuse.module';
     MediaModule,
     ProyectosModule,
     RefuerzosModule,
+    ValoracionesModule,
     CalificacionesModule,
     ReportesModule,
     AsistenciaModule,

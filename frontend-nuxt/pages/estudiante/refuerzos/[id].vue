@@ -8,7 +8,7 @@
 
     <template v-else-if="r">
       <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-3">
-        <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider" :class="r.tipo === 'reto' ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+        <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider" :class="r.tipo === 'reto' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
           {{ r.tipo === 'reto' ? 'Reto de tu docente' : 'Refuerzo de tu docente' }}
         </span>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">{{ r.titulo }}</h1>

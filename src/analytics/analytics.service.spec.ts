@@ -118,3 +118,32 @@ describe('AnalyticsService.getClassMetrics — solo las unidades de la clase', (
     expect(r?.studentRankings[0]).toMatchObject({ avgMastery: 0, submissionsCount: 0 });
   });
 });
+
+// Revisión del 04/10 (MOD-02): el inicio decía «1 día» de racha y «Mi progreso» «0 días» porque aquí contaba un
+// intento abierto y sin entregar. Practicar es entregar, como en las estadísticas.
+describe('AnalyticsService.getStudentDashboard — la racha cuenta entregas, no intentos abiertos', () => {
+  const montar = (subs: unknown[]) => {
+    const repos = new Map<unknown, unknown>([
+      [LearningProgress, { find: jest.fn().mockResolvedValue([]) }],
+      [Submission, { find: jest.fn().mockResolvedValue(subs) }],
+      [ReviewSchedule, { find: jest.fn().mockResolvedValue([]) }],
+      [User, { findOne: jest.fn().mockResolvedValue({ id: 2, fullName: 'Ana' }) }],
+    ]);
+    type Deps = ConstructorParameters<typeof AnalyticsService>;
+    return new AnalyticsService({ getRepository: (e: unknown) => repos.get(e) } as unknown as Deps[0], { assertTeacherSharesClassWithStudent: jest.fn() } as unknown as Deps[1]);
+  };
+  const act = { title: 'Ej', totalPoints: 20, passingScore: 60 };
+
+  it('un intento en curso de hoy no suma racha', async () => {
+    const service = montar([{ id: 'c', activityId: 1, score: 0, status: 'in_progress', createdAt: new Date(), submittedAt: null, activity: act }]);
+    const res = await service.getStudentDashboard(2, { id: 2, role: 'estudiante' });
+    expect(res.summary.streakDays).toBe(0);
+  });
+
+  it('una entrega calificada de hoy sí suma, contada por su fecha de entrega', async () => {
+    const hace3Dias = new Date(Date.now() - 3 * 86_400_000);
+    const service = montar([{ id: 'a', activityId: 1, score: 20, status: 'graded', createdAt: hace3Dias, submittedAt: new Date(), activity: act }]);
+    const res = await service.getStudentDashboard(2, { id: 2, role: 'estudiante' });
+    expect(res.summary.streakDays).toBe(1);
+  });
+});

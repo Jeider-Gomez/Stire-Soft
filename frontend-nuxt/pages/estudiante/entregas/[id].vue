@@ -26,7 +26,7 @@
       <!-- Entregar -->
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-3 text-xs" aria-labelledby="entregar-titulo">
         <h2 id="entregar-titulo" class="text-sm font-bold text-base-texto-primario flex items-center gap-1.5"><Send :size="15" class="text-acento-ambar-fuerte" aria-hidden="true" /> Entregar</h2>
-        <p v-if="!puedeEntregar" class="text-base-texto-secundario bg-base-bg-secundario rounded-md p-3">{{ motivoSinEntregar }}</p>
+        <p v-if="!puedeEntregar" class="text-slate-600 bg-base-bg-secundario rounded-md p-3">{{ motivoSinEntregar }}</p>
         <template v-else>
           <p class="text-base-texto-secundario">Se envía una copia de tu proyecto tal como está guardado. Puedes seguir editándolo: lo que entregas no cambia.</p>
           <form v-if="misProyectos.length" novalidate @submit.prevent="enviar" class="flex flex-col sm:flex-row gap-2 sm:items-end">

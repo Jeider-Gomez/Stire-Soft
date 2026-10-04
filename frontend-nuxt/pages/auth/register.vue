@@ -9,7 +9,7 @@
         <!-- En el celular la marca ya está en el encabezado: aquí se ocultaría espacio que necesita el formulario. -->
         <LayoutMarcaST tamano="grande" :escudo="campoEnFoco === 'password'" class="hidden lg:flex shrink-0" />
         <div>
-          <h1 class="text-2xl font-bold tracking-tight font-poppins text-slate-900">Crear Cuenta</h1>
+          <h1 class="text-2xl font-bold tracking-tight font-poppins text-slate-900">Crear cuenta</h1>
           <p class="text-sm mt-1 max-w-[360px] lg:max-w-none leading-relaxed text-slate-600">
             Crea tu cuenta en menos de un minuto
           </p>
@@ -99,7 +99,7 @@
           <div class="space-y-1.5">
             <label for="fullName" class="block text-sm font-semibold text-slate-700">Nombre completo</label>
             <div class="relative">
-              <User :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
+              <User :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
               <input id="fullName" ref="nombreRef" v-model="fullName" type="text" required autocomplete="name" placeholder="Ej: Pedro Romero Mendoza" class="campo-auth pl-10 pr-3.5" :class="campoMal('fullName')" :aria-invalid="!!faltan.fullName || undefined" />
             </div>
             <p v-if="faltan.fullName" class="text-[11px] font-semibold text-red-700">{{ faltan.fullName }}</p>
@@ -108,7 +108,7 @@
           <div class="space-y-1.5">
             <label for="email" class="block text-sm font-semibold text-slate-700">Correo</label>
             <div class="relative">
-              <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
+              <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
               <input id="email" v-model="email" type="email" required autocomplete="email" placeholder="usuario@unicor.edu.co" class="campo-auth pl-10 pr-3.5" :class="campoMal('email')" :aria-invalid="!!faltan.email || undefined" />
             </div>
             <p v-if="faltan.email" class="text-[11px] font-semibold text-red-700">{{ faltan.email }}</p>
@@ -117,7 +117,7 @@
           <div class="space-y-1.5 lg:col-span-2">
             <label for="password" class="block text-sm font-semibold text-slate-700">Contraseña</label>
             <div class="relative">
-              <Lock :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
+              <Lock :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
               <input
                 id="password"
                 v-model="password"
@@ -136,7 +136,7 @@
               <button
                 type="button"
                 @click="verClave = !verClave"
-                class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-400 hover:text-slate-700 transition-colors"
+                class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-slate-700 transition-colors"
                 :aria-label="verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'"
                 :aria-pressed="verClave">
                 <EyeOff v-if="verClave" :size="16" aria-hidden="true" />
@@ -188,8 +188,8 @@
           <div v-if="selectedRole === 'estudiante'" class="space-y-1.5">
             <label for="classCode" class="block text-sm font-semibold text-slate-700">Código de clase</label>
             <div class="relative">
-              <KeyRound :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
-              <input id="classCode" v-model="classCode" type="text" placeholder="Ej: WEB-ALGO-T01" class="campo-auth pl-10 pr-3.5 uppercase tracking-wider font-mono" />
+              <KeyRound :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
+              <input id="classCode" v-model="classCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ej.: ALGO-203413" @input="classCode = codigoMientrasEscribe(classCode)" class="campo-auth pl-10 pr-3.5 uppercase tracking-wider font-mono" />
             </div>
             <p class="text-[11px] text-slate-500">Si tu docente te dio un código, ingrésalo para entrar a su clase de una vez.</p>
           </div>
@@ -218,7 +218,7 @@
                 @click="showApiKey = !showApiKey"
                 :aria-label="showApiKey ? 'Ocultar clave' : 'Mostrar clave'"
                 :aria-pressed="showApiKey"
-                class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-400 hover:text-slate-700">
+                class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-slate-700">
                 <EyeOff v-if="showApiKey" :size="16" aria-hidden="true" />
                 <Eye v-else :size="16" aria-hidden="true" />
               </button>
@@ -284,7 +284,7 @@
 import { AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, BookOpen, Bot, Check, CheckCircle2, Eye, EyeOff, GraduationCap, KeyRound, ListPlus, Lock, Mail, ShieldAlert, ShieldCheck, User } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
-import { rutaDeVuelta } from '~/utils/codigoClase'
+import { rutaDeVuelta, codigoMientrasEscribe } from '~/utils/codigoClase'
 import { faltantesDelRegistro, type Faltantes } from '~/utils/registro'
 
 const route = useRoute()

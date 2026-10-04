@@ -14,9 +14,9 @@
             </span>
           </div>
           <h1 class="text-2xl font-poppins font-bold text-slate-800 tracking-tight">
-            Mis Clases y Grupos Asignados
+            Mis clases
           </h1>
-          <p class="text-xs text-slate-400 mt-1">
+          <p class="text-xs text-slate-500 mt-1">
             Universidad de Córdoba · Sistema de Tutoría Inteligente
             <span class="text-stire-blue font-semibold">STIRE</span>
           </p>
@@ -45,13 +45,13 @@
             <div class="p-2 rounded-xl bg-stire-blue/10">
               <Users :size="18" class="text-stire-blue" />
             </div>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stire-success/15 text-stire-success flex items-center gap-1">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stire-success/15 text-emerald-700 flex items-center gap-1">
               <span class="pulse-dot" />
               Activos
             </span>
           </div>
           <p class="text-2xl font-poppins font-bold text-slate-800">{{ totalStudents }}</p>
-          <p class="text-xs text-slate-400 mt-0.5">Total Estudiantes</p>
+          <p class="text-xs text-slate-500 mt-0.5">Total Estudiantes</p>
           <p class="text-[11px] text-slate-500 mt-1">En {{ classes.length }} grupo{{ classes.length !== 1 ? 's' : '' }} habilitado{{ classes.length !== 1 ? 's' : '' }}</p>
         </div>
       </Transition>
@@ -62,9 +62,9 @@
         <div class="metric-card">
           <div class="flex items-start justify-between mb-3">
             <div class="p-2 rounded-xl bg-stire-teal/10">
-              <TrendingUp :size="18" class="text-stire-teal-dark" />
+              <TrendingUp :size="18" class="text-teal-700" />
             </div>
-            <span class="text-[10px] font-bold text-stire-teal-dark">Dominio</span>
+            <span class="text-[10px] font-bold text-teal-700">Dominio</span>
           </div>
           <p class="text-2xl font-poppins font-bold text-slate-800">{{ porcentaje(avgMastery) }}</p>
           <!-- Micro barra de progreso -->
@@ -74,7 +74,7 @@
               :style="{ width: `${avgMastery}%` }"
             />
           </div>
-          <p class="text-xs text-slate-400 mt-1.5">Dominio Promedio</p>
+          <p class="text-xs text-slate-500 mt-1.5">Dominio Promedio</p>
         </div>
       </Transition>
 
@@ -89,7 +89,7 @@
             <span class="text-[10px] font-bold text-stire-purple">Bandeja</span>
           </div>
           <p class="text-2xl font-poppins font-bold text-stire-purple">{{ unreadMessages ?? '—' }}</p>
-          <p class="text-xs text-slate-400 mt-0.5">Mensajes sin leer</p>
+          <p class="text-xs text-slate-500 mt-0.5">Mensajes sin leer</p>
           <p class="text-[11px] text-slate-500 mt-1">De tus estudiantes</p>
         </NuxtLink>
       </Transition>
@@ -100,10 +100,10 @@
         <div class="metric-card border-l-4 border-stire-warning">
           <div class="flex items-start justify-between mb-3">
             <div class="p-2 rounded-xl bg-stire-warning/10">
-              <AlertTriangle :size="18" class="text-stire-warning" />
+              <AlertTriangle :size="18" class="text-amber-700" />
             </div>
             <button
-              class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stire-warning/15 text-stire-warning
+              class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stire-warning/15 text-amber-700
                      hover:bg-stire-warning/25 transition-colors whitespace-nowrap"
               title="Ver quiénes están en rezago"
               @click="navigateTo('/docente/rendimiento')"
@@ -111,8 +111,8 @@
               Ver alumnos →
             </button>
           </div>
-          <p class="text-2xl font-poppins font-bold text-stire-warning">{{ atRiskCount }}</p>
-          <p class="text-xs text-slate-400 mt-0.5">Alumnos en Rezago</p>
+          <p class="text-2xl font-poppins font-bold text-amber-700">{{ atRiskCount }}</p>
+          <p class="text-xs text-slate-500 mt-0.5">Alumnos en Rezago</p>
           <p class="text-[11px] text-slate-500 mt-1">Dominio &lt; 50 %</p>
         </div>
       </Transition>
@@ -125,7 +125,7 @@
       leave-from-class="opacity-100" leave-to-class="opacity-0">
       <div
         v-if="successMessage"
-        class="p-3.5 bg-stire-success/10 border border-stire-success/30 text-stire-success rounded-xl text-xs flex items-center justify-between gap-3"
+        class="p-3.5 bg-stire-success/10 border border-stire-success/30 text-emerald-700 rounded-xl text-xs flex items-center justify-between gap-3"
       >
         <div class="flex items-center gap-2">
           <Check :size="14" />
@@ -138,7 +138,7 @@
     <!-- Cargando -->
     <div
       v-if="isLoading"
-      class="p-14 text-center text-sm text-slate-400 bg-white rounded-2xl border border-slate-200"
+      class="p-14 text-center text-sm text-slate-500 bg-white rounded-2xl border border-slate-200"
     >
       <div class="inline-block w-6 h-6 border-2 border-stire-blue border-t-transparent rounded-full animate-spin mb-3" />
       <p>Cargando tus clases académicas…</p>
@@ -154,7 +154,7 @@
       </div>
       <div>
         <p class="font-poppins font-bold text-slate-800">Aún no tienes clases creadas</p>
-        <p class="text-sm text-slate-400 mt-1">Crea tu primera clase y comparte el código con tus estudiantes.</p>
+        <p class="text-sm text-slate-500 mt-1">Crea tu primera clase y comparte el código con tus estudiantes.</p>
       </div>
       <button @click="openCreateModal" class="btn-stire-primary mx-auto">
         <Plus :size="15" />
@@ -173,9 +173,9 @@
           placeholder="Buscar clase por código o nombre…"
           class="input-stire pl-9"
         />
-        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">🔍</span>
+        <Search :size="12" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" aria-hidden="true" />
       </div>
-      <p class="text-xs text-slate-400 whitespace-nowrap">
+      <p class="text-xs text-slate-500 whitespace-nowrap">
         Mostrando {{ filteredClasses.length }} de {{ classes.length }} clase{{ classes.length !== 1 ? 's' : '' }}
       </p>
     </div>
@@ -214,7 +214,7 @@
                   @click="copyCode(cls.code)"
                   class="flex items-center gap-1.5 text-[11px] font-medium px-2 py-1 rounded-lg
                          border border-slate-200 text-slate-500 hover:border-stire-teal/50
-                         hover:text-stire-teal-dark hover:bg-stire-teal/5
+                         hover:text-teal-700 hover:bg-stire-teal/5
                          active:scale-95 transition-all duration-150 whitespace-nowrap"
                   :title="`Copiar código ${cls.code}`"
                 >
@@ -226,7 +226,7 @@
                     leave-from-class="opacity-100 scale-100"
                     leave-to-class="opacity-0 scale-75"
                   >
-                    <Check v-if="copiedCode === cls.code" :size="12" class="text-stire-success" key="check" />
+                    <Check v-if="copiedCode === cls.code" :size="12" class="text-emerald-700" key="check" />
                     <Copy v-else :size="12" key="copy" />
                   </Transition>
                   <span>{{ copiedCode === cls.code ? 'Copiado' : 'Copiar' }}</span>
@@ -250,14 +250,14 @@
               <h2 class="text-lg font-poppins font-bold text-slate-800 tracking-tight">
                 {{ cls.name }}
               </h2>
-              <p v-if="cls.description" class="text-xs text-slate-400 mt-1 line-clamp-2">
+              <p v-if="cls.description" class="text-xs text-slate-500 mt-1 line-clamp-2">
                 {{ cls.description }}
               </p>
             </div>
 
             <!-- Badge Activo -->
             <span class="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full
-                         bg-stire-success/10 text-stire-success text-[11px] font-bold border border-stire-success/25">
+                         bg-stire-success/10 text-emerald-700 text-[11px] font-bold border border-stire-success/25">
               <span class="pulse-dot" />
               Activo
             </span>
@@ -296,7 +296,7 @@
               <span
                 v-if="cls.avgMastery !== undefined"
                 class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
-                :class="cls.avgMastery >= 70 ? 'bg-stire-success/10 text-stire-success' : 'bg-stire-warning/10 text-stire-warning'"
+                :class="cls.avgMastery >= 70 ? 'bg-stire-success/10 text-emerald-700' : 'bg-stire-warning/10 text-amber-700'"
               >
                 {{ porcentaje(cls.avgMastery) }}
               </span>
@@ -317,7 +317,7 @@
             <!-- La clase como lugar: «Hoy», con las pestañas de la clase (utils/pestanasClase.ts) -->
             <NuxtLink
               :to="`/docente/clase/${cls.id}`"
-              class="btn-stire-teal"
+              class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800"
             >
               <UserCheck :size="14" />
               <span>Abrir la clase</span>
@@ -368,14 +368,14 @@
                   </div>
                   <div>
                     <h3 id="crear-clase-titulo" class="font-poppins font-bold text-slate-800">Crear Nueva Clase</h3>
-                    <p class="text-[11px] text-slate-400">Universidad de Córdoba</p>
+                    <p class="text-[11px] text-slate-500">Universidad de Córdoba</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   aria-label="Cerrar"
                   @click="isModalOpen = false"
-                  class="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                  class="p-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
                 >
                   <X :size="16" aria-hidden="true" />
                 </button>
@@ -421,7 +421,7 @@
                     class="input-stire font-mono uppercase"
                     aria-describedby="new-class-code-estado"
                   />
-                  <p id="new-class-code-estado" class="text-[11px] mt-1 flex items-center gap-1" :class="estadoCodigo.tipo === 'ocupado' ? 'text-semantico-falla font-semibold' : estadoCodigo.tipo === 'libre' ? 'text-semantico-pasa font-semibold' : 'text-slate-400'" aria-live="polite">
+                  <p id="new-class-code-estado" class="text-[11px] mt-1 flex items-center gap-1" :class="estadoCodigo.tipo === 'ocupado' ? 'text-semantico-falla font-semibold' : estadoCodigo.tipo === 'libre' ? 'text-semantico-pasa font-semibold' : 'text-slate-500'" aria-live="polite">
                     <X v-if="estadoCodigo.tipo === 'ocupado'" :size="12" aria-hidden="true" />
                     <Check v-else-if="estadoCodigo.tipo === 'libre'" :size="12" aria-hidden="true" />
                     {{ estadoCodigo.texto }}
@@ -462,14 +462,14 @@
                       <option v-for="p in plantillas" :key="`p${p.classId}`" :value="p.classId">{{ textoPlantilla(p) }}</option>
                     </optgroup>
                   </select>
-                  <p class="text-[11px] text-slate-400 mt-1">Opcional. Se copian explicaciones y ejercicios en borrador; nunca estudiantes ni notas.</p>
+                  <p class="text-[11px] text-slate-500 mt-1">Opcional. Se copian explicaciones y ejercicios en borrador; nunca estudiantes ni notas.</p>
                 </div>
 
                 <!-- Toggle aprobación -->
                 <div class="p-4 bg-stire-canvas rounded-xl border border-slate-200 flex items-center justify-between gap-4">
                   <div>
                     <p class="text-xs font-semibold text-slate-800">Requiere Aprobación</p>
-                    <p class="text-[11px] text-slate-400 mt-0.5">El docente aprueba manualmente cada ingreso.</p>
+                    <p class="text-[11px] text-slate-500 mt-0.5">El docente aprueba manualmente cada ingreso.</p>
                   </div>
                   <input
                     type="checkbox"
@@ -532,14 +532,14 @@
           <div class="bg-white rounded-3xl p-10 max-w-sm w-full text-center shadow-2xl space-y-6 max-h-[90dvh] overflow-y-auto">
             <div>
               <h3 class="font-poppins font-bold text-xl text-slate-800">Código de Clase</h3>
-              <p class="text-sm text-slate-400 mt-1">{{ qrModal.className }}</p>
+              <p class="text-sm text-slate-500 mt-1">{{ qrModal.className }}</p>
               <p class="text-xs text-slate-500 mt-2">Que lo escaneen con la cámara del celular: se abre STIRE con el código ya escrito.</p>
             </div>
             <div class="flex items-center justify-center">
               <canvas ref="qrCanvas" class="rounded-2xl shadow-lg" />
             </div>
             <div class="p-4 bg-stire-canvas rounded-2xl">
-              <p class="text-xs text-slate-400 mb-1">Código de acceso</p>
+              <p class="text-xs text-slate-500 mb-1">Código de acceso</p>
               <p class="text-3xl font-mono font-bold text-stire-blue tracking-widest">{{ qrModal.code }}</p>
             </div>
             <button
@@ -559,10 +559,7 @@
 <script setup lang="ts">
 import { textoPlantilla, type Plantilla } from '~/utils/plantillas'
 import { porcentaje } from '~/utils/porcentaje'
-import {
-  Plus, Users, TrendingUp, BookOpen, AlertTriangle,
-  Mail, Check, Copy, QrCode, UserCheck, X
-} from 'lucide-vue-next'
+import { AlertTriangle, BookOpen, Check, Copy, Mail, Plus, QrCode, Search, TrendingUp, UserCheck, Users, X } from 'lucide-vue-next'
 import { normalizarCodigo, sugerirCodigo, urlDeIngreso } from '~/utils/codigoClase'
 import { useApi } from '~/composables/useApi'
 const { messageOf } = useApiErrorMessage()

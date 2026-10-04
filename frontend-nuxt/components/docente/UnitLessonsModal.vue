@@ -30,7 +30,7 @@
             </button>
             <button
               @click="handleClose"
-              class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+              class="p-1.5 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
               aria-label="Cerrar la explicación">
               <X :size="18" aria-hidden="true" />
             </button>
@@ -74,17 +74,17 @@
 
               <div class="flex items-center gap-0.5 shrink-0">
                 <button :disabled="idx === 0 || isReordering" @click="moveLesson(idx, -1)"
-                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none"
+                  class="p-1.5 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none"
                   aria-label="Subir explicación" title="Subir">
                   <ChevronUp :size="16" aria-hidden="true" />
                 </button>
                 <button :disabled="idx === sortedLessons.length - 1 || isReordering" @click="moveLesson(idx, 1)"
-                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none"
+                  class="p-1.5 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none"
                   aria-label="Bajar explicación" title="Bajar">
                   <ChevronDown :size="16" aria-hidden="true" />
                 </button>
                 <button :disabled="togglingId === item.id" @click="toggleLessonVisibility(item)"
-                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                  class="p-1.5 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                   :aria-label="item.isVisible !== false ? `Ocultar ${item.title}` : `Mostrar ${item.title}`"
                   :title="item.isVisible !== false ? 'Ocultar a los estudiantes' : 'Mostrar a los estudiantes'">
                   <Eye v-if="item.isVisible !== false" :size="16" aria-hidden="true" />
@@ -92,12 +92,12 @@
                 </button>
                 <button v-if="esRecurso(item.type)" @click="vistaPreviaId = vistaPreviaId === item.id ? null : item.id"
                   :aria-expanded="vistaPreviaId === item.id"
-                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                  class="p-1.5 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                   :aria-label="`Vista previa de ${item.title}`" title="Vista previa">
                   <ScanEye :size="16" aria-hidden="true" />
                 </button>
                 <button @click="openEditForm(item)"
-                  class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                  class="p-1.5 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                   :aria-label="`Editar ${item.title}`" title="Editar">
                   <Pencil :size="16" aria-hidden="true" />
                 </button>

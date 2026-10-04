@@ -6,7 +6,7 @@
     </div>
 
     <!-- Instrucción -->
-    <div class="text-[11px] text-base-texto-secundario bg-base-bg-secundario px-3 py-2 rounded border border-base-borde-sutil">
+    <div class="text-[11px] text-slate-600 bg-base-bg-secundario px-3 py-2 rounded border border-base-borde-sutil">
       Completa los espacios en blanco dentro de la plantilla de código:
     </div>
 
@@ -30,7 +30,7 @@
               :id="`blank-${token.id}`"
               v-model="blankAnswers[token.id]"
               :placeholder="token.id"
-              class="px-2 py-0.5 bg-editor-line text-stire-teal font-mono text-xs border border-slate-600 focus:border-stire-teal focus:outline-none focus:ring-1 focus:ring-stire-teal/60 rounded transition-colors text-center"
+              class="px-2 py-0.5 bg-editor-line text-teal-300 font-mono text-xs border border-slate-600 focus:border-stire-teal focus:outline-none focus:ring-1 focus:ring-stire-teal/60 rounded transition-colors text-center"
               :style="{ width: `${Math.max(60, (blankAnswers[token.id]?.length || token.id.length || 4) * 10 + 20)}px` }"
             />
           </span>
@@ -41,10 +41,10 @@
     <!-- Estado de completitud -->
     <div class="text-[11px] text-base-texto-secundario flex items-center justify-between pt-1">
       <span v-if="allBlanksFilled" class="text-semantico-pasa">
-        ✔ Todos los espacios completados ({{ Object.keys(blankAnswers).length }}/{{ expectedBlankIds.length }}).
+        Todos los espacios completados ({{ Object.keys(blankAnswers).length }}/{{ expectedBlankIds.length }}).
       </span>
       <span v-else class="text-acento-ambar-fuerte">
-        ⚠ Completa todos los espacios en blanco antes de entregar ({{ filledCount }}/{{ expectedBlankIds.length }} completados).
+        Completa todos los espacios en blanco antes de entregar ({{ filledCount }}/{{ expectedBlankIds.length }} completados).
       </span>
     </div>
   </div>

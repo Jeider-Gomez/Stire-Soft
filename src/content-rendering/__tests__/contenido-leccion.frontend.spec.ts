@@ -6,9 +6,15 @@ import { IMAGEN_EN_LINEA as IMAGEN_SERVIDOR, RECURSO_EN_LINEA as RECURSO_SERVIDO
 // Imágenes, recursos y ejemplos en vivo DENTRO del texto de la lección. Se prueba el archivo real de frontend-nuxt.
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
 const leer = (...partes: string[]) => readFileSync(path.join(raiz, ...partes), 'utf8');
-const js = ts.transpileModule(leer('utils', 'contenidoLeccion.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
-const mod = { exports: {} as Record<string, unknown> };
-new Function('module', 'exports', js)(mod, mod.exports);
+// Carga un archivo de utils/ con sus importaciones relativas (contenidoLeccion.ts usa algoritmoMultiformato.ts).
+function cargarUtil(nombre: string): Record<string, unknown> {
+  const codigo = ts.transpileModule(leer('utils', `${nombre}.ts`), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
+  const m = { exports: {} as Record<string, unknown> };
+  const requerir = (ruta: string) => cargarUtil(ruta.replace(/^\.\//, ''));
+  new Function('module', 'exports', 'require', codigo)(m, m.exports, requerir);
+  return m.exports;
+}
+const mod = { exports: cargarUtil('contenidoLeccion') };
 const { partirContenido, marcaDeImagen, marcaDeRecurso, EJEMPLO_EN_VIVO, IMAGEN_EN_LINEA, RECURSO_EN_LINEA, insertadosDe } = mod.exports as {
   partirContenido: (t: string) => Array<Record<string, unknown>>;
   marcaDeImagen: (a: string, u: string, p?: string) => string;

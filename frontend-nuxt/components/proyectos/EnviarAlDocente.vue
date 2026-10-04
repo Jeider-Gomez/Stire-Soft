@@ -5,7 +5,7 @@
     </h2>
     <p v-if="cargando" class="text-base-texto-secundario">Cargando…</p>
     <template v-else>
-      <p v-if="abiertas.length === 0" class="text-base-texto-secundario bg-base-bg-secundario rounded-md p-3">
+      <p v-if="abiertas.length === 0" class="text-slate-600 bg-base-bg-secundario rounded-md p-3">
         No tienes entregas abiertas para este tipo de proyecto. Cuando tu docente cree una, aparecerá aquí y en tu inicio.
       </p>
       <form v-else novalidate @submit.prevent="enviar" class="flex flex-col sm:flex-row gap-2 sm:items-end">

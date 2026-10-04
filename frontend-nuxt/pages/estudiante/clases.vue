@@ -9,7 +9,7 @@
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Mis Clases y Grupos Académicos
+          Mis clases
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
           Gestiona las asignaturas en las que estás matriculado o ingresa el código de una nueva clase
@@ -21,7 +21,7 @@
         <NuxtLink
           to="/estudiante"
           class="px-3.5 py-1.5 rounded-md border border-base-borde-fuerte text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario transition-colors">
-          ← Volver al Dashboard
+          ← Volver al inicio
         </NuxtLink>
       </div>
     </header>
@@ -49,12 +49,17 @@
             v-model="joinCode"
             type="text"
             required
-            placeholder="CÓDIGO DE CLASE"
-            class="px-3 py-1.5 text-xs font-mono uppercase tracking-wider rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none w-full sm:w-52" />
+            autocapitalize="characters"
+            autocomplete="off"
+            spellcheck="false"
+            enterkeyhint="go"
+            placeholder="Ej.: ALGO-203413"
+            @input="joinCode = codigoMientrasEscribe(joinCode)"
+            class="min-h-[44px] px-3 py-1.5 text-xs font-mono uppercase tracking-wider rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none w-full sm:w-52" />
           <button
             type="submit"
             :disabled="isJoining || !joinCode.trim()"
-            class="px-4 py-1.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors shadow-sm disabled:opacity-50 whitespace-nowrap">
+            class="min-h-[44px] px-4 py-1.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors shadow-sm disabled:opacity-50 whitespace-nowrap">
             <span v-if="isJoining">Inscribiendo...</span>
             <span v-else>Unirse</span>
           </button>
@@ -64,16 +69,16 @@
 
       <!-- Alerta de éxito o error -->
       <div v-if="feedbackMessage" class="mt-4 p-3 rounded-md text-xs flex items-center gap-2" :class="feedbackIsError ? 'bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla' : 'bg-semantico-pasa/10 border border-semantico-pasa/30 text-semantico-pasa'">
-        <span>{{ feedbackIsError ? '⚠' : '✔' }}</span>
+        <span>{{ feedbackIsError ? '!' : '✓' }}</span>
         <span>{{ feedbackMessage }}</span>
       </div>
     </section>
 
-    <!-- Lista de Clases Matriculadas -->
+    <!-- Lista de Clases en las que estás -->
     <section class="space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
-          <span>📚</span> Clases Matriculadas ({{ enrolledClasses.length }})
+          <BookOpen :size="16" aria-hidden="true" /> Clases en las que estás ({{ enrolledClasses.length }})
         </h2>
         <button
           @click="fetchEnrollments"
@@ -84,11 +89,11 @@
       </div>
 
       <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
-        <span class="inline-block animate-spin mr-2">⏳</span> Cargando tus asignaturas matriculadas...
+        <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Cargando tus asignaturas matriculadas...
       </div>
 
       <div v-else-if="enrolledClasses.length === 0" class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
-        <div class="text-3xl">🎓</div>
+        <GraduationCap :size="30" class="mx-auto text-slate-500" aria-hidden="true" />
         <h3 class="font-bold text-sm text-base-texto-primario">Aún no estás matriculado en ninguna clase</h3>
         <p class="text-base-texto-secundario max-w-md mx-auto">
           Solicita el código de clase a tu docente de la Universidad de Córdoba o ingresa el código de demostración en el formulario superior para comenzar tu aprendizaje adaptativo.
@@ -106,7 +111,7 @@
               <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono tracking-wider bg-base-bg-secundario border border-base-borde-fuerte text-base-texto-primario">
                 {{ item.class?.code || 'SIN CÓDIGO' }}
               </span>
-              <span v-if="isActiveClass(item.class?.id)" class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/15 text-semantico-pasa flex items-center gap-1">
+              <span v-if="isActiveClass(item.class?.id)" class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/10 text-semantico-pasa flex items-center gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-semantico-pasa"></span> Activa ahora
               </span>
             </div>
@@ -120,7 +125,7 @@
             </p>
 
             <div class="text-xs text-base-texto-secundario flex items-center gap-1.5 mb-4">
-              <span>👨‍🏫</span>
+              <UserRound :size="16" aria-hidden="true" />
               <span class="font-medium text-base-texto-primario">
                 {{ item.class?.teacher?.fullName || 'Docente asignado' }}
               </span>
@@ -149,8 +154,8 @@
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
 import { useStudentStore } from '~/stores/student'
-import { KeyRound } from 'lucide-vue-next'
-import { normalizarCodigo } from '~/utils/codigoClase'
+import { BookOpen, GraduationCap, KeyRound, Loader2, UserRound } from 'lucide-vue-next'
+import { normalizarCodigo, codigoMientrasEscribe } from '~/utils/codigoClase'
 const { messageOf } = useApiErrorMessage()
 
 definePageMeta({

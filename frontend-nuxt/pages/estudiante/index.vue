@@ -97,8 +97,8 @@
             {{ r.tipo === 'reto' ? 'Un reto de tu docente' : 'Tu docente te preparó un refuerzo' }}
           </p>
           <h2 class="text-sm font-bold text-base-texto-primario">{{ r.titulo }}</h2>
-          <p v-if="r.mensaje" class="text-xs text-base-texto-secundario line-clamp-2">{{ r.mensaje }}</p>
-          <p class="text-[11px] text-base-texto-secundario">{{ r.pasosHechos }} de {{ r.totalPasos }} pasos<template v-if="r.fechaLimite"> · hasta {{ fechaCorta(r.fechaLimite) }}</template></p>
+          <p v-if="r.mensaje" class="text-xs text-slate-700 line-clamp-2">{{ r.mensaje }}</p>
+          <p class="text-[11px] text-slate-700">{{ r.pasosHechos }} de {{ r.totalPasos }} pasos<template v-if="r.fechaLimite"> · hasta {{ fechaCorta(r.fechaLimite) }}</template></p>
         </div>
         <NuxtLink :to="`/estudiante/refuerzos/${r.id}`" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs text-center shrink-0">
           {{ r.pasosHechos ? 'Continuar' : 'Empezar' }}
@@ -118,6 +118,22 @@
           <p class="text-xs text-base-texto-secundario leading-relaxed">
             {{ studentStore.activeUnit.empezada ? (recommendedReasonMessage || studentStore.activeUnit.description) : studentStore.activeUnit.description }}
           </p>
+          <!-- META-03 (transparencia y agencia): cómo elige STIRE y que el estudiante puede elegir otra cosa -->
+          <details class="text-[11px] text-slate-600 group">
+            <summary class="inline-flex items-center gap-1 min-h-[32px] cursor-pointer font-semibold text-acento-ambar-fuerte hover:underline">
+              <CircleHelp :size="12" aria-hidden="true" /> ¿Por qué veo esto?
+            </summary>
+            <div class="mt-1 p-3 rounded-lg bg-base-bg-secundario/60 border border-base-borde-sutil space-y-1 leading-relaxed text-slate-700">
+              <p>STIRE elige tu siguiente paso con estas reglas, en orden:</p>
+              <ol class="list-decimal pl-4 space-y-0.5">
+                <li>Si fallaste 3 veces seguidas en la lección, una pausa para volver a la explicación o pedir una pista.</li>
+                <li>Si un repaso venció, el repaso: es cuando más ayuda a no olvidar.</li>
+                <li>Si vas bien, un ejercicio más difícil; si te costaron los dos últimos, uno del mismo nivel.</li>
+                <li>Si no, el siguiente ejercicio de la lección que estás trabajando.</li>
+              </ol>
+              <p>Es una sugerencia: puedes abrir cualquier lección abierta del plan del curso o elegir tú el ejercicio.</p>
+            </div>
+          </details>
           <div v-if="studentStore.activeUnit.empezada" class="flex items-center gap-3 pt-1">
             <div class="w-48 h-2 bg-base-bg-secundario rounded-full overflow-hidden border border-base-borde-sutil" role="progressbar"
               :aria-valuenow="studentStore.activeUnit.masteryPercentage" aria-valuemin="0" aria-valuemax="100" aria-label="Dominio de la lección">
@@ -204,12 +220,28 @@
                 </span>
               </span>
               <span class="px-2 py-0.5 rounded text-[10px] font-bold shrink-0"
-                :class="e.estado === 'sin_entregar' ? 'bg-acento-ambar/15 text-acento-ambar-fuerte' : e.estado === 'revisada' ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario'">
+                :class="e.estado === 'sin_entregar' ? 'bg-acento-ambar/15 text-acento-ambar-fuerte' : e.estado === 'revisada' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600'">
                 {{ e.estado === 'revisada' ? (e.ultima?.nota != null ? `Revisada · ${notaTexto(e.ultima.nota)}` : 'Revisada') : e.estado === 'por_revisar' ? 'Entregada, sin revisar' : 'Por entregar' }}
               </span>
             </NuxtLink>
           </li>
         </ul>
+      </section>
+
+      <!-- Aviso del próximo módulo (bloqueo suave, utils/bloqueoModulos.ts): cuánto falta para abrirlo -->
+      <section v-if="studentStore.proximoModulo" class="p-4 rounded-xl border border-acento-ambar-fuerte/30 bg-acento-ambar/5 flex flex-col sm:flex-row sm:items-center gap-3" aria-labelledby="proximo-modulo-titulo">
+        <Lock :size="20" class="shrink-0 text-acento-ambar-fuerte" aria-hidden="true" />
+        <div class="flex-1 space-y-1.5">
+          <h2 id="proximo-modulo-titulo" class="text-xs font-bold text-base-texto-primario">
+            «{{ studentStore.proximoModulo.modulo.titulo.split(':')[0] }}» se abre con {{ studentStore.proximoModulo.umbral }} % de dominio en «{{ studentStore.proximoModulo.anterior.titulo.split(':')[0] }}»
+          </h2>
+          <div class="flex items-center gap-2">
+            <div class="flex-1 max-w-xs h-2 bg-base-blanco rounded-full overflow-hidden border border-base-borde-sutil" role="progressbar" :aria-valuenow="studentStore.proximoModulo.dominio" aria-valuemin="0" :aria-valuemax="studentStore.proximoModulo.umbral" aria-label="Dominio para abrir el próximo módulo">
+              <div class="h-full bg-acento-ambar-fuerte rounded-full" :style="{ width: `${Math.min(100, Math.round((studentStore.proximoModulo.dominio / studentStore.proximoModulo.umbral) * 100))}%` }" />
+            </div>
+            <span class="text-[11px] text-slate-700">Vas en {{ studentStore.proximoModulo.dominio }} % · te faltan {{ studentStore.proximoModulo.falta }}</span>
+          </div>
+        </div>
       </section>
 
       <!-- 3. EL PLAN DEL CURSO: módulos, temas (solo si agrupan más de una lección) y lecciones -->
@@ -228,7 +260,10 @@
         <div v-else class="space-y-4">
           <section v-for="mod in studentStore.modules" :key="mod.id" class="bg-base-blanco rounded-xl border border-base-borde-sutil overflow-hidden shadow-sm" :aria-label="mod.title">
             <div class="bg-base-bg-secundario/60 px-5 py-3 border-b border-base-borde-sutil flex flex-wrap items-center justify-between gap-2">
-              <h3 class="font-bold text-xs text-base-texto-primario">{{ mod.title }}</h3>
+              <h3 class="font-bold text-xs text-base-texto-primario flex items-center gap-1.5">
+                <Lock v-if="studentStore.estadoModulo(mod.id)?.requiere" :size="12" class="text-slate-500" aria-label="Bloqueado" />
+                {{ mod.title }}
+              </h3>
               <span class="text-[11px] text-base-texto-secundario flex items-center gap-2">
                 <span class="w-16 h-1.5 bg-base-blanco rounded-full overflow-hidden border border-base-borde-sutil" aria-hidden="true">
                   <span class="block h-full bg-semantico-pasa" :style="{ width: `${porcentajeModulo(mod)}%` }"></span>
@@ -237,8 +272,12 @@
               </span>
             </div>
 
+            <p v-if="studentStore.estadoModulo(mod.id)?.requiere" class="px-5 py-3 text-xs text-slate-600">
+              Se abre con {{ studentStore.estadoModulo(mod.id)!.requiere!.umbral }} % de dominio en «{{ studentStore.estadoModulo(mod.id)!.requiere!.titulo }}».
+              Vas en {{ studentStore.estadoModulo(mod.id)!.requiere!.dominio }} %.
+            </p>
             <!-- Cada tema es un grupo separado por una línea; el nombre solo aparece si agrupa más de una lección. -->
-            <div>
+            <div v-else>
             <div v-for="tema in mod.topics" :key="tema.id" class="border-t border-base-borde-sutil first:border-t-0 py-1">
               <p v-if="tema.units.length > 1" class="px-5 pt-2 pb-0.5 text-[10px] font-bold uppercase tracking-wider text-base-texto-secundario">
                 {{ tema.title }}
@@ -256,7 +295,7 @@
                       <span class="block text-xs font-semibold group-hover:underline" :class="unit.status === 'dominado' ? 'text-base-texto-secundario' : 'text-base-texto-primario'">{{ unit.title }}</span>
                       <span v-if="unit.id === studentStore.activeUnit?.id" class="block text-[11px] text-base-texto-secundario truncate">{{ unit.description }}</span>
                     </span>
-                    <span v-if="forgettingUnitIds.has(unit.id)" class="inline-flex items-center gap-1 text-[10px] font-semibold text-semantico-info shrink-0">
+                    <span v-if="debeRepasar(unit)" class="inline-flex items-center gap-1 text-[10px] font-semibold text-semantico-info shrink-0">
                       <RotateCcw :size="12" aria-hidden="true" /> Repasar
                     </span>
                     <span v-if="unit.id === studentStore.activeUnit?.id"
@@ -275,8 +314,9 @@
 </template>
 
 <script setup lang="ts">
+import { tocaRepasar } from '~/utils/progresoLeccion'
 import { computed, onMounted, ref, watch } from 'vue'
-import { RotateCcw, TrendingUp, AlertTriangle, BadgeCheck, ShieldAlert, Landmark, Library, GraduationCap, KeyRound, Brain, Flame, Map as MapIcon, Play, BookOpen, CheckCircle2, CircleDot, Circle, Inbox } from 'lucide-vue-next'
+import { AlertTriangle, BadgeCheck, BookOpen, Brain, CheckCircle2, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, ShieldAlert, TrendingUp } from 'lucide-vue-next'
 import { contar, DOMINADO } from '~/utils/terminos'
 import { fechaCorta, notaTexto, type EstadoEntrega } from '~/utils/entregas'
 import { useStudentStore } from '~/stores/student'
@@ -353,16 +393,10 @@ watch(
   { immediate: true }
 )
 
-// Unidades con repaso vencido o crítico para el badge «Se está olvidando» (T2)
-const forgettingUnitIds = computed(() => {
-  const ids = new Set<number>()
-  for (const r of studentStore.reviews) {
-    if (r.urgency === 'vencido' || r.urgency === 'critico') {
-      ids.add(r.learningUnitId)
-    }
-  }
-  return ids
-})
+// «Repasar» solo en lecciones ya aprendidas con el repaso vencido (utils/progresoLeccion.ts); en una lección sin
+// dominio lo que toca es practicarla, no repasarla (revisión del 04/10, MOD-02).
+const urgenciaPorLeccion = computed(() => new Map(studentStore.reviews.map((r) => [r.learningUnitId, r.urgency])))
+const debeRepasar = (unit: { id: number; masteryPercentage: number }) => tocaRepasar(unit.masteryPercentage, urgenciaPorLeccion.value.get(unit.id))
 
 // Refuerzos y retos sin terminar de la clase activa.
 interface MiRefuerzo { id: number; classId: number; tipo: 'refuerzo' | 'reto'; titulo: string; mensaje: string | null; fechaLimite: string | null; totalPasos: number; pasosHechos: number }

@@ -13,7 +13,7 @@
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Rendimiento del Grupo y Alertas Tempranas
+          Rendimiento del grupo y alertas tempranas
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
           Diagnóstico del dominio conceptual y detección proactiva de rezago académico
@@ -37,12 +37,12 @@
 
     <!-- ESTADO 1: Cargando -->
     <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
-      <span class="inline-block animate-spin mr-2">⏳</span> Calculando métricas de cohorte en tiempo real...
+      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Calculando métricas de cohorte en tiempo real...
     </div>
 
     <!-- ESTADO 2: Error -->
     <div v-else-if="errorMessage" class="p-8 text-center bg-base-blanco rounded-xl border border-semantico-falla/30 text-xs space-y-3">
-      <span class="text-2xl">⚠</span>
+      <TriangleAlert :size="22" class="text-2xl" aria-hidden="true" />
       <p class="font-bold text-semantico-falla">{{ errorMessage }}</p>
       <button
         @click="loadClassMetrics"
@@ -53,7 +53,7 @@
 
     <!-- ESTADO 3: Vacío (Sin alumnos matriculados) -->
     <div v-else-if="metrics && (!metrics.studentRankings || metrics.studentRankings.length === 0)" class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
-      <span class="text-3xl">👥</span>
+      <Users :size="28" class="text-3xl" aria-hidden="true" />
       <h3 class="font-bold text-base-texto-primario text-sm">Sin estudiantes matriculados</h3>
       <p class="text-base-texto-secundario max-w-md mx-auto">
         Esta clase aún no cuenta con estudiantes registrados. Comparte el código
@@ -162,7 +162,7 @@
               :class="onlyAtRisk
                 ? 'bg-semantico-falla/15 text-semantico-falla border-semantico-falla/40'
                 : 'borde-afordancia text-base-texto-primario hover:bg-base-bg-secundario'">
-              <span>🚨</span>
+              <OctagonAlert :size="16" aria-hidden="true" />
               <span>{{ onlyAtRisk ? 'Viendo solo rezago (<50%)' : 'Filtrar por riesgo (<50%)' }}</span>
             </button>
           </div>
@@ -170,7 +170,7 @@
 
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-left">
-            <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil font-semibold">
+            <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil font-semibold">
               <tr>
                 <th class="p-3">Estudiante</th>
                 <th class="p-3">Correo</th>
@@ -207,7 +207,7 @@
                     :class="st.avgMastery < 50
                       ? 'bg-semantico-falla/15 text-semantico-falla'
                       : st.avgMastery >= 80
-                        ? 'bg-semantico-pasa/15 text-semantico-pasa'
+                        ? 'bg-semantico-pasa/10 text-semantico-pasa'
                         : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
                     {{ st.avgMastery < 50 ? 'Rezago Crítico' : st.avgMastery >= 80 ? 'Sobresaliente' : 'En Progreso' }}
                   </span>
@@ -230,6 +230,7 @@
 </template>
 
 <script setup lang="ts">
+import { Loader2, OctagonAlert, TriangleAlert, Users } from 'lucide-vue-next'
 import { porcentaje } from '~/utils/porcentaje'
 import { useApi } from '~/composables/useApi'
 const { messageOf } = useApiErrorMessage()

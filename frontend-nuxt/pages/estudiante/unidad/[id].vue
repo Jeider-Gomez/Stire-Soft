@@ -20,6 +20,22 @@
       <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando la lección…
     </p>
 
+    <!-- Módulo todavía cerrado (bloqueo suave, utils/bloqueoModulos.ts): se dice qué falta y a dónde ir -->
+    <div v-else-if="bloqueo" role="status" class="p-8 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
+      <Lock :size="28" class="mx-auto text-slate-500" aria-hidden="true" />
+      <p class="text-sm font-bold text-base-texto-primario">Esta lección se abre cuando domines un poco más «{{ bloqueo.titulo.split(':')[0] }}»</p>
+      <p class="text-slate-600 max-w-md mx-auto">
+        Tu docente pidió {{ bloqueo.umbral }} % de dominio en ese módulo antes de seguir, para que avances con base. Vas en
+        <strong class="text-base-texto-primario">{{ bloqueo.dominio }} %</strong>: te faltan {{ Math.max(0, bloqueo.umbral - bloqueo.dominio) }} puntos.
+      </p>
+      <div class="max-w-xs mx-auto h-2 bg-base-bg-secundario rounded-full overflow-hidden" role="progressbar" :aria-valuenow="bloqueo.dominio" aria-valuemin="0" :aria-valuemax="bloqueo.umbral" aria-label="Dominio del módulo anterior">
+        <div class="h-full bg-acento-ambar-fuerte rounded-full" :style="{ width: `${Math.min(100, Math.round((bloqueo.dominio / bloqueo.umbral) * 100))}%` }" />
+      </div>
+      <NuxtLink to="/estudiante" class="inline-flex items-center gap-1.5 min-h-[44px] px-4 rounded-md text-xs font-bold bg-acento-ambar-fuerte text-white">
+        Seguir con lo que me falta
+      </NuxtLink>
+    </div>
+
     <!-- Lección no encontrada / sin acceso -->
     <div v-else-if="loadError || !unitData" class="p-8 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
       <p class="font-bold text-base-texto-primario">No pudimos cargar esta lección.</p>
@@ -67,11 +83,13 @@
       </article>
 
       <!-- Practicar: es la forma de avanzar y de medir lo que sabes (docs/DISENO_INTERVENCION_DOCENTE.md §10.2) -->
+      <ValorarLeccion :unit-id="unitId" />
+
       <section class="rounded-lg border border-acento-ambar-fuerte/30 bg-acento-ambar/10 p-5 space-y-3" aria-labelledby="practicar-titulo">
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 id="practicar-titulo" class="text-sm font-bold text-base-texto-primario">Practica</h2>
-            <p class="text-xs text-base-texto-secundario">
+            <p class="text-xs text-slate-700">
               {{ recommendedActivity?.reasonMessage ?? 'Cada ejercicio que resuelves suma a tu dominio de la lección.' }}
             </p>
           </div>
@@ -111,14 +129,14 @@
           </NuxtLink>
           <span
             v-if="recommendedActivity.level"
-            class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-blanco border border-base-borde-fuerte text-base-texto-secundario"
+            class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-blanco border border-base-borde-fuerte text-slate-700"
           >
             {{ levelLabel(recommendedActivity.level) }}
           </span>
         </div>
 
         <div v-else-if="chooseManually" class="flex flex-col gap-2">
-          <p v-if="isLoadingActivities" class="text-xs text-base-texto-secundario">Cargando ejercicios…</p>
+          <p v-if="isLoadingActivities" class="text-xs text-slate-700">Cargando ejercicios…</p>
           <NuxtLink
             v-for="activity in unitActivities"
             :key="activity.id"
@@ -128,7 +146,7 @@
           </NuxtLink>
         </div>
 
-        <p v-else class="text-xs text-base-texto-secundario">
+        <p v-else class="text-xs text-slate-700">
           Todavía no hay ejercicios publicados para esta lección.
         </p>
 
@@ -163,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, BookOpen, ChevronRight, Inbox, Lightbulb, Loader2, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
+import { ArrowLeft, BookOpen, ChevronRight, Inbox, Lightbulb, Loader2, Lock, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
 import { fechaCorta } from '~/utils/entregas'
 import { DOMINADO, TERMINOS } from '~/utils/terminos'
 import { useAuthStore } from '~/stores/auth'
@@ -182,6 +200,11 @@ const studentStore = useStudentStore()
 const api = useApi()
 
 const unitId = Number(route.params.id) || 0
+/** Si la lección es de un módulo todavía cerrado, qué falta para abrirlo; null si está abierta. */
+const bloqueo = computed(() => {
+  const mod = studentStore.modules.find((m) => m.units.some((u) => u.id === unitId))
+  return mod ? studentStore.estadoModulo(mod.id)?.requiere ?? null : null
+})
 
 interface UnitDetail {
   id: number

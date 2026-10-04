@@ -29,8 +29,8 @@
 
     <!-- Estado de selección -->
     <div class="text-[11px] text-base-texto-secundario flex items-center gap-1.5 pt-1">
-      <span v-if="selectedId" class="text-semantico-pasa">✔ Opción seleccionada.</span>
-      <span v-else class="text-acento-ambar-fuerte">⚠ Selecciona una opción antes de entregar.</span>
+      <span v-if="selectedId" class="text-semantico-pasa">Opción seleccionada.</span>
+      <span v-else class="text-acento-ambar-fuerte">Selecciona una opción antes de entregar.</span>
       <span v-if="selectedId"> Cuando estés seguro, pulsa <strong>Entregar respuesta</strong>.</span>
     </div>
   </div>

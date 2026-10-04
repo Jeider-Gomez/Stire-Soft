@@ -12,7 +12,7 @@
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Bandeja de Mensajería Docente-Estudiante
+          Mensajes
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
           Canal institucional de orientación y retroalimentación académica
@@ -43,7 +43,7 @@
         :class="activeTab === 'inbox'
           ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold bg-base-blanco'
           : 'text-base-texto-secundario hover:text-base-texto-primario'">
-        <span>📥 Recibidos</span>
+        <span>Recibidos</span>
         <span v-if="inboxMessages.length > 0" class="px-1.5 py-0.2 rounded-full bg-base-bg-secundario text-[10px]">
           {{ inboxMessages.length }}
         </span>
@@ -55,7 +55,7 @@
         :class="activeTab === 'sent'
           ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold bg-base-blanco'
           : 'text-base-texto-secundario hover:text-base-texto-primario'">
-        <span>📤 Enviados</span>
+        <span>Enviados</span>
         <span v-if="sentMessages.length > 0" class="px-1.5 py-0.2 rounded-full bg-base-bg-secundario text-[10px]">
           {{ sentMessages.length }}
         </span>
@@ -64,12 +64,12 @@
 
     <!-- ESTADO 1: Cargando -->
     <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
-      <span class="inline-block animate-spin mr-2">⏳</span> Sincronizando mensajes...
+      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Sincronizando mensajes...
     </div>
 
     <!-- ESTADO 2: Error -->
     <div v-else-if="errorMessage" class="p-8 text-center bg-base-blanco rounded-xl border border-semantico-falla/30 text-xs space-y-3">
-      <span class="text-2xl">⚠</span>
+      <TriangleAlert :size="22" class="text-2xl" aria-hidden="true" />
       <p class="font-bold text-semantico-falla">{{ errorMessage }}</p>
       <button
         @click="fetchMessages"
@@ -82,7 +82,7 @@
     <div
       v-else-if="activeMessages.length === 0"
       class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-3">
-      <span class="text-3xl">📭</span>
+      <MailOpen :size="28" class="text-3xl" aria-hidden="true" />
       <h3 class="font-bold text-base-texto-primario text-sm">
         {{ activeTab === 'inbox' ? 'Bandeja de entrada vacía' : 'Sin mensajes enviados' }}
       </h3>
@@ -117,11 +117,11 @@
             <span v-if="activeTab === 'inbox' && !msg.isRead" class="px-1.5 py-0.5 rounded-full bg-semantico-info/15 text-semantico-info text-[10px] font-bold flex-shrink-0">
               Nuevo
             </span>
-            <span class="ml-auto text-[10px] text-base-texto-secundario flex-shrink-0">
+            <span class="ml-auto text-[10px] text-slate-700 flex-shrink-0">
               {{ formatDate(msg.createdAt) }}
             </span>
           </div>
-          <p class="text-base-texto-secundario line-clamp-2">{{ msg.content }}</p>
+          <p class="text-slate-700 line-clamp-2">{{ msg.content }}</p>
         </div>
 
         <!-- Botón responder (solo en inbox) -->
@@ -179,7 +179,7 @@
               Estudiante Destinatario *
             </label>
             <div v-if="isLoadingStudents" class="text-base-texto-secundario py-1.5 text-[11px]">
-              <span class="animate-spin inline-block mr-1">⏳</span> Cargando estudiantes...
+              <Loader2 :size="14" class="animate-spin inline-block mr-1" aria-hidden="true" /> Cargando estudiantes...
             </div>
             <select
               v-else
@@ -231,7 +231,7 @@
               type="submit"
               :disabled="isSending"
               class="px-4 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-              <span v-if="isSending" class="animate-spin">⚙️</span>
+              <Loader2 :size="14" v-if="isSending" class="animate-spin" aria-hidden="true" />
               <span>{{ isSending ? 'Enviando...' : 'Enviar Mensaje' }}</span>
             </button>
           </div>
@@ -242,6 +242,7 @@
 </template>
 
 <script setup lang="ts">
+import { Loader2, MailOpen, TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 const { messageOf } = useApiErrorMessage()
 

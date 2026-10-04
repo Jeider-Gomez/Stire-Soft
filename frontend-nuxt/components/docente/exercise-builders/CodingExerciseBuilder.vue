@@ -21,7 +21,7 @@
       </div>
       <!-- Nota fija: el juez solo ejecuta JavaScript -->
       <p class="mt-1.5 text-[11px] text-base-texto-secundario">
-        ℹ El juez ejecuta solo <strong>JavaScript</strong>; otros lenguajes se ofrecerán cuando el juez los soporte.
+        El juez ejecuta solo <strong>JavaScript</strong>; otros lenguajes se ofrecerán cuando el juez los soporte.
       </p>
     </div>
 
@@ -58,7 +58,7 @@
                   v-model="tc.isPublic"
                   class="accent-acento-ambar-fuerte" />
                 <span :class="tc.isPublic ? 'text-semantico-pasa font-bold' : 'text-base-texto-secundario'">
-                  {{ tc.isPublic ? '👁 Público (visible)' : '🔒 Privado (oculto)' }}
+                  {{ tc.isPublic ? 'Público (visible)' : 'Privado (oculto)' }}
                 </span>
               </label>
 

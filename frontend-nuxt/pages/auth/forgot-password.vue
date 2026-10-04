@@ -31,7 +31,7 @@
               Correo con el que te registraste
             </label>
             <div class="relative">
-              <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
+              <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
               <input
                 id="email"
                 v-model="email"

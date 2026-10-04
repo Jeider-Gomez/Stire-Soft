@@ -70,7 +70,7 @@
         <li v-for="(s, i) in STEPS" :key="s" class="flex items-center gap-2">
           <span
             class="w-6 h-6 rounded-full flex items-center justify-center"
-            :class="step === i + 1 ? 'bg-acento-ambar-fuerte text-base-blanco' : step > i + 1 ? 'bg-semantico-pasa/20 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario'"
+            :class="step === i + 1 ? 'bg-acento-ambar-fuerte text-base-blanco' : step > i + 1 ? 'bg-semantico-pasa/20 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600'"
             :aria-current="step === i + 1 ? 'step' : undefined">
             {{ i + 1 }}
           </span>

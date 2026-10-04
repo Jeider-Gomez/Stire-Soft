@@ -84,6 +84,8 @@
         </div>
       </li>
     </ol>
+
+    <DocenteValoracionesClase :class-id="classId" />
   </div>
 </template>
 
@@ -109,7 +111,7 @@ const ESTILO: Record<TipoPendiente, { icono: Component; fondo: string }> = {
   revisar: { icono: Inbox, fondo: 'bg-acento-ambar/15 text-acento-ambar-fuerte' },
   salto_fallido: { icono: Undo2, fondo: 'bg-semantico-falla/10 text-semantico-falla' },
   refuerzo_quieto: { icono: Clock, fondo: 'bg-acento-ambar/15 text-acento-ambar-fuerte' },
-  sin_actividad: { icono: Moon, fondo: 'bg-base-bg-secundario text-base-texto-secundario' },
+  sin_actividad: { icono: Moon, fondo: 'bg-base-bg-secundario text-slate-600' },
   entrega_cierra: { icono: Clock, fondo: 'bg-semantico-info/10 text-semantico-info' },
   listos: { icono: Rocket, fondo: 'bg-semantico-pasa/10 text-semantico-pasa' },
 }

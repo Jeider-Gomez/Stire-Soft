@@ -19,6 +19,10 @@ export const useTutorStore = defineStore('tutor', () => {
 
   // ─── Estado del drawer ──────────────────────────────────────────────────────
   const isOpen = ref(false)
+  // UI-05: el estudiante pidió resolver el ejercicio por pasos (subpreguntas); vale para el próximo mensaje.
+  const modoPorPasos = ref(false)
+  // UI-04: la explicación de la lección no le sirvió; el Tutor la explica de otra forma (vale para el próximo mensaje).
+  const modoOtraExplicacion = ref(false)
   const isThinking = ref(false)
   const hasGreeted = ref(false)
   /** Segundos que lleva el tutor pensando; para escalar el mensaje de espera. */
@@ -207,6 +211,21 @@ export const useTutorStore = defineStore('tutor', () => {
   }
 
   // ─── Abrir / Cerrar drawer ──────────────────────────────────────────────────
+  /** «Resolverlo por pasos con el Tutor» (UI-05): el Tutor divide el problema en subpreguntas y plantea la primera. */
+  async function resolverPorPasos() {
+    await openDrawer()
+    modoPorPasos.value = true
+    await sendMessage('Quiero resolver este ejercicio por pasos.')
+  }
+
+  /** «¿Te sirvió esta explicación?» → No: el Tutor explica la lección de otra forma (UI-04). */
+  async function pedirOtraExplicacion(queNoQuedoClaro?: string) {
+    await openDrawer()
+    modoOtraExplicacion.value = true
+    const detalle = queNoQuedoClaro?.trim() ? ` No me quedó claro: ${queNoQuedoClaro.trim().slice(0, 300)}` : ''
+    await sendMessage(`La explicación de esta lección no me sirvió. ¿Me la explicas de otra forma?${detalle}`)
+  }
+
   async function openDrawer() {
     isOpen.value = true
     // 1. Historial (solo la primera vez)
@@ -235,6 +254,10 @@ export const useTutorStore = defineStore('tutor', () => {
   // ─── Enviar mensaje (§18.1) ──────────────────────────────────────────────────
   async function sendMessage(userText: string) {
     if (!userText.trim()) return
+    // El modo por pasos vale para este mensaje; los siguientes siguen la conversación normal.
+    const modoEnvio = modoPorPasos.value ? 'por-pasos' as const : modoOtraExplicacion.value ? 'otra-explicacion' as const : undefined
+    modoPorPasos.value = false
+    modoOtraExplicacion.value = false
 
     lastUserMessage.value = userText
 
@@ -268,6 +291,12 @@ export const useTutorStore = defineStore('tutor', () => {
             }
           : contextoSegunPantalla(route.path, workspaceStore.currentExercise ?? null, {
               js: workspaceStore.code, html: workspaceStore.htmlCode, css: workspaceStore.cssCode,
+            }, {
+              // Señales (src/tutor/tutor-senales.ts): error probable de la salida, juicio de confianza y modo por pasos.
+              errorProbable: workspaceStore.errorProbable ?? undefined,
+              confianza: workspaceStore.calibracion?.confianza,
+              acerto: workspaceStore.calibracion?.acerto,
+              modo: modoEnvio,
             })
       })
 
@@ -339,6 +368,9 @@ export const useTutorStore = defineStore('tutor', () => {
   }
 
   return {
+    pedirOtraExplicacion,
+    modoPorPasos,
+    resolverPorPasos,
     isOpen,
     isThinking,
     thinkingSeconds,

@@ -62,7 +62,7 @@
         <div class="flex items-center gap-1.5 shrink-0">
           <span
             class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-            :class="act.status === 'published' ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+            :class="act.status === 'published' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
             {{ act.status === 'published' ? 'Visible' : 'Borrador' }}
           </span>
           <button
@@ -74,7 +74,7 @@
           </button>
           <button
             @click="openEdit(act)"
-            class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+            class="p-1 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
             :data-editar-id="act.id"
             :aria-label="`Editar ${act.title}`" title="Editar">
             <Pencil :size="14" aria-hidden="true" />
@@ -83,7 +83,7 @@
           <button
             @click="duplicateVariant(act.id, act.title)"
             :disabled="isDuplicating"
-            class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte disabled:opacity-50"
+            class="p-1 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte disabled:opacity-50"
             :aria-label="`Duplicar como variante ${act.title}`"
             title="Duplicar como variante">
             <Copy :size="14" aria-hidden="true" />
@@ -345,10 +345,10 @@
                   <span class="font-bold text-base-texto-primario text-xs">
                     {{ item.title }}
                   </span>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-bg-secundario border border-base-borde-sutil text-base-texto-secundario">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-bg-secundario border border-base-borde-sutil text-slate-600">
                     {{ questionTypeName(item.questionType) }}
                   </span>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-bg-secundario border border-base-borde-sutil text-base-texto-secundario">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-bg-secundario border border-base-borde-sutil text-slate-600">
                     {{ difficultyLabel(item.difficulty) }}
                   </span>
                 </div>

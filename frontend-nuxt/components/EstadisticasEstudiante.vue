@@ -6,11 +6,21 @@
     <p v-else-if="error" class="text-xs text-base-texto-secundario">{{ error }}</p>
 
     <template v-else-if="e">
+      <!-- Mi autorregulación (META-01): el meta-nivel, separado de los números; una observación y una pregunta -->
+      <section v-if="!docente && reflexion" class="p-4 rounded-xl border border-semantico-info/25 bg-semantico-info/5 flex gap-3" aria-labelledby="autorregulacion-titulo">
+        <Brain :size="20" class="shrink-0 text-semantico-info mt-0.5" aria-hidden="true" />
+        <div class="space-y-1">
+          <h3 id="autorregulacion-titulo" class="text-xs font-bold text-base-texto-primario">Mi autorregulación: cómo estoy estudiando</h3>
+          <p class="text-xs text-base-texto-primario">{{ reflexion.observacion }}</p>
+          <p class="text-xs font-semibold text-semantico-info">{{ reflexion.pregunta }}</p>
+        </div>
+      </section>
+
       <!-- Racha: lo que más motiva a volver, y la semana en siete puntos -->
       <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm flex flex-col sm:flex-row sm:items-center gap-4">
         <div class="flex items-center gap-3 sm:min-w-[14rem]">
           <span class="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-            :class="e.racha > 0 ? 'bg-acento-ambar/15 text-acento-ambar-fuerte' : 'bg-base-bg-secundario text-base-texto-secundario'">
+            :class="e.racha > 0 ? 'bg-acento-ambar/15 text-acento-ambar-fuerte' : 'bg-base-bg-secundario text-slate-600'">
             <Flame :size="22" aria-hidden="true" />
           </span>
           <div>
@@ -114,9 +124,10 @@
 // Estadísticas al estilo de Anki (docs/DISENO_INTERVENCION_DOCENTE.md §10.3), simplificadas (BT-21): racha y semana a
 // la vista, el resto plegado.
 import { computed, ref, watch } from 'vue'
-import { BarChart3, Check, ChevronDown, Flame } from 'lucide-vue-next'
+import { BarChart3, Brain, Check, ChevronDown, Flame } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { avisoDeRacha, ultimaSemana } from '~/utils/racha'
+import { reflexionDeLaSemana } from '~/utils/autorregulacion'
 
 const props = withDefaults(defineProps<{ studentId: number | null | undefined; classId: number | null | undefined; vista?: 'estudiante' | 'docente' }>(), {
   vista: 'estudiante',
@@ -155,6 +166,9 @@ watch(() => [props.studentId, props.classId], async ([sid, cid]) => {
 }, { immediate: true })
 
 const semana = computed(() => (e.value ? ultimaSemana(e.value.calendario) : []))
+const reflexion = computed(() => (e.value
+  ? reflexionDeLaSemana({ diasSemana: semana.value.filter((d) => d.practico).length, vencidos: e.value.vencidos, retencion: e.value.retencion, lecciones: e.value.lecciones })
+  : null))
 const avisoRacha = computed(() => (e.value ? avisoDeRacha(e.value.racha, e.value.practicoHoy, docente.value) : { texto: '', urgente: false }))
 
 const segmentos = computed(() => {

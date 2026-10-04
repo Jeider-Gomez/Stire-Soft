@@ -69,7 +69,7 @@
           :key="item.id"
           class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 p-2.5 rounded-lg border border-base-borde-sutil bg-base-blanco">
           <div class="flex items-center gap-2 flex-1">
-            <span class="font-mono text-[10px] text-base-texto-secundario px-1.5 py-0.5 rounded bg-base-bg-secundario">
+            <span class="font-mono text-[10px] text-slate-600 px-1.5 py-0.5 rounded bg-base-bg-secundario">
               #{{ idx + 1 }}
             </span>
             <input

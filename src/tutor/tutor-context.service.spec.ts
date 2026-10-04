@@ -104,3 +104,16 @@ describe('TutorContextService — nivel por tema y lenguaje sencillo', () => {
     expect(prompt).toContain('Nunca digas «tu perfil», «tu nivel»');
   });
 });
+
+// Segunda versión (listas de chequeo): las señales llegan al prompt dentro del contexto en pantalla.
+describe('TutorContextService — señales del estudiante en el prompt', () => {
+  const repo = { find: jest.fn().mockResolvedValue([]) };
+  const service = new TutorContextService(repo as never);
+  it('el error probable y el modo por pasos aparecen; un valor inventado no', async () => {
+    const prompt = await service.buildSystemPrompt(1, { currentRoute: '/estudiante/evaluacion/5', senales: { errorProbable: 'concatena', modo: 'por-pasos' } }, null);
+    expect(prompt).toContain('ERROR DE CONCEPTO PROBABLE');
+    expect(prompt).toContain('MODO POR PASOS');
+    const otro = await service.buildSystemPrompt(1, { currentRoute: '/x', senales: { errorProbable: 'olvida todo' } }, null);
+    expect(otro).not.toContain('ERROR DE CONCEPTO PROBABLE');
+  });
+});

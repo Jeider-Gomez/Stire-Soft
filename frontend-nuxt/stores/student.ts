@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { estadoDeModulos, proximoModuloCerrado } from '~/utils/bloqueoModulos'
 import { computed } from 'vue'
 import type { CourseModule, CourseTopic, LearningUnit, SpacedReviewItem, StudentAnalytics, UnitStatus } from '~/types'
 import { DOMINADO } from '~/utils/terminos'
@@ -30,6 +31,18 @@ export const useStudentStore = defineStore('student', () => {
 
   // Módulos curriculares cargados dinámicamente desde el backend
   const modules = ref<CourseModule[]>([])
+
+  // Bloqueo suave por módulo (utils/bloqueoModulos.ts): umbral de la clase activa (0 = sin bloqueo).
+  const dominioParaAvanzar = ref(50)
+  const estadosModulos = computed(() => estadoDeModulos(
+    modules.value.map((m) => ({ id: m.id, titulo: m.title, lecciones: m.units.map((u) => ({ dominio: u.masteryPercentage, empezada: !!u.empezada })) })),
+    dominioParaAvanzar.value,
+  ))
+  const estadoModulo = (moduleId: number) => estadosModulos.value.find((e) => e.id === moduleId) ?? null
+  const proximoModulo = computed(() => proximoModuloCerrado(
+    modules.value.map((m) => ({ id: m.id, titulo: m.title, lecciones: [] })),
+    estadosModulos.value,
+  ))
 
   // Repasos de repetición espaciada: cargados en vivo desde GET /review-schedules/due (SM-2)
   const reviews = ref<SpacedReviewItem[]>([])
@@ -92,7 +105,7 @@ export const useStudentStore = defineStore('student', () => {
         const enrollmentsRes = await api.get<Array<{
           id: number
           classId?: number
-          class?: { id: number; name: string; code: string; description?: string; teacher?: { fullName: string } }
+          class?: { id: number; name: string; code: string; description?: string; dominioParaAvanzar?: number; teacher?: { fullName: string } }
         }>>('/enrollment/my')
 
         if (Array.isArray(enrollmentsRes) && enrollmentsRes.length > 0) {
@@ -107,6 +120,7 @@ export const useStudentStore = defineStore('student', () => {
               teacherName: e.class!.teacher?.fullName || 'Docente'
             }))
 
+          const umbrales = new Map(enrollmentsRes.filter((e) => e.class).map((e) => [e.class!.id, e.class!.dominioParaAvanzar ?? 50]))
           // Si no hay clase activa seleccionada o la actual no está en la lista, seleccionar la primera
           const currentExists = enrolledClasses.value.some(c => c.classId === currentClassId.value)
           if (!currentClassId.value || !currentExists) {
@@ -120,6 +134,7 @@ export const useStudentStore = defineStore('student', () => {
               currentTeacher.value = active.teacherName
             }
           }
+          dominioParaAvanzar.value = umbrales.get(currentClassId.value!) ?? 50
         } else {
           enrolledClasses.value = []
           currentClassId.value = null
@@ -345,6 +360,10 @@ export const useStudentStore = defineStore('student', () => {
   }
 
   return {
+    dominioParaAvanzar,
+    estadosModulos,
+    estadoModulo,
+    proximoModulo,
     currentClassId,
     currentClassName,
     currentTeacher,

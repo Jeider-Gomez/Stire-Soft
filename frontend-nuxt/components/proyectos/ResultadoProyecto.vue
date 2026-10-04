@@ -22,7 +22,7 @@
         </button>
       </div>
       <span class="ml-auto flex items-center gap-1">
-        <button v-if="tipo === 'web'" type="button" @click="recargar" class="px-2 py-1 rounded font-semibold text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario inline-flex items-center gap-1">
+        <button v-if="tipo === 'web'" type="button" @click="recargar" class="px-2 py-1 rounded font-semibold text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario inline-flex items-center gap-1">
           <RotateCcw :size="12" aria-hidden="true" /> Recargar
         </button>
         <button type="button" @click="alternarAmpliado" :aria-pressed="ampliado"

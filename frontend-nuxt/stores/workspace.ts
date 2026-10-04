@@ -3,7 +3,9 @@ import type { TestCase, SubmissionResult, HtmlCssRunResult } from '~/types'
 import { useAuthStore } from './auth'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
-import { puedeAutoguardar, esperaReintento, textoAutoguardado, type EstadoAutoguardado } from '~/utils/autoguardado'
+import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
+import { debePreguntarConfianza, type Calibracion, type Confianza } from '~/utils/confianza'
+import { puedeAutoguardar, esperaReintento, textoAutoguardado, claveBorrador, guardarBorrador, leerBorrador, borrarBorrador, borradorDistinto, type EstadoAutoguardado } from '~/utils/autoguardado'
 
 export interface WorkspaceExercise {
   activityId: number
@@ -100,6 +102,16 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   ])
 
   const submissionResult = ref<SubmissionResult | null>(null)
+  // META-02: juicio de confianza antes de la primera entrega del ejercicio y su contraste al calificar.
+  const pidiendoConfianza = ref(false)
+  const juicioConfianza = ref<Confianza | null>(null)
+  let juicioDecidido = false
+  const calibracion = ref<Calibracion | null>(null)
+  // MOD-02: error de concepto más probable según el primer caso público que no coincide (utils/diagnosticoSalida.ts).
+  const errorProbable = computed(() => {
+    const tc = publicTestCases.value.find((c) => c.passed === false)
+    return tc ? diagnosticarSalida(String(tc.expectedOutput ?? ''), String(tc.actualOutput ?? ''), String(tc.input ?? ''))?.tipo ?? null : null
+  })
 
   /**
    * Dominio (mastery %) del estudiante en la unidad de aprendizaje de esta
@@ -107,6 +119,15 @@ export const useWorkspaceStore = defineStore('workspace', () => {
    * cuánto avanzó su dominio real en vez de solo un puntaje crudo confuso.
    */
   const masteryBefore = ref<number | null>(null)
+  // Se recuperó el código que el estudiante había escrito (copia local): la pantalla lo avisa y ofrece volver a la plantilla.
+  const borradorRecuperado = ref(false)
+  let plantillaActual: { code?: string; html?: string; css?: string } = {}
+  const almacen = (): Storage | null => { try { return typeof window !== 'undefined' ? window.localStorage : null } catch { return null } }
+  const claveActual = () => {
+    const uid = authStore.user?.id
+    const aid = currentExercise.value.activityId
+    return uid && aid ? claveBorrador(uid, aid) : null
+  }
   const masteryAfter = ref<number | null>(null)
 
   async function fetchUnitMastery(unitId: number): Promise<number | null> {
@@ -137,6 +158,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     cancelarAutoguardado()
     currentSubmissionId.value = null
     submissionResult.value = null
+    pidiendoConfianza.value = false
+    juicioConfianza.value = null
+    juicioDecidido = false
+    calibracion.value = null
     pendingAnswer.value = null
     currentQuestion.value = null
     masteryBefore.value = null
@@ -207,6 +232,20 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         }
 
         code.value = starter
+
+        // Recuperar lo que el estudiante había escrito en este ejercicio (F5, corte de red, celular sin señal).
+        plantillaActual = isCoding ? { code: starter } : isHtmlCss ? { html: htmlCode.value, css: cssCode.value } : {}
+        borradorRecuperado.value = false
+        const clave = claveActual()
+        const borrador = clave && (isCoding || isHtmlCss) ? leerBorrador(almacen(), clave) : null
+        if (borrador && borradorDistinto(borrador, plantillaActual)) {
+          if (isCoding && borrador.code !== undefined) code.value = borrador.code
+          if (isHtmlCss) {
+            if (borrador.html !== undefined) htmlCode.value = borrador.html
+            if (borrador.css !== undefined) cssCode.value = borrador.css
+          }
+          borradorRecuperado.value = true
+        }
 
         if (isCoding) {
           // Cargar casos de prueba públicos
@@ -407,8 +446,21 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
   // Acción 2: "🚀 Entregar solución" — Calificación formal contra el backend NestJS
   // Para CODING: usa code.value. Para HTML_CSS: usa { html, css }. Para el resto: usa pendingAnswer.value.
+  /** Respuesta a «¿Qué tan seguro estás?» (null = omitir) y sigue con la entrega. */
+  function responderConfianza(c: Confianza | null) {
+    juicioConfianza.value = c
+    juicioDecidido = true
+    pidiendoConfianza.value = false
+    return submitSolution()
+  }
+
   async function submitSolution() {
     const qType = currentExercise.value.questionType
+    // Antes de la primera entrega del ejercicio se pregunta la confianza (una vez; se puede omitir).
+    if (debePreguntarConfianza(currentExercise.value.usedAttempts, juicioDecidido)) {
+      pidiendoConfianza.value = true
+      return
+    }
 
     if (qType === 'html_css') {
       if (!htmlCode.value || !htmlCode.value.trim()) {
@@ -490,11 +542,21 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
+  // Al calificarse la entrega se contrasta con el juicio de confianza (una sola vez por ejercicio).
+  watch(submissionResult, (r) => {
+    if (!r || r.status !== 'graded' || !juicioConfianza.value || calibracion.value) return
+    const acerto = typeof r.passed === 'boolean' ? r.passed : r.totalCount > 0 && r.passedCount === r.totalCount
+    calibracion.value = { confianza: juicioConfianza.value, acerto }
+  })
+
   // Autosave: PUT /submissions/:id/autosave (aplica a coding y html_css). Con debounce: se guarda 0,8 s después de
   // la última tecla. Un fallo de red se reintenta solo (2, 5 y 10 s); con los intentos ya usados no se guarda.
   function triggerAutosave() {
     const qType = currentExercise.value.questionType
     if (qType !== 'coding' && qType !== 'html_css') return
+    // Primero la copia local: funciona sin red y sin intentos, y es lo que se recupera al volver a abrir el ejercicio.
+    const clave = claveActual()
+    if (clave) guardarBorrador(almacen(), clave, qType === 'coding' ? { code: code.value } : { html: htmlCode.value, css: cssCode.value })
     if (autosaveTimer) clearTimeout(autosaveTimer)
     const ex = currentExercise.value
     if (!puedeAutoguardar({ hayIntentoAbierto: !!currentSubmissionId.value, usados: ex.usedAttempts, permitidos: ex.attemptsAllowed })) {
@@ -504,6 +566,23 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     autosaveState.value = 'saving'
     const generacion = autosaveGeneracion
     autosaveTimer = setTimeout(() => saveNow(generacion, 0), 800)
+  }
+
+  /** Descarta lo recuperado y vuelve a la plantilla del docente. */
+  function restaurarPlantilla() {
+    const clave = claveActual()
+    if (clave) borrarBorrador(almacen(), clave)
+    if (plantillaActual.code !== undefined) code.value = plantillaActual.code
+    if (plantillaActual.html !== undefined) htmlCode.value = plantillaActual.html
+    if (plantillaActual.css !== undefined) cssCode.value = plantillaActual.css
+    borradorRecuperado.value = false
+  }
+
+  // Al volver la conexión, se reintenta lo que quedó pendiente.
+  if (typeof window !== 'undefined') {
+    window.addEventListener('online', () => {
+      if (autosaveState.value === 'error' || autosaveState.value === 'retrying') triggerAutosave()
+    })
   }
 
   function cancelarAutoguardado() {
@@ -561,6 +640,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     isSubmitting,
     isLoadingExercise,
     lastAutosave,
+    pidiendoConfianza,
+    juicioConfianza,
+    calibracion,
+    responderConfianza,
+    errorProbable,
+    borradorRecuperado,
+    restaurarPlantilla,
     autosaveState,
     hasUnsavedChanges,
     hiddenTestCaseCount,

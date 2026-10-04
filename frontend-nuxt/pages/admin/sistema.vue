@@ -9,7 +9,7 @@
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Logs del Sistema y Parámetros Globales
+          Registros del sistema y parámetros
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
           Parámetros del sandbox y eventos recientes del servidor
@@ -22,8 +22,8 @@
         @click="confirmAndRunCleanup"
         :disabled="isCleaning"
         class="px-4 py-2 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:bg-semantico-falla/90 transition-colors shadow-sm self-start sm:self-auto flex items-center gap-1.5 cursor-pointer disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-semantico-falla">
-        <span v-if="isCleaning" class="animate-spin" aria-hidden="true">⚙️</span>
-        <span v-else aria-hidden="true">🧹</span>
+        <Loader2 :size="14" v-if="isCleaning" class="animate-spin" aria-hidden="true" />
+        <Eraser :size="16" v-else aria-hidden="true" />
         <span>{{ isCleaning ? 'Ejecutando limpieza...' : 'Ejecutar Limpieza de Mantenimiento' }}</span>
       </button>
     </header>
@@ -34,7 +34,7 @@
       role="status"
       aria-live="polite"
       class="p-3 bg-semantico-pasa/10 border border-semantico-pasa/40 text-semantico-pasa rounded-xl text-xs flex items-center justify-between">
-      <span>✔ {{ cleanupFeedback }}</span>
+      <span>{{ cleanupFeedback }}</span>
       <button
         @click="cleanupFeedback = null"
         aria-label="Cerrar notificación de limpieza"
@@ -136,9 +136,9 @@
           <button
             @click="fetchAll"
             :disabled="loadingLogs"
-            class="borde-afordancia px-3 py-1 rounded-md text-xs font-semibold hover:bg-base-bg-secundario text-base-texto-secundario flex items-center gap-1 transition-colors disabled:opacity-50"
+            class="borde-afordancia px-3 py-1 rounded-md text-xs font-semibold hover:bg-base-bg-secundario text-slate-600 flex items-center gap-1 transition-colors disabled:opacity-50"
             aria-label="Actualizar registros del sistema">
-            <span :class="{ 'animate-spin': loadingLogs }" aria-hidden="true">🔄</span>
+            <Loader2 :size="14" :class="{ 'animate-spin': loadingLogs }" aria-hidden="true" />
             <span>Actualizar</span>
           </button>
         </div>
@@ -191,7 +191,7 @@
         <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
         <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
           <h2 id="confirm-cleanup-title" class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
-            <span class="text-semantico-falla" aria-hidden="true">⚠</span>
+            <TriangleAlert :size="16" class="text-semantico-falla" aria-hidden="true" />
             <span>Confirmar Limpieza de Mantenimiento</span>
           </h2>
           <p class="text-xs text-base-texto-secundario leading-relaxed">
@@ -209,7 +209,7 @@
               @click="executeCleanup"
               :disabled="isCleaning"
               class="px-4 py-1.5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:bg-semantico-falla/90 transition-colors flex items-center gap-1">
-              <span v-if="isCleaning" class="animate-spin">⚙️</span>
+              <Loader2 :size="14" v-if="isCleaning" class="animate-spin" aria-hidden="true" />
               <span>{{ isCleaning ? 'Limpiando...' : 'Sí, ejecutar' }}</span>
             </button>
           </div>
@@ -220,6 +220,7 @@
 </template>
 
 <script setup lang="ts">
+import { Eraser, Loader2, TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import type { SystemStatus, SystemLogs } from '~/types'

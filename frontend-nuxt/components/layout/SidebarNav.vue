@@ -7,7 +7,7 @@
     <button
       id="boton-menu"
       type="button"
-      class="boton-menu hidden md:flex self-end -mt-1 -mr-1 mb-2 w-9 h-9 items-center justify-center rounded-lg text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario"
+      class="boton-menu hidden md:flex self-end -mt-1 -mr-1 mb-2 w-9 h-9 items-center justify-center rounded-lg text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario"
       :aria-expanded="!colapsado"
       :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
       @click="alternarMenu">
@@ -37,13 +37,21 @@
             <button
               @click="toggleModule(mod.id)"
               class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-md hover:bg-base-bg-secundario text-base-texto-primario transition-colors">
-              <span class="truncate">{{ mod.title.split(':')[0] }}</span>
+              <span class="truncate flex items-center gap-1.5">
+                <Lock v-if="studentStore.estadoModulo(mod.id)?.abierto === false" :size="12" class="shrink-0 text-slate-500" aria-label="Bloqueado" />
+                {{ mod.title.split(':')[0] }}
+              </span>
               <ChevronDown v-if="openModules.includes(mod.id)" :size="14" class="text-base-texto-secundario" aria-hidden="true" />
               <ChevronRight v-else :size="14" class="text-base-texto-secundario" aria-hidden="true" />
             </button>
 
             <!-- Lecciones del módulo; el tema se muestra solo si agrupa más de una lección -->
-            <div v-if="openModules.includes(mod.id)" class="pl-3 pr-1 py-1 space-y-1">
+            <!-- Módulo cerrado (bloqueo suave, utils/bloqueoModulos.ts): se dice qué falta en vez de mostrar las lecciones. -->
+            <p v-if="openModules.includes(mod.id) && studentStore.estadoModulo(mod.id)?.requiere" class="mx-3 my-1 px-2.5 py-2 rounded-md bg-base-bg-secundario text-[11px] text-slate-600 leading-snug">
+              Se abre con {{ studentStore.estadoModulo(mod.id)!.requiere!.umbral }} % de dominio en
+              «{{ studentStore.estadoModulo(mod.id)!.requiere!.titulo.split(':')[0] }}». Vas en {{ studentStore.estadoModulo(mod.id)!.requiere!.dominio }} %.
+            </p>
+            <div v-else-if="openModules.includes(mod.id)" class="pl-3 pr-1 py-1 space-y-1">
               <template v-for="tema in mod.topics" :key="tema.id">
                 <p v-if="tema.units.length > 1" class="px-2.5 pt-1.5 text-[10px] font-bold uppercase tracking-wider text-base-texto-secundario truncate">{{ tema.title }}</p>
                 <NuxtLink
@@ -51,7 +59,7 @@
                   :key="unit.id"
                   :to="`/estudiante/unidad/${unit.id}`"
                   class="flex items-center justify-between text-xs px-2.5 py-1.5 rounded transition-colors"
-                  :class="route.path === `/estudiante/unidad/${unit.id}` ? 'bg-base-bg-secundario font-semibold text-acento-ambar-fuerte' : 'text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario/60'">
+                  :class="route.path === `/estudiante/unidad/${unit.id}` ? 'bg-base-bg-secundario font-semibold text-acento-ambar-fuerte' : 'text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario/60'">
                   <div class="flex items-center gap-1.5 truncate">
                     <span class="inline-block w-1.5 h-1.5 rounded-full shrink-0" :class="getStatusDotClass(unit.status)" aria-hidden="true"></span>
                     <span class="truncate">{{ unit.title }}</span>
@@ -205,7 +213,7 @@
 </template>
 
 <script setup lang="ts">
-import { FolderCode, House, PanelLeftClose, PanelLeftOpen, QrCode, MessageSquarePlus, Repeat, TrendingUp, Mail, Users, BookOpen, Activity, ShieldCheck, Settings, ChevronDown, ChevronRight, Check } from 'lucide-vue-next'
+import { Activity, BookOpen, Check, ChevronDown, ChevronRight, FolderCode, House, Lock, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { claseDeLaRuta } from '~/utils/pestanasClase'

@@ -6,8 +6,8 @@
     </div>
 
     <!-- Instrucciones -->
-    <div class="text-[11px] text-base-texto-secundario bg-base-bg-secundario px-3 py-2 rounded border border-base-borde-sutil">
-      Organiza los siguientes bloques en el orden secuencial correcto usando los botones ⬆ y ⬇:
+    <div class="text-[11px] text-slate-600 bg-base-bg-secundario px-3 py-2 rounded border border-base-borde-sutil">
+      Organiza los siguientes bloques en el orden secuencial correcto con las flechas de subir y bajar:
     </div>
 
     <!-- Lista de bloques reordenables -->
@@ -38,7 +38,7 @@
             class="p-1.5 rounded text-xs border border-base-borde-sutil hover:bg-base-bg-secundario disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-base-texto-primario"
             title="Mover arriba"
           >
-            ⬆
+            <ArrowUp :size="16" aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -47,7 +47,7 @@
             class="p-1.5 rounded text-xs border border-base-borde-sutil hover:bg-base-bg-secundario disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-base-texto-primario"
             title="Mover abajo"
           >
-            ⬇
+            <ArrowDown :size="16" aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -56,7 +56,7 @@
     <!-- Estado -->
     <div class="text-[11px] text-base-texto-secundario flex items-center justify-between pt-1">
       <span class="text-semantico-pasa">
-        ✔ {{ orderedBlocks.length }} bloques ordenados. Puedes ajustar el orden o entregar.
+        {{ orderedBlocks.length }} bloques ordenados. Puedes ajustar el orden o entregar.
       </span>
       <span>
         Cuando estés seguro, pulsa <strong>Entregar respuesta</strong>.
@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import { ArrowDown, ArrowUp } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 
 interface BlockItem {

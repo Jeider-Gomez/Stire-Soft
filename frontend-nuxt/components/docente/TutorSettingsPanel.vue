@@ -72,7 +72,7 @@
       </div>
 
       <!-- Resumen efectivo -->
-      <div class="p-2 bg-base-bg-secundario rounded text-[10px] text-base-texto-secundario border border-base-borde-sutil">
+      <div class="p-2 bg-base-bg-secundario rounded text-[10px] text-slate-600 border border-base-borde-sutil">
         <span class="font-semibold">Resultado para tus estudiantes:</span>
         {{ effectiveSummary }}
       </div>

@@ -51,7 +51,7 @@
             <div class="flex items-center gap-1 border-b border-base-borde-sutil px-2 py-1.5 overflow-x-auto text-[11px]" role="tablist" aria-label="Archivos">
               <button v-for="(a, i) in envio.archivos" :key="a.nombre" type="button" role="tab" :aria-selected="i === actual" @click="actual = i"
                 class="px-2.5 py-1 rounded font-mono whitespace-nowrap"
-                :class="i === actual ? 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:bg-base-bg-secundario'">
+                :class="i === actual ? 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:bg-base-bg-secundario'">
                 {{ a.nombre }}
               </button>
             </div>

@@ -50,11 +50,11 @@
               <button v-for="(a, i) in proyecto.archivos" :key="a.nombre" type="button" role="tab" :aria-selected="i === actual"
                 @click="actual = i"
                 class="px-2.5 py-1 rounded font-mono whitespace-nowrap"
-                :class="i === actual ? 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:bg-base-bg-secundario'">
+                :class="i === actual ? 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:bg-base-bg-secundario'">
                 {{ a.nombre }}
               </button>
               <button v-if="proyecto.archivos.length < 10" type="button" @click="agregando = true"
-                class="p-1 rounded text-base-texto-secundario hover:bg-base-bg-secundario" aria-label="Agregar archivo" title="Agregar archivo">
+                class="p-1 rounded text-slate-600 hover:bg-base-bg-secundario" aria-label="Agregar archivo" title="Agregar archivo">
                 <Plus :size="14" aria-hidden="true" />
               </button>
             </div>

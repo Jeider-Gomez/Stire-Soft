@@ -21,7 +21,7 @@
           <span
             v-if="passedCount > 0"
             class="px-1.5 py-0.2 rounded-full text-[10px]"
-            :class="passedCount === workspaceStore.publicTestCases.length ? 'bg-semantico-pasa/15 text-semantico-pasa font-bold' : 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold'">
+            :class="passedCount === workspaceStore.publicTestCases.length ? 'bg-semantico-pasa/10 text-semantico-pasa font-bold' : 'bg-acento-ambar/15 text-acento-ambar-fuerte font-bold'">
             {{ passedCount }}/{{ workspaceStore.publicTestCases.length }}
           </span>
         </button>
@@ -42,7 +42,7 @@
 
           <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil space-y-1">
             <span class="font-bold text-base-texto-primario block">Cómo se califica</span>
-            <ul v-if="isCodingActivity" class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">
+            <ul v-if="isCodingActivity" class="list-disc pl-4 space-y-1 text-slate-600 text-[11px]">
               <li>{{ workspaceStore.publicTestCases.length }} {{ workspaceStore.publicTestCases.length === 1 ? 'ejemplo que puedes ver' : 'ejemplos que puedes ver' }} en la pestaña «Casos de prueba» y probar con «Probar código».</li>
               <li v-if="workspaceStore.hiddenTestCaseCount > 0">
                 {{ workspaceStore.hiddenTestCaseCount }} {{ workspaceStore.hiddenTestCaseCount === 1 ? 'caso oculto' : 'casos ocultos' }} más, que se revisan al entregar (por ejemplo, los valores límite).
@@ -50,12 +50,12 @@
               <li v-else>No hay casos ocultos: lo que ves es lo que se revisa.</li>
               <li v-if="workspaceStore.timeLimitMs">Límite de tiempo por ejecución: {{ workspaceStore.timeLimitMs }} ms.</li>
             </ul>
-            <ul v-else-if="isHtmlCssActivity" class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">
+            <ul v-else-if="isHtmlCssActivity" class="list-disc pl-4 space-y-1 text-slate-600 text-[11px]">
               <li>Reglas públicas visibles en el panel de evaluación.</li>
               <li>Puntaje proporcional al peso de las reglas cumplidas (públicas y ocultas).</li>
               <li>Puntaje sobre {{ workspaceStore.currentExercise.maxScore }} puntos según tu código HTML y CSS.</li>
             </ul>
-            <ul v-else class="list-disc pl-4 space-y-1 text-base-texto-secundario text-[11px]">
+            <ul v-else class="list-disc pl-4 space-y-1 text-slate-600 text-[11px]">
               <li>Evaluación formal inmediata al entregar.</li>
               <li>Consumo de intento al enviar solución definitiva.</li>
               <li>Puntaje sobre {{ workspaceStore.currentExercise.maxScore }} puntos según tu respuesta.</li>
@@ -85,12 +85,12 @@
               <div class="flex items-center justify-between font-bold text-xs">
                 <span>Caso #{{ tc.id }}: <code class="font-codigo text-acento-ambar-fuerte">{{ tc.input }}</code></span>
                 <span v-if="tc.passed === true" class="text-semantico-pasa flex items-center gap-1">
-                  <span>✔</span>
+                  <Check :size="16" aria-hidden="true" />
                   <span>Superado</span>
                 </span>
                 <span v-else-if="tc.passed === false" class="text-semantico-falla flex items-center gap-1">
-                  <span>✖</span>
-                  <span>Falla en salida</span>
+                  <X :size="14" aria-hidden="true" />
+                  <span>Todavía no coincide</span>
                 </span>
                 <span v-else class="text-base-texto-secundario text-[11px]">
                   Sin evaluar
@@ -100,22 +100,24 @@
               <!-- Diff Visual: Esperado vs Obtenido -->
               <div class="grid grid-cols-2 gap-2 text-[11px] font-codigo pt-1">
                 <div class="p-2 bg-base-blanco rounded border border-base-borde-sutil">
-                  <span class="text-base-texto-secundario text-[10px] block font-sans">Salida Esperada:</span>
+                  <span class="text-base-texto-secundario text-[10px] block font-sans">Salida esperada:</span>
                   <span class="font-bold text-semantico-pasa">{{ tc.expectedOutput }}</span>
                 </div>
                 <div class="p-2 bg-base-blanco rounded border border-base-borde-sutil">
-                  <span class="text-base-texto-secundario text-[10px] block font-sans">Salida de tu Código:</span>
+                  <span class="text-base-texto-secundario text-[10px] block font-sans">Lo que mostró tu código:</span>
                   <span :class="tc.passed ? 'text-semantico-pasa font-bold' : tc.passed === false ? 'text-semantico-falla font-bold' : 'text-base-texto-secundario'">
                     {{ tc.actualOutput || '—' }}
                   </span>
-                  <span
-                    v-if="tc.passed === false && !tc.actualOutput"
-                    class="block mt-1 font-sans text-[10px] text-base-texto-secundario">
-                    Tu código no imprimió nada: revisa que escribas el resultado con console.log
-                    <template v-if="workspaceStore.timeLimitMs">y que no tarde más de {{ workspaceStore.timeLimitMs }} ms (un bucle infinito se corta).</template>
-                  </span>
                 </div>
               </div>
+              <!-- Qué revisar: el error de concepto más probable, sin dar la solución (MOD-02 y MOD-04) -->
+              <p v-if="tc.passed === false && diagnostico(tc)" class="flex items-start gap-1.5 text-[11px] text-base-texto-primario bg-base-blanco rounded border border-semantico-falla/25 p-2">
+                <Lightbulb :size="13" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
+                <span>
+                  {{ diagnostico(tc)?.mensaje }}
+                  <template v-if="!tc.actualOutput && workspaceStore.timeLimitMs"> Si tarda más de {{ workspaceStore.timeLimitMs }} ms (un bucle infinito), se corta.</template>
+                </span>
+              </p>
             </div>
           </div>
 
@@ -130,10 +132,14 @@
               ¿No te sale lo esperado? El Tutor puede darte una pista mirando tu código, sin darte la respuesta.
             </p>
             <div class="flex flex-wrap gap-2">
-              <button type="button" class="px-3 py-1.5 rounded-md bg-stire-purple text-white font-bold hover:opacity-90" @click="pedirAyudaAlTutor">
+              <button type="button" class="min-h-[40px] px-3 py-1.5 rounded-md bg-stire-purple text-white font-bold hover:opacity-90" @click="pedirAyudaAlTutor">
                 Pedir una pista al Tutor
               </button>
-              <button type="button" class="px-3 py-1.5 rounded-md font-semibold text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario" @click="ofertaCerrada = true">
+              <!-- UI-05: el Tutor divide el problema en subpreguntas y plantea la primera; se ofrece, no se impone. -->
+              <button type="button" class="min-h-[40px] px-3 py-1.5 rounded-md border border-stire-purple/40 text-stire-purple font-bold hover:bg-stire-purple/10" @click="resolverPorPasos">
+                Resolverlo por pasos con el Tutor
+              </button>
+              <button type="button" class="px-3 py-1.5 rounded-md font-semibold text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario" @click="ofertaCerrada = true">
                 Ahora no
               </button>
             </div>
@@ -141,7 +147,7 @@
 
           <div
             v-if="workspaceStore.hiddenTestCaseCount > 0"
-            class="p-3 bg-base-bg-secundario rounded border border-base-borde-sutil text-[11px] text-base-texto-secundario flex items-center gap-2">
+            class="p-3 bg-base-bg-secundario rounded border border-base-borde-sutil text-[11px] text-slate-600 flex items-center gap-2">
             <Lock :size="14" aria-hidden="true" />
             <span>{{ workspaceStore.hiddenTestCaseCount }} caso(s) privado(s) permanecen ocultos para evaluar la generalización de la solución.</span>
           </div>
@@ -177,7 +183,7 @@
       <!-- Barra Superior del Editor -->
       <div class="h-9 bg-editor-header border-b border-editor-border px-4 flex items-center justify-between text-xs text-editor-muted flex-shrink-0">
         <div class="flex items-center gap-2">
-          <span class="text-stire-teal font-bold">JS</span>
+          <span class="text-teal-300 font-bold">JS</span>
           <span class="text-white font-medium">solucion.js</span>
           <span class="text-[10px] text-editor-muted">• JavaScript (ES2024)</span>
         </div>
@@ -187,6 +193,8 @@
           <span>UTF-8</span>
         </div>
       </div>
+
+      <AvisoBorrador />
 
       <!-- Área de Edición de Código (CodeMirror 6) -->
       <div class="flex-1 relative overflow-hidden">
@@ -289,7 +297,7 @@
       <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-center max-h-[90dvh] overflow-y-auto">
         <div
           class="w-14 h-14 rounded-full flex items-center justify-center text-2xl mx-auto font-bold"
-          :class="isSuccessResult ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+          :class="isSuccessResult ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
           <PartyPopper v-if="isSuccessResult" :size="28" aria-hidden="true" />
           <ClipboardCheck v-else :size="28" aria-hidden="true" />
         </div>
@@ -325,6 +333,15 @@
           </p>
         </div>
 
+        <!-- META-02: contraste entre lo que dijo antes de entregar y lo que obtuvo -->
+        <p
+          v-if="calibracion"
+          class="flex items-start gap-2 p-3 rounded-lg border text-xs"
+          :class="calibracion.tono === 'bien' ? 'border-semantico-pasa/30 bg-semantico-pasa/5 text-base-texto-primario' : 'border-acento-ambar-fuerte/30 bg-acento-ambar/5 text-base-texto-primario'">
+          <Scale :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
+          <span>{{ calibracion.texto }}</span>
+        </p>
+
         <p v-if="workspaceStore.submissionResult?.feedback" class="text-xs text-base-texto-secundario">
           {{ workspaceStore.submissionResult.feedback }}
         </p>
@@ -357,7 +374,9 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpen, FlaskConical, Terminal, Lock, PartyPopper, ClipboardCheck, Send, Sparkles } from 'lucide-vue-next'
+import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
+import { mensajeCalibracion } from '~/utils/confianza'
+import { BookOpen, Check, ClipboardCheck, FlaskConical, Lightbulb, Lock, PartyPopper, Scale, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
 import { debeOfrecerTutor, pistaSegunTipo } from '~/utils/ofertaTutor'
@@ -378,6 +397,12 @@ const ofertaCerrada = ref(false)
 watch(() => workspaceStore.isRunning, (corriendo) => { if (corriendo) ofertaCerrada.value = false })
 const ofrecerTutor = computed(() =>
   !tutorStore.isOpen && debeOfrecerTutor(workspaceStore.publicTestCases, workspaceStore.isRunning, ofertaCerrada.value))
+
+async function resolverPorPasos() {
+  workspaceStore.submissionResult = null
+  ofertaCerrada.value = true
+  await tutorStore.resolverPorPasos()
+}
 
 async function pedirAyudaAlTutor() {
   workspaceStore.submissionResult = null
@@ -455,4 +480,11 @@ watch(() => route.params.activityId, (newId) => {
     initActivity()
   }
 })
+
+/** Diagnóstico de un caso que no coincide (utils/diagnosticoSalida.ts). */
+const diagnostico = (tc: { expectedOutput: string; actualOutput?: string; input?: string }) =>
+  diagnosticarSalida(String(tc.expectedOutput ?? ''), String(tc.actualOutput ?? ''), String(tc.input ?? ''))
+
+/** Calibración de la entrega (META-02, utils/confianza.ts), si el estudiante dijo qué tan seguro estaba. */
+const calibracion = computed(() => (workspaceStore.calibracion ? mensajeCalibracion(workspaceStore.calibracion) : null))
 </script>

@@ -51,8 +51,8 @@
                 class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 resize-y text-base-texto-primario"></textarea>
             </div>
 
-            <div class="p-3 bg-base-bg-secundario rounded-md border border-base-borde-sutil text-[11px] text-base-texto-secundario">
-              ℹ El módulo se creará como <strong class="text-base-texto-primario">Borrador</strong>. Los estudiantes no lo verán hasta que lo publiques.
+            <div class="p-3 bg-base-bg-secundario rounded-md border border-base-borde-sutil text-[11px] text-slate-600">
+              El módulo se creará como <strong class="text-base-texto-primario">Borrador</strong>. Los estudiantes no lo verán hasta que lo publiques.
             </div>
 
             <p v-if="moduleModal.error" role="alert" class="text-semantico-falla text-[11px]">
@@ -70,8 +70,8 @@
                 type="submit"
                 :disabled="moduleModal.saving"
                 class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <span v-if="moduleModal.saving" class="animate-spin">⚙️</span>
-                <span>{{ moduleModal.saving ? 'Creando…' : '✔ Crear módulo' }}</span>
+                <Loader2 :size="14" v-if="moduleModal.saving" class="animate-spin" aria-hidden="true" />
+                <span>{{ moduleModal.saving ? 'Creando…' : 'Crear módulo' }}</span>
               </button>
             </div>
           </form>
@@ -145,8 +145,8 @@
                 type="submit"
                 :disabled="topicModal.saving"
                 class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <span v-if="topicModal.saving" class="animate-spin">⚙️</span>
-                <span>{{ topicModal.saving ? 'Creando…' : '✔ Crear tema' }}</span>
+                <Loader2 :size="14" v-if="topicModal.saving" class="animate-spin" aria-hidden="true" />
+                <span>{{ topicModal.saving ? 'Creando…' : 'Crear tema' }}</span>
               </button>
             </div>
           </form>
@@ -234,7 +234,7 @@
                 type="submit"
                 :disabled="unitModal.saving"
                 class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <span v-if="unitModal.saving" class="animate-spin">⚙️</span>
+                <Loader2 :size="14" v-if="unitModal.saving" class="animate-spin" aria-hidden="true" />
                 <span>{{ unitModal.saving ? 'Creando…' : 'Crear lección' }}</span>
               </button>
             </div>
@@ -246,6 +246,7 @@
 </template>
 
 <script setup lang="ts">
+import { Loader2 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 
 const emit = defineEmits<{

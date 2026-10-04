@@ -28,9 +28,9 @@
       @keydown.space.prevent="elegir"
       @click="zonaRef?.focus()"
     >
-      <ImagePlus :size="20" class="mx-auto text-base-texto-secundario" aria-hidden="true" />
+      <ImagePlus :size="20" class="mx-auto text-slate-700" aria-hidden="true" />
       <p class="mt-1 font-semibold text-base-texto-primario">Haz clic aquí y pega tu pantallazo con <kbd class="px-1 rounded border border-base-borde-fuerte font-mono text-[10px]">Ctrl + V</kbd></p>
-      <p id="zona-pantallazo-ayuda" class="text-[11px] text-base-texto-secundario">
+      <p id="zona-pantallazo-ayuda" class="text-[11px] text-slate-700">
         Tómalo con <strong>{{ atajo }}</strong>. También puedes arrastrarlo aquí o
         <button type="button" class="text-acento-ambar-fuerte font-semibold underline" @click.stop="elegir">elegir un archivo</button>.
       </p>

@@ -17,3 +17,15 @@ export function faltantesDelRegistro(nombre: string, correo: string, clave: stri
   if (!claveCumple(clave)) f.password = 'La contraseña aún no cumple lo que falta abajo.'
   return f
 }
+
+/**
+ * Validación del inicio de sesión campo a campo (PAT-03 de la lista de chequeo): el error aparece debajo del campo que
+ * hay que corregir, con un texto que dice qué hacer, en lugar del globo del navegador.
+ */
+export function faltantesDelIngreso(correo: string, clave: string): Partial<Record<'email' | 'password', string>> {
+  const f: Partial<Record<'email' | 'password', string>> = {}
+  if (!correo.trim()) f.email = 'Escribe tu correo.'
+  else if (!CORREO.test(correo.trim())) f.email = 'Revisa el correo: debe verse como nombre@dominio.com.'
+  if (!clave) f.password = 'Escribe tu contraseña.'
+  return f
+}

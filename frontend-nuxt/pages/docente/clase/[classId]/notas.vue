@@ -212,7 +212,7 @@
           <div class="overflow-x-auto">
             <table class="w-full text-xs">
               <caption class="sr-only">Notas por estudiante: cada nota, la de cada módulo, la que propone STIRE y la final</caption>
-              <thead class="bg-base-bg-secundario text-base-texto-secundario">
+              <thead class="bg-base-bg-secundario text-slate-600">
                 <tr>
                   <th scope="col" class="text-left font-semibold px-3 py-2 sticky left-0 bg-base-bg-secundario min-w-[10rem]">Estudiante</th>
                   <th v-for="col in columnas" :key="col.clave" scope="col" class="text-left font-semibold px-3 py-2 min-w-[8rem]" :class="col.tipo === 'modulo' ? 'bg-acento-ambar/10 text-base-texto-primario' : ''">
@@ -315,6 +315,7 @@ import {
   sincronizarGrupos, sumaPesos,
   type Componente, type Esquema, type FilaLibro, type Libro,
 } from '~/utils/calificaciones'
+const { confirmar } = useConfirmar()
 
 definePageMeta({ layout: 'teacher' })
 
@@ -466,7 +467,7 @@ function descartar() {
 }
 
 async function dejarDeUsar() {
-  if (!confirm('¿Dejar de usar notas en esta clase? Las notas que pusiste y su historial se conservan por si vuelves a armarlas.')) return
+  if (!(await confirmar({ titulo: '¿Dejar de usar notas en esta clase?', mensaje: 'Las notas que pusiste y su historial se conservan por si vuelves a armarlas.', accion: 'Dejar de usar notas' }))) return
   try {
     aplicar(await api.del<Libro>(`/calificaciones/clase/${classId}/esquema`))
     editando.value = false

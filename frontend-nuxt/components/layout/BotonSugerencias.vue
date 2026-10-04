@@ -71,7 +71,7 @@
               <li v-for="r in mios" :key="r.id" class="rounded-md border border-base-borde-sutil p-2.5 space-y-1">
                 <p class="flex flex-wrap items-center gap-2">
                   <span class="font-semibold">{{ TIPOS[r.tipo] }}</span>
-                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold" :class="r.estado === 'resuelto' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-secundario'">{{ ESTADOS[r.estado] }}</span>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold" :class="r.estado === 'resuelto' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600'">{{ ESTADOS[r.estado] }}</span>
                   <span class="text-base-texto-secundario">{{ fechaCorta(r.createdAt) }}{{ r.clase ? ` · ${r.clase}` : '' }}</span>
                   <span v-if="r.tieneCaptura" class="inline-flex items-center gap-1 text-base-texto-secundario"><ImageIcon :size="12" aria-hidden="true" /> con pantallazo</span>
                 </p>

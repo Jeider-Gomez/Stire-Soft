@@ -31,6 +31,7 @@
       </div>
 
       <!-- Área de Edición: Pestaña HTML (CodeMirror 6) -->
+      <AvisoBorrador />
       <div v-if="activeEditorTab === 'html'" class="flex-1 relative overflow-hidden">
         <CodeEditor
           v-model="workspaceStore.htmlCode"
@@ -73,7 +74,7 @@
       <div class="flex-1 flex flex-col min-h-[260px] lg:min-h-0 lg:h-1/2 border-b border-base-borde-sutil overflow-hidden">
         <div class="h-9 bg-base-bg-secundario border-b border-base-borde-sutil px-3 flex items-center justify-between text-xs font-semibold text-base-texto-primario flex-shrink-0">
           <div class="flex items-center gap-2">
-            <span>🌐</span>
+            <Globe :size="16" aria-hidden="true" />
             <span>Vista previa</span>
             <span class="text-[10px] font-normal text-base-texto-secundario">(actualización en vivo)</span>
           </div>
@@ -98,9 +99,9 @@
         <!-- Cabecera de Reglas -->
         <div class="h-9 bg-base-bg-secundario border-b border-base-borde-sutil px-3 flex items-center justify-between text-xs font-semibold text-base-texto-primario flex-shrink-0">
           <div class="flex items-center gap-2">
-            <span>📋</span>
+            <ClipboardList :size="16" aria-hidden="true" />
             <span>Reglas a cumplir</span>
-            <span v-if="rulesSummary" class="text-[10px] px-1.5 py-0.2 rounded-full font-bold" :class="rulesSummary.allPassed ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+            <span v-if="rulesSummary" class="text-[10px] px-1.5 py-0.2 rounded-full font-bold" :class="rulesSummary.allPassed ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
               {{ rulesSummary.passedCount }}/{{ rulesSummary.totalCount }}
             </span>
           </div>
@@ -114,7 +115,7 @@
         <div class="flex-1 overflow-y-auto p-4 space-y-2.5 text-xs">
           <!-- Alerta de Error (429 u otros) -->
           <div v-if="workspaceStore.htmlCssRunError" class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 rounded-lg text-semantico-falla text-xs flex items-start gap-2">
-            <span class="font-bold text-sm">⚠</span>
+            <TriangleAlert :size="14" class="font-bold text-sm" aria-hidden="true" />
             <div class="flex-1 leading-snug">
               <p class="font-semibold">{{ workspaceStore.htmlCssRateLimited ? 'Límite alcanzado' : 'No se pudo probar' }}</p>
               <p class="text-[11px] mt-0.5">{{ workspaceStore.htmlCssRunError }}</p>
@@ -131,7 +132,7 @@
               <div class="flex-1">
                 <p class="font-medium text-base-texto-primario leading-snug">{{ rule.label }}</p>
                 <p v-if="rule.hint" class="text-[11px] text-base-texto-secundario mt-1 italic">
-                  💡 {{ rule.hint }}
+                  {{ rule.hint }}
                 </p>
                 <!-- Detalle de fallo si vino del servidor -->
                 <p v-if="getRuleDetail(rule.id)" class="text-[11px] text-semantico-falla mt-1.5 font-medium bg-semantico-falla/5 p-1.5 rounded border border-semantico-falla/20">
@@ -139,7 +140,7 @@
                 </p>
               </div>
 
-              <!-- Estado de la regla: Neutro «—» antes de probar; ✔ / ✘ después -->
+              <!-- Estado de la regla: Neutro «—» antes de probar; / ✘ después -->
               <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold font-mono" :class="getRuleBadgeClass(rule.id)">
                 <span>{{ getRuleBadgeText(rule.id) }}</span>
               </div>
@@ -149,7 +150,7 @@
           <!-- Reglas ocultas -->
           <div class="pt-2 text-xs text-base-texto-secundario border-t border-base-borde-sutil">
             <p v-if="typeof hiddenRuleCount === 'number'" class="flex items-center gap-1.5 text-[11px]">
-              <span>🔒</span>
+              <Lock :size="16" aria-hidden="true" />
               <span>
                 {{ hiddenRuleCount === 1 ? '1 regla oculta se evalúa' : `${hiddenRuleCount} reglas ocultas se evalúan` }} al entregar.
               </span>
@@ -168,7 +169,7 @@
             :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting || isHtmlEmpty"
             class="borde-afordancia px-3 py-1.5 rounded text-xs font-bold text-base-texto-primario bg-base-blanco hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
             :title="isHtmlEmpty ? 'El HTML no puede estar vacío' : 'Evalúa contra las reglas públicas sin consumir intentos'">
-            <span v-if="workspaceStore.isRunning" class="animate-spin">⚙️</span>
+            <Loader2 :size="14" v-if="workspaceStore.isRunning" class="animate-spin" aria-hidden="true" />
             <span v-else>▶</span>
             <span>Probar</span>
           </button>
@@ -179,7 +180,7 @@
             :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting || isHtmlEmpty"
             class="px-3.5 py-1.5 rounded text-xs font-bold text-base-blanco bg-acento-ambar-fuerte hover:bg-acento-ambar transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
             :title="isHtmlEmpty ? 'El HTML no puede estar vacío' : 'Envía tu solución definitiva para calificación'">
-            <span v-if="workspaceStore.isSubmitting" class="animate-spin">⏳</span>
+            <Loader2 :size="14" v-if="workspaceStore.isSubmitting" class="animate-spin" aria-hidden="true" />
             <span>Entregar solución</span>
           </button>
         </div>
@@ -189,6 +190,7 @@
 </template>
 
 <script setup lang="ts">
+import { ClipboardList, Globe, Loader2, Lock, TriangleAlert } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import type { WorkspaceQuestion } from '~/stores/workspace'
 
@@ -294,7 +296,7 @@ function getRuleBadgeText(ruleId: string): string {
 
 function getRuleBadgeClass(ruleId: string): string {
   const result = getRuleResult(ruleId)
-  if (!result) return 'bg-base-bg-secundario text-base-texto-secundario border border-base-borde-sutil'
+  if (!result) return 'bg-base-bg-secundario text-slate-600 border border-base-borde-sutil'
   return result.passed
     ? 'bg-semantico-pasa/15 text-semantico-pasa border border-semantico-pasa/30'
     : 'bg-semantico-falla/15 text-semantico-falla border border-semantico-falla/30'

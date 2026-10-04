@@ -32,7 +32,7 @@
           <span class="font-poppins font-bold text-base text-slate-800 tracking-tight">
             STIRE <span class="text-stire-blue">Soft</span>
           </span>
-          <p class="text-[10px] text-slate-400 font-interfaz tracking-wide leading-tight mt-0.5">
+          <p class="text-[10px] text-slate-500 font-interfaz tracking-wide leading-tight mt-0.5">
             Unicor · Ing. Sistemas
           </p>
         </div>
@@ -43,12 +43,12 @@
         v-if="authStore.currentRole === 'estudiante' && studentStore.currentClassName"
         class="hidden lg:flex items-center gap-2 ml-2 pl-3 border-l border-slate-200 min-w-0"
       >
-        <GraduationCap :size="13" class="text-slate-400 flex-shrink-0" />
+        <GraduationCap :size="13" class="text-slate-500 flex-shrink-0" />
         <span class="text-xs text-slate-600 font-medium truncate max-w-[220px]">
           {{ studentStore.currentClassName }}
         </span>
-        <span class="text-slate-300">•</span>
-        <span class="text-xs text-slate-400 truncate max-w-[160px]">
+        <span class="text-slate-500">•</span>
+        <span class="text-xs text-slate-500 truncate max-w-[160px]">
           {{ studentStore.currentTeacher }}
         </span>
       </div>
@@ -56,10 +56,10 @@
       <!-- Contexto institucional docente/admin -->
       <div
         v-else-if="authStore.currentRole !== 'estudiante'"
-        class="hidden lg:flex items-center gap-1.5 ml-2 pl-3 border-l border-slate-200 text-xs text-slate-400"
+        class="hidden lg:flex items-center gap-1.5 ml-2 pl-3 border-l border-slate-200 text-xs text-slate-500"
       >
         <span>Universidad de Córdoba</span>
-        <span class="text-slate-300">•</span>
+        <span class="text-slate-500">•</span>
         <span>Facultad de Ingeniería de Sistemas</span>
       </div>
     </div>
@@ -113,7 +113,7 @@
             <!-- Info usuario -->
             <div class="px-4 py-3 border-b border-slate-100">
               <p class="text-xs font-semibold text-slate-800">{{ authStore.user?.fullName }}</p>
-              <p class="text-[11px] text-slate-400 mt-0.5">{{ authStore.user?.email }}</p>
+              <p class="text-[11px] text-slate-500 mt-0.5">{{ authStore.user?.email }}</p>
             </div>
 
             <!-- Enlace Mi perfil -->
@@ -193,7 +193,7 @@ const roleBadgeClass = computed(() => {
     case 'administrador':
       return 'badge-admin'
     default:
-      return 'badge-estudiante'
+      return 'badge-estudiante !text-teal-800'
   }
 })
 

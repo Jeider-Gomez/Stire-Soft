@@ -13,6 +13,22 @@ export function normalizarCodigo(texto: string): string {
     .replace(/^-|-$/g, '')
 }
 
+/**
+ * Formato asistido mientras se escribe (PAT-03): mayúsculas, sin tildes y guiones en lugar de espacios, pero sin quitar
+ * el guion del final (si no, no se podría escribir «ALGO-»). Al enviar se usa normalizarCodigo.
+ */
+export function codigoMientrasEscribe(texto: string): string {
+  return texto
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toUpperCase()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^A-Z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-/, '')
+    .slice(0, 30)
+}
+
 // Sin letras ni números que se confunden al dictarlos o leerlos en un proyector (0/O, 1/I/L).
 const ALFABETO = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
 

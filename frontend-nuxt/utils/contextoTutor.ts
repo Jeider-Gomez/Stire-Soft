@@ -10,7 +10,16 @@ export interface EjercicioAbierto {
   questionType: string
 }
 
+/** Señales para el Tutor (src/tutor/tutor-senales.ts): error probable, juicio de confianza y modo por pasos. */
+export interface SenalesTutor {
+  errorProbable?: string
+  confianza?: string
+  acerto?: boolean
+  modo?: 'por-pasos' | 'otra-explicacion'
+}
+
 export interface ContextoTutor {
+  senales?: SenalesTutor
   currentRoute: string
   learningUnitId?: number
   activityId?: number
@@ -23,10 +32,11 @@ export function contextoSegunPantalla(
   ruta: string,
   ejercicio: EjercicioAbierto | null,
   codigo: { js: string; html: string; css: string },
+  senales?: SenalesTutor,
 ): ContextoTutor {
   // Leyendo una lección: /estudiante/unidad/<id>
   const leccion = /^\/estudiante\/unidad\/(\d+)/.exec(ruta)
-  if (leccion) return { currentRoute: ruta, learningUnitId: Number(leccion[1]) }
+  if (leccion) return { currentRoute: ruta, learningUnitId: Number(leccion[1]), ...(senales?.modo === 'otra-explicacion' ? { senales: { modo: senales.modo } } : {}) }
 
   // Resolviendo un ejercicio: /estudiante/evaluacion/<id> (solo si el ejercicio cargado es ese)
   const evaluacion = /^\/estudiante\/evaluacion\/(\d+)/.exec(ruta)
@@ -40,6 +50,8 @@ export function contextoSegunPantalla(
       ...(ejercicio.questionType === 'html_css'
         ? { currentCode: ['<!-- index.html -->', codigo.html, '', '/* estilos.css */', codigo.css].join('\n'), codeLanguage: 'html' }
         : { currentCode: codigo.js }),
+      // Solo las señales que existen: un objeto vacío no se manda.
+      ...(senales && Object.values(senales).some((v) => v !== undefined) ? { senales } : {}),
     }
   }
 

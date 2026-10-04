@@ -6,7 +6,7 @@
     </div>
 
     <!-- Instrucciones -->
-    <div class="text-[11px] text-base-texto-secundario bg-base-bg-secundario px-3 py-2 rounded border border-base-borde-sutil">
+    <div class="text-[11px] text-slate-600 bg-base-bg-secundario px-3 py-2 rounded border border-base-borde-sutil">
       Empareja cada concepto de la columna izquierda con su correspondiente definición o valor en la columna derecha:
     </div>
 
@@ -52,10 +52,10 @@
     <!-- Estado de completitud -->
     <div class="text-[11px] text-base-texto-secundario flex items-center justify-between pt-1">
       <span v-if="allPaired" class="text-semantico-pasa">
-        ✔ Todos los elementos emparejados ({{ Object.keys(pairs).length }}/{{ leftColumn.length }}).
+        Todos los elementos emparejados ({{ Object.keys(pairs).length }}/{{ leftColumn.length }}).
       </span>
       <span v-else class="text-acento-ambar-fuerte">
-        ⚠ Empareja todos los elementos antes de entregar ({{ pairedCount }}/{{ leftColumn.length }} emparejados).
+        Empareja todos los elementos antes de entregar ({{ pairedCount }}/{{ leftColumn.length }} emparejados).
       </span>
     </div>
   </div>

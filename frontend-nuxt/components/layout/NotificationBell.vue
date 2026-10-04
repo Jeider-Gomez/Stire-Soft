@@ -9,7 +9,7 @@
       <Bell :size="18" />
       <span
         v-if="unreadCount > 0"
-        class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-stire-danger text-white text-[9px] font-bold flex items-center justify-center"
+        class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-red-600 text-white text-[9px] font-bold flex items-center justify-center"
       >
         {{ unreadCount > 9 ? '9+' : unreadCount }}
       </span>
@@ -31,15 +31,15 @@
       >
         <div class="px-4 py-2.5 border-b border-slate-100 flex items-center justify-between">
           <p class="text-xs font-semibold text-slate-800">Notificaciones</p>
-          <span v-if="unreadCount > 0" class="text-[10px] text-slate-400">{{ unreadCount }} sin leer</span>
+          <span v-if="unreadCount > 0" class="text-[10px] text-slate-500">{{ unreadCount }} sin leer</span>
         </div>
 
         <div class="max-h-96 overflow-y-auto">
-          <div v-if="isLoading" class="px-4 py-6 text-center text-[11px] text-slate-400">
-            <span class="inline-block animate-spin mr-1">⏳</span> Cargando...
+          <div v-if="isLoading" class="px-4 py-6 text-center text-[11px] text-slate-500">
+            <Loader2 :size="14" class="inline-block animate-spin mr-1" aria-hidden="true" /> Cargando...
           </div>
 
-          <div v-else-if="notifications.length === 0" class="px-4 py-6 text-center text-[11px] text-slate-400">
+          <div v-else-if="notifications.length === 0" class="px-4 py-6 text-center text-[11px] text-slate-500">
             No tienes notificaciones todavía.
           </div>
 
@@ -59,7 +59,7 @@
               <div class="min-w-0 flex-1">
                 <p class="font-semibold text-slate-800 truncate">{{ n.title }}</p>
                 <p class="text-slate-500 line-clamp-2 mt-0.5">{{ n.message }}</p>
-                <p class="text-[10px] text-slate-400 mt-1">{{ formatDate(n.createdAt) }}</p>
+                <p class="text-[10px] text-slate-500 mt-1">{{ formatDate(n.createdAt) }}</p>
               </div>
             </div>
           </button>
@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { Bell } from 'lucide-vue-next'
+import { Bell, Loader2 } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 

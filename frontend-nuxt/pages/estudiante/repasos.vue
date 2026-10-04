@@ -4,7 +4,7 @@
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Repasos Diarios de Algoritmia
+          Repasos de hoy
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
           Repasa justo antes de olvidar: unos minutos hoy te ahorran volver a estudiar desde cero.
@@ -13,7 +13,7 @@
 
       <!-- Indicador de Sesión Corta -->
       <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil text-center flex-shrink-0">
-        <span class="text-xs text-base-texto-secundario block">Tiempo Total Estimado:</span>
+        <span class="text-xs text-slate-600 block">Tiempo estimado:</span>
         <span class="text-lg font-bold text-acento-ambar-fuerte">~13 minutos</span>
       </div>
     </header>
@@ -87,8 +87,8 @@
         </div>
 
         <!-- Explicación pedagógica no punitiva (P04) -->
-        <p class="text-xs text-base-texto-secundario bg-base-bg-secundario/60 p-2.5 rounded border border-base-borde-sutil/60">
-          💡 <strong>Objetivo de retención:</strong> Refuerza este concepto ahora para elevar tu factor de estabilidad de memoria y evitar olvido en la siguiente evaluación.
+        <p class="text-xs text-slate-600 bg-base-bg-secundario/60 p-2.5 rounded border border-base-borde-sutil/60">
+          <strong>Objetivo de retención:</strong> Refuerza este concepto ahora para elevar tu factor de estabilidad de memoria y evitar olvido en la siguiente evaluación.
         </p>
       </div>
     </section>
@@ -97,7 +97,7 @@
     <div
       v-if="studentStore.reviews.length === 0"
       class="bg-base-blanco rounded-xl border border-semantico-pasa/40 p-8 text-center space-y-3 shadow-sm">
-      <div class="w-12 h-12 rounded-full bg-semantico-pasa/15 text-semantico-pasa flex items-center justify-center text-xl mx-auto font-bold">
+      <div class="w-12 h-12 rounded-full bg-semantico-pasa/10 text-semantico-pasa flex items-center justify-center text-xl mx-auto font-bold">
         ⬤
       </div>
       <h3 class="font-bold text-base text-base-texto-primario">¡Estás al día con todos tus repasos!</h3>

@@ -63,7 +63,7 @@
               <NuxtLink :to="`/estudiante/unidad/${item.unitId}`" class="text-xs font-bold text-base-texto-primario hover:underline">{{ item.unitTitle }}</NuxtLink>
               <p class="mt-0.5 flex flex-wrap items-center gap-1.5 text-[10px]">
                 <span class="px-1.5 py-0.5 rounded font-bold" :class="claseEstado(item.mastery)">{{ getMasteryLevelName(item.mastery) }}</span>
-                <span v-if="forgettingUnitIds.has(item.unitId)" class="inline-flex items-center gap-1 font-semibold text-acento-ambar-fuerte">
+                <span v-if="debeRepasar(item)" class="inline-flex items-center gap-1 font-semibold text-acento-ambar-fuerte">
                   <RotateCcw :size="10" aria-hidden="true" /> Toca repasarla
                 </span>
               </p>
@@ -74,9 +74,9 @@
               </div>
               <span class="w-10 text-right text-[11px] font-bold text-base-texto-primario">{{ item.mastery }} %</span>
               <!-- Una acción solo donde hace falta: repasar lo que se olvida o seguir lo que no está dominado. -->
-              <NuxtLink v-if="forgettingUnitIds.has(item.unitId) || item.mastery < 85" :to="`/estudiante/unidad/${item.unitId}`"
+              <NuxtLink v-if="debeRepasar(item) || item.mastery < 85" :to="`/estudiante/unidad/${item.unitId}`"
                 class="borde-afordancia px-2.5 py-1 rounded text-[11px] font-semibold bg-base-blanco text-acento-ambar-fuerte hover:bg-acento-ambar/10 whitespace-nowrap min-h-[32px] inline-flex items-center">
-                {{ forgettingUnitIds.has(item.unitId) ? 'Repasar' : 'Practicar' }}
+                {{ debeRepasar(item) ? 'Repasar' : 'Practicar' }}
               </NuxtLink>
               <span v-else class="w-[4.5rem]" aria-hidden="true"></span>
             </div>
@@ -97,7 +97,7 @@
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-xs text-left">
-          <thead class="bg-base-bg-secundario text-base-texto-secundario border-b border-base-borde-sutil">
+          <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil">
             <tr>
               <th class="p-2.5 font-semibold">Ejercicio</th>
               <th class="p-2.5 font-semibold hidden sm:table-cell">Fecha</th>
@@ -118,7 +118,7 @@
               <td class="p-2.5">
                 <span
                   class="px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap"
-                  :class="sub.passed === true ? 'bg-semantico-pasa/15 text-semantico-pasa' : sub.passed === false ? 'bg-semantico-falla/15 text-semantico-falla' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+                  :class="sub.passed === true ? 'bg-semantico-pasa/10 text-semantico-pasa' : sub.passed === false ? 'bg-semantico-falla/15 text-semantico-falla' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
                   {{ resultLabel(sub) }}
                 </span>
               </td>
@@ -131,6 +131,7 @@
 </template>
 
 <script setup lang="ts">
+import { nombreDelEstado, tocaRepasar } from '~/utils/progresoLeccion'
 import { computed, onMounted } from 'vue'
 import { ArrowRight, RotateCcw } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
@@ -143,16 +144,9 @@ definePageMeta({
 const studentStore = useStudentStore()
 const authStore = useAuthStore()
 
-// Unidades con repaso vencido o crítico para «Se está olvidando» (T2)
-const forgettingUnitIds = computed(() => {
-  const ids = new Set<number>()
-  for (const r of studentStore.reviews) {
-    if (r.urgency === 'vencido' || r.urgency === 'critico') {
-      ids.add(r.learningUnitId)
-    }
-  }
-  return ids
-})
+// Urgencia del repaso de cada lección; «Toca repasarla» se decide con el dominio (utils/progresoLeccion.ts).
+const urgenciaPorLeccion = computed(() => new Map(studentStore.reviews.map((r) => [r.learningUnitId, r.urgency])))
+const debeRepasar = (item: { unitId: number; mastery: number }) => tocaRepasar(item.mastery, urgenciaPorLeccion.value.get(item.unitId))
 
 onMounted(() => {
   studentStore.fetchStudentData()
@@ -169,18 +163,12 @@ function resultLabel(sub: { status: string; passed: boolean | null }) {
 // parcial, si no dominado). Antes esta pantalla usaba 70 y 40 y podía nombrar distinto el estado de una unidad.
 /** El color sale del mismo estado que el nombre (antes usaba otros cortes y un 70 % salía verde y «En práctica»). */
 function claseEstado(m: number) {
-  if (m >= 85) return 'bg-semantico-pasa/15 text-semantico-pasa'
+  if (m >= 85) return 'bg-semantico-pasa/10 text-semantico-pasa'
   if (m >= 20) return 'bg-acento-ambar-fuerte/15 text-acento-ambar-fuerte'
-  return 'bg-base-bg-secundario text-base-texto-secundario'
+  return 'bg-base-bg-secundario text-slate-600'
 }
 const colorBarra = (m: number) => (m >= 85 ? 'bg-semantico-pasa' : m >= 20 ? 'bg-acento-ambar-fuerte' : 'bg-base-borde-fuerte')
 
-function getMasteryLevelName(percentage: number) {
-  if (percentage >= 85) return 'Dominado'
-  if (percentage >= 60) return 'Comprensión parcial'
-  if (percentage >= 20) return 'En práctica'
-  if (percentage > 0) return 'Explorado'
-  return 'No visto'
-}
+const getMasteryLevelName = nombreDelEstado
 </script>
 

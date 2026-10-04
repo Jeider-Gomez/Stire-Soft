@@ -4,7 +4,7 @@
 
     <!-- Aviso de alcance (§25.3) -->
     <div class="p-3 rounded-lg bg-semantico-info/8 border border-semantico-info/30 text-semantico-info leading-relaxed">
-      <span class="font-bold">ℹ Alcance de la calificación automática:</span>
+      <span class="font-bold">Alcance de la calificación automática:</span>
       se evalúa presencia y jerarquía de etiquetas, atributos, textos, propiedades CSS declaradas y accesibilidad básica.
       <strong>No</strong> se califica posición, tamaño renderizado, <code class="font-mono">@media</code>/responsive ni animaciones; indícalo a los estudiantes en el enunciado.
     </div>

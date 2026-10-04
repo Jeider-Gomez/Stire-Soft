@@ -29,7 +29,7 @@
           v-if="pantallaAncha"
           id="pliegue-tutor"
           type="button"
-          class="absolute top-1/2 -translate-y-1/2 -left-5 w-5 h-16 rounded-l-lg bg-base-blanco border border-r-0 border-base-borde-sutil shadow-md flex items-center justify-center text-slate-400 hover:text-stire-purple hover:w-6 hover:-left-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stire-purple/40 transition-all"
+          class="absolute top-1/2 -translate-y-1/2 -left-5 w-5 h-16 rounded-l-lg bg-base-blanco border border-r-0 border-base-borde-sutil shadow-md flex items-center justify-center text-slate-500 hover:text-stire-purple hover:w-6 hover:-left-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stire-purple/40 transition-all"
           aria-label="Recoger el Tutor"
           title="Recoger el Tutor (Esc)"
           @click="tutorStore.closeDrawer()"
@@ -42,7 +42,7 @@
           <div class="flex items-center gap-3">
             <div class="relative" aria-hidden="true">
               <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-inner">
-                <Bot :size="24" :stroke-width="2.2" class="text-stire-teal" />
+                <Bot :size="24" :stroke-width="2.2" class="text-teal-300" />
               </div>
               <span v-if="tutorStore.tutorEnabled" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-stire-teal border-2 border-stire-blue rounded-full" />
             </div>
@@ -111,7 +111,7 @@
         <!-- Indicador de Contexto Activo de Aprendizaje -->
         <div v-if="activeContextLabel" class="px-4 py-2 bg-stire-canvas border-b border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
           <div class="flex items-center gap-1.5 truncate">
-            <BookOpen :size="14" class="text-stire-teal shrink-0" aria-hidden="true" />
+            <BookOpen :size="14" class="text-teal-700 shrink-0" aria-hidden="true" />
             <span class="truncate font-medium font-poppins text-stire-blue">{{ activeContextLabel }}</span>
           </div>
           <div class="flex items-center gap-2 flex-shrink-0">
@@ -148,7 +148,7 @@
           </button>
           <button
             type="button"
-            class="shrink-0 p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-acento-ambar/15"
+            class="shrink-0 p-1 rounded text-slate-700 hover:text-base-texto-primario hover:bg-acento-ambar/15"
             aria-label="Ocultar el aviso de repasos"
             @click="avisoRepasosDescartado = true"
           >
@@ -166,7 +166,7 @@
           <!-- Aviso: Tutor desactivado por docente (§20.3) -->
           <div
             v-if="!tutorStore.tutorEnabled"
-            class="mx-4 mt-4 p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil text-xs text-base-texto-secundario"
+            class="mx-4 mt-4 p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil text-xs text-slate-600"
             role="status"
           >
             <Ban :size="14" class="inline -mt-0.5 mr-1" aria-hidden="true" />
@@ -189,7 +189,7 @@
               <!-- Burbuja de mensaje (con el robot al lado cuando habla el Tutor) -->
               <div class="flex items-end gap-1.5 max-w-[88%] mensaje-entrada">
                 <span v-if="msg.sender !== 'student'" class="w-6 h-6 mb-1 rounded-lg bg-stire-blue flex items-center justify-center shrink-0" aria-hidden="true">
-                  <Bot :size="16" :stroke-width="2.2" class="text-stire-teal" />
+                  <Bot :size="16" :stroke-width="2.2" class="text-teal-300" />
                 </span>
                 <div
                   class="rounded-2xl p-3 text-xs leading-relaxed shadow-sm"
@@ -241,7 +241,7 @@
             <!-- Indicador de pensamiento IA (§18.6 — texto escalado) -->
             <div v-if="tutorStore.isThinking" class="flex items-center gap-2 text-xs text-slate-500 py-1" role="status">
               <span class="w-6 h-6 rounded-lg bg-stire-blue flex items-center justify-center shrink-0" aria-hidden="true">
-                <Bot :size="14" class="text-stire-teal animate-pulse" />
+                <Bot :size="14" class="text-teal-300 animate-pulse" />
               </span>
               <span class="flex items-center gap-1 bg-white px-3 py-2 rounded-2xl border border-slate-200 shadow-sm">
                 <span class="w-1.5 h-1.5 rounded-full bg-stire-teal animate-bounce" aria-hidden="true" />
@@ -298,7 +298,7 @@
                 placeholder="Haz una pregunta sobre tu lógica..."
                 aria-label="Pregunta al Tutor IA"
                 style="font-size: 16px;"
-                class="flex-1 px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-stire-teal focus:ring-2 focus:ring-stire-teal/20 text-slate-800 placeholder:text-slate-400 outline-none transition-all disabled:opacity-50" />
+                class="flex-1 px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-stire-teal focus:ring-2 focus:ring-stire-teal/20 text-slate-800 placeholder:text-slate-500 outline-none transition-all disabled:opacity-50" />
               <button
                 @click="handleSend"
                 :disabled="!inputQuery.trim() || tutorStore.isThinking || !tutorStore.tutorEnabled"
@@ -323,6 +323,7 @@ import { atajosASimpleVista, atajosDisponibles, preguntasNuevas, type Atajo } fr
 import { useStudentStore } from '~/stores/student'
 import { formatTutorMessage } from '~/utils/formatTutorMessage'
 
+const { confirmar } = useConfirmar()
 const tutorStore = useTutorStore()
 const workspaceStore = useWorkspaceStore()
 const studentStore = useStudentStore()
@@ -406,10 +407,10 @@ const overdueNotice = computed(() => {
 })
 
 // ─── Navegación segura con verificación de autoguardado (§21.2 T4c) ─────────
-function navigateWithAutosaveCheck(url: string) {
+async function navigateWithAutosaveCheck(url: string) {
   if (workspaceStore.currentExercise?.activityId) {
     if (workspaceStore.hasUnsavedChanges) {
-      const ok = confirm('Tienes cambios en el código que podrían no haberse sincronizado aún. ¿Deseas salir de todas formas?')
+      const ok = await confirmar({ titulo: '¿Salir del ejercicio?', mensaje: 'Hay cambios en tu código que todavía no se guardaron. Si sales ahora, podrías perderlos.', accion: 'Salir de todas formas', cancelar: 'Quedarme', peligro: true })
       if (!ok) return
     }
   }

@@ -30,7 +30,7 @@
       <div class="px-4 py-3 border-b border-base-borde-sutil flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div class="min-w-0">
           <h2 class="text-sm font-bold text-base-texto-primario flex items-center gap-2 flex-wrap">
-            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold" :class="r.tipo === 'reto' ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">{{ r.tipo === 'reto' ? 'Reto' : 'Refuerzo' }}</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold" :class="r.tipo === 'reto' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">{{ r.tipo === 'reto' ? 'Reto' : 'Refuerzo' }}</span>
             {{ r.titulo }}
             <span v-if="r.archivado" class="text-[10px] font-semibold text-base-texto-secundario">Archivado</span>
           </h2>

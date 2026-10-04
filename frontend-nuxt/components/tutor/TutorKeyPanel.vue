@@ -3,7 +3,7 @@
     <!-- Si ya tiene clave: mostrar estado y acciones -->
     <div v-if="tutorStore.hasKey" class="space-y-3">
       <div class="flex items-center gap-2 p-3 rounded-lg bg-semantico-pasa/10 border border-semantico-pasa/30">
-        <span aria-hidden="true">🔑</span>
+        <KeyRound :size="16" aria-hidden="true" />
         <div class="text-xs">
           <p class="font-semibold text-semantico-pasa">Clave configurada</p>
           <p class="text-base-texto-secundario">termina en <code class="font-codigo">••••{{ tutorStore.last4 }}</code></p>
@@ -89,8 +89,10 @@
 </template>
 
 <script setup lang="ts">
+import { KeyRound } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
 
+const { confirmar } = useConfirmar()
 const tutorStore = useTutorStore()
 
 const apiKeyInput = ref('')
@@ -114,7 +116,7 @@ async function handleSave() {
 }
 
 async function handleDelete() {
-  if (!confirm('¿Seguro que quieres eliminar tu clave? El Tutor dejará de funcionar hasta que configures una nueva.')) return
+  if (!(await confirmar({ titulo: '¿Eliminar tu clave?', mensaje: 'El Tutor dejará de funcionar hasta que configures una nueva.', accion: 'Eliminar la clave', peligro: true }))) return
   isDeleting.value = true
   const result = await tutorStore.deleteApiKey()
   isDeleting.value = false
@@ -173,7 +175,7 @@ const ErrorMsg = defineComponent({
 const PrivacyNotice = defineComponent({
   setup() {
     return () =>
-      h('div', { class: 'text-[10px] text-base-texto-secundario p-2 bg-base-bg-secundario rounded border border-base-borde-sutil' }, [
+      h('div', { class: 'text-[10px] text-slate-600 p-2 bg-base-bg-secundario rounded border border-base-borde-sutil' }, [
         h('p', { class: 'font-semibold mb-1' }, '🔒 Privacidad'),
         h('p', {}, 'Tu clave se guarda cifrada y solo sirve para hablar con el Tutor; nadie del equipo puede verla. Las preguntas que le haces al Tutor (y el código que tengas abierto en el editor) se envían a Google usando '),
         h('strong', {}, 'tu'),

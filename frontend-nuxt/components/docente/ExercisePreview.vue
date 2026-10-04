@@ -18,7 +18,7 @@
         <div class="mt-3 text-xs">
           <p class="font-semibold text-base-texto-primario mb-1">Casos de prueba que puede ver</p>
           <table v-if="previewConfig.testCases?.length" class="w-full text-[11px] border border-base-borde-sutil rounded">
-            <thead class="bg-base-bg-secundario text-base-texto-secundario">
+            <thead class="bg-base-bg-secundario text-slate-600">
               <tr><th class="p-1.5 text-left">Entrada</th><th class="p-1.5 text-left">Salida esperada</th></tr>
             </thead>
             <tbody>

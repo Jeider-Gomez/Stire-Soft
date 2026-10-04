@@ -40,7 +40,7 @@
 
           <div class="flex flex-wrap items-center gap-1" role="toolbar" aria-label="Formato del texto">
             <button v-for="t in TOOLS" :key="t.label" type="button" @click="apply(t.action)"
-              class="p-1.5 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+              class="p-1.5 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
               :title="t.label" :aria-label="t.label">
               <component :is="t.icon" :size="16" aria-hidden="true" />
             </button>

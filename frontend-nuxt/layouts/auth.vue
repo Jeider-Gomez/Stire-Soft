@@ -13,7 +13,7 @@
       </div>
       <div class="text-xs text-slate-600 font-medium text-center sm:text-right">
         <span class="text-slate-800 font-semibold">Universidad de Córdoba</span>
-        <span class="mx-2 text-stire-teal font-bold" aria-hidden="true">•</span>
+        <span class="mx-2 text-teal-300 font-bold" aria-hidden="true">•</span>
         <span class="text-stire-blue">Sistema Tutor Inteligente</span>
       </div>
     </header>

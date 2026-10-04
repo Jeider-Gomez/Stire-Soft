@@ -68,15 +68,20 @@ export class AnalyticsService {
     const totalReviews = reviews.length;
     const pendingReviews = repasosPendientes(reviews.map((r) => r.nextReviewDate), now);
 
-    // 3. Racha real calculada desde las entregas
+    // 3. Racha real calculada desde las entregas. Abrir un ejercicio (intento «en curso») no es practicar: antes contaba,
+    // y el inicio decía «1 día» mientras «Mi progreso» decía «0 días» (revisión del 04/10, MOD-02). Misma regla y misma
+    // fecha que las estadísticas (learning-progress.service.ts): entregas, por fecha de entrega.
     const allSubs = await submissionRepo.find({
       where: { studentId },
       order: { createdAt: 'DESC' },
-      select: ['createdAt'],
+      select: ['createdAt', 'submittedAt', 'status'],
     });
 
     // Días en hora de Colombia (racha-y-repasos.ts), los mismos de las estadísticas del estudiante.
-    const streakDays = rachaDeDias(allSubs.map((sub) => new Date(sub.createdAt)), now);
+    const streakDays = rachaDeDias(
+      allSubs.filter((sub) => sub.status !== SubmissionStatus.IN_PROGRESS).map((sub) => new Date(sub.submittedAt ?? sub.createdAt)),
+      now,
+    );
 
     // 4. Recent submissions
     const recentSubmissions = await submissionRepo.find({

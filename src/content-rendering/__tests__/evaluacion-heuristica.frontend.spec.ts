@@ -45,8 +45,11 @@ describe('Evaluación heurística: hallazgos corregidos', () => {
   });
 
   it('los nombres de estado de dominio usan los mismos cortes que el servidor (85, 60, 20)', () => {
+    // La función vive en utils/progresoLeccion.ts desde la v2.0.0 (la usan el inicio y «Mi progreso»).
     const progreso = leer('pages', 'estudiante', 'progreso.vue');
-    const funcion = progreso.slice(progreso.indexOf('function getMasteryLevelName'));
+    expect(progreso).toContain('const getMasteryLevelName = nombreDelEstado');
+    const util = leer('utils', 'progresoLeccion.ts');
+    const funcion = util.slice(util.indexOf('export function nombreDelEstado'));
     expect(funcion).toMatch(/>= 85\) return 'Dominado'[\s\S]*>= 60\) return 'Comprensión parcial'[\s\S]*>= 20\) return 'En práctica'/);
     expect(progreso).not.toMatch(/Umbral de maestría: 70%/);
   });
@@ -60,7 +63,7 @@ describe('Evaluación heurística: hallazgos corregidos', () => {
 
   it('el botón del tutor en la pantalla del ejercicio tiene nombre accesible', () => {
     // Desde el 03/10 es el lanzador flotante, el mismo en todas las pantallas (P-UI-04).
-    expect(leer('layouts', 'workspace.vue')).toContain('<TutorLanzadorTutor />');
+    expect(leer('layouts', 'workspace.vue')).toMatch(/<TutorLanzadorTutor( [^>]*)?\/>/);
     expect(leer('components', 'tutor', 'LanzadorTutor.vue')).toContain('aria-label="Abrir el Tutor IA"');
   });
 
