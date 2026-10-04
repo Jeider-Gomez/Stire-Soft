@@ -18,6 +18,11 @@ con su fecha y la versión evaluada. Cada lista va en dos formatos:
 al Tutor. Tiene dos líneas de trabajo (interfaz y Tutores Inteligentes), una sola versión nueva (v2.0.0, para el martes 06/10) y la verificación de cada
 ítem por un integrante del equipo.
 
+## Verificación del equipo
+
+[`VERIFICACION_v2.0.0.md`](VERIFICACION_v2.0.0.md): cada integrante prueba como usuario los ítems que le tocan y marca ✅, ⚠️ o ❌, y
+todos responden la encuesta SUS. Un ítem cuenta como cumplido solo con el ✅ de quien lo verifica.
+
 ## Revisiones
 
 | Fecha | Versión evaluada | Interfaz (Pressman) | Sistemas Tutores Inteligentes (Caro) | Carpeta |
