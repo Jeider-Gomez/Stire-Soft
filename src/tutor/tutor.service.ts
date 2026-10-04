@@ -57,6 +57,13 @@ export function esSaludo(texto: string): boolean {
 }
 const SUGGESTION_CLOSERS = ['¿Le damos con', '¿Practicamos', '¿Te animas con', '¿Vamos con'];
 
+/**
+ * Cierre del saludo: dice qué hacer. José (HALLAZGOS.md, 02/10) notó que el saludo dejaba la duda de si había que
+ * escribir ya o esperar otra instrucción.
+ */
+export const CIERRE_CON_SUGERENCIA = 'Toca la tarjeta de abajo para ir al ejercicio, o escríbeme tu duda cuando quieras.';
+export const CIERRE_SIN_SUGERENCIA = 'Escríbeme tu duda abajo: puede ser sobre un ejercicio, tu código o un tema de la lección.';
+
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 const GEMINI_TIMEOUT_MS = 15000;
 const HISTORY_WINDOW = 6;
@@ -305,8 +312,8 @@ export class TutorService {
     const timeOfDayGreeting = saludoSegunHora();
 
     const message = suggestedActivity
-      ? `${timeOfDayGreeting} ${GREETING_PREFIXES[variant]} ${trasComa(suggestedActivity.reasonMessage)} ${SUGGESTION_CLOSERS[variant]} "${suggestedActivity.activityTitle}"?`
-      : `${timeOfDayGreeting} Vas al día con tus repasos y tu dominio está en buen nivel en todas tus unidades. ¿En qué quieres que te ayude hoy?`;
+      ? `${timeOfDayGreeting} ${GREETING_PREFIXES[variant]} ${trasComa(suggestedActivity.reasonMessage)} ${SUGGESTION_CLOSERS[variant]} "${suggestedActivity.activityTitle}"? ${CIERRE_CON_SUGERENCIA}`
+      : `${timeOfDayGreeting} Vas al día con tus repasos y tu dominio está en buen nivel en todas tus unidades. ${CIERRE_SIN_SUGERENCIA}`;
 
     // Si lo último de la conversación ya es un saludo (abrió el Tutor, no escribió nada y volvió a entrar), se cambia
     // por el nuevo en vez de sumar otro: el historial mostraba tres saludos seguidos (02/10).

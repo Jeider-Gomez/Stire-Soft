@@ -207,11 +207,18 @@
               <button
                 v-if="msg.suggestedActivity"
                 @click="tutorStore.goToSuggestedActivity(msg.suggestedActivity)"
-                class="borde-afordancia mt-1.5 max-w-[85%] text-left px-3 py-2 rounded-xl bg-stire-teal/10 border border-stire-teal/40 hover:bg-stire-teal/20 transition-colors"
+                class="tarjeta-sugerencia group mt-1.5 max-w-[85%] w-full text-left pl-3 pr-2 py-2.5 rounded-xl bg-white border-2 border-stire-blue shadow-md hover:shadow-lg hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stire-teal/50 transition-all flex items-center gap-3"
               >
-                <span class="flex items-center gap-1 text-[10px] font-semibold text-stire-blue uppercase tracking-wide"><Target :size="12" aria-hidden="true" /> Practica esto</span>
-                <span class="block text-xs font-medium text-base-texto-primario mt-0.5">{{ msg.suggestedActivity.activityTitle }}</span>
-                <span class="block text-[11px] text-base-texto-secundario mt-0.5">{{ msg.suggestedActivity.learningUnitTitle }}</span>
+                <!-- Se ve como botón, no como otro mensaje: borde fuerte, sombra y una acción explícita a la derecha
+                     (hallazgo de José, HALLAZGOS.md, 02/10: «necesitan mayor contraste para distinguirse como botones»). -->
+                <span class="flex-1 min-w-0">
+                  <span class="flex items-center gap-1 text-[10px] font-bold text-stire-blue uppercase tracking-wide"><Target :size="12" aria-hidden="true" /> Practica esto</span>
+                  <span class="block text-sm font-bold text-base-texto-primario mt-0.5">{{ msg.suggestedActivity.activityTitle }}</span>
+                  <span class="block text-[11px] text-base-texto-secundario mt-0.5">{{ msg.suggestedActivity.learningUnitTitle }}</span>
+                </span>
+                <span class="shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-stire-blue text-white text-xs font-bold group-hover:bg-stire-purple transition-colors">
+                  Ir <ArrowRight :size="14" aria-hidden="true" />
+                </span>
               </button>
             </div>
 
@@ -293,7 +300,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ban, BookOpen, Bot, Clock, Compass, KeyRound, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
+import { ArrowRight, Ban, BookOpen, Bot, Clock, Compass, KeyRound, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { atajosASimpleVista, atajosDisponibles, preguntasNuevas, type Atajo } from '~/utils/atajosTutor'

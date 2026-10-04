@@ -1,5 +1,5 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { TutorService, esSaludo, saludoSegunHora, trasComa } from './tutor.service';
+import { CIERRE_CON_SUGERENCIA, CIERRE_SIN_SUGERENCIA, TutorService, esSaludo, saludoSegunHora, trasComa } from './tutor.service';
 
 const STUDENT: any = { id: 1, role: 'estudiante' };
 
@@ -487,5 +487,14 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
       expect(convRepo.delete).not.toHaveBeenCalled();
       expect(r.reemplazaAnterior).toBe(false);
     });
+  });
+});
+
+// José (HALLAZGOS.md, 02/10): el saludo dejaba la duda de si había que escribir ya o esperar otra instrucción.
+describe('Saludo del Tutor: dice qué hacer', () => {
+  it('los cierres del saludo nombran la acción (tocar la tarjeta o escribir la duda)', () => {
+    expect(CIERRE_CON_SUGERENCIA).toMatch(/Toca la tarjeta/);
+    expect(CIERRE_CON_SUGERENCIA).toMatch(/escríbeme tu duda/);
+    expect(CIERRE_SIN_SUGERENCIA).toMatch(/^Escríbeme tu duda abajo/);
   });
 });

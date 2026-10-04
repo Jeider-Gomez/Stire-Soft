@@ -299,3 +299,12 @@ describe('Patrones de interfaz tomados de los referentes (docs/investigacion/ref
     expect(leer('layouts', 'workspace.vue')).toMatch(/<header class="sticky top-0 md:static/);
   });
 });
+
+describe('Hallazgos de José sobre el Tutor (docs/material-visual/01-tutor-ia/HALLAZGOS.md)', () => {
+  it('la tarjeta «Practica esto» se ve como botón: borde fuerte, sombra y una acción «Ir»', () => {
+    const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
+    expect(d).toMatch(/class="tarjeta-sugerencia[^"]*border-2 border-stire-blue shadow-md/);
+    expect(d).toMatch(/bg-stire-blue text-white[^"]*">\s*Ir <ArrowRight/);
+    expect(d).not.toContain('bg-stire-teal/10 border border-stire-teal/40');
+  });
+});
