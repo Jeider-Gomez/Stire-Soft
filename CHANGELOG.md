@@ -12,6 +12,43 @@ entry to the oldest.
 
 ---
 
+## v2.0.0 — segunda versión con las listas de chequeo del profesor · 4 de Octubre de 2026
+
+La versión que se presenta al profesor el 06/10. Sale de aplicar las dos listas de chequeo (interfaz, Pressman caps.
+12–14, y Sistemas Tutores Inteligentes, Caro 2015) a la v1.1.0 desplegada (`docs/calidad/listas-chequeo/2026-10-04_antes/`:
+62,5 % y 58,3 %). La regla fue cumplir la intención de cada criterio sin limitar al Tutor
+(`docs/calidad/listas-chequeo/PLAN_DE_MEJORA.md`). Cambia el número mayor porque cambia cómo se estudia: bloqueo por
+módulo, juicio de confianza y valoración de las lecciones.
+
+**Interfaz**
+- Contraste AA en todas las pantallas (axe-core marcó 5 a 24 elementos por pantalla), etiquetas en «Mi perfil»,
+  «Saltar al contenido» y migas también en el ejercicio.
+- En el celular, Probar y Entregar en una barra inferior fija, en la zona del pulgar; botones de 44–48 px.
+- Diálogo propio en lugar de `confirm()`; 107 emojis cambiados por íconos de Lucide; títulos en estilo de oración.
+- Inicio de sesión con el error bajo cada campo; código de clase con formato asistido y teclado en mayúsculas.
+- **El código ya no se pierde:** el autoguardado del servidor no se leía al volver a abrir el ejercicio (un F5 lo
+  borraba). Ahora hay una copia local por estudiante y ejercicio, se recupera con aviso y se puede volver a la
+  plantilla. Aviso de «sin conexión» y reintento al volver la red.
+
+**Tutor y modelo del estudiante**
+- Diagnóstico de la salida que no coincide (números juntados como texto, uno de más, espacios, mayúsculas,
+  decimales…) en lenguaje de estudiante; el Tutor recibe el error probable. Lista cerrada: el navegador no cuela texto.
+- Juicio de confianza antes de la primera entrega, calibración al calificar; el Tutor la usa.
+- «Resolverlo por pasos con el Tutor» y «Que el Tutor me lo explique de otra forma».
+- «¿Te sirvió esta explicación?» al final de cada lección; el docente ve el resultado por lección, sin nombres, con
+  las que conviene revisar primero (tabla `valoraciones_leccion`, migración `1791500000000-AddValoracionesLeccion`).
+- Bloqueo suave por módulo: el siguiente se abre con 50 % de dominio promedio del anterior; lo empezado nunca se
+  cierra; el docente cambia el umbral o lo apaga (columna `classes.dominioParaAvanzar`, migración `1791400000000`).
+- El algoritmo de cada lección en pseudocódigo, diagrama de flujo (generado) o paso a paso; se recuerda la preferencia.
+- «Mi autorregulación» en Mi progreso y «¿Por qué veo esto?» en el siguiente paso.
+- Corregido: la racha decía 1 en el inicio y 0 en Mi progreso (contaba intentos sin entregar); una lección sin dominio
+  aparecía como «No visto · Toca repasarla».
+- Personas y análisis de tareas: `docs/modesec/usuarios/PERSONAS_Y_TAREAS.md`.
+
+Verificación: `npm run build` sin errores, 1438 de 1438 pruebas, `nuxi typecheck` sin errores.
+
+---
+
 ## v1.1.0 — multimedia en los cursos y foto de perfil · 2 de Octubre de 2026
 
 La versión con la que **empieza** la prueba del equipo (dos funciones nuevas sobre `v1.0.0`, por eso cambia el número
