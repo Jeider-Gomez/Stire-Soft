@@ -2,7 +2,7 @@
   <div class="max-w-4xl mx-auto space-y-6">
     <!-- Dónde está: Inicio › Módulo › Tema (si agrupa varias lecciones) › Lección -->
     <nav aria-label="Ubicación" class="flex items-center gap-1.5 flex-wrap text-xs text-base-texto-secundario">
-      <NuxtLink to="/estudiante" class="hover:underline">Inicio</NuxtLink>
+      <NuxtLink to="/estudiante" class="hover:underline inline-flex items-center min-h-[44px] -my-3">Inicio</NuxtLink>
       <ChevronRight :size="12" aria-hidden="true" />
       <template v-if="ubicacion.modulo">
         <span>{{ ubicacion.modulo }}</span>
@@ -96,7 +96,7 @@
           <button
             v-if="recommendedActivity"
             type="button"
-            class="text-xs font-semibold text-acento-ambar-fuerte hover:underline"
+            class="text-xs font-semibold text-acento-ambar-fuerte hover:underline min-h-[44px]"
             @click="toggleManualChoice">
             {{ chooseManually ? 'Usar el recomendado' : 'Elegir yo el ejercicio' }}
           </button>
@@ -105,10 +105,10 @@
         <!-- Tope (docs/DISENO_INTERVENCION_DOCENTE.md §4.4): tras varios fallos seguidos, lo primero es parar y volver a la
              explicación o pedir una pista; el ejercicio sigue ahí, pero ya no es el botón principal. -->
         <div v-if="enPausa" class="flex items-center gap-2 flex-wrap">
-          <button type="button" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors" @click="volverALaExplicacion">
+          <button type="button" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors min-h-[44px]" @click="volverALaExplicacion">
             <BookOpen :size="14" aria-hidden="true" /> Volver a la explicación
           </button>
-          <button type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-md borde-afordancia text-xs font-semibold" @click="tutorStore.openDrawer()">
+          <button type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-md borde-afordancia text-xs font-semibold min-h-[44px]" @click="tutorStore.openDrawer()">
             <Lightbulb :size="14" aria-hidden="true" /> Pedir una pista al tutor
           </button>
         </div>
@@ -116,7 +116,7 @@
         <div v-if="recommendedActivity && !chooseManually" class="flex items-center gap-2 flex-wrap">
           <NuxtLink
             :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
-            class="inline-flex items-center gap-2 transition-colors text-xs"
+            class="inline-flex items-center gap-2 transition-colors text-xs min-h-[44px]"
             :class="enPausa ? 'font-semibold text-acento-ambar-fuerte hover:underline' : 'px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold'"
           >
             <template v-if="enPausa">Intentar otro ejercicio de todas formas</template>
@@ -172,7 +172,7 @@
       <div class="pt-4 border-t border-base-borde-sutil flex items-center justify-between">
         <NuxtLink
           to="/estudiante"
-          class="inline-flex items-center gap-1.5 borde-afordancia px-4 py-2 rounded-md text-xs font-semibold bg-base-blanco text-base-texto-primario">
+          class="inline-flex items-center gap-1.5 borde-afordancia px-4 py-2 rounded-md text-xs font-semibold bg-base-blanco text-base-texto-primario min-h-[44px]">
           <ArrowLeft :size="14" aria-hidden="true" /> Volver al plan del curso
         </NuxtLink>
       </div>

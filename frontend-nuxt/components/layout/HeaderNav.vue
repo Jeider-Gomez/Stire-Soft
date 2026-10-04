@@ -17,7 +17,7 @@
       <!-- Isotipo + Logotipo -->
       <NuxtLink
         :to="homeRoute"
-        class="flex items-center gap-2.5 group flex-shrink-0"
+        class="flex items-center gap-2.5 group flex-shrink-0 min-h-[44px]"
       >
         <!-- Isotipo [ST] con gradiente institucional -->
         <div

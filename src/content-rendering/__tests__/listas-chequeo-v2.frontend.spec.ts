@@ -37,7 +37,7 @@ describe('UX-07 · contraste WCAG 2.1 AA (axe-core marcó estas clases en produc
   });
 
   it('el botón «Abrir la clase» y la insignia «Estudiante» llevan un tono que cumple AA', () => {
-    expect(leer('pages', 'docente', 'index.vue')).toContain('class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800"');
+    expect(leer('pages', 'docente', 'index.vue')).toContain('class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800 min-h-[44px]"');
     expect(leer('components', 'layout', 'HeaderNav.vue')).toContain("return 'badge-estudiante !text-teal-800'");
   });
 });
@@ -79,5 +79,42 @@ describe('MOB-02 y UX-06 · zona del pulgar y tamaño de los botones del ejercic
   it('el lanzador del Tutor sube por encima de la barra en el celular', () => {
     expect(ws).toContain('<TutorLanzadorTutor :sobre-barra="isCodingActivity || isHtmlCssActivity" />');
     expect(leer('components', 'tutor', 'LanzadorTutor.vue')).toMatch(/\.lanzador-tutor\.sobre-barra \{ bottom: calc\(5\.5rem/);
+  });
+});
+
+describe('MOB-02 · objetivos táctiles de 44 px (la revisión del «después» midió estos por debajo en el celular)', () => {
+  // La etiqueta de apertura del control que contiene `marca` (una clase, texto o atributo que lo identifica).
+  const etiquetas = (rel: string, marca: string): string[] => {
+    const s = leer(...rel.split('/'));
+    const out: string[] = [];
+    for (let i = s.indexOf(marca); i >= 0; i = s.indexOf(marca, i + 1)) {
+      let ini = s.lastIndexOf('<', i);
+      while (ini > 0 && !/[A-Za-z]/.test(s[ini + 1])) ini = s.lastIndexOf('<', ini - 1); // «mastery < 85» no abre etiqueta
+      out.push(s.slice(ini, s.indexOf('>', i)));
+    }
+    return out;
+  };
+  const CONTROLES: [string, string, number][] = [
+    ['components/layout/HeaderNav.vue', 'class="flex items-center gap-2.5 group flex-shrink-0', 1],
+    ['layouts/workspace.vue', 'class="hover:underline', 2],
+    ['pages/estudiante/unidad/[id].vue', 'to="/estudiante" class="hover:underline', 1],
+    ['pages/estudiante/unidad/[id].vue', '@click="toggleManualChoice"', 1],
+    ['pages/estudiante/unidad/[id].vue', '@click="volverALaExplicacion"', 1],
+    ['pages/estudiante/unidad/[id].vue', '@click="tutorStore.openDrawer()"', 1],
+    ['pages/estudiante/unidad/[id].vue', ':to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"', 1],
+    ['pages/estudiante/evaluacion/[activityId].vue', "@click=\"leftTab = 'casos'\"", 1],
+    ['pages/estudiante/index.vue', 'to="/estudiante/repasos"', 1],
+    ['pages/estudiante/progreso.vue', 'to="/estudiante/repasos"', 1],
+    ['pages/estudiante/progreso.vue', 'hover:bg-acento-ambar/10 whitespace-nowrap', 1],
+    ['pages/docente/index.vue', 'title="Ver quiénes están en rezago"', 1],
+    ['pages/docente/index.vue', '@click="copyCode(cls.code)"', 1],
+    ['pages/docente/index.vue', '@click="openQrModal(cls)"', 1],
+    ['pages/docente/index.vue', 'class="btn-stire-secondary', 5],
+    ['pages/docente/index.vue', 'class="btn-stire-teal', 1],
+  ];
+  it.each(CONTROLES)('%s · %s mide al menos 44 px de alto', (rel, marca, cuantos) => {
+    const tags = etiquetas(rel, marca);
+    expect(tags).toHaveLength(cuantos);
+    for (const t of tags) expect(t).toContain('min-h-[44px]');
   });
 });

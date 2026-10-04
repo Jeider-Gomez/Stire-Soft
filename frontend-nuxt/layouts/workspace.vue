@@ -22,9 +22,9 @@
           </h1>
           <!-- Migas: dónde está el ejercicio dentro del curso (UX-01 / PAT-02 de la lista de chequeo) -->
           <nav aria-label="Ubicación" class="flex items-center gap-1 flex-wrap text-[11px] text-base-texto-secundario">
-            <NuxtLink to="/estudiante" class="hover:underline">Inicio</NuxtLink>
+            <NuxtLink to="/estudiante" class="hover:underline inline-flex items-center min-h-[44px] -my-3.5">Inicio</NuxtLink>
             <ChevronRight :size="11" aria-hidden="true" />
-            <NuxtLink :to="backLink" class="hover:underline truncate max-w-[180px]">{{ workspaceStore.currentExercise.unitTitle }}</NuxtLink>
+            <NuxtLink :to="backLink" class="hover:underline truncate max-w-[180px] inline-flex items-center min-h-[44px] -my-3.5">{{ workspaceStore.currentExercise.unitTitle }}</NuxtLink>
             <ChevronRight :size="11" aria-hidden="true" />
             <span aria-current="page">Ejercicio · {{ difficultyLabel }}</span>
           </nav>

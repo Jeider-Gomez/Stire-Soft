@@ -24,7 +24,7 @@
 
         <button
           @click="openCreateModal"
-          class="btn-stire-primary self-start sm:self-auto"
+          class="btn-stire-primary self-start sm:self-auto min-h-[44px]"
         >
           <Plus :size="15" />
           Crear Nueva Clase
@@ -103,7 +103,7 @@
               <AlertTriangle :size="18" class="text-amber-700" />
             </div>
             <button
-              class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stire-warning/15 text-amber-800
+              class="text-[10px] font-bold px-2 py-0.5 min-h-[44px] rounded-full bg-stire-warning/15 text-amber-800
                      hover:bg-stire-warning/25 transition-colors whitespace-nowrap"
               title="Ver quiénes están en rezago"
               @click="navigateTo('/docente/rendimiento')"
@@ -212,7 +212,7 @@
                 <!-- Botón copiar con animación -->
                 <button
                   @click="copyCode(cls.code)"
-                  class="flex items-center gap-1.5 text-[11px] font-medium px-2 py-1 rounded-lg
+                  class="flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 min-h-[44px] rounded-lg
                          border border-slate-200 text-slate-500 hover:border-stire-teal/50
                          hover:text-teal-700 hover:bg-stire-teal/5
                          active:scale-95 transition-all duration-150 whitespace-nowrap"
@@ -235,7 +235,7 @@
                 <!-- QR proyector -->
                 <button
                   @click="openQrModal(cls)"
-                  class="flex items-center gap-1.5 text-[11px] font-medium px-2 py-1 rounded-lg
+                  class="flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 min-h-[44px] rounded-lg
                          border border-slate-200 text-slate-500 hover:border-stire-purple/50
                          hover:text-stire-purple hover:bg-stire-purple/5
                          active:scale-95 transition-all duration-150 whitespace-nowrap"
@@ -274,7 +274,7 @@
             <!-- Matrícula -->
             <NuxtLink
               :to="`/docente/clase/${cls.id}/ajustes`"
-              class="btn-stire-secondary"
+              class="btn-stire-secondary min-h-[44px]"
             >
               <Users :size="14" />
               <span>Matrícula</span>
@@ -289,7 +289,7 @@
             <!-- Rendimiento -->
             <NuxtLink
               :to="`/docente/rendimiento?classId=${cls.id}`"
-              class="btn-stire-secondary"
+              class="btn-stire-secondary min-h-[44px]"
             >
               <TrendingUp :size="14" />
               <span>Rendimiento</span>
@@ -305,7 +305,7 @@
             <!-- Contenidos -->
             <NuxtLink
               :to="`/docente/contenidos?classId=${cls.id}`"
-              class="btn-stire-secondary"
+              class="btn-stire-secondary min-h-[44px]"
             >
               <BookOpen :size="14" />
               <span>Contenidos</span>
@@ -317,7 +317,7 @@
             <!-- La clase como lugar: «Hoy», con las pestañas de la clase (utils/pestanasClase.ts) -->
             <NuxtLink
               :to="`/docente/clase/${cls.id}`"
-              class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800"
+              class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800 min-h-[44px]"
             >
               <UserCheck :size="14" />
               <span>Abrir la clase</span>
@@ -491,7 +491,7 @@
                   <button
                     type="button"
                     @click="isModalOpen = false"
-                    class="btn-stire-secondary"
+                    class="btn-stire-secondary min-h-[44px]"
                   >
                     Cancelar
                   </button>
@@ -544,7 +544,7 @@
             </div>
             <button
               @click="qrModal.open = false"
-              class="btn-stire-secondary w-full justify-center"
+              class="btn-stire-secondary w-full justify-center min-h-[44px]"
             >
               Cerrar
             </button>

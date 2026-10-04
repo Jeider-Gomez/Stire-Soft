@@ -25,7 +25,7 @@
         <span class="text-xs text-base-texto-secundario block font-medium">Repasos para hoy</span>
         <span class="text-2xl font-bold text-acento-ambar-fuerte mt-1 block">{{ studentStore.hasLoaded ? studentStore.reviewsDueToday.length : '—' }}</span>
         <NuxtLink v-if="studentStore.hasLoaded && studentStore.reviewsDueToday.length" to="/estudiante/repasos"
-          class="mt-1 px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold inline-flex items-center gap-1 min-h-[36px]">
+          class="mt-1 px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold inline-flex items-center gap-1 min-h-[44px]">
           Repasar ahora <ArrowRight :size="13" aria-hidden="true" />
         </NuxtLink>
         <span v-else class="text-[10px] text-base-texto-secundario">{{ studentStore.hasLoaded ? 'Al día. Nada que repasar hoy.' : 'Cargando…' }}</span>
@@ -75,7 +75,7 @@
               <span class="w-10 text-right text-[11px] font-bold text-base-texto-primario">{{ item.mastery }} %</span>
               <!-- Una acción solo donde hace falta: repasar lo que se olvida o seguir lo que no está dominado. -->
               <NuxtLink v-if="debeRepasar(item) || item.mastery < 85" :to="`/estudiante/unidad/${item.unitId}`"
-                class="borde-afordancia px-2.5 py-1 rounded text-[11px] font-semibold bg-base-blanco text-acento-ambar-fuerte hover:bg-acento-ambar/10 whitespace-nowrap min-h-[32px] inline-flex items-center">
+                class="borde-afordancia px-2.5 py-1 rounded text-[11px] font-semibold bg-base-blanco text-acento-ambar-fuerte hover:bg-acento-ambar/10 whitespace-nowrap min-h-[44px] inline-flex items-center">
                 {{ debeRepasar(item) ? 'Repasar' : 'Practicar' }}
               </NuxtLink>
               <span v-else class="w-[4.5rem]" aria-hidden="true"></span>
