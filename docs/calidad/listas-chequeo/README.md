@@ -28,21 +28,24 @@ todos responden la encuesta SUS. Un ítem cuenta como cumplido solo con el ✅ d
 | Fecha | Versión evaluada | Interfaz (Pressman) | Sistemas Tutores Inteligentes (Caro) | Carpeta |
 |---|---|---|---|---|
 | **04/10/2026** · antes | `main @ 7c9977b` (v1.1.0 + ajustes de UI/UX del 02 y 03/10), desplegada | **20 / 32 · 62,5 %** · Básico con observaciones | **14 / 24 · 58,3 %** · Insuficiente | [`2026-10-04_antes/`](2026-10-04_antes/) |
-| 06/10/2026 · después | v2.0.0, verificada por el equipo | — | — | `2026-10-06_v2.0.0/` |
+| **04/10/2026** · después | `main @ 4d41b8d` (v2.0.0 candidata), desplegada · **falta el visto bueno del equipo (05/10)** | **28 / 32 · 87,5 %** · Aceptable / Competente | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-04_despues/`](2026-10-04_despues/) |
+| 05/10/2026 · verificada | v2.0.0 (etiqueta), con los ✅ del equipo y el SUS | — | — | se completa en `2026-10-04_despues/` |
 
-### Antes (04/10/2026), por bloque
+### Antes y después (04/10/2026), por bloque
 
-| Lista | Bloque | Puntos |
-|---|---|---|
-| Interfaz | Cap. 12 · Experiencia de usuario (8 ítems) | 10 / 16 |
-| Interfaz | Cap. 13 · Movilidad (4 ítems) | 5 / 8 |
-| Interfaz | Cap. 14 · Patrones (4 ítems) | 5 / 8 |
-| Sistemas Tutores | Los 4 módulos canónicos | 6 / 8 |
-| Sistemas Tutores | Inteligencia del tutor en la interfaz | 5 / 10 |
-| Sistemas Tutores | Metacognición | 3 / 6 |
+| Lista | Bloque | Antes | Después |
+|---|---|---|---|
+| Interfaz | Cap. 12 · Experiencia de usuario (8 ítems) | 10 / 16 | 15 / 16 |
+| Interfaz | Cap. 13 · Movilidad (4 ítems) | 5 / 8 | 7 / 8 |
+| Interfaz | Cap. 14 · Patrones (4 ítems) | 5 / 8 | 6 / 8 |
+| Sistemas Tutores | Los 4 módulos canónicos | 6 / 8 | 8 / 8 |
+| Sistemas Tutores | Inteligencia del tutor en la interfaz | 5 / 10 | 10 / 10 |
+| Sistemas Tutores | Metacognición | 3 / 6 | 6 / 6 |
+
+Lo que falta en la interfaz: el SUS del equipo (UX-08, pasa a C el 05/10 → 29/32 · 90,6 %), el modo oscuro de la identidad visual de José (MOB-03) y dos arreglos internos sin efecto para el usuario (PAT-01 y PAT-04). En Tutores Inteligentes, el 100 % incluye cinco adaptaciones que cumplen la intención del criterio y no su ejemplo literal; se presentan al profesor con su respaldo ([`PLAN_DE_MEJORA.md`](PLAN_DE_MEJORA.md) §1).
 
 En la carpeta de cada fecha:
-- `CHECKLIST_INTERFAZ_<fecha>.docx` y `.md`;
+- `CHECKLIST_INTERFAZ_<fecha>.docx` y `.md` (en el «después», con el sufijo `_DESPUES` y la columna «Antes»);
 - `CHECKLIST_ITS_<fecha>.docx` y `.md`;
 - `capturas/`: computador `pc_*` y celular `cel_*`, de estudiante (`est`) y docente (`doc`);
 - `evidencia-automatica.json`: tamaños de los controles, desplazamiento horizontal y resultados de axe-core por pantalla.
@@ -56,11 +59,12 @@ En la carpeta de cada fecha:
    - navegación con el teclado;
    - modo oscuro del sistema;
    - conexión cortada;
-   - axe-core 4.10 con WCAG 2.1 AA.
+   - axe-core 4.10 con WCAG 2.1 AA (en el «después», también en el celular);
+   - Lighthouse 12 en el inicio de sesión (solo en el «después»).
 3. La valoración usa la escala del profesor: C = 2, CP = 1, NC = 0 y NA = excluido. Ante la duda se puso la nota más
    baja y se dijo por qué.
-4. Para el **después** se aplica la misma lista, con el mismo método, sobre la versión que tenga los ajustes, y se llena
-   la segunda fila de la tabla.
+4. Para el **después** se aplica la misma lista, con el mismo método, sobre la versión que tenga los ajustes. Después lo
+   verifica el equipo, cada ítem una persona distinta de quien lo hizo.
 
 La revisión se hizo con apoyo de Claude Code. Cada afirmación tiene su evidencia en el código, en una captura o en las
 mediciones de `evidencia-automatica.json`.

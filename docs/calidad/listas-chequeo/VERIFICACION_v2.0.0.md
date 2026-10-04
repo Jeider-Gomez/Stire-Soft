@@ -4,7 +4,7 @@
 > Cada integrante prueba **como usuario** los ítems que le tocan, en https://stire-soft.vercel.app, en computador y en
 > celular. **Fecha límite: lunes 05/10, 8:00 p. m.**
 > **Cómo marcar:** en la columna «Resultado» escribe ✅ (de acuerdo), ⚠️ (de acuerdo, con una observación) o ❌ (no se
-> cumple). Agrega una frase en «Observación» y, si algo falla, una captura en `docs/calidad/listas-chequeo/2026-10-06_v2.0.0/capturas-equipo/`.
+> cumple). Agrega una frase en «Observación» y, si algo falla, una captura en `docs/calidad/listas-chequeo/2026-10-04_despues/capturas-equipo/`.
 > Un ítem cuenta como cumplido **solo con tu ✅**. Jeider no verifica sus propios cambios.
 > Al terminar, responde la **encuesta SUS** (§5): son 2 minutos.
 

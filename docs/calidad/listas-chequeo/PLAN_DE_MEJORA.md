@@ -102,7 +102,8 @@ responden el **SUS** (10 preguntas, Brooke, 1996): es la evidencia de UX-08.
 | Fecha | Versión | Interfaz | Tutores | Verificado por el equipo | Carpeta |
 |---|---|---|---|---|---|
 | 04/10/2026 | v1.1.0 + ajustes (antes) | 20/32 · 62,5 % | 14/24 · 58,3 % | — (revisión inicial) | [`2026-10-04_antes/`](2026-10-04_antes/) |
-| 05–06/10/2026 | **v2.0.0 (después)** | — | — | pendiente | `2026-10-06_v2.0.0/` |
+| 04/10/2026 | v2.0.0 candidata (después), `main @ 4d41b8d` | 28/32 · 87,5 % | 24/24 · 100 % | pendiente (05/10) | [`2026-10-04_despues/`](2026-10-04_despues/) |
+| 05/10/2026 | **v2.0.0** (etiqueta) | 29/32 · 90,6 % con el SUS | 24/24 · 100 % | — | se completa en la misma carpeta |
 
 ## Referencias
 

@@ -1,0 +1,370 @@
+{
+  "publico": {
+    "pc_login": {
+      "titulo": "Iniciar sesión · STIRE-Soft",
+      "h1": "Iniciar sesión",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": false,
+      "controles": 6,
+      "menores44": 5,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "pc_register": {
+      "titulo": "Crear cuenta · STIRE-Soft",
+      "h1": "Crear cuenta",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": false,
+      "controles": 7,
+      "menores44": 6,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "pc_validacion_login": {
+      "bajoElCampo": "Revisa el correo: debe verse como nombre@dominio.com.",
+      "foco": "email",
+      "invalido": "true"
+    },
+    "cel_login": {
+      "titulo": "Iniciar sesión · STIRE-Soft",
+      "h1": "Iniciar sesión",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": false,
+      "controles": 6,
+      "menores44": 5,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "cel_register": {
+      "titulo": "Crear cuenta · STIRE-Soft",
+      "h1": "Crear cuenta",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": false,
+      "controles": 7,
+      "menores44": 5,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "cel_validacion_login": {
+      "bajoElCampo": "Revisa el correo: debe verse como nombre@dominio.com.",
+      "foco": "email",
+      "invalido": "true"
+    }
+  },
+  "estudiante_pc": {
+    "primerTab": "A «Saltar al contenido» visible=true",
+    "rachaInicio": "0 días",
+    "porQue": true,
+    "proximoModulo": null,
+    "modulosCerrados": 0,
+    "inicio": {
+      "titulo": "Inicio · STIRE-Soft",
+      "h1": "Estructura y navegación de un OVA",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 38,
+      "menores44": 3,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "unidad": {
+      "titulo": "Lección · STIRE-Soft",
+      "h1": "Estructura y navegación de un OVA",
+      "scrollHorizontal": false,
+      "migas": true,
+      "saltar": true,
+      "controles": 25,
+      "menores44": 2,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "ejercicio": {
+      "titulo": "Ejercicio · STIRE-Soft",
+      "h1": "Saludo personalizado",
+      "scrollHorizontal": false,
+      "migas": true,
+      "saltar": true,
+      "controles": 8,
+      "menores44": 0,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "progreso": {
+      "titulo": "Mi progreso · STIRE-Soft",
+      "h1": "Mi progreso",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 27,
+      "menores44": 8,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": [],
+      "rachaProgreso": "0",
+      "autorregulacion": "Mi autorregulación: cómo estoy estudiando\n\nTienes 6 repasos pendientes. Repasar justo cuando toca es lo que evita que olvides lo que ya aprendiste.\n\n¿En qué momento de hoy puedes dedicarles 10 minutos?",
+      "estados": [
+        "Algoritmos en la vida diaria Dominado Toca repasarla 95 % Repasar",
+        "Pseudocódigo y diagramas de flujo Dominado Toca repasarla 100 % Repasar",
+        "Variables y tipos de datos Dominado Toca repasarla 100 % Repasar",
+        "Operadores y expresiones Dominado Toca repasarla 100 % Repasar",
+        "Mi primera página HTML Dominado Toca repasarla 91 % Repasar",
+        "Estructura y navegación de un OVA Empezada 0 % Practicar"
+      ]
+    },
+    "repasos": {
+      "titulo": "Repasos · STIRE-Soft",
+      "h1": "Repasos de hoy",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 20,
+      "menores44": 8,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "clases": {
+      "titulo": "Mis clases · STIRE-Soft",
+      "h1": "Mis clases",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 20,
+      "menores44": 6,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "perfil": {
+      "titulo": "Mi perfil · STIRE-Soft",
+      "h1": "Mi perfil",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 25,
+      "menores44": 13,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "valorar": true,
+    "valorarEnviado": "Enviado. Gracias: así tu docente sabe qué explicar mejor.",
+    "algoritmo": {
+      "leccion": "/estudiante/unidad/37",
+      "diagrama": true,
+      "pasos": [
+        "1",
+        "Pregunta si condición:",
+        "1.a",
+        "Si sí:",
+        "1.a.1",
+        "(se ejecuta si la condición es verdadera)."
+      ],
+      "recordado": "Paso a paso"
+    },
+    "modoOscuroFondo": "rgb(247, 249, 252)"
+  },
+  "ejercicio": {
+    "migas": "Inicio Variables y tipos de datos Ejercicio · Básico",
+    "diagnostico": [
+      "Casi: cambia alguna mayúscula o minúscula. La salida debe ser exactamente igual."
+    ],
+    "estadoCaso": true,
+    "autoguardado": "Guardado a las 12:47 ✔",
+    "recuperadoAviso": true,
+    "recuperadoCodigo": true,
+    "dialogoPropio": {
+      "texto": "¿Volver a la plantilla? Se borra lo que escribiste en este ejercicio y vuelve el código inicial del docente. Cancelar Volver a la plantilla",
+      "foco": "Cancelar"
+    },
+    "plantillaRestaurada": true
+  },
+  "celular": {
+    "inicio": {
+      "titulo": "Inicio · STIRE-Soft",
+      "h1": "Estructura y navegación de un OVA",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 29,
+      "menores44": 1,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "unidad": {
+      "titulo": "Lección · STIRE-Soft",
+      "h1": "Estructura y navegación de un OVA",
+      "scrollHorizontal": false,
+      "migas": true,
+      "saltar": true,
+      "controles": 16,
+      "menores44": 0,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "ejercicio": {
+      "titulo": "Ejercicio · STIRE-Soft",
+      "h1": "Saludo personalizado",
+      "scrollHorizontal": false,
+      "migas": true,
+      "saltar": true,
+      "controles": 8,
+      "menores44": 0,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": [
+        {
+          "id": "scrollable-region-focusable",
+          "impacto": "serious",
+          "nodos": 1,
+          "ejemplos": [
+            "<div tabindex=\"-1\" class=\"cm-scroller\">"
+          ]
+        }
+      ]
+    },
+    "progreso": {
+      "titulo": "Mi progreso · STIRE-Soft",
+      "h1": "Mi progreso",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 18,
+      "menores44": 6,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "clases": {
+      "titulo": "Mis clases · STIRE-Soft",
+      "h1": "Mis clases",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 11,
+      "menores44": 3,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "botones": [
+      {
+        "texto": "Probar código",
+        "arriba": 784,
+        "alto": 48,
+        "pantalla": 844
+      },
+      {
+        "texto": "Entregar solución",
+        "arriba": 784,
+        "alto": 48,
+        "pantalla": 844
+      }
+    ],
+    "tutorNoTapa": true,
+    "horizontal": {
+      "titulo": "Ejercicio · STIRE-Soft",
+      "h1": "Saludo personalizado",
+      "scrollHorizontal": false,
+      "migas": true,
+      "saltar": true,
+      "controles": 8,
+      "menores44": 0,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0
+    },
+    "sinConexion": {
+      "aviso": "Sin conexión. Puedes seguir: tu código queda en este equipo y se enviará al volver la red.",
+      "estado": "Sin conexión: tu código queda en este equipo; reintentando…"
+    },
+    "alVolver": "Guardado a las 12:48 ✔",
+    "codigoClase": {
+      "valor": "ALGO-2034",
+      "autocap": "characters"
+    }
+  },
+  "docente": {
+    "pc_inicio": {
+      "titulo": "Mis clases · STIRE-Soft",
+      "h1": "Mis clases",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 32,
+      "menores44": 2,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "pc_clase": {
+      "titulo": "Hoy en la clase · STIRE-Soft",
+      "h1": "Hoy en tu clase",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 27,
+      "menores44": 10,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": [],
+      "valoraciones": "¿Les sirvieron las explicaciones?\n\nLo que respondieron tus estudiantes al final de cada lección, sin sus nombres.\n\nEstructura y navegación de un OVA\n 0 ·  1 · 0 % le sirvió\nEditar la lección\n«Prueba de la revisión del 04/10: el ejemplo del menú interno»"
+    },
+    "ajustes": {
+      "campo": true,
+      "valor": "50"
+    },
+    "cel_inicio": {
+      "titulo": "Mis clases · STIRE-Soft",
+      "h1": "Mis clases",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 27,
+      "menores44": 1,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": []
+    },
+    "cel_clase": {
+      "titulo": "Hoy en la clase · STIRE-Soft",
+      "h1": "Hoy en tu clase",
+      "scrollHorizontal": false,
+      "migas": false,
+      "saltar": true,
+      "controles": 22,
+      "menores44": 9,
+      "sinNombreAccesible": 0,
+      "emojisEnMain": 0,
+      "axe": [],
+      "valoraciones": "¿Les sirvieron las explicaciones?\n\nLo que respondieron tus estudiantes al final de cada lección, sin sus nombres.\n\nEstructura y navegación de un OVA\n 0 ·  1 · 0 % le sirvió\nEditar la lección\n«Prueba de la revisión del 04/10: el ejemplo del menú interno»"
+    }
+  },
+  "lighthouse": {
+    "mobile": {
+      "Performance": 79,
+      "Accessibility": 100,
+      "Best Practices": 100,
+      "SEO": 100
+    },
+    "desktop": {
+      "Performance": 92,
+      "Accessibility": 100,
+      "Best Practices": 100,
+      "SEO": 100
+    }
+  }
+}
