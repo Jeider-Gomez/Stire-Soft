@@ -59,12 +59,20 @@ contrastada.
   - **Computador:** botón «Tutor IA» en el encabezado. Bien.
   - **Celular:** solo un ícono morado con un punto, sin nombre. Dentro del ejercicio el encabezado se iba con el
     scroll y el Tutor desaparecía. Es el «a veces no se encuentra» que reportó el dueño.
-- **Decisión:** adaptar.
-  - **Computador:** queda en el encabezado, con texto, como Coursera y LeetCode.
-  - **Celular:** botón flotante «Tutor» abajo a la derecha, con texto, en la zona del pulgar. Se oculta con el
-    Tutor abierto y no se duplica en el encabezado.
-- **Estado:** hecho, `f785dd7`. Verificado en 390×844: visible arriba y abajo en inicio, lección, progreso y
-  ejercicio.
+- **Recomendación de José (S07-JO01):** «Cambiar la ventana o el acceso al tutor inteligente de posición hacia una
+  zona de la pantalla que resulte más natural y cómoda para la lectura e interacción constante del usuario». La
+  ventana se resolvió con P-UI-06; el acceso, con este patrón.
+- **Decisión:** adaptar con **un solo acceso**, el mismo en todas las pantallas.
+  - Botón flotante «Tutor», con texto, abajo a la derecha: la zona del pulgar en el celular y la que más se espera
+    para un chat en computador.
+  - Se oculta con el Tutor abierto.
+  - Se quitaron los botones del encabezado para que no haya dos accesos distintos.
+  - Coursera y LeetCode lo ponen en la barra superior. Se prefirió la esquina porque el dueño del proyecto y José
+    pidieron un acceso flotante, siempre en el mismo lugar, que no compita con «Probar» y «Entregar».
+- **Estado:**
+  - **Celular:** hecho en `f785dd7`.
+  - **Todas las pantallas:** hecho el 03/10 en el commit «lanzador único».
+  - **Verificado** en 390×844 y en computador.
 
 ### P-UI-05 · Las acciones principales del ejercicio no se pierden
 

@@ -41,15 +41,7 @@
 
       <!-- Acciones Principales (Zona D Integrada) -->
       <div class="flex items-center gap-2">
-        <!-- Tutor IA Trigger. En el celular el Tutor se abre con el lanzador flotante (LanzadorTutor.vue). -->
-        <button
-          @click="tutorStore.toggleDrawer()"
-          aria-label="Abrir el Tutor IA"
-          title="Tutor IA"
-          class="hidden sm:flex borde-afordancia px-2.5 py-1.5 rounded text-xs font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 items-center gap-1">
-          <Sparkles :size="14" aria-hidden="true" />
-          <span class="hidden md:inline">Tutor IA</span>
-        </button>
+        <!-- El Tutor se abre con el lanzador flotante de abajo a la derecha (LanzadorTutor.vue). -->
 
         <!-- Acción 1: «Probar» (solo código y HTML/CSS) -->
         <button
@@ -100,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, Cloud, Sparkles, Play, Send, Loader2 } from 'lucide-vue-next'
+import { ArrowLeft, Cloud, Play, Send, Loader2 } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
 

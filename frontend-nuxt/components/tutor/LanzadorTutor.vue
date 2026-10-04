@@ -1,13 +1,14 @@
 <template>
-  <!-- Lanzador del Tutor en el celular: abajo a la derecha, con su nombre y siempre a la vista (patrón P-UI-04 de
-       docs/investigacion/referentes/PATRONES_DE_INTERFAZ.md). En el encabezado del celular solo cabía un ícono sin texto
-       y en el ejercicio se iba con el scroll. Desde sm en adelante el Tutor se abre desde el encabezado. -->
+  <!-- Lanzador del Tutor: abajo a la derecha, con su nombre, en el mismo sitio en todas las pantallas y siempre a la
+       vista (P-UI-04 en docs/investigacion/referentes/PATRONES_DE_INTERFAZ.md). Recomendación de José: «cambiar la
+       ventana o el acceso al Tutor hacia una zona más natural y cómoda para la interacción constante». La ventana ya
+       es un panel al lado (P-UI-06); el acceso es este botón. Antes estaba en el encabezado: en el celular era un ícono
+       sin nombre y en el ejercicio se iba con el scroll. -->
   <button
     v-if="!tutorStore.isOpen"
     id="lanzador-tutor"
     type="button"
-    class="sm:hidden fixed right-4 z-40 inline-flex items-center gap-2 pl-3.5 pr-4 py-3 rounded-full bg-stire-purple text-white text-sm font-bold shadow-lg shadow-stire-purple/30 active:scale-95 transition-transform"
-    style="bottom: calc(1rem + env(safe-area-inset-bottom))"
+    class="lanzador-tutor fixed right-4 sm:right-6 z-40 inline-flex items-center gap-2 pl-3.5 pr-4 py-3 rounded-full bg-stire-purple text-white text-sm font-bold shadow-lg shadow-stire-purple/30 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-stire-purple/40 transition-all"
     aria-label="Abrir el Tutor IA"
     @click="tutorStore.openDrawer()">
     <Sparkles :size="18" aria-hidden="true" />
@@ -21,3 +22,12 @@ import { useTutorStore } from '~/stores/tutor'
 
 const tutorStore = useTutorStore()
 </script>
+
+<style scoped>
+.lanzador-tutor {
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+@media (min-width: 640px) {
+  .lanzador-tutor { bottom: 1.5rem; }
+}
+</style>

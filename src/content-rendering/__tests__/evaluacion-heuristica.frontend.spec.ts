@@ -59,8 +59,9 @@ describe('Evaluación heurística: hallazgos corregidos', () => {
   });
 
   it('el botón del tutor en la pantalla del ejercicio tiene nombre accesible', () => {
-    const layout = leer('layouts', 'workspace.vue');
-    expect(layout).toMatch(/@click="tutorStore\.toggleDrawer\(\)"\s*aria-label="Abrir el Tutor IA"/);
+    // Desde el 03/10 es el lanzador flotante, el mismo en todas las pantallas (P-UI-04).
+    expect(leer('layouts', 'workspace.vue')).toContain('<TutorLanzadorTutor />');
+    expect(leer('components', 'tutor', 'LanzadorTutor.vue')).toContain('aria-label="Abrir el Tutor IA"');
   });
 
   it('los porcentajes del docente se escriben enteros y con espacio («97 %», no «97.36%»)', () => {

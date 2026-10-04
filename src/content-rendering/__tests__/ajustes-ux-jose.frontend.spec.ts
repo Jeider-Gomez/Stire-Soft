@@ -286,13 +286,16 @@ describe('Patrones de interfaz tomados de los referentes (docs/investigacion/ref
     expect(leer('components', 'layout', 'HeaderNav.vue')).toMatch(/class="h-16 bg-white\/80 glass-header[^"]*sticky top-0/);
   });
 
-  it('P-UI-04: en el celular el Tutor se abre con un lanzador flotante con texto; el del encabezado es para sm en adelante', () => {
+  it('P-UI-04: el Tutor se abre con un único lanzador flotante con texto, abajo a la derecha, en todas las pantallas', () => {
     const lanzador = leer('components', 'tutor', 'LanzadorTutor.vue');
     expect(lanzador).toContain('v-if="!tutorStore.isOpen"');
-    expect(lanzador).toMatch(/class="sm:hidden fixed right-4/);
+    expect(lanzador).toMatch(/class="lanzador-tutor fixed right-4 sm:right-6/);
+    expect(lanzador).not.toContain('sm:hidden');
     expect(lanzador).toMatch(/<Sparkles[^>]*\/>\s*Tutor\s*<\/button>/);
     for (const layout of ['student.vue', 'workspace.vue']) expect(leer('layouts', layout)).toContain('<TutorLanzadorTutor />');
-    expect(leer('components', 'layout', 'HeaderNav.vue')).toMatch(/aria-label="Abrir el Tutor IA"\s*class="hidden sm:inline-flex/);
+    // un solo acceso: ni el encabezado general ni el del ejercicio tienen otro botón del Tutor
+    expect(leer('components', 'layout', 'HeaderNav.vue')).not.toContain('Abrir el Tutor IA');
+    expect(leer('layouts', 'workspace.vue')).not.toContain('tutorStore.toggleDrawer()');
   });
 
   it('P-UI-05: en el celular la barra del ejercicio (Probar, Entregar) queda fija arriba', () => {

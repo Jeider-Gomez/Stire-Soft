@@ -66,22 +66,8 @@
 
     <!-- ── DERECHA: Badge de rol + Avatar + Salir ── -->
     <div class="flex items-center gap-2 flex-shrink-0">
-      <!-- Botón Tutor IA (solo estudiante) -->
-      <!-- En el celular el Tutor se abre con el lanzador flotante de abajo (components/tutor/LanzadorTutor.vue). -->
-      <button
-        v-if="authStore.currentRole === 'estudiante'"
-        @click="tutorStore.toggleDrawer()"
-        aria-label="Abrir el Tutor IA"
-        class="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg
-               bg-stire-purple/10 text-stire-purple border border-stire-purple/25
-               hover:bg-stire-purple/15 hover:-translate-y-0.5 hover:shadow-md
-               active:scale-95 transition-all duration-200 text-xs font-semibold whitespace-nowrap"
-      >
-        <Sparkles :size="13" />
-        <span>Tutor IA</span>
-        <span class="pulse-dot ml-0.5" />
-      </button>
-
+      <!-- El Tutor se abre con el lanzador flotante de abajo a la derecha, igual en todas las pantallas
+           (components/tutor/LanzadorTutor.vue; recomendación de José, «reubicar el acceso al Tutor»). -->
       <!-- Badge de Rol -->
       <span :class="roleBadgeClass" class="hidden sm:inline-flex items-center gap-1.5">
         <span class="pulse-dot" v-if="authStore.currentRole === 'docente' || authStore.currentRole === 'administrador'" />
@@ -158,16 +144,14 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, Sparkles, LogOut, GraduationCap, UserCircle } from 'lucide-vue-next'
+import { Menu, LogOut, GraduationCap, UserCircle } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
-import { useTutorStore } from '~/stores/tutor'
 
 defineEmits(['toggle-sidebar'])
 
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
-const tutorStore = useTutorStore()
 
 const showUserMenu = ref(false)
 const avatarMenuRef = ref<HTMLElement | null>(null)

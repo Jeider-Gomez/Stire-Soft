@@ -218,7 +218,7 @@ real. No hace falta cubrir los 7.
 | Reubicar el Tutor | Se abre como un panel a la derecha que oscurece la pantalla: mientras se usa no se puede leer la lección. | **Se adopta** (`S08-J01`): en computador, panel lateral sin oscurecer que deja ver la lección; en celular sigue igual. |
 | Menú lateral retráctil | En celular ya se oculta; en computador ocupa siempre 260 px. | **Se adopta** (`S08-J01`): botón para dejarlo solo con íconos, recordado por usuario. |
 | Cajas de texto expandibles | 19 cajas de texto; se estiran desde la esquina, pero no crecen solas. | **Se adopta** (`S08-J01`): crecen solas mientras se escribe. |
-| Registro en dos columnas o en pasos | 8 campos, ya con partes en dos columnas, 490 px de ancho. | **En parte** (`S08-J01`): no se harán pasos (más clics, más abandono); lo obligatorio arriba y lo opcional agrupado debajo (idea de Jeider, 02/10), y el botón «Crear cuenta» visible sin bajar en 1366×768. |
+| Registro en dos columnas o en pasos | 8 campos, ya con partes en dos columnas, 490 px de ancho. | **En parte** (`S08-J01`): no se harán pasos (más clics, más abandono); lo obligatorio arriba y lo opcional agrupado debajo (idea de Jeider, 02/10), y el botón «Crear cuenta» visible sin bajar en 1366×768. *Actualización 03/10: se hizo en dos pasos (lo obligatorio primero; lo opcional en un paso aparte al que se llega con un botón), ver `S08-J01` en la bitácora 8.* |
 
 ### Julio Galvis
 

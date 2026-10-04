@@ -85,13 +85,19 @@ arriba (sin apagado automático durante la prueba), aprueba a los docentes y ati
     descripción larga no se llegaba al botón); aviso en rojo cuando el admin aún no cambia el rol a docente; botón del
     menú arriba y fijo; login que cabe en un portátil, con foco y mensaje de error útiles; el Tutor se ofrece cuando
     falla un caso de prueba o un intento (como hace Khan Academy con Khanmigo).
+  - Tercera ronda (03/10), con los referentes estudiados en `docs/investigacion/referentes/`: barra lateral fija al
+    bajar, «ocultar el menú» como un solo ícono, encabezado semitransparente, registro en dos pasos y **acceso al Tutor
+    con un botón flotante «Tutor» abajo a la derecha en todas las pantallas**, que completa la recomendación de José de
+    «cambiar la ventana o el acceso al Tutor» (la ventana ya era un panel al lado).
+  - Hallazgos de José sobre el chatbot (`HALLAZGOS.md`): la tarjeta «Practica esto» ahora se ve como botón y el saludo
+    dice qué hacer (tocar la tarjeta o escribir la duda).
   - Pendiente: la revisión visual de José (`S08-JO02`).
 - [ ] **S08-J02 · Hallazgos del QA de Jorge** *(de su reporte del 02/10)*
   - QA-06: el indicador del nivel de ayuda del Tutor (Pista, Pregunta guía, Dónde está el error) parece un grupo de
     botones; rediseñarlo para que se lea como indicador.
   - QA-07: «No se pudo autoguardar» aparece a ratos; buscar la causa y que reintente solo.
-  - Del reporte del Tutor de José (`HALLAZGOS.md`): las tarjetas de sugerencia necesitan más contraste para verse como
-    botones.
+  - ~~Del reporte del Tutor de José (`HALLAZGOS.md`): las tarjetas de sugerencia necesitan más contraste para verse
+    como botones.~~ Hecho el 03/10 (ver `S08-J01`).
 - [ ] **S08-J03 · Operar la prueba** *(el servidor está encendido 24/7 durante la prueba)*
   - Comprobar cada día que la app responde; aprobar a Pedro y a Julio como docentes.
   - Revisar las sugerencias cada día (ahora con pantallazo) y corregir en el día lo de gravedad 3.
