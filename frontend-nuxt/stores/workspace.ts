@@ -3,6 +3,7 @@ import type { TestCase, SubmissionResult, HtmlCssRunResult } from '~/types'
 import { useAuthStore } from './auth'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
+import { puedeAutoguardar, esperaReintento, textoAutoguardado, type EstadoAutoguardado } from '~/utils/autoguardado'
 
 export interface WorkspaceExercise {
   activityId: number
@@ -13,6 +14,8 @@ export interface WorkspaceExercise {
   learningUnitId: number
   difficulty: string
   maxAttempts: number
+  /** Límite real de la actividad (activity.attemptsAllowed); 0 = sin límite. maxAttempts es solo lo que se muestra. */
+  attemptsAllowed: number
   usedAttempts: number
   description: string
   initialCode: string
@@ -43,6 +46,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     learningUnitId: 0,
     difficulty: 'Básico',
     maxAttempts: 3,
+    attemptsAllowed: 3,
     usedAttempts: 0,
     description: 'Cargando enunciado desde la base de datos de STIRE...',
     initialCode: '// Cargando plantilla...\n',
@@ -74,20 +78,15 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const isSubmitting = ref(false)
   const isLoadingExercise = ref(false)
   // Estado REAL del autoguardado (antes era un texto fijo «sincronizado ✔» desde
-  // antes de escribir nada). Solo aplica a actividades de código.
-  const autosaveState = ref<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  // antes de escribir nada). Solo aplica a actividades de código. Textos y reglas en utils/autoguardado.ts.
+  const autosaveState = ref<EstadoAutoguardado>('idle')
   const autosavedAt = ref<string>('')
-  const lastAutosave = computed(() => {
-    switch (autosaveState.value) {
-      case 'saving': return 'Guardando cambios…'
-      case 'saved': return `Autoguardado a las ${autosavedAt.value} ✔`
-      case 'error': return 'No se pudo autoguardar'
-      default: return 'Sin cambios por guardar'
-    }
-  })
-  // Hay cambios que todavía no llegaron al servidor (guardando o con error)
-  const hasUnsavedChanges = computed(() => autosaveState.value === 'saving' || autosaveState.value === 'error')
+  const lastAutosave = computed(() => textoAutoguardado(autosaveState.value, autosavedAt.value))
+  // Hay cambios que todavía no llegaron al servidor (guardando, reintentando o con error)
+  const hasUnsavedChanges = computed(() => ['saving', 'retrying', 'error'].includes(autosaveState.value))
   let autosaveTimer: ReturnType<typeof setTimeout> | undefined
+  // Sube al entregar o cambiar de ejercicio: un guardado o reintento que ya estaba en camino se descarta.
+  let autosaveGeneracion = 0
   // Datos reales del ejercicio de código que muestra el panel «Enunciado»
   const hiddenTestCaseCount = ref(0)
   const timeLimitMs = ref<number | null>(null)
@@ -135,6 +134,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     isLoadingExercise.value = true
     loadError.value = null
     currentExercise.value = { ...currentExercise.value, activityId, questionType: '', title: 'Cargando ejercicio...', description: '' }
+    cancelarAutoguardado()
     currentSubmissionId.value = null
     submissionResult.value = null
     pendingAnswer.value = null
@@ -187,6 +187,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           learningUnitId: activity.learningUnitId,
           difficulty: activity.difficulty || 'Básico',
           maxAttempts: activity.attemptsAllowed || 3,
+          attemptsAllowed: Number(activity.attemptsAllowed ?? 0),
           usedAttempts: Number(activity.attemptsUsed ?? 0),
           description: activity.description || primaryQuestion.question || 'Sin enunciado disponible.',
           initialCode: starter,
@@ -419,6 +420,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       return
     }
 
+    // La entrega lleva el código actual: un autoguardado pendiente llegaría con el intento ya cerrado (QA-07).
+    cancelarAutoguardado()
     isSubmitting.value = true
     submissionResult.value = null
     consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Enviando solución formal para calificación (POST /submissions/:id/submit)...`)
@@ -487,16 +490,30 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
-  // Autosave: PUT /submissions/:id/autosave (aplica a coding y html_css). Con debounce.
+  // Autosave: PUT /submissions/:id/autosave (aplica a coding y html_css). Con debounce: se guarda 0,8 s después de
+  // la última tecla. Un fallo de red se reintenta solo (2, 5 y 10 s); con los intentos ya usados no se guarda.
   function triggerAutosave() {
     const qType = currentExercise.value.questionType
     if (qType !== 'coding' && qType !== 'html_css') return
-    autosaveState.value = 'saving'
     if (autosaveTimer) clearTimeout(autosaveTimer)
-    autosaveTimer = setTimeout(saveNow, 800)
+    const ex = currentExercise.value
+    if (!puedeAutoguardar({ hayIntentoAbierto: !!currentSubmissionId.value, usados: ex.usedAttempts, permitidos: ex.attemptsAllowed })) {
+      autosaveState.value = 'sin-intentos'
+      return
+    }
+    autosaveState.value = 'saving'
+    const generacion = autosaveGeneracion
+    autosaveTimer = setTimeout(() => saveNow(generacion, 0), 800)
   }
 
-  async function saveNow() {
+  function cancelarAutoguardado() {
+    if (autosaveTimer) clearTimeout(autosaveTimer)
+    autosaveTimer = undefined
+    autosaveGeneracion++
+    autosaveState.value = 'idle'
+  }
+
+  async function saveNow(generacion: number, intento: number) {
     try {
       const subId = await ensureActiveSubmission()
       const qType = currentExercise.value.questionType
@@ -512,11 +529,20 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           }
         ]
       })
+      if (generacion !== autosaveGeneracion) return
       autosavedAt.value = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       autosaveState.value = 'saved'
-    } catch (err: any) {
-      autosaveState.value = 'error'
-      console.warn('[STIRE Autosave] No se pudo autoguardar:', err?.message)
+    } catch (err: unknown) {
+      if (generacion !== autosaveGeneracion) return
+      const e = err as { response?: { status?: number }; statusCode?: number; message?: string }
+      const espera = esperaReintento(intento, e?.response?.status ?? e?.statusCode)
+      if (espera === null) {
+        autosaveState.value = 'error'
+        console.warn('[STIRE Autosave] No se pudo autoguardar:', e?.message)
+        return
+      }
+      autosaveState.value = 'retrying'
+      autosaveTimer = setTimeout(() => saveNow(generacion, intento + 1), espera)
     }
   }
 

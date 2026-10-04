@@ -78,28 +78,26 @@
           </div>
         </div>
 
-        <!-- Indicador de Nivel de Guía real del backend (§18.4) — oculto si guidanceLevel es null -->
+        <!-- Indicador de Nivel de Guía real del backend (§18.4) — oculto si guidanceLevel es null. Es texto, no botones:
+             con tres etiquetas con borde Jorge las tomó por botones que no hacían nada (QA-06, 02/10). -->
         <div
           v-if="tutorStore.guidanceLevel !== null"
-          class="px-4 py-2 bg-stire-teal/10 border-b border-stire-teal/25 flex items-center justify-between text-xs"
+          class="px-4 py-1.5 bg-stire-teal/10 border-b border-stire-teal/25 flex items-center gap-2 text-[11px]"
           role="status"
           :aria-label="`Nivel de ayuda actual: ${tutorStore.guidanceLevel} de 3 — ${guidanceLevelLabel}`"
         >
-          <span class="text-acento-ambar-fuerte font-medium">Ayuda:</span>
-          <div class="flex items-center gap-1" aria-hidden="true">
+          <span class="flex items-center gap-0.5" aria-hidden="true">
             <span
-              class="px-2 py-0.5 rounded text-[10px] font-semibold"
-              :class="tutorStore.guidanceLevel === 1 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'"
-            >Pista</span>
-            <span
-              class="px-2 py-0.5 rounded text-[10px] font-semibold"
-              :class="tutorStore.guidanceLevel === 2 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'"
-            >Pregunta guía</span>
-            <span
-              class="px-2 py-0.5 rounded text-[10px] font-semibold"
-              :class="tutorStore.guidanceLevel === 3 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-blanco text-base-texto-secundario border border-base-borde-sutil'"
-            >Dónde está el error</span>
-          </div>
+              v-for="n in 3"
+              :key="n"
+              class="w-1.5 h-1.5 rounded-full"
+              :class="n <= tutorStore.guidanceLevel ? 'bg-acento-ambar-fuerte' : 'bg-base-borde-sutil'"
+            />
+          </span>
+          <span class="text-base-texto-primario" aria-hidden="true">
+            Nivel de ayuda: <strong class="font-semibold">{{ guidanceLevelLabel }}</strong>
+            <span class="text-base-texto-secundario"> · sube si sigues fallando el ejercicio</span>
+          </span>
         </div>
         <!-- En un refuerzo la ayuda empieza un nivel más arriba (docs/DISENO_INTERVENCION_DOCENTE.md §10.4): se le dice
              al estudiante por qué, para que no lo tome como que el Tutor «se rindió». -->
@@ -430,9 +428,9 @@ const thinkingText = computed(() => {
 // ─── Texto accesible del nivel de guía ──────────────────────────────────────
 const guidanceLevelLabel = computed(() => {
   const labels: Record<number, string> = {
-    1: 'pista conceptual',
+    1: 'pista',
     2: 'pregunta guía',
-    3: 'localizar la falla'
+    3: 'dónde está el error'
   }
   return labels[tutorStore.guidanceLevel ?? 0] || ''
 })
