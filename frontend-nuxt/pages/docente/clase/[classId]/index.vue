@@ -76,7 +76,7 @@
 
           <div v-else class="flex flex-wrap gap-2 pt-1">
             <NuxtLink v-for="(a, i) in p.acciones" :key="a.to + a.texto" :to="a.to"
-              class="px-3.5 py-2 rounded-md text-xs inline-flex items-center gap-1.5"
+              class="min-h-[44px] sm:min-h-0 px-3.5 py-2 rounded-md text-xs inline-flex items-center gap-1.5"
               :class="i === 0 ? 'bg-acento-ambar-fuerte text-base-blanco font-bold' : 'borde-afordancia font-semibold text-base-texto-primario'">
               {{ a.texto }}
             </NuxtLink>

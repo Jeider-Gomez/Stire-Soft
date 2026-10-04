@@ -395,7 +395,7 @@
                   type="button"
                   aria-label="Cerrar"
                   @click="isModalOpen = false"
-                  class="p-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                  class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
                 >
                   <X :size="16" aria-hidden="true" />
                 </button>
@@ -446,7 +446,7 @@
                     <button
                       type="button"
                       @click="generateRandomCode"
-                      class="text-[11px] text-stire-blue hover:underline font-medium transition-colors"
+                      class="min-h-[44px] sm:min-h-0 text-[11px] text-stire-blue hover:underline font-medium transition-colors"
                     >
                       Generar sugerido
                     </button>
@@ -491,10 +491,11 @@
                 <!-- Toggle aprobación -->
                 <div class="p-4 bg-stire-canvas rounded-xl border border-slate-200 flex items-center justify-between gap-4">
                   <div>
-                    <p class="text-xs font-semibold text-slate-800">Requiere aprobación</p>
+                    <label for="new-class-aprobacion" class="text-xs font-semibold text-slate-800">Requiere aprobación</label>
                     <p class="text-[11px] text-slate-500 mt-0.5">El docente aprueba manualmente cada ingreso.</p>
                   </div>
                   <input
+                    id="new-class-aprobacion"
                     type="checkbox"
                     v-model="newClass.requiresApproval"
                     class="w-4 h-4 rounded cursor-pointer accent-stire-blue"
@@ -521,7 +522,7 @@
                   <button
                     type="submit"
                     :disabled="isSubmitting"
-                    class="btn-stire-primary disabled:opacity-50"
+                    class="btn-stire-primary min-h-[44px] disabled:opacity-50"
                   >
                     <span v-if="isSubmitting" class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <Plus v-else :size="14" />

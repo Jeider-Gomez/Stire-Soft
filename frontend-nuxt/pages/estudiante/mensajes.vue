@@ -21,8 +21,8 @@
 
       <button
         @click="openNewMessageModal"
-        class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors shadow-sm self-start sm:self-auto cursor-pointer flex items-center gap-1.5">
-        <span>✉️</span>
+        class="min-h-[44px] sm:min-h-0 px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors shadow-sm self-start sm:self-auto cursor-pointer flex items-center gap-1.5">
+        <Mail :size="14" aria-hidden="true" />
         <span>Redactar mensaje</span>
       </button>
     </header>
@@ -39,7 +39,7 @@
     <div class="flex items-center gap-2 border-b border-base-borde-sutil pb-1 text-xs">
       <button
         @click="activeTab = 'inbox'"
-        class="px-3 py-1.5 rounded-t font-semibold transition-colors flex items-center gap-1.5"
+        class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-t font-semibold transition-colors flex items-center gap-1.5"
         :class="activeTab === 'inbox'
           ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold bg-base-blanco'
           : 'text-base-texto-secundario hover:text-base-texto-primario'">
@@ -51,7 +51,7 @@
 
       <button
         @click="activeTab = 'sent'"
-        class="px-3 py-1.5 rounded-t font-semibold transition-colors flex items-center gap-1.5"
+        class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-t font-semibold transition-colors flex items-center gap-1.5"
         :class="activeTab === 'sent'
           ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold bg-base-blanco'
           : 'text-base-texto-secundario hover:text-base-texto-primario'">
@@ -144,7 +144,7 @@
       <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-xs max-h-[90dvh] overflow-y-auto">
         <div class="flex items-center justify-between pb-2 border-b border-base-borde-sutil">
           <h3 id="compose-modal-title" class="font-bold text-base-texto-primario flex items-center gap-1.5">
-            <span>✉️</span>
+            <Mail :size="14" aria-hidden="true" />
             <span>Escribir a un docente</span>
           </h3>
           <button
@@ -223,7 +223,7 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2, MailOpen, TriangleAlert } from 'lucide-vue-next'
+import { Loader2, Mail, MailOpen, TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 const { messageOf } = useApiErrorMessage()
 

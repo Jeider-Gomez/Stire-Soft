@@ -120,7 +120,7 @@
           </p>
           <!-- META-03 (transparencia y agencia): cómo elige STIRE y que el estudiante puede elegir otra cosa -->
           <details class="text-[11px] text-slate-600 group">
-            <summary class="inline-flex items-center gap-1 min-h-[32px] cursor-pointer font-semibold text-acento-ambar-fuerte hover:underline">
+            <summary class="inline-flex items-center gap-1 min-h-[44px] cursor-pointer font-semibold text-acento-ambar-fuerte hover:underline">
               <CircleHelp :size="12" aria-hidden="true" /> ¿Por qué veo esto?
             </summary>
             <div class="mt-1 p-3 rounded-lg bg-base-bg-secundario/60 border border-base-borde-sutil space-y-1 leading-relaxed text-slate-700">

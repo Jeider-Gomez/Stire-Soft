@@ -10,7 +10,7 @@
         <span class="text-xs min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="enrollment.student?.fullName" :foto-id="enrollment.student?.fotoId" decorativo /><span class="truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span></span>
         <div class="flex gap-2 shrink-0">
           <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-exito hover:bg-semantico-exito/10" @click="change(enrollment.id, 'approve')">Aprobar</button>
-          <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10" @click="change(enrollment.id, 'reject')">Rechazar</button>
+          <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10" @click="change(enrollment.id, 'reject')">Rechazar</button>
         </div>
       </div>
     </section>
@@ -20,7 +20,7 @@
       <p v-if="active.length === 0" class="text-xs text-base-texto-secundario">Todavía no hay estudiantes. Comparte el código de la clase.</p>
       <div v-for="enrollment in active" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
         <span class="text-xs min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="enrollment.student?.fullName" :foto-id="enrollment.student?.fotoId" decorativo /><span class="truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span></span>
-        <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10 shrink-0" @click="change(enrollment.id, 'remove')">Remover</button>
+        <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10 shrink-0" @click="change(enrollment.id, 'remove')">Remover</button>
       </div>
     </section>
 
@@ -30,7 +30,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
         <div>
           <p class="text-xs font-semibold text-base-texto-primario">Exigir aprobación para matricularse</p>
-          <p class="text-[11px] text-base-texto-secundario mt-0.5">
+          <p class="text-[11px] text-slate-600 mt-0.5">
             Si está activo, un estudiante que ingrese el código queda en «pendiente» hasta que lo apruebes aquí.
           </p>
         </div>
@@ -38,10 +38,10 @@
           @click="toggleRequiresApproval"
           :disabled="isSavingApproval"
           :aria-pressed="!!classInfo?.requiresApproval"
-          class="px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
+          class="min-h-[44px] px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
           :class="classInfo?.requiresApproval
             ? 'bg-semantico-exito/15 text-semantico-exito'
-            : 'bg-base-borde-sutil text-base-texto-secundario'"
+            : 'bg-base-borde-sutil text-slate-700'"
         >
           <Check v-if="classInfo?.requiresApproval" :size="12" aria-hidden="true" />
           {{ classInfo?.requiresApproval ? 'Activado' : 'Desactivado' }}
@@ -83,7 +83,7 @@
         </div>
         <button type="button" :disabled="guardandoLogros" :aria-pressed="logrosActivos"
           class="min-h-[44px] px-3 rounded-md text-xs font-bold flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
-          :class="logrosActivos ? 'bg-semantico-exito/15 text-semantico-exito' : 'bg-base-borde-sutil text-base-texto-secundario'"
+          :class="logrosActivos ? 'bg-semantico-exito/15 text-semantico-exito' : 'bg-base-borde-sutil text-slate-700'"
           @click="guardarLogros({ logrosActivos: !logrosActivos })">
           <Check v-if="logrosActivos" :size="12" aria-hidden="true" />
           {{ logrosActivos ? 'Activados' : 'Desactivados' }}
@@ -118,7 +118,7 @@
           <input v-model="alcanceElegido" type="radio" name="alcance-plantilla" :value="o.valor" :disabled="!!o.motivoNoDisponible" class="mt-0.5" />
           <span class="text-xs">
             <span class="font-semibold text-base-texto-primario">{{ o.titulo }}</span>
-            <span class="block text-[11px] text-base-texto-secundario">{{ o.motivoNoDisponible || o.ayuda }}</span>
+            <span class="block text-[11px] text-slate-600">{{ o.motivoNoDisponible || o.ayuda }}</span>
           </span>
         </label>
       </div>

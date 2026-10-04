@@ -77,7 +77,7 @@
 
             <NuxtLink
               :to="`/estudiante/unidad/${item.learningUnitId}`"
-              class="px-4 py-2 rounded-md font-bold text-xs transition-colors shadow-sm inline-block text-center"
+              class="min-h-[44px] px-4 py-2 rounded-md font-bold text-xs transition-colors shadow-sm inline-flex items-center justify-center text-center"
               :class="item.urgency === 'critico'
                 ? 'bg-semantico-falla hover:opacity-90 text-base-blanco'
                 : 'bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco'">

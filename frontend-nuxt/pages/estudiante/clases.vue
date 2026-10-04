@@ -20,8 +20,8 @@
       <div class="flex items-center gap-2">
         <NuxtLink
           to="/estudiante"
-          class="px-3.5 py-1.5 rounded-md border border-base-borde-fuerte text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario transition-colors">
-          ← Volver al inicio
+          class="min-h-[44px] sm:min-h-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border border-base-borde-fuerte text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario transition-colors">
+          <ArrowLeft :size="14" aria-hidden="true" /> Volver al inicio
         </NuxtLink>
       </div>
     </header>
@@ -83,8 +83,8 @@
         <button
           @click="fetchEnrollments"
           :disabled="isLoading"
-          class="text-xs text-acento-ambar-fuerte hover:underline font-semibold flex items-center gap-1">
-          <span>↻</span> Actualizar lista
+          class="min-h-[44px] sm:min-h-0 text-xs text-acento-ambar-fuerte hover:underline font-semibold flex items-center gap-1">
+          <RefreshCw :size="13" aria-hidden="true" /> Actualizar lista
         </button>
       </div>
 
@@ -140,7 +140,7 @@
 
             <button
               @click="selectActiveClass(item)"
-              class="px-3.5 py-1.5 rounded-md font-bold text-xs transition-colors"
+              class="min-h-[44px] sm:min-h-0 px-3.5 py-1.5 rounded-md font-bold text-xs transition-colors"
               :class="isActiveClass(item.class?.id) ? 'bg-base-bg-secundario text-base-texto-primario hover:bg-base-borde-fuerte' : 'bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco shadow-sm'">
               {{ isActiveClass(item.class?.id) ? 'Ver contenido' : 'Cambiar a esta clase' }}
             </button>
@@ -154,7 +154,7 @@
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
 import { useStudentStore } from '~/stores/student'
-import { BookOpen, GraduationCap, KeyRound, Loader2, UserRound } from 'lucide-vue-next'
+import { ArrowLeft, BookOpen, GraduationCap, KeyRound, Loader2, RefreshCw, UserRound } from 'lucide-vue-next'
 import { normalizarCodigo, codigoMientrasEscribe } from '~/utils/codigoClase'
 const { messageOf } = useApiErrorMessage()
 

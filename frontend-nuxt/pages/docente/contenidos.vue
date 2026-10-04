@@ -121,7 +121,7 @@
               <h2 class="text-xs font-bold text-base-texto-primario">
                 {{ sec.title }}
               </h2>
-              <p v-if="sec.description" class="text-[11px] text-base-texto-secundario">
+              <p v-if="sec.description" class="text-[11px] text-slate-600">
                 {{ sec.description }}
               </p>
             </div>
@@ -135,9 +135,9 @@
               @click="toggleSectionPublish(sec)"
               class="px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
               :class="sec.isPublished
-                ? 'bg-semantico-pasa/10 text-semantico-pasa border-semantico-pasa/40 hover:bg-semantico-pasa/25'
+                ? 'bg-semantico-pasa/10 text-emerald-800 border-semantico-pasa/40 hover:bg-semantico-pasa/25'
                 : 'bg-base-blanco text-base-texto-secundario border-base-borde-fuerte hover:text-base-texto-primario'">
-              {{ sec.isPublished ? 'Publicado' : '○ Borrador' }}
+              {{ sec.isPublished ? 'Publicado' : 'Borrador' }}
             </button>
             <button
               @click="openNewTopicModal(sec)"

@@ -8,11 +8,11 @@
     <label :class="claseOpcion(modelValue === null)">
       <input type="radio" :name="nombre" :checked="modelValue === null" class="sr-only" @change="emit('update:modelValue', null)" />
       <span class="text-xs font-semibold text-base-texto-primario">Empezar vacía</span>
-      <span class="text-[11px] text-base-texto-secundario">Creas los módulos y lecciones tú.</span>
+      <span class="text-[11px] text-slate-600">Creas los módulos y lecciones tú.</span>
     </label>
 
     <template v-if="recomendadas.length">
-      <p class="pt-1 text-[11px] font-bold uppercase tracking-wide text-base-texto-secundario">
+      <p class="pt-1 text-[11px] font-bold uppercase tracking-wide text-slate-600">
         {{ asignaturaNombre ? `Recomendadas para ${asignaturaNombre}` : 'Plantillas de otros docentes' }}
       </p>
       <label v-for="p in recomendadas" :key="p.classId" :class="claseOpcion(modelValue === p.classId)">
@@ -21,8 +21,8 @@
           <span class="text-xs font-semibold text-base-texto-primario">{{ p.enfoque || p.nombre }}</span>
           <span v-if="p.cercania === 0" class="shrink-0 text-[10px] font-bold text-semantico-exito">Misma asignatura</span>
         </span>
-        <span class="text-[11px] text-base-texto-secundario">{{ p.docente }}<template v-if="p.asignatura && p.cercania !== 0"> · {{ p.asignatura.nombre }}</template></span>
-        <span class="text-[11px] text-base-texto-secundario">{{ senalesDePlantilla(p).join(' · ') }}</span>
+        <span class="text-[11px] text-slate-600">{{ p.docente }}<template v-if="p.asignatura && p.cercania !== 0"> · {{ p.asignatura.nombre }}</template></span>
+        <span class="text-[11px] text-slate-600">{{ senalesDePlantilla(p).join(' · ') }}</span>
       </label>
     </template>
 
@@ -31,17 +31,17 @@
     </button>
     <div v-if="verMas && resto.length" class="space-y-3">
       <div v-for="g in agruparPorAsignatura(resto)" :key="g.clave" class="space-y-1.5">
-        <p class="text-[11px] font-bold text-base-texto-primario">{{ g.titulo }} <span class="font-normal text-base-texto-secundario">· {{ cuantosEnfoques(g) }}<template v-if="g.subtitulo"> · {{ g.subtitulo }}</template></span></p>
+        <p class="text-[11px] font-bold text-base-texto-primario">{{ g.titulo }} <span class="font-normal text-slate-600">· {{ cuantosEnfoques(g) }}<template v-if="g.subtitulo"> · {{ g.subtitulo }}</template></span></p>
         <label v-for="p in g.plantillas" :key="p.classId" :class="claseOpcion(modelValue === p.classId)">
           <input type="radio" :name="nombre" :checked="modelValue === p.classId" class="sr-only" @change="emit('update:modelValue', p.classId)" />
-          <span class="text-xs font-semibold text-base-texto-primario">{{ p.enfoque || p.nombre }} <span class="font-normal text-base-texto-secundario">· {{ p.docente }}</span></span>
-          <span class="text-[11px] text-base-texto-secundario">{{ senalesDePlantilla(p).join(' · ') }}</span>
+          <span class="text-xs font-semibold text-base-texto-primario">{{ p.enfoque || p.nombre }} <span class="font-normal text-slate-600">· {{ p.docente }}</span></span>
+          <span class="text-[11px] text-slate-600">{{ senalesDePlantilla(p).join(' · ') }}</span>
         </label>
       </div>
     </div>
 
     <template v-if="misClases.length">
-      <p class="pt-1 text-[11px] font-bold uppercase tracking-wide text-base-texto-secundario">De mis clases</p>
+      <p class="pt-1 text-[11px] font-bold uppercase tracking-wide text-slate-600">De mis clases</p>
       <label v-for="c in misClases" :key="`m${c.id}`" :class="claseOpcion(modelValue === c.id)">
         <input type="radio" :name="nombre" :checked="modelValue === c.id" class="sr-only" @change="emit('update:modelValue', c.id)" />
         <span class="text-xs font-semibold text-base-texto-primario">{{ c.name }}</span>

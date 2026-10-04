@@ -40,7 +40,7 @@
           type="text"
           maxlength="120"
           placeholder="Tu nombre completo"
-          class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
+          class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
         />
       </div>
 
@@ -54,7 +54,7 @@
           :value="authStore.user?.email || ''"
           type="email"
           readonly
-          class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-bg-secundario text-slate-600 outline-none cursor-not-allowed"
+          class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-bg-secundario text-slate-600 outline-none cursor-not-allowed"
         />
       </div>
 
@@ -68,7 +68,7 @@
           :value="roleLabel"
           type="text"
           readonly
-          class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-bg-secundario text-slate-600 outline-none cursor-not-allowed"
+          class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-bg-secundario text-slate-600 outline-none cursor-not-allowed"
         />
       </div>
 
@@ -79,7 +79,7 @@
           type="button"
           :disabled="!nameChanged || isSavingName"
           @click="saveName"
-          class="px-4 py-2 rounded-md text-xs font-bold bg-acento-ambar text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-acento-ambar-fuerte"
+          class="min-h-[44px] px-4 py-2 rounded-md text-xs font-bold bg-acento-ambar text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-acento-ambar-fuerte"
         >
           {{ isSavingName ? 'Guardando...' : 'Guardar nombre' }}
         </button>
@@ -105,7 +105,7 @@
             :type="showCurrentPwd ? 'text' : 'password'"
             autocomplete="current-password"
             placeholder="Tu contraseña actual"
-            class="w-full px-3 py-2 pr-10 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
+            class="w-full min-h-[44px] px-3 py-2 pr-10 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
           />
           <button
             type="button"
@@ -130,7 +130,7 @@
             :type="showNewPwd ? 'text' : 'password'"
             autocomplete="new-password"
             placeholder="Mínimo 6 caracteres, mayúscula, minúscula y número o símbolo"
-            class="w-full px-3 py-2 pr-10 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
+            class="w-full min-h-[44px] px-3 py-2 pr-10 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
           />
           <button
             type="button"
@@ -155,7 +155,7 @@
             :type="showConfirmPwd ? 'text' : 'password'"
             autocomplete="new-password"
             placeholder="Repite la nueva contraseña"
-            class="w-full px-3 py-2 pr-10 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
+            class="w-full min-h-[44px] px-3 py-2 pr-10 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
           />
           <button
             type="button"
@@ -176,7 +176,7 @@
           type="button"
           :disabled="isSavingPwd"
           @click="savePassword"
-          class="px-4 py-2 rounded-md text-xs font-bold bg-acento-ambar text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-acento-ambar-fuerte"
+          class="min-h-[44px] px-4 py-2 rounded-md text-xs font-bold bg-acento-ambar text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-acento-ambar-fuerte"
         >
           {{ isSavingPwd ? 'Guardando...' : 'Cambiar contraseña' }}
         </button>

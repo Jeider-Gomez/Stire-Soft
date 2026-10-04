@@ -55,7 +55,8 @@ describe('UX-02 · confirmar con un diálogo propio, no con window.confirm()', (
 });
 
 describe('UX-04 · consistencia: íconos de una sola familia y títulos en estilo de oración', () => {
-  const EMOJI = /[\u{1F300}-\u{1FAFF}✅❌⚠✔⏳ℹ⚙⬆⬇✏↩]/u;
+  // ✉ ↻ ○ ←: la revisión de seguimiento (04/10) los encontró en Mensajes, Mis clases y Contenidos.
+  const EMOJI = /[\u{1F300}-\u{1FAFF}✅❌⚠✔⏳ℹ⚙⬆⬇✏↩✉↻○←]/u;
 
   it('ninguna plantilla usa emojis como íconos (salvo los símbolos del registro de consola del ejercicio)', () => {
     const con = PANTALLAS.flatMap((f) =>
