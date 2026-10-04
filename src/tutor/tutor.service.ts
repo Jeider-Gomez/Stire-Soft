@@ -64,6 +64,26 @@ const SUGGESTION_CLOSERS = ['¿Le damos con', '¿Practicamos', '¿Te animas con'
 export const CIERRE_CON_SUGERENCIA = 'Toca la tarjeta de abajo para ir al ejercicio, o escríbeme tu duda cuando quieras.';
 export const CIERRE_SIN_SUGERENCIA = 'Escríbeme tu duda abajo: puede ser sobre un ejercicio, tu código o un tema de la lección.';
 
+/**
+ * Saludo cuando no hay un ejercicio que sugerir. Antes decía siempre «Vas al día con tus repasos y tu dominio está en
+ * buen nivel en todas tus unidades», también con repasos vencidos (si ya hizo todas las actividades de esa lección no
+ * hay «siguiente actividad» que sugerir) y con un estudiante que no ha empezado nada (03/10, la franja del Tutor decía
+ * «6 repasos vencidos» justo encima). Solo afirma lo que sabe.
+ */
+export function saludoSinSugerencia(
+  saludo: string,
+  repasos: { overdueCount: number; oldest: { learningUnitTitle?: string | null } | null },
+): string {
+  if (repasos.overdueCount > 0) {
+    const n = repasos.overdueCount;
+    const cuales = n === 1 ? 'un repaso pendiente' : `${n} repasos pendientes`;
+    const titulo = repasos.oldest?.learningUnitTitle;
+    const masAtrasado = titulo ? (n === 1 ? `: "${titulo}"` : `; el más atrasado es "${titulo}"`) : '';
+    return `${saludo} Tienes ${cuales}${masAtrasado}. Lo encuentras en «Repasos», en el menú. ${CIERRE_SIN_SUGERENCIA}`;
+  }
+  return `${saludo} Vas al día con tus repasos. ${CIERRE_SIN_SUGERENCIA}`;
+}
+
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 const GEMINI_TIMEOUT_MS = 15000;
 const HISTORY_WINDOW = 6;
@@ -313,7 +333,7 @@ export class TutorService {
 
     const message = suggestedActivity
       ? `${timeOfDayGreeting} ${GREETING_PREFIXES[variant]} ${trasComa(suggestedActivity.reasonMessage)} ${SUGGESTION_CLOSERS[variant]} "${suggestedActivity.activityTitle}"? ${CIERRE_CON_SUGERENCIA}`
-      : `${timeOfDayGreeting} Vas al día con tus repasos y tu dominio está en buen nivel en todas tus unidades. ${CIERRE_SIN_SUGERENCIA}`;
+      : saludoSinSugerencia(timeOfDayGreeting, await this.recommendationService.summarizeDueReviews(studentId));
 
     // Si lo último de la conversación ya es un saludo (abrió el Tutor, no escribió nada y volvió a entrar), se cambia
     // por el nuevo en vez de sumar otro: el historial mostraba tres saludos seguidos (02/10).

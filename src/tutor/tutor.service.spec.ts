@@ -1,5 +1,5 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { CIERRE_CON_SUGERENCIA, CIERRE_SIN_SUGERENCIA, TutorService, esSaludo, saludoSegunHora, trasComa } from './tutor.service';
+import { CIERRE_CON_SUGERENCIA, CIERRE_SIN_SUGERENCIA, TutorService, saludoSinSugerencia, esSaludo, saludoSegunHora, trasComa } from './tutor.service';
 
 const STUDENT: any = { id: 1, role: 'estudiante' };
 
@@ -496,5 +496,21 @@ describe('Saludo del Tutor: dice qué hacer', () => {
     expect(CIERRE_CON_SUGERENCIA).toMatch(/Toca la tarjeta/);
     expect(CIERRE_CON_SUGERENCIA).toMatch(/escríbeme tu duda/);
     expect(CIERRE_SIN_SUGERENCIA).toMatch(/^Escríbeme tu duda abajo/);
+  });
+});
+
+// 03/10: el saludo decía «Vas al día con tus repasos» con 6 repasos vencidos en la franja de arriba.
+describe('Saludo sin ejercicio que sugerir: solo afirma lo que sabe', () => {
+  it('con repasos vencidos los nombra, con el más atrasado', () => {
+    const m = saludoSinSugerencia('¡Buenas noches!', { overdueCount: 6, oldest: { learningUnitTitle: 'Algoritmos en la vida diaria' } });
+    expect(m).toBe(`¡Buenas noches! Tienes 6 repasos pendientes; el más atrasado es "Algoritmos en la vida diaria". Lo encuentras en «Repasos», en el menú. ${CIERRE_SIN_SUGERENCIA}`);
+    expect(m).not.toContain('Vas al día');
+    expect(saludoSinSugerencia('¡Buenos días!', { overdueCount: 1, oldest: { learningUnitTitle: 'Ciclos' } })).toContain('Tienes un repaso pendiente: "Ciclos".');
+  });
+
+  it('sin repasos vencidos dice que va al día, sin afirmar nada sobre su dominio', () => {
+    const m = saludoSinSugerencia('¡Buenas tardes!', { overdueCount: 0, oldest: null });
+    expect(m).toBe(`¡Buenas tardes! Vas al día con tus repasos. ${CIERRE_SIN_SUGERENCIA}`);
+    expect(m).not.toContain('dominio');
   });
 });
