@@ -33,7 +33,7 @@
             STIRE <span class="text-stire-blue">Soft</span>
           </span>
           <p class="text-[10px] text-slate-500 font-interfaz tracking-wide leading-tight mt-0.5">
-            Unicórdoba · Lic. en Informática
+            {{ subtitulo }}
           </p>
         </div>
       </NuxtLink>
@@ -48,20 +48,18 @@
           {{ studentStore.currentClassName }}
         </span>
         <span class="text-slate-500">•</span>
-        <span class="text-xs text-slate-500 truncate max-w-[160px]">
-          {{ studentStore.currentTeacher }}
+        <span class="text-xs text-slate-500 truncate max-w-[260px]" :title="studentStore.currentTeacher">
+          {{ studentStore.currentAsignatura ? lugarDeAsignatura(studentStore.currentAsignatura) : studentStore.currentTeacher }}
         </span>
       </div>
 
-      <!-- Contexto institucional docente/admin. Fijo mientras STIRE sirve a un solo programa; cuando las clases tengan su
-           asignatura y programa (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md) saldrá de la clase activa. -->
+      <!-- Contexto institucional del docente: sale de las asignaturas de sus clases (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md).
+           Si ninguna la tiene, no se muestra nada: nunca un programa inventado. -->
       <div
-        v-else-if="authStore.currentRole !== 'estudiante'"
+        v-else-if="authStore.currentRole === 'docente' && contexto.texto.value"
         class="hidden lg:flex items-center gap-1.5 ml-2 pl-3 border-l border-slate-200 text-xs text-slate-500"
       >
-        <span>Universidad de Córdoba</span>
-        <span class="text-slate-500">•</span>
-        <span>Licenciatura en Informática</span>
+        <span>{{ contexto.texto.value }}</span>
       </div>
     </div>
 
@@ -148,11 +146,25 @@
 import { Menu, LogOut, GraduationCap, UserCircle } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
+import { institucionCorta, lugarDeAsignatura, programaCorto } from '~/utils/contextoAcademico'
 
 defineEmits(['toggle-sidebar'])
 
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
+const contexto = useContextoDocente()
+watch(() => authStore.currentRole, (rol) => { if (rol === 'docente') contexto.cargar() }, { immediate: true })
+
+// Debajo del logo: la institución y el programa de la clase activa (estudiante) o de las clases (docente); si no hay datos,
+// lo que STIRE es.
+const subtitulo = computed(() => {
+  if (authStore.currentRole === 'estudiante' && studentStore.currentAsignatura) {
+    const a = studentStore.currentAsignatura
+    return [institucionCorta(a.institution), a.program ? programaCorto(a.program.name) : ''].filter(Boolean).join(' · ') || 'Curso libre'
+  }
+  if (authStore.currentRole === 'docente' && contexto.texto.value) return contexto.texto.value
+  return 'Sistema tutor inteligente'
+})
 
 const showUserMenu = ref(false)
 const avatarMenuRef = ref<HTMLElement | null>(null)

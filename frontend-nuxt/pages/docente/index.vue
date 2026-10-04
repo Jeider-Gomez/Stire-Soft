@@ -250,6 +250,10 @@
               <h2 class="text-lg font-poppins font-bold text-slate-800 tracking-tight">
                 {{ cls.name }}
               </h2>
+              <p v-if="cls.asignatura || cls.grupo || cls.periodo" class="text-xs text-slate-600 mt-0.5">
+                <template v-if="cls.asignatura">{{ cls.asignatura.nombre }} · {{ lugarDeAsignatura(cls.asignatura) }}</template>
+                <template v-if="cls.grupo || cls.periodo">{{ cls.asignatura ? ' · ' : '' }}{{ [cls.grupo, cls.periodo].filter(Boolean).join(' · ') }}</template>
+              </p>
               <p v-if="cls.description" class="text-xs text-slate-500 mt-1 line-clamp-2">
                 {{ cls.description }}
               </p>
@@ -383,14 +387,33 @@
 
               <!-- Form -->
               <form @submit.prevent="submitCreateClass" class="space-y-4">
+                <!-- Asignatura, grupo y periodo (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md): opcionales; sugieren el nombre -->
+                <div>
+                  <label for="new-class-asignatura" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Asignatura <span class="font-normal text-slate-500">(opcional)</span>
+                  </label>
+                  <DocenteSelectorAsignatura v-model="newClass.asignatura" input-id="new-class-asignatura" :programa-sugerido="programaHabitual" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label for="new-class-grupo" class="block text-xs font-semibold text-slate-700 mb-1.5">Grupo</label>
+                    <input id="new-class-grupo" v-model="newClass.grupo" type="text" maxlength="40" placeholder="Grupo 2" class="input-stire min-h-[44px]" />
+                  </div>
+                  <div>
+                    <label for="new-class-periodo" class="block text-xs font-semibold text-slate-700 mb-1.5">Periodo</label>
+                    <input id="new-class-periodo" v-model="newClass.periodo" type="text" maxlength="7" placeholder="2026-2" class="input-stire min-h-[44px]" />
+                  </div>
+                </div>
+
                 <!-- Nombre -->
                 <div>
                   <label for="new-class-name" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Nombre de la asignatura *
+                    Nombre de la clase *
                   </label>
                   <input
                     id="new-class-name"
                     v-model="newClass.name"
+                    @input="nombreTocado = true"
                     type="text"
                     required
                     placeholder="Ej: Algoritmos y Lógica de Programación"
@@ -559,6 +582,7 @@
 <script setup lang="ts">
 import { textoPlantilla, type Plantilla } from '~/utils/plantillas'
 import { porcentaje } from '~/utils/porcentaje'
+import { lugarDeAsignatura, nombreSugerido, periodoActual, type AsignaturaInfo } from '~/utils/contextoAcademico'
 import { AlertTriangle, BookOpen, Check, Copy, Mail, Plus, QrCode, Search, TrendingUp, UserCheck, Users, X } from 'lucide-vue-next'
 import { normalizarCodigo, sugerirCodigo, urlDeIngreso } from '~/utils/codigoClase'
 import { useApi } from '~/composables/useApi'
@@ -576,6 +600,9 @@ interface TeacherClass {
   enrollmentCount?: number
   avgMastery?: number
   atRiskCount?: number
+  asignatura?: AsignaturaInfo | null
+  grupo?: string | null
+  periodo?: string | null
 }
 
 const api = useApi()
@@ -606,7 +633,21 @@ const newClass = reactive({
   code: '',
   description: '',
   requiresApproval: false,
-  sourceClassId: null as number | null
+  sourceClassId: null as number | null,
+  asignatura: null as AsignaturaInfo | null,
+  grupo: '',
+  periodo: ''
+})
+// El nombre se sugiere con la asignatura, el grupo y el periodo hasta que el docente lo escribe él mismo.
+const nombreTocado = ref(false)
+watch(() => [newClass.asignatura, newClass.grupo, newClass.periodo] as const, ([a, grupo, periodo]) => {
+  if (!nombreTocado.value && a) newClass.name = nombreSugerido(a.nombre, grupo, periodo)
+})
+// El programa en el que más enseña, para sugerir primero sus asignaturas.
+const programaHabitual = computed<number | null>(() => {
+  const cuenta = new Map<number, number>()
+  for (const c of classes.value) if (c.asignatura?.programId) cuenta.set(c.asignatura.programId, (cuenta.get(c.asignatura.programId) ?? 0) + 1)
+  return [...cuenta.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
 })
 
 // Modal QR
@@ -640,6 +681,10 @@ function openCreateModal() {
   newClass.description = ''
   newClass.requiresApproval = false
   newClass.sourceClassId = null
+  newClass.asignatura = null
+  newClass.grupo = ''
+  newClass.periodo = periodoActual()
+  nombreTocado.value = false
   generateRandomCode()
   errorMessage.value = null
   isModalOpen.value = true
@@ -685,9 +730,13 @@ async function submitCreateClass() {
       name: newClass.name.trim(),
       code: normalizarCodigo(newClass.code),
       description: newClass.description.trim() || undefined,
-      requiresApproval: newClass.requiresApproval
+      requiresApproval: newClass.requiresApproval,
+      asignaturaId: newClass.asignatura?.id,
+      grupo: newClass.grupo.trim() || undefined,
+      periodo: newClass.periodo.trim() || undefined
     })
     if (res && res.id) {
+      void useContextoDocente().recargar() // la barra superior toma la asignatura nueva
       if (newClass.sourceClassId) {
         try {
           await api.post(`/reuse/classes/${res.id}/import`, {

@@ -6,6 +6,7 @@ import { DOMINADO } from '~/utils/terminos'
 import { calcularAvance } from '~/utils/avanceCurso'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from './auth'
+import { contextoDeClase, type AsignaturaInfo } from '~/utils/contextoAcademico'
 
 export interface EnrolledClassInfo {
   id: number
@@ -14,6 +15,8 @@ export interface EnrolledClassInfo {
   code: string
   description?: string
   teacherName: string
+  /** Asignatura de la clase, con su programa e institución (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md). */
+  asignatura?: AsignaturaInfo | null
 }
 
 export const useStudentStore = defineStore('student', () => {
@@ -24,6 +27,9 @@ export const useStudentStore = defineStore('student', () => {
   const currentClassName = ref<string>('')
   const currentTeacher = ref<string>('')
   const enrolledClasses = ref<EnrolledClassInfo[]>([])
+  /** Dónde va la clase activa, para la barra superior: «Fundamentos de Algoritmia · 3.er semestre · Lic. en Informática». */
+  const currentAsignatura = computed(() => enrolledClasses.value.find((c) => c.classId === currentClassId.value)?.asignatura ?? null)
+  const currentContexto = computed(() => contextoDeClase({ asignatura: currentAsignatura.value }))
 
   const isLoading = ref(false)
   const isSyncing = ref(false)
@@ -105,7 +111,7 @@ export const useStudentStore = defineStore('student', () => {
         const enrollmentsRes = await api.get<Array<{
           id: number
           classId?: number
-          class?: { id: number; name: string; code: string; description?: string; dominioParaAvanzar?: number; teacher?: { fullName: string } }
+          class?: { id: number; name: string; code: string; description?: string; dominioParaAvanzar?: number; teacher?: { fullName: string }; asignatura?: AsignaturaInfo | null }
         }>>('/enrollment/my')
 
         if (Array.isArray(enrollmentsRes) && enrollmentsRes.length > 0) {
@@ -117,7 +123,8 @@ export const useStudentStore = defineStore('student', () => {
               name: e.class!.name,
               code: e.class!.code,
               description: e.class!.description,
-              teacherName: e.class!.teacher?.fullName || 'Docente'
+              teacherName: e.class!.teacher?.fullName || 'Docente',
+              asignatura: e.class!.asignatura ?? null
             }))
 
           const umbrales = new Map(enrollmentsRes.filter((e) => e.class).map((e) => [e.class!.id, e.class!.dominioParaAvanzar ?? 50]))
@@ -367,6 +374,8 @@ export const useStudentStore = defineStore('student', () => {
     currentClassId,
     currentClassName,
     currentTeacher,
+    currentAsignatura,
+    currentContexto,
     enrolledClasses,
     isLoading,
     isSyncing,

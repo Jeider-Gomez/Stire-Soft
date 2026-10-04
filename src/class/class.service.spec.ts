@@ -214,3 +214,45 @@ describe('ClassService.update — F24-09', () => {
     expect(await check({ name: 'X', description: 'y' })).toHaveLength(0);
   });
 });
+
+// Organización académica (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md): la clase guarda su asignatura, periodo y grupo.
+describe('ClassService — asignatura, periodo y grupo de la clase', () => {
+  const asignatura = { id: 3, nombre: 'Fundamentos de Algoritmia' };
+  const buscarAsignatura = jest.fn();
+  const classRepo = {
+    findOne: jest.fn(),
+    create: jest.fn((x: object) => x),
+    save: jest.fn(async (x: object) => x),
+    manager: { findOne: buscarAsignatura },
+  };
+  const auth = { assertTeacherOwnsClass: jest.fn() };
+  type Args = ConstructorParameters<typeof ClassService>;
+  const service = new ClassService(classRepo as unknown as Args[0], {} as Args[1], {} as Args[2], {} as Args[3], auth as unknown as Args[4]);
+
+  beforeEach(() => jest.clearAllMocks());
+
+  it('al crear guarda la asignatura (con su relación), el periodo y el grupo sin espacios', async () => {
+    classRepo.findOne.mockResolvedValue(null);
+    buscarAsignatura.mockResolvedValue(asignatura);
+    const c = await service.create({ name: 'Algoritmia', code: 'ALGO-2034', asignaturaId: 3, periodo: ' 2026-2 ', grupo: ' Grupo 2 ' }, 10);
+    expect(c).toMatchObject({ asignaturaId: 3, asignatura, periodo: '2026-2', grupo: 'Grupo 2' });
+  });
+
+  it('una asignatura que no existe es un 400 que dice qué hacer', async () => {
+    classRepo.findOne.mockResolvedValue(null);
+    buscarAsignatura.mockResolvedValue(null);
+    await expect(service.create({ name: 'A', code: 'ALGO-2035', asignaturaId: 99 }, 10)).rejects.toThrow('Esa asignatura no existe');
+  });
+
+  it('al editar, null quita la asignatura aunque estuviera cargada, y el texto vacío quita periodo y grupo', async () => {
+    classRepo.findOne.mockResolvedValue({ id: 1, teacherId: 10, asignaturaId: 3, asignatura, periodo: '2026-1', grupo: 'G1' });
+    const c = await service.update(1, { asignaturaId: null, periodo: '', grupo: '  ' }, { id: 10, role: UserRole.DOCENTE } as Parameters<ClassService['update']>[2]);
+    expect(c).toMatchObject({ asignaturaId: null, asignatura: null, periodo: null, grupo: null });
+  });
+
+  it('el periodo se escribe como 2026-2 o 2026', async () => {
+    const mal = await validate(plainToInstance(UpdateClassDto, { periodo: 'segundo de 2026' }));
+    expect(mal.map((e) => e.property)).toEqual(['periodo']);
+    expect(await validate(plainToInstance(UpdateClassDto, { periodo: '2026-2', grupo: 'Grupo 2', asignaturaId: null }))).toHaveLength(0);
+  });
+});

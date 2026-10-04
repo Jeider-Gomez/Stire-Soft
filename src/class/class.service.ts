@@ -17,6 +17,7 @@ import { UserService } from '../user/user.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { normalizarCodigo, problemaDelCodigo } from './codigo-clase';
+import { Asignatura } from '../institution/entities/asignatura.entity';
 
 export interface ClassWithStats extends Class {
   enrollmentCount: number;
@@ -51,7 +52,8 @@ export class ClassService {
       throw new ConflictException('Ya existe una clase con ese código. Elige otro.');
     }
 
-    const classEntity = this.classRepository.create({ ...createClassDto, code, teacherId });
+    const academico = await this.datosAcademicos(createClassDto);
+    const classEntity = this.classRepository.create({ ...createClassDto, ...academico, code, teacherId });
     try {
       return await this.classRepository.save(classEntity);
     } catch (err) {
@@ -188,8 +190,31 @@ export class ClassService {
     // F24-09: un docente ajeno recibía 409 (Conflict); es una falta de permiso → 403, igual que el resto de operaciones sobre la clase.
     await this.authorizationService.assertTeacherOwnsClass(user, classEntity.id);
 
-    Object.assign(classEntity, updateClassDto);
+    const academico = await this.datosAcademicos(updateClassDto);
+    Object.assign(classEntity, updateClassDto, academico);
     return await this.classRepository.save(classEntity);
+  }
+
+  /**
+   * Asignatura, periodo y grupo listos para guardar (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md). La asignatura debe existir;
+   * la relación se asigna junto con su id porque, ya cargada, TypeORM la usaría en lugar del id. Texto vacío = sin dato.
+   */
+  private async datosAcademicos(dto: CreateClassDto | UpdateClassDto): Promise<Partial<Class>> {
+    const out: Partial<Class> = {};
+    if (dto.asignaturaId !== undefined) {
+      if (dto.asignaturaId === null) {
+        out.asignaturaId = null;
+        out.asignatura = null;
+      } else {
+        const asignatura = await this.classRepository.manager.findOne(Asignatura, { where: { id: dto.asignaturaId } });
+        if (!asignatura) throw new BadRequestException('Esa asignatura no existe. Búscala de nuevo o agrégala.');
+        out.asignaturaId = asignatura.id;
+        out.asignatura = asignatura;
+      }
+    }
+    if (dto.periodo !== undefined) out.periodo = dto.periodo?.trim() || null;
+    if (dto.grupo !== undefined) out.grupo = dto.grupo?.trim() || null;
+    return out;
   }
 
   async remove(id: number, user: User): Promise<void> {

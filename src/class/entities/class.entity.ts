@@ -12,6 +12,7 @@ import {
 import { User } from '../../user/entities/user.entity';
 import { Enrollment } from '../../enrollment/entities/enrollment.entity';
 import { Section } from '../../section/entities/section.entity';
+import { Asignatura } from '../../institution/entities/asignatura.entity';
 
 @Entity('classes')
 @Index(['teacherId'])
@@ -65,6 +66,25 @@ export class Class {
    */
   @Column({ type: 'int', default: 50 })
   dominioParaAvanzar!: number;
+
+  /**
+   * Qué enseña esta clase y para quién (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md). Opcional: sin asignatura la clase
+   * funciona igual. De ella salen la institución, el programa y el semestre que muestra la barra superior.
+   */
+  @ManyToOne(() => Asignatura, { eager: true, nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'asignaturaId' })
+  asignatura?: Asignatura | null;
+
+  @Column({ type: 'int', nullable: true })
+  asignaturaId?: number | null;
+
+  /** Periodo académico («2026-2»). */
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  periodo?: string | null;
+
+  /** Grupo o sección («Grupo 2»). */
+  @Column({ type: 'varchar', length: 40, nullable: true })
+  grupo?: string | null;
 
   // Relación OneToMany: Una clase tiene muchas inscripciones (Enrollment)
   @OneToMany(() => Enrollment, (enrollment) => enrollment.class, { eager: false })

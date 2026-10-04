@@ -302,6 +302,18 @@ trazabilidad (solo para el anexo técnico).
 
 ---
 
+## BT-28. La clase dice para qué asignatura es; el catálogo lo amplía el docente
+
+| | |
+|---|---|
+| **Problema observado** | La barra superior decía «Facultad de Ingeniería de Sistemas», un texto fijo y falso: STIRE se hace para la Licenciatura en Informática (Facultad de Educación y Ciencias Humanas). La clase no guardaba su asignatura, semestre, grupo ni periodo. |
+| **Decisión** | - **Cinco niveles opcionales:** institución → (facultad) → programa (carrera o grado) → asignatura → clase.<br>- **Tres formas de asignatura:** de un programa; de una institución sin programa (electiva libre); o libre, sin institución.<br>- **Catálogo abierto:** el docente agrega asignaturas, programas e instituciones al crear su clase; repetir devuelve lo existente.<br>- **La barra superior sale de los datos;** sin datos no muestra nada. |
+| **Fundamento** | - **Correspondencia con el mundo real y prevención de errores** (Nielsen, 1994): el sistema usa las categorías del usuario (asignatura, semestre, grupo) y no afirma lo que no sabe.<br>- **Guías de producto (no evidencia científica):** Brightspace separa la plantilla del curso de cada oferta por periodo; Canvas Commons comparte por alcance (solo yo, institución, consorcio, público). Detalle en `docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md`.<br>- **Herramienta flexible:** todo es opcional y no hace falta un administrador (BT-18). |
+| **Cómo se materializa** | «Nueva clase» y Ajustes (asignatura, grupo, periodo); barra superior. |
+| **Trazabilidad** | `src/institution/`, `src/migrations/1791600000000-AddOrganizacionAcademica.ts`, `frontend-nuxt/components/docente/SelectorAsignatura.vue`, `utils/contextoAcademico.ts`. |
+
+---
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |

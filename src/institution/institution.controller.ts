@@ -3,6 +3,9 @@ import { InstitutionService } from './institution.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '../user/entities/user.entity';
+import { BuscarAsignaturasDto, CrearAsignaturaDto, CrearInstitucionDto, CrearProgramaDto } from './dto/catalogo.dto';
 
 @Controller()
 export class InstitutionController {
@@ -17,11 +20,12 @@ export class InstitutionController {
     return this.institutionService.findAllInstitutions();
   }
 
+  // El docente amplía el catálogo al crear su clase (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.2); repetir devuelve lo existente.
   @Post('institutions')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  createInstitution(@Body() body: { name: string }) {
-    return this.institutionService.createInstitution(body);
+  @Roles('docente', 'admin')
+  createInstitution(@Body() dto: CrearInstitucionDto) {
+    return this.institutionService.createInstitution(dto);
   }
 
   @Get('programs')
@@ -33,8 +37,22 @@ export class InstitutionController {
 
   @Post('programs')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  createProgram(@Body() body: { name: string; maxSemesters: number; institutionId: number }) {
-    return this.institutionService.createProgram(body);
+  @Roles('docente', 'admin')
+  createProgram(@Body() dto: CrearProgramaDto) {
+    return this.institutionService.createProgram(dto);
+  }
+
+  @Get('asignaturas')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('estudiante', 'docente', 'admin')
+  buscarAsignaturas(@Query() dto: BuscarAsignaturasDto) {
+    return this.institutionService.buscarAsignaturas(dto);
+  }
+
+  @Post('asignaturas')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('docente', 'admin')
+  crearAsignatura(@Body() dto: CrearAsignaturaDto, @GetUser() user: User) {
+    return this.institutionService.crearAsignatura(dto, user.id);
   }
 }

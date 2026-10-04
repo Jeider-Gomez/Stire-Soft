@@ -1,5 +1,5 @@
 ---
-estado:  propuesta (04/10/2026), pendiente de la decisión de Jeider
+estado:  fase 1 hecha (04/10/2026); fases 2 y 3 propuestas
 pregunta del dueño: «¿cómo organizar en STIRE la universidad o el colegio, la facultad, la carrera o el grado, el semestre y
   los cursos, para que lo que dice la barra superior sea verdad? ¿Cómo compartir plantillas con la facultad o el semestre
   sin abrumar? ¿La clase debe decir para qué asignatura, carrera y semestre es?»
@@ -50,8 +50,13 @@ Institución          Universidad de Córdoba (universidad)      ·  I. E. San J
 
 - **Programa** cubre carrera y grado: lleva `tipo` (carrera | nivel escolar) y cuántos periodos tiene (semestres o grados).
   Así un colegio y una universidad usan el mismo modelo, sin pantallas distintas.
-- **Asignatura** (nuevo, el «curso del plan de estudios»): nombre, código opcional, programa y semestre o grado.
-  Una asignatura puede estar en varios programas si el plan la comparte (por ejemplo, una electiva de la facultad).
+- **Asignatura** (nuevo, el «curso del plan de estudios»): nombre, código opcional y, según el caso, tres formas
+  (pedido de Jeider, 04/10):
+  | Forma | Institución | Programa | Semestre o grado | Ejemplo | La barra dice |
+  |---|---|---|---|---|---|
+  | **De un programa** | sí | sí | opcional | Fundamentos de Algoritmia, Lic. en Informática | «3.er semestre · Lic. en Informática» |
+  | **De una institución, sin programa** | sí | no | no | una electiva libre, un curso de extensión | «Electiva · Unicórdoba» |
+  | **Libre** | no | no | no | un taller que un docente dicta por su cuenta | «Curso libre» |
 - **Clase** (existe): se le agregan `asignatura`, `periodo` («2026-2») y `grupo` («Grupo 2»). El nombre se sugiere solo
   («Fundamentos de Algoritmia — Grupo 2 · 2026-2») y el docente lo puede cambiar.
 - **Vínculos del docente** (existe `user_affiliations`): un docente puede estar en **varias instituciones, programas,
@@ -141,25 +146,41 @@ agrega uno con el mismo buscador.
 - Los conteos de módulos, lecciones, copias y valoración se guardan al compartir o copiar. Hoy son subconsultas por fila;
   con paginación siguen siendo baratas, pero así no crecen.
 
-## 3. Por fases, sin poner en riesgo la v2.0.0
+## 3. Lo que el servidor tenía y nadie usaba (revisión del 04/10)
+
+De 179 rutas del servidor, estas no las llama ninguna pantalla (se descartaron las que el frontend arma en tiempo de ejecución,
+como aprobar o rechazar una matrícula):
+
+| Qué | Para qué servía | Qué hacer |
+|---|---|---|
+| `GET/POST /institutions`, `/programs`, `POST /users/me/affiliations` y la tabla `user_affiliations` (programa, rol, semestre del usuario) | La organización académica | **Ya se usan** institución y programa (fase 1). Los vínculos del usuario quedan para «Dónde enseño / Qué estudio» (fase 3) |
+| `startDate`, `endDate` y `maxStudents` de la clase | Fechas de matrícula y cupo: el servidor ya los hace cumplir al entrar con el código | Ninguna pantalla los deja poner. Encajan con el **periodo**: llevarlos a Ajustes (fase 2) |
+| Módulo `gamification` (tabla `achievements`) | Logros | Su servicio está comentado: código muerto. Decidir si se borra o se diseña (no es prioridad pedagógica) |
+| `GET /activity-log/student/:id` | Historial de actividad del estudiante | Útil para el docente en la ficha del estudiante; hoy no se muestra |
+| `GET /message/conversation/:userId` | Ver una conversación | La pantalla de mensajes usa otra ruta; revisar si sobra |
+| `GET /learning-unit/all`, `GET/PATCH/DELETE /activity-types/:id`, `GET /auth/profile` | Administración y pruebas | Sin pantalla; se pueden quitar o dejar solo al admin |
+| `DELETE /media/images/:id` | Borrar una imagen subida | El editor no deja borrar imágenes; quedan huérfanas |
+
+## 4. Por fases, sin poner en riesgo la v2.0.0
 
 | Fase | Qué | Cuándo |
 |---|---|---|
 | **0** | Texto verdadero en la barra superior («Lic. en Informática») | **Hecho, 04/10** |
-| **1** | Asignatura, periodo y grupo en la clase; catálogo precargado de la Licenciatura; asistente de «Nueva clase»; barra superior desde los datos; se completan las 2 clases reales | Después de presentar la v2.0.0 (desde el 07/10) |
+| **1** | Asignatura (tres formas), periodo y grupo en la clase; catálogo precargado (Unicórdoba, Licenciatura en Informática, Fundamentos de Algoritmia 203413); el docente agrega asignaturas, programas e instituciones (también colegios por grados); barra superior desde los datos | **Hecho, 04/10** (pedido «a la brevedad»). Falta completar las 2 clases reales en Ajustes |
 | **2** | Alcances de plantilla y recomendación por cercanía con tarjetas de calidad | Semana siguiente |
 | **3** | Varias instituciones (colegios), filtro por programa en el inicio del docente, «Hay una versión nueva» | Cuando llegue el primer colegio |
 
 Cada fase lleva su migración (todas las columnas nuevas son opcionales, así que las clases de hoy no se tocan), sus
 pruebas y su entrada en `investigacion/BASE_TEORICA.md`.
 
-## 4. Lo que tiene que decidir Jeider
+## 5. Lo que tiene que decidir Jeider
 
-1. ¿El docente puede **agregar asignaturas** al catálogo él mismo, con el admin solo para unir duplicados? (Recomendado: sí.)
+1. ~~¿El docente puede agregar asignaturas?~~ Sí (04/10), y también una electiva sin programa o un curso libre.
 2. ¿El alcance **predeterminado** al compartir es «Docentes de esta asignatura» o «Solo yo»? (Recomendado: «Solo yo», y
    sugerir «esta asignatura» con una frase.)
 3. El **nombre exacto, el código y el semestre** del curso de Víctor Castro.
-4. ¿Se empieza la fase 1 después del martes 06/10? (Recomendado: sí; no tocar la v2.0.0 mientras el equipo la verifica.)
+4. ~~¿Cuándo la fase 1?~~ Hecha el 04/10: todo es opcional y las clases de antes no cambian.
+5. ¿Qué hacer con la gamificación muerta y las rutas sin uso (§3)?
 
 ## Referencias de producto
 

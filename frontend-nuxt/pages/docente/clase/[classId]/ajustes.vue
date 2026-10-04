@@ -99,6 +99,26 @@
     <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-4">
       <h2 class="text-sm font-bold text-base-texto-primario">Datos de la clase</h2>
 
+      <!-- Asignatura, grupo y periodo (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md): de aquí sale lo que dice la barra superior -->
+      <div>
+        <label for="class-asignatura" class="block text-xs font-semibold text-base-texto-primario mb-1">
+          Asignatura <span class="text-base-texto-secundario font-normal">(opcional)</span>
+        </label>
+        <DocenteSelectorAsignatura v-model="editForm.asignatura" input-id="class-asignatura" />
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="class-grupo" class="block text-xs font-semibold text-base-texto-primario mb-1">Grupo</label>
+          <input id="class-grupo" v-model="editForm.grupo" type="text" maxlength="40" placeholder="Grupo 2"
+            class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors" />
+        </div>
+        <div>
+          <label for="class-periodo" class="block text-xs font-semibold text-base-texto-primario mb-1">Periodo</label>
+          <input id="class-periodo" v-model="editForm.periodo" type="text" maxlength="7" placeholder="2026-2"
+            class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors" />
+        </div>
+      </div>
+
       <div>
         <label for="class-name" class="block text-xs font-semibold text-base-texto-primario mb-1">
           Nombre <span class="text-semantico-error">*</span>
@@ -170,6 +190,7 @@
 </template>
 
 <script setup lang="ts">
+import type { AsignaturaInfo } from '~/utils/contextoAcademico'
 import { Check } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 
@@ -189,6 +210,9 @@ interface ClassInfo {
   requiresApproval?: boolean
   compartidaComoPlantilla?: boolean
   dominioParaAvanzar?: number
+  asignatura?: AsignaturaInfo | null
+  grupo?: string | null
+  periodo?: string | null
 }
 
 const route = useRoute()
@@ -203,13 +227,19 @@ const classId = Number(route.params.classId)
 // Datos editables del formulario
 const editForm = reactive({
   name: '',
-  description: ''
+  description: '',
+  asignatura: null as AsignaturaInfo | null,
+  grupo: '',
+  periodo: ''
 })
 
 // Estado guardado (para comparar cambios)
 const savedData = reactive({
   name: '',
-  description: ''
+  description: '',
+  asignaturaId: null as number | null,
+  grupo: '',
+  periodo: ''
 })
 
 const isSavingData = ref(false)
@@ -218,7 +248,8 @@ const saveError = ref<string | null>(null)
 const codeCopied = ref(false)
 
 const hasChanges = computed(() => {
-  return editForm.name.trim() !== savedData.name || editForm.description !== savedData.description
+  return editForm.name.trim() !== savedData.name || editForm.description !== savedData.description ||
+    (editForm.asignatura?.id ?? null) !== savedData.asignaturaId || editForm.grupo.trim() !== savedData.grupo || editForm.periodo.trim() !== savedData.periodo
 })
 
 async function load() {
@@ -232,10 +263,20 @@ async function load() {
   classInfo.value = classData
 
   // Inicializar formulario con los datos actuales
-  editForm.name = classData?.name || ''
-  editForm.description = classData?.description || ''
+  llenarFormulario(classData)
+}
+
+function llenarFormulario(c: ClassInfo | null) {
+  editForm.name = c?.name || ''
+  editForm.description = c?.description || ''
+  editForm.asignatura = c?.asignatura ?? null
+  editForm.grupo = c?.grupo ?? ''
+  editForm.periodo = c?.periodo ?? ''
   savedData.name = editForm.name
   savedData.description = editForm.description
+  savedData.asignaturaId = editForm.asignatura?.id ?? null
+  savedData.grupo = editForm.grupo
+  savedData.periodo = editForm.periodo
 }
 
 async function saveData() {
@@ -251,13 +292,16 @@ async function saveData() {
 
   try {
     // Solo enviar los campos que cambiaron (PATCH parcial)
-    const body: Record<string, string> = {}
+    const body: Record<string, string | number | null> = {}
     if (editForm.name.trim() !== savedData.name) {
       body.name = editForm.name.trim()
     }
     if (editForm.description !== savedData.description) {
       body.description = editForm.description
     }
+    if ((editForm.asignatura?.id ?? null) !== savedData.asignaturaId) body.asignaturaId = editForm.asignatura?.id ?? null
+    if (editForm.grupo.trim() !== savedData.grupo) body.grupo = editForm.grupo.trim()
+    if (editForm.periodo.trim() !== savedData.periodo) body.periodo = editForm.periodo.trim()
 
     const updated = await api.apiFetch<ClassInfo>(`/class/${classId}`, {
       method: 'PATCH',
@@ -265,10 +309,8 @@ async function saveData() {
     })
 
     classInfo.value = updated
-    savedData.name = updated.name
-    savedData.description = updated.description || ''
-    editForm.name = updated.name
-    editForm.description = updated.description || ''
+    llenarFormulario(updated)
+    if ('asignaturaId' in body) void useContextoDocente().recargar() // la barra superior toma la asignatura
 
     saveSuccess.value = true
     setTimeout(() => { saveSuccess.value = false }, 3000)
