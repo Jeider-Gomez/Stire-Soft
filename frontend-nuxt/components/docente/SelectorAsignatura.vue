@@ -44,7 +44,7 @@
           :class="activa === i ? 'bg-acento-ambar/10' : 'hover:bg-base-bg-secundario'"
           @mousedown.prevent="elegir(a)">
           <p class="text-sm text-base-texto-primario">{{ a.nombre }}<span v-if="a.codigo" class="text-base-texto-secundario"> · {{ a.codigo }}</span></p>
-          <p class="text-[11px] text-base-texto-secundario">{{ lugarDeAsignatura(a) }}</p>
+          <p class="text-[11px] text-base-texto-secundario">{{ lugarDeAsignatura(a) }}<span v-if="a.oficial" class="ml-1.5 inline-flex items-center gap-0.5 font-semibold text-semantico-exito"><BadgeCheck :size="11" aria-hidden="true" /> Oficial</span></p>
         </li>
         <li
           v-if="texto.trim().length >= 3"
@@ -138,8 +138,23 @@
         </template>
       </div>
 
+      <!-- «¿Es alguna de estas?» (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.2.1): evita la misma asignatura con dos nombres -->
+      <div v-if="parecidas.length" role="alert" class="rounded-lg border border-acento-ambar/40 bg-acento-ambar/10 p-3 space-y-2">
+        <p class="text-xs font-semibold text-base-texto-primario">¿Es alguna de estas? Ya existen con un nombre o código parecido:</p>
+        <ul class="space-y-1.5">
+          <li v-for="a in parecidas" :key="a.id" class="flex items-center justify-between gap-2 rounded-md bg-base-blanco px-3 py-1.5">
+            <span class="min-w-0 text-xs">
+              <span class="font-semibold text-base-texto-primario">{{ a.nombre }}</span><span v-if="a.codigo" class="text-base-texto-secundario"> · {{ a.codigo }}</span>
+              <span class="block text-[11px] text-base-texto-secundario">{{ lugarDeAsignatura(a) }}<template v-if="a.oficial"> · oficial</template></span>
+            </span>
+            <button type="button" class="shrink-0 min-h-[44px] px-3 rounded-md text-xs font-bold bg-acento-ambar-fuerte text-base-blanco" @click="usarParecida(a)">Usar esta</button>
+          </li>
+        </ul>
+        <button type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="agregarIgual">No, es otra: agregarla</button>
+      </div>
+
       <p v-if="error" role="alert" class="text-xs text-semantico-error">{{ error }}</p>
-      <div class="flex flex-wrap justify-end gap-2">
+      <div v-if="!parecidas.length" class="flex flex-wrap justify-end gap-2">
         <button type="button" class="min-h-[44px] px-4 rounded-md text-xs font-semibold borde-afordancia" @click="agregando = false">Cancelar</button>
         <button type="button" class="min-h-[44px] px-4 rounded-md text-xs font-bold bg-acento-ambar-fuerte text-base-blanco disabled:opacity-50" :disabled="guardando" @click="guardar">
           {{ guardando ? 'Agregando…' : 'Agregar y elegir' }}
@@ -151,7 +166,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref, useId, watch } from 'vue'
-import { Plus, Search } from 'lucide-vue-next'
+import { BadgeCheck, Plus, Search } from 'lucide-vue-next'
 import { institucionCorta, lugarDeAsignatura, periodoDelPlan, type AsignaturaInfo, type InstitucionInfo, type ProgramaInfo } from '~/utils/contextoAcademico'
 
 const props = defineProps<{ modelValue: AsignaturaInfo | null; inputId?: string; programaSugerido?: number | null }>()
@@ -175,6 +190,8 @@ const agregando = ref(false)
 const guardando = ref(false)
 const error = ref('')
 const instituciones = ref<Array<InstitucionInfo & { programs?: ProgramaInfo[] }>>([])
+const parecidas = ref<AsignaturaInfo[]>([])
+const yaPregunto = ref(false)
 
 const nueva = reactive({
   nombre: '', codigo: '', donde: 'programa' as 'programa' | 'institucion' | 'libre',
@@ -192,6 +209,8 @@ const periodosDelPrograma = computed(() => {
 })
 watch(() => nueva.institutionId, () => { nueva.programId = null; nueva.periodoPlan = null })
 watch(() => nueva.programId, () => { nueva.periodoPlan = null })
+// Si cambia lo que se va a agregar, se vuelve a preguntar por las parecidas.
+watch(() => [nueva.nombre, nueva.codigo, nueva.donde, nueva.institutionId, nueva.programId], () => { parecidas.value = []; yaPregunto.value = false })
 
 // Búsqueda con pausa: una consulta cuando deja de escribir, no una por tecla.
 let espera: ReturnType<typeof setTimeout> | undefined
@@ -247,11 +266,31 @@ async function empezarAgregar() {
   else if (instituciones.value.length === 1) nueva.institutionId = instituciones.value[0].id
 }
 
+function usarParecida(a: AsignaturaInfo) {
+  parecidas.value = []
+  agregando.value = false
+  elegir(a)
+}
+function agregarIgual() {
+  parecidas.value = []
+  void guardar()
+}
+
 async function guardar() {
   error.value = ''
   if (nueva.nombre.trim().length < 3) { error.value = 'Escribe el nombre completo de la asignatura.'; return }
   if (nueva.donde !== 'libre' && nueva.institutionId === null) { error.value = 'Elige la institución.'; return }
   if (nueva.donde === 'programa' && nueva.programId === null) { error.value = 'Elige el programa o nivel, o marca «De una institución, sin programa».'; return }
+  // Antes de crear nada, ¿ya existe con otro nombre? Si hay parecidas se muestran y el docente decide.
+  if (!yaPregunto.value) {
+    yaPregunto.value = true
+    const params = new URLSearchParams({ nombre: nueva.nombre })
+    if (nueva.codigo.trim()) params.set('codigo', nueva.codigo.trim())
+    if (nueva.donde === 'programa' && nueva.programId !== null && nueva.programId !== NUEVA) params.set('programId', String(nueva.programId))
+    else if (nueva.donde !== 'libre' && nueva.institutionId !== null && nueva.institutionId !== NUEVA) params.set('institutionId', String(nueva.institutionId))
+    try { parecidas.value = await api.get<AsignaturaInfo[]>(`/asignaturas/parecidas?${params}`) } catch { parecidas.value = [] }
+    if (parecidas.value.length) return
+  }
   guardando.value = true
   try {
     let institutionId: number | undefined

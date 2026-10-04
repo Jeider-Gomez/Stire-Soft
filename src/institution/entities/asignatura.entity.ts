@@ -11,6 +11,7 @@ import { Program } from './program.entity';
  */
 @Entity('asignaturas')
 @Index(['nombre'])
+@Index('IDX_asignaturas_ambito_nombre', ['ambito', 'nombreNormalizado'], { unique: true })
 export class Asignatura {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -42,6 +43,24 @@ export class Asignatura {
 
   @Column({ type: 'int', nullable: true })
   creadaPorId!: number | null;
+
+  /**
+   * Orden del catálogo (§2.2.1 del diseño). El nombre normalizado (normalizar.ts) y el ámbito («p:7», «i:1» o «libre»)
+   * forman un índice único: dos asignaturas iguales no pueden existir en el mismo lugar.
+   */
+  @Column({ length: 150 })
+  nombreNormalizado!: string;
+
+  @Column({ length: 20 })
+  ambito!: string;
+
+  /** Del plan de estudios, o confirmada por el admin: sale primero y marcada. La agregada por un docente funciona igual. */
+  @Column({ default: false })
+  oficial!: boolean;
+
+  /** Nombres normalizados de las asignaturas que se unieron a esta, separados por «|»: quien busca el viejo la encuentra. */
+  @Column({ type: 'varchar', length: 600, nullable: true })
+  sinonimos!: string | null;
 
   @CreateDateColumn()
   createdAt!: Date;

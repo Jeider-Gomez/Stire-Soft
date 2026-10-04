@@ -96,3 +96,27 @@ describe('La barra superior y los formularios usan los datos, no texto fijo', ()
     expect(sel).toContain('role="combobox"');
   });
 });
+
+describe('Orden del catálogo (§2.2.1 y §2.2.2): sin duplicados y sin trabajo manual para el admin', () => {
+  const sel = leer('components', 'docente', 'SelectorAsignatura.vue');
+  it('antes de agregar pregunta «¿Es alguna de estas?» y deja usar la existente o agregar igual', () => {
+    expect(sel).toContain('/asignaturas/parecidas?');
+    expect(sel).toContain('¿Es alguna de estas?');
+    expect(sel).toContain('@click="usarParecida(a)"');
+    expect(sel).toContain('No, es otra: agregarla');
+    // la pregunta va antes de crear: si hay parecidas, no se crea nada todavía
+    expect(sel.indexOf('/asignaturas/parecidas?')).toBeLessThan(sel.indexOf("api.post<AsignaturaInfo>('/asignaturas'"));
+  });
+  it('las oficiales se marcan en la búsqueda', () => {
+    expect(sel).toMatch(/v-if="a\.oficial"[^>]*>[\s\S]{0,80}Oficial/);
+  });
+  it('el admin tiene «Catálogo académico»: unir (con confirmación), son distintas y confirmar como oficial', () => {
+    const cat = leer('pages', 'admin', 'catalogo.vue');
+    expect(cat).toContain("api.get<Revision>('/asignaturas/revision')");
+    expect(cat).toMatch(/await confirmar\(\{[\s\S]*accion: 'Unir'/);
+    expect(cat).toContain('/unir`, { destinoId: destino.id }');
+    expect(cat).toContain("api.post('/asignaturas/distintas'");
+    expect(cat).toContain('{ oficial: true }');
+    expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('to="/admin/catalogo"');
+  });
+});

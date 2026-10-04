@@ -1,8 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { IsNull, Repository } from 'typeorm';
-import { InstitutionService } from './institution.service';
+import { Repository } from 'typeorm';
+import { agregarSinonimos, InstitutionService } from './institution.service';
 import { Institution } from './entities/institution.entity';
 import { Program } from './entities/program.entity';
 import { Asignatura } from './entities/asignatura.entity';
@@ -60,14 +60,14 @@ describe('InstitutionService.crearAsignatura — las tres formas de una asignatu
     const existente = { id: 5, nombre: 'Fundamentos de Algoritmia', programId: 7, institutionId: 1 };
     asignaturaRepo.findOne.mockResolvedValueOnce(existente);
     await expect(service.crearAsignatura({ nombre: 'Fundamentos de Algoritmia', programId: 7 }, 42)).resolves.toBe(existente);
-    expect(asignaturaRepo.findOne).toHaveBeenCalledWith({ where: { nombre: 'Fundamentos de Algoritmia', programId: 7, institutionId: 1 } });
+    expect(asignaturaRepo.findOne).toHaveBeenCalledWith({ where: { ambito: 'p:7', nombreNormalizado: 'fundamentos algoritmia' } });
     expect(asignaturaRepo.save).not.toHaveBeenCalled();
   });
 
   it('un curso libre se compara con los otros cursos libres (programa e institución vacíos)', async () => {
     const { service, asignaturaRepo } = armar();
     await service.crearAsignatura({ nombre: 'Taller de robótica' }, 42);
-    expect(asignaturaRepo.findOne).toHaveBeenCalledWith({ where: { nombre: 'Taller de robótica', programId: IsNull(), institutionId: IsNull() } });
+    expect(asignaturaRepo.findOne).toHaveBeenCalledWith({ where: { ambito: 'libre', nombreNormalizado: 'taller robotica' } });
   });
 
   it('un semestre que el programa no tiene es un 400 que lo explica', async () => {
@@ -107,15 +107,18 @@ describe('InstitutionService.buscarAsignaturas — primero las del programa del 
   it('ordena: su programa, otros programas, electivas, cursos libres', async () => {
     const { service, asignaturaRepo } = armar();
     const filas = [
-      { nombre: 'Taller libre', programId: null, institutionId: null, periodoPlan: null },
-      { nombre: 'Electiva de IA', programId: null, institutionId: 1, periodoPlan: null },
-      { nombre: 'Algoritmia de otro programa', programId: 9, institutionId: 1, periodoPlan: 2 },
-      { nombre: 'Fundamentos de Algoritmia', programId: 7, institutionId: 1, periodoPlan: 3 },
+      { nombre: 'Taller libre', programId: null, institutionId: null, periodoPlan: null, oficial: false },
+      { nombre: 'Electiva de IA', programId: null, institutionId: 1, periodoPlan: null, oficial: false },
+      { nombre: 'Electiva oficial', programId: null, institutionId: 1, periodoPlan: null, oficial: true },
+      { nombre: 'Algoritmia de otro programa', programId: 9, institutionId: 1, periodoPlan: 2, oficial: false },
+      { nombre: 'Fundamentos de Algoritmia', programId: 7, institutionId: 1, periodoPlan: 3, oficial: true },
     ];
     const qb = { leftJoinAndSelect: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(), orderBy: jest.fn().mockReturnThis(), take: jest.fn().mockReturnThis(), getMany: jest.fn().mockResolvedValue(filas) };
     Object.assign(asignaturaRepo, { createQueryBuilder: jest.fn(() => qb) });
     const r = await service.buscarAsignaturas({ q: 'a', programId: 7 });
-    expect(r.map((a) => a.nombre)).toEqual(['Fundamentos de Algoritmia', 'Algoritmia de otro programa', 'Electiva de IA', 'Taller libre']);
+    expect(r.map((a) => a.nombre)).toEqual(['Fundamentos de Algoritmia', 'Algoritmia de otro programa', 'Electiva oficial', 'Electiva de IA', 'Taller libre']);
+    // compara el nombre normalizado: la base de producción distingue mayúsculas
+    expect(qb.where).toHaveBeenCalled();
   });
 
   it('sin texto ni programa no devuelve nada (no se lista el catálogo entero)', async () => {
@@ -132,5 +135,55 @@ describe('DTO del catálogo', () => {
   it('una asignatura necesita un nombre de 3 letras o más; lo demás es opcional', async () => {
     expect(await validate(plainToInstance(CrearAsignaturaDto, { nombre: 'IA' }))).toHaveLength(1);
     expect(await validate(plainToInstance(CrearAsignaturaDto, { nombre: 'Ética docente' }))).toHaveLength(0);
+  });
+});
+
+describe('InstitutionService — orden del catálogo (§2.2.1)', () => {
+  it('la asignatura de un docente queda «agregada»; la del admin, oficial; ambas con nombre normalizado y ámbito', async () => {
+    const { service, programRepo } = armar();
+    programRepo.findOne.mockResolvedValue(LIC);
+    await expect(service.crearAsignatura({ nombre: 'Fund. de Programación', programId: 7 }, 42)).resolves.toMatchObject({
+      oficial: false, nombreNormalizado: 'fundamentos programacion', ambito: 'p:7',
+    });
+    await expect(service.crearAsignatura({ nombre: 'Ética docente', programId: 7 }, 1, true)).resolves.toMatchObject({ oficial: true });
+  });
+
+  it('el mismo código en el mismo programa es la misma asignatura, aunque el nombre sea otro', async () => {
+    const { service, programRepo, asignaturaRepo } = armar();
+    programRepo.findOne.mockResolvedValue(LIC);
+    const oficial = { id: 1, nombre: 'Fundamentos de Algoritmia', codigo: '203413' };
+    asignaturaRepo.findOne.mockResolvedValueOnce(null).mockResolvedValueOnce(oficial);
+    await expect(service.crearAsignatura({ nombre: 'Algoritmos I', codigo: '203413', programId: 7 }, 42)).resolves.toBe(oficial);
+    expect(asignaturaRepo.save).not.toHaveBeenCalled();
+  });
+
+  it('si dos docentes la agregan a la vez, el índice único decide y se devuelve la que quedó', async () => {
+    const { service, programRepo, asignaturaRepo } = armar();
+    programRepo.findOne.mockResolvedValue(LIC);
+    const ganadora = { id: 9, nombre: 'Fundamentos de Programación' };
+    asignaturaRepo.save.mockRejectedValueOnce(Object.assign(new Error('dup'), { code: 'ER_DUP_ENTRY' }));
+    asignaturaRepo.findOne.mockResolvedValueOnce(null).mockResolvedValueOnce(ganadora);
+    await expect(service.crearAsignatura({ nombre: 'Fundamentos de Programación', programId: 7 }, 42)).resolves.toBe(ganadora);
+  });
+
+  it('«¿Es alguna de estas?»: encuentra la oficial por errata, por sinónimo o por código, en la misma institución', async () => {
+    const { service, programRepo, asignaturaRepo } = armar();
+    programRepo.findOne.mockResolvedValue(LIC);
+    const lista = [
+      { id: 1, nombre: 'Fundamentos de Algoritmia', nombreNormalizado: 'fundamentos algoritmia', codigo: '203413', oficial: true, sinonimos: null },
+      { id: 2, nombre: 'Fotografía', nombreNormalizado: 'fotografia', codigo: null, oficial: true, sinonimos: null },
+      { id: 3, nombre: 'Ética docente', nombreNormalizado: 'etica docente', codigo: null, oficial: false, sinonimos: 'deontologia docente' },
+    ];
+    Object.assign(asignaturaRepo, { find: jest.fn().mockResolvedValue(lista) });
+    expect((await service.parecidas({ nombre: 'Fundamentos de Algoritimia', programId: 7 })).map((a) => a.id)).toEqual([1]);
+    expect((await service.parecidas({ nombre: 'Deontología docente', programId: 7 })).map((a) => a.id)).toEqual([3]);
+    expect((await service.parecidas({ nombre: 'Algoritmos', codigo: '203413', programId: 7 })).map((a) => a.id)).toEqual([1]);
+    expect(await service.parecidas({ nombre: 'Robótica educativa', programId: 7 })).toEqual([]);
+  });
+
+  it('sinónimos: sin repetir, sin el nombre actual y sin pasar de 600 caracteres', () => {
+    expect(agregarSinonimos('a b|c d', ['c d', 'e f', 'nombre actual', ''], 'nombre actual')).toBe('a b|c d|e f');
+    expect(agregarSinonimos(null, [], 'x')).toBeNull();
+    expect(agregarSinonimos(null, Array.from({ length: 100 }, (_, i) => 'sinonimo largo ' + i), 'x')!.length).toBeLessThanOrEqual(600);
   });
 });

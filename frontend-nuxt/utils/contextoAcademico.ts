@@ -12,6 +12,8 @@ export interface AsignaturaInfo {
   institutionId?: number | null
   program?: ProgramaInfo | null
   institution?: InstitucionInfo | null
+  /** Del plan de estudios o confirmada por el admin; si no, la agregó un docente (funciona igual). */
+  oficial?: boolean
 }
 export interface ClaseConAsignatura { asignatura?: AsignaturaInfo | null }
 

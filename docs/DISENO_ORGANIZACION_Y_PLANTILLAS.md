@@ -129,7 +129,7 @@ docente que hace lo mismo pero solo en lo suyo. Así es como escalan Canvas (sub
 **Casos reales de hoy:**
 - **Fundamentos de Algoritmia** (203413, 3.er semestre, Lic. en Informática) es **una** asignatura con **dos** plantillas:
   «con JavaScript», según el plan de clase, y «Pensamiento algorítmico desde cero», otro enfoque con menos programación.
-- **La electiva de inteligencia artificial** es de la Universidad de Córdoba, **sin programa**: electiva libre.
+- **Uso de la Inteligencia Artificial en la Educación** (Prof. Víctor Castro) es de la Universidad de Córdoba, **sin programa**: electiva libre.
 
 ### 2.3 Plantillas: compartir por alcance, encontrarlas por cercanía
 
@@ -222,7 +222,7 @@ como aprobar o rechazar una matrícula):
 |---|---|---|
 | **0** | Texto verdadero en la barra superior («Lic. en Informática») | **Hecho, 04/10** |
 | **1** | Asignatura (tres formas), periodo y grupo en la clase; catálogo precargado (Unicórdoba, Licenciatura en Informática, Fundamentos de Algoritmia 203413); el docente agrega asignaturas, programas e instituciones (también colegios por grados); barra superior desde los datos | **Hecho, 04/10** (pedido «a la brevedad»). Falta completar las 2 clases reales en Ajustes |
-| **1.5** | Orden del catálogo (§2.2.1): nombre normalizado con índice único, «¿Es alguna de estas?», oficial o agregada, «Unir» con sinónimo y pantalla «Catálogo» del admin | Siguiente, antes de que otros docentes agreguen asignaturas |
+| **1.5** | Orden del catálogo (§2.2.1): nombre normalizado con índice único, «¿Es alguna de estas?», oficial o agregada, «Unir» con sinónimo y pantalla «Catálogo» del admin | **Hecho, 04/10** (falta desplegar el servidor). Electiva «Uso de la Inteligencia Artificial en la Educación» (Prof. Víctor Castro) cargada como oficial |
 | **2** | Plantillas por asignatura con enfoque, alcances y recomendación por cercanía con tarjetas de calidad | Semana siguiente |
 | **3** | Varias instituciones (colegios), filtro por programa en el inicio del docente, «Hay una versión nueva» | Cuando llegue el primer colegio |
 

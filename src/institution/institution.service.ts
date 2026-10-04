@@ -4,7 +4,15 @@ import { Brackets, IsNull, Repository } from 'typeorm';
 import { Institution } from './entities/institution.entity';
 import { Program } from './entities/program.entity';
 import { Asignatura } from './entities/asignatura.entity';
-import { BuscarAsignaturasDto, CrearAsignaturaDto, CrearInstitucionDto, CrearProgramaDto } from './dto/catalogo.dto';
+import {
+  ActualizarAsignaturaDto,
+  BuscarAsignaturasDto,
+  CrearAsignaturaDto,
+  CrearInstitucionDto,
+  CrearProgramaDto,
+  ParecidasDto,
+} from './dto/catalogo.dto';
+import { ambitoDe, normalizarNombre, sonParecidas } from './normalizar';
 
 /**
  * Catálogo académico (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md): instituciones, programas y asignaturas. Lo amplía
@@ -63,31 +71,72 @@ export class InstitutionService {
   }
 
   /**
-   * Buscar asignaturas por nombre o código. Primero las del programa indicado (el del docente), luego el resto; hasta 20.
+   * Buscar asignaturas por nombre, sinónimo o código. Compara nombres normalizados (sin tildes ni mayúsculas: la base de
+   * producción distingue mayúsculas al comparar). Primero las del programa del docente, después las oficiales; hasta 20.
    * Sin texto, devuelve las del programa indicado, para sugerirlas antes de escribir.
    */
   async buscarAsignaturas(dto: BuscarAsignaturasDto): Promise<Asignatura[]> {
     const q = (dto.q ?? '').trim();
-    if (!q && !dto.programId) return [];
+    const qn = normalizarNombre(q);
+    if (!qn && !dto.programId) return [];
     const qb = this.asignaturaRepo
       .createQueryBuilder('a')
       .leftJoinAndSelect('a.program', 'program')
       .leftJoinAndSelect('a.institution', 'institution');
-    if (q) {
-      qb.where(new Brackets((w) => w.where('a.nombre LIKE :q', { q: `%${q}%` }).orWhere('a.codigo LIKE :q', { q: `${q}%` })));
+    if (qn) {
+      qb.where(
+        new Brackets((w) =>
+          w
+            .where('a.nombreNormalizado LIKE :qn', { qn: `%${qn}%` })
+            .orWhere('a.sinonimos LIKE :qn', { qn: `%${qn}%` })
+            .orWhere('a.codigo LIKE :cod', { cod: `${q}%` }),
+        ),
+      );
     } else {
       qb.where('a.programId = :programId', { programId: dto.programId });
     }
     const filas = await qb.orderBy('a.nombre', 'ASC').take(60).getMany();
-    // Primero las del programa del docente, luego las de algún programa, luego las electivas y los cursos libres.
+    // Su programa, otros programas, electivas, cursos libres; dentro de cada grupo, las oficiales primero.
     const rango = (a: Asignatura) => (dto.programId && a.programId === dto.programId ? 0 : a.programId ? 1 : a.institutionId ? 2 : 3);
     return filas
-      .sort((x, y) => rango(x) - rango(y) || (x.periodoPlan ?? 99) - (y.periodoPlan ?? 99) || x.nombre.localeCompare(y.nombre, 'es'))
+      .sort(
+        (x, y) =>
+          rango(x) - rango(y) ||
+          Number(y.oficial) - Number(x.oficial) ||
+          (x.periodoPlan ?? 99) - (y.periodoPlan ?? 99) ||
+          x.nombre.localeCompare(y.nombre, 'es'),
+      )
       .slice(0, 20);
   }
 
-  /** Agregar una asignatura: de un programa, de una institución sin programa (electiva libre) o libre. */
-  async crearAsignatura(dto: CrearAsignaturaDto, creadaPorId: number): Promise<Asignatura> {
+  /**
+   * «¿Es alguna de estas?»: antes de agregar una asignatura, las parecidas de la misma institución (o los cursos libres):
+   * mismo código, o un nombre a una o dos letras, o con las mismas palabras. Hasta 5, las oficiales primero.
+   */
+  async parecidas(dto: ParecidasDto): Promise<Asignatura[]> {
+    const nn = normalizarNombre(dto.nombre);
+    if (!nn) return [];
+    let institutionId = dto.institutionId ?? null;
+    if (dto.programId) institutionId = (await this.programRepo.findOne({ where: { id: dto.programId } }))?.institutionId ?? institutionId;
+    const candidatas = await this.asignaturaRepo.find({ where: { institutionId: institutionId ?? IsNull() }, take: 2000 });
+    const codigo = dto.codigo?.trim();
+    return candidatas
+      .filter(
+        (a) =>
+          (!!codigo && a.codigo === codigo) ||
+          sonParecidas(nn, a.nombreNormalizado) ||
+          (a.sinonimos ?? '').split('|').some((s) => sonParecidas(nn, s)),
+      )
+      .sort((x, y) => Number(y.oficial) - Number(x.oficial) || x.nombre.localeCompare(y.nombre, 'es'))
+      .slice(0, 5);
+  }
+
+  /**
+   * Agregar una asignatura: de un programa, de una institución sin programa (electiva libre) o libre. Si ya existe la
+   * misma en el mismo lugar (nombre normalizado o código), devuelve esa: el índice único lo garantiza aunque dos docentes
+   * la agreguen a la vez. La de un admin queda oficial; la de un docente, agregada (funciona igual).
+   */
+  async crearAsignatura(dto: CrearAsignaturaDto, creadaPorId: number, esAdmin = false): Promise<Asignatura> {
     const nombre = dto.nombre.trim().replace(/\s+/g, ' ');
     let programId: number | null = null;
     let institutionId: number | null = dto.institutionId ?? null;
@@ -111,14 +160,120 @@ export class InstitutionService {
       throw new BadRequestException('Esa institución no existe.');
     }
 
-    const existente = await this.asignaturaRepo.findOne({
-      where: { nombre, programId: programId ?? IsNull(), institutionId: institutionId ?? IsNull() },
-    });
+    const nombreNormalizado = normalizarNombre(nombre);
+    if (nombreNormalizado.length < 3) throw new BadRequestException('Escribe el nombre completo de la asignatura.');
+    const ambito = ambitoDe(programId, institutionId);
+    const codigo = dto.codigo?.trim() || null;
+    const existente = await this.mismaEnElAmbito(ambito, nombreNormalizado, codigo);
     if (existente) return existente;
 
-    const nueva = await this.asignaturaRepo.save(
-      this.asignaturaRepo.create({ nombre, codigo: dto.codigo?.trim() || null, periodoPlan, programId, institutionId, creadaPorId }),
-    );
-    return (await this.asignaturaRepo.findOne({ where: { id: nueva.id } })) ?? nueva;
+    try {
+      const nueva = await this.asignaturaRepo.save(
+        this.asignaturaRepo.create({ nombre, nombreNormalizado, ambito, oficial: esAdmin, codigo, periodoPlan, programId, institutionId, creadaPorId }),
+      );
+      return (await this.asignaturaRepo.findOne({ where: { id: nueva.id } })) ?? nueva;
+    } catch (err) {
+      // Otro docente la agregó en el mismo instante: el índice único decide y se devuelve esa.
+      if ((err as { code?: string })?.code === 'ER_DUP_ENTRY') {
+        const ganadora = await this.mismaEnElAmbito(ambito, nombreNormalizado, codigo);
+        if (ganadora) return ganadora;
+      }
+      throw err;
+    }
   }
+
+  private async mismaEnElAmbito(ambito: string, nombreNormalizado: string, codigo: string | null): Promise<Asignatura | null> {
+    return (
+      (await this.asignaturaRepo.findOne({ where: { ambito, nombreNormalizado } })) ??
+      (codigo ? await this.asignaturaRepo.findOne({ where: { ambito, codigo } }) : null)
+    );
+  }
+
+  // ─── Pantalla «Catálogo» del admin (§2.2.2): revisar lo que STIRE detecta, sin buscar a mano ───
+
+  /** Posibles duplicados (misma institución o ambos libres) que nadie marcó como distintos, y las agregadas sin confirmar. */
+  async revisionDelCatalogo(): Promise<{
+    duplicados: Array<{ a: Asignatura; b: Asignatura; motivo: string }>;
+    agregadas: Asignatura[];
+    clasesPorAsignatura: Record<number, number>;
+  }> {
+    const todas = await this.asignaturaRepo.find({ order: { id: 'ASC' }, take: 5000 });
+    const distintas: Array<{ menorId: number; mayorId: number }> = await this.asignaturaRepo.manager.query(
+      'SELECT `menorId`, `mayorId` FROM `asignaturas_distintas`',
+    );
+    const yaRevisado = new Set(distintas.map((d) => `${d.menorId}-${d.mayorId}`));
+    const duplicados: Array<{ a: Asignatura; b: Asignatura; motivo: string }> = [];
+    for (let i = 0; i < todas.length; i++) {
+      for (let j = i + 1; j < todas.length; j++) {
+        const [a, b] = [todas[i], todas[j]];
+        if ((a.institutionId ?? 0) !== (b.institutionId ?? 0) || yaRevisado.has(`${a.id}-${b.id}`)) continue;
+        const motivo =
+          a.codigo && a.codigo === b.codigo ? 'mismo código' : sonParecidas(a.nombreNormalizado, b.nombreNormalizado) ? 'nombre parecido' : '';
+        if (motivo) duplicados.push({ a, b, motivo });
+      }
+    }
+    const conteo: Array<{ asignaturaId: number; n: string }> = await this.asignaturaRepo.manager.query(
+      'SELECT `asignaturaId`, COUNT(*) AS n FROM `classes` WHERE `asignaturaId` IS NOT NULL GROUP BY `asignaturaId`',
+    );
+    return {
+      duplicados: duplicados.slice(0, 100),
+      agregadas: todas.filter((a) => !a.oficial),
+      clasesPorAsignatura: Object.fromEntries(conteo.map((c) => [c.asignaturaId, Number(c.n)])),
+    };
+  }
+
+  /** El admin corrige el nombre o el código, o la confirma como oficial. El nombre viejo queda como sinónimo. */
+  async actualizarAsignatura(id: number, dto: ActualizarAsignaturaDto): Promise<Asignatura> {
+    const a = await this.asignaturaRepo.findOne({ where: { id } });
+    if (!a) throw new NotFoundException('Esa asignatura no existe.');
+    if (dto.nombre && dto.nombre.trim() !== a.nombre) {
+      const nombreNormalizado = normalizarNombre(dto.nombre);
+      const otra = await this.asignaturaRepo.findOne({ where: { ambito: a.ambito, nombreNormalizado } });
+      if (otra && otra.id !== a.id) throw new BadRequestException(`Ya existe «${otra.nombre}» en el mismo lugar: únelas en lugar de renombrar.`);
+      a.sinonimos = agregarSinonimos(a.sinonimos, [a.nombreNormalizado], nombreNormalizado);
+      a.nombre = dto.nombre.trim().replace(/\s+/g, ' ');
+      a.nombreNormalizado = nombreNormalizado;
+    }
+    if (dto.codigo !== undefined) a.codigo = dto.codigo.trim() || null;
+    if (dto.oficial !== undefined) a.oficial = dto.oficial;
+    return this.asignaturaRepo.save(a);
+  }
+
+  /**
+   * Unir: las clases de «origen» pasan a «destino», sus nombres quedan como sinónimos de destino y origen se borra.
+   * Nada se pierde: quien busque el nombre viejo encuentra la que se quedó.
+   */
+  async unirAsignaturas(origenId: number, destinoId: number): Promise<Asignatura> {
+    if (origenId === destinoId) throw new BadRequestException('Elige dos asignaturas distintas.');
+    return this.asignaturaRepo.manager.transaction(async (m) => {
+      const repo = m.getRepository(Asignatura);
+      const origen = await repo.findOne({ where: { id: origenId } });
+      const destino = await repo.findOne({ where: { id: destinoId } });
+      if (!origen || !destino) throw new NotFoundException('Esa asignatura no existe.');
+      await m.query('UPDATE `classes` SET `asignaturaId` = ? WHERE `asignaturaId` = ?', [destino.id, origen.id]);
+      destino.sinonimos = agregarSinonimos(destino.sinonimos, [origen.nombreNormalizado, ...(origen.sinonimos ?? '').split('|')], destino.nombreNormalizado);
+      if (!destino.codigo && origen.codigo) destino.codigo = origen.codigo;
+      if (!destino.periodoPlan && origen.periodoPlan && destino.programId === origen.programId) destino.periodoPlan = origen.periodoPlan;
+      destino.oficial = destino.oficial || origen.oficial;
+      await repo.remove(origen);
+      return repo.save(destino);
+    });
+  }
+
+  /** «Son distintas»: el par deja de salir como posible duplicado. */
+  async marcarDistintas(aId: number, bId: number): Promise<void> {
+    if (aId === bId) throw new BadRequestException('Elige dos asignaturas distintas.');
+    await this.asignaturaRepo.manager.query('INSERT IGNORE INTO `asignaturas_distintas` (`menorId`, `mayorId`) VALUES (?, ?)', [
+      Math.min(aId, bId),
+      Math.max(aId, bId),
+    ]);
+  }
+}
+
+/** Suma nombres normalizados a la lista de sinónimos, sin repetir ni incluir el nombre actual; cabe en 600 caracteres. */
+export function agregarSinonimos(actuales: string | null, nuevos: string[], nombreActual: string): string | null {
+  const lista = [...new Set([...(actuales ?? '').split('|'), ...nuevos].map((s) => s.trim()).filter((s) => s && s !== nombreActual))];
+  let out = '';
+  for (const s of lista) if ((out ? out.length + 1 : 0) + s.length <= 600) out = out ? `${out}|${s}` : s;
+  return out || null;
 }

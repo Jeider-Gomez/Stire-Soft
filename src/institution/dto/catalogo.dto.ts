@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
 import { TIPOS_INSTITUCION } from '../entities/institution.entity';
 import type { TipoInstitucion } from '../entities/institution.entity';
 import { TIPOS_PROGRAMA } from '../entities/program.entity';
@@ -84,4 +84,57 @@ export class BuscarAsignaturasDto {
   @Type(() => Number)
   @IsInt()
   programId?: number;
+}
+
+/** «¿Es alguna de estas?»: las asignaturas parecidas a la que se va a agregar. */
+export class ParecidasDto {
+  @IsString()
+  @MaxLength(150)
+  nombre!: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  programId?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  institutionId?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(30)
+  codigo?: string;
+}
+
+/** El admin corrige una asignatura o la confirma como oficial. */
+export class ActualizarAsignaturaDto {
+  @IsOptional()
+  @IsString({ message: 'El nombre debe ser texto' })
+  @MinLength(3, { message: 'Escribe el nombre completo de la asignatura' })
+  @MaxLength(150, { message: 'El nombre puede tener hasta 150 caracteres' })
+  nombre?: string;
+
+  @IsOptional()
+  @IsString({ message: 'El código debe ser texto' })
+  @MaxLength(30, { message: 'El código puede tener hasta 30 caracteres' })
+  codigo?: string;
+
+  @IsOptional()
+  @IsBoolean({ message: 'Oficial es sí o no' })
+  oficial?: boolean;
+}
+
+export class UnirAsignaturaDto {
+  @IsInt({ message: 'Elige la asignatura que se queda' })
+  destinoId!: number;
+}
+
+export class MarcarDistintasDto {
+  @IsInt()
+  aId!: number;
+
+  @IsInt()
+  bId!: number;
 }
