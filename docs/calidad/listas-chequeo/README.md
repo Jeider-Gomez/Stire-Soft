@@ -12,12 +12,18 @@ con su fecha y la versión evaluada. Cada lista va en dos formatos:
 - el **Word del profesor llenado**, con el mismo formato, para entregar;
 - una página **Markdown** con la misma revisión, para leerla y compararla en GitHub.
 
+## Plan de mejora
+
+[`PLAN_DE_MEJORA.md`](PLAN_DE_MEJORA.md) explica cómo se pasa del «antes» al 100 %. La regla es cumplir la intención de cada criterio sin limitar
+al Tutor. Tiene dos líneas de trabajo (interfaz y Tutores Inteligentes), una sola versión nueva (v2.0.0, para el martes 06/10) y la verificación de cada
+ítem por un integrante del equipo.
+
 ## Revisiones
 
 | Fecha | Versión evaluada | Interfaz (Pressman) | Sistemas Tutores Inteligentes (Caro) | Carpeta |
 |---|---|---|---|---|
 | **04/10/2026** · antes | `main @ 7c9977b` (v1.1.0 + ajustes de UI/UX del 02 y 03/10), desplegada | **20 / 32 · 62,5 %** · Básico con observaciones | **14 / 24 · 58,3 %** · Insuficiente | [`2026-10-04_antes/`](2026-10-04_antes/) |
-| después | v1.2.0, cuando se hagan los ajustes | — | — | — |
+| 06/10/2026 · después | v2.0.0, verificada por el equipo | — | — | `2026-10-06_v2.0.0/` |
 
 ### Antes (04/10/2026), por bloque
 
