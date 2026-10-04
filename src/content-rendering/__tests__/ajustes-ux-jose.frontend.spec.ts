@@ -311,3 +311,17 @@ describe('Hallazgos de José sobre el Tutor (docs/material-visual/01-tutor-ia/HA
     expect(d).not.toContain('bg-stire-teal/10 border border-stire-teal/40');
   });
 });
+
+describe('Cerrar el Tutor es fácil (pedido de Jeider, 03/10)', () => {
+  const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
+
+  it('pliegue sutil en el borde del panel (computador), X de 40 px y Escape', () => {
+    expect(d).toMatch(/v-if="pantallaAncha"\s+id="pliegue-tutor"[\s\S]*?aria-label="Recoger el Tutor"[\s\S]*?@click="tutorStore\.closeDrawer\(\)"/);
+    expect(d).toMatch(/id="cerrar-tutor"[\s\S]*?class="w-10 h-10/);
+    expect(d).toContain("if (event.key === 'Escape' && tutorStore.isOpen)");
+  });
+
+  it('al cerrar, el foco vuelve al lanzador aunque el botón que lo abrió ya no exista', () => {
+    expect(d).toContain("const destino = openerElement?.isConnected ? openerElement : document.getElementById('lanzador-tutor')");
+  });
+});

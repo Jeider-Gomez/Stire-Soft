@@ -23,6 +23,20 @@
         class="fixed top-0 right-0 h-full w-full max-w-drawer bg-base-blanco border-l border-base-borde-sutil shadow-2xl lg:shadow-lg z-50 flex flex-col justify-between focus:outline-none"
         @keydown="handleKeydown"
       >
+        <!-- Pliegue para recoger el panel (pedido de Jeider, 03/10: «un pliegue sutil para volver a recoger»). Pestaña
+             pegada al borde izquierdo, a media altura, solo en computador, donde el panel convive con la página. -->
+        <button
+          v-if="pantallaAncha"
+          id="pliegue-tutor"
+          type="button"
+          class="absolute top-1/2 -translate-y-1/2 -left-5 w-5 h-16 rounded-l-lg bg-base-blanco border border-r-0 border-base-borde-sutil shadow-md flex items-center justify-center text-slate-400 hover:text-stire-purple hover:w-6 hover:-left-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stire-purple/40 transition-all"
+          aria-label="Recoger el Tutor"
+          title="Recoger el Tutor (Esc)"
+          @click="tutorStore.closeDrawer()"
+        >
+          <ChevronRight :size="16" aria-hidden="true" />
+        </button>
+
         <!-- Header del Tutor IA -->
         <div class="p-4 flex items-center justify-between bg-gradient-to-r from-stire-blue via-[#0e48a8] to-stire-purple text-white select-none">
           <div class="flex items-center gap-3">
@@ -49,13 +63,17 @@
               <KeyRound :size="12" aria-hidden="true" /> Mi clave
             </button>
 
+            <!-- Cerrar fácil (pedido de Jeider, 03/10), sin estorbar: la X sigue discreta pero con un área de 40 px
+                 (antes ~28). También cierran el pliegue del borde, Escape y, en el celular, tocar el fondo. -->
             <button
+              id="cerrar-tutor"
               ref="closeButtonRef"
               @click="tutorStore.closeDrawer()"
-              class="p-1.5 rounded-lg text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
+              class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-200 hover:text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
               aria-label="Cerrar Tutor"
+              title="Cerrar (Esc)"
             >
-              <X :size="16" aria-hidden="true" />
+              <X :size="20" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -300,7 +318,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight, Ban, BookOpen, Bot, Clock, Compass, KeyRound, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
+import { ArrowRight, Ban, BookOpen, Bot, ChevronRight, Clock, Compass, KeyRound, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { atajosASimpleVista, atajosDisponibles, preguntasNuevas, type Atajo } from '~/utils/atajosTutor'
@@ -460,7 +478,12 @@ watch(
       openerElement = document.activeElement as HTMLElement | null
       focusInsideDrawer()
     } else {
-      nextTick(() => openerElement?.focus())
+      // El botón flotante que lo abrió se oculta mientras el panel está abierto: si ya no está en la página, el foco
+      // vuelve al lanzador nuevo para que el teclado no se pierda.
+      nextTick(() => {
+        const destino = openerElement?.isConnected ? openerElement : document.getElementById('lanzador-tutor')
+        destino?.focus()
+      })
     }
   }
 )
