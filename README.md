@@ -124,6 +124,10 @@ cada ola) están en [`CLAUDE.md`](CLAUDE.md). El historial de cambios, con su ev
 
 Docente: **Dr. Raúl Emiro Toscano Miranda** · Departamento de Informática Educativa, Universidad de Córdoba.
 
+**Colaboración:** **María Soto**, compañera del curso *Uso de la Inteligencia Artificial en la Educación*
+(Prof. Víctor Castro), donde STIRE se presenta con Jeider Gómez y José López. Acompaña la articulación del
+Tutor IA con las lecturas de IA educativa de ese curso.
+
 ---
 
 <sub>Proyecto académico de la Universidad de Córdoba. Todavía no tiene una licencia de código abierto declarada.</sub>
