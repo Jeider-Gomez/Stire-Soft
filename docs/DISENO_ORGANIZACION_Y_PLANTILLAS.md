@@ -76,6 +76,61 @@ de un administrador.
 - El administrador solo **une duplicados** («Fund. de Algoritmia» = «Fundamentos de Algoritmia») y corrige nombres. Es el
   mismo papel excepcional que ya tiene con la aprobación de docentes.
 
+### 2.2.1 Orden sin burocracia: cómo se evita el desorden (pregunta de Jeider, 04/10)
+
+**El riesgo:** si cada docente agrega asignaturas a su manera, aparecen «Fundamentos de Algoritmia», «Fund. Algoritmia» y
+«Algoritmia I» como tres cosas distintas, con sus plantillas repartidas. **La clave es separar tres capas con reglas
+distintas:**
+
+| Capa | Cuántas hay | ¿Se permiten varias «parecidas»? | Regla |
+|---|---|---|---|
+| **Catálogo** (instituciones, programas, asignaturas) | Pocas: cientos por universidad, y cambian una vez por plan de estudios | **No.** Una asignatura es una sola | Se previene el duplicado al escribir y se une el que se cuele |
+| **Plantillas** (contenido de un curso) | Muchas | **Sí, y es bueno:** son *enfoques* de la misma asignatura. «Fundamentos de Algoritmia con JavaScript» y «Pensamiento algorítmico, solo pseudocódigo» son dos plantillas de **una** asignatura | No se unen: se **agrupan** por asignatura y se **ordenan** por calidad |
+| **Clases** | Muchísimas | Sí: cada grupo y periodo es una | Privadas de su docente; no estorban a nadie |
+
+**1. Prevenir el duplicado al escribir** (sin intervención de nadie):
+- La base guarda el nombre **normalizado**: sin tildes ni mayúsculas, sin «de», «la», «y», y con las abreviaturas
+  expandidas («Fund.» → «Fundamentos»). Hay un índice único por programa sobre ese nombre y otro sobre el **código**, así que
+  dos asignaturas iguales no pueden existir en el mismo programa.
+- Antes de «Agregar», STIRE muestra **«¿Es alguna de estas?»** con las parecidas (mismo código, o nombre a una o dos letras
+  de distancia). Agregar otra exige un clic más.
+
+**2. Oficiales y agregadas:**
+- Las precargadas del plan de estudios, y las que alguien confirma, son **oficiales**: salen primero y con una marca.
+- Las que agrega un docente funcionan **al instante** (nunca se espera aprobación para dictar), pero salen como «agregada
+  por un docente» y después de las oficiales.
+
+**3. Unir lo que se cuele, sin perder nada:**
+- «Unir A en B» pasa las clases y plantillas de A a B, y guarda el nombre de A como **sinónimo**: quien busque «Fund.
+  Algoritmia» encuentra la oficial.
+- STIRE **detecta solo** los posibles duplicados (los mismos criterios del punto 1) y los lista en una pantalla «Catálogo».
+  Nadie tiene que buscarlos.
+
+**4. Plantillas sin ruido:**
+- Cada plantilla compartida pertenece a una asignatura y tiene un **enfoque** de una línea.
+- La lista se agrupa: «Fundamentos de Algoritmia — 2 enfoques», con las 3 mejores visibles (por cercanía, copias,
+  «¿te sirvió?» y actualidad) y el resto en «ver todas».
+- No se listan las plantillas vacías. Las que nadie ha copiado ni actualizado en dos periodos dejan de listarse solas
+  (no se borran).
+
+### 2.2.2 ¿Tiene que intervenir el admin?
+
+**En el día a día, no.** Crear asignaturas, dictar clases, compartir y copiar plantillas no espera a nadie. El admin (hoy
+Jeider) solo:
+1. **Revisa la pantalla «Catálogo»** cuando STIRE avisa de posibles duplicados: une o descarta con un clic. Es una carga
+   pequeña, porque el catálogo crece por planes de estudio, no por clases.
+2. **Confirma** como oficiales las asignaturas que agregan los docentes, si quiere (no es obligatorio).
+3. **Atiende lo excepcional:** una institución mal escrita o una plantilla reportada.
+
+**Cuando haya varias carreras o colegios** (no ahora), el admin nombra un **coordinador** por programa o institución: un
+docente que hace lo mismo pero solo en lo suyo. Así es como escalan Canvas (subcuentas por facultad) y Brightspace
+(unidades organizativas): la curaduría se reparte, no se concentra en una persona.
+
+**Casos reales de hoy:**
+- **Fundamentos de Algoritmia** (203413, 3.er semestre, Lic. en Informática) es **una** asignatura con **dos** plantillas:
+  «con JavaScript», según el plan de clase, y «Pensamiento algorítmico desde cero», otro enfoque con menos programación.
+- **La electiva de inteligencia artificial** es de la Universidad de Córdoba, **sin programa**: electiva libre.
+
 ### 2.3 Plantillas: compartir por alcance, encontrarlas por cercanía
 
 El sí/no de hoy se cambia por **«¿Con quién la compartes?»**, como en Canvas Commons, pero con los niveles de una universidad:
@@ -167,7 +222,8 @@ como aprobar o rechazar una matrícula):
 |---|---|---|
 | **0** | Texto verdadero en la barra superior («Lic. en Informática») | **Hecho, 04/10** |
 | **1** | Asignatura (tres formas), periodo y grupo en la clase; catálogo precargado (Unicórdoba, Licenciatura en Informática, Fundamentos de Algoritmia 203413); el docente agrega asignaturas, programas e instituciones (también colegios por grados); barra superior desde los datos | **Hecho, 04/10** (pedido «a la brevedad»). Falta completar las 2 clases reales en Ajustes |
-| **2** | Alcances de plantilla y recomendación por cercanía con tarjetas de calidad | Semana siguiente |
+| **1.5** | Orden del catálogo (§2.2.1): nombre normalizado con índice único, «¿Es alguna de estas?», oficial o agregada, «Unir» con sinónimo y pantalla «Catálogo» del admin | Siguiente, antes de que otros docentes agreguen asignaturas |
+| **2** | Plantillas por asignatura con enfoque, alcances y recomendación por cercanía con tarjetas de calidad | Semana siguiente |
 | **3** | Varias instituciones (colegios), filtro por programa en el inicio del docente, «Hay una versión nueva» | Cuando llegue el primer colegio |
 
 Cada fase lleva su migración (todas las columnas nuevas son opcionales, así que las clases de hoy no se tocan), sus
