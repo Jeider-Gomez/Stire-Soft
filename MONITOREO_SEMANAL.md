@@ -92,7 +92,7 @@ arriba (sin apagado automático durante la prueba), aprueba a los docentes y ati
   - Hallazgos de José sobre el chatbot (`HALLAZGOS.md`): la tarjeta «Practica esto» ahora se ve como botón y el saludo
     dice qué hacer (tocar la tarjeta o escribir la duda).
   - Pendiente: la revisión visual de José (`S08-JO02`).
-- [ ] **S08-J02 · Hallazgos del QA de Jorge** *(de su reporte del 02/10)*
+- [x] **S08-J02 · Hallazgos del QA de Jorge** *(de su reporte del 02/10)*
   - ~~QA-06: el indicador del nivel de ayuda del Tutor (Pista, Pregunta guía, Dónde está el error) parece un grupo de
     botones; rediseñarlo para que se lea como indicador.~~ Hecho el 04/10: ahora es una línea de texto con tres
     puntos, «Nivel de ayuda: pista · sube si sigues fallando el ejercicio».
@@ -101,7 +101,7 @@ arriba (sin apagado automático durante la prueba), aprueba a los docentes y ati
     en «Intentos: 3 / 3»), cada tecla pedía abrir un intento nuevo, el servidor lo negaba y salía el aviso en rojo.
     Ahora dice «Ya usaste tus intentos: lo que escribas no se guarda»; un fallo de red se reintenta solo (2, 5 y
     10 s); y al entregar o cambiar de ejercicio se cancela el guardado pendiente.
-  - Falta: desplegar y que Jorge lo verifique en `S08-JOR01`.
+  - En `main` (`2f5024c`) y desplegado en Vercel el 04/10. Jorge lo verifica en `S08-JOR01`.
 - [x] **Listas de chequeo del profesor: el «antes»** *(pedidas por correo; hecho el 04/10)*. Se aplicaron la lista de
   interfaz (Pressman, caps. 12–14) y la de Sistemas Tutores Inteligentes (Caro, 2015) a la versión desplegada, con código,
   capturas de computador y celular, teclado, modo oscuro, conexión cortada y axe-core. Resultados: interfaz **20/32
