@@ -173,7 +173,7 @@
           type="text"
           maxlength="120"
           placeholder="Nombre de la clase"
-          class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
+          class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
         />
       </div>
 
@@ -186,7 +186,7 @@
           v-model="editForm.description"
           rows="3"
           placeholder="Breve descripción de la clase..."
-          class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors resize-none"
+          class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors resize-none"
         />
       </div>
 
@@ -206,7 +206,7 @@
             id="copy-class-code-btn"
             type="button"
             @click="copyCode"
-            class="px-3 py-2 rounded-md text-xs font-bold bg-base-borde-sutil hover:bg-acento-ambar/20 text-base-texto-primario transition-colors flex-shrink-0 flex items-center gap-1"
+            class="min-h-[44px] px-3 py-2 rounded-md text-xs font-bold bg-base-borde-sutil hover:bg-acento-ambar/20 text-base-texto-primario transition-colors flex-shrink-0 flex items-center gap-1"
           >
             <Check v-if="codeCopied" :size="12" aria-hidden="true" />
             <span>{{ codeCopied ? 'Copiado' : 'Copiar' }}</span>
@@ -220,7 +220,7 @@
           type="button"
           :disabled="!hasChanges || isSavingData"
           @click="saveData"
-          class="px-4 py-2 rounded-md text-xs font-bold bg-acento-ambar text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-acento-ambar-fuerte"
+          class="min-h-[44px] px-4 py-2 rounded-md text-xs font-bold bg-acento-ambar text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-acento-ambar-fuerte"
         >
           {{ isSavingData ? 'Guardando...' : 'Guardar cambios' }}
         </button>

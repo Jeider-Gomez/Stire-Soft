@@ -18,6 +18,10 @@ describe('UX-07 · contraste sobre fondos grises (axe-core color-contrast)', () 
     expect(a).toContain('<span class="block text-[11px] text-slate-600">{{ o.motivoNoDisponible || o.ayuda }}</span>');
   });
 
+  it('la asignatura elegida (sobre gris, en Ajustes y Crear clase) no usa el gris secundario', () => {
+    expect(leer('components', 'docente', 'SelectorAsignatura.vue')).not.toContain('text-base-texto-secundario');
+  });
+
   it('en Contenidos, la descripción del módulo y «Publicado» alcanzan 4,5:1', () => {
     const c = leer('pages', 'docente', 'contenidos.vue');
     expect(c).toContain('<p v-if="sec.description" class="text-[11px] text-slate-600">');
@@ -49,9 +53,16 @@ describe('MOB-02 · controles de 44 px en el celular', () => {
     expect(leer('pages', 'estudiante', 'index.vue')).not.toContain('min-h-[32px]');
   });
 
-  it('los campos del perfil miden 44 px (antes 39 px)', () => {
-    const f = leer('components', 'perfil', 'Form.vue');
-    expect(f).not.toMatch(/class="w-full px-3 py-2/);
+  it.each([
+    ['components/perfil/Form.vue'],
+    ['pages/docente/clase/[classId]/ajustes.vue'],
+  ])('los campos de %s miden 44 px (antes 39 px)', (rel) => {
+    expect(leer(rel)).not.toMatch(/class="w-full px-3 py-2/);
+  });
+
+  it('los enlaces de la lección en Mi progreso y «Editar la lección» en Hoy se tocan con el pulgar (antes 15 y 17 px)', () => {
+    expect(leer('pages', 'estudiante', 'progreso.vue')).toMatch(/min-h-\[44px\] sm:min-h-0 text-xs font-bold text-base-texto-primario hover:underline">\{\{ item\.unitTitle \}\}/);
+    expect(leer('components', 'docente', 'ValoracionesClase.vue')).toMatch(/min-h-\[44px\] sm:min-h-0[^>]*>Editar la lección/);
   });
 
   it('Crear clase: «Cerrar» y «Generar sugerido» ya no miden 32 y 17 px', () => {

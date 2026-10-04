@@ -16,7 +16,7 @@
             <ThumbsDown :size="12" class="inline -mt-0.5" aria-hidden="true" /> {{ f.no }}
             <span v-if="f.porcentajeUtil !== null"> · {{ f.porcentajeUtil }} % le sirvió</span>
           </span>
-          <NuxtLink :to="`/docente/contenidos?classId=${classId}&unitId=${f.learningUnitId}`" class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline">Editar la lección</NuxtLink>
+          <NuxtLink :to="`/docente/contenidos?classId=${classId}&unitId=${f.learningUnitId}`" class="inline-flex items-center min-h-[44px] sm:min-h-0 text-[11px] font-semibold text-acento-ambar-fuerte hover:underline">Editar la lección</NuxtLink>
         </div>
         <ul v-if="f.comentarios.length" class="pl-3 border-l-2 border-base-borde-sutil space-y-1">
           <li v-for="(c, i) in f.comentarios" :key="i" class="text-[11px] text-slate-700">«{{ c }}»</li>

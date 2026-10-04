@@ -6,15 +6,15 @@
     <!-- Elegida -->
     <div v-if="modelValue" class="flex items-start justify-between gap-3 rounded-lg border border-base-borde-sutil bg-base-bg-secundario p-3">
       <div class="min-w-0">
-        <p class="text-sm font-semibold text-base-texto-primario">{{ modelValue.nombre }}<span v-if="modelValue.codigo" class="font-normal text-base-texto-secundario"> · {{ modelValue.codigo }}</span></p>
-        <p class="text-xs text-base-texto-secundario">{{ lugarDeAsignatura(modelValue) }}<template v-if="modelValue.institution && modelValue.program"> · {{ institucionCorta(modelValue.institution) }}</template></p>
+        <p class="text-sm font-semibold text-base-texto-primario">{{ modelValue.nombre }}<span v-if="modelValue.codigo" class="font-normal text-slate-600"> · {{ modelValue.codigo }}</span></p>
+        <p class="text-xs text-slate-600">{{ lugarDeAsignatura(modelValue) }}<template v-if="modelValue.institution && modelValue.program"> · {{ institucionCorta(modelValue.institution) }}</template></p>
       </div>
       <button type="button" class="shrink-0 min-h-[44px] px-3 text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="quitar">Cambiar</button>
     </div>
 
     <!-- Buscar -->
     <div v-else-if="!agregando" class="relative">
-      <Search :size="15" class="absolute left-3 top-3.5 text-base-texto-secundario pointer-events-none" aria-hidden="true" />
+      <Search :size="15" class="absolute left-3 top-3.5 text-slate-600 pointer-events-none" aria-hidden="true" />
       <input
         :id="inputId"
         v-model="texto"
@@ -43,8 +43,8 @@
           class="px-3 py-2.5 cursor-pointer min-h-[44px]"
           :class="activa === i ? 'bg-acento-ambar/10' : 'hover:bg-base-bg-secundario'"
           @mousedown.prevent="elegir(a)">
-          <p class="text-sm text-base-texto-primario">{{ a.nombre }}<span v-if="a.codigo" class="text-base-texto-secundario"> · {{ a.codigo }}</span></p>
-          <p class="text-[11px] text-base-texto-secundario">{{ lugarDeAsignatura(a) }}<span v-if="a.oficial" class="ml-1.5 inline-flex items-center gap-0.5 font-semibold text-semantico-exito"><BadgeCheck :size="11" aria-hidden="true" /> Oficial</span></p>
+          <p class="text-sm text-base-texto-primario">{{ a.nombre }}<span v-if="a.codigo" class="text-slate-600"> · {{ a.codigo }}</span></p>
+          <p class="text-[11px] text-slate-600">{{ lugarDeAsignatura(a) }}<span v-if="a.oficial" class="ml-1.5 inline-flex items-center gap-0.5 font-semibold text-semantico-exito"><BadgeCheck :size="11" aria-hidden="true" /> Oficial</span></p>
         </li>
         <li
           v-if="texto.trim().length >= 3"
@@ -57,7 +57,7 @@
           <Plus :size="14" aria-hidden="true" /> Agregar «{{ texto.trim() }}»
         </li>
       </ul>
-      <p :id="`${uid}-ayuda`" class="mt-1 text-[11px] text-base-texto-secundario">Opcional. Con la asignatura, la clase muestra su programa y semestre, y las plantillas se encuentran solas.</p>
+      <p :id="`${uid}-ayuda`" class="mt-1 text-[11px] text-slate-600">Opcional. Con la asignatura, la clase muestra su programa y semestre, y las plantillas se encuentran solas.</p>
     </div>
 
     <!-- Agregar -->
@@ -67,7 +67,7 @@
         <label class="sm:col-span-2 text-xs font-semibold text-base-texto-primario">Nombre
           <input v-model="nueva.nombre" type="text" maxlength="150" class="input-stire mt-1 min-h-[44px]" />
         </label>
-        <label class="text-xs font-semibold text-base-texto-primario">Código <span class="font-normal text-base-texto-secundario">(opcional)</span>
+        <label class="text-xs font-semibold text-base-texto-primario">Código <span class="font-normal text-slate-600">(opcional)</span>
           <input v-model="nueva.codigo" type="text" maxlength="30" placeholder="203413" class="input-stire mt-1 min-h-[44px]" />
         </label>
       </div>
@@ -75,7 +75,7 @@
       <div role="radiogroup" aria-label="Dónde va la asignatura" class="space-y-1.5">
         <label v-for="o in OPCIONES" :key="o.valor" class="flex items-start gap-2 text-xs cursor-pointer min-h-[44px] py-1">
           <input v-model="nueva.donde" type="radio" :value="o.valor" class="mt-0.5" />
-          <span><span class="font-semibold text-base-texto-primario">{{ o.titulo }}</span><br /><span class="text-base-texto-secundario">{{ o.ayuda }}</span></span>
+          <span><span class="font-semibold text-base-texto-primario">{{ o.titulo }}</span><br /><span class="text-slate-600">{{ o.ayuda }}</span></span>
         </label>
       </div>
 
@@ -111,7 +111,7 @@
             <option :value="NUEVA">Otro programa o nivel…</option>
           </select>
         </label>
-        <label v-if="nueva.programId !== null" class="text-xs font-semibold text-base-texto-primario">{{ tipoPrograma === 'grado' ? 'Grado' : 'Semestre' }} <span class="font-normal text-base-texto-secundario">(opcional)</span>
+        <label v-if="nueva.programId !== null" class="text-xs font-semibold text-base-texto-primario">{{ tipoPrograma === 'grado' ? 'Grado' : 'Semestre' }} <span class="font-normal text-slate-600">(opcional)</span>
           <select v-model="nueva.periodoPlan" class="input-stire mt-1 min-h-[44px]">
             <option :value="null">Sin {{ tipoPrograma === 'grado' ? 'grado' : 'semestre' }} fijo</option>
             <option v-for="n in periodosDelPrograma" :key="n" :value="n">{{ periodoDelPlan(n, tipoPrograma) }}</option>
@@ -132,7 +132,7 @@
               <input v-model.number="nueva.programaPeriodos" type="number" min="1" max="20" class="input-stire mt-1 min-h-[44px]" />
             </label>
           </div>
-          <label class="sm:col-span-2 text-xs font-semibold text-base-texto-primario">Facultad <span class="font-normal text-base-texto-secundario">(opcional; un colegio no tiene)</span>
+          <label class="sm:col-span-2 text-xs font-semibold text-base-texto-primario">Facultad <span class="font-normal text-slate-600">(opcional; un colegio no tiene)</span>
             <input v-model="nueva.programaFacultad" type="text" maxlength="150" class="input-stire mt-1 min-h-[44px]" />
           </label>
         </template>
@@ -144,8 +144,8 @@
         <ul class="space-y-1.5">
           <li v-for="a in parecidas" :key="a.id" class="flex items-center justify-between gap-2 rounded-md bg-base-blanco px-3 py-1.5">
             <span class="min-w-0 text-xs">
-              <span class="font-semibold text-base-texto-primario">{{ a.nombre }}</span><span v-if="a.codigo" class="text-base-texto-secundario"> · {{ a.codigo }}</span>
-              <span class="block text-[11px] text-base-texto-secundario">{{ lugarDeAsignatura(a) }}<template v-if="a.oficial"> · oficial</template></span>
+              <span class="font-semibold text-base-texto-primario">{{ a.nombre }}</span><span v-if="a.codigo" class="text-slate-600"> · {{ a.codigo }}</span>
+              <span class="block text-[11px] text-slate-600">{{ lugarDeAsignatura(a) }}<template v-if="a.oficial"> · oficial</template></span>
             </span>
             <button type="button" class="shrink-0 min-h-[44px] px-3 rounded-md text-xs font-bold bg-acento-ambar-fuerte text-base-blanco" @click="usarParecida(a)">Usar esta</button>
           </li>

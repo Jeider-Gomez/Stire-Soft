@@ -63,7 +63,7 @@
         <ul class="divide-y divide-base-borde-sutil">
           <li v-for="item in studentStore.analytics.masteryByUnit" :key="item.unitId" class="py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <div class="min-w-0 sm:w-1/2">
-              <NuxtLink :to="`/estudiante/unidad/${item.unitId}`" class="text-xs font-bold text-base-texto-primario hover:underline">{{ item.unitTitle }}</NuxtLink>
+              <NuxtLink :to="`/estudiante/unidad/${item.unitId}`" class="inline-flex items-center min-h-[44px] sm:min-h-0 text-xs font-bold text-base-texto-primario hover:underline">{{ item.unitTitle }}</NuxtLink>
               <p class="mt-0.5 flex flex-wrap items-center gap-1.5 text-[10px]">
                 <span class="px-1.5 py-0.5 rounded font-bold" :class="claseEstado(item.mastery)">{{ getMasteryLevelName(item.mastery) }}</span>
                 <span v-if="debeRepasar(item)" class="inline-flex items-center gap-1 font-semibold text-acento-ambar-fuerte">
