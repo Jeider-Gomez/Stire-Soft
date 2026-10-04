@@ -61,13 +61,16 @@ export class LearningUnitService {
   }
 
   /**
-   * Obtener todas las unidades de una clase
+   * Obtener todas las unidades de una clase: unidad → tema → sección (módulo) → clase. La clase está en la sección;
+   * antes se filtraba por `topic.classId`, que no existe, y la consulta fallaba con un 500 (revisión del 04/10 de la
+   * v2.0.0, al usarla por primera vez para «¿Les sirvieron las explicaciones?»).
    */
   async findByClass(classId: number): Promise<LearningUnit[]> {
     return await this.learningUnitRepository
       .createQueryBuilder('unit')
       .innerJoin('unit.topic', 'topic')
-      .where('topic.classId = :classId', { classId })
+      .innerJoin('topic.section', 'section')
+      .where('section.classId = :classId', { classId })
       .orderBy('unit.order', 'ASC')
       .getMany();
   }

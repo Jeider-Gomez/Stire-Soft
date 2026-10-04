@@ -8,7 +8,7 @@
       <!-- Botón colapsar sidebar (mobile) -->
       <button
         @click="$emit('toggle-sidebar')"
-        class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors duration-150 flex-shrink-0 md:hidden"
+        class="p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors duration-150 flex-shrink-0 md:hidden"
         aria-label="Abrir menú lateral"
       >
         <Menu :size="18" />
@@ -87,7 +87,7 @@
       <div class="relative" ref="avatarMenuRef">
         <button
           @click="showUserMenu = !showUserMenu"
-          class="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 transition-colors duration-150 group"
+          class="flex items-center gap-2 p-1 min-h-[44px] rounded-xl hover:bg-slate-100 transition-colors duration-150 group"
           :aria-label="`Menú de ${authStore.user?.fullName || 'usuario'}`"
         >
           <AvatarUsuario :nombre="authStore.user?.fullName" :foto-id="authStore.user?.fotoId" decorativo

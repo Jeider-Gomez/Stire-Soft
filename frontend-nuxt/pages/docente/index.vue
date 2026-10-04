@@ -103,7 +103,7 @@
               <AlertTriangle :size="18" class="text-amber-700" />
             </div>
             <button
-              class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stire-warning/15 text-amber-700
+              class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stire-warning/15 text-amber-800
                      hover:bg-stire-warning/25 transition-colors whitespace-nowrap"
               title="Ver quiénes están en rezago"
               @click="navigateTo('/docente/rendimiento')"

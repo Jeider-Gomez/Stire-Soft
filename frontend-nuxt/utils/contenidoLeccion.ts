@@ -7,7 +7,7 @@
 //
 // Lo que está dentro de otro bloque de código no se toca: es un ejemplo para leer.
 
-import { esPseudocodigo } from './algoritmoMultiformato'
+import { esJavaScriptAlgoritmo, esPseudocodigo } from './algoritmoMultiformato'
 
 export const IMAGEN_EN_LINEA = /^!\[([^\]\n]*)\]\(\s*(\S+?)(?:\s+"([^"\n]*)")?\s*\)$/
 export const RECURSO_EN_LINEA = /^@\[([^\]\n]*)\]\(\s*(\S+?)\s*\)$/
@@ -17,8 +17,11 @@ export type Segmento =
   | { tipo: 'imagen'; alt: string; url: string; pie: string | null }
   | { tipo: 'recurso'; titulo: string; url: string }
   | { tipo: 'vivo'; codigo: string }
-  /** Un algoritmo en pseudocódigo (empieza con «Algoritmo» o «Proceso»): se puede ver como texto, diagrama o pasos (UI-01). */
-  | { tipo: 'algoritmo'; codigo: string }
+  /**
+   * Un algoritmo (pseudocódigo que empieza con «Algoritmo» o JavaScript que muestra o decide algo): se puede ver como
+   * código, pseudocódigo, diagrama de flujo o paso a paso (UI-01). Si no se puede dibujar con fidelidad, solo el código.
+   */
+  | { tipo: 'algoritmo'; codigo: string; lenguaje: 'pseudocodigo' | 'javascript' }
 
 /** Cómo se inserta cada recurso, armado por el servidor al guardar (`metadata.insertados`). */
 export type Insertados = Record<string, { url: string; provider: string; embedUrl: string | null }>
@@ -45,7 +48,10 @@ export function partirContenido(texto: string): Segmento[] {
         segmentos.push({ tipo: 'vivo', codigo: cuerpo })
       } else if ((lenguaje === '' || lenguaje === 'pseudocodigo' || lenguaje === 'psc') && esPseudocodigo(cuerpo)) {
         cerrarTexto()
-        segmentos.push({ tipo: 'algoritmo', codigo: cuerpo })
+        segmentos.push({ tipo: 'algoritmo', codigo: cuerpo, lenguaje: 'pseudocodigo' })
+      } else if ((lenguaje === '' || lenguaje === 'js' || lenguaje === 'javascript') && esJavaScriptAlgoritmo(cuerpo)) {
+        cerrarTexto()
+        segmentos.push({ tipo: 'algoritmo', codigo: cuerpo, lenguaje: 'javascript' })
       } else {
         parrafo.push(...lineas.slice(i, fin + 1))
       }

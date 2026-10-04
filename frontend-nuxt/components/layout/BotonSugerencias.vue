@@ -5,7 +5,7 @@
   <div>
     <button
       type="button"
-      class="flex items-center gap-1.5 px-2 py-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors text-xs font-semibold min-h-[40px]"
+      class="flex items-center gap-1.5 px-2 py-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors text-xs font-semibold min-h-[44px] min-w-[44px] justify-center"
       aria-label="Enviar una sugerencia o contar un problema"
       @click="abrir"
     >

@@ -24,7 +24,7 @@
         <!-- 1. Inicio (EST-V01) -->
         <NuxtLink
           to="/estudiante"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="isCurrentRoute('/estudiante') && route.path === '/estudiante' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <House :size="18" aria-hidden="true" class="shrink-0" />
           <span>Inicio</span>
@@ -36,7 +36,7 @@
           <div v-for="mod in studentStore.modules" :key="mod.id" class="mb-1">
             <button
               @click="toggleModule(mod.id)"
-              class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-md hover:bg-base-bg-secundario text-base-texto-primario transition-colors">
+              class="w-full flex items-center justify-between min-h-[44px] px-3 py-2 text-xs font-semibold rounded-md hover:bg-base-bg-secundario text-base-texto-primario transition-colors">
               <span class="truncate flex items-center gap-1.5">
                 <Lock v-if="studentStore.estadoModulo(mod.id)?.abierto === false" :size="12" class="shrink-0 text-slate-500" aria-label="Bloqueado" />
                 {{ mod.title.split(':')[0] }}
@@ -58,7 +58,7 @@
                   v-for="unit in tema.units"
                   :key="unit.id"
                   :to="`/estudiante/unidad/${unit.id}`"
-                  class="flex items-center justify-between text-xs px-2.5 py-1.5 rounded transition-colors"
+                  class="flex items-center justify-between min-h-[40px] text-xs px-2.5 py-1.5 rounded transition-colors"
                   :class="route.path === `/estudiante/unidad/${unit.id}` ? 'bg-base-bg-secundario font-semibold text-acento-ambar-fuerte' : 'text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario/60'">
                   <div class="flex items-center gap-1.5 truncate">
                     <span class="inline-block w-1.5 h-1.5 rounded-full shrink-0" :class="getStatusDotClass(unit.status)" aria-hidden="true"></span>
@@ -94,7 +94,7 @@
         <!-- 6. Mi Progreso (EST-V06) -->
         <NuxtLink
           to="/estudiante/progreso"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/progreso' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <TrendingUp :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mi Progreso</span>
@@ -103,7 +103,7 @@
         <!-- Asistencia con QR (src/asistencia): el código que el estudiante le muestra al docente -->
         <NuxtLink
           to="/estudiante/asistencia"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/asistencia' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <QrCode :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mi asistencia</span>
@@ -113,7 +113,7 @@
         <NuxtLink
           v-if="proyectosDisponible"
           to="/estudiante/proyectos"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path.startsWith('/estudiante/proyectos') ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <FolderCode :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mis proyectos</span>
@@ -122,7 +122,7 @@
         <!-- 7. Mensajes -->
         <NuxtLink
           to="/estudiante/mensajes"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/mensajes' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <Mail :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
@@ -135,7 +135,7 @@
 
         <NuxtLink
           to="/docente"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <Users :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mis Clases</span>
@@ -151,20 +151,20 @@
             :key="c.id"
             :to="`/docente/clase/${c.id}`"
             :title="c.name"
-            class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+            class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
             :class="claseActiva === c.id ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
             <BookOpen :size="18" aria-hidden="true" class="shrink-0" />
             <!-- Dos grupos de la misma materia se cortan igual: el código los distingue. -->
             <span class="min-w-0">
               <span class="block truncate">{{ c.name }}</span>
-              <span v-if="c.code" class="block truncate font-mono text-[10px] font-normal text-base-texto-secundario">{{ c.code }}</span>
+              <span v-if="c.code" class="block truncate font-mono text-[10px] font-normal text-slate-600">{{ c.code }}</span>
             </span>
           </NuxtLink>
         </div>
 
         <NuxtLink
           to="/docente/mensajes"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/mensajes' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <Mail :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
@@ -177,7 +177,7 @@
 
         <NuxtLink
           to="/admin/dashboard"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/dashboard' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <Activity :size="18" aria-hidden="true" class="shrink-0" />
           <span>Estado del Sistema</span>
@@ -185,7 +185,7 @@
 
         <NuxtLink
           to="/admin"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin' || route.path === '/admin/usuarios' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <ShieldCheck :size="18" aria-hidden="true" class="shrink-0" />
           <span>Usuarios y Roles</span>
@@ -193,7 +193,7 @@
 
         <NuxtLink
           to="/admin/sugerencias"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/sugerencias' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <MessageSquarePlus :size="18" aria-hidden="true" class="shrink-0" />
           <span>Sugerencias</span>
@@ -201,7 +201,7 @@
 
         <NuxtLink
           to="/admin/sistema"
-          class="flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/sistema' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <Settings :size="18" aria-hidden="true" class="shrink-0" />
           <span>Logs y Mantenimiento</span>

@@ -11,16 +11,16 @@
       <!-- Resumen de la semana (estilo «Class Snapshot»): esta semana frente a la anterior. -->
       <dl v-if="semana" class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs" aria-label="Esta semana">
         <div class="rounded-lg bg-base-bg-secundario px-3 py-2">
-          <dt class="text-[11px] text-base-texto-secundario">Practicaron esta semana</dt>
-          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.estudiantesActivos }} de {{ semana.total }} <span class="font-normal text-base-texto-secundario">· la anterior {{ semana.semanaAnterior.estudiantesActivos }}</span></dd>
+          <dt class="text-[11px] text-slate-600">Practicaron esta semana</dt>
+          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.estudiantesActivos }} de {{ semana.total }} <span class="font-normal text-slate-600">· la anterior {{ semana.semanaAnterior.estudiantesActivos }}</span></dd>
         </div>
         <div class="rounded-lg bg-base-bg-secundario px-3 py-2">
-          <dt class="text-[11px] text-base-texto-secundario">Ejercicios entregados</dt>
-          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.ejercicios }} <span class="font-normal text-base-texto-secundario">· la anterior {{ semana.semanaAnterior.ejercicios }}</span></dd>
+          <dt class="text-[11px] text-slate-600">Ejercicios entregados</dt>
+          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.ejercicios }} <span class="font-normal text-slate-600">· la anterior {{ semana.semanaAnterior.ejercicios }}</span></dd>
         </div>
         <div class="rounded-lg bg-base-bg-secundario px-3 py-2">
-          <dt class="text-[11px] text-base-texto-secundario">Aprobados</dt>
-          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.aprobados }} <span class="font-normal text-base-texto-secundario">· la anterior {{ semana.semanaAnterior.aprobados }}</span></dd>
+          <dt class="text-[11px] text-slate-600">Aprobados</dt>
+          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.aprobados }} <span class="font-normal text-slate-600">· la anterior {{ semana.semanaAnterior.aprobados }}</span></dd>
         </div>
       </dl>
     </header>

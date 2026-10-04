@@ -80,6 +80,138 @@ export function leerAlgoritmo(codigo: string): Nodo[] | null {
   return arbol.length ? arbol : null
 }
 
+// ─── JavaScript de las lecciones → la misma estructura ─────────────────────────────────────────────────────────────
+// Casi todos los algoritmos del curso están en JavaScript (revisión del 04/10: 12 de 13 bloques). Se leen los que usan lo
+// que se enseña en Fundamentos: lectura de la entrada, variables, operaciones, if / else if / else, for, while y
+// console.log. Si aparece algo que no se puede dibujar con fidelidad (funciones, objetos, el DOM…), devuelve null y la
+// lección muestra solo el código.
+
+const expresion = (t: string) =>
+  t.replace(/;\s*$/, '')
+    .replace(/Math\.floor\(/g, 'trunc(').replace(/Math\.round\(/g, 'redon(').replace(/Math\.sqrt\(/g, 'raiz(').replace(/Math\.abs\(/g, 'abs(')
+    .replace(/===/g, '=').replace(/!==/g, '≠').replace(/&&/g, ' y ').replace(/\|\|/g, ' o ')
+    .replace(/!(?!=)/g, 'no ')
+    .replace(/\s+/g, ' ').trim()
+
+/** Un bloque de JavaScript parece un algoritmo (no HTML, no CSS) si muestra o decide algo. */
+export function esJavaScriptAlgoritmo(codigo: string): boolean {
+  const t = codigo.trim()
+  if (!t || t.startsWith('<') || /^[.#]?[\w-]+\s*\{/m.test(t.split('\n')[0] ?? '')) return false
+  return /console\.log\(|\bif\s*\(|\bfor\s*\(|\bwhile\s*\(/.test(t)
+}
+
+export function leerJavaScript(codigo: string): Nodo[] | null {
+  // Los comentarios al final de una línea se quitan; los que ocupan una línea entera se guardan aparte: si un bloque
+  // solo tiene comentarios (una plantilla como «if (condición) { // se ejecuta si… }»), ellos son sus pasos.
+  const lineas = codigo.split(/\r?\n/)
+    .map((l) => (l.trim().startsWith('//') ? l.trim() : l.replace(/\/\/.*$/, '').trim()))
+    .filter((l) => l !== '')
+  let i = 0
+
+  function bloque(raiz: boolean): { nodos: Nodo[]; cierre: string } | null {
+    const nodos: Nodo[] = []
+    const comentarios: Nodo[] = []
+    const cerrar = (cierre: string) => ({ nodos: nodos.length ? nodos : comentarios, cierre })
+    while (i < lineas.length) {
+      const l = lineas[i++]
+      let m: RegExpExecArray | null
+      if (l.startsWith('//')) {
+        comentarios.push({ tipo: 'proceso', texto: `(${l.replace(/^\/\/\s*/, '')})` })
+        continue
+      }
+      if (/^\}/.test(l)) {
+        if (raiz) return null
+        return cerrar(l)
+      }
+      if ((m = /^if\s*\((.+)\)\s*\{$/.exec(l))) {
+        const si = condicional(expresion(m[1]))
+        if (!si) return null
+        nodos.push(si)
+      } else if ((m = /^for\s*\(\s*(?:let|var)?\s*(\w+)\s*=\s*([^;]+);\s*(\w+)\s*(<=|<)\s*([^;]+);\s*(\w+)\s*(\+\+|\+=\s*(\d+))\s*\)\s*\{$/.exec(l)) && m[1] === m[3] && m[1] === m[6]) {
+        const cuerpo = bloque(false)
+        if (!cuerpo || cuerpo.cierre !== '}') return null
+        const hasta = m[4] === '<' ? `${expresion(m[5])} - 1` : expresion(m[5])
+        nodos.push({ tipo: 'para', variable: m[1], desde: expresion(m[2]), hasta, paso: m[8] ?? null, cuerpo: cuerpo.nodos })
+      } else if ((m = /^while\s*\((.+)\)\s*\{$/.exec(l))) {
+        const cuerpo = bloque(false)
+        if (!cuerpo || cuerpo.cierre !== '}') return null
+        nodos.push({ tipo: 'mientras', condicion: expresion(m[1]), cuerpo: cuerpo.nodos })
+      } else if ((m = /^console\.log\((.*)\);?$/.exec(l))) {
+        nodos.push({ tipo: 'escribir', texto: expresion(m[1]) })
+      } else if (/readFileSync/.test(l)) {
+        nodos.push({ tipo: 'leer', texto: 'la entrada' })
+      } else if ((m = /^(?:const|let|var)\s+(\w+)\s*=\s*(.+)$/.exec(l))) {
+        if (/=>|\bfunction\b|\{\s*$|document\.|\bnew\b/.test(m[2])) return null
+        if (/\blineas\[[^\]]+\]|\binput\b|\bentrada\b/.test(m[2])) nodos.push({ tipo: 'leer', texto: m[1] })
+        else nodos.push({ tipo: 'proceso', texto: `${m[1]} ← ${expresion(m[2])}` })
+      } else if ((m = /^(?:let|var)\s+(\w+);?$/.exec(l))) {
+        continue // declarar sin valor no es un paso del algoritmo
+      } else if ((m = /^(\w+)\s*(\+\+|--);?$/.exec(l))) {
+        nodos.push({ tipo: 'proceso', texto: `${m[1]} ← ${m[1]} ${m[2] === '++' ? '+' : '-'} 1` })
+      } else if ((m = /^(\w+)\s*([+\-*/])=\s*(.+)$/.exec(l))) {
+        nodos.push({ tipo: 'proceso', texto: `${m[1]} ← ${m[1]} ${m[2]} ${expresion(m[3])}` })
+      } else if ((m = /^(\w+)\s*=\s*([^=].*)$/.exec(l))) {
+        if (/=>|\bfunction\b|document\./.test(m[2])) return null
+        nodos.push({ tipo: 'proceso', texto: `${m[1]} ← ${expresion(m[2])}` })
+      } else {
+        return null // funciones, return, objetos, DOM…: no se dibuja
+      }
+    }
+    return raiz ? cerrar('') : null
+  }
+
+  // if (…) { … } [else if (…) { … }]* [else { … }]
+  function condicional(condicion: string): Nodo | null {
+    const entonces = bloque(false)
+    if (!entonces) return null
+    let m: RegExpExecArray | null
+    if ((m = /^\}\s*else\s+if\s*\((.+)\)\s*\{$/.exec(entonces.cierre))) {
+      const otro = condicional(expresion(m[1]))
+      return otro ? { tipo: 'si', condicion, entonces: entonces.nodos, sino: [otro] } : null
+    }
+    if (/^\}\s*else\s*\{$/.test(entonces.cierre)) {
+      const sino = bloque(false)
+      if (!sino || sino.cierre !== '}') return null
+      return { tipo: 'si', condicion, entonces: entonces.nodos, sino: sino.nodos }
+    }
+    return entonces.cierre === '}' ? { tipo: 'si', condicion, entonces: entonces.nodos, sino: [] } : null
+  }
+
+  const todo = bloque(true)
+  if (!todo || !todo.nodos.length) return null
+  // «Leer la entrada» (readFileSync) sobra si después se leen datos concretos (const nota = Number(lineas[0])).
+  const lecturas = todo.nodos.filter((n) => n.tipo === 'leer')
+  return lecturas.length > 1 ? todo.nodos.filter((n) => !(n.tipo === 'leer' && n.texto === 'la entrada')) : todo.nodos
+}
+
+/** El mismo algoritmo escrito en pseudocódigo estilo PSeInt (para los bloques que el docente escribió en JavaScript). */
+export function aPseudocodigo(nodos: Nodo[], nombre = 'MiAlgoritmo'): string {
+  const out: string[] = []
+  const ind = (n: number) => '    '.repeat(n)
+  const ps = (t: string) => t.replace(/←/g, '<-')
+  const escribir = (ns: Nodo[], n: number) => {
+    for (const x of ns) {
+      switch (x.tipo) {
+        case 'inicio': case 'fin': break
+        case 'leer': out.push(`${ind(n)}Leer ${x.texto === 'la entrada' ? 'entrada' : x.texto}`); break
+        case 'escribir': out.push(`${ind(n)}Escribir ${x.texto}`); break
+        case 'proceso': out.push(`${ind(n)}${ps(x.texto)}`); break
+        case 'si':
+          out.push(`${ind(n)}Si ${x.condicion} Entonces`); escribir(x.entonces, n + 1)
+          if (x.sino.length) { out.push(`${ind(n)}SiNo`); escribir(x.sino, n + 1) }
+          out.push(`${ind(n)}FinSi`); break
+        case 'mientras': out.push(`${ind(n)}Mientras ${x.condicion} Hacer`); escribir(x.cuerpo, n + 1); out.push(`${ind(n)}FinMientras`); break
+        case 'para': out.push(`${ind(n)}Para ${x.variable} <- ${x.desde} Hasta ${x.hasta}${x.paso ? ` Con Paso ${x.paso}` : ''} Hacer`); escribir(x.cuerpo, n + 1); out.push(`${ind(n)}FinPara`); break
+        case 'repetir': out.push(`${ind(n)}Repetir`); escribir(x.cuerpo, n + 1); out.push(`${ind(n)}Hasta Que ${x.condicion}`); break
+      }
+    }
+  }
+  out.push(`Algoritmo ${nombre}`)
+  escribir(nodos, 1)
+  out.push('FinAlgoritmo')
+  return out.join('\n')
+}
+
 // ─── Paso a paso en palabras ────────────────────────────────────────────────────────────────────────────────────────
 
 const lista = (t: string) => {

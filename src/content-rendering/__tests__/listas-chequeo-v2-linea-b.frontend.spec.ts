@@ -240,3 +240,59 @@ describe('UI-05 y META-03 · resolver por pasos y «¿Por qué veo esto?»', () 
     expect(i).toContain('Es una sugerencia: puedes abrir cualquier lección abierta');
   });
 });
+
+// Revisión del 04/10: 12 de los 13 bloques de código del curso están en JavaScript; con solo pseudocódigo, UI-01 casi
+// no se veía. Ejemplos tomados de las lecciones reales (src/seeds/cursos/fundamentos-203413).
+describe('UI-01 · los algoritmos en JavaScript también se ven como pseudocódigo, diagrama y pasos', () => {
+  type N = unknown[];
+  const a = cargar<{
+    esJavaScriptAlgoritmo: (c: string) => boolean;
+    leerJavaScript: (c: string) => N | null;
+    aPseudocodigo: (n: N, nombre?: string) => string;
+    pasoAPaso: (n: N) => Array<{ texto: string }>;
+  }>('algoritmoMultiformato');
+
+  it('distingue un algoritmo de HTML o CSS', () => {
+    expect(a.esJavaScriptAlgoritmo('const nota = Number(lineas[0]);\nif (nota >= 3) {\n  console.log("Aprobó");\n}')).toBe(true);
+    expect(a.esJavaScriptAlgoritmo('<!DOCTYPE html>\n<html>')).toBe(false);
+    expect(a.esJavaScriptAlgoritmo('.diapositiva {\n  color: red;\n}')).toBe(false);
+  });
+
+  it('if / else if / else (lección «Varios caminos con else if») se vuelve Si anidados', () => {
+    const codigo = 'if (nota >= 4.6) {\n  console.log("Superior");\n} else if (nota >= 4.0) {\n  console.log("Alto");\n} else {\n  console.log("Bajo");\n}';
+    expect(a.aPseudocodigo(a.leerJavaScript(codigo)!, 'Nivel')).toBe(
+      'Algoritmo Nivel\n    Si nota >= 4.6 Entonces\n        Escribir "Superior"\n    SiNo\n        Si nota >= 4.0 Entonces\n            Escribir "Alto"\n        SiNo\n            Escribir "Bajo"\n        FinSi\n    FinSi\nFinAlgoritmo',
+    );
+  });
+
+  it('for con < y <=, while, acumulador y lectura de datos (lección «Contadores y acumuladores»)', () => {
+    const codigo = 'const n = Number(lineas[0]);\nlet suma = 0;\nfor (let i = 1; i <= n; i++) {\n  const nota = Number(lineas[i]);\n  suma = suma + nota;\n}\nconsole.log(suma / n);';
+    expect(a.aPseudocodigo(a.leerJavaScript(codigo)!, 'Promedio')).toBe(
+      'Algoritmo Promedio\n    Leer n\n    suma <- 0\n    Para i <- 1 Hasta n Hacer\n        Leer nota\n        suma <- suma + nota\n    FinPara\n    Escribir suma / n\nFinAlgoritmo',
+    );
+    expect(a.aPseudocodigo(a.leerJavaScript('for (let i = 0; i < 3; i++) {\n  console.log(i);\n}')!)).toContain('Para i <- 0 Hasta 3 - 1 Hacer');
+    expect(a.pasoAPaso(a.leerJavaScript('let n = 3;\nwhile (n > 0) {\n  console.log(n);\n  n = n - 1;\n}')!).map((p) => p.texto)).toEqual(['Calcula n como 3.', 'Mientras n > 0, repite:']);
+  });
+
+  it('operadores de JavaScript se escriben como en pseudocódigo (=== → =, && → y, Math.floor → trunc)', () => {
+    expect(a.aPseudocodigo(a.leerJavaScript('const h = Math.floor(m / 60);\nif (a === b && !c) {\n  console.log(h);\n}')!)).toContain('h <- trunc(m / 60)\n    Si a = b y no c Entonces');
+  });
+
+  it('una plantilla con solo comentarios muestra los comentarios como pasos', () => {
+    const plantilla = 'if (condición) {\n  // se ejecuta si la condición es verdadera\n} else {\n  // se ejecuta si es falsa\n}';
+    expect(a.aPseudocodigo(a.leerJavaScript(plantilla)!)).toContain('(se ejecuta si la condición es verdadera)\n    SiNo\n        (se ejecuta si es falsa)');
+  });
+
+  it('funciones, objetos o el DOM no se dibujan (solo el código, nunca un diagrama equivocado)', () => {
+    expect(a.leerJavaScript('function area(b, h) {\n  return b * h;\n}\nconsole.log(area(3, 4));')).toBeNull();
+    expect(a.leerJavaScript('const boton = document.querySelector("#sumar");\nconsole.log(boton);')).toBeNull();
+    expect(a.leerJavaScript('if (a) {\n  console.log(a);')).toBeNull(); // llave sin cerrar
+  });
+
+  it('la lección marca el lenguaje del bloque y el componente ofrece cuatro formatos para JavaScript', () => {
+    expect(leer('utils', 'contenidoLeccion.ts')).toContain("segmentos.push({ tipo: 'algoritmo', codigo: cuerpo, lenguaje: 'javascript' })");
+    const c = leer('components', 'AlgoritmoMultiformato.vue');
+    expect(c).toContain("...(esJs.value ? [{ valor: 'pseudo' as const, texto: 'Pseudocódigo'");
+    expect(leer('components', 'ContenidoLeccion.vue')).toContain(':lenguaje="s.lenguaje"');
+  });
+});

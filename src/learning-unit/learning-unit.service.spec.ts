@@ -83,3 +83,21 @@ describe('LearningUnitService.findOne — BOLA fix', () => {
     expect(mockTopicRepo.findOne).not.toHaveBeenCalled();
   });
 });
+
+// Revisión del 04/10 (v2.0.0): findByClass filtraba por `topic.classId`, columna que no existe; la consulta fallaba con
+// un 500 en producción la primera vez que se usó. La clase está en la sección: unidad → tema → sección → clase.
+describe('LearningUnitService.findByClass — llega a la clase por la sección', () => {
+  it('une tema y sección y filtra por section.classId', async () => {
+    const llamadas: string[] = [];
+    const qb = {
+      innerJoin: (rel: string, alias: string) => { llamadas.push(`join ${rel} ${alias}`); return qb; },
+      where: (cond: string) => { llamadas.push(`where ${cond}`); return qb; },
+      orderBy: () => qb,
+      getMany: () => Promise.resolve([]),
+    };
+    const repo = { createQueryBuilder: () => qb };
+    const service = new LearningUnitService(repo as never, {} as never, {} as never, {} as never);
+    await service.findByClass(5);
+    expect(llamadas).toEqual(['join unit.topic topic', 'join topic.section section', 'where section.classId = :classId']);
+  });
+});

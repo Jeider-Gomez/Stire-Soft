@@ -6,8 +6,8 @@
       <div class="flex items-center border-b border-base-borde-sutil bg-base-bg-secundario text-xs font-semibold px-2 pt-2 gap-1 flex-shrink-0">
         <button
           @click="leftTab = 'enunciado'"
-          class="px-3 py-2 rounded-t-md transition-colors"
-          :class="leftTab === 'enunciado' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:text-base-texto-primario'">
+          class="min-h-[44px] px-3 py-2 rounded-t-md transition-colors"
+          :class="leftTab === 'enunciado' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'">
           <span class="inline-flex items-center gap-1.5"><BookOpen :size="14" aria-hidden="true" /> Enunciado</span>
         </button>
 
@@ -16,7 +16,7 @@
           v-if="isCodingActivity"
           @click="leftTab = 'casos'"
           class="px-3 py-2 rounded-t-md transition-colors flex items-center gap-1.5"
-          :class="leftTab === 'casos' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:text-base-texto-primario'">
+          :class="leftTab === 'casos' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'">
           <span class="inline-flex items-center gap-1.5"><FlaskConical :size="14" aria-hidden="true" /> Casos de prueba</span>
           <span
             v-if="passedCount > 0"
@@ -28,8 +28,8 @@
 
         <button
           @click="leftTab = 'consola'"
-          class="px-3 py-2 rounded-t-md transition-colors"
-          :class="leftTab === 'consola' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-base-texto-secundario hover:text-base-texto-primario'">
+          class="min-h-[44px] px-3 py-2 rounded-t-md transition-colors"
+          :class="leftTab === 'consola' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'">
           <span class="inline-flex items-center gap-1.5"><Terminal :size="14" aria-hidden="true" /> Registro</span>
         </button>
       </div>

@@ -13,7 +13,7 @@
         </p>
       </template>
       <EjemploEnVivo v-else-if="s.tipo === 'vivo'" :codigo="s.codigo" />
-      <AlgoritmoMultiformato v-else-if="s.tipo === 'algoritmo'" :codigo="s.codigo" />
+      <AlgoritmoMultiformato v-else-if="s.tipo === 'algoritmo'" :codigo="s.codigo" :lenguaje="s.lenguaje" />
     </template>
   </div>
 </template>

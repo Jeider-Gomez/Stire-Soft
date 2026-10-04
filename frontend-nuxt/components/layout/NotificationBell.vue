@@ -2,7 +2,7 @@
   <div class="relative" ref="bellMenuRef">
     <button
       @click="toggleOpen"
-      class="relative p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors duration-150"
+      class="relative p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors duration-150"
       aria-label="Notificaciones"
       :aria-expanded="isOpen"
     >
