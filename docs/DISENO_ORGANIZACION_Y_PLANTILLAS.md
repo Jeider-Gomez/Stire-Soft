@@ -223,7 +223,7 @@ como aprobar o rechazar una matrícula):
 | **0** | Texto verdadero en la barra superior («Lic. en Informática») | **Hecho, 04/10** |
 | **1** | Asignatura (tres formas), periodo y grupo en la clase; catálogo precargado (Unicórdoba, Licenciatura en Informática, Fundamentos de Algoritmia 203413); el docente agrega asignaturas, programas e instituciones (también colegios por grados); barra superior desde los datos | **Hecho, 04/10** (pedido «a la brevedad»). Falta completar las 2 clases reales en Ajustes |
 | **1.5** | Orden del catálogo (§2.2.1): nombre normalizado con índice único, «¿Es alguna de estas?», oficial o agregada, «Unir» con sinónimo y pantalla «Catálogo» del admin | **Hecho, 04/10** (falta desplegar el servidor). Electiva «Uso de la Inteligencia Artificial en la Educación» (Prof. Víctor Castro) cargada como oficial |
-| **2** | Plantillas por asignatura con enfoque, alcances y recomendación por cercanía con tarjetas de calidad | Semana siguiente |
+| **2** | Plantillas por asignatura con enfoque; «¿Con quién compartes?» (nadie, asignatura, programa, facultad, institución, todos) con los nombres reales; cada docente ve lo compartido con alguien como él; recomendadas por cercanía, copias, «¿te sirvió?» (desde 5 votos) y actualidad; vacías y abandonadas ocultas; el código de ingreso ya no viaja con la plantilla | **Hecho, 04/10** (falta desplegar el servidor) |
 | **3** | Varias instituciones (colegios), filtro por programa en el inicio del docente, «Hay una versión nueva» | Cuando llegue el primer colegio |
 
 Cada fase lleva su migración (todas las columnas nuevas son opcionales, así que las clases de hoy no se tocan), sus

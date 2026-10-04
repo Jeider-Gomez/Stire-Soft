@@ -74,15 +74,24 @@ describe('ReuseService', () => {
     db.insertar(Section, { id: 12, classId: DESTINO, title: 'Ya existía', order: 0, isPublished: true });
     authorization = { assertTeacherOwnsClass: jest.fn().mockResolvedValue(undefined) };
     // ORIGEN es del docente 7; 3 es de otro docente y la compartió como plantilla; 4 es de otro docente y no.
-    db.insertar(Class, { id: ORIGEN, teacherId: 7, compartidaComoPlantilla: false });
-    db.insertar(Class, { id: 3, teacherId: 8, compartidaComoPlantilla: true });
-    db.insertar(Class, { id: 4, teacherId: 8, compartidaComoPlantilla: false });
+    db.insertar(Class, { id: ORIGEN, teacherId: 7, compartidaComoPlantilla: false, alcancePlantilla: 'nadie' });
+    db.insertar(Class, { id: 3, name: 'ALGO', teacherId: 8, teacher: { fullName: 'Laura' }, compartidaComoPlantilla: true, alcancePlantilla: 'todos', vecesCopiada: 0, updatedAt: new Date() });
+    db.insertar(Class, { id: 4, teacherId: 8, compartidaComoPlantilla: false, alcancePlantilla: 'nadie' });
     db.insertar(Section, { id: 13, classId: 3, title: 'Módulo compartido', order: 0, isPublished: true });
     db.insertar(Section, { id: 14, classId: 4, title: 'Módulo privado', order: 0, isPublished: true });
     const dataSource = {
       transaction: (cb: (m: unknown) => unknown) => cb(db.manager),
       getRepository: (e: { name: string }) => ({ findOne: (o: { where: Record<string, unknown> }) => db.manager.findOne(e, o), find: (o: { where: Record<string, unknown> }) => db.manager.find(e, o) }),
-      query: jest.fn(() => Promise.resolve([{ classId: 3, nombre: 'ALGO', codigo: 'ALGO-1', docente: 'Laura', modulos: '1', lecciones: '6', ejercicios: '20' }])),
+      // Conteos de contenido y votos «¿te sirvió?» por clase; el UPDATE del contador de copias no devuelve nada.
+      query: jest.fn((sql: string) =>
+        Promise.resolve(
+          sql.includes('COUNT(DISTINCT')
+            ? [{ classId: 3, modulos: '1', lecciones: '6', ejercicios: '20' }]
+            : sql.includes('valoraciones_leccion')
+              ? [{ classId: 3, utiles: '9', total: '10' }]
+              : [],
+        ),
+      ),
     };
     service = new ReuseService(dataSource as never, authorization as never);
   });
@@ -138,7 +147,7 @@ describe('ReuseService', () => {
 
     it('de una clase ajena solo copia si su docente la compartió como plantilla; si no, no copia nada', async () => {
       const antes = db.tabla(Section).length;
-      await expect(service.importClassContent(DOCENTE, DESTINO, { sourceClassId: 4 })).rejects.toThrow('no la compartió como plantilla');
+      await expect(service.importClassContent(DOCENTE, DESTINO, { sourceClassId: 4 })).rejects.toThrow('no la compartió contigo');
       expect(db.tabla(Section).length).toBe(antes);
 
       const r = await service.importClassContent(DOCENTE, DESTINO, { sourceClassId: 3 });
@@ -154,8 +163,20 @@ describe('ReuseService', () => {
       await expect(service.modulosParaCopiar(DOCENTE, 4)).rejects.toThrow(ForbiddenException);
     });
 
-    it('lista las plantillas de otros docentes con cuánto contenido tienen', async () => {
-      await expect(service.plantillas(DOCENTE)).resolves.toEqual([{ classId: 3, nombre: 'ALGO', codigo: 'ALGO-1', docente: 'Laura', modulos: 1, lecciones: 6, ejercicios: 20 }]);
+    it('lista las plantillas de otros docentes con cuánto contenido tienen y qué tan útiles fueron, sin el código de ingreso', async () => {
+      const [p, ...resto] = await service.plantillas(DOCENTE);
+      expect(resto).toEqual([]);
+      expect(p).toEqual(expect.objectContaining({ classId: 3, nombre: 'ALGO', docente: 'Laura', modulos: 1, lecciones: 6, ejercicios: 20, valoracion: { utiles: 9, total: 10 }, cercania: 5 }));
+      expect(p).not.toHaveProperty('codigo');
+    });
+
+    it('copiar la plantilla de otro docente suma una copia; copiar de una clase propia, no', async () => {
+      const query = (service as unknown as { dataSource: { query: jest.Mock } }).dataSource.query;
+      await service.importClassContent(DOCENTE, DESTINO, { sourceClassId: 3 });
+      expect(query).toHaveBeenCalledWith(expect.stringContaining('vecesCopiada'), [3]);
+      query.mockClear();
+      await service.importClassContent(DOCENTE, DESTINO, { sourceClassId: ORIGEN });
+      expect(query).not.toHaveBeenCalledWith(expect.stringContaining('vecesCopiada'), expect.anything());
     });
   });
 
@@ -227,5 +248,66 @@ describe('ReuseService', () => {
       const r = await servicio.bank(DOCENTE, {});
       expect(r[0]).toEqual(expect.objectContaining({ activityId: 5, questionType: 'mcq', questionPreview: '¿Qué imprime? x', status: 'draft' }));
     });
+  });
+});
+
+// Alcances y orden de las plantillas (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.3) con asignaturas reales del catálogo.
+describe('ReuseService.plantillas — alcance, cercanía y limpieza', () => {
+  const EDU = { id: 10, name: 'Licenciatura en Informática', tipo: 'carrera', facultad: 'Educación' };
+  const ALGO = { id: 1, nombre: 'Fundamentos de Algoritmia', programId: 10, institutionId: 100, periodoPlan: 3, program: EDU, institution: null };
+  const PROG = { id: 2, nombre: 'Fundamentos de Programación', programId: 10, institutionId: 100, periodoPlan: 4, program: EDU, institution: null };
+  const IA = { id: 5, nombre: 'Uso de la IA en la Educación', programId: null, institutionId: 100, periodoPlan: null, program: null, institution: null };
+  const reciente = new Date();
+  const viejo = new Date(Date.now() - 400 * 24 * 3600 * 1000);
+
+  function servicio(clases: Array<Record<string, unknown>>, lecciones: Record<number, number>) {
+    const db = baseEnMemoria();
+    for (const c of clases) db.insertar(Class, c as Fila);
+    db.insertar({ name: 'Asignatura' }, ALGO as Fila);
+    const dataSource = {
+      getRepository: (e: { name: string }) => ({ find: (o: { where: Record<string, unknown> }) => db.manager.find(e, o), findOne: (o: { where: Record<string, unknown> }) => db.manager.findOne(e, o) }),
+      query: jest.fn((sql: string) =>
+        Promise.resolve(sql.includes('COUNT(DISTINCT') ? Object.entries(lecciones).map(([id, n]) => ({ classId: Number(id), modulos: '1', lecciones: String(n), ejercicios: '3' })) : []),
+      ),
+    };
+    return new ReuseService(dataSource as never, { assertTeacherOwnsClass: jest.fn() } as never);
+  }
+  const plantilla = (id: number, extra: Record<string, unknown>) => ({
+    id, name: `Clase ${id}`, teacherId: 8, teacher: { fullName: 'Laura' }, compartidaComoPlantilla: true, vecesCopiada: 0, updatedAt: reciente, ...extra,
+  });
+
+  it('un docente de Fundamentos de Algoritmia ve lo de su asignatura y su programa, no lo restringido a otra asignatura', async () => {
+    const s = servicio(
+      [
+        { id: 90, teacherId: 7, asignatura: ALGO, compartidaComoPlantilla: false }, // su propia clase: le da contexto
+        plantilla(1, { asignatura: ALGO, alcancePlantilla: 'asignatura' }),
+        plantilla(2, { asignatura: PROG, alcancePlantilla: 'programa' }),
+        plantilla(3, { asignatura: PROG, alcancePlantilla: 'asignatura' }),
+        plantilla(4, { asignatura: IA, alcancePlantilla: 'institucion' }),
+      ],
+      { 1: 5, 2: 5, 3: 5, 4: 5 },
+    );
+    expect((await s.plantillas(DOCENTE)).map((p) => p.classId).sort()).toEqual([1, 2, 4]);
+  });
+
+  it('un docente nuevo, sin clases, ve lo compartido con todos; al elegir la asignatura ve también lo de esa asignatura', async () => {
+    const s = servicio([plantilla(1, { asignatura: ALGO, alcancePlantilla: 'asignatura' }), plantilla(2, { asignatura: PROG, alcancePlantilla: 'todos' })], { 1: 5, 2: 5 });
+    expect((await s.plantillas(DOCENTE)).map((p) => p.classId)).toEqual([2]);
+    expect((await s.plantillas(DOCENTE, 1)).map((p) => p.classId)).toEqual([1, 2]); // la de su asignatura primero
+  });
+
+  it('ordena por cercanía y luego por copias; no lista vacías ni abandonadas', async () => {
+    const s = servicio(
+      [
+        plantilla(1, { asignatura: PROG, alcancePlantilla: 'todos', vecesCopiada: 9 }),
+        plantilla(2, { asignatura: ALGO, alcancePlantilla: 'todos', vecesCopiada: 0 }),
+        plantilla(3, { asignatura: ALGO, alcancePlantilla: 'todos', vecesCopiada: 4 }),
+        plantilla(4, { asignatura: ALGO, alcancePlantilla: 'todos' }), // vacía
+        plantilla(5, { asignatura: ALGO, alcancePlantilla: 'todos', updatedAt: viejo }), // nadie la copió en un año
+        plantilla(6, { asignatura: ALGO, alcancePlantilla: 'todos', updatedAt: viejo, vecesCopiada: 2 }), // vieja pero usada
+      ],
+      { 1: 5, 2: 5, 3: 5, 4: 0, 5: 5, 6: 5 },
+    );
+    expect((await s.plantillas(DOCENTE, 1)).map((p) => p.classId)).toEqual([3, 6, 2, 1]);
   });
 });

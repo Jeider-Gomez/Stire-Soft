@@ -1,4 +1,4 @@
-import { ForbiddenException, ConflictException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { ClassService } from './class.service';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { UserRole } from '../user/entities/user.entity';
@@ -254,5 +254,37 @@ describe('ClassService — asignatura, periodo y grupo de la clase', () => {
     const mal = await validate(plainToInstance(UpdateClassDto, { periodo: 'segundo de 2026' }));
     expect(mal.map((e) => e.property)).toEqual(['periodo']);
     expect(await validate(plainToInstance(UpdateClassDto, { periodo: '2026-2', grupo: 'Grupo 2', asignaturaId: null }))).toHaveLength(0);
+  });
+});
+
+// Plantillas por alcance (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.3).
+describe('ClassService — con quién se comparte el contenido', () => {
+  const buscarAsignatura = jest.fn();
+  const classRepo = { findOne: jest.fn(), create: jest.fn((x: object) => x), save: jest.fn(async (x: object) => x), manager: { findOne: buscarAsignatura } };
+  type Args = ConstructorParameters<typeof ClassService>;
+  const service = new ClassService(classRepo as unknown as Args[0], {} as Args[1], {} as Args[2], {} as Args[3], { assertTeacherOwnsClass: jest.fn() } as unknown as Args[4]);
+  const docente = { id: 10, role: UserRole.DOCENTE } as Parameters<ClassService['update']>[2];
+  const ALGO = { id: 1, nombre: 'Fundamentos de Algoritmia', programId: 10, institutionId: 100, program: { facultad: 'Educación' } };
+
+  beforeEach(() => jest.clearAllMocks());
+
+  it('el alcance y el antiguo sí/no siempre coinciden', async () => {
+    classRepo.findOne.mockResolvedValue({ id: 1, teacherId: 10, asignatura: ALGO, alcancePlantilla: 'nadie', compartidaComoPlantilla: false });
+    await expect(service.update(1, { alcancePlantilla: 'programa', enfoque: '  Con JavaScript  ' }, docente)).resolves.toMatchObject({
+      alcancePlantilla: 'programa', compartidaComoPlantilla: true, enfoque: 'Con JavaScript',
+    });
+    classRepo.findOne.mockResolvedValue({ id: 1, teacherId: 10, asignatura: null, alcancePlantilla: 'nadie' });
+    await expect(service.update(1, { compartidaComoPlantilla: true }, docente)).resolves.toMatchObject({ alcancePlantilla: 'todos' });
+    await expect(service.update(1, { alcancePlantilla: 'nadie' }, docente)).resolves.toMatchObject({ compartidaComoPlantilla: false });
+  });
+
+  it('compartir con la asignatura exige que la clase la tenga: 400 que dice qué hacer', async () => {
+    classRepo.findOne.mockResolvedValue({ id: 1, teacherId: 10, asignatura: null, alcancePlantilla: 'nadie' });
+    await expect(service.update(1, { alcancePlantilla: 'asignatura' }, docente)).rejects.toThrow('primero elige la asignatura');
+  });
+
+  it('quitar la asignatura de una clase compartida con su asignatura se rechaza (dejaría de verse sin aviso)', async () => {
+    classRepo.findOne.mockResolvedValue({ id: 1, teacherId: 10, asignaturaId: 1, asignatura: ALGO, alcancePlantilla: 'asignatura', compartidaComoPlantilla: true });
+    await expect(service.update(1, { asignaturaId: null }, docente)).rejects.toThrow(BadRequestException);
   });
 });

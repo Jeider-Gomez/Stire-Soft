@@ -1,4 +1,6 @@
-import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, ValidateIf } from 'class-validator';
+import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, ValidateIf } from 'class-validator';
+import { ALCANCES_PLANTILLA } from '../entities/class.entity';
+import type { AlcancePlantilla } from '../entities/class.entity';
 
 export class CreateClassDto {
   @IsString({ message: 'El nombre debe ser una cadena de texto' })
@@ -17,9 +19,22 @@ export class CreateClassDto {
   @IsOptional()
   requiresApproval?: boolean;
 
+  /** Antiguo sí/no: sí equivale a compartir con todos. Se prefiere `alcancePlantilla`. */
   @IsBoolean()
   @IsOptional()
   compartidaComoPlantilla?: boolean;
+
+  /** Con quién se comparte el contenido (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.3). */
+  @IsIn(ALCANCES_PLANTILLA, { message: 'Elige con quién compartir: nadie, la asignatura, el programa, la facultad, la institución o todos' })
+  @IsOptional()
+  alcancePlantilla?: AlcancePlantilla;
+
+  /** El enfoque de la plantilla en una línea. */
+  @ValidateIf((_o, v) => v !== null && v !== undefined)
+  @IsString({ message: 'El enfoque debe ser texto' })
+  @MaxLength(160, { message: 'El enfoque puede tener hasta 160 caracteres' })
+  @IsOptional()
+  enfoque?: string | null;
 
   /** Dominio (%) del módulo anterior para abrir el siguiente; 0 = sin bloqueo. */
   @IsInt({ message: 'El dominio para avanzar debe ser un número entero' })

@@ -12,6 +12,9 @@ import { Activity } from '../activities/entities/activity.entity';
 import { ActivityQuestion } from '../activity-questions/entities/activity-question.entity';
 import { PublicationStatus } from '../common/enums/status.enum';
 import { BankQueryDto, CopyActivityDto, ImportClassContentDto } from './dto/reuse.dto';
+import type { AlcancePlantilla } from '../class/entities/class.entity';
+import { Asignatura } from '../institution/entities/asignatura.entity';
+import { cercania, contextoDe, puedeVerPlantilla, type ContextoDocente } from './alcance-plantilla';
 
 // Reutilizar lo que ya se hizo (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.5): traer el contenido de otra clase propia
 // (dos salones de la misma materia, o el semestre siguiente), el banco de ejercicios del docente y copiar un ejercicio
@@ -27,15 +30,36 @@ export interface ResumenImportacion {
   questions: number;
 }
 
-/** Una clase cuyo docente compartió su contenido como plantilla. */
+/** Una clase cuyo docente compartió su contenido como plantilla (sin su código de ingreso). */
 export interface Plantilla {
   classId: number;
   nombre: string;
-  codigo: string;
   docente: string;
+  enfoque: string | null;
+  alcance: AlcancePlantilla;
+  asignatura: {
+    id: number;
+    nombre: string;
+    periodoPlan: number | null;
+    programId: number | null;
+    institutionId: number | null;
+    program: { id: number; name: string; tipo: string } | null;
+    institution: { id: number; name: string; sigla: string | null } | null;
+  } | null;
   modulos: number;
   lecciones: number;
   ejercicios: number;
+  vecesCopiada: number;
+  /** «¿Te sirvió esta explicación?» de los estudiantes de esa clase; null si nadie votó. */
+  valoracion: { utiles: number; total: number } | null;
+  actualizada: string;
+  /** 0 la misma asignatura … 5 nada en común con la que se va a dictar. */
+  cercania: number;
+}
+
+/** Proporción de votos «me sirvió»; sin votos cuenta como neutra (0,5) para no castigar ni premiar lo nuevo. */
+function utilidad(p: Pick<Plantilla, 'valoracion'>): number {
+  return p.valoracion ? p.valoracion.utiles / p.valoracion.total : 0.5;
 }
 
 export interface EjercicioDelBanco {
@@ -62,33 +86,100 @@ export class ReuseService {
   ) {}
 
   /**
-   * El origen se puede leer si es una clase propia o si su docente la compartió como plantilla. Solo el contenido: los
-   * estudiantes, entregas, progreso y notas de esa clase nunca se copian.
+   * El contexto del docente para ver plantillas (alcance-plantilla.ts): las asignaturas de sus clases y, si está creando
+   * una clase, la asignatura que eligió.
    */
-  private async assertPuedeCopiarDe(user: User, sourceClassId: number): Promise<void> {
-    const origen = await this.dataSource.getRepository(Class).findOne({ where: { id: sourceClassId } });
-    if (!origen) throw new NotFoundException('Clase no encontrada');
-    if (user.role === 'admin' || origen.teacherId === user.id || origen.compartidaComoPlantilla) return;
-    throw new ForbiddenException('Esa clase no es tuya y su docente no la compartió como plantilla.');
+  private async contextoDel(user: User, asignaturaId?: number): Promise<{ ctx: ContextoDocente; destino: Asignatura | null }> {
+    const propias = await this.dataSource.getRepository(Class).find({ where: { teacherId: user.id } });
+    const destino = asignaturaId ? await this.dataSource.getRepository(Asignatura).findOne({ where: { id: asignaturaId } }) : null;
+    return { ctx: contextoDe([...propias.map((c) => c.asignatura), destino]), destino };
+  }
+
+  private visibleParaDocente(origen: Class, user: User, ctx: ContextoDocente): boolean {
+    if (user.role === 'admin' || origen.teacherId === user.id) return true;
+    return origen.compartidaComoPlantilla && puedeVerPlantilla(origen.alcancePlantilla ?? 'todos', origen.asignatura, ctx);
   }
 
   /**
-   * Plantillas de otros docentes: clases cuyo contenido su docente compartió. Las propias no aparecen aquí (ya están en
-   * «Mis clases»).
+   * El origen se puede leer si es una clase propia o si su docente la compartió con alguien como este docente (su
+   * asignatura, programa, facultad, institución o todos). Solo el contenido: los estudiantes, entregas, progreso y notas
+   * de esa clase nunca se copian.
    */
-  async plantillas(user: User): Promise<Plantilla[]> {
-    const filas: Array<Record<string, string | number>> = await this.dataSource.query(
-      'SELECT c.id AS classId, c.name AS nombre, c.code AS codigo, u.fullName AS docente, ' +
-        '(SELECT COUNT(*) FROM sections s WHERE s.classId = c.id) AS modulos, ' +
-        '(SELECT COUNT(*) FROM learning_units lu JOIN topics t ON lu.topicId = t.id JOIN sections s ON t.sectionId = s.id WHERE s.classId = c.id) AS lecciones, ' +
-        "(SELECT COUNT(*) FROM activities a JOIN learning_units lu ON a.learningUnitId = lu.id JOIN topics t ON lu.topicId = t.id JOIN sections s ON t.sectionId = s.id WHERE s.classId = c.id AND a.status != 'archived') AS ejercicios " +
-        'FROM classes c JOIN users u ON u.id = c.teacherId WHERE c.compartidaComoPlantilla = 1 AND c.teacherId != ? ORDER BY c.name',
-      [user.id],
+  private async assertPuedeCopiarDe(user: User, sourceClassId: number): Promise<Class> {
+    const origen = await this.dataSource.getRepository(Class).findOne({ where: { id: sourceClassId } });
+    if (!origen) throw new NotFoundException('Clase no encontrada');
+    if (this.visibleParaDocente(origen, user, (await this.contextoDel(user)).ctx)) return origen;
+    throw new ForbiddenException('Esa clase no es tuya y su docente no la compartió contigo.');
+  }
+
+  /**
+   * Plantillas de otros docentes que este docente puede ver (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.3), con lo que
+   * responde «¿me sirve?» sin abrirlas: asignatura y enfoque, cuánto contenido tienen, cuántas veces se copiaron, qué tan
+   * útil les pareció a los estudiantes y cuándo se actualizaron. Ordenadas por cercanía a `asignaturaId` (la que va a
+   * dictar), luego copias, utilidad y actualidad. No salen las vacías ni las abandonadas (sin copias y sin cambios en un
+   * año). Las propias no aparecen aquí: ya están en «Mis clases». No incluye el código de la clase: es el secreto con el
+   * que entran sus estudiantes.
+   */
+  async plantillas(user: User, asignaturaId?: number): Promise<Plantilla[]> {
+    const { ctx, destino } = await this.contextoDel(user, asignaturaId);
+    const compartidas = await this.dataSource.getRepository(Class).find({ where: { compartidaComoPlantilla: true } });
+    const visibles = compartidas.filter((c) => c.teacherId !== user.id && this.visibleParaDocente(c, user, ctx));
+    if (!visibles.length) return [];
+
+    const ids = visibles.map((c) => c.id);
+    const lista = ids.map(() => '?').join(', ');
+    const conteos: Array<{ classId: number; modulos: string; lecciones: string; ejercicios: string }> = await this.dataSource.query(
+      'SELECT s.classId AS classId, COUNT(DISTINCT s.id) AS modulos, COUNT(DISTINCT lu.id) AS lecciones, COUNT(DISTINCT a.id) AS ejercicios ' +
+        'FROM sections s LEFT JOIN topics t ON t.sectionId = s.id LEFT JOIN learning_units lu ON lu.topicId = t.id ' +
+        "LEFT JOIN activities a ON a.learningUnitId = lu.id AND a.status != 'archived' " +
+        `WHERE s.classId IN (${lista}) GROUP BY s.classId`,
+      ids,
     );
-    return filas.map((f) => ({
-      classId: Number(f.classId), nombre: String(f.nombre), codigo: String(f.codigo), docente: String(f.docente),
-      modulos: Number(f.modulos), lecciones: Number(f.lecciones), ejercicios: Number(f.ejercicios),
-    }));
+    const votos: Array<{ classId: number; utiles: string; total: string }> = await this.dataSource.query(
+      'SELECT s.classId AS classId, SUM(v.util) AS utiles, COUNT(*) AS total FROM valoraciones_leccion v ' +
+        'JOIN learning_units lu ON lu.id = v.learningUnitId JOIN topics t ON t.id = lu.topicId JOIN sections s ON s.id = t.sectionId ' +
+        `WHERE s.classId IN (${lista}) GROUP BY s.classId`,
+      ids,
+    );
+    const porClase = new Map(conteos.map((f) => [Number(f.classId), f]));
+    const votosPorClase = new Map(votos.map((f) => [Number(f.classId), f]));
+    const haceUnAnio = Date.now() - 365 * 24 * 3600 * 1000;
+
+    return visibles
+      .map((c): Plantilla => {
+        const n = porClase.get(c.id);
+        const v = votosPorClase.get(c.id);
+        const a = c.asignatura;
+        return {
+          classId: c.id,
+          nombre: c.name,
+          docente: c.teacher?.fullName ?? 'Docente',
+          enfoque: c.enfoque ?? null,
+          alcance: c.alcancePlantilla ?? 'todos',
+          asignatura: a
+            ? {
+                id: a.id, nombre: a.nombre, periodoPlan: a.periodoPlan, programId: a.programId, institutionId: a.institutionId,
+                program: a.program ? { id: a.program.id, name: a.program.name, tipo: a.program.tipo } : null,
+                institution: a.institution ? { id: a.institution.id, name: a.institution.name, sigla: a.institution.sigla } : null,
+              }
+            : null,
+          modulos: Number(n?.modulos ?? 0),
+          lecciones: Number(n?.lecciones ?? 0),
+          ejercicios: Number(n?.ejercicios ?? 0),
+          vecesCopiada: c.vecesCopiada ?? 0,
+          valoracion: v && Number(v.total) > 0 ? { utiles: Number(v.utiles), total: Number(v.total) } : null,
+          actualizada: (c.updatedAt ?? new Date()).toISOString(),
+          cercania: cercania(a, destino),
+        };
+      })
+      .filter((p) => p.lecciones > 0 && !(p.vecesCopiada === 0 && new Date(p.actualizada).getTime() < haceUnAnio))
+      .sort(
+        (x, y) =>
+          x.cercania - y.cercania ||
+          y.vecesCopiada - x.vecesCopiada ||
+          utilidad(y) - utilidad(x) ||
+          y.actualizada.localeCompare(x.actualizada),
+      );
   }
 
   /** Los módulos de una clase propia o de una plantilla compartida, para elegir cuáles copiar. */
@@ -104,9 +195,9 @@ export class ReuseService {
       throw new BadRequestException('Elige una clase distinta de esta para traer su contenido.');
     }
     await this.authorizationService.assertTeacherOwnsClass(user, targetClassId);
-    await this.assertPuedeCopiarDe(user, dto.sourceClassId);
+    const origen = await this.assertPuedeCopiarDe(user, dto.sourceClassId);
 
-    return this.dataSource.transaction(async (manager) => {
+    const resumen = await this.dataSource.transaction(async (manager) => {
       let secciones = await manager.find(Section, { where: { classId: dto.sourceClassId }, order: { order: 'ASC', id: 'ASC' } });
       if (dto.sectionIds) {
         const pedidas = new Set(dto.sectionIds);
@@ -187,6 +278,11 @@ export class ReuseService {
       }
       return resumen;
     });
+    // Una plantilla de otro docente que alguien copió: es la señal de que sirve (ordena las plantillas).
+    if (origen.teacherId !== user.id) {
+      await this.dataSource.query('UPDATE `classes` SET `vecesCopiada` = `vecesCopiada` + 1 WHERE `id` = ?', [origen.id]);
+    }
+    return resumen;
   }
 
   /**

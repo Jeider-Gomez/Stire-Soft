@@ -522,8 +522,9 @@
                   {{ c.name }} ({{ c.code }})
                 </option>
               </optgroup>
-              <optgroup v-if="plantillas.length" label="Plantillas de otros docentes">
-                <option v-for="p in plantillas" :key="`p${p.classId}`" :value="p.classId">{{ textoPlantilla(p) }}</option>
+              <!-- Plantillas de otros docentes, agrupadas por asignatura: primero la de esta clase (§2.3) -->
+              <optgroup v-for="g in gruposDePlantillas" :key="g.clave" :label="`${g.titulo} · ${cuantosEnfoques(g)}`">
+                <option v-for="p in g.plantillas" :key="`p${p.classId}`" :value="p.classId">{{ textoPlantilla(p) }}</option>
               </optgroup>
             </select>
           </div>
@@ -616,7 +617,7 @@
 </template>
 
 <script setup lang="ts">
-import { textoPlantilla, type Plantilla } from '~/utils/plantillas'
+import { agruparPorAsignatura, cuantosEnfoques, textoPlantilla, type Plantilla } from '~/utils/plantillas'
 import { BookOpen, ChevronRight, CopyPlus, FileText, Folder, Loader2, Pencil, TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
@@ -630,6 +631,7 @@ interface TeacherClass {
   id: number
   code: string
   name: string
+  asignaturaId?: number | null
 }
 
 interface LearningUnitItem {
@@ -1019,14 +1021,17 @@ const otherClasses = computed(() => {
 })
 // Contenido que otros docentes compartieron como plantilla (utils/plantillas.ts).
 const plantillas = ref<Plantilla[]>([])
+// Con la asignatura de la clase abierta, el servidor ordena por cercanía y muestra lo compartido con esa asignatura.
 async function cargarPlantillas() {
+  const asignaturaId = teacherClasses.value.find((c) => c.id === selectedClassId.value)?.asignaturaId
   try {
-    plantillas.value = await api.get<Plantilla[]>('/reuse/plantillas')
+    plantillas.value = await api.get<Plantilla[]>(asignaturaId ? `/reuse/plantillas?asignaturaId=${asignaturaId}` : '/reuse/plantillas')
   } catch {
     plantillas.value = []
   }
 }
-onMounted(cargarPlantillas)
+const gruposDePlantillas = computed(() => agruparPorAsignatura(plantillas.value))
+watch(selectedClassId, () => { void cargarPlantillas() }, { immediate: true })
 
 const importModal = reactive({
   open: false,

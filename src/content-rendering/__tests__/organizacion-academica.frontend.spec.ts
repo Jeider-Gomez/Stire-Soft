@@ -139,3 +139,77 @@ describe('Regresión 04/10: el estudiante veía «Curso libre» en Fundamentos d
     expect(svc).toContain("'class.asignatura', 'class.asignatura.program', 'class.asignatura.institution'");
   });
 });
+
+// Plantillas por asignatura y alcance (§2.3): agrupadas, con señales de calidad, sin abrumar.
+interface PlantillaT {
+  classId: number; nombre: string; docente: string; enfoque: string | null; alcance: string; asignatura: Asig | null;
+  modulos: number; lecciones: number; ejercicios: number; vecesCopiada: number; valoracion: { utiles: number; total: number } | null; actualizada: string; cercania: number;
+}
+const P = cargar<{
+  textoPlantilla: (p: PlantillaT) => string;
+  haceCuanto: (iso: string, ahora?: Date) => string;
+  senalesDePlantilla: (p: PlantillaT, ahora?: Date) => string[];
+  agruparPorAsignatura: (p: PlantillaT[]) => Array<{ titulo: string; subtitulo: string; plantillas: PlantillaT[] }>;
+  cuantosEnfoques: (g: { plantillas: unknown[] }) => string;
+  opcionesDeAlcance: (a: Asig | null) => Array<{ valor: string; titulo: string; motivoNoDisponible: string | null }>;
+}>('plantillas');
+
+describe('Plantillas: agrupadas por asignatura, con lo que dice si sirven', () => {
+  const HOY = new Date('2026-10-04T12:00:00Z');
+  const base: PlantillaT = {
+    classId: 3, nombre: 'Fundamentos de Algoritmia (203413)', docente: 'Laura Martínez', enfoque: 'Con JavaScript, según el plan de clase', alcance: 'asignatura',
+    asignatura: ALGO, modulos: 4, lecciones: 13, ejercicios: 41, vecesCopiada: 0, valoracion: null, actualizada: '2026-10-01T12:00:00Z', cercania: 0,
+  };
+  const pensar = { ...base, classId: 4, nombre: 'Pensamiento algorítmico desde cero', enfoque: 'Solo pseudocódigo, sin programar', vecesCopiada: 2 };
+  const ia = { ...base, classId: 9, enfoque: null, nombre: 'IA en el aula', asignatura: ELECTIVA, cercania: 4 };
+
+  it('el texto de la lista no lleva el código de ingreso de la clase', () => {
+    expect(P.textoPlantilla(base)).toBe('Con JavaScript, según el plan de clase — Laura Martínez · 4 módulos, 13 lecciones');
+    expect(P.textoPlantilla(base)).not.toContain('ALGO-');
+  });
+  it('señales: contenido, copias, utilidad solo con 5 votos o más, actualidad', () => {
+    expect(P.senalesDePlantilla(base, HOY)).toEqual(['4 módulos · 13 lecciones · 41 ejercicios', 'actualizada hace 3 días']);
+    expect(P.senalesDePlantilla({ ...pensar, valoracion: { utiles: 18, total: 20 } }, HOY)).toEqual([
+      '4 módulos · 13 lecciones · 41 ejercicios', 'la copiaron 2 docentes', 'a 90 % de los estudiantes le sirvió', 'actualizada hace 3 días',
+    ]);
+    expect(P.senalesDePlantilla({ ...base, valoracion: { utiles: 2, total: 3 } }, HOY).join()).not.toContain('%');
+  });
+  it('hace cuánto, en palabras', () => {
+    expect(P.haceCuanto('2026-10-04T08:00:00Z', HOY)).toBe('hoy');
+    expect(P.haceCuanto('2026-10-03T08:00:00Z', HOY)).toBe('ayer');
+    expect(P.haceCuanto('2026-07-01T08:00:00Z', HOY)).toBe('hace 3 meses');
+    expect(P.haceCuanto('2024-09-01T08:00:00Z', HOY)).toBe('hace 2 años');
+  });
+  it('dos plantillas de Fundamentos de Algoritmia son un grupo con 2 enfoques, antes que la electiva', () => {
+    const g = P.agruparPorAsignatura([ia, base, pensar]);
+    expect(g.map((x) => [x.titulo, x.plantillas.length])).toEqual([['Fundamentos de Algoritmia', 2], ['IA en la educación', 1]]);
+    expect(g[0].subtitulo).toBe('3.er semestre · Lic. en Informática · Unicórdoba');
+    expect(P.cuantosEnfoques(g[0])).toBe('2 enfoques');
+  });
+  it('«¿Con quién compartes?» usa los nombres reales y explica lo que no se puede', () => {
+    const algo = P.opcionesDeAlcance({ ...ALGO, program: { ...LIC, facultad: 'Facultad de Educación y Ciencias Humanas' } as Prog });
+    expect(algo.map((o) => o.titulo)).toEqual([
+      'No compartir', 'Docentes de Fundamentos de Algoritmia', 'Docentes de Lic. en Informática',
+      'Docentes de la Facultad de Educación y Ciencias Humanas', 'Docentes de Unicórdoba', 'Todos los docentes de STIRE',
+    ]);
+    expect(algo.every((o) => o.motivoNoDisponible === null)).toBe(true);
+    const electiva = P.opcionesDeAlcance(ELECTIVA);
+    expect(electiva.find((o) => o.valor === 'programa')!.motivoNoDisponible).toBe('Esta asignatura no es de un programa.');
+    expect(electiva.find((o) => o.valor === 'institucion')!.motivoNoDisponible).toBeNull();
+    const sin = P.opcionesDeAlcance(null);
+    expect(sin.filter((o) => o.motivoNoDisponible).map((o) => o.valor)).toEqual(['asignatura', 'programa', 'facultad', 'institucion']);
+  });
+  it('las pantallas usan el agrupamiento y el alcance, y piden las plantillas para la asignatura', () => {
+    const index = leer('pages', 'docente', 'index.vue');
+    expect(index).toContain('<DocenteElegirPlantilla');
+    expect(index).toContain('/reuse/plantillas?asignaturaId=');
+    const elegir = leer('components', 'docente', 'ElegirPlantilla.vue');
+    expect(elegir).toContain('Ver más plantillas');
+    expect(elegir).toContain('agruparPorAsignatura(resto)');
+    expect(leer('pages', 'docente', 'contenidos.vue')).toContain('v-for="g in gruposDePlantillas"');
+    const ajustes = leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue');
+    expect(ajustes).toContain('opcionesDeAlcance(classInfo.value?.asignatura)');
+    expect(ajustes).toContain("alcancePlantilla: alcanceElegido.value");
+    expect(ajustes).not.toContain('alternarPlantilla');
+  });
+});

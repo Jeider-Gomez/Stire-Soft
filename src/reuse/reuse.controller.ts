@@ -26,8 +26,10 @@ export class ReuseController {
 
   @Get('plantillas')
   @ApiOperation({ summary: 'Plantillas de otros docentes: clases cuyo contenido su docente compartió para copiarlo' })
-  plantillas(@GetUser() user: User) {
-    return this.reuseService.plantillas(user);
+  plantillas(@GetUser() user: User, @Query('asignaturaId') asignaturaId?: string) {
+    // La asignatura que el docente va a dictar ordena por cercanía (y amplía lo que puede ver: su programa, su facultad…).
+    const id = Number(asignaturaId);
+    return this.reuseService.plantillas(user, Number.isInteger(id) && id > 0 ? id : undefined);
   }
 
   @Get('classes/:classId/modulos')

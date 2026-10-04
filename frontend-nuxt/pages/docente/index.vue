@@ -465,28 +465,12 @@
                   />
                 </div>
 
-                <!-- Copiar contenido de otra clase (T3) -->
-                <div>
-                  <label for="new-class-source" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Copiar el contenido de
-                  </label>
-                  <select
-                    id="new-class-source"
-                    v-model="newClass.sourceClassId"
-                    class="input-stire text-xs"
-                  >
-                    <option :value="null">Empezar vacía</option>
-                    <optgroup v-if="classes.length" label="Mis clases">
-                      <option v-for="c in classes" :key="c.id" :value="c.id">
-                        {{ c.name }} ({{ c.code }})
-                      </option>
-                    </optgroup>
-                    <optgroup v-if="plantillas.length" label="Plantillas de otros docentes">
-                      <option v-for="p in plantillas" :key="`p${p.classId}`" :value="p.classId">{{ textoPlantilla(p) }}</option>
-                    </optgroup>
-                  </select>
-                  <p class="text-[11px] text-slate-500 mt-1">Opcional. Se copian explicaciones y ejercicios en borrador; nunca estudiantes ni notas.</p>
-                </div>
+                <!-- Copiar contenido: plantillas recomendadas para su asignatura, el resto agrupado, y sus clases (§2.3) -->
+                <DocenteElegirPlantilla
+                  v-model="newClass.sourceClassId"
+                  :plantillas="plantillas"
+                  :mis-clases="classes"
+                  :asignatura-nombre="newClass.asignatura?.nombre" />
 
                 <!-- Toggle aprobación -->
                 <div class="p-4 bg-stire-canvas rounded-xl border border-slate-200 flex items-center justify-between gap-4">
@@ -580,7 +564,7 @@
 </template>
 
 <script setup lang="ts">
-import { textoPlantilla, type Plantilla } from '~/utils/plantillas'
+import type { Plantilla } from '~/utils/plantillas'
 import { porcentaje } from '~/utils/porcentaje'
 import { lugarDeAsignatura, nombreSugerido, periodoActual, type AsignaturaInfo } from '~/utils/contextoAcademico'
 import { AlertTriangle, BookOpen, Check, Copy, Mail, Plus, QrCode, Search, TrendingUp, UserCheck, Users, X } from 'lucide-vue-next'
@@ -609,9 +593,10 @@ const api = useApi()
 const classes = ref<TeacherClass[]>([])
 // Contenido que otros docentes compartieron como plantilla, para empezar una clase con él.
 const plantillas = ref<Plantilla[]>([])
-async function fetchPlantillas() {
+// Con la asignatura elegida, el servidor ordena por cercanía y muestra también lo compartido con esa asignatura o su programa.
+async function fetchPlantillas(asignaturaId?: number) {
   try {
-    plantillas.value = await api.get<Plantilla[]>('/reuse/plantillas')
+    plantillas.value = await api.get<Plantilla[]>(asignaturaId ? `/reuse/plantillas?asignaturaId=${asignaturaId}` : '/reuse/plantillas')
   } catch {
     plantillas.value = []
   }
@@ -638,6 +623,7 @@ const newClass = reactive({
   grupo: '',
   periodo: ''
 })
+watch(() => newClass.asignatura?.id, (id) => { void fetchPlantillas(id) })
 // El nombre se sugiere con la asignatura, el grupo y el periodo hasta que el docente lo escribe él mismo.
 const nombreTocado = ref(false)
 watch(() => [newClass.asignatura, newClass.grupo, newClass.periodo] as const, ([a, grupo, periodo]) => {

@@ -14,6 +14,10 @@ import { Enrollment } from '../../enrollment/entities/enrollment.entity';
 import { Section } from '../../section/entities/section.entity';
 import { Asignatura } from '../../institution/entities/asignatura.entity';
 
+/** Con quién se comparte el contenido de una clase, de lo más cercano a lo más amplio. */
+export const ALCANCES_PLANTILLA = ['nadie', 'asignatura', 'programa', 'facultad', 'institucion', 'todos'] as const;
+export type AlcancePlantilla = (typeof ALCANCES_PLANTILLA)[number];
+
 @Entity('classes')
 @Index(['teacherId'])
 export class Class {
@@ -49,6 +53,21 @@ export class Class {
    */
   @Column({ default: false })
   compartidaComoPlantilla!: boolean;
+
+  /**
+   * Con quién se comparte el contenido (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.3). `compartidaComoPlantilla` queda
+   * como resumen (alcance distinto de «nadie») para lo que ya lo usaba.
+   */
+  @Column({ type: 'varchar', length: 20, default: 'nadie' })
+  alcancePlantilla!: AlcancePlantilla;
+
+  /** El enfoque de esta plantilla en una línea: «Con JavaScript, según el plan de clase», «Solo pseudocódigo». */
+  @Column({ type: 'varchar', length: 160, nullable: true })
+  enfoque?: string | null;
+
+  /** Cuántas veces otros docentes copiaron este contenido: una señal de que sirve. */
+  @Column({ type: 'int', default: 0 })
+  vecesCopiada!: number;
 
   @Column({ type: 'date', nullable: true })
   startDate?: Date;

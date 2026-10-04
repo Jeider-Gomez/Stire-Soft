@@ -71,27 +71,38 @@
     </section>
 
     <!-- Compartir el contenido con otros docentes (docs/DISENO_CLASES_Y_DOCENTES.md) -->
-    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
-      <h2 class="text-sm font-bold text-base-texto-primario">Compartir el contenido</h2>
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
-        <div>
-          <p class="text-xs font-semibold text-base-texto-primario">Compartir como plantilla con otros docentes</p>
-          <p class="text-[11px] text-base-texto-secundario mt-0.5">
-            Otros docentes podrán copiar los módulos, explicaciones y ejercicios a sus propias clases. Reciben una copia: lo
-            que cambien no toca tu clase, y tus estudiantes, entregas y notas nunca se comparten.
-          </p>
-        </div>
-        <button
-          type="button"
-          :disabled="isSavingPlantilla"
-          :aria-pressed="!!classInfo?.compartidaComoPlantilla"
-          class="px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
-          :class="classInfo?.compartidaComoPlantilla ? 'bg-semantico-exito/15 text-semantico-exito' : 'bg-base-borde-sutil text-base-texto-secundario'"
-          @click="alternarPlantilla"
-        >
-          <Check v-if="classInfo?.compartidaComoPlantilla" :size="12" aria-hidden="true" />
-          {{ classInfo?.compartidaComoPlantilla ? 'Compartida' : 'No compartida' }}
+    <!-- Compartir el contenido (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.3): con quién, y su enfoque en una línea -->
+    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3" aria-labelledby="compartir-titulo">
+      <h2 id="compartir-titulo" class="text-sm font-bold text-base-texto-primario">Compartir el contenido</h2>
+      <p class="text-[11px] text-base-texto-secundario">
+        Otros docentes podrán copiar los módulos, explicaciones y ejercicios a sus propias clases. Reciben una copia: lo que
+        cambien no toca tu clase, y tus estudiantes, entregas y notas nunca se comparten.
+      </p>
+      <div role="radiogroup" aria-labelledby="compartir-titulo" class="space-y-1.5">
+        <label v-for="o in opcionesCompartir" :key="o.valor"
+          class="flex items-start gap-2 min-h-[44px] rounded-lg border px-3 py-2"
+          :class="o.motivoNoDisponible ? 'border-base-borde-sutil opacity-60 cursor-not-allowed' : alcanceElegido === o.valor ? 'border-acento-ambar-fuerte bg-acento-ambar/10 cursor-pointer' : 'border-base-borde-sutil hover:bg-base-bg-secundario cursor-pointer'">
+          <input v-model="alcanceElegido" type="radio" name="alcance-plantilla" :value="o.valor" :disabled="!!o.motivoNoDisponible" class="mt-0.5" />
+          <span class="text-xs">
+            <span class="font-semibold text-base-texto-primario">{{ o.titulo }}</span>
+            <span class="block text-[11px] text-base-texto-secundario">{{ o.motivoNoDisponible || o.ayuda }}</span>
+          </span>
+        </label>
+      </div>
+      <div v-if="alcanceElegido !== 'nadie'">
+        <label for="enfoque-plantilla" class="block text-xs font-semibold text-base-texto-primario mb-1">
+          Enfoque <span class="text-base-texto-secundario font-normal">(una línea: cómo la diferencias de otras de la misma asignatura)</span>
+        </label>
+        <input id="enfoque-plantilla" v-model="enfoqueElegido" type="text" maxlength="160" placeholder="Con JavaScript, según el plan de clase · Solo pseudocódigo, sin programar"
+          class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none" />
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button" :disabled="isSavingPlantilla || !cambioCompartir"
+          class="min-h-[44px] px-4 rounded-md text-xs font-bold bg-acento-ambar-fuerte text-base-blanco disabled:opacity-50"
+          @click="guardarCompartir">
+          {{ isSavingPlantilla ? 'Guardando…' : 'Guardar' }}
         </button>
+        <p v-if="avisoCompartir" role="status" class="text-xs" :class="avisoCompartir.error ? 'text-semantico-error' : 'text-semantico-exito'">{{ avisoCompartir.texto }}</p>
       </div>
     </section>
 
@@ -191,6 +202,7 @@
 
 <script setup lang="ts">
 import type { AsignaturaInfo } from '~/utils/contextoAcademico'
+import { opcionesDeAlcance, type AlcancePlantilla } from '~/utils/plantillas'
 import { Check } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 
@@ -209,6 +221,8 @@ interface ClassInfo {
   description?: string
   requiresApproval?: boolean
   compartidaComoPlantilla?: boolean
+  alcancePlantilla?: AlcancePlantilla
+  enfoque?: string | null
   dominioParaAvanzar?: number
   asignatura?: AsignaturaInfo | null
   grupo?: string | null
@@ -344,15 +358,33 @@ async function change(id: string, action: 'approve' | 'reject' | 'remove') {
   await load()
 }
 
+// Con quién se comparte: las opciones dicen los nombres reales de su asignatura, programa, facultad e institución.
 const isSavingPlantilla = ref(false)
-async function alternarPlantilla() {
+const alcanceElegido = ref<AlcancePlantilla>('nadie')
+const enfoqueElegido = ref('')
+const avisoCompartir = ref<{ texto: string; error: boolean } | null>(null)
+const opcionesCompartir = computed(() => opcionesDeAlcance(classInfo.value?.asignatura))
+watch(classInfo, (c) => {
+  alcanceElegido.value = c?.alcancePlantilla ?? (c?.compartidaComoPlantilla ? 'todos' : 'nadie')
+  enfoqueElegido.value = c?.enfoque ?? ''
+}, { immediate: true })
+const cambioCompartir = computed(() => {
+  const c = classInfo.value
+  return !!c && (alcanceElegido.value !== (c.alcancePlantilla ?? 'nadie') || enfoqueElegido.value.trim() !== (c.enfoque ?? ''))
+})
+async function guardarCompartir() {
   if (!classInfo.value) return
   isSavingPlantilla.value = true
+  avisoCompartir.value = null
   try {
     classInfo.value = await api.apiFetch<ClassInfo>(`/class/${classId}`, {
       method: 'PATCH',
-      body: { compartidaComoPlantilla: !classInfo.value.compartidaComoPlantilla }
+      body: { alcancePlantilla: alcanceElegido.value, enfoque: enfoqueElegido.value.trim() || null }
     })
+    const titulo = opcionesCompartir.value.find((o) => o.valor === alcanceElegido.value)?.titulo ?? ''
+    avisoCompartir.value = { texto: alcanceElegido.value === 'nadie' ? 'Guardado: no se comparte.' : `Guardado: la ven ${titulo.charAt(0).toLowerCase()}${titulo.slice(1)}.`, error: false }
+  } catch (err) {
+    avisoCompartir.value = { texto: messageOf(err, 'No se pudo guardar.'), error: true }
   } finally {
     isSavingPlantilla.value = false
   }

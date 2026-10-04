@@ -18,6 +18,7 @@ import { User, UserRole } from '../user/entities/user.entity';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { normalizarCodigo, problemaDelCodigo } from './codigo-clase';
 import { Asignatura } from '../institution/entities/asignatura.entity';
+import { problemaDelAlcance } from '../reuse/alcance-plantilla';
 
 export interface ClassWithStats extends Class {
   enrollmentCount: number;
@@ -54,6 +55,7 @@ export class ClassService {
 
     const academico = await this.datosAcademicos(createClassDto);
     const classEntity = this.classRepository.create({ ...createClassDto, ...academico, code, teacherId });
+    this.validarAlcance(classEntity);
     try {
       return await this.classRepository.save(classEntity);
     } catch (err) {
@@ -192,6 +194,7 @@ export class ClassService {
 
     const academico = await this.datosAcademicos(updateClassDto);
     Object.assign(classEntity, updateClassDto, academico);
+    this.validarAlcance(classEntity);
     return await this.classRepository.save(classEntity);
   }
 
@@ -214,7 +217,21 @@ export class ClassService {
     }
     if (dto.periodo !== undefined) out.periodo = dto.periodo?.trim() || null;
     if (dto.grupo !== undefined) out.grupo = dto.grupo?.trim() || null;
+    // Alcance de la plantilla y el antiguo sí/no siempre coinciden: «sí» es compartir con todos.
+    if (dto.alcancePlantilla !== undefined) {
+      out.alcancePlantilla = dto.alcancePlantilla;
+      out.compartidaComoPlantilla = dto.alcancePlantilla !== 'nadie';
+    } else if (dto.compartidaComoPlantilla !== undefined) {
+      out.alcancePlantilla = dto.compartidaComoPlantilla ? 'todos' : 'nadie';
+    }
+    if (dto.enfoque !== undefined) out.enfoque = dto.enfoque?.trim() || null;
     return out;
+  }
+
+  /** Compartir con la asignatura, el programa, la facultad o la institución exige que la clase tenga esos datos. */
+  private validarAlcance(c: Partial<Class>): void {
+    const problema = problemaDelAlcance(c.alcancePlantilla ?? 'nadie', c.asignatura);
+    if (problema) throw new BadRequestException(problema);
   }
 
   async remove(id: number, user: User): Promise<void> {
