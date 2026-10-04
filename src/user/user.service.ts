@@ -3,6 +3,7 @@ import {
   ConflictException,
   ForbiddenException,
   NotFoundException,
+  BadRequestException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,6 +19,15 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAffiliationDto } from './dto/create-affiliation.dto';
 import { InstitutionService } from '../institution/institution.service';
 import { MediaService } from '../media/media.service';
+
+
+export interface VinculoAcademico {
+  id: number;
+  roleType: string;
+  currentSemester: number | null;
+  program: { id: number; name: string; tipo: string; maxSemesters: number; facultad: string | null; institutionId: number };
+  institution: { id: number; name: string; sigla: string | null } | null;
+}
 
 @Injectable()
 export class UserService {
@@ -236,18 +246,47 @@ export class UserService {
   /**
    * Agregar afiliación académica a un usuario
    */
-  async addAffiliation(userId: number, data: CreateAffiliationDto) {
-    const user = await this.findOne(userId);
-    const program = await this.institutionService.findProgramById(data.programId);
-
-    const affiliation = this.affiliationRepository.create({
-      user,
-      program,
-      roleType: data.roleType,
-      currentSemester: data.currentSemester,
+  /**
+   * «Dónde enseño / Qué estudio» (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md, fase 3): los programas de una persona, con su
+   * institución. Sirven para que un docente nuevo vea desde el primer día las plantillas de su programa y facultad, y
+   * para que la barra superior diga dónde enseña aunque aún no tenga clases.
+   */
+  async misVinculos(userId: number): Promise<VinculoAcademico[]> {
+    const filas = await this.affiliationRepository.find({
+      where: { userId, isActive: true },
+      relations: ['program', 'program.institution'],
+      order: { id: 'ASC' },
     });
+    return filas.map((v) => ({
+      id: v.id,
+      roleType: v.roleType,
+      currentSemester: v.currentSemester ?? null,
+      program: { id: v.program.id, name: v.program.name, tipo: v.program.tipo, maxSemesters: v.program.maxSemesters, facultad: v.program.facultad, institutionId: v.program.institutionId },
+      institution: v.program.institution ? { id: v.program.institution.id, name: v.program.institution.name, sigla: v.program.institution.sigla } : null,
+    }));
+  }
 
-    return await this.affiliationRepository.save(affiliation);
+  /**
+   * Agregar un vínculo. El rol sale de la cuenta (un docente enseña, un estudiante estudia), no de lo que mande el
+   * cliente. Si ya existía con ese programa, se actualiza el semestre en lugar de duplicarlo.
+   */
+  async addAffiliation(userId: number, data: CreateAffiliationDto, rolDeLaCuenta?: string): Promise<VinculoAcademico> {
+    const program = await this.institutionService.findProgramById(data.programId);
+    if (data.currentSemester && data.currentSemester > program.maxSemesters) {
+      throw new BadRequestException(`${program.name} tiene ${program.maxSemesters} ${program.tipo === 'grado' ? 'grados' : 'semestres'}.`);
+    }
+    const roleType = rolDeLaCuenta === 'estudiante' ? 'estudiante' : rolDeLaCuenta ? 'docente' : data.roleType;
+    const existente = await this.affiliationRepository.findOne({ where: { userId, programId: program.id } });
+    const vinculo = existente ?? this.affiliationRepository.create({ userId, programId: program.id });
+    Object.assign(vinculo, { roleType, currentSemester: data.currentSemester ?? null, isActive: true });
+    const guardado = await this.affiliationRepository.save(vinculo);
+    return (await this.misVinculos(userId)).find((v) => v.id === guardado.id)!;
+  }
+
+  async quitarVinculo(userId: number, id: number): Promise<void> {
+    const vinculo = await this.affiliationRepository.findOne({ where: { id, userId } });
+    if (!vinculo) throw new NotFoundException('Ese vínculo no existe.');
+    await this.affiliationRepository.remove(vinculo);
   }
 
   /**

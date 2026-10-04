@@ -179,6 +179,15 @@
         Mostrando {{ filteredClasses.length }} de {{ classes.length }} clase{{ classes.length !== 1 ? 's' : '' }}
       </p>
     </div>
+    <!-- Filtro por programa: solo si enseña en más de uno -->
+    <div v-if="!isLoading && programasDelDocente.length > 1" role="group" aria-label="Filtrar por programa" class="flex flex-wrap gap-2 text-xs">
+      <button v-for="p in [{ id: null, nombre: 'Todos los programas' }, ...programasDelDocente]" :key="p.id ?? 'todos'" type="button"
+        class="min-h-[44px] px-3 rounded-full border"
+        :class="programaFiltro === p.id ? 'border-acento-ambar-fuerte bg-acento-ambar/10 font-semibold' : 'border-base-borde-fuerte'"
+        :aria-pressed="programaFiltro === p.id" @click="programaFiltro = p.id">
+        {{ p.nombre }}
+      </button>
+    </div>
 
     <!-- ═══════════════════════════════════════════════════════
          TARJETAS DE CLASES
@@ -329,6 +338,13 @@
           </div>
         </div>
       </TransitionGroup>
+      <!-- Periodos anteriores, plegados: no estorban, pero siguen a un clic -->
+      <button v-if="organizacion.anteriores > 0" type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline" :aria-expanded="verAnteriores" @click="verAnteriores = true">
+        Ver {{ organizacion.anteriores === 1 ? 'la clase' : `las ${organizacion.anteriores} clases` }} de periodos anteriores
+      </button>
+      <button v-else-if="verAnteriores" type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline" :aria-expanded="true" @click="verAnteriores = false">
+        Ocultar periodos anteriores
+      </button>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════
@@ -567,6 +583,7 @@
 import type { Plantilla } from '~/utils/plantillas'
 import { porcentaje } from '~/utils/porcentaje'
 import { lugarDeAsignatura, nombreSugerido, periodoActual, type AsignaturaInfo } from '~/utils/contextoAcademico'
+import { organizarClases, programasDeLasClases } from '~/utils/organizarClases'
 import { AlertTriangle, BookOpen, Check, Copy, Mail, Plus, QrCode, Search, TrendingUp, UserCheck, Users, X } from 'lucide-vue-next'
 import { normalizarCodigo, sugerirCodigo, urlDeIngreso } from '~/utils/codigoClase'
 import { useApi } from '~/composables/useApi'
@@ -633,8 +650,11 @@ watch(() => [newClass.asignatura, newClass.grupo, newClass.periodo] as const, ([
 const programaHabitual = computed<number | null>(() => {
   const cuenta = new Map<number, number>()
   for (const c of classes.value) if (c.asignatura?.programId) cuenta.set(c.asignatura.programId, (cuenta.get(c.asignatura.programId) ?? 0) + 1)
-  return [...cuenta.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
+  return [...cuenta.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? contexto.programaPrincipal.value
 })
+// Sin clases con asignatura, el programa de «Dónde enseño» sugiere las asignaturas de la primera clase.
+const contexto = useContextoDocente()
+contexto.cargar()
 
 // Modal QR
 const qrCanvas = ref<HTMLCanvasElement | null>(null)
@@ -654,13 +674,13 @@ const atRiskCount = computed(() =>
 )
 
 // Búsqueda
-const filteredClasses = computed(() => {
-  const q = searchQuery.value.trim().toLowerCase()
-  if (!q) return classes.value
-  return classes.value.filter(c =>
-    c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)
-  )
-})
+// Cuando pasan los semestres (utils/organizarClases.ts): el periodo vigente a la vista, los anteriores plegados y un
+// filtro por programa solo si enseña en más de uno. Al buscar, se busca en todo.
+const programaFiltro = ref<number | null>(null)
+const verAnteriores = ref(false)
+const programasDelDocente = computed(() => programasDeLasClases(classes.value))
+const organizacion = computed(() => organizarClases(classes.value, { texto: searchQuery.value, programaId: programaFiltro.value, verAnteriores: verAnteriores.value }))
+const filteredClasses = computed(() => organizacion.value.visibles)
 
 function openCreateModal() {
   newClass.name = ''

@@ -70,3 +70,19 @@ export function problemaDelAlcance(alcance: AlcancePlantilla, asignatura: Asigna
   if (alcance === 'institucion' && !asignatura.institutionId) return 'Es un curso libre, sin institución: compártelo con todos o con su asignatura.';
   return null;
 }
+
+/**
+ * Suma al contexto los programas de los vínculos del docente («Dónde enseño», fase 3): un docente nuevo, sin clases,
+ * vincula la Licenciatura en Informática y ya ve lo compartido con ese programa, su facultad y su institución.
+ */
+export function agregarProgramas(
+  ctx: ContextoDocente,
+  programas: ReadonlyArray<{ id: number; institutionId: number; facultad?: string | null }>,
+): ContextoDocente {
+  for (const p of programas) {
+    ctx.programas.add(p.id);
+    ctx.instituciones.add(p.institutionId);
+    if (p.facultad?.trim()) ctx.facultades.add(`${p.institutionId}|${p.facultad.trim().toLowerCase()}`);
+  }
+  return ctx;
+}

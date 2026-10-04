@@ -90,3 +90,16 @@ export function nombreSugerido(asignatura: string, grupo = '', periodo = ''): st
   const cola = [grupo.trim(), periodo.trim()].filter(Boolean).join(' · ')
   return cola ? `${asignatura.trim()} — ${cola}` : asignatura.trim()
 }
+
+/** Un vínculo de «Dónde enseño / Qué estudio» (GET /users/me/affiliations). */
+export interface VinculoInfo { program: ProgramaInfo; institution: InstitucionInfo | null }
+
+/** Si las clases no dicen dónde enseña (sin asignatura o sin clases), lo dicen sus vínculos de «Dónde enseño». */
+export function contextoDeVinculos(vinculos: ReadonlyArray<VinculoInfo>): string | null {
+  if (!vinculos.length) return null
+  const instituciones = new Set(vinculos.map((v) => v.institution?.id ?? v.program.institutionId))
+  if (instituciones.size > 1) return `${instituciones.size} instituciones`
+  const inst = institucionCorta(vinculos[0].institution)
+  if (vinculos.length === 1) return [inst, programaCorto(vinculos[0].program.name)].filter(Boolean).join(' · ')
+  return [inst, `${vinculos.length} programas`].filter(Boolean).join(' · ')
+}

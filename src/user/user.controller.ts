@@ -45,12 +45,25 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  // «Dónde enseño / Qué estudio» (fase 3 de docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md): solo los vínculos propios.
+  @Roles('estudiante', 'docente', 'admin')
+  @Get('me/affiliations')
+  misVinculos(@GetUser() user: User) {
+    return this.userService.misVinculos(user.id);
+  }
+
   @Post('me/affiliations')
   addAffiliation(
     @GetUser() user: User,
     @Body() dto: CreateAffiliationDto,
   ) {
-    return this.userService.addAffiliation(user.id, dto);
+    return this.userService.addAffiliation(user.id, dto, user.role);
+  }
+
+  @Roles('estudiante', 'docente', 'admin')
+  @Delete('me/affiliations/:affiliationId')
+  quitarVinculo(@GetUser() user: User, @Param('affiliationId', ParseIntPipe) id: number) {
+    return this.userService.quitarVinculo(user.id, id);
   }
 
   // Rutas /me* declaradas ANTES de las rutas con :id para que 'me' no sea

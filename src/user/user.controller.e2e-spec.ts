@@ -32,6 +32,8 @@ describe('UserController (e2e) — P0-02 escalada de privilegios', () => {
     remove: jest.fn(),
     updateRole: jest.fn(),
     addAffiliation: jest.fn(),
+    misVinculos: jest.fn(),
+    quitarVinculo: jest.fn(),
   };
 
   // Simula un JwtAuthGuard que ya validó el token y adjuntó req.user —
@@ -284,7 +286,18 @@ describe('UserController (e2e) — P0-02 escalada de privilegios', () => {
       expect(mockUserService.addAffiliation).toHaveBeenCalledWith(
         1,
         expect.objectContaining({ programId: 1, roleType: 'estudiante' }),
+        // el rol del vínculo lo decide la cuenta, no el cuerpo (fase 3 de DISENO_ORGANIZACION_Y_PLANTILLAS.md)
+        expect.any(String),
       );
+    });
+
+    it('listar y quitar los vínculos propios: GET y DELETE /users/me/affiliations', async () => {
+      mockUserService.misVinculos.mockResolvedValue([]);
+      mockUserService.quitarVinculo.mockResolvedValue(undefined);
+      await request(app.getHttpServer()).get('/users/me/affiliations').expect(200);
+      expect(mockUserService.misVinculos).toHaveBeenCalledWith(1);
+      await request(app.getHttpServer()).delete('/users/me/affiliations/5').expect(200);
+      expect(mockUserService.quitarVinculo).toHaveBeenCalledWith(1, 5);
     });
   });
 });

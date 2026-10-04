@@ -14,7 +14,8 @@ import { PublicationStatus } from '../common/enums/status.enum';
 import { BankQueryDto, CopyActivityDto, ImportClassContentDto } from './dto/reuse.dto';
 import type { AlcancePlantilla } from '../class/entities/class.entity';
 import { Asignatura } from '../institution/entities/asignatura.entity';
-import { cercania, contextoDe, puedeVerPlantilla, type ContextoDocente } from './alcance-plantilla';
+import { agregarProgramas, cercania, contextoDe, puedeVerPlantilla, type ContextoDocente } from './alcance-plantilla';
+import { UserAffiliation } from '../user/entities/user-affiliation.entity';
 
 // Reutilizar lo que ya se hizo (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.5): traer el contenido de otra clase propia
 // (dos salones de la misma materia, o el semestre siguiente), el banco de ejercicios del docente y copiar un ejercicio
@@ -92,7 +93,13 @@ export class ReuseService {
   private async contextoDel(user: User, asignaturaId?: number): Promise<{ ctx: ContextoDocente; destino: Asignatura | null }> {
     const propias = await this.dataSource.getRepository(Class).find({ where: { teacherId: user.id } });
     const destino = asignaturaId ? await this.dataSource.getRepository(Asignatura).findOne({ where: { id: asignaturaId } }) : null;
-    return { ctx: contextoDe([...propias.map((c) => c.asignatura), destino]), destino };
+    // Y los programas de sus vínculos («Dónde enseño»): así un docente sin clases ya ve lo de su programa y facultad.
+    const vinculos = await this.dataSource.getRepository(UserAffiliation).find({ where: { userId: user.id, isActive: true }, relations: ['program'] });
+    const ctx = agregarProgramas(
+      contextoDe([...propias.map((c) => c.asignatura), destino]),
+      vinculos.filter((v) => v.program).map((v) => ({ id: v.program.id, institutionId: v.program.institutionId, facultad: v.program.facultad })),
+    );
+    return { ctx, destino };
   }
 
   private visibleParaDocente(origen: Class, user: User, ctx: ContextoDocente): boolean {

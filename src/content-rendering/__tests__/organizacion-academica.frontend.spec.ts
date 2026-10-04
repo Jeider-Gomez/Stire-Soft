@@ -213,3 +213,70 @@ describe('Plantillas: agrupadas por asignatura, con lo que dice si sirven', () =
     expect(ajustes).not.toContain('alternarPlantilla');
   });
 });
+
+// Fase 3: «Dónde enseño / Qué estudio», el inicio del docente cuando pasan los semestres y la gamificación sobria.
+describe('Fase 3 — práctico, escalable y sin abrumar', () => {
+  const V = cargar<{ contextoDeVinculos: (v: Array<{ program: Prog & { institutionId?: number }; institution: Inst | null }>) => string | null }>('contextoAcademico');
+  const O = cargar<{
+    periodoVigente: (c: unknown[], ahora?: Date) => string | null;
+    programasDeLasClases: (c: unknown[]) => Array<{ id: number; nombre: string }>;
+    organizarClases: (c: unknown[], f: { texto: string; programaId: number | null; verAnteriores: boolean }, ahora?: Date) => { visibles: Array<{ id: number }>; anteriores: number; vigente: string | null };
+  }>('organizarClases');
+  const R = cargar<{ textoEsfuerzo: (e: { dias: number; avanzados: number; repasos: number } | null) => string; textoRachaSemanas: (n: number) => string }>('racha');
+  const HOY = new Date(2026, 9, 4);
+  const MATE: Prog = { id: 8, name: 'Licenciatura en Matemáticas' };
+  const clase = (id: number, periodo: string | null, asignatura: Asig | null = ALGO, name = `Clase ${id}`) => ({ id, name, code: `C-${id}`, periodo, asignatura });
+
+  it('la barra del docente sin clases con asignatura sale de sus vínculos', () => {
+    expect(V.contextoDeVinculos([{ program: LIC, institution: UNICOR }])).toBe('Unicórdoba · Lic. en Informática');
+    expect(V.contextoDeVinculos([{ program: LIC, institution: UNICOR }, { program: MATE, institution: UNICOR }])).toBe('Unicórdoba · 2 programas');
+    expect(V.contextoDeVinculos([{ program: LIC, institution: UNICOR }, { program: MATE, institution: { id: 2, name: 'I. E. San José' } }])).toBe('2 instituciones');
+    expect(V.contextoDeVinculos([])).toBeNull();
+  });
+
+  it('a la vista el periodo vigente y las clases sin periodo; los anteriores, plegados y contados', () => {
+    const clases = [clase(1, '2026-2'), clase(2, '2026-1'), clase(3, '2025-2'), clase(4, null)];
+    const r = O.organizarClases(clases, { texto: '', programaId: null, verAnteriores: false }, HOY);
+    expect(r.vigente).toBe('2026-2');
+    expect(r.visibles.map((c) => c.id)).toEqual([1, 4]);
+    expect(r.anteriores).toBe(2);
+    expect(O.organizarClases(clases, { texto: '', programaId: null, verAnteriores: true }, HOY).visibles.map((c) => c.id)).toEqual([1, 2, 3, 4]);
+  });
+  it('al buscar se busca en todo, también en lo plegado y por asignatura', () => {
+    const clases = [clase(1, '2026-2'), clase(2, '2025-1', ALGO, 'Algoritmia vieja')];
+    const r = O.organizarClases(clases, { texto: 'vieja', programaId: null, verAnteriores: false }, HOY);
+    expect(r.visibles.map((c) => c.id)).toEqual([2]);
+    expect(O.organizarClases(clases, { texto: 'fundamentos', programaId: null, verAnteriores: false }, HOY).visibles).toHaveLength(2);
+  });
+  it('si ninguna clase es del periodo actual, el vigente es el más reciente', () => {
+    expect(O.periodoVigente([clase(1, '2025-2'), clase(2, '2025-1')], HOY)).toBe('2025-2');
+    expect(O.periodoVigente([clase(1, null)], HOY)).toBeNull();
+  });
+  it('el filtro por programa solo existe con dos programas o más', () => {
+    const mate: Asig = { id: 9, nombre: 'Cálculo', program: MATE, institution: UNICOR };
+    expect(O.programasDeLasClases([clase(1, '2026-2'), clase(2, '2026-2')])).toHaveLength(1);
+    const dos = [clase(1, '2026-2'), clase(2, '2026-2', mate)];
+    expect(O.programasDeLasClases(dos).map((p) => p.nombre)).toEqual(['Lic. en Informática', 'Lic. en Matemáticas']);
+    expect(O.organizarClases(dos, { texto: '', programaId: 8, verAnteriores: false }, HOY).visibles.map((c) => c.id)).toEqual([2]);
+  });
+
+  it('gamificación sobria: racha de semanas y el esfuerzo de la semana, sin regaño', () => {
+    expect(R.textoRachaSemanas(0)).toBe('Empieza esta semana');
+    expect(R.textoRachaSemanas(1)).toBe('1 semana');
+    expect(R.textoRachaSemanas(4)).toBe('4 semanas seguidas');
+    expect(R.textoEsfuerzo({ dias: 2, avanzados: 1, repasos: 3 })).toBe('2 días de estudio · 1 ejercicio avanzado · 3 repasos');
+    expect(R.textoEsfuerzo({ dias: 1, avanzados: 0, repasos: 0 })).toBe('1 día de estudio');
+    expect(R.textoEsfuerzo(null)).toBe('Esta semana aún no practicas. Un rato basta para empezar.');
+  });
+
+  it('las pantallas lo usan', () => {
+    for (const rol of ['docente', 'estudiante']) expect(leer('pages', rol, 'perfil.vue')).toContain('<PerfilVinculos');
+    const vinc = leer('components', 'perfil', 'Vinculos.vue');
+    expect(vinc).toContain("'Dónde enseño' : 'Qué estudio'");
+    expect(vinc).toContain('api.del(`/users/me/affiliations/${v.id}`)');
+    const index = leer('pages', 'docente', 'index.vue');
+    expect(index).toContain('v-if="!isLoading && programasDelDocente.length > 1"');
+    expect(index).toContain('de periodos anteriores');
+    expect(leer('pages', 'estudiante', 'index.vue')).toContain('textoRachaSemanas(studentStore.analytics.streakWeeks)');
+  });
+});
