@@ -17,7 +17,7 @@ import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { construirMapaDeCalor, MapaDeCalor } from './mapa-de-calor';
 import { construirResumenSemanal, ResumenSemanal } from './resumen-semanal';
 import { rachaDeDias, repasosPendientes } from './racha-y-repasos';
-import { evaluarLogros, siguienteLogro, type Logro } from './logros';
+import { categoriasPermitidas, evaluarLogros, siguienteLogro, type Logro } from './logros';
 
 @Injectable()
 export class AnalyticsService {
@@ -143,11 +143,23 @@ export class AnalyticsService {
    * Logros y medallas (logros.ts; BT-29): el catálogo completo con lo obtenido, el avance de lo que falta, los nuevos
    * que el estudiante no ha visto y la meta más cercana. Lo obtenido se guarda una vez con su fecha.
    */
-  async getLogros(studentId: number, requestingUser: User): Promise<{ logros: Logro[]; nuevos: string[]; siguiente: Logro | null }> {
+  async getLogros(studentId: number, requestingUser: User): Promise<{ activos: boolean; logros: Logro[]; nuevos: string[]; siguiente: Logro | null }> {
     if (requestingUser.role === 'estudiante' && requestingUser.id !== studentId) {
       throw new ForbiddenException('No tienes acceso a los logros de otro estudiante.');
     }
     await this.authorizationService.assertTeacherSharesClassWithStudent(requestingUser, studentId);
+
+    // Lo que permiten sus clases (docs/DISENO_LOGROS.md §6): las categorías activas en cualquiera de ellas. Si ninguna
+    // usa logros, no hay logros.
+    const clases: Array<{ classId: number; logrosActivos: number; categoriasLogro: string | null }> = await this.dataSource.query(
+      'SELECT c.id AS classId, c.logrosActivos, c.categoriasLogro FROM enrollments e JOIN classes c ON c.id = e.classId ' +
+        "WHERE e.studentId = ? AND e.status = 'active'",
+      [studentId],
+    );
+    const conLogros = clases.filter((c) => Number(c.logrosActivos));
+    if (!conLogros.length) return { activos: false, logros: [], nuevos: [], siguiente: null };
+    const permitidas = categoriasPermitidas(conLogros.map((c) => c.categoriasLogro));
+    const clasesConDominio = new Set(conLogros.filter((c) => categoriasPermitidas([c.categoriasLogro]).has('dominio')).map((c) => Number(c.classId)));
 
     const filas: Array<{ activityId: number; learningUnitId: number; attemptNumber: number; score: number; isReview: number; status: string; fecha: Date; difficulty: string; totalPoints: number; passingScore: number }> =
       await this.dataSource.query(
@@ -164,8 +176,8 @@ export class AnalyticsService {
       fecha: new Date(e.fecha),
       repaso: !!Number(e.isReview),
     }));
-    const lecciones: Array<{ unitId: number; moduloId: number; moduloTitulo: string; mastery: number | null; fecha: Date | null }> = await this.dataSource.query(
-      'SELECT lu.id AS unitId, s.id AS moduloId, s.title AS moduloTitulo, lp.mastery AS mastery, lp.updatedAt AS fecha FROM learning_units lu ' +
+    const lecciones: Array<{ classId: number; unitId: number; moduloId: number; moduloTitulo: string; mastery: number | null; fecha: Date | null }> = await this.dataSource.query(
+      'SELECT s.classId AS classId, lu.id AS unitId, s.id AS moduloId, s.title AS moduloTitulo, lp.mastery AS mastery, lp.updatedAt AS fecha FROM learning_units lu ' +
         'JOIN topics t ON t.id = lu.topicId JOIN sections s ON s.id = t.sectionId JOIN enrollments e ON e.classId = s.classId ' +
         'LEFT JOIN learning_progress lp ON lp.learningUnitId = lu.id AND lp.studentId = e.studentId ' +
         "WHERE e.studentId = ? AND e.status = 'active' AND s.isPublished = 1 AND t.isActive = 1 AND lu.isActive = 1",
@@ -173,13 +185,13 @@ export class AnalyticsService {
     );
     const logros = evaluarLogros(
       entregas,
-      lecciones.map((l) => ({
+      lecciones.filter((l) => clasesConDominio.has(Number(l.classId))).map((l) => ({
         learningUnitId: Number(l.unitId), moduloId: Number(l.moduloId), moduloTitulo: l.moduloTitulo,
         mastery: Number(l.mastery ?? 0), fecha: l.fecha ? new Date(l.fecha) : null,
       })),
       entregas.filter((e) => e.repaso).map((e) => e.fecha),
       entregas.map((e) => e.fecha),
-    );
+    ).filter((l) => permitidas.has(l.categoria));
 
     // Guardar lo obtenido (una vez) y saber qué no ha visto: así se celebra una sola vez, con su fecha estable.
     const obtenidos = logros.filter((l) => l.obtenido);
@@ -189,9 +201,12 @@ export class AnalyticsService {
     const guardados: Array<{ clave: string; visto: number }> = obtenidos.length
       ? await this.dataSource.query('SELECT `clave`, `visto` FROM `logros_estudiante` WHERE `studentId` = ?', [studentId])
       : [];
+    const vigentes = new Set(logros.map((l) => l.clave));
     return {
+      activos: true,
       logros,
-      nuevos: guardados.filter((g) => !Number(g.visto)).map((g) => g.clave),
+      // Solo los que la clase permite hoy: si el docente quita una categoría, no se celebran sus medallas.
+      nuevos: guardados.filter((g) => !Number(g.visto) && vigentes.has(g.clave)).map((g) => g.clave),
       siguiente: siguienteLogro(logros),
     };
   }

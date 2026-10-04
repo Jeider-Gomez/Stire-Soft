@@ -312,3 +312,22 @@ describe('Logros y medallas', () => {
     for (const f of [inicio, leer('components', 'estudiante', 'MisLogros.vue')]) expect(sinComentarios(f).toLowerCase()).not.toMatch(/ranking|clasificaci[oó]n|posici[oó]n/);
   });
 });
+
+describe('Logros configurables por el docente, sin trabajo extra', () => {
+  const L2 = cargar<{ categoriasElegidas: (t: string | null) => string[] }>('logros');
+  it('sin elección son todas, en orden; con elección, solo esas', () => {
+    expect(L2.categoriasElegidas(null)).toEqual(['constancia', 'practica', 'dominio', 'desafio', 'persistencia', 'memoria']);
+    expect(L2.categoriasElegidas('memoria,dominio')).toEqual(['dominio', 'memoria']);
+  });
+  it('en Ajustes: un interruptor (activados por defecto) y las categorías plegadas, con al menos una', () => {
+    const ajustes = leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue');
+    expect(ajustes).toContain('classInfo.value?.logrosActivos ?? true');
+    expect(ajustes).toContain('guardarLogros({ logrosActivos: !logrosActivos })');
+    expect(ajustes).toMatch(/<details v-if="logrosActivos"/);
+    expect(ajustes).toContain('categoriasLogro.length === 1 && categoriasLogro.includes(c)');
+  });
+  it('si ninguna clase del estudiante usa logros, no los ve', () => {
+    expect(leer('components', 'estudiante', 'LogrosInicio.vue')).toContain('v-if="!datos || datos.activos"');
+    expect(leer('components', 'estudiante', 'MisLogros.vue')).toContain('v-if="!datos || datos.activos"');
+  });
+});

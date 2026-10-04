@@ -1,4 +1,4 @@
-import { evaluarLogros, siguienteLogro, type EntregaParaLogros, type LeccionParaLogros } from './logros';
+import { categoriasPermitidas, evaluarLogros, siguienteLogro, type EntregaParaLogros, type LeccionParaLogros } from './logros';
 
 // Logros y medallas (logros.ts; BT-29). Días y semanas en hora de Colombia.
 const col = (dia: string, hora = '10:00') => new Date(`${dia}T${hora}:00-05:00`);
@@ -99,5 +99,14 @@ describe('siguienteLogro — una sola meta, la más cercana', () => {
   });
   it('sin nada empezado, propone una de bronce', () => {
     expect(siguienteLogro(evaluarLogros([], [], [], []))?.nivel).toBe('bronce');
+  });
+});
+
+describe('categoriasPermitidas — lo que el docente eligió en cada clase', () => {
+  it('sin elección son todas; con elección, solo esas; con varias clases, la unión', () => {
+    expect([...categoriasPermitidas([null])].sort()).toEqual(['constancia', 'desafio', 'dominio', 'memoria', 'persistencia', 'practica']);
+    expect([...categoriasPermitidas(['dominio,memoria'])].sort()).toEqual(['dominio', 'memoria']);
+    expect([...categoriasPermitidas(['dominio', 'desafio,dominio'])].sort()).toEqual(['desafio', 'dominio']);
+    expect([...categoriasPermitidas(['dominio,inventada'])]).toEqual(['dominio']);
   });
 });

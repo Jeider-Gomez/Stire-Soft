@@ -1,7 +1,7 @@
 <template>
   <!-- Logros en el inicio, sin abrumar: si hay medallas nuevas, se celebran una vez; si no, la última. Y UNA meta: la
        más cercana, con su avance. El resto, en «Mi progreso». Sin ranking ni comparación (Hanus y Fox, 2015). -->
-  <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm space-y-2.5" aria-labelledby="logros-inicio-titulo">
+  <div v-if="!datos || datos.activos" class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm space-y-2.5" aria-labelledby="logros-inicio-titulo">
     <div class="flex items-center justify-between gap-2">
       <p id="logros-inicio-titulo" class="text-[11px] text-base-texto-secundario font-medium">Logros</p>
       <p v-if="datos" class="text-[10px] text-base-texto-secundario">{{ obtenidos }} de {{ datos.logros.length }} medallas</p>

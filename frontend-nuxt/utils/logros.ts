@@ -14,7 +14,8 @@ export interface Logro {
   obtenido: string | null
   progreso: { actual: number; meta: number }
 }
-export interface RespuestaLogros { logros: Logro[]; nuevos: string[]; siguiente: Logro | null }
+/** `activos`: false si ninguna de sus clases usa logros (el docente los apagó). */
+export interface RespuestaLogros { activos: boolean; logros: Logro[]; nuevos: string[]; siguiente: Logro | null }
 
 /** Nombre y para qué sirve cada categoría, en el orden en que se muestran. */
 export const CATEGORIAS_LOGRO: Record<CategoriaLogro, { nombre: string; sentido: string }> = {
@@ -24,6 +25,13 @@ export const CATEGORIAS_LOGRO: Record<CategoriaLogro, { nombre: string; sentido:
   desafio: { nombre: 'Desafío', sentido: 'Atreverse con los ejercicios avanzados.' },
   persistencia: { nombre: 'Persistencia', sentido: 'Lograrlo después de varios intentos.' },
   memoria: { nombre: 'Memoria', sentido: 'Repasar a tiempo para no olvidar.' },
+}
+
+/** Las categorías que eligió el docente («dominio,memoria»); vacío o null = todas. */
+export function categoriasElegidas(texto: string | null | undefined): CategoriaLogro[] {
+  const todas = Object.keys(CATEGORIAS_LOGRO) as CategoriaLogro[]
+  const elegidas = (texto ?? '').split(',').map((c) => c.trim()).filter((c): c is CategoriaLogro => todas.includes(c as CategoriaLogro))
+  return elegidas.length ? todas.filter((c) => elegidas.includes(c)) : todas
 }
 
 export const NOMBRE_NIVEL: Record<NivelLogro, string> = { bronce: 'Bronce', plata: 'Plata', oro: 'Oro' }

@@ -19,6 +19,7 @@ import { AuthorizationService } from '../common/authorization/authorization.serv
 import { normalizarCodigo, problemaDelCodigo } from './codigo-clase';
 import { Asignatura } from '../institution/entities/asignatura.entity';
 import { problemaDelAlcance } from '../reuse/alcance-plantilla';
+import { CATEGORIAS_LOGRO } from '../analytics/logros';
 
 export interface ClassWithStats extends Class {
   enrollmentCount: number;
@@ -30,6 +31,13 @@ export interface ClassWithStats extends Class {
 export type PublicClass = Omit<Class, 'code' | 'teacher' | 'enrollments' | 'sections' | 'students'> & {
   teacher?: { id: number; fullName: string };
 };
+
+/** El cuerpo sin los campos que llegan como lista y se guardan convertidos (datosAcademicos los convierte). */
+function sinListas<T extends { categoriasLogro?: string[] | null }>(dto: T): Omit<T, 'categoriasLogro'> {
+  const copia = { ...dto };
+  delete copia.categoriasLogro;
+  return copia;
+}
 
 @Injectable()
 export class ClassService {
@@ -54,7 +62,7 @@ export class ClassService {
     }
 
     const academico = await this.datosAcademicos(createClassDto);
-    const classEntity = this.classRepository.create({ ...createClassDto, ...academico, code, teacherId });
+    const classEntity = this.classRepository.create({ ...sinListas(createClassDto), ...academico, code, teacherId });
     this.validarAlcance(classEntity);
     try {
       return await this.classRepository.save(classEntity);
@@ -193,7 +201,7 @@ export class ClassService {
     await this.authorizationService.assertTeacherOwnsClass(user, classEntity.id);
 
     const academico = await this.datosAcademicos(updateClassDto);
-    Object.assign(classEntity, updateClassDto, academico);
+    Object.assign(classEntity, sinListas(updateClassDto), academico);
     this.validarAlcance(classEntity);
     return await this.classRepository.save(classEntity);
   }
@@ -225,6 +233,11 @@ export class ClassService {
       out.alcancePlantilla = dto.compartidaComoPlantilla ? 'todos' : 'nadie';
     }
     if (dto.enfoque !== undefined) out.enfoque = dto.enfoque?.trim() || null;
+    // Categorías de logros: en el orden del catálogo, sin repetir; todas (o ninguna marcada) = vacío, que es «todas».
+    if (dto.categoriasLogro !== undefined) {
+      const elegidas = CATEGORIAS_LOGRO.filter((c) => (dto.categoriasLogro ?? []).includes(c));
+      out.categoriasLogro = elegidas.length === 0 || elegidas.length === CATEGORIAS_LOGRO.length ? null : elegidas.join(',');
+    }
     return out;
   }
 

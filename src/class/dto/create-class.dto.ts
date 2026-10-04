@@ -1,5 +1,6 @@
-import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, ValidateIf } from 'class-validator';
+import { IsArray, IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, ValidateIf } from 'class-validator';
 import { ALCANCES_PLANTILLA } from '../entities/class.entity';
+import { CATEGORIAS_LOGRO } from '../../analytics/logros';
 import type { AlcancePlantilla } from '../entities/class.entity';
 
 export class CreateClassDto {
@@ -28,6 +29,18 @@ export class CreateClassDto {
   @IsIn(ALCANCES_PLANTILLA, { message: 'Elige con quién compartir: nadie, la asignatura, el programa, la facultad, la institución o todos' })
   @IsOptional()
   alcancePlantilla?: AlcancePlantilla;
+
+  /** Logros y medallas en la clase (docs/DISENO_LOGROS.md §6). */
+  @IsBoolean({ message: 'Logros activos es sí o no' })
+  @IsOptional()
+  logrosActivos?: boolean;
+
+  /** Categorías de logros; null o lista vacía = todas. */
+  @ValidateIf((_o, v) => v !== null && v !== undefined)
+  @IsArray({ message: 'Las categorías van en una lista' })
+  @IsIn(CATEGORIAS_LOGRO, { each: true, message: 'Categoría de logro desconocida' })
+  @IsOptional()
+  categoriasLogro?: string[] | null;
 
   /** El enfoque de la plantilla en una línea. */
   @ValidateIf((_o, v) => v !== null && v !== undefined)

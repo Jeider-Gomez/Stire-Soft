@@ -288,3 +288,23 @@ describe('ClassService — con quién se comparte el contenido', () => {
     await expect(service.update(1, { asignaturaId: null }, docente)).rejects.toThrow(BadRequestException);
   });
 });
+
+// Logros y medallas configurables por clase (docs/DISENO_LOGROS.md §6).
+describe('ClassService — logros de la clase', () => {
+  const classRepo = { findOne: jest.fn(), create: jest.fn((x: object) => x), save: jest.fn(async (x: object) => x), manager: { findOne: jest.fn() } };
+  type Args = ConstructorParameters<typeof ClassService>;
+  const service = new ClassService(classRepo as unknown as Args[0], {} as Args[1], {} as Args[2], {} as Args[3], { assertTeacherOwnsClass: jest.fn() } as unknown as Args[4]);
+  const docente = { id: 10, role: UserRole.DOCENTE } as Parameters<ClassService['update']>[2];
+  beforeEach(() => classRepo.findOne.mockResolvedValue({ id: 1, teacherId: 10, logrosActivos: true, categoriasLogro: null, alcancePlantilla: 'nadie' }));
+
+  it('guarda las categorías elegidas como texto, en el orden del catálogo; todas = vacío (todas)', async () => {
+    await expect(service.update(1, { categoriasLogro: ['memoria', 'dominio', 'dominio'] }, docente)).resolves.toMatchObject({ categoriasLogro: 'dominio,memoria' });
+    const todas = ['constancia', 'practica', 'dominio', 'desafio', 'persistencia', 'memoria'];
+    await expect(service.update(1, { categoriasLogro: todas }, docente)).resolves.toMatchObject({ categoriasLogro: null });
+    await expect(service.update(1, { logrosActivos: false }, docente)).resolves.toMatchObject({ logrosActivos: false });
+  });
+  it('una categoría desconocida es un 400 del validador', async () => {
+    const errores = await validate(plainToInstance(UpdateClassDto, { categoriasLogro: ['puntos'] }));
+    expect(errores.map((e) => e.property)).toEqual(['categoriasLogro']);
+  });
+});

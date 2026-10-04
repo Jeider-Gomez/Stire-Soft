@@ -69,6 +69,14 @@ export class Class {
   @Column({ type: 'int', default: 0 })
   vecesCopiada!: number;
 
+  /** Logros y medallas en esta clase (docs/DISENO_LOGROS.md §6). Activados por defecto: no hay que configurar nada. */
+  @Column({ default: true })
+  logrosActivos!: boolean;
+
+  /** Categorías de logros que usa la clase, separadas por coma; vacío = todas. */
+  @Column({ type: 'varchar', length: 120, nullable: true })
+  categoriasLogro?: string | null;
+
   @Column({ type: 'date', nullable: true })
   startDate?: Date;
 

@@ -1,7 +1,7 @@
 <template>
   <!-- Todas las medallas, por categoría: las obtenidas a color con su fecha; las que faltan en gris, con lo que hay que
        hacer y cuánto falta. Ver la meta y el camino motiva más que una sorpresa (criterios claros, como Moodle). -->
-  <section id="logros" class="bg-base-blanco rounded-lg border border-base-borde-sutil p-5 shadow-sm space-y-4 scroll-mt-20" aria-labelledby="mis-logros-titulo">
+  <section v-if="!datos || datos.activos" id="logros" class="bg-base-blanco rounded-lg border border-base-borde-sutil p-5 shadow-sm space-y-4 scroll-mt-20" aria-labelledby="mis-logros-titulo">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
       <h2 id="mis-logros-titulo" class="text-sm font-bold text-base-texto-primario">Mis logros</h2>
       <p v-if="datos" class="text-[11px] text-base-texto-secundario">{{ obtenidos }} de {{ datos.logros.length }} medallas · solo las ves tú</p>

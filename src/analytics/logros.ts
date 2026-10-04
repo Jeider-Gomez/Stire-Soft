@@ -15,7 +15,8 @@ import { diaDe } from '../common/utils/dia-colombia';
 export const DOMINIO_LOGRO = 85; // el mismo «dominado» de learning-progress/estadisticas.ts
 
 export type Nivel = 'bronce' | 'plata' | 'oro';
-export type Categoria = 'constancia' | 'practica' | 'dominio' | 'desafio' | 'persistencia' | 'memoria';
+export const CATEGORIAS_LOGRO = ['constancia', 'practica', 'dominio', 'desafio', 'persistencia', 'memoria'] as const;
+export type Categoria = (typeof CATEGORIAS_LOGRO)[number];
 
 export interface EntregaParaLogros {
   activityId: number;
@@ -234,4 +235,17 @@ export function siguienteLogro(logros: ReadonlyArray<Logro>): Logro | null {
   const pendientes = logros.filter((l) => !l.obtenido && l.progreso.actual > 0);
   const candidatos = pendientes.length ? pendientes : logros.filter((l) => !l.obtenido && (l.nivel === 'bronce' || l.nivel === null));
   return [...candidatos].sort((a, b) => b.progreso.actual / b.progreso.meta - a.progreso.actual / a.progreso.meta)[0] ?? null;
+}
+
+/**
+ * Las categorías que permiten las clases del estudiante (docs/DISENO_LOGROS.md §6): la unión de lo que cada clase con
+ * logros activos eligió. Una clase sin elección (vacío o null) permite todas.
+ */
+export function categoriasPermitidas(configuraciones: ReadonlyArray<string | null | undefined>): Set<Categoria> {
+  const permitidas = new Set<Categoria>();
+  for (const c of configuraciones) {
+    const elegidas = (c ?? '').split(',').map((x) => x.trim()).filter((x): x is Categoria => (CATEGORIAS_LOGRO as readonly string[]).includes(x));
+    for (const cat of elegidas.length ? elegidas : CATEGORIAS_LOGRO) permitidas.add(cat);
+  }
+  return permitidas;
 }

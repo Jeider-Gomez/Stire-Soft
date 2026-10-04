@@ -70,7 +70,40 @@
       <p v-if="avisoAvance" role="status" class="text-[11px] font-semibold" :class="avisoAvance.error ? 'text-red-700' : 'text-semantico-pasa'">{{ avisoAvance.texto }}</p>
     </section>
 
-    <!-- Compartir el contenido con otros docentes (docs/DISENO_CLASES_Y_DOCENTES.md) -->
+    <!-- Logros y medallas (docs/DISENO_LOGROS.md §6): activados por defecto; un interruptor y, si quiere, qué categorías.
+         Los niveles (bronce, plata, oro) son fijos: el docente no tiene que pensar en números. -->
+    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3" aria-labelledby="logros-titulo">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 id="logros-titulo" class="text-sm font-bold text-base-texto-primario">Logros y medallas</h2>
+          <p class="text-[11px] text-base-texto-secundario mt-0.5">
+            Cada estudiante gana medallas por aprender: dominar lecciones y módulos, resolver avanzados, no rendirse,
+            repasar. Son privadas y sin ranking. Ya vienen listas; no tienes que configurar nada.
+          </p>
+        </div>
+        <button type="button" :disabled="guardandoLogros" :aria-pressed="logrosActivos"
+          class="min-h-[44px] px-3 rounded-md text-xs font-bold flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
+          :class="logrosActivos ? 'bg-semantico-exito/15 text-semantico-exito' : 'bg-base-borde-sutil text-base-texto-secundario'"
+          @click="guardarLogros({ logrosActivos: !logrosActivos })">
+          <Check v-if="logrosActivos" :size="12" aria-hidden="true" />
+          {{ logrosActivos ? 'Activados' : 'Desactivados' }}
+        </button>
+      </div>
+      <details v-if="logrosActivos" class="rounded-lg border border-base-borde-sutil">
+        <summary class="min-h-[44px] flex items-center px-3 text-xs font-semibold text-base-texto-primario cursor-pointer">
+          Elegir categorías <span class="ml-1 font-normal text-base-texto-secundario">({{ categoriasLogro.length === CATEGORIAS.length ? 'todas' : `${categoriasLogro.length} de ${CATEGORIAS.length}` }})</span>
+        </summary>
+        <div class="px-3 pb-3 space-y-1.5">
+          <label v-for="c in CATEGORIAS" :key="c" class="flex items-start gap-2 min-h-[44px] py-1 text-xs cursor-pointer">
+            <input type="checkbox" :checked="categoriasLogro.includes(c)" :disabled="guardandoLogros || (categoriasLogro.length === 1 && categoriasLogro.includes(c))" class="mt-0.5" @change="alternarCategoria(c)" />
+            <span><span class="font-semibold text-base-texto-primario">{{ CATEGORIAS_LOGRO[c].nombre }}</span> <span class="text-base-texto-secundario">· {{ CATEGORIAS_LOGRO[c].sentido }}</span></span>
+          </label>
+          <p class="text-[11px] text-base-texto-secundario">Debe quedar al menos una. Para no usar logros, desactívalos arriba.</p>
+        </div>
+      </details>
+      <p v-if="avisoLogros" role="status" class="text-xs" :class="avisoLogros.error ? 'text-semantico-error' : 'text-semantico-exito'">{{ avisoLogros.texto }}</p>
+    </section>
+
     <!-- Compartir el contenido (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.3): con quién, y su enfoque en una línea -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3" aria-labelledby="compartir-titulo">
       <h2 id="compartir-titulo" class="text-sm font-bold text-base-texto-primario">Compartir el contenido</h2>
@@ -203,6 +236,7 @@
 <script setup lang="ts">
 import type { AsignaturaInfo } from '~/utils/contextoAcademico'
 import { opcionesDeAlcance, type AlcancePlantilla } from '~/utils/plantillas'
+import { CATEGORIAS_LOGRO, categoriasElegidas, type CategoriaLogro } from '~/utils/logros'
 import { Check } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 
@@ -223,6 +257,8 @@ interface ClassInfo {
   compartidaComoPlantilla?: boolean
   alcancePlantilla?: AlcancePlantilla
   enfoque?: string | null
+  logrosActivos?: boolean
+  categoriasLogro?: string | null
   dominioParaAvanzar?: number
   asignatura?: AsignaturaInfo | null
   grupo?: string | null
@@ -356,6 +392,30 @@ async function change(id: string, action: 'approve' | 'reject' | 'remove') {
   const path = action === 'remove' ? `/enrollment/${id}` : `/enrollment/${id}/${action}`
   await api.apiFetch(path, { method })
   await load()
+}
+
+// Logros y medallas: activados por defecto; el docente solo los apaga o elige categorías (docs/DISENO_LOGROS.md §6).
+const CATEGORIAS = Object.keys(CATEGORIAS_LOGRO) as CategoriaLogro[]
+const logrosActivos = computed(() => classInfo.value?.logrosActivos ?? true)
+const categoriasLogro = computed(() => categoriasElegidas(classInfo.value?.categoriasLogro))
+const guardandoLogros = ref(false)
+const avisoLogros = ref<{ texto: string; error: boolean } | null>(null)
+async function guardarLogros(cambio: { logrosActivos?: boolean; categoriasLogro?: CategoriaLogro[] }) {
+  guardandoLogros.value = true
+  avisoLogros.value = null
+  try {
+    classInfo.value = await api.apiFetch<ClassInfo>(`/class/${classId}`, { method: 'PATCH', body: cambio })
+    avisoLogros.value = { texto: cambio.logrosActivos === false ? 'Guardado: esta clase no usa logros.' : 'Guardado.', error: false }
+  } catch (err) {
+    avisoLogros.value = { texto: messageOf(err, 'No se pudo guardar.'), error: true }
+  } finally {
+    guardandoLogros.value = false
+  }
+}
+function alternarCategoria(c: CategoriaLogro) {
+  const actuales = categoriasLogro.value
+  const nuevas = actuales.includes(c) ? actuales.filter((x) => x !== c) : [...actuales, c]
+  if (nuevas.length) void guardarLogros({ categoriasLogro: nuevas })
 }
 
 // Con quién se comparte: las opciones dicen los nombres reales de su asignatura, programa, facultad e institución.

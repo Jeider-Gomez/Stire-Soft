@@ -59,6 +59,16 @@ Los días y las semanas se cuentan en hora de Colombia.
   celebrarlo una vez.
 - `GET /analytics/student/:id/logros` (el estudiante, o su docente) y `POST /analytics/logros/vistos` (el estudiante).
 
+## 6. Lo que decide el docente (sin trabajo extra)
+
+- **Por defecto, activados con todas las categorías.** El docente no tiene que configurar nada.
+- **En Ajustes de la clase:** un interruptor «Activados / Desactivados» y, plegado, «Elegir categorías» (6 casillas; al
+  menos una). Por ejemplo, quitar «Práctica» si no quiere premiar la cantidad diaria.
+- **Los niveles (bronce, plata, oro) no se configuran:** son fijos y con respaldo; elegir números sería tedioso.
+- **Varias clases:** el estudiante ve las categorías activas en cualquiera de sus clases; las medallas de módulo, solo de
+  las clases con «Dominio». Si ninguna clase usa logros, no los ve. Si el docente quita una categoría, sus medallas
+  dejan de mostrarse y no se celebran.
+
 ## Referencias
 
 - Denny, P. (2013). The effect of virtual achievements on student engagement. En *Proceedings of the SIGCHI Conference on
