@@ -120,3 +120,22 @@ describe('Orden del catálogo (§2.2.1 y §2.2.2): sin duplicados y sin trabajo 
     expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('to="/admin/catalogo"');
   });
 });
+
+describe('Regresión 04/10: el estudiante veía «Curso libre» en Fundamentos de Algoritmia', () => {
+  // GET /enrollment/my traía la asignatura sin programa ni institución (TypeORM no carga las eager anidadas por «class»).
+  it('una asignatura con ids de programa o institución pero sin sus datos no se presenta como curso libre', () => {
+    const incompleta = { id: 1, nombre: 'Fundamentos de Algoritmia', programId: 1, institutionId: 1 };
+    expect(C.lugarDeAsignatura(incompleta)).toBe('');
+    expect(C.contextoDeClase({ asignatura: incompleta })).toBe('Fundamentos de Algoritmia');
+    expect(C.lugarDeAsignatura({ id: 2, nombre: 'Electiva', institutionId: 1 })).toBe('');
+  });
+  it('la barra del estudiante no cae en «Curso libre» si la asignatura es de un programa o institución', () => {
+    const header = leer('components', 'layout', 'HeaderNav.vue');
+    expect(header).toContain("(a.programId || a.institutionId ? 'Sistema tutor inteligente' : 'Curso libre')");
+    expect(header).toContain('lugarDeAsignatura(studentStore.currentAsignatura)) || studentStore.currentTeacher');
+  });
+  it('la matrícula del estudiante pide la asignatura con su programa e institución', () => {
+    const svc = readFileSync(path.join(__dirname, '..', '..', 'enrollment', 'enrollment.service.ts'), 'utf8');
+    expect(svc).toContain("'class.asignatura', 'class.asignatura.program', 'class.asignatura.institution'");
+  });
+});

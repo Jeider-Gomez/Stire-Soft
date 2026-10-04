@@ -48,12 +48,16 @@ export function lugarDeAsignatura(a: AsignaturaInfo): string {
     return partes.filter(Boolean).join(' · ')
   }
   if (a.institution) return `Electiva · ${institucionCorta(a.institution)}`
+  // Sin datos del programa o la institución pero con sus ids, no se sabe dónde va: mejor nada que un «Curso libre» falso.
+  if (a.programId || a.institutionId) return ''
   return 'Curso libre'
 }
 
 /** Para la barra superior del estudiante: la asignatura y dónde va, o null si la clase no la tiene. */
 export function contextoDeClase(c: ClaseConAsignatura | null | undefined): string | null {
-  return c?.asignatura ? `${c.asignatura.nombre} · ${lugarDeAsignatura(c.asignatura)}` : null
+  if (!c?.asignatura) return null
+  const lugar = lugarDeAsignatura(c.asignatura)
+  return lugar ? `${c.asignatura.nombre} · ${lugar}` : c.asignatura.nombre
 }
 
 /**

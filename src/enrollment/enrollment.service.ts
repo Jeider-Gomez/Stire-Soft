@@ -92,7 +92,9 @@ export class EnrollmentService {
   async findByStudent(studentId: number): Promise<Enrollment[]> {
     return await this.enrollmentRepository.find({
       where: { studentId, status: EnrollmentStatus.ACTIVE },
-      relations: ['class', 'class.teacher'],
+      // La asignatura con su programa e institución, para la barra superior del estudiante: cargada a través de «class»,
+      // TypeORM no trae las relaciones eager anidadas, y sin ellas la clase parecía un «Curso libre».
+      relations: ['class', 'class.teacher', 'class.asignatura', 'class.asignatura.program', 'class.asignatura.institution'],
     });
   }
 

@@ -49,7 +49,7 @@
         </span>
         <span class="text-slate-500">•</span>
         <span class="text-xs text-slate-500 truncate max-w-[260px]" :title="studentStore.currentTeacher">
-          {{ studentStore.currentAsignatura ? lugarDeAsignatura(studentStore.currentAsignatura) : studentStore.currentTeacher }}
+          {{ (studentStore.currentAsignatura && lugarDeAsignatura(studentStore.currentAsignatura)) || studentStore.currentTeacher }}
         </span>
       </div>
 
@@ -160,7 +160,8 @@ watch(() => authStore.currentRole, (rol) => { if (rol === 'docente') contexto.ca
 const subtitulo = computed(() => {
   if (authStore.currentRole === 'estudiante' && studentStore.currentAsignatura) {
     const a = studentStore.currentAsignatura
-    return [institucionCorta(a.institution), a.program ? programaCorto(a.program.name) : ''].filter(Boolean).join(' · ') || 'Curso libre'
+    return [institucionCorta(a.institution), a.program ? programaCorto(a.program.name) : ''].filter(Boolean).join(' · ') ||
+      (a.programId || a.institutionId ? 'Sistema tutor inteligente' : 'Curso libre')
   }
   if (authStore.currentRole === 'docente' && contexto.texto.value) return contexto.texto.value
   return 'Sistema tutor inteligente'
