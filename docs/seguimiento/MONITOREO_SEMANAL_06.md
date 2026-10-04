@@ -303,7 +303,7 @@ Semana 6. Las dos capturas son de ese día, **18/09**, no del 25/09.
 ### Jorge Cervantes
 
 - [x] Fix de Fase G verificado (QA). *(Auditoría entregada el 23/09:
-  `docs/calidad/reportes-qa/REPORTE_AUDITORIA_QA_STIRE_23-09.md`, commit `07fccdb`. La §5.4 hace el barrido de control de
+  `docs/calidad/reportes-qa/REPORTE_QA_S6_2026-09-23.md`, commit `07fccdb`. La §5.4 hace el barrido de control de
   acceso por módulo e incluye `activity-questions`. La reproducción en vivo del 403 y del 200 quedó registrada
   arriba, en `S06-J02`.)*
 - [x] Ángulos adicionales de `GUIA_AUDITORIA_2026-09-16.md` cubiertos. *(Mismo reporte: §4.2 pruebas

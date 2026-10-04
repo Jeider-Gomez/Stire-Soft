@@ -93,9 +93,21 @@ arriba (sin apagado automático durante la prueba), aprueba a los docentes y ati
     dice qué hacer (tocar la tarjeta o escribir la duda).
   - Pendiente: la revisión visual de José (`S08-JO02`).
 - [ ] **S08-J02 · Hallazgos del QA de Jorge** *(de su reporte del 02/10)*
-  - QA-06: el indicador del nivel de ayuda del Tutor (Pista, Pregunta guía, Dónde está el error) parece un grupo de
-    botones; rediseñarlo para que se lea como indicador.
-  - QA-07: «No se pudo autoguardar» aparece a ratos; buscar la causa y que reintente solo.
+  - ~~QA-06: el indicador del nivel de ayuda del Tutor (Pista, Pregunta guía, Dónde está el error) parece un grupo de
+    botones; rediseñarlo para que se lea como indicador.~~ Hecho el 04/10: ahora es una línea de texto con tres
+    puntos, «Nivel de ayuda: pista · sube si sigues fallando el ejercicio».
+  - ~~QA-07: «No se pudo autoguardar» aparece a ratos; buscar la causa y que reintente solo.~~ Hecho el 04/10. El
+    código se guarda solo, 0,8 s después de dejar de escribir. Causa principal: con los intentos ya usados (Jorge iba
+    en «Intentos: 3 / 3»), cada tecla pedía abrir un intento nuevo, el servidor lo negaba y salía el aviso en rojo.
+    Ahora dice «Ya usaste tus intentos: lo que escribas no se guarda»; un fallo de red se reintenta solo (2, 5 y
+    10 s); y al entregar o cambiar de ejercicio se cancela el guardado pendiente.
+  - Falta: desplegar y que Jorge lo verifique en `S08-JOR01`.
+- [x] **Listas de chequeo del profesor: el «antes»** *(pedidas por correo; hecho el 04/10)*. Se aplicaron la lista de
+  interfaz (Pressman, caps. 12–14) y la de Sistemas Tutores Inteligentes (Caro, 2015) a la versión desplegada, con código,
+  capturas de computador y celular, teclado, modo oscuro, conexión cortada y axe-core. Resultados: interfaz **20/32
+  (62,5 %)** y Tutores **14/24 (58,3 %)**. Están en el Word del profesor y en Markdown en
+  [`docs/calidad/listas-chequeo/`](docs/calidad/listas-chequeo/README.md). El «después» se mide con la v1.2.0.
+  La carpeta `docs/calidad/` quedó ordenada con nombres fechados.
   - ~~Del reporte del Tutor de José (`HALLAZGOS.md`): las tarjetas de sugerencia necesitan más contraste para verse
     como botones.~~ Hecho el 03/10 (ver `S08-J01`).
 - [ ] **S08-J03 · Operar la prueba** *(el servidor está encendido 24/7 durante la prueba)*

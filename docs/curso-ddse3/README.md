@@ -30,7 +30,7 @@ que la cumple y su estado. Leyenda: ✅ entregado · 🔄 en curso · 📅 segú
 
 | Lo que pide la guía | Dónde está | Estado |
 |---|---|---|
-| Bitácora `MONITOREO_SEMANAL.md` en la **raíz** del repositorio, con la plantilla oficial | [`MONITOREO_SEMANAL.md`](../../MONITOREO_SEMANAL.md) (semana en curso) y las semanas cerradas en §4 de esta página | ✅ cada semana |
+| Bitácora `MONITOREO_SEMANAL.md` en la **raíz** del repositorio, con la plantilla oficial | [`MONITOREO_SEMANAL.md`](../../MONITOREO_SEMANAL.md) (semana en curso) y las semanas cerradas en §5 de esta página | ✅ cada semana |
 | Evidencia de ingeniería de prompts (ROCAS + MOCAVI / MODESEC) | [Bitácora N.º 1 §2.2](../seguimiento/MONITOREO_SEMANAL_01.md#22-evidencia-de-ingeniería-de-prompts-rocas--mocavi--modesec): prompt ROCAS del pitch con sus iteraciones · [prompts completos enviados a las IA](../agentes-ia/prompts/README.md) | ✅ |
 | Avance MODESEC Fase II: diagrama de contenidos | [`3.1_DIAGRAMA_CONTENIDOS.md`](../modesec/contenidos/3.1_DIAGRAMA_CONTENIDOS.md) | ✅ |
 | Guion técnico multimedial | [`3.2_GUION_TECNICO_MULTIMEDIAL.md`](../modesec/guiones/3.2_GUION_TECNICO_MULTIMEDIAL.md) | ✅ |
@@ -55,7 +55,18 @@ que la cumple y su estado. Leyenda: ✅ entregado · 🔄 en curso · 📅 segú
 | Sección de la GUI para el artículo (IMRyD, figura compuesta) | [`semana-03/SECCION_GUI_ARTICULO.md`](semana-03/SECCION_GUI_ARTICULO.md): Figura 2 (a)(b)(c) y texto en inglés | ✅ |
 | Frontend en Nuxt (Vue 3) con Google Antigravity | [`frontend-nuxt/`](../../frontend-nuxt/) · [planes e informes de Antigravity](../agentes-ia/antigravity/README.md) · desplegado en https://stire-soft.vercel.app | ✅ |
 
-## 4. Bitácoras semanales
+## 4. Listas de chequeo del frontend (correo del docente, 04/10/2026)
+
+El docente pidió aplicar la lista de chequeo de interfaz gráfica y, para la línea de Sistemas Tutores Inteligentes,
+la lista de ITS. También, de forma opcional, un comparativo del antes y el después.
+
+| Lo que pide | Dónde está | Estado |
+|---|---|---|
+| Aplicar la lista de interfaz (Pressman & Maxim, caps. 12–14) | [`calidad/listas-chequeo/2026-10-04_antes/`](../calidad/listas-chequeo/2026-10-04_antes/CHECKLIST_INTERFAZ_2026-10-04.md) (Word llenado + Markdown): **20/32 · 62,5 %** | ✅ antes |
+| Aplicar la lista de Sistemas Tutores Inteligentes (Caro, 2015) | [`CHECKLIST_ITS_2026-10-04.md`](../calidad/listas-chequeo/2026-10-04_antes/CHECKLIST_ITS_2026-10-04.md) (Word llenado + Markdown): **14/24 · 58,3 %** | ✅ antes |
+| Comparativo antes y después (opcional) | [`calidad/listas-chequeo/README.md`](../calidad/listas-chequeo/README.md): el antes es `main @ 7c9977b`; el después será la v1.2.0 con los ajustes | 🔄 |
+
+## 5. Bitácoras semanales
 
 | Semana del curso | Fechas | Bitácora |
 |---|---|---|
@@ -69,7 +80,7 @@ que la cumple y su estado. Leyenda: ✅ entregado · 🔄 en curso · 📅 segú
 
 Evidencias de las reuniones (capturas con fecha): [`seguimiento/evidencias/`](../seguimiento/evidencias/).
 
-## 5. Guías originales del docente
+## 6. Guías originales del docente
 
 | Archivo | Contenido |
 |---|---|
@@ -78,6 +89,8 @@ Evidencias de las reuniones (capturas con fecha): [`seguimiento/evidencias/`](..
 | [`Guia_Estudiante_Semana_03.docx`](guias/Guia_Estudiante_Semana_03.docx) | Interfaces, Nuxt con Antigravity y los 15 artículos |
 | [`Guia_Semana_03_GUI_Mockups.docx`](guias/Guia_Semana_03_GUI_Mockups.docx) | Mockups y mapa de navegación |
 | [`Cronograma_DDSE3_2026-2.docx`](guias/Cronograma_DDSE3_2026-2.docx) | Cronograma de 16 semanas y plan de retos |
+| [`Checklist_Interfaz_Pressman.docx`](guias/Checklist_Interfaz_Pressman.docx) | Lista de chequeo del frontend: UX, movilidad y patrones (Pressman & Maxim, caps. 12–14) |
+| [`Checklist_ITS_Caro.docx`](guias/Checklist_ITS_Caro.docx) | Lista de chequeo de Sistemas Tutores Inteligentes (Caro Piñeres, 2015) |
 
 Referencia base de MODESEC: Caro, M., Toscano, R., Hernández, F., & David, M. (2009). MODESEC: Modelo
 para el desarrollo de software educativo basado en competencias. *Nuevas Ideas en Informática

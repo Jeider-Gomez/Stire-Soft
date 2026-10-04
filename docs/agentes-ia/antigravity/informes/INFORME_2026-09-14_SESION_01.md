@@ -12,7 +12,7 @@
 
 ## 1. Resumen Ejecutivo
 
-Esta sesión ejecutó la totalidad del **§14 de `PLAN_IMPLEMENTACION.md`**, motivado por la auditoría QA de Jorge Cervantes (`docs/calidad/REPORTE_AUDITORIA_QA_STIRE2VERSION.md`). Se construyeron **9 artefactos de código nuevos** y se modificaron **4 artefactos existentes**, cubriendo:
+Esta sesión ejecutó la totalidad del **§14 de `PLAN_IMPLEMENTACION.md`**, motivado por la auditoría QA de Jorge Cervantes (`docs/calidad/REPORTE_QA_S4_2026-09-12_v2.md`). Se construyeron **9 artefactos de código nuevos** y se modificaron **4 artefactos existentes**, cubriendo:
 
 1. **Corrección de seguridad P2-R4 (Self-XSS):** Sanitización de mensajes del Tutor IA antes de renderizar con `v-html`.
 2. **Formulario operativo "Crear Clase" (FE-02):** Modal reactivo en la cabecera docente conectado a `POST /class` del backend real.

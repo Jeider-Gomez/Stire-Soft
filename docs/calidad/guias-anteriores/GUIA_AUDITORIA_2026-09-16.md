@@ -13,7 +13,7 @@ desde ángulos que normalmente no se cubren**, y terminando con dos cosas concre
 porcentaje real de avance está el proyecto**, y **si ya se puede desplegar o no**.
 
 **Por qué existe este documento:** no es para limitar tu alcance, es para que no partas de cero.
-Tu auditoría anterior (`REPORTE_AUDITORIA_QA_STIRE2VERSION.md`, 12/09) se hizo contra un ZIP
+Tu auditoría anterior (`REPORTE_QA_S4_2026-09-12_v2.md`, 12/09) se hizo contra un ZIP
 comprimido, no contra `main` en vivo, y algunos de sus hallazgos (`FE-01`, `FE-03`) ya estaban
 resueltos desde antes de la fecha del propio reporte (verificado por Claude Code el 14/09,
 `docs/PLAN_MAESTRO.md` §5) — probablemente por auditar una copia desactualizada. La §1 de abajo te

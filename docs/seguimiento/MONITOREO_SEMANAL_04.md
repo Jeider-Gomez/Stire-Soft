@@ -177,7 +177,7 @@ completada — corregido. **No se tocó el estado de ninguna tarjeta de Julio, J
 ### Jorge Cervantes — Calidad y Pruebas
 
 - [x] **S04-JOR01 · Pruebas funcionales** — objetivo 11/09. *(Cerrado 14/09 por Pedro contra evidencia
-  real: `docs/calidad/reportes-qa/REPORTE_AUDITORIA_QA_STIRE2VERSION.md`, subido por Jorge el 14/09 — login,
+  real: `docs/calidad/reportes-qa/REPORTE_QA_S4_2026-09-12_v2.md`, subido por Jorge el 14/09 — login,
   navegación, ejercicio/envío y Tutor IA probados con resultado documentado por flujo. La tarjeta de
   Trello se movió a `✅ Hecho` retroactivamente; no estaba movida cuando Jorge subió el reporte.)*
 - [x] **S04-JOR02 · Revisar calidad frontend** — objetivo 11/09. *(Cerrado 14/09 por Pedro contra la

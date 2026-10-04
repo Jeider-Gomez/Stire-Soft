@@ -235,7 +235,7 @@ Si al cambiar los datos la cifra no cambia, es fija.
 
 ## 7. Qué entregar
 
-Un solo archivo `docs/calidad/REPORTE_AUDITORIA_QA_STIRE_<fecha>.md` (rama `qa/reporte-<fecha>` o directo a `main`), con:
+Un solo archivo `docs/calidad/reportes-qa/REPORTE_QA_S<semana>_<AAAA-MM-DD>.md` (rama `qa/reporte-<fecha>` o directo a `main`), con:
 
 1. **Cabecera de entorno:** commit auditado, fecha, sistema operativo, versiones (Node, base de datos, navegador), herramientas usadas y **cuáles faltaron**.
 2. **Cobertura:** la matriz de la sección 4 con el estado de **cada** fila. Al final: `probadas / total` y la lista de ⛔ y 🔧 con el motivo.
@@ -288,6 +288,6 @@ No repitas una fase que ya pasó salvo que el commit cambie.
 </paradas>
 
 <entrega>
-Archivo docs/calidad/REPORTE_AUDITORIA_QA_STIRE_<fecha>.md con: cabecera de entorno, matriz de cobertura completa con estado por fila y total probadas/total, tabla de hallazgos con pasos y evidencia, veredicto de despliegue en dos párrafos (no puede ser "apto" si quedan sin probar E1, E3, E4, E5 o A5) y la lista explícita de lo no probado. En el chat, resume en 10 líneas y di qué herramienta te faltó, si alguna.
+Archivo docs/calidad/reportes-qa/REPORTE_QA_S<semana>_<AAAA-MM-DD>.md con: cabecera de entorno, matriz de cobertura completa con estado por fila y total probadas/total, tabla de hallazgos con pasos y evidencia, veredicto de despliegue en dos párrafos (no puede ser "apto" si quedan sin probar E1, E3, E4, E5 o A5) y la lista explícita de lo no probado. En el chat, resume en 10 líneas y di qué herramienta te faltó, si alguna.
 </entrega>
 ```

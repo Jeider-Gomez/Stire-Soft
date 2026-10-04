@@ -1,0 +1,744 @@
+{
+  "publico": {
+    "pc_login": {
+      "titulo": "Iniciar sesión · STIRE-Soft",
+      "h1": "Iniciar Sesión",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 0,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 6,
+      "menores44": 5,
+      "menores48": 6,
+      "ejemplosMenores44": [
+        "input «» 396x43",
+        "a «¿Olvidaste tu clave?» 134x29",
+        "input «» 396x43",
+        "button «Mostrar contraseña» 32x32",
+        "a «Regístrate aquí» 101x17"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [],
+      "inputs": [
+        "email:email ac=email",
+        "password:password ac=current-password"
+      ]
+    },
+    "pc_register": {
+      "titulo": "Crear cuenta · STIRE-Soft",
+      "h1": "Crear Cuenta",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 0,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 9,
+      "menores44": 8,
+      "menores48": 9,
+      "ejemplosMenores44": [
+        "input «» 1x1",
+        "input «» 1x1",
+        "input «» 343x43",
+        "input «» 343x43",
+        "input «» 702x43",
+        "button «Mostrar contraseña» 32x32"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [],
+      "inputs": [
+        "accountType:radio",
+        "accountType:radio",
+        "fullName:text ac=name",
+        "email:email ac=email",
+        "password:password ac=new-password",
+        "classCode:text",
+        "apiKey:password ac=off"
+      ]
+    },
+    "pc_validacion_login": {
+      "validity": "Incluye un signo \"@\" en la dirección de correo electrónico. La dirección \"correo-malo\" no incluye el signo \"@\".",
+      "alertas": []
+    },
+    "cel_login": {
+      "titulo": "Iniciar sesión · STIRE-Soft",
+      "h1": "Iniciar Sesión",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 0,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 6,
+      "menores44": 5,
+      "menores48": 6,
+      "ejemplosMenores44": [
+        "input «» 300x43",
+        "a «¿Olvidaste tu clave?» 134x29",
+        "input «» 300x43",
+        "button «Mostrar contraseña» 32x32",
+        "a «Regístrate aquí» 101x17"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [],
+      "inputs": [
+        "email:email ac=email",
+        "password:password ac=current-password"
+      ]
+    },
+    "cel_register": {
+      "titulo": "Crear cuenta · STIRE-Soft",
+      "h1": "Crear Cuenta",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 0,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 9,
+      "menores44": 7,
+      "menores48": 8,
+      "ejemplosMenores44": [
+        "input «» 1x1",
+        "input «» 1x1",
+        "input «» 316x43",
+        "input «» 316x43",
+        "input «» 316x43",
+        "button «Mostrar contraseña» 32x32"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [],
+      "inputs": [
+        "accountType:radio",
+        "accountType:radio",
+        "fullName:text ac=name",
+        "email:email ac=email",
+        "password:password ac=new-password",
+        "classCode:text",
+        "apiKey:password ac=off"
+      ]
+    },
+    "cel_validacion_login": {
+      "validity": "Incluye un signo \"@\" en la dirección de correo electrónico. La dirección \"correo-malo\" no incluye el signo \"@\".",
+      "alertas": []
+    }
+  },
+  "estudiante_pc": {
+    "unidadEncontrada": "/estudiante/unidad/46",
+    "siguientePaso": null,
+    "inicio": {
+      "titulo": "Inicio · STIRE-Soft",
+      "h1": "Estructura y navegación de un OVA",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 38,
+      "menores44": 34,
+      "menores48": 34,
+      "ejemplosMenores44": [
+        "a «ST\nSTIRE Soft\n\nUnicor · Ing. S» 154x36",
+        "button «Sugerencias» 112x40",
+        "button «9+» 34x34",
+        "button «SV\nSebastián» 105x40",
+        "button «Ocultar el menú» 36x36",
+        "a «Inicio» 227x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impacto": "serious",
+          "nodos": 5,
+          "ayuda": "Elements must meet minimum color contrast ratio thresholds"
+        }
+      ]
+    },
+    "unidad": {
+      "titulo": "Lección · STIRE-Soft",
+      "h1": "Estructura y navegación de un OVA",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 2,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 20,
+      "menores44": 20,
+      "menores48": 20,
+      "ejemplosMenores44": [
+        "a «ST\nSTIRE Soft\n\nUnicor · Ing. S» 154x36",
+        "button «Sugerencias» 112x40",
+        "button «9+» 34x34",
+        "button «SV\nSebastián» 105x40",
+        "button «Ocultar el menú» 36x36",
+        "a «Inicio» 227x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impacto": "serious",
+          "nodos": 5,
+          "ayuda": "Elements must meet minimum color contrast ratio thresholds"
+        }
+      ]
+    },
+    "ejercicio": {
+      "titulo": "Ejercicio · STIRE-Soft",
+      "h1": "Saludo personalizado",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 0,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 6,
+      "menores44": 6,
+      "menores48": 6,
+      "ejemplosMenores44": [
+        "a «Volver a la lección» 144x28",
+        "button «Probar código» 128x32",
+        "button «Entregar solución» 151x30",
+        "button «Enunciado» 106x39",
+        "button «Casos de prueba» 142x34",
+        "button «Registro» 92x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impacto": "serious",
+          "nodos": 5,
+          "ayuda": "Elements must meet minimum color contrast ratio thresholds"
+        }
+      ]
+    },
+    "progreso": {
+      "titulo": "Mi progreso · STIRE-Soft",
+      "h1": "Mi progreso",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 27,
+      "menores44": 27,
+      "menores48": 27,
+      "ejemplosMenores44": [
+        "a «ST\nSTIRE Soft\n\nUnicor · Ing. S» 154x36",
+        "button «Sugerencias» 112x40",
+        "button «9+» 34x34",
+        "button «SV\nSebastián» 105x40",
+        "button «Ocultar el menú» 36x36",
+        "a «Inicio» 227x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impacto": "serious",
+          "nodos": 15,
+          "ayuda": "Elements must meet minimum color contrast ratio thresholds"
+        }
+      ]
+    },
+    "repasos": {
+      "titulo": "Repasos · STIRE-Soft",
+      "h1": "Repasos Diarios de Algoritmia",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 20,
+      "menores44": 20,
+      "menores48": 20,
+      "ejemplosMenores44": [
+        "a «ST\nSTIRE Soft\n\nUnicor · Ing. S» 154x36",
+        "button «Sugerencias» 112x40",
+        "button «9+» 34x34",
+        "button «SV\nSebastián» 105x40",
+        "button «Ocultar el menú» 36x36",
+        "a «Inicio» 227x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impacto": "serious",
+          "nodos": 5,
+          "ayuda": "Elements must meet minimum color contrast ratio thresholds"
+        }
+      ]
+    },
+    "clases": {
+      "titulo": "Mis clases · STIRE-Soft",
+      "h1": "Mis Clases y Grupos Académicos",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 20,
+      "menores44": 20,
+      "menores48": 20,
+      "ejemplosMenores44": [
+        "a «ST\nSTIRE Soft\n\nUnicor · Ing. S» 154x36",
+        "button «Sugerencias» 112x40",
+        "button «9+» 34x34",
+        "button «SV\nSebastián» 105x40",
+        "button «Ocultar el menú» 36x36",
+        "a «Inicio» 227x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impacto": "serious",
+          "nodos": 5,
+          "ayuda": "Elements must meet minimum color contrast ratio thresholds"
+        }
+      ]
+    },
+    "perfil": {
+      "titulo": "Mi perfil · STIRE-Soft",
+      "h1": "Mi Perfil",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 26,
+      "menores44": 26,
+      "menores48": 26,
+      "ejemplosMenores44": [
+        "a «ST\nSTIRE Soft\n\nUnicor · Ing. S» 154x36",
+        "button «Sugerencias» 112x40",
+        "button «9+» 34x34",
+        "button «SV\nSebastián» 105x40",
+        "button «Ocultar el menú» 36x36",
+        "a «Inicio» 227x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impacto": "serious",
+          "nodos": 6,
+          "ayuda": "Elements must meet minimum color contrast ratio thresholds"
+        },
+        {
+          "id": "label",
+          "impacto": "critical",
+          "nodos": 2,
+          "ayuda": "Form elements must have labels"
+        }
+      ]
+    },
+    "teclado": [
+      "a «ST\nSTIRE Soft\n\nUnicor · I» outline=auto/1px ring=false",
+      "button «Sugerencias» outline=auto/1px ring=false",
+      "button «9+» outline=auto/1px ring=false",
+      "button «SV\nSebastián» outline=auto/1px ring=false",
+      "button «Ocultar el menú» outline=auto/1px ring=false",
+      "a «Inicio» outline=auto/1px ring=false",
+      "button «Unidad 1 · Introducción a» outline=auto/1px ring=false",
+      "button «Unidad 2 · Diseño e imple» outline=auto/1px ring=false",
+      "button «Unidad 3 · Algoritmos par» outline=auto/1px ring=false",
+      "a «Repasos\n6» outline=auto/1px ring=false",
+      "a «Mi Progreso» outline=auto/1px ring=false",
+      "a «Mi asistencia» outline=auto/1px ring=false"
+    ],
+    "modoOscuroFondo": "rgb(247, 249, 252)"
+  },
+  "estudiante_cel": {
+    "inicio": {
+      "titulo": "Inicio · STIRE-Soft",
+      "h1": "Estructura y navegación de un OVA",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 29,
+      "menores44": 24,
+      "menores48": 24,
+      "ejemplosMenores44": [
+        "button «Abrir menú lateral» 34x34",
+        "a «ST» 36x36",
+        "button «Enviar una sugerencia o contar» 34x40",
+        "button «9+» 34x34",
+        "button «SV» 40x40",
+        "a «Mis Clases (1)» 126x32"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)"
+    },
+    "unidad": {
+      "titulo": "Lección · STIRE-Soft",
+      "h1": "Estructura y navegación de un OVA",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 2,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 11,
+      "menores44": 11,
+      "menores48": 11,
+      "ejemplosMenores44": [
+        "button «Abrir menú lateral» 34x34",
+        "a «ST» 36x36",
+        "button «Enviar una sugerencia o contar» 34x40",
+        "button «9+» 34x34",
+        "button «SV» 40x40",
+        "a «Inicio» 30x18"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)"
+    },
+    "ejercicio": {
+      "titulo": "Ejercicio · STIRE-Soft",
+      "h1": "Saludo personalizado",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 0,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 6,
+      "menores44": 6,
+      "menores48": 6,
+      "ejemplosMenores44": [
+        "a «Volver a la lección» 144x28",
+        "button «Probar código» 128x32",
+        "button «Entregar solución» 151x30",
+        "button «Enunciado» 106x39",
+        "button «Casos de prueba» 142x34",
+        "button «Registro» 92x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)"
+    },
+    "progreso": {
+      "titulo": "Mi progreso · STIRE-Soft",
+      "h1": "Mi progreso",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 18,
+      "menores44": 18,
+      "menores48": 18,
+      "ejemplosMenores44": [
+        "button «Abrir menú lateral» 34x34",
+        "a «ST» 36x36",
+        "button «Enviar una sugerencia o contar» 34x40",
+        "button «9+» 34x34",
+        "button «SV» 40x40",
+        "a «Repasar ahora» 125x36"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)"
+    },
+    "clases": {
+      "titulo": "Mis clases · STIRE-Soft",
+      "h1": "Mis Clases y Grupos Académicos",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 11,
+      "menores44": 10,
+      "menores48": 11,
+      "ejemplosMenores44": [
+        "button «Abrir menú lateral» 34x34",
+        "a «ST» 36x36",
+        "button «Enviar una sugerencia o contar» 34x40",
+        "button «9+» 34x34",
+        "button «SV» 40x40",
+        "a «← Volver al Dashboard» 162x32"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)"
+    },
+    "botonesEjercicio": [
+      "Probar código y=49 128x32 (alto pantalla 844)",
+      "Entregar solución y=50 151x30 (alto pantalla 844)"
+    ],
+    "horizontal": {
+      "titulo": "Ejercicio · STIRE-Soft",
+      "h1": "Saludo personalizado",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 0,
+        "main": 1,
+        "header": 1
+      },
+      "breadcrumbs": false,
+      "controles": 6,
+      "menores44": 3,
+      "menores48": 4,
+      "ejemplosMenores44": [
+        "button «Enunciado» 106x39",
+        "button «Casos de prueba» 142x34",
+        "button «Registro» 92x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)"
+    },
+    "sinConexion": [
+      "No se pudo autoguardar"
+    ],
+    "campoCodigo": [
+      "codigo-clase:text autocap=null"
+    ]
+  },
+  "docente": {
+    "pc_inicio": {
+      "titulo": "Mis clases · STIRE-Soft",
+      "h1": "Mis Clases y Grupos Asignados",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 32,
+      "menores44": 28,
+      "menores48": 28,
+      "ejemplosMenores44": [
+        "a «ST\nSTIRE Soft\n\nUnicor · Ing. S» 154x36",
+        "button «Sugerencias» 112x40",
+        "button «1» 34x34",
+        "button «LM\nLaura» 80x40",
+        "button «Ocultar el menú» 36x36",
+        "a «Mis Clases» 227x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impacto": "serious",
+          "nodos": 24,
+          "ayuda": "Elements must meet minimum color contrast ratio thresholds"
+        }
+      ]
+    },
+    "pc_clase": {
+      "titulo": "Hoy en la clase · STIRE-Soft",
+      "h1": "Hoy en tu clase",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 2,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 27,
+      "menores44": 16,
+      "menores48": 24,
+      "ejemplosMenores44": [
+        "a «ST\nSTIRE Soft\n\nUnicor · Ing. S» 154x36",
+        "button «Sugerencias» 112x40",
+        "button «1» 34x34",
+        "button «LM\nLaura» 80x40",
+        "button «Ocultar el menú» 36x36",
+        "a «Mis Clases» 227x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "tabs": [
+        "Mis Clases",
+        "Fundamentos de Algoritmia (203413)\nALGO-203413",
+        "Pensamiento algorítmico desde cero\nPENSAR-ALGO",
+        "Fundamentos de Algoritmia — grupo 2\nALGO-203413-G2",
+        "Mensajes",
+        "Hoy",
+        "Contenido",
+        "Estudiantes",
+        "Asistencia",
+        "Entregas",
+        "Refuerzos",
+        "Notas",
+        "Ajustes"
+      ]
+    },
+    "cel_inicio": {
+      "titulo": "Mis clases · STIRE-Soft",
+      "h1": "Mis Clases y Grupos Asignados",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 1,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 27,
+      "menores44": 26,
+      "menores48": 26,
+      "ejemplosMenores44": [
+        "button «Abrir menú lateral» 34x34",
+        "a «ST» 36x36",
+        "button «Enviar una sugerencia o contar» 34x40",
+        "button «1» 34x34",
+        "button «LM» 40x40",
+        "button «Crear Nueva Clase» 181x37"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)"
+    },
+    "cel_clase": {
+      "titulo": "Hoy en la clase · STIRE-Soft",
+      "h1": "Hoy en tu clase",
+      "scrollHorizontal": false,
+      "landmarks": {
+        "nav": 2,
+        "main": 1,
+        "header": 2
+      },
+      "breadcrumbs": false,
+      "controles": 22,
+      "menores44": 14,
+      "menores48": 22,
+      "ejemplosMenores44": [
+        "button «Abrir menú lateral» 34x34",
+        "a «ST» 36x36",
+        "button «Enviar una sugerencia o contar» 34x40",
+        "button «1» 34x34",
+        "button «LM» 40x40",
+        "a «Fundamentos de Algoritmia (203» 240x21"
+      ],
+      "sinNombreAccesible": 0,
+      "imagenes": 0,
+      "imagenesSinAlt": 0,
+      "imagenesLazy": 0,
+      "fondoBody": "rgb(247, 249, 252)",
+      "tabs": [
+        "Mis Clases",
+        "Fundamentos de Algoritmia (203413)ALGO-203413",
+        "Pensamiento algorítmico desde ceroPENSAR-ALGO",
+        "Fundamentos de Algoritmia — grupo 2ALGO-203413-G2",
+        "Mensajes",
+        "Hoy",
+        "Contenido",
+        "Estudiantes",
+        "Asistencia",
+        "Entregas",
+        "Refuerzos",
+        "Notas",
+        "Ajustes"
+      ]
+    }
+  },
+  "_meta": {
+    "fecha": "2026-10-04",
+    "sitio": "https://stire-soft.vercel.app",
+    "version": "main @ 7c9977b",
+    "herramientas": "puppeteer-core + Chrome; axe-core 4.10.2 (wcag2a, wcag2aa, wcag21aa)",
+    "cuentas": "de prueba @example.com (estudiante y docente)"
+  }
+}

@@ -601,7 +601,7 @@ descrito abajo; deténte y avisa antes de continuar.
 ### 14.1 Qué motiva esta fase — verificación en frío contra el código real (14/09)
 
 Jorge Cervantes (Calidad y Pruebas del equipo) entregó una auditoría QA completa el 12/09
-(`docs/calidad/reportes-qa/REPORTE_AUDITORIA_QA_STIRE2VERSION.md`). Antes de convertir sus hallazgos de
+(`docs/calidad/reportes-qa/REPORTE_QA_S4_2026-09-12_v2.md`). Antes de convertir sus hallazgos de
 frontend en trabajo para esta fase, Claude Code los verificó uno por uno contra `frontend-nuxt/`
 real, siguiendo la regla de este proyecto de tratar todo hallazgo como hipótesis hasta comprobarlo:
 
