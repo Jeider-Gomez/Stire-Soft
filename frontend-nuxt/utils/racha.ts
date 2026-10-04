@@ -29,3 +29,26 @@ export function avisoDeRacha(racha: number, practicoHoy: boolean, docente = fals
   if (practicoHoy) return { texto: 'Hoy ya sumaste. ¡Vuelve mañana!', urgente: false }
   return { texto: 'Haz un ejercicio hoy para no perderla.', urgente: true }
 }
+
+// ─── Gamificación sobria (docs/investigacion/REFERENTES_PLATAFORMAS_Y_STI.md §10) ───
+export interface EsfuerzoSemana { dias: number; avanzados: number; repasos: number }
+
+/**
+ * El esfuerzo de esta semana en una línea, solo con lo que hubo: «2 días de estudio · 1 ejercicio avanzado · 3 repasos».
+ * Sin práctica todavía, una invitación sin regaño.
+ */
+export function textoEsfuerzo(e: EsfuerzoSemana | null | undefined): string {
+  if (!e || (e.dias === 0 && e.repasos === 0)) return 'Esta semana aún no practicas. Un rato basta para empezar.'
+  const n = (x: number, uno: string, varios: string) => `${x} ${x === 1 ? uno : varios}`
+  return [
+    e.dias ? n(e.dias, 'día de estudio', 'días de estudio') : '',
+    e.avanzados ? n(e.avanzados, 'ejercicio avanzado', 'ejercicios avanzados') : '',
+    e.repasos ? n(e.repasos, 'repaso', 'repasos') : '',
+  ].filter(Boolean).join(' · ')
+}
+
+/** «3 semanas seguidas»; 0 → «Empieza esta semana». */
+export function textoRachaSemanas(semanas: number): string {
+  if (semanas <= 0) return 'Empieza esta semana'
+  return semanas === 1 ? '1 semana' : `${semanas} semanas seguidas`
+}

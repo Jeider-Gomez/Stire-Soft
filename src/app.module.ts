@@ -41,7 +41,6 @@ import { LearningProgressModule } from './learning-progress/learning-progress.mo
 import { ReviewSchedulesModule } from './review-schedules/review-schedules.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AnalyticsModule } from './analytics/analytics.module';
-import { GamificationModule } from './gamification/gamification.module';
 import { ContentRenderingModule } from './content-rendering/content-rendering.module';
 // QuestionBanksModule eliminado del árbol activo de dependencias.
 // Las entidades QuestionBank y BankQuestion están definidas en src/question-banks/entities/
@@ -120,7 +119,6 @@ import { ReuseModule } from './reuse/reuse.module';
     ReviewSchedulesModule,
     NotificationsModule,
     AnalyticsModule,
-    GamificationModule,
     ContentRenderingModule,
     PrerequisitesModule,
     ContentModule,

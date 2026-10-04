@@ -20,7 +20,9 @@ import {
 // con el motor de evaluación y el juez REALES, que cada ejercicio está bien planteado: la solución obtiene todos los
 // puntos, el error común no, y ninguna respuesta llega al estudiante. Un ejercicio mal planteado frustra a un
 // estudiante real; por eso se prueba antes de crearlo.
-jest.setTimeout(120_000);
+// Ejecuta el juez real (proceso aislado) con unos 40 ejercicios uno tras otro: dura ~70 s sola y más de 120 s cuando
+// corre junto a toda la suite. El límite cubre esa carga; no esconde una falla (las demás pruebas tienen el suyo).
+jest.setTimeout(300_000);
 
 // Esta prueba comprueba que cada ejercicio está bien planteado, no la velocidad de la máquina. Con la suite completa
 // en paralelo, arrancar Node tardó más de los 2000 ms del juez y una solución correcta salió «time_limit (2032 ms)»

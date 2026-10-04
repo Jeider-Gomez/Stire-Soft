@@ -62,6 +62,8 @@ export const useStudentStore = defineStore('student', () => {
     avgMastery: 0,
     avgSuccessRate: 0,
     streakDays: 0,
+    streakWeeks: 0,
+    esfuerzoSemana: null,
     completedExercises: 0,
     reviewStats: {
       pending: 0,
@@ -164,6 +166,8 @@ export const useStudentStore = defineStore('student', () => {
               avgMastery: number
               avgSuccessRate: number
               streakDays?: number
+              streakWeeks?: number
+              esfuerzoSemana?: { dias: number; avanzados: number; repasos: number }
               totalUnitsTracked: number
               totalAttempts: number
               completedActivitiesCount: number
@@ -184,6 +188,8 @@ export const useStudentStore = defineStore('student', () => {
               avgMastery: analyticsData.summary.avgMastery || 0,
               avgSuccessRate: analyticsData.summary.avgSuccessRate || 0,
               streakDays: analyticsData.summary.streakDays || 0,
+              streakWeeks: analyticsData.summary.streakWeeks || 0,
+              esfuerzoSemana: analyticsData.summary.esfuerzoSemana ?? null,
               completedExercises: analyticsData.summary.completedActivitiesCount || 0,
               reviewStats: {
                 pending: analyticsData.summary.reviewStats?.pending || 0,

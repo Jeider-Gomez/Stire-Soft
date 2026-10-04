@@ -78,6 +78,9 @@ export interface StudentAnalytics {
     critical: number
   }
   streakDays: number
+  /** Semanas seguidas con práctica (gamificación sobria: la racha diaria castiga a quien estudia días fijos). */
+  streakWeeks: number
+  esfuerzoSemana: { dias: number; avanzados: number; repasos: number } | null
   completedExercises: number
   masteryByUnit: Array<{
     unitId: number

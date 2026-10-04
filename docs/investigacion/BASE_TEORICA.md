@@ -314,6 +314,18 @@ trazabilidad (solo para el anexo técnico).
 
 ---
 
+## BT-29. Gamificación sobria: racha de semanas y esfuerzo de la semana, sin medallas ni ranking
+
+| | |
+|---|---|
+| **Problema observado** | El inicio mostraba una racha de **días**: quien estudia martes y jueves la perdía cada semana. Había un módulo de medallas en pausa, con un diseño que no servía (un solo «desbloqueado por» por medalla). |
+| **Decisión** | - **Racha de semanas** seguidas con práctica; si esta semana aún no practica, la de la semana pasada sigue viva.<br>- **Esfuerzo de la semana** en una línea: días de estudio, ejercicios **avanzados** aprobados y repasos hechos. Repetir lo fácil suma días, no ejercicios avanzados ni dominio.<br>- Sin puntos, medallas ni ranking. Sin práctica, una invitación sin regaño.<br>- Se quitó el módulo de medallas y su tabla. |
+| **Fundamento** | - **Efectos pequeños** de la gamificación sobre el aprendizaje; funciona mejor con narrativa y con competencia combinada con colaboración, no solo con puntos y medallas (Sailer y Homner, 2020). Por eso lo que se muestra es el **esfuerzo propio**, no una comparación.<br>- **Justicia académica** (pilar 3): no premiar la repetición de lo fácil (ver BT del dominio y Baker, Corbett y Koedinger, 2004).<br>- La propuesta concreta viene de `REFERENTES_PLATAFORMAS_Y_STI.md` §10. |
+| **Cómo se materializa** | Tarjeta «Racha de estudio» del inicio del estudiante. «Mi progreso» conserva la racha de días al estilo Anki (BT-21). |
+| **Trazabilidad** | `src/analytics/racha-y-repasos.ts` (`rachaDeSemanas`, `esfuerzoDeLaSemana`), `frontend-nuxt/utils/racha.ts`, `src/migrations/1791900000000-QuitarGamificacion.ts`. |
+
+---
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |
@@ -331,6 +343,7 @@ trazabilidad (solo para el anexo técnico).
 - Atkinson, R. K., Derry, S. J., Renkl, A. y Wortham, D. (2000). Learning from Examples: Instructional Principles from the Worked Examples Research. *Review of Educational Research, 70*(2), 181-214. https://doi.org/10.3102/00346543070002181
 - Baker, R. S., Corbett, A. T. y Koedinger, K. R. (2004). Detecting Student Misuse of Intelligent Tutoring Systems. En *ITS 2004*, LNCS, 531-540. https://doi.org/10.1007/978-3-540-30139-4_50
 - Bastani, H., Bastani, O., Sungu, A., Ge, H. et al. (2025). Generative AI without guardrails can harm learning: Evidence from high school mathematics. *PNAS, 122*(26). https://doi.org/10.1073/pnas.2422633122
+- Sailer, M. y Homner, L. (2020). The Gamification of Learning: a Meta-analysis. *Educational Psychology Review, 32*(1), 77-112. https://doi.org/10.1007/s10648-019-09498-w
 - Black, P. y Wiliam, D. (1998). Assessment and Classroom Learning. *Assessment in Education: Principles, Policy & Practice, 5*(1), 7-74. https://doi.org/10.1080/0969595980050102
 - Bloom, B. S. (1968). Learning for Mastery. *Evaluation Comment, 1*(2). — matriz #1
 - Bloom, B. S. (1984). The 2 Sigma Problem. *Educational Researcher, 13*(6), 4-16. — matriz #30

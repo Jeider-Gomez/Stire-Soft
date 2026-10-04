@@ -1,5 +1,6 @@
 import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, MoreThan } from 'typeorm';
+import { Difficulty } from '../common/enums/difficulty.enum';
 import { LearningProgress } from '../learning-progress/entities/learning-progress.entity';
 import { Submission } from '../submissions/entities/submission.entity';
 import { ReviewSchedule } from '../review-schedules/entities/review-schedule.entity';
@@ -15,7 +16,7 @@ import { SubmissionStatus } from '../common/enums/submission-status.enum';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { construirMapaDeCalor, MapaDeCalor } from './mapa-de-calor';
 import { construirResumenSemanal, ResumenSemanal } from './resumen-semanal';
-import { rachaDeDias, repasosPendientes } from './racha-y-repasos';
+import { esfuerzoDeLaSemana, rachaDeDias, rachaDeSemanas, repasosPendientes } from './racha-y-repasos';
 
 @Injectable()
 export class AnalyticsService {
@@ -83,6 +84,30 @@ export class AnalyticsService {
       now,
     );
 
+    // Gamificación sobria (racha-y-repasos.ts): racha de semanas y el esfuerzo de esta semana, sin puntos ni medallas.
+    const fechasDePractica = allSubs.filter((sub) => sub.status !== SubmissionStatus.IN_PROGRESS).map((sub) => new Date(sub.submittedAt ?? sub.createdAt));
+    const streakWeeks = rachaDeSemanas(fechasDePractica, now);
+    const haceOchoDias = new Date(now.getTime() - 8 * 86_400_000);
+    const entregasRecientes = await submissionRepo.find({
+      where: { studentId, createdAt: MoreThan(haceOchoDias) },
+      relations: ['activity'],
+    });
+    const esfuerzoSemana = esfuerzoDeLaSemana(
+      entregasRecientes
+        .filter((sub) => sub.status !== SubmissionStatus.IN_PROGRESS)
+        .map((sub) => ({
+          fecha: new Date(sub.submittedAt ?? sub.createdAt),
+          activityId: sub.activityId,
+          avanzadoAprobado:
+            sub.activity?.difficulty === Difficulty.AVANZADO &&
+            sub.status === SubmissionStatus.GRADED &&
+            !!sub.activity.totalPoints &&
+            (sub.score / sub.activity.totalPoints) * 100 >= sub.activity.passingScore,
+        })),
+      reviews.map((r) => r.lastReviewedAt).filter((d): d is Date => !!d),
+      now,
+    );
+
     // 4. Recent submissions
     const recentSubmissions = await submissionRepo.find({
       where: { studentId },
@@ -107,6 +132,8 @@ export class AnalyticsService {
         totalAttempts,
         completedActivitiesCount,
         streakDays,
+        streakWeeks,
+        esfuerzoSemana,
         reviewStats: {
           total: totalReviews,
           pending: pendingReviews,
