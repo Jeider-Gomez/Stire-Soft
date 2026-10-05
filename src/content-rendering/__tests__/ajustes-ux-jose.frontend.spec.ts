@@ -299,7 +299,9 @@ describe('Patrones de interfaz tomados de los referentes (docs/investigacion/ref
     expect(lanzador).toContain('v-if="!tutorStore.isOpen"');
     expect(lanzador).toMatch(/class="lanzador-tutor fixed right-4 sm:right-6/);
     expect(lanzador).not.toContain('sm:hidden');
-    expect(lanzador).toMatch(/<Sparkles[^>]*\/>\s*Tutor\s*<\/button>/);
+    // Con texto; al bajar por la página se reduce al ícono para no tapar botones (crítica del 05/10), y su nombre accesible sigue.
+    expect(lanzador).toMatch(/<Sparkles[^>]*\/>\s*<span v-if="!compacto">Tutor<\/span>\s*<\/button>/);
+    expect(lanzador).toContain('aria-label="Abrir el Tutor IA"');
     for (const layout of ['student.vue', 'workspace.vue']) expect(leer('layouts', layout)).toMatch(/<TutorLanzadorTutor( [^>]*)?\/>/);
     // un solo acceso: ni el encabezado general ni el del ejercicio tienen otro botón del Tutor
     expect(leer('components', 'layout', 'HeaderNav.vue')).not.toContain('Abrir el Tutor IA');
