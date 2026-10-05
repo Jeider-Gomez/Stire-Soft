@@ -72,13 +72,12 @@ describe('Fase 29: Editor visual de diagramas de flujo', () => {
     });
 
     it('ofrece paleta con las figuras requeridas (inicio, fin, proceso, entrada, salida, decisión)', () => {
+      // Desde el 05/10 la paleta es components/proyectos/diagrama/PaletaFiguras.vue: una lista en vez de seis botones copiados.
       const contenido = readFileSync(rutaComponente, 'utf8');
-      expect(contenido).toContain("agregarFigura('inicio')");
-      expect(contenido).toContain("agregarFigura('fin')");
-      expect(contenido).toContain("agregarFigura('proceso')");
-      expect(contenido).toContain("agregarFigura('entrada')");
-      expect(contenido).toContain("agregarFigura('salida')");
-      expect(contenido).toContain("agregarFigura('decision')");
+      expect(contenido).toContain('@agregar="agregarFigura"');
+      const paleta = readFileSync(path.join(raizNuxt, 'components', 'proyectos', 'diagrama', 'PaletaFiguras.vue'), 'utf8');
+      expect(paleta).toContain("const ORDEN: TipoFigura[] = ['inicio', 'entrada', 'proceso', 'decision', 'salida', 'fin']");
+      expect(paleta).toContain("@click=\"emit('agregar', b.tipo)\"");
     });
 
     it('valida el diagrama en vivo mediante traducirDiagrama', () => {

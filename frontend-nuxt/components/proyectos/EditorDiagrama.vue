@@ -21,109 +21,7 @@
     </div>
 
     <template v-else>
-      <!-- Paleta de figuras (solo si no es de solo lectura) -->
-      <div
-        v-if="!soloLectura"
-        class="bg-base-blanco rounded-xl border border-base-borde-sutil p-2.5 shadow-sm space-y-2"
-        role="toolbar"
-        aria-label="Herramientas para agregar figuras"
-      >
-        <div class="flex items-center justify-between gap-2 flex-wrap">
-          <span class="text-[11px] font-bold text-base-texto-secundario uppercase tracking-wider">
-            Agregar figura
-          </span>
-          <span
-            v-if="diagrama.figuras.length >= limiteFiguras"
-            class="text-[11px] font-bold text-semantico-falla bg-semantico-falla/10 px-2 py-0.5 rounded"
-          >
-            Límite alcanzado: {{ limiteFiguras }} figuras
-          </span>
-          <span v-else class="text-[11px] text-base-texto-secundario">
-            {{ diagrama.figuras.length }} de {{ limiteFiguras }} figuras
-          </span>
-        </div>
-
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5">
-          <!-- Botón Inicio: solo si no hay inicio -->
-          <button
-            v-if="!hayInicio"
-            type="button"
-            :disabled="diagrama.figuras.length >= limiteFiguras"
-            @click="agregarFigura('inicio')"
-            class="min-h-[44px] sm:min-h-[36px] px-3 py-1.5 rounded-lg border border-base-borde-fuerte bg-base-blanco hover:bg-base-bg-secundario disabled:opacity-50 text-base-texto-primario font-semibold text-xs flex items-center gap-2 transition-colors shrink-0 shadow-sm"
-          >
-            <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true" class="text-acento-ambar-fuerte">
-              <rect x="1" y="1" width="16" height="10" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="1.8" />
-            </svg>
-            <span>Inicio</span>
-          </button>
-
-          <!-- Entrada -->
-          <button
-            type="button"
-            :disabled="diagrama.figuras.length >= limiteFiguras"
-            @click="agregarFigura('entrada')"
-            class="min-h-[44px] sm:min-h-[36px] px-3 py-1.5 rounded-lg border border-base-borde-fuerte bg-base-blanco hover:bg-base-bg-secundario disabled:opacity-50 text-base-texto-primario font-semibold text-xs flex items-center gap-2 transition-colors shrink-0 shadow-sm"
-          >
-            <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true" class="text-acento-ambar-fuerte">
-              <polygon points="4,1 17,1 14,11 1,11" fill="none" stroke="currentColor" stroke-width="1.8" />
-            </svg>
-            <span>Entrada</span>
-          </button>
-
-          <!-- Proceso -->
-          <button
-            type="button"
-            :disabled="diagrama.figuras.length >= limiteFiguras"
-            @click="agregarFigura('proceso')"
-            class="min-h-[44px] sm:min-h-[36px] px-3 py-1.5 rounded-lg border border-base-borde-fuerte bg-base-blanco hover:bg-base-bg-secundario disabled:opacity-50 text-base-texto-primario font-semibold text-xs flex items-center gap-2 transition-colors shrink-0 shadow-sm"
-          >
-            <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true" class="text-acento-ambar-fuerte">
-              <rect x="1" y="2" width="16" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8" />
-            </svg>
-            <span>Proceso</span>
-          </button>
-
-          <!-- Decisión -->
-          <button
-            type="button"
-            :disabled="diagrama.figuras.length >= limiteFiguras"
-            @click="agregarFigura('decision')"
-            class="min-h-[44px] sm:min-h-[36px] px-3 py-1.5 rounded-lg border border-base-borde-fuerte bg-base-blanco hover:bg-base-bg-secundario disabled:opacity-50 text-base-texto-primario font-semibold text-xs flex items-center gap-2 transition-colors shrink-0 shadow-sm"
-          >
-            <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true" class="text-acento-ambar-fuerte">
-              <polygon points="9,1 17,6 9,11 1,6" fill="none" stroke="currentColor" stroke-width="1.8" />
-            </svg>
-            <span>Decisión</span>
-          </button>
-
-          <!-- Salida -->
-          <button
-            type="button"
-            :disabled="diagrama.figuras.length >= limiteFiguras"
-            @click="agregarFigura('salida')"
-            class="min-h-[44px] sm:min-h-[36px] px-3 py-1.5 rounded-lg border border-base-borde-fuerte bg-base-blanco hover:bg-base-bg-secundario disabled:opacity-50 text-base-texto-primario font-semibold text-xs flex items-center gap-2 transition-colors shrink-0 shadow-sm"
-          >
-            <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true" class="text-acento-ambar-fuerte">
-              <polygon points="4,1 17,1 14,11 1,11" fill="none" stroke="currentColor" stroke-width="1.8" />
-            </svg>
-            <span>Salida</span>
-          </button>
-
-          <!-- Fin -->
-          <button
-            type="button"
-            :disabled="diagrama.figuras.length >= limiteFiguras"
-            @click="agregarFigura('fin')"
-            class="min-h-[44px] sm:min-h-[36px] px-3 py-1.5 rounded-lg border border-base-borde-fuerte bg-base-blanco hover:bg-base-bg-secundario disabled:opacity-50 text-base-texto-primario font-semibold text-xs flex items-center gap-2 transition-colors shrink-0 shadow-sm"
-          >
-            <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true" class="text-acento-ambar-fuerte">
-              <rect x="1" y="1" width="16" height="10" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="1.8" />
-            </svg>
-            <span>Fin</span>
-          </button>
-        </div>
-      </div>
+      <ProyectosDiagramaPaletaFiguras v-if="!soloLectura" :cantidad="diagrama.figuras.length" :limite="limiteFiguras" :hay-inicio="hayInicio" @agregar="agregarFigura" />
 
       <!-- Aviso de modo unión interactivo (para celular y teclado) -->
       <div
@@ -169,7 +67,7 @@
             <defs>
               <!-- Cuadrícula suave de 20px -->
               <pattern id="patron-rejilla" width="20" height="20" patternUnits="userSpaceOnUse">
-                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.8" opacity="0.6" />
+                <path d="M 20 0 L 0 0 0 20" fill="none" class="stroke-base-borde-sutil" stroke-width="0.8" opacity="0.6" />
               </pattern>
 
               <!-- Punta de flecha normal -->
@@ -182,7 +80,7 @@
                 markerHeight="6"
                 orient="auto-start-reverse"
               >
-                <path d="M 0 0 L 10 4 L 0 8 z" fill="#64748b" />
+                <path d="M 0 0 L 10 4 L 0 8 z" class="fill-base-texto-secundario" />
               </marker>
 
               <!-- Punta de flecha seleccionada -->
@@ -195,7 +93,7 @@
                 markerHeight="6"
                 orient="auto-start-reverse"
               >
-                <path d="M 0 0 L 10 4 L 0 8 z" fill="#d97706" />
+                <path d="M 0 0 L 10 4 L 0 8 z" class="fill-acento-ambar-fuerte" />
               </marker>
             </defs>
 
@@ -229,7 +127,7 @@
                 <path
                   :d="fl.ruta"
                   fill="none"
-                  :stroke="esFlechaSeleccionada(fl) ? '#d97706' : '#64748b'"
+                  :class="esFlechaSeleccionada(fl) ? 'stroke-acento-ambar-fuerte' : 'stroke-base-texto-secundario'"
                   :stroke-width="esFlechaSeleccionada(fl) ? 3 : 2"
                   :marker-end="esFlechaSeleccionada(fl) ? 'url(#punta-flecha-seleccionada)' : 'url(#punta-flecha)'"
                 />
@@ -242,8 +140,7 @@
                     width="24"
                     height="18"
                     rx="4"
-                    fill="#ffffff"
-                    :stroke="esFlechaSeleccionada(fl) ? '#d97706' : '#94a3b8'"
+                    :class="['fill-base-blanco', esFlechaSeleccionada(fl) ? 'stroke-acento-ambar-fuerte' : 'stroke-base-borde-fuerte']"
                     stroke-width="1.2"
                   />
                   <text
@@ -251,7 +148,7 @@
                     y="3"
                     text-anchor="middle"
                     class="text-[10px] font-bold"
-                    :fill="fl.etiqueta === 'Sí' ? '#16a34a' : '#dc2626'"
+                    :class="fl.etiqueta === 'Sí' ? 'fill-semantico-pasa' : 'fill-semantico-falla'"
                   >
                     {{ fl.etiqueta }}
                   </text>
@@ -266,7 +163,7 @@
                 :y1="arrastrandoConexion.origenY"
                 :x2="arrastrandoConexion.actualX"
                 :y2="arrastrandoConexion.actualY"
-                stroke="#d97706"
+                class="stroke-acento-ambar-fuerte"
                 stroke-width="2.5"
                 stroke-dasharray="4 4"
                 marker-end="url(#punta-flecha-seleccionada)"
@@ -308,20 +205,16 @@
                 :height="geometriaFigura(fig).h"
                 :rx="geometriaFigura(fig).h / 2"
                 :ry="geometriaFigura(fig).h / 2"
-                :fill="colorFondoFigura(fig)"
-                :stroke="colorBordeFigura(fig)"
                 :stroke-width="anchoBordeFigura(fig)"
-                class="transition-colors"
+                :class="claseFigura(fig)"
               />
 
               <!-- 2. Paralelogramo (Entrada / Salida) -->
               <polygon
                 v-else-if="TIPO_FIGURA[fig.tipo].forma === 'paralelogramo'"
-                :points="`18,0 ${geometriaFigura(fig).w},0 ${geometriaFigura(fig).w - 18},${geometriaFigura(fig).h} 0,${geometriaFigura(fig).h}`"
-                :fill="colorFondoFigura(fig)"
-                :stroke="colorBordeFigura(fig)"
+                :points="puntosForma(fig)"
                 :stroke-width="anchoBordeFigura(fig)"
-                class="transition-colors"
+                :class="claseFigura(fig)"
               />
 
               <!-- 3. Rectángulo (Proceso) -->
@@ -333,20 +226,16 @@
                 :height="geometriaFigura(fig).h"
                 rx="6"
                 ry="6"
-                :fill="colorFondoFigura(fig)"
-                :stroke="colorBordeFigura(fig)"
                 :stroke-width="anchoBordeFigura(fig)"
-                class="transition-colors"
+                :class="claseFigura(fig)"
               />
 
               <!-- 4. Rombo (Decisión) -->
               <polygon
                 v-else-if="TIPO_FIGURA[fig.tipo].forma === 'rombo'"
-                :points="`${geometriaFigura(fig).w / 2},0 ${geometriaFigura(fig).w},${geometriaFigura(fig).h / 2} ${geometriaFigura(fig).w / 2},${geometriaFigura(fig).h} 0,${geometriaFigura(fig).h / 2}`"
-                :fill="colorFondoFigura(fig)"
-                :stroke="colorBordeFigura(fig)"
+                :points="puntosForma(fig)"
                 :stroke-width="anchoBordeFigura(fig)"
-                class="transition-colors"
+                :class="claseFigura(fig)"
               />
 
               <!-- Texto dentro de la figura, partido en líneas -->
@@ -372,9 +261,9 @@
                 :transform="`translate(${geometriaFigura(fig).w - 14}, -8)`"
                 class="pointer-events-none"
               >
-                <circle r="9" fill="#ef4444" />
+                <circle r="9" class="fill-semantico-falla" />
                 <!-- Icono de exclamación -->
-                <path d="M 0 -4 L 0 1 M 0 3.5 L 0 5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+                <path d="M 0 -4 L 0 1 M 0 3.5 L 0 5" class="stroke-base-blanco" stroke-width="2" stroke-linecap="round" />
               </g>
 
               <!-- Puntos de salida (puertos de conexión) si no es solo lectura -->
@@ -390,10 +279,8 @@
                   <circle r="12" fill="transparent" />
                   <circle
                     r="5"
-                    fill="#ffffff"
-                    stroke="#d97706"
                     stroke-width="2"
-                    class="group-hover:scale-125 transition-transform"
+                    class="fill-base-blanco stroke-acento-ambar-fuerte group-hover:scale-125 transition-transform"
                   />
                 </g>
 
@@ -409,12 +296,10 @@
                     <circle r="12" fill="transparent" />
                     <circle
                       r="5"
-                      fill="#ffffff"
-                      stroke="#16a34a"
                       stroke-width="2"
-                      class="group-hover:scale-125 transition-transform"
+                      class="fill-base-blanco stroke-semantico-pasa group-hover:scale-125 transition-transform"
                     />
-                    <text x="0" y="16" text-anchor="middle" class="text-[9px] font-bold fill-[#16a34a]">Sí</text>
+                    <text x="0" y="16" text-anchor="middle" class="text-[9px] font-bold fill-semantico-pasa">Sí</text>
                   </g>
 
                   <!-- Puerto No (derecha) -->
@@ -427,12 +312,10 @@
                     <circle r="12" fill="transparent" />
                     <circle
                       r="5"
-                      fill="#ffffff"
-                      stroke="#dc2626"
                       stroke-width="2"
-                      class="group-hover:scale-125 transition-transform"
+                      class="fill-base-blanco stroke-semantico-falla group-hover:scale-125 transition-transform"
                     />
-                    <text x="14" y="3" text-anchor="start" class="text-[9px] font-bold fill-[#dc2626]">No</text>
+                    <text x="14" y="3" text-anchor="start" class="text-[9px] font-bold fill-semantico-falla">No</text>
                   </g>
                 </template>
               </template>
@@ -440,188 +323,19 @@
           </svg>
         </div>
 
-        <!-- Panel lateral/inferior de edición (solo si hay selección y no es solo lectura) -->
-        <aside
+        <!-- Panel de la figura o la flecha elegida (components/proyectos/diagrama/PanelEdicionDiagrama.vue) -->
+        <ProyectosDiagramaPanelEdicionDiagrama
           v-if="!soloLectura && (figuraSeleccionada || flechaSeleccionadaData)"
-          class="w-full lg:w-72 bg-base-blanco rounded-xl border border-base-borde-fuerte p-4 shadow-sm space-y-3 shrink-0"
-          aria-label="Panel de edición"
-        >
-          <!-- Si hay una flecha seleccionada -->
-          <div v-if="flechaSeleccionadaData" class="space-y-3">
-            <div class="flex items-center justify-between border-b border-base-borde-sutil pb-2">
-              <span class="font-bold text-base-texto-primario text-xs flex items-center gap-1.5">
-                <Link2 :size="14" class="text-acento-ambar-fuerte" aria-hidden="true" />
-                Flecha de conexión
-              </span>
-              <button
-                type="button"
-                @click="deseleccionarTodo"
-                class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario"
-                aria-label="Cerrar panel"
-              >
-                <X :size="14" aria-hidden="true" />
-              </button>
-            </div>
-
-            <p class="text-xs text-base-texto-secundario">
-              De: <strong class="text-base-texto-primario">{{ flechaSeleccionadaData.origenTitulo }}</strong>
-              <br />
-              A: <strong class="text-base-texto-primario">{{ flechaSeleccionadaData.destinoTitulo }}</strong>
-              <span v-if="flechaSeleccionadaData.rama" class="block font-semibold mt-0.5 text-acento-ambar-fuerte">
-                Rama: {{ flechaSeleccionadaData.rama }}
-              </span>
-            </p>
-
-            <button
-              type="button"
-              @click="quitarFlechaSeleccionada"
-              class="w-full min-h-[44px] sm:min-h-[36px] px-3 py-2 rounded-lg bg-semantico-falla/10 hover:bg-semantico-falla/20 text-semantico-falla font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-            >
-              <Unlink :size="14" aria-hidden="true" />
-              <span>Quitar flecha</span>
-            </button>
-          </div>
-
-          <!-- Si hay una figura seleccionada -->
-          <div v-else-if="figuraSeleccionada" class="space-y-3">
-            <div class="flex items-center justify-between border-b border-base-borde-sutil pb-2">
-              <div>
-                <span class="font-bold text-base-texto-primario text-xs">
-                  {{ TIPO_FIGURA[figuraSeleccionada.tipo].nombre }}
-                </span>
-                <span class="text-[10px] font-mono text-base-texto-secundario ml-1.5">
-                  ({{ figuraSeleccionada.id }})
-                </span>
-              </div>
-              <button
-                type="button"
-                @click="deseleccionarTodo"
-                class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario"
-                aria-label="Cerrar panel"
-              >
-                <X :size="14" aria-hidden="true" />
-              </button>
-            </div>
-
-            <p class="text-[11px] text-base-texto-secundario leading-relaxed">
-              {{ TIPO_FIGURA[figuraSeleccionada.tipo].ayuda }}
-            </p>
-
-            <!-- Campo de texto (Inicio y Fin no tienen texto editable) -->
-            <div v-if="figuraSeleccionada.tipo !== 'inicio' && figuraSeleccionada.tipo !== 'fin'" class="space-y-1">
-              <label for="editor-texto-figura" class="block font-semibold text-[11px] text-base-texto-primario">
-                Contenido
-              </label>
-
-              <!-- Multilínea para Proceso -->
-              <textarea
-                v-if="figuraSeleccionada.tipo === 'proceso'"
-                id="editor-texto-figura"
-                ref="campoTextoRef"
-                v-model="figuraSeleccionada.texto"
-                rows="4"
-                maxlength="200"
-                placeholder="Una instrucción por línea..."
-                class="w-full px-2.5 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-xs font-mono outline-none focus:border-acento-ambar-fuerte leading-relaxed"
-                @input="emitirCambios"
-              />
-
-              <!-- Una línea para Entrada, Decisión y Salida -->
-              <input
-                v-else
-                id="editor-texto-figura"
-                ref="campoTextoRef"
-                v-model="figuraSeleccionada.texto"
-                type="text"
-                maxlength="200"
-                :placeholder="figuraSeleccionada.tipo === 'decision' ? 'x >= 10' : 'valor'"
-                class="w-full px-2.5 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco text-xs font-mono outline-none focus:border-acento-ambar-fuerte"
-                @input="emitirCambios"
-              />
-              <span class="text-[10px] text-base-texto-secundario block text-right">
-                {{ figuraSeleccionada.texto.length }} / 200
-              </span>
-            </div>
-
-            <!-- Acciones de conexión por botón -->
-            <div class="space-y-1.5 pt-1 border-t border-base-borde-sutil">
-              <!-- No es Fin: puede conectar -->
-              <template v-if="figuraSeleccionada.tipo !== 'fin'">
-                <!-- Decisión: conectar Sí y conectar No -->
-                <template v-if="figuraSeleccionada.tipo === 'decision'">
-                  <div class="flex items-center justify-between gap-2">
-                    <button
-                      type="button"
-                      @click="activarModoUnion('si')"
-                      class="min-h-[44px] sm:min-h-[32px] flex-1 px-2.5 py-1 rounded bg-base-blanco border border-base-borde-fuerte hover:bg-base-bg-secundario font-semibold text-xs text-left"
-                    >
-                      Unir «Sí» con…
-                    </button>
-                    <button
-                      v-if="figuraSeleccionada.si"
-                      type="button"
-                      @click="quitarSalida('si')"
-                      class="min-h-[44px] sm:min-h-[32px] px-2 py-1 text-semantico-falla hover:bg-semantico-falla/10 rounded font-semibold text-xs"
-                      title="Quitar flecha del Sí"
-                    >
-                      Quitar
-                    </button>
-                  </div>
-
-                  <div class="flex items-center justify-between gap-2">
-                    <button
-                      type="button"
-                      @click="activarModoUnion('no')"
-                      class="min-h-[44px] sm:min-h-[32px] flex-1 px-2.5 py-1 rounded bg-base-blanco border border-base-borde-fuerte hover:bg-base-bg-secundario font-semibold text-xs text-left"
-                    >
-                      Unir «No» con…
-                    </button>
-                    <button
-                      v-if="figuraSeleccionada.no"
-                      type="button"
-                      @click="quitarSalida('no')"
-                      class="min-h-[44px] sm:min-h-[32px] px-2 py-1 text-semantico-falla hover:bg-semantico-falla/10 rounded font-semibold text-xs"
-                      title="Quitar flecha del No"
-                    >
-                      Quitar
-                    </button>
-                  </div>
-                </template>
-
-                <!-- Otras figuras: botón Unir con… -->
-                <div v-else class="flex items-center justify-between gap-2">
-                  <button
-                    type="button"
-                    @click="activarModoUnion('siguiente')"
-                    class="min-h-[44px] sm:min-h-[32px] flex-1 px-2.5 py-1 rounded bg-base-blanco border border-base-borde-fuerte hover:bg-base-bg-secundario font-semibold text-xs text-left flex items-center gap-1.5"
-                  >
-                    <Link2 :size="13" class="text-acento-ambar-fuerte" aria-hidden="true" />
-                    <span>Unir con…</span>
-                  </button>
-                  <button
-                    v-if="figuraSeleccionada.siguiente"
-                    type="button"
-                    @click="quitarSalida('siguiente')"
-                    class="min-h-[44px] sm:min-h-[32px] px-2 py-1 text-semantico-falla hover:bg-semantico-falla/10 rounded font-semibold text-xs"
-                    title="Quitar flecha"
-                  >
-                    Quitar flecha
-                  </button>
-                </div>
-              </template>
-
-              <!-- Botón Borrar Figura -->
-              <button
-                type="button"
-                @click="borrarFigura(figuraSeleccionada)"
-                class="w-full min-h-[44px] sm:min-h-[32px] mt-2 px-3 py-1.5 rounded-lg border border-semantico-falla/40 text-semantico-falla hover:bg-semantico-falla/10 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <Trash2 :size="13" aria-hidden="true" />
-                <span>Borrar figura</span>
-              </button>
-            </div>
-          </div>
-        </aside>
+          ref="panelRef"
+          :figura="flechaSeleccionadaData ? null : figuraSeleccionada"
+          :flecha="flechaSeleccionadaData"
+          @cerrar="deseleccionarTodo"
+          @texto="cambiarTexto"
+          @unir="activarModoUnion"
+          @quitar-salida="quitarSalida"
+          @quitar-flecha="quitarFlechaSeleccionada"
+          @borrar="figuraSeleccionada && borrarFigura(figuraSeleccionada)"
+        />
       </div>
 
       <!-- Aviso en vivo de validación (traducirDiagrama) bajo el lienzo -->
@@ -639,7 +353,9 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { AlertCircle, AlertTriangle, Link2, RefreshCw, Trash2, Unlink, X } from 'lucide-vue-next'
+// Editor de diagramas de flujo: el lienzo y lo que se hace en él (arrastrar, unir, teclado). La geometría está en
+// utils/geometriaDiagrama.ts; la paleta y el panel de edición, en components/proyectos/diagrama/ (antes 1322 líneas).
+import { AlertCircle, AlertTriangle, Link2, RefreshCw } from 'lucide-vue-next'
 import {
   type Diagrama,
   type ErrorDiagrama,
@@ -651,6 +367,11 @@ import {
   leerDiagrama,
   traducirDiagrama
 } from '~/utils/diagramaFlujo'
+import {
+  TEXTO_INICIAL, type Flecha, type Salida,
+  dimensionesLienzo as medirLienzo, geometriaFigura, lineasTexto, listaDeFlechas, lugarLibre, nombreFigura, nuevoId,
+  posicionInicialTexto, puntoDeSalida, puntosForma, quitarReferencias,
+} from '~/utils/geometriaDiagrama'
 
 const props = withDefaults(
   defineProps<{
@@ -674,12 +395,12 @@ const ultimoJsonEmitido = ref('')
 const errorTraduccion = ref<ErrorDiagrama | null>(null)
 
 const figuraSeleccionadaId = ref<string | null>(null)
-const flechaSeleccionada = ref<{ origenId: string; salida: 'siguiente' | 'si' | 'no' } | null>(null)
-const modoUnion = ref<{ origenId: string; salida: 'siguiente' | 'si' | 'no' } | null>(null)
+const flechaSeleccionada = ref<{ origenId: string; salida: Salida } | null>(null)
+const modoUnion = ref<{ origenId: string; salida: Salida } | null>(null)
 
 const lienzoContenedorRef = ref<HTMLDivElement | null>(null)
 const svgRef = ref<SVGSVGElement | null>(null)
-const campoTextoRef = ref<HTMLInputElement | HTMLTextAreaElement | null>(null)
+const panelRef = ref<{ enfocarTexto: () => void } | null>(null)
 
 // Estado del arrastre de figuras
 interface EstadoArrastre {
@@ -696,7 +417,7 @@ const arrastreActual = ref<EstadoArrastre | null>(null)
 // Estado del arrastre de conexiones interactivas
 interface EstadoArrastreConexion {
   origenId: string
-  salida: 'siguiente' | 'si' | 'no'
+  salida: Salida
   origenX: number
   origenY: number
   actualX: number
@@ -711,6 +432,7 @@ const figuraSeleccionada = computed(() => {
   return diagrama.value.figuras.find((f) => f.id === figuraSeleccionadaId.value) ?? null
 })
 
+// Las figuras se nombran por lo que dicen («Proceso: x <- 1»), no por su identificador interno («Proceso (f3)»).
 const flechaSeleccionadaData = computed(() => {
   if (!flechaSeleccionada.value) return null
   const origen = diagrama.value.figuras.find((f) => f.id === flechaSeleccionada.value!.origenId)
@@ -719,23 +441,14 @@ const flechaSeleccionadaData = computed(() => {
   if (!destinoId) return null
   const destino = diagrama.value.figuras.find((f) => f.id === destinoId)
   return {
-    origenTitulo: `${TIPO_FIGURA[origen.tipo].nombre} (${origen.id})`,
-    destinoTitulo: destino ? `${TIPO_FIGURA[destino.tipo].nombre} (${destino.id})` : destinoId,
-    rama: flechaSeleccionada.value.salida === 'si' ? 'Sí' : flechaSeleccionada.value.salida === 'no' ? 'No' : null
+    origen: nombreFigura(origen),
+    destino: destino ? nombreFigura(destino) : destinoId,
+    rama: flechaSeleccionada.value.salida === 'si' ? 'Sí' as const : flechaSeleccionada.value.salida === 'no' ? 'No' as const : null
   }
 })
 
-// Dimensiones dinámicas del lienzo para scroll nativo
-const dimensionesLienzo = computed(() => {
-  let maxX = 750
-  let maxY = 550
-  for (const f of diagrama.value.figuras) {
-    const geo = geometriaFigura(f)
-    if (f.x + geo.w + 120 > maxX) maxX = f.x + geo.w + 120
-    if (f.y + geo.h + 120 > maxY) maxY = f.y + geo.h + 120
-  }
-  return { ancho: maxX, alto: maxY }
-})
+// El lienzo crece con el diagrama para desplazarse con su propia barra.
+const dimensionesLienzo = computed(() => medirLienzo(diagrama.value.figuras))
 
 // Declarado antes del watch inmediato de abajo: ese watch valida al cargar y usa este reloj durante el setup.
 let timerValidacion: ReturnType<typeof setTimeout> | null = null
@@ -824,69 +537,6 @@ onBeforeUnmount(() => {
   if (timerValidacion) clearTimeout(timerValidacion)
 })
 
-// ─── Geometría y cálculo de texto ───────────────────────────────────────────
-function lineasTexto(fig: Figura): string[] {
-  if (fig.tipo === 'inicio') return ['Inicio']
-  if (fig.tipo === 'fin') return ['Fin']
-  const texto = fig.texto.trim()
-  if (!texto) return ['…']
-
-  const parrafos = texto.split('\n')
-  const resultado: string[] = []
-  const maxPorLinea = fig.tipo === 'decision' ? 16 : 20
-
-  for (const p of parrafos) {
-    if (p.length <= maxPorLinea) {
-      resultado.push(p)
-    } else {
-      const palabras = p.split(' ')
-      let actual = ''
-      for (const pal of palabras) {
-        if (!actual) {
-          actual = pal
-        } else if ((actual + ' ' + pal).length <= maxPorLinea) {
-          actual += ' ' + pal
-        } else {
-          resultado.push(actual)
-          actual = pal
-        }
-      }
-      if (actual) resultado.push(actual)
-    }
-  }
-  return resultado.slice(0, 5)
-}
-
-function geometriaFigura(fig: Figura): { w: number; h: number } {
-  const lineas = lineasTexto(fig)
-  const maxChars = Math.max(...lineas.map((l) => l.length), 4)
-
-  if (fig.tipo === 'inicio' || fig.tipo === 'fin') {
-    return { w: 140, h: 48 }
-  }
-  if (fig.tipo === 'decision') {
-    const w = Math.max(150, Math.min(260, 48 + maxChars * 9))
-    const h = Math.max(68, Math.min(130, 36 + lineas.length * 18))
-    return { w, h }
-  }
-  if (fig.tipo === 'entrada' || fig.tipo === 'salida') {
-    const w = Math.max(140, Math.min(260, 44 + maxChars * 8))
-    const h = Math.max(50, Math.min(120, 24 + lineas.length * 16))
-    return { w, h }
-  }
-  // Rectángulo
-  const w = Math.max(140, Math.min(250, 36 + maxChars * 8))
-  const h = Math.max(50, Math.min(130, 26 + lineas.length * 16))
-  return { w, h }
-}
-
-function posicionInicialTexto(fig: Figura): number {
-  const geo = geometriaFigura(fig)
-  const lineas = lineasTexto(fig)
-  const alturaTotalTexto = (lineas.length - 1) * 16
-  return (geo.h - alturaTotalTexto) / 2 + 4
-}
-
 // ─── Colores y estilos de figuras ───────────────────────────────────────────
 function tieneError(fig: Figura): boolean {
   return errorTraduccion.value?.figuraId === fig.id
@@ -896,15 +546,12 @@ function esFiguraSeleccionada(fig: Figura): boolean {
   return figuraSeleccionadaId.value === fig.id
 }
 
-function colorFondoFigura(fig: Figura): string {
-  if (esFiguraSeleccionada(fig)) return '#fef3c7' // acento-ambar sutil
-  return '#ffffff'
-}
-
-function colorBordeFigura(fig: Figura): string {
-  if (tieneError(fig)) return '#ef4444' // semantico-falla
-  if (esFiguraSeleccionada(fig)) return '#d97706' // acento-ambar-fuerte
-  return '#94a3b8' // base-borde-fuerte
+// Colores del tema (claro, oscuro, alto contraste), no hex fijos: con fondo #ffffff y texto del tema, en modo oscuro
+// el texto quedaba blanco sobre blanco.
+function claseFigura(fig: Figura): string[] {
+  const fondo = esFiguraSeleccionada(fig) ? 'fill-acento-ambar/10' : 'fill-base-blanco'
+  const borde = tieneError(fig) ? 'stroke-semantico-falla' : esFiguraSeleccionada(fig) ? 'stroke-acento-ambar-fuerte' : 'stroke-base-texto-secundario'
+  return [fondo, borde, 'transition-colors']
 }
 
 function anchoBordeFigura(fig: Figura): number {
@@ -919,140 +566,14 @@ function ariaLabelFigura(fig: Figura): string {
 }
 
 // ─── Flechas de conexión ───────────────────────────────────────────────────
-interface InfoFlecha {
-  origenId: string
-  destinoId: string
-  salida: 'siguiente' | 'si' | 'no'
-  ruta: string
-  etiqueta?: string
-  etiquetaX: number
-  etiquetaY: number
-}
+const listaFlechas = computed<Flecha[]>(() => listaDeFlechas(diagrama.value.figuras))
 
-const listaFlechas = computed<InfoFlecha[]>(() => {
-  const flechas: InfoFlecha[] = []
-
-  for (const f of diagrama.value.figuras) {
-    if (f.tipo === 'decision') {
-      if (f.si) {
-        const dest = diagrama.value.figuras.find((d) => d.id === f.si)
-        if (dest) {
-          const ruta = calcularRuta(f, 'si', dest)
-          flechas.push({
-            origenId: f.id,
-            destinoId: dest.id,
-            salida: 'si',
-            ruta: ruta.path,
-            etiqueta: 'Sí',
-            etiquetaX: ruta.labelX,
-            etiquetaY: ruta.labelY
-          })
-        }
-      }
-      if (f.no) {
-        const dest = diagrama.value.figuras.find((d) => d.id === f.no)
-        if (dest) {
-          const ruta = calcularRuta(f, 'no', dest)
-          flechas.push({
-            origenId: f.id,
-            destinoId: dest.id,
-            salida: 'no',
-            ruta: ruta.path,
-            etiqueta: 'No',
-            etiquetaX: ruta.labelX,
-            etiquetaY: ruta.labelY
-          })
-        }
-      }
-    } else if (f.tipo !== 'fin' && f.siguiente) {
-      const dest = diagrama.value.figuras.find((d) => d.id === f.siguiente)
-      if (dest) {
-        const ruta = calcularRuta(f, 'siguiente', dest)
-        flechas.push({
-          origenId: f.id,
-          destinoId: dest.id,
-          salida: 'siguiente',
-          ruta: ruta.path,
-          etiquetaX: ruta.labelX,
-          etiquetaY: ruta.labelY
-        })
-      }
-    }
-  }
-
-  return flechas
-})
-
-function calcularRuta(
-  orig: Figura,
-  salida: 'siguiente' | 'si' | 'no',
-  dest: Figura
-): { path: string; labelX: number; labelY: number } {
-  const geoOrig = geometriaFigura(orig)
-  const geoDest = geometriaFigura(dest)
-
-  let x1: number
-  let y1: number
-
-  if (salida === 'no') {
-    x1 = orig.x + geoOrig.w
-    y1 = orig.y + geoOrig.h / 2
-  } else {
-    // siguiente o si
-    x1 = orig.x + geoOrig.w / 2
-    y1 = orig.y + geoOrig.h
-  }
-
-  // Punto de llegada a la figura destino
-  let x2: number
-  let y2: number
-
-  // Si destino está abajo
-  if (dest.y >= y1) {
-    x2 = dest.x + geoDest.w / 2
-    y2 = dest.y
-  } else if (salida === 'no' && dest.x > orig.x) {
-    // Si sale por la derecha y destino está arriba a la derecha
-    x2 = dest.x
-    y2 = dest.y + geoDest.h / 2
-  } else {
-    // Bucle hacia arriba
-    x2 = dest.x + geoDest.w / 2
-    y2 = dest.y
-  }
-
-  let path = ''
-  let labelX = (x1 + x2) / 2
-  let labelY = (y1 + y2) / 2
-
-  if (Math.abs(x1 - x2) < 4 && y2 >= y1) {
-    // Línea vertical recta
-    path = `M ${x1} ${y1} L ${x2} ${y2}`
-    labelX = x1 + 14
-    labelY = (y1 + y2) / 2
-  } else if (y2 >= y1 + 20) {
-    // Curva suave descendente
-    const deltaY = (y2 - y1) * 0.5
-    path = `M ${x1} ${y1} C ${x1} ${y1 + deltaY}, ${x2} ${y2 - deltaY}, ${x2} ${y2}`
-    labelX = (x1 + x2) / 2
-    labelY = (y1 + y2) / 2
-  } else {
-    // Retorno hacia arriba o hacia el lateral
-    const margenLateral = Math.max(x1, x2) + 60
-    path = `M ${x1} ${y1} C ${margenLateral} ${y1}, ${margenLateral} ${y2 - 30}, ${x2} ${y2}`
-    labelX = margenLateral - 10
-    labelY = (y1 + y2) / 2
-  }
-
-  return { path, labelX, labelY }
-}
-
-function esFlechaSeleccionada(fl: InfoFlecha): boolean {
+function esFlechaSeleccionada(fl: Flecha): boolean {
   if (!flechaSeleccionada.value) return false
   return flechaSeleccionada.value.origenId === fl.origenId && flechaSeleccionada.value.salida === fl.salida
 }
 
-function seleccionarFlecha(origenId: string, salida: 'siguiente' | 'si' | 'no') {
+function seleccionarFlecha(origenId: string, salida: Salida) {
   if (props.soloLectura) return
   figuraSeleccionadaId.value = null
   flechaSeleccionada.value = { origenId, salida }
@@ -1068,7 +589,13 @@ function quitarFlechaSeleccionada() {
   }
 }
 
-function quitarSalida(salida: 'siguiente' | 'si' | 'no') {
+function cambiarTexto(texto: string) {
+  if (!figuraSeleccionada.value) return
+  figuraSeleccionada.value.texto = texto
+  emitirCambios()
+}
+
+function quitarSalida(salida: Salida) {
   if (!figuraSeleccionada.value) return
   figuraSeleccionada.value[salida] = null
   emitirCambios()
@@ -1152,9 +679,7 @@ function deseleccionarTodo() {
 
 function iniciarEdicionTeclado(fig: Figura) {
   seleccionarFigura(fig)
-  nextTick(() => {
-    campoTextoRef.value?.focus()
-  })
+  nextTick(() => panelRef.value?.enfocarTexto())
 }
 
 function moverFiguraTeclado(fig: Figura, deltaX: number, deltaY: number) {
@@ -1165,7 +690,7 @@ function moverFiguraTeclado(fig: Figura, deltaX: number, deltaY: number) {
 }
 
 // ─── Conexiones por arrastre desde puertos ───────────────────────────────────
-function onPuertoPointerDown(fig: Figura, salida: 'siguiente' | 'si' | 'no', e: PointerEvent) {
+function onPuertoPointerDown(fig: Figura, salida: Salida, e: PointerEvent) {
   if (props.soloLectura) return
   const el = e.currentTarget as Element | null
   if (el && typeof el.setPointerCapture === 'function') {
@@ -1174,13 +699,7 @@ function onPuertoPointerDown(fig: Figura, salida: 'siguiente' | 'si' | 'no', e: 
     } catch {}
   }
 
-  const geo = geometriaFigura(fig)
-  let origX = fig.x + geo.w / 2
-  let origY = fig.y + geo.h
-  if (salida === 'no') {
-    origX = fig.x + geo.w
-    origY = fig.y + geo.h / 2
-  }
+  const { x: origX, y: origY } = puntoDeSalida(fig, salida)
 
   arrastrandoConexion.value = {
     origenId: fig.id,
@@ -1219,7 +738,7 @@ function onSvgPointerUp(e: PointerEvent) {
 }
 
 // ─── Modo Unión por botones (para celular y teclado) ─────────────────────────
-function activarModoUnion(salida: 'siguiente' | 'si' | 'no') {
+function activarModoUnion(salida: Salida) {
   if (!figuraSeleccionada.value) return
   modoUnion.value = { origenId: figuraSeleccionada.value.id, salida }
 }
@@ -1241,82 +760,32 @@ function completarModoUnion(destino: Figura) {
 }
 
 // ─── Agregar y borrar figuras ───────────────────────────────────────────────
-function generarNuevoId(tipo: TipoFigura, figuras: Figura[]): string {
-  if (tipo === 'inicio' && !figuras.some((f) => f.id === 'inicio')) return 'inicio'
-  if (tipo === 'fin' && !figuras.some((f) => f.id === 'fin')) return 'fin'
-
-  let n = 1
-  while (figuras.some((f) => f.id === `f${n}`)) {
-    n++
-  }
-  return `f${n}`
-}
-
-function encontrarLugarLibre(): { x: number; y: number } {
-  if (diagrama.value.figuras.length === 0) return { x: 160, y: 30 }
-  const maxY = Math.max(...diagrama.value.figuras.map((f) => f.y))
-  const ultima = diagrama.value.figuras[diagrama.value.figuras.length - 1]
-  return {
-    x: ultima ? ultima.x : 160,
-    y: maxY + 100
-  }
-}
-
 function agregarFigura(tipo: TipoFigura) {
   if (props.soloLectura) return
   if (diagrama.value.figuras.length >= limiteFiguras) return
-
-  const id = generarNuevoId(tipo, diagrama.value.figuras)
-  const pos = encontrarLugarLibre()
-
-  let textoPredeterminado = ''
-  if (tipo === 'inicio') textoPredeterminado = 'Inicio'
-  else if (tipo === 'fin') textoPredeterminado = 'Fin'
-  else if (tipo === 'entrada') textoPredeterminado = 'variable'
-  else if (tipo === 'proceso') textoPredeterminado = 'x <- 1'
-  else if (tipo === 'decision') textoPredeterminado = 'x >= 0'
-  else if (tipo === 'salida') textoPredeterminado = '"Listo"'
-
   const nueva: Figura = {
-    id,
+    id: nuevoId(tipo, diagrama.value.figuras),
     tipo,
-    texto: textoPredeterminado,
-    x: pos.x,
-    y: pos.y,
+    texto: TEXTO_INICIAL[tipo],
+    ...lugarLibre(diagrama.value.figuras),
     siguiente: null,
     si: null,
     no: null
   }
-
   diagrama.value.figuras.push(nueva)
   seleccionarFigura(nueva)
   emitirCambios()
-
-  nextTick(() => {
-    if (tipo !== 'inicio' && tipo !== 'fin') {
-      campoTextoRef.value?.focus()
-    }
-  })
+  // Inicio y Fin no tienen texto que escribir.
+  if (tipo !== 'inicio' && tipo !== 'fin') nextTick(() => panelRef.value?.enfocarTexto())
 }
 
 function borrarFigura(fig: Figura) {
   if (props.soloLectura) return
   const idx = diagrama.value.figuras.findIndex((f) => f.id === fig.id)
   if (idx === -1) return
-
   diagrama.value.figuras.splice(idx, 1)
-
-  // Limpiar flechas que apuntaban a esta figura
-  for (const f of diagrama.value.figuras) {
-    if (f.siguiente === fig.id) f.siguiente = null
-    if (f.si === fig.id) f.si = null
-    if (f.no === fig.id) f.no = null
-  }
-
-  if (figuraSeleccionadaId.value === fig.id) {
-    figuraSeleccionadaId.value = null
-  }
-
+  quitarReferencias(diagrama.value.figuras, fig.id)
+  if (figuraSeleccionadaId.value === fig.id) figuraSeleccionadaId.value = null
   emitirCambios()
 }
 </script>
