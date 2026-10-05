@@ -9,8 +9,8 @@
       <div v-for="enrollment in pending" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
         <span class="text-xs min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="enrollment.student?.fullName" :foto-id="enrollment.student?.fotoId" decorativo /><span class="truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span></span>
         <div class="flex gap-2 shrink-0">
-          <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-exito hover:bg-semantico-exito/10" @click="change(enrollment.id, 'approve')">Aprobar</button>
-          <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10" @click="change(enrollment.id, 'reject')">Rechazar</button>
+          <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-pasa hover:bg-semantico-pasa/10" @click="change(enrollment.id, 'approve')">Aprobar</button>
+          <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-falla hover:bg-semantico-falla/10" @click="change(enrollment.id, 'reject')">Rechazar</button>
         </div>
       </div>
     </section>
@@ -20,7 +20,7 @@
       <p v-if="active.length === 0" class="text-xs text-base-texto-secundario">Todavía no hay estudiantes. Comparte el código de la clase.</p>
       <div v-for="enrollment in active" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
         <span class="text-xs min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="enrollment.student?.fullName" :foto-id="enrollment.student?.fotoId" decorativo /><span class="truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span></span>
-        <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-error hover:bg-semantico-error/10 shrink-0" @click="change(enrollment.id, 'remove')">Remover</button>
+        <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-falla hover:bg-semantico-falla/10 shrink-0" @click="change(enrollment.id, 'remove')" :aria-label="`Quitar de la clase a ${enrollment.student?.fullName || 'este estudiante'}`">Quitar de la clase</button>
       </div>
     </section>
 
@@ -40,7 +40,7 @@
           :aria-pressed="!!classInfo?.requiresApproval"
           class="min-h-[44px] px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
           :class="classInfo?.requiresApproval
-            ? 'bg-semantico-exito/15 text-semantico-exito'
+            ? 'bg-semantico-pasa/15 text-semantico-pasa'
             : 'bg-base-borde-sutil text-slate-700'"
         >
           <Check v-if="classInfo?.requiresApproval" :size="12" aria-hidden="true" />
@@ -83,7 +83,7 @@
         </div>
         <button type="button" :disabled="guardandoLogros" :aria-pressed="logrosActivos"
           class="min-h-[44px] px-3 rounded-md text-xs font-bold flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
-          :class="logrosActivos ? 'bg-semantico-exito/15 text-semantico-exito' : 'bg-base-borde-sutil text-slate-700'"
+          :class="logrosActivos ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-borde-sutil text-slate-700'"
           @click="guardarLogros({ logrosActivos: !logrosActivos })">
           <Check v-if="logrosActivos" :size="12" aria-hidden="true" />
           {{ logrosActivos ? 'Activados' : 'Desactivados' }}
@@ -101,7 +101,7 @@
           <p class="text-[11px] text-base-texto-secundario">Debe quedar al menos una. Para no usar logros, desactívalos arriba.</p>
         </div>
       </details>
-      <p v-if="avisoLogros" role="status" class="text-xs" :class="avisoLogros.error ? 'text-semantico-error' : 'text-semantico-exito'">{{ avisoLogros.texto }}</p>
+      <p v-if="avisoLogros" role="status" class="text-xs" :class="avisoLogros.error ? 'text-semantico-falla' : 'text-semantico-pasa'">{{ avisoLogros.texto }}</p>
     </section>
 
     <!-- Compartir el contenido (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.3): con quién, y su enfoque en una línea -->
@@ -135,7 +135,7 @@
           @click="guardarCompartir">
           {{ isSavingPlantilla ? 'Guardando…' : 'Guardar' }}
         </button>
-        <p v-if="avisoCompartir" role="status" class="text-xs" :class="avisoCompartir.error ? 'text-semantico-error' : 'text-semantico-exito'">{{ avisoCompartir.texto }}</p>
+        <p v-if="avisoCompartir" role="status" class="text-xs" :class="avisoCompartir.error ? 'text-semantico-falla' : 'text-semantico-pasa'">{{ avisoCompartir.texto }}</p>
       </div>
     </section>
 
@@ -165,7 +165,7 @@
 
       <div>
         <label for="class-name" class="block text-xs font-semibold text-base-texto-primario mb-1">
-          Nombre <span class="text-semantico-error">*</span>
+          Nombre <span class="text-semantico-falla">*</span>
         </label>
         <input
           id="class-name"
@@ -225,9 +225,9 @@
           {{ isSavingData ? 'Guardando...' : 'Guardar cambios' }}
         </button>
         <transition name="fade">
-          <span v-if="saveSuccess" role="status" class="text-xs text-semantico-exito font-semibold">Cambios guardados.</span>
+          <span v-if="saveSuccess" role="status" class="text-xs text-semantico-pasa font-semibold">Cambios guardados.</span>
         </transition>
-        <span v-if="saveError" role="alert" class="text-xs text-semantico-error font-semibold">{{ saveError }}</span>
+        <span v-if="saveError" role="alert" class="text-xs text-semantico-falla font-semibold">{{ saveError }}</span>
       </div>
     </section>
   </div>

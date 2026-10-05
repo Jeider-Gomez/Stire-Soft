@@ -15,7 +15,7 @@
 
     <p v-if="cargando" role="status" class="text-xs text-base-texto-secundario">Cargando…</p>
     <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
-    <p v-if="aviso" role="status" class="text-xs text-semantico-exito">{{ aviso }}</p>
+    <p v-if="aviso" role="status" class="text-xs text-semantico-pasa">{{ aviso }}</p>
 
     <section aria-labelledby="duplicados-titulo" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 space-y-3">
       <h2 id="duplicados-titulo" class="text-sm font-bold text-base-texto-primario">Posibles duplicados ({{ datos.duplicados.length }})</h2>

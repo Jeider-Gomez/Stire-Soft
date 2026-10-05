@@ -37,12 +37,12 @@
         <NuxtLink
           :to="enlaceNuevoRefuerzo(claseDeLaFicha, 'reto', [Number(route.params.studentId)])"
           class="px-3.5 py-2 rounded-md borde-afordancia text-xs font-semibold flex items-center gap-1.5">
-          <Rocket :size="14" aria-hidden="true" /> Reto
+          <Rocket :size="14" aria-hidden="true" /> Asignar reto
         </NuxtLink>
         <NuxtLink
           to="/docente/mensajes"
           class="px-3.5 py-2 rounded-md borde-afordancia text-xs font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 transition-colors flex items-center gap-1.5">
-          <Mail :size="14" aria-hidden="true" /> Mensaje
+          <Mail :size="14" aria-hidden="true" /> Escribirle
         </NuxtLink>
       </div>
     </header>

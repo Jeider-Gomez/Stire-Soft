@@ -42,16 +42,16 @@
             type="button"
             @click="moveBlock(idx, -1)"
             class="p-1 text-base-texto-secundario hover:text-base-texto-primario disabled:opacity-30 rounded"
-            title="Subir paso">
-            ▲
+            title="Subir paso" aria-label="Subir paso">
+            <ChevronUp :size="14" aria-hidden="true" />
           </button>
           <button
             :disabled="idx === blocks.length - 1"
             type="button"
             @click="moveBlock(idx, 1)"
             class="p-1 text-base-texto-secundario hover:text-base-texto-primario disabled:opacity-30 rounded"
-            title="Bajar paso">
-            ▼
+            title="Bajar paso" aria-label="Bajar paso">
+            <ChevronDown :size="14" aria-hidden="true" />
           </button>
         </div>
 
@@ -62,7 +62,7 @@
           class="p-1 text-semantico-falla hover:bg-semantico-falla/10 rounded transition-colors"
           title="Eliminar bloque"
           :aria-label="`Eliminar bloque ${idx + 1}`">
-          ✕
+          <X :size="14" aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -70,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+import { ChevronDown, ChevronUp, X } from 'lucide-vue-next'
 interface BlockItem {
   id: string
   content: string

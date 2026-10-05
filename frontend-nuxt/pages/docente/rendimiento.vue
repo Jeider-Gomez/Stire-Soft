@@ -216,7 +216,7 @@
                   <NuxtLink
                     :to="`/docente/estudiante/${st.studentId}?clase=${selectedClassId}`"
                     class="borde-afordancia px-2.5 py-1 rounded text-[11px] font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 inline-flex items-center gap-1">
-                    <span>Ver detalle</span>
+                    <span>Ver ficha</span><span class="sr-only"> de {{ st.fullName }}</span>
                     <span>→</span>
                   </NuxtLink>
                 </td>

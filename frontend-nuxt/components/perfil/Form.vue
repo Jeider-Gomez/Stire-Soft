@@ -84,9 +84,9 @@
           {{ isSavingName ? 'Guardando...' : 'Guardar nombre' }}
         </button>
         <transition name="fade">
-          <span v-if="nameSuccess" class="text-xs text-semantico-exito font-semibold">Nombre actualizado.</span>
+          <span v-if="nameSuccess" class="text-xs text-semantico-pasa font-semibold">Nombre actualizado.</span>
         </transition>
-        <span v-if="nameError" class="text-xs text-semantico-error">{{ nameError }}</span>
+        <span v-if="nameError" class="text-xs text-semantico-falla">{{ nameError }}</span>
       </div>
     </section>
 
@@ -181,9 +181,9 @@
           {{ isSavingPwd ? 'Guardando...' : 'Cambiar contraseña' }}
         </button>
         <transition name="fade">
-          <span v-if="pwdSuccess" class="text-xs text-semantico-exito font-semibold">Contraseña actualizada exitosamente.</span>
+          <span v-if="pwdSuccess" class="text-xs text-semantico-pasa font-semibold">Contraseña actualizada exitosamente.</span>
         </transition>
-        <span v-if="pwdError" class="text-xs text-semantico-error">{{ pwdError }}</span>
+        <span v-if="pwdError" class="text-xs text-semantico-falla">{{ pwdError }}</span>
       </div>
     </section>
 

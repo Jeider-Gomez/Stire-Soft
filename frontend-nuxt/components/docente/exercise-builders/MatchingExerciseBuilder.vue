@@ -55,7 +55,7 @@
           class="p-1 text-semantico-falla hover:bg-semantico-falla/10 rounded transition-colors"
           title="Eliminar pareja"
           :aria-label="`Eliminar pareja ${idx + 1}`">
-          ✕
+          <X :size="14" aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -63,6 +63,7 @@
 </template>
 
 <script setup lang="ts">
+import { X } from 'lucide-vue-next'
 interface PairRow {
   id: string
   left: string

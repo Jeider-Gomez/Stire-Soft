@@ -57,7 +57,7 @@
 
     <!-- Feedback de error de acción -->
     <div v-if="actionError" role="alert" aria-live="assertive" class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-lg text-xs flex items-center justify-between">
-      <span>✖ {{ actionError }}</span>
+      <span class="inline-flex items-center gap-1"><CircleX :size="14" aria-hidden="true" /> {{ actionError }}</span>
       <button @click="actionError = null" class="text-[11px] underline focus:outline-none focus:ring-2 focus:ring-semantico-falla rounded">Cerrar</button>
     </div>
 
@@ -287,7 +287,7 @@
               @click="closeEditTopicModal"
               class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded"
               aria-label="Cerrar modal de edición de tema">
-              ✕
+              <X :size="14" aria-hidden="true" />
             </button>
           </div>
 
@@ -396,7 +396,7 @@
               @click="closeEditUnitModal"
               class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded"
               aria-label="Cerrar la edición de la lección">
-              ✕
+              <X :size="14" aria-hidden="true" />
             </button>
           </div>
 
@@ -498,7 +498,7 @@
               @click="closeImportModal"
               class="text-base-texto-secundario hover:text-base-texto-primario text-xs p-1"
               aria-label="Cerrar modal">
-              ✕
+              <X :size="14" aria-hidden="true" />
             </button>
           </div>
 
@@ -618,7 +618,7 @@
 
 <script setup lang="ts">
 import { agruparPorAsignatura, cuantosEnfoques, textoPlantilla, type Plantilla } from '~/utils/plantillas'
-import { BookOpen, ChevronRight, CopyPlus, FileText, Folder, Loader2, Pencil, TriangleAlert } from 'lucide-vue-next'
+import { BookOpen, ChevronRight, CircleX, CopyPlus, FileText, Folder, Loader2, Pencil, TriangleAlert, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'

@@ -146,21 +146,21 @@
               type="button"
               @click="moveRule(idx, -1)"
               class="p-1 text-base-texto-secundario hover:text-base-texto-primario disabled:opacity-30 rounded"
-              title="Subir regla"
-            >▲</button>
+              title="Subir regla" aria-label="Subir regla"
+            ><ChevronUp :size="14" aria-hidden="true" /></button>
             <button
               :disabled="idx === rules.length - 1"
               type="button"
               @click="moveRule(idx, 1)"
               class="p-1 text-base-texto-secundario hover:text-base-texto-primario disabled:opacity-30 rounded"
-              title="Bajar regla"
-            >▼</button>
+              title="Bajar regla" aria-label="Bajar regla"
+            ><ChevronDown :size="14" aria-hidden="true" /></button>
             <button
               type="button"
               @click="removeRule(idx)"
               class="p-1 text-semantico-falla hover:bg-semantico-falla/10 rounded transition-colors"
               :aria-label="`Eliminar regla ${idx + 1}`"
-            >✕</button>
+            ><X :size="14" aria-hidden="true" /></button>
           </div>
         </div>
 
@@ -372,6 +372,7 @@
 </template>
 
 <script setup lang="ts">
+import { ChevronDown, ChevronUp, X } from 'lucide-vue-next'
 type RuleKind = 'element_exists' | 'element_count' | 'text' | 'attribute' | 'css_property' | 'a11y'
 
 interface RuleItem {

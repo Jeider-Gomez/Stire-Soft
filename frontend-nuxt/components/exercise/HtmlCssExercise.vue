@@ -170,7 +170,7 @@
             class="borde-afordancia px-3 py-1.5 rounded text-xs font-bold text-base-texto-primario bg-base-blanco hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
             :title="isHtmlEmpty ? 'El HTML no puede estar vacío' : 'Evalúa contra las reglas públicas sin consumir intentos'">
             <Loader2 :size="14" v-if="workspaceStore.isRunning" class="animate-spin" aria-hidden="true" />
-            <span v-else>▶</span>
+            <span v-else class="inline-flex"><Play :size="14" aria-hidden="true" /></span>
             <span>Probar</span>
           </button>
 
@@ -190,7 +190,7 @@
 </template>
 
 <script setup lang="ts">
-import { ClipboardList, Globe, Loader2, Lock, TriangleAlert } from 'lucide-vue-next'
+import { ClipboardList, Globe, Loader2, Lock, Play, TriangleAlert } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import type { WorkspaceQuestion } from '~/stores/workspace'
 

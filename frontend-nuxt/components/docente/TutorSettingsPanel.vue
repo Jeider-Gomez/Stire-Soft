@@ -84,7 +84,7 @@
 
       <!-- Confirmación de guardado -->
       <div v-if="savedOk" role="status" class="text-[11px] text-semantico-pasa bg-semantico-pasa/10 border border-semantico-pasa/30 rounded p-2">
-        ✓ Configuración guardada
+        <CircleCheck :size="14" aria-hidden="true" /> Configuración guardada
       </div>
 
       <!-- Botón guardar -->
@@ -101,6 +101,7 @@
 </template>
 
 <script setup lang="ts">
+import { CircleCheck } from 'lucide-vue-next'
 import type { TutorSettings, TutorStyle } from '~/types'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'

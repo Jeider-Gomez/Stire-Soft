@@ -55,7 +55,7 @@
           class="p-1 text-semantico-falla hover:bg-semantico-falla/10 rounded transition-colors"
           title="Eliminar opción"
           :aria-label="`Eliminar opción ${idx + 1}`">
-          ✕
+          <X :size="14" aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -76,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import { X } from 'lucide-vue-next'
 interface OptionItem {
   id: string
   text: string

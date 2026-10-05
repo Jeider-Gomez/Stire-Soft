@@ -62,7 +62,7 @@
               <label for="nuevo-archivo" class="font-semibold">Nombre</label>
               <input id="nuevo-archivo" ref="nuevoArchivoRef" v-model="nombreNuevo" :placeholder="({ web: 'otra.css', javascript: 'util.js', pseudocodigo: 'notas.txt', diagrama: 'notas.txt' })[proyecto.tipo]"
                 class="flex-1 px-2 py-1 rounded border border-base-borde-fuerte font-mono" />
-              <button type="submit" class="px-2 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold">Agregar</button>
+              <button type="submit" class="px-2 py-1 rounded bg-acento-ambar-fuerte text-base-blanco font-bold">Agregar archivo</button>
               <button type="button" @click="agregando = false" class="px-2 py-1 rounded borde-afordancia">Cancelar</button>
             </form>
             <div class="flex-1 min-h-0">

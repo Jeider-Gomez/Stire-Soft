@@ -69,7 +69,7 @@
 
       <!-- Alerta de éxito o error -->
       <div v-if="feedbackMessage" class="mt-4 p-3 rounded-md text-xs flex items-center gap-2" :class="feedbackIsError ? 'bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla' : 'bg-semantico-pasa/10 border border-semantico-pasa/30 text-semantico-pasa'">
-        <span>{{ feedbackIsError ? '!' : '✓' }}</span>
+        <component :is="feedbackIsError ? CircleAlert : CircleCheck" :size="14" aria-hidden="true" />
         <span>{{ feedbackMessage }}</span>
       </div>
     </section>
@@ -154,7 +154,7 @@
 <script setup lang="ts">
 import { useApi } from '~/composables/useApi'
 import { useStudentStore } from '~/stores/student'
-import { ArrowLeft, BookOpen, GraduationCap, KeyRound, Loader2, RefreshCw, UserRound } from 'lucide-vue-next'
+import { ArrowLeft, BookOpen, CircleAlert, CircleCheck, GraduationCap, KeyRound, Loader2, RefreshCw, UserRound } from 'lucide-vue-next'
 import { normalizarCodigo, codigoMientrasEscribe } from '~/utils/codigoClase'
 const { messageOf } = useApiErrorMessage()
 

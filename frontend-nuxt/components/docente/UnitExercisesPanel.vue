@@ -265,7 +265,7 @@
               @click="closeBankModal"
               class="text-base-texto-secundario hover:text-base-texto-primario p-1"
               aria-label="Cerrar modal">
-              ✕
+              <X :size="14" aria-hidden="true" />
             </button>
           </div>
 
@@ -391,7 +391,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
-import { Plus, Pencil, Archive, Copy, Library, Search, Loader2, Eye } from 'lucide-vue-next'
+import { Archive, Copy, Eye, Library, Loader2, Pencil, Plus, Search, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import { EXERCISE_TYPES, exerciseTypeInfo, type ExerciseTypeId } from '~/utils/exerciseTypes'

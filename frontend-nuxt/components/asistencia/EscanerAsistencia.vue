@@ -5,7 +5,7 @@
         <div class="flex items-center justify-between gap-2">
           <h2 id="escaner-asistencia-titulo" class="text-sm font-bold text-base-texto-primario">Escanear la asistencia</h2>
           <button ref="cerrarRef" type="button" class="px-3 py-2 rounded-md borde-afordancia font-semibold inline-flex items-center gap-1" @click="emit('cerrar')">
-            <X :size="14" aria-hidden="true" /> Terminar
+            <X :size="14" aria-hidden="true" /> Terminar de escanear
           </button>
         </div>
 

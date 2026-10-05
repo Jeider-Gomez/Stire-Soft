@@ -37,7 +37,7 @@
           </fieldset>
           <button type="submit" :disabled="creando || proyectos.length >= estado.limites.proyectosPorUsuario"
             class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold disabled:opacity-50 inline-flex items-center gap-1.5">
-            <Plus :size="14" aria-hidden="true" /> Crear
+            <Plus :size="14" aria-hidden="true" /> Crear proyecto
           </button>
         </div>
         <p v-if="errorCrear" role="alert" class="text-semantico-falla text-[11px]">{{ errorCrear }}</p>
@@ -66,7 +66,7 @@
               </span>
             </NuxtLink>
             <div class="flex items-center gap-2 shrink-0">
-              <NuxtLink :to="`/estudiante/proyectos/${p.id}`" class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-semibold">Abrir</NuxtLink>
+              <NuxtLink :to="`/estudiante/proyectos/${p.id}`" class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-semibold" :aria-label="`Abrir ${p.titulo}`">Abrir proyecto</NuxtLink>
               <button v-if="porBorrar !== p.id" type="button" @click="porBorrar = p.id"
                 class="p-1.5 rounded text-base-texto-secundario hover:text-semantico-falla hover:bg-semantico-falla/10"
                 :aria-label="`Borrar ${p.titulo}`" title="Borrar">
@@ -74,7 +74,7 @@
               </button>
               <span v-else class="flex items-center gap-1.5" role="group" :aria-label="`Confirmar borrar ${p.titulo}`">
                 <span class="text-semantico-falla font-semibold">¿Borrar? No se puede deshacer.</span>
-                <button type="button" @click="borrar(p.id)" class="px-2 py-1 rounded bg-semantico-falla text-base-blanco font-bold">Borrar</button>
+                <button type="button" @click="borrar(p.id)" class="px-2 py-1 rounded bg-semantico-falla text-base-blanco font-bold">Sí, borrar</button>
                 <button type="button" @click="porBorrar = null" class="px-2 py-1 rounded borde-afordancia">No</button>
               </span>
             </div>

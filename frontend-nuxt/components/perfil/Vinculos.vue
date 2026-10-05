@@ -23,7 +23,7 @@
             {{ [institucionCorta(v.institution), v.program.facultad, v.currentSemester ? periodoDelPlan(v.currentSemester, v.program.tipo) : ''].filter(Boolean).join(' · ') }}
           </span>
         </span>
-        <button type="button" class="shrink-0 min-h-[44px] px-3 text-xs font-semibold text-semantico-error hover:underline" :aria-label="`Quitar ${v.program.name}`" @click="quitar(v)">Quitar</button>
+        <button type="button" class="shrink-0 min-h-[44px] px-3 text-xs font-semibold text-semantico-falla hover:underline" :aria-label="`Quitar ${v.program.name}`" @click="quitar(v)">Quitar</button>
       </li>
     </ul>
     <p v-else class="text-xs text-base-texto-secundario">Todavía no has agregado ninguno.</p>
@@ -55,7 +55,7 @@
       <button type="button" :disabled="!programaId || guardando" class="min-h-[44px] px-4 rounded-md text-xs font-bold bg-acento-ambar-fuerte text-base-blanco disabled:opacity-50" @click="agregar">
         {{ guardando ? 'Guardando…' : 'Agregar' }}
       </button>
-      <p v-if="aviso" role="status" class="text-xs" :class="aviso.error ? 'text-semantico-error' : 'text-semantico-exito'">{{ aviso.texto }}</p>
+      <p v-if="aviso" role="status" class="text-xs" :class="aviso.error ? 'text-semantico-falla' : 'text-semantico-pasa'">{{ aviso.texto }}</p>
     </div>
   </section>
 </template>

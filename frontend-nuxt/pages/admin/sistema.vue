@@ -48,7 +48,7 @@
       v-if="cleanupError"
       role="alert"
       class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-xl text-xs flex items-center justify-between">
-      <span>✖ {{ cleanupError }}</span>
+      <span class="inline-flex items-center gap-1"><CircleX :size="14" aria-hidden="true" /> {{ cleanupError }}</span>
       <button
         @click="cleanupError = null"
         aria-label="Cerrar alerta de error"
@@ -220,7 +220,7 @@
 </template>
 
 <script setup lang="ts">
-import { Eraser, Loader2, TriangleAlert } from 'lucide-vue-next'
+import { CircleX, Eraser, Loader2, TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import type { SystemStatus, SystemLogs } from '~/types'

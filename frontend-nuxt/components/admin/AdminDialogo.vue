@@ -5,7 +5,7 @@
        - El fondo la cierra solo si el clic EMPEZÓ en el fondo: al seleccionar texto arrastrando y soltar fuera, el
          navegador lo contaba como clic en el fondo y la cerraba (reporte de Jorge, 02/10). -->
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base-negro/50 backdrop-blur-sm"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
     @mousedown="inicioClic = $event.target" @click.self="inicioClic === $event.currentTarget && cierraConFondo && cerrar()">
     <div
       ref="dialogo"

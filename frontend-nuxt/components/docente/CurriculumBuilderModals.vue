@@ -20,7 +20,7 @@
               @click="closeModuleModal"
               class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded"
               aria-label="Cerrar modal">
-              ✕
+              <X :size="14" aria-hidden="true" />
             </button>
           </div>
 
@@ -99,7 +99,7 @@
               @click="closeTopicModal"
               class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded"
               aria-label="Cerrar modal">
-              ✕
+              <X :size="14" aria-hidden="true" />
             </button>
           </div>
 
@@ -174,7 +174,7 @@
               @click="closeUnitModal"
               class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded"
               aria-label="Cerrar modal">
-              ✕
+              <X :size="14" aria-hidden="true" />
             </button>
           </div>
 
@@ -246,7 +246,7 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2 } from 'lucide-vue-next'
+import { Loader2, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 
 const emit = defineEmits<{

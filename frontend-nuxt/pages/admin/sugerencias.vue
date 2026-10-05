@@ -56,7 +56,7 @@
           </select>
           <label class="sr-only" :for="`nota-${r.id}`">Nota para quien lo envió</label>
           <input :id="`nota-${r.id}`" v-model="r.notaEditada" maxlength="1000" placeholder="Nota para quien lo envió (opcional)" class="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-base-borde-fuerte bg-base-blanco" />
-          <button type="button" class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold" @click="guardar(r)">Guardar</button>
+          <button type="button" class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold" @click="guardar(r)">Guardar estado y nota</button>
           <span v-if="guardado === r.id" role="status" class="text-semantico-pasa font-semibold">Guardado</span>
         </div>
       </li>

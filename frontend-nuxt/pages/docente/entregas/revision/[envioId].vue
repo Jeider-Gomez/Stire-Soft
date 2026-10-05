@@ -106,7 +106,7 @@
               <Loader2 v-if="guardando" :size="14" class="animate-spin" aria-hidden="true" /><Save v-else :size="14" aria-hidden="true" />
               Guardar revisión
             </button>
-            <span role="status" class="text-[11px]" :class="mensaje ? 'text-semantico-exito font-semibold' : 'text-base-texto-secundario'">
+            <span role="status" class="text-[11px]" :class="mensaje ? 'text-semantico-pasa font-semibold' : 'text-base-texto-secundario'">
               {{ mensaje || (envio.revisadoAt ? `Revisada ${fechaCorta(envio.revisadoAt)}` : 'Sin revisar') }}
             </span>
             <span v-if="error" role="alert" class="text-semantico-falla">{{ error }}</span>

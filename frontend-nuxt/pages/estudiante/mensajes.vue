@@ -151,7 +151,7 @@
             @click="isComposeOpen = false"
             aria-label="Cerrar modal de redacción"
             class="text-base-texto-secundario hover:text-base-texto-primario text-sm font-bold focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded">
-            ✕
+            <X :size="14" aria-hidden="true" />
           </button>
         </div>
 
@@ -223,7 +223,7 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2, Mail, MailOpen, TriangleAlert } from 'lucide-vue-next'
+import { Loader2, Mail, MailOpen, TriangleAlert, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 const { messageOf } = useApiErrorMessage()
 

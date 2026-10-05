@@ -186,7 +186,7 @@
 
         <div class="flex justify-between gap-3">
           <button type="button" @click="step = 1" class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario">
-            Atrás
+            Volver al paso anterior
           </button>
           <button type="submit" class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold hover:bg-acento-ambar inline-flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
             Ver cómo lo verá el estudiante <ChevronRight :size="14" aria-hidden="true" />

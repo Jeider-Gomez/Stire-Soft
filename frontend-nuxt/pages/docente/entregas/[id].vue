@@ -31,7 +31,7 @@
               {{ entrega.publicada ? 'Despublicar' : 'Publicar' }}
             </button>
             <button type="button" @click="editando = !editando" class="px-3 py-1.5 rounded-md borde-afordancia font-semibold inline-flex items-center gap-1">
-              <Pencil :size="13" aria-hidden="true" /> Editar
+              <Pencil :size="13" aria-hidden="true" /> Editar entrega
             </button>
           </div>
         </div>
@@ -43,7 +43,7 @@
 
       <DocenteEntregaForm v-if="editando" :class-id="entrega.classId" :inicial="entrega" @guardada="alGuardar" @cancelar="editando = false" />
       <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
-      <p v-if="aviso" role="status" class="text-xs text-semantico-exito font-semibold">{{ aviso }}</p>
+      <p v-if="aviso" role="status" class="text-xs text-semantico-pasa font-semibold">{{ aviso }}</p>
 
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm text-xs" aria-labelledby="estudiantes-titulo">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 py-3 border-b border-base-borde-sutil">

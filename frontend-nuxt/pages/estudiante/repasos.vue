@@ -23,15 +23,15 @@
       <span class="font-bold text-base-texto-primario text-[11px]">Niveles de urgencia:</span>
       <div class="flex items-center gap-4 text-[11px]">
         <span class="flex items-center gap-1.5 font-medium text-semantico-falla">
-          <span>■</span>
+          <span aria-hidden="true">■</span>
           <span>Crítico (repasar hoy)</span>
         </span>
         <span class="flex items-center gap-1.5 font-medium text-acento-ambar-fuerte">
-          <span>▲</span>
+          <span aria-hidden="true">▲</span>
           <span>Pendiente / Mañana</span>
         </span>
         <span class="flex items-center gap-1.5 font-medium text-semantico-pasa">
-          <span>⬤</span>
+          <span aria-hidden="true">⬤</span>
           <span>Al día (retención alta)</span>
         </span>
       </div>

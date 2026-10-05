@@ -19,7 +19,7 @@
         <input type="radio" :name="nombre" :checked="modelValue === p.classId" class="sr-only" @change="emit('update:modelValue', p.classId)" />
         <span class="flex items-start justify-between gap-2">
           <span class="text-xs font-semibold text-base-texto-primario">{{ p.enfoque || p.nombre }}</span>
-          <span v-if="p.cercania === 0" class="shrink-0 text-[10px] font-bold text-semantico-exito">Misma asignatura</span>
+          <span v-if="p.cercania === 0" class="shrink-0 text-[10px] font-bold text-semantico-pasa">Misma asignatura</span>
         </span>
         <span class="text-[11px] text-slate-600">{{ p.docente }}<template v-if="p.asignatura && p.cercania !== 0"> · {{ p.asignatura.nombre }}</template></span>
         <span class="text-[11px] text-slate-600">{{ senalesDePlantilla(p).join(' · ') }}</span>

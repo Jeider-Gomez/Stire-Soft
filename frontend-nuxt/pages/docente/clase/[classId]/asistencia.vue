@@ -52,7 +52,7 @@
             {{ detalle.sesion.abierta ? 'Cerrar asistencia' : 'Reabrir' }}
           </button>
           <button type="button" class="px-3 py-2 rounded-md text-semantico-falla font-semibold text-xs inline-flex items-center gap-1.5 hover:bg-semantico-falla/10" @click="borrarSesion">
-            <Trash2 :size="14" aria-hidden="true" /> Borrar
+            <Trash2 :size="14" aria-hidden="true" /> Borrar sesión
           </button>
         </div>
       </div>
