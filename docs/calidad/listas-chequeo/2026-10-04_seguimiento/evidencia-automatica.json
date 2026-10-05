@@ -1,0 +1,506 @@
+{
+ "fecha": "2026-10-04",
+ "version": "main @ 6787d3e (desplegada en stire-soft.vercel.app)",
+ "herramientas": "puppeteer + axe-core 4.10.2 (wcag2a, wcag2aa, wcag21aa)",
+ "pantallas": {
+  "pc_login": {
+   "scrollHorizontal": false,
+   "controles": 6,
+   "menores44": 4,
+   "menores44Ejemplos": [
+    "INPUT «» 43px",
+    "A «¿Olvidaste tu clave?» 29px",
+    "INPUT «» 43px",
+    "BUTTON «Mostrar contraseña» 32px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "pc_register": {
+   "scrollHorizontal": false,
+   "controles": 7,
+   "menores44": 5,
+   "menores44Ejemplos": [
+    "INPUT «» 43px",
+    "INPUT «» 43px",
+    "INPUT «» 43px",
+    "BUTTON «Mostrar contraseña» 32px",
+    "BUTTON «Agregar código de clase o clave del Tuto» 37px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_login": {
+   "scrollHorizontal": false,
+   "controles": 6,
+   "menores44": 4,
+   "menores44Ejemplos": [
+    "INPUT «» 43px",
+    "A «¿Olvidaste tu clave?» 29px",
+    "INPUT «» 43px",
+    "BUTTON «Mostrar contraseña» 32px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_register": {
+   "scrollHorizontal": false,
+   "controles": 7,
+   "menores44": 4,
+   "menores44Ejemplos": [
+    "INPUT «» 43px",
+    "INPUT «» 43px",
+    "INPUT «» 43px",
+    "BUTTON «Mostrar contraseña» 32px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "pc_est_inicio": {
+   "scrollHorizontal": false,
+   "controles": 39,
+   "menores44": 2,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Repasos\n6» 37px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "pc_est_unidad": {
+   "scrollHorizontal": false,
+   "controles": 25,
+   "menores44": 2,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Repasos\n6» 37px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "pc_est_ejercicio": {
+   "scrollHorizontal": false,
+   "controles": 8,
+   "menores44": 0,
+   "menores44Ejemplos": [],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "pc_est_progreso": {
+   "scrollHorizontal": false,
+   "controles": 28,
+   "menores44": 8,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Repasos\n6» 37px",
+    "A «Algoritmos en la vida diaria» 18px",
+    "A «Pseudocódigo y diagramas de flujo» 18px",
+    "A «Variables y tipos de datos» 18px",
+    "A «Operadores y expresiones» 18px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "pc_est_repasos": {
+   "scrollHorizontal": false,
+   "controles": 20,
+   "menores44": 2,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Repasos\n6» 37px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "pc_est_clases": {
+   "scrollHorizontal": false,
+   "controles": 20,
+   "menores44": 6,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Repasos\n6» 37px",
+    "A «Volver al inicio» 32px",
+    "BUTTON «Escanear QR» 32px",
+    "BUTTON «Actualizar lista» 18px",
+    "BUTTON «Ver contenido» 30px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "pc_est_perfil": {
+   "scrollHorizontal": false,
+   "controles": 28,
+   "menores44": 5,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Repasos\n6» 37px",
+    "BUTTON «» 24px",
+    "BUTTON «» 24px",
+    "BUTTON «» 24px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "pc_est_mensajes": {
+   "scrollHorizontal": false,
+   "controles": 17,
+   "menores44": 5,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Repasos\n6» 37px",
+    "BUTTON «Redactar mensaje» 34px",
+    "BUTTON «Recibidos» 32px",
+    "BUTTON «Enviados» 30px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "pc_doc_inicio": {
+   "scrollHorizontal": false,
+   "controles": 32,
+   "menores44": 2,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "INPUT «» 43px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "pc_doc_crear_clase": {
+   "scrollHorizontal": false,
+   "controles": 42,
+   "menores44": 5,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "INPUT «» 43px",
+    "INPUT «» 43px",
+    "BUTTON «Generar sugerido» 17px",
+    "INPUT «» 43px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "pc_doc_clase": {
+   "scrollHorizontal": false,
+   "controles": 27,
+   "menores44": 10,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Fundamentos de Algoritmia — grupo 2» 21px",
+    "A «Sebastián Vargas Peña» 25px",
+    "A «Asignar refuerzo» 34px",
+    "A «Revisar» 34px",
+    "A «Revisar» 34px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "pc_doc_ajustes": {
+   "scrollHorizontal": false,
+   "controles": 37,
+   "menores44": 7,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Fundamentos de Algoritmia — grupo 2» 21px",
+    "BUTTON «Remover» 30px",
+    "BUTTON «Remover» 30px",
+    "BUTTON «Remover» 30px",
+    "BUTTON «Remover» 30px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "pc_doc_notas": {
+   "scrollHorizontal": false,
+   "controles": 22,
+   "menores44": 2,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Fundamentos de Algoritmia — grupo 2» 21px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "pc_doc_contenidos": {
+   "scrollHorizontal": false,
+   "controles": 92,
+   "menores44": 75,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "A «Fundamentos de Algoritmia (203413)» 21px",
+    "SELECT «Fundamentos de Algoritmia (203413) (ALGO» 31px",
+    "BUTTON «+\nNuevo módulo» 30px",
+    "BUTTON «Traer de otra clase» 32px",
+    "BUTTON «Publicado» 27px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "pc_doc_perfil": {
+   "scrollHorizontal": false,
+   "controles": 24,
+   "menores44": 4,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "BUTTON «» 24px",
+    "BUTTON «» 24px",
+    "BUTTON «» 24px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "pc_doc_mensajes": {
+   "scrollHorizontal": false,
+   "controles": 13,
+   "menores44": 4,
+   "menores44Ejemplos": [
+    "BUTTON «Ocultar el menú» 36px",
+    "BUTTON «Redactar mensaje» 34px",
+    "BUTTON «Recibidos» 32px",
+    "BUTTON «Enviados\n2» 30px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_est_inicio": {
+   "scrollHorizontal": false,
+   "controles": 30,
+   "menores44": 0,
+   "menores44Ejemplos": [],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "cel_est_unidad": {
+   "scrollHorizontal": false,
+   "controles": 16,
+   "menores44": 0,
+   "menores44Ejemplos": [],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "cel_est_ejercicio": {
+   "scrollHorizontal": false,
+   "controles": 8,
+   "menores44": 0,
+   "menores44Ejemplos": [],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": [
+    {
+     "id": "scrollable-region-focusable",
+     "impacto": "serious",
+     "nodos": 1,
+     "ejemplos": [
+      "<div tabindex=\"-1\" class=\"cm-scroller\">"
+     ]
+    }
+   ]
+  },
+  "cel_est_progreso": {
+   "scrollHorizontal": false,
+   "controles": 19,
+   "menores44": 0,
+   "menores44Ejemplos": [],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "cel_est_repasos": {
+   "scrollHorizontal": false,
+   "controles": 11,
+   "menores44": 0,
+   "menores44Ejemplos": [],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "cel_est_clases": {
+   "scrollHorizontal": false,
+   "controles": 11,
+   "menores44": 0,
+   "menores44Ejemplos": [],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "cel_est_perfil": {
+   "scrollHorizontal": false,
+   "controles": 19,
+   "menores44": 3,
+   "menores44Ejemplos": [
+    "BUTTON «» 24px",
+    "BUTTON «» 24px",
+    "BUTTON «» 24px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "cel_est_mensajes": {
+   "scrollHorizontal": false,
+   "controles": 8,
+   "menores44": 0,
+   "menores44Ejemplos": [],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": 0,
+   "axe": []
+  },
+  "cel_doc_inicio": {
+   "scrollHorizontal": false,
+   "controles": 27,
+   "menores44": 1,
+   "menores44Ejemplos": [
+    "INPUT «» 43px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_doc_crear_clase": {
+   "scrollHorizontal": false,
+   "controles": 37,
+   "menores44": 3,
+   "menores44Ejemplos": [
+    "INPUT «» 43px",
+    "INPUT «» 43px",
+    "INPUT «» 43px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_doc_clase": {
+   "scrollHorizontal": false,
+   "controles": 22,
+   "menores44": 3,
+   "menores44Ejemplos": [
+    "A «Fundamentos de Algoritmia — grupo 2» 21px",
+    "A «Sebastián Vargas Peña» 25px",
+    "A «Julián Ortega Ríos» 25px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_doc_ajustes": {
+   "scrollHorizontal": false,
+   "controles": 32,
+   "menores44": 2,
+   "menores44Ejemplos": [
+    "A «Fundamentos de Algoritmia — grupo 2» 21px",
+    "INPUT «» 39px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_doc_notas": {
+   "scrollHorizontal": false,
+   "controles": 17,
+   "menores44": 1,
+   "menores44Ejemplos": [
+    "A «Fundamentos de Algoritmia — grupo 2» 21px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_doc_contenidos": {
+   "scrollHorizontal": false,
+   "controles": 87,
+   "menores44": 65,
+   "menores44Ejemplos": [
+    "A «Fundamentos de Algoritmia (203413)» 21px",
+    "SELECT «Fundamentos de Algoritmia (203413) (ALGO» 31px",
+    "BUTTON «+\nNuevo módulo» 30px",
+    "BUTTON «Traer de otra clase» 32px",
+    "BUTTON «Publicado» 27px",
+    "BUTTON «+\nNuevo tema» 43px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_doc_perfil": {
+   "scrollHorizontal": false,
+   "controles": 19,
+   "menores44": 3,
+   "menores44Ejemplos": [
+    "BUTTON «» 24px",
+    "BUTTON «» 24px",
+    "BUTTON «» 24px"
+   ],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  },
+  "cel_doc_mensajes": {
+   "scrollHorizontal": false,
+   "controles": 8,
+   "menores44": 0,
+   "menores44Ejemplos": [],
+   "sinNombreAccesible": 0,
+   "emojis": 0,
+   "tapadosPorTutor": null,
+   "axe": []
+  }
+ },
+ "modoOscuroFondo": "rgb(247, 249, 252)"
+}

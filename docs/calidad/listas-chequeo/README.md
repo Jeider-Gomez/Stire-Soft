@@ -18,6 +18,10 @@ con su fecha y la versión evaluada. Cada lista va en dos formatos:
 al Tutor. Tiene dos líneas de trabajo (interfaz y Tutores Inteligentes), una sola versión nueva (v2.0.0, para el martes 06/10) y la verificación de cada
 ítem por un integrante del equipo.
 
+## Dónde estamos hoy
+
+[`2026-10-04_seguimiento/ESTADO_STIRE_LISTAS_CHEQUEO.md`](2026-10-04_seguimiento/ESTADO_STIRE_LISTAS_CHEQUEO.md) explica, ítem por ítem, cómo está STIRE frente a las dos listas después de la organización académica, las plantillas y los logros: qué se encontró al medir 36 pantallas, qué se corrigió y qué falta para el 100 %.
+
 ## Verificación del equipo
 
 [`VERIFICACION_v2.0.0.md`](VERIFICACION_v2.0.0.md): cada integrante prueba como usuario los ítems que le tocan y marca ✅, ⚠️ o ❌, y
@@ -29,6 +33,7 @@ todos responden la encuesta SUS. Un ítem cuenta como cumplido solo con el ✅ d
 |---|---|---|---|---|
 | **04/10/2026** · antes | `main @ 7c9977b` (v1.1.0 + ajustes de UI/UX del 02 y 03/10), desplegada | **20 / 32 · 62,5 %** · Básico con observaciones | **14 / 24 · 58,3 %** · Insuficiente | [`2026-10-04_antes/`](2026-10-04_antes/) |
 | **04/10/2026** · después | `main @ 4d41b8d` (v2.0.0 candidata), desplegada · **falta el visto bueno del equipo (05/10)** | **28 / 32 · 87,5 %** · Aceptable / Competente | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-04_despues/`](2026-10-04_despues/) |
+| **04/10/2026** · seguimiento | `main @ 6787d3e` (con organización académica, plantillas y logros), desplegada · 36 pantallas medidas | **28 / 32 · 87,5 %** · Aceptable / Competente (29/32 · 90,6 % · Sobresaliente con el SUS) | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-04_seguimiento/`](2026-10-04_seguimiento/) |
 | 05/10/2026 · verificada | v2.0.0 (etiqueta), con los ✅ del equipo y el SUS | — | — | se completa en `2026-10-04_despues/` |
 
 ### Antes y después (04/10/2026), por bloque
