@@ -50,6 +50,7 @@ describe('reglas del árbol de contenidos', () => {
 
 describe('la página organiza; el composable habla con la API; una ventana por componente', () => {
   const pagina = leer('pages', 'docente', 'contenidos.vue');
+  const arbol = leer('components', 'docente', 'ArbolContenidos.vue');
 
   it('la página no llama a la API y ya no es un «Blob» (antes 1131 líneas)', () => {
     expect(pagina).not.toMatch(/api\.(get|post|patch|put|del)\(/);
@@ -78,10 +79,10 @@ describe('la página organiza; el composable habla con la API; una ventana por c
     expect(menu).toContain(':aria-expanded="abierto"');
     expect(menu).toContain('@keydown.esc.stop="cerrar(true)"');
     expect(menu).toContain("document.addEventListener('click', alClicAfuera)");
-    expect(pagina).toContain('<MenuMas :id-boton="`mas-tema-${topic.id}`"');
-    expect(pagina).toContain('Archivar tema…');
+    expect(arbol).toContain('<MenuMas :id-boton="`mas-tema-${topic.id}`"');
+    expect(arbol).toContain('Archivar tema…');
     // «Archivar» ya no es un botón rojo suelto junto a «Nueva lección».
-    expect(pagina).not.toMatch(/:aria-label="`Archivar tema/);
+    expect(arbol).not.toMatch(/:aria-label="`Archivar tema/);
     for (const v of ['VentanaEditarTema', 'VentanaArchivarTema']) {
       expect(leer('components', 'docente', 'contenidos', `${v}.vue`)).toContain(':devolver-foco="`mas-tema-${tema.id}`"');
     }
@@ -89,8 +90,8 @@ describe('la página organiza; el composable habla con la API; una ventana por c
 
   it('en el celular el selector de clase no se sale y el botón de publicar dice qué hace', () => {
     expect(pagina).toMatch(/id="class-selector"[\s\S]{0,120}class="min-w-0 flex-1/);
-    expect(pagina).toContain('flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b');
-    expect(pagina).toContain('Pulsa para publicarlo');
+    expect(arbol).toContain('flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b');
+    expect(arbol).toContain('Pulsa para publicarlo');
   });
 
   it('sin «any»', () => {

@@ -1,0 +1,94 @@
+import { readdirSync, readFileSync, statSync } from 'fs';
+import * as path from 'path';
+
+const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
+const PAGINAS_CON_API = [
+  'pages/auth/forgot-password.vue',
+  'pages/auth/register.vue',
+  'pages/auth/reset-password.vue',
+  'pages/admin/catalogo.vue',
+  'pages/admin/dashboard.vue',
+  'pages/admin/sistema.vue',
+  'pages/admin/sugerencias.vue',
+  'pages/admin/usabilidad.vue',
+  'pages/docente/clase/[classId]/asistencia.vue',
+  'pages/docente/clase/[classId]/ajustes.vue',
+  'pages/docente/clase/[classId]/index.vue',
+  'pages/docente/entregas/[id].vue',
+  'pages/docente/entregas/index.vue',
+  'pages/docente/entregas/revision/[envioId].vue',
+  'pages/docente/estudiante/[studentId].vue',
+  'pages/docente/refuerzos/index.vue',
+  'pages/docente/refuerzos/nuevo.vue',
+  'pages/docente/rendimiento.vue',
+  'pages/estudiante/asistencia.vue',
+  'pages/estudiante/clases.vue',
+  'pages/estudiante/entregas/[id].vue',
+  'pages/estudiante/index.vue',
+  'pages/estudiante/proyectos/[id].vue',
+  'pages/estudiante/proyectos/index.vue',
+  'pages/estudiante/refuerzos/[id].vue',
+  'pages/estudiante/unidad/[id].vue',
+];
+
+const COMPONENTES_CON_API = [
+  'components/admin/HistorialRoles.vue',
+  'components/EncuestaSus.vue',
+  'components/InvitacionEncuesta.vue',
+  'components/docente/CurriculumBuilderModals.vue',
+  'components/docente/EntregaForm.vue',
+  'components/estudiante/ResumenLogros.vue',
+  'components/ValorarLeccion.vue',
+  'components/estudiante/MisLogros.vue',
+  'components/estudiante/MiCalibracion.vue',
+  'components/layout/SidebarNav.vue',
+  'components/layout/NotificationBell.vue',
+  'components/estudiante/LogrosInicio.vue',
+  'components/perfil/Vinculos.vue',
+  'components/docente/MapaDeCalor.vue',
+  'components/estudiante/ComoAvanzas.vue',
+  'components/perfil/Form.vue',
+  'components/MiNota.vue',
+  'components/docente/LessonEditor.vue',
+  'components/EstadisticasEstudiante.vue',
+  'components/docente/TutorSettingsPanel.vue',
+  'components/layout/BotonSugerencias.vue',
+  'components/proyectos/EnviarAlDocente.vue',
+  'components/docente/ValoracionesClase.vue',
+  'components/docente/SelectorAsignatura.vue',
+  'components/docente/ResourceForm.vue',
+  'components/docente/UnitLessonsModal.vue',
+];
+
+function archivosVue(dir: string): string[] {
+  let todos: string[] = [];
+  let entradas: string[] = [];
+  try { entradas = readdirSync(dir); } catch { return []; }
+  for (const entrada of entradas) {
+    const archivo = path.join(dir, entrada);
+    if (statSync(archivo).isDirectory()) todos = todos.concat(archivosVue(archivo));
+    else if (entrada.endsWith('.vue')) todos.push(archivo);
+  }
+  return todos;
+}
+
+function rutasVue(carpeta: 'pages' | 'components'): string[] {
+  return archivosVue(path.join(raiz, carpeta)).map((archivo) => path.relative(raiz, archivo).replace(/\\/g, '/'));
+}
+
+describe('PAT-01: páginas sin llamadas directas a la API', () => {
+  it('ninguna página ajena a la lista empieza a usar useApi() o $fetch(', () => {
+    const encontradas = rutasVue('pages').filter((ruta) => /\buseApi\s*\(|\$fetch\s*\(/.test(readFileSync(path.join(raiz, ruta), 'utf8')));
+    expect(encontradas.filter((ruta) => !PAGINAS_CON_API.includes(ruta))).toEqual([]);
+  });
+
+  it('cada página pendiente de la lista todavía usa useApi()', () => {
+    expect(PAGINAS_CON_API.filter((ruta) => !/\buseApi\s*\(/.test(readFileSync(path.join(raiz, ruta), 'utf8')))).toEqual([]);
+  });
+
+  it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {
+    const encontrados = rutasVue('components').filter((ruta) => /\buseApi\s*\(/.test(readFileSync(path.join(raiz, ruta), 'utf8')));
+    expect(encontrados.filter((ruta) => !COMPONENTES_CON_API.includes(ruta))).toEqual([]);
+    expect(encontrados.length).toBeLessThanOrEqual(COMPONENTES_CON_API.length);
+  });
+});

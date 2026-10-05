@@ -23,7 +23,7 @@ describe('UX-07 · contraste sobre fondos grises (axe-core color-contrast)', () 
   });
 
   it('en Contenidos, la descripción del módulo y «Publicado» alcanzan 4,5:1', () => {
-    const c = leer('pages', 'docente', 'contenidos.vue');
+    const c = leer('pages', 'docente', 'contenidos.vue') + leer('components', 'docente', 'ArbolContenidos.vue');
     expect(c).toContain('<p v-if="sec.description" class="text-[11px] text-slate-600">');
     expect(c).not.toContain("'bg-semantico-pasa/10 text-semantico-pasa");
   });
@@ -49,7 +49,10 @@ describe('MOB-02 · controles de 44 px en el celular', () => {
     ['pages/estudiante/index.vue', 1],
     ['pages/docente/clase/[classId]/index.vue', 1],
   ])('%s tiene sus botones de acción a 44 px', (rel, minimo) => {
-    expect((leer(rel).match(/min-h-\[44px\]/g) ?? []).length).toBeGreaterThanOrEqual(minimo);
+    const contenido = rel === 'pages/docente/contenidos.vue'
+      ? leer(rel) + leer('components', 'docente', 'ArbolContenidos.vue')
+      : leer(rel);
+    expect((contenido.match(/min-h-\[44px\]/g) ?? []).length).toBeGreaterThanOrEqual(minimo);
   });
 
   it('el lanzador flotante del Tutor no tapa el último botón de la página (Mis clases: «Ver contenido»)', () => {
