@@ -20,7 +20,7 @@
             id="class-selector"
             v-model="selectedClassId"
             @change="loadSections"
-            class="text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte">
+            class="min-h-[44px] text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte">
             <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
               {{ c.name }} ({{ c.code }})
             </option>
@@ -30,9 +30,9 @@
         <button
           v-if="selectedClassId"
           @click="openNewModuleModal"
-          class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
+          class="min-h-[44px] px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
           aria-label="Crear nuevo módulo curricular">
-          <span>+</span>
+          <Plus :size="14" aria-hidden="true" />
           <span>Nuevo módulo</span>
         </button>
 
@@ -41,7 +41,7 @@
           v-if="selectedClassId && (otherClasses.length > 0 || plantillas.length > 0)"
           type="button"
           @click="openImportModal"
-          class="px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
+          class="min-h-[44px] px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
           aria-label="Traer contenidos de otra clase">
           <CopyPlus :size="14" class="text-acento-ambar-fuerte" aria-hidden="true" />
           <span>Traer de otra clase</span>
@@ -133,7 +133,7 @@
             </span>
             <button
               @click="toggleSectionPublish(sec)"
-              class="px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+              class="min-h-[44px] sm:min-h-0 px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
               :class="sec.isPublished
                 ? 'bg-semantico-pasa/10 text-emerald-800 border-semantico-pasa/40 hover:bg-semantico-pasa/25'
                 : 'bg-base-blanco text-base-texto-secundario border-base-borde-fuerte hover:text-base-texto-primario'">
@@ -141,9 +141,9 @@
             </button>
             <button
               @click="openNewTopicModal(sec)"
-              class="px-2.5 py-1 rounded text-[11px] font-bold bg-base-blanco border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte flex items-center gap-1"
+              class="min-h-[44px] sm:min-h-0 px-2.5 py-1 rounded text-[11px] font-bold bg-base-blanco border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte flex items-center gap-1"
               :aria-label="`Crear nuevo tema en módulo ${sec.title}`">
-              <span>+</span>
+              <Plus :size="13" aria-hidden="true" />
               <span>Nuevo tema</span>
             </button>
           </div>
@@ -160,7 +160,7 @@
             :key="topic.id"
             class="rounded-lg border border-base-borde-sutil p-3 bg-base-blanco space-y-2">
             <!-- Cabecera del Topic con acciones Editar / Archivar / Nueva unidad -->
-            <div class="flex items-center justify-between text-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
               <span class="font-bold text-base-texto-primario flex items-center gap-1.5">
                 <Folder :size="16" class="text-acento-ambar-fuerte" aria-hidden="true" />
                 <span>{{ topic.title }}</span>
@@ -168,19 +168,19 @@
               <div class="flex items-center gap-2">
                 <button
                   @click="openNewUnitModal(sec, topic)"
-                  class="px-2 py-0.5 rounded text-[11px] font-semibold bg-acento-ambar-fuerte/10 border border-acento-ambar-fuerte/30 text-acento-ambar-fuerte hover:bg-acento-ambar/20 transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                  class="min-h-[44px] sm:min-h-0 px-2 py-0.5 rounded text-[11px] font-semibold inline-flex items-center gap-1 bg-acento-ambar-fuerte/10 border border-acento-ambar-fuerte/30 text-acento-ambar-fuerte hover:bg-acento-ambar/20 transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                   :aria-label="`Nueva lección en el tema ${topic.title}`">
-                  + Nueva lección
+                  <Plus :size="13" aria-hidden="true" /> Nueva lección
                 </button>
                 <button
                   @click="openEditTopicModal(topic)"
-                  class="px-2 py-0.5 rounded text-[11px] font-semibold bg-base-bg-secundario border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                  class="min-h-[44px] sm:min-h-0 px-2 py-0.5 rounded text-[11px] font-semibold bg-base-bg-secundario border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                   :aria-label="`Editar tema ${topic.title}`">
                   Editar
                 </button>
                 <button
                   @click="confirmArchiveTopic(topic)"
-                  class="px-2 py-0.5 rounded text-[11px] font-semibold border border-semantico-falla/30 text-semantico-falla hover:bg-semantico-falla/10 transition-colors focus:outline-none focus:ring-2 focus:ring-semantico-falla"
+                  class="min-h-[44px] sm:min-h-0 px-2 py-0.5 rounded text-[11px] font-semibold border border-semantico-falla/30 text-semantico-falla hover:bg-semantico-falla/10 transition-colors focus:outline-none focus:ring-2 focus:ring-semantico-falla"
                   :aria-label="`Archivar tema ${topic.title}`">
                   Archivar
                 </button>
@@ -201,7 +201,7 @@
                     @click="toggleUnit(unit)"
                     :aria-expanded="expandedUnitId === unit.id"
                     :aria-controls="`unidad-panel-${unit.id}`"
-                    class="flex items-center gap-2 text-left flex-1 min-w-0 rounded focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+                    class="min-h-[44px] sm:min-h-0 flex items-center gap-2 text-left flex-1 min-w-0 rounded focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
                     <ChevronRight :size="16" class="shrink-0 text-base-texto-secundario transition-transform" :class="expandedUnitId === unit.id ? 'rotate-90' : ''" aria-hidden="true" />
                     <span class="text-base-texto-primario font-semibold truncate">{{ unit.title }}</span>
                     <span v-if="unitSummary[unit.id]" class="text-[10px] text-base-texto-secundario whitespace-nowrap">
@@ -212,7 +212,7 @@
                     <span v-if="unit.isActive === false" class="text-[10px] font-bold px-2 py-0.5 rounded bg-base-texto-secundario/15 text-base-texto-secundario">Inactiva</span>
                     <button
                       @click="openEditUnitModal(unit)"
-                      class="p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-blanco focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                      class="min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 inline-flex items-center justify-center p-1 rounded text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-blanco focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                       :aria-label="`Editar la lección ${unit.title}`" title="Editar lección">
                       <Pencil :size="14" aria-hidden="true" />
                     </button>
@@ -228,7 +228,7 @@
                       </h4>
                       <button
                         @click="openLessonsModal(unit, lessonsByUnit[unit.id]?.length ? {} : { create: true })"
-                        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar inline-flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                        class="min-h-[44px] sm:min-h-0 px-2.5 py-1 rounded-md text-[11px] font-bold bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar inline-flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
                         :aria-label="`Explicación de la lección ${unit.title}`">
                         <BookOpen :size="14" aria-hidden="true" /> {{ lessonsByUnit[unit.id]?.length ? 'Explicación' : 'Escribir la explicación' }}
                       </button>
@@ -618,7 +618,7 @@
 
 <script setup lang="ts">
 import { agruparPorAsignatura, cuantosEnfoques, textoPlantilla, type Plantilla } from '~/utils/plantillas'
-import { BookOpen, ChevronRight, CircleX, CopyPlus, FileText, Folder, Loader2, Pencil, TriangleAlert, X } from 'lucide-vue-next'
+import { BookOpen, ChevronRight, CircleX, CopyPlus, FileText, Folder, Loader2, Pencil, Plus, TriangleAlert, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'

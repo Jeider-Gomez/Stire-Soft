@@ -44,6 +44,8 @@ describe('MOB-02 · controles de 44 px en el celular', () => {
     ['components/mensajes/BandejaMensajes.vue', 3],
     ['components/mensajes/VentanaRedactar.vue', 2],
     ['pages/estudiante/repasos.vue', 1],
+    // Contenidos: la evaluación del 05/10 midió 68 de 88 controles por debajo de 44 px en el celular.
+    ['pages/docente/contenidos.vue', 10],
     ['pages/estudiante/index.vue', 1],
     ['pages/docente/clase/[classId]/index.vue', 1],
   ])('%s tiene sus botones de acción a 44 px', (rel, minimo) => {
