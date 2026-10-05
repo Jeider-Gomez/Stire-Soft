@@ -65,6 +65,8 @@ describe('en el ejercicio', () => {
 
   it('el ejemplo parecido va al Tutor con su modo; volver a la explicación lleva a la lección', () => {
     expect(leer('stores', 'tutor.ts')).toContain("modoEjemplo.value ? 'ejemplo-parecido' as const");
+    // el tipo de las señales lo admite (nuxi typecheck lo detectó: el store mandaba un modo que el tipo no tenía)
+    expect(leer('utils', 'contextoTutor.ts')).toContain("modo?: 'por-pasos' | 'otra-explicacion' | 'ejemplo-parecido'");
     expect(p).toContain('navigateTo(`/estudiante/unidad/${workspaceStore.currentExercise.learningUnitId}#explicacion`)');
   });
 });

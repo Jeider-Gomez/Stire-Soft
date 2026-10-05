@@ -15,7 +15,7 @@ export interface SenalesTutor {
   errorProbable?: string
   confianza?: string
   acerto?: boolean
-  modo?: 'por-pasos' | 'otra-explicacion'
+  modo?: 'por-pasos' | 'otra-explicacion' | 'ejemplo-parecido'
 }
 
 export interface ContextoTutor {
