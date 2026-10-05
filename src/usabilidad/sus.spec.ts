@@ -1,4 +1,4 @@
-import { aceptabilidadSus, debeInvitar, puedeResponder, puntajeSus, resumirSus, type RespuestaSus } from './sus';
+import { aceptabilidadSus, debeInvitar, puedeResponder, puntajeSus, resumirSus, TAREAS_POR_ROL, validarTareas, type RespuestaSus } from './sus';
 import { UsabilidadService } from './usabilidad.service';
 import type { User } from '../user/entities/user.entity';
 
@@ -58,7 +58,39 @@ describe('resumirSus: lo que ve el admin, sin nombres', () => {
   });
 
   it('sin respuestas no inventa un promedio', () => {
-    expect(resumirSus([])).toMatchObject({ n: 0, promedio: null, aceptabilidad: null });
+    expect(resumirSus([])).toMatchObject({ n: 0, promedio: null, aceptabilidad: null, tareas: {} });
+  });
+});
+
+describe('segunda parte, distinta por rol: facilidad de las tareas (Sauro y Dumas, 2009)', () => {
+  it('cinco tareas de estudiante y cinco de docente, sin repetirse', () => {
+    expect(TAREAS_POR_ROL.estudiante).toHaveLength(5);
+    expect(TAREAS_POR_ROL.docente).toHaveLength(5);
+    const claves = [...TAREAS_POR_ROL.estudiante, ...TAREAS_POR_ROL.docente].map((t) => t.clave);
+    expect(new Set(claves).size).toBe(10);
+  });
+
+  it('solo se guardan tareas del propio rol, de 1 a 7; null es «no la he hecho»', () => {
+    expect(validarTareas('estudiante', { 'resolver-ejercicio': 6, 'pedir-ayuda': null })).toEqual({ 'resolver-ejercicio': 6 });
+    expect(validarTareas('estudiante', { 'pedir-ayuda': null })).toBeNull();
+    expect(validarTareas('estudiante', undefined)).toBeNull();
+    expect(() => validarTareas('estudiante', { 'crear-leccion': 5 })).toThrow('no es de tu rol');
+    expect(() => validarTareas('docente', { 'crear-leccion': 8 })).toThrow('1 (muy difícil) a 7');
+    expect(() => validarTareas('docente', { 'crear-leccion': 2.5 })).toThrow('1 (muy difícil) a 7');
+    expect(() => validarTareas('docente', [5])).toThrow('no son válidas');
+  });
+
+  it('el admin ve, por rol, de la tarea más difícil a la más fácil', () => {
+    const r = (rol: string, tareas: Record<string, number> | null): RespuestaSus => ({ rol, puntaje: 70, respuestas: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3], comentario: null, tareas, fecha: new Date(2026, 9, 5) });
+    const res = resumirSus([
+      r('estudiante', { 'resolver-ejercicio': 6, 'pedir-ayuda': 2 }),
+      r('estudiante', { 'resolver-ejercicio': 4, 'pedir-ayuda': 3 }),
+      r('docente', { 'crear-ejercicio': 3 }),
+    ]);
+    expect(res.tareas.estudiante[0]).toMatchObject({ clave: 'pedir-ayuda', promedio: 2.5, n: 2 });
+    expect(res.tareas.estudiante[1]).toMatchObject({ clave: 'resolver-ejercicio', promedio: 5, n: 2 });
+    expect(res.tareas.estudiante[4].promedio).toBeNull();
+    expect(res.tareas.docente[0]).toMatchObject({ clave: 'crear-ejercicio', promedio: 3, n: 1 });
   });
 });
 
@@ -99,7 +131,14 @@ describe('UsabilidadService', () => {
     ultima = null;
     const r = await service.responder(user, { respuestas: [5, 1, 5, 1, 5, 1, 5, 1, 5, 1], comentario: '  Me gusta  ' }, new Date(2026, 9, 20));
     expect(r.puntaje).toBe(100);
-    expect(guardadas[0]).toMatchObject({ userId: 1, rol: 'estudiante', puntaje: 100, comentario: 'Me gusta' });
+    expect(guardadas[0]).toMatchObject({ userId: 1, rol: 'estudiante', puntaje: 100, comentario: 'Me gusta', tareas: null });
+  });
+
+  it('guarda la facilidad de las tareas de su rol y rechaza las de otro rol', async () => {
+    ultima = null;
+    await service.responder(user, { respuestas: [5, 1, 5, 1, 5, 1, 5, 1, 5, 1], tareas: { 'resolver-ejercicio': 7 } }, new Date(2026, 9, 20));
+    expect(guardadas[guardadas.length - 1]).toMatchObject({ tareas: { 'resolver-ejercicio': 7 } });
+    await expect(service.responder(user, { respuestas: [5, 1, 5, 1, 5, 1, 5, 1, 5, 1], tareas: { 'crear-leccion': 7 } }, new Date(2026, 9, 20))).rejects.toThrow('no es de tu rol');
   });
 
   it('no deja responder dos veces en 90 días', async () => {

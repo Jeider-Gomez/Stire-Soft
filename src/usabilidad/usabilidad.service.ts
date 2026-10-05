@@ -1,10 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { EncuestaSus } from './entities/encuesta-sus.entity';
 import { ResponderSusDto } from './dto/responder-sus.dto';
-import { debeInvitar, puedeResponder, puntajeSus, resumirSus, type ResumenSus } from './sus';
+import { debeInvitar, EncuestaInvalidaError, puedeResponder, puntajeSus, resumirSus, validarTareas, type ResumenSus } from './sus';
 
 @Injectable()
 export class UsabilidadService {
@@ -31,9 +31,16 @@ export class UsabilidadService {
     if (!puedeResponder(ultima?.createdAt ?? null, ahora)) {
       throw new ConflictException('Ya respondiste la encuesta hace poco. Podrás volver a responderla más adelante.');
     }
+    let tareas: Record<string, number> | null;
+    try {
+      tareas = validarTareas(user.role, dto.tareas);
+    } catch (e) {
+      if (e instanceof EncuestaInvalidaError) throw new BadRequestException(e.message);
+      throw e;
+    }
     const puntaje = puntajeSus(dto.respuestas);
     const comentario = dto.comentario?.trim() ? dto.comentario.trim() : null;
-    await this.encuestas.save(this.encuestas.create({ userId: user.id, rol: user.role, respuestas: dto.respuestas, puntaje, comentario }));
+    await this.encuestas.save(this.encuestas.create({ userId: user.id, rol: user.role, respuestas: dto.respuestas, puntaje, comentario, tareas }));
     return { puntaje };
   }
 
@@ -46,6 +53,6 @@ export class UsabilidadService {
       vistas.add(e.userId);
       return true;
     });
-    return resumirSus(ultimas.map((e) => ({ rol: e.rol, respuestas: e.respuestas, puntaje: e.puntaje, comentario: e.comentario, fecha: e.createdAt })));
+    return resumirSus(ultimas.map((e) => ({ rol: e.rol, respuestas: e.respuestas, puntaje: e.puntaje, comentario: e.comentario, tareas: e.tareas, fecha: e.createdAt })));
   }
 }

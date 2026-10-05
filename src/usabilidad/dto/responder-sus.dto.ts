@@ -1,4 +1,4 @@
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsInt, IsObject, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ResponderSusDto {
@@ -16,4 +16,12 @@ export class ResponderSusDto {
   @IsString()
   @MaxLength(500)
   comentario?: string;
+
+  @ApiProperty({
+    description: 'Facilidad de las tareas de su rol: { clave: 1 (muy difícil) a 7 (muy fácil) }; sin la clave o null = no la ha hecho (src/usabilidad/sus.ts)',
+    required: false,
+  })
+  @IsOptional()
+  @IsObject()
+  tareas?: Record<string, unknown>;
 }

@@ -26,6 +26,10 @@ export class EncuestaSus {
   @Column({ type: 'varchar', length: 500, nullable: true })
   comentario!: string | null;
 
+  /** Facilidad de las tareas de su rol, de 1 a 7 (sus.ts, TAREAS_POR_ROL); null si no respondió esa parte. */
+  @Column({ type: 'json', nullable: true })
+  tareas!: Record<string, number> | null;
+
   @CreateDateColumn()
   createdAt!: Date;
 }
