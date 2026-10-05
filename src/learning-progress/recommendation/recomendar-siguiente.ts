@@ -60,6 +60,11 @@ export interface EntradaRecomendador {
   intentos: IntentoParaRecomendar[];
   confianza: Confianza | null;
   repasoVencido: boolean;
+  /**
+   * El estudiante pidió un reto («Tomar un reto», pedido del dueño 04/10: «que el que se sienta en confianza pueda elegir
+   * un desafío más difícil para subir su dominio más rápido»): un ejercicio pendiente del nivel siguiente al que va.
+   */
+  reto?: boolean;
 }
 
 const NOMBRE_NIVEL: Record<Difficulty, string> = {
@@ -227,6 +232,22 @@ function recomendarSinTope(entrada: EntradaRecomendador): Recomendacion | null {
     }
     return null;
   };
+
+  // 0. Reto pedido: la primera casilla pendiente del nivel siguiente al que viene trabajando (la zona de lo que aún no
+  //    domina pero está a su alcance; Metcalfe, 2009). Si no hay nivel más alto pendiente, sigue la recomendación normal.
+  if (entrada.reto && !completada) {
+    // Dónde va: lo más alto entre su nivel pendiente más bajo, lo que ya aprobó y lo último que intentó.
+    const ultimo = calificados[calificados.length - 1];
+    const nivelActual = Math.max(
+      nivelesConPendientes[0],
+      ultimo ? rangoNivel(porId.get(ultimo.activityId)!.difficulty) : -1,
+      ...actividades.filter(aprobada).map((a) => rangoNivel(a.difficulty)),
+    );
+    for (const nivel of nivelesConPendientes.filter((n) => n > nivelActual)) {
+      const elegida = primeraPendienteEnNivel(nivel);
+      if (elegida) return resultado(elegida.actividad, 'reto');
+    }
+  }
 
   // 1. Repaso primero: una hermana de una casilla ya aprobada (la no intentada; si no, la practicada hace más tiempo).
   if (entrada.repasoVencido) {

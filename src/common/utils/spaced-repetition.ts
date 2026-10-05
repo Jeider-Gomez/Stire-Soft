@@ -12,12 +12,28 @@ const EASE_MINIMO = 1.3;
 /**
  * Traducción del resultado a la calidad SM-2, sin preguntarle nada extra al estudiante:
  * falló → 1 (Again) · acertó tras varios intentos → 3 (Hard) · al primer intento → 4 (Good) ·
- * al primer intento habiendo dicho «Me siento seguro» → 5 (Easy).
+ * al primer intento estando seguro → 5 (Easy). «Seguro» es haber tomado el reto de la lección o haber dicho «Estoy
+ * seguro» antes de entregar ese ejercicio.
  */
 export function calidadDeRepaso(resultado: { aprobado: boolean; primerIntento: boolean; seSentiaSeguro: boolean }): CalidadRepaso {
   if (!resultado.aprobado) return 1;
   if (!resultado.primerIntento) return 3;
   return resultado.seSentiaSeguro ? 5 : 4;
+}
+
+/** Los nombres de Anki, en español, para mostrarle al estudiante cómo quedó cada resultado. */
+export type NombreCalidad = 'otra-vez' | 'dificil' | 'bien' | 'facil';
+export function nombreCalidad(calidad: CalidadRepaso): NombreCalidad {
+  return calidad === 1 ? 'otra-vez' : calidad === 3 ? 'dificil' : calidad === 4 ? 'bien' : 'facil';
+}
+
+/** Cuántos resultados de cada tipo, de una lista de intentos calificados. */
+export function contarCalidades(
+  intentos: Array<{ aprobado: boolean; primerIntento: boolean; seSentiaSeguro: boolean }>,
+): Record<NombreCalidad, number> {
+  const cuenta: Record<NombreCalidad, number> = { 'otra-vez': 0, dificil: 0, bien: 0, facil: 0 };
+  for (const i of intentos) cuenta[nombreCalidad(calidadDeRepaso(i))]++;
+  return cuenta;
 }
 
 export interface EstadoRepaso {

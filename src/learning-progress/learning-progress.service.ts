@@ -177,7 +177,7 @@ export class LearningProgressService {
     ).length;
   }
 
-  async getNextActivity(studentId: number, learningUnitId: number): Promise<NextActivityRecommendation | null> {
+  async getNextActivity(studentId: number, learningUnitId: number, opciones: { reto?: boolean } = {}): Promise<NextActivityRecommendation | null> {
     const activities = await this.cargarActividadesConTipo(learningUnitId, studentId);
     if (activities.length === 0) return null;
 
@@ -209,6 +209,7 @@ export class LearningProgressService {
       })),
       confianza: esConfianza(confianza) ? confianza : null,
       repasoVencido: !!schedule && new Date(schedule.nextReviewDate).getTime() <= Date.now(),
+      reto: opciones.reto,
     });
     if (!recomendacion) return null;
 
@@ -250,6 +251,12 @@ export class LearningProgressService {
   /** Marca un intento como repaso: se calificó cuando la unidad tenía un repaso vencido. */
   async marcarComoRepaso(submissionId: string): Promise<void> {
     await this.submissionsRepo.update(submissionId, { isReview: true });
+  }
+
+  /** Lo que dijo el estudiante antes de entregar («seguro», «dudo», «adivino») o null si no respondió. */
+  async juicioDeEntrega(submissionId: string): Promise<string | null> {
+    const submission = await this.submissionsRepo.findOne({ where: { id: submissionId } });
+    return submission?.confianza ?? null;
   }
 
   async esPrimerIntento(submissionId: string): Promise<boolean> {

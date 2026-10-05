@@ -103,11 +103,12 @@ export class LearningProgressController {
 
   @Get('student/:studentId/unit/:unitId/next-activity')
   @Roles('estudiante', 'docente', 'admin')
-  @ApiOperation({ summary: 'Recomendar la siguiente actividad de una unidad' })
+  @ApiOperation({ summary: 'Recomendar la siguiente actividad de una unidad; con ?reto=1, un ejercicio del nivel siguiente' })
   async getNextActivity(
     @Param('studentId', ParseIntPipe) studentId: number,
     @Param('unitId', ParseIntPipe) unitId: number,
     @Request() req: any,
+    @Query('reto') reto?: string,
   ) {
     const user = req.user;
     if (user.role === 'estudiante' && user.id !== studentId) {
@@ -119,7 +120,7 @@ export class LearningProgressController {
     if (user.role === 'estudiante') {
       await this.authorizationService.assertEnrolledInClass(user, await this.learningProgressService.resolveClassId(unitId));
     }
-    return this.learningProgressService.getNextActivity(studentId, unitId);
+    return this.learningProgressService.getNextActivity(studentId, unitId, { reto: reto === '1' || reto === 'true' });
   }
 
   /**

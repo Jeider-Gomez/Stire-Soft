@@ -1,4 +1,4 @@
-import { calculateNextReview, calidadDeRepaso, INTERVALO_MAXIMO_DIAS } from './spaced-repetition';
+import { calculateNextReview, contarCalidades, nombreCalidad, calidadDeRepaso, INTERVALO_MAXIMO_DIAS } from './spaced-repetition';
 
 const INICIAL = { repetitions: 0, intervalDays: 1, easeFactor: 2.5 };
 const HOY = new Date(2026, 8, 27, 10, 0);
@@ -51,5 +51,20 @@ describe('calculateNextReview (SM-2 con calidad del resultado)', () => {
     const esperado = new Date(HOY);
     esperado.setDate(esperado.getDate() + 3);
     expect(r.nextReviewDate.getTime()).toBe(esperado.getTime());
+  });
+});
+
+describe('la escala de Anki, en palabras para el estudiante', () => {
+  it('cada calidad tiene su nombre y se cuentan los resultados', () => {
+    expect([1, 3, 4, 5].map((c) => nombreCalidad(c as 1 | 3 | 4 | 5))).toEqual(['otra-vez', 'dificil', 'bien', 'facil']);
+    expect(
+      contarCalidades([
+        { aprobado: false, primerIntento: true, seSentiaSeguro: true },
+        { aprobado: true, primerIntento: false, seSentiaSeguro: false },
+        { aprobado: true, primerIntento: true, seSentiaSeguro: false },
+        { aprobado: true, primerIntento: true, seSentiaSeguro: true },
+        { aprobado: true, primerIntento: true, seSentiaSeguro: true },
+      ]),
+    ).toEqual({ 'otra-vez': 1, dificil: 1, bien: 1, facil: 2 });
   });
 });

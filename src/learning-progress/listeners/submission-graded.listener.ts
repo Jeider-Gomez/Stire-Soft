@@ -33,10 +33,11 @@ export class SubmissionGradedListener {
     );
 
     // 3. Calendario de repasos con la calidad del resultado (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.4)
+    //    «Seguro»: tomó el reto de la lección o dijo «Estoy seguro» antes de entregar este ejercicio.
     const calidad = calidadDeRepaso({
       aprobado: event.totalPoints > 0 && (event.score / event.totalPoints) * 100 >= event.passingScore,
       primerIntento: await this.progressService.esPrimerIntento(event.submissionId),
-      seSentiaSeguro: progress.entryConfidence === CONFIANZA_SEGURO,
+      seSentiaSeguro: progress.entryConfidence === CONFIANZA_SEGURO || (await this.progressService.juicioDeEntrega(event.submissionId)) === 'seguro',
     });
     await this.reviewService.registrarResultado(event.studentId, event.learningUnitId, calidad);
   }

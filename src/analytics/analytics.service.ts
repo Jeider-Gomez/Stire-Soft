@@ -19,6 +19,8 @@ import { construirResumenSemanal, ResumenSemanal } from './resumen-semanal';
 import { rachaDeDias, repasosPendientes } from './racha-y-repasos';
 import { categoriasPermitidas, evaluarLogros, siguienteLogro, type Logro } from './logros';
 import { esNivelConfianza, resumirCalibracion, type ResumenCalibracion } from './calibracion';
+import { contarCalidades, type NombreCalidad } from '../common/utils/spaced-repetition';
+import { CONFIANZA_SEGURO } from '../learning-progress/recommendation/recomendar-siguiente';
 
 @Injectable()
 export class AnalyticsService {
@@ -148,7 +150,12 @@ export class AnalyticsService {
    * Calibración del juicio de confianza (calibracion.ts): lo que el estudiante dijo antes de entregar contra lo que
    * obtuvo. La ve él mismo y su docente (para saber a quién conviene mostrarle que sabe más, o menos, de lo que cree).
    */
-  async getCalibracion(studentId: number, requestingUser: User): Promise<ResumenCalibracion> {
+  /**
+   * META-02 y «cómo avanzas» (pedido del dueño, 04/10): la calibración del juicio de confianza y, como en Anki, cuántos
+   * de sus resultados de los últimos 30 días fueron «Otra vez», «Difícil», «Bien» o «Fácil» (la misma traducción con la
+   * que se programan sus repasos: spaced-repetition.ts, calidadDeRepaso).
+   */
+  async getCalibracion(studentId: number, requestingUser: User): Promise<ResumenCalibracion & { escala: Record<NombreCalidad, number> }> {
     if (requestingUser.role === 'estudiante' && requestingUser.id !== studentId) {
       throw new ForbiddenException('No tienes acceso a la calibración de otro estudiante.');
     }
@@ -158,13 +165,30 @@ export class AnalyticsService {
         "WHERE s.studentId = ? AND s.status = 'graded' AND s.confianza IS NOT NULL",
       [studentId],
     );
-    return resumirCalibracion(
+    const resumen = resumirCalibracion(
       filas.flatMap((f) =>
         esNivelConfianza(f.confianza)
           ? [{ confianza: f.confianza, acerto: Number(f.totalPoints) > 0 && (Number(f.score) / Number(f.totalPoints)) * 100 >= Number(f.passingScore) }]
           : [],
       ),
     );
+    const desde = new Date(Date.now() - 30 * 86_400_000);
+    const resultados: Array<{ attemptNumber: number; score: number; totalPoints: number; passingScore: number; confianza: string | null; entryConfidence: number | null }> =
+      await this.dataSource.query(
+        'SELECT s.attemptNumber, s.score, a.totalPoints, a.passingScore, s.confianza, lp.entryConfidence FROM submissions s ' +
+          'JOIN activities a ON a.id = s.activityId ' +
+          'LEFT JOIN learning_progress lp ON lp.studentId = s.studentId AND lp.learningUnitId = a.learningUnitId ' +
+          "WHERE s.studentId = ? AND s.status = 'graded' AND COALESCE(s.submittedAt, s.createdAt) >= ?",
+        [studentId, desde],
+      );
+    const escala = contarCalidades(
+      resultados.map((r) => ({
+        aprobado: Number(r.totalPoints) > 0 && (Number(r.score) / Number(r.totalPoints)) * 100 >= Number(r.passingScore),
+        primerIntento: Number(r.attemptNumber) === 1,
+        seSentiaSeguro: Number(r.entryConfidence) === CONFIANZA_SEGURO || r.confianza === 'seguro',
+      })),
+    );
+    return { ...resumen, escala };
   }
 
   async getLogros(studentId: number, requestingUser: User): Promise<{ activos: boolean; logros: Logro[]; nuevos: string[]; siguiente: Logro | null }> {

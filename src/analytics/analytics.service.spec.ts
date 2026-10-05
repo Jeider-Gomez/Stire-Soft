@@ -174,6 +174,19 @@ describe('AnalyticsService.getCalibracion', () => {
     await expect(service.getCalibracion(3, estudiante(2))).rejects.toThrow('No tienes acceso');
   });
 
+  it('cuenta sus resultados de los últimos 30 días como en Anki: Otra vez, Difícil, Bien y Fácil', async () => {
+    query.mockResolvedValueOnce([]).mockResolvedValueOnce([
+      { attemptNumber: 1, score: 0, totalPoints: 20, passingScore: 60, confianza: 'seguro', entryConfidence: null },
+      { attemptNumber: 2, score: 20, totalPoints: 20, passingScore: 60, confianza: null, entryConfidence: null },
+      { attemptNumber: 1, score: 20, totalPoints: 20, passingScore: 60, confianza: 'dudo', entryConfidence: null },
+      { attemptNumber: 1, score: 20, totalPoints: 20, passingScore: 60, confianza: 'seguro', entryConfidence: null },
+      { attemptNumber: 1, score: 20, totalPoints: 20, passingScore: 60, confianza: null, entryConfidence: 3 },
+    ]);
+    const r = await service.getCalibracion(2, estudiante(2));
+    expect(r.escala).toEqual({ 'otra-vez': 1, dificil: 1, bien: 1, facil: 2 });
+    expect(query.mock.calls[query.mock.calls.length - 1][0]).toContain('COALESCE(s.submittedAt, s.createdAt) >= ?');
+  });
+
   it('el docente pasa por la verificación de que comparte clase con el estudiante', async () => {
     await service.getCalibracion(2, { id: 10, role: 'docente' } as User);
     expect(autorizacion.assertTeacherSharesClassWithStudent).toHaveBeenCalledWith({ id: 10, role: 'docente' }, 2);

@@ -200,3 +200,44 @@ describe('nivelSaltadoHasta', () => {
   });
 });
 
+
+// «Tomar un reto» en cualquier momento (pedido del dueño, 04/10): el que se siente seguro elige un ejercicio más difícil.
+describe('reto pedido por el estudiante', () => {
+  const pedir = (intentos: IntentoParaRecomendar[] = [], confianza: Confianza | null = null, repasoVencido = false) =>
+    recomendarSiguiente({ actividades: UNIDAD, intentos, confianza, repasoVencido, reto: true });
+
+  beforeEach(() => {
+    reloj = 0;
+  });
+
+  it('sin practicar: un ejercicio del nivel intermedio', () => {
+    const r = pedir()!;
+    expect(r.motivo).toBe('reto');
+    expect(r.nivel).toBe(I);
+  });
+
+  it('a mitad de lo básico, ya practicando: el nivel siguiente, no el más alto', () => {
+    const r = pedir([intento(1, 100), intento(2, 0)])!;
+    expect(r.motivo).toBe('reto');
+    expect(r.nivel).toBe(I);
+  });
+
+  it('trabajando en el intermedio: el avanzado', () => {
+    const r = pedir([intento(1, 100), intento(2, 100), intento(4, 100), intento(5, 100)])!;
+    expect(r.actividad.id).toBe(7);
+    expect(r.motivo).toBe('reto');
+  });
+
+  it('el reto se pide antes que el repaso vencido (lo pidió el estudiante)', () => {
+    expect(pedir([intento(1, 100)], null, true)!.motivo).toBe('reto');
+  });
+
+  it('sin nivel más alto pendiente, sigue la recomendación de siempre', () => {
+    const r = pedir([intento(7, 100), intento(1, 100)])!;
+    expect(r.motivo).not.toBe('reto');
+  });
+
+  it('sin pedirlo, nada cambia', () => {
+    expect(recomendar(UNIDAD, [intento(1, 100), intento(2, 0)])!.motivo).not.toBe('reto');
+  });
+});
