@@ -18,7 +18,7 @@
           <span v-if="entrega.cierraAt" :class="cerrada ? 'text-semantico-falla font-semibold' : ''">
             {{ cerrada ? 'Cerró' : 'Cierra' }} {{ fechaCorta(entrega.cierraAt) }}{{ cerrada && entrega.aceptaTarde ? ' (aún recibe, marcada como tarde)' : '' }}
           </span>
-          <span>{{ entrega.conNota ? 'Con nota' : 'Con comentario de tu docente' }}</span>
+          <span>{{ ({ comentario: 'Con comentario de tu docente', aprobacion: 'Aprobado o no aprobado, con comentario', desempeno: 'Desempeño (Superior, Alto, Básico o Bajo), con comentario', nota: 'Con nota de 0,0 a 5,0' } as const)[escalaDe(entrega)] }}</span>
         </p>
         <div v-if="entrega.consigna" class="prose prose-xs text-xs text-base-texto-primario border-t border-base-borde-sutil pt-3" v-html="formatMarkdown(entrega.consigna)" />
       </header>
@@ -65,6 +65,7 @@
             <p v-if="!v.revisadoAt" class="text-[11px] text-base-texto-secundario">Tu docente aún no la revisa.</p>
             <p v-if="v.comentario" class="text-base-texto-primario whitespace-pre-wrap bg-base-bg-secundario rounded p-2">{{ v.comentario }}</p>
             <p v-if="v.nota !== null" class="text-base-texto-primario">Nota: <strong>{{ notaTexto(v.nota) }}</strong> de 5,0</p>
+            <p v-else-if="v.valoracion" class="text-base-texto-primario">{{ v.valoracion === 'aprobado' || v.valoracion === 'no_aprobado' ? 'Resultado' : 'Desempeño' }}: <strong>{{ NOMBRE_VALORACION[v.valoracion] }}</strong></p>
             <p v-if="v.revisadoAt" class="text-[11px] text-base-texto-secundario">Revisada {{ fechaCorta(v.revisadoAt) }}</p>
             <button type="button" @click="descargarVersion(v.id)" class="text-[11px] font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1">
               <Download :size="12" aria-hidden="true" /> Descargar esta versión (.zip)
@@ -93,15 +94,15 @@ import { useApi } from '~/composables/useApi'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import type { TipoProyecto } from '~/utils/proyectoNavegador'
 import { descargarZip } from '~/utils/descargaProyecto'
-import { TIPO_ENTREGA, fechaCorta, notaTexto, textoEvento, type EventoHistorial, type TipoEntrega } from '~/utils/entregas'
+import { NOMBRE_VALORACION, TIPO_ENTREGA, escalaDe, fechaCorta, notaTexto, textoEvento, type EscalaEntrega, type EventoHistorial, type TipoEntrega, type Valoracion } from '~/utils/entregas'
 import type { ArchivoProyecto } from '~/utils/proyectoNavegador'
 
 definePageMeta({ layout: 'student' })
 
-interface Version { id: number; version: number; titulo: string; tarde: boolean; nota: number | null; comentario: string | null; revisadoAt: string | null; createdAt: string }
+interface Version { id: number; version: number; titulo: string; tarde: boolean; nota: number | null; valoracion?: Valoracion | null; comentario: string | null; revisadoAt: string | null; createdAt: string }
 interface Entrega {
   id: number; classId: number; titulo: string; consigna: string; tipoProyecto: TipoEntrega; tienePlantilla: boolean
-  abreAt: string | null; cierraAt: string | null; aceptaTarde: boolean; conNota: boolean; limite: number
+  abreAt: string | null; cierraAt: string | null; aceptaTarde: boolean; conNota: boolean; escala?: EscalaEntrega; limite: number
   versiones: Version[]; historial: EventoHistorial[]
 }
 interface Proyecto { id: number; titulo: string; tipo: TipoProyecto; updatedAt: string }

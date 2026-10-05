@@ -51,7 +51,7 @@
               <span class="text-[11px] text-base-texto-secundario">
                 {{ e.learningUnitId ? leccion(e.learningUnitId) : 'Entrega de la materia' }} · {{ TIPO_ENTREGA[e.tipoProyecto] }}
                 <template v-if="e.cierraAt"> · cierra {{ fechaCorta(e.cierraAt) }}</template>
-                · hasta {{ e.maxVersiones }} {{ e.maxVersiones === 1 ? 'versión' : 'versiones' }}{{ e.conNota ? ' · con nota' : '' }}
+                · hasta {{ e.maxVersiones }} {{ e.maxVersiones === 1 ? 'versión' : 'versiones' }}{{ escalaDe(e) === 'comentario' ? '' : ` · ${ESCALAS.find((x) => x.valor === escalaDe(e))?.titulo.toLowerCase()}` }}
               </span>
             </span>
             <span class="flex items-center gap-3 shrink-0 text-[11px]">
@@ -69,14 +69,14 @@
 import { computed, onMounted, ref } from 'vue'
 import { Inbox, Loader2, Plus } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
-import { TIPO_ENTREGA, fechaCorta, type EstadoEntrega, type TipoEntrega } from '~/utils/entregas'
+import { ESCALAS, TIPO_ENTREGA, escalaDe, fechaCorta, type EscalaEntrega, type EstadoEntrega, type TipoEntrega } from '~/utils/entregas'
 
 definePageMeta({ layout: 'teacher' })
 
 interface Clase { id: number; name: string }
 interface Resumen {
   id: number; titulo: string; learningUnitId: number | null; tipoProyecto: TipoEntrega; cierraAt: string | null; maxVersiones: number
-  conNota: boolean; publicada: boolean; asignadaA: number[] | null; estudiantes: number; conteo: Record<EstadoEntrega, number>
+  conNota: boolean; escala?: EscalaEntrega; publicada: boolean; asignadaA: number[] | null; estudiantes: number; conteo: Record<EstadoEntrega, number>
 }
 
 const api = useApi()

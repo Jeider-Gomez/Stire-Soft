@@ -52,15 +52,20 @@
     </div>
 
     <fieldset class="space-y-2 rounded-lg border border-base-borde-sutil p-3">
-      <legend class="px-1 font-semibold text-base-texto-primario">Cómo se valora</legend>
-      <label class="flex items-start gap-2 cursor-pointer">
-        <input v-model="f.conNota" type="checkbox" class="mt-0.5 accent-acento-ambar-fuerte" />
-        <span>Con nota de 0,0 a 5,0 <span class="block text-[11px] text-base-texto-secundario">Sin marcar, solo comentario: en lo formativo el comentario suele servir más que la nota.</span></span>
-      </label>
+      <legend class="px-1 font-semibold text-base-texto-primario">Cómo la calificas</legend>
+      <!-- Cuatro escalas (pedido del dueño, 04/10): la nota es solo una de ellas. Se califica desde la primera versión. -->
+      <div class="grid sm:grid-cols-2 gap-2">
+        <label v-for="e in ESCALAS" :key="e.valor" class="flex items-start gap-2 cursor-pointer rounded-md border p-2.5 min-h-[44px]"
+          :class="f.escala === e.valor ? 'border-acento-ambar-fuerte bg-acento-ambar/5' : 'border-base-borde-sutil'">
+          <input v-model="f.escala" type="radio" name="entrega-escala" :value="e.valor" class="mt-0.5 accent-acento-ambar-fuerte" />
+          <span><span class="font-semibold text-base-texto-primario">{{ e.titulo }}</span>
+            <span class="block text-[11px] text-base-texto-secundario">{{ e.ayuda }}</span></span>
+        </label>
+      </div>
       <label class="flex items-start gap-2" :class="puedeContar ? 'cursor-pointer' : 'opacity-60'">
         <input v-model="f.cuentaParaDominio" type="checkbox" :disabled="!puedeContar" class="mt-0.5 accent-acento-ambar-fuerte" />
         <span>La nota cuenta para el dominio de la lección
-          <span class="block text-[11px] text-base-texto-secundario">{{ puedeContar ? 'Es evidencia: entra al dominio como un ejercicio más, del nivel que elijas.' : 'Necesita una lección y nota.' }}</span>
+          <span class="block text-[11px] text-base-texto-secundario">{{ puedeContar ? 'Es evidencia: entra al dominio como un ejercicio más, del nivel que elijas.' : 'Necesita una lección y nota de 0,0 a 5,0.' }}</span>
         </span>
       </label>
       <div v-if="f.cuentaParaDominio" class="pl-6">
@@ -132,7 +137,7 @@
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import { Loader2, Save, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
-import { TIPO_ENTREGA, aFechaLocal, deFechaLocal, type EntregaEditable, type TipoEntrega, codigoInicialPorDefecto, lenguajeDeArchivo, type ArchivoCodigo } from '~/utils/entregas'
+import { ESCALAS, TIPO_ENTREGA, aFechaLocal, deFechaLocal, escalaDe, type EntregaEditable, type TipoEntrega, codigoInicialPorDefecto, lenguajeDeArchivo, type ArchivoCodigo } from '~/utils/entregas'
 
 const props = defineProps<{ classId: number; inicial?: EntregaEditable | null }>()
 const emit = defineEmits<{ (e: 'guardada', entrega: { id: number }): void; (e: 'cancelar'): void }>()
@@ -155,7 +160,7 @@ const f = reactive({
   cierraAt: aFechaLocal(i?.cierraAt),
   aceptaTarde: i?.aceptaTarde ?? true,
   maxVersiones: i?.maxVersiones ?? 3,
-  conNota: i?.conNota ?? false,
+  escala: escalaDe(i),
   cuentaParaDominio: i?.cuentaParaDominio ?? false,
   dificultad: i?.dificultad ?? 'basico',
   publicada: i?.publicada ?? false,
@@ -180,7 +185,7 @@ watch(() => f.tipoProyecto, (tipo) => {
   else if (usarCodigoInicial.value) restaurarCodigoInicial()
 })
 
-const puedeContar = computed(() => f.learningUnitId !== null && f.conNota)
+const puedeContar = computed(() => f.learningUnitId !== null && f.escala === 'nota')
 watch(puedeContar, (si) => { if (!si) f.cuentaParaDominio = false })
 
 onMounted(async () => {
@@ -211,7 +216,9 @@ async function guardar() {
     cierraAt: deFechaLocal(f.cierraAt),
     aceptaTarde: f.aceptaTarde,
     maxVersiones: Number(f.maxVersiones),
-    conNota: f.conNota,
+    escala: f.escala,
+    // Para un servidor de antes de las escalas (que solo conoce «con nota»).
+    conNota: f.escala === 'nota',
     cuentaParaDominio: f.cuentaParaDominio,
     dificultad: f.dificultad,
     publicada: f.publicada,

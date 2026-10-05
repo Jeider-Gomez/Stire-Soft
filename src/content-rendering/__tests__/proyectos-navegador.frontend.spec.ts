@@ -98,10 +98,14 @@ describe('Entregas (docs/DISENO_INTERVENCION_DOCENTE.md §3)', () => {
     expect(leer('utils/pestanasClase.ts')).toContain("case 'entregas': return `/docente/entregas?clase=${classId}`");
   });
 
-  it('en la revisión, el comentario va antes que la nota, y la nota solo aparece si la entrega lleva nota', () => {
+  it('en la revisión, el comentario va antes que la calificación, y la calificación sigue la escala de la entrega', () => {
     const revision = leer('pages/docente/entregas/revision/[envioId].vue');
     expect(revision.indexOf('id="revision-comentario"')).toBeLessThan(revision.indexOf('id="revision-nota"'));
-    expect(revision).toMatch(/<div v-if="envio\.entrega\?\.conNota"/);
+    expect(revision).toContain('<div v-if="escala === \'nota\'" class="sm:w-40">');
+    expect(revision).toContain('<fieldset v-else-if="escala === \'aprobacion\' || escala === \'desempeno\'"');
+    expect(revision).toContain('v-for="o in VALORACIONES_DE[escala]"');
+    // solo comentario: se dice y se ofrece cambiarlo, en vez de dejar al docente buscando dónde poner la nota
+    expect(revision).toContain('Cambiar cómo se califica');
     expect(revision).toContain('Siguiente sin revisar');
     expect(revision).toContain('textoEvento(h)');
   });
@@ -114,7 +118,9 @@ describe('Entregas (docs/DISENO_INTERVENCION_DOCENTE.md §3)', () => {
   it('el formulario del docente: 3 versiones por defecto, sin nota por defecto y lección opcional', () => {
     const form = leer('components/docente/EntregaForm.vue');
     expect(form).toContain('maxVersiones: i?.maxVersiones ?? 3');
-    expect(form).toContain('conNota: i?.conNota ?? false');
+    expect(form).toContain('escala: escalaDe(i),');
+    expect(form).toContain('v-for="e in ESCALAS"');
+    expect(form).toContain("const puedeContar = computed(() => f.learningUnitId !== null && f.escala === 'nota')");
     expect(form).toContain('<option :value="null">Ninguna: es una entrega de la materia</option>');
   });
 });
@@ -129,7 +135,43 @@ describe('Historial de una entrega en palabras', () => {
     expect(textoEvento({ tipo: 'nota_cambiada', detalle: { antes: 4, despues: 4.5 } })).toBe('Nota cambiada: 4,0 → 4,5');
     expect(textoEvento({ tipo: 'revisada', detalle: { nota: null, comentario: 'Bien' } })).toBe('Revisada con comentario');
     expect(textoEvento({ tipo: 'reabierta', detalle: null })).toBe('El docente dio una versión más');
+    expect(textoEvento({ tipo: 'revisada', detalle: { nota: null, comentario: null, valoracion: 'superior' } })).toBe('Revisada · Superior');
+    expect(textoEvento({ tipo: 'valoracion_cambiada', detalle: { antes: 'no_aprobado', despues: 'aprobado' } })).toBe('Valoración cambiada: No aprobado → Aprobado');
     expect(notaTexto(null)).toBe('');
+  });
+});
+
+describe('Escalas de calificación de una entrega (pedido del dueño, 04/10)', () => {
+  const E = cargar<{
+    ESCALAS: Array<{ valor: string }>;
+    escalaDe: (e: { escala?: string | null; conNota?: boolean } | null) => string;
+    calificacionTexto: (v: { nota: number | null; valoracion?: string | null } | null) => string;
+    VALORACIONES_DE: Record<string, Array<{ valor: string }>>;
+  }>('entregas.ts');
+
+  it('cuatro escalas, la primera solo comentario; aprobado o no; desempeño en cuatro niveles', () => {
+    expect(E.ESCALAS.map((e) => e.valor)).toEqual(['comentario', 'aprobacion', 'desempeno', 'nota']);
+    expect(E.VALORACIONES_DE.aprobacion.map((v) => v.valor)).toEqual(['aprobado', 'no_aprobado']);
+    expect(E.VALORACIONES_DE.desempeno.map((v) => v.valor)).toEqual(['superior', 'alto', 'basico', 'bajo']);
+  });
+
+  it('una respuesta de antes de las escalas se entiende por «con nota»', () => {
+    expect(E.escalaDe({ conNota: true })).toBe('nota');
+    expect(E.escalaDe({ conNota: false })).toBe('comentario');
+    expect(E.escalaDe({ escala: 'desempeno', conNota: false })).toBe('desempeno');
+    expect(E.escalaDe(null)).toBe('comentario');
+  });
+
+  it('la calificación en una palabra: nota con coma o la valoración', () => {
+    expect(E.calificacionTexto({ nota: 4.5 })).toBe('4,5');
+    expect(E.calificacionTexto({ nota: null, valoracion: 'no_aprobado' })).toBe('No aprobado');
+    expect(E.calificacionTexto({ nota: null, valoracion: null })).toBe('');
+  });
+
+  it('el estudiante ve la valoración en su entrega y en el inicio', () => {
+    const leer = (archivo: string) => readFileSync(path.join(__dirname, '..', '..', '..', 'frontend-nuxt', archivo), 'utf8');
+    expect(leer('pages/estudiante/entregas/[id].vue')).toContain('NOMBRE_VALORACION[v.valoracion]');
+    expect(leer('pages/estudiante/index.vue')).toContain('calificacionTexto(e.ultima)');
   });
 });
 

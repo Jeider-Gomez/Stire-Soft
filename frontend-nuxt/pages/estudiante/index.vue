@@ -221,7 +221,7 @@
               </span>
               <span class="px-2 py-0.5 rounded text-[10px] font-bold shrink-0"
                 :class="e.estado === 'sin_entregar' ? 'bg-acento-ambar/15 text-acento-ambar-fuerte' : e.estado === 'revisada' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600'">
-                {{ e.estado === 'revisada' ? (e.ultima?.nota != null ? `Revisada · ${notaTexto(e.ultima.nota)}` : 'Revisada') : e.estado === 'por_revisar' ? 'Entregada, sin revisar' : 'Por entregar' }}
+                {{ e.estado === 'revisada' ? (calificacionTexto(e.ultima) ? `Revisada · ${calificacionTexto(e.ultima)}` : 'Revisada') : e.estado === 'por_revisar' ? 'Entregada, sin revisar' : 'Por entregar' }}
               </span>
             </NuxtLink>
           </li>
@@ -318,7 +318,7 @@ import { tocaRepasar } from '~/utils/progresoLeccion'
 import { computed, onMounted, ref, watch } from 'vue'
 import { AlertTriangle, BadgeCheck, BookOpen, Brain, CheckCircle2, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, ShieldAlert, TrendingUp } from 'lucide-vue-next'
 import { contar, DOMINADO } from '~/utils/terminos'
-import { fechaCorta, notaTexto, type EstadoEntrega } from '~/utils/entregas'
+import { calificacionTexto, fechaCorta, type EstadoEntrega, type Valoracion } from '~/utils/entregas'
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
@@ -411,7 +411,7 @@ onMounted(async () => {
 })
 
 // Entregas de la clase activa: primero las que faltan por entregar, luego las que tienen revisión nueva.
-interface MiEntrega { id: number; titulo: string; cierraAt: string | null; estado: EstadoEntrega; versionesUsadas: number; limite: number; ultima: { nota: number | null } | null }
+interface MiEntrega { id: number; titulo: string; cierraAt: string | null; estado: EstadoEntrega; versionesUsadas: number; limite: number; ultima: { nota: number | null; valoracion?: Valoracion | null } | null }
 const entregas = ref<MiEntrega[]>([])
 const ORDEN_ESTADO: Record<EstadoEntrega, number> = { sin_entregar: 0, revisada: 1, por_revisar: 2 }
 watch(

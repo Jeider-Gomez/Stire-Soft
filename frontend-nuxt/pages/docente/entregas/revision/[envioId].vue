@@ -74,14 +74,33 @@
               class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30"></textarea>
             <p class="text-[11px] text-base-texto-secundario text-right">{{ comentario.length }} / 2000</p>
           </div>
-          <div v-if="envio.entrega?.conNota" class="sm:w-40">
+          <!-- La calificación según la escala de la entrega. Se puede poner desde la primera versión: si el trabajo ya está
+               bien, no hace falta esperar otra. -->
+          <div v-if="escala === 'nota'" class="sm:w-40">
             <label for="revision-nota" class="block font-semibold text-base-texto-primario mb-1">Nota (0,0 a 5,0)</label>
             <input id="revision-nota" v-model="nota" type="text" inputmode="decimal" placeholder="Sin nota" maxlength="4"
               :aria-invalid="!!errorNota" aria-describedby="revision-nota-error"
               class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
             <p id="revision-nota-error" v-if="errorNota" class="text-semantico-falla text-[11px] mt-1">{{ errorNota }}</p>
           </div>
-          <p v-else class="text-[11px] text-base-texto-secundario">Esta entrega es solo con comentario.</p>
+          <fieldset v-else-if="escala === 'aprobacion' || escala === 'desempeno'" class="space-y-1.5">
+            <legend class="font-semibold text-base-texto-primario mb-1">{{ escala === 'aprobacion' ? '¿Aprobado?' : 'Desempeño' }}</legend>
+            <div class="flex flex-wrap gap-2">
+              <label v-for="o in VALORACIONES_DE[escala]" :key="o.valor" class="cursor-pointer">
+                <input v-model="valoracion" type="radio" name="revision-valoracion" :value="o.valor" class="peer sr-only" />
+                <span class="inline-flex flex-col justify-center min-h-[44px] px-3 py-1.5 rounded-md border border-base-borde-fuerte peer-checked:border-acento-ambar-fuerte peer-checked:bg-acento-ambar-fuerte peer-checked:text-base-blanco peer-focus-visible:ring-2 peer-focus-visible:ring-acento-ambar-fuerte/40">
+                  <span class="font-bold">{{ o.texto }}</span>
+                  <span class="text-[10px] opacity-90">{{ o.ayuda }}</span>
+                </span>
+              </label>
+              <button v-if="valoracion" type="button" class="min-h-[44px] px-2 text-[11px] font-semibold text-base-texto-secundario hover:underline" @click="valoracion = null">Quitar</button>
+            </div>
+          </fieldset>
+          <p v-else class="text-[11px] text-base-texto-secundario">
+            Esta entrega es solo con comentario.
+            <NuxtLink :to="`/docente/entregas/${envio.entregaId}`" class="font-semibold text-acento-ambar-fuerte hover:underline">Cambiar cómo se califica</NuxtLink>
+            (aprobado o no, desempeño o nota).
+          </p>
           <div class="flex flex-wrap items-center gap-3">
             <button type="submit" :disabled="guardando" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold inline-flex items-center gap-1.5 disabled:opacity-50">
               <Loader2 v-if="guardando" :size="14" class="animate-spin" aria-hidden="true" /><Save v-else :size="14" aria-hidden="true" />
@@ -113,16 +132,16 @@ import { computed, ref, watch } from 'vue'
 import { ArrowLeft, ArrowRight, Download, History, Loader2, Save } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { descargarHtml, descargarZip } from '~/utils/descargaProyecto'
-import { fechaCorta, notaTexto, textoEvento, type EventoHistorial } from '~/utils/entregas'
+import { VALORACIONES_DE, escalaDe, fechaCorta, notaTexto, textoEvento, type EscalaEntrega, type EventoHistorial, type Valoracion } from '~/utils/entregas'
 import type { ArchivoProyecto, TipoProyecto } from '~/utils/proyectoNavegador'
 
 definePageMeta({ layout: 'teacher' })
 
 interface Envio {
   id: number; entregaId: number; classId: number; version: number; titulo: string; tipo: TipoProyecto; tarde: boolean
-  archivos: ArchivoProyecto[]; estudiante: string; clase: string; nota: number | null; comentario: string | null
+  archivos: ArchivoProyecto[]; estudiante: string; clase: string; nota: number | null; valoracion: Valoracion | null; comentario: string | null
   revisadoAt: string | null; createdAt: string
-  entrega: { id: number; titulo: string; conNota: boolean; maxVersiones: number } | null
+  entrega: { id: number; titulo: string; escala?: EscalaEntrega; conNota: boolean; maxVersiones: number } | null
   versiones: Array<{ id: number; version: number; createdAt: string; tarde: boolean; revisadoAt: string | null }>
   historial: EventoHistorial[]
   siguienteSinRevisar: number | null
@@ -136,6 +155,8 @@ const cargando = ref(true)
 const error = ref<string | null>(null)
 const actual = ref(0)
 const nota = ref('')
+const valoracion = ref<Valoracion | null>(null)
+const escala = computed(() => escalaDe(envio.value?.entrega))
 const comentario = ref('')
 const errorNota = ref<string | null>(null)
 const guardando = ref(false)
@@ -162,6 +183,7 @@ async function cargar() {
   try {
     envio.value = await api.get<Envio>(`/proyecto-envios/${Number(route.params.envioId)}`)
     nota.value = notaTexto(envio.value.nota)
+    valoracion.value = envio.value.valoracion ?? null
     comentario.value = envio.value.comentario ?? ''
   } catch (err) {
     error.value = messageOf(err, 'No se pudo abrir la entrega.')
@@ -186,8 +208,13 @@ async function guardar() {
   if (n !== null && (!Number.isFinite(n) || n < 0 || n > 5)) { errorNota.value = 'Escribe una nota entre 0,0 y 5,0, o déjala vacía.'; return }
   guardando.value = true
   try {
+    const conValoracion = escala.value === 'aprobacion' || escala.value === 'desempeno'
     const r = await api.patch<{ nota: number | null; comentario: string | null; revisadoAt: string | null }>(
-      `/proyecto-envios/${envio.value.id}/revision`, { nota: envio.value.entrega?.conNota ? n : null, comentario: comentario.value })
+      `/proyecto-envios/${envio.value.id}/revision`, {
+        nota: escala.value === 'nota' ? n : null,
+        ...(conValoracion ? { valoracion: valoracion.value } : {}),
+        comentario: comentario.value,
+      })
     await cargar()
     mensaje.value = r.revisadoAt ? 'Revisión guardada. El estudiante ya la ve.' : 'Revisión borrada: queda «sin revisar».'
   } catch (err) {

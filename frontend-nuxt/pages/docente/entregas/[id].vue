@@ -21,7 +21,7 @@
               </h1>
               <p class="text-[11px] text-base-texto-secundario">
                 {{ TIPO_ENTREGA[entrega.tipoProyecto] }} · hasta {{ entrega.maxVersiones }} {{ entrega.maxVersiones === 1 ? 'versión' : 'versiones' }}
-                · {{ entrega.conNota ? 'con nota' : 'solo comentario' }}{{ entrega.cuentaParaDominio ? ' · cuenta para el dominio' : '' }}
+                · {{ ESCALAS.find((e) => e.valor === escalaDe(entrega))?.titulo.toLowerCase() }}{{ entrega.cuentaParaDominio ? ' · cuenta para el dominio' : '' }}
                 <template v-if="entrega.cierraAt"> · cierra {{ fechaCorta(entrega.cierraAt) }}{{ entrega.aceptaTarde ? ' (acepta tarde)' : '' }}</template>
               </p>
             </div>
@@ -69,7 +69,7 @@
             </div>
             <div class="flex items-center gap-2 flex-wrap shrink-0">
               <span class="px-2 py-0.5 rounded text-[10px] font-bold" :class="CLASE_ESTADO[f.estado]">
-                {{ ESTADO_ENTREGA[f.estado] }}<template v-if="f.estado === 'revisada' && ultima(f).nota !== null"> · {{ notaTexto(ultima(f).nota) }}</template>
+                {{ ESTADO_ENTREGA[f.estado] }}<template v-if="f.estado === 'revisada' && calificacionTexto(ultima(f))"> · {{ calificacionTexto(ultima(f)) }}</template>
               </span>
               <NuxtLink v-if="f.versiones.length" :to="`/docente/entregas/revision/${ultima(f).id}`"
                 class="px-3 py-1.5 rounded-md font-bold" :class="f.estado === 'por_revisar' ? 'bg-acento-ambar-fuerte text-base-blanco' : 'borde-afordancia'">
@@ -90,11 +90,11 @@ import { computed, onMounted, ref } from 'vue'
 import { ArrowLeft, Loader2, Pencil } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { formatMarkdown } from '~/utils/formatMarkdown'
-import { ESTADO_ENTREGA, TIPO_ENTREGA, fechaCorta, notaTexto, type EntregaEditable, type EstadoEntrega } from '~/utils/entregas'
+import { ESCALAS, ESTADO_ENTREGA, TIPO_ENTREGA, calificacionTexto, escalaDe, fechaCorta, type EntregaEditable, type EstadoEntrega, type Valoracion } from '~/utils/entregas'
 
 definePageMeta({ layout: 'teacher' })
 
-interface Version { id: number; version: number; tarde: boolean; nota: number | null; revisadoAt: string | null; createdAt: string }
+interface Version { id: number; version: number; tarde: boolean; nota: number | null; valoracion?: Valoracion | null; revisadoAt: string | null; createdAt: string }
 interface Fila { studentId: number; estudiante: string; estado: EstadoEntrega; reaperturas: number; versiones: Version[] }
 type Detalle = EntregaEditable & { classId: number; filas: Fila[] }
 

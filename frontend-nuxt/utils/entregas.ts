@@ -7,6 +7,48 @@ export type EstadoEntrega = 'sin_entregar' | 'por_revisar' | 'revisada'
 
 export type TipoEntrega = 'web' | 'javascript' | 'pseudocodigo' | 'diagrama' | 'cualquiera'
 
+/** Cómo se califica la entrega (src/proyectos/entrega-reglas.ts). */
+export type EscalaEntrega = 'comentario' | 'aprobacion' | 'desempeno' | 'nota'
+export type Valoracion = 'aprobado' | 'no_aprobado' | 'superior' | 'alto' | 'basico' | 'bajo'
+
+/** Las cuatro formas de calificar, en el orden en que se ofrecen (la primera es la de por defecto). */
+export const ESCALAS: Array<{ valor: EscalaEntrega; titulo: string; ayuda: string }> = [
+  { valor: 'comentario', titulo: 'Solo comentario', ayuda: 'Retroalimentación para mejorar. En lo formativo suele servir más que la nota.' },
+  { valor: 'aprobacion', titulo: 'Aprobado o no aprobado', ayuda: 'Con comentario. Para entregas de práctica o de cumplimiento.' },
+  { valor: 'desempeno', titulo: 'Desempeño: Superior, Alto, Básico o Bajo', ayuda: 'El nivel sin un número, con la escala nacional (Decreto 1290 de 2009).' },
+  { valor: 'nota', titulo: 'Nota de 0,0 a 5,0', ayuda: 'La única que entra al libro de notas y puede contar para el dominio de la lección.' },
+]
+
+/** Las valoraciones de cada escala sin número, con lo que significan. */
+export const VALORACIONES_DE: Record<'aprobacion' | 'desempeno', Array<{ valor: Valoracion; texto: string; ayuda: string }>> = {
+  aprobacion: [
+    { valor: 'aprobado', texto: 'Aprobado', ayuda: 'Cumple lo pedido' },
+    { valor: 'no_aprobado', texto: 'No aprobado', ayuda: 'Todavía no cumple' },
+  ],
+  desempeno: [
+    { valor: 'superior', texto: 'Superior', ayuda: 'Va más allá de lo pedido' },
+    { valor: 'alto', texto: 'Alto', ayuda: 'Cumple bien lo pedido' },
+    { valor: 'basico', texto: 'Básico', ayuda: 'Cumple lo mínimo' },
+    { valor: 'bajo', texto: 'Bajo', ayuda: 'No alcanza lo mínimo' },
+  ],
+}
+
+export const NOMBRE_VALORACION: Record<Valoracion, string> = {
+  aprobado: 'Aprobado', no_aprobado: 'No aprobado', superior: 'Superior', alto: 'Alto', basico: 'Básico', bajo: 'Bajo',
+}
+
+/** La escala de una entrega; las respuestas de antes de las escalas solo traían «con nota». */
+export function escalaDe(e: { escala?: EscalaEntrega | null; conNota?: boolean } | null | undefined): EscalaEntrega {
+  return e?.escala ?? (e?.conNota ? 'nota' : 'comentario')
+}
+
+/** «4,5», «Aprobado», «Superior» o '' si no tiene calificación. */
+export function calificacionTexto(v: { nota: number | null; valoracion?: Valoracion | null } | null | undefined): string {
+  if (!v) return ''
+  if (v.valoracion) return NOMBRE_VALORACION[v.valoracion] ?? ''
+  return notaTexto(v.nota)
+}
+
 /** Un archivo de un proyecto o del código inicial de una entrega. */
 export interface ArchivoCodigo { nombre: string; contenido: string }
 
@@ -16,6 +58,7 @@ export interface EntregaEditable {
   /** Código inicial: «Empezar desde la plantilla» le crea al estudiante un proyecto con estos archivos. */
   plantilla?: ArchivoCodigo[] | null
   abreAt: string | null; cierraAt: string | null; aceptaTarde: boolean; maxVersiones: number; conNota: boolean
+  escala?: EscalaEntrega
   cuentaParaDominio: boolean; dificultad: string; publicada: boolean; asignadaA: number[] | null
 }
 
@@ -84,7 +127,7 @@ export function deFechaLocal(valor: string): string | null {
 
 export interface EventoHistorial {
   id: number
-  tipo: 'enviada' | 'revisada' | 'nota_cambiada' | 'comentario_editado' | 'revision_borrada' | 'reabierta'
+  tipo: 'enviada' | 'revisada' | 'nota_cambiada' | 'valoracion_cambiada' | 'comentario_editado' | 'revision_borrada' | 'reabierta'
   detalle: Record<string, unknown> | null
   actor: string
   createdAt: string
@@ -95,8 +138,11 @@ export function textoEvento(e: EventoHistorial): string {
   const d = e.detalle ?? {}
   switch (e.tipo) {
     case 'enviada': return `Versión ${d.version} enviada${d.tarde ? ' (tarde)' : ''}`
-    case 'revisada': return typeof d.nota === 'number' ? `Revisada · nota ${notaTexto(d.nota)}` : 'Revisada con comentario'
+    case 'revisada':
+      if (typeof d.valoracion === 'string') return `Revisada · ${NOMBRE_VALORACION[d.valoracion as Valoracion] ?? d.valoracion}`
+      return typeof d.nota === 'number' ? `Revisada · nota ${notaTexto(d.nota)}` : 'Revisada con comentario'
     case 'nota_cambiada': return `Nota cambiada: ${notaTexto(d.antes as number | null) || 'sin nota'} → ${notaTexto(d.despues as number | null) || 'sin nota'}`
+    case 'valoracion_cambiada': return `Valoración cambiada: ${NOMBRE_VALORACION[d.antes as Valoracion] ?? 'sin valorar'} → ${NOMBRE_VALORACION[d.despues as Valoracion] ?? 'sin valorar'}`
     case 'comentario_editado': return 'Comentario editado'
     case 'revision_borrada': return 'Revisión borrada: vuelve a «sin revisar»'
     case 'reabierta': return 'El docente dio una versión más'
