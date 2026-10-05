@@ -64,6 +64,9 @@
         </div>
       </header>
 
+      <!-- UI-01: leer, escuchar, ver y practicar, como opciones (docs/DISENO_FORMATOS_LECCION.md) -->
+      <EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" />
+
       <!-- La explicación y los recursos de la lección, tal como los publicó el docente -->
       <article
         v-if="unitContent.length > 0"
@@ -224,6 +227,8 @@ interface ContentBlock {
 
 /** Video, PDF, imagen o recurso insertado (paso 6); el resto es texto en Markdown. */
 const esRecurso = (type?: string) => ['video', 'pdf', 'image', 'embed'].includes(type ?? '')
+/** Los bloques de texto, para escucharlos (EscucharLeccion). Computado: el mismo arreglo mientras no cambie la lección. */
+const bloquesDeTexto = computed(() => unitContent.value.filter((c) => !esRecurso(c.type)))
 
 interface ActivitySummary {
   id: number
