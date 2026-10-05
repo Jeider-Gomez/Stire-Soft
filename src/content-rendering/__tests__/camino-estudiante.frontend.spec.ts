@@ -77,6 +77,8 @@ describe('La lección antes del ejercicio y la evaluación implícita', () => {
     // primero se busca el reto; la confianza solo se marca si lo hay
     expect(leccion.indexOf('/next-activity?reto=1')).toBeLessThan(leccion.indexOf('confidence`, { confianza: 3 }'));
     expect(leccion).toContain("reto.reason === 'reto'");
+    // tras varios fallos seguidos, el tope va primero y se dice por qué no hay reto
+    expect(leccion).toContain("reto?.reason === 'pausa'");
     // mientras no esté dominada (antes, solo antes de empezar)
     expect(leccion).toContain('puedeSaltar.value = !!rec && !rec.allCompleted && (progress?.mastery ?? 0) < DOMINADO');
   });

@@ -307,7 +307,10 @@ async function saltarConReto() {
       await navigateTo(`/estudiante/evaluacion/${reto.activityId}?reto=1`)
       return
     }
-    saltoError.value = 'No hay ejercicios de un nivel más alto pendientes en esta lección: sigue con el recomendado.'
+    // Tras varios fallos seguidos el tope (BT-16) va primero: no se ofrece algo más difícil.
+    saltoError.value = reto?.reason === 'pausa'
+      ? 'Llevas varios intentos seguidos sin lograrlo: primero vuelve a la explicación o pide una pista. El reto queda para después.'
+      : 'No hay ejercicios de un nivel más alto pendientes en esta lección: sigue con el recomendado.'
     puedeSaltar.value = false
   } catch (error: unknown) {
     saltoError.value = messageOf(error, 'No se pudo preparar el reto. Prueba con «Practicar».')
