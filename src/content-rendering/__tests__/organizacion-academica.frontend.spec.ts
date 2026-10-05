@@ -206,7 +206,7 @@ describe('Plantillas: agrupadas por asignatura, con lo que dice si sirven', () =
     const elegir = leer('components', 'docente', 'ElegirPlantilla.vue');
     expect(elegir).toContain('Ver más plantillas');
     expect(elegir).toContain('agruparPorAsignatura(resto)');
-    expect(leer('pages', 'docente', 'contenidos.vue')).toContain('v-for="g in gruposDePlantillas"');
+    expect(leer('components', 'docente', 'contenidos', 'VentanaImportar.vue')).toContain('v-for="g in gruposDePlantillas"');
     const ajustes = leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue');
     expect(ajustes).toContain('opcionesDeAlcance(classInfo.value?.asignatura)');
     expect(ajustes).toContain("alcancePlantilla: alcanceElegido.value");

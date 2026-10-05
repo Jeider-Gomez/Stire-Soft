@@ -49,18 +49,26 @@ Resultados:
 
 Lo comprueba `src/content-rendering/__tests__/admin-dividido.frontend.spec.ts`.
 
+## 3 bis. Lo que se dividió después (05/10)
+
+| Pantalla | Antes | Ahora |
+|---|---|---|
+| Mensajes (estudiante y docente) | Dos páginas casi iguales, de 413 y 453 líneas, que llamaban a la API | `composables/useMensajes.ts` + `components/mensajes/BandejaMensajes.vue` y `VentanaRedactar.vue`; cada página unas 70–100 líneas |
+| `pages/docente/contenidos.vue` | 1131 líneas, cuatro ventanas y sus llamadas a la API | 389 líneas: el árbol. `composables/useContenidosCurso.ts`, `utils/contenidosCurso.ts` (reglas con prueba) y una ventana por componente en `components/docente/contenidos/` |
+
+Las ventanas nuevas usan la misma base que las del admin (`AdminDialogo`): foco inicial, Tab atrapado, Escape y foco de
+vuelta. Lo comprueban `mensajes.frontend.spec.ts` y `contenidos-dividido.frontend.spec.ts`, y una prueba en el
+navegador abrió y cerró cada ventana sin errores.
+
 ## 4. Lo que queda, con criterio
 
 | Archivo | Líneas | ¿Dividir? |
 |---|---|---|
 | `components/proyectos/EditorDiagrama.vue` | 1322 | **Con cuidado:** el lienzo y su estado van juntos. Se puede extraer el panel de propiedades y la barra de herramientas, no el lienzo. |
-| `pages/docente/contenidos.vue` | 1131 | **Sí:** mezcla el árbol del curso, la edición de temas y lecciones y las publicaciones. Mismo patrón que el admin (composable `useContenidosCurso` y componentes por sección). |
 | `components/docente/UnitExercisesPanel.vue`, `pages/docente/index.vue` | 852, 827 | Sí, por secciones, después de contenidos. |
 | Los demás de 300 a 650 líneas | — | Revisar uno por uno con el criterio de arriba. |
 
-**PAT-01:** 32 de 44 páginas todavía llaman a la API desde la vista. El panel de usuarios ya no lo hace, pero se agregaron 3 páginas (la encuesta del estudiante y la del docente, que no la llaman, y los resultados del admin, que sí). El patrón ya está probado en el panel del
-admin. Se aplica página por página, empezando por las que comparten lógica, como las dos de Mensajes, casi iguales entre
-estudiante y docente.
+**PAT-01:** 29 de 45 páginas todavía llaman a la API desde la vista (eran 32 de 44). El patrón ya está probado en el panel del admin, Mensajes y Contenidos; se sigue página por página, empezando por las más grandes (`docente/index.vue`, 826 líneas).
 
 Hecho así, sin prisa y con pruebas, no cambia lo que ve el usuario ni arriesga la prueba del equipo.
 

@@ -39,6 +39,7 @@
         <!-- Botón Traer de otra clase (T3) -->
         <button
           v-if="selectedClassId && (otherClasses.length > 0 || plantillas.length > 0)"
+          id="abrir-importar"
           type="button"
           @click="openImportModal"
           class="min-h-[44px] px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
@@ -63,7 +64,7 @@
 
     <!-- ESTADO 1: Cargando -->
     <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
-      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Cargando estructura curricular...
+      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Cargando los contenidos…
     </div>
 
     <!-- ESTADO 2: Error -->
@@ -73,7 +74,7 @@
       <button
         @click="loadSections"
         class="px-4 py-2 rounded-md bg-base-bg-secundario border border-base-borde-fuerte font-semibold hover:bg-base-borde-sutil transition-colors">
-        Reintentar carga
+        Volver a cargar
       </button>
     </div>
 
@@ -81,9 +82,9 @@
     <div v-else-if="sections.length === 0" class="p-12 text-center bg-base-blanco rounded-xl border border-base-borde-fuerte text-xs space-y-4">
       <BookOpen :size="28" class="text-3xl block" aria-hidden="true" />
       <div>
-        <h3 class="font-bold text-base-texto-primario text-sm">Sin módulos curriculares</h3>
+        <h3 class="font-bold text-base-texto-primario text-sm">Esta clase todavía no tiene módulos</h3>
         <p class="text-base-texto-secundario max-w-md mx-auto mt-1">
-          Esta clase aún no cuenta con secciones temáticas configuradas en el sistema.
+          Crea el primero o trae los de otra clase tuya o de una plantilla.
         </p>
       </div>
       <div class="flex items-center justify-center gap-3">
@@ -91,8 +92,8 @@
           v-if="selectedClassId"
           @click="openNewModuleModal"
           class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm">
-          <span>+</span>
-          <span>Crear primer módulo</span>
+          <Plus :size="14" aria-hidden="true" />
+          <span>Crear el primer módulo</span>
         </button>
         <button
           v-if="selectedClassId && (otherClasses.length > 0 || plantillas.length > 0)"
@@ -270,335 +271,11 @@
       </div>
     </div>
 
-    <!-- MODAL: Editar Topic -->
-    <Teleport to="body">
-      <div
-        v-if="editTopicModal.open"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-topic-title"
-        @click.self="closeEditTopicModal">
-        <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
-          <div class="flex items-center justify-between">
-            <h2 id="modal-topic-title" class="text-sm font-bold text-base-texto-primario">Editar tema</h2>
-            <button
-              @click="closeEditTopicModal"
-              class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded"
-              aria-label="Cerrar modal de edición de tema">
-              <X :size="14" aria-hidden="true" />
-            </button>
-          </div>
-
-          <form @submit.prevent="submitEditTopic" class="space-y-4 text-xs">
-            <div>
-              <label for="topic-title" class="block font-semibold text-base-texto-primario mb-1">Título *</label>
-              <input
-                id="topic-title"
-                ref="editTopicTitleRef"
-                v-model="editTopicModal.form.title"
-                type="text"
-                required
-                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario" />
-            </div>
-
-            <div>
-              <label for="topic-desc" class="block font-semibold text-base-texto-primario mb-1">Descripción</label>
-              <textarea v-crece
-                id="topic-desc"
-                v-model="editTopicModal.form.description"
-                rows="3"
-                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 resize-y text-base-texto-primario"></textarea>
-            </div>
-
-            <div>
-              <label for="topic-order" class="block font-semibold text-base-texto-primario mb-1">Orden</label>
-              <input
-                id="topic-order"
-                v-model.number="editTopicModal.form.order"
-                type="number"
-                min="0"
-                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario" />
-            </div>
-
-            <p v-if="editTopicModal.error" role="alert" class="text-semantico-falla text-[11px]">{{ editTopicModal.error }}</p>
-
-            <div class="flex items-center justify-end gap-3 pt-1">
-              <button
-                type="button"
-                @click="closeEditTopicModal"
-                class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-base-borde-fuerte">
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                :disabled="editTopicModal.saving"
-                class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <Loader2 :size="14" v-if="editTopicModal.saving" class="animate-spin" aria-hidden="true" />
-                <span>{{ editTopicModal.saving ? 'Guardando…' : 'Guardar cambios' }}</span>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </Teleport>
-
-    <!-- MODAL: Confirmar Archivar Topic -->
-    <Teleport to="body">
-      <div
-        v-if="archiveTopicModal.open"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-archive-title"
-        @click.self="archiveTopicModal.open = false">
-        <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-sm p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
-          <h2 id="modal-archive-title" class="text-sm font-bold text-base-texto-primario">¿Archivar este tema?</h2>
-          <p class="text-xs text-base-texto-secundario">
-            El tema <strong class="text-base-texto-primario">{{ archiveTopicModal.topic?.title }}</strong>
-            quedará inactivo (soft delete). Esta acción es reversible por un administrador.
-          </p>
-          <p v-if="archiveTopicModal.error" role="alert" class="text-semantico-falla text-[11px]">{{ archiveTopicModal.error }}</p>
-          <div class="flex items-center justify-end gap-3">
-            <button
-              @click="archiveTopicModal.open = false"
-              class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-base-borde-fuerte">
-              Cancelar
-            </button>
-            <button
-              @click="submitArchiveTopic"
-              :disabled="archiveTopicModal.saving"
-              class="px-5 py-2 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-semantico-falla">
-              <Loader2 :size="14" v-if="archiveTopicModal.saving" class="animate-spin" aria-hidden="true" />
-              <span>{{ archiveTopicModal.saving ? 'Archivando…' : 'Archivar tema' }}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
-
-    <!-- MODAL: Editar LearningUnit -->
-    <Teleport to="body">
-      <div
-        v-if="editUnitModal.open"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-unit-title"
-        @click.self="closeEditUnitModal">
-        <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-md p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
-          <div class="flex items-center justify-between">
-            <h2 id="modal-unit-title" class="text-sm font-bold text-base-texto-primario">Editar la lección</h2>
-            <button
-              @click="closeEditUnitModal"
-              class="text-base-texto-secundario hover:text-base-texto-primario transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte rounded"
-              aria-label="Cerrar la edición de la lección">
-              <X :size="14" aria-hidden="true" />
-            </button>
-          </div>
-
-          <form @submit.prevent="submitEditUnit" class="space-y-4 text-xs">
-            <div>
-              <label for="unit-title" class="block font-semibold text-base-texto-primario mb-1">Título *</label>
-              <input
-                id="unit-title"
-                ref="editUnitTitleRef"
-                v-model="editUnitModal.form.title"
-                type="text"
-                required
-                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario" />
-            </div>
-
-            <div>
-              <label for="unit-desc" class="block font-semibold text-base-texto-primario mb-1">Descripción</label>
-              <textarea v-crece
-                id="unit-desc"
-                v-model="editUnitModal.form.description"
-                rows="3"
-                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 resize-y text-base-texto-primario"></textarea>
-            </div>
-
-            <div>
-              <label for="unit-difficulty" class="block font-semibold text-base-texto-primario mb-1">Nivel de dificultad</label>
-              <select
-                id="unit-difficulty"
-                v-model="editUnitModal.form.difficulty"
-                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario">
-                <option value="basico">Básico</option>
-                <option value="intermedio">Intermedio</option>
-                <option value="avanzado">Avanzado</option>
-              </select>
-            </div>
-
-            <div>
-              <label for="unit-order" class="block font-semibold text-base-texto-primario mb-1">Orden</label>
-              <input
-                id="unit-order"
-                v-model.number="editUnitModal.form.order"
-                type="number"
-                min="0"
-                class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario" />
-            </div>
-
-            <!-- Sección plegable: Tutor IA en esta unidad (§20.1) -->
-            <details v-if="editUnitModal.unitId" class="border-t border-base-borde-sutil pt-3">
-              <summary class="text-[11px] font-semibold text-base-texto-secundario cursor-pointer hover:text-base-texto-primario select-none flex items-center gap-1.5">
-                Tutor IA en esta lección
-              </summary>
-              <div class="mt-3">
-                <DocenteTutorSettingsPanel scope-type="unit" :scope-id="editUnitModal.unitId" />
-              </div>
-            </details>
-
-            <p v-if="editUnitModal.error" role="alert" class="text-semantico-falla text-[11px]">{{ editUnitModal.error }}</p>
-
-            <div class="flex items-center justify-end gap-3 pt-1">
-              <button
-                type="button"
-                @click="closeEditUnitModal"
-                class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-base-borde-fuerte">
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                :disabled="editUnitModal.saving"
-                class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
-                <Loader2 :size="14" v-if="editUnitModal.saving" class="animate-spin" aria-hidden="true" />
-                <span>{{ editUnitModal.saving ? 'Guardando…' : 'Guardar cambios' }}</span>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </Teleport>
-
-    <!-- Modal Traer de otra clase (T3) -->
-    <Teleport to="body">
-      <div
-        v-if="importModal.open"
-        class="fixed inset-0 bg-base-texto-primario/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-        @click.self="closeImportModal">
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-import-title"
-          class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-xl p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
-          <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
-            <div class="flex items-center gap-2">
-              <CopyPlus :size="18" class="text-acento-ambar-fuerte" />
-              <h2 id="modal-import-title" class="text-sm font-bold text-base-texto-primario">
-                Traer contenido de otra clase
-              </h2>
-            </div>
-            <button
-              type="button"
-              @click="closeImportModal"
-              class="text-base-texto-secundario hover:text-base-texto-primario text-xs p-1"
-              aria-label="Cerrar modal">
-              <X :size="14" aria-hidden="true" />
-            </button>
-          </div>
-
-          <p class="text-xs text-base-texto-secundario">
-            Se copian explicaciones y ejercicios <strong>sin publicar</strong>. No se copian estudiantes ni notas.
-          </p>
-
-          <!-- Selector de clase origen -->
-          <div class="space-y-1">
-            <label for="import-source-class" class="text-xs font-semibold text-base-texto-primario block">
-              Clase de origen:
-            </label>
-            <select
-              id="import-source-class"
-              ref="importSourceRef"
-              v-model="importModal.sourceClassId"
-              @change="onSourceClassChange"
-              class="w-full text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-2 outline-none focus:border-acento-ambar-fuerte">
-              <optgroup v-if="otherClasses.length" label="Mis clases">
-                <option v-for="c in otherClasses" :key="c.id" :value="c.id">
-                  {{ c.name }} ({{ c.code }})
-                </option>
-              </optgroup>
-              <!-- Plantillas de otros docentes, agrupadas por asignatura: primero la de esta clase (§2.3) -->
-              <optgroup v-for="g in gruposDePlantillas" :key="g.clave" :label="`${g.titulo} · ${cuantosEnfoques(g)}`">
-                <option v-for="p in g.plantillas" :key="`p${p.classId}`" :value="p.classId">{{ textoPlantilla(p) }}</option>
-              </optgroup>
-            </select>
-          </div>
-
-          <!-- Secciones disponibles -->
-          <div class="space-y-2 flex-1 overflow-y-auto min-h-[140px] max-h-[260px] border border-base-borde-sutil rounded-lg p-3 bg-base-bg-secundario/30">
-            <div class="flex items-center justify-between pb-2 border-b border-base-borde-sutil text-[11px] font-semibold text-base-texto-secundario">
-              <span>Secciones a copiar ({{ importModal.selectedSectionIds.length }}/{{ importModal.sections.length }})</span>
-              <div class="space-x-2">
-                <button
-                  type="button"
-                  @click="selectAllSections"
-                  class="text-acento-ambar-fuerte hover:underline">
-                  Todas
-                </button>
-                <span>·</span>
-                <button
-                  type="button"
-                  @click="deselectAllSections"
-                  class="text-base-texto-secundario hover:underline">
-                  Ninguna
-                </button>
-              </div>
-            </div>
-
-            <div v-if="importModal.isLoadingSections" class="p-6 text-center text-xs text-base-texto-secundario">
-              <Loader2 :size="14" class="inline-block animate-spin mr-2 align-middle" aria-hidden="true" /> Cargando secciones de la clase...
-            </div>
-
-            <div v-else-if="importModal.sections.length === 0" class="p-6 text-center text-xs text-base-texto-secundario italic">
-              Esta clase no tiene secciones para copiar.
-            </div>
-
-            <div v-else class="space-y-1.5 pt-1">
-              <label
-                v-for="sec in importModal.sections"
-                :key="sec.id"
-                class="flex items-center gap-2.5 p-2 rounded hover:bg-base-blanco cursor-pointer text-xs transition-colors border border-transparent hover:border-base-borde-sutil">
-                <input
-                  type="checkbox"
-                  :value="sec.id"
-                  v-model="importModal.selectedSectionIds"
-                  class="rounded border-base-borde-fuerte text-acento-ambar-fuerte focus:ring-acento-ambar-fuerte" />
-                <span class="font-medium text-base-texto-primario">
-                  Módulo {{ sec.order || '—' }}: {{ sec.title }}
-                </span>
-              </label>
-            </div>
-          </div>
-
-          <p v-if="importModal.error" role="alert" class="text-semantico-falla text-xs">
-            {{ importModal.error }}
-          </p>
-
-          <div class="flex items-center justify-end gap-3 pt-2 border-t border-base-borde-sutil">
-            <button
-              type="button"
-              @click="closeImportModal"
-              :disabled="importModal.isImporting"
-              class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-50">
-              Cancelar
-            </button>
-            <button
-              type="button"
-              @click="submitImport"
-              :disabled="importModal.isImporting || !importModal.sourceClassId || importModal.selectedSectionIds.length === 0"
-              class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors disabled:opacity-50 flex items-center gap-2">
-              <Loader2 v-if="importModal.isImporting" :size="14" class="animate-spin" aria-hidden="true" />
-              <span>{{ importModal.isImporting ? 'Copiando…' : 'Traer contenido' }}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <!-- Una ventana a la vez; cada una es su propio componente con la base común (foco, Tab atrapado, Escape). -->
+    <DocenteContenidosVentanaEditarTema v-if="ventana?.tipo === 'tema'" :tema="ventana.tema" @cerrar="ventana = null" />
+    <DocenteContenidosVentanaArchivarTema v-else-if="ventana?.tipo === 'archivar'" :tema="ventana.tema" @cerrar="ventana = null" />
+    <DocenteContenidosVentanaEditarLeccion v-else-if="ventana?.tipo === 'leccion'" :leccion="ventana.leccion" @cerrar="ventana = null" />
+    <DocenteContenidosVentanaImportar v-else-if="ventana?.tipo === 'importar'" @cerrar="ventana = null" />
 
     <!-- Modales para construir currículo (Módulo, Tema, Unidad) -->
     <CurriculumBuilderModals
@@ -617,515 +294,96 @@
 </template>
 
 <script setup lang="ts">
-import { agruparPorAsignatura, cuantosEnfoques, textoPlantilla, type Plantilla } from '~/utils/plantillas'
-import { BookOpen, ChevronRight, CircleX, CopyPlus, FileText, Folder, Loader2, Pencil, Plus, TriangleAlert, X } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+// Contenidos del curso (DOC-V02): la página organiza el árbol y abre una ventana a la vez; los datos y la API están en
+// composables/useContenidosCurso.ts y cada ventana en components/docente/contenidos/ (PAT-01 y PAT-04; antes un solo
+// archivo de 1131 líneas con cuatro ventanas y sus llamadas a la API).
+import { computed, nextTick, onMounted, provide, ref } from 'vue'
+import { BookOpen, ChevronRight, CircleX, CopyPlus, FileText, Folder, Loader2, Pencil, Plus, TriangleAlert } from 'lucide-vue-next'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
+import { CLAVE_CONTENIDOS, useContenidosCurso } from '~/composables/useContenidosCurso'
+import { mayorOrden, resumenDeLeccion, type LeccionDelArbol, type ModuloDelArbol, type TemaDelArbol } from '~/utils/contenidosCurso'
 
-definePageMeta({
-  layout: 'teacher'
-})
+definePageMeta({ layout: 'teacher' })
 
-interface TeacherClass {
-  id: number
-  code: string
-  name: string
-  asignaturaId?: number | null
-}
+const estado = useContenidosCurso()
+provide(CLAVE_CONTENIDOS, estado)
+// Los nombres de la plantilla se conservan: así el árbol no cambió y el cambio queda en la lógica.
+const {
+  clases: teacherClasses, claseId: selectedClassId, clase: selectedClass, otrasClases: otherClasses, modulos: sections,
+  cargando: isLoading, error: errorMessage, aviso: actionFeedback, errorAccion: actionError, plantillas,
+  cargarModulos: loadSections, alternarPublicacion: toggleSectionPublish,
+  explicaciones: lessonsByUnit, ejercicios: exerciseCountByUnit, cargarExplicaciones: loadLessons,
+} = estado
 
-interface LearningUnitItem {
-  id: number
-  title: string
-  description?: string
-  difficulty: string
-  order: number
-  isActive?: boolean
-}
+type Ventana =
+  | { tipo: 'tema' | 'archivar'; tema: TemaDelArbol }
+  | { tipo: 'leccion'; leccion: LeccionDelArbol }
+  | { tipo: 'importar' }
+const ventana = ref<Ventana | null>(null)
+const openEditTopicModal = (tema: TemaDelArbol) => { ventana.value = { tipo: 'tema', tema } }
+const confirmArchiveTopic = (tema: TemaDelArbol) => { ventana.value = { tipo: 'archivar', tema } }
+const openEditUnitModal = (leccion: LeccionDelArbol) => { ventana.value = { tipo: 'leccion', leccion } }
+const openImportModal = () => { ventana.value = { tipo: 'importar' } }
 
-interface TopicItem {
-  id: number
-  title: string
-  description?: string
-  order: number
-  learningUnits?: LearningUnitItem[]
-}
-
-interface SectionItem {
-  id: number
-  title: string
-  description?: string
-  order: number
-  isPublished: boolean
-  topics?: TopicItem[]
-}
-
-const api = useApi()
-const { messageOf } = useApiErrorMessage()
-
-const teacherClasses = ref<TeacherClass[]>([])
-const selectedClassId = ref<number | null>(null)
-const sections = ref<SectionItem[]>([])
-const isLoading = ref(false)
-const errorMessage = ref<string | null>(null)
-const actionFeedback = ref<string | null>(null)
-const actionError = ref<string | null>(null)
-
-// Refs para modales de construcción y lecciones
+// Crear módulos, temas y lecciones, y escribir las explicaciones: sus ventanas ya eran componentes aparte.
 const builderModalsRef = ref<InstanceType<typeof CurriculumBuilderModals> | null>(null)
 const lessonsModalRef = ref<InstanceType<typeof UnitLessonsModal> | null>(null)
 const selectedUnitForLessons = ref<{ id: number; title: string } | null>(null)
 
 function openNewModuleModal() {
-  if (!selectedClassId.value) return
-  const maxOrder = sections.value.reduce((max, s) => Math.max(max, s.order || 0), 0)
-  builderModalsRef.value?.openCreateModule(selectedClassId.value, maxOrder)
+  if (selectedClassId.value) builderModalsRef.value?.openCreateModule(selectedClassId.value, mayorOrden(sections.value))
 }
-
-function openNewTopicModal(sec: SectionItem) {
-  const maxOrder = (sec.topics || []).reduce((max, t) => Math.max(max, t.order || 0), 0)
-  builderModalsRef.value?.openCreateTopic(sec.id, maxOrder)
+function openNewTopicModal(sec: ModuloDelArbol) {
+  builderModalsRef.value?.openCreateTopic(sec.id, mayorOrden(sec.topics))
 }
-
-function openNewUnitModal(sec: SectionItem, topic: TopicItem) {
-  const maxOrder = (topic.learningUnits || []).reduce((max, u) => Math.max(max, u.order || 0), 0)
-  builderModalsRef.value?.openCreateUnit(sec.id, topic.id, maxOrder)
+function openNewUnitModal(sec: ModuloDelArbol, topic: TemaDelArbol) {
+  builderModalsRef.value?.openCreateUnit(sec.id, topic.id, mayorOrden(topic.learningUnits))
 }
-
-function openLessonsModal(unit: LearningUnitItem, opts: { create?: boolean; editId?: number } = {}) {
+function openLessonsModal(unit: LeccionDelArbol, opts: { create?: boolean; editId?: number } = {}) {
   selectedUnitForLessons.value = { id: unit.id, title: unit.title }
-  nextTick(() => {
-    lessonsModalRef.value?.openModal(opts)
-  })
+  nextTick(() => lessonsModalRef.value?.openModal(opts))
+}
+function onLessonsModalClosed() {
+  if (selectedUnitForLessons.value) void loadLessons(selectedUnitForLessons.value.id)
+}
+function onSectionCreated(nuevo: ModuloDelArbol) {
+  sections.value.push({ ...nuevo, isPublished: nuevo.isPublished ?? false, topics: [] })
+}
+function onTopicCreated(p: { sectionId: number; topic: TemaDelArbol }) {
+  const m = sections.value.find((s) => s.id === p.sectionId)
+  if (m) (m.topics ??= []).push({ ...p.topic, learningUnits: [] })
+}
+function onUnitCreated(p: { sectionId: number; topicId: number; unit: LeccionDelArbol }) {
+  const t = sections.value.find((s) => s.id === p.sectionId)?.topics?.find((x) => x.id === p.topicId)
+  if (t) (t.learningUnits ??= []).push(p.unit)
 }
 
-// ─── Unidad abierta: sus lecciones y ejercicios ─────────────────────────────────
-interface LessonSummary { id: number; title: string; isVisible?: boolean }
-const route = useRoute()
+// La lección abierta muestra sus explicaciones y sus ejercicios.
 const expandedUnitId = ref<number | null>(null)
-const lessonsByUnit = reactive<Record<number, LessonSummary[]>>({})
-const exerciseCountByUnit = reactive<Record<number, number>>({})
-
-const unitSummary = computed(() => {
-  const out: Record<number, string> = {}
-  const ids = new Set([...Object.keys(lessonsByUnit), ...Object.keys(exerciseCountByUnit)].map(Number))
-  for (const id of ids) {
-    const parts: string[] = []
-    if (lessonsByUnit[id] !== undefined) parts.push(plural(lessonsByUnit[id].length, 'explicación', 'explicaciones'))
-    if (exerciseCountByUnit[id] !== undefined) parts.push(plural(exerciseCountByUnit[id], 'ejercicio', 'ejercicios'))
-    out[id] = parts.join(' · ')
-  }
-  return out
-})
-
-async function loadLessons(unitId: number) {
-  try {
-    const list = await api.get<LessonSummary[]>(`/content/unit/${unitId}/all`)
-    lessonsByUnit[unitId] = Array.isArray(list) ? list : []
-  } catch {
-    lessonsByUnit[unitId] = []
-  }
-}
-
-function toggleUnit(unit: LearningUnitItem) {
+function toggleUnit(unit: LeccionDelArbol) {
   expandedUnitId.value = expandedUnitId.value === unit.id ? null : unit.id
-  if (expandedUnitId.value) loadLessons(unit.id)
+  if (expandedUnitId.value) void loadLessons(unit.id)
 }
-
 function setExerciseCount(unitId: number, n: number) {
   exerciseCountByUnit[unitId] = n
 }
-
-function onLessonsModalClosed() {
-  if (selectedUnitForLessons.value) loadLessons(selectedUnitForLessons.value.id)
-}
-
-function onSectionCreated(newSec: any) {
-  sections.value.push({
-    ...newSec,
-    isPublished: newSec.isPublished ?? false,
-    topics: []
-  })
-}
-
-function onTopicCreated(payload: { sectionId: number; topic: any }) {
-  const sec = sections.value.find(s => s.id === payload.sectionId)
-  if (sec) {
-    if (!sec.topics) sec.topics = []
-    sec.topics.push({
-      ...payload.topic,
-      learningUnits: []
-    })
-  }
-}
-
-function onUnitCreated(payload: { sectionId: number; topicId: number; unit: any }) {
-  const sec = sections.value.find(s => s.id === payload.sectionId)
-  if (sec) {
-    const topic = sec.topics?.find(t => t.id === payload.topicId)
-    if (topic) {
-      if (!topic.learningUnits) topic.learningUnits = []
-      topic.learningUnits.push(payload.unit)
-    }
-  }
-}
-
-// Refs para autofocus en modales
-const editTopicTitleRef = ref<HTMLInputElement | null>(null)
-const editUnitTitleRef = ref<HTMLInputElement | null>(null)
-
-const selectedClass = computed(() => {
-  return teacherClasses.value.find(c => c.id === selectedClassId.value)
+const unitSummary = computed(() => {
+  const out: Record<number, string> = {}
+  const ids = new Set([...Object.keys(lessonsByUnit), ...Object.keys(exerciseCountByUnit)].map(Number))
+  for (const id of ids) out[id] = resumenDeLeccion(lessonsByUnit[id]?.length, exerciseCountByUnit[id])
+  return out
 })
 
-// ─── Modal Editar Topic ────────────────────────────────────────────────────────
-const editTopicModal = reactive({
-  open: false,
-  topicId: null as number | null,
-  form: { title: '', description: '', order: 0 },
-  saving: false,
-  error: null as string | null
+// Con ?classId abre esa clase; con ?unitId, además, esa lección (enlaces desde «Hoy» y desde el ejercicio).
+const route = useRoute()
+onMounted(async () => {
+  await estado.cargarClases(Number(route.query.classId) || undefined)
+  const qUnit = Number(route.query.unitId)
+  if (qUnit) {
+    expandedUnitId.value = qUnit
+    void loadLessons(qUnit)
+    nextTick(() => document.getElementById(`unidad-${qUnit}`)?.scrollIntoView({ block: 'center' }))
+  }
 })
-
-function openEditTopicModal(topic: TopicItem) {
-  editTopicModal.topicId = topic.id
-  editTopicModal.form.title = topic.title
-  editTopicModal.form.description = topic.description || ''
-  editTopicModal.form.order = topic.order
-  editTopicModal.error = null
-  editTopicModal.open = true
-  nextTick(() => editTopicTitleRef.value?.focus())
-}
-
-function closeEditTopicModal() {
-  editTopicModal.open = false
-}
-
-async function submitEditTopic() {
-  if (!editTopicModal.form.title.trim()) {
-    editTopicModal.error = 'El título es obligatorio.'
-    return
-  }
-  editTopicModal.saving = true
-  editTopicModal.error = null
-  try {
-    await api.patch(`/topic/${editTopicModal.topicId}`, {
-      title: editTopicModal.form.title.trim(),
-      description: editTopicModal.form.description.trim() || undefined,
-      order: editTopicModal.form.order
-    })
-    // Actualizar en memoria
-    for (const sec of sections.value) {
-      const t = sec.topics?.find(t => t.id === editTopicModal.topicId)
-      if (t) {
-        t.title = editTopicModal.form.title.trim()
-        t.description = editTopicModal.form.description.trim()
-        t.order = editTopicModal.form.order
-        break
-      }
-    }
-    actionFeedback.value = `Tema "${editTopicModal.form.title}" actualizado correctamente.`
-    closeEditTopicModal()
-  } catch (err: any) {
-    editTopicModal.error = messageOf(err, 'Error al actualizar el tema.')
-  } finally {
-    editTopicModal.saving = false
-  }
-}
-
-// ─── Modal Archivar Topic ──────────────────────────────────────────────────────
-const archiveTopicModal = reactive({
-  open: false,
-  topic: null as TopicItem | null,
-  saving: false,
-  error: null as string | null
-})
-
-function confirmArchiveTopic(topic: TopicItem) {
-  archiveTopicModal.topic = topic
-  archiveTopicModal.error = null
-  archiveTopicModal.open = true
-}
-
-async function submitArchiveTopic() {
-  if (!archiveTopicModal.topic) return
-  archiveTopicModal.saving = true
-  archiveTopicModal.error = null
-  try {
-    await api.del(`/topic/${archiveTopicModal.topic.id}`)
-    // Remover de la vista
-    for (const sec of sections.value) {
-      if (sec.topics) {
-        const idx = sec.topics.findIndex(t => t.id === archiveTopicModal.topic!.id)
-        if (idx !== -1) {
-          sec.topics.splice(idx, 1)
-          break
-        }
-      }
-    }
-    actionFeedback.value = `Tema "${archiveTopicModal.topic.title}" archivado correctamente.`
-    archiveTopicModal.open = false
-  } catch (err: any) {
-    archiveTopicModal.error = messageOf(err, 'Error al archivar el tema.')
-  } finally {
-    archiveTopicModal.saving = false
-  }
-}
-
-// ─── Modal Editar LearningUnit ────────────────────────────────────────────────
-const editUnitModal = reactive({
-  open: false,
-  unitId: null as number | null,
-  form: { title: '', description: '', difficulty: 'basico', order: 0 },
-  saving: false,
-  error: null as string | null
-})
-
-function openEditUnitModal(unit: LearningUnitItem) {
-  editUnitModal.unitId = unit.id
-  editUnitModal.form.title = unit.title
-  editUnitModal.form.description = unit.description || ''
-  editUnitModal.form.difficulty = unit.difficulty || 'basico'
-  editUnitModal.form.order = unit.order
-  editUnitModal.error = null
-  editUnitModal.open = true
-  nextTick(() => editUnitTitleRef.value?.focus())
-}
-
-function closeEditUnitModal() {
-  editUnitModal.open = false
-}
-
-async function submitEditUnit() {
-  if (!editUnitModal.form.title.trim()) {
-    editUnitModal.error = 'El título es obligatorio.'
-    return
-  }
-  editUnitModal.saving = true
-  editUnitModal.error = null
-  try {
-    await api.patch(`/learning-unit/${editUnitModal.unitId}`, {
-      title: editUnitModal.form.title.trim(),
-      description: editUnitModal.form.description.trim() || undefined,
-      difficulty: editUnitModal.form.difficulty,
-      order: editUnitModal.form.order
-    })
-    // Actualizar en memoria
-    for (const sec of sections.value) {
-      for (const t of sec.topics || []) {
-        const u = t.learningUnits?.find(u => u.id === editUnitModal.unitId)
-        if (u) {
-          u.title = editUnitModal.form.title.trim()
-          u.description = editUnitModal.form.description.trim()
-          u.difficulty = editUnitModal.form.difficulty
-          u.order = editUnitModal.form.order
-          break
-        }
-      }
-    }
-    actionFeedback.value = `Lección "${editUnitModal.form.title}" actualizada.`
-    closeEditUnitModal()
-  } catch (err: any) {
-    editUnitModal.error = messageOf(err, 'No se pudo actualizar la lección.')
-  } finally {
-    editUnitModal.saving = false
-  }
-}
-
-// ─── Carga de datos ────────────────────────────────────────────────────────────
-async function fetchClasses() {
-  isLoading.value = true
-  errorMessage.value = null
-
-  try {
-    const cls = await api.get<TeacherClass[]>('/class/my-classes')
-    if (Array.isArray(cls) && cls.length > 0) {
-      teacherClasses.value = cls
-      const qClass = Number(route.query.classId)
-      selectedClassId.value = cls.find(c => c.id === qClass)?.id ?? cls[0].id
-      await loadSections()
-      const qUnit = Number(route.query.unitId)
-      if (qUnit) {
-        expandedUnitId.value = qUnit
-        loadLessons(qUnit)
-        nextTick(() => document.getElementById(`unidad-${qUnit}`)?.scrollIntoView({ block: 'center' }))
-      }
-    } else {
-      teacherClasses.value = []
-      isLoading.value = false
-    }
-  } catch (err: any) {
-    errorMessage.value = messageOf(err, 'Error al cargar las clases del docente')
-    isLoading.value = false
-  }
-}
-
-async function loadSections() {
-  if (!selectedClassId.value) return
-  isLoading.value = true
-  errorMessage.value = null
-
-  try {
-    const secList = await api.get<SectionItem[]>(`/sections/class/${selectedClassId.value}`)
-    if (Array.isArray(secList)) {
-      const fullSections: SectionItem[] = []
-      for (const s of secList) {
-        try {
-          const topics = await api.get<TopicItem[]>(`/topic/section/${s.id}`)
-          fullSections.push({
-            ...s,
-            topics: Array.isArray(topics) ? topics : []
-          })
-        } catch {
-          fullSections.push({ ...s, topics: [] })
-        }
-      }
-      sections.value = fullSections
-    } else {
-      sections.value = []
-    }
-  } catch (err: any) {
-    errorMessage.value = messageOf(err, 'Error al cargar los contenidos de la clase')
-  } finally {
-    isLoading.value = false
-  }
-}
-
-async function toggleSectionPublish(sec: SectionItem) {
-  try {
-    const newStatus = !sec.isPublished
-    await api.patch(`/sections/${sec.id}/publish`, { isPublished: newStatus })
-    sec.isPublished = newStatus
-    actionFeedback.value = `Sección "${sec.title}" actualizada a ${newStatus ? 'Publicado' : 'Borrador'}.`
-  } catch (err: any) {
-    actionError.value = 'No se pudo actualizar el estado de publicación.'
-  }
-}
-
-onMounted(() => {
-  fetchClasses()
-})
-
-// ─── T3: Traer de otra clase ───────────────────────────────────────────────
-interface ResumenImportacion {
-  sections: number
-  topics: number
-  learningUnits: number
-  contents: number
-  activities: number
-  questions: number
-}
-
-const otherClasses = computed(() => {
-  return teacherClasses.value.filter(c => c.id !== selectedClassId.value)
-})
-// Contenido que otros docentes compartieron como plantilla (utils/plantillas.ts).
-const plantillas = ref<Plantilla[]>([])
-// Con la asignatura de la clase abierta, el servidor ordena por cercanía y muestra lo compartido con esa asignatura.
-async function cargarPlantillas() {
-  const asignaturaId = teacherClasses.value.find((c) => c.id === selectedClassId.value)?.asignaturaId
-  try {
-    plantillas.value = await api.get<Plantilla[]>(asignaturaId ? `/reuse/plantillas?asignaturaId=${asignaturaId}` : '/reuse/plantillas')
-  } catch {
-    plantillas.value = []
-  }
-}
-const gruposDePlantillas = computed(() => agruparPorAsignatura(plantillas.value))
-watch(selectedClassId, () => { void cargarPlantillas() }, { immediate: true })
-
-const importModal = reactive({
-  open: false,
-  sourceClassId: null as number | null,
-  sections: [] as Array<{ id: number; title: string; order: number }>,
-  selectedSectionIds: [] as number[],
-  isLoadingSections: false,
-  isImporting: false,
-  error: null as string | null
-})
-
-// El foco entra al diálogo al abrirlo y vuelve al botón que lo abrió al cerrarlo.
-const importSourceRef = ref<HTMLSelectElement | null>(null)
-let importOpener: HTMLElement | null = null
-
-function openImportModal() {
-  importOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null
-  importModal.open = true
-  importModal.error = null
-  nextTick(() => importSourceRef.value?.focus())
-  const primera = otherClasses.value[0]?.id ?? plantillas.value[0]?.classId
-  if (primera) {
-    importModal.sourceClassId = primera
-    onSourceClassChange()
-  } else {
-    importModal.sourceClassId = null
-    importModal.sections = []
-    importModal.selectedSectionIds = []
-  }
-}
-
-function closeImportModal() {
-  if (importModal.isImporting) return
-  importModal.open = false
-  nextTick(() => importOpener?.focus())
-}
-
-async function onSourceClassChange() {
-  if (!importModal.sourceClassId) {
-    importModal.sections = []
-    importModal.selectedSectionIds = []
-    return
-  }
-  importModal.isLoadingSections = true
-  importModal.error = null
-  try {
-    // Sirve para una clase propia y para una plantilla de otro docente (cuyos módulos no se leen por /sections).
-    const res = await api.get<Array<{ id: number; title: string; order: number }>>(`/reuse/classes/${importModal.sourceClassId}/modulos`)
-    importModal.sections = Array.isArray(res) ? res : []
-    importModal.selectedSectionIds = importModal.sections.map(s => s.id)
-  } catch (err: unknown) {
-    importModal.error = messageOf(err, 'Error al cargar las secciones de la clase de origen')
-    importModal.sections = []
-    importModal.selectedSectionIds = []
-  } finally {
-    importModal.isLoadingSections = false
-  }
-}
-
-function selectAllSections() {
-  importModal.selectedSectionIds = importModal.sections.map(s => s.id)
-}
-
-function deselectAllSections() {
-  importModal.selectedSectionIds = []
-}
-
-async function submitImport() {
-  if (!selectedClassId.value || !importModal.sourceClassId || importModal.selectedSectionIds.length === 0) return
-  importModal.isImporting = true
-  importModal.error = null
-
-  try {
-    const payload: { sourceClassId: number; sectionIds?: number[] } = {
-      sourceClassId: importModal.sourceClassId
-    }
-    if (importModal.selectedSectionIds.length !== importModal.sections.length) {
-      payload.sectionIds = importModal.selectedSectionIds
-    }
-
-    const res = await api.post<ResumenImportacion>(`/reuse/classes/${selectedClassId.value}/import`, payload)
-    importModal.open = false
-    actionFeedback.value = `Se trajeron ${plural(res.sections, 'sección', 'secciones')}, ${plural(res.learningUnits, 'unidad', 'unidades')} y ${plural(res.activities, 'ejercicio', 'ejercicios')}. Revísalas y publícalas cuando quieras.`
-    await loadSections()
-  } catch (err: unknown) {
-    importModal.error = messageOf(err, 'Error al traer contenidos de la clase')
-  } finally {
-    importModal.isImporting = false
-  }
-}
-
-// Escape cierra el diálogo abierto aunque el foco se haya perdido.
-useEscapeToClose(() => editTopicModal.open, closeEditTopicModal)
-useEscapeToClose(() => archiveTopicModal.open, () => { archiveTopicModal.open = false })
-useEscapeToClose(() => editUnitModal.open, closeEditUnitModal)
-useEscapeToClose(() => importModal.open, closeImportModal)
 </script>
