@@ -52,3 +52,37 @@ describe('Racha y semana', () => {
     expect(p).toContain('Repasar ahora');
   });
 });
+
+// 05/10: el titular es la semana de estudio (3 días distintos de lunes a domingo, como el logro), no la racha.
+describe('semana de estudio', () => {
+  const raizR = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
+  const jsR = ts.transpileModule(readFileSync(path.join(raizR, 'utils', 'racha.ts'), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
+  const modR = { exports: {} as Record<string, unknown> };
+  new Function('module', 'exports', jsR)(modR, modR.exports);
+  const R = modR.exports as {
+    semanaActual: (c: Array<{ dia: string; ejercicios: number }>, hoy: string) => Array<{ dia: string; letra: string; practico: boolean; esHoy: boolean; futuro: boolean }>;
+    textoSemana: (n: number, docente?: boolean) => { titulo: string; ayuda: string };
+  };
+
+  it('de lunes a domingo de la semana de hoy, con lo practicado y lo que falta por venir', () => {
+    // 2026-10-07 es miércoles.
+    const s = R.semanaActual([{ dia: '2026-10-05', ejercicios: 2 }, { dia: '2026-10-04', ejercicios: 1 }, { dia: '2026-10-07', ejercicios: 0 }], '2026-10-07');
+    expect(s.map((d) => d.dia)).toEqual(['2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-09', '2026-10-10', '2026-10-11']);
+    expect(s.map((d) => d.letra).join('')).toBe('LMMJVSD');
+    expect(s.filter((d) => d.practico).map((d) => d.dia)).toEqual(['2026-10-05']); // el domingo anterior no cuenta
+    expect(s[2].esHoy).toBe(true);
+    expect(s.slice(3).every((d) => d.futuro)).toBe(true);
+  });
+
+  it('dice cuánto falta y que no tienen que ser seguidos, como el logro', () => {
+    expect(R.textoSemana(1)).toEqual({ titulo: '1 de 3 días esta semana', ayuda: 'Te faltan 2 días. No tienen que ser seguidos.' });
+    expect(R.textoSemana(3).ayuda).toBe('¡Semana de estudio cumplida!');
+    expect(R.textoSemana(2, true).ayuda).toBe('Le falta 1 día para la meta de la semana.');
+  });
+
+  it('en Mi progreso el titular es la semana; la racha queda como dato secundario', () => {
+    const c = readFileSync(path.join(raizR, 'components', 'EstadisticasEstudiante.vue'), 'utf8');
+    expect(c).toContain('{{ semanaTexto.titulo }}');
+    expect(c).not.toContain('de racha</span>');
+  });
+});

@@ -16,32 +16,31 @@
         </div>
       </section>
 
-      <!-- Racha: lo que más motiva a volver, y la semana en siete puntos -->
+      <!-- La semana de estudio: 3 días distintos de lunes a domingo, como el logro «Semana de estudio» (sin exigir días
+           seguidos). La racha de días seguidos queda como dato secundario. -->
       <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm flex flex-col sm:flex-row sm:items-center gap-4">
-        <div class="flex items-center gap-3 sm:min-w-[14rem]">
+        <div class="flex items-center gap-3 sm:min-w-[15rem]">
           <span class="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-            :class="e.racha > 0 ? 'bg-acento-ambar/15 text-acento-ambar-fuerte' : 'bg-base-bg-secundario text-slate-600'">
-            <Flame :size="22" aria-hidden="true" />
+            :class="diasSemana >= META_DIAS_SEMANA ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+            <CalendarCheck :size="22" aria-hidden="true" />
           </span>
           <div>
-            <p class="text-xl font-bold text-base-texto-primario leading-tight">
-              {{ e.racha }} {{ e.racha === 1 ? 'día' : 'días' }} <span class="text-sm font-semibold">de racha</span>
-            </p>
-            <p class="text-[11px]" :class="avisoRacha.urgente ? 'text-acento-ambar-fuerte font-semibold' : 'text-base-texto-secundario'">{{ avisoRacha.texto }}</p>
+            <p class="text-lg font-bold text-base-texto-primario leading-tight">{{ semanaTexto.titulo }}</p>
+            <p class="text-[11px] text-base-texto-secundario">{{ semanaTexto.ayuda }}</p>
           </div>
         </div>
-        <ol class="flex items-end gap-2 sm:ml-auto" :aria-label="`Últimos 7 días: ${semana.filter((d) => d.practico).length} con práctica`">
+        <ol class="flex items-end gap-2 sm:ml-auto" :aria-label="`Esta semana, de lunes a domingo: ${diasSemana} ${diasSemana === 1 ? 'día' : 'días'} con práctica`">
           <li v-for="d in semana" :key="d.dia" class="flex flex-col items-center gap-1 w-7">
             <span class="w-6 h-6 rounded-full flex items-center justify-center border"
-              :class="d.practico ? 'bg-semantico-pasa border-semantico-pasa text-base-blanco' : d.esHoy ? 'border-acento-ambar-fuerte border-dashed' : 'border-base-borde-fuerte'">
+              :class="d.practico ? 'bg-semantico-pasa border-semantico-pasa text-base-blanco' : d.esHoy ? 'border-acento-ambar-fuerte border-dashed' : d.futuro ? 'border-base-borde-sutil' : 'border-base-borde-fuerte'">
               <Check v-if="d.practico" :size="13" aria-hidden="true" />
             </span>
             <span class="text-[10px]" :class="d.esHoy ? 'font-bold text-base-texto-primario' : 'text-base-texto-secundario'">{{ d.esHoy ? 'Hoy' : d.letra }}</span>
-            <span class="sr-only">{{ d.practico ? 'con práctica' : 'sin práctica' }}</span>
+            <span class="sr-only">{{ d.practico ? 'con práctica' : d.futuro ? 'todavía no llega' : 'sin práctica' }}</span>
           </li>
         </ol>
-        <p v-if="e.rachaMaxima > e.racha" class="text-[11px] text-base-texto-secundario sm:border-l sm:border-base-borde-sutil sm:pl-4">
-          Mejor racha<br class="hidden sm:block" /> <strong class="text-base-texto-primario">{{ e.rachaMaxima }} días</strong>
+        <p v-if="e.racha > 1" class="text-[11px] text-base-texto-secundario sm:border-l sm:border-base-borde-sutil sm:pl-4 inline-flex items-center gap-1">
+          <Flame :size="13" aria-hidden="true" /> {{ e.racha }} días seguidos
         </p>
       </div>
 
@@ -124,9 +123,9 @@
 // Estadísticas al estilo de Anki (docs/DISENO_INTERVENCION_DOCENTE.md §10.3), simplificadas (BT-21): racha y semana a
 // la vista, el resto plegado.
 import { computed, ref, watch } from 'vue'
-import { BarChart3, Brain, Check, ChevronDown, Flame } from 'lucide-vue-next'
+import { BarChart3, Brain, CalendarCheck, Check, ChevronDown, Flame } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
-import { avisoDeRacha, ultimaSemana } from '~/utils/racha'
+import { META_DIAS_SEMANA, semanaActual, textoSemana } from '~/utils/racha'
 import { reflexionDeLaSemana } from '~/utils/autorregulacion'
 
 const props = withDefaults(defineProps<{ studentId: number | null | undefined; classId: number | null | undefined; vista?: 'estudiante' | 'docente' }>(), {
@@ -165,11 +164,12 @@ watch(() => [props.studentId, props.classId], async ([sid, cid]) => {
   }
 }, { immediate: true })
 
-const semana = computed(() => (e.value ? ultimaSemana(e.value.calendario) : []))
+const semana = computed(() => (e.value ? semanaActual(e.value.calendario, e.value.hoy) : []))
+const diasSemana = computed(() => semana.value.filter((d) => d.practico).length)
+const semanaTexto = computed(() => textoSemana(diasSemana.value, docente.value))
 const reflexion = computed(() => (e.value
   ? reflexionDeLaSemana({ diasSemana: semana.value.filter((d) => d.practico).length, vencidos: e.value.vencidos, retencion: e.value.retencion, lecciones: e.value.lecciones })
   : null))
-const avisoRacha = computed(() => (e.value ? avisoDeRacha(e.value.racha, e.value.practicoHoy, docente.value) : { texto: '', urgente: false }))
 
 const segmentos = computed(() => {
   const l = e.value?.lecciones
