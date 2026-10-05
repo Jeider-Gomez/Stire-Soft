@@ -67,3 +67,14 @@ describe('botones que dicen qué hacen', () => {
     expect(genericos).toEqual([]);
   });
 });
+
+describe('números como se escriben en español', () => {
+  it('porcentajes con espacio antes del signo (97 %), no «97%»', () => {
+    const malos = plantillas.flatMap(({ f, t }) => (/\}\}%/.test(t) ? [f] : []));
+    expect(malos).toEqual([]);
+  });
+
+  it('la comparación semanal dice con qué se compara', () => {
+    expect(readFileSync(path.join(raiz, 'pages', 'docente', 'clase', '[classId]', 'index.vue'), 'utf8')).not.toContain('· la anterior {{');
+  });
+});

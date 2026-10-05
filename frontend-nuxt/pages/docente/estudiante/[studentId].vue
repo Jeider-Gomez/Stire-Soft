@@ -79,7 +79,7 @@
           <span class="text-[10px] font-semibold text-base-texto-secundario block">Dominio en lo trabajado</span>
           <div class="flex items-baseline gap-1 mt-1">
             <span class="text-xl sm:text-2xl font-bold" :class="dashboard.summary.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
-              {{ dashboard.summary.avgMastery }}%
+              {{ porcentaje(dashboard.summary.avgMastery) }}
             </span>
           </div>
           <p class="text-[10px] text-base-texto-secundario mt-1">Solo las lecciones que ya practicó</p>
@@ -90,7 +90,7 @@
           <span class="text-[10px] font-semibold text-base-texto-secundario block">Ejercicios aprobados</span>
           <div class="flex items-baseline gap-1 mt-1">
             <span class="text-xl sm:text-2xl font-bold text-base-texto-primario">
-              {{ dashboard.summary.avgSuccessRate }}%
+              {{ porcentaje(dashboard.summary.avgSuccessRate) }}
             </span>
           </div>
           <p class="text-[10px] text-base-texto-secundario mt-1">{{ plural(dashboard.summary.totalAttempts, 'intento', 'intentos') }} en total</p>
@@ -134,9 +134,9 @@
             <div class="flex items-center justify-between text-xs">
               <span class="font-bold text-base-texto-primario">{{ u.unitTitle }}</span>
               <div class="flex items-center gap-3">
-                <span class="text-[11px] text-base-texto-secundario">Éxito: {{ u.successRate }}%</span>
+                <span class="text-[11px] text-base-texto-secundario">Aprobados: {{ porcentaje(u.successRate) }}</span>
                 <span class="font-mono font-bold text-xs" :class="u.mastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
-                  {{ u.mastery }}%
+                  {{ porcentaje(u.mastery) }}
                 </span>
               </div>
             </div>
@@ -202,6 +202,7 @@
 </template>
 
 <script setup lang="ts">
+import { porcentaje } from '~/utils/porcentaje'
 import { ArrowLeft, LifeBuoy, Loader2, Mail, Rocket, TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { enlaceNuevoRefuerzo } from '~/utils/refuerzos'
