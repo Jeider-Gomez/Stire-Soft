@@ -38,7 +38,7 @@ describe('Ajustes de UI/UX de José', () => {
   });
 
   it('las cajas para textos largos usan v-crece; los editores de código no', () => {
-    for (const f of [['pages', 'estudiante', 'mensajes.vue'], ['pages', 'docente', 'mensajes.vue'], ['components', 'layout', 'BotonSugerencias.vue'], ['components', 'docente', 'EntregaForm.vue'], ['pages', 'auth', 'register.vue']]) {
+    for (const f of [['components', 'mensajes', 'VentanaRedactar.vue'], ['components', 'layout', 'BotonSugerencias.vue'], ['components', 'docente', 'EntregaForm.vue'], ['pages', 'auth', 'register.vue']]) {
       expect(leer(...f)).toContain('v-crece');
     }
     expect(leer('components', 'CodeEditor.vue')).not.toContain('v-crece');

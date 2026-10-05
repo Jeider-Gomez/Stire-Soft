@@ -40,8 +40,9 @@ describe('UX-07 · todo campo tiene etiqueta (axe-core label)', () => {
 describe('MOB-02 · controles de 44 px en el celular', () => {
   it.each([
     ['pages/estudiante/clases.vue', 3],
-    ['pages/estudiante/mensajes.vue', 3],
-    ['pages/docente/mensajes.vue', 3],
+    // Mensajes: la bandeja y la ventana son compartidas entre estudiante y docente (components/mensajes/).
+    ['components/mensajes/BandejaMensajes.vue', 3],
+    ['components/mensajes/VentanaRedactar.vue', 2],
     ['pages/estudiante/repasos.vue', 1],
     ['pages/estudiante/index.vue', 1],
     ['pages/docente/clase/[classId]/index.vue', 1],
