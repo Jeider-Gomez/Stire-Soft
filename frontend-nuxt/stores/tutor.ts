@@ -23,6 +23,8 @@ export const useTutorStore = defineStore('tutor', () => {
   const modoPorPasos = ref(false)
   // UI-04: la explicación de la lección no le sirvió; el Tutor la explica de otra forma (vale para el próximo mensaje).
   const modoOtraExplicacion = ref(false)
+  // UI-05: tras varios intentos fallidos, un ejemplo resuelto de un problema parecido (no el suyo).
+  const modoEjemplo = ref(false)
   const isThinking = ref(false)
   const hasGreeted = ref(false)
   /** Segundos que lleva el tutor pensando; para escalar el mensaje de espera. */
@@ -218,6 +220,13 @@ export const useTutorStore = defineStore('tutor', () => {
     await sendMessage('Quiero resolver este ejercicio por pasos.')
   }
 
+  /** UI-05: cambiar de táctica tras varios fallos — ver resuelto un problema parecido, no el suyo. */
+  async function verEjemploParecido() {
+    await openDrawer()
+    modoEjemplo.value = true
+    await sendMessage('Quiero ver resuelto un ejemplo parecido a este ejercicio.')
+  }
+
   /** «¿Te sirvió esta explicación?» → No: el Tutor explica la lección de otra forma (UI-04). */
   async function pedirOtraExplicacion(queNoQuedoClaro?: string) {
     await openDrawer()
@@ -255,8 +264,9 @@ export const useTutorStore = defineStore('tutor', () => {
   async function sendMessage(userText: string) {
     if (!userText.trim()) return
     // El modo por pasos vale para este mensaje; los siguientes siguen la conversación normal.
-    const modoEnvio = modoPorPasos.value ? 'por-pasos' as const : modoOtraExplicacion.value ? 'otra-explicacion' as const : undefined
+    const modoEnvio = modoPorPasos.value ? 'por-pasos' as const : modoEjemplo.value ? 'ejemplo-parecido' as const : modoOtraExplicacion.value ? 'otra-explicacion' as const : undefined
     modoPorPasos.value = false
+    modoEjemplo.value = false
     modoOtraExplicacion.value = false
 
     lastUserMessage.value = userText
@@ -371,6 +381,7 @@ export const useTutorStore = defineStore('tutor', () => {
     pedirOtraExplicacion,
     modoPorPasos,
     resolverPorPasos,
+    verEjemploParecido,
     isOpen,
     isThinking,
     thinkingSeconds,

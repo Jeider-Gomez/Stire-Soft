@@ -121,7 +121,8 @@
             </div>
           </div>
 
-          <!-- Algún caso falló: se ofrece el Tutor en ese momento (utils/ofertaTutor.ts). Se puede cerrar. -->
+          <!-- Algún caso falló: se ofrece ayuda en ese momento (utils/ofertaTutor.ts). UI-05: escala con los fallos seguidos y
+               cambia de táctica; UNA acción principal y las demás plegadas, para no abrumar. Se puede cerrar. -->
           <div
             v-if="ofrecerTutor"
             id="oferta-tutor"
@@ -129,20 +130,24 @@
             class="p-3 rounded-lg border-2 border-stire-purple/40 bg-stire-purple/5 text-xs space-y-2">
             <p class="flex items-start gap-2 font-semibold text-base-texto-primario">
               <Sparkles :size="16" class="shrink-0 text-stire-purple" aria-hidden="true" />
-              ¿No te sale lo esperado? El Tutor puede darte una pista mirando tu código, sin darte la respuesta.
+              {{ ayuda.mensaje }}
             </p>
             <div class="flex flex-wrap gap-2">
-              <button type="button" class="min-h-[40px] px-3 py-1.5 rounded-md bg-stire-purple text-white font-bold hover:opacity-90" @click="pedirAyudaAlTutor">
-                Pedir una pista al Tutor
+              <button type="button" class="min-h-[44px] px-3 py-1.5 rounded-md bg-stire-purple text-white font-bold hover:opacity-90" @click="usarAyuda(ayuda.principal)">
+                {{ TEXTO_AYUDA[ayuda.principal] }}
               </button>
-              <!-- UI-05: el Tutor divide el problema en subpreguntas y plantea la primera; se ofrece, no se impone. -->
-              <button type="button" class="min-h-[40px] px-3 py-1.5 rounded-md border border-stire-purple/40 text-stire-purple font-bold hover:bg-stire-purple/10" @click="resolverPorPasos">
-                Resolverlo por pasos con el Tutor
-              </button>
-              <button type="button" class="px-3 py-1.5 rounded-md font-semibold text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario" @click="ofertaCerrada = true">
+              <button type="button" class="min-h-[44px] px-3 py-1.5 rounded-md font-semibold text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario" @click="ofertaCerrada = true">
                 Ahora no
               </button>
             </div>
+            <details v-if="ayuda.otras.length">
+              <summary class="min-h-[44px] inline-flex items-center cursor-pointer font-semibold text-stire-purple hover:underline">Otras formas de destrabarte</summary>
+              <div class="flex flex-wrap gap-2 pt-1">
+                <button v-for="o in ayuda.otras" :key="o" type="button" class="min-h-[44px] px-3 py-1.5 rounded-md border border-stire-purple/40 text-stire-purple font-semibold hover:bg-stire-purple/10" @click="usarAyuda(o)">
+                  {{ TEXTO_AYUDA[o] }}
+                </button>
+              </div>
+            </details>
           </div>
 
           <div
@@ -379,7 +384,7 @@ import { mensajeCalibracion } from '~/utils/confianza'
 import { BookOpen, Check, ClipboardCheck, FlaskConical, Lightbulb, Lock, PartyPopper, Scale, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
-import { debeOfrecerTutor, pistaSegunTipo } from '~/utils/ofertaTutor'
+import { ayudaSegunFallos, debeOfrecerTutor, pistaSegunTipo, TEXTO_AYUDA, type Ayuda } from '~/utils/ofertaTutor'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import { exerciseTypeInfo } from '~/utils/exerciseTypes'
 
@@ -397,6 +402,20 @@ const ofertaCerrada = ref(false)
 watch(() => workspaceStore.isRunning, (corriendo) => { if (corriendo) ofertaCerrada.value = false })
 const ofrecerTutor = computed(() =>
   !tutorStore.isOpen && debeOfrecerTutor(workspaceStore.publicTestCases, workspaceStore.isRunning, ofertaCerrada.value))
+
+const ayuda = computed(() => ayudaSegunFallos(workspaceStore.fallosSeguidos))
+
+/** UI-05: la ayuda elegida. Volver a la explicación lleva a la lección del ejercicio. */
+async function usarAyuda(a: Ayuda) {
+  if (a === 'pista') return pedirAyudaAlTutor()
+  if (a === 'por-pasos') return resolverPorPasos()
+  ofertaCerrada.value = true
+  if (a === 'ejemplo') {
+    workspaceStore.submissionResult = null
+    return tutorStore.verEjemploParecido()
+  }
+  return navigateTo(`/estudiante/unidad/${workspaceStore.currentExercise.learningUnitId}#explicacion`)
+}
 
 async function resolverPorPasos() {
   workspaceStore.submissionResult = null

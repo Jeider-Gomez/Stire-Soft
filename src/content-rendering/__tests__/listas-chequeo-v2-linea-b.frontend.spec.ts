@@ -232,7 +232,9 @@ describe('UI-04 · «¿Te sirvió esta explicación?» y recursos que fallan', (
 
 describe('UI-05 y META-03 · resolver por pasos y «¿Por qué veo esto?»', () => {
   it('el ejercicio ofrece «Resolverlo por pasos con el Tutor» junto a la pista', () => {
-    expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('Resolverlo por pasos con el Tutor');
+    // El texto vive en utils/ofertaTutor.ts desde la ayuda escalonada (ayuda-escalonada.frontend.spec.ts).
+    expect(leer('utils', 'ofertaTutor.ts')).toContain("'por-pasos': 'Resolverlo por pasos con el Tutor'");
+    expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('{{ TEXTO_AYUDA[ayuda.principal] }}');
     expect(leer('stores', 'tutor.ts')).toContain("'Quiero resolver este ejercicio por pasos.'");
   });
   it('el siguiente paso explica cómo elige STIRE y deja elegir otra cosa', () => {

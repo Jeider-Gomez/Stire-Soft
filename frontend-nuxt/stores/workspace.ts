@@ -107,6 +107,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const juicioConfianza = ref<Confianza | null>(null)
   let juicioDecidido = false
   const calibracion = ref<Calibracion | null>(null)
+  // UI-05: cuántas veces seguidas ha fallado en esta visita (Probar o Entregar); la ayuda que se ofrece escala con esto.
+  const fallosSeguidos = ref(0)
   // MOD-02: error de concepto más probable según el primer caso público que no coincide (utils/diagnosticoSalida.ts).
   const errorProbable = computed(() => {
     const tc = publicTestCases.value.find((c) => c.passed === false)
@@ -162,6 +164,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     juicioConfianza.value = null
     juicioDecidido = false
     calibracion.value = null
+    fallosSeguidos.value = 0
     pendingAnswer.value = null
     currentQuestion.value = null
     masteryBefore.value = null
@@ -353,6 +356,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           passed: r.passed
         }))
 
+        fallosSeguidos.value = res.allPassed ? 0 : fallosSeguidos.value + 1
         if (res.allPassed) {
           consoleLog.value.push(`✔ Todos los casos públicos aprobados (${res.results.length}/${res.results.length}).`)
         } else {
@@ -551,6 +555,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     calibracion.value = { confianza: juicioConfianza.value, acerto }
   })
 
+  // UI-05: una entrega calificada que no aprueba también cuenta como fallo seguido; una que aprueba lo reinicia.
+  watch(submissionResult, (r) => {
+    if (!r || r.status !== 'graded') return
+    const aprobo = typeof r.passed === 'boolean' ? r.passed : r.totalCount > 0 && r.passedCount === r.totalCount
+    fallosSeguidos.value = aprobo ? 0 : fallosSeguidos.value + 1
+  })
+
   // Autosave: PUT /submissions/:id/autosave (aplica a coding y html_css). Con debounce: se guarda 0,8 s después de
   // la última tecla. Un fallo de red se reintenta solo (2, 5 y 10 s); con los intentos ya usados no se guarda.
   function triggerAutosave() {
@@ -645,6 +656,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     pidiendoConfianza,
     juicioConfianza,
     calibracion,
+    fallosSeguidos,
     responderConfianza,
     errorProbable,
     borradorRecuperado,
