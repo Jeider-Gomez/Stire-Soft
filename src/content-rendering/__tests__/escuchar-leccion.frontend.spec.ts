@@ -85,3 +85,10 @@ describe('formatos de la lección y dónde se ofrece', () => {
     expect(leer('components', 'EscucharLeccion.vue')).toContain('if (mio === turno && estado.value === \'leyendo\') leer(i + 1)');
   });
 });
+
+describe('UI-04 · con «No me sirvió», otra vía de la misma lección', () => {
+  it('la valoración ofrece escucharla o verla de otra forma, y lleva a la barra de formatos', () => {
+    expect(leer('components', 'ValorarLeccion.vue')).toContain('<a href="#formas-leccion"');
+    expect(leer('components', 'EscucharLeccion.vue')).toContain('id="formas-leccion"');
+  });
+});

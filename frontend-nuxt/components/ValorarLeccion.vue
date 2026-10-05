@@ -39,6 +39,10 @@
           Enviar a mi docente
         </button>
       </div>
+      <!-- UI-01 y UI-04: otra vía de la misma lección (escucharla, el diagrama o el paso a paso), sin esperar al docente -->
+      <p class="text-[11px] text-slate-600">
+        También puedes <a href="#formas-leccion" class="font-semibold text-acento-ambar-fuerte hover:underline">escucharla o verla de otra forma</a>, arriba de la explicación.
+      </p>
       <p v-if="enviado" role="status" class="text-xs text-slate-600">Enviado. Gracias: así tu docente sabe qué explicar mejor.</p>
     </div>
     <p v-if="error" role="alert" class="text-xs font-semibold text-red-700">{{ error }}</p>

@@ -2,7 +2,7 @@
   <!-- UI-01 (docs/DISENO_FORMATOS_LECCION.md): la lección se puede leer, escuchar, ver y practicar. Arriba, como opciones
        que cada estudiante usa cuando le sirven, no como un «estilo» que le asignamos. La voz es la del navegador: sin
        costo y sin enviar el texto a ningún servicio. Si el navegador no tiene voz en español, el botón no aparece. -->
-  <div class="rounded-lg border border-base-borde-sutil bg-base-blanco px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3" aria-label="Formas de estudiar esta lección" role="group">
+  <div id="formas-leccion" tabindex="-1" class="rounded-lg border border-base-borde-sutil bg-base-blanco px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 scroll-mt-20" aria-label="Formas de estudiar esta lección" role="group">
     <div v-if="disponible" class="flex flex-wrap items-center gap-2">
       <button v-if="estado === 'quieto'" type="button" class="min-h-[44px] inline-flex items-center gap-2 px-4 rounded-md bg-semantico-info text-base-blanco text-xs font-bold" @click="empezar">
         <Headphones :size="15" aria-hidden="true" /> Escuchar la lección
