@@ -301,12 +301,28 @@ describe('Logros y medallas', () => {
     expect(L.textoNuevos([{ titulo: 'Semana de estudio' }])).toBe('¡Nueva medalla: Semana de estudio!');
     expect(L.textoNuevos([{ titulo: 'a' }, { titulo: 'b' }])).toBe('¡2 medallas nuevas!');
   });
-  it('el inicio celebra lo nuevo una vez y muestra una meta; «Mi progreso» tiene todas; sin ranking', () => {
+  it('las ganadas, la más reciente primero; y el filtro de la pantalla de logros', () => {
+    const M = cargar<{ medallasGanadas: (l: unknown[]) => Array<{ clave: string }>; filtrarLogros: (l: unknown[], f: string) => Array<{ clave: string }> }>('logros');
+    const l = [{ clave: 'a', obtenido: '2026-09-01' }, { clave: 'b', obtenido: null }, { clave: 'c', obtenido: '2026-10-01' }];
+    expect(M.medallasGanadas(l).map((x) => x.clave)).toEqual(['c', 'a']);
+    expect(M.filtrarLogros(l, 'faltan').map((x) => x.clave)).toEqual(['b']);
+    expect(M.filtrarLogros(l, 'ganados').map((x) => x.clave)).toEqual(['a', 'c']);
+    expect(M.filtrarLogros(l, 'todos')).toHaveLength(3);
+  });
+  it('el inicio celebra lo nuevo una vez y muestra una meta; «Mi progreso» solo el resumen; todas en su pantalla; sin ranking', () => {
     const inicio = leer('components', 'estudiante', 'LogrosInicio.vue');
     expect(inicio).toContain("api.post('/analytics/logros/vistos'");
     expect(inicio).toContain('datos.siguiente');
+    expect(inicio).toContain('to="/estudiante/logros"');
     expect(leer('pages', 'estudiante', 'index.vue')).toContain('<EstudianteLogrosInicio />');
-    expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('<EstudianteMisLogros />');
+    // 04/10: las 26 medallas llenaban «Mi progreso»; ahora va una fila con las ganadas y la próxima meta.
+    const progreso = leer('pages', 'estudiante', 'progreso.vue');
+    expect(progreso).toContain('<EstudianteResumenLogros />');
+    expect(progreso).not.toContain('<EstudianteMisLogros />');
+    expect(leer('pages', 'estudiante', 'logros.vue')).toContain('<EstudianteMisLogros />');
+    const resumen = leer('components', 'estudiante', 'ResumenLogros.vue');
+    expect(resumen).toContain('ganados.value.slice(0, 8)');
+    expect(resumen).toContain('v-if="!datos || datos.activos"');
     // lo que ve el estudiante (sin los comentarios del código, que explican por qué no hay ranking)
     const sinComentarios = (t: string) => t.replace(/<!--[\s\S]*?-->/g, '').replace(/\/\/.*$/gm, '');
     for (const f of [inicio, leer('components', 'estudiante', 'MisLogros.vue')]) expect(sinComentarios(f).toLowerCase()).not.toMatch(/ranking|clasificaci[oó]n|posici[oó]n/);

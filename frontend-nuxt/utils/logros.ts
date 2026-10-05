@@ -64,6 +64,19 @@ export function ultimoLogro(logros: ReadonlyArray<Logro>): Logro | null {
   return [...logros].filter((l) => l.obtenido).sort((a, b) => b.obtenido!.localeCompare(a.obtenido!))[0] ?? null
 }
 
+/** Las medallas ganadas, la más reciente primero (la fila de «Mi progreso»). */
+export function medallasGanadas(logros: ReadonlyArray<Logro>): Logro[] {
+  return [...logros].filter((l) => l.obtenido).sort((a, b) => b.obtenido!.localeCompare(a.obtenido!))
+}
+
+/** Filtro de la pantalla de logros. */
+export type FiltroLogros = 'todos' | 'ganados' | 'faltan'
+export function filtrarLogros(logros: ReadonlyArray<Logro>, filtro: FiltroLogros): Logro[] {
+  if (filtro === 'ganados') return logros.filter((l) => l.obtenido)
+  if (filtro === 'faltan') return logros.filter((l) => !l.obtenido)
+  return [...logros]
+}
+
 /** «¡Nueva medalla: Semana de estudio!» o «¡3 medallas nuevas!» */
 export function textoNuevos(nuevos: ReadonlyArray<Logro>): string {
   if (!nuevos.length) return ''

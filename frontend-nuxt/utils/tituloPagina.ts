@@ -10,6 +10,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/estudiante\/unidad\//, 'Lección'],
   [/^\/estudiante\/evaluacion\//, 'Ejercicio'],
   [/^\/estudiante\/progreso/, 'Mi progreso'],
+  [/^\/estudiante\/logros/, 'Mis logros'],
   [/^\/estudiante\/repasos/, 'Repasos'],
   [/^\/estudiante\/mensajes/, 'Mensajes'],
   [/^\/estudiante\/perfil/, 'Mi perfil'],

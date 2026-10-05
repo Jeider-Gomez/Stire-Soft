@@ -33,7 +33,7 @@
         </div>
         <p class="text-[10px] text-base-texto-secundario">{{ datos.siguiente.descripcion }}</p>
       </div>
-      <NuxtLink to="/estudiante/progreso#logros" class="inline-flex items-center min-h-[44px] text-[11px] font-semibold text-acento-ambar-fuerte hover:underline">Ver todos mis logros</NuxtLink>
+      <NuxtLink to="/estudiante/logros" class="inline-flex items-center min-h-[44px] text-[11px] font-semibold text-acento-ambar-fuerte hover:underline">Ver todos mis logros</NuxtLink>
     </template>
   </div>
 </template>

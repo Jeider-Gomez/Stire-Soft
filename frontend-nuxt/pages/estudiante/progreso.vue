@@ -38,8 +38,8 @@
     <!-- META-02: lo que dice antes de entregar contra lo que obtiene, con el tiempo (docs/DISENO_CONFIANZA.md) -->
     <EstudianteMiCalibracion />
 
-    <!-- Logros y medallas, por categoría (utils/logros.ts; BT-29). «Ver todos mis logros» del inicio llega aquí. -->
-    <EstudianteMisLogros />
+    <!-- Logros: solo el resumen; la lista completa está en /estudiante/logros (utils/logros.ts; BT-29). -->
+    <EstudianteResumenLogros />
 
     <!-- Su nota y de dónde sale, si el docente la hizo visible (§6) -->
     <MiNota :class-id="studentStore.currentClassId" />
