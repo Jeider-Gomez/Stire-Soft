@@ -87,12 +87,12 @@ async function handleSubmit() {
     const res = await api.post<{ message: string }>('/auth/forgot-password', { email: email.value.trim() })
     sentMessage.value = res?.message || 'Si el correo está registrado, te enviamos un enlace para restablecer tu contraseña.'
     sent.value = true
-  } catch (err: any) {
-    const status = err?.response?.status || err?.statusCode
-    const m = err?.data?.error ?? err?.data?.message
+  } catch (err) {
+    // El código y el motivo del servidor, leídos sin «any» (composables/useApiErrorMessage.ts).
+    const { status, detail: m } = useApiErrorMessage().extract(err)
     errorMessage.value = status === 429
       ? 'Hiciste varias solicitudes seguidas. Espera un minuto e inténtalo de nuevo.'
-      : (Array.isArray(m) ? m.join(' · ') : m) || 'No pudimos procesar la solicitud. Inténtalo de nuevo en un momento.'
+      : m || 'No pudimos procesar la solicitud. Inténtalo de nuevo en un momento.'
   } finally {
     isLoading.value = false
   }

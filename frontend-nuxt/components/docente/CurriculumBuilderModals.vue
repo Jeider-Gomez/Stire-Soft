@@ -305,7 +305,7 @@ async function submitCreateModule() {
     emit('section-created', res)
     emit('feedback', `Módulo "${moduleModal.form.title.trim()}" creado correctamente.`)
     closeModuleModal()
-  } catch (err: any) {
+  } catch (err) {
     moduleModal.error = messageOf(err, 'Error al crear el módulo.')
   } finally {
     moduleModal.saving = false
@@ -353,7 +353,7 @@ async function submitCreateTopic() {
     emit('topic-created', { sectionId: topicModal.sectionId, topic: res })
     emit('feedback', `Tema "${topicModal.form.title.trim()}" creado correctamente.`)
     closeTopicModal()
-  } catch (err: any) {
+  } catch (err) {
     topicModal.error = messageOf(err, 'Error al crear el tema.')
   } finally {
     topicModal.saving = false
@@ -409,7 +409,7 @@ async function submitCreateUnit() {
     })
     emit('feedback', `Lección "${unitModal.form.title.trim()}" creada.`)
     closeUnitModal()
-  } catch (err: any) {
+  } catch (err) {
     unitModal.error = messageOf(err, 'No se pudo crear la lección.')
   } finally {
     unitModal.saving = false

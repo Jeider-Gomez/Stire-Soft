@@ -42,9 +42,10 @@ export const useAuthStore = defineStore('auth', () => {
         return { ok: true }
       }
       return { ok: false, error: 'Respuesta inesperada del servidor' }
-    } catch (err: any) {
-      const status = err?.response?.status || err?.status
-      const msg = err?.data?.error || err?.data?.message || err?.message || 'Error de conexión'
+    } catch (err) {
+      // Sin «any» y sin el texto crudo de ofetch («[POST] "http://…": 401»): el motivo del servidor o un texto propio.
+      const { status, detail } = useApiErrorMessage().extract(err)
+      const msg = detail || 'Error de conexión'
 
       if (status === 401) {
         return { ok: false, error: 'Correo o contraseña incorrectos' }
@@ -102,8 +103,8 @@ export const useAuthStore = defineStore('auth', () => {
               headers: { Authorization: `Bearer ${jwt}` },
               body: { code: classCode.trim().toUpperCase() }
             })
-          } catch (enrollErr: any) {
-            console.warn('[STIRE Auth] Falló inscripción inicial por código:', enrollErr?.message)
+          } catch (enrollErr) {
+            console.warn('[STIRE Auth] Falló inscripción inicial por código:', enrollErr instanceof Error ? enrollErr.message : enrollErr)
             enrollmentWarning = 'Tu cuenta fue creada, pero no se pudo asociar el código de clase. Podrás unirte desde tu panel.'
           }
         }
@@ -111,9 +112,9 @@ export const useAuthStore = defineStore('auth', () => {
         return { ok: true, enrollmentWarning, roleRequest: response?.roleRequest }
       }
       return { ok: false, error: 'Respuesta inesperada del servidor tras el registro' }
-    } catch (err: any) {
-      const status = err?.response?.status || err?.statusCode
-      const msg = err?.data?.error || err?.data?.message || err?.message || 'Error de conexión'
+    } catch (err) {
+      const { status, detail } = useApiErrorMessage().extract(err)
+      const msg = detail || 'Error de conexión'
 
       if (status === 409) {
         return { ok: false, error: 'Ya existe una cuenta registrada con este correo institucional.' }

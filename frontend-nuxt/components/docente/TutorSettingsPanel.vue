@@ -165,7 +165,7 @@ async function loadSettings() {
     form.value.enabled = res.own.enabled
     form.value.maxGuideLevel = res.own.maxGuideLevel
     form.value.style = res.own.style
-  } catch (err: any) {
+  } catch (err) {
     const { detail, status } = extract(err)
     if (status === 403) {
       loadError.value = 'No puedes configurar el Tutor de una clase que no dictas.'
@@ -192,7 +192,7 @@ async function handleSave() {
     savedOk.value = true
     // Limpiar confirmación tras 3 segundos
     setTimeout(() => { savedOk.value = false }, 3000)
-  } catch (err: any) {
+  } catch (err) {
     const { detail, status } = extract(err)
     if (status === 403) {
       saveError.value = 'No puedes configurar el Tutor de una clase que no dictas.'

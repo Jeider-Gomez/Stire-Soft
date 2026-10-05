@@ -149,8 +149,8 @@ export const useStudentStore = defineStore('student', () => {
           currentTeacher.value = ''
           modules.value = []
         }
-      } catch (err: any) {
-        console.warn('[STIRE Student] No se pudo cargar matrícula:', err?.message)
+      } catch (err) {
+        console.warn('[STIRE Student] No se pudo cargar matrícula:', err instanceof Error ? err.message : err)
       }
 
       // 2. Analítica de estudiante real
@@ -204,8 +204,8 @@ export const useStudentStore = defineStore('student', () => {
               recentSubmissions: analyticsData.recentSubmissions || []
             }
           }
-        } catch (err: any) {
-          console.warn('[STIRE Student] No se pudo cargar analíticas:', err?.message)
+        } catch (err) {
+          console.warn('[STIRE Student] No se pudo cargar analíticas:', err instanceof Error ? err.message : err)
         }
       }
 
@@ -308,8 +308,8 @@ export const useStudentStore = defineStore('student', () => {
               }
             })
           }
-        } catch (err: any) {
-          console.warn('[STIRE Student] No se pudo cargar secciones/currículo:', err?.message)
+        } catch (err) {
+          console.warn('[STIRE Student] No se pudo cargar secciones/currículo:', err instanceof Error ? err.message : err)
         }
       }
 
@@ -355,8 +355,8 @@ export const useStudentStore = defineStore('student', () => {
             analytics.value.reviewStats.critical = reviews.value.filter(r => r.urgency === 'critico').length
           }
         }
-      } catch (err: any) {
-        console.warn('[STIRE Student] No se pudo cargar repasos:', err?.message)
+      } catch (err) {
+        console.warn('[STIRE Student] No se pudo cargar repasos:', err instanceof Error ? err.message : err)
       }
 
       lastSyncTime.value = `Sincronizado ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`

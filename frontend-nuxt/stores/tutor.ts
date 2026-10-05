@@ -127,7 +127,7 @@ export const useTutorStore = defineStore('tutor', () => {
         await sendMessage(lastUserMessage.value)
       }
       return { ok: true }
-    } catch (err: any) {
+    } catch (err) {
       const { extract } = useApiErrorMessage()
       const { detail, status } = extract(err)
       const errTexts: Record<number, string> = {
@@ -325,7 +325,7 @@ export const useTutorStore = defineStore('tutor', () => {
           suggestedActivity: res.suggestedActivity ?? null
         })
       }
-    } catch (err: any) {
+    } catch (err) {
       console.warn('[STIRE Tutor] Error al consultar Tutor IA:', err)
       const { text, needsKey, is403 } = friendlyTutorError(err)
 

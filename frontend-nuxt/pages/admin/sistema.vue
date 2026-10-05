@@ -285,7 +285,7 @@ async function fetchLogs() {
       logEntries.value = res.entries || []
       logsNote.value = res.note || ''
     }
-  } catch (err: any) {
+  } catch (err) {
     const { detail } = extract(err)
     logError.value = detail || 'Error al conectar con el visor de logs del servidor.'
   } finally {
@@ -354,7 +354,7 @@ async function executeCleanup() {
     cleanupFeedback.value = res?.message || 'Limpieza de mantenimiento ejecutada exitosamente en el servidor.'
     showConfirmModal.value = false
     await fetchLogs()
-  } catch (err: any) {
+  } catch (err) {
     const { detail } = extract(err)
     cleanupError.value = detail || 'Error al ejecutar la limpieza de mantenimiento en el servidor.'
     showConfirmModal.value = false

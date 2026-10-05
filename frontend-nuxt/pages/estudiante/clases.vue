@@ -198,7 +198,7 @@ async function fetchEnrollments() {
     if (Array.isArray(res)) {
       enrolledClasses.value = res
     }
-  } catch (err: any) {
+  } catch (err) {
     console.error('[STIRE] Error al listar matrículas:', err)
   } finally {
     isLoading.value = false
@@ -225,8 +225,8 @@ async function handleJoinClass() {
     // Recargar matrículas y actualizar store
     await fetchEnrollments()
     await studentStore.fetchStudentData()
-  } catch (err: any) {
-    const status = err?.response?.status || err?.statusCode
+  } catch (err) {
+    const { status } = useApiErrorMessage().extract(err)
 
     feedbackIsError.value = true
     if (status === 409) {

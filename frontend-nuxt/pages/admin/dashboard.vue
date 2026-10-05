@@ -349,7 +349,7 @@ async function fetchStatus() {
   try {
     const res = await api.get<SystemStatus>('/admin/system/status')
     statusData.value = res
-  } catch (err: any) {
+  } catch (err) {
     const { status, detail } = extract(err)
     if (status === 403) {
       errorMessage.value = 'No tienes permisos de administrador para consultar el estado del sistema.'

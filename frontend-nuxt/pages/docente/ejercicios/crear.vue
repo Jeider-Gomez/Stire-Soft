@@ -228,7 +228,7 @@
 
 <script setup lang="ts">
 import { ArrowLeft, ChevronRight, CircleCheck, Settings2 } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useCrearEjercicio, type ClaseDelDocente, type LeccionParaEjercicio, type TipoDeActividadCrear } from '~/composables/useCrearEjercicio'
 import { EXERCISE_TYPES, exerciseTypeInfo, type ExerciseTypeId } from '~/utils/exerciseTypes'
 import CodingExerciseBuilder from '~/components/docente/exercise-builders/CodingExerciseBuilder.vue'
 import McqExerciseBuilder from '~/components/docente/exercise-builders/McqExerciseBuilder.vue'
@@ -240,33 +240,31 @@ import HtmlCssExerciseBuilder from '~/components/docente/exercise-builders/HtmlC
 
 definePageMeta({ layout: 'teacher' })
 
-interface TeacherClass { id: number; code: string; name: string }
-interface LearningUnitItem { id: number; title: string; difficulty: string }
-interface ActivityTypeOption { id: number; name: string; code: string; baseWeight: number }
 type BuilderResult = { valid: boolean; error?: string; config?: unknown }
 
-function isConfig(v: unknown): v is Record<string, any> {
+function isConfig(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v)
 }
 
 const STEPS = ['Tipo', 'Contenido', 'Revisar y publicar']
 
-const api = useApi()
+// Las llamadas a la API están en composables/useCrearEjercicio.ts (PAT-01).
+const { cargarInicio, leccionesDeClase, crear } = useCrearEjercicio()
 const route = useRoute()
 const { messageOf } = useApiErrorMessage()
 
-const teacherClasses = ref<TeacherClass[]>([])
+const teacherClasses = ref<ClaseDelDocente[]>([])
 const selectedClassId = ref<number | null>(null)
-const units = ref<LearningUnitItem[]>([])
+const units = ref<LeccionParaEjercicio[]>([])
 const loadingUnits = ref(false)
 const showPlacement = ref(false)
-const activityTypes = ref<ActivityTypeOption[]>([])
+const activityTypes = ref<TipoDeActividadCrear[]>([])
 const activityTypeId = ref<number | null>(null)
 
 const step = ref(1)
 const exerciseType = ref<ExerciseTypeId>('mcq')
 const publishImmediately = ref(true)
-const previewConfig = ref<Record<string, any> | null>(null)
+const previewConfig = ref<Record<string, unknown> | null>(null)
 const stepError = ref<string | null>(null)
 const submitError = ref<string | null>(null)
 const isSubmitting = ref(false)
@@ -350,40 +348,16 @@ async function submitExercise() {
   if (!previewConfig.value || !form.learningUnitId) return
   isSubmitting.value = true
   submitError.value = null
-  let activityId: number | null = null
   try {
-    const act = await api.post<{ id: number }>('/activities', {
+    const { publicado: published } = await crear({
       learningUnitId: form.learningUnitId,
-      activityTypeId: activityTypeId.value ?? undefined,
+      activityTypeId: activityTypeId.value,
       title: form.title.trim(),
       description: form.questionText.trim(),
       difficulty: form.difficulty,
       totalPoints: form.totalPoints,
-      passingScore: 60,
       attemptsAllowed: form.attemptsAllowed,
-      isRequired: true,
-      adaptiveWeight: 0.4
-    })
-    if (!act?.id) throw new Error('El servidor no devolvió el ejercicio creado.')
-    activityId = act.id
-    try {
-      await api.post('/activity-questions', {
-        activityId,
-        type: exerciseType.value,
-        question: form.questionText.trim(),
-        points: form.totalPoints,
-        order: 0,
-        config: previewConfig.value
-      })
-    } catch (questionErr) {
-      // Si falla la pregunta no queda un ejercicio vacío: se borra la actividad recién creada.
-      await api.del(`/activities/${activityId}`).catch(() => undefined)
-      throw questionErr
-    }
-    let published = false
-    if (publishImmediately.value) {
-      published = await api.patch(`/activities/${activityId}/publish`).then(() => true, () => false)
-    }
+    }, exerciseType.value, previewConfig.value, publishImmediately.value)
     created.value = { title: form.title.trim(), published }
   } catch (err) {
     submitError.value = messageOf(err, 'No se pudo guardar el ejercicio.')
@@ -408,12 +382,7 @@ async function onClassChange() {
   if (!selectedClassId.value) return
   loadingUnits.value = true
   try {
-    const sections = await api.get<Array<{ id: number }>>(`/sections/class/${selectedClassId.value}`)
-    const collected: LearningUnitItem[] = []
-    for (const s of Array.isArray(sections) ? sections : []) {
-      const topics = await api.get<Array<{ learningUnits?: LearningUnitItem[] }>>(`/topic/section/${s.id}`)
-      for (const t of Array.isArray(topics) ? topics : []) collected.push(...(t.learningUnits ?? []))
-    }
+    const collected = await leccionesDeClase(selectedClassId.value)
     units.value = collected
     form.learningUnitId = collected[0]?.id ?? null
   } catch (err) {
@@ -425,15 +394,11 @@ async function onClassChange() {
 
 onMounted(async () => {
   try {
-    const [classes, types] = await Promise.all([
-      api.get<TeacherClass[]>('/class/my-classes'),
-      api.get<ActivityTypeOption[] | { data?: ActivityTypeOption[] }>('/activity-types')
-    ])
-    const typeList = Array.isArray(types) ? types : (types?.data ?? [])
+    const { clases: classes, tipos: typeList } = await cargarInicio()
     activityTypes.value = typeList
     activityTypeId.value = (typeList.find((t) => t.code === 'AUTO-EVAL') ?? typeList[0])?.id ?? null
 
-    teacherClasses.value = Array.isArray(classes) ? classes : []
+    teacherClasses.value = classes
     const qClass = Number(route.query.classId)
     const qUnit = Number(route.query.unitId)
     selectedClassId.value = teacherClasses.value.find((c) => c.id === qClass)?.id ?? teacherClasses.value[0]?.id ?? null

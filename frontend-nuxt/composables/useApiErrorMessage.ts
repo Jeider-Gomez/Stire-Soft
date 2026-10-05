@@ -7,13 +7,23 @@
  *
  * `detail` nunca contiene URLs, mensajes crudos de ofetch ni `err.message`.
  */
+/** Lee `obj.a.b…` de algo que no se sabe qué es (un error capturado) sin `any`: undefined si el camino no existe. */
+function campo(obj: unknown, ...camino: string[]): unknown {
+  let actual = obj
+  for (const k of camino) {
+    if (typeof actual !== 'object' || actual === null) return undefined
+    actual = (actual as Record<string, unknown>)[k]
+  }
+  return actual
+}
+const numero = (v: unknown): number | undefined => (typeof v === 'number' ? v : undefined)
+
 export function useApiErrorMessage() {
-  function extract(err: any): { status: number; detail: string } {
-    const status: number =
-      err?.response?.status ?? err?.statusCode ?? err?.status ?? 0
+  function extract(err: unknown): { status: number; detail: string } {
+    const status = numero(campo(err, 'response', 'status')) ?? numero(campo(err, 'statusCode')) ?? numero(campo(err, 'status')) ?? 0
 
     // El backend manda 'error' como string o string[]
-    const raw = err?.data?.error ?? err?.data?.message ?? null
+    const raw = campo(err, 'data', 'error') ?? campo(err, 'data', 'message') ?? null
     let detail = ''
 
     if (Array.isArray(raw)) {
@@ -29,7 +39,7 @@ export function useApiErrorMessage() {
    * Texto para mostrar cuando falla una acción: el motivo que dio el servidor (`error`/`message`) o, si no
    * hay, `fallback`. Nunca devuelve el texto crudo de ofetch (`[POST] "http://…": 409 Conflict`).
    */
-  function messageOf(err: any, fallback: string): string {
+  function messageOf(err: unknown, fallback: string): string {
     const { status, detail } = extract(err)
     if (detail) return detail
     if (status === 0) return 'No pude conectarme con el servidor. Revisa tu conexión e inténtalo de nuevo.'
@@ -41,7 +51,7 @@ export function useApiErrorMessage() {
    * Los textos para 422, 428, 429 y 503 vienen del backend (field `error`);
    * si no existen, se usa el texto de la tabla del §18.1.
    */
-  function friendlyTutorError(err: any): {
+  function friendlyTutorError(err: unknown): {
     status: number
     text: string
     /** true si el error es 428 o 422 (abrir panel de clave) */

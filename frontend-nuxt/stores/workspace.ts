@@ -280,7 +280,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           consoleLog.value.push(`  → Completa la respuesta en el panel izquierdo y presiona "Entregar solución".`)
         }
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('[STIRE Workspace] Error cargando actividad:', err)
       const { messageOf } = useApiErrorMessage()
       const msg = messageOf(err, 'Error al cargar actividad')
@@ -364,7 +364,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           consoleLog.value.push(`✖ Discrepancias encontradas: ${passedCount}/${res.results.length} casos aprobados. Revisa la pestaña de casos.`)
         }
       }
-    } catch (err: any) {
+    } catch (err) {
       const { messageOf, extract } = useApiErrorMessage()
       const { status } = extract(err)
       const msg = messageOf(err, 'Error de conexión con el sandbox del backend')
@@ -418,7 +418,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         }
       }
       return htmlCssResults.value
-    } catch (err: any) {
+    } catch (err) {
       const { messageOf, extract } = useApiErrorMessage()
       const { status } = extract(err)
       const msg = messageOf(err, 'Error de conexión con el evaluador del backend')
@@ -532,7 +532,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           }
         }
       }
-    } catch (err: any) {
+    } catch (err) {
       const { messageOf, extract } = useApiErrorMessage()
       const { status } = extract(err)
       const msg = messageOf(err, 'Error de red o backend no disponible')

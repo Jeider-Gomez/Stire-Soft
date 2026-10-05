@@ -285,7 +285,7 @@ async function fetchStudentDashboard() {
   try {
     const res = await api.get<StudentDashboardData>(`/analytics/student/${studentId}`)
     dashboard.value = res
-  } catch (err: any) {
+  } catch (err) {
     errorMessage.value = messageOf(err, 'No tienes permiso o no se pudo cargar el seguimiento del alumno')
   } finally {
     isLoading.value = false

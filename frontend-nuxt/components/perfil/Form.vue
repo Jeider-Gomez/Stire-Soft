@@ -296,7 +296,7 @@ async function saveName() {
     }
     nameSuccess.value = true
     setTimeout(() => { nameSuccess.value = false }, 3000)
-  } catch (err: any) {
+  } catch (err) {
     nameError.value = messageOf(err, 'Error al guardar el nombre.')
   } finally {
     isSavingName.value = false
@@ -347,7 +347,7 @@ async function savePassword() {
     pwdForm.newPassword = ''
     pwdForm.confirmPassword = ''
     pwdSuccess.value = true
-  } catch (err: any) {
+  } catch (err) {
     const msg = messageOf(err, 'Error al cambiar la contraseña.')
     pwdError.value = Array.isArray(msg) ? msg.join('. ') : msg
   } finally {

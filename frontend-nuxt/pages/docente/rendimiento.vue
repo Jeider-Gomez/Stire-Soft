@@ -335,7 +335,7 @@ async function fetchClassesAndMetrics() {
       teacherClasses.value = []
       isLoading.value = false
     }
-  } catch (err: any) {
+  } catch (err) {
     errorMessage.value = messageOf(err, 'Error al cargar las clases del docente')
     isLoading.value = false
   }
@@ -349,7 +349,7 @@ async function loadClassMetrics() {
   try {
     const res = await api.get<ClassMetricsResponse>(`/analytics/class/${selectedClassId.value}`)
     metrics.value = res
-  } catch (err: any) {
+  } catch (err) {
     errorMessage.value = messageOf(err, 'Error al obtener las analíticas de la clase seleccionada')
   } finally {
     isLoading.value = false

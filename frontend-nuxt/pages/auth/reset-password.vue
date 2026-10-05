@@ -100,10 +100,10 @@ async function handleSubmit() {
   try {
     await api.post('/auth/reset-password', { token: token.value, password: password.value })
     done.value = true
-  } catch (err: any) {
-    const status = err?.response?.status || err?.statusCode
-    const m = err?.data?.error ?? err?.data?.message
-    const text = Array.isArray(m) ? m.join(' · ') : m
+  } catch (err) {
+    // El código y el motivo del servidor, leídos sin «any» (composables/useApiErrorMessage.ts).
+    const { status, detail: m } = useApiErrorMessage().extract(err)
+    const text = m
     if (status === 429) {
       errorMessage.value = 'Demasiados intentos seguidos. Espera un minuto e inténtalo de nuevo.'
     } else {
