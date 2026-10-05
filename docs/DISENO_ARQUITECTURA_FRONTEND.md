@@ -69,7 +69,7 @@ navegador abrió y cerró cada ventana sin errores.
 | `components/docente/UnitExercisesPanel.vue`, `pages/docente/index.vue` | 852, 827 | Sí, por secciones, después de contenidos. |
 | Los demás de 300 a 650 líneas | — | Revisar uno por uno con el criterio de arriba. |
 
-**PAT-01:** 28 de 45 páginas todavía llaman a la API desde la vista (eran 32 de 44). El patrón ya está probado en el panel del admin, Mensajes y Contenidos; se sigue página por página, empezando por las más grandes que quedan.
+**PAT-01:** 26 de 45 páginas todavía usan `useApi()` desde la vista (eran 28 el 05/10 por la mañana y 32 de 44 antes). El patrón ya está probado en el panel del admin, Mensajes, Contenidos, Notas y Crear ejercicio; también se dividieron dos componentes grandes: los ejercicios de una lección (852 → 162 líneas, `useEjerciciosUnidad`) y el editor de diagramas (1322 → 791, geometría en `utils/geometriaDiagrama.ts`). Se sigue página por página, empezando por las más grandes que quedan (`auth/register`, `estudiante/unidad/[id]`, `docente/clase/[classId]/asistencia`).
 
 Hecho así, sin prisa y con pruebas, no cambia lo que ve el usuario ni arriesga la prueba del equipo.
 
