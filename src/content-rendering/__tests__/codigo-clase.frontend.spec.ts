@@ -34,7 +34,7 @@ describe('Código y QR de la clase (frontend)', () => {
 
   it('el QR lleva la página para unirse con el código escrito', () => {
     expect(u.urlDeIngreso('https://stire-soft.vercel.app/', 'ALGO-7KQ2')).toBe('https://stire-soft.vercel.app/estudiante/clases?codigo=ALGO-7KQ2');
-    expect(leer('pages', 'docente', 'index.vue')).toContain('QRCode.toCanvas(qrCanvas.value, urlDeIngreso(window.location.origin, cls.code)');
+    expect(leer('components', 'docente', 'VentanaQrClase.vue')).toContain('QRCode.toCanvas(lienzo.value, urlDeIngreso(window.location.origin, props.codigo)');
   });
 
   it('tras iniciar sesión o registrarse vuelve a la página del QR, nunca a otro sitio', () => {
@@ -49,7 +49,7 @@ describe('Código y QR de la clase (frontend)', () => {
     const clases = leer('pages', 'estudiante', 'clases.vue');
     expect(clases).toContain("normalizarCodigo(route.query.codigo)");
     expect(clases).toContain('Escaneaste el código de una clase');
-    expect(leer('pages', 'docente', 'index.vue')).toContain('/class/codigo-disponible?codigo=');
+    expect(leer('composables', 'useClasesDocente.ts')).toContain('/class/codigo-disponible?codigo=');
   });
 
   it('el escáner dentro de la app toma el código del QR de STIRE y no sigue un QR ajeno', () => {

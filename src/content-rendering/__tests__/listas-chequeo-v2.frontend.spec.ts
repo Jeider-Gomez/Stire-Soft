@@ -109,7 +109,8 @@ describe('MOB-02 · objetivos táctiles de 44 px (la revisión del «después» 
     ['pages/docente/index.vue', 'title="Ver quiénes están en rezago"', 1],
     ['pages/docente/index.vue', '@click="copyCode(cls.code)"', 1],
     ['pages/docente/index.vue', '@click="openQrModal(cls)"', 1],
-    ['pages/docente/index.vue', 'class="btn-stire-secondary', 5],
+    // Las otras dos (Cancelar y Cerrar del QR) están desde el 05/10 en VentanaCrearClase y VentanaQrClase.
+    ['pages/docente/index.vue', 'class="btn-stire-secondary', 3],
     ['pages/docente/index.vue', 'class="btn-stire-teal', 1],
   ];
   it.each(CONTROLES)('%s · %s mide al menos 44 px de alto', (rel, marca, cuantos) => {

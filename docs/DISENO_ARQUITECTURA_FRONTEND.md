@@ -55,6 +55,7 @@ Lo comprueba `src/content-rendering/__tests__/admin-dividido.frontend.spec.ts`.
 |---|---|---|
 | Mensajes (estudiante y docente) | Dos páginas casi iguales, de 413 y 453 líneas, que llamaban a la API | `composables/useMensajes.ts` + `components/mensajes/BandejaMensajes.vue` y `VentanaRedactar.vue`; cada página unas 70–100 líneas |
 | `pages/docente/contenidos.vue` | 1131 líneas, cuatro ventanas y sus llamadas a la API | 389 líneas: el árbol. `composables/useContenidosCurso.ts`, `utils/contenidosCurso.ts` (reglas con prueba) y una ventana por componente en `components/docente/contenidos/` |
+| `pages/docente/index.vue` (inicio del docente) | 826 líneas con «Crear clase» y el QR dentro; el QR no era un diálogo para el lector de pantalla | 408 líneas. `composables/useClasesDocente.ts`, `components/docente/VentanaCrearClase.vue` y `VentanaQrClase.vue` |
 
 Las ventanas nuevas usan la misma base que las del admin (`AdminDialogo`): foco inicial, Tab atrapado, Escape y foco de
 vuelta. Lo comprueban `mensajes.frontend.spec.ts` y `contenidos-dividido.frontend.spec.ts`, y una prueba en el
@@ -68,7 +69,7 @@ navegador abrió y cerró cada ventana sin errores.
 | `components/docente/UnitExercisesPanel.vue`, `pages/docente/index.vue` | 852, 827 | Sí, por secciones, después de contenidos. |
 | Los demás de 300 a 650 líneas | — | Revisar uno por uno con el criterio de arriba. |
 
-**PAT-01:** 29 de 45 páginas todavía llaman a la API desde la vista (eran 32 de 44). El patrón ya está probado en el panel del admin, Mensajes y Contenidos; se sigue página por página, empezando por las más grandes (`docente/index.vue`, 826 líneas).
+**PAT-01:** 28 de 45 páginas todavía llaman a la API desde la vista (eran 32 de 44). El patrón ya está probado en el panel del admin, Mensajes y Contenidos; se sigue página por página, empezando por las más grandes que quedan.
 
 Hecho así, sin prisa y con pruebas, no cambia lo que ve el usuario ni arriesga la prueba del equipo.
 

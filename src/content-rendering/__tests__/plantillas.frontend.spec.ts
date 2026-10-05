@@ -23,7 +23,7 @@ describe('Plantillas compartidas', () => {
 
   it('el docente elige con quién compartir en Ajustes, y se copia al crear una clase o con «Traer de otra clase»', () => {
     expect(leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue')).toContain('body: { alcancePlantilla: alcanceElegido.value');
-    expect(leer('pages', 'docente', 'index.vue')).toContain('<DocenteElegirPlantilla');
+    expect(leer('components', 'docente', 'VentanaCrearClase.vue')).toContain('<DocenteElegirPlantilla');
     const contenidos = leer('pages', 'docente', 'contenidos.vue');
     expect(leer('components', 'docente', 'contenidos', 'VentanaImportar.vue')).toContain('<optgroup v-for="g in gruposDePlantillas"');
     // los módulos de una plantilla ajena se leen por reuse (no por /sections, que es solo del dueño)

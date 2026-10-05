@@ -80,7 +80,7 @@ describe('La barra superior y los formularios usan los datos, no texto fijo', ()
     expect(header).toContain('studentStore.currentAsignatura');
   });
   it('crear una clase y sus ajustes permiten elegir asignatura, grupo y periodo', () => {
-    for (const f of [leer('pages', 'docente', 'index.vue'), leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue')]) {
+    for (const f of [leer('components', 'docente', 'VentanaCrearClase.vue'), leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue')]) {
       expect(f).toContain('<DocenteSelectorAsignatura v-model=');
       expect(f).toMatch(/grupo/);
       expect(f).toMatch(/periodo/);
@@ -200,9 +200,8 @@ describe('Plantillas: agrupadas por asignatura, con lo que dice si sirven', () =
     expect(sin.filter((o) => o.motivoNoDisponible).map((o) => o.valor)).toEqual(['asignatura', 'programa', 'facultad', 'institucion']);
   });
   it('las pantallas usan el agrupamiento y el alcance, y piden las plantillas para la asignatura', () => {
-    const index = leer('pages', 'docente', 'index.vue');
-    expect(index).toContain('<DocenteElegirPlantilla');
-    expect(index).toContain('/reuse/plantillas?asignaturaId=');
+    expect(leer('components', 'docente', 'VentanaCrearClase.vue')).toContain('<DocenteElegirPlantilla');
+    expect(leer('composables', 'useClasesDocente.ts')).toContain('/reuse/plantillas?asignaturaId=');
     const elegir = leer('components', 'docente', 'ElegirPlantilla.vue');
     expect(elegir).toContain('Ver más plantillas');
     expect(elegir).toContain('agruparPorAsignatura(resto)');

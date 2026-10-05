@@ -23,6 +23,7 @@
         </div>
 
         <button
+          id="abrir-crear-clase"
           @click="openCreateModal"
           class="btn-stire-primary self-start sm:self-auto min-h-[44px]"
         >
@@ -345,334 +346,34 @@
       </button>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         MODAL: CREAR NUEVA CLASE
-    ═══════════════════════════════════════════════════════ -->
-    <Teleport to="body">
-      <Transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-if="isModalOpen"
-          class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="crear-clase-titulo"
-          @mousedown="inicioClic = $event.target"
-          @click.self="inicioClic === $event.currentTarget && (isModalOpen = false)"
-        >
-          <Transition
-            enter-active-class="transition duration-200 ease-out"
-            enter-from-class="opacity-0 scale-95"
-            enter-to-class="opacity-100 scale-100"
-            leave-active-class="transition duration-150 ease-in"
-            leave-from-class="opacity-100 scale-100"
-            leave-to-class="opacity-0 scale-95"
-          >
-            <div
-              v-if="isModalOpen"
-              class="bg-white rounded-2xl border border-slate-200 p-7 max-w-md w-full shadow-2xl space-y-5 max-h-[90dvh] overflow-y-auto"
-            >
-              <!-- Header modal -->
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 gradient-stire rounded-xl flex items-center justify-center">
-                    <BookOpen :size="18" class="text-white" />
-                  </div>
-                  <div>
-                    <h3 id="crear-clase-titulo" class="font-poppins font-bold text-slate-800">Crear nueva clase</h3>
-                    <p class="text-[11px] text-slate-500">Universidad de Córdoba</p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  aria-label="Cerrar"
-                  @click="isModalOpen = false"
-                  class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                >
-                  <X :size="16" aria-hidden="true" />
-                </button>
-              </div>
-
-              <!-- Form -->
-              <form @submit.prevent="submitCreateClass" class="space-y-4">
-                <!-- Asignatura, grupo y periodo (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md): opcionales; sugieren el nombre -->
-                <div>
-                  <label for="new-class-asignatura" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Asignatura <span class="font-normal text-slate-500">(opcional)</span>
-                  </label>
-                  <DocenteSelectorAsignatura v-model="newClass.asignatura" input-id="new-class-asignatura" :programa-sugerido="programaHabitual" />
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label for="new-class-grupo" class="block text-xs font-semibold text-slate-700 mb-1.5">Grupo</label>
-                    <input id="new-class-grupo" v-model="newClass.grupo" type="text" maxlength="40" placeholder="Grupo 2" class="input-stire min-h-[44px]" />
-                  </div>
-                  <div>
-                    <label for="new-class-periodo" class="block text-xs font-semibold text-slate-700 mb-1.5">Periodo</label>
-                    <input id="new-class-periodo" v-model="newClass.periodo" type="text" maxlength="7" placeholder="2026-2" class="input-stire min-h-[44px]" />
-                  </div>
-                </div>
-
-                <!-- Nombre -->
-                <div>
-                  <label for="new-class-name" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Nombre de la clase *
-                  </label>
-                  <input
-                    id="new-class-name"
-                    v-model="newClass.name"
-                    @input="nombreTocado = true"
-                    type="text"
-                    required
-                    placeholder="Ej: Algoritmos y Lógica de Programación"
-                    class="input-stire"
-                  />
-                </div>
-
-                <!-- Código -->
-                <div>
-                  <div class="flex items-center justify-between mb-1.5">
-                    <label for="new-class-code" class="text-xs font-semibold text-slate-700">
-                      Código único de clase *
-                    </label>
-                    <button
-                      type="button"
-                      @click="generateRandomCode"
-                      class="min-h-[44px] sm:min-h-0 text-[11px] text-stire-blue hover:underline font-medium transition-colors"
-                    >
-                      Generar sugerido
-                    </button>
-                  </div>
-                  <input
-                    id="new-class-code"
-                    v-model="newClass.code"
-                    type="text"
-                    required
-                    placeholder="Ej: ALGO-2026-1"
-                    class="input-stire font-mono uppercase"
-                    aria-describedby="new-class-code-estado"
-                  />
-                  <p id="new-class-code-estado" class="text-[11px] mt-1 flex items-center gap-1" :class="estadoCodigo.tipo === 'ocupado' ? 'text-semantico-falla font-semibold' : estadoCodigo.tipo === 'libre' ? 'text-semantico-pasa font-semibold' : 'text-slate-500'" aria-live="polite">
-                    <X v-if="estadoCodigo.tipo === 'ocupado'" :size="12" aria-hidden="true" />
-                    <Check v-else-if="estadoCodigo.tipo === 'libre'" :size="12" aria-hidden="true" />
-                    {{ estadoCodigo.texto }}
-                  </p>
-                </div>
-
-                <!-- Descripción -->
-                <div>
-                  <label for="new-class-desc" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Descripción / Competencias
-                  </label>
-                  <textarea v-crece
-                    id="new-class-desc"
-                    v-model="newClass.description"
-                    rows="2"
-                    placeholder="Objetivos de aprendizaje del curso..."
-                    class="input-stire resize-none"
-                  />
-                </div>
-
-                <!-- Copiar contenido: plantillas recomendadas para su asignatura, el resto agrupado, y sus clases (§2.3) -->
-                <DocenteElegirPlantilla
-                  v-model="newClass.sourceClassId"
-                  :plantillas="plantillas"
-                  :mis-clases="classes"
-                  :asignatura-nombre="newClass.asignatura?.nombre" />
-
-                <!-- Toggle aprobación -->
-                <div class="p-4 bg-stire-canvas rounded-xl border border-slate-200 flex items-center justify-between gap-4">
-                  <div>
-                    <label for="new-class-aprobacion" class="text-xs font-semibold text-slate-800">Requiere aprobación</label>
-                    <p class="text-[11px] text-slate-500 mt-0.5">El docente aprueba manualmente cada ingreso.</p>
-                  </div>
-                  <input
-                    id="new-class-aprobacion"
-                    type="checkbox"
-                    v-model="newClass.requiresApproval"
-                    class="w-4 h-4 rounded cursor-pointer accent-stire-blue"
-                  />
-                </div>
-
-                <!-- Error -->
-                <div
-                  v-if="errorMessage"
-                  class="p-3 bg-stire-danger/10 border border-stire-danger/25 text-stire-danger rounded-xl text-xs"
-                >
-                  {{ errorMessage }}
-                </div>
-
-                <!-- Acciones -->
-                <div class="flex items-center justify-end gap-3 pt-1">
-                  <button
-                    type="button"
-                    @click="isModalOpen = false"
-                    class="btn-stire-secondary min-h-[44px]"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    :disabled="isSubmitting"
-                    class="btn-stire-primary min-h-[44px] disabled:opacity-50"
-                  >
-                    <span v-if="isSubmitting" class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <Plus v-else :size="14" />
-                    {{ isSubmitting ? 'Guardando…' : 'Crear clase' }}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </Transition>
-        </div>
-      </Transition>
-    </Teleport>
-
-    <!-- ═══════════════════════════════════════════════════════
-         MODAL: QR PROYECTOR
-    ═══════════════════════════════════════════════════════ -->
-    <Teleport to="body">
-      <Transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-if="qrModal.open"
-          class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-          @click.self="qrModal.open = false"
-        >
-          <div class="bg-white rounded-3xl p-10 max-w-sm w-full text-center shadow-2xl space-y-6 max-h-[90dvh] overflow-y-auto">
-            <div>
-              <h3 class="font-poppins font-bold text-xl text-slate-800">Código de clase</h3>
-              <p class="text-sm text-slate-500 mt-1">{{ qrModal.className }}</p>
-              <p class="text-xs text-slate-500 mt-2">Que lo escaneen con la cámara del celular: se abre STIRE con el código ya escrito.</p>
-            </div>
-            <div class="flex items-center justify-center">
-              <canvas ref="qrCanvas" class="rounded-2xl shadow-lg" />
-            </div>
-            <div class="p-4 bg-stire-canvas rounded-2xl">
-              <p class="text-xs text-slate-500 mb-1">Código de acceso</p>
-              <p class="text-3xl font-mono font-bold text-stire-blue tracking-widest">{{ qrModal.code }}</p>
-            </div>
-            <button
-              @click="qrModal.open = false"
-              class="btn-stire-secondary w-full justify-center min-h-[44px]"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
+    <!-- Ventanas: crear una clase y mostrar su QR (components/docente/), sobre la base de ventanas común. -->
+    <DocenteVentanaCrearClase v-if="creando" @cerrar="creando = false" @creada="alCrear" />
+    <DocenteVentanaQrClase v-if="qr" :codigo="qr.codigo" :nombre="qr.nombre" @cerrar="qr = null" />
 
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Plantilla } from '~/utils/plantillas'
+// Inicio del docente: sus clases organizadas por periodo y programa, las cifras de todas y el acceso a cada una. Los datos
+// y la API están en composables/useClasesDocente.ts; crear una clase y el QR, en sus ventanas (PAT-01 y PAT-04; antes
+// 826 líneas con las dos ventanas dentro).
+import { computed, onMounted, provide, ref } from 'vue'
 import { porcentaje } from '~/utils/porcentaje'
-import { lugarDeAsignatura, nombreSugerido, periodoActual, type AsignaturaInfo } from '~/utils/contextoAcademico'
+import { lugarDeAsignatura } from '~/utils/contextoAcademico'
 import { organizarClases, programasDeLasClases } from '~/utils/organizarClases'
-import { AlertTriangle, BookOpen, Check, Copy, Mail, Plus, QrCode, Search, TrendingUp, UserCheck, Users, X } from 'lucide-vue-next'
-import { normalizarCodigo, sugerirCodigo, urlDeIngreso } from '~/utils/codigoClase'
-import { useApi } from '~/composables/useApi'
-const { messageOf } = useApiErrorMessage()
+import { AlertTriangle, BookOpen, Check, Copy, Mail, Plus, QrCode, Search, TrendingUp, UserCheck, Users } from 'lucide-vue-next'
+import { CLAVE_CLASES_DOCENTE, useClasesDocente, type ClaseDelDocente } from '~/composables/useClasesDocente'
 
 definePageMeta({ layout: 'teacher' })
 
-interface TeacherClass {
-  id: number
-  code: string
-  name: string
-  description?: string
-  isActive: boolean
-  requiresApproval?: boolean
-  enrollmentCount?: number
-  avgMastery?: number
-  atRiskCount?: number
-  asignatura?: AsignaturaInfo | null
-  grupo?: string | null
-  periodo?: string | null
-}
+const estado = useClasesDocente()
+provide(CLAVE_CLASES_DOCENTE, estado)
+const { clases: classes, cargando: isLoading, noLeidos: unreadMessages, totalEstudiantes: totalStudents, dominioPromedio: avgMastery, enRezago: atRiskCount } = estado
 
-const api = useApi()
-const classes = ref<TeacherClass[]>([])
-// Contenido que otros docentes compartieron como plantilla, para empezar una clase con él.
-const plantillas = ref<Plantilla[]>([])
-// Con la asignatura elegida, el servidor ordena por cercanía y muestra también lo compartido con esa asignatura o su programa.
-async function fetchPlantillas(asignaturaId?: number) {
-  try {
-    plantillas.value = await api.get<Plantilla[]>(asignaturaId ? `/reuse/plantillas?asignaturaId=${asignaturaId}` : '/reuse/plantillas')
-  } catch {
-    plantillas.value = []
-  }
-}
-const isLoading = ref(false)
-const copiedCode = ref<string | null>(null)
 const successMessage = ref<string | null>(null)
+const copiedCode = ref<string | null>(null)
 const searchQuery = ref('')
 
-// Modal crear clase
-const isModalOpen = ref(false)
-// Se cierra por el fondo solo si el clic empezó en el fondo: seleccionar texto de la descripción y soltar afuera no
-// debe borrar lo escrito.
-const inicioClic = ref<EventTarget | null>(null)
-const isSubmitting = ref(false)
-const errorMessage = ref<string | null>(null)
-const newClass = reactive({
-  name: '',
-  code: '',
-  description: '',
-  requiresApproval: false,
-  sourceClassId: null as number | null,
-  asignatura: null as AsignaturaInfo | null,
-  grupo: '',
-  periodo: ''
-})
-watch(() => newClass.asignatura?.id, (id) => { void fetchPlantillas(id) })
-// El nombre se sugiere con la asignatura, el grupo y el periodo hasta que el docente lo escribe él mismo.
-const nombreTocado = ref(false)
-watch(() => [newClass.asignatura, newClass.grupo, newClass.periodo] as const, ([a, grupo, periodo]) => {
-  if (!nombreTocado.value && a) newClass.name = nombreSugerido(a.nombre, grupo, periodo)
-})
-// El programa en el que más enseña, para sugerir primero sus asignaturas.
-const programaHabitual = computed<number | null>(() => {
-  const cuenta = new Map<number, number>()
-  for (const c of classes.value) if (c.asignatura?.programId) cuenta.set(c.asignatura.programId, (cuenta.get(c.asignatura.programId) ?? 0) + 1)
-  return [...cuenta.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? contexto.programaPrincipal.value
-})
-// Sin clases con asignatura, el programa de «Dónde enseño» sugiere las asignaturas de la primera clase.
-const contexto = useContextoDocente()
-contexto.cargar()
-
-// Modal QR
-const qrCanvas = ref<HTMLCanvasElement | null>(null)
-const qrModal = reactive({ open: false, code: '', className: '' })
-
-// Métricas derivadas
-const totalStudents = computed(() =>
-  classes.value.reduce((acc, c) => acc + (c.enrollmentCount ?? 0), 0)
-)
-const avgMastery = computed(() => {
-  const withMastery = classes.value.filter(c => c.avgMastery !== undefined)
-  if (!withMastery.length) return 0
-  return Math.round(withMastery.reduce((acc, c) => acc + (c.avgMastery ?? 0), 0) / withMastery.length)
-})
-const atRiskCount = computed(() =>
-  classes.value.reduce((acc, c) => acc + (c.atRiskCount ?? 0), 0)
-)
-
-// Búsqueda
 // Cuando pasan los semestres (utils/organizarClases.ts): el periodo vigente a la vista, los anteriores plegados y un
 // filtro por programa solo si enseña en más de uno. Al buscar, se busca en todo.
 const programaFiltro = ref<number | null>(null)
@@ -681,146 +382,27 @@ const programasDelDocente = computed(() => programasDeLasClases(classes.value))
 const organizacion = computed(() => organizarClases(classes.value, { texto: searchQuery.value, programaId: programaFiltro.value, verAnteriores: verAnteriores.value }))
 const filteredClasses = computed(() => organizacion.value.visibles)
 
-function openCreateModal() {
-  newClass.name = ''
-  newClass.description = ''
-  newClass.requiresApproval = false
-  newClass.sourceClassId = null
-  newClass.asignatura = null
-  newClass.grupo = ''
-  newClass.periodo = periodoActual()
-  nombreTocado.value = false
-  generateRandomCode()
-  errorMessage.value = null
-  isModalOpen.value = true
-}
-
-function generateRandomCode() {
-  newClass.code = sugerirCodigo(newClass.name)
-}
-
-// Mientras escribe, si el código sirve y está libre: dos clases nunca comparten código.
-const estadoCodigo = reactive<{ tipo: 'nada' | 'revisando' | 'libre' | 'ocupado'; texto: string }>({ tipo: 'nada', texto: 'Los estudiantes lo escriben o escanean su QR para entrar.' })
-let relojCodigo: ReturnType<typeof setTimeout> | null = null
-watch(() => newClass.code, (texto) => {
-  if (relojCodigo) clearTimeout(relojCodigo)
-  if (!texto.trim()) { Object.assign(estadoCodigo, { tipo: 'nada', texto: 'Los estudiantes lo escriben o escanean su QR para entrar.' }); return }
-  Object.assign(estadoCodigo, { tipo: 'revisando', texto: 'Revisando que nadie lo tenga…' })
-  relojCodigo = setTimeout(async () => {
-    try {
-      const r = await api.get<{ codigo: string; disponible: boolean; motivo: string | null }>(`/class/codigo-disponible?codigo=${encodeURIComponent(texto)}`)
-      if (normalizarCodigo(newClass.code) !== r.codigo) return
-      Object.assign(estadoCodigo, r.disponible
-        ? { tipo: 'libre', texto: r.codigo === newClass.code.trim() ? 'Disponible.' : `Disponible. Se guardará como ${r.codigo}.` }
-        : { tipo: 'ocupado', texto: r.motivo ?? 'No disponible.' })
-    } catch {
-      Object.assign(estadoCodigo, { tipo: 'nada', texto: 'No se pudo revisar ahora; se revisará al crear la clase.' })
-    }
-  }, 400)
-})
-
-async function submitCreateClass() {
-  if (estadoCodigo.tipo === 'ocupado') {
-    errorMessage.value = estadoCodigo.texto + ' Elige otro o pulsa «Generar sugerido».'
-    return
-  }
-  if (!newClass.name.trim() || !newClass.code.trim()) {
-    errorMessage.value = 'El nombre y el código de la clase son obligatorios.'
-    return
-  }
-  isSubmitting.value = true
-  errorMessage.value = null
-  try {
-    const res = await api.post<TeacherClass>('/class', {
-      name: newClass.name.trim(),
-      code: normalizarCodigo(newClass.code),
-      description: newClass.description.trim() || undefined,
-      requiresApproval: newClass.requiresApproval,
-      asignaturaId: newClass.asignatura?.id,
-      grupo: newClass.grupo.trim() || undefined,
-      periodo: newClass.periodo.trim() || undefined
-    })
-    if (res && res.id) {
-      void useContextoDocente().recargar() // la barra superior toma la asignatura nueva
-      if (newClass.sourceClassId) {
-        try {
-          await api.post(`/reuse/classes/${res.id}/import`, {
-            sourceClassId: newClass.sourceClassId
-          })
-        } catch (importErr: unknown) {
-          // La clase ya quedó creada: se cierra el modal, porque volver a pulsar «Crear» crearía otra clase.
-          isModalOpen.value = false
-          successMessage.value = `Clase "${res.name}" creada con código ${res.code}, pero no se pudo copiar el contenido (${messageOf(importErr, 'error del servidor')}). Tráelo desde Contenidos con «Traer de otra clase».`
-          setTimeout(() => { successMessage.value = null }, 10000)
-          await fetchClasses()
-          return
-        }
-      }
-      isModalOpen.value = false
-      successMessage.value = `Clase "${res.name}" creada con código ${res.code}.`
-      setTimeout(() => { successMessage.value = null }, 4000)
-      await fetchClasses()
-    }
-  } catch (err: any) {
-    errorMessage.value = messageOf(err, 'Error al crear la clase')
-  } finally {
-    isSubmitting.value = false
-  }
-}
-
-async function fetchClasses() {
-  isLoading.value = true
-  try {
-    const res = await api.get<TeacherClass[]>('/class/my-classes')
-    if (Array.isArray(res)) classes.value = res
-  } catch (err: any) {
-    console.error('[STIRE Docente] Error al cargar clases:', err)
-  } finally {
-    isLoading.value = false
-  }
+// Ventanas
+const creando = ref(false)
+const qr = ref<{ codigo: string; nombre: string } | null>(null)
+const openCreateModal = () => { creando.value = true }
+const openQrModal = (cls: ClaseDelDocente) => { qr.value = { codigo: cls.code, nombre: cls.name } }
+function alCrear(aviso: string) {
+  creando.value = false
+  successMessage.value = aviso
+  setTimeout(() => { if (successMessage.value === aviso) successMessage.value = null }, aviso.includes('no se pudo copiar') ? 10000 : 5000)
 }
 
 function copyCode(code: string) {
-  if (navigator?.clipboard) {
-    navigator.clipboard.writeText(code)
-    copiedCode.value = code
-    setTimeout(() => {
-      if (copiedCode.value === code) copiedCode.value = null
-    }, 2500)
-  }
-}
-
-async function openQrModal(cls: TeacherClass) {
-  qrModal.code = cls.code
-  qrModal.className = cls.name
-  qrModal.open = true
-  await nextTick()
-  if (qrCanvas.value) {
-    try {
-      const QRCode = await import('qrcode')
-      // El QR lleva la página para unirse con el código ya escrito: la cámara del celular la abre sola.
-      await QRCode.toCanvas(qrCanvas.value, urlDeIngreso(window.location.origin, cls.code), {
-        width: 220,
-        margin: 2,
-        color: { dark: '#0B3D91', light: '#FFFFFF' }
-      })
-    } catch {
-      // qrcode not available — silently ignore
-    }
-  }
-}
-
-const unreadMessages = ref<number | null>(null)
-async function fetchUnreadMessages() {
-  try {
-    const res = await api.get<{ count: number }>('/message/unread-count')
-    unreadMessages.value = res?.count ?? 0
-  } catch { /* sin dato: la tarjeta muestra «—», nunca un número inventado */ }
+  if (!navigator?.clipboard) return
+  void navigator.clipboard.writeText(code)
+  copiedCode.value = code
+  setTimeout(() => { if (copiedCode.value === code) copiedCode.value = null }, 2500)
 }
 
 onMounted(() => {
-  fetchPlantillas()
-  fetchClasses()
-  fetchUnreadMessages()
+  void estado.cargarPlantillas()
+  void estado.cargarClases()
+  void estado.cargarNoLeidos()
 })
 </script>

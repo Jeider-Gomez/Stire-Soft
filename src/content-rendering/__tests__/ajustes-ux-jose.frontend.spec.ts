@@ -124,10 +124,13 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
     expect(sinTope).toEqual([]);
   });
 
-  it('crear clase: la ventana no se cierra al soltar una selección afuera y la X es un ícono con nombre', () => {
-    const d = leer('pages', 'docente', 'index.vue');
-    expect(d).toContain('@click.self="inicioClic === $event.currentTarget && (isModalOpen = false)"');
-    expect(d).not.toContain('✕');
+  it('crear clase: la ventana no se cierra al soltar una selección afuera (base común de ventanas) y sin «✕» de texto', () => {
+    // Desde el 05/10 la ventana es components/docente/VentanaCrearClase.vue, sobre AdminDialogo, que cierra por el
+    // fondo solo si el clic empezó en el fondo.
+    const v = leer('components', 'docente', 'VentanaCrearClase.vue');
+    expect(v).toContain('<AdminDialogo');
+    expect(leer('components', 'admin', 'AdminDialogo.vue')).toContain('@click.self="inicioClic === $event.currentTarget && cierraConFondo && cerrar()"');
+    expect(v).not.toContain('✕');
   });
 
   it('la solicitud de docente pendiente se avisa en rojo y dice que el admin aún no cambia el rol', () => {

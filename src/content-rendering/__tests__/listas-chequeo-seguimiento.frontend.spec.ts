@@ -31,9 +31,9 @@ describe('UX-07 · contraste sobre fondos grises (axe-core color-contrast)', () 
 
 describe('UX-07 · todo campo tiene etiqueta (axe-core label)', () => {
   it('la casilla «Requiere aprobación» de Crear clase está unida a su etiqueta', () => {
-    const d = leer('pages', 'docente', 'index.vue');
+    const d = leer('components', 'docente', 'VentanaCrearClase.vue');
     expect(d).toContain('<label for="new-class-aprobacion"');
-    expect(d).toMatch(/id="new-class-aprobacion"\s+type="checkbox"/);
+    expect(d).toMatch(/id="new-class-aprobacion"[^>]*type="checkbox"/);
   });
 });
 
@@ -74,10 +74,9 @@ describe('MOB-02 · controles de 44 px en el celular', () => {
     expect(leer('components', 'docente', 'ValoracionesClase.vue')).toMatch(/min-h-\[44px\] sm:min-h-0[^>]*>Editar la lección/);
   });
 
-  it('Crear clase: «Cerrar» y «Generar sugerido» ya no miden 32 y 17 px', () => {
-    const d = leer('pages', 'docente', 'index.vue');
-    expect(d).toContain('aria-label="Cerrar"');
-    expect(d).toContain('min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg text-slate-500');
+  it('Crear clase: «Generar sugerido» ya no mide 17 px y se cierra con «Cancelar» de 44 px o con Escape', () => {
+    const d = leer('components', 'docente', 'VentanaCrearClase.vue');
+    expect(d).toMatch(/btn-stire-secondary min-h-\[44px\][^>]*>Cancelar/);
     expect(d).toMatch(/min-h-\[44px\] sm:min-h-0 text-\[11px\] text-stire-blue[^>]*>\s*Generar sugerido/);
   });
 });
