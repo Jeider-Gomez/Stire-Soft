@@ -105,11 +105,19 @@ describe('formatMarkdown (frontend-nuxt/utils/formatMarkdown.ts): tablas y lista
       const doc = dom(html);
       return Array.from(doc.querySelectorAll(tag)).flatMap((el) => [el.previousSibling?.nodeName, el.nextSibling?.nodeName]);
     };
-    for (const tag of ['h4', 'pre', 'div', 'ol']) expect({ tag, br: vecinos(tag).includes('BR') }).toEqual({ tag, br: false });
+    for (const tag of ['h3', 'pre', 'div', 'ol']) expect({ tag, br: vecinos(tag).includes('BR') }).toEqual({ tag, br: false });
     expect(html).toContain('Primer párrafo.<br><br>Segundo párrafo.');
   });
 
   it('un número con punto en medio de una frase no crea una lista', () => {
     expect(dom(comoEstudiante('La nota mínima es 3. Con menos se reprueba.')).querySelector('ol')).toBeNull();
+  });
+});
+
+describe('títulos de la lección en orden (WCAG 1.3.1)', () => {
+  it('«##» es h3 y «###» h4: la sección ya es h2, sin saltar de h2 a h4', () => {
+    const html = comoEstudiante('## La idea\n\n### Pruébalo\n\nTexto.');
+    expect(html).toMatch(/<h3[^>]*>La idea<\/h3>/);
+    expect(html).toMatch(/<h4[^>]*>Pruébalo<\/h4>/);
   });
 });

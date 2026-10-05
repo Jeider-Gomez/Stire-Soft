@@ -12,7 +12,7 @@
           :aria-pressed="voto === true"
           :disabled="guardando"
           @click="valorar(true)">
-          <ThumbsUp :size="15" aria-hidden="true" /> Sí
+          <ThumbsUp :size="15" aria-hidden="true" /> Sí, me sirvió
         </button>
         <button
           type="button"
@@ -21,7 +21,7 @@
           :aria-pressed="voto === false"
           :disabled="guardando"
           @click="valorar(false)">
-          <ThumbsDown :size="15" aria-hidden="true" /> No
+          <ThumbsDown :size="15" aria-hidden="true" /> No me quedó claro
         </button>
       </div>
     </div>

@@ -335,9 +335,9 @@ export const useStudentStore = defineStore('student', () => {
             urgency: r.urgency,
             urgencyLabel:
               r.urgency === 'critico'
-                ? 'Crítico — Repasar hoy'
+                ? 'Atrasado'
                 : r.urgency === 'vencido'
-                ? 'Pendiente hoy'
+                ? 'Toca hoy'
                 : r.urgency === 'manana'
                 ? 'Mañana'
                 : 'Al día',

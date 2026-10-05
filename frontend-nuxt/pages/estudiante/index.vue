@@ -148,7 +148,7 @@
           <!-- Con el tope (varios fallos seguidos) el siguiente paso es volver a la lección, no otro ejercicio. -->
           <NuxtLink v-if="!studentStore.activeUnit.empezada || !recommendedExerciseId || recommendedReason === 'pausa'" :to="`/estudiante/unidad/${studentStore.activeUnit.id}`"
             class="px-5 py-3 rounded-lg bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs text-center transition-colors shadow-sm flex items-center justify-center gap-2 min-h-[44px]">
-            <BookOpen :size="15" aria-hidden="true" /> {{ recommendedReason === 'pausa' ? 'Repasar la explicación' : studentStore.activeUnit.empezada ? 'Abrir la lección' : 'Empezar la lección' }}
+            <BookOpen :size="15" aria-hidden="true" /> {{ recommendedReason === 'pausa' ? 'Releer la lección' : studentStore.activeUnit.empezada ? 'Abrir la lección' : 'Empezar la lección' }}
           </NuxtLink>
           <template v-else>
             <NuxtLink :to="`/estudiante/evaluacion/${recommendedExerciseId}`"
@@ -168,7 +168,7 @@
             class="borde-afordancia px-4 py-2.5 rounded-lg bg-base-bg-secundario text-center text-xs font-semibold text-base-texto-primario flex items-center justify-center gap-1.5 min-h-[44px]">
             <Brain :size="14" aria-hidden="true" />
             <span v-if="!studentStore.hasLoaded">Repasos</span>
-            <span v-else-if="studentStore.reviewsDueToday.length">Repasar ({{ studentStore.reviewsDueToday.length }} para hoy)</span>
+            <span v-else-if="studentStore.reviewsDueToday.length">Hacer mis {{ studentStore.reviewsDueToday.length }} {{ studentStore.reviewsDueToday.length === 1 ? 'repaso' : 'repasos' }} de hoy</span>
             <span v-else>Repasos: ninguno para hoy</span>
           </NuxtLink>
         </div>

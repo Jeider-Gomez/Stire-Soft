@@ -80,7 +80,7 @@ describe('La lección antes del ejercicio y la evaluación implícita', () => {
     // tras varios fallos seguidos, el tope va primero y se dice por qué no hay reto
     expect(leccion).toContain("reto?.reason === 'pausa'");
     // mientras no esté dominada (antes, solo antes de empezar)
-    expect(leccion).toContain('puedeSaltar.value = !!rec && !rec.allCompleted && (progress?.mastery ?? 0) < DOMINADO');
+    expect(leccion).toContain("puedeSaltar.value = !!rec && !rec.allCompleted && rec.reason !== 'pausa' && (progress?.mastery ?? 0) < DOMINADO");
   });
 
   it('el docente ve «Intentó saltar con un reto y falló», no «dijo sentirse seguro»', () => {

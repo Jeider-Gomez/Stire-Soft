@@ -1,148 +1,84 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-6">
-    <!-- Cabecera de Repasos SM-2 (EST-V05) -->
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Repasos de hoy
-        </h1>
-        <p class="text-xs text-base-texto-secundario mt-0.5">
-          Repasa justo antes de olvidar: unos minutos hoy te ahorran volver a estudiar desde cero.
-        </p>
-      </div>
-
-      <!-- Indicador de Sesión Corta -->
-      <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil text-center flex-shrink-0">
-        <span class="text-xs text-slate-600 block">Tiempo estimado:</span>
-        <span class="text-lg font-bold text-acento-ambar-fuerte">~13 minutos</span>
-      </div>
+  <!-- Repasos (EST-V05; crítica de diseño del 05/10). Antes todo salía en rojo como «crítico», con seis botones
+       iguales, un párrafo técnico repetido en cada tarjeta y un tiempo fijo. Ahora: uno para empezar, el resto en
+       lista, el tiempo calculado y la razón dicha una sola vez, en palabras. -->
+  <div class="max-w-3xl mx-auto space-y-5">
+    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-1">
+      <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Repasos de hoy</h1>
+      <p v-if="lista.length" class="text-sm font-semibold text-base-texto-primario">
+        {{ lista.length }} {{ lista.length === 1 ? 'repaso' : 'repasos' }} · {{ tiempoTotal(lista) }}
+      </p>
+      <p class="text-xs text-base-texto-secundario">
+        Repasar justo cuando empiezas a olvidar hace que lo recuerdes por más tiempo. Cada repaso es un ejercicio corto de una lección que ya practicaste.
+      </p>
     </header>
 
-    <!-- Leyenda de Triple Codificación Accesible (P06 — WCAG 2.1 AA) -->
-    <section class="bg-base-blanco rounded-lg border border-base-borde-sutil p-3 flex flex-wrap items-center justify-between gap-3 text-xs text-base-texto-secundario">
-      <span class="font-bold text-base-texto-primario text-[11px]">Niveles de urgencia:</span>
-      <div class="flex items-center gap-4 text-[11px]">
-        <span class="flex items-center gap-1.5 font-medium text-semantico-falla">
-          <span aria-hidden="true">■</span>
-          <span>Crítico (repasar hoy)</span>
-        </span>
-        <span class="flex items-center gap-1.5 font-medium text-acento-ambar-fuerte">
-          <span aria-hidden="true">▲</span>
-          <span>Pendiente / Mañana</span>
-        </span>
-        <span class="flex items-center gap-1.5 font-medium text-semantico-pasa">
-          <span aria-hidden="true">⬤</span>
-          <span>Al día (retención alta)</span>
-        </span>
-      </div>
-    </section>
-
-    <!-- Lista de Conceptos a Repasar -->
-    <section class="space-y-3">
-      <div
-        v-for="item in studentStore.reviews"
-        :key="item.id"
-        class="bg-base-blanco rounded-xl border p-5 shadow-sm space-y-3 transition-all"
-        :class="{
-          'border-semantico-falla/40': item.urgency === 'critico',
-          'border-acento-ambar-fuerte/40': item.urgency === 'vencido',
-          'border-base-borde-sutil': item.urgency === 'al-dia'
-        }">
+    <template v-if="lista.length">
+      <!-- Por dónde empezar: una sola acción principal -->
+      <section class="rounded-xl border border-acento-ambar-fuerte/40 bg-acento-ambar/5 p-5 space-y-3" aria-labelledby="empezar-titulo">
+        <p id="empezar-titulo" class="text-[11px] font-bold uppercase tracking-wider text-acento-ambar-fuerte">Empieza por aquí</p>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <!-- Triple Codificación: Forma + Color + Texto (P06) -->
-              <span
-                class="px-2.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
-                :class="getUrgencyBadgeClass(item.urgency)">
-                <span>{{ getUrgencyShape(item.urgency) }}</span>
-                <span>{{ item.urgencyLabel }}</span>
-              </span>
-
-              <span class="text-xs text-base-texto-secundario font-medium">
-                {{ item.moduleTitle }}
-              </span>
-            </div>
-
-            <h3 class="text-sm font-bold text-base-texto-primario">
-              {{ item.conceptTitle }}
-            </h3>
-          </div>
-
-          <!-- Botón de Refuerzo Rápido -->
-          <div class="flex items-center gap-3 flex-shrink-0">
-            <span class="text-xs text-base-texto-secundario">
-              ⏱ ~{{ item.estimatedTimeMin }} min
+          <div class="space-y-1 min-w-0">
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold" :class="ESTILO_URGENCIA[primero.urgency]">
+              <component :is="ICONO[primero.urgency]" :size="12" aria-hidden="true" /> {{ primero.urgencyLabel }}
             </span>
-
-            <NuxtLink
-              :to="`/estudiante/unidad/${item.learningUnitId}`"
-              class="min-h-[44px] px-4 py-2 rounded-md font-bold text-xs transition-colors shadow-sm inline-flex items-center justify-center text-center"
-              :class="item.urgency === 'critico'
-                ? 'bg-semantico-falla hover:opacity-90 text-base-blanco'
-                : 'bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco'">
-              Iniciar refuerzo
-            </NuxtLink>
+            <h2 class="text-base font-bold text-base-texto-primario">{{ primero.conceptTitle }}</h2>
           </div>
+          <NuxtLink :to="`/estudiante/unidad/${primero.learningUnitId}`"
+            class="min-h-[44px] px-5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-sm inline-flex items-center justify-center gap-1.5 shrink-0">
+            Repasar ahora <ArrowRight :size="15" aria-hidden="true" />
+          </NuxtLink>
         </div>
+      </section>
 
-        <!-- Explicación pedagógica no punitiva (P04) -->
-        <p class="text-xs text-slate-600 bg-base-bg-secundario/60 p-2.5 rounded border border-base-borde-sutil/60">
-          <strong>Objetivo de retención:</strong> Refuerza este concepto ahora para elevar tu factor de estabilidad de memoria y evitar olvido en la siguiente evaluación.
-        </p>
-      </div>
-    </section>
+      <section v-if="resto.length" class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm" aria-labelledby="despues-titulo">
+        <h2 id="despues-titulo" class="px-5 pt-4 text-sm font-bold text-base-texto-primario">Después</h2>
+        <ul class="divide-y divide-base-borde-sutil">
+          <li v-for="item in resto" :key="item.id" class="px-5 py-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="min-w-0 flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold shrink-0" :class="ESTILO_URGENCIA[item.urgency]">
+                <component :is="ICONO[item.urgency]" :size="12" aria-hidden="true" /> {{ item.urgencyLabel }}
+              </span>
+              <span class="font-semibold text-base-texto-primario truncate">{{ item.conceptTitle }}</span>
+            </span>
+            <NuxtLink :to="`/estudiante/unidad/${item.learningUnitId}`" :aria-label="`Repasar ${item.conceptTitle}`"
+              class="min-h-[44px] px-3 rounded-md borde-afordancia font-semibold text-acento-ambar-fuerte inline-flex items-center">
+              Repasar
+            </NuxtLink>
+          </li>
+        </ul>
+      </section>
+    </template>
 
-    <!-- Estado si todo está al día -->
-    <div
-      v-if="studentStore.reviews.length === 0"
-      class="bg-base-blanco rounded-xl border border-semantico-pasa/40 p-8 text-center space-y-3 shadow-sm">
-      <div class="w-12 h-12 rounded-full bg-semantico-pasa/10 text-semantico-pasa flex items-center justify-center text-xl mx-auto font-bold">
-        ⬤
-      </div>
-      <h3 class="font-bold text-base text-base-texto-primario">¡Estás al día con todos tus repasos!</h3>
+    <div v-else class="bg-base-blanco rounded-xl border border-semantico-pasa/40 p-8 text-center space-y-3 shadow-sm">
+      <CircleCheck :size="40" class="mx-auto text-semantico-pasa" aria-hidden="true" />
+      <h2 class="font-bold text-base text-base-texto-primario">Estás al día con tus repasos</h2>
       <p class="text-xs text-base-texto-secundario max-w-md mx-auto">
-        Tu memoria a largo plazo está consolidada según el algoritmo SM-2. Puedes continuar avanzando en nuevos módulos.
+        Lo que ya practicaste volverá aquí cuando toque repasarlo. Mientras tanto, sigue con la lección que tienes en curso.
       </p>
-      <NuxtLink
-        to="/estudiante"
-        class="inline-block px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs">
-        Volver al inicio
+      <NuxtLink to="/estudiante" class="inline-flex items-center min-h-[44px] px-4 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs">
+        Ir a mi siguiente paso
       </NuxtLink>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { ArrowRight, CalendarCheck, CalendarClock, CircleCheck, Clock } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
-import type { ReviewUrgency } from '~/types'
+import { ESTILO_URGENCIA, ordenarRepasos, tiempoTotal } from '~/utils/repasos'
 
-definePageMeta({
-  layout: 'student'
-})
+definePageMeta({ layout: 'student' })
 
 const studentStore = useStudentStore()
+const lista = computed(() => ordenarRepasos(studentStore.reviews))
+const primero = computed(() => lista.value[0])
+const resto = computed(() => lista.value.slice(1))
+// La urgencia se lee por la forma del ícono, el color y el texto a la vez (P06).
+const ICONO = { critico: Clock, vencido: CalendarCheck, manana: CalendarClock, 'al-dia': CircleCheck }
 
 onMounted(() => {
   studentStore.fetchStudentData()
 })
-
-function getUrgencyBadgeClass(urgency: ReviewUrgency) {
-  switch (urgency) {
-    case 'critico': return 'bg-semantico-falla/15 text-semantico-falla'
-    case 'vencido': return 'bg-urgencia-repaso-vencido/15 text-urgencia-repaso-vencido'
-    case 'manana': return 'bg-acento-ambar-fuerte/15 text-acento-ambar-fuerte'
-    case 'al-dia': return 'bg-semantico-pasa/15 text-semantico-pasa'
-  }
-}
-
-function getUrgencyShape(urgency: ReviewUrgency) {
-  switch (urgency) {
-    case 'critico': return '■'
-    case 'vencido': return '▲'
-    case 'manana': return '▲'
-    case 'al-dia': return '⬤'
-  }
-}
 </script>

@@ -68,7 +68,8 @@ export function formatMarkdown(raw: string, options: { escapeHtml?: boolean } = 
   const text = renderTables(options.escapeHtml ? escapeHtml(withoutCode) : withoutCode)
     .replace(/^#### (.*?)$/gm, '<h5 class="font-bold text-xs text-base-texto-primario mt-2 mb-1">$1</h5>')
     .replace(/^### (.*?)$/gm, '<h4 class="font-bold text-xs text-base-texto-primario mt-2 mb-1">$1</h4>')
-    .replace(/^## (.*?)$/gm, '<h4 class="font-bold text-sm text-base-texto-primario mt-3 mb-1">$1</h4>')
+    // «##» es h3: la sección de la lección ya es h2, y saltar de h2 a h4 desorienta a quien navega por títulos con lector de pantalla.
+    .replace(/^## (.*?)$/gm, '<h3 class="font-bold text-sm text-base-texto-primario mt-3 mb-1">$1</h3>')
     .replace(/^# (.*?)$/gm, '<h3 class="font-bold text-base text-base-texto-primario mt-1 mb-2">$1</h3>')
     .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(^|[^*\w])\*([^*\n]+)\*(?![*\w])/g, '$1<em>$2</em>')

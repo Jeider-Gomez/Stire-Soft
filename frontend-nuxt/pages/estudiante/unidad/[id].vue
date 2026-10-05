@@ -100,18 +100,19 @@
             type="button"
             class="text-xs font-semibold text-acento-ambar-fuerte hover:underline min-h-[44px]"
             @click="toggleManualChoice">
-            {{ chooseManually ? 'Usar el recomendado' : 'Elegir yo el ejercicio' }}
+            {{ chooseManually ? 'Volver al recomendado' : 'Ver todos los ejercicios' }}
           </button>
         </div>
 
         <!-- Tope (docs/DISENO_INTERVENCION_DOCENTE.md §4.4): tras varios fallos seguidos, lo primero es parar y volver a la
              explicación o pedir una pista; el ejercicio sigue ahí, pero ya no es el botón principal. -->
         <div v-if="enPausa" class="flex items-center gap-2 flex-wrap">
-          <button type="button" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors min-h-[44px]" @click="volverALaExplicacion">
-            <BookOpen :size="14" aria-hidden="true" /> Volver a la explicación
+          <!-- La pista primero: el estudiante ya está en la lección, y «volver a la explicación» solo subía la página. -->
+          <button type="button" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors min-h-[44px]" @click="tutorStore.openDrawer()">
+            <Lightbulb :size="14" aria-hidden="true" /> Pedir una pista al Tutor
           </button>
-          <button type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-md borde-afordancia text-xs font-semibold min-h-[44px]" @click="tutorStore.openDrawer()">
-            <Lightbulb :size="14" aria-hidden="true" /> Pedir una pista al tutor
+          <button type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-md borde-afordancia text-xs font-semibold min-h-[44px]" @click="volverALaExplicacion">
+            <BookOpen :size="14" aria-hidden="true" /> Releer la explicación
           </button>
         </div>
 
@@ -121,7 +122,7 @@
             class="inline-flex items-center gap-2 transition-colors text-xs min-h-[44px]"
             :class="enPausa ? 'font-semibold text-acento-ambar-fuerte hover:underline' : 'px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold'"
           >
-            <template v-if="enPausa">Intentar otro ejercicio de todas formas</template>
+            <template v-if="enPausa">Probar otro ejercicio igual</template>
             <template v-else>
             <RotateCcw v-if="recommendedActivity.reason === 'repaso'" :size="14" aria-hidden="true" />
             <TrendingUp v-else-if="recommendedActivity.reason === 'reto' || recommendedActivity.reason === 'sube_nivel'" :size="14" aria-hidden="true" />
@@ -380,7 +381,7 @@ onMounted(async () => {
     recommendedActivity.value = rec
     dominio.value = progress && (progress.attemptsCount ?? 0) > 0 ? Math.round(progress.mastery ?? 0) : null
     // El reto se ofrece mientras la lección no esté dominada ni completada (antes, solo antes de empezar).
-    puedeSaltar.value = !!rec && !rec.allCompleted && (progress?.mastery ?? 0) < DOMINADO
+    puedeSaltar.value = !!rec && !rec.allCompleted && rec.reason !== 'pausa' && (progress?.mastery ?? 0) < DOMINADO
   } catch (error: unknown) {
     console.warn('[STIRE Student] No se pudo cargar el progreso o la actividad recomendada:', error)
   }
