@@ -40,7 +40,7 @@
           type="text"
           maxlength="120"
           placeholder="Tu nombre completo"
-          class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
+          class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-fuerte bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
         />
       </div>
 
@@ -105,16 +105,18 @@
             :type="showCurrentPwd ? 'text' : 'password'"
             autocomplete="current-password"
             placeholder="Tu contraseña actual"
-            class="w-full min-h-[44px] px-3 py-2 pr-10 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
+            class="w-full min-h-[44px] px-3 py-2 pr-12 text-sm rounded-md border border-base-borde-fuerte bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
           />
           <button
             type="button"
             @click="showCurrentPwd = !showCurrentPwd"
-            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 p-1"
+            class="absolute right-0 top-0 h-full w-11 inline-flex items-center justify-center rounded-r-md text-slate-600 hover:text-base-texto-primario focus-visible:ring-2 focus-visible:ring-acento-ambar-fuerte"
             :title="showCurrentPwd ? 'Ocultar contraseña' : 'Ver contraseña'"
+            :aria-label="showCurrentPwd ? 'Ocultar contraseña' : 'Ver contraseña'"
+            :aria-pressed="showCurrentPwd"
           >
-            <EyeOff v-if="showCurrentPwd" :size="16" />
-            <Eye v-else :size="16" />
+            <EyeOff aria-hidden="true" v-if="showCurrentPwd" :size="16" />
+            <Eye aria-hidden="true" v-else :size="16" />
           </button>
         </div>
       </div>
@@ -130,16 +132,18 @@
             :type="showNewPwd ? 'text' : 'password'"
             autocomplete="new-password"
             placeholder="Mínimo 6 caracteres, mayúscula, minúscula y número o símbolo"
-            class="w-full min-h-[44px] px-3 py-2 pr-10 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
+            class="w-full min-h-[44px] px-3 py-2 pr-12 text-sm rounded-md border border-base-borde-fuerte bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
           />
           <button
             type="button"
             @click="showNewPwd = !showNewPwd"
-            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 p-1"
+            class="absolute right-0 top-0 h-full w-11 inline-flex items-center justify-center rounded-r-md text-slate-600 hover:text-base-texto-primario focus-visible:ring-2 focus-visible:ring-acento-ambar-fuerte"
             :title="showNewPwd ? 'Ocultar contraseña' : 'Ver contraseña'"
+            :aria-label="showNewPwd ? 'Ocultar contraseña' : 'Ver contraseña'"
+            :aria-pressed="showNewPwd"
           >
-            <EyeOff v-if="showNewPwd" :size="16" />
-            <Eye v-else :size="16" />
+            <EyeOff aria-hidden="true" v-if="showNewPwd" :size="16" />
+            <Eye aria-hidden="true" v-else :size="16" />
           </button>
         </div>
       </div>
@@ -155,16 +159,18 @@
             :type="showConfirmPwd ? 'text' : 'password'"
             autocomplete="new-password"
             placeholder="Repite la nueva contraseña"
-            class="w-full min-h-[44px] px-3 py-2 pr-10 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
+            class="w-full min-h-[44px] px-3 py-2 pr-12 text-sm rounded-md border border-base-borde-fuerte bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
           />
           <button
             type="button"
             @click="showConfirmPwd = !showConfirmPwd"
-            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 p-1"
+            class="absolute right-0 top-0 h-full w-11 inline-flex items-center justify-center rounded-r-md text-slate-600 hover:text-base-texto-primario focus-visible:ring-2 focus-visible:ring-acento-ambar-fuerte"
             :title="showConfirmPwd ? 'Ocultar contraseña' : 'Ver contraseña'"
+            :aria-label="showConfirmPwd ? 'Ocultar contraseña' : 'Ver contraseña'"
+            :aria-pressed="showConfirmPwd"
           >
-            <EyeOff v-if="showConfirmPwd" :size="16" />
-            <Eye v-else :size="16" />
+            <EyeOff aria-hidden="true" v-if="showConfirmPwd" :size="16" />
+            <Eye aria-hidden="true" v-else :size="16" />
           </button>
         </div>
       </div>

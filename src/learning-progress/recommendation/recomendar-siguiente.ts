@@ -96,7 +96,7 @@ function mensajePara(motivo: MotivoRecomendacion, nivel: Difficulty): string {
     case 'sin_intentos':
       return 'Usaste todos los intentos de los ejercicios que faltan. Pídele ayuda al tutor o a tu docente.';
     case 'pausa':
-      return 'Llevas varios intentos seguidos sin lograrlo. Para un momento: vuelve a la explicación o pídele una pista al tutor. Tu docente ya sabe que esta lección te está costando.';
+      return 'Llevas varios intentos seguidos sin lograrlo. Para un momento: vuelve a la explicación o pídele una pista al tutor. Si lo necesitas, tu docente ya está al tanto y puede ayudarte.';
   }
 }
 
