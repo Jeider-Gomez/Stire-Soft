@@ -70,38 +70,41 @@ export class ProyectoEnviosService {
       tarde: envio.tarde,
       archivos: envio.archivos,
       nota: envio.nota,
+      valoracion: envio.valoracion,
       comentario: envio.comentario,
       revisadoAt: envio.revisadoAt,
       createdAt: envio.createdAt,
       estudiante: estudiante?.fullName || estudiante?.email || 'Estudiante',
       clase: clase?.name ?? '',
-      entrega: entrega ? { id: entrega.id, titulo: entrega.titulo, conNota: entrega.conNota, maxVersiones: entrega.maxVersiones, cierraAt: entrega.cierraAt } : null,
-      versiones: versiones.map((v) => ({ id: v.id, version: v.version, createdAt: v.createdAt, tarde: v.tarde, revisadoAt: v.revisadoAt, nota: v.nota })),
+      entrega: entrega ? { id: entrega.id, titulo: entrega.titulo, escala: entrega.escala, conNota: entrega.conNota, maxVersiones: entrega.maxVersiones, cierraAt: entrega.cierraAt } : null,
+      versiones: versiones.map((v) => ({ id: v.id, version: v.version, createdAt: v.createdAt, tarde: v.tarde, revisadoAt: v.revisadoAt, nota: v.nota, valoracion: v.valoracion })),
       historial: await this.entregasService.conNombres(historial),
       siguienteSinRevisar,
     };
   }
 
   /**
-   * El docente pone comentario y, si la entrega lleva nota, nota. Dejar ambos vacíos lo vuelve a «sin revisar». Cada
-   * cambio queda en el historial con el valor anterior. Si la entrega cuenta para el dominio, se recalcula la lección.
+   * El docente pone comentario y, según la escala de la entrega, valoración o nota. Dejar todo vacío lo vuelve a «sin
+   * revisar». Cada cambio queda en el historial con el valor anterior. Si la entrega cuenta para el dominio, se
+   * recalcula la lección.
    */
-  async revisar(user: User, id: number, datos: { nota?: unknown; comentario?: unknown }) {
+  async revisar(user: User, id: number, datos: { nota?: unknown; valoracion?: unknown; comentario?: unknown }) {
     const envio = await this.envios.findOne({ where: { id } });
     if (!envio) throw new NotFoundException('Envío no encontrado.');
     await this.autorizacion.assertTeacherOwnsClass(user, envio.classId);
     const entrega = await this.entregas.findOne({ where: { id: envio.entregaId } });
     let revision: Revision;
     try {
-      revision = validarRevision(datos, entrega?.conNota ?? true);
+      revision = validarRevision(datos, entrega?.escala ?? 'nota');
     } catch (e) {
       if (e instanceof ProyectoInvalidoError) throw new BadRequestException(e.message);
       throw e;
     }
-    const cambios = eventosDeRevision({ nota: envio.nota, comentario: envio.comentario, revisadoAt: envio.revisadoAt }, revision);
+    const cambios = eventosDeRevision({ nota: envio.nota, valoracion: envio.valoracion, comentario: envio.comentario, revisadoAt: envio.revisadoAt }, revision);
     envio.nota = revision.nota;
+    envio.valoracion = revision.valoracion;
     envio.comentario = revision.comentario;
-    if (revision.nota === null && revision.comentario === null) envio.revisadoAt = null;
+    if (revision.nota === null && revision.valoracion === null && revision.comentario === null) envio.revisadoAt = null;
     else if (cambios.length) envio.revisadoAt = new Date();
     const guardado = await this.envios.save(envio);
     for (const c of cambios) {
@@ -110,6 +113,6 @@ export class ProyectoEnviosService {
     if (cambios.length && entrega?.cuentaParaDominio && entrega.learningUnitId) {
       this.eventEmitter.emit('entrega.revisada', new EntregaRevisadaEvent(envio.studentId, entrega.learningUnitId));
     }
-    return { id: guardado.id, nota: guardado.nota, comentario: guardado.comentario, revisadoAt: guardado.revisadoAt };
+    return { id: guardado.id, nota: guardado.nota, valoracion: guardado.valoracion, comentario: guardado.comentario, revisadoAt: guardado.revisadoAt };
   }
 }

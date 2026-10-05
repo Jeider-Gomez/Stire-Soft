@@ -21,7 +21,7 @@ function crear(opciones: { envio?: Record<string, unknown> | null; entrega?: Rec
     find: jest.fn(() => Promise.resolve(opciones.todas ?? (envio ? [envio] : []))),
     save: jest.fn((e: object) => Promise.resolve(e)),
   };
-  const entregas = { findOne: jest.fn(() => Promise.resolve({ id: 2, titulo: 'Calculadora', conNota: true, maxVersiones: 3, cierraAt: null, cuentaParaDominio: false, learningUnitId: null, ...opciones.entrega })) };
+  const entregas = { findOne: jest.fn(() => Promise.resolve({ id: 2, titulo: 'Calculadora', escala: 'nota', conNota: true, maxVersiones: 3, cierraAt: null, cuentaParaDominio: false, learningUnitId: null, ...opciones.entrega })) };
   const eventos = { find: jest.fn(() => Promise.resolve([])), create: jest.fn((e: object) => e), save: jest.fn((e: object) => Promise.resolve(e)) };
   const clases = { findOne: jest.fn(() => Promise.resolve({ id: 3, name: 'Algoritmia', teacherId: 9 })) };
   const usuarios = { findOne: jest.fn(() => Promise.resolve({ id: 5, fullName: 'Luisa Rojas' })) };
@@ -45,23 +45,39 @@ function crear(opciones: { envio?: Record<string, unknown> | null; entrega?: Rec
 
 describe('Revisión: reglas', () => {
   it('la nota va de 0,0 a 5,0 con un decimal; acepta coma; vacía es «sin nota»', () => {
-    expect(validarRevision({ nota: '4,25' })).toEqual({ nota: 4.3, comentario: null });
-    expect(validarRevision({ nota: 5, comentario: '  Muy bien  ' })).toEqual({ nota: 5, comentario: 'Muy bien' });
+    expect(validarRevision({ nota: '4,25' })).toEqual({ nota: 4.3, valoracion: null, comentario: null });
+    expect(validarRevision({ nota: 5, comentario: '  Muy bien  ' })).toEqual({ nota: 5, valoracion: null, comentario: 'Muy bien' });
     expect(() => validarRevision({ nota: 5.1 })).toThrow('0,0 a 5,0');
     expect(() => validarRevision({ comentario: 'x'.repeat(2001) })).toThrow('2000');
   });
 
-  it('en una entrega sin nota, solo se acepta el comentario', () => {
-    expect(() => validarRevision({ nota: 4, comentario: 'Bien' }, false)).toThrow('sin nota');
-    expect(validarRevision({ comentario: 'Bien' }, false)).toEqual({ nota: null, comentario: 'Bien' });
+  it('en una entrega solo con comentario, solo se acepta el comentario', () => {
+    expect(() => validarRevision({ nota: 4, comentario: 'Bien' }, 'comentario')).toThrow('sin nota');
+    expect(() => validarRevision({ valoracion: 'aprobado' }, 'comentario')).toThrow('aprobado o desempeño');
+    expect(validarRevision({ comentario: 'Bien' }, 'comentario')).toEqual({ nota: null, valoracion: null, comentario: 'Bien' });
+  });
+
+  it('cada escala acepta solo sus valoraciones: aprobado o no; Superior, Alto, Básico o Bajo', () => {
+    expect(validarRevision({ valoracion: 'aprobado' }, 'aprobacion')).toEqual({ nota: null, valoracion: 'aprobado', comentario: null });
+    expect(validarRevision({ valoracion: 'no_aprobado', comentario: 'Falta validar' }, 'aprobacion').valoracion).toBe('no_aprobado');
+    expect(() => validarRevision({ valoracion: 'superior' }, 'aprobacion')).toThrow('escala de la entrega');
+    expect(validarRevision({ valoracion: 'superior' }, 'desempeno').valoracion).toBe('superior');
+    expect(() => validarRevision({ valoracion: 'excelente' }, 'desempeno')).toThrow('escala de la entrega');
+    // una escala sin número no recibe nota, y la de nota no recibe valoración
+    expect(() => validarRevision({ nota: 4 }, 'desempeno')).toThrow('sin nota');
+    expect(() => validarRevision({ valoracion: 'aprobado' }, 'nota')).toThrow('aprobado o desempeño');
   });
 
   it('el historial guarda qué cambió y el valor anterior', () => {
-    expect(eventosDeRevision({ nota: null, comentario: null, revisadoAt: null }, { nota: 4, comentario: 'Bien' })).toEqual([{ tipo: 'revisada', detalle: { nota: 4, comentario: 'Bien' } }]);
-    expect(eventosDeRevision({ nota: 4, comentario: 'Bien', revisadoAt: new Date() }, { nota: 4.5, comentario: 'Bien' })).toEqual([{ tipo: 'nota_cambiada', detalle: { antes: 4, despues: 4.5 } }]);
-    expect(eventosDeRevision({ nota: 4, comentario: 'Bien', revisadoAt: new Date() }, { nota: 4, comentario: 'Mejor' }).map((e) => e.tipo)).toEqual(['comentario_editado']);
-    expect(eventosDeRevision({ nota: 4, comentario: null, revisadoAt: new Date() }, { nota: null, comentario: null })).toEqual([{ tipo: 'revision_borrada', detalle: { notaAnterior: 4 } }]);
-    expect(eventosDeRevision({ nota: 4, comentario: 'Bien', revisadoAt: new Date() }, { nota: 4, comentario: 'Bien' })).toEqual([]);
+    const r = (nota: number | null, comentario: string | null, valoracion: 'aprobado' | 'no_aprobado' | null = null) => ({ nota, valoracion, comentario });
+    expect(eventosDeRevision({ ...r(null, null), revisadoAt: null }, r(4, 'Bien'))).toEqual([{ tipo: 'revisada', detalle: { nota: 4, comentario: 'Bien' } }]);
+    expect(eventosDeRevision({ ...r(4, 'Bien'), revisadoAt: new Date() }, r(4.5, 'Bien'))).toEqual([{ tipo: 'nota_cambiada', detalle: { antes: 4, despues: 4.5 } }]);
+    expect(eventosDeRevision({ ...r(4, 'Bien'), revisadoAt: new Date() }, r(4, 'Mejor')).map((e) => e.tipo)).toEqual(['comentario_editado']);
+    expect(eventosDeRevision({ ...r(4, null), revisadoAt: new Date() }, r(null, null))).toEqual([{ tipo: 'revision_borrada', detalle: { notaAnterior: 4 } }]);
+    expect(eventosDeRevision({ ...r(4, 'Bien'), revisadoAt: new Date() }, r(4, 'Bien'))).toEqual([]);
+    // la valoración también queda en el historial
+    expect(eventosDeRevision({ ...r(null, null), revisadoAt: null }, r(null, null, 'aprobado'))).toEqual([{ tipo: 'revisada', detalle: { nota: null, comentario: null, valoracion: 'aprobado' } }]);
+    expect(eventosDeRevision({ ...r(null, 'x', 'no_aprobado'), revisadoAt: new Date() }, r(null, 'x', 'aprobado'))).toEqual([{ tipo: 'valoracion_cambiada', detalle: { antes: 'no_aprobado', despues: 'aprobado' } }]);
   });
 });
 
@@ -105,7 +121,7 @@ describe('ProyectoEnviosService', () => {
   });
 
   it('en una entrega sin nota, poner nota es un 400', async () => {
-    await expect(crear({ entrega: { conNota: false } }).service.revisar(docente, 40, { nota: 4 })).rejects.toThrow(BadRequestException);
+    await expect(crear({ entrega: { conNota: false, escala: 'comentario' } }).service.revisar(docente, 40, { nota: 4 })).rejects.toThrow(BadRequestException);
   });
 
   it('otro docente no puede revisar (403)', async () => {

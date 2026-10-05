@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import type { ArchivoProyecto, TipoProyecto } from '../proyecto-reglas';
+import type { Valoracion } from '../envio-reglas';
 
 /**
  * Copia congelada de un proyecto enviada a una entrega del docente (docs/DISENO_INTERVENCION_DOCENTE.md §3). No guarda una referencia fuerte al
@@ -46,6 +47,10 @@ export class ProyectoEnvio {
   /** 0,0 a 5,0; null = sin nota. */
   @Column({ type: 'decimal', precision: 2, scale: 1, nullable: true, transformer: { to: (v: number | null) => v, from: (v: string | null) => (v === null ? null : Number(v)) } })
   nota!: number | null;
+
+  /** Con escala de aprobación o de desempeño: «aprobado», «superior», … (envio-reglas.ts); null = sin valorar. */
+  @Column({ type: 'varchar', length: 15, nullable: true })
+  valoracion!: Valoracion | null;
 
   @Column({ type: 'text', nullable: true })
   comentario!: string | null;

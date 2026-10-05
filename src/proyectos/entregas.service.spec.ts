@@ -16,7 +16,18 @@ const base = { abreAt: null, cierraAt: null, aceptaTarde: true, maxVersiones: 3 
 
 describe('Entregas: reglas', () => {
   it('valores por defecto: 3 versiones, sin nota (comentario primero), no cuenta para el dominio, borrador', () => {
-    expect(validarEntrega({ titulo: ' Calculadora ' })).toMatchObject({ titulo: 'Calculadora', maxVersiones: 3, conNota: false, cuentaParaDominio: false, publicada: false, learningUnitId: null, tipoProyecto: 'cualquiera' });
+    expect(validarEntrega({ titulo: ' Calculadora ' })).toMatchObject({ titulo: 'Calculadora', maxVersiones: 3, escala: 'comentario', conNota: false, cuentaParaDominio: false, publicada: false, learningUnitId: null, tipoProyecto: 'cualquiera' });
+  });
+
+  it('la escala: comentario, aprobado o no, desempeño o nota; «con nota» de pantallas anteriores sigue sirviendo', () => {
+    expect(validarEntrega({ titulo: 'X', escala: 'aprobacion' })).toMatchObject({ escala: 'aprobacion', conNota: false });
+    expect(validarEntrega({ titulo: 'X', escala: 'nota' })).toMatchObject({ escala: 'nota', conNota: true });
+    expect(() => validarEntrega({ titulo: 'X', escala: 'estrellas' })).toThrow('cómo se califica');
+    expect(validarEntrega({ titulo: 'X', conNota: true })).toMatchObject({ escala: 'nota', conNota: true });
+    // desmarcar «con nota» no borra una escala de desempeño ya elegida
+    expect(validarEntrega({ conNota: false }, validarEntrega({ titulo: 'X', escala: 'desempeno' })).escala).toBe('desempeno');
+    // solo la nota numérica cuenta para el dominio
+    expect(() => validarEntrega({ titulo: 'X', escala: 'aprobacion', cuentaParaDominio: true, learningUnitId: 30 })).toThrow('lección y nota');
   });
 
   it('el máximo de versiones es editable entre 1 y 10', () => {

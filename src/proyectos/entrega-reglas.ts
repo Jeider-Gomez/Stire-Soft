@@ -8,6 +8,18 @@ import { ProyectoInvalidoError, TIPOS_PROYECTO, validarArchivos, type ArchivoPro
 export const TIPOS_ENTREGA = [...TIPOS_PROYECTO, 'cualquiera'] as const;
 export type TipoEntrega = (typeof TIPOS_ENTREGA)[number];
 
+/**
+ * Cómo califica el docente cada entrega (pedido del dueño, 04/10: «nota, aprobado o no aprobado… distintas opciones
+ * según se haya configurado la actividad»):
+ * - `comentario`: solo retroalimentación (por defecto: en lo formativo el comentario sirve más que la nota; Butler, 1988);
+ * - `aprobacion`: aprobado o no aprobado, con comentario;
+ * - `desempeno`: Superior, Alto, Básico o Bajo (la escala nacional de desempeño, Decreto 1290 de 2009, que conocen los
+ *   futuros licenciados);
+ * - `nota`: de 0,0 a 5,0. Es la única que entra al libro de notas y al dominio de la lección, porque es numérica.
+ */
+export const ESCALAS_ENTREGA = ['comentario', 'aprobacion', 'desempeno', 'nota'] as const;
+export type EscalaEntrega = (typeof ESCALAS_ENTREGA)[number];
+
 export const LIMITES_ENTREGA = {
   largoTitulo: 150,
   largoConsigna: 20000,
@@ -25,6 +37,8 @@ export interface DatosEntrega {
   cierraAt: Date | null;
   aceptaTarde: boolean;
   maxVersiones: number;
+  escala: EscalaEntrega;
+  /** Derivado de `escala` (= 'nota'); se conserva porque lo leen el libro de notas y el dominio. */
   conNota: boolean;
   cuentaParaDominio: boolean;
   dificultad: Difficulty;
@@ -42,6 +56,7 @@ const VALORES_POR_DEFECTO: Omit<DatosEntrega, 'titulo'> = {
   aceptaTarde: true,
   maxVersiones: LIMITES_ENTREGA.versionesPorDefecto,
   // Comentario primero: la nota es opcional (decisión del dueño, §10; Butler, 1988).
+  escala: 'comentario',
   conNota: false,
   cuentaParaDominio: false,
   dificultad: Difficulty.BASICO,
@@ -114,7 +129,17 @@ export function validarEntrega(entrada: Record<string, unknown>, actual?: DatosE
     }
     r.maxVersiones = n;
   }
-  if (tiene('conNota')) r.conNota = booleano(entrada.conNota, 'Con nota');
+  if (tiene('escala')) {
+    if (!(ESCALAS_ENTREGA as readonly unknown[]).includes(entrada.escala)) {
+      throw new ProyectoInvalidoError('Elige cómo se califica: solo comentario, aprobado o no, desempeño o nota.');
+    }
+    r.escala = entrada.escala as EscalaEntrega;
+  } else if (tiene('conNota')) {
+    // Pantallas anteriores mandaban «con nota» sí o no.
+    const conNota = booleano(entrada.conNota, 'Con nota');
+    r.escala = conNota ? 'nota' : r.escala === 'nota' ? 'comentario' : r.escala;
+  }
+  r.conNota = r.escala === 'nota';
   if (tiene('cuentaParaDominio')) r.cuentaParaDominio = booleano(entrada.cuentaParaDominio, 'Cuenta para el dominio');
   if (tiene('dificultad')) {
     if (!Object.values(Difficulty).includes(entrada.dificultad as Difficulty)) throw new ProyectoInvalidoError('La dificultad no es válida.');
@@ -128,7 +153,7 @@ export function validarEntrega(entrada: Record<string, unknown>, actual?: DatosE
     else throw new ProyectoInvalidoError('La lista de estudiantes no es válida.');
   }
   if (r.cuentaParaDominio && (!r.learningUnitId || !r.conNota)) {
-    throw new ProyectoInvalidoError('Para contar en el dominio, la entrega necesita una lección y nota.');
+    throw new ProyectoInvalidoError('Para contar en el dominio, la entrega necesita una lección y nota de 0,0 a 5,0.');
   }
   return r;
 }

@@ -25,8 +25,8 @@ export class ProyectoEnviosController {
 
   @Patch(':id/revision')
   @Roles('docente', 'admin')
-  @ApiOperation({ summary: 'Comentario y, si la entrega lleva nota, nota de 0,0 a 5,0: { nota?, comentario? }' })
-  revisar(@Param('id', ParseIntPipe) id: number, @Body() datos: { nota?: unknown; comentario?: unknown }, @GetUser() user: User) {
+  @ApiOperation({ summary: 'Comentario y, según la escala de la entrega, valoración o nota de 0,0 a 5,0: { nota?, valoracion?, comentario? }' })
+  revisar(@Param('id', ParseIntPipe) id: number, @Body() datos: { nota?: unknown; valoracion?: unknown; comentario?: unknown }, @GetUser() user: User) {
     return this.envios.revisar(user, id, datos ?? {});
   }
 }

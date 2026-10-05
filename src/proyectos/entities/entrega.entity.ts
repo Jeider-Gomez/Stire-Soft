@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Difficulty } from '../../common/enums/difficulty.enum';
 import type { ArchivoProyecto } from '../proyecto-reglas';
-import type { TipoEntrega } from '../entrega-reglas';
+import type { EscalaEntrega, TipoEntrega } from '../entrega-reglas';
 
 /**
  * Un espacio de entrega que el docente crea en su clase (docs/DISENO_INTERVENCION_DOCENTE.md §3 y §10). Puede estar en
@@ -47,7 +47,11 @@ export class Entrega {
   @Column({ type: 'int', default: 3 })
   maxVersiones!: number;
 
-  /** Si el docente pone nota (0,0 a 5,0) además del comentario. */
+  /** Cómo se califica: solo comentario, aprobado o no, desempeño o nota (entrega-reglas.ts). */
+  @Column({ type: 'varchar', length: 15, default: 'comentario' })
+  escala!: EscalaEntrega;
+
+  /** Si el docente pone nota (0,0 a 5,0) además del comentario: `escala` = 'nota' (lo leen el libro de notas y el dominio). */
   @Column({ default: false })
   conNota!: boolean;
 

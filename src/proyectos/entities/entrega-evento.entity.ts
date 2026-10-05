@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-export type TipoEventoEntrega = 'enviada' | 'revisada' | 'nota_cambiada' | 'comentario_editado' | 'revision_borrada' | 'reabierta';
+export type TipoEventoEntrega = 'enviada' | 'revisada' | 'nota_cambiada' | 'valoracion_cambiada' | 'comentario_editado' | 'revision_borrada' | 'reabierta';
 
 /**
  * Historial de una entrega (docs/DISENO_INTERVENCION_DOCENTE.md §3.4): quién hizo qué y cuándo. Nada se sobrescribe sin
