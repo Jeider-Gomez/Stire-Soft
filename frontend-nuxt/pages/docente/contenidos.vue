@@ -14,13 +14,14 @@
 
       <!-- Selector de Clase y Botón Nuevo Módulo -->
       <div class="flex flex-wrap items-center gap-3">
-        <div v-if="teacherClasses.length > 1" class="flex items-center gap-2">
+        <!-- En el celular el nombre largo de la clase sacaba el selector del recuadro: ahora ocupa el ancho y se recorta. -->
+        <div v-if="teacherClasses.length > 1" class="flex items-center gap-2 w-full sm:w-auto min-w-0">
           <label for="class-selector" class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
           <select
             id="class-selector"
             v-model="selectedClassId"
             @change="loadSections"
-            class="min-h-[44px] text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte">
+            class="min-w-0 flex-1 sm:flex-none w-full sm:w-auto sm:max-w-xs truncate min-h-[44px] text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte">
             <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
               {{ c.name }} ({{ c.code }})
             </option>
@@ -113,9 +114,10 @@
         :key="sec.id"
         class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden">
         <!-- Cabecera de Sección / Módulo -->
-        <div class="p-4 bg-base-bg-secundario flex items-center justify-between gap-3 border-b border-base-borde-sutil">
-          <div class="flex items-center gap-3">
-            <span class="w-6 h-6 rounded bg-acento-ambar/20 text-acento-ambar-fuerte font-bold text-xs flex items-center justify-center">
+        <!-- En el celular, título arriba y acciones debajo (antes el número se aplastaba y el título quedaba en una columna angosta). -->
+        <div class="p-4 bg-base-bg-secundario flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-base-borde-sutil">
+          <div class="flex items-start sm:items-center gap-3 min-w-0">
+            <span class="shrink-0 w-6 h-6 rounded bg-acento-ambar/20 text-acento-ambar-fuerte font-bold text-xs flex items-center justify-center">
               {{ sec.order || 'M' }}
             </span>
             <div>
@@ -128,12 +130,13 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 shrink-0 self-end sm:self-auto">
             <span v-if="!sec.isPublished" class="text-[11px] text-base-texto-secundario italic hidden md:inline">
               Los estudiantes no lo verán hasta que lo publiques
             </span>
             <button
               @click="toggleSectionPublish(sec)"
+              :aria-label="sec.isPublished ? `Módulo ${sec.title} publicado. Pulsa para volverlo a borrador` : `Módulo ${sec.title} en borrador. Pulsa para publicarlo`"
               class="min-h-[44px] sm:min-h-0 px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
               :class="sec.isPublished
                 ? 'bg-semantico-pasa/10 text-emerald-800 border-semantico-pasa/40 hover:bg-semantico-pasa/25'
