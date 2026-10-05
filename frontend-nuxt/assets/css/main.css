@@ -6,7 +6,7 @@
 
 @layer base {
   body {
-    @apply bg-stire-canvas text-slate-800 font-interfaz antialiased min-h-screen;
+    @apply bg-stire-canvas text-base-texto-primario font-interfaz antialiased min-h-screen;
     /* Inter convierte «<-» y «->» en flechas: en opciones y pasos de pseudocódigo el estudiante debe ver lo que escribe. */
     font-feature-settings: "calt" 0;
   }
@@ -32,7 +32,7 @@
 
   /* Botón secundario */
   .btn-stire-secondary {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-sm
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-base-borde-sutil bg-base-blanco text-base-texto-primario font-semibold text-sm
            hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300
            active:scale-95 transition-all duration-200 whitespace-nowrap cursor-pointer;
   }
@@ -46,13 +46,13 @@
 
   /* Tarjeta de analítica */
   .metric-card {
-    @apply bg-white border border-slate-200 rounded-2xl p-5 shadow-sm
+    @apply bg-base-blanco border border-base-borde-sutil rounded-2xl p-5 shadow-sm
            hover:shadow-md hover:-translate-y-0.5 transition-all duration-200;
   }
 
   /* Tarjeta de clase docente */
   .class-card {
-    @apply bg-white border border-slate-200 rounded-2xl p-6 shadow-sm
+    @apply bg-base-blanco border border-base-borde-sutil rounded-2xl p-6 shadow-sm
            hover:shadow-md hover:border-stire-blue/30 transition-all duration-200;
   }
 
@@ -74,9 +74,9 @@
 
   /* Input institucional */
   .input-stire {
-    @apply w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200
+    @apply w-full px-3 py-2.5 rounded-xl bg-base-blanco border border-base-borde-sutil
            focus:border-stire-blue focus:ring-2 focus:ring-stire-blue/20 outline-none
-           text-sm text-slate-800 placeholder:text-slate-400 transition-all duration-150;
+           text-sm text-base-texto-primario placeholder:text-slate-400 transition-all duration-150;
   }
 }
 
@@ -125,7 +125,7 @@
   /* Las clases de la paleta anterior (base-*, acento-*, semantico-*) ya toman sus valores de tailwind.config.ts.
      Antes se reasignaban aquí una por una y los estados (hover:, /10) seguían saliendo en ámbar. */
   .borde-afordancia {
-    @apply border border-slate-200 transition-colors duration-150;
+    @apply border border-base-borde-sutil transition-colors duration-150;
   }
   .borde-afordancia:hover {
     @apply border-stire-blue/40 bg-stire-blue/5;

@@ -59,7 +59,7 @@
           :class="f.escala === e.valor ? 'border-acento-ambar-fuerte bg-acento-ambar/5' : 'border-base-borde-sutil'">
           <input v-model="f.escala" type="radio" name="entrega-escala" :value="e.valor" class="mt-0.5 accent-acento-ambar-fuerte" />
           <span><span class="font-semibold text-base-texto-primario">{{ e.titulo }}</span>
-            <span class="block text-[11px] text-base-texto-secundario">{{ e.ayuda }}</span></span>
+            <span class="block text-[11px] text-slate-600">{{ e.ayuda }}</span></span>
         </label>
       </div>
       <label class="flex items-start gap-2" :class="puedeContar ? 'cursor-pointer' : 'opacity-60'">

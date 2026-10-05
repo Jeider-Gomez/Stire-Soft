@@ -1,7 +1,7 @@
 <template>
   <!-- ===== HEADER INSTITUCIONAL STIRE SOFT ===== -->
   <header
-    class="h-16 bg-white/80 glass-header border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-40 shadow-sm"
+    class="h-16 bg-base-blanco/80 glass-header border-b border-base-borde-sutil flex items-center justify-between px-4 md:px-6 sticky top-0 z-40 shadow-sm"
   >
     <!-- ── IZQUIERDA: Isotipo + Logotipo + Contexto Institucional ── -->
     <div class="flex items-center gap-3 min-w-0">
@@ -126,6 +126,17 @@
               <span>Mi perfil</span>
             </NuxtLink>
 
+            <!-- Apariencia y lectura: tema oscuro, contraste y tamaño del texto (components/perfil/AparienciaLectura.vue) -->
+            <NuxtLink
+              :to="`${homeRoute}/perfil#apariencia`"
+              @click="showUserMenu = false"
+              class="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-slate-700
+                     hover:bg-slate-50 transition-colors duration-150 font-medium"
+            >
+              <Contrast :size="14" />
+              <span>Apariencia y lectura</span>
+            </NuxtLink>
+
             <!-- Opción cerrar sesión -->
             <button
               @click="handleLogout"
@@ -143,7 +154,7 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, LogOut, GraduationCap, UserCircle } from 'lucide-vue-next'
+import { Menu, LogOut, GraduationCap, UserCircle, Contrast } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { institucionCorta, lugarDeAsignatura, programaCorto } from '~/utils/contextoAcademico'

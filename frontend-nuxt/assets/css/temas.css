@@ -1,0 +1,174 @@
+/*
+ * Temas y preferencias de lectura (utils/apariencia.ts; docs/DISENO_APARIENCIA.md).
+ *
+ * Los colores semánticos de tailwind.config.ts (base-*, acento-*, semantico-*, estado-unidad-*, urgencia-repaso-*,
+ * stire-canvas) leen estas variables, en canales RGB para que funcionen las transparencias (bg-semantico-pasa/10).
+ * El tema claro tiene EXACTAMENTE los valores de siempre: quien no cambia nada ve lo mismo.
+ *
+ * Atributos de <html> que pone plugins/apariencia.client.ts:
+ *   data-tema="claro|oscuro|sistema" · data-contraste="normal|alto" · data-texto="normal|grande|muy-grande"
+ *   data-espaciado="normal|amplio"
+ *
+ * Lo que es oscuro siempre (el editor de código, la cabecera del Tutor, el fondo de las ventanas) no cambia.
+ */
+
+:root {
+  --c-base-blanco: 255 255 255;
+  --c-base-bg-primario: 247 249 252;
+  --c-base-bg-secundario: 241 245 249;
+  --c-base-borde-sutil: 226 232 240;
+  --c-base-borde-fuerte: 203 213 225;
+  --c-base-texto-secundario: 100 116 139;
+  --c-base-texto-primario: 30 41 59;
+  --c-acento-ambar: 8 42 102;
+  --c-acento-ambar-fuerte: 11 61 145;
+  --c-semantico-pasa: 4 120 87;
+  --c-semantico-falla: 185 28 28;
+  --c-semantico-info: 11 61 145;
+  --c-unidad-dominado: 4 120 87;
+  --c-unidad-en-progreso: 123 47 191;
+  --c-unidad-por-iniciar: 11 61 145;
+  --c-unidad-bloqueado: 100 116 139;
+  --c-repaso-al-dia: 4 120 87;
+  --c-repaso-manana: 123 47 191;
+  --c-repaso-vencido: 180 83 9;
+  --c-repaso-critico: 185 28 28;
+  --c-stire-canvas: 247 249 252;
+  color-scheme: light;
+}
+
+/* Alto contraste (claro): textos secundarios y bordes más marcados, como «Usar interfaz de alto contraste» de Canvas. */
+:root[data-contraste="alto"] {
+  --c-base-texto-secundario: 51 65 85;
+  --c-base-texto-primario: 15 23 42;
+  --c-base-borde-sutil: 148 163 184;
+  --c-base-borde-fuerte: 100 116 139;
+  --c-acento-ambar-fuerte: 8 42 102;
+}
+:root[data-contraste="alto"] .text-slate-500,
+:root[data-contraste="alto"] .text-slate-600 { color: rgb(30 41 59); }
+
+/* ── Tema oscuro ── Se repite para «oscuro» y para «sistema» cuando el dispositivo está en oscuro. */
+:root[data-tema="oscuro"] {
+  --c-base-blanco: 19 28 46;
+  --c-base-bg-primario: 11 18 32;
+  --c-base-bg-secundario: 27 38 59;
+  --c-base-borde-sutil: 38 51 73;
+  --c-base-borde-fuerte: 71 85 105;
+  --c-base-texto-secundario: 167 180 200;
+  --c-base-texto-primario: 230 236 245;
+  --c-acento-ambar: 191 219 254;
+  --c-acento-ambar-fuerte: 147 197 253;
+  --c-semantico-pasa: 52 211 153;
+  --c-semantico-falla: 248 113 113;
+  --c-semantico-info: 147 197 253;
+  --c-unidad-dominado: 52 211 153;
+  --c-unidad-en-progreso: 196 181 253;
+  --c-unidad-por-iniciar: 147 197 253;
+  --c-unidad-bloqueado: 148 163 184;
+  --c-repaso-al-dia: 52 211 153;
+  --c-repaso-manana: 196 181 253;
+  --c-repaso-vencido: 251 191 36;
+  --c-repaso-critico: 248 113 113;
+  --c-stire-canvas: 11 18 32;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-tema="sistema"] {
+    --c-base-blanco: 19 28 46;
+    --c-base-bg-primario: 11 18 32;
+    --c-base-bg-secundario: 27 38 59;
+    --c-base-borde-sutil: 38 51 73;
+    --c-base-borde-fuerte: 71 85 105;
+    --c-base-texto-secundario: 167 180 200;
+    --c-base-texto-primario: 230 236 245;
+    --c-acento-ambar: 191 219 254;
+    --c-acento-ambar-fuerte: 147 197 253;
+    --c-semantico-pasa: 52 211 153;
+    --c-semantico-falla: 248 113 113;
+    --c-semantico-info: 147 197 253;
+    --c-unidad-dominado: 52 211 153;
+    --c-unidad-en-progreso: 196 181 253;
+    --c-unidad-por-iniciar: 147 197 253;
+    --c-unidad-bloqueado: 148 163 184;
+    --c-repaso-al-dia: 52 211 153;
+    --c-repaso-manana: 196 181 253;
+    --c-repaso-vencido: 251 191 36;
+    --c-repaso-critico: 248 113 113;
+    --c-stire-canvas: 11 18 32;
+    color-scheme: dark;
+  }
+}
+/* Alto contraste en oscuro */
+:root[data-tema="oscuro"][data-contraste="alto"] {
+  --c-base-texto-secundario: 226 232 240;
+  --c-base-texto-primario: 248 250 252;
+  --c-base-borde-sutil: 100 116 139;
+  --c-base-borde-fuerte: 148 163 184;
+}
+
+/*
+ * Clases grises y de color sueltas (sin token) que quedan en las pantallas: en oscuro se aclaran los textos y se
+ * oscurecen los fondos claros. Solo las que van sobre una tarjeta o la página; las superficies que siempre son oscuras
+ * (bg-slate-800/900, el editor, el Tutor) no se tocan.
+ */
+:root[data-tema="oscuro"] body { background-color: rgb(var(--c-stire-canvas)); color: rgb(var(--c-base-texto-primario)); }
+:root[data-tema="oscuro"] :is(.text-slate-400, .text-slate-500) { color: rgb(148 163 184); }
+:root[data-tema="oscuro"] :is(.text-slate-600, .text-slate-700) { color: rgb(var(--c-base-texto-secundario)); }
+:root[data-tema="oscuro"] :is(.text-slate-800, .text-slate-900, .text-gray-900, .text-black) { color: rgb(var(--c-base-texto-primario)); }
+:root[data-tema="oscuro"] :is(.bg-white, .bg-slate-50, .bg-gray-50) { background-color: rgb(var(--c-base-blanco)); }
+:root[data-tema="oscuro"] :is(.bg-slate-100, .bg-slate-200, .hover\:bg-slate-50:hover, .hover\:bg-slate-100:hover) { background-color: rgb(var(--c-base-bg-secundario)); }
+:root[data-tema="oscuro"] :is(.border-slate-100, .border-slate-200, .border-slate-300) { border-color: rgb(var(--c-base-borde-sutil)); }
+:root[data-tema="oscuro"] .divide-slate-100 > * + * { border-color: rgb(var(--c-base-borde-sutil)); }
+:root[data-tema="oscuro"] :is(.text-stire-blue, .text-stire-blue-dark) { color: rgb(147 197 253); }
+:root[data-tema="oscuro"] .text-stire-purple { color: rgb(196 181 253); }
+:root[data-tema="oscuro"] :is(.text-red-600, .text-red-700, .text-red-800) { color: rgb(252 165 165); }
+:root[data-tema="oscuro"] :is(.text-amber-600, .text-amber-700, .text-amber-800, .text-yellow-700) { color: rgb(252 211 77); }
+:root[data-tema="oscuro"] :is(.text-emerald-700, .text-emerald-800, .text-teal-700, .text-teal-800) { color: rgb(110 231 183); }
+:root[data-tema="oscuro"] :is(.bg-red-50, .bg-amber-50, .bg-yellow-50, .bg-teal-50, .bg-emerald-50) { background-color: rgb(var(--c-base-bg-secundario)); }
+:root[data-tema="oscuro"] :is(.border-red-200, .border-red-300) { border-color: rgb(127 29 29); }
+/* Botones de color con texto blanco fijo: en oscuro el color se aclara, así que el texto pasa a oscuro. */
+:root[data-tema="oscuro"] :is([class*="bg-acento-"], [class*="bg-semantico-"]):is(.text-white, .hover\:text-white:hover) { color: rgb(var(--c-base-blanco)); }
+:root[data-tema="oscuro"] :is(.\!text-teal-800, .\!text-teal-700) { color: rgb(110 231 183) !important; }
+:root[data-tema="oscuro"] .badge-admin { color: rgb(147 197 253); }
+:root[data-tema="oscuro"] .badge-docente { color: rgb(196 181 253); }
+:root[data-tema="oscuro"] .badge-estudiante { color: rgb(110 231 183) !important; }
+
+@media (prefers-color-scheme: dark) {
+  :root[data-tema="sistema"] body { background-color: rgb(var(--c-stire-canvas)); color: rgb(var(--c-base-texto-primario)); }
+  :root[data-tema="sistema"] :is(.text-slate-400, .text-slate-500) { color: rgb(148 163 184); }
+  :root[data-tema="sistema"] :is(.text-slate-600, .text-slate-700) { color: rgb(var(--c-base-texto-secundario)); }
+  :root[data-tema="sistema"] :is(.text-slate-800, .text-slate-900, .text-gray-900, .text-black) { color: rgb(var(--c-base-texto-primario)); }
+  :root[data-tema="sistema"] :is(.bg-white, .bg-slate-50, .bg-gray-50) { background-color: rgb(var(--c-base-blanco)); }
+  :root[data-tema="sistema"] :is(.bg-slate-100, .bg-slate-200, .hover\:bg-slate-50:hover, .hover\:bg-slate-100:hover) { background-color: rgb(var(--c-base-bg-secundario)); }
+  :root[data-tema="sistema"] :is(.border-slate-100, .border-slate-200, .border-slate-300) { border-color: rgb(var(--c-base-borde-sutil)); }
+  :root[data-tema="sistema"] .divide-slate-100 > * + * { border-color: rgb(var(--c-base-borde-sutil)); }
+  :root[data-tema="sistema"] :is(.text-stire-blue, .text-stire-blue-dark) { color: rgb(147 197 253); }
+  :root[data-tema="sistema"] .text-stire-purple { color: rgb(196 181 253); }
+  :root[data-tema="sistema"] :is(.text-red-600, .text-red-700, .text-red-800) { color: rgb(252 165 165); }
+  :root[data-tema="sistema"] :is(.text-amber-600, .text-amber-700, .text-amber-800, .text-yellow-700) { color: rgb(252 211 77); }
+  :root[data-tema="sistema"] :is(.text-emerald-700, .text-emerald-800, .text-teal-700, .text-teal-800) { color: rgb(110 231 183); }
+  :root[data-tema="sistema"] :is(.bg-red-50, .bg-amber-50, .bg-yellow-50, .bg-teal-50, .bg-emerald-50) { background-color: rgb(var(--c-base-bg-secundario)); }
+  :root[data-tema="sistema"] :is(.border-red-200, .border-red-300) { border-color: rgb(127 29 29); }
+  :root[data-tema="sistema"] :is([class*="bg-acento-"], [class*="bg-semantico-"]):is(.text-white, .hover\:text-white:hover) { color: rgb(var(--c-base-blanco)); }
+  :root[data-tema="sistema"] :is(.\!text-teal-800, .\!text-teal-700) { color: rgb(110 231 183) !important; }
+  :root[data-tema="sistema"] .badge-admin { color: rgb(147 197 253); }
+  :root[data-tema="sistema"] .badge-docente { color: rgb(196 181 253); }
+  :root[data-tema="sistema"] .badge-estudiante { color: rgb(110 231 183) !important; }
+}
+
+/* ── Tamaño del texto ── Los tamaños de tailwind.config.ts están en rem; estos son los fijos que quedan en pantallas. */
+:root[data-texto="grande"] { font-size: 112.5%; }
+:root[data-texto="muy-grande"] { font-size: 125%; }
+:root:is([data-texto="grande"], [data-texto="muy-grande"]) .text-\[9px\] { font-size: 0.5625rem; }
+:root:is([data-texto="grande"], [data-texto="muy-grande"]) .text-\[10px\] { font-size: 0.625rem; }
+:root:is([data-texto="grande"], [data-texto="muy-grande"]) .text-\[11px\] { font-size: 0.6875rem; }
+:root:is([data-texto="grande"], [data-texto="muy-grande"]) .text-\[13px\] { font-size: 0.8125rem; }
+
+/* ── Espaciado del texto (WCAG 1.4.12): más aire entre líneas, letras y palabras ── */
+:root[data-espaciado="amplio"] :is(p, li, dd, label, td, th, blockquote, figcaption) {
+  line-height: 1.8;
+  letter-spacing: 0.03em;
+  word-spacing: 0.1em;
+}
+:root[data-espaciado="amplio"] :is(p, li) + :is(p, li) { margin-top: 0.5em; }

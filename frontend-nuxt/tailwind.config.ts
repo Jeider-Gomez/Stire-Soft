@@ -22,42 +22,45 @@ export default <Partial<Config>>{
         'stire-success': '#10B981',
         'stire-warning': '#F59E0B',
         'stire-danger': '#EF4444',
-        'stire-canvas': '#F7F9FC',
+        // Fondo de la página: cambia con el tema (assets/css/temas.css).
+        'stire-canvas': 'rgb(var(--c-stire-canvas) / <alpha-value>)',
         'stire-dark-canvas': '#050C1F',
         'stire-dark-card': '#0A1435',
         // Tokens semánticos con la paleta de la identidad de José (prototipo STIRE-FRONEND, 28/09). Los nombres
         // «acento-ambar» se conservan porque los usan cientos de clases; sus valores ya son los azules de la guía.
         // Todos los colores de texto pasan WCAG AA (4.5:1) sobre blanco y sobre stire-canvas.
+        // Desde el 04/10 leen variables (assets/css/temas.css): el tema claro conserva estos mismos valores
+        // (#FFFFFF, #F7F9FC, …) y el oscuro y el alto contraste los cambian sin tocar las pantallas.
         base: {
-          blanco: '#FFFFFF',
-          'bg-primario': '#F7F9FC',
-          'bg-secundario': '#F1F5F9',
-          'borde-sutil': '#E2E8F0',
-          'borde-fuerte': '#CBD5E1',
-          'texto-secundario': '#64748B',
-          'texto-primario': '#1E293B'
+          blanco: 'rgb(var(--c-base-blanco) / <alpha-value>)',
+          'bg-primario': 'rgb(var(--c-base-bg-primario) / <alpha-value>)',
+          'bg-secundario': 'rgb(var(--c-base-bg-secundario) / <alpha-value>)',
+          'borde-sutil': 'rgb(var(--c-base-borde-sutil) / <alpha-value>)',
+          'borde-fuerte': 'rgb(var(--c-base-borde-fuerte) / <alpha-value>)',
+          'texto-secundario': 'rgb(var(--c-base-texto-secundario) / <alpha-value>)',
+          'texto-primario': 'rgb(var(--c-base-texto-primario) / <alpha-value>)'
         },
         acento: {
           // Antes ámbar. «ambar-fuerte» es el azul tecnológico (botones, enlaces); «ambar» su tono de hover.
-          ambar: '#082A66',
-          'ambar-fuerte': '#0B3D91'
+          ambar: 'rgb(var(--c-acento-ambar) / <alpha-value>)',
+          'ambar-fuerte': 'rgb(var(--c-acento-ambar-fuerte) / <alpha-value>)'
         },
         semantico: {
-          pasa: '#047857',
-          falla: '#B91C1C',
-          info: '#0B3D91'
+          pasa: 'rgb(var(--c-semantico-pasa) / <alpha-value>)',
+          falla: 'rgb(var(--c-semantico-falla) / <alpha-value>)',
+          info: 'rgb(var(--c-semantico-info) / <alpha-value>)'
         },
         'estado-unidad': {
-          dominado: '#047857',
-          'en-progreso': '#7B2FBF',
-          'por-iniciar': '#0B3D91',
-          bloqueado: '#64748B'
+          dominado: 'rgb(var(--c-unidad-dominado) / <alpha-value>)',
+          'en-progreso': 'rgb(var(--c-unidad-en-progreso) / <alpha-value>)',
+          'por-iniciar': 'rgb(var(--c-unidad-por-iniciar) / <alpha-value>)',
+          bloqueado: 'rgb(var(--c-unidad-bloqueado) / <alpha-value>)'
         },
         'urgencia-repaso': {
-          'al-dia': '#047857',
-          manana: '#7B2FBF',
-          vencido: '#B45309',
-          critico: '#B91C1C'
+          'al-dia': 'rgb(var(--c-repaso-al-dia) / <alpha-value>)',
+          manana: 'rgb(var(--c-repaso-manana) / <alpha-value>)',
+          vencido: 'rgb(var(--c-repaso-vencido) / <alpha-value>)',
+          critico: 'rgb(var(--c-repaso-critico) / <alpha-value>)'
         },
         // Editor de código con los colores del prototipo: fondo pizarra, palabras clave moradas, números ámbar.
         editor: {
@@ -75,14 +78,15 @@ export default <Partial<Config>>{
         poppins: ['Poppins', 'sans-serif'],
         codigo: ['"JetBrains Mono"', 'monospace']
       },
+      // En rem (los mismos 12, 14, 16… px con el tamaño normal), para que «Texto grande» los agrande (utils/apariencia.ts).
       fontSize: {
-        xs: '12px',
-        sm: '14px',
-        base: '16px',
-        md: '18px',
-        lg: '20px',
-        xl: '24px',
-        '2xl': '32px'
+        xs: '0.75rem',
+        sm: '0.875rem',
+        base: '1rem',
+        md: '1.125rem',
+        lg: '1.25rem',
+        xl: '1.5rem',
+        '2xl': '2rem'
       },
       fontWeight: {
         regular: '400',

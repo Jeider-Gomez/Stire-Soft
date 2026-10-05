@@ -1,7 +1,7 @@
 <template>
   <div class="w-full max-w-[490px] lg:max-w-[760px] mx-auto">
     <!-- Tarjeta del prototipo de José (misma que el inicio de sesión) -->
-    <div class="tarjeta-auth relative rounded-3xl p-5 sm:p-7 bg-white/95 border border-slate-200/90 backdrop-blur-2xl overflow-hidden animar-entrada">
+    <div class="tarjeta-auth relative rounded-3xl p-5 sm:p-7 bg-base-blanco/95 border border-slate-200/90 backdrop-blur-2xl overflow-hidden animar-entrada">
       <div class="absolute top-0 inset-x-0 h-[3px] linea-marca" aria-hidden="true" />
 
       <!-- En computador la marca va al lado del título: el formulario cabe sin bajar en un portátil. -->

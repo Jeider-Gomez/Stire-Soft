@@ -15,6 +15,8 @@ export default defineNuxtConfig({
   ],
 
   css: [
+    // Primero las variables de los temas (claro, oscuro, alto contraste): main.css y las pantallas las usan.
+    '~/assets/css/temas.css',
     '~/assets/css/main.css'
   ],
 

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full max-w-md">
-    <div class="relative bg-white/95 rounded-3xl border border-slate-200/90 p-8 shadow-xl shadow-stire-blue/10 backdrop-blur-2xl overflow-hidden animar-entrada">
+    <div class="relative bg-base-blanco/95 rounded-3xl border border-slate-200/90 p-8 shadow-xl shadow-stire-blue/10 backdrop-blur-2xl overflow-hidden animar-entrada">
       <div class="absolute top-0 inset-x-0 h-[3px] linea-marca" aria-hidden="true" />
       <div class="text-center mb-6">
         <LayoutMarcaST tamano="grande" class="mx-auto mb-3.5" />

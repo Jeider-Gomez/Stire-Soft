@@ -291,7 +291,7 @@ describe('Tutor: aviso de repasos compacto y «Mi clave» en una línea (pedido 
 
 describe('Patrones de interfaz tomados de los referentes (docs/investigacion/referentes/PATRONES_DE_INTERFAZ.md)', () => {
   it('P-UI-01: el encabezado queda fijo y es semitransparente con desenfoque', () => {
-    expect(leer('components', 'layout', 'HeaderNav.vue')).toMatch(/class="h-16 bg-white\/80 glass-header[^"]*sticky top-0/);
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toMatch(/class="h-16 bg-base-blanco\/80 glass-header[^"]*sticky top-0/);
   });
 
   it('P-UI-04: el Tutor se abre con un único lanzador flotante con texto, abajo a la derecha, en todas las pantallas', () => {

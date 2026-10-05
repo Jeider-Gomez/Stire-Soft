@@ -2,7 +2,7 @@
   <div class="w-full max-w-[470px] mx-auto">
     <!-- Tarjeta del prototipo de José: borde superior con la línea de la marca, sombra con los colores de la marca
          y entrada suave. -->
-    <div class="tarjeta-auth relative rounded-3xl p-7 sm:p-9 bg-white/95 border border-slate-200/90 backdrop-blur-2xl overflow-hidden animar-entrada">
+    <div class="tarjeta-auth relative rounded-3xl p-7 sm:p-9 bg-base-blanco/95 border border-slate-200/90 backdrop-blur-2xl overflow-hidden animar-entrada">
       <div class="absolute top-0 inset-x-0 h-[3px] linea-marca" aria-hidden="true" />
 
       <!-- En computador la marca va al lado del título, como en el registro: en un portátil (657 px de alto)
