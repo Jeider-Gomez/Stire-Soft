@@ -14,7 +14,8 @@
       :aria-labelledby="idTitulo"
       :aria-describedby="idDescripcion"
       tabindex="-1"
-      class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-xl space-y-4 outline-none max-h-[90dvh] overflow-y-auto"
+      class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 w-full shadow-xl space-y-4 outline-none max-h-[90dvh] overflow-y-auto"
+      :class="ANCHOS[ancho]"
       @keydown="atraparFoco($event, dialogo)">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" :class="claseIcono">
@@ -46,7 +47,11 @@ const props = withDefaults(defineProps<{
   ocupado?: boolean
   /** Si el fondo la cierra (no, cuando muestra algo que hay que copiar antes). */
   cierraConFondo?: boolean
-}>(), { claseIcono: 'bg-acento-ambar/15 text-acento-ambar-fuerte', devolverFoco: null, ocupado: false, cierraConFondo: true, idDescripcion: undefined })
+  /** Ancho máximo: «md» para confirmar, «2xl» para un formulario largo, «3xl» para una lista con filtros. */
+  ancho?: 'md' | '2xl' | '3xl'
+}>(), { claseIcono: 'bg-acento-ambar/15 text-acento-ambar-fuerte', devolverFoco: null, ocupado: false, cierraConFondo: true, idDescripcion: undefined, ancho: 'md' })
+// Clases completas (no armadas con el ancho) para que Tailwind las encuentre al compilar.
+const ANCHOS = { md: 'max-w-md', '2xl': 'max-w-2xl', '3xl': 'max-w-3xl' } as const
 
 const emit = defineEmits<{ cerrar: [] }>()
 const dialogo = ref<HTMLElement | null>(null)

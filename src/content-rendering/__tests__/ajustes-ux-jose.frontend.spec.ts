@@ -117,7 +117,10 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
       const lineas = leer(f).split('\n');
       lineas.forEach((l, i) => {
         if (!/fixed inset-0.*items-center/.test(l)) return;
-        const panel = lineas.slice(i, i + 22).find((x) => /class="[^"]*max-w-/.test(x)) ?? '';
+        // El panel es la primera línea con su ancho: un `max-w-` fijo o, en la base común de ventanas (AdminDialogo),
+        // el ancho elegido con `:class="ANCHOS[ancho]"`, que va justo debajo de su `class` con el alto máximo.
+        const j = lineas.findIndex((x, k) => k >= i && k < i + 22 && (/class="[^"]*max-w-/.test(x) || /:class="ANCHOS\[ancho\]"/.test(x)));
+        const panel = j < 0 ? '' : lineas[j] + (/:class="ANCHOS/.test(lineas[j]) ? lineas[j - 1] : '');
         if (!/max-h-/.test(panel)) sinTope.push(`${f}:${i + 1}`);
       });
     }
