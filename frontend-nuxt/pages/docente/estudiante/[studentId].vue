@@ -114,6 +114,9 @@
       <!-- Racha y semana a la vista; lo demás plegado (BT-21). La racha ya cuenta los días en hora de Colombia. -->
       <EstadisticasEstudiante :student-id="Number(route.params.studentId)" :class-id="claseDeLaFicha" vista="docente" />
 
+      <!-- META-02: si se siente seguro más de lo que acierta, o al revés (docs/DISENO_CONFIANZA.md) -->
+      <EstudianteMiCalibracion :student-id="Number(route.params.studentId)" docente />
+
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
           Dominio por lección

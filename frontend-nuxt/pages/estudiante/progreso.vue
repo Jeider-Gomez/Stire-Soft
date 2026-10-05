@@ -35,6 +35,9 @@
     <!-- Racha y semana a la vista; el resto de estadísticas, plegado (BT-21) -->
     <EstadisticasEstudiante :student-id="authStore.user?.id" :class-id="studentStore.currentClassId" />
 
+    <!-- META-02: lo que dice antes de entregar contra lo que obtiene, con el tiempo (docs/DISENO_CONFIANZA.md) -->
+    <EstudianteMiCalibracion />
+
     <!-- Logros y medallas, por categoría (utils/logros.ts; BT-29). «Ver todos mis logros» del inicio llega aquí. -->
     <EstudianteMisLogros />
 

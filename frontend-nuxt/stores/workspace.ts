@@ -490,6 +490,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           : pendingAnswer.value!
 
       const submitRes = await api.post<SubmissionResult>(`/submissions/${subId}/submit`, {
+        // META-02: el juicio de la primera entrega se guarda para la calibración con el tiempo (Mi progreso).
+        ...(juicioConfianza.value && currentExercise.value.usedAttempts === 0 ? { confianza: juicioConfianza.value } : {}),
         answers: [
           {
             questionId: currentExercise.value.questionId,

@@ -91,7 +91,8 @@ describe('META-02 · juicio de confianza y calibración', () => {
     const textos = casos.map(([confianza, acerto]) => c.mensajeCalibracion({ confianza, acerto }).texto);
     expect(new Set(textos).size).toBe(6);
     expect(c.mensajeCalibracion({ confianza: 'seguro', acerto: true }).tono).toBe('bien');
-    expect(c.mensajeCalibracion({ confianza: 'seguro', acerto: false }).texto).toMatch(/El Tutor puede ayudarte/);
+    // Hipercorrección (Butterfield y Metcalfe, 2001): el error con seguridad sorprende; se invita a mirar la diferencia.
+    expect(c.mensajeCalibracion({ confianza: 'seguro', acerto: false }).texto).toMatch(/el error que más enseña.*qué esperabas y qué mostró/);
   });
 
   it('el store pregunta antes de entregar, se puede omitir, y el Tutor recibe la calibración', () => {
