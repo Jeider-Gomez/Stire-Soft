@@ -376,6 +376,56 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Panel de usuarios del admin (mismo comportamiento, código dividido). |
 | **Trazabilidad** | `frontend-nuxt/pages/admin/index.vue`, `composables/useGestionUsuarios.ts`, `components/admin/`; `docs/DISENO_ARQUITECTURA_FRONTEND.md`. |
 
+## BT-35. Cada persona elige la apariencia: claro por defecto, oscuro, alto contraste y texto grande
+
+| | |
+|---|---|
+| **Problema observado** | El modo oscuro (MOB-03) faltaba y el dueño pidió más inclusividad. Contraste y modo oscuro se confundían: el contraste mínimo ya se cumplía; faltaba poder elegir. |
+| **Decisión** | En el perfil: tema claro (por defecto), oscuro o el del dispositivo; alto contraste; texto normal, grande o muy grande; más espacio entre líneas y letras. **No** se ofrece una fuente para dislexia. |
+| **Fundamento** | - El texto oscuro sobre claro se lee mejor (Piepenbrock et al., 2013): el claro es el de partida.<br>- El texto más grande ayuda a leer con dislexia (Rello y Baeza-Yates, 2013); OpenDyslexic no mejoró la lectura (Wery y Diliberto, 2017).<br>- Espaciado del texto: WCAG 2.1, 1.4.12. Canvas, GitHub y YouTube ofrecen estas opciones (guías de producto). |
+| **Cómo se materializa** | «Apariencia y lectura» en Mi perfil y en el menú del usuario. |
+| **Trazabilidad** | `frontend-nuxt/utils/apariencia.ts`, `assets/css/temas.css`, `components/perfil/AparienciaLectura.vue`; `docs/DISENO_APARIENCIA.md`. |
+
+## BT-36. Escuchar la lección con la frase resaltada, sin ocupar la pantalla
+
+| | |
+|---|---|
+| **Problema observado** | «Escuchar la lección» era una franja grande arriba de la lección, que el dueño encontró invasiva; además la lectura se quedaba muda en Chrome y la pausa no funcionaba en Android. |
+| **Decisión** | Un botón «Escuchar» junto al título y, al usarlo, un reproductor pequeño abajo (anterior, pausa, siguiente, velocidad y voz) que resalta la frase que suena, como el Lector inmersivo de Microsoft o ReadSpeaker. |
+| **Fundamento** | - Leer mientras se escucha mejora la comprensión de quien tiene dificultades de lectura (metaanálisis de Wood, Moxley, Tighe y Wagner, 2018).<br>- Palabras habladas junto al diagrama (principio de modalidad, Mayer, 2017). |
+| **Cómo se materializa** | Cabecera de cada lección. |
+| **Trazabilidad** | `frontend-nuxt/components/EscucharLeccion.vue`, `utils/escucharLeccion.ts`. |
+
+## BT-37. La entrega se califica con la escala que elige el docente
+
+| | |
+|---|---|
+| **Problema observado** | El docente no encontraba dónde poner la nota de una entrega hecha bien a la primera: la entrega estaba «solo con comentario» y la única alternativa era la nota de 0,0 a 5,0. |
+| **Decisión** | Cuatro escalas: solo comentario (por defecto), aprobado o no, desempeño (Superior, Alto, Básico, Bajo) o nota. Se califica desde la primera versión; si es solo comentario, la revisión lo dice y ofrece cambiarlo. Solo la nota numérica entra al libro de notas y al dominio. |
+| **Fundamento** | - El comentario sin nota favorece el interés y el desempeño en lo formativo (Butler, 1988): sigue siendo el de partida.<br>- La escala de desempeño es la nacional de la educación básica y media (Decreto 1290 de 2009), la que usarán los futuros licenciados.<br>- Herramienta flexible: el docente decide. |
+| **Cómo se materializa** | Formulario de la entrega y revisión del docente; la entrega del estudiante. |
+| **Trazabilidad** | `src/proyectos/entrega-reglas.ts`, `src/proyectos/envio-reglas.ts`, `src/migrations/1792400000000-EscalaEntrega.ts`, `frontend-nuxt/utils/entregas.ts`. |
+
+## BT-38. La encuesta mide igual para todos y pregunta a cada rol por sus tareas
+
+| | |
+|---|---|
+| **Problema observado** | La encuesta SUS era la misma para estudiantes y docentes: decía cuánto les gusta STIRE, no qué les cuesta. |
+| **Decisión** | El SUS igual para todos (para comparar) y después cinco tareas clave de cada rol, de 1 (muy difícil) a 7 (muy fácil), con «No lo he hecho», y una pregunta abierta de su rol. El admin ve las tareas de la más difícil a la más fácil. |
+| **Fundamento** | - La pregunta única de facilidad (Single Ease Question) es breve y funciona tan bien como cuestionarios más largos para medir la dificultad de una tarea (Sauro y Dumas, 2009).<br>- Cambiar las afirmaciones del SUS rompería su validez y su comparación (Bangor, Kortum y Miller, 2008). |
+| **Cómo se materializa** | Encuesta del estudiante y del docente; resultados del admin. |
+| **Trazabilidad** | `src/usabilidad/sus.ts` (TAREAS_POR_ROL), `src/migrations/1792500000000-TareasEncuesta.ts`, `frontend-nuxt/components/EncuestaSus.vue`. |
+
+## BT-39. El estudiante ve cómo avanza: resultados como en Anki y un reto cuando se siente seguro
+
+| | |
+|---|---|
+| **Problema observado** | «Mi calibración» no se entendía. El dueño pidió una escala como la de Anki, pero decidida por el resultado del ejercicio, que el estudiante seguro pueda tomar un desafío para avanzar más rápido y que sepa cómo funciona STIRE. |
+| **Decisión** | - Cada resultado se muestra como Otra vez, Difícil, Bien o Fácil, con la misma regla que programa sus repasos (SM-2).<br>- «Tomar un reto» en cualquier momento mientras la lección no esté dominada: un ejercicio del nivel siguiente; si lo resuelve a la primera, lo de abajo deja de exigirse.<br>- «Cómo avanzas en STIRE» en Mi progreso lo explica con sus datos, y la calibración en una frase. |
+| **Fundamento** | - Repetición espaciada con la calidad del resultado (Woźniak y Gorzelańczyk, 1994; matriz #2).<br>- Estudiar en la zona de lo que aún no se domina pero está al alcance (Metcalfe, 2009).<br>- Ver la propia calibración con retroalimentación mejora el monitoreo (Nietfeld, Cao y Osborne, 2006). |
+| **Cómo se materializa** | Resultado del ejercicio, lección y Mi progreso. |
+| **Trazabilidad** | `src/common/utils/spaced-repetition.ts`, `src/learning-progress/recommendation/recomendar-siguiente.ts`, `frontend-nuxt/utils/escalaResultados.ts`, `components/estudiante/ComoAvanzas.vue`. |
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |
@@ -390,6 +440,12 @@ trazabilidad (solo para el anexo técnico).
 
 ## Referencias (verificadas en Crossref; las de la matriz, con su número)
 
+- Metcalfe, J. (2009). Metacognitive Judgments and Control of Study. *Current Directions in Psychological Science, 18*(3), 159-163. https://doi.org/10.1111/j.1467-8721.2009.01628.x
+- Piepenbrock, C., Mayr, S., Mund, I. y Buchner, A. (2013). Positive display polarity is advantageous for both younger and older adults. *Ergonomics, 56*(7), 1116-1124. https://doi.org/10.1080/00140139.2013.790485
+- Rello, L. y Baeza-Yates, R. (2013). Good fonts for dyslexia. En *Proceedings of the 15th International ACM SIGACCESS Conference on Computers and Accessibility* (pp. 1-8). https://doi.org/10.1145/2513383.2513447
+- Sauro, J. y Dumas, J. S. (2009). Comparison of three one-question, post-task usability questionnaires. En *Proceedings of the SIGCHI Conference on Human Factors in Computing Systems* (pp. 1599-1608). https://doi.org/10.1145/1518701.1518946
+- Wery, J. J. y Diliberto, J. A. (2017). The effect of a specialized dyslexia font, OpenDyslexic, on reading rate and accuracy. *Annals of Dyslexia, 67*(2), 114-127. https://doi.org/10.1007/s11881-016-0127-1
+- Wood, S. G., Moxley, J. H., Tighe, E. L. y Wagner, R. K. (2018). Does Use of Text-to-Speech and Related Read-Aloud Tools Improve Reading Comprehension for Students With Reading Disabilities? A Meta-Analysis. *Journal of Learning Disabilities, 51*(1), 73-84. https://doi.org/10.1177/0022219416688170
 - Aleven, V., Roll, I., McLaren, B. M. y Koedinger, K. R. (2016). Help Helps, But Only So Much: Research on Help Seeking with Intelligent Tutoring Systems. *International Journal of Artificial Intelligence in Education, 26*(1), 205-223. https://doi.org/10.1007/s40593-015-0089-1
 - Bangor, A., Kortum, P. T. y Miller, J. T. (2008). An Empirical Evaluation of the System Usability Scale. *International Journal of Human–Computer Interaction, 24*(6), 574-594. https://doi.org/10.1080/10447310802205776
 - Brooke, J. (1996). SUS: A «quick and dirty» usability scale. En P. W. Jordan et al. (Eds.), *Usability Evaluation in Industry* (pp. 189-194). Taylor & Francis.

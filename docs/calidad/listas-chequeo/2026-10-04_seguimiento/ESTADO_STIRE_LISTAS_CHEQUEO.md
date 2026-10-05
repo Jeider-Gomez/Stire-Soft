@@ -107,7 +107,7 @@ del docente. Hoy las pantallas del estudiante están en 0. En las del docente qu
 | **UX-08** | Prototipado validado y métricas de usabilidad | CP | CP | **CP** | Prototipo en Figma, evaluación heurística y auditorías de calidad. **Falta el SUS**: ya está preparado en [`VERIFICACION_v2.0.0.md`](../VERIFICACION_v2.0.0.md) §5, pero nadie lo ha respondido. | Los 5 integrantes responden el SUS el 05/10 y se calcula el puntaje. **+1 punto** |
 | MOB-01 | Pirámide de diseño móvil | C | C | **C** | Sin desplazamiento horizontal en las 36 pantallas, tampoco en horizontal. | — |
 | MOB-02 | Ergonomía táctil y zona del pulgar | CP | C | **C** | Barra inferior de 48 px en el ejercicio. 0 controles pequeños en las pantallas del estudiante. El botón del Tutor ya no tapa nada. **Observación:** Contenidos, el editor del docente, sigue con controles pequeños en el celular; se prepara un curso desde el computador. | Para ser estrictos: llevar Contenidos a 44 px en el celular. No cambia la nota. |
-| **MOB-03** | Sensibilidad al contexto | CP | CP | **CP** | El código de clase sale en mayúsculas y se formatea solo; la rotación funciona. **Sigue sin modo oscuro:** con el sistema en oscuro el fondo se mantiene en `rgb(247, 249, 252)`. | Modo oscuro con José: toca `tailwind.config.ts` y `main.css`, que son su territorio. **+1 punto** |
+| **MOB-03** | Sensibilidad al contexto | CP | CP | **C** (§9) | El código de clase sale en mayúsculas y se formatea solo; la rotación funciona. **Desde la tercera ronda (§9):** tema claro, oscuro o «como mi dispositivo», alto contraste, texto grande y espaciado, en Mi perfil. 0 problemas de contraste en 20 pantallas con el tema oscuro. | — |
 | MOB-04 | Resiliencia de red | CP | C | **C** | Aviso «Sin conexión», copia local del código y reintento al volver la red. | — |
 | **PAT-01** | Patrones arquitectónicos (MVC / componentes) | CP | CP | **CP** | Lo nuevo sigue el patrón: lógica en utilidades puras con prueba (`utils/logros.ts`, `plantillas.ts`, `contextoAcademico.ts`, `organizarClases.ts`) y el composable `useContextoDocente`. Pero **32 de 41 páginas** todavía llaman a la API desde la vista. | Pasar las llamadas de las páginas grandes a composables por dominio. **+1 punto** |
 | PAT-02 | Patrones de navegación | C | C | **C** | Menú con la opción activa, pestañas, migas y barra inferior en el celular. | — |
@@ -264,11 +264,51 @@ El Tutor, que ya tenía la nota completa, quedó **mejor de verdad**:
 y la encuesta). El frontend se publica después del servidor: si se publicara antes, las entregas con juicio de confianza
 fallarían.
 
+## 9. Tercera ronda (noche del 04/10): lo que Jeider encontró al probar
+
+Jeider probó STIRE con cuentas de prueba y señaló siete cosas. Esto es lo que se hizo con cada una.
+
+| Lo que encontró | Qué se hizo | Dónde verlo |
+|---|---|---|
+| **Los logros llenan «Mi progreso»** y dañan la interfaz | «Mi progreso» muestra una sola fila con las medallas ganadas y la próxima meta. Las 26 medallas están en su propia pantalla, con el filtro Todas, Ganadas o Por ganar (como el perfil de Duolingo o Khan Academy). Además, «Mi progreso» ahora pone primero el dominio por lección. | Mi progreso → «Ver todos» |
+| **«Mi calibración» no se entiende**; la idea era una escala como la de Anki, pero decidida por el resultado del ejercicio, y que el estudiante seguro pueda tomar un desafío | STIRE ya calificaba cada resultado como los botones de Anki para programar los repasos, pero no se veía. Ahora se ve: al calificar, «Para tus repasos: Bien» (Otra vez, Difícil, Bien o Fácil); en Mi progreso, la tarjeta **«Cómo avanzas en STIRE»** explica qué sube el dominio, cuenta sus resultados de 30 días y explica el reto. **«¿Te sientes seguro? Toma un reto»** está en cada lección mientras no esté dominada (antes, solo antes de empezar): un ejercicio del nivel siguiente; si lo resuelve a la primera, lo de abajo deja de exigirse. La calibración queda en una frase: «Cuando dijiste "Estoy seguro", acertaste 4 de 5». | Ejercicio, lección, Mi progreso. BT-39 |
+| **«Escuchar la lección» es invasivo**, ocupa mucho al principio y tiene errores | Como el Lector inmersivo de Microsoft o ReadSpeaker: un botón «Escuchar» junto al título y, al usarlo, un reproductor pequeño abajo que **resalta la frase que suena**, con anterior, pausa, siguiente, velocidad y voz. Prefiere las voces naturales del navegador y recuerda la velocidad. **Errores corregidos:** la lectura se quedaba muda tras la primera frase en Chrome; la pausa no se retomaba en Android; «Parte X de Y» interrumpía al lector de pantalla; «x <- 5» sonaba «menor que guion». | Cualquier lección. BT-36 |
+| **¿Se hizo lo del contraste? ¿No era el modo oscuro?** | Son dos cosas. El **contraste** (que cada texto se distinga de su fondo) ya estaba corregido en la revisión de seguimiento (§3). El **modo oscuro** (MOB-03) faltaba y ahora está, con más opciones: tema claro (por defecto), oscuro o el del dispositivo; alto contraste; texto grande o muy grande; más espacio entre líneas. No se agregó una «fuente para dislexia» porque no mejoró la lectura en un estudio controlado (Wery y Diliberto, 2017). | Mi perfil → «Apariencia y lectura», o el menú del usuario. BT-35, `docs/DISENO_APARIENCIA.md` |
+| **La encuesta debería ser distinta para estudiantes y docentes, y aportar de verdad** | El SUS sigue igual para todos (solo así se compara). Después, cinco tareas de cada rol, de 1 (muy difícil) a 7 (muy fácil), con «No lo he hecho», y una pregunta abierta de su rol. El admin ve, por rol, la tarea más difícil primero. Lo que pidió de la invitación (que espere unos días y no moleste) ya estaba así. | Encuesta; resultados del admin. BT-38 |
+| **El docente no encuentra dónde poner la nota** de una entrega hecha bien a la primera | La entrega de prueba estaba «solo con comentario», y la única alternativa era la nota de 0,0 a 5,0. Ahora cada entrega tiene su **escala**: solo comentario, aprobado o no aprobado, desempeño (Superior, Alto, Básico, Bajo) o nota. Se califica desde la versión 1. Si es solo comentario, la revisión lo dice y ofrece «Cambiar cómo se califica». | Entregas del docente. BT-37 |
+| **Al docente todavía le falta UX y diseño** | En esta ronda: la escala de calificación, el modo oscuro también para el docente y la encuesta con sus propias tareas. La encuesta del lunes dirá cuál de sus cinco tareas cuesta más, para mejorar primero esa con datos y no a ojo. | — |
+
+### 9.1 Verificación
+
+- Pruebas: todas las del proyecto en verde, más las nuevas de cada cambio (escala de entregas, encuesta por rol, reto, escala de resultados, apariencia, logros, escuchar).
+- Migraciones `EscalaEntrega` y `TareasEncuesta` probadas en la base local: run, revert, run.
+- axe-core (WCAG 2.1 AA), en 20 pantallas de estudiante, docente y admin:
+
+| Tema | Resultado |
+|---|---|
+| Claro (el de siempre) | 0 problemas después de corregir uno nuevo: la ayuda gris sobre la opción elegida quedaba en 4,32:1 |
+| Oscuro | 0 problemas después de corregir tres (la insignia del rol y los botones azules con texto blanco fijo) |
+| Alto contraste (claro y oscuro) | 0 problemas en las 11 pantallas del estudiante |
+
+### 9.2 Cómo queda la nota
+
+| Lista | Antes de esta ronda | Ahora | Con el SUS del equipo |
+|---|---|---|---|
+| Interfaz | 28/32 · 87,5 % | **29/32 · 90,6 % · Sobresaliente** (MOB-03 pasa a C) | **30/32 · 93,8 % · Sobresaliente** |
+| Tutores Inteligentes | 24/24 · 100 % | 24/24 · 100 % | — |
+
+Quedan en CP de la interfaz: UX-08 (hasta que el equipo responda el SUS), PAT-01 y PAT-04 (llevar las demás páginas al
+patrón del panel del admin).
+
 ## Referencias
 
 - Butterfield, B. y Metcalfe, J. (2001). Errors committed with high confidence are hypercorrected. *Journal of Experimental Psychology: Learning, Memory, and Cognition, 27*(6), 1491-1494. https://doi.org/10.1037/0278-7393.27.6.1491
 - Pashler, H., McDaniel, M., Rohrer, D. y Bjork, R. (2008). Learning Styles: Concepts and Evidence. *Psychological Science in the Public Interest, 9*(3), 105-119. https://doi.org/10.1111/j.1539-6053.2009.01038.x
 - Piepenbrock, C., Mayr, S., Mund, I. y Buchner, A. (2013). Positive display polarity is advantageous for both younger and older adults. *Ergonomics, 56*(7), 1116-1124. https://doi.org/10.1080/00140139.2013.790485
+- Rello, L. y Baeza-Yates, R. (2013). Good fonts for dyslexia. En *Proceedings of the 15th International ACM SIGACCESS Conference on Computers and Accessibility* (pp. 1-8). https://doi.org/10.1145/2513383.2513447
+- Sauro, J. y Dumas, J. S. (2009). Comparison of three one-question, post-task usability questionnaires. En *Proceedings of the SIGCHI Conference on Human Factors in Computing Systems* (pp. 1599-1608). https://doi.org/10.1145/1518701.1518946
+- Wery, J. J. y Diliberto, J. A. (2017). The effect of a specialized dyslexia font, OpenDyslexic, on reading rate and accuracy. *Annals of Dyslexia, 67*(2), 114-127. https://doi.org/10.1007/s11881-016-0127-1
+- Wood, S. G., Moxley, J. H., Tighe, E. L. y Wagner, R. K. (2018). Does Use of Text-to-Speech and Related Read-Aloud Tools Improve Reading Comprehension for Students With Reading Disabilities? A Meta-Analysis. *Journal of Learning Disabilities, 51*(1), 73-84. https://doi.org/10.1177/0022219416688170
 - Razzaq, L. y Heffernan, N. T. (2006). Scaffolding vs. Hints in the Assistment System. En *ITS 2006*, LNCS 4053, 635-644. https://doi.org/10.1007/11774303_63
 - Rogowsky, B. A., Calhoun, B. M. y Tallal, P. (2015). Matching learning style to instructional method: Effects on comprehension. *Journal of Educational Psychology, 107*(1), 64-78. https://doi.org/10.1037/a0037478
 - Brooke, J. (1996). SUS: A «quick and dirty» usability scale. En P. W. Jordan et al. (Eds.), *Usability Evaluation in Industry* (pp. 189–194). Taylor & Francis.
