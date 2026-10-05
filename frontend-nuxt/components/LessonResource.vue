@@ -13,7 +13,7 @@
   </figure>
 
   <!-- Recurso insertado (video, documento, presentación, actividad) o enlace -->
-  <div v-else class="space-y-2">
+  <div v-else :data-leer-aviso="`Recurso: ${title || 'sin título'}. Ábrelo en la pantalla.`" class="space-y-2">
     <div v-if="insertable" class="relative w-full overflow-hidden rounded-lg border border-base-borde-sutil bg-base-bg-secundario" :style="{ aspectRatio: proporcion }">
       <iframe
         :src="insertable"

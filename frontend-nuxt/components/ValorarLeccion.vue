@@ -41,7 +41,7 @@
       </div>
       <!-- UI-01 y UI-04: otra vía de la misma lección (escucharla, el diagrama o el paso a paso), sin esperar al docente -->
       <p class="text-[11px] text-slate-600">
-        También puedes <a href="#formas-leccion" class="font-semibold text-acento-ambar-fuerte hover:underline">escucharla o verla de otra forma</a>, arriba de la explicación.
+        También puedes <a href="#escuchar-leccion" class="font-semibold text-acento-ambar-fuerte hover:underline">escucharla</a> con el botón «Escuchar» junto al título, o ver el algoritmo como diagrama o paso a paso.
       </p>
       <p v-if="enviado" role="status" class="text-xs text-slate-600">Enviado. Gracias: así tu docente sabe qué explicar mejor.</p>
     </div>

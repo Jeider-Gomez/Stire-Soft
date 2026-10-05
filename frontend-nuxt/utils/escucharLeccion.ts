@@ -1,93 +1,124 @@
 // «Escuchar la lección» (UI-01, docs/DISENO_FORMATOS_LECCION.md): la explicación también por el oído, con la voz del
 // navegador (sin costo, sin enviar el texto a nadie). No es para el «estudiante auditivo»: adaptar el formato a un
 // supuesto estilo no mejora el aprendizaje (Pashler et al., 2008; Rogowsky, Calhoun y Tallal, 2015). Es una vía más que
-// cada uno usa cuando le sirve (cansado de leer, en el celular, con baja visión) y que deja los ojos libres para el
-// diagrama: palabras habladas con imagen aprenden mejor que texto en pantalla con imagen (principio de modalidad,
-// Mayer, 2017).
+// cada uno usa cuando le sirve (cansado de leer, en el celular, con baja visión o dislexia) y que deja los ojos libres
+// para el diagrama (principio de modalidad, Mayer, 2017). Como el Lector inmersivo de Microsoft o ReadSpeaker, se lee
+// lo que está en pantalla y se resalta la frase que suena: leer mientras se escucha ayuda a comprender a quien le
+// cuesta leer (Wood, Moxley, Tighe y Wagner, 2018).
 
 import { partirContenido } from './contenidoLeccion'
 
 export interface BloqueLeccion { title?: string | null; body?: string | null }
 
-/** Markdown → texto que se puede decir en voz alta: sin símbolos, los enlaces por su texto, el código anunciado. */
-export function markdownParaVoz(md: string): string {
-  return md
-    .replace(/```[\s\S]*?```/g, ' Hay un fragmento de código en la pantalla. ')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, (_, alt: string) => (alt.trim() ? ` Imagen: ${alt.trim()}. ` : ' '))
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    .replace(/^\s{0,3}#{1,6}\s*(.+)$/gm, '$1.')
-    .replace(/^\s*(?:[-*+]|\d+[.)])\s+/gm, '')
-    .replace(/^\s*>\s?/gm, '')
-    .replace(/(\*\*|__|\*|_|~~)(?=\S)([\s\S]*?\S)\1/g, '$2')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, 'y')
-    .replace(/[ \t]+/g, ' ')
-    .replace(/\s*\n\s*/g, '\n')
-    .trim()
+/** Una frase de un párrafo, con su posición en el texto del párrafo (para resaltarla mientras suena). */
+export interface Frase { texto: string; inicio: number; fin: number }
+
+const ES_FIN = /[.!?]/
+const CIERRE = /[»)”"']/
+const ESPACIO = /\s/
+
+/**
+ * Las frases de un texto con su posición. Cada frase es una lectura: el navegador corta las lecturas largas (Chrome se
+ * detiene a los ~15 s de una sola locución), así que una frase de más de `max` caracteres se parte por comas o espacios.
+ */
+export function frasesConPosicion(texto: string, max = 220): Frase[] {
+  const cortes: Array<[number, number]> = []
+  let ini = 0
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto[i]
+    if (c === '\n') { cortes.push([ini, i]); ini = i + 1; continue }
+    if (!ES_FIN.test(c)) continue
+    if (ESPACIO.test(texto[i + 1] ?? ' ')) { cortes.push([ini, i + 1]); ini = i + 1 }
+    else if (CIERRE.test(texto[i + 1] ?? '') && ESPACIO.test(texto[i + 2] ?? ' ')) { cortes.push([ini, i + 2]); ini = i + 2; i++ }
+  }
+  cortes.push([ini, texto.length])
+
+  const frases: Frase[] = []
+  const agregar = (a: number, b: number) => {
+    while (a < b && ESPACIO.test(texto[a])) a++
+    while (b > a && ESPACIO.test(texto[b - 1])) b--
+    if (b > a) frases.push({ texto: texto.slice(a, b).replace(/\s+/g, ' '), inicio: a, fin: b })
+  }
+  for (const [a0, b] of cortes) {
+    let a = a0
+    while (a < b && ESPACIO.test(texto[a])) a++
+    while (b - a > max) {
+      const trozo = texto.slice(a, a + max)
+      const corte = Math.max(trozo.lastIndexOf(', ') + 1, trozo.lastIndexOf(' '))
+      const fin = corte > max / 2 ? a + corte : a + max
+      agregar(a, fin)
+      a = fin
+    }
+    agregar(a, b)
+  }
+  return frases
 }
 
-/** Lo que se dice de cada bloque: el texto, y un aviso corto de lo que solo se puede ver. */
-export function textoParaEscuchar(bloques: BloqueLeccion[]): string {
-  const partes: string[] = []
-  for (const b of bloques) {
-    if (b.title?.trim()) partes.push(`${b.title.trim().replace(/[.:]$/, '')}.`)
-    for (const s of partirContenido(b.body ?? '')) {
-      if (s.tipo === 'texto') partes.push(markdownParaVoz(s.markdown))
-      else if (s.tipo === 'imagen') partes.push(s.alt ? `Imagen: ${s.alt}.` : '')
-      else if (s.tipo === 'recurso') partes.push(`Recurso: ${s.titulo}. Ábrelo en la pantalla.`)
-      else if (s.tipo === 'vivo') partes.push('Aquí hay un ejemplo en vivo: pruébalo en la pantalla.')
-      else partes.push('Aquí está el algoritmo: míralo como diagrama de flujo o paso a paso mientras escuchas.')
-    }
-  }
-  return partes.filter(Boolean).join('\n')
+/** Solo el texto de cada frase (lo que se dice). */
+export function partirEnFrases(texto: string, max = 220): string[] {
+  return frasesConPosicion(texto, max).map((f) => f.texto)
 }
 
 /**
- * Frases de hasta `max` caracteres. El navegador corta las lecturas largas (Chrome se detiene a los ~15 s de una sola
- * locución), así que se leen por partes, y así también se sabe por dónde va.
+ * Lo que la voz diría mal, en palabras: la asignación del pseudocódigo («x <- 5» sonaba «menor que guion») y las
+ * comparaciones. El resto se lee tal cual.
  */
-export function partirEnFrases(texto: string, max = 220): string[] {
-  const frases = texto
-    .split(/\n+/)
-    .flatMap((p) => p.split(/(?<=[.!?»)])\s+/))
-    .map((f) => f.trim())
-    .filter(Boolean)
-  const trozos: string[] = []
-  for (const f of frases) {
-    if (f.length <= max) {
-      const ultimo = trozos[trozos.length - 1]
-      if (ultimo && ultimo.length + 1 + f.length <= max) trozos[trozos.length - 1] = `${ultimo} ${f}`
-      else trozos.push(f)
-      continue
-    }
-    // Una frase muy larga se parte por comas o espacios.
-    let resto = f
-    while (resto.length > max) {
-      const corte = Math.max(resto.lastIndexOf(', ', max), resto.lastIndexOf(' ', max))
-      const i = corte > max / 2 ? corte + 1 : max
-      trozos.push(resto.slice(0, i).trim())
-      resto = resto.slice(i).trim()
-    }
-    if (resto) trozos.push(resto)
-  }
-  return trozos
+export function textoParaVoz(texto: string): string {
+  return texto
+    .replace(/\s*(?:<-|←)\s*/g, ' recibe ')
+    .replace(/\s*<=\s*/g, ' menor o igual que ')
+    .replace(/\s*>=\s*/g, ' mayor o igual que ')
+    .replace(/\s*(?:!=|<>)\s*/g, ' distinto de ')
+    .replace(/\s*==\s*/g, ' igual a ')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
-/** La voz en español más cercana: Colombia, luego Latinoamérica, luego cualquier español. */
-export function elegirVoz<V extends { lang: string }>(voces: V[]): V | null {
-  const por = (re: RegExp) => voces.find((v) => re.test(v.lang.replace('_', '-')))
-  return por(/^es-CO/i) ?? por(/^es-(419|MX|US|AR|CL|PE|VE|EC)/i) ?? por(/^es\b/i) ?? null
+interface VozLike { lang: string; name?: string }
+
+const LATAM = /^es-(CO|419|MX|US|AR|CL|PE|VE|EC|UY|BO|PY|CR|PA|DO|GT|HN|NI|SV|PR|CU)/i
+/** Voces neuronales (Edge «Natural», Chrome «Google», Safari «Premium/Mejorada»): suenan mucho mejor que las clásicas. */
+const NATURAL = /natural|neural|online|premium|enhanced|mejorada|google/i
+
+/** Puntaje de una voz: -1 si no es español; las naturales primero y, entre iguales, Colombia y luego Latinoamérica. */
+export function puntajeVoz(v: VozLike): number {
+  const lang = v.lang.replace('_', '-')
+  if (!/^es\b/i.test(lang)) return -1
+  const region = /^es-CO/i.test(lang) ? 3 : LATAM.test(lang) ? 2 : 1
+  return (NATURAL.test(v.name ?? '') ? 10 : 0) + region
+}
+
+/** Las voces en español, la mejor primero. */
+export function vocesEnEspanol<V extends VozLike>(voces: V[]): V[] {
+  return voces.filter((v) => puntajeVoz(v) >= 0).sort((a, b) => puntajeVoz(b) - puntajeVoz(a))
+}
+
+/** La mejor voz en español (o la que el estudiante eligió, si sigue disponible); sin español, ninguna. */
+export function elegirVoz<V extends VozLike & { voiceURI?: string }>(voces: V[], preferida?: string | null): V | null {
+  const espanol = vocesEnEspanol(voces)
+  return (preferida ? espanol.find((v) => v.voiceURI === preferida) : undefined) ?? espanol[0] ?? null
+}
+
+/** Nombre corto de una voz para el selector: «Salome (Colombia)». */
+export function nombreVoz(v: VozLike): string {
+  const nombre = (v.name ?? 'Voz')
+    .replace(/^(Microsoft|Google)\s+/i, '')
+    .replace(/\s+Online\s*\(Natural\)/i, '')
+    .replace(/\s+-\s+.*$/, '')
+    .trim()
+  const pais: Record<string, string> = { CO: 'Colombia', MX: 'México', US: 'EE. UU.', ES: 'España', AR: 'Argentina', CL: 'Chile', PE: 'Perú', VE: 'Venezuela', EC: 'Ecuador', '419': 'Latinoamérica' }
+  const region = v.lang.replace('_', '-').split('-')[1]?.toUpperCase()
+  return region && pais[region] ? `${nombre} (${pais[region]})` : nombre
 }
 
 export const VELOCIDADES = [
-  { valor: 0.85, texto: 'Lenta' },
+  { valor: 0.75, texto: 'Lenta' },
   { valor: 1, texto: 'Normal' },
-  { valor: 1.2, texto: 'Rápida' },
+  { valor: 1.25, texto: 'Rápida' },
+  { valor: 1.5, texto: 'Muy rápida' },
 ] as const
 
-/** Qué más trae la lección además del texto: para decírselo al estudiante arriba, como opciones (no como etiqueta). */
+/** Qué más trae la lección además del texto: se dice en una línea junto a «Escuchar», como opciones (no como etiqueta). */
 export function formatosDeLeccion(bloques: BloqueLeccion[]): { diagrama: boolean; imagenes: boolean; recursos: boolean; enVivo: boolean } {
   const segs = bloques.flatMap((b) => partirContenido(b.body ?? ''))
   return {
@@ -95,5 +126,30 @@ export function formatosDeLeccion(bloques: BloqueLeccion[]): { diagrama: boolean
     imagenes: segs.some((s) => s.tipo === 'imagen'),
     recursos: segs.some((s) => s.tipo === 'recurso'),
     enVivo: segs.some((s) => s.tipo === 'vivo'),
+  }
+}
+
+/** «Incluye diagrama de flujo y un ejemplo en vivo»; vacío si solo hay texto. */
+export function textoFormatos(f: ReturnType<typeof formatosDeLeccion>): string {
+  const partes = [
+    f.diagrama && 'el algoritmo en diagrama y paso a paso',
+    f.enVivo && 'un ejemplo en vivo',
+    f.imagenes && 'imágenes',
+    f.recursos && 'videos o recursos',
+  ].filter((x): x is string => !!x)
+  if (!partes.length) return ''
+  return `Incluye ${partes.length === 1 ? partes[0] : `${partes.slice(0, -1).join(', ')} y ${partes[partes.length - 1]}`}.`
+}
+
+/** Preferencias de lectura del estudiante en este navegador (velocidad y voz). */
+export const CLAVE_PREFERENCIAS_VOZ = 'stire.escuchar.preferencias'
+export interface PreferenciasVoz { velocidad: number; voz: string | null }
+export function leerPreferenciasVoz(crudo: string | null): PreferenciasVoz {
+  try {
+    const p = crudo ? JSON.parse(crudo) : null
+    const velocidad = VELOCIDADES.some((v) => v.valor === p?.velocidad) ? (p.velocidad as number) : 1
+    return { velocidad, voz: typeof p?.voz === 'string' ? p.voz : null }
+  } catch {
+    return { velocidad: 1, voz: null }
   }
 }

@@ -62,10 +62,9 @@
             {{ dominio >= DOMINADO ? `Dominada · ${dominio} %` : dominio > 0 ? `${dominio} % de dominio` : 'Aún sin dominio: empieza a practicar' }}
           </span>
         </div>
+        <!-- UI-01: escuchar la lección y qué más trae, en una línea (docs/DISENO_FORMATOS_LECCION.md) -->
+        <EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" />
       </header>
-
-      <!-- UI-01: leer, escuchar, ver y practicar, como opciones (docs/DISENO_FORMATOS_LECCION.md) -->
-      <EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" />
 
       <!-- La explicación y los recursos de la lección, tal como los publicó el docente -->
       <article

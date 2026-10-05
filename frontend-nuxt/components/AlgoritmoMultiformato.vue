@@ -2,7 +2,7 @@
   <!-- Un algoritmo de la lección en varios formatos (UI-01): el código del docente, pseudocódigo, diagrama de flujo y
        paso a paso en palabras. El estudiante elige y STIRE recuerda su preferencia (utils/algoritmoMultiformato.ts).
        Si el algoritmo no se puede dibujar con fidelidad, se muestra solo el código: nunca un diagrama equivocado. -->
-  <figure class="rounded-lg border border-base-borde-sutil bg-base-blanco overflow-hidden">
+  <figure data-leer-aviso="Aquí está el algoritmo: míralo como diagrama de flujo o paso a paso en la pantalla." class="rounded-lg border border-base-borde-sutil bg-base-blanco overflow-hidden">
     <div v-if="arbol" role="tablist" aria-label="Formato del algoritmo" class="flex flex-wrap gap-1 p-1.5 bg-base-bg-secundario border-b border-base-borde-sutil">
       <button
         v-for="f in formatos"

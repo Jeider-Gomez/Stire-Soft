@@ -1,7 +1,7 @@
 <template>
   <!-- Ejemplo de HTML, CSS y JavaScript dentro de la lección. Corre en un iframe aislado (allow-scripts SIN
        allow-same-origin): no puede tocar STIRE ni la sesión del estudiante. -->
-  <figure class="rounded-lg border border-base-borde-sutil overflow-hidden bg-base-blanco not-prose">
+  <figure data-leer-aviso="Aquí hay un ejemplo en vivo: pruébalo en la pantalla." class="rounded-lg border border-base-borde-sutil overflow-hidden bg-base-blanco not-prose">
     <figcaption class="flex items-center justify-between gap-2 px-3 py-1.5 border-b border-base-borde-sutil bg-base-bg-secundario text-[11px]">
       <span class="inline-flex items-center gap-1 font-semibold text-base-texto-secundario"><MonitorPlay :size="12" aria-hidden="true" /> Ejemplo en vivo</span>
       <span class="flex items-center gap-1">
