@@ -24,7 +24,7 @@ const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'pages/docente/ejercicios/crear.vue': { lineas: 411, motivo: 'Pendiente de separar selector, formulario y configuración por tipo en H.5.' },
   'pages/estudiante/index.vue': { lineas: 462, motivo: 'Pendiente de extraer las tarjetas del inicio en H.5.' },
   'pages/estudiante/evaluacion/[activityId].vue': { lineas: 528, motivo: 'Pendiente de revisar los componentes por tipo de ejercicio en H.5.' },
-  'pages/estudiante/unidad/[id].vue': { lineas: 396, motivo: 'Pendiente de separar bloques de la lección en H.5.' },
+  'pages/estudiante/unidad/[id].vue': { lineas: 392, motivo: 'Pendiente de separar bloques de la lección en H.5.' },
 };
 
 function archivosVue(dir: string): string[] {

@@ -28,7 +28,6 @@ const PAGINAS_CON_API = [
   'pages/estudiante/proyectos/[id].vue',
   'pages/estudiante/proyectos/index.vue',
   'pages/estudiante/refuerzos/[id].vue',
-  'pages/estudiante/unidad/[id].vue',
 ];
 
 const COMPONENTES_CON_API = [
@@ -106,6 +105,16 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     expect(nuevoRefuerzo).not.toContain('`/sections/class/${claseId.value}`');
     expect(crearEjercicio).toContain('seccionesClase');
     expect(crearEjercicio).not.toContain('`/sections/class/${classId}`');
+  });
+
+  it('H4.2 la página de la unidad delega sus consultas y acciones al composable del estudiante', () => {
+    const pagina = readFileSync(path.join(raiz, 'pages/estudiante/unidad/[id].vue'), 'utf8');
+    const composable = readFileSync(path.join(raiz, 'composables/useUnidadEstudiante.ts'), 'utf8');
+    expect(pagina).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
+    expect(pagina).toContain('useUnidadEstudiante()');
+    for (const ruta of ['/learning-unit/${unitId}', '/content/unit/${unitId}', '/activities?learningUnitId=${unitId}', '/entregas/mias?classId=${classId}', '/learning-progress/student/${studentId}/unit/${unitId}/next-activity', '/learning-progress/unit/${unitId}/confidence']) {
+      expect(composable).toContain(ruta);
+    }
   });
 
   it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {

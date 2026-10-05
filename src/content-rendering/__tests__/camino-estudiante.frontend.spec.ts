@@ -71,11 +71,14 @@ describe('La lección antes del ejercicio y la evaluación implícita', () => {
 
   it('no se pregunta «¿Cómo te sientes?»: se ofrece tomar un reto en cualquier momento, con el mismo reto de salto (confianza 3)', () => {
     const leccion = leer('pages', 'estudiante', 'unidad', '[id].vue');
+    const apiUnidad = leer('composables', 'useUnidadEstudiante.ts');
     expect(plantilla(leccion)).not.toContain('¿Cómo te sientes');
     expect(leccion).toContain('¿Te sientes seguro? Toma un reto');
-    expect(leccion).toContain('/next-activity?reto=1');
+    expect(leccion).toContain('siguienteActividad(studentId, unitId, true)');
+    expect(apiUnidad).toContain("const sufijo = reto ? '?reto=1' : ''");
+    expect(apiUnidad).toContain('/next-activity${sufijo}');
     // primero se busca el reto; la confianza solo se marca si lo hay
-    expect(leccion.indexOf('/next-activity?reto=1')).toBeLessThan(leccion.indexOf('confidence`, { confianza: 3 }'));
+    expect(leccion.indexOf('siguienteActividad(studentId, unitId, true)')).toBeLessThan(leccion.indexOf('registrarConfianza(unitId, 3)'));
     expect(leccion).toContain("reto.reason === 'reto'");
     // tras varios fallos seguidos, el tope va primero y se dice por qué no hay reto
     expect(leccion).toContain("reto?.reason === 'pausa'");

@@ -192,7 +192,7 @@ import { DOMINADO, TERMINOS } from '~/utils/terminos'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { useTutorStore } from '~/stores/tutor'
-import { useApi } from '~/composables/useApi'
+import { useUnidadEstudiante } from '~/composables/useUnidadEstudiante'
 import { insertadosDe } from '~/utils/contenidoLeccion'
 
 definePageMeta({
@@ -202,7 +202,7 @@ definePageMeta({
 const route = useRoute()
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
-const api = useApi()
+const { unidad, contenidos, actividades, entregasDeClase, progreso, siguienteActividad, registrarConfianza } = useUnidadEstudiante()
 
 const unitId = Number(route.params.id) || 0
 /** Si la lección es de un módulo todavía cerrado, qué falta para abrirlo; null si está abierta. */
@@ -301,10 +301,10 @@ async function saltarConReto() {
     const studentId = authStore.user?.id
     // Primero se busca el reto; solo si hay uno se marca la confianza (así no cambia nada si no lo hay).
     const reto = studentId
-      ? await api.get<NextActivityRecommendation | null>(`/learning-progress/student/${studentId}/unit/${unitId}/next-activity?reto=1`)
+      ? await siguienteActividad(studentId, unitId, true)
       : null
     if (reto?.activityId && reto.reason === 'reto') {
-      await api.put(`/learning-progress/unit/${unitId}/confidence`, { confianza: 3 })
+      await registrarConfianza(unitId, 3)
       await navigateTo(`/estudiante/evaluacion/${reto.activityId}?reto=1`)
       return
     }
@@ -325,7 +325,7 @@ async function toggleManualChoice() {
   if (chooseManually.value && unitActivities.value.length === 0) {
     isLoadingActivities.value = true
     try {
-      const res = await api.get<{ data: ActivitySummary[] }>(`/activities?learningUnitId=${unitId}`)
+      const res = await actividades(unitId)
       unitActivities.value = res?.data || []
     } catch (error: unknown) {
       console.warn('[STIRE Student] No se pudo cargar la lista de actividades de la unidad:', error)
@@ -344,15 +344,15 @@ onMounted(async () => {
 
   try {
     const [unit, contents] = await Promise.all([
-      api.get<UnitDetail>(`/learning-unit/${unitId}`),
-      api.get<ContentBlock[]>(`/content/unit/${unitId}`)
+      unidad(unitId),
+      contenidos(unitId)
     ])
     unitData.value = unit
     unitContent.value = contents || []
     // Si la unidad es de otra de sus clases (llegó desde un repaso o una notificación), el encabezado y el
     // plan de estudio pasan a esa clase.
     if (unit?.classId) {
-      api.get<typeof entregas.value>(`/entregas/mias?classId=${unit.classId}`)
+      entregasDeClase(unit.classId)
         .then((lista) => { entregas.value = lista.filter((e) => e.learningUnitId === unitId) })
         .catch(() => undefined)
     }
@@ -371,12 +371,8 @@ onMounted(async () => {
 
   try {
     const [progress, rec] = await Promise.all([
-      api.get<{ entryConfidence: number | null; mastery?: number; attemptsCount?: number } | null>(
-        `/learning-progress/student/${studentId}/unit/${unitId}`
-      ),
-      api.get<NextActivityRecommendation | null>(
-        `/learning-progress/student/${studentId}/unit/${unitId}/next-activity`
-      )
+      progreso(studentId, unitId),
+      siguienteActividad(studentId, unitId)
     ])
     recommendedActivity.value = rec
     dominio.value = progress && (progress.attemptsCount ?? 0) > 0 ? Math.round(progress.mastery ?? 0) : null
