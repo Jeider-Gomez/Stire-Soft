@@ -59,6 +59,11 @@ export class Submission {
   @Column({ type: 'boolean', default: false })
   isReview: boolean;
 
+  /** Juicio de confianza antes de la primera entrega del ejercicio: 'seguro' | 'dudo' | 'adivino' (META-02,
+   *  src/analytics/calibracion.ts). Null si no se preguntó o el estudiante lo omitió. */
+  @Column({ type: 'varchar', length: 10, nullable: true })
+  confianza: string | null;
+
   @OneToMany(() => SubmissionAnswer, (answer) => answer.submission)
   answers: SubmissionAnswer[];
 

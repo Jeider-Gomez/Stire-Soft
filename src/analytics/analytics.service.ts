@@ -18,6 +18,7 @@ import { construirMapaDeCalor, MapaDeCalor } from './mapa-de-calor';
 import { construirResumenSemanal, ResumenSemanal } from './resumen-semanal';
 import { rachaDeDias, repasosPendientes } from './racha-y-repasos';
 import { categoriasPermitidas, evaluarLogros, siguienteLogro, type Logro } from './logros';
+import { esNivelConfianza, resumirCalibracion, type ResumenCalibracion } from './calibracion';
 
 @Injectable()
 export class AnalyticsService {
@@ -143,6 +144,29 @@ export class AnalyticsService {
    * Logros y medallas (logros.ts; BT-29): el catálogo completo con lo obtenido, el avance de lo que falta, los nuevos
    * que el estudiante no ha visto y la meta más cercana. Lo obtenido se guarda una vez con su fecha.
    */
+  /**
+   * Calibración del juicio de confianza (calibracion.ts): lo que el estudiante dijo antes de entregar contra lo que
+   * obtuvo. La ve él mismo y su docente (para saber a quién conviene mostrarle que sabe más, o menos, de lo que cree).
+   */
+  async getCalibracion(studentId: number, requestingUser: User): Promise<ResumenCalibracion> {
+    if (requestingUser.role === 'estudiante' && requestingUser.id !== studentId) {
+      throw new ForbiddenException('No tienes acceso a la calibración de otro estudiante.');
+    }
+    await this.authorizationService.assertTeacherSharesClassWithStudent(requestingUser, studentId);
+    const filas: Array<{ confianza: string; score: number; totalPoints: number; passingScore: number }> = await this.dataSource.query(
+      'SELECT s.confianza, s.score, a.totalPoints, a.passingScore FROM submissions s JOIN activities a ON a.id = s.activityId ' +
+        "WHERE s.studentId = ? AND s.status = 'graded' AND s.confianza IS NOT NULL",
+      [studentId],
+    );
+    return resumirCalibracion(
+      filas.flatMap((f) =>
+        esNivelConfianza(f.confianza)
+          ? [{ confianza: f.confianza, acerto: Number(f.totalPoints) > 0 && (Number(f.score) / Number(f.totalPoints)) * 100 >= Number(f.passingScore) }]
+          : [],
+      ),
+    );
+  }
+
   async getLogros(studentId: number, requestingUser: User): Promise<{ activos: boolean; logros: Logro[]; nuevos: string[]; siguiente: Logro | null }> {
     if (requestingUser.role === 'estudiante' && requestingUser.id !== studentId) {
       throw new ForbiddenException('No tienes acceso a los logros de otro estudiante.');

@@ -1,4 +1,5 @@
-import { IsInt, IsNotEmpty, IsObject, ValidateNested, IsArray, IsOptional } from 'class-validator';
+import { IsInt, IsNotEmpty, IsObject, ValidateNested, IsArray, IsOptional, IsIn } from 'class-validator';
+import { NIVELES_CONFIANZA } from '../../analytics/calibracion';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -23,4 +24,9 @@ export class SubmitAnswersDto {
   @IsOptional()
   @IsInt()
   timeSpentSeconds?: number;
+
+  @ApiProperty({ description: 'Qué tan seguro estaba antes de entregar (META-02)', required: false, enum: NIVELES_CONFIANZA })
+  @IsOptional()
+  @IsIn(NIVELES_CONFIANZA)
+  confianza?: (typeof NIVELES_CONFIANZA)[number];
 }

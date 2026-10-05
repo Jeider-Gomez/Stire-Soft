@@ -27,6 +27,14 @@ export class AnalyticsController {
     return this.analyticsService.getLogros(studentId, req.user);
   }
 
+  // Calibración del juicio de confianza (calibracion.ts): la del propio estudiante, o la de un estudiante de su clase.
+  @Get('student/:studentId/calibracion')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante', 'docente', 'admin')
+  getCalibracion(@Param('studentId', ParseIntPipe) studentId: number, @Req() req: { user: User }) {
+    return this.analyticsService.getCalibracion(studentId, req.user);
+  }
+
   @Post('logros/vistos')
   @UseGuards(RolesGuard)
   @Roles('estudiante')

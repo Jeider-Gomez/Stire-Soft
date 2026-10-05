@@ -163,6 +163,7 @@ export class SubmissionsService {
       submission.status = hasAsync ? SubmissionStatus.SUBMITTED : SubmissionStatus.GRADED;
       submission.submittedAt = new Date();
       if (dto.timeSpentSeconds) submission.timeSpentSeconds = dto.timeSpentSeconds;
+      if (dto.confianza) submission.confianza = dto.confianza;
       
       await queryRunner.manager.save(submission);
 

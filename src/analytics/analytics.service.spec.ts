@@ -147,3 +147,35 @@ describe('AnalyticsService.getStudentDashboard — la racha cuenta entregas, no 
     expect(res.summary.streakDays).toBe(1);
   });
 });
+
+// META-02: la calibración del juicio de confianza (calibracion.ts). Solo la ve el estudiante o su docente.
+describe('AnalyticsService.getCalibracion', () => {
+  type Deps = ConstructorParameters<typeof AnalyticsService>;
+  const filas = [
+    { confianza: 'seguro', score: 20, totalPoints: 20, passingScore: 60 },
+    { confianza: 'seguro', score: 0, totalPoints: 20, passingScore: 60 },
+    { confianza: 'dudo', score: 12, totalPoints: 20, passingScore: 60 },
+    { confianza: 'otra-cosa', score: 20, totalPoints: 20, passingScore: 60 },
+  ];
+  const query = jest.fn().mockResolvedValue(filas);
+  const autorizacion = { assertTeacherSharesClassWithStudent: jest.fn().mockResolvedValue(undefined) };
+  const service = new AnalyticsService({ query } as unknown as Deps[0], autorizacion as unknown as Deps[1]);
+  const estudiante = (id: number) => ({ id, role: 'estudiante' }) as User;
+
+  it('cuenta aciertos por nivel con la nota mínima de la actividad e ignora valores fuera de la lista', async () => {
+    const r = await service.getCalibracion(2, estudiante(2));
+    expect(r.total).toBe(3);
+    expect(r.porNivel.seguro).toEqual({ total: 2, aciertos: 1 });
+    expect(r.porNivel.dudo).toEqual({ total: 1, aciertos: 1 });
+    expect(query.mock.calls[0][0]).toContain("s.status = 'graded' AND s.confianza IS NOT NULL");
+  });
+
+  it('un estudiante no ve la de otro', async () => {
+    await expect(service.getCalibracion(3, estudiante(2))).rejects.toThrow('No tienes acceso');
+  });
+
+  it('el docente pasa por la verificación de que comparte clase con el estudiante', async () => {
+    await service.getCalibracion(2, { id: 10, role: 'docente' } as User);
+    expect(autorizacion.assertTeacherSharesClassWithStudent).toHaveBeenCalledWith({ id: 10, role: 'docente' }, 2);
+  });
+});
