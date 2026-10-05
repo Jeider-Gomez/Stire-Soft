@@ -69,11 +69,16 @@ describe('La lección antes del ejercicio y la evaluación implícita', () => {
     expect(inicio).toMatch(/<NuxtLink :to="`\/estudiante\/unidad\/\$\{unit\.id\}`"/);
   });
 
-  it('no se pregunta «¿Cómo te sientes?»: se ofrece saltar con un reto, que usa el mismo reto de salto (confianza 3)', () => {
+  it('no se pregunta «¿Cómo te sientes?»: se ofrece tomar un reto en cualquier momento, con el mismo reto de salto (confianza 3)', () => {
     const leccion = leer('pages', 'estudiante', 'unidad', '[id].vue');
     expect(plantilla(leccion)).not.toContain('¿Cómo te sientes');
-    expect(leccion).toContain('¿Ya lo sabes? Demuéstralo con un reto');
-    expect(leccion).toMatch(/confidence`, \{ confianza: 3 \}/);
+    expect(leccion).toContain('¿Te sientes seguro? Toma un reto');
+    expect(leccion).toContain('/next-activity?reto=1');
+    // primero se busca el reto; la confianza solo se marca si lo hay
+    expect(leccion.indexOf('/next-activity?reto=1')).toBeLessThan(leccion.indexOf('confidence`, { confianza: 3 }'));
+    expect(leccion).toContain("reto.reason === 'reto'");
+    // mientras no esté dominada (antes, solo antes de empezar)
+    expect(leccion).toContain('puedeSaltar.value = !!rec && !rec.allCompleted && (progress?.mastery ?? 0) < DOMINADO');
   });
 
   it('el docente ve «Intentó saltar con un reto y falló», no «dijo sentirse seguro»', () => {

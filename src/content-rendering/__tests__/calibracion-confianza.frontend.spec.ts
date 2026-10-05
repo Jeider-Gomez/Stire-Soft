@@ -44,8 +44,13 @@ describe('la lectura de la calibración', () => {
 });
 
 describe('dónde se ve', () => {
-  it('en Mi progreso del estudiante y en la ficha del estudiante del docente', () => {
-    expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('<EstudianteMiCalibracion />');
+  it('en Mi progreso, dentro de «Cómo avanzas»; y en la ficha del estudiante del docente', () => {
+    const progreso = leer('pages', 'estudiante', 'progreso.vue');
+    expect(progreso).toContain('<EstudianteComoAvanzas />');
+    expect(progreso).not.toContain('<EstudianteMiCalibracion />');
+    // lo importante primero: el dominio por lección va antes que «Cómo avanzas» y los logros
+    expect(progreso.indexOf('Cómo vas en cada lección')).toBeLessThan(progreso.indexOf('<EstudianteComoAvanzas />'));
+    expect(progreso.indexOf('<EstudianteComoAvanzas />')).toBeLessThan(progreso.indexOf('<EstudianteResumenLogros />'));
     expect(leer('pages', 'docente', 'estudiante', '[studentId].vue')).toContain('<EstudianteMiCalibracion :student-id="Number(route.params.studentId)" docente />');
   });
 
@@ -54,5 +59,37 @@ describe('dónde se ve', () => {
     expect(v).toContain('/analytics/student/${id}/calibracion');
     expect(v).toContain('role="progressbar"');
     expect(v).toContain(':aria-label=');
+  });
+});
+
+// Pedido del dueño (04/10): «como Anki con sus escalas, pero lo determina el ejercicio» y que el estudiante sepa cómo
+// funciona STIRE. utils/escalaResultados.ts sigue la misma regla que el servidor (spaced-repetition.ts, calidadDeRepaso).
+describe('cada resultado contado como en Anki', () => {
+  const e = cargar<{
+    calidadDelResultado: (r: { aprobado: boolean; primerIntento: boolean; seguro: boolean }) => string;
+    ORDEN_CALIDADES: string[];
+  }>('escalaResultados');
+
+  it('falló → Otra vez; varios intentos → Difícil; a la primera → Bien; a la primera y seguro → Fácil', () => {
+    expect(e.calidadDelResultado({ aprobado: false, primerIntento: true, seguro: true })).toBe('otra-vez');
+    expect(e.calidadDelResultado({ aprobado: true, primerIntento: false, seguro: true })).toBe('dificil');
+    expect(e.calidadDelResultado({ aprobado: true, primerIntento: true, seguro: false })).toBe('bien');
+    expect(e.calidadDelResultado({ aprobado: true, primerIntento: true, seguro: true })).toBe('facil');
+    expect(e.ORDEN_CALIDADES).toEqual(['otra-vez', 'dificil', 'bien', 'facil']);
+  });
+
+  it('las claves son las mismas que cuenta el servidor', () => {
+    const servidor = readFileSync(path.join(__dirname, '..', '..', 'common', 'utils', 'spaced-repetition.ts'), 'utf8');
+    for (const c of e.ORDEN_CALIDADES) expect(servidor).toContain(`'${c}'`);
+  });
+
+  it('al calificar, el ejercicio dice cómo quedó para sus repasos; «Cómo avanzas» cuenta los de 30 días y explica el reto', () => {
+    const ejercicio = leer('pages', 'estudiante', 'evaluacion', '[activityId].vue');
+    expect(ejercicio).toContain('Para tus repasos: {{ CALIDADES[calidad].texto }}.');
+    expect(ejercicio).toContain("seguro: workspaceStore.juicioConfianza === 'seguro' || route.query.reto === '1'");
+    const como = leer('components', 'estudiante', 'ComoAvanzas.vue');
+    expect(como).toContain('datos?.escala?.[c]');
+    expect(como).toContain('¿Te sientes seguro? Toma un reto');
+    expect(como).toContain('Cuando dijiste «Estoy seguro», acertaste');
   });
 });

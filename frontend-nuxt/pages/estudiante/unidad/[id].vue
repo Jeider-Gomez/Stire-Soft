@@ -152,13 +152,15 @@
           Todavía no hay ejercicios publicados para esta lección.
         </p>
 
-        <!-- Saltar con un reto, como «¿Ya sabes esto?» de Duolingo: solo antes de empezar, y sin preguntar cómo se siente. -->
-        <div v-if="puedeSaltar" class="pt-2 border-t border-acento-ambar-fuerte/20 text-xs">
+        <!-- Tomar un reto, como «¿Ya sabes esto?» de Duolingo, pero en cualquier momento mientras la lección no esté
+             dominada (pedido del dueño, 04/10): el que se siente seguro elige un ejercicio del nivel siguiente. -->
+        <div v-if="puedeSaltar" class="pt-2 border-t border-acento-ambar-fuerte/20 text-xs space-y-1">
           <button type="button" :disabled="saltando" @click="saltarConReto"
-            class="font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1.5 disabled:opacity-50">
-            <Zap :size="13" aria-hidden="true" /> ¿Ya lo sabes? Demuéstralo con un reto y avanza más rápido
+            class="min-h-[44px] font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1.5 disabled:opacity-50">
+            <Zap :size="13" aria-hidden="true" /> ¿Te sientes seguro? Toma un reto
           </button>
-          <p v-if="saltoError" role="alert" class="text-semantico-falla mt-1">{{ saltoError }}</p>
+          <p class="text-[11px] text-slate-700">Un ejercicio del nivel siguiente. Si lo resuelves a la primera, lo de abajo deja de exigirse y tu dominio sube más rápido.</p>
+          <p v-if="saltoError" role="status" class="text-slate-700">{{ saltoError }}</p>
         </div>
       </section>
 
@@ -270,8 +272,9 @@ const { messageOf } = useApiErrorMessage()
 /** Dominio de la lección (null si aún no hay progreso: se muestra desde que empieza a practicar). */
 const dominio = ref<number | null>(null)
 /**
- * Saltar con un reto (docs/DISENO_INTERVENCION_DOCENTE.md §10.2): reemplaza la pregunta «¿Cómo te sientes con este tema?».
- * Por dentro es el mismo reto de salto (confianza 3): si lo resuelve al primer intento, se salta lo básico.
+ * Tomar un reto (docs/DISENO_INTERVENCION_DOCENTE.md §10.2; en cualquier momento desde el 04/10): reemplaza la pregunta
+ * «¿Cómo te sientes con este tema?». Por dentro es el reto de salto (confianza 3): si lo resuelve al primer intento, lo
+ * de abajo deja de exigirse.
  */
 const puedeSaltar = ref(false)
 const entregas = ref<Array<{ id: number; titulo: string; learningUnitId: number | null; cierraAt: string | null; versionesUsadas: number; limite: number }>>([])
@@ -294,16 +297,17 @@ async function saltarConReto() {
   saltando.value = true
   saltoError.value = null
   try {
-    await api.put(`/learning-progress/unit/${unitId}/confidence`, { confianza: 3 })
     const studentId = authStore.user?.id
+    // Primero se busca el reto; solo si hay uno se marca la confianza (así no cambia nada si no lo hay).
     const reto = studentId
-      ? await api.get<NextActivityRecommendation | null>(`/learning-progress/student/${studentId}/unit/${unitId}/next-activity`)
+      ? await api.get<NextActivityRecommendation | null>(`/learning-progress/student/${studentId}/unit/${unitId}/next-activity?reto=1`)
       : null
-    if (reto?.activityId) {
-      await navigateTo(`/estudiante/evaluacion/${reto.activityId}`)
+    if (reto?.activityId && reto.reason === 'reto') {
+      await api.put(`/learning-progress/unit/${unitId}/confidence`, { confianza: 3 })
+      await navigateTo(`/estudiante/evaluacion/${reto.activityId}?reto=1`)
       return
     }
-    recommendedActivity.value = reto
+    saltoError.value = 'No hay ejercicios de un nivel más alto pendientes en esta lección: sigue con el recomendado.'
     puedeSaltar.value = false
   } catch (error: unknown) {
     saltoError.value = messageOf(error, 'No se pudo preparar el reto. Prueba con «Practicar».')
@@ -372,8 +376,8 @@ onMounted(async () => {
     ])
     recommendedActivity.value = rec
     dominio.value = progress && (progress.attemptsCount ?? 0) > 0 ? Math.round(progress.mastery ?? 0) : null
-    // El reto de salto solo tiene sentido antes de empezar a practicar la lección.
-    puedeSaltar.value = !!rec && (!progress || ((progress.attemptsCount ?? 0) === 0 && progress.entryConfidence !== 3))
+    // El reto se ofrece mientras la lección no esté dominada ni completada (antes, solo antes de empezar).
+    puedeSaltar.value = !!rec && !rec.allCompleted && (progress?.mastery ?? 0) < DOMINADO
   } catch (error: unknown) {
     console.warn('[STIRE Student] No se pudo cargar el progreso o la actividad recomendada:', error)
   }

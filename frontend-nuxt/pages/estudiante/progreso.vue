@@ -35,15 +35,6 @@
     <!-- Racha y semana a la vista; el resto de estadísticas, plegado (BT-21) -->
     <EstadisticasEstudiante :student-id="authStore.user?.id" :class-id="studentStore.currentClassId" />
 
-    <!-- META-02: lo que dice antes de entregar contra lo que obtiene, con el tiempo (docs/DISENO_CONFIANZA.md) -->
-    <EstudianteMiCalibracion />
-
-    <!-- Logros: solo el resumen; la lista completa está en /estudiante/logros (utils/logros.ts; BT-29). -->
-    <EstudianteResumenLogros />
-
-    <!-- Su nota y de dónde sale, si el docente la hizo visible (§6) -->
-    <MiNota :class-id="studentStore.currentClassId" />
-
     <!-- Dominio por lección, con acceso a reforzar cada una -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 shadow-sm space-y-4">
       <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
@@ -90,6 +81,15 @@
         </ul>
       </div>
     </section>
+
+    <!-- Cómo funciona STIRE y cómo avanzar más rápido (pedido del dueño, 04/10); incluye la calibración (META-02) -->
+    <EstudianteComoAvanzas />
+
+    <!-- Logros: solo el resumen; la lista completa está en /estudiante/logros (utils/logros.ts; BT-29). -->
+    <EstudianteResumenLogros />
+
+    <!-- Su nota y de dónde sale, si el docente la hizo visible (§6) -->
+    <MiNota :class-id="studentStore.currentClassId" />
 
     <!-- Historial Reciente de Evaluaciones -->
     <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 shadow-sm space-y-3">

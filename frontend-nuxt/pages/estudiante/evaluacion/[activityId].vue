@@ -338,6 +338,13 @@
           </p>
         </div>
 
+        <!-- Cómo quedó este resultado para sus repasos, como los botones de Anki pero decidido por el ejercicio
+             (utils/escalaResultados.ts; pedido del dueño, 04/10). -->
+        <p v-if="calidad" class="flex items-start gap-2 p-3 rounded-lg border border-base-borde-sutil bg-base-bg-secundario text-xs text-base-texto-primario">
+          <ListChecks :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
+          <span><strong>Para tus repasos: {{ CALIDADES[calidad].texto }}.</strong> {{ CALIDADES[calidad].significa }} {{ EFECTO_EN_REPASOS }}</span>
+        </p>
+
         <!-- META-02: contraste entre lo que dijo antes de entregar y lo que obtuvo -->
         <p
           v-if="calibracion"
@@ -381,7 +388,8 @@
 <script setup lang="ts">
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
 import { mensajeCalibracion } from '~/utils/confianza'
-import { BookOpen, Check, ClipboardCheck, FlaskConical, Lightbulb, Lock, PartyPopper, Scale, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
+import { CALIDADES, calidadDelResultado, EFECTO_EN_REPASOS } from '~/utils/escalaResultados'
+import { BookOpen, Check, ClipboardCheck, FlaskConical, Lightbulb, ListChecks, Lock, PartyPopper, Scale, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
 import { ayudaSegunFallos, debeOfrecerTutor, pistaSegunTipo, TEXTO_AYUDA, type Ayuda } from '~/utils/ofertaTutor'
@@ -506,4 +514,15 @@ const diagnostico = (tc: { expectedOutput: string; actualOutput?: string; input?
 
 /** Calibración de la entrega (META-02, utils/confianza.ts), si el estudiante dijo qué tan seguro estaba. */
 const calibracion = computed(() => (workspaceStore.calibracion ? mensajeCalibracion(workspaceStore.calibracion) : null))
+/** Otra vez, Difícil, Bien o Fácil, con la misma regla que el servidor usa para sus repasos (calidadDeRepaso). */
+const calidad = computed(() => {
+  const r = workspaceStore.submissionResult
+  if (!r || r.status !== 'graded') return null
+  const aprobado = typeof r.passed === 'boolean' ? r.passed : r.totalCount > 0 && r.passedCount === r.totalCount
+  return calidadDelResultado({
+    aprobado,
+    primerIntento: workspaceStore.currentExercise.usedAttempts === 1,
+    seguro: workspaceStore.juicioConfianza === 'seguro' || route.query.reto === '1',
+  })
+})
 </script>
