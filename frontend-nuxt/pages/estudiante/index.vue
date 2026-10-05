@@ -258,9 +258,12 @@
         </div>
 
         <div v-else class="space-y-4">
-          <section v-for="mod in studentStore.modules" :key="mod.id" class="bg-base-blanco rounded-xl border border-base-borde-sutil overflow-hidden shadow-sm" :aria-label="mod.title">
-            <div class="bg-base-bg-secundario/60 px-5 py-3 border-b border-base-borde-sutil flex flex-wrap items-center justify-between gap-2">
+          <!-- Cada módulo se pliega; solo queda abierto el de la lección en curso. En el celular el inicio medía más de
+               3000 px y el plan quedaba muy abajo (crítica de diseño del 05/10). -->
+          <details v-for="mod in studentStore.modules" :key="mod.id" class="group bg-base-blanco rounded-xl border border-base-borde-sutil overflow-hidden shadow-sm" :open="moduloAbierto(mod)">
+            <summary class="list-none cursor-pointer min-h-[44px] bg-base-bg-secundario/60 px-5 py-3 group-open:border-b border-base-borde-sutil flex flex-wrap items-center justify-between gap-2">
               <h3 class="font-bold text-xs text-base-texto-primario flex items-center gap-1.5">
+                <ChevronRight :size="14" class="shrink-0 transition-transform group-open:rotate-90" aria-hidden="true" />
                 <Lock v-if="studentStore.estadoModulo(mod.id)?.requiere" :size="12" class="text-slate-500" aria-label="Bloqueado" />
                 {{ mod.title }}
               </h3>
@@ -270,7 +273,7 @@
                 </span>
                 {{ dominadasDe(mod) }} de {{ contar(mod.units.length, 'leccion') }} dominadas
               </span>
-            </div>
+            </summary>
 
             <p v-if="studentStore.estadoModulo(mod.id)?.requiere" class="px-5 py-3 text-xs text-slate-600">
               Se abre con {{ studentStore.estadoModulo(mod.id)!.requiere!.umbral }} % de dominio en «{{ studentStore.estadoModulo(mod.id)!.requiere!.titulo }}».
@@ -306,7 +309,7 @@
               </ul>
             </div>
             </div>
-          </section>
+          </details>
         </div>
       </section>
     </template>
@@ -316,7 +319,15 @@
 <script setup lang="ts">
 import { tocaRepasar } from '~/utils/progresoLeccion'
 import { computed, onMounted, ref, watch } from 'vue'
-import { AlertTriangle, BadgeCheck, BookOpen, Brain, CheckCircle2, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, ShieldAlert, TrendingUp } from 'lucide-vue-next'
+
+/** Abierto: el módulo de la lección en curso; sin lección en curso, el primero que no está completo. */
+function moduloAbierto(mod: { id: number; units: Array<{ id: number; status?: string }> }): boolean {
+  const activa = studentStore.activeUnit?.id
+  if (activa) return mod.units.some((u) => u.id === activa)
+  const primeroPendiente = studentStore.modules.find((m) => m.units.some((u) => u.status !== 'dominado'))
+  return (primeroPendiente ?? studentStore.modules[0])?.id === mod.id
+}
+import { AlertTriangle, BadgeCheck, BookOpen, Brain, CheckCircle2, ChevronRight, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, ShieldAlert, TrendingUp } from 'lucide-vue-next'
 import { contar, DOMINADO } from '~/utils/terminos'
 import { calificacionTexto, fechaCorta, type EstadoEntrega, type Valoracion } from '~/utils/entregas'
 import { useStudentStore } from '~/stores/student'

@@ -34,15 +34,15 @@
       <section v-if="resto.length" class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm" aria-labelledby="despues-titulo">
         <h2 id="despues-titulo" class="px-5 pt-4 text-sm font-bold text-base-texto-primario">Después</h2>
         <ul class="divide-y divide-base-borde-sutil">
-          <li v-for="item in resto" :key="item.id" class="px-5 py-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span class="min-w-0 flex items-center gap-2">
+          <li v-for="item in resto" :key="item.id" class="px-5 py-3 flex items-center justify-between gap-2 text-xs">
+            <span class="min-w-0 flex-1 flex flex-wrap items-center gap-x-2 gap-y-1">
               <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold shrink-0" :class="ESTILO_URGENCIA[item.urgency]">
                 <component :is="ICONO[item.urgency]" :size="12" aria-hidden="true" /> {{ item.urgencyLabel }}
               </span>
-              <span class="font-semibold text-base-texto-primario truncate">{{ item.conceptTitle }}</span>
+              <span class="font-semibold text-base-texto-primario">{{ item.conceptTitle }}</span>
             </span>
             <NuxtLink :to="`/estudiante/unidad/${item.learningUnitId}`" :aria-label="`Repasar ${item.conceptTitle}`"
-              class="min-h-[44px] px-3 rounded-md borde-afordancia font-semibold text-acento-ambar-fuerte inline-flex items-center">
+              class="min-h-[44px] px-3 rounded-md borde-afordancia font-semibold text-acento-ambar-fuerte inline-flex items-center shrink-0">
               Repasar
             </NuxtLink>
           </li>

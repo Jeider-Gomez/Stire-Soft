@@ -77,7 +77,7 @@
             Dominio promedio
           </span>
           <div class="flex items-baseline gap-2">
-            <span class="text-2xl font-bold font-mono" :class="metrics.metrics.avgClassMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
+            <span class="text-2xl font-bold tabular-nums" :class="metrics.metrics.avgClassMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
               {{ porcentaje(metrics.metrics.avgClassMastery) }}
             </span>
             <span class="text-[11px] text-base-texto-secundario">del curso</span>
@@ -93,10 +93,10 @@
         <!-- KPI 2: Tasa de aprobación -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-1">
           <span class="text-[11px] font-semibold text-base-texto-secundario uppercase tracking-wider block">
-            Tasa de aprobación
+            Ejercicios aprobados
           </span>
           <div class="flex items-baseline gap-2">
-            <span class="text-2xl font-bold font-mono text-base-texto-primario">
+            <span class="text-2xl font-bold tabular-nums text-base-texto-primario">
               {{ porcentaje(metrics.metrics.avgClassSuccessRate) }}
             </span>
             <span class="text-[11px] text-base-texto-secundario">en envíos</span>
@@ -109,16 +109,16 @@
         <!-- KPI 3: Alumnos en Riesgo -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-1">
           <span class="text-[11px] font-semibold text-base-texto-secundario uppercase tracking-wider block">
-            Alumnos en rezago
+            Necesitan apoyo
           </span>
           <div class="flex items-baseline gap-2">
-            <span class="text-2xl font-bold font-mono" :class="atRiskCount > 0 ? 'text-semantico-falla' : 'text-semantico-pasa'">
+            <span class="text-2xl font-bold tabular-nums" :class="atRiskCount > 0 ? 'text-semantico-falla' : 'text-semantico-pasa'">
               {{ atRiskCount }}
             </span>
             <span class="text-[11px] text-base-texto-secundario">de {{ metrics.metrics.totalStudents }} alumnos</span>
           </div>
           <p class="text-[10px]" :class="atRiskCount > 0 ? 'text-semantico-falla font-semibold' : 'text-semantico-pasa'">
-            {{ atRiskCount > 0 ? 'Requieren refuerzo pedagógico' : 'Sin alertas de rezago' }}
+            {{ atRiskCount > 0 ? 'Van por debajo del 50 % de dominio' : 'Nadie va por debajo del 50 %' }}
           </p>
         </div>
 
@@ -128,7 +128,7 @@
             Estudiantes en la clase
           </span>
           <div class="flex items-baseline gap-2">
-            <span class="text-2xl font-bold font-mono text-acento-ambar-fuerte">
+            <span class="text-2xl font-bold tabular-nums text-acento-ambar-fuerte">
               {{ metrics.metrics.totalStudents }}
             </span>
             <span class="text-[11px] text-base-texto-secundario">matriculados</span>
@@ -177,7 +177,7 @@
               <span class="block text-[11px] text-base-texto-secundario">{{ porcentaje(st.successRate) }} de ejercicios aprobados · {{ st.submissionsCount }} envíos</span>
             </span>
             <span class="text-right shrink-0 space-y-1">
-              <span class="block font-mono font-bold" :class="st.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">{{ porcentaje(st.avgMastery) }}</span>
+              <span class="block tabular-nums font-bold" :class="st.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">{{ porcentaje(st.avgMastery) }}</span>
               <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold" :class="claseDiagnostico(st.avgMastery)">{{ textoDiagnostico(st.avgMastery) }}</span>
             </span>
           </li>
@@ -207,13 +207,13 @@
                 <td class="p-3 font-mono text-[11px] text-base-texto-secundario">
                   {{ st.email }}
                 </td>
-                <td class="p-3 text-center font-mono font-bold" :class="st.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
+                <td class="p-3 text-center tabular-nums font-bold" :class="st.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">
                   {{ porcentaje(st.avgMastery) }}
                 </td>
-                <td class="p-3 text-center font-mono text-base-texto-primario">
+                <td class="p-3 text-center tabular-nums text-base-texto-primario">
                   {{ porcentaje(st.successRate) }}
                 </td>
-                <td class="p-3 text-center font-mono text-base-texto-secundario">
+                <td class="p-3 text-center tabular-nums text-base-texto-secundario">
                   {{ st.submissionsCount }}
                 </td>
                 <td class="p-3 text-center">

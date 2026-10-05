@@ -19,7 +19,8 @@ export function tiempoTotal(repasos: Array<{ estimatedTimeMin: number }>): strin
 }
 
 export const ESTILO_URGENCIA: Record<ReviewUrgency, string> = {
-  critico: 'bg-urgencia-repaso-vencido/15 text-urgencia-repaso-vencido',
+  // Ámbar oscuro sobre ámbar claro (el ámbar del token sobre su 15 % daba 4,2:1 a 11 px).
+  critico: 'bg-amber-50 text-amber-800 border border-amber-200',
   vencido: 'bg-acento-ambar-fuerte/10 text-acento-ambar-fuerte',
   manana: 'bg-base-bg-secundario text-base-texto-secundario',
   'al-dia': 'bg-semantico-pasa/10 text-semantico-pasa',

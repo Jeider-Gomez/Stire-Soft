@@ -127,6 +127,7 @@
 :root[data-tema="oscuro"] :is(.text-emerald-700, .text-emerald-800, .text-teal-700, .text-teal-800) { color: rgb(110 231 183); }
 :root[data-tema="oscuro"] :is(.bg-red-50, .bg-amber-50, .bg-yellow-50, .bg-teal-50, .bg-emerald-50) { background-color: rgb(var(--c-base-bg-secundario)); }
 :root[data-tema="oscuro"] :is(.border-red-200, .border-red-300) { border-color: rgb(127 29 29); }
+:root[data-tema="oscuro"] .border-amber-200 { border-color: rgb(120 53 15); }
 /* Botones de color con texto blanco fijo: en oscuro el color se aclara, así que el texto pasa a oscuro. */
 :root[data-tema="oscuro"] :is([class*="bg-acento-"], [class*="bg-semantico-"]):is(.text-white, .hover\:text-white:hover) { color: rgb(var(--c-base-blanco)); }
 :root[data-tema="oscuro"] :is(.\!text-teal-800, .\!text-teal-700) { color: rgb(110 231 183) !important; }
@@ -150,6 +151,7 @@
   :root[data-tema="sistema"] :is(.text-emerald-700, .text-emerald-800, .text-teal-700, .text-teal-800) { color: rgb(110 231 183); }
   :root[data-tema="sistema"] :is(.bg-red-50, .bg-amber-50, .bg-yellow-50, .bg-teal-50, .bg-emerald-50) { background-color: rgb(var(--c-base-bg-secundario)); }
   :root[data-tema="sistema"] :is(.border-red-200, .border-red-300) { border-color: rgb(127 29 29); }
+  :root[data-tema="sistema"] .border-amber-200 { border-color: rgb(120 53 15); }
   :root[data-tema="sistema"] :is([class*="bg-acento-"], [class*="bg-semantico-"]):is(.text-white, .hover\:text-white:hover) { color: rgb(var(--c-base-blanco)); }
   :root[data-tema="sistema"] :is(.\!text-teal-800, .\!text-teal-700) { color: rgb(110 231 183) !important; }
   :root[data-tema="sistema"] .badge-admin { color: rgb(147 197 253); }
