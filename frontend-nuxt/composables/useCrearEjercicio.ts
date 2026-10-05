@@ -20,17 +20,18 @@ export interface EjercicioNuevo {
  */
 export function useCrearEjercicio() {
   const api = useApi()
+  const { misClases, seccionesClase } = useMisClases()
 
   async function cargarInicio(): Promise<{ clases: ClaseDelDocente[]; tipos: TipoDeActividadCrear[] }> {
     const [clases, tipos] = await Promise.all([
-      api.get<ClaseDelDocente[]>('/class/my-classes'),
+      misClases<ClaseDelDocente[]>(),
       api.get<TipoDeActividadCrear[] | { data?: TipoDeActividadCrear[] }>('/activity-types'),
     ])
     return { clases: Array.isArray(clases) ? clases : [], tipos: Array.isArray(tipos) ? tipos : (tipos?.data ?? []) }
   }
 
   async function leccionesDeClase(classId: number): Promise<LeccionParaEjercicio[]> {
-    const modulos = await api.get<Array<{ id: number }>>(`/sections/class/${classId}`)
+    const modulos = await seccionesClase<Array<{ id: number }>>(classId)
     const temasPorModulo = await Promise.all(
       (Array.isArray(modulos) ? modulos : []).map((m) => api.get<Array<{ learningUnits?: LeccionParaEjercicio[] }>>(`/topic/section/${m.id}`)),
     )

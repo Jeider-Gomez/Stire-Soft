@@ -86,6 +86,28 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     expect(PAGINAS_CON_API.filter((ruta) => !/\buseApi\s*\(/.test(readFileSync(path.join(raiz, ruta), 'utf8')))).toEqual([]);
   });
 
+  it('H4.1 comparte las consultas de clases y secciones entre las pantallas docentes', () => {
+    const entregas = readFileSync(path.join(raiz, 'pages/docente/entregas/index.vue'), 'utf8');
+    const refuerzos = readFileSync(path.join(raiz, 'pages/docente/refuerzos/index.vue'), 'utf8');
+    const nuevoRefuerzo = readFileSync(path.join(raiz, 'pages/docente/refuerzos/nuevo.vue'), 'utf8');
+    const rendimiento = readFileSync(path.join(raiz, 'pages/docente/rendimiento.vue'), 'utf8');
+    const crearEjercicio = readFileSync(path.join(raiz, 'composables/useCrearEjercicio.ts'), 'utf8');
+    const compartido = readFileSync(path.join(raiz, 'composables/useMisClases.ts'), 'utf8');
+
+    expect(compartido).toContain("'/class/my-classes'");
+    expect(compartido).toContain('`/sections/class/${classId}`');
+    for (const pagina of [entregas, refuerzos, nuevoRefuerzo, rendimiento, crearEjercicio]) {
+      expect(pagina).toContain('misClases');
+      expect(pagina).not.toContain("'/class/my-classes'");
+    }
+    expect(entregas).toContain('seccionesClase');
+    expect(nuevoRefuerzo).toContain('seccionesClase');
+    expect(entregas).not.toContain('`/sections/class/${claseId.value}`');
+    expect(nuevoRefuerzo).not.toContain('`/sections/class/${claseId.value}`');
+    expect(crearEjercicio).toContain('seccionesClase');
+    expect(crearEjercicio).not.toContain('`/sections/class/${classId}`');
+  });
+
   it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {
     const encontrados = rutasVue('components').filter((ruta) => /\buseApi\s*\(/.test(readFileSync(path.join(raiz, ruta), 'utf8')));
     expect(encontrados.filter((ruta) => !COMPONENTES_CON_API.includes(ruta))).toEqual([]);

@@ -69,6 +69,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { Inbox, Loader2, Plus } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
+import { useMisClases } from '~/composables/useMisClases'
 import { ESCALAS, TIPO_ENTREGA, escalaDe, fechaCorta, type EscalaEntrega, type EstadoEntrega, type TipoEntrega } from '~/utils/entregas'
 
 definePageMeta({ layout: 'teacher' })
@@ -80,6 +81,7 @@ interface Resumen {
 }
 
 const api = useApi()
+const { misClases, seccionesClase } = useMisClases()
 const route = useRoute()
 const { messageOf } = useApiErrorMessage()
 const clases = ref<Clase[]>([])
@@ -100,7 +102,7 @@ async function cargar() {
   try {
     const [lista, secciones] = await Promise.all([
       api.get<Resumen[]>(`/entregas/clase/${claseId.value}`),
-      api.get<Array<{ topics?: Array<{ learningUnits?: Array<{ id: number; title: string }> }> }>>(`/sections/class/${claseId.value}`),
+      seccionesClase<Array<{ topics?: Array<{ learningUnits?: Array<{ id: number; title: string }> }> }>>(claseId.value),
     ])
     entregas.value = lista
     lecciones.value = new Map(secciones.flatMap((s) => (s.topics ?? []).flatMap((t) => t.learningUnits ?? [])).map((l) => [l.id, l.title]))
@@ -118,7 +120,7 @@ async function alCrear(e: { id: number }) {
 
 onMounted(async () => {
   try {
-    clases.value = await api.get<Clase[]>('/class/my-classes')
+    clases.value = await misClases<Clase[]>()
     const pedida = Number(route.query.clase)
     claseId.value = clases.value.find((c) => c.id === pedida)?.id ?? clases.value[0]?.id ?? null
     if (claseId.value !== null) await cargar()

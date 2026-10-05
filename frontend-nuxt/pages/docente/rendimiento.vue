@@ -251,6 +251,7 @@ function claseDiagnostico(dominio: number): string {
 import { ArrowRight, Loader2, OctagonAlert, TriangleAlert, Users } from 'lucide-vue-next'
 import { porcentaje } from '~/utils/porcentaje'
 import { useApi } from '~/composables/useApi'
+import { useMisClases } from '~/composables/useMisClases'
 const { messageOf } = useApiErrorMessage()
 
 definePageMeta({
@@ -289,6 +290,7 @@ interface ClassMetricsResponse {
 }
 
 const api = useApi()
+const { misClases } = useMisClases()
 const route = useRoute()
 
 const teacherClasses = ref<TeacherClass[]>([])
@@ -320,7 +322,7 @@ async function fetchClassesAndMetrics() {
   errorMessage.value = null
 
   try {
-    const clsList = await api.get<TeacherClass[]>('/class/my-classes')
+    const clsList = await misClases<TeacherClass[]>()
     if (Array.isArray(clsList) && clsList.length > 0) {
       teacherClasses.value = clsList
       // Si viene por query param ?classId=

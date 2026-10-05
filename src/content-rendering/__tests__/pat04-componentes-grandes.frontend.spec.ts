@@ -19,7 +19,7 @@ const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'pages/auth/register.vue': { lineas: 423, motivo: 'Pendiente de extraer los pasos del registro en H.5.' },
   'pages/docente/contenidos.vue': { lineas: 407, motivo: 'Organiza la clase, los estados y los modales; el árbol curricular se separó en ArbolContenidos.vue.' },
   'pages/docente/index.vue': { lineas: 387, motivo: 'Excluido por instrucción: archivo en trabajo de Antigravity.' },
-  'pages/docente/rendimiento.vue': { lineas: 362, motivo: 'Pendiente de revisar la separación de sus secciones en H.5.' },
+  'pages/docente/rendimiento.vue': { lineas: 364, motivo: 'Pendiente de revisar la separación de sus secciones en H.5.' },
   'pages/docente/clase/[classId]/ajustes.vue': { lineas: 695, motivo: 'Excluido por instrucción: archivo en trabajo de Antigravity.' },
   'pages/docente/ejercicios/crear.vue': { lineas: 411, motivo: 'Pendiente de separar selector, formulario y configuración por tipo en H.5.' },
   'pages/estudiante/index.vue': { lineas: 462, motivo: 'Pendiente de extraer las tarjetas del inicio en H.5.' },

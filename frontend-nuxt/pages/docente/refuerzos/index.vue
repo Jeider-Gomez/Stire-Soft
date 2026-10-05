@@ -78,6 +78,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { ArrowRight, LifeBuoy, Loader2, Plus } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
+import { useMisClases } from '~/composables/useMisClases'
 import { fechaCorta } from '~/utils/entregas'
 import { enlaceNuevoRefuerzo, type TipoRefuerzo } from '~/utils/refuerzos'
 
@@ -88,6 +89,7 @@ interface Resumen { id: number; tipo: TipoRefuerzo; titulo: string; fechaLimite:
 
 const route = useRoute()
 const api = useApi()
+const { misClases } = useMisClases()
 const { messageOf } = useApiErrorMessage()
 const clases = ref<Array<{ id: number; name: string }>>([])
 const claseId = ref<number | null>(null)
@@ -122,7 +124,7 @@ async function archivar(id: number) {
 
 onMounted(async () => {
   try {
-    clases.value = await api.get('/class/my-classes')
+    clases.value = await misClases()
     const pedida = Number(route.query.clase)
     claseId.value = clases.value.find((c) => c.id === pedida)?.id ?? clases.value[0]?.id ?? null
     await cargar()

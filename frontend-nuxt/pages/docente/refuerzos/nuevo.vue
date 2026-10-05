@@ -142,6 +142,7 @@
 import { onMounted, reactive, ref, watch } from 'vue'
 import { ArrowLeft, ChevronDown, ChevronUp, Dumbbell, FileText, Inbox, Loader2, Send, Sparkles, Trash2, Video } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
+import { useMisClases } from '~/composables/useMisClases'
 import { deFechaLocal } from '~/utils/entregas'
 import { NOMBRE_NIVEL, NOMBRE_TIPO_PREGUNTA, idsDeConsulta, mensajeSugerido, type TipoRefuerzo } from '~/utils/refuerzos'
 
@@ -155,6 +156,7 @@ const NOMBRE_PASO: Record<TipoPaso, string> = { explicacion: 'Otra explicación'
 
 const route = useRoute()
 const api = useApi()
+const { misClases, seccionesClase } = useMisClases()
 const { messageOf } = useApiErrorMessage()
 const clases = ref<Array<{ id: number; name: string }>>([])
 const claseId = ref<number | null>(null)
@@ -216,7 +218,7 @@ async function cargarClase() {
   if (claseId.value === null) return
   try {
     const [secciones, matriculas] = await Promise.all([
-      api.get<Array<{ id: number; title: string; topics?: Array<{ learningUnits?: Array<{ id: number; title: string }> }> }>>(`/sections/class/${claseId.value}`),
+      seccionesClase<Array<{ id: number; title: string; topics?: Array<{ learningUnits?: Array<{ id: number; title: string }> }> }>>(claseId.value),
       api.get<Array<{ studentId: number; status: string; student?: { fullName?: string; email?: string } }>>(`/enrollment/class/${claseId.value}`),
     ])
     modulos.value = secciones.map((s) => ({ id: s.id, title: s.title, lecciones: (s.topics ?? []).flatMap((t) => t.learningUnits ?? []).map((l) => ({ id: l.id, title: l.title })) }))
@@ -235,7 +237,7 @@ async function cargarClase() {
 
 onMounted(async () => {
   try {
-    clases.value = await api.get('/class/my-classes')
+    clases.value = await misClases()
     const pedida = Number(route.query.clase)
     claseId.value = clases.value.find((c) => c.id === pedida)?.id ?? clases.value[0]?.id ?? null
     await cargarClase()
