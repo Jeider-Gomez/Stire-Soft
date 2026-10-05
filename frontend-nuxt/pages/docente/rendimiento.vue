@@ -13,10 +13,10 @@
           </span>
         </div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Rendimiento del grupo y alertas tempranas
+          Cómo va tu grupo
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
-          Diagnóstico del dominio conceptual y detección proactiva de rezago académico
+          Quién va bien, quién necesita ayuda y en qué lección
         </p>
       </div>
 
@@ -125,7 +125,7 @@
         <!-- KPI 4: Total Alumnos Activos -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-1">
           <span class="text-[11px] font-semibold text-base-texto-secundario uppercase tracking-wider block">
-            Cohorte activa
+            Estudiantes en la clase
           </span>
           <div class="flex items-baseline gap-2">
             <span class="text-2xl font-bold font-mono text-acento-ambar-fuerte">
@@ -150,7 +150,7 @@
               Estudiantes y nivel de dominio
             </h2>
             <p class="text-base-texto-secundario text-[11px]">
-              Haz clic en cualquier estudiante para inspeccionar su trazabilidad individual
+              Abre a un estudiante para ver su avance lección por lección
             </p>
           </div>
 
@@ -163,7 +163,7 @@
                 ? 'bg-semantico-falla/15 text-semantico-falla border-semantico-falla/40'
                 : 'borde-afordancia text-base-texto-primario hover:bg-base-bg-secundario'">
               <OctagonAlert :size="16" aria-hidden="true" />
-              <span>{{ onlyAtRisk ? 'Viendo solo rezago (<50%)' : 'Filtrar por riesgo (<50%)' }}</span>
+              <span>{{ onlyAtRisk ? 'Ver a todos' : 'Ver solo quienes van por debajo del 50 %' }}</span>
             </button>
           </div>
         </div>
@@ -175,7 +175,7 @@
                 <th class="p-3">Estudiante</th>
                 <th class="p-3">Correo</th>
                 <th class="p-3 text-center">Dominio</th>
-                <th class="p-3 text-center">Tasa de éxito</th>
+                <th class="p-3 text-center">Ejercicios aprobados</th>
                 <th class="p-3 text-center">Envíos</th>
                 <th class="p-3 text-center">Diagnóstico</th>
                 <th class="p-3 text-right">Acción</th>

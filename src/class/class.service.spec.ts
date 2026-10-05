@@ -127,7 +127,7 @@ describe('ClassService.findByCode — un código ausente no puede devolver "la p
 // datos — encontrado al investigar el pendiente de KPIs inventados.
 describe('ClassService.findByTeacher — enrollmentCount, avgMastery, atRiskCount reales', () => {
   let service: ClassService;
-  const mockClassRepo = { find: jest.fn() };
+  const mockClassRepo = { find: jest.fn(), manager: { query: jest.fn() } };
   const mockEnrollmentRepo = { find: jest.fn() };
   const mockProgressRepo = { find: jest.fn() };
   const mockUserService = {};
@@ -160,9 +160,11 @@ describe('ClassService.findByTeacher — enrollmentCount, avgMastery, atRiskCoun
       { classId: 1, studentId: 101 },
       { classId: 2, studentId: 102 },
     ]);
+    // Lecciones 1 y 2 son de la clase 1; la 3 de la clase 2.
+    mockClassRepo.manager.query.mockResolvedValue([{ unitId: 1, classId: 1 }, { unitId: 2, classId: 1 }, { unitId: 3, classId: 2 }]);
     mockProgressRepo.find.mockResolvedValue([
-      { studentId: 100, mastery: 80 },
-      { studentId: 101, mastery: 20 }, // en riesgo
+      { studentId: 100, learningUnitId: 1, mastery: 80 },
+      { studentId: 101, learningUnitId: 2, mastery: 20 }, // en riesgo
       // 102 sin ninguna fila de progreso → mastery 0 → también en riesgo
     ]);
 
@@ -170,6 +172,19 @@ describe('ClassService.findByTeacher — enrollmentCount, avgMastery, atRiskCoun
 
     expect(result[0]).toMatchObject({ id: 1, enrollmentCount: 2, avgMastery: 50, atRiskCount: 1 });
     expect(result[1]).toMatchObject({ id: 2, enrollmentCount: 1, avgMastery: 0, atRiskCount: 1 });
+  });
+
+  it('el dominio de cada clase cuenta solo sus lecciones (antes mezclaba todas las clases del estudiante)', async () => {
+    mockClassRepo.find.mockResolvedValue([{ id: 1, teacherId: 10, name: 'A' }, { id: 2, teacherId: 10, name: 'B' }]);
+    mockEnrollmentRepo.find.mockResolvedValue([{ classId: 1, studentId: 100 }, { classId: 2, studentId: 100 }]);
+    mockClassRepo.manager.query.mockResolvedValue([{ unitId: 1, classId: 1 }, { unitId: 3, classId: 2 }]);
+    mockProgressRepo.find.mockResolvedValue([
+      { studentId: 100, learningUnitId: 1, mastery: 90 },
+      { studentId: 100, learningUnitId: 3, mastery: 10 },
+    ]);
+    const [a, b] = await service.findByTeacher(10);
+    expect(a).toMatchObject({ avgMastery: 90, atRiskCount: 0 });
+    expect(b).toMatchObject({ avgMastery: 10, atRiskCount: 1 });
   });
 
   it('una clase sin matrículas activas queda con avgMastery indefinido (sin datos, no un cero mentiroso)', async () => {

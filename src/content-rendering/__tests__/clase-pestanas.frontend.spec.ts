@@ -77,7 +77,7 @@ describe('Pestañas de la clase', () => {
       expect(menu).not.toContain(herramienta);
     }
     // La tarjeta de cada clase en «Mis clases» abre su «Hoy».
-    expect(leer('pages', 'docente', 'index.vue')).toContain('<span>Abrir la clase</span>');
+    expect(leer('pages', 'docente', 'index.vue')).toContain('<span>Ver hoy en la clase</span>');
   });
 });
 

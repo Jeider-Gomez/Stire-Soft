@@ -123,7 +123,7 @@ export class ClassService {
 
   /**
    * Igual que la clase, pero con `enrollmentCount`, `avgMastery` y `atRiskCount`
-   * (matrículas activas y maestría global del estudiante, promediada por clase;
+   * (matrículas activas y maestría del estudiante en las lecciones de esa clase, promediada;
    * "en riesgo" = maestría < 50, mismo umbral que `rendimiento.vue`). Antes el
    * dashboard docente mostraba estos tres datos como 0 fijo porque este endpoint
    * nunca los calculaba.
@@ -145,18 +145,25 @@ export class ClassService {
       ? await this.learningProgressRepository.find({ where: { studentId: In(studentIds) } })
       : [];
 
-    const masteryByStudent = new Map<number, number>();
-    for (const studentId of studentIds) {
-      const studentProgress = progressList.filter((p) => p.studentId === studentId);
-      const avg = studentProgress.length
-        ? studentProgress.reduce((acc, p) => acc + p.mastery, 0) / studentProgress.length
-        : 0;
-      masteryByStudent.set(studentId, avg);
-    }
+    // Solo las lecciones de cada clase, como en «Rendimiento del grupo» (analytics.service.ts): antes se promediaba el
+    // dominio del estudiante en TODAS sus clases, y el inicio del docente decía «0 en rezago» mientras Rendimiento decía
+    // «1 de 5» para la misma clase (crítica de diseño del 05/10).
+    const unidades: Array<{ unitId: number; classId: number }> = classIds.length
+      ? await this.classRepository.manager.query(
+          'SELECT lu.id AS unitId, s.classId AS classId FROM learning_units lu JOIN topics t ON lu.topicId = t.id ' +
+            'JOIN sections s ON t.sectionId = s.id WHERE s.classId IN (?)',
+          [classIds],
+        )
+      : [];
+    const claseDeUnidad = new Map(unidades.map((u) => [Number(u.unitId), Number(u.classId)]));
+    const dominioEnClase = (studentId: number, classId: number): number => {
+      const suyos = progressList.filter((p) => p.studentId === studentId && claseDeUnidad.get(p.learningUnitId) === classId);
+      return suyos.length ? suyos.reduce((acc, p) => acc + p.mastery, 0) / suyos.length : 0;
+    };
 
     return classes.map((cls) => {
       const classEnrollments = enrollments.filter((e) => e.classId === cls.id);
-      const masteries = classEnrollments.map((e) => masteryByStudent.get(e.studentId) ?? 0);
+      const masteries = classEnrollments.map((e) => dominioEnClase(e.studentId, cls.id));
       const avgMastery = masteries.length
         ? Math.round((masteries.reduce((acc, m) => acc + m, 0) / masteries.length) * 100) / 100
         : undefined;

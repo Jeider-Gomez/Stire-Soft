@@ -6,8 +6,8 @@
       <NuxtLink
         :to="volverAlGrupo"
         class="borde-afordancia px-2.5 py-1 rounded text-base-texto-secundario hover:text-base-texto-primario flex items-center gap-1">
-        <span>◀</span>
-        <span>Volver al rendimiento del grupo</span>
+        <ArrowLeft :size="14" aria-hidden="true" />
+        <span>Volver a cómo va el grupo</span>
       </NuxtLink>
     </div>
 
@@ -23,7 +23,7 @@
           {{ dashboard?.studentName || 'Seguimiento y diagnóstico del estudiante' }}
         </h1>
         <p class="text-xs text-base-texto-secundario mt-0.5">
-          Universidad de Córdoba • Sistema de Tutoría Inteligente STIRE
+          {{ ultimaActividad }}
         </p>
       </div>
 
@@ -202,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import { LifeBuoy, Loader2, Mail, Rocket, TriangleAlert } from 'lucide-vue-next'
+import { ArrowLeft, LifeBuoy, Loader2, Mail, Rocket, TriangleAlert } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { enlaceNuevoRefuerzo } from '~/utils/refuerzos'
 const { messageOf } = useApiErrorMessage()
@@ -257,6 +257,13 @@ interface StudentDashboardData {
 const route = useRoute()
 // Clase desde la que se abrió la ficha (Rendimiento o el mapa de calor): las estadísticas de lecciones son de esa clase.
 const claseDeLaFicha = computed(() => Number(route.query.clase) || null)
+/** Lo que el docente necesita saber al abrir la ficha: cuándo practicó por última vez (antes decía el nombre de la universidad). */
+const ultimaActividad = computed(() => {
+  const ultima = dashboard.value?.recentSubmissions?.[0]?.createdAt
+  if (!ultima) return dashboard.value ? 'Todavía no ha entregado ejercicios.' : ''
+  const dias = Math.floor((Date.now() - new Date(ultima).getTime()) / 86_400_000)
+  return `Última entrega: ${dias <= 0 ? 'hoy' : dias === 1 ? 'ayer' : `hace ${dias} días`}`
+})
 const volverAlGrupo = computed(() => (claseDeLaFicha.value ? `/docente/rendimiento?classId=${claseDeLaFicha.value}` : '/docente/rendimiento'))
 const api = useApi()
 

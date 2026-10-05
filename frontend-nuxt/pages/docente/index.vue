@@ -67,7 +67,6 @@
             <div class="p-2 rounded-xl bg-stire-teal/10">
               <TrendingUp :size="18" class="text-teal-700" />
             </div>
-            <span class="text-[10px] font-bold text-teal-700">Dominio</span>
           </div>
           <p class="text-2xl font-poppins font-bold text-slate-800">{{ porcentaje(avgMastery) }}</p>
           <!-- Micro barra de progreso -->
@@ -89,7 +88,6 @@
             <div class="p-2 rounded-xl bg-stire-purple/10">
               <Mail :size="18" class="text-stire-purple" />
             </div>
-            <span class="text-[10px] font-bold text-stire-purple">Bandeja</span>
           </div>
           <p class="text-2xl font-poppins font-bold text-stire-purple">{{ unreadMessages ?? '—' }}</p>
           <p class="text-xs text-slate-500 mt-0.5">Mensajes sin leer</p>
@@ -100,21 +98,23 @@
       <!-- 4. Alumnos en rezago -->
       <Transition appear enter-active-class="transition duration-300 ease-out delay-200"
         enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
-        <div class="metric-card border-l-4 border-stire-warning">
+        <!-- En ámbar solo cuando hay alguien en rezago: una tarjeta en alarma con «0» enseña a ignorar las alarmas. -->
+        <div class="metric-card" :class="atRiskCount > 0 ? 'ring-2 ring-stire-warning/60' : ''">
           <div class="flex items-start justify-between mb-3">
             <div class="p-2 rounded-xl bg-stire-warning/10">
               <AlertTriangle :size="18" class="text-amber-700" />
             </div>
             <button
-              class="text-[10px] font-bold px-2 py-0.5 min-h-[44px] rounded-full bg-stire-warning/15 text-amber-800
+              v-if="atRiskCount > 0"
+              class="text-[11px] font-bold px-2 py-0.5 min-h-[44px] rounded-full bg-stire-warning/15 text-amber-800
                      hover:bg-stire-warning/25 transition-colors whitespace-nowrap"
               title="Ver quiénes están en rezago"
               @click="navigateTo('/docente/rendimiento')"
             >
-              Ver alumnos →
+              Ver quiénes →
             </button>
           </div>
-          <p class="text-2xl font-poppins font-bold text-amber-700">{{ atRiskCount }}</p>
+          <p class="text-2xl font-poppins font-bold" :class="atRiskCount > 0 ? 'text-amber-700' : 'text-slate-800'">{{ atRiskCount }}</p>
           <p class="text-xs text-slate-500 mt-0.5">Alumnos en rezago</p>
           <p class="text-[11px] text-slate-500 mt-1">Dominio &lt; 50 %</p>
         </div>
@@ -336,7 +336,7 @@
               class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800 min-h-[44px]"
             >
               <UserCheck :size="14" />
-              <span>Abrir la clase</span>
+              <span>Ver hoy en la clase</span>
             </NuxtLink>
           </div>
         </div>
