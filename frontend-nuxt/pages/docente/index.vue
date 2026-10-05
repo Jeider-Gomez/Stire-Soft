@@ -230,6 +230,7 @@
                          hover:text-teal-700 hover:bg-stire-teal/5
                          active:scale-95 transition-all duration-150 whitespace-nowrap"
                   :title="`Copiar código ${cls.code}`"
+                  :aria-label="copiedCode === cls.code ? `Código ${cls.code} copiado` : `Copiar el código ${cls.code}`"
                 >
                   <Transition mode="out-in"
                     enter-active-class="transition duration-150 ease-out"
@@ -253,8 +254,9 @@
                          hover:text-stire-purple hover:bg-stire-purple/5
                          active:scale-95 transition-all duration-150 whitespace-nowrap"
                   title="Proyectar código QR"
+                  :aria-label="`Mostrar el QR de ${cls.name} para proyectarlo`"
                 >
-                  <QrCode :size="12" />
+                  <QrCode :size="12" aria-hidden="true" />
                   <span>QR</span>
                 </button>
               </div>
@@ -272,12 +274,13 @@
               </p>
             </div>
 
-            <!-- Badge Activo -->
-            <span class="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full
-                         bg-stire-success/10 text-emerald-700 text-[11px] font-bold border border-stire-success/25">
-              <span class="pulse-dot" />
-              Activo
-            </span>
+            <!-- Antes un «Activo» que salía igual en todas las clases. Ahora lo que pide atención: quién necesita apoyo. -->
+            <NuxtLink v-if="cls.atRiskCount" :to="`/docente/rendimiento?classId=${cls.id}`"
+              class="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 min-h-[32px] rounded-full bg-amber-50 text-amber-800 text-[11px] font-bold border border-amber-200 hover:bg-amber-100">
+              <AlertTriangle :size="12" aria-hidden="true" />
+              {{ cls.atRiskCount === 1 ? '1 necesita apoyo' : `${cls.atRiskCount} necesitan apoyo` }}
+            </NuxtLink>
+            <span v-else-if="!cls.isActive" class="flex-shrink-0 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[11px] font-bold">Inactiva</span>
           </div>
 
           <!-- Cómo entran los estudiantes (el código ya está arriba, con Copiar y QR) -->
@@ -285,53 +288,29 @@
             Matrícula {{ cls.requiresApproval ? 'con aprobación: apruebas a cada estudiante en «Matrícula».' : 'directa: entra quien tenga el código.' }}
           </p>
 
-          <!-- ─── ZONA DE ACCIONES (espaciosa) ─── -->
-          <div class="flex flex-wrap gap-2.5 pt-4 border-t border-slate-100">
-
-            <!-- Matrícula -->
-            <NuxtLink
-              :to="`/docente/clase/${cls.id}/ajustes`"
-              class="btn-stire-secondary min-h-[44px]"
-            >
-              <Users :size="14" />
-              <!-- Antes «Matrícula 4»: no se sabía si el 4 era un número o una acción. -->
-              <span>{{ cls.enrollmentCount ? `${cls.enrollmentCount} ${cls.enrollmentCount === 1 ? 'estudiante' : 'estudiantes'}` : 'Estudiantes' }}</span>
+          <!-- Acciones (crítica del 05/10): antes seis botones con el mismo peso. Las cifras son un enlace de texto a
+               «Estudiantes» (la misma pantalla que esa pestaña; antes «N estudiantes» llevaba a Ajustes), y quedan dos
+               botones: Contenidos y, como acción principal, entrar a la clase. -->
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-2.5 pt-4 border-t border-slate-100">
+            <NuxtLink :to="`/docente/rendimiento?classId=${cls.id}`"
+              class="min-h-[44px] inline-flex items-center gap-1.5 text-xs text-slate-700 hover:text-stire-blue hover:underline tabular-nums">
+              <Users :size="14" aria-hidden="true" />
+              <span>{{ cls.enrollmentCount === 1 ? '1 estudiante' : `${cls.enrollmentCount ?? 0} estudiantes` }}</span>
+              <template v-if="cls.avgMastery !== undefined && cls.enrollmentCount">
+                <span aria-hidden="true">·</span>
+                <span>dominio del grupo <strong :class="cls.avgMastery >= 70 ? 'text-emerald-700' : 'text-amber-700'">{{ porcentaje(cls.avgMastery) }}</strong></span>
+              </template>
             </NuxtLink>
 
-            <!-- Rendimiento -->
-            <NuxtLink
-              :to="`/docente/rendimiento?classId=${cls.id}`"
-              class="btn-stire-secondary min-h-[44px]"
-            >
-              <TrendingUp :size="14" />
-              <span>Dominio del grupo</span>
-              <span
-                v-if="cls.avgMastery !== undefined"
-                class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
-                :class="cls.avgMastery >= 70 ? 'bg-stire-success/10 text-emerald-700' : 'bg-stire-warning/10 text-amber-700'"
-              >
-                {{ porcentaje(cls.avgMastery) }}
-              </span>
-            </NuxtLink>
-
-            <!-- Contenidos -->
-            <NuxtLink
-              :to="`/docente/contenidos?classId=${cls.id}`"
-              class="btn-stire-secondary min-h-[44px]"
-            >
-              <BookOpen :size="14" />
-              <span>Contenidos</span>
-            </NuxtLink>
-
-            <!-- Spacer -->
             <div class="flex-1" />
 
+            <NuxtLink :to="`/docente/contenidos?classId=${cls.id}`" class="btn-stire-secondary min-h-[44px]">
+              <BookOpen :size="14" aria-hidden="true" />
+              <span>Contenidos</span>
+            </NuxtLink>
             <!-- La clase como lugar: «Hoy», con las pestañas de la clase (utils/pestanasClase.ts) -->
-            <NuxtLink
-              :to="`/docente/clase/${cls.id}`"
-              class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800 min-h-[44px]"
-            >
-              <UserCheck :size="14" />
+            <NuxtLink :to="`/docente/clase/${cls.id}`" class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800 min-h-[44px]">
+              <UserCheck :size="14" aria-hidden="true" />
               <span>Ver hoy en la clase</span>
             </NuxtLink>
           </div>

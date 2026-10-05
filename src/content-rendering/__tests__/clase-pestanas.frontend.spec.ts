@@ -79,6 +79,16 @@ describe('Pestañas de la clase', () => {
     // La tarjeta de cada clase en «Mis clases» abre su «Hoy».
     expect(leer('pages', 'docente', 'index.vue')).toContain('<span>Ver hoy en la clase</span>');
   });
+
+  it('en la tarjeta, «N estudiantes» lleva a la misma pantalla que la pestaña «Estudiantes» y el aviso dice quién necesita apoyo', () => {
+    const d = leer('pages', 'docente', 'index.vue');
+    expect(pestanas.enlacePestana('estudiantes', 7)).toBe('/docente/rendimiento?classId=7');
+    expect(d).toMatch(/:to="`\/docente\/rendimiento\?classId=\$\{cls\.id\}`"[\s\S]{0,300}estudiantes`/);
+    // «N estudiantes» ya no lleva a Ajustes y el «Activo» que salía igual en todas se fue.
+    expect(d).not.toContain(':to="`/docente/clase/${cls.id}/ajustes`"');
+    expect(d).not.toMatch(/\n\s*Activo\n/);
+    expect(d).toContain("`${cls.atRiskCount} necesitan apoyo`");
+  });
 });
 
 describe('«Hoy» de la clase', () => {
