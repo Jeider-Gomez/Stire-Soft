@@ -134,14 +134,17 @@
             <span v-if="!sec.isPublished" class="text-[11px] text-base-texto-secundario italic hidden md:inline">
               Los estudiantes no lo verán hasta que lo publiques
             </span>
+            <!-- Publicar/Borrador: color y texto según estado para máxima claridad -->
             <button
               @click="toggleSectionPublish(sec)"
-              :aria-label="sec.isPublished ? `Módulo ${sec.title} publicado. Pulsa para volverlo a borrador` : `Módulo ${sec.title} en borrador. Pulsa para publicarlo`"
-              class="min-h-[44px] sm:min-h-0 px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+              :aria-label="sec.isPublished ? `Módulo '${sec.title}' publicado. Pulsa para volver a borrador` : `Módulo '${sec.title}' en borrador. Pulsa para publicarlo`"
+              class="min-h-[44px] sm:min-h-0 px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte inline-flex items-center gap-1"
               :class="sec.isPublished
-                ? 'bg-semantico-pasa/10 text-emerald-800 border-semantico-pasa/40 hover:bg-semantico-pasa/25'
-                : 'bg-base-blanco text-base-texto-secundario border-base-borde-fuerte hover:text-base-texto-primario'">
-              {{ sec.isPublished ? 'Publicado' : 'Borrador' }}
+                ? 'bg-semantico-pasa/10 text-emerald-800 border-semantico-pasa/40 hover:bg-red-50 hover:border-red-300 hover:text-red-700'
+                : 'bg-acento-ambar-fuerte text-base-blanco border-acento-ambar-fuerte hover:bg-acento-ambar'">
+              <Check v-if="sec.isPublished" :size="12" aria-hidden="true" />
+              <EyeOff v-else :size="12" aria-hidden="true" />
+              {{ sec.isPublished ? 'Publicado' : 'Publicar' }}
             </button>
             <button
               @click="openNewTopicModal(sec)"
@@ -150,6 +153,14 @@
               <Plus :size="13" aria-hidden="true" />
               <span>Nuevo tema</span>
             </button>
+            <!-- Menú «Más» del módulo: editar orden y eliminar -->
+            <MenuMas :id-boton="`mas-seccion-${sec.id}`" :etiqueta="`Más acciones del módulo ${sec.title}`">
+              <button type="button" class="w-full min-h-[44px] sm:min-h-[36px] px-3 text-left font-semibold text-semantico-falla hover:bg-semantico-falla/10 focus:outline-none focus:bg-semantico-falla/10 flex items-center gap-2"
+                @click="confirmarEliminarModulo(sec)">
+                <Trash2 :size="13" aria-hidden="true" />
+                Eliminar módulo…
+              </button>
+            </MenuMas>
           </div>
         </div>
 
@@ -176,16 +187,21 @@
                   :aria-label="`Nueva lección en el tema ${topic.title}`">
                   <Plus :size="13" aria-hidden="true" /> Nueva lección
                 </button>
-                <!-- Editar y archivar detrás de «Más» (crítica del 05/10): «Archivar» en rojo junto a «Nueva lección»
-                     llamaba la atención en cada tema y quedaba a un clic por error. -->
+                <!-- Editar, archivar y eliminar detrás de «Más» -->
                 <MenuMas :id-boton="`mas-tema-${topic.id}`" :etiqueta="`Más acciones del tema ${topic.title}`">
                   <button type="button" class="w-full min-h-[44px] sm:min-h-[36px] px-3 text-left font-semibold text-base-texto-primario hover:bg-acento-ambar/10 focus:outline-none focus:bg-acento-ambar/10"
                     @click="openEditTopicModal(topic)">
                     Editar tema
                   </button>
-                  <button type="button" class="w-full min-h-[44px] sm:min-h-[36px] px-3 text-left font-semibold text-semantico-falla hover:bg-semantico-falla/10 focus:outline-none focus:bg-semantico-falla/10"
+                  <button type="button" class="w-full min-h-[44px] sm:min-h-[36px] px-3 text-left font-semibold text-slate-700 hover:bg-base-bg-secundario focus:outline-none flex items-center gap-2"
                     @click="confirmArchiveTopic(topic)">
+                    <Archive :size="13" aria-hidden="true" />
                     Archivar tema…
+                  </button>
+                  <button type="button" class="w-full min-h-[44px] sm:min-h-[36px] px-3 text-left font-semibold text-semantico-falla hover:bg-semantico-falla/10 focus:outline-none flex items-center gap-2"
+                    @click="confirmarEliminarTema(sec, topic)">
+                    <Trash2 :size="13" aria-hidden="true" />
+                    Eliminar tema…
                   </button>
                 </MenuMas>
               </div>
@@ -220,6 +236,14 @@
                       :aria-label="`Editar la lección ${unit.title}`" title="Editar lección">
                       <Pencil :size="14" aria-hidden="true" />
                     </button>
+                    <!-- Eliminar lección detrás de Más para no borrar por error -->
+                    <MenuMas :id-boton="`mas-leccion-${unit.id}`" :etiqueta="`Más acciones de la lección ${unit.title}`">
+                      <button type="button" class="w-full min-h-[44px] sm:min-h-[36px] px-3 text-left font-semibold text-semantico-falla hover:bg-semantico-falla/10 focus:outline-none flex items-center gap-2"
+                        @click="confirmarEliminarLeccion(unit)">
+                        <Trash2 :size="13" aria-hidden="true" />
+                        Eliminar lección…
+                      </button>
+                    </MenuMas>
                   </div>
                 </div>
 
@@ -280,6 +304,76 @@
     <DocenteContenidosVentanaEditarLeccion v-else-if="ventana?.tipo === 'leccion'" :leccion="ventana.leccion" @cerrar="ventana = null" />
     <DocenteContenidosVentanaImportar v-else-if="ventana?.tipo === 'importar'" @cerrar="ventana = null" />
 
+    <!-- Confirmaciones de eliminación inline (usan AdminDialogo) -->
+    <AdminDialogo
+      v-if="confirmacion?.tipo === 'modulo'"
+      id-titulo="eliminar-modulo-titulo"
+      titulo="¿Eliminar este módulo?"
+      :subtitulo="confirmacion.titulo"
+      id-descripcion="eliminar-modulo-desc"
+      clase-icono="bg-semantico-falla/10 text-semantico-falla"
+      :ocupado="eliminando"
+      @cerrar="confirmacion = null">
+      <template #icono><Trash2 :size="18" aria-hidden="true" /></template>
+      <p id="eliminar-modulo-desc" class="text-xs text-slate-700">
+        Se eliminarán también todos sus temas y lecciones. Esta acción no se puede deshacer.
+      </p>
+      <p v-if="errorEliminacion" role="alert" class="text-semantico-falla text-[11px]">{{ errorEliminacion }}</p>
+      <div class="flex items-center justify-end gap-2">
+        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="confirmacion = null">Cancelar</button>
+        <button type="button" :disabled="eliminando" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarEliminarModulo">
+          <Loader2 v-if="eliminando" :size="14" class="animate-spin" aria-hidden="true" />
+          {{ eliminando ? 'Eliminando…' : 'Sí, eliminar el módulo' }}
+        </button>
+      </div>
+    </AdminDialogo>
+
+    <AdminDialogo
+      v-else-if="confirmacion?.tipo === 'leccion'"
+      id-titulo="eliminar-leccion-titulo"
+      titulo="¿Eliminar esta lección?"
+      :subtitulo="confirmacion.titulo"
+      id-descripcion="eliminar-leccion-desc"
+      clase-icono="bg-semantico-falla/10 text-semantico-falla"
+      :ocupado="eliminando"
+      @cerrar="confirmacion = null">
+      <template #icono><Trash2 :size="18" aria-hidden="true" /></template>
+      <p id="eliminar-leccion-desc" class="text-xs text-slate-700">
+        Se eliminarán también sus explicaciones y ejercicios. Esta acción no se puede deshacer.
+      </p>
+      <p v-if="errorEliminacion" role="alert" class="text-semantico-falla text-[11px]">{{ errorEliminacion }}</p>
+      <div class="flex items-center justify-end gap-2">
+        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="confirmacion = null">Cancelar</button>
+        <button type="button" :disabled="eliminando" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarEliminarLeccion">
+          <Loader2 v-if="eliminando" :size="14" class="animate-spin" aria-hidden="true" />
+          {{ eliminando ? 'Eliminando…' : 'Sí, eliminar la lección' }}
+        </button>
+      </div>
+    </AdminDialogo>
+
+    <AdminDialogo
+      v-else-if="confirmacion?.tipo === 'tema'"
+      id-titulo="eliminar-tema-titulo"
+      titulo="¿Eliminar este tema?"
+      :subtitulo="confirmacion.titulo"
+      id-descripcion="eliminar-tema-desc"
+      clase-icono="bg-semantico-falla/10 text-semantico-falla"
+      :ocupado="eliminando"
+      @cerrar="confirmacion = null">
+      <template #icono><Trash2 :size="18" aria-hidden="true" /></template>
+      <p id="eliminar-tema-desc" class="text-xs text-slate-700">
+        {{ confirmacion.cantidadLecciones === 0 ? 'Se eliminará este tema permanentemente.' : `Se eliminará este tema y sus ${confirmacion.cantidadLecciones} lecciones asociadas permanentemente.` }} Esta acción no se puede deshacer.
+      </p>
+      <p v-if="errorEliminacion" role="alert" class="text-semantico-falla text-[11px]">{{ errorEliminacion }}</p>
+      <div class="flex items-center justify-end gap-2">
+        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="confirmacion = null">Cancelar</button>
+        <button type="button" :disabled="eliminando" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarEliminarTema">
+          <Loader2 v-if="eliminando" :size="14" class="animate-spin" aria-hidden="true" />
+          {{ eliminando ? 'Eliminando…' : 'Sí, eliminar el tema' }}
+        </button>
+      </div>
+    </AdminDialogo>
+
     <!-- Modales para construir currículo (Módulo, Tema, Unidad) -->
     <CurriculumBuilderModals
       ref="builderModalsRef"
@@ -301,10 +395,12 @@
 // composables/useContenidosCurso.ts y cada ventana en components/docente/contenidos/ (PAT-01 y PAT-04; antes un solo
 // archivo de 1131 líneas con cuatro ventanas y sus llamadas a la API).
 import { computed, nextTick, onMounted, provide, ref } from 'vue'
-import { BookOpen, ChevronRight, CircleX, CopyPlus, FileText, Folder, Loader2, Pencil, Plus, TriangleAlert } from 'lucide-vue-next'
+import { Archive, BookOpen, Check, ChevronRight, CircleX, CopyPlus, EyeOff, FileText, Folder, Loader2, Pencil, Plus, Trash2, TriangleAlert } from 'lucide-vue-next'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 import { CLAVE_CONTENIDOS, useContenidosCurso } from '~/composables/useContenidosCurso'
+const api = useApi()
+const { messageOf } = useApiErrorMessage()
 import { mayorOrden, resumenDeLeccion, type LeccionDelArbol, type ModuloDelArbol, type TemaDelArbol } from '~/utils/contenidosCurso'
 
 definePageMeta({ layout: 'teacher' })
@@ -328,6 +424,98 @@ const openEditTopicModal = (tema: TemaDelArbol) => { ventana.value = { tipo: 'te
 const confirmArchiveTopic = (tema: TemaDelArbol) => { ventana.value = { tipo: 'archivar', tema } }
 const openEditUnitModal = (leccion: LeccionDelArbol) => { ventana.value = { tipo: 'leccion', leccion } }
 const openImportModal = () => { ventana.value = { tipo: 'importar' } }
+
+// ─── Eliminar módulo / tema / lección ───
+type Confirmacion =
+  | { tipo: 'modulo'; id: number; titulo: string }
+  | { tipo: 'tema'; id: number; titulo: string; sectionId: number; cantidadLecciones: number }
+  | { tipo: 'leccion'; id: number; titulo: string; sectionId: number; topicId: number }
+const confirmacion = ref<Confirmacion | null>(null)
+const eliminando = ref(false)
+const errorEliminacion = ref<string | null>(null)
+
+function confirmarEliminarModulo(sec: ModuloDelArbol) {
+  errorEliminacion.value = null
+  confirmacion.value = { tipo: 'modulo', id: sec.id, titulo: sec.title }
+}
+function confirmarEliminarTema(sec: ModuloDelArbol, topic: TemaDelArbol) {
+  errorEliminacion.value = null
+  confirmacion.value = {
+    tipo: 'tema',
+    id: topic.id,
+    titulo: topic.title,
+    sectionId: sec.id,
+    cantidadLecciones: topic.learningUnits?.length ?? 0
+  }
+}
+function confirmarEliminarLeccion(unit: LeccionDelArbol) {
+  errorEliminacion.value = null
+  // Buscamos sectionId y topicId para poder quitar la lección del árbol local
+  let sectionId = 0, topicId = 0
+  for (const m of sections.value) {
+    for (const t of m.topics ?? []) {
+      if (t.learningUnits?.some(u => u.id === unit.id)) { sectionId = m.id; topicId = t.id }
+    }
+  }
+  confirmacion.value = { tipo: 'leccion', id: unit.id, titulo: unit.title, sectionId, topicId }
+}
+
+async function ejecutarEliminarModulo() {
+  const conf = confirmacion.value
+  if (!conf || conf.tipo !== 'modulo') return
+  eliminando.value = true
+  errorEliminacion.value = null
+  try {
+    await api.del(`/sections/${conf.id}`)
+    sections.value = sections.value.filter(s => s.id !== conf.id)
+    actionFeedback.value = `Módulo «${conf.titulo}» eliminado.`
+    confirmacion.value = null
+  } catch (err: unknown) {
+    errorEliminacion.value = messageOf(err, 'No se pudo eliminar el módulo.')
+  } finally {
+    eliminando.value = false
+  }
+}
+
+async function ejecutarEliminarTema() {
+  const conf = confirmacion.value
+  if (!conf || conf.tipo !== 'tema') return
+  eliminando.value = true
+  errorEliminacion.value = null
+  try {
+    await api.del(`/topic/${conf.id}?permanent=true`)
+    const sec = sections.value.find(s => s.id === conf.sectionId)
+    if (sec) {
+      sec.topics = (sec.topics ?? []).filter(t => t.id !== conf.id)
+    }
+    actionFeedback.value = `Tema «${conf.titulo}» eliminado.`
+    confirmacion.value = null
+  } catch (err: unknown) {
+    errorEliminacion.value = messageOf(err, 'No se pudo eliminar el tema.')
+  } finally {
+    eliminando.value = false
+  }
+}
+
+async function ejecutarEliminarLeccion() {
+  const conf = confirmacion.value
+  if (!conf || conf.tipo !== 'leccion') return
+  eliminando.value = true
+  errorEliminacion.value = null
+  try {
+    await api.del(`/learning-unit/${conf.id}`)
+    const modulo = sections.value.find(s => s.id === conf.sectionId)
+    const tema = modulo?.topics?.find(t => t.id === conf.topicId)
+    if (tema) tema.learningUnits = (tema.learningUnits ?? []).filter(u => u.id !== conf.id)
+    actionFeedback.value = `Lección «${conf.titulo}» eliminada.`
+    if (expandedUnitId.value === conf.id) expandedUnitId.value = null
+    confirmacion.value = null
+  } catch (err: unknown) {
+    errorEliminacion.value = messageOf(err, 'No se pudo eliminar la lección.')
+  } finally {
+    eliminando.value = false
+  }
+}
 
 // Crear módulos, temas y lecciones, y escribir las explicaciones: sus ventanas ya eran componentes aparte.
 const builderModalsRef = ref<InstanceType<typeof CurriculumBuilderModals> | null>(null)

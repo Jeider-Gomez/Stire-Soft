@@ -91,6 +91,26 @@ export class TopicService {
   }
 
   /**
+   * Eliminar definitivamente un topic y sus unidades.
+   * Solo el docente dueño de la clase padre (o admin).
+   */
+  async deletePermanent(id: number, user: User): Promise<void> {
+    const topic = await this.findOne(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(topic));
+    const learningUnits = topic.learningUnits ?? [];
+    if (learningUnits.length > 0) {
+      await this.topicRepository.manager.transaction(async (manager) => {
+        for (const unit of learningUnits) {
+          await manager.delete('learning_units', { id: unit.id });
+        }
+        await manager.remove(topic);
+      });
+    } else {
+      await this.topicRepository.remove(topic);
+    }
+  }
+
+  /**
    * Topic -> Section -> classId. `sectionId` es una columna directa del
    * topic (no requiere cargar la relación `section`); `classId` es a su vez
    * una columna directa de `Section` (ver mismo patrón en

@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { TopicService } from './topic.service';
@@ -82,13 +83,20 @@ export class TopicController {
 
   /**
    * DELETE /topic/:id
-   * Desactivar un topic (soft delete lógico).
+   * Desactivar un topic (soft delete lógico) o eliminarlo definitivamente con ?permanent=true.
    */
   @Delete(':id')
   @UseGuards(RolesGuard)
   @Roles('docente', 'admin')
-  @ApiOperation({ summary: 'Desactivar un topic' })
-  remove(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+  @ApiOperation({ summary: 'Desactivar o eliminar definitivamente un topic' })
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+    @Query('permanent') permanent?: string,
+  ) {
+    if (permanent === 'true') {
+      return this.topicService.deletePermanent(id, user);
+    }
     return this.topicService.remove(id, user);
   }
 }

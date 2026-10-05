@@ -2,6 +2,19 @@
   <div class="max-w-4xl mx-auto space-y-6">
     <DocentePestanasClase :class-id="classId" activa="ajustes" :nombre="classInfo?.name" :codigo="classInfo?.code" />
 
+    <!-- Mensaje de éxito / toast accesible -->
+    <transition name="fade">
+      <div v-if="toastExito" role="status" class="p-3 bg-semantico-pasa/15 border border-semantico-pasa/40 rounded-lg text-xs font-semibold text-emerald-900 flex items-center justify-between gap-2 shadow-sm">
+        <span class="flex items-center gap-2">
+          <Check :size="16" class="text-semantico-pasa shrink-0" aria-hidden="true" />
+          {{ toastExito }}
+        </span>
+        <button type="button" @click="toastExito = null" class="p-1 text-slate-500 hover:text-slate-800 rounded focus:outline-none" aria-label="Cerrar aviso">
+          <X :size="14" aria-hidden="true" />
+        </button>
+      </div>
+    </transition>
+
     <!-- Quién está en la clase: primero las solicitudes, porque el estudiante no ve el curso hasta que lo aceptas. -->
     <section id="solicitudes" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
       <h1 class="text-sm font-bold text-base-texto-primario">Solicitudes para entrar</h1>
@@ -9,8 +22,8 @@
       <div v-for="enrollment in pending" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
         <span class="text-xs min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="enrollment.student?.fullName" :foto-id="enrollment.student?.fotoId" decorativo /><span class="truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span></span>
         <div class="flex gap-2 shrink-0">
-          <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-pasa hover:bg-semantico-pasa/10" @click="change(enrollment.id, 'approve')">Aprobar</button>
-          <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-falla hover:bg-semantico-falla/10" @click="change(enrollment.id, 'reject')">Rechazar</button>
+          <button class="px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-pasa hover:bg-semantico-pasa/10" @click="change(enrollment, 'approve')">Aprobar</button>
+          <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-falla hover:bg-semantico-falla/10" @click="change(enrollment, 'reject')">Rechazar</button>
         </div>
       </div>
     </section>
@@ -20,7 +33,10 @@
       <p v-if="active.length === 0" class="text-xs text-base-texto-secundario">Todavía no hay estudiantes. Comparte el código de la clase.</p>
       <div v-for="enrollment in active" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
         <span class="text-xs min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="enrollment.student?.fullName" :foto-id="enrollment.student?.fotoId" decorativo /><span class="truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span></span>
-        <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-falla hover:bg-semantico-falla/10 shrink-0" @click="change(enrollment.id, 'remove')" :aria-label="`Quitar de la clase a ${enrollment.student?.fullName || 'este estudiante'}`">Quitar de la clase</button>
+        <button class="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-semibold text-semantico-falla hover:bg-semantico-falla/10 shrink-0 inline-flex items-center gap-1.5" @click="confirmarQuitarEstudiante(enrollment)" :aria-label="`Quitar de la clase a ${enrollment.student?.fullName || 'este estudiante'}`">
+          <Trash2 :size="13" aria-hidden="true" />
+          Quitar de la clase
+        </button>
       </div>
     </section>
 
@@ -230,6 +246,111 @@
         <span v-if="saveError" role="alert" class="text-xs text-semantico-falla font-semibold">{{ saveError }}</span>
       </div>
     </section>
+
+    <!-- Estado y gestión de la clase (Archivar y Eliminar) -->
+    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-4" aria-labelledby="gestion-clase-titulo">
+      <h2 id="gestion-clase-titulo" class="text-sm font-bold text-base-texto-primario">Estado y gestión de la clase</h2>
+
+      <!-- Archivar / Reactivar clase -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-base-texto-primario">Estado:</span>
+            <span class="px-2 py-0.5 rounded text-[11px] font-bold"
+              :class="classInfo?.isActive !== false ? 'bg-semantico-pasa/15 text-emerald-800' : 'bg-slate-200 text-slate-700'">
+              {{ classInfo?.isActive !== false ? 'Clase activa' : 'Clase archivada' }}
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-600 mt-1">
+            {{ classInfo?.isActive !== false
+              ? 'Los estudiantes matriculados pueden acceder al curso. Si la archivas, no podrán verla ni enviar entregas, pero se conserva todo su contenido y notas.'
+              : 'Esta clase está archivada. Los estudiantes no pueden verla ni enviar entregas. Puedes reactivarla cuando desees.' }}
+          </p>
+        </div>
+        <button
+          type="button"
+          :disabled="guardandoEstadoClase"
+          @click="alternarArchivoClase"
+          class="min-h-[44px] px-3.5 py-1.5 rounded-md text-xs font-bold transition-colors shrink-0 self-start sm:self-auto inline-flex items-center gap-1.5 border"
+          :class="classInfo?.isActive !== false
+            ? 'border-base-borde-fuerte bg-base-blanco text-slate-700 hover:bg-slate-100'
+            : 'border-semantico-pasa bg-semantico-pasa/10 text-emerald-800 hover:bg-semantico-pasa/20'">
+          <Loader2 v-if="guardandoEstadoClase" :size="13" class="animate-spin" aria-hidden="true" />
+          <Archive v-else-if="classInfo?.isActive !== false" :size="13" aria-hidden="true" />
+          <Check v-else :size="13" aria-hidden="true" />
+          {{ guardandoEstadoClase ? 'Guardando…' : classInfo?.isActive !== false ? 'Archivar clase' : 'Reactivar clase' }}
+        </button>
+      </div>
+
+      <!-- Zona de peligro: Eliminar clase -->
+      <div class="p-4 rounded-lg border border-semantico-falla/30 bg-semantico-falla/5 space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+          <div>
+            <h3 class="text-xs font-bold text-semantico-falla flex items-center gap-1.5">
+              <TriangleAlert :size="14" aria-hidden="true" /> Eliminar clase definitivamente
+            </h3>
+            <p class="text-[11px] text-slate-700 mt-1 max-w-xl">
+              Solo se puede eliminar si la clase no contiene módulos creados. Si ya tiene contenido o calificaciones de estudiantes, te recomendamos <strong>archivarla</strong> para proteger el registro académico.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="min-h-[44px] px-4 py-2 rounded-md text-xs font-bold bg-semantico-falla text-base-blanco hover:opacity-90 transition-opacity shrink-0 inline-flex items-center gap-1.5 self-start sm:self-auto"
+            @click="abrirEliminarClase">
+            <Trash2 :size="14" aria-hidden="true" />
+            Eliminar clase…
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Diálogo: Confirmar quitar estudiante -->
+    <AdminDialogo
+      v-if="estudianteAQuitar"
+      id-titulo="quitar-estudiante-titulo"
+      titulo="¿Quitar estudiante de la clase?"
+      :subtitulo="estudianteAQuitar.student?.fullName || estudianteAQuitar.student?.email || 'Estudiante'"
+      id-descripcion="quitar-estudiante-desc"
+      clase-icono="bg-semantico-falla/10 text-semantico-falla"
+      :ocupado="procesandoQuitar"
+      @cerrar="estudianteAQuitar = null">
+      <template #icono><Trash2 :size="18" aria-hidden="true" /></template>
+      <p id="quitar-estudiante-desc" class="text-xs text-slate-700">
+        El estudiante perderá el acceso a las actividades y contenidos de esta clase. Podrá solicitar matricularse nuevamente si le compartes el código de ingreso.
+      </p>
+      <p v-if="errorQuitarEstudiante" role="alert" class="text-semantico-falla text-[11px]">{{ errorQuitarEstudiante }}</p>
+      <div class="flex items-center justify-end gap-2">
+        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="procesandoQuitar" @click="estudianteAQuitar = null">Cancelar</button>
+        <button type="button" :disabled="procesandoQuitar" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarQuitarEstudiante">
+          <Loader2 v-if="procesandoQuitar" :size="14" class="animate-spin" aria-hidden="true" />
+          {{ procesandoQuitar ? 'Quitando…' : 'Sí, quitar de la clase' }}
+        </button>
+      </div>
+    </AdminDialogo>
+
+    <!-- Diálogo: Confirmar eliminar clase -->
+    <AdminDialogo
+      v-if="mostrarEliminarClase"
+      id-titulo="eliminar-clase-titulo"
+      titulo="¿Eliminar esta clase?"
+      :subtitulo="classInfo?.name || ''"
+      id-descripcion="eliminar-clase-desc"
+      clase-icono="bg-semantico-falla/10 text-semantico-falla"
+      :ocupado="eliminandoClase"
+      @cerrar="mostrarEliminarClase = false">
+      <template #icono><Trash2 :size="18" aria-hidden="true" /></template>
+      <p id="eliminar-clase-desc" class="text-xs text-slate-700">
+        Esta acción eliminará la clase permanentemente. Solo es posible si no contiene módulos ni actividades creadas.
+      </p>
+      <p v-if="errorEliminarClase" role="alert" class="text-semantico-falla text-[11px] font-semibold p-2 bg-semantico-falla/10 rounded">{{ errorEliminarClase }}</p>
+      <div class="flex items-center justify-end gap-2">
+        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminandoClase" @click="mostrarEliminarClase = false">Cancelar</button>
+        <button type="button" :disabled="eliminandoClase" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarEliminarClase">
+          <Loader2 v-if="eliminandoClase" :size="14" class="animate-spin" aria-hidden="true" />
+          {{ eliminandoClase ? 'Eliminando…' : 'Sí, eliminar la clase' }}
+        </button>
+      </div>
+    </AdminDialogo>
   </div>
 </template>
 
@@ -237,7 +358,7 @@
 import type { AsignaturaInfo } from '~/utils/contextoAcademico'
 import { opcionesDeAlcance, type AlcancePlantilla } from '~/utils/plantillas'
 import { CATEGORIAS_LOGRO, categoriasElegidas, type CategoriaLogro } from '~/utils/logros'
-import { Check } from 'lucide-vue-next'
+import { Archive, Check, Loader2, Trash2, TriangleAlert, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 
 definePageMeta({ layout: 'teacher' })
@@ -253,6 +374,7 @@ interface ClassInfo {
   name: string
   code?: string
   description?: string
+  isActive?: boolean
   requiresApproval?: boolean
   compartidaComoPlantilla?: boolean
   alcancePlantilla?: AlcancePlantilla
@@ -264,6 +386,15 @@ interface ClassInfo {
   grupo?: string | null
   periodo?: string | null
 }
+
+const toastExito = ref<string | null>(null)
+const estudianteAQuitar = ref<EnrollmentItem | null>(null)
+const procesandoQuitar = ref(false)
+const errorQuitarEstudiante = ref<string | null>(null)
+const guardandoEstadoClase = ref(false)
+const mostrarEliminarClase = ref(false)
+const eliminandoClase = ref(false)
+const errorEliminarClase = ref<string | null>(null)
 
 const route = useRoute()
 const api = useApi()
@@ -387,11 +518,80 @@ async function copyCode() {
   }
 }
 
-async function change(id: string, action: 'approve' | 'reject' | 'remove') {
-  const method = action === 'remove' ? 'DELETE' : 'PATCH'
-  const path = action === 'remove' ? `/enrollment/${id}` : `/enrollment/${id}/${action}`
-  await api.apiFetch(path, { method })
-  await load()
+async function change(enrollment: EnrollmentItem, action: 'approve' | 'reject') {
+  const path = `/enrollment/${enrollment.id}/${action}`
+  try {
+    await api.apiFetch(path, { method: 'PATCH' })
+    const nombre = enrollment.student?.fullName || enrollment.student?.email || 'Estudiante'
+    toastExito.value = action === 'approve'
+      ? `Solicitud de «${nombre}» aprobada exitosamente.`
+      : `Solicitud de «${nombre}» rechazada.`
+    setTimeout(() => { toastExito.value = null }, 4000)
+    await load()
+  } catch (err) {
+    saveError.value = messageOf(err, 'No se pudo procesar la solicitud.')
+  }
+}
+
+function confirmarQuitarEstudiante(enrollment: EnrollmentItem) {
+  errorQuitarEstudiante.value = null
+  estudianteAQuitar.value = enrollment
+}
+
+async function ejecutarQuitarEstudiante() {
+  if (!estudianteAQuitar.value) return
+  procesandoQuitar.value = true
+  errorQuitarEstudiante.value = null
+  const nombre = estudianteAQuitar.value.student?.fullName || estudianteAQuitar.value.student?.email || 'Estudiante'
+  try {
+    await api.apiFetch(`/enrollment/${estudianteAQuitar.value.id}`, { method: 'DELETE' })
+    estudianteAQuitar.value = null
+    toastExito.value = `Estudiante «${nombre}» quitado de la clase exitosamente.`
+    setTimeout(() => { toastExito.value = null }, 4000)
+    await load()
+  } catch (err) {
+    errorQuitarEstudiante.value = messageOf(err, 'No se pudo quitar al estudiante.')
+  } finally {
+    procesandoQuitar.value = false
+  }
+}
+
+async function alternarArchivoClase() {
+  if (!classInfo.value) return
+  guardandoEstadoClase.value = true
+  const nuevoEstado = !(classInfo.value.isActive !== false)
+  try {
+    const updated = await api.apiFetch<ClassInfo>(`/class/${classId}`, {
+      method: 'PATCH',
+      body: { isActive: nuevoEstado }
+    })
+    classInfo.value = updated
+    toastExito.value = nuevoEstado ? 'Clase reactivada exitosamente.' : 'Clase archivada exitosamente.'
+    setTimeout(() => { toastExito.value = null }, 4000)
+  } catch (err) {
+    saveError.value = messageOf(err, 'No se pudo cambiar el estado de la clase.')
+  } finally {
+    guardandoEstadoClase.value = false
+  }
+}
+
+function abrirEliminarClase() {
+  errorEliminarClase.value = null
+  mostrarEliminarClase.value = true
+}
+
+async function ejecutarEliminarClase() {
+  eliminandoClase.value = true
+  errorEliminarClase.value = null
+  try {
+    await api.apiFetch(`/class/${classId}`, { method: 'DELETE' })
+    mostrarEliminarClase.value = false
+    await navigateTo('/docente/clases')
+  } catch (err) {
+    errorEliminarClase.value = messageOf(err, 'No se pudo eliminar la clase: aún contiene módulos creados. Te recomendamos archivarla.')
+  } finally {
+    eliminandoClase.value = false
+  }
 }
 
 // Logros y medallas: activados por defecto; el docente solo los apaga o elige categorías (docs/DISENO_LOGROS.md §6).

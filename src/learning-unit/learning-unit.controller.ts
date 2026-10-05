@@ -76,11 +76,13 @@ export class LearningUnitController {
   }
 
   /**
-   * Eliminar una unidad (solo admin)
+   * Eliminar una unidad. El docente dueño de la clase (o admin) puede
+   * eliminar sus propias lecciones; el servicio valida en profundidad que
+   * el docente sea el propietario antes de proceder.
    */
   @Delete(':id')
   @UseGuards(RolesGuard)
-  @Roles('admin')
+  @Roles('docente', 'admin')
   remove(@Param('id') id: string, @GetUser() user: User) {
     return this.learningUnitService.remove(+id, user);
   }
