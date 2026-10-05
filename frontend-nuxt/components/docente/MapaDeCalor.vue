@@ -96,9 +96,11 @@
             <thead>
               <tr>
                 <th scope="col" class="sticky left-0 z-10 bg-base-blanco text-left font-semibold text-base-texto-secundario pr-2">Estudiante</th>
-                <th v-for="(u, i) in mapa.unidades" :key="u.id" scope="col" :title="u.title"
-                  class="w-11 min-w-[2.75rem] text-center font-mono font-semibold text-base-texto-secundario">
-                  <abbr :title="u.title" class="no-underline">L{{ i + 1 }}</abbr>
+                <!-- El nombre de la lección en vertical (antes «L1… L17»: había que recordar o desplegar cuál era cuál; crítica
+                     de diseño del 05/10). Los nombres largos se cortan con «…» y el completo queda en el título. -->
+                <th v-for="(u, i) in mapa.unidades" :key="u.id" scope="col" :title="`${i + 1}. ${u.title}`"
+                  class="w-11 min-w-[2.75rem] align-bottom font-semibold text-base-texto-secundario pb-1">
+                  <span class="encabezado-vertical">{{ i + 1 }}. {{ u.title }}</span>
                 </th>
               </tr>
             </thead>
@@ -137,9 +139,9 @@
           </li>
         </ul>
         <details class="text-[11px] text-base-texto-secundario">
-          <summary class="cursor-pointer select-none font-semibold">Qué lección es cada columna</summary>
+          <summary class="cursor-pointer select-none font-semibold min-h-[44px] inline-flex items-center">Ver los nombres completos de las lecciones</summary>
           <ol class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-0.5">
-            <li v-for="(u, i) in mapa.unidades" :key="u.id"><span class="font-mono font-semibold">L{{ i + 1 }}</span> · {{ u.title }}</li>
+            <li v-for="(u, i) in mapa.unidades" :key="u.id"><span class="font-semibold">{{ i + 1 }}.</span> {{ u.title }}</li>
           </ol>
         </details>
       </div>
@@ -231,3 +233,17 @@ async function cargar() {
 
 watch(() => props.classId, cargar, { immediate: true })
 </script>
+
+<style scoped>
+/* Nombre de la lección en vertical, de abajo hacia arriba, como los encabezados de un mapa de calor de hoja de cálculo. */
+.encabezado-vertical {
+  display: inline-block;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  max-height: 8.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+</style>

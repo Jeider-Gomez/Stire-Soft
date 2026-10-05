@@ -92,3 +92,12 @@ describe('el docente en el celular', () => {
     expect(p).toContain("scrollIntoView({ inline: 'center', block: 'nearest' })");
   });
 });
+
+describe('mapa de calor: reconocer antes que recordar', () => {
+  it('cada columna dice el nombre de la lección (antes «L1… L17»)', () => {
+    const m = readFileSync(path.join(raiz, 'components', 'docente', 'MapaDeCalor.vue'), 'utf8');
+    expect(m).toContain('<span class="encabezado-vertical">{{ i + 1 }}. {{ u.title }}</span>');
+    expect(m).not.toContain('L{{ i + 1 }}');
+    expect(m).toContain('writing-mode: vertical-rl');
+  });
+});
