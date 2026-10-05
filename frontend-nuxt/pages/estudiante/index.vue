@@ -202,6 +202,9 @@
         <EstudianteLogrosInicio />
       </section>
 
+      <!-- Encuesta de usabilidad SUS (UX-08): solo si lleva unos días usando STIRE y no la ha respondido -->
+      <InvitacionEncuesta ruta="/estudiante/encuesta" />
+
       <!-- Entregas que creó el docente: primero lo que falta entregar (docs/DISENO_INTERVENCION_DOCENTE.md §3.2) -->
       <section v-if="entregas.length" class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm" aria-labelledby="entregas-titulo">
         <h2 id="entregas-titulo" class="px-5 py-3 border-b border-base-borde-sutil text-sm font-bold text-base-texto-primario flex items-center gap-2">

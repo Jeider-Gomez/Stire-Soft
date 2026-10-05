@@ -13,6 +13,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/estudiante\/repasos/, 'Repasos'],
   [/^\/estudiante\/mensajes/, 'Mensajes'],
   [/^\/estudiante\/perfil/, 'Mi perfil'],
+  [/^\/estudiante\/encuesta/, 'Encuesta de usabilidad'],
   [/^\/estudiante\/refuerzos\//, 'Refuerzo'],
   [/^\/estudiante\/entregas\//, 'Entrega'],
   [/^\/estudiante\/proyectos\/\d+/, 'Proyecto'],
@@ -32,11 +33,14 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/docente\/entregas/, 'Entregas'],
   [/^\/docente\/mensajes/, 'Mensajes'],
   [/^\/docente\/perfil/, 'Mi perfil'],
+  [/^\/docente\/encuesta/, 'Encuesta de usabilidad'],
   [/^\/docente\/?$/, 'Mis clases'],
   [/^\/admin\/usuarios/, 'Usuarios'],
   [/^\/admin\/sistema/, 'Estado del sistema'],
   [/^\/admin\/sugerencias/, 'Sugerencias'],
   [/^\/admin\/perfil/, 'Mi perfil'],
+  [/^\/admin\/catalogo/, 'Catálogo académico'],
+  [/^\/admin\/usabilidad/, 'Encuesta de usabilidad'],
   [/^\/admin(\/dashboard)?\/?$/, 'Administración'],
 ]
 

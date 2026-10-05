@@ -32,6 +32,9 @@
       </div>
     </header>
 
+    <!-- Encuesta de usabilidad SUS (UX-08): solo si lleva unos días usando STIRE y no la ha respondido -->
+    <InvitacionEncuesta ruta="/docente/encuesta" />
+
     <!-- ═══════════════════════════════════════════════════════
          BARRA DE MÉTRICAS (4 TARJETAS)
     ═══════════════════════════════════════════════════════ -->

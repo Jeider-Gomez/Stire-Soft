@@ -208,6 +208,14 @@
         </NuxtLink>
 
         <NuxtLink
+          to="/admin/usabilidad"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
+          :class="route.path === '/admin/usabilidad' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <ClipboardList :size="18" aria-hidden="true" class="shrink-0" />
+          <span>Encuesta de usabilidad</span>
+        </NuxtLink>
+
+        <NuxtLink
           to="/admin/sistema"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/sistema' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
@@ -221,7 +229,7 @@
 </template>
 
 <script setup lang="ts">
-import { Activity, BookOpen, Check, Library, ChevronDown, ChevronRight, FolderCode, House, Lock, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
+import { Activity, BookOpen, Check, ClipboardList, Library, ChevronDown, ChevronRight, FolderCode, House, Lock, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { claseDeLaRuta } from '~/utils/pestanasClase'
