@@ -7,7 +7,8 @@
     </div>
     <!-- El nombre va fuera del <nav>: en «Hoy» también enlaza a la página actual, y la navegación debe tener una sola. -->
     <nav aria-label="Secciones de la clase">
-      <ul class="flex overflow-x-auto px-2 text-xs font-semibold">
+      <!-- En el celular no caben las 8: el borde derecho se desvanece para mostrar que hay más, y la activa queda a la vista. -->
+      <ul ref="lista" class="flex overflow-x-auto px-2 text-xs font-semibold pestanas-desvanecidas">
         <li v-for="p in PESTANAS_CLASE" :key="p.id" class="shrink-0">
           <NuxtLink
             :to="enlacePestana(p.id, classId)"
@@ -26,10 +27,20 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { BookOpen, CalendarCheck, ClipboardCheck, GraduationCap, Inbox, LifeBuoy, Settings, Users } from 'lucide-vue-next'
 import { PESTANAS_CLASE, enlacePestana, type PestanaClase } from '~/utils/pestanasClase'
 
 defineProps<{ classId: number; activa: PestanaClase; nombre?: string; codigo?: string }>()
 
+const lista = ref<HTMLElement | null>(null)
+onMounted(() => lista.value?.querySelector('[aria-current="page"]')?.scrollIntoView({ inline: 'center', block: 'nearest' }))
+
 const ICONOS = { hoy: CalendarCheck, contenido: BookOpen, estudiantes: Users, asistencia: ClipboardCheck, entregas: Inbox, refuerzos: LifeBuoy, notas: GraduationCap, ajustes: Settings }
 </script>
+
+<style scoped>
+@media (max-width: 767px) {
+  .pestanas-desvanecidas { mask-image: linear-gradient(to right, #000 85%, transparent); }
+}
+</style>

@@ -168,7 +168,22 @@
           </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- En el celular, una tarjeta por estudiante: la tabla de 7 columnas partía los nombres en tres líneas y dejaba la
+             acción fuera de la pantalla (crítica de diseño del 05/10). -->
+        <ul class="md:hidden divide-y divide-base-borde-sutil" aria-label="Estudiantes">
+          <li v-for="st in filteredStudents" :key="st.studentId" class="py-3 flex items-center justify-between gap-3 text-xs">
+            <span class="min-w-0 space-y-1">
+              <NuxtLink :to="`/docente/estudiante/${st.studentId}?clase=${selectedClassId}`" class="font-semibold text-acento-ambar-fuerte hover:underline inline-flex min-h-[44px] items-center">{{ st.fullName }}</NuxtLink>
+              <span class="block text-[11px] text-base-texto-secundario">{{ porcentaje(st.successRate) }} de ejercicios aprobados · {{ st.submissionsCount }} envíos</span>
+            </span>
+            <span class="text-right shrink-0 space-y-1">
+              <span class="block font-mono font-bold" :class="st.avgMastery >= 60 ? 'text-semantico-pasa' : 'text-semantico-falla'">{{ porcentaje(st.avgMastery) }}</span>
+              <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold" :class="claseDiagnostico(st.avgMastery)">{{ textoDiagnostico(st.avgMastery) }}</span>
+            </span>
+          </li>
+        </ul>
+
+        <div class="hidden md:block overflow-x-auto">
           <table class="w-full text-xs text-left">
             <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil font-semibold">
               <tr>
@@ -204,12 +219,8 @@
                 <td class="p-3 text-center">
                   <span
                     class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-                    :class="st.avgMastery < 50
-                      ? 'bg-semantico-falla/15 text-semantico-falla'
-                      : st.avgMastery >= 80
-                        ? 'bg-semantico-pasa/10 text-semantico-pasa'
-                        : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
-                    {{ st.avgMastery < 50 ? 'Rezago crítico' : st.avgMastery >= 80 ? 'Sobresaliente' : 'En progreso' }}
+                    :class="claseDiagnostico(st.avgMastery)">
+                    {{ textoDiagnostico(st.avgMastery) }}
                   </span>
                 </td>
                 <td class="p-3 text-right">
@@ -217,7 +228,7 @@
                     :to="`/docente/estudiante/${st.studentId}?clase=${selectedClassId}`"
                     class="borde-afordancia px-2.5 py-1 rounded text-[11px] font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 inline-flex items-center gap-1">
                     <span>Ver ficha</span><span class="sr-only"> de {{ st.fullName }}</span>
-                    <span>→</span>
+                    <ArrowRight :size="12" aria-hidden="true" />
                   </NuxtLink>
                 </td>
               </tr>
@@ -230,7 +241,14 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2, OctagonAlert, TriangleAlert, Users } from 'lucide-vue-next'
+/** Diagnóstico en palabras (antes «Rezago crítico»): describe qué necesita, sin etiquetar al estudiante. */
+function textoDiagnostico(dominio: number): string {
+  return dominio < 50 ? 'Necesita apoyo' : dominio >= 80 ? 'Va muy bien' : 'Avanzando'
+}
+function claseDiagnostico(dominio: number): string {
+  return dominio < 50 ? 'bg-semantico-falla/15 text-semantico-falla' : dominio >= 80 ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'
+}
+import { ArrowRight, Loader2, OctagonAlert, TriangleAlert, Users } from 'lucide-vue-next'
 import { porcentaje } from '~/utils/porcentaje'
 import { useApi } from '~/composables/useApi'
 const { messageOf } = useApiErrorMessage()

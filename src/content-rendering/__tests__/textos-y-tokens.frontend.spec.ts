@@ -78,3 +78,17 @@ describe('números como se escriben en español', () => {
     expect(readFileSync(path.join(raiz, 'pages', 'docente', 'clase', '[classId]', 'index.vue'), 'utf8')).not.toContain('· la anterior {{');
   });
 });
+
+describe('el docente en el celular', () => {
+  it('Rendimiento: tarjetas por estudiante en el celular y la tabla desde 768 px; diagnóstico sin etiquetar («Necesita apoyo»)', () => {
+    const r = readFileSync(path.join(raiz, 'pages', 'docente', 'rendimiento.vue'), 'utf8');
+    expect(r).toContain('<ul class="md:hidden divide-y divide-base-borde-sutil" aria-label="Estudiantes">');
+    expect(r).toContain('<div class="hidden md:block overflow-x-auto">');
+    expect(r).toContain("'Necesita apoyo'");
+  });
+  it('las pestañas de la clase muestran que hay más y dejan la activa a la vista', () => {
+    const p = readFileSync(path.join(raiz, 'components', 'docente', 'PestanasClase.vue'), 'utf8');
+    expect(p).toContain('mask-image: linear-gradient(to right, #000 85%, transparent)');
+    expect(p).toContain("scrollIntoView({ inline: 'center', block: 'nearest' })");
+  });
+});
