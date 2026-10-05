@@ -151,6 +151,9 @@ profesor el martes con su respaldo. Si alguna no se acepta, baja de C a CP: cada
 
 ## 6. Qué falta para el 100 % y en qué orden
 
+> **Actualizado en la noche (§8):** la encuesta SUS ya está dentro de STIRE (punto 1), el patrón de PAT-01 y PAT-04 ya se
+> aplicó al panel del admin (puntos 4 y 5) y el modo oscuro (punto 3) espera una decisión.
+
 | # | Qué | Ítem | Puntos | Quién | Cuándo | Riesgo para el usuario |
 |---|---|---|---|---|---|---|
 | 1 | **Responder el SUS** (10 preguntas, 2 minutos por persona) y calcular el puntaje | UX-08 | +1 → **29/32 · 90,6 % · Sobresaliente** | José, Jorge, Julio, Pedro y Jeider | Lunes 05/10 | Ninguno: no cambia la aplicación |
@@ -190,8 +193,84 @@ compromiso con fecha.
 - **Límites:** es una autoevaluación con apoyo de Claude Code. Un ítem se considera cumplido de verdad solo con el ✅ de
   quien lo verifica en el equipo.
 
+## 8. Segunda ronda (noche del 04/10): lo que faltaba, cuestionado y mejorado
+
+Jeider pidió no dejar para después lo que se puede hacer ya, y cuestionar los criterios: cumplir su intención, explicarla
+y proponer algo mejor cuando el ejemplo de la lista no ayuda al estudiante. Cada decisión tiene su documento de diseño,
+con la investigación, y su entrada en la base teórica de la tesis (BT-30 a BT-34).
+
+### 8.1 Lo que faltaba en la lista de interfaz
+
+| Ítem | Qué falta y por qué | Qué se hizo | Estado |
+|---|---|---|---|
+| **UX-08** · Medir la usabilidad | El SUS era una tabla para llenar a mano: nadie lo calcula ni lo repite, y los estudiantes nunca lo responden. | **La encuesta SUS ahora está dentro de STIRE.** Se responde en 2 minutos desde el inicio o el perfil, se calcula sola y el admin ve los resultados sin nombres, con qué afirmación baja el puntaje. Invita después de 3 días de uso, sin interrumpir; se repite a los 90 días. [`DISENO_ENCUESTA_USABILIDAD.md`](../../../DISENO_ENCUESTA_USABILIDAD.md) | **Lista para recolectar.** Pasa a C cuando haya respuestas: las del equipo el lunes. |
+| **MOB-03** · Modo oscuro | El criterio lo pide expresamente. Hacerlo bien exige que los colores sean variables (`tailwind.config.ts` y `main.css`, territorio de José) y revisar unas 50 pantallas. **Lo que dice la investigación:** leer texto oscuro sobre fondo claro es más rápido y preciso (Piepenbrock et al., 2013). Por eso el modo oscuro va como **opción**, no como cambio por defecto. | Nada todavía. **Necesita una decisión de Jeider:** lo hace José en su territorio, o se autoriza a Claude Code a convertir los colores a variables. | CP |
+| **PAT-01** · Separar la vista de los datos | 32 de 44 páginas llaman a la API desde la vista. | **El patrón quedó probado en el panel de usuarios del admin.** La página ya no llama a la API; lo hace `useGestionUsuarios`, que es lo que recomienda Nuxt para aplicaciones grandes. Se sigue página por página. [`DISENO_ARQUITECTURA_FRONTEND.md`](../../../DISENO_ARQUITECTURA_FRONTEND.md) | CP (avanza) |
+| **PAT-04** · «The Blob» | **Cuestionado:** «ninguno de más de 300 líneas» es una señal, no la regla. «The Blob» es un archivo que concentra responsabilidades. Se divide por responsabilidad. | **El panel del admin, el peor caso, pasó de 1532 líneas a una página de 93**, un composable y 8 componentes de 38 a 138 líneas. Las cinco ventanas comparten una sola base accesible. `nuxi typecheck` da 0 errores. Quedan 26 de 125 archivos con más de 300 líneas; el siguiente es `docente/contenidos.vue`. | CP (avanza) |
+
+### 8.2 Las mejoras al Tutor (todas activas ahora, verificables por el equipo)
+
+| Ítem | Lo que pide la lista | Lo que se cuestionó | Lo que hace STIRE ahora |
+|---|---|---|---|
+| **META-02** · Juicios de confianza | Un control «¿qué tan seguro estás?» antes de cada envío y el contraste con el resultado | Preguntar en cada envío lo vuelve rutina; y si el juicio no se guarda, no se aprende de él | El juicio **se guarda**. **«Mi calibración: ¿sé cuándo sé?»** muestra con el tiempo cuántas veces acertó con cada nivel y da **una** acción: a quien se siente seguro y falla, predecir la salida antes de entregar. Lo ve también el docente. «Estabas seguro y no acertó» se presenta como el error que más enseña (hipercorrección). [`DISENO_CONFIANZA.md`](../../../DISENO_CONFIANZA.md) |
+| **UI-01** · Contenido en varios formatos | Diagnosticar el estilo (visual o verbal) y mostrar «su» formato | No hay evidencia de que emparejar el estilo mejore el aprendizaje (Pashler et al., 2008; Rogowsky et al., 2015); encasilla | Cada lección se puede **leer, ver, escuchar y practicar**. Lo nuevo es **«Escuchar la lección»**, con la voz del navegador, sin costo y sin enviar el texto a nadie. Arriba de cada lección dice qué más trae. Todos tienen todas las vías. [`DISENO_FORMATOS_LECCION.md`](../../../DISENO_FORMATOS_LECCION.md) |
+| **UI-05** · Replanificar ante el bloqueo | Atenuar la pantalla y pasar a un modo guiado tras 3 fallos | Quita el control justo cuando el estudiante está frustrado; forzar los pasos frustra (Razzaq y Heffernan, 2006) | **Ayuda escalonada, una acción a la vez:** 1 fallo, una pista; 2, por pasos; 3 o más, «Probemos de otra forma» con **un ejemplo resuelto parecido** (el Tutor no resuelve el suyo). Lo demás va plegado en «Otras formas de destrabarte». [`DISENO_REPLANIFICAR.md`](../../../DISENO_REPLANIFICAR.md) |
+
+### 8.3 Lo que decide el profesor: las 5 adaptaciones
+
+En Tutores Inteligentes STIRE tiene 24/24 **si el profesor acepta** que 5 ítems se cumplan por su intención y no por su
+ejemplo literal. Cada uno vale 2 puntos. Si no acepta uno, baja a «cumple parcialmente» (1 punto). Para cada caso hay un
+plan B que no le quita libertad al estudiante.
+
+| Ítem | Lo que pide literalmente | Lo que hace STIRE y por qué | Si no lo acepta: plan B |
+|---|---|---|---|
+| **UI-01** | Diagnóstico de estilo y un formato por estudiante | Todas las vías para todos (leer, ver, escuchar, practicar); la evidencia descarta el emparejamiento de estilos | Un cuestionario **opcional** de Felder solo para que el estudiante se conozca, que sugiera por cuál vía empezar sin ocultar las demás |
+| **UI-02** | Bloquear temas al estudiante «secuencial» | Bloqueo suave por módulo, igual para todos, que **el docente** ajusta o apaga; libre dentro del módulo. Ya cumple la intención, y la decisión queda en manos del docente | Una opción «Prefiero ir en orden» que el estudiante activa |
+| **UI-04** | Recomendar recursos «por pares» con k-NN | Ver la explicación abajo | Activar «a otros les sirvió…» solo cuando la clase tenga datos suficientes (unas 30 valoraciones) |
+| **UI-05** | Atenuar la pantalla y forzar el modo guiado | Ayuda escalonada que se ofrece, no se impone | Que el docente pueda activar el modo por pasos automático tras N fallos |
+| **META-02** | Un control en **cada** envío | En el primer envío de cada ejercicio, más la calibración acumulada | Una opción del docente: «preguntar la confianza en cada envío» |
+
+**UI-04, explicado sin términos técnicos.** El ejemplo de la lista es este: cuando a un estudiante no le sirve una
+explicación, el sistema busca **estudiantes parecidos** (k-NN significa «los vecinos más cercanos») y le recomienda lo que
+a ellos les sirvió. Funciona en plataformas con miles de estudiantes. En una clase de 5 a 30, los «vecinos» no se parecen
+de verdad y la recomendación sería casi al azar.
+
+Lo que hace STIRE cumple la intención, que es que **los recursos se mejoren con lo que dicen los estudiantes**:
+1. Al final de cada lección pregunta «¿Te sirvió esta explicación?».
+2. Si la respuesta es «No», el Tutor la explica de otra forma, y ahora también ofrece las otras vías de la lección
+   (escucharla o ver el diagrama).
+3. El docente ve qué lecciones no se entienden y las mejora: el curso mejora con el uso.
+4. Si un recurso externo falla, se ofrece otra vía sin romper la pantalla.
+
+Es lo que tú mismo propusiste: evaluar la lección que el estudiante está usando para después mejorar el contenido.
+
+### 8.4 Cómo queda
+
+| Lista | Hoy (autoevaluación) | Con el SUS del equipo | Si además el profesor rechaza una adaptación |
+|---|---|---|---|
+| Interfaz | 28/32 · 87,5 % · Aceptable | **29/32 · 90,6 % · Sobresaliente** | — |
+| Tutores Inteligentes | 24/24 · 100 % · Sobresaliente | 24/24 · 100 % | 23/24 · 95,8 % · Sobresaliente (con dos rechazos: 22/24 · 91,7 %) |
+
+En puntos, la interfaz no sube hasta tener respuestas del SUS. Pero los tres ítems que siguen en CP avanzaron:
+- **PAT-01 y PAT-04:** su patrón ya está probado en el panel del admin.
+- **MOB-03:** espera una decisión.
+
+El Tutor, que ya tenía la nota completa, quedó **mejor de verdad**:
+- la calibración ahora se aprende con el tiempo;
+- la lección también se escucha;
+- la ayuda cambia de táctica sin abrumar.
+
+**Antes de que el equipo lo vea hay que desplegar el servidor**, porque estas mejoras guardan datos nuevos (la confianza
+y la encuesta). El frontend se publica después del servidor: si se publicara antes, las entregas con juicio de confianza
+fallarían.
+
 ## Referencias
 
+- Butterfield, B. y Metcalfe, J. (2001). Errors committed with high confidence are hypercorrected. *Journal of Experimental Psychology: Learning, Memory, and Cognition, 27*(6), 1491-1494. https://doi.org/10.1037/0278-7393.27.6.1491
+- Pashler, H., McDaniel, M., Rohrer, D. y Bjork, R. (2008). Learning Styles: Concepts and Evidence. *Psychological Science in the Public Interest, 9*(3), 105-119. https://doi.org/10.1111/j.1539-6053.2009.01038.x
+- Piepenbrock, C., Mayr, S., Mund, I. y Buchner, A. (2013). Positive display polarity is advantageous for both younger and older adults. *Ergonomics, 56*(7), 1116-1124. https://doi.org/10.1080/00140139.2013.790485
+- Razzaq, L. y Heffernan, N. T. (2006). Scaffolding vs. Hints in the Assistment System. En *ITS 2006*, LNCS 4053, 635-644. https://doi.org/10.1007/11774303_63
+- Rogowsky, B. A., Calhoun, B. M. y Tallal, P. (2015). Matching learning style to instructional method: Effects on comprehension. *Journal of Educational Psychology, 107*(1), 64-78. https://doi.org/10.1037/a0037478
 - Brooke, J. (1996). SUS: A «quick and dirty» usability scale. En P. W. Jordan et al. (Eds.), *Usability Evaluation in Industry* (pp. 189–194). Taylor & Francis.
 - Caro Piñeres, M. F. (2015). *Metamodel for personalized adaptation of pedagogical strategies using metacognition in Intelligent Tutoring Systems* (tesis doctoral). Universidad Nacional de Colombia, Medellín.
 - Denny, P. (2013). The effect of virtual achievements on student engagement. *CHI '13*, 763–772. https://doi.org/10.1145/2470654.2470763

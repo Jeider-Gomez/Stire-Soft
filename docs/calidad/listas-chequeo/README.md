@@ -20,7 +20,7 @@ al Tutor. Tiene dos líneas de trabajo (interfaz y Tutores Inteligentes), una so
 
 ## Dónde estamos hoy
 
-[`2026-10-04_seguimiento/ESTADO_STIRE_LISTAS_CHEQUEO.md`](2026-10-04_seguimiento/ESTADO_STIRE_LISTAS_CHEQUEO.md) explica, ítem por ítem, cómo está STIRE frente a las dos listas después de la organización académica, las plantillas y los logros: qué se encontró al medir 36 pantallas, qué se corrigió y qué falta para el 100 %.
+[`2026-10-04_seguimiento/ESTADO_STIRE_LISTAS_CHEQUEO.md`](2026-10-04_seguimiento/ESTADO_STIRE_LISTAS_CHEQUEO.md) explica, ítem por ítem, cómo está STIRE frente a las dos listas después de la organización académica, las plantillas y los logros: qué se encontró al medir 36 pantallas, qué se corrigió y qué falta para el 100 %. Su §8 recoge la segunda ronda de la noche: la encuesta SUS dentro de STIRE, la calibración del juicio de confianza, «Escuchar la lección», la ayuda escalonada, la división del panel del admin y las 5 adaptaciones que se presentan al profesor, con su plan B.
 
 ## Verificación del equipo
 

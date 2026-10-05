@@ -326,6 +326,56 @@ trazabilidad (solo para el anexo técnico).
 
 ---
 
+## BT-30. El juicio de confianza se guarda y se muestra como calibración con el tiempo
+
+| | |
+|---|---|
+| **Problema observado** | STIRE preguntaba «¿Qué tan seguro estás?» antes de la primera entrega y decía si coincidió, pero el juicio no se guardaba: nadie podía ver si la seguridad del estudiante coincide con sus resultados a lo largo del curso. |
+| **Decisión** | - Se guarda el juicio de la primera entrega de cada ejercicio.<br>- «Mi calibración» en Mi progreso: aciertos por nivel y **una** lectura con **una** acción (sobreconfianza, subconfianza, calibrado), desde 5 juicios. La ve también el docente.<br>- «Estabas seguro y no acertó» se presenta como el error que más enseña. |
+| **Fundamento** | - Los ejercicios de monitoreo con retroalimentación, repetidos, mejoran la precisión del juicio y el rendimiento (Nietfeld, Cao y Osborne, 2006).<br>- Conviene distinguir sobreconfianza de subconfianza (Schraw, 2009).<br>- Los errores cometidos con mucha seguridad se corrigen mejor tras la retroalimentación (hipercorrección; Butterfield y Metcalfe, 2001). |
+| **Cómo se materializa** | Mi progreso del estudiante, ficha del estudiante del docente, mensaje al calificar. |
+| **Trazabilidad** | `src/analytics/calibracion.ts`, `src/migrations/1792200000000-ConfianzaEntrega.ts`, `frontend-nuxt/utils/confianza.ts`, `components/estudiante/MiCalibracion.vue`; `docs/DISENO_CONFIANZA.md`. |
+
+## BT-31. La usabilidad se mide dentro de STIRE con el SUS
+
+| | |
+|---|---|
+| **Problema observado** | El SUS era una tabla para llenar a mano: no se calculaba, no se repetía y los estudiantes reales nunca lo respondían. |
+| **Decisión** | - Encuesta SUS dentro de la aplicación, de 2 minutos, con una pregunta abierta.<br>- Invitación como tarjeta en el inicio, solo después de 3 días de uso; «Ahora no» la oculta 7 días; se repite a los 90 días.<br>- El admin ve los resultados sin nombres, por rol y por afirmación. |
+| **Fundamento** | - SUS (Brooke, 1996), con rangos de aceptabilidad de Bangor, Kortum y Miller (2008).<br>- Hay versiones validadas en español (Sevilla-Gonzalez et al., 2020; Castilla et al., 2024).<br>- Preguntar después de usar y sin interrumpir (guías de producto de encuestas dentro de la aplicación, no evidencia científica). |
+| **Cómo se materializa** | `/estudiante/encuesta`, `/docente/encuesta`, tarjeta en el inicio, `/admin/usabilidad`. |
+| **Trazabilidad** | `src/usabilidad/`, `src/migrations/1792300000000-EncuestaSus.ts`, `frontend-nuxt/utils/sus.ts`; `docs/DISENO_ENCUESTA_USABILIDAD.md`. |
+
+## BT-32. Varias formas de entrar a la misma lección, no un «estilo» por estudiante
+
+| | |
+|---|---|
+| **Problema observado** | La lista de chequeo propone diagnosticar el estilo de aprendizaje (Felder-Silverman) y mostrar a cada uno «su» formato. Jeider lo consideró excesivo y pidió tener el material en varios tipos (visual, auditivo y práctico) para no limitar al estudiante a lo textual. |
+| **Decisión** | - Cada lección se puede **leer**, **ver** (el algoritmo en diagrama, pseudocódigo y paso a paso; imágenes y videos), **escuchar** (nuevo: «Escuchar la lección», con la voz del navegador) y **practicar** (ejemplos en vivo y ejercicios).<br>- Arriba de la lección, «También en esta lección» dice qué trae. No se diagnostica un estilo. |
+| **Fundamento** | - No hay evidencia para emparejar la enseñanza con el estilo preferido (Pashler et al., 2008); un experimento con audiolibro o texto no encontró efecto de la preferencia (Rogowsky, Calhoun y Tallal, 2015); el mito encasilla (Kirschner, 2017).<br>- Palabras e imágenes juntas, y palabras habladas junto al diagrama, ayudan a todos (principios multimedia y de modalidad; Mayer, 2017); codificación dual (Clark y Paivio, 1991). |
+| **Cómo se materializa** | Barra de formatos y «Escuchar la lección» al inicio de cada lección. |
+| **Trazabilidad** | `frontend-nuxt/utils/escucharLeccion.ts`, `components/EscucharLeccion.vue`, `components/AlgoritmoMultiformato.vue`; `docs/DISENO_FORMATOS_LECCION.md`. |
+
+## BT-33. Ante el bloqueo, la ayuda escala y cambia de táctica, una acción a la vez
+
+| | |
+|---|---|
+| **Problema observado** | Al fallar se ofrecían varias ayudas a la vez, siempre las mismas. La lista propone atenuar la pantalla y forzar un modo guiado; Jeider pidió no abrumar. |
+| **Decisión** | Según los fallos seguidos: 1, una pista; 2, por pasos; 3 o más, «Probemos de otra forma» con un **ejemplo resuelto parecido**. Una acción principal, «Ahora no» y las demás plegadas. Nada se impone. |
+| **Fundamento** | - Dividir el problema en subpreguntas enseña más que una pista larga, pero forzarlo frustra (Razzaq y Heffernan, 2006).<br>- Los estudiantes abusan o evitan la ayuda; orientarla mejora su uso (Aleven, Roll, McLaren y Koedinger, 2016).<br>- Estudiar ejemplos resueltos ayuda a los novatos (Atkinson, Derry, Renkl y Wortham, 2000).<br>- Khan Academy ofrece pistas, ejemplo y video, uno a la vez (guía de producto). |
+| **Cómo se materializa** | Tarjeta de ayuda en el ejercicio; modo «ejemplo parecido» del Tutor. |
+| **Trazabilidad** | `frontend-nuxt/utils/ofertaTutor.ts`, `stores/workspace.ts`, `stores/tutor.ts`, `src/tutor/tutor-senales.ts`; `docs/DISENO_REPLANIFICAR.md`. |
+
+## BT-34. Composables por dominio y componentes con una responsabilidad
+
+| | |
+|---|---|
+| **Problema observado** | El panel de usuarios del admin tenía 1532 líneas: llamadas a la API, dos tablas y cinco ventanas que repetían la misma lógica de foco («The Blob»). |
+| **Decisión** | La página organiza; un composable habla con la API; una base común para las ventanas; un componente por ventana y por pestaña. Se divide por **responsabilidad**, no por número de líneas. |
+| **Fundamento** | - El antipatrón «The Blob» es la concentración de responsabilidades (Brown et al., 1998, en Pressman y Maxim, 2019, cap. 14).<br>- Nuxt recomienda la obtención de datos en composables por dominio (documentación oficial; guía de producto). |
+| **Cómo se materializa** | Panel de usuarios del admin (mismo comportamiento, código dividido). |
+| **Trazabilidad** | `frontend-nuxt/pages/admin/index.vue`, `composables/useGestionUsuarios.ts`, `components/admin/`; `docs/DISENO_ARQUITECTURA_FRONTEND.md`. |
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |
@@ -340,6 +390,20 @@ trazabilidad (solo para el anexo técnico).
 
 ## Referencias (verificadas en Crossref; las de la matriz, con su número)
 
+- Aleven, V., Roll, I., McLaren, B. M. y Koedinger, K. R. (2016). Help Helps, But Only So Much: Research on Help Seeking with Intelligent Tutoring Systems. *International Journal of Artificial Intelligence in Education, 26*(1), 205-223. https://doi.org/10.1007/s40593-015-0089-1
+- Bangor, A., Kortum, P. T. y Miller, J. T. (2008). An Empirical Evaluation of the System Usability Scale. *International Journal of Human–Computer Interaction, 24*(6), 574-594. https://doi.org/10.1080/10447310802205776
+- Brooke, J. (1996). SUS: A «quick and dirty» usability scale. En P. W. Jordan et al. (Eds.), *Usability Evaluation in Industry* (pp. 189-194). Taylor & Francis.
+- Butterfield, B. y Metcalfe, J. (2001). Errors committed with high confidence are hypercorrected. *Journal of Experimental Psychology: Learning, Memory, and Cognition, 27*(6), 1491-1494. https://doi.org/10.1037/0278-7393.27.6.1491
+- Castilla, D. et al. (2024). Psychometric Properties of the Spanish Full and Short Forms of the System Usability Scale (SUS). *International Journal of Human–Computer Interaction, 40*(15), 4145-4151. https://doi.org/10.1080/10447318.2023.2209840
+- Clark, J. M. y Paivio, A. (1991). Dual coding theory and education. *Educational Psychology Review, 3*(3), 149-210. https://doi.org/10.1007/BF01320076
+- Kirschner, P. A. (2017). Stop propagating the learning styles myth. *Computers & Education, 106*, 166-171. https://doi.org/10.1016/j.compedu.2016.12.006
+- Mayer, R. E. (2017). Using multimedia for e-learning. *Journal of Computer Assisted Learning, 33*(5), 403-423. https://doi.org/10.1111/jcal.12197
+- Nietfeld, J. L., Cao, L. y Osborne, J. W. (2006). The effect of distributed monitoring exercises and feedback on performance, monitoring accuracy, and self-efficacy. *Metacognition and Learning, 1*(2), 159-179. https://doi.org/10.1007/s10409-006-9595-6
+- Pashler, H., McDaniel, M., Rohrer, D. y Bjork, R. (2008). Learning Styles: Concepts and Evidence. *Psychological Science in the Public Interest, 9*(3), 105-119. https://doi.org/10.1111/j.1539-6053.2009.01038.x
+- Razzaq, L. y Heffernan, N. T. (2006). Scaffolding vs. Hints in the Assistment System. En *ITS 2006*, LNCS 4053, 635-644. https://doi.org/10.1007/11774303_63
+- Rogowsky, B. A., Calhoun, B. M. y Tallal, P. (2015). Matching learning style to instructional method: Effects on comprehension. *Journal of Educational Psychology, 107*(1), 64-78. https://doi.org/10.1037/a0037478
+- Schraw, G. (2009). A conceptual analysis of five measures of metacognitive monitoring. *Metacognition and Learning, 4*(1), 33-45. https://doi.org/10.1007/s11409-008-9031-3
+- Sevilla-Gonzalez, M. del R. et al. (2020). Spanish Version of the System Usability Scale for the Assessment of Electronic Tools: Development and Validation. *JMIR Human Factors, 7*(4), e21161. https://doi.org/10.2196/21161
 - Atkinson, R. K., Derry, S. J., Renkl, A. y Wortham, D. (2000). Learning from Examples: Instructional Principles from the Worked Examples Research. *Review of Educational Research, 70*(2), 181-214. https://doi.org/10.3102/00346543070002181
 - Baker, R. S., Corbett, A. T. y Koedinger, K. R. (2004). Detecting Student Misuse of Intelligent Tutoring Systems. En *ITS 2004*, LNCS, 531-540. https://doi.org/10.1007/978-3-540-30139-4_50
 - Bastani, H., Bastani, O., Sungu, A., Ge, H. et al. (2025). Generative AI without guardrails can harm learning: Evidence from high school mathematics. *PNAS, 122*(26). https://doi.org/10.1073/pnas.2422633122
