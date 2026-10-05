@@ -1,13 +1,15 @@
 <template>
-  <!-- Encuesta SUS (UX-08; utils/sus.ts). 10 afirmaciones, de 1 a 5, en una sola página: son 2 minutos. Cada afirmación es
-       un grupo de radios con su leyenda; los botones miden 44 px. Si falta alguna, el error va junto a ella y el foco
-       también (PAT-03). -->
+  <!-- Encuesta de usabilidad (UX-08; utils/sus.ts), en dos partes y en una sola página (unos 3 minutos):
+       1. el SUS, igual para todos (10 afirmaciones de 1 a 5), para comparar con otras plataformas y entre roles;
+       2. distinta por rol: qué tan fácil fue cada tarea clave, de 1 a 7 (Sauro y Dumas, 2009), y una pregunta abierta
+          de su rol. Cada pregunta es un grupo de radios con su leyenda; los botones miden 44 px. Si falta alguna del SUS,
+          el error va junto a ella y el foco también (PAT-03). Las de la segunda parte se pueden dejar en «No lo he hecho». -->
   <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 sm:p-6 shadow-sm space-y-5" aria-labelledby="encuesta-titulo">
     <header class="space-y-1">
       <h1 id="encuesta-titulo" class="text-xl font-bold text-base-texto-primario tracking-tight">Encuesta de usabilidad</h1>
       <p class="text-xs text-slate-600">
-        10 afirmaciones sobre cómo te ha parecido usar STIRE. Marca qué tan de acuerdo estás con cada una. Son unos 2 minutos
-        y nos dicen qué mejorar. No hay respuestas buenas ni malas.
+        Primero 10 afirmaciones sobre cómo te ha parecido usar STIRE; después {{ tareas.length ? `${tareas.length} preguntas sobre lo que haces como ${rol}` : 'una pregunta abierta' }}.
+        Son unos 3 minutos y nos dicen qué mejorar. No hay respuestas buenas ni malas.
       </p>
     </header>
 
@@ -23,6 +25,7 @@
     </div>
 
     <form v-else class="space-y-4" novalidate @submit.prevent="enviar">
+      <h2 class="text-sm font-bold text-base-texto-primario">1. Tu experiencia en general</h2>
       <p class="text-[11px] text-slate-600" aria-live="polite">Respondidas: {{ 10 - faltan.length }} de 10</p>
       <fieldset v-for="(a, i) in AFIRMACIONES_SUS" :id="`sus-${i}`" :key="i" tabindex="-1"
         class="rounded-lg border p-3 space-y-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-acento-ambar-fuerte"
@@ -43,8 +46,31 @@
         <p v-if="errores && respuestas[i] === null" :id="`sus-${i}-falta`" class="text-[11px] font-semibold text-semantico-falla">Falta esta respuesta.</p>
       </fieldset>
 
+      <template v-if="tareas.length">
+        <h2 class="text-sm font-bold text-base-texto-primario pt-2">2. Lo que haces en STIRE</h2>
+        <p class="text-[11px] text-slate-600">¿Qué tan fácil o difícil te ha resultado cada cosa? Si no la has hecho, déjala en «No lo he hecho».</p>
+        <fieldset v-for="t in tareas" :key="t.clave" class="rounded-lg border border-base-borde-sutil p-3 space-y-2">
+          <legend class="sr-only">{{ t.texto }}</legend>
+          <p class="text-sm text-base-texto-primario" aria-hidden="true">{{ t.texto }}</p>
+          <div class="grid grid-cols-7 gap-1">
+            <label v-for="v in ESCALA_FACILIDAD" :key="v"
+              class="min-h-[44px] flex items-center justify-center rounded-md border text-sm font-bold cursor-pointer transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-acento-ambar-fuerte"
+              :class="facilidad[t.clave] === v ? 'bg-acento-ambar-fuerte text-base-blanco border-acento-ambar-fuerte' : 'border-base-borde-fuerte text-base-texto-primario hover:bg-base-bg-secundario'">
+              <input v-model="facilidad[t.clave]" type="radio" :name="`tarea-${t.clave}`" :value="v" class="sr-only" />
+              <span aria-hidden="true">{{ v }}</span>
+              <span class="sr-only">{{ v }}{{ v === 1 ? ': muy difícil' : v === 7 ? ': muy fácil' : '' }}</span>
+            </label>
+          </div>
+          <div class="flex justify-between text-[10px] text-slate-600" aria-hidden="true"><span>Muy difícil</span><span>Muy fácil</span></div>
+          <label class="inline-flex items-center gap-2 min-h-[44px] text-xs text-slate-700 cursor-pointer">
+            <input v-model="facilidad[t.clave]" type="radio" :name="`tarea-${t.clave}`" :value="null" class="accent-acento-ambar-fuerte" />
+            No lo he hecho
+          </label>
+        </fieldset>
+      </template>
+
       <div class="space-y-1">
-        <label for="sus-comentario" class="block text-xs font-semibold text-base-texto-primario">¿Qué cambiarías primero? <span class="font-normal text-slate-600">(opcional)</span></label>
+        <label for="sus-comentario" class="block text-xs font-semibold text-base-texto-primario">{{ preguntaAbierta(rol) }} <span class="font-normal text-slate-600">(opcional)</span></label>
         <textarea id="sus-comentario" v-model="comentario" rows="3" maxlength="500"
           class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none" />
       </div>
@@ -60,9 +86,14 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { CircleCheck } from 'lucide-vue-next'
-import { AFIRMACIONES_SUS, ESCALA_SUS, faltantesSus, type EstadoSus } from '~/utils/sus'
+import { AFIRMACIONES_SUS, ESCALA_FACILIDAD, ESCALA_SUS, faltantesSus, preguntaAbierta, TAREAS_POR_ROL, tareasRespondidas, type EstadoSus } from '~/utils/sus'
+import { useAuthStore } from '~/stores/auth'
 
 const api = useApi()
+const authStore = useAuthStore()
+const rol = computed(() => authStore.user?.role)
+const tareas = computed(() => TAREAS_POR_ROL[rol.value ?? ''] ?? [])
+const facilidad = ref<Record<string, number | null>>({})
 const respuestas = ref<Array<number | null>>(Array(10).fill(null))
 const comentario = ref('')
 const estado = ref<EstadoSus | null>(null)
@@ -96,7 +127,12 @@ async function enviar() {
   }
   enviando.value = true
   try {
-    const r = await api.post<{ puntaje: number }>('/usabilidad/sus', { respuestas: respuestas.value, ...(comentario.value.trim() ? { comentario: comentario.value.trim() } : {}) })
+    const respondidas = tareasRespondidas(facilidad.value)
+    const r = await api.post<{ puntaje: number }>('/usabilidad/sus', {
+      respuestas: respuestas.value,
+      ...(comentario.value.trim() ? { comentario: comentario.value.trim() } : {}),
+      ...(Object.keys(respondidas).length ? { tareas: respondidas } : {}),
+    })
     hecho.value = r.puntaje
   } catch {
     error.value = 'No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.'

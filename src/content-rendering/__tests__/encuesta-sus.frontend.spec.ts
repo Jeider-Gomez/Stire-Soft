@@ -88,3 +88,32 @@ describe('el formulario', () => {
     expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('to="/admin/usabilidad"');
   });
 });
+
+describe('segunda parte, distinta para estudiantes y docentes (pedido del dueño, 04/10)', () => {
+  const u = cargar<{
+    TAREAS_POR_ROL: Record<string, Array<{ clave: string }>>;
+    preguntaAbierta: (rol?: string) => string;
+    tareasRespondidas: (v: Record<string, number | null>) => Record<string, number>;
+  }>('sus');
+  const f = leer('components', 'EncuestaSus.vue');
+
+  it('las tareas son las mismas claves que valida el servidor', () => {
+    const servidor = readFileSync(path.join(__dirname, '..', '..', 'usabilidad', 'sus.ts'), 'utf8');
+    for (const rol of ['estudiante', 'docente']) for (const t of u.TAREAS_POR_ROL[rol]) expect(servidor).toContain(`clave: '${t.clave}'`);
+  });
+
+  it('cada rol tiene su pregunta abierta y «No lo he hecho» no se envía', () => {
+    expect(u.preguntaAbierta('estudiante')).toBe('¿Qué te ayudaría a aprender mejor con STIRE?');
+    expect(u.preguntaAbierta('docente')).toBe('¿Qué te quitaría más trabajo en STIRE?');
+    expect(u.tareasRespondidas({ a: 5, b: null })).toEqual({ a: 5 });
+  });
+
+  it('el SUS va primero e igual para todos; luego la facilidad de 1 a 7, con «No lo he hecho»', () => {
+    expect(f.indexOf('1. Tu experiencia en general')).toBeLessThan(f.indexOf('2. Lo que haces en STIRE'));
+    expect(f).toContain('<fieldset v-for="t in tareas"');
+    expect(f).toContain('No lo he hecho');
+    expect(f).toContain('{{ preguntaAbierta(rol) }}');
+    // el admin ve la tarea más difícil de cada rol
+    expect(leer('pages', 'admin', 'usabilidad.vue')).toContain('v-for="(lista, r) in datos.tareas ?? {}"');
+  });
+});

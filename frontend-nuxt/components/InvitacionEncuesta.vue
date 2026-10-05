@@ -6,7 +6,7 @@
     <MessageSquareHeart :size="22" class="shrink-0 text-semantico-info" aria-hidden="true" />
     <div class="flex-1 min-w-0">
       <p id="invitacion-encuesta-titulo" class="text-sm font-bold text-base-texto-primario">¿Nos ayudas a mejorar STIRE?</p>
-      <p class="text-xs text-slate-700">10 afirmaciones sobre cómo te ha parecido usarlo. Son unos 2 minutos.</p>
+      <p class="text-xs text-slate-700">Cómo te ha parecido usarlo y qué te cuesta más. Son unos 3 minutos.</p>
     </div>
     <div class="flex gap-2">
       <NuxtLink :to="ruta" class="min-h-[44px] inline-flex items-center px-4 rounded-md bg-semantico-info text-base-blanco text-xs font-bold">Responder</NuxtLink>

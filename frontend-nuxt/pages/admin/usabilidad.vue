@@ -48,8 +48,24 @@
         </ul>
       </section>
 
+      <!-- Segunda parte, por rol: dónde está la dificultad. La más difícil, arriba. -->
+      <section v-for="(lista, r) in datos.tareas ?? {}" :key="r" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 space-y-3" :aria-labelledby="`tareas-${r}-titulo`">
+        <h2 :id="`tareas-${r}-titulo`" class="text-sm font-bold text-base-texto-primario">Facilidad de las tareas: {{ r === 'docente' ? 'docentes' : 'estudiantes' }}</h2>
+        <p class="text-[11px] text-slate-600">Promedio de 1 (muy difícil) a 7 (muy fácil), de la más difícil a la más fácil. Bajo {{ FACILIDAD_ACEPTABLE }}, la tarea cuesta más de lo que debería: es la primera a mejorar.</p>
+        <ul class="space-y-2">
+          <li v-for="t in lista" :key="t.clave" class="grid grid-cols-[1fr_auto] gap-3 items-center text-xs">
+            <span class="text-base-texto-primario">
+              {{ t.texto }} <span class="text-slate-600">({{ t.n }} {{ t.n === 1 ? 'respuesta' : 'respuestas' }})</span>
+              <span v-if="t.promedio !== null && t.promedio < FACILIDAD_ACEPTABLE" class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-50 text-red-700 border border-red-200">A mejorar</span>
+            </span>
+            <span class="font-bold text-base-texto-primario tabular-nums">{{ t.promedio === null ? '—' : formato(t.promedio) }}</span>
+          </li>
+        </ul>
+      </section>
+
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 space-y-3" aria-labelledby="comentarios-titulo">
-        <h2 id="comentarios-titulo" class="text-sm font-bold text-base-texto-primario">¿Qué cambiarían primero?</h2>
+        <h2 id="comentarios-titulo" class="text-sm font-bold text-base-texto-primario">Lo que pidieron, en sus palabras</h2>
+        <p class="text-[11px] text-slate-600">Estudiantes: «¿Qué te ayudaría a aprender mejor?». Docentes: «¿Qué te quitaría más trabajo?».</p>
         <p v-if="!datos.comentarios.length" class="text-xs text-slate-600">Nadie ha dejado un comentario todavía.</p>
         <ul v-else class="divide-y divide-base-borde-sutil">
           <li v-for="(c, i) in datos.comentarios" :key="i" class="py-2 text-xs">
@@ -65,7 +81,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { ClipboardList } from 'lucide-vue-next'
-import { afirmacionesAMejorar, AFIRMACIONES_SUS, esPositivaSus, NOMBRE_ACEPTABILIDAD, type ResumenSus } from '~/utils/sus'
+import { afirmacionesAMejorar, AFIRMACIONES_SUS, esPositivaSus, FACILIDAD_ACEPTABLE, NOMBRE_ACEPTABILIDAD, type ResumenSus } from '~/utils/sus'
 
 definePageMeta({ layout: 'admin' })
 

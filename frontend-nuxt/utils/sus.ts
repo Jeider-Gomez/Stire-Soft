@@ -62,6 +62,45 @@ export function invitacionPospuesta(guardado: string | null, ahora: number): boo
   return Number.isFinite(t) && t > 0 && ahora - t < DIAS_SIN_INVITAR * 86_400_000
 }
 
+/**
+ * Segunda parte, distinta por rol (src/usabilidad/sus.ts, TAREAS_POR_ROL): «¿Qué tan fácil o difícil te resultó…?» de
+ * 1 a 7 para las tareas clave de cada rol (Single Ease Question; Sauro y Dumas, 2009). El SUS dice cuánto; esto, dónde.
+ */
+export const TAREAS_POR_ROL: Record<string, ReadonlyArray<{ clave: string; texto: string }>> = {
+  estudiante: [
+    { clave: 'entender-leccion', texto: 'Entender una lección (leerla, escucharla o ver su diagrama)' },
+    { clave: 'resolver-ejercicio', texto: 'Resolver un ejercicio y entender por qué pasó o falló' },
+    { clave: 'pedir-ayuda', texto: 'Pedir ayuda al Tutor cuando te atascas' },
+    { clave: 'saber-que-sigue', texto: 'Saber qué estudiar o repasar después' },
+    { clave: 'entregar-proyecto', texto: 'Hacer y entregar un proyecto' },
+  ],
+  docente: [
+    { clave: 'crear-leccion', texto: 'Crear o editar una lección' },
+    { clave: 'crear-ejercicio', texto: 'Crear un ejercicio con sus casos de prueba' },
+    { clave: 'revisar-entregas', texto: 'Revisar y calificar entregas' },
+    { clave: 'seguir-clase', texto: 'Ver quién va bien y quién necesita ayuda' },
+    { clave: 'configurar-clase', texto: 'Configurar la clase (Tutor, logros, notas)' },
+  ],
+}
+export const ESCALA_FACILIDAD = [1, 2, 3, 4, 5, 6, 7] as const
+
+/** La pregunta abierta de cada rol: lo que más le serviría, en sus palabras. */
+export function preguntaAbierta(rol: string | undefined): string {
+  if (rol === 'docente') return '¿Qué te quitaría más trabajo en STIRE?'
+  if (rol === 'estudiante') return '¿Qué te ayudaría a aprender mejor con STIRE?'
+  return '¿Qué cambiarías primero?'
+}
+
+/** Solo las tareas respondidas (sin respuesta = «no la he hecho»). */
+export function tareasRespondidas(valores: Record<string, number | null>): Record<string, number> {
+  return Object.fromEntries(Object.entries(valores).filter((e): e is [string, number] => typeof e[1] === 'number'))
+}
+
+export interface FacilidadTarea { clave: string; texto: string; promedio: number | null; n: number }
+
+/** Bajo 5 de 7 una tarea es difícil para lo que debería ser (el promedio de referencia de la SEQ ronda 5,5). */
+export const FACILIDAD_ACEPTABLE = 5
+
 export interface EstadoSus { ultima: string | null; puntaje: number | null; puedeResponder: boolean; invitar: boolean }
 export interface ResumenSus {
   n: number
@@ -70,4 +109,6 @@ export interface ResumenSus {
   porRol: Record<string, { n: number; promedio: number }>
   porPregunta: number[]
   comentarios: Array<{ rol: string; texto: string; fecha: string }>
+  /** Por rol, de la tarea más difícil a la más fácil. Ausente en un servidor de antes de la segunda parte. */
+  tareas?: Record<string, FacilidadTarea[]>
 }
