@@ -5,6 +5,8 @@
  * - META-02 · juicio de confianza: lo que el estudiante dijo antes de entregar («seguro», «dudo», «adivino») y si acertó.
  * - UI-05 · resolver por pasos: el estudiante pidió que el problema se divida en subpreguntas.
  * - UI-04 · otra explicación: el estudiante dijo que la explicación de la lección no le sirvió.
+ * - UI-05 · ejemplo parecido: tras varios intentos fallidos, ver resuelto un problema PARECIDO (no el suyo) — cambio de
+ *   táctica con el efecto del ejemplo resuelto (Atkinson, Derry, Renkl y Wortham, 2000).
  *
  * Todo llega como un código de una lista cerrada: el navegador no puede colar texto libre en el prompt.
  */
@@ -61,6 +63,13 @@ export function instruccionesDeSenales(s: SenalesDelEstudiante | null | undefine
     lineas.push(
       'MODO POR PASOS (lo pidió el estudiante tras varios intentos fallidos): divide el problema en 3 a 5 subpreguntas pequeñas y en orden. ' +
         'Escribe solo la lista corta de pasos y plantea ÚNICAMENTE la primera subpregunta; espera su respuesta antes de seguir. No escribas el código de la solución.',
+    );
+  }
+  if (s.modo === 'ejemplo-parecido') {
+    lineas.push(
+      'EJEMPLO PARECIDO (UI-05, lo pidió el estudiante tras varios intentos fallidos): resuelve paso a paso un problema PARECIDO pero distinto ' +
+        '(otro contexto y otros datos), explicando el porqué de cada paso. NO resuelvas su ejercicio ni escribas su solución. ' +
+        'Termina pidiéndole que diga qué paso del ejemplo se parece a lo que le falta en su ejercicio.',
     );
   }
   if (s.modo === 'otra-explicacion') {

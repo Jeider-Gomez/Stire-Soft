@@ -47,3 +47,12 @@ describe('instruccionesDeSenales (MOD-02, META-02 y UI-05 de la lista de chequeo
     expect(instruccionesDeSenales({ errorProbable: 'por-uno', confianza: 'seguro', acerto: false, modo: 'por-pasos' })).toHaveLength(3);
   });
 });
+
+describe('UI-05 · ejemplo parecido', () => {
+  it('resuelve un problema PARECIDO, no el del estudiante, y le pide relacionarlo', () => {
+    const [l] = instruccionesDeSenales({ modo: 'ejemplo-parecido' });
+    expect(l).toMatch(/PARECIDO pero distinto/);
+    expect(l).toMatch(/NO resuelvas su ejercicio/);
+    expect(l).toMatch(/qué paso del ejemplo se parece/);
+  });
+});
