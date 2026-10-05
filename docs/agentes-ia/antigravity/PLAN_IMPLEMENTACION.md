@@ -1,6 +1,6 @@
 ---
 estado:     pendiente — Fase 30 (escrita el 2026-10-05)
-verificado: 2026-10-05 contra src/ y frontend-nuxt/ reales (main @ 50d22c8 + cambios sin commit)
+verificado: 2026-10-05 contra src/ y frontend-nuxt/ reales (main @ 949c06e)
 fuente:     normativo (insumo de arranque para Google Antigravity)
 ---
 
@@ -25,10 +25,11 @@ Esta fase deja al docente **organizar su curso con confianza**:
 - lo que se puede deshacer se puede deshacer;
 - cada acción confirma que salió bien.
 
-### 30.1 Punto de partida: hay trabajo a medias SIN commit (léelo primero)
+### 30.1 Punto de partida: ya hay un primer borrador en `main` (commit `949c06e`, léelo primero)
 
-En el árbol de trabajo hay cambios que nadie ha commiteado. **No los borres; tampoco los commitees tal cual.** Úsalos
-como borrador y corrige lo que se indica:
+Mientras se escribía este plan, alguien commiteó un primer intento (`949c06e`, sin pruebas ni revisión). Ya está en
+`main`, y por eso el frontend está en Vercel. **No lo deshagas a ciegas: es el punto de partida.** Corrige lo que se
+indica:
 
 | Archivo | Qué trae | Qué está mal |
 |---|---|---|
@@ -133,7 +134,7 @@ docente.
   - **Responden 409** si alguna lección afectada tiene `learning_progress`, `submissions` o `review_schedules`, con el
     texto «N estudiantes tienen avance aquí: archívalo para no perderlo».
   - Las pruebas cubren tres casos: vacío borra, con avance da 409 sin borrar nada, y un docente ajeno da 403.
-  - Se corrige el trabajo sin commit de 30.1.
+  - Se corrige el borrador `949c06e` de 30.1. **Hasta que A1 esté en `main`, no se despliega el backend**: el borrador ya permite al docente borrar lecciones con cascada sobre el avance.
 - **A2. Archivar y restaurar módulos.**
   - Migración: columna `sections.isActive` (por defecto `true`).
   - Rutas: `PATCH /sections/:id/archivar` y `/restaurar`.
@@ -179,7 +180,7 @@ docente.
   - si `sePuedeEliminar` es falso, muestra el motivo y «Archivar en su lugar».
 - Bloque «Archivados (N)» plegado, con «Restaurar».
 - Las llamadas van en `useContenidosCurso`: `archivar(nivel, id)`, `restaurar`, `impacto`, `eliminar`.
-- Saca de `contenidos.vue` las funciones `confirmarEliminar*` y `ejecutarEliminar*` del borrador.
+- Saca de `contenidos.vue` las funciones `confirmarEliminar*` y `ejecutarEliminar*` del borrador `949c06e`.
 
 **B4. Clases: archivar y eliminar.**
 - En `ajustes.vue` se mantiene la sección «Estado y gestión de la clase» del borrador, conectada a A3 y A4. Eliminar
