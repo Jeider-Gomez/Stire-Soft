@@ -293,13 +293,8 @@
               class="btn-stire-secondary min-h-[44px]"
             >
               <Users :size="14" />
-              <span>Matrícula</span>
-              <span
-                v-if="cls.enrollmentCount"
-                class="ml-1 px-1.5 py-0.5 rounded-full bg-stire-blue/10 text-stire-blue text-[10px] font-bold"
-              >
-                {{ cls.enrollmentCount }}
-              </span>
+              <!-- Antes «Matrícula 4»: no se sabía si el 4 era un número o una acción. -->
+              <span>{{ cls.enrollmentCount ? `${cls.enrollmentCount} ${cls.enrollmentCount === 1 ? 'estudiante' : 'estudiantes'}` : 'Estudiantes' }}</span>
             </NuxtLink>
 
             <!-- Rendimiento -->
@@ -308,7 +303,7 @@
               class="btn-stire-secondary min-h-[44px]"
             >
               <TrendingUp :size="14" />
-              <span>Rendimiento</span>
+              <span>Dominio del grupo</span>
               <span
                 v-if="cls.avgMastery !== undefined"
                 class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
