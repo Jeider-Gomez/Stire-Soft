@@ -8,8 +8,9 @@ describe('Administración: pestaña «Cambios de rol»', () => {
   const componente = readFileSync(path.join(raizNuxt, 'components', 'admin', 'HistorialRoles.vue'), 'utf8');
 
   it('la página del admin tiene la pestaña y muestra el historial dentro de la cadena de pestañas', () => {
-    expect(pagina).toContain("@click=\"activeTab = 'roles'\"");
-    expect(pagina).toContain("<AdminHistorialRoles v-else-if=\"activeTab === 'roles'\" />");
+    // Desde la división del panel (PAT-04), las pestañas son una lista y cada una muestra su componente.
+    expect(pagina).toContain("{ id: 'roles', texto: 'Cambios de rol', icono: History }");
+    expect(pagina).toContain("<AdminHistorialRoles v-else-if=\"pestana === 'roles'\" />");
   });
 
   it('el historial lee GET /users/cambios-de-rol y dice quién hizo el cambio y por dónde', () => {
@@ -20,6 +21,7 @@ describe('Administración: pestaña «Cambios de rol»', () => {
   it('las pestañas usan iconos de lucide, no emojis', () => {
     const nav = /<nav[\s\S]*?<\/nav>/.exec(pagina)?.[0] ?? '';
     expect(nav).not.toMatch(/\p{Extended_Pictographic}/u);
-    expect(nav).toContain('<History');
+    expect(nav).toContain('<component :is="p.icono"');
+    expect(pagina).toMatch(/import {[^}]*History[^}]*} from 'lucide-vue-next'/);
   });
 });

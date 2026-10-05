@@ -11,7 +11,7 @@
             v-if="statusData"
             class="px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1.5"
             :class="isSystemHealthy ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
-            <span aria-hidden="true">{{ isSystemHealthy ? '●' : '▲' }}</span>
+            <component :is="isSystemHealthy ? CircleCheck : TriangleAlert" :size="12" aria-hidden="true" />
             <span>{{ isSystemHealthy ? 'Servicios operacionales' : 'Degradación detectada' }}</span>
           </span>
         </div>
@@ -66,7 +66,7 @@
             <span
               class="px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
               :class="(statusData.api.requests.serverErrorRatePct ?? 0) > 5 ? 'bg-semantico-falla/15 text-semantico-falla' : 'bg-semantico-pasa/10 text-semantico-pasa'">
-              <span aria-hidden="true">{{ (statusData.api.requests.serverErrorRatePct ?? 0) > 5 ? '▲' : '✓' }}</span>
+              <component :is="(statusData.api.requests.serverErrorRatePct ?? 0) > 5 ? TriangleAlert : CircleCheck" :size="12" aria-hidden="true" />
               <span>{{ (statusData.api.requests.serverErrorRatePct ?? 0) > 5 ? 'Degradado' : 'Normal' }}</span>
             </span>
           </div>
@@ -90,7 +90,7 @@
             <span
               class="px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
               :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario text-slate-600 border border-base-borde-sutil'">
-              <span aria-hidden="true">{{ statusData.database.ok ? '✓' : '—' }}</span>
+              <CircleCheck v-if="statusData.database.ok" :size="12" aria-hidden="true" /><span v-else aria-hidden="true">—</span>
               <span>{{ statusData.database.ok ? (statusData.sandbox.adapter || 'Activo') : 'Sin datos' }}</span>
             </span>
           </div>
@@ -109,7 +109,7 @@
             <span
               class="px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1"
               :class="statusData.database.ok ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
-              <span aria-hidden="true">{{ statusData.database.ok ? '✓' : '✕' }}</span>
+              <component :is="statusData.database.ok ? CircleCheck : CircleX" :size="12" aria-hidden="true" />
               <span>{{ statusData.database.ok ? 'Conectada' : 'Sin conexión' }}</span>
             </span>
           </div>
@@ -287,7 +287,7 @@
 </template>
 
 <script setup lang="ts">
-import { Bot, Loader2, TriangleAlert, Users, Zap } from 'lucide-vue-next'
+import { Bot, CircleCheck, CircleX, Loader2, TriangleAlert, Users, Zap } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import type { SystemStatus } from '~/types'

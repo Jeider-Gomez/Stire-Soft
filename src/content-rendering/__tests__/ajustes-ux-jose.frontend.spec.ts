@@ -84,18 +84,25 @@ describe('Ajustes de UI/UX de José', () => {
 });
 
 describe('Admin: restablecer contraseña (reporte de Jorge, 02/10)', () => {
-  const admin = readFileSync(path.join(raiz, 'pages', 'admin', 'index.vue'), 'utf8');
+  // Desde la división del panel (PAT-04) las cinco ventanas usan una sola base, AdminDialogo.vue.
+  const comp = (n: string) => readFileSync(path.join(raiz, 'components', 'admin', n), 'utf8');
+  const dialogo = comp('AdminDialogo.vue');
+  const clave = comp('AdminModalClave.vue');
+  const VENTANAS = ['AdminModalCambioRol.vue', 'AdminModalDecision.vue', 'AdminModalRegistrar.vue', 'AdminModalActivar.vue', 'AdminModalClave.vue'];
 
   it('los paneles se cierran por el fondo solo si el clic empezó en el fondo (no al soltar una selección fuera)', () => {
-    expect(admin).not.toMatch(/@click\.self="\w+">/);
-    expect(admin.match(/@mousedown="inicioClic = \$event\.target" @click\.self="inicioClic === \$event\.currentTarget && /g)).toHaveLength(5);
+    expect(dialogo).toContain('@mousedown="inicioClic = $event.target" @click.self="inicioClic === $event.currentTarget && cierraConFondo && cerrar()"');
+    for (const v of VENTANAS) {
+      expect(comp(v)).toContain('<AdminDialogo');
+      expect(comp(v)).not.toMatch(/@click\.self/);
+    }
     // con la contraseña ya generada, el fondo no cierra: se perdería para siempre
-    expect(admin).toContain('!resetSuccessPassword && closeResetPwdModal()');
+    expect(clave).toContain(':cierra-con-fondo="!claveAsignada"');
   });
 
   it('la contraseña generada va en un campo de solo lectura que se selecciona entera, sin espacios alrededor', () => {
-    expect(admin).toMatch(/id="reset-pwd-generada"\s+:value="resetSuccessPassword"\s+readonly/);
-    expect(admin).toContain("document.getElementById('reset-pwd-generada')");
+    expect(clave).toMatch(/id="reset-pwd-generada"\s+:value="claveAsignada"\s+readonly/);
+    expect(clave).toContain("document.getElementById('reset-pwd-generada')");
   });
 });
 
