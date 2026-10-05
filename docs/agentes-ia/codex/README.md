@@ -9,6 +9,10 @@ Todo lo relacionado con el trabajo de Codex sobre STIRE-Soft vive aquí — mism
 agregan al final del mismo archivo, con fecha, en vez de crear un archivo aparte por entrega — mismo
 criterio que usa `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md`.
 
+### Vigente desde el 2026-10-05: Fase H
+
+PAT-01 y PAT-04 de la lista de interfaz del profesor: mover las llamadas a la API de 25 páginas a composables por dominio y dividir los componentes que mezclan responsabilidades, sin cambios visibles. Las Fases A a G se archivaron en [`docs/_archivo/PLAN_IMPLEMENTACION_CODEX_2026-10-05.md`](../../_archivo/PLAN_IMPLEMENTACION_CODEX_2026-10-05.md); los enlaces de abajo a sus secciones apuntan ahora a ese archivo.
+
 ### Estado al 2026-09-16
 
 | Bloque | Estado | Alcance documentado |
