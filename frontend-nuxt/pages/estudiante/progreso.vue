@@ -91,11 +91,15 @@
     <!-- Su nota y de dónde sale, si el docente la hizo visible (§6) -->
     <MiNota :class-id="studentStore.currentClassId" />
 
-    <!-- Historial Reciente de Evaluaciones -->
-    <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 shadow-sm space-y-3">
-      <h2 class="text-sm font-bold text-base-texto-primario">
+    <!-- Historial reciente, plegado: es para consultar, no lo primero que se mira (Mi progreso medía 3416 px en el
+         celular; crítica de diseño del 05/10). -->
+    <details class="group bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm">
+      <summary class="list-none cursor-pointer min-h-[44px] px-6 py-4 flex items-center gap-2 text-sm font-bold text-base-texto-primario">
+        <ChevronDown :size="16" class="transition-transform group-open:rotate-180" aria-hidden="true" />
         Tus últimos ejercicios
-      </h2>
+        <span class="ml-auto text-[11px] font-normal text-base-texto-secundario">{{ studentStore.analytics.recentSubmissions.length }}</span>
+      </summary>
+      <div class="px-6 pb-6 space-y-3">
 
       <p v-if="studentStore.analytics.recentSubmissions.length === 0" class="text-xs text-base-texto-secundario italic py-2">
         Todavía no has entregado ejercicios.
@@ -132,14 +136,15 @@
           </tbody>
         </table>
       </div>
-    </section>
+      </div>
+    </details>
   </div>
 </template>
 
 <script setup lang="ts">
 import { nombreDelEstado, tocaRepasar } from '~/utils/progresoLeccion'
 import { computed, onMounted } from 'vue'
-import { ArrowRight, RotateCcw } from 'lucide-vue-next'
+import { ArrowRight, ChevronDown, RotateCcw } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
 
