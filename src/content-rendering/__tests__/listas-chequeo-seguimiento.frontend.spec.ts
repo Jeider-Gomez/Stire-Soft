@@ -49,6 +49,12 @@ describe('MOB-02 · controles de 44 px en el celular', () => {
     expect((leer(rel).match(/min-h-\[44px\]/g) ?? []).length).toBeGreaterThanOrEqual(minimo);
   });
 
+  it('el lanzador flotante del Tutor no tapa el último botón de la página (Mis clases: «Ver contenido»)', () => {
+    const l = leer('layouts', 'student.vue');
+    expect(l).toContain('<TutorLanzadorTutor />');
+    expect(l).toMatch(/<main id="contenido"[^>]*\bpb-24 sm:pb-24 md:pb-24\b/);
+  });
+
   it('«¿Por qué veo esto?» se toca con el pulgar (antes 32 px)', () => {
     expect(leer('pages', 'estudiante', 'index.vue')).not.toContain('min-h-[32px]');
   });

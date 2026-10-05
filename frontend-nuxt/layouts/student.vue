@@ -18,7 +18,8 @@
       <LayoutSidebarNav :class="sidebarClass" />
 
       <!-- Zona C: Contenido Dinámico de la Página -->
-      <main id="contenido" tabindex="-1" class="flex-1 min-w-0 p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
+      <!-- pb-24: el lanzador del Tutor flota abajo a la derecha; sin este margen tapaba el último botón de la página. -->
+      <main id="contenido" tabindex="-1" class="flex-1 min-w-0 p-4 sm:p-6 md:p-8 pb-24 sm:pb-24 md:pb-24 max-w-7xl mx-auto w-full overflow-y-auto">
         <slot />
       </main>
     </div>
