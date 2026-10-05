@@ -7,6 +7,7 @@ import * as ts from 'typescript';
 // de frontend-nuxt.
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
 const leer = (...partes: string[]) => readFileSync(path.join(raiz, ...partes), 'utf8');
+const pantallaNotas = () => ['pages/docente/clase/[classId]/notas.vue', 'components/docente/notas/FormularioEsquema.vue', 'components/docente/notas/TablaNotas.vue'].map((f) => leer(...f.split('/'))).join('\n');
 const js = ts.transpileModule(leer('utils', 'calificaciones.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
 const mod = { exports: {} as Record<string, unknown> };
 new Function('module', 'exports', js)(mod, mod.exports);
@@ -93,7 +94,8 @@ describe('Calificaciones: a la manera del docente (decisión del dueño, 01/10)'
   });
 
   it('la pantalla no impone nada: formas de empezar, nota del curso o de un módulo, porcentajes / promedio / sin final, y dejar de usar notas', () => {
-    const notas = leer('pages', 'docente', 'clase', '[classId]', 'notas.vue');
+    // Desde el 05/10 la pantalla es la página más el formulario del esquema y la tabla (components/docente/notas/).
+    const notas = pantallaNotas();
     expect(notas).toContain('Esta clase no lleva notas en STIRE');
     expect(notas).toContain('<option :value="null">Todo el curso</option>');
     expect(notas).toContain('v-model="borrador.calculo"');
@@ -107,8 +109,17 @@ describe('Calificaciones: a la manera del docente (decisión del dueño, 01/10)'
 });
 
 describe('Calificaciones: pantallas', () => {
+  it('la página organiza: no llama a la API (PAT-01; antes 584 líneas)', () => {
+    const pagina = leer('pages', 'docente', 'clase', '[classId]', 'notas.vue');
+    expect(pagina).not.toMatch(/api\.(get|post|patch|put|del)\(/);
+    expect(pagina).toContain('provide(CLAVE_NOTAS_CLASE, estado)');
+    expect(pagina.split('\n').length).toBeLessThan(130);
+    expect(leer('components', 'docente', 'notas', 'TablaNotas.vue')).toContain(':aria-expanded="abierto === f.studentId"');
+  });
+
   it('el docente ajusta (o pone) la final con motivo y ve el historial; las notas calculadas no se editan a mano', () => {
-    const notas = leer('pages', 'docente', 'clase', '[classId]', 'notas.vue');
+    // Desde el 05/10 la pantalla es la página más el formulario del esquema y la tabla (components/docente/notas/).
+    const notas = pantallaNotas();
     expect(notas).toContain("{ clave: 'final', ...cuerpo }");
     expect(notas).toContain('Motivo (queda en el historial)');
     expect(notas).toContain(`<template v-else-if="col.componente.tipo === 'manual'">`);
