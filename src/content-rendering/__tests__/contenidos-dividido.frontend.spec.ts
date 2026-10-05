@@ -73,6 +73,20 @@ describe('la página organiza; el composable habla con la API; una ventana por c
     expect(pagina).toContain('id="abrir-importar"');
   });
 
+  it('editar y archivar un tema van detrás de «Más» y, al cerrar la ventana, el foco vuelve a ese botón', () => {
+    const menu = leer('components', 'MenuMas.vue');
+    expect(menu).toContain(':aria-expanded="abierto"');
+    expect(menu).toContain('@keydown.esc.stop="cerrar(true)"');
+    expect(menu).toContain("document.addEventListener('click', alClicAfuera)");
+    expect(pagina).toContain('<MenuMas :id-boton="`mas-tema-${topic.id}`"');
+    expect(pagina).toContain('Archivar tema…');
+    // «Archivar» ya no es un botón rojo suelto junto a «Nueva lección».
+    expect(pagina).not.toMatch(/:aria-label="`Archivar tema/);
+    for (const v of ['VentanaEditarTema', 'VentanaArchivarTema']) {
+      expect(leer('components', 'docente', 'contenidos', `${v}.vue`)).toContain(':devolver-foco="`mas-tema-${tema.id}`"');
+    }
+  });
+
   it('sin «any»', () => {
     expect(pagina).not.toMatch(/:\s*any\b/);
     expect(leer('composables', 'useContenidosCurso.ts')).not.toMatch(/:\s*any\b/);

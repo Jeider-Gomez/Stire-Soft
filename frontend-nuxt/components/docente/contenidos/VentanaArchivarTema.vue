@@ -1,6 +1,6 @@
 <template>
   <!-- Confirmar antes de archivar un tema: dice qué pasa con lo que contiene, en palabras y sin términos técnicos. -->
-  <AdminDialogo id-titulo="archivar-tema-titulo" titulo="¿Archivar este tema?" :subtitulo="tema.title" id-descripcion="archivar-tema-desc"
+  <AdminDialogo id-titulo="archivar-tema-titulo" titulo="¿Archivar este tema?" :subtitulo="tema.title" :devolver-foco="`mas-tema-${tema.id}`" id-descripcion="archivar-tema-desc"
     clase-icono="bg-semantico-falla/10 text-semantico-falla" :ocupado="archivando" @cerrar="emit('cerrar')">
     <template #icono><Archive :size="18" aria-hidden="true" /></template>
     <p id="archivar-tema-desc" class="text-xs text-slate-700">

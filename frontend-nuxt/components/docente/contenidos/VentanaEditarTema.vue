@@ -1,6 +1,6 @@
 <template>
   <!-- Editar un tema: título, descripción y orden. Base común de ventanas (foco, Tab atrapado, Escape). -->
-  <AdminDialogo id-titulo="editar-tema-titulo" titulo="Editar tema" :subtitulo="tema.title" :ocupado="guardando" @cerrar="emit('cerrar')">
+  <AdminDialogo id-titulo="editar-tema-titulo" titulo="Editar tema" :subtitulo="tema.title" :devolver-foco="`mas-tema-${tema.id}`" :ocupado="guardando" @cerrar="emit('cerrar')">
     <template #icono><Folder :size="18" aria-hidden="true" /></template>
     <form class="space-y-4 text-xs" novalidate @submit.prevent="guardar">
       <div>

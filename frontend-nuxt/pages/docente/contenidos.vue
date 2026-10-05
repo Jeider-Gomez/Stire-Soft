@@ -173,18 +173,18 @@
                   :aria-label="`Nueva lección en el tema ${topic.title}`">
                   <Plus :size="13" aria-hidden="true" /> Nueva lección
                 </button>
-                <button
-                  @click="openEditTopicModal(topic)"
-                  class="min-h-[44px] sm:min-h-0 px-2 py-0.5 rounded text-[11px] font-semibold bg-base-bg-secundario border border-base-borde-fuerte text-base-texto-primario hover:bg-acento-ambar/10 hover:border-acento-ambar-fuerte transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
-                  :aria-label="`Editar tema ${topic.title}`">
-                  Editar
-                </button>
-                <button
-                  @click="confirmArchiveTopic(topic)"
-                  class="min-h-[44px] sm:min-h-0 px-2 py-0.5 rounded text-[11px] font-semibold border border-semantico-falla/30 text-semantico-falla hover:bg-semantico-falla/10 transition-colors focus:outline-none focus:ring-2 focus:ring-semantico-falla"
-                  :aria-label="`Archivar tema ${topic.title}`">
-                  Archivar
-                </button>
+                <!-- Editar y archivar detrás de «Más» (crítica del 05/10): «Archivar» en rojo junto a «Nueva lección»
+                     llamaba la atención en cada tema y quedaba a un clic por error. -->
+                <MenuMas :id-boton="`mas-tema-${topic.id}`" :etiqueta="`Más acciones del tema ${topic.title}`">
+                  <button type="button" class="w-full min-h-[44px] sm:min-h-[36px] px-3 text-left font-semibold text-base-texto-primario hover:bg-acento-ambar/10 focus:outline-none focus:bg-acento-ambar/10"
+                    @click="openEditTopicModal(topic)">
+                    Editar tema
+                  </button>
+                  <button type="button" class="w-full min-h-[44px] sm:min-h-[36px] px-3 text-left font-semibold text-semantico-falla hover:bg-semantico-falla/10 focus:outline-none focus:bg-semantico-falla/10"
+                    @click="confirmArchiveTopic(topic)">
+                    Archivar tema…
+                  </button>
+                </MenuMas>
               </div>
             </div>
 
