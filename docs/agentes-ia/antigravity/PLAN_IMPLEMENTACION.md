@@ -1,6 +1,6 @@
 ---
 estado:     pendiente — Fase 30 (escrita el 2026-10-05)
-verificado: 2026-10-05 contra src/ y frontend-nuxt/ reales (main @ 949c06e)
+verificado: 2026-10-06 contra src/ y frontend-nuxt/ reales (main @ a2e23da: Fase H de Codex y Parte A ya en main)
 fuente:     normativo (insumo de arranque para Google Antigravity)
 ---
 
@@ -25,23 +25,33 @@ Esta fase deja al docente **organizar su curso con confianza**:
 - lo que se puede deshacer se puede deshacer;
 - cada acción confirma que salió bien.
 
-### 30.1 Punto de partida: ya hay un primer borrador en `main` (commit `949c06e`, léelo primero)
+### 30.1 Punto de partida (06/10): qué hay ya en `main`
 
-Mientras se escribía este plan, alguien commiteó un primer intento (`949c06e`, sin pruebas ni revisión). Ya está en
-`main`, y por eso el frontend está en Vercel. **No lo deshagas a ciegas: es el punto de partida.** Corrige lo que se
-indica:
+Tres cosas pasaron antes de que empieces. Léelas, porque cambian dónde trabajas:
 
-| Archivo | Qué trae | Qué está mal |
-|---|---|---|
-| `frontend-nuxt/pages/docente/contenidos.vue` | Ítems «Eliminar módulo…», «Eliminar tema…» y «Eliminar lección…» en el menú «Más»; 3 ventanas de confirmación con `AdminDialogo`; botón «Publicar» (ámbar) / «Publicado» (verde, rojo al pasar el mouse) | (1) Llama a la API desde la página (`api.del`), y esta crece 206 líneas: rompe PAT-01 y PAT-04, porque contenidos.vue había quedado en 389. (2) `hover:bg-red-50`, `text-red-700`: colores crudos fuera de la identidad visual. (3) El estado solo se entiende al pasar el mouse, y en el celular no hay mouse. (4) No dice cuánto se pierde (estudiantes con avance, entregas). |
-| `frontend-nuxt/pages/docente/clase/[classId]/ajustes.vue` | Aviso de éxito al aprobar, rechazar o quitar un estudiante; ventana para confirmar «Quitar de la clase»; sección «Estado y gestión de la clase» con «Archivar clase» y «Eliminar clase…» | (1) «Archivar clase» envía `isActive`, pero `UpdateClassDto` **no lo acepta**: el backend responde 400 (`forbidNonWhitelisted`). (2) El aviso de éxito es local de esta página; hace falta uno compartido. (3) También llama a la API desde la página. |
-| `src/topic/topic.controller.ts`, `topic.service.ts` | `DELETE /topic/:id?permanent=true` → `deletePermanent` borra el tema y sus lecciones | **Peligroso.** `learning_progress` y `review_schedules` tienen `onDelete: 'CASCADE'` hacia la lección: borrar una lección **borra en silencio el avance de los estudiantes**. Además, `activities` hacia la lección **no** tiene cascada, así que con ejercicios el borrado falla con 500. Sin pruebas. |
-| `src/learning-unit/learning-unit.controller.ts` | El docente puede hacer `DELETE /learning-unit/:id` (antes solo el admin) | El mismo problema: cascada sobre el avance y 500 si hay ejercicios. Sin pruebas. |
-
-`DELETE /sections/:id` ya existe para el docente (`section.service.ts:152`) y tiene el mismo defecto: las lecciones no
-se borran en cascada con sus temas, así que un módulo con contenido falla con 500. Esto ya se documentó en
-`class.service.ts:260`. Por eso **`DELETE /class/:id` bloquea a propósito** cuando la clase tiene módulos (409, con un
-mensaje claro). Ese es el patrón que hay que seguir.
+1. **Borrador `949c06e`** (05/10, sin pruebas ni revisión): los ítems «Eliminar módulo… / tema… / lección…» en el menú
+   «Más», tres ventanas de confirmación y el botón «Publicar» (ámbar) / «Publicado» (verde, rojo al pasar el mouse) en
+   Contenido; en Ajustes de la clase, el aviso de éxito local (`toastExito`), la confirmación de «Quitar de la clase» y la
+   sección «Estado y gestión de la clase». **Es el punto de partida, no lo deshagas a ciegas.** Lo que está mal:
+   - colores crudos fuera de la identidad (`hover:bg-red-50`, `text-red-700`);
+   - el estado de publicación solo se entiende al pasar el mouse (en el celular no hay mouse);
+   - las ventanas no dicen cuánto se pierde;
+   - «Archivar clase» envía `isActive` al `PATCH /class/:id` y recibe **400**;
+   - hay tres ventanas casi iguales en vez de una.
+2. **Fase H de Codex** (06/10, PAT-01/PAT-04): `contenidos.vue` ya **no llama a la API** y el árbol pasó a un
+   componente. Trabaja sobre estos archivos, no sobre una versión vieja:
+   - `components/docente/ArbolContenidos.vue`: el árbol (módulos, temas y lecciones, el botón de publicación y los
+     menús «Más»), 226 líneas. Recibe el estado y las funciones de la página por props.
+   - `composables/useContenidosAcciones.ts`: hoy solo `eliminarModulo`, `eliminarTema` y `eliminarLeccion`. Agrégale
+     `impacto`, `archivar` y `restaurar`, o muévelas a `useContenidosCurso`, sin duplicar.
+   - `pages/docente/contenidos.vue`: 407 líneas. Con las ventanas nuevas en componentes debe bajar de 400.
+   - **Única página que sigue llamando a la API:** `pages/docente/clase/[classId]/ajustes.vue`. Muévela a un
+     composable `useAjustesClase.ts` y quítala de `PAGINAS_CON_API` en
+     `src/content-rendering/__tests__/pat01-paginas-sin-api.frontend.spec.ts`: PAT-01 queda en 45/45.
+   - Hay dos pruebas-trinquete que no pueden empeorar:
+     - `pat01-paginas-sin-api`;
+     - `pat04-componentes-grandes` (ningún `.vue` nuevo de más de 300 líneas sin motivo).
+3. **Parte A del backend** (06/10, commit `a2e23da`): hecha y probada (30.4). **Usa esas rutas; no inventes otras.**
 
 ### 30.2 Reglas
 
@@ -126,34 +136,31 @@ docente.
 - No tapa el botón del Tutor.
 - Respeta `prefers-reduced-motion`.
 
-### 30.4 Parte A — backend (Claude Code; Antigravity solo la consume)
+### 30.4 Parte A — backend: HECHA (commit `a2e23da`, 06/10)
 
-- **A1. Eliminar seguro.** `DELETE /sections/:id`, `DELETE /topic/:id?permanent=true` y `DELETE /learning-unit/:id`
-  funcionan así:
-  - En una transacción borran en orden: contenidos, preguntas, ejercicios, lecciones, temas y módulo.
-  - **Responden 409** si alguna lección afectada tiene `learning_progress`, `submissions` o `review_schedules`, con el
-    texto «N estudiantes tienen avance aquí: archívalo para no perderlo».
-  - Las pruebas cubren tres casos: vacío borra, con avance da 409 sin borrar nada, y un docente ajeno da 403.
-  - Se corrige el borrador `949c06e` de 30.1. **Hasta que A1 esté en `main`, no se despliega el backend**: el borrador ya permite al docente borrar lecciones con cascada sobre el avance.
-- **A2. Archivar y restaurar módulos.**
-  - Migración: columna `sections.isActive` (por defecto `true`).
-  - Rutas: `PATCH /sections/:id/archivar` y `/restaurar`.
-  - El estudiante no ve módulos archivados. El docente los recibe con `isActive: false`.
-  - Los temas ya se archivan (`topic.isActive`); se añade `PATCH /topic/:id/restaurar`.
-  - Las lecciones (`learning_units.isActive`): se añaden `archivar` y `restaurar`.
-- **A3. Archivar y restaurar clases.** `PATCH /class/:id/archivar` y `/restaurar` (rutas explícitas; no se agrega
-  `isActive` al DTO general).
-  - Una clase archivada no aparece en el inicio del estudiante y no acepta entregas ni ingresos con el código.
-  - El docente la ve en «Archivadas».
-- **A4. Impacto antes de borrar.** `GET /sections/:id/impacto`, `GET /topic/:id/impacto`,
-  `GET /learning-unit/:id/impacto` y `GET /class/:id/impacto` devuelven:
+Claude Code la hizo con 19 pruebas nuevas, la migración probada (run → revert → run) y el SQL real comprobado en
+MariaDB. **Antigravity solo la consume.** Rutas, todas solo para el docente dueño o el admin:
 
-  ```ts
-  { temas: number; lecciones: number; ejercicios: number; estudiantesConAvance: number; entregas: number; sePuedeEliminar: boolean; motivo?: string }
-  ```
+| Qué | Ruta | Respuesta |
+|---|---|---|
+| Impacto antes de borrar | `GET /sections/:id/impacto`, `GET /topic/:id/impacto`, `GET /learning-unit/:id/impacto`, `GET /class/:id/impacto` | `{ modulos, temas, lecciones, ejercicios, estudiantesConAvance, entregas, sePuedeEliminar, motivo? }` |
+| Eliminar | `DELETE /sections/:id`, `DELETE /topic/:id?permanent=true`, `DELETE /learning-unit/:id`, `DELETE /class/:id` | 204/200; **409** con `motivo` si hay trabajo de estudiantes (o, en la clase, si tiene módulos) |
+| Archivar | `PATCH /sections/:id/archivar`, `PATCH /topic/:id/archivar`, `PATCH /learning-unit/:id/archivar`, `PATCH /class/:id/archivar` | El objeto con `isActive: false`. El módulo archivado también queda `isPublished: false` |
+| Restaurar | `PATCH /sections/:id/restaurar`, `PATCH /topic/:id/restaurar`, `PATCH /learning-unit/:id/restaurar`, `PATCH /class/:id/restaurar` | `isActive: true`. El módulo vuelve **como borrador** (el docente lo publica cuando quiera) |
+| Publicar u ocultar | `PATCH /sections/:id/publish` (ya existía, alterna) | **409** si el módulo está archivado: «restáuralo antes de publicarlo» |
 
-- **A5. Despliegue.** Claude Code avisa cuando A1 a A4 estén en `main`; Jeider despliega por SSH. Hasta entonces la
-  Parte B no se une a `main`.
+Reglas que ya cumple el backend y que la interfaz debe reflejar:
+- **Qué cuenta como trabajo de estudiantes:** avance con intentos o dominio, envíos, repasos y valoraciones. Abrir una
+  lección no cuenta.
+- **El `motivo` del 409** viene listo para mostrarlo tal cual. Por ejemplo: «3 estudiantes tienen avance aquí.
+  Archívalo para no perder su trabajo.» En la clase: «Esta clase tiene 2 módulos. Archívala para conservar todo, o
+  elimina antes los módulos que no tengan avance.»
+- **Una clase archivada** sale del inicio del estudiante y el estudiante ya no entra a su contenido (403 «Tu docente
+  archivó esta clase.»). El docente la sigue recibiendo en `GET /class/my-classes` con `isActive: false`.
+- **El docente recibe los módulos, temas y lecciones archivados** con `isActive: false` en `GET /sections/class/:id`.
+  El bloque «Archivados (N)» se arma con eso.
+- **Despliegue:** Jeider despliega el backend por SSH. **No unas la Parte B a `main` hasta que Jeider confirme el
+  despliegue.**
 
 ### 30.5 Parte B — frontend (Antigravity)
 
@@ -164,7 +171,7 @@ docente.
 - Prueba: el aviso aparece con `role="status"`, se va a los 6 s, «Deshacer» llama a su función y el de error tiene
   `role="alert"` y no se cierra solo.
 
-**B2. Publicar / Ocultar (D1)** en el encabezado de cada módulo de `contenidos.vue`, con un componente
+**B2. Publicar / Ocultar (D1)** en el encabezado de cada módulo (`components/docente/ArbolContenidos.vue`), con un componente
 `components/docente/contenidos/EstadoPublicacion.vue`.
 - La acción va en `useContenidosCurso` (ya existe `alternarPublicacion`: sepárala en `publicar` y `ocultar`).
 - Quita el `hover:bg-red-*` del borrador.

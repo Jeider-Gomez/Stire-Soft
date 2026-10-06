@@ -9,7 +9,10 @@ Todo lo relacionado con el trabajo de Codex sobre STIRE-Soft vive aquí — mism
 agregan al final del mismo archivo, con fecha, en vez de crear un archivo aparte por entrega — mismo
 criterio que usa `docs/agentes-ia/antigravity/PLAN_IMPLEMENTACION.md`.
 
-### Vigente desde el 2026-10-05: Fase H
+### Fase H (2026-10-05): ejecutada y unida a `main` el 2026-10-06
+
+Auditada por Claude Code: 1794 pruebas, typecheck, build, generate y 22 pantallas recorridas en el navegador contra producción sin errores; se corrigieron las tildes escritas como entidades HTML en `AvisoSolicitudRol.vue` (`9358d45`). Informe: [`informes/INFORME_FASE_H.md`](informes/INFORME_FASE_H.md). PAT-01 en 44/45 (falta `ajustes.vue`, que pasa a la Fase 30 de Antigravity).
+
 
 PAT-01 y PAT-04 de la lista de interfaz del profesor: mover las llamadas a la API de 25 páginas a composables por dominio y dividir los componentes que mezclan responsabilidades, sin cambios visibles. Las Fases A a G se archivaron en [`docs/_archivo/PLAN_IMPLEMENTACION_CODEX_2026-10-05.md`](../../_archivo/PLAN_IMPLEMENTACION_CODEX_2026-10-05.md); los enlaces de abajo a sus secciones apuntan ahora a ese archivo.
 
