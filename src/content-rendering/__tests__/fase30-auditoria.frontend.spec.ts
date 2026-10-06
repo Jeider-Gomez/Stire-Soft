@@ -74,6 +74,17 @@ describe('Fase 30 — auditoría', () => {
     expect(cargar).not.toMatch(/api\.get[^\n]*\/topic\/section\//);
   });
 
+  it('Contenido: el error al eliminar se muestra (aviso de error) y archivar desde «Eliminar» recarga el árbol', () => {
+    const c = leer('pages', 'docente', 'contenidos.vue');
+    // Antes se guardaba en `errorEliminacion`, que ningún elemento mostraba: un 409 dejaba la ventana muda.
+    expect(c).not.toContain('errorEliminacion');
+    expect(c).toContain("avisar({ tipo: 'error', texto: messageOf(err, 'No se pudo eliminar.') })");
+    const onArchivar = c.slice(c.indexOf('function onArchivar()'), c.indexOf('function onArchivar()') + 160);
+    expect(onArchivar).toContain('loadSections()');
+    expect(onArchivar).not.toContain('.filter(');
+    expect(c).toContain("leccion: 'Lección «%s» eliminada'");
+  });
+
   it('el aviso de archivar concuerda en género («Lección … archivada»)', () => {
     expect(leer('components', 'docente', 'contenidos', 'VentanaArchivar.vue')).toContain("leccion: 'Lección «%s» archivada'");
   });

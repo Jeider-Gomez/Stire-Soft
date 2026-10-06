@@ -212,14 +212,11 @@ type Confirmacion =
   | { tipo: 'leccion'; id: number; titulo: string; sectionId: number; topicId: number }
 const confirmacion = ref<Confirmacion | null>(null)
 const eliminando = ref(false)
-const errorEliminacion = ref<string | null>(null)
 
 function confirmarEliminarModulo(sec: ModuloDelArbol) {
-  errorEliminacion.value = null
   confirmacion.value = { tipo: 'modulo', id: sec.id, titulo: sec.title }
 }
 function confirmarEliminarTema(sec: ModuloDelArbol, topic: TemaDelArbol) {
-  errorEliminacion.value = null
   confirmacion.value = {
     tipo: 'tema',
     id: topic.id,
@@ -229,7 +226,6 @@ function confirmarEliminarTema(sec: ModuloDelArbol, topic: TemaDelArbol) {
   }
 }
 function confirmarEliminarLeccion(unit: LeccionDelArbol) {
-  errorEliminacion.value = null
   // Buscamos sectionId y topicId para poder quitar la lección del árbol local
   let sectionId = 0, topicId = 0
   for (const m of sections.value) {
@@ -245,7 +241,6 @@ async function ejecutarEliminar() {
   const conf = confirmacion.value
   if (!conf) return
   eliminando.value = true
-  errorEliminacion.value = null
   try {
     if (conf.tipo === 'modulo') {
       await acciones.eliminar('modulo', conf.id)
@@ -261,31 +256,23 @@ async function ejecutarEliminar() {
       if (tema) tema.learningUnits = (tema.learningUnits ?? []).filter(u => u.id !== conf.id)
       if (expandedUnitId.value === conf.id) expandedUnitId.value = null
     }
-    const textos: Record<string, string> = { modulo: 'Módulo', tema: 'Tema', leccion: 'Lección' }
-    avisar({ tipo: 'exito', texto: `${textos[conf.tipo]} «${conf.titulo}» eliminado.` })
+    const textos: Record<string, string> = { modulo: 'Módulo «%s» eliminado', tema: 'Tema «%s» eliminado', leccion: 'Lección «%s» eliminada' }
+    avisar({ tipo: 'exito', texto: `${textos[conf.tipo].replace('%s', conf.titulo)}.` })
     confirmacion.value = null
   } catch (err: unknown) {
-    errorEliminacion.value = messageOf(err, `No se pudo eliminar.`)
+    avisar({ tipo: 'error', texto: messageOf(err, 'No se pudo eliminar.') })
   } finally {
     eliminando.value = false
   }
 }
 
-/** Cuando VentanaEliminar archivó el ítem (en lugar de eliminar), lo quitamos del árbol local. */
+/**
+ * Cuando VentanaEliminar archivó el ítem en lugar de eliminarlo: se recarga el árbol para que aparezca en su bloque
+ * «Archivados (N)» con «Restaurar» (antes se quitaba del árbol local y parecía eliminado).
+ */
 function onArchivar() {
-  const conf = confirmacion.value
-  if (!conf) return
-  if (conf.tipo === 'modulo') {
-    sections.value = sections.value.filter(s => s.id !== conf.id)
-  } else if (conf.tipo === 'tema') {
-    const sec = sections.value.find(s => s.id === conf.sectionId)
-    if (sec) sec.topics = (sec.topics ?? []).filter(t => t.id !== conf.id)
-  } else {
-    const modulo = sections.value.find(s => s.id === conf.sectionId)
-    const tema = modulo?.topics?.find(t => t.id === conf.topicId)
-    if (tema) tema.learningUnits = (tema.learningUnits ?? []).filter(u => u.id !== conf.id)
-  }
   confirmacion.value = null
+  void loadSections()
 }
 
 // Crear módulos, temas y lecciones, y escribir las explicaciones: sus ventanas ya eran componentes aparte.
