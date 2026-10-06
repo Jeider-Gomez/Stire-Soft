@@ -77,7 +77,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { ArrowRight, LifeBuoy, Loader2, Plus } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useRefuerzosDocente } from '~/composables/useRefuerzosDocente'
 import { useMisClases } from '~/composables/useMisClases'
 import { fechaCorta } from '~/utils/entregas'
 import { enlaceNuevoRefuerzo, type TipoRefuerzo } from '~/utils/refuerzos'
@@ -88,7 +88,7 @@ interface Fila { studentId: number; nombre: string; pasosHechos: number; dominio
 interface Resumen { id: number; tipo: TipoRefuerzo; titulo: string; fechaLimite: string | null; archivado: boolean; createdAt: string; totalPasos: number; lecciones: Array<{ id: number; titulo: string }>; estudiantes: Fila[] }
 
 const route = useRoute()
-const api = useApi()
+const accionesRefuerzo = useRefuerzosDocente()
 const { misClases } = useMisClases()
 const { messageOf } = useApiErrorMessage()
 const clases = ref<Array<{ id: number; name: string }>>([])
@@ -105,7 +105,7 @@ async function cargar() {
   cargando.value = true
   error.value = null
   try {
-    lista.value = await api.get<Resumen[]>(`/refuerzos/clase/${claseId.value}`)
+    lista.value = await accionesRefuerzo.listar<Resumen[]>(claseId.value)
   } catch (err) {
     error.value = messageOf(err, 'No se pudieron cargar los refuerzos.')
   } finally {
@@ -115,7 +115,7 @@ async function cargar() {
 
 async function archivar(id: number) {
   try {
-    await api.patch(`/refuerzos/${id}/archivar`, {})
+    await accionesRefuerzo.archivar(id)
     await cargar()
   } catch (err) {
     error.value = messageOf(err, 'No se pudo archivar.')

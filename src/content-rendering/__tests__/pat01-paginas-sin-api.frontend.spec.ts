@@ -14,8 +14,6 @@ const PAGINAS_CON_API = [
   'pages/docente/clase/[classId]/asistencia.vue',
   'pages/docente/clase/[classId]/ajustes.vue',
   'pages/docente/estudiante/[studentId].vue',
-  'pages/docente/refuerzos/index.vue',
-  'pages/docente/refuerzos/nuevo.vue',
   'pages/docente/rendimiento.vue',
 ];
 
@@ -155,6 +153,14 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     for (const ruta of rutas) expect(readFileSync(path.join(raiz, ruta), 'utf8')).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
     const composable = readFileSync(path.join(raiz, 'composables/useEntregasDocente.ts'), 'utf8');
     for (const ruta of ['/entregas/clase/${classId}', '/entregas/${id}/detalle', '/entregas/${id}/reabrir', '/proyecto-envios/${id}/revision']) expect(composable).toContain(ruta);
+  });
+
+  it('H4.3 las páginas de refuerzos docentes delegan consultas y cambios', () => {
+    for (const ruta of ['pages/docente/refuerzos/index.vue', 'pages/docente/refuerzos/nuevo.vue']) {
+      expect(readFileSync(path.join(raiz, ruta), 'utf8')).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
+    }
+    const composable = readFileSync(path.join(raiz, 'composables/useRefuerzosDocente.ts'), 'utf8');
+    for (const ruta of ['/refuerzos/clase/${classId}', '/refuerzos/${id}/archivar', '/enrollment/class/${classId}', "'/refuerzos'"]) expect(composable).toContain(ruta);
   });
 
   it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {

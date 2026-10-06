@@ -141,7 +141,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, watch } from 'vue'
 import { ArrowLeft, ChevronDown, ChevronUp, Dumbbell, FileText, Inbox, Loader2, Send, Sparkles, Trash2, Video } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useRefuerzosDocente } from '~/composables/useRefuerzosDocente'
 import { useMisClases } from '~/composables/useMisClases'
 import { deFechaLocal } from '~/utils/entregas'
 import { NOMBRE_NIVEL, NOMBRE_TIPO_PREGUNTA, idsDeConsulta, mensajeSugerido, type TipoRefuerzo } from '~/utils/refuerzos'
@@ -155,7 +155,7 @@ interface Ejercicio { id: number; titulo: string; leccion: string; dificultad: s
 const NOMBRE_PASO: Record<TipoPaso, string> = { explicacion: 'Otra explicación', recurso: 'Recurso', ejercicio: 'Ejercicio', entrega: 'Entrega' }
 
 const route = useRoute()
-const api = useApi()
+const accionesRefuerzo = useRefuerzosDocente()
 const { misClases, seccionesClase } = useMisClases()
 const { messageOf } = useApiErrorMessage()
 const clases = ref<Array<{ id: number; name: string }>>([])
@@ -207,7 +207,7 @@ function proponerMensaje() {
 async function cargarSugerencias() {
   if (claseId.value === null) return
   try {
-    sugerencias.value = await api.get(`/refuerzos/clase/${claseId.value}/sugerencias?lecciones=${f.lecciones.join(',')}&estudiantes=${f.estudiantes.join(',')}&tipo=${f.tipo}`)
+    sugerencias.value = await accionesRefuerzo.sugerencias(claseId.value, `lecciones=${f.lecciones.join(',')}&estudiantes=${f.estudiantes.join(',')}&tipo=${f.tipo}`)
   } catch (err) {
     error.value = messageOf(err, 'No se pudieron cargar los ejercicios sugeridos.')
   }
@@ -219,7 +219,7 @@ async function cargarClase() {
   try {
     const [secciones, matriculas] = await Promise.all([
       seccionesClase<Array<{ id: number; title: string; topics?: Array<{ learningUnits?: Array<{ id: number; title: string }> }> }>>(claseId.value),
-      api.get<Array<{ studentId: number; status: string; student?: { fullName?: string; email?: string } }>>(`/enrollment/class/${claseId.value}`),
+      accionesRefuerzo.matriculas<Array<{ studentId: number; status: string; student?: { fullName?: string; email?: string } }>>(claseId.value),
     ])
     modulos.value = secciones.map((s) => ({ id: s.id, title: s.title, lecciones: (s.topics ?? []).flatMap((t) => t.learningUnits ?? []).map((l) => ({ id: l.id, title: l.title })) }))
     estudiantes.value = matriculas.filter((m) => m.status === 'active').map((m) => ({ id: m.studentId, nombre: m.student?.fullName || m.student?.email || 'Estudiante' }))
@@ -254,7 +254,7 @@ async function guardar() {
   if (!f.pasos.length) { error.value = 'Agrega al menos un paso.'; return }
   guardando.value = true
   try {
-    await api.post('/refuerzos', {
+    await accionesRefuerzo.crear({
       classId: claseId.value,
       tipo: f.tipo,
       titulo: f.titulo.trim(),
