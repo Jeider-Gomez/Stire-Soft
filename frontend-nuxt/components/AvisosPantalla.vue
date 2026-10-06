@@ -19,7 +19,7 @@
           :role="aviso.tipo === 'error' ? 'alert' : 'status'"
           class="motion-reduce:transition-none pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold"
           :class="{
-            'bg-semantico-pasa/15 border-semantico-pasa/40 text-emerald-900 dark:text-emerald-100': aviso.tipo === 'exito',
+            'bg-semantico-pasa/15 border-semantico-pasa/40 text-emerald-800': aviso.tipo === 'exito',
             'bg-semantico-falla/10 border-semantico-falla/40 text-semantico-falla': aviso.tipo === 'error',
             'bg-acento-ambar/10 border-acento-ambar-fuerte/30 text-acento-ambar-fuerte': aviso.tipo === 'info',
           }"

@@ -43,7 +43,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Archive, Loader2 } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import { useAvisos } from '~/composables/useAvisos'
 
@@ -59,7 +58,7 @@ const emit = defineEmits<{
   (e: 'archivado'): void
 }>()
 
-const api = useApi()
+const acciones = useContenidosAcciones()
 const { messageOf } = useApiErrorMessage()
 const { avisar } = useAvisos()
 
@@ -81,12 +80,6 @@ const botones = {
   leccion: 'Sí, archivar la lección',
 }
 
-const ruta = {
-  modulo: '/sections',
-  tema: '/topic',
-  leccion: '/learning-unit',
-}
-
 const archivando = ref(false)
 const error = ref<string | null>(null)
 
@@ -94,9 +87,9 @@ async function ejecutarArchivar() {
   archivando.value = true
   error.value = null
   try {
-    await api.patch(`${ruta[props.nivel]}/${props.id}/archivar`, {})
-    const etiquetas = { modulo: 'Módulo', tema: 'Tema', leccion: 'Lección' }
-    avisar({ tipo: 'exito', texto: `${etiquetas[props.nivel]} «${props.titulo}» archivado.` })
+    await acciones.archivar(props.nivel, props.id)
+    const etiquetas = { modulo: 'Módulo «%s» archivado', tema: 'Tema «%s» archivado', leccion: 'Lección «%s» archivada' }
+    avisar({ tipo: 'exito', texto: `${etiquetas[props.nivel].replace('%s', props.titulo)}.` })
     emit('archivado')
     emit('cerrar')
   } catch (err: unknown) {

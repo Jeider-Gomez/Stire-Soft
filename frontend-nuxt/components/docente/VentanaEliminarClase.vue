@@ -17,6 +17,15 @@
       Calculando las consecuencias…
     </div>
 
+    <!-- No se pudo calcular el impacto: no se ofrece eliminar a ciegas -->
+    <div v-else-if="errorImpacto" id="eliminar-clase-desc" class="space-y-3">
+      <p role="alert" class="text-semantico-falla text-xs font-semibold p-3 bg-semantico-falla/10 rounded-lg">{{ errorImpacto }}</p>
+      <div class="flex items-center justify-end gap-2">
+        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" @click="$emit('cerrar')">Cancelar</button>
+        <button type="button" class="min-h-[44px] px-4 rounded-md text-xs font-bold border border-base-borde-fuerte text-base-texto-primario hover:bg-base-bg-secundario" @click="cargarImpacto">Reintentar</button>
+      </div>
+    </div>
+
     <!-- No se puede eliminar: hay trabajo de estudiantes -->
     <div v-else-if="impacto && !impacto.sePuedeEliminar" id="eliminar-clase-desc" class="space-y-3">
       <div class="p-3 bg-acento-ambar/10 border border-acento-ambar-fuerte/30 rounded-lg text-xs">
@@ -63,43 +72,23 @@
         Archivar en su lugar
       </button>
 
-      <!-- Cuenta regresiva accesible -->
-      <div v-if="segundosRestantes > 0">
-        <!-- Anuncio para lectores de pantalla: una sola vez al inicio -->
-        <div aria-live="polite" class="sr-only">
-          <span v-if="anunciarInicio">Podrás eliminar en {{ duracion }} segundos</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <!-- Barra de progreso visual -->
-          <div class="flex-1 bg-base-borde-sutil rounded-full h-1.5 overflow-hidden">
-            <div
-              class="h-full bg-semantico-falla transition-all"
-              :style="{ width: `${(1 - segundosRestantes / duracion) * 100}%` }"
-            />
-          </div>
-          <span class="text-xs font-mono text-base-texto-secundario tabular-nums shrink-0">{{ segundosRestantes }}s</span>
-        </div>
-        <button
-          type="button"
-          disabled
-          aria-disabled="true"
-          :aria-describedby="'espera-desc-' + claseId"
-          class="mt-2 w-full min-h-[44px] px-4 rounded-lg text-xs font-bold bg-semantico-falla/30 text-semantico-falla/60 cursor-not-allowed"
-        >
-          Lee antes de continuar ({{ segundosRestantes }})
-        </button>
-        <span :id="'espera-desc-' + claseId" class="sr-only">
-          El botón se habilitará en {{ segundosRestantes }} segundos y cuando escribas el nombre de la clase
-        </span>
+      <!-- Cuenta regresiva accesible: el nombre se puede escribir mientras corre y «Cancelar» está siempre -->
+      <div aria-live="polite" class="sr-only">
+        <span v-if="anunciarInicio">Podrás eliminar en {{ duracion }} segundos, cuando escribas el nombre de la clase</span>
+        <span v-if="anunciarFin">Ya puedes eliminar, si el nombre coincide</span>
       </div>
-
-      <!-- Cuando terminó la cuenta: campo de nombre + botón confirmar -->
-      <div v-else class="space-y-2">
-        <div aria-live="polite" class="sr-only">
-          <span v-if="anunciarFin">Ya puedes escribir el nombre para confirmar</span>
+      <div v-if="segundosRestantes > 0" class="flex items-center gap-3">
+        <div class="flex-1 bg-base-borde-sutil rounded-full h-1.5 overflow-hidden" aria-hidden="true">
+          <div
+            class="h-full bg-semantico-falla motion-safe:transition-all"
+            :style="{ width: `${(1 - segundosRestantes / duracion) * 100}%` }"
+          />
         </div>
+        <span class="text-xs font-mono text-base-texto-secundario tabular-nums shrink-0" aria-hidden="true">{{ segundosRestantes }} s</span>
+      </div>
+      <div class="space-y-2">
         <label :for="'confirmar-nombre-' + claseId" class="block text-xs font-semibold text-base-texto-primario">
-          Escribe el nombre de la clase para confirmar
+          Escribe el nombre de la clase para confirmar: <span class="font-bold">{{ nombreClase }}</span>
         </label>
         <input
           :id="'confirmar-nombre-' + claseId"
@@ -110,17 +99,19 @@
           class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-fuerte bg-base-blanco focus:border-semantico-falla focus:ring-2 focus:ring-semantico-falla/30 outline-none"
         />
         <p v-if="errorAccion" role="alert" class="text-semantico-falla text-[11px] font-semibold p-2 bg-semantico-falla/10 rounded">{{ errorAccion }}</p>
+        <span :id="'espera-desc-' + claseId" class="sr-only">{{ motivoDeshabilitado }}</span>
         <div class="flex items-center justify-end gap-2">
           <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="$emit('cerrar')">Cancelar</button>
           <button
             type="button"
             :disabled="!puedeEliminar || eliminando"
             :aria-disabled="!puedeEliminar || eliminando"
-            class="min-h-[44px] px-5 rounded-lg bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-40 inline-flex items-center gap-2"
+            :aria-describedby="puedeEliminar ? undefined : 'espera-desc-' + claseId"
+            class="min-h-[44px] px-5 rounded-lg bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-2"
             @click="$emit('confirmar')"
           >
             <Loader2 v-if="eliminando" :size="14" class="animate-spin" aria-hidden="true" />
-            {{ eliminando ? 'Eliminando…' : 'Sí, eliminar la clase' }}
+            {{ eliminando ? 'Eliminando…' : segundosRestantes > 0 ? `Lee antes de continuar (${segundosRestantes})` : 'Sí, eliminar la clase' }}
           </button>
         </div>
       </div>
@@ -149,7 +140,8 @@ defineEmits<{
   (e: 'archivar'): void
 }>()
 
-const api = useApi()
+const acciones = useContenidosAcciones()
+const { messageOf } = useApiErrorMessage()
 
 const cargandoImpacto = ref(true)
 const impacto = ref<ImpactoEliminacion | null>(null)
@@ -158,6 +150,7 @@ const segundosRestantes = ref(0)
 const nombreEscrito = ref('')
 const archivando = ref(false)
 const errorAccion = ref<string | null>(null)
+const errorImpacto = ref<string | null>(null)
 const anunciarInicio = ref(false)
 const anunciarFin = ref(false)
 
@@ -165,6 +158,12 @@ let intervalo: ReturnType<typeof setInterval> | null = null
 
 const lineasConsecuencias = computed(() =>
   impacto.value ? textoConsecuencias(impacto.value, 'clase') : []
+)
+
+const motivoDeshabilitado = computed(() =>
+  segundosRestantes.value > 0
+    ? `Lee las consecuencias: el botón se habilita en ${segundosRestantes.value} segundos y cuando el nombre coincida.`
+    : 'Escribe el nombre exacto de la clase para habilitar el botón.'
 )
 
 const puedeEliminar = computed(() =>
@@ -188,18 +187,23 @@ function iniciarCuenta(imp: ImpactoEliminacion) {
   }, 1000)
 }
 
-onMounted(async () => {
+// Si no se pudo calcular el impacto no se ofrece eliminar (antes asumía una clase vacía y arrancaba 4 s).
+async function cargarImpacto() {
+  cargandoImpacto.value = true
+  errorImpacto.value = null
   try {
-    const result = await api.get<ImpactoEliminacion>(`/class/${props.claseId}/impacto`)
+    const result = await acciones.impactoClase(props.claseId)
     impacto.value = result
     if (result.sePuedeEliminar) iniciarCuenta(result)
-  } catch {
-    impacto.value = { sePuedeEliminar: true }
-    iniciarCuenta({ sePuedeEliminar: true })
+  } catch (err: unknown) {
+    impacto.value = null
+    errorImpacto.value = messageOf(err, 'No pude calcular qué se pierde. Revisa tu conexión e inténtalo de nuevo.')
   } finally {
     cargandoImpacto.value = false
   }
-})
+}
+
+onMounted(cargarImpacto)
 
 onUnmounted(() => {
   if (intervalo) clearInterval(intervalo)

@@ -49,5 +49,10 @@ export function useContenidosAcciones() {
     return api.get<ImpactoEliminacion>(`${RUTA[nivel]}/${id}/impacto`)
   }
 
-  return { eliminarModulo, eliminarTema, eliminarLeccion, eliminar, archivar, restaurar, impacto }
+  /** Qué se pierde si se elimina la clase entera (incluye `matriculados`). */
+  function impactoClase(classId: number): Promise<ImpactoEliminacion> {
+    return api.get<ImpactoEliminacion>(`/class/${classId}/impacto`)
+  }
+
+  return { eliminarModulo, eliminarTema, eliminarLeccion, eliminar, archivar, restaurar, impacto, impactoClase }
 }

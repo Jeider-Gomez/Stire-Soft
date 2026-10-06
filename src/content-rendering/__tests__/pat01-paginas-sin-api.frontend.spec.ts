@@ -31,9 +31,6 @@ const COMPONENTES_CON_API = [
   'components/docente/SelectorAsignatura.vue',
   'components/docente/ResourceForm.vue',
   'components/docente/UnitLessonsModal.vue',
-  'components/docente/contenidos/VentanaArchivar.vue',
-  'components/docente/contenidos/VentanaEliminar.vue',
-  'components/docente/VentanaEliminarClase.vue',
 ];
 
 function archivosVue(dir: string): string[] {

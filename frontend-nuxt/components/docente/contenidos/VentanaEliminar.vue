@@ -18,6 +18,15 @@
       Calculando el impacto…
     </div>
 
+    <!-- No se pudo calcular el impacto: no se ofrece eliminar a ciegas -->
+    <div v-else-if="errorImpacto" :id="`eliminar-${nivel}-desc`" class="space-y-3">
+      <p role="alert" class="text-semantico-falla text-xs font-semibold p-3 bg-semantico-falla/10 rounded-lg">{{ errorImpacto }}</p>
+      <div class="flex items-center justify-end gap-2">
+        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" @click="$emit('cerrar')">Cancelar</button>
+        <button type="button" class="min-h-[44px] px-4 rounded-md text-xs font-bold border border-base-borde-fuerte text-base-texto-primario hover:bg-base-bg-secundario" @click="cargarImpacto">Reintentar</button>
+      </div>
+    </div>
+
     <!-- No se puede eliminar: hay trabajo de estudiantes -->
     <div v-else-if="impacto && !impacto.sePuedeEliminar" :id="`eliminar-${nivel}-desc`" class="space-y-3">
       <div class="p-3 bg-acento-ambar/10 border border-acento-ambar-fuerte/30 rounded-lg text-xs text-base-texto-primario">
@@ -159,7 +168,7 @@ const emit = defineEmits<{
   (e: 'archivar'): void
 }>()
 
-const api = useApi()
+const acciones = useContenidosAcciones()
 const { messageOf } = useApiErrorMessage()
 const { avisar } = useAvisos()
 
@@ -173,21 +182,13 @@ const labelConfirmar: Record<string, string> = {
   tema: 'Sí, eliminar el tema',
   leccion: 'Sí, eliminar la lección',
 }
-const rutaImpacto: Record<string, string> = {
-  modulo: '/sections',
-  tema: '/topic',
-  leccion: '/learning-unit',
-}
-const rutaArchivar: Record<string, string> = {
-  modulo: '/sections',
-  tema: '/topic',
-  leccion: '/learning-unit',
-}
 
 const cargandoImpacto = ref(true)
 const impacto = ref<ImpactoEliminacion | null>(null)
 const archivando = ref(false)
 const errorAccion = ref<string | null>(null)
+/** Si no se pudo calcular el impacto, no se ofrece eliminar a ciegas: se dice y se ofrece reintentar. */
+const errorImpacto = ref<string | null>(null)
 
 const duracion = ref(5)
 const segundosRestantes = ref(0)
@@ -229,12 +230,14 @@ function iniciarCuenta(imp: ImpactoEliminacion) {
 async function cargarImpacto() {
   cargandoImpacto.value = true
   try {
-    impacto.value = await api.get<ImpactoEliminacion>(`${rutaImpacto[props.nivel]}/${props.id}/impacto`)
+    errorImpacto.value = null
+    impacto.value = await acciones.impacto(props.nivel, props.id)
     if (impacto.value.sePuedeEliminar && requiereConfirmacionNombre.value) {
       iniciarCuenta(impacto.value)
     }
-  } catch {
-    impacto.value = { sePuedeEliminar: true }
+  } catch (err: unknown) {
+    impacto.value = null
+    errorImpacto.value = messageOf(err, 'No pude calcular qué se pierde. Revisa tu conexión e inténtalo de nuevo.')
   } finally {
     cargandoImpacto.value = false
   }
@@ -244,8 +247,8 @@ async function archivarEnSuLugar() {
   archivando.value = true
   errorAccion.value = null
   try {
-    await api.patch(`${rutaArchivar[props.nivel]}/${props.id}/archivar`, {})
-    avisar({ tipo: 'exito', texto: `${props.titulo} archivado.` })
+    await acciones.archivar(props.nivel, props.id)
+    avisar({ tipo: 'exito', texto: `«${props.titulo}» quedó archivado.` })
     emit('archivar')
     emit('cerrar')
   } catch (err: unknown) {
