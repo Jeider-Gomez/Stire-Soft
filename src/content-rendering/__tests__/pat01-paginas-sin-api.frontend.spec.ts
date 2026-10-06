@@ -2,9 +2,7 @@ import { readdirSync, readFileSync, statSync } from 'fs';
 import * as path from 'path';
 
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
-const PAGINAS_CON_API = [
-  'pages/docente/clase/[classId]/ajustes.vue',
-];
+const PAGINAS_CON_API: string[] = [];
 
 const COMPONENTES_CON_API = [
   'components/admin/HistorialRoles.vue',
@@ -33,6 +31,9 @@ const COMPONENTES_CON_API = [
   'components/docente/SelectorAsignatura.vue',
   'components/docente/ResourceForm.vue',
   'components/docente/UnitLessonsModal.vue',
+  'components/docente/contenidos/VentanaArchivar.vue',
+  'components/docente/contenidos/VentanaEliminar.vue',
+  'components/docente/VentanaEliminarClase.vue',
 ];
 
 function archivosVue(dir: string): string[] {

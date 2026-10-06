@@ -280,7 +280,7 @@
               <AlertTriangle :size="12" aria-hidden="true" />
               {{ cls.atRiskCount === 1 ? '1 necesita apoyo' : `${cls.atRiskCount} necesitan apoyo` }}
             </NuxtLink>
-            <span v-else-if="!cls.isActive" class="flex-shrink-0 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[11px] font-bold">Inactiva</span>
+            <span v-else-if="cls.isActive === false" class="flex-shrink-0 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[11px] font-bold">Archivada</span>
           </div>
 
           <!-- Cómo entran los estudiantes (el código ya está arriba, con Copiar y QR) -->
@@ -323,6 +323,39 @@
       <button v-else-if="verAnteriores" type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline" :aria-expanded="true" @click="verAnteriores = false">
         Ocultar periodos anteriores
       </button>
+
+      <!-- Clases archivadas (N) plegadas, con Restaurar (B4) -->
+      <div v-if="clasesArchivadas.length > 0" class="rounded-xl border border-dashed border-base-borde-fuerte p-4 bg-base-bg-secundario/40 space-y-2 mt-4">
+        <details class="group text-xs">
+          <summary class="cursor-pointer font-bold text-base-texto-secundario hover:text-base-texto-primario list-none flex items-center justify-between p-1">
+            <span class="flex items-center gap-2">
+              <Archive :size="16" aria-hidden="true" />
+              <span>Clases archivadas ({{ clasesArchivadas.length }})</span>
+            </span>
+            <ChevronRight :size="16" class="transition-transform group-open:rotate-90" aria-hidden="true" />
+          </summary>
+          <div class="mt-3 space-y-2 pt-2 border-t border-base-borde-sutil">
+            <div
+              v-for="c in clasesArchivadas"
+              :key="c.id"
+              class="flex items-center justify-between gap-3 p-3 bg-base-blanco rounded-lg border border-base-borde-sutil text-xs"
+            >
+              <div class="min-w-0">
+                <p class="font-bold text-base-texto-primario truncate">{{ c.name }} <span class="font-mono text-xs text-base-texto-secundario">({{ c.code }})</span></p>
+                <p class="text-[11px] text-base-texto-secundario">Archivada · Los estudiantes no pueden acceder</p>
+              </div>
+              <button
+                type="button"
+                class="min-h-[36px] px-3 py-1 rounded text-xs font-semibold border border-base-borde-fuerte hover:bg-base-bg-secundario text-base-texto-primario inline-flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+                @click="restaurarClase(c)"
+              >
+                <RotateCcw :size="13" aria-hidden="true" />
+                Restaurar
+              </button>
+            </div>
+          </div>
+        </details>
+      </div>
     </section>
 
     <!-- Ventanas: crear una clase y mostrar su QR (components/docente/), sobre la base de ventanas común. -->
@@ -340,7 +373,7 @@ import { computed, onMounted, provide, ref } from 'vue'
 import { porcentaje } from '~/utils/porcentaje'
 import { lugarDeAsignatura } from '~/utils/contextoAcademico'
 import { organizarClases, programasDeLasClases } from '~/utils/organizarClases'
-import { AlertTriangle, BookOpen, Check, Copy, Mail, Plus, QrCode, Search, TrendingUp, UserCheck, Users } from 'lucide-vue-next'
+import { AlertTriangle, Archive, BookOpen, Check, ChevronRight, Copy, Mail, Plus, QrCode, RotateCcw, Search, TrendingUp, UserCheck, Users } from 'lucide-vue-next'
 import { CLAVE_CLASES_DOCENTE, useClasesDocente, type ClaseDelDocente } from '~/composables/useClasesDocente'
 
 definePageMeta({ layout: 'teacher' })
@@ -357,9 +390,15 @@ const searchQuery = ref('')
 // filtro por programa solo si enseña en más de uno. Al buscar, se busca en todo.
 const programaFiltro = ref<number | null>(null)
 const verAnteriores = ref(false)
-const programasDelDocente = computed(() => programasDeLasClases(classes.value))
-const organizacion = computed(() => organizarClases(classes.value, { texto: searchQuery.value, programaId: programaFiltro.value, verAnteriores: verAnteriores.value }))
+const clasesActivas = computed(() => classes.value.filter((c) => c.isActive !== false))
+const clasesArchivadas = computed(() => classes.value.filter((c) => c.isActive === false))
+const programasDelDocente = computed(() => programasDeLasClases(clasesActivas.value))
+const organizacion = computed(() => organizarClases(clasesActivas.value, { texto: searchQuery.value, programaId: programaFiltro.value, verAnteriores: verAnteriores.value }))
 const filteredClasses = computed(() => organizacion.value.visibles)
+
+async function restaurarClase(cls: ClaseDelDocente) {
+  await estado.restaurarClase(cls.id)
+}
 
 // Ventanas
 const creando = ref(false)

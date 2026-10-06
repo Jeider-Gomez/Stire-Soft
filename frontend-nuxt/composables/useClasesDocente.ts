@@ -102,6 +102,22 @@ export function useClasesDocente() {
     }
   }
 
+  async function restaurarClase(id: number): Promise<void> {
+    await api.patch(`/class/${id}/restaurar`, {})
+    const c = clases.value.find((x) => x.id === id)
+    if (c) c.isActive = true
+    const { avisar } = useAvisos()
+    avisar({ tipo: 'exito', texto: 'Clase reactivada.' })
+  }
+
+  async function archivarClase(id: number): Promise<void> {
+    await api.patch(`/class/${id}/archivar`, {})
+    const c = clases.value.find((x) => x.id === id)
+    if (c) c.isActive = false
+    const { avisar } = useAvisos()
+    avisar({ tipo: 'exito', texto: 'Clase archivada.' })
+  }
+
   // Cifras del encabezado, de todas sus clases.
   const totalEstudiantes = computed(() => clases.value.reduce((s, c) => s + (c.enrollmentCount ?? 0), 0))
   const dominioPromedio = computed(() => {
@@ -110,7 +126,12 @@ export function useClasesDocente() {
   })
   const enRezago = computed(() => clases.value.reduce((s, c) => s + (c.atRiskCount ?? 0), 0))
 
-  return { clases, cargando, noLeidos, plantillas, cargarClases, cargarNoLeidos, cargarPlantillas, revisarCodigo, crearClase, totalEstudiantes, dominioPromedio, enRezago }
+  return {
+    clases, cargando, noLeidos, plantillas,
+    cargarClases, cargarNoLeidos, cargarPlantillas, revisarCodigo, crearClase,
+    restaurarClase, archivarClase,
+    totalEstudiantes, dominioPromedio, enRezago,
+  }
 }
 
 export type EstadoClasesDocente = ReturnType<typeof useClasesDocente>

@@ -2,18 +2,7 @@
   <div class="max-w-4xl mx-auto space-y-6">
     <DocentePestanasClase :class-id="classId" activa="ajustes" :nombre="classInfo?.name" :codigo="classInfo?.code" />
 
-    <!-- Mensaje de éxito / toast accesible -->
-    <transition name="fade">
-      <div v-if="toastExito" role="status" class="p-3 bg-semantico-pasa/15 border border-semantico-pasa/40 rounded-lg text-xs font-semibold text-emerald-900 flex items-center justify-between gap-2 shadow-sm">
-        <span class="flex items-center gap-2">
-          <Check :size="16" class="text-semantico-pasa shrink-0" aria-hidden="true" />
-          {{ toastExito }}
-        </span>
-        <button type="button" @click="toastExito = null" class="p-1 text-slate-500 hover:text-slate-800 rounded focus:outline-none" aria-label="Cerrar aviso">
-          <X :size="14" aria-hidden="true" />
-        </button>
-      </div>
-    </transition>
+
 
     <!-- Quién está en la clase: primero las solicitudes, porque el estudiante no ve el curso hasta que lo aceptas. -->
     <section id="solicitudes" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
@@ -290,7 +279,7 @@
               <TriangleAlert :size="14" aria-hidden="true" /> Eliminar clase definitivamente
             </h3>
             <p class="text-[11px] text-slate-700 mt-1 max-w-xl">
-              Solo se puede eliminar si la clase no contiene módulos creados. Si ya tiene contenido o calificaciones de estudiantes, te recomendamos <strong>archivarla</strong> para proteger el registro académico.
+              Si la clase fue creada por error y nadie ha trabajado en ella, puedes eliminarla. Si ya tiene contenido o trabajo de estudiantes, te recomendamos <strong>archivarla</strong> para proteger el registro académico.
             </p>
           </div>
           <button
@@ -328,29 +317,16 @@
       </div>
     </AdminDialogo>
 
-    <!-- Diálogo: Confirmar eliminar clase -->
-    <AdminDialogo
+    <!-- Diálogo: Confirmar eliminar clase (B4 D3 bis) -->
+    <DocenteVentanaEliminarClase
       v-if="mostrarEliminarClase"
-      id-titulo="eliminar-clase-titulo"
-      titulo="¿Eliminar esta clase?"
-      :subtitulo="classInfo?.name || ''"
-      id-descripcion="eliminar-clase-desc"
-      clase-icono="bg-semantico-falla/10 text-semantico-falla"
-      :ocupado="eliminandoClase"
-      @cerrar="mostrarEliminarClase = false">
-      <template #icono><Trash2 :size="18" aria-hidden="true" /></template>
-      <p id="eliminar-clase-desc" class="text-xs text-slate-700">
-        Esta acción eliminará la clase permanentemente. Solo es posible si no contiene módulos ni actividades creadas.
-      </p>
-      <p v-if="errorEliminarClase" role="alert" class="text-semantico-falla text-[11px] font-semibold p-2 bg-semantico-falla/10 rounded">{{ errorEliminarClase }}</p>
-      <div class="flex items-center justify-end gap-2">
-        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminandoClase" @click="mostrarEliminarClase = false">Cancelar</button>
-        <button type="button" :disabled="eliminandoClase" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarEliminarClase">
-          <Loader2 v-if="eliminandoClase" :size="14" class="animate-spin" aria-hidden="true" />
-          {{ eliminandoClase ? 'Eliminando…' : 'Sí, eliminar la clase' }}
-        </button>
-      </div>
-    </AdminDialogo>
+      :clase-id="classId"
+      :nombre-clase="classInfo?.name || ''"
+      :eliminando="eliminandoClase"
+      @cerrar="mostrarEliminarClase = false"
+      @confirmar="ejecutarEliminarClase"
+      @archivar="alternarArchivoClase"
+    />
   </div>
 </template>
 
@@ -359,35 +335,17 @@ import type { AsignaturaInfo } from '~/utils/contextoAcademico'
 import { opcionesDeAlcance, type AlcancePlantilla } from '~/utils/plantillas'
 import { CATEGORIAS_LOGRO, categoriasElegidas, type CategoriaLogro } from '~/utils/logros'
 import { Archive, Check, Loader2, Trash2, TriangleAlert, X } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useAjustesClase, type ClassInfo, type EnrollmentItem } from '~/composables/useAjustesClase'
 
 definePageMeta({ layout: 'teacher' })
 
-interface EnrollmentItem {
-  id: string
-  status: string
-  student?: { fullName?: string; email?: string; fotoId?: string | null }
-}
+const route = useRoute()
+const classId = Number(route.params.classId)
+const { messageOf } = useApiErrorMessage()
 
-interface ClassInfo {
-  id: number
-  name: string
-  code?: string
-  description?: string
-  isActive?: boolean
-  requiresApproval?: boolean
-  compartidaComoPlantilla?: boolean
-  alcancePlantilla?: AlcancePlantilla
-  enfoque?: string | null
-  logrosActivos?: boolean
-  categoriasLogro?: string | null
-  dominioParaAvanzar?: number
-  asignatura?: AsignaturaInfo | null
-  grupo?: string | null
-  periodo?: string | null
-}
+const ajustes = useAjustesClase(classId)
+const { pending, active, classInfo } = ajustes
 
-const toastExito = ref<string | null>(null)
 const estudianteAQuitar = ref<EnrollmentItem | null>(null)
 const procesandoQuitar = ref(false)
 const errorQuitarEstudiante = ref<string | null>(null)
@@ -395,15 +353,7 @@ const guardandoEstadoClase = ref(false)
 const mostrarEliminarClase = ref(false)
 const eliminandoClase = ref(false)
 const errorEliminarClase = ref<string | null>(null)
-
-const route = useRoute()
-const api = useApi()
-const { messageOf } = useApiErrorMessage()
-const pending = ref<EnrollmentItem[]>([])
-const active = ref<EnrollmentItem[]>([])
-const classInfo = ref<ClassInfo | null>(null)
 const isSavingApproval = ref(false)
-const classId = Number(route.params.classId)
 
 // Datos editables del formulario
 const editForm = reactive({
@@ -434,16 +384,7 @@ const hasChanges = computed(() => {
 })
 
 async function load() {
-  const [pendingItems, allItems, classData] = await Promise.all([
-    api.get<EnrollmentItem[]>(`/enrollment/class/${classId}/pending`),
-    api.get<EnrollmentItem[]>(`/enrollment/class/${classId}`),
-    api.get<ClassInfo>(`/class/${classId}`)
-  ])
-  pending.value = pendingItems
-  active.value = allItems.filter(item => item.status === 'active')
-  classInfo.value = classData
-
-  // Inicializar formulario con los datos actuales
+  const classData = await ajustes.load()
   llenarFormulario(classData)
 }
 
@@ -472,7 +413,6 @@ async function saveData() {
   saveError.value = null
 
   try {
-    // Solo enviar los campos que cambiaron (PATCH parcial)
     const body: Record<string, string | number | null> = {}
     if (editForm.name.trim() !== savedData.name) {
       body.name = editForm.name.trim()
@@ -484,18 +424,13 @@ async function saveData() {
     if (editForm.grupo.trim() !== savedData.grupo) body.grupo = editForm.grupo.trim()
     if (editForm.periodo.trim() !== savedData.periodo) body.periodo = editForm.periodo.trim()
 
-    const updated = await api.apiFetch<ClassInfo>(`/class/${classId}`, {
-      method: 'PATCH',
-      body
-    })
-
-    classInfo.value = updated
+    const updated = await ajustes.guardarDatos(body)
     llenarFormulario(updated)
-    if ('asignaturaId' in body) void useContextoDocente().recargar() // la barra superior toma la asignatura
+    if ('asignaturaId' in body) void useContextoDocente().recargar()
 
     saveSuccess.value = true
     setTimeout(() => { saveSuccess.value = false }, 3000)
-  } catch (err) {
+  } catch (err: unknown) {
     saveError.value = messageOf(err, 'Error al guardar los cambios.')
   } finally {
     isSavingData.value = false
@@ -509,7 +444,6 @@ async function copyCode() {
     codeCopied.value = true
     setTimeout(() => { codeCopied.value = false }, 2000)
   } catch {
-    // fallback
     const el = document.getElementById('class-code-display') as HTMLInputElement | null
     el?.select()
     document.execCommand('copy')
@@ -519,16 +453,9 @@ async function copyCode() {
 }
 
 async function change(enrollment: EnrollmentItem, action: 'approve' | 'reject') {
-  const path = `/enrollment/${enrollment.id}/${action}`
   try {
-    await api.apiFetch(path, { method: 'PATCH' })
-    const nombre = enrollment.student?.fullName || enrollment.student?.email || 'Estudiante'
-    toastExito.value = action === 'approve'
-      ? `Solicitud de «${nombre}» aprobada exitosamente.`
-      : `Solicitud de «${nombre}» rechazada.`
-    setTimeout(() => { toastExito.value = null }, 4000)
-    await load()
-  } catch (err) {
+    await ajustes.cambiarMatricula(enrollment, action)
+  } catch (err: unknown) {
     saveError.value = messageOf(err, 'No se pudo procesar la solicitud.')
   }
 }
@@ -542,14 +469,10 @@ async function ejecutarQuitarEstudiante() {
   if (!estudianteAQuitar.value) return
   procesandoQuitar.value = true
   errorQuitarEstudiante.value = null
-  const nombre = estudianteAQuitar.value.student?.fullName || estudianteAQuitar.value.student?.email || 'Estudiante'
   try {
-    await api.apiFetch(`/enrollment/${estudianteAQuitar.value.id}`, { method: 'DELETE' })
+    await ajustes.quitarEstudiante(estudianteAQuitar.value)
     estudianteAQuitar.value = null
-    toastExito.value = `Estudiante «${nombre}» quitado de la clase exitosamente.`
-    setTimeout(() => { toastExito.value = null }, 4000)
-    await load()
-  } catch (err) {
+  } catch (err: unknown) {
     errorQuitarEstudiante.value = messageOf(err, 'No se pudo quitar al estudiante.')
   } finally {
     procesandoQuitar.value = false
@@ -559,16 +482,9 @@ async function ejecutarQuitarEstudiante() {
 async function alternarArchivoClase() {
   if (!classInfo.value) return
   guardandoEstadoClase.value = true
-  const nuevoEstado = !(classInfo.value.isActive !== false)
   try {
-    const updated = await api.apiFetch<ClassInfo>(`/class/${classId}`, {
-      method: 'PATCH',
-      body: { isActive: nuevoEstado }
-    })
-    classInfo.value = updated
-    toastExito.value = nuevoEstado ? 'Clase reactivada exitosamente.' : 'Clase archivada exitosamente.'
-    setTimeout(() => { toastExito.value = null }, 4000)
-  } catch (err) {
+    await ajustes.alternarArchivoClase()
+  } catch (err: unknown) {
     saveError.value = messageOf(err, 'No se pudo cambiar el estado de la clase.')
   } finally {
     guardandoEstadoClase.value = false
@@ -584,11 +500,11 @@ async function ejecutarEliminarClase() {
   eliminandoClase.value = true
   errorEliminarClase.value = null
   try {
-    await api.apiFetch(`/class/${classId}`, { method: 'DELETE' })
+    await ajustes.eliminarClase()
     mostrarEliminarClase.value = false
-    await navigateTo('/docente/clases')
-  } catch (err) {
-    errorEliminarClase.value = messageOf(err, 'No se pudo eliminar la clase: aún contiene módulos creados. Te recomendamos archivarla.')
+    await navigateTo('/docente')
+  } catch (err: unknown) {
+    errorEliminarClase.value = messageOf(err, 'No se pudo eliminar la clase.')
   } finally {
     eliminandoClase.value = false
   }
@@ -604,9 +520,9 @@ async function guardarLogros(cambio: { logrosActivos?: boolean; categoriasLogro?
   guardandoLogros.value = true
   avisoLogros.value = null
   try {
-    classInfo.value = await api.apiFetch<ClassInfo>(`/class/${classId}`, { method: 'PATCH', body: cambio })
+    await ajustes.guardarLogros(cambio)
     avisoLogros.value = { texto: cambio.logrosActivos === false ? 'Guardado: esta clase no usa logros.' : 'Guardado.', error: false }
-  } catch (err) {
+  } catch (err: unknown) {
     avisoLogros.value = { texto: messageOf(err, 'No se pudo guardar.'), error: true }
   } finally {
     guardandoLogros.value = false
@@ -637,13 +553,10 @@ async function guardarCompartir() {
   isSavingPlantilla.value = true
   avisoCompartir.value = null
   try {
-    classInfo.value = await api.apiFetch<ClassInfo>(`/class/${classId}`, {
-      method: 'PATCH',
-      body: { alcancePlantilla: alcanceElegido.value, enfoque: enfoqueElegido.value.trim() || null }
-    })
     const titulo = opcionesCompartir.value.find((o) => o.valor === alcanceElegido.value)?.titulo ?? ''
+    await ajustes.guardarCompartir({ alcancePlantilla: alcanceElegido.value, enfoque: enfoqueElegido.value.trim() || null }, titulo)
     avisoCompartir.value = { texto: alcanceElegido.value === 'nadie' ? 'Guardado: no se comparte.' : `Guardado: la ven ${titulo.charAt(0).toLowerCase()}${titulo.slice(1)}.`, error: false }
-  } catch (err) {
+  } catch (err: unknown) {
     avisoCompartir.value = { texto: messageOf(err, 'No se pudo guardar.'), error: true }
   } finally {
     isSavingPlantilla.value = false
@@ -663,9 +576,9 @@ async function guardarAvance() {
   }
   guardandoAvance.value = true
   try {
-    classInfo.value = await api.apiFetch<ClassInfo>(`/class/${classId}`, { method: 'PATCH', body: { dominioParaAvanzar: v } })
+    await ajustes.guardarAvance(v)
     avisoAvance.value = { texto: v === 0 ? 'Guardado: los módulos ya no se bloquean.' : `Guardado: el siguiente módulo se abre con ${v} %.`, error: false }
-  } catch (e) {
+  } catch (e: unknown) {
     avisoAvance.value = { texto: messageOf(e, 'No se pudo guardar. Intenta de nuevo.'), error: true }
   } finally {
     guardandoAvance.value = false
@@ -676,11 +589,7 @@ async function toggleRequiresApproval() {
   if (!classInfo.value) return
   isSavingApproval.value = true
   try {
-    const updated = await api.apiFetch<ClassInfo>(`/class/${classId}`, {
-      method: 'PATCH',
-      body: { requiresApproval: !classInfo.value.requiresApproval }
-    })
-    classInfo.value = updated
+    await ajustes.toggleRequiresApproval()
   } finally {
     isSavingApproval.value = false
   }
