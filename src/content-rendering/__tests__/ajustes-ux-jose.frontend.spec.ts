@@ -139,7 +139,9 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
   it('la solicitud de docente pendiente se avisa en rojo y dice que el admin aún no cambia el rol', () => {
     const e = leer('components', 'estudiante', 'AvisoSolicitudRol.vue');
     expect(e).toContain("'bg-semantico-falla/10 border-semantico-falla text-semantico-falla': solicitud.status !== 'approved'");
-    expect(e).toContain('El administrador todav&#237;a no ha cambiado tu rol a docente');
+    expect(e).toContain('El administrador todavía no ha cambiado tu rol a docente');
+    // Las tildes van escritas, no como entidades HTML (&#237;): se ven igual pero el código no se puede leer ni buscar.
+    expect(e).not.toMatch(/&#\d+;/);
     const r = leer('pages', 'auth', 'register.vue');
     expect(r).toContain('Todavía no eres docente');
     expect(r).toMatch(/v-if="selectedRole === 'docente'"[^>]*text-semantico-falla/);

@@ -14,19 +14,19 @@
       <AlertTriangle v-else :size="22" class="shrink-0" aria-hidden="true" />
 
       <div v-if="solicitud.status === 'pending'" class="space-y-0.5">
-        <p class="text-sm font-bold">El administrador todav&#237;a no ha cambiado tu rol a docente</p>
+        <p class="text-sm font-bold">El administrador todavía no ha cambiado tu rol a docente</p>
         <p class="text-xs font-medium text-base-texto-primario">
-          Por ahora entras como estudiante. Cuando aprueben tu solicitud, cierra sesi&#243;n y vuelve a entrar para ver el panel docente.
-          Si te urge, av&#237;sale al administrador.
+          Por ahora entras como estudiante. Cuando aprueben tu solicitud, cierra sesión y vuelve a entrar para ver el panel docente.
+          Si te urge, avísale al administrador.
         </p>
       </div>
       <div v-else-if="solicitud.status === 'approved'" class="space-y-0.5">
         <p class="text-sm font-bold">Ya eres docente</p>
-        <p class="text-xs font-medium text-base-texto-primario">Cierra sesi&#243;n y vuelve a entrar para usar el panel docente.</p>
+        <p class="text-xs font-medium text-base-texto-primario">Cierra sesión y vuelve a entrar para usar el panel docente.</p>
       </div>
       <div v-else class="space-y-0.5">
         <p class="text-sm font-bold">Tu solicitud para ser docente fue rechazada</p>
-        <p v-if="solicitud.reviewNote" class="text-xs font-medium text-base-texto-primario">&#171;{{ solicitud.reviewNote }}&#187;</p>
+        <p v-if="solicitud.reviewNote" class="text-xs font-medium text-base-texto-primario">«{{ solicitud.reviewNote }}»</p>
       </div>
     </div>
 
@@ -35,7 +35,7 @@
       type="button"
       @click="$emit('cerrar-sesion')"
       class="shrink-0 px-3 py-1.5 rounded-lg bg-semantico-pasa text-white text-xs font-bold hover:opacity-90">
-      Cerrar sesi&#243;n
+      Cerrar sesión
     </button>
   </div>
 </template>
