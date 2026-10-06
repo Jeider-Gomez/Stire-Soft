@@ -61,18 +61,16 @@ Las ventanas nuevas usan la misma base que las del admin (`AdminDialogo`): foco 
 vuelta. Lo comprueban `mensajes.frontend.spec.ts` y `contenidos-dividido.frontend.spec.ts`, y una prueba en el
 navegador abrió y cerró cada ventana sin errores.
 
-## 4. Lo que queda, con criterio
+## 4. Estado tras la Fase H (05/10/2026)
 
-| Archivo | Líneas | ¿Dividir? |
-|---|---|---|
-| `components/proyectos/EditorDiagrama.vue` | 1322 | **Con cuidado:** el lienzo y su estado van juntos. Se puede extraer el panel de propiedades y la barra de herramientas, no el lienzo. |
-| `components/docente/UnitExercisesPanel.vue`, `pages/docente/index.vue` | 852, 827 | Sí, por secciones, después de contenidos. |
-| Los demás de 300 a 650 líneas | — | Revisar uno por uno con el criterio de arriba. |
+| Criterio | Estado medido | Qué significa |
+|---|---:|---|
+| PAT-01 | 44/45 páginas sin llamadas directas a la API | 25/25 páginas previstas en H.4 migradas a composables. `pages/docente/clase/[classId]/ajustes.vue` sigue pendiente por ser archivo protegido de Antigravity. `pages/docente/contenidos.vue` también quedó sin llamadas tras una excepción autorizada para corregir la prueba trinquete. |
+| PAT-04 | 120/142 archivos Vue de `pages/` y `components/` tienen 300 líneas o menos | Los otros 22 superan 300 líneas; cada uno tiene un motivo revisado en `pat04-componentes-grandes.frontend.spec.ts`. Se extrajeron el árbol curricular a `ArbolContenidos.vue` y el aviso de solicitud de rol a `AvisoSolicitudRol.vue`. |
 
-**PAT-01:** 26 de 45 páginas todavía usan `useApi()` desde la vista (eran 28 el 05/10 por la mañana y 32 de 44 antes). El patrón ya está probado en el panel del admin, Mensajes, Contenidos, Notas y Crear ejercicio; también se dividieron dos componentes grandes: los ejercicios de una lección (852 → 162 líneas, `useEjerciciosUnidad`) y el editor de diagramas (1322 → 791, geometría en `utils/geometriaDiagrama.ts`). Se sigue página por página, empezando por las más grandes que quedan (`auth/register`, `estudiante/unidad/[id]`, `docente/clase/[classId]/asistencia`).
+La cifra inicial de 145 archivos Vue no coincide con el inventario actual de `pages/` y `components/`, que suma 142. El criterio sigue siendo separar responsabilidades distintas, no recortar líneas por sí mismas. El trinquete PAT-04 registra tamaños máximos y razones para que una modificación futura no introduzca archivos grandes sin revisión.
 
-Hecho así, sin prisa y con pruebas, no cambia lo que ve el usuario ni arriesga la prueba del equipo.
-
+PAT-01 no queda en la meta inicial de 2 páginas pendientes: solo resta `pages/docente/clase/[classId]/ajustes.vue`, que no se tocó porque pertenece a Antigravity. No se corrigieron advertencias ni otros defectos encontrados durante las verificaciones.
 ## Referencias
 
 - Brown, W. J., Malveau, R. C., McCormick, H. W. y Mowbray, T. J. (1998). *AntiPatterns: Refactoring Software, Architectures, and Projects in Crisis*. Wiley (citado en Pressman y Maxim, 2019, cap. 14).
