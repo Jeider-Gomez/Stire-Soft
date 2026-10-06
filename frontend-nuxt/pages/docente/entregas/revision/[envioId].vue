@@ -130,7 +130,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { ArrowLeft, ArrowRight, Download, History, Loader2, Save } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useEntregasDocente } from '~/composables/useEntregasDocente'
 import { descargarHtml, descargarZip } from '~/utils/descargaProyecto'
 import { VALORACIONES_DE, escalaDe, fechaCorta, notaTexto, textoEvento, type EscalaEntrega, type EventoHistorial, type Valoracion } from '~/utils/entregas'
 import type { ArchivoProyecto, TipoProyecto } from '~/utils/proyectoNavegador'
@@ -148,7 +148,7 @@ interface Envio {
 }
 
 const route = useRoute()
-const api = useApi()
+const accionesEntrega = useEntregasDocente()
 const { messageOf } = useApiErrorMessage()
 const envio = ref<Envio | null>(null)
 const cargando = ref(true)
@@ -181,7 +181,7 @@ async function cargar() {
   errorNota.value = null
   actual.value = 0
   try {
-    envio.value = await api.get<Envio>(`/proyecto-envios/${Number(route.params.envioId)}`)
+    envio.value = await accionesEntrega.envio<Envio>(Number(route.params.envioId))
     nota.value = notaTexto(envio.value.nota)
     valoracion.value = envio.value.valoracion ?? null
     comentario.value = envio.value.comentario ?? ''
@@ -209,8 +209,8 @@ async function guardar() {
   guardando.value = true
   try {
     const conValoracion = escala.value === 'aprobacion' || escala.value === 'desempeno'
-    const r = await api.patch<{ nota: number | null; comentario: string | null; revisadoAt: string | null }>(
-      `/proyecto-envios/${envio.value.id}/revision`, {
+    const r = await accionesEntrega.revisar<{ nota: number | null; comentario: string | null; revisadoAt: string | null }>(
+      envio.value.id, {
         nota: escala.value === 'nota' ? n : null,
         ...(conValoracion ? { valoracion: valoracion.value } : {}),
         comentario: comentario.value,

@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { Inbox, Loader2, Plus } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useEntregasDocente } from '~/composables/useEntregasDocente'
 import { useMisClases } from '~/composables/useMisClases'
 import { ESCALAS, TIPO_ENTREGA, escalaDe, fechaCorta, type EscalaEntrega, type EstadoEntrega, type TipoEntrega } from '~/utils/entregas'
 
@@ -80,7 +80,7 @@ interface Resumen {
   conNota: boolean; escala?: EscalaEntrega; publicada: boolean; asignadaA: number[] | null; estudiantes: number; conteo: Record<EstadoEntrega, number>
 }
 
-const api = useApi()
+const accionesEntrega = useEntregasDocente()
 const { misClases, seccionesClase } = useMisClases()
 const route = useRoute()
 const { messageOf } = useApiErrorMessage()
@@ -101,7 +101,7 @@ async function cargar() {
   error.value = null
   try {
     const [lista, secciones] = await Promise.all([
-      api.get<Resumen[]>(`/entregas/clase/${claseId.value}`),
+      accionesEntrega.listar<Resumen[]>(claseId.value),
       seccionesClase<Array<{ topics?: Array<{ learningUnits?: Array<{ id: number; title: string }> }> }>>(claseId.value),
     ])
     entregas.value = lista

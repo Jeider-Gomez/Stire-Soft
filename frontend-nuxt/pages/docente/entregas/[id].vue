@@ -88,7 +88,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { ArrowLeft, Loader2, Pencil } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useEntregasDocente } from '~/composables/useEntregasDocente'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import { ESCALAS, ESTADO_ENTREGA, TIPO_ENTREGA, calificacionTexto, escalaDe, fechaCorta, type EntregaEditable, type EstadoEntrega, type Valoracion } from '~/utils/entregas'
 
@@ -111,7 +111,7 @@ const CLASE_ESTADO: Record<EstadoEntrega, string> = {
 }
 
 const route = useRoute()
-const api = useApi()
+const accionesEntrega = useEntregasDocente()
 const { messageOf } = useApiErrorMessage()
 const entrega = ref<Detalle | null>(null)
 const cargando = ref(true)
@@ -127,7 +127,7 @@ const visibles = computed(() => (entrega.value?.filas ?? []).filter((f) => filtr
 
 async function cargar() {
   try {
-    entrega.value = await api.get<Detalle>(`/entregas/${Number(route.params.id)}/detalle`)
+    entrega.value = await accionesEntrega.detalle<Detalle>(Number(route.params.id))
     if (cuantos('por_revisar') > 0 && filtro.value === 'todos' && !aviso.value) filtro.value = 'por_revisar'
   } catch (err) {
     error.value = messageOf(err, 'No se pudo cargar la entrega.')
@@ -147,7 +147,7 @@ async function alternarPublicada() {
   cambiando.value = true
   error.value = null
   try {
-    await api.patch(`/entregas/${entrega.value.id}`, { publicada: !entrega.value.publicada })
+    await accionesEntrega.publicar(entrega.value.id, !entrega.value.publicada)
     aviso.value = entrega.value.publicada ? 'Ya no la ven los estudiantes (lo entregado se conserva).' : 'Publicada: los estudiantes ya la ven.'
     await cargar()
   } catch (err) {
@@ -161,7 +161,7 @@ async function reabrir(studentId: number, nombre: string) {
   if (!entrega.value) return
   error.value = null
   try {
-    await api.post(`/entregas/${entrega.value.id}/reabrir`, { studentId })
+    await accionesEntrega.reabrir(entrega.value.id, studentId)
     aviso.value = `${nombre} puede enviar una versión más.`
     await cargar()
   } catch (err) {

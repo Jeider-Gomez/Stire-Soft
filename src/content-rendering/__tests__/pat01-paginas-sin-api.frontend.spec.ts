@@ -13,9 +13,6 @@ const PAGINAS_CON_API = [
   'pages/admin/usabilidad.vue',
   'pages/docente/clase/[classId]/asistencia.vue',
   'pages/docente/clase/[classId]/ajustes.vue',
-  'pages/docente/entregas/[id].vue',
-  'pages/docente/entregas/index.vue',
-  'pages/docente/entregas/revision/[envioId].vue',
   'pages/docente/estudiante/[studentId].vue',
   'pages/docente/refuerzos/index.vue',
   'pages/docente/refuerzos/nuevo.vue',
@@ -151,6 +148,13 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     expect(pagina).toContain('Promise.allSettled');
     expect(composable).toContain('/analytics/class/${classId}/semana');
     expect(composable).toContain('/enrollment/${id}/${accion}');
+  });
+
+  it('H4.3 las páginas del docente delegan lecturas y acciones de entregas', () => {
+    const rutas = ['pages/docente/entregas/index.vue', 'pages/docente/entregas/[id].vue', 'pages/docente/entregas/revision/[envioId].vue'];
+    for (const ruta of rutas) expect(readFileSync(path.join(raiz, ruta), 'utf8')).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
+    const composable = readFileSync(path.join(raiz, 'composables/useEntregasDocente.ts'), 'utf8');
+    for (const ruta of ['/entregas/clase/${classId}', '/entregas/${id}/detalle', '/entregas/${id}/reabrir', '/proyecto-envios/${id}/revision']) expect(composable).toContain(ruta);
   });
 
   it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {
