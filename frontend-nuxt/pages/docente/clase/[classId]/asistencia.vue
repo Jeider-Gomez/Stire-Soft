@@ -116,7 +116,7 @@
 
 <script setup lang="ts">
 import { ClipboardCheck, Download, Loader2, Lock, LockOpen, ScanLine, Shuffle, Trash2, TriangleAlert } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useAsistenciaClase } from '~/composables/useAsistenciaClase'
 import {
   ESTADOS, csvAsistencia, elegirAlAzar, fechaSesion, textoEstado,
   type EstadoAsistencia, type ResultadoEscaneo, type ResumenAsistencia,
@@ -132,9 +132,9 @@ interface Detalle { sesion: Sesion; clase: string; estudiantes: EstudianteEnSesi
 
 const route = useRoute()
 const router = useRouter()
-const api = useApi()
-const { messageOf } = useApiErrorMessage()
 const classId = Number(route.params.classId)
+const accionesAsistencia = useAsistenciaClase(classId)
+const { messageOf } = useApiErrorMessage()
 
 const clase = ref<{ id: number; name: string; code?: string } | null>(null)
 const sesiones = ref<SesionConConteo[]>([])
@@ -159,14 +159,14 @@ const conteo = computed(() => {
 const hora = (iso: string) => new Date(iso).toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })
 
 async function cargarSesiones() {
-  sesiones.value = await api.get<SesionConConteo[]>(`/asistencia/clase/${classId}/sesiones`)
+  sesiones.value = await accionesAsistencia.sesiones<SesionConConteo[]>()
 }
 
 async function abrirSesion(id: number) {
   errorMarca.value = null
   sorteados.value = []
   try {
-    detalle.value = await api.get<Detalle>(`/asistencia/sesiones/${id}`)
+    detalle.value = await accionesAsistencia.detalle<Detalle>(id)
     tema.value = detalle.value.sesion.tema ?? ''
     if (Number(route.query.sesion) !== id) router.replace({ query: { ...route.query, sesion: String(id) } })
   } catch (err) {
@@ -178,7 +178,7 @@ async function cargar() {
   cargando.value = true
   error.value = null
   try {
-    const [c] = await Promise.all([api.get<{ id: number; name: string; code?: string }>(`/class/${classId}`), cargarSesiones()])
+    const [c] = await Promise.all([accionesAsistencia.clase<{ id: number; name: string; code?: string }>(), cargarSesiones()])
     clase.value = c
     // La de la dirección (al recargar) o la abierta más reciente.
     const pedida = Number(route.query.sesion)
@@ -195,7 +195,7 @@ async function tomarHoy() {
   creando.value = true
   error.value = null
   try {
-    const s = await api.post<Sesion>(`/asistencia/clase/${classId}/sesiones`, {})
+    const s = await accionesAsistencia.crearSesion<Sesion>()
     await cargarSesiones()
     await abrirSesion(s.id)
   } catch (err) {
@@ -215,7 +215,7 @@ async function marcar(userId: number, estado: EstadoAsistencia | null) {
   marcando.value = userId
   errorMarca.value = null
   try {
-    await api.put(`/asistencia/sesiones/${detalle.value.sesion.id}/estudiantes/${userId}`, { estado })
+    await accionesAsistencia.marcar(detalle.value.sesion.id, userId, estado)
     await refrescar()
   } catch (err) {
     errorMarca.value = messageOf(err, 'No se pudo guardar la marca.')
@@ -233,9 +233,7 @@ async function escanear(codigo: string) {
   if (!detalle.value || procesando.value) return
   procesando.value = true
   try {
-    const r = await api.post<{ estudiante: { nombre: string; fotoId: string | null }; yaEstaba: boolean; alerta: string | null }>(
-      `/asistencia/sesiones/${detalle.value.sesion.id}/escanear`, { codigo },
-    )
+    const r = await accionesAsistencia.escanear<{ estudiante: { nombre: string; fotoId: string | null }; yaEstaba: boolean; alerta: string | null }>(detalle.value.sesion.id, codigo)
     ultimo.value = { ok: true, nombre: r.estudiante.nombre, fotoId: r.estudiante.fotoId, yaEstaba: r.yaEstaba, alerta: r.alerta }
     if (navigator.vibrate) navigator.vibrate(r.alerta ? [80, 60, 80] : 60)
     await refrescar()
@@ -253,7 +251,7 @@ function sortear() {
 async function actualizar(datos: { abierta?: boolean; tema?: string }) {
   if (!detalle.value) return
   try {
-    await api.patch(`/asistencia/sesiones/${detalle.value.sesion.id}`, datos)
+    await accionesAsistencia.actualizar(detalle.value.sesion.id, datos)
     await refrescar()
   } catch (err) {
     errorMarca.value = messageOf(err, 'No se pudo guardar el cambio.')
@@ -267,7 +265,7 @@ async function borrarSesion() {
   if (!detalle.value) return
   if (!(await confirmar({ titulo: `¿Borrar la asistencia del ${fechaSesion(detalle.value.sesion.fecha)}?`, mensaje: 'Se pierden las marcas de esa sesión y no se pueden recuperar.', accion: 'Borrar la asistencia', peligro: true }))) return
   try {
-    await api.del(`/asistencia/sesiones/${detalle.value.sesion.id}`)
+    await accionesAsistencia.borrar(detalle.value.sesion.id)
     detalle.value = null
     router.replace({ query: { ...route.query, sesion: undefined } })
     await cargarSesiones()
@@ -278,7 +276,7 @@ async function borrarSesion() {
 
 async function descargarCsv() {
   try {
-    const resumen = await api.get<ResumenAsistencia>(`/asistencia/clase/${classId}/resumen`)
+    const resumen = await accionesAsistencia.resumen<ResumenAsistencia>()
     const url = URL.createObjectURL(new Blob([csvAsistencia(resumen)], { type: 'text/csv;charset=utf-8' }))
     const a = document.createElement('a')
     a.href = url

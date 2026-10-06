@@ -68,7 +68,8 @@ describe('Asistencia (frontend)', () => {
     expect(estudiante).toContain('clearTimeout(temporizador)');
     const docente = leer('pages', 'docente', 'clase', '[classId]', 'asistencia.vue');
     expect(docente).toContain('<AsistenciaEscanerAsistencia');
-    expect(docente).toContain('/escanear`, { codigo }');
+    expect(docente).toContain('accionesAsistencia.escanear');
+    expect(leer('composables', 'useAsistenciaClase.ts')).toContain('/asistencia/sesiones/${sesionId}/escanear`');
     expect(docente).toContain('elegirAlAzar(presentes.value, 3)');
     // el escáner ignora QR ajenos y el mismo código leído muchas veces por segundo
     const escaner = leer('components', 'asistencia', 'EscanerAsistencia.vue');
