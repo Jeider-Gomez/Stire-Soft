@@ -14,6 +14,7 @@ export function useContenidosCurso() {
   const api = useApi()
   const { messageOf } = useApiErrorMessage()
   const { avisar } = useAvisos()
+  const { confirmar } = useConfirmar()
 
   const clases = ref<ClaseDocente[]>([])
   const claseId = ref<number | null>(null)
@@ -45,13 +46,11 @@ export function useContenidosCurso() {
     cargando.value = true
     error.value = null
     try {
+      // Para el docente, `/sections/class/:id` ya trae cada módulo con TODOS sus temas (también los archivados) y sus
+      // lecciones, en orden. Antes se pedía además `/topic/section/:id` por módulo, uno tras otro, y esa ruta solo
+      // devuelve los temas activos: un tema archivado desaparecía y nunca llegaba a «Temas archivados (N)».
       const lista = await api.get<ModuloDelArbol[]>(`/sections/class/${claseId.value}`)
-      const completos: ModuloDelArbol[] = []
-      for (const m of Array.isArray(lista) ? lista : []) {
-        const temas = await api.get<TemaDelArbol[]>(`/topic/section/${m.id}`).catch(() => [])
-        completos.push({ ...m, topics: Array.isArray(temas) ? temas : [] })
-      }
-      modulos.value = completos
+      modulos.value = (Array.isArray(lista) ? lista : []).map((m) => ({ ...m, topics: m.topics ?? [] }))
     } catch (err: unknown) {
       error.value = messageOf(err, 'No se pudieron cargar los contenidos de la clase.')
     } finally {
@@ -67,26 +66,35 @@ export function useContenidosCurso() {
     }
   }
 
-  async function publicarModulo(m: ModuloDelArbol) {
+  // `PATCH /sections/:id/publish` alterna el estado: el cuerpo no cuenta. «Deshacer» vuelve a alternarlo.
+  async function publicarModulo(m: ModuloDelArbol, conDeshacer = true) {
     try {
-      await api.patch(`/sections/${m.id}/publish`, { isPublished: true })
+      await api.patch(`/sections/${m.id}/publish`)
       m.isPublished = true
       avisar({
         tipo: 'exito',
-        texto: `«${m.title}» quedó publicado: los estudiantes ya lo ven.`
+        texto: `«${m.title}» quedó publicado: los estudiantes ya lo ven.`,
+        deshacer: conDeshacer ? () => { void ocultarModulo(m, false) } : undefined,
       })
     } catch {
       avisar({ tipo: 'error', texto: 'No se pudo publicar el módulo.' })
     }
   }
 
-  async function ocultarModulo(m: ModuloDelArbol) {
+  /** Ocultar pide confirmación (D1): los estudiantes dejan de verlo, aunque su avance no se pierde. */
+  async function ocultarModulo(m: ModuloDelArbol, preguntar = true) {
+    if (preguntar && !(await confirmar({
+      titulo: '¿Ocultar este módulo?',
+      mensaje: `Tus estudiantes dejarán de ver «${m.title}». Su avance no se pierde y puedes publicarlo otra vez cuando quieras.`,
+      accion: 'Ocultar',
+    }))) return
     try {
-      await api.patch(`/sections/${m.id}/publish`, { isPublished: false })
+      await api.patch(`/sections/${m.id}/publish`)
       m.isPublished = false
       avisar({
         tipo: 'exito',
-        texto: `«${m.title}» volvió a borrador: los estudiantes ya no lo ven.`
+        texto: `«${m.title}» volvió a borrador: los estudiantes ya no lo ven.`,
+        deshacer: preguntar ? () => { void publicarModulo(m, false) } : undefined,
       })
     } catch {
       avisar({ tipo: 'error', texto: 'No se pudo ocultar el módulo.' })

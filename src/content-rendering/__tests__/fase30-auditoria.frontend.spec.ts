@@ -54,6 +54,26 @@ describe('Fase 30 — auditoría', () => {
     expect(c).toContain('text-emerald-800');
   });
 
+  it('publicar / ocultar (D1): ocultar pide confirmación y los dos avisos traen «Deshacer»', () => {
+    const c = leer('composables', 'useContenidosCurso.ts');
+    expect(c).toContain("titulo: '¿Ocultar este módulo?'");
+    expect(c).toContain('Su avance no se pierde');
+    expect((c.match(/deshacer: /g) ?? []).length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('el botón de publicar mide 44 px en el celular y el chip dice la palabra completa (no «Pub.»/«Bor.»)', () => {
+    const c = leer('components', 'docente', 'contenidos', 'EstadoPublicacion.vue');
+    expect(c).toContain('min-h-[44px] sm:min-h-[36px]');
+    expect(c).not.toMatch(/'Pub\.'|'Bor\.'/);
+  });
+
+  it('Contenido carga los temas archivados: no los pide a /topic/section (solo devuelve los activos)', () => {
+    const c = leer('composables', 'useContenidosCurso.ts');
+    const cargar = c.slice(c.indexOf('async function cargarModulos'), c.indexOf('async function alternarPublicacion'));
+    expect(cargar).toContain('/sections/class/${claseId.value}');
+    expect(cargar).not.toMatch(/api\.get[^\n]*\/topic\/section\//);
+  });
+
   it('el aviso de archivar concuerda en género («Lección … archivada»)', () => {
     expect(leer('components', 'docente', 'contenidos', 'VentanaArchivar.vue')).toContain("leccion: 'Lección «%s» archivada'");
   });

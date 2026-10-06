@@ -12,8 +12,7 @@
     >
       <Check v-if="publicado" :size="11" aria-hidden="true" />
       <EyeOff v-else :size="11" aria-hidden="true" />
-      <span class="hidden sm:inline">{{ publicado ? 'Publicado' : 'Borrador' }}</span>
-      <span class="sm:hidden">{{ publicado ? 'Pub.' : 'Bor.' }}</span>
+      {{ publicado ? 'Publicado' : 'Borrador' }}
     </span>
 
     <!-- Botón de acción: lo que el docente HACE a continuación -->
@@ -23,7 +22,7 @@
       :aria-label="publicado
         ? `Ocultar el módulo «${titulo}»: los estudiantes dejarán de verlo`
         : `Publicar el módulo «${titulo}»: los estudiantes empezarán a verlo`"
-      class="min-h-[36px] px-2.5 py-1 rounded text-[11px] font-bold transition-colors border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte inline-flex items-center gap-1 disabled:opacity-50"
+      class="min-h-[44px] sm:min-h-[36px] px-2.5 py-1 rounded text-[11px] font-bold transition-colors border focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte inline-flex items-center gap-1 disabled:opacity-50"
       :class="publicado
         ? 'border-acento-ambar-fuerte/60 text-acento-ambar-fuerte bg-acento-ambar/5 hover:bg-acento-ambar/15'
         : 'bg-semantico-pasa text-base-blanco border-semantico-pasa hover:bg-semantico-pasa/80'"
