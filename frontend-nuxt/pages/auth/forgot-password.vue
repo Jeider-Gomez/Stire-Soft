@@ -69,11 +69,11 @@
 
 <script setup lang="ts">
 import { AlertCircle, ArrowLeft, Mail } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useCuentaPublica } from '~/composables/useCuentaPublica'
 
 definePageMeta({ layout: 'auth' })
 
-const api = useApi()
+const cuentaPublica = useCuentaPublica()
 const email = ref('')
 const isLoading = ref(false)
 const errorMessage = ref('')
@@ -84,7 +84,7 @@ async function handleSubmit() {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    const res = await api.post<{ message: string }>('/auth/forgot-password', { email: email.value.trim() })
+    const res = await cuentaPublica.solicitarRestablecimiento(email.value.trim())
     sentMessage.value = res?.message || 'Si el correo está registrado, te enviamos un enlace para restablecer tu contraseña.'
     sent.value = true
   } catch (err) {

@@ -75,11 +75,11 @@
 
 <script setup lang="ts">
 import { TriangleAlert } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useCuentaPublica } from '~/composables/useCuentaPublica'
 
 definePageMeta({ layout: 'auth' })
 
-const api = useApi()
+const cuentaPublica = useCuentaPublica()
 const route = useRoute()
 const token = computed(() => String(route.query.token || ''))
 const password = ref('')
@@ -98,7 +98,7 @@ async function handleSubmit() {
   }
   isLoading.value = true
   try {
-    await api.post('/auth/reset-password', { token: token.value, password: password.value })
+    await cuentaPublica.restablecerContrasena(token.value, password.value)
     done.value = true
   } catch (err) {
     // El código y el motivo del servidor, leídos sin «any» (composables/useApiErrorMessage.ts).

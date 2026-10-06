@@ -3,9 +3,6 @@ import * as path from 'path';
 
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
 const PAGINAS_CON_API = [
-  'pages/auth/forgot-password.vue',
-  'pages/auth/register.vue',
-  'pages/auth/reset-password.vue',
   'pages/docente/clase/[classId]/ajustes.vue',
 ];
 
@@ -183,6 +180,13 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     expect(catalogo).toContain("'/asignaturas/revision'");
     expect(sugerencias).toContain('/reportes/${id}/captura');
     expect(sus).toContain("'/usabilidad/sus/resultados'");
+  });
+
+  it('H4.5 las páginas de cuenta delegan solicitudes públicas sin exponer el transporte', () => {
+    const rutas = ['pages/auth/register.vue', 'pages/auth/forgot-password.vue', 'pages/auth/reset-password.vue'];
+    for (const ruta of rutas) expect(readFileSync(path.join(raiz, ruta), 'utf8')).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
+    const cuenta = readFileSync(path.join(raiz, 'composables/useCuentaPublica.ts'), 'utf8');
+    for (const ruta of ["'/tutor/api-key'", "'/auth/forgot-password'", "'/auth/reset-password'"]) expect(cuenta).toContain(ruta);
   });
 
   it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {

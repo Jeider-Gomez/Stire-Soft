@@ -283,7 +283,7 @@
 <script setup lang="ts">
 import { AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, BookOpen, Bot, Check, CheckCircle2, Eye, EyeOff, GraduationCap, KeyRound, ListPlus, Lock, Mail, ShieldAlert, ShieldCheck, User } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
-import { useApi } from '~/composables/useApi'
+import { useCuentaPublica } from '~/composables/useCuentaPublica'
 import { rutaDeVuelta, codigoMientrasEscribe } from '~/utils/codigoClase'
 import { faltantesDelRegistro, type Faltantes } from '~/utils/registro'
 
@@ -294,7 +294,7 @@ definePageMeta({
 })
 
 const authStore = useAuthStore()
-const api = useApi()
+const cuentaPublica = useCuentaPublica()
 const fullName = ref('')
 const email = ref('')
 const password = ref('')
@@ -377,7 +377,7 @@ async function handleRegister() {
     // Si el estudiante ingresó una clave, guardarla (no bloqueante — §19.1)
     if (selectedRole.value === 'estudiante' && apiKey.value.trim()) {
       try {
-        await api.put('/tutor/api-key', { apiKey: apiKey.value.trim() })
+        await cuentaPublica.asociarClaveTutor(apiKey.value.trim())
       } catch {
         // Error no bloqueante: el registro ya fue exitoso
         tutorKeyWarning.value = 'Tu cuenta se creó, pero no pude guardar tu clave: puedes configurarla luego desde el Tutor.'
