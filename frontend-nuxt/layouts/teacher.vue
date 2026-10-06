@@ -16,6 +16,7 @@
       </main>
     </div>
     <LayoutFooterBar />
+    <AvisosPantalla />
     <DialogoConfirmar />
     <AvisoSinConexion />
   </div>
