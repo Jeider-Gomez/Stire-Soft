@@ -1,4 +1,5 @@
 import { ref, type InjectionKey } from 'vue'
+import { useAvisos } from '~/composables/useAvisos'
 import { notaComa, type Esquema, type Libro } from '~/utils/calificaciones'
 
 export interface EventoNota { id: number; nombre: string; antes: number | null; despues: number | null; motivo: string | null; createdAt: string }
@@ -10,6 +11,7 @@ export interface EventoNota { id: number; nombre: string; antes: number | null; 
 export function useNotasClase(classId: number) {
   const api = useApi()
   const { messageOf } = useApiErrorMessage()
+  const { avisar } = useAvisos()
 
   const clase = ref<{ id: number; name: string; code?: string } | null>(null)
   const libro = ref<Libro | null>(null)
@@ -61,18 +63,24 @@ export function useNotasClase(classId: number) {
   async function guardarEsquema(esquema: Esquema, notaAprobatoria: number): Promise<string | null> {
     try {
       aplicar(await api.put<Libro>(`/calificaciones/clase/${classId}/esquema`, { ...esquema, notaAprobatoria }))
+      avisar({ tipo: 'exito', texto: 'Esquema de calificaciones guardado.' })
       return null
     } catch (err) {
-      return messageOf(err, 'No se pudo guardar.')
+      const msg = messageOf(err, 'No se pudo guardar.')
+      avisar({ tipo: 'error', texto: msg })
+      return msg
     }
   }
 
   async function dejarDeUsar(): Promise<string | null> {
     try {
       aplicar(await api.del<Libro>(`/calificaciones/clase/${classId}/esquema`))
+      avisar({ tipo: 'info', texto: 'Se dejó de usar el esquema de calificaciones.' })
       return null
     } catch (err) {
-      return messageOf(err, 'No se pudo quitar.')
+      const msg = messageOf(err, 'No se pudo quitar.')
+      avisar({ tipo: 'error', texto: msg })
+      return msg
     }
   }
 
@@ -84,9 +92,12 @@ export function useNotasClase(classId: number) {
     try {
       await api.put(`/calificaciones/clase/${classId}/estudiante/${studentId}/nota`, cuerpo)
       libro.value = await api.get<Libro>(`/calificaciones/clase/${classId}`)
+      avisar({ tipo: 'exito', texto: 'Nota guardada.' })
       return null
     } catch (err) {
-      return messageOf(err, cuerpo.clave === 'final' ? 'No se pudo guardar.' : 'No se guardó')
+      const msg = messageOf(err, cuerpo.clave === 'final' ? 'No se pudo guardar.' : 'No se guardó')
+      avisar({ tipo: 'error', texto: msg })
+      return msg
     }
   }
 

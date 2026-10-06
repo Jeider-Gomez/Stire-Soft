@@ -1,4 +1,5 @@
 import { computed, ref, type InjectionKey } from 'vue'
+import { useAvisos } from '~/composables/useAvisos'
 import {
   casillasConUnEjercicio, consultaBanco,
   type EjercicioDeLaLeccion, type EjercicioDelBanco, type FiltrosBanco, type TipoDeActividad,
@@ -15,6 +16,7 @@ export interface PreguntaDelDocente { id: number; type: string; config: unknown 
 export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => void) {
   const api = useApi()
   const { messageOf } = useApiErrorMessage()
+  const { avisar: notificarPantalla } = useAvisos()
 
   const ejercicios = ref<EjercicioDeLaLeccion[]>([])
   const tipos = ref<TipoDeActividad[]>([])
@@ -64,8 +66,10 @@ export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => v
       await api.patch(`/activities/${ej.id}/publish`)
       ej.status = 'published'
       aviso.value = `«${ej.title}» ya es visible para los estudiantes.`
+      notificarPantalla({ tipo: 'exito', texto: aviso.value })
     } catch (err) {
       error.value = messageOf(err, 'No se pudo publicar el ejercicio.')
+      notificarPantalla({ tipo: 'error', texto: error.value })
     }
   }
 
@@ -75,9 +79,12 @@ export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => v
       ej.status = 'archived'
       aviso.value = `«${ej.title}» archivado.`
       alContar(visibles.value.length)
+      notificarPantalla({ tipo: 'exito', texto: aviso.value })
       return null
     } catch (err) {
-      return messageOf(err, 'No se pudo archivar el ejercicio.')
+      const msg = messageOf(err, 'No se pudo archivar el ejercicio.')
+      notificarPantalla({ tipo: 'error', texto: msg })
+      return msg
     }
   }
 
@@ -88,10 +95,12 @@ export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => v
     try {
       const res = await api.post<{ id: number }>(`/reuse/activities/${id}/copy`, { learningUnitId: unidadId, variant: true })
       aviso.value = 'Variante creada en borrador.'
+      notificarPantalla({ tipo: 'exito', texto: aviso.value })
       await cargar()
       return ejercicios.value.find((a) => a.id === res.id) ?? null
     } catch (err) {
       error.value = messageOf(err, 'No se pudo duplicar el ejercicio como variante.')
+      notificarPantalla({ tipo: 'error', texto: error.value })
       return null
     } finally {
       duplicando.value = false
@@ -123,9 +132,12 @@ export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => v
         await api.patch(`/activity-questions/${pregunta.id}`, { question: datos.description, points: datos.totalPoints, config: pregunta.config })
       }
       aviso.value = 'Cambios guardados.'
+      notificarPantalla({ tipo: 'exito', texto: aviso.value })
       return null
     } catch (err) {
-      return messageOf(err, 'No se pudieron guardar los cambios.')
+      const msg = messageOf(err, 'No se pudieron guardar los cambios.')
+      notificarPantalla({ tipo: 'error', texto: msg })
+      return msg
     }
   }
 
@@ -142,10 +154,13 @@ export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => v
     try {
       await api.post(`/reuse/activities/${item.activityId}/copy`, { learningUnitId: unidadId })
       aviso.value = 'Agregado como borrador. Revísalo y publícalo.'
+      notificarPantalla({ tipo: 'exito', texto: aviso.value })
       await cargar()
       return null
     } catch (err) {
-      return messageOf(err, 'No se pudo agregar el ejercicio a esta lección.')
+      const msg = messageOf(err, 'No se pudo agregar el ejercicio a esta lección.')
+      notificarPantalla({ tipo: 'error', texto: msg })
+      return msg
     }
   }
 

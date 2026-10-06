@@ -182,6 +182,7 @@ const emit = defineEmits<{
 
 const api = useApi()
 const { messageOf } = useApiErrorMessage()
+const { avisar } = useAvisos()
 
 const isOpen = ref(false)
 const isLoading = ref(false)
@@ -276,6 +277,7 @@ function onRecursoGuardado(guardado: Pick<LessonItem, 'id' | 'title' | 'type' | 
   if (idx === -1) lessons.value.push(recurso)
   else lessons.value[idx] = recurso
   feedbackMsg.value = creado ? `Recurso «${recurso.title}» agregado. Ya lo ven tus estudiantes.` : `Recurso «${recurso.title}» guardado.`
+  avisar({ tipo: 'exito', texto: feedbackMsg.value })
   recursoForm.open = false
   vistaPreviaId.value = recurso.id
 }
@@ -304,6 +306,7 @@ async function onEditorSave(payload: { title: string; body: string }) {
       const idx = lessons.value.findIndex((l) => l.id === formState.id)
       if (idx !== -1) lessons.value[idx] = updated
       feedbackMsg.value = `Lección «${updated.title}» guardada.`
+      avisar({ tipo: 'exito', texto: feedbackMsg.value })
     } else {
       const created = await api.post<LessonItem>('/content', {
         learningUnitId: props.unit.id,
@@ -315,6 +318,7 @@ async function onEditorSave(payload: { title: string; body: string }) {
       })
       lessons.value.push(created)
       feedbackMsg.value = `Lección «${created.title}» creada. Ya la ven tus estudiantes.`
+      avisar({ tipo: 'exito', texto: feedbackMsg.value })
     }
     showForm.value = false
   } catch (err) {
@@ -331,6 +335,7 @@ async function toggleLessonVisibility(lesson: LessonItem) {
     const res = await api.patch<LessonItem>(`/content/${lesson.id}/visibility`)
     lesson.isVisible = res.isVisible
     feedbackMsg.value = lesson.isVisible ? `«${lesson.title}» ya es visible.` : `«${lesson.title}» quedó oculta para los estudiantes.`
+    avisar({ tipo: 'exito', texto: feedbackMsg.value })
   } catch (err) {
     errorMsg.value = messageOf(err, 'No se pudo cambiar la visibilidad de la explicación.')
   } finally {
@@ -373,6 +378,7 @@ async function executeDelete() {
     await api.del(`/content/${lessonToDelete.value.id}`)
     lessons.value = lessons.value.filter((l) => l.id !== lessonToDelete.value!.id)
     feedbackMsg.value = `Lección «${lessonToDelete.value.title}» eliminada.`
+    avisar({ tipo: 'exito', texto: feedbackMsg.value })
     lessonToDelete.value = null
   } catch (err) {
     errorMsg.value = messageOf(err, 'No se pudo eliminar la explicación.')
