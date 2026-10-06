@@ -51,17 +51,7 @@
       </div>
     </header>
 
-    <!-- Feedback de guardado -->
-    <div v-if="actionFeedback" role="status" aria-live="polite" class="p-3 bg-semantico-pasa/10 border border-semantico-pasa/40 text-semantico-pasa rounded-lg text-xs flex items-center justify-between">
-      <span>{{ actionFeedback }}</span>
-      <button @click="actionFeedback = null" class="text-[11px] underline focus:outline-none focus:ring-2 focus:ring-semantico-pasa rounded">Cerrar</button>
-    </div>
 
-    <!-- Feedback de error de acción -->
-    <div v-if="actionError" role="alert" aria-live="assertive" class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-lg text-xs flex items-center justify-between">
-      <span class="inline-flex items-center gap-1"><CircleX :size="14" aria-hidden="true" /> {{ actionError }}</span>
-      <button @click="actionError = null" class="text-[11px] underline focus:outline-none focus:ring-2 focus:ring-semantico-falla rounded">Cerrar</button>
-    </div>
 
     <!-- ESTADO 1: Cargando -->
     <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
@@ -114,91 +104,40 @@
       :unit-summary="unitSummary"
       :toggle-section-publish="estado.alternarPublicacion"
       :open-new-topic-modal="openNewTopicModal"
+      :open-edit-module-modal="openEditModuleModal"
+      :confirm-archive-module="confirmArchiveModule"
       :confirmar-eliminar-modulo="confirmarEliminarModulo"
+      :restaurar-modulo="m => estado.restaurar('modulo', m.id)"
       :open-new-unit-modal="openNewUnitModal"
       :open-edit-topic-modal="openEditTopicModal"
       :confirm-archive-topic="confirmArchiveTopic"
       :confirmar-eliminar-tema="confirmarEliminarTema"
+      :restaurar-tema="t => estado.restaurar('tema', t.id)"
       :toggle-unit="toggleUnit"
       :open-edit-unit-modal="openEditUnitModal"
+      :confirm-archive-unit="confirmArchiveUnit"
       :confirmar-eliminar-leccion="confirmarEliminarLeccion"
+      :restaurar-leccion="u => estado.restaurar('leccion', u.id)"
       :open-lessons-modal="openLessonsModal"
       :set-exercise-count="setExerciseCount" />
     <!-- Una ventana a la vez; cada una es su propio componente con la base común (foco, Tab atrapado, Escape). -->
-    <DocenteContenidosVentanaEditarTema v-if="ventana?.tipo === 'tema'" :tema="ventana.tema" @cerrar="ventana = null" />
-    <DocenteContenidosVentanaArchivarTema v-else-if="ventana?.tipo === 'archivar'" :tema="ventana.tema" @cerrar="ventana = null" />
+    <DocenteContenidosVentanaEditarModulo v-if="ventana?.tipo === 'modulo'" :modulo="ventana.modulo" @cerrar="ventana = null" />
+    <DocenteContenidosVentanaEditarTema v-else-if="ventana?.tipo === 'tema'" :tema="ventana.tema" @cerrar="ventana = null" />
+    <DocenteContenidosVentanaArchivar v-else-if="ventana?.tipo === 'archivar'" :nivel="ventana.nivel" :id="ventana.id" :titulo="ventana.titulo" :devolver-foco="ventana.devolverFoco" @archivado="loadSections" @cerrar="ventana = null" />
+    <DocenteContenidosVentanaArchivarTema v-else-if="ventana?.tipo === 'archivar-tema'" :tema="ventana.tema" @cerrar="ventana = null" />
     <DocenteContenidosVentanaEditarLeccion v-else-if="ventana?.tipo === 'leccion'" :leccion="ventana.leccion" @cerrar="ventana = null" />
     <DocenteContenidosVentanaImportar v-else-if="ventana?.tipo === 'importar'" @cerrar="ventana = null" />
 
-    <!-- Confirmaciones de eliminación inline (usan AdminDialogo) -->
-    <AdminDialogo
-      v-if="confirmacion?.tipo === 'modulo'"
-      id-titulo="eliminar-modulo-titulo"
-      titulo="¿Eliminar este módulo?"
-      :subtitulo="confirmacion.titulo"
-      id-descripcion="eliminar-modulo-desc"
-      clase-icono="bg-semantico-falla/10 text-semantico-falla"
-      :ocupado="eliminando"
-      @cerrar="confirmacion = null">
-      <template #icono><Trash2 :size="18" aria-hidden="true" /></template>
-      <p id="eliminar-modulo-desc" class="text-xs text-slate-700">
-        Se eliminarán también todos sus temas y lecciones. Esta acción no se puede deshacer.
-      </p>
-      <p v-if="errorEliminacion" role="alert" class="text-semantico-falla text-[11px]">{{ errorEliminacion }}</p>
-      <div class="flex items-center justify-end gap-2">
-        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="confirmacion = null">Cancelar</button>
-        <button type="button" :disabled="eliminando" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarEliminarModulo">
-          <Loader2 v-if="eliminando" :size="14" class="animate-spin" aria-hidden="true" />
-          {{ eliminando ? 'Eliminando…' : 'Sí, eliminar el módulo' }}
-        </button>
-      </div>
-    </AdminDialogo>
-
-    <AdminDialogo
-      v-else-if="confirmacion?.tipo === 'leccion'"
-      id-titulo="eliminar-leccion-titulo"
-      titulo="¿Eliminar esta lección?"
-      :subtitulo="confirmacion.titulo"
-      id-descripcion="eliminar-leccion-desc"
-      clase-icono="bg-semantico-falla/10 text-semantico-falla"
-      :ocupado="eliminando"
-      @cerrar="confirmacion = null">
-      <template #icono><Trash2 :size="18" aria-hidden="true" /></template>
-      <p id="eliminar-leccion-desc" class="text-xs text-slate-700">
-        Se eliminarán también sus explicaciones y ejercicios. Esta acción no se puede deshacer.
-      </p>
-      <p v-if="errorEliminacion" role="alert" class="text-semantico-falla text-[11px]">{{ errorEliminacion }}</p>
-      <div class="flex items-center justify-end gap-2">
-        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="confirmacion = null">Cancelar</button>
-        <button type="button" :disabled="eliminando" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarEliminarLeccion">
-          <Loader2 v-if="eliminando" :size="14" class="animate-spin" aria-hidden="true" />
-          {{ eliminando ? 'Eliminando…' : 'Sí, eliminar la lección' }}
-        </button>
-      </div>
-    </AdminDialogo>
-
-    <AdminDialogo
-      v-else-if="confirmacion?.tipo === 'tema'"
-      id-titulo="eliminar-tema-titulo"
-      titulo="¿Eliminar este tema?"
-      :subtitulo="confirmacion.titulo"
-      id-descripcion="eliminar-tema-desc"
-      clase-icono="bg-semantico-falla/10 text-semantico-falla"
-      :ocupado="eliminando"
-      @cerrar="confirmacion = null">
-      <template #icono><Trash2 :size="18" aria-hidden="true" /></template>
-      <p id="eliminar-tema-desc" class="text-xs text-slate-700">
-        {{ confirmacion.cantidadLecciones === 0 ? 'Se eliminará este tema permanentemente.' : `Se eliminará este tema y sus ${confirmacion.cantidadLecciones} lecciones asociadas permanentemente.` }} Esta acción no se puede deshacer.
-      </p>
-      <p v-if="errorEliminacion" role="alert" class="text-semantico-falla text-[11px]">{{ errorEliminacion }}</p>
-      <div class="flex items-center justify-end gap-2">
-        <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="confirmacion = null">Cancelar</button>
-        <button type="button" :disabled="eliminando" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarEliminarTema">
-          <Loader2 v-if="eliminando" :size="14" class="animate-spin" aria-hidden="true" />
-          {{ eliminando ? 'Eliminando…' : 'Sí, eliminar el tema' }}
-        </button>
-      </div>
-    </AdminDialogo>
+    <!-- Ventana única de eliminación para módulo / tema / lección (B3) -->
+    <DocenteContenidosVentanaEliminar
+      v-if="confirmacion"
+      :nivel="confirmacion.tipo"
+      :id="confirmacion.id"
+      :titulo="confirmacion.titulo"
+      :eliminando="eliminando"
+      @cerrar="confirmacion = null"
+      @confirmar="ejecutarEliminar"
+      @archivar="onArchivar" />
 
     <!-- Modales para construir currículo (Módulo, Tema, Unidad) -->
     <CurriculumBuilderModals
@@ -206,7 +145,7 @@
       @section-created="onSectionCreated"
       @topic-created="onTopicCreated"
       @unit-created="onUnitCreated"
-      @feedback="msg => actionFeedback = msg" />
+      @feedback="msg => avisar({ tipo: 'exito', texto: msg })" />
 
     <!-- Modal para gestionar Lecciones de una unidad -->
     <UnitLessonsModal
@@ -221,11 +160,12 @@
 // composables/useContenidosCurso.ts y cada ventana en components/docente/contenidos/ (PAT-01 y PAT-04; antes un solo
 // archivo de 1131 líneas con cuatro ventanas y sus llamadas a la API).
 import { computed, nextTick, onMounted, provide, ref } from 'vue'
-import { Archive, BookOpen, Check, ChevronRight, CircleX, CopyPlus, EyeOff, FileText, Folder, Loader2, Pencil, Plus, Trash2, TriangleAlert } from 'lucide-vue-next'
+import { Archive, BookOpen, Check, ChevronRight, CopyPlus, EyeOff, FileText, Folder, Loader2, Pencil, Plus, Trash2, TriangleAlert } from 'lucide-vue-next'
 import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 import { CLAVE_CONTENIDOS, useContenidosCurso } from '~/composables/useContenidosCurso'
 import { useContenidosAcciones } from '~/composables/useContenidosAcciones'
+import { useAvisos } from '~/composables/useAvisos'
 const { messageOf } = useApiErrorMessage()
 import { mayorOrden, resumenDeLeccion, type LeccionDelArbol, type ModuloDelArbol, type TemaDelArbol } from '~/utils/contenidosCurso'
 
@@ -233,23 +173,36 @@ definePageMeta({ layout: 'teacher' })
 
 const estado = useContenidosCurso()
 const acciones = useContenidosAcciones()
+const { avisar } = useAvisos()
 provide(CLAVE_CONTENIDOS, estado)
 // Los nombres de la plantilla se conservan: así el árbol no cambió y el cambio queda en la lógica.
 const {
   clases: teacherClasses, claseId: selectedClassId, clase: selectedClass, otrasClases: otherClasses, modulos: sections,
-  cargando: isLoading, error: errorMessage, aviso: actionFeedback, errorAccion: actionError, plantillas,
+  cargando: isLoading, error: errorMessage, plantillas,
   cargarModulos: loadSections, alternarPublicacion: toggleSectionPublish,
   explicaciones: lessonsByUnit, ejercicios: exerciseCountByUnit, cargarExplicaciones: loadLessons,
 } = estado
 
 type Ventana =
-  | { tipo: 'tema' | 'archivar'; tema: TemaDelArbol }
+  | { tipo: 'modulo'; modulo: ModuloDelArbol }
+  | { tipo: 'tema'; tema: TemaDelArbol }
+  | { tipo: 'archivar'; nivel: 'modulo' | 'tema' | 'leccion'; id: number; titulo: string; devolverFoco?: string }
+  | { tipo: 'archivar-tema'; tema: TemaDelArbol }
   | { tipo: 'leccion'; leccion: LeccionDelArbol }
   | { tipo: 'importar' }
 const ventana = ref<Ventana | null>(null)
+const openEditModuleModal = (modulo: ModuloDelArbol) => { ventana.value = { tipo: 'modulo', modulo } }
+const confirmArchiveModule = (modulo: ModuloDelArbol) => {
+  ventana.value = { tipo: 'archivar', nivel: 'modulo', id: modulo.id, titulo: modulo.title, devolverFoco: `mas-seccion-${modulo.id}` }
+}
 const openEditTopicModal = (tema: TemaDelArbol) => { ventana.value = { tipo: 'tema', tema } }
-const confirmArchiveTopic = (tema: TemaDelArbol) => { ventana.value = { tipo: 'archivar', tema } }
+const confirmArchiveTopic = (tema: TemaDelArbol) => {
+  ventana.value = { tipo: 'archivar', nivel: 'tema', id: tema.id, titulo: tema.title, devolverFoco: `mas-tema-${tema.id}` }
+}
 const openEditUnitModal = (leccion: LeccionDelArbol) => { ventana.value = { tipo: 'leccion', leccion } }
+const confirmArchiveUnit = (leccion: LeccionDelArbol) => {
+  ventana.value = { tipo: 'archivar', nivel: 'leccion', id: leccion.id, titulo: leccion.title, devolverFoco: `mas-leccion-${leccion.id}` }
+}
 const openImportModal = () => { ventana.value = { tipo: 'importar' } }
 
 // ─── Eliminar módulo / tema / lección ───
@@ -287,61 +240,52 @@ function confirmarEliminarLeccion(unit: LeccionDelArbol) {
   confirmacion.value = { tipo: 'leccion', id: unit.id, titulo: unit.title, sectionId, topicId }
 }
 
-async function ejecutarEliminarModulo() {
+/** Ejecutor único — el componente VentanaEliminar delega aquí. */
+async function ejecutarEliminar() {
   const conf = confirmacion.value
-  if (!conf || conf.tipo !== 'modulo') return
+  if (!conf) return
   eliminando.value = true
   errorEliminacion.value = null
   try {
-    await acciones.eliminarModulo(conf.id)
-    sections.value = sections.value.filter(s => s.id !== conf.id)
-    actionFeedback.value = `Módulo «${conf.titulo}» eliminado.`
-    confirmacion.value = null
-  } catch (err: unknown) {
-    errorEliminacion.value = messageOf(err, 'No se pudo eliminar el módulo.')
-  } finally {
-    eliminando.value = false
-  }
-}
-
-async function ejecutarEliminarTema() {
-  const conf = confirmacion.value
-  if (!conf || conf.tipo !== 'tema') return
-  eliminando.value = true
-  errorEliminacion.value = null
-  try {
-    await acciones.eliminarTema(conf.id)
-    const sec = sections.value.find(s => s.id === conf.sectionId)
-    if (sec) {
-      sec.topics = (sec.topics ?? []).filter(t => t.id !== conf.id)
+    if (conf.tipo === 'modulo') {
+      await acciones.eliminar('modulo', conf.id)
+      sections.value = sections.value.filter(s => s.id !== conf.id)
+    } else if (conf.tipo === 'tema') {
+      await acciones.eliminar('tema', conf.id)
+      const sec = sections.value.find(s => s.id === conf.sectionId)
+      if (sec) sec.topics = (sec.topics ?? []).filter(t => t.id !== conf.id)
+    } else {
+      await acciones.eliminar('leccion', conf.id)
+      const modulo = sections.value.find(s => s.id === conf.sectionId)
+      const tema = modulo?.topics?.find(t => t.id === conf.topicId)
+      if (tema) tema.learningUnits = (tema.learningUnits ?? []).filter(u => u.id !== conf.id)
+      if (expandedUnitId.value === conf.id) expandedUnitId.value = null
     }
-    actionFeedback.value = `Tema «${conf.titulo}» eliminado.`
+    const textos: Record<string, string> = { modulo: 'Módulo', tema: 'Tema', leccion: 'Lección' }
+    avisar({ tipo: 'exito', texto: `${textos[conf.tipo]} «${conf.titulo}» eliminado.` })
     confirmacion.value = null
   } catch (err: unknown) {
-    errorEliminacion.value = messageOf(err, 'No se pudo eliminar el tema.')
+    errorEliminacion.value = messageOf(err, `No se pudo eliminar.`)
   } finally {
     eliminando.value = false
   }
 }
 
-async function ejecutarEliminarLeccion() {
+/** Cuando VentanaEliminar archivó el ítem (en lugar de eliminar), lo quitamos del árbol local. */
+function onArchivar() {
   const conf = confirmacion.value
-  if (!conf || conf.tipo !== 'leccion') return
-  eliminando.value = true
-  errorEliminacion.value = null
-  try {
-    await acciones.eliminarLeccion(conf.id)
+  if (!conf) return
+  if (conf.tipo === 'modulo') {
+    sections.value = sections.value.filter(s => s.id !== conf.id)
+  } else if (conf.tipo === 'tema') {
+    const sec = sections.value.find(s => s.id === conf.sectionId)
+    if (sec) sec.topics = (sec.topics ?? []).filter(t => t.id !== conf.id)
+  } else {
     const modulo = sections.value.find(s => s.id === conf.sectionId)
     const tema = modulo?.topics?.find(t => t.id === conf.topicId)
     if (tema) tema.learningUnits = (tema.learningUnits ?? []).filter(u => u.id !== conf.id)
-    actionFeedback.value = `Lección «${conf.titulo}» eliminada.`
-    if (expandedUnitId.value === conf.id) expandedUnitId.value = null
-    confirmacion.value = null
-  } catch (err: unknown) {
-    errorEliminacion.value = messageOf(err, 'No se pudo eliminar la lección.')
-  } finally {
-    eliminando.value = false
   }
+  confirmacion.value = null
 }
 
 // Crear módulos, temas y lecciones, y escribir las explicaciones: sus ventanas ya eran componentes aparte.

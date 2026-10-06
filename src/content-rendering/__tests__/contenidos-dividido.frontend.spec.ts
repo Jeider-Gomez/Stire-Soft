@@ -91,7 +91,7 @@ describe('la página organiza; el composable habla con la API; una ventana por c
   it('en el celular el selector de clase no se sale y el botón de publicar dice qué hace', () => {
     expect(pagina).toMatch(/id="class-selector"[\s\S]{0,120}class="min-w-0 flex-1/);
     expect(arbol).toContain('flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b');
-    expect(arbol).toContain('Pulsa para publicarlo');
+    expect(arbol).toContain('<DocenteContenidosEstadoPublicacion');
   });
 
   it('sin «any»', () => {

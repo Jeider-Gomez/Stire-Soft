@@ -17,6 +17,7 @@ export interface TemaDelArbol {
   title: string
   description?: string
   order: number
+  isActive?: boolean
   learningUnits?: LeccionDelArbol[]
 }
 
@@ -26,6 +27,7 @@ export interface ModuloDelArbol {
   description?: string
   order: number
   isPublished: boolean
+  isActive?: boolean
   topics?: TemaDelArbol[]
 }
 
