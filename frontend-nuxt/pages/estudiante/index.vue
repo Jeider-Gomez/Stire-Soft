@@ -27,47 +27,7 @@
       </div>
     </div>
 
-    <!-- Solicitud de rol docente (§23 T4). Pedido de Jeider (02/10): que se note. Quien pidió ser docente y entra
-         como estudiante puede creer que la app falló; el aviso dice en rojo que el admin aún no cambia su rol. -->
-    <div
-      v-if="myRoleRequest"
-      id="aviso-rol-docente"
-      role="status"
-      class="p-4 rounded-xl border-2 border-l-8 flex items-start justify-between gap-3 shadow-sm"
-      :class="{
-        'bg-semantico-falla/10 border-semantico-falla text-semantico-falla': myRoleRequest.status !== 'approved',
-        'bg-semantico-pasa/10 border-semantico-pasa text-semantico-pasa': myRoleRequest.status === 'approved'
-      }">
-      <div class="flex items-start gap-3">
-        <ShieldAlert v-if="myRoleRequest.status === 'pending'" :size="22" class="shrink-0" aria-hidden="true" />
-        <BadgeCheck v-else-if="myRoleRequest.status === 'approved'" :size="22" class="shrink-0" aria-hidden="true" />
-        <AlertTriangle v-else :size="22" class="shrink-0" aria-hidden="true" />
-
-        <div v-if="myRoleRequest.status === 'pending'" class="space-y-0.5">
-          <p class="text-sm font-bold">El administrador todavía no ha cambiado tu rol a docente</p>
-          <p class="text-xs font-medium text-base-texto-primario">
-            Por ahora entras como estudiante. Cuando aprueben tu solicitud, cierra sesión y vuelve a entrar para ver el panel docente.
-            Si te urge, avísale al administrador.
-          </p>
-        </div>
-        <div v-else-if="myRoleRequest.status === 'approved'" class="space-y-0.5">
-          <p class="text-sm font-bold">Ya eres docente</p>
-          <p class="text-xs font-medium text-base-texto-primario">Cierra sesión y vuelve a entrar para usar el panel docente.</p>
-        </div>
-        <div v-else class="space-y-0.5">
-          <p class="text-sm font-bold">Tu solicitud para ser docente fue rechazada</p>
-          <p v-if="myRoleRequest.reviewNote" class="text-xs font-medium text-base-texto-primario">«{{ myRoleRequest.reviewNote }}»</p>
-        </div>
-      </div>
-
-      <button
-        v-if="myRoleRequest.status === 'approved'"
-        type="button"
-        @click="authStore.logout()"
-        class="shrink-0 px-3 py-1.5 rounded-lg bg-semantico-pasa text-white text-xs font-bold hover:opacity-90">
-        Cerrar sesión
-      </button>
-    </div>
+    <AvisoSolicitudRol :solicitud="myRoleRequest" @cerrar-sesion="authStore.logout()" />
 
     <!-- ESTADO VACÍO SI NO ESTÁ MATRICULADO -->
     <section v-if="!studentStore.isSyncing && studentStore.enrolledClasses.length === 0" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-8 text-center space-y-4 shadow-sm">
@@ -327,7 +287,7 @@ function moduloAbierto(mod: { id: number; units: Array<{ id: number; status?: st
   const primeroPendiente = studentStore.modules.find((m) => m.units.some((u) => u.status !== 'dominado'))
   return (primeroPendiente ?? studentStore.modules[0])?.id === mod.id
 }
-import { AlertTriangle, BadgeCheck, BookOpen, Brain, CheckCircle2, ChevronRight, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, ShieldAlert, TrendingUp } from 'lucide-vue-next'
+import { BookOpen, Brain, CheckCircle2, ChevronRight, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, TrendingUp } from 'lucide-vue-next'
 import { contar, DOMINADO } from '~/utils/terminos'
 import { calificacionTexto, fechaCorta, type EstadoEntrega } from '~/utils/entregas'
 import { useStudentStore } from '~/stores/student'
