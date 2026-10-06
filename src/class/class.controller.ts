@@ -82,6 +82,27 @@ export class ClassController {
     return this.classService.update(id, updateClassDto, user);
   }
 
+  @Get(':id/impacto')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  impacto(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.classService.impacto(id, user);
+  }
+
+  @Patch(':id/archivar')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  archivar(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.classService.archivar(id, user);
+  }
+
+  @Patch(':id/restaurar')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  restaurar(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.classService.restaurar(id, user);
+  }
+
   @Delete(':id')
   @UseGuards(RolesGuard)
   @Roles('docente', 'admin')

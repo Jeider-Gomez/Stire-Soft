@@ -81,9 +81,35 @@ export class TopicController {
     return this.topicService.update(id, updateDto, user);
   }
 
+  /** GET /topic/:id/impacto — qué se pierde si se elimina el tema. */
+  @Get(':id/impacto')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Qué se pierde si se elimina el tema' })
+  impacto(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.topicService.impacto(id, user);
+  }
+
+  /** PATCH /topic/:id/archivar — lo mismo que DELETE sin ?permanent: se oculta y se conserva. */
+  @Patch(':id/archivar')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Archivar un tema' })
+  archivar(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.topicService.remove(id, user);
+  }
+
+  @Patch(':id/restaurar')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Restaurar un tema archivado' })
+  restaurar(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.topicService.restaurar(id, user);
+  }
+
   /**
    * DELETE /topic/:id
-   * Desactivar un topic (soft delete lógico) o eliminarlo definitivamente con ?permanent=true.
+   * Archivar un topic (soft delete lógico) o eliminarlo definitivamente con ?permanent=true (409 si hay avance de estudiantes).
    */
   @Delete(':id')
   @UseGuards(RolesGuard)

@@ -30,6 +30,10 @@ export class Section {
   @Column({ default: false })
   isPublished!: boolean;
 
+  /** Archivado (Fase 30): guarda todo, no se ve para el estudiante y se puede restaurar. Archivar también lo despublica. */
+  @Column({ default: true })
+  isActive!: boolean;
+
   // N secciones pertenecen a 1 clase
   @ManyToOne(() => Class, (cls) => cls.sections, {
     eager: false,

@@ -75,10 +75,30 @@ export class LearningUnitController {
     return this.learningUnitService.update(+id, updateDto, user);
   }
 
+  /** Qué se pierde si se elimina la lección; si hay trabajo de estudiantes, no se puede (se archiva). */
+  @Get(':id/impacto')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  impacto(@Param('id') id: string, @GetUser() user: User) {
+    return this.learningUnitService.impacto(+id, user);
+  }
+
+  @Patch(':id/archivar')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  archivar(@Param('id') id: string, @GetUser() user: User) {
+    return this.learningUnitService.archivar(+id, user);
+  }
+
+  @Patch(':id/restaurar')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  restaurar(@Param('id') id: string, @GetUser() user: User) {
+    return this.learningUnitService.restaurar(+id, user);
+  }
+
   /**
-   * Eliminar una unidad. El docente dueño de la clase (o admin) puede
-   * eliminar sus propias lecciones; el servicio valida en profundidad que
-   * el docente sea el propietario antes de proceder.
+   * Eliminar una lección: el docente dueño de la clase (o admin), solo si ningún estudiante tiene avance (si no, 409).
    */
   @Delete(':id')
   @UseGuards(RolesGuard)

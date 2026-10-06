@@ -11,6 +11,12 @@ describe('SectionService — P1-06', () => {
     findOne: jest.fn(),
     save: jest.fn((s) => Promise.resolve(s)),
     remove: jest.fn().mockResolvedValue(undefined),
+    // Fase 30: eliminar va en una transacción que primero mide el impacto (sin trabajo de estudiantes: 0).
+    manager: {
+      transaction: jest.fn(async (fn: (m: unknown) => Promise<unknown>) =>
+        fn({ query: jest.fn().mockResolvedValue([{ n: 0 }]), delete: jest.fn().mockResolvedValue(undefined) }),
+      ),
+    },
   };
   const mockClassRepo = { findOne: jest.fn() };
   const mockEnrollmentRepo = { findOne: jest.fn() };
@@ -41,7 +47,7 @@ describe('SectionService — P1-06', () => {
   it('remove: docente A no puede eliminar sección ajena → 403', async () => {
     const docenteA = { id: 99, role: UserRole.DOCENTE } as any;
     await expect(service.remove(1, docenteA)).rejects.toThrow(ForbiddenException);
-    expect(mockSectionRepo.remove).not.toHaveBeenCalled();
+    expect(mockSectionRepo.manager.transaction).not.toHaveBeenCalled();
   });
 
   it('el docente dueño sí puede editar/publicar/eliminar su sección', async () => {

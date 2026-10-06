@@ -10,6 +10,7 @@ import { UpdateTopicDto } from './dto/update-topic.dto';
 import { SectionService } from '../section/section.service';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User } from '../user/entities/user.entity';
+import { ImpactoBorrado, borrarLecciones, exigirQueSePuedaEliminar, impactoDeLecciones } from '../common/contenido/borrado-contenido';
 
 @Injectable()
 export class TopicService {
@@ -90,24 +91,35 @@ export class TopicService {
     return await this.topicRepository.save(topic);
   }
 
+  /** Restaurar un tema archivado. Solo el docente dueño de la clase padre (o admin). */
+  async restaurar(id: number, user: User): Promise<Topic> {
+    const topic = await this.findOne(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(topic));
+    topic.isActive = true;
+    return await this.topicRepository.save(topic);
+  }
+
+  /** Qué se pierde si se elimina el tema (Fase 30). */
+  async impacto(id: number, user: User): Promise<ImpactoBorrado> {
+    const topic = await this.findOne(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(topic));
+    return impactoDeLecciones(this.topicRepository.manager, (topic.learningUnits ?? []).map((u) => u.id), { modulos: 0, temas: 1 });
+  }
+
   /**
-   * Eliminar definitivamente un topic y sus unidades.
-   * Solo el docente dueño de la clase padre (o admin).
+   * Eliminar definitivamente un tema y sus lecciones. Solo el docente dueño (o admin), y solo si ningún estudiante tiene
+   * avance en él (409: se archiva). El primer intento (05/10) borraba las lecciones sin mirar: la cascada se llevaba el
+   * avance de los estudiantes y, con ejercicios, fallaba con un 500.
    */
   async deletePermanent(id: number, user: User): Promise<void> {
     const topic = await this.findOne(id);
     await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(topic));
-    const learningUnits = topic.learningUnits ?? [];
-    if (learningUnits.length > 0) {
-      await this.topicRepository.manager.transaction(async (manager) => {
-        for (const unit of learningUnits) {
-          await manager.delete('learning_units', { id: unit.id });
-        }
-        await manager.remove(topic);
-      });
-    } else {
-      await this.topicRepository.remove(topic);
-    }
+    const unitIds = (topic.learningUnits ?? []).map((u) => u.id);
+    await this.topicRepository.manager.transaction(async (manager) => {
+      exigirQueSePuedaEliminar(await impactoDeLecciones(manager, unitIds, { modulos: 0, temas: 1 }));
+      await borrarLecciones(manager, unitIds);
+      await manager.delete(Topic, { id: topic.id });
+    });
   }
 
   /**

@@ -35,6 +35,11 @@ export class AuthorizationService {
     if (!enrollment) {
       throw new ForbiddenException('No estás matriculado en esta clase');
     }
+    // Clase archivada por su docente (Fase 30): el estudiante ya no entra a su contenido ni envía trabajo.
+    const cls = await this.classRepo.findOne({ where: { id: classId } });
+    if (cls && cls.isActive === false) {
+      throw new ForbiddenException('Tu docente archivó esta clase.');
+    }
   }
 
   /**

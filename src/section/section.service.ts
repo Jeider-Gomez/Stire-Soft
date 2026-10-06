@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Section } from './entities/section.entity';
@@ -9,6 +9,7 @@ import { AuthorizationService } from '../common/authorization/authorization.serv
 import { User, UserRole } from '../user/entities/user.entity';
 import { PublicationStatus } from '../common/enums/status.enum';
 import { actividadVisiblePara } from '../activities/visibilidad';
+import { ImpactoBorrado, borrarLecciones, exigirQueSePuedaEliminar, impactoDeLecciones } from '../common/contenido/borrado-contenido';
 
 @Injectable()
 export class SectionService {
@@ -84,7 +85,7 @@ export class SectionService {
     }
     await this.authorizationService.assertEnrolledInClass(user, classId);
     return sections
-      .filter((s) => s.isPublished)
+      .filter((s) => s.isPublished && s.isActive !== false)
       .map((s) => ({
         ...s,
         topics: (s.topics ?? [])
@@ -141,17 +142,56 @@ export class SectionService {
   async togglePublish(id: number, user: User): Promise<Section> {
     const section = await this.findOne(id);
     await this.authorizationService.assertTeacherOwnsClass(user, section.classId);
+    if (!section.isPublished && section.isActive === false) {
+      throw new ConflictException('Este módulo está archivado: restáuralo antes de publicarlo.');
+    }
     section.isPublished = !section.isPublished;
     return this.sectionRepository.save(section);
   }
 
   /**
-   * Eliminar una sección (hard delete — la cascada borra sus topics).
-   * Solo el docente dueño de la clase (o admin).
+   * Qué se pierde si se elimina el módulo (Fase 30): temas, lecciones, ejercicios y estudiantes con avance.
+   */
+  async impacto(id: number, user: User): Promise<ImpactoBorrado> {
+    const section = await this.findOne(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, section.classId);
+    return impactoDeLecciones(this.sectionRepository.manager, leccionesDe(section), { modulos: 1, temas: section.topics?.length ?? 0 });
+  }
+
+  /**
+   * Eliminar un módulo con sus temas y lecciones. Solo el docente dueño (o admin), y solo si ningún estudiante tiene
+   * avance en él (409: se archiva). Antes, con lecciones, fallaba con un 500 (`learning_units → topics` no tiene cascada).
    */
   async remove(id: number, user: User): Promise<void> {
     const section = await this.findOne(id);
     await this.authorizationService.assertTeacherOwnsClass(user, section.classId);
-    await this.sectionRepository.remove(section);
+    const unitIds = leccionesDe(section);
+    await this.sectionRepository.manager.transaction(async (manager) => {
+      exigirQueSePuedaEliminar(await impactoDeLecciones(manager, unitIds, { modulos: 1, temas: section.topics?.length ?? 0 }));
+      await borrarLecciones(manager, unitIds);
+      // Los temas caen en cascada con el módulo (topics.sectionId ON DELETE CASCADE).
+      await manager.delete(Section, { id: section.id });
+    });
   }
+
+  /** Archivar: deja de verse para el estudiante (también se despublica) y conserva todo. */
+  async archivar(id: number, user: User): Promise<Section> {
+    const section = await this.findOne(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, section.classId);
+    section.isActive = false;
+    section.isPublished = false;
+    return this.sectionRepository.save(section);
+  }
+
+  /** Restaurar: vuelve como borrador; el docente decide cuándo publicarlo otra vez. */
+  async restaurar(id: number, user: User): Promise<Section> {
+    const section = await this.findOne(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, section.classId);
+    section.isActive = true;
+    return this.sectionRepository.save(section);
+  }
+}
+
+function leccionesDe(section: Section): number[] {
+  return (section.topics ?? []).flatMap((t) => (t.learningUnits ?? []).map((u) => u.id));
 }

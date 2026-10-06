@@ -92,14 +92,44 @@ export class SectionController {
   }
 
   /**
+   * GET /sections/:id/impacto
+   * Qué se pierde si se elimina el módulo; si hay trabajo de estudiantes, no se puede (se archiva).
+   */
+  @Get(':id/impacto')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Qué se pierde si se elimina el módulo' })
+  impacto(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.sectionService.impacto(id, user);
+  }
+
+  @Patch(':id/archivar')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Archivar un módulo (no se ve para el estudiante; se conserva todo)' })
+  archivar(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.sectionService.archivar(id, user);
+  }
+
+  @Patch(':id/restaurar')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Restaurar un módulo archivado (vuelve como borrador)' })
+  restaurar(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.sectionService.restaurar(id, user);
+  }
+
+  /**
    * DELETE /sections/:id
-   * Elimina la sección. La cascada eliminará sus topics automáticamente.
+   * Elimina el módulo con sus temas y lecciones, solo si ningún estudiante tiene avance en él (si no, 409).
    */
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(RolesGuard)
   @Roles('docente', 'admin')
-  @ApiOperation({ summary: 'Eliminar una sección (y sus topics en cascada)' })
+  @ApiOperation({ summary: 'Eliminar un módulo sin trabajo de estudiantes' })
   remove(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
     return this.sectionService.remove(id, user);
   }

@@ -20,6 +20,7 @@ import { normalizarCodigo, problemaDelCodigo } from './codigo-clase';
 import { Asignatura } from '../institution/entities/asignatura.entity';
 import { problemaDelAlcance } from '../reuse/alcance-plantilla';
 import { CATEGORIAS_LOGRO } from '../analytics/logros';
+import { ImpactoBorrado, impactoDeLecciones } from '../common/contenido/borrado-contenido';
 
 export interface ClassWithStats extends Class {
   enrollmentCount: number;
@@ -103,7 +104,8 @@ export class ClassService {
     });
     if (enrollments.length === 0) return [];
     return await this.classRepository.find({
-      where: { id: In(enrollments.map((e) => e.classId)) },
+      // Una clase archivada sale del inicio del estudiante (Fase 30); el docente la sigue viendo en «Archivadas».
+      where: { id: In(enrollments.map((e) => e.classId)), isActive: true },
       relations: ['teacher'],
     });
   }
@@ -266,5 +268,49 @@ export class ClassService {
       );
     }
     await this.classRepository.remove(classEntity);
+  }
+
+  /**
+   * Qué se pierde si se elimina la clase (Fase 30). Solo se elimina una clase sin módulos: el docente puede eliminar
+   * antes los módulos sin avance o, lo normal, archivar la clase.
+   */
+  async impacto(id: number, user: User): Promise<ImpactoBorrado> {
+    const classEntity = await this.findOne(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, classEntity.id);
+    const manager = this.classRepository.manager;
+    const filas: Array<{ seccion: number; tema: number | null; leccion: number | null }> = await manager.query(
+      'SELECT s.id AS seccion, t.id AS tema, lu.id AS leccion FROM sections s ' +
+        'LEFT JOIN topics t ON t.sectionId = s.id LEFT JOIN learning_units lu ON lu.topicId = t.id WHERE s.classId = ?',
+      [classEntity.id],
+    );
+    const distintos = (xs: Array<number | null>) => [...new Set(xs.filter((x): x is number => x != null).map(Number))];
+    const modulos = distintos(filas.map((f) => f.seccion)).length;
+    const impacto = await impactoDeLecciones(manager, distintos(filas.map((f) => f.leccion)), {
+      modulos,
+      temas: distintos(filas.map((f) => f.tema)).length,
+    });
+    if (modulos === 0) return impacto;
+    const cuantos = modulos === 1 ? '1 módulo' : `${modulos} módulos`;
+    return {
+      ...impacto,
+      sePuedeEliminar: false,
+      motivo: `Esta clase tiene ${cuantos}. Archívala para conservar todo, o elimina antes los módulos que no tengan avance.`,
+    };
+  }
+
+  /** Archivar: sale del inicio de sus estudiantes, no acepta nuevos ingresos ni trabajo; se conserva todo. */
+  async archivar(id: number, user: User): Promise<Class> {
+    return this.cambiarActiva(id, user, false);
+  }
+
+  async restaurar(id: number, user: User): Promise<Class> {
+    return this.cambiarActiva(id, user, true);
+  }
+
+  private async cambiarActiva(id: number, user: User, activa: boolean): Promise<Class> {
+    const classEntity = await this.findOne(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, classEntity.id);
+    classEntity.isActive = activa;
+    return this.classRepository.save(classEntity);
   }
 }

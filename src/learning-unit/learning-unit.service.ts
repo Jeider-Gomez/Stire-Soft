@@ -8,6 +8,7 @@ import { CreateLearningUnitDto } from './dto/create-learning-unit.dto';
 import { UpdateLearningUnitDto } from './dto/update-learning-unit.dto';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User, UserRole } from '../user/entities/user.entity';
+import { ImpactoBorrado, borrarLecciones, exigirQueSePuedaEliminar, impactoDeLecciones } from '../common/contenido/borrado-contenido';
 
 @Injectable()
 export class LearningUnitService {
@@ -138,15 +139,41 @@ export class LearningUnitService {
     return await this.learningUnitRepository.save(unit);
   }
 
+  /** Qué se pierde si se elimina la lección (Fase 30). */
+  async impacto(id: number, user: User): Promise<ImpactoBorrado> {
+    const unit = await this.findOneRaw(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(unit));
+    return impactoDeLecciones(this.learningUnitRepository.manager, [unit.id], { modulos: 0, temas: 0 });
+  }
+
   /**
-   * Eliminar una unidad de aprendizaje. Solo el docente dueño de la clase
-   * de su topic (o admin) — la ruta ya exige @Roles('admin') además, esto
-   * es defensa en profundidad si esa restricción de rol cambia.
+   * Eliminar una lección. Solo el docente dueño de la clase de su tema (o admin), y solo si ningún estudiante tiene
+   * avance en ella (409: se archiva). Antes el borrado arrastraba en cascada el avance (`learning_progress`) y, con
+   * ejercicios, fallaba con un 500 (`activities → learning_units` no tiene cascada).
    */
   async remove(id: number, user: User): Promise<void> {
     const unit = await this.findOneRaw(id);
     await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(unit));
-    await this.learningUnitRepository.remove(unit);
+    await this.learningUnitRepository.manager.transaction(async (manager) => {
+      exigirQueSePuedaEliminar(await impactoDeLecciones(manager, [unit.id], { modulos: 0, temas: 0 }));
+      await borrarLecciones(manager, [unit.id]);
+    });
+  }
+
+  /** Archivar (`isActive = false`): el estudiante deja de verla; se conserva todo. */
+  async archivar(id: number, user: User): Promise<LearningUnit> {
+    return this.cambiarActiva(id, user, false);
+  }
+
+  async restaurar(id: number, user: User): Promise<LearningUnit> {
+    return this.cambiarActiva(id, user, true);
+  }
+
+  private async cambiarActiva(id: number, user: User, activa: boolean): Promise<LearningUnit> {
+    const unit = await this.findOneRaw(id);
+    await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(unit));
+    unit.isActive = activa;
+    return await this.learningUnitRepository.save(unit);
   }
 
   /**
