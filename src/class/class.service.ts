@@ -5,9 +5,8 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { EntityManager, In, Repository } from 'typeorm';
 import { Class } from './entities/class.entity';
-import { Section } from '../section/entities/section.entity';
 import { Enrollment } from '../enrollment/entities/enrollment.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { LearningProgress } from '../learning-progress/entities/learning-progress.entity';
@@ -20,7 +19,15 @@ import { normalizarCodigo, problemaDelCodigo } from './codigo-clase';
 import { Asignatura } from '../institution/entities/asignatura.entity';
 import { problemaDelAlcance } from '../reuse/alcance-plantilla';
 import { CATEGORIAS_LOGRO } from '../analytics/logros';
-import { ImpactoBorrado, impactoDeLecciones } from '../common/contenido/borrado-contenido';
+import {
+  ImpactoBorrado,
+  borrarConfiguracionDeClase,
+  borrarLecciones,
+  exigirQueSePuedaEliminar,
+  impactoDeLecciones,
+  motivoDeBloqueo,
+  trabajoEnClase,
+} from '../common/contenido/borrado-contenido';
 
 export interface ClassWithStats extends Class {
   enrollmentCount: number;
@@ -256,46 +263,61 @@ export class ClassService {
     if (problema) throw new BadRequestException(problema);
   }
 
+  /**
+   * Eliminar una clase (Fase 30, 06/10). Una clase creada por error se puede eliminar aunque tenga módulos, siempre que
+   * ningún estudiante haya trabajado en ella (si no, 409: se archiva). Antes se bloqueaba con cualquier módulo porque
+   * borrarla fallaba con 500 (las lecciones no caen en cascada con sus temas) y, de lograrse, se perdía el trabajo.
+   */
   async remove(id: number, user: User): Promise<void> {
     const classEntity = await this.findOne(id);
     await this.authorizationService.assertTeacherOwnsClass(user, classEntity.id);
-    // Con contenido, borrar fallaba con 500 (las unidades no se borran en cascada con sus temas) y, de lograrse,
-    // se perderían entregas y el progreso de los estudiantes.
-    const secciones = await this.classRepository.manager.count(Section, { where: { classId: classEntity.id } });
-    if (secciones > 0) {
-      throw new ConflictException(
-        'Esta clase ya tiene contenido y no se puede eliminar: se perderían las entregas y el progreso de tus estudiantes.',
-      );
-    }
-    await this.classRepository.remove(classEntity);
+    await this.classRepository.manager.transaction(async (manager) => {
+      const { impacto, unitIds } = await this.medirClase(manager, classEntity.id);
+      exigirQueSePuedaEliminar(impacto);
+      await borrarLecciones(manager, unitIds);
+      await borrarConfiguracionDeClase(manager, classEntity.id);
+      // Módulos (y con ellos sus temas), matrículas y sesiones de asistencia caen en cascada con la clase.
+      await manager.delete(Class, { id: classEntity.id });
+    });
   }
 
-  /**
-   * Qué se pierde si se elimina la clase (Fase 30). Solo se elimina una clase sin módulos: el docente puede eliminar
-   * antes los módulos sin avance o, lo normal, archivar la clase.
-   */
+  /** Qué se pierde si se elimina la clase: su contenido, los estudiantes matriculados y si alguien ya trabajó en ella. */
   async impacto(id: number, user: User): Promise<ImpactoBorrado> {
     const classEntity = await this.findOne(id);
     await this.authorizationService.assertTeacherOwnsClass(user, classEntity.id);
-    const manager = this.classRepository.manager;
+    return (await this.medirClase(this.classRepository.manager, classEntity.id)).impacto;
+  }
+
+  private async medirClase(manager: EntityManager, classId: number): Promise<{ impacto: ImpactoBorrado; unitIds: number[] }> {
     const filas: Array<{ seccion: number; tema: number | null; leccion: number | null }> = await manager.query(
       'SELECT s.id AS seccion, t.id AS tema, lu.id AS leccion FROM sections s ' +
         'LEFT JOIN topics t ON t.sectionId = s.id LEFT JOIN learning_units lu ON lu.topicId = t.id WHERE s.classId = ?',
-      [classEntity.id],
+      [classId],
     );
     const distintos = (xs: Array<number | null>) => [...new Set(xs.filter((x): x is number => x != null).map(Number))];
-    const modulos = distintos(filas.map((f) => f.seccion)).length;
-    const impacto = await impactoDeLecciones(manager, distintos(filas.map((f) => f.leccion)), {
-      modulos,
+    const unitIds = distintos(filas.map((f) => f.leccion));
+    const contenido = await impactoDeLecciones(manager, unitIds, {
+      modulos: distintos(filas.map((f) => f.seccion)).length,
       temas: distintos(filas.map((f) => f.tema)).length,
     });
-    if (modulos === 0) return impacto;
-    const cuantos = modulos === 1 ? '1 módulo' : `${modulos} módulos`;
-    return {
-      ...impacto,
-      sePuedeEliminar: false,
-      motivo: `Esta clase tiene ${cuantos}. Archívala para conservar todo, o elimina antes los módulos que no tengan avance.`,
+    const trabajo = await trabajoEnClase(manager, classId);
+    const matriculas: Array<{ n: string | number }> = await manager.query(
+      'SELECT COUNT(*) AS n FROM enrollments WHERE classId = ? AND status = ?',
+      [classId, EnrollmentStatus.ACTIVE],
+    );
+    const sePuedeEliminar = trabajo.estudiantes === 0 && trabajo.entregas === 0;
+    const impacto: ImpactoBorrado = {
+      modulos: contenido.modulos,
+      temas: contenido.temas,
+      lecciones: contenido.lecciones,
+      ejercicios: contenido.ejercicios,
+      estudiantesConAvance: trabajo.estudiantes,
+      entregas: trabajo.entregas,
+      matriculados: Number(matriculas[0]?.n ?? 0),
+      sePuedeEliminar,
+      ...(sePuedeEliminar ? {} : { motivo: motivoDeBloqueo(trabajo.estudiantes).replace('Archívalo', 'Archiva la clase') }),
     };
+    return { impacto, unitIds };
   }
 
   /** Archivar: sale del inicio de sus estudiantes, no acepta nuevos ingresos ni trabajo; se conserva todo. */

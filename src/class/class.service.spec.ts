@@ -10,7 +10,17 @@ import { UpdateClassDto } from './dto/update-class.dto';
 // remove. Usa un AuthorizationService real (con repos falsos).
 describe('ClassService.remove — P1-06', () => {
   let service: ClassService;
-  const mockClassRepo = { findOne: jest.fn(), remove: jest.fn().mockResolvedValue(undefined), manager: { count: jest.fn() } };
+  // Fase 30 (06/10): eliminar mide el trabajo de estudiantes y borra dentro de una transacción.
+  let trabajoDeEstudiantes = 0;
+  const transaccion = {
+    query: jest.fn(async (sql: string) => (sql.startsWith('SELECT COUNT(DISTINCT q.studentId)') ? [{ n: trabajoDeEstudiantes }] : sql.startsWith('SELECT s.id') ? [] : [{ n: 0 }])),
+    delete: jest.fn().mockResolvedValue(undefined),
+  };
+  const mockClassRepo = {
+    findOne: jest.fn(),
+    remove: jest.fn().mockResolvedValue(undefined),
+    manager: { count: jest.fn(), transaction: jest.fn(async (fn: (m: unknown) => Promise<unknown>) => fn(transaccion)) },
+  };
   const mockEnrollmentRepo = { findOne: jest.fn() };
   const mockProgressRepo = { find: jest.fn() };
   const mockUserService = {};
@@ -37,22 +47,24 @@ describe('ClassService.remove — P1-06', () => {
 
   it('el docente dueño sí puede eliminar su propia clase', async () => {
     mockClassRepo.findOne.mockResolvedValue({ id: 5, teacherId: 10, teacher: {} });
-    mockClassRepo.manager.count.mockResolvedValue(0);
+    trabajoDeEstudiantes = 0;
     const docenteDueño = { id: 10, role: UserRole.DOCENTE } as any;
 
     await expect(service.remove(5, docenteDueño)).resolves.toBeUndefined();
-    expect(mockClassRepo.remove).toHaveBeenCalled();
+    expect(transaccion.delete).toHaveBeenCalledWith(expect.anything(), { id: 5 });
   });
 
-  // Antes respondía 500 («Cannot delete or update a parent row»): las unidades no se borran en cascada con sus temas.
-  it('una clase con contenido no se borra: 409 con un mensaje que explica por qué', async () => {
+  // Antes respondía 500 («Cannot delete or update a parent row»). Desde el 06/10 se puede eliminar una clase con contenido
+  // (creada por error), pero no una donde algún estudiante ya trabajó: 409 con un mensaje que explica por qué.
+  it('una clase con trabajo de estudiantes no se borra: 409 con un mensaje que explica por qué', async () => {
     mockClassRepo.findOne.mockResolvedValue({ id: 5, teacherId: 10, teacher: {} });
-    mockClassRepo.manager.count.mockResolvedValue(3);
+    trabajoDeEstudiantes = 2;
+    transaccion.delete.mockClear();
     const docenteDueño = { id: 10, role: UserRole.DOCENTE } as any;
 
     await expect(service.remove(5, docenteDueño)).rejects.toThrow(ConflictException);
-    await expect(service.remove(5, docenteDueño)).rejects.toThrow(/tiene contenido/);
-    expect(mockClassRepo.remove).not.toHaveBeenCalled();
+    await expect(service.remove(5, docenteDueño)).rejects.toThrow(/tienen avance aquí. Archiva la clase/);
+    expect(transaccion.delete).not.toHaveBeenCalled();
   });
 });
 

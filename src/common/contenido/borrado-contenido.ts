@@ -20,6 +20,8 @@ export interface ImpactoBorrado {
   entregas: number;
   sePuedeEliminar: boolean;
   motivo?: string;
+  /** Solo para una clase: estudiantes matriculados que perderán el acceso (la ventana lo advierte). */
+  matriculados?: number;
 }
 
 type Filas = Array<{ n: string | number | null }>;
@@ -91,4 +93,52 @@ export async function borrarLecciones(manager: EntityManager, unitIds: number[])
   // review_schedules, con la lección.
   await manager.query('DELETE FROM activities WHERE learningUnitId IN (?)', [unitIds]);
   await manager.query('DELETE FROM learning_units WHERE id IN (?)', [unitIds]);
+}
+
+/** Une las lecciones de una tabla `x` (con `learningUnitId`) con su clase. */
+const EN_CLASE =
+  'INNER JOIN learning_units lu ON lu.id = x.learningUnitId INNER JOIN topics t ON t.id = lu.topicId ' +
+  'INNER JOIN sections s ON s.id = t.sectionId WHERE s.classId = ?';
+const ENVIOS_DE_CLASE =
+  'FROM submissions sb INNER JOIN activities x ON x.id = sb.activityId ' + EN_CLASE;
+
+/**
+ * Trabajo de estudiantes en TODA una clase (Fase 30, 06/10: una clase creada por error se puede eliminar aunque tenga
+ * módulos, siempre que nadie haya trabajado en ella). Además de lo de sus lecciones, cuentan los envíos de proyectos,
+ * las notas, la asistencia tomada, los pasos de refuerzos hechos y los eventos de entregas de estudiantes.
+ */
+export async function trabajoEnClase(manager: EntityManager, classId: number): Promise<{ estudiantes: number; entregas: number }> {
+  const consulta = [
+    `SELECT x.studentId FROM learning_progress x ${EN_CLASE} AND (x.attemptsCount > 0 OR x.mastery > 0)`,
+    `SELECT x.studentId FROM review_schedules x ${EN_CLASE}`,
+    `SELECT x.studentId FROM valoraciones_leccion x ${EN_CLASE}`,
+    `SELECT sb.studentId ${ENVIOS_DE_CLASE}`,
+    'SELECT studentId FROM proyecto_envios WHERE classId = ?',
+    'SELECT studentId FROM notas_registradas WHERE classId = ?',
+    'SELECT studentId FROM notas_historial WHERE classId = ?',
+    'SELECT h.studentId FROM refuerzo_pasos_hechos h INNER JOIN refuerzos r ON r.id = h.refuerzoId WHERE r.classId = ?',
+    'SELECT ra.userId FROM registros_asistencia ra INNER JOIN sesiones_asistencia sa ON sa.id = ra.sesionId WHERE sa.classId = ?',
+    'SELECT ee.studentId FROM entrega_eventos ee INNER JOIN entregas e ON e.id = ee.entregaId WHERE e.classId = ? AND ee.studentId IS NOT NULL',
+  ];
+  const estudiantes = numero(
+    await manager.query(`SELECT COUNT(DISTINCT q.studentId) AS n FROM (${consulta.join(' UNION ')}) q`, consulta.map(() => classId)),
+  );
+  const entregas =
+    numero(await manager.query(`SELECT COUNT(*) AS n ${ENVIOS_DE_CLASE}`, [classId])) +
+    numero(await manager.query('SELECT COUNT(*) AS n FROM proyecto_envios WHERE classId = ?', [classId]));
+  return { estudiantes, entregas };
+}
+
+/**
+ * Borra lo que el docente configuró en la clase y no tiene llave foránea hacia ella (entregas, refuerzos, esquema de
+ * notas). Va después de `exigirQueSePuedaEliminar` y de `borrarLecciones`; módulos, temas, matrículas y sesiones de
+ * asistencia caen en cascada con la clase.
+ */
+export async function borrarConfiguracionDeClase(manager: EntityManager, classId: number): Promise<void> {
+  await manager.query('DELETE ee FROM entrega_eventos ee INNER JOIN entregas e ON e.id = ee.entregaId WHERE e.classId = ?', [classId]);
+  await manager.query('DELETE FROM entregas WHERE classId = ?', [classId]);
+  await manager.query('DELETE h FROM refuerzo_pasos_hechos h INNER JOIN refuerzos r ON r.id = h.refuerzoId WHERE r.classId = ?', [classId]);
+  await manager.query('DELETE FROM refuerzos WHERE classId = ?', [classId]);
+  await manager.query('DELETE FROM notas_historial WHERE classId = ?', [classId]);
+  await manager.query('DELETE FROM esquemas_calificacion WHERE classId = ?', [classId]);
 }

@@ -127,6 +127,34 @@ lecciones y 23 ejercicios». Los números vienen del backend (A4), no se calcula
   GitHub); el botón se habilita solo cuando coincide.
 - Para un tema o una lección basta el botón.
 
+**D3 bis · Tiempo para leer antes de eliminar una clase** (pedido de Jeider, 06/10: una clase creada por error se
+puede eliminar, pero quien la elimina tiene que leer primero las consecuencias). La ventana de **eliminar clase**:
+1. **Muestra las consecuencias en una lista corta, con los números del backend** (`GET /class/:id/impacto`). Por
+   ejemplo:
+   - «Se eliminarán 3 módulos, 10 temas, 17 lecciones y 122 ejercicios.»
+   - «2 estudiantes matriculados perderán el acceso a la clase» (campo `matriculados`; si es 0, no se muestra).
+   - «Esto no se puede deshacer. Si solo quieres guardarla, archívala.»
+   Debajo, el botón **«Archivar en su lugar»**, siempre visible.
+2. **Cuenta regresiva de 8 segundos** (la mitad si el impacto da 0 módulos y 0 matriculados: clase vacía) antes de
+   habilitar «Sí, eliminar la clase»:
+   - Se muestra como una barra o anillo que se vacía y el número de segundos que faltan. El botón dice «Lee antes de
+     continuar (8)» → «(7)» … y al llegar a 0 cambia a «Sí, eliminar la clase».
+   - El botón se habilita solo cuando terminó la cuenta **y** el nombre escrito coincide. Las dos condiciones se ven
+     (por ejemplo: «Escribe el nombre de la clase para confirmar»).
+   - **«Cancelar» y Escape funcionan siempre**, también durante la cuenta. Si se cierra y se vuelve a abrir, la cuenta
+     empieza de nuevo.
+   - La cuenta empieza cuando llega el impacto, no al abrir la ventana: mientras dice «Calculando…» no corre.
+   - **Accesible:** el número no se anuncia cada segundo. Hay un `aria-live="polite"` que dice una vez «Podrás eliminar
+     en 8 segundos» y otra vez «Ya puedes eliminar». El botón deshabilitado lleva `aria-disabled` y el motivo en
+     `aria-describedby`. Con `prefers-reduced-motion`, sin animación: solo el número.
+   - La lógica va en una utilidad pura con prueba, `utils/cuentaRegresiva.ts`: segundos según el impacto, y
+     «¿se puede confirmar?» = cuenta en 0 y nombre igual, sin distinguir mayúsculas ni espacios de los bordes. La
+     ventana solo la usa.
+3. **Si `sePuedeEliminar` es falso** (ya hay trabajo de estudiantes), no hay cuenta ni campo de nombre: se muestra el
+   `motivo` y el único botón principal es «Archivar la clase».
+
+Para **eliminar un módulo con contenido** se usa el mismo componente, con 5 segundos.
+
 **D4 · Toda acción del docente termina con un aviso.** Hay un solo sistema de avisos para toda la app:
 `composables/useAvisos.ts` más `components/AvisosPantalla.vue`, montado en `layouts/default.vue` o en el layout del
 docente.
@@ -144,7 +172,7 @@ MariaDB. **Antigravity solo la consume.** Rutas, todas solo para el docente due�
 | Qué | Ruta | Respuesta |
 |---|---|---|
 | Impacto antes de borrar | `GET /sections/:id/impacto`, `GET /topic/:id/impacto`, `GET /learning-unit/:id/impacto`, `GET /class/:id/impacto` | `{ modulos, temas, lecciones, ejercicios, estudiantesConAvance, entregas, sePuedeEliminar, motivo? }` |
-| Eliminar | `DELETE /sections/:id`, `DELETE /topic/:id?permanent=true`, `DELETE /learning-unit/:id`, `DELETE /class/:id` | 204/200; **409** con `motivo` si hay trabajo de estudiantes (o, en la clase, si tiene módulos) |
+| Eliminar | `DELETE /sections/:id`, `DELETE /topic/:id?permanent=true`, `DELETE /learning-unit/:id`, `DELETE /class/:id` | 204/200; **409** con `motivo` si hay trabajo de estudiantes (en la clase cuentan también proyectos, notas, asistencia, refuerzos y entregas) |
 | Archivar | `PATCH /sections/:id/archivar`, `PATCH /topic/:id/archivar`, `PATCH /learning-unit/:id/archivar`, `PATCH /class/:id/archivar` | El objeto con `isActive: false`. El módulo archivado también queda `isPublished: false` |
 | Restaurar | `PATCH /sections/:id/restaurar`, `PATCH /topic/:id/restaurar`, `PATCH /learning-unit/:id/restaurar`, `PATCH /class/:id/restaurar` | `isActive: true`. El módulo vuelve **como borrador** (el docente lo publica cuando quiera) |
 | Publicar u ocultar | `PATCH /sections/:id/publish` (ya existía, alterna) | **409** si el módulo está archivado: «restáuralo antes de publicarlo» |
@@ -153,8 +181,10 @@ Reglas que ya cumple el backend y que la interfaz debe reflejar:
 - **Qué cuenta como trabajo de estudiantes:** avance con intentos o dominio, envíos, repasos y valoraciones. Abrir una
   lección no cuenta.
 - **El `motivo` del 409** viene listo para mostrarlo tal cual. Por ejemplo: «3 estudiantes tienen avance aquí.
-  Archívalo para no perder su trabajo.» En la clase: «Esta clase tiene 2 módulos. Archívala para conservar todo, o
-  elimina antes los módulos que no tengan avance.»
+  Archívalo para no perder su trabajo.» En la clase: «3 estudiantes tienen avance aquí. Archiva la clase para no perder su
+  trabajo.»
+- **Una clase creada por error se puede eliminar** aunque tenga módulos, si nadie trabajó en ella (06/10). El impacto
+  de la clase trae además `matriculados`: los estudiantes que perderán el acceso. La ventana debe advertirlo (D3 bis).
 - **Una clase archivada** sale del inicio del estudiante y el estudiante ya no entra a su contenido (403 «Tu docente
   archivó esta clase.»). El docente la sigue recibiendo en `GET /class/my-classes` con `isActive: false`.
 - **El docente recibe los módulos, temas y lecciones archivados** con `isActive: false` en `GET /sections/class/:id`.
@@ -191,7 +221,9 @@ Reglas que ya cumple el backend y que la interfaz debe reflejar:
 
 **B4. Clases: archivar y eliminar.**
 - En `ajustes.vue` se mantiene la sección «Estado y gestión de la clase» del borrador, conectada a A3 y A4. Eliminar
-  pide escribir el nombre de la clase (D3).
+  usa la ventana de D3 bis: consecuencias, nombre escrito y cuenta regresiva de 8 s, en
+  `components/docente/VentanaEliminarClase.vue`. Quita del borrador el texto «Solo se puede eliminar si la clase no
+  contiene módulos», que ya no es cierto.
 - En `pages/docente/index.vue`:
   - las tarjetas de clases activas como hoy;
   - debajo, «Clases archivadas (N)» plegado, con «Restaurar»;
@@ -249,7 +281,9 @@ Contra el backend desplegado, cuenta `laura.martinez.docente@example.com` (la cl
 4. Con `sebastian.vargas@example.com` (estudiante) entra a la clase de prueba y avanza una lección. Como docente,
    intenta eliminar ese módulo: **no deja**, dice por qué y ofrece «Archivar en su lugar».
 5. Quita al estudiante de la clase: confirmación, aviso «Quitaste a…» y «Deshacer».
-6. Archiva la clase (el estudiante ya no la ve) y restáurala. Luego elimina una clase vacía escribiendo su nombre.
+6. Archiva la clase (el estudiante ya no la ve) y restáurala. Crea otra clase «Creada por error» con un módulo y una
+   lección, y elimínala: la ventana lista las consecuencias y el botón no se habilita hasta que pasan los 8 segundos
+   **y** escribes el nombre. Con la clase de prueba donde avanzó el estudiante: no deja eliminar y ofrece archivar.
 7. Todo lo anterior solo con el teclado (Tab, Enter, Escape) y en tema oscuro: nada blanco sobre blanco y el foco
    siempre visible.
 8. axe DevTools en Contenido y Ajustes: 0 problemas nuevos.
