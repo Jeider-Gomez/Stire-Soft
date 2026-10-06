@@ -24,7 +24,6 @@ const PAGINAS_CON_API = [
   'pages/estudiante/asistencia.vue',
   'pages/estudiante/clases.vue',
   'pages/estudiante/entregas/[id].vue',
-  'pages/estudiante/index.vue',
   'pages/estudiante/proyectos/[id].vue',
   'pages/estudiante/proyectos/index.vue',
   'pages/estudiante/refuerzos/[id].vue',
@@ -113,6 +112,16 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     expect(pagina).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
     expect(pagina).toContain('useUnidadEstudiante()');
     for (const ruta of ['/learning-unit/${unitId}', '/content/unit/${unitId}', '/activities?learningUnitId=${unitId}', '/entregas/mias?classId=${classId}', '/learning-progress/student/${studentId}/unit/${unitId}/next-activity', '/learning-progress/unit/${unitId}/confidence']) {
+      expect(composable).toContain(ruta);
+    }
+  });
+
+  it('H4.2 el inicio del estudiante delega solicitudes, recomendaciones, refuerzos y entregas', () => {
+    const pagina = readFileSync(path.join(raiz, 'pages/estudiante/index.vue'), 'utf8');
+    const composable = readFileSync(path.join(raiz, 'composables/useInicioEstudiante.ts'), 'utf8');
+    expect(pagina).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
+    expect(pagina).toContain('useInicioEstudiante()');
+    for (const ruta of ['/role-requests/me', '/learning-progress/student/${studentId}/unit/${unitId}/next-activity', '/refuerzos/mios', '/entregas/mias?classId=${classId}']) {
       expect(composable).toContain(ruta);
     }
   });

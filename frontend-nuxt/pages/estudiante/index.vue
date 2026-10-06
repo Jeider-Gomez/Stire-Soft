@@ -329,10 +329,10 @@ function moduloAbierto(mod: { id: number; units: Array<{ id: number; status?: st
 }
 import { AlertTriangle, BadgeCheck, BookOpen, Brain, CheckCircle2, ChevronRight, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, ShieldAlert, TrendingUp } from 'lucide-vue-next'
 import { contar, DOMINADO } from '~/utils/terminos'
-import { calificacionTexto, fechaCorta, type EstadoEntrega, type Valoracion } from '~/utils/entregas'
+import { calificacionTexto, fechaCorta, type EstadoEntrega } from '~/utils/entregas'
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
-import { useApi } from '~/composables/useApi'
+import { useInicioEstudiante, type EntregaInicioEstudiante, type RefuerzoInicioEstudiante, type SolicitudRolEstudiante } from '~/composables/useInicioEstudiante'
 import type { CourseModule, LearningUnit } from '~/types'
 
 definePageMeta({
@@ -341,19 +341,14 @@ definePageMeta({
 
 const studentStore = useStudentStore()
 const authStore = useAuthStore()
-const api = useApi()
+const { solicitudRol, actividadRecomendada, refuerzos: cargarRefuerzos, entregas: cargarEntregas } = useInicioEstudiante()
 
 // Estado de solicitud de rol docente del estudiante (§23 T4)
-const myRoleRequest = ref<{
-  id: number
-  status: 'pending' | 'approved' | 'rejected'
-  reason?: string | null
-  reviewNote?: string | null
-} | null>(null)
+const myRoleRequest = ref<SolicitudRolEstudiante | null>(null)
 
 async function fetchMyRoleRequest() {
   try {
-    const res = await api.get<{ request: any } | null>('/role-requests/me')
+    const res = await solicitudRol()
     if (res?.request) {
       myRoleRequest.value = res.request
     }
@@ -389,9 +384,7 @@ watch(
     if (!unitId || !studentId) return
 
     try {
-      const rec = await api.get<{ activityId: number; reason?: string; reasonMessage?: string; level?: string } | null>(
-        `/learning-progress/student/${studentId}/unit/${unitId}/next-activity`
-      )
+      const rec = await actividadRecomendada(studentId, unitId)
       recommendedExerciseId.value = rec?.activityId ?? null
       recommendedReason.value = rec?.reason ?? null
       recommendedReasonMessage.value = rec?.reasonMessage ?? null
@@ -410,19 +403,19 @@ const urgenciaPorLeccion = computed(() => new Map(studentStore.reviews.map((r) =
 const debeRepasar = (unit: { id: number; masteryPercentage: number }) => tocaRepasar(unit.masteryPercentage, urgenciaPorLeccion.value.get(unit.id))
 
 // Refuerzos y retos sin terminar de la clase activa.
-interface MiRefuerzo { id: number; classId: number; tipo: 'refuerzo' | 'reto'; titulo: string; mensaje: string | null; fechaLimite: string | null; totalPasos: number; pasosHechos: number }
+type MiRefuerzo = RefuerzoInicioEstudiante
 const refuerzosTodos = ref<MiRefuerzo[]>([])
 const refuerzos = computed(() => refuerzosTodos.value.filter((r) => r.classId === studentStore.currentClassId && r.pasosHechos < r.totalPasos))
 onMounted(async () => {
   try {
-    refuerzosTodos.value = await api.get<MiRefuerzo[]>('/refuerzos/mios')
+    refuerzosTodos.value = await cargarRefuerzos()
   } catch {
     // Sin refuerzos o servidor sin esta función todavía: no se muestra nada.
   }
 })
 
 // Entregas de la clase activa: primero las que faltan por entregar, luego las que tienen revisión nueva.
-interface MiEntrega { id: number; titulo: string; cierraAt: string | null; estado: EstadoEntrega; versionesUsadas: number; limite: number; ultima: { nota: number | null; valoracion?: Valoracion | null } | null }
+type MiEntrega = EntregaInicioEstudiante
 const entregas = ref<MiEntrega[]>([])
 const ORDEN_ESTADO: Record<EstadoEntrega, number> = { sin_entregar: 0, revisada: 1, por_revisar: 2 }
 watch(
@@ -431,7 +424,7 @@ watch(
     entregas.value = []
     if (!classId) return
     try {
-      const lista = await api.get<MiEntrega[]>(`/entregas/mias?classId=${classId}`)
+      const lista = await cargarEntregas(classId)
       entregas.value = [...lista].sort((a, b) => ORDEN_ESTADO[a.estado] - ORDEN_ESTADO[b.estado])
     } catch {
       // Sin entregas o servidor sin esta función todavía: la sección no aparece.
