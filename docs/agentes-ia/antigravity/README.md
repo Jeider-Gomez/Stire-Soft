@@ -15,7 +15,9 @@ en el mismo archivo — no se archivan por eso. Se archiva completo, con fecha e
 [`docs/_archivo/`](../../_archivo/) únicamente cuando se reemplaza de fondo (fases nuevas, no una
 corrección más) — ver la regla exacta ahí.
 
-**Vigente desde el 2026-10-05: Fase 30** (el docente publica, oculta, archiva y elimina con confianza, y cada acción confirma que salió bien). La Parte A (backend) es de Claude Code y va primero; la Parte B es de Antigravity.
+**Archivado el 2026-10-06:** la Fase 30 se movió a [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-10-06.md`](../../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-10-06.md), con la nota de la auditoría de Claude Code (recorrido en el navegador y 9 defectos corregidos). **El archivo vigente no tiene ninguna fase pendiente.**
+
+**Antes:** Fase 30 (el docente publica, oculta, archiva y elimina con confianza, y cada acción confirma que salió bien). La Parte A (backend) es de Claude Code y va primero; la Parte B es de Antigravity.
 
 **Archivado el 2026-10-02:** la Fase 29 (editor visual de diagramas de flujo) se movió a [`docs/_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-10-02.md`](../../_archivo/PLAN_IMPLEMENTACION_ANTIGRAVITY_2026-10-02.md), con la nota de la auditoría de Claude Code (verificación en Chrome 41/41 y 5 defectos corregidos). **El archivo vigente no tiene ninguna fase pendiente**: la siguiente sale de la prueba con el equipo.
 
