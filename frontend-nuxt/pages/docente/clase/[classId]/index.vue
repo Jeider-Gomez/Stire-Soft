@@ -92,7 +92,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, type Component } from 'vue'
 import { AlertTriangle, CheckCircle2, Clock, Inbox, Loader2, Moon, Rocket, Undo2, UserPlus } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useResumenClase } from '~/composables/useResumenClase'
 import { enlacePestana } from '~/utils/pestanasClase'
 import { pendientesDeHoy, type EntregaHoy, type MapaHoy, type RefuerzoHoy, type SemanaHoy, type TipoPendiente } from '~/utils/hoyClase'
 
@@ -101,8 +101,8 @@ definePageMeta({ layout: 'teacher' })
 interface Solicitud { id: string; student?: { fullName?: string; email?: string; fotoId?: string | null } }
 
 const route = useRoute()
-const api = useApi()
 const classId = Number(route.params.classId)
+const accionesResumen = useResumenClase(classId)
 const MAX_PERSONAS = 8
 
 const ESTILO: Record<TipoPendiente, { icono: Component; fondo: string }> = {
@@ -148,12 +148,12 @@ const valor = <T,>(r: PromiseSettledResult<T>): T | null => (r.status === 'fulfi
 async function cargar() {
   cargando.value = true
   const [c, s, e, m, r, w] = await Promise.allSettled([
-    api.get<{ id: number; name: string; code?: string }>(`/class/${classId}`),
-    api.get<Solicitud[]>(`/enrollment/class/${classId}/pending`),
-    api.get<EntregaHoy[]>(`/entregas/clase/${classId}`),
-    api.get<MapaHoy & { estudiantes: unknown[] }>(`/analytics/class/${classId}/heatmap`),
-    api.get<RefuerzoHoy[]>(`/refuerzos/clase/${classId}`),
-    api.get<SemanaHoy>(`/analytics/class/${classId}/semana`),
+    accionesResumen.clase<{ id: number; name: string; code?: string }>(),
+    accionesResumen.solicitudes<Solicitud[]>(),
+    accionesResumen.entregas<EntregaHoy[]>(),
+    accionesResumen.mapa<MapaHoy & { estudiantes: unknown[] }>(),
+    accionesResumen.refuerzos<RefuerzoHoy[]>(),
+    accionesResumen.semana<SemanaHoy>(),
   ])
   clase.value = valor(c)
   solicitudes.value = valor(s) ?? []
@@ -166,7 +166,7 @@ async function cargar() {
 }
 
 async function resolverSolicitud(id: string, accion: 'approve' | 'reject') {
-  await api.apiFetch(`/enrollment/${id}/${accion}`, { method: 'PATCH' })
+  await accionesResumen.resolverSolicitud(id, accion)
   solicitudes.value = solicitudes.value.filter((s) => s.id !== id)
 }
 

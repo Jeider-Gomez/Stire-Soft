@@ -172,7 +172,7 @@ describe('«Hoy» de la clase', () => {
     expect(lista[0].personas).toEqual([{ id: 3, nombre: 'Camila', nota: 'hace 9 días' }, { id: 4, nombre: 'Andrés', nota: 'aún no ha practicado' }]);
     expect(lista[0].acciones[0]).toEqual({ texto: 'Escribirles', to: '/docente/mensajes' });
     // y la pantalla muestra la semana frente a la anterior
-    expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain('api.get<SemanaHoy>(`/analytics/class/${classId}/semana`)');
+    expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain('accionesResumen.semana<SemanaHoy>()');
     // el espacio antes del total va dentro de la expresión: Vue recorta el de un <template> y salía «más.4 estudiantes»
     expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain("totalEstudiantes === null ? '' : ` ${totalEstudiantes}");
   });

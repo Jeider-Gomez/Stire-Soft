@@ -13,7 +13,6 @@ const PAGINAS_CON_API = [
   'pages/admin/usabilidad.vue',
   'pages/docente/clase/[classId]/asistencia.vue',
   'pages/docente/clase/[classId]/ajustes.vue',
-  'pages/docente/clase/[classId]/index.vue',
   'pages/docente/entregas/[id].vue',
   'pages/docente/entregas/index.vue',
   'pages/docente/entregas/revision/[envioId].vue',
@@ -143,6 +142,15 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     expect(refuerzos).toContain('/refuerzos/${id}/pasos/${indice}/hecho');
     expect(clases).toContain("'/enrollment/my'");
     expect(clases).toContain("'/enrollment/join'");
+  });
+
+  it('H4.3 el panel Hoy delega la carga paralela y la resolución de solicitudes', () => {
+    const pagina = readFileSync(path.join(raiz, 'pages/docente/clase/[classId]/index.vue'), 'utf8');
+    const composable = readFileSync(path.join(raiz, 'composables/useResumenClase.ts'), 'utf8');
+    expect(pagina).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del|apiFetch)\(/);
+    expect(pagina).toContain('Promise.allSettled');
+    expect(composable).toContain('/analytics/class/${classId}/semana');
+    expect(composable).toContain('/enrollment/${id}/${accion}');
   });
 
   it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {
