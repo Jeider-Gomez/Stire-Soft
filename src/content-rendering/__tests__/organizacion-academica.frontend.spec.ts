@@ -112,11 +112,12 @@ describe('Orden del catálogo (§2.2.1 y §2.2.2): sin duplicados y sin trabajo 
   });
   it('el admin tiene «Catálogo académico»: unir (con confirmación), son distintas y confirmar como oficial', () => {
     const cat = leer('pages', 'admin', 'catalogo.vue');
-    expect(cat).toContain("api.get<Revision>('/asignaturas/revision')");
+    const catalogo = leer('composables', 'useCatalogoAsignaturas.ts');
+    expect(catalogo).toContain("api.get<T>('/asignaturas/revision')");
     expect(cat).toMatch(/await confirmar\(\{[\s\S]*accion: 'Unir'/);
-    expect(cat).toContain('/unir`, { destinoId: destino.id }');
-    expect(cat).toContain("api.post('/asignaturas/distintas'");
-    expect(cat).toContain('{ oficial: true }');
+    expect(cat).toContain('accionesCatalogo.unir(origen.id, destino.id)');
+    expect(catalogo).toContain("api.post('/asignaturas/distintas'");
+    expect(catalogo).toContain('{ oficial: true }');
     expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('to="/admin/catalogo"');
   });
 });

@@ -6,11 +6,6 @@ const PAGINAS_CON_API = [
   'pages/auth/forgot-password.vue',
   'pages/auth/register.vue',
   'pages/auth/reset-password.vue',
-  'pages/admin/catalogo.vue',
-  'pages/admin/dashboard.vue',
-  'pages/admin/sistema.vue',
-  'pages/admin/sugerencias.vue',
-  'pages/admin/usabilidad.vue',
   'pages/docente/clase/[classId]/ajustes.vue',
 ];
 
@@ -174,6 +169,20 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     const composable = readFileSync(path.join(raiz, 'composables/useRendimiento.ts'), 'utf8');
     expect(composable).toContain('/analytics/class/${classId}');
     expect(composable).toContain('/analytics/student/${studentId}');
+  });
+
+  it('H4.4 las cinco páginas admin delegan estado, catálogo, sugerencias y resultados SUS', () => {
+    const rutas = ['pages/admin/sistema.vue', 'pages/admin/dashboard.vue', 'pages/admin/catalogo.vue', 'pages/admin/sugerencias.vue', 'pages/admin/usabilidad.vue'];
+    for (const ruta of rutas) expect(readFileSync(path.join(raiz, ruta), 'utf8')).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del|apiFetch)\(/);
+    const sistema = readFileSync(path.join(raiz, 'composables/useAdminSistema.ts'), 'utf8');
+    const catalogo = readFileSync(path.join(raiz, 'composables/useCatalogoAsignaturas.ts'), 'utf8');
+    const sugerencias = readFileSync(path.join(raiz, 'composables/useSugerencias.ts'), 'utf8');
+    const sus = readFileSync(path.join(raiz, 'composables/useResultadosSus.ts'), 'utf8');
+    expect(sistema).toContain("'/admin/system/status'");
+    expect(sistema).toContain('/admin/system/logs?level=${level}&limit=100');
+    expect(catalogo).toContain("'/asignaturas/revision'");
+    expect(sugerencias).toContain('/reportes/${id}/captura');
+    expect(sus).toContain("'/usabilidad/sus/resultados'");
   });
 
   it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {

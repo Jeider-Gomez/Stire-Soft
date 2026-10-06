@@ -61,7 +61,8 @@ describe('Pantallazo en las sugerencias (frontend)', () => {
 
   it('el admin ve el pantallazo pidiéndolo con su sesión (no es una imagen pública)', () => {
     const admin = leer('pages', 'admin', 'sugerencias.vue');
-    expect(admin).toContain("api.apiFetch<Blob>(`/reportes/${r.id}/captura`, { responseType: 'blob' })");
+    expect(admin).toContain('sugerencias.captura(r.id)');
+    expect(leer('composables', 'useSugerencias.ts')).toContain("api.apiFetch<Blob>(`/reportes/${id}/captura`, { responseType: 'blob' })");
     expect(leer('composables', 'useApi.ts')).toContain("responseType?: 'blob'");
   });
 });

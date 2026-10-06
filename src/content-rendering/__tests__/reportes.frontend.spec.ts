@@ -21,7 +21,8 @@ describe('Sugerencias desde cualquier pantalla', () => {
   it('el admin los ve en «Sugerencias», los marca y los descarga en CSV', () => {
     expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('to="/admin/sugerencias"');
     const bandeja = leer('pages', 'admin', 'sugerencias.vue');
-    expect(bandeja).toContain('api.patch(`/reportes/${r.id}`, { estado: r.estado, nota: r.notaEditada })');
+    expect(bandeja).toContain('sugerencias.actualizar(r.id, { estado: r.estado, nota: r.notaEditada })');
+    expect(leer('composables', 'useSugerencias.ts')).toContain('api.patch(`/reportes/${id}`, cambios)');
     expect(bandeja).toContain("a.download = 'sugerencias-stire.csv'");
   });
 });

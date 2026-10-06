@@ -288,7 +288,7 @@
 
 <script setup lang="ts">
 import { Bot, CircleCheck, CircleX, Loader2, TriangleAlert, Users, Zap } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useAdminSistema } from '~/composables/useAdminSistema'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import type { SystemStatus } from '~/types'
 
@@ -296,7 +296,7 @@ definePageMeta({
   layout: 'admin'
 })
 
-const api = useApi()
+const sistema = useAdminSistema()
 const { extract } = useApiErrorMessage()
 
 const statusData = ref<SystemStatus | null>(null)
@@ -347,7 +347,7 @@ async function fetchStatus() {
   isLoading.value = true
   errorMessage.value = null
   try {
-    const res = await api.get<SystemStatus>('/admin/system/status')
+    const res = await sistema.estado()
     statusData.value = res
   } catch (err) {
     const { status, detail } = extract(err)

@@ -84,7 +84,7 @@ const GRAVEDADES: Record<number, string> = { 1: 'detalle', 2: 'confunde', 3: 'bl
 const ESTADOS: Record<Estado, string> = { nuevo: 'Nuevo', visto: 'Visto', resuelto: 'Resuelto', descartado: 'Descartado' }
 const FILTROS: Record<'todos' | Estado, string> = { todos: 'Todos', nuevo: 'Nuevos', visto: 'Vistos', resuelto: 'Resueltos', descartado: 'Descartados' }
 
-const api = useApi()
+const sugerencias = useSugerencias()
 const { messageOf } = useApiErrorMessage()
 const lista = ref<Reporte[]>([])
 const filtro = ref<'todos' | Estado>('nuevo')
@@ -97,7 +97,7 @@ const cargandoCaptura = ref<number | null>(null)
 async function verCaptura(r: Reporte) {
   cargandoCaptura.value = r.id
   try {
-    const blob = await api.apiFetch<Blob>(`/reportes/${r.id}/captura`, { responseType: 'blob' })
+    const blob = await sugerencias.captura(r.id)
     capturas.value = { ...capturas.value, [r.id]: URL.createObjectURL(blob) }
   } catch (err) {
     error.value = messageOf(err, 'No se pudo cargar el pantallazo.')
@@ -111,7 +111,7 @@ async function cargar() {
   cargando.value = true
   error.value = null
   try {
-    const datos = await api.get<Reporte[]>(filtro.value === 'todos' ? '/reportes' : `/reportes?estado=${filtro.value}`)
+    const datos = await sugerencias.listar<Reporte[]>(filtro.value === 'todos' ? null : filtro.value)
     lista.value = datos.map((r) => ({ ...r, notaEditada: r.nota ?? '' }))
   } catch (err) {
     error.value = messageOf(err, 'No se pudieron cargar las sugerencias.')
@@ -127,7 +127,7 @@ function cambiarFiltro(valor: 'todos' | Estado) {
 
 async function guardar(r: Reporte) {
   try {
-    await api.patch(`/reportes/${r.id}`, { estado: r.estado, nota: r.notaEditada })
+    await sugerencias.actualizar(r.id, { estado: r.estado, nota: r.notaEditada })
     guardado.value = r.id
     setTimeout(() => { if (guardado.value === r.id) guardado.value = null }, 2000)
   } catch (err) {

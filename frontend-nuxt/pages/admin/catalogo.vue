@@ -69,7 +69,7 @@ interface Revision {
   clasesPorAsignatura: Record<number, number>
 }
 
-const api = useApi()
+const accionesCatalogo = useCatalogoAsignaturas()
 const { messageOf } = useApiErrorMessage()
 const { confirmar } = useConfirmar()
 const datos = ref<Revision>({ duplicados: [], agregadas: [], clasesPorAsignatura: {} })
@@ -87,7 +87,7 @@ const clases = (id: number) => {
 async function cargar() {
   cargando.value = true
   error.value = ''
-  try { datos.value = await api.get<Revision>('/asignaturas/revision') } catch (e) { error.value = messageOf(e, 'No se pudo cargar el catálogo.') }
+  try { datos.value = await accionesCatalogo.revision<Revision>() } catch (e) { error.value = messageOf(e, 'No se pudo cargar el catálogo.') }
   cargando.value = false
 }
 
@@ -113,13 +113,13 @@ async function unir(origen: AsignaturaInfo, destino: AsignaturaInfo) {
     accion: 'Unir',
     peligro: true,
   })
-  if (ok) await hacer(() => api.post(`/asignaturas/${origen.id}/unir`, { destinoId: destino.id }), `Listo: «${origen.nombre}» quedó unida a «${destino.nombre}».`)
+  if (ok) await hacer(() => accionesCatalogo.unir(origen.id, destino.id), `Listo: «${origen.nombre}» quedó unida a «${destino.nombre}».`)
 }
 function distintas(a: AsignaturaInfo, b: AsignaturaInfo) {
-  return hacer(() => api.post('/asignaturas/distintas', { aId: a.id, bId: b.id }), 'Marcadas como distintas: no volverán a salir juntas.')
+  return hacer(() => accionesCatalogo.distintas(a.id, b.id), 'Marcadas como distintas: no volverán a salir juntas.')
 }
 function confirmarOficial(a: AsignaturaInfo) {
-  return hacer(() => api.patch(`/asignaturas/${a.id}`, { oficial: true }), `«${a.nombre}» ya es oficial.`)
+  return hacer(() => accionesCatalogo.confirmarOficial(a.id), `«${a.nombre}» ya es oficial.`)
 }
 
 onMounted(cargar)

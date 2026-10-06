@@ -221,7 +221,7 @@
 
 <script setup lang="ts">
 import { CircleX, Eraser, Loader2, TriangleAlert } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useAdminSistema } from '~/composables/useAdminSistema'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import type { SystemStatus, SystemLogs } from '~/types'
 
@@ -229,7 +229,7 @@ definePageMeta({
   layout: 'admin'
 })
 
-const api = useApi()
+const sistema = useAdminSistema()
 const { extract } = useApiErrorMessage()
 
 const systemStatus = ref<SystemStatus | null>(null)
@@ -269,7 +269,7 @@ function getLevelBadgeClass(level: string): string {
 
 async function fetchStatus() {
   try {
-    const res = await api.get<SystemStatus>('/admin/system/status')
+    const res = await sistema.estado()
     systemStatus.value = res
   } catch (err) {
     console.warn('[STIRE Admin] Error al cargar parámetros del sistema:', err)
@@ -280,7 +280,7 @@ async function fetchLogs() {
   loadingLogs.value = true
   logError.value = null
   try {
-    const res = await api.get<SystemLogs>(`/admin/system/logs?level=${selectedLevel.value}&limit=100`)
+    const res = await sistema.logs(selectedLevel.value)
     if (res) {
       logEntries.value = res.entries || []
       logsNote.value = res.note || ''
@@ -350,7 +350,7 @@ async function executeCleanup() {
   cleanupError.value = null
 
   try {
-    const res = await api.post<{ message?: string; success?: boolean }>('/maintenance/cleanup')
+    const res = await sistema.limpiar()
     cleanupFeedback.value = res?.message || 'Limpieza de mantenimiento ejecutada exitosamente en el servidor.'
     showConfirmModal.value = false
     await fetchLogs()

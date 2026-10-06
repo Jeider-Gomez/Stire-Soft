@@ -81,11 +81,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { ClipboardList } from 'lucide-vue-next'
+import { useResultadosSus } from '~/composables/useResultadosSus'
 import { afirmacionesAMejorar, AFIRMACIONES_SUS, esPositivaSus, FACILIDAD_ACEPTABLE, NOMBRE_ACEPTABILIDAD, type ResumenSus } from '~/utils/sus'
 
 definePageMeta({ layout: 'admin' })
 
-const api = useApi()
+const resultadosSus = useResultadosSus()
 const datos = ref<ResumenSus | null>(null)
 const error = ref('')
 const formato = (n: number) => n.toLocaleString('es-CO', { maximumFractionDigits: 1 })
@@ -97,7 +98,7 @@ const colorAceptabilidad = computed(() =>
 
 onMounted(async () => {
   try {
-    datos.value = await api.get<ResumenSus>('/usabilidad/sus/resultados')
+    datos.value = await resultadosSus.cargar()
   } catch {
     error.value = 'No se pudieron cargar los resultados.'
   }
