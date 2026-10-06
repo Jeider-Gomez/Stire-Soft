@@ -12,8 +12,6 @@ const PAGINAS_CON_API = [
   'pages/admin/sugerencias.vue',
   'pages/admin/usabilidad.vue',
   'pages/docente/clase/[classId]/ajustes.vue',
-  'pages/docente/estudiante/[studentId].vue',
-  'pages/docente/rendimiento.vue',
 ];
 
 const COMPONENTES_CON_API = [
@@ -167,6 +165,15 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     const composable = readFileSync(path.join(raiz, 'composables/useAsistenciaClase.ts'), 'utf8');
     expect(pagina).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
     for (const ruta of ['/asistencia/clase/${classId}/sesiones', '/asistencia/sesiones/${sesionId}/escanear', '/asistencia/clase/${classId}/resumen']) expect(composable).toContain(ruta);
+  });
+
+  it('H4.3 las páginas de rendimiento docente delegan las métricas por clase y estudiante', () => {
+    for (const ruta of ['pages/docente/rendimiento.vue', 'pages/docente/estudiante/[studentId].vue']) {
+      expect(readFileSync(path.join(raiz, ruta), 'utf8')).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
+    }
+    const composable = readFileSync(path.join(raiz, 'composables/useRendimiento.ts'), 'utf8');
+    expect(composable).toContain('/analytics/class/${classId}');
+    expect(composable).toContain('/analytics/student/${studentId}');
   });
 
   it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {

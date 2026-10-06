@@ -204,7 +204,7 @@
 <script setup lang="ts">
 import { porcentaje } from '~/utils/porcentaje'
 import { ArrowLeft, LifeBuoy, Loader2, Mail, Rocket, TriangleAlert } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useRendimiento } from '~/composables/useRendimiento'
 import { enlaceNuevoRefuerzo } from '~/utils/refuerzos'
 const { messageOf } = useApiErrorMessage()
 
@@ -266,7 +266,7 @@ const ultimaActividad = computed(() => {
   return `Última entrega: ${dias <= 0 ? 'hoy' : dias === 1 ? 'ayer' : `hace ${dias} días`}`
 })
 const volverAlGrupo = computed(() => (claseDeLaFicha.value ? `/docente/rendimiento?classId=${claseDeLaFicha.value}` : '/docente/rendimiento'))
-const api = useApi()
+const datosRendimiento = useRendimiento()
 
 const dashboard = ref<StudentDashboardData | null>(null)
 const isLoading = ref(false)
@@ -283,7 +283,7 @@ async function fetchStudentDashboard() {
   errorMessage.value = null
 
   try {
-    const res = await api.get<StudentDashboardData>(`/analytics/student/${studentId}`)
+    const res = await datosRendimiento.estudiante<StudentDashboardData>(studentId)
     dashboard.value = res
   } catch (err) {
     errorMessage.value = messageOf(err, 'No tienes permiso o no se pudo cargar el seguimiento del alumno')

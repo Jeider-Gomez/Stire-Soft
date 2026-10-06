@@ -250,7 +250,7 @@ function claseDiagnostico(dominio: number): string {
 }
 import { ArrowRight, Loader2, OctagonAlert, TriangleAlert, Users } from 'lucide-vue-next'
 import { porcentaje } from '~/utils/porcentaje'
-import { useApi } from '~/composables/useApi'
+import { useRendimiento } from '~/composables/useRendimiento'
 import { useMisClases } from '~/composables/useMisClases'
 const { messageOf } = useApiErrorMessage()
 
@@ -289,7 +289,7 @@ interface ClassMetricsResponse {
   studentRankings: StudentRanking[]
 }
 
-const api = useApi()
+const datosRendimiento = useRendimiento()
 const { misClases } = useMisClases()
 const route = useRoute()
 
@@ -349,7 +349,7 @@ async function loadClassMetrics() {
   errorMessage.value = null
 
   try {
-    const res = await api.get<ClassMetricsResponse>(`/analytics/class/${selectedClassId.value}`)
+    const res = await datosRendimiento.clase<ClassMetricsResponse>(selectedClassId.value)
     metrics.value = res
   } catch (err) {
     errorMessage.value = messageOf(err, 'Error al obtener las analíticas de la clase seleccionada')
