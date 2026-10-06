@@ -56,21 +56,14 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { ArrowLeft, Check, CheckCircle2, Circle, Inbox, Loader2, Play } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useRefuerzosEstudiante, type RefuerzoEstudiante as Refuerzo } from '~/composables/useRefuerzosEstudiante'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import { fechaCorta } from '~/utils/entregas'
 
 definePageMeta({ layout: 'student' })
 
-type PasoVisto =
-  | { tipo: 'explicacion'; titulo: string; texto: string; hecho: boolean }
-  | { tipo: 'recurso'; titulo: string; url: string; provider: string; embedUrl: string | null; hecho: boolean }
-  | { tipo: 'ejercicio'; activityId: number; titulo: string; hecho: boolean }
-  | { tipo: 'entrega'; entregaId: number; titulo: string; hecho: boolean }
-interface Refuerzo { id: number; tipo: 'refuerzo' | 'reto'; titulo: string; mensaje: string | null; fechaLimite: string | null; lecciones: Array<{ id: number; titulo: string }>; pasos: PasoVisto[] }
-
 const route = useRoute()
-const api = useApi()
+const accionesRefuerzo = useRefuerzosEstudiante()
 const { messageOf } = useApiErrorMessage()
 const r = ref<Refuerzo | null>(null)
 const cargando = ref(true)
@@ -82,7 +75,7 @@ const hechos = computed(() => r.value?.pasos.filter((p) => p.hecho).length ?? 0)
 
 async function cargar() {
   try {
-    r.value = await api.get<Refuerzo>(`/refuerzos/${id}`)
+    r.value = await accionesRefuerzo.obtener(id)
   } catch (err) {
     error.value = messageOf(err, 'No se pudo abrir.')
   } finally {
@@ -93,7 +86,7 @@ async function cargar() {
 async function marcar(i: number) {
   marcando.value = i
   try {
-    await api.post(`/refuerzos/${id}/pasos/${i}/hecho`, {})
+    await accionesRefuerzo.marcarPaso(id, i)
     await cargar()
   } catch (err) {
     error.value = messageOf(err, 'No se pudo marcar el paso.')

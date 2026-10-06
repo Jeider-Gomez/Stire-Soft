@@ -55,20 +55,14 @@
 <script setup lang="ts">
 import { Loader2 } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
-import { useApi } from '~/composables/useApi'
+import { useAsistenciaEstudiante } from '~/composables/useAsistenciaEstudiante'
 import { ESTADOS, fechaSesion, idDeDispositivo, textoEstado, type EstadoAsistencia } from '~/utils/asistencia'
+import type { ClaseAsistenciaEstudiante as ClaseAsistencia } from '~/composables/useAsistenciaEstudiante'
 
 definePageMeta({ layout: 'student' })
 
-interface ClaseAsistencia {
-  classId: number
-  clase: string
-  porcentaje: number | null
-  sesiones: Array<{ id: number; fecha: string; tema: string | null; estado: EstadoAsistencia | null }>
-}
-
 const authStore = useAuthStore()
-const api = useApi()
+const servicioAsistencia = useAsistenciaEstudiante()
 const { messageOf } = useApiErrorMessage()
 
 const qrCanvas = ref<HTMLCanvasElement | null>(null)
@@ -92,7 +86,7 @@ async function renovarCodigo() {
   if (!activo) return
   cargandoCodigo.value = true
   try {
-    const r = await api.get<{ codigo: string; venceEnMs: number; ventanaMs: number }>(`/asistencia/mi-codigo?dispositivo=${idDeDispositivo()}`)
+    const r = await servicioAsistencia.codigo(idDeDispositivo())
     const QRCode = await import('qrcode')
     if (qrCanvas.value) await QRCode.toCanvas(qrCanvas.value, r.codigo, { width: 256, margin: 1, errorCorrectionLevel: 'M' })
     hayCodigo.value = true
@@ -111,7 +105,7 @@ async function renovarCodigo() {
 
 async function cargarHistorial() {
   try {
-    clases.value = await api.get<ClaseAsistencia[]>('/asistencia/mia')
+    clases.value = await servicioAsistencia.historial()
   } catch (err) {
     error.value = messageOf(err, 'No se pudo cargar tu asistencia.')
   } finally {

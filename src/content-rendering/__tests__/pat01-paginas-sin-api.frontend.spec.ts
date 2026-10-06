@@ -21,12 +21,6 @@ const PAGINAS_CON_API = [
   'pages/docente/refuerzos/index.vue',
   'pages/docente/refuerzos/nuevo.vue',
   'pages/docente/rendimiento.vue',
-  'pages/estudiante/asistencia.vue',
-  'pages/estudiante/clases.vue',
-  'pages/estudiante/entregas/[id].vue',
-  'pages/estudiante/proyectos/[id].vue',
-  'pages/estudiante/proyectos/index.vue',
-  'pages/estudiante/refuerzos/[id].vue',
 ];
 
 const COMPONENTES_CON_API = [
@@ -124,6 +118,31 @@ describe('PAT-01: páginas sin llamadas directas a la API', () => {
     for (const ruta of ['/role-requests/me', '/learning-progress/student/${studentId}/unit/${unitId}/next-activity', '/refuerzos/mios', '/entregas/mias?classId=${classId}']) {
       expect(composable).toContain(ruta);
     }
+  });
+
+  it('H4.2 las páginas pequeñas del estudiante delegan sus llamadas a composables de dominio', () => {
+    const paginas = [
+      'pages/estudiante/entregas/[id].vue', 'pages/estudiante/proyectos/index.vue',
+      'pages/estudiante/proyectos/[id].vue', 'pages/estudiante/asistencia.vue',
+      'pages/estudiante/refuerzos/[id].vue', 'pages/estudiante/clases.vue',
+    ];
+    for (const ruta of paginas) {
+      expect(readFileSync(path.join(raiz, ruta), 'utf8')).not.toMatch(/\buseApi\s*\(|api\.(get|post|patch|put|del)\(/);
+    }
+    const entregas = readFileSync(path.join(raiz, 'composables/useEntregasEstudiante.ts'), 'utf8');
+    const proyectos = readFileSync(path.join(raiz, 'composables/useProyectos.ts'), 'utf8');
+    const asistencia = readFileSync(path.join(raiz, 'composables/useAsistenciaEstudiante.ts'), 'utf8');
+    const refuerzos = readFileSync(path.join(raiz, 'composables/useRefuerzosEstudiante.ts'), 'utf8');
+    const clases = readFileSync(path.join(raiz, 'composables/useClasesEstudiante.ts'), 'utf8');
+    expect(entregas).toContain('/entregas/${id}/enviar');
+    expect(entregas).toContain('/proyecto-envios/${id}');
+    expect(proyectos).toContain("'/proyectos/estado'");
+    expect(proyectos).toContain('/proyectos/${id}');
+    expect(asistencia).toContain('/asistencia/mi-codigo?dispositivo=${dispositivo}');
+    expect(asistencia).toContain("'/asistencia/mia'");
+    expect(refuerzos).toContain('/refuerzos/${id}/pasos/${indice}/hecho');
+    expect(clases).toContain("'/enrollment/my'");
+    expect(clases).toContain("'/enrollment/join'");
   });
 
   it('los componentes solo usan useApi() en la lista inicial, cuyo tamaño solo puede bajar', () => {

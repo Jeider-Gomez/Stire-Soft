@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { ArrowLeft, Check, Download, Loader2, Plus, Trash2 } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useProyectos, type ProyectoEstudiante as Proyecto } from '~/composables/useProyectos'
 import { useTutorStore } from '~/stores/tutor'
 import { descargarHtml as bajarHtml, descargarZip as bajarZip } from '~/utils/descargaProyecto'
 import { EXTENSIONES_PROYECTO, type ArchivoProyecto, type TipoProyecto } from '~/utils/proyectoNavegador'
@@ -98,10 +98,8 @@ import { diagramaInicial } from '~/utils/diagramaFlujo'
 
 definePageMeta({ layout: 'student' })
 
-interface Proyecto { id: number; titulo: string; tipo: TipoProyecto; archivos: ArchivoProyecto[] }
-
 const route = useRoute()
-const api = useApi()
+const accionesProyecto = useProyectos()
 const { messageOf } = useApiErrorMessage()
 
 const proyecto = ref<Proyecto | null>(null)
@@ -128,7 +126,7 @@ const lenguaje = lenguajeDeArchivo
 
 onMounted(async () => {
   try {
-    const p = await api.get<Proyecto>(`/proyectos/${Number(route.params.id)}`)
+    const p = await accionesProyecto.obtener(Number(route.params.id))
     if (p.tipo === 'diagrama' && !p.archivos.some((a) => a.nombre === 'diagrama.json')) {
       p.archivos.push({ nombre: 'diagrama.json', contenido: JSON.stringify(diagramaInicial(), null, 2) })
     }
@@ -155,7 +153,7 @@ async function guardarArchivos() {
   estadoGuardado.value = 'guardando'
   const enviados = JSON.stringify(proyecto.value.archivos)
   try {
-    await api.patch(`/proyectos/${proyecto.value.id}`, { archivos: proyecto.value.archivos })
+    await accionesProyecto.actualizar(proyecto.value.id, { archivos: proyecto.value.archivos })
     error.value = null
     estadoGuardado.value = JSON.stringify(proyecto.value.archivos) === enviados ? 'guardado' : 'pendiente'
   } catch (err) {
@@ -167,7 +165,7 @@ async function guardarArchivos() {
 async function guardarTitulo() {
   if (!proyecto.value) return
   try {
-    await api.patch(`/proyectos/${proyecto.value.id}`, { titulo: proyecto.value.titulo })
+    await accionesProyecto.actualizar(proyecto.value.id, { titulo: proyecto.value.titulo })
   } catch (err) {
     error.value = messageOf(err, 'No se pudo cambiar el nombre.')
   }

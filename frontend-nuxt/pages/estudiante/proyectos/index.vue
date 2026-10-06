@@ -89,14 +89,11 @@
 import { onMounted, reactive, ref } from 'vue'
 import { Braces, FolderCode, Globe, ListOrdered, Loader2, Plus, Trash2, Workflow } from 'lucide-vue-next'
 import { TIPO_PROYECTO, TIPOS_QUE_SE_CREAN, type TipoProyecto } from '~/utils/proyectoNavegador'
-import { useApi } from '~/composables/useApi'
+import { useProyectos, type EstadoProyectosEstudiante as Estado, type ResumenProyectoEstudiante as Resumen } from '~/composables/useProyectos'
 
 definePageMeta({ layout: 'student' })
 
-interface Estado { disponible: boolean; limites: { proyectosPorUsuario: number; archivosPorProyecto: number; bytesPorProyecto: number } }
-interface Resumen { id: number; titulo: string; tipo: TipoProyecto; bytes: number; updatedAt: string }
-
-const api = useApi()
+const accionesProyecto = useProyectos()
 const { messageOf } = useApiErrorMessage()
 const estado = ref<Estado | null>(null)
 const proyectos = ref<Resumen[]>([])
@@ -112,8 +109,8 @@ const fecha = (iso: string) => new Date(iso).toLocaleString('es-CO', { day: 'num
 
 onMounted(async () => {
   try {
-    estado.value = await api.get<Estado>('/proyectos/estado')
-    if (estado.value.disponible) proyectos.value = await api.get<Resumen[]>('/proyectos')
+    estado.value = await accionesProyecto.estado()
+    if (estado.value.disponible) proyectos.value = await accionesProyecto.listar()
   } catch (err) {
     error.value = messageOf(err, 'No se pudieron cargar tus proyectos.')
   } finally {
@@ -126,7 +123,7 @@ async function crearProyecto() {
   if (!nuevo.titulo.trim()) { errorCrear.value = 'Ponle un nombre al proyecto.'; return }
   creando.value = true
   try {
-    const creado = await api.post<{ id: number }>('/proyectos', { titulo: nuevo.titulo.trim(), tipo: nuevo.tipo })
+    const creado = await accionesProyecto.crear(nuevo.titulo.trim(), nuevo.tipo)
     await navigateTo(`/estudiante/proyectos/${creado.id}`)
   } catch (err) {
     errorCrear.value = messageOf(err, 'No se pudo crear el proyecto.')
@@ -137,7 +134,7 @@ async function crearProyecto() {
 
 async function borrar(id: number) {
   try {
-    await api.del(`/proyectos/${id}`)
+    await accionesProyecto.borrar(id)
     proyectos.value = proyectos.value.filter((p) => p.id !== id)
   } catch (err) {
     error.value = messageOf(err, 'No se pudo borrar el proyecto.')

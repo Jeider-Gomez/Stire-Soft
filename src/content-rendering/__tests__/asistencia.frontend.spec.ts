@@ -62,7 +62,9 @@ describe('Asistencia (frontend)', () => {
   it('el estudiante tiene su QR en el menú y el docente una pestaña en la clase con escáner, marcas a mano y sorteo', () => {
     expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('to="/estudiante/asistencia"');
     const estudiante = leer('pages', 'estudiante', 'asistencia.vue');
-    expect(estudiante).toContain('/asistencia/mi-codigo?dispositivo=${idDeDispositivo()}');
+    const asistenciaEstudiante = leer('composables', 'useAsistenciaEstudiante.ts');
+    expect(asistenciaEstudiante).toContain('/asistencia/mi-codigo?dispositivo=${dispositivo}');
+    expect(estudiante).toContain('servicioAsistencia.codigo(idDeDispositivo())');
     expect(estudiante).toContain('clearTimeout(temporizador)');
     const docente = leer('pages', 'docente', 'clase', '[classId]', 'asistencia.vue');
     expect(docente).toContain('<AsistenciaEscanerAsistencia');

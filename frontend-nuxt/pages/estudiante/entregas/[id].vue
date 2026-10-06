@@ -90,25 +90,18 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { ArrowLeft, Download, FolderPlus, History, Loader2, Send } from 'lucide-vue-next'
-import { useApi } from '~/composables/useApi'
+import { useEntregasEstudiante } from '~/composables/useEntregasEstudiante'
 import { formatMarkdown } from '~/utils/formatMarkdown'
-import type { TipoProyecto } from '~/utils/proyectoNavegador'
 import { descargarZip } from '~/utils/descargaProyecto'
-import { NOMBRE_VALORACION, TIPO_ENTREGA, escalaDe, fechaCorta, notaTexto, textoEvento, type EscalaEntrega, type EventoHistorial, type TipoEntrega, type Valoracion } from '~/utils/entregas'
+import { NOMBRE_VALORACION, TIPO_ENTREGA, escalaDe, fechaCorta, notaTexto, textoEvento } from '~/utils/entregas'
 import type { ArchivoProyecto } from '~/utils/proyectoNavegador'
 
 definePageMeta({ layout: 'student' })
 
-interface Version { id: number; version: number; titulo: string; tarde: boolean; nota: number | null; valoracion?: Valoracion | null; comentario: string | null; revisadoAt: string | null; createdAt: string }
-interface Entrega {
-  id: number; classId: number; titulo: string; consigna: string; tipoProyecto: TipoEntrega; tienePlantilla: boolean
-  abreAt: string | null; cierraAt: string | null; aceptaTarde: boolean; conNota: boolean; escala?: EscalaEntrega; limite: number
-  versiones: Version[]; historial: EventoHistorial[]
-}
-interface Proyecto { id: number; titulo: string; tipo: TipoProyecto; updatedAt: string }
+import type { EntregaEstudiante as Entrega, ProyectoEntregaEstudiante as Proyecto } from '~/composables/useEntregasEstudiante'
 
 const route = useRoute()
-const api = useApi()
+const accionesEntrega = useEntregasEstudiante()
 const { messageOf } = useApiErrorMessage()
 const entrega = ref<Entrega | null>(null)
 const proyectos = ref<Proyecto[]>([])
@@ -140,10 +133,7 @@ const motivoSinEntregar = computed(() => {
 
 async function cargar() {
   try {
-    const [e, lista] = await Promise.all([
-      api.get<Entrega>(`/entregas/${id}`),
-      api.get<Proyecto[]>('/proyectos').catch(() => [] as Proyecto[]),
-    ])
+    const [e, lista] = await accionesEntrega.cargar(id)
     entrega.value = e
     proyectos.value = lista
     if (proyectoElegido.value === null || !misProyectos.value.some((p) => p.id === proyectoElegido.value)) {
@@ -162,7 +152,7 @@ async function enviar() {
   mensaje.value = null
   error.value = null
   try {
-    const r = await api.post<{ version: number }>(`/entregas/${id}/enviar`, { proyectoId: proyectoElegido.value })
+    const r = await accionesEntrega.enviar(id, proyectoElegido.value)
     mensaje.value = `Entregaste la versión ${r.version}.`
     await cargar()
   } catch (err) {
@@ -176,7 +166,7 @@ async function empezar() {
   empezando.value = true
   error.value = null
   try {
-    const p = await api.post<{ id: number }>(`/entregas/${id}/empezar`)
+    const p = await accionesEntrega.empezar(id)
     await navigateTo(`/estudiante/proyectos/${p.id}`)
   } catch (err) {
     error.value = messageOf(err, 'No se pudo crear el proyecto.')
@@ -187,7 +177,7 @@ async function empezar() {
 
 async function descargarVersion(envioId: number) {
   try {
-    const v = await api.get<{ titulo: string; version: number; archivos: ArchivoProyecto[] }>(`/proyecto-envios/${envioId}`)
+    const v = await accionesEntrega.version(envioId)
     descargarZip(`${v.titulo} v${v.version}`, v.archivos)
   } catch (err) {
     error.value = messageOf(err, 'No se pudo descargar la versión.')

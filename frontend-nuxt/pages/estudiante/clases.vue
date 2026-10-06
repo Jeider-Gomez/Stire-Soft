@@ -152,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-import { useApi } from '~/composables/useApi'
+import { useClasesEstudiante, type MatriculaEstudiante as EnrollmentItem } from '~/composables/useClasesEstudiante'
 import { useStudentStore } from '~/stores/student'
 import { ArrowLeft, BookOpen, CircleAlert, CircleCheck, GraduationCap, KeyRound, Loader2, RefreshCw, UserRound } from 'lucide-vue-next'
 import { normalizarCodigo, codigoMientrasEscribe } from '~/utils/codigoClase'
@@ -162,23 +162,7 @@ definePageMeta({
   layout: 'student'
 })
 
-interface EnrollmentItem {
-  id: number
-  classId: number
-  status: string
-  joinedAt?: string
-  class?: {
-    id: number
-    name: string
-    code: string
-    description?: string
-    teacher?: {
-      fullName: string
-    }
-  }
-}
-
-const api = useApi()
+const accionesClases = useClasesEstudiante()
 const studentStore = useStudentStore()
 
 const enrolledClasses = ref<EnrollmentItem[]>([])
@@ -194,7 +178,7 @@ const feedbackIsError = ref(false)
 async function fetchEnrollments() {
   isLoading.value = true
   try {
-    const res = await api.get<EnrollmentItem[]>('/enrollment/my')
+    const res = await accionesClases.listar()
     if (Array.isArray(res)) {
       enrolledClasses.value = res
     }
@@ -213,9 +197,7 @@ async function handleJoinClass() {
   feedbackIsError.value = false
 
   try {
-    const res = await api.post<any>('/enrollment/join', {
-      code: normalizarCodigo(joinCode.value)
-    })
+    await accionesClases.unirse(normalizarCodigo(joinCode.value))
 
     feedbackMessage.value = '¡Te has matriculado exitosamente en la clase!'
     feedbackIsError.value = false
