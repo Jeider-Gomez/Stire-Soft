@@ -45,8 +45,8 @@
           :aria-pressed="!!classInfo?.requiresApproval"
           class="min-h-[44px] px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
           :class="classInfo?.requiresApproval
-            ? 'bg-semantico-pasa/15 text-semantico-pasa'
-            : 'bg-base-borde-sutil text-slate-700'"
+            ? 'bg-semantico-pasa/10 text-semantico-pasa'
+            : 'bg-base-bg-secundario border border-base-borde-fuerte text-base-texto-primario'"
         >
           <Check v-if="classInfo?.requiresApproval" :size="12" aria-hidden="true" />
           {{ classInfo?.requiresApproval ? 'Activado' : 'Desactivado' }}

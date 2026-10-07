@@ -26,13 +26,14 @@
         </div>
 
         <!-- Flecha o separador -->
-        <span class="text-base-texto-secundario hidden sm:inline text-xs font-bold">➔</span>
+        <span class="text-base-texto-secundario hidden sm:inline text-xs font-bold" aria-hidden="true">➔</span>
 
         <!-- Selector de la columna derecha -->
         <div class="flex-1 sm:max-w-xs">
           <select
             :id="`matching-select-${leftItem.id}`"
             v-model="pairs[leftItem.id]"
+            :aria-label="`Pareja de «${itemText(leftItem)}»`"
             class="w-full text-xs bg-base-blanco text-base-texto-primario border border-base-borde-sutil rounded px-2.5 py-1.5 focus:border-acento-ambar-fuerte focus:outline-none focus:ring-1 focus:ring-acento-ambar-fuerte transition-colors"
             :class="pairs[leftItem.id] ? 'border-acento-ambar-fuerte text-acento-ambar-fuerte font-semibold' : 'text-base-texto-secundario'"
           >

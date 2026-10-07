@@ -85,7 +85,7 @@
           <!-- Insignia roja = repasos que tocan HOY (vencidos o críticos); los de mañana no son urgentes. -->
           <span
             v-if="studentStore.reviewsDueToday.length > 0"
-            class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-semantico-falla/15 text-semantico-falla"
+            class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-semantico-falla text-base-blanco"
             :aria-label="`${studentStore.reviewsDueToday.length} para hoy`">
             {{ studentStore.reviewsDueToday.length }}
           </span>

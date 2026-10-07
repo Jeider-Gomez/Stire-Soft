@@ -8,7 +8,7 @@
       <div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight inline-flex items-center gap-2">
           {{ titulo }}
-          <span v-if="noLeidos > 0" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-semantico-falla/15 text-semantico-falla">
+          <span v-if="noLeidos > 0" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-semantico-falla text-base-blanco">
             {{ noLeidos }} sin leer
           </span>
         </h1>

@@ -66,7 +66,7 @@
           id="copy-class-code-btn"
           type="button"
           @click="copyCode"
-          class="min-h-[44px] px-3 py-2 rounded-md text-xs font-bold bg-base-borde-sutil hover:bg-acento-ambar/20 text-base-texto-primario transition-colors flex-shrink-0 flex items-center gap-1"
+          class="min-h-[44px] px-3 py-2 rounded-md text-xs font-bold bg-base-bg-secundario border border-base-borde-fuerte hover:bg-acento-ambar/20 text-base-texto-primario transition-colors flex-shrink-0 flex items-center gap-1"
         >
           <Check v-if="codeCopied" :size="12" aria-hidden="true" />
           <span>{{ codeCopied ? 'Copiado' : 'Copiar' }}</span>

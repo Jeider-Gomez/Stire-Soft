@@ -3,10 +3,11 @@
  *
  * Los colores semánticos de tailwind.config.ts (base-*, acento-*, semantico-*, estado-unidad-*, urgencia-repaso-*,
  * stire-canvas) leen estas variables, en canales RGB para que funcionen las transparencias (bg-semantico-pasa/10).
- * El tema claro tiene EXACTAMENTE los valores de siempre: quien no cambia nada ve lo mismo.
+ * El tema claro tiene los valores de siempre, salvo el texto secundario, que pasó de slate-500 a slate-600 el 07/10:
+ * sobre los fondos grises (bg-secundario) daba 4,3 a 1 y el mínimo de WCAG es 4,5 (lo encontró axe con agent-browser).
  *
  * Atributos de <html> que pone plugins/apariencia.client.ts:
- *   data-tema="claro|oscuro|sistema" · data-contraste="normal|alto" · data-texto="normal|grande|muy-grande"
+ *   data-tema="claro|oscuro" (el tema que se ve: «Como mi dispositivo» ya viene resuelto) · data-tema-elegido · data-contraste="normal|alto" · data-texto="normal|grande|muy-grande"
  *   data-espaciado="normal|amplio"
  *
  * Lo que es oscuro siempre (el editor de código, la cabecera del Tutor, el fondo de las ventanas) no cambia.
@@ -18,7 +19,7 @@
   --c-base-bg-secundario: 241 245 249;
   --c-base-borde-sutil: 226 232 240;
   --c-base-borde-fuerte: 203 213 225;
-  --c-base-texto-secundario: 100 116 139;
+  --c-base-texto-secundario: 71 85 105;
   --c-base-texto-primario: 30 41 59;
   --c-acento-ambar: 8 42 102;
   --c-acento-ambar-fuerte: 11 61 145;
@@ -37,18 +38,7 @@
   color-scheme: light;
 }
 
-/* Alto contraste (claro): textos secundarios y bordes más marcados, como «Usar interfaz de alto contraste» de Canvas. */
-:root[data-contraste="alto"] {
-  --c-base-texto-secundario: 51 65 85;
-  --c-base-texto-primario: 15 23 42;
-  --c-base-borde-sutil: 148 163 184;
-  --c-base-borde-fuerte: 100 116 139;
-  --c-acento-ambar-fuerte: 8 42 102;
-}
-:root[data-contraste="alto"] .text-slate-500,
-:root[data-contraste="alto"] .text-slate-600 { color: rgb(30 41 59); }
-
-/* ── Tema oscuro ── Se repite para «oscuro» y para «sistema» cuando el dispositivo está en oscuro. */
+/* ── Tema oscuro ── También es el de «Como mi dispositivo» cuando el dispositivo está en oscuro (plugins/apariencia.client.ts). */
 :root[data-tema="oscuro"] {
   --c-base-blanco: 19 28 46;
   --c-base-bg-primario: 11 18 32;
@@ -73,40 +63,6 @@
   --c-stire-canvas: 11 18 32;
   color-scheme: dark;
 }
-@media (prefers-color-scheme: dark) {
-  :root[data-tema="sistema"] {
-    --c-base-blanco: 19 28 46;
-    --c-base-bg-primario: 11 18 32;
-    --c-base-bg-secundario: 27 38 59;
-    --c-base-borde-sutil: 38 51 73;
-    --c-base-borde-fuerte: 71 85 105;
-    --c-base-texto-secundario: 167 180 200;
-    --c-base-texto-primario: 230 236 245;
-    --c-acento-ambar: 191 219 254;
-    --c-acento-ambar-fuerte: 147 197 253;
-    --c-semantico-pasa: 52 211 153;
-    --c-semantico-falla: 248 113 113;
-    --c-semantico-info: 147 197 253;
-    --c-unidad-dominado: 52 211 153;
-    --c-unidad-en-progreso: 196 181 253;
-    --c-unidad-por-iniciar: 147 197 253;
-    --c-unidad-bloqueado: 148 163 184;
-    --c-repaso-al-dia: 52 211 153;
-    --c-repaso-manana: 196 181 253;
-    --c-repaso-vencido: 251 191 36;
-    --c-repaso-critico: 248 113 113;
-    --c-stire-canvas: 11 18 32;
-    color-scheme: dark;
-  }
-}
-/* Alto contraste en oscuro */
-:root[data-tema="oscuro"][data-contraste="alto"] {
-  --c-base-texto-secundario: 226 232 240;
-  --c-base-texto-primario: 248 250 252;
-  --c-base-borde-sutil: 100 116 139;
-  --c-base-borde-fuerte: 148 163 184;
-}
-
 /*
  * Clases grises y de color sueltas (sin token) que quedan en las pantallas: en oscuro se aclaran los textos y se
  * oscurecen los fondos claros. Solo las que van sobre una tarjeta o la página; las superficies que siempre son oscuras
@@ -135,28 +91,76 @@
 :root[data-tema="oscuro"] .badge-docente { color: rgb(196 181 253); }
 :root[data-tema="oscuro"] .badge-estudiante { color: rgb(110 231 183) !important; }
 
-@media (prefers-color-scheme: dark) {
-  :root[data-tema="sistema"] body { background-color: rgb(var(--c-stire-canvas)); color: rgb(var(--c-base-texto-primario)); }
-  :root[data-tema="sistema"] :is(.text-slate-400, .text-slate-500) { color: rgb(148 163 184); }
-  :root[data-tema="sistema"] :is(.text-slate-600, .text-slate-700) { color: rgb(var(--c-base-texto-secundario)); }
-  :root[data-tema="sistema"] :is(.text-slate-800, .text-slate-900, .text-gray-900, .text-black) { color: rgb(var(--c-base-texto-primario)); }
-  :root[data-tema="sistema"] :is(.bg-white, .bg-slate-50, .bg-gray-50) { background-color: rgb(var(--c-base-blanco)); }
-  :root[data-tema="sistema"] :is(.bg-slate-100, .bg-slate-200, .hover\:bg-slate-50:hover, .hover\:bg-slate-100:hover) { background-color: rgb(var(--c-base-bg-secundario)); }
-  :root[data-tema="sistema"] :is(.border-slate-100, .border-slate-200, .border-slate-300) { border-color: rgb(var(--c-base-borde-sutil)); }
-  :root[data-tema="sistema"] .divide-slate-100 > * + * { border-color: rgb(var(--c-base-borde-sutil)); }
-  :root[data-tema="sistema"] :is(.text-stire-blue, .text-stire-blue-dark) { color: rgb(147 197 253); }
-  :root[data-tema="sistema"] .text-stire-purple { color: rgb(196 181 253); }
-  :root[data-tema="sistema"] :is(.text-red-600, .text-red-700, .text-red-800) { color: rgb(252 165 165); }
-  :root[data-tema="sistema"] :is(.text-amber-600, .text-amber-700, .text-amber-800, .text-yellow-700) { color: rgb(252 211 77); }
-  :root[data-tema="sistema"] :is(.text-emerald-700, .text-emerald-800, .text-teal-700, .text-teal-800) { color: rgb(110 231 183); }
-  :root[data-tema="sistema"] :is(.bg-red-50, .bg-amber-50, .bg-yellow-50, .bg-teal-50, .bg-emerald-50) { background-color: rgb(var(--c-base-bg-secundario)); }
-  :root[data-tema="sistema"] :is(.border-red-200, .border-red-300) { border-color: rgb(127 29 29); }
-  :root[data-tema="sistema"] .border-amber-200 { border-color: rgb(120 53 15); }
-  :root[data-tema="sistema"] :is([class*="bg-acento-"], [class*="bg-semantico-"]):is(.text-white, .hover\:text-white:hover) { color: rgb(var(--c-base-blanco)); }
-  :root[data-tema="sistema"] :is(.\!text-teal-800, .\!text-teal-700) { color: rgb(110 231 183) !important; }
-  :root[data-tema="sistema"] .badge-admin { color: rgb(147 197 253); }
-  :root[data-tema="sistema"] .badge-docente { color: rgb(196 181 253); }
-  :root[data-tema="sistema"] .badge-estudiante { color: rgb(110 231 183) !important; }
+/*
+ * ── Alto contraste ── (07/10, tras la revisión de Jeider: «todavía no está lista»). Antes solo oscurecía un poco los
+ * grises y casi no se notaba. Ahora sigue a los referentes:
+ * - Canvas («Interfaz de alto contraste»): texto casi negro, bordes marcados y ENLACES SUBRAYADOS, para que no dependan
+ *   solo del color (WCAG 1.4.1);
+ * - GitHub («Aumentar contraste», en claro y en oscuro): el mismo cambio en los dos temas;
+ * - foco grueso y visible (WCAG 2.4.7 y 2.4.13): contorno de 3 px, no una sombra que se pierde;
+ * - las tarjetas se separan por el borde, no por la sombra; los botones desactivados no se confunden con los activos.
+ */
+:root[data-contraste="alto"] {
+  --c-base-blanco: 255 255 255;
+  --c-base-bg-primario: 255 255 255;
+  --c-base-bg-secundario: 241 245 249;
+  --c-base-texto-secundario: 30 41 59;
+  --c-base-texto-primario: 2 6 23;
+  --c-base-borde-sutil: 71 85 105;
+  --c-base-borde-fuerte: 30 41 59;
+  --c-acento-ambar: 8 42 102;
+  --c-acento-ambar-fuerte: 8 42 102;
+  --c-semantico-pasa: 6 95 70;
+  --c-semantico-falla: 153 27 27;
+  --c-semantico-info: 8 42 102;
+  --c-repaso-vencido: 146 64 14;
+  --c-stire-canvas: 255 255 255;
+}
+:root[data-tema="oscuro"][data-contraste="alto"] {
+  --c-base-blanco: 0 0 0;
+  --c-base-bg-primario: 0 0 0;
+  --c-base-bg-secundario: 23 23 23;
+  --c-base-texto-secundario: 241 245 249;
+  --c-base-texto-primario: 255 255 255;
+  --c-base-borde-sutil: 203 213 225;
+  --c-base-borde-fuerte: 241 245 249;
+  --c-acento-ambar: 219 234 254;
+  --c-acento-ambar-fuerte: 191 219 254;
+  --c-semantico-pasa: 110 231 183;
+  --c-semantico-falla: 252 165 165;
+  --c-semantico-info: 191 219 254;
+  --c-repaso-vencido: 253 224 71;
+  --c-stire-canvas: 0 0 0;
+}
+:root[data-contraste="alto"] :is(.text-slate-400, .text-slate-500, .text-slate-600, .text-slate-700, .text-gray-500, .text-gray-600) { color: rgb(var(--c-base-texto-secundario)); }
+:root[data-contraste="alto"] :is(.border-slate-100, .border-slate-200, .border-slate-300) { border-color: rgb(var(--c-base-borde-sutil)); }
+:root[data-contraste="alto"] .divide-slate-100 > * + * { border-color: rgb(var(--c-base-borde-sutil)); }
+:root[data-contraste="alto"] :is(.shadow-sm, .shadow, .shadow-md) { box-shadow: none; }
+/* Solo los enlaces dentro del texto (WCAG 1.4.1): las pestañas, el menú y los botones ya se ven como controles. */
+:root[data-contraste="alto"] main :is(p, li, td, dd, label, small) a:not([class*="bg-"]),
+:root[data-contraste="alto"] .prose a { text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+:root[data-contraste="alto"] :focus-visible { outline: 3px solid rgb(var(--c-acento-ambar-fuerte)) !important; outline-offset: 2px; box-shadow: none !important; }
+:root[data-contraste="alto"] ::placeholder { color: rgb(var(--c-base-texto-secundario)); opacity: 0.85; }
+:root[data-contraste="alto"] :is(button, a, input, select, textarea):disabled { opacity: 1; filter: grayscale(1); text-decoration: line-through; }
+:root[data-contraste="alto"] :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="range"]) { border-color: rgb(var(--c-base-borde-fuerte)); }
+:root[data-tema="oscuro"][data-contraste="alto"] :is(.bg-slate-100, .bg-slate-200, .bg-slate-50, .bg-white) { background-color: rgb(var(--c-base-bg-secundario)); }
+
+/*
+ * ── Colores forzados del sistema (Windows: «Temas de contraste») ── El sistema operativo reemplaza todos los colores
+ * por los suyos (blanco sobre negro, amarillo sobre negro…). Lo que se pierde es lo que solo se veía por el fondo o la
+ * sombra: los botones sin borde, las barras de avance y el foco hecho con sombra. Aquí se devuelven con los colores del
+ * sistema (ButtonText, Highlight, CanvasText), como recomiendan Microsoft y la especificación de CSS.
+ */
+@media (forced-colors: active) {
+  button, [role="button"], a[class*="bg-"], [role="tab"], select { border: 1px solid ButtonText; }
+  :focus-visible { outline: 3px solid Highlight !important; outline-offset: 2px; }
+  [role="progressbar"], .barra-avance { forced-color-adjust: none; background-color: Canvas; border: 1px solid CanvasText; }
+  [role="progressbar"] > *, .barra-avance > * { background-color: Highlight; }
+  /* Las demás barras: una pista redondeada con un relleno de ancho en línea (style="width: 60%"). */
+  .rounded-full.overflow-hidden:has(> [style*="width"]) { forced-color-adjust: none; background-color: Canvas; border: 1px solid CanvasText; }
+  .rounded-full.overflow-hidden > [style*="width"] { background-color: Highlight; }
+  [aria-current="page"], [aria-selected="true"], [aria-pressed="true"] { outline: 2px solid Highlight; }
+  svg { forced-color-adjust: auto; }
 }
 
 /* ── Tamaño del texto ── Los tamaños de tailwind.config.ts están en rem; estos son los fijos que quedan en pantallas. */

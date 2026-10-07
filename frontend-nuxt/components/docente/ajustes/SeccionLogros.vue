@@ -12,7 +12,7 @@
       </div>
       <button type="button" :disabled="guardandoLogros" :aria-pressed="logrosActivos"
         class="min-h-[44px] px-3 rounded-md text-xs font-bold flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1"
-        :class="logrosActivos ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-borde-sutil text-slate-700'"
+        :class="logrosActivos ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-base-bg-secundario border border-base-borde-fuerte text-base-texto-primario'"
         @click="guardarLogros({ logrosActivos: !logrosActivos })">
         <Check v-if="logrosActivos" :size="12" aria-hidden="true" />
         {{ logrosActivos ? 'Activados' : 'Desactivados' }}

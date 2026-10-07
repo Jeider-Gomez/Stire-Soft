@@ -10,7 +10,7 @@
       <section v-if="!docente && reflexion" class="p-4 rounded-xl border border-semantico-info/25 bg-semantico-info/5 flex gap-3" aria-labelledby="autorregulacion-titulo">
         <Brain :size="20" class="shrink-0 text-semantico-info mt-0.5" aria-hidden="true" />
         <div class="space-y-1">
-          <h3 id="autorregulacion-titulo" class="text-xs font-bold text-base-texto-primario">Mi autorregulación: cómo estoy estudiando</h3>
+          <h2 id="autorregulacion-titulo" class="text-xs font-bold text-base-texto-primario">Mi autorregulación: cómo estoy estudiando</h2>
           <p class="text-xs text-base-texto-primario">{{ reflexion.observacion }}</p>
           <p class="text-xs font-semibold text-semantico-info">{{ reflexion.pregunta }}</p>
         </div>

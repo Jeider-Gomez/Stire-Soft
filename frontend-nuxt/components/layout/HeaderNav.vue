@@ -73,6 +73,9 @@
         {{ roleLabel }}
       </span>
 
+      <!-- Apariencia y lectura a un clic desde cualquier pantalla (components/layout/BotonApariencia.vue) -->
+      <LayoutBotonApariencia />
+
       <!-- Sugerencias: un problema, algo confuso o una idea (docs/calidad/PRUEBA_DOS_SEMANAS.md) -->
       <LayoutBotonSugerencias />
 
