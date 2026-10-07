@@ -19,11 +19,11 @@ describe('Sugerencias desde cualquier pantalla', () => {
     expect(boton).toContain("api.get('/reportes/mios')");
   });
 
-  it('el admin los ve en «Sugerencias», los marca y los descarga en CSV', () => {
+  it('el admin los ve en «Sugerencias», los resuelve o archiva y los descarga en Excel (desde el 07/10; antes CSV)', () => {
     expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('to="/admin/sugerencias"');
     const bandeja = leer('pages', 'admin', 'sugerencias.vue');
-    expect(bandeja).toContain('sugerencias.actualizar(r.id, { estado: r.estado, nota: r.notaEditada })');
+    expect(bandeja).toContain('await sugerencias.actualizar(r.id, { estado, nota: nota ?? undefined })');
     expect(leer('composables', 'useSugerencias.ts')).toContain('api.patch(`/reportes/${id}`, cambios)');
-    expect(bandeja).toContain("a.download = 'sugerencias-stire.csv'");
+    expect(bandeja).toContain('descargarExcel(libroDeSugerencias(lista.value), `sugerencias-stire-${new Date().toISOString().slice(0, 10)}.xlsx`)');
   });
 });

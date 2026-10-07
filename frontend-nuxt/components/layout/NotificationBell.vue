@@ -40,7 +40,7 @@
           <button v-if="unreadCount > 0" type="button" class="min-h-[44px] px-2 text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="marcarTodas">
             Marcar todas como leídas
           </button>
-          <button type="button" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md text-base-texto-secundario hover:bg-base-bg-secundario sm:hidden" @click="cerrar">
+          <button type="button" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md text-base-texto-primario hover:bg-base-bg-secundario sm:hidden" @click="cerrar">
             <X :size="16" aria-hidden="true" /><span class="sr-only">Cerrar las notificaciones</span>
           </button>
         </div>

@@ -10,7 +10,7 @@
         lección, sin sus nombres; primero las que vale la pena revisar.
       </p>
     </div>
-    <p v-if="!filas.length" class="text-xs text-base-texto-secundario bg-base-bg-secundario rounded-md p-3">
+    <p v-if="!filas.length" class="text-xs text-base-texto-primario bg-base-bg-secundario rounded-md p-3">
       Todavía nadie ha respondido. Cuando tus estudiantes terminen una lección, aquí verás cuántos dijeron que les sirvió.
     </p>
     <p v-else class="text-xs text-base-texto-primario">

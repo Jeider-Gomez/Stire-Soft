@@ -129,6 +129,11 @@ const JUSTIFIED_EXCEPTIONS: Exception[] = [
     reason: 'notificationsRepository.findOne({ where: { id, userId } }) — ownership forzado en el WHERE.',
   },
   {
+    controller: NotificationsController,
+    method: 'markAllRead',
+    reason: 'update({ userId: user.id, isRead: false }) — solo toca las notificaciones del propio usuario (07/10).',
+  },
+  {
     controller: MessageController,
     method: 'create',
     reason: 'el remitente es siempre user.id; no hay recurso ajeno que tocar al crear.',
