@@ -50,8 +50,8 @@
         <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
           {{ TERMINOS.leccion.uno }}
         </span>
-        <h1 class="text-xl md:text-2xl font-bold text-base-texto-primario tracking-tight">{{ unitData.title }}</h1>
-        <p class="text-xs text-base-texto-secundario">{{ unitData.description }}</p>
+        <h1 id="titulo-leccion" class="text-xl md:text-2xl font-bold text-base-texto-primario tracking-tight">{{ unitData.title }}</h1>
+        <p v-if="unitData.description" id="descripcion-leccion" class="text-xs text-base-texto-secundario">{{ unitData.description }}</p>
         <!-- El dominio de la lección se ve desde el principio: practicar es la forma de medirlo. -->
         <div v-if="dominio !== null" class="flex items-center gap-3">
           <div class="w-40 h-2 bg-base-bg-secundario rounded-full overflow-hidden border border-base-borde-sutil" role="progressbar"

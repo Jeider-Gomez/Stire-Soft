@@ -106,7 +106,8 @@ describe('formatMarkdown (frontend-nuxt/utils/formatMarkdown.ts): tablas y lista
       return Array.from(doc.querySelectorAll(tag)).flatMap((el) => [el.previousSibling?.nodeName, el.nextSibling?.nodeName]);
     };
     for (const tag of ['h3', 'pre', 'div', 'ol']) expect({ tag, br: vecinos(tag).includes('BR') }).toEqual({ tag, br: false });
-    expect(html).toContain('Primer párrafo.<br><br>Segundo párrafo.');
+    // Desde el 07/10 cada párrafo es un <p> (lo leen «Escuchar» y los lectores de pantalla), no texto entre <br><br>.
+    expect(html).toContain('<p class="my-3">Primer párrafo.</p><p class="my-3">Segundo párrafo.</p>');
   });
 
   it('un número con punto en medio de una frase no crea una lista', () => {

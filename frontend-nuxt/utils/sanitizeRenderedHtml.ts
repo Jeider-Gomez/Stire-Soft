@@ -46,8 +46,53 @@ function installIframeHook() {
   })
 }
 
-export function sanitizeRenderedHtml(html: string): string {
+export function sanitizeRenderedHtml(html: string, opciones: { parrafos?: boolean } = {}): string {
   if (!html) return ''
   installIframeHook()
-  return DOMPurify.sanitize(html, { ALLOWED_TAGS, ALLOWED_ATTR })
+  if (!opciones.parrafos) return DOMPurify.sanitize(html, { ALLOWED_TAGS, ALLOWED_ATTR })
+  const fragmento = DOMPurify.sanitize(html, { ALLOWED_TAGS, ALLOWED_ATTR, RETURN_DOM_FRAGMENT: true })
+  envolverParrafos(fragmento)
+  const caja = fragmento.ownerDocument.createElement('div')
+  caja.appendChild(fragmento)
+  return caja.innerHTML
+}
+
+// Lo que ya es un bloque: no va dentro de un párrafo.
+const BLOQUES = new Set(['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'UL', 'OL', 'PRE', 'TABLE', 'DIV', 'BLOCKQUOTE', 'HR', 'IFRAME'])
+
+/**
+ * El texto suelto entre bloques, partido por líneas en blanco (`<br><br>`), pasa a `<p>`. Antes cada párrafo era texto
+ * pelado entre saltos: «Escuchar» solo leía títulos, listas y tablas (se saltaba todos los párrafos) y un lector de
+ * pantalla no podía ir de párrafo en párrafo. Se hace sobre el DOM ya saneado: no se crea nada que no sea un `<p>`.
+ */
+function envolverParrafos(raiz: DocumentFragment) {
+  const doc = raiz.ownerDocument
+  let tramo: ChildNode[] = []
+  const vacio = (n: ChildNode) => n.nodeName === 'BR' || (n.nodeType === 3 && !(n.textContent ?? '').trim())
+  const cerrar = () => {
+    while (tramo.length && vacio(tramo[0])) tramo.shift()!.remove()
+    while (tramo.length && vacio(tramo[tramo.length - 1])) tramo.pop()!.remove()
+    if (tramo.length) {
+      const p = doc.createElement('p')
+      p.className = 'my-3'
+      tramo[0].before(p)
+      for (const n of tramo) p.appendChild(n)
+    }
+    tramo = []
+  }
+  for (const n of Array.from(raiz.childNodes)) {
+    if (n.nodeType === 1 && BLOQUES.has(n.nodeName)) { cerrar(); continue }
+    if (n.nodeName === 'BR') {
+      // Dos saltos seguidos (con espacios entre ellos o no) cierran el párrafo.
+      let siguiente = n.nextSibling
+      while (siguiente && siguiente.nodeType === 3 && !(siguiente.textContent ?? '').trim()) siguiente = siguiente.nextSibling
+      if (siguiente?.nodeName === 'BR' || tramo.length && tramo[tramo.length - 1].nodeName === 'BR') {
+        tramo.push(n)
+        cerrar()
+        continue
+      }
+    }
+    tramo.push(n)
+  }
+  cerrar()
 }

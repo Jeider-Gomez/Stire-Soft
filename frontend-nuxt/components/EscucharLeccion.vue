@@ -57,18 +57,12 @@
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { Headphones, Pause, Play, Settings2, SkipBack, SkipForward, X } from 'lucide-vue-next'
 import {
-  CLAVE_PREFERENCIAS_VOZ, elegirVoz, formatosDeLeccion, frasesConPosicion, leerPreferenciasVoz, nombreVoz, textoFormatos,
-  textoParaVoz, VELOCIDADES, vocesEnEspanol, type BloqueLeccion, type Frase,
+  CLAVE_PREFERENCIAS_VOZ, elegirVoz, formatosDeLeccion, leerPreferenciasVoz, lecturasDeLeccion, nombreVoz, textoFormatos,
+  textoParaVoz, VELOCIDADES, vocesEnEspanol, type BloqueLeccion, type Lectura,
 } from '~/utils/escucharLeccion'
 
 const props = withDefaults(defineProps<{ bloques: BloqueLeccion[]; objetivo?: string }>(), { objetivo: '#explicacion' })
 
-interface Lectura { el: HTMLElement; frase: Frase }
-
-// Lo que se lee de la pantalla: títulos, párrafos, viñetas, pies de imagen y el texto alternativo de las imágenes. Lo
-// que solo se puede ver (el algoritmo, un ejemplo en vivo, un video) se anuncia con su `data-leer-aviso`.
-const SELECTOR = 'h2,h3,h4,h5,p,li,figcaption,blockquote,img,pre,table,[data-leer-aviso]'
-const CONTENEDORES = 'p,li,figcaption,blockquote,pre,table'
 const RESALTADO = 'stire-leyendo'
 
 const disponible = ref(false)
@@ -88,7 +82,7 @@ let turno = 0
 // Chrome a veces libera la locución en curso y nunca dispara su «fin» (la lectura se quedaba muda tras la primera
 // frase): se guarda aquí para que siga viva mientras suena.
 const vivas = new Set<SpeechSynthesisUtterance>()
-let bloqueResaltado: HTMLElement | null = null
+let bloqueResaltado: Element | null = null
 
 function leerLocal(): string | null {
   try { return localStorage.getItem(CLAVE_PREFERENCIAS_VOZ) } catch { return null }
@@ -111,31 +105,13 @@ onMounted(() => {
   window.speechSynthesis.addEventListener?.('voiceschanged', cargarVoces)
 })
 
-/** Las frases de la lección, en orden, tal como están en pantalla. */
+/** Las frases de la lección, en orden, tal como están en pantalla: el título y la descripción, y luego la explicación. */
 function construir(): Lectura[] {
-  const raiz = document.querySelector<HTMLElement>(props.objetivo)
-  if (!raiz) return []
-  const out: Lectura[] = []
-  for (const el of raiz.querySelectorAll<HTMLElement>(SELECTOR)) {
-    if (el.closest('[aria-hidden="true"]')) continue
-    const anuncio = el.closest<HTMLElement>('[data-leer-aviso]')
-    if (anuncio && anuncio !== el) continue
-    const padre = el.parentElement?.closest(CONTENEDORES)
-    if (padre && raiz.contains(padre)) continue
-    const solo = (texto: string): Frase[] => [{ texto, inicio: -1, fin: -1 }]
-    let frases: Frase[]
-    if (el.dataset.leerAviso !== undefined) frases = solo(el.dataset.leerAviso)
-    else if (el instanceof HTMLImageElement) frases = el.alt.trim() ? solo(`Imagen: ${el.alt.trim()}.`) : []
-    else if (el.tagName === 'PRE') frases = solo('Hay un fragmento de código en la pantalla.')
-    else if (el.tagName === 'TABLE') frases = solo('Hay una tabla en la pantalla.')
-    else frases = frasesConPosicion(el.textContent ?? '')
-    for (const frase of frases) out.push({ el, frase })
-  }
-  return out
+  return lecturasDeLeccion(document.querySelector(props.objetivo), [document.getElementById('titulo-leccion'), document.getElementById('descripcion-leccion')])
 }
 
 /** El rango de una frase dentro de su párrafo, recorriendo sus nodos de texto (el mismo orden que `textContent`). */
-function rangoDe(el: HTMLElement, inicio: number, fin: number): Range | null {
+function rangoDe(el: Element, inicio: number, fin: number): Range | null {
   if (inicio < 0) return null
   const recorrido = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
   const rango = document.createRange()

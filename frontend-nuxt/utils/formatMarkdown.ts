@@ -91,5 +91,6 @@ export function formatMarkdown(raw: string, options: { escapeHtml?: boolean } = 
 
   // El HTML final pasa siempre por DOMPurify: los reemplazos de arriba trabajan sobre texto y podían insertar comillas dentro de un
   // atributo del HTML ya saneado por el servidor (ver sanitizeRenderedHtml.ts).
-  return sanitizeRenderedHtml(html)
+  // Además, el texto suelto entre líneas en blanco sale como <p>: así lo leen «Escuchar» y los lectores de pantalla.
+  return sanitizeRenderedHtml(html, { parrafos: true })
 }

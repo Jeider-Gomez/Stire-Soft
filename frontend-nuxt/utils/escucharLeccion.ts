@@ -153,3 +153,63 @@ export function leerPreferenciasVoz(crudo: string | null): PreferenciasVoz {
     return { velocidad: 1, voz: null }
   }
 }
+
+/** Una lectura: el elemento que se resalta y la frase que suena. */
+export interface Lectura { el: Element; frase: Frase }
+
+// Lo que se lee de la pantalla. Lo que solo se puede ver (el algoritmo, un ejemplo en vivo, un video) se anuncia con su
+// `data-leer-aviso`. `dt`, `dd`, `summary` y `h6` también: antes un docente que los usaba veía partes calladas.
+const SELECTOR_LECTURA = 'h1,h2,h3,h4,h5,h6,p,li,dt,dd,summary,figcaption,blockquote,img,pre,table,[data-leer-aviso]'
+const CONTENEDORES_LECTURA = 'p,li,dt,dd,figcaption,blockquote,pre,table'
+/** Más líneas que esto en un bloque de código: se anuncia en vez de leerse línea por línea. */
+export const MAX_LINEAS_CODIGO = 25
+
+const una = (texto: string): Frase[] => [{ texto, inicio: -1, fin: -1 }]
+const limpio = (t: string | null | undefined) => (t ?? '').replace(/\s+/g, ' ').trim()
+
+/** Una tabla, fila por fila: «Columnas: Figura, Significado.» y «Óvalo; Inicio o fin.». Cada fila se resalta sola. */
+function lecturasDeTabla(tabla: Element): Lectura[] {
+  const filas = Array.from(tabla.querySelectorAll('tr'))
+  const out: Lectura[] = [{ el: tabla, frase: una(`Tabla de ${filas.length} filas.`)[0] }]
+  for (const tr of filas) {
+    const celdas = Array.from(tr.children).map((c) => limpio(c.textContent)).filter(Boolean)
+    if (!celdas.length) continue
+    const encabezado = tr.parentElement?.tagName === 'THEAD' || Array.from(tr.children).every((c) => c.tagName === 'TH')
+    out.push({ el: tr, frase: una(encabezado ? `Columnas: ${celdas.join(', ')}.` : `${celdas.join('; ')}.`)[0] })
+  }
+  return out
+}
+
+/** Un bloque de código o pseudocódigo: corto, línea por línea (con `textoParaVoz` al decirlo); largo, se anuncia. */
+function lecturasDeCodigo(pre: Element): Lectura[] {
+  const lineas = (pre.textContent ?? '').split('\n').map((l) => l.trim()).filter(Boolean)
+  if (!lineas.length) return []
+  if (lineas.length > MAX_LINEAS_CODIGO) return [{ el: pre, frase: una(`Hay un fragmento de código de ${lineas.length} líneas en la pantalla.`)[0] }]
+  return [{ el: pre, frase: una('Código:')[0] }, ...lineas.map((l) => ({ el: pre, frase: una(l)[0] }))]
+}
+
+/**
+ * Todas las lecturas de la lección, en el orden de la pantalla: primero `antes` (el título y la descripción, que están
+ * fuera de la explicación) y luego lo que hay en `raiz`. Se salta lo oculto a los lectores (`aria-hidden`).
+ */
+export function lecturasDeLeccion(raiz: Element | null, antes: Array<Element | null> = []): Lectura[] {
+  const out: Lectura[] = []
+  for (const el of antes) {
+    if (el && limpio(el.textContent)) for (const frase of frasesConPosicion(el.textContent ?? '')) out.push({ el, frase })
+  }
+  if (!raiz) return out
+  for (const el of Array.from(raiz.querySelectorAll(SELECTOR_LECTURA))) {
+    if (el.closest('[aria-hidden="true"]')) continue
+    const anuncio = el.closest('[data-leer-aviso]')
+    if (anuncio && anuncio !== el) continue
+    const padre = el.parentElement?.closest(CONTENEDORES_LECTURA)
+    if (padre && raiz.contains(padre)) continue
+    const aviso = el.getAttribute('data-leer-aviso')
+    if (aviso !== null) out.push({ el, frase: una(aviso)[0] })
+    else if (el.tagName === 'IMG') { const alt = limpio(el.getAttribute('alt')); if (alt) out.push({ el, frase: una(`Imagen: ${alt}.`)[0] }) }
+    else if (el.tagName === 'PRE') out.push(...lecturasDeCodigo(el))
+    else if (el.tagName === 'TABLE') out.push(...lecturasDeTabla(el))
+    else for (const frase of frasesConPosicion(el.textContent ?? '')) out.push({ el, frase })
+  }
+  return out
+}
