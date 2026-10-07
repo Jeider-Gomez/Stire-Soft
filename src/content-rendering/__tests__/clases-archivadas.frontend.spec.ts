@@ -5,7 +5,7 @@ import * as path from 'path';
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
 const leer = (...p: string[]) => readFileSync(path.join(raiz, ...p), 'utf8');
 
-describe('Fase 30 B4 · VentanaEliminarClase.vue — cuenta regresiva, nombre y consecuencias (D3 bis)', () => {
+describe('Fase 30 B4 · VentanaEliminarClase.vue — consecuencias y confirmar con una casilla (D3 bis, simplificada el 07/10)', () => {
   it('el componente existe y muestra consecuencias del impacto', () => {
     const comp = leer('components', 'docente', 'VentanaEliminarClase.vue');
     expect(comp).toContain('textoConsecuencias');
@@ -14,15 +14,14 @@ describe('Fase 30 B4 · VentanaEliminarClase.vue — cuenta regresiva, nombre y 
     expect(comp).toContain('sePuedeEliminar');
   });
 
-  it('tiene cuenta regresiva de 8 s y campo de nombre para confirmar (D3 bis)', () => {
+  it('se confirma con una casilla, sin cuenta regresiva ni escribir el nombre (07/10, Jeider: «es tedioso»)', () => {
     const comp = leer('components', 'docente', 'VentanaEliminarClase.vue');
-    expect(comp).toContain('duracionSegundos');
-    expect(comp).toContain('puedeConfirmar');
-    expect(comp).toContain('nombreEscrito');
-    expect(comp).toContain('Escribe el nombre de la clase para confirmar');
-    // Contador visible en el botón
-    expect(comp).toContain('Lee antes de continuar');
-    // Botón final habilitado solo cuando el nombre coincide
+    expect(comp).toContain('puedeConfirmar(entendido.value)');
+    expect(comp).toContain('<input v-model="entendido" type="checkbox"');
+    expect(comp).toContain('Entiendo que la clase se borra para siempre');
+    expect(comp).not.toContain('nombreEscrito');
+    expect(comp).not.toContain('segundosRestantes');
+    // Botón final habilitado solo con la casilla marcada (y si el servidor dice que se puede)
     expect(comp).toContain(':disabled="!puedeEliminar || eliminando"');
   });
 
@@ -35,7 +34,6 @@ describe('Fase 30 B4 · VentanaEliminarClase.vue — cuenta regresiva, nombre y 
   it('foco inicial en Cancelar y accesible (data-foco-inicial)', () => {
     const comp = leer('components', 'docente', 'VentanaEliminarClase.vue');
     expect(comp).toContain('data-foco-inicial');
-    expect(comp).toContain('aria-live');
   });
 
   it('usa semantico-falla sin clases de color crudo', () => {

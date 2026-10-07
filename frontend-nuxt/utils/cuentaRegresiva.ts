@@ -1,5 +1,5 @@
 /**
- * Utilidad pura para la cuenta regresiva antes de habilitar «Eliminar» (D3 bis).
+ * Utilidad pura para confirmar «Eliminar» (D3 bis; simplificada el 07/10).
  * Sin dependencias de Vue: se puede probar con jest sin montar componentes.
  */
 
@@ -16,31 +16,14 @@ export interface ImpactoEliminacion {
 }
 
 /**
- * Duración de la cuenta según el impacto.
- * - Clase/módulo vacíos (sin módulos ni matriculados): 4 s
- * - Resto: 8 s (clase) o 5 s (módulo)
+ * ¿Puede confirmar el borrado? Cuando marcó «Entiendo que se borra para siempre».
+ *
+ * 07/10, Jeider: antes había que esperar una cuenta regresiva y escribir el nombre exacto, y era tedioso. Solo se puede
+ * eliminar lo que ningún estudiante trabajó (si hay avance, el servidor lo impide y se ofrece archivar), así que lo que se
+ * pierde es contenido del docente, que ve listado arriba de la casilla. Como Classroom o Moodle: confirmar, no teclear.
  */
-export function duracionSegundos(impacto: ImpactoEliminacion, nivel: 'clase' | 'modulo'): number {
-  if (nivel === 'clase') {
-    const esVacia = !impacto.modulos && !impacto.matriculados
-    return esVacia ? 4 : 8
-  }
-  // módulo
-  const esVacio = !impacto.temas && !impacto.lecciones && !impacto.ejercicios
-  return esVacio ? 2 : 5
-}
-
-/**
- * ¿Puede confirmar el borrado?
- * Sí cuando: cuenta en 0 Y nombre escrito coincide (sin mayúsculas ni espacios de borde).
- */
-export function puedeConfirmar(
-  segundosRestantes: number,
-  nombreEscrito: string,
-  nombreEsperado: string,
-): boolean {
-  if (segundosRestantes > 0) return false
-  return nombreEscrito.trim().toLowerCase() === nombreEsperado.trim().toLowerCase()
+export function puedeConfirmar(entendido: boolean): boolean {
+  return entendido
 }
 
 /** Texto del resumen de consecuencias (plurales correctos en español). */

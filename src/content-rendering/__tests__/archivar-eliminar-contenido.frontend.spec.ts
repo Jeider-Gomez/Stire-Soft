@@ -24,7 +24,7 @@ describe('Fase 30 B3 · VentanaArchivar.vue — única ventana de archivar para 
   });
 });
 
-describe('Fase 30 B3 · VentanaEliminar.vue — única ventana de eliminar con impacto y cuenta regresiva', () => {
+describe('Fase 30 B3 · VentanaEliminar.vue — única ventana de eliminar con impacto y confirmación', () => {
   it('muestra impacto antes de permitir eliminar (sePuedeEliminar, D3)', () => {
     const comp = leer('components', 'docente', 'contenidos', 'VentanaEliminar.vue');
     expect(comp).toContain('sePuedeEliminar');
@@ -49,10 +49,12 @@ describe('Fase 30 B3 · VentanaEliminar.vue — única ventana de eliminar con i
     expect(comp).toContain('data-foco-inicial');
   });
 
-  it('VentanaEliminar usa cuentaRegresiva.ts para duracion y puedeConfirmar', () => {
+  it('un módulo con contenido se confirma con una casilla, sin cuenta ni escribir el nombre (07/10)', () => {
     const comp = leer('components', 'docente', 'contenidos', 'VentanaEliminar.vue');
-    expect(comp).toContain('duracionSegundos');
-    expect(comp).toContain('puedeConfirmar');
+    expect(comp).toContain('return puedeConfirmar(entendido.value)');
+    expect(comp).toContain('Entiendo que el módulo se borra para siempre');
+    expect(comp).not.toContain('nombreEscrito');
+    expect(comp).not.toContain('duracionSegundos');
   });
 });
 

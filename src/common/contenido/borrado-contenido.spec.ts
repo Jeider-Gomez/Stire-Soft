@@ -46,7 +46,7 @@ describe('borrado de contenido (Fase 30)', () => {
     const { manager } = managerFalso({ ejercicios: 2, estudiantes: 3 });
     const r = await impactoDeLecciones(manager as never, [1], { modulos: 0, temas: 0 });
     expect(r.sePuedeEliminar).toBe(false);
-    expect(r.motivo).toBe('3 estudiantes tienen avance aquí. Archívalo para no perder su trabajo.');
+    expect(r.motivo).toBe('3 estudiantes tienen avance aquí. Archívalo para no perder su trabajo: deja de verse, se guarda su avance y lo puedes restaurar cuando quieras.');
     expect(() => exigirQueSePuedaEliminar(r)).toThrow(ConflictException);
   });
 
@@ -65,7 +65,7 @@ describe('borrado de contenido (Fase 30)', () => {
   });
 
   it('el motivo en singular', () => {
-    expect(motivoDeBloqueo(1)).toBe('1 estudiante tiene avance aquí. Archívalo para no perder su trabajo.');
+    expect(motivoDeBloqueo(1)).toBe('1 estudiante tiene avance aquí. Archívalo para no perder su trabajo: deja de verse, se guarda su avance y lo puedes restaurar cuando quieras.');
   });
 
   it('borra en el orden que exigen las llaves: referencias, ejercicios y por último las lecciones', async () => {

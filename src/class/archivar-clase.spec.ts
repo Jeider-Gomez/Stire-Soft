@@ -68,7 +68,7 @@ describe('clase archivada (Fase 30)', () => {
 
   it('una clase donde alguien trabajó: 409 y no borra nada', async () => {
     const { service, consultas, deleteFn } = clasePorEliminar(3);
-    await expect(service.remove(5, dueno)).rejects.toThrow('3 estudiantes tienen avance aquí. Archiva la clase para no perder su trabajo.');
+    await expect(service.remove(5, dueno)).rejects.toThrow('3 estudiantes tienen avance aquí. Archiva la clase para no perder su trabajo: deja de verse, se guarda su avance y lo puedes restaurar cuando quieras.');
     expect(consultas.some((c) => c.startsWith('DELETE') || c.startsWith('UPDATE'))).toBe(false);
     expect(deleteFn).not.toHaveBeenCalled();
   });

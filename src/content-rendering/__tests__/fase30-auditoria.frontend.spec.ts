@@ -33,20 +33,13 @@ describe('Fase 30 — auditoría', () => {
     }
   });
 
-  it('eliminar clase: «Cancelar» y el campo del nombre están visibles también durante la cuenta regresiva', () => {
+  it('eliminar clase: la casilla, «Cancelar» y «Sí, eliminar la clase» están juntos y siempre visibles (07/10: sin cuenta regresiva)', () => {
     const c = leer('components', 'docente', 'VentanaEliminarClase.vue');
-    const cuenta = c.indexOf('<div v-if="segundosRestantes > 0" class="flex items-center gap-3">');
-    // El campo y «Cancelar» van en un bloque hermano SIN condición, después de la barra: existen mientras corre la cuenta.
-    const confirmar = c.indexOf('      <div class="space-y-2">\n        <label', cuenta);
-    expect(cuenta).toBeGreaterThan(-1);
-    expect(confirmar).toBeGreaterThan(cuenta);
-    expect(c.indexOf('v-model="nombreEscrito"')).toBeGreaterThan(confirmar);
-    expect(c.indexOf("@click=\"$emit('cerrar')\">Cancelar</button>", confirmar)).toBeGreaterThan(confirmar);
-    expect(c).not.toContain('<div v-else class="space-y-2">');
-    expect(c).toContain('`Lee antes de continuar (${segundosRestantes})`');
+    const casilla = c.indexOf('<input v-model="entendido" type="checkbox"');
+    expect(casilla).toBeGreaterThan(-1);
+    expect(c.indexOf("@click=\"$emit('cerrar')\">Cancelar</button>", casilla)).toBeGreaterThan(casilla);
     expect(c).toContain('Sí, eliminar la clase');
-    // Lector de pantalla: se anuncia al empezar y al terminar, no cada segundo.
-    expect((c.match(/aria-live="polite"/g) ?? []).length).toBe(1);
+    expect(c).not.toContain('segundosRestantes');
   });
 
   it('avisos: el verde de éxito es el que el tema oscuro sabe cambiar (no `dark:`, que no está configurado)', () => {

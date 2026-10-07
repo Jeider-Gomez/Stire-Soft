@@ -68,7 +68,8 @@ export async function impactoDeLecciones(
 
 export function motivoDeBloqueo(estudiantes: number): string {
   const quien = estudiantes === 1 ? '1 estudiante tiene' : `${Math.max(estudiantes, 1)} estudiantes tienen`;
-  return `${quien} avance aquí. Archívalo para no perder su trabajo.`;
+  // 07/10: dice qué hace archivar (Jeider no entendía qué pasaba con el progreso).
+  return `${quien} avance aquí. Archívalo para no perder su trabajo: deja de verse, se guarda su avance y lo puedes restaurar cuando quieras.`;
 }
 
 /** Lanza 409 si hay trabajo de estudiantes: la ventana del docente ofrece «Archivar en su lugar». */

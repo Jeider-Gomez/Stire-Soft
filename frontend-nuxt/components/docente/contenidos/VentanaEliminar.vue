@@ -74,54 +74,19 @@
         Archivar en su lugar
       </button>
 
-      <!-- Cuenta regresiva si es un módulo con contenido -->
-      <div v-if="requiereConfirmacionNombre && segundosRestantes > 0">
-        <div aria-live="polite" class="sr-only">
-          <span v-if="anunciarInicio">Podrás eliminar en {{ duracion }} segundos</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="flex-1 bg-base-borde-sutil rounded-full h-1.5 overflow-hidden">
-            <div
-              class="h-full bg-semantico-falla transition-all"
-              :style="{ width: `${(1 - segundosRestantes / duracion) * 100}%` }"
-            />
-          </div>
-          <span class="text-xs font-mono text-base-texto-secundario tabular-nums shrink-0">{{ segundosRestantes }}s</span>
-        </div>
-        <button
-          type="button"
-          disabled
-          aria-disabled="true"
-          class="mt-2 w-full min-h-[44px] px-4 rounded-lg text-xs font-bold bg-semantico-falla/30 text-semantico-falla/60 cursor-not-allowed"
-        >
-          Lee antes de continuar ({{ segundosRestantes }})
-        </button>
-      </div>
-
-      <!-- Campo de confirmación por nombre si es módulo con contenido y terminó la cuenta -->
-      <div v-else-if="requiereConfirmacionNombre" class="space-y-2">
-        <div aria-live="polite" class="sr-only">
-          <span v-if="anunciarFin">Ya puedes escribir el nombre para confirmar</span>
-        </div>
-        <label :for="'confirmar-nombre-' + id" class="block text-xs font-semibold text-base-texto-primario">
-          Escribe el nombre del módulo para confirmar
+      <!-- Un módulo con contenido: una casilla para confirmar (antes, cuenta regresiva y escribir el nombre exacto). -->
+      <div v-if="requiereConfirmacion" class="space-y-2">
+        <label class="flex items-start gap-2 min-h-[44px] cursor-pointer text-xs text-base-texto-primario">
+          <input v-model="entendido" type="checkbox" class="mt-0.5 w-4 h-4 accent-semantico-falla" />
+          <span>Entiendo que el módulo se borra para siempre, con todo lo de arriba.</span>
         </label>
-        <input
-          :id="'confirmar-nombre-' + id"
-          v-model="nombreEscrito"
-          type="text"
-          autocomplete="off"
-          :placeholder="titulo"
-          class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-fuerte bg-base-blanco focus:border-semantico-falla focus:ring-2 focus:ring-semantico-falla/30 outline-none"
-        />
         <p v-if="errorAccion" role="alert" class="text-semantico-falla text-[11px] font-semibold p-2 bg-semantico-falla/10 rounded">{{ errorAccion }}</p>
         <div class="flex items-center justify-end gap-2 pt-1">
           <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="$emit('cerrar')">Cancelar</button>
           <button
             type="button"
             :disabled="!puedeConfirmarEliminar || eliminando"
-            :aria-disabled="!puedeConfirmarEliminar || eliminando"
-            class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-40 inline-flex items-center gap-2"
+            class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-2"
             @click="$emit('confirmar')"
           >
             <Loader2 v-if="eliminando" :size="14" class="animate-spin" aria-hidden="true" />
@@ -130,7 +95,7 @@
         </div>
       </div>
 
-      <!-- Eliminación directa (sin nombre ni cuenta) para tema, lección o módulo vacío -->
+      <!-- Eliminación directa para tema, lección o módulo vacío -->
       <div v-else>
         <p v-if="errorAccion" role="alert" class="text-semantico-falla text-[11px] font-semibold p-2 bg-semantico-falla/10 rounded">{{ errorAccion }}</p>
         <div class="flex items-center justify-end gap-2 pt-1">
@@ -151,9 +116,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { Archive, Loader2, TriangleAlert, Trash2 } from 'lucide-vue-next'
-import { duracionSegundos, puedeConfirmar, textoConsecuencias, type ImpactoEliminacion } from '~/utils/cuentaRegresiva'
+import { puedeConfirmar, textoConsecuencias, type ImpactoEliminacion } from '~/utils/cuentaRegresiva'
 import { useAvisos } from '~/composables/useAvisos'
 
 const props = defineProps<{
@@ -190,51 +155,27 @@ const errorAccion = ref<string | null>(null)
 /** Si no se pudo calcular el impacto, no se ofrece eliminar a ciegas: se dice y se ofrece reintentar. */
 const errorImpacto = ref<string | null>(null)
 
-const duracion = ref(5)
-const segundosRestantes = ref(0)
-const nombreEscrito = ref('')
-const anunciarInicio = ref(false)
-const anunciarFin = ref(false)
-let intervalo: ReturnType<typeof setInterval> | null = null
+const entendido = ref(false)
 
 const lineasConsecuencias = computed(() =>
   impacto.value ? textoConsecuencias(impacto.value, props.nivel) : []
 )
 
-const requiereConfirmacionNombre = computed(() =>
+const requiereConfirmacion = computed(() =>
   props.nivel === 'modulo' &&
   Boolean(impacto.value && ((impacto.value.temas || 0) > 0 || (impacto.value.lecciones || 0) > 0 || (impacto.value.ejercicios || 0) > 0))
 )
 
 const puedeConfirmarEliminar = computed(() => {
-  if (!requiereConfirmacionNombre.value) return true
-  return puedeConfirmar(segundosRestantes.value, nombreEscrito.value, props.titulo)
+  if (!requiereConfirmacion.value) return true
+  return puedeConfirmar(entendido.value)
 })
-
-function iniciarCuenta(imp: ImpactoEliminacion) {
-  duracion.value = duracionSegundos(imp, 'modulo')
-  segundosRestantes.value = duracion.value
-  anunciarInicio.value = true
-  setTimeout(() => { anunciarInicio.value = false }, 500)
-
-  intervalo = setInterval(() => {
-    segundosRestantes.value -= 1
-    if (segundosRestantes.value <= 0) {
-      if (intervalo) clearInterval(intervalo)
-      anunciarFin.value = true
-      setTimeout(() => { anunciarFin.value = false }, 500)
-    }
-  }, 1000)
-}
 
 async function cargarImpacto() {
   cargandoImpacto.value = true
   try {
     errorImpacto.value = null
     impacto.value = await acciones.impacto(props.nivel, props.id)
-    if (impacto.value.sePuedeEliminar && requiereConfirmacionNombre.value) {
-      iniciarCuenta(impacto.value)
-    }
   } catch (err: unknown) {
     impacto.value = null
     errorImpacto.value = messageOf(err, 'No pude calcular qué se pierde. Revisa tu conexión e inténtalo de nuevo.')
@@ -259,7 +200,4 @@ async function archivarEnSuLugar() {
 }
 
 onMounted(cargarImpacto)
-onUnmounted(() => {
-  if (intervalo) clearInterval(intervalo)
-})
 </script>
