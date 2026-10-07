@@ -74,8 +74,8 @@ describe('Fase 30 B4 · ajustes.vue — sin llamadas directas a la API (PAT-01)'
     expect(ajustes).toContain('useAjustesClase');
   });
 
-  it('ajustes.vue integra VentanaEliminarClase', () => {
-    const ajustes = leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue');
+  it('Ajustes integra VentanaEliminarClase (en su sección «Estado y gestión»)', () => {
+    const ajustes = leer('components', 'docente', 'ajustes', 'SeccionGestion.vue');
     expect(ajustes).toContain('DocenteVentanaEliminarClase');
   });
 

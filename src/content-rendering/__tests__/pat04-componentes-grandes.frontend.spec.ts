@@ -21,7 +21,6 @@ const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'pages/docente/contenidos.vue': { lineas: 407, motivo: 'Coordina estados y acciones del arbol curricular; el arbol se extrae a ArbolContenidos.vue.' },
   'pages/docente/index.vue': { lineas: 426, motivo: 'Inicio docente con tarjetas de clase y sección de clases archivadas; Fase 30 B4.' },
   'pages/docente/rendimiento.vue': { lineas: 364, motivo: 'Panel de analitica del rendimiento; filtros y metricas describen una misma vista.' },
-  'pages/docente/clase/[classId]/ajustes.vue': { lineas: 695, motivo: 'Excluido por instruccion: archivo en trabajo de Antigravity.' },
   'pages/docente/ejercicios/crear.vue': { lineas: 411, motivo: 'Orquesta el alta de ejercicio y delega configuracion especifica a constructores por tipo.' },
   'pages/estudiante/index.vue': { lineas: 415, motivo: 'Dashboard del aprendizaje del estudiante; el aviso de solicitud de rol se separo a AvisoSolicitudRol.vue.' },
   'pages/estudiante/evaluacion/[activityId].vue': { lineas: 528, motivo: 'Orquesta una evaluacion y selecciona los componentes existentes segun el tipo de actividad.' },

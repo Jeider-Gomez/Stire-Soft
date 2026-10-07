@@ -3,7 +3,8 @@ import * as path from 'path';
 
 // Auditoría de la Fase 30 (Claude Code, 06/10) sobre lo que entregó Antigravity.
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
-const leer = (...p: string[]) => readFileSync(path.join(raiz, ...p), 'utf8');
+// Sin depender del salto de línea: en Windows, Git puede dejar los archivos con CRLF.
+const leer = (...p: string[]) => readFileSync(path.join(raiz, ...p), 'utf8').replace(/\r\n/g, '\n');
 const VENTANAS = [
   ['components', 'docente', 'contenidos', 'VentanaEliminar.vue'],
   ['components', 'docente', 'contenidos', 'VentanaArchivar.vue'],

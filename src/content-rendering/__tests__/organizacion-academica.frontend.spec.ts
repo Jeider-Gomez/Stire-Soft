@@ -80,7 +80,7 @@ describe('La barra superior y los formularios usan los datos, no texto fijo', ()
     expect(header).toContain('studentStore.currentAsignatura');
   });
   it('crear una clase y sus ajustes permiten elegir asignatura, grupo y periodo', () => {
-    for (const f of [leer('components', 'docente', 'VentanaCrearClase.vue'), leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue')]) {
+    for (const f of [leer('components', 'docente', 'VentanaCrearClase.vue'), leer('components', 'docente', 'ajustes', 'SeccionDatos.vue')]) {
       expect(f).toContain('<DocenteSelectorAsignatura v-model=');
       expect(f).toMatch(/grupo/);
       expect(f).toMatch(/periodo/);
@@ -207,7 +207,7 @@ describe('Plantillas: agrupadas por asignatura, con lo que dice si sirven', () =
     expect(elegir).toContain('Ver más plantillas');
     expect(elegir).toContain('agruparPorAsignatura(resto)');
     expect(leer('components', 'docente', 'contenidos', 'VentanaImportar.vue')).toContain('v-for="g in gruposDePlantillas"');
-    const ajustes = leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue');
+    const ajustes = leer('components', 'docente', 'ajustes', 'SeccionCompartir.vue');
     expect(ajustes).toContain('opcionesDeAlcance(classInfo.value?.asignatura)');
     expect(ajustes).toContain("alcancePlantilla: alcanceElegido.value");
     expect(ajustes).not.toContain('alternarPlantilla');
@@ -336,7 +336,7 @@ describe('Logros configurables por el docente, sin trabajo extra', () => {
     expect(L2.categoriasElegidas('memoria,dominio')).toEqual(['dominio', 'memoria']);
   });
   it('en Ajustes: un interruptor (activados por defecto) y las categorías plegadas, con al menos una', () => {
-    const ajustes = leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue');
+    const ajustes = leer('components', 'docente', 'ajustes', 'SeccionLogros.vue');
     expect(ajustes).toContain('classInfo.value?.logrosActivos ?? true');
     expect(ajustes).toContain('guardarLogros({ logrosActivos: !logrosActivos })');
     expect(ajustes).toMatch(/<details v-if="logrosActivos"/);

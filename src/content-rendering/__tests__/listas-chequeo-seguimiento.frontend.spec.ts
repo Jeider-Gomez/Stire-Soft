@@ -13,7 +13,8 @@ describe('UX-07 · contraste sobre fondos grises (axe-core color-contrast)', () 
   });
 
   it('en Ajustes, el botón apagado y las ayudas sobre gris alcanzan 4,5:1', () => {
-    const a = leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue');
+    // Desde el 07/10 cada sección de Ajustes es un componente (PAT-04): se revisan la página y todas sus secciones.
+    const a = [leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue'), ...['SeccionAvance', 'SeccionLogros', 'SeccionCompartir', 'SeccionDatos', 'SeccionGestion'].map((c) => leer('components', 'docente', 'ajustes', `${c}.vue`))].join(' ');
     expect(a).not.toContain("'bg-base-borde-sutil text-base-texto-secundario'");
     expect(a).toContain('<span class="block text-[11px] text-slate-600">{{ o.motivoNoDisponible || o.ayuda }}</span>');
   });
@@ -68,6 +69,8 @@ describe('MOB-02 · controles de 44 px en el celular', () => {
   it.each([
     ['components/perfil/Form.vue'],
     ['pages/docente/clase/[classId]/ajustes.vue'],
+    ['components/docente/ajustes/SeccionDatos.vue'],
+    ['components/docente/ajustes/SeccionCompartir.vue'],
   ])('los campos de %s miden 44 px (antes 39 px)', (rel) => {
     expect(leer(rel)).not.toMatch(/class="w-full px-3 py-2/);
   });

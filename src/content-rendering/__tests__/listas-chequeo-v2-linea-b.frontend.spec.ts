@@ -133,7 +133,7 @@ describe('MOD-01 y UI-02 · bloqueo suave por módulo', () => {
 
   it('el docente cambia o apaga el umbral; la lección de un módulo cerrado muestra el aviso', () => {
     expect(readFileSync(path.join(__dirname, '..', '..', 'class', 'entities', 'class.entity.ts'), 'utf8')).toMatch(/@Column\(\{ type: 'int', default: 50 \}\)\s*dominioParaAvanzar/);
-    expect(leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue')).toContain('ajustes.guardarAvance(v)');
+    expect(leer('components', 'docente', 'ajustes', 'SeccionAvance.vue')).toContain('ajustes.guardarAvance(v)');
     expect(leer('composables', 'useAjustesClase.ts')).toContain('dominioParaAvanzar: v');
     expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toMatch(/v-else-if="bloqueo"/);
   });

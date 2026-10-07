@@ -179,3 +179,6 @@ export function useAjustesClase(classId: number) {
     guardarAvance,
   }
 }
+
+/** El estado y las acciones de «Ajustes de la clase»; la página lo crea y lo pasa a cada sección. */
+export type EstadoAjustesClase = ReturnType<typeof useAjustesClase>
