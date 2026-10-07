@@ -83,6 +83,16 @@ describe('Calificaciones: reglas', () => {
     expect(() => validarEsquema({ componentes: [{ nombre: 'A', tipo: 'manual', moduloId: -1 }] })).toThrow('módulo');
   });
 
+  it('una nota nueva se le avisa al estudiante solo si la clase muestra las notas (07/10)', async () => {
+    const oculta = { emit: jest.fn() };
+    await crear({ eventEmitter: oculta }).service.registrarNota(docente, 3, 5, { clave: 'parcial', nota: 4 });
+    expect(oculta.emit).not.toHaveBeenCalled();
+    const visible = { emit: jest.fn() };
+    await crear({ eventEmitter: visible, esquema: { id: 1, classId: 3, ...esquemaSugerido(), visibleParaEstudiantes: true, updatedAt: ahora } })
+      .service.registrarNota(docente, 3, 5, { clave: 'parcial', nota: 4 });
+    expect(visible.emit).toHaveBeenCalledWith('nota.registrada', expect.objectContaining({ classId: 3, studentId: 5, nombre: 'Parcial', nota: 4 }));
+  });
+
   it('el ajuste de la final exige motivo; una nota manual no', () => {
     expect(() => validarMotivo('', true)).toThrow('motivo');
     expect(() => validarMotivo('ok', true)).toThrow('más de detalle');
@@ -176,7 +186,7 @@ describe('Calificaciones: el libro', () => {
   });
 });
 
-function crear(opciones: { esquema?: Record<string, unknown> | null; registrada?: Record<string, unknown> | null; matriculas?: Array<Record<string, unknown>> } = {}) {
+function crear(opciones: { esquema?: Record<string, unknown> | null; registrada?: Record<string, unknown> | null; matriculas?: Array<Record<string, unknown>>; eventEmitter?: { emit: jest.Mock } } = {}) {
   const guardado = opciones.esquema === undefined ? { id: 1, classId: 3, ...esquemaSugerido(), updatedAt: ahora } : opciones.esquema;
   const esquemas = {
     findOne: jest.fn(() => Promise.resolve(guardado)),
@@ -207,6 +217,7 @@ function crear(opciones: { esquema?: Record<string, unknown> | null; registrada?
   const service = new CalificacionesService(
     esquemas as unknown as Deps[0], registradas as unknown as Deps[1], historial as unknown as Deps[2], entregas as unknown as Deps[3],
     envios as unknown as Deps[4], matriculas as unknown as Deps[5], progresos as unknown as Deps[6], autorizacion as unknown as Deps[7],
+    opciones.eventEmitter as unknown as Deps[8],
   );
   return { service, esquemas, registradas, historial };
 }

@@ -9,11 +9,14 @@ import { Submission } from '../../submissions/entities/submission.entity';
 import { SubmissionStatus } from '../../common/enums/submission-status.enum';
 import { User } from '../../user/entities/user.entity';
 import { FALLOS_PARA_PAUSA, fallosSeguidos } from '../../learning-progress/recommendation/recomendar-siguiente';
+import { avisoDeAtasco } from '../notificacion-reglas';
 
 /**
  * Tope estilo ASSISTments (docs/DISENO_INTERVENCION_DOCENTE.md §4.4; BASE_TEORICA.md BT-16): cuando un estudiante llega
  * a FALLOS_PARA_PAUSA fallos seguidos en una lección, el docente recibe un aviso, una sola vez por racha. Al estudiante
  * el recomendador ya le propone parar y volver a la explicación. Sin tope, practica en círculo y nadie se entera.
+ * Desde el 07/10 el estudiante también recibe, una vez por racha, una sugerencia de qué hacer (notificacion-reglas.ts):
+ * queda en sus notificaciones para volver a ella aunque ya haya salido del ejercicio (hallazgo de José).
  */
 @Injectable()
 export class AtascoListener {
@@ -49,6 +52,10 @@ export class AtascoListener {
       );
       const destino = filas[0];
       if (!destino) return;
+      const sugerencia = avisoDeAtasco(destino.unidad, FALLOS_PARA_PAUSA);
+      await this.notificationsService.createNotification(event.studentId, sugerencia.titulo, sugerencia.mensaje, NotificationType.INFO, {
+        enlace: `/estudiante/unidad/${event.learningUnitId}`,
+      });
       const estudiante = await this.dataSource.getRepository(User).findOne({ where: { id: event.studentId } });
       await this.notificationsService.createNotification(
         Number(destino.teacherId),
@@ -56,6 +63,7 @@ export class AtascoListener {
         `Lleva ${FALLOS_PARA_PAUSA} intentos seguidos sin lograr «${destino.unidad}». STIRE le propuso volver a la explicación. ` +
           'En «Hoy» de tu clase puedes asignarle un refuerzo o escribirle.',
         NotificationType.INFO,
+        { enlace: `/docente/clase/${destino.classId}` },
       );
     } catch (error) {
       // Un aviso que no se pudo crear no debe romper la calificación.

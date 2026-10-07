@@ -1,7 +1,8 @@
 import { NotificationsService } from '../notifications.service';
-import { SubmissionGradedListener } from '../listeners/submission-graded.listener';
+import { RevisionDocenteListener } from '../listeners/revision-docente.listener';
+import { EnvioRevisadoEvent, NotaRegistradaEvent } from '../../common/events/revision-docente.event';
+import { avisoDeHito, avisoDeRepasos, hitoCruzado, resumenRevision } from '../notificacion-reglas';
 import { LearningStatusChangedListener } from '../listeners/learning-status-changed.listener';
-import { SubmissionGradedEvent } from '../../common/events/submission-graded.event';
 import { LearningStatusChangedEvent } from '../../common/events/learning-status-changed.event';
 import { LearningStatus } from '../../common/enums/learning-status.enum';
 import { NotificationType } from '../../common/enums/notification-type.enum';
@@ -44,10 +45,12 @@ describe('Notifications Module Unit Tests', () => {
         title: 'Hello Title',
         message: 'Hello Message',
         type: NotificationType.INFO,
+        enlace: null,
+        clave: null,
       });
       expect(notificationsRepo.save).toHaveBeenCalled();
-      expect(result.id).toBe(100);
-      expect(result.type).toBe(NotificationType.INFO);
+      expect(result?.id).toBe(100);
+      expect(result?.type).toBe(NotificationType.INFO);
     });
 
     it('should create a notification with specific type GRADE', async () => {
@@ -63,8 +66,10 @@ describe('Notifications Module Unit Tests', () => {
         title: 'Grade Received',
         message: 'Your activity has been graded',
         type: NotificationType.GRADE,
+        enlace: null,
+        clave: null,
       });
-      expect(result.type).toBe(NotificationType.GRADE);
+      expect(result?.type).toBe(NotificationType.GRADE);
     });
 
     it('should find unread notifications for a user', async () => {
@@ -122,89 +127,94 @@ describe('Notifications Module Unit Tests', () => {
     });
   });
 
-  describe('SubmissionGradedListener', () => {
-    let listener: SubmissionGradedListener;
-    let createNotificationSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      createNotificationSpy = jest.spyOn(service, 'createNotification').mockImplementation(async () => ({} as any));
-      listener = new SubmissionGradedListener(service);
+  describe('notificaciones con clave y enlace (07/10)', () => {
+    it('con una clave que ya existe para ese usuario no crea otra', async () => {
+      notificationsRepo.findOne.mockResolvedValue(makeNotification({ clave: 'modulo:3:50' }));
+      const r = await service.createNotification(42, 'Hito', 'x', NotificationType.INFO, { clave: 'modulo:3:50' });
+      expect(r).toBeNull();
+      expect(notificationsRepo.save).not.toHaveBeenCalled();
     });
 
-    it('should create an approved activity notification when student passes', async () => {
-      // passingScore es un porcentaje (60%): 8.5/10 = 85% >= 60% → aprueba.
-      const event = new SubmissionGradedEvent('sub-1', 42, 5, 10, 8.5, 60.0, 10);
-
-      await listener.handleSubmissionGradedEvent(event);
-
-      expect(createNotificationSpy).toHaveBeenCalledWith(
-        42,
-        '¡Actividad Aprobada!',
-        expect.stringContaining('Felicidades'),
-        NotificationType.GRADE,
-      );
+    it('guarda el enlace y la clave', async () => {
+      notificationsRepo.findOne.mockResolvedValue(null);
+      await service.createNotification(42, 'Hito', 'x', NotificationType.INFO, { enlace: '/estudiante/progreso', clave: 'modulo:3:50' });
+      expect(notificationsRepo.create).toHaveBeenCalledWith(expect.objectContaining({ enlace: '/estudiante/progreso', clave: 'modulo:3:50' }));
     });
 
-    it('should create a graded notification urging review when student does not pass', async () => {
-      // passingScore es un porcentaje (60%): 4.0/10 = 40% < 60% → no aprueba.
-      const event = new SubmissionGradedEvent('sub-2', 42, 5, 10, 4.0, 60.0, 10);
+    it('si dos eventos a la vez chocan con el índice único, no falla: queda una sola', async () => {
+      notificationsRepo.findOne.mockResolvedValue(null);
+      notificationsRepo.save.mockRejectedValue(Object.assign(new Error('dup'), { code: 'ER_DUP_ENTRY' }));
+      await expect(service.createNotification(42, 'Hito', 'x', NotificationType.INFO, { clave: 'k' })).resolves.toBeNull();
+    });
 
-      await listener.handleSubmissionGradedEvent(event);
-
-      expect(createNotificationSpy).toHaveBeenCalledWith(
-        42,
-        'Actividad Calificada',
-        expect.stringContaining('Te invitamos a revisar'),
-        NotificationType.GRADE,
-      );
+    it('marca todas como leídas', async () => {
+      notificationsRepo.update = jest.fn().mockResolvedValue({ affected: 4 });
+      await expect(service.markAllAsRead(42)).resolves.toEqual({ marcadas: 4 });
+      expect(notificationsRepo.update).toHaveBeenCalledWith({ userId: 42, isRead: false }, { isRead: true });
     });
   });
 
-  describe('LearningStatusChangedListener', () => {
+  describe('reglas: qué se avisa (notificacion-reglas.ts)', () => {
+    it('avisa al cruzar el 50, el 75 y el 100 % de lecciones dominadas del módulo, y nada en medio', () => {
+      // Módulo de 8 lecciones: 4 → 50 %, 6 → 75 %, 8 → 100 %; las demás no avisan.
+      expect([1, 2, 3, 4, 5, 6, 7, 8].map((n) => hitoCruzado(n - 1, n, 8))).toEqual([null, null, null, 50, null, 75, null, 100]);
+    });
+
+    it('un módulo de una lección cruza los tres a la vez: un solo aviso, el del 100 %', () => {
+      expect(hitoCruzado(0, 1, 1)).toBe(100);
+      expect(hitoCruzado(0, 0, 4)).toBeNull();
+      expect(hitoCruzado(2, 3, 0)).toBeNull();
+    });
+
+    it('los textos dicen el avance en lecciones y la revisión en una línea', () => {
+      expect(avisoDeHito(75, 'Variables', 6, 8)).toEqual({ titulo: 'Llevas el 75 % del módulo «Variables»', mensaje: 'Dominaste 6 de 8 lecciones. Ya casi lo terminas.' });
+      expect(avisoDeHito(100, 'Variables', 8, 8).titulo).toBe('¡Dominaste el módulo «Variables»!');
+      expect(avisoDeRepasos(1).titulo).toBe('Tienes 1 repaso pendiente hoy');
+      expect(resumenRevision(4.5, null, 'Buen trabajo')).toBe('Nota: 4,5 · «Buen trabajo»');
+      expect(resumenRevision(null, 'aprobado', null)).toBe('Valoración: aprobado');
+    });
+  });
+
+  describe('LearningStatusChangedListener: avance por módulo', () => {
+    const evento = (oldStatus: LearningStatus, newStatus: LearningStatus) => new LearningStatusChangedEvent(42, 7, oldStatus, newStatus, 90);
+    let dataSource: { query: jest.Mock };
+    let notifier: { createNotification: jest.Mock };
     let listener: LearningStatusChangedListener;
-    let createNotificationSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      createNotificationSpy = jest.spyOn(service, 'createNotification').mockImplementation(async () => ({} as any));
-      listener = new LearningStatusChangedListener(service);
+      dataSource = { query: jest.fn() };
+      notifier = { createNotification: jest.fn() };
+      listener = new LearningStatusChangedListener(dataSource as never, notifier as never);
     });
 
-    it('should create a special DOMINADO notification when status transitions to DOMINADO', async () => {
-      const event = new LearningStatusChangedEvent(
-        42,
-        10,
-        LearningStatus.COMPRENSION_PARCIAL,
-        LearningStatus.DOMINADO,
-        90.0,
-      );
-
-      await listener.handleLearningStatusChangedEvent(event);
-
-      expect(createNotificationSpy).toHaveBeenCalledWith(
-        42,
-        '¡Felicidades, Unidad Dominada! 🏆',
-        expect.stringContaining('dominado por completo'),
-        NotificationType.INFO,
-      );
+    it('al dominar la lección que completa la mitad del módulo, avisa una vez con su clave y su enlace', async () => {
+      dataSource.query.mockResolvedValueOnce([{ id: 3, title: 'Variables' }]).mockResolvedValueOnce([{ total: '8', dominadas: '4' }]);
+      await listener.handleLearningStatusChangedEvent(evento(LearningStatus.COMPRENSION_PARCIAL, LearningStatus.DOMINADO));
+      expect(notifier.createNotification).toHaveBeenCalledWith(42, 'Llevas el 50 % del módulo «Variables»', 'Dominaste 4 de 8 lecciones. Vas por la mitad: sigue así.',
+        NotificationType.INFO, { enlace: '/estudiante/progreso', clave: 'modulo:3:50' });
     });
 
-    it('should create a standard progress notification when status transitions to COMPRENSION_PARCIAL', async () => {
-      const event = new LearningStatusChangedEvent(
-        42,
-        10,
-        LearningStatus.EN_PRACTICA,
-        LearningStatus.COMPRENSION_PARCIAL,
-        75.0,
-      );
+    it('sin cruzar un hito, o en cualquier otro cambio de estado, no avisa (antes avisaba cada cambio)', async () => {
+      dataSource.query.mockResolvedValueOnce([{ id: 3, title: 'Variables' }]).mockResolvedValueOnce([{ total: '8', dominadas: '5' }]);
+      await listener.handleLearningStatusChangedEvent(evento(LearningStatus.EN_PRACTICA, LearningStatus.DOMINADO));
+      await listener.handleLearningStatusChangedEvent(evento(LearningStatus.EXPLORADO, LearningStatus.EN_PRACTICA));
+      await listener.handleLearningStatusChangedEvent(evento(LearningStatus.EN_PRACTICA, LearningStatus.COMPRENSION_PARCIAL));
+      expect(notifier.createNotification).not.toHaveBeenCalled();
+    });
+  });
 
-      await listener.handleLearningStatusChangedEvent(event);
+  describe('RevisionDocenteListener: lo que hace el docente sí se avisa', () => {
+    it('la revisión de una entrega llega con la nota y el comentario, y lleva a la entrega', async () => {
+      const notifier = { createNotification: jest.fn() };
+      const l = new RevisionDocenteListener({ query: jest.fn() } as never, notifier as never);
+      await l.envioRevisado(new EnvioRevisadoEvent(42, 9, 'Proyecto final', 4.5, null, 'Muy bien'));
+      expect(notifier.createNotification).toHaveBeenCalledWith(42, 'Tu docente revisó «Proyecto final»', 'Nota: 4,5 · «Muy bien»', NotificationType.GRADE, { enlace: '/estudiante/entregas/9' });
+    });
 
-      expect(createNotificationSpy).toHaveBeenCalledWith(
-        42,
-        '¡Gran Avance! 🌟',
-        expect.stringContaining('comprensión parcial'),
-        NotificationType.INFO,
-      );
+    it('una nota del libro llega con el nombre de la clase y lleva a «Mi progreso»', async () => {
+      const notifier = { createNotification: jest.fn() };
+      const l = new RevisionDocenteListener({ query: jest.fn().mockResolvedValue([{ name: 'Algoritmia G1' }]) } as never, notifier as never);
+      await l.notaRegistrada(new NotaRegistradaEvent(5, 42, 'Parcial 1', 3.8));
+      expect(notifier.createNotification).toHaveBeenCalledWith(42, 'Nueva nota en Algoritmia G1', 'Parcial 1: 3,8. Mira el detalle en «Mi progreso».', NotificationType.GRADE, { enlace: '/estudiante/progreso' });
     });
   });
 });

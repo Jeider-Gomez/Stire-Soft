@@ -10,21 +10,39 @@ export class NotificationsService {
   ) {}
 
   /**
-   * Crea una nueva notificación para un estudiante.
+   * Crea una notificación. Con `clave`, solo una vez por usuario: si ya existe, no crea otra y devuelve null (el hito de
+   * un módulo, los repasos de un día). Con `enlace`, la notificación lleva a donde se resuelve.
    */
   async createNotification(
     userId: number,
     title: string,
     message: string,
     type: NotificationType = NotificationType.INFO,
-  ): Promise<Notification> {
+    extra: { enlace?: string | null; clave?: string | null } = {},
+  ): Promise<Notification | null> {
+    const clave = extra.clave ?? null;
+    if (clave && (await this.notificationsRepository.findOne({ where: { userId, clave } }))) return null;
     const notification = this.notificationsRepository.create({
       userId,
       title,
       message,
       type,
+      enlace: extra.enlace ?? null,
+      clave,
     });
-    return this.notificationsRepository.save(notification);
+    try {
+      return await this.notificationsRepository.save(notification);
+    } catch (error) {
+      // Dos eventos a la vez con la misma clave: el índice único deja pasar solo uno.
+      if (clave && (error as { code?: string }).code === 'ER_DUP_ENTRY') return null;
+      throw error;
+    }
+  }
+
+  /** Marca como leídas todas las notificaciones del usuario. */
+  async markAllAsRead(userId: number): Promise<{ marcadas: number }> {
+    const r = await this.notificationsRepository.update({ userId, isRead: false }, { isRead: true });
+    return { marcadas: r.affected ?? 0 };
   }
 
   /**

@@ -1,4 +1,6 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Optional } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NotaRegistradaEvent } from '../common/events/revision-docente.event';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { EsquemaCalificacion } from './entities/esquema-calificacion.entity';
@@ -41,6 +43,7 @@ export class CalificacionesService {
     @InjectRepository(Enrollment) private readonly matriculas: Repository<Enrollment>,
     @InjectRepository(LearningProgress) private readonly progresos: Repository<LearningProgress>,
     private readonly autorizacion: AuthorizationService,
+    @Optional() private readonly eventEmitter?: EventEmitter2,
   ) {}
 
   /** Lecciones de módulos publicados, en el orden del curso, con su módulo (para armar una nota por módulo). */
@@ -202,6 +205,10 @@ export class CalificacionesService {
     await this.historialRepo.save(this.historialRepo.create({
       classId, studentId, clave, nombre: clave === CLAVE_FINAL ? 'Nota final' : (componente?.nombre ?? clave), antes, despues: nota, motivo, actorId: user.id,
     }));
+    // Solo si la clase muestra las notas: avisar de una nota que el estudiante no puede ver confundiría.
+    if (nota !== null && guardado.visibleParaEstudiantes) {
+      this.eventEmitter?.emit('nota.registrada', new NotaRegistradaEvent(classId, studentId, clave === CLAVE_FINAL ? 'Nota final' : (componente?.nombre ?? clave), nota));
+    }
     return { cambio: true };
   }
 

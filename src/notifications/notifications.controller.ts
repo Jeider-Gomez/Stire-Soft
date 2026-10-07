@@ -32,6 +32,13 @@ export class NotificationsController {
     return this.notificationsService.findForUser(user.id, false);
   }
 
+  /** PATCH /notifications/read-all — marca todas como leídas. Va antes de :id/read. */
+  @Patch('read-all')
+  @ApiOperation({ summary: 'Marcar todas mis notificaciones como leídas' })
+  markAllRead(@GetUser() user: User) {
+    return this.notificationsService.markAllAsRead(user.id);
+  }
+
   /**
    * PATCH /notifications/:id/read
    * Marca una notificación específica como leída.

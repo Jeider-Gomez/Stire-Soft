@@ -58,7 +58,13 @@ describe('Tope: aviso al docente', () => {
   it('al llegar al tope avisa al docente de la clase, con el nombre y la lección', async () => {
     const { listener, notificaciones } = crear([10, 20, 30]);
     await listener.handle(evento);
-    expect(notificaciones.createNotification).toHaveBeenCalledWith(9, 'Luisa Rojas se atascó', expect.stringContaining('«Varios caminos con else if»'), 'info');
+    expect(notificaciones.createNotification).toHaveBeenCalledWith(9, 'Luisa Rojas se atascó', expect.stringContaining('«Varios caminos con else if»'), 'info', { enlace: '/docente/clase/5' });
+  });
+
+  it('al estudiante le deja una sugerencia de qué hacer, que lleva a la lección (07/10, hallazgo de José)', async () => {
+    const { listener, notificaciones } = crear([10, 20, 30]);
+    await listener.handle(evento);
+    expect(notificaciones.createNotification).toHaveBeenCalledWith(16, 'Una sugerencia para «Varios caminos con else if»', expect.stringContaining('pide una pista al Tutor'), 'info', { enlace: '/estudiante/unidad/30' });
   });
 
   it('un aviso por racha: ni antes del tope ni en cada fallo de más', async () => {

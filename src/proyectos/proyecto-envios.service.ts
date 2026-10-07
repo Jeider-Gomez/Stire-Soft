@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EnvioRevisadoEvent } from '../common/events/revision-docente.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Repository } from 'typeorm';
 import { ProyectoEnvio } from './entities/proyecto-envio.entity';
@@ -109,6 +110,10 @@ export class ProyectoEnviosService {
     const guardado = await this.envios.save(envio);
     for (const c of cambios) {
       await this.eventos.save(this.eventos.create({ entregaId: envio.entregaId, studentId: envio.studentId, envioId: envio.id, tipo: c.tipo, detalle: c.detalle, actorId: user.id }));
+    }
+    // Lo que hace el docente sí se avisa (notificacion-reglas.ts): la nota o el comentario llegan aunque el estudiante no abra la entrega.
+    if (cambios.length && entrega && envio.revisadoAt) {
+      this.eventEmitter.emit('envio.revisado', new EnvioRevisadoEvent(envio.studentId, entrega.id, entrega.titulo, envio.nota, envio.valoracion, envio.comentario));
     }
     if (cambios.length && entrega?.cuentaParaDominio && entrega.learningUnitId) {
       this.eventEmitter.emit('entrega.revisada', new EntregaRevisadaEvent(envio.studentId, entrega.learningUnitId));

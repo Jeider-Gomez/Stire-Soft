@@ -5,6 +5,7 @@ import { ReviewSchedulesRepository } from './review-schedules.repository';
 import { calculateNextReview, CalidadRepaso } from '../common/utils/spaced-repetition';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../common/enums/notification-type.enum';
+import { avisoDeRepasos, fechaClave } from '../notifications/notificacion-reglas';
 import { diasEntre } from '../common/utils/dia-colombia';
 
 @Injectable()
@@ -115,19 +116,21 @@ export class ReviewSchedulesService {
     for (const schedule of overdueSchedules) {
       schedule.urgencyLevel = 3; // Urgente / Vencido
       await this.reviewRepo.save(schedule);
+    }
 
-      const unitTitle = schedule.learningUnit?.title || 'la Unidad de Aprendizaje';
-      
+    // Un solo aviso al día por estudiante con cuántos repasos tiene pendientes (notificacion-reglas.ts); antes llegaba uno
+    // por cada lección vencida. La clave del día evita repetirlo.
+    const hoy = fechaClave(new Date());
+    for (const studentId of [...new Set(overdueSchedules.map((s) => s.studentId))]) {
       try {
-        await this.notificationsService.createNotification(
-          schedule.studentId,
-          'Repaso Vencido ⏰',
-          `Tienes un repaso vencido para la Unidad de Aprendizaje "${unitTitle}". ¡Completa tu repaso diario!`,
-          NotificationType.REVIEW_SCHEDULE,
-        );
-        this.logger.log(`Notificación de repaso vencido enviada al estudiante ${schedule.studentId} para unidad ${schedule.learningUnitId}`);
+        const pendientes = await this.reviewRepo.count({ where: { studentId, nextReviewDate: LessThanOrEqual(new Date()) } });
+        const { titulo, mensaje } = avisoDeRepasos(pendientes);
+        await this.notificationsService.createNotification(studentId, titulo, mensaje, NotificationType.REVIEW_SCHEDULE, {
+          enlace: '/estudiante/repasos',
+          clave: `repasos:${hoy}`,
+        });
       } catch (error) {
-        this.logger.error(`Error enviando notificación al estudiante ${schedule.studentId}: ${error.message}`);
+        this.logger.error(`Error enviando el aviso de repasos al estudiante ${studentId}: ${(error as Error).message}`);
       }
     }
 

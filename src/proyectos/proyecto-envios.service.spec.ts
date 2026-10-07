@@ -117,7 +117,16 @@ describe('ProyectoEnviosService', () => {
     expect(conDominio.eventEmitter.emit).toHaveBeenCalledWith('entrega.revisada', expect.objectContaining({ studentId: 5, learningUnitId: 30 }));
     const sinDominio = crear();
     await sinDominio.service.revisar(docente, 40, { nota: 4 });
-    expect(sinDominio.eventEmitter.emit).not.toHaveBeenCalled();
+    expect(sinDominio.eventEmitter.emit).not.toHaveBeenCalledWith('entrega.revisada', expect.anything());
+  });
+
+  it('toda revisión con contenido avisa al estudiante (evento envio.revisado); borrarla no avisa', async () => {
+    const { service, eventEmitter } = crear();
+    await service.revisar(docente, 40, { nota: 4, comentario: 'Bien' });
+    expect(eventEmitter.emit).toHaveBeenCalledWith('envio.revisado', expect.objectContaining({ studentId: 5, entregaId: 2, titulo: 'Calculadora', nota: 4, comentario: 'Bien' }));
+    eventEmitter.emit.mockClear();
+    await service.revisar(docente, 40, { nota: null, comentario: '' });
+    expect(eventEmitter.emit).not.toHaveBeenCalled();
   });
 
   it('en una entrega sin nota, poner nota es un 400', async () => {

@@ -36,6 +36,7 @@ describe('ReviewSchedulesService Unit Tests', () => {
       create: jest.fn((datos) => ({ ...datos })),
       save: jest.fn(async (s) => s),
       find: jest.fn(),
+      count: jest.fn(),
       findDueForStudent: jest.fn(),
     };
     notificationsService = {
@@ -180,38 +181,26 @@ describe('ReviewSchedulesService Unit Tests', () => {
       expect(notificationsService.createNotification).not.toHaveBeenCalled();
     });
 
-    it('should update urgencyLevel to 3 and create notifications for overdue schedules', async () => {
+    it('marca los vencidos como urgentes y manda UN solo aviso al día por estudiante, con cuántos tiene (07/10)', async () => {
+      // Antes: un aviso por cada lección vencida. Ahora: uno por estudiante, que lleva a «Repasos» y no se repite ese día.
       const overdue1 = makeReviewSchedule({ id: 100, studentId: 42, learningUnitId: 10 });
-      const overdue2 = makeReviewSchedule({ 
-        id: 101, 
-        studentId: 88, 
-        learningUnitId: 11,
-        learningUnit: { id: 11, title: 'Unidad de Recursión' }
-      });
-      reviewRepo.find.mockResolvedValue([overdue1, overdue2]);
+      const overdue1b = makeReviewSchedule({ id: 102, studentId: 42, learningUnitId: 12 });
+      const overdue2 = makeReviewSchedule({ id: 101, studentId: 88, learningUnitId: 11, learningUnit: { id: 11, title: 'Unidad de Recursión' } });
+      reviewRepo.find.mockResolvedValue([overdue1, overdue1b, overdue2]);
+      reviewRepo.count.mockImplementation(async ({ where }: { where: { studentId: number } }) => (where.studentId === 42 ? 3 : 1));
 
       await service.checkOverdueReviews();
 
-      expect(overdue1.urgencyLevel).toBe(3);
-      expect(overdue2.urgencyLevel).toBe(3);
-
-      expect(reviewRepo.save).toHaveBeenCalledWith(overdue1);
-      expect(reviewRepo.save).toHaveBeenCalledWith(overdue2);
-
-      expect(notificationsService.createNotification).toHaveBeenNthCalledWith(
-        1,
-        42,
-        'Repaso Vencido ⏰',
-        expect.stringContaining('Unidad de Introducción'),
-        NotificationType.REVIEW_SCHEDULE,
+      expect([overdue1, overdue1b, overdue2].map((o) => o.urgencyLevel)).toEqual([3, 3, 3]);
+      expect(notificationsService.createNotification).toHaveBeenCalledTimes(2);
+      const hoy = new Date().toISOString().slice(0, 10);
+      expect(notificationsService.createNotification).toHaveBeenCalledWith(
+        42, 'Tienes 3 repasos pendientes hoy', expect.any(String), NotificationType.REVIEW_SCHEDULE,
+        { enlace: '/estudiante/repasos', clave: `repasos:${hoy}` },
       );
-
-      expect(notificationsService.createNotification).toHaveBeenNthCalledWith(
-        2,
-        88,
-        'Repaso Vencido ⏰',
-        expect.stringContaining('Unidad de Recursión'),
-        NotificationType.REVIEW_SCHEDULE,
+      expect(notificationsService.createNotification).toHaveBeenCalledWith(
+        88, 'Tienes 1 repaso pendiente hoy', expect.any(String), NotificationType.REVIEW_SCHEDULE,
+        { enlace: '/estudiante/repasos', clave: `repasos:${hoy}` },
       );
     });
   });

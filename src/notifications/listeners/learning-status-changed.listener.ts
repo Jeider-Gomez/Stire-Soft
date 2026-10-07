@@ -1,52 +1,53 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { DataSource } from 'typeorm';
 import { LearningStatusChangedEvent } from '../../common/events/learning-status-changed.event';
 import { NotificationsService } from '../notifications.service';
 import { LearningStatus } from '../../common/enums/learning-status.enum';
 import { NotificationType } from '../../common/enums/notification-type.enum';
+import { avisoDeHito, hitoCruzado } from '../notificacion-reglas';
 
+/**
+ * Avance por módulo (notificacion-reglas.ts): cuando una lección pasa a «dominada», se cuenta cuántas del módulo lleva el
+ * estudiante y se avisa solo si cruzó el 50 %, el 75 % o el 100 %, una vez por hito. Antes había un aviso por cada cambio
+ * de estado de cada lección («¡En marcha!», «¡Gran avance!»…), que saturaba y repetía lo que ya se veía en pantalla.
+ */
 @Injectable()
 export class LearningStatusChangedListener {
   private readonly logger = new Logger(LearningStatusChangedListener.name);
 
-  constructor(private readonly notificationsService: NotificationsService) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   @OnEvent('learning.status.changed')
   async handleLearningStatusChangedEvent(event: LearningStatusChangedEvent) {
-    this.logger.log(
-      `[Notificaciones] Generando notificación de transición de estado para estudiante ${event.studentId}, unidad ${event.learningUnitId} (${event.oldStatus} -> ${event.newStatus})`,
-    );
-
-    let title = 'Nuevo Progreso Académico';
-    let message = `Tu estado de aprendizaje ha cambiado a '${event.newStatus}' (Maestría: ${event.mastery.toFixed(1)}%).`;
-
-    if (event.newStatus === LearningStatus.DOMINADO) {
-      title = '¡Felicidades, Unidad Dominada! 🏆';
-      message = `¡Excelente logro! Has dominado por completo los conceptos clave de la Unidad de Aprendizaje con un nivel de maestría del ${event.mastery.toFixed(1)}%. ¡Increíble trabajo!`;
-    } else if (event.newStatus === LearningStatus.COMPRENSION_PARCIAL) {
-      title = '¡Gran Avance! 🌟';
-      message = `¡Vas por un excelente camino! Has alcanzado comprensión parcial en la Unidad de Aprendizaje (Maestría: ${event.mastery.toFixed(1)}%). ¡Solo un poco más para dominarla!`;
-    } else if (event.newStatus === LearningStatus.EN_PRACTICA) {
-      title = '¡En Marcha! 📚';
-      message = `Tu estado ha progresado a 'En Práctica' (Maestría: ${event.mastery.toFixed(1)}%). Continúa resolviendo actividades para afianzar tus conocimientos.`;
-    } else if (event.newStatus === LearningStatus.EXPLORADO) {
-      title = '¡Unidad Explorada! 🔍';
-      message = `Has comenzado a explorar la Unidad de Aprendizaje. Sigue adelante para comenzar tus prácticas y subir tu nivel de maestría.`;
-    }
-
+    if (event.newStatus !== LearningStatus.DOMINADO || event.oldStatus === LearningStatus.DOMINADO) return;
     try {
-      await this.notificationsService.createNotification(
-        event.studentId,
-        title,
-        message,
-        NotificationType.INFO,
+      const modulo: Array<{ id: number; title: string }> = await this.dataSource.query(
+        'SELECT s.id AS id, s.title AS title FROM learning_units lu JOIN topics t ON lu.topicId = t.id JOIN sections s ON t.sectionId = s.id WHERE lu.id = ?',
+        [event.learningUnitId],
       );
-      this.logger.log(`[Notificaciones] Notificación de estado creada con éxito para estudiante ${event.studentId}`);
+      if (!modulo[0]) return;
+      const sectionId = Number(modulo[0].id);
+      const filas: Array<{ total: number | string; dominadas: number | string }> = await this.dataSource.query(
+        'SELECT COUNT(*) AS total, SUM(CASE WHEN lp.status = ? THEN 1 ELSE 0 END) AS dominadas FROM learning_units lu ' +
+          'JOIN topics t ON lu.topicId = t.id LEFT JOIN learning_progress lp ON lp.learningUnitId = lu.id AND lp.studentId = ? ' +
+          'WHERE t.sectionId = ? AND lu.isActive = 1 AND t.isActive = 1',
+        [LearningStatus.DOMINADO, event.studentId, sectionId],
+      );
+      const total = Number(filas[0]?.total ?? 0);
+      const dominadas = Number(filas[0]?.dominadas ?? 0);
+      const hito = hitoCruzado(dominadas - 1, dominadas, total);
+      if (hito === null) return;
+      const { titulo, mensaje } = avisoDeHito(hito, modulo[0].title, dominadas, total);
+      await this.notificationsService.createNotification(event.studentId, titulo, mensaje, NotificationType.INFO, {
+        enlace: '/estudiante/progreso',
+        clave: `modulo:${sectionId}:${hito}`,
+      });
     } catch (error) {
-      this.logger.error(
-        `[Notificaciones] Error creando notificación de estado para estudiante ${event.studentId}: ${error.message}`,
-        error.stack,
-      );
+      this.logger.error(`[Notificaciones] No se pudo avisar el avance del estudiante ${event.studentId}: ${(error as Error).message}`);
     }
   }
 }
