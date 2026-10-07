@@ -256,3 +256,9 @@ describe('revisión exhaustiva de accesibilidad (07/10, axe-core con WCAG 2.2 en
     expect(leer('pages', 'admin', 'sistema.vue').replace(/\r\n/g, '\n')).toContain('tabindex="0"\n        aria-label="Registro del servidor"');
   });
 });
+
+describe('editor de código en el celular (07/10, axe en el ejercicio 122 a 375 px)', () => {
+  it('el contenido del editor es enfocable siempre: la zona con desplazamiento se alcanza con el teclado', () => {
+    expect(leer('components', 'CodeEditor.vue')).toMatch(/EditorView\.contentAttributes\.of\(\{[\s\S]*?tabindex: '0'/);
+  });
+});
