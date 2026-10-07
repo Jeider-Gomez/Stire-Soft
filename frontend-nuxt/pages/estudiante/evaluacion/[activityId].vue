@@ -412,8 +412,6 @@ const workspaceStore = useWorkspaceStore()
 useHead({ title: computed(() => tituloConNombre(workspaceStore.currentExercise?.title, route.path)) })
 const leftTab = ref<'enunciado' | 'casos' | 'consola'>('enunciado')
 const { plegado: panelPlegado, plegar: plegarPanel } = usePanelPlegable('stire.ejercicio.panelPlegado')
-catch { /* sin almacenamiento: no se recuerda */ }
-}
 const tutorStore = useTutorStore()
 
 // Oferta del Tutor al fallar: vuelve a aparecer en cada nueva prueba, salvo que el Tutor ya esté abierto.

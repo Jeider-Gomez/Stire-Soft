@@ -21,7 +21,7 @@ const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'pages/docente/rendimiento.vue': { lineas: 364, motivo: 'Panel de analitica del rendimiento; filtros y metricas describen una misma vista.' },
   'pages/docente/ejercicios/crear.vue': { lineas: 411, motivo: 'Orquesta el alta de ejercicio y delega configuracion especifica a constructores por tipo.' },
   'pages/estudiante/index.vue': { lineas: 415, motivo: 'Dashboard del aprendizaje del estudiante; el aviso de solicitud de rol se separo a AvisoSolicitudRol.vue.' },
-  'pages/estudiante/evaluacion/[activityId].vue': { lineas: 539, motivo: 'Orquesta una evaluacion y selecciona los componentes existentes segun el tipo de actividad. +3 el 07/10: el nombre del ejercicio en el título de la página (WCAG 2.4.2). +8 el 07/10: plegar el enunciado (hallazgo de José, S08-E01); la franja y su memoria ya están fuera (FranjaPanelPlegado.vue, usePanelPlegable.ts).' },
+  'pages/estudiante/evaluacion/[activityId].vue': { lineas: 537, motivo: 'Orquesta una evaluacion y selecciona los componentes existentes segun el tipo de actividad. +3 el 07/10: el nombre del ejercicio en el título de la página (WCAG 2.4.2). +6 el 07/10: plegar el enunciado (hallazgo de José, S08-E01); la franja y su memoria ya están fuera (FranjaPanelPlegado.vue, usePanelPlegable.ts).' },
   'pages/estudiante/unidad/[id].vue': { lineas: 395, motivo: 'Orquesta la vista de una unidad; los bloques de contenido ya tienen componentes especializados. +3 el 07/10: el nombre de la lección en el título de la página (WCAG 2.4.2).' },
 };
 
