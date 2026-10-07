@@ -38,6 +38,11 @@
             Slides, Sheets y Forms, Genially, Canva, Scratch, simulaciones PhET y Word o PowerPoint públicos. Otro sitio queda
             como enlace. En Drive, comparte el archivo con «Cualquier persona con el enlace».
           </p>
+          <!-- Inclusión (07/10, WCAG 1.2.2 y 1.2.3): un video sin subtítulos deja por fuera a quien no oye o está en un
+               lugar con ruido; uno que solo se entiende viéndolo, a quien no ve. -->
+          <p class="text-[11px] text-base-texto-secundario">
+            Si es un video, mejor uno con subtítulos. Y cuenta en la lección, con palabras, lo importante que se ve en él.
+          </p>
         </div>
 
         <!-- Imagen -->

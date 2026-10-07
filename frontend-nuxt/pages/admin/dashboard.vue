@@ -168,7 +168,8 @@
           </span>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Se puede desplazar con el teclado (WCAG 2.1.1): en el celular la tabla no cabe. -->
+        <div class="overflow-x-auto" tabindex="0" role="region" aria-label="Tabla de subsistemas (desplázala de lado si no cabe)">
           <table class="w-full text-xs text-left">
             <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil font-semibold">
               <tr>

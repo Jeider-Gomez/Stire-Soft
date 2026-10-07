@@ -2,7 +2,7 @@
   <!-- Las pestañas de la clase (utils/pestanasClase.ts): el mismo encabezado en cada pantalla de la clase. -->
   <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-sm">
     <div v-if="nombre" class="px-4 pt-3 flex items-center gap-2 min-w-0 text-xs">
-      <NuxtLink :to="enlacePestana('hoy', classId)" class="font-bold text-sm text-base-texto-primario truncate hover:underline">{{ nombre }}</NuxtLink>
+      <NuxtLink :to="enlacePestana('hoy', classId)" class="font-bold text-sm text-base-texto-primario truncate hover:underline py-1 min-h-[28px]">{{ nombre }}</NuxtLink>
       <span v-if="codigo" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-acento-ambar/15 text-acento-ambar-fuerte shrink-0">{{ codigo }}</span>
     </div>
     <!-- El nombre va fuera del <nav>: en «Hoy» también enlaza a la página actual, y la navegación debe tener una sola. -->

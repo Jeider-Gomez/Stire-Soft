@@ -387,6 +387,7 @@
 
 <script setup lang="ts">
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
+import { tituloConNombre } from '~/utils/tituloPagina'
 import { mensajeCalibracion } from '~/utils/confianza'
 import { CALIDADES, calidadDelResultado, EFECTO_EN_REPASOS } from '~/utils/escalaResultados'
 import { BookOpen, Check, ClipboardCheck, FlaskConical, Lightbulb, ListChecks, Lock, PartyPopper, Scale, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
@@ -402,6 +403,8 @@ definePageMeta({
 
 const route = useRoute()
 const workspaceStore = useWorkspaceStore()
+// El nombre del ejercicio en la pestaña y para el lector de pantalla (WCAG 2.4.2).
+useHead({ title: computed(() => tituloConNombre(workspaceStore.currentExercise?.title, route.path)) })
 const leftTab = ref<'enunciado' | 'casos' | 'consola'>('enunciado')
 const tutorStore = useTutorStore()
 

@@ -20,11 +20,12 @@
           <h1 class="text-xs font-bold text-base-texto-primario truncate">
             {{ workspaceStore.currentExercise.title }}
           </h1>
-          <!-- Migas: dónde está el ejercicio dentro del curso (UX-01 / PAT-02 de la lista de chequeo) -->
+          <!-- Migas: dónde está el ejercicio dentro del curso (UX-01 / PAT-02 de la lista de chequeo). Miden 44 px para el dedo
+               (MOB-02) y van por encima del título (z-10): axe las veía tapadas por él (WCAG 2.5.8, 07/10). -->
           <nav aria-label="Ubicación" class="flex items-center gap-1 flex-wrap text-[11px] text-base-texto-secundario">
-            <NuxtLink to="/estudiante" class="hover:underline inline-flex items-center min-h-[44px] -my-3.5">Inicio</NuxtLink>
+            <NuxtLink to="/estudiante" class="hover:underline inline-flex items-center min-h-[44px] -my-3.5 relative z-10">Inicio</NuxtLink>
             <ChevronRight :size="11" aria-hidden="true" />
-            <NuxtLink :to="backLink" class="hover:underline truncate max-w-[180px] inline-flex items-center min-h-[44px] -my-3.5">{{ workspaceStore.currentExercise.unitTitle }}</NuxtLink>
+            <NuxtLink :to="backLink" class="hover:underline truncate max-w-[180px] inline-flex items-center min-h-[44px] -my-3.5 relative z-10">{{ workspaceStore.currentExercise.unitTitle }}</NuxtLink>
             <ChevronRight :size="11" aria-hidden="true" />
             <span aria-current="page">Ejercicio · {{ difficultyLabel }}</span>
           </nav>

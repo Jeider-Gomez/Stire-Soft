@@ -146,6 +146,69 @@
 :root[data-tema="oscuro"][data-contraste="alto"] :is(.bg-slate-100, .bg-slate-200, .bg-slate-50, .bg-white) { background-color: rgb(var(--c-base-bg-secundario)); }
 
 /*
+ * ── Temas de contraste (07/10) ── Acuático, Desierto, Anochecer y Cielo nocturno, con los colores de Windows 11.
+ * utils/apariencia.ts pone la paleta en las variables (--c-*): fondo, texto, enlace, inactivo, resalte, texto sobre
+ * resalte y texto de botón. Aquí se reduce a esa paleta lo que todavía tiene colores fijos: grises sueltos, degradados,
+ * los colores de la marca, el editor de código y el Tutor. Reglas de Microsoft («Contrast themes»):
+ * - un solo fondo; paneles y tarjetas se separan con borde (2 px en las ventanas);
+ * - el texto secundario es el mismo texto: el gris (GrayText) es SOLO para lo deshabilitado;
+ * - los enlaces llevan el color de enlace; lo seleccionado, el color de resalte con su texto;
+ * - nada de imágenes de fondo ni degradados detrás del texto.
+ */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) body { background-color: rgb(var(--c-base-blanco)); color: rgb(var(--c-base-texto-primario)); }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is([class*="text-slate-"], [class*="text-gray-"], [class*="text-stire-"], [class*="text-blue-"], [class*="text-indigo-"],
+  [class*="text-purple-"], [class*="text-violet-"], [class*="text-emerald-"], [class*="text-teal-"], [class*="text-green-"],
+  [class*="text-amber-"], [class*="text-yellow-"], [class*="text-orange-"], [class*="text-red-"], [class*="text-cyan-"],
+  [class*="text-sky-"], [class*="text-editor-"], [class*="text-[#"], .text-black) { color: rgb(var(--c-base-texto-primario)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is(.text-white, .hover\:text-white:hover) { color: rgb(var(--c-base-texto-primario)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is([class*="bg-slate-"], [class*="bg-gray-"], [class*="bg-stire-"], [class*="bg-blue-"], [class*="bg-indigo-"], [class*="bg-purple-"],
+  [class*="bg-violet-"], [class*="bg-emerald-"], [class*="bg-teal-"], [class*="bg-green-"], [class*="bg-amber-"], [class*="bg-yellow-"],
+  [class*="bg-orange-"], [class*="bg-red-"], [class*="bg-cyan-"], [class*="bg-sky-"], [class*="bg-editor-"], [class*="bg-[#"], .bg-white, .bg-black,
+  .gradient-stire, [class*="bg-gradient-"], .linea-marca, .glass-header) {
+  background: rgb(var(--c-base-blanco)) !important; background-image: none !important;
+}
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is([class*="border-slate-"], [class*="border-gray-"], [class*="border-stire-"], [class*="border-blue-"], [class*="border-purple-"],
+  [class*="border-emerald-"], [class*="border-teal-"], [class*="border-amber-"], [class*="border-red-"], [class*="border-editor-"], [class*="border-[#"]) { border-color: rgb(var(--c-ct-boton-texto)) !important; }
+/* Lo que se veía por su color de fondo (avatar, ícono de la marca, insignias, botón del Tutor) gana un borde. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is(.gradient-stire, [class*="bg-stire-"], [class*="bg-gradient-"], [class*="bg-purple-"], [class*="bg-teal-"], [class*="bg-emerald-"], [class*="bg-amber-"], [class*="bg-red-"]) {
+  border: 1px solid rgb(var(--c-ct-boton-texto));
+}
+/* Botón principal: color de selección y su texto (como los botones de acento de Windows). Con «~=» (la clase
+   entera): con «*=» también atrapaba «peer-checked:bg-…» y todos los botones de tamaño se veían elegidos. El :not() le
+   da el mismo peso que la regla de «text-white» (que tiene :hover), y como va después, gana. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .peer:checked ~ [class*="peer-checked:bg-acento-ambar"] { background: rgb(var(--c-ct-resalte)) !important; color: rgb(var(--c-ct-resalte-texto)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is([class~="bg-acento-ambar-fuerte"], [class~="bg-acento-ambar"], .btn-stire-primary, .btn-stire-teal):not([data-sin-regla]) { background: rgb(var(--c-ct-resalte)) !important; color: rgb(var(--c-ct-resalte-texto)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is([class~="bg-acento-ambar-fuerte"], [class~="bg-acento-ambar"], .btn-stire-primary, .btn-stire-teal):not([data-sin-regla]) * { color: inherit !important; }
+/* Bordes semitransparentes (border-…/25): con el color de los bordes, que se vean (WCAG 1.4.11). */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) [class*="border-"][class*="/"] { border-color: rgb(var(--c-ct-boton-texto)) !important; }
+/* Los tintes suaves (bg-…/10) se quedan: sobre el fondo de la paleta conservan 7 a 1 con el texto. */
+/* Fondos llenos de un estado (aprobado, no pasa, vence…): el texto va con el color del fondo de la página. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is([class*="bg-semantico-"], [class*="bg-estado-unidad-"], [class*="bg-urgencia-repaso-"]):not([class*="bg-semantico-pasa/"]):not([class*="bg-semantico-falla/"]):not([class*="bg-semantico-info/"]) { color: rgb(var(--c-base-blanco)) !important; }
+/* Lo seleccionado o la página actual: resalte con su texto. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is(a[aria-current="page"], [aria-selected="true"], [aria-pressed="true"]) { background: rgb(var(--c-ct-resalte)) !important; color: rgb(var(--c-ct-resalte-texto)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is(a[aria-current="page"], [aria-selected="true"], [aria-pressed="true"]) * { color: inherit !important; }
+/* Enlaces del contenido: color de enlace (Hotlight). */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) main :is(p, li, td, dd, label, small, span) a:not([class*="bg-"]):not([aria-current]), :root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .prose a { color: rgb(var(--c-ct-enlace)) !important; }
+/* Deshabilitado: el gris de Windows, sin tachar (el gris ya lo dice). */
+/* Más específica que la del botón principal: un botón deshabilitado nunca debe verse como uno activo. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is(button, a, input, select, textarea, [aria-disabled="true"]):is(:disabled, [aria-disabled="true"]):not([data-sin-regla]) { opacity: 1 !important; color: rgb(var(--c-ct-inactivo)) !important; border-color: rgb(var(--c-ct-inactivo)) !important; background: rgb(var(--c-base-blanco)) !important; text-decoration: none; filter: none; }
+/* Ventanas y menús flotantes: borde de 2 px; el velo de atrás no tapa el borde. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is([role="dialog"], [role="alertdialog"], [role="menu"], [role="listbox"]) { border: 2px solid rgb(var(--c-ct-boton-texto)) !important; }
+/* Campos: fondo de la página, texto y borde visibles. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) :is(input, select, textarea) { background-color: rgb(var(--c-base-blanco)) !important; color: rgb(var(--c-base-texto-primario)) !important; border-color: rgb(var(--c-ct-boton-texto)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) ::selection { background: rgb(var(--c-ct-resalte)); color: rgb(var(--c-ct-resalte-texto)); }
+/* Editor de código (CodeMirror): texto de un solo color sobre el fondo, como lo deja Windows; la selección, resaltada. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .cm-editor, :root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .cm-editor .cm-gutters, :root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .cm-editor .cm-activeLine, :root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .cm-editor .cm-activeLineGutter { background: rgb(var(--c-base-blanco)) !important; color: rgb(var(--c-base-texto-primario)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .cm-editor .cm-content * { color: rgb(var(--c-base-texto-primario)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .cm-editor .cm-gutters { border-right: 1px solid rgb(var(--c-ct-boton-texto)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .cm-editor .cm-selectionBackground, :root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .cm-editor ::selection { background: rgb(var(--c-ct-resalte)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .cm-editor .cm-cursor { border-left-color: rgb(var(--c-base-texto-primario)) !important; }
+/* Barras de avance: el relleno con el color de resalte y la pista con borde. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .rounded-full.overflow-hidden:has(> [style*="width"]) { background: rgb(var(--c-base-blanco)) !important; border: 1px solid rgb(var(--c-ct-boton-texto)); }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .rounded-full.overflow-hidden > [style*="width"] { background: rgb(var(--c-ct-resalte)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) img:not([alt=""]) { outline: 1px solid rgb(var(--c-ct-boton-texto)); }
+
+/*
  * ── Colores forzados del sistema (Windows: «Temas de contraste») ── El sistema operativo reemplaza todos los colores
  * por los suyos (blanco sobre negro, amarillo sobre negro…). Lo que se pierde es lo que solo se veía por el fondo o la
  * sombra: los botones sin borde, las barras de avance y el foco hecho con sombra. Aquí se devuelven con los colores del
@@ -178,3 +241,11 @@
   word-spacing: 0.1em;
 }
 :root[data-espaciado="amplio"] :is(p, li) + :is(p, li) { margin-top: 0.5em; }
+
+/* ── Reducir el movimiento (07/10, como Khan Academy; WCAG 2.3.3) ── Elegido aquí o pedido por el dispositivo. */
+:root[data-movimiento="reducido"] *, :root[data-movimiento="reducido"] *::before, :root[data-movimiento="reducido"] *::after {
+  animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

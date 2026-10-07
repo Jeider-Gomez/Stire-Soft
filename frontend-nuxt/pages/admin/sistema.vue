@@ -148,6 +148,8 @@
       <div
         role="log"
         aria-live="off"
+        tabindex="0"
+        aria-label="Registro del servidor"
         class="bg-editor-bg text-editor-text p-4 rounded-xl font-mono text-xs space-y-1.5 max-h-[350px] overflow-y-auto border border-base-borde-fuerte">
         <div v-if="loadingLogs && logEntries.length === 0" class="text-center py-6 text-editor-muted">
           Cargando eventos del servidor...

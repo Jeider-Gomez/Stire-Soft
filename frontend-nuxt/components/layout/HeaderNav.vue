@@ -90,13 +90,15 @@
         <button
           @click="showUserMenu = !showUserMenu"
           class="flex items-center gap-2 p-1 min-h-[44px] rounded-xl hover:bg-slate-100 transition-colors duration-150 group"
-          :aria-label="`Menú de ${authStore.user?.fullName || 'usuario'}`"
+          :aria-expanded="showUserMenu"
         >
+          <!-- Sin aria-label: el nombre contiene lo que se ve, el primer nombre (WCAG 2.5.3, control por voz). -->
           <AvatarUsuario :nombre="authStore.user?.fullName" :foto-id="authStore.user?.fotoId" decorativo
             class="shadow-sm group-hover:shadow-md transition-shadow" />
-          <span class="hidden md:block text-xs font-medium text-slate-700 max-w-[120px] truncate">
-            {{ authStore.user?.fullName?.split(' ')[0] }}
-          </span>
+          <span class="sr-only">Menú de la cuenta: </span>
+          <span class="sr-only md:not-sr-only md:block text-xs font-medium text-slate-700 max-w-[120px] truncate">
+            {{ primerNombre }}
+          </span><span v-if="restoDelNombre" class="sr-only"> {{ restoDelNombre }}</span>
         </button>
 
         <!-- Dropdown de usuario -->
@@ -165,6 +167,8 @@ import { institucionCorta, lugarDeAsignatura, programaCorto } from '~/utils/cont
 defineEmits(['toggle-sidebar'])
 
 const authStore = useAuthStore()
+const primerNombre = computed(() => authStore.user?.fullName?.split(' ')[0] || 'usuario')
+const restoDelNombre = computed(() => authStore.user?.fullName?.split(' ').slice(1).join(' ') || '')
 const studentStore = useStudentStore()
 const contexto = useContextoDocente()
 watch(() => authStore.currentRole, (rol) => { if (rol === 'docente') contexto.cargar() }, { immediate: true })

@@ -249,13 +249,12 @@
                 <li v-for="unit in tema.units" :key="unit.id">
                   <NuxtLink :to="`/estudiante/unidad/${unit.id}`"
                     class="min-h-[44px] px-5 py-2.5 flex items-center gap-3 hover:bg-base-bg-primario/60 transition-colors group"
-                    :class="unit.id === studentStore.activeUnit?.id ? 'bg-acento-ambar/5' : ''"
-                    :aria-label="`${unit.title}: ${estadoLeccion(unit)}`">
+                    :class="unit.id === studentStore.activeUnit?.id ? 'bg-acento-ambar/5' : ''">
                     <CheckCircle2 v-if="unit.status === 'dominado'" :size="18" class="text-semantico-pasa shrink-0" aria-hidden="true" />
                     <CircleDot v-else-if="unit.status === 'en-progreso'" :size="18" class="text-acento-ambar-fuerte shrink-0" aria-hidden="true" />
                     <Circle v-else :size="18" class="text-base-borde-fuerte shrink-0" aria-hidden="true" />
                     <span class="flex-1 min-w-0">
-                      <span class="block text-xs font-semibold group-hover:underline" :class="unit.status === 'dominado' ? 'text-base-texto-secundario' : 'text-base-texto-primario'">{{ unit.title }}</span>
+                      <span class="block text-xs font-semibold group-hover:underline" :class="unit.status === 'dominado' ? 'text-base-texto-secundario' : 'text-base-texto-primario'">{{ unit.title }}<span class="sr-only">: {{ estadoLeccion(unit) }}</span></span>
                       <span v-if="unit.id === studentStore.activeUnit?.id" class="block text-[11px] text-slate-600 truncate">{{ unit.description }}</span>
                     </span>
                     <span v-if="debeRepasar(unit)" class="inline-flex items-center gap-1 text-[10px] font-semibold text-semantico-info shrink-0">

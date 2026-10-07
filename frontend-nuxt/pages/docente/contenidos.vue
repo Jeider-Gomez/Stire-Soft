@@ -43,8 +43,7 @@
           id="abrir-importar"
           type="button"
           @click="openImportModal"
-          class="min-h-[44px] px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
-          aria-label="Traer contenidos de otra clase">
+          class="min-h-[44px] px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-base-texto-primario font-semibold text-xs hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm">
           <CopyPlus :size="14" class="text-acento-ambar-fuerte" aria-hidden="true" />
           <span>Traer de otra clase</span>
         </button>

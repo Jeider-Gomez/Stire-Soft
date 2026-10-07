@@ -40,7 +40,7 @@
             <legend class="px-1 font-semibold text-base-texto-primario">Estudiantes ({{ f.estudiantes.length }})</legend>
             <ul class="max-h-48 overflow-y-auto space-y-1">
               <li v-for="e in estudiantes" :key="e.id">
-                <label class="flex items-center gap-1.5 cursor-pointer"><input v-model="f.estudiantes" type="checkbox" :value="e.id" class="accent-acento-ambar-fuerte" /> {{ e.nombre }}</label>
+                <label class="flex items-center gap-2 cursor-pointer min-h-[32px]"><input v-model="f.estudiantes" type="checkbox" :value="e.id" class="w-5 h-5 shrink-0 accent-acento-ambar-fuerte" /> {{ e.nombre }}</label>
               </li>
             </ul>
           </fieldset>
@@ -49,8 +49,8 @@
             <div class="max-h-48 overflow-y-auto space-y-2">
               <div v-for="m in modulos" :key="m.id">
                 <p class="text-[10px] font-bold uppercase tracking-wider text-base-texto-secundario">{{ m.title }}</p>
-                <label v-for="l in m.lecciones" :key="l.id" class="flex items-center gap-1.5 cursor-pointer">
-                  <input v-model="f.lecciones" type="checkbox" :value="l.id" class="accent-acento-ambar-fuerte" /> {{ l.title }}
+                <label v-for="l in m.lecciones" :key="l.id" class="flex items-center gap-2 cursor-pointer min-h-[32px]">
+                  <input v-model="f.lecciones" type="checkbox" :value="l.id" class="w-5 h-5 shrink-0 accent-acento-ambar-fuerte" /> {{ l.title }}
                 </label>
               </div>
             </div>

@@ -9,7 +9,8 @@ describe('Sugerencias desde cualquier pantalla', () => {
   it('el botón está en el encabezado de todos los roles y anota sola la pantalla y el dispositivo', () => {
     expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutBotonSugerencias />');
     const boton = leer('components', 'layout', 'BotonSugerencias.vue');
-    expect(boton).toContain('<span class="hidden lg:inline">Sugerencias</span>');
+    // 07/10: visible desde lg y siempre para el lector (WCAG 2.5.3, control por voz).
+    expect(boton).toContain('<span class="sr-only lg:not-sr-only">Sugerencias</span>');
     expect(boton).not.toMatch(/>\s*Reportar/);
     expect(boton).toContain('ruta: route.fullPath');
     expect(boton).toContain('classId: claseActual()');

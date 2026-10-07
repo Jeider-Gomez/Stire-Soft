@@ -27,6 +27,16 @@ describe('Evaluación heurística: hallazgos corregidos', () => {
     expect(leer('app.vue')).toMatch(/useHead\(\{ title: computed\(\(\) => tituloPagina\(route\.path\)\) \}\)/);
   });
 
+  it('07/10: la asistencia tenía el título genérico y la de la clase decía «Hoy»; lección y ejercicio dicen cuál', () => {
+    const titulo = cargarTitulo();
+    expect(titulo('/estudiante/asistencia')).toBe('Mi asistencia · STIRE-Soft');
+    expect(titulo('/docente/clase/28/asistencia')).toBe('Asistencia de la clase · STIRE-Soft');
+    expect(titulo('/docente/clase/28')).toBe('Hoy en la clase · STIRE-Soft');
+    expect(leer('utils', 'tituloPagina.ts')).toContain('return nombre?.trim() ? `${nombre.trim()} · ${base}` : base');
+    expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toContain('useHead({ title: computed(() => tituloConNombre(unitData.value?.title, route.path)) })');
+    expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('tituloConNombre(workspaceStore.currentExercise?.title, route.path)');
+  });
+
   it('«repasos para hoy» cuenta solo los vencidos o críticos (Luisa tenía 5 para mañana y decía «5 para hoy»)', () => {
     const store = leer('stores', 'student.ts');
     expect(store).toMatch(/reviewsDueToday = computed\(\(\) => reviews\.value\.filter\(\(r\) => r\.urgency === 'vencido' \|\| r\.urgency === 'critico'\)\)/);

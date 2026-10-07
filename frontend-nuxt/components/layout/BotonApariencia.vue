@@ -7,12 +7,12 @@
       id="boton-apariencia"
       type="button"
       class="flex items-center gap-1.5 px-2 py-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors text-xs font-semibold min-h-[44px] min-w-[44px] justify-center"
-      aria-label="Apariencia y lectura: tema, contraste y tamaño del texto"
       :aria-expanded="abierto"
       @click="abierto = true"
     >
+      <!-- Sin aria-label: el nombre empieza por «Apariencia», lo que se ve (WCAG 2.5.3, control por voz). -->
       <Contrast :size="18" aria-hidden="true" />
-      <span class="hidden lg:inline">Apariencia</span>
+      <span class="sr-only lg:not-sr-only">Apariencia</span><span class="sr-only"> y lectura: tema, contraste y tamaño del texto</span>
     </button>
 
     <Teleport to="body">

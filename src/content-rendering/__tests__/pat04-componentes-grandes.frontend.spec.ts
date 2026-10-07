@@ -13,16 +13,16 @@ const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'components/perfil/Form.vue': { lineas: 362, motivo: 'Formulario de perfil con una unica accion de guardado y secciones de la misma cuenta.' },
   'components/proyectos/EditorDiagrama.vue': { lineas: 791, motivo: 'Excluido por instruccion; lienzo y estado grafico estrechamente acoplados.' },
   'components/tutor/TutorChatDrawer.vue': { lineas: 572, motivo: 'Interaccion de conversacion en un unico panel; mensajes, compositor y clave comparten el store.' },
-  'pages/admin/dashboard.vue': { lineas: 393, motivo: 'Resumen del sistema; la carga de estado ya se comparte mediante useAdminSistema.' },
-  'pages/admin/sistema.vue': { lineas: 394, motivo: 'Gestion de estado, registros y limpieza; la carga de estado se comparte mediante useAdminSistema.' },
+  'pages/admin/dashboard.vue': { lineas: 394, motivo: 'Resumen del sistema; la carga de estado ya se comparte mediante useAdminSistema. +1 el 07/10: la tabla se desplaza con el teclado (WCAG 2.1.1).' },
+  'pages/admin/sistema.vue': { lineas: 396, motivo: 'Gestion de estado, registros y limpieza; la carga de estado se comparte mediante useAdminSistema. +2 el 07/10: el registro se enfoca con el teclado (WCAG 2.1.1).' },
   'pages/auth/register.vue': { lineas: 423, motivo: 'Un unico flujo de registro en dos pasos; validacion y envio comparten el mismo formulario.' },
   'pages/docente/contenidos.vue': { lineas: 407, motivo: 'Coordina estados y acciones del arbol curricular; el arbol se extrae a ArbolContenidos.vue.' },
   'pages/docente/index.vue': { lineas: 426, motivo: 'Inicio docente con tarjetas de clase y sección de clases archivadas; Fase 30 B4.' },
   'pages/docente/rendimiento.vue': { lineas: 364, motivo: 'Panel de analitica del rendimiento; filtros y metricas describen una misma vista.' },
   'pages/docente/ejercicios/crear.vue': { lineas: 411, motivo: 'Orquesta el alta de ejercicio y delega configuracion especifica a constructores por tipo.' },
   'pages/estudiante/index.vue': { lineas: 415, motivo: 'Dashboard del aprendizaje del estudiante; el aviso de solicitud de rol se separo a AvisoSolicitudRol.vue.' },
-  'pages/estudiante/evaluacion/[activityId].vue': { lineas: 528, motivo: 'Orquesta una evaluacion y selecciona los componentes existentes segun el tipo de actividad.' },
-  'pages/estudiante/unidad/[id].vue': { lineas: 392, motivo: 'Orquesta la vista de una unidad; los bloques de contenido ya tienen componentes especializados.' },
+  'pages/estudiante/evaluacion/[activityId].vue': { lineas: 531, motivo: 'Orquesta una evaluacion y selecciona los componentes existentes segun el tipo de actividad. +3 el 07/10: el nombre del ejercicio en el título de la página (WCAG 2.4.2).' },
+  'pages/estudiante/unidad/[id].vue': { lineas: 395, motivo: 'Orquesta la vista de una unidad; los bloques de contenido ya tienen componentes especializados. +3 el 07/10: el nombre de la lección en el título de la página (WCAG 2.4.2).' },
 };
 
 function archivosVue(dir: string): string[] {

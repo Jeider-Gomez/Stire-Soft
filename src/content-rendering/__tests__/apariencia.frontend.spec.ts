@@ -13,30 +13,35 @@ function cargar<T>(nombre: string): T {
   return mod.exports as T;
 }
 
-type Apariencia = { tema: string; altoContraste: boolean; texto: string; espaciado: boolean };
+type Apariencia = { tema: string; altoContraste: boolean; temaContraste: string; texto: string; espaciado: boolean; menosMovimiento: boolean };
+type Paleta = Record<string, string>;
 type Sistema = { oscuro: boolean; masContraste: boolean };
 const a = cargar<{
   leerApariencia: (crudo: string | null, sistema?: Sistema) => Apariencia;
   atributosApariencia: (x: Apariencia, sistema?: Sistema) => Record<string, string>;
-  temaEfectivo: (tema: string, sistema?: Sistema) => string;
+  temaEfectivo: (tema: string, sistema?: Sistema, temaContraste?: string) => string;
+  variablesDeContraste: (t: string) => Record<string, string>;
+  razonDeContraste: (x: string, y: string) => number;
+  TEMAS_CONTRASTE: Array<{ valor: string; texto: string; oscuro: boolean; paleta: Paleta }>;
   APARIENCIA_POR_DEFECTO: Apariencia;
 }>('apariencia');
+const BASE = { tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false };
 
 describe('preferencias guardadas', () => {
   it('por defecto, el tema claro de siempre (se lee mejor; Piepenbrock et al., 2013)', () => {
-    expect(a.APARIENCIA_POR_DEFECTO).toEqual({ tema: 'claro', altoContraste: false, texto: 'normal', espaciado: false });
+    expect(a.APARIENCIA_POR_DEFECTO).toEqual(BASE);
     expect(a.leerApariencia(null)).toEqual(a.APARIENCIA_POR_DEFECTO);
   });
 
   it('un valor dañado vuelve al de por defecto sin perder los demás', () => {
-    expect(a.leerApariencia('{"tema":"oscuro","texto":"gigante","altoContraste":true}')).toEqual({ tema: 'oscuro', altoContraste: true, texto: 'normal', espaciado: false });
+    expect(a.leerApariencia('{"tema":"oscuro","texto":"gigante","altoContraste":true,"temaContraste":"rosado"}')).toEqual({ ...BASE, tema: 'oscuro', altoContraste: true });
     expect(a.leerApariencia('no es json')).toEqual(a.APARIENCIA_POR_DEFECTO);
     expect(a.leerApariencia('[1,2]')).toEqual(a.APARIENCIA_POR_DEFECTO);
   });
 
   it('se traducen a los atributos de <html> que leen los estilos; «Como mi dispositivo» llega ya resuelto', () => {
-    expect(a.atributosApariencia({ tema: 'sistema', altoContraste: true, texto: 'grande', espaciado: true }, { oscuro: true, masContraste: false })).toEqual({
-      'data-tema': 'oscuro', 'data-tema-elegido': 'sistema', 'data-contraste': 'alto', 'data-texto': 'grande', 'data-espaciado': 'amplio',
+    expect(a.atributosApariencia({ ...BASE, tema: 'sistema', altoContraste: true, texto: 'grande', espaciado: true, menosMovimiento: true }, { oscuro: true, masContraste: false })).toEqual({
+      'data-tema': 'oscuro', 'data-tema-elegido': 'sistema', 'data-contraste': 'alto', 'data-tema-contraste': 'ninguno', 'data-texto': 'grande', 'data-espaciado': 'amplio', 'data-movimiento': 'reducido',
     });
     expect(a.temaEfectivo('sistema', { oscuro: false, masContraste: false })).toBe('claro');
     expect(a.temaEfectivo('oscuro', { oscuro: false, masContraste: false })).toBe('oscuro');
@@ -157,5 +162,92 @@ describe('lo que encontró la revisión con agent-browser (07/10)', () => {
 
   it('en «Mi progreso» los títulos no saltan de h1 a h3', () => {
     expect(leer('components', 'EstadisticasEstudiante.vue')).toContain('<h2 id="autorregulacion-titulo"');
+  });
+});
+
+
+describe('temas de contraste como los de Windows 11 (07/10)', () => {
+  it('son los cuatro de Windows, con sus colores de fondo, texto, enlace y selección', () => {
+    expect(a.TEMAS_CONTRASTE.map((t) => t.texto)).toEqual(['Acuático', 'Desierto', 'Anochecer', 'Cielo nocturno']);
+    const cielo = a.TEMAS_CONTRASTE.find((t) => t.valor === 'cielo-nocturno')!.paleta;
+    expect(cielo).toMatchObject({ fondo: '#000000', texto: '#FFFFFF', enlace: '#8080FF', resalte: '#D6B4FD', botonTexto: '#FFEE32' });
+    expect(a.TEMAS_CONTRASTE.find((t) => t.valor === 'desierto')!.paleta).toMatchObject({ fondo: '#FFFAEF', texto: '#3D3D3D', resalte: '#903909' });
+  });
+
+  it.each(['acuatico', 'desierto', 'anochecer', 'cielo-nocturno'])('%s: 7 a 1 o más en texto, botón, selección y estados; enlaces y deshabilitado, 4,5 a 1 o más', (valor) => {
+    const p = a.TEMAS_CONTRASTE.find((t) => t.valor === valor)!.paleta;
+    for (const c of [p.texto, p.botonTexto, p.resalte, p.correcto, p.error, p.aviso, p.progreso]) expect(a.razonDeContraste(c, p.fondo)).toBeGreaterThanOrEqual(7);
+    expect(a.razonDeContraste(p.resalteTexto, p.resalte)).toBeGreaterThanOrEqual(7);
+    expect(a.razonDeContraste(p.fondo, p.resalte)).toBeGreaterThanOrEqual(7); // texto del botón principal
+    for (const c of [p.enlace, p.inactivo]) expect(a.razonDeContraste(c, p.fondo)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('un tema de contraste manda sobre el tema elegido y trae el contraste aumentado; sus colores van a las variables', () => {
+    expect(a.temaEfectivo('claro', { oscuro: false, masContraste: false }, 'cielo-nocturno')).toBe('oscuro');
+    expect(a.temaEfectivo('oscuro', { oscuro: true, masContraste: false }, 'desierto')).toBe('claro');
+    expect(a.atributosApariencia({ ...BASE, temaContraste: 'acuatico' })).toMatchObject({ 'data-tema': 'oscuro', 'data-contraste': 'alto', 'data-tema-contraste': 'acuatico' });
+    const v = a.variablesDeContraste('acuatico');
+    expect(v['--c-base-blanco']).toBe('32 32 32');
+    expect(v['--c-base-texto-secundario']).toBe(v['--c-base-texto-primario']); // sin gris para el texto secundario (Microsoft)
+    expect(v['--c-acento-ambar-fuerte']).toBe('142 227 240');
+    expect(a.variablesDeContraste('ninguno')).toEqual({});
+  });
+
+  it('el CSS reduce a la paleta los colores fijos, el editor y las ventanas (borde de 2 px)', () => {
+    const temas = leer('assets', 'css', 'temas.css');
+    const ct = temas.slice(temas.indexOf('── Temas de contraste'), temas.indexOf('── Colores forzados'));
+    expect(ct).toContain('[class*="text-slate-"]');
+    // Los colores escritos a mano (text-[#…]) y la pestaña activa: los encontró la pasada con los cuatro temas (222 fallas).
+    expect(ct).toContain('[class*="text-[#"]');
+    expect(ct).toContain('[class*="bg-[#"]');
+    expect(ct).toContain('a:not([class*="bg-"]):not([aria-current])');
+    expect(ct).toContain(':is([class~="bg-acento-ambar-fuerte"], [class~="bg-acento-ambar"], .btn-stire-primary, .btn-stire-teal):not([data-sin-regla])');
+    expect(ct).toContain('.peer:checked ~ [class*="peer-checked:bg-acento-ambar"]');
+    expect(ct).not.toContain('[class*="bg-acento-ambar-fuerte"]');
+    expect(ct).toContain('.gradient-stire');
+    expect(ct).toContain('.cm-editor');
+    expect(ct).toContain('[role="dialog"], [role="alertdialog"], [role="menu"], [role="listbox"]) { border: 2px solid');
+    expect(ct).toContain('rgb(var(--c-ct-enlace))');
+    expect(ct).toContain('rgb(var(--c-ct-inactivo))');
+    // Un deshabilitado no puede verse como el botón principal (se vio en «Guardar nombre» con Cielo nocturno).
+    expect(ct).toContain(':is(:disabled, [aria-disabled="true"]):not([data-sin-regla]) { opacity: 1 !important;');
+  });
+
+  it('el panel ofrece «Ninguno» y los cuatro temas con vista previa, «Reducir el movimiento» y el aviso de Windows', () => {
+    const c = leer('components', 'perfil', 'AparienciaLectura.vue');
+    expect(c).toContain('<legend class="text-xs font-semibold text-base-texto-primario mb-1">Tema de contraste</legend>');
+    expect(c).toContain("{ valor: 'ninguno', texto: 'Ninguno'");
+    expect(c).toContain('Reducir el movimiento');
+    expect(c).toContain('sistemaConColoresForzados()');
+    const temas = leer('assets', 'css', 'temas.css');
+    expect(temas).toContain(':root[data-movimiento="reducido"] *');
+    expect(temas).toContain('@media (prefers-reduced-motion: reduce)');
+  });
+});
+
+describe('revisión exhaustiva de accesibilidad (07/10, axe-core con WCAG 2.2 en 39 pantallas)', () => {
+  it('2.5.3 Etiqueta en el nombre: los botones de la cabecera no tapan con aria-label el texto que se ve', () => {
+    for (const f of ['BotonSugerencias.vue', 'BotonApariencia.vue', 'NotificationBell.vue']) {
+      const c = leer('components', 'layout', f);
+      expect(c).not.toMatch(/\saria-label="(Enviar una sugerencia|Apariencia y lectura|Notificaciones)/);
+    }
+    expect(leer('components', 'layout', 'BotonSugerencias.vue')).toContain('<span class="sr-only lg:not-sr-only">Sugerencias</span>');
+    expect(leer('components', 'layout', 'NotificationBell.vue')).toContain('<span class="sr-only"> sin leer</span>');
+    const cab = leer('components', 'layout', 'HeaderNav.vue');
+    expect(cab).not.toContain(':aria-label="`Menú de ${');
+    expect(cab).toContain(':aria-expanded="showUserMenu"');
+    expect(leer('pages', 'docente', 'contenidos.vue')).not.toContain('aria-label="Traer contenidos de otra clase"');
+    expect(leer('pages', 'estudiante', 'index.vue')).toContain('<span class="sr-only">: {{ estadoLeccion(unit) }}</span>');
+  });
+
+  it('2.5.8 Tamaño del objetivo: casillas de 20 px en filas de 32 px; migas del ejercicio sin tapar; nombre de la clase de 28 px', () => {
+    expect(leer('pages', 'docente', 'refuerzos', 'nuevo.vue').match(/w-5 h-5 shrink-0 accent-acento-ambar-fuerte/g)).toHaveLength(2);
+    expect(leer('layouts', 'workspace.vue').match(/min-h-\[44px\] -my-3\.5 relative z-10/g)).toHaveLength(2); // 44 px (MOB-02) y sin quedar tapadas por el título
+    expect(leer('components', 'docente', 'PestanasClase.vue')).toContain('py-1 min-h-[28px]');
+  });
+
+  it('2.1.1 Teclado: las zonas que se desplazan se pueden enfocar', () => {
+    expect(leer('pages', 'admin', 'dashboard.vue')).toContain('<div class="overflow-x-auto" tabindex="0" role="region"');
+    expect(leer('pages', 'admin', 'sistema.vue').replace(/\r\n/g, '\n')).toContain('tabindex="0"\n        aria-label="Registro del servidor"');
   });
 });

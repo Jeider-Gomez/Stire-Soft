@@ -7,6 +7,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/auth\/forgot-password/, 'Recuperar contraseña'],
   [/^\/auth\/reset-password/, 'Nueva contraseña'],
   [/^\/estudiante\/clases/, 'Mis clases'],
+  [/^\/estudiante\/asistencia/, 'Mi asistencia'],
   [/^\/estudiante\/unidad\//, 'Lección'],
   [/^\/estudiante\/evaluacion\//, 'Ejercicio'],
   [/^\/estudiante\/progreso/, 'Mi progreso'],
@@ -25,6 +26,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/docente\/rendimiento/, 'Rendimiento del grupo'],
   [/^\/docente\/clase\/\d+\/ajustes/, 'Ajustes de la clase'],
   [/^\/docente\/clase\/\d+\/notas/, 'Notas de la clase'],
+  [/^\/docente\/clase\/\d+\/asistencia/, 'Asistencia de la clase'],
   [/^\/docente\/clase\//, 'Hoy en la clase'],
   [/^\/docente\/estudiante\//, 'Detalle del estudiante'],
   [/^\/docente\/refuerzos\/nuevo/, 'Asignar refuerzo o reto'],
@@ -46,6 +48,15 @@ const TITULOS: Array<[RegExp, string]> = [
 ]
 
 export const NOMBRE_APP = 'STIRE-Soft'
+
+/**
+ * Con el nombre de lo que se abrió delante (07/10): «Variables y tipos · Lección · STIRE-Soft». En una pestaña o con
+ * el lector de pantalla, «Lección» sola no dice cuál.
+ */
+export function tituloConNombre(nombre: string | null | undefined, ruta: string): string {
+  const base = tituloPagina(ruta)
+  return nombre?.trim() ? `${nombre.trim()} · ${base}` : base
+}
 
 /** «Mi progreso · STIRE-Soft»; una ruta desconocida lleva solo el nombre de la aplicación. */
 export function tituloPagina(ruta: string): string {

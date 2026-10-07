@@ -6,11 +6,12 @@
     <button
       type="button"
       class="flex items-center gap-1.5 px-2 py-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors text-xs font-semibold min-h-[44px] min-w-[44px] justify-center"
-      aria-label="Enviar una sugerencia o contar un problema"
       @click="abrir"
     >
+      <!-- Sin aria-label: el nombre empieza por el texto que se ve, para que «haz clic en Sugerencias» funcione con la
+           voz (WCAG 2.5.3). En el celular la palabra se oculta a la vista, no al lector. -->
       <MessageSquarePlus :size="18" aria-hidden="true" />
-      <span class="hidden lg:inline">Sugerencias</span>
+      <span class="sr-only lg:not-sr-only">Sugerencias</span><span class="sr-only">: enviar una o contar un problema</span>
     </button>
 
     <Teleport to="body">

@@ -188,6 +188,7 @@
 <script setup lang="ts">
 import { ArrowLeft, BookOpen, ChevronRight, Inbox, Lightbulb, Loader2, Lock, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
 import { fechaCorta } from '~/utils/entregas'
+import { tituloConNombre } from '~/utils/tituloPagina'
 import { DOMINADO, TERMINOS } from '~/utils/terminos'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
@@ -252,6 +253,8 @@ interface NextActivityRecommendation {
 const isLoading = ref(true)
 const loadError = ref(false)
 const unitData = ref<UnitDetail | null>(null)
+// El nombre de la lección en la pestaña y para el lector de pantalla (WCAG 2.4.2).
+useHead({ title: computed(() => tituloConNombre(unitData.value?.title, route.path)) })
 const unitContent = ref<ContentBlock[]>([])
 const recommendedActivity = ref<NextActivityRecommendation | null>(null)
 const tutorStore = useTutorStore()
