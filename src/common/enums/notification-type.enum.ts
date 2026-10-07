@@ -3,4 +3,5 @@ export enum NotificationType {
   REVIEW_SCHEDULE = 'review_schedule',
   MESSAGE = 'message',
   INFO = 'info',
+  AVISO = 'aviso',
 }

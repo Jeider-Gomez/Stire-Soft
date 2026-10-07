@@ -1,6 +1,9 @@
 <template>
   <div class="max-w-5xl mx-auto">
+    <MensajesPestanasMensajes :activa="verAvisos ? 'avisos' : 'mensajes'" />
+    <MensajesAvisosClase v-if="verAvisos" rol="estudiante" />
     <MensajesBandejaMensajes
+      v-else
       titulo="Mensajes con tus docentes"
       descripcion="Escríbele a un docente de tus clases o lee lo que te han enviado."
       texto-redactar="Escribir a un docente"
@@ -37,11 +40,15 @@
 <script setup lang="ts">
 // Mensajes del estudiante: la bandeja y la ventana son compartidas con el docente (components/mensajes/); aquí solo
 // se decide a quién puede escribirle: a los docentes de sus clases activas.
-import { provide, ref } from 'vue'
+import { computed, provide, ref } from 'vue'
 import { CLAVE_MENSAJES, useDestinatarios, useMensajes, type Destinatario } from '~/composables/useMensajes'
 import { otraPersona, type Mensaje } from '~/utils/mensajes'
 
 definePageMeta({ layout: 'student' })
+
+// «Avisos» (?ver=avisos): lo que el docente comunica a toda la clase (components/mensajes/AvisosClase.vue).
+const route = useRoute()
+const verAvisos = computed(() => route.query.ver === 'avisos')
 
 const estado = useMensajes()
 provide(CLAVE_MENSAJES, estado)

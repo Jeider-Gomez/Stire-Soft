@@ -3,6 +3,7 @@ import { MediaModule } from './media/media.module';
 import { ProyectosModule } from './proyectos/proyectos.module';
 import { RefuerzosModule } from './refuerzos/refuerzos.module';
 import { ValoracionesModule } from './valoraciones/valoraciones.module';
+import { AvisosClaseModule } from './avisos-clase/avisos-clase.module';
 import { UsabilidadModule } from './usabilidad/usabilidad.module';
 import { CalificacionesModule } from './calificaciones/calificaciones.module';
 import { ReportesModule } from './reportes/reportes.module';
@@ -132,6 +133,7 @@ import { ReuseModule } from './reuse/reuse.module';
     ProyectosModule,
     RefuerzosModule,
     ValoracionesModule,
+    AvisosClaseModule,
     UsabilidadModule,
     CalificacionesModule,
     ReportesModule,
