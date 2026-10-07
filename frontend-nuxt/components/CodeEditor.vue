@@ -336,10 +336,7 @@ onMounted(async () => {
         EditorView.contentAttributes.of({
           ...(props.id ? { id: props.id } : {}),
           'aria-label': props.ariaLabel,
-          'aria-multiline': 'true',
-          // Enfocable siempre (también en solo lectura): en el celular la zona del editor se desplaza y quien usa el
-          // teclado tiene que poder entrar a ella (axe scrollable-region-focusable, 07/10).
-          tabindex: '0'
+          'aria-multiline': 'true', tabindex: '0' // enfocable también en solo lectura: en el celular la zona se desplaza (axe, 07/10)
         }),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
