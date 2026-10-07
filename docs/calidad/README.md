@@ -15,6 +15,10 @@ registros de un momento: no se editan después de escritos. Las correcciones que
 Los resultados de cada semana de la prueba van en `resultados-prueba/PRUEBA_SEMANA_N_RESULTADOS.md` (la carpeta se crea
 con el primero).
 
+| Fecha | Hallazgos de la prueba |
+|---|---|
+| 2026-10-07 | [José, semana 8](resultados-prueba/HALLAZGOS_JOSE_S08_2026-10-07.md): la pantalla del ejercicio, las notificaciones y el contraste de las métricas (5 hechos, 1 pendiente suyo) |
+
 ## Carpetas
 
 ```

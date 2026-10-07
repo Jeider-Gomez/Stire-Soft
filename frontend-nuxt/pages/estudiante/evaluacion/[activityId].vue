@@ -1,7 +1,8 @@
 <template>
   <div class="md:h-full flex flex-col md:flex-row md:overflow-hidden bg-base-bg-primario">
+    <ExerciseFranjaPanelPlegado v-if="(isCodingActivity || isHtmlCssActivity) && panelPlegado" controla="panel-enunciado" @mostrar="plegarPanel(false)" />
     <!-- COLUMNA IZQUIERDA: Enunciado, Casos de Prueba (solo coding) y Consola. Los demás tipos usan una sola columna. -->
-    <div v-if="isCodingActivity || isHtmlCssActivity" class="w-full md:w-[45%] lg:w-[40%] flex flex-col border-r border-base-borde-sutil bg-base-blanco md:h-full max-h-[55vh] md:max-h-none overflow-hidden">
+    <div v-if="isCodingActivity || isHtmlCssActivity" v-show="!panelPlegado" id="panel-enunciado" class="w-full md:w-[45%] lg:w-[40%] flex flex-col border-r border-base-borde-sutil bg-base-blanco md:h-full max-h-[55vh] md:max-h-none overflow-hidden">
       <!-- Pestañas de Navegación del Panel Izquierdo -->
       <div class="flex items-center border-b border-base-borde-sutil bg-base-bg-secundario text-xs font-semibold px-2 pt-2 gap-1 flex-shrink-0">
         <button
@@ -31,6 +32,10 @@
           class="min-h-[44px] px-3 py-2 rounded-t-md transition-colors"
           :class="leftTab === 'consola' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'">
           <span class="inline-flex items-center gap-1.5"><Terminal :size="14" aria-hidden="true" /> Registro</span>
+        </button>
+        <button type="button" class="ml-auto min-h-[44px] px-2 rounded-md inline-flex items-center gap-1 text-slate-600 hover:text-base-texto-primario"
+          :aria-expanded="true" aria-controls="panel-enunciado" title="Plegar el panel para escribir con más espacio" @click="plegarPanel(true)">
+          <PanelLeftClose :size="15" aria-hidden="true" /> Plegar<span class="sr-only"> el enunciado</span>
         </button>
       </div>
 
@@ -390,7 +395,7 @@ import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
 import { tituloConNombre } from '~/utils/tituloPagina'
 import { mensajeCalibracion } from '~/utils/confianza'
 import { CALIDADES, calidadDelResultado, EFECTO_EN_REPASOS } from '~/utils/escalaResultados'
-import { BookOpen, Check, ClipboardCheck, FlaskConical, Lightbulb, ListChecks, Lock, PartyPopper, Scale, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
+import { BookOpen, Check, ClipboardCheck, FlaskConical, Lightbulb, ListChecks, Lock, PanelLeftClose, PartyPopper, Scale, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
 import { ayudaSegunFallos, debeOfrecerTutor, pistaSegunTipo, TEXTO_AYUDA, type Ayuda } from '~/utils/ofertaTutor'
@@ -406,6 +411,9 @@ const workspaceStore = useWorkspaceStore()
 // El nombre del ejercicio en la pestaña y para el lector de pantalla (WCAG 2.4.2).
 useHead({ title: computed(() => tituloConNombre(workspaceStore.currentExercise?.title, route.path)) })
 const leftTab = ref<'enunciado' | 'casos' | 'consola'>('enunciado')
+const { plegado: panelPlegado, plegar: plegarPanel } = usePanelPlegable('stire.ejercicio.panelPlegado')
+catch { /* sin almacenamiento: no se recuerda */ }
+}
 const tutorStore = useTutorStore()
 
 // Oferta del Tutor al fallar: vuelve a aparecer en cada nueva prueba, salvo que el Tutor ya esté abierto.
