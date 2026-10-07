@@ -1,12 +1,23 @@
 <template>
   <!-- Lo que dicen los estudiantes de cada lección (UI-04): «¿Te sirvió esta explicación?», sin nombres. Primero las que
        vale la pena revisar (3 votos o más y más «No» que «Sí»). -->
-  <section v-if="filas.length" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 space-y-3" aria-labelledby="valoraciones-titulo">
+  <!-- Siempre visible (07/10): antes no aparecía hasta el primer voto y el docente no sabía que existía. -->
+  <section v-if="cargado" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 space-y-3" aria-labelledby="valoraciones-titulo">
     <div>
       <h2 id="valoraciones-titulo" class="text-sm font-bold text-base-texto-primario">¿Les sirvieron las explicaciones?</h2>
-      <p class="text-xs text-slate-600">Lo que respondieron tus estudiantes al final de cada lección, sin sus nombres.</p>
+      <p class="text-xs text-slate-600">
+        Al final de cada lección tus estudiantes responden «¿Te sirvió esta explicación?» y, si no, qué no quedó claro. Aquí lo ves por
+        lección, sin sus nombres; primero las que vale la pena revisar.
+      </p>
     </div>
-    <ul class="divide-y divide-base-borde-sutil">
+    <p v-if="!filas.length" class="text-xs text-base-texto-secundario bg-base-bg-secundario rounded-md p-3">
+      Todavía nadie ha respondido. Cuando tus estudiantes terminen una lección, aquí verás cuántos dijeron que les sirvió.
+    </p>
+    <p v-else class="text-xs text-base-texto-primario">
+      <span class="font-semibold">{{ totalVotos }} {{ totalVotos === 1 ? 'respuesta' : 'respuestas' }}</span> en {{ filas.length }} {{ filas.length === 1 ? 'lección' : 'lecciones' }}
+      <span v-if="porRevisar"> · <span class="font-semibold text-red-700">{{ porRevisar }} para revisar</span></span>
+    </p>
+    <ul v-if="filas.length" class="divide-y divide-base-borde-sutil">
       <li v-for="f in filas" :key="f.learningUnitId" class="py-3 space-y-1.5">
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-semibold text-base-texto-primario flex-1 min-w-[10rem]">{{ f.titulo }}</span>
@@ -27,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { ThumbsDown, ThumbsUp } from 'lucide-vue-next'
 
 interface Fila { learningUnitId: number; titulo: string; si: number; no: number; porcentajeUtil: number | null; comentarios: string[]; revisar: boolean }
@@ -35,8 +46,12 @@ interface Fila { learningUnitId: number; titulo: string; si: number; no: number;
 const props = defineProps<{ classId: number }>()
 const api = useApi()
 const filas = ref<Fila[]>([])
+const cargado = ref(false)
+const totalVotos = computed(() => filas.value.reduce((n, f) => n + f.si + f.no, 0))
+const porRevisar = computed(() => filas.value.filter((f) => f.revisar).length)
 
 onMounted(async () => {
   try { filas.value = await api.get<Fila[]>(`/valoraciones/clase/${props.classId}`) } catch { filas.value = [] }
+  cargado.value = true
 })
 </script>
