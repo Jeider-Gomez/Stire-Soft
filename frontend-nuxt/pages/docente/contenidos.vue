@@ -127,6 +127,7 @@
     <DocenteContenidosVentanaArchivarTema v-else-if="ventana?.tipo === 'archivar-tema'" :tema="ventana.tema" @cerrar="ventana = null" />
     <DocenteContenidosVentanaEditarLeccion v-else-if="ventana?.tipo === 'leccion'" :leccion="ventana.leccion" @cerrar="ventana = null" />
     <DocenteContenidosVentanaImportar v-else-if="ventana?.tipo === 'importar'" @cerrar="ventana = null" />
+    <DocenteContenidosVentanaCrear v-else-if="ventana?.tipo === 'crear'" :nivel="ventana.nivel" :padre-id="ventana.padreId" :orden="ventana.orden" @creado="onCreado" @cerrar="ventana = null" />
 
     <!-- Ventana única de eliminación para módulo / tema / lección (B3) -->
     <DocenteContenidosVentanaEliminar
@@ -138,14 +139,6 @@
       @cerrar="confirmacion = null"
       @confirmar="ejecutarEliminar"
       @archivar="onArchivar" />
-
-    <!-- Modales para construir currículo (Módulo, Tema, Unidad) -->
-    <CurriculumBuilderModals
-      ref="builderModalsRef"
-      @section-created="onSectionCreated"
-      @topic-created="onTopicCreated"
-      @unit-created="onUnitCreated"
-      @feedback="msg => avisar({ tipo: 'exito', texto: msg })" />
 
     <!-- Modal para gestionar Lecciones de una unidad -->
     <UnitLessonsModal
@@ -161,7 +154,6 @@
 // archivo de 1131 líneas con cuatro ventanas y sus llamadas a la API).
 import { computed, nextTick, onMounted, provide, ref } from 'vue'
 import { Archive, BookOpen, Check, ChevronRight, CopyPlus, EyeOff, FileText, Folder, Loader2, Pencil, Plus, Trash2, TriangleAlert } from 'lucide-vue-next'
-import CurriculumBuilderModals from '~/components/docente/CurriculumBuilderModals.vue'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 import { CLAVE_CONTENIDOS, useContenidosCurso } from '~/composables/useContenidosCurso'
 import { useContenidosAcciones } from '~/composables/useContenidosAcciones'
@@ -190,6 +182,7 @@ type Ventana =
   | { tipo: 'archivar-tema'; tema: TemaDelArbol }
   | { tipo: 'leccion'; leccion: LeccionDelArbol }
   | { tipo: 'importar' }
+  | { tipo: 'crear'; nivel: 'modulo' | 'tema' | 'leccion'; padreId: number; orden: number; sectionId?: number; topicId?: number }
 const ventana = ref<Ventana | null>(null)
 const openEditModuleModal = (modulo: ModuloDelArbol) => { ventana.value = { tipo: 'modulo', modulo } }
 const confirmArchiveModule = (modulo: ModuloDelArbol) => {
@@ -276,18 +269,18 @@ function onArchivar() {
 }
 
 // Crear módulos, temas y lecciones, y escribir las explicaciones: sus ventanas ya eran componentes aparte.
-const builderModalsRef = ref<InstanceType<typeof CurriculumBuilderModals> | null>(null)
 const lessonsModalRef = ref<InstanceType<typeof UnitLessonsModal> | null>(null)
 const selectedUnitForLessons = ref<{ id: number; title: string } | null>(null)
 
+// Crear módulo, tema o lección: una sola ventana (VentanaCrear) sobre la base común.
 function openNewModuleModal() {
-  if (selectedClassId.value) builderModalsRef.value?.openCreateModule(selectedClassId.value, mayorOrden(sections.value))
+  if (selectedClassId.value) ventana.value = { tipo: 'crear', nivel: 'modulo', padreId: selectedClassId.value, orden: mayorOrden(sections.value) + 1 }
 }
 function openNewTopicModal(sec: ModuloDelArbol) {
-  builderModalsRef.value?.openCreateTopic(sec.id, mayorOrden(sec.topics))
+  ventana.value = { tipo: 'crear', nivel: 'tema', padreId: sec.id, orden: mayorOrden(sec.topics) + 1, sectionId: sec.id }
 }
 function openNewUnitModal(sec: ModuloDelArbol, topic: TemaDelArbol) {
-  builderModalsRef.value?.openCreateUnit(sec.id, topic.id, mayorOrden(topic.learningUnits))
+  ventana.value = { tipo: 'crear', nivel: 'leccion', padreId: topic.id, orden: mayorOrden(topic.learningUnits) + 1, sectionId: sec.id, topicId: topic.id }
 }
 function openLessonsModal(unit: LeccionDelArbol, opts: { create?: boolean; editId?: number } = {}) {
   selectedUnitForLessons.value = { id: unit.id, title: unit.title }
@@ -296,16 +289,20 @@ function openLessonsModal(unit: LeccionDelArbol, opts: { create?: boolean; editI
 function onLessonsModalClosed() {
   if (selectedUnitForLessons.value) void loadLessons(selectedUnitForLessons.value.id)
 }
-function onSectionCreated(nuevo: ModuloDelArbol) {
-  sections.value.push({ ...nuevo, isPublished: nuevo.isPublished ?? false, topics: [] })
-}
-function onTopicCreated(p: { sectionId: number; topic: TemaDelArbol }) {
-  const m = sections.value.find((s) => s.id === p.sectionId)
-  if (m) (m.topics ??= []).push({ ...p.topic, learningUnits: [] })
-}
-function onUnitCreated(p: { sectionId: number; topicId: number; unit: LeccionDelArbol }) {
-  const t = sections.value.find((s) => s.id === p.sectionId)?.topics?.find((x) => x.id === p.topicId)
-  if (t) (t.learningUnits ??= []).push(p.unit)
+/** Lo recién creado se agrega al árbol en su lugar, sin recargar. */
+function onCreado(creado: ModuloDelArbol | TemaDelArbol | LeccionDelArbol) {
+  const v = ventana.value
+  if (v?.tipo !== 'crear') return
+  if (v.nivel === 'modulo') {
+    const m = creado as ModuloDelArbol
+    sections.value.push({ ...m, isPublished: m.isPublished ?? false, topics: [] })
+  } else if (v.nivel === 'tema') {
+    const m = sections.value.find((s) => s.id === v.sectionId)
+    if (m) (m.topics ??= []).push({ ...(creado as TemaDelArbol), learningUnits: [] })
+  } else {
+    const t = sections.value.find((s) => s.id === v.sectionId)?.topics?.find((x) => x.id === v.topicId)
+    if (t) (t.learningUnits ??= []).push(creado as LeccionDelArbol)
+  }
 }
 
 // La lección abierta muestra sus explicaciones y sus ejercicios.

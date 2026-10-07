@@ -8,7 +8,6 @@ const COMPONENTES_CON_API = [
   'components/admin/HistorialRoles.vue',
   'components/EncuestaSus.vue',
   'components/InvitacionEncuesta.vue',
-  'components/docente/CurriculumBuilderModals.vue',
   'components/docente/EntregaForm.vue',
   'components/estudiante/ResumenLogros.vue',
   'components/ValorarLeccion.vue',

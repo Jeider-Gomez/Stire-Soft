@@ -7,8 +7,8 @@ import * as path from 'path';
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
 const CARPETAS = ['components', 'pages', 'composables', 'utils', 'stores', 'layouts', 'plugins', 'middleware'];
 const PATRON = /:\s*any\b|<any>|, any>|as any|any\[\]/g;
-/** El techo de hoy. Si bajas el número de `any`, baja también este. */
-const TECHO = 35;
+/** El techo de hoy. Si bajas el número de `any`, baja también este. (07/10: 35 → 27, con Codex y la ventana única de crear.) */
+const TECHO = 27;
 
 function archivos(dir: string): string[] {
   let todos: string[] = [];

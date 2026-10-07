@@ -4,7 +4,6 @@ import * as path from 'path';
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
 const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'components/CodeEditor.vue': { lineas: 438, motivo: 'Editor CodeMirror; edicion, estado y comandos forman una sola herramienta.' },
-  'components/docente/CurriculumBuilderModals.vue': { lineas: 429, motivo: 'Coordina tres flujos relacionados de creacion curricular y sus eventos de retorno al arbol.' },
   'components/docente/LessonEditor.vue': { lineas: 336, motivo: 'Editor de una leccion; contenido y estado de edicion van juntos.' },
   'components/docente/SelectorAsignatura.vue': { lineas: 324, motivo: 'Seleccion y busqueda del catalogo forman una unica interaccion.' },
   'components/docente/ArbolContenidos.vue': { lineas: 401, motivo: 'Árbol de módulos, temas y lecciones con menú Más y bloques archivados; Fase 30 B3.' },

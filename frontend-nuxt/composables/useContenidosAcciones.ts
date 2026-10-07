@@ -3,6 +3,7 @@
  * Fase 30 B3: archivar, restaurar, impacto y eliminar — todo por nivel.
  */
 import type { ImpactoEliminacion } from '~/utils/cuentaRegresiva'
+import type { LeccionDelArbol, ModuloDelArbol, TemaDelArbol } from '~/utils/contenidosCurso'
 
 type Nivel = 'modulo' | 'tema' | 'leccion'
 
@@ -54,5 +55,17 @@ export function useContenidosAcciones() {
     return api.get<ImpactoEliminacion>(`/class/${classId}/impacto`)
   }
 
-  return { eliminarModulo, eliminarTema, eliminarLeccion, eliminar, archivar, restaurar, impacto, impactoClase }
+  type DatosNuevo = { title: string; description?: string; order: number }
+  /** Crear: el módulo nace como borrador; la lección lleva su dificultad. */
+  function crearModulo(classId: number, d: DatosNuevo): Promise<ModuloDelArbol> {
+    return api.post<ModuloDelArbol>('/sections', { classId, ...d })
+  }
+  function crearTema(sectionId: number, d: DatosNuevo): Promise<TemaDelArbol> {
+    return api.post<TemaDelArbol>('/topic', { sectionId, ...d })
+  }
+  function crearLeccion(topicId: number, d: DatosNuevo & { difficulty: 'basico' | 'intermedio' | 'avanzado' }): Promise<LeccionDelArbol> {
+    return api.post<LeccionDelArbol>('/learning-unit', { topicId, ...d })
+  }
+
+  return { eliminarModulo, eliminarTema, eliminarLeccion, eliminar, archivar, restaurar, impacto, impactoClase, crearModulo, crearTema, crearLeccion }
 }
