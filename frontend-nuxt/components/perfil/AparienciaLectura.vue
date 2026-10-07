@@ -21,7 +21,7 @@
     <fieldset class="space-y-2" :disabled="!!temaDeContraste" :aria-describedby="temaDeContraste ? `${prefijo}-nota-tema` : undefined">
       <legend class="text-xs font-semibold text-base-texto-primario mb-1">Tema</legend>
       <p v-if="temaDeContraste" :id="`${prefijo}-nota-tema`" class="text-[11px] text-base-texto-secundario">
-        Con el tema de contraste «{{ temaDeContraste.texto }}» activo, se usan sus colores. Elige «Ninguno» abajo para volver a estos.
+        Con el tema de contraste «{{ temaDeContraste.texto }}» activo, se usan sus colores. Apaga «Tema de contraste» abajo para volver a estos.
       </p>
       <div class="grid sm:grid-cols-3 gap-2">
         <label v-for="t in TEMAS" :key="t.valor" class="flex flex-col gap-2 rounded-md border-2 p-2 cursor-pointer text-xs has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-acento-ambar-fuerte"
@@ -49,30 +49,50 @@
       </label>
     </fieldset>
 
-    <!-- Temas de contraste: los cuatro de Windows 11, con su vista previa «Aa» y los puntos de su paleta. -->
-    <fieldset class="space-y-2">
-      <legend class="text-xs font-semibold text-base-texto-primario mb-1">Tema de contraste</legend>
-      <p class="text-[11px] text-base-texto-secundario">Pocos colores muy distintos entre sí, como los «Temas de contraste» de Windows. Para baja visión o si te cansa la vista.</p>
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-        <label v-for="t in OPCIONES_CONTRASTE" :key="t.valor" class="flex flex-col gap-1.5 rounded-md border-2 p-1.5 cursor-pointer text-xs has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-acento-ambar-fuerte"
-          :class="a.temaContraste === t.valor ? 'border-acento-ambar-fuerte' : 'border-base-borde-sutil'">
-          <span class="flex items-end justify-between h-16 rounded px-2 py-1.5 border" aria-hidden="true"
-            :style="t.paleta ? { background: t.paleta.fondo, color: t.paleta.texto, borderColor: t.paleta.texto } : {}"
-            :class="t.paleta ? '' : 'border-dashed border-base-borde-fuerte text-base-texto-secundario'">
-            <span class="text-2xl font-semibold leading-none">Aa</span>
-            <span v-if="t.paleta" class="flex gap-0.5">
-              <span v-for="(c, i) in puntos(t.paleta)" :key="i" class="w-2 h-2 rounded-full border" :style="{ background: c, borderColor: t.paleta.texto }" />
-            </span>
+    <!-- Temas de contraste, como en Windows 11 (Configuración › Accesibilidad › Temas de contraste): un interruptor y, al
+         encenderlo, los cuatro temas con su vista previa «Aa» y los puntos de su paleta. Apagado no ocupa espacio: quien no
+         lo necesita no tiene que leer cinco tarjetas, y quien sí lo busca lo encuentra con un nombre claro. -->
+    <div class="rounded-lg border border-base-borde-sutil">
+      <div class="flex items-center gap-3 p-3">
+        <div class="flex-1 min-w-0">
+          <p :id="`${prefijo}-ct-titulo`" class="text-xs font-semibold text-base-texto-primario">Tema de contraste</p>
+          <p :id="`${prefijo}-ct-ayuda`" class="text-[11px] text-base-texto-secundario">Pocos colores muy distintos entre sí, como en Windows. Para baja visión o si te cansa la vista.</p>
+        </div>
+        <button type="button" role="switch" :aria-checked="!!temaDeContraste" :aria-labelledby="`${prefijo}-ct-titulo`"
+          :aria-describedby="`${prefijo}-ct-ayuda`" :aria-controls="`${prefijo}-ct-temas`"
+          class="shrink-0 inline-flex items-center gap-2 min-h-[44px] px-1 rounded-md text-xs font-semibold text-base-texto-primario focus-visible:outline focus-visible:outline-2 focus-visible:outline-acento-ambar-fuerte"
+          @click="alternarContraste">
+          <span class="relative inline-block w-11 h-6 rounded-full border-2 transition-colors"
+            :class="temaDeContraste ? 'bg-acento-ambar-fuerte border-acento-ambar-fuerte' : 'bg-base-bg-secundario border-base-borde-fuerte'" aria-hidden="true">
+            <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full transition-transform"
+              :class="temaDeContraste ? 'translate-x-5 bg-base-blanco' : 'bg-base-texto-secundario'" />
           </span>
-          <span class="flex items-start gap-1.5 min-h-[44px]">
-            <input :checked="a.temaContraste === t.valor" type="radio" :name="`${prefijo}-contraste`" :value="t.valor" class="mt-0.5 w-4 h-4 accent-acento-ambar-fuerte"
-              @change="cambiar({ temaContraste: t.valor })" />
-            <span><span class="font-semibold text-base-texto-primario">{{ t.texto }}</span>
-              <span class="block text-[10px] text-base-texto-secundario">{{ t.ayuda }}</span></span>
-          </span>
-        </label>
+          <!-- El estado también en palabras: no solo por el color o la posición (WCAG 1.4.1). -->
+          <span aria-hidden="true" class="w-14 text-left">{{ temaDeContraste ? 'Activado' : 'Apagado' }}</span>
+        </button>
       </div>
-    </fieldset>
+      <fieldset v-show="temaDeContraste" :id="`${prefijo}-ct-temas`" class="border-t border-base-borde-sutil p-3 space-y-2">
+        <legend class="sr-only">Elige el tema de contraste</legend>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <label v-for="t in TEMAS_CONTRASTE" :key="t.valor" class="flex flex-col gap-1.5 rounded-md border-2 p-1.5 cursor-pointer text-xs has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-acento-ambar-fuerte"
+            :class="a.temaContraste === t.valor ? 'border-acento-ambar-fuerte' : 'border-base-borde-sutil'">
+            <span class="flex items-end justify-between h-16 rounded px-2 py-1.5 border" aria-hidden="true"
+              :style="{ background: t.paleta.fondo, color: t.paleta.texto, borderColor: t.paleta.texto }">
+              <span class="text-2xl font-semibold leading-none">Aa</span>
+              <span class="flex gap-0.5">
+                <span v-for="(c, i) in puntos(t.paleta)" :key="i" class="w-2 h-2 rounded-full border" :style="{ background: c, borderColor: t.paleta.texto }" />
+              </span>
+            </span>
+            <span class="flex items-start gap-1.5 min-h-[44px]">
+              <input :checked="a.temaContraste === t.valor" type="radio" :name="`${prefijo}-contraste`" :value="t.valor" class="mt-0.5 w-4 h-4 accent-acento-ambar-fuerte"
+                @change="elegirContraste(t.valor)" />
+              <span><span class="font-semibold text-base-texto-primario">{{ t.texto }}</span>
+                <span class="block text-[10px] text-base-texto-secundario">{{ t.ayuda }}</span></span>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
 
     <fieldset class="space-y-2">
       <legend class="text-xs font-semibold text-base-texto-primario mb-1">Tamaño del texto</legend>
@@ -124,10 +144,22 @@ const CLARO = { fondo: '#F7F9FC', texto: '#1E293B', boton: '#0B3D91' }
 const OSCURO = { fondo: '#0B1220', texto: '#E6ECF5', boton: '#93C5FD' }
 const MUESTRAS: Record<Tema, Array<typeof CLARO>> = { claro: [CLARO], oscuro: [OSCURO], sistema: [CLARO, OSCURO] }
 
-const OPCIONES_CONTRASTE: Array<{ valor: TemaContraste; texto: string; ayuda: string; paleta?: PaletaContraste }> = [
-  { valor: 'ninguno', texto: 'Ninguno', ayuda: 'Los colores del tema de arriba.' },
-  ...TEMAS_CONTRASTE,
-]
+// Al encender el interruptor vuelve el último tema de contraste que se usó en este navegador (Acuático la primera vez).
+const CLAVE_ULTIMO = 'stire.apariencia.ultimoContraste'
+function ultimoContraste(): TemaContraste {
+  try {
+    const v = localStorage.getItem(CLAVE_ULTIMO)
+    return TEMAS_CONTRASTE.some((t) => t.valor === v) ? (v as TemaContraste) : 'acuatico'
+  } catch { return 'acuatico' }
+}
+function elegirContraste(valor: TemaContraste) {
+  cambiar({ temaContraste: valor })
+  try { localStorage.setItem(CLAVE_ULTIMO, valor) } catch { /* sin almacenamiento: la próxima vez, Acuático */ }
+}
+function alternarContraste() {
+  if (temaDeContraste.value) cambiar({ temaContraste: 'ninguno' })
+  else elegirContraste(ultimoContraste())
+}
 // Los puntos de la vista previa, como en Windows: texto, enlace, deshabilitado, seleccionado y botón.
 const puntos = (p: PaletaContraste) => [p.texto, p.enlace, p.inactivo, p.resalte, p.botonTexto]
 </script>

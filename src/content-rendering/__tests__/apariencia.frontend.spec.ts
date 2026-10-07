@@ -213,10 +213,15 @@ describe('temas de contraste como los de Windows 11 (07/10)', () => {
     expect(ct).toContain(':is(:disabled, [aria-disabled="true"]):not([data-sin-regla]) { opacity: 1 !important;');
   });
 
-  it('el panel ofrece «Ninguno» y los cuatro temas con vista previa, «Reducir el movimiento» y el aviso de Windows', () => {
+  it('el panel ofrece un interruptor «Tema de contraste» que despliega los cuatro temas, «Reducir el movimiento» y el aviso de Windows', () => {
     const c = leer('components', 'perfil', 'AparienciaLectura.vue');
-    expect(c).toContain('<legend class="text-xs font-semibold text-base-texto-primario mb-1">Tema de contraste</legend>');
-    expect(c).toContain("{ valor: 'ninguno', texto: 'Ninguno'");
+    // 07/10 noche, Jeider: la sección debía ser «un desplegable que se activa». Como en Windows: interruptor y, encendido, los temas.
+    expect(c).toContain('role="switch" :aria-checked="!!temaDeContraste"');
+    expect(c).toContain('<fieldset v-show="temaDeContraste"');
+    expect(c).toContain('v-for="t in TEMAS_CONTRASTE"');
+    expect(c).not.toContain("texto: 'Ninguno'");
+    // Apagarlo vuelve a los colores normales; encenderlo recuerda el último tema.
+    expect(c).toMatch(/if \(temaDeContraste\.value\) cambiar\(\{ temaContraste: 'ninguno' \}\)\s*else elegirContraste\(ultimoContraste\(\)\)/);
     expect(c).toContain('Reducir el movimiento');
     expect(c).toContain('sistemaConColoresForzados()');
     const temas = leer('assets', 'css', 'temas.css');
