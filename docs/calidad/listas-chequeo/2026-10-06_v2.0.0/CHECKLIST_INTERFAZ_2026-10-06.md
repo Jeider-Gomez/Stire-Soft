@@ -8,10 +8,10 @@
 
 | | Antes (04/10) | Hoy (06/10) |
 |---|---|---|
-| **Total** | 20/32 · 62.5 % · Básico con observaciones | **30/32 · 93.8 % · Sobresaliente** |
+| **Total** | 20/32 · 62.5 % · Básico con observaciones | **31/32 · 96.9 % · Sobresaliente** (actualizado el 07/10) |
 | Bloque 1: Experiencia de Usuario (Capítulo 12) | 10/16 | 15/16 |
 | Bloque 2: Diseño para la Movilidad (Capítulo 13) | 5/8 | 8/8 |
-| Bloque 3: Diseño Basado en Patrones (Capítulo 14) | 5/8 | 7/8 |
+| Bloque 3: Diseño Basado en Patrones (Capítulo 14) | 5/8 | 8/8 |
 
 ## 1. Datos generales
 
@@ -24,7 +24,7 @@
 | URL Demo / Repositorio | https://stire-soft.vercel.app · https://github.com/Jeider-Gomez/Stire-Soft |
 | Docente / Evaluador | Prof. Raúl Toscano Miranda · Autoevaluación del equipo STIRE-Soft (revisión con apoyo de Claude Code) |
 | Nombre de la Aplicación / Frontend | STIRE-Soft — Sistema Tutor Inteligente con Repetición Espaciada (frontend Nuxt 3) |
-| Calificación final | **30 / 32 puntos = 93.8 / 100 · Sobresaliente** |
+| Calificación final | **31 / 32 puntos = 96.9 / 100 · Sobresaliente** (actualizada el 07/10, PAT-04) |
 
 Escala del profesor: **C** cumple totalmente (2) · **CP** cumple parcialmente (1) · **NC** no cumple (0) · **NA** no aplica.
 
@@ -57,7 +57,7 @@ Escala del profesor: **C** cumple totalmente (2) · **CP** cumple parcialmente (
 | **PAT-01** | Patrones arquitectónicos y de presentación (MVC / componentes) | CP | **C** ↑ | Ninguna página llama a la API desde la vista: 0 de 45 (eran 31 de 40 el 04/10). Cada pantalla organiza y pide sus datos a un composable por dominio (useUnidadEstudiante, useAsistenciaClase, useAjustesClase, useContenidosCurso y otros 25 nuevos); las reglas viven en utilidades puras con prueba. Una prueba automática impide que una página vuelva a llamar a la API (src/content-rendering/__tests__/pat01-paginas-sin-api.frontend.spec.ts). Queda: 26 componentes todavía llaman a la API; siguen el mismo camino, sin cambiar lo que ve el usuario. | — |
 | **PAT-02** | Patrones de navegación de interfaz (Tidwell, van Welie) | C | **C** | Menú lateral con la opción activa (aria-current), pestañas en la clase del docente y en el ejercicio, migas en la lección y ahora también en el ejercicio, y barra de acciones inferior en el celular. | — |
 | **PAT-03** | Patrones de entrada de datos y formularios | CP | **C** ↑ | El inicio de sesión valida sin el globo del navegador: el error aparece bajo el campo y el foco va al primero que falta (utils/registro.ts, faltantesDelIngreso). El código de clase tiene formato asistido (utils/codigoClase.ts): mayúsculas y guion mientras se escribe. El registro ya validaba campo a campo. Captura cel_validacion_login.webp. | — |
-| **PAT-04** | Prevención de antipatrones de UI | CP | **CP** | Sin «Mystery Meat» (0 botones sin nombre) ni ventanas encimadas. «The Blob» se atacó por responsabilidad, no por longitud: el panel del admin pasó de 1532 a 93 líneas, Contenidos de 1131 a 338, el editor de diagramas de 1322 a 791 y Notas de 584 a 102. 23 de 153 archivos pasan de 300 líneas y cada uno tiene escrito por qué (prueba pat04-componentes-grandes, que no deja crecer ninguno). Sigue en CP porque Ajustes de la clase (604 líneas) todavía junta seis secciones independientes. | Dividir Ajustes de la clase por secciones y CurriculumBuilderModals (varias ventanas en un archivo). |
+| **PAT-04** | Prevención de antipatrones de UI | CP | **C** ↑ | Sin «Mystery Meat» (0 botones sin nombre) ni ventanas encimadas: todas las ventanas usan la misma base accesible. «The Blob» se atacó por responsabilidad, no por longitud: se dividieron los cinco archivos que mezclaban responsabilidades (panel del admin 1532 → 93 líneas, Contenidos 1131 → 338, Ajustes de la clase 604 → 153, las tres ventanas de crear contenido 429 → una sola ventana, el constructor de ejercicios HTML/CSS 645 → 174 con su lógica en una utilidad con prueba). Quedan 20 de 159 archivos de más de 300 líneas, cada uno con su motivo escrito (una sola herramienta: editor de diagramas, editor de código, cajón del Tutor…); la prueba pat04-componentes-grandes no deja que crezcan ni que aparezcan nuevos (actualizado el 07/10). | — |
 
 ## 5. Consolidación
 
@@ -65,8 +65,8 @@ Escala del profesor: **C** cumple totalmente (2) · **CP** cumple parcialmente (
 |---|---|---|---|---|---|
 | Bloque 1: Experiencia de Usuario (Capítulo 12) | 8 | 16 | 10 | 15 | 93.8 % |
 | Bloque 2: Diseño para la Movilidad (Capítulo 13) | 4 | 8 | 5 | 8 | 100.0 % |
-| Bloque 3: Diseño Basado en Patrones (Capítulo 14) | 4 | 8 | 5 | 7 | 87.5 % |
-| **Total** | | **32** | **20** | **30** | **93.8 % · Sobresaliente** |
+| Bloque 3: Diseño Basado en Patrones (Capítulo 14) | 4 | 8 | 5 | 8 | 100.0 % |
+| **Total** | | **32** | **20** | **31** | **96.9 % · Sobresaliente** |
 
 ## 6. Fortalezas
 
@@ -74,7 +74,7 @@ Accesibilidad medida: 0 problemas de axe-core WCAG 2.1 AA en 20 pantallas y Ligh
 
 ## 7. Lo que queda
 
-1) Falta el SUS del equipo: se responde en la revisión humana, hasta el viernes 09/10 (UX-08). 2) Ajustes de la clase todavía junta seis secciones independientes (PAT-04). Compromiso: 1 esta semana; 2 sin cambiar lo que ve el usuario.
+1) Falta el SUS del equipo: se responde en la revisión humana, hasta el viernes 09/10 (UX-08). Con él, 32/32. (07/10: PAT-04 pasó a C al dividir Ajustes de la clase, las ventanas de crear contenido y el constructor HTML/CSS.)
 
 ## 8. Método
 

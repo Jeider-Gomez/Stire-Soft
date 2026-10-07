@@ -21,9 +21,9 @@ al Tutor. Tiene dos líneas de trabajo (interfaz y Tutores Inteligentes), una so
 ## Dónde estamos hoy
 
 **La evaluación de la IA más reciente es la del 06/10:** [`2026-10-06_v2.0.0/`](2026-10-06_v2.0.0/), con las dos listas en Word (formato del
-profesor) y en Markdown. Interfaz **30/32 · 93,8 % · Sobresaliente** y Tutores Inteligentes **24/24 · 100 %**. Respecto al 04/10 subieron
-MOB-03 (modo oscuro y opciones de lectura) y PAT-01 (ninguna página llama a la API); siguen en CP UX-08 (falta el SUS del equipo) y PAT-04
-(Ajustes de la clase todavía junta seis secciones).
+profesor) y en Markdown. Interfaz **31/32 · 96,9 % · Sobresaliente** y Tutores Inteligentes **24/24 · 100 %**. Respecto al 04/10 subieron
+MOB-03 (modo oscuro y opciones de lectura), PAT-01 (ninguna página llama a la API) y, el 07/10, PAT-04 (se dividieron los archivos que
+mezclaban responsabilidades). Solo queda en CP UX-08: falta el SUS del equipo.
 
 El razonamiento ítem por ítem de las rondas del 04/10 sigue en
 [`2026-10-04_seguimiento/ESTADO_STIRE_LISTAS_CHEQUEO.md`](2026-10-04_seguimiento/ESTADO_STIRE_LISTAS_CHEQUEO.md).
@@ -40,7 +40,7 @@ todos responden la encuesta SUS. Un ítem cuenta como cumplido solo con el ✅ d
 | **04/10/2026** · antes | `main @ 7c9977b` (v1.1.0 + ajustes de UI/UX del 02 y 03/10), desplegada | **20 / 32 · 62,5 %** · Básico con observaciones | **14 / 24 · 58,3 %** · Insuficiente | [`2026-10-04_antes/`](2026-10-04_antes/) |
 | **04/10/2026** · después | `main @ 4d41b8d` (v2.0.0 candidata), desplegada · **falta el visto bueno del equipo (05/10)** | **28 / 32 · 87,5 %** · Aceptable / Competente | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-04_despues/`](2026-10-04_despues/) |
 | **04/10/2026** · seguimiento | `main @ 6787d3e` (con organización académica, plantillas y logros), desplegada · 36 pantallas medidas | **28 / 32 · 87,5 %** · Aceptable / Competente (29/32 · 90,6 % · Sobresaliente con el SUS) | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-04_seguimiento/`](2026-10-04_seguimiento/) |
-| **06/10/2026** · v2.0.0 (IA, actualizada) | `main @ 80f63d6` (con la Fase H de Codex y la Fase 30: el docente publica, oculta, archiva y elimina con confianza), desplegada · se reevaluaron UX-02, UX-06, UX-08, MOB-03, PAT-01 y PAT-04 | **30 / 32 · 93,8 %** · Sobresaliente (31/32 · 96,9 % con el SUS) | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-06_v2.0.0/`](2026-10-06_v2.0.0/) |
+| **06/10/2026** · v2.0.0 (IA, actualizada) | `main @ 80f63d6` (con la Fase H de Codex y la Fase 30: el docente publica, oculta, archiva y elimina con confianza), desplegada · se reevaluaron UX-02, UX-06, UX-08, MOB-03, PAT-01 y PAT-04 | **31 / 32 · 96,9 %** · Sobresaliente (32/32 con el SUS; PAT-04 pasó a C el 07/10) | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-06_v2.0.0/`](2026-10-06_v2.0.0/) |
 | 09/10/2026 · revisión humana | v2.0.0 (etiqueta), con la nota de cada integrante y el SUS | — | — | se consolida en [`VERIFICACION_v2.0.0.md`](VERIFICACION_v2.0.0.md) |
 
 ### Antes y después (04/10/2026), por bloque

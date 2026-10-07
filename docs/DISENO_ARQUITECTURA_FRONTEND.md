@@ -71,6 +71,19 @@ navegador abrió y cerró cada ventana sin errores.
 La cifra inicial de 145 archivos Vue no coincide con el inventario actual de `pages/` y `components/`, que suma 142. El criterio sigue siendo separar responsabilidades distintas, no recortar líneas por sí mismas. El trinquete PAT-04 registra tamaños máximos y razones para que una modificación futura no introduzca archivos grandes sin revisión.
 
 PAT-01 no queda en la meta inicial de 2 páginas pendientes: solo resta `pages/docente/clase/[classId]/ajustes.vue`, que no se tocó porque pertenece a Antigravity. No se corrigieron advertencias ni otros defectos encontrados durante las verificaciones.
+
+## 5. Estado al 07/10/2026 (Fase 30 y cierre de PAT-04)
+
+| Criterio | Estado medido | Qué cambió |
+|---|---:|---|
+| PAT-01 | **0 de 45 páginas** llaman a la API | La Fase 30 llevó Ajustes de la clase a `useAjustesClase`. Quedan componentes que llaman a la API; siguen el mismo camino. |
+| PAT-04 | **139 de 159** archivos Vue con 300 líneas o menos; los 20 restantes, con su motivo | Se dividieron los archivos que mezclaban responsabilidades: Ajustes de la clase (604 → 153, una sección por componente en `components/docente/ajustes/`), las tres ventanas de crear contenido (`CurriculumBuilderModals.vue`, 429 → una sola `VentanaCrear.vue` sobre `AdminDialogo`) y el constructor HTML/CSS (645 → 174, con la lógica en `utils/reglasHtmlCss.ts` y su prueba). |
+| `any` | 27 (eran 35) | Techo bajado en `sin-any.frontend.spec.ts`. |
+
+Con esto PAT-01 y PAT-04 pasan a **C** en la evaluación de la IA
+([`docs/calidad/listas-chequeo/2026-10-06_v2.0.0/`](calidad/listas-chequeo/2026-10-06_v2.0.0/)). Cada división se recorrió en el
+navegador contra el backend local antes de subirla.
+
 ## Referencias
 
 - Brown, W. J., Malveau, R. C., McCormick, H. W. y Mowbray, T. J. (1998). *AntiPatterns: Refactoring Software, Architectures, and Projects in Crisis*. Wiley (citado en Pressman y Maxim, 2019, cap. 14).
