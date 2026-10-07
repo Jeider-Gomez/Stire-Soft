@@ -39,5 +39,7 @@ export function validarRevision(entrada: Record<string, unknown>): { estado: Est
   const estado = entrada.estado as EstadoReporte;
   if (!(ESTADOS_REPORTE as readonly string[]).includes(estado)) throw new ReporteInvalidoError('Estado no válido.');
   const nota = typeof entrada.nota === 'string' && entrada.nota.trim() ? entrada.nota.trim().slice(0, LIMITES_REPORTE.nota) : null;
+  // Resolver sin decir cómo no le sirve a quien lo envió ni al equipo después (07/10).
+  if (estado === 'resuelto' && !nota) throw new ReporteInvalidoError('Escribe cómo se resolvió: lo lee quien lo envió.');
   return { estado, nota };
 }

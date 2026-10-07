@@ -69,15 +69,19 @@ describe('ReportesService', () => {
     await expect(crear(30).service.crear(luisa, base)).rejects.toThrow(HttpException);
   });
 
-  it('la bandeja del admin pone primero lo más grave y nombra a quien lo reportó', async () => {
+  it('la bandeja del admin pone primero lo más nuevo (07/10) y nombra a quien lo reportó', async () => {
     const lista = await crear().service.todos();
-    expect(lista.map((r) => [r.id, r.autor])).toEqual([[2, 'Julián'], [1, 'Luisa'], [3, 'Luisa']]);
+    // 11:00, 10:00 y 9:00: la de las 9 es la más grave (3), pero ya no salta arriba de las nuevas.
+    expect(lista.map((r) => [r.id, r.autor])).toEqual([[3, 'Luisa'], [1, 'Luisa'], [2, 'Julián']]);
     await expect(crear().service.todos('raro')).rejects.toThrow(BadRequestException);
   });
 
   it('revisar un reporte que no existe da 404', async () => {
     await expect(crear().service.revisar(9, { estado: 'visto' })).rejects.toThrow(NotFoundException);
     await expect(crear().service.revisar(1, { estado: 'resuelto', nota: 'Listo' })).resolves.toEqual({ id: 1, estado: 'resuelto', nota: 'Listo' });
+    // Resolver exige decir cómo (lo lee quien lo envió); descartar no.
+    await expect(crear().service.revisar(1, { estado: 'resuelto', nota: '  ' })).rejects.toThrow('cómo se resolvió');
+    await expect(crear().service.revisar(1, { estado: 'descartado' })).resolves.toMatchObject({ estado: 'descartado', nota: null });
   });
 });
 

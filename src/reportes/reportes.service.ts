@@ -52,7 +52,10 @@ export class ReportesService {
     return lista.map((r) => ({ id: r.id, tipo: r.tipo, gravedad: r.gravedad, texto: r.texto, ruta: r.ruta, clase: r.clase, estado: r.estado, nota: r.nota, tieneCaptura: !!r.capturaId, createdAt: r.createdAt }));
   }
 
-  /** Bandeja del admin: lo más grave primero y, dentro de eso, lo más nuevo. */
+  /**
+   * Bandeja del admin: lo más nuevo primero (07/10, Jeider: «quiero ver las nuevas y me aparecen abajo»). Antes se
+   * ordenaba primero por gravedad; ahora la pantalla deja elegir «Más graves primero».
+   */
   async todos(estado?: string) {
     if (estado && !(ESTADOS_REPORTE as readonly string[]).includes(estado)) throw new BadRequestException('Estado no válido.');
     const lista = await this.reportes.find({ where: estado ? { estado: estado as EstadoReporte } : {}, order: { createdAt: 'DESC' }, take: 500 });
@@ -61,7 +64,7 @@ export class ReportesService {
     const nombre = new Map(usuarios.map((u) => [u.id, u.fullName]));
     return lista
       .map(({ capturaId, ...r }) => ({ ...r, tieneCaptura: !!capturaId, autor: nombre.get(r.userId) ?? '—' }))
-      .sort((a, b) => (b.gravedad ?? 0) - (a.gravedad ?? 0) || b.createdAt.getTime() - a.createdAt.getTime());
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || b.id - a.id);
   }
 
   /** El reporte, si es de quien lo pide o si es admin; a los demás, «no encontrado» (no se revela que existe). */
