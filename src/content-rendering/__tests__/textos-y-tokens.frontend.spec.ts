@@ -50,7 +50,7 @@ describe('íconos: Lucide, no símbolos de texto', () => {
   });
 
   it('subir y bajar tienen nombre accesible', () => {
-    for (const f of ['components/docente/exercise-builders/OrderingExerciseBuilder.vue', 'components/docente/exercise-builders/HtmlCssExerciseBuilder.vue']) {
+    for (const f of ['components/docente/exercise-builders/OrderingExerciseBuilder.vue', 'components/docente/exercise-builders/EditorReglaHtmlCss.vue']) {
       expect(leer(f)).toMatch(/aria-label="Subir (paso|regla)"/);
     }
   });
