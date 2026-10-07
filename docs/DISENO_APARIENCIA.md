@@ -112,6 +112,26 @@ Lo comprueba `apariencia.frontend.spec.ts`. Las preferencias siguen guardándose
 cuenta, para que sigan a la persona en otro computador (como Moodle y GitHub), necesita un cambio en el servidor y
 queda como siguiente paso.
 
+## 4 ter. Tercera vuelta (07/10, tarde): temas de contraste como los de Windows
+
+Jeider comparó con los «Temas de contraste» de Windows 11 (Acuático, Desierto, Anochecer y Cielo nocturno) y dijo que
+STIRE todavía no cumplía. La diferencia de fondo: un tema de contraste de Windows no es un oscuro más, es una **paleta
+reducida de ocho colores con significado** (fondo, texto, enlace, deshabilitado, seleccionado y botón), con 7 a 1 o más.
+
+- **«Tema de contraste»** en el panel de apariencia: Ninguno, Acuático, Desierto, Anochecer y Cielo nocturno, con la
+  vista previa «Aa» y los puntos de su paleta, como en Windows. Cuando hay uno, manda sobre el tema y el contraste.
+- La paleta vive en `utils/apariencia.ts` (`TEMAS_CONTRASTE`) y se aplica a las variables de color; `temas.css` reduce a
+  ella lo que tenía colores fijos (grises, degradados de la marca, el editor de código y el Tutor). Reglas de Microsoft:
+  un solo fondo y paneles separados por borde (2 px en ventanas), el texto secundario es el mismo texto, el gris solo
+  para lo deshabilitado, el color de enlace solo para enlaces y el de selección para lo seleccionado y el botón principal.
+- Único cambio frente a Windows: en Desierto, el texto sobre lo seleccionado es el crema del fondo (`#FFFAEF`), porque el
+  de Windows (`#FFF5E3`) da 6,98 a 1 y la prueba exige 7.
+- **«Reducir el movimiento»**, como Khan Academy (WCAG 2.3.3); se respeta también si lo pide el dispositivo.
+- La opción de antes se llama ahora **«Aumentar el contraste»** (como GitHub): refuerza el tema claro u oscuro.
+
+La prueba exhaustiva de ese día (39 pantallas, computador y celular, WCAG 2.2) está en
+[`calidad/auditorias/ACCESIBILIDAD_E_INCLUSION_2026-10-07.md`](calidad/auditorias/ACCESIBILIDAD_E_INCLUSION_2026-10-07.md).
+
 ## 5. Territorio de identidad visual
 
 `tailwind.config.ts` y `main.css` son el territorio de José. El cambio lo autorizó el dueño del proyecto el 04/10

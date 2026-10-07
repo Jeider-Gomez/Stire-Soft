@@ -56,6 +56,7 @@ actualizaron los enlaces que los citaban.
 | 2026-09-23 | [`REPORTE_AUDITORIA_QA_FASE24_2026-09-23.md`](auditorias/REPORTE_AUDITORIA_QA_FASE24_2026-09-23.md) | Fase 24 con el método de la guía maestra: 10 hallazgos (1 crítico, 3 altos); 6 corregidos en la misma rama. |
 | 2026-09-25 | [`REPORTE_AUDITORIA_QA_FASE25B_2026-09-25.md`](auditorias/REPORTE_AUDITORIA_QA_FASE25B_2026-09-25.md) | Ejercicios de HTML y CSS: seguridad de la vista previa, flujos y móvil. 7 hallazgos; corregidos los dos reales. |
 | 2026-09-30 | [`EVALUACION_HEURISTICA_2026-09-30.md`](auditorias/EVALUACION_HEURISTICA_2026-09-30.md) | Evaluación heurística (Nielsen) y recorrido cognitivo sobre la web real. |
+| 2026-10-07 | [`ACCESIBILIDAD_E_INCLUSION_2026-10-07.md`](auditorias/ACCESIBILIDAD_E_INCLUSION_2026-10-07.md) | Accesibilidad e inclusión con WCAG 2.2 en 39 pantallas (computador y celular) y los cuatro temas de contraste de Windows: de 196 elementos con fallas a 0. |
 
 ### [`guias-anteriores/`](guias-anteriores/) — guías ya reemplazadas
 
