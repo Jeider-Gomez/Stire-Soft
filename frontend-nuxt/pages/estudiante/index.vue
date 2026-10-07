@@ -6,10 +6,11 @@
         <Landmark :size="20" class="text-acento-ambar-fuerte shrink-0" aria-hidden="true" />
         <div>
           <span class="text-[10px] font-bold uppercase tracking-wider text-acento-ambar-fuerte">
-            Asignatura activa
+            Tu clase
           </span>
+          <!-- El nombre que le puso tu docente; si tienes otra clase que se llama igual, también el docente (etiquetaDeClase). -->
           <h2 class="text-xs sm:text-sm font-bold text-base-texto-primario">
-            {{ studentStore.currentClassName || 'Sin clase activa seleccionada' }}
+            {{ studentStore.currentClassLabel || 'Sin clase activa seleccionada' }}
           </h2>
           <p v-if="studentStore.currentTeacher" class="text-[11px] text-base-texto-secundario">
             Docente: {{ studentStore.currentTeacher }}

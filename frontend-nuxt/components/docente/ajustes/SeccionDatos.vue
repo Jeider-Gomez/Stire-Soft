@@ -33,8 +33,13 @@
         type="text"
         maxlength="120"
         placeholder="Nombre de la clase"
+        :aria-describedby="nombreYaUsado ? 'class-name-repetido' : undefined"
         class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors"
       />
+      <!-- Dos clases con el mismo nombre se confunden: los estudiantes creen ver el mismo curso (prueba del 07/10). -->
+      <p v-if="nombreYaUsado" id="class-name-repetido" class="text-[11px] mt-1 text-semantico-falla font-semibold">
+        Otra de tus clases se llama así. Agrégale el grupo o el periodo para que tus estudiantes las distingan.
+      </p>
     </div>
 
     <div>
@@ -94,13 +99,17 @@
 
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next'
-import type { AsignaturaInfo } from '~/utils/contextoAcademico'
+import { nombreRepetido, type AsignaturaInfo } from '~/utils/contextoAcademico'
 import type { ClassInfo, EstadoAjustesClase } from '~/composables/useAjustesClase'
 
 /** «Datos de la clase» de Ajustes: nombre, descripción, asignatura, grupo, periodo y el código para copiar. */
 const props = defineProps<{ ajustes: EstadoAjustesClase }>()
 const { classInfo } = props.ajustes
 const { messageOf } = useApiErrorMessage()
+// Los nombres de sus otras clases, para avisar si el nuevo nombre repite uno.
+const otrasClases = ref<Array<{ id: number; name: string }>>([])
+onMounted(async () => { otrasClases.value = await useDestinatarios().clasesDelDocente() })
+const nombreYaUsado = computed(() => nombreRepetido(editForm.name, otrasClases.value.filter((c) => c.id !== classInfo.value?.id).map((c) => c.name)))
 
 // Datos editables del formulario
 const editForm = reactive({

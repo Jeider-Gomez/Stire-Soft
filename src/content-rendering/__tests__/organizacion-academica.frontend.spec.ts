@@ -347,3 +347,23 @@ describe('Logros configurables por el docente, sin trabajo extra', () => {
     expect(leer('components', 'estudiante', 'MisLogros.vue')).toContain('v-if="!datos || datos.activos"');
   });
 });
+
+describe('clases que se llaman igual (07/10: en producción, tres clases de dos docentes se llamaban «Fundamentos de Algoritmia»)', () => {
+  type Cl = { classId: number; name: string; teacherName: string; code?: string };
+  const N = cargar<{ nombreRepetido: (n: string, otros: string[]) => boolean; etiquetaDeClase: (c: Cl, todas: Cl[]) => string }>('contextoAcademico');
+
+  it('detecta el nombre repetido sin importar tildes, mayúsculas ni espacios', () => {
+    expect(N.nombreRepetido('FUNDAMENTOS  de algoritmia', ['Fundamentos de Algoritmia'])).toBe(true);
+    expect(N.nombreRepetido('Fundamentos de Algoritmia — G2', ['Fundamentos de Algoritmia'])).toBe(false);
+    expect(N.nombreRepetido('  ', ['  '])).toBe(false);
+  });
+
+  it('el estudiante ve el nombre que puso su docente; si tiene otra igual, también quién la dicta', () => {
+    const pedro = { classId: 11, name: 'Fundamentos de Algoritmia', teacherName: 'Pedro Mendivil', code: 'CLASE-7P7K' };
+    const julio = { classId: 12, name: 'Fundamentos de Algoritmia', teacherName: 'Julio De La Espriella', code: 'CLASE-5AAU' };
+    const pedro2 = { classId: 13, name: 'Fundamentos de Algoritmia', teacherName: 'Pedro Mendivil', code: 'CLASE-SH42' };
+    expect(N.etiquetaDeClase(pedro, [pedro])).toBe('Fundamentos de Algoritmia');
+    expect(N.etiquetaDeClase(julio, [pedro, julio])).toBe('Fundamentos de Algoritmia · Julio De La Espriella');
+    expect(N.etiquetaDeClase(pedro, [pedro, pedro2])).toBe('Fundamentos de Algoritmia · Pedro Mendivil · CLASE-7P7K');
+  });
+});

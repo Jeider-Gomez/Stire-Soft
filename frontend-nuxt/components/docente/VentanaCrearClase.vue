@@ -27,7 +27,11 @@
       <div>
         <label for="new-class-name" class="block text-xs font-semibold text-slate-700 mb-1.5">Nombre de la clase</label>
         <input id="new-class-name" v-model="f.name" data-foco-inicial type="text" required maxlength="150" placeholder="Ej.: Algoritmos y lógica de programación"
-          class="input-stire min-h-[44px]" @input="nombreTocado = true" />
+          class="input-stire min-h-[44px]" :aria-describedby="nombreYaUsado ? 'new-class-name-repetido' : undefined" @input="nombreTocado = true" />
+        <!-- Dos clases con el mismo nombre se confunden: los estudiantes creen ver el mismo curso (prueba del 07/10). -->
+        <p v-if="nombreYaUsado" id="new-class-name-repetido" class="text-[11px] mt-1 text-semantico-falla font-semibold">
+          Ya tienes una clase que se llama así. Agrégale el grupo o el periodo (por ejemplo «{{ f.name.trim() }} — G2 {{ periodoActual() }}») para que tus estudiantes las distingan.
+        </p>
       </div>
 
       <div>
@@ -78,7 +82,7 @@
 import { computed, inject, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { BookOpen, Check, Loader2, Plus, X } from 'lucide-vue-next'
 import { CLAVE_CLASES_DOCENTE, type DatosClaseNueva } from '~/composables/useClasesDocente'
-import { nombreSugerido, periodoActual } from '~/utils/contextoAcademico'
+import { nombreRepetido, nombreSugerido, periodoActual } from '~/utils/contextoAcademico'
 import { normalizarCodigo, sugerirCodigo } from '~/utils/codigoClase'
 
 const emit = defineEmits<{ cerrar: []; creada: [aviso: string] }>()
@@ -94,6 +98,7 @@ const error = ref<string | null>(null)
 watch(() => f.asignatura?.id, (id) => { void cargarPlantillas(id) })
 // El nombre se sugiere con la asignatura, el grupo y el periodo hasta que el docente lo escribe él mismo.
 const nombreTocado = ref(false)
+const nombreYaUsado = computed(() => nombreRepetido(f.name, clases.value.map((c) => c.name)))
 watch(() => [f.asignatura, f.grupo, f.periodo] as const, ([a, grupo, periodo]) => {
   if (!nombreTocado.value && a) f.name = nombreSugerido(a.nombre, grupo, periodo)
 })

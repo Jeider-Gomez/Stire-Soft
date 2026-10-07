@@ -6,7 +6,7 @@ import { DOMINADO } from '~/utils/terminos'
 import { calcularAvance } from '~/utils/avanceCurso'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from './auth'
-import { contextoDeClase, type AsignaturaInfo } from '~/utils/contextoAcademico'
+import { contextoDeClase, etiquetaDeClase, type AsignaturaInfo } from '~/utils/contextoAcademico'
 
 export interface EnrolledClassInfo {
   id: number
@@ -30,6 +30,11 @@ export const useStudentStore = defineStore('student', () => {
   /** Dónde va la clase activa, para la barra superior: «Fundamentos de Algoritmia · 3.er semestre · Lic. en Informática». */
   const currentAsignatura = computed(() => enrolledClasses.value.find((c) => c.classId === currentClassId.value)?.asignatura ?? null)
   const currentContexto = computed(() => contextoDeClase({ asignatura: currentAsignatura.value }))
+  /** El nombre de la clase activa como lo puso su docente; si el estudiante tiene otra igual, con el docente (etiquetaDeClase). */
+  const currentClassLabel = computed(() => {
+    const c = enrolledClasses.value.find((x) => x.classId === currentClassId.value)
+    return c ? etiquetaDeClase(c, enrolledClasses.value) : currentClassName.value
+  })
 
   const isLoading = ref(false)
   const isSyncing = ref(false)
@@ -373,6 +378,7 @@ export const useStudentStore = defineStore('student', () => {
     proximoModulo,
     currentClassId,
     currentClassName,
+    currentClassLabel,
     currentTeacher,
     currentAsignatura,
     currentContexto,

@@ -103,3 +103,29 @@ export function contextoDeVinculos(vinculos: ReadonlyArray<VinculoInfo>): string
   if (vinculos.length === 1) return [inst, programaCorto(vinculos[0].program.name)].filter(Boolean).join(' · ')
   return [inst, `${vinculos.length} programas`].filter(Boolean).join(' · ')
 }
+
+/** Para comparar nombres de clase: sin tildes, mayúsculas ni espacios de más («FUNDAMENTOS  de algoritmia» = «Fundamentos de Algoritmia»). */
+const normalizarNombre = (n: string) => n.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim().toLowerCase()
+
+/**
+ * Si `nombre` ya lo usa otra de `otros`. En la prueba del 07/10 tres clases de dos docentes se llamaban igual
+ * («Fundamentos de Algoritmia», sin grupo ni periodo) y los estudiantes creían ver el mismo curso con otro contenido.
+ */
+export function nombreRepetido(nombre: string, otros: string[]): boolean {
+  const n = normalizarNombre(nombre)
+  return !!n && otros.some((o) => normalizarNombre(o) === n)
+}
+
+/**
+ * Cómo ve el estudiante el nombre de una clase: el que le puso su docente y, si tiene otra con el mismo nombre, también
+ * el docente (y el código, si además es el mismo docente). Así dos clases iguales nunca se confunden.
+ */
+export function etiquetaDeClase(
+  c: { classId: number; name: string; teacherName: string; code?: string },
+  todas: ReadonlyArray<{ classId: number; name: string; teacherName: string }>,
+): string {
+  const gemelas = todas.filter((o) => o.classId !== c.classId && normalizarNombre(o.name) === normalizarNombre(c.name))
+  if (!gemelas.length) return c.name
+  const mismoDocente = gemelas.some((o) => o.teacherName === c.teacherName)
+  return mismoDocente && c.code ? `${c.name} · ${c.teacherName} · ${c.code}` : `${c.name} · ${c.teacherName}`
+}

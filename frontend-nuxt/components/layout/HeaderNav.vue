@@ -45,7 +45,7 @@
       >
         <GraduationCap :size="13" class="text-slate-500 flex-shrink-0" />
         <span class="text-xs text-slate-600 font-medium truncate max-w-[220px]">
-          {{ studentStore.currentClassName }}
+          {{ studentStore.currentClassLabel }}
         </span>
         <span class="text-slate-500">•</span>
         <span class="text-xs text-slate-500 truncate max-w-[260px]" :title="studentStore.currentTeacher">
