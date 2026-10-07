@@ -1,5 +1,5 @@
 ---
-estado: vigente (04/10/2026)
+estado: vigente (07/10/2026)
 criterios: MOB-03 (modo oscuro, sensibilidad al contexto) y CON-01/accesibilidad de la lista de interfaz
 pedido del dueño: «mejórale el tema de la inclusividad… el tema de contraste no era cambiar un modo oscuro o algo así»
 ---
@@ -64,11 +64,60 @@ guarda nada (modo privado), se aplica igual sin recordarse.
 axe-core (WCAG 2.1 AA) en 20 pantallas de los tres roles, en tema claro y en oscuro: ver la tabla de resultados en
 `docs/calidad/listas-chequeo/2026-10-04_seguimiento/ESTADO_STIRE_LISTAS_CHEQUEO.md` §9.
 
+## 4 bis. Segunda vuelta (07/10): «todavía no está lista»
+
+Jeider la probó y dijo que el contraste no estaba listo aunque la IA lo había dado por cumplido. Tenía razón. Se probó
+de nuevo con **agent-browser** (axe-core 4.12, 20 pantallas del estudiante y el docente, en claro, oscuro, claro con alto
+contraste y oscuro con alto contraste) y mirando las capturas como lo haría un usuario. Lo que axe no veía:
+
+| Problema | Por qué importaba |
+|---|---|
+| «Alto contraste» apenas cambiaba un gris | Quien lo activaba no notaba la diferencia |
+| La opción estaba al final del perfil, debajo de la contraseña | Quien la necesita no la encuentra |
+| Con «Como mi dispositivo» en oscuro, el alto contraste no hacía nada | El CSS repetía el tema oscuro y esa copia no tenía alto contraste |
+| No se respetaba lo que pide el dispositivo (más contraste, temas de contraste de Windows) | Los botones sin borde y las barras desaparecían con los colores forzados |
+
+Y lo que axe sí encontró: el texto secundario del tema claro daba 4,3 a 1 sobre fondos grises (el mínimo es 4,5), un
+botón «Desactivado» de Ajustes empeoraba con alto contraste y el número de repasos del menú daba 4,2 a 1.
+
+### Cómo lo hacen otras plataformas
+
+| Plataforma | Qué toma STIRE |
+|---|---|
+| Canvas LMS, «Interfaz de alto contraste» | Texto más oscuro, bordes marcados y **enlaces subrayados** (no depender solo del color, WCAG 1.4.1) |
+| GitHub, «Aumentar contraste» | El alto contraste existe en claro **y** en oscuro; el tema se elige con una **vista previa** |
+| Moodle, herramientas de accesibilidad | Las opciones están **en cada página**, no escondidas en la cuenta |
+| YouTube, Duolingo | Claro, oscuro o «como el dispositivo», a un clic desde el menú de arriba |
+| Microsoft y la especificación de CSS (`forced-colors`) | Respetar los «Temas de contraste» de Windows: bordes, foco y barras con los colores del sistema |
+
+Khan Academy no tiene modo oscuro propio (la comunidad lo pide desde hace años): no todo referente educativo lo resuelve.
+
+### Lo que se hizo
+
+- **Botón «Apariencia» en la cabecera** (`components/layout/BotonApariencia.vue`): abre las mismas opciones sin salir de
+  la pantalla. Sigue estando en el perfil y en el menú del usuario.
+- **Vista previa de cada tema**, como GitHub.
+- **Alto contraste de verdad** (`assets/css/temas.css`): texto casi negro (blanco en oscuro, sobre negro), bordes
+  marcados, enlaces subrayados, contorno de 3 px en el foco, sin sombras y botones desactivados que no se confunden.
+- **«Como mi dispositivo» se resuelve en `utils/apariencia.ts`** (`temaEfectivo`), no en el CSS: el tema oscuro ya no
+  está repetido y el alto contraste funciona por los dos caminos. Si el dispositivo cambia a oscuro con STIRE abierto,
+  la app lo sigue.
+- **Si nunca se ha elegido nada y el dispositivo pide más contraste** (`prefers-contrast: more`), el alto contraste
+  empieza activado. Se puede quitar.
+- **Temas de contraste de Windows** (`@media (forced-colors: active)`): botones con borde, foco y barras visibles.
+- Texto secundario del tema claro de slate-500 a slate-600; el botón «Desactivado» y los contadores del menú, con
+  contraste suficiente.
+
+Lo comprueba `apariencia.frontend.spec.ts`. Las preferencias siguen guardándose en el navegador: guardarlas en la
+cuenta, para que sigan a la persona en otro computador (como Moodle y GitHub), necesita un cambio en el servidor y
+queda como siguiente paso.
+
 ## 5. Territorio de identidad visual
 
 `tailwind.config.ts` y `main.css` son el territorio de José. El cambio lo autorizó el dueño del proyecto el 04/10
 («si eso no está hecho, comienza a trabajar»), y quedó anotado en `docs/identidad-visual/BITACORA.md`. Los valores del
-tema claro no cambiaron: José puede seguir ajustando la paleta editando las variables de `temas.css`.
+tema claro no cambiaron, salvo el texto secundario (07/10, por contraste): José puede seguir ajustando la paleta
+editando las variables de `temas.css`.
 
 ## Referencias
 
