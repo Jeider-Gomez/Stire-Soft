@@ -120,8 +120,12 @@ export function resumirSus(respuestas: RespuestaSus[]): ResumenSus {
   return { n, promedio, aceptabilidad: promedio === null ? null : aceptabilidadSus(promedio), porRol, porPregunta, comentarios, tareas };
 }
 
-/** Cada cuánto se puede volver a responder: medir de nuevo después de cambios, sin cansar con encuestas. */
-export const DIAS_ENTRE_RESPUESTAS = 90;
+/**
+ * Cada cuánto se puede volver a responder: medir de nuevo después de cambios, sin cansar con encuestas. 08/10, Jeider:
+ * 7 días mientras dure la prueba con el equipo (antes 90), porque STIRE cambia cada semana y así se compara la semana 1
+ * con la 2. Al terminar la prueba conviene volver a un plazo largo.
+ */
+export const DIAS_ENTRE_RESPUESTAS = 7;
 /** No se invita a quien acaba de llegar: para opinar de la usabilidad hay que haber usado la plataforma. */
 export const DIAS_DE_USO_PARA_INVITAR = 3;
 const DIA = 86_400_000;

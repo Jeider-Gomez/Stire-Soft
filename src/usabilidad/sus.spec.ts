@@ -98,16 +98,16 @@ describe('cuándo responder y cuándo invitar', () => {
   const ahora = new Date(2026, 9, 20);
   const haceDias = (d: number) => new Date(ahora.getTime() - d * 86_400_000);
 
-  it('se puede volver a responder a los 90 días', () => {
+  it('se puede volver a responder a los 7 días, mientras dure la prueba (08/10; antes 90)', () => {
     expect(puedeResponder(null, ahora)).toBe(true);
-    expect(puedeResponder(haceDias(89), ahora)).toBe(false);
-    expect(puedeResponder(haceDias(90), ahora)).toBe(true);
+    expect(puedeResponder(haceDias(6), ahora)).toBe(false);
+    expect(puedeResponder(haceDias(7), ahora)).toBe(true);
   });
 
   it('no se invita a quien acaba de llegar (menos de 3 días) ni a quien ya respondió', () => {
     expect(debeInvitar(haceDias(1), null, ahora)).toBe(false);
     expect(debeInvitar(haceDias(3), null, ahora)).toBe(true);
-    expect(debeInvitar(haceDias(30), haceDias(10), ahora)).toBe(false);
+    expect(debeInvitar(haceDias(30), haceDias(5), ahora)).toBe(false);
   });
 });
 
@@ -141,8 +141,8 @@ describe('UsabilidadService', () => {
     await expect(service.responder(user, { respuestas: [5, 1, 5, 1, 5, 1, 5, 1, 5, 1], tareas: { 'crear-leccion': 7 } }, new Date(2026, 9, 20))).rejects.toThrow('no es de tu rol');
   });
 
-  it('no deja responder dos veces en 90 días', async () => {
-    ultima = { createdAt: new Date(2026, 9, 1), puntaje: 80 };
+  it('no deja responder dos veces en 7 días', async () => {
+    ultima = { createdAt: new Date(2026, 9, 15), puntaje: 80 };
     await expect(service.responder(user, { respuestas: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3] }, new Date(2026, 9, 20))).rejects.toThrow('Ya respondiste');
   });
 

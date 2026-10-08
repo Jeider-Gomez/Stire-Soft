@@ -9,7 +9,7 @@
       </h1>
       <p class="text-xs text-slate-600">
         Estudiantes y docentes la responden desde su inicio o su perfil. Cuenta la última respuesta de cada persona; se puede
-        volver a responder a los 90 días, para medir otra vez después de los cambios.
+        volver a responder a los 7 días mientras dure la prueba, para medir otra vez después de los cambios.
       </p>
     </header>
 

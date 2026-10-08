@@ -33,7 +33,7 @@ producto, no evidencia científica):
 - Preguntar **después de usar**, no al llegar. Por eso no se invita a quien lleva menos de 3 días.
 - **No interrumpir:** una tarjeta en el inicio, no una ventana encima.
 - **Respetar el «Ahora no»:** la oculta 7 días.
-- **No cansar:** se puede volver a responder a los 90 días, para medir otra vez después de cambios grandes.
+- **No cansar:** se puede volver a responder a los 90 días, para medir otra vez después de cambios grandes. Mientras dura la prueba con el equipo (desde el 08/10), a los 7 días: STIRE cambia cada semana y así se compara una semana con la otra.
 
 ## 4. Qué hace STIRE
 
