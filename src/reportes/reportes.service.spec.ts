@@ -3,7 +3,7 @@ import { BadRequestException, ForbiddenException, HttpException, NotFoundExcepti
 import { MAX_BYTES_CAPTURA, validarImagen } from '../media/imagen-subida';
 import { ReportesService } from './reportes.service';
 import { ReportesController } from './reportes.controller';
-import { validarReporte, validarRevision } from './reporte-reglas';
+import { avisoDeRevision, validarReporte, validarRevision } from './reporte-reglas';
 import { User, UserRole } from '../user/entities/user.entity';
 
 type Deps = ConstructorParameters<typeof ReportesService>;
@@ -50,8 +50,9 @@ function crear(enUnDia = 0, reporteGuardado?: Record<string, unknown>) {
     eliminar: jest.fn(() => Promise.resolve()),
     obtener: jest.fn(() => Promise.resolve({ mimeType: 'image/jpeg', data: Buffer.from('jpg') })),
   };
-  const service = new ReportesService(reportes as unknown as Deps[0], usuarios as unknown as Deps[1], clases as unknown as Deps[2], media as unknown as Deps[3]);
-  return { service, guardados, media, reportes };
+  const notificaciones = { createNotification: jest.fn(() => Promise.resolve(null)) };
+  const service = new ReportesService(reportes as unknown as Deps[0], usuarios as unknown as Deps[1], clases as unknown as Deps[2], media as unknown as Deps[3], notificaciones as unknown as Deps[4]);
+  return { service, guardados, media, reportes, notificaciones };
 }
 
 describe('ReportesService', () => {
@@ -78,10 +79,34 @@ describe('ReportesService', () => {
 
   it('revisar un reporte que no existe da 404', async () => {
     await expect(crear().service.revisar(9, { estado: 'visto' })).rejects.toThrow(NotFoundException);
-    await expect(crear().service.revisar(1, { estado: 'resuelto', nota: 'Listo' })).resolves.toEqual({ id: 1, estado: 'resuelto', nota: 'Listo' });
+    await expect(crear().service.revisar(1, { estado: 'resuelto', nota: 'Listo' })).resolves.toEqual({ id: 1, estado: 'resuelto', nota: 'Listo', avisado: false });
     // Resolver exige decir cómo (lo lee quien lo envió); descartar no.
     await expect(crear().service.revisar(1, { estado: 'resuelto', nota: '  ' })).rejects.toThrow('cómo se resolvió');
     await expect(crear().service.revisar(1, { estado: 'descartado' })).resolves.toMatchObject({ estado: 'descartado', nota: null });
+  });
+
+  // 08/10, Jeider: avisarle (opcional) a quien la envió, con lo que escribió el equipo.
+  it('con «avisar», le llega una notificación con la respuesta y el enlace a lo que envió; sin él, nada', async () => {
+    const guardado = { id: 4, userId: 5, rol: 'docente', texto: 'En el celular no veo el botón para entregar.', estado: 'nuevo', nota: null };
+    const con = crear(0, { ...guardado });
+    await expect(con.service.revisar(4, { estado: 'resuelto', nota: 'Arreglado: el botón ya se ve.', avisar: true })).resolves.toMatchObject({ avisado: true });
+    expect(con.notificaciones.createNotification).toHaveBeenCalledWith(
+      5, 'Tu sugerencia ya está resuelta', '«En el celular no veo el botón para entregar.». Respuesta: Arreglado: el botón ya se ve.', undefined,
+      { enlace: '/docente?sugerencias=mias', clave: 'sugerencia-4-resuelto' },
+    );
+    const sin = crear(0, { ...guardado });
+    await sin.service.revisar(4, { estado: 'resuelto', nota: 'Arreglado.' });
+    expect(sin.notificaciones.createNotification).not.toHaveBeenCalled();
+  });
+
+  it('el aviso dice qué pasó según el estado y recorta los textos largos', () => {
+    const base = { id: 1, texto: 'x'.repeat(200), nota: 'y'.repeat(300), rol: 'estudiante' };
+    expect(avisoDeRevision({ ...base, estado: 'nuevo' })).toBeNull();
+    expect(avisoDeRevision({ ...base, estado: 'visto' })?.titulo).toBe('El equipo revisó tu sugerencia');
+    const a = avisoDeRevision({ ...base, estado: 'descartado' });
+    expect(a?.titulo).toBe('El equipo respondió tu sugerencia');
+    expect(a?.mensaje.length).toBeLessThan(260);
+    expect(a?.enlace).toBe('/estudiante?sugerencias=mias');
   });
 });
 

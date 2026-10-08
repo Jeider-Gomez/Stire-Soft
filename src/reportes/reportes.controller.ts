@@ -65,7 +65,7 @@ export class ReportesController {
 
   @Patch(':id')
   @Roles('admin')
-  @ApiOperation({ summary: 'Revisar un reporte: { estado, nota? }' })
+  @ApiOperation({ summary: 'Revisar un reporte: { estado, nota?, avisar? } (avisar: notifica a quien lo envió)' })
   revisar(@Param('id', ParseIntPipe) id: number, @Body() datos: Record<string, unknown>) {
     return this.reportes.revisar(id, datos ?? {});
   }

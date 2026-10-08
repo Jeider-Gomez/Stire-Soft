@@ -116,6 +116,11 @@
               </label>
               <textarea :id="`nota-${r.id}`" v-model="editando.nota" v-crece rows="2" maxlength="1000" data-foco-nota class="w-full px-3 py-2 rounded-md border border-base-borde-fuerte bg-base-blanco"
                 :placeholder="editando.estado === 'resuelto' ? 'Ej.: Arreglado: el botón ya se ve en el celular (versión del 07/10).' : ''" />
+              <!-- Opcional (08/10): le llega una notificación con lo que escribiste y abre «Lo que he enviado». -->
+              <label class="flex items-start gap-2 min-h-[44px] cursor-pointer">
+                <input v-model="editando.avisar" type="checkbox" class="mt-0.5 w-4 h-4" />
+                <span>Avisarle a {{ r.autor }}: le llega una notificación con lo que escribiste aquí.</span>
+              </label>
               <div class="flex flex-wrap items-center gap-2 justify-end">
                 <p v-if="falta" class="mr-auto text-base-texto-secundario">{{ falta }}</p>
                 <button type="button" class="min-h-[44px] px-3 rounded-md borde-afordancia font-semibold" @click="editando = null">Cancelar</button>
@@ -171,7 +176,7 @@ const error = ref<string | null>(null)
 const anuncio = ref('')
 const capturas = ref<Record<number, string>>({})
 const cargandoCaptura = ref<number | null>(null)
-const editando = ref<{ id: number; estado: EstadoSugerencia; nota: string } | null>(null)
+const editando = ref<{ id: number; estado: EstadoSugerencia; nota: string; avisar: boolean } | null>(null)
 const guardando = ref(false)
 
 const visibles = computed(() => filtrar(lista.value, filtros))
@@ -213,14 +218,14 @@ async function cargar() {
 }
 
 function abrirEdicion(r: Sugerencia, estado: EstadoSugerencia) {
-  editando.value = { id: r.id, estado, nota: estado === r.estado ? (r.nota ?? '') : '' }
+  editando.value = { id: r.id, estado, nota: estado === r.estado ? (r.nota ?? '') : '', avisar: estado === 'resuelto' }
   nextTick(() => document.querySelector<HTMLTextAreaElement>('[data-foco-nota]')?.focus())
 }
 
-async function cambiar(r: Sugerencia, estado: EstadoSugerencia, nota: string | null) {
+async function cambiar(r: Sugerencia, estado: EstadoSugerencia, nota: string | null, avisar = false) {
   guardando.value = true
   try {
-    await sugerencias.actualizar(r.id, { estado, nota: nota ?? undefined })
+    await sugerencias.actualizar(r.id, { estado, nota: nota ?? undefined, avisar })
     r.estado = estado
     r.nota = nota && nota.trim() ? nota.trim() : null
     r.updatedAt = new Date().toISOString()
@@ -236,7 +241,7 @@ async function cambiar(r: Sugerencia, estado: EstadoSugerencia, nota: string | n
 
 function guardar(r: Sugerencia) {
   if (!editando.value || falta.value) return
-  void cambiar(r, editando.value.estado, editando.value.nota)
+  void cambiar(r, editando.value.estado, editando.value.nota, editando.value.avisar)
 }
 
 function descargar() {

@@ -2,7 +2,8 @@ import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Inj
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, MoreThanOrEqual, Repository } from 'typeorm';
 import { Reporte } from './entities/reporte.entity';
-import { ESTADOS_REPORTE, LIMITES_REPORTE, ReporteInvalidoError, validarReporte, validarRevision, type EstadoReporte } from './reporte-reglas';
+import { avisoDeRevision, ESTADOS_REPORTE, LIMITES_REPORTE, ReporteInvalidoError, validarReporte, validarRevision, type EstadoReporte } from './reporte-reglas';
+import { NotificationsService } from '../notifications/notifications.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { MediaService } from '../media/media.service';
 import { MAX_BYTES_CAPTURA } from '../media/imagen-subida';
@@ -25,6 +26,7 @@ export class ReportesService {
     @InjectRepository(User) private readonly usuarios: Repository<User>,
     @InjectRepository(Class) private readonly clases: Repository<Class>,
     private readonly media: MediaService,
+    private readonly notificaciones: NotificationsService,
   ) {}
 
   /** Nombre y código de la clase en la que estaba, si la app lo mandó; solo es un rótulo para separar resultados. */
@@ -99,6 +101,9 @@ export class ReportesService {
     if (!r) throw new NotFoundException('Reporte no encontrado');
     Object.assign(r, v);
     await this.reportes.save(r);
-    return { id: r.id, estado: r.estado, nota: r.nota };
+    // Opcional: avisarle a quien la envió, con lo que escribió el equipo (08/10).
+    const aviso = datos.avisar === true ? avisoDeRevision({ id: r.id, texto: r.texto ?? '', estado: r.estado as EstadoReporte, nota: r.nota, rol: r.rol ?? 'estudiante' }) : null;
+    if (aviso) await this.notificaciones.createNotification(r.userId, aviso.titulo, aviso.mensaje, undefined, { enlace: aviso.enlace, clave: aviso.clave });
+    return { id: r.id, estado: r.estado, nota: r.nota, avisado: !!aviso };
   }
 }

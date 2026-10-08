@@ -130,7 +130,7 @@
           </div>
 
           <div class="pt-3 border-t border-base-borde-sutil">
-            <CodingExerciseBuilder v-show="exerciseType === 'coding'" ref="codingBuilderRef" />
+            <CodingExerciseBuilder v-show="exerciseType === 'coding'" ref="codingBuilderRef" :enunciado="form.questionText" />
             <McqExerciseBuilder v-show="exerciseType === 'mcq'" ref="mcqBuilderRef" />
             <FillCodeExerciseBuilder v-show="exerciseType === 'fill_code'" ref="fillCodeBuilderRef" />
             <DragDropExerciseBuilder v-show="exerciseType === 'drag_drop'" ref="dragDropBuilderRef" />

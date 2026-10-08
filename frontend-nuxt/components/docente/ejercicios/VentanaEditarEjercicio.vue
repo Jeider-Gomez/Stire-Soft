@@ -80,7 +80,7 @@
           <!-- Solo se monta el editor del tipo de este ejercicio: los demás, ocultos, tendrían campos `required` vacíos
                que el navegador no puede enfocar y bloquearían el envío del formulario. -->
           <div v-if="r.estado === 'editable'" v-show="!r.vistaPrevia">
-            <CodingExerciseBuilder v-if="r.tipo === 'coding'" ref="coding" />
+            <CodingExerciseBuilder v-if="r.tipo === 'coding'" ref="coding" :enunciado="f.description" />
             <McqExerciseBuilder v-else-if="r.tipo === 'mcq'" ref="mcq" />
             <FillCodeExerciseBuilder v-else-if="r.tipo === 'fill_code'" ref="fillCode" />
             <DragDropExerciseBuilder v-else-if="r.tipo === 'drag_drop'" ref="dragDrop" />

@@ -43,3 +43,22 @@ export function validarRevision(entrada: Record<string, unknown>): { estado: Est
   if (estado === 'resuelto' && !nota) throw new ReporteInvalidoError('Escribe cómo se resolvió: lo lee quien lo envió.');
   return { estado, nota };
 }
+
+/**
+ * El aviso opcional a quien envió la sugerencia cuando el equipo la revisa (08/10, Jeider: que sepa que su sugerencia
+ * se resolvió, se revisó o su idea se tomó en cuenta, y pueda leer lo que el equipo escribió). Lleva a su inicio con
+ * «Lo que he enviado» abierto (?sugerencias=mias). La clave evita avisar dos veces el mismo cambio.
+ */
+export function avisoDeRevision(r: { id: number; texto: string; estado: EstadoReporte; nota: string | null; rol: string }): {
+  titulo: string;
+  mensaje: string;
+  enlace: string;
+  clave: string;
+} | null {
+  if (r.estado === 'nuevo') return null;
+  const titulo = r.estado === 'resuelto' ? 'Tu sugerencia ya está resuelta' : r.estado === 'visto' ? 'El equipo revisó tu sugerencia' : 'El equipo respondió tu sugerencia';
+  const corto = r.texto.length > 80 ? `${r.texto.slice(0, 77).trimEnd()}…` : r.texto;
+  const respuesta = r.nota ? ` Respuesta: ${r.nota.length > 160 ? `${r.nota.slice(0, 157).trimEnd()}…` : r.nota}` : '';
+  const inicio = r.rol === 'docente' ? '/docente' : r.rol === 'admin' ? '/admin' : '/estudiante';
+  return { titulo, mensaje: `«${corto}».${respuesta}`, enlace: `${inicio}?sugerencias=mias`, clave: `sugerencia-${r.id}-${r.estado}` };
+}

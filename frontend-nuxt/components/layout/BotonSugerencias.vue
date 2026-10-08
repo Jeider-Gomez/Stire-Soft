@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { Image as ImageIcon, MessageSquarePlus, X } from 'lucide-vue-next'
 import { imagenDe } from '~/utils/captura'
 import { useApi } from '~/composables/useApi'
@@ -198,4 +198,14 @@ async function verMios() {
 }
 
 useEscapeToClose(() => abierto.value, cerrar)
+
+// La notificación «Tu sugerencia ya está resuelta» trae ?sugerencias=mias: se abre «Lo que he enviado» con la respuesta
+// del equipo, y se quita de la dirección para que no se vuelva a abrir al recargar (08/10).
+watch(() => route.query.sugerencias, (v) => {
+  if (v !== 'mias') return
+  abrir()
+  void verMios()
+  const { sugerencias: _quitar, ...resto } = route.query
+  void navigateTo({ path: route.path, query: resto }, { replace: true })
+}, { immediate: true })
 </script>

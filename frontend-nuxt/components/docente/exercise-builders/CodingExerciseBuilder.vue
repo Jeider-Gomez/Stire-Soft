@@ -1,5 +1,7 @@
 <template>
   <div class="space-y-5 text-xs">
+    <!-- Qué hace bueno a un ejercicio de programar, revisado mientras se escribe (08/10). -->
+    <GuiaEjercicioCodigo :enunciado="enunciado ?? ''" :plantilla="starterCode" :casos="testCases" />
     <!-- Código inicial -->
     <div>
       <label for="coding-starter" class="block font-semibold text-base-texto-primario mb-1">
@@ -106,6 +108,10 @@
 </template>
 
 <script setup lang="ts">
+import GuiaEjercicioCodigo from './GuiaEjercicioCodigo.vue'
+
+/** El enunciado que escribe el docente, para la guía (opcional). */
+defineProps<{ enunciado?: string }>()
 interface TestCaseItem {
   label?: string
   input: string
