@@ -17,6 +17,7 @@ con el primero).
 
 | Fecha | Hallazgos de la prueba |
 |---|---|
+| 2026-10-07 | [Jeider, semana 8](resultados-prueba/HALLAZGOS_JEIDER_S08_2026-10-07.md): el dominio que bajaba al volver a acertar, a dónde seguir después de entregar, la calibración, el historial, la prueba de escritorio, el menú del docente y el scroll de las notificaciones (9 hechos, 5 por decidir) |
 | 2026-10-07 | [José, semana 8](resultados-prueba/HALLAZGOS_JOSE_S08_2026-10-07.md): la pantalla del ejercicio, las notificaciones y el contraste de las métricas (5 hechos, 1 pendiente suyo) |
 
 ## Carpetas
