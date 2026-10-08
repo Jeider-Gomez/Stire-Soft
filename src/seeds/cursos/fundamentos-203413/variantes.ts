@@ -69,7 +69,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       tipo: 'mcq',
       titulo: 'Prueba de escritorio: el descuento',
       enunciado:
-        'Sigue el algoritmo con una tabla:\n\n```\nLeer precio\ndescuento <- precio * 10 / 100\nprecio <- precio - descuento\nEscribir precio\n```\n\nSi el precio leído es **2000**, ¿qué escribe?',
+        'Haz la **prueba de escritorio**: ejecuta el algoritmo a mano, línea por línea, y anota en una tabla cuánto vale cada variable después de cada paso. La flecha `<-` quiere decir «guarda en»: calcula lo de la derecha y lo guarda en la variable de la izquierda.\n\n```\nLeer precio\ndescuento <- precio * 10 / 100\nprecio <- precio - descuento\nEscribir precio\n```\n\nEl precio leído es **2000**. Completa la tabla (en tu cuaderno o mentalmente):\n\n| Paso | precio | descuento |\n|---|---|---|\n| Leer precio | 2000 | (sin valor) |\n| descuento <- precio * 10 / 100 | 2000 | ? |\n| precio <- precio - descuento | ? | ? |\n\n¿Qué escribe al final?',
       dificultad: 'basico',
       opciones: ['1800', '200', '2000', '1990'],
       correcta: 0,
@@ -360,7 +360,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
     {
       tipo: 'mcq',
       titulo: 'Prueba de escritorio: cuatro asignaciones',
-      enunciado: 'Sigue el algoritmo paso a paso con una tabla:\n\n```\nx <- 2\ny <- x * 3\nx <- y - x\ny <- x + y\n```\n\n¿Cuánto valen **x** y **y** al final?',
+      enunciado: 'Haz la **prueba de escritorio**: ejecuta el algoritmo a mano, línea por línea, y anota en una tabla cuánto vale cada variable después de cada paso. La flecha `<-` quiere decir «guarda en»: calcula lo de la derecha y lo guarda en la variable de la izquierda. Una columna para **x** y otra para **y**:\n\n```\nx <- 2\ny <- x * 3\nx <- y - x\ny <- x + y\n```\n\n¿Cuánto valen **x** y **y** al final?',
       dificultad: 'basico',
       opciones: ['x = 4, y = 10', 'x = 2, y = 6', 'x = 4, y = 6', 'x = 6, y = 10'],
       correcta: 0,

@@ -72,7 +72,7 @@ y haz la prueba de escritorio con 3.5, 4.0 y 2.5. ¿Te dio 3.33?`,
             {
               tipo: 'mcq',
               titulo: 'Prueba de escritorio: el intercambio',
-              enunciado: `Sigue el algoritmo paso a paso con una tabla:
+              enunciado: `Haz la **prueba de escritorio**: ejecuta el algoritmo a mano, línea por línea, y anota en una tabla cuánto vale cada variable después de cada paso. La flecha \`<-\` quiere decir «guarda en»: calcula lo de la derecha y lo guarda en la variable de la izquierda. Una columna para **a** y otra para **b**:
 
 \`\`\`
 a <- 5
