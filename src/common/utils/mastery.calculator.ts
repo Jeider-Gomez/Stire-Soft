@@ -5,6 +5,8 @@ import { claveCasilla, rangoNivel } from './casilla';
 // proporcional al esfuerzo y la complejidad, no a la cantidad de clics. Repetir un ejercicio BASICO
 // varias veces hasta acertarlo no debe pesar igual que acertar uno difícil al primer intento — pero
 // repetir un ejercicio difícil sí es aprendizaje real y no se penaliza.
+// Cuentan los intentos HASTA lograr la mejor nota: volver a resolver bien un ejercicio ya resuelto es práctica y no
+// puede bajar el dominio (07/10, Jeider: falló, acertó con +20 % y al acertar otra vez el dominio quedó en 17 %).
 const EASY_REPEAT_FREE_ATTEMPTS = 2;
 const EASY_REPEAT_DECAY_STEP = 0.15;
 const EASY_REPEAT_MIN_FACTOR = 0.5;
@@ -19,6 +21,12 @@ function easyRepeatDecayFactor(activity: any, attemptsOnActivity: number): numbe
 function momento(submission: any): number {
   const fecha = submission.submittedAt ?? submission.createdAt;
   return fecha ? new Date(fecha).getTime() : 0;
+}
+
+/** Cuántos intentos le tomó llegar a su mejor nota; los de después no cuentan para la penalización. */
+function intentosHastaLaMejor(intentos: any[], mejor: number): number {
+  const enOrden = [...intentos].sort((a, b) => momento(a) - momento(b));
+  return enOrden.findIndex((s) => s.score === mejor) + 1;
 }
 
 /**
@@ -57,7 +65,7 @@ export function calculateUnitMastery(
       const bestScore = actSubmissions.length > 0
         ? Math.max(...actSubmissions.map(s => s.score))
         : 0;
-      const decayFactor = easyRepeatDecayFactor(activity, actSubmissions.length);
+      const decayFactor = easyRepeatDecayFactor(activity, intentosHastaLaMejor(actSubmissions, bestScore));
       ratio = Math.max(ratio, (bestScore / activity.totalPoints) * decayFactor);
       weight = Math.max(weight, activity.adaptiveWeight * (activity.activityType?.baseWeight || 1));
     }

@@ -41,9 +41,32 @@ describe('calculateUnitMastery', () => {
 
   it('el factor de penalización nunca baja del piso mínimo (0.5) sin importar cuántos intentos', () => {
     const activities = [{ id: 1, difficulty: Difficulty.BASICO, totalPoints: 100, adaptiveWeight: 1, activityType: { baseWeight: 1 } }];
-    const submissions = Array.from({ length: 20 }, () => ({ activityId: 1, score: 100 }));
+    const submissions = [...Array.from({ length: 19 }, () => ({ activityId: 1, score: 0 })), { activityId: 1, score: 100 }];
 
     expect(calculateUnitMastery(submissions, activities)).toBe(50);
+  });
+
+  it('volver a resolver bien un BASICO ya resuelto no baja el dominio (07/10: falló, acertó y al acertar otra vez bajaba)', () => {
+    const activities = [{ id: 1, difficulty: Difficulty.BASICO, totalPoints: 20, adaptiveWeight: 1, activityType: { baseWeight: 1 } }];
+    const intentos = [{ activityId: 1, score: 0 }, { activityId: 1, score: 20 }, { activityId: 1, score: 20 }];
+    expect(calculateUnitMastery(intentos.slice(0, 2), activities)).toBe(100);
+    expect(calculateUnitMastery(intentos, activities)).toBe(100);
+    expect(calculateUnitMastery(Array.from({ length: 8 }, () => ({ activityId: 1, score: 20 })), activities)).toBe(100);
+  });
+
+  it('el orden es por fecha: la penalización mira los intentos anteriores al primer acierto', () => {
+    const activities = [{ id: 1, difficulty: Difficulty.BASICO, totalPoints: 100, adaptiveWeight: 1, activityType: { baseWeight: 1 } }];
+    const d = (dia: number) => new Date(2026, 9, dia);
+    // Llegan desordenados: el acierto es el 4.º intento (2 de exceso -> 0.7) y los dos de después no restan.
+    const submissions = [
+      { activityId: 1, score: 100, submittedAt: d(6) },
+      { activityId: 1, score: 10, submittedAt: d(1) },
+      { activityId: 1, score: 100, submittedAt: d(5) },
+      { activityId: 1, score: 30, submittedAt: d(3) },
+      { activityId: 1, score: 20, submittedAt: d(2) },
+      { activityId: 1, score: 100, submittedAt: d(4) },
+    ];
+    expect(calculateUnitMastery(submissions, activities)).toBe(70);
   });
 
   it('no penaliza actividades INTERMEDIO o AVANZADO sin importar el número de intentos', () => {
@@ -64,11 +87,12 @@ describe('calculateUnitMastery', () => {
       { id: 1, difficulty: Difficulty.BASICO, totalPoints: 100, adaptiveWeight: 1, activityType: { baseWeight: 1 } },
       { id: 2, difficulty: Difficulty.AVANZADO, totalPoints: 100, adaptiveWeight: 1, activityType: { baseWeight: 1 } },
     ];
-    // Actividad 1 (BASICO): 20 intentos -> factor 0.5 -> aporta (100/100)*1*0.5 = 0.5
+    // Actividad 1 (BASICO): acertada al intento 20 -> factor 0.5 -> aporta (100/100)*1*0.5 = 0.5
     // Actividad 2 (AVANZADO): 1 intento -> factor 1 -> aporta (100/100)*1*1 = 1
     // Mastery = round((0.5 + 1) / (1 + 1) * 100) = 75
     const submissions = [
-      ...Array.from({ length: 20 }, () => ({ activityId: 1, score: 100 })),
+      ...Array.from({ length: 19 }, () => ({ activityId: 1, score: 0 })),
+      { activityId: 1, score: 100 },
       { activityId: 2, score: 100 },
     ];
 
