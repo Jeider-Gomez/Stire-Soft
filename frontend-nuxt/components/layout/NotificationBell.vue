@@ -205,6 +205,7 @@ function handleClickOutside(event: MouseEvent) {
 }
 
 useEscapeToClose(() => isOpen.value, cerrar)
+useBloqueoScrollMovil(() => isOpen.value)
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)

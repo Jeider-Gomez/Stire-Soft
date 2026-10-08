@@ -129,3 +129,27 @@ export function etiquetaDeClase(
   const mismoDocente = gemelas.some((o) => o.teacherName === c.teacherName)
   return mismoDocente && c.code ? `${c.name} · ${c.teacherName} · ${c.code}` : `${c.name} · ${c.teacherName}`
 }
+
+const PALABRAS_MENORES = new Set(['de', 'del', 'la', 'las', 'el', 'los', 'y', 'e', 'en', 'a', 'para', 'con'])
+
+/**
+ * Iniciales de cada clase para el menú del docente (07/10, Jeider: con el menú plegado todas tenían el mismo ícono y no
+ * se sabía cuál era cuál). «Fundamentos de Algoritmia» → «FA»; si dos clases dan las mismas iniciales, se numeran en el
+ * orden de la lista: «FA1», «FA2». Como los avatares de los equipos de Teams o de los servidores de Discord.
+ */
+export function siglasDeClases(clases: ReadonlyArray<{ id: number; name: string }>): Record<number, string> {
+  const base = clases.map((c) => {
+    const palabras = c.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(/[^A-Za-z0-9]+/).filter(Boolean)
+    const fuertes = palabras.filter((p) => !PALABRAS_MENORES.has(p.toLowerCase()))
+    const usar = fuertes.length ? fuertes : palabras
+    const sigla = usar.length === 1 ? usar[0].slice(0, 2) : usar.slice(0, 2).map((p) => p[0]).join('')
+    return { id: c.id, sigla: sigla.toUpperCase() || '?' }
+  })
+  const vistas: Record<string, number> = {}
+  const total = (s: string) => base.filter((b) => b.sigla === s).length
+  return Object.fromEntries(base.map((b) => {
+    if (total(b.sigla) === 1) return [b.id, b.sigla]
+    vistas[b.sigla] = (vistas[b.sigla] ?? 0) + 1
+    return [b.id, `${b.sigla}${vistas[b.sigla]}`]
+  }))
+}

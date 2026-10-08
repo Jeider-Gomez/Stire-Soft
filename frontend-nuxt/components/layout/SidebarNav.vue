@@ -141,26 +141,8 @@
           <span>Mis clases</span>
         </NuxtLink>
 
-        <!-- La clase como lugar (utils/pestanasClase.ts): cada clase abre su «Hoy», y adentro están sus pestañas
-             (Contenido, Estudiantes, Entregas, Refuerzos, Ajustes). Antes el menú era por herramienta y cada pantalla
-             volvía a preguntar de qué clase. -->
-        <div v-if="clasesDocente.length" class="pt-2 pb-1">
-          <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Tus clases</p>
-          <NuxtLink
-            v-for="c in clasesDocente"
-            :key="c.id"
-            :to="`/docente/clase/${c.id}`"
-            :title="c.name"
-            class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-            :class="claseActiva === c.id ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-            <BookOpen :size="18" aria-hidden="true" class="shrink-0" />
-            <!-- Dos grupos de la misma materia se cortan igual: el código los distingue. -->
-            <span class="min-w-0">
-              <span class="block truncate">{{ c.name }}</span>
-              <span v-if="c.code" class="block truncate font-mono text-[10px] font-normal text-slate-600">{{ c.code }}</span>
-            </span>
-          </NuxtLink>
-        </div>
+        <!-- Cada clase con sus iniciales; abre su «Hoy» (ClasesDelMenu.vue). -->
+        <LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />
 
         <NuxtLink
           to="/docente/mensajes"
@@ -229,10 +211,9 @@
 </template>
 
 <script setup lang="ts">
-import { Activity, BookOpen, Check, ClipboardList, Library, ChevronDown, ChevronRight, FolderCode, House, Lock, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
+import { Activity, Check, ClipboardList, Library, ChevronDown, ChevronRight, FolderCode, House, Lock, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
-import { claseDeLaRuta } from '~/utils/pestanasClase'
 
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
@@ -264,18 +245,6 @@ onMounted(async () => {
     proyectosDisponible.value = (await useApi().get<{ disponible: boolean }>('/proyectos/estado')).disponible
   } catch {
     proyectosDisponible.value = false
-  }
-})
-
-// Las clases del docente para el menú; la activa sale de la dirección (ruta o consulta).
-const clasesDocente = ref<Array<{ id: number; name: string; code?: string }>>([])
-const claseActiva = computed(() => claseDeLaRuta(route.path, route.query))
-onMounted(async () => {
-  if (authStore.currentRole !== 'docente') return
-  try {
-    clasesDocente.value = await useApi().get<Array<{ id: number; name: string; code?: string }>>('/class/my-classes')
-  } catch {
-    clasesDocente.value = []
   }
 })
 

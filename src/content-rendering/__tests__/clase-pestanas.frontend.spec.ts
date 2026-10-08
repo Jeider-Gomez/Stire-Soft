@@ -69,7 +69,9 @@ describe('Pestañas de la clase', () => {
   });
 
   it('el menú lleva a cada clase y ya no es un menú por herramienta', () => {
-    const menu = leer('components', 'layout', 'SidebarNav.vue');
+    // Desde el 07/10 las clases del menú viven en ClasesDelMenu.vue (con sus iniciales).
+    const menu = leer('components', 'layout', 'SidebarNav.vue') + leer('components', 'layout', 'ClasesDelMenu.vue');
+    expect(menu).toContain(`<LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />`);
     expect(menu).toContain(':to="`/docente/clase/${c.id}`"');
     // dos grupos de la misma materia se distinguen por el código
     expect(menu).toContain('{{ c.code }}');
