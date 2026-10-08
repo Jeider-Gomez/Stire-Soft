@@ -19,10 +19,14 @@ export function debePreguntarConfianza(intentosUsados: number, yaDecidio: boolea
 export interface Calibracion { confianza: Confianza; acerto: boolean }
 
 /** Qué se le dice al estudiante al calificar, según lo que dijo y lo que obtuvo. */
-export function mensajeCalibracion(c: Calibracion): { texto: string; tono: 'bien' | 'atencion' } {
+export function mensajeCalibracion(c: Calibracion, esCodigo = true): { texto: string; tono: 'bien' | 'atencion' } {
   if (c.confianza === 'seguro') {
+    if (!c.acerto && !esCodigo) {
+      // 07/10: en una pregunta de opción múltiple no hay «casos» ni «programa» (Jeider no lo entendió).
+      return { texto: 'Estabas seguro y no acertaste: este es el error que más enseña, porque te sorprende. Busca en qué paso tu razonamiento se separó de la respuesta correcta; esa diferencia es la que se te va a quedar.', tono: 'atencion' }
+    }
     return c.acerto
-      ? { texto: 'Dijiste que estabas seguro y acertaste: tu juicio está bien calibrado.', tono: 'bien' }
+      ? { texto: 'Dijiste que estabas seguro y acertaste: sabes cuándo sabes. Esta lección tardará más en volver a tus repasos.', tono: 'bien' }
       // Efecto de hipercorrección (Butterfield y Metcalfe, 2001): el error cometido con seguridad sorprende, y por eso
       // se corrige y se recuerda mejor si se mira la diferencia. Se invita a mirarla, sin regañar.
       : { texto: 'Estabas seguro y no acertó: este es el error que más enseña, porque te sorprende. Mira caso por caso qué esperabas y qué mostró tu programa; esa diferencia es la que se te va a quedar.', tono: 'atencion' }

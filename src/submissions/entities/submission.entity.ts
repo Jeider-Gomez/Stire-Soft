@@ -64,6 +64,14 @@ export class Submission {
   @Column({ type: 'varchar', length: 10, nullable: true })
   confianza: string | null;
 
+  /** Dominio de la lección (0-100) justo antes y después de calificar esta entrega: el historial del estudiante
+   *  muestra cuánto le sumó cada ejercicio (07/10). Null en las entregas anteriores a este cambio. */
+  @Column({ type: 'int', nullable: true })
+  dominioAntes: number | null;
+
+  @Column({ type: 'int', nullable: true })
+  dominioDespues: number | null;
+
   @OneToMany(() => SubmissionAnswer, (answer) => answer.submission)
   answers: SubmissionAnswer[];
 

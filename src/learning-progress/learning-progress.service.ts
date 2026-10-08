@@ -253,6 +253,17 @@ export class LearningProgressService {
     await this.submissionsRepo.update(submissionId, { isReview: true });
   }
 
+  /** Dominio guardado de la lección (0 si todavía no hay progreso). */
+  async dominioActual(studentId: number, learningUnitId: number): Promise<number> {
+    const progress = await this.progressRepo.findOne({ where: { studentId, learningUnitId } });
+    return Math.round(progress?.mastery ?? 0);
+  }
+
+  /** Cuánto movió esta entrega el dominio: lo muestra «Tus últimos ejercicios» (07/10). */
+  async registrarDominioDeEntrega(submissionId: string, antes: number, despues: number): Promise<void> {
+    await this.submissionsRepo.update(submissionId, { dominioAntes: antes, dominioDespues: Math.round(despues) });
+  }
+
   /** Lo que dijo el estudiante antes de entregar («seguro», «dudo», «adivino») o null si no respondió. */
   async juicioDeEntrega(submissionId: string): Promise<string | null> {
     const submission = await this.submissionsRepo.findOne({ where: { id: submissionId } });

@@ -23,7 +23,8 @@ export class SubmissionGradedListener {
     const esRepaso = await this.reviewService.estaVencido(event.studentId, event.learningUnitId);
     if (esRepaso) await this.progressService.marcarComoRepaso(event.submissionId);
 
-    // 2. Recalcular el dominio
+    // 2. Recalcular el dominio, y guardar en la entrega cuánto lo movió (historial del estudiante)
+    const antes = await this.progressService.dominioActual(event.studentId, event.learningUnitId);
     const progress = await this.progressService.recalculateMastery(
       event.studentId,
       event.learningUnitId,
@@ -31,6 +32,7 @@ export class SubmissionGradedListener {
       event.score,
       event.passingScore
     );
+    await this.progressService.registrarDominioDeEntrega(event.submissionId, antes, progress.mastery);
 
     // 3. Calendario de repasos con la calidad del resultado (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.4)
     //    «Seguro»: tomó el reto de la lección o dijo «Estoy seguro» antes de entregar este ejercicio.

@@ -93,6 +93,9 @@ export interface StudentAnalytics {
     passed: boolean | null
     status: string
     createdAt: string
+    /** Dominio de su lección antes y después de esta entrega (null en las de antes del 07/10). */
+    dominioAntes?: number | null
+    dominioDespues?: number | null
   }>
 }
 

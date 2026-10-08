@@ -84,9 +84,11 @@ describe('cada resultado contado como en Anki', () => {
   });
 
   it('al calificar, el ejercicio dice cómo quedó para sus repasos; «Cómo avanzas» cuenta los de 30 días y explica el reto', () => {
-    const ejercicio = leer('pages', 'estudiante', 'evaluacion', '[activityId].vue');
-    expect(ejercicio).toContain('Para tus repasos: {{ CALIDADES[calidad].texto }}.');
-    expect(ejercicio).toContain("seguro: workspaceStore.juicioConfianza === 'seguro' || route.query.reto === '1'");
+    // Desde el 07/10, en palabras («vuelve pronto a tus repasos») y en la ventana del resultado.
+    const resultado = leer('components', 'exercise', 'ResultadoEntrega.vue');
+    expect(resultado).toContain('{{ CUANDO_VUELVE[calidad] }}');
+    expect(resultado).toContain("seguro: ws.juicioConfianza === 'seguro' || props.reto");
+    expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain(":reto=\"route.query.reto === '1'\"");
     const como = leer('components', 'estudiante', 'ComoAvanzas.vue');
     expect(como).toContain('datos?.escala?.[c]');
     expect(como).toContain('¿Te sientes seguro? Toma un reto');

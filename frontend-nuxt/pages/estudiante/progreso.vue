@@ -113,6 +113,7 @@
               <th class="p-2.5 font-semibold hidden sm:table-cell">Fecha</th>
               <th class="p-2.5 font-semibold">Puntaje</th>
               <th class="p-2.5 font-semibold">Resultado</th>
+              <th class="p-2.5 font-semibold">Tu dominio</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-base-borde-sutil">
@@ -132,6 +133,14 @@
                   {{ resultLabel(sub) }}
                 </span>
               </td>
+              <!-- Cuánto movió esta entrega el dominio de su lección (07/10, pedido de Jeider). -->
+              <td class="p-2.5 whitespace-nowrap">
+                <template v-if="cambioDeDominio(sub)">
+                  <span class="font-bold" :class="cambioDeDominio(sub)!.diferencia > 0 ? 'text-semantico-pasa' : cambioDeDominio(sub)!.diferencia < 0 ? 'text-semantico-falla' : 'text-base-texto-secundario'">{{ cambioDeDominio(sub)!.corto }}</span>
+                  <span class="text-base-texto-secundario"> → {{ sub.dominioDespues }} %</span>
+                </template>
+                <span v-else class="text-base-texto-secundario">—</span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -143,6 +152,7 @@
 
 <script setup lang="ts">
 import { nombreDelEstado, tocaRepasar } from '~/utils/progresoLeccion'
+import { cambioCorto } from '~/utils/resultadoEntrega'
 import { computed, onMounted } from 'vue'
 import { ArrowRight, ChevronDown, RotateCcw } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
@@ -162,6 +172,8 @@ const debeRepasar = (item: { unitId: number; mastery: number }) => tocaRepasar(i
 onMounted(() => {
   studentStore.fetchStudentData()
 })
+
+const cambioDeDominio = (sub: { dominioAntes?: number | null; dominioDespues?: number | null }) => cambioCorto(sub.dominioAntes, sub.dominioDespues)
 
 function resultLabel(sub: { status: string; passed: boolean | null }) {
   if (sub.status !== 'graded') return 'En curso'

@@ -205,7 +205,9 @@ describe('El Tutor se ofrece al fallar (como Khan Academy con Khanmigo)', () => 
     const p = leer('pages', 'estudiante', 'evaluacion', '[activityId].vue');
     expect(p).toContain('v-if="ofrecerTutor"');
     expect(p).toContain('@click="ofertaCerrada = true"');
-    expect(p).toMatch(/v-if="!isSuccessResult"\s+id="oferta-tutor-resultado"/);
+    // El resultado vive en ResultadoEntrega.vue (07/10): ofrece el Tutor si no aprobó y la página abre la pista.
+    expect(leer('components', 'exercise', 'ResultadoEntrega.vue')).toMatch(/v-if="!exito"\s+id="oferta-tutor-resultado"/);
+    expect(p).toContain('@tutor="pedirAyudaAlTutor"');
     expect(p).toContain('tutorStore.requestQuickHint(pistaSegunTipo(');
   });
 });

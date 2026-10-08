@@ -480,6 +480,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     cancelarAutoguardado()
     isSubmitting.value = true
     submissionResult.value = null
+    // El cambio de dominio se cuenta desde la entrega anterior, no desde que se abrió el ejercicio (07/10: la segunda
+    // entrega decía «+17 %» sumando también lo de la primera, y una bajada se mostraba como «se mantiene»).
+    if (masteryAfter.value !== null) masteryBefore.value = masteryAfter.value
+    masteryAfter.value = null
     consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Enviando solución formal para calificación (POST /submissions/:id/submit)...`)
 
     try {

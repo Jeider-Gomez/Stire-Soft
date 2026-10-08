@@ -132,6 +132,9 @@ export class AnalyticsService {
         status: s.status,
         submittedAt: s.submittedAt,
         createdAt: s.createdAt,
+        // Cuánto movió el dominio de su lección (null en las entregas de antes del 07/10)
+        dominioAntes: s.dominioAntes ?? null,
+        dominioDespues: s.dominioDespues ?? null,
       })),
       masteryByUnit: progressList.map(p => ({
         unitId: p.learningUnitId,

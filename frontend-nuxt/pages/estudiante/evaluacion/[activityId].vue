@@ -282,6 +282,7 @@
           </div>
         </section>
 
+        <ExerciseSinIntentos v-if="remainingAttempts === 0 && !workspaceStore.submissionResult && workspaceStore.currentExercise.activityId" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <p class="text-[11px] text-base-texto-secundario">
             <span v-if="typeInfo">{{ typeInfo.grading }} · </span>
@@ -300,102 +301,15 @@
       </div>
     </div>
 
-    <!-- Modal de Resultado de Entrega (refleja el resultado real del backend) -->
-    <div
-      v-if="workspaceStore.submissionResult"
-      class="fixed inset-0 bg-base-texto-primario/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-center max-h-[90dvh] overflow-y-auto">
-        <div
-          class="w-14 h-14 rounded-full flex items-center justify-center text-2xl mx-auto font-bold"
-          :class="isSuccessResult ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
-          <PartyPopper v-if="isSuccessResult" :size="28" aria-hidden="true" />
-          <ClipboardCheck v-else :size="28" aria-hidden="true" />
-        </div>
-
-        <h3 class="text-lg font-bold text-base-texto-primario">
-          {{ isSuccessResult ? '¡Bien hecho!' : 'Tu intento ya tiene nota' }}
-        </h3>
-
-        <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
-          <p class="text-2xl font-bold" :class="isSuccessResult ? 'text-semantico-pasa' : 'text-semantico-falla'">
-            {{ workspaceStore.submissionResult?.totalScore ?? 0 }} / {{ resultMaxScore }} pts
-          </p>
-          <p v-if="isCodingActivity" class="text-xs text-base-texto-secundario mt-1">
-            <!-- passedCount/totalCount cuentan preguntas (respuestas correctas), no casos de prueba: una pregunta de código con
-                 2 casos (1 oculto) mostraba «1 de 1 casos». -->
-            Resolviste bien {{ workspaceStore.submissionResult?.passedCount ?? 0 }} de {{ workspaceStore.submissionResult?.totalCount ?? 0 }} {{ (workspaceStore.submissionResult?.totalCount ?? 0) === 1 ? 'ejercicio' : 'ejercicios' }} (cada uno se califica con todos sus casos de prueba, también los ocultos).
-          </p>
-          <p v-else-if="isHtmlCssActivity" class="text-xs text-base-texto-secundario mt-1">
-            Solución HTML y CSS evaluada contra las reglas del docente.
-          </p>
-          <p v-else class="text-xs text-base-texto-secundario mt-1">
-            Tu resultado ya cuenta en tu progreso.
-          </p>
-        </div>
-
-        <!-- Dominio de la unidad: la señal que de verdad importa para el
-             estudiante, más allá del puntaje crudo de un solo intento. -->
-        <div v-if="masteryDelta" class="p-3 bg-acento-ambar/10 rounded-lg border border-acento-ambar/30">
-          <p class="text-sm font-semibold text-base-texto-primario">
-            Tu dominio de esta lección {{ masteryDelta.diff > 0 ? 'subió a' : 'se mantiene en' }}
-            <span class="text-acento-ambar-fuerte">{{ masteryDelta.after }} %</span>
-            <span v-if="masteryDelta.diff > 0" class="text-semantico-pasa"> (+{{ masteryDelta.diff }} %)</span>
-          </p>
-        </div>
-
-        <!-- Cómo quedó este resultado para sus repasos, como los botones de Anki pero decidido por el ejercicio
-             (utils/escalaResultados.ts; pedido del dueño, 04/10). -->
-        <p v-if="calidad" class="flex items-start gap-2 p-3 rounded-lg border border-base-borde-sutil bg-base-bg-secundario text-xs text-base-texto-primario">
-          <ListChecks :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
-          <span><strong>Para tus repasos: {{ CALIDADES[calidad].texto }}.</strong> {{ CALIDADES[calidad].significa }} {{ EFECTO_EN_REPASOS }}</span>
-        </p>
-
-        <!-- META-02: contraste entre lo que dijo antes de entregar y lo que obtuvo -->
-        <p
-          v-if="calibracion"
-          class="flex items-start gap-2 p-3 rounded-lg border text-xs"
-          :class="calibracion.tono === 'bien' ? 'border-semantico-pasa/30 bg-semantico-pasa/5 text-base-texto-primario' : 'border-acento-ambar-fuerte/30 bg-acento-ambar/5 text-base-texto-primario'">
-          <Scale :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
-          <span>{{ calibracion.texto }}</span>
-        </p>
-
-        <p v-if="workspaceStore.submissionResult?.feedback" class="text-xs text-base-texto-secundario">
-          {{ workspaceStore.submissionResult.feedback }}
-        </p>
-
-        <button
-          v-if="!isSuccessResult"
-          id="oferta-tutor-resultado"
-          type="button"
-          class="w-full py-2 rounded-md bg-stire-purple text-white text-xs font-bold hover:opacity-90 inline-flex items-center justify-center gap-1.5"
-          @click="pedirAyudaAlTutor">
-          <Sparkles :size="14" aria-hidden="true" /> Repasar lo que falló con el Tutor
-        </button>
-
-        <div class="flex items-center gap-2 pt-2">
-          <button
-            @click="workspaceStore.submissionResult = null"
-            class="flex-1 py-2 rounded-md borde-afordancia text-xs font-semibold bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario transition-colors">
-            Seguir practicando
-          </button>
-
-          <NuxtLink
-            to="/estudiante"
-            class="flex-1 py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco text-xs font-bold transition-colors">
-            Volver al inicio
-          </NuxtLink>
-        </div>
-      </div>
-    </div>
+    <!-- Resultado de la entrega: qué pasó, cuánto se movió el dominio y a dónde seguir (07/10). -->
+    <ExerciseResultadoEntrega v-if="workspaceStore.submissionResult" :exito="isSuccessResult" :reto="route.query.reto === '1'" @tutor="pedirAyudaAlTutor" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
 import { tituloConNombre } from '~/utils/tituloPagina'
-import { mensajeCalibracion } from '~/utils/confianza'
-import { CALIDADES, calidadDelResultado, EFECTO_EN_REPASOS } from '~/utils/escalaResultados'
-import { BookOpen, Check, ClipboardCheck, FlaskConical, Lightbulb, ListChecks, Lock, PanelLeftClose, PartyPopper, Scale, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
+import { BookOpen, Check, FlaskConical, Lightbulb, Lock, PanelLeftClose, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
 import { ayudaSegunFallos, debeOfrecerTutor, pistaSegunTipo, TEXTO_AYUDA, type Ayuda } from '~/utils/ofertaTutor'
@@ -466,10 +380,6 @@ const passedCount = computed(() => {
   return workspaceStore.publicTestCases.filter(tc => tc.passed === true).length
 })
 
-const resultMaxScore = computed(() => {
-  return workspaceStore.submissionResult?.maxScore ?? workspaceStore.currentExercise.maxScore
-})
-
 const isSuccessResult = computed(() => {
   const result = workspaceStore.submissionResult
   if (!result) return false
@@ -481,16 +391,6 @@ const isSuccessResult = computed(() => {
   // ver submissions.service.ts. No se recalcula acá para no duplicar esa
   // regla de negocio ni desalinearse si cambia en el backend.
   return result.passed === true
-})
-
-// Cuánto subió el dominio (mastery %) de la unidad de aprendizaje tras este
-// intento, para comunicar el resultado en términos de progreso real y no
-// solo con un puntaje crudo de un único intento.
-const masteryDelta = computed(() => {
-  const before = workspaceStore.masteryBefore
-  const after = workspaceStore.masteryAfter
-  if (before === null || after === null) return null
-  return { before, after, diff: Math.max(0, after - before) }
 })
 
 // Fase 26: el mínimo de 18 servía para pintar el margen de números del textarea anterior; CodeMirror ya los dibuja,
@@ -520,18 +420,4 @@ watch(() => route.params.activityId, (newId) => {
 /** Diagnóstico de un caso que no coincide (utils/diagnosticoSalida.ts). */
 const diagnostico = (tc: { expectedOutput: string; actualOutput?: string; input?: string }) =>
   diagnosticarSalida(String(tc.expectedOutput ?? ''), String(tc.actualOutput ?? ''), String(tc.input ?? ''))
-
-/** Calibración de la entrega (META-02, utils/confianza.ts), si el estudiante dijo qué tan seguro estaba. */
-const calibracion = computed(() => (workspaceStore.calibracion ? mensajeCalibracion(workspaceStore.calibracion) : null))
-/** Otra vez, Difícil, Bien o Fácil, con la misma regla que el servidor usa para sus repasos (calidadDeRepaso). */
-const calidad = computed(() => {
-  const r = workspaceStore.submissionResult
-  if (!r || r.status !== 'graded') return null
-  const aprobado = typeof r.passed === 'boolean' ? r.passed : r.totalCount > 0 && r.passedCount === r.totalCount
-  return calidadDelResultado({
-    aprobado,
-    primerIntento: workspaceStore.currentExercise.usedAttempts === 1,
-    seguro: workspaceStore.juicioConfianza === 'seguro' || route.query.reto === '1',
-  })
-})
 </script>

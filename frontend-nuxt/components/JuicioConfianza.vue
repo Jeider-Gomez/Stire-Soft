@@ -4,8 +4,9 @@
        calibración y el Tutor la usa. -->
   <div v-if="workspaceStore.pidiendoConfianza" class="fixed inset-0 z-[90] bg-slate-900/40 flex items-end sm:items-center justify-center p-4" @mousedown.self="omitir">
     <div role="dialog" aria-modal="true" aria-labelledby="confianza-titulo" aria-describedby="confianza-ayuda" class="w-full max-w-sm max-h-[90vh] overflow-y-auto bg-base-blanco rounded-xl shadow-xl border border-base-borde-sutil p-5 space-y-3">
-      <h2 id="confianza-titulo" class="text-sm font-bold text-base-texto-primario">Antes de entregar: ¿qué tan seguro estás de que pasa todos los casos?</h2>
-      <p id="confianza-ayuda" class="text-xs text-slate-600">Al calificar te mostramos si coincidió, y en «Mi progreso» ves con el tiempo si tu seguridad acierta. Saber cuándo sabes también es aprender.</p>
+      <h2 id="confianza-titulo" class="text-sm font-bold text-base-texto-primario">Antes de entregar: ¿qué tan seguro estás de {{ workspaceStore.currentExercise.questionType === 'coding' ? 'que pasa todos los casos' : 'tu respuesta' }}?</h2>
+      <!-- Para qué sirve, en palabras (07/10, Jeider: «¿qué es eso de calibrar mi juicio?»). -->
+      <p id="confianza-ayuda" class="text-xs text-slate-600">Sirve para dos cosas: si estabas seguro y aciertas, la lección tarda más en volver a tus repasos; y al calificar ves si tu seguridad coincidió con el resultado. Saber cuándo sabes también es aprender.</p>
       <div class="grid gap-2">
         <button
           v-for="(op, i) in OPCIONES_CONFIANZA"
