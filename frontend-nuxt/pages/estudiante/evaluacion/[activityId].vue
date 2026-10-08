@@ -43,29 +43,11 @@
       <div class="flex-1 overflow-y-auto p-5 text-xs text-base-texto-primario leading-relaxed">
         <!-- 1. Pestaña Enunciado -->
         <div v-if="leftTab === 'enunciado'" class="space-y-4">
+          <ExerciseSinIntentos v-if="avisoEjercicio" :motivo="avisoEjercicio" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
           <div class="prose prose-xs" v-html="formatMarkdown(workspaceStore.currentExercise.description)"></div>
+          <ExercisePasosCodigo v-if="isCodingActivity" :codigo="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" @por-pasos="resolverPorPasos" />
 
-          <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil space-y-1">
-            <span class="font-bold text-base-texto-primario block">Cómo se califica</span>
-            <ul v-if="isCodingActivity" class="list-disc pl-4 space-y-1 text-slate-600 text-[11px]">
-              <li>{{ workspaceStore.publicTestCases.length }} {{ workspaceStore.publicTestCases.length === 1 ? 'ejemplo que puedes ver' : 'ejemplos que puedes ver' }} en la pestaña «Casos de prueba» y probar con «Probar código».</li>
-              <li v-if="workspaceStore.hiddenTestCaseCount > 0">
-                {{ workspaceStore.hiddenTestCaseCount }} {{ workspaceStore.hiddenTestCaseCount === 1 ? 'caso oculto' : 'casos ocultos' }} más, que se revisan al entregar (por ejemplo, los valores límite).
-              </li>
-              <li v-else>No hay casos ocultos: lo que ves es lo que se revisa.</li>
-              <li v-if="workspaceStore.timeLimitMs">Límite de tiempo por ejecución: {{ workspaceStore.timeLimitMs }} ms.</li>
-            </ul>
-            <ul v-else-if="isHtmlCssActivity" class="list-disc pl-4 space-y-1 text-slate-600 text-[11px]">
-              <li>Reglas públicas visibles en el panel de evaluación.</li>
-              <li>Puntaje proporcional al peso de las reglas cumplidas (públicas y ocultas).</li>
-              <li>Puntaje sobre {{ workspaceStore.currentExercise.maxScore }} puntos según tu código HTML y CSS.</li>
-            </ul>
-            <ul v-else class="list-disc pl-4 space-y-1 text-slate-600 text-[11px]">
-              <li>Evaluación formal inmediata al entregar.</li>
-              <li>Consumo de intento al enviar solución definitiva.</li>
-              <li>Puntaje sobre {{ workspaceStore.currentExercise.maxScore }} puntos según tu respuesta.</li>
-            </ul>
-          </div>
+          <ExerciseComoSeCalifica :codigo="isCodingActivity" :html-css="isHtmlCssActivity" />
         </div>
 
         <!-- 2. Pestaña Casos de Prueba (P02 — Solo coding) -->
@@ -282,7 +264,7 @@
           </div>
         </section>
 
-        <ExerciseSinIntentos v-if="remainingAttempts === 0 && !workspaceStore.submissionResult && workspaceStore.currentExercise.activityId" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
+        <ExerciseSinIntentos v-if="avisoEjercicio" :motivo="avisoEjercicio" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <p class="text-[11px] text-base-texto-secundario">
             <span v-if="typeInfo">{{ typeInfo.grading }} · </span>
@@ -374,6 +356,12 @@ const isHtmlCssActivity = computed(() => workspaceStore.currentExercise.question
 const typeInfo = computed(() => exerciseTypeInfo(workspaceStore.currentExercise.questionType))
 const statementHtml = computed(() => formatMarkdown(workspaceStore.currentExercise.description || ''))
 const remainingAttempts = computed(() => Math.max(0, (workspaceStore.currentExercise.maxAttempts ?? 0) - (workspaceStore.currentExercise.usedAttempts ?? 0)))
+/** Aviso arriba del ejercicio: sin intentos, o ya aprobado (repetirlo es práctica). */
+const avisoEjercicio = computed(() => {
+  const ej = workspaceStore.currentExercise
+  if (!ej.activityId || workspaceStore.submissionResult) return null
+  return remainingAttempts.value === 0 ? 'sin-intentos' : ej.yaAprobada ? 'completado' : null
+})
 const canSubmitAnswer = computed(() => Boolean(workspaceStore.pendingAnswer) && !workspaceStore.isSubmitting && remainingAttempts.value > 0)
 
 const passedCount = computed(() => {

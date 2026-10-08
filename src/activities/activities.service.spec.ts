@@ -5,7 +5,7 @@ import { PublicationStatus } from '../common/enums/status.enum';
 import { UserRole } from '../user/entities/user.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
-import { Not } from 'typeorm';
+import { MoreThanOrEqual, Not } from 'typeorm';
 
 // Regresión de P0-04: CRUD de actividades sin control de acceso. Usa un
 // AuthorizationService REAL (con repos falsos) — no mockeado — para probar
@@ -269,6 +269,20 @@ describe('ActivitiesService — P0-04', () => {
     expect(res).toMatchObject({ attemptsUsed: 2 });
     expect(mockActivitiesRepo.manager.count).toHaveBeenCalledWith(expect.anything(), {
       where: { studentId: 20, activityId: 1, status: Not(SubmissionStatus.IN_PROGRESS) },
+    });
+  });
+
+  // 08/10, Jeider: al volver a un ejercicio ya resuelto, la pantalla avisa que repetirlo es práctica.
+  it('estudiante → GET actividad dice si ya la aprobó alguna vez (nota calificada ≥ el mínimo para aprobar)', async () => {
+    mockActivitiesRepo.findOne.mockResolvedValue({ ...publishedActivityClass5, totalPoints: 20, passingScore: 60 });
+    mockEnrollmentRepo.findOne.mockResolvedValue({ classId: 5, studentId: 20, status: EnrollmentStatus.ACTIVE });
+    mockActivitiesRepo.manager.count.mockResolvedValueOnce(2).mockResolvedValueOnce(0);
+
+    const res = await service.findOneForRequester(1, { id: 20, role: UserRole.ESTUDIANTE } as any);
+
+    expect(res).toMatchObject({ attemptsUsed: 2, yaAprobada: false });
+    expect(mockActivitiesRepo.manager.count).toHaveBeenLastCalledWith(expect.anything(), {
+      where: { studentId: 20, activityId: 1, status: SubmissionStatus.GRADED, score: MoreThanOrEqual(12) },
     });
   });
 });

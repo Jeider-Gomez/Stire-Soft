@@ -21,6 +21,8 @@ export interface WorkspaceExercise {
   usedAttempts: number
   description: string
   initialCode: string
+  /** Ya lo aprobó alguna vez: la pantalla avisa que repetirlo es práctica (08/10). */
+  yaAprobada?: boolean
   /** Puntaje máximo real de la actividad (activity.totalPoints) — nunca asumir 100. */
   maxScore: number
 }
@@ -219,6 +221,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           usedAttempts: Number(activity.attemptsUsed ?? 0),
           description: activity.description || primaryQuestion.question || 'Sin enunciado disponible.',
           initialCode: starter,
+          yaAprobada: activity.yaAprobada === true,
           maxScore: activity.totalPoints ?? 100
         }
 

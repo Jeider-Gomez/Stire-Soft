@@ -74,7 +74,9 @@ describe('al volver a abrir un ejercicio sin intentos', () => {
   });
 
   it('la página lo muestra cuando ya no quedan intentos y no hay un resultado abierto', () => {
-    expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('<ExerciseSinIntentos v-if="remainingAttempts === 0 && !workspaceStore.submissionResult');
+    const pagina = leer('pages', 'estudiante', 'evaluacion', '[activityId].vue');
+    expect(pagina).toContain('<ExerciseSinIntentos v-if="avisoEjercicio" :motivo="avisoEjercicio"');
+    expect(pagina).toContain("if (!ej.activityId || workspaceStore.submissionResult) return null");
     expect(leer('components', 'exercise', 'SinIntentos.vue')).toContain('Ya usaste los intentos de este ejercicio.');
   });
 });

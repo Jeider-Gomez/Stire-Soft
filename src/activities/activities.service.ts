@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { MoreThanOrEqual, Not, Repository } from 'typeorm';
 import { ActivitiesRepository } from './activities.repository';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
@@ -135,7 +135,16 @@ export class ActivitiesService {
       const attemptsUsed = await this.activitiesRepo.manager.count(Submission, {
         where: { studentId: user.id, activityId: activity.id, status: Not(SubmissionStatus.IN_PROGRESS) },
       });
-      return Object.assign(activity, { attemptsUsed });
+      // ¿Ya lo aprobó alguna vez? La pantalla avisa que repetirlo es práctica (08/10, Jeider).
+      const aprobadas = await this.activitiesRepo.manager.count(Submission, {
+        where: {
+          studentId: user.id,
+          activityId: activity.id,
+          status: SubmissionStatus.GRADED,
+          score: MoreThanOrEqual((activity.totalPoints * activity.passingScore) / 100),
+        },
+      });
+      return Object.assign(activity, { attemptsUsed, yaAprobada: aprobadas > 0 });
     }
 
     // Un docente solo ve (incluidos borradores) las actividades de SUS clases:

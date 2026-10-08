@@ -35,6 +35,8 @@ const TEXTO_IR: Record<string, string> = {
   baja_nivel: 'Afianzar con otro ejercicio',
   repaso: 'Hacer el repaso',
   practica_extra: 'Practicar con otro ejercicio',
+  // 08/10: el recomendador también puede devolver uno que ya intentó sin aprobar; antes no se ofrecía y quedaba «Volver a la lección».
+  reintento: 'Volver al que te faltó',
 }
 
 function irA(rec: RecomendacionSiguiente | null, actual: number): AccionResultado | null {
