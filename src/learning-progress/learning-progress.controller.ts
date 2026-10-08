@@ -101,6 +101,15 @@ export class LearningProgressController {
     });
   }
 
+  @Get('unit/:unitId/mis-ejercicios')
+  @Roles('estudiante')
+  @ApiOperation({ summary: 'Los ejercicios de una lección para el estudiante: si suben su dominio, nivel, tipo y peso' })
+  async misEjercicios(@Param('unitId', ParseIntPipe) unitId: number, @Request() req: any) {
+    // Solo en lecciones de sus clases, como la recomendación.
+    await this.authorizationService.assertEnrolledInClass(req.user, await this.learningProgressService.resolveClassId(unitId));
+    return this.learningProgressService.misEjercicios(req.user.id, unitId);
+  }
+
   @Get('student/:studentId/unit/:unitId/next-activity')
   @Roles('estudiante', 'docente', 'admin')
   @ApiOperation({ summary: 'Recomendar la siguiente actividad de una unidad; con ?reto=1, un ejercicio del nivel siguiente' })

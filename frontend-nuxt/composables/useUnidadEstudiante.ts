@@ -27,6 +27,22 @@ export interface RecomendacionActividadEstudiante {
   reasonMessage: string
 }
 
+/** Un ejercicio de la lección para el estudiante (src/learning-progress/ejercicios-leccion.ts). */
+export type EstadoEjercicioEstudiante = 'por-hacer' | 'en-curso' | 'hecho' | 'cuenta-otro' | 'sin-intentos'
+export interface EjercicioLeccionEstudiante {
+  id: number
+  titulo: string
+  nivel: string
+  tipo: string | null
+  pesoPct: number
+  parecidos: number
+  estado: EstadoEjercicioEstudiante
+  subeDominio: boolean
+  intentosUsados: number
+  intentosPermitidos: number
+  mejorPct: number | null
+}
+
 export interface EntregaUnidadEstudiante {
   id: number
   titulo: string
@@ -57,6 +73,10 @@ export function useUnidadEstudiante() {
     return api.get<{ data: ActividadUnidadEstudiante[] }>(`/activities?learningUnitId=${unitId}`)
   }
 
+  function misEjercicios(unitId: number): Promise<EjercicioLeccionEstudiante[]> {
+    return api.get<EjercicioLeccionEstudiante[]>(`/learning-progress/unit/${unitId}/mis-ejercicios`)
+  }
+
   function entregasDeClase(classId: number): Promise<EntregaUnidadEstudiante[]> {
     return api.get<EntregaUnidadEstudiante[]>(`/entregas/mias?classId=${classId}`)
   }
@@ -74,5 +94,5 @@ export function useUnidadEstudiante() {
     return api.put(`/learning-progress/unit/${unitId}/confidence`, { confianza })
   }
 
-  return { unidad, contenidos, actividades, entregasDeClase, progreso, siguienteActividad, registrarConfianza }
+  return { unidad, contenidos, actividades, misEjercicios, entregasDeClase, progreso, siguienteActividad, registrarConfianza }
 }

@@ -138,16 +138,8 @@
           </span>
         </div>
 
-        <div v-else-if="chooseManually" class="flex flex-col gap-2">
-          <p v-if="isLoadingActivities" class="text-xs text-slate-700">Cargando ejercicios…</p>
-          <NuxtLink
-            v-for="activity in unitActivities"
-            :key="activity.id"
-            :to="`/estudiante/evaluacion/${activity.id}`"
-            class="text-xs font-semibold text-acento-ambar-fuerte hover:underline">
-            {{ activity.title }}
-          </NuxtLink>
-        </div>
+        <!-- Todos los ejercicios, por nivel, con cuáles todavía suben el dominio (08/10). -->
+        <EstudianteEjerciciosDeLaLeccion v-else-if="chooseManually" :unit-id="unitId" />
 
         <p v-else class="text-xs text-slate-700">
           Todavía no hay ejercicios publicados para esta lección.
@@ -203,7 +195,7 @@ definePageMeta({
 const route = useRoute()
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
-const { unidad, contenidos, actividades, entregasDeClase, progreso, siguienteActividad, registrarConfianza } = useUnidadEstudiante()
+const { unidad, contenidos, entregasDeClase, progreso, siguienteActividad, registrarConfianza } = useUnidadEstudiante()
 
 const unitId = Number(route.params.id) || 0
 /** Si la lección es de un módulo todavía cerrado, qué falta para abrirlo; null si está abierta. */
@@ -232,11 +224,6 @@ interface ContentBlock {
 const esRecurso = (type?: string) => ['video', 'pdf', 'image', 'embed'].includes(type ?? '')
 /** Los bloques de texto, para escucharlos (EscucharLeccion). Computado: el mismo arreglo mientras no cambie la lección. */
 const bloquesDeTexto = computed(() => unitContent.value.filter((c) => !esRecurso(c.type)))
-
-interface ActivitySummary {
-  id: number
-  title: string
-}
 
 interface NextActivityRecommendation {
   activityId: number
@@ -268,8 +255,6 @@ function volverALaExplicacion() {
   el.focus({ preventScroll: true })
 }
 const chooseManually = ref(false)
-const unitActivities = ref<ActivitySummary[]>([])
-const isLoadingActivities = ref(false)
 
 const { messageOf } = useApiErrorMessage()
 
@@ -323,19 +308,8 @@ async function saltarConReto() {
   }
 }
 
-async function toggleManualChoice() {
+function toggleManualChoice() {
   chooseManually.value = !chooseManually.value
-  if (chooseManually.value && unitActivities.value.length === 0) {
-    isLoadingActivities.value = true
-    try {
-      const res = await actividades(unitId)
-      unitActivities.value = res?.data || []
-    } catch (error: unknown) {
-      console.warn('[STIRE Student] No se pudo cargar la lista de actividades de la unidad:', error)
-    } finally {
-      isLoadingActivities.value = false
-    }
-  }
 }
 
 onMounted(async () => {

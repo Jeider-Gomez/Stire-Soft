@@ -21,6 +21,7 @@ import { LearningProgress } from './entities/learning-progress.entity';
 import { Confianza, MotivoRecomendacion, nivelSaltadoHasta, recomendarSiguiente } from './recommendation/recomendar-siguiente';
 import { construirEstadisticas, SEMANAS_CALENDARIO } from './estadisticas';
 import { actividadVisiblePara } from '../activities/visibilidad';
+import { ejerciciosDeLaLeccion, EjercicioLeccion } from './ejercicios-leccion';
 
 export interface NextActivityRecommendation {
   activityId: number;
@@ -175,6 +176,18 @@ export class LearningProgressService {
       submission =>
         submission.status !== SubmissionStatus.IN_PROGRESS && !isSubmissionPassed(submission, activity),
     ).length;
+  }
+
+  /** «Ver todos los ejercicios» de la lección: cuáles todavía suben su dominio, su nivel, tipo y peso (08/10). */
+  async misEjercicios(studentId: number, learningUnitId: number): Promise<EjercicioLeccion[]> {
+    const activities = await this.cargarActividadesConTipo(learningUnitId, studentId);
+    if (activities.length === 0) return [];
+    const intentos = await this.submissionsRepo.createQueryBuilder('sub')
+      .where('sub.studentId = :studentId', { studentId })
+      .andWhere('sub.activityId IN (:...activityIds)', { activityIds: activities.map((a) => a.id) })
+      .andWhere('sub.status != :status', { status: SubmissionStatus.IN_PROGRESS })
+      .getMany();
+    return ejerciciosDeLaLeccion(activities, intentos);
   }
 
   async getNextActivity(studentId: number, learningUnitId: number, opciones: { reto?: boolean } = {}): Promise<NextActivityRecommendation | null> {
