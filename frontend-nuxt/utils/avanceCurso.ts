@@ -13,6 +13,9 @@ export function calcularAvance(lecciones: LeccionConAvance[]) {
   return {
     total: lecciones.length,
     dominadas: lecciones.filter((u) => u.status === 'dominado').length,
+    // Para la barra por estados del inicio (08/10): empezadas sin dominar, y las que no ha tocado.
+    enPractica: trabajadas.filter((u) => u.status !== 'dominado').length,
+    sinEmpezar: lecciones.filter((u) => !u.empezada && u.status !== 'dominado').length,
     trabajadas: trabajadas.length,
     dominioTrabajado: trabajadas.length
       ? Math.round(trabajadas.reduce((suma, u) => suma + u.masteryPercentage, 0) / trabajadas.length)

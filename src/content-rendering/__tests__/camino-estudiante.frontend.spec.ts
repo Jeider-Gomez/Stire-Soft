@@ -16,7 +16,7 @@ function cargar<T>(archivo: string): T {
 }
 
 type Leccion = { status: string; masteryPercentage: number; empezada?: boolean };
-const { calcularAvance } = cargar<{ calcularAvance: (l: Leccion[]) => { total: number; dominadas: number; trabajadas: number; dominioTrabajado: number } }>('avanceCurso.ts');
+const { calcularAvance } = cargar<{ calcularAvance: (l: Leccion[]) => { total: number; dominadas: number; enPractica: number; sinEmpezar: number; trabajadas: number; dominioTrabajado: number } }>('avanceCurso.ts');
 const { contar, DOMINADO } = cargar<{ contar: (n: number, t: string, m?: boolean) => string; DOMINADO: number }>('terminos.ts');
 
 describe('Avance honesto del curso', () => {
@@ -25,13 +25,13 @@ describe('Avance honesto del curso', () => {
       ...Array.from({ length: 5 }, () => ({ status: 'dominado', masteryPercentage: 100, empezada: true })),
       ...Array.from({ length: 12 }, () => ({ status: 'por-iniciar', masteryPercentage: 0, empezada: false })),
     ];
-    expect(calcularAvance(lecciones)).toEqual({ total: 17, dominadas: 5, trabajadas: 5, dominioTrabajado: 100 });
+    expect(calcularAvance(lecciones)).toEqual({ total: 17, dominadas: 5, enPractica: 0, sinEmpezar: 12, trabajadas: 5, dominioTrabajado: 100 });
   });
 
   it('una lección empezada con 0 % cuenta como trabajada (no como «sin empezar»)', () => {
     const r = calcularAvance([{ status: 'en-progreso', masteryPercentage: 0, empezada: true }, { status: 'dominado', masteryPercentage: 90, empezada: true }]);
-    expect(r).toMatchObject({ trabajadas: 2, dominioTrabajado: 45, dominadas: 1 });
-    expect(calcularAvance([])).toEqual({ total: 0, dominadas: 0, trabajadas: 0, dominioTrabajado: 0 });
+    expect(r).toMatchObject({ trabajadas: 2, dominioTrabajado: 45, dominadas: 1, enPractica: 1, sinEmpezar: 0 });
+    expect(calcularAvance([])).toEqual({ total: 0, dominadas: 0, enPractica: 0, sinEmpezar: 0, trabajadas: 0, dominioTrabajado: 0 });
   });
 
   it('el umbral de «dominada» es el del servidor (85) y lo usa el plan del estudiante', () => {
@@ -40,8 +40,10 @@ describe('Avance honesto del curso', () => {
   });
 
   it('el inicio muestra «x de N lecciones», no un dominio suelto', () => {
-    const inicio = plantilla(leer('pages', 'estudiante', 'index.vue'));
-    expect(inicio).toContain('studentStore.avanceCurso.dominadas');
+    // Desde el 08/10 las dos tarjetas están en TuAvance.vue (curso por estados y cuánto subió hoy o esta semana).
+    expect(plantilla(leer('pages', 'estudiante', 'index.vue'))).toContain('<EstudianteTuAvance />');
+    const inicio = plantilla(leer('components', 'estudiante', 'TuAvance.vue'));
+    expect(inicio).toContain('a.dominadas');
     expect(inicio).toContain('Dominio en lo que has trabajado');
     expect(inicio).not.toContain('Ya dominas lo que llevas');
   });

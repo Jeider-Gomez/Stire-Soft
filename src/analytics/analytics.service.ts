@@ -1,5 +1,5 @@
 import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, MoreThanOrEqual } from 'typeorm';
 import { Difficulty } from '../common/enums/difficulty.enum';
 import { LearningProgress } from '../learning-progress/entities/learning-progress.entity';
 import { Submission } from '../submissions/entities/submission.entity';
@@ -96,6 +96,15 @@ export class AnalyticsService {
       take: 5,
     });
 
+    // 5. Cuánto movió cada entrega el dominio de su lección en los últimos 8 días (07/10, Jeider: «se que avancé, pero
+    // tengo que calcularlo yo»). El inicio lo resume en «hoy» o «esta semana» con la hora del dispositivo
+    // (utils/avanceReciente.ts); 8 días para que «esta semana» no se corte por la zona horaria.
+    const cambiosRecientes = await submissionRepo.find({
+      where: { studentId, submittedAt: MoreThanOrEqual(new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000)) },
+      relations: ['activity', 'activity.learningUnit'],
+      order: { submittedAt: 'ASC' },
+    });
+
     // Nombre para la cabecera del detalle del docente, que mostraba «ID: #4».
     const student = await this.dataSource.getRepository(User).findOne({
       where: { id: studentId },
@@ -136,6 +145,15 @@ export class AnalyticsService {
         dominioAntes: s.dominioAntes ?? null,
         dominioDespues: s.dominioDespues ?? null,
       })),
+      cambiosDominio: (cambiosRecientes ?? [])
+        .filter((s) => s.dominioDespues !== null && s.dominioDespues !== undefined && s.dominioAntes !== null && s.dominioAntes !== undefined && s.activity)
+        .map((s) => ({
+          fecha: s.submittedAt,
+          learningUnitId: s.activity.learningUnitId,
+          titulo: s.activity.learningUnit?.title ?? s.activity.title,
+          antes: s.dominioAntes,
+          despues: s.dominioDespues,
+        })),
       masteryByUnit: progressList.map(p => ({
         unitId: p.learningUnitId,
         unitTitle: p.learningUnit?.title || 'Unidad Desconocida',

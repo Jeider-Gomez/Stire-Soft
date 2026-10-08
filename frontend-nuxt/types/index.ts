@@ -97,6 +97,8 @@ export interface StudentAnalytics {
     dominioAntes?: number | null
     dominioDespues?: number | null
   }>
+  /** Cuánto movió cada entrega el dominio de su lección en los últimos 8 días (utils/avanceReciente.ts). */
+  cambiosDominio?: Array<{ fecha: string; learningUnitId: number; titulo: string; antes: number; despues: number }>
 }
 
 export interface TestCase {

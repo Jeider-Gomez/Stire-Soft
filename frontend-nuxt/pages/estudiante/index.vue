@@ -137,27 +137,8 @@
 
       <!-- 2. AVANCE HONESTO: cuánto del curso, no solo de lo trabajado (antes decía «Dominio 100 %» con 5 de 17) -->
       <section class="grid grid-cols-1 sm:grid-cols-3 gap-4" aria-label="Tu avance">
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Avance del curso</p>
-          <p class="text-xl font-bold mt-1 text-base-texto-primario">
-            <template v-if="studentStore.hasLoaded">{{ studentStore.avanceCurso.dominadas }} <span class="text-sm font-semibold text-base-texto-secundario">de {{ contar(studentStore.avanceCurso.total, 'leccion') }}</span></template>
-            <template v-else>—</template>
-          </p>
-          <div class="mt-2 h-1.5 bg-base-bg-secundario rounded-full overflow-hidden" aria-hidden="true">
-            <div class="h-full bg-semantico-pasa rounded-full" :style="{ width: `${porcentajeAvance}%` }"></div>
-          </div>
-          <span class="text-[10px] text-base-texto-secundario">lecciones dominadas</span>
-        </div>
-
-        <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-          <p class="text-[11px] text-base-texto-secundario font-medium">Dominio en lo que has trabajado</p>
-          <p class="text-xl font-bold mt-1" :class="studentStore.avanceCurso.dominioTrabajado >= DOMINADO ? 'text-semantico-pasa' : 'text-base-texto-primario'">
-            {{ studentStore.hasLoaded && studentStore.avanceCurso.trabajadas ? `${studentStore.avanceCurso.dominioTrabajado} %` : '—' }}
-          </p>
-          <span class="text-[10px] text-base-texto-secundario">
-            {{ studentStore.avanceCurso.trabajadas ? `en ${contar(studentStore.avanceCurso.trabajadas, 'leccion')} que ya empezaste` : 'Aún no empiezas ninguna lección' }}
-          </span>
-        </div>
+        <!-- El curso por estados y cuánto subiste hoy o esta semana (TuAvance.vue, 08/10). -->
+        <EstudianteTuAvance />
 
         <!-- Logros y medallas (utils/logros.ts; BT-29): la nueva o la última, y la meta más cercana -->
         <EstudianteLogrosInicio />
@@ -288,7 +269,7 @@ function moduloAbierto(mod: { id: number; units: Array<{ id: number; status?: st
   return (primeroPendiente ?? studentStore.modules[0])?.id === mod.id
 }
 import { BookOpen, Brain, CheckCircle2, ChevronRight, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, TrendingUp } from 'lucide-vue-next'
-import { contar, DOMINADO } from '~/utils/terminos'
+import { contar } from '~/utils/terminos'
 import { calificacionTexto, fechaCorta, type EstadoEntrega } from '~/utils/entregas'
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
@@ -393,10 +374,6 @@ watch(
   { immediate: true },
 )
 
-const porcentajeAvance = computed(() => {
-  const { dominadas, total } = studentStore.avanceCurso
-  return total ? Math.round((dominadas / total) * 100) : 0
-})
 const dominadasDe = (mod: CourseModule) => mod.units.filter((u) => u.status === 'dominado').length
 const porcentajeModulo = (mod: CourseModule) => (mod.units.length ? Math.round((dominadasDe(mod) / mod.units.length) * 100) : 0)
 

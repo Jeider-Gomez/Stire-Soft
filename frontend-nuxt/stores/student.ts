@@ -182,6 +182,7 @@ export const useStudentStore = defineStore('student', () => {
               successRate: number
             }>
             recentSubmissions?: StudentAnalytics['recentSubmissions']
+            cambiosDominio?: StudentAnalytics['cambiosDominio']
           }>(`/analytics/student/${studentId}`)
 
           if (analyticsData?.summary) {
@@ -206,7 +207,8 @@ export const useStudentStore = defineStore('student', () => {
                   status: calculatedStatus
                 }
               }),
-              recentSubmissions: analyticsData.recentSubmissions || []
+              recentSubmissions: analyticsData.recentSubmissions || [],
+              cambiosDominio: analyticsData.cambiosDominio || []
             }
           }
         } catch (err) {
