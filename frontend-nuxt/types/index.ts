@@ -129,6 +129,11 @@ export interface SubmissionResult {
   totalCount: number
   status: SubmissionStatus
   feedback?: string
+  /**
+   * Opción múltiple (JEIDER-S08-11): al acertar, por qué es correcta; al fallar, qué repasar, nunca la respuesta
+   * (src/submissions/retroalimentacion.ts).
+   */
+  retroalimentacion?: Array<{ preguntaId: number; correcta: boolean; explicacion: string | null; repasar: string | null }>
   testCaseResults?: Array<{
     id: number
     passed: boolean

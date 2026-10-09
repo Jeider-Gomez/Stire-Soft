@@ -85,6 +85,6 @@ export function revisarLeccion(e: { explicaciones: ExplicacionParaGuia[]; ejerci
 
 export const CONSEJOS_LECCION = [
   'STIRE no adivina el «estilo» de cada estudiante: no hay evidencia de que sirva. Lo que ayuda a todos es dar varias formas de entrar a la misma idea.',
-  'En opción múltiple, escribe por qué es correcta: es la retroalimentación que el estudiante ve con su resultado.',
+  'En opción múltiple, escribe por qué es correcta (la lee al acertar) y qué repasar si falla, sin dar la respuesta.',
   'Todo es opcional: la guía solo dice qué falta y por qué.',
 ]

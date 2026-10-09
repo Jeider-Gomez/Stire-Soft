@@ -172,3 +172,22 @@ export function avisoPorEstado(estado: string | undefined): MotivoAviso | null {
   if (estado === 'sin-intentos') return 'sin-intentos'
   return null
 }
+
+/** Lo que el docente escribió para cada pregunta de opción múltiple, como lo lee el estudiante (JEIDER-S08-11; BT-41). */
+export interface RetroalimentacionPregunta { preguntaId: number; correcta: boolean; explicacion: string | null; repasar: string | null }
+export interface RetroParaMostrar { tipo: 'porque' | 'repasar'; texto: string }
+
+const REPASAR_POR_DEFECTO = 'Vuelve a la explicación de la lección y prueba con un ejercicio parecido: no te damos la respuesta para que la descubras.'
+
+/**
+ * Al acertar, por qué es correcta (si el docente lo escribió); al fallar, qué repasar, nunca la respuesta. Sin texto del
+ * docente, al fallar se sugiere volver a la explicación (una sola vez, aunque fallen varias preguntas).
+ */
+export function retroParaMostrar(retro: ReadonlyArray<RetroalimentacionPregunta> | undefined): RetroParaMostrar[] {
+  const out: RetroParaMostrar[] = []
+  for (const r of retro ?? []) {
+    if (r.correcta && r.explicacion) out.push({ tipo: 'porque', texto: r.explicacion })
+    if (!r.correcta) out.push({ tipo: 'repasar', texto: r.repasar ?? REPASAR_POR_DEFECTO })
+  }
+  return out.filter((x, i) => out.findIndex((y) => y.tipo === x.tipo && y.texto === x.texto) === i)
+}
