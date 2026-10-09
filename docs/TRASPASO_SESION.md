@@ -1,7 +1,7 @@
 # Traspaso de sesión — dónde quedamos y cómo se trabaja
 
 > Para una sesión nueva de Claude Code (en la nube o local). Se lee después de `CLAUDE.md`.
-> **Última actualización:** 2026-10-09 · `main @ 19ba823`. Lo privado (contraseñas de las cuentas de
+> **Última actualización:** 2026-10-09 (tarde, sesión en la nube) · `main @ 5363ab6` + este traspaso. Lo privado (contraseñas de las cuentas de
 > prueba, acceso al servidor) **no** va aquí: el repo es público. Jeider lo pega en el primer mensaje.
 
 ## 1. Con quién trabajas
@@ -58,17 +58,28 @@ Hallazgos de Jeider: `docs/calidad/resultados-prueba/HALLAZGOS_JEIDER_S08_2026-1
 - Sugerencias: el admin puede avisarle (opcional) a quien la envió, con la respuesta del equipo
   (`avisar` en `PATCH /reportes/:id`).
 - Encuesta SUS cada 7 días (`src/usabilidad/sus.ts`, `DIAS_ENTRE_RESPUESTAS`), **temporal para la prueba**.
+- **09/10 (tarde), hallazgos UX-03 y pendientes de Jeider** (detalle en `HALLAZGOS_JEIDER_S08_2026-10-07.md`, al final):
+  siguiente lección siempre a mano y «otro parecido» al fallar (`c83b12b`); meta de la lección (85 %) y lo que pide el
+  módulo (`2f602fc`); botón «Ver todos: cuáles suben tu dominio» y aviso en los parecidos (`e30e2e7`); retroalimentación
+  de opción múltiple en el backend (`ffbe1be`); **opción múltiple con 1 intento por defecto** (`f979155`); guía opcional
+  «Para que sea una buena lección» y 3 parecidos en opción múltiple (`cf45fbb`); tooltips y detalles visuales
+  (`a2bee90`); barra de fuerza de la clave (`5363ab6`). BT-40, BT-41 y BT-42.
+- Sugerencias n.º 2, 3, 5 y 6 resueltas o vistas con «Avisarle»; 7 y 8 descartadas (repetidas).
+- Desde la nube: se trabaja directo en `main` con push (Jeider lo autorizó). El dominio de la API debe estar permitido
+  en la red del entorno; Node `fetch` no usa el proxy: usar `curl`.
 
-**Producción:** el servidor quedó en `75bb7b6`. Falta desplegar `09fcf8c…19ba823` (sin migraciones).
-Hasta entonces «Ver todos los ejercicios» falla en producción.
+**Producción:** el backend está en `19ba823`. **Falta desplegar `ffbe1be`** (sin migraciones): agrega `retroalimentacion` a la respuesta
+de la entrega. El frontend que la muestra **no está en `main`**: está en la rama `claude/wizardly-lovelace-g2i462`
+(«frontend del punto 6»). Cuando el backend esté arriba, se lleva a `main`.
 
 ## 5. Pendiente
 
 | Qué | Quién / cuándo |
 |---|---|
-| Desplegar el backend (`19ba823`, sin migraciones). | Jeider pega los comandos; necesita la llave SSH de su PC. |
-| Después del despliegue: marcar en el panel del admin las sugerencias n.º 2 y 5 como resueltas y la n.º 3 como revisada, con «Avisarle» activo. Las respuestas ya redactadas están en el primer mensaje de Jeider. | Con la cuenta de admin de prueba (nunca la de Jeider). |
-| **Decisión de Jeider:** intentos en opción múltiple y respuesta cerrada. Recomendado: 1 intento que cuenta y luego la explicación; para practicar, los ejercicios parecidos; programar conserva varios intentos; el docente puede cambiarlo. Falta saber si se aplica también a los ejercicios ya cargados. | Esperar respuesta. |
+| Desplegar el backend `ffbe1be` (sin migraciones) y después llevar a `main` el frontend del punto 6 (rama `claude/wizardly-lovelace-g2i462`). | Jeider despliega; luego se sube el frontend. |
+| **Decisión de Jeider:** ¿pasar a 1 intento también los ejercicios de opción múltiple ya cargados en producción? Lo nuevo ya se crea con 1. Ojo: los cursos tienen 2 parecidos por grupo y la guía recomienda 3. | Esperar respuesta. |
+| **Para pensar:** que el dominio baje un escalón solo con evidencia de olvido (un repaso fallado), no a cero. Ver «Para pensar» en `HALLAZGOS_JEIDER_S08_2026-10-07.md`. | Después de la prueba. |
+| Contarle a José la barra de la clave (`components/auth/FuerzaClave.vue`) y la guía de la lección. Solo usan sus tokens. | Jeider. |
 | Enunciados de prueba de escritorio en la clase de Pedro en producción: el seed ya los explica, pero los datos de producción hay que editarlos como docente. | Pedro o con la API. |
 | Revisión pedagógica de los ejercicios de programar de los cursos (S08-J09 en el Backlog de Trello). | Después de la prueba. |
 | Volver la encuesta SUS a un intervalo largo y reactivar el apagado automático de Azure al terminar la prueba. | 16/10 (o 23/10 si hay 3.ª semana). |
