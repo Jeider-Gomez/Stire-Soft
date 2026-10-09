@@ -97,12 +97,15 @@
               {{ recommendedActivity?.reasonMessage ?? 'Cada ejercicio que resuelves suma a tu dominio de la lección.' }}
             </p>
           </div>
+          <!-- 09/10 (Jeider): antes, un enlace pequeño que no se encontraba; ahora un botón que dice para qué sirve. -->
           <button
             v-if="recommendedActivity"
             type="button"
-            class="text-xs font-semibold text-acento-ambar-fuerte hover:underline min-h-[44px]"
+            :aria-expanded="chooseManually"
+            class="inline-flex items-center gap-1.5 px-3 rounded-md borde-afordancia bg-base-blanco text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario min-h-[44px]"
             @click="toggleManualChoice">
-            {{ chooseManually ? 'Volver al recomendado' : 'Ver todos los ejercicios' }}
+            <ListChecks :size="14" class="text-acento-ambar-fuerte" aria-hidden="true" />
+            {{ chooseManually ? 'Volver al recomendado' : 'Ver todos: cuáles suben tu dominio' }}
           </button>
         </div>
 
@@ -185,7 +188,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight, BookOpen, ChevronRight, Inbox, Lightbulb, Loader2, Lock, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, BookOpen, ChevronRight, Inbox, Lightbulb, ListChecks, Loader2, Lock, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
 import { fechaCorta } from '~/utils/entregas'
 import { tituloConNombre } from '~/utils/tituloPagina'
 import { DOMINADO, TERMINOS } from '~/utils/terminos'
@@ -265,7 +268,8 @@ function volverALaExplicacion() {
   el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   el.focus({ preventScroll: true })
 }
-const chooseManually = ref(false)
+// Desde un ejercicio («Ver cuáles todavía suben tu dominio») se llega con la lista ya abierta.
+const chooseManually = ref(route.query.ejercicios === '1')
 
 const { messageOf } = useApiErrorMessage()
 
@@ -353,6 +357,7 @@ onMounted(async () => {
   } finally {
     isLoading.value = false
   }
+  if (chooseManually.value) nextTick(() => document.getElementById('practicar-titulo')?.scrollIntoView({ block: 'start' }))
 
   const studentId = authStore.user?.id
   if (!studentId) return

@@ -59,7 +59,7 @@ describe('al volver a un ejercicio ya aprobado', () => {
     expect(v).toContain('<strong>Ya completaste este ejercicio.</strong>');
     expect(v).toContain('la lección vuelve antes a tus repasos');
     const pagina = leer('pages', 'estudiante', 'evaluacion', '[activityId].vue');
-    expect(pagina).toContain("return remainingAttempts.value === 0 ? 'sin-intentos' : ej.yaAprobada ? 'completado' : null");
+    expect(pagina).toContain("return remainingAttempts.value === 0 ? 'sin-intentos' : ej.yaAprobada ? 'completado' : 'revisar'");
     expect(leer('stores', 'workspace.ts')).toContain('yaAprobada: activity.yaAprobada === true');
   });
 

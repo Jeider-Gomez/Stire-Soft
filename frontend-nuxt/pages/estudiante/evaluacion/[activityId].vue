@@ -356,11 +356,11 @@ const isHtmlCssActivity = computed(() => workspaceStore.currentExercise.question
 const typeInfo = computed(() => exerciseTypeInfo(workspaceStore.currentExercise.questionType))
 const statementHtml = computed(() => formatMarkdown(workspaceStore.currentExercise.description || ''))
 const remainingAttempts = computed(() => Math.max(0, (workspaceStore.currentExercise.maxAttempts ?? 0) - (workspaceStore.currentExercise.usedAttempts ?? 0)))
-/** Aviso arriba del ejercicio: sin intentos, o ya aprobado (repetirlo es práctica). */
+/** Aviso arriba del ejercicio: sin intentos, ya aprobado o (con «revisar», de la lista de la lección) un parecido ya resuelto. */
 const avisoEjercicio = computed(() => {
   const ej = workspaceStore.currentExercise
   if (!ej.activityId || workspaceStore.submissionResult) return null
-  return remainingAttempts.value === 0 ? 'sin-intentos' : ej.yaAprobada ? 'completado' : null
+  return remainingAttempts.value === 0 ? 'sin-intentos' : ej.yaAprobada ? 'completado' : 'revisar'
 })
 const canSubmitAnswer = computed(() => Boolean(workspaceStore.pendingAnswer) && !workspaceStore.isSubmitting && remainingAttempts.value > 0)
 

@@ -158,3 +158,17 @@ export const CUANDO_VUELVE: Record<NombreCalidad, string> = {
   bien: 'Esta lección vuelve a tus repasos en unos días, para que no se te olvide.',
   facil: 'Esta lección tarda más en volver a tus repasos: ya la tienes clara.',
 }
+
+export type MotivoAviso = 'sin-intentos' | 'completado' | 'parecido'
+
+/**
+ * El aviso al abrir un ejercicio según cómo va en la lista de la lección (09/10, Jeider: «al entrar a un ejercicio ya
+ * hecho no me avisa que no subirá el dominio»). Antes solo se avisaba en el mismo ejercicio aprobado; un «parecido» de
+ * uno ya resuelto (mismo tipo y nivel: cuenta el mejor) tampoco sube el dominio y no decía nada.
+ */
+export function avisoPorEstado(estado: string | undefined): MotivoAviso | null {
+  if (estado === 'hecho') return 'completado'
+  if (estado === 'cuenta-otro') return 'parecido'
+  if (estado === 'sin-intentos') return 'sin-intentos'
+  return null
+}
