@@ -148,17 +148,8 @@
                 <AlertTriangle :size="14" class="text-amber-600" aria-hidden="true" /> Bloq Mayús está activado
               </p>
             </Transition>
-            <!-- Lo que exige el servidor, en una línea; cuando se cumple todo queda solo «Contraseña segura». -->
-            <p v-if="claveCompleta" id="reglas-clave" class="flex items-center gap-1 text-[11px] font-semibold text-[#00705f]">
-              <CheckCircle2 :size="13" aria-hidden="true" /> Contraseña segura
-            </p>
-            <ul v-else id="reglas-clave" class="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px]">
-              <li v-for="regla in reglasClave" :key="regla.texto" class="flex items-center gap-1" :class="regla.cumple ? 'text-[#00705f] font-semibold' : faltan.password ? 'text-red-700 font-semibold' : 'text-slate-500'">
-                <Check v-if="regla.cumple" :size="11" aria-hidden="true" />
-                <span v-else class="w-[11px] text-center" aria-hidden="true">·</span>
-                {{ regla.texto }}<span class="sr-only">{{ regla.cumple ? ' (cumplido)' : ' (pendiente)' }}</span>
-              </li>
-            </ul>
+            <!-- JEIDER-S08-12: barra de fuerza con color y texto, y las reglas del servidor siempre a la vista. -->
+            <AuthFuerzaClave id="reglas-clave" :clave="password" :falta="!!faltan.password" />
           </div>
         </div>
 
@@ -281,7 +272,7 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, BookOpen, Bot, Check, CheckCircle2, Eye, EyeOff, GraduationCap, KeyRound, ListPlus, Lock, Mail, ShieldAlert, ShieldCheck, User } from 'lucide-vue-next'
+import { AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, BookOpen, Bot, Check, Eye, EyeOff, GraduationCap, KeyRound, ListPlus, Lock, Mail, ShieldAlert, ShieldCheck, User } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useCuentaPublica } from '~/composables/useCuentaPublica'
 import { rutaDeVuelta, codigoMientrasEscribe } from '~/utils/codigoClase'
@@ -343,15 +334,6 @@ function detectarBloqMayus(evento: KeyboardEvent) {
   bloqMayus.value = evento.getModifierState?.('CapsLock') ?? false
 }
 
-// Lo mismo que exige el servidor (src/common/validators/password-complexity.ts): 6 o más caracteres, una mayúscula,
-// una minúscula y un número o un símbolo.
-const reglasClave = computed(() => [
-  { texto: '6 o más caracteres', cumple: password.value.length >= 6 },
-  { texto: 'Una mayúscula', cumple: /[A-Z]/.test(password.value) },
-  { texto: 'Una minúscula', cumple: /[a-z]/.test(password.value) },
-  { texto: 'Un número o un símbolo', cumple: /[\d\W]/.test(password.value) },
-])
-const claveCompleta = computed(() => reglasClave.value.every((r) => r.cumple))
 
 async function handleRegister() {
   if (Object.keys(validar()).length) { enfocarPrimerFaltante(); return }
