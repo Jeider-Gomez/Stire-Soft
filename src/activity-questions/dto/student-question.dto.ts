@@ -46,7 +46,8 @@ export class StudentQuestionDto {
     switch (type) {
       case QuestionType.MCQ: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { correctAnswerId, explanation, ...rest } = config;
+        // `repasar` (qué repasar si falla) tampoco: sale con el resultado, no antes de responder.
+        const { correctAnswerId, explanation, repasar, ...rest } = config;
         return rest;
       }
 

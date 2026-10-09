@@ -24,6 +24,7 @@ import { Enrollment } from '../enrollment/entities/enrollment.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { Activity } from '../activities/entities/activity.entity';
 import { actividadVisiblePara } from '../activities/visibilidad';
+import { retroalimentacionCerrada } from './retroalimentacion';
 
 @Injectable()
 export class SubmissionsService {
@@ -207,6 +208,7 @@ export class SubmissionsService {
           ? (totalScore / submission.activity.totalPoints) * 100 >= submission.activity.passingScore
           : null,
         status: submission.status,
+        retroalimentacion: retroalimentacionCerrada(questions, answerEntities),
       };
 
     } catch (error: any) {
@@ -323,6 +325,7 @@ export class SubmissionsService {
       passedCount: submission.answers.filter((a) => a.isCorrect === true).length,
       totalCount: submission.answers.length,
       feedback: submission.feedback,
+      retroalimentacion: retroalimentacionCerrada(await this.questionsRepo.findByActivityId(submission.activityId), submission.answers),
     };
   }
 

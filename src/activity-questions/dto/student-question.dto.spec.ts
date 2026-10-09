@@ -10,15 +10,17 @@ function makeQuestion(type: QuestionType, config: any): ActivityQuestion {
 // respuesta correcta a partir de lo que el endpoint le sirve — ni por un
 // campo explícito, ni por el orden en que llegan los elementos.
 describe('StudentQuestionDto.fromEntity', () => {
-  it('MCQ: quita correctAnswerId y explanation', () => {
+  it('MCQ: quita correctAnswerId, explanation y repasar (salen con el resultado, no antes)', () => {
     const q = makeQuestion(QuestionType.MCQ, {
       options: [{ id: 'a', text: 'A' }, { id: 'b', text: 'B' }],
       correctAnswerId: 'b',
       explanation: 'porque b es la correcta',
+      repasar: 'Repasa la sección de B.',
     });
     const dto = StudentQuestionDto.fromEntity(q);
     expect(dto.config).not.toHaveProperty('correctAnswerId');
     expect(dto.config).not.toHaveProperty('explanation');
+    expect(dto.config).not.toHaveProperty('repasar');
     expect(dto.config.options).toEqual(q.config.options);
   });
 

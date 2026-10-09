@@ -436,6 +436,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Ventana del resultado, aviso de «sin intentos», cabecera y final de la lección. |
 | **Trazabilidad** | `frontend-nuxt/utils/siguienteLeccion.ts`, `utils/resultadoEntrega.ts`, `utils/bloqueoModulos.ts` (`metaDelModulo`), `components/estudiante/MetaDeLaLeccion.vue`. |
 
+## BT-41. Opción múltiple: un intento, qué repasar al fallar y por qué es correcta al acertar
+
+| | |
+|---|---|
+| **Problema observado** | En la prueba (09/10), Jeider: al fallar no sabía por qué. Con 3 intentos y 4 opciones se aprueba casi siempre por descarte. El docente escribía una explicación que el estudiante nunca veía. |
+| **Decisión** | - Opción múltiple con **un intento** por defecto (el docente lo puede cambiar). Para volver a intentarlo, un ejercicio **parecido**, no el mismo.<br>- Al fallar: **qué repasar**, sin dar la respuesta (lo escribe el docente; si no, se propone volver a la explicación de la lección) y otro ejercicio parecido.<br>- Al acertar: **por qué es correcta** (la explicación del docente), para afianzarla.<br>- Al docente se le recomienda, sin obligarlo, tener al menos 3 ejercicios parecidos de opción múltiple por lección. |
+| **Fundamento** | - Adivinar de forma sistemática es una forma de «jugar con el sistema» en vez de aprender (Baker, Corbett y Koedinger, 2004): varios intentos en una pregunta de 4 opciones lo permiten.<br>- La retroalimentación formativa más útil explica, no solo dice correcto o incorrecto (Shute, 2008). Por eso la explicación sale y no se limita a «Respuesta incorrecta».<br>- Recuperar la información en una prueba fortalece el aprendizaje (Roediger y Karpicke, 2006, matriz #4). Una pregunta nueva sobre la misma idea es otra recuperación; repetir la misma, ya vista con su respuesta, no lo es.<br>- El correctivo presenta la idea de otra forma (Bloom, 1968, matriz #1; Guskey, 2007): el «qué repasar» lleva a la explicación y el parecido la pregunta distinto.<br>- El mínimo de 3 parecidos es una decisión de diseño, a validar con datos de uso: con 1 intento cada uno, deja dos oportunidades más antes de pedir ayuda al docente. |
+| **Cómo se materializa** | Ventana del resultado del estudiante; formulario de opción múltiple y guía de la lección del docente. |
+| **Trazabilidad** | `src/submissions/retroalimentacion.ts`, `src/activity-questions/dto/student-question.dto.ts`, `scripts/cursos/crear-cursos.ts`. |
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |

@@ -2,6 +2,8 @@ export interface McqConfig {
   options: { id: string; text: string }[];
   correctAnswerId: string | string[]; // Array if multiple choice
   explanation?: string;
+  /** Qué repasar si falla, sin dar la respuesta (09/10). Se muestra con el resultado, nunca antes. */
+  repasar?: string;
   isMultipleChoice?: boolean;
 }
 

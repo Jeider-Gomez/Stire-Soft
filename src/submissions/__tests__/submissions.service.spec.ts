@@ -593,15 +593,20 @@ describe('SubmissionsService', () => {
         status: SubmissionStatus.GRADED,
         score: 20,
         activity,
-        answers: [{ isCorrect: true }],
+        answers: [{ questionId: 1, isCorrect: true }],
       });
       submissionsRepo.findOne.mockResolvedValue(submission);
+      questionsRepo.findByActivityId.mockResolvedValue([
+        { id: 1, type: QuestionType.MCQ, config: { correctAnswerId: 'a', explanation: 'Porque sí.', repasar: 'Repasa el tema.' } },
+      ]);
 
       const result = await service.getSubmissionStatus(submissionId, studentId);
 
       expect(result.maxScore).toBe(20);
       expect(result.passed).toBe(true);
       expect(result.totalScore).toBe(20);
+      // JEIDER-S08-11: al acertar, por qué es correcta; nunca «qué repasar».
+      expect(result.retroalimentacion).toEqual([{ preguntaId: 1, correcta: true, explicacion: 'Porque sí.', repasar: null }]);
     });
 
     it('deja passed=null mientras status no sea GRADED', async () => {
