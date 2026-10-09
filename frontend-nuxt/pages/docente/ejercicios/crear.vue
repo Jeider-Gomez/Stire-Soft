@@ -229,7 +229,7 @@
 <script setup lang="ts">
 import { ArrowLeft, ChevronRight, CircleCheck, Settings2 } from 'lucide-vue-next'
 import { useCrearEjercicio, type ClaseDelDocente, type LeccionParaEjercicio, type TipoDeActividadCrear } from '~/composables/useCrearEjercicio'
-import { EXERCISE_TYPES, exerciseTypeInfo, type ExerciseTypeId } from '~/utils/exerciseTypes'
+import { EXERCISE_TYPES, exerciseTypeInfo, intentosPorDefecto, type ExerciseTypeId } from '~/utils/exerciseTypes'
 import CodingExerciseBuilder from '~/components/docente/exercise-builders/CodingExerciseBuilder.vue'
 import McqExerciseBuilder from '~/components/docente/exercise-builders/McqExerciseBuilder.vue'
 import FillCodeExerciseBuilder from '~/components/docente/exercise-builders/FillCodeExerciseBuilder.vue'
@@ -274,8 +274,7 @@ const form = reactive({
   learningUnitId: null as number | null,
   title: '',
   difficulty: 'basico',
-  totalPoints: 20,
-  attemptsAllowed: 3,
+  totalPoints: 20, attemptsAllowed: intentosPorDefecto('mcq'),
   questionText: ''
 })
 
@@ -320,6 +319,7 @@ function weightHint(w: number) {
 
 function chooseType(id: ExerciseTypeId) {
   exerciseType.value = id
+  form.attemptsAllowed = intentosPorDefecto(id) // opción múltiple: 1 (BT-41); el docente lo puede cambiar
   stepError.value = null
   step.value = 2
   nextTick(() => document.getElementById('create-title')?.focus())

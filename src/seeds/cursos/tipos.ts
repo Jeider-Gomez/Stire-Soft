@@ -145,6 +145,16 @@ export const LEER_ENTRADA =
   "// Lee la entrada: cada línea es un texto (no cambies esta línea)\n" +
   "const lineas = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\n";
 
+/**
+ * Intentos con los que se crea cada ejercicio de los cursos (09/10, decisión de Jeider; BT-41): opción múltiple, 1 (con
+ * varios se acierta por descarte; para volver a intentarlo hay un parecido); programar y HTML/CSS, 5; el resto, 3. Es el
+ * mismo valor por defecto del formulario del docente (frontend-nuxt/utils/exerciseTypes.ts).
+ */
+export function intentosPorDefecto(tipo: Ejercicio['tipo']): number {
+  if (tipo === 'mcq') return 1;
+  return tipo === 'coding' || tipo === 'html_css' ? 5 : 3;
+}
+
 const LETRAS = 'abcdefghij';
 
 /** Configuración de la pregunta tal como la guarda la app. */

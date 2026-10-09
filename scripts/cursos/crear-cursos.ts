@@ -12,7 +12,7 @@
 import { Api, requerida } from './api';
 import { cursoFundamentos203413 } from '../../src/seeds/cursos/fundamentos-203413';
 import { cursoPensamientoAlgoritmico } from '../../src/seeds/cursos/pensamiento-algoritmico';
-import { aConfig, Curso, Ejercicio } from '../../src/seeds/cursos/tipos';
+import { aConfig, Curso, Ejercicio, intentosPorDefecto } from '../../src/seeds/cursos/tipos';
 
 /** Con --actualizar, lo que ya existe recibe el texto vigente de las lecciones y los enunciados (como cuando el docente los edita). */
 const ACTUALIZAR = process.argv.includes('--actualizar');
@@ -51,7 +51,7 @@ async function crearEjercicio(api: Api, unidadId: number, e: Ejercicio, activity
       difficulty: e.dificultad,
       totalPoints: puntos,
       passingScore: 60,
-      attemptsAllowed: e.intentos ?? (e.tipo === 'coding' || e.tipo === 'html_css' ? 5 : 3),
+      attemptsAllowed: e.intentos ?? intentosPorDefecto(e.tipo),
       isRequired: true,
       adaptiveWeight: 0.4,
     });

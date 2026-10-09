@@ -67,3 +67,13 @@ export const EXERCISE_TYPES: ExerciseTypeInfo[] = [
 export function exerciseTypeInfo(id: string): ExerciseTypeInfo | undefined {
   return EXERCISE_TYPES.find((t) => t.id === id)
 }
+
+/**
+ * Intentos con los que se crea un ejercicio; el docente los puede cambiar (09/10, decisión de Jeider; BT-41). En opción
+ * múltiple, varios intentos permiten acertar por descarte: un intento, y para volver a intentarlo, un ejercicio
+ * parecido. Programar y HTML/CSS se corrigen con lo que dicen los casos: más intentos.
+ */
+export function intentosPorDefecto(tipo: string): number {
+  if (tipo === 'mcq') return 1
+  return tipo === 'coding' || tipo === 'html_css' ? 5 : 3
+}
