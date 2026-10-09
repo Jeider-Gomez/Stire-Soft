@@ -54,14 +54,16 @@
         <p v-if="unitData.description" id="descripcion-leccion" class="text-xs text-base-texto-secundario">{{ unitData.description }}</p>
         <!-- El dominio de la lección se ve desde el principio: practicar es la forma de medirlo. -->
         <div v-if="dominio !== null" class="flex items-center gap-3">
-          <div class="w-40 h-2 bg-base-bg-secundario rounded-full overflow-hidden border border-base-borde-sutil" role="progressbar"
+          <div class="relative w-40 h-2 bg-base-bg-secundario rounded-full overflow-hidden border border-base-borde-sutil" role="progressbar"
             :aria-valuenow="dominio" aria-valuemin="0" aria-valuemax="100" aria-label="Tu dominio de la lección">
+            <span class="absolute inset-y-0 w-0.5 bg-base-texto-primario/60" :style="{ left: `${DOMINADO}%` }" aria-hidden="true" />
             <div class="h-full rounded-full" :class="dominio >= DOMINADO ? 'bg-semantico-pasa' : 'bg-acento-ambar-fuerte'" :style="{ width: `${dominio}%` }"></div>
           </div>
           <span class="text-[11px] font-semibold text-base-texto-primario">
             {{ dominio >= DOMINADO ? `Dominada · ${dominio} %` : dominio > 0 ? `${dominio} % de dominio` : 'Aún sin dominio: empieza a practicar' }}
           </span>
         </div>
+        <EstudianteMetaDeLaLeccion :unit-id="unitId" />
         <!-- UI-01: escuchar la lección y qué más trae, en una línea (docs/DISENO_FORMATOS_LECCION.md) -->
         <EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" />
       </header>

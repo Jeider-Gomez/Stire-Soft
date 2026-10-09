@@ -426,6 +426,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Resultado del ejercicio, lección y Mi progreso. |
 | **Trazabilidad** | `src/common/utils/spaced-repetition.ts`, `src/learning-progress/recommendation/recomendar-siguiente.ts`, `frontend-nuxt/utils/escalaResultados.ts`, `components/estudiante/ComoAvanzas.vue`. |
 
+## BT-40. El estudiante sabe hacia dónde va: la meta de la lección, lo que pide el módulo y la siguiente lección a mano
+
+| | |
+|---|---|
+| **Problema observado** | En la prueba (09/10), Jeider como estudiante: después de unos ejercicios los botones no dejaban seguir ni pasar a la siguiente lección, y no se decía qué dominio se recomienda ni cuánto falta para abrir el siguiente módulo. |
+| **Decisión** | - Pasar a la siguiente lección siempre es una opción: en la ventana del resultado, al quedarse sin intentos y al final de la lección. Con la lección completa es el botón principal; practicar más o repasar queda como opción.<br>- Al fallar, primero otro ejercicio parecido y después corregir el mismo.<br>- La lección dice su meta (85 %, con una línea en la barra) y, si el docente dejó el bloqueo suave, cuánto pide el módulo para abrir el siguiente, cuánto lleva y cuánto falta. |
+| **Fundamento** | - La retroalimentación responde tres preguntas: hacia dónde voy, cómo voy y qué sigue (Hattie y Timperley, 2007, matriz #13). La meta y lo que falta responden la primera; la siguiente lección, la tercera.<br>- Dejar claro qué es un buen desempeño (metas y criterios) es un principio de la buena retroalimentación (Nicol y Macfarlane-Dick, 2006).<br>- En el aprendizaje para el dominio, el criterio para avanzar es explícito (Bloom, 1968, matriz #1). STIRE lo recomienda, pero no bloquea dentro del módulo: el docente decide el bloqueo entre módulos.<br>- Repetir más de lo mismo no corrige; el correctivo presenta la idea de otra forma (Bloom, 1968; Guskey, 2007). Por eso, al fallar, primero un ejercicio distinto. |
+| **Cómo se materializa** | Ventana del resultado, aviso de «sin intentos», cabecera y final de la lección. |
+| **Trazabilidad** | `frontend-nuxt/utils/siguienteLeccion.ts`, `utils/resultadoEntrega.ts`, `utils/bloqueoModulos.ts` (`metaDelModulo`), `components/estudiante/MetaDeLaLeccion.vue`. |
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |

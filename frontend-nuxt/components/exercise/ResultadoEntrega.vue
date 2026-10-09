@@ -29,6 +29,8 @@
         {{ cambio.texto }}<span v-if="cambio.diferencia > 0" class="text-semantico-pasa"> (+{{ cambio.diferencia }})</span><span v-else-if="cambio.diferencia < 0" class="text-semantico-falla"> ({{ cambio.diferencia }})</span>.
       </p>
 
+      <EstudianteMetaDeLaLeccion v-if="ej.learningUnitId" :unit-id="ej.learningUnitId" solo-modulo class="text-left" />
+
       <p v-if="calidad" class="flex items-start gap-2 p-3 rounded-lg border border-base-borde-sutil bg-base-bg-secundario text-xs text-left text-base-texto-primario">
         <ListChecks :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
         <span>{{ CUANDO_VUELVE[calidad] }}</span>

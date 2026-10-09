@@ -63,3 +63,19 @@ export function proximoModuloCerrado(modulos: ReadonlyArray<ModuloParaBloqueo>, 
     falta: Math.max(0, r.umbral - r.dominio),
   }
 }
+
+/**
+ * Lo que pide el módulo de una lección para abrir el siguiente (09/10, Jeider: «no me dice cuánto necesito para
+ * desbloquear el siguiente módulo»). null si no hay bloqueo, si es el último módulo o si el siguiente ya está abierto.
+ */
+export function metaDelModulo(
+  modulos: ReadonlyArray<{ id: number; title: string; units: ReadonlyArray<{ id: number }> }>,
+  estados: ReadonlyArray<EstadoModulo>,
+  unitId: number,
+): { modulo: string; siguiente: string; dominio: number; umbral: number; falta: number } | null {
+  const i = modulos.findIndex((m) => m.units.some((u) => u.id === unitId))
+  if (i < 0 || i === modulos.length - 1) return null
+  const r = estados.find((e) => e.id === modulos[i + 1].id)?.requiere
+  if (!r || r.moduloId !== modulos[i].id) return null
+  return { modulo: r.titulo, siguiente: modulos[i + 1].title, dominio: r.dominio, umbral: r.umbral, falta: Math.max(0, r.umbral - r.dominio) }
+}
