@@ -63,14 +63,21 @@
           {{ paso.primaria.texto }} <ArrowRight :size="14" aria-hidden="true" />
         </button>
       </div>
+      <!-- Pasar a la siguiente lección siempre es una opción (09/10); si su módulo está cerrado, se dice qué falta. -->
+      <button v-if="paso.siguienteLeccion" type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1.5" @click="hacer(paso.siguienteLeccion)">
+        {{ paso.siguienteLeccion.texto }} <ArrowRight :size="14" aria-hidden="true" />
+      </button>
+      <p v-if="paso.nota" class="flex items-start gap-1.5 text-[11px] text-left text-base-texto-secundario"><Lock :size="13" class="shrink-0 mt-0.5" aria-hidden="true" /> {{ paso.nota }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ArrowRight, ClipboardCheck, ListChecks, PartyPopper, Scale, Sparkles } from 'lucide-vue-next'
+import { ArrowRight, ClipboardCheck, ListChecks, Lock, PartyPopper, Scale, Sparkles } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useAuthStore } from '~/stores/auth'
+import { useStudentStore } from '~/stores/student'
+import { siguienteLeccion } from '~/utils/siguienteLeccion'
 import { mensajeCalibracion } from '~/utils/confianza'
 import { calidadDelResultado } from '~/utils/escalaResultados'
 import { CUANDO_VUELVE, pasoSiguiente, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
@@ -80,6 +87,7 @@ defineEmits<{ tutor: [] }>()
 
 const ws = useWorkspaceStore()
 const authStore = useAuthStore()
+const studentStore = useStudentStore()
 const { siguienteActividad } = useUnidadEstudiante()
 
 const r = computed(() => ws.submissionResult!)
@@ -90,6 +98,8 @@ const quedanIntentos = computed(() => Math.max(0, (ej.value.maxAttempts ?? 0) - 
 
 const recomendacion = ref<RecomendacionSiguiente | null>(null)
 onMounted(async () => {
+  // El ejercicio usa otro layout: si se abrió directo (sin pasar por el plan), el plan se carga para saber qué lección sigue.
+  if (!studentStore.hasLoaded) studentStore.fetchStudentData().catch(() => undefined)
   const sid = authStore.user?.id
   if (!sid || !ej.value.learningUnitId) return
   try {
@@ -99,7 +109,8 @@ onMounted(async () => {
   }
 })
 
-const paso = computed(() => pasoSiguiente({ aprobado: props.exito, quedanIntentos: quedanIntentos.value, actividadActual: ej.value.activityId, recomendacion: recomendacion.value }))
+const sigLeccion = computed(() => siguienteLeccion(studentStore.modules, studentStore.estadosModulos, ej.value.learningUnitId))
+const paso = computed(() => pasoSiguiente({ aprobado: props.exito, quedanIntentos: quedanIntentos.value, actividadActual: ej.value.activityId, recomendacion: recomendacion.value, siguienteLeccion: sigLeccion.value }))
 const cambio = computed(() => textoCambioDominio(ws.masteryBefore, ws.masteryAfter))
 const calibracion = computed(() => (ws.calibracion && ej.value.usedAttempts === 1 ? mensajeCalibracion(ws.calibracion, esCodigo.value) : null))
 /** Otra vez, Difícil, Bien o Fácil, con la misma regla que el servidor usa para sus repasos (calidadDeRepaso). */
@@ -111,6 +122,7 @@ function hacer(a: AccionResultado) {
   ws.submissionResult = null
   if (a.tipo === 'ejercicio') return navigateTo(`/estudiante/evaluacion/${a.activityId}${a.reto ? '?reto=1' : ''}`)
   if (a.tipo === 'leccion') return navigateTo(`/estudiante/unidad/${ej.value.learningUnitId}`)
+  if (a.tipo === 'siguiente-leccion') return navigateTo(`/estudiante/unidad/${a.unitId}`)
   if (a.tipo === 'inicio') return navigateTo('/estudiante')
 }
 </script>

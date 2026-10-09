@@ -166,19 +166,24 @@
         </NuxtLink>
       </section>
 
-      <div class="pt-4 border-t border-base-borde-sutil flex items-center justify-between">
+      <div class="pt-4 border-t border-base-borde-sutil flex flex-wrap items-center justify-between gap-3">
         <NuxtLink
           to="/estudiante"
           class="inline-flex items-center gap-1.5 borde-afordancia px-4 py-2 rounded-md text-xs font-semibold bg-base-blanco text-base-texto-primario min-h-[44px]">
           <ArrowLeft :size="14" aria-hidden="true" /> Volver al plan del curso
         </NuxtLink>
+        <!-- 09/10: pasar a la siguiente lección cuando quiera; si su módulo está cerrado, qué falta. -->
+        <NuxtLink v-if="sigLeccion?.abierta" :to="`/estudiante/unidad/${sigLeccion.id}`" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-bold bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco min-h-[44px] text-right">
+          Siguiente lección: {{ sigLeccion.titulo }} <ArrowRight :size="14" aria-hidden="true" />
+        </NuxtLink>
+        <p v-else-if="sigLeccion" class="max-w-xs text-right text-[11px] text-base-texto-secundario">{{ notaModuloCerrado(sigLeccion) }}</p>
       </div>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, BookOpen, ChevronRight, Inbox, Lightbulb, Loader2, Lock, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, BookOpen, ChevronRight, Inbox, Lightbulb, Loader2, Lock, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
 import { fechaCorta } from '~/utils/entregas'
 import { tituloConNombre } from '~/utils/tituloPagina'
 import { DOMINADO, TERMINOS } from '~/utils/terminos'
@@ -187,6 +192,8 @@ import { useStudentStore } from '~/stores/student'
 import { useTutorStore } from '~/stores/tutor'
 import { useUnidadEstudiante } from '~/composables/useUnidadEstudiante'
 import { insertadosDe } from '~/utils/contenidoLeccion'
+import { siguienteLeccion } from '~/utils/siguienteLeccion'
+import { notaModuloCerrado } from '~/utils/resultadoEntrega'
 
 definePageMeta({
   layout: 'student'
@@ -203,6 +210,8 @@ const bloqueo = computed(() => {
   const mod = studentStore.modules.find((m) => m.units.some((u) => u.id === unitId))
   return mod ? studentStore.estadoModulo(mod.id)?.requiere ?? null : null
 })
+
+const sigLeccion = computed(() => siguienteLeccion(studentStore.modules, studentStore.estadosModulos, unitId))
 
 interface UnitDetail {
   id: number

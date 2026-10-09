@@ -14,10 +14,10 @@ function cargar<T>(nombre: string): T {
   return mod.exports as T;
 }
 
-interface Accion { tipo: string; texto: string; activityId?: number; reto?: boolean }
-interface Paso { titulo: string; mensaje: string; primaria: Accion; secundaria: Accion }
+interface Accion { tipo: string; texto: string; activityId?: number; reto?: boolean; unitId?: number }
+interface Paso { titulo: string; mensaje: string; primaria: Accion; secundaria: Accion; siguienteLeccion: Accion | null; nota: string | null }
 const u = cargar<{
-  pasoSiguiente: (e: { aprobado: boolean; quedanIntentos: number; actividadActual: number; recomendacion: unknown }) => Paso;
+  pasoSiguiente: (e: { aprobado: boolean; quedanIntentos: number; actividadActual: number; recomendacion: unknown; siguienteLeccion?: unknown }) => Paso;
   textoCambioDominio: (a: number | null, d: number | null) => { texto: string; diferencia: number } | null;
   CUANDO_VUELVE: Record<string, string>;
 }>('resultadoEntrega');
@@ -45,10 +45,15 @@ describe('después de entregar: un siguiente paso que sirve', () => {
     expect(completa.primaria).toMatchObject({ tipo: 'inicio', texto: 'Ir a mi siguiente paso' });
   });
 
-  it('no aprobó y le quedan intentos: intentar de nuevo, diciendo cuántos quedan', () => {
+  it('no aprobó y le quedan intentos: primero otro ejercicio parecido; corregir este queda como segunda opción (09/10)', () => {
     const p = u.pasoSiguiente({ aprobado: false, quedanIntentos: 1, actividadActual: 10, recomendacion: rec(11, 'hermana') });
-    expect(p.primaria).toEqual({ tipo: 'reintentar', texto: 'Intentar de nuevo' });
-    expect(p.mensaje).toContain('Te queda 1 intento');
+    expect(p.primaria).toMatchObject({ tipo: 'ejercicio', activityId: 11 });
+    expect(p.secundaria).toEqual({ tipo: 'reintentar', texto: 'Corregir este' });
+    expect(p.mensaje).toContain('te queda 1 intento');
+    // Sin otro ejercicio disponible, intentar de nuevo, diciendo cuántos quedan.
+    const solo = u.pasoSiguiente({ aprobado: false, quedanIntentos: 2, actividadActual: 10, recomendacion: null });
+    expect(solo.primaria).toEqual({ tipo: 'reintentar', texto: 'Intentar de nuevo' });
+    expect(solo.mensaje).toContain('Te quedan 2 intentos');
   });
 
   it('sin intentos nunca ofrece seguir en el mismo ejercicio: otro parecido o la lección', () => {
@@ -152,5 +157,57 @@ describe('la ventana del resultado', () => {
   it('es un diálogo con nombre y sus botones miden al menos 44 px', () => {
     expect(v).toContain('role="dialog" aria-modal="true" aria-labelledby="resultado-titulo"');
     expect((v.match(/min-h-\[44px\]/g) ?? []).length).toBeGreaterThanOrEqual(3);
+  });
+});
+
+// 09/10, Jeider: «después de dos ejercicios los botones no me dejan seguir con más ejercicios, ni me dan la opción de pasar
+// a la siguiente lección si lo prefiero». Cada lección de los cursos se completa con 3 o 4 ejercicios aprobados.
+describe('pasar a la siguiente lección siempre es una opción', () => {
+  const { siguienteLeccion } = cargar<{ siguienteLeccion: (m: unknown, e: unknown, id: number) => { id: number; titulo: string; abierta: boolean; requiere: unknown } | null }>('siguienteLeccion');
+  const modulos = [
+    { id: 1, units: [{ id: 10, title: 'Variables' }, { id: 11, title: 'Operadores' }] },
+    { id: 2, units: [{ id: 20, title: 'Condicionales' }] },
+  ];
+  const abiertos = [{ id: 1, abierto: true, dominio: 40, requiere: null }, { id: 2, abierto: true, dominio: 0, requiere: null }];
+  const cerrado = [abiertos[0], { id: 2, abierto: false, dominio: 0, requiere: { moduloId: 1, titulo: 'Unidad 1: Datos', dominio: 40, umbral: 50 } }];
+  const sig = (id: number, estados = abiertos) => siguienteLeccion(modulos, estados, id);
+
+  it('la siguiente del plan, también la primera del módulo que sigue; la última del curso no tiene siguiente', () => {
+    expect(sig(10)).toMatchObject({ id: 11, titulo: 'Operadores', abierta: true });
+    expect(sig(11)).toMatchObject({ id: 20, abierta: true });
+    expect(sig(20)).toBeNull();
+    expect(sig(99)).toBeNull();
+  });
+
+  it('se ofrece con lecciones por hacer, al fallar y sin intentos, sin quitar el siguiente ejercicio', () => {
+    for (const p of [
+      u.pasoSiguiente({ aprobado: true, quedanIntentos: 0, actividadActual: 10, recomendacion: rec(11, 'hermana'), siguienteLeccion: sig(10) }),
+      u.pasoSiguiente({ aprobado: false, quedanIntentos: 2, actividadActual: 10, recomendacion: rec(11, 'hermana'), siguienteLeccion: sig(10) }),
+      u.pasoSiguiente({ aprobado: false, quedanIntentos: 0, actividadActual: 10, recomendacion: null, siguienteLeccion: sig(10) }),
+    ]) {
+      expect(p.siguienteLeccion).toEqual({ tipo: 'siguiente-leccion', texto: 'Pasar a la siguiente lección: «Operadores»', unitId: 11 });
+    }
+  });
+
+  it('con la lección completa, avanzar es lo principal; practicar más o repasar queda como opción', () => {
+    const p = u.pasoSiguiente({ aprobado: true, quedanIntentos: 0, actividadActual: 10, recomendacion: rec(12, 'practica_extra', true), siguienteLeccion: sig(10) });
+    expect(p.titulo).toBe('¡Completaste la lección!');
+    expect(p.primaria).toMatchObject({ tipo: 'siguiente-leccion', unitId: 11 });
+    expect(p.secundaria).toMatchObject({ tipo: 'ejercicio', activityId: 12, texto: 'Practicar con otro ejercicio' });
+    expect(p.siguienteLeccion).toBeNull(); // ya es la principal: no se repite
+    expect(p.mensaje).toContain('100 %');
+  });
+
+  it('si la siguiente está en un módulo cerrado, no se ofrece: se dice qué falta para abrirlo', () => {
+    const p = u.pasoSiguiente({ aprobado: true, quedanIntentos: 0, actividadActual: 11, recomendacion: rec(12, 'practica_extra', true), siguienteLeccion: sig(11, cerrado) });
+    expect(p.siguienteLeccion).toBeNull();
+    expect(p.primaria.tipo).toBe('inicio');
+    expect(p.nota).toBe('La siguiente lección, «Condicionales», se abre con 50 % de dominio en «Unidad 1». Vas en 40 %: te faltan 10 puntos.');
+  });
+
+  it('la ventana, el aviso de sin intentos y la página de la lección muestran la siguiente lección', () => {
+    expect(leer('components', 'exercise', 'ResultadoEntrega.vue')).toContain('@click="hacer(paso.siguienteLeccion)"');
+    expect(leer('components', 'exercise', 'SinIntentos.vue')).toContain('@click="ir(aSiguiente)"');
+    expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toContain('Siguiente lección: {{ sigLeccion.titulo }}');
   });
 });

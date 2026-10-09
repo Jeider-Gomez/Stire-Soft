@@ -4,6 +4,7 @@
 // del servidor (hermano del mismo nivel, nivel siguiente o repaso), como «Continuar» en Khan Academy o Duolingo.
 
 import type { NombreCalidad } from '~/utils/escalaResultados'
+import type { SiguienteLeccion } from '~/utils/siguienteLeccion'
 
 export interface RecomendacionSiguiente {
   activityId: number
@@ -18,12 +19,19 @@ export type AccionResultado =
   | { tipo: 'reintentar'; texto: string }
   | { tipo: 'leccion'; texto: string }
   | { tipo: 'inicio'; texto: string }
+  | { tipo: 'siguiente-leccion'; texto: string; unitId: number }
 
 export interface PasoSiguiente {
   titulo: string
   mensaje: string
   primaria: AccionResultado
   secundaria: AccionResultado
+  /**
+   * 09/10 (Jeider): pasar a la siguiente lección siempre es una opción, aunque queden ejercicios. null si ya es la
+   * primaria, si no hay siguiente o si su módulo está cerrado (entonces `nota` dice qué falta).
+   */
+  siguienteLeccion: AccionResultado | null
+  nota: string | null
 }
 
 /** Motivos del recomendador que llevan a OTRO ejercicio de la lección (no al mismo). */
@@ -46,35 +54,62 @@ function irA(rec: RecomendacionSiguiente | null, actual: number): AccionResultad
 
 const LECCION: AccionResultado = { tipo: 'leccion', texto: 'Volver a la lección' }
 
+/** La acción «pasar a la siguiente lección», o null si no hay o su módulo está cerrado. */
+export function irASiguienteLeccion(sig: SiguienteLeccion | null | undefined): AccionResultado | null {
+  return sig?.abierta ? { tipo: 'siguiente-leccion', texto: `Pasar a la siguiente lección: «${sig.titulo}»`, unitId: sig.id } : null
+}
+
+/** Si la siguiente lección está en un módulo cerrado, qué falta para abrirlo. */
+export function notaModuloCerrado(sig: SiguienteLeccion | null | undefined): string | null {
+  if (!sig || sig.abierta || !sig.requiere) return null
+  const r = sig.requiere
+  return `La siguiente lección, «${sig.titulo}», se abre con ${r.umbral} % de dominio en «${r.titulo.split(':')[0]}». Vas en ${r.dominio} %: te faltan ${Math.max(0, r.umbral - r.dominio)} puntos.`
+}
+
 export function pasoSiguiente(e: {
   aprobado: boolean
   quedanIntentos: number
   actividadActual: number
   recomendacion: RecomendacionSiguiente | null
+  siguienteLeccion?: SiguienteLeccion | null
 }): PasoSiguiente {
   const ir = irA(e.recomendacion, e.actividadActual)
+  const siguiente = irASiguienteLeccion(e.siguienteLeccion)
+  const nota = notaModuloCerrado(e.siguienteLeccion)
+  const completa = !!e.recomendacion && (e.recomendacion.allCompleted || e.recomendacion.reason === 'completada')
 
   if (e.aprobado) {
-    if (ir) {
-      return { titulo: '¡Lo lograste!', mensaje: `Sigue: «${e.recomendacion!.title}». ${e.recomendacion!.reasonMessage}`, primaria: ir, secundaria: LECCION }
-    }
-    if (e.recomendacion?.allCompleted || e.recomendacion?.reason === 'completada') {
+    // Lección completa: lo recomendado es avanzar; practicar más (hasta el 100 %) o repasar queda como opción.
+    if (completa) {
       return {
         titulo: '¡Completaste la lección!',
-        mensaje: 'Ya resolviste lo que pide esta lección. En el inicio está tu siguiente paso.',
-        primaria: { tipo: 'inicio', texto: 'Ir a mi siguiente paso' },
-        secundaria: LECCION,
+        mensaje: siguiente
+          ? 'Ya resolviste un ejercicio de cada tipo. Lo recomendado es seguir con la siguiente lección; si quieres, practica más para llegar al 100 %.'
+          : 'Ya resolviste lo que pide esta lección. En el inicio está tu siguiente paso.',
+        primaria: siguiente ?? { tipo: 'inicio', texto: 'Ir a mi siguiente paso' },
+        secundaria: ir ?? LECCION,
+        siguienteLeccion: null,
+        nota,
       }
     }
-    return { titulo: '¡Lo lograste!', mensaje: 'En la lección eliges con qué seguir.', primaria: LECCION, secundaria: { tipo: 'inicio', texto: 'Ir al inicio' } }
+    if (ir) {
+      return { titulo: '¡Lo lograste!', mensaje: `Sigue: «${e.recomendacion!.title}». ${e.recomendacion!.reasonMessage}`, primaria: ir, secundaria: LECCION, siguienteLeccion: siguiente, nota }
+    }
+    return { titulo: '¡Lo lograste!', mensaje: 'En la lección eliges con qué seguir.', primaria: LECCION, secundaria: { tipo: 'inicio', texto: 'Ir al inicio' }, siguienteLeccion: siguiente, nota }
   }
 
   if (e.quedanIntentos > 0) {
+    const quedan = e.quedanIntentos === 1 ? 'Te queda 1 intento' : `Te quedan ${e.quedanIntentos} intentos`
+    // 09/10 (Jeider): mejor un ejercicio distinto que repetir el mismo; repetir queda como segunda opción.
     return {
       titulo: 'Todavía no, pero vas en camino',
-      mensaje: `Mira qué falló, corrígelo y vuelve a entregar. ${e.quedanIntentos === 1 ? 'Te queda 1 intento' : `Te quedan ${e.quedanIntentos} intentos`}.`,
-      primaria: { tipo: 'reintentar', texto: 'Intentar de nuevo' },
-      secundaria: LECCION,
+      mensaje: ir
+        ? `Revisa qué falló y practica la misma idea con otro ejercicio, «${e.recomendacion!.title}». Si prefieres, corrige este: ${quedan.toLowerCase()}.`
+        : `Mira qué falló, corrígelo y vuelve a entregar. ${quedan}.`,
+      primaria: ir ?? { tipo: 'reintentar', texto: 'Intentar de nuevo' },
+      secundaria: ir ? { tipo: 'reintentar', texto: 'Corregir este' } : LECCION,
+      siguienteLeccion: siguiente,
+      nota,
     }
   }
 
@@ -86,6 +121,8 @@ export function pasoSiguiente(e: {
       : 'No pasa nada: equivocarse es parte de practicar. Repasa la explicación o pídele una pista al Tutor antes de seguir.',
     primaria: ir ?? LECCION,
     secundaria: ir ? LECCION : { tipo: 'inicio', texto: 'Ir al inicio' },
+    siguienteLeccion: siguiente,
+    nota,
   }
 }
 
