@@ -50,6 +50,23 @@ como docente). Las capturas y el recorrido con navegador no van al repo, porque 
 | 8 | Barra de fuerza de la clave | **Sí.** | Al cumplir las reglas, la lista se reemplazaba por «listo». | Barra con los colores de STIRE, nivel en palabras y reglas siempre visibles. | **Hecho** (`5363ab6`) |
 | 9 | Intentos en opción múltiple | Decisión de Jeider: 1 intento; para volver a intentarlo, un parecido. | Con 3 intentos y 4 opciones se aprueba por descarte. | 1 intento por defecto al crear y al cargar los cursos (el docente lo cambia). | **Hecho** (`f979155`) para lo nuevo. **Falta decidir** si se cambian los ya cargados. |
 
+### «Tengo un ejercicio y no puedo seguir subiendo mi dominio» (09/10, noche)
+
+**Era verdad, y era un error.** La lección 22 de Valentina estaba atascada en 96 %, y la lista decía que ningún ejercicio
+sumaba. La lista calculaba con reglas distintas a las del dominio. Además, cualquier lección podía quedar sin salida:
+una casilla con los intentos gastados se congelaba, la penalización por repetir era permanente y una entrega con nota
+baja la topaba.
+
+Se reemplazó el cálculo por el **motor del dominio por evidencia** (`4c4c04d`, backend; diseño e investigación en
+`docs/DISENO_DOMINIO.md`, BT-43):
+
+- Sube rápido con ejercicios nuevos, poco al repetir el mismo, y baja poco al fallar, nunca a cero.
+- Los intentos se reabren a las 24 horas.
+- Una prueba con 500 lecciones al azar comprueba que siempre se llega al 100 %.
+
+**Falta desplegarlo y recalcular una vez.** El frontend que muestra «+N % si lo resuelves» y «Se reabre mañana» espera
+el despliegue.
+
 ### Para pensar: cómo sube y baja el dominio
 
 Jeider: «se puede subir pero no se puede bajar; si se baja se complica la subida, y si no se baja se pierde el miedo».
@@ -62,6 +79,5 @@ Lo que se olvida lo atienden los repasos (SM-2), que vuelven antes cuando se fal
 - **Khan Academy**, según su centro de ayuda, sube por niveles (Familiar, Competente, Dominado). Una pregunta fallada en
   un examen o en una evaluación mixta baja un nivel, no a cero. Es una fuente secundaria: no se pudo abrir la página
   directamente desde la sesión, así que hay que verificarla antes de citarla en la tesis.
-- **Propuesta para después de la prueba:** que baje solo con evidencia de olvido, y en un escalón, no a cero. Por
-  ejemplo, fallar un repaso de una lección dominada la deja «en práctica» hasta acertar el siguiente. Así el castigo es
-  pequeño, se recupera con una sola respuesta correcta y no desanima. Requiere backend y una BT; queda para decidir.
+- **Hecho el 09/10 (noche):** el dominio ahora sube y baja con la evidencia, sin bajar nunca a cero. Ver arriba y
+  `docs/DISENO_DOMINIO.md`.

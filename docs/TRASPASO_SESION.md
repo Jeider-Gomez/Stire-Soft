@@ -64,21 +64,26 @@ Hallazgos de Jeider: `docs/calidad/resultados-prueba/HALLAZGOS_JEIDER_S08_2026-1
   de opción múltiple en el backend (`ffbe1be`); **opción múltiple con 1 intento por defecto** (`f979155`); guía opcional
   «Para que sea una buena lección» y 3 parecidos en opción múltiple (`cf45fbb`); tooltips y detalles visuales
   (`a2bee90`); barra de fuerza de la clave (`5363ab6`). BT-40, BT-41 y BT-42.
+- **09/10 (noche): motor del dominio por evidencia** (`4c4c04d`, backend; `docs/DISENO_DOMINIO.md`, BT-43). El dominio
+  sube y baja con cada intento y el 100 % siempre se puede alcanzar: los intentos se reabren a las 24 horas, y lo
+  comprueba una prueba con 500 lecciones al azar. La lista «Ver todos los ejercicios» usa el mismo motor. Corte de
+  reglas: 10/10.
 - Sugerencias n.º 2, 3, 5 y 6 resueltas o vistas con «Avisarle»; 7 y 8 descartadas (repetidas).
 - Desde la nube: se trabaja directo en `main` con push (Jeider lo autorizó). El dominio de la API debe estar permitido
   en la red del entorno; Node `fetch` no usa el proxy: usar `curl`.
 
-**Producción:** el backend está en `19ba823`. **Falta desplegar `ffbe1be`** (sin migraciones): agrega `retroalimentacion` a la respuesta
-de la entrega. El frontend que la muestra **no está en `main`**: está en la rama `claude/wizardly-lovelace-g2i462`
+**Producción:** el backend está en `19ba823`. **Falta desplegar hasta `4c4c04d`** (sin migraciones): `ffbe1be` agrega
+`retroalimentacion` a la entrega, y `4c4c04d` trae el motor del dominio. **Después del despliegue, recalcular una vez**:
+`node dist/scripts/recalcular-dominio.js --simular` y, si el resumen se ve bien, sin `--simular`. El frontend que la muestra **no está en `main`**: está en la rama `claude/wizardly-lovelace-g2i462`
 («frontend del punto 6»). Cuando el backend esté arriba, se lleva a `main`.
 
 ## 5. Pendiente
 
 | Qué | Quién / cuándo |
 |---|---|
-| Desplegar el backend `ffbe1be` (sin migraciones) y después llevar a `main` el frontend del punto 6 (rama `claude/wizardly-lovelace-g2i462`). | Jeider despliega; luego se sube el frontend. |
+| Desplegar el backend hasta `4c4c04d` (sin migraciones), recalcular el dominio y después llevar a `main` el frontend (rama `claude/wizardly-lovelace-g2i462`, PR #6). | Jeider despliega; luego se sube el frontend. |
+| **Decisión de Jeider:** ¿activar el peso por nivel (avanzado pesa más) después de la prueba? Ver `DISENO_DOMINIO.md` §6. | Después del 16/10. |
 | **Decisión de Jeider:** ¿pasar a 1 intento también los ejercicios de opción múltiple ya cargados en producción? Lo nuevo ya se crea con 1. Ojo: los cursos tienen 2 parecidos por grupo y la guía recomienda 3. | Esperar respuesta. |
-| **Para pensar:** que el dominio baje un escalón solo con evidencia de olvido (un repaso fallado), no a cero. Ver «Para pensar» en `HALLAZGOS_JEIDER_S08_2026-10-07.md`. | Después de la prueba. |
 | Contarle a José la barra de la clave (`components/auth/FuerzaClave.vue`) y la guía de la lección. Solo usan sus tokens. | Jeider. |
 | Enunciados de prueba de escritorio en la clase de Pedro en producción: el seed ya los explica, pero los datos de producción hay que editarlos como docente. | Pedro o con la API. |
 | Revisión pedagógica de los ejercicios de programar de los cursos (S08-J09 en el Backlog de Trello). | Después de la prueba. |

@@ -456,6 +456,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | «Contenidos» del docente: panel de ejercicios de cada lección y aviso de parecidos (3 en opción múltiple, 2 en el resto). |
 | **Trazabilidad** | `frontend-nuxt/utils/guiaLeccion.ts`, `components/docente/GuiaLeccion.vue`, `utils/ejerciciosUnidad.ts` (`casillasConPocosEjercicios`). |
 
+## BT-43. El dominio es una estimación que sube y baja con la evidencia, y el 100 % siempre se puede alcanzar
+
+| | |
+|---|---|
+| **Problema observado** | En la prueba (09/10), Jeider quedó con una lección en 96 % sin forma de subirla: la lista decía que ningún ejercicio sumaba, y una casilla con los intentos gastados quedaba congelada. Pidió que el dominio suba y baje sin que un error cueste la lección, que repetir el mismo ejercicio suba poco, que quien ya sabe avance rápido, y que sea imposible diseñar una lección a la que no se llegue al 100 %. |
+| **Decisión** | - Cada casilla (tipo × nivel) es una estimación que cada intento mueve hacia su nota: un ejercicio nuevo aprobado a la primera la llena; aprobar tras fallar o repetir uno ya aprobado suma menos; fallar baja un 10 % de lo que se tenía (25 % si es un repaso olvidado), nunca a cero.<br>- Garantía: un intento se reabre a las 24 horas; cada aprobado completo acerca la casilla al menos un 25 %; las entregas solo suben.<br>- Los intentos de antes del corte (10/10) se cuentan con las reglas de antes. |
+| **Fundamento** | - El Elo y las medias móviles en sistemas adaptativos: movimientos proporcionales a lo inesperado, sencillos y robustos (Pelánek, 2016; Klinkenberg, Straatemeier y van der Maas, 2011). Una media móvil se comporta de forma comparable a modelos más complejos como BKT (Pelánek y Řihák, 2017; Pelánek, 2017; Corbett y Anderson, 1995).<br>- Olvidar no es empezar de cero: Anki manda la tarjeta a reaprendizaje; Duolingo acorta su vida media (Settles y Meeder, 2016).<br>- Variar los ejercicios (intercalar) mejora el aprendizaje (Rohrer y Taylor, 2007), y repetir hasta adivinar es «jugar con el sistema» (Baker, Corbett y Koedinger, 2004).<br>- Equivocarse, con retroalimentación, es parte de aprender (Metcalfe, 2017). Las pérdidas se sienten más que las ganancias (Kahneman y Tversky, 1979): bajar es más lento que subir.<br>- Las constantes (0,6, 0,4, 0,25, 0,10 y 24 horas) son decisiones de diseño a validar con datos de uso. |
+| **Cómo se materializa** | Dominio de cada lección, «Ver todos los ejercicios» (cuánto sube cada uno), el recomendador y el límite de intentos. |
+| **Trazabilidad** | `src/common/utils/motor-dominio.ts` (con su prueba de 500 lecciones al azar), `src/learning-progress/ejercicios-leccion.ts`, `src/scripts/recalcular-dominio.ts`, `docs/DISENO_DOMINIO.md`. |
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |
@@ -470,65 +480,73 @@ trazabilidad (solo para el anexo técnico).
 
 ## Referencias (verificadas en Crossref; las de la matriz, con su número)
 
-- Metcalfe, J. (2009). Metacognitive Judgments and Control of Study. *Current Directions in Psychological Science, 18*(3), 159-163. https://doi.org/10.1111/j.1467-8721.2009.01628.x
-- Piepenbrock, C., Mayr, S., Mund, I. y Buchner, A. (2013). Positive display polarity is advantageous for both younger and older adults. *Ergonomics, 56*(7), 1116-1124. https://doi.org/10.1080/00140139.2013.790485
-- Rello, L. y Baeza-Yates, R. (2013). Good fonts for dyslexia. En *Proceedings of the 15th International ACM SIGACCESS Conference on Computers and Accessibility* (pp. 1-8). https://doi.org/10.1145/2513383.2513447
-- Sauro, J. y Dumas, J. S. (2009). Comparison of three one-question, post-task usability questionnaires. En *Proceedings of the SIGCHI Conference on Human Factors in Computing Systems* (pp. 1599-1608). https://doi.org/10.1145/1518701.1518946
-- Wery, J. J. y Diliberto, J. A. (2017). The effect of a specialized dyslexia font, OpenDyslexic, on reading rate and accuracy. *Annals of Dyslexia, 67*(2), 114-127. https://doi.org/10.1007/s11881-016-0127-1
-- Wood, S. G., Moxley, J. H., Tighe, E. L. y Wagner, R. K. (2018). Does Use of Text-to-Speech and Related Read-Aloud Tools Improve Reading Comprehension for Students With Reading Disabilities? A Meta-Analysis. *Journal of Learning Disabilities, 51*(1), 73-84. https://doi.org/10.1177/0022219416688170
 - Aleven, V., Roll, I., McLaren, B. M. y Koedinger, K. R. (2016). Help Helps, But Only So Much: Research on Help Seeking with Intelligent Tutoring Systems. *International Journal of Artificial Intelligence in Education, 26*(1), 205-223. https://doi.org/10.1007/s40593-015-0089-1
-- Bangor, A., Kortum, P. T. y Miller, J. T. (2008). An Empirical Evaluation of the System Usability Scale. *International Journal of Human–Computer Interaction, 24*(6), 574-594. https://doi.org/10.1080/10447310802205776
-- Brooke, J. (1996). SUS: A «quick and dirty» usability scale. En P. W. Jordan et al. (Eds.), *Usability Evaluation in Industry* (pp. 189-194). Taylor & Francis.
-- Butterfield, B. y Metcalfe, J. (2001). Errors committed with high confidence are hypercorrected. *Journal of Experimental Psychology: Learning, Memory, and Cognition, 27*(6), 1491-1494. https://doi.org/10.1037/0278-7393.27.6.1491
-- Castilla, D. et al. (2024). Psychometric Properties of the Spanish Full and Short Forms of the System Usability Scale (SUS). *International Journal of Human–Computer Interaction, 40*(15), 4145-4151. https://doi.org/10.1080/10447318.2023.2209840
-- Clark, J. M. y Paivio, A. (1991). Dual coding theory and education. *Educational Psychology Review, 3*(3), 149-210. https://doi.org/10.1007/BF01320076
-- Kirschner, P. A. (2017). Stop propagating the learning styles myth. *Computers & Education, 106*, 166-171. https://doi.org/10.1016/j.compedu.2016.12.006
-- Mayer, R. E. (2017). Using multimedia for e-learning. *Journal of Computer Assisted Learning, 33*(5), 403-423. https://doi.org/10.1111/jcal.12197
-- Nietfeld, J. L., Cao, L. y Osborne, J. W. (2006). The effect of distributed monitoring exercises and feedback on performance, monitoring accuracy, and self-efficacy. *Metacognition and Learning, 1*(2), 159-179. https://doi.org/10.1007/s10409-006-9595-6
-- Pashler, H., McDaniel, M., Rohrer, D. y Bjork, R. (2008). Learning Styles: Concepts and Evidence. *Psychological Science in the Public Interest, 9*(3), 105-119. https://doi.org/10.1111/j.1539-6053.2009.01038.x
-- Razzaq, L. y Heffernan, N. T. (2006). Scaffolding vs. Hints in the Assistment System. En *ITS 2006*, LNCS 4053, 635-644. https://doi.org/10.1007/11774303_63
-- Rogowsky, B. A., Calhoun, B. M. y Tallal, P. (2015). Matching learning style to instructional method: Effects on comprehension. *Journal of Educational Psychology, 107*(1), 64-78. https://doi.org/10.1037/a0037478
-- Schraw, G. (2009). A conceptual analysis of five measures of metacognitive monitoring. *Metacognition and Learning, 4*(1), 33-45. https://doi.org/10.1007/s11409-008-9031-3
-- Sevilla-Gonzalez, M. del R. et al. (2020). Spanish Version of the System Usability Scale for the Assessment of Electronic Tools: Development and Validation. *JMIR Human Factors, 7*(4), e21161. https://doi.org/10.2196/21161
 - Atkinson, R. K., Derry, S. J., Renkl, A. y Wortham, D. (2000). Learning from Examples: Instructional Principles from the Worked Examples Research. *Review of Educational Research, 70*(2), 181-214. https://doi.org/10.3102/00346543070002181
 - Baker, R. S., Corbett, A. T. y Koedinger, K. R. (2004). Detecting Student Misuse of Intelligent Tutoring Systems. En *ITS 2004*, LNCS, 531-540. https://doi.org/10.1007/978-3-540-30139-4_50
+- Bangor, A., Kortum, P. T. y Miller, J. T. (2008). An Empirical Evaluation of the System Usability Scale. *International Journal of Human–Computer Interaction, 24*(6), 574-594. https://doi.org/10.1080/10447310802205776
 - Bastani, H., Bastani, O., Sungu, A., Ge, H. et al. (2025). Generative AI without guardrails can harm learning: Evidence from high school mathematics. *PNAS, 122*(26). https://doi.org/10.1073/pnas.2422633122
-- Denny, P. (2013). The effect of virtual achievements on student engagement. En *Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI '13)*, 763-772. https://doi.org/10.1145/2470654.2470763
-- Hanus, M. D. y Fox, J. (2015). Assessing the effects of gamification in the classroom: A longitudinal study on intrinsic motivation, social comparison, satisfaction, effort, and academic performance. *Computers & Education, 80*, 152-161. https://doi.org/10.1016/j.compedu.2014.08.019
-- Sailer, M. y Homner, L. (2020). The Gamification of Learning: a Meta-analysis. *Educational Psychology Review, 32*(1), 77-112. https://doi.org/10.1007/s10648-019-09498-w
 - Black, P. y Wiliam, D. (1998). Assessment and Classroom Learning. *Assessment in Education: Principles, Policy & Practice, 5*(1), 7-74. https://doi.org/10.1080/0969595980050102
 - Bloom, B. S. (1968). Learning for Mastery. *Evaluation Comment, 1*(2). — matriz #1
 - Bloom, B. S. (1984). The 2 Sigma Problem. *Educational Researcher, 13*(6), 4-16. — matriz #30
+- Brooke, J. (1996). SUS: A «quick and dirty» usability scale. En P. W. Jordan et al. (Eds.), *Usability Evaluation in Industry* (pp. 189-194). Taylor & Francis.
 - Butler, R. (1988). Enhancing and undermining intrinsic motivation: the effects of task-involving and ego-involving evaluation on interest and performance. *British Journal of Educational Psychology, 58*(1), 1-14. https://doi.org/10.1111/j.2044-8279.1988.tb00874.x
+- Butterfield, B. y Metcalfe, J. (2001). Errors committed with high confidence are hypercorrected. *Journal of Experimental Psychology: Learning, Memory, and Cognition, 27*(6), 1491-1494. https://doi.org/10.1037/0278-7393.27.6.1491
+- Castilla, D. et al. (2024). Psychometric Properties of the Spanish Full and Short Forms of the System Usability Scale (SUS). *International Journal of Human–Computer Interaction, 40*(15), 4145-4151. https://doi.org/10.1080/10447318.2023.2209840
 - Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T. y Rohrer, D. (2006). Distributed practice in verbal recall tasks. *Psychological Bulletin, 132*(3), 354-380. — matriz #3
+- Clark, J. M. y Paivio, A. (1991). Dual coding theory and education. *Educational Psychology Review, 3*(3), 149-210. https://doi.org/10.1007/BF01320076
+- Corbett, A. T. y Anderson, J. R. (1995). Knowledge tracing: Modeling the acquisition of procedural knowledge. *User Modeling and User-Adapted Interaction, 4*, 253-278. https://doi.org/10.1007/BF01099821
+- Denny, P. (2013). The effect of virtual achievements on student engagement. En *Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI '13)*, 763-772. https://doi.org/10.1145/2470654.2470763
 - du Boulay, B. (1986). Some Difficulties of Learning to Program. *Journal of Educational Computing Research, 2*(1), 57-73. https://doi.org/10.2190/3lfx-9rrf-67t8-uvk9
 - Fuchs, D. y Fuchs, L. S. (2006). Introduction to response to intervention: What, why, and how valid is it? *Reading Research Quarterly, 41*(1). https://doi.org/10.1598/rrq.41.1.4
 - Guskey, T. R. (2007). Closing Achievement Gaps: Revisiting Benjamin S. Bloom's "Learning for Mastery". *Journal of Advanced Academics, 19*(1). https://doi.org/10.4219/jaa-2007-704
-- Heffernan, N. T. y Heffernan, C. L. (2014). The ASSISTments Ecosystem. *International Journal of Artificial Intelligence in Education, 24*(4). https://doi.org/10.1007/s40593-014-0024-x
+- Hanus, M. D. y Fox, J. (2015). Assessing the effects of gamification in the classroom: A longitudinal study on intrinsic motivation, social comparison, satisfaction, effort, and academic performance. *Computers & Education, 80*, 152-161. https://doi.org/10.1016/j.compedu.2014.08.019
 - Hattie, J. y Timperley, H. (2007). The Power of Feedback. *Review of Educational Research, 77*(1), 81-112. — matriz #13
+- Heffernan, N. T. y Heffernan, C. L. (2014). The ASSISTments Ecosystem. *International Journal of Artificial Intelligence in Education, 24*(4). https://doi.org/10.1007/s40593-014-0024-x
 - Holstein, K., McLaren, B. M. y Aleven, V. (2018). Student Learning Benefits of a Mixed-Reality Teacher Awareness Tool in AI-Enhanced Classrooms. En *AIED 2018*, LNCS, 154-168. https://doi.org/10.1007/978-3-319-93843-1_12
 - Holstein, K., McLaren, B. M. y Aleven, V. (2019). Co-Designing a Real-Time Classroom Orchestration Tool to Support Teacher–AI Complementarity. *Journal of Learning Analytics, 6*(2). https://doi.org/10.18608/jla.2019.62.3
+- Kahneman, D. y Tversky, A. (1979). Prospect Theory: An Analysis of Decision under Risk. *Econometrica, 47*(2), 263-291. https://doi.org/10.2307/1914185
 - Kalyuga, S., Ayres, P., Chandler, P. y Sweller, J. (2003). The Expertise Reversal Effect. *Educational Psychologist, 38*(1), 23-31. https://doi.org/10.1207/S15326985EP3801_4
 - Kestin, G., Miller, K., Klales, A., Milbourne, T. y Ponti, G. (2025). AI tutoring outperforms in-class active learning: an RCT introducing a novel research-based design in an authentic educational setting. *Scientific Reports, 15*, 17458. https://doi.org/10.1038/s41598-025-97652-6
+- Kirschner, P. A. (2017). Stop propagating the learning styles myth. *Computers & Education, 106*, 166-171. https://doi.org/10.1016/j.compedu.2016.12.006
+- Klinkenberg, S., Straatemeier, M. y van der Maas, H. L. J. (2011). Computer adaptive practice of Maths ability using a new item response model for on the fly ability and difficulty estimation. *Computers & Education, 57*(2), 1813-1824. https://doi.org/10.1016/j.compedu.2011.02.003
 - Kluger, A. N. y DeNisi, A. (1996). The effects of feedback interventions on performance. *Psychological Bulletin, 119*(2), 254-284. https://doi.org/10.1037/0033-2909.119.2.254
 - Knoop-van Campen, C. A. N. y Molenaar, I. (2020). How Teachers Integrate Dashboards into Their Feedback Practices. *Frontline Learning Research, 8*(4), 37-51. — matriz #20
 - Koedinger, K. R. y Aleven, V. (2007). Exploring the Assistance Dilemma in Experiments with Cognitive Tutors. *Educational Psychology Review, 19*(3), 239-264. — matriz #6
 - Kulik, C.-L. C., Kulik, J. A. y Bangert-Drowns, R. L. (1990). Effectiveness of Mastery Learning Programs: A Meta-Analysis. *Review of Educational Research, 60*(2). https://doi.org/10.2307/1170612
 - Liu, R., Zenke, C., Liu, C., Holmes, A., Thornton, P. y Malan, D. J. (2024). Teaching CS50 with AI: Leveraging Generative Artificial Intelligence in Computer Science Education. En *Proc. SIGCSE 2024*, 750-756. https://doi.org/10.1145/3626252.3630938
 - Mandel, T. (1997). *The Elements of User Interface Design*. Wiley. — matriz #22
+- Mayer, R. E. (2017). Using multimedia for e-learning. *Journal of Computer Assisted Learning, 33*(5), 403-423. https://doi.org/10.1111/jcal.12197
 - Mayer, R. E. y Moreno, R. (2003). Nine Ways to Reduce Cognitive Load in Multimedia Learning. *Educational Psychologist, 38*(1), 43-52. https://doi.org/10.1207/S15326985EP3801_6
+- Metcalfe, J. (2009). Metacognitive Judgments and Control of Study. *Current Directions in Psychological Science, 18*(3), 159-163. https://doi.org/10.1111/j.1467-8721.2009.01628.x
+- Metcalfe, J. (2017). Learning from Errors. *Annual Review of Psychology, 68*, 465-489. https://doi.org/10.1146/annurev-psych-010416-044022
 - Molenaar, I. y Knoop-van Campen, C. A. N. (2019). How Teachers Make Dashboard Information Actionable. *IEEE Transactions on Learning Technologies, 12*(3). https://doi.org/10.1109/tlt.2018.2851585
 - Nicol, D. J. y Macfarlane-Dick, D. (2006). Formative assessment and self-regulated learning: a model and seven principles of good feedback practice. *Studies in Higher Education, 31*(2). https://doi.org/10.1080/03075070600572090
 - Nielsen, J. (1994). Enhancing the explanatory power of usability heuristics. En *Proc. CHI '94*, 152-158. https://doi.org/10.1145/191666.191729
-- Roschelle, J., Feng, M., Murphy, R. F. y Mason, C. A. (2016). Online Mathematics Homework Increases Student Achievement. *AERA Open, 2*(4). https://doi.org/10.1177/2332858416673968
+- Nietfeld, J. L., Cao, L. y Osborne, J. W. (2006). The effect of distributed monitoring exercises and feedback on performance, monitoring accuracy, and self-efficacy. *Metacognition and Learning, 1*(2), 159-179. https://doi.org/10.1007/s10409-006-9595-6
+- Pashler, H., McDaniel, M., Rohrer, D. y Bjork, R. (2008). Learning Styles: Concepts and Evidence. *Psychological Science in the Public Interest, 9*(3), 105-119. https://doi.org/10.1111/j.1539-6053.2009.01038.x
+- Pelánek, R. (2016). Applications of the Elo rating system in adaptive educational systems. *Computers & Education, 98*, 169-179. https://doi.org/10.1016/j.compedu.2016.03.017
+- Pelánek, R. (2017). Bayesian knowledge tracing, logistic models, and beyond: an overview of learner modeling techniques. *User Modeling and User-Adapted Interaction, 27*, 313-350. https://doi.org/10.1007/s11257-017-9193-2
+- Pelánek, R. y Řihák, J. (2017). Experimental Analysis of Mastery Learning Criteria. En *UMAP '17*, 156-163. https://doi.org/10.1145/3079628.3079667
+- Piepenbrock, C., Mayr, S., Mund, I. y Buchner, A. (2013). Positive display polarity is advantageous for both younger and older adults. *Ergonomics, 56*(7), 1116-1124. https://doi.org/10.1080/00140139.2013.790485
+- Razzaq, L. y Heffernan, N. T. (2006). Scaffolding vs. Hints in the Assistment System. En *ITS 2006*, LNCS 4053, 635-644. https://doi.org/10.1007/11774303_63
+- Rello, L. y Baeza-Yates, R. (2013). Good fonts for dyslexia. En *Proceedings of the 15th International ACM SIGACCESS Conference on Computers and Accessibility* (pp. 1-8). https://doi.org/10.1145/2513383.2513447
 - Roediger, H. L. y Karpicke, J. D. (2006). Test-Enhanced Learning. *Psychological Science, 17*(3), 249-255. — matriz #4
+- Rogowsky, B. A., Calhoun, B. M. y Tallal, P. (2015). Matching learning style to instructional method: Effects on comprehension. *Journal of Educational Psychology, 107*(1), 64-78. https://doi.org/10.1037/a0037478
+- Rohrer, D. y Taylor, K. (2007). The shuffling of mathematics problems improves learning. *Instructional Science, 35*, 481-498. https://doi.org/10.1007/s11251-007-9015-8
+- Roschelle, J., Feng, M., Murphy, R. F. y Mason, C. A. (2016). Online Mathematics Homework Increases Student Achievement. *AERA Open, 2*(4). https://doi.org/10.1177/2332858416673968
+- Sailer, M. y Homner, L. (2020). The Gamification of Learning: a Meta-analysis. *Educational Psychology Review, 32*(1), 77-112. https://doi.org/10.1007/s10648-019-09498-w
+- Sauro, J. y Dumas, J. S. (2009). Comparison of three one-question, post-task usability questionnaires. En *Proceedings of the SIGCHI Conference on Human Factors in Computing Systems* (pp. 1599-1608). https://doi.org/10.1145/1518701.1518946
+- Schraw, G. (2009). A conceptual analysis of five measures of metacognitive monitoring. *Metacognition and Learning, 4*(1), 33-45. https://doi.org/10.1007/s11409-008-9031-3
 - Settles, B. y Meeder, B. (2016). A Trainable Spaced Repetition Model for Language Learning. En *Proc. ACL 2016*, 1848-1858. https://doi.org/10.18653/v1/P16-1174
+- Sevilla-Gonzalez, M. del R. et al. (2020). Spanish Version of the System Usability Scale for the Assessment of Electronic Tools: Development and Validation. *JMIR Human Factors, 7*(4), e21161. https://doi.org/10.2196/21161
 - Shute, V. J. (2008). Focus on Formative Feedback. *Review of Educational Research, 78*(1), 153-189. https://doi.org/10.3102/0034654307313795
 - Sweller, J., van Merriënboer, J. J. G. y Paas, F. G. W. C. (1998). Cognitive Architecture and Instructional Design. *Educational Psychology Review, 10*(3), 251-296. — matriz #14
 - VanLehn, K. (2011). The Relative Effectiveness of Human Tutoring, Intelligent Tutoring Systems, and Other Tutoring Systems. *Educational Psychologist, 46*(4), 197-221. — matriz #5
 - Verbert, K., Duval, E., Klerkx, J., Govaerts, S. y Santos, J. L. (2013). Learning Analytics Dashboard Applications. *American Behavioral Scientist, 57*(10), 1500-1509. — matriz #21
+- Wery, J. J. y Diliberto, J. A. (2017). The effect of a specialized dyslexia font, OpenDyslexic, on reading rate and accuracy. *Annals of Dyslexia, 67*(2), 114-127. https://doi.org/10.1007/s11881-016-0127-1
 - Wiliam, D. (2011). What is assessment for learning? *Studies in Educational Evaluation, 37*(1). https://doi.org/10.1016/j.stueduc.2011.03.001
 - Wise, A. F. (2014). Designing pedagogical interventions to support student use of learning analytics. En *LAK '14*, 203-211. https://doi.org/10.1145/2567574.2567588
+- Wood, S. G., Moxley, J. H., Tighe, E. L. y Wagner, R. K. (2018). Does Use of Text-to-Speech and Related Read-Aloud Tools Improve Reading Comprehension for Students With Reading Disabilities? A Meta-Analysis. *Journal of Learning Disabilities, 51*(1), 73-84. https://doi.org/10.1177/0022219416688170
 - Woźniak, P. y Gorzelańczyk, E. (1994). Optimization of repetition spacing in the practice of learning. *Acta Neurobiologiae Experimentalis, 54*(1), 59-62. — matriz #2
 - Ye, J., Su, J. y Cao, Y. (2022). A Stochastic Shortest Path Algorithm for Optimizing Spaced Repetition Scheduling. En *Proc. KDD 2022*, 4381-4390. https://doi.org/10.1145/3534678.3539081
 - Zimmerman, B. J. (2002). Becoming a Self-Regulated Learner: An Overview. *Theory Into Practice, 41*(2), 64-70. — matriz #31
