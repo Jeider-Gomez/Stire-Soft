@@ -1,5 +1,7 @@
 # STIRE — Estado del proyecto y punto de continuación
 
+> **Para retomar el trabajo hoy, leer [`TRASPASO_SESION.md`](./TRASPASO_SESION.md)** (actualizado el 2026-10-09).
+>
 > **Nota (2026-09-19):** este documento es el traspaso de la Ola 2 y no se ha actualizado desde
 > entonces. Para el estado vigente (qué está hecho, a medias o pendiente, verificado contra el código)
 > ver [`PLAN_MAESTRO.md`](./PLAN_MAESTRO.md) §4 y §5; para las decisiones de arquitectura, 

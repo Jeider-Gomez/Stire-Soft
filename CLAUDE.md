@@ -4,6 +4,11 @@ Este archivo es la fuente de verdad de las reglas de ingeniería del proyecto ST
 `docs/ESTADO_STIRE_HANDOFF.md` es el documento de traspaso (dónde estamos, qué se cerró,
 qué queda abierto); este archivo es el que dice **cómo** se trabaja aquí, y se lee siempre.
 
+**Al empezar una sesión nueva, leer también `docs/TRASPASO_SESION.md`:** con quién se trabaja, las reglas
+que no están en el código y lo pendiente. Lo esencial: **responder siempre en español**; cero cobros;
+funciones del docente opcionales; no tocar el territorio de José; desplegar solo cuando el dueño pega
+los comandos, y el backend antes que el frontend que lo usa.
+
 ---
 
 ## Regla de Oro

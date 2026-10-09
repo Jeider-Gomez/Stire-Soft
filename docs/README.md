@@ -28,7 +28,8 @@ tabla de abajo.
 **Decisiones y contratos:** [`ADR_DECISIONES_ARQUITECTURA.md`](ADR_DECISIONES_ARQUITECTURA.md) ·
 [`CONTRATO_CONTENT_RENDERING.md`](CONTRATO_CONTENT_RENDERING.md) ·
 [`DESPLIEGUE.md`](DESPLIEGUE.md) ·
-[`ESTADO_STIRE_HANDOFF.md`](ESTADO_STIRE_HANDOFF.md) (traspaso histórico de la Ola 2; el estado vigente está en `PLAN_MAESTRO.md`).
+[`ESTADO_STIRE_HANDOFF.md`](ESTADO_STIRE_HANDOFF.md) (traspaso histórico de la Ola 2; el estado vigente está en `PLAN_MAESTRO.md`) ·
+[`TRASPASO_SESION.md`](TRASPASO_SESION.md) (para retomar el trabajo en una sesión nueva de Claude Code: reglas del dueño y pendientes).
 
 ## 2. El curso y la investigación
 
