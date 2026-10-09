@@ -169,6 +169,12 @@ pasa a ser el punto de partida, no la verdad fija.
 
 ### 3.4 Dominio y repasos que se mantienen vivos
 
+> **Desde el 10/10/2026 el dominio se calcula con el motor por evidencia** (`docs/DISENO_DOMINIO.md`): cada casilla es
+> una estimación que se mueve con cada intento (sube rápido con ejercicios nuevos, poco al repetir y baja poco al
+> fallar), y los intentos se reabren a las 24 horas para que siempre se pueda llegar al 100 %. Lo de abajo sigue
+> valiendo para los repasos (la calidad sale del resultado); «la casilla cuenta con su mejor nota» es la regla de
+> antes del corte.
+
 1. **La calidad del repaso sale del resultado**, no del dominio acumulado. Se traduce como los botones de
    Anki, sin preguntarle nada al estudiante:
 

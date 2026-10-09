@@ -22,7 +22,7 @@ describe('ActivitiesService — P0-04', () => {
     softRemove: jest.fn().mockResolvedValue(undefined),
     updateStatus: jest.fn().mockResolvedValue(undefined),
     findWithPagination: jest.fn().mockResolvedValue([[], 0]),
-    manager: { count: jest.fn().mockResolvedValue(0) },
+    manager: { count: jest.fn().mockResolvedValue(0), find: jest.fn().mockResolvedValue([]) },
   };
   const mockClassRepo = { findOne: jest.fn() };
   const mockEnrollmentRepo = { findOne: jest.fn() };
@@ -284,5 +284,20 @@ describe('ActivitiesService — P0-04', () => {
     expect(mockActivitiesRepo.manager.count).toHaveBeenLastCalledWith(expect.anything(), {
       where: { studentId: 20, activityId: 1, status: SubmissionStatus.GRADED, score: MoreThanOrEqual(12) },
     });
+  });
+
+  // 09/10: con el límite usado, se reabre un intento a las 24 horas del último; la pantalla lo dice.
+  it('estudiante → GET actividad dice si tiene un intento disponible y, si no, cuándo se reabre', async () => {
+    mockActivitiesRepo.findOne.mockResolvedValue({ ...publishedActivityClass5, attemptsAllowed: 1 });
+    mockEnrollmentRepo.findOne.mockResolvedValue({ classId: 5, studentId: 20, status: EnrollmentStatus.ACTIVE });
+    const hace1h = new Date(Date.now() - 3_600_000);
+    mockActivitiesRepo.manager.find.mockResolvedValueOnce([{ id: 'a', submittedAt: hace1h }]);
+
+    const res = await service.findOneForRequester(1, { id: 20, role: UserRole.ESTUDIANTE } as never);
+
+    expect(res).toMatchObject({ intentoDisponible: false, reabreEn: new Date(hace1h.getTime() + 86_400_000).toISOString() });
+
+    mockActivitiesRepo.manager.find.mockResolvedValueOnce([{ id: 'a', submittedAt: new Date(Date.now() - 25 * 3_600_000) }]);
+    expect(await service.findOneForRequester(1, { id: 20, role: UserRole.ESTUDIANTE } as never)).toMatchObject({ intentoDisponible: true, reabreEn: null });
   });
 });

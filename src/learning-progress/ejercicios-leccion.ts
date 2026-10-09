@@ -1,6 +1,7 @@
 import { Difficulty } from '../common/enums/difficulty.enum';
 import { QuestionType } from '../common/enums/question-type.enum';
 import { claveCasilla, rangoNivel, rangoTipo } from '../common/utils/casilla';
+import { casillasDeDominio, gananciaSiLoResuelve, intentosDisponibles } from '../common/utils/motor-dominio';
 
 // «Ver todos los ejercicios» de una lección (08/10, Jeider): antes era una lista de nombres. Ahora cada ejercicio dice
 // si todavía puede subir tu dominio, su nivel, su tipo y cuánto pesa en la lección, con las mismas reglas del dominio
@@ -20,11 +21,11 @@ export interface ActividadLeccion {
   order?: number | null;
 }
 
-export interface IntentoLeccion { activityId: number; score: number }
+export interface IntentoLeccion { activityId: number; score: number; isReview?: boolean | null; submittedAt?: Date | string | null; createdAt?: Date | string | null }
 
 /**
  * por-hacer: no lo ha intentado y sube su dominio · en-curso: lo intentó y todavía no lo aprueba · hecho: lo aprobó ·
- * cuenta-otro: no lo ha hecho, pero un ejercicio parecido ya dio todo lo de su casilla · sin-intentos: usó los intentos.
+ * cuenta-otro: no lo ha aprobado, pero su casilla ya está completa (no sube) · sin-intentos: usó los intentos (se reabre).
  */
 export type EstadoEjercicio = 'por-hacer' | 'en-curso' | 'hecho' | 'cuenta-otro' | 'sin-intentos';
 
@@ -38,8 +39,14 @@ export interface EjercicioLeccion {
   /** Cuántos ejercicios comparten su casilla (incluido él): cuentan como uno. */
   parecidos: number;
   estado: EstadoEjercicio;
-  /** ¿Hacerlo (o mejorarlo) todavía puede subir el dominio? */
+  /** ¿Hacerlo (o mejorarlo) todavía puede subir el dominio? (ganancia de 1 punto o más y un intento disponible). */
   subeDominio: boolean;
+  /** Puntos que subiría el dominio de la lección si lo resolviera ahora con nota completa (motor del dominio). */
+  ganancia: number;
+  /** Cuánto lleva su casilla (sus parecidos y él), de 0 a 100. */
+  casillaPct: number;
+  /** Si no le quedan intentos: cuándo se reabre uno (ISO). */
+  reabreEn: string | null;
   intentosUsados: number;
   /** 0 = sin límite. */
   intentosPermitidos: number;
@@ -49,13 +56,28 @@ export interface EjercicioLeccion {
 
 const peso = (a: ActividadLeccion) => (a.adaptiveWeight ?? 1) * (a.activityType?.baseWeight || 1);
 
-export function ejerciciosDeLaLeccion(actividades: ActividadLeccion[], intentos: IntentoLeccion[]): EjercicioLeccion[] {
+/**
+ * 09/10 (Jeider: «tengo un ejercicio y no puedo seguir subiendo mi dominio»): la lista calculaba «sube o no» con sus
+ * propias reglas (la mejor nota sin la penalización por repetir) y decía «Ya cuenta un parecido · no sube» cuando sí
+ * subía. Ahora usa el motor del dominio (common/utils/motor-dominio.ts): cuánto sube cada uno es lo que de verdad
+ * cambiaría su dominio, y un ejercicio sin intentos dice cuándo se reabre.
+ */
+export function ejerciciosDeLaLeccion(
+  actividades: ActividadLeccion[],
+  intentos: IntentoLeccion[],
+  opciones: { nivelSaltadoHasta?: number; ahora?: Date } = {},
+): EjercicioLeccion[] {
+  const ahora = opciones.ahora ?? new Date();
+  const paraMotor = actividades.map((a) => ({ ...a, passingScore: a.passingScore }));
+  const casillasMotor = casillasDeDominio(intentos, paraMotor, opciones);
+  const casillaDe = new Map<number, number>();
+  for (const c of casillasMotor) for (const id of c.actividades) casillaDe.set(id, Math.round(c.estimacion * 100));
+
   const casillas = new Map<string, ActividadLeccion[]>();
   for (const a of actividades) {
     const clave = claveCasilla(a);
     casillas.set(clave, [...(casillas.get(clave) ?? []), a]);
   }
-
   const pesoCasilla = new Map<string, number>();
   for (const [clave, hermanas] of casillas) pesoCasilla.set(clave, Math.max(...hermanas.map(peso)));
   const pesoTotal = [...pesoCasilla.values()].reduce((s, p) => s + p, 0) || 1;
@@ -64,26 +86,24 @@ export function ejerciciosDeLaLeccion(actividades: ActividadLeccion[], intentos:
     const notas = intentos.filter((i) => i.activityId === a.id).map((i) => (a.totalPoints > 0 ? i.score / a.totalPoints : 0));
     return notas.length ? Math.max(...notas) : null;
   };
-  const mejorDeCasilla = new Map<string, number>();
-  for (const [clave, hermanas] of casillas) mejorDeCasilla.set(clave, Math.max(0, ...hermanas.map((h) => mejor(h) ?? 0)));
 
   return actividades
     .map((a) => {
       const clave = claveCasilla(a);
-      const usados = intentos.filter((i) => i.activityId === a.id).length;
+      const suyos = intentos.filter((i) => i.activityId === a.id);
       const permitidos = a.attemptsAllowed ?? 0;
-      const quedan = permitidos === 0 || usados < permitidos;
+      const fechas = suyos.map((i) => new Date(i.submittedAt ?? i.createdAt ?? 0));
+      const { quedan, reabreEn } = intentosDisponibles(permitidos, fechas, ahora);
       const nota = mejor(a);
       const aprobado = nota !== null && nota * 100 >= a.passingScore;
-      const casillaLlena = (mejorDeCasilla.get(clave) ?? 0) >= 1;
+      const ganancia = gananciaSiLoResuelve(intentos, paraMotor, a.id, { ...opciones, ahora });
 
       let estado: EstadoEjercicio;
       if (aprobado) estado = 'hecho';
-      else if (!quedan) estado = 'sin-intentos';
-      else if (casillaLlena) estado = 'cuenta-otro';
-      else estado = usados > 0 ? 'en-curso' : 'por-hacer';
+      else if (quedan === 0) estado = 'sin-intentos';
+      else if (ganancia < 1) estado = 'cuenta-otro';
+      else estado = suyos.length > 0 ? 'en-curso' : 'por-hacer';
 
-      const subeDominio = quedan && !casillaLlena && (estado !== 'hecho' || (nota ?? 0) < 1);
       return {
         id: a.id,
         titulo: a.title,
@@ -92,8 +112,11 @@ export function ejerciciosDeLaLeccion(actividades: ActividadLeccion[], intentos:
         pesoPct: Math.round(((pesoCasilla.get(clave) ?? 0) / pesoTotal) * 100),
         parecidos: casillas.get(clave)?.length ?? 1,
         estado,
-        subeDominio,
-        intentosUsados: usados,
+        subeDominio: quedan > 0 && ganancia >= 1,
+        ganancia,
+        casillaPct: casillaDe.get(a.id) ?? 0,
+        reabreEn: reabreEn ? reabreEn.toISOString() : null,
+        intentosUsados: suyos.length,
         intentosPermitidos: permitidos,
         mejorPct: nota === null ? null : Math.round(nota * 100),
         orden: a.order ?? 0,

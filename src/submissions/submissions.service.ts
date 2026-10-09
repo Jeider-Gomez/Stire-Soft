@@ -25,6 +25,7 @@ import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { Activity } from '../activities/entities/activity.entity';
 import { actividadVisiblePara } from '../activities/visibilidad';
 import { retroalimentacionCerrada } from './retroalimentacion';
+import { intentosDisponibles } from '../common/utils/motor-dominio';
 
 @Injectable()
 export class SubmissionsService {
@@ -60,11 +61,16 @@ export class SubmissionsService {
     const active = await this.submissionsRepo.findActiveSubmission(studentId, activity.id);
     if (active) return active;
 
-    // Verificar límites de intentos
-    // attemptsAllowed = 0 → intentos infinitos; > 0 → límite estricto
-    const attempts = await this.submissionsRepo.getAttemptCount(studentId, activity.id);
-    if (activity.attemptsAllowed > 0 && attempts >= activity.attemptsAllowed) {
-      throw new BadRequestException(`Límite de intentos alcanzado (${activity.attemptsAllowed})`);
+    // Límite de intentos (attemptsAllowed = 0 → sin límite). Con el límite usado, se reabre uno a las 24 horas del último:
+    // así ninguna lección queda sin forma de llegar al 100 % (09/10; motor-dominio.ts, docs/DISENO_DOMINIO.md).
+    const fechas = await this.submissionsRepo.fechasDeIntentos(studentId, activity.id);
+    const attempts = fechas.length;
+    const disponibles = intentosDisponibles(activity.attemptsAllowed, fechas);
+    if (disponibles.quedan <= 0) {
+      const cuando = disponibles.reabreEn
+        ? disponibles.reabreEn.toLocaleString('es-CO', { timeZone: 'America/Bogota', weekday: 'long', hour: 'numeric', minute: '2-digit' })
+        : 'pronto';
+      throw new BadRequestException(`Ya usaste los intentos de este ejercicio. Se reabre uno el ${cuando}; mientras, prueba con uno parecido.`);
     }
 
     const submission = this.submissionsRepo.create({

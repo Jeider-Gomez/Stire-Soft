@@ -120,7 +120,7 @@ describe('LearningProgressService', () => {
       expect(result.mastery).toBe(100);
     });
 
-    it('una entrega revisada que cuenta para el dominio es evidencia: su nota entra como una casilla más (§5)', async () => {
+    it('una entrega revisada que cuenta para el dominio es evidencia que solo sube: una nota baja no deja la lección sin salida (09/10)', async () => {
       const activity = makeActivity({ id: 1, totalPoints: 100, passingScore: 60 });
       progressRepo.findOrCreate.mockResolvedValue(makeProgress({ attemptsCount: 3 }));
       activitiesRepo.find.mockResolvedValue([activity]);
@@ -133,7 +133,8 @@ describe('LearningProgressService', () => {
 
       const result = await service.recalculateMastery(42, 10, null, 0, 0, false);
 
-      expect(result.mastery).toBe(75);
+      // Antes, 2,5 de 5 dejaba la lección en 75 % para siempre (el estudiante no puede rehacer una entrega cerrada).
+      expect(result.mastery).toBe(100);
       expect(result.attemptsCount).toBe(3);
       expect(activitiesRepo.manager.query.mock.calls[0][1]).toEqual([10, 42]);
     });
@@ -365,7 +366,7 @@ describe('LearningProgressService', () => {
       expect(result).toEqual(expect.objectContaining({ activityId: 2, order: 2, allCompleted: false }));
     });
 
-    it('devuelve la última actividad con allCompleted cuando todas están aprobadas', async () => {
+    it('con todas aprobadas pero el dominio bajo 100, sigue ofreciendo la que más lo sube (09/10: practicar hasta el 100 %)', async () => {
       activitiesRepo.find.mockResolvedValue([
         makeActivity({ id: 1, order: 1, activityType: { code: 'mcq', baseWeight: 1 } }),
         makeActivity({ id: 2, order: 2, activityType: { code: 'coding', baseWeight: 1 } }),
@@ -377,7 +378,8 @@ describe('LearningProgressService', () => {
 
       const result = await service.getNextActivity(42, 10);
 
-      expect(result).toEqual(expect.objectContaining({ activityId: 2, order: 2, allCompleted: true }));
+      // 60 y 80 de 100: aprobadas, pero el dominio va en 70 %. La de 60 es la que más sube.
+      expect(result).toEqual(expect.objectContaining({ activityId: 1, allCompleted: true, reason: 'practica_extra' }));
     });
   });
 

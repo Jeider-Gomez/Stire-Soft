@@ -13,6 +13,7 @@ tabla de abajo.
 | Entender por qué existe STIRE | [`00_VISION_FUNCIONAL.md`](00_VISION_FUNCIONAL.md) |
 | Ver la aplicación desplegada y cómo se actualiza | [`DESPLIEGUE.md`](DESPLIEGUE.md) §8 |
 | Subir cambios sin pisarse (ramas, Pull Requests, versiones) | [`FLUJO_GIT.md`](FLUJO_GIT.md) |
+| Entender **cómo sube y baja el dominio** y por qué siempre se puede llegar al 100 % | [`DISENO_DOMINIO.md`](DISENO_DOMINIO.md) |
 
 ## 1. El sistema (leer en orden)
 
