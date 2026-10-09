@@ -65,7 +65,7 @@ const peso = (a: ActividadLeccion) => (a.adaptiveWeight ?? 1) * (a.activityType?
 export function ejerciciosDeLaLeccion(
   actividades: ActividadLeccion[],
   intentos: IntentoLeccion[],
-  opciones: { nivelSaltadoHasta?: number; ahora?: Date } = {},
+  opciones: { nivelSaltadoHasta?: number; ahora?: Date; pesoNivel?: Record<string, number>; horasParaReabrir?: number } = {},
 ): EjercicioLeccion[] {
   const ahora = opciones.ahora ?? new Date();
   const paraMotor = actividades.map((a) => ({ ...a, passingScore: a.passingScore }));
@@ -93,7 +93,7 @@ export function ejerciciosDeLaLeccion(
       const suyos = intentos.filter((i) => i.activityId === a.id);
       const permitidos = a.attemptsAllowed ?? 0;
       const fechas = suyos.map((i) => new Date(i.submittedAt ?? i.createdAt ?? 0));
-      const { quedan, reabreEn } = intentosDisponibles(permitidos, fechas, ahora);
+      const { quedan, reabreEn } = intentosDisponibles(permitidos, fechas, ahora, opciones.horasParaReabrir);
       const nota = mejor(a);
       const aprobado = nota !== null && nota * 100 >= a.passingScore;
       const ganancia = gananciaSiLoResuelve(intentos, paraMotor, a.id, { ...opciones, ahora });

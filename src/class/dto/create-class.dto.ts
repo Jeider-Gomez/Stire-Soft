@@ -56,6 +56,18 @@ export class CreateClassDto {
   @IsOptional()
   dominioParaAvanzar?: number;
 
+  /** Cada cuántas horas se reabre un intento con el límite usado (1 a 168; docs/DISENO_DOMINIO.md). */
+  @IsInt({ message: 'Las horas para reabrir un intento deben ser un número entero' })
+  @Min(1, { message: 'Un intento se reabre entre 1 y 168 horas (una semana)' })
+  @Max(168, { message: 'Un intento se reabre entre 1 y 168 horas (una semana)' })
+  @IsOptional()
+  horasParaReabrir?: number;
+
+  /** Si los niveles altos pesan más en el dominio. */
+  @IsBoolean({ message: 'Indica sí o no' })
+  @IsOptional()
+  nivelesPesanDistinto?: boolean;
+
   /** Asignatura del catálogo (GET /asignaturas); null la quita. */
   @ValidateIf((_o, v) => v !== null && v !== undefined)
   @IsInt({ message: 'La asignatura no es válida' })

@@ -14,7 +14,8 @@ import { ContentRenderingService } from '../content-rendering/content-rendering.
 import { Submission } from '../submissions/entities/submission.entity';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
 import { actividadVisiblePara } from './visibilidad';
-import { intentosDisponibles } from '../common/utils/motor-dominio';
+import { intentosDisponibles, reglasDeClase } from '../common/utils/motor-dominio';
+import { Class } from '../class/entities/class.entity';
 
 @Injectable()
 export class ActivitiesService {
@@ -151,7 +152,8 @@ export class ActivitiesService {
         where: { studentId: user.id, activityId: activity.id, status: Not(SubmissionStatus.IN_PROGRESS) },
         select: { id: true, submittedAt: true, createdAt: true },
       });
-      const { quedan, reabreEn } = intentosDisponibles(activity.attemptsAllowed, terminados.map((t) => new Date(t.submittedAt ?? t.createdAt ?? 0)));
+      const clase = await this.activitiesRepo.manager.findOne(Class, { where: { id: classId } });
+      const { quedan, reabreEn } = intentosDisponibles(activity.attemptsAllowed, terminados.map((t) => new Date(t.submittedAt ?? t.createdAt ?? 0)), new Date(), reglasDeClase(clase).horasParaReabrir);
       return Object.assign(activity, { attemptsUsed, yaAprobada: aprobadas > 0, intentoDisponible: quedan > 0, reabreEn: reabreEn?.toISOString() ?? null });
     }
 

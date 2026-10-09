@@ -90,6 +90,8 @@ describe('SubmissionsService', () => {
 
     activitiesRepo = {
       findOne: jest.fn().mockResolvedValue(makeActivity()),
+      // Las reglas de la clase (horas para reabrir); sin clase, las de por defecto.
+      manager: { findOne: jest.fn().mockResolvedValue(null) },
     };
 
     questionsRepo = {

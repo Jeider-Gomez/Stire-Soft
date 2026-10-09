@@ -4,7 +4,7 @@ import { LearningProgressRepository } from './learning-progress.repository';
 import { SubmissionsRepository } from '../submissions/submissions.repository';
 import { ActivitiesRepository } from '../activities/activities.repository';
 import { Difficulty } from '../common/enums/difficulty.enum';
-import { ActividadDominio, IntentoDominio, calcularDominio, gananciaSiLoResuelve } from '../common/utils/motor-dominio';
+import { ActividadDominio, IntentoDominio, calcularDominio, gananciaSiLoResuelve, reglasDeClase } from '../common/utils/motor-dominio';
 import { LearningStatus } from '../common/enums/learning-status.enum';
 import { PublicationStatus } from '../common/enums/status.enum';
 import { LearningStatusChangedEvent } from '../common/events/learning-status-changed.event';
@@ -23,6 +23,7 @@ import { Confianza, MotivoRecomendacion, nivelSaltadoHasta, recomendarSiguiente 
 import { construirEstadisticas, SEMANAS_CALENDARIO } from './estadisticas';
 import { actividadVisiblePara } from '../activities/visibilidad';
 import { ejerciciosDeLaLeccion, EjercicioLeccion } from './ejercicios-leccion';
+import { Class } from '../class/entities/class.entity';
 
 export interface NextActivityRecommendation {
   activityId: number;
@@ -60,10 +61,11 @@ export function dominioConEntregas(
   actividades: ActividadDominio[],
   entregas: { actividades: ActividadDominio[]; intentos: IntentoDominio[] },
   nivelSaltadoHasta: number,
+  pesoNivel?: Record<string, number>,
 ): number {
-  const soloEjercicios = calcularDominio(intentos, actividades, { nivelSaltadoHasta });
+  const soloEjercicios = calcularDominio(intentos, actividades, { nivelSaltadoHasta, pesoNivel });
   if (entregas.actividades.length === 0) return soloEjercicios;
-  return Math.max(soloEjercicios, calcularDominio([...intentos, ...entregas.intentos], [...actividades, ...entregas.actividades], { nivelSaltadoHasta }));
+  return Math.max(soloEjercicios, calcularDominio([...intentos, ...entregas.intentos], [...actividades, ...entregas.actividades], { nivelSaltadoHasta, pesoNivel }));
 }
 
 @Injectable()
@@ -107,7 +109,8 @@ export class LearningProgressService {
       esConfianza(progress.entryConfidence) ? progress.entryConfidence : null,
     );
     const evidencias = await this.evidenciasDeEntregas(studentId, learningUnitId);
-    progress.mastery = dominioConEntregas(submissions, activities, evidencias, saltadoHasta);
+    const reglas = await this.reglasDeLaUnidad(learningUnitId);
+    progress.mastery = dominioConEntregas(submissions, activities, evidencias, saltadoHasta, reglas.pesoNivel);
 
     if (contarIntento) progress.attemptsCount += 1;
 
@@ -217,7 +220,8 @@ export class LearningProgressService {
       intentos.map((s) => ({ activityId: s.activityId, score: s.score, calificado: true, fecha: new Date(s.submittedAt ?? s.createdAt ?? 0) })),
       esConfianza(confianza) ? confianza : null,
     );
-    return ejerciciosDeLaLeccion(activities, intentos, { nivelSaltadoHasta: saltadoHasta });
+    const reglas = await this.reglasDeLaUnidad(learningUnitId);
+    return ejerciciosDeLaLeccion(activities, intentos, { nivelSaltadoHasta: saltadoHasta, pesoNivel: reglas.pesoNivel, horasParaReabrir: reglas.horasParaReabrir });
   }
 
   async getNextActivity(studentId: number, learningUnitId: number, opciones: { reto?: boolean } = {}): Promise<NextActivityRecommendation | null> {
@@ -234,6 +238,7 @@ export class LearningProgressService {
 
     const confianza = progress?.entryConfidence;
     const calificadas = submissions.filter((sub) => sub.status !== SubmissionStatus.IN_PROGRESS);
+    const reglas = await this.reglasDeLaUnidad(learningUnitId);
     const recomendacion = recomendarSiguiente({
       actividades: activities.map(activity => ({
         id: activity.id,
@@ -255,7 +260,8 @@ export class LearningProgressService {
       repasoVencido: !!schedule && new Date(schedule.nextReviewDate).getTime() <= Date.now(),
       reto: opciones.reto,
       // Con la lección completa, sigue ofreciendo lo que todavía sube el dominio hasta el 100 % (09/10).
-      ganancias: new Map(activities.map((a) => [a.id, gananciaSiLoResuelve(calificadas, activities, a.id)])),
+      ganancias: new Map(activities.map((a) => [a.id, gananciaSiLoResuelve(calificadas, activities, a.id, { pesoNivel: reglas.pesoNivel })])),
+      horasParaReabrir: reglas.horasParaReabrir,
     });
     if (!recomendacion) return null;
 
@@ -292,6 +298,16 @@ export class LearningProgressService {
     const section = topic ? await manager.findOne(Section, { where: { id: topic.sectionId } }) : null;
     if (!section) throw new NotFoundException(`Unidad de aprendizaje ${learningUnitId} no encontrada`);
     return section.classId;
+  }
+
+  /** Las reglas del dominio que el docente ajustó en la clase de la lección (Ajustes; motor-dominio.ts: reglasDeClase). */
+  async reglasDeLaUnidad(learningUnitId: number): Promise<ReturnType<typeof reglasDeClase>> {
+    try {
+      const classId = await this.resolveClassId(learningUnitId);
+      return reglasDeClase(await this.activitiesRepo.manager.findOne(Class, { where: { id: classId } }));
+    } catch {
+      return reglasDeClase(null); // sin clase (datos de prueba): las reglas por defecto
+    }
   }
 
   /** Marca un intento como repaso: se calificó cuando la unidad tenía un repaso vencido. */
