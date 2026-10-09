@@ -345,3 +345,19 @@ describe('Cerrar el Tutor es fácil (pedido de Jeider, 03/10)', () => {
     expect(d).toContain("const destino = openerElement?.isConnected ? openerElement : document.getElementById('lanzador-tutor')");
   });
 });
+
+describe('Degradados que respetan el tema oscuro (sugerencia n.º 6 de José, 09/10)', () => {
+  const vues = (dir: string): string[] =>
+    readdirSync(path.join(raiz, dir), { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? vues(path.join(dir, e.name)) : e.name.endsWith('.vue') ? [path.join(dir, e.name)] : []);
+
+  // `white` no cambia con el tema: en oscuro el fondo del chat del Tutor se aclaraba hasta blanco detrás de los mensajes.
+  it('ningún degradado usa blanco fijo; usa base-blanco, que el tema oscuro vuelve superficie oscura', () => {
+    const conBlancoFijo = [...vues('pages'), ...vues('components'), ...vues('layouts')].filter((f) => /\b(from|via|to)-white\b/.test(leer(f)));
+    expect(conBlancoFijo).toEqual([]);
+  });
+
+  it('el fondo de los mensajes del Tutor va de stire-canvas a base-blanco', () => {
+    expect(leer('components', 'tutor', 'TutorChatDrawer.vue')).toContain('bg-gradient-to-b from-stire-canvas/70 to-base-blanco');
+  });
+});

@@ -175,7 +175,7 @@
 
           <!-- Mensajes del Chat (§18.2 — scroll automático) -->
           <div
-            class="flex-1 overflow-y-auto p-4 space-y-3.5 bg-gradient-to-b from-stire-canvas/70 to-white"
+            class="flex-1 overflow-y-auto p-4 space-y-3.5 bg-gradient-to-b from-stire-canvas/70 to-base-blanco"
             ref="messagesContainer"
             aria-live="polite"
             aria-label="Mensajes del Tutor"
