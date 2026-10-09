@@ -14,7 +14,7 @@
         <EstudianteMedalla :categoria="nuevos[0].categoria" :nivel="nuevos[0].nivel" :obtenida="true" :titulo="nuevos[0].titulo" grande />
         <span class="min-w-0">
           <span class="block text-sm font-bold text-base-texto-primario">{{ textoNuevos(nuevos) }}</span>
-          <span class="block text-[11px] text-base-texto-secundario">{{ nuevos.length === 1 ? nuevos[0].descripcion : nuevos.map((l) => l.titulo).join(' · ') }}</span>
+          <span class="block text-[11px] text-base-texto-secundario">{{ nuevos.length === 1 ? nuevos[0].descripcion : listaNuevos(nuevos) }}</span>
         </span>
       </div>
       <div v-else-if="ultimo" class="flex items-center gap-2.5">
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { porcentajeLogro, textoNuevos, textoProgreso, ultimoLogro, type RespuestaLogros } from '~/utils/logros'
+import { listaNuevos, porcentajeLogro, textoNuevos, textoProgreso, ultimoLogro, type RespuestaLogros } from '~/utils/logros'
 import { useAuthStore } from '~/stores/auth'
 
 const api = useApi()

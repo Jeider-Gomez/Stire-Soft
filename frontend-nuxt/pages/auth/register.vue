@@ -137,7 +137,7 @@
                 type="button"
                 @click="verClave = !verClave"
                 class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-slate-700 transition-colors"
-                :aria-label="verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                :aria-label="verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'" :title="verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'"
                 :aria-pressed="verClave">
                 <EyeOff v-if="verClave" :size="16" aria-hidden="true" />
                 <Eye v-else :size="16" aria-hidden="true" />
@@ -216,7 +216,7 @@
               <button
                 type="button"
                 @click="showApiKey = !showApiKey"
-                :aria-label="showApiKey ? 'Ocultar clave' : 'Mostrar clave'"
+                :aria-label="showApiKey ? 'Ocultar clave' : 'Mostrar clave'" :title="showApiKey ? 'Ocultar clave' : 'Mostrar clave'"
                 :aria-pressed="showApiKey"
                 class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-slate-700">
                 <EyeOff v-if="showApiKey" :size="16" aria-hidden="true" />

@@ -6,17 +6,19 @@
          ejercicio; Probar y Entregar bajan a una barra fija en la zona del pulgar (MOB-02). Sin desenfoque
          (backdrop-filter): haría que la barra fija se ubicara respecto al encabezado y no a la pantalla. -->
     <header class="sticky top-0 md:static min-h-14 md:h-14 py-2 md:py-0 gap-y-2 flex-wrap md:flex-nowrap bg-base-blanco border-b border-base-borde-sutil px-4 flex items-center justify-between z-30 shadow-sm flex-shrink-0">
-      <div class="flex items-center gap-3">
+      <!-- 09/10: en el celular el título largo se salía de la pantalla y «Volver a la lección» se partía en tres líneas. -->
+      <div class="flex items-center gap-3 min-w-0 flex-1">
         <NuxtLink
           :to="backLink"
-          class="borde-afordancia min-h-[44px] px-2.5 rounded text-xs font-medium text-base-texto-secundario hover:text-base-texto-primario flex items-center gap-1">
+          aria-label="Volver a la lección"
+          class="borde-afordancia min-h-[44px] px-2.5 rounded text-xs font-medium text-base-texto-secundario hover:text-base-texto-primario flex items-center gap-1 shrink-0 whitespace-nowrap">
           <ArrowLeft :size="14" aria-hidden="true" />
-          <span>Volver a la lección</span>
+          <span class="sm:hidden">Volver</span><span class="hidden sm:inline">Volver a la lección</span>
         </NuxtLink>
 
-        <div class="h-4 w-[1px] bg-base-borde-sutil"></div>
+        <div class="h-4 w-[1px] bg-base-borde-sutil shrink-0"></div>
 
-        <div>
+        <div class="min-w-0">
           <h1 class="text-xs font-bold text-base-texto-primario truncate">
             {{ workspaceStore.currentExercise.title }}
           </h1>

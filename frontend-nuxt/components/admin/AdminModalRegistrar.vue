@@ -20,7 +20,7 @@
         </div>
         <div class="relative">
           <input id="reg-pwd" v-model="form.password" :type="verClave ? 'text' : 'password'" required placeholder="Mín. 6 car., mayúscula, minúscula y número/símbolo" :class="[CAMPO, 'pr-8']" />
-          <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600" :aria-label="verClave ? 'Ocultar contraseña' : 'Ver contraseña'" @click="verClave = !verClave">
+          <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600" :aria-label="verClave ? 'Ocultar contraseña' : 'Ver contraseña'" :title="verClave ? 'Ocultar contraseña' : 'Ver contraseña'" @click="verClave = !verClave">
             <EyeOff v-if="verClave" :size="14" aria-hidden="true" />
             <Eye v-else :size="14" aria-hidden="true" />
           </button>

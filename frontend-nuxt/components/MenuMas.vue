@@ -10,6 +10,7 @@
       :aria-expanded="abierto"
       :aria-controls="idLista"
       :aria-label="etiqueta"
+      title="Más acciones"
       class="min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] inline-flex items-center justify-center rounded border border-base-borde-fuerte bg-base-bg-secundario text-base-texto-primario hover:bg-acento-ambar/10 transition-colors focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
       @click="abierto = !abierto">
       <MoreHorizontal :size="16" aria-hidden="true" />

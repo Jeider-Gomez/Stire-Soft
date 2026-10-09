@@ -303,7 +303,7 @@
                 @click="handleSend"
                 :disabled="!inputQuery.trim() || tutorStore.isThinking || !tutorStore.tutorEnabled"
                 class="w-11 h-11 rounded-xl bg-stire-teal hover:bg-[#14e2c8] text-[#070e24] flex items-center justify-center shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
-                aria-label="Enviar pregunta"
+                aria-label="Enviar pregunta" title="Enviar"
               >
                 <Send :size="16" aria-hidden="true" />
               </button>

@@ -20,7 +20,7 @@
           <div class="relative">
             <input id="reset-pwd-input" v-model="nueva" data-foco-inicial :type="verClave ? 'text' : 'password'" required placeholder="Escribe o pulsa Generar aleatoria…"
               class="w-full min-h-[44px] px-3 py-1.5 pr-8 rounded-md border border-base-borde-fuerte bg-base-blanco text-base-texto-primario outline-none focus:ring-1 focus:ring-acento-ambar-fuerte font-mono text-xs" />
-            <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600" :aria-label="verClave ? 'Ocultar contraseña' : 'Ver contraseña'" @click="verClave = !verClave">
+            <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600" :aria-label="verClave ? 'Ocultar contraseña' : 'Ver contraseña'" :title="verClave ? 'Ocultar contraseña' : 'Ver contraseña'" @click="verClave = !verClave">
               <EyeOff v-if="verClave" :size="14" aria-hidden="true" />
               <Eye v-else :size="14" aria-hidden="true" />
             </button>

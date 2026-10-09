@@ -10,8 +10,9 @@
         @click="$emit('toggle-sidebar')"
         class="p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors duration-150 flex-shrink-0 md:hidden"
         aria-label="Abrir menú lateral"
+        title="Menú"
       >
-        <Menu :size="18" />
+        <Menu :size="18" aria-hidden="true" />
       </button>
 
       <!-- Isotipo + Logotipo -->

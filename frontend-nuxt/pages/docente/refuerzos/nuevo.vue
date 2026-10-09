@@ -77,9 +77,9 @@
             <div class="flex items-center justify-between gap-2">
               <span class="font-bold text-base-texto-primario">{{ i + 1 }}. {{ NOMBRE_PASO[p.tipo] }}</span>
               <span class="flex items-center gap-1">
-                <button type="button" :disabled="i === 0" @click="mover(i, -1)" class="p-1 rounded hover:bg-base-bg-secundario disabled:opacity-30" :aria-label="`Subir el paso ${i + 1}`"><ChevronUp :size="14" aria-hidden="true" /></button>
-                <button type="button" :disabled="i === f.pasos.length - 1" @click="mover(i, 1)" class="p-1 rounded hover:bg-base-bg-secundario disabled:opacity-30" :aria-label="`Bajar el paso ${i + 1}`"><ChevronDown :size="14" aria-hidden="true" /></button>
-                <button type="button" @click="f.pasos.splice(i, 1)" class="p-1 rounded hover:bg-semantico-falla/10 hover:text-semantico-falla" :aria-label="`Quitar el paso ${i + 1}`"><Trash2 :size="14" aria-hidden="true" /></button>
+                <button type="button" :disabled="i === 0" @click="mover(i, -1)" class="p-1 rounded hover:bg-base-bg-secundario disabled:opacity-30" :aria-label="`Subir el paso ${i + 1}`" title="Subir el paso"><ChevronUp :size="14" aria-hidden="true" /></button>
+                <button type="button" :disabled="i === f.pasos.length - 1" @click="mover(i, 1)" class="p-1 rounded hover:bg-base-bg-secundario disabled:opacity-30" :aria-label="`Bajar el paso ${i + 1}`" title="Bajar el paso"><ChevronDown :size="14" aria-hidden="true" /></button>
+                <button type="button" @click="f.pasos.splice(i, 1)" class="p-1 rounded hover:bg-semantico-falla/10 hover:text-semantico-falla" :aria-label="`Quitar el paso ${i + 1}`" title="Quitar el paso"><Trash2 :size="14" aria-hidden="true" /></button>
               </span>
             </div>
             <template v-if="p.tipo === 'explicacion' || p.tipo === 'recurso'">

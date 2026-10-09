@@ -82,3 +82,12 @@ export function textoNuevos(nuevos: ReadonlyArray<Logro>): string {
   if (!nuevos.length) return ''
   return nuevos.length === 1 ? `¡Nueva medalla: ${nuevos[0].titulo}!` : `¡${nuevos.length} medallas nuevas!`
 }
+
+/**
+ * Los nombres de las medallas nuevas, sin abrumar (09/10: con 16 nuevas, el inicio mostraba un párrafo con todas y
+ * estiraba las tarjetas de al lado): las 3 primeras y «y N más»; todas están en «Mis logros».
+ */
+export function listaNuevos(nuevos: ReadonlyArray<Pick<Logro, 'titulo'>>, max = 3): string {
+  const primeros = nuevos.slice(0, max).map((l) => l.titulo).join(' · ')
+  return nuevos.length > max ? `${primeros} y ${nuevos.length - max} más` : primeros
+}
