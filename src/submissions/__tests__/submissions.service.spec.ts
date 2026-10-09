@@ -75,6 +75,7 @@ describe('SubmissionsService', () => {
       findOne: jest.fn(),
       findActiveSubmission: jest.fn(),
       getAttemptCount: jest.fn(),
+      fechasDeIntentos: jest.fn(),
       create: jest.fn(),
       save: jest.fn(),
       createQueryBuilder: jest.fn(),
@@ -182,7 +183,7 @@ describe('SubmissionsService', () => {
       submissionsRepo.findActiveSubmission
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(activeSubmission);
-      submissionsRepo.getAttemptCount.mockResolvedValue(0);
+      submissionsRepo.fechasDeIntentos.mockResolvedValue(Array.from({ length: 0 }, () => new Date()));
       submissionsRepo.create.mockReturnValue(makeSubmission());
       submissionsRepo.save.mockRejectedValue({ code: 'ER_DUP_ENTRY', sqlState: '23000' });
 
@@ -193,10 +194,24 @@ describe('SubmissionsService', () => {
       const activity = makeActivity({ attemptsAllowed: 3 });
       activitiesRepo.findOne.mockResolvedValue(activity);
       submissionsRepo.findActiveSubmission.mockResolvedValue(null);
-      submissionsRepo.getAttemptCount.mockResolvedValue(3); // ya llegó al límite
+      submissionsRepo.fechasDeIntentos.mockResolvedValue(Array.from({ length: 3 }, () => new Date())); // ya llegó al límite
 
       await expect(service.startSubmission(dto, studentId))
         .rejects.toThrow(BadRequestException);
+    });
+
+    it('con el límite usado, a las 24 horas del último se reabre un intento (09/10: ninguna lección sin salida)', async () => {
+      const activity = makeActivity({ attemptsAllowed: 1 });
+      activitiesRepo.findOne.mockResolvedValue(activity);
+      submissionsRepo.findActiveSubmission.mockResolvedValue(null);
+      submissionsRepo.fechasDeIntentos.mockResolvedValue([new Date(Date.now() - 25 * 3_600_000)]);
+      submissionsRepo.create.mockImplementation((x: unknown) => x);
+      submissionsRepo.save.mockImplementation(async (x: unknown) => x);
+
+      await expect(service.startSubmission(dto, studentId)).resolves.toMatchObject({ attemptNumber: 2 });
+
+      submissionsRepo.fechasDeIntentos.mockResolvedValue([new Date(Date.now() - 3_600_000)]);
+      await expect(service.startSubmission(dto, studentId)).rejects.toThrow('Se reabre uno el');
     });
 
     it('[FIX] attemptsAllowed = 0 permite intentos ilimitados — no bloquea cuando ya hay N intentos', async () => {
@@ -206,7 +221,7 @@ describe('SubmissionsService', () => {
       activitiesRepo.findOne.mockResolvedValue(activity);
       submissionsRepo.findActiveSubmission.mockResolvedValue(null);
       // Simular que el estudiante ya hizo 999 intentos
-      submissionsRepo.getAttemptCount.mockResolvedValue(999);
+      submissionsRepo.fechasDeIntentos.mockResolvedValue(Array.from({ length: 999 }, () => new Date()));
       submissionsRepo.create.mockReturnValue(newSubmission);
       submissionsRepo.save.mockResolvedValue(newSubmission);
 
@@ -222,7 +237,7 @@ describe('SubmissionsService', () => {
       const newSubmission = makeSubmission();
       activitiesRepo.findOne.mockResolvedValue(activity);
       submissionsRepo.findActiveSubmission.mockResolvedValue(null);
-      submissionsRepo.getAttemptCount.mockResolvedValue(0);
+      submissionsRepo.fechasDeIntentos.mockResolvedValue(Array.from({ length: 0 }, () => new Date()));
       submissionsRepo.create.mockReturnValue(newSubmission);
       submissionsRepo.save.mockResolvedValue(newSubmission);
 
@@ -235,7 +250,7 @@ describe('SubmissionsService', () => {
       const newSubmission = makeSubmission();
       activitiesRepo.findOne.mockResolvedValue(activity);
       submissionsRepo.findActiveSubmission.mockResolvedValue(null);
-      submissionsRepo.getAttemptCount.mockResolvedValue(0);
+      submissionsRepo.fechasDeIntentos.mockResolvedValue(Array.from({ length: 0 }, () => new Date()));
       submissionsRepo.create.mockReturnValue(newSubmission);
       submissionsRepo.save.mockResolvedValue(newSubmission);
 

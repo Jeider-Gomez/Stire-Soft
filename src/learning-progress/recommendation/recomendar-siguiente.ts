@@ -1,6 +1,7 @@
 import { Difficulty } from '../../common/enums/difficulty.enum';
 import { QuestionType } from '../../common/enums/question-type.enum';
 import { claveCasilla, rangoNivel, rangoTipo } from '../../common/utils/casilla';
+import { intentosDisponibles } from '../../common/utils/motor-dominio';
 
 /**
  * Recomendador de la siguiente actividad de una unidad (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.3). Función pura: recibe
@@ -65,6 +66,13 @@ export interface EntradaRecomendador {
    * un desafío más difícil para subir su dominio más rápido»): un ejercicio pendiente del nivel siguiente al que va.
    */
   reto?: boolean;
+  /**
+   * Cuánto subiría el dominio cada ejercicio si lo resolviera ahora (motor del dominio). Con la lección completa, se
+   * ofrece el que más sube hasta llegar al 100 % (09/10, Jeider: «que te permita seguir practicando hasta el 100 %»).
+   */
+  ganancias?: Map<number, number>;
+  /** Para saber si un ejercicio sin intentos ya se reabrió (por defecto, ahora). */
+  ahora?: Date;
 }
 
 const NOMBRE_NIVEL: Record<Difficulty, string> = {
@@ -90,7 +98,7 @@ function mensajePara(motivo: MotivoRecomendacion, nivel: Difficulty): string {
     case 'siguiente':
       return 'Sigue con el siguiente ejercicio de la lección.';
     case 'practica_extra':
-      return 'Completaste la lección. Si quieres, practica con este ejercicio que aún no has hecho.';
+      return 'Completaste la lección. Si quieres llegar al 100 %, este ejercicio todavía sube tu dominio.';
     case 'completada':
       return 'Completaste la lección. Puedes seguir practicando.';
     case 'sin_intentos':
@@ -181,9 +189,10 @@ function recomendarSinTope(entrada: EntradaRecomendador): Recomendacion | null {
 
   const aprobada = (a: ActividadParaRecomendar) => calificados.some((i) => i.activityId === a.id && aprueba(a, i.score));
   const intentada = (a: ActividadParaRecomendar) => intentos.some((i) => i.activityId === a.id);
-  // Misma regla que SubmissionsService.start: solo un límite positivo restringe.
+  // Misma regla que SubmissionsService.start: el límite del docente, y un intento que se reabre cada 24 horas.
+  const ahora = entrada.ahora ?? new Date();
   const quedanIntentos = (a: ActividadParaRecomendar) =>
-    !(a.attemptsAllowed > 0) || intentos.filter((i) => i.activityId === a.id).length < a.attemptsAllowed;
+    intentosDisponibles(a.attemptsAllowed, intentos.filter((i) => i.activityId === a.id).map((i) => i.fecha), ahora).quedan > 0;
 
   // Casillas en orden pedagógico: nivel, luego tipo.
   const casillas: Casilla[] = [];
@@ -261,8 +270,12 @@ function recomendarSinTope(entrada: EntradaRecomendador): Recomendacion | null {
   }
 
   if (completada) {
-    const extra = actividades.find((a) => !intentada(a) && quedanIntentos(a));
-    return extra ? resultado(extra, 'practica_extra') : resultado(actividades[actividades.length - 1], 'completada');
+    // Lo que todavía sube el dominio (hasta el 100 %), el que más primero; si no se sabe, uno que no haya intentado.
+    const sube = entrada.ganancias
+      ? actividades.filter((a) => (entrada.ganancias!.get(a.id) ?? 0) >= 1 && quedanIntentos(a))
+        .sort((a, b) => (entrada.ganancias!.get(b.id) ?? 0) - (entrada.ganancias!.get(a.id) ?? 0) || Number(intentada(a)) - Number(intentada(b)))[0]
+      : actividades.find((a) => !intentada(a) && quedanIntentos(a));
+    return sube ? resultado(sube, 'practica_extra') : resultado(actividades[actividades.length - 1], 'completada');
   }
 
   // 2. Nivel objetivo.

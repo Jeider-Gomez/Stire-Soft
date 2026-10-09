@@ -14,6 +14,7 @@ import { ContentRenderingService } from '../content-rendering/content-rendering.
 import { Submission } from '../submissions/entities/submission.entity';
 import { SubmissionStatus } from '../common/enums/submission-status.enum';
 import { actividadVisiblePara } from './visibilidad';
+import { intentosDisponibles } from '../common/utils/motor-dominio';
 
 @Injectable()
 export class ActivitiesService {
@@ -144,7 +145,14 @@ export class ActivitiesService {
           score: MoreThanOrEqual((activity.totalPoints * activity.passingScore) / 100),
         },
       });
-      return Object.assign(activity, { attemptsUsed, yaAprobada: aprobadas > 0 });
+      // 09/10: con el límite usado, se reabre un intento a las 24 horas del último (motor-dominio.ts). La pantalla deja
+      // entregar si `intentoDisponible` y, si no, dice cuándo se reabre.
+      const terminados = await this.activitiesRepo.manager.find(Submission, {
+        where: { studentId: user.id, activityId: activity.id, status: Not(SubmissionStatus.IN_PROGRESS) },
+        select: { id: true, submittedAt: true, createdAt: true },
+      });
+      const { quedan, reabreEn } = intentosDisponibles(activity.attemptsAllowed, terminados.map((t) => new Date(t.submittedAt ?? t.createdAt ?? 0)));
+      return Object.assign(activity, { attemptsUsed, yaAprobada: aprobadas > 0, intentoDisponible: quedan > 0, reabreEn: reabreEn?.toISOString() ?? null });
     }
 
     // Un docente solo ve (incluidos borradores) las actividades de SUS clases:

@@ -3,7 +3,8 @@ import { In } from 'typeorm';
 import { LearningProgressRepository } from './learning-progress.repository';
 import { SubmissionsRepository } from '../submissions/submissions.repository';
 import { ActivitiesRepository } from '../activities/activities.repository';
-import { calculateUnitMastery } from '../common/utils/mastery.calculator';
+import { Difficulty } from '../common/enums/difficulty.enum';
+import { ActividadDominio, IntentoDominio, calcularDominio, gananciaSiLoResuelve } from '../common/utils/motor-dominio';
 import { LearningStatus } from '../common/enums/learning-status.enum';
 import { PublicationStatus } from '../common/enums/status.enum';
 import { LearningStatusChangedEvent } from '../common/events/learning-status-changed.event';
@@ -45,6 +46,26 @@ export function isSubmissionPassed(submission: Submission, activity: Activity | 
     && (submission.score / activity.totalPoints) * 100 >= activity.passingScore;
 }
 
+/** La dificultad de una entrega viene de SQL como texto: solo se acepta un nivel conocido (si no, básico). */
+const NIVELES_ENTREGA = new Set<string>(Object.values(Difficulty));
+const nivelDeEntrega = (d: string): Difficulty => (NIVELES_ENTREGA.has(d) ? (d as Difficulty) : Difficulty.BASICO);
+
+/**
+ * Dominio de la lección con el motor por evidencia (docs/DISENO_DOMINIO.md). Las entregas revisadas que cuentan para el
+ * dominio solo pueden subirlo: el estudiante no puede rehacer una entrega cerrada, y una nota baja no puede dejar la
+ * lección sin forma de llegar al 100 % (garantía del motor).
+ */
+export function dominioConEntregas(
+  intentos: IntentoDominio[],
+  actividades: ActividadDominio[],
+  entregas: { actividades: ActividadDominio[]; intentos: IntentoDominio[] },
+  nivelSaltadoHasta: number,
+): number {
+  const soloEjercicios = calcularDominio(intentos, actividades, { nivelSaltadoHasta });
+  if (entregas.actividades.length === 0) return soloEjercicios;
+  return Math.max(soloEjercicios, calcularDominio([...intentos, ...entregas.intentos], [...actividades, ...entregas.actividades], { nivelSaltadoHasta }));
+}
+
 @Injectable()
 export class LearningProgressService {
   private readonly logger = new Logger(LearningProgressService.name);
@@ -59,8 +80,10 @@ export class LearningProgressService {
   /**
    * Recalcula el dominio de la lección. `contarIntento` es false cuando el cambio no viene de un intento del estudiante
    * sino de la revisión del docente en una entrega que cuenta para el dominio (docs/DISENO_INTERVENCION_DOCENTE.md §5).
+   * `silencioso`: sin avisos de cambio de estado (recalcular todo al cambiar las reglas, src/scripts/recalcular-dominio.ts);
+   * `guardar: false`: solo calcula, para simular el cambio antes de aplicarlo.
    */
-  async recalculateMastery(studentId: number, learningUnitId: number, lastActivityId: number | null, score: number, passingScore: number, contarIntento = true) {
+  async recalculateMastery(studentId: number, learningUnitId: number, lastActivityId: number | null, score: number, passingScore: number, contarIntento = true, opciones: { silencioso?: boolean; guardar?: boolean } = {}) {
     const progress = await this.progressRepo.findOrCreate(studentId, learningUnitId);
     const oldStatus = progress.status || LearningStatus.NO_VISTO;
     
@@ -84,7 +107,7 @@ export class LearningProgressService {
       esConfianza(progress.entryConfidence) ? progress.entryConfidence : null,
     );
     const evidencias = await this.evidenciasDeEntregas(studentId, learningUnitId);
-    progress.mastery = calculateUnitMastery([...submissions, ...evidencias.intentos], [...activities, ...evidencias.actividades], saltadoHasta);
+    progress.mastery = dominioConEntregas(submissions, activities, evidencias, saltadoHasta);
 
     if (contarIntento) progress.attemptsCount += 1;
 
@@ -124,10 +147,11 @@ export class LearningProgressService {
     
     if (lastActivityId !== null) progress.lastActivityId = lastActivityId;
 
+    if (opciones.guardar === false) return progress;
     const savedProgress = await this.progressRepo.save(progress);
 
     // Emitir y registrar evento de cambio de estado de aprendizaje
-    if (oldStatus !== newStatus) {
+    if (oldStatus !== newStatus && !opciones.silencioso) {
       this.logger.log(
         `[Transición Cognitiva] Estudiante ${studentId} cambió su estado en Unidad ${learningUnitId}: ${oldStatus} -> ${newStatus} (Maestría: ${progress.mastery.toFixed(2)}%)`
       );
@@ -187,7 +211,13 @@ export class LearningProgressService {
       .andWhere('sub.activityId IN (:...activityIds)', { activityIds: activities.map((a) => a.id) })
       .andWhere('sub.status != :status', { status: SubmissionStatus.IN_PROGRESS })
       .getMany();
-    return ejerciciosDeLaLeccion(activities, intentos);
+    const confianza = (await this.progressRepo.findOne({ where: { studentId, learningUnitId } }))?.entryConfidence;
+    const saltadoHasta = nivelSaltadoHasta(
+      activities,
+      intentos.map((s) => ({ activityId: s.activityId, score: s.score, calificado: true, fecha: new Date(s.submittedAt ?? s.createdAt ?? 0) })),
+      esConfianza(confianza) ? confianza : null,
+    );
+    return ejerciciosDeLaLeccion(activities, intentos, { nivelSaltadoHasta: saltadoHasta });
   }
 
   async getNextActivity(studentId: number, learningUnitId: number, opciones: { reto?: boolean } = {}): Promise<NextActivityRecommendation | null> {
@@ -203,6 +233,7 @@ export class LearningProgressService {
     const schedule = await this.activitiesRepo.manager.findOne(ReviewSchedule, { where: { studentId, learningUnitId } });
 
     const confianza = progress?.entryConfidence;
+    const calificadas = submissions.filter((sub) => sub.status !== SubmissionStatus.IN_PROGRESS);
     const recomendacion = recomendarSiguiente({
       actividades: activities.map(activity => ({
         id: activity.id,
@@ -223,6 +254,8 @@ export class LearningProgressService {
       confianza: esConfianza(confianza) ? confianza : null,
       repasoVencido: !!schedule && new Date(schedule.nextReviewDate).getTime() <= Date.now(),
       reto: opciones.reto,
+      // Con la lección completa, sigue ofreciendo lo que todavía sube el dominio hasta el 100 % (09/10).
+      ganancias: new Map(activities.map((a) => [a.id, gananciaSiLoResuelve(calificadas, activities, a.id)])),
     });
     if (!recomendacion) return null;
 
@@ -294,7 +327,7 @@ export class LearningProgressService {
    * una casilla propia, con la nota de la última versión revisada (0,0 a 5,0). La nota del docente es evidencia, no un
    * valor del dominio escrito a mano. Las entregas sin revisar no cuentan: no bajan el dominio de quien no ha entregado.
    */
-  async evidenciasDeEntregas(studentId: number, learningUnitId: number): Promise<{ actividades: Parameters<typeof calculateUnitMastery>[1]; intentos: Parameters<typeof calculateUnitMastery>[0] }> {
+  async evidenciasDeEntregas(studentId: number, learningUnitId: number): Promise<{ actividades: ActividadDominio[]; intentos: IntentoDominio[] }> {
     const filas: Array<{ entregaId: number; dificultad: string; nota: string | number; revisadoAt: Date }> = await this.activitiesRepo.manager.query(
       'SELECT e.id AS entregaId, e.dificultad AS dificultad, pe.nota AS nota, pe.revisadoAt AS revisadoAt ' +
         'FROM entregas e JOIN proyecto_envios pe ON pe.entregaId = e.id ' +
@@ -303,13 +336,13 @@ export class LearningProgressService {
       [learningUnitId, studentId],
     );
     const vistas = new Set<number>();
-    const actividades: Parameters<typeof calculateUnitMastery>[1] = [];
-    const intentos: Parameters<typeof calculateUnitMastery>[0] = [];
+    const actividades: ActividadDominio[] = [];
+    const intentos: IntentoDominio[] = [];
     for (const f of filas) {
       if (vistas.has(f.entregaId)) continue;
       vistas.add(f.entregaId);
       const id = -Number(f.entregaId);
-      actividades.push({ id, difficulty: f.dificultad, questionType: null, totalPoints: 5, passingScore: 60, adaptiveWeight: 1, activityType: { baseWeight: 1 } });
+      actividades.push({ id, difficulty: nivelDeEntrega(f.dificultad), questionType: null, totalPoints: 5, passingScore: 60, adaptiveWeight: 1, activityType: { baseWeight: 1 } });
       intentos.push({ activityId: id, score: Number(f.nota), isReview: false, submittedAt: f.revisadoAt });
     }
     return { actividades, intentos };

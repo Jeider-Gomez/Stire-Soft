@@ -25,7 +25,8 @@ function intento(activityId: number, score: number, calificado = true): IntentoP
 }
 
 function recomendar(actividades: ActividadParaRecomendar[], intentos: IntentoParaRecomendar[] = [], confianza: Confianza | null = null, repasoVencido = false) {
-  return recomendarSiguiente({ actividades, intentos, confianza, repasoVencido });
+  // Una hora después de los intentos: todavía no se reabre ninguno (se reabren a las 24 horas, motor-dominio.ts).
+  return recomendarSiguiente({ actividades, intentos, confianza, repasoVencido, ahora: new Date(2026, 8, 1, 1, reloj) });
 }
 
 // Unidad típica: básico (predecir, ordenar ×2 hermanas, programar), intermedio (completar, programar), avanzado (programar).
@@ -166,6 +167,23 @@ describe('recomendarSiguiente', () => {
     const r = recomendar([act(1, B, QuestionType.MCQ, { attemptsAllowed: 1 })], [intento(1, 0)])!;
     expect(r.motivo).toBe('sin_intentos');
     expect(r.completada).toBe(false);
+  });
+
+  it('a las 24 horas se reabre un intento: ninguna casilla queda sin salida (09/10)', () => {
+    const acts = [act(1, B, QuestionType.MCQ, { attemptsAllowed: 1 })];
+    const r = recomendarSiguiente({ actividades: acts, intentos: [intento(1, 0)], confianza: null, repasoVencido: false, ahora: new Date(2026, 8, 2, 1) })!;
+    expect(r.actividad.id).toBe(1);
+    expect(r.motivo).toBe('reintento');
+  });
+
+  it('con la lección completa, ofrece el ejercicio que más sube el dominio hasta el 100 %', () => {
+    const acts = [act(1, B, QuestionType.MCQ), act(2, B, QuestionType.MCQ), act(3, B, QuestionType.ORDERING)];
+    const ganancias = new Map([[1, 0], [2, 4], [3, 9]]);
+    const r = recomendarSiguiente({ actividades: acts, intentos: [intento(1, 100), intento(3, 70)], confianza: null, repasoVencido: false, ganancias, ahora: new Date(2026, 8, 1, 1) })!;
+    expect(r.completada).toBe(true);
+    expect(r).toMatchObject({ motivo: 'practica_extra', actividad: { id: 3 } });
+    const nada = recomendarSiguiente({ actividades: acts, intentos: [intento(1, 100), intento(3, 100)], confianza: null, repasoVencido: false, ganancias: new Map(), ahora: new Date(2026, 8, 1, 1) })!;
+    expect(nada.motivo).toBe('completada');
   });
 
   it('actividades sin tipo de pregunta conocido se tratan cada una como su propia casilla', () => {
