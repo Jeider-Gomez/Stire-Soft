@@ -23,6 +23,9 @@
       </div>
     </div>
 
+    <!-- Qué conviene que tenga la lección (09/10): opcional, no bloquea nada. -->
+    <DocenteGuiaLeccion v-if="explicaciones" :explicaciones="explicaciones" :ejercicios="deLaUnidadEnBanco" />
+
     <!-- Texto de ayuda variantes (T5) -->
     <p class="text-[11px] text-base-texto-secundario">
       Las variantes son otro ejercicio del mismo tipo y nivel. STIRE las usa para reintentos y repasos, para que el estudiante no repita la misma respuesta.
@@ -34,7 +37,10 @@
         v-for="slot in singleExerciseSlots"
         :key="slot.activityId"
         class="p-2.5 rounded-md bg-acento-ambar/10 border border-acento-ambar/30 text-[11px] flex items-center justify-between gap-3 text-base-texto-primario">
-        <span>El nivel {{ slot.level }} de {{ slot.typeName }} tiene 1 ejercicio; una variante ayuda en los repasos.</span>
+        <span>
+          {{ slot.typeName }}, nivel {{ slot.level }}: {{ slot.tiene === 1 ? 'tiene 1 ejercicio' : `tiene ${slot.tiene} ejercicios` }}; se recomiendan {{ slot.recomendados }}.
+          {{ slot.recomendados === 3 ? 'Con un solo intento, los parecidos son la forma de volver a intentarlo sin repetir la misma pregunta.' : 'Una variante ayuda en los reintentos y repasos.' }}
+        </span>
         <button
           type="button"
           @click="duplicateVariant(slot.activityId)"
@@ -119,14 +125,15 @@ import { nextTick, onMounted, provide, ref } from 'vue'
 import { Archive, Copy, Library, Pencil, Plus } from 'lucide-vue-next'
 import { CLAVE_EJERCICIOS_UNIDAD, useEjerciciosUnidad } from '~/composables/useEjerciciosUnidad'
 import { nombreNivel, type EjercicioDeLaLeccion } from '~/utils/ejerciciosUnidad'
+import type { ExplicacionParaGuia } from '~/utils/guiaLeccion'
 
-const props = defineProps<{ unitId: number; classId: number }>()
+const props = defineProps<{ unitId: number; classId: number; explicaciones?: ExplicacionParaGuia[] }>()
 const emit = defineEmits<{ (e: 'count', n: number): void }>()
 
 const estado = useEjerciciosUnidad(props.unitId, (n) => emit('count', n))
 provide(CLAVE_EJERCICIOS_UNIDAD, estado)
 const { ejercicios: activities, visibles: visibleActivities, cargando: loading, error: loadError, aviso: feedback, advertencia: feedbackAviso,
-  duplicando: isDuplicating, casillasSolas: singleExerciseSlots, cargar: load, publicar: publish } = estado
+  duplicando: isDuplicating, casillasSolas: singleExerciseSlots, cargar: load, publicar: publish, deLaUnidadEnBanco } = estado
 
 type Ventana =
   | { tipo: 'editar'; ejercicio: EjercicioDeLaLeccion; variante: boolean }

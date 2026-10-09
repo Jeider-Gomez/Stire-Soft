@@ -32,7 +32,8 @@ export interface ModuloDelArbol {
 }
 
 /** Una explicación de una lección (lo que el docente escribe en «Explicación»). */
-export interface ExplicacionResumen { id: number; title: string; isVisible?: boolean }
+/** Lo que devuelve /content/unit/:id/all: el tipo, el texto y los insertados los usa la guía de la lección. */
+export interface ExplicacionResumen { id: number; title: string; isVisible?: boolean; type?: string | null; body?: string | null; metadata?: Record<string, unknown> | null }
 
 export interface ResumenImportacion { sections: number; topics: number; learningUnits: number; contents: number; activities: number; questions: number }
 

@@ -1,7 +1,7 @@
 import { computed, ref, type InjectionKey } from 'vue'
 import { useAvisos } from '~/composables/useAvisos'
 import {
-  casillasConUnEjercicio, consultaBanco,
+  casillasConPocosEjercicios, consultaBanco,
   type EjercicioDeLaLeccion, type EjercicioDelBanco, type FiltrosBanco, type TipoDeActividad,
 } from '~/utils/ejerciciosUnidad'
 
@@ -29,7 +29,7 @@ export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => v
   const deLaUnidadEnBanco = ref<EjercicioDelBanco[]>([])
 
   const visibles = computed(() => ejercicios.value.filter((a) => a.status !== 'archived'))
-  const casillasSolas = computed(() => casillasConUnEjercicio(deLaUnidadEnBanco.value))
+  const casillasSolas = computed(() => casillasConPocosEjercicios(deLaUnidadEnBanco.value))
 
   async function revisarCasillas() {
     try {
@@ -165,7 +165,7 @@ export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => v
   }
 
   return {
-    unidadId, ejercicios, visibles, tipos, cargando, error, aviso, advertencia, duplicando, casillasSolas,
+    unidadId, ejercicios, visibles, tipos, cargando, error, aviso, advertencia, duplicando, casillasSolas, deLaUnidadEnBanco,
     cargar, publicar, archivar, duplicarVariante, respuestasDe, guardar, buscarEnBanco, copiarDelBanco,
   }
 }

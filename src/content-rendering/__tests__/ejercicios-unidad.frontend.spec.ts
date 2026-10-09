@@ -17,7 +17,7 @@ type DelBanco = { activityId: number; title: string; difficulty: string; questio
 const e = cargar<{
   nombreNivel: (d?: string | null) => string;
   nombreTipo: (t?: string | null) => string;
-  casillasConUnEjercicio: (b: DelBanco[]) => Array<{ level: string; typeName: string; activityId: number; title: string }>;
+  casillasConPocosEjercicios: (b: DelBanco[]) => Array<{ level: string; typeName: string; activityId: number; title: string; tiene: number; recomendados: number }>;
   consultaBanco: (f: { type: string; difficulty: string; q: string }) => string;
   sinFiltros: (f: { type: string; difficulty: string; q: string }) => boolean;
 }>('ejerciciosUnidad');
@@ -30,14 +30,22 @@ describe('reglas de los ejercicios de una lección', () => {
     expect(e.nombreTipo('mcq')).not.toBe('mcq');
   });
 
-  it('avisa solo las combinaciones tipo + nivel con un único ejercicio', () => {
+  it('avisa las combinaciones tipo + nivel con menos parecidos de los recomendados: 3 en opción múltiple, 2 en el resto (BT-41)', () => {
     const b: DelBanco[] = [
       { activityId: 1, title: 'A', difficulty: 'basico', questionType: 'mcq' },
       { activityId: 2, title: 'B', difficulty: 'basico', questionType: 'mcq' },
       { activityId: 3, title: 'C', difficulty: 'avanzado', questionType: 'mcq' },
+      { activityId: 4, title: 'D', difficulty: 'avanzado', questionType: 'mcq' },
+      { activityId: 5, title: 'E', difficulty: 'avanzado', questionType: 'mcq' },
+      { activityId: 6, title: 'F', difficulty: 'basico', questionType: 'ordering' },
+      { activityId: 7, title: 'G', difficulty: 'basico', questionType: 'ordering' },
+      { activityId: 8, title: 'H', difficulty: 'basico', questionType: 'coding' },
     ];
-    expect(e.casillasConUnEjercicio(b)).toEqual([{ level: 'avanzado', typeName: e.nombreTipo('mcq'), activityId: 3, title: 'C' }]);
-    expect(e.casillasConUnEjercicio([])).toEqual([]);
+    expect(e.casillasConPocosEjercicios(b)).toEqual([
+      { level: 'básico', typeName: e.nombreTipo('mcq'), activityId: 1, title: 'A', tiene: 2, recomendados: 3 },
+      { level: 'básico', typeName: e.nombreTipo('coding'), activityId: 8, title: 'H', tiene: 1, recomendados: 2 },
+    ]);
+    expect(e.casillasConPocosEjercicios([])).toEqual([]);
   });
 
   it('la búsqueda del banco lleva solo los filtros puestos', () => {

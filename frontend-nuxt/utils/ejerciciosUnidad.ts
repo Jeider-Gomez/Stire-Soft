@@ -39,16 +39,26 @@ export function nombreTipo(tipo: string | null | undefined): string {
   return exerciseTypeInfo(tipo as ExerciseTypeId)?.name || tipo
 }
 
-/** Las combinaciones tipo + nivel con un solo ejercicio: sin una variante, el reintento repite la misma pregunta. */
-export function casillasConUnEjercicio(banco: EjercicioDelBanco[]): Array<{ level: string; typeName: string; activityId: number; title: string }> {
+/**
+ * Parecidos (mismo tipo y nivel) que se recomiendan, sin obligar: en opción múltiple, 3, porque con un intento el parecido
+ * es la forma de volver a intentarlo sin repetir la misma pregunta (09/10, Jeider; BT-41); en el resto, 2, para que el
+ * reintento y el repaso no repitan la misma.
+ */
+export const PARECIDOS_RECOMENDADOS = (tipo: string | null | undefined): number => (tipo === 'mcq' ? 3 : 2)
+
+/** Las combinaciones tipo + nivel con menos parecidos de los recomendados. Es un aviso: el docente decide. */
+export function casillasConPocosEjercicios(banco: EjercicioDelBanco[]): Array<{ level: string; typeName: string; activityId: number; title: string; tiene: number; recomendados: number }> {
   const grupos = new Map<string, EjercicioDelBanco[]>()
   for (const ej of banco) {
     const clave = `${ej.questionType || 'unknown'}_${ej.difficulty || 'basico'}`
     grupos.set(clave, [...(grupos.get(clave) ?? []), ej])
   }
   return [...grupos.values()]
-    .filter((lista) => lista.length === 1)
-    .map(([ej]) => ({ level: nombreNivel(ej.difficulty).toLowerCase(), typeName: nombreTipo(ej.questionType), activityId: ej.activityId, title: ej.title }))
+    .filter((lista) => lista.length < PARECIDOS_RECOMENDADOS(lista[0].questionType))
+    .map((lista) => {
+      const [ej] = lista
+      return { level: nombreNivel(ej.difficulty).toLowerCase(), typeName: nombreTipo(ej.questionType), activityId: ej.activityId, title: ej.title, tiene: lista.length, recomendados: PARECIDOS_RECOMENDADOS(ej.questionType) }
+    })
 }
 
 /** `?type=…&difficulty=…&q=…` con solo los filtros puestos; vacío sin filtros. */

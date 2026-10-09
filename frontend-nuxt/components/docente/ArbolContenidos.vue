@@ -231,6 +231,7 @@
                 <DocenteUnitExercisesPanel
                   :unit-id="unit.id"
                   :class-id="selectedClassId!"
+                  :explicaciones="lessonsByUnit[unit.id]"
                   @count="(n: number) => setExerciseCount(unit.id, n)"
                 />
               </div>

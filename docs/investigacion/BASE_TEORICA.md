@@ -446,6 +446,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Ventana del resultado del estudiante; formulario de opción múltiple y guía de la lección del docente. |
 | **Trazabilidad** | `src/submissions/retroalimentacion.ts`, `src/activity-questions/dto/student-question.dto.ts`, `scripts/cursos/crear-cursos.ts`. |
 
+## BT-42. Guía opcional para que el docente arme una buena lección, sin estilos de aprendizaje
+
+| | |
+|---|---|
+| **Problema observado** | Jeider (09/10) pidió indicarle al docente qué debe tener cada lección para abarcar los diferentes estilos de aprendizaje. |
+| **Decisión** | Una guía opcional y plegable en cada lección de «Contenidos», que revisa en vivo y dice qué falta y por qué, sin bloquear nada: explicación escrita (también se puede escuchar), un ejemplo resuelto, una imagen, diagrama o video, el error más común, ejercicios de al menos dos tipos y de más de un nivel, y 3 parecidos por nivel en opción múltiple. No diagnostica ni menciona un estilo por estudiante. |
+| **Fundamento** | - No hay evidencia adecuada para enseñar según el estilo de cada uno (Pashler, McDaniel, Rohrer y Bjork, 2008; Kirschner, 2017). Ver `docs/DISENO_FORMATOS_LECCION.md`.<br>- Lo que sí ayuda a todos: palabras e imágenes juntas (Mayer, 2017).<br>- Estudiar un ejemplo resuelto antes de practicar ayuda al principiante (Atkinson et al., 2000).<br>- El correctivo presenta la idea de otra forma (Bloom, 1968, matriz #1): por eso varios tipos y niveles de ejercicio.<br>- Herramienta flexible: el docente decide (regla del proyecto). |
+| **Cómo se materializa** | «Contenidos» del docente: panel de ejercicios de cada lección y aviso de parecidos (3 en opción múltiple, 2 en el resto). |
+| **Trazabilidad** | `frontend-nuxt/utils/guiaLeccion.ts`, `components/docente/GuiaLeccion.vue`, `utils/ejerciciosUnidad.ts` (`casillasConPocosEjercicios`). |
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |
