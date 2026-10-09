@@ -7,6 +7,8 @@ import {
   casillasDeDominio,
   gananciaSiLoResuelve,
   intentosDisponibles,
+  PESO_NIVEL_DISTINTO,
+  reglasDeClase,
 } from './motor-dominio';
 
 // docs/DISENO_DOMINIO.md. Las fechas van después del corte (reglas nuevas) salvo donde se prueba el corte.
@@ -225,5 +227,21 @@ describe('GARANTÍA: desde cualquier historial, aprobar lleva la lección al 100
           ),
       );
     }
+  });
+});
+
+describe('reglas que el docente ajusta en su clase', () => {
+  it('horas para reabrir de 1 a 168 (nunca cerrado para siempre) y niveles que pesan distinto, si lo elige', () => {
+    expect(reglasDeClase(null)).toEqual({ horasParaReabrir: 24, pesoNivel: REGLAS.pesoNivel });
+    expect(reglasDeClase({ horasParaReabrir: 6 }).horasParaReabrir).toBe(6);
+    expect(reglasDeClase({ horasParaReabrir: 0 }).horasParaReabrir).toBe(24);
+    expect(reglasDeClase({ horasParaReabrir: 500 }).horasParaReabrir).toBe(168);
+    expect(reglasDeClase({ nivelesPesanDistinto: true }).pesoNivel).toEqual(PESO_NIVEL_DISTINTO);
+  });
+
+  it('las horas del docente cambian cuándo se reabre', () => {
+    const hace3h = new Date(Date.now() - 3 * 3_600_000);
+    expect(intentosDisponibles(1, [hace3h], new Date(), 2).quedan).toBe(1);
+    expect(intentosDisponibles(1, [hace3h], new Date(), 24).quedan).toBe(0);
   });
 });

@@ -25,7 +25,8 @@ import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { Activity } from '../activities/entities/activity.entity';
 import { actividadVisiblePara } from '../activities/visibilidad';
 import { retroalimentacionCerrada } from './retroalimentacion';
-import { intentosDisponibles } from '../common/utils/motor-dominio';
+import { intentosDisponibles, reglasDeClase } from '../common/utils/motor-dominio';
+import { Class } from '../class/entities/class.entity';
 
 @Injectable()
 export class SubmissionsService {
@@ -65,7 +66,9 @@ export class SubmissionsService {
     // así ninguna lección queda sin forma de llegar al 100 % (09/10; motor-dominio.ts, docs/DISENO_DOMINIO.md).
     const fechas = await this.submissionsRepo.fechasDeIntentos(studentId, activity.id);
     const attempts = fechas.length;
-    const disponibles = intentosDisponibles(activity.attemptsAllowed, fechas);
+    const classId = activity.learningUnit?.topic?.section?.classId;
+    const clase = classId ? await this.activitiesRepo.manager.findOne(Class, { where: { id: classId } }) : null;
+    const disponibles = intentosDisponibles(activity.attemptsAllowed, fechas, new Date(), reglasDeClase(clase).horasParaReabrir);
     if (disponibles.quedan <= 0) {
       const cuando = disponibles.reabreEn
         ? disponibles.reabreEn.toLocaleString('es-CO', { timeZone: 'America/Bogota', weekday: 'long', hour: 'numeric', minute: '2-digit' })

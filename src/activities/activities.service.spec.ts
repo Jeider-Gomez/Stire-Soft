@@ -22,7 +22,7 @@ describe('ActivitiesService — P0-04', () => {
     softRemove: jest.fn().mockResolvedValue(undefined),
     updateStatus: jest.fn().mockResolvedValue(undefined),
     findWithPagination: jest.fn().mockResolvedValue([[], 0]),
-    manager: { count: jest.fn().mockResolvedValue(0), find: jest.fn().mockResolvedValue([]) },
+    manager: { count: jest.fn().mockResolvedValue(0), find: jest.fn().mockResolvedValue([]), findOne: jest.fn().mockResolvedValue(null) },
   };
   const mockClassRepo = { findOne: jest.fn() };
   const mockEnrollmentRepo = { findOne: jest.fn() };
@@ -299,5 +299,15 @@ describe('ActivitiesService — P0-04', () => {
 
     mockActivitiesRepo.manager.find.mockResolvedValueOnce([{ id: 'a', submittedAt: new Date(Date.now() - 25 * 3_600_000) }]);
     expect(await service.findOneForRequester(1, { id: 20, role: UserRole.ESTUDIANTE } as never)).toMatchObject({ intentoDisponible: true, reabreEn: null });
+  });
+
+  // 09/10, Jeider: el docente ajusta cada cuántas horas se reabre (Ajustes de la clase).
+  it('estudiante → el intento se reabre según las horas que eligió el docente', async () => {
+    mockActivitiesRepo.findOne.mockResolvedValue({ ...publishedActivityClass5, attemptsAllowed: 1 });
+    mockEnrollmentRepo.findOne.mockResolvedValue({ classId: 5, studentId: 20, status: EnrollmentStatus.ACTIVE });
+    mockActivitiesRepo.manager.find.mockResolvedValueOnce([{ id: 'a', submittedAt: new Date(Date.now() - 3 * 3_600_000) }]);
+    mockActivitiesRepo.manager.findOne.mockResolvedValueOnce({ id: 5, horasParaReabrir: 2 });
+
+    expect(await service.findOneForRequester(1, { id: 20, role: UserRole.ESTUDIANTE } as never)).toMatchObject({ intentoDisponible: true });
   });
 });

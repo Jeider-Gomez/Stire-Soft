@@ -73,6 +73,8 @@ export interface EntradaRecomendador {
   ganancias?: Map<number, number>;
   /** Para saber si un ejercicio sin intentos ya se reabrió (por defecto, ahora). */
   ahora?: Date;
+  /** Cada cuántas horas se reabre un intento en esta clase (Ajustes; por defecto 24). */
+  horasParaReabrir?: number;
 }
 
 const NOMBRE_NIVEL: Record<Difficulty, string> = {
@@ -192,7 +194,7 @@ function recomendarSinTope(entrada: EntradaRecomendador): Recomendacion | null {
   // Misma regla que SubmissionsService.start: el límite del docente, y un intento que se reabre cada 24 horas.
   const ahora = entrada.ahora ?? new Date();
   const quedanIntentos = (a: ActividadParaRecomendar) =>
-    intentosDisponibles(a.attemptsAllowed, intentos.filter((i) => i.activityId === a.id).map((i) => i.fecha), ahora).quedan > 0;
+    intentosDisponibles(a.attemptsAllowed, intentos.filter((i) => i.activityId === a.id).map((i) => i.fecha), ahora, entrada.horasParaReabrir).quedan > 0;
 
   // Casillas en orden pedagógico: nivel, luego tipo.
   const casillas: Casilla[] = [];

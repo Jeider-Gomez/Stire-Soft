@@ -265,6 +265,7 @@ export function intentosDisponibles(
   attemptsAllowed: number,
   fechasDeIntentos: Date[],
   ahora: Date = new Date(),
+  horasParaReabrir: number = REGLAS.reabrirCadaHoras,
 ): { quedan: number; reabreEn: Date | null } {
   if (!(attemptsAllowed > 0))
     return { quedan: Number.POSITIVE_INFINITY, reabreEn: null };
@@ -272,8 +273,26 @@ export function intentosDisponibles(
   if (usados < attemptsAllowed)
     return { quedan: attemptsAllowed - usados, reabreEn: null };
   const ultimo = Math.max(...fechasDeIntentos.map((f) => f.getTime()));
-  const reabre = ultimo + REGLAS.reabrirCadaHoras * 3_600_000;
+  const reabre = ultimo + Math.min(168, Math.max(1, horasParaReabrir)) * 3_600_000;
   return reabre <= ahora.getTime()
     ? { quedan: 1, reabreEn: null }
     : { quedan: 0, reabreEn: new Date(reabre) };
+}
+
+/** Peso de cada nivel cuando el docente elige que los niveles altos pesen más (Ajustes de la clase). */
+export const PESO_NIVEL_DISTINTO: Record<string, number> = { [Difficulty.BASICO]: 1, [Difficulty.INTERMEDIO]: 1.5, [Difficulty.AVANZADO]: 2 };
+
+/**
+ * Las reglas que el docente ajusta en su clase (09/10, Jeider: «que el docente pueda seguir tomando decisiones sobre lo
+ * que pesa más»). Sin clase o sin ajuste, las de REGLAS. El docente nunca puede dejar un ejercicio cerrado para siempre.
+ */
+export function reglasDeClase(clase?: { horasParaReabrir?: number | null; nivelesPesanDistinto?: boolean | null } | null): {
+  horasParaReabrir: number;
+  pesoNivel: Record<string, number>;
+} {
+  const horas = Number(clase?.horasParaReabrir);
+  return {
+    horasParaReabrir: Number.isFinite(horas) && horas >= 1 ? Math.min(168, Math.round(horas)) : REGLAS.reabrirCadaHoras,
+    pesoNivel: clase?.nivelesPesanDistinto ? PESO_NIVEL_DISTINTO : REGLAS.pesoNivel,
+  };
 }

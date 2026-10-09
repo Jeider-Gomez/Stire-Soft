@@ -95,6 +95,17 @@ export class Class {
   dominioParaAvanzar!: number;
 
   /**
+   * Motor del dominio (docs/DISENO_DOMINIO.md): con el límite de intentos usado, cada cuántas horas se reabre UN intento
+   * (1 a 168). Nunca «cerrado para siempre»: así ninguna lección queda sin forma de llegar al 100 %.
+   */
+  @Column({ type: 'int', default: 24 })
+  horasParaReabrir!: number;
+
+  /** Si los niveles altos pesan más en el dominio de la lección (básico 1, intermedio 1,5, avanzado 2). Opcional. */
+  @Column({ type: 'boolean', default: false })
+  nivelesPesanDistinto!: boolean;
+
+  /**
    * Qué enseña esta clase y para quién (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md). Opcional: sin asignatura la clase
    * funciona igual. De ella salen la institución, el programa y el semestre que muestra la barra superior.
    */
