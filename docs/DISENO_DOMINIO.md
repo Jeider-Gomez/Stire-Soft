@@ -89,13 +89,24 @@ lección sigue recomendando 3 parecidos en opción múltiple: no para que sea po
   y sin `--simular` lo guarda. No manda notificaciones ni cuenta intentos.
 - La lista y el dominio usan la **misma función**. La lista ya no puede decir «no sube» si sube, y dice cuánto: `ganancia`.
 
-## 6. Decisiones abiertas (para Jeider)
+## 6. Lo que decide el docente
+
+El motor no le quita decisiones al docente (pedido de Jeider, 09/10):
+
+- **El peso de cada ejercicio** lo elige al crearlo, con su tipo de actividad (práctica, examen…). El motor lo respeta.
+- **Los intentos de cada ejercicio, sus niveles y sus parecidos** los sigue fijando el docente.
+- **El bloqueo entre módulos** es opcional y configurable (Ajustes → Avance).
+- **Nuevo, en Ajustes → Avance:** cada cuántas horas se reabre un intento con el límite usado (1 a 168, por defecto 24)
+  y si los niveles altos pesan más (por defecto no). Lo único que no puede elegir es dejar un ejercicio cerrado para
+  siempre: es la garantía del §4.
+
+## 7. Decisiones abiertas (para Jeider)
 
 | Decisión | Propuesta | Cuándo |
 |---|---|---|
-| **Peso por nivel.** Que lo avanzado pese más (1 / 1,5 / 2). | Activarlo cambia el dominio de todos hacia atrás. Está listo en `REGLAS.pesoNivel` y desactivado. Activarlo al terminar la prueba. | Después del 16/10. |
+| **Peso por nivel.** Que lo avanzado pese más (1 / 1,5 / 2). | Ya lo decide cada docente en su clase (apagado por defecto). Activarlo cambia el dominio de sus estudiantes en su próxima entrega. Recomendado: después de la prueba. | Cada docente. |
 | **Olvido con el tiempo.** Hoy el dominio no baja si no se practica; lo atienden los repasos. | Opción: mostrar la «retención» de los repasos (Anki/FSRS, Ye, Su y Cao, 2022) junto al dominio, sin bajarlo. | Después de la prueba. |
-| **Reabrir cada 24 horas.** | Si se ve lento, 12 horas, o reabrir antes cuando la lección tiene un repaso vencido. | Con datos de uso. |
+| **Reabrir cada 24 horas.** | Cada docente lo cambia en su clase (1 a 168). Opción futura: reabrir antes cuando la lección tiene un repaso vencido. | Con datos de uso. |
 | **Constantes** (0,6 / 0,4 / 0,25 / 0,10). | Son decisiones de diseño, no valores de la literatura. Ajustarlas con los datos de la prueba. | Con datos de uso. |
 
 ## Referencias (verificadas en Crossref)
