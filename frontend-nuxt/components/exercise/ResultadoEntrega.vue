@@ -88,7 +88,7 @@ import { useStudentStore } from '~/stores/student'
 import { siguienteLeccion } from '~/utils/siguienteLeccion'
 import { mensajeCalibracion } from '~/utils/confianza'
 import { calidadDelResultado } from '~/utils/escalaResultados'
-import { CUANDO_VUELVE, pasoSiguiente, retroParaMostrar, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
+import { CUANDO_VUELVE, intentosQueQuedan, pasoSiguiente, retroParaMostrar, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
 
 const props = defineProps<{ exito: boolean; reto: boolean }>()
 defineEmits<{ tutor: [] }>()
@@ -102,7 +102,7 @@ const r = computed(() => ws.submissionResult!)
 const ej = computed(() => ws.currentExercise)
 const esCodigo = computed(() => ej.value.questionType === 'coding')
 const maxScore = computed(() => r.value.maxScore ?? ej.value.maxScore)
-const quedanIntentos = computed(() => Math.max(0, (ej.value.maxAttempts ?? 0) - (ej.value.usedAttempts ?? 0)))
+const quedanIntentos = computed(() => intentosQueQuedan(ej.value))
 
 const recomendacion = ref<RecomendacionSiguiente | null>(null)
 onMounted(async () => {

@@ -57,7 +57,7 @@ describe('al volver a un ejercicio ya aprobado', () => {
   it('avisa que repetirlo es práctica, qué pasa si se equivoca, y ofrece otro', () => {
     const v = leer('components', 'exercise', 'SinIntentos.vue');
     expect(v).toContain('<strong>Ya completaste este ejercicio.</strong>');
-    expect(v).toContain('la lección vuelve antes a tus repasos');
+    expect(v).toContain('Repetirlo suma poco a tu dominio (es repaso)');
     const pagina = leer('pages', 'estudiante', 'evaluacion', '[activityId].vue');
     expect(pagina).toContain("return remainingAttempts.value === 0 ? 'sin-intentos' : ej.yaAprobada ? 'completado' : 'revisar'");
     expect(leer('stores', 'workspace.ts')).toContain('yaAprobada: activity.yaAprobada === true');
@@ -73,15 +73,16 @@ describe('al volver a un ejercicio ya aprobado', () => {
 describe('«Ver todos los ejercicios» de la lección', () => {
   const v = leer('components', 'exercise', '..', 'estudiante', 'EjerciciosDeLaLeccion.vue');
 
-  it('cada ejercicio dice con ícono, color y TEXTO si sube el dominio; y su tipo, peso e intentos', () => {
-    for (const t of ["texto: 'Sube tu dominio'", "texto: 'Hecho'", "texto: 'Ya cuenta un parecido'", "texto: 'Sin intentos'"]) expect(v).toContain(t);
-    expect(v).toContain('pesa {{ e.pesoPct }} % de la lección');
-    expect(v).toContain('{{ tipoDe(e.tipo) }}');
+  it('cada ejercicio dice con ícono, color y TEXTO qué pasa si lo hace ahora; y su tipo e intentos (09/10: cuánto sube)', () => {
+    expect(v).toContain('{{ etiqueta(e).texto }}');
+    expect(v).toContain(':class="CHIP[etiqueta(e).tipo]"');
+    expect(v).toContain('{{ tipoDe(g.tipo) }}');
+    expect(v).toContain('{{ textoIntentos(e) }}');
   });
 
-  it('agrupado por nivel, con el resumen arriba, y la lección lo usa en vez de la lista de nombres', () => {
-    expect(v).toContain('Nivel {{ NIVEL[g.nivel] ?? g.nivel }}');
-    expect(v).toContain('todavía suben');
+  it('por nivel y por grupo de parecidos, con el resumen y el recomendado arriba, y la lección lo usa en vez de la lista de nombres', () => {
+    expect(v).toContain('Nivel {{ NIVEL[n.nivel] ?? n.nivel }}');
+    expect(v).toContain('El que más sube: {{ mejor.titulo }}');
     const leccion = leer('pages', 'estudiante', 'unidad', '[id].vue');
     expect(leccion).toContain('<EstudianteEjerciciosDeLaLeccion v-else-if="chooseManually" :unit-id="unitId" />');
     expect(leer('composables', 'useUnidadEstudiante.ts')).toContain('`/learning-progress/unit/${unitId}/mis-ejercicios`');

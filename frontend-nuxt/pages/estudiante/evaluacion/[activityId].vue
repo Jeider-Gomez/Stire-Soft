@@ -355,7 +355,7 @@ const isHtmlCssActivity = computed(() => workspaceStore.currentExercise.question
 
 const typeInfo = computed(() => exerciseTypeInfo(workspaceStore.currentExercise.questionType))
 const statementHtml = computed(() => formatMarkdown(workspaceStore.currentExercise.description || ''))
-const remainingAttempts = computed(() => Math.max(0, (workspaceStore.currentExercise.maxAttempts ?? 0) - (workspaceStore.currentExercise.usedAttempts ?? 0)))
+const remainingAttempts = computed(() => intentosQueQuedan(workspaceStore.currentExercise)) // con el intento que se reabre a las 24 h
 /** Aviso arriba del ejercicio: sin intentos, ya aprobado o (con «revisar», de la lista de la lección) un parecido ya resuelto. */
 const avisoEjercicio = computed(() => {
   const ej = workspaceStore.currentExercise

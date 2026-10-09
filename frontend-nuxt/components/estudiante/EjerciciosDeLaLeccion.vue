@@ -1,36 +1,56 @@
-<!-- «Ver todos los ejercicios» de una lección (08/10, Jeider): antes, una lista de nombres. Ahora, por nivel y de
-     reconocer a crear, cada ejercicio dice con color, ícono Y texto si todavía sube tu dominio, su tipo, su nivel y cuánto
-     pesa en la lección (GET /learning-progress/unit/:id/mis-ejercicios, src/learning-progress/ejercicios-leccion.ts). -->
+<!-- «Ver todos los ejercicios» de una lección. 08/10: cuáles suben el dominio. 09/10 (Jeider: «tengo un ejercicio y no
+     puedo seguir subiendo mi dominio»; «métele más UX y UI»): con el motor del dominio del servidor, por nivel y por
+     grupo de parecidos; cada grupo dice cuánto lleva y cada ejercicio CUÁNTO sube si lo resuelves, o cuándo se reabre.
+     El que más sube va marcado como recomendado. Color + ícono + texto: nada depende solo del color (WCAG 1.4.1).
+     utils/ejerciciosPorGrupo.ts; GET /learning-progress/unit/:id/mis-ejercicios. -->
 <template>
   <div class="space-y-3">
     <p v-if="cargando" class="text-xs text-slate-700">Cargando ejercicios…</p>
     <p v-else-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
     <template v-else-if="ejercicios.length">
-      <p class="text-[11px] text-base-texto-primario">
-        <strong>{{ conteo.suben }}</strong> {{ conteo.suben === 1 ? 'ejercicio todavía sube' : 'ejercicios todavía suben' }} tu dominio ·
-        {{ conteo.hechos }} {{ conteo.hechos === 1 ? 'hecho' : 'hechos' }}. Los «parecidos» (mismo tipo y nivel) cuentan como uno: vale el mejor.
-      </p>
-      <section v-for="g in grupos" :key="g.nivel" :aria-labelledby="`nivel-${g.nivel}`" class="space-y-1.5">
-        <h3 :id="`nivel-${g.nivel}`" class="text-[11px] font-bold uppercase tracking-wide text-base-texto-secundario">Nivel {{ NIVEL[g.nivel] ?? g.nivel }}</h3>
-        <ul class="space-y-1.5">
-          <li v-for="e in g.ejercicios" :key="e.id">
-            <NuxtLink
-              :to="`/estudiante/evaluacion/${e.id}`"
-              class="flex items-start gap-2.5 min-h-[44px] p-2.5 rounded-lg border bg-base-blanco hover:bg-base-bg-secundario"
-              :class="e.subeDominio ? 'border-acento-ambar-fuerte/40' : 'border-base-borde-sutil'">
-              <component :is="ESTADO[e.estado].icono" :size="16" class="shrink-0 mt-0.5" :class="ESTADO[e.estado].color" aria-hidden="true" />
-              <span class="flex-1 min-w-0">
-                <span class="block text-xs font-semibold text-base-texto-primario">{{ e.titulo }}</span>
-                <span class="block text-[11px] text-base-texto-secundario">
-                  {{ tipoDe(e.tipo) }} · pesa {{ e.pesoPct }} % de la lección<template v-if="e.parecidos > 1"> (con {{ e.parecidos - 1 }} {{ e.parecidos === 2 ? 'parecido' : 'parecidos' }})</template>
-                  <template v-if="e.intentosUsados"> · {{ e.intentosPermitidos ? `${e.intentosUsados} de ${e.intentosPermitidos} intentos` : `${e.intentosUsados} intentos` }}</template>
-                  <template v-if="e.mejorPct !== null"> · mejor nota {{ e.mejorPct }} %</template>
+      <!-- A dónde ir: cuántos suben y el que más -->
+      <div class="rounded-lg bg-base-blanco border border-base-borde-sutil p-3 space-y-1.5">
+        <p class="text-xs font-semibold text-base-texto-primario flex items-center gap-1.5">
+          <TrendingUp :size="15" class="text-acento-ambar-fuerte shrink-0" aria-hidden="true" /> {{ resumen }}
+        </p>
+        <NuxtLink v-if="mejor" :to="`/estudiante/evaluacion/${mejor.id}`"
+          class="inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco text-xs font-bold">
+          El que más sube: {{ mejor.titulo }} (+{{ mejor.ganancia ?? 0 }} %) <ArrowRight :size="14" aria-hidden="true" />
+        </NuxtLink>
+        <p class="text-[11px] text-base-texto-secundario">
+          Un ejercicio nuevo resuelto a la primera llena su grupo. Repetir el mismo suma poco y equivocarte baja un poco: variar es lo que más sube.
+        </p>
+      </div>
+
+      <section v-for="n in niveles" :key="n.nivel" :aria-labelledby="`nivel-${n.nivel}`" class="space-y-2">
+        <h3 :id="`nivel-${n.nivel}`" class="text-[11px] font-bold uppercase tracking-wide text-base-texto-secundario">Nivel {{ NIVEL[n.nivel] ?? n.nivel }}</h3>
+        <div v-for="g in n.grupos" :key="g.clave" class="rounded-lg border border-base-borde-sutil bg-base-blanco overflow-hidden">
+          <!-- El grupo: sus parecidos cuentan juntos -->
+          <div class="flex items-center gap-2.5 px-3 py-2 bg-base-bg-secundario/60">
+            <DocenteExerciseTypeIcon :type="g.tipo ?? ''" :size="15" />
+            <span class="text-xs font-semibold text-base-texto-primario flex-1 min-w-0 truncate">{{ tipoDe(g.tipo) }}<span v-if="g.ejercicios.length > 1" class="font-normal text-base-texto-secundario"> · {{ g.ejercicios.length }} parecidos</span></span>
+            <div class="w-20 h-1.5 rounded-full bg-base-blanco border border-base-borde-sutil overflow-hidden" role="progressbar" :aria-valuenow="g.casillaPct" aria-valuemin="0" aria-valuemax="100" :aria-label="`Grupo ${tipoDe(g.tipo)}: ${g.casillaPct} %`">
+              <div class="h-full rounded-full transition-all duration-500" :class="g.casillaPct >= 100 ? 'bg-semantico-pasa' : 'bg-acento-ambar-fuerte'" :style="{ width: `${g.casillaPct}%` }" />
+            </div>
+            <span class="w-9 text-right text-[11px] font-bold tabular-nums" :class="g.casillaPct >= 100 ? 'text-semantico-pasa' : 'text-base-texto-primario'">{{ g.casillaPct }} %</span>
+          </div>
+          <ul class="divide-y divide-base-borde-sutil">
+            <li v-for="e in g.ejercicios" :key="e.id">
+              <NuxtLink :to="`/estudiante/evaluacion/${e.id}`"
+                class="flex items-center gap-2.5 min-h-[48px] px-3 py-2 hover:bg-base-bg-secundario transition-colors"
+                :class="mejor?.id === e.id ? 'ring-2 ring-inset ring-acento-ambar-fuerte/50' : ''">
+                <component :is="ICONO[etiqueta(e).tipo]" :size="16" class="shrink-0" :class="COLOR[etiqueta(e).tipo]" aria-hidden="true" />
+                <span class="flex-1 min-w-0">
+                  <span class="block text-xs font-semibold text-base-texto-primario break-words">{{ e.titulo }}</span>
+                  <span class="block text-[11px] text-base-texto-secundario">
+                    <template v-if="mejor?.id === e.id">Recomendado · </template>{{ textoIntentos(e) }}
+                  </span>
                 </span>
-              </span>
-              <span class="shrink-0 px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap" :class="ESTADO[e.estado].chip">{{ ESTADO[e.estado].texto }}</span>
-            </NuxtLink>
-          </li>
-        </ul>
+                <span class="shrink-0 px-2 py-0.5 rounded text-[11px] font-bold whitespace-nowrap tabular-nums" :class="CHIP[etiqueta(e).tipo]">{{ etiqueta(e).texto }}</span>
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
       </section>
     </template>
     <p v-else class="text-xs text-slate-700">Todavía no hay ejercicios publicados para esta lección.</p>
@@ -38,9 +58,11 @@
 </template>
 
 <script setup lang="ts">
-import { Ban, CheckCircle2, CircleDot, Copy, TrendingUp } from 'lucide-vue-next'
+import { ArrowRight, CheckCircle2, Clock, Copy, RotateCcw, TrendingUp } from 'lucide-vue-next'
 import { exerciseTypeInfo } from '~/utils/exerciseTypes'
-import type { EjercicioLeccionEstudiante, EstadoEjercicioEstudiante } from '~/composables/useUnidadEstudiante'
+import { textoReabre } from '~/utils/resultadoEntrega'
+import { agruparEjercicios, etiquetaDe, recomendado, resumenEjercicios, type EjercicioParaGrupo, type Etiqueta } from '~/utils/ejerciciosPorGrupo'
+import type { EjercicioLeccionEstudiante } from '~/composables/useUnidadEstudiante'
 
 const props = defineProps<{ unitId: number }>()
 const { misEjercicios } = useUnidadEstudiante()
@@ -50,26 +72,25 @@ const cargando = ref(true)
 const error = ref<string | null>(null)
 
 const NIVEL: Record<string, string> = { basico: 'básico', intermedio: 'intermedio', avanzado: 'avanzado' }
-const ESTADO: Record<EstadoEjercicioEstudiante, { texto: string; icono: typeof TrendingUp; color: string; chip: string }> = {
-  'por-hacer': { texto: 'Sube tu dominio', icono: TrendingUp, color: 'text-acento-ambar-fuerte', chip: 'bg-acento-ambar/15 text-acento-ambar-fuerte' },
-  'en-curso': { texto: 'Intentado: aún sube', icono: CircleDot, color: 'text-acento-ambar-fuerte', chip: 'bg-acento-ambar/15 text-acento-ambar-fuerte' },
-  hecho: { texto: 'Hecho', icono: CheckCircle2, color: 'text-semantico-pasa', chip: 'bg-semantico-pasa/10 text-semantico-pasa' },
-  'cuenta-otro': { texto: 'Ya cuenta un parecido', icono: Copy, color: 'text-base-texto-secundario', chip: 'bg-base-bg-secundario text-base-texto-primario' },
-  'sin-intentos': { texto: 'Sin intentos', icono: Ban, color: 'text-base-texto-secundario', chip: 'bg-base-bg-secundario text-base-texto-primario' },
+const ICONO: Record<Etiqueta['tipo'], typeof TrendingUp> = { sube: TrendingUp, repaso: RotateCcw, hecho: CheckCircle2, completo: Copy, reabre: Clock }
+const COLOR: Record<Etiqueta['tipo'], string> = {
+  sube: 'text-acento-ambar-fuerte', repaso: 'text-semantico-info', hecho: 'text-semantico-pasa', completo: 'text-base-texto-secundario', reabre: 'text-base-texto-secundario',
+}
+const CHIP: Record<Etiqueta['tipo'], string> = {
+  sube: 'bg-acento-ambar/15 text-acento-ambar-fuerte',
+  repaso: 'bg-semantico-info/10 text-semantico-info',
+  hecho: 'bg-semantico-pasa/10 text-semantico-pasa',
+  completo: 'bg-base-bg-secundario text-base-texto-primario',
+  reabre: 'bg-base-bg-secundario text-base-texto-primario',
 }
 
 const tipoDe = (t: string | null) => (t ? exerciseTypeInfo(t)?.name ?? t : 'Ejercicio')
-const conteo = computed(() => ({ suben: ejercicios.value.filter((e) => e.subeDominio).length, hechos: ejercicios.value.filter((e) => e.estado === 'hecho').length }))
-/** Ya vienen ordenados del servidor (nivel, y de reconocer a crear); aquí solo se agrupan por nivel. */
-const grupos = computed(() => {
-  const out: Array<{ nivel: string; ejercicios: EjercicioLeccionEstudiante[] }> = []
-  for (const e of ejercicios.value) {
-    const g = out.find((x) => x.nivel === e.nivel)
-    if (g) g.ejercicios.push(e)
-    else out.push({ nivel: e.nivel, ejercicios: [e] })
-  }
-  return out
-})
+const etiqueta = (e: EjercicioParaGrupo) => etiquetaDe(e, textoReabre)
+const textoIntentos = (e: EjercicioParaGrupo) =>
+  e.intentosUsados === 0 ? 'Sin intentar' : e.intentosPermitidos ? `${e.intentosUsados} de ${e.intentosPermitidos} intentos` : `${e.intentosUsados} intentos`
+const niveles = computed(() => agruparEjercicios(ejercicios.value))
+const mejor = computed(() => recomendado(ejercicios.value))
+const resumen = computed(() => resumenEjercicios(ejercicios.value, textoReabre))
 
 onMounted(async () => {
   try {
