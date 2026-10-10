@@ -25,7 +25,7 @@ export function guidanceLevelForFailedAttempts(failedAttempts: number, ampliada 
 }
 
 const GUIDANCE_INSTRUCTIONS: Record<GuidanceLevel, string> = {
-  1: 'NIVEL 1 · PISTA CONCEPTUAL: da solo una pista conceptual o una metáfora sobre la idea clave. No menciones líneas concretas de código ni la solución.',
+  1: 'NIVEL 1 · PISTA CONCEPTUAL: da solo una pista conceptual o una metáfora sobre la idea clave. No menciones líneas concretas de código ni la solución, salvo que el programa no arranque por un error de sintaxis: eso sí dile en qué línea está.',
   2: 'NIVEL 2 · PREGUNTA GUÍA: haz una o dos preguntas guía que lleven al estudiante a descubrir dónde está el error. No escribas la corrección.',
   3: 'NIVEL 3 · LOCALIZAR LA FALLA: indica en qué parte del código o del razonamiento está la falla (qué línea o condición revisar) y por qué, pero NO escribas el código corregido ni la solución completa.',
 };

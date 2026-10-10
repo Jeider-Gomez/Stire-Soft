@@ -12,7 +12,24 @@
         <span class="min-w-0 space-y-1">
           <span class="block font-semibold text-base-texto-primario">{{ p.titulo }}</span>
           <span class="block text-[11px] text-base-texto-primario [&_code]:font-mono [&_code]:bg-base-blanco [&_code]:px-1 [&_code]:rounded" v-html="conCodigo(p.detalle)" />
-          <code v-if="p.codigo" class="block font-mono text-[11px] bg-editor-bg text-editor-text rounded px-2 py-1 overflow-x-auto">{{ p.codigo }}</code>
+          <!-- Qué hay en cada posición de `lineas` con el ejemplo (10/10: se confundía la posición con el valor). -->
+          <dl v-if="p.datos?.length" class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-[11px] bg-base-blanco rounded border border-base-borde-sutil px-2 py-1.5">
+            <template v-for="d in p.datos" :key="d.posicion">
+              <dt class="text-semantico-info font-semibold">{{ d.posicion }}</dt>
+              <dd class="text-base-texto-primario whitespace-pre-wrap break-all">"{{ d.valor }}"</dd>
+            </template>
+          </dl>
+          <!-- Una meta por línea de la salida, con su marca cuando la última prueba ya la mostró igual. -->
+          <ul v-if="p.metas?.length" class="space-y-1">
+            <li v-for="m in p.metas" :key="m.linea" class="flex items-center gap-1.5 text-[11px]">
+              <CheckCircle2 v-if="m.ok" :size="14" class="shrink-0 text-semantico-pasa" aria-hidden="true" />
+              <XCircle v-else-if="m.ok === false" :size="14" class="shrink-0 text-semantico-falla" aria-hidden="true" />
+              <Circle v-else :size="14" class="shrink-0 text-base-texto-secundario" aria-hidden="true" />
+              <span>Línea {{ m.linea }}: <code class="font-mono bg-base-blanco px-1 rounded">{{ m.esperado }}</code></span>
+              <span class="sr-only">{{ m.ok ? '(ya coincide)' : m.ok === false ? '(todavía no coincide)' : '' }}</span>
+            </li>
+          </ul>
+          <code v-if="p.codigo" class="block font-mono text-[11px] bg-editor-bg text-editor-text rounded px-2 py-1 overflow-x-auto whitespace-pre">{{ p.codigo }}</code>
         </span>
       </li>
     </ol>
@@ -23,10 +40,14 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDown, ListOrdered, Sparkles } from 'lucide-vue-next'
+import { CheckCircle2, ChevronDown, Circle, ListOrdered, Sparkles, XCircle } from 'lucide-vue-next'
 import { pasosCodigo } from '~/utils/pasosCodigo'
 
-const props = defineProps<{ codigo: string; ejemplo?: { input: string; expectedOutput: string } | null; yaAprobado?: boolean }>()
+const props = defineProps<{
+  codigo: string
+  ejemplo?: { input: string; expectedOutput: string; actualOutput?: string; passed?: boolean } | null
+  yaAprobado?: boolean
+}>()
 defineEmits<{ 'por-pasos': [] }>()
 
 const pasos = computed(() => pasosCodigo({ codigo: props.codigo, ejemplo: props.ejemplo }))

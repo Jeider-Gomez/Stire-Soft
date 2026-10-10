@@ -305,9 +305,10 @@ export class AnalyticsService {
       throw new ForbiddenException('No tienes acceso a las métricas de esta clase.');
     }
 
-    // Estudiantes matriculados
+    // Estudiantes matriculados: solo las matrículas activas. Antes contaba también a los retirados (y a las solicitudes sin
+    // aprobar): un estudiante quitado en Ajustes seguía en «Estudiantes» y como «Necesita apoyo» (sugerencia n.º 9 de Pedro).
     const enrollments = await enrollmentRepo.find({
-      where: { classId },
+      where: { classId, status: EnrollmentStatus.ACTIVE },
       relations: ['student'],
     });
 

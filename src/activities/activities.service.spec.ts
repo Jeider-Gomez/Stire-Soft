@@ -310,4 +310,15 @@ describe('ActivitiesService — P0-04', () => {
 
     expect(await service.findOneForRequester(1, { id: 20, role: UserRole.ESTUDIANTE } as never)).toMatchObject({ intentoDisponible: true });
   });
+
+  // Sugerencia n.º 11 de José (10/10): un ejercicio del refuerzo se podía no poder hacer por los intentos de la lección.
+  it('estudiante → un ejercicio que el docente le mandó en un refuerzo tiene un intento propio', async () => {
+    mockActivitiesRepo.findOne.mockResolvedValue({ ...publishedActivityClass5, attemptsAllowed: 1 });
+    mockEnrollmentRepo.findOne.mockResolvedValue({ classId: 5, studentId: 20, status: EnrollmentStatus.ACTIVE });
+    mockActivitiesRepo.manager.find
+      .mockResolvedValueOnce([{ id: 'a', submittedAt: new Date(Date.now() - 3_600_000) }])
+      .mockResolvedValueOnce([{ createdAt: new Date(Date.now() - 600_000), archivado: false, estudiantes: [20], pasos: [{ tipo: 'ejercicio', activityId: 1 }] }]);
+
+    expect(await service.findOneForRequester(1, { id: 20, role: UserRole.ESTUDIANTE } as never)).toMatchObject({ intentoDisponible: true, intentoDeRefuerzo: true, reabreEn: null });
+  });
 });

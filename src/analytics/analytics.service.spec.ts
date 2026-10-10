@@ -1,3 +1,4 @@
+import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { AnalyticsService } from './analytics.service';
 import { LearningProgress } from '../learning-progress/entities/learning-progress.entity';
 import { Submission } from '../submissions/entities/submission.entity';
@@ -94,7 +95,7 @@ describe('AnalyticsService.getClassMetrics — solo las unidades de la clase', (
     const entregas = [{ studentId: 7, status: 'graded' }];
     const repos = new Map<unknown, unknown>([
       [Class, { findOne: () => Promise.resolve({ id: 3, name: 'ALGO', code: 'ALGO', teacherId: 10 }) }],
-      [Enrollment, { find: () => Promise.resolve([{ studentId: 7, student: { fullName: 'Andrés', email: 'a@x' } }]) }],
+      [Enrollment, { find: (o: unknown) => { llamadas.push({ repo: 'matriculas', metodo: 'find', args: [o] }); return Promise.resolve([{ studentId: 7, student: { fullName: 'Andrés', email: 'a@x' } }]); } }],
       [LearningProgress, { createQueryBuilder: () => qb('progreso', progreso) }],
       [Submission, { createQueryBuilder: () => qb('entregas', entregas) }],
       [LearningUnit, { createQueryBuilder: () => qb('unidades', [], unidadesDeLaClase.map((id) => ({ id, title: 'U', sectionTitle: 'S' }))) }],
@@ -109,6 +110,12 @@ describe('AnalyticsService.getClassMetrics — solo las unidades de la clase', (
     expect(llamadas).toContainEqual({ repo: 'progreso', metodo: 'andWhere', args: ['p.learningUnitId IN (:...idsUnidad)', { idsUnidad: [1, 2] }] });
     expect(llamadas).toContainEqual({ repo: 'entregas', metodo: 'andWhere', args: ['a.learningUnitId IN (:...idsUnidad)', { idsUnidad: [1, 2] }] });
     expect(r?.studentRankings[0]).toMatchObject({ studentId: 7, avgMastery: 80, submissionsCount: 1 });
+  });
+
+  it('solo cuenta las matrículas activas: un estudiante retirado no sigue en la lista (sugerencia n.º 9 de Pedro, 09/10)', async () => {
+    const { service, llamadas } = crear([1]);
+    await service.getClassMetrics(3, { id: 10, role: 'docente' });
+    expect(llamadas).toContainEqual({ repo: 'matriculas', metodo: 'find', args: [{ where: { classId: 3, status: EnrollmentStatus.ACTIVE }, relations: ['student'] }] });
   });
 
   it('una clase sin unidades no lee progreso de otras clases: todo en cero', async () => {

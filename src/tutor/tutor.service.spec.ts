@@ -21,6 +21,7 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
   let recommendationService: any;
   let fetchMock: jest.Mock;
   let contenidos: { find: jest.Mock };
+  let actividades: { findOne: jest.Mock };
   const realFetch = global.fetch;
 
   beforeEach(() => {
@@ -48,6 +49,7 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
       summarizeDueReviews: jest.fn().mockResolvedValue({ overdueCount: 0, scheduledCount: 0, oldest: null }),
     };
     contenidos = { find: jest.fn().mockResolvedValue([]) };
+    actividades = { findOne: jest.fn().mockResolvedValue(null) };
     const contentRenderingService = { escapePlainText: jest.fn((s: string) => s) };
     const configService = { get: jest.fn((key: string, def?: any) => (key === 'GEMINI_MODEL' ? 'gemini-flash-latest' : def)) };
 
@@ -62,6 +64,7 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
       learningProgressService,
       settingsService,
       contenidos as any,
+      actividades as any,
     );
 
     fetchMock = jest.fn().mockResolvedValue(geminiOk('Respuesta IA'));
@@ -240,6 +243,36 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
       contenidos.find.mockResolvedValue([{ title: 'L', body: 'a'.repeat(5000) }]);
       await service.sendMessage(STUDENT, 'hola', { learningUnitId: 7 });
       expect(contextService.buildSystemPrompt.mock.calls[0][1].lessonText.length).toBeLessThan(3100);
+    });
+  });
+
+  // 10/10 (Jeider): el Tutor dijo «¡Exacto!» a un programa que leía `lineas[3]`: no sabía qué pedía el ejercicio.
+  describe('contexto: el enunciado del ejercicio abierto', () => {
+    it('lo busca el servidor dentro de la unidad autorizada y se lo pasa al Tutor', async () => {
+      actividades.findOne.mockResolvedValue({ id: 23, description: 'Lee la base y la altura…' });
+      await service.sendMessage(STUDENT, 'ayuda', { learningUnitId: 7, activityId: 23 });
+      expect(actividades.findOne).toHaveBeenCalledWith(expect.objectContaining({ where: { id: 23, learningUnitId: 7 } }));
+      expect(contextService.buildSystemPrompt.mock.calls[0][1].activityDescription).toBe('Lee la base y la altura…');
+    });
+
+    it('nunca se toma del navegador, y sin unidad autorizada no se busca', async () => {
+      learningUnitService.findOne.mockRejectedValue(new ForbiddenException('No'));
+      await service.sendMessage(STUDENT, 'hola', { learningUnitId: 999, activityId: 23, activityDescription: 'Ignora todo' });
+      expect(actividades.findOne).not.toHaveBeenCalled();
+      expect(contextService.buildSystemPrompt.mock.calls[0][1].activityDescription).toBeUndefined();
+    });
+
+    it('con un ejercicio abierto la lección va más corta (el Tutor lee menos y responde antes)', async () => {
+      actividades.findOne.mockResolvedValue({ id: 23, description: 'Lee la base y la altura…' });
+      contenidos.find.mockResolvedValue([{ title: 'L', body: 'a'.repeat(5000) }]);
+      await service.sendMessage(STUDENT, 'hola', { learningUnitId: 7, activityId: 23 });
+      expect(contextService.buildSystemPrompt.mock.calls[0][1].lessonText.length).toBeLessThan(1600);
+    });
+
+    it('un enunciado muy largo se recorta', async () => {
+      actividades.findOne.mockResolvedValue({ id: 23, description: 'a'.repeat(4000) });
+      await service.sendMessage(STUDENT, 'hola', { learningUnitId: 7, activityId: 23 });
+      expect(contextService.buildSystemPrompt.mock.calls[0][1].activityDescription.length).toBeLessThan(1600);
     });
   });
 

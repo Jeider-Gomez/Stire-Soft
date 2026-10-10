@@ -466,6 +466,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Dominio de cada lección, «Ver todos los ejercicios» (cuánto sube cada uno), el recomendador y el límite de intentos. |
 | **Trazabilidad** | `src/common/utils/motor-dominio.ts` (con su prueba de 500 lecciones al azar), `src/learning-progress/ejercicios-leccion.ts`, `src/scripts/recalcular-dominio.ts`, `docs/DISENO_DOMINIO.md`. |
 
+## BT-44. En un ejercicio de programar, el estudiante ve qué recibe, qué debe salir línea por línea y dónde está su error
+
+| | |
+|---|---|
+| **Problema observado** | En la prueba (10/10), Jeider no pudo resolver un ejercicio básico de área y perímetro: escribió `lineas[3]` porque la base era 3 (confundió la posición con el valor), copió de los pasos un código de ejemplo que no era válido, la pista ante un error de sintaxis decía «la primera diferencia está en la línea 1» y el tutor lo felicitó sin ver que el programa no funcionaba. |
+| **Decisión** | - Antes de programar se muestra qué hay en cada posición de la entrada y la salida esperada partida en una meta por línea, con su marca cuando ya coincide.<br>- Todo el código de ejemplo de los pasos es válido.<br>- Cada error de ejecución dice su línea y qué revisar, en lenguaje de estudiante, sin dar la solución.<br>- El tutor recibe el enunciado y el resultado de la última prueba.<br>- Se propone al docente, de forma opcional, escribir los pasos de cada ejercicio, comprobarlo con su solución y ordenar la lección de predecir a crear (`docs/DISENO_EJERCICIOS_PROGRAMAR.md` §5). |
+| **Fundamento** | - Predecir y leer un programa antes de escribirlo (PRIMM: Sentance, Waite y Kallia, 2019); usar, modificar y crear (Lee et al., 2011).<br>- Las submetas con nombre mejoran la resolución de problemas nuevos (Margulieux y Catrambone, 2016).<br>- Retirar la ayuda poco a poco, del ejemplo al problema propio (Renkl y Atkinson, 2003); ordenar líneas como paso intermedio (Ericson et al., 2022).<br>- Mensajes de error en lenguaje claro (Becker, 2016); la evidencia posterior sobre su efecto es mixta, por eso aquí se acompañan del número de línea y de qué revisar.<br>- Un tutor de IA que conoce el curso y no entrega la solución (Liu et al., 2024; Bastani et al., 2025). |
+| **Cómo se materializa** | Pantalla del ejercicio de programar: pasos, tarjeta de cada caso de prueba y pista; contexto del tutor. |
+| **Trazabilidad** | `frontend-nuxt/utils/pasosCodigo.ts`, `frontend-nuxt/utils/diagnosticoSalida.ts`, `frontend-nuxt/components/exercise/CasoPrueba.vue`, `src/judge-engine/hardened-process-sandbox.adapter.ts`, `src/tutor/tutor-context.service.ts`, `docs/DISENO_EJERCICIOS_PROGRAMAR.md`. |
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |
@@ -485,6 +495,7 @@ trazabilidad (solo para el anexo técnico).
 - Baker, R. S., Corbett, A. T. y Koedinger, K. R. (2004). Detecting Student Misuse of Intelligent Tutoring Systems. En *ITS 2004*, LNCS, 531-540. https://doi.org/10.1007/978-3-540-30139-4_50
 - Bangor, A., Kortum, P. T. y Miller, J. T. (2008). An Empirical Evaluation of the System Usability Scale. *International Journal of Human–Computer Interaction, 24*(6), 574-594. https://doi.org/10.1080/10447310802205776
 - Bastani, H., Bastani, O., Sungu, A., Ge, H. et al. (2025). Generative AI without guardrails can harm learning: Evidence from high school mathematics. *PNAS, 122*(26). https://doi.org/10.1073/pnas.2422633122
+- Becker, B. A. (2016). An Effective Approach to Enhancing Compiler Error Messages. En *Proceedings of the 47th ACM Technical Symposium on Computing Science Education (SIGCSE '16)*, 126-131. https://doi.org/10.1145/2839509.2844584
 - Black, P. y Wiliam, D. (1998). Assessment and Classroom Learning. *Assessment in Education: Principles, Policy & Practice, 5*(1), 7-74. https://doi.org/10.1080/0969595980050102
 - Bloom, B. S. (1968). Learning for Mastery. *Evaluation Comment, 1*(2). — matriz #1
 - Bloom, B. S. (1984). The 2 Sigma Problem. *Educational Researcher, 13*(6), 4-16. — matriz #30
@@ -497,6 +508,7 @@ trazabilidad (solo para el anexo técnico).
 - Corbett, A. T. y Anderson, J. R. (1995). Knowledge tracing: Modeling the acquisition of procedural knowledge. *User Modeling and User-Adapted Interaction, 4*, 253-278. https://doi.org/10.1007/BF01099821
 - Denny, P. (2013). The effect of virtual achievements on student engagement. En *Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI '13)*, 763-772. https://doi.org/10.1145/2470654.2470763
 - du Boulay, B. (1986). Some Difficulties of Learning to Program. *Journal of Educational Computing Research, 2*(1), 57-73. https://doi.org/10.2190/3lfx-9rrf-67t8-uvk9
+- Ericson, B. J., Denny, P., Prather, J., Duran, R. et al. (2022). Parsons Problems and Beyond: Systematic Literature Review and Empirical Study Designs. En *Proceedings of the 2022 Working Group Reports on Innovation and Technology in Computer Science Education (ITiCSE-WGR '22)*, 191-234. https://doi.org/10.1145/3571785.3574127
 - Fuchs, D. y Fuchs, L. S. (2006). Introduction to response to intervention: What, why, and how valid is it? *Reading Research Quarterly, 41*(1). https://doi.org/10.1598/rrq.41.1.4
 - Guskey, T. R. (2007). Closing Achievement Gaps: Revisiting Benjamin S. Bloom's "Learning for Mastery". *Journal of Advanced Academics, 19*(1). https://doi.org/10.4219/jaa-2007-704
 - Hanus, M. D. y Fox, J. (2015). Assessing the effects of gamification in the classroom: A longitudinal study on intrinsic motivation, social comparison, satisfaction, effort, and academic performance. *Computers & Education, 80*, 152-161. https://doi.org/10.1016/j.compedu.2014.08.019
@@ -513,8 +525,10 @@ trazabilidad (solo para el anexo técnico).
 - Knoop-van Campen, C. A. N. y Molenaar, I. (2020). How Teachers Integrate Dashboards into Their Feedback Practices. *Frontline Learning Research, 8*(4), 37-51. — matriz #20
 - Koedinger, K. R. y Aleven, V. (2007). Exploring the Assistance Dilemma in Experiments with Cognitive Tutors. *Educational Psychology Review, 19*(3), 239-264. — matriz #6
 - Kulik, C.-L. C., Kulik, J. A. y Bangert-Drowns, R. L. (1990). Effectiveness of Mastery Learning Programs: A Meta-Analysis. *Review of Educational Research, 60*(2). https://doi.org/10.2307/1170612
+- Lee, I., Martin, F., Denner, J., Coulter, B. et al. (2011). Computational thinking for youth in practice. *ACM Inroads, 2*(1), 32-37. https://doi.org/10.1145/1929887.1929902
 - Liu, R., Zenke, C., Liu, C., Holmes, A., Thornton, P. y Malan, D. J. (2024). Teaching CS50 with AI: Leveraging Generative Artificial Intelligence in Computer Science Education. En *Proc. SIGCSE 2024*, 750-756. https://doi.org/10.1145/3626252.3630938
 - Mandel, T. (1997). *The Elements of User Interface Design*. Wiley. — matriz #22
+- Margulieux, L. E. y Catrambone, R. (2016). Improving problem solving with subgoal labels in expository text and worked examples. *Learning and Instruction, 42*, 58-71. https://doi.org/10.1016/j.learninstruc.2015.12.002
 - Mayer, R. E. (2017). Using multimedia for e-learning. *Journal of Computer Assisted Learning, 33*(5), 403-423. https://doi.org/10.1111/jcal.12197
 - Mayer, R. E. y Moreno, R. (2003). Nine Ways to Reduce Cognitive Load in Multimedia Learning. *Educational Psychologist, 38*(1), 43-52. https://doi.org/10.1207/S15326985EP3801_6
 - Metcalfe, J. (2009). Metacognitive Judgments and Control of Study. *Current Directions in Psychological Science, 18*(3), 159-163. https://doi.org/10.1111/j.1467-8721.2009.01628.x
@@ -530,6 +544,7 @@ trazabilidad (solo para el anexo técnico).
 - Piepenbrock, C., Mayr, S., Mund, I. y Buchner, A. (2013). Positive display polarity is advantageous for both younger and older adults. *Ergonomics, 56*(7), 1116-1124. https://doi.org/10.1080/00140139.2013.790485
 - Razzaq, L. y Heffernan, N. T. (2006). Scaffolding vs. Hints in the Assistment System. En *ITS 2006*, LNCS 4053, 635-644. https://doi.org/10.1007/11774303_63
 - Rello, L. y Baeza-Yates, R. (2013). Good fonts for dyslexia. En *Proceedings of the 15th International ACM SIGACCESS Conference on Computers and Accessibility* (pp. 1-8). https://doi.org/10.1145/2513383.2513447
+- Renkl, A. y Atkinson, R. K. (2003). Structuring the Transition From Example Study to Problem Solving in Cognitive Skill Acquisition: A Cognitive Load Perspective. *Educational Psychologist, 38*(1), 15-22. https://doi.org/10.1207/S15326985EP3801_3
 - Roediger, H. L. y Karpicke, J. D. (2006). Test-Enhanced Learning. *Psychological Science, 17*(3), 249-255. — matriz #4
 - Rogowsky, B. A., Calhoun, B. M. y Tallal, P. (2015). Matching learning style to instructional method: Effects on comprehension. *Journal of Educational Psychology, 107*(1), 64-78. https://doi.org/10.1037/a0037478
 - Rohrer, D. y Taylor, K. (2007). The shuffling of mathematics problems improves learning. *Instructional Science, 35*, 481-498. https://doi.org/10.1007/s11251-007-9015-8
@@ -537,6 +552,7 @@ trazabilidad (solo para el anexo técnico).
 - Sailer, M. y Homner, L. (2020). The Gamification of Learning: a Meta-analysis. *Educational Psychology Review, 32*(1), 77-112. https://doi.org/10.1007/s10648-019-09498-w
 - Sauro, J. y Dumas, J. S. (2009). Comparison of three one-question, post-task usability questionnaires. En *Proceedings of the SIGCHI Conference on Human Factors in Computing Systems* (pp. 1599-1608). https://doi.org/10.1145/1518701.1518946
 - Schraw, G. (2009). A conceptual analysis of five measures of metacognitive monitoring. *Metacognition and Learning, 4*(1), 33-45. https://doi.org/10.1007/s11409-008-9031-3
+- Sentance, S., Waite, J. y Kallia, M. (2019). Teaching computer programming with PRIMM: a sociocultural perspective. *Computer Science Education, 29*(2-3), 136-176. https://doi.org/10.1080/08993408.2019.1608781
 - Settles, B. y Meeder, B. (2016). A Trainable Spaced Repetition Model for Language Learning. En *Proc. ACL 2016*, 1848-1858. https://doi.org/10.18653/v1/P16-1174
 - Sevilla-Gonzalez, M. del R. et al. (2020). Spanish Version of the System Usability Scale for the Assessment of Electronic Tools: Development and Validation. *JMIR Human Factors, 7*(4), e21161. https://doi.org/10.2196/21161
 - Shute, V. J. (2008). Focus on Formative Feedback. *Review of Educational Research, 78*(1), 153-189. https://doi.org/10.3102/0034654307313795

@@ -22,7 +22,7 @@ describe('los pasos para resolver un ejercicio de programar', () => {
     const p = pasosCodigo({ codigo: PLANTILLA, ejemplo: { input: 'Ana', expectedOutput: 'Hola, Ana.' } });
     expect(p.map((x) => x.titulo)).toEqual([
       'Mira qué entra y qué debe salir',
-      'La plantilla ya lee la entrada por ti',
+      'Lo que recibe tu programa',
       'Haz el cálculo o arma el texto',
       'Muestra el resultado con console.log',
       'Pulsa «Probar código»',
@@ -35,9 +35,9 @@ describe('los pasos para resolver un ejercicio de programar', () => {
   it('si entran números, explica que llegan como texto y cómo convertirlos', () => {
     const p = pasosCodigo({ codigo: PLANTILLA, ejemplo: { input: '3\n4', expectedOutput: '7' } });
     expect(p[0].detalle).toContain('Si entran 2 líneas, `3`, `4`, debe salir `7`');
-    expect(p[1].detalle).toContain('la segunda `lineas[1]`');
+    expect(p[1].detalle).toContain('es la posición y empieza en 0');
     expect(p[1].detalle).toContain('conviértelas con `Number(...)`');
-    expect(p[1].codigo).toBe('const a = Number(lineas[0]);');
+    expect(p[1].codigo).toBe('const a = Number(lineas[0]); // a vale 3, la primera línea');
   });
 
   it('nunca da la solución: el cálculo queda para el estudiante', () => {

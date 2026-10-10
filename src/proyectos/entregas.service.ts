@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Entrega } from './entities/entrega.entity';
@@ -6,6 +6,7 @@ import { EntregaEvento } from './entities/entrega-evento.entity';
 import { ProyectoEnvio } from './entities/proyecto-envio.entity';
 import { ProyectosService } from './proyectos.service';
 import {
+  notificacionDeEntrega,
   estadoDeEntrega,
   siguienteVersionDeEntrega,
   validarEntrega,
@@ -21,6 +22,9 @@ import { Topic } from '../topic/entities/topic.entity';
 import { Section } from '../section/entities/section.entity';
 import { AuthorizationService } from '../common/authorization/authorization.service';
 import { User } from '../user/entities/user.entity';
+import { Class } from '../class/entities/class.entity';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../common/enums/notification-type.enum';
 
 /** Los errores de las reglas son un 400 con el motivo. */
 function reglas<T>(fn: () => T): T {
@@ -78,7 +82,31 @@ export class EntregasService {
     @InjectRepository(User) private readonly usuarios: Repository<User>,
     private readonly proyectos: ProyectosService,
     private readonly autorizacion: AuthorizationService,
+    private readonly notificaciones: NotificationsService,
+    @InjectRepository(Class) private readonly clases: Repository<Class>,
   ) {}
+
+  private readonly logger = new Logger(EntregasService.name);
+
+  /**
+   * Avisa a los estudiantes a los que la entrega les queda visible (sugerencia n.º 10 de Pedro). Con la clave
+   * `entrega:<id>`, cada estudiante recibe el aviso una sola vez, aunque el docente despublique y vuelva a publicar o la
+   * asigne a más estudiantes después. Un aviso que falla no deja sin aviso a los demás.
+   */
+  private async avisarPublicada(entrega: Entrega): Promise<number> {
+    if (!entrega.publicada) return 0;
+    const clase = await this.clases.findOne({ where: { id: entrega.classId } });
+    const n = notificacionDeEntrega(entrega, clase?.name ?? 'tu clase');
+    let avisados = 0;
+    for (const e of await this.estudiantesDe(entrega.classId, entrega.asignadaA)) {
+      try {
+        if (await this.notificaciones.createNotification(e.id, n.titulo, n.mensaje, NotificationType.AVISO, { enlace: n.enlace, clave: n.clave })) avisados++;
+      } catch (error) {
+        this.logger.error(`No se pudo avisar de la entrega ${entrega.id} al estudiante ${e.id}: ${(error as Error).message}`);
+      }
+    }
+    return avisados;
+  }
 
   // ───────────────────────── Docente ─────────────────────────
 
@@ -105,7 +133,9 @@ export class EntregasService {
     await this.autorizacion.assertTeacherOwnsClass(user, classId);
     const validos = reglas(() => validarEntrega(datos));
     await this.exigirLeccionDeLaClase(validos.learningUnitId, classId);
-    return this.entregas.save(this.entregas.create({ ...validos, classId, createdBy: user.id }));
+    const guardada = await this.entregas.save(this.entregas.create({ ...validos, classId, createdBy: user.id }));
+    await this.avisarPublicada(guardada);
+    return guardada;
   }
 
   async actualizar(user: User, id: number, datos: Record<string, unknown>): Promise<Entrega> {
@@ -113,7 +143,9 @@ export class EntregasService {
     const validos = reglas(() => validarEntrega(datos, datosDe(entrega)));
     await this.exigirLeccionDeLaClase(validos.learningUnitId, entrega.classId);
     Object.assign(entrega, validos);
-    return this.entregas.save(entrega);
+    const guardada = await this.entregas.save(entrega);
+    await this.avisarPublicada(guardada); // al publicarla o asignarla a más estudiantes; nadie recibe el aviso dos veces
+    return guardada;
   }
 
   /** Solo se borra si nadie ha entregado: lo enviado no se pierde. Para cerrarla, se despublica o se le pone cierre. */

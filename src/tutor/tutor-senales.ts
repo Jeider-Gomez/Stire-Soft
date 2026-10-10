@@ -12,6 +12,11 @@
  */
 
 export const ERRORES_DE_SALIDA = {
+  sintaxis: 'su programa tiene un error de sintaxis y ni siquiera arranca (falta un valor, un paréntesis o una comilla); eso va antes que cualquier otra cosa',
+  'no-existe': 'usa una variable que no existe (no la creó o la escribió distinto)',
+  indefinido: 'usa o muestra algo vacío (undefined); a menudo lee una posición de la entrada que no existe, como lineas[3] cuando solo hay dos líneas',
+  error: 'su programa se detiene con un error al ejecutarse',
+  nan: 'una cuenta da NaN: usa un dato que no es número (no lo convirtió con Number o leyó la posición equivocada de la entrada)',
   vacia: 'su programa no muestra nada: probablemente falta mostrar el resultado (console.log) o el programa no llega a esa línea',
   eco: 'su programa muestra la misma entrada que recibe: le falta el paso que la procesa',
   concatena: 'junta los números como texto en lugar de operarlos (no convierte la entrada a número; «5» + «3» da «53»)',
@@ -25,6 +30,22 @@ export const ERRORES_DE_SALIDA = {
 } as const;
 export type ErrorDeSalida = keyof typeof ERRORES_DE_SALIDA;
 
+/**
+ * Conceptos de JavaScript que pide el ejercicio abierto (10/10; frontend-nuxt/utils/conceptosEjercicio.ts los deduce del
+ * enunciado). Con ellos el Tutor sabe qué explicar si el estudiante dice que no sabe JavaScript.
+ */
+export const CONCEPTOS_EJERCICIO = {
+  'leer-entrada': 'leer la entrada (lineas[0] es la primera línea; el número es la posición, no el valor)',
+  'convertir-numero': 'convertir texto en número con Number(...)',
+  operaciones: 'operaciones aritméticas y paréntesis, guardando cada resultado en una variable',
+  'division-entera': 'división entera con Math.floor y residuo con %',
+  texto: 'armar un texto uniendo textos y variables con +',
+  'varias-lineas': 'mostrar varias líneas (un console.log por línea, en orden)',
+  decisiones: 'decidir con if / else',
+  ciclos: 'repetir con for',
+  'escribir-bien': 'escribir JavaScript válido (un valor a cada lado de un operador, cerrar paréntesis y comillas)',
+} as const;
+
 export const CONFIANZAS = ['seguro', 'dudo', 'adivino'] as const;
 export type Confianza = (typeof CONFIANZAS)[number];
 
@@ -34,6 +55,8 @@ export interface SenalesDelEstudiante {
   /** Si la última entrega con ese juicio aprobó. */
   acerto?: unknown;
   modo?: unknown;
+  /** Claves de CONCEPTOS_EJERCICIO. */
+  conceptos?: unknown;
 }
 
 /** Líneas para el prompt, solo con valores de las listas cerradas; lo demás se ignora. */
@@ -57,6 +80,13 @@ export function instruccionesDeSenales(s: SenalesDelEstudiante | null | undefine
     } else if (c === 'adivino' && !s.acerto) {
       lineas.push('CALIBRACIÓN: reconoció que estaba adivinando. Vuelve a la idea base de la lección antes de hablar del código.');
     }
+  }
+
+  if (Array.isArray(s.conceptos)) {
+    const conceptos = [...new Set(s.conceptos)]
+      .filter((c): c is keyof typeof CONCEPTOS_EJERCICIO => typeof c === 'string' && Object.prototype.hasOwnProperty.call(CONCEPTOS_EJERCICIO, c))
+      .map((c) => CONCEPTOS_EJERCICIO[c]);
+    if (conceptos.length > 0) lineas.push(`LO QUE PIDE ESTE EJERCICIO: ${conceptos.join('; ')}.`);
   }
 
   if (s.modo === 'por-pasos') {

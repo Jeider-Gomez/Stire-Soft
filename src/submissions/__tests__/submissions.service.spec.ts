@@ -91,7 +91,7 @@ describe('SubmissionsService', () => {
     activitiesRepo = {
       findOne: jest.fn().mockResolvedValue(makeActivity()),
       // Las reglas de la clase (horas para reabrir); sin clase, las de por defecto.
-      manager: { findOne: jest.fn().mockResolvedValue(null) },
+      manager: { findOne: jest.fn().mockResolvedValue(null), find: jest.fn().mockResolvedValue([]) },
     };
 
     questionsRepo = {
@@ -214,6 +214,23 @@ describe('SubmissionsService', () => {
 
       submissionsRepo.fechasDeIntentos.mockResolvedValue([new Date(Date.now() - 3_600_000)]);
       await expect(service.startSubmission(dto, studentId)).rejects.toThrow('Se reabre uno el');
+    });
+
+    it('si el docente se lo mandó en un refuerzo, tiene un intento propio aunque haya usado los de la lección (n.º 11 de José)', async () => {
+      const activity = makeActivity({ attemptsAllowed: 1, learningUnit: { topic: { section: { classId: 5 } } } });
+      activitiesRepo.findOne.mockResolvedValue(activity);
+      submissionsRepo.findActiveSubmission.mockResolvedValue(null);
+      const hace1h = new Date(Date.now() - 3_600_000);
+      submissionsRepo.fechasDeIntentos.mockResolvedValue([hace1h]); // lo gastó en la lección hace 1 hora
+      submissionsRepo.create.mockImplementation((x: unknown) => x);
+      submissionsRepo.save.mockImplementation(async (x: unknown) => x);
+      const refuerzo = { createdAt: new Date(Date.now() - 600_000), archivado: false, estudiantes: [studentId], pasos: [{ tipo: 'ejercicio', activityId: activity.id }] };
+      activitiesRepo.manager.find.mockResolvedValue([refuerzo]);
+
+      await expect(service.startSubmission(dto, studentId)).resolves.toMatchObject({ attemptNumber: 2 });
+      // Ya lo hizo dentro del refuerzo: el intento propio se usó.
+      submissionsRepo.fechasDeIntentos.mockResolvedValue([hace1h, new Date()]);
+      await expect(service.startSubmission(dto, studentId)).rejects.toThrow('Ya usaste los intentos');
     });
 
     it('[FIX] attemptsAllowed = 0 permite intentos ilimitados — no bloquea cuando ya hay N intentos', async () => {

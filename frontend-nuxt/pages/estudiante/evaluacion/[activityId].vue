@@ -45,6 +45,7 @@
         <div v-if="leftTab === 'enunciado'" class="space-y-4">
           <ExerciseSinIntentos v-if="avisoEjercicio" :motivo="avisoEjercicio" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
           <div class="prose prose-xs" v-html="formatMarkdown(workspaceStore.currentExercise.description)"></div>
+          <ExerciseConceptosEjercicio v-if="isCodingActivity" :enunciado="workspaceStore.currentExercise.description" :plantilla="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :unidad="workspaceStore.currentExercise.unitTitle" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" />
           <ExercisePasosCodigo v-if="isCodingActivity" :codigo="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" @por-pasos="resolverPorPasos" />
 
           <ExerciseComoSeCalifica :codigo="isCodingActivity" :html-css="isHtmlCssActivity" />
@@ -60,52 +61,7 @@
           </div>
 
           <div class="space-y-3">
-            <div
-              v-for="tc in workspaceStore.publicTestCases"
-              :key="tc.id"
-              class="border rounded-lg p-3 space-y-2 transition-colors"
-              :class="{
-                'border-semantico-pasa/40 bg-semantico-pasa/5': tc.passed === true,
-                'border-semantico-falla/40 bg-semantico-falla/5': tc.passed === false,
-                'border-base-borde-sutil bg-base-bg-secundario/40': tc.passed === undefined
-              }">
-              <div class="flex items-center justify-between font-bold text-xs">
-                <span>Caso #{{ tc.id }}: <code class="font-codigo text-acento-ambar-fuerte">{{ tc.input }}</code></span>
-                <span v-if="tc.passed === true" class="text-semantico-pasa flex items-center gap-1">
-                  <Check :size="16" aria-hidden="true" />
-                  <span>Superado</span>
-                </span>
-                <span v-else-if="tc.passed === false" class="text-semantico-falla flex items-center gap-1">
-                  <X :size="14" aria-hidden="true" />
-                  <span>Todavía no coincide</span>
-                </span>
-                <span v-else class="text-base-texto-secundario text-[11px]">
-                  Sin evaluar
-                </span>
-              </div>
-
-              <!-- Diff Visual: Esperado vs Obtenido -->
-              <div class="grid grid-cols-2 gap-2 text-[11px] font-codigo pt-1">
-                <div class="p-2 bg-base-blanco rounded border border-base-borde-sutil">
-                  <span class="text-base-texto-secundario text-[10px] block font-sans">Salida esperada:</span>
-                  <span class="font-bold text-semantico-pasa">{{ tc.expectedOutput }}</span>
-                </div>
-                <div class="p-2 bg-base-blanco rounded border border-base-borde-sutil">
-                  <span class="text-base-texto-secundario text-[10px] block font-sans">Lo que mostró tu código:</span>
-                  <span :class="tc.passed ? 'text-semantico-pasa font-bold' : tc.passed === false ? 'text-semantico-falla font-bold' : 'text-base-texto-secundario'">
-                    {{ tc.actualOutput || '—' }}
-                  </span>
-                </div>
-              </div>
-              <!-- Qué revisar: el error de concepto más probable, sin dar la solución (MOD-02 y MOD-04) -->
-              <p v-if="tc.passed === false && diagnostico(tc)" class="flex items-start gap-1.5 text-[11px] text-base-texto-primario bg-base-blanco rounded border border-semantico-falla/25 p-2">
-                <Lightbulb :size="13" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
-                <span>
-                  {{ diagnostico(tc)?.mensaje }}
-                  <template v-if="!tc.actualOutput && workspaceStore.timeLimitMs"> Si tarda más de {{ workspaceStore.timeLimitMs }} ms (un bucle infinito), se corta.</template>
-                </span>
-              </p>
-            </div>
+            <ExerciseCasoPrueba v-for="tc in workspaceStore.publicTestCases" :key="tc.id" :tc="tc" :diagnostico="tc.passed === false ? diagnostico(tc) : null" :limite-ms="workspaceStore.timeLimitMs" />
           </div>
 
           <!-- Algún caso falló: se ofrece ayuda en ese momento (utils/ofertaTutor.ts). UI-05: escala con los fallos seguidos y
@@ -291,7 +247,7 @@
 <script setup lang="ts">
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
 import { tituloConNombre } from '~/utils/tituloPagina'
-import { BookOpen, Check, FlaskConical, Lightbulb, Lock, PanelLeftClose, Send, Sparkles, Terminal, X } from 'lucide-vue-next'
+import { BookOpen, FlaskConical, Lock, PanelLeftClose, Send, Sparkles, Terminal } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
 import { ayudaSegunFallos, debeOfrecerTutor, pistaSegunTipo, TEXTO_AYUDA, type Ayuda } from '~/utils/ofertaTutor'

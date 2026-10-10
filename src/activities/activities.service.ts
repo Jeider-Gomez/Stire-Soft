@@ -16,6 +16,8 @@ import { SubmissionStatus } from '../common/enums/submission-status.enum';
 import { actividadVisiblePara } from './visibilidad';
 import { intentosDisponibles, reglasDeClase } from '../common/utils/motor-dominio';
 import { Class } from '../class/entities/class.entity';
+import { Refuerzo } from '../refuerzos/entities/refuerzo.entity';
+import { intentoDeRefuerzo } from '../refuerzos/refuerzo-reglas';
 
 @Injectable()
 export class ActivitiesService {
@@ -153,8 +155,17 @@ export class ActivitiesService {
         select: { id: true, submittedAt: true, createdAt: true },
       });
       const clase = await this.activitiesRepo.manager.findOne(Class, { where: { id: classId } });
-      const { quedan, reabreEn } = intentosDisponibles(activity.attemptsAllowed, terminados.map((t) => new Date(t.submittedAt ?? t.createdAt ?? 0)), new Date(), reglasDeClase(clase).horasParaReabrir);
-      return Object.assign(activity, { attemptsUsed, yaAprobada: aprobadas > 0, intentoDisponible: quedan > 0, reabreEn: reabreEn?.toISOString() ?? null });
+      const fechas = terminados.map((t) => new Date(t.submittedAt ?? t.createdAt ?? 0));
+      const { quedan, reabreEn } = intentosDisponibles(activity.attemptsAllowed, fechas, new Date(), reglasDeClase(clase).horasParaReabrir);
+      // Un ejercicio que el docente le mandó en un refuerzo tiene un intento propio (sugerencia n.º 11 de José).
+      const deRefuerzo = quedan <= 0 && intentoDeRefuerzo(await this.activitiesRepo.manager.find(Refuerzo, { where: { classId, archivado: false } }), activity.id, user.id, fechas);
+      return Object.assign(activity, {
+        attemptsUsed,
+        yaAprobada: aprobadas > 0,
+        intentoDisponible: quedan > 0 || deRefuerzo,
+        intentoDeRefuerzo: deRefuerzo,
+        reabreEn: quedan > 0 || deRefuerzo ? null : reabreEn?.toISOString() ?? null,
+      });
     }
 
     // Un docente solo ve (incluidos borradores) las actividades de SUS clases:
