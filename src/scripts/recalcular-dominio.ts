@@ -5,7 +5,7 @@
 //
 // Uso, en el servidor (docs/DESPLIEGUE.md):
 //   node dist/scripts/recalcular-dominio.js --simular   → solo dice qué cambiaría, no guarda nada
-//   node dist/scripts/recalcular-dominio.js             → recalcula y guarda
+//   node dist/scripts/recalcular-dominio.js             → guarda SOLO las lecciones que suben (nunca baja nada)
 import { NestFactory } from '@nestjs/core';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AppModule } from '../app.module';
@@ -20,19 +20,30 @@ export interface CambioDominio {
   despues: number;
 }
 
-/** Resumen en palabras de los cambios (lo que se imprime al final). */
+/**
+ * Resumen en palabras (lo que se imprime al final). Solo se GUARDA lo que sube: nunca se baja un dominio ya ganado en
+ * plena prueba (pedido de Jeider, 10/10). Los que bajarían se listan como «se conservan»: suele ser una lección a la que
+ * se le agregaron ejercicios después (el estudiante 4 llegó al 100 % con 1 ejercicio y luego la lección tuvo 8).
+ */
 export function resumenCambios(cambios: CambioDominio[]): string {
   const suben = cambios.filter((c) => c.despues > c.antes);
-  const bajan = cambios.filter((c) => c.despues < c.antes);
+  const seConservan = cambios.filter((c) => c.despues < c.antes);
   const llegan100 = suben.filter((c) => c.despues === 100).length;
   return [
-    `${cambios.length} lecciones revisadas: ${suben.length} suben (${llegan100} llegan al 100 %), ${bajan.length} bajan y ${cambios.length - suben.length - bajan.length} quedan igual.`,
-    ...bajan.map(
+    `${cambios.length} lecciones revisadas: ${suben.length} suben (${llegan100} llegan al 100 %), ${cambios.length - suben.length - seConservan.length} quedan igual y ${seConservan.length} se conservan (bajarían, pero no se baja nada: 0 bajan).`,
+    ...suben.map(
       (c) =>
-        `  baja: estudiante ${c.studentId}, lección ${c.learningUnitId}: ${c.antes} % → ${c.despues} %`,
+        `  sube: estudiante ${c.studentId}, lección ${c.learningUnitId}: ${c.antes} % → ${c.despues} %`,
+    ),
+    ...seConservan.map(
+      (c) =>
+        `  se conserva: estudiante ${c.studentId}, lección ${c.learningUnitId}: queda en ${c.antes} % (el cálculo da ${c.despues} %)`,
     ),
   ].join('\n');
 }
+
+/** Solo se guarda si sube. */
+export const debeGuardarse = (c: CambioDominio): boolean => c.despues > c.antes;
 
 async function main() {
   const simular = process.argv.includes('--simular');
@@ -47,21 +58,37 @@ async function main() {
     const cambios: CambioDominio[] = [];
     for (const p of await progresos.find()) {
       const antes = Math.round(p.mastery ?? 0);
-      const nuevo = await servicio.recalculateMastery(
+      // Primero se calcula sin guardar; solo si sube se guarda (nunca se baja un dominio ya ganado).
+      const calculado = await servicio.recalculateMastery(
         p.studentId,
         p.learningUnitId,
         null,
         0,
         0,
         false,
-        { silencioso: true, guardar: !simular },
+        {
+          silencioso: true,
+          guardar: false,
+        },
       );
-      cambios.push({
+      const cambio = {
         studentId: p.studentId,
         learningUnitId: p.learningUnitId,
         antes,
-        despues: Math.round(nuevo.mastery),
-      });
+        despues: Math.round(calculado.mastery),
+      };
+      if (!simular && debeGuardarse(cambio)) {
+        await servicio.recalculateMastery(
+          p.studentId,
+          p.learningUnitId,
+          null,
+          0,
+          0,
+          false,
+          { silencioso: true },
+        );
+      }
+      cambios.push(cambio);
     }
     console.log(
       `${simular ? '[SIMULACIÓN, no se guardó nada] ' : ''}${resumenCambios(cambios)}`,
