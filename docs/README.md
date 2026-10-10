@@ -14,6 +14,7 @@ tabla de abajo.
 | Ver la aplicación desplegada y cómo se actualiza | [`DESPLIEGUE.md`](DESPLIEGUE.md) §8 |
 | Subir cambios sin pisarse (ramas, Pull Requests, versiones) | [`FLUJO_GIT.md`](FLUJO_GIT.md) |
 | Entender **cómo sube y baja el dominio** y por qué siempre se puede llegar al 100 % | [`DISENO_DOMINIO.md`](DISENO_DOMINIO.md) |
+| Diseñar **ejercicios de programar que enseñan** (referentes, lo hecho y lo propuesto para el docente) | [`DISENO_EJERCICIOS_PROGRAMAR.md`](DISENO_EJERCICIOS_PROGRAMAR.md) |
 
 ## 1. El sistema (leer en orden)
 
