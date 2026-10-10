@@ -30,6 +30,8 @@ import { Activity } from '../activities/entities/activity.entity';
 export const MAX_LECCION_PARA_TUTOR = 3000;
 /** Cuánto del enunciado del ejercicio se le da al Tutor (10/10: sin él felicitaba código que no resolvía el ejercicio). */
 export const MAX_ENUNCIADO_PARA_TUTOR = 1500;
+/** La lección cuando hay un ejercicio abierto: el enunciado es lo principal. */
+export const MAX_LECCION_CON_EJERCICIO = 1500;
 
 const PRACTICE_INTENT_PATTERN =
   /\b(quiero|puedo|deseo|dame|necesito|hazme|ponme)\b[^.!?]{0,40}\b(practicar|estudiar|ejercitar|un ejercicio|ejercicios|repasar)\b/i;
@@ -175,10 +177,12 @@ export class TutorService {
     }
 
     const practiceIntent = PRACTICE_INTENT_PATTERN.test(message);
+    const enunciado = unit ? await this.enunciadoDelEjercicio(context?.activityId, unit.id) : {};
     const promptContext = {
       ...this.sanitizeContext(context, unit),
-      ...(unit ? await this.leccionDeLaUnidad(unit.id) : {}),
-      ...(unit ? await this.enunciadoDelEjercicio(context?.activityId, unit.id) : {}),
+      // Con un ejercicio abierto la lección es apoyo: va más corta, así el Tutor lee menos y responde antes (10/10).
+      ...(unit ? await this.leccionDeLaUnidad(unit.id, enunciado.activityDescription ? MAX_LECCION_CON_EJERCICIO : MAX_LECCION_PARA_TUTOR) : {}),
+      ...enunciado,
     };
 
     // En un refuerzo la ayuda empieza un nivel más arriba; el tope del docente sigue mandando.
@@ -292,7 +296,7 @@ export class TutorService {
    * La lección de la unidad (texto Markdown visible, en orden), para que el Tutor sepa qué está leyendo o qué estudió el
    * estudiante. La busca el servidor con la unidad ya autorizada: nunca se usa un texto de lección que mande el cliente.
    */
-  private async leccionDeLaUnidad(unitId: number): Promise<{ lessonTitle?: string; lessonText?: string }> {
+  private async leccionDeLaUnidad(unitId: number, maximo = MAX_LECCION_PARA_TUTOR): Promise<{ lessonTitle?: string; lessonText?: string }> {
     const bloques = await this.contenidos.find({
       where: { learningUnitId: unitId, isVisible: true, type: ContentType.MARKDOWN },
       order: { order: 'ASC' },
@@ -302,7 +306,7 @@ export class TutorService {
     if (!texto) return {};
     return {
       lessonTitle: bloques[0]?.title,
-      lessonText: texto.length > MAX_LECCION_PARA_TUTOR ? `${texto.slice(0, MAX_LECCION_PARA_TUTOR)}\n[…]` : texto,
+      lessonText: texto.length > maximo ? `${texto.slice(0, maximo)}\n[…]` : texto,
     };
   }
 

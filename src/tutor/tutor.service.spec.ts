@@ -262,6 +262,13 @@ describe('TutorService (Gemini con clave del estudiante)', () => {
       expect(contextService.buildSystemPrompt.mock.calls[0][1].activityDescription).toBeUndefined();
     });
 
+    it('con un ejercicio abierto la lección va más corta (el Tutor lee menos y responde antes)', async () => {
+      actividades.findOne.mockResolvedValue({ id: 23, description: 'Lee la base y la altura…' });
+      contenidos.find.mockResolvedValue([{ title: 'L', body: 'a'.repeat(5000) }]);
+      await service.sendMessage(STUDENT, 'hola', { learningUnitId: 7, activityId: 23 });
+      expect(contextService.buildSystemPrompt.mock.calls[0][1].lessonText.length).toBeLessThan(1600);
+    });
+
     it('un enunciado muy largo se recorta', async () => {
       actividades.findOne.mockResolvedValue({ id: 23, description: 'a'.repeat(4000) });
       await service.sendMessage(STUDENT, 'hola', { learningUnitId: 7, activityId: 23 });
