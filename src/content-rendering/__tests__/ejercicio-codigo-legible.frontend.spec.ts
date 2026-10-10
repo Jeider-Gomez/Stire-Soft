@@ -135,3 +135,59 @@ describe('lo que el Tutor recibe del último «Probar código»', () => {
     expect(leer('stores', 'tutor.ts')).toContain('ultimaPruebaDe(workspaceStore.publicTestCases)');
   });
 });
+
+// 10/10, Jeider: «si hubiera una mejor guía en el ejercicio de cómo hacerlo o qué debería ir a revisar».
+describe('«Lo que vas a usar»: los conceptos que pide el ejercicio, con un ejemplo de otro problema', () => {
+  type C = { clave: string; titulo: string; idea: string; ejemplo: string };
+  const { conceptosDelEjercicio, CONCEPTOS } = cargar<{
+    conceptosDelEjercicio: (e: { enunciado: string; plantilla: string; ejemplo?: { input: string; expectedOutput: string } | null; unidad?: string }) => C[];
+    CONCEPTOS: Record<string, C>;
+  }>('conceptosEjercicio');
+
+  it('Área y perímetro: leer la entrada, convertir a número, operaciones y dos líneas', () => {
+    const c = conceptosDelEjercicio({
+      enunciado: 'Lee la **base** (primera línea) y la **altura** (segunda línea) de un rectángulo. Escribe en dos líneas: 1. El área (base × altura). 2. El perímetro (2 × (base + altura)).',
+      plantilla: PLANTILLA,
+      ejemplo: { input: '3\n4', expectedOutput: '12\n14' },
+      unidad: 'Operadores y expresiones',
+    });
+    expect(c.map((x) => x.clave)).toEqual(['leer-entrada', 'convertir-numero', 'operaciones', 'varias-lineas']);
+  });
+
+  it('De minutos a horas: división entera y armar un texto', () => {
+    const c = conceptosDelEjercicio({
+      enunciado: 'Lee una cantidad de **minutos** y escríbela en horas y minutos con el formato `H h M min`. Pista: `Math.floor` y el operador `%`.',
+      plantilla: PLANTILLA,
+      ejemplo: { input: '135', expectedOutput: '2 h 15 min' },
+    }).map((x) => x.clave);
+    expect(c).toEqual(expect.arrayContaining(['division-entera', 'texto']));
+    expect(c).not.toContain('varias-lineas');
+  });
+
+  it('cada ejemplo es JavaScript válido y de otro problema (no trae la solución de un ejercicio del curso)', () => {
+    for (const c of Object.values(CONCEPTOS)) {
+      expect(() => new Function(c.ejemplo)).not.toThrow();
+      expect(c.ejemplo).not.toMatch(/base|altura|minutos/);
+    }
+  });
+
+  it('la pantalla la muestra en programar, con el enlace a la lección', () => {
+    const vue = leer('components', 'exercise', 'ConceptosEjercicio.vue');
+    expect(vue).toContain('Lo que vas a usar');
+    expect(vue).toContain('Repasar la lección');
+    expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('<ExerciseConceptosEjercicio v-if="isCodingActivity"');
+  });
+
+  it('cada error dice qué repasar, y la tarjeta muestra su ejemplo', () => {
+    expect(diagnosticarSalida('12\n14', 'NaN\nNaN', '3\n4')?.repasar).toBe('leer-entrada');
+    expect(diagnosticarSalida('8', '53', '5\n3')?.repasar).toBe('convertir-numero');
+    expect(diagnosticarSalida('12', "SyntaxError: Unexpected token ';' (línea 8)")?.repasar).toBe('escribir-bien');
+    const tarjeta = leer('components', 'exercise', 'CasoPrueba.vue');
+    expect(tarjeta).toContain('Repasa: {{ repasar.titulo }}');
+    expect(tarjeta).toContain('{{ repasar.ejemplo }}');
+  });
+
+  it('el Tutor recibe los mismos conceptos', () => {
+    expect(leer('stores', 'tutor.ts')).toContain('conceptos: conceptosParaTutor()');
+  });
+});

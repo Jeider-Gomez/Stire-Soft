@@ -16,6 +16,8 @@ export interface SenalesTutor {
   confianza?: string
   acerto?: boolean
   modo?: 'por-pasos' | 'otra-explicacion' | 'ejemplo-parecido'
+  /** Conceptos que pide el ejercicio (utils/conceptosEjercicio.ts). */
+  conceptos?: string[]
 }
 
 /** Resultado del último «Probar código» (10/10): el Tutor lo ve en vez de felicitar una línea suelta. */

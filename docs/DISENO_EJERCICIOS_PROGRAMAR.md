@@ -69,8 +69,15 @@ Ninguno de estos es un error del estudiante. Son de diseño: la pantalla no le d
 | La tarjeta del caso muestra «Entra», «Debe salir» y «Lo que mostró tu código» respetando los saltos de línea; la entrada ya no se pierde al probar | `components/exercise/CasoPrueba.vue`, `stores/workspace.ts` |
 | El Tutor recibe el enunciado (lo busca el servidor) y el resultado de la última prueba; no felicita un programa que no puede funcionar | `src/tutor/tutor.service.ts`, `tutor-context.service.ts`, `frontend-nuxt/utils/contextoTutor.ts` |
 | Se mide cuánto tarda cada respuesta del Tutor (registro del servidor) | `src/tutor/tutor.service.ts` |
+| **«Lo que vas a usar»**: los conceptos de JavaScript que pide el ejercicio (leer la entrada, convertir a número, operaciones, división entera, armar un texto, varias líneas, if, for), cada uno con una frase y un ejemplo de OTRO problema, y el enlace para repasar la lección. Se deducen del enunciado, la plantilla y el ejemplo: el docente no hace nada | `frontend-nuxt/utils/conceptosEjercicio.ts`, `components/exercise/ConceptosEjercicio.vue` |
+| Cada pista de error dice **qué repasar** y muestra su ejemplo | `utils/diagnosticoSalida.ts` (`repasar`), `components/exercise/CasoPrueba.vue` |
+| **Tutor para quien empieza a programar**: un problema a la vez (primero lo que impide que el programa arranque), dice la línea, explica el concepto con un ejemplo de otro problema si el estudiante no sabe JavaScript, termina con una sola acción; recibe los conceptos del ejercicio; con un ejercicio abierto lee menos de la lección (responde antes) | `src/tutor/tutor-context.service.ts`, `tutor-senales.ts`, `tutor-guidance.ts`, `tutor.service.ts` |
 
-## 5. Propuesta para el docente (fase B, por decidir)
+## 5. Propuesta para el docente (fase B, en espera)
+
+> **Decisión de Jeider (10/10):** primero mejorar lo que ya existe en el ejercicio y en el Tutor, no agregar funciones
+> nuevas al docente. B4 («si sale ___, dile ___») se descarta por exagerada. Lo demás queda como idea para después de
+> la prueba.
 
 Todo opcional: si el docente no lo usa, el ejercicio sigue funcionando como hoy, con los pasos automáticos.
 

@@ -7,12 +7,24 @@ export type TipoDiagnostico =
   | 'sintaxis' | 'no-existe' | 'indefinido' | 'error' | 'nan'
   | 'vacia' | 'eco' | 'concatena' | 'espacios' | 'mayusculas' | 'puntuacion' | 'por-uno' | 'redondeo' | 'numero' | 'linea'
 
+import type { ClaveConcepto } from './conceptosEjercicio'
+
 export interface Diagnostico {
   tipo: TipoDiagnostico
   /** Qué pasó y qué revisar, en lenguaje de estudiante. Nunca trae el código corregido. */
   mensaje: string
   /** Línea del código donde está el error, si el servidor la dijo («… (línea 8)»). */
   linea?: number
+  /** Qué concepto repasar, con su ejemplo (utils/conceptosEjercicio.ts). */
+  repasar?: ClaveConcepto
+}
+
+/** Qué repasar según el error (10/10, Jeider: «qué debería ir a revisar para poder hacer el código»). */
+const REPASAR: Record<TipoDiagnostico, ClaveConcepto> = {
+  sintaxis: 'escribir-bien', 'no-existe': 'escribir-bien', error: 'escribir-bien',
+  indefinido: 'leer-entrada', nan: 'leer-entrada', eco: 'operaciones',
+  concatena: 'convertir-numero', numero: 'operaciones', redondeo: 'division-entera', 'por-uno': 'ciclos',
+  vacia: 'varias-lineas', espacios: 'varias-lineas', linea: 'varias-lineas', mayusculas: 'texto', puntuacion: 'texto',
 }
 
 const LEER_POSICION = 'Ojo: el número entre corchetes es la POSICIÓN, no el valor: la primera línea que entra es lineas[0], la segunda lineas[1].'
@@ -55,6 +67,11 @@ const numero = (t: string): number | null => {
 }
 
 export function diagnosticarSalida(esperada: string, obtenida: string, entrada = ''): Diagnostico | null {
+  const d = diagnosticar(esperada, obtenida, entrada)
+  return d ? { ...d, repasar: REPASAR[d.tipo] } : null
+}
+
+function diagnosticar(esperada: string, obtenida: string, entrada: string): Diagnostico | null {
   const e = esperada.trim()
   const o = obtenida.trim()
   if (e === o) return null

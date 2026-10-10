@@ -48,13 +48,23 @@
         <template v-if="!tc.actualOutput && limiteMs"> Si tarda más de {{ limiteMs }} ms (un bucle infinito), se corta.</template>
       </span>
     </p>
+    <!-- Qué repasar, con un ejemplo de otro problema (utils/conceptosEjercicio.ts). -->
+    <details v-if="repasar" class="text-[11px] bg-base-blanco rounded border border-base-borde-sutil px-2 py-1.5">
+      <summary class="cursor-pointer min-h-[32px] flex items-center gap-1 font-semibold text-semantico-info">
+        <BookMarked :size="13" aria-hidden="true" /> Repasa: {{ repasar.titulo }}
+      </summary>
+      <p class="mt-1 text-base-texto-primario">{{ repasar.idea }}</p>
+      <pre class="mt-1.5 font-mono bg-editor-bg text-editor-text rounded px-2 py-1.5 overflow-x-auto whitespace-pre">{{ repasar.ejemplo }}</pre>
+    </details>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Check, Lightbulb, X } from 'lucide-vue-next'
+import { BookMarked, Check, Lightbulb, X } from 'lucide-vue-next'
 import type { TestCase } from '~/types'
 import type { Diagnostico } from '~/utils/diagnosticoSalida'
+import { CONCEPTOS } from '~/utils/conceptosEjercicio'
 
-defineProps<{ tc: TestCase; diagnostico: Diagnostico | null; limiteMs?: number | null }>()
+const props = defineProps<{ tc: TestCase; diagnostico: Diagnostico | null; limiteMs?: number | null }>()
+const repasar = computed(() => (props.diagnostico?.repasar ? CONCEPTOS[props.diagnostico.repasar] : null))
 </script>

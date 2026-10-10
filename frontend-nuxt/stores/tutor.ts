@@ -1,4 +1,5 @@
 import { contextoSegunPantalla, ultimaPruebaDe } from '~/utils/contextoTutor'
+import { conceptosDelEjercicio } from '~/utils/conceptosEjercicio'
 import { defineStore } from 'pinia'
 import type { TutorMessage, TutorSuggestedActivity, TutorApiKey, TutorGuidance } from '~/types'
 import { useAuthStore } from './auth'
@@ -260,6 +261,14 @@ export const useTutorStore = defineStore('tutor', () => {
     }
   }
 
+  /** Los conceptos que pide el ejercicio de programar abierto (los mismos de «Lo que vas a usar»). */
+  function conceptosParaTutor(): string[] | undefined {
+    const ej = workspaceStore.currentExercise
+    if (!ej || ej.questionType !== 'coding') return undefined
+    const claves = conceptosDelEjercicio({ enunciado: ej.description, plantilla: ej.initialCode, ejemplo: workspaceStore.publicTestCases[0], unidad: ej.unitTitle }).map((c) => c.clave)
+    return claves.length > 0 ? claves : undefined
+  }
+
   // ─── Enviar mensaje (§18.1) ──────────────────────────────────────────────────
   async function sendMessage(userText: string) {
     if (!userText.trim()) return
@@ -307,6 +316,7 @@ export const useTutorStore = defineStore('tutor', () => {
               confianza: workspaceStore.calibracion?.confianza,
               acerto: workspaceStore.calibracion?.acerto,
               modo: modoEnvio,
+              conceptos: conceptosParaTutor(),
             }, ultimaPruebaDe(workspaceStore.publicTestCases))
       })
 

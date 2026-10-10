@@ -45,6 +45,7 @@
         <div v-if="leftTab === 'enunciado'" class="space-y-4">
           <ExerciseSinIntentos v-if="avisoEjercicio" :motivo="avisoEjercicio" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
           <div class="prose prose-xs" v-html="formatMarkdown(workspaceStore.currentExercise.description)"></div>
+          <ExerciseConceptosEjercicio v-if="isCodingActivity" :enunciado="workspaceStore.currentExercise.description" :plantilla="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :unidad="workspaceStore.currentExercise.unitTitle" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" />
           <ExercisePasosCodigo v-if="isCodingActivity" :codigo="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" @por-pasos="resolverPorPasos" />
 
           <ExerciseComoSeCalifica :codigo="isCodingActivity" :html-css="isHtmlCssActivity" />
