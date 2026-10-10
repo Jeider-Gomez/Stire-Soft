@@ -120,6 +120,18 @@ describe('LearningProgressService', () => {
       expect(result.mastery).toBe(100);
     });
 
+    it('lo conservado al cambiar las reglas (10/10) es un piso: una entrega nueva no baja de ahí; sin piso, baja normal', async () => {
+      const activity = makeActivity({ id: 1, totalPoints: 100, passingScore: 60 });
+      activitiesRepo.find.mockResolvedValue([activity, makeActivity({ id: 2, totalPoints: 100, passingScore: 60, questionType: 'ordering' })]);
+      mockQueryBuilder([makeSubmission({ activityId: 1, score: 100 })]);
+
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress({ mastery: 100, dominioConservado: 100 }));
+      expect((await service.recalculateMastery(42, 10, 1, 0, 60)).mastery).toBe(100);
+
+      progressRepo.findOrCreate.mockResolvedValue(makeProgress({ mastery: 100, dominioConservado: null }));
+      expect((await service.recalculateMastery(42, 10, 1, 0, 60)).mastery).toBeLessThan(100);
+    });
+
     it('una entrega revisada que cuenta para el dominio es evidencia que solo sube: una nota baja no deja la lección sin salida (09/10)', async () => {
       const activity = makeActivity({ id: 1, totalPoints: 100, passingScore: 60 });
       progressRepo.findOrCreate.mockResolvedValue(makeProgress({ attemptsCount: 3 }));

@@ -25,6 +25,14 @@ export class LearningProgress extends StireBaseEntity {
   @Column({ type: 'float', default: 0 })
   mastery: number;
 
+  /**
+   * Dominio que se conserva al cambiar las reglas (10/10; src/scripts/recalcular-dominio.ts): si el cálculo nuevo da
+   * menos que lo que el estudiante ya tenía (casi siempre, una lección a la que se le agregaron ejercicios después), se
+   * guarda aquí y el dominio nunca baja de este valor. null en las demás lecciones: ahí el dominio sube y baja normal.
+   */
+  @Column({ type: 'float', nullable: true })
+  dominioConservado: number | null;
+
   @Column({
     type: 'enum',
     enum: LearningStatus,
