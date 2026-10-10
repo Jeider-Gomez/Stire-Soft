@@ -87,6 +87,10 @@ lección sigue recomendando 3 parecidos en opción múltiple: no para que sea po
   nuevas. Nadie baja por el cambio de reglas.
 - **Recalcular una vez.** Después de desplegar: `node dist/scripts/recalcular-dominio.js --simular` dice qué cambiaría,
   y sin `--simular` lo guarda. No manda notificaciones ni cuenta intentos.
+- **Aplicado el 10/10 sin bajarle a nadie.** El script solo guarda lo que sube. En las 8 lecciones donde el cálculo
+  nuevo daba menos, guarda lo que el estudiante tenía en `learning_progress.dominioConservado`, y el dominio nunca baja
+  de ahí, tampoco en sus próximas entregas. Casi siempre era una lección a la que se le agregaron ejercicios después
+  de dominarla. En producción: 5 suben (3 atascadas llegan al 100 %), 8 se conservan, 93 quedan igual, 0 bajan.
 - La lista y el dominio usan la **misma función**. La lista ya no puede decir «no sube» si sube, y dice cuánto: `ganancia`.
 
 ## 6. Lo que decide el docente
