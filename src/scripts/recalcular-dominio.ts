@@ -5,7 +5,9 @@
 //
 // Uso, en el servidor (docs/DESPLIEGUE.md):
 //   node dist/scripts/recalcular-dominio.js --simular   → solo dice qué cambiaría, no guarda nada
-//   node dist/scripts/recalcular-dominio.js             → guarda SOLO las lecciones que suben (nunca baja nada)
+//   node dist/scripts/recalcular-dominio.js             → guarda SOLO las lecciones que suben (nunca baja nada), y en
+//                                                         las que bajarían deja lo ganado como piso (dominioConservado),
+//                                                         para que tampoco bajen en su próxima entrega
 import { NestFactory } from '@nestjs/core';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AppModule } from '../app.module';
@@ -87,6 +89,9 @@ async function main() {
           false,
           { silencioso: true },
         );
+      } else if (!simular && cambio.despues < cambio.antes) {
+        // Se conserva: lo ya ganado queda como piso de esa lección, también en sus próximas entregas (10/10).
+        await progresos.update(p.id, { dominioConservado: p.mastery });
       }
       cambios.push(cambio);
     }

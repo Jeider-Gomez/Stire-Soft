@@ -110,7 +110,8 @@ export class LearningProgressService {
     );
     const evidencias = await this.evidenciasDeEntregas(studentId, learningUnitId);
     const reglas = await this.reglasDeLaUnidad(learningUnitId);
-    progress.mastery = dominioConEntregas(submissions, activities, evidencias, saltadoHasta, reglas.pesoNivel);
+    // Lo conservado al cambiar las reglas (10/10) es un piso solo en esas lecciones: no se baja lo ya ganado.
+    progress.mastery = Math.max(dominioConEntregas(submissions, activities, evidencias, saltadoHasta, reglas.pesoNivel), progress.dominioConservado ?? 0);
 
     if (contarIntento) progress.attemptsCount += 1;
 
