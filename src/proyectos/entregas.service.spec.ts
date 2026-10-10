@@ -111,11 +111,24 @@ function crear(opciones: { entrega?: Record<string, unknown> | null; anteriores?
     findOne: jest.fn(() => Promise.resolve(opciones.matriculado === false ? null : { studentId: 5, classId: 3 })),
     find: jest.fn(() => Promise.resolve([{ studentId: 5, classId: 3 }, { studentId: 6, classId: 3 }])),
   };
-  const usuarios = { find: jest.fn(() => Promise.resolve([{ id: 5, fullName: 'Luisa' }, { id: 6, fullName: 'Julián' }])) };
+  const todos = [{ id: 5, fullName: 'Luisa' }, { id: 6, fullName: 'Julián' }];
+  // Respeta el filtro `id: In([...])` de estudiantesDe.
+  const usuarios = { find: jest.fn((q?: { where?: { id?: { value?: number[] } } }) => Promise.resolve(q?.where?.id?.value ? todos.filter((u) => q.where!.id!.value!.includes(u.id)) : todos)) };
   const proyectos = {
     obtener: jest.fn(() => Promise.resolve(opciones.proyecto ?? { id: 1, ownerId: 5, titulo: 'Calculadora', tipo: 'javascript', archivos })),
     crearConArchivos: jest.fn(() => Promise.resolve({ id: 77 })),
   };
+  // Con clave, una sola vez por estudiante (como NotificationsService): la segunda devuelve null.
+  const avisadas = new Set<string>();
+  const notificaciones = {
+    createNotification: jest.fn((userId: number, _t: string, _m: string, _tipo: unknown, extra: { clave: string }) => {
+      const k = `${userId}|${extra.clave}`;
+      if (avisadas.has(k)) return Promise.resolve(null);
+      avisadas.add(k);
+      return Promise.resolve({ id: avisadas.size });
+    }),
+  };
+  const clases = { findOne: jest.fn(() => Promise.resolve({ id: 3, name: 'Fundamentos de Algoritmia' })) };
   const autorizacion = {
     assertTeacherOwnsClass: jest.fn((u: User) => (u.id === 9 ? Promise.resolve() : Promise.reject(new ForbiddenException('No dictas esta clase')))),
   };
@@ -127,8 +140,10 @@ function crear(opciones: { entrega?: Record<string, unknown> | null; anteriores?
     usuarios as unknown as Deps[4],
     proyectos as unknown as Deps[5],
     autorizacion as unknown as Deps[6],
+    notificaciones as unknown as Deps[7],
+    clases as unknown as Deps[8],
   );
-  return { service, entregas, eventos, envios, proyectos };
+  return { service, entregas, eventos, envios, proyectos, notificaciones };
 }
 
 describe('EntregasService', () => {
@@ -191,6 +206,32 @@ describe('EntregasService', () => {
     const anteriores = [{ id: 40, entregaId: 2, studentId: 5, version: 1, revisadoAt: null, titulo: 'A', tarde: false, nota: null, comentario: null, createdAt: ahora }];
     const d = await crear({ anteriores }).service.detalle(docente, 2);
     expect(d.filas.map((f) => [f.estudiante, f.estado])).toEqual([['Luisa', 'por_revisar'], ['Julián', 'sin_entregar']]);
+  });
+});
+
+// Sugerencia n.º 10 de Pedro (09/10): «al crear una entrega no les llega la notificación a los estudiantes».
+describe('EntregasService: aviso a los estudiantes al publicar', () => {
+  it('crearla publicada avisa a cada estudiante activo, con enlace a la entrega', async () => {
+    const { service, notificaciones } = crear();
+    await service.crear(docente, { classId: 3, titulo: 'Calculadora', publicada: true });
+    expect(notificaciones.createNotification).toHaveBeenCalledTimes(2);
+    expect(notificaciones.createNotification).toHaveBeenCalledWith(5, 'Nueva entrega: «Calculadora»', expect.stringContaining('«Fundamentos de Algoritmia»'), 'aviso', { enlace: '/estudiante/entregas/2', clave: 'entrega:2' });
+  });
+
+  it('un borrador no avisa; al publicarlo, sí; volver a guardar o republicar no repite el aviso', async () => {
+    const { service, notificaciones } = crear({ entrega: { id: 2, classId: 3, titulo: 'Calculadora', publicada: false, asignadaA: null, tipoProyecto: 'cualquiera', plantilla: null, ...base } });
+    await service.crear(docente, { classId: 3, titulo: 'Calculadora' });
+    expect(notificaciones.createNotification).not.toHaveBeenCalled();
+    await service.actualizar(docente, 2, { publicada: true });
+    await service.actualizar(docente, 2, { publicada: true });
+    expect(notificaciones.createNotification).toHaveBeenCalledTimes(4); // 2 estudiantes × 2 guardados…
+    expect(new Set(notificaciones.createNotification.mock.calls.map((c) => c[0])).size).toBe(2); // …pero solo 2 avisos creados (la clave)
+  });
+
+  it('asignada a algunos estudiantes: solo les avisa a ellos', async () => {
+    const { service, notificaciones } = crear();
+    await service.crear(docente, { classId: 3, titulo: 'Calculadora', publicada: true, asignadaA: [6] });
+    expect(notificaciones.createNotification.mock.calls.map((c) => c[0])).toEqual([6]);
   });
 });
 

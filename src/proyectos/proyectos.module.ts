@@ -14,9 +14,10 @@ import { ProyectoEnviosService } from './proyecto-envios.service';
 import { ProyectoEnviosController } from './proyecto-envios.controller';
 import { EntregasService } from './entregas.service';
 import { EntregasController } from './entregas.controller';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Proyecto, ProyectoEnvio, Entrega, EntregaEvento, Enrollment, Class, User]), AuthorizationModule],
+  imports: [TypeOrmModule.forFeature([Proyecto, ProyectoEnvio, Entrega, EntregaEvento, Enrollment, Class, User]), AuthorizationModule, NotificationsModule],
   controllers: [ProyectosController, ProyectoEnviosController, EntregasController],
   providers: [ProyectosService, ProyectoEnviosService, EntregasService],
 })

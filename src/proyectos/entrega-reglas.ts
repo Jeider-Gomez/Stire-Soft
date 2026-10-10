@@ -196,3 +196,22 @@ export function estadoDeEntrega(versiones: Array<{ version: number; revisadoAt: 
   if (!ultima) return 'sin_entregar';
   return ultima.revisadoAt ? 'revisada' : 'por_revisar';
 }
+
+/**
+ * La notificación que reciben los estudiantes cuando una entrega queda publicada para ellos (sugerencia n.º 10 de Pedro,
+ * 09/10: «los estudiantes no ven que se subió una entrega y la pasan por alto»). Dice la clase y hasta cuándo.
+ */
+export function notificacionDeEntrega(
+  entrega: { id: number; titulo: string; cierraAt: Date | null },
+  nombreClase: string,
+): { titulo: string; mensaje: string; enlace: string; clave: string } {
+  const cierre = entrega.cierraAt
+    ? ` Cierra el ${new Date(entrega.cierraAt).toLocaleString('es-CO', { timeZone: 'America/Bogota', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}.`
+    : '';
+  return {
+    titulo: `Nueva entrega: «${entrega.titulo}»`,
+    mensaje: `Tu docente de «${nombreClase}» publicó una entrega.${cierre}`,
+    enlace: `/estudiante/entregas/${entrega.id}`,
+    clave: `entrega:${entrega.id}`,
+  };
+}
