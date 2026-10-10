@@ -164,11 +164,49 @@ export type MotivoAviso = 'sin-intentos' | 'completado' | 'parecido'
 /**
  * El aviso al abrir un ejercicio según cómo va en la lista de la lección (09/10, Jeider: «al entrar a un ejercicio ya
  * hecho no me avisa que no subirá el dominio»). Antes solo se avisaba en el mismo ejercicio aprobado; un «parecido» de
- * uno ya resuelto (mismo tipo y nivel: cuenta el mejor) tampoco sube el dominio y no decía nada.
+ * uno ya resuelto (mismo tipo y nivel) casi no sube el dominio y no decía nada.
  */
 export function avisoPorEstado(estado: string | undefined): MotivoAviso | null {
   if (estado === 'hecho') return 'completado'
   if (estado === 'cuenta-otro') return 'parecido'
   if (estado === 'sin-intentos') return 'sin-intentos'
   return null
+}
+
+/** Lo que el docente escribió para cada pregunta de opción múltiple, como lo lee el estudiante (JEIDER-S08-11; BT-41). */
+export interface RetroalimentacionPregunta { preguntaId: number; correcta: boolean; explicacion: string | null; repasar: string | null }
+export interface RetroParaMostrar { tipo: 'porque' | 'repasar'; texto: string }
+
+const REPASAR_POR_DEFECTO = 'Vuelve a la explicación de la lección y prueba con un ejercicio parecido: no te damos la respuesta para que la descubras.'
+
+/**
+ * Al acertar, por qué es correcta (si el docente lo escribió); al fallar, qué repasar, nunca la respuesta. Sin texto del
+ * docente, al fallar se sugiere volver a la explicación (una sola vez, aunque fallen varias preguntas).
+ */
+export function retroParaMostrar(retro: ReadonlyArray<RetroalimentacionPregunta> | undefined): RetroParaMostrar[] {
+  const out: RetroParaMostrar[] = []
+  for (const r of retro ?? []) {
+    if (r.correcta && r.explicacion) out.push({ tipo: 'porque', texto: r.explicacion })
+    if (!r.correcta) out.push({ tipo: 'repasar', texto: r.repasar ?? REPASAR_POR_DEFECTO })
+  }
+  return out.filter((x, i) => out.findIndex((y) => y.tipo === x.tipo && y.texto === x.texto) === i)
+}
+
+/**
+ * Intentos que le quedan en pantalla (09/10). Con el límite usado, el servidor reabre un intento a las 24 horas del
+ * último (`intentoDisponible`): así ningún ejercicio queda cerrado para siempre.
+ */
+export function intentosQueQuedan(ej: { maxAttempts?: number; usedAttempts?: number; intentoDisponible?: boolean }): number {
+  const quedan = Math.max(0, (ej.maxAttempts ?? 0) - (ej.usedAttempts ?? 0))
+  return quedan > 0 ? quedan : ej.intentoDisponible ? 1 : 0
+}
+
+/** «el viernes a las 3:15 p. m.» (hora de Colombia), para decir cuándo se reabre un intento. */
+export function textoReabre(iso: string | null | undefined): string | null {
+  if (!iso) return null
+  const fecha = new Date(iso)
+  if (Number.isNaN(fecha.getTime())) return null
+  const dia = fecha.toLocaleDateString('es-CO', { timeZone: 'America/Bogota', weekday: 'long' })
+  const hora = fecha.toLocaleTimeString('es-CO', { timeZone: 'America/Bogota', hour: 'numeric', minute: '2-digit' })
+  return `el ${dia} a las ${hora}`
 }

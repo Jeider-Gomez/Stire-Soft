@@ -25,6 +25,10 @@ export interface ClassInfo {
   logrosActivos?: boolean
   categoriasLogro?: string | null
   dominioParaAvanzar?: number
+  /** Motor del dominio: cada cuántas horas se reabre un intento con el límite usado (1 a 168). */
+  horasParaReabrir?: number
+  /** Si intermedio y avanzado pesan más en el dominio de la lección. */
+  nivelesPesanDistinto?: boolean
   asignatura?: AsignaturaInfo | null
   grupo?: string | null
   periodo?: string | null
@@ -161,6 +165,11 @@ export function useAjustesClase(classId: number) {
     })
   }
 
+  /** Reglas del dominio de la clase (docs/DISENO_DOMINIO.md): opcionales; el docente decide. */
+  async function guardarReglasDominio(r: { horasParaReabrir: number; nivelesPesanDistinto: boolean }): Promise<void> {
+    classInfo.value = await api.patch<ClassInfo>(`/class/${classId}`, r)
+  }
+
   return {
     pending,
     active,
@@ -177,6 +186,7 @@ export function useAjustesClase(classId: number) {
     guardarLogros,
     guardarCompartir,
     guardarAvance,
+    guardarReglasDominio,
   }
 }
 

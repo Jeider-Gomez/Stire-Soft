@@ -23,6 +23,10 @@ export interface WorkspaceExercise {
   initialCode: string
   /** Ya lo aprobó alguna vez: la pantalla avisa que repetirlo es práctica (08/10). */
   yaAprobada?: boolean
+  /** 09/10: con el límite usado, se reabre un intento a las 24 horas del último (motor-dominio.ts del servidor). */
+  intentoDisponible?: boolean
+  /** Si no hay intento disponible: cuándo se reabre (ISO). */
+  reabreEn?: string | null
   /** Puntaje máximo real de la actividad (activity.totalPoints) — nunca asumir 100. */
   maxScore: number
 }
@@ -222,6 +226,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           description: activity.description || primaryQuestion.question || 'Sin enunciado disponible.',
           initialCode: starter,
           yaAprobada: activity.yaAprobada === true,
+          intentoDisponible: activity.intentoDisponible === true,
+          reabreEn: typeof activity.reabreEn === 'string' ? activity.reabreEn : null,
           maxScore: activity.totalPoints ?? 100
         }
 
@@ -515,6 +521,11 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
       if (submitRes) {
         currentExercise.value.usedAttempts += 1
+        // Con este intento se usó el límite (o el reabierto): el próximo se reabre en 24 horas.
+        if (currentExercise.value.attemptsAllowed > 0 && currentExercise.value.usedAttempts >= currentExercise.value.attemptsAllowed) {
+          currentExercise.value.intentoDisponible = false
+          currentExercise.value.reabreEn = new Date(Date.now() + 24 * 3_600_000).toISOString()
+        }
         currentSubmissionId.value = null // Intento cerrado
         pendingAnswer.value = null
 

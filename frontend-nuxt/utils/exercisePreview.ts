@@ -20,7 +20,7 @@ export function toStudentPreviewConfig(type: string, config: Config | null | und
   if (!config || typeof config !== 'object') return {}
   switch (type) {
     case 'mcq': {
-      const { correctAnswerId, explanation, ...rest } = config
+      const { correctAnswerId, explanation, repasar, ...rest } = config
       return rest
     }
     case 'coding': {

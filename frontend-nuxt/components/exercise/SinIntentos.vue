@@ -7,15 +7,16 @@
   <div v-if="aviso">
     <div role="status" class="rounded-lg border border-semantico-info/30 bg-semantico-info/5 p-3 flex flex-col sm:flex-row sm:items-center gap-3">
       <p v-if="aviso === 'parecido'" class="flex-1 text-xs text-base-texto-primario">
-        <strong>Este ejercicio ya no sube tu dominio.</strong> Ya resolviste uno parecido (mismo tipo y nivel) y cuenta el
-        mejor. Sirve para repasar; para seguir subiendo, prueba uno que todavía sume.
+        <strong>Este ejercicio ya no sube tu dominio.</strong> Su grupo (mismo tipo y nivel) ya está completo. Sirve para
+        repasar; para seguir subiendo, prueba uno que todavía sume.
       </p>
       <p v-else-if="aviso === 'completado'" class="flex-1 text-xs text-base-texto-primario">
-        <strong>Ya completaste este ejercicio.</strong> Tu mejor resultado ya cuenta en tu dominio: repetirlo solo lo sube si
-        ahora lo haces mejor, y si te equivocas, la lección vuelve antes a tus repasos. Para seguir subiendo, prueba otro.
+        <strong>Ya completaste este ejercicio.</strong> Repetirlo suma poco a tu dominio (es repaso) y equivocarte lo baja un
+        poco. Para subir más rápido, prueba uno parecido que no hayas hecho.
       </p>
       <p v-else class="flex-1 text-xs text-base-texto-primario">
-        <strong>Ya usaste los intentos de este ejercicio.</strong> Puedes leerlo cuanto quieras; para seguir sumando a tu dominio, practica con otro.
+        <strong>Ya usaste los intentos de este ejercicio.</strong> Se reabre uno {{ reabre ?? 'mañana' }}. Mientras, puedes leerlo
+        y practicar con uno parecido: también sube tu dominio.
       </p>
       <div class="flex gap-2 shrink-0">
         <button type="button" class="min-h-[44px] px-3 rounded-md borde-afordancia text-xs font-semibold bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario" @click="ir(acciones[1])">{{ acciones[1].texto }}</button>
@@ -39,7 +40,8 @@
 import { ArrowRight, ListChecks } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
-import { accionesSinIntentos, avisoPorEstado, irASiguienteLeccion, notaModuloCerrado, type AccionResultado, type MotivoAviso, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
+import { useWorkspaceStore } from '~/stores/workspace'
+import { accionesSinIntentos, avisoPorEstado, irASiguienteLeccion, notaModuloCerrado, textoReabre, type AccionResultado, type MotivoAviso, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
 import { siguienteLeccion } from '~/utils/siguienteLeccion'
 
 const props = defineProps<{ activityId: number; learningUnitId: number; motivo: MotivoAviso | 'revisar' }>()
@@ -47,6 +49,10 @@ const authStore = useAuthStore()
 const { siguienteActividad, misEjercicios } = useUnidadEstudiante()
 const desdeLista = ref<MotivoAviso | null>(null)
 const aviso = computed(() => (props.motivo === 'revisar' ? desdeLista.value : props.motivo))
+// Cuándo se reabre un intento (09/10: con el límite usado, a las 24 horas del último): de la lista o del ejercicio abierto.
+const reabreLista = ref<string | null>(null)
+const ws = useWorkspaceStore()
+const reabre = computed(() => textoReabre(reabreLista.value ?? (ws.currentExercise.activityId === props.activityId ? ws.currentExercise.reabreEn : null)))
 
 const recomendacion = ref<RecomendacionSiguiente | null>(null)
 const acciones = computed(() => accionesSinIntentos(recomendacion.value, props.activityId))
@@ -60,7 +66,9 @@ onMounted(async () => {
   if (!sid || !props.learningUnitId) return
   if (props.motivo === 'revisar') {
     try {
-      desdeLista.value = avisoPorEstado((await misEjercicios(props.learningUnitId)).find((e) => e.id === props.activityId)?.estado)
+      const suyo = (await misEjercicios(props.learningUnitId)).find((e) => e.id === props.activityId)
+      desdeLista.value = avisoPorEstado(suyo?.estado)
+      reabreLista.value = suyo?.reabreEn ?? null
     } catch {
       desdeLista.value = null // sin la lista no se avisa: el ejercicio funciona igual
     }

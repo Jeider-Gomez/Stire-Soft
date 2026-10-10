@@ -13,7 +13,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
       <div class="rounded-lg bg-base-bg-secundario p-3 space-y-1">
         <p class="font-semibold text-base-texto-primario inline-flex items-center gap-1.5"><TrendingUp :size="14" class="text-acento-ambar-fuerte" aria-hidden="true" /> Tu dominio sube practicando</p>
-        <p class="text-slate-700">Cada ejercicio que apruebas suma a su lección. Desde 85 % la lección queda dominada, y vuelve de vez en cuando como repaso para que no se te olvide.</p>
+        <p class="text-slate-700">Un ejercicio nuevo resuelto a la primera suma más; repetir el mismo, poco; equivocarte baja un poco, nunca a cero. Siempre puedes llegar al 100 %. Desde 85 % la lección queda dominada, y vuelve de vez en cuando como repaso para que no se te olvide.</p>
       </div>
 
       <div class="rounded-lg bg-base-bg-secundario p-3 space-y-2">

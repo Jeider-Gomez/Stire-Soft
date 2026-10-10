@@ -38,6 +38,12 @@ export interface EjercicioLeccionEstudiante {
   parecidos: number
   estado: EstadoEjercicioEstudiante
   subeDominio: boolean
+  /** Puntos que subiría el dominio de la lección si lo resolviera ahora (el mismo motor del dominio, 09/10). */
+  ganancia?: number
+  /** Cuánto lleva su grupo (él y sus parecidos), de 0 a 100. */
+  casillaPct?: number
+  /** Sin intentos: cuándo se reabre uno (ISO). */
+  reabreEn?: string | null
   intentosUsados: number
   intentosPermitidos: number
   mejorPct: number | null

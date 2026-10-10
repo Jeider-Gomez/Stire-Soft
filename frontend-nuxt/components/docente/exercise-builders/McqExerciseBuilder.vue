@@ -60,16 +60,32 @@
       </div>
     </div>
 
-    <!-- Explicación pedagógica opcional -->
+    <!-- Retroalimentación (09/10, JEIDER-S08-11; BT-41): por qué es correcta sale al ACERTAR; al fallar, qué repasar, sin
+         dar la respuesta (con un intento, vuelve a intentarlo con un ejercicio parecido). Las dos son opcionales. -->
     <div>
       <label for="mcq-explanation" class="block font-semibold text-base-texto-primario mb-1">
-        Explicación de retroalimentación (opcional)
+        Por qué es correcta (opcional)
       </label>
+      <p id="mcq-explanation-ayuda" class="text-[11px] text-base-texto-secundario mb-1">El estudiante la lee cuando acierta, para afianzar la idea.</p>
       <input
         id="mcq-explanation"
         v-model="explanation"
         type="text"
-        placeholder="Breve justificación que se mostrará tras calificar la pregunta..."
+        aria-describedby="mcq-explanation-ayuda"
+        placeholder="La A de REDA es «Abierto»: lo define la licencia, no la herramienta."
+        class="w-full px-3 py-2 text-xs rounded bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
+    </div>
+    <div>
+      <label for="mcq-repasar" class="block font-semibold text-base-texto-primario mb-1">
+        Si falla, qué repasar (opcional)
+      </label>
+      <p id="mcq-repasar-ayuda" class="text-[11px] text-base-texto-secundario mb-1">Sin dar la respuesta. Si lo dejas vacío, se le sugiere volver a la explicación de la lección.</p>
+      <input
+        id="mcq-repasar"
+        v-model="repasar"
+        type="text"
+        aria-describedby="mcq-repasar-ayuda"
+        placeholder="Repasa qué hace «abierto» a un recurso en la sección «OVA y REDA»."
         class="w-full px-3 py-2 text-xs rounded bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
     </div>
   </div>
@@ -91,6 +107,7 @@ const options = ref<OptionItem[]>([
 
 const correctAnswerId = ref('opt1')
 const explanation = ref('')
+const repasar = ref('')
 
 function addOption() {
   counter++
@@ -117,6 +134,7 @@ function reset() {
   ]
   correctAnswerId.value = 'opt1'
   explanation.value = ''
+  repasar.value = ''
 }
 
 // Inversa de validateAndGetConfig: deja el editor como si el docente hubiera escrito este `config` guardado.
@@ -129,6 +147,7 @@ function load(config: unknown) {
   const correcta = asText(c.correctAnswerId)
   correctAnswerId.value = cargadas.some(o => o.id === correcta) ? correcta : cargadas[0]!.id
   explanation.value = asText(c.explanation)
+  repasar.value = asText(c.repasar)
 }
 
 function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: string; config?: any } {
@@ -157,7 +176,8 @@ function validateAndGetConfig(_totalPoints: number): { valid: boolean; error?: s
       options: options.value.map(o => ({ id: o.id, text: o.text.trim() })),
       correctAnswerId: correctAnswerId.value,
       isMultipleChoice: false,
-      explanation: explanation.value.trim() || undefined
+      explanation: explanation.value.trim() || undefined,
+      repasar: repasar.value.trim() || undefined
     }
   }
 }

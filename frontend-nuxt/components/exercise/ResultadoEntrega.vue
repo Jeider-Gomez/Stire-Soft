@@ -47,6 +47,12 @@
       </p>
 
       <p v-if="r.feedback" class="text-xs text-base-texto-secundario">{{ r.feedback }}</p>
+      <!-- Opción múltiple (JEIDER-S08-11): al acertar, por qué; al fallar, qué repasar, sin la respuesta. -->
+      <p v-for="x in retro" :key="x.tipo + x.texto" class="flex items-start gap-2 p-3 rounded-lg border text-xs text-left text-base-texto-primario"
+        :class="x.tipo === 'porque' ? 'border-semantico-pasa/30 bg-semantico-pasa/5' : 'border-semantico-info/30 bg-semantico-info/5'">
+        <component :is="x.tipo === 'porque' ? Lightbulb : BookOpen" :size="15" class="shrink-0 mt-0.5" :class="x.tipo === 'porque' ? 'text-semantico-pasa' : 'text-semantico-info'" aria-hidden="true" />
+        <span><strong>{{ x.tipo === 'porque' ? 'Por qué es correcta:' : 'Qué repasar:' }}</strong> {{ x.texto }}</span>
+      </p>
 
       <button
         v-if="!exito"
@@ -75,14 +81,14 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight, ClipboardCheck, ListChecks, Lock, PartyPopper, Scale, Sparkles } from 'lucide-vue-next'
+import { ArrowRight, BookOpen, ClipboardCheck, Lightbulb, ListChecks, Lock, PartyPopper, Scale, Sparkles } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { siguienteLeccion } from '~/utils/siguienteLeccion'
 import { mensajeCalibracion } from '~/utils/confianza'
 import { calidadDelResultado } from '~/utils/escalaResultados'
-import { CUANDO_VUELVE, pasoSiguiente, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
+import { CUANDO_VUELVE, intentosQueQuedan, pasoSiguiente, retroParaMostrar, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
 
 const props = defineProps<{ exito: boolean; reto: boolean }>()
 defineEmits<{ tutor: [] }>()
@@ -96,7 +102,7 @@ const r = computed(() => ws.submissionResult!)
 const ej = computed(() => ws.currentExercise)
 const esCodigo = computed(() => ej.value.questionType === 'coding')
 const maxScore = computed(() => r.value.maxScore ?? ej.value.maxScore)
-const quedanIntentos = computed(() => Math.max(0, (ej.value.maxAttempts ?? 0) - (ej.value.usedAttempts ?? 0)))
+const quedanIntentos = computed(() => intentosQueQuedan(ej.value))
 
 const recomendacion = ref<RecomendacionSiguiente | null>(null)
 onMounted(async () => {
@@ -114,6 +120,7 @@ onMounted(async () => {
 const sigLeccion = computed(() => siguienteLeccion(studentStore.modules, studentStore.estadosModulos, ej.value.learningUnitId))
 const paso = computed(() => pasoSiguiente({ aprobado: props.exito, quedanIntentos: quedanIntentos.value, actividadActual: ej.value.activityId, recomendacion: recomendacion.value, siguienteLeccion: sigLeccion.value }))
 const cambio = computed(() => textoCambioDominio(ws.masteryBefore, ws.masteryAfter))
+const retro = computed(() => retroParaMostrar(r.value.retroalimentacion))
 const calibracion = computed(() => (ws.calibracion && ej.value.usedAttempts === 1 ? mensajeCalibracion(ws.calibracion, esCodigo.value) : null))
 /** Otra vez, Difícil, Bien o Fácil, con la misma regla que el servidor usa para sus repasos (calidadDeRepaso). */
 const calidad = computed(() => r.value.status === 'graded'
