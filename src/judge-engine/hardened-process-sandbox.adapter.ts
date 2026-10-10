@@ -232,10 +232,26 @@ export class HardenedProcessSandboxAdapter implements SandboxAdapter {
 
   /** Elimina rutas absolutas y da un mensaje pedagógico ante agotamiento de heap. */
   private sanitizeStderr(raw: string): string {
-    if (/JavaScript heap out of memory|FATAL ERROR/i.test(raw)) {
-      return `Límite de memoria excedido (${MAX_HEAP_MB} MB).`;
-    }
-    const first = raw.split('\n').find((l) => /Error|error/.test(l)) ?? 'Error de ejecución';
-    return first.replace(/[A-Za-z]:\\[^\s)]+|\/[^\s)]+/g, '<ruta>').trim().slice(0, 300);
+    return limpiarErrorDelEstudiante(raw);
   }
+}
+
+/**
+ * El error que ve el estudiante: la línea «TipoError: mensaje» sin rutas del servidor y, si Node la dice, la línea de SU
+ * código donde ocurrió (10/10, Jeider: un `SyntaxError` sin línea no le decía dónde mirar). Node escribe primero
+ * `…/student.js:8`, luego la línea de código, y después `SyntaxError: …`; la línea del código se salta porque el
+ * estudiante pudo escribir la palabra «error» en ella.
+ */
+export function limpiarErrorDelEstudiante(raw: string): string {
+  if (/JavaScript heap out of memory|FATAL ERROR/i.test(raw)) {
+    return `Límite de memoria excedido (${MAX_HEAP_MB} MB).`;
+  }
+  const lineas = raw.split('\n');
+  const first =
+    lineas.find((l) => /^\s*[A-Za-z]*Error\b/.test(l)) ??
+    lineas.find((l) => /Error|error/.test(l)) ??
+    'Error de ejecución';
+  const mensaje = first.replace(/[A-Za-z]:\\[^\s)]+|\/[^\s)]+/g, '<ruta>').trim().slice(0, 280);
+  const linea = /student\.js:(\d+)/.exec(raw)?.[1];
+  return linea ? `${mensaje} (línea ${linea})` : mensaje;
 }

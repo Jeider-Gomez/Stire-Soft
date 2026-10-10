@@ -12,6 +12,11 @@
  */
 
 export const ERRORES_DE_SALIDA = {
+  sintaxis: 'su programa tiene un error de sintaxis y ni siquiera arranca (falta un valor, un paréntesis o una comilla); eso va antes que cualquier otra cosa',
+  'no-existe': 'usa una variable que no existe (no la creó o la escribió distinto)',
+  indefinido: 'usa o muestra algo vacío (undefined); a menudo lee una posición de la entrada que no existe, como lineas[3] cuando solo hay dos líneas',
+  error: 'su programa se detiene con un error al ejecutarse',
+  nan: 'una cuenta da NaN: usa un dato que no es número (no lo convirtió con Number o leyó la posición equivocada de la entrada)',
   vacia: 'su programa no muestra nada: probablemente falta mostrar el resultado (console.log) o el programa no llega a esa línea',
   eco: 'su programa muestra la misma entrada que recibe: le falta el paso que la procesa',
   concatena: 'junta los números como texto en lugar de operarlos (no convierte la entrada a número; «5» + «3» da «53»)',

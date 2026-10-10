@@ -41,6 +41,25 @@ describe('HardenedProcessSandboxAdapter', () => {
     expect(result.stderr).toContain('solo JavaScript');
   });
 
+  // 10/10 (Jeider): un SyntaxError sin línea no decía dónde mirar.
+  it('dice en qué línea del código del estudiante está el error de sintaxis, sin rutas del servidor', async () => {
+    const result = await adapter.executeIsolated(
+      'const area = 12;\nconst error = area + /* tu cálculo */;\nconsole.log(error);',
+      'javascript',
+      { expected: '12' },
+    );
+
+    expect(result.status).toBe('runtime_error');
+    expect(result.stderr).toMatch(/^SyntaxError: .* \(línea 2\)$/);
+    expect(result.stderr).not.toContain('/');
+  });
+
+  it('dice la línea de un error al ejecutar', async () => {
+    const result = await adapter.executeIsolated('const a = 1;\nconsole.log(b);', 'javascript', { expected: '1' });
+
+    expect(result.stderr).toBe('ReferenceError: b is not defined (línea 2)');
+  });
+
   // Regresión directa de P0-05: este adaptador NUNCA debe aprobar código por
   // contener una palabra mágica — solo por producir la salida correcta.
   it('NO aprueba código solo por contener la palabra "correct" (a diferencia del mock anterior)', async () => {

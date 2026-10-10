@@ -24,9 +24,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Content } from '../content/entities/content.entity';
 import { ContentType } from '../common/enums/content-type.enum';
+import { Activity } from '../activities/entities/activity.entity';
 
 /** Cuánto de la lección se le da al Tutor: lo suficiente para hablar con las mismas palabras y ejemplos. */
 export const MAX_LECCION_PARA_TUTOR = 3000;
+/** Cuánto del enunciado del ejercicio se le da al Tutor (10/10: sin él felicitaba código que no resolvía el ejercicio). */
+export const MAX_ENUNCIADO_PARA_TUTOR = 1500;
 
 const PRACTICE_INTENT_PATTERN =
   /\b(quiero|puedo|deseo|dame|necesito|hazme|ponme)\b[^.!?]{0,40}\b(practicar|estudiar|ejercitar|un ejercicio|ejercicios|repasar)\b/i;
@@ -145,6 +148,7 @@ export class TutorService {
     private readonly learningProgressService: LearningProgressService,
     private readonly settingsService: TutorSettingsService,
     @InjectRepository(Content) private readonly contenidos: Repository<Content>,
+    @InjectRepository(Activity) private readonly actividades: Repository<Activity>,
   ) {
     this.geminiModel = this.configService.get<string>('GEMINI_MODEL', 'gemini-flash-latest');
   }
@@ -171,7 +175,11 @@ export class TutorService {
     }
 
     const practiceIntent = PRACTICE_INTENT_PATTERN.test(message);
-    const promptContext = { ...this.sanitizeContext(context, unit), ...(unit ? await this.leccionDeLaUnidad(unit.id) : {}) };
+    const promptContext = {
+      ...this.sanitizeContext(context, unit),
+      ...(unit ? await this.leccionDeLaUnidad(unit.id) : {}),
+      ...(unit ? await this.enunciadoDelEjercicio(context?.activityId, unit.id) : {}),
+    };
 
     // En un refuerzo la ayuda empieza un nivel más arriba; el tope del docente sigue mandando.
     const refuerzo = await this.settingsService.refuerzoConLaActividad(studentId, context?.activityId);
@@ -298,14 +306,29 @@ export class TutorService {
     };
   }
 
+  /**
+   * El enunciado del ejercicio abierto, para que el Tutor revise el código contra lo que se pide (10/10, Jeider: dijo
+   * «¡Exacto!» a un programa que leía `lineas[3]` y nunca iba a funcionar). Lo busca el servidor y solo dentro de la
+   * unidad ya autorizada: un id de otra unidad no trae nada.
+   */
+  private async enunciadoDelEjercicio(activityId: unknown, unitId: number): Promise<{ activityDescription?: string }> {
+    const id = Number(activityId);
+    if (!Number.isInteger(id) || id <= 0) return {};
+    const actividad = await this.actividades.findOne({ where: { id, learningUnitId: unitId }, select: { id: true, description: true } });
+    const texto = actividad?.description?.trim();
+    if (!texto) return {};
+    return { activityDescription: texto.length > MAX_ENUNCIADO_PARA_TUTOR ? `${texto.slice(0, MAX_ENUNCIADO_PARA_TUTOR)}\n[…]` : texto };
+  }
+
   private sanitizeContext(context: any, unit: { id: number; title: string } | null): any {
     if (!context || typeof context !== 'object') return context;
     const rest = { ...context };
     delete rest.learningUnitId;
     delete rest.unitTitle;
-    // La lección la pone el servidor (leccionDeLaUnidad), no el navegador.
+    // La lección y el enunciado los pone el servidor (leccionDeLaUnidad, enunciadoDelEjercicio), no el navegador.
     delete rest.lessonTitle;
     delete rest.lessonText;
+    delete rest.activityDescription;
     return unit ? { ...rest, learningUnitId: unit.id, unitTitle: unit.title } : rest;
   }
 
@@ -369,6 +392,7 @@ export class TutorService {
     let sawQuota = false;
     for (const model of candidateModels) {
       let res: Awaited<ReturnType<typeof fetch>>;
+      const inicio = Date.now();
       try {
         res = await fetch(`${GEMINI_BASE_URL}/${model}:generateContent`, {
           method: 'POST',
@@ -388,7 +412,11 @@ export class TutorService {
           .filter(Boolean)
           .join('')
           .trim();
-        if (text) return text;
+        if (text) {
+          // Cuánto tarda cada respuesta (10/10, «el tutor se demora»): para medir antes de cambiar el modelo o el pensamiento.
+          this.logger.log(`Tutor: ${model} respondió en ${Date.now() - inicio} ms.`);
+          return text;
+        }
         this.logger.warn(`Modelo ${model} respondió sin texto (finishReason: ${data?.candidates?.[0]?.finishReason ?? 'desconocido'}).`);
         continue;
       }

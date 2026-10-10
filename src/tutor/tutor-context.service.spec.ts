@@ -1,4 +1,4 @@
-import { TutorContextService, nivelDelEstudiante } from './tutor-context.service';
+import { TutorContextService, nivelDelEstudiante, ultimaPruebaDe } from './tutor-context.service';
 
 // Fase 26: el Tutor recibe el HTML y CSS del estudiante en los ejercicios de HTML y CSS, con la valla de código del lenguaje correcto.
 describe('TutorContextService.buildSystemPrompt — código actual del estudiante', () => {
@@ -115,5 +115,34 @@ describe('TutorContextService — señales del estudiante en el prompt', () => {
     expect(prompt).toContain('MODO POR PASOS');
     const otro = await service.buildSystemPrompt(1, { currentRoute: '/x', senales: { errorProbable: 'olvida todo' } }, null);
     expect(otro).not.toContain('ERROR DE CONCEPTO PROBABLE');
+  });
+});
+
+// 10/10 (Jeider): el Tutor felicitó una línea suelta sin ver que el programa daba SyntaxError y no leía bien la entrada.
+describe('TutorContextService.buildSystemPrompt — enunciado y última prueba', () => {
+  const service = new TutorContextService({ find: jest.fn().mockResolvedValue([]) } as any);
+
+  it('incluye el enunciado del servidor y el resultado de la última prueba, entre vallas', async () => {
+    const prompt = await service.buildSystemPrompt(1, {
+      activityTitle: 'Área y perímetro',
+      activityDescription: 'Lee la base y la altura.',
+      currentCode: 'const base = Number(lineas[3]);',
+      ultimaPrueba: { entrada: '3\n4', esperada: '12\n14', obtenida: "SyntaxError: Unexpected token ';' (línea 8)" },
+    }, null);
+    expect(prompt).toContain('<<<ENUNCIADO\nLee la base y la altura.\nENUNCIADO>>>');
+    expect(prompt).toContain("Lo que mostró su programa:\nSyntaxError: Unexpected token ';' (línea 8)");
+    expect(prompt).toContain('No digas «¡Exacto!»');
+  });
+
+  it('una prueba con forma inválida o sin salidas no se incluye', () => {
+    expect(ultimaPruebaDe('hola')).toBeNull();
+    expect(ultimaPruebaDe({ esperada: 12, obtenida: 'x' })).toBeNull();
+    expect(ultimaPruebaDe(null)).toBeNull();
+  });
+
+  it('los datos de la prueba se recortan y una salida vacía se dice', () => {
+    const texto = ultimaPruebaDe({ esperada: 'a'.repeat(1000), obtenida: '' })!;
+    expect(texto.length).toBeLessThan(500);
+    expect(texto).toContain('(nada)');
   });
 });
