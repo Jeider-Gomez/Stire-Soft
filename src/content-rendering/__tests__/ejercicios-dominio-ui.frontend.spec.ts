@@ -71,3 +71,11 @@ describe('intentos que se reabren (la pantalla del ejercicio)', () => {
     expect(leer('stores', 'workspace.ts')).toContain('intentoDisponible: activity.intentoDisponible === true');
   });
 });
+
+describe('la cabecera del ejercicio no dice «3 / 3» como si no quedara nada (10/10)', () => {
+  it('con el límite usado y un intento reabierto (o de un refuerzo), dice «1 más disponible»', () => {
+    const w = leer('layouts', 'workspace.vue');
+    expect(w).toContain('workspaceStore.currentExercise.usedAttempts >= workspaceStore.currentExercise.maxAttempts && workspaceStore.currentExercise.intentoDisponible');
+    expect(w).toContain('1 más disponible');
+  });
+});

@@ -46,7 +46,9 @@
         </span>
 
         <span class="text-base-texto-secundario text-[11px]">
-          Intentos: <strong class="text-base-texto-primario">{{ workspaceStore.currentExercise.usedAttempts }}</strong> / {{ workspaceStore.currentExercise.maxAttempts }}
+          Intentos: <strong class="text-base-texto-primario">{{ workspaceStore.currentExercise.usedAttempts }}</strong> / {{ workspaceStore.currentExercise.maxAttempts }}<!--
+          10/10: con el límite usado, el servidor reabre uno a las 24 h o lo da un refuerzo; «3 / 3» solo confundía. -->
+          <template v-if="workspaceStore.currentExercise.usedAttempts >= workspaceStore.currentExercise.maxAttempts && workspaceStore.currentExercise.intentoDisponible"> · <strong class="text-semantico-pasa">1 más disponible</strong></template>
         </span>
       </div>
 
