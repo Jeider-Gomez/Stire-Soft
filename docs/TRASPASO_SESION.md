@@ -94,10 +94,9 @@ Comandos, en el servidor (§8 de `DESPLIEGUE.md`), en este orden: copia de la ba
 
 | Qué | Quién / cuándo |
 |---|---|
-| ~~Marcar las sugerencias n.º 9 y 10 de Pedro~~ (hechas el 10/10, probadas en producción, con aviso). Antes: marcar las sugerencias **n.º 9 y 10 de Pedro** como resueltas, con «Avisarle». N.º 9: «Arreglado el 10/10: al quitar a un estudiante en Ajustes, ya no aparece en Estudiantes ni como "Necesita apoyo".» N.º 10: «Arreglado el 10/10 con tu idea: al publicar una entrega, a cada estudiante le llega una notificación con el enlace.» | Con la cuenta de admin de prueba. |
-| **Decisión de Jeider:** ¿activar el peso por nivel (avanzado pesa más) después de la prueba? Ver `DISENO_DOMINIO.md` §6. | Después del 16/10. |
+| Peso por nivel (avanzado pesa más): ya lo decide **cada docente** en Ajustes → Avance (apagado por defecto). Recomendado activarlo después de la prueba. Ver `DISENO_DOMINIO.md` §6. | Cada docente, después del 16/10. |
 | **Decisión de Jeider:** ¿pasar a 1 intento también los ejercicios de opción múltiple ya cargados en producción? Lo nuevo ya se crea con 1. Ojo: los cursos tienen 2 parecidos por grupo y la guía recomienda 3. | Esperar respuesta. |
-| Contarle a José la barra de la clave (`components/auth/FuerzaClave.vue`) y la guía de la lección. Solo usan sus tokens. | Jeider. |
+| Contarle a José la barra de la clave (`components/auth/FuerzaClave.vue`), la guía de la lección y la lista de ejercicios rediseñada. Solo usan sus tokens. | Jeider. |
 | Enunciados de prueba de escritorio en la clase de Pedro en producción: el seed ya los explica, pero los datos de producción hay que editarlos como docente. | Pedro o con la API. |
 | Revisión pedagógica de los ejercicios de programar de los cursos (S08-J09 en el Backlog de Trello). | Después de la prueba. |
 | Volver la encuesta SUS a un intervalo largo y reactivar el apagado automático de Azure al terminar la prueba. | 16/10 (o 23/10 si hay 3.ª semana). |
