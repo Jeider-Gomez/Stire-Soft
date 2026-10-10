@@ -350,9 +350,11 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       })
 
       if (res && Array.isArray(res.results)) {
+        // La entrada se conserva: el servidor no la devuelve y en su lugar quedaba el título («Ejemplo 1»).
+        const entradas = publicTestCases.value.map((tc) => tc.input)
         publicTestCases.value = res.results.map((r, index) => ({
           id: index + 1,
-          input: r.input || r.label || `Caso #${index + 1}`,
+          input: r.input || entradas[index] || r.label || `Caso #${index + 1}`,
           expectedOutput: r.expected || r.expectedOutput || '',
           actualOutput: r.actualOutput !== undefined ? String(r.actualOutput) : '',
           isPublic: true,

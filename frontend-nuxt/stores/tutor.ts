@@ -1,4 +1,4 @@
-import { contextoSegunPantalla } from '~/utils/contextoTutor'
+import { contextoSegunPantalla, ultimaPruebaDe } from '~/utils/contextoTutor'
 import { defineStore } from 'pinia'
 import type { TutorMessage, TutorSuggestedActivity, TutorApiKey, TutorGuidance } from '~/types'
 import { useAuthStore } from './auth'
@@ -307,7 +307,7 @@ export const useTutorStore = defineStore('tutor', () => {
               confianza: workspaceStore.calibracion?.confianza,
               acerto: workspaceStore.calibracion?.acerto,
               modo: modoEnvio,
-            })
+            }, ultimaPruebaDe(workspaceStore.publicTestCases))
       })
 
       // Actualizar nivel de guía con la respuesta del backend

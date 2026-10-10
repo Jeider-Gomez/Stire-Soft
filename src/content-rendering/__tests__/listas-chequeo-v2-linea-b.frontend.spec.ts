@@ -67,8 +67,10 @@ describe('MOD-02 y MOD-04 · diagnóstico de una salida que no coincide', () => 
   });
 
   it('el ejercicio muestra el diagnóstico bajo el caso y dice «Todavía no coincide», no «Falla en salida»', () => {
-    const p = leer('pages', 'estudiante', 'evaluacion', '[activityId].vue');
-    expect(p).toContain('diagnostico(tc)?.mensaje');
+    // 10/10: la tarjeta del caso salió a CasoPrueba.vue; la página le pasa el diagnóstico.
+    expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('diagnostico(tc)');
+    const p = leer('components', 'exercise', 'CasoPrueba.vue');
+    expect(p).toContain('diagnostico.mensaje');
     expect(p).toContain('Todavía no coincide');
     expect(p).not.toContain('Falla en salida');
   });

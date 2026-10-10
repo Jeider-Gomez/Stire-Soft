@@ -18,8 +18,12 @@ export interface SenalesTutor {
   modo?: 'por-pasos' | 'otra-explicacion' | 'ejemplo-parecido'
 }
 
+/** Resultado del último «Probar código» (10/10): el Tutor lo ve en vez de felicitar una línea suelta. */
+export interface UltimaPrueba { entrada: string; esperada: string; obtenida: string }
+
 export interface ContextoTutor {
   senales?: SenalesTutor
+  ultimaPrueba?: UltimaPrueba
   currentRoute: string
   learningUnitId?: number
   activityId?: number
@@ -33,6 +37,7 @@ export function contextoSegunPantalla(
   ejercicio: EjercicioAbierto | null,
   codigo: { js: string; html: string; css: string },
   senales?: SenalesTutor,
+  ultimaPrueba?: UltimaPrueba | null,
 ): ContextoTutor {
   // Leyendo una lección: /estudiante/unidad/<id>
   const leccion = /^\/estudiante\/unidad\/(\d+)/.exec(ruta)
@@ -52,9 +57,16 @@ export function contextoSegunPantalla(
         : { currentCode: codigo.js }),
       // Solo las señales que existen: un objeto vacío no se manda.
       ...(senales && Object.values(senales).some((v) => v !== undefined) ? { senales } : {}),
+      ...(ultimaPrueba ? { ultimaPrueba } : {}),
     }
   }
 
   // Cualquier otra pantalla (inicio, progreso, repasos…): solo dónde está, sin suponer una lección ni un ejercicio.
   return { currentRoute: ruta }
+}
+
+/** El caso que más le sirve al Tutor: el primero que no coincide; si todos coinciden, ninguno. Sin probar, nada. */
+export function ultimaPruebaDe(casos: ReadonlyArray<{ input: string; expectedOutput: string; actualOutput?: string; passed?: boolean }>): UltimaPrueba | null {
+  const c = casos.find((x) => x.passed === false)
+  return c ? { entrada: c.input, esperada: c.expectedOutput, obtenida: c.actualOutput ?? '' } : null
 }
