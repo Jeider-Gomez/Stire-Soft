@@ -74,7 +74,7 @@ Hallazgos de Jeider: `docs/calidad/resultados-prueba/HALLAZGOS_JEIDER_S08_2026-1
 - Desde la nube: se trabaja directo en `main` con push (Jeider lo autorizó). El dominio de la API debe estar permitido
   en la red del entorno; Node `fetch` no usa el proxy: usar `curl`.
 
-**Producción:** el backend está en `19ba823`. **Falta desplegar hasta `7446778`, CON una migración**
+**Producción:** el backend está en `19ba823`. **Falta desplegar hasta `108aa45`, CON una migración**
 (`1793000000000-ReglasDominioPorClase`):
 
 - `ffbe1be` agrega `retroalimentacion` a la entrega.
@@ -92,6 +92,7 @@ Comandos, en el servidor (§8 de `DESPLIEGUE.md`), en este orden: copia de la ba
 | Qué | Quién / cuándo |
 |---|---|
 | Desplegar el backend hasta `4c4c04d` (sin migraciones), recalcular el dominio y después llevar a `main` el frontend (rama `claude/wizardly-lovelace-g2i462`, PR #6). | Jeider despliega; luego se sube el frontend. |
+| Después del despliegue, marcar las sugerencias **n.º 9 y 10 de Pedro** como resueltas, con «Avisarle». N.º 9: «Arreglado el 10/10: al quitar a un estudiante en Ajustes, ya no aparece en Estudiantes ni como "Necesita apoyo".» N.º 10: «Arreglado el 10/10 con tu idea: al publicar una entrega, a cada estudiante le llega una notificación con el enlace.» | Con la cuenta de admin de prueba. |
 | **Decisión de Jeider:** ¿activar el peso por nivel (avanzado pesa más) después de la prueba? Ver `DISENO_DOMINIO.md` §6. | Después del 16/10. |
 | **Decisión de Jeider:** ¿pasar a 1 intento también los ejercicios de opción múltiple ya cargados en producción? Lo nuevo ya se crea con 1. Ojo: los cursos tienen 2 parecidos por grupo y la guía recomienda 3. | Esperar respuesta. |
 | Contarle a José la barra de la clave (`components/auth/FuerzaClave.vue`) y la guía de la lección. Solo usan sus tokens. | Jeider. |
