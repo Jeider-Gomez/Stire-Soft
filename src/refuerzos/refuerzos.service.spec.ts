@@ -137,3 +137,21 @@ describe('RefuerzosController: roles', () => {
     expect(Reflect.getMetadata('roles', RefuerzosController.prototype[metodo])).toEqual(roles);
   });
 });
+
+describe('intentoDeRefuerzo (sugerencia n.º 11 de José, 10/10)', () => {
+  const { intentoDeRefuerzo } = jest.requireActual<typeof import('./refuerzo-reglas')>('./refuerzo-reglas');
+  const creado = new Date('2026-10-10T12:00:00Z');
+  const r = (extra: object = {}) => ({ createdAt: creado, archivado: false, estudiantes: [7], pasos: [{ tipo: 'ejercicio' as const, activityId: 15 }], ...extra });
+  const antes = new Date('2026-10-09T12:00:00Z');
+  const despues = new Date('2026-10-10T13:00:00Z');
+
+  it('da un intento propio si el docente le mandó ese ejercicio y no lo ha hecho desde entonces', () => {
+    expect(intentoDeRefuerzo([r()], 15, 7, [antes])).toBe(true);
+  });
+  it('no lo da si ya lo hizo dentro del refuerzo, si es otro ejercicio u otro estudiante, o si está archivado', () => {
+    expect(intentoDeRefuerzo([r()], 15, 7, [antes, despues])).toBe(false);
+    expect(intentoDeRefuerzo([r()], 16, 7, [antes])).toBe(false);
+    expect(intentoDeRefuerzo([r()], 15, 8, [antes])).toBe(false);
+    expect(intentoDeRefuerzo([r({ archivado: true })], 15, 7, [antes])).toBe(false);
+  });
+});

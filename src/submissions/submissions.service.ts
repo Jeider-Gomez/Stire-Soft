@@ -27,6 +27,8 @@ import { actividadVisiblePara } from '../activities/visibilidad';
 import { retroalimentacionCerrada } from './retroalimentacion';
 import { intentosDisponibles, reglasDeClase } from '../common/utils/motor-dominio';
 import { Class } from '../class/entities/class.entity';
+import { Refuerzo } from '../refuerzos/entities/refuerzo.entity';
+import { intentoDeRefuerzo } from '../refuerzos/refuerzo-reglas';
 
 @Injectable()
 export class SubmissionsService {
@@ -69,7 +71,9 @@ export class SubmissionsService {
     const classId = activity.learningUnit?.topic?.section?.classId;
     const clase = classId ? await this.activitiesRepo.manager.findOne(Class, { where: { id: classId } }) : null;
     const disponibles = intentosDisponibles(activity.attemptsAllowed, fechas, new Date(), reglasDeClase(clase).horasParaReabrir);
-    if (disponibles.quedan <= 0) {
+    // Si el docente se lo mandó en un refuerzo, tiene un intento propio aunque haya usado los de la lección (n.º 11).
+    const refuerzos = disponibles.quedan <= 0 && classId ? await this.activitiesRepo.manager.find(Refuerzo, { where: { classId, archivado: false } }) : [];
+    if (disponibles.quedan <= 0 && !intentoDeRefuerzo(refuerzos, activity.id, studentId, fechas)) {
       const cuando = disponibles.reabreEn
         ? disponibles.reabreEn.toLocaleString('es-CO', { timeZone: 'America/Bogota', weekday: 'long', hour: 'numeric', minute: '2-digit' })
         : 'pronto';

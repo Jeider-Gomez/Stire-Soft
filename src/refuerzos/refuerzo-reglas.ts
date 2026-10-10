@@ -107,3 +107,24 @@ export function ordenarSugerencias<T extends { nivel: number; aprobadosPor: numb
     return tipo === 'refuerzo' ? a.nivel - b.nivel : b.nivel - a.nivel;
   });
 }
+
+/**
+ * Un ejercicio que el docente manda en un refuerzo da UN intento propio (sugerencia n.º 11 de José, 10/10: «cuando se
+ * acaban los intentos haciéndolos en la lección, ya no se puede realizar el ejercicio en el refuerzo»). El docente pidió
+ * hacerlo: el límite de intentos de la lección no puede impedirlo. El intento vale hasta que lo hace después de creado el
+ * refuerzo (el paso queda hecho, pasosHechos); un refuerzo archivado ya no lo da.
+ */
+export function intentoDeRefuerzo(
+  refuerzos: Array<{ createdAt: Date; archivado: boolean; estudiantes: number[]; pasos: Paso[] }>,
+  activityId: number,
+  studentId: number,
+  fechasDeIntentos: Date[],
+): boolean {
+  return refuerzos.some(
+    (r) =>
+      !r.archivado &&
+      r.estudiantes.includes(studentId) &&
+      r.pasos.some((p) => p.tipo === 'ejercicio' && p.activityId === activityId) &&
+      !fechasDeIntentos.some((f) => f.getTime() >= new Date(r.createdAt).getTime()),
+  );
+}
