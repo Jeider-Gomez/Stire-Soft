@@ -104,7 +104,7 @@ habría sido inventar contenido sin respaldo, no completar un diseño real. Con 
 completo para el alcance decidido esta semana** (D-06 + Insumo 15 §1): las 9 ventanas de Estudiante
 en sus 4 estados, y las 9 de Docente/Administrador en 3 de 4 estados, todas cableadas.
 
-**Backend — auditoría de autenticación y cierre de FASE CC-09 (09/09, con Claude Code):**
+**Backend — auditoría de autenticación y cierre de FASE CC-09 (09/09, Jeider):**
 - Bloqueo 1 y 2 cerrados: `POST /submissions/:id/run` ("Probar código" sin consumir intento,
   reutiliza el sandbox real vía `JudgeExecutionService.runPublicCases()`) y
   `GET /review-schedules/due` (primera consulta real para `EST-V05`, urgencia calculada en vivo,

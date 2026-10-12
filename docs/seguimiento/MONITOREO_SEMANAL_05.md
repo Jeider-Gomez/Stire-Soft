@@ -41,7 +41,7 @@
 
 Esta semana está dominada por la **sustentación del Reto 2 oficial** (15–17 de septiembre). Todo lo demás se organiza alrededor de llegar a esa sustentación con evidencia real.
 
-En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya se verificaron contra el código real y quedan para corregir esta semana (`P2-R4` Self-XSS, `FE-02` botón sin formulario); las otras ya fueron revisadas por Claude Code y no deben repetirse como auditoría de código.
+En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya se verificaron contra el código real y quedan para corregir esta semana (`P2-R4` Self-XSS, `FE-02` botón sin formulario); las otras ya fueron revisadas por Jeider y no deben repetirse como auditoría de código.
 
 ### Resultados esperados
 
@@ -50,7 +50,7 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 3. Jorge realiza **QA general del proyecto sobre el resultado ejecutable**, cubriendo los flujos funcionales principales, backend/API, integración y correcciones entregadas por los agentes.
 4. Bitácora cerrada el viernes, sin retraso.
 
-> **Alcance actualizado de Jorge:** esta semana se prioriza el QA general del proyecto. **No incluye MODESEC ni comparación con Figma.** Tampoco incluye repetir auditorías de código ya realizadas por Claude Code, Antigravity o Codex.
+> **Alcance actualizado de Jorge:** esta semana se prioriza el QA general del proyecto. **No incluye MODESEC ni comparación con Figma.** Tampoco incluye repetir auditorías de código ya realizadas.
 
 ---
 
@@ -89,7 +89,7 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 
 ### Jorge Cervantes — Gestión + Calidad
 
-- [x] **S05-JOR01 · Re-verificar hallazgos propios sin confirmar.** Hecho por Claude Code el 14/09 para evitar duplicar una auditoría de código; el resultado quedó documentado en `docs/PLAN_MAESTRO.md` §5.
+- [x] **S05-JOR01 · Re-verificar hallazgos propios sin confirmar.** Hecho por Jeider el 14/09 para evitar duplicar una auditoría de código; el resultado quedó documentado en `docs/PLAN_MAESTRO.md` §5.
 - [ ] **S05-JOR02 · QA general del proyecto** — validar el sistema ejecutable de extremo a extremo, sin repetir auditorías de código de los agentes.
 
 **Qué debe hacer Jorge:**
@@ -183,7 +183,7 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
   Tarjeta `S05-J01` movida a `✅ Hecho`.)*
 - [x] Self-XSS del Tutor IA corregido (`P2-R4`). *(Ya estaba resuelto desde la Fase 14, commit
   `71360b7` — `escapeHtml()` en `TutorChatDrawer.vue` antes del markdown. Tarjeta `S05-J02` movida a
-  `✅ Hecho` el 18/09 por Claude Code, verificado contra el código real, no solo contra el commit.)*
+  `✅ Hecho` el 18/09 por Jeider, verificado contra el código real, no solo contra el commit.)*
 - [x] Formulario de "Crear Nueva Clase" conectado (`FE-02`). *(Mismo commit `71360b7` — modal real
   conectado a `POST /class`. Tarjeta `S05-J03` movida a `✅ Hecho` el 18/09, mismo criterio.)*
 
@@ -209,7 +209,7 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
 
 ### Jorge Cervantes
 
-- [x] Hallazgos re-verificados por Claude Code, sin duplicación de trabajo. *(14/09, ver
+- [x] Hallazgos re-verificados por Jeider, sin duplicación de trabajo. *(14/09, ver
   `docs/PLAN_MAESTRO.md` §5.)*
 - [x] QA general del sistema entregado. *(`docs/calidad/reportes-qa/REPORTE_QA_S5_2026-09-18.md`, 18/09
   — commit `83593cb` auditado, 331/331 tests, build backend/frontend en verde, `P2-R4`/`FE-02`
@@ -217,7 +217,7 @@ En paralelo, el QA previo de Jorge dejó una lista de brechas concretas. Dos ya 
   tarjeta `S05-JOR02` (login, navegación, flujo de estudiante, Tutor IA, API, integración, estados
   de error, correcciones de agentes, conclusión) — tarjeta movida a `✅ Hecho`.)*
 
-**Nota de verificación (18/09, Claude Code):** el reporte de Jorge se tomó como hallazgo a
+**Nota de verificación (18/09, Jeider):** el reporte de Jorge se tomó como hallazgo a
 verificar, no como hecho consumado — regla vigente de este proyecto. Dos precisiones reales:
 1. `VERIFY-01` ("`verify:clean` falla, requiere MySQL en :3306") no es un defecto de código — es el
    comportamiento **esperado** del script: `verify:clean` existe exactamente para exigir una base de

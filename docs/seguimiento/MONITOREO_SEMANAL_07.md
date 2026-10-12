@@ -193,8 +193,7 @@ real. No hace falta cubrir los 7.
 ### Pedro Romero
 
 - [x] Tablero de la Semana 7 creado. *(26/09.)*
-- [x] Bitácora cerrada el viernes 02/10, contrastada con Trello y Git. *(El cierre y el tablero de la Semana 8 los
-  hizo Jeider con Claude Code esa noche.)*
+- [x] Bitácora cerrada el viernes 02/10, contrastada con Trello y Git, y tablero de la Semana 8 creado.
 - [x] Pitch del Reto 3 en `docs/pitch/PITCH_RETO_03.md`. *(Subido el 02/10.)*
 - [x] 7 Hábitos registrados (1, 2, 3 y 5).
 

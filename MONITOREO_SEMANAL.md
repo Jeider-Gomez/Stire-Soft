@@ -10,7 +10,7 @@
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
 > **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_08.md`](./docs/seguimiento/MONITOREO_SEMANAL_08.md), cerrada el
-> 12/10 con 18 de 27 ítems cumplidos. La prueba funcionó en Fundamentos (Pedro dictó y José terminó la Unidad 1) y Pedro
+> 12/10 con 19 de 27 ítems cumplidos. La prueba funcionó en Fundamentos (Pedro dictó y José terminó la Unidad 1) y Pedro
 > terminó las secciones 1 y 2 de Pensamiento. **Julio y Jorge no dejaron registro de su semana**: sus lecciones, el
 > reporte docente, el QA, sus criterios de las listas y sus hábitos pasan a esta semana.
 

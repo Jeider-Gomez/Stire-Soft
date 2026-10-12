@@ -153,7 +153,7 @@ arriba (sin apagado automático durante la prueba), aprueba a los docentes y ati
 ### Pedro Romero — Documentación + Bitácora
 
 - [x] **S08-P01 · Tablero Trello de la Semana 8** — creado el 02/10.
-- [ ] **S08-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 09/10 (la única tarea con fecha del viernes), contrastada con Trello y Git.
+- [x] **S08-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 09/10 (la única tarea con fecha del viernes), contrastada con Trello y Git.
 - [x] **S08-P04 · Docente de Fundamentos de Algoritmia**
   - Crear su cuenta de docente (Jeider aprueba el rol) y la clase desde la plantilla `ALGO-203413`; publicar la Unidad 1
     y compartir el código o el QR con José y Julio.
@@ -242,7 +242,8 @@ tablero se revisó tal como quedó el viernes.)*
   los de la semana 2.
 - [ ] Su parte de la lista de Tutores Inteligentes (`S08-V-PEDRO`): quedó «en marcha», sin comentarios. **Pasa a la
   Semana 9.**
-- [ ] Bitácora cerrada el viernes (`S08-P02`): no se cerró; la cerró Jeider con Claude Code el lunes 12/10.
+- [x] Bitácora cerrada (`S08-P02`), contrastada con Trello y Git. *(Lunes 12/10, con retraso: debía cerrarse el
+  viernes 09/10.)*
 
 ### José López
 
@@ -291,7 +292,7 @@ tablero se revisó tal como quedó el viernes.)*
   puede consolidar (`S08-J07`) ni preparar la sustentación en inglés (`S08-P05`).
 - [ ] SUS del equipo (`S08-J08`): faltan respuestas.
 
-**Resumen de cierre:** 18 de 27 ítems cerrados. La prueba arrancó y funcionó en la parte de **Fundamentos**: Pedro
+**Resumen de cierre:** 19 de 27 ítems cerrados. La prueba arrancó y funcionó en la parte de **Fundamentos**: Pedro
 dictó, José terminó la Unidad 1 y STIRE recibió sus sugerencias y las de Pedro y Julio, que se resolvieron en la misma
 semana. En **Pensamiento** solo avanzó Pedro como estudiante (5 de 5). **Julio y Jorge no dejaron registro** en Trello ni
 en Git: ni sus lecciones, ni el reporte docente, ni el QA, ni sus criterios de las listas, ni sus hábitos (Julio sí
