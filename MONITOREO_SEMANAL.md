@@ -11,8 +11,8 @@
 
 > **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_08.md`](./docs/seguimiento/MONITOREO_SEMANAL_08.md), cerrada el
 > 12/10 con 19 de 27 ítems cumplidos. La prueba funcionó en Fundamentos (Pedro dictó y José terminó la Unidad 1) y Pedro
-> terminó las secciones 1 y 2 de Pensamiento. **Julio y Jorge no dejaron registro de su semana**: sus lecciones, el
-> reporte docente, el QA, sus criterios de las listas y sus hábitos pasan a esta semana.
+> terminó las secciones 1 y 2 de Pensamiento. Las tareas de Julio y Jorge que quedaron abiertas se suman a las de esta
+> semana (las de los hábitos no: cada semana tiene su propio registro).
 
 ---
 
@@ -35,28 +35,31 @@
 ## 🎯 2. Objetivo del Sprint
 
 **Semana 2 de la prueba con el equipo** ([`docs/calidad/PRUEBA_DOS_SEMANAS.md`](./docs/calidad/PRUEBA_DOS_SEMANAS.md)),
-**ponerse al día con lo que no se hizo en la Semana 8** y cerrar la revisión humana de las dos listas del profesor.
+**completar lo que quedó abierto de la Semana 8** y cerrar la revisión humana de las dos listas del profesor.
 
-### Roles en la prueba, ajustados *(12/10)*
+### Roles en la prueba *(12/10)*
 
-Solo cruza de curso quien terminó el suyo en la semana 1. Jorge y Julio no empezaron, así que hacen esta semana su
-primer curso.
+Se mantiene el cruce previsto en `PRUEBA_DOS_SEMANAS.md`. A Julio y a Jorge, lo que quedó abierto de la semana 1 (🔁) se
+les suma a lo de la semana 2; no se les quita nada del plan.
 
-| Clase | Docente | Estudiantes en la Semana 9 | Meta de la Semana 9 |
-|---|---|---|---|
-| Fundamentos de Algoritmia (`ALGO-203413`) | Pedro (publica la **Unidad 2**) | Julio (segunda cuenta): **Unidad 1** *(pendiente)* | Unidad 1 completa (6 lecciones) |
-| Pensamiento algorítmico (`PENSAR-ALGO`) | Julio (publica las **secciones 3 y 4**) | José: **secciones 1 y 2** · Jorge: **secciones 1 y 2** *(pendiente)* · Pedro (segunda cuenta): **secciones 3 y 4** | 5 lecciones cada uno |
+| Persona | Semana 9 | Lecciones |
+|---|---|---|
+| José | Pensamiento, secciones 1 y 2 | 5 |
+| Pedro (segunda cuenta) | Pensamiento, secciones 3 y 4 | 5 |
+| Jorge | 🔁 Pensamiento, secciones 1 y 2 · Fundamentos, Unidad 1 | 5 + 6 |
+| Julio (segunda cuenta) | 🔁 Fundamentos, Unidad 1 · Fundamentos, Unidad 2 | 6 + 8 |
 
-José se une a la clase de Julio (un estudiante puede estar en varias clases y cambia de clase arriba). Jeider sigue como
-administrador y estudiante en las dos clases, sin obligación de terminar.
+Docentes: Pedro publica la **Unidad 2** de Fundamentos y Julio las **secciones 3 y 4** de Pensamiento. José se une a la
+clase de Julio y Jorge a la de Pedro (un estudiante puede estar en varias clases y cambia de clase arriba). Jeider sigue
+como administrador y estudiante en las dos clases, sin obligación de terminar.
 
 ### Resultados esperados
 
 1. **Lo pendiente de la Semana 8, a más tardar el martes 13/10:** los criterios de las listas de Jorge, Julio y Pedro
    (`S09-V-*`) y los resultados de la semana 1 (`S09-P03`).
-2. Julio usa el rol de docente con su curso y deja su reporte (`S09-JL01`).
-3. Jorge entrega el QA en producción (`S09-JOR01`).
-4. Los estudiantes alcanzan su meta (`S09-E01`, `S09-E02`, `S09-E03`).
+2. Julio usa el rol de docente con su curso y deja el reporte de las dos semanas (`S09-JL01`, `S09-JL02`).
+3. Jorge entrega el QA de las dos semanas (`S09-JOR01`, `S09-JOR02`).
+4. Los estudiantes alcanzan su meta (`S09-E01` a `S09-E06`).
 5. Jeider corrige los 5 hallazgos de José (`S09-J01`), consolida las dos listas y el SUS y cierra la v2.0.0 (`S09-J03`).
 6. Resultados de las dos semanas de la prueba (`S09-P03`) y decisión sobre la Semana 10.
 7. Registro de los 7 Hábitos de los 5 integrantes (`S09-H-*`).
@@ -66,8 +69,9 @@ administrador y estudiante en las dos clases, sin obligación de terminar.
 
 ## 📋 3. Plan de trabajo semanal
 
-> **Fecha máxima de las tareas: jueves 15/10, 8:00 p. m.** Lo que viene de la Semana 8 marcado con ⏪ tiene fecha del
-> **martes 13/10, 8:00 p. m.** Solo la bitácora se cierra el viernes 16/10. Cada tarjeta de Trello tiene su lista de
+> **Fecha máxima de las tareas: jueves 15/10, 8:00 p. m.** Los criterios de las listas y los resultados de la semana 1
+> tienen fecha del **martes 13/10, 8:00 p. m.** Solo la bitácora se cierra el viernes 16/10. 🔁 = tarea de la Semana 8
+> que se suma a las de esta semana. Cada persona tiene sus tarjetas por separado. Cada tarjeta de Trello tiene su lista de
 > verificación.
 
 > Tablero: https://trello.com/b/eFKisFRU/stire-kanban-desarrollo-semana-09-12-16-oct-2026
@@ -87,28 +91,29 @@ administrador y estudiante en las dos clases, sin obligación de terminar.
   - Medir cuánto tarda el Tutor con el registro nuevo y decidir si hace falta la respuesta en streaming.
   - **Al terminar la prueba** (16/10, o 23/10 si hay Semana 10): reactivar el apagado automático de las 23:00 y volver
     a poner la encuesta SUS cada 90 días.
-- [ ] **S09-J03 · Cerrar la v2.0.0 con las dos listas** *(viene de `S08-J06`, `S08-J07` y `S08-J08`)*
+- [ ] 🔁 **S09-J03 · Cerrar la v2.0.0 con las dos listas** *(viene de `S08-J06`, `S08-J07` y `S08-J08`)*
   - Cuando estén los criterios de todos (`S09-V-*`): la tabla «nota de la IA vs. nota humana» de los 28 criterios en
     `VERIFICACION_v2.0.0.md`, con el porqué de cada diferencia.
   - SUS del equipo con las cinco respuestas (Mi perfil → «Responder la encuesta de usabilidad»).
   - Etiqueta `v2.0.0` en Git y su entrada en `CHANGELOG.md`.
-- [ ] **S09-J04 · Asistencia en el salón con cámaras reales** ⏪ *(viene de `S08-J04`; fecha límite 16/10)* — un celular
+- [ ] 🔁 **S09-J04 · Asistencia en el salón con cámaras reales** *(viene de `S08-J04`; fecha límite 16/10)* — un celular
   Android, un iPhone (de un compañero, en el encuentro presencial) y la cámara de un portátil.
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] **S09-V-JULIO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** ⏪ *(martes 13/10)* — MOD-01, MOD-03, UI-01,
-  UI-02, UI-03 y UI-05, un comentario por criterio sin mirar la nota de la IA.
-- [ ] **S09-JL01 · Docente de Pensamiento algorítmico** ⏪ *(viene de `S08-JL01`)*
-  - Publicar las secciones 3 y 4 y unir a José a la clase.
-  - Revisar «Hoy» cada día; crear una entrega y comentar lo que llegue; asignar un refuerzo; tomar la asistencia una vez.
-  - Revisión pedagógica de las lecciones: coherencia, dificultad e instrucciones claras.
-  - Reporte en `docs/cursos/REVISION_DOCENTE_PENSAR.md`, con las dos semanas.
-- [ ] **S09-E03 · Estudiante de Fundamentos, Unidad 1** ⏪ (segunda cuenta).
+- [ ] 🔁 **S09-V-JULIO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** *(martes 13/10)* — MOD-01, MOD-03,
+  UI-01, UI-02, UI-03 y UI-05, un comentario por criterio sin mirar la nota de la IA.
+- [ ] 🔁 **S09-JL01 · Docente de Pensamiento, semana 1** *(viene de `S08-JL01`)* — cuentas, clase y secciones 1 y 2
+  publicadas (marcar lo que ya esté), una entrega, un refuerzo, una asistencia con QR, revisión pedagógica de las
+  secciones 1 y 2 y reporte en `docs/cursos/REVISION_DOCENTE_PENSAR_S8.md`.
+- [ ] **S09-JL02 · Docente de Pensamiento, semana 2** — publicar las secciones 3 y 4, revisar «Hoy» y comentar
+  entregas, revisión pedagógica de las secciones 3 y 4 y reporte en `docs/cursos/REVISION_DOCENTE_PENSAR_S9.md`.
+- [ ] 🔁 **S09-E03 · Estudiante de Fundamentos, Unidad 1** (segunda cuenta, 6 lecciones).
+- [ ] **S09-E04 · Estudiante de Fundamentos, Unidad 2** (segunda cuenta, 8 lecciones).
 
 ### José López — UI/UX + Comunicación
 
-- [ ] **S09-E01 · Estudiante de Pensamiento, secciones 1 y 2**, con Jorge.
+- [ ] **S09-E01 · Estudiante de Pensamiento, secciones 1 y 2** (5 lecciones).
 - [ ] **S09-JO01 · Revisar los 5 hallazgos corregidos y lo que más confundió en la prueba**
   - Comprobar en el celular y en el computador cómo quedaron sus 5 hallazgos (`S09-J01`).
   - Observar a un compañero 10 minutos haciendo una lección de Pensamiento, sin ayudarle.
@@ -116,24 +121,28 @@ administrador y estudiante en las dos clases, sin obligación de terminar.
 
 ### Jorge Cervantes — Gestión + Calidad
 
-- [ ] **S09-V-JORGE · Lista de INTERFAZ: 5 criterios como usuario** ⏪ *(martes 13/10)* — UX-02, UX-07, MOB-04, PAT-02 y
-  PAT-03.
-- [ ] **S09-JOR01 · QA de las funciones nuevas en producción** ⏪ *(viene de `S08-JOR01`)* — lo de la Semana 8 (asistencia
-  con QR, unirse con QR, proyectos, entregas, foto de perfil, ajustes de UI/UX, Tutor) y lo nuevo de la Semana 8 (avisos
-  del docente, notificaciones, temas de contraste, archivar contenidos, ejercicios de programar). Reporte en
-  `docs/calidad/reportes-qa/REPORTE_QA_S9_2026-10-15.md`.
-- [ ] **S09-E01 · Estudiante de Pensamiento, secciones 1 y 2** ⏪, con José.
+- [ ] 🔁 **S09-V-JORGE · Lista de INTERFAZ: 5 criterios como usuario** *(martes 13/10)* — UX-02, UX-07, MOB-04, PAT-02
+  y PAT-03.
+- [ ] 🔁 **S09-JOR01 · QA de las funciones de la Semana 8** *(viene de `S08-JOR01`)* — asistencia con QR, unirse con QR,
+  proyectos, entregas, foto de perfil, ajustes de UI/UX, lo corregido de su reporte anterior y el Tutor. Reporte en
+  `docs/calidad/reportes-qa/REPORTE_QA_S8_2026-10-08.md`.
+- [ ] **S09-JOR02 · QA de regresión de la Semana 9** — avisos y notificaciones, «Apariencia», el ejercicio de programar
+  nuevo, la retroalimentación de opción múltiple, el Tutor en un ejercicio y los 5 hallazgos de José corregidos. Reporte
+  en `docs/calidad/reportes-qa/REPORTE_QA_S9_2026-10-15.md`.
+- [ ] 🔁 **S09-E05 · Estudiante de Pensamiento, secciones 1 y 2** (5 lecciones).
+- [ ] **S09-E06 · Estudiante de Fundamentos, Unidad 1** (6 lecciones).
 
 ### Pedro Romero — Documentación + Bitácora
 
 - [x] **S09-P01 · Tablero Trello de la Semana 9** — creado el 12/10.
-- [ ] **S09-V-PEDRO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** ⏪ *(martes 13/10)* — MOD-02, MOD-04, UI-04,
+- [ ] 🔁 **S09-V-PEDRO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** *(martes 13/10)* — MOD-02, MOD-04, UI-04,
   META-01, META-02 y META-03.
-- [ ] **S09-P03 · Resultados de la prueba, semanas 1 y 2** ⏪ — el Excel de sugerencias, las tres preguntas de cada persona
+- [ ] **S09-P03 · Resultados de la prueba, semanas 1 y 2** — el Excel de sugerencias, las tres preguntas de cada persona
   y el avance frente a la meta, en `docs/calidad/resultados-prueba/PRUEBA_RESULTADOS.md`. La semana 1 el martes 13/10; la
   semana 2 el viernes 16/10.
-- [ ] **S09-P04 · Docente de Fundamentos (Unidad 2) y estudiante de Pensamiento (secciones 3 y 4)** — publicar la Unidad 2
-  y comentar las entregas; terminar el curso de Pensamiento con la segunda cuenta (`S09-E02`).
+- [ ] **S09-P04 · Docente de Fundamentos (Unidad 2)** — publicar la Unidad 2, compartir la clase con Jorge, comentar las
+  entregas y nota en `docs/cursos/REVISION_DOCENTE_FUNDAMENTOS_S9.md`.
+- [ ] **S09-E02 · Estudiante de Pensamiento, secciones 3 y 4** (segunda cuenta, 5 lecciones).
 - [ ] **S09-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 16/10, contrastada con Trello y Git.
 
 ### 3.1 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
@@ -156,8 +165,8 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 📥 BACKLOG → 📋 ESTA SEMANA → ⚙️ EN CURSO → ✅ HECHO
 ```
 
-1. Máximo **3 tarjetas comprometidas por persona** en `Esta semana` (sin contar la de los 7 Hábitos). Pedro tiene una más
-   porque la bitácora es de todas las semanas.
+1. Máximo **3 tarjetas comprometidas por persona** en `Esta semana` (sin contar la de los 7 Hábitos). Esta semana hay
+   excepciones: las tarjetas 🔁 de la Semana 8 se suman a las de la semana, y Pedro tiene la bitácora.
 2. Máximo **2 tarjetas simultáneas por persona** en `En curso`.
 3. Una tarjeta bloqueada permanece en `En curso` con etiqueta roja + `🚧 BLOQUEADA`.
 4. Una tarea no pasa a `Hecho` sin evidencia; el código terminado tiene respaldo en GitHub.
@@ -167,21 +176,22 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 
 ## ⚠️ 5. Riesgos vivos
 
-1. **Participación desigual:** *(nuevo, 12/10)* en la Semana 8, dos de cinco integrantes no dejaron registro. Si se
-   repite, la prueba no tendrá los dos estudiantes por curso ni la revisión humana completa de las listas. Mitigación:
-   los pendientes tienen fecha del martes 13/10 y se revisan en el reporte de ese día.
+1. **Carga de Julio y Jorge:** *(nuevo, 12/10)* esta semana tienen lo suyo y lo que quedó abierto de la Semana 8. Si no
+   alcanzan, la prueba no tendrá los dos estudiantes por curso ni la revisión humana completa de las listas. Mitigación:
+   lo más urgente (los criterios) va el martes 13/10, y el reporte de ese día muestra cómo van.
 2. **La revisión humana de las listas bloquea otras tareas:** sin los criterios de Jorge, Julio y Pedro no se consolidan
    las listas (`S09-J03`) ni se prepara la sustentación en inglés (`S09-P05`).
 3. **Clave del Tutor:** cada estudiante necesita su propia clave gratuita de Google AI Studio.
 4. **Crédito de Azure:** el servidor sigue encendido 24/7 durante la prueba; Jeider lo revisa martes y jueves y reactiva
    el apagado al terminar.
-5. **Semana 10:** si Julio y Jorge no terminan su primer curso, la prueba se alarga hasta el 23/10.
+5. **Semana 10:** si alguien no termina sus lecciones, la prueba se alarga hasta el 23/10.
 
 ---
 
 ## 📅 6. Seguimiento
 
-- **Martes 13/10:** los pendientes ⏪ de la Semana 8 entregados; qué terminó cada uno y si hay bloqueo.
+- **Martes 13/10:** los criterios de las listas y los resultados de la semana 1 entregados; cómo van las tarjetas 🔁;
+  si hay bloqueo.
 - **Jueves 15/10:** qué puede cerrar el viernes, qué está en riesgo, qué necesita de otro.
 - **Viernes 16/10:** revisar Trello y GitHub, validar evidencias, resultados de las dos semanas y decidir la Semana 10.
 
@@ -195,8 +205,8 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 
 ## 🔭 8. Proyección
 
-**Semana 10 (19 – 23 de octubre), solo si hace falta.** Julio y Jorge cruzan de curso (Julio a la Unidad 2 de
-Fundamentos, Jorge a la Unidad 1); Pedro publica la Unidad 3. Al cierre: informe consolidado de la prueba, versión con lo
+**Semana 10 (19 – 23 de octubre), solo si hace falta.** Cada uno termina las lecciones que le falten y Pedro publica la
+Unidad 3 de Fundamentos. Al cierre: informe consolidado de la prueba, versión con lo
 corregido y decisión del alcance de la v2.0. Se decide el viernes 16/10.
 
 **Al terminar la prueba, Jeider reactiva el apagado automático de las 23:00 y pone la encuesta SUS cada 90 días.**

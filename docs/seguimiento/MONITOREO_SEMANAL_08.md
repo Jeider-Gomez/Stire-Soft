@@ -273,7 +273,8 @@ tablero se revisó tal como quedó el viernes.)*
 - [ ] Su parte de la lista de Tutores Inteligentes (`S08-V-JULIO`): sin comentarios.
 - [ ] 7 Hábitos: sin registro.
 
-**Todo pasa a la Semana 9.**
+Las tres primeras pasan a la Semana 9 y se suman a las de esa semana. Los hábitos no se repiten: cada semana tiene su
+propio registro.
 
 ### Jorge Cervantes
 
@@ -282,7 +283,8 @@ tablero se revisó tal como quedó el viernes.)*
 - [ ] Su parte de la lista de interfaz (`S08-V-JORGE`): sin comentarios.
 - [ ] 7 Hábitos: sin registro.
 
-**Todo pasa a la Semana 9.**
+Las tres primeras pasan a la Semana 9 y se suman a las de esa semana. Los hábitos no se repiten: cada semana tiene su
+propio registro.
 
 ### Todo el equipo
 
@@ -296,10 +298,8 @@ tablero se revisó tal como quedó el viernes.)*
 
 **Resumen de cierre:** 19 de 27 ítems cerrados. La prueba arrancó y funcionó en la parte de **Fundamentos**: Pedro
 dictó, José terminó la Unidad 1 y STIRE recibió sus sugerencias y las de Pedro y Julio, que se resolvieron en la misma
-semana. En **Pensamiento** solo avanzó Pedro como estudiante (5 de 5). **Julio y Jorge no dejaron registro** en Trello ni
-en Git: ni sus lecciones, ni el reporte docente, ni el QA, ni sus criterios de las listas, ni sus hábitos (Julio sí
-envió sugerencias desde STIRE).
-Por eso la Semana 9 no hace el cruce completo que estaba previsto (ver abajo) y es probable que haga falta la Semana 10.
+semana. En **Pensamiento** avanzó Pedro como estudiante (5 de 5). Las tareas de Julio y Jorge quedaron abiertas en
+Trello y en Git (Julio sí envió sugerencias desde STIRE); pasan a la Semana 9 y se suman a las de esa semana.
 
 > **Nota:** se marca solo con resultados verificables, con el mismo criterio de las semanas anteriores. Si alguien hizo
 > algo y no lo dejó en Trello o en Git, lo sube en la Semana 9 y se anota allí.
@@ -308,21 +308,19 @@ Por eso la Semana 9 no hace el cruce completo que estaba previsto (ver abajo) y 
 
 ## ➡️ 8. Pasa a la Semana 9 (12 – 16 de octubre)
 
-Semana 2 de la prueba. **Cambio frente al plan:** solo cruza quien terminó su curso de la semana 1.
+Semana 2 de la prueba, con el cruce previsto. Lo que quedó abierto de la Semana 8 se suma a lo de la Semana 9, en
+tarjetas separadas por persona:
 
-| Persona | Plan original | Semana 9, ajustada | Por qué |
-|---|---|---|---|
-| José | Pensamiento, secciones 1 y 2 | **Igual** | Terminó la Unidad 1 de Fundamentos |
-| Pedro (segunda cuenta) | Pensamiento, secciones 3 y 4 | **Igual** | Terminó las secciones 1 y 2 |
-| Jorge | Fundamentos, Unidad 1 | **Sigue en Pensamiento, secciones 1 y 2** | No empezó; cambiar de curso dejaría Pensamiento sin su segundo estudiante |
-| Julio (segunda cuenta) | Fundamentos, Unidad 2 | **Unidad 1 de Fundamentos** | No empezó la Unidad 1 |
+| Persona | Semana 9 | Se suma de la Semana 8 |
+|---|---|---|
+| José | Pensamiento, secciones 1 y 2 | — |
+| Pedro | Docente: Unidad 2. Estudiante: Pensamiento, secciones 3 y 4 | Sus criterios de la lista y los resultados de la semana 1 |
+| Jorge | Fundamentos, Unidad 1 · QA de regresión | Pensamiento, secciones 1 y 2 · QA de la Semana 8 · sus criterios de la lista |
+| Julio | Docente: secciones 3 y 4. Estudiante: Fundamentos, Unidad 2 | Docente de la semana 1 · Fundamentos, Unidad 1 · sus criterios de la lista |
+| Jeider | Hallazgos de José · operar la prueba | v2.0.0 cerrada · asistencia con cámaras reales |
 
-Pasan, además: Julio, el rol de docente y su reporte (`S08-JL01`); Jorge, el QA en producción (`S08-JOR01`); Jorge,
-Julio y Pedro, sus criterios de las listas; Pedro, los resultados de la semana 1; Jeider, la v2.0.0 cerrada, la
-asistencia con cámaras reales y los 5 hallazgos de José.
-
-Si al cierre de la Semana 9 Julio y Jorge no terminan su primer curso, **se hace la Semana 10 (19 – 23 de octubre)**
-para que crucen. **Al terminar la prueba (16/10, o 23/10 si hay Semana 10), Jeider reactiva el apagado automático de
+Los hábitos de la Semana 8 no se repiten. Si al cierre de la Semana 9 alguien no termina sus lecciones, **se hace la
+Semana 10 (19 – 23 de octubre)**. **Al terminar la prueba (16/10, o 23/10 si hay Semana 10), Jeider reactiva el apagado automático de
 las 23:00 y vuelve a poner la encuesta SUS cada 90 días.**
 
 Plan completo: bitácora N.º 9 (`MONITOREO_SEMANAL.md`).
