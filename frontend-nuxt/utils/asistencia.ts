@@ -81,3 +81,9 @@ export function fechaSesion(fecha: string): string {
 export type ResultadoEscaneo =
   | { ok: true; nombre: string; fotoId: string | null; yaEstaba: boolean; alerta: string | null }
   | { ok: false; mensaje: string }
+
+/** Lo que le queda al código QR de «Mi asistencia», en palabras (hallazgo de José, 09/10: con la barra sola no se notaba). */
+export function textoCuentaQr(segundos: number): string {
+  if (segundos <= 0) return 'Cambiando el código…'
+  return `Cambia en ${segundos} ${segundos === 1 ? 'segundo' : 'segundos'}`
+}

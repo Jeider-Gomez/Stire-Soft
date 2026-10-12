@@ -8,10 +8,10 @@
 
     <!-- Elementos sin ubicar -->
     <div
-      class="min-h-[3.5rem] rounded-xl border-2 border-dashed p-3 flex flex-wrap gap-2 transition-colors"
-      :class="dragOver === TRAY ? 'border-acento-ambar-fuerte bg-acento-ambar/5' : 'border-base-borde-sutil bg-base-bg-secundario/50'"
+      class="min-h-[3.5rem] rounded-xl border-2 border-dashed p-3 flex flex-wrap gap-2 transition-all duration-150"
+      :class="dragOver === TRAY && dragging ? ESTILO_ZONA.encima : 'border-base-borde-sutil bg-base-bg-secundario/50'"
       @dragover.prevent="dragOver = TRAY"
-      @dragleave="dragOver = null"
+      @dragleave="salir($event)"
       @drop.prevent="dropOn(null)"
       aria-label="Elementos por ubicar">
       <button
@@ -20,7 +20,7 @@
         type="button"
         draggable="true"
         @dragstart="onDragStart(item.id)"
-        @dragend="dragOver = null"
+        @dragend="terminar"
         @click="toggleSelect(item.id)"
         :aria-pressed="selected === item.id"
         class="px-3 py-1.5 rounded-lg border text-xs font-mono cursor-grab active:cursor-grabbing shadow-xs transition focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
@@ -35,10 +35,10 @@
       <div
         v-for="target in targets"
         :key="target.id"
-        class="rounded-xl border-2 p-3 min-h-[7rem] flex flex-col gap-2 transition-colors"
-        :class="dragOver === target.id ? 'border-acento-ambar-fuerte bg-acento-ambar/5' : 'border-base-borde-sutil bg-base-blanco'"
+        class="rounded-xl border-2 p-3 min-h-[7rem] flex flex-col gap-2 transition-all duration-150"
+        :class="ESTILO_ZONA[estado(target.id)]"
         @dragover.prevent="dragOver = target.id"
-        @dragleave="dragOver = null"
+        @dragleave="salir($event)"
         @drop.prevent="dropOn(target.id)">
         <button
           type="button"
@@ -47,7 +47,8 @@
           class="text-left text-xs font-bold text-base-texto-primario rounded focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte disabled:cursor-default"
           :aria-label="selected ? `Poner el elemento seleccionado en ${target.label}` : target.label">
           {{ target.label }}
-          <span v-if="selected" class="block text-[10px] font-normal text-acento-ambar-fuerte">Toca aquí para ponerlo</span>
+          <span v-if="estado(target.id) === 'encima'" class="block text-[10px] font-bold text-acento-ambar-fuerte">Suelta aquí</span>
+          <span v-else-if="selected" class="block text-[10px] font-normal text-acento-ambar-fuerte">Toca aquí para ponerlo</span>
         </button>
         <div class="flex flex-wrap gap-1.5">
           <button
@@ -56,7 +57,7 @@
             type="button"
             draggable="true"
             @dragstart="onDragStart(item.id)"
-            @dragend="dragOver = null"
+            @dragend="terminar"
             @click="unplace(item.id)"
             class="px-2.5 py-1 rounded-md border border-acento-ambar-fuerte/40 bg-acento-ambar/10 text-xs font-mono text-base-texto-primario hover:bg-acento-ambar/20 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
             :aria-label="`${item.content}, en ${target.label}. Toca para devolverlo`"
@@ -75,6 +76,7 @@
 
 <script setup lang="ts">
 import { useWorkspaceStore } from '~/stores/workspace'
+import { estadoZona, saleDeLaZona, type EstadoZona } from '~/utils/zonaArrastre'
 
 interface DragItem { id: string; content: string }
 interface DropTarget { id: string; label: string }
@@ -119,6 +121,24 @@ function placeSelected(targetId: string) {
 
 function unplace(id: string) {
   mappings[id] = ''
+}
+
+// Mientras hay una pieza en la mano, todas las zonas se marcan con borde punteado; la que tiene la pieza encima se
+// resalta con borde, fondo, un anillo y «Suelta aquí» (hallazgo de José, 09/10). utils/zonaArrastre.ts.
+const ESTILO_ZONA: Record<EstadoZona, string> = {
+  encima: 'border-acento-ambar-fuerte bg-acento-ambar/15 ring-4 ring-acento-ambar/30',
+  disponible: 'border-dashed border-acento-ambar-fuerte/60 bg-base-blanco',
+  normal: 'border-base-borde-sutil bg-base-blanco',
+}
+const estado = (zona: string) => estadoZona(zona, { sobre: dragOver.value, arrastrando: dragging.value, seleccionado: selected.value })
+
+function salir(e: DragEvent) {
+  if (saleDeLaZona(e.currentTarget as Element | null, e.relatedTarget)) dragOver.value = null
+}
+
+function terminar() {
+  dragging.value = null
+  dragOver.value = null
 }
 
 function onDragStart(id: string) {

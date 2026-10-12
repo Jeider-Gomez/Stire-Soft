@@ -21,6 +21,7 @@
         aria-label="Tutor IA"
         tabindex="-1"
         class="fixed top-0 right-0 h-full w-full max-w-drawer bg-base-blanco border-l border-base-borde-sutil shadow-2xl lg:shadow-lg z-50 flex flex-col justify-between focus:outline-none"
+        :style="estiloAlTeclado"
         @keydown="handleKeydown"
       >
         <!-- Pliegue para recoger el panel (pedido de Jeider, 03/10: «un pliegue sutil para volver a recoger»). Pestaña
@@ -293,6 +294,7 @@
                 ref="inputRef"
                 v-model="inputQuery"
                 @keydown.enter="handleSend"
+                @focus="scrollToBottom"
                 type="text"
                 :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
                 placeholder="Haz una pregunta sobre tu lógica..."
@@ -418,7 +420,6 @@ async function navigateWithAutosaveCheck(url: string) {
   navigateTo(url)
 }
 
-// ─── Texto del indicador de pensamiento escalado (§18.6) ────────────────────
 const thinkingText = computed(() => {
   const s = tutorStore.thinkingSeconds
   if (s >= 20) return 'Está tardando más de lo normal. Puedes seguir esperando.'
@@ -426,7 +427,6 @@ const thinkingText = computed(() => {
   return 'El tutor está analizando tu contexto de código...'
 })
 
-// ─── Texto accesible del nivel de guía ──────────────────────────────────────
 const guidanceLevelLabel = computed(() => {
   const labels: Record<number, string> = {
     1: 'pista',
@@ -437,27 +437,25 @@ const guidanceLevelLabel = computed(() => {
 })
 
 // ─── Scroll automático (§18.2) ───────────────────────────────────────────────
-watch(
-  () => [tutorStore.messages.length, tutorStore.isThinking],
-  () => scrollToBottom()
-)
+watch(() => [tutorStore.messages.length, tutorStore.isThinking], () => scrollToBottom())
 
 function scrollToBottom() {
   nextTick(() => {
-    if (messagesContainer.value) {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
-    }
+    if (messagesContainer.value) messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
   })
 }
 
+// ─── El teclado del celular (hallazgo de José, 09/10) ────────────────────────
+// El teclado achica solo lo visible, no la página: tapaba los últimos mensajes y el campo. El panel toma el alto de lo
+// que se ve y el chat baja al último mensaje (composables/useAreaVisible.ts). En computador no cambia nada.
+const estiloAlTeclado = useAreaVisible(pantallaAncha, () => { if (tutorStore.isOpen) scrollToBottom() })
+
 // ─── Foco al abrir / devolver foco al cerrar (§18.3 + §22 T2) ───────────────
-// El openerElement se guarda ANTES de nextTick: en ese instante
-// document.activeElement todavía es el botón que disparó la apertura.
+// openerElement se guarda ANTES de nextTick: ahí document.activeElement aún es el botón que lo abrió.
 let openerElement: HTMLElement | null = null
 
-// El foco debe quedar SIEMPRE dentro del panel. Al abrir, el estado de la clave aún no llegó: se
-// enfoca el campo del chat, y cuando llega (sin clave) ese campo se desmonta y el foco caería al
-// <body>. Por eso se vuelve a llamar cuando cambia showKeyPanel.
+// El foco queda SIEMPRE dentro del panel. Al abrir, la clave aún no llegó: se enfoca el campo, y si llega sin clave ese
+// campo se desmonta y el foco caería al <body>. Por eso se vuelve a llamar cuando cambia showKeyPanel.
 function focusInsideDrawer() {
   nextTick(() => {
     const drawer = drawerRef.value
@@ -477,8 +475,10 @@ watch(
       openerElement = document.activeElement as HTMLElement | null
       focusInsideDrawer()
     } else {
-      // El botón flotante que lo abrió se oculta mientras el panel está abierto: si ya no está en la página, el foco
-      // vuelve al lanzador nuevo para que el teclado no se pierda.
+      // Si se cerró porque se abrió otra cosa (las notificaciones, 09/10), el foco ya está allá y no se le quita. Si no,
+      // vuelve al botón que lo abrió o, si ya no está en la página, al lanzador nuevo.
+      const activo = document.activeElement
+      if (activo && activo !== document.body && !drawerRef.value?.contains(activo)) return
       nextTick(() => {
         const destino = openerElement?.isConnected ? openerElement : document.getElementById('lanzador-tutor')
         destino?.focus()
@@ -495,8 +495,7 @@ watch(
 )
 
 // ─── Escape cierra el drawer (§18.3) ─────────────────────────────────────────
-// Va en el documento y no en el panel: si el foco cae fuera del panel, un @keydown del panel
-// nunca recibiría la tecla y Escape parecería no hacer nada.
+// En el documento y no en el panel: con el foco fuera del panel, un @keydown del panel nunca recibiría la tecla.
 function handleDocumentKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape' && tutorStore.isOpen) {
     tutorStore.closeDrawer()

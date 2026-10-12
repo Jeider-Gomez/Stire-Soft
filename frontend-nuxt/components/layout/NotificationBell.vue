@@ -18,6 +18,11 @@
       </span>
     </button>
 
+    <!-- En el celular, a pantalla completa (hallazgo de José, 09/10: como menú flotante tapaba la página sin dejar
+         espacio para leer); se cierra con la X de arriba. Va al <body>: dentro del encabezado, que tiene desenfoque
+         (backdrop-filter), «fixed» se mediría desde el encabezado y no desde la pantalla. En el computador, una columna
+         de 384 px bajo la campana. Cada notificación se lee completa. -->
+    <Teleport to="body" :disabled="!esCelular">
     <Transition
       enter-active-class="transition duration-150 ease-out"
       enter-from-class="opacity-0 -translate-y-1"
@@ -26,26 +31,26 @@
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-1"
     >
-      <!-- En el celular el panel ocupa el ancho de la pantalla (antes medía 320 px y cortaba el texto: hallazgo de José);
-           en el computador, una columna de 384 px. Cada notificación se lee completa. -->
       <div
         v-if="isOpen"
         id="panel-notificaciones"
-        class="fixed inset-x-2 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-96 bg-base-blanco rounded-2xl shadow-xl border border-base-borde-fuerte z-50 flex flex-col max-h-[calc(100dvh-5rem)] sm:max-h-[32rem]"
+        ref="panelRef"
+        class="fixed inset-0 z-[60] bg-base-blanco flex flex-col sm:absolute sm:inset-auto sm:right-0 sm:top-12 sm:w-96 sm:z-50 sm:rounded-2xl sm:shadow-xl sm:border sm:border-base-borde-fuerte sm:max-h-[32rem]"
         role="dialog"
+        :aria-modal="esCelular ? 'true' : undefined"
         aria-labelledby="titulo-notificaciones"
       >
-        <div class="px-4 py-2.5 border-b border-base-borde-sutil flex items-center gap-2">
+        <div class="px-4 py-2.5 border-b border-base-borde-sutil flex items-center gap-2 shrink-0">
           <h2 id="titulo-notificaciones" class="text-sm font-semibold text-base-texto-primario flex-1">Notificaciones</h2>
           <button v-if="unreadCount > 0" type="button" class="min-h-[44px] px-2 text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="marcarTodas">
             Marcar todas como leídas
           </button>
-          <button type="button" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md text-base-texto-primario hover:bg-base-bg-secundario sm:hidden" @click="cerrar">
+          <button ref="cerrarRef" type="button" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md text-base-texto-primario hover:bg-base-bg-secundario sm:hidden" @click="cerrar">
             <X :size="16" aria-hidden="true" /><span class="sr-only">Cerrar las notificaciones</span>
           </button>
         </div>
 
-        <div class="overflow-y-auto overscroll-contain">
+        <div class="overflow-y-auto overscroll-contain flex-1 min-h-0">
           <p v-if="isLoading" role="status" class="px-4 py-6 text-center text-xs text-base-texto-secundario">
             <Loader2 :size="14" class="inline-block animate-spin mr-1" aria-hidden="true" /> Cargando…
           </p>
@@ -85,6 +90,7 @@
         </div>
       </div>
     </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -93,6 +99,7 @@ import { nextTick } from 'vue'
 import { Bell, ChevronRight, GraduationCap, Lightbulb, Loader2, Megaphone, MessageSquare, RotateCcw, X } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
+import { useTutorStore } from '~/stores/tutor'
 
 const api = useApi()
 const authStore = useAuthStore()
@@ -122,6 +129,9 @@ const isLoading = ref(false)
 const notifications = ref<NotificationItem[]>([])
 const unreadCount = ref(0)
 const bellMenuRef = ref<HTMLElement | null>(null)
+const panelRef = ref<HTMLElement | null>(null)
+const cerrarRef = ref<HTMLButtonElement | null>(null)
+const tutorStore = useTutorStore()
 const botonRef = ref<HTMLButtonElement | null>(null)
 let pollHandle: ReturnType<typeof setInterval> | undefined
 
@@ -154,10 +164,21 @@ async function fetchNotifications() {
   }
 }
 
+// Notificaciones y Tutor no se abren a la vez (hallazgo de José, 09/10: en el computador los dos paneles se tapaban).
+// Abrir uno cierra el otro; la conversación del Tutor no se pierde.
 function toggleOpen() {
   isOpen.value = !isOpen.value
-  if (isOpen.value) fetchNotifications()
+  if (isOpen.value) {
+    if (tutorStore.isOpen) tutorStore.closeDrawer()
+    fetchNotifications()
+    // A pantalla completa, el foco entra al panel (si no, quedaría en la campana, tapada).
+    if (esCelular.value) nextTick(() => cerrarRef.value?.focus())
+  }
 }
+watch(() => tutorStore.isOpen, (abierto) => { if (abierto) isOpen.value = false })
+
+// En el celular (< 640 px) el panel va a pantalla completa.
+const esCelular = ref(false)
 
 function cerrar() {
   isOpen.value = false
@@ -199,7 +220,9 @@ async function marcarTodas() {
 }
 
 function handleClickOutside(event: MouseEvent) {
-  if (bellMenuRef.value && !bellMenuRef.value.contains(event.target as Node)) {
+  const objetivo = event.target as Node
+  if (panelRef.value?.contains(objetivo)) return
+  if (bellMenuRef.value && !bellMenuRef.value.contains(objetivo)) {
     isOpen.value = false
   }
 }
@@ -207,12 +230,19 @@ function handleClickOutside(event: MouseEvent) {
 useEscapeToClose(() => isOpen.value, cerrar)
 useBloqueoScrollMovil(() => isOpen.value)
 
+let consultaCelular: MediaQueryList | null = null
+const actualizarCelular = () => { esCelular.value = !!consultaCelular?.matches }
+
 onMounted(() => {
+  consultaCelular = window.matchMedia('(max-width: 639px)')
+  actualizarCelular()
+  consultaCelular.addEventListener('change', actualizarCelular)
   document.addEventListener('click', handleClickOutside)
   refreshUnreadCount()
   pollHandle = setInterval(refreshUnreadCount, 30000)
 })
 onUnmounted(() => {
+  consultaCelular?.removeEventListener('change', actualizarCelular)
   document.removeEventListener('click', handleClickOutside)
   if (pollHandle) clearInterval(pollHandle)
 })

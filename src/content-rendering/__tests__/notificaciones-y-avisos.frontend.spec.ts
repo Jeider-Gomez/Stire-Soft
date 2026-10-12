@@ -29,7 +29,8 @@ describe('la campana de notificaciones (07/10)', () => {
   });
 
   it('en el celular el panel ocupa el ancho de la pantalla; en el computador, una columna', () => {
-    expect(c).toContain('fixed inset-x-2 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-96');
+    // 12/10 (S09-J01, José): en el celular, a pantalla completa (hallazgos-jose-s09.frontend.spec.ts).
+    expect(c).toContain('fixed inset-0 z-[60] bg-base-blanco flex flex-col sm:absolute sm:inset-auto sm:right-0 sm:top-12 sm:w-96');
   });
 
   it('lleva a donde se resuelve (su enlace) y se pueden marcar todas como leídas', () => {

@@ -67,7 +67,8 @@ describe('MOB-02 y UX-06 · zona del pulgar y tamaño de los botones del ejercic
   it('en el celular Probar y Entregar van en una barra fija abajo; en computador, en el encabezado', () => {
     expect(ws).toMatch(/barra-acciones fixed md:static inset-x-0 bottom-0/);
     expect(ws).toMatch(/\.barra-acciones \{ padding-bottom: calc\(0\.75rem \+ env\(safe-area-inset-bottom\)\); \}/);
-    expect(ws).toMatch(/'pb-24 md:pb-0': isCodingActivity \|\| isHtmlCssActivity/);
+    // 12/10: el espacio de abajo vale para todos los ejercicios (el lanzador tapaba la última opción múltiple).
+    expect(ws).toContain('class="flex-1 md:overflow-hidden pb-24 md:pb-0"');
   });
   it('los dos botones miden 48 px de alto en el celular y 44 px en computador', () => {
     const botones = [...ws.matchAll(/min-h-\[48px\] md:min-h-\[44px\]/g)];

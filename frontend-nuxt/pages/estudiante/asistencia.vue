@@ -21,8 +21,16 @@
           <span class="sr-only">Generando tu código…</span>
         </div>
       </div>
-      <div class="w-64 max-w-full h-1.5 rounded-full bg-base-bg-secundario overflow-hidden" aria-hidden="true">
-        <div class="h-full bg-stire-teal transition-[width] duration-1000 ease-linear" :style="{ width: `${restante}%` }" />
+      <!-- Cuánto le queda al código (hallazgo de José, 09/10: la barra de 6 px no se notaba). Ahora es más gruesa, con
+           borde, y dice los segundos en palabras; los últimos 5 s cambia a ámbar. No se anuncia cada segundo al lector
+           de pantalla: solo el texto, que se lee al llegar a él. -->
+      <div class="w-64 max-w-full space-y-1">
+        <div class="h-3 rounded-full bg-base-bg-secundario border border-base-borde-fuerte overflow-hidden" aria-hidden="true">
+          <div class="h-full rounded-full transition-[width] duration-1000 ease-linear" :class="segundos <= 5 ? 'bg-acento-ambar-fuerte' : 'bg-stire-teal'" :style="{ width: `${restante}%` }" />
+        </div>
+        <p v-if="hayCodigo" class="flex items-center justify-center gap-1.5 text-xs font-semibold text-base-texto-primario tabular-nums">
+          <RefreshCw :size="13" aria-hidden="true" /> {{ textoCuentaQr(segundos) }}
+        </p>
       </div>
       <p v-if="errorCodigo" role="alert" class="text-xs text-semantico-falla">{{ errorCodigo }}</p>
       <p v-else class="text-[11px] text-base-texto-secundario">Sube el brillo de la pantalla si al docente le cuesta leerlo.</p>
@@ -53,10 +61,10 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2 } from 'lucide-vue-next'
+import { Loader2, RefreshCw } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useAsistenciaEstudiante } from '~/composables/useAsistenciaEstudiante'
-import { ESTADOS, fechaSesion, idDeDispositivo, textoEstado, type EstadoAsistencia } from '~/utils/asistencia'
+import { ESTADOS, fechaSesion, idDeDispositivo, textoCuentaQr, textoEstado, type EstadoAsistencia } from '~/utils/asistencia'
 import type { ClaseAsistenciaEstudiante as ClaseAsistencia } from '~/composables/useAsistenciaEstudiante'
 
 definePageMeta({ layout: 'student' })
@@ -70,6 +78,7 @@ const hayCodigo = ref(false)
 const cargandoCodigo = ref(true)
 const errorCodigo = ref<string | null>(null)
 const restante = ref(100)
+const segundos = ref(20)
 const clases = ref<ClaseAsistencia[]>([])
 const cargando = ref(true)
 const error = ref<string | null>(null)
@@ -116,7 +125,11 @@ async function cargarHistorial() {
 onMounted(() => {
   renovarCodigo()
   cargarHistorial()
-  reloj = setInterval(() => { restante.value = Math.max(0, Math.min(100, ((vence - Date.now()) / ventana) * 100)) }, 1000)
+  reloj = setInterval(() => {
+    const falta = Math.max(0, vence - Date.now())
+    restante.value = Math.min(100, (falta / ventana) * 100)
+    segundos.value = Math.ceil(falta / 1000)
+  }, 1000)
 })
 
 onBeforeUnmount(() => {

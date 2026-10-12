@@ -97,7 +97,9 @@
     </div>
 
     <!-- Contenido Workspace -->
-    <main id="contenido" tabindex="-1" class="flex-1 md:overflow-hidden" :class="{ 'pb-24 md:pb-0': isCodingActivity || isHtmlCssActivity }">
+    <!-- pb-24 en el celular para todos los ejercicios (José, MOB-02, 09/10): en opción múltiple el lanzador del Tutor
+         tapaba la última opción y el botón de entregar. En programar, además, deja sitio a la barra fija de abajo. -->
+    <main id="contenido" tabindex="-1" class="flex-1 md:overflow-hidden pb-24 md:pb-0">
       <slot />
     </main>
 
