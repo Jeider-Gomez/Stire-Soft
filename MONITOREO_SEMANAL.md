@@ -166,8 +166,8 @@ a más tardar el **martes 13/10, 8:00 p. m.** Con las cinco respuestas sale el p
 
 ### 3.2 Todo el equipo — Pitch grupal: STIRE antes y después de las listas del profesor
 
-Unos 5 minutos, en español y en inglés. Estructura, tiempos y reparto en
-[`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./docs/pitch/PITCH_LISTAS_CHEQUEO.md). Jeider abre, cada uno presenta 2 o 3 de
+Unos 3 minutos (estimado), breve y claro, en español y en inglés. Estructura, tiempos y reparto en
+[`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./docs/pitch/PITCH_LISTAS_CHEQUEO.md). Jeider abre, cada uno presenta 2 de
 los criterios que revisó como usuario (antes → qué cambiamos → después, con capturas) y Pedro cierra con los totales, el
 SUS y lo que falta. Las notas se escriben después de consolidar la revisión humana (`S09-J03`).
 

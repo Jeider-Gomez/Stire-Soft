@@ -16,20 +16,21 @@ en inglés.
 
 ## 1. Estructura y tiempos
 
-Duración sugerida: unos 5 minutos. Se ajusta cuando el profesor confirme el tiempo.
+Duración estimada: unos 3 minutos, un poco más que los pitch anteriores (60 s). Lo importante es que sea breve, claro y
+conciso: mejor decir poco y bien que leer una lista.
 
 | Parte | Quién | Tiempo | Qué dice |
 |---|---|---|---|
-| Apertura | Jeider | 0:30 | Qué es STIRE, qué pidió el profesor (las dos listas) y cómo las aplicamos: una evaluación antes (04/10), los cambios y la revisión del equipo como usuarios. |
-| Interfaz · uso y orientación | José | 0:50 | UX-01, UX-04, UX-06, MOB-01, MOB-02, MOB-03 |
-| Interfaz · control, teclado y formularios | Jorge | 0:50 | UX-02, UX-07, MOB-04, PAT-02, PAT-03 |
-| Interfaz · información, usuarios y código | Jeider | 0:50 | UX-03, UX-05, UX-08, PAT-01, PAT-04 |
-| Tutor · cómo enseña y guía | Julio | 0:50 | MOD-01, MOD-03, UI-01, UI-02, UI-03, UI-05 |
-| Tutor · cómo conoce al estudiante y lo hace pensar | Pedro | 0:50 | MOD-02, MOD-04, UI-04, META-01, META-02, META-03 |
-| Cierre | Pedro | 0:30 | Totales antes → después, el SUS del equipo y lo que falta para la v2.0. |
+| Apertura | Jeider | 0:20 | Qué es STIRE, qué pidió el profesor (las dos listas) y cómo las aplicamos: una evaluación antes (04/10), los cambios y la revisión del equipo como usuarios. |
+| Interfaz · uso y orientación | José | 0:30 | UX-01, UX-04, UX-06, MOB-01, MOB-02, MOB-03 |
+| Interfaz · control, teclado y formularios | Jorge | 0:30 | UX-02, UX-07, MOB-04, PAT-02, PAT-03 |
+| Interfaz · información, usuarios y código | Jeider | 0:30 | UX-03, UX-05, UX-08, PAT-01, PAT-04 |
+| Tutor · cómo enseña y guía | Julio | 0:30 | MOD-01, MOD-03, UI-01, UI-02, UI-03, UI-05 |
+| Tutor · cómo conoce al estudiante y lo hace pensar | Pedro | 0:30 | MOD-02, MOD-04, UI-04, META-01, META-02, META-03 |
+| Cierre | Pedro | 0:20 | Totales antes → después, el SUS del equipo y lo que falta para la v2.0. |
 
-**Cada persona, en sus 50 segundos:** escoge **2 o 3 criterios**, los que más cambiaron. No hace falta decirlos todos.
-Para cada uno, una frase por parte:
+**Cada persona, en unos 30 segundos:** escoge **2 criterios**, los que más cambiaron. No hace falta decirlos todos.
+Para cada uno, una frase corta por parte:
 
 1. **Qué pide el criterio**, en palabras simples.
 2. **Antes:** cómo estaba STIRE el 04/10, con una captura.
@@ -47,7 +48,7 @@ de la versión desplegada (https://stire-soft.vercel.app).
 
 ### José
 
-*(Por escribir: 2 o 3 criterios, con antes, qué cambiamos y después.)*
+*(Por escribir: 2 criterios, con antes, qué cambiamos y después.)*
 
 ### Jorge
 
@@ -79,7 +80,7 @@ intelligent tutoring system, mastery, spaced repetition, feedback, metacognition
 
 ## 4. Diapositivas
 
-Una diapositiva por persona, con sus 2 o 3 criterios: dos capturas (antes y después) y una línea por criterio. Además,
+Una diapositiva por persona, con sus 2 criterios: dos capturas (antes y después) y una línea por criterio. Además,
 una de apertura y una de cierre. En total, 7 diapositivas.
 
 ## 5. Ensayo
