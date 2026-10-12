@@ -55,8 +55,8 @@ como administrador y estudiante en las dos clases, sin obligación de terminar.
 
 ### Resultados esperados
 
-1. **Lo pendiente de la Semana 8, a más tardar el martes 13/10:** los criterios de las listas de Jorge, Julio y Pedro
-   (`S09-V-*`) y los resultados de la semana 1 (`S09-P03`).
+1. **A más tardar el martes 13/10:** la encuesta SUS de los cinco (`S09-SUS-*`), los criterios de las listas de Jorge,
+   Julio y Pedro (`S09-V-*`) y los resultados de la semana 1 (`S09-P03`).
 2. Julio usa el rol de docente con su curso y deja el reporte de las dos semanas (`S09-JL01`, `S09-JL02`).
 3. Jorge entrega el QA de las dos semanas (`S09-JOR01`, `S09-JOR02`).
 4. Los estudiantes alcanzan su meta (`S09-E01` a `S09-E06`).
@@ -94,43 +94,53 @@ como administrador y estudiante en las dos clases, sin obligación de terminar.
 - [ ] 🔁 **S09-J03 · Cerrar la v2.0.0 con las dos listas** *(viene de `S08-J06`, `S08-J07` y `S08-J08`)*
   - Cuando estén los criterios de todos (`S09-V-*`): la tabla «nota de la IA vs. nota humana» de los 28 criterios en
     `VERIFICACION_v2.0.0.md`, con el porqué de cada diferencia.
-  - SUS del equipo con las cinco respuestas (Mi perfil → «Responder la encuesta de usabilidad»).
+  - SUS del equipo con las cinco respuestas (`S09-SUS-*`, §3.1).
   - Etiqueta `v2.0.0` en Git y su entrada en `CHANGELOG.md`.
 - [ ] 🔁 **S09-J04 · Asistencia en el salón con cámaras reales** *(viene de `S08-J04`; fecha límite 16/10)* — un celular
   Android, un iPhone (de un compañero, en el encuentro presencial) y la cámara de un portátil.
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] 🔁 **S09-V-JULIO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** *(martes 13/10)* — MOD-01, MOD-03,
-  UI-01, UI-02, UI-03 y UI-05, un comentario por criterio sin mirar la nota de la IA.
-- [ ] 🔁 **S09-JL01 · Docente de Pensamiento, semana 1** *(viene de `S08-JL01`)* — cuentas, clase y secciones 1 y 2
-  publicadas (marcar lo que ya esté), una entrega, un refuerzo, una asistencia con QR, revisión pedagógica de las
-  secciones 1 y 2 y reporte en `docs/cursos/REVISION_DOCENTE_PENSAR_S8.md`.
+**Lo de esta semana (Semana 9)**
+
 - [ ] **S09-JL02 · Docente de Pensamiento, semana 2** — publicar las secciones 3 y 4, revisar «Hoy» y comentar
   entregas, revisión pedagógica de las secciones 3 y 4 y reporte en `docs/cursos/REVISION_DOCENTE_PENSAR_S9.md`.
-- [ ] 🔁 **S09-E03 · Estudiante de Fundamentos, Unidad 1** (segunda cuenta, 6 lecciones).
 - [ ] **S09-E04 · Estudiante de Fundamentos, Unidad 2** (segunda cuenta, 8 lecciones).
+
+**Lo que quedó abierto de la Semana 8 (se suma a lo anterior)**
+
+- [ ] **S09-V-JULIO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** *(martes 13/10)* — MOD-01, MOD-03,
+  UI-01, UI-02, UI-03 y UI-05, un comentario por criterio sin mirar la nota de la IA.
+- [ ] **S09-JL01 · Docente de Pensamiento, semana 1** *(de `S08-JL01`)* — cuentas, clase y secciones 1 y 2 publicadas
+  (marcar lo que ya esté), una entrega, un refuerzo, una asistencia con QR, revisión pedagógica de las secciones 1 y 2
+  y reporte en `docs/cursos/REVISION_DOCENTE_PENSAR_S8.md`.
+- [ ] **S09-E03 · Estudiante de Fundamentos, Unidad 1** (segunda cuenta, 6 lecciones).
 
 ### José López — UI/UX + Comunicación
 
 - [ ] **S09-E01 · Estudiante de Pensamiento, secciones 1 y 2** (5 lecciones).
 - [ ] **S09-JO01 · Revisar los 5 hallazgos corregidos y lo que más confundió en la prueba**
   - Comprobar en el celular y en el computador cómo quedaron sus 5 hallazgos (`S09-J01`).
-  - Observar a un compañero 10 minutos haciendo una lección de Pensamiento, sin ayudarle.
-  - Lo que más confundió en las dos semanas y su propuesta para la v2.0, en un comentario de la tarjeta con capturas.
+  - Lo que más le confundió en las dos semanas como estudiante y su propuesta para la v2.0, en un comentario de la
+    tarjeta con capturas.
 
 ### Jorge Cervantes — Gestión + Calidad
 
-- [ ] 🔁 **S09-V-JORGE · Lista de INTERFAZ: 5 criterios como usuario** *(martes 13/10)* — UX-02, UX-07, MOB-04, PAT-02
-  y PAT-03.
-- [ ] 🔁 **S09-JOR01 · QA de las funciones de la Semana 8** *(viene de `S08-JOR01`)* — asistencia con QR, unirse con QR,
-  proyectos, entregas, foto de perfil, ajustes de UI/UX, lo corregido de su reporte anterior y el Tutor. Reporte en
-  `docs/calidad/reportes-qa/REPORTE_QA_S8_2026-10-08.md`.
+**Lo de esta semana (Semana 9)**
+
 - [ ] **S09-JOR02 · QA de regresión de la Semana 9** — avisos y notificaciones, «Apariencia», el ejercicio de programar
   nuevo, la retroalimentación de opción múltiple, el Tutor en un ejercicio y los 5 hallazgos de José corregidos. Reporte
   en `docs/calidad/reportes-qa/REPORTE_QA_S9_2026-10-15.md`.
-- [ ] 🔁 **S09-E05 · Estudiante de Pensamiento, secciones 1 y 2** (5 lecciones).
 - [ ] **S09-E06 · Estudiante de Fundamentos, Unidad 1** (6 lecciones).
+
+**Lo que quedó abierto de la Semana 8 (se suma a lo anterior)**
+
+- [ ] **S09-V-JORGE · Lista de INTERFAZ: 5 criterios como usuario** *(martes 13/10)* — UX-02, UX-07, MOB-04, PAT-02 y
+  PAT-03.
+- [ ] **S09-JOR01 · QA de las funciones de la Semana 8** *(de `S08-JOR01`)* — asistencia con QR, unirse con QR,
+  proyectos, entregas, foto de perfil, ajustes de UI/UX, lo corregido de su reporte anterior y el Tutor. Reporte en
+  `docs/calidad/reportes-qa/REPORTE_QA_S8_2026-10-08.md`.
+- [ ] **S09-E05 · Estudiante de Pensamiento, secciones 1 y 2** (5 lecciones).
 
 ### Pedro Romero — Documentación + Bitácora
 
@@ -145,13 +155,20 @@ como administrador y estudiante en las dos clases, sin obligación de terminar.
 - [ ] **S09-E02 · Estudiante de Pensamiento, secciones 3 y 4** (segunda cuenta, 5 lecciones).
 - [ ] **S09-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 16/10, contrastada con Trello y Git.
 
-### 3.1 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
+### 3.1 Todo el equipo — Encuesta de usabilidad (SUS)
+
+Cada uno responde en STIRE la encuesta de usabilidad (Mi perfil → «Responder la encuesta de usabilidad», unos 2 minutos)
+a más tardar el **martes 13/10, 8:00 p. m.** Con las cinco respuestas sale el puntaje SUS del equipo (`S09-J03`).
+
+- [ ] **S09-SUS-JEIDER** · **S09-SUS-PEDRO** · **S09-SUS-JOSE** · **S09-SUS-JULIO** · **S09-SUS-JORGE**
+
+### 3.2 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
 
 Registro libre y semanal en un comentario de su tarjeta, con la situación real de cada hábito.
 
 - [ ] **S09-H-JEIDER** · **S09-H-PEDRO** · **S09-H-JOSE** · **S09-H-JULIO** · **S09-H-JORGE**
 
-### 3.2 En el backlog
+### 3.3 En el backlog
 
 - **S09-J05 · Revisar los ejercicios de programar de los cursos** *(viene de `S08-J09`)*. La pantalla del ejercicio ya
   cambió el 10/10 (`docs/DISENO_EJERCICIOS_PROGRAMAR.md`); falta revisar los 28 ejercicios de Fundamentos uno por uno.
