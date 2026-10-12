@@ -62,8 +62,10 @@ como administrador y estudiante en las dos clases, sin obligación de terminar.
 4. Los estudiantes alcanzan su meta (`S09-E01` a `S09-E06`).
 5. Jeider corrige los 5 hallazgos de José (`S09-J01`), consolida las dos listas y el SUS y cierra la v2.0.0 (`S09-J03`).
 6. Resultados de las dos semanas de la prueba (`S09-P03`) y decisión sobre la Semana 10.
-7. Registro de los 7 Hábitos de los 5 integrantes (`S09-H-*`).
-8. Bitácora cerrada el viernes 16/10, sin retraso.
+7. **Pitch grupal** de STIRE antes y después de las listas del profesor, en español y en inglés, ensayado el viernes
+   (`S09-P05`, `S09-PITCH-*`).
+8. Registro de los 7 Hábitos de los 5 integrantes (`S09-H-*`).
+9. Bitácora cerrada el viernes 16/10, sin retraso.
 
 ---
 
@@ -162,17 +164,29 @@ a más tardar el **martes 13/10, 8:00 p. m.** Con las cinco respuestas sale el p
 
 - [ ] **S09-SUS-JEIDER** · **S09-SUS-PEDRO** · **S09-SUS-JOSE** · **S09-SUS-JULIO** · **S09-SUS-JORGE**
 
-### 3.2 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
+### 3.2 Todo el equipo — Pitch grupal: STIRE antes y después de las listas del profesor
+
+Unos 5 minutos, en español y en inglés. Estructura, tiempos y reparto en
+[`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./docs/pitch/PITCH_LISTAS_CHEQUEO.md). Jeider abre, cada uno presenta 2 o 3 de
+los criterios que revisó como usuario (antes → qué cambiamos → después, con capturas) y Pedro cierra con los totales, el
+SUS y lo que falta. Las notas se escriben después de consolidar la revisión humana (`S09-J03`).
+
+- [ ] **S09-P05 · Pitch grupal** — Pedro coordina: junta las partes, arma las 7 diapositivas y dirige el ensayo del
+  viernes 16/10.
+- [ ] **S09-PITCH-JEIDER** (apertura; UX-03, UX-05, UX-08, PAT-01, PAT-04) · **S09-PITCH-JOSE** (UX-01, UX-04, UX-06,
+  MOB-01 a 03) · **S09-PITCH-JORGE** (UX-02, UX-07, MOB-04, PAT-02, PAT-03) · **S09-PITCH-JULIO** (MOD-01, MOD-03,
+  UI-01 a 03, UI-05) · **S09-PITCH-PEDRO** (MOD-02, MOD-04, UI-04, META-01 a 03; cierre) — cada parte, el jueves 15/10.
+
+### 3.3 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
 
 Registro libre y semanal en un comentario de su tarjeta, con la situación real de cada hábito.
 
 - [ ] **S09-H-JEIDER** · **S09-H-PEDRO** · **S09-H-JOSE** · **S09-H-JULIO** · **S09-H-JORGE**
 
-### 3.3 En el backlog
+### 3.4 En el backlog
 
 - **S09-J05 · Revisar los ejercicios de programar de los cursos** *(viene de `S08-J09`)*. La pantalla del ejercicio ya
   cambió el 10/10 (`docs/DISENO_EJERCICIOS_PROGRAMAR.md`); falta revisar los 28 ejercicios de Fundamentos uno por uno.
-- **S09-P05 · Sustentación en inglés: cómo cumple STIRE las dos listas** *(viene de `S08-P05`)*. Depende de `S09-J03`.
 
 ---
 
@@ -197,7 +211,7 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
    alcanzan, la prueba no tendrá los dos estudiantes por curso ni la revisión humana completa de las listas. Mitigación:
    lo más urgente (los criterios) va el martes 13/10, y el reporte de ese día muestra cómo van.
 2. **La revisión humana de las listas bloquea otras tareas:** sin los criterios de Jorge, Julio y Pedro no se consolidan
-   las listas (`S09-J03`) ni se prepara la sustentación en inglés (`S09-P05`).
+   las listas (`S09-J03`) ni se llenan las notas del pitch (`S09-P05`).
 3. **Clave del Tutor:** cada estudiante necesita su propia clave gratuita de Google AI Studio.
 4. **Crédito de Azure:** el servidor sigue encendido 24/7 durante la prueba; Jeider lo revisa martes y jueves y reactiva
    el apagado al terminar.
