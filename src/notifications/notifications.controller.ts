@@ -1,4 +1,12 @@
-import { Controller, Get, Patch, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { NotificationsService } from './notifications.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -17,7 +25,9 @@ export class NotificationsController {
    * Retorna todas las notificaciones no leídas para el estudiante autenticado.
    */
   @Get()
-  @ApiOperation({ summary: 'Obtener notificaciones no leídas de la sesión del usuario' })
+  @ApiOperation({
+    summary: 'Obtener notificaciones no leídas de la sesión del usuario',
+  })
   findMyNotifications(@GetUser() user: User) {
     return this.notificationsService.findForUser(user.id, true);
   }
@@ -27,7 +37,10 @@ export class NotificationsController {
    * Retorna todas las notificaciones (leídas y no leídas) para el estudiante autenticado.
    */
   @Get('all')
-  @ApiOperation({ summary: 'Obtener todas las notificaciones (leídas y no leídas) del usuario' })
+  @ApiOperation({
+    summary:
+      'Obtener todas las notificaciones (leídas y no leídas) del usuario',
+  })
   findAllMyNotifications(@GetUser() user: User) {
     return this.notificationsService.findForUser(user.id, false);
   }
@@ -47,5 +60,19 @@ export class NotificationsController {
   @ApiOperation({ summary: 'Marcar una notificación como leída' })
   markRead(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
     return this.notificationsService.markAsRead(id, user.id);
+  }
+
+  /** DELETE /notifications/leidas — borra las ya leídas. Va antes de :id. */
+  @Delete('leidas')
+  @ApiOperation({ summary: 'Borrar mis notificaciones ya leídas' })
+  borrarLeidas(@GetUser() user: User) {
+    return this.notificationsService.borrarLeidas(user.id);
+  }
+
+  /** DELETE /notifications/:id — borra una notificación propia. */
+  @Delete(':id')
+  @ApiOperation({ summary: 'Borrar una notificación' })
+  borrar(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.notificationsService.borrar(id, user.id);
   }
 }

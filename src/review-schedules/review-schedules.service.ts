@@ -129,6 +129,8 @@ export class ReviewSchedulesService {
           enlace: '/estudiante/repasos',
           clave: `repasos:${hoy}`,
         });
+        // El de hoy reemplaza a los de días anteriores: se acumulaban en la campana (12/10, Jeider).
+        await this.notificationsService.borrarAnterioresDelTipo(studentId, NotificationType.REVIEW_SCHEDULE, `repasos:${hoy}`);
       } catch (error) {
         this.logger.error(`Error enviando el aviso de repasos al estudiante ${studentId}: ${(error as Error).message}`);
       }

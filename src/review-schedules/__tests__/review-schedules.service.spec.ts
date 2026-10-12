@@ -41,6 +41,7 @@ describe('ReviewSchedulesService Unit Tests', () => {
     };
     notificationsService = {
       createNotification: jest.fn(async () => ({})),
+      borrarAnterioresDelTipo: jest.fn(async () => 0),
     };
     service = new ReviewSchedulesService(reviewRepo, notificationsService);
   });
@@ -202,6 +203,9 @@ describe('ReviewSchedulesService Unit Tests', () => {
         88, 'Tienes 1 repaso pendiente hoy', expect.any(String), NotificationType.REVIEW_SCHEDULE,
         { enlace: '/estudiante/repasos', clave: `repasos:${hoy}` },
       );
+      // 12/10: el aviso de hoy borra los de días anteriores, que se acumulaban en la campana.
+      expect(notificationsService.borrarAnterioresDelTipo).toHaveBeenCalledWith(42, NotificationType.REVIEW_SCHEDULE, `repasos:${hoy}`);
+      expect(notificationsService.borrarAnterioresDelTipo).toHaveBeenCalledTimes(2);
     });
   });
 });

@@ -32,8 +32,41 @@ describe('Notifications Module Unit Tests', () => {
       save: jest.fn(async (n) => ({ id: 100, ...n, createdAt: new Date(), updatedAt: new Date() })),
       find: jest.fn(),
       findOne: jest.fn(),
+      softDelete: jest.fn(async () => ({ affected: 1 })),
     };
     service = new NotificationsService(notificationsRepo);
+  });
+
+  describe('borrar notificaciones (12/10, Jeider: «se acumulan mucho»)', () => {
+    it('borra solo una del propio usuario; si no es suya, 404', async () => {
+      await expect(service.borrar(7, 42)).resolves.toEqual({ borradas: 1 });
+      expect(notificationsRepo.softDelete).toHaveBeenCalledWith({ id: 7, userId: 42 });
+      notificationsRepo.softDelete.mockResolvedValueOnce({ affected: 0 });
+      await expect(service.borrar(7, 99)).rejects.toThrow(NotFoundException);
+    });
+
+    it('«Borrar las leídas» no toca las que no ha leído', async () => {
+      notificationsRepo.softDelete.mockResolvedValueOnce({ affected: 5 });
+      await expect(service.borrarLeidas(42)).resolves.toEqual({ borradas: 5 });
+      expect(notificationsRepo.softDelete).toHaveBeenCalledWith({ userId: 42, isRead: true });
+    });
+
+    it('el aviso de repasos de hoy borra los de días anteriores y deja el de hoy', async () => {
+      notificationsRepo.find.mockResolvedValueOnce([
+        { id: 1, clave: 'repasos:2026-10-10' },
+        { id: 2, clave: null },
+        { id: 3, clave: 'repasos:2026-10-12' },
+      ]);
+      notificationsRepo.softDelete.mockResolvedValueOnce({ affected: 2 });
+      await expect(service.borrarAnterioresDelTipo(42, NotificationType.REVIEW_SCHEDULE, 'repasos:2026-10-12')).resolves.toBe(2);
+      expect(notificationsRepo.softDelete).toHaveBeenCalledWith([1, 2]);
+    });
+
+    it('la lista trae como mucho las 50 más recientes', async () => {
+      notificationsRepo.find.mockResolvedValueOnce([]);
+      await service.findForUser(42);
+      expect(notificationsRepo.find).toHaveBeenCalledWith(expect.objectContaining({ take: 50, order: { createdAt: 'DESC' } }));
+    });
   });
 
   describe('NotificationsService', () => {
@@ -84,6 +117,7 @@ describe('Notifications Module Unit Tests', () => {
       expect(notificationsRepo.find).toHaveBeenCalledWith({
         where: { userId: 42, isRead: false },
         order: { createdAt: 'DESC' },
+        take: 50,
       });
       expect(result).toHaveLength(2);
       expect(result[0].userId).toBe(42);
@@ -101,6 +135,7 @@ describe('Notifications Module Unit Tests', () => {
       expect(notificationsRepo.find).toHaveBeenCalledWith({
         where: { userId: 42 },
         order: { createdAt: 'DESC' },
+        take: 50,
       });
       expect(result).toHaveLength(2);
     });

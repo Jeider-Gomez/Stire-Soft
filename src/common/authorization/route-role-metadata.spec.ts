@@ -134,6 +134,16 @@ const JUSTIFIED_EXCEPTIONS: Exception[] = [
     reason: 'update({ userId: user.id, isRead: false }) — solo toca las notificaciones del propio usuario (07/10).',
   },
   {
+    controller: NotificationsController,
+    method: 'borrar',
+    reason: 'softDelete({ id, userId: user.id }) — ownership forzado en el WHERE; si no es suya, 404 (12/10).',
+  },
+  {
+    controller: NotificationsController,
+    method: 'borrarLeidas',
+    reason: 'softDelete({ userId: user.id, isRead: true }) — solo las del propio usuario (12/10).',
+  },
+  {
     controller: MessageController,
     method: 'create',
     reason: 'el remitente es siempre user.id; no hay recurso ajeno que tocar al crear.',
