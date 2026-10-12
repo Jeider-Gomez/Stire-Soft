@@ -233,8 +233,9 @@ tablero se revisó tal como quedó el viernes.)*
 ### Pedro Romero
 
 - [x] Tablero de la Semana 8 (`S08-P01`). *(02/10.)*
-- [x] Docente de Fundamentos de Algoritmia (`S08-P04`): clase creada desde la plantilla y Unidad 1 publicada, con 7
-  capturas de evidencia en la tarjeta. *(09/10.)* José y Julio estaban en su clase.
+- [x] Docente de Fundamentos de Algoritmia (`S08-P04`): clase creada desde la plantilla, Unidad 1 publicada, «Hoy»
+  revisado de lunes a jueves, una entrega, un refuerzo y una asistencia con QR. Nota en
+  `docs/cursos/REVISION_DOCENTE_FUNDAMENTOS_S8` (subida sin la extensión `.md`) y 7 capturas en la tarjeta. *(09/10.)*
 - [x] Estudiante de Pensamiento: secciones 1 y 2 completas (5 de 5 lecciones). *(`S08-E02`.)*
 - [x] 7 Hábitos registrados (1, 2, 5 y 6). *(`S08-H-PEDRO`.)*
 - [ ] Resultados de la semana 1 (`S08-P03`): no está `PRUEBA_SEMANA_1_RESULTADOS.md`. **Pasa a la Semana 9**, junto con
