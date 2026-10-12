@@ -42,15 +42,16 @@ describe('1. En el celular, el teclado ya no tapa el chat del Tutor', () => {
     const v = leer('components', 'tutor', 'TutorChatDrawer.vue');
     expect(v).toContain('useAreaVisible(pantallaAncha, () => { if (tutorStore.isOpen) scrollToBottom() })');
     expect(v).toContain(':style="estiloAlTeclado"');
-    expect(v).toContain('@focus="scrollToBottom"');
+    expect(v).toContain('@focus="escribiendo = true; scrollToBottom()"');
   });
 });
 
-describe('2. Notificaciones a pantalla completa en el celular', () => {
+describe('2. Notificaciones en el celular: una hoja que deja ver que sigues en la página (12/10, Jeider: «a pantalla completa es muy brusco»)', () => {
   const v = leer('components', 'layout', 'NotificationBell.vue');
-  it('en el celular el panel ocupa toda la pantalla y va al <body> (el encabezado tiene desenfoque)', () => {
+  it('en el celular va al <body> (el encabezado tiene desenfoque), bajo la cabecera y con el fondo atenuado', () => {
     expect(v).toContain('<Teleport to="body" :disabled="!esCelular">');
-    expect(v).toMatch(/class="fixed inset-0 z-\[60\][^"]*sm:absolute sm:inset-auto sm:right-0 sm:top-12 sm:w-96/);
+    expect(v).toContain('fixed inset-x-2 top-[4.25rem] z-[60] max-h-[min(75dvh,36rem)]');
+    expect(v).toContain('v-if="isOpen && esCelular" class="fixed inset-0 z-[59] bg-base-texto-primario/30"');
     expect(v).toContain("window.matchMedia('(max-width: 639px)')");
   });
   it('un toque dentro del panel no lo cierra, aunque esté fuera de la campana', () => {
@@ -108,9 +109,12 @@ describe('5. En arrastrar y soltar, la zona reacciona a la pieza', () => {
   });
 });
 
-describe('MOB-02 (José): el lanzador del Tutor no tapa la última opción del ejercicio', () => {
-  it('todos los ejercicios dejan espacio abajo en el celular', () => {
-    expect(leer('layouts', 'workspace.vue')).toContain('class="flex-1 md:overflow-hidden pb-24 md:pb-0"');
+describe('MOB-02 (José): el Tutor no tapa la última opción del ejercicio', () => {
+  it('en el celular el Tutor del ejercicio está en la cabecera, con su nombre; el flotante solo en computador', () => {
+    const ws = leer('layouts', 'workspace.vue');
+    expect(ws).toContain('id="tutor-cabecera"');
+    expect(ws).toContain('<TutorLanzadorTutor solo-computador />');
+    expect(leer('components', 'tutor', 'LanzadorTutor.vue')).toContain("'hidden md:inline-flex': soloComputador");
   });
 });
 

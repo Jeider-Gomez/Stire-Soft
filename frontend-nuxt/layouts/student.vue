@@ -29,7 +29,8 @@
 
     <!-- EST-V04: Tutor IA Drawer Global -->
     <TutorChatDrawer />
-    <TutorLanzadorTutor />
+    <!-- En una lección, en el celular, el Tutor va en la barra de abajo (EstudianteNavegacionLeccion). -->
+    <TutorLanzadorTutor :solo-computador="enLeccion" />
     <DialogoConfirmar />
     <AvisoSinConexion />
   </div>
@@ -41,6 +42,8 @@ import { useTutorStore } from '~/stores/tutor'
 
 const studentStore = useStudentStore()
 const tutorStore = useTutorStore()
+const route = useRoute()
+const enLeccion = computed(() => route.path.startsWith('/estudiante/unidad/'))
 const { sidebarOpen, sidebarClass, close: closeSidebar, toggle: toggleSidebar } = useMobileSidebar()
 
 onMounted(async () => {

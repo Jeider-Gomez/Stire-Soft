@@ -68,7 +68,7 @@ describe('MOB-02 y UX-06 · zona del pulgar y tamaño de los botones del ejercic
     expect(ws).toMatch(/barra-acciones fixed md:static inset-x-0 bottom-0/);
     expect(ws).toMatch(/\.barra-acciones \{ padding-bottom: calc\(0\.75rem \+ env\(safe-area-inset-bottom\)\); \}/);
     // 12/10: el espacio de abajo vale para todos los ejercicios (el lanzador tapaba la última opción múltiple).
-    expect(ws).toContain('class="flex-1 md:overflow-hidden pb-24 md:pb-0"');
+    expect(ws).toContain(":class=\"isCodingActivity || isHtmlCssActivity ? 'pb-24 md:pb-0' : 'pb-6 md:pb-0'\"");
   });
   it('los dos botones miden 48 px de alto en el celular y 44 px en computador', () => {
     const botones = [...ws.matchAll(/min-h-\[48px\] md:min-h-\[44px\]/g)];
@@ -78,7 +78,9 @@ describe('MOB-02 y UX-06 · zona del pulgar y tamaño de los botones del ejercic
     expect(ws).not.toMatch(/<header[^>]*glass-header/);
   });
   it('el lanzador del Tutor sube por encima de la barra en el celular', () => {
-    expect(ws).toContain('<TutorLanzadorTutor :sobre-barra="isCodingActivity || isHtmlCssActivity" />');
+    // 12/10: en el celular el Tutor del ejercicio está en la cabecera; el flotante, solo en computador.
+    expect(ws).toContain('<TutorLanzadorTutor solo-computador />');
+    expect(ws).toContain('id="tutor-cabecera"');
     expect(leer('components', 'tutor', 'LanzadorTutor.vue')).toMatch(/\.lanzador-tutor\.sobre-barra \{ bottom: calc\(5\.5rem/);
   });
 });

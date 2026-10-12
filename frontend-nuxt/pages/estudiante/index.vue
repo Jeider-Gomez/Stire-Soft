@@ -215,11 +215,11 @@
                 </span>
                 {{ dominadasDe(mod) }} de {{ contar(mod.units.length, 'leccion') }} dominadas
               </span>
+              <EstudianteCandadoModulo :modulo-id="mod.id" />
             </summary>
 
             <p v-if="studentStore.estadoModulo(mod.id)?.requiere" class="px-5 py-3 text-xs text-slate-600">
-              Se abre con {{ studentStore.estadoModulo(mod.id)!.requiere!.umbral }} % de dominio en «{{ studentStore.estadoModulo(mod.id)!.requiere!.titulo }}».
-              Vas en {{ studentStore.estadoModulo(mod.id)!.requiere!.dominio }} %.
+              Faltan {{ Math.max(0, studentStore.estadoModulo(mod.id)!.requiere!.umbral - studentStore.estadoModulo(mod.id)!.requiere!.dominio) }} puntos de dominio en «{{ studentStore.estadoModulo(mod.id)!.requiere!.titulo }}». Practica sus lecciones para abrir este módulo.
             </p>
             <!-- Cada tema es un grupo separado por una línea; el nombre solo aparece si agrupa más de una lección. -->
             <div v-else>

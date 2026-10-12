@@ -132,11 +132,11 @@
               <span>{{ statusData.tutor.provider || 'Gemini' }}</span>
             </span>
           </div>
-          <p class="text-lg font-bold font-mono text-acento-ambar-fuerte truncate" :title="statusData.tutor.model">
-            {{ statusData.tutor.model || '—' }}
+          <p class="text-lg font-bold text-acento-ambar-fuerte truncate" :title="statusData.tutor.model">
+            {{ nombreModelo(statusData.tutor.model) }}
           </p>
           <p class="text-[10px] text-base-texto-secundario leading-relaxed">
-            {{ statusData.tutor.studentsWithKey != null ? statusData.tutor.studentsWithKey : '—' }} con clave · {{ statusData.tutor.studentMessagesLast24h != null ? statusData.tutor.studentMessagesLast24h : '—' }} msgs en 24 h
+            {{ statusData.tutor.studentsWithKey != null ? statusData.tutor.studentsWithKey : '—' }} con clave · {{ statusData.tutor.studentMessagesLast24h != null ? statusData.tutor.studentMessagesLast24h : '—' }} mensajes en 24 h
           </p>
         </div>
       </section>
@@ -263,7 +263,7 @@
               <tr class="hover:bg-base-bg-secundario/40 transition-colors">
                 <td class="p-3 font-bold font-sans text-base-texto-primario">Tutor socrático IA</td>
                 <td class="p-3 text-base-texto-secundario">
-                  {{ statusData.tutor.provider || 'Gemini' }} · {{ statusData.tutor.model || '—' }}
+                  <span :title="statusData.tutor.model">{{ nombreModelo(statusData.tutor.model) }}</span>
                 </td>
                 <td class="p-3 text-center">
                   <span

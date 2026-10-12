@@ -287,7 +287,7 @@ describe('Tutor: aviso de repasos compacto y «Mi clave» en una línea (pedido 
   const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
 
   it('el aviso de repasos es una franja de una línea que se puede descartar, no una tarjeta flotante', () => {
-    expect(d).toContain('v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado"');
+    expect(d).toContain('v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado && !compacto"');
     expect(d).toContain('aria-label="Ocultar el aviso de repasos"');
     expect(d).toContain("useState('tutor-aviso-repasos-descartado'");
     expect(d).toContain("sessionStorage.setItem(CLAVE_AVISO_REPASOS, '1')");
@@ -342,7 +342,8 @@ describe('Cerrar el Tutor es fácil (pedido de Jeider, 03/10)', () => {
   });
 
   it('al cerrar, el foco vuelve al lanzador aunque el botón que lo abrió ya no exista', () => {
-    expect(d).toContain("const destino = openerElement?.isConnected ? openerElement : document.getElementById('lanzador-tutor')");
+    // 12/10: en el celular el Tutor se abre desde la cabecera del ejercicio o la barra de la lección.
+    expect(d).toContain("const destino = openerElement?.isConnected ? openerElement : document.getElementById('tutor-cabecera') ?? document.getElementById('tutor-barra') ?? document.getElementById('lanzador-tutor')");
   });
 });
 

@@ -28,7 +28,9 @@ export default defineNuxtConfig({
       },
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        // interactive-widget: en Android el teclado achica la página y no solo lo visible; así el Tutor y las barras fijas quedan
+        // encima del teclado (12/10). iPhone lo ignora y lo resuelve composables/useAreaVisible.ts.
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, interactive-widget=resizes-content' },
         { name: 'description', content: 'Sistema Tutor Inteligente con Repetición Espaciada y Evaluación Automática' }
       ],
       link: [

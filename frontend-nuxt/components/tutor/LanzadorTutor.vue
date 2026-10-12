@@ -8,7 +8,7 @@
   <button
     v-if="!tutorStore.isOpen"
     id="lanzador-tutor"
-    :class="[{ 'sobre-barra': sobreBarra }, compacto ? 'p-3' : 'pl-3.5 pr-4 py-3']"
+    :class="[{ 'sobre-barra': sobreBarra, 'hidden md:inline-flex': soloComputador }, compacto ? 'p-3' : 'pl-3.5 pr-4 py-3']"
     type="button"
     class="lanzador-tutor fixed right-4 sm:right-6 z-40 inline-flex items-center gap-2 rounded-full bg-stire-purple text-white text-sm font-bold shadow-lg shadow-stire-purple/30 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-stire-purple/40 transition-all"
     aria-label="Abrir el Tutor IA"
@@ -24,7 +24,8 @@ import { Sparkles } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
 
 // En el ejercicio, en el celular, Probar y Entregar van en una barra fija abajo: el lanzador sube para no taparla.
-defineProps<{ sobreBarra?: boolean }>()
+// En el ejercicio, en el celular, el Tutor va en la cabecera (layouts/workspace.vue) y el flotante solo en computador.
+defineProps<{ sobreBarra?: boolean; soloComputador?: boolean }>()
 const tutorStore = useTutorStore()
 
 /** Compacto mientras se baja; la página puede desplazarse en la ventana o en el contenedor principal. */

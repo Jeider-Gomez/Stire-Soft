@@ -12,7 +12,7 @@ const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'components/layout/SidebarNav.vue': { lineas: 304, motivo: 'Navegacion por rol y comportamiento responsive de una unica barra lateral. 335 -> 304 el 07/10: las clases del docente salieron a ClasesDelMenu.vue.' },
   'components/perfil/Form.vue': { lineas: 362, motivo: 'Formulario de perfil con una unica accion de guardado y secciones de la misma cuenta.' },
   'components/proyectos/EditorDiagrama.vue': { lineas: 791, motivo: 'Excluido por instruccion; lienzo y estado grafico estrechamente acoplados.' },
-  'components/tutor/TutorChatDrawer.vue': { lineas: 572, motivo: 'Interaccion de conversacion en un unico panel; mensajes, compositor y clave comparten el store.' },
+  'components/tutor/TutorChatDrawer.vue': { lineas: 545, motivo: 'Interaccion de conversacion en un unico panel; mensajes, compositor y clave comparten el store.' },
   'pages/admin/dashboard.vue': { lineas: 394, motivo: 'Resumen del sistema; la carga de estado ya se comparte mediante useAdminSistema. +1 el 07/10: la tabla se desplaza con el teclado (WCAG 2.1.1).' },
   'pages/admin/sistema.vue': { lineas: 396, motivo: 'Gestion de estado, registros y limpieza; la carga de estado se comparte mediante useAdminSistema. +2 el 07/10: el registro se enfoca con el teclado (WCAG 2.1.1).' },
   'pages/auth/register.vue': { lineas: 423, motivo: 'Un unico flujo de registro en dos pasos; validacion y envio comparten el mismo formulario.' },

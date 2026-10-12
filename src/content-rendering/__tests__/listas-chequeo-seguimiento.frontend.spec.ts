@@ -58,7 +58,8 @@ describe('MOB-02 · controles de 44 px en el celular', () => {
 
   it('el lanzador flotante del Tutor no tapa el último botón de la página (Mis clases: «Ver contenido»)', () => {
     const l = leer('layouts', 'student.vue');
-    expect(l).toContain('<TutorLanzadorTutor />');
+    // 12/10: en una lección, en el celular, el Tutor va en la barra de abajo (NavegacionLeccion.vue).
+    expect(l).toContain('<TutorLanzadorTutor :solo-computador="enLeccion" />');
     expect(l).toMatch(/<main id="contenido"[^>]*\bpb-24 sm:pb-24 md:pb-24\b/);
   });
 

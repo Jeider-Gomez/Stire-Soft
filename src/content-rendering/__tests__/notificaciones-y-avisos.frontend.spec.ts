@@ -24,13 +24,15 @@ describe('la campana de notificaciones (07/10)', () => {
   const c = leer('components', 'layout', 'NotificationBell.vue');
 
   it('cada notificación se lee completa: sin cortar el título ni el mensaje', () => {
-    expect(c).not.toMatch(/line-clamp|class="[^"]*\btruncate\b/);
-    expect(c).toContain('whitespace-pre-line break-words');
+    // 12/10: cada notificación es un componente propio (ItemNotificacion.vue).
+    const item = leer('components', 'layout', 'ItemNotificacion.vue');
+    expect(c + item).not.toMatch(/line-clamp|class="[^"]*\btruncate\b/);
+    expect(item).toContain('whitespace-pre-line break-words');
   });
 
   it('en el celular el panel ocupa el ancho de la pantalla; en el computador, una columna', () => {
-    // 12/10 (S09-J01, José): en el celular, a pantalla completa (hallazgos-jose-s09.frontend.spec.ts).
-    expect(c).toContain('fixed inset-0 z-[60] bg-base-blanco flex flex-col sm:absolute sm:inset-auto sm:right-0 sm:top-12 sm:w-96');
+    // 12/10 (Jeider): ni pantalla completa ni menú pegado: una hoja bajo la cabecera, con el fondo atenuado.
+    expect(c).toContain('fixed inset-x-2 top-[4.25rem] z-[60] max-h-[min(75dvh,36rem)] sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-96');
   });
 
   it('lleva a donde se resuelve (su enlace) y se pueden marcar todas como leídas', () => {

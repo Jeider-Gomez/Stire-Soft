@@ -54,7 +54,7 @@ describe('Refuerzos: la acción junto al dato', () => {
 
   it('en un ejercicio del refuerzo, el chat del Tutor dice que la ayuda está ampliada y por qué', () => {
     const chat = leer('components', 'tutor', 'TutorChatDrawer.vue');
-    expect(chat).toContain('v-if="tutorStore.guidanceLevel !== null && tutorStore.refuerzo"');
+    expect(chat).toContain('v-if="tutorStore.guidanceLevel !== null && tutorStore.refuerzo && !compacto"');
     expect(chat).toContain('Ayuda ampliada: este ejercicio es parte de tu refuerzo');
     expect(leer('stores', 'tutor.ts')).toContain('refuerzo.value = res?.refuerzo ?? null');
   });

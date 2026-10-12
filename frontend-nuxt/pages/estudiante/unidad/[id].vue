@@ -184,6 +184,8 @@
         <p v-else-if="sigLeccion" class="max-w-xs text-right text-[11px] text-base-texto-secundario">{{ notaModuloCerrado(sigLeccion) }}</p>
       </div>
     </template>
+    <!-- Celular: anterior, plan del curso, siguiente y Tutor en una barra abajo (12/10). -->
+    <EstudianteNavegacionLeccion :unit-id="unitId" />
   </div>
 </template>
 

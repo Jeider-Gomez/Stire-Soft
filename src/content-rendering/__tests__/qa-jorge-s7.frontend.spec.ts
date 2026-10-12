@@ -76,6 +76,6 @@ describe('QA-06: el nivel de ayuda del Tutor se lee como indicador, no como boto
 
   it('dice cuándo sube el nivel, para que nadie intente tocarlo', () => {
     expect(bloque).toContain('sube si sigues fallando el ejercicio');
-    expect(drawer).toMatch(/1: 'pista',\s*2: 'pregunta guía',\s*3: 'dónde está el error'/);
+    expect(leer('utils', 'textosTutor.ts')).toContain("{ 1: 'pista', 2: 'pregunta guía', 3: 'dónde está el error' }");
   });
 });

@@ -99,8 +99,8 @@
         <!-- Modelo LLM Tutor -->
         <div class="p-3 rounded-lg bg-base-bg-secundario border border-base-borde-sutil space-y-1">
           <span class="text-base-texto-secundario text-[11px] block">Modelo del Tutor IA</span>
-          <span class="font-mono font-bold text-acento-ambar-fuerte text-sm truncate block" :title="systemStatus?.tutor.model">
-            {{ systemStatus?.tutor.model || '—' }}
+          <span class="font-bold text-acento-ambar-fuerte text-sm truncate block" :title="systemStatus?.tutor.model">
+            {{ nombreModelo(systemStatus?.tutor.model) }}
           </span>
           <p class="text-[10px] text-base-texto-secundario">Proveedor: {{ systemStatus?.tutor.provider || 'Google Gemini' }}</p>
         </div>

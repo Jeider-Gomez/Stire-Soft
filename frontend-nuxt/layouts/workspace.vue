@@ -24,7 +24,9 @@
           </h1>
           <!-- Migas: dónde está el ejercicio dentro del curso (UX-01 / PAT-02 de la lista de chequeo). Miden 44 px para el dedo
                (MOB-02) y van por encima del título (z-10): axe las veía tapadas por él (WCAG 2.5.8, 07/10). -->
-          <nav aria-label="Ubicación" class="flex items-center gap-1 flex-wrap text-[11px] text-base-texto-secundario">
+          <!-- En el celular, una sola línea (las migas ocupaban dos y la cabecera medía 72 px de los ~600 que deja el navegador). -->
+          <p class="sm:hidden text-[11px] text-base-texto-secundario truncate">{{ workspaceStore.currentExercise.unitTitle }} · {{ difficultyLabel }}</p>
+          <nav aria-label="Ubicación" class="hidden sm:flex items-center gap-1 flex-wrap text-[11px] text-base-texto-secundario">
             <NuxtLink to="/estudiante" class="hover:underline inline-flex items-center min-h-[44px] -my-3.5 relative z-10">Inicio</NuxtLink>
             <ChevronRight :size="11" aria-hidden="true" />
             <NuxtLink :to="backLink" class="hover:underline truncate max-w-[180px] inline-flex items-center min-h-[44px] -my-3.5 relative z-10">{{ workspaceStore.currentExercise.unitTitle }}</NuxtLink>
@@ -33,6 +35,18 @@
           </nav>
         </div>
       </div>
+
+      <!-- El Tutor en el celular (Jeider, 12/10: «chiquito y apartado», y el botón flotante tapaba el ejercicio): arriba a la
+           derecha, con su nombre, en la cabecera que siempre está a la vista. En computador sigue el botón flotante. -->
+      <button
+        v-if="!tutorStore.isOpen"
+        id="tutor-cabecera"
+        type="button"
+        class="md:hidden shrink-0 min-h-[44px] pl-3 pr-3.5 rounded-full bg-stire-purple text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform"
+        aria-label="Abrir el Tutor IA"
+        @click="tutorStore.openDrawer()">
+        <Sparkles :size="16" aria-hidden="true" /> Tutor
+      </button>
 
       <!-- Estado de Autoguardado e Intentos -->
       <div class="hidden sm:flex items-center gap-4 text-xs">
@@ -97,15 +111,15 @@
     </div>
 
     <!-- Contenido Workspace -->
-    <!-- pb-24 en el celular para todos los ejercicios (José, MOB-02, 09/10): en opción múltiple el lanzador del Tutor
-         tapaba la última opción y el botón de entregar. En programar, además, deja sitio a la barra fija de abajo. -->
-    <main id="contenido" tabindex="-1" class="flex-1 md:overflow-hidden pb-24 md:pb-0">
+    <!-- En el celular el Tutor está en la cabecera: ya no hay botón flotante que tape la última opción (José, MOB-02). En
+         programar, pb-24 deja sitio a la barra fija de Probar y Entregar. -->
+    <main id="contenido" tabindex="-1" class="flex-1 md:overflow-hidden" :class="isCodingActivity || isHtmlCssActivity ? 'pb-24 md:pb-0' : 'pb-6 md:pb-0'">
       <slot />
     </main>
 
     <!-- Tutor IA Overlay -->
     <TutorChatDrawer />
-    <TutorLanzadorTutor :sobre-barra="isCodingActivity || isHtmlCssActivity" />
+    <TutorLanzadorTutor solo-computador />
     <DialogoConfirmar />
     <JuicioConfianza />
     <AvisoSinConexion />
@@ -113,7 +127,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ChevronRight, Cloud, Loader2, Play, Send, TriangleAlert } from 'lucide-vue-next'
+import { ArrowLeft, ChevronRight, Cloud, Loader2, Play, Send, Sparkles, TriangleAlert } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
 

@@ -18,11 +18,13 @@
       </span>
     </button>
 
-    <!-- En el celular, a pantalla completa (hallazgo de José, 09/10: como menú flotante tapaba la página sin dejar
-         espacio para leer); se cierra con la X de arriba. Va al <body>: dentro del encabezado, que tiene desenfoque
-         (backdrop-filter), «fixed» se mediría desde el encabezado y no desde la pantalla. En el computador, una columna
-         de 384 px bajo la campana. Cada notificación se lee completa. -->
+    <!-- En el celular, una hoja bajo la cabecera con el fondo atenuado: ni un menú pegado a la campana ni toda la pantalla
+         (12/10, Jeider: «muy brusco»; José, 09/10: el menú tapaba sin dejar leer). Va al <body>: dentro del encabezado, que
+         tiene desenfoque (backdrop-filter), «fixed» se mediría desde el encabezado. En computador, una columna de 384 px. -->
     <Teleport to="body" :disabled="!esCelular">
+    <Transition enter-active-class="transition-opacity duration-150" enter-from-class="opacity-0" leave-active-class="transition-opacity duration-100" leave-to-class="opacity-0">
+      <div v-if="isOpen && esCelular" class="fixed inset-0 z-[59] bg-base-texto-primario/30" aria-hidden="true" @click="cerrar" />
+    </Transition>
     <Transition
       enter-active-class="transition duration-150 ease-out"
       enter-from-class="opacity-0 -translate-y-1"
@@ -35,58 +37,51 @@
         v-if="isOpen"
         id="panel-notificaciones"
         ref="panelRef"
-        class="fixed inset-0 z-[60] bg-base-blanco flex flex-col sm:absolute sm:inset-auto sm:right-0 sm:top-12 sm:w-96 sm:z-50 sm:rounded-2xl sm:shadow-xl sm:border sm:border-base-borde-fuerte sm:max-h-[32rem]"
+        class="fixed inset-x-2 top-[4.25rem] z-[60] max-h-[min(75dvh,36rem)] sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-96 sm:z-50 sm:max-h-[32rem] bg-base-blanco rounded-2xl shadow-xl border border-base-borde-fuerte flex flex-col"
         role="dialog"
         :aria-modal="esCelular ? 'true' : undefined"
         aria-labelledby="titulo-notificaciones"
       >
-        <div class="px-4 py-2.5 border-b border-base-borde-sutil flex items-center gap-2 shrink-0">
-          <h2 id="titulo-notificaciones" class="text-sm font-semibold text-base-texto-primario flex-1">Notificaciones</h2>
-          <button v-if="unreadCount > 0" type="button" class="min-h-[44px] px-2 text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="marcarTodas">
-            Marcar todas como leídas
-          </button>
-          <button ref="cerrarRef" type="button" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md text-base-texto-primario hover:bg-base-bg-secundario sm:hidden" @click="cerrar">
-            <X :size="16" aria-hidden="true" /><span class="sr-only">Cerrar las notificaciones</span>
-          </button>
+        <div class="px-4 pt-2.5 pb-2 border-b border-base-borde-sutil shrink-0 space-y-2">
+          <div class="flex items-center gap-2">
+            <h2 id="titulo-notificaciones" class="text-sm font-semibold text-base-texto-primario flex-1">Notificaciones</h2>
+            <button ref="cerrarRef" type="button" class="min-w-[44px] min-h-[44px] -my-2 -mr-2 inline-flex items-center justify-center rounded-md text-base-texto-primario hover:bg-base-bg-secundario sm:hidden" @click="cerrar">
+              <X :size="16" aria-hidden="true" /><span class="sr-only">Cerrar las notificaciones</span>
+            </button>
+          </div>
+          <!-- Filtro como en GitHub o LinkedIn: lo nuevo primero, lo leído a un toque. -->
+          <div class="flex gap-1.5" role="group" aria-label="Qué notificaciones ver">
+            <button v-for="f in FILTROS" :key="f.id" type="button" :aria-pressed="filtro === f.id"
+              class="min-h-[36px] px-3 rounded-full text-xs font-semibold border transition-colors"
+              :class="filtro === f.id ? 'bg-base-texto-primario text-base-blanco border-base-texto-primario' : 'border-base-borde-fuerte text-base-texto-primario hover:bg-base-bg-secundario'"
+              @click="filtro = f.id">
+              {{ f.texto }}<template v-if="f.id === 'sin-leer' && unreadCount"> ({{ unreadCount }})</template>
+            </button>
+          </div>
         </div>
 
         <div class="overflow-y-auto overscroll-contain flex-1 min-h-0">
           <p v-if="isLoading" role="status" class="px-4 py-6 text-center text-xs text-base-texto-secundario">
             <Loader2 :size="14" class="inline-block animate-spin mr-1" aria-hidden="true" /> Cargando…
           </p>
-
-          <div v-else-if="notifications.length === 0" class="px-4 py-8 text-center text-xs text-base-texto-secundario space-y-1">
-            <p class="font-semibold text-base-texto-primario">Estás al día</p>
+          <div v-else-if="!grupos.length" class="px-4 py-8 text-center text-xs text-base-texto-secundario space-y-1">
+            <p class="font-semibold text-base-texto-primario">{{ textoVacio(filtro === 'sin-leer', notifications.length > 0) }}</p>
             <p>Aquí llegan tus notas, lo que te escribe tu docente, tus avances por módulo y los repasos del día.</p>
           </div>
+          <template v-else>
+            <section v-for="g in grupos" :key="g.grupo" :aria-label="g.grupo">
+              <h3 class="sticky top-0 z-10 px-4 py-1 bg-base-bg-secundario text-[11px] font-bold text-base-texto-primario">{{ g.grupo }}</h3>
+              <ul class="divide-y divide-base-borde-sutil">
+                <LayoutItemNotificacion v-for="n in g.items" :key="n.id" :n="n" :destino="destinoDe(n)" @abrir="handleNotificationClick" />
+              </ul>
+            </section>
+          </template>
+        </div>
 
-          <ul v-else class="divide-y divide-base-borde-sutil">
-            <li v-for="n in notifications" :key="n.id">
-              <button
-                type="button"
-                @click="handleNotificationClick(n)"
-                class="w-full text-left px-4 py-3 text-xs hover:bg-base-bg-secundario transition-colors flex items-start gap-3"
-                :class="!n.isRead ? 'bg-semantico-info/5' : ''"
-              >
-                <span class="mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="ICONOS[n.type].fondo" aria-hidden="true">
-                  <component :is="ICONOS[n.type].icono" :size="15" />
-                </span>
-                <span class="min-w-0 flex-1">
-                  <span class="flex items-start gap-2">
-                    <span class="font-semibold text-sm text-base-texto-primario break-words flex-1">{{ n.title }}</span>
-                    <span v-if="!n.isRead" class="mt-1.5 w-2 h-2 rounded-full bg-semantico-info shrink-0" aria-hidden="true" />
-                  </span>
-                  <!-- Completo, sin cortar (antes se cortaba en dos líneas y no se podía leer el mensaje entero). -->
-                  <span class="block text-base-texto-secundario mt-0.5 whitespace-pre-line break-words leading-relaxed">{{ n.message }}</span>
-                  <span class="flex items-center gap-2 mt-1.5 text-[11px] text-base-texto-secundario">
-                    <span>{{ ICONOS[n.type].nombre }} · {{ formatDate(n.createdAt) }}</span>
-                    <span v-if="!n.isRead" class="sr-only">, sin leer</span>
-                    <span v-if="destinoDe(n)" class="ml-auto font-semibold text-acento-ambar-fuerte inline-flex items-center gap-0.5">Abrir <ChevronRight :size="12" aria-hidden="true" /></span>
-                  </span>
-                </span>
-              </button>
-            </li>
-          </ul>
+        <div v-if="unreadCount > 0" class="px-3 py-1.5 border-t border-base-borde-sutil shrink-0 flex justify-end">
+          <button type="button" class="min-h-[44px] px-2 text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="marcarTodas">
+            Marcar todas como leídas
+          </button>
         </div>
       </div>
     </Transition>
@@ -96,7 +91,8 @@
 
 <script setup lang="ts">
 import { nextTick } from 'vue'
-import { Bell, ChevronRight, GraduationCap, Lightbulb, Loader2, Megaphone, MessageSquare, RotateCcw, X } from 'lucide-vue-next'
+import { Bell, Loader2, X } from 'lucide-vue-next'
+import { agruparNotificaciones, textoVacio, type NotificacionCampana } from '~/utils/notificaciones'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 import { useTutorStore } from '~/stores/tutor'
@@ -104,25 +100,10 @@ import { useTutorStore } from '~/stores/tutor'
 const api = useApi()
 const authStore = useAuthStore()
 
-type TipoNotificacion = 'grade' | 'review_schedule' | 'message' | 'info' | 'aviso'
-interface NotificationItem {
-  id: number
-  title: string
-  message: string
-  isRead: boolean
-  type: TipoNotificacion
-  enlace?: string | null
-  createdAt: string
-}
-
-// Un ícono y un nombre por tipo: se distingue de un vistazo una nota de un repaso (y no solo por el color).
-const ICONOS: Record<TipoNotificacion, { icono: typeof Bell; nombre: string; fondo: string }> = {
-  grade: { icono: GraduationCap, nombre: 'Nota', fondo: 'bg-semantico-pasa/10 text-semantico-pasa' },
-  review_schedule: { icono: RotateCcw, nombre: 'Repasos', fondo: 'bg-acento-ambar/15 text-acento-ambar-fuerte' },
-  message: { icono: MessageSquare, nombre: 'Mensaje', fondo: 'bg-semantico-info/10 text-semantico-info' },
-  aviso: { icono: Megaphone, nombre: 'Aviso de la clase', fondo: 'bg-stire-purple/10 text-stire-purple' },
-  info: { icono: Lightbulb, nombre: 'Tu avance', fondo: 'bg-base-bg-secundario text-base-texto-secundario' },
-}
+type NotificationItem = NotificacionCampana
+const FILTROS = [{ id: 'sin-leer', texto: 'Sin leer' }, { id: 'todas', texto: 'Todas' }] as const
+const filtro = ref<'sin-leer' | 'todas'>('todas')
+const grupos = computed(() => agruparNotificaciones(notifications.value, filtro.value === 'sin-leer'))
 
 const isOpen = ref(false)
 const isLoading = ref(false)
@@ -134,15 +115,6 @@ const cerrarRef = ref<HTMLButtonElement | null>(null)
 const tutorStore = useTutorStore()
 const botonRef = ref<HTMLButtonElement | null>(null)
 let pollHandle: ReturnType<typeof setInterval> | undefined
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr)
-  const minutos = Math.round((Date.now() - d.getTime()) / 60000)
-  if (minutos < 1) return 'ahora'
-  if (minutos < 60) return `hace ${minutos} min`
-  if (minutos < 24 * 60) return `hace ${Math.round(minutos / 60)} h`
-  return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })
-}
 
 async function refreshUnreadCount() {
   try {
@@ -170,6 +142,8 @@ function toggleOpen() {
   isOpen.value = !isOpen.value
   if (isOpen.value) {
     if (tutorStore.isOpen) tutorStore.closeDrawer()
+    // Abre en «Sin leer» si hay algo nuevo; si no, en «Todas».
+    filtro.value = unreadCount.value > 0 ? 'sin-leer' : 'todas'
     fetchNotifications()
     // A pantalla completa, el foco entra al panel (si no, quedaría en la campana, tapada).
     if (esCelular.value) nextTick(() => cerrarRef.value?.focus())

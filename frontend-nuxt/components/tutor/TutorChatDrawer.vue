@@ -39,9 +39,11 @@
         </button>
 
         <!-- Header del Tutor IA -->
-        <div class="p-4 flex items-center justify-between bg-gradient-to-r from-stire-blue via-[#0e48a8] to-stire-purple text-white select-none">
+        <!-- Escribiendo en el celular (con el teclado abierto) todo se compacta: solo el nombre, la X y los mensajes. Con
+             la cabecera completa y tres franjas quedaba una rendija para leer (Jeider, 12/10). -->
+        <div class="flex items-center justify-between bg-gradient-to-r from-stire-blue via-[#0e48a8] to-stire-purple text-white select-none" :class="compacto ? 'px-3 py-1' : 'p-3 lg:p-4'">
           <div class="flex items-center gap-3">
-            <div class="relative" aria-hidden="true">
+            <div v-if="!compacto" class="relative" aria-hidden="true">
               <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-inner">
                 <Bot :size="24" :stroke-width="2.2" class="text-teal-300" />
               </div>
@@ -49,7 +51,7 @@
             </div>
             <div>
               <h3 class="font-bold text-sm font-poppins tracking-tight">Tutor IA STIRE</h3>
-              <p class="text-[11px] text-slate-200">Te guía con preguntas y pistas; no te da la solución</p>
+              <p v-if="!compacto" class="text-[11px] text-slate-200">Te guía con preguntas y pistas; no te da la solución</p>
             </div>
           </div>
 
@@ -82,7 +84,7 @@
         <!-- Indicador de Nivel de Guía real del backend (§18.4) — oculto si guidanceLevel es null. Es texto, no botones:
              con tres etiquetas con borde Jorge las tomó por botones que no hacían nada (QA-06, 02/10). -->
         <div
-          v-if="tutorStore.guidanceLevel !== null"
+          v-if="tutorStore.guidanceLevel !== null && !compacto"
           class="px-4 py-1.5 bg-stire-teal/10 border-b border-stire-teal/25 flex items-center gap-2 text-[11px]"
           role="status"
           :aria-label="`Nivel de ayuda actual: ${tutorStore.guidanceLevel} de 3 — ${guidanceLevelLabel}`"
@@ -103,14 +105,14 @@
         <!-- En un refuerzo la ayuda empieza un nivel más arriba (docs/DISENO_INTERVENCION_DOCENTE.md §10.4): se le dice
              al estudiante por qué, para que no lo tome como que el Tutor «se rindió». -->
         <p
-          v-if="tutorStore.guidanceLevel !== null && tutorStore.refuerzo"
+          v-if="tutorStore.guidanceLevel !== null && tutorStore.refuerzo && !compacto"
           class="px-4 py-1.5 bg-semantico-info/10 border-b border-semantico-info/20 text-[11px] text-base-texto-primario"
         >
           Ayuda ampliada: este ejercicio es parte de tu refuerzo «{{ tutorStore.refuerzo }}».
         </p>
 
         <!-- Indicador de Contexto Activo de Aprendizaje -->
-        <div v-if="activeContextLabel" class="px-4 py-2 bg-stire-canvas border-b border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
+        <div v-if="activeContextLabel && !compacto" class="px-4 py-2 bg-stire-canvas border-b border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
           <div class="flex items-center gap-1.5 truncate">
             <BookOpen :size="14" class="text-teal-700 shrink-0" aria-hidden="true" />
             <span class="truncate font-medium font-poppins text-stire-blue">{{ activeContextLabel }}</span>
@@ -132,7 +134,7 @@
              pegada al encabezado y que se puede descartar: como tarjeta flotante ocupaba ~80 px del chat y los mensajes
              parecían quedar debajo (pedido de Jeider, 03/10). El detalle del más atrasado va en el título. -->
         <div
-          v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado"
+          v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado && !compacto"
           id="aviso-repasos-tutor"
           class="px-4 py-1.5 bg-acento-ambar/10 border-b border-acento-ambar/30 text-[11px] text-base-texto-primario flex items-center gap-2 shrink-0"
           role="status"
@@ -295,14 +297,18 @@
                 ref="inputRef"
                 v-model="inputQuery"
                 @keydown.enter="handleSend"
-                @focus="scrollToBottom"
+                @focus="escribiendo = true; scrollToBottom()"
+                @blur="escribiendo = false"
                 type="text"
                 :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
                 placeholder="Haz una pregunta sobre tu lógica..."
                 aria-label="Pregunta al Tutor IA"
                 style="font-size: 16px;"
                 class="flex-1 px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-stire-teal focus:ring-2 focus:ring-stire-teal/20 text-slate-800 placeholder:text-slate-500 outline-none transition-all disabled:opacity-50" />
+              <!-- mousedown.prevent: tocar Enviar no le quita el foco al campo; si no, el teclado se cerraba y el botón se
+                   movía bajo el dedo antes de recibir el toque. -->
               <button
+                @mousedown.prevent
                 @click="handleSend"
                 :disabled="!inputQuery.trim() || tutorStore.isThinking || !tutorStore.tutorEnabled"
                 class="w-11 h-11 rounded-xl bg-stire-teal hover:bg-[#14e2c8] text-[#070e24] flex items-center justify-center shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
@@ -325,6 +331,7 @@ import { useWorkspaceStore } from '~/stores/workspace'
 import { atajosASimpleVista, atajosDisponibles, preguntasNuevas, type Atajo } from '~/utils/atajosTutor'
 import { useStudentStore } from '~/stores/student'
 import { formatTutorMessage } from '~/utils/formatTutorMessage'
+import { avisoRepasosCorto as textoRepasosCorto, avisoRepasosLargo, nombreNivelAyuda, textoPensando } from '~/utils/textosTutor'
 
 const { confirmar } = useConfirmar()
 const tutorStore = useTutorStore()
@@ -383,31 +390,8 @@ onMounted(() => {
 watch(avisoRepasosDescartado, (oculto) => {
   try { if (oculto) sessionStorage.setItem(CLAVE_AVISO_REPASOS, '1') } catch { /* se usa sin recordar */ }
 })
-const avisoRepasosCorto = computed(() => {
-  const n = tutorStore.dueReviews?.overdueCount ?? 0
-  return n === 1 ? 'Tienes 1 repaso vencido' : `Tienes ${n} repasos vencidos`
-})
-const overdueNotice = computed(() => {
-  const reviews = tutorStore.dueReviews
-  if (!reviews || reviews.overdueCount <= 0) return null
-
-  const countText = reviews.overdueCount === 1
-    ? 'Tienes 1 repaso vencido.'
-    : `Tienes ${reviews.overdueCount} repasos vencidos.`
-
-  let oldestText = ''
-  if (reviews.oldest) {
-    const days = reviews.oldest.daysOverdue
-    const timeText = days === 0 ? 'toca hoy' : `hace ${days} ${days === 1 ? 'día' : 'días'}`
-    if (reviews.oldest.learningUnitTitle) {
-      oldestText = ` El más atrasado: «${reviews.oldest.learningUnitTitle}» (${timeText}).`
-    } else {
-      oldestText = ` El más atrasado: ${timeText}.`
-    }
-  }
-
-  return `${countText}${oldestText}`
-})
+const avisoRepasosCorto = computed(() => textoRepasosCorto(tutorStore.dueReviews))
+const overdueNotice = computed(() => avisoRepasosLargo(tutorStore.dueReviews))
 
 // ─── Navegación segura con verificación de autoguardado (§21.2 T4c) ─────────
 async function navigateWithAutosaveCheck(url: string) {
@@ -421,21 +405,8 @@ async function navigateWithAutosaveCheck(url: string) {
   navigateTo(url)
 }
 
-const thinkingText = computed(() => {
-  const s = tutorStore.thinkingSeconds
-  if (s >= 20) return 'Está tardando más de lo normal. Puedes seguir esperando.'
-  if (s >= 8) return 'Sigo trabajando en tu respuesta…'
-  return 'El tutor está analizando tu contexto de código...'
-})
-
-const guidanceLevelLabel = computed(() => {
-  const labels: Record<number, string> = {
-    1: 'pista',
-    2: 'pregunta guía',
-    3: 'dónde está el error'
-  }
-  return labels[tutorStore.guidanceLevel ?? 0] || ''
-})
+const thinkingText = computed(() => textoPensando(tutorStore.thinkingSeconds))
+const guidanceLevelLabel = computed(() => nombreNivelAyuda(tutorStore.guidanceLevel))
 
 // ─── Scroll automático (§18.2) ───────────────────────────────────────────────
 watch(() => [tutorStore.messages.length, tutorStore.isThinking], () => scrollToBottom())
@@ -450,6 +421,8 @@ function scrollToBottom() {
 // El teclado achica solo lo visible, no la página: tapaba los últimos mensajes y el campo. El panel toma el alto de lo
 // que se ve y el chat baja al último mensaje (composables/useAreaVisible.ts). En computador no cambia nada.
 const estiloAlTeclado = useAreaVisible(pantallaAncha, () => { if (tutorStore.isOpen) scrollToBottom() })
+const escribiendo = ref(false)
+const compacto = computed(() => !pantallaAncha.value && escribiendo.value)
 
 // ─── Foco al abrir / devolver foco al cerrar (§18.3 + §22 T2) ───────────────
 // openerElement se guarda ANTES de nextTick: ahí document.activeElement aún es el botón que lo abrió.
@@ -481,7 +454,7 @@ watch(
       const activo = document.activeElement
       if (activo && activo !== document.body && !drawerRef.value?.contains(activo)) return
       nextTick(() => {
-        const destino = openerElement?.isConnected ? openerElement : document.getElementById('lanzador-tutor')
+        const destino = openerElement?.isConnected ? openerElement : document.getElementById('tutor-cabecera') ?? document.getElementById('tutor-barra') ?? document.getElementById('lanzador-tutor')
         destino?.focus()
       })
     }
