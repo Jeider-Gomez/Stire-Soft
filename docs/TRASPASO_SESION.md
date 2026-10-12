@@ -95,6 +95,7 @@ Comandos, en el servidor (§8 de `DESPLIEGUE.md`), en este orden: copia de la ba
 | Qué | Quién / cuándo |
 |---|---|
 | Peso por nivel (avanzado pesa más): ya lo decide **cada docente** en Ajustes → Avance (apagado por defecto). Recomendado activarlo después de la prueba. Ver `DISENO_DOMINIO.md` §6. | Cada docente, después del 16/10. |
+| **El Tutor (12/10):** lista de lo dicho en la Semana 8 en `docs/calidad/resultados-prueba/TUTOR_S08_LISTA.md` (TUT-01 a TUT-16). Los 5 hallazgos de José (S09-J01) ya están en `main`. Dato clave: solo 4 estudiantes tienen clave de Google y nadie usó el Tutor del 10/10 al 12/10; antes del streaming, decidir con Jeider cómo conseguir que tengan su clave (TUT-15). | Jeider decide; se mira el uso el martes y el jueves (Admin → Sistema). |
 | **Decisión de Jeider:** ¿pasar a 1 intento también los ejercicios de opción múltiple ya cargados en producción? Lo nuevo ya se crea con 1. Ojo: los cursos tienen 2 parecidos por grupo y la guía recomienda 3. | Esperar respuesta. |
 | Contarle a José la barra de la clave (`components/auth/FuerzaClave.vue`), la guía de la lección y la lista de ejercicios rediseñada. Solo usan sus tokens. | Jeider. |
 | Enunciados de prueba de escritorio en la clase de Pedro en producción: el seed ya los explica, pero los datos de producción hay que editarlos como docente. | Pedro o con la API. |
