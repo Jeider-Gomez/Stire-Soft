@@ -287,7 +287,9 @@ tablero se revisó tal como quedó el viernes.)*
 ### Todo el equipo
 
 - [x] Reunión del equipo el jueves 08/10 por Meet: José compartió pantalla y recorrió STIRE como estudiante.
-  *(Evidencia: [`evidencias/semana-08/reunion-equipo-2026-10-08.webp`](./evidencias/semana-08/reunion-equipo-2026-10-08.webp).)*
+  *(Evidencia abajo.)*
+
+  ![Reunión del equipo por Meet, jueves 08/10, 9:24 p. m.: José comparte pantalla en STIRE](./evidencias/semana-08/reunion-equipo-2026-10-08.webp)
 - [ ] Revisión humana de las dos listas (16 de 28 criterios sin comentario: los de Jorge, Julio y Pedro). Sin ella no se
   puede consolidar (`S08-J07`) ni preparar la sustentación en inglés (`S08-P05`).
 - [ ] SUS del equipo (`S08-J08`): faltan respuestas.
