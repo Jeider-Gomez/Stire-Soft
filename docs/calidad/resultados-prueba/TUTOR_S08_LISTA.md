@@ -43,6 +43,17 @@ Estados: ✅ hecho · 🔧 hecho hoy, falta verlo en el celular · ⏳ espera a 
 | TUT-15 | ¿Por qué casi nadie usa el Tutor? | Este análisis (12/10) | 4 estudiantes con clave y 0 mensajes en 24 h. | 📋 para decidir contigo |
 | TUT-16 | En Admin → Sistema se ve «gemini-flash-latest» y otros nombres técnicos en inglés. | José, lista de interfaz UX-04 | Solo lo ve el administrador. Se puede dejar «Google Gemini (modelo rápido)» y el nombre técnico en la ayuda. | 📋 menor |
 
+### 12/10 (tarde): Jeider probando en su celular
+
+| # | Lo que dijo | Qué cambió | Estado |
+|---|---|---|---|
+| TUT-17 | En el ejercicio, el acceso al Tutor era «chiquito y apartado». | Arriba a la derecha, con su nombre, en la cabecera que siempre se ve; el botón flotante queda solo en computador. | ✅ `a1c9ed6` |
+| TUT-18 | Con el teclado abierto, casi no se leen los mensajes (cabecera grande y tres franjas). | Escribiendo en el celular, la cabecera se compacta y las franjas se esconden; Enviar no cierra el teclado; en Android el teclado achica la página. | ✅ `a1c9ed6` |
+| TUT-19 | Las notificaciones a pantalla completa son «muy bruscas», y se acumulan. | Una hoja bajo la cabecera con el fondo atenuado, «Sin leer / Todas» y grupos por día. Borrar una o las leídas, y el aviso de repasos de hoy borra los de días anteriores: el servidor ya está en `main` (`378fcb3`), la pantalla espera a que se despliegue. | 🔧 falta desplegar el backend |
+| TUT-20 | En el celular no hay botón para la siguiente lección y elegir lección está menos desarrollado que en el PC. | Barra abajo en la lección: anterior, «Lección n de m» (abre el plan del curso con el estado de cada lección y qué abre cada módulo cerrado), siguiente y Tutor. Se esconde al bajar leyendo. | ✅ `a1c9ed6` |
+| TUT-21 | José, UX-01: el inicio no dice qué abre el siguiente módulo. | El candado dice «Se abre con N % en …» con una barra hasta la meta, aunque el módulo esté plegado. | ✅ `a1c9ed6` |
+| TUT-16 | José, UX-04: «gemini-flash-latest» en Administración. | Ahora dice «Gemini (modelo rápido)»; el nombre técnico queda al pasar el mouse. | ✅ `a1c9ed6` |
+
 ## Lo que propongo hacer, en orden
 
 1. **Ver en el celular TUT-01 a TUT-04** (Vercel ya publicó el commit). Lo hace José en `S09-JO01` y, si quieres, tú antes
