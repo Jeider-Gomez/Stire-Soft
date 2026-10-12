@@ -113,3 +113,10 @@ describe('MOB-02 (José): el lanzador del Tutor no tapa la última opción del e
     expect(leer('layouts', 'workspace.vue')).toContain('class="flex-1 md:overflow-hidden pb-24 md:pb-0"');
   });
 });
+
+describe('MOB-01 (José): un bloque de código largo del Tutor no mueve el chat de lado', () => {
+  it('la burbuja puede encogerse (min-w-0) y el código se desplaza dentro de su recuadro', () => {
+    expect(leer('components', 'tutor', 'TutorChatDrawer.vue')).toContain('class="min-w-0 break-words rounded-2xl p-3');
+    expect(leer('utils', 'formatTutorMessage.ts')).toContain('overflow-x-auto');
+  });
+});

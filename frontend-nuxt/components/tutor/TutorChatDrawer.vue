@@ -192,8 +192,9 @@
                 <span v-if="msg.sender !== 'student'" class="w-6 h-6 mb-1 rounded-lg bg-stire-blue flex items-center justify-center shrink-0" aria-hidden="true">
                   <Bot :size="16" :stroke-width="2.2" class="text-teal-300" />
                 </span>
+                <!-- min-w-0: un bloque de código largo ya no ensancha la burbuja ni mueve el chat de lado (José, MOB-01). -->
                 <div
-                  class="rounded-2xl p-3 text-xs leading-relaxed shadow-sm"
+                  class="min-w-0 break-words rounded-2xl p-3 text-xs leading-relaxed shadow-sm"
                   :class="msg.isError
                     ? 'bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-bl-none'
                     : msg.sender === 'student'
