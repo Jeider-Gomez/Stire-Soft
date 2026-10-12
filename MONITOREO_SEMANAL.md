@@ -1,18 +1,18 @@
-# 🚀 Bitácora de Monitoreo y Control N.º 8 — Proyecto: STIRE-Soft
+# 🚀 Bitácora de Monitoreo y Control N.º 9 — Proyecto: STIRE-Soft
 
 **Curso:** DDSE3 — 2026-2  
 **Grupo:** [G1 / G2]  
 **Repositorio GitHub:** https://github.com/Jeider-Gomez/Stire-Soft  
-**Semana:** 5 – 9 de octubre de 2026  
-**Entrega de las tareas:** jueves 8 de octubre, 8:00 p. m. · **Cierre de la bitácora:** viernes 9 de octubre, 8:00 p. m.  
-**Tablero Kanban:** https://trello.com/b/UtgkXyv2/stire-kanban-desarrollo-semana-08-5-9-oct-2026
+**Semana:** 12 – 16 de octubre de 2026  
+**Entrega de las tareas:** jueves 15 de octubre, 8:00 p. m. · **Pendientes de la Semana 8:** martes 13 de octubre, 8:00 p. m. · **Cierre de la bitácora:** viernes 16 de octubre, 8:00 p. m.  
+**Tablero Kanban:** https://trello.com/b/eFKisFRU/stire-kanban-desarrollo-semana-09-12-16-oct-2026
 
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
-> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_07.md`](./docs/seguimiento/MONITOREO_SEMANAL_07.md), cerrada el
-> 02/10 con 14 de 15 ítems cumplidos. STIRE quedó en internet en su versión 1.1, con los dos cursos cargados. Jorge hizo la
-> primera auditoría sobre el entorno desplegado. Pasan a esta semana la revisión del rol de docente de Julio, los
-> ajustes de UI/UX que propuso José y dos hallazgos de Jorge.
+> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_08.md`](./docs/seguimiento/MONITOREO_SEMANAL_08.md), cerrada el
+> 12/10 con 18 de 27 ítems cumplidos. La prueba funcionó en Fundamentos (Pedro dictó y José terminó la Unidad 1) y Pedro
+> terminó las secciones 1 y 2 de Pensamiento. **Julio y Jorge no dejaron registro de su semana**: sus lecciones, el
+> reporte docente, el QA, sus criterios de las listas y sus hábitos pasan a esta semana.
 
 ---
 
@@ -34,140 +34,119 @@
 
 ## 🎯 2. Objetivo del Sprint
 
-**Empezar la prueba de STIRE con el equipo** (semana 1 de 2), según
-[`docs/calidad/PRUEBA_DOS_SEMANAS.md`](./docs/calidad/PRUEBA_DOS_SEMANAS.md): dos cursos y dos grupos que se cruzan la
-semana siguiente. Todos usan la app como docente o como estudiante y envían sugerencias con el botón «Sugerencias».
-Lo que bloquee el uso se corrige en el día.
+**Semana 2 de la prueba con el equipo** ([`docs/calidad/PRUEBA_DOS_SEMANAS.md`](./docs/calidad/PRUEBA_DOS_SEMANAS.md)),
+**ponerse al día con lo que no se hizo en la Semana 8** y cerrar la revisión humana de las dos listas del profesor.
 
-### Roles en la prueba *(acordados el 02/10)*
+### Roles en la prueba, ajustados *(12/10)*
 
-Cada docente dicta un curso a dos estudiantes y es estudiante del curso del otro con una segunda cuenta (validación
-cruzada). José y Jorge cambian de curso en la Semana 9. Detalle en `PRUEBA_DOS_SEMANAS.md` §1.
+Solo cruza de curso quien terminó el suyo en la semana 1. Jorge y Julio no empezaron, así que hacen esta semana su
+primer curso.
 
-| Clase | Docente | Estudiantes en la Semana 8 | Meta de la Semana 8 |
+| Clase | Docente | Estudiantes en la Semana 9 | Meta de la Semana 9 |
 |---|---|---|---|
-| Fundamentos de Algoritmia (`ALGO-203413`) | Pedro | José y Julio (segunda cuenta) | **Unidad 1** completa (6 lecciones) |
-| Pensamiento algorítmico (`PENSAR-ALGO`) | Julio | Jorge y Pedro (segunda cuenta) | **Secciones 1 y 2** completas (5 lecciones) |
+| Fundamentos de Algoritmia (`ALGO-203413`) | Pedro (publica la **Unidad 2**) | Julio (segunda cuenta): **Unidad 1** *(pendiente)* | Unidad 1 completa (6 lecciones) |
+| Pensamiento algorítmico (`PENSAR-ALGO`) | Julio (publica las **secciones 3 y 4**) | José: **secciones 1 y 2** · Jorge: **secciones 1 y 2** *(pendiente)* · Pedro (segunda cuenta): **secciones 3 y 4** | 5 lecciones cada uno |
 
-Jeider entra como estudiante en las dos clases, sin obligación de terminar, y administra: vigila que el servidor esté
-arriba (sin apagado automático durante la prueba), aprueba a los docentes y atiende las sugerencias.
+José se une a la clase de Julio (un estudiante puede estar en varias clases y cambia de clase arriba). Jeider sigue como
+administrador y estudiante en las dos clases, sin obligación de terminar.
 
 ### Resultados esperados
 
-1. La prueba arranca el lunes con Pedro y Julio aprobados como docentes, las dos clases creadas desde las plantillas y
-   los cuatro estudiantes unidos a su clase.
-2. Los estudiantes alcanzan la meta de la semana: Unidad 1 de Fundamentos y secciones 1 y 2 de Pensamiento (`S08-E01`, `S08-E02`).
-3. Pedro y Julio usan el rol de docente con su curso y dejan su revisión (`S08-P04`, `S08-JL01`).
-4. Jorge audita las funciones nuevas en producción (`S08-JOR01`).
-5. José revisa los ajustes visuales y observa a los compañeros durante la prueba (`S08-JO02`).
-6. Resultados de la semana 1 de la prueba: sugerencias y las tres preguntas de cada persona (`S08-P03`).
-7. Registro de los 7 Hábitos de los 5 integrantes (`S08-H-*`).
-8. Bitácora cerrada el viernes, sin retraso.
+1. **Lo pendiente de la Semana 8, a más tardar el martes 13/10:** los criterios de las listas de Jorge, Julio y Pedro
+   (`S09-V-*`) y los resultados de la semana 1 (`S09-P03`).
+2. Julio usa el rol de docente con su curso y deja su reporte (`S09-JL01`).
+3. Jorge entrega el QA en producción (`S09-JOR01`).
+4. Los estudiantes alcanzan su meta (`S09-E01`, `S09-E02`, `S09-E03`).
+5. Jeider corrige los 5 hallazgos de José (`S09-J01`), consolida las dos listas y el SUS y cierra la v2.0.0 (`S09-J03`).
+6. Resultados de las dos semanas de la prueba (`S09-P03`) y decisión sobre la Semana 10.
+7. Registro de los 7 Hábitos de los 5 integrantes (`S09-H-*`).
+8. Bitácora cerrada el viernes 16/10, sin retraso.
 
 ---
 
 ## 📋 3. Plan de trabajo semanal
 
-> **Fecha máxima de todas las tareas: jueves 08/10, 8:00 p. m.** Solo la bitácora se cierra el viernes 09/10. Cada
-> tarjeta de Trello tiene su lista de verificación.
+> **Fecha máxima de las tareas: jueves 15/10, 8:00 p. m.** Lo que viene de la Semana 8 marcado con ⏪ tiene fecha del
+> **martes 13/10, 8:00 p. m.** Solo la bitácora se cierra el viernes 16/10. Cada tarjeta de Trello tiene su lista de
+> verificación.
 
-> Tablero: https://trello.com/b/UtgkXyv2/stire-kanban-desarrollo-semana-08-5-9-oct-2026
+> Tablero: https://trello.com/b/eFKisFRU/stire-kanban-desarrollo-semana-09-12-16-oct-2026
 
 ### Jeider Gómez — Líder Técnico
 
-- [x] **S08-J01 · Ajustes de UI/UX según las recomendaciones de José** *(viene del reporte de José, Semana 7)*
-  - Tutor como panel lateral que deja ver la lección (computador); en celular sigue como cajón.
-  - Menú lateral retráctil en computador, solo íconos al colapsarlo.
-  - Cajas de texto que crecen solas.
-  - Registro: lo obligatorio arriba y lo opcional plegado debajo; la clave de Google solo para estudiantes; dos
-    columnas en computador y el botón visible sin bajar en un portátil de 1366×768.
-  - Segunda ronda (revisión propia, 03/10): todas las ventanas emergentes con scroll (al crear un curso con una
-    descripción larga no se llegaba al botón); aviso en rojo cuando el admin aún no cambia el rol a docente; botón del
-    menú arriba y fijo; login que cabe en un portátil, con foco y mensaje de error útiles; el Tutor se ofrece cuando
-    falla un caso de prueba o un intento (como hace Khan Academy con Khanmigo).
-  - Tercera ronda (03/10), con los referentes estudiados en `docs/investigacion/referentes/`: barra lateral fija al
-    bajar, «ocultar el menú» como un solo ícono, encabezado semitransparente, registro en dos pasos y **acceso al Tutor
-    con un botón flotante «Tutor» abajo a la derecha en todas las pantallas**, que completa la recomendación de José de
-    «cambiar la ventana o el acceso al Tutor» (la ventana ya era un panel al lado).
-  - Hallazgos de José sobre el chatbot (`HALLAZGOS.md`): la tarjeta «Practica esto» ahora se ve como botón y el saludo
-    dice qué hacer (tocar la tarjeta o escribir la duda).
-  - Pendiente: la revisión visual de José (`S08-JO02`).
-- [x] **S08-J02 · Hallazgos del QA de Jorge** *(de su reporte del 02/10)*
-  - ~~QA-06: el indicador del nivel de ayuda del Tutor (Pista, Pregunta guía, Dónde está el error) parece un grupo de
-    botones; rediseñarlo para que se lea como indicador.~~ Hecho el 04/10: ahora es una línea de texto con tres
-    puntos, «Nivel de ayuda: pista · sube si sigues fallando el ejercicio».
-  - ~~QA-07: «No se pudo autoguardar» aparece a ratos; buscar la causa y que reintente solo.~~ Hecho el 04/10. El
-    código se guarda solo, 0,8 s después de dejar de escribir. Causa principal: con los intentos ya usados (Jorge iba
-    en «Intentos: 3 / 3»), cada tecla pedía abrir un intento nuevo, el servidor lo negaba y salía el aviso en rojo.
-    Ahora dice «Ya usaste tus intentos: lo que escribas no se guarda»; un fallo de red se reintenta solo (2, 5 y
-    10 s); y al entregar o cambiar de ejercicio se cancela el guardado pendiente.
-  - En `main` (`2f5024c`) y desplegado en Vercel el 04/10. Jorge lo verifica en `S08-JOR01`.
-- [x] **Listas de chequeo del profesor: el «antes»** *(pedidas por correo; hecho el 04/10)*. Se aplicaron la lista de
-  interfaz (Pressman, caps. 12–14) y la de Sistemas Tutores Inteligentes (Caro, 2015) a la versión desplegada, con código,
-  capturas de computador y celular, teclado, modo oscuro, conexión cortada y axe-core. Resultados: interfaz **20/32
-  (62,5 %)** y Tutores **14/24 (58,3 %)**. Están en el Word del profesor y en Markdown en
-  [`docs/calidad/listas-chequeo/`](docs/calidad/listas-chequeo/README.md). El «después» se mide con la v1.2.0.
-  La carpeta `docs/calidad/` quedó ordenada con nombres fechados.
-  - ~~Del reporte del Tutor de José (`HALLAZGOS.md`): las tarjetas de sugerencia necesitan más contraste para verse
-    como botones.~~ Hecho el 03/10 (ver `S08-J01`).
-- [ ] **S08-J03 · Operar la prueba** *(el servidor está encendido 24/7 durante la prueba)*
-  - Comprobar cada día que la app responde; aprobar a Pedro y a Julio como docentes.
-  - Revisar las sugerencias cada día (ahora con pantallazo) y corregir en el día lo de gravedad 3.
-  - Revisar el consumo del crédito de Azure el martes y el jueves.
-- [ ] **S08-J04 · Asistencia en el salón con cámaras reales** — probar el escáner con un celular Android, un iPhone y la
-  cámara de un portátil.
+- [ ] **S09-J01 · Los 5 hallazgos de UX de José** *(de `S08-JO02`, 09/10)*
+  - En el celular, al abrir el teclado el chat del Tutor baja hasta el último mensaje.
+  - Notificaciones a pantalla completa en el celular.
+  - El tiempo que le queda al QR de «Mi asistencia» se ve claro (ya hay una barra; revisar con José por qué no se nota).
+  - En computador, abrir las notificaciones cierra u oculta el Tutor, y al revés.
+  - En arrastrar y soltar, la zona de destino se resalta mientras la pieza está encima.
+- [ ] **S09-J02 · Operar la semana 2 de la prueba**
+  - Comprobar cada día que la app responde; aprobar a Julio como docente si aún no lo está.
+  - Revisar las sugerencias cada día y corregir en el día lo de gravedad 3; marcar las n.º 9 y 10 de Pedro.
+  - Revisar el crédito de Azure el martes y el jueves.
+  - Medir cuánto tarda el Tutor con el registro nuevo y decidir si hace falta la respuesta en streaming.
+  - **Al terminar la prueba** (16/10, o 23/10 si hay Semana 10): reactivar el apagado automático de las 23:00 y volver
+    a poner la encuesta SUS cada 90 días.
+- [ ] **S09-J03 · Cerrar la v2.0.0 con las dos listas** *(viene de `S08-J06`, `S08-J07` y `S08-J08`)*
+  - Cuando estén los criterios de todos (`S09-V-*`): la tabla «nota de la IA vs. nota humana» de los 28 criterios en
+    `VERIFICACION_v2.0.0.md`, con el porqué de cada diferencia.
+  - SUS del equipo con las cinco respuestas (Mi perfil → «Responder la encuesta de usabilidad»).
+  - Etiqueta `v2.0.0` en Git y su entrada en `CHANGELOG.md`.
+- [ ] **S09-J04 · Asistencia en el salón con cámaras reales** ⏪ *(viene de `S08-J04`; fecha límite 16/10)* — un celular
+  Android, un iPhone (de un compañero, en el encuentro presencial) y la cámara de un portátil.
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] **S08-JL01 · Docente de Pensamiento algorítmico: revisar el rol de docente con el curso real** *(viene de
-  `S07-JL03` y `S07-JL04`)*
-  - Crear su cuenta de docente (Jeider aprueba el rol) y la clase desde la plantilla `PENSAR-ALGO`; publicar las
-    secciones 1 y 2 y compartir el código o el QR con Jorge y Pedro.
+- [ ] **S09-V-JULIO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** ⏪ *(martes 13/10)* — MOD-01, MOD-03, UI-01,
+  UI-02, UI-03 y UI-05, un comentario por criterio sin mirar la nota de la IA.
+- [ ] **S09-JL01 · Docente de Pensamiento algorítmico** ⏪ *(viene de `S08-JL01`)*
+  - Publicar las secciones 3 y 4 y unir a José a la clase.
   - Revisar «Hoy» cada día; crear una entrega y comentar lo que llegue; asignar un refuerzo; tomar la asistencia una vez.
-  - Revisión pedagógica de las 5 lecciones de la semana: coherencia, dificultad e instrucciones claras.
-  - Reporte en `docs/cursos/REVISION_DOCENTE_PENSAR_S8.md`.
-- [ ] **S08-E01 · Estudiante de Fundamentos** (segunda cuenta), con José — meta: Unidad 1 completa.
+  - Revisión pedagógica de las lecciones: coherencia, dificultad e instrucciones claras.
+  - Reporte en `docs/cursos/REVISION_DOCENTE_PENSAR.md`, con las dos semanas.
+- [ ] **S09-E03 · Estudiante de Fundamentos, Unidad 1** ⏪ (segunda cuenta).
 
 ### José López — UI/UX + Comunicación
 
-- [ ] **S08-E01 · Estudiante de Fundamentos**, con Julio — meta: Unidad 1 completa.
-- [ ] **S08-JO02 · Revisión de UX de la plataforma: heurísticas y observación de compañeros** — para tener sugerencias
-  concretas para la v2.0:
-  - revisar cómo quedaron sus recomendaciones ya aplicadas (`S08-J01`);
-  - recorrido con las 10 heurísticas de Nielsen, en computador y en celular (375 px). Como estudiante: Inicio, una
-    lección, un ejercicio de código, el Tutor, Mi progreso, Repasos, Mis proyectos y Mi asistencia. Como docente: Hoy,
-    Contenido, Notas y Asistencia;
-  - observar a 2 compañeros, 10 minutos cada uno, haciendo una tarea sin ayudarles;
-  - cada hallazgo con pantalla, qué pasa, por qué molesta (heurística), propuesta concreta, captura y prioridad. Meta:
-    al menos 10, 3 prioritarios y 3 vistos en el celular;
-  - entrega en `docs/identidad-visual/REVISION_UX_S8.md`, con capturas en `docs/identidad-visual/capturas-s8/`.
+- [ ] **S09-E01 · Estudiante de Pensamiento, secciones 1 y 2**, con Jorge.
+- [ ] **S09-JO01 · Revisar los 5 hallazgos corregidos y lo que más confundió en la prueba**
+  - Comprobar en el celular y en el computador cómo quedaron sus 5 hallazgos (`S09-J01`).
+  - Observar a un compañero 10 minutos haciendo una lección de Pensamiento, sin ayudarle.
+  - Lo que más confundió en las dos semanas y su propuesta para la v2.0, en un comentario de la tarjeta con capturas.
 
 ### Jorge Cervantes — Gestión + Calidad
 
-- [ ] **S08-E02 · Estudiante de Pensamiento**, con Pedro — meta: secciones 1 y 2 completas.
-- [ ] **S08-JOR01 · QA de las funciones nuevas en producción** — con la
-  [guía maestra](./docs/calidad/GUIA_AUDITORIA_MAESTRA.md): asistencia con QR, unirse a una clase escaneando el QR,
-  proyectos, entregas, notas, foto de perfil, ajustes de UI/UX y una nueva prueba del Tutor. Reporte en
-  `docs/calidad/reportes-qa/REPORTE_QA_S8_2026-10-08.md`.
+- [ ] **S09-V-JORGE · Lista de INTERFAZ: 5 criterios como usuario** ⏪ *(martes 13/10)* — UX-02, UX-07, MOB-04, PAT-02 y
+  PAT-03.
+- [ ] **S09-JOR01 · QA de las funciones nuevas en producción** ⏪ *(viene de `S08-JOR01`)* — lo de la Semana 8 (asistencia
+  con QR, unirse con QR, proyectos, entregas, foto de perfil, ajustes de UI/UX, Tutor) y lo nuevo de la Semana 8 (avisos
+  del docente, notificaciones, temas de contraste, archivar contenidos, ejercicios de programar). Reporte en
+  `docs/calidad/reportes-qa/REPORTE_QA_S9_2026-10-15.md`.
+- [ ] **S09-E01 · Estudiante de Pensamiento, secciones 1 y 2** ⏪, con José.
 
 ### Pedro Romero — Documentación + Bitácora
 
-- [x] **S08-P01 · Tablero Trello de la Semana 8** — creado el 02/10.
-- [ ] **S08-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 09/10 (la única tarea con fecha del viernes), contrastada con Trello y Git.
-- [ ] **S08-P04 · Docente de Fundamentos de Algoritmia**
-  - Crear su cuenta de docente (Jeider aprueba el rol) y la clase desde la plantilla `ALGO-203413`; publicar la Unidad 1
-    y compartir el código o el QR con José y Julio.
-  - Revisar «Hoy» cada día; crear una entrega y comentar lo que llegue; asignar un refuerzo; tomar la asistencia una vez.
-  - Nota corta de cómo le fue como docente en `docs/cursos/REVISION_DOCENTE_FUNDAMENTOS_S8.md`.
-- [ ] **S08-E02 · Estudiante de Pensamiento** (segunda cuenta), con Jorge — meta: secciones 1 y 2 completas.
-- [ ] **S08-P03 · Resultados de la semana 1 de la prueba** — descargar el CSV de sugerencias y juntar las respuestas de
-  las tres preguntas en `docs/calidad/resultados-prueba/PRUEBA_SEMANA_1_RESULTADOS.md`.
+- [x] **S09-P01 · Tablero Trello de la Semana 9** — creado el 12/10.
+- [ ] **S09-V-PEDRO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** ⏪ *(martes 13/10)* — MOD-02, MOD-04, UI-04,
+  META-01, META-02 y META-03.
+- [ ] **S09-P03 · Resultados de la prueba, semanas 1 y 2** ⏪ — el Excel de sugerencias, las tres preguntas de cada persona
+  y el avance frente a la meta, en `docs/calidad/resultados-prueba/PRUEBA_RESULTADOS.md`. La semana 1 el martes 13/10; la
+  semana 2 el viernes 16/10.
+- [ ] **S09-P04 · Docente de Fundamentos (Unidad 2) y estudiante de Pensamiento (secciones 3 y 4)** — publicar la Unidad 2
+  y comentar las entregas; terminar el curso de Pensamiento con la segunda cuenta (`S09-E02`).
+- [ ] **S09-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 16/10, contrastada con Trello y Git.
 
 ### 3.1 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
 
 Registro libre y semanal en un comentario de su tarjeta, con la situación real de cada hábito.
 
-- [ ] **S08-H-JEIDER** · **S08-H-PEDRO** · **S08-H-JOSE** · **S08-H-JULIO** · **S08-H-JORGE**
+- [ ] **S09-H-JEIDER** · **S09-H-PEDRO** · **S09-H-JOSE** · **S09-H-JULIO** · **S09-H-JORGE**
+
+### 3.2 En el backlog
+
+- **S09-J05 · Revisar los ejercicios de programar de los cursos** *(viene de `S08-J09`)*. La pantalla del ejercicio ya
+  cambió el 10/10 (`docs/DISENO_EJERCICIOS_PROGRAMAR.md`); falta revisar los 28 ejercicios de Fundamentos uno por uno.
+- **S09-P05 · Sustentación en inglés: cómo cumple STIRE las dos listas** *(viene de `S08-P05`)*. Depende de `S09-J03`.
 
 ---
 
@@ -177,7 +156,8 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 📥 BACKLOG → 📋 ESTA SEMANA → ⚙️ EN CURSO → ✅ HECHO
 ```
 
-1. Máximo **3 tarjetas comprometidas por persona** en `Esta semana` (sin contar la de los 7 Hábitos).
+1. Máximo **3 tarjetas comprometidas por persona** en `Esta semana` (sin contar la de los 7 Hábitos). Pedro tiene una más
+   porque la bitácora es de todas las semanas.
 2. Máximo **2 tarjetas simultáneas por persona** en `En curso`.
 3. Una tarjeta bloqueada permanece en `En curso` con etiqueta roja + `🚧 BLOQUEADA`.
 4. Una tarea no pasa a `Hecho` sin evidencia; el código terminado tiene respaldo en GitHub.
@@ -187,51 +167,39 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 
 ## ⚠️ 5. Riesgos vivos
 
-1. **Servidor apagado:** *(mitigado el 02/10)* Jeider quitó el apagado automático de las 23:00 durante la prueba, para
-   que la app esté disponible a cualquier hora. Se vuelve a activar al terminar, para cuidar el crédito de Azure.
-2. **Clave del Tutor:** cada estudiante necesita su propia clave gratuita de Google AI Studio; sin ella no puede usar el
-   Tutor.
-3. **Tiempo de respuesta del Tutor:** entre 3 y 29 segundos según la carga de Google; se avisa en pantalla.
-4. **Crédito de Azure:** 100 dólares. Con el servidor encendido 24/7 durante la prueba se gasta más rápido que con el
-   apagado nocturno: Jeider lo revisa martes y jueves (alertas al 50 % y al 80 %) y reactiva el apagado al terminar.
-5. **Pocas personas:** con 5 integrantes la prueba encuentra la mayoría de problemas de uso, pero cada ausencia pesa.
+1. **Participación desigual:** *(nuevo, 12/10)* en la Semana 8, dos de cinco integrantes no dejaron registro. Si se
+   repite, la prueba no tendrá los dos estudiantes por curso ni la revisión humana completa de las listas. Mitigación:
+   los pendientes tienen fecha del martes 13/10 y se revisan en el reporte de ese día.
+2. **La revisión humana de las listas bloquea otras tareas:** sin los criterios de Jorge, Julio y Pedro no se consolidan
+   las listas (`S09-J03`) ni se prepara la sustentación en inglés (`S09-P05`).
+3. **Clave del Tutor:** cada estudiante necesita su propia clave gratuita de Google AI Studio.
+4. **Crédito de Azure:** el servidor sigue encendido 24/7 durante la prueba; Jeider lo revisa martes y jueves y reactiva
+   el apagado al terminar.
+5. **Semana 10:** si Julio y Jorge no terminan su primer curso, la prueba se alarga hasta el 23/10.
 
 ---
 
 ## 📅 6. Seguimiento
 
-- **Martes:** qué terminó, qué está haciendo, qué falta, si hay bloqueo. Sugerencias de gravedad 3 de lunes y martes.
-- **Jueves:** qué puede cerrar el viernes, qué está en riesgo, qué necesita de otro.
-- **Viernes:** revisar Trello y GitHub, validar evidencias, resultados de la semana 1, preparar la Semana 9.
+- **Martes 13/10:** los pendientes ⏪ de la Semana 8 entregados; qué terminó cada uno y si hay bloqueo.
+- **Jueves 15/10:** qué puede cerrar el viernes, qué está en riesgo, qué necesita de otro.
+- **Viernes 16/10:** revisar Trello y GitHub, validar evidencias, resultados de las dos semanas y decidir la Semana 10.
 
 ---
 
 ## 🧾 7. Resultado del Sprint — completar al cierre
 
-*(Se marca solo con resultados verificables al cierre del viernes 09/10.)*
+*(Se marca solo con resultados verificables al cierre del viernes 16/10.)*
 
 ---
 
-## 🔭 8. Proyección de las semanas 9 y 10
+## 🔭 8. Proyección
 
-**Semana 9 (12 – 16 de octubre), semana 2 de la prueba.** José pasa a Pensamiento y Jorge a Fundamentos; Julio y Pedro
-siguen en el curso del otro.
+**Semana 10 (19 – 23 de octubre), solo si hace falta.** Julio y Jorge cruzan de curso (Julio a la Unidad 2 de
+Fundamentos, Jorge a la Unidad 1); Pedro publica la Unidad 3. Al cierre: informe consolidado de la prueba, versión con lo
+corregido y decisión del alcance de la v2.0. Se decide el viernes 16/10.
 
-| Quién | Qué |
-|---|---|
-| Pedro | Docente: publica la Unidad 2 de Fundamentos. Estudiante: secciones 3 y 4 de Pensamiento (termina el curso). Resultados de la semana 2. |
-| Julio | Docente: publica las secciones 3 y 4 de Pensamiento y compara con la primera semana. Estudiante: Unidad 2 de Fundamentos. |
-| José | Estudiante de Pensamiento: secciones 1 y 2. UX: informe de lo que más confundió y propuestas visuales para la v2.0. |
-| Jorge | Estudiante de Fundamentos: Unidad 1. QA de regresión sobre lo corregido entre semanas. |
-| Jeider | Antes del lunes 12, corregir lo que haya bloqueado la prueba en la semana 1. Operar la prueba. |
-| Todos | Las tres preguntas del final de la semana y los 7 Hábitos. |
-
-**Semana 10 (19 – 23 de octubre), solo si hace falta.** Pedro publica la Unidad 3 de Fundamentos y Julio (estudiante) la
-termina; José y Jorge avanzan en lo que les falte. Al cierre: informe consolidado de la prueba, versión v1.2.0 con lo
-corregido y decisión del alcance de la v2.0.
-
-Se decide al cierre de la Semana 9 si hace falta la Semana 10, según cuánto del curso alcanzaron. **Al terminar la
-prueba, Jeider vuelve a activar el apagado automático de las 23:00** para cuidar el crédito de Azure.
+**Al terminar la prueba, Jeider reactiva el apagado automático de las 23:00 y pone la encuesta SUS cada 90 días.**
 
 ---
 
@@ -246,9 +214,10 @@ prueba, Jeider vuelve a activar el apagado automático de las 23:00** para cuida
 | 5 | 14 – 18 de septiembre de 2026 | [`MONITOREO_SEMANAL_05.md`](./docs/seguimiento/MONITOREO_SEMANAL_05.md) |
 | 6 | 21 – 25 de septiembre de 2026 | [`MONITOREO_SEMANAL_06.md`](./docs/seguimiento/MONITOREO_SEMANAL_06.md) |
 | 7 | 28 de septiembre – 2 de octubre de 2026 | [`MONITOREO_SEMANAL_07.md`](./docs/seguimiento/MONITOREO_SEMANAL_07.md) |
-| 8 | 5 – 9 de octubre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
+| 8 | 5 – 9 de octubre de 2026 | [`MONITOREO_SEMANAL_08.md`](./docs/seguimiento/MONITOREO_SEMANAL_08.md) |
+| 9 | 12 – 16 de octubre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
 
 ---
 
-*Bitácora N.º 8 · Semana del 5 al 9 de octubre de 2026.*  
+*Bitácora N.º 9 · Semana del 12 al 16 de octubre de 2026.*  
 *Responsable de seguimiento y cierre documental: Pedro Romero.*
