@@ -3,55 +3,44 @@
      ejercicio que elige el recomendador, intentar de nuevo si quedan intentos, o la lección. utils/resultadoEntrega.ts. -->
 <template>
   <div class="fixed inset-0 bg-base-texto-primario/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div role="dialog" aria-modal="true" aria-labelledby="resultado-titulo" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 max-w-md w-full shadow-2xl space-y-4 text-center max-h-[90dvh] overflow-y-auto overscroll-contain">
-      <div
-        class="w-14 h-14 rounded-full flex items-center justify-center mx-auto"
-        :class="exito ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
-        <PartyPopper v-if="exito" :size="28" aria-hidden="true" />
-        <ClipboardCheck v-else :size="28" aria-hidden="true" />
+    <div role="dialog" aria-modal="true" aria-labelledby="resultado-titulo" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 max-w-md w-full shadow-2xl space-y-3 text-center max-h-[90dvh] overflow-y-auto overscroll-contain">
+      <!-- MOD-03 (Jeider 17/10: «estamos saturando al estudiante»): arriba solo lo que importa en una mirada — cómo le
+           fue, el puntaje y cuánto se movió el dominio —, luego lo que enseña (la retroalimentación) y el siguiente paso.
+           Lo demás (casos, cuándo vuelve a los repasos, la meta del módulo) queda en «Más detalles», como Duolingo o Khan. -->
+      <div class="flex items-center gap-3 text-left">
+        <div
+          class="w-11 h-11 shrink-0 rounded-full flex items-center justify-center"
+          :class="exito ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
+          <PartyPopper v-if="exito" :size="22" aria-hidden="true" />
+          <ClipboardCheck v-else :size="22" aria-hidden="true" />
+        </div>
+        <div class="min-w-0">
+          <h3 id="resultado-titulo" class="text-base font-bold text-base-texto-primario">{{ paso.titulo }}</h3>
+          <p class="text-sm">
+            <span class="font-bold" :class="exito ? 'text-semantico-pasa' : 'text-semantico-falla'">{{ r.totalScore ?? 0 }} / {{ maxScore }} pts</span>
+            <span v-if="cambio" class="text-base-texto-secundario"> · {{ dominioCorto(ws.masteryBefore, ws.masteryAfter) }}</span>
+          </p>
+        </div>
       </div>
 
-      <div class="space-y-1">
-        <h3 id="resultado-titulo" class="text-lg font-bold text-base-texto-primario">{{ paso.titulo }}</h3>
-        <p class="text-xs text-base-texto-secundario">{{ paso.mensaje }}</p>
-      </div>
+      <p class="text-xs text-left text-base-texto-secundario">{{ paso.mensaje }}</p>
 
-      <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil">
-        <p class="text-2xl font-bold" :class="exito ? 'text-semantico-pasa' : 'text-semantico-falla'">{{ r.totalScore ?? 0 }} / {{ maxScore }} pts</p>
-        <!-- Se cuentan preguntas (respuestas correctas), no casos de prueba; con 0 preguntas contadas no se muestra «0 de 0». -->
-        <p v-if="esCodigo && (r.totalCount ?? 0) > 0" class="text-xs text-base-texto-secundario mt-1">
-          Resolviste bien {{ r.passedCount ?? 0 }} de {{ r.totalCount }} {{ r.totalCount === 1 ? 'ejercicio' : 'ejercicios' }} (con todos sus casos de prueba, también los ocultos).
-        </p>
-      </div>
-
-      <!-- Cuánto se movió el dominio desde la entrega anterior, también si bajó (antes decía «se mantiene»). -->
-      <p v-if="cambio" class="p-3 rounded-lg border text-sm font-semibold text-base-texto-primario" :class="cambio.diferencia < 0 ? 'border-semantico-falla/30 bg-semantico-falla/5' : 'border-acento-ambar/30 bg-acento-ambar/10'">
-        {{ cambio.texto }}<span v-if="cambio.diferencia > 0" class="text-semantico-pasa"> (+{{ cambio.diferencia }})</span><span v-else-if="cambio.diferencia < 0" class="text-semantico-falla"> ({{ cambio.diferencia }})</span>.
-      </p>
-
-      <EstudianteMetaDeLaLeccion v-if="ej.learningUnitId" :unit-id="ej.learningUnitId" solo-modulo class="text-left" />
-
-      <p v-if="calidad" class="flex items-start gap-2 p-3 rounded-lg border border-base-borde-sutil bg-base-bg-secundario text-xs text-left text-base-texto-primario">
-        <ListChecks :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
-        <span>{{ CUANDO_VUELVE[calidad] }}</span>
-      </p>
-
-      <!-- META-02: lo que dijo antes de entregar contra lo que obtuvo. Solo en la entrega en la que lo dijo: en las
-           siguientes ya no corresponde (07/10: seguía diciendo «acertaste» después de fallar). -->
-      <p
-        v-if="calibracion"
-        class="flex items-start gap-2 p-3 rounded-lg border text-xs text-left text-base-texto-primario"
-        :class="calibracion.tono === 'bien' ? 'border-semantico-pasa/30 bg-semantico-pasa/5' : 'border-acento-ambar-fuerte/30 bg-acento-ambar/5'">
-        <Scale :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
-        <span>{{ calibracion.texto }}</span>
-      </p>
-
-      <p v-if="r.feedback" class="text-xs text-base-texto-secundario">{{ r.feedback }}</p>
+      <!-- Lo que enseña: la retroalimentación del ejercicio y, si dijo qué tan seguro estaba, si acertó (META-02). -->
+      <p v-if="r.feedback" class="text-xs text-left text-base-texto-primario">{{ r.feedback }}</p>
       <!-- Opción múltiple (JEIDER-S08-11): al acertar, por qué; al fallar, qué repasar, sin la respuesta. -->
       <p v-for="x in retro" :key="x.tipo + x.texto" class="flex items-start gap-2 p-3 rounded-lg border text-xs text-left text-base-texto-primario"
         :class="x.tipo === 'porque' ? 'border-semantico-pasa/30 bg-semantico-pasa/5' : 'border-semantico-info/30 bg-semantico-info/5'">
         <component :is="x.tipo === 'porque' ? Lightbulb : BookOpen" :size="15" class="shrink-0 mt-0.5" :class="x.tipo === 'porque' ? 'text-semantico-pasa' : 'text-semantico-info'" aria-hidden="true" />
         <span><strong>{{ x.tipo === 'porque' ? 'Por qué es correcta:' : 'Qué repasar:' }}</strong> {{ x.texto }}</span>
+      </p>
+      <!-- META-02: lo que dijo antes de entregar contra lo que obtuvo. Solo en la entrega en la que lo dijo: en las
+           siguientes ya no corresponde (07/10: seguía diciendo «acertaste» después de fallar). -->
+      <p
+        v-if="calibracion"
+        class="flex items-start gap-2 p-2.5 rounded-lg border text-xs text-left text-base-texto-primario"
+        :class="calibracion.tono === 'bien' ? 'border-semantico-pasa/30 bg-semantico-pasa/5' : 'border-acento-ambar-fuerte/30 bg-acento-ambar/5'">
+        <Scale :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
+        <span>{{ calibracion.texto }}</span>
       </p>
 
       <button
@@ -63,7 +52,7 @@
         <Sparkles :size="14" aria-hidden="true" /> Que el Tutor me explique qué falló
       </button>
 
-      <div class="flex flex-col-reverse sm:flex-row items-stretch gap-2 pt-2">
+      <div class="flex flex-col-reverse sm:flex-row items-stretch gap-2">
         <button type="button" class="flex-1 min-h-[44px] py-2 rounded-md borde-afordancia text-xs font-semibold bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario" @click="hacer(paso.secundaria)">
           {{ paso.secundaria.texto }}
         </button>
@@ -75,7 +64,23 @@
       <button v-if="paso.siguienteLeccion" type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1.5" @click="hacer(paso.siguienteLeccion)">
         {{ paso.siguienteLeccion.texto }} <ArrowRight :size="14" aria-hidden="true" />
       </button>
-      <p v-if="paso.nota" class="flex items-start gap-1.5 text-[11px] text-left text-base-texto-secundario"><Lock :size="13" class="shrink-0 mt-0.5" aria-hidden="true" /> {{ paso.nota }}</p>
+
+      <details v-if="hayDetalles" class="text-left text-xs border-t border-base-borde-sutil pt-2">
+        <summary class="min-h-[44px] flex items-center cursor-pointer font-semibold text-base-texto-secundario hover:text-base-texto-primario">Más detalles</summary>
+        <div class="space-y-2 pt-1 text-base-texto-primario">
+          <!-- Se cuentan preguntas (respuestas correctas), no casos de prueba; con 0 preguntas contadas no se muestra «0 de 0». -->
+          <p v-if="esCodigo && (r.totalCount ?? 0) > 0">
+            Resolviste bien {{ r.passedCount ?? 0 }} de {{ r.totalCount }} {{ r.totalCount === 1 ? 'ejercicio' : 'ejercicios' }} (con todos sus casos de prueba, también los ocultos).
+          </p>
+          <p v-if="cambio">{{ cambio.texto }}.</p>
+          <p v-if="calidad" class="flex items-start gap-2">
+            <ListChecks :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
+            <span>{{ CUANDO_VUELVE[calidad] }}</span>
+          </p>
+          <EstudianteMetaDeLaLeccion v-if="ej.learningUnitId" :unit-id="ej.learningUnitId" solo-modulo class="text-left" />
+          <p v-if="paso.nota" class="flex items-start gap-1.5 text-[11px] text-base-texto-secundario"><Lock :size="13" class="shrink-0 mt-0.5" aria-hidden="true" /> {{ paso.nota }}</p>
+        </div>
+      </details>
     </div>
   </div>
 </template>
@@ -88,7 +93,7 @@ import { useStudentStore } from '~/stores/student'
 import { siguienteLeccion } from '~/utils/siguienteLeccion'
 import { mensajeCalibracion } from '~/utils/confianza'
 import { calidadDelResultado } from '~/utils/escalaResultados'
-import { CUANDO_VUELVE, intentosQueQuedan, pasoSiguiente, retroParaMostrar, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
+import { CUANDO_VUELVE, dominioCorto, intentosQueQuedan, pasoSiguiente, retroParaMostrar, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
 
 const props = defineProps<{ exito: boolean; reto: boolean }>()
 defineEmits<{ tutor: [] }>()
@@ -126,6 +131,9 @@ const calibracion = computed(() => (ws.calibracion && ej.value.usedAttempts === 
 const calidad = computed(() => r.value.status === 'graded'
   ? calidadDelResultado({ aprobado: props.exito, primerIntento: ej.value.usedAttempts === 1, seguro: ws.juicioConfianza === 'seguro' || props.reto })
   : null)
+
+/** «Más detalles» solo si hay algo que poner dentro. */
+const hayDetalles = computed(() => (esCodigo.value && (r.value.totalCount ?? 0) > 0) || !!cambio.value || !!calidad.value || !!ej.value.learningUnitId || !!paso.value.nota)
 
 function hacer(a: AccionResultado) {
   ws.submissionResult = null

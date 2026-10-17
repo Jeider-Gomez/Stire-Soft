@@ -30,49 +30,6 @@
           <span>Inicio</span>
         </NuxtLink>
 
-        <!-- 2, 3, 4: Los 3 Módulos con acordeón interno sin flyout -->
-        <div class="pt-2 pb-1 ocultar-colapsado">
-          <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Plan de estudio</p>
-          <div v-for="mod in studentStore.modules" :key="mod.id" class="mb-1">
-            <button
-              @click="toggleModule(mod.id)"
-              class="w-full flex items-center justify-between min-h-[44px] px-3 py-2 text-xs font-semibold rounded-md hover:bg-base-bg-secundario text-base-texto-primario transition-colors">
-              <span class="truncate flex items-center gap-1.5">
-                <Lock v-if="studentStore.estadoModulo(mod.id)?.abierto === false" :size="12" class="shrink-0 text-slate-500" aria-label="Bloqueado" />
-                {{ mod.title.split(':')[0] }}
-              </span>
-              <ChevronDown v-if="openModules.includes(mod.id)" :size="14" class="text-base-texto-secundario" aria-hidden="true" />
-              <ChevronRight v-else :size="14" class="text-base-texto-secundario" aria-hidden="true" />
-            </button>
-
-            <!-- Lecciones del módulo; el tema se muestra solo si agrupa más de una lección -->
-            <!-- Módulo cerrado (bloqueo suave, utils/bloqueoModulos.ts): se dice qué falta en vez de mostrar las lecciones. -->
-            <p v-if="openModules.includes(mod.id) && studentStore.estadoModulo(mod.id)?.requiere" class="mx-3 my-1 px-2.5 py-2 rounded-md bg-base-bg-secundario text-[11px] text-slate-600 leading-snug">
-              Se abre con {{ studentStore.estadoModulo(mod.id)!.requiere!.umbral }} % de dominio en
-              «{{ studentStore.estadoModulo(mod.id)!.requiere!.titulo.split(':')[0] }}». Vas en {{ studentStore.estadoModulo(mod.id)!.requiere!.dominio }} %.
-            </p>
-            <div v-else-if="openModules.includes(mod.id)" class="pl-3 pr-1 py-1 space-y-1">
-              <template v-for="tema in mod.topics" :key="tema.id">
-                <p v-if="tema.units.length > 1" class="px-2.5 pt-1.5 text-[10px] font-bold uppercase tracking-wider text-base-texto-secundario truncate">{{ tema.title }}</p>
-                <NuxtLink
-                  v-for="unit in tema.units"
-                  :key="unit.id"
-                  :to="`/estudiante/unidad/${unit.id}`"
-                  class="flex items-center justify-between min-h-[40px] text-xs px-2.5 py-1.5 rounded transition-colors"
-                  :class="route.path === `/estudiante/unidad/${unit.id}` ? 'bg-base-bg-secundario font-semibold text-acento-ambar-fuerte' : 'text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario/60'">
-                  <div class="flex items-center gap-1.5 truncate">
-                    <span class="inline-block w-1.5 h-1.5 rounded-full shrink-0" :class="getStatusDotClass(unit.status)" aria-hidden="true"></span>
-                    <span class="truncate">{{ unit.title }}</span>
-                  </div>
-                  <Check v-if="unit.status === 'dominado'" :size="14" class="text-semantico-pasa" aria-label="Dominada" />
-                </NuxtLink>
-              </template>
-            </div>
-          </div>
-        </div>
-
-        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 pt-2">Consolidación</p>
-
         <!-- 5. Repasos (EST-V05) -->
         <NuxtLink
           to="/estudiante/repasos"
@@ -127,6 +84,8 @@
           <Mail :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
         </NuxtLink>
+        <!-- Plan del curso, debajo de la navegación (components/layout/PlanDelCurso.vue). -->
+        <LayoutPlanDelCurso />
       </nav>
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
@@ -211,7 +170,7 @@
 </template>
 
 <script setup lang="ts">
-import { Activity, Check, ClipboardList, Library, ChevronDown, ChevronRight, FolderCode, House, Lock, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
+import { Activity, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 
@@ -248,28 +207,8 @@ onMounted(async () => {
   }
 })
 
-const openModules = ref<number[]>([1, 2])
-
-function toggleModule(id: number) {
-  if (openModules.value.includes(id)) {
-    openModules.value = openModules.value.filter(m => m !== id)
-  } else {
-    openModules.value.push(id)
-  }
-}
-
 function isCurrentRoute(path: string) {
   return route.path.startsWith(path)
-}
-
-function getStatusDotClass(status: string) {
-  switch (status) {
-    case 'dominado': return 'bg-estado-unidad-dominado'
-    case 'en-progreso': return 'bg-estado-unidad-en-progreso'
-    case 'por-iniciar': return 'bg-estado-unidad-por-iniciar'
-    case 'bloqueado': return 'bg-estado-unidad-bloqueado'
-    default: return 'bg-base-texto-secundario'
-  }
 }
 </script>
 

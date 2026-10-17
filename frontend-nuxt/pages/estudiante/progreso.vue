@@ -79,6 +79,22 @@
             </div>
           </li>
         </ul>
+        <!-- MOD-01 (Jeider 17/10): también lo que falta, sin llenar la pantalla: plegado, por módulo. -->
+        <details v-if="sinEmpezar.length" class="mt-3 pt-3 border-t border-base-borde-sutil text-xs">
+          <summary class="min-h-[44px] flex items-center cursor-pointer font-semibold text-base-texto-primario">
+            Te faltan por empezar {{ totalSinEmpezar }} {{ totalSinEmpezar === 1 ? 'lección' : 'lecciones' }} de este curso
+          </summary>
+          <div v-for="g in sinEmpezar" :key="g.id" class="mt-2">
+            <p class="font-bold text-base-texto-secundario inline-flex items-center gap-1.5">
+              <Lock v-if="studentStore.estadoModulo(g.id)?.abierto === false" :size="12" aria-label="Módulo cerrado" /> {{ g.titulo }}
+            </p>
+            <ul class="mt-1 space-y-0.5">
+              <li v-for="l in g.lecciones" :key="l.id">
+                <NuxtLink :to="`/estudiante/unidad/${l.id}`" class="inline-flex items-center min-h-[36px] text-slate-700 hover:text-acento-ambar-fuerte hover:underline">{{ l.title }}</NuxtLink>
+              </li>
+            </ul>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -154,7 +170,8 @@
 import { nombreDelEstado, textoRepaso, tocaRepasar } from '~/utils/progresoLeccion'
 import { cambioCorto } from '~/utils/resultadoEntrega'
 import { computed, onMounted } from 'vue'
-import { ArrowRight, ChevronDown, RotateCcw } from 'lucide-vue-next'
+import { ArrowRight, ChevronDown, Lock, RotateCcw } from 'lucide-vue-next'
+import { sinEmpezarPorModulo } from '~/utils/planLateral'
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
 
@@ -166,6 +183,8 @@ const studentStore = useStudentStore()
 const authStore = useAuthStore()
 
 // Urgencia del repaso de cada lección; «Toca repasarla» se decide con el dominio (utils/progresoLeccion.ts).
+const sinEmpezar = computed(() => sinEmpezarPorModulo(studentStore.modules))
+const totalSinEmpezar = computed(() => sinEmpezar.value.reduce((n, g) => n + g.lecciones.length, 0))
 const urgenciaPorLeccion = computed(() => new Map(studentStore.reviews.map((r) => [r.learningUnitId, r.urgency])))
 const debeRepasar = (item: { unitId: number; mastery: number }) => tocaRepasar(item.mastery, urgenciaPorLeccion.value.get(item.unitId))
 

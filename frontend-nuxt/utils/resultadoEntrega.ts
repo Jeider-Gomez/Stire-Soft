@@ -144,6 +144,14 @@ export function textoCambioDominio(antes: number | null, despues: number | null)
   return { texto: `Tu dominio de esta lección sigue en ${despues} %`, diferencia }
 }
 
+/** El dominio en una línea, para la cabecera del resultado: «Dominio 62 % → 70 % (+8)» o «Dominio 70 %, igual». */
+export function dominioCorto(antes: number | null, despues: number | null): string {
+  if (antes === null || despues === null) return ''
+  const diferencia = Math.round(despues - antes)
+  if (diferencia === 0) return `Dominio ${despues} %, igual`
+  return `Dominio ${antes} % → ${despues} % (${diferencia > 0 ? '+' : '−'}${Math.abs(diferencia)})`
+}
+
 /** Lo mismo, corto, para la tabla de «Tus últimos ejercicios»: «+20 %», «−3 %» o «igual». */
 export function cambioCorto(antes: number | null | undefined, despues: number | null | undefined): { corto: string; diferencia: number } | null {
   if (antes === null || antes === undefined || despues === null || despues === undefined) return null
