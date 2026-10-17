@@ -10,6 +10,10 @@ export interface Mensaje {
   content: string
   isRead: boolean
   createdAt: string
+  /** Imagen adjunta: se pide con GET /message/:id/imagen (sugerencia n.º 13). */
+  imagenId?: string | null
+  /** Cuándo se editó el texto; la bandeja muestra «Editado». */
+  editadoEn?: string | null
   sender?: UsuarioMensaje
   receiver?: UsuarioMensaje
 }

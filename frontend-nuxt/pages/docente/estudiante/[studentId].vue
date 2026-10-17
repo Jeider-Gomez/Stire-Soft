@@ -151,52 +151,8 @@
         </div>
       </section>
 
-      <!-- Historial de Entregas Recientes -->
-      <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
-        <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
-          Historial de soluciones y entregas
-        </h2>
-
-        <div v-if="dashboard.recentSubmissions.length === 0" class="text-xs text-base-texto-secundario italic py-4">
-          El estudiante no ha enviado soluciones aún.
-        </div>
-
-        <div v-else class="overflow-x-auto">
-          <table class="w-full text-xs text-left">
-            <thead class="bg-base-bg-secundario text-slate-600 border-b border-base-borde-sutil font-semibold">
-              <tr>
-                <th class="p-2.5">Actividad</th>
-                <th class="p-2.5 hidden sm:table-cell">Fecha</th>
-                <th class="p-2.5 text-center hidden sm:table-cell">Estado</th>
-                <th class="p-2.5 text-right">Puntaje</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-base-borde-sutil">
-              <tr v-for="sub in dashboard.recentSubmissions" :key="sub.id" class="hover:bg-base-bg-secundario/40">
-                <td class="p-2.5 font-semibold text-base-texto-primario">
-                  {{ sub.activityTitle }}
-                </td>
-                <td class="p-2.5 text-[11px] text-base-texto-secundario hidden sm:table-cell">
-                  {{ new Date(sub.createdAt).toLocaleString() }}
-                </td>
-                <td class="p-2.5 text-center hidden sm:table-cell">
-                  <span
-                    class="px-2 py-0.5 rounded text-[10px] font-bold"
-                    :class="sub.status === 'graded' ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
-                    {{ statusLabel(sub.status) }}
-                  </span>
-                </td>
-                <td
-                  class="p-2.5 text-right font-bold"
-                  :class="sub.passed === true ? 'text-semantico-pasa' : sub.passed === false ? 'text-semantico-falla' : 'text-base-texto-secundario'">
-                  <template v-if="sub.status === 'graded'">{{ sub.score }} / {{ sub.maxScore ?? '—' }}</template>
-                  <template v-else>—</template>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <!-- Todas las entregas, por páginas (sugerencia n.º 12). -->
+      <DocenteHistorialEntregas :student-id="dashboard.studentId" />
     </div>
   </div>
 </template>
@@ -211,16 +167,6 @@ const { messageOf } = useApiErrorMessage()
 definePageMeta({
   layout: 'teacher'
 })
-
-function statusLabel(status: string): string {
-  switch (status) {
-    case 'graded': return 'Calificado'
-    case 'in_progress': return 'En curso'
-    case 'submitted': return 'Calificando'
-    case 'expired': return 'Expirado'
-    default: return 'Sin entregar'
-  }
-}
 
 interface StudentDashboardData {
   studentId: number

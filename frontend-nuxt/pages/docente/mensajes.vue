@@ -99,9 +99,9 @@ async function abrir(m: Mensaje | null) {
   }
 }
 
-async function enviarMensaje() {
+async function enviarMensaje(imagen: Blob | null) {
   enviando.value = true
-  errorEnvio.value = await estado.enviar(destinatario.value, contenido.value)
+  errorEnvio.value = await estado.enviar(destinatario.value, contenido.value, imagen)
   enviando.value = false
   if (!errorEnvio.value) abierta.value = false
 }

@@ -1,10 +1,10 @@
 <template>
   <div class="space-y-1.5">
-    <p id="zona-pantallazo-titulo" class="font-semibold text-base-texto-primario">Pantallazo <span class="font-normal text-base-texto-secundario">(opcional)</span></p>
+    <p :id="`${idBase}-titulo`" class="font-semibold text-base-texto-primario">{{ titulo }} <span class="font-normal text-base-texto-secundario">(opcional)</span></p>
 
     <!-- Vista previa del pantallazo elegido -->
     <div v-if="vista" class="relative rounded-lg border border-base-borde-fuerte overflow-hidden bg-base-bg-secundario">
-      <img :src="vista" alt="Pantallazo que se enviará con la sugerencia" class="w-full max-h-48 object-contain" />
+      <img :src="vista" :alt="textoAlt" class="w-full max-h-48 object-contain" />
       <button type="button" class="absolute top-1.5 right-1.5 px-2 py-1 rounded-md bg-base-blanco/95 border border-base-borde-fuerte font-semibold inline-flex items-center gap-1 hover:text-semantico-falla" @click="quitar">
         <X :size="12" aria-hidden="true" /> Quitar
       </button>
@@ -16,8 +16,8 @@
       ref="zonaRef"
       tabindex="0"
       role="button"
-      aria-labelledby="zona-pantallazo-titulo"
-      aria-describedby="zona-pantallazo-ayuda"
+      :aria-labelledby="`${idBase}-titulo`"
+      :aria-describedby="`${idBase}-ayuda`"
       class="rounded-lg border-2 border-dashed px-3 py-4 text-center cursor-pointer outline-none transition-colors focus-visible:ring-2 focus-visible:ring-stire-teal/50"
       :class="encima ? 'border-acento-ambar-fuerte bg-acento-ambar/10' : 'border-base-borde-fuerte hover:border-acento-ambar-fuerte focus:border-acento-ambar-fuerte'"
       @paste.prevent="alPegar"
@@ -30,7 +30,7 @@
     >
       <ImagePlus :size="20" class="mx-auto text-slate-700" aria-hidden="true" />
       <p class="mt-1 font-semibold text-base-texto-primario">Haz clic aquí y pega tu pantallazo con <kbd class="px-1 rounded border border-base-borde-fuerte font-mono text-[10px]">Ctrl + V</kbd></p>
-      <p id="zona-pantallazo-ayuda" class="text-[11px] text-slate-700">
+      <p :id="`${idBase}-ayuda`" class="text-[11px] text-slate-700">
         Tómalo con <strong>{{ atajo }}</strong>. También puedes arrastrarlo aquí o
         <button type="button" class="text-acento-ambar-fuerte font-semibold underline" @click.stop="elegir">elegir un archivo</button>.
       </p>
@@ -46,6 +46,12 @@
 import { ImagePlus, X } from 'lucide-vue-next'
 import { atajoDeCaptura, esImagenAceptada, imagenDe, MAX_BYTES_CAPTURA, reducirCaptura } from '~/utils/captura'
 
+// Las sugerencias la usan con sus textos de siempre; los mensajes (sugerencia n.º 13) le ponen «Imagen».
+withDefaults(defineProps<{ titulo?: string; textoAlt?: string; idBase?: string }>(), {
+  titulo: 'Pantallazo',
+  textoAlt: 'Pantallazo que se enviará con la sugerencia',
+  idBase: 'zona-pantallazo',
+})
 const modelo = defineModel<Blob | null>({ default: null })
 
 const zonaRef = ref<HTMLElement | null>(null)

@@ -15,6 +15,7 @@ export function useMensajes() {
   const noLeidos = ref(0)
   const cargando = ref(false)
   const error = ref<string | null>(null)
+  const aviso = ref<string | null>(null)
   const visibles = computed(() => (bandeja.value === 'recibidos' ? recibidos.value : enviados.value))
 
   async function cargar() {
@@ -49,11 +50,25 @@ export function useMensajes() {
     await Promise.all(recibidos.value.filter((m) => !m.isRead).map((m) => marcarLeido(m)))
   }
 
-  /** Envía y deja abierta la bandeja de enviados, donde se ve lo que se acaba de mandar. */
-  async function enviar(receiverId: number, contenido: string): Promise<string | null> {
+  /**
+   * Envía y deja abierta la bandeja de enviados, donde se ve lo que se acaba de mandar. La imagen (opcional) se sube
+   * después, como el pantallazo de las sugerencias; si falla, el texto ya llegó y se dice.
+   */
+  async function enviar(receiverId: number, contenido: string, imagen: Blob | null = null): Promise<string | null> {
     if (!receiverId || !contenido.trim()) return 'Elige a quién escribirle y escribe el mensaje.'
+    aviso.value = null
     try {
-      await api.post('/message', { receiverId, content: contenido.trim() })
+      const creado = await api.post<{ id: number }>('/message', { receiverId, content: contenido.trim() })
+      if (imagen) {
+        const datos = new FormData()
+        datos.append('imagen', imagen, 'imagen.jpg')
+        try {
+          await api.put(`/message/${creado.id}/imagen`, datos)
+        } catch (err: unknown) {
+          // El texto ya llegó: se cierra la ventana (reintentar duplicaría el mensaje) y se avisa en la bandeja.
+          aviso.value = `El mensaje se envió, pero la imagen no: ${messageOf(err, 'no se pudo subir')}.`
+        }
+      }
       await cargar()
       bandeja.value = 'enviados'
       return null
@@ -62,7 +77,25 @@ export function useMensajes() {
     }
   }
 
-  return { bandeja, recibidos, enviados, noLeidos, cargando, error, visibles, cargar, marcarLeido, marcarTodos, enviar }
+  /** Corrige el texto de un mensaje enviado (sugerencia n.º 13); devuelve el error o null. */
+  async function editar(m: Mensaje, contenido: string): Promise<string | null> {
+    if (!contenido.trim()) return 'El mensaje no puede quedar vacío.'
+    try {
+      const editado = await api.patch<Mensaje>(`/message/${m.id}`, { content: contenido.trim() })
+      m.content = editado.content
+      m.editadoEn = editado.editadoEn ?? null
+      return null
+    } catch (err: unknown) {
+      return messageOf(err, 'No se pudo guardar el cambio.')
+    }
+  }
+
+  /** La imagen de un mensaje (privada: va con la sesión, no por un enlace público). */
+  function imagen(id: number) {
+    return api.apiFetch<Blob>(`/message/${id}/imagen`, { responseType: 'blob' })
+  }
+
+  return { bandeja, recibidos, enviados, noLeidos, cargando, error, aviso, visibles, cargar, marcarLeido, marcarTodos, enviar, editar, imagen }
 }
 
 export type EstadoMensajes = ReturnType<typeof useMensajes>
