@@ -47,6 +47,40 @@ módulo, juicio de confianza y valoración de las lecciones.
 
 Verificación: `npm run build` sin errores, 1438 de 1438 pruebas, `nuxi typecheck` sin errores.
 
+### Cierre de la v2.0.0 · 17 de Octubre de 2026
+
+La etiqueta `v2.0.0` se puso el 17/10 (commit `194976a`), con la revisión humana de las dos listas completa
+(`docs/calidad/listas-chequeo/VERIFICACION_v2.0.0.md` §7 y §8):
+
+- **Nota del equipo** (cada uno como usuario, sin ver la de la IA): interfaz **27 / 32 · 84,4 %** y Sistemas Tutores
+  Inteligentes **20 / 24 · 83,3 %**. La IA había dado 31 / 32 y 24 / 24: fue más generosa en 9 criterios y más estricta
+  en 1. Cada diferencia terminó en una corrección; solo quedan abiertos UX-04 (identidad visual de José) y MOD-02
+  (errores de concepto, con la idea de Pedro).
+- **SUS del equipo:** 81,5 con 5 respuestas (bueno). Límite: lo responden quienes construyeron STIRE.
+- Entre el 04 y el 17/10 entraron las correcciones de la prueba de dos semanas y de la revisión del equipo: plan del
+  curso compacto en la barra lateral, resultado de la entrega más breve, «No me quedó claro» con caminos distintos,
+  el Tutor que acompaña paso a paso (con escuchar y dictar), aviso al docente cuando un recurso falla, historial
+  completo en la ficha del estudiante y mensajes con imagen que se pueden editar (migración
+  `1793200000000-MensajesImagenYEdicion`).
+- Análisis para el equipo: `docs/calidad/listas-chequeo/analisis/`.
+
+Verificación final: 2221 de 2221 pruebas, `nuxi typecheck` sin errores y `npm run verify:clean` (extracto literal de la
+salida):
+
+```
+[verify:clean 1] rm -rf node_modules dist
+[verify:clean 2] npm ci (instalacion exacta desde package-lock.json)
+[verify:clean 3] crear base de datos vacia de verificacion: stire_verify_clean
+[verify:clean 4] migration:run contra la base de datos vacia
+[verify:clean 5] db:seed:demo contra la base de datos vacia
+[verify:clean 6] npm run build
+[verify:clean] setup completo. Base de datos de verificacion: stire_verify_clean (puerto 3097). Continua scripts/verify-clean-server-check.js.
+  login OK para docente.demo@stire.local (token recibido)
+  OK, status 200
+[verify:clean:server-check] limpieza: eliminar base de datos de verificacion stire_verify_clean
+[verify:clean] TODO EN VERDE: npm ci -> migration:run -> db:seed:demo -> build -> start -> login real -> apagado.
+```
+
 ---
 
 ## v1.1.0 — multimedia en los cursos y foto de perfil · 2 de Octubre de 2026
