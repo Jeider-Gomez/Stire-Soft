@@ -152,6 +152,13 @@ describe('TutorContextService.buildSystemPrompt — enunciado y última prueba',
     expect(prompt).toContain('no empieces tus respuestas con «Hola» ni con otro saludo');
     expect(prompt).toMatch(/responde «¡Buen(os días|as tardes|as noches)!» una sola vez/);
   });
+
+  // Jeider (17/10): pidió explicar un video que no cargaba y el Tutor no sabía qué hacer.
+  it('si un recurso no carga, dice que no lo ve y explica el tema con la lección, sin inventar el video', async () => {
+    const prompt = await service.buildSystemPrompt(1, {}, null);
+    expect(prompt).toContain('no le carga, tú no puedes verlo');
+    expect(prompt).toContain('No inventes lo que dice el video.');
+  });
 });
 
 // 10/10, Jeider: «no sé JavaScript y no entendí del todo»: un problema a la vez, la línea, y el concepto con otro ejemplo.

@@ -295,7 +295,7 @@ async function resolverPorPasos() {
 async function pedirAyudaAlTutor() {
   workspaceStore.submissionResult = null
   ofertaCerrada.value = true
-  await tutorStore.openDrawer()
+  await tutorStore.openDrawer({ conPregunta: true })
   tutorStore.requestQuickHint(pistaSegunTipo(workspaceStore.currentExercise.questionType))
 }
 

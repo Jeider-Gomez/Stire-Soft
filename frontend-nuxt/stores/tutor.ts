@@ -217,27 +217,39 @@ export const useTutorStore = defineStore('tutor', () => {
   // ─── Abrir / Cerrar drawer ──────────────────────────────────────────────────
   /** «Resolverlo por pasos con el Tutor» (UI-05): el Tutor divide el problema en subpreguntas y plantea la primera. */
   async function resolverPorPasos() {
-    await openDrawer()
+    await openDrawer({ conPregunta: true })
     modoPorPasos.value = true
     await sendMessage('Quiero resolver este ejercicio por pasos.')
   }
 
   /** UI-05: cambiar de táctica tras varios fallos — ver resuelto un problema parecido, no el suyo. */
   async function verEjemploParecido() {
-    await openDrawer()
+    await openDrawer({ conPregunta: true })
     modoEjemplo.value = true
     await sendMessage('Quiero ver resuelto un ejemplo parecido a este ejercicio.')
   }
 
   /** «¿Te sirvió esta explicación?» → No: el Tutor explica la lección de otra forma (UI-04). */
   async function pedirOtraExplicacion(queNoQuedoClaro?: string) {
-    await openDrawer()
+    await openDrawer({ conPregunta: true })
     modoOtraExplicacion.value = true
     const detalle = queNoQuedoClaro?.trim() ? ` No me quedó claro: ${queNoQuedoClaro.trim().slice(0, 300)}` : ''
     await sendMessage(`La explicación de esta lección no me sirvió. ¿Me la explicas de otra forma?${detalle}`)
   }
 
-  async function openDrawer() {
+  /** «Pedirle al Tutor que lo explique» en un recurso que no carga (UI-04): el Tutor no ve el video, explica el tema. */
+  async function preguntarPorRecurso(titulo: string) {
+    await openDrawer({ conPregunta: true })
+    await sendMessage(`No me carga el recurso «${titulo}». ¿Me explicas lo que muestra?`)
+  }
+
+  /**
+   * Abre el panel. Con `conPregunta` (un botón que abre el Tutor con una pregunta ya escrita) no se pide el saludo
+   * proactivo: llegaba después de la pregunta y quedaba debajo, como si fuera la respuesta (Jeider, 17/10: pidió que
+   * explicara un video y el Tutor contestó «tienes pendiente repasar…»).
+   */
+  async function openDrawer(opciones: { conPregunta?: boolean } = {}) {
+    if (opciones.conPregunta) hasGreeted.value = true
     isOpen.value = true
     // 1. Historial (solo la primera vez)
     await fetchHistory()
@@ -390,6 +402,7 @@ export const useTutorStore = defineStore('tutor', () => {
 
   return {
     pedirOtraExplicacion,
+    preguntarPorRecurso,
     modoPorPasos,
     resolverPorPasos,
     verEjemploParecido,

@@ -31,3 +31,37 @@ describe('UI-04: «No me quedó claro» ofrece solo las formas que la lección t
     expect(v).not.toContain('o ver el algoritmo como diagrama o paso a paso');
   });
 });
+
+describe('el Tutor abierto con una pregunta no responde con el saludo (Jeider, 17/10)', () => {
+  it('los botones que abren el Tutor con una pregunta no piden el saludo proactivo', () => {
+    const t = leer('stores', 'tutor.ts');
+    expect(t).toMatch(/async function openDrawer\(opciones: \{ conPregunta\?: boolean \} = \{\}\) \{\s*if \(opciones\.conPregunta\) hasGreeted\.value = true/);
+    expect(t.match(/await openDrawer\(\{ conPregunta: true \}\)/g)?.length).toBe(4);
+    expect(leer('components', 'LessonResource.vue')).toContain("await useTutorStore().preguntarPorRecurso(props.title || 'de la lección')");
+    expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('await tutorStore.openDrawer({ conPregunta: true })');
+  });
+});
+
+describe('UI-04: si un video de YouTube no se puede ver, STIRE muestra qué hacer (Jeider, 17/10)', () => {
+  const v = cargar<{ conAvisoDeErrores: (s: string, o: string) => string; errorDelReproductor: (d: unknown, o: string) => number | null }>('errorVideo');
+
+  it('activa los avisos del reproductor solo en los videos de YouTube', () => {
+    expect(v.conAvisoDeErrores('https://www.youtube-nocookie.com/embed/abc', 'https://stire-soft.vercel.app'))
+      .toBe('https://www.youtube-nocookie.com/embed/abc?enablejsapi=1&origin=https%3A%2F%2Fstire-soft.vercel.app');
+    expect(v.conAvisoDeErrores('https://docs.google.com/presentation/d/x/embed', 'https://a')).toBe('https://docs.google.com/presentation/d/x/embed');
+  });
+
+  it('reconoce el «onError» de YouTube y no hace caso a mensajes de otros sitios', () => {
+    expect(v.errorDelReproductor('{"event":"onError","info":150}', 'https://www.youtube-nocookie.com')).toBe(150);
+    expect(v.errorDelReproductor('{"event":"onReady","info":null}', 'https://www.youtube-nocookie.com')).toBeNull();
+    expect(v.errorDelReproductor('{"event":"onError","info":150}', 'https://malicioso.example')).toBeNull();
+    expect(v.errorDelReproductor('no es json', 'https://www.youtube.com')).toBeNull();
+  });
+
+  it('el recurso cambia el recuadro por el aviso con sus alternativas', () => {
+    const r = leer('components', 'LessonResource.vue');
+    expect(r).toContain('Este video no se puede ver aquí.');
+    expect(r).toContain('if (!marco.value || e.source !== marco.value.contentWindow) return');
+    expect(r).toContain('Que el Tutor me explique el tema');
+  });
+});
