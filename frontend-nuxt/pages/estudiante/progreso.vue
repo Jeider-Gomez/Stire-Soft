@@ -61,7 +61,7 @@
               <p class="mt-0.5 flex flex-wrap items-center gap-1.5 text-[10px]">
                 <span class="px-1.5 py-0.5 rounded font-bold" :class="claseEstado(item.mastery)">{{ getMasteryLevelName(item.mastery) }}</span>
                 <span v-if="debeRepasar(item)" class="inline-flex items-center gap-1 font-semibold text-acento-ambar-fuerte">
-                  <RotateCcw :size="10" aria-hidden="true" /> Toca repasarla
+                  <RotateCcw :size="10" aria-hidden="true" /> {{ textoRepaso(item.mastery) }}
                 </span>
               </p>
             </div>
@@ -151,7 +151,7 @@
 </template>
 
 <script setup lang="ts">
-import { nombreDelEstado, tocaRepasar } from '~/utils/progresoLeccion'
+import { nombreDelEstado, textoRepaso, tocaRepasar } from '~/utils/progresoLeccion'
 import { cambioCorto } from '~/utils/resultadoEntrega'
 import { computed, onMounted } from 'vue'
 import { ArrowRight, ChevronDown, RotateCcw } from 'lucide-vue-next'

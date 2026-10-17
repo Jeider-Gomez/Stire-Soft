@@ -24,3 +24,23 @@ export function nombreDelEstado(dominio: number): string {
 export function tocaRepasar(dominio: number, urgencia: string | undefined): boolean {
   return (urgencia === 'vencido' || urgencia === 'critico') && dominio >= UMBRAL_REPASO
 }
+
+/** Desde aquí una lección está dominada: lo que sigue es opcional (más práctica) o un repaso corto cuando vence. */
+export const UMBRAL_DOMINADA = 85
+
+/**
+ * Texto del dominio y del botón de práctica en el inicio. José (S09-JO01, 14/10): con 98 % o 100 % el inicio seguía
+ * diciendo «Seguir practicando» y no quedaba claro si la lección estaba terminada.
+ */
+export function estadoDePractica(dominio: number, razon: string | null): { dominio: string; boton: string } {
+  const dominada = dominio >= UMBRAL_DOMINADA
+  return {
+    dominio: dominada ? `${dominio} % de dominio · Dominada ✓` : `${dominio} % de dominio`,
+    boton: razon === 'repaso' ? 'Hacer un repaso corto' : dominada ? 'Practicar más (opcional)' : 'Seguir practicando',
+  }
+}
+
+/** Etiqueta del repaso en «Mi progreso»: en una lección dominada es para no olvidarla, no porque falte terminarla. */
+export function textoRepaso(dominio: number): string {
+  return dominio >= UMBRAL_DOMINADA ? 'Dominada · toca un repaso corto' : 'Toca repasarla'
+}

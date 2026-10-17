@@ -44,6 +44,8 @@ const studentStore = useStudentStore()
 const tutorStore = useTutorStore()
 const route = useRoute()
 const enLeccion = computed(() => route.path.startsWith('/estudiante/unidad/'))
+// WCAG 2.4.11 (foco no tapado): al avanzar con Tab, lo enfocado se desplaza por encima del lanzador flotante del Tutor.
+useHead({ htmlAttrs: { class: 'scroll-pb-24' } })
 const { sidebarOpen, sidebarClass, close: closeSidebar, toggle: toggleSidebar } = useMobileSidebar()
 
 onMounted(async () => {

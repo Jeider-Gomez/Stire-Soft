@@ -100,7 +100,7 @@
               :aria-valuenow="studentStore.activeUnit.masteryPercentage" aria-valuemin="0" aria-valuemax="100" aria-label="Dominio de la lección">
               <div class="h-full bg-acento-ambar-fuerte rounded-full transition-all duration-500" :style="{ width: `${studentStore.activeUnit.masteryPercentage}%` }"></div>
             </div>
-            <span class="text-xs font-semibold text-base-texto-primario">{{ studentStore.activeUnit.masteryPercentage }} % de dominio</span>
+            <span class="text-xs font-semibold text-base-texto-primario">{{ estadoDePractica(studentStore.activeUnit.masteryPercentage, recommendedReason).dominio }}</span>
           </div>
         </div>
 
@@ -117,7 +117,7 @@
               <RotateCcw v-if="recommendedReason === 'repaso'" :size="15" aria-hidden="true" />
               <TrendingUp v-else-if="recommendedReason === 'reto' || recommendedReason === 'sube_nivel'" :size="15" aria-hidden="true" />
               <Play v-else :size="15" aria-hidden="true" />
-              Seguir practicando
+              {{ estadoDePractica(studentStore.activeUnit.masteryPercentage, recommendedReason).boton }}
             </NuxtLink>
             <NuxtLink :to="`/estudiante/unidad/${studentStore.activeUnit.id}`" class="text-xs font-semibold text-acento-ambar-fuerte hover:underline text-center">
               Ver la explicación
@@ -258,7 +258,7 @@
 </template>
 
 <script setup lang="ts">
-import { tocaRepasar } from '~/utils/progresoLeccion'
+import { estadoDePractica, tocaRepasar } from '~/utils/progresoLeccion'
 import { computed, onMounted, ref, watch } from 'vue'
 
 /** Abierto: el módulo de la lección en curso; sin lección en curso, el primero que no está completo. */

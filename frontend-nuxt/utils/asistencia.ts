@@ -87,3 +87,12 @@ export function textoCuentaQr(segundos: number): string {
   if (segundos <= 0) return 'Cambiando el código…'
   return `Cambia en ${segundos} ${segundos === 1 ? 'segundo' : 'segundos'}`
 }
+
+/**
+ * La clase en la que el estudiante está trabajando va primero; las demás conservan su orden. José (S09-JO01, 14/10):
+ * con varias clases de nombres parecidos no se sabía cuál era la de ahora.
+ */
+export function claseActualPrimero<T extends { classId: number }>(clases: T[], actual: number | null | undefined): T[] {
+  const i = clases.findIndex((c) => c.classId === actual)
+  return i <= 0 ? clases : [clases[i], ...clases.slice(0, i), ...clases.slice(i + 1)]
+}

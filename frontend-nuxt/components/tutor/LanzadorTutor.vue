@@ -28,16 +28,30 @@ import { useTutorStore } from '~/stores/tutor'
 defineProps<{ sobreBarra?: boolean; soloComputador?: boolean }>()
 const tutorStore = useTutorStore()
 
-/** Compacto mientras se baja; la página puede desplazarse en la ventana o en el contenedor principal. */
+/**
+ * Compacto mientras se baja; la página puede desplazarse en la ventana o en el contenedor principal. En pantallas de
+ * menos de 380 px (José, S09-JO01: en celulares pequeños quedaba cerca de «Continuar») va siempre como ícono, como el
+ * botón de chat de Intercom o el FAB normal de Material: con texto ocupa casi un tercio del ancho.
+ */
 const compacto = ref(false)
+let estrecho = false
 let anterior = 0
 function alDesplazar(e: Event) {
   const t = e.target
   const y = t instanceof HTMLElement ? t.scrollTop : window.scrollY
-  compacto.value = y > 120 && y > anterior
+  compacto.value = estrecho || (y > 120 && y > anterior)
   anterior = y
 }
-onMounted(() => document.addEventListener('scroll', alDesplazar, { capture: true, passive: true }))
+function alCambiarAncho() {
+  estrecho = window.innerWidth < 380
+  compacto.value = estrecho
+}
+onMounted(() => {
+  alCambiarAncho()
+  window.addEventListener('resize', alCambiarAncho, { passive: true })
+  document.addEventListener('scroll', alDesplazar, { capture: true, passive: true })
+})
+onBeforeUnmount(() => window.removeEventListener('resize', alCambiarAncho))
 onBeforeUnmount(() => document.removeEventListener('scroll', alDesplazar, { capture: true }))
 </script>
 

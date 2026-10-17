@@ -73,6 +73,22 @@ contrastada.
   - **Celular:** hecho en `f785dd7`.
   - **Todas las pantallas:** hecho el 03/10 en el commit «lanzador único».
   - **Verificado** en 390×844 y en computador.
+- **Revisión del 17/10 (José, S09-JO01: «en celulares pequeños el botón del Tutor puede quedar sobre Continuar o
+  Entregar»).** Cómo lo resuelven otros:
+  - **Panel acoplado, no ventana encima.** Khanmigo y Coursera **[obs]** abren el asistente en un panel al lado que no
+    tapa el contenido. STIRE ya lo hace en computador (P-UI-06).
+  - **Ayuda en el momento, no un botón permanente.** Duolingo Max **[doc]**: «Explain My Answer» aparece abajo solo
+    después de responder, junto a «Continue». STIRE ya ofrece el Tutor al fallar (P-UI-08).
+  - **El botón se encoge.** Material Design y SAP Fiori **[guía]**: el botón flotante con texto se reduce al ícono
+    mientras se baja y vuelve al detenerse o al subir. STIRE lo hace desde el 12/10.
+  - **No tapar lo enfocado ni lo último de la página [guía].** Un botón fijo dificulta el uso con zoom, lector de
+    pantalla o control por voz (UX Movement), y WCAG 2.4.11 pide que lo enfocado no quede oculto.
+  - **Decisión:** se sigue la propuesta de José (minimizar el botón) y se completa con dos cosas: en pantallas de menos
+    de 380 px el botón es siempre un ícono, y al avanzar con el teclado lo enfocado se desplaza por encima del botón
+    (`scroll-pb-24`). En el ejercicio y la lección del celular el Tutor ya no flota (cabecera y barra de abajo, 12/10).
+  - **Fuentes:** https://www.techradar.com/news/duolingos-new-gpt-4-ai-will-happily-explain-why-your-spanish-is-wrong ·
+    https://www.sap.com/design-system/fiori-design-android/v26-4/components/buttons/fab/usage ·
+    https://uxmovement.com/mobile/when-to-use-a-floating-call-to-action-button/
 
 ### P-UI-05 · Las acciones principales del ejercicio no se pierden
 

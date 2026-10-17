@@ -41,9 +41,11 @@
       <p v-if="cargando" role="status" class="text-xs text-base-texto-secundario">Cargando…</p>
       <p v-else-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
       <p v-else-if="!clases.length" class="text-xs text-base-texto-secundario">Aún no estás en ninguna clase.</p>
-      <article v-for="c in clases" :key="c.classId" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-4 shadow-sm space-y-2">
+      <article v-for="c in clasesOrdenadas" :key="c.classId" class="bg-base-blanco rounded-xl border p-4 shadow-sm space-y-2" :class="c.classId === studentStore.currentClassId ? 'border-acento-ambar-fuerte' : 'border-base-borde-fuerte'">
         <div class="flex items-center justify-between gap-2">
-          <h3 class="text-sm font-bold text-base-texto-primario truncate">{{ c.clase }}</h3>
+          <h3 class="text-sm font-bold text-base-texto-primario min-w-0 truncate">
+            <span v-if="c.classId === studentStore.currentClassId" class="mr-1.5 px-1.5 py-0.5 rounded bg-acento-ambar/10 text-acento-ambar-fuerte text-[10px] font-bold align-middle">Clase actual</span>{{ c.clase }}
+          </h3>
           <span class="text-xs font-bold shrink-0" :class="c.porcentaje === null ? 'text-base-texto-secundario' : c.porcentaje >= 80 ? 'text-semantico-pasa' : 'text-semantico-falla'">
             {{ c.porcentaje === null ? 'Sin registros' : `${c.porcentaje} % de asistencia` }}
           </span>
@@ -63,8 +65,9 @@
 <script setup lang="ts">
 import { Loader2, RefreshCw } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
+import { useStudentStore } from '~/stores/student'
 import { useAsistenciaEstudiante } from '~/composables/useAsistenciaEstudiante'
-import { ESTADOS, fechaSesion, idDeDispositivo, textoCuentaQr, textoEstado, type EstadoAsistencia } from '~/utils/asistencia'
+import { ESTADOS, claseActualPrimero, fechaSesion, idDeDispositivo, textoCuentaQr, textoEstado, type EstadoAsistencia } from '~/utils/asistencia'
 import type { ClaseAsistenciaEstudiante as ClaseAsistencia } from '~/composables/useAsistenciaEstudiante'
 
 definePageMeta({ layout: 'student' })
@@ -80,6 +83,8 @@ const errorCodigo = ref<string | null>(null)
 const restante = ref(100)
 const segundos = ref(20)
 const clases = ref<ClaseAsistencia[]>([])
+const studentStore = useStudentStore()
+const clasesOrdenadas = computed(() => claseActualPrimero(clases.value, studentStore.currentClassId))
 const cargando = ref(true)
 const error = ref<string | null>(null)
 
