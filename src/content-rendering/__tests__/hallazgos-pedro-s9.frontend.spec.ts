@@ -65,3 +65,14 @@ describe('UI-04: si un video de YouTube no se puede ver, STIRE muestra qué hace
     expect(r).toContain('Que el Tutor me explique el tema');
   });
 });
+
+describe('el docente se entera de un recurso que no funciona (Jeider, 17/10)', () => {
+  it('YouTube con error y «Pedirle al Tutor» avisan al docente, sin bloquear al estudiante', () => {
+    const r = leer('components', 'LessonResource.vue');
+    expect(r).toContain("await recursoFalla.reportar(unitId, (props.title || 'Recurso de la lección').slice(0, 200), motivo)");
+    expect(leer('composables', 'useRecursoFalla.ts')).toContain('/recurso-falla`');
+    expect(r).toMatch(/videoFallo\.value = true\s*avisarAlDocente\('no-se-puede-ver'\)/);
+    expect(r).toMatch(/async function pedirAlTutor\(\) \{\s*avisarAlDocente\('no-carga'\)/);
+    expect(r).toContain('Ya le avisamos a tu docente para que lo revise.');
+  });
+});

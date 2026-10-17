@@ -17,7 +17,7 @@
     <!-- Si YouTube avisa que el video no se puede ver (utils/errorVideo.ts), en vez del recuadro gris: qué pasó y qué hacer. -->
     <div v-if="insertable && videoFallo" role="status" class="rounded-lg border border-dashed border-base-borde-fuerte p-4 space-y-2 text-xs">
       <p class="font-semibold text-base-texto-primario">Este video no se puede ver aquí.</p>
-      <p class="text-base-texto-secundario">Puede que su autor no permita verlo fuera de YouTube, que sea privado o que ya no exista.</p>
+      <p class="text-base-texto-secundario">Puede que su autor no permita verlo fuera de YouTube, que sea privado o que ya no exista.<template v-if="docenteAvisado"> Ya le avisamos a tu docente para que lo revise.</template></p>
       <div class="flex flex-wrap gap-2">
         <a v-if="enlace" :href="enlace" target="_blank" rel="noopener noreferrer" class="min-h-[44px] px-3 rounded-md borde-afordancia font-semibold text-acento-ambar-fuerte inline-flex items-center gap-1">
           Intentar verlo en YouTube <ExternalLink :size="12" aria-hidden="true" />
@@ -68,7 +68,21 @@ const imagenFallo = ref(false)
 const route = useRoute()
 const enLeccion = computed(() => route.path.startsWith('/estudiante/unidad/'))
 async function pedirAlTutor() {
+  avisarAlDocente('no-carga')
   await useTutorStore().preguntarPorRecurso(props.title || 'de la lección')
+}
+
+// El docente recibe un aviso para revisar el recurso (src/valoraciones/recurso-falla.service.ts; una vez por recurso y
+// por día). Si falla el aviso, el estudiante sigue con su alternativa igual.
+const recursoFalla = useRecursoFalla()
+const docenteAvisado = ref(false)
+async function avisarAlDocente(motivo: 'no-se-puede-ver' | 'no-carga') {
+  const unitId = Number(route.params.id)
+  if (!enLeccion.value || !Number.isInteger(unitId) || unitId <= 0) return
+  try {
+    await recursoFalla.reportar(unitId, (props.title || 'Recurso de la lección').slice(0, 200), motivo)
+    docenteAvisado.value = true
+  } catch { /* sin conexión o sin permiso: no bloquea al estudiante */ }
 }
 
 const config = useRuntimeConfig()
@@ -89,7 +103,10 @@ function pedirAvisos() {
 }
 function alMensaje(e: MessageEvent) {
   if (!marco.value || e.source !== marco.value.contentWindow) return
-  if (errorDelReproductor(e.data, e.origin) !== null) videoFallo.value = true
+  if (errorDelReproductor(e.data, e.origin) !== null && !videoFallo.value) {
+    videoFallo.value = true
+    avisarAlDocente('no-se-puede-ver')
+  }
 }
 onMounted(() => {
   if (insertable.value) srcMarco.value = conAvisoDeErrores(insertable.value, window.location.origin)
