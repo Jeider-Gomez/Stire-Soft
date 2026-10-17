@@ -13,11 +13,11 @@ ya se cumple. Es el documento compartido para el pitch y para la entrega.
 
 | Lista | Antes (04/10) | Equipo, primera revisión | **Equipo, final (17/10)** |
 |---|---|---|---|
-| Interfaz (Pressman) | 20 / 32 · 62,5 % | 27 / 32 · 84,4 % | **31 / 32 · 96,9 % · Sobresaliente** |
+| Interfaz (Pressman) | 20 / 32 · 62,5 % | 27 / 32 · 84,4 % | **32 / 32 · 100,0 % · Sobresaliente** |
 | Sistemas Tutores Inteligentes (Caro) | 14 / 24 · 58,3 % | 20 / 24 · 83,3 % | **23 / 24 · 95,8 % · Sobresaliente** |
 
-**SUS del equipo:** 81,5 con 5 respuestas (bueno). Queda en CP: **UX-04** (identidad visual) y **MOD-02** (errores de
-concepto); los dos están en el plan de la Semana 10.
+**SUS del equipo:** 81,5 con 5 respuestas (bueno). Queda en CP solo **MOD-02** (separar los errores de concepto de los de
+escritura), que está en el plan de la Semana 10.
 
 ## Interfaz gráfica (Pressman y Maxim, caps. 12, 13 y 14)
 
@@ -26,7 +26,7 @@ concepto); los dos están en el plan de la Semana 10.
 | UX-01 | José | CP | **C** | Las migas funcionan, pero no decía cuánto dominio faltaba para abrir el siguiente módulo. | Candado del módulo con «Se abre con N % · llevas N %» y meta de cada lección. |
 | UX-02 | Jorge | CP | **C** | «Antes de entregar» no se podía cancelar: tocar fuera entregaba la respuesta. | «Volver a editar» en la ventana; tocar fuera o Escape ya no entrega. |
 | UX-03 | Jeider | C | **C** | La app muestra lo que se necesita; faltaba decir qué ejercicio ya no sube el dominio y cuánto pide el módulo siguiente. | Aviso «Este ejercicio ya no sube tu dominio» y meta de la lección. |
-| UX-04 | José | CP | **CP** | Términos técnicos en inglés en el panel del administrador, mayúsculas sostenidas y botones principales con estilos distintos. | El estado del sistema ya está en español claro. Queda unificar mayúsculas y botón principal con la identidad visual de José. |
+| UX-04 | José | CP | **C** | Marcó términos técnicos en inglés en el panel del administrador; el 17/10 José corrigió su nota: son términos propios de la administración del servidor, no de lo que usan estudiantes y docentes. | De todas formas, el estado del sistema quedó en español claro. |
 | UX-05 | Jeider | C | **C** | Las Personas y las tareas se parecen a los estudiantes y docentes de la prueba. | — |
 | UX-06 | José | C | **C** | La entrega dice «Calificando…», el resultado y el dominio; los botones se leen bien. | — |
 | UX-07 | Jorge | C | **C** | El foco se ve siempre y todo se usa solo con Tab y Enter. | — |

@@ -1,8 +1,8 @@
 # Qué falta para cerrar la v2.0.0
 
 **Estado al 17/10/2026.** La v2.0.0 quedó cerrada y etiquetada el 17/10, con la revisión humana completa
-(`VERIFICACION_v2.0.0.md` §7). Con las correcciones confirmadas por todo el equipo: interfaz **31 / 32** y
-Tutores Inteligentes **23 / 24**. Lo que sigue abierto pasa a la Semana 10.
+(`VERIFICACION_v2.0.0.md` §7). Con las correcciones confirmadas por todo el equipo: interfaz **32 / 32** y
+Tutores Inteligentes **23 / 24** (José corrigió UX-04 a C). Lo que sigue abierto pasa a la Semana 10.
 
 ## 1. Lo que falta, por persona
 
@@ -17,7 +17,7 @@ Tutores Inteligentes **23 / 24**. Lo que sigue abierto pasa a la Semana 10.
 
 | Lista | Antes (04/10) | Equipo hoy | Lo que falta para el máximo | Abierto |
 |---|---|---|---|---|
-| Interfaz | 20 / 32 | 31 / 32 · 96,9 % (confirmado el 17/10) | 32 / 32 con UX-04 | UX-04 (identidad visual) |
+| Interfaz | 20 / 32 | 32 / 32 · 100 % (confirmado el 17/10) | — | — |
 | Tutores Inteligentes | 14 / 24 | 23 / 24 · 95,8 % (confirmado el 17/10) | 24 / 24 con MOD-02 | MOD-02 (espera ideas de Pedro) |
 
 ## 3. SUS: lo que hay hasta hoy

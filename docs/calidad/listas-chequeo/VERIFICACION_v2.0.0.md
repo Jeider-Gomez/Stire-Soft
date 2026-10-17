@@ -146,8 +146,9 @@ La nota de la IA es la del 06/10 (actualizada el 07/10), en [`2026-10-06_v2.0.0/
 La nota oficial de la v2.0.0 es la del equipo. La IA fue más generosa en 9 de los 28 criterios y más estricta en 1.
 
 **Confirmación (17/10):** quien revisó cada criterio confirmó como usuario que las correcciones de UX-01, MOB-01, MOB-02
-(José), UX-02 (Jorge), UI-04 (Pedro), UI-01 y UI-05 (Jeider) ya cumplen. Con eso, **interfaz 31 / 32 · 96,9 %** y **Tutores
-Inteligentes 23 / 24 · 95,8 %**; siguen abiertos UX-04 y MOD-02. Word del profesor con esta revisión:
+(José), UX-02 (Jorge), UI-04 (Pedro), UI-01 y UI-05 (Jeider) ya cumplen, y José corrigió su nota de UX-04 a C (los
+términos en inglés eran del panel del servidor). Con eso, **interfaz 32 / 32 · 100 %** y **Tutores Inteligentes 23 / 24 ·
+95,8 %**; solo sigue abierto MOD-02. Word del profesor con esta revisión:
 [`2026-10-17_revision_equipo/`](2026-10-17_revision_equipo/README.md).
 
 ### Criterio por criterio
