@@ -4,6 +4,7 @@
  *   (frontend-nuxt/utils/diagnosticoSalida.ts) y aquí se traduce a una instrucción para el Tutor.
  * - META-02 · juicio de confianza: lo que el estudiante dijo antes de entregar («seguro», «dudo», «adivino») y si acertó.
  * - UI-05 · resolver por pasos: el estudiante pidió que el problema se divida en subpreguntas.
+ * - UI-05 · acompañado: aceptó que el Tutor lo acompañe hasta resolverlo; vale para toda la conversación, no un mensaje.
  * - UI-04 · otra explicación: el estudiante dijo que la explicación de la lección no le sirvió.
  * - UI-05 · ejemplo parecido: tras varios intentos fallidos, ver resuelto un problema PARECIDO (no el suyo) — cambio de
  *   táctica con el efecto del ejemplo resuelto (Atkinson, Derry, Renkl y Wortham, 2000).
@@ -100,6 +101,15 @@ export function instruccionesDeSenales(s: SenalesDelEstudiante | null | undefine
       'EJEMPLO PARECIDO (UI-05, lo pidió el estudiante tras varios intentos fallidos): resuelve paso a paso un problema PARECIDO pero distinto ' +
         '(otro contexto y otros datos), explicando el porqué de cada paso. NO resuelvas su ejercicio ni escribas su solución. ' +
         'Termina pidiéndole que diga qué paso del ejemplo se parece a lo que le falta en su ejercicio.',
+    );
+  }
+  if (s.modo === 'acompanado') {
+    lineas.push(
+      'ACOMPAÑAMIENTO (UI-05): el estudiante lleva varios fallos seguidos y aceptó que lo acompañes hasta resolverlo. Tú diriges, como un profesor ' +
+        'particular paciente y cercano: frases cortas, cálidas y sin listas largas. (1) Si es el inicio, pregúntale qué cree que pide el ejercicio o qué ' +
+        'intentó. (2) Avanza con UNA sola pregunta pequeña por mensaje y espera su respuesta. (3) Si acierta, dile qué hizo bien y pasa al paso siguiente; ' +
+        'si no, una pista más concreta o un ejemplo de 1 a 2 líneas de OTRO problema. (4) Nunca escribas la solución completa de su ejercicio. ' +
+        '(5) Cuando su programa ya funcione, pídele que explique con sus palabras por qué funciona y proponle un mini reto parecido con otros datos para comprobar que lo entendió.',
     );
   }
   if (s.modo === 'otra-explicacion') {

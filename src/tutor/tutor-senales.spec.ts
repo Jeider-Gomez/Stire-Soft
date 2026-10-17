@@ -56,3 +56,14 @@ describe('UI-05 · ejemplo parecido', () => {
     expect(l).toMatch(/qué paso del ejemplo se parece/);
   });
 });
+
+// Jeider (17/10): que el Tutor acompañe como una persona cuando el estudiante se estanca.
+describe('UI-05 · modo acompañado', () => {
+  it('el Tutor dirige con una pregunta a la vez, no da la solución y cierra comprobando con un reto parecido', () => {
+    const [linea] = instruccionesDeSenales({ modo: 'acompanado' });
+    expect(linea).toContain('ACOMPAÑAMIENTO');
+    expect(linea).toContain('UNA sola pregunta pequeña por mensaje');
+    expect(linea).toContain('Nunca escribas la solución completa');
+    expect(linea).toContain('mini reto parecido');
+  });
+});
