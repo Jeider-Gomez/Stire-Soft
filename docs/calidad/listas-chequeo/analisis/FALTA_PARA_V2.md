@@ -8,8 +8,7 @@ listas esté completa y consolidada (`S09-J03`).
 
 | Quién | Qué falta | Por qué importa |
 |---|---|---|
-| Julio | Sus 6 criterios de Tutores Inteligentes como usuario: MOD-01, MOD-03, UI-01, UI-02, UI-03 y UI-05 ([`S09-V-JULIO`](https://trello.com/c/98oTw69c)). | Sin ellos la lista de Tutores Inteligentes queda en 6 de 12 criterios y no hay total sobre 24. |
-| Julio y quien no la haya respondido | La encuesta SUS en STIRE (Mi perfil → «Responder la encuesta de usabilidad»). Van 3 de 5. | El SUS es la evidencia de UX-08. |
+| Quien no la haya respondido (ver las tarjetas `S09-SUS-*`) | La encuesta SUS en STIRE (Mi perfil → «Responder la encuesta de usabilidad»). Van 3 de 5. | El SUS es la evidencia de UX-08. |
 | José | Confirmar como usuario UX-01, MOB-01 y MOB-02, que se corrigieron después de su revisión. Proponer cómo unificar UX-04 (nombres, mayúsculas y botón principal) con su identidad visual. | UX-04 es el único criterio de la interfaz que sigue en CP. |
 | Jorge | Confirmar UX-02 («Volver a editar» en «Antes de entregar»). | Pasa de CP a C con su confirmación. |
 | Pedro | Confirmar UI-04 y responder la propuesta de MOD-02 (tarjeta «Errores que más se repiten esta semana» en «Hoy» del docente, [`S09-J08`](https://trello.com/c/uZe4F9nK)). | MOD-02 es el único criterio de Tutores Inteligentes que sigue abierto. |
@@ -21,7 +20,7 @@ listas esté completa y consolidada (`S09-J03`).
 | Lista | Antes (04/10) | Equipo hoy | Si se confirma lo corregido | Lo que no depende de nadie más |
 |---|---|---|---|---|
 | Interfaz | 20 / 32 | 27 / 32 · 84,4 % | 31 / 32 · 96,9 % | UX-04 (identidad visual) |
-| Tutores Inteligentes | 14 / 24 | 10 / 12 (solo Pedro) | 11 / 12 en los de Pedro | Los 6 de Julio y MOD-02 |
+| Tutores Inteligentes | 14 / 24 | 20 / 24 · 83,3 % | 23 / 24 · 95,8 % | MOD-02 (espera ideas de Pedro) |
 
 ## 3. SUS: lo que hay hasta hoy
 

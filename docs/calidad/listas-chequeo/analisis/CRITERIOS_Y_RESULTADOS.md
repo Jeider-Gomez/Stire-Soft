@@ -10,19 +10,18 @@ usuarios (revisión humana en Trello, tarjetas `S08-V-*` y `S09-V-*`), lo que se
 está **hoy** (17/10).
 
 > **Escala del profesor:** C = cumple (2) · CP = cumple en parte (1) · NC = no cumple (0).
-> **La nota de la evaluación automática no va aquí.** Julio todavía no entrega sus 6 criterios y no debe verla antes. La
-> comparación «nota automática contra nota del equipo» la hace Jeider al consolidar (`S09-J03`), en
-> [`VERIFICACION_v2.0.0.md`](../VERIFICACION_v2.0.0.md).
+> **La nota de la evaluación automática no va aquí.** La comparación «nota automática contra nota del equipo» la hace
+> Jeider al consolidar (`S09-J03`), en [`VERIFICACION_v2.0.0.md`](../VERIFICACION_v2.0.0.md).
 
 ## Resumen
 
 | Lista | Antes (04/10) | Nota del equipo | Criterios revisados |
 |---|---|---|---|
 | Interfaz | 20 / 32 · 62,5 % | **27 / 32 · 84,4 %** | 16 de 16 (José, Jorge y Jeider) |
-| Tutores Inteligentes | 14 / 24 · 58,3 % | **10 / 12** en los 6 de Pedro | 6 de 12 (faltan los 6 de Julio) |
+| Tutores Inteligentes | 14 / 24 · 58,3 % | **20 / 24 · 83,3 %** | 12 de 12 (Pedro y Jeider, que revisó los 6 de Julio) |
 
-Lo que el equipo marcó «a medias» (CP) y ya se corrigió después: UX-01, UX-02, MOB-01, MOB-02 y UI-04. Quedan abiertos
-UX-04 y MOD-02 (ver la última columna).
+Lo que el equipo marcó «a medias» (CP) y ya se corrigió después: UX-01, UX-02, MOB-01, MOB-02, UI-01, UI-04 y UI-05.
+Quedan abiertos UX-04 y MOD-02 (ver la última columna).
 
 ## 1. Interfaz gráfica (Pressman)
 
@@ -67,20 +66,20 @@ solo UX-04 seguiría en CP.
 
 | ID | Qué pide | Antes (04/10) | Revisó | Nota del equipo | Lo que vio quien revisó | Después de la revisión | Hoy |
 |---|---|---|---|---|---|---|---|
-| MOD-01 | El conocimiento del curso, ordenado y con prerrequisitos | CP | Julio | *pendiente* | — | — | Falta su revisión |
+| MOD-01 | El conocimiento del curso, ordenado y con prerrequisitos | CP | Jeider (17/10) | **C** | Ordenado por módulos; cada lección con su meta; el candado dice cuánto falta; al entregar dice qué caso falla. El plan lateral cortaba los nombres y empujaba el menú, y «Mi progreso» no decía qué faltaba empezar. | Plan del curso después de Inicio, un módulo abierto, nombres completos y «N/M»; «Mi progreso» con las lecciones sin empezar (`7b6c46e`, `e52c410`). | Cumple |
 | MOD-02 | Lo que STIRE sabe del estudiante (dominio, errores) | CP | Pedro (16/10) | **CP** | Hay dominio por lección, estados e historial. No hay perfil Visual/Verbal ni se separan los errores de concepto de los de escritura. | Perfil Visual/Verbal: decidido no hacerlo, los estilos de aprendizaje no tienen evidencia (Pashler y otros, 2008; Kirschner, 2017; BT-42). Errores de concepto: propuesta a Pedro de una tarjeta en «Hoy» del docente (`S09-J08`). | **Abierto**, espera ideas de Pedro |
-| MOD-03 | Cómo enseña el Tutor (tácticas, planes) | C | Julio | *pendiente* | — | — | Falta su revisión |
+| MOD-03 | Cómo enseña el Tutor (tácticas, planes) | C | Jeider (17/10) | **C** | El Tutor guía con preguntas; recomienda según el dominio o deja elegir; el reto sube de nivel. El resultado de la entrega saturaba con tanta información. | Resultado breve: puntaje y dominio en una línea, la retroalimentación y el siguiente paso; lo demás en «Más detalles» (`7b6c46e`). | Cumple |
 | MOD-04 | Que la interfaz hable con amabilidad y oriente | C | Pedro (16/10) | **C** | Mensajes que orientan sin regañar; el Tutor usa analogías y preguntas. | — | Cumple |
 
 ### La inteligencia del tutor en la interfaz
 
 | ID | Qué pide | Antes (04/10) | Revisó | Nota del equipo | Lo que vio quien revisó | Después de la revisión | Hoy |
 |---|---|---|---|---|---|---|---|
-| UI-01 | La lección en varias formas (texto, diagrama, paso a paso) | NC | Julio | *pendiente* | — | — | Falta su revisión |
-| UI-02 | Elegir entre ir paso a paso o navegar libre | CP | Julio | *pendiente* | — | — | Falta su revisión |
-| UI-03 | Ayuda que aparece cuando se necesita, sin dar la respuesta | C | Julio | *pendiente* | — | — | Falta su revisión |
+| UI-01 | La lección en varias formas (texto, diagrama, paso a paso) | NC | Jeider (17/10) | **CP** | El pseudocódigo en tres formas y «Escuchar» funcionan, pero «No me quedó claro» ofrecía lo que ya estaba en la lección. | Caminos distintos y nunca sin opción: ejercicio sencillo, lección anterior, otro video, el docente y el Tutor (`e52c410`). | Corregido |
+| UI-02 | Elegir entre ir paso a paso o navegar libre | CP | Jeider (17/10) | **C** | «Tu siguiente paso» guía y el plan deja abrir cualquier lección de un módulo abierto. | — | Cumple |
+| UI-03 | Ayuda que aparece cuando se necesita, sin dar la respuesta | C | Jeider (17/10) | **C** | El Tutor se ofrece al fallar un caso, la ayuda sube de nivel y no da la solución. | — | Cumple |
 | UI-04 | Valorar la lección y alternativas si un recurso falla | NC | Pedro (16/10) | **CP** | «¿Te sirvió?» y «explícalo de otra forma» funcionan. No se probó qué pasa si un recurso falla ni si un «No» ofrece otro recurso. | «No me quedó claro» ofrece las otras formas de la lección (`907c4d6`); un video caído dice qué hacer (`a986ee5`) y avisa al docente (`784afed`, `c3a0147`). | Corregido |
-| UI-05 | Cambiar el plan cuando el estudiante se atasca | C | Julio | *pendiente* | — | — | Falta su revisión |
+| UI-05 | Cambiar el plan cuando el estudiante se atasca | C | Jeider (17/10) | **CP** | Cambia de táctica a los 3 fallos, pero el Tutor no acompañaba como una persona hasta que entendiera. | Modo acompañado: una pregunta a la vez, sin la solución y un reto parecido al final; escuchar las respuestas y dictar con el micrófono (`bec128e`, `e52c410`). | Corregido |
 
 ### Metacognición
 
@@ -90,8 +89,8 @@ solo UX-04 seguiría en CP.
 | META-02 | Preguntar qué tan seguro está y compararlo con el resultado | NC | Pedro (16/10) | **C** | Pregunta la confianza antes de entregar y dice «Estabas seguro y no acertaste». | — | Cumple |
 | META-03 | Explicar por qué recomienda algo y dejar elegir | C | Pedro (16/10) | **C** | «¿Por qué veo esto?» explica las reglas; se puede elegir otra lección. | — | Cumple |
 
-**Tutores Inteligentes según el equipo:** 4 en C y 2 en CP en los criterios de Pedro = **10 / 12**. Los 6 de Julio
-(MOD-01, MOD-03, UI-01, UI-02, UI-03, UI-05) faltan para el total sobre 24.
+**Tutores Inteligentes según el equipo:** 8 criterios en C (16 puntos) y 4 en CP (4 puntos) = **20 / 24 · 83,3 %**. Con
+lo corregido después (UI-01, UI-04 y UI-05), si se confirma, queda en 23 / 24; solo MOD-02 seguiría en CP.
 
 ## 3. Dónde está cada revisión
 
@@ -101,6 +100,6 @@ solo UX-04 seguiría en CP.
 | Jorge | Interfaz | UX-02, UX-07, MOB-04, PAT-02, PAT-03 | [`S09-V-JORGE`](https://trello.com/c/51pn0RBy) |
 | Jeider | Interfaz | UX-03, UX-05, UX-08, PAT-01, PAT-04 | [`S08-V-JEIDER`](https://trello.com/c/IRWFeW8K) |
 | Pedro | Tutores Inteligentes | MOD-02, MOD-04, UI-04, META-01, META-02, META-03 | [`S09-V-PEDRO`](https://trello.com/c/kDMivXDw) |
-| Julio | Tutores Inteligentes | MOD-01, MOD-03, UI-01, UI-02, UI-03, UI-05 | [`S09-V-JULIO`](https://trello.com/c/98oTw69c) · *sin entregar* |
+| Jeider (por Julio) | Tutores Inteligentes | MOD-01, MOD-03, UI-01, UI-02, UI-03, UI-05 | [`S09-V-JULIO`](https://trello.com/c/98oTw69c), en la lista «Mis criterios» |
 
 Las capturas que adjuntó cada uno están en su tarjeta.
