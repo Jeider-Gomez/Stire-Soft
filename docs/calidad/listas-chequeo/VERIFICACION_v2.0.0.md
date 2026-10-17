@@ -145,6 +145,10 @@ La nota de la IA es la del 06/10 (actualizada el 07/10), en [`2026-10-06_v2.0.0/
 
 La nota oficial de la v2.0.0 es la del equipo. La IA fue más generosa en 9 de los 28 criterios y más estricta en 1.
 
+**Confirmación (17/10):** quien revisó cada criterio confirmó como usuario que las correcciones de UX-01, MOB-01, MOB-02
+(José), UI-04 (Pedro), UI-01 y UI-05 (Jeider) ya cumplen. Con eso, **interfaz 30 / 32 · 93,8 %** y **Tutores Inteligentes
+23 / 24 · 95,8 %**. Falta la confirmación de Jorge para UX-02; siguen abiertos UX-04 y MOD-02.
+
 ### Criterio por criterio
 
 | ID | IA | Equipo | Quién | Por qué difieren | Qué se hizo |

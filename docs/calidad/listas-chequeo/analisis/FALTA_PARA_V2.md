@@ -1,25 +1,25 @@
 # Qué falta para cerrar la v2.0.0
 
-**Estado al 17/10/2026.** La v2.0.0 está publicada desde el 04/10 y se ha corregido con lo que encontró el equipo en la
-prueba, pero todavía **no tiene la etiqueta `v2.0.0` en Git**: la etiqueta se pone cuando la revisión humana de las dos
-listas esté completa y consolidada (`S09-J03`).
+**Estado al 17/10/2026.** La v2.0.0 quedó cerrada y etiquetada el 17/10, con la revisión humana completa
+(`VERIFICACION_v2.0.0.md` §7). Con las correcciones confirmadas por el equipo: interfaz **30 / 32** y Tutores
+Inteligentes **23 / 24**. Lo que sigue abierto pasa a la Semana 10.
 
 ## 1. Lo que falta, por persona
 
 | Quién | Qué falta | Por qué importa |
 |---|---|---|
-| José | Confirmar como usuario UX-01, MOB-01 y MOB-02, que se corrigieron después de su revisión. Proponer cómo unificar UX-04 (nombres, mayúsculas y botón principal) con su identidad visual. | UX-04 es el único criterio de la interfaz que sigue en CP. |
-| Jorge | Confirmar UX-02 («Volver a editar» en «Antes de entregar»). | Pasa de CP a C con su confirmación. |
-| Pedro | Confirmar UI-04 y responder la propuesta de MOD-02 (tarjeta «Errores que más se repiten esta semana» en «Hoy» del docente, [`S09-J08`](https://trello.com/c/uZe4F9nK)). | MOD-02 es el único criterio de Tutores Inteligentes que sigue abierto. |
+| José | ~~Confirmar UX-01, MOB-01 y MOB-02~~ (confirmado el 17/10). Proponer cómo unificar UX-04 (nombres, mayúsculas y botón principal) con su identidad visual. | UX-04 es el único criterio de la interfaz que sigue en CP. |
+| Jorge | Confirmar UX-02 («Volver a editar» en «Antes de entregar»). Es la única corrección sin confirmar. | Pasa de CP a C con su confirmación. |
+| Pedro | ~~Confirmar UI-04~~ (confirmado el 17/10). Responder la propuesta de MOD-02 (tarjeta «Errores que más se repiten esta semana» en «Hoy» del docente, [`S09-J08`](https://trello.com/c/uZe4F9nK)). | MOD-02 es el único criterio de Tutores Inteligentes que sigue abierto. |
 | Jeider | Consolidar: tabla «nota automática contra nota del equipo» en [`VERIFICACION_v2.0.0.md`](../VERIFICACION_v2.0.0.md) con el porqué de cada diferencia, el SUS del equipo, `npm run verify:clean`, la etiqueta `v2.0.0` y su entrada en `CHANGELOG.md`. | Es el cierre (`S09-J03`). |
 | Todos | El pitch grupal con las notas consolidadas ([`PITCH_LISTAS_CHEQUEO.md`](../../../pitch/PITCH_LISTAS_CHEQUEO.md)). | Las notas del guion salen de la consolidación. |
 
 ## 2. Cómo van las notas
 
-| Lista | Antes (04/10) | Equipo hoy | Si se confirma lo corregido | Lo que no depende de nadie más |
+| Lista | Antes (04/10) | Equipo hoy | Lo que falta para el máximo | Abierto |
 |---|---|---|---|---|
-| Interfaz | 20 / 32 | 27 / 32 · 84,4 % | 31 / 32 · 96,9 % | UX-04 (identidad visual) |
-| Tutores Inteligentes | 14 / 24 | 20 / 24 · 83,3 % | 23 / 24 · 95,8 % | MOD-02 (espera ideas de Pedro) |
+| Interfaz | 20 / 32 | 30 / 32 · 93,8 % (confirmado el 17/10) | 31 / 32 · 96,9 % con UX-02 de Jorge | UX-04 (identidad visual) |
+| Tutores Inteligentes | 14 / 24 | 23 / 24 · 95,8 % (confirmado el 17/10) | 24 / 24 con MOD-02 | MOD-02 (espera ideas de Pedro) |
 
 ## 3. SUS: lo que hay hasta hoy
 
