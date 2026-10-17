@@ -12,6 +12,11 @@ con su fecha y la versión evaluada. Cada lista va en dos formatos:
 - el **Word del profesor llenado**, con el mismo formato, para entregar;
 - una página **Markdown** con la misma revisión, para leerla y compararla en GitHub.
 
+## Análisis para el equipo
+
+[`analisis/`](analisis/README.md) junta los resultados para analizarlos y presentarlos: los 28 criterios con la nota del
+equipo, cómo estaba STIRE antes (con el enlace a esa versión) y lo que falta para cerrar la v2.0.0.
+
 ## Plan de mejora
 
 [`PLAN_DE_MEJORA.md`](PLAN_DE_MEJORA.md) explica cómo se pasa del «antes» al 100 %. La regla es cumplir la intención de cada criterio sin limitar
