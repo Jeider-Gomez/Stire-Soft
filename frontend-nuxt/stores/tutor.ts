@@ -27,6 +27,12 @@ export const useTutorStore = defineStore('tutor', () => {
   const modoOtraExplicacion = ref(false)
   // UI-05: tras varios intentos fallidos, un ejemplo resuelto de un problema parecido (no el suyo).
   const modoEjemplo = ref(false)
+  /**
+   * UI-05 · modo acompañado (Jeider 17/10: «que el Tutor intervenga como una persona real si se estanca»): a diferencia
+   * de los otros modos, vale para TODA la conversación hasta que el estudiante lo termine o cambie de ejercicio.
+   */
+  const modoAcompanado = ref(false)
+  watch(() => workspaceStore.currentExercise?.activityId, () => { modoAcompanado.value = false })
   const isThinking = ref(false)
   const hasGreeted = ref(false)
   /** Segundos que lleva el tutor pensando; para escalar el mensaje de espera. */
@@ -222,6 +228,17 @@ export const useTutorStore = defineStore('tutor', () => {
     await sendMessage('Quiero resolver este ejercicio por pasos.')
   }
 
+  /** UI-05: tras varios fallos, el estudiante acepta que el Tutor lo acompañe hasta resolverlo. */
+  async function acompanar() {
+    await openDrawer({ conPregunta: true })
+    modoAcompanado.value = true
+    await sendMessage('Llevo varios intentos con este ejercicio y no me sale. ¿Me acompañas a resolverlo paso a paso?')
+  }
+
+  function terminarAcompanamiento() {
+    modoAcompanado.value = false
+  }
+
   /** UI-05: cambiar de táctica tras varios fallos — ver resuelto un problema parecido, no el suyo. */
   async function verEjemploParecido() {
     await openDrawer({ conPregunta: true })
@@ -286,7 +303,7 @@ export const useTutorStore = defineStore('tutor', () => {
   async function sendMessage(userText: string) {
     if (!userText.trim()) return
     // El modo por pasos vale para este mensaje; los siguientes siguen la conversación normal.
-    const modoEnvio = modoPorPasos.value ? 'por-pasos' as const : modoEjemplo.value ? 'ejemplo-parecido' as const : modoOtraExplicacion.value ? 'otra-explicacion' as const : undefined
+    const modoEnvio = modoAcompanado.value ? 'acompanado' as const : modoPorPasos.value ? 'por-pasos' as const : modoEjemplo.value ? 'ejemplo-parecido' as const : modoOtraExplicacion.value ? 'otra-explicacion' as const : undefined
     modoPorPasos.value = false
     modoEjemplo.value = false
     modoOtraExplicacion.value = false
@@ -405,6 +422,9 @@ export const useTutorStore = defineStore('tutor', () => {
     preguntarPorRecurso,
     modoPorPasos,
     resolverPorPasos,
+    modoAcompanado,
+    acompanar,
+    terminarAcompanamiento,
     verEjemploParecido,
     isOpen,
     isThinking,

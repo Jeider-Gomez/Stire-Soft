@@ -17,11 +17,13 @@ type Ayuda = { mensaje: string; principal: string; otras: string[] };
 const { ayudaSegunFallos, TEXTO_AYUDA } = cargar<{ ayudaSegunFallos: (n: number) => Ayuda; TEXTO_AYUDA: Record<string, string> }>('ofertaTutor');
 
 describe('la ayuda escala y cambia de táctica', () => {
-  it('1 fallo: una pista; 2: por pasos; 3 o más: un ejemplo resuelto parecido', () => {
+  // 17/10 (Jeider): desde el tercer fallo, el Tutor se ofrece a acompañarlo hasta resolverlo; el ejemplo parecido sigue a un toque.
+  it('1 fallo: una pista; 2: por pasos; 3 o más: resolverlo juntos, con el ejemplo parecido a un toque', () => {
     expect(ayudaSegunFallos(1).principal).toBe('pista');
     expect(ayudaSegunFallos(2).principal).toBe('por-pasos');
-    expect(ayudaSegunFallos(3).principal).toBe('ejemplo');
-    expect(ayudaSegunFallos(7).principal).toBe('ejemplo');
+    expect(ayudaSegunFallos(3).principal).toBe('acompanar');
+    expect(ayudaSegunFallos(7).principal).toBe('acompanar');
+    expect(ayudaSegunFallos(3).otras[0]).toBe('ejemplo');
   });
 
   it('nunca repite la principal entre las otras, y nunca muestra más de 3 otras', () => {
@@ -33,7 +35,7 @@ describe('la ayuda escala y cambia de táctica', () => {
   });
 
   it('desde el tercer fallo dice que se prueba de otra forma (no repite la misma explicación)', () => {
-    expect(ayudaSegunFallos(3).mensaje).toMatch(/Probemos de otra forma/);
+    expect(ayudaSegunFallos(3).mensaje).toMatch(/¿Lo resolvemos juntos\?/);
     expect(ayudaSegunFallos(3).otras).toContain('explicacion');
   });
 
@@ -66,7 +68,7 @@ describe('en el ejercicio', () => {
   it('el ejemplo parecido va al Tutor con su modo; volver a la explicación lleva a la lección', () => {
     expect(leer('stores', 'tutor.ts')).toContain("modoEjemplo.value ? 'ejemplo-parecido' as const");
     // el tipo de las señales lo admite (nuxi typecheck lo detectó: el store mandaba un modo que el tipo no tenía)
-    expect(leer('utils', 'contextoTutor.ts')).toContain("modo?: 'por-pasos' | 'otra-explicacion' | 'ejemplo-parecido'");
+    expect(leer('utils', 'contextoTutor.ts')).toContain("modo?: 'por-pasos' | 'otra-explicacion' | 'ejemplo-parecido' | 'acompanado'");
     expect(p).toContain('navigateTo(`/estudiante/unidad/${workspaceStore.currentExercise.learningUnitId}#explicacion`)');
   });
 });

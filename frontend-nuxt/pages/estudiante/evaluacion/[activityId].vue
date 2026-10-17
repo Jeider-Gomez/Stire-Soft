@@ -279,9 +279,9 @@ async function usarAyuda(a: Ayuda) {
   if (a === 'pista') return pedirAyudaAlTutor()
   if (a === 'por-pasos') return resolverPorPasos()
   ofertaCerrada.value = true
-  if (a === 'ejemplo') {
+  if (a === 'acompanar' || a === 'ejemplo') {
     workspaceStore.submissionResult = null
-    return tutorStore.verEjemploParecido()
+    return a === 'acompanar' ? tutorStore.acompanar() : tutorStore.verEjemploParecido()
   }
   return navigateTo(`/estudiante/unidad/${workspaceStore.currentExercise.learningUnitId}#explicacion`)
 }

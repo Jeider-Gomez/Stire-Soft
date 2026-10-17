@@ -40,7 +40,7 @@
 <script setup lang="ts">
 // Mensajes del estudiante: la bandeja y la ventana son compartidas con el docente (components/mensajes/); aquí solo
 // se decide a quién puede escribirle: a los docentes de sus clases activas.
-import { computed, provide, ref } from 'vue'
+import { computed, onMounted, provide, ref } from 'vue'
 import { CLAVE_MENSAJES, useDestinatarios, useMensajes, type Destinatario } from '~/composables/useMensajes'
 import { otraPersona, type Mensaje } from '~/utils/mensajes'
 
@@ -75,6 +75,13 @@ async function abrir(m: Mensaje | null) {
     cargandoDocentes.value = false
   }
 }
+
+// «Preguntarle a tu docente» desde una lección que no quedó clara (UI-01): abre la ventana con la duda ya escrita.
+onMounted(() => {
+  if (route.query.redactar !== '1') return
+  abrir(null).then(() => { contenido.value = typeof route.query.texto === 'string' ? route.query.texto.slice(0, 2000) : '' })
+  navigateTo({ path: route.path }, { replace: true })
+})
 
 async function enviarMensaje(imagen: Blob | null) {
   enviando.value = true

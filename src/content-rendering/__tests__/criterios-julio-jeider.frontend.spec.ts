@@ -9,7 +9,9 @@ const leer = (...p: string[]) => readFileSync(path.join(raiz, ...p), 'utf8');
 function cargar<T>(nombre: string): T {
   const js = ts.transpileModule(leer('utils', `${nombre}.ts`), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
   const mod = { exports: {} as Record<string, unknown> };
-  new Function('module', 'exports', 'require', js)(mod, mod.exports, () => ({}));
+  // Las utilidades que importan otras de ~/utils/ las reciben cargadas igual.
+  const requerir = (ruta: string) => (ruta.startsWith('~/utils/') ? cargar(ruta.slice('~/utils/'.length)) : {});
+  new Function('module', 'exports', 'require', js)(mod, mod.exports, requerir);
   return mod.exports as T;
 }
 
@@ -41,9 +43,11 @@ describe('MOD-01: el plan del curso en la barra lateral', () => {
     expect(plan.conteoModulo(modulos[1])).toEqual({ dominadas: 0, total: 2 });
   });
 
-  it('va debajo de la navegación, en su componente, con nombres en dos líneas y sin los ids fijos de antes', () => {
+  it('va después de Inicio, con alto limitado, en su componente, con nombres en dos líneas y sin los ids fijos de antes', () => {
     const menu = leer('components', 'layout', 'SidebarNav.vue');
-    expect(menu.indexOf('<span>Mensajes</span>')).toBeLessThan(menu.indexOf('<LayoutPlanDelCurso />'));
+    expect(menu.indexOf('<span>Inicio</span>')).toBeLessThan(menu.indexOf('<LayoutPlanDelCurso />'));
+    expect(menu.indexOf('<LayoutPlanDelCurso />')).toBeLessThan(menu.indexOf('<span>Repasos</span>'));
+    expect(leer('components', 'layout', 'PlanDelCurso.vue')).toContain('max-h-[40vh] overflow-y-auto');
     expect(menu).not.toContain('openModules');
     const p = leer('components', 'layout', 'PlanDelCurso.vue');
     expect(p).toContain('<span class="line-clamp-2" :title="mod.title">{{ mod.title }}</span>');
@@ -81,5 +85,76 @@ describe('MOD-03: el resultado de una entrega, breve y claro', () => {
     expect(v.indexOf('<EstudianteMetaDeLaLeccion')).toBeGreaterThan(detalles);
     expect(v.indexOf('{{ calibracion.texto }}')).toBeLessThan(detalles);
     expect(v.indexOf('{{ x.texto }}')).toBeLessThan(detalles);
+  });
+});
+
+describe('UI-01: «No me quedó claro» siempre deja otros caminos, no solo el chatbot', () => {
+  type Op = { tipo: string; destino: string };
+  const a = cargar<{
+    opcionesDeAyuda: (e: { tituloLeccion: string; sencillo: { id: number; titulo: string; nivel: string; estado: string } | null; anterior: { id: number; titulo: string } | null; hayVivo: boolean; hayRecurso: boolean }) => Op[];
+    ejercicioSencillo: (e: Array<{ id: number; titulo: string; nivel: string; estado: string }>) => { id: number } | null;
+    leccionAnterior: (m: Array<{ units: Array<{ id: number; title: string }> }>, id: number) => { id: number; titulo: string } | null;
+    busquedaDeVideo: (t: string) => string;
+  }>('ayudaLeccion');
+
+  it('sin nada en la lección quedan tres caminos: otro video, el docente y el Tutor', () => {
+    const o = a.opcionesDeAyuda({ tituloLeccion: 'Ciclos', sencillo: null, anterior: null, hayVivo: false, hayRecurso: false });
+    expect(o.map((x) => x.tipo)).toEqual(['video', 'docente', 'tutor']);
+  });
+
+  it('con todo, primero aprender haciéndolo y repasar la base; el Tutor al final', () => {
+    const o = a.opcionesDeAyuda({ tituloLeccion: 'Ciclos', sencillo: { id: 5, titulo: 'Contar', nivel: 'basico', estado: 'por-hacer' }, anterior: { id: 2, titulo: 'Variables' }, hayVivo: true, hayRecurso: true });
+    expect(o.map((x) => x.tipo)).toEqual(['practicar', 'vivo', 'anterior', 'recurso', 'video', 'docente', 'tutor']);
+    expect(o[0].destino).toBe('/estudiante/evaluacion/5');
+    expect(o[2].destino).toBe('/estudiante/unidad/2');
+  });
+
+  it('el ejercicio sencillo es el de nivel más bajo que aún puede hacer; la lección anterior sigue el plan', () => {
+    expect(a.ejercicioSencillo([
+      { id: 1, titulo: 'A', nivel: 'intermedio', estado: 'por-hacer' },
+      { id: 2, titulo: 'B', nivel: 'basico', estado: 'hecho' },
+      { id: 3, titulo: 'C', nivel: 'basico', estado: 'sin-intentos' },
+    ])?.id).toBe(1);
+    const plan = [{ units: [{ id: 1, title: 'Uno' }] }, { units: [{ id: 2, title: 'Dos' }] }];
+    expect(a.leccionAnterior(plan, 2)).toEqual({ id: 1, titulo: 'Uno' });
+    expect(a.leccionAnterior(plan, 1)).toBeNull();
+    expect(a.busquedaDeVideo('Ciclos for')).toBe('https://www.youtube.com/results?search_query=Ciclos%20for%20explicaci%C3%B3n');
+  });
+
+  it('el panel ya no ofrece el diagrama ni «Escuchar» de la misma lección, y el docente recibe la duda escrita', () => {
+    const v = leer('components', 'ValorarLeccion.vue');
+    expect(v).toContain('<li v-for="op in opciones" :key="op.tipo">');
+    expect(v).not.toContain('O míralo de otra forma en esta lección');
+    expect(v).toContain("query: { redactar: '1', texto: `No me quedó clara la lección");
+    expect(leer('pages', 'estudiante', 'mensajes.vue')).toMatch(/if \(route\.query\.redactar !== '1'\) return/);
+  });
+});
+
+describe('UI-05: el Tutor acompaña cuando el estudiante se estanca', () => {
+  const o = cargar<{ ayudaSegunFallos: (n: number) => { principal: string; otras: string[] } }>('ofertaTutor');
+
+  it('desde el tercer fallo ofrece resolverlo juntos (no lo impone) y el modo dura toda la conversación', () => {
+    expect(o.ayudaSegunFallos(3)).toMatchObject({ principal: 'acompanar', otras: ['ejemplo', 'explicacion', 'pista'] });
+    const t = leer('stores', 'tutor.ts');
+    expect(t).toContain("const modoEnvio = modoAcompanado.value ? 'acompanado' as const");
+    expect(t).toContain('watch(() => workspaceStore.currentExercise?.activityId, () => { modoAcompanado.value = false })');
+    expect(leer('components', 'tutor', 'AvisoAcompanado.vue')).toContain('tutorStore.terminarAcompanamiento()');
+  });
+
+  it('cada respuesta del Tutor se puede escuchar y la pregunta se puede dictar', () => {
+    const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
+    expect(d).toContain(`<TutorPieMensaje :de-estudiante="msg.sender === 'student'"`);
+    expect(d).toContain('<TutorDictarPregunta :escrito="inputQuery"');
+    expect(d).toContain('<TutorAvisoAcompanado />');
+    expect(leer('components', 'tutor', 'DictarPregunta.vue')).toContain("reconocedor.lang = 'es-CO'");
+  });
+
+  it('lo que se lee no incluye el código ni las marcas, y lo dictado se suma a lo escrito', () => {
+    const v = cargar<{ textoDeMensaje: (t: string) => string; unirDictado: (a: string, b: string) => string; hayVozNatural: (v: Array<{ lang: string; name?: string }>) => boolean }>('vozTutor');
+    expect(v.textoDeMensaje('**Mira** esto:\n```js\nlet x = 1\n```\n- Usa `for`')).toBe('Mira esto: (te dejé un código en el chat) Usa for');
+    expect(v.unirDictado('Hola', ' cómo hago un ciclo ')).toBe('Hola cómo hago un ciclo');
+    expect(v.unirDictado('', 'ciclo')).toBe('ciclo');
+    expect(v.hayVozNatural([{ lang: 'es-CO', name: 'Microsoft Salome Online (Natural)' }])).toBe(true);
+    expect(v.hayVozNatural([{ lang: 'es-ES', name: 'Microsoft Helena' }])).toBe(false);
   });
 });

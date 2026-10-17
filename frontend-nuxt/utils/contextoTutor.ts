@@ -15,7 +15,7 @@ export interface SenalesTutor {
   errorProbable?: string
   confianza?: string
   acerto?: boolean
-  modo?: 'por-pasos' | 'otra-explicacion' | 'ejemplo-parecido'
+  modo?: 'por-pasos' | 'otra-explicacion' | 'ejemplo-parecido' | 'acompanado'
   /** Conceptos que pide el ejercicio (utils/conceptosEjercicio.ts). */
   conceptos?: string[]
 }

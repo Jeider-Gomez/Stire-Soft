@@ -29,6 +29,9 @@
           <House :size="18" aria-hidden="true" class="shrink-0" />
           <span>Inicio</span>
         </NuxtLink>
+        <!-- Plan del curso justo después de Inicio (Jeider 17/10), con alto limitado para que el resto del menú siga a la
+             vista (components/layout/PlanDelCurso.vue). -->
+        <LayoutPlanDelCurso />
 
         <!-- 5. Repasos (EST-V05) -->
         <NuxtLink
@@ -84,8 +87,6 @@
           <Mail :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
         </NuxtLink>
-        <!-- Plan del curso, debajo de la navegación (components/layout/PlanDelCurso.vue). -->
-        <LayoutPlanDelCurso />
       </nav>
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->

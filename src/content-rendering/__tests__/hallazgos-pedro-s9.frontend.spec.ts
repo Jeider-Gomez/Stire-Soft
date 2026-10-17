@@ -36,7 +36,7 @@ describe('el Tutor abierto con una pregunta no responde con el saludo (Jeider, 1
   it('los botones que abren el Tutor con una pregunta no piden el saludo proactivo', () => {
     const t = leer('stores', 'tutor.ts');
     expect(t).toMatch(/async function openDrawer\(opciones: \{ conPregunta\?: boolean \} = \{\}\) \{\s*if \(opciones\.conPregunta\) hasGreeted\.value = true/);
-    expect(t.match(/await openDrawer\(\{ conPregunta: true \}\)/g)?.length).toBe(4);
+    expect(t.match(/await openDrawer\(\{ conPregunta: true \}\)/g)?.length).toBe(5);
     expect(leer('components', 'LessonResource.vue')).toContain("await useTutorStore().preguntarPorRecurso(props.title || 'de la lección')");
     expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('await tutorStore.openDrawer({ conPregunta: true })');
   });

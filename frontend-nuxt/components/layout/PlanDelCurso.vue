@@ -1,9 +1,11 @@
 <template>
-  <!-- Plan del curso (MOD-01, Jeider 17/10): va DEBAJO de la navegación para no empujarla, un módulo abierto a la
-       vez (el de la lección donde está, como el temario de Coursera o Udemy), nombres completos en dos líneas y
-       cuántas lecciones lleva dominadas cada módulo. -->
-  <div class="pt-3 mt-2 border-t border-base-borde-sutil ocultar-colapsado">
-    <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Plan del curso</p>
+  <!-- Plan del curso (MOD-01, Jeider 17/10): justo después de Inicio, siempre a mano, pero con alto limitado y su propio
+       desplazamiento para no empujar Repasos, Mi progreso y los demás. Un módulo abierto a la vez (el de la lección
+       donde está, como el temario de Coursera o Udemy), nombres completos en dos líneas y cuántas lecciones lleva
+       dominadas cada módulo. -->
+  <div class="py-2 my-1 border-y border-base-borde-sutil ocultar-colapsado">
+    <p id="plan-del-curso" class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Plan del curso</p>
+    <div class="max-h-[40vh] overflow-y-auto overscroll-contain" role="group" aria-labelledby="plan-del-curso">
     <div v-for="mod in studentStore.modules" :key="mod.id" class="mb-0.5">
       <button
         type="button"
@@ -46,6 +48,7 @@
           </NuxtLink>
         </template>
       </div>
+    </div>
     </div>
   </div>
 </template>

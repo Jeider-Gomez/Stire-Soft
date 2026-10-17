@@ -19,9 +19,10 @@ export function pistaSegunTipo(tipo: string | undefined): 'parada' | 'conceptual
 // 1 fallo: una pista. 2: por pasos (subpreguntas, lo más efectivo en ASSISTments). 3 o más: cambiar de táctica — un
 // ejemplo resuelto PARECIDO (efecto del ejemplo resuelto: Atkinson, Derry, Renkl y Wortham, 2000) o volver a la idea.
 
-export type Ayuda = 'pista' | 'por-pasos' | 'ejemplo' | 'explicacion'
+export type Ayuda = 'acompanar' | 'pista' | 'por-pasos' | 'ejemplo' | 'explicacion'
 
 export const TEXTO_AYUDA: Record<Ayuda, string> = {
+  acompanar: 'Resolverlo juntos, paso a paso',
   pista: 'Pedir una pista al Tutor',
   'por-pasos': 'Resolverlo por pasos con el Tutor',
   ejemplo: 'Ver resuelto un ejemplo parecido',
@@ -29,11 +30,13 @@ export const TEXTO_AYUDA: Record<Ayuda, string> = {
 }
 
 export function ayudaSegunFallos(fallos: number): { mensaje: string; principal: Ayuda; otras: Ayuda[] } {
+  // 3 o más (Jeider 17/10): el Tutor se ofrece a acompañarlo de verdad, como una persona, hasta que le salga. Se ofrece,
+  // no se impone; el ejemplo parecido, la explicación y la pista siguen a un toque.
   if (fallos >= 3) {
     return {
-      mensaje: 'Llevas varios intentos con este ejercicio. Probemos de otra forma: ver resuelto un problema parecido suele destrabar.',
-      principal: 'ejemplo',
-      otras: ['por-pasos', 'explicacion', 'pista'],
+      mensaje: 'Llevas varios intentos con esto y es normal atascarse. ¿Lo resolvemos juntos? Te acompaño paso a paso, sin darte la respuesta, y al final comprobamos con uno parecido.',
+      principal: 'acompanar',
+      otras: ['ejemplo', 'explicacion', 'pista'],
     }
   }
   if (fallos === 2) {

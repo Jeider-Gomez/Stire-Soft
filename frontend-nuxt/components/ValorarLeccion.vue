@@ -31,24 +31,25 @@
     <div v-if="voto === false" class="space-y-2">
       <label for="valorar-comentario" class="block text-xs font-semibold text-base-texto-primario">¿Qué no quedó claro? <span class="font-normal text-slate-600">(opcional; tu docente lo ve sin tu nombre)</span></label>
       <textarea id="valorar-comentario" v-model="comentario" v-crece rows="2" maxlength="300" class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-fuerte bg-base-blanco" placeholder="Por ejemplo: no entendí para qué sirve el contador" />
-      <div class="flex flex-wrap gap-2">
-        <button type="button" class="min-h-[44px] px-4 rounded-md bg-stire-purple text-white text-xs font-bold inline-flex items-center gap-1.5" @click="otraExplicacion">
-          <Sparkles :size="14" aria-hidden="true" /> Que el Tutor me lo explique de otra forma
-        </button>
-        <button type="button" class="min-h-[44px] px-4 rounded-md border border-base-borde-fuerte text-xs font-semibold" :disabled="guardando" @click="valorar(false)">
-          Enviar a mi docente
-        </button>
-      </div>
-      <!-- UI-01 y UI-04: las otras formas que ESTA lección trae (no una lista fija), sin esperar al docente
-           (Pedro, 16/10: «falta la selección adaptativa de recursos alternativos»; utils/formasLeccion.ts). -->
-      <div v-if="formas.length" class="space-y-1.5">
-        <p class="text-[11px] font-semibold text-base-texto-primario">O míralo de otra forma en esta lección:</p>
-        <div class="flex flex-wrap gap-2">
-          <button v-for="f in formas" :key="f.selector" type="button" class="min-h-[44px] px-3 rounded-md borde-afordancia text-xs font-semibold text-acento-ambar-fuerte" @click="irA(f.selector)">
-            {{ f.texto }}
+      <!-- UI-01 (Jeider 17/10): caminos distintos para no quedarse estancado, no solo el Tutor ni lo que ya está en la
+           misma lección (utils/ayudaLeccion.ts). Siempre hay al menos tres: otro video, el docente y el Tutor. -->
+      <p class="text-xs font-semibold text-base-texto-primario">Elige cómo seguir:</p>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <li v-for="op in opciones" :key="op.tipo">
+          <button type="button" class="w-full h-full min-h-[44px] p-3 rounded-lg text-left text-xs flex items-start gap-2.5 transition-colors"
+            :class="op.tipo === 'tutor' ? 'bg-stire-purple/10 border border-stire-purple/30 hover:bg-stire-purple/15' : 'borde-afordancia bg-base-blanco hover:bg-base-bg-secundario'"
+            @click="elegir(op)">
+            <component :is="ICONO[op.tipo]" :size="16" class="shrink-0 mt-0.5" :class="op.tipo === 'tutor' ? 'text-stire-purple' : 'text-acento-ambar-fuerte'" aria-hidden="true" />
+            <span>
+              <span class="block font-bold text-base-texto-primario">{{ op.titulo }}<span v-if="op.tipo === 'video'" class="sr-only"> (se abre en otra pestaña)</span></span>
+              <span class="block text-slate-700">{{ op.detalle }}</span>
+            </span>
           </button>
-        </div>
-      </div>
+        </li>
+      </ul>
+      <button type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline" :disabled="guardando" @click="valorar(false)">
+        Solo avisar a mi docente que no quedó claro
+      </button>
       <p v-if="enviado" role="status" class="text-xs text-slate-600">Enviado. Gracias: así tu docente sabe qué explicar mejor.</p>
     </div>
     <p v-if="error" role="alert" class="text-xs font-semibold text-red-700">{{ error }}</p>
@@ -56,10 +57,12 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue'
-import { formasDisponibles, type FormaLeccion } from '~/utils/formasLeccion'
-import { Sparkles, ThumbsDown, ThumbsUp } from 'lucide-vue-next'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { formasDisponibles } from '~/utils/formasLeccion'
+import { ejercicioSencillo, leccionAnterior, opcionesDeAyuda, type EjercicioParaAyuda, type OpcionAyuda, type TipoAyuda } from '~/utils/ayudaLeccion'
+import { BookOpenCheck, Hammer, MessageCircle, MousePointerClick, CirclePlay, Sparkles, ThumbsDown, ThumbsUp, Video } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
+import { useStudentStore } from '~/stores/student'
 
 const props = defineProps<{ unitId: number }>()
 const api = useApi()
@@ -71,14 +74,41 @@ const comentario = ref('')
 const guardando = ref(false)
 const enviado = ref(false)
 const error = ref<string | null>(null)
-const formas = ref<FormaLeccion[]>([])
+const studentStore = useStudentStore()
+const { misEjercicios } = useUnidadEstudiante()
+const ICONO: Record<TipoAyuda, typeof Sparkles> = { practicar: Hammer, anterior: BookOpenCheck, vivo: MousePointerClick, recurso: CirclePlay, video: Video, docente: MessageCircle, tutor: Sparkles }
 
-// Al marcar «No me quedó claro» se miran las formas que la lección trae en la página.
+// Al marcar «No me quedó claro» se miran las formas que la lección trae en la página y el ejercicio más sencillo.
+const formas = ref<string[]>([])
+const ejercicios = ref<EjercicioParaAyuda[]>([])
 watch(voto, async (v) => {
   if (v !== false) return
   await nextTick()
-  formas.value = formasDisponibles((sel) => !!document.querySelector(sel))
+  formas.value = formasDisponibles((sel) => !!document.querySelector(sel)).map((f) => f.selector)
+  if (!ejercicios.value.length) ejercicios.value = await misEjercicios(props.unitId).catch(() => [])
 }, { immediate: true })
+
+const tituloLeccion = computed(() => studentStore.modules.flatMap((m) => m.units).find((u) => u.id === props.unitId)?.title ?? '')
+const opciones = computed(() => opcionesDeAyuda({
+  tituloLeccion: tituloLeccion.value,
+  sencillo: ejercicioSencillo(ejercicios.value),
+  anterior: leccionAnterior(studentStore.modules, props.unitId),
+  hayVivo: formas.value.includes('[data-forma="vivo"]'),
+  hayRecurso: formas.value.includes('[data-forma="recurso"]'),
+}))
+
+/** Cada camino guarda primero el «No» con el comentario, para que el docente lo vea aunque el estudiante se vaya. */
+async function elegir(op: OpcionAyuda) {
+  if (comentario.value.trim()) await valorar(false)
+  if (op.tipo === 'tutor') return otraExplicacion()
+  if (op.tipo === 'video') return void window.open(op.destino, '_blank', 'noopener')
+  if (op.destino.startsWith('[')) return irA(op.destino)
+  if (op.tipo === 'docente') {
+    const duda = comentario.value.trim()
+    return navigateTo({ path: '/estudiante/mensajes', query: { redactar: '1', texto: `No me quedó clara la lección «${tituloLeccion.value}».${duda ? ` ${duda}` : ''}` } })
+  }
+  return navigateTo(op.destino)
+}
 
 /** Lleva a esa parte de la lección y deja el foco ahí (el botón «Escuchar» se enfoca él mismo). */
 function irA(selector: string) {
