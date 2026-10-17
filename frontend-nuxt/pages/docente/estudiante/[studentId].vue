@@ -151,6 +151,9 @@
         </div>
       </section>
 
+      <!-- Perfil de aprendizaje (MOD-02): errores de concepto que se repiten y cómo estudia. -->
+      <EstudiantePerfilAprendizaje :student-id="dashboard.studentId" docente />
+
       <!-- Todas las entregas, por páginas (sugerencia n.º 12). -->
       <DocenteHistorialEntregas :student-id="dashboard.studentId" />
     </div>

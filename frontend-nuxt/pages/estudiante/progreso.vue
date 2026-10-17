@@ -98,6 +98,9 @@
       </div>
     </section>
 
+    <!-- Perfil de aprendizaje (MOD-02): errores que se repiten y cómo estudia -->
+    <EstudiantePerfilAprendizaje v-if="authStore.user?.id" :student-id="authStore.user.id" />
+
     <!-- Cómo funciona STIRE y cómo avanzar más rápido (pedido del dueño, 04/10); incluye la calibración (META-02) -->
     <EstudianteComoAvanzas />
 

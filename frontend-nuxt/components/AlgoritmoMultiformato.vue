@@ -73,7 +73,11 @@ onMounted(() => {
   } catch { /* sin almacenamiento: queda el código */ }
 })
 
+// Lo que elige cuenta para su perfil de aprendizaje (Visual/Verbal, MOD-02).
+const { registrar } = useUsoFormatos()
+const COMO_FORMATO = { codigo: 'pseudocodigo', pseudo: 'pseudocodigo', diagrama: 'diagrama', pasos: 'pasos' } as const
 function elegir(f: Formato) {
+  if (f !== formato.value) registrar(COMO_FORMATO[f])
   formato.value = f
   try { localStorage.setItem(CLAVE, f) } catch { /* no es crítico */ }
 }

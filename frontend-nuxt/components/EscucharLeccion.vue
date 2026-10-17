@@ -61,6 +61,9 @@ import {
   textoParaVoz, VELOCIDADES, vocesEnEspanol, type BloqueLeccion, type Lectura,
 } from '~/utils/escucharLeccion'
 
+// Escuchar cuenta para su perfil de aprendizaje (Visual/Verbal, MOD-02).
+const { registrar: registrarFormato } = useUsoFormatos()
+
 const props = withDefaults(defineProps<{ bloques: BloqueLeccion[]; objetivo?: string }>(), { objetivo: '#explicacion' })
 
 const RESALTADO = 'stire-leyendo'
@@ -186,6 +189,7 @@ function empezar() {
   if (!lecturas.value.length) { aviso.value = 'Esta lección no tiene texto para leer.'; return }
   estado.value = 'leyendo'
   aviso.value = 'Leyendo la lección en voz alta.'
+  registrarFormato('escuchar') // perfil de aprendizaje (MOD-02)
   leerDesde(0)
 }
 

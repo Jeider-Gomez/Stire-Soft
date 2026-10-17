@@ -476,6 +476,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Pantalla del ejercicio de programar: pasos, tarjeta de cada caso de prueba y pista; contexto del tutor. |
 | **Trazabilidad** | `frontend-nuxt/utils/pasosCodigo.ts`, `frontend-nuxt/utils/diagnosticoSalida.ts`, `frontend-nuxt/components/exercise/CasoPrueba.vue`, `src/judge-engine/hardened-process-sandbox.adapter.ts`, `src/tutor/tutor-context.service.ts`, `docs/DISENO_EJERCICIOS_PROGRAMAR.md`. |
 
+## BT-45. El perfil de aprendizaje describe cómo estudia cada uno y separa los errores de concepto de los descuidos
+
+| | |
+|---|---|
+| **Problema observado** | En la revisión del equipo (16/10), Pedro dejó MOD-02 a medias: no había un panel con el perfil del estudiante en las dimensiones de la lista (Visual/Verbal, Global/Secuencial) ni algo que diferenciara las concepciones erróneas de fondo de los descuidos de escritura. Cada error se explicaba en su intento, pero nada decía «esto te pasa seguido». |
+| **Decisión** | - Tarjeta «Mi perfil de aprendizaje» en «Mi progreso» y en la ficha del docente: temario dominado (verde, ámbar y gris), errores de concepto que se repiten en dos ejercicios o más con la confusión de fondo, y los descuidos de escritura aparte.<br>- Las dos dimensiones de la lista se muestran **descriptivas**: qué formatos elige de verdad (visual o verbal) y si sigue el plan en orden o salta (secuencial o global). No cambian lo que STIRE muestra: todos los formatos siguen para todos (BT-42). |
+| **Fundamento** | - No hay evidencia para adaptar la enseñanza al estilo preferido (Pashler et al., 2008; Kirschner, 2017): por eso el perfil informa y no prescribe.<br>- Ver los propios datos de estudio apoya el monitoreo metacognitivo (Metcalfe, 2009; Schraw, 2009).<br>- Las reglas que clasifican cada error son las mismas que ya explican la salida en el ejercicio (BT-44; Becker, 2016). |
+| **Cómo se materializa** | Tarjeta del perfil; cada elección de formato (diagrama, pseudocódigo, paso a paso, escuchar) se registra; los casos que fallan se clasifican con la salida esperada guardada. |
+| **Trazabilidad** | `src/analytics/perfil-aprendizaje.ts`, `src/analytics/analytics.service.ts` (`getPerfilAprendizaje`), migración `1793300000000-UsoFormatos`, `frontend-nuxt/components/estudiante/PerfilAprendizaje.vue`, `frontend-nuxt/utils/perfilAprendizaje.ts`. |
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |
