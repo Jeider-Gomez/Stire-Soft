@@ -30,6 +30,27 @@ export class AnalyticsService {
   ) {}
 
   /**
+   * Todas las entregas del estudiante, por páginas, para la ficha del docente (sugerencia n.º 12, Julio 16/10: solo se
+   * veían las 5 más recientes). Mismos permisos que la ficha.
+   */
+  async getStudentSubmissions(studentId: number, requestingUser: User, pagina = 1, porPagina = 20) {
+    if (requestingUser.role === 'estudiante' && requestingUser.id !== studentId) {
+      throw new ForbiddenException('No tienes acceso a las métricas de otro estudiante.');
+    }
+    await this.authorizationService.assertTeacherSharesClassWithStudent(requestingUser, studentId);
+    const tam = Math.min(Math.max(Math.trunc(porPagina) || 20, 1), 50);
+    const pag = Math.max(Math.trunc(pagina) || 1, 1);
+    const [entregas, total] = await this.dataSource.getRepository(Submission).findAndCount({
+      where: { studentId },
+      relations: ['activity'],
+      order: { createdAt: 'DESC' },
+      skip: (pag - 1) * tam,
+      take: tam,
+    });
+    return { items: entregas.map(entregaParaDocente), total, pagina: pag, porPagina: tam };
+  }
+
+  /**
    * OLA 3 - PUNTO 2/3 (P1-R5, docs/REAUDITORIA_OLA2.md): faltaba exactamente
    * la verificación que `getClassMetrics` sí hace en este mismo archivo
    * (línea ~104) — un docente veía el dashboard de CUALQUIER estudiante de
@@ -126,25 +147,7 @@ export class AnalyticsService {
           pending: pendingReviews,
         }
       },
-      recentSubmissions: recentSubmissions.map(s => ({
-        id: s.id,
-        activityId: s.activityId,
-        activityTitle: s.activity?.title || 'Actividad Desconocida',
-        score: s.score,
-        // Puntaje máximo real de la actividad y si aprobó: la pantalla del docente
-        // mostraba "N / 100" fijo y pintaba de rojo un 20/20.
-        maxScore: s.activity?.totalPoints ?? null,
-        passed:
-          s.status === 'graded' && s.activity?.totalPoints
-            ? (s.score / s.activity.totalPoints) * 100 >= s.activity.passingScore
-            : null,
-        status: s.status,
-        submittedAt: s.submittedAt,
-        createdAt: s.createdAt,
-        // Cuánto movió el dominio de su lección (null en las entregas de antes del 07/10)
-        dominioAntes: s.dominioAntes ?? null,
-        dominioDespues: s.dominioDespues ?? null,
-      })),
+      recentSubmissions: recentSubmissions.map(entregaParaDocente),
       cambiosDominio: (cambiosRecientes ?? [])
         .filter((s) => s.dominioDespues !== null && s.dominioDespues !== undefined && s.dominioAntes !== null && s.dominioAntes !== undefined && s.activity)
         .map((s) => ({
@@ -528,4 +531,25 @@ export class AnalyticsService {
   private async idsUnidadesDeClase(classId: number, soloPublicadas: boolean): Promise<number[]> {
     return (await this.unidadesDeClase(classId, soloPublicadas)).map((u) => u.id);
   }
+}
+
+/** Una entrega como la ve la ficha del docente: con el puntaje máximo real y si aprobó (antes mostraba «N / 100» fijo). */
+function entregaParaDocente(s: Submission) {
+  return {
+    id: s.id,
+    activityId: s.activityId,
+    activityTitle: s.activity?.title || 'Actividad Desconocida',
+    score: s.score,
+    maxScore: s.activity?.totalPoints ?? null,
+    passed:
+      s.status === 'graded' && s.activity?.totalPoints
+        ? (s.score / s.activity.totalPoints) * 100 >= s.activity.passingScore
+        : null,
+    status: s.status,
+    submittedAt: s.submittedAt,
+    createdAt: s.createdAt,
+    // Cuánto movió el dominio de su lección (null en las entregas de antes del 07/10)
+    dominioAntes: s.dominioAntes ?? null,
+    dominioDespues: s.dominioDespues ?? null,
+  };
 }

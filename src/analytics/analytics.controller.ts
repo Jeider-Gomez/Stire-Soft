@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Post, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards, Req } from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -16,6 +16,14 @@ export class AnalyticsController {
   @Get('student/:studentId')
   getStudentDashboard(@Param('studentId') studentId: string, @Req() req: any) {
     return this.analyticsService.getStudentDashboard(+studentId, req.user);
+  }
+
+  // Historial completo de la ficha, por páginas (sugerencia n.º 12): la ficha solo traía las 5 entregas más recientes.
+  @Get('student/:studentId/entregas')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante', 'docente', 'admin')
+  getEntregas(@Param('studentId', ParseIntPipe) studentId: number, @Query('pagina') pagina: string | undefined, @Req() req: { user: User }) {
+    return this.analyticsService.getStudentSubmissions(studentId, req.user, Number(pagina) || 1);
   }
 
   /** Mapa de calor del docente: estudiantes × unidades y las listas de a quién ayudar (paso 6). */

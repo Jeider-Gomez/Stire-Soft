@@ -37,6 +37,14 @@ export class Message {
   @Column({ default: false })
   isRead!: boolean;
 
+  // Imagen adjunta (media_files): solo la ven el remitente y el destinatario, por GET /message/:id/imagen.
+  @Column({ type: 'varchar', length: 36, nullable: true })
+  imagenId!: string | null;
+
+  // Cuándo el remitente editó el texto por última vez; la bandeja muestra «Editado».
+  @Column({ type: 'datetime', nullable: true })
+  editadoEn!: Date | null;
+
   @CreateDateColumn()
   createdAt!: Date;
 }

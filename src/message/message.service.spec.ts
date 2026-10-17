@@ -17,6 +17,7 @@ describe('MessageService', () => {
   };
   let eventEmitter: { emitAsync: jest.Mock };
   let authorization: { assertCanMessage: jest.Mock };
+  let media: { subirImagen: jest.Mock; eliminar: jest.Mock; obtener: jest.Mock };
   const sender = { id: 7, fullName: 'Ana Pérez', role: 'docente' } as never;
 
   beforeEach(() => {
@@ -31,7 +32,12 @@ describe('MessageService', () => {
     } as never;
     eventEmitter = { emitAsync: jest.fn().mockResolvedValue(undefined) };
     authorization = { assertCanMessage: jest.fn().mockResolvedValue(undefined) };
-    service = new MessageService(messageRepository as never, eventEmitter as never, authorization as never);
+    media = {
+      subirImagen: jest.fn().mockResolvedValue({ id: 'nueva-uuid' }),
+      eliminar: jest.fn().mockResolvedValue(undefined),
+      obtener: jest.fn().mockResolvedValue({ mimeType: 'image/jpeg', data: Buffer.from('x') }),
+    };
+    service = new MessageService(messageRepository as never, eventEmitter as never, authorization as never, media as never);
   });
 
   it('crea un mensaje con el remitente autenticado, sin confiar en el DTO', async () => {
@@ -154,5 +160,54 @@ describe('MessageService', () => {
       expect(await errs({ receiverId: 0, content: 'ok' })).toBeGreaterThan(0);
       expect(await errs({ receiverId: 3, content: 'x'.repeat(2001) })).toBeGreaterThan(0);
     });
+  });
+});
+
+// Sugerencia n.º 13 (Julio, 16/10): enviar imágenes y poder corregir un mensaje ya enviado.
+describe('MessageService — editar y adjuntar una imagen', () => {
+  const docente = { id: 7, fullName: 'Julio', role: 'docente' } as never;
+  const crear = (mensaje: Partial<Message> | null) => {
+    const repo = {
+      findOne: jest.fn().mockResolvedValue(mensaje),
+      save: jest.fn().mockImplementation(async (m: Message) => m),
+    };
+    const media = {
+      subirImagen: jest.fn().mockResolvedValue({ id: 'nueva-uuid' }),
+      eliminar: jest.fn().mockResolvedValue(undefined),
+      obtener: jest.fn().mockResolvedValue({ mimeType: 'image/jpeg', data: Buffer.from('x') }),
+    };
+    const service = new MessageService(repo as never, { emitAsync: jest.fn() } as never, {} as never, media as never);
+    return { service, repo, media };
+  };
+
+  it('el remitente edita su mensaje y queda marcado como editado', async () => {
+    const { service, repo } = crear({ id: 1, senderId: 7, receiverId: 12, content: 'Mañana no hay clse', editadoEn: null });
+    const editado = await service.editar(1, docente, '  Mañana no hay clase ');
+    expect(repo.findOne).toHaveBeenCalledWith({ where: { id: 1, senderId: 7 } });
+    expect(editado.content).toBe('Mañana no hay clase');
+    expect(editado.editadoEn).toBeInstanceOf(Date);
+  });
+
+  it('el mismo texto no lo marca como editado; un mensaje ajeno no se encuentra', async () => {
+    const igual = crear({ id: 1, senderId: 7, content: 'Hola', editadoEn: null });
+    expect((await igual.service.editar(1, docente, 'Hola')).editadoEn).toBeNull();
+    expect(igual.repo.save).not.toHaveBeenCalled();
+    await expect(crear(null).service.editar(1, docente, 'x')).rejects.toThrow(NotFoundException);
+  });
+
+  it('adjunta una imagen de hasta 3 MB y reemplaza la anterior', async () => {
+    const { service, media, repo } = crear({ id: 1, senderId: 7, imagenId: 'vieja-uuid' });
+    await expect(service.adjuntarImagen(1, docente, Buffer.from('img'))).resolves.toEqual({ imagenId: 'nueva-uuid' });
+    expect(media.subirImagen).toHaveBeenCalledWith(docente, expect.any(Buffer), 3 * 1024 * 1024);
+    expect(repo.save).toHaveBeenCalledWith(expect.objectContaining({ imagenId: 'nueva-uuid' }));
+    expect(media.eliminar).toHaveBeenCalledWith(docente, 'vieja-uuid');
+  });
+
+  it('la imagen solo la ven quien envió y quien recibió el mensaje', async () => {
+    const { service } = crear({ id: 1, senderId: 7, receiverId: 12, imagenId: 'uuid' });
+    await expect(service.imagen(1, 12)).resolves.toMatchObject({ mimeType: 'image/jpeg' });
+    await expect(service.imagen(1, 7)).resolves.toMatchObject({ mimeType: 'image/jpeg' });
+    await expect(service.imagen(1, 99)).rejects.toThrow(NotFoundException);
+    await expect(crear({ id: 2, senderId: 7, receiverId: 12, imagenId: null }).service.imagen(2, 12)).rejects.toThrow('no tiene imagen');
   });
 });

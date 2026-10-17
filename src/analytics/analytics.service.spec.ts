@@ -199,3 +199,31 @@ describe('AnalyticsService.getCalibracion', () => {
     expect(autorizacion.assertTeacherSharesClassWithStudent).toHaveBeenCalledWith({ id: 10, role: 'docente' }, 2);
   });
 });
+
+// Sugerencia n.º 12 (Julio, 16/10): la ficha del estudiante solo mostraba las 5 entregas más recientes.
+describe('AnalyticsService.getStudentSubmissions — historial completo por páginas', () => {
+  const entregas = [{ id: 'a', activityId: 1, score: 20, status: 'graded', createdAt: new Date(), activity: { title: 'Ej', totalPoints: 20, passingScore: 60 } }];
+  const submissionRepo = { findAndCount: jest.fn().mockResolvedValue([entregas, 47]) };
+  const dataSource = { getRepository: () => submissionRepo };
+  const authorization = { assertTeacherSharesClassWithStudent: jest.fn().mockResolvedValue(undefined) };
+  const service = new AnalyticsService(dataSource as never, authorization as never);
+  const docente = { id: 10, role: 'docente' } as User;
+
+  it('pide la página con salto y tamaño, y devuelve el total para saber si hay más', async () => {
+    const res = await service.getStudentSubmissions(2, docente, 3);
+    expect(submissionRepo.findAndCount).toHaveBeenCalledWith(expect.objectContaining({ where: { studentId: 2 }, order: { createdAt: 'DESC' }, skip: 40, take: 20 }));
+    expect(res).toMatchObject({ total: 47, pagina: 3, porPagina: 20 });
+    expect(res.items[0]).toMatchObject({ id: 'a', maxScore: 20, passed: true });
+  });
+
+  it('comprueba que el docente comparte clase con el estudiante, y una página inválida es la 1', async () => {
+    authorization.assertTeacherSharesClassWithStudent.mockClear();
+    const res = await service.getStudentSubmissions(2, docente, 0);
+    expect(authorization.assertTeacherSharesClassWithStudent).toHaveBeenCalledWith(docente, 2);
+    expect(res.pagina).toBe(1);
+  });
+
+  it('un estudiante no ve el historial de otro', async () => {
+    await expect(service.getStudentSubmissions(2, { id: 5, role: 'estudiante' } as User, 1)).rejects.toThrow('otro estudiante');
+  });
+});

@@ -5,12 +5,14 @@ import { MessageController } from './message.controller';
 import { Message } from './entities/message.entity';
 import { AuthModule } from '../auth/auth.module';
 import { AuthorizationModule } from '../common/authorization/authorization.module';
+import { MediaModule } from '../media/media.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Message]),
     AuthModule,
     AuthorizationModule,
+    MediaModule,
   ],
   controllers: [MessageController],
   providers: [MessageService],
