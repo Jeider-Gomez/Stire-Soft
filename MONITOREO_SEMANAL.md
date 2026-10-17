@@ -1,18 +1,17 @@
-# 🚀 Bitácora de Monitoreo y Control N.º 9 — Proyecto: STIRE-Soft
+# 🚀 Bitácora de Monitoreo y Control N.º 10 — Proyecto: STIRE-Soft
 
 **Curso:** DDSE3 — 2026-2  
 **Grupo:** [G1 / G2]  
 **Repositorio GitHub:** https://github.com/Jeider-Gomez/Stire-Soft  
-**Semana:** 12 – 16 de octubre de 2026  
-**Entrega de las tareas:** jueves 15 de octubre, 8:00 p. m. · **Pendientes de la Semana 8:** martes 13 de octubre, 8:00 p. m. · **Cierre de la bitácora:** viernes 16 de octubre, 8:00 p. m.  
-**Tablero Kanban:** https://trello.com/b/eFKisFRU/stire-kanban-desarrollo-semana-09-12-16-oct-2026
+**Semana:** 19 – 23 de octubre de 2026  
+**Partes del pitch:** martes 20 de octubre, 8:00 p. m. · **Ensayo:** jueves 22 de octubre, 8:00 p. m. · **Cierre de la bitácora:** viernes 23 de octubre, 8:00 p. m.  
+**Tablero Kanban:** https://trello.com/b/5zzc2oki/stire-kanban-desarrollo-semana-10-19-23-oct-2026
 
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
-> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_08.md`](./docs/seguimiento/MONITOREO_SEMANAL_08.md), cerrada el
-> 12/10 con 19 de 27 ítems cumplidos. La prueba funcionó en Fundamentos (Pedro dictó y José terminó la Unidad 1) y Pedro
-> terminó las secciones 1 y 2 de Pensamiento. Las tareas de Julio y Jorge que quedaron abiertas se suman a las de esta
-> semana (las de los hábitos no: cada semana tiene su propio registro).
+> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_09.md`](./docs/seguimiento/MONITOREO_SEMANAL_09.md), cerrada el
+> 17/10 con 23 de 36 ítems cumplidos. Se cerró la v2.0.0 y la revisión humana de las dos listas quedó en 32 / 32 y
+> 24 / 24 (MOD-02 lo confirma Pedro), con un SUS del equipo de 81,5. El pitch pasa a esta semana; lo demás, al backlog.
 
 ---
 
@@ -34,159 +33,92 @@
 
 ## 🎯 2. Objetivo del Sprint
 
-**Semana 2 de la prueba con el equipo** ([`docs/calidad/PRUEBA_DOS_SEMANAS.md`](./docs/calidad/PRUEBA_DOS_SEMANAS.md)),
-**completar lo que quedó abierto de la Semana 8** y cerrar la revisión humana de las dos listas del profesor.
-
-### Roles en la prueba *(12/10)*
-
-Se mantiene el cruce previsto en `PRUEBA_DOS_SEMANAS.md`. A Julio y a Jorge, lo que quedó abierto de la semana 1 (🔁) se
-les suma a lo de la semana 2; no se les quita nada del plan.
-
-| Persona | Semana 9 | Lecciones |
-|---|---|---|
-| José | Pensamiento, secciones 1 y 2 | 5 |
-| Pedro (segunda cuenta) | Pensamiento, secciones 3 y 4 | 5 |
-| Jorge | 🔁 Pensamiento, secciones 1 y 2 · Fundamentos, Unidad 1 | 5 + 6 |
-| Julio (segunda cuenta) | 🔁 Fundamentos, Unidad 1 · Fundamentos, Unidad 2 | 6 + 8 |
-
-Docentes: Pedro publica la **Unidad 2** de Fundamentos y Julio las **secciones 3 y 4** de Pensamiento. José se une a la
-clase de Julio y Jorge a la de Pedro (un estudiante puede estar en varias clases y cambia de clase arriba). Jeider sigue
-como administrador y estudiante en las dos clases, sin obligación de terminar.
+**La semana del pitch** (decisión de Jeider, 17/10): presentar STIRE antes y después de las listas de chequeo del
+profesor, en español y en inglés. Todo lo demás espera en el backlog.
 
 ### Resultados esperados
 
-1. **A más tardar el martes 13/10:** la encuesta SUS de los cinco (`S09-SUS-*`), los criterios de las listas de Jorge,
-   Julio y Pedro (`S09-V-*`) y los resultados de la semana 1 (`S09-P03`).
-2. Julio usa el rol de docente con su curso y deja el reporte de las dos semanas (`S09-JL01`, `S09-JL02`).
-3. Jorge entrega el QA de las dos semanas (`S09-JOR01`, `S09-JOR02`).
-4. Los estudiantes alcanzan su meta (`S09-E01` a `S09-E06`).
-5. Jeider corrige los 5 hallazgos de José (`S09-J01`), consolida las dos listas y el SUS y cierra la v2.0.0 (`S09-J03`).
-6. Resultados de las dos semanas de la prueba (`S09-P03`) y decisión sobre la Semana 10.
-7. **Pitch grupal** de STIRE antes y después de las listas del profesor, en español y en inglés, ensayado el viernes
-   (`S09-P05`, `S09-PITCH-*`).
-8. Registro de los 7 Hábitos de los 5 integrantes (`S09-H-*`).
-9. Bitácora cerrada el viernes 16/10, sin retraso.
+1. Cada uno entrega su parte del pitch, en español y en inglés, con sus dos capturas, a más tardar el **martes 20/10**.
+2. Las 7 diapositivas listas el **miércoles 21/10**, con el video de respaldo de la demostración.
+3. Ensayo con cronómetro el **jueves 22/10** y exposición (fecha por confirmar).
+4. Pedro confirma MOD-02 como usuario: la lista de Tutores queda en 24 / 24.
+5. Después de la exposición, Jeider reactiva el apagado automático de las 23:00 y la encuesta SUS cada 90 días.
+6. Registro de los 7 Hábitos de los 5 integrantes (`S10-H-*`).
+7. Bitácora cerrada el viernes 23/10, sin retraso.
 
 ---
 
 ## 📋 3. Plan de trabajo semanal
 
-> **Fecha máxima de las tareas: jueves 15/10, 8:00 p. m.** Los criterios de las listas y los resultados de la semana 1
-> tienen fecha del **martes 13/10, 8:00 p. m.** Solo la bitácora se cierra el viernes 16/10. 🔁 = tarea de la Semana 8
-> que se suma a las de esta semana. Cada persona tiene sus tarjetas por separado. Cada tarjeta de Trello tiene su lista de
+> 🔁 = viene de la Semana 9. Cada persona tiene sus tarjetas por separado y cada tarjeta de Trello tiene su lista de
 > verificación.
 
-> Tablero: https://trello.com/b/eFKisFRU/stire-kanban-desarrollo-semana-09-12-16-oct-2026
+### 3.1 El pitch: cómo lo vamos a presentar
+
+Detalle, guion y criterios sugeridos en [`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./docs/pitch/PITCH_LISTAS_CHEQUEO.md).
+
+- **Formato:** 7 diapositivas en Google Slides con capturas de antes (04/10) y después, una línea por criterio, y
+  **30 segundos en vivo** del Tutor que acompaña paso a paso. Si falla internet, se pasa el video de respaldo.
+- **Orden:** Jeider (apertura) → José → Jorge → Jeider → Julio → **en vivo** → Pedro → Pedro (cierre). Unos 3 minutos y
+  medio.
+- **Cifras:** antes 62,5 % y 58,3 %; hoy, según el equipo, 100 % y 100 %; SUS 81,5 (bueno).
+
+| Cuándo | Qué | Quién |
+|---|---|---|
+| Martes 20/10, 8:00 p. m. | Su parte (español e inglés) y sus dos capturas · plantilla de las diapositivas | José, Jorge, Julio y Pedro · José |
+| Miércoles 21/10 | Diapositivas completas · video de respaldo | Pedro · Jeider |
+| Jueves 22/10, 8:00 p. m. | Ensayo por Meet con cronómetro, en los dos idiomas | Todos (Pedro dirige) |
+| Por confirmar | Exposición | Todos |
 
 ### Jeider Gómez — Líder Técnico
 
-- [ ] **S09-J01 · Los 5 hallazgos de UX de José** *(de `S08-JO02`, 09/10)*
-  - En el celular, al abrir el teclado el chat del Tutor baja hasta el último mensaje.
-  - Notificaciones a pantalla completa en el celular.
-  - El tiempo que le queda al QR de «Mi asistencia» se ve claro (ya hay una barra; revisar con José por qué no se nota).
-  - En computador, abrir las notificaciones cierra u oculta el Tutor, y al revés.
-  - En arrastrar y soltar, la zona de destino se resalta mientras la pieza está encima.
-- [ ] **S09-J02 · Operar la semana 2 de la prueba**
-  - Comprobar cada día que la app responde; aprobar a Julio como docente si aún no lo está.
-  - Revisar las sugerencias cada día y corregir en el día lo de gravedad 3; marcar las n.º 9 y 10 de Pedro.
-  - Revisar el crédito de Azure el martes y el jueves.
-  - Medir cuánto tarda el Tutor con el registro nuevo y decidir si hace falta la respuesta en streaming.
-  - **Al terminar la prueba** (16/10, o 23/10 si hay Semana 10): reactivar el apagado automático de las 23:00 y volver
-    a poner la encuesta SUS cada 90 días.
-- [ ] 🔁 **S09-J03 · Cerrar la v2.0.0 con las dos listas** *(viene de `S08-J06`, `S08-J07` y `S08-J08`)*
-  - Cuando estén los criterios de todos (`S09-V-*`): la tabla «nota de la IA vs. nota humana» de los 28 criterios en
-    `VERIFICACION_v2.0.0.md`, con el porqué de cada diferencia.
-  - SUS del equipo con las cinco respuestas (`S09-SUS-*`, §3.1).
-  - Etiqueta `v2.0.0` en Git y su entrada en `CHANGELOG.md`.
-- [ ] 🔁 **S09-J04 · Asistencia en el salón con cámaras reales** *(viene de `S08-J04`; fecha límite 16/10)* — un celular
-  Android, un iPhone (de un compañero, en el encuentro presencial) y la cámara de un portátil.
-
-### Julio Galvis — Diseño Instruccional
-
-**Lo de esta semana (Semana 9)**
-
-- [ ] **S09-JL02 · Docente de Pensamiento, semana 2** — publicar las secciones 3 y 4, revisar «Hoy» y comentar
-  entregas, revisión pedagógica de las secciones 3 y 4 y reporte en `docs/cursos/REVISION_DOCENTE_PENSAR_S9.md`.
-- [ ] **S09-E04 · Estudiante de Fundamentos, Unidad 2** (segunda cuenta, 8 lecciones).
-
-**Lo que quedó abierto de la Semana 8 (se suma a lo anterior)**
-
-- [ ] **S09-V-JULIO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** *(martes 13/10)* — MOD-01, MOD-03,
-  UI-01, UI-02, UI-03 y UI-05, un comentario por criterio sin mirar la nota de la IA.
-- [ ] **S09-JL01 · Docente de Pensamiento, semana 1** *(de `S08-JL01`)* — cuentas, clase y secciones 1 y 2 publicadas
-  (marcar lo que ya esté), una entrega, un refuerzo, una asistencia con QR, revisión pedagógica de las secciones 1 y 2
-  y reporte en `docs/cursos/REVISION_DOCENTE_PENSAR_S8.md`.
-- [ ] **S09-E03 · Estudiante de Fundamentos, Unidad 1** (segunda cuenta, 6 lecciones).
-
-### José López — UI/UX + Comunicación
-
-- [ ] **S09-E01 · Estudiante de Pensamiento, secciones 1 y 2** (5 lecciones).
-- [ ] **S09-JO01 · Revisar los 5 hallazgos corregidos y lo que más confundió en la prueba**
-  - Comprobar en el celular y en el computador cómo quedaron sus 5 hallazgos (`S09-J01`).
-  - Lo que más le confundió en las dos semanas como estudiante y su propuesta para la v2.0, en un comentario de la
-    tarjeta con capturas.
-
-### Jorge Cervantes — Gestión + Calidad
-
-**Lo de esta semana (Semana 9)**
-
-- [ ] **S09-JOR02 · QA de regresión de la Semana 9** — avisos y notificaciones, «Apariencia», el ejercicio de programar
-  nuevo, la retroalimentación de opción múltiple, el Tutor en un ejercicio y los 5 hallazgos de José corregidos. Reporte
-  en `docs/calidad/reportes-qa/REPORTE_QA_S9_2026-10-15.md`.
-- [ ] **S09-E06 · Estudiante de Fundamentos, Unidad 1** (6 lecciones).
-
-**Lo que quedó abierto de la Semana 8 (se suma a lo anterior)**
-
-- [ ] **S09-V-JORGE · Lista de INTERFAZ: 5 criterios como usuario** *(martes 13/10)* — UX-02, UX-07, MOB-04, PAT-02 y
-  PAT-03.
-- [ ] **S09-JOR01 · QA de las funciones de la Semana 8** *(de `S08-JOR01`)* — asistencia con QR, unirse con QR,
-  proyectos, entregas, foto de perfil, ajustes de UI/UX, lo corregido de su reporte anterior y el Tutor. Reporte en
-  `docs/calidad/reportes-qa/REPORTE_QA_S8_2026-10-08.md`.
-- [ ] **S09-E05 · Estudiante de Pensamiento, secciones 1 y 2** (5 lecciones).
+- [ ] **S10-J01 · Demostración en vivo del Tutor y video de respaldo** *(miércoles 21/10)* — tres fallos en un
+  ejercicio, el Tutor ofrece acompañar, una pregunta dictada y «Escuchar» la respuesta.
+- [ ] **S10-J02 · Operar el servidor** — arriba en el ensayo y en la exposición; después, apagado de las 23:00 y SUS
+  cada 90 días.
+- [x] **Su parte del pitch** — apertura, UX-08 y PAT-01, ya escritas en los dos idiomas (de `S09-PITCH-JEIDER`).
 
 ### Pedro Romero — Documentación + Bitácora
 
-- [x] **S09-P01 · Tablero Trello de la Semana 9** — creado el 12/10.
-- [ ] 🔁 **S09-V-PEDRO · Lista de TUTOR INTELIGENTE: 6 criterios como usuario** *(martes 13/10)* — MOD-02, MOD-04, UI-04,
-  META-01, META-02 y META-03.
-- [ ] **S09-P03 · Resultados de la prueba, semanas 1 y 2** — el Excel de sugerencias, las tres preguntas de cada persona
-  y el avance frente a la meta, en `docs/calidad/resultados-prueba/PRUEBA_RESULTADOS.md`. La semana 1 el martes 13/10; la
-  semana 2 el viernes 16/10.
-- [ ] **S09-P04 · Docente de Fundamentos (Unidad 2)** — publicar la Unidad 2, compartir la clase con Jorge, comentar las
-  entregas y nota en `docs/cursos/REVISION_DOCENTE_FUNDAMENTOS_S9.md`.
-- [ ] **S09-E02 · Estudiante de Pensamiento, secciones 3 y 4** (segunda cuenta, 5 lecciones).
-- [ ] **S09-P02 · Bitácora** — mantenerla al día y cerrarla el viernes 16/10, contrastada con Trello y Git.
+- [x] **S10-P01 · Tablero de la Semana 10** — creado el 17/10.
+- [ ] 🔁 **S10-PITCH-PEDRO · Su parte y el cierre** *(martes 20/10)* — sugeridos MOD-02 y UI-04.
+- [ ] 🔁 **S10-P05 · Coordinar el pitch** — diapositivas, ensayo y pasar las diapositivas en la exposición.
+- [ ] **S10-P06 · Confirmar MOD-02 como usuario** *(martes 20/10)* — «Mi perfil de aprendizaje» en «Mi progreso» y en la
+  ficha de un estudiante.
+- [ ] **S10-P02 · Bitácora** — al día y cerrada el viernes 23/10.
 
-### 3.1 Todo el equipo — Encuesta de usabilidad (SUS)
+### José López — UI/UX + Comunicación
 
-Cada uno responde en STIRE la encuesta de usabilidad (Mi perfil → «Responder la encuesta de usabilidad», unos 2 minutos)
-a más tardar el **martes 13/10, 8:00 p. m.** Con las cinco respuestas sale el puntaje SUS del equipo (`S09-J03`).
+- [ ] 🔁 **S10-PITCH-JOSE · Su parte y la plantilla de las diapositivas** *(martes 20/10)* — sugeridos UX-01 y MOB-02.
 
-- [ ] **S09-SUS-JEIDER** · **S09-SUS-PEDRO** · **S09-SUS-JOSE** · **S09-SUS-JULIO** · **S09-SUS-JORGE**
+### Jorge Cervantes — Gestión + Calidad
 
-### 3.2 Todo el equipo — Pitch grupal: STIRE antes y después de las listas del profesor
+- [ ] 🔁 **S10-PITCH-JORGE · Su parte** *(martes 20/10)* — sugeridos UX-02 y PAT-03.
 
-Unos 3 minutos (estimado), breve y claro, en español y en inglés. Estructura, tiempos y reparto en
-[`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./docs/pitch/PITCH_LISTAS_CHEQUEO.md). Jeider abre, cada uno presenta 2 de
-los criterios que revisó como usuario (antes → qué cambiamos → después, con capturas) y Pedro cierra con los totales, el
-SUS y lo que falta. Las notas se escriben después de consolidar la revisión humana (`S09-J03`).
+### Julio Galvis — Diseño Instruccional
 
-- [ ] **S09-P05 · Pitch grupal** — Pedro coordina: junta las partes, arma las 7 diapositivas y dirige el ensayo del
-  viernes 16/10.
-- [ ] **S09-PITCH-JEIDER** (apertura; UX-03, UX-05, UX-08, PAT-01, PAT-04) · **S09-PITCH-JOSE** (UX-01, UX-04, UX-06,
-  MOB-01 a 03) · **S09-PITCH-JORGE** (UX-02, UX-07, MOB-04, PAT-02, PAT-03) · **S09-PITCH-JULIO** (MOD-01, MOD-03,
-  UI-01 a 03, UI-05) · **S09-PITCH-PEDRO** (MOD-02, MOD-04, UI-04, META-01 a 03; cierre) — cada parte, el jueves 15/10.
+- [ ] 🔁 **S10-PITCH-JULIO · Su parte** *(martes 20/10)* — sugeridos UI-05 y UI-01; da paso a la demostración en vivo.
 
-### 3.3 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
+### 3.2 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
 
 Registro libre y semanal en un comentario de su tarjeta, con la situación real de cada hábito.
 
-- [ ] **S09-H-JEIDER** · **S09-H-PEDRO** · **S09-H-JOSE** · **S09-H-JULIO** · **S09-H-JORGE**
+- [ ] **S10-H-JEIDER** · **S10-H-PEDRO** · **S10-H-JOSE** · **S10-H-JORGE** · **S10-H-JULIO**
 
-### 3.4 En el backlog
+### 3.3 En el backlog
 
-- **S09-J05 · Revisar los ejercicios de programar de los cursos** *(viene de `S08-J09`)*. La pantalla del ejercicio ya
-  cambió el 10/10 (`docs/DISENO_EJERCICIOS_PROGRAMAR.md`); falta revisar los 28 ejercicios de Fundamentos uno por uno.
+Esperan a después del pitch, en tarjetas por persona:
+
+| Persona | Tarjetas |
+|---|---|
+| Jeider | `B-J01` recorrido guiado dentro de STIRE (Driver.js) · `B-J02` corregir los ejercicios de programar según la revisión · 🔁 `B-J03` asistencia con un iPhone · `B-J04` hablar con el Tutor en cualquier navegador |
+| Pedro | 🔁 `B-P01` resultados de la prueba · `B-P02` manual de usuario · `B-P03` revisar los ejercicios de ciclos y listas y crear uno como docente |
+| José | `B-JO01` revisar los 8 de HTML/CSS y «Tabla de multiplicar» y crear uno como docente |
+| Jorge | `B-JOR01` revisar los secuenciales y crear uno como docente · 🔁 `B-JOR02` QA de la Semana 9 |
+| Julio | `B-JL01` revisar los condicionales y crear uno como docente · 🔁 `B-JL02` docente de Pensamiento · 🔁 `B-JL03` estudiante de Fundamentos |
+
+La revisión de los 36 ejercicios de programar se anota en `docs/cursos/REVISION_EJERCICIOS_PROGRAMAR_S10.md`, una fila
+por ejercicio. Todos prueban el recorrido guiado cuando Jeider lo termine.
 
 ---
 
@@ -196,51 +128,43 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 📥 BACKLOG → 📋 ESTA SEMANA → ⚙️ EN CURSO → ✅ HECHO
 ```
 
-1. Máximo **3 tarjetas comprometidas por persona** en `Esta semana` (sin contar la de los 7 Hábitos). Esta semana hay
-   excepciones: las tarjetas 🔁 de la Semana 8 se suman a las de la semana, y Pedro tiene la bitácora.
+1. Máximo **3 tarjetas comprometidas por persona** en `Esta semana` (sin contar la de los 7 Hábitos).
 2. Máximo **2 tarjetas simultáneas por persona** en `En curso`.
 3. Una tarjeta bloqueada permanece en `En curso` con etiqueta roja + `🚧 BLOQUEADA`.
 4. Una tarea no pasa a `Hecho` sin evidencia; el código terminado tiene respaldo en GitHub.
-5. Al cerrar la semana, el tablero se cierra en Trello para que quede como registro sin cambios.
+5. Una tarjeta del backlog pasa a `Esta semana` solo cuando la persona termina lo del pitch.
+6. Al cerrar la semana, el tablero se cierra en Trello para que quede como registro sin cambios.
 
 ---
 
 ## ⚠️ 5. Riesgos vivos
 
-1. **Carga de Julio y Jorge:** *(nuevo, 12/10)* esta semana tienen lo suyo y lo que quedó abierto de la Semana 8. Si no
-   alcanzan, la prueba no tendrá los dos estudiantes por curso ni la revisión humana completa de las listas. Mitigación:
-   lo más urgente (los criterios) va el martes 13/10, y el reporte de ese día muestra cómo van.
-2. **La revisión humana de las listas bloquea otras tareas:** sin los criterios de Jorge, Julio y Pedro no se consolidan
-   las listas (`S09-J03`) ni se llenan las notas del pitch (`S09-P05`).
-3. **Clave del Tutor:** cada estudiante necesita su propia clave gratuita de Google AI Studio.
-4. **Crédito de Azure:** el servidor sigue encendido 24/7 durante la prueba; Jeider lo revisa martes y jueves y reactiva
-   el apagado al terminar.
-5. **Semana 10:** si alguien no termina sus lecciones, la prueba se alarga hasta el 23/10.
+1. **Partes del pitch que no llegan:** en la Semana 9 quedaron sin entregar las de José, Jorge, Julio y Pedro.
+   Mitigación: plazo el martes 20/10 y Pedro revisa el martes en la noche quién falta.
+2. **Fecha de la exposición sin confirmar:** si cae antes del jueves 22/10, todo se adelanta.
+3. **Internet en la demostración:** video de respaldo de 30 s dentro de la presentación.
+4. **Crédito de Azure:** el servidor sigue encendido 24/7 hasta la exposición; después se reactiva el apagado.
 
 ---
 
 ## 📅 6. Seguimiento
 
-- **Martes 13/10:** los criterios de las listas y los resultados de la semana 1 entregados; cómo van las tarjetas 🔁;
-  si hay bloqueo.
-- **Jueves 15/10:** qué puede cerrar el viernes, qué está en riesgo, qué necesita de otro.
-- **Viernes 16/10:** revisar Trello y GitHub, validar evidencias, resultados de las dos semanas y decidir la Semana 10.
+- **Martes 20/10:** partes del pitch y capturas entregadas; MOD-02 confirmado.
+- **Jueves 22/10:** ensayo con cronómetro; qué ajustar.
+- **Viernes 23/10:** revisar Trello y GitHub, validar evidencias y decidir qué tarjetas del backlog entran a la Semana 11.
 
 ---
 
 ## 🧾 7. Resultado del Sprint — completar al cierre
 
-*(Se marca solo con resultados verificables al cierre del viernes 16/10.)*
+*(Se marca solo con resultados verificables al cierre del viernes 23/10.)*
 
 ---
 
 ## 🔭 8. Proyección
 
-**Semana 10 (19 – 23 de octubre), solo si hace falta.** Cada uno termina las lecciones que le falten y Pedro publica la
-Unidad 3 de Fundamentos. Al cierre: informe consolidado de la prueba, versión con lo
-corregido y decisión del alcance de la v2.0. Se decide el viernes 16/10.
-
-**Al terminar la prueba, Jeider reactiva el apagado automático de las 23:00 y pone la encuesta SUS cada 90 días.**
+**Semana 11 (26 – 30 de octubre):** sale del backlog, empezando por la revisión de los ejercicios de programar (cada uno
+revisa los suyos y crea uno como docente), el recorrido guiado y el manual de usuario.
 
 ---
 
@@ -256,9 +180,10 @@ corregido y decisión del alcance de la v2.0. Se decide el viernes 16/10.
 | 6 | 21 – 25 de septiembre de 2026 | [`MONITOREO_SEMANAL_06.md`](./docs/seguimiento/MONITOREO_SEMANAL_06.md) |
 | 7 | 28 de septiembre – 2 de octubre de 2026 | [`MONITOREO_SEMANAL_07.md`](./docs/seguimiento/MONITOREO_SEMANAL_07.md) |
 | 8 | 5 – 9 de octubre de 2026 | [`MONITOREO_SEMANAL_08.md`](./docs/seguimiento/MONITOREO_SEMANAL_08.md) |
-| 9 | 12 – 16 de octubre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
+| 9 | 12 – 16 de octubre de 2026 | [`MONITOREO_SEMANAL_09.md`](./docs/seguimiento/MONITOREO_SEMANAL_09.md) |
+| 10 | 19 – 23 de octubre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
 
 ---
 
-*Bitácora N.º 9 · Semana del 12 al 16 de octubre de 2026.*  
+*Bitácora N.º 10 · Semana del 19 al 23 de octubre de 2026.*  
 *Responsable de seguimiento y cierre documental: Pedro Romero.*

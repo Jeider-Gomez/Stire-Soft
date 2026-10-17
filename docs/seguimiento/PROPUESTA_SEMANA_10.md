@@ -3,6 +3,9 @@
 Propuesta para que Jeider elija antes de armar la Bitácora N.º 10 y el tablero de Trello. Cuando se decida, este archivo
 pasa a la bitácora y se archiva.
 
+> **Decidido el 17/10:** la Semana 10 es solo el pitch (formato A de §2) y lo demás pasa al backlog, con la revisión de
+> los ejercicios de programar repartida por persona. Plan en la bitácora N.º 10 (`MONITOREO_SEMANAL.md`).
+
 ## 1. Dónde quedamos (17/10)
 
 - **v2.0.0 cerrada y etiquetada.** Revisión humana completa de las dos listas, con las correcciones confirmadas por todos:

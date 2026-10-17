@@ -158,7 +158,7 @@ términos en inglés eran del panel del servidor). Con eso, **interfaz 32 / 32 �
 | UX-01 | C | CP | José | La IA vio migas y orden; José, como usuario, no encontró cuánto dominio faltaba para abrir el siguiente módulo. | Candado con «Se abre con N % · llevas N %» y meta de la lección. |
 | UX-02 | C | CP | Jorge | La IA revisó las ventanas de confirmación; Jorge encontró una que no tenía: «Antes de entregar» entregaba al tocar fuera. | «Volver a editar», y tocar fuera ya no entrega (`6929b1c`). |
 | UX-03 | C | C | Jeider | — | — |
-| UX-04 | C | CP | José | La IA contó emojis y títulos; José vio términos técnicos en inglés, mayúsculas sostenidas y botones principales distintos. | **Abierto:** va con la identidad visual de José. |
+| UX-04 | C | CP | José | La IA contó emojis y títulos; José vio términos técnicos en inglés, mayúsculas sostenidas y botones principales distintos. | José lo corrigió a C el 17/10. |
 | UX-05 | C | C | Jeider | — | — |
 | UX-06 | C | C | José | — | — |
 | UX-07 | C | C | Jorge | — | — |
@@ -172,7 +172,7 @@ términos en inglés eran del panel del servidor). Con eso, **interfaz 32 / 32 �
 | PAT-03 | C | C | Jorge | — | — |
 | PAT-04 | C | C | Jeider | — | — |
 | MOD-01 | C | C | Jeider | — | Plan del curso más claro en la barra lateral y lecciones sin empezar en «Mi progreso» (`7b6c46e`, `fbce768`). |
-| MOD-02 | C | CP | Pedro | La IA aceptó la adaptación (dominio por lección, diagnóstico de la salida); Pedro buscó el perfil Visual/Verbal y la separación de errores de concepto y de escritura. | Perfil Visual/Verbal descartado con evidencia (BT-42). **Abierto:** errores de concepto, espera la idea de Pedro (`S09-J08`). |
+| MOD-02 | C | CP | Pedro | La IA aceptó la adaptación (dominio por lección, diagnóstico de la salida); Pedro buscó el perfil Visual/Verbal y la separación de errores de concepto y de escritura. | «Mi perfil de aprendizaje» para el estudiante y su docente: temario dominado, errores de concepto que se repiten aparte de los descuidos de escritura, y Visual/Verbal y Secuencial/Global descriptivos (BT-45, `732f06e`, `693b698`). Falta que Pedro lo confirme como usuario. |
 | MOD-03 | C | C | Jeider | — | Resultado de la entrega más breve (`7b6c46e`). |
 | MOD-04 | C | C | Pedro | — | — |
 | UI-01 | C | CP | Jeider | La IA vio los formatos; como usuario, «No me quedó claro» ofrecía lo que ya estaba en la lección. | Caminos distintos para no quedarse estancado (`e52c410`). |
