@@ -41,6 +41,7 @@ const PRACTICE_INTENT_PATTERN =
 const GREETING_PREFIXES = ['Oye,', 'Mira,', 'Antes de seguir,', 'Una cosa,'];
 // El saludo según la hora vive en tutor-saludo.ts: también lo usa el prompt (tutor-context.service.ts).
 import { saludoSegunHora, esSaludo } from './tutor-saludo';
+import { OrdenDeModelos } from './orden-modelos';
 export { saludoSegunHora, esSaludo };
 
 /** «Antes de seguir, Tienes…» → «Antes de seguir, tienes…». Una sigla al inicio («HTML …») se deja igual. */
@@ -79,6 +80,8 @@ export function saludoSinSugerencia(
 
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 const GEMINI_TIMEOUT_MS = 15000;
+/** Compartido por todas las preguntas: si un modelo de Google está caído, lo está para todos (orden-modelos.ts). */
+const ordenDeModelos = new OrdenDeModelos();
 const HISTORY_WINDOW = 6;
 
 export const HISTORY_DEFAULT_LIMIT = 20;
@@ -382,7 +385,7 @@ export class TutorService {
     );
 
     let sawQuota = false;
-    for (const model of candidateModels) {
+    for (const model of ordenDeModelos.orden(candidateModels)) {
       let res: Awaited<ReturnType<typeof fetch>>;
       const inicio = Date.now();
       try {
@@ -393,6 +396,7 @@ export class TutorService {
           signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
         });
       } catch (err: any) {
+        ordenDeModelos.fallo(model);
         this.logger.warn(`Fallo de red o timeout con ${model} (${err?.name ?? 'error'}). Probando siguiente modelo.`);
         continue;
       }
@@ -407,6 +411,7 @@ export class TutorService {
         if (text) {
           // Cuánto tarda cada respuesta (10/10, «el tutor se demora»): para medir antes de cambiar el modelo o el pensamiento.
           this.logger.log(`Tutor: ${model} respondió en ${Date.now() - inicio} ms.`);
+          ordenDeModelos.respondio(model);
           return text;
         }
         this.logger.warn(`Modelo ${model} respondió sin texto (finishReason: ${data?.candidates?.[0]?.finishReason ?? 'desconocido'}).`);
@@ -421,6 +426,7 @@ export class TutorService {
         );
       }
       if (res.status === 429) sawQuota = true;
+      if (res.status >= 500) ordenDeModelos.fallo(model);
       this.logger.warn(`Modelo ${model} devolvió ${res.status}. Probando siguiente modelo.`);
     }
 
