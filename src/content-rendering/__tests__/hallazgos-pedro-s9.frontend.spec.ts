@@ -1,0 +1,33 @@
+import { readFileSync } from 'fs';
+import * as path from 'path';
+import * as ts from 'typescript';
+
+// UI-04 (Pedro, S09-V-PEDRO, 16/10): al marcar «No me quedó claro», las otras formas que ESTA lección trae.
+const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
+const leer = (...p: string[]) => readFileSync(path.join(raiz, ...p), 'utf8');
+function cargar<T>(nombre: string): T {
+  const js = ts.transpileModule(leer('utils', `${nombre}.ts`), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
+  const mod = { exports: {} as Record<string, unknown> };
+  new Function('module', 'exports', js)(mod, mod.exports);
+  return mod.exports as T;
+}
+
+const f = cargar<{ formasDisponibles: (hay: (s: string) => boolean) => Array<{ selector: string; texto: string }> }>('formasLeccion');
+
+describe('UI-04: «No me quedó claro» ofrece solo las formas que la lección tiene', () => {
+  it('una lección con diagrama y sin video ofrece el diagrama y escucharla, no el video', () => {
+    const hay = new Set(['[data-forma="algoritmo"]', '#escuchar-leccion']);
+    expect(f.formasDisponibles((s) => hay.has(s)).map((x) => x.texto)).toEqual(['Verlo como diagrama o paso a paso', 'Escuchar la lección']);
+    expect(f.formasDisponibles(() => false)).toEqual([]);
+  });
+
+  it('las partes de la lección llevan su marca y el aviso ya no promete formas que no existen', () => {
+    const c = leer('components', 'ContenidoLeccion.vue');
+    expect(c).toContain('data-forma="vivo"');
+    expect(c).toContain('data-forma="algoritmo"');
+    expect(leer('components', 'LessonResource.vue')).toContain(`:data-forma="insertable ? 'recurso' : undefined"`);
+    const v = leer('components', 'ValorarLeccion.vue');
+    expect(v).toContain('formasDisponibles((sel) => !!document.querySelector(sel))');
+    expect(v).not.toContain('o ver el algoritmo como diagrama o paso a paso');
+  });
+});

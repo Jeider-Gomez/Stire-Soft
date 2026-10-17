@@ -122,7 +122,8 @@ describe('el reproductor', () => {
 
 describe('UI-04 · con «No me sirvió», otra vía de la misma lección', () => {
   it('la valoración lleva al botón «Escuchar»', () => {
-    expect(leer('components', 'ValorarLeccion.vue')).toContain('<a href="#escuchar-leccion"');
+    // 17/10: el botón «Escuchar la lección» sale entre las formas que la lección trae (utils/formasLeccion.ts).
+    expect(leer('utils', 'formasLeccion.ts')).toContain("{ selector: '#escuchar-leccion', texto: 'Escuchar la lección' }");
     expect(leer('components', 'EscucharLeccion.vue')).toContain('id="escuchar-leccion"');
   });
 });

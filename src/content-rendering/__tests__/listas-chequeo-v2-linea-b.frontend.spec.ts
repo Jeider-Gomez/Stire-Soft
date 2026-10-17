@@ -212,7 +212,7 @@ describe('UI-01 · el algoritmo en pseudocódigo, diagrama de flujo y paso a pas
     const c = leer('components', 'AlgoritmoMultiformato.vue');
     expect(c).toContain("localStorage.setItem(CLAVE, f)");
     expect(c).toContain('role="tablist"');
-    expect(leer('components', 'ContenidoLeccion.vue')).toContain("<AlgoritmoMultiformato v-else-if=\"s.tipo === 'algoritmo'\"");
+    expect(leer('components', 'ContenidoLeccion.vue')).toContain(`<div v-else-if="s.tipo === 'algoritmo'" data-forma="algoritmo" tabindex="-1"><AlgoritmoMultiformato`);
   });
 });
 

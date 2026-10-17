@@ -39,10 +39,16 @@
           Enviar a mi docente
         </button>
       </div>
-      <!-- UI-01 y UI-04: otra vía de la misma lección (escucharla, el diagrama o el paso a paso), sin esperar al docente -->
-      <p class="text-[11px] text-slate-600">
-        También puedes <a href="#escuchar-leccion" class="font-semibold text-acento-ambar-fuerte hover:underline">escucharla</a> con el botón «Escuchar» junto al título, o ver el algoritmo como diagrama o paso a paso.
-      </p>
+      <!-- UI-01 y UI-04: las otras formas que ESTA lección trae (no una lista fija), sin esperar al docente
+           (Pedro, 16/10: «falta la selección adaptativa de recursos alternativos»; utils/formasLeccion.ts). -->
+      <div v-if="formas.length" class="space-y-1.5">
+        <p class="text-[11px] font-semibold text-base-texto-primario">O míralo de otra forma en esta lección:</p>
+        <div class="flex flex-wrap gap-2">
+          <button v-for="f in formas" :key="f.selector" type="button" class="min-h-[44px] px-3 rounded-md borde-afordancia text-xs font-semibold text-acento-ambar-fuerte" @click="irA(f.selector)">
+            {{ f.texto }}
+          </button>
+        </div>
+      </div>
       <p v-if="enviado" role="status" class="text-xs text-slate-600">Enviado. Gracias: así tu docente sabe qué explicar mejor.</p>
     </div>
     <p v-if="error" role="alert" class="text-xs font-semibold text-red-700">{{ error }}</p>
@@ -50,7 +56,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
+import { formasDisponibles, type FormaLeccion } from '~/utils/formasLeccion'
 import { Sparkles, ThumbsDown, ThumbsUp } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
 
@@ -64,6 +71,22 @@ const comentario = ref('')
 const guardando = ref(false)
 const enviado = ref(false)
 const error = ref<string | null>(null)
+const formas = ref<FormaLeccion[]>([])
+
+// Al marcar «No me quedó claro» se miran las formas que la lección trae en la página.
+watch(voto, async (v) => {
+  if (v !== false) return
+  await nextTick()
+  formas.value = formasDisponibles((sel) => !!document.querySelector(sel))
+}, { immediate: true })
+
+/** Lleva a esa parte de la lección y deja el foco ahí (el botón «Escuchar» se enfoca él mismo). */
+function irA(selector: string) {
+  const el = document.querySelector<HTMLElement>(selector)
+  if (!el) return
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  el.focus({ preventScroll: true })
+}
 
 onMounted(async () => {
   try {

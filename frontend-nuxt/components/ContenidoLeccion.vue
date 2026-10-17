@@ -12,8 +12,9 @@
           {{ s.titulo || 'Recurso' }}: se verá aquí al guardar la lección.
         </p>
       </template>
-      <EjemploEnVivo v-else-if="s.tipo === 'vivo'" :codigo="s.codigo" />
-      <AlgoritmoMultiformato v-else-if="s.tipo === 'algoritmo'" :codigo="s.codigo" :lenguaje="s.lenguaje" />
+      <!-- data-forma: «No me quedó claro» ofrece ir a estas otras formas de la lección (utils/formasLeccion.ts). -->
+      <div v-else-if="s.tipo === 'vivo'" data-forma="vivo" tabindex="-1"><EjemploEnVivo :codigo="s.codigo" /></div>
+      <div v-else-if="s.tipo === 'algoritmo'" data-forma="algoritmo" tabindex="-1"><AlgoritmoMultiformato :codigo="s.codigo" :lenguaje="s.lenguaje" /></div>
     </template>
   </div>
 </template>
