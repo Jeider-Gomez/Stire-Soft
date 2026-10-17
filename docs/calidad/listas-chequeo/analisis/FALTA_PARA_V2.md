@@ -8,7 +8,6 @@ listas esté completa y consolidada (`S09-J03`).
 
 | Quién | Qué falta | Por qué importa |
 |---|---|---|
-| Quien no la haya respondido (ver las tarjetas `S09-SUS-*`) | La encuesta SUS en STIRE (Mi perfil → «Responder la encuesta de usabilidad»). Van 3 de 5. | El SUS es la evidencia de UX-08. |
 | José | Confirmar como usuario UX-01, MOB-01 y MOB-02, que se corrigieron después de su revisión. Proponer cómo unificar UX-04 (nombres, mayúsculas y botón principal) con su identidad visual. | UX-04 es el único criterio de la interfaz que sigue en CP. |
 | Jorge | Confirmar UX-02 («Volver a editar» en «Antes de entregar»). | Pasa de CP a C con su confirmación. |
 | Pedro | Confirmar UI-04 y responder la propuesta de MOD-02 (tarjeta «Errores que más se repiten esta semana» en «Hoy» del docente, [`S09-J08`](https://trello.com/c/uZe4F9nK)). | MOD-02 es el único criterio de Tutores Inteligentes que sigue abierto. |
@@ -29,8 +28,8 @@ Datos de Administración → Usabilidad (17/10). La encuesta es anónima: no se 
 
 | | Respuestas | Puntaje |
 |---|---|---|
-| Total | 3 | **83,3** · bueno (más de 80) |
-| Como estudiante | 2 | 90 |
+| Total | 5 | **81,5** · bueno (más de 80) |
+| Como estudiante | 4 | 84,4 |
 | Como docente | 1 | 70 |
 
 **Límite que se escribe junto al resultado:** quienes responden construyeron STIRE, así que el puntaje sirve para el

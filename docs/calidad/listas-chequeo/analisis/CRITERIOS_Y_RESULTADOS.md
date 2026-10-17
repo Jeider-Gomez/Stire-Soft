@@ -36,7 +36,7 @@ Quedan abiertos UX-04 y MOD-02 (ver la última columna).
 | UX-05 | Personas y análisis de tareas | CP | Jeider (09/10) | **C** | Las Personas se parecen a los estudiantes y docentes de la prueba. | — | Cumple |
 | UX-06 | Respuesta inmediata y estado visible | CP | José (09/10) | **C** | La entrega dice «Calificando…», el resultado y el dominio; los botones se leen bien. | — | Cumple |
 | UX-07 | Accesibilidad y teclado (WCAG) | CP | Jorge (14/10) | **C** | El foco se ve siempre; todo se usa solo con Tab y Enter. | — | Cumple |
-| UX-08 | Prototipo y medición de la usabilidad (SUS) | CP | Jeider (09/10) | **C** | La encuesta SUS está dentro de STIRE; falta que respondan todos. | 3 de 5 respuestas: SUS 83,3 (ver [`FALTA_PARA_V2.md`](FALTA_PARA_V2.md)). | Cumple, faltan 2 respuestas |
+| UX-08 | Prototipo y medición de la usabilidad (SUS) | CP | Jeider (09/10) | **C** | La encuesta SUS está dentro de STIRE; falta que respondan todos. | 5 respuestas: SUS 81,5 (ver [`FALTA_PARA_V2.md`](FALTA_PARA_V2.md)). | Cumple |
 
 ### Bloque 2 · Diseño para la movilidad (cap. 13)
 

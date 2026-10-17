@@ -116,7 +116,7 @@ más de 80 es bueno.
 
 ---
 
-## 6. Resultado
+## 6. Resultado (plantilla inicial; la consolidación está en §7)
 
 | Integrante | Ítems | ✅ | ⚠️ | ❌ | SUS |
 |---|---|---|---|---|---|
@@ -126,3 +126,74 @@ más de 80 es bueno.
 | Pedro | 6 + 4 | | | | |
 | Jeider | 5 + cierre | | | | |
 | **Promedio SUS** | | | | | |
+
+---
+
+## 7. Consolidación: nota de la IA contra nota del equipo (17/10/2026)
+
+La revisión humana quedó completa el 17/10 con los 28 criterios. Cada integrante evaluó como usuario sin ver la nota de
+la IA; la comparación se hizo solo después. Las notas del equipo, con el porqué de cada una, están en
+[`analisis/CRITERIOS_Y_RESULTADOS.md`](analisis/CRITERIOS_Y_RESULTADOS.md) y en las tarjetas `S08-V-*` y `S09-V-*` de Trello.
+La nota de la IA es la del 06/10 (actualizada el 07/10), en [`2026-10-06_v2.0.0/`](2026-10-06_v2.0.0/).
+
+### Resumen
+
+| Lista | Antes (04/10) | IA (06/10) | Equipo (09 al 17/10) | Equipo, con lo corregido después |
+|---|---|---|---|---|
+| Interfaz (Pressman) | 20 / 32 · 62,5 % | 31 / 32 · 96,9 % | **27 / 32 · 84,4 %** | 31 / 32 · 96,9 % (si quien revisó lo confirma) |
+| Sistemas Tutores Inteligentes (Caro) | 14 / 24 · 58,3 % | 24 / 24 · 100 % | **20 / 24 · 83,3 %** | 23 / 24 · 95,8 % (si quien revisó lo confirma) |
+
+La nota oficial de la v2.0.0 es la del equipo. La IA fue más generosa en 9 de los 28 criterios y más estricta en 1.
+
+### Criterio por criterio
+
+| ID | IA | Equipo | Quién | Por qué difieren | Qué se hizo |
+|---|---|---|---|---|---|
+| UX-01 | C | CP | José | La IA vio migas y orden; José, como usuario, no encontró cuánto dominio faltaba para abrir el siguiente módulo. | Candado con «Se abre con N % · llevas N %» y meta de la lección. |
+| UX-02 | C | CP | Jorge | La IA revisó las ventanas de confirmación; Jorge encontró una que no tenía: «Antes de entregar» entregaba al tocar fuera. | «Volver a editar», y tocar fuera ya no entrega (`6929b1c`). |
+| UX-03 | C | C | Jeider | — | — |
+| UX-04 | C | CP | José | La IA contó emojis y títulos; José vio términos técnicos en inglés, mayúsculas sostenidas y botones principales distintos. | **Abierto:** va con la identidad visual de José. |
+| UX-05 | C | C | Jeider | — | — |
+| UX-06 | C | C | José | — | — |
+| UX-07 | C | C | Jorge | — | — |
+| UX-08 | CP | C | Jeider | La IA esperaba el puntaje del SUS; Jeider valoró que la medición ya está dentro de STIRE. | SUS con 5 respuestas: 81,5 (§8). |
+| MOB-01 | C | CP | José | La IA midió 0 desplazamiento horizontal en las pantallas recorridas; José lo vio en diagramas anchos y en el chat del Tutor. | Un código largo ya no mueve el chat (`ebf2931`). |
+| MOB-02 | C | CP | José | La IA midió los botones; José vio que el botón del Tutor tapaba opciones en pantallas bajas. | Espacio para el Tutor y botón en ícono bajo 380 px (`17500e4`, `d0985ee`). |
+| MOB-03 | C | C | José | — | — |
+| MOB-04 | C | C | Jorge | — | — |
+| PAT-01 | C | C | Jeider | — | — |
+| PAT-02 | C | C | Jorge | — | — |
+| PAT-03 | C | C | Jorge | — | — |
+| PAT-04 | C | C | Jeider | — | — |
+| MOD-01 | C | C | Jeider | — | Plan del curso más claro en la barra lateral y lecciones sin empezar en «Mi progreso» (`7b6c46e`, `fbce768`). |
+| MOD-02 | C | CP | Pedro | La IA aceptó la adaptación (dominio por lección, diagnóstico de la salida); Pedro buscó el perfil Visual/Verbal y la separación de errores de concepto y de escritura. | Perfil Visual/Verbal descartado con evidencia (BT-42). **Abierto:** errores de concepto, espera la idea de Pedro (`S09-J08`). |
+| MOD-03 | C | C | Jeider | — | Resultado de la entrega más breve (`7b6c46e`). |
+| MOD-04 | C | C | Pedro | — | — |
+| UI-01 | C | CP | Jeider | La IA vio los formatos; como usuario, «No me quedó claro» ofrecía lo que ya estaba en la lección. | Caminos distintos para no quedarse estancado (`e52c410`). |
+| UI-02 | C | C | Jeider | — | — |
+| UI-03 | C | C | Jeider | — | — |
+| UI-04 | C | CP | Pedro | Pedro no pudo comprobar qué pasa si un recurso falla. | Video caído con alternativas y aviso al docente (`a986ee5`, `784afed`). |
+| UI-05 | C | CP | Jeider | La IA vio el cambio de táctica; como usuario, faltaba un acompañamiento de verdad. | Modo acompañado, escuchar y dictar (`bec128e`, `e52c410`). |
+| META-01 | C | C | Pedro | — | — |
+| META-02 | C | C | Pedro | — | — |
+| META-03 | C | C | Pedro | — | — |
+
+**Lo que se aprende de la comparación:** la IA acierta en lo que se puede medir (contraste, tamaños, desplazamiento,
+código) y se equivoca en lo que solo ve una persona usando la aplicación: si una opción se encuentra, si ayuda de
+verdad y si algo estorba. Por eso la nota que vale es la del equipo, y cada diferencia terminó en una corrección.
+
+## 8. SUS del equipo (17/10/2026)
+
+Administración → Usabilidad, encuesta anónima dentro de STIRE:
+
+| | Respuestas | Puntaje |
+|---|---|---|
+| Total | 5 | **81,5** · bueno (más de 68 es aceptable; más de 80, bueno) |
+| Como estudiante | 4 | 84,4 |
+| Como docente | 1 | 70 |
+
+Las afirmaciones que más bajan el puntaje son «Encontré STIRE innecesariamente complejo» (2,4 de 5) y «Necesitaría ayuda
+de una persona técnica» (2,6): son lo primero que hay que mejorar.
+
+**Límites:** quienes responden construyeron STIRE, así que el puntaje sirve para el curso y no como prueba con usuarios
+externos. La encuesta es anónima: se cuentan 5 respuestas, sin saber de quién es cada una.
