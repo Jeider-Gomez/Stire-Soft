@@ -14,10 +14,10 @@ ya se cumple. Es el documento compartido para el pitch y para la entrega.
 | Lista | Antes (04/10) | Equipo, primera revisión | **Equipo, final (17/10)** |
 |---|---|---|---|
 | Interfaz (Pressman) | 20 / 32 · 62,5 % | 27 / 32 · 84,4 % | **32 / 32 · 100,0 % · Sobresaliente** |
-| Sistemas Tutores Inteligentes (Caro) | 14 / 24 · 58,3 % | 20 / 24 · 83,3 % | **23 / 24 · 95,8 % · Sobresaliente** |
+| Sistemas Tutores Inteligentes (Caro) | 14 / 24 · 58,3 % | 20 / 24 · 83,3 % | **24 / 24 · 100,0 % · Sobresaliente** |
 
-**SUS del equipo:** 81,5 con 5 respuestas (bueno). Queda en CP solo **MOD-02** (separar los errores de concepto de los de
-escritura), que está en el plan de la Semana 10.
+**SUS del equipo:** 81,5 con 5 respuestas (bueno). MOD-02 se completó el 17/10 con el perfil de aprendizaje; falta que Pedro lo
+confirme como usuario, igual que los demás confirmaron sus correcciones.
 
 ## Interfaz gráfica (Pressman y Maxim, caps. 12, 13 y 14)
 
@@ -45,7 +45,7 @@ escritura), que está en el plan de la Semana 10.
 | ID | Revisó | Nota inicial | Nota final | Lo que vio | Qué se hizo |
 |---|---|---|---|---|---|
 | MOD-01 | Jeider | C | **C** | Ordenado por módulos; cada lección con su meta; el candado dice cuánto falta; al entregar dice qué caso falla. | Plan del curso compacto y «Mi progreso» con las lecciones sin empezar. |
-| MOD-02 | Pedro | CP | **CP** | Dominio por lección e historial, pero sin perfil Visual/Verbal ni separación de errores de concepto y de escritura. | Perfil Visual/Verbal descartado con evidencia (Pashler y otros, 2008; Kirschner, 2017). Errores de concepto: se construye con la idea de Pedro. |
+| MOD-02 | Pedro | CP | **C** | Dominio por lección e historial, pero sin perfil Visual/Verbal ni separación de errores de concepto y de escritura. | Tarjeta «Mi perfil de aprendizaje» (17/10) para el estudiante y su docente: temario dominado en verde, ámbar y gris; errores de concepto que se repiten, aparte de los descuidos de escritura; y cómo estudia (visual o verbal, secuencial o global), descriptivo y sin encasillar (BT-45). Pedro lo confirma como usuario. |
 | MOD-03 | Jeider | C | **C** | El Tutor guía con preguntas; recomienda según el dominio o deja elegir; el reto sube de nivel. | Resultado de la entrega más breve y claro. |
 | MOD-04 | Pedro | C | **C** | Mensajes que orientan sin regañar; el Tutor usa analogías y preguntas. | — |
 | UI-01 | Jeider | CP | **C** | Los formatos funcionan, pero «No me quedó claro» ofrecía lo que ya estaba en la lección. | Caminos distintos: ejercicio sencillo, lección anterior, otro video, el docente y el Tutor. |

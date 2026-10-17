@@ -18,7 +18,7 @@ Tutores Inteligentes **23 / 24** (José corrigió UX-04 a C). Lo que sigue abier
 | Lista | Antes (04/10) | Equipo hoy | Lo que falta para el máximo | Abierto |
 |---|---|---|---|---|
 | Interfaz | 20 / 32 | 32 / 32 · 100 % (confirmado el 17/10) | — | — |
-| Tutores Inteligentes | 14 / 24 | 23 / 24 · 95,8 % (confirmado el 17/10) | 24 / 24 con MOD-02 | MOD-02 (espera ideas de Pedro) |
+| Tutores Inteligentes | 14 / 24 | 23 / 24 confirmado; 24 / 24 con MOD-02 | Que Pedro confirme MOD-02 | — |
 
 ## 3. SUS: lo que hay hasta hoy
 

@@ -46,7 +46,7 @@ todos responden la encuesta SUS. Un ítem cuenta como cumplido solo con el ✅ d
 | **04/10/2026** · después | `main @ 4d41b8d` (v2.0.0 candidata), desplegada · **falta el visto bueno del equipo (05/10)** | **28 / 32 · 87,5 %** · Aceptable / Competente | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-04_despues/`](2026-10-04_despues/) |
 | **04/10/2026** · seguimiento | `main @ 6787d3e` (con organización académica, plantillas y logros), desplegada · 36 pantallas medidas | **28 / 32 · 87,5 %** · Aceptable / Competente (29/32 · 90,6 % · Sobresaliente con el SUS) | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-04_seguimiento/`](2026-10-04_seguimiento/) |
 | **06/10/2026** · v2.0.0 (IA, actualizada) | `main @ 80f63d6` (con la Fase H de Codex y la Fase 30: el docente publica, oculta, archiva y elimina con confianza), desplegada · se reevaluaron UX-02, UX-06, UX-08, MOB-03, PAT-01 y PAT-04 | **31 / 32 · 96,9 %** · Sobresaliente (32/32 con el SUS; PAT-04 pasó a C el 07/10) | **24 / 24 · 100 %** · Sobresaliente | [`2026-10-06_v2.0.0/`](2026-10-06_v2.0.0/) |
-| **17/10/2026 · revisión del equipo** | v2.0.0 (etiqueta), cada integrante como usuario, con las correcciones confirmadas | **32 / 32 · 100 %** · Sobresaliente | **23 / 24 · 95,8 %** · Sobresaliente | [`2026-10-17_revision_equipo/`](2026-10-17_revision_equipo/README.md) |
+| **17/10/2026 · revisión del equipo** | v2.0.0 (etiqueta), cada integrante como usuario, con las correcciones confirmadas | **32 / 32 · 100 %** · Sobresaliente | **24 / 24 · 100 %** · Sobresaliente (MOD-02 a confirmar por Pedro) | [`2026-10-17_revision_equipo/`](2026-10-17_revision_equipo/README.md) |
 
 ### Antes y después (04/10/2026), por bloque
 

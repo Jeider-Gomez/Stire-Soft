@@ -147,8 +147,8 @@ La nota oficial de la v2.0.0 es la del equipo. La IA fue más generosa en 9 de l
 
 **Confirmación (17/10):** quien revisó cada criterio confirmó como usuario que las correcciones de UX-01, MOB-01, MOB-02
 (José), UX-02 (Jorge), UI-04 (Pedro), UI-01 y UI-05 (Jeider) ya cumplen, y José corrigió su nota de UX-04 a C (los
-términos en inglés eran del panel del servidor). Con eso, **interfaz 32 / 32 · 100 %** y **Tutores Inteligentes 23 / 24 ·
-95,8 %**; solo sigue abierto MOD-02. Word del profesor con esta revisión:
+términos en inglés eran del panel del servidor). Con eso, **interfaz 32 / 32 · 100 %**. MOD-02 se completó el 17/10 con el perfil de aprendizaje (BT-45):
+**Tutores Inteligentes 24 / 24 · 100 %** cuando Pedro lo confirme como usuario. Word del profesor con esta revisión:
 [`2026-10-17_revision_equipo/`](2026-10-17_revision_equipo/README.md).
 
 ### Criterio por criterio

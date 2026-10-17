@@ -21,11 +21,11 @@ está **hoy** (17/10).
 | Lista | Antes (04/10) | Nota del equipo | Criterios revisados |
 |---|---|---|---|
 | Interfaz | 20 / 32 · 62,5 % | **27 / 32 · 84,4 %** → **32 / 32 · 100 %** con lo confirmado | 16 de 16 (José, Jorge y Jeider) |
-| Tutores Inteligentes | 14 / 24 · 58,3 % | **20 / 24 · 83,3 %** → **23 / 24 · 95,8 %** con lo confirmado | 12 de 12 (Pedro y Jeider, que revisó los 6 de Julio) |
+| Tutores Inteligentes | 14 / 24 · 58,3 % | **20 / 24 · 83,3 %** → **24 / 24 · 100 %** con MOD-02 (a confirmar por Pedro) | 12 de 12 (Pedro y Jeider, que revisó los 6 de Julio) |
 
 Lo que el equipo marcó «a medias» (CP) y ya se corrigió después: UX-01, UX-02, MOB-01, MOB-02, UI-01, UI-04 y UI-05.
 **El 17/10 quien los revisó confirmó que ya se cumplen** (Jorge confirmó UX-02). José corrigió su nota de UX-04 a C: los términos en
-inglés eran del panel del servidor. Solo queda abierto MOD-02.
+inglés eran del panel del servidor. MOD-02 se completó el 17/10 con el perfil de aprendizaje; falta la confirmación de Pedro.
 
 ## 1. Interfaz gráfica (Pressman)
 
