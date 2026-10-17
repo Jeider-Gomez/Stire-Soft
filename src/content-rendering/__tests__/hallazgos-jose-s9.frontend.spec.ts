@@ -51,3 +51,22 @@ describe('el lanzador del Tutor no tapa los botones', () => {
     expect(leer('layouts', 'student.vue')).toContain("useHead({ htmlAttrs: { class: 'scroll-pb-24' } })");
   });
 });
+
+describe('Repasos: una lección dominada no sale como «Atrasado» (Jeider, 17/10)', () => {
+  const r = cargar<{ presentarRepaso: (u: string, l: string, d: number | undefined) => { dominada: boolean; etiqueta: string; nota: string | null } }>('repasos');
+
+  it('con 85 % o más dice «Dominada ✓» y que el repaso es para no olvidarla', () => {
+    expect(r.presentarRepaso('critico', 'Atrasado', 100)).toMatchObject({ dominada: true, etiqueta: 'Dominada ✓ · 100 %', nota: 'Repaso corto para no olvidarla' });
+  });
+
+  it('sin dominar conserva la urgencia y dice el dominio', () => {
+    expect(r.presentarRepaso('critico', 'Atrasado', 40)).toMatchObject({ dominada: false, etiqueta: 'Atrasado', nota: '40 % de dominio' });
+    expect(r.presentarRepaso('vencido', 'Toca hoy', undefined)).toMatchObject({ etiqueta: 'Toca hoy', nota: null });
+  });
+
+  it('la página lo usa y explica que esperar no baja el dominio', () => {
+    const p = leer('pages', 'estudiante', 'repasos.vue');
+    expect(p).toContain('presentarRepaso(r.urgency, r.urgencyLabel, dominioPorLeccion.value.get(r.learningUnitId))');
+    expect(p).toContain('dejar pasar el repaso no te baja el dominio');
+  });
+});

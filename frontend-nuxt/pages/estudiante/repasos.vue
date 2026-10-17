@@ -11,6 +11,9 @@
       <p class="text-xs text-base-texto-secundario">
         Repasar justo cuando empiezas a olvidar hace que lo recuerdes por más tiempo. Cada repaso es un ejercicio corto de una lección que ya practicaste.
       </p>
+      <p v-if="hayDominadas" class="text-xs text-base-texto-secundario">
+        Las lecciones que ya dominaste <strong class="text-base-texto-primario">siguen dominadas</strong>: dejar pasar el repaso no te baja el dominio. El repaso es para que no se te olviden.
+      </p>
     </header>
 
     <template v-if="lista.length">
@@ -19,10 +22,11 @@
         <p id="empezar-titulo" class="text-[11px] font-bold uppercase tracking-wider text-acento-ambar-fuerte">Empieza por aquí</p>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="space-y-1 min-w-0">
-            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold" :class="ESTILO_URGENCIA[primero.urgency]">
-              <component :is="ICONO[primero.urgency]" :size="12" aria-hidden="true" /> {{ primero.urgencyLabel }}
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold" :class="ver(primero).estilo">
+              <component :is="ver(primero).dominada ? CircleCheck : ICONO[primero.urgency]" :size="12" aria-hidden="true" /> {{ ver(primero).etiqueta }}
             </span>
             <h2 class="text-base font-bold text-base-texto-primario">{{ primero.conceptTitle }}</h2>
+            <p v-if="ver(primero).nota" class="text-xs text-base-texto-secundario">{{ ver(primero).nota }}</p>
           </div>
           <NuxtLink :to="`/estudiante/unidad/${primero.learningUnitId}`"
             class="min-h-[44px] px-5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-sm inline-flex items-center justify-center gap-1.5 shrink-0">
@@ -36,10 +40,11 @@
         <ul class="divide-y divide-base-borde-sutil">
           <li v-for="item in resto" :key="item.id" class="px-5 py-3 flex items-center justify-between gap-2 text-xs">
             <span class="min-w-0 flex-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold shrink-0" :class="ESTILO_URGENCIA[item.urgency]">
-                <component :is="ICONO[item.urgency]" :size="12" aria-hidden="true" /> {{ item.urgencyLabel }}
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold shrink-0" :class="ver(item).estilo">
+                <component :is="ver(item).dominada ? CircleCheck : ICONO[item.urgency]" :size="12" aria-hidden="true" /> {{ ver(item).etiqueta }}
               </span>
               <span class="font-semibold text-base-texto-primario">{{ item.conceptTitle }}</span>
+              <span v-if="ver(item).nota" class="basis-full sm:basis-auto text-base-texto-secundario"><span class="hidden sm:inline" aria-hidden="true">· </span>{{ ver(item).nota }}</span>
             </span>
             <NuxtLink :to="`/estudiante/unidad/${item.learningUnitId}`" :aria-label="`Repasar ${item.conceptTitle}`"
               class="min-h-[44px] px-3 rounded-md borde-afordancia font-semibold text-acento-ambar-fuerte inline-flex items-center shrink-0">
@@ -67,7 +72,8 @@
 import { computed, onMounted } from 'vue'
 import { ArrowRight, CalendarCheck, CalendarClock, CircleCheck, Clock } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
-import { ESTILO_URGENCIA, ordenarRepasos, tiempoTotal } from '~/utils/repasos'
+import type { ReviewUrgency } from '~/types'
+import { ordenarRepasos, presentarRepaso, tiempoTotal } from '~/utils/repasos'
 
 definePageMeta({ layout: 'student' })
 
@@ -75,6 +81,9 @@ const studentStore = useStudentStore()
 const lista = computed(() => ordenarRepasos(studentStore.reviews))
 const primero = computed(() => lista.value[0])
 const resto = computed(() => lista.value.slice(1))
+const dominioPorLeccion = computed(() => new Map(studentStore.analytics.masteryByUnit.map((m) => [m.unitId, m.mastery])))
+const ver = (r: { urgency: ReviewUrgency; urgencyLabel: string; learningUnitId: number }) => presentarRepaso(r.urgency, r.urgencyLabel, dominioPorLeccion.value.get(r.learningUnitId))
+const hayDominadas = computed(() => lista.value.some((r) => (dominioPorLeccion.value.get(r.learningUnitId) ?? 0) >= 85))
 // La urgencia se lee por la forma del ícono, el color y el texto a la vez (P06).
 const ICONO = { critico: Clock, vencido: CalendarCheck, manana: CalendarClock, 'al-dia': CircleCheck }
 

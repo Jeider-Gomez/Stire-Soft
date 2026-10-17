@@ -25,3 +25,19 @@ export const ESTILO_URGENCIA: Record<ReviewUrgency, string> = {
   manana: 'bg-base-bg-secundario text-base-texto-secundario',
   'al-dia': 'bg-semantico-pasa/10 text-semantico-pasa',
 }
+
+// Verde oscuro sobre verde claro, con borde, como el ámbar de «critico»: el verde del token sobre su 10 % no llegaba a
+// 4,5:1 a 11 px (axe, 17/10).
+export const ESTILO_DOMINADA = 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+
+/**
+ * Cómo se presenta un repaso según el dominio de la lección. José (S09-JO01) y Jeider (17/10): una lección con 100 %
+ * salía como «Atrasado», como si estuviera mal. Una lección dominada sigue dominada (el dominio no baja por esperar;
+ * solo si se falla el repaso, motor-dominio.ts): se dice «Dominada ✓» y que el repaso es para no olvidarla.
+ */
+export function presentarRepaso(urgency: ReviewUrgency, urgencyLabel: string, dominio: number | undefined): { dominada: boolean; etiqueta: string; estilo: string; nota: string | null } {
+  if (dominio !== undefined && dominio >= 85) {
+    return { dominada: true, etiqueta: `Dominada ✓ · ${dominio} %`, estilo: ESTILO_DOMINADA, nota: 'Repaso corto para no olvidarla' }
+  }
+  return { dominada: false, etiqueta: urgencyLabel, estilo: ESTILO_URGENCIA[urgency], nota: dominio !== undefined ? `${dominio} % de dominio` : null }
+}
