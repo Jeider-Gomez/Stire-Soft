@@ -27,8 +27,8 @@
       <template #destinatario>
         <label for="redactar-destinatario" class="block font-semibold text-base-texto-primario mb-1">Docente</label>
         <p v-if="cargandoDocentes" class="text-base-texto-secundario">Cargando tus docentes…</p>
-        <select v-else id="redactar-destinatario" v-model="destinatario" data-foco-inicial :disabled="docentes.length === 0"
-          class="w-full min-h-[44px] px-3 rounded-md bg-base-blanco border border-base-borde-fuerte disabled:opacity-50">
+        <select v-else id="redactar-destinatario" v-model="destinatario" data-foco-inicial :disabled="docentes.length === 0" :aria-invalid="!!errorEnvio && !destinatario"
+          class="w-full min-h-[44px] px-3 rounded-md bg-base-blanco border disabled:opacity-50" :class="errorEnvio && !destinatario ? 'border-semantico-falla border-2' : 'border-base-borde-fuerte'">
           <option :value="0" disabled>{{ docentes.length ? 'Elige un docente' : 'No estás matriculado en ninguna clase activa' }}</option>
           <option v-for="d in docentes" :key="d.id" :value="d.id">{{ d.nombre }} · {{ d.detalle }}</option>
         </select>

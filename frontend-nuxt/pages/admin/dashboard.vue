@@ -181,9 +181,9 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-base-borde-sutil font-mono text-[11px]">
-              <!-- 1. API NestJS Core -->
+              <!-- 1. Servidor de STIRE (API NestJS) -->
               <tr class="hover:bg-base-bg-secundario/40 transition-colors">
-                <td class="p-3 font-bold font-sans text-base-texto-primario">API NestJS Core</td>
+                <td class="p-3 font-bold font-sans text-base-texto-primario">Servidor de STIRE</td>
                 <td class="p-3 text-base-texto-secundario">v{{ statusData.api.version || '—' }} (Node {{ statusData.api.nodeVersion || '—' }}, {{ statusData.api.environment || '—' }})</td>
                 <td class="p-3 text-center">
                   <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/10 text-semantico-pasa">
@@ -191,7 +191,7 @@
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
-                  RSS: {{ statusData.api.memory.rssMb }} MB / Heap: {{ statusData.api.memory.heapUsedMb }} MB
+                  Memoria: {{ statusData.api.memory.rssMb }} MB en total, {{ statusData.api.memory.heapUsedMb }} MB en uso
                 </td>
                 <td class="p-3 text-right font-sans text-base-texto-secundario">
                   {{ formatUptime(statusData.api.uptimeSeconds) }}
@@ -221,7 +221,7 @@
               <tr class="hover:bg-base-bg-secundario/40 transition-colors">
                 <td class="p-3 font-bold font-sans text-base-texto-primario">Sandbox de código</td>
                 <td class="p-3 text-base-texto-secundario">
-                  Adapter: {{ statusData.sandbox.adapter || '—' }} · Timeout: {{ statusData.sandbox.timeoutMs }} ms
+                  Modo: {{ statusData.sandbox.adapter === 'hardened' ? 'reforzado' : (statusData.sandbox.adapter || '—') }} · Tiempo máximo: {{ statusData.sandbox.timeoutMs }} ms
                 </td>
                 <td class="p-3 text-center">
                   <span
@@ -231,10 +231,10 @@
                   </span>
                 </td>
                 <td class="p-3 text-center text-base-texto-primario">
-                  Límite: {{ statusData.sandbox.maxHeapMb }} MB Heap / {{ statusData.sandbox.maxOutputKb }} KB Out
+                  Límite: {{ statusData.sandbox.maxHeapMb }} MB de memoria y {{ statusData.sandbox.maxOutputKb }} KB de salida
                 </td>
                 <td class="p-3 text-right font-sans text-base-texto-secundario">
-                  {{ statusData.sandbox.executionsLast24h != null ? `${statusData.sandbox.executionsLast24h} ejec. en 24h` : '—' }}
+                  {{ statusData.sandbox.executionsLast24h != null ? `${statusData.sandbox.executionsLast24h} ejecuciones en 24 h` : '—' }}
                 </td>
               </tr>
 
@@ -259,9 +259,9 @@
                 </td>
               </tr>
 
-              <!-- 5. Tutor socrático IA -->
+              <!-- 5. Tutor con IA -->
               <tr class="hover:bg-base-bg-secundario/40 transition-colors">
-                <td class="p-3 font-bold font-sans text-base-texto-primario">Tutor socrático IA</td>
+                <td class="p-3 font-bold font-sans text-base-texto-primario">Tutor con IA</td>
                 <td class="p-3 text-base-texto-secundario">
                   <span :title="statusData.tutor.model">{{ nombreModelo(statusData.tutor.model) }}</span>
                 </td>
@@ -276,7 +276,7 @@
                   {{ statusData.tutor.studentsWithKey != null ? statusData.tutor.studentsWithKey : '—' }} claves activas
                 </td>
                 <td class="p-3 text-right font-sans text-base-texto-secundario">
-                  {{ statusData.tutor.studentMessagesLast24h != null ? `${statusData.tutor.studentMessagesLast24h} msgs en 24h` : '—' }}
+                  {{ statusData.tutor.studentMessagesLast24h != null ? `${statusData.tutor.studentMessagesLast24h} mensajes en 24 h` : '—' }}
                 </td>
               </tr>
             </tbody>

@@ -326,6 +326,7 @@
 
 <script setup lang="ts">
 import { ArrowRight, Ban, BookOpen, Bot, ChevronRight, Clock, Compass, KeyRound, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
+import { etiquetaDeContexto } from '~/utils/planLateral'
 import { useTutorStore } from '~/stores/tutor'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { atajosASimpleVista, atajosDisponibles, preguntasNuevas, type Atajo } from '~/utils/atajosTutor'
@@ -367,18 +368,7 @@ function usarAtajo(tipo: Atajo) {
 }
 
 // ─── Contexto de aprendizaje activo ─────────────────────────────────────────
-const activeContextLabel = computed(() => {
-  if (workspaceStore.currentExercise?.title && workspaceStore.currentExercise?.activityId) {
-    const unitPrefix = workspaceStore.currentExercise.unitTitle
-      ? `${workspaceStore.currentExercise.unitTitle} • `
-      : ''
-    return `${unitPrefix}${workspaceStore.currentExercise.title}`
-  }
-  if (studentStore.activeUnit?.title) {
-    return `Lección actual: ${studentStore.activeUnit.title}`
-  }
-  return null
-})
+const activeContextLabel = computed(() => etiquetaDeContexto(route.path, workspaceStore.currentExercise, studentStore.modules, studentStore.activeUnit))
 
 // ─── Aviso de repasos vencidos (§21.2 T4c) ──────────────────────────────────
 // Descartado, no vuelve en esta sesión del navegador (useState entre páginas; sessionStorage si recarga).

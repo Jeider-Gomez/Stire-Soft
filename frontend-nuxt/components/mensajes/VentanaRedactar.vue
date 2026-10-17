@@ -9,7 +9,8 @@
       <div>
         <label for="redactar-contenido" class="block font-semibold text-base-texto-primario mb-1">{{ etiquetaMensaje }}</label>
         <textarea id="redactar-contenido" v-crece :value="contenido" :data-foco-inicial="respondiendoA ? '' : undefined" rows="4" maxlength="2000" :placeholder="placeholder"
-          class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none resize-none focus:ring-2 focus:ring-acento-ambar-fuerte/30"
+          class="w-full px-3 py-2 rounded-md bg-base-blanco border focus:border-acento-ambar-fuerte outline-none resize-none focus:ring-2 focus:ring-acento-ambar-fuerte/30"
+          :class="error && !contenido.trim() ? 'border-semantico-falla border-2' : 'border-base-borde-fuerte'"
           :aria-invalid="!!error" :aria-describedby="error ? 'redactar-error' : undefined"
           @input="emit('update:contenido', ($event.target as HTMLTextAreaElement).value)" @paste="pegarEnTexto" />
       </div>

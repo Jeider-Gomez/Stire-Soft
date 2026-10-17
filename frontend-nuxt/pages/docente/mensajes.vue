@@ -36,8 +36,8 @@
           <div>
             <label for="redactar-destinatario" class="block font-semibold text-base-texto-primario mb-1">Estudiante</label>
             <p v-if="cargandoEstudiantes" class="text-base-texto-secundario">Cargando estudiantes…</p>
-            <select v-else id="redactar-destinatario" v-model="destinatario" :disabled="estudiantes.length === 0"
-              class="w-full min-h-[44px] px-3 rounded-md bg-base-blanco border border-base-borde-fuerte disabled:opacity-50">
+            <select v-else id="redactar-destinatario" v-model="destinatario" :disabled="estudiantes.length === 0" :aria-invalid="!!errorEnvio && !destinatario"
+              class="w-full min-h-[44px] px-3 rounded-md bg-base-blanco border disabled:opacity-50" :class="errorEnvio && !destinatario ? 'border-semantico-falla border-2' : 'border-base-borde-fuerte'">
               <option :value="0" disabled>{{ estudiantes.length ? 'Elige un estudiante' : claseId ? 'Esta clase no tiene estudiantes' : 'Primero elige una clase' }}</option>
               <option v-for="e in estudiantes" :key="e.id" :value="e.id">{{ e.nombre }}{{ e.detalle ? ` · ${e.detalle}` : '' }}</option>
             </select>

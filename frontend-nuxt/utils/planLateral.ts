@@ -37,3 +37,25 @@ export function tituloCorto(titulo: string): string {
   const corto = titulo.replace(/^\s*(unidad|m[oó]dulo|secci[oó]n|tema)\s*\d+\s*[:.\-–—·]\s*/i, '').trim()
   return corto || titulo.trim()
 }
+
+/**
+ * Qué dice la cabecera del Tutor sobre dónde está el estudiante (17/10: en «El robot que sigue órdenes» decía
+ * «Lección actual: Descomponer…», que era la lección recomendada del inicio y no la abierta). En un ejercicio, el
+ * ejercicio; en una lección, ESA lección; en otra pantalla, la siguiente lección recomendada, dicha como tal.
+ */
+export function etiquetaDeContexto(
+  ruta: string,
+  ejercicio: { activityId?: number; title?: string; unitTitle?: string } | null | undefined,
+  modulos: ModuloPlan[],
+  siguiente: { title?: string } | null | undefined,
+): string | null {
+  if (/^\/estudiante\/evaluacion\//.test(ruta) && ejercicio?.activityId && ejercicio.title) {
+    return `${ejercicio.unitTitle ? `${ejercicio.unitTitle} • ` : ''}${ejercicio.title}`
+  }
+  const leccion = leccionDeLaRuta(ruta)
+  if (leccion !== null) {
+    const u = modulos.flatMap((m) => m.units).find((x) => x.id === leccion)
+    return u ? `Lección actual: ${u.title}` : null
+  }
+  return siguiente?.title ? `Tu siguiente lección: ${siguiente.title}` : null
+}
