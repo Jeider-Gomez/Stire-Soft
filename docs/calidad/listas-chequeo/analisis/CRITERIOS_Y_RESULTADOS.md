@@ -1,5 +1,8 @@
 # Los 28 criterios de las dos listas y lo que dijo el equipo
 
+> **Versión final para entregar:** [`../2026-10-17_revision_equipo/`](../2026-10-17_revision_equipo/README.md), con el Word del
+> profesor llenado con la revisión del equipo.
+
 Documento compartido del equipo con todos los criterios de las dos listas del Prof. Toscano, en un solo lugar:
 
 - **Interfaz gráfica** (Pressman y Maxim, 2019, caps. 12, 13 y 14): 16 criterios, 32 puntos.
@@ -17,11 +20,11 @@ está **hoy** (17/10).
 
 | Lista | Antes (04/10) | Nota del equipo | Criterios revisados |
 |---|---|---|---|
-| Interfaz | 20 / 32 · 62,5 % | **27 / 32 · 84,4 %** → **30 / 32 · 93,8 %** con lo confirmado | 16 de 16 (José, Jorge y Jeider) |
+| Interfaz | 20 / 32 · 62,5 % | **27 / 32 · 84,4 %** → **31 / 32 · 96,9 %** con lo confirmado | 16 de 16 (José, Jorge y Jeider) |
 | Tutores Inteligentes | 14 / 24 · 58,3 % | **20 / 24 · 83,3 %** → **23 / 24 · 95,8 %** con lo confirmado | 12 de 12 (Pedro y Jeider, que revisó los 6 de Julio) |
 
 Lo que el equipo marcó «a medias» (CP) y ya se corrigió después: UX-01, UX-02, MOB-01, MOB-02, UI-01, UI-04 y UI-05.
-**El 17/10 quien los revisó confirmó que ya se cumplen**, salvo UX-02, que espera la confirmación de Jorge. Quedan abiertos
+**El 17/10 quien los revisó confirmó que ya se cumplen** (Jorge confirmó UX-02). Quedan abiertos
 UX-04 y MOD-02 (ver la última columna).
 
 ## 1. Interfaz gráfica (Pressman)
