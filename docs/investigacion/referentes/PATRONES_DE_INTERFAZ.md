@@ -36,6 +36,19 @@ contrastada.
   desplaza sola si es larga.
 - **Estado:** hecho, `f785dd7`. Verificado: la barra queda en su sitio al bajar.
 
+### P-UI-02b · El temario del curso en la barra lateral, sin un segundo scroll
+
+- **Referentes:** Open edX restauró el temario a la izquierda porque los estudiantes lo abrían en otra pestaña para
+  orientarse, y lo quiere con marcas de avance **[doc. oficial]**; Coursera y Udemy muestran el temario con un módulo
+  desplegado y su avance (por ejemplo «3/6») **[obs]**; los sistemas de diseño de Visa y ServiceTitan recomiendan pocos
+  niveles y plegar lo que no se usa para limitar cuántos enlaces se ven a la vez **[doc. oficial]**.
+- **STIRE antes:** el plan iba en medio del menú, abría varios módulos a la vez, cortaba los nombres y empujaba Repasos
+  y Mi progreso fuera de la pantalla; un primer arreglo le puso alto máximo y su propio scroll, y quedaron dos scroll.
+- **Decisión (Jeider, 17/10):** el plan va después de Inicio; un solo scroll, el de la barra; todo el plan se pliega desde
+  su título (se recuerda); un módulo abierto a la vez, el de la lección actual; módulos «M1» y lecciones «1.1» en una
+  línea, con el nombre completo al pasar el mouse y la lección actual completa; «N/M» dominadas por módulo.
+- **Estado:** hecho, `components/layout/PlanDelCurso.vue` y `utils/planLateral.ts`.
+
 ### P-UI-03 · Contraer el menú con un solo ícono
 
 - **Referentes:** Platzi **[descripción del dueño]**; ChatGPT, Claude y Gemini **[obs, uso diario]**: ícono de panel
@@ -217,6 +230,9 @@ contrastada.
 - UX Collective, *Where should AI sit in your UI?*: https://uxdesign.cc/where-should-ai-sit-in-your-ui-1710a258390e
 
 **Plataformas (documentación oficial):**
+- Open edX, *Restore the left-sidebar navigation in the learner experience*: https://openedx.atlassian.net/wiki/spaces/OEPM/pages/3909779457/Feature+Enhancement+Proposal+Restore+the+left-sidebar+navigation+in+the+learner+experience
+- Visa Design System, *Vertical navigation*: https://design.visa.com/components/vertical-navigation/usage/
+- ServiceTitan Anvil, *Side Nav*: https://anvil.servicetitan.com/docs/web/components/side-nav/design
 - Codecademy, *Behind the Build: AI Learning Assistant*: https://www.codecademy.com/resources/blog/behind-the-build-ai-learning-assistant
 - Duolingo, *Explain My Answer*: https://blog.duolingo.com/explain-my-answer-now-free
 - Khanmigo, estudio de uso (Chalkbeat, 25/08/2026): https://www.chalkbeat.org/2026/08/25/ai-tutoring-students-khanmigo-khan-academy-engagement-study/

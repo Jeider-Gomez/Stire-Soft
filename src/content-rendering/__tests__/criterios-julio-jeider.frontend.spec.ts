@@ -38,6 +38,15 @@ describe('MOD-01: el plan del curso en la barra lateral', () => {
     expect(plan.leccionDeLaRuta('/estudiante/progreso')).toBeNull();
   });
 
+  it('abrevia el nombre del módulo: el número ya lo dice «M1»', () => {
+    const t = cargar<{ tituloCorto: (t: string) => string }>('planLateral').tituloCorto;
+    expect(t('Unidad 1: Fundamentos de algoritmia')).toBe('Fundamentos de algoritmia');
+    expect(t('Módulo 2 - Ciclos')).toBe('Ciclos');
+    expect(t('Unidad 1 · Introducción a la algoritmia')).toBe('Introducción a la algoritmia');
+    expect(t('Pensar antes de programar')).toBe('Pensar antes de programar');
+    expect(t('Unidad 3:')).toBe('Unidad 3:');
+  });
+
   it('cuenta las lecciones dominadas de cada módulo', () => {
     expect(plan.conteoModulo(modulos[0])).toEqual({ dominadas: 2, total: 2 });
     expect(plan.conteoModulo(modulos[1])).toEqual({ dominadas: 0, total: 2 });
@@ -47,11 +56,16 @@ describe('MOD-01: el plan del curso en la barra lateral', () => {
     const menu = leer('components', 'layout', 'SidebarNav.vue');
     expect(menu.indexOf('<span>Inicio</span>')).toBeLessThan(menu.indexOf('<LayoutPlanDelCurso />'));
     expect(menu.indexOf('<LayoutPlanDelCurso />')).toBeLessThan(menu.indexOf('<span>Repasos</span>'));
-    expect(leer('components', 'layout', 'PlanDelCurso.vue')).toContain('max-h-[40vh] overflow-y-auto');
+    // 17/10, segunda vuelta (Jeider): un solo scroll, el de la barra; nada de un scroll dentro del plan.
+    expect(leer('components', 'layout', 'PlanDelCurso.vue')).not.toMatch(/overflow-y-auto|max-h-/);
     expect(menu).not.toContain('openModules');
     const p = leer('components', 'layout', 'PlanDelCurso.vue');
-    expect(p).toContain('<span class="line-clamp-2" :title="mod.title">{{ mod.title }}</span>');
+    expect(p).toContain('M{{ i + 1 }}');
+    expect(p).toContain('{{ i + 1 }}.{{ j + 1 }}');
+    expect(p).toContain(':title="mod.title"');
+    expect(p).toContain(":class=\"esActual(unit.id) ? 'line-clamp-2' : 'truncate'\"");
     expect(p).toContain(':aria-expanded="moduloAbierto === mod.id"');
+    expect(p).toMatch(/:aria-expanded="planAbierto"[\s\S]*?localStorage\.setItem\(CLAVE_PLAN/);
     expect(p).not.toContain("split(':')[0] }}\n");
   });
 });

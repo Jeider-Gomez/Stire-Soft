@@ -31,3 +31,9 @@ export function sinEmpezarPorModulo(modulos: ModuloPlan[]): Array<{ id: number; 
     .map((m) => ({ id: m.id, titulo: m.title, lecciones: m.units.filter((u) => !u.empezada && u.status !== 'dominado') }))
     .filter((g) => g.lecciones.length > 0)
 }
+
+/** El nombre del módulo sin «Unidad 1:», «Unidad 1 ·», «Módulo 2 -» o «Sección 3.»: el número ya lo dice la etiqueta «M1». */
+export function tituloCorto(titulo: string): string {
+  const corto = titulo.replace(/^\s*(unidad|m[oó]dulo|secci[oó]n|tema)\s*\d+\s*[:.\-–—·]\s*/i, '').trim()
+  return corto || titulo.trim()
+}
