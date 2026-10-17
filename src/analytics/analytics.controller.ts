@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, ParseIntPipe, Post, Query, UseGuards, Req } from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -24,6 +24,23 @@ export class AnalyticsController {
   @Roles('estudiante', 'docente', 'admin')
   getEntregas(@Param('studentId', ParseIntPipe) studentId: number, @Query('pagina') pagina: string | undefined, @Req() req: { user: User }) {
     return this.analyticsService.getStudentSubmissions(studentId, req.user, Number(pagina) || 1);
+  }
+
+  // Perfil de aprendizaje (MOD-02): el propio estudiante, su docente o un admin.
+  @Get('student/:studentId/perfil')
+  @UseGuards(RolesGuard)
+  @Roles('estudiante', 'docente', 'admin')
+  getPerfil(@Param('studentId', ParseIntPipe) studentId: number, @Req() req: { user: User }) {
+    return this.analyticsService.getPerfilAprendizaje(studentId, req.user);
+  }
+
+  // El estudiante eligió un formato de la lección (diagrama, pseudocódigo, pasos, escuchar, video o ejemplo en vivo).
+  @Post('formato')
+  @HttpCode(200)
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
+  registrarFormato(@Body('formato') formato: unknown, @Req() req: { user: User }) {
+    return this.analyticsService.registrarFormato(req.user, typeof formato === 'string' ? formato : '');
   }
 
   /** Mapa de calor del docente: estudiantes × unidades y las listas de a quién ayudar (paso 6). */

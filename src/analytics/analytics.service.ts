@@ -21,6 +21,8 @@ import { categoriasPermitidas, evaluarLogros, siguienteLogro, type Logro } from 
 import { esNivelConfianza, resumirCalibracion, type ResumenCalibracion } from './calibracion';
 import { contarCalidades, type NombreCalidad } from '../common/utils/spaced-repetition';
 import { CONFIANZA_SEGURO } from '../learning-progress/recommendation/recomendar-siguiente';
+import { DOMINADO } from '../learning-progress/estadisticas';
+import { erroresQueSeRepiten, FORMATOS, ordenDeEstudio, preferenciaDeFormatos, tipoDeError, type FalloClasificado } from './perfil-aprendizaje';
 
 @Injectable()
 export class AnalyticsService {
@@ -28,6 +30,81 @@ export class AnalyticsService {
     private readonly dataSource: DataSource,
     private readonly authorizationService: AuthorizationService,
   ) {}
+
+  /** Suma una elección de formato del propio estudiante (perfil de aprendizaje, MOD-02). Un formato desconocido se ignora. */
+  async registrarFormato(user: User, formato: string): Promise<{ ok: boolean }> {
+    if (!(FORMATOS as readonly string[]).includes(formato)) return { ok: false };
+    await this.dataSource.query(
+      'INSERT INTO uso_formatos (studentId, formato, veces) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE veces = veces + 1',
+      [user.id, formato],
+    );
+    return { ok: true };
+  }
+
+  /**
+   * Perfil de aprendizaje (MOD-02): errores de concepto que se repiten frente a descuidos de escritura, cómo recorre el
+   * curso, qué formatos elige y cuánto domina del temario. Mismos permisos que la ficha del estudiante.
+   */
+  async getPerfilAprendizaje(studentId: number, requestingUser: User) {
+    if (requestingUser.role === 'estudiante' && requestingUser.id !== studentId) {
+      throw new ForbiddenException('No tienes acceso a las métricas de otro estudiante.');
+    }
+    await this.authorizationService.assertTeacherSharesClassWithStudent(requestingUser, studentId);
+
+    // 1. Casos que fallaron en ejercicios de programar, con la salida esperada del caso (activity_questions.config).
+    const filas: Array<{ stdout: string | null; stderr: string | null; status: string; testCaseLabel: string | null; submissionId: string; createdAt: Date; config: unknown }> =
+      await this.dataSource.query(
+        `SELECT er.stdout, er.stderr, er.status, er.testCaseLabel, sa.submissionId, er.createdAt, q.config
+           FROM execution_results er
+           JOIN submission_answers sa ON sa.id = er.submissionAnswerId
+           JOIN submissions s ON s.id = sa.submissionId
+           JOIN activity_questions q ON q.id = sa.questionId
+          WHERE s.studentId = ? AND er.status <> 'accepted' AND er.deletedAt IS NULL
+          ORDER BY er.createdAt DESC LIMIT 500`,
+        [studentId],
+      );
+    const fallos: FalloClasificado[] = [];
+    for (const f of filas) {
+      const config = (typeof f.config === 'string' ? JSON.parse(f.config) : f.config) as { testCases?: Array<{ label?: string; input?: string; expected?: string }> } | null;
+      const caso = config?.testCases?.find((c) => c.label === f.testCaseLabel);
+      if (!caso || typeof caso.expected !== 'string' || f.status === 'time_limit') continue;
+      const obtenida = (f.stdout ?? '').trim() ? (f.stdout ?? '') : (f.stderr ?? '');
+      const tipo = tipoDeError(caso.expected, obtenida, caso.input ?? '');
+      if (tipo) fallos.push({ tipo, entregaId: String(f.submissionId), fecha: new Date(f.createdAt) });
+    }
+
+    // 2. El plan de sus clases activas, en orden, y cuándo empezó cada lección (su primera entrega en ella).
+    const plan: Array<{ id: number }> = await this.dataSource.query(
+      `SELECT lu.id FROM enrollments e
+         JOIN sections se ON se.classId = e.classId
+         JOIN topics t ON t.sectionId = se.id
+         JOIN learning_units lu ON lu.topicId = t.id
+        WHERE e.studentId = ? AND e.status = ? AND lu.isActive = 1
+        ORDER BY e.classId, se.order, t.order, lu.order, lu.id`,
+      [studentId, EnrollmentStatus.ACTIVE],
+    );
+    const inicios: Array<{ unitId: number; fecha: Date }> = await this.dataSource.query(
+      `SELECT a.learningUnitId AS unitId, MIN(s.createdAt) AS fecha
+         FROM submissions s JOIN activities a ON a.id = s.activityId
+        WHERE s.studentId = ? GROUP BY a.learningUnitId`,
+      [studentId],
+    );
+
+    // 3. Formatos elegidos y 4. dominio del temario.
+    const uso: Array<{ formato: string; veces: number }> = await this.dataSource.query('SELECT formato, veces FROM uso_formatos WHERE studentId = ?', [studentId]);
+    const progreso = await this.dataSource.getRepository(LearningProgress).find({ where: { studentId } });
+    const enPlan = new Set(plan.map((p) => Number(p.id)));
+    const delPlan = progreso.filter((p) => enPlan.has(p.learningUnitId));
+    const dominadas = delPlan.filter((p) => p.mastery >= DOMINADO).length;
+    const enProceso = delPlan.filter((p) => p.mastery < DOMINADO && (p.mastery > 0 || p.attemptsCount > 0)).length;
+
+    return {
+      errores: erroresQueSeRepiten(fallos),
+      orden: ordenDeEstudio(plan.map((p) => Number(p.id)), inicios.map((i) => ({ unitId: Number(i.unitId), fecha: new Date(i.fecha) }))),
+      formatos: preferenciaDeFormatos(uso.map((u) => ({ formato: u.formato, veces: Number(u.veces) }))),
+      dominio: { dominadas, enProceso, sinEmpezar: Math.max(0, enPlan.size - dominadas - enProceso), total: enPlan.size },
+    };
+  }
 
   /**
    * Todas las entregas del estudiante, por páginas, para la ficha del docente (sugerencia n.º 12, Julio 16/10: solo se

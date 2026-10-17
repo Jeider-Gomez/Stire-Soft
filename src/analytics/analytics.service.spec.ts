@@ -227,3 +227,47 @@ describe('AnalyticsService.getStudentSubmissions — historial completo por pág
     await expect(service.getStudentSubmissions(2, { id: 5, role: 'estudiante' } as User, 1)).rejects.toThrow('otro estudiante');
   });
 });
+
+// MOD-02 (Pedro, 16/10): el perfil junta errores que se repiten, orden, formatos y dominio.
+describe('AnalyticsService.getPerfilAprendizaje', () => {
+  const config = { testCases: [{ label: 'Ejemplo 1', input: '5\n3', expected: '8' }] };
+  const query = jest.fn(async (sql: string) => {
+    if (sql.includes('FROM execution_results')) {
+      return [
+        { stdout: '53', stderr: null, status: 'wrong_answer', testCaseLabel: 'Ejemplo 1', submissionId: 'a', createdAt: new Date(), config },
+        { stdout: '53', stderr: null, status: 'wrong_answer', testCaseLabel: 'Ejemplo 1', submissionId: 'b', createdAt: new Date(), config: JSON.stringify(config) },
+        { stdout: '', stderr: 'SyntaxError: x', status: 'runtime_error', testCaseLabel: 'Ejemplo 1', submissionId: 'c', createdAt: new Date(), config },
+      ];
+    }
+    if (sql.includes('FROM enrollments')) return [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
+    if (sql.includes('MIN(s.createdAt)')) return [1, 2, 3, 4].map((u) => ({ unitId: u, fecha: new Date(2026, 9, u) }));
+    if (sql.includes('FROM uso_formatos')) return [{ formato: 'diagrama', veces: 6 }, { formato: 'pseudocodigo', veces: 2 }];
+    return [];
+  });
+  const progreso = [{ learningUnitId: 1, mastery: 90, attemptsCount: 2 }, { learningUnitId: 2, mastery: 40, attemptsCount: 1 }];
+  const dataSource = { query, getRepository: () => ({ find: jest.fn().mockResolvedValue(progreso) }) };
+  const authorization = { assertTeacherSharesClassWithStudent: jest.fn().mockResolvedValue(undefined) };
+  const service = new AnalyticsService(dataSource as never, authorization as never);
+
+  it('el docente ve los errores de concepto que se repiten, los descuidos aparte, el orden, los formatos y el dominio', async () => {
+    const p = await service.getPerfilAprendizaje(2, { id: 10, role: 'docente' } as User);
+    expect(authorization.assertTeacherSharesClassWithStudent).toHaveBeenCalledWith({ id: 10, role: 'docente' }, 2);
+    expect(p.errores.seRepiten).toEqual([expect.objectContaining({ tipo: 'concatena', veces: 2 })]);
+    expect(p.errores.descuidos).toBe(1);
+    expect(p.orden.etiqueta).toBe('secuencial');
+    expect(p.formatos).toMatchObject({ pctVisual: 75, etiqueta: 'visual' });
+    expect(p.dominio).toEqual({ dominadas: 1, enProceso: 1, sinEmpezar: 2, total: 4 });
+  });
+
+  it('un estudiante no ve el perfil de otro', async () => {
+    await expect(service.getPerfilAprendizaje(2, { id: 5, role: 'estudiante' } as User)).rejects.toThrow('otro estudiante');
+  });
+
+  it('solo se registran los formatos conocidos', async () => {
+    query.mockClear();
+    expect(await service.registrarFormato({ id: 5 } as User, 'nada')).toEqual({ ok: false });
+    expect(query).not.toHaveBeenCalled();
+    expect(await service.registrarFormato({ id: 5 } as User, 'diagrama')).toEqual({ ok: true });
+    expect(query).toHaveBeenCalledWith(expect.stringContaining('ON DUPLICATE KEY UPDATE veces = veces + 1'), [5, 'diagrama']);
+  });
+});
