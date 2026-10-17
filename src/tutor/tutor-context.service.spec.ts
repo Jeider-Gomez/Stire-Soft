@@ -145,6 +145,13 @@ describe('TutorContextService.buildSystemPrompt — enunciado y última prueba',
     expect(texto.length).toBeLessThan(500);
     expect(texto).toContain('(nada)');
   });
+
+  // QA-ERR-08 (Jorge, 16/10): el Tutor empezaba con «¡Hola!» en vez del saludo según la hora.
+  it('no empieza cada respuesta con «Hola»; si lo saludan, usa el saludo según la hora de Colombia', async () => {
+    const prompt = await service.buildSystemPrompt(1, {}, null);
+    expect(prompt).toContain('no empieces tus respuestas con «Hola» ni con otro saludo');
+    expect(prompt).toMatch(/responde «¡Buen(os días|as tardes|as noches)!» una sola vez/);
+  });
 });
 
 // 10/10, Jeider: «no sé JavaScript y no entendí del todo»: un problema a la vez, la línea, y el concepto con otro ejemplo.

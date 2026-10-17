@@ -1,5 +1,6 @@
 import { contextoSegunPantalla, ultimaPruebaDe } from '~/utils/contextoTutor'
 import { conceptosDelEjercicio } from '~/utils/conceptosEjercicio'
+import { saludoDeRespaldo } from '~/utils/saludoTutor'
 import { defineStore } from 'pinia'
 import type { TutorMessage, TutorSuggestedActivity, TutorApiKey, TutorGuidance } from '~/types'
 import { useAuthStore } from './auth'
@@ -195,7 +196,7 @@ export const useTutorStore = defineStore('tutor', () => {
       messages.value.push({
         id: `msg-${Date.now()}-greeting`,
         sender: 'tutor',
-        text: res?.message || '¡Hola! Soy tu Tutor IA de STIRE. ¿En qué necesitas orientación hoy?',
+        text: res?.message || saludoDeRespaldo(),
         timestamp: nowLabel(),
         suggestedActivity: res?.suggestedActivity ?? null
       })
@@ -204,7 +205,7 @@ export const useTutorStore = defineStore('tutor', () => {
       messages.value.push({
         id: `msg-${Date.now()}-greeting`,
         sender: 'tutor',
-        text: '¡Hola! Soy tu Tutor IA de STIRE. ¿En qué necesitas orientación hoy?',
+        text: saludoDeRespaldo(),
         timestamp: nowLabel()
       })
     } finally {

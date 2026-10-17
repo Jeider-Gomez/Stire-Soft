@@ -37,7 +37,7 @@
             Escríbelo o escanea con la cámara del celular el QR que proyecta tu docente.
           </p>
           <p v-if="desdeQr" role="status" class="text-xs font-semibold text-acento-ambar-fuerte mt-1.5">
-            Escaneaste el código de una clase: pulsa «Unirse» para entrar.
+            {{ isJoining ? 'Escaneaste el código de una clase: te estamos uniendo…' : 'Escaneaste el código de una clase.' }}
           </p>
         </div>
 
@@ -63,7 +63,7 @@
             <span v-if="isJoining">Inscribiendo...</span>
             <span v-else>Unirse</span>
           </button>
-          <EscanerQrClase @codigo="(c) => { joinCode = c; desdeQr = true }" />
+          <EscanerQrClase @codigo="unirseDesdeQr" />
         </form>
       </div>
 
@@ -223,6 +223,13 @@ async function handleJoinClass() {
   }
 }
 
+// Sugerencia n.º 14 (Jorge, 16/10): escanear el QR ya es la decisión de unirse; no hace falta pulsar «Unirse» después.
+function unirseDesdeQr(codigo: string) {
+  joinCode.value = codigo
+  desdeQr.value = true
+  return handleJoinClass()
+}
+
 function isActiveClass(classId?: number): boolean {
   if (!classId) return false
   return studentStore.currentClassId === classId
@@ -252,12 +259,12 @@ function formatDate(dateStr?: string): string | null {
 
 onMounted(() => {
   fetchEnrollments()
-  // Llegó escaneando el QR de la clase (…/estudiante/clases?codigo=ALGO-7KQ2): el código ya queda escrito.
+  // Llegó escaneando el QR de la clase (…/estudiante/clases?codigo=ALGO-7KQ2): se une de una vez. El código se quita
+  // de la dirección para que recargar la página no lo intente otra vez.
   const codigo = typeof route.query.codigo === 'string' ? normalizarCodigo(route.query.codigo) : ''
   if (codigo) {
-    joinCode.value = codigo
-    desdeQr.value = true
-    nextTick(() => codigoRef.value?.focus())
+    navigateTo({ path: route.path, query: {} }, { replace: true })
+    unirseDesdeQr(codigo)
   }
 })
 </script>

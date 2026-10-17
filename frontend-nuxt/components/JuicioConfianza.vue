@@ -1,8 +1,8 @@
 <template>
   <!-- META-02 (Caro, 2015: juicios metacognitivos): antes de la PRIMERA entrega del ejercicio, «¿Qué tan seguro estás?».
-       Tres opciones y «Omitir»; no se vuelve a preguntar en los intentos siguientes. Al calificar se muestra la
+       Tres opciones, «Volver a editar» y «Omitir y entregar»; no se vuelve a preguntar en los intentos siguientes. Al calificar se muestra la
        calibración y el Tutor la usa. -->
-  <div v-if="workspaceStore.pidiendoConfianza" class="fixed inset-0 z-[90] bg-slate-900/40 flex items-end sm:items-center justify-center p-4" @mousedown.self="omitir">
+  <div v-if="workspaceStore.pidiendoConfianza" class="fixed inset-0 z-[90] bg-slate-900/40 flex items-end sm:items-center justify-center p-4" @mousedown.self="volverAEditar">
     <div role="dialog" aria-modal="true" aria-labelledby="confianza-titulo" aria-describedby="confianza-ayuda" class="w-full max-w-sm max-h-[90vh] overflow-y-auto bg-base-blanco rounded-xl shadow-xl border border-base-borde-sutil p-5 space-y-3">
       <h2 id="confianza-titulo" class="text-sm font-bold text-base-texto-primario">Antes de entregar: ¿qué tan seguro estás de {{ workspaceStore.currentExercise.questionType === 'coding' ? 'que pasa todos los casos' : 'tu respuesta' }}?</h2>
       <!-- Para qué sirve, en palabras (07/10, Jeider: «¿qué es eso de calibrar mi juicio?»). -->
@@ -19,9 +19,15 @@
           <span class="block text-[11px] text-slate-600">{{ op.ayuda }}</span>
         </button>
       </div>
-      <button type="button" class="w-full min-h-[44px] text-xs font-semibold text-slate-600 hover:text-base-texto-primario" @click="omitir">
-        Omitir y entregar
-      </button>
+      <!-- UX-02 (Jorge, 14/10): salir sin entregar tiene que estar a la vista; tocar fuera tampoco entrega. -->
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" class="min-h-[44px] rounded-lg border border-base-borde-fuerte text-xs font-semibold text-base-texto-primario hover:bg-slate-50" @click="volverAEditar">
+          Volver a editar
+        </button>
+        <button type="button" class="min-h-[44px] text-xs font-semibold text-slate-600 hover:text-base-texto-primario" @click="omitir">
+          Omitir y entregar
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -34,10 +40,12 @@ import { OPCIONES_CONFIANZA } from '~/utils/confianza'
 const workspaceStore = useWorkspaceStore()
 const primera = ref<HTMLButtonElement | null>(null)
 const omitir = () => workspaceStore.responderConfianza(null)
+// Cierra sin entregar: el estudiante vio algo que quiere corregir antes de gastar el intento.
+const volverAEditar = () => { workspaceStore.pidiendoConfianza = false }
 
 watch(() => workspaceStore.pidiendoConfianza, async (abierto) => {
   if (abierto) { await nextTick(); primera.value?.focus() }
 })
 // Escape cierra sin entregar: el estudiante quizá quería seguir editando.
-useEscapeToClose(() => workspaceStore.pidiendoConfianza, () => { workspaceStore.pidiendoConfianza = false })
+useEscapeToClose(() => workspaceStore.pidiendoConfianza, volverAEditar)
 </script>

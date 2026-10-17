@@ -28,10 +28,18 @@
           </div>
 
           <template v-if="!viendoMios">
-            <p v-if="enviado" role="status" class="rounded-md bg-semantico-pasa/10 text-semantico-pasa p-3 font-semibold">
-              ¡Gracias! Quedó guardado con la pantalla donde estabas{{ capturaSubida ? ' y tu pantallazo' : '' }}. Con esto mejoramos STIRE.
-            </p>
-            <p v-if="enviado && avisoCaptura" role="alert" class="rounded-md bg-acento-ambar/10 text-acento-ambar-fuerte p-3 font-semibold">{{ avisoCaptura }}</p>
+            <!-- Sugerencias n.º 15 y 16 (Jorge, 16/10): al enviar, el agradecimiento en grande y dos caminos; el formulario
+                 se vacía para la siguiente en vez de quedarse debajo con lo ya enviado. -->
+            <div v-if="enviado" class="space-y-3">
+              <p role="status" class="rounded-md bg-semantico-pasa/10 text-semantico-pasa p-4 text-sm font-semibold">
+                ¡Gracias! Quedó guardado con la pantalla donde estabas{{ capturaSubida ? ' y tu pantallazo' : '' }}. Con esto mejoramos STIRE.
+              </p>
+              <p v-if="avisoCaptura" role="alert" class="rounded-md bg-acento-ambar/10 text-acento-ambar-fuerte p-3 font-semibold">{{ avisoCaptura }}</p>
+              <div class="grid grid-cols-2 gap-2">
+                <button ref="nuevaRef" type="button" class="min-h-[44px] rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold" @click="nuevaSugerencia">Nueva sugerencia</button>
+                <button type="button" class="min-h-[44px] rounded-md border border-base-borde-fuerte font-semibold text-base-texto-primario" @click="verMios">Ver lo que he enviado</button>
+              </div>
+            </div>
             <form v-else class="space-y-4" @submit.prevent="enviar">
               <fieldset>
                 <legend class="font-semibold text-base-texto-primario mb-1.5">¿Qué es?</legend>
@@ -62,7 +70,7 @@
                 </button>
               </div>
             </form>
-            <button type="button" class="text-acento-ambar-fuerte font-semibold hover:underline" @click="verMios">Ver lo que he enviado</button>
+            <button v-if="!enviado" type="button" class="text-acento-ambar-fuerte font-semibold hover:underline" @click="verMios">Ver lo que he enviado</button>
           </template>
 
           <template v-else>
@@ -117,6 +125,7 @@ const viendoMios = ref(false)
 const cargandoMios = ref(false)
 const mios = ref<Array<{ id: number; tipo: Tipo; estado: Estado; texto: string; clase: string; nota: string | null; tieneCaptura?: boolean; createdAt: string }>>([])
 const captura = ref<Blob | null>(null)
+const nuevaRef = ref<HTMLButtonElement | null>(null)
 const capturaSubida = ref(false)
 const avisoCaptura = ref<string | null>(null)
 const zonaRef = ref<{ usar: (archivo: File | null) => void } | null>(null)
@@ -140,6 +149,10 @@ function claseActual(): number | undefined {
 
 function abrir() {
   abierto.value = true
+  nuevaSugerencia()
+}
+/** Formulario en blanco: al abrir la ventana y con «Nueva sugerencia» después de enviar. */
+function nuevaSugerencia() {
   enviado.value = false
   viendoMios.value = false
   error.value = null
@@ -178,6 +191,8 @@ async function enviar() {
       }
     }
     enviado.value = true
+    await nextTick()
+    nuevaRef.value?.focus()
   } catch (err) {
     error.value = messageOf(err, 'No se pudo enviar. Inténtalo de nuevo.')
   } finally {

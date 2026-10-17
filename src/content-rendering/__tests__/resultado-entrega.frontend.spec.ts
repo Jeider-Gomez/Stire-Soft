@@ -102,6 +102,14 @@ describe('la calibración habla del tipo de ejercicio', () => {
     expect(j).toContain('la lección tarda más en volver a tus repasos');
     expect(leer('components', 'exercise', 'ResultadoEntrega.vue')).toContain('mensajeCalibracion(ws.calibracion, esCodigo.value)');
   });
+
+  it('se puede salir sin entregar: «Volver a editar» a la vista, y tocar fuera no entrega (UX-02, Jorge 14/10)', () => {
+    const j = leer('components', 'JuicioConfianza.vue');
+    expect(j).toContain('Volver a editar');
+    expect(j).toContain('@mousedown.self="volverAEditar"');
+    expect(j).not.toContain('@mousedown.self="omitir"');
+    expect(j).toMatch(/const volverAEditar = \(\) => \{ workspaceStore\.pidiendoConfianza = false \}/);
+  });
 });
 
 describe('el cambio de dominio, dicho como es', () => {
