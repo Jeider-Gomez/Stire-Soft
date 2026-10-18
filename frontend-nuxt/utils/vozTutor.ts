@@ -42,12 +42,65 @@ export function mensajeErrorVoz(error: string): string | null {
       return 'No te escuché. Toca el micrófono y habla cerca de él.'
     case 'not-allowed':
     case 'service-not-allowed':
+    case 'NotAllowedError':
       return 'El navegador no dio permiso para el micrófono. Actívalo en el candado de la barra de direcciones.'
     case 'audio-capture':
+    case 'NotFoundError':
       return 'No encontré un micrófono conectado.'
     case 'network':
       return 'Este navegador no puede convertir la voz en texto. Prueba en Chrome o Edge.'
     default:
       return 'No se pudo escuchar. Intenta de nuevo o escribe tu pregunta.'
   }
+}
+
+/**
+ * Cómo se dicta (17/10): en el celular, el dictado del navegador funciona (usa el reconocimiento del teléfono). En el
+ * computador no es confiable (Brave no trae el servicio de Google y Chrome falló sin decir nada): ahí se graba el audio
+ * y Gemini lo pasa a texto con la clave del estudiante (POST /tutor/transcribir).
+ */
+export function modoDeVoz(hayDictado: boolean, pantallaTactil: boolean, hayGrabadora: boolean): 'dictado' | 'grabacion' | null {
+  if (hayDictado && pantallaTactil) return 'dictado'
+  if (hayGrabadora) return 'grabacion'
+  return hayDictado ? 'dictado' : null
+}
+
+/** Baja el audio a 16 kHz (lo que necesita el reconocimiento de voz) promediando las muestras de cada tramo. */
+export function remuestrear(muestras: Float32Array, desde: number, hasta = 16000): Float32Array {
+  if (desde <= hasta) return muestras
+  const razon = desde / hasta
+  const salida = new Float32Array(Math.floor(muestras.length / razon))
+  for (let i = 0; i < salida.length; i++) {
+    const inicio = Math.floor(i * razon)
+    const fin = Math.min(muestras.length, Math.floor((i + 1) * razon))
+    let suma = 0
+    for (let j = inicio; j < fin; j++) suma += muestras[j]
+    salida[i] = suma / Math.max(1, fin - inicio)
+  }
+  return salida
+}
+
+/** WAV mono de 16 bits: el formato que el servidor acepta y que Gemini entiende, grabe lo que grabe cada navegador. */
+export function codificarWav(muestras: Float32Array, frecuencia: number): ArrayBuffer {
+  const buffer = new ArrayBuffer(44 + muestras.length * 2)
+  const v = new DataView(buffer)
+  const texto = (pos: number, t: string) => { for (let i = 0; i < t.length; i++) v.setUint8(pos + i, t.charCodeAt(i)) }
+  texto(0, 'RIFF')
+  v.setUint32(4, 36 + muestras.length * 2, true)
+  texto(8, 'WAVE')
+  texto(12, 'fmt ')
+  v.setUint32(16, 16, true)
+  v.setUint16(20, 1, true)
+  v.setUint16(22, 1, true)
+  v.setUint32(24, frecuencia, true)
+  v.setUint32(28, frecuencia * 2, true)
+  v.setUint16(32, 2, true)
+  v.setUint16(34, 16, true)
+  texto(36, 'data')
+  v.setUint32(40, muestras.length * 2, true)
+  muestras.forEach((m, i) => {
+    const x = Math.max(-1, Math.min(1, m))
+    v.setInt16(44 + i * 2, x < 0 ? x * 0x8000 : x * 0x7fff, true)
+  })
+  return buffer
 }

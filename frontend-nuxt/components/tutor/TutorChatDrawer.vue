@@ -278,13 +278,15 @@
             </div>
 
             <!-- Input de Pregunta Libre (§18.6 — font-size ≥16px para evitar zoom iOS) -->
-            <div class="flex items-center gap-2">
+            <!-- Como el campo de los chats de IA en el celular (17/10, Jeider: el botón de enviar se salía de la pantalla): una
+                 caja con los atajos, el texto y UN botón a la derecha, que es el micrófono si no hay texto y enviar si lo hay. -->
+            <div class="flex items-center gap-1 p-1 rounded-2xl bg-white border border-slate-200 focus-within:border-stire-teal focus-within:ring-2 focus-within:ring-stire-teal/20 transition-all">
               <button
                 v-if="!atajosSolos"
                 id="boton-atajos"
                 type="button"
-                class="w-11 h-11 rounded-xl border flex items-center justify-center shrink-0 transition-colors"
-                :class="verAtajos ? 'bg-amber-50 border-amber-300 text-amber-600' : 'bg-white border-slate-200 text-slate-500 hover:text-amber-600'"
+                class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+                :class="verAtajos ? 'bg-amber-50 text-amber-600' : 'text-slate-500 hover:text-amber-600'"
                 :aria-expanded="verAtajos"
                 aria-controls="atajos-tutor"
                 title="Atajos para pedir ayuda"
@@ -300,18 +302,19 @@
                 @blur="escribiendo = false"
                 type="text"
                 :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
-                placeholder="Haz una pregunta sobre tu lógica..."
+                placeholder="Pregúntale al Tutor…"
                 aria-label="Pregunta al Tutor IA"
                 style="font-size: 16px;"
-                class="flex-1 px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-stire-teal focus:ring-2 focus:ring-stire-teal/20 text-slate-800 placeholder:text-slate-500 outline-none transition-all disabled:opacity-50" />
-              <TutorDictarPregunta :escrito="inputQuery" :desactivado="tutorStore.isThinking || !tutorStore.tutorEnabled" @texto="(t) => (inputQuery = t)" />
+                class="flex-1 min-w-0 px-2 py-2 bg-transparent text-slate-800 placeholder:text-slate-500 outline-none disabled:opacity-50" />
+              <TutorDictarPregunta v-show="!inputQuery.trim() || vozActiva" :escrito="inputQuery" :desactivado="tutorStore.isThinking || !tutorStore.tutorEnabled" @texto="(t) => (inputQuery = t)" @activo="(a) => (vozActiva = a)" />
               <!-- mousedown.prevent: tocar Enviar no le quita el foco al campo; si no, el teclado se cerraba y el botón se
                    movía bajo el dedo antes de recibir el toque. -->
               <button
+                v-show="inputQuery.trim() && !vozActiva"
                 @mousedown.prevent
                 @click="handleSend"
                 :disabled="!inputQuery.trim() || tutorStore.isThinking || !tutorStore.tutorEnabled"
-                class="w-11 h-11 rounded-xl bg-stire-teal hover:bg-[#14e2c8] text-[#070e24] flex items-center justify-center shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                class="w-10 h-10 rounded-full bg-stire-teal hover:bg-[#14e2c8] text-[#070e24] flex items-center justify-center shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                 aria-label="Enviar pregunta" title="Enviar"
               >
                 <Send :size="16" aria-hidden="true" />
@@ -341,6 +344,8 @@ const studentStore = useStudentStore()
 
 const pantallaAncha = usePantallaAncha()
 const inputQuery = ref('')
+/** El micrófono está grabando o pasando la voz a texto: sigue a la vista para poder terminar. */
+const vozActiva = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
 const drawerRef = ref<HTMLElement | null>(null)
 const inputRef = ref<HTMLElement | null>(null)

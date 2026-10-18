@@ -299,6 +299,14 @@ export const useTutorStore = defineStore('tutor', () => {
     return claves.length > 0 ? claves : undefined
   }
 
+  /** Lo que el estudiante dijo con la voz, en texto (POST /tutor/transcribir, con su clave de Google AI Studio). */
+  async function transcribir(audio: Blob): Promise<string> {
+    const datos = new FormData()
+    datos.append('audio', audio, 'voz.wav')
+    const res = await api.post<{ texto: string }>('/tutor/transcribir', datos)
+    return res.texto
+  }
+
   // ─── Enviar mensaje (§18.1) ──────────────────────────────────────────────────
   async function sendMessage(userText: string) {
     if (!userText.trim()) return
@@ -446,6 +454,7 @@ export const useTutorStore = defineStore('tutor', () => {
     closeDrawer,
     toggleDrawer,
     sendMessage,
+    transcribir,
     retryLastMessage,
     requestQuickHint,
     goToSuggestedActivity,

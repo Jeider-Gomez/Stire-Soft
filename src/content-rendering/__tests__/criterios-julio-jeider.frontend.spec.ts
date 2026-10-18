@@ -158,7 +158,7 @@ describe('UI-05: el Tutor acompaña cuando el estudiante se estanca', () => {
   it('cada respuesta del Tutor se puede escuchar y la pregunta se puede dictar', () => {
     const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
     expect(d).toContain(`<TutorPieMensaje :de-estudiante="msg.sender === 'student'"`);
-    expect(d).toContain('<TutorDictarPregunta :escrito="inputQuery"');
+    expect(d).toContain(':escrito="inputQuery" :desactivado="tutorStore.isThinking');
     expect(d).toContain('<TutorAvisoAcompanado />');
     expect(leer('components', 'tutor', 'DictarPregunta.vue')).toContain("reconocedor.lang = 'es-CO'");
   });
@@ -183,5 +183,35 @@ describe('UI-05: el Tutor acompaña cuando el estudiante se estanca', () => {
     const d = leer('components', 'tutor', 'DictarPregunta.vue');
     expect(d).toContain('<p v-if="error" role="alert"');
     expect(d).not.toMatch(/<p v-if="error"[^>]*sr-only/);
+  });
+
+  // Jeider, 17/10: en el celular el dictado funcionó; en el computador, ni en Chrome ni en Brave. Allí se graba y Gemini
+  // lo pasa a texto con la clave del estudiante.
+  it('en el celular dicta el navegador; en el computador se graba y se convierte en texto en el servidor', () => {
+    const v = cargar<{ modoDeVoz: (d: boolean, t: boolean, g: boolean) => string | null }>('vozTutor');
+    expect(v.modoDeVoz(true, true, true)).toBe('dictado');
+    expect(v.modoDeVoz(true, false, true)).toBe('grabacion');
+    expect(v.modoDeVoz(false, false, true)).toBe('grabacion');
+    expect(v.modoDeVoz(false, false, false)).toBeNull();
+    expect(leer('stores', 'tutor.ts')).toContain("api.post<{ texto: string }>('/tutor/transcribir', datos)");
+  });
+
+  it('la grabación llega al servidor como WAV de 16 kHz, el formato que acepta', () => {
+    const v = cargar<{ codificarWav: (m: Float32Array, f: number) => ArrayBuffer; remuestrear: (m: Float32Array, de: number, a?: number) => Float32Array }>('vozTutor');
+    const m = v.remuestrear(new Float32Array(48000).fill(0.5), 48000);
+    expect(m.length).toBe(16000);
+    const wav = new DataView(v.codificarWav(m, 16000));
+    const txt = (i: number, n: number) => String.fromCharCode(...Array.from({ length: n }, (_, k) => wav.getUint8(i + k)));
+    expect(txt(0, 4)).toBe('RIFF');
+    expect(txt(8, 4)).toBe('WAVE');
+    expect(wav.getUint32(24, true)).toBe(16000);
+    expect(wav.byteLength).toBe(44 + 16000 * 2);
+  });
+
+  it('el campo del chat no empuja los botones: un solo botón que es micrófono sin texto y enviar con texto', () => {
+    const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
+    expect(d).toContain('class="flex-1 min-w-0');
+    expect(d).toContain('<TutorDictarPregunta v-show="!inputQuery.trim() || vozActiva"');
+    expect(d).toContain('v-show="inputQuery.trim() && !vozActiva"');
   });
 });
