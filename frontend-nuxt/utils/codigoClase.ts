@@ -54,6 +54,9 @@ export function urlDeIngreso(origen: string, codigo: string): string {
 export function rutaDeVuelta(valor: unknown): string | null {
   if (typeof valor !== 'string') return null
   if (!valor.startsWith('/') || valor.startsWith('//') || valor.startsWith('/\\') || valor.startsWith('/auth')) return null
+  // Solo dentro de las secciones de la app (17/10: quien escribía /login terminaba, tras entrar, en «No encontramos esa
+  // página»): otra ruta lleva al inicio del rol.
+  if (!/^\/(estudiante|docente|admin)(\/|\?|$)/.test(valor)) return null
   return valor
 }
 

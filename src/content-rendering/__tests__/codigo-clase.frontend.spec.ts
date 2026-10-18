@@ -40,6 +40,9 @@ describe('Código y QR de la clase (frontend)', () => {
   it('tras iniciar sesión o registrarse vuelve a la página del QR, nunca a otro sitio', () => {
     expect(u.rutaDeVuelta('/estudiante/clases?codigo=ALGO-7KQ2')).toBe('/estudiante/clases?codigo=ALGO-7KQ2');
     for (const malo of ['//evil.com', 'https://evil.com', '/\\evil.com', '/auth/login', 5, undefined]) expect(u.rutaDeVuelta(malo)).toBeNull();
+    // 17/10: /login no existe; tras entrar se va al inicio del rol, no a «No encontramos esa página».
+    for (const fuera of ['/login', '/', '/estudianteX']) expect(u.rutaDeVuelta(fuera)).toBeNull();
+    expect(u.rutaDeVuelta('/docente/clase/3')).toBe('/docente/clase/3');
     expect(leer('middleware', 'auth.global.ts')).toContain("query: { volver: to.fullPath }");
     expect(leer('pages', 'auth', 'login.vue')).toContain('rutaDeVuelta(route.query.volver) ?? rutaDelRol(');
     expect(leer('pages', 'auth', 'register.vue')).toContain("rutaDeVuelta(route.query.volver) ?? '/estudiante'");
