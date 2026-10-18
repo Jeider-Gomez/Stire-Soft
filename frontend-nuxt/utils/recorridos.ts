@@ -17,7 +17,7 @@ export interface PasoRecorrido {
 
 export interface Recorrido {
   id: string
-  rol: 'estudiante' | 'docente'
+  rol: 'estudiante' | 'docente' | 'administrador'
   /** Nombre de la pantalla, para el botón «?»: «Ver cómo funciona {pantalla}». */
   pantalla: string
   pasos: PasoRecorrido[]
@@ -93,6 +93,68 @@ export const RECORRIDOS: Recorrido[] = [
       { elemento: '[data-recorrido="hoy"]', titulo: 'Hoy en tu clase', texto: 'Lo que conviene atender primero: quien no puede avanzar, lo que espera tu comentario y quien está listo para más.' },
     ],
   },
+  {
+    id: 'docente-contenidos',
+    rol: 'docente',
+    pantalla: 'los contenidos',
+    pasos: [
+      { elemento: '[data-recorrido="nuevo-modulo"]', titulo: 'Nuevo módulo', texto: 'El curso se arma en módulos, temas y lecciones. Empieza por un módulo.' },
+      { elemento: '#abrir-importar', titulo: 'Traer de otra clase', texto: 'Copia los módulos de otra clase tuya o de una plantilla, en vez de escribirlos otra vez.' },
+      { elemento: '[data-recorrido="arbol"]', titulo: 'Tu curso', texto: 'Abre una lección para escribir su explicación y crear sus ejercicios. Lo que no publiques, tus estudiantes no lo ven.' },
+    ],
+  },
+  {
+    id: 'docente-estudiantes',
+    rol: 'docente',
+    pantalla: 'tus estudiantes',
+    pasos: [
+      { elemento: '[data-recorrido="resumen-clase"]', titulo: 'La clase de un vistazo', texto: 'El dominio promedio, los ejercicios aprobados y cuántos necesitan apoyo.' },
+      { elemento: '[aria-labelledby="mapa-calor-titulo"]', titulo: '¿A quién ayudo ahora?', texto: 'Cada fila es un estudiante y cada columna una lección. Toca una celda para ver qué le pasa.' },
+      { elemento: '[data-recorrido="solo-riesgo"]', titulo: 'Solo quienes necesitan apoyo', texto: 'Filtra la lista para ver primero a quienes van por debajo.' },
+      { elemento: '[data-recorrido="lista-estudiantes"]', titulo: 'Cada estudiante', texto: 'Ábrelo para ver su avance lección por lección.' },
+    ],
+  },
+  {
+    id: 'docente-notas',
+    rol: 'docente',
+    pantalla: 'las notas',
+    pasos: [
+      { elemento: '[data-recorrido="empezar-notas"]', titulo: 'Las notas son opcionales', texto: 'Si quieres llevarlas aquí, elige cómo empezar. Después cambias lo que quieras.' },
+      { elemento: '[data-recorrido="resumen-notas"]', titulo: 'Resumen', texto: 'El promedio de la clase, quiénes aprueban y quiénes no tienen nota todavía.' },
+      { elemento: '[data-recorrido="tabla-notas"]', titulo: 'La tabla', texto: 'Las notas que pones tú se escriben en la celda. La final se puede ajustar, con un motivo que queda en el historial.' },
+      { elemento: '[data-recorrido="moodle"]', titulo: 'Para Moodle', texto: 'Descarga el archivo y súbelo en Moodle, en «Importar calificaciones».' },
+    ],
+  },
+  {
+    id: 'admin-usuarios',
+    rol: 'administrador',
+    pantalla: 'usuarios y roles',
+    pasos: [
+      { elemento: '[data-recorrido="menu-admin"]', titulo: 'El menú', texto: 'El estado del servidor, los usuarios, las sugerencias, el catálogo, la encuesta y los registros.' },
+      { elemento: '#open-register-user-btn', titulo: 'Registrar usuario', texto: 'Crea una cuenta a mano, por ejemplo para un docente nuevo.' },
+      { elemento: 'nav[aria-label="Secciones de administración"]', titulo: 'Solicitudes y cambios', texto: 'Aquí apruebas a quien pidió ser docente y ves el historial de cambios de rol.' },
+    ],
+  },
+  {
+    id: 'admin-sugerencias',
+    rol: 'administrador',
+    pantalla: 'las sugerencias',
+    pasos: [
+      { elemento: '[data-recorrido="estado-sugerencias"]', titulo: 'Lo pendiente', texto: 'Cuántas faltan por atender y cuántas impiden que alguien siga usando STIRE.' },
+      { elemento: '[data-recorrido="bandejas"]', titulo: 'Bandejas', texto: 'Al resolver una, escribe cómo: quien la envió lo lee. Lo que no sirve se archiva con un motivo.' },
+      { elemento: '[data-recorrido="excel"]', titulo: 'Descargar', texto: 'Todas en un Excel con filtros y un resumen.' },
+    ],
+  },
+  {
+    id: 'admin-usabilidad',
+    rol: 'administrador',
+    pantalla: 'la encuesta',
+    pasos: [
+      { elemento: '[data-recorrido="sus-resumen"]', titulo: 'El puntaje', texto: 'El promedio SUS de 0 a 100. Cuenta la última respuesta de cada persona.' },
+      { elemento: '[aria-labelledby="por-afirmacion-titulo"]', titulo: 'Qué lo baja', texto: 'Cada afirmación por separado: la que más baja es por donde conviene empezar.' },
+      { elemento: '[aria-labelledby="comentarios-titulo"]', titulo: 'En sus palabras', texto: 'Lo que cambiarían primero. El puntaje dice cuánto; los comentarios dicen qué.' },
+    ],
+  },
 ]
 
 /** Qué recorrido corresponde a una ruta, según el rol. Las rutas con más partes (una lección, un ejercicio) van por prefijo. */
@@ -108,8 +170,16 @@ export function recorridoDeRuta(ruta: string, rol: string | null | undefined): R
       : rol === 'docente'
         ? r === '/docente' ? 'docente-inicio'
           : /^\/docente\/clase\/[^/]+$/.test(r) ? 'docente-clase'
-            : null
-        : null
+            : r === '/docente/contenidos' ? 'docente-contenidos'
+              : r === '/docente/rendimiento' ? 'docente-estudiantes'
+                : /^\/docente\/clase\/[^/]+\/notas$/.test(r) ? 'docente-notas'
+                  : null
+        : rol === 'administrador'
+          ? r === '/admin' || r === '/admin/usuarios' ? 'admin-usuarios'
+            : r === '/admin/sugerencias' ? 'admin-sugerencias'
+              : r === '/admin/usabilidad' ? 'admin-usabilidad'
+                : null
+          : null
   return RECORRIDOS.find((x) => x.id === id) ?? null
 }
 

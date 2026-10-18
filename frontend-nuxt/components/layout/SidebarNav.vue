@@ -115,7 +115,7 @@
       </nav>
 
       <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR (ADM-V01..V03) -->
-      <nav v-else class="space-y-1.5 text-sm font-medium">
+      <nav v-else data-recorrido="menu-admin" class="space-y-1.5 text-sm font-medium">
         <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Administración</p>
 
         <NuxtLink

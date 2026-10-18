@@ -16,7 +16,7 @@
     <p v-if="!datos" :role="error ? 'alert' : 'status'" class="text-xs" :class="error ? 'text-semantico-falla' : 'text-slate-600'">{{ error || 'Cargando…' }}</p>
 
     <template v-else>
-      <section class="grid grid-cols-1 sm:grid-cols-3 gap-4" aria-label="Resumen">
+      <section class="grid grid-cols-1 sm:grid-cols-3 gap-4" aria-label="Resumen" data-recorrido="sus-resumen">
         <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 text-center">
           <p class="text-xs text-slate-600">Puntaje SUS promedio</p>
           <p class="text-3xl font-bold text-base-texto-primario">{{ datos.promedio === null ? '—' : formato(datos.promedio) }}</p>

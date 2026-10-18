@@ -70,7 +70,7 @@
     <!-- ESTADO 4: Defecto (Con datos reales de cohorte) -->
     <div v-else-if="metrics" class="space-y-6">
       <!-- Tarjetas KPI -->
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section data-recorrido="resumen-clase" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- KPI 1: Dominio promedio -->
         <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-1">
           <span class="text-[11px] font-semibold text-base-texto-secundario uppercase tracking-wider block">
@@ -143,7 +143,7 @@
       <DocenteMapaDeCalor :class-id="selectedClassId" />
 
       <!-- Lista de estudiantes con filtros -->
-      <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden space-y-4 p-5">
+      <section data-recorrido="lista-estudiantes" class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm overflow-hidden space-y-4 p-5">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-base-borde-sutil text-xs">
           <div>
             <h2 class="text-sm font-bold text-base-texto-primario">
@@ -156,7 +156,7 @@
 
           <!-- Filtro de riesgo -->
           <div class="flex items-center gap-2">
-            <button
+            <button data-recorrido="solo-riesgo"
               @click="onlyAtRisk = !onlyAtRisk"
               class="px-3 py-1.5 rounded-md font-semibold text-xs border transition-colors flex items-center gap-1.5"
               :class="onlyAtRisk

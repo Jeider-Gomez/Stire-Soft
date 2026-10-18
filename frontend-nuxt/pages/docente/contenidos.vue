@@ -30,6 +30,7 @@
 
         <button
           v-if="selectedClassId"
+          data-recorrido="nuevo-modulo"
           @click="openNewModuleModal"
           class="min-h-[44px] px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte shadow-sm"
           aria-label="Crear nuevo módulo curricular">
@@ -98,6 +99,7 @@
 
     <DocenteArbolContenidos
       v-else
+      data-recorrido="arbol"
       :estado="estado"
       :expanded-unit-id="expandedUnitId"
       :unit-summary="unitSummary"

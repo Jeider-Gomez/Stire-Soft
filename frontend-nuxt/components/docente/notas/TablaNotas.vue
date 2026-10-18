@@ -6,7 +6,7 @@
     <p v-if="libro.filas.length === 0" class="text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil p-6 text-center">
       Todavía no hay estudiantes en la clase.
     </p>
-    <section v-else class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-sm overflow-hidden">
+    <section v-else data-recorrido="tabla-notas" class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-xs">
           <caption class="sr-only">Notas por estudiante: cada nota, la de cada módulo, la que propone STIRE y la final</caption>

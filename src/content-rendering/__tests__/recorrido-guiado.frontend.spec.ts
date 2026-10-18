@@ -38,8 +38,15 @@ describe('recorrido guiado', () => {
     expect(r.recorridoDeRuta('/estudiante/progreso/', 'estudiante')?.id).toBe('estudiante-progreso');
     expect(r.recorridoDeRuta('/docente', 'docente')?.id).toBe('docente-inicio');
     expect(r.recorridoDeRuta('/docente/clase/5', 'docente')?.id).toBe('docente-clase');
+    expect(r.recorridoDeRuta('/docente/contenidos', 'docente')?.id).toBe('docente-contenidos');
+    expect(r.recorridoDeRuta('/docente/rendimiento', 'docente')?.id).toBe('docente-estudiantes');
+    expect(r.recorridoDeRuta('/docente/clase/5/notas', 'docente')?.id).toBe('docente-notas');
+    expect(r.recorridoDeRuta('/admin', 'administrador')?.id).toBe('admin-usuarios');
+    expect(r.recorridoDeRuta('/admin/sugerencias', 'administrador')?.id).toBe('admin-sugerencias');
+    expect(r.recorridoDeRuta('/admin/usabilidad', 'administrador')?.id).toBe('admin-usabilidad');
     // Otra pantalla u otro rol: sin recorrido (y sin botón «?»).
-    expect(r.recorridoDeRuta('/docente/clase/5/notas', 'docente')).toBeNull();
+    expect(r.recorridoDeRuta('/docente/clase/5/asistencia', 'docente')).toBeNull();
+    expect(r.recorridoDeRuta('/admin', 'docente')).toBeNull();
     expect(r.recorridoDeRuta('/estudiante', 'docente')).toBeNull();
   });
 
@@ -77,7 +84,7 @@ describe('recorrido guiado', () => {
     const h = leer('components', 'layout', 'HeaderNav.vue');
     expect(h).toContain('v-if="recorrido.actual.value"');
     expect(h).toContain('@click="recorrido.mostrar()"');
-    for (const l of ['student.vue', 'teacher.vue', 'workspace.vue']) {
+    for (const l of ['student.vue', 'teacher.vue', 'workspace.vue', 'admin.vue']) {
       expect(leer('layouts', l)).toContain('watch(() => rutaActual.path, primeraVez, { immediate: true })');
     }
   });

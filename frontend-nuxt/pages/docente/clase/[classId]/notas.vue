@@ -12,7 +12,7 @@
           súbelo en «Importar calificaciones».
         </p>
       </div>
-      <button v-if="libro?.esquema" type="button" :disabled="libro.filas.length === 0" @click="descargarCsv"
+      <button v-if="libro?.esquema" data-recorrido="moodle" type="button" :disabled="libro.filas.length === 0" @click="descargarCsv"
         class="min-h-[44px] px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 shrink-0 self-start disabled:opacity-40">
         <Download :size="14" aria-hidden="true" /> Descargar para Moodle (CSV)
       </button>
@@ -25,7 +25,7 @@
 
     <template v-if="libro">
       <!-- ─── Sin notas: es opcional. Formas de empezar, que después se cambian por completo. ─── -->
-      <section v-if="!libro.esquema && !borrador" class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-sm p-6 space-y-4">
+      <section v-if="!libro.esquema && !borrador" data-recorrido="empezar-notas" class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-sm p-6 space-y-4">
         <div>
           <h2 class="text-sm font-bold text-base-texto-primario">Esta clase no lleva notas en STIRE</h2>
           <p class="text-xs text-base-texto-secundario mt-1">No es obligatorio. Si quieres llevarlas aquí, elige cómo empezar; después cambias lo que quieras.</p>
@@ -44,7 +44,7 @@
 
       <template v-if="libro.esquema">
         <!-- ─── Resumen ─── -->
-        <section v-if="libro.esquema.calculo !== 'ninguno' || libro.filas.some((f) => f.final !== null)" aria-label="Resumen de la clase" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <section v-if="libro.esquema.calculo !== 'ninguno' || libro.filas.some((f) => f.final !== null)" aria-label="Resumen de la clase" data-recorrido="resumen-notas" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4">
             <p class="text-[11px] text-base-texto-secundario">Promedio de la clase</p>
             <p class="text-xl font-bold text-base-texto-primario">{{ libro.resumen.promedio === null ? '—' : notaComa(libro.resumen.promedio) }}</p>

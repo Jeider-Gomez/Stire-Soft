@@ -14,12 +14,12 @@
             Quien la envió ve el estado y tu respuesta.
           </p>
         </div>
-        <button type="button" :disabled="!lista.length" class="shrink-0 min-h-[44px] px-4 rounded-md bg-semantico-pasa text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 disabled:opacity-40 self-start" @click="descargar">
+        <button type="button" data-recorrido="excel" :disabled="!lista.length" class="shrink-0 min-h-[44px] px-4 rounded-md bg-semantico-pasa text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 disabled:opacity-40 self-start" @click="descargar">
           <FileSpreadsheet :size="15" aria-hidden="true" /> Descargar Excel
         </button>
       </div>
       <!-- El estado de un vistazo: cuánto falta y cuánto bloquea. -->
-      <dl class="grid grid-cols-3 gap-2 text-center">
+      <dl data-recorrido="estado-sugerencias" class="grid grid-cols-3 gap-2 text-center">
         <div class="rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 p-2">
           <dt class="text-[11px] text-base-texto-secundario">Por atender</dt>
           <dd class="text-lg font-bold text-base-texto-primario">{{ conteo.pendientes }}<span v-if="bloquean" class="block text-[11px] font-semibold text-semantico-falla">{{ bloquean }} {{ bloquean === 1 ? 'bloquea' : 'bloquean' }}</span></dd>
@@ -35,7 +35,7 @@
       </dl>
     </header>
 
-    <div class="flex flex-wrap gap-2 border-b border-base-borde-sutil text-xs" role="tablist" aria-label="Bandejas de sugerencias">
+    <div class="flex flex-wrap gap-2 border-b border-base-borde-sutil text-xs" role="tablist" aria-label="Bandejas de sugerencias" data-recorrido="bandejas">
       <button v-for="b in BANDEJAS" :id="`tab-${b.valor}`" :key="b.valor" type="button" role="tab" :aria-selected="filtros.bandeja === b.valor" aria-controls="panel-sugerencias"
         class="min-h-[44px] px-3 font-semibold inline-flex items-center gap-1.5 border-b-2 -mb-px"
         :class="filtros.bandeja === b.valor ? 'border-acento-ambar-fuerte text-acento-ambar-fuerte' : 'border-transparent text-base-texto-secundario hover:text-base-texto-primario'"
