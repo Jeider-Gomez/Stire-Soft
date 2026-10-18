@@ -17,7 +17,7 @@
       </ol>
 
       <figure v-if="tarea.captura" class="rounded-lg border border-base-borde-fuerte overflow-hidden bg-base-bg-secundario">
-        <img :src="tarea.captura.src" :alt="tarea.captura.alt" loading="lazy" class="block mx-auto w-auto max-w-full max-h-[560px]" />
+        <img :src="tarea.captura.src" :alt="tarea.captura.alt" class="block mx-auto w-auto max-w-full max-h-[560px]" />
       </figure>
 
       <p class="flex gap-2 text-sm rounded-lg bg-semantico-pasa/10 border border-semantico-pasa/30 p-3 text-base-texto-primario">
@@ -59,7 +59,10 @@ const circulo = computed(() => (props.rol === 'estudiante' ? 'bg-stire-purple' :
 
 <style scoped>
 @media print {
-  .tarea-manual { break-inside: avoid-page; box-shadow: none; }
-  figure { break-inside: avoid; }
+  /* La tarea puede seguir en la hoja siguiente; lo que no se parte es el título con su primer paso, la captura y cada
+     recuadro. */
+  .tarea-manual { box-shadow: none; }
+  header, li, figure, p, section { break-inside: avoid; }
+  header { break-after: avoid; }
 }
 </style>

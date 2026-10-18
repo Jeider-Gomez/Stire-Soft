@@ -94,12 +94,14 @@ const volver = computed(() =>
 @media print {
   @page { size: A4; margin: 16mm 14mm 18mm; @bottom-right { content: 'STIRE · Manual de usuario · ' counter(page); font: 9px Inter, sans-serif; color: #64748B; } }
   @page :first { margin: 0; @bottom-right { content: none; } }
-  .manual { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { background: #fff !important; }
+  .manual { min-height: 0; background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .manual .no-imprimir { display: none !important; }
   .manual .portada { min-height: 297mm; display: flex; align-items: center; break-after: page; }
   .manual .indice { break-after: page; }
   .manual .indice > div { position: static; border: none; }
   .manual .seccion-manual { break-before: page; }
   .manual .seccion-manual:first-of-type { break-before: auto; }
+  .manual .seccion-manual > header { break-after: avoid; }
 }
 </style>
