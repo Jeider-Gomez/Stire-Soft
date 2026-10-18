@@ -34,17 +34,19 @@
 ## 🎯 2. Objetivo del Sprint
 
 **La semana del pitch** (decisión de Jeider, 17/10): presentar STIRE antes y después de las listas de chequeo del
-profesor, en español y en inglés. Todo lo demás espera en el backlog.
+profesor, en español y en inglés, y mostrarle los avances. Jorge hace además el QA de la Semana 9. Todo lo demás espera
+en el backlog.
 
 ### Resultados esperados
 
-1. Cada uno entrega su parte del pitch, en español y en inglés, con sus dos capturas, a más tardar el **martes 20/10**.
-2. Las 7 diapositivas listas el **miércoles 21/10**, con el video de respaldo de la demostración.
+1. Cada uno tiene su parte del pitch, en español y en inglés, a más tardar el **martes 20/10**.
+2. La presentación de avances revisada por el equipo el **miércoles 21/10**.
 3. Ensayo con cronómetro el **jueves 22/10** y exposición (fecha por confirmar).
 4. Pedro confirma MOD-02 como usuario: la lista de Tutores queda en 24 / 24.
-5. Después de la exposición, Jeider reactiva el apagado automático de las 23:00 y la encuesta SUS cada 90 días.
-6. Registro de los 7 Hábitos de los 5 integrantes (`S10-H-*`).
-7. Bitácora cerrada el viernes 23/10, sin retraso.
+5. Jorge entrega el QA de regresión de la Semana 9 (`S10-JOR02`).
+6. Después de la exposición, Jeider reactiva el apagado automático de las 23:00. La encuesta SUS se queda cada 7 días.
+7. Registro de los 7 Hábitos de los 5 integrantes (`S10-H-*`).
+8. Bitácora cerrada el viernes 23/10, sin retraso.
 
 ---
 
@@ -53,51 +55,55 @@ profesor, en español y en inglés. Todo lo demás espera en el backlog.
 > 🔁 = viene de la Semana 9. Cada persona tiene sus tarjetas por separado y cada tarjeta de Trello tiene su lista de
 > verificación.
 
-### 3.1 El pitch: cómo lo vamos a presentar
+### 3.1 El pitch y la presentación de avances
 
-Detalle, guion y criterios sugeridos en [`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./docs/pitch/PITCH_LISTAS_CHEQUEO.md).
+Guion con un borrador para cada uno en [`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./docs/pitch/PITCH_LISTAS_CHEQUEO.md).
 
-- **Formato:** 7 diapositivas en Google Slides con capturas de antes (04/10) y después, una línea por criterio, y
-  **30 segundos en vivo** del Tutor que acompaña paso a paso. Si falla internet, se pasa el video de respaldo.
-- **Orden:** Jeider (apertura) → José → Jorge → Jeider → Julio → **en vivo** → Pedro → Pedro (cierre). Unos 3 minutos y
-  medio.
+- **Pitch, sin diapositivas:** cada uno habla por su cuenta unos 30 segundos, en español y en inglés, de los criterios de
+  su lista y de lo que hizo la semana. Orden: Jeider → José → Jorge → Julio → Pedro (cierra).
+- **Presentación de avances (aparte):** 10 diapositivas en inglés para el profesor
+  (https://claude.ai/artifact/VM5P4yjDpG27rRZXYgu3Vs). Se entiende sola y también después del pitch: la diapositiva
+  «The pitch» dice quién habla de qué.
 - **Cifras:** antes 62,5 % y 58,3 %; hoy, según el equipo, 100 % y 100 %; SUS 81,5 (bueno).
 
-| Cuándo | Qué | Quién |
-|---|---|---|
-| Martes 20/10, 8:00 p. m. | Su parte (español e inglés) y sus dos capturas · plantilla de las diapositivas | José, Jorge, Julio y Pedro · José |
-| Miércoles 21/10 | Diapositivas completas · video de respaldo | Pedro · Jeider |
-| Jueves 22/10, 8:00 p. m. | Ensayo por Meet con cronómetro, en los dos idiomas | Todos (Pedro dirige) |
-| Por confirmar | Exposición | Todos |
+| Cuándo | Qué |
+|---|---|
+| Martes 20/10, 8:00 p. m. | Cada uno tiene su parte lista |
+| Miércoles 21/10 | Presentación de avances revisada |
+| Jueves 22/10, 8:00 p. m. | Ensayo por Meet con cronómetro (Pedro dirige) |
+| Por confirmar | Exposición |
 
 ### Jeider Gómez — Líder Técnico
 
-- [ ] **S10-J01 · Demostración en vivo del Tutor y video de respaldo** *(miércoles 21/10)* — tres fallos en un
-  ejercicio, el Tutor ofrece acompañar, una pregunta dictada y «Escuchar» la respuesta.
-- [ ] **S10-J02 · Operar el servidor** — arriba en el ensayo y en la exposición; después, apagado de las 23:00 y SUS
-  cada 90 días.
-- [x] **Su parte del pitch** — apertura, UX-08 y PAT-01, ya escritas en los dos idiomas (de `S09-PITCH-JEIDER`).
+- [ ] **S10-J02 · Operar el servidor** — arriba en el ensayo y en la exposición; después, el apagado de las 23:00.
+- [x] **Su parte del pitch** — apertura, UX-08 y PAT-01, en los dos idiomas.
+- [x] **Presentación de avances** y borradores del pitch para cada uno. *(17/10.)*
+- [x] **Encuesta SUS cada 7 días**, ya sin volver a 90. *(17/10.)*
 
 ### Pedro Romero — Documentación + Bitácora
 
 - [x] **S10-P01 · Tablero de la Semana 10** — creado el 17/10.
-- [ ] 🔁 **S10-PITCH-PEDRO · Su parte y el cierre** *(martes 20/10)* — sugeridos MOD-02 y UI-04.
-- [ ] 🔁 **S10-P05 · Coordinar el pitch** — diapositivas, ensayo y pasar las diapositivas en la exposición.
+- [ ] 🔁 **S10-PITCH-PEDRO · Su parte y el cierre** *(martes 20/10)* — borrador con MOD-02 y UI-04.
+- [ ] 🔁 **S10-P05 · Coordinar el pitch y la presentación de avances** — que todos tengan su parte, el ensayo y mostrar
+  la presentación al profesor.
 - [ ] **S10-P06 · Confirmar MOD-02 como usuario** *(martes 20/10)* — «Mi perfil de aprendizaje» en «Mi progreso» y en la
   ficha de un estudiante.
 - [ ] **S10-P02 · Bitácora** — al día y cerrada el viernes 23/10.
 
 ### José López — UI/UX + Comunicación
 
-- [ ] 🔁 **S10-PITCH-JOSE · Su parte y la plantilla de las diapositivas** *(martes 20/10)* — sugeridos UX-01 y MOB-02.
+- [ ] 🔁 **S10-PITCH-JOSE · Su parte** *(martes 20/10)* — borrador con UX-01 y MOB-02.
 
 ### Jorge Cervantes — Gestión + Calidad
 
-- [ ] 🔁 **S10-PITCH-JORGE · Su parte** *(martes 20/10)* — sugeridos UX-02 y PAT-03.
+- [ ] 🔁 **S10-PITCH-JORGE · Su parte** *(martes 20/10)* — borrador con UX-02 y PAT-03.
+- [ ] 🔁 **S10-JOR02 · QA de regresión de la Semana 9** *(jueves 22/10)* — avisos y notificaciones, «Apariencia», el
+  ejercicio de programar, la retroalimentación de opción múltiple, el Tutor, los 5 hallazgos de José y lo nuevo del 17/10.
+  Reporte en `docs/calidad/reportes-qa/REPORTE_QA_S9.md`.
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] 🔁 **S10-PITCH-JULIO · Su parte** *(martes 20/10)* — sugeridos UI-05 y UI-01; da paso a la demostración en vivo.
+- [ ] 🔁 **S10-PITCH-JULIO · Su parte** *(martes 20/10)* — borrador con UI-05 y UI-01.
 
 ### 3.2 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
 
@@ -114,7 +120,7 @@ Esperan a después del pitch, en tarjetas por persona:
 | Jeider | `B-J01` recorrido guiado dentro de STIRE (Driver.js) · `B-J02` corregir los ejercicios de programar según la revisión · 🔁 `B-J03` asistencia con un iPhone · `B-J04` hablar con el Tutor en cualquier navegador |
 | Pedro | 🔁 `B-P01` resultados de la prueba · `B-P02` manual de usuario · `B-P03` revisar los ejercicios de ciclos y listas y crear uno como docente |
 | José | `B-JO01` revisar los 8 de HTML/CSS y «Tabla de multiplicar» y crear uno como docente |
-| Jorge | `B-JOR01` revisar los secuenciales y crear uno como docente · 🔁 `B-JOR02` QA de la Semana 9 |
+| Jorge | `B-JOR01` revisar los secuenciales y crear uno como docente |
 | Julio | `B-JL01` revisar los condicionales y crear uno como docente · 🔁 `B-JL02` docente de Pensamiento · 🔁 `B-JL03` estudiante de Fundamentos |
 
 La revisión de los 36 ejercicios de programar se anota en `docs/cursos/REVISION_EJERCICIOS_PROGRAMAR_S10.md`, una fila
@@ -140,16 +146,15 @@ por ejercicio. Todos prueban el recorrido guiado cuando Jeider lo termine.
 ## ⚠️ 5. Riesgos vivos
 
 1. **Partes del pitch que no llegan:** en la Semana 9 quedaron sin entregar las de José, Jorge, Julio y Pedro.
-   Mitigación: plazo el martes 20/10 y Pedro revisa el martes en la noche quién falta.
+   Mitigación: cada uno tiene ya un borrador; plazo el martes 20/10 y Pedro revisa esa noche quién falta.
 2. **Fecha de la exposición sin confirmar:** si cae antes del jueves 22/10, todo se adelanta.
-3. **Internet en la demostración:** video de respaldo de 30 s dentro de la presentación.
-4. **Crédito de Azure:** el servidor sigue encendido 24/7 hasta la exposición; después se reactiva el apagado.
+3. **Crédito de Azure:** el servidor sigue encendido 24/7 hasta la exposición; después se reactiva el apagado.
 
 ---
 
 ## 📅 6. Seguimiento
 
-- **Martes 20/10:** partes del pitch y capturas entregadas; MOD-02 confirmado.
+- **Martes 20/10:** partes del pitch listas; MOD-02 confirmado.
 - **Jueves 22/10:** ensayo con cronómetro; qué ajustar.
 - **Viernes 23/10:** revisar Trello y GitHub, validar evidencias y decidir qué tarjetas del backlog entran a la Semana 11.
 

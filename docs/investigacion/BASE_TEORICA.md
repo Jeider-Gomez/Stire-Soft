@@ -341,7 +341,7 @@ trazabilidad (solo para el anexo técnico).
 | | |
 |---|---|
 | **Problema observado** | El SUS era una tabla para llenar a mano: no se calculaba, no se repetía y los estudiantes reales nunca lo respondían. |
-| **Decisión** | - Encuesta SUS dentro de la aplicación, de 2 minutos, con una pregunta abierta.<br>- Invitación como tarjeta en el inicio, solo después de 3 días de uso; «Ahora no» la oculta 7 días; se repite a los 90 días.<br>- El admin ve los resultados sin nombres, por rol y por afirmación. |
+| **Decisión** | - Encuesta SUS dentro de la aplicación, de 2 minutos, con una pregunta abierta.<br>- Invitación como tarjeta en el inicio, solo después de 3 días de uso; «Ahora no» la oculta 7 días; se repite cada 7 días (antes 90; cambio de Jeider, 08/10 y 17/10, porque STIRE cambia cada semana).<br>- El admin ve los resultados sin nombres, por rol y por afirmación. |
 | **Fundamento** | - SUS (Brooke, 1996), con rangos de aceptabilidad de Bangor, Kortum y Miller (2008).<br>- Hay versiones validadas en español (Sevilla-Gonzalez et al., 2020; Castilla et al., 2024).<br>- Preguntar después de usar y sin interrumpir (guías de producto de encuestas dentro de la aplicación, no evidencia científica). |
 | **Cómo se materializa** | `/estudiante/encuesta`, `/docente/encuesta`, tarjeta en el inicio, `/admin/usabilidad`. |
 | **Trazabilidad** | `src/usabilidad/`, `src/migrations/1792300000000-EncuestaSus.ts`, `frontend-nuxt/utils/sus.ts`; `docs/DISENO_ENCUESTA_USABILIDAD.md`. |

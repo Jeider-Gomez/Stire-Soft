@@ -122,8 +122,8 @@ export function resumirSus(respuestas: RespuestaSus[]): ResumenSus {
 
 /**
  * Cada cuánto se puede volver a responder: medir de nuevo después de cambios, sin cansar con encuestas. 08/10, Jeider:
- * 7 días mientras dure la prueba con el equipo (antes 90), porque STIRE cambia cada semana y así se compara la semana 1
- * con la 2. Al terminar la prueba conviene volver a un plazo largo.
+ * 7 días (antes 90), porque STIRE cambia cada semana y así se compara una semana con la otra. 17/10, Jeider: se queda
+ * en 7 días también después de la prueba.
  */
 export const DIAS_ENTRE_RESPUESTAS = 7;
 /** No se invita a quien acaba de llegar: para opinar de la usabilidad hay que haber usado la plataforma. */

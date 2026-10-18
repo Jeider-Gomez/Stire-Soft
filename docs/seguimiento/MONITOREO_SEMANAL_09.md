@@ -273,7 +273,7 @@ tablero se revisó tal como quedó.)*
 - [x] 🔁 QA de las funciones de la Semana 8 (`S09-JOR01`): `REPORTE_QA_S8_2026-10-08.md`.
 - [x] Estudiante de Pensamiento, secciones 1 y 2 (`S09-E05`) y de Fundamentos, Unidad 1 (`S09-E06`).
 - [x] SUS (`S09-SUS-JORGE`).
-- [ ] QA de regresión de la Semana 9 (`S09-JOR02`): en curso, sin `REPORTE_QA_S9`. **Pasa al backlog.**
+- [ ] QA de regresión de la Semana 9 (`S09-JOR02`): en curso, sin `REPORTE_QA_S9`. **Pasa a la Semana 10.**
 - [ ] Su parte del pitch (`S09-PITCH-JORGE`): en curso. **Pasa a la Semana 10.**
 - [ ] 7 Hábitos (`S09-H-JORGE`): en curso, sin registro.
 
@@ -297,8 +297,8 @@ tablero se revisó tal como quedó.)*
 
 **Resumen de cierre:** 23 de 36 ítems cerrados. Se cumplió lo central de la semana: la v2.0.0 quedó cerrada y
 etiquetada, la revisión humana de las dos listas se completó (antes 62,5 % y 58,3 %; hoy 100 % y 100 %) y el SUS del
-equipo dio 81,5. Lo que queda abierto pasa así: **el pitch, a la Semana 10**; **lo demás, al backlog** (QA de la Semana
-9, resultados de la prueba, lo de docente y estudiante de Julio, el iPhone y la revisión de los ejercicios).
+equipo dio 81,5. Lo que queda abierto pasa así: **el pitch y el QA de la Semana 9, a la Semana 10**; **lo demás, al backlog**
+(resultados de la prueba, lo de docente y estudiante de Julio, el iPhone y la revisión de los ejercicios).
 
 > **Nota:** se marca solo con resultados verificables, con el mismo criterio de las semanas anteriores. Si alguien hizo
 > algo y no lo dejó en Trello o en Git, lo sube en la Semana 10 y se anota allí.
@@ -312,14 +312,14 @@ equipo dio 81,5. Lo que queda abierto pasa así: **el pitch, a la Semana 10**; *
 
 | Persona | Semana 10 (pitch) | Al backlog |
 |---|---|---|
-| Jeider | Demostración en vivo y video de respaldo | Tutorial guiado · revisión de los ejercicios · iPhone · voz con el Tutor |
+| Jeider | Presentación de avances para el profesor | Tutorial guiado · revisión de los ejercicios · iPhone · voz con el Tutor |
 | Pedro | 🔁 Coordinar el pitch, su parte y el cierre · confirmar MOD-02 | 🔁 Resultados de la prueba · manual de usuario |
-| José | 🔁 Su parte del pitch · diseño de las diapositivas | Revisión de ejercicios |
-| Jorge | 🔁 Su parte del pitch | 🔁 QA de la Semana 9 · revisión de ejercicios |
+| José | 🔁 Su parte del pitch | Revisión de ejercicios |
+| Jorge | 🔁 Su parte del pitch · 🔁 QA de la Semana 9 | Revisión de ejercicios |
 | Julio | 🔁 Su parte del pitch | 🔁 Docente de Pensamiento · estudiante de Fundamentos · revisión de ejercicios |
 
 Los hábitos de la Semana 9 no se repiten. **Después de la exposición, Jeider reactiva el apagado automático de las
-23:00 y vuelve a poner la encuesta SUS cada 90 días.**
+23:00.** La encuesta SUS se queda cada 7 días (decisión de Jeider, 17/10).
 
 Plan completo: bitácora N.º 10 (`MONITOREO_SEMANAL.md`).
 

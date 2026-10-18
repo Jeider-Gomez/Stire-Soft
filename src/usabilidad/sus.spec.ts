@@ -98,7 +98,7 @@ describe('cuándo responder y cuándo invitar', () => {
   const ahora = new Date(2026, 9, 20);
   const haceDias = (d: number) => new Date(ahora.getTime() - d * 86_400_000);
 
-  it('se puede volver a responder a los 7 días, mientras dure la prueba (08/10; antes 90)', () => {
+  it('se puede volver a responder a los 7 días (08/10, antes 90; fijo desde el 17/10)', () => {
     expect(puedeResponder(null, ahora)).toBe(true);
     expect(puedeResponder(haceDias(6), ahora)).toBe(false);
     expect(puedeResponder(haceDias(7), ahora)).toBe(true);

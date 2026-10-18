@@ -7,117 +7,125 @@ codigos:    no aplica (pitch, no ventanas)
 # Pitch grupal — STIRE antes y después de las listas de chequeo del profesor
 
 Pitch del equipo sobre lo que cambió en STIRE con las dos listas de chequeo del profesor: **Interfaz gráfica**
-(Pressman) y **Sistemas Tutores Inteligentes** (Caro, 2015). Como los pitch anteriores, hay un guion en español y otro
-en inglés. Se pasó de la Semana 9 a la Semana 10 (decisión de Jeider, 17/10).
+(Pressman) y **Sistemas Tutores Inteligentes** (Caro, 2015). Se pasó de la Semana 9 a la Semana 10 (decisión de Jeider,
+17/10).
 
-## 1. Cómo lo vamos a presentar
+## 1. Cómo se hace
 
-**Formato:** diapositivas con capturas de antes y después, y **30 segundos en vivo** del Tutor. Si falla internet, se pasa
-el video de respaldo de esos 30 segundos.
+Son dos cosas separadas que también funcionan juntas:
 
-| | Qué |
-|---|---|
-| **Diapositivas** | 7, en Google Slides compartido (gratis, todos editan a la vez). José arma la plantilla con los colores de STIRE; Pedro junta el contenido. |
-| **Cada diapositiva de persona** | El nombre del criterio arriba y dos capturas lado a lado: **antes (04/10)** a la izquierda y **después** a la derecha. Debajo, una sola línea por criterio. Nada de párrafos: lo que se dice va en la voz, no en la pantalla. |
-| **Demostración en vivo** | Jeider, desde su portátil, con una cuenta de estudiante de prueba que ya tiene clave del Tutor. Tres fallos en un ejercicio → el Tutor ofrece «acompañarte paso a paso» → una pregunta dictada por voz → «Escuchar» la respuesta. Va justo después de la parte de Julio, que la presenta. |
-| **Video de respaldo** | Jeider graba esos mismos 30 s y lo deja dentro de la presentación, en una diapositiva oculta. |
-| **Quién pasa las diapositivas** | Pedro. Cada persona dice «siguiente» al terminar. |
-| **Idioma** | Se llevan ensayados los dos guiones; se presenta en el que pida el profesor. |
-| **Duración** | Unos 3 minutos y medio: mejor decir poco y bien que leer una lista. |
-
-### Orden y tiempos
-
-| # | Diapositiva | Quién | Tiempo | Criterios sugeridos (los que más cambiaron) |
-|---|---|---|---|---|
-| 1 | Apertura | Jeider | 0:20 | Qué es STIRE, qué pidió el profesor y cómo lo aplicamos. |
-| 2 | Interfaz · uso y orientación | José | 0:30 | **UX-01** (el candado dice cuánto falta para abrir el módulo) y **MOB-02** (el botón del Tutor ya no tapa opciones en el celular). |
-| 3 | Interfaz · control y formularios | Jorge | 0:30 | **UX-02** («Antes de entregar» ya no entrega al tocar fuera) y **PAT-03**. |
-| 4 | Interfaz · información y código | Jeider | 0:30 | **UX-08** y **PAT-01** (ya escritos, abajo). |
-| 5 | Tutor · cómo enseña y guía | Julio | 0:30 | **UI-05** (modo acompañado, escuchar y dictar) y **UI-01** (caminos distintos cuando no se entiende). |
-| — | **En vivo** | Jeider | 0:30 | El Tutor que acompaña paso a paso (o el video de respaldo). |
-| 6 | Tutor · cómo conoce al estudiante | Pedro | 0:30 | **MOD-02** («Mi perfil de aprendizaje») y **UI-04** (si un video falla, hay alternativas). |
-| 7 | Cierre | Pedro | 0:20 | Antes **62,5 % y 58,3 %** → hoy **100 % y 100 %** según el equipo; SUS **81,5** (bueno); lo que sigue. |
-
-Cada quien puede cambiar sus dos criterios por otros suyos. Para cada uno, una frase por parte: **qué pide** (en palabras
-simples) → **antes** → **qué cambiamos** → **después**.
-
-**Capturas:** las del «antes» están en `docs/calidad/listas-chequeo/2026-10-04_antes/capturas/`. Las del «después» se
-toman de https://stire-soft.vercel.app y se guardan en `docs/pitch/capturas/` con el nombre `persona_criterio_despues.png`.
-
-### Fechas
-
-| Cuándo | Qué | Quién |
+| | Pitch | Presentación de avances |
 |---|---|---|
-| **Martes 20/10, 8:00 p. m.** | Su parte escrita en este archivo (español e inglés) y sus dos capturas | José, Jorge, Julio y Pedro |
-| **Martes 20/10** | Plantilla de las diapositivas | José |
-| **Miércoles 21/10** | Diapositivas completas · video de respaldo | Pedro · Jeider |
-| **Jueves 22/10, 8:00 p. m.** | Ensayo por Meet, con cronómetro, en los dos idiomas | Todos (Pedro dirige) |
-| **Por confirmar** | Exposición | Todos |
+| **Qué es** | Cada uno habla por su cuenta, **sin diapositivas**, unos 30 segundos. | 10 diapositivas en inglés para mostrarle al profesor los avances. |
+| **Qué dice** | Los criterios de su lista que revisó y lo que hizo la semana. | Qué es STIRE, las dos listas antes y después, la prueba con el equipo, qué aprendimos, quién habla de qué en el pitch y lo que sigue. |
+| **Sola** | Sí: cada parte se entiende sin las demás. | Sí: se entiende sin el pitch. |
+| **Juntas** | Primero el pitch y después la presentación como resumen (o al revés: la diapositiva «The pitch» presenta a cada uno). | |
 
-> Si la exposición cae antes del jueves 22/10, todo se adelanta para que el ensayo quede al menos un día antes.
+**Presentación de avances:** https://claude.ai/artifact/VM5P4yjDpG27rRZXYgu3Vs. Se edita en el navegador; para que
+el equipo la abra y la edite, Jeider la comparte desde el menú «Share». También se descarga en PowerPoint o PDF.
+
+**Orden del pitch:** Jeider → José → Jorge → Julio → Pedro (cierra). Cada uno, en español y en inglés.
+
+| Cuándo | Qué |
+|---|---|
+| Martes 20/10, 8:00 p. m. | Cada uno tiene su parte lista (ajusta el borrador de abajo a sus palabras). |
+| Jueves 22/10, 8:00 p. m. | Ensayo por Meet con cronómetro, en los dos idiomas. Pedro dirige. |
+| Por confirmar | Exposición. Si cae antes del jueves, todo se adelanta. |
+
+**Cómo armar tu parte (30 s):** una frase de quién eres y qué revisaste → tus 2 criterios (qué pide, cómo estaba, qué
+cambiamos) → una frase de lo que hiciste esta semana. Los borradores de abajo usan solo lo que está en Trello y en Git;
+cámbialos con tus palabras.
 
 ## 2. Guion en español
 
-### Apertura — Jeider
+### Jeider — apertura
 
 > STIRE es un tutor inteligente para aprender algoritmia: explica, pone ejercicios, programa los repasos y tiene un Tutor
-> con IA que guía sin dar la respuesta. El profesor nos pidió evaluarlo con dos listas de chequeo: interfaz y tutores
-> inteligentes. El 4 de octubre sacamos 62 % y 58 %. Corregimos, y después cada uno lo evaluó como usuario, sin mirar la
-> nota de la IA. Hoy el equipo le da 100 % en las dos.
-
-### José
-
-*(Por escribir: 2 criterios, con antes, qué cambiamos y después.)*
-
-### Jorge
-
-*(Por escribir.)*
-
-### Jeider
-
-> **UX-08 · Medir si es fácil de usar.** Antes no medíamos la usabilidad. Pusimos la encuesta SUS dentro de STIRE, con
-> preguntas según el rol, y el resultado se calcula solo. El equipo le dio 81,5 sobre 100: bueno.
+> con IA que guía sin dar la respuesta. El profesor nos pidió evaluarlo con dos listas: interfaz y tutores inteligentes.
+> El 4 de octubre sacamos 62 % y 58 %. Corregimos, y cada uno lo evaluó como usuario, sin mirar la nota de la IA. Hoy el
+> equipo le da 100 % en las dos.
 >
-> **PAT-01 · Separar la pantalla de los datos.** Antes, 31 de 40 pantallas pedían sus datos directamente. Ahora ninguna:
-> los datos pasan por una capa aparte, y una prueba automática impide que vuelva a pasar.
+> Yo revisé cómo se mide y cómo está hecho por dentro. **UX-08:** antes no medíamos si era fácil de usar; ahora la
+> encuesta SUS está dentro de STIRE y el equipo le dio 81,5 sobre 100. **PAT-01:** antes 31 de 40 pantallas pedían sus
+> datos directamente; ahora ninguna, y una prueba automática lo vigila. Esta semana cerré la versión 2.0 y agregué el
+> perfil de aprendizaje del estudiante.
 
-Capturas: «antes» sin encuesta ([`pc_est_perfil.webp`](../calidad/listas-chequeo/2026-10-04_antes/capturas/pc_est_perfil.webp)) y
-«después» la encuesta ([`capturas/jeider_ux08_despues_encuesta.png`](capturas/jeider_ux08_despues_encuesta.png)) y sus
-resultados ([`capturas/jeider_ux08_despues_resultados.png`](capturas/jeider_ux08_despues_resultados.png)).
+### José — interfaz: uso y orientación
 
-### Julio
+> Yo revisé si STIRE se entiende al usarlo y si funciona en el celular. **UX-01:** un módulo bloqueado no decía qué
+> faltaba; ahora dice cuánto dominio pide y cuánto llevas. **MOB-02:** en celulares pequeños el botón del Tutor tapaba
+> opciones; ahora deja espacio y se vuelve un ícono. Esta semana terminé como estudiante las secciones 1 y 2 de
+> Pensamiento algorítmico y comprobé que mis cinco hallazgos quedaron corregidos.
 
-*(Por escribir. Termina con: «Se los mostramos en vivo».)*
+### Jorge — interfaz: control y formularios
 
-### Pedro
+> Yo revisé si el usuario tiene el control y si los formularios lo protegen de errores. **UX-02:** al entregar un
+> ejercicio, tocar fuera de la ventana lo entregaba sin querer; ahora tiene «Volver a editar» y tocar fuera ya no entrega.
+> **PAT-03:** *[completa con lo que viste]*. Esta semana hice el QA de las funciones de la Semana 8 y terminé como
+> estudiante Pensamiento, secciones 1 y 2, y Fundamentos, Unidad 1.
 
-*(Por escribir.)*
+### Julio — Tutor: cómo enseña y guía
 
-### Cierre — Pedro
+> Yo revisé cómo enseña el Tutor. **UI-05:** cuando un estudiante se atasca, el Tutor ya no solo cambia la pista: ahora
+> lo acompaña paso a paso, puede leerle la respuesta en voz alta y le puede dictar la pregunta. **UI-01:** si una lección
+> no se entiende, «No me quedó claro» ofrece otros caminos: practicar, un video, escribirle al docente o el Tutor. Esta
+> semana *[completa: lo que hiciste]*.
 
-*(Por escribir: los totales antes y después, el SUS de 81,5 y lo que sigue: revisar los ejercicios de programar, el
-manual de usuario y un recorrido guiado dentro de STIRE.)*
+### Pedro — Tutor: cómo conoce al estudiante, y cierre
+
+> Yo revisé cómo conoce STIRE al estudiante. **MOD-02:** faltaba un perfil del estudiante y separar los errores de
+> concepto de los descuidos de escritura; con mi idea, ahora está «Mi perfil de aprendizaje», que el estudiante y su
+> docente ven. **UI-04:** si un video falla, la lección ofrece alternativas y le avisa al docente. Esta semana dicté la
+> Unidad 2 de Fundamentos y terminé como estudiante las secciones 3 y 4 de Pensamiento.
+>
+> **Cierre:** pasamos de 62 % y 58 % a 100 % en las dos listas, con una usabilidad de 81,5. Lo que sigue: revisar los
+> ejercicios de programar, un manual de usuario y un recorrido guiado dentro de STIRE.
 
 ## 3. Guion en inglés
 
-La misma estructura, traducida de la versión en español cuando esté lista. La pronunciación de palabras difíciles está
-en [`GUIA_PRONUNCIACION.md`](./GUIA_PRONUNCIACION.md).
+La pronunciación de palabras difíciles está en [`GUIA_PRONUNCIACION.md`](./GUIA_PRONUNCIACION.md).
 
-### Opening — Jeider
+### Jeider — opening
 
 > STIRE is an intelligent tutor for learning algorithms: it explains, gives exercises, schedules reviews and has an AI
 > Tutor that guides you without giving the answer. Our professor asked us to evaluate it with two checklists: interface
-> and intelligent tutoring systems. On October 4th we scored 62 % and 58 %. We fixed it, and then each of us evaluated it
-> as a user, without looking at the AI's score. Today the team gives it 100 % on both.
-
-### Jeider
-
-> **UX-08 · Measuring usability.** Before, we didn't measure usability. We added the SUS survey inside STIRE, with
-> questions for each role, and the score is calculated automatically. The team gave it 81.5 out of 100: good.
+> and intelligent tutoring systems. On October 4th we scored 62 % and 58 %. We fixed it, and each of us evaluated it as a
+> user, without looking at the AI’s score. Today the team gives it 100 % on both.
 >
-> **PAT-01 · Separating the screen from the data.** Before, 31 of 40 screens requested their data directly. Now none do:
-> data goes through a separate layer, and an automated test keeps it that way.
+> I reviewed how we measure it and how it is built. **UX-08:** we didn’t measure usability; now the SUS survey is inside
+> STIRE, and the team gave it 81.5 out of 100. **PAT-01:** 31 of 40 screens requested their data directly; now none do,
+> and an automated test checks it. This week I closed version 2.0 and added the student’s learning profile.
 
-Glosario común: *checklist, criterion / criteria, before and after, usability, accessibility, keyboard navigation,
-intelligent tutoring system, mastery, spaced repetition, feedback, metacognition, learning profile, System Usability
-Scale (SUS).*
+### José — interface: use and orientation
+
+> I reviewed whether STIRE is easy to understand and works on a phone. **UX-01:** a locked module didn’t say what was
+> missing; now it shows how much mastery it needs and how much you have. **MOB-02:** on small phones the Tutor button
+> covered options; now it leaves room and becomes an icon. This week I finished sections 1 and 2 of Algorithmic Thinking
+> as a student and checked that my five findings were fixed.
+
+### Jorge — interface: control and forms
+
+> I reviewed whether users stay in control and whether forms protect them from mistakes. **UX-02:** when submitting an
+> exercise, tapping outside the window submitted it by accident; now there is “Edit again”, and tapping outside does not
+> submit. **PAT-03:** *[complete with what you saw]*. This week I tested the Week 8 features and finished Algorithmic
+> Thinking, sections 1 and 2, and Fundamentals, Unit 1, as a student.
+
+### Julio — Tutor: how it teaches and guides
+
+> I reviewed how the Tutor teaches. **UI-05:** when a student gets stuck, the Tutor no longer just changes the hint: it
+> walks them through step by step, can read the answer aloud and accepts spoken questions. **UI-01:** if a lesson isn’t
+> clear, “I didn’t get it” offers other paths: practice, a video, writing to the teacher, or the Tutor. This week
+> *[complete: what you did]*.
+
+### Pedro — Tutor: how it knows the student, and closing
+
+> I reviewed how STIRE gets to know the student. **MOD-02:** there was no student profile, and concept errors were not
+> separated from typing slips; following my idea, there is now “My learning profile”, for the student and the teacher.
+> **UI-04:** if a video fails, the lesson offers alternatives and tells the teacher. This week I taught Unit 2 of
+> Fundamentals and finished sections 3 and 4 of Algorithmic Thinking as a student.
+>
+> **Closing:** we went from 62 % and 58 % to 100 % on both checklists, with a usability score of 81.5. Next: reviewing
+> the coding exercises, a user manual and a guided tour inside STIRE.
+
+Glosario común: *checklist, criterion / criteria, before and after, usability, accessibility, intelligent tutoring
+system, mastery, spaced repetition, feedback, learning profile, System Usability Scale (SUS).*
