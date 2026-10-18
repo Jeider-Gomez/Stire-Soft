@@ -120,7 +120,11 @@ Lo que salga de la revisión lo corrige Jeider (`B-J02`).
 - [ ] **S10-P06 · Confirmar MOD-02 como usuario** *(lunes 19/10)*.
 - [ ] **S10-P07 · Manual de usuario — a cargo** *(viernes 23/10)* — por tareas y por rol, como las guías de Canvas,
   Classroom y Open edX: 6 tareas del estudiante y 6 del docente, cada una con pasos, una captura y «si algo sale mal».
-  En `docs/MANUAL_DE_USUARIO.md`. Mismas tareas y palabras que el recorrido guiado.
+  **Cambio del 18/10 (Jeider):** el manual vive en la aplicación, en https://stire-soft.vercel.app/ayuda (se abre sin
+  cuenta y se descarga en PDF). Ya están la plantilla con la identidad de STIRE, los primeros pasos, «unirme a una
+  clase», «crear una clase» y «cómo funciona STIRE». Pedro completa las demás tareas en `frontend-nuxt/utils/manual.ts`
+  (copiar una tarea y cambiar sus textos) y sus capturas en `frontend-nuxt/public/manual/capturas/`. Mismas palabras
+  que el recorrido guiado.
 - [ ] **S10-EJ-PEDRO · Sus 4 ejercicios de programar** *(viernes 23/10)*.
 - [ ] **S10-P02 · Bitácora** — al día y cerrada el viernes 23/10.
 
