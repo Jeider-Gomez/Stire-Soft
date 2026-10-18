@@ -84,7 +84,7 @@ Tres unidades: **herramientas para el frontend** (5 semanas), **implementación 
 | U2 · Al menos un componente de IA en el frontend | Tutor con Gemini (texto y voz) | ✅ |
 | U2 · Pruebas de usabilidad documentadas | SUS dentro de la app, listas de chequeo, [`calidad/`](../calidad/README.md) | 🔄 falta la prueba con estudiantes (Reto 5) |
 | WCAG 2.2 | [`calidad/auditorias/ACCESIBILIDAD_E_INCLUSION_2026-10-07.md`](../calidad/auditorias/ACCESIBILIDAD_E_INCLUSION_2026-10-07.md) | ✅ |
-| U3-E1 · Esquema del artículo con la documentación del software | — | 📅 |
+| U3-E1 · Esquema del artículo con la documentación del software | [`ARTICULO_FORMATO.md`](ARTICULO_FORMATO.md): de dónde sale el formato (APA 7 y la revista Acta Scientiæ Informaticæ) y el esqueleto IMRyD | 🔄 |
 | U3-E2 / E3 · Primer y segundo avance del artículo | — | 📅 |
 | U3 · Presentación del artículo como en un congreso | — | 📅 |
 
