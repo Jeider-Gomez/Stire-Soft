@@ -38,6 +38,10 @@ en primera persona, sin frases de anuncio.
 
 Unas 130 a 150 palabras por persona. Jeider abre con el contexto del grupo y Pedro cierra con los totales.
 
+> **Revisado contra el código y producción (17/10).** Antes del ensayo hay que comprobar dos cosas como usuario: Julio
+> prueba «Escuchar» y el micrófono del Tutor en Chrome (Jeider no pudo dictar; si no funciona, se quita esa frase), y
+> Pedro confirma MOD-02 (sin eso, la lista de Tutores es 23 de 24, no 100 %).
+
 | Cuándo | Qué |
 |---|---|
 | Martes 20/10, 8:00 p. m. | Cada uno tiene su minuto listo (ajusta el guion a sus palabras). |
@@ -81,8 +85,8 @@ celulares pequeños el botón del Tutor tapaba algunas opciones.
 
 **[SOLUTION — 0:25–0:50]**
 
-Ahora el módulo bloqueado dice cuánto dominio necesita y cuánto llevas, y el plan del curso se ve completo en la barra
-lateral. En el celular, el botón del Tutor deja espacio y se convierte en un ícono. Lo comprobé en los dos aparatos.
+Ahora, cuando el docente bloquea un módulo, el candado dice cuánto dominio necesita y cuánto llevas, y el plan del
+curso se ve completo en la barra lateral. En el celular, el botón del Tutor deja espacio y se convierte en un ícono. Lo comprobé en los dos aparatos.
 
 **[CIERRE — 0:50–1:00]**
 
@@ -102,8 +106,7 @@ entregara sin querer.
 
 **[SOLUTION — 0:25–0:50]**
 
-Se corrigió: ahora la ventana tiene la opción «Volver a editar» y tocar fuera ya no entrega nada. Lo volví a probar en
-producción. *[Agrega aquí tu segundo criterio, por ejemplo PAT-03, con lo que viste.]*
+Se corrigió el 16/10: ahora la ventana tiene la opción «Volver a editar» y tocar fuera ya no entrega nada. *[Agrega aquí tu segundo criterio, por ejemplo PAT-03, con lo que viste.]*
 
 **[CIERRE — 0:50–1:00]**
 
@@ -123,9 +126,10 @@ ofrecía lo mismo que ya estaba en la lección.
 
 **[SOLUTION — 0:25–0:50]**
 
-Ahora, después de varios intentos fallidos, el Tutor ofrece acompañar paso a paso; además puede leer la respuesta en
-voz alta y recibir la pregunta por voz. Si una lección no se entiende, hay cinco caminos: practicar, repasar la
-lección anterior, ver otro video, preguntarle al docente o pedirle otra explicación al Tutor.
+Ahora, desde el tercer intento fallido, el Tutor ofrece acompañar paso a paso; además puede leer la respuesta en voz
+alta y, en Chrome o Edge, recibir la pregunta por voz. Si una lección no se entiende, hay otros caminos según la
+lección: un ejercicio sencillo, la lección anterior, otro video, preguntarle al docente o pedirle otra explicación al
+Tutor.
 
 **[CIERRE — 0:50–1:00]**
 
@@ -194,8 +198,8 @@ button covered some options.
 
 **[SOLUTION — 0:25–0:50]**
 
-Now the locked module shows how much mastery it needs and how much you have, and the whole course plan is visible in
-the sidebar. On phones, the Tutor button leaves room and turns into an icon. I checked it on both devices.
+Now, when the teacher locks a module, it shows how much mastery it needs and how much you have, and the whole course
+plan is visible in the sidebar. On phones, the Tutor button leaves room and turns into an icon. I checked it on both devices.
 
 **[CIERRE — 0:50–1:00]**
 
@@ -214,8 +218,7 @@ During QA, I found that in the "Before you submit" window, just tapping outside 
 
 **[SOLUTION — 0:25–0:50]**
 
-It was fixed: now the window has an "Edit again" option, and tapping outside submits nothing. I tested it again in
-production. *[Add your second criterion here, for example PAT-03, with what you saw.]*
+It was fixed on October 16th: now the window has an "Edit again" option, and tapping outside submits nothing. *[Add your second criterion here, for example PAT-03, with what you saw.]*
 
 **[CIERRE — 0:50–1:00]**
 
@@ -235,9 +238,9 @@ offered what was already in the lesson.
 
 **[SOLUTION — 0:25–0:50]**
 
-Now, after several failed attempts, the Tutor offers to go step by step. It can also read the answer aloud and take a
-spoken question. If a lesson isn't clear, there are five paths: practice, review the previous lesson, watch another
-video, ask the teacher, or ask the Tutor for a different explanation.
+Now, from the third failed attempt, the Tutor offers to go step by step. It can also read the answer aloud and, in
+Chrome or Edge, take a spoken question. If a lesson isn't clear, there are other paths depending on the lesson: a simple
+exercise, the previous lesson, another video, asking the teacher, or asking the Tutor for a different explanation.
 
 **[CIERRE — 0:50–1:00]**
 

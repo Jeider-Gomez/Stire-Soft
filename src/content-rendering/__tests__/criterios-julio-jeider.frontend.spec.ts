@@ -171,4 +171,17 @@ describe('UI-05: el Tutor acompaña cuando el estudiante se estanca', () => {
     expect(v.hayVozNatural([{ lang: 'es-CO', name: 'Microsoft Salome Online (Natural)' }])).toBe(true);
     expect(v.hayVozNatural([{ lang: 'es-ES', name: 'Microsoft Helena' }])).toBe(false);
   });
+
+  // Jeider, 17/10: «no he podido hablar con el chatbot con la voz». El fallo del dictado solo lo oía un lector de pantalla.
+  it('si el dictado falla, la pantalla dice por qué y qué hacer', () => {
+    const v = cargar<{ mensajeErrorVoz: (e: string) => string | null }>('vozTutor');
+    expect(v.mensajeErrorVoz('not-allowed')).toMatch(/permiso para el micrófono/);
+    expect(v.mensajeErrorVoz('network')).toMatch(/Chrome o Edge/);
+    expect(v.mensajeErrorVoz('no-speech')).toMatch(/No te escuché/);
+    expect(v.mensajeErrorVoz('audio-capture')).toMatch(/micrófono/);
+    expect(v.mensajeErrorVoz('aborted')).toBeNull();
+    const d = leer('components', 'tutor', 'DictarPregunta.vue');
+    expect(d).toContain('<p v-if="error" role="alert"');
+    expect(d).not.toMatch(/<p v-if="error"[^>]*sr-only/);
+  });
 });

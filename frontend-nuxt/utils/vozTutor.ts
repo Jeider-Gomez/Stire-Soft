@@ -29,3 +29,25 @@ export function unirDictado(escrito: string, dictado: string): string {
   const b = dictado.trim()
   return a && b ? `${a} ${b}` : a || b
 }
+
+/**
+ * Qué decirle al estudiante cuando el dictado falla (Jeider, 17/10: «no he podido hablar con el chatbot con la voz»).
+ * Antes el aviso solo lo oía un lector de pantalla: en la pantalla no pasaba nada y parecía que el botón no servía.
+ */
+export function mensajeErrorVoz(error: string): string | null {
+  switch (error) {
+    case 'aborted':
+      return null
+    case 'no-speech':
+      return 'No te escuché. Toca el micrófono y habla cerca de él.'
+    case 'not-allowed':
+    case 'service-not-allowed':
+      return 'El navegador no dio permiso para el micrófono. Actívalo en el candado de la barra de direcciones.'
+    case 'audio-capture':
+      return 'No encontré un micrófono conectado.'
+    case 'network':
+      return 'Este navegador no puede convertir la voz en texto. Prueba en Chrome o Edge.'
+    default:
+      return 'No se pudo escuchar. Intenta de nuevo o escribe tu pregunta.'
+  }
+}
