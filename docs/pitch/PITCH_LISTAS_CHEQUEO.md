@@ -52,6 +52,8 @@ Unas 130 a 150 palabras por persona. Jeider abre con el contexto del grupo y Ped
 
 ### Jeider
 
+> Mi minuto aparte, como líder técnico (recorrido guiado y voz): [`PITCH_JEIDER_LIDER_TECNICO.md`](./PITCH_JEIDER_LIDER_TECNICO.md).
+
 **[HOOK — 0:00–0:10]**
 
 El profesor nos pidió evaluar STIRE con dos listas de chequeo: una de interfaz y otra de sistemas tutores
