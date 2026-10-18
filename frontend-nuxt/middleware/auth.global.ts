@@ -25,6 +25,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   const isPublicRoute = to.path.startsWith('/auth')
+  // El manual de usuario se abre sin cuenta: se comparte por enlace y se descarga en PDF.
+  if (to.path === '/ayuda') return
 
   // 1. Ruta pública — siempre permitida
   if (isPublicRoute) {

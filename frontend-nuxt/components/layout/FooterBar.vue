@@ -10,6 +10,8 @@
     </div>
 
     <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5">
+      <NuxtLink to="/ayuda" class="min-h-[44px] sm:min-h-0 inline-flex items-center font-semibold text-acento-ambar-fuerte hover:underline">Manual de usuario</NuxtLink>
+      <span>•</span>
       <span>Universidad de Córdoba</span>
     </div>
   </footer>
