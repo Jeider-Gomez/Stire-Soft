@@ -80,6 +80,11 @@ Guion con un borrador para cada uno en [`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./
 - [x] **Su parte del pitch** — apertura, UX-08 y PAT-01, en los dos idiomas.
 - [x] **Presentación de avances** y borradores del pitch para cada uno. *(17/10.)*
 - [x] **Encuesta SUS cada 7 días**, ya sin volver a 90. *(17/10.)*
+- [x] **S10-J03 · Hablarle al Tutor con la voz en cualquier navegador** *(17/10)* — primero el dictado del navegador (no
+  gasta tokens); si no lo soporta (Brave en el computador), graba la voz y Gemini la pasa a texto con la clave del
+  estudiante. STIRE no guarda los audios. El campo del chat quedó como el de los chats de IA: un botón que es micrófono
+  sin texto y enviar con texto, y ya no se sale en el celular (`a6d40ee`, `fe57dbe`, `c33d1ce`). Probado por Jeider en
+  Chrome y en el celular.
 
 ### Pedro Romero — Documentación + Bitácora
 
@@ -118,7 +123,7 @@ Esperan a después del pitch, en tarjetas por persona:
 
 | Persona | Tarjetas |
 |---|---|
-| Jeider | `B-J01` recorrido guiado dentro de STIRE (Driver.js) · `B-J02` corregir los ejercicios de programar según la revisión · 🔁 `B-J03` asistencia con un iPhone · `B-J04` hablar con el Tutor en cualquier navegador |
+| Jeider | `B-J01` recorrido guiado dentro de STIRE (Driver.js) · `B-J02` corregir los ejercicios de programar según la revisión · 🔁 `B-J03` asistencia con un iPhone |
 | Pedro | 🔁 `B-P01` resultados de la prueba · `B-P02` manual de usuario · `B-P03` revisar los ejercicios de ciclos y listas y crear uno como docente |
 | José | `B-JO01` revisar los 8 de HTML/CSS y «Tabla de multiplicar» y crear uno como docente |
 | Jorge | `B-JOR01` revisar los secuenciales y crear uno como docente |
