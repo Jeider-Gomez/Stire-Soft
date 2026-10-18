@@ -95,11 +95,12 @@ Lo que salga de la revisión lo corrige Jeider (`B-J02`).
 
 ### Jeider Gómez — Líder Técnico
 
-- [ ] **S10-J04 · Recorrido guiado dentro de STIRE — a cargo** *(viernes 23/10)* — señala cada parte de la pantalla con
+- [ ] **S10-J04 · Recorrido guiado dentro de STIRE — a cargo** *(viernes 23/10; publicado el 18/10 para el estudiante y para el inicio y «Hoy» del docente, `0690ccb`; faltan contenidos, estudiantes y notas, y probarlo con teclado y lector de pantalla)* — señala cada parte de la pantalla con
   una explicación corta la primera vez que se entra, y se repite desde un botón «?». Estudiante: inicio, lección,
   ejercicio, Tutor y progreso. Docente: «Hoy», contenidos, estudiantes y notas. Driver.js (licencia MIT). Todos lo
   prueban cuando esté publicado.
 - [ ] **S10-EJ-JEIDER · Sus 4 ejercicios de programar** *(viernes 23/10)*.
+- [x] **Entrar por `/login`** ya no termina en «No encontramos esa página» (`ff81570`, 18/10).
 - [ ] **S10-J02 · Operar el servidor** — arriba en el ensayo y en la exposición; después, el apagado de las 23:00.
 - [x] **Su parte del pitch** — contexto del grupo, UX-08 y PAT-01, en los dos idiomas.
 - [x] **Presentación de avances** y guiones del pitch para cada uno. *(17/10.)*
