@@ -66,6 +66,28 @@ la lista de ITS. También, de forma opcional, un comparativo del antes y el desp
 | Aplicar la lista de Sistemas Tutores Inteligentes (Caro, 2015) | [`CHECKLIST_ITS_2026-10-04.md`](../calidad/listas-chequeo/2026-10-04_antes/CHECKLIST_ITS_2026-10-04.md) (Word llenado + Markdown): **14/24 · 58,3 %** | ✅ antes |
 | Comparativo antes y después (opcional) | [`calidad/listas-chequeo/README.md`](../calidad/listas-chequeo/README.md): el antes es `main @ 7c9977b`; el después será la v1.2.0 con los ajustes | 🔄 |
 
+## 4b. Plan de curso (FDOC-088, recibido el 18/10/2026)
+
+Tres unidades: **herramientas para el frontend** (5 semanas), **implementación del frontend** (5) y **divulgación**
+(6). La tercera es un **artículo científico IMRyD con normas APA 7**. El plan no menciona un manual de usuario: la
+«documentación del software educativo» va dentro del esquema del artículo (U3-E1).
+
+| Lo que pide el plan | Dónde está | Estado |
+|---|---|---|
+| U1-E1 · Diseño de componentes de UI a partir de mockups | [`semana-03/GUI_MOCKUPS_Y_NAVEGACION.md`](semana-03/GUI_MOCKUPS_Y_NAVEGACION.md) | ✅ |
+| U1-E2 · Segmentos: componentes, páginas y capas (diseño computacional) | [`DISENO_ARQUITECTURA_FRONTEND.md`](../DISENO_ARQUITECTURA_FRONTEND.md) | ✅ |
+| U1-E3 · Prototipo con páginas, capas y componentes | [`frontend-nuxt/`](../../frontend-nuxt/), desplegado | ✅ |
+| U2-E1/E2 · Estado con Pinia y su actualización | `frontend-nuxt/stores/` y `composables/` | ✅ |
+| U2-E3 · Servicios de la API definidos (endpoints, métodos, parámetros, tipos) | Swagger del backend (`src/main.ts`, `/docs`, solo en desarrollo) | 🔄 falta un documento con los servicios que usa el cliente |
+| U2 · ESLint en el frontend | El frontend no tiene ESLint (el backend sí) | 🔄 pendiente |
+| U2 · Axios para las peticiones | Se usa `$fetch` de Nuxt, que cumple la misma función | justificar en el artículo |
+| U2 · Al menos un componente de IA en el frontend | Tutor con Gemini (texto y voz) | ✅ |
+| U2 · Pruebas de usabilidad documentadas | SUS dentro de la app, listas de chequeo, [`calidad/`](../calidad/README.md) | 🔄 falta la prueba con estudiantes (Reto 5) |
+| WCAG 2.2 | [`calidad/auditorias/ACCESIBILIDAD_E_INCLUSION_2026-10-07.md`](../calidad/auditorias/ACCESIBILIDAD_E_INCLUSION_2026-10-07.md) | ✅ |
+| U3-E1 · Esquema del artículo con la documentación del software | — | 📅 |
+| U3-E2 / E3 · Primer y segundo avance del artículo | — | 📅 |
+| U3 · Presentación del artículo como en un congreso | — | 📅 |
+
 ## 5. Bitácoras semanales
 
 | Semana del curso | Fechas | Bitácora |
@@ -91,6 +113,7 @@ Evidencias de las reuniones (capturas con fecha): [`seguimiento/evidencias/`](..
 | [`Cronograma_DDSE3_2026-2.docx`](guias/Cronograma_DDSE3_2026-2.docx) | Cronograma de 16 semanas y plan de retos |
 | [`Checklist_Interfaz_Pressman.docx`](guias/Checklist_Interfaz_Pressman.docx) | Lista de chequeo del frontend: UX, movilidad y patrones (Pressman & Maxim, caps. 12–14) |
 | [`Checklist_ITS_Caro.docx`](guias/Checklist_ITS_Caro.docx) | Lista de chequeo de Sistemas Tutores Inteligentes (Caro Piñeres, 2015) |
+| [`FDOC-088_Plan_de_Curso_DDSE3_2026-2.pdf`](guias/FDOC-088_Plan_de_Curso_DDSE3_2026-2.pdf) | Plan de curso oficial: competencias, 3 unidades, evidencias, rúbrica y bibliografía |
 
 Referencia base de MODESEC: Caro, M., Toscano, R., Hernández, F., & David, M. (2009). MODESEC: Modelo
 para el desarrollo de software educativo basado en competencias. *Nuevas Ideas en Informática
