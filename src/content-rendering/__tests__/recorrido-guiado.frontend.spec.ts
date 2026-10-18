@@ -79,6 +79,7 @@ describe('recorrido guiado', () => {
     expect(c).toContain('if (!r || yaVisto(r)) return');
     expect(c).toContain('onDestroyed: () => marcarVisto(r)');
     expect(c).toContain('.filter((p) => seVe(p.elemento))');
+    expect(c).toContain("showButtons: pasos.length > 1 ? ['next', 'previous', 'close'] : ['next', 'close']");
     expect(c).toContain("matchMedia('(prefers-reduced-motion: reduce)')");
     expect(c).toContain("setAttribute('aria-label', 'Cerrar el recorrido')");
     const h = leer('components', 'layout', 'HeaderNav.vue');

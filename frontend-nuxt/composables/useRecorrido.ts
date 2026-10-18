@@ -39,6 +39,8 @@ export function useRecorrido() {
     driver({
       steps: pasos,
       showProgress: pasos.length > 1,
+      // Con un solo paso, «← Anterior» no lleva a ningún lado.
+      showButtons: pasos.length > 1 ? ['next', 'previous', 'close'] : ['next', 'close'],
       progressText: '{{current}} de {{total}}',
       nextBtnText: 'Siguiente →',
       prevBtnText: '← Anterior',
