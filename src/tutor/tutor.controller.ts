@@ -1,4 +1,5 @@
-import { Controller, Post, Get, Put, Delete, Body, Query, BadRequestException, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Body, Query, BadRequestException, UseGuards, UseInterceptors, UploadedFile, HttpCode } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { GetUser } from '../auth/decorators/get-user.decorator';
@@ -9,6 +10,7 @@ import { TutorService } from './tutor.service';
 import { ChatDto } from './dto/chat.dto';
 import { SaveApiKeyDto } from './dto/api-key.dto';
 import { TutorCredentialService } from './tutor-credential.service';
+import { MAX_BYTES_AUDIO } from './tutor-voz';
 
 @ApiTags('AI Tutor')
 @ApiBearerAuth()
@@ -47,6 +49,21 @@ export class TutorController {
   }
 
   @Throttle({ default: { limit: 30, ttl: 60000 } })
+  /**
+   * Lo que el estudiante le dice al Tutor con la voz, en texto (tutor-voz.ts). El navegador manda el audio en WAV y el chat
+   * lo envía como un mensaje más.
+   */
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @Post('transcribir')
+  @HttpCode(200)
+  @UseGuards(RolesGuard)
+  @Roles('estudiante')
+  @UseInterceptors(FileInterceptor('audio', { limits: { fileSize: MAX_BYTES_AUDIO + 1, files: 1 } }))
+  @ApiOperation({ summary: 'Convierte en texto una pregunta dicha con la voz (con la clave del estudiante)' })
+  async transcribir(@UploadedFile() archivo: { buffer: Buffer } | undefined, @GetUser() user: User) {
+    return { texto: await this.tutorService.transcribir(user, archivo?.buffer) };
+  }
+
   @Get('greeting')
   @UseGuards(RolesGuard)
   @Roles('estudiante')

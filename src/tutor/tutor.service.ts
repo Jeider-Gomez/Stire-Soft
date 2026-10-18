@@ -1,12 +1,15 @@
 import {
+  BadRequestException,
   ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
   Logger,
   NotFoundException,
+  PayloadTooLargeException,
   ServiceUnavailableException,
   UnprocessableEntityException,
+  UnsupportedMediaTypeException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TutorConversationsRepository } from './tutor-conversations.repository';
@@ -42,6 +45,7 @@ const GREETING_PREFIXES = ['Oye,', 'Mira,', 'Antes de seguir,', 'Una cosa,'];
 // El saludo según la hora vive en tutor-saludo.ts: también lo usa el prompt (tutor-context.service.ts).
 import { saludoSegunHora, esSaludo } from './tutor-saludo';
 import { OrdenDeModelos } from './orden-modelos';
+import { cuerpoTranscripcion, esWav, limpiarTranscripcion, MAX_BYTES_AUDIO } from './tutor-voz';
 export { saludoSegunHora, esSaludo };
 
 /** «Antes de seguir, Tienes…» → «Antes de seguir, tienes…». Una sigla al inicio («HTML …») se deja igual. */
@@ -379,7 +383,31 @@ export class TutorService {
       contents: this.toGeminiContents(history, userMessage),
       generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
     };
+    return this.pedirAGemini(apiKey, body);
+  }
 
+  /**
+   * Convierte en texto lo que el estudiante le dijo al Tutor (tutor-voz.ts). Usa su misma clave gratuita: sin clave no hay
+   * Tutor, y por tanto tampoco voz.
+   */
+  async transcribir(user: User, audio: Buffer | undefined): Promise<string> {
+    if (!audio || audio.length === 0) throw new BadRequestException('No llegó el audio. Graba de nuevo.');
+    if (audio.length > MAX_BYTES_AUDIO) throw new PayloadTooLargeException('El audio es muy largo: graba hasta un minuto.');
+    if (!esWav(audio)) throw new UnsupportedMediaTypeException('El audio debe llegar en WAV.');
+    const apiKey = await this.credentialService.getDecryptedKey(user.id);
+    if (!apiKey) {
+      throw new HttpException(
+        'Para usar el Tutor necesitas configurar tu clave gratuita de Google AI Studio.',
+        HttpStatus.PRECONDITION_REQUIRED,
+      );
+    }
+    const texto = limpiarTranscripcion(await this.pedirAGemini(apiKey, cuerpoTranscripcion(audio), true));
+    if (!texto) throw new UnprocessableEntityException('No se entendió el audio. Habla un poco más cerca del micrófono.');
+    return texto;
+  }
+
+  /** Prueba los modelos en orden (orden-modelos.ts) hasta que uno responda. `vacioEsRespuesta`: un audio sin voz da texto vacío. */
+  private async pedirAGemini(apiKey: string, body: object, vacioEsRespuesta = false): Promise<string> {
     const candidateModels = Array.from(
       new Set([this.geminiModel, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'].map(m => m.replace(/^models\//, ''))),
     );
@@ -408,7 +436,7 @@ export class TutorService {
           .filter(Boolean)
           .join('')
           .trim();
-        if (text) {
+        if (text || vacioEsRespuesta) {
           // Cuánto tarda cada respuesta (10/10, «el tutor se demora»): para medir antes de cambiar el modelo o el pensamiento.
           this.logger.log(`Tutor: ${model} respondió en ${Date.now() - inicio} ms.`);
           ordenDeModelos.respondio(model);
