@@ -59,9 +59,9 @@ en el backlog.
 
 Guion con un borrador para cada uno en [`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./docs/pitch/PITCH_LISTAS_CHEQUEO.md).
 
-- **Pitch, sin diapositivas:** cada uno habla **1 minuto**, en español y en inglés, con estructura de pitch (gancho,
-  problema, qué hicimos, prueba y por qué importa) sobre los criterios de su lista y lo que hizo la semana. Los cinco
-  forman un pitch grupal de 5 minutos. Orden: Jeider (gancho del grupo) → José → Jorge → Julio → Pedro (cierra).
+- **Pitch, sin diapositivas:** cada uno habla **1 minuto**, en español y en inglés, con la estructura de los pitch anteriores ([HOOK],
+  [PROBLEM], [SOLUTION] y cierre) sobre los criterios de su lista y lo que hizo la semana. Los cinco
+  forman un pitch grupal de 5 minutos. Orden: Jeider (contexto del grupo) → José → Jorge → Julio → Pedro (cierra).
 - **Presentación de avances (aparte):** 15 diapositivas en inglés para el profesor, con capturas de antes y después y
   los dos enlaces (el STIRE del 04/10 y el de hoy): https://claude.ai/artifact/VM5P4yjDpG27rRZXYgu3Vs. Se entiende
   sola y también después del pitch: la diapositiva «The pitch» dice quién habla de qué.
