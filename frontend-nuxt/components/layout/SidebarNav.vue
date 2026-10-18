@@ -31,11 +31,12 @@
         </NuxtLink>
         <!-- Plan del curso justo después de Inicio (Jeider 17/10), con alto limitado para que el resto del menú siga a la
              vista (components/layout/PlanDelCurso.vue). -->
-        <LayoutPlanDelCurso />
+        <LayoutPlanDelCurso data-recorrido="plan" />
 
         <!-- 5. Repasos (EST-V05) -->
         <NuxtLink
           to="/estudiante/repasos"
+          data-recorrido="repasos"
           class="flex items-center justify-between px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/repasos' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <div class="flex items-center gap-2.5">

@@ -54,8 +54,8 @@ describe('MOD-01: el plan del curso en la barra lateral', () => {
 
   it('va después de Inicio, con alto limitado, en su componente, con nombres en dos líneas y sin los ids fijos de antes', () => {
     const menu = leer('components', 'layout', 'SidebarNav.vue');
-    expect(menu.indexOf('<span>Inicio</span>')).toBeLessThan(menu.indexOf('<LayoutPlanDelCurso />'));
-    expect(menu.indexOf('<LayoutPlanDelCurso />')).toBeLessThan(menu.indexOf('<span>Repasos</span>'));
+    expect(menu.indexOf('<span>Inicio</span>')).toBeLessThan(menu.indexOf('<LayoutPlanDelCurso data-recorrido="plan" />'));
+    expect(menu.indexOf('<LayoutPlanDelCurso data-recorrido="plan" />')).toBeLessThan(menu.indexOf('<span>Repasos</span>'));
     // 17/10, segunda vuelta (Jeider): un solo scroll, el de la barra; nada de un scroll dentro del plan.
     expect(leer('components', 'layout', 'PlanDelCurso.vue')).not.toMatch(/overflow-y-auto|max-h-/);
     expect(menu).not.toContain('openModules');

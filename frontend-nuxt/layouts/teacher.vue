@@ -24,4 +24,9 @@
 
 <script setup lang="ts">
 const { sidebarOpen, sidebarClass, close: closeSidebar, toggle: toggleSidebar } = useMobileSidebar()
+
+// La primera vez en cada pantalla, el recorrido guiado señala sus partes (S10-J04).
+const { primeraVez } = useRecorrido()
+const rutaActual = useRoute()
+onMounted(() => watch(() => rutaActual.path, primeraVez, { immediate: true }))
 </script>

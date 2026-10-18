@@ -67,7 +67,7 @@
       </section>
 
       <!-- 1. EL SIGUIENTE PASO: una sola acción destacada (docs/DISENO_INTERVENCION_DOCENTE.md §10.2) -->
-      <section v-if="studentStore.activeUnit" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <section v-if="studentStore.activeUnit" data-recorrido="siguiente-paso" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="space-y-2 max-w-2xl min-w-0">
           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-acento-ambar/15 text-acento-ambar-fuerte uppercase tracking-wider">
             Tu siguiente paso

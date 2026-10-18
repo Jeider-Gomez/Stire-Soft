@@ -77,6 +77,7 @@
         <button
           v-if="isCodingActivity || isHtmlCssActivity"
           @click="handleRun"
+          data-recorrido="probar"
           :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting"
           class="borde-afordancia flex-1 md:flex-none justify-center min-h-[48px] md:min-h-[44px] px-4 rounded-md text-sm md:text-xs font-bold text-base-texto-primario bg-base-bg-secundario hover:bg-base-borde-sutil transition-colors flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
           :title="isCodingActivity || isHtmlCssActivity ? 'Evalúa contra casos de prueba/reglas públicas sin consumir intentos' : 'Esta actividad se califica directamente al entregar'">
@@ -89,6 +90,7 @@
         <button
           v-if="isCodingActivity || isHtmlCssActivity"
           @click="workspaceStore.submitSolution()"
+          data-recorrido="entregar"
           :disabled="!canSubmit"
           class="flex-1 md:flex-none justify-center min-h-[48px] md:min-h-[44px] px-4 rounded-md text-sm md:text-xs font-bold text-base-blanco bg-acento-ambar-fuerte hover:bg-acento-ambar transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
           :title="canSubmit ? 'Envía tu solución formalmente para calificación' : 'Completa la respuesta antes de entregar'">
@@ -133,6 +135,11 @@ import { useTutorStore } from '~/stores/tutor'
 
 const workspaceStore = useWorkspaceStore()
 const tutorStore = useTutorStore()
+
+// La primera vez en un ejercicio, el recorrido guiado señala sus partes (S10-J04).
+const { primeraVez } = useRecorrido()
+const rutaActual = useRoute()
+onMounted(() => watch(() => rutaActual.path, primeraVez, { immediate: true }))
 
 const supportedTypes = ['coding', 'mcq', 'fill_code', 'drag_drop', 'ordering', 'matching', 'html_css']
 

@@ -2,7 +2,7 @@
   <div class="max-w-4xl mx-auto space-y-6">
     <DocentePestanasClase :class-id="classId" activa="hoy" :nombre="clase?.name" :codigo="clase?.code" />
 
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
+    <header data-recorrido="hoy" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
       <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Hoy en tu clase</h1>
       <p class="text-xs text-base-texto-secundario mt-1">
         Lo que conviene atender, en orden: primero quien no puede avanzar, luego lo que espera tu comentario y al final quien

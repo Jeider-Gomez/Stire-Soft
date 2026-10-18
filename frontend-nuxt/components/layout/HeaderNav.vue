@@ -74,6 +74,17 @@
         {{ roleLabel }}
       </span>
 
+      <!-- Repetir el recorrido guiado de esta pantalla (composables/useRecorrido.ts; S10-J04). -->
+      <button
+        v-if="recorrido.actual.value"
+        type="button"
+        class="p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors"
+        :aria-label="`Ver cómo funciona ${recorrido.actual.value.pantalla}`"
+        :title="`Ver cómo funciona ${recorrido.actual.value.pantalla}`"
+        @click="recorrido.mostrar()">
+        <CircleHelp :size="18" aria-hidden="true" />
+      </button>
+
       <!-- Apariencia y lectura a un clic desde cualquier pantalla (components/layout/BotonApariencia.vue) -->
       <LayoutBotonApariencia />
 
@@ -160,7 +171,9 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, LogOut, GraduationCap, UserCircle, Contrast } from 'lucide-vue-next'
+import { Menu, LogOut, GraduationCap, UserCircle, Contrast, CircleHelp } from 'lucide-vue-next'
+
+const recorrido = useRecorrido()
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { institucionCorta, lugarDeAsignatura, programaCorto } from '~/utils/contextoAcademico'

@@ -91,7 +91,7 @@ describe('el reproductor', () => {
   it('va junto al título de la lección, no como franja aparte', () => {
     const pagina = leer('pages', 'estudiante', 'unidad', '[id].vue');
     const cabecera = pagina.slice(pagina.indexOf('<header'), pagina.indexOf('</header>'));
-    expect(cabecera).toContain('<EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" />');
+    expect(cabecera).toContain('<EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" data-recorrido="escuchar" />');
     expect(c).not.toContain('También en esta lección');
   });
 

@@ -100,7 +100,7 @@
       <Transition appear enter-active-class="transition duration-300 ease-out delay-200"
         enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
         <!-- En ámbar solo cuando hay alguien en rezago: una tarjeta en alarma con «0» enseña a ignorar las alarmas. -->
-        <div class="metric-card" :class="atRiskCount > 0 ? 'ring-2 ring-stire-warning/60' : ''">
+        <div data-recorrido="rezago" class="metric-card" :class="atRiskCount > 0 ? 'ring-2 ring-stire-warning/60' : ''">
           <div class="flex items-start justify-between mb-3">
             <div class="p-2 rounded-xl bg-stire-warning/10">
               <AlertTriangle :size="18" class="text-amber-700" />
@@ -196,7 +196,7 @@
     <!-- ═══════════════════════════════════════════════════════
          TARJETAS DE CLASES
     ═══════════════════════════════════════════════════════ -->
-    <section v-if="!isLoading && classes.length > 0" class="space-y-5">
+    <section v-if="!isLoading && classes.length > 0" data-recorrido="clases" class="space-y-5">
       <TransitionGroup
         tag="div"
         class="space-y-5"

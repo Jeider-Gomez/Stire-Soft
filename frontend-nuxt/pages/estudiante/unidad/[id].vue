@@ -63,9 +63,9 @@
             {{ dominio >= DOMINADO ? `Dominada · ${dominio} %` : dominio > 0 ? `${dominio} % de dominio` : 'Aún sin dominio: empieza a practicar' }}
           </span>
         </div>
-        <EstudianteMetaDeLaLeccion :unit-id="unitId" />
+        <EstudianteMetaDeLaLeccion :unit-id="unitId" data-recorrido="meta-leccion" />
         <!-- UI-01: escuchar la lección y qué más trae, en una línea (docs/DISENO_FORMATOS_LECCION.md) -->
-        <EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" />
+        <EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" data-recorrido="escuchar" />
       </header>
 
       <!-- La explicación y los recursos de la lección, tal como los publicó el docente -->
@@ -87,7 +87,7 @@
       </article>
 
       <!-- Practicar: es la forma de avanzar y de medir lo que sabes (docs/DISENO_INTERVENCION_DOCENTE.md §10.2) -->
-      <ValorarLeccion :unit-id="unitId" />
+      <ValorarLeccion :unit-id="unitId" data-recorrido="valorar" />
 
       <section class="rounded-lg border border-acento-ambar-fuerte/30 bg-acento-ambar/10 p-5 space-y-3" aria-labelledby="practicar-titulo">
         <div class="flex flex-wrap items-start justify-between gap-3">

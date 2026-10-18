@@ -13,7 +13,7 @@
     <!-- Resumen de Métricas Clave -->
     <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <!-- Avance honesto (docs/DISENO_INTERVENCION_DOCENTE.md §10.2): antes mostraba un dominio general de 99 % con 5 de 17. -->
-      <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
+      <div data-recorrido="avance" class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm text-center">
         <span class="text-xs text-base-texto-secundario block font-medium">Avance del curso</span>
         <span class="text-2xl font-bold mt-1 block text-base-texto-primario">{{ studentStore.hasLoaded ? `${studentStore.avanceCurso.dominadas} de ${studentStore.avanceCurso.total}` : '—' }}</span>
         <span class="text-[10px] text-base-texto-secundario">
@@ -36,7 +36,7 @@
     <EstadisticasEstudiante :student-id="authStore.user?.id" :class-id="studentStore.currentClassId" />
 
     <!-- Dominio por lección, con acceso a reforzar cada una -->
-    <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 shadow-sm space-y-4">
+    <section data-recorrido="lecciones" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 shadow-sm space-y-4">
       <div class="flex items-center justify-between border-b border-base-borde-sutil pb-3">
         <div>
           <h2 class="text-sm font-bold text-base-texto-primario">
@@ -99,7 +99,7 @@
     </section>
 
     <!-- Perfil de aprendizaje (MOD-02): errores que se repiten y cómo estudia -->
-    <EstudiantePerfilAprendizaje v-if="authStore.user?.id" :student-id="authStore.user.id" />
+    <EstudiantePerfilAprendizaje v-if="authStore.user?.id" :student-id="authStore.user.id" data-recorrido="perfil" />
 
     <!-- Cómo funciona STIRE y cómo avanzar más rápido (pedido del dueño, 04/10); incluye la calibración (META-02) -->
     <EstudianteComoAvanzas />

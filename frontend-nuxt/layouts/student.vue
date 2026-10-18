@@ -48,6 +48,11 @@ const enLeccion = computed(() => route.path.startsWith('/estudiante/unidad/'))
 useHead({ htmlAttrs: { class: 'scroll-pb-24' } })
 const { sidebarOpen, sidebarClass, close: closeSidebar, toggle: toggleSidebar } = useMobileSidebar()
 
+// La primera vez en cada pantalla, el recorrido guiado señala sus partes (S10-J04).
+const { primeraVez } = useRecorrido()
+const rutaActual = useRoute()
+onMounted(() => watch(() => rutaActual.path, primeraVez, { immediate: true }))
+
 onMounted(async () => {
   // Cargar datos de estudiante cuando el store esté vacío (§21.2 T3b), una sola vez
   // `isSyncing` es el indicador que fetchStudentData() realmente activa (`isLoading` nunca se pone en true)

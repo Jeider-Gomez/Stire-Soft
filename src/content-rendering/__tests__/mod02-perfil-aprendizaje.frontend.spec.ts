@@ -35,7 +35,7 @@ describe('MOD-02: el perfil dice cómo estudia, con sus datos', () => {
   });
 
   it('la tarjeta está en «Mi progreso» y en la ficha del docente, y los formatos elegidos se registran', () => {
-    expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('<EstudiantePerfilAprendizaje v-if="authStore.user?.id" :student-id="authStore.user.id" />');
+    expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('<EstudiantePerfilAprendizaje v-if="authStore.user?.id" :student-id="authStore.user.id" data-recorrido="perfil" />');
     expect(leer('pages', 'docente', 'estudiante', '[studentId].vue')).toContain('<EstudiantePerfilAprendizaje :student-id="dashboard.studentId" docente />');
     const c = leer('components', 'estudiante', 'PerfilAprendizaje.vue');
     expect(c).toContain('Errores que se repiten');

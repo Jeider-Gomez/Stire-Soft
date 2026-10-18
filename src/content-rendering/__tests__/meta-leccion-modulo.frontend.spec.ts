@@ -40,7 +40,7 @@ describe('lo que pide el módulo para abrir el siguiente, desde la lección', ()
     expect(meta).toContain('Meta de la lección: {{ DOMINADO }} %');
     expect(meta).toContain('se abre con <strong>{{ meta.umbral }} %</strong> de dominio promedio');
     const leccion = leer('pages', 'estudiante', 'unidad', '[id].vue');
-    expect(leccion).toContain('<EstudianteMetaDeLaLeccion :unit-id="unitId" />');
+    expect(leccion).toContain('<EstudianteMetaDeLaLeccion :unit-id="unitId" data-recorrido="meta-leccion" />');
     expect(leccion).toContain(':style="{ left: `${DOMINADO}%` }"');
     expect(leer('components', 'exercise', 'ResultadoEntrega.vue')).toContain('<EstudianteMetaDeLaLeccion v-if="ej.learningUnitId" :unit-id="ej.learningUnitId" solo-modulo');
   });

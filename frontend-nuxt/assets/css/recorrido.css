@@ -1,0 +1,29 @@
+/* Recorrido guiado (composables/useRecorrido.ts, Driver.js): el globo con la letra de STIRE y botones que se tocan bien
+   en el celular (44 px). Los colores son los de Driver.js; la identidad visual (José) puede ajustarlos aquí. */
+.recorrido-stire {
+  font-family: inherit;
+  max-width: 320px;
+  border-radius: 12px;
+}
+.recorrido-stire .driver-popover-title {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+}
+.recorrido-stire .driver-popover-description {
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.recorrido-stire .driver-popover-footer button {
+  font-family: inherit;
+  font-size: 14px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-shadow: none;
+}
+.recorrido-stire .driver-popover-close-btn {
+  width: 44px;
+  height: 44px;
+}
