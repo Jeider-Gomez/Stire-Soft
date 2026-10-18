@@ -41,7 +41,6 @@ export function mensajeErrorVoz(error: string): string | null {
     case 'no-speech':
       return 'No te escuché. Toca el micrófono y habla cerca de él.'
     case 'not-allowed':
-    case 'service-not-allowed':
     case 'NotAllowedError':
       return 'El navegador no dio permiso para el micrófono. Actívalo en el candado de la barra de direcciones.'
     case 'audio-capture':
@@ -55,14 +54,18 @@ export function mensajeErrorVoz(error: string): string | null {
 }
 
 /**
- * Cómo se dicta (17/10): en el celular, el dictado del navegador funciona (usa el reconocimiento del teléfono). En el
- * computador no es confiable (Brave no trae el servicio de Google y Chrome falló sin decir nada): ahí se graba el audio
- * y Gemini lo pasa a texto con la clave del estudiante (POST /tutor/transcribir).
+ * Cómo se dicta (17/10): primero el dictado del navegador, que escribe mientras se habla (en el celular funciona, porque
+ * usa el reconocimiento del teléfono). Si en ese navegador no sirve (Brave no trae el servicio de Google y da error de
+ * red), se graba el audio y Gemini lo pasa a texto con la clave del estudiante (POST /tutor/transcribir).
  */
-export function modoDeVoz(hayDictado: boolean, pantallaTactil: boolean, hayGrabadora: boolean): 'dictado' | 'grabacion' | null {
-  if (hayDictado && pantallaTactil) return 'dictado'
-  if (hayGrabadora) return 'grabacion'
-  return hayDictado ? 'dictado' : null
+export function modoDeVoz(hayDictado: boolean, hayGrabadora: boolean, dictadoFallo = false): 'dictado' | 'grabacion' | null {
+  if (hayDictado && (!dictadoFallo || !hayGrabadora)) return 'dictado'
+  return hayGrabadora ? 'grabacion' : null
+}
+
+/** Errores que dicen que el dictado no existe en este navegador (no que el estudiante no habló o negó el permiso). */
+export function dictadoNoSirve(error: string): boolean {
+  return ['network', 'service-not-allowed', 'language-not-supported'].includes(error)
 }
 
 /** Baja el audio a 16 kHz (lo que necesita el reconocimiento de voz) promediando las muestras de cada tramo. */

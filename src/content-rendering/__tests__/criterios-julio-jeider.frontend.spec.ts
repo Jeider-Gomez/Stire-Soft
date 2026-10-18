@@ -187,12 +187,18 @@ describe('UI-05: el Tutor acompaña cuando el estudiante se estanca', () => {
 
   // Jeider, 17/10: en el celular el dictado funcionó; en el computador, ni en Chrome ni en Brave. Allí se graba y Gemini
   // lo pasa a texto con la clave del estudiante.
-  it('en el celular dicta el navegador; en el computador se graba y se convierte en texto en el servidor', () => {
-    const v = cargar<{ modoDeVoz: (d: boolean, t: boolean, g: boolean) => string | null }>('vozTutor');
-    expect(v.modoDeVoz(true, true, true)).toBe('dictado');
-    expect(v.modoDeVoz(true, false, true)).toBe('grabacion');
-    expect(v.modoDeVoz(false, false, true)).toBe('grabacion');
-    expect(v.modoDeVoz(false, false, false)).toBeNull();
+  it('primero el dictado del navegador; si en ese navegador no sirve, se graba y Gemini lo pasa a texto', () => {
+    const v = cargar<{ modoDeVoz: (d: boolean, g: boolean, f?: boolean) => string | null; dictadoNoSirve: (e: string) => boolean }>('vozTutor');
+    expect(v.modoDeVoz(true, true)).toBe('dictado');
+    expect(v.modoDeVoz(true, true, true)).toBe('grabacion');
+    expect(v.modoDeVoz(false, true)).toBe('grabacion');
+    expect(v.modoDeVoz(true, false, true)).toBe('dictado');
+    expect(v.modoDeVoz(false, false)).toBeNull();
+    expect(v.dictadoNoSirve('network')).toBe(true);
+    expect(v.dictadoNoSirve('not-allowed')).toBe(false);
+    expect(v.dictadoNoSirve('no-speech')).toBe(false);
+    const d = leer('components', 'tutor', 'DictarPregunta.vue');
+    expect(d).toMatch(/dictadoNoSirve\(e\.error\) && hayGrabadora\) \{[\s\S]*?modo\.value = 'grabacion'\s*void grabar\(\)/);
     expect(leer('stores', 'tutor.ts')).toContain("api.post<{ texto: string }>('/tutor/transcribir', datos)");
   });
 

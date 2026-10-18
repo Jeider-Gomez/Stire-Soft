@@ -1,7 +1,7 @@
 <template>
-  <!-- Hablarle al Tutor (UI-05, Jeider 17/10). En el celular, el dictado del navegador escribe mientras hablas. En el
-       computador se graba la voz y Gemini la pasa a texto con la clave del estudiante (el dictado de Chrome y Brave no
-       funcionó allí). En los dos casos el texto queda en el campo para revisarlo y enviarlo. -->
+  <!-- Hablarle al Tutor (UI-05, Jeider 17/10). Primero el dictado del navegador, que escribe mientras hablas; si en este
+       navegador no sirve, se graba la voz y Gemini la pasa a texto con la clave del estudiante, y se recuerda para la
+       próxima vez. En los dos casos el texto queda en el campo para revisarlo y enviarlo. -->
   <span v-if="modo" class="relative shrink-0 flex">
     <button
       type="button"
@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { Loader2, Mic, MicOff } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
-import { codificarWav, mensajeErrorVoz, modoDeVoz, remuestrear, unirDictado } from '~/utils/vozTutor'
+import { codificarWav, dictadoNoSirve, mensajeErrorVoz, modoDeVoz, remuestrear, unirDictado } from '~/utils/vozTutor'
 
 /** Lo que usamos del reconocimiento de voz del navegador (no viene en los tipos de TypeScript). */
 interface ResultadoVoz { isFinal: boolean; 0: { transcript: string } }
@@ -52,6 +52,8 @@ const { messageOf } = useApiErrorMessage()
 
 /** Un minuto basta para una pregunta y cabe en lo que acepta el servidor. */
 const MAX_SEGUNDOS = 60
+/** Este navegador ya demostró que su dictado no sirve: se graba directamente. */
+const CLAVE_GRABAR = 'stire-voz-grabar'
 
 const modo = ref<'dictado' | 'grabacion' | null>(null)
 const estado = ref<'listo' | 'escuchando' | 'procesando'>('listo')
@@ -74,9 +76,12 @@ function constructor(): ConstructorReconocedor | null {
   const w = window as unknown as { SpeechRecognition?: ConstructorReconocedor; webkitSpeechRecognition?: ConstructorReconocedor }
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null
 }
+let hayGrabadora = false
 onMounted(() => {
-  const hayGrabadora = typeof MediaRecorder !== 'undefined' && !!navigator.mediaDevices?.getUserMedia
-  modo.value = modoDeVoz(!!constructor(), window.matchMedia('(pointer: coarse)').matches, hayGrabadora)
+  hayGrabadora = typeof MediaRecorder !== 'undefined' && !!navigator.mediaDevices?.getUserMedia
+  let fallo = false
+  try { fallo = localStorage.getItem(CLAVE_GRABAR) === '1' } catch { /* sin almacenamiento: se intenta el dictado */ }
+  modo.value = modoDeVoz(!!constructor(), hayGrabadora, fallo)
 })
 
 function fallar(codigo: string) {
@@ -110,8 +115,22 @@ function dictar() {
     emit('texto', unirDictado(base, dicho))
   }
   let fallo = false
-  reconocedor.onerror = (e) => { fallo = true; fallar(e.error) }
-  reconocedor.onend = () => { estado.value = 'listo'; if (!fallo) aviso.value = 'Listo: revisa el texto y envíalo.' }
+  reconocedor.onerror = (e) => {
+    fallo = true
+    if (dictadoNoSirve(e.error) && hayGrabadora) {
+      // El dictado de este navegador no sirve: se pasa a grabar sin que el estudiante tenga que hacer nada más.
+      try { localStorage.setItem(CLAVE_GRABAR, '1') } catch { /* solo se pierde el recuerdo */ }
+      modo.value = 'grabacion'
+      void grabar()
+      return
+    }
+    fallar(e.error)
+  }
+  reconocedor.onend = () => {
+    if (modo.value !== 'dictado') return
+    estado.value = 'listo'
+    if (!fallo) aviso.value = 'Listo: revisa el texto y envíalo.'
+  }
   estado.value = 'escuchando'
   aviso.value = 'Escuchando…'
   try {
