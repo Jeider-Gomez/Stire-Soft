@@ -44,9 +44,9 @@ Unas 130 a 150 palabras por persona. Jeider abre con el contexto del grupo y Ped
 
 | Cuándo | Qué |
 |---|---|
-| Martes 20/10, 8:00 p. m. | Cada uno tiene su minuto listo (ajusta el guion a sus palabras). |
-| Jueves 22/10, 8:00 p. m. | Ensayo por Meet con cronómetro, en los dos idiomas. Pedro dirige. |
-| Por confirmar | Exposición. Si cae antes del jueves, todo se adelanta. |
+| Lunes 19/10, 6:00 p. m. | Cada uno tiene su minuto listo (ajusta el guion a sus palabras). |
+| **Lunes 19/10, 8:00 p. m.** | **Ensayo por Meet con cronómetro, en los dos idiomas. Pedro dirige.** |
+| Por confirmar | Exposición. Si cae antes del lunes, todo se adelanta. |
 
 ## 2. Guion en español
 
