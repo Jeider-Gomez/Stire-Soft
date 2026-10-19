@@ -422,7 +422,7 @@ trazabilidad (solo para el anexo técnico).
 |---|---|
 | **Problema observado** | «Mi calibración» no se entendía. El dueño pidió una escala como la de Anki, pero decidida por el resultado del ejercicio, que el estudiante seguro pueda tomar un desafío para avanzar más rápido y que sepa cómo funciona STIRE. |
 | **Decisión** | - Cada resultado se muestra como Otra vez, Difícil, Bien o Fácil, con la misma regla que programa sus repasos (SM-2).<br>- «Tomar un reto» en cualquier momento mientras la lección no esté dominada: un ejercicio del nivel siguiente; si lo resuelve a la primera, lo de abajo deja de exigirse.<br>- «Cómo avanzas en STIRE» en Mi progreso lo explica con sus datos, y la calibración en una frase. |
-| **Fundamento** | - Repetición espaciada con la calidad del resultado (Woźniak y Gorzelańczyk, 1994; matriz #2).<br>- Estudiar en la zona de lo que aún no se domina pero está al alcance (Metcalfe, 2009).<br>- Ver la propia calibración con retroalimentación mejora el monitoreo (Nietfeld, Cao y Osborne, 2006). |
+| **Fundamento** | - Repetición espaciada con la calidad del resultado: SM-2 (Woźniak, 1990; tesis de maestría, https://www-v1.supermemo.com/archives1990-2015/english/ol/sm2).<br>- Estudiar en la zona de lo que aún no se domina pero está al alcance (Metcalfe, 2009).<br>- Ver la propia calibración con retroalimentación mejora el monitoreo (Nietfeld, Cao y Osborne, 2006). |
 | **Cómo se materializa** | Resultado del ejercicio, lección y Mi progreso. |
 | **Trazabilidad** | `src/common/utils/spaced-repetition.ts`, `src/learning-progress/recommendation/recomendar-siguiente.ts`, `frontend-nuxt/utils/escalaResultados.ts`, `components/estudiante/ComoAvanzas.vue`. |
 

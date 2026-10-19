@@ -7,8 +7,9 @@ leer por separado. Repositorio: https://github.com/Jeider-Gomez/Stire-Soft
 
 | Qué | Enlace |
 |---|---|
-| Borrador en PDF (4 páginas) | https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/curso-ddse3/articulo/STIRE_Articulo_E1_esquema.pdf |
-| El mismo borrador en Word | https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/curso-ddse3/articulo/STIRE_Articulo_E1_esquema.docx |
+| Artículo en PDF (6 páginas) | https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/curso-ddse3/articulo/STIRE_Articulo.pdf |
+| El mismo artículo en Word | https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/curso-ddse3/articulo/STIRE_Articulo.docx |
+| Lo que falta (no va en el documento) | https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/curso-ddse3/articulo/PENDIENTES.md |
 | Figuras (arquitectura e interfaz) | https://github.com/Jeider-Gomez/Stire-Soft/tree/main/docs/curso-ddse3/articulo/figuras |
 | Reglas del formato (plantilla de la revista, APA 7, guía de Uniandes) y lo que falta | https://github.com/Jeider-Gomez/Stire-Soft/blob/main/docs/curso-ddse3/ARTICULO_FORMATO.md |
 | Script que arma el Word (todo el texto del artículo está aquí, fácil de leer) | https://github.com/Jeider-Gomez/Stire-Soft/blob/main/scripts/articulo/generar_articulo.py |

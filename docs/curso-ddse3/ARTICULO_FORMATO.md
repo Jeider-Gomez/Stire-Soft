@@ -99,21 +99,10 @@ coincide y agrega:
 - los datos se reportan incluso si van en contra de lo esperado;
 - la discusión explica las limitaciones.
 
-**Primer borrador (U3-E1):** `articulo/STIRE_Articulo_E1_esquema.docx` (y `.pdf`), 4 páginas, armado sobre la misma
-plantilla.
-- **Cómo se armó:** lo genera `scripts/articulo/generar_articulo.py`. La plantilla no se sube porque trae correos de
-  otras personas.
-- **Qué tiene:**
-  - Figura 1: arquitectura.
-  - Figura 2: interfaz del estudiante en producción.
-  - Tabla 1: listas de chequeo.
-  - Tabla 2: intervalos de repaso.
-  - 12 referencias verificadas en Crossref.
-- **Lo que falta** sale resaltado en amarillo:
-  - el dato local de pérdida en Fundamentos de Algoritmia;
-  - la referencia de la lista de tutores inteligentes;
-  - la prueba piloto con estudiantes;
-  - el correo, el ORCID y los nombres completos de los autores.
+**El artículo:** `articulo/STIRE_Articulo.docx` (y `.pdf`), 6 páginas, armado sobre la misma plantilla por
+`scripts/articulo/generar_articulo.py` (la plantilla no se sube porque trae correos de otras personas). Es un artículo
+científico independiente: solo dice lo que está hecho y comprobado. Lo que falta (prueba piloto, ORCID, datos de los
+autores) se lleva en `articulo/PENDIENTES.md`, no en el documento.
 
 **Dos DOI del plan de curso llevan a otro artículo** (comprobado en Crossref el 18/10):
 

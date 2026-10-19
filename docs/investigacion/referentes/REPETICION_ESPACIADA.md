@@ -6,7 +6,7 @@ SM-2) en `../BASE_TEORICA.md` y en la matriz bibliográfica.
 
 ## Dónde está STIRE
 
-**SM-2** (Woźniak y Gorzelańczyk, 1994, matriz #2), con la calidad del repaso sacada del **resultado real**:
+**SM-2** (Woźniak, 1990; no el artículo de 1994 de la matriz #2, que no lo describe), con la calidad del repaso sacada del **resultado real**:
 - falló: 1, «otra vez»;
 - acertó tras varios intentos: 3, «difícil»;
 - al primer intento: 4, «bien»;

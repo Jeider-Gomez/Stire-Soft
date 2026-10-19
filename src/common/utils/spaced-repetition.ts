@@ -1,4 +1,4 @@
-// Repetición espaciada SM-2 (Woźniak y Gorzelańczyk, 1994 — matriz bibliográfica #2) con la calidad de respuesta
+// Repetición espaciada SM-2 (Woźniak, 1990; el artículo de 1994, matriz bibliográfica #2, no lo describe) con la calidad de respuesta
 // derivada del RESULTADO de cada repaso, como los botones de Anki (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.4). Antes la
 // calidad salía del dominio acumulado de la unidad, que usa la mejor nota y nunca baja: un repaso fallado no reiniciaba
 // el intervalo.
