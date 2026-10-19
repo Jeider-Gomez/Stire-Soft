@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "Si usas STIRE en un trabajo académico, cítalo con estos datos."
+title: "STIRE: sistema tutor inteligente con repetición espaciada para el aprendizaje de Fundamentos de Algoritmia"
+type: software
+version: 2.0.0
+date-released: 2026-10-17
+url: "https://stire-soft.vercel.app"
+repository-code: "https://github.com/Jeider-Gomez/Stire-Soft"
+abstract: >-
+  Sistema tutor inteligente web para el curso Fundamentos de Algoritmia de la Universidad de Córdoba (Colombia):
+  ejercicios calificados automáticamente, un tutor conversacional que orienta con preguntas y pistas sin dar la
+  solución, y un calendario de repasos que adapta el algoritmo SM-2 al ritmo de un semestre.
+keywords:
+  - sistemas tutores inteligentes
+  - repetición espaciada
+  - aprendizaje de la programación
+  - software educativo
+  - inteligencia artificial
+authors:
+  - given-names: Jeider Jair
+    family-names: Gómez Oviedo
+    affiliation: "Universidad de Córdoba"
+  - given-names: Pedro Gabriel
+    family-names: Romero Mendivil
+    affiliation: "Universidad de Córdoba"
+  - given-names: José
+    family-names: López
+    affiliation: "Universidad de Córdoba"
+  - given-names: Julio
+    family-names: Galvis
+    affiliation: "Universidad de Córdoba"
+  - given-names: Jorge
+    family-names: Cervantes
+    affiliation: "Universidad de Córdoba"

@@ -15,7 +15,7 @@ tutor que te orienta sin darte la respuesta.
 ![Nuxt 3](https://img.shields.io/badge/Nuxt_3-Vue_3-00DC82?logo=nuxt.js&logoColor=white)
 ![NestJS 11](https://img.shields.io/badge/NestJS_11-TypeScript-E0234E?logo=nestjs&logoColor=white)
 ![MariaDB](https://img.shields.io/badge/MariaDB-TypeORM-003545?logo=mariadb&logoColor=white)
-![Pruebas](https://img.shields.io/badge/pruebas-730_en_verde-2EA043)
+![Pruebas](https://img.shields.io/badge/pruebas-2258_en_verde-2EA043)
 ![Desplegado](https://img.shields.io/badge/desplegado-Vercel_+_Azure-0078D4)
 
 Universidad de Córdoba · Departamento de Informática Educativa · Diseño y Desarrollo de Software Educativo III · 2026-2
@@ -32,9 +32,13 @@ Universidad de Córdoba · Departamento de Informática Educativa · Diseño y D
 | El sistema mide su **dominio** por unidad, le programa **repasos** con el algoritmo SM-2 y le recomienda qué hacer después. | Configura el **Tutor IA** de su clase: si está activo, hasta dónde puede ayudar y con qué estilo. | Revisa los registros del sistema y los parámetros del sandbox. |
 
 <p align="center">
-  <img src="docs/material-visual/05-primera-version-desplegada/04_estudiante-inicio.png" width="49%" alt="Inicio del estudiante">
-  <img src="docs/material-visual/05-primera-version-desplegada/07_estudiante-ejercicio-codigo.png" width="49%" alt="Ejercicio de código">
+  <img src="docs/material-visual/06-version-2/01_estudiante-inicio-celular.png" width="24%" alt="Inicio del estudiante: su siguiente paso y cuánto domina la lección">
+  <img src="docs/material-visual/06-version-2/02_estudiante-ejercicio-celular.png" width="24%" alt="Ejercicio de programación con el enunciado, el editor y los botones para probar y entregar">
+  <img src="docs/material-visual/06-version-2/03_tutor-celular.png" width="24%" alt="El Tutor responde con una pista y una pregunta, sin dar la solución">
+  <img src="docs/material-visual/06-version-2/04_repasos-celular.png" width="24%" alt="Repasos del día, empezando por el más atrasado">
 </p>
+
+<p align="center"><sub>Versión 2.0 en el celular: siguiente paso, ejercicio, Tutor y repasos.</sub></p>
 
 Más capturas en [`docs/material-visual/`](docs/material-visual/README.md).
 
@@ -84,7 +88,7 @@ y `estudiante1.demo@stire.local` a `estudiante3.demo@stire.local`.
 ## Calidad
 
 ```bash
-npm run build && npm test   # compila y corre las 730 pruebas (77 suites)
+npm run build && npm test   # compila y corre las 2258 pruebas (217 suites)
 npm run verify:clean        # de cero: npm ci → migraciones → seed → build → arranque → login real
 ```
 
@@ -111,6 +115,18 @@ cada ola) están en [`CLAUDE.md`](CLAUDE.md). El historial de cambios, con su ev
 ├── CHANGELOG.md         Historial de cambios con evidencia
 └── CLAUDE.md            Reglas de trabajo del proyecto
 ```
+
+## Artículo y cómo citar
+
+- **Artículo científico:** [`docs/curso-ddse3/articulo/STIRE_Articulo.pdf`](docs/curso-ddse3/articulo/STIRE_Articulo.pdf)
+  (formato de la revista *Acta Scientiæ Informaticæ*, en preparación). Lo que falta está en
+  [`PENDIENTES.md`](docs/curso-ddse3/articulo/PENDIENTES.md).
+- **Para citar el software:** botón **«Cite this repository»** de GitHub (sale del archivo
+  [`CITATION.cff`](CITATION.cff)), o:
+
+> Gómez Oviedo, J. J., Romero Mendivil, P. G., López, J., Galvis, J. y Cervantes, J. (2026). *STIRE: sistema tutor
+> inteligente con repetición espaciada para el aprendizaje de Fundamentos de Algoritmia* (versión 2.0.0) [Software].
+> Universidad de Córdoba. https://github.com/Jeider-Gomez/Stire-Soft
 
 ## Equipo
 

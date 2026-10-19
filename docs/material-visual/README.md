@@ -16,6 +16,7 @@ Una carpeta por módulo, en el orden en que se van probando:
 | [`03-docente/`](./03-docente/) | Flujo del docente | 8 |
 | [`04-admin/`](./04-admin/) | Panel de administrador | 9 |
 | [`05-primera-version-desplegada/`](./05-primera-version-desplegada/) | **Versión 1 desplegada** (Vercel + Azure, paleta nueva) y la lista de lo que hay que mejorar en la versión 2 (UX y UI) | 7 |
+| [`06-version-2/`](./06-version-2/) | **Versión 2.0 en el celular** (18/10/2026): inicio, ejercicio, Tutor respondiendo de verdad y repasos. Se usan en el README y en el artículo | 10 |
 | [`vistas/`](./vistas/) | **Las pantallas de la versión actual** (hoy `v1.0.0`), con nombres fijos: cada versión las reemplaza y Git muestra el antes y el después | — |
 
 ## Convención

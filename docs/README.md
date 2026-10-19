@@ -8,6 +8,7 @@ tabla de abajo.
 | Si quieres… | Abre |
 |---|---|
 | Revisar las **entregas del curso** (lo que pidió el docente y dónde está cada cosa) | [`curso-ddse3/`](curso-ddse3/README.md) |
+| Leer el **artículo científico** de STIRE y lo que le falta | [`curso-ddse3/articulo/`](curso-ddse3/articulo/PENDIENTES.md) |
 | Ver la **semana en curso** | [`../MONITOREO_SEMANAL.md`](../MONITOREO_SEMANAL.md) |
 | Saber qué está hecho y qué falta en todo el proyecto | [`PLAN_MAESTRO.md`](PLAN_MAESTRO.md) |
 | Entender por qué existe STIRE | [`00_VISION_FUNCIONAL.md`](00_VISION_FUNCIONAL.md) |
