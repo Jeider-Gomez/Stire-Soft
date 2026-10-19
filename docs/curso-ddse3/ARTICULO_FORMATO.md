@@ -44,14 +44,13 @@ formato y el esqueleto del artículo con el material que ya tenemos.
 - Figuras y tablas en su lugar dentro del texto, no al final. Envío en Word.
 - La página dice «seguir el formato del archivo de ejemplo», pero no tiene enlace a ese archivo.
 
-**Ojo, hay un choque:** el plan pide APA 7 (autor y año: «Woźniak y Gorzelańczyk, 1994»), y la revista usa números
-entre corchetes. **Mientras el profesor no diga otra cosa, se escribe en APA 7**, porque es lo que evalúa la rúbrica.
-Pasar a [1] después es mecánico.
+**Ya resuelto con la plantilla (§5):** la página web de la revista dice «[1]» y Times 12, pero la plantilla en Word,
+que es más reciente, pide **APA 7 en orden alfabético** y **Times New Roman 11**. Se sigue la plantilla.
 
 ## 3. Preguntas para el profesor
 
-1. ¿Las citas van en APA 7 o en el formato numérico de Acta Scientiæ Informaticæ?
-2. ¿Hay plantilla (el «archivo de ejemplo»)? ¿Cuántas páginas?
+1. ~~¿APA 7 o numérico?~~ y ~~¿plantilla y páginas?~~ Resueltas con la plantilla (§5).
+2. ¿Cuál es el orden de los autores? ¿Va el profesor como coautor?
 3. ¿El manual de usuario es una entrega aparte o es «la documentación del software» del esquema (U3-E1)?
 4. ¿Fechas de E1, E2 y E3?
 
@@ -71,3 +70,54 @@ Pasar a [1] después es mecánico.
 **Regla del proyecto:** ninguna referencia entra sin comprobar la obra, y si la cita es textual, la página. Lo que
 no se pudo verificar del dossier de repetición espaciada está en
 `investigacion/REVISION_DOSSIER_REPETICION_ESPACIADA.md` §5.
+
+## 5. La plantilla de la revista (recibida el 18/10/2026) y el primer borrador
+
+La plantilla «Formato-Revista_Acta_S_Informaticae.docx» trae comentarios de la revisora con las reglas:
+
+- **Título:** conciso, máximo 15 a 20 palabras.
+- **Extensión:** entre **4 y 6 páginas**, en Times New Roman **11**. Se respeta la plantilla al pie de la letra.
+- **Redacción:** clara, técnica y en **tercera persona**.
+- **Resumen y abstract:** un solo párrafo de **150 a 200 palabras** con objetivos, método, resultados y conclusiones,
+  sin citas. Máximo 5 palabras clave, en orden alfabético.
+- **Secciones:** I. Introducción (con citas) · II. Metodología y desarrollo · III. Resultados y discusión · IV.
+  Conclusiones · V. Referencias.
+  - **Resultados y discusión:** se aceptan **resultados parciales**. La discusión contrasta los resultados con la
+    literatura.
+  - **Conclusiones:** incluyen las limitaciones.
+- **Cada autor lleva:**
+  - su afiliación;
+  - un enlace a su **correo**;
+  - un enlace a su **ORCID**, si lo tiene. Se crea gratis en https://orcid.org: es un identificador único de
+    investigador. Conviene que los cinco lo creen.
+- **Figuras:** legibles, citadas en el texto y, de preferencia, imágenes de lo desarrollado.
+- **Referencias:** APA 7, en orden alfabético, y todas citadas en el texto.
+
+La guía de la Universidad de los Andes (https://leo.uniandes.edu.co/guia-para-escribir-un-articulo-cientifico/)
+coincide y agrega:
+- el objetivo general empieza con un verbo en infinitivo;
+- los datos se reportan incluso si van en contra de lo esperado;
+- la discusión explica las limitaciones.
+
+**Primer borrador (U3-E1):** `articulo/STIRE_Articulo_E1_esquema.docx` (y `.pdf`), 4 páginas, armado sobre la misma
+plantilla.
+- **Cómo se armó:** lo genera `scripts/articulo/generar_articulo.py`. La plantilla no se sube porque trae correos de
+  otras personas.
+- **Qué tiene:**
+  - Figura 1: arquitectura.
+  - Figura 2: interfaz del estudiante en producción.
+  - Tabla 1: listas de chequeo.
+  - Tabla 2: intervalos de repaso.
+  - 12 referencias verificadas en Crossref.
+- **Lo que falta** sale resaltado en amarillo:
+  - el dato local de pérdida en Fundamentos de Algoritmia;
+  - la referencia de la lista de tutores inteligentes;
+  - la prueba piloto con estudiantes;
+  - el correo, el ORCID y los nombres completos de los autores.
+
+**Dos DOI del plan de curso llevan a otro artículo** (comprobado en Crossref el 18/10):
+
+| Referencia del plan | Problema | Dato correcto |
+|---|---|---|
+| MODESEC: Caro Piñeres, Toscano Miranda y Hernández Rozo (2009), DOI 10.18359/rcin.277 | Ese DOI es de otro artículo («MIDDIS», 2010) | https://doi.org/10.18359/rcin.311 (*Ciencia e Ingeniería Neogranadina, 19*(1), 71–98; cuatro autores, con David Lobo) |
+| Giraldo Cardozo y Muñoz Vargas (2026), «Marco didáctico ROCAS…», *Acta Scientiæ Informaticæ, 10*(1), DOI 10.21897/26192659.4189 | Ese DOI es de «Comunicación científica y ética en la era de la Inteligencia Artificial», *9*(2), 2025 | El artículo de ROCAS hay que buscarlo aparte; el borrador cita el de ética, que es el que tiene ese DOI |
