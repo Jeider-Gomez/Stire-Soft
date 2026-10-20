@@ -52,27 +52,28 @@ Unas 130 a 150 palabras por persona. Jeider abre con el contexto del grupo y Ped
 
 ### Jeider
 
-> Mi minuto aparte, como líder técnico (recorrido guiado y voz): [`PITCH_JEIDER_LIDER_TECNICO.md`](./PITCH_JEIDER_LIDER_TECNICO.md).
+> Abre el pitch del grupo. Mi minuto aparte, como líder técnico: [`PITCH_JEIDER_LIDER_TECNICO.md`](./PITCH_JEIDER_LIDER_TECNICO.md).
 
 **[HOOK — 0:00–0:10]**
 
-El profesor nos pidió evaluar STIRE con dos listas de chequeo: una de interfaz y otra de sistemas tutores
-inteligentes. El 4 de octubre sacamos 62 y 58 por ciento.
+Somos el equipo de STIRE, un tutor inteligente para aprender a programar. Hoy les contamos qué cambió desde que el
+profesor nos dio dos listas de chequeo: una de interfaz y otra de tutores inteligentes.
 
 **[PROBLEM — 0:10–0:25]**
 
-Esa primera nota la había calculado la IA. Por eso, después de corregir, cada uno revisó sus criterios como usuario,
-sin mirar esa nota. En lo que yo revisé, el problema era que no medíamos si STIRE era fácil de usar: lo suponíamos.
+El 4 de octubre sacamos 62 y 58 por ciento. Y aprendimos algo: cuando una IA revisó la versión nueva, fue más generosa
+que nosotros en 9 de 28 criterios. Por eso cada uno revisó los suyos como usuario. En lo mío, no medíamos si STIRE era
+fácil de usar: lo suponíamos.
 
 **[SOLUTION — 0:25–0:50]**
 
-Pusimos la encuesta SUS dentro de la aplicación. Se responde en dos minutos y el puntaje se calcula solo; el equipo le
-dio 81,5 sobre 100, que es un resultado bueno. También ordenamos el código: antes, 31 de 40 pantallas pedían sus datos
-directamente; hoy ninguna, y una prueba automática lo revisa.
+Pusimos la encuesta SUS dentro de la aplicación, y el equipo le dio 81,5 sobre 100. Lo que más bajó el puntaje fue
+«necesitaría ayuda de una persona técnica». Por eso hice un recorrido guiado: la primera vez que entras a una pantalla,
+te muestra sus partes. Y ahora al Tutor también se le puede hablar con el micrófono.
 
 **[CIERRE — 0:50–1:00]**
 
-Esta semana cerré la versión 2.0 y agregué el perfil de aprendizaje que propuso Pedro. Ahora cada uno cuenta su parte.
+Ahora José les cuenta lo de la interfaz, Jorge lo del QA, Julio lo del Tutor, y Pedro cierra con los resultados.
 
 ### José
 
@@ -161,24 +162,24 @@ La pronunciación de palabras difíciles está en [`GUIA_PRONUNCIACION.md`](./GU
 
 **[HOOK — 0:00–0:10]**
 
-Our professor asked us to evaluate STIRE with two checklists: one for the interface and one for intelligent tutoring
-systems. On October 4th we scored 62 and 58 percent.
+We are the STIRE team, an intelligent tutor for learning to program. Today we'll tell you what changed since our
+professor gave us two checklists: one for the interface and one for intelligent tutoring systems.
 
 **[PROBLEM — 0:10–0:25]**
 
-That first score was calculated by AI. So, after fixing things, each of us reviewed our criteria as a user, without
-looking at that score. In my part, the problem was that we didn't measure whether STIRE was easy to use. We just assumed
-it.
+On October 4th we scored 62 and 58 percent. And we learned something: when an AI reviewed the new version, it was more
+generous than we were in 9 of 28 criteria. So each of us reviewed our own criteria as a user. In my part, we didn't
+measure whether STIRE was easy to use. We just assumed it.
 
 **[SOLUTION — 0:25–0:50]**
 
-We added the SUS survey inside the app. It takes two minutes and the score is calculated automatically. The team gave it
-81.5 out of 100, which is a good result. We also organized the code: before, 31 of 40 screens requested their data
-directly. Today none do, and an automated test checks it.
+We added the SUS survey inside the app, and the team gave it 81.5 out of 100. What pulled the score down the most was
+"I would need help from a technical person." So I built a guided tour: the first time you open a screen, it shows you
+its parts. And now you can also talk to the Tutor with the microphone.
 
 **[CIERRE — 0:50–1:00]**
 
-This week I closed version 2.0 and added the learning profile that Pedro proposed. Now each of us will present our part.
+Now José will talk about the interface, Jorge about QA, Julio about the Tutor, and Pedro will close with the results.
 
 ### José
 
