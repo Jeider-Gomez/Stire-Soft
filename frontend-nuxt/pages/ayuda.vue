@@ -18,7 +18,7 @@
         <div class="space-y-3 max-w-2xl">
           <p class="inline-block px-2.5 py-0.5 rounded-full bg-white/15 text-xs font-semibold tracking-wide">{{ VERSION_MANUAL }}</p>
           <h1 class="font-poppins text-3xl sm:text-5xl font-bold tracking-tight">Manual de usuario</h1>
-          <p class="text-base sm:text-lg text-white/90">Cómo usar STIRE, tarea por tarea, si eres estudiante o docente.</p>
+          <p class="text-base sm:text-lg text-white/90">Cómo usar STIRE, tarea por tarea, si eres estudiante, docente o administrador.</p>
         </div>
         <div class="no-imprimir flex flex-wrap gap-3">
           <a :href="PDF_MANUAL" download class="min-h-[44px] inline-flex items-center gap-2 px-5 rounded-lg bg-white text-stire-blue font-bold text-sm shadow-md hover:bg-stire-purple-light">
@@ -38,7 +38,7 @@
         <div class="lg:sticky lg:top-6 bg-base-blanco rounded-xl border border-base-borde-sutil p-4">
           <p class="font-poppins text-sm font-bold mb-2">Contenido</p>
           <ol class="space-y-1 text-sm">
-            <li v-for="(s, i) in MANUAL" :key="s.id">
+            <li v-for="(s, i) in visibles" :key="s.id">
               <a :href="`#${s.id}`" class="block py-1.5 font-semibold text-base-texto-primario hover:underline">{{ i + 1 }}. {{ s.titulo }}</a>
               <ul v-if="s.tareas.length" class="ml-4 space-y-0.5">
                 <li v-for="t in s.tareas" :key="t.id"><a :href="`#${t.id}`" class="block py-1 text-base-texto-secundario hover:underline">{{ t.titulo }}</a></li>
@@ -49,17 +49,45 @@
       </nav>
 
       <main id="contenido-manual" tabindex="-1" class="space-y-12 min-w-0">
-        <section v-for="(s, i) in MANUAL" :id="s.id" :key="s.id" class="seccion-manual space-y-5" :aria-labelledby="`${s.id}-titulo`">
+        <!-- Buscador y filtro por rol (solo en pantalla; el PDF lleva todo). -->
+        <div class="no-imprimir bg-base-blanco rounded-xl border border-base-borde-sutil p-4 space-y-3" role="search">
+          <label for="buscar-manual" class="block text-sm font-bold text-base-texto-primario">Buscar en el manual</label>
+          <div class="relative">
+            <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-base-texto-secundario" aria-hidden="true" />
+            <input id="buscar-manual" v-model="busqueda" type="search" placeholder="Por ejemplo: repasos, Tutor, asistencia" autocomplete="off"
+              class="w-full min-h-[44px] pl-9 pr-3 rounded-lg border border-base-borde-fuerte bg-base-blanco text-sm text-base-texto-primario" />
+          </div>
+          <div class="flex flex-wrap gap-2" role="group" aria-label="Ver el manual de">
+            <button v-for="r in ROLES" :key="r.valor" type="button" :aria-pressed="rol === r.valor"
+              class="min-h-[44px] px-4 rounded-full border text-sm font-semibold"
+              :class="rol === r.valor ? 'bg-stire-blue border-stire-blue text-base-blanco' : 'border-base-borde-fuerte text-base-texto-primario hover:bg-base-bg-secundario'"
+              @click="rol = r.valor">{{ r.texto }}</button>
+          </div>
+          <p class="text-xs text-base-texto-secundario" aria-live="polite">{{ resumenFiltro }}</p>
+        </div>
+
+        <p v-if="!visibles.length" class="text-sm text-base-texto-secundario">
+          No encontramos «{{ busqueda }}». Prueba con otra palabra o cuéntanos qué buscabas con «Sugerencias».
+        </p>
+
+        <section v-for="(s, i) in visibles" :id="s.id" :key="s.id" class="seccion-manual space-y-5" :aria-labelledby="`${s.id}-titulo`">
           <header class="space-y-2">
             <p class="text-xs font-bold uppercase tracking-wider" :class="s.rol === 'estudiante' ? 'text-stire-purple' : 'text-base-texto-secundario'">{{ etiquetaRol(s.rol) }}</p>
             <h2 :id="`${s.id}-titulo`" class="font-poppins text-2xl font-bold">{{ i + 1 }}. {{ s.titulo }}</h2>
             <p class="text-base text-base-texto-secundario max-w-2xl">{{ s.intro }}</p>
           </header>
           <ManualTareaManual v-for="t in s.tareas" :key="t.id" :tarea="t" :rol="s.rol" />
-          <dl v-if="s.bloques?.length" class="grid sm:grid-cols-3 gap-4">
+          <dl v-if="s.bloques?.length" class="grid sm:grid-cols-2 gap-4">
             <div v-for="b in s.bloques" :key="b.titulo" class="bg-base-blanco rounded-xl border border-base-borde-sutil border-t-4 border-t-stire-teal p-4">
               <dt class="font-poppins font-bold">{{ b.titulo }}</dt>
-              <dd class="text-sm text-base-texto-secundario mt-1 leading-relaxed">{{ b.texto }}</dd>
+              <dd class="text-sm text-base-texto-secundario mt-1 leading-relaxed"><ManualTextoConBotones :texto="b.texto" /></dd>
+            </div>
+          </dl>
+          <ManualCalendarioRepasos v-if="s.conCalendario" />
+          <dl v-if="s.preguntas?.length" class="bg-base-blanco rounded-xl border border-base-borde-sutil divide-y divide-base-borde-sutil">
+            <div v-for="p in s.preguntas" :key="p.pregunta" class="pregunta p-4">
+              <dt class="font-semibold text-base-texto-primario"><ManualTextoConBotones :texto="p.pregunta" /></dt>
+              <dd class="text-sm text-base-texto-secundario mt-1 leading-relaxed"><ManualTextoConBotones :texto="p.respuesta" /></dd>
             </div>
           </dl>
         </section>
@@ -73,10 +101,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { ArrowLeft, Download } from 'lucide-vue-next'
+import { computed, nextTick, onMounted, ref } from 'vue'
+import { ArrowLeft, Download, Search } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
-import { MANUAL, PDF_MANUAL, VERSION_MANUAL, etiquetaRol } from '~/utils/manual'
+import { MANUAL, PDF_MANUAL, VERSION_MANUAL, etiquetaRol, filtrarManual, type RolManual } from '~/utils/manual'
 
 definePageMeta({ layout: false })
 useHead({ title: 'Manual de usuario · STIRE' })
@@ -86,6 +114,32 @@ const authStore = useAuthStore()
 const volver = computed(() =>
   authStore.isAuthenticated ? { ruta: '/', texto: 'Volver a STIRE' } : { ruta: '/auth/login', texto: 'Entrar a STIRE' },
 )
+
+const ROLES: Array<{ valor: RolManual; texto: string }> = [
+  { valor: 'todos', texto: 'Todo' },
+  { valor: 'estudiante', texto: 'Estudiante' },
+  { valor: 'docente', texto: 'Docente' },
+  { valor: 'administrador', texto: 'Administrador' },
+]
+// Quien entra con su cuenta ve primero lo de su rol; sin cuenta (y en el PDF), todo.
+const rolDeCuenta = authStore.isAuthenticated ? authStore.currentRole : null
+const rol = ref<RolManual>(rolDeCuenta === 'estudiante' || rolDeCuenta === 'docente' || rolDeCuenta === 'administrador' ? rolDeCuenta : 'todos')
+const busqueda = ref('')
+const visibles = computed(() => filtrarManual(MANUAL, busqueda.value, rol.value))
+// Un enlace directo (/ayuda#hacer-repasos, el «Ver en el manual» del recorrido) siempre llega a su tarea, aunque sea de
+// otro rol: si el filtro la ocultaba, se muestra todo.
+onMounted(async () => {
+  const id = decodeURIComponent(window.location.hash.slice(1))
+  if (!id) return
+  const esta = (lista: typeof visibles.value) => lista.some((s) => s.id === id || s.tareas.some((t) => t.id === id))
+  if (!esta(visibles.value)) rol.value = 'todos'
+  await nextTick()
+  document.getElementById(id)?.scrollIntoView()
+})
+const resumenFiltro = computed(() => {
+  const n = visibles.value.reduce((a, s) => a + s.tareas.length, 0)
+  return `${n} ${n === 1 ? 'tarea' : 'tareas'} · ${rol.value === 'todos' ? 'todos los roles' : etiquetaRol(rol.value)}`
+})
 </script>
 
 <style>
@@ -103,5 +157,6 @@ const volver = computed(() =>
   .manual .seccion-manual { break-before: page; }
   .manual .seccion-manual:first-of-type { break-before: auto; }
   .manual .seccion-manual > header { break-after: avoid; }
+  .manual .pregunta { break-inside: avoid; }
 }
 </style>

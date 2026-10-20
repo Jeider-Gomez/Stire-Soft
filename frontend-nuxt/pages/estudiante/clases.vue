@@ -27,7 +27,7 @@
     </header>
 
     <!-- Formulario para Unirse a Nueva Clase -->
-    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 shadow-sm">
+    <section data-recorrido="unirse-clase" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 shadow-sm">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
@@ -75,7 +75,7 @@
     </section>
 
     <!-- Lista de Clases en las que estás -->
-    <section class="space-y-4">
+    <section data-recorrido="lista-clases" class="space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
           <BookOpen :size="16" aria-hidden="true" /> Clases en las que estás ({{ enrolledClasses.length }})

@@ -3,7 +3,7 @@
        iguales, un párrafo técnico repetido en cada tarjeta y un tiempo fijo. Ahora: uno para empezar, el resto en
        lista, el tiempo calculado y la razón dicha una sola vez, en palabras. -->
   <div class="max-w-3xl mx-auto space-y-5">
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-1">
+    <header data-recorrido="repasos-hoy" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-1">
       <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Repasos de hoy</h1>
       <p v-if="lista.length" class="text-sm font-semibold text-base-texto-primario">
         {{ lista.length }} {{ lista.length === 1 ? 'repaso' : 'repasos' }} · {{ tiempoTotal(lista) }}

@@ -12,7 +12,7 @@
         </p>
       </div>
       <div class="flex flex-wrap gap-2 shrink-0 self-start">
-        <button type="button" :disabled="creando" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 disabled:opacity-40" @click="tomarHoy">
+        <button type="button" data-recorrido="tomar-asistencia" :disabled="creando" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 disabled:opacity-40" @click="tomarHoy">
           <Loader2 v-if="creando" :size="14" class="animate-spin" aria-hidden="true" /><ClipboardCheck v-else :size="14" aria-hidden="true" />
           Tomar asistencia de hoy
         </button>

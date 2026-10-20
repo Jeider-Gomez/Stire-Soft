@@ -5,14 +5,19 @@
  *
  * Cada paso apunta a un elemento con `data-recorrido="…"` (o a un id que ya existía). Si el elemento no está en la
  * pantalla (oculto en el celular, o la pantalla no lo muestra en ese momento), el paso se salta: nunca un globo flotando
- * sobre nada.
+ * sobre nada. Solo la bienvenida del inicio va sin elemento: sale en el centro de la pantalla.
+ *
+ * Más didáctico (docs/PLAN_AYUDA_AL_USUARIO.md §4, frente B): los pasos «hazlo tú» esperan a que la persona toque el
+ * elemento (aprender haciendo), y cada recorrido enlaza a su tarea del manual («Ver en el manual»).
  */
 
 export interface PasoRecorrido {
-  /** Selector CSS del elemento que se señala. */
-  elemento: string
+  /** Selector CSS del elemento que se señala. Sin él, el globo sale en el centro (solo la bienvenida). */
+  elemento?: string
   titulo: string
   texto: string
+  /** «Hazlo tú»: el recorrido sigue cuando la persona toca el elemento (también puede tocar «Siguiente»). */
+  hazloTu?: boolean
 }
 
 export interface Recorrido {
@@ -20,6 +25,8 @@ export interface Recorrido {
   rol: 'estudiante' | 'docente' | 'administrador'
   /** Nombre de la pantalla, para el botón «?»: «Ver cómo funciona {pantalla}». */
   pantalla: string
+  /** Id de la tarea del manual (utils/manual.ts) que explica esta pantalla: el globo enlaza a /ayuda#{manual}. */
+  manual?: string
   pasos: PasoRecorrido[]
 }
 
@@ -34,7 +41,9 @@ export const RECORRIDOS: Recorrido[] = [
     id: 'estudiante-inicio',
     rol: 'estudiante',
     pantalla: 'el inicio',
+    manual: 'estudiar-una-leccion',
     pasos: [
+      { titulo: 'Bienvenido a STIRE', texto: 'Aquí aprendes a programar a tu ritmo: lees, practicas, el Tutor te guía y STIRE te recuerda repasar.' },
       { elemento: '[data-recorrido="siguiente-paso"]', titulo: 'Tu siguiente paso', texto: 'STIRE te dice qué conviene hacer ahora: seguir practicando, ver la explicación o hacer tus repasos.' },
       { elemento: '[data-recorrido="plan"]', titulo: 'El plan del curso', texto: 'Los módulos y sus lecciones, con tu avance. Una lección con ✓ ya la dominas; con un punto, la estás practicando.' },
       { elemento: '[data-recorrido="repasos"]', titulo: 'Repasos', texto: 'Las lecciones que toca repasar hoy para no olvidarlas. El número dice cuántas son.' },
@@ -46,6 +55,7 @@ export const RECORRIDOS: Recorrido[] = [
     id: 'estudiante-leccion',
     rol: 'estudiante',
     pantalla: 'la lección',
+    manual: 'estudiar-una-leccion',
     pasos: [
       { elemento: '[data-recorrido="meta-leccion"]', titulo: 'La meta de la lección', texto: 'Lo que vas a poder hacer al terminarla y cuánto dominio llevas.' },
       { elemento: '[data-recorrido="escuchar"]', titulo: 'Escuchar', texto: 'STIRE te lee la lección en voz alta, por si prefieres oírla.' },
@@ -57,17 +67,19 @@ export const RECORRIDOS: Recorrido[] = [
     id: 'estudiante-ejercicio',
     rol: 'estudiante',
     pantalla: 'el ejercicio',
+    manual: 'resolver-un-ejercicio',
     pasos: [
       { elemento: '#panel-enunciado', titulo: 'El enunciado', texto: 'Qué hay que hacer, qué recibe tu programa y qué debe mostrar. En «Casos de prueba» ves ejemplos de entrada y salida.' },
-      { elemento: '[data-recorrido="probar"]', titulo: 'Probar', texto: 'Revisa tu código con los ejemplos sin gastar intentos. Pruébalo las veces que quieras.' },
+      { elemento: '[data-recorrido="probar"]', titulo: 'Probar', texto: 'Revisa tu código con los ejemplos sin gastar intentos. Hazlo tú: tócalo ahora y mira qué pasa.', hazloTu: true },
       { elemento: '[data-recorrido="entregar"]', titulo: 'Entregar', texto: 'Cuando estés listo, entrégalo: se califica y cuenta como un intento.' },
-      { ...tutor, titulo: 'Si te atascas', texto: 'Ábrele el Tutor: te da una pista y, si sigues atascado, te acompaña paso a paso.' },
+      { ...tutor, titulo: 'Si te atascas', texto: 'El Tutor te da una pista y, si sigues atascado, te acompaña paso a paso. Hazlo tú: ábrelo y pregúntale.', hazloTu: true },
     ],
   },
   {
     id: 'estudiante-progreso',
     rol: 'estudiante',
     pantalla: 'tu progreso',
+    manual: 'ver-mi-progreso',
     pasos: [
       { elemento: '[data-recorrido="avance"]', titulo: 'Avance del curso', texto: 'Cuántas lecciones dominas de todo el curso.' },
       { elemento: '[data-recorrido="lecciones"]', titulo: 'Cómo vas en cada lección', texto: 'El dominio de cada lección que has trabajado, y un botón para repasarla.' },
@@ -75,10 +87,43 @@ export const RECORRIDOS: Recorrido[] = [
     ],
   },
   {
+    id: 'estudiante-repasos',
+    rol: 'estudiante',
+    pantalla: 'tus repasos',
+    manual: 'hacer-mis-repasos',
+    pasos: [
+      { elemento: '[data-recorrido="repasos-hoy"]', titulo: 'Por qué repasar', texto: 'Lo que aprendes se olvida en pocos días. Repasar justo a tiempo hace que lo recuerdes por más tiempo.' },
+      { elemento: '[aria-labelledby="empezar-titulo"]', titulo: 'Empieza por aquí', texto: 'El repaso más urgente. Es un ejercicio corto de una lección que ya practicaste.' },
+      { elemento: '[aria-labelledby="despues-titulo"]', titulo: 'Después', texto: 'Los demás de hoy. Según cómo te vaya, cada lección vuelve en 1, 3, 8 días o más.' },
+    ],
+  },
+  {
+    id: 'estudiante-clases',
+    rol: 'estudiante',
+    pantalla: 'tus clases',
+    manual: 'unirme-a-una-clase',
+    pasos: [
+      { elemento: '[data-recorrido="unirse-clase"]', titulo: 'Unirte a una clase', texto: 'Escribe el código que te dio tu docente y toca «Unirse». También puedes escanear su QR.' },
+      { elemento: '[data-recorrido="lista-clases"]', titulo: 'Tus clases', texto: 'Las clases en las que estás. Cada una tiene su plan del curso.' },
+    ],
+  },
+  {
+    id: 'estudiante-asistencia',
+    rol: 'estudiante',
+    pantalla: 'tu asistencia',
+    manual: 'marcar-asistencia',
+    pasos: [
+      { elemento: '[aria-labelledby="mi-codigo-titulo"]', titulo: 'Tu código', texto: 'Muéstraselo a tu docente cuando tome asistencia. Cambia cada 20 segundos: una foto no sirve para marcar a otro.' },
+      { elemento: '[aria-labelledby="historial-titulo"]', titulo: 'Tu asistencia', texto: 'El porcentaje de cada clase y cada sesión: presente, tarde, con excusa o ausente.' },
+    ],
+  },
+  {
     id: 'docente-inicio',
     rol: 'docente',
     pantalla: 'el inicio',
+    manual: 'crear-una-clase',
     pasos: [
+      { titulo: 'Bienvenido a STIRE', texto: 'STIRE enseña, califica y agenda los repasos de tus estudiantes. Todo lo del docente es opcional: usa lo que te sirva.' },
       { elemento: '#abrir-crear-clase', titulo: 'Crear una clase', texto: 'Desde una plantilla o en blanco. Tus estudiantes entran con el código o escaneando el QR.' },
       { elemento: '[data-recorrido="rezago"]', titulo: 'Alumnos en rezago', texto: 'Quién va por debajo de 50 % de dominio. Toca «Ver quiénes» para saber a quién apoyar.' },
       { elemento: '[data-recorrido="clases"]', titulo: 'Tus clases', texto: 'Abre una clase para ver «Hoy», los contenidos, las entregas y las notas.' },
@@ -88,6 +133,7 @@ export const RECORRIDOS: Recorrido[] = [
     id: 'docente-clase',
     rol: 'docente',
     pantalla: 'la clase',
+    manual: 'saber-a-quien-ayudar',
     pasos: [
       { elemento: 'nav[aria-label="Secciones de la clase"]', titulo: 'Las secciones de la clase', texto: '«Hoy», contenidos, estudiantes, entregas, notas, asistencia y ajustes, siempre arriba.' },
       { elemento: '[data-recorrido="hoy"]', titulo: 'Hoy en tu clase', texto: 'Lo que conviene atender primero: quien no puede avanzar, lo que espera tu comentario y quien está listo para más.' },
@@ -97,6 +143,7 @@ export const RECORRIDOS: Recorrido[] = [
     id: 'docente-contenidos',
     rol: 'docente',
     pantalla: 'los contenidos',
+    manual: 'armar-los-contenidos',
     pasos: [
       { elemento: '[data-recorrido="nuevo-modulo"]', titulo: 'Nuevo módulo', texto: 'El curso se arma en módulos, temas y lecciones. Empieza por un módulo.' },
       { elemento: '#abrir-importar', titulo: 'Traer de otra clase', texto: 'Copia los módulos de otra clase tuya o de una plantilla, en vez de escribirlos otra vez.' },
@@ -107,6 +154,7 @@ export const RECORRIDOS: Recorrido[] = [
     id: 'docente-estudiantes',
     rol: 'docente',
     pantalla: 'tus estudiantes',
+    manual: 'saber-a-quien-ayudar',
     pasos: [
       { elemento: '[data-recorrido="resumen-clase"]', titulo: 'La clase de un vistazo', texto: 'El dominio promedio, los ejercicios aprobados y cuántos necesitan apoyo.' },
       { elemento: '[aria-labelledby="mapa-calor-titulo"]', titulo: '¿A quién ayudo ahora?', texto: 'Cada fila es un estudiante y cada columna una lección. Toca una celda para ver qué le pasa.' },
@@ -118,6 +166,7 @@ export const RECORRIDOS: Recorrido[] = [
     id: 'docente-notas',
     rol: 'docente',
     pantalla: 'las notas',
+    manual: 'llevar-las-notas',
     pasos: [
       { elemento: '[data-recorrido="empezar-notas"]', titulo: 'Las notas son opcionales', texto: 'Si quieres llevarlas aquí, elige cómo empezar. Después cambias lo que quieras.' },
       { elemento: '[data-recorrido="resumen-notas"]', titulo: 'Resumen', texto: 'El promedio de la clase, quiénes aprueban y quiénes no tienen nota todavía.' },
@@ -126,10 +175,23 @@ export const RECORRIDOS: Recorrido[] = [
     ],
   },
   {
+    id: 'docente-asistencia',
+    rol: 'docente',
+    pantalla: 'la asistencia',
+    manual: 'tomar-asistencia',
+    pasos: [
+      { elemento: '[data-recorrido="tomar-asistencia"]', titulo: 'La asistencia es opcional', texto: 'Si quieres llevarla aquí, empieza la sesión de hoy. Cada estudiante abre «Mi asistencia» en su celular.' },
+      { elemento: '[aria-labelledby="sesion-titulo"]', titulo: 'La sesión de hoy', texto: 'Escanea los códigos: ves el nombre y la foto de cada uno. Al cerrar, quien no marcó queda ausente.' },
+      { elemento: '[aria-labelledby="sesiones-titulo"]', titulo: 'Sesiones anteriores', texto: 'Las sesiones que ya tomaste. Con «Planilla (CSV)» las descargas todas.' },
+    ],
+  },
+  {
     id: 'admin-usuarios',
     rol: 'administrador',
     pantalla: 'usuarios y roles',
+    manual: 'aprobar-un-docente',
     pasos: [
+      { titulo: 'Bienvenido a STIRE', texto: 'Desde aquí apruebas a los docentes, atiendes las sugerencias y revisas cómo está STIRE.' },
       { elemento: '[data-recorrido="menu-admin"]', titulo: 'El menú', texto: 'El estado del servidor, los usuarios, las sugerencias, el catálogo, la encuesta y los registros.' },
       { elemento: '#open-register-user-btn', titulo: 'Registrar usuario', texto: 'Crea una cuenta a mano, por ejemplo para un docente nuevo.' },
       { elemento: 'nav[aria-label="Secciones de administración"]', titulo: 'Solicitudes y cambios', texto: 'Aquí apruebas a quien pidió ser docente y ves el historial de cambios de rol.' },
@@ -139,6 +201,7 @@ export const RECORRIDOS: Recorrido[] = [
     id: 'admin-sugerencias',
     rol: 'administrador',
     pantalla: 'las sugerencias',
+    manual: 'atender-sugerencias',
     pasos: [
       { elemento: '[data-recorrido="estado-sugerencias"]', titulo: 'Lo pendiente', texto: 'Cuántas faltan por atender y cuántas impiden que alguien siga usando STIRE.' },
       { elemento: '[data-recorrido="bandejas"]', titulo: 'Bandejas', texto: 'Al resolver una, escribe cómo: quien la envió lo lee. Lo que no sirve se archiva con un motivo.' },
@@ -149,6 +212,7 @@ export const RECORRIDOS: Recorrido[] = [
     id: 'admin-usabilidad',
     rol: 'administrador',
     pantalla: 'la encuesta',
+    manual: 'leer-la-encuesta',
     pasos: [
       { elemento: '[data-recorrido="sus-resumen"]', titulo: 'El puntaje', texto: 'El promedio SUS de 0 a 100. Cuenta la última respuesta de cada persona.' },
       { elemento: '[aria-labelledby="por-afirmacion-titulo"]', titulo: 'Qué lo baja', texto: 'Cada afirmación por separado: la que más baja es por donde conviene empezar.' },
@@ -166,14 +230,18 @@ export function recorridoDeRuta(ruta: string, rol: string | null | undefined): R
         : r.startsWith('/estudiante/unidad/') ? 'estudiante-leccion'
           : r.startsWith('/estudiante/evaluacion/') ? 'estudiante-ejercicio'
             : r === '/estudiante/progreso' ? 'estudiante-progreso'
-              : null
+              : r === '/estudiante/repasos' ? 'estudiante-repasos'
+                : r === '/estudiante/clases' ? 'estudiante-clases'
+                  : r === '/estudiante/asistencia' ? 'estudiante-asistencia'
+                    : null
       : rol === 'docente'
         ? r === '/docente' ? 'docente-inicio'
           : /^\/docente\/clase\/[^/]+$/.test(r) ? 'docente-clase'
             : r === '/docente/contenidos' ? 'docente-contenidos'
               : r === '/docente/rendimiento' ? 'docente-estudiantes'
                 : /^\/docente\/clase\/[^/]+\/notas$/.test(r) ? 'docente-notas'
-                  : null
+                  : /^\/docente\/clase\/[^/]+\/asistencia$/.test(r) ? 'docente-asistencia'
+                    : null
         : rol === 'administrador'
           ? r === '/admin' || r === '/admin/usuarios' ? 'admin-usuarios'
             : r === '/admin/sugerencias' ? 'admin-sugerencias'

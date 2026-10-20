@@ -27,3 +27,13 @@
   width: 44px;
   height: 44px;
 }
+/* «Ver en el manual» (enlace a /ayuda#tarea): azul de enlace, subrayado y con área de toque cómoda. */
+.recorrido-stire .recorrido-manual {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 4px;
+  font-weight: 600;
+  color: #1d4ed8;
+  text-decoration: underline;
+}

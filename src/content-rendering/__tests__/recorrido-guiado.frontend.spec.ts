@@ -13,8 +13,8 @@ function cargar<T>(nombre: string): T {
   return mod.exports as T;
 }
 
-type Paso = { elemento: string; titulo: string; texto: string };
-type Recorrido = { id: string; rol: string; pantalla: string; pasos: Paso[] };
+type Paso = { elemento?: string; titulo: string; texto: string; hazloTu?: boolean };
+type Recorrido = { id: string; rol: string; pantalla: string; manual?: string; pasos: Paso[] };
 const r = cargar<{
   RECORRIDOS: Recorrido[];
   recorridoDeRuta: (ruta: string, rol: string) => Recorrido | null;
@@ -44,15 +44,25 @@ describe('recorrido guiado', () => {
     expect(r.recorridoDeRuta('/admin', 'administrador')?.id).toBe('admin-usuarios');
     expect(r.recorridoDeRuta('/admin/sugerencias', 'administrador')?.id).toBe('admin-sugerencias');
     expect(r.recorridoDeRuta('/admin/usabilidad', 'administrador')?.id).toBe('admin-usabilidad');
+    expect(r.recorridoDeRuta('/estudiante/repasos', 'estudiante')?.id).toBe('estudiante-repasos');
+    expect(r.recorridoDeRuta('/estudiante/clases', 'estudiante')?.id).toBe('estudiante-clases');
+    expect(r.recorridoDeRuta('/estudiante/asistencia', 'estudiante')?.id).toBe('estudiante-asistencia');
+    expect(r.recorridoDeRuta('/docente/clase/5/asistencia', 'docente')?.id).toBe('docente-asistencia');
     // Otra pantalla u otro rol: sin recorrido (y sin botón «?»).
-    expect(r.recorridoDeRuta('/docente/clase/5/asistencia', 'docente')).toBeNull();
+    expect(r.recorridoDeRuta('/docente/clase/5/ajustes', 'docente')).toBeNull();
     expect(r.recorridoDeRuta('/admin', 'docente')).toBeNull();
     expect(r.recorridoDeRuta('/estudiante', 'docente')).toBeNull();
   });
 
   it('cada paso señala un elemento que existe en las pantallas (data-recorrido o un id que ya estaba)', () => {
     for (const rec of r.RECORRIDOS) {
-      for (const p of rec.pasos) {
+      for (const [i, p] of rec.pasos.entries()) {
+        // Sin elemento, solo la bienvenida del inicio, como primer paso.
+        if (!p.elemento) {
+          expect(i).toBe(0);
+          expect(p.titulo).toBe('Bienvenido a STIRE');
+          continue;
+        }
         const marca = /data-recorrido="([^"]+)"/.exec(p.elemento)?.[1];
         const id = /^#([\w-]+)$/.exec(p.elemento)?.[1];
         const aria = /^\[aria-labelledby="([^"]+)"\]$/.exec(p.elemento)?.[1];
@@ -66,11 +76,28 @@ describe('recorrido guiado', () => {
     }
   });
 
-  it('textos cortos, en palabras de usuario', () => {
+  it('textos cortos, en palabras de usuario (hasta 5 pasos, sin contar la bienvenida)', () => {
     for (const rec of r.RECORRIDOS) {
-      expect(rec.pasos.length).toBeLessThanOrEqual(5);
+      expect(rec.pasos.filter((p) => p.elemento).length).toBeLessThanOrEqual(5);
       for (const p of rec.pasos) expect(p.texto.length).toBeLessThanOrEqual(160);
     }
+  });
+
+  it('cada recorrido enlaza a una tarea del manual que existe, y la bienvenida está en el inicio de cada rol', () => {
+    const manual = cargar<{ MANUAL: Array<{ tareas: Array<{ id: string }> }> }>('manual');
+    const tareas = new Set(manual.MANUAL.flatMap((s) => s.tareas.map((t) => t.id)));
+    for (const rec of r.RECORRIDOS) expect(tareas.has(rec.manual ?? '')).toBe(true);
+    for (const id of ['estudiante-inicio', 'docente-inicio', 'admin-usuarios']) {
+      expect(r.RECORRIDOS.find((x) => x.id === id)?.pasos[0].titulo).toBe('Bienvenido a STIRE');
+    }
+  });
+
+  it('«hazlo tú»: en el ejercicio, tocar «Probar código» o el Tutor lleva al paso siguiente', () => {
+    const ejercicio = r.RECORRIDOS.find((x) => x.id === 'estudiante-ejercicio');
+    expect(ejercicio?.pasos.filter((p) => p.hazloTu).map((p) => p.elemento)).toEqual(['[data-recorrido="probar"]', '#lanzador-tutor']);
+    const c = leer('composables', 'useRecorrido.ts');
+    expect(c).toContain('advanceOnClick: p.hazloTu ?? false');
+    expect(c).toContain('if (r.manual) globo.description.appendChild(enlaceAlManual(r.manual))');
   });
 
   it('sale solo la primera vez (por persona y pantalla) y se repite desde «?» en la cabecera', () => {

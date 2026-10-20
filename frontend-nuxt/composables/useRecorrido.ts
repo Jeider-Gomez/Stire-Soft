@@ -7,9 +7,23 @@ import { claveVisto, recorridoDeRuta, type Recorrido } from '~/utils/recorridos'
 /** Espera a que la pantalla cargue sus datos antes de señalar sus partes. */
 const ESPERA_PRIMERA_VEZ_MS = 1500
 
-function seVe(selector: string): boolean {
+/** Sin selector (la bienvenida) siempre se muestra, en el centro. */
+function seVe(selector: string | undefined): boolean {
+  if (!selector) return true
   const el = document.querySelector(selector)
   return !!el && el.getClientRects().length > 0
+}
+
+/** «Ver en el manual» al pie del globo: abre la tarea en otra pestaña para no perder el recorrido. */
+function enlaceAlManual(tarea: string): HTMLAnchorElement {
+  const a = document.createElement('a')
+  a.href = `/ayuda#${tarea}`
+  a.target = '_blank'
+  a.rel = 'noopener'
+  a.className = 'recorrido-manual'
+  a.textContent = 'Ver en el manual'
+  a.setAttribute('aria-label', 'Ver en el manual (se abre en otra pestaña)')
+  return a
 }
 
 /**
@@ -34,7 +48,8 @@ export function useRecorrido() {
   function dibujar(r: Recorrido): boolean {
     const pasos: DriveStep[] = r.pasos
       .filter((p) => seVe(p.elemento))
-      .map((p) => ({ element: p.elemento, popover: { title: p.titulo, description: p.texto } }))
+      // «Hazlo tú»: tocar el elemento lleva al paso siguiente (Driver.js deja tocar lo señalado).
+      .map((p) => ({ element: p.elemento, advanceOnClick: p.hazloTu ?? false, popover: { title: p.titulo, description: p.texto } }))
     if (!pasos.length) return false
     driver({
       steps: pasos,
@@ -52,6 +67,7 @@ export function useRecorrido() {
       onPopoverRender: (globo) => {
         globo.closeButton.setAttribute('aria-label', 'Cerrar el recorrido')
         globo.closeButton.setAttribute('title', 'Cerrar el recorrido')
+        if (r.manual) globo.description.appendChild(enlaceAlManual(r.manual))
       },
       onDestroyed: () => marcarVisto(r),
     }).drive()
