@@ -55,8 +55,15 @@ describe('recorrido guiado', () => {
     expect(r.recorridoDeRuta('/docente/ejercicios/crear', 'docente')?.id).toBe('docente-crear-ejercicio');
     expect(r.recorridoDeRuta('/docente/mensajes', 'docente')?.id).toBe('docente-mensajes');
     expect(r.recorridoDeRuta('/admin/dashboard', 'administrador')?.id).toBe('admin-estado');
+    expect(r.recorridoDeRuta('/estudiante/proyectos', 'estudiante')?.id).toBe('estudiante-proyectos');
+    expect(r.recorridoDeRuta('/docente/perfil', 'docente')?.id).toBe('docente-perfil');
+    expect(r.recorridoDeRuta('/docente/refuerzos', 'docente')?.id).toBe('docente-refuerzos');
+    expect(r.recorridoDeRuta('/docente/clase/5/ajustes', 'docente')?.id).toBe('docente-ajustes');
+    expect(r.recorridoDeRuta('/admin/perfil', 'administrador')?.id).toBe('admin-perfil');
+    expect(r.recorridoDeRuta('/admin/catalogo', 'administrador')?.id).toBe('admin-catalogo');
+    expect(r.recorridoDeRuta('/admin/sistema', 'administrador')?.id).toBe('admin-registros');
     // Otra pantalla u otro rol: sin recorrido (y sin botón «?»).
-    expect(r.recorridoDeRuta('/docente/clase/5/ajustes', 'docente')).toBeNull();
+    expect(r.recorridoDeRuta('/docente/refuerzos/nuevo', 'docente')).toBeNull();
     expect(r.recorridoDeRuta('/admin', 'docente')).toBeNull();
     expect(r.recorridoDeRuta('/estudiante', 'docente')).toBeNull();
   });

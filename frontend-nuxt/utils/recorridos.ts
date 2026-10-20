@@ -152,6 +152,16 @@ export const RECORRIDOS: Recorrido[] = [
     ],
   },
   {
+    id: 'estudiante-proyectos',
+    rol: 'estudiante',
+    pantalla: 'tus proyectos',
+    manual: 'crear-un-proyecto',
+    pasos: [
+      { elemento: '[data-recorrido="nuevo-proyecto"]', titulo: 'Un proyecto nuevo', texto: 'Ponle nombre, elige el tipo y créalo. Se ejecuta en tu navegador y solo tú lo ves.' },
+      { elemento: '[aria-labelledby="lista-proyectos"]', titulo: 'Tus proyectos', texto: 'Ábrelos cuando quieras para seguir programando.' },
+    ],
+  },
+  {
     id: 'docente-inicio',
     rol: 'docente',
     pantalla: 'el inicio',
@@ -247,6 +257,38 @@ export const RECORRIDOS: Recorrido[] = [
     pasos: mensajes('tus estudiantes'),
   },
   {
+    id: 'docente-perfil',
+    rol: 'docente',
+    pantalla: 'tu perfil',
+    manual: 'cambiar-mis-datos',
+    pasos: [
+      { elemento: '[data-recorrido="datos-perfil"]', titulo: 'Tus datos', texto: 'Tu nombre, tu foto (opcional) y tu contraseña.' },
+      { elemento: '[aria-labelledby="vinculos-titulo"]', titulo: 'Dónde enseñas', texto: 'Opcional: con tu programa ves desde el primer día las plantillas que comparten sus docentes.' },
+      { elemento: '[data-recorrido="apariencia"]', titulo: 'Apariencia y lectura', texto: 'El tema, el contraste, el tamaño del texto y menos movimiento, a tu gusto.' },
+    ],
+  },
+  {
+    id: 'docente-refuerzos',
+    rol: 'docente',
+    pantalla: 'los refuerzos',
+    manual: 'asignar-un-refuerzo',
+    pasos: [
+      { elemento: '[data-recorrido="nuevo-refuerzo"]', titulo: 'Refuerzos y retos', texto: 'Un refuerzo apoya a quien va atrás; un reto le da más a quien va adelante. Los dos son opcionales.' },
+    ],
+  },
+  {
+    id: 'docente-ajustes',
+    rol: 'docente',
+    pantalla: 'los ajustes de la clase',
+    manual: 'ajustar-la-clase',
+    pasos: [
+      { elemento: '[aria-labelledby="avance-titulo"]', titulo: 'Avance entre módulos', texto: 'Cuánto dominio del módulo anterior hace falta para abrir el siguiente. Con 0 % no hay bloqueo.' },
+      { elemento: '[aria-labelledby="compartir-titulo"]', titulo: 'Compartir el contenido', texto: 'Con quién compartes tu curso como plantilla: nadie, tu asignatura, tu programa o más.' },
+      { elemento: '[aria-labelledby="logros-titulo"]', titulo: 'Logros y medallas', texto: 'Qué medallas pueden ganar tus estudiantes.' },
+      { elemento: '[aria-labelledby="gestion-clase-titulo"]', titulo: 'Estado de la clase', texto: 'Al terminar el periodo, la archivas aquí.' },
+    ],
+  },
+  {
     id: 'admin-estado',
     rol: 'administrador',
     pantalla: 'el estado del sistema',
@@ -254,6 +296,36 @@ export const RECORRIDOS: Recorrido[] = [
     pasos: [
       { elemento: '[aria-label="Indicadores principales de salud"]', titulo: 'Lo principal', texto: 'Cada indicador dice si va normal o degradado.' },
       { elemento: '[data-recorrido="subsistemas"]', titulo: 'Cada parte de STIRE', texto: 'El estado detallado de cada subsistema y a qué hora se actualizó.' },
+    ],
+  },
+  {
+    id: 'admin-perfil',
+    rol: 'administrador',
+    pantalla: 'tu perfil',
+    manual: 'cambiar-mis-datos',
+    pasos: [
+      { elemento: '[data-recorrido="datos-perfil"]', titulo: 'Tus datos', texto: 'Tu nombre, tu foto (opcional) y tu contraseña.' },
+      { elemento: '[data-recorrido="apariencia"]', titulo: 'Apariencia y lectura', texto: 'El tema, el contraste, el tamaño del texto y menos movimiento, a tu gusto.' },
+    ],
+  },
+  {
+    id: 'admin-catalogo',
+    rol: 'administrador',
+    pantalla: 'el catálogo',
+    manual: 'ordenar-el-catalogo',
+    pasos: [
+      { elemento: '[aria-labelledby="duplicados-titulo"]', titulo: 'Posibles duplicados', texto: 'La misma asignatura con dos nombres. Eliges cuál dejar, o dices que son distintas.' },
+      { elemento: '[aria-labelledby="agregadas-titulo"]', titulo: 'Agregadas por docentes', texto: 'Ya funcionan. Confirmarlas como oficiales es opcional: salen primero en la búsqueda.' },
+    ],
+  },
+  {
+    id: 'admin-registros',
+    rol: 'administrador',
+    pantalla: 'los registros',
+    manual: 'revisar-el-sistema',
+    pasos: [
+      { elemento: '[aria-label="Actualizar registros del sistema"]', titulo: 'Actualizar', texto: 'Trae los registros más recientes del servidor.' },
+      { elemento: '[aria-label="Registro del servidor"]', titulo: 'El registro del servidor', texto: 'Lo que pasó en el servidor. Sirve para saber qué falló y cuándo.' },
     ],
   },
   {
@@ -307,7 +379,8 @@ export function recorridoDeRuta(ruta: string, rol: string | null | undefined): R
                     : r === '/estudiante/mensajes' ? 'estudiante-mensajes'
                       : r === '/estudiante/logros' ? 'estudiante-logros'
                         : r === '/estudiante/perfil' ? 'estudiante-perfil'
-                          : null
+                          : r === '/estudiante/proyectos' ? 'estudiante-proyectos'
+                            : null
       : rol === 'docente'
         ? r === '/docente' ? 'docente-inicio'
           : /^\/docente\/clase\/[^/]+$/.test(r) ? 'docente-clase'
@@ -318,13 +391,19 @@ export function recorridoDeRuta(ruta: string, rol: string | null | undefined): R
                     : r === '/docente/entregas' ? 'docente-entregas'
                       : r === '/docente/ejercicios/crear' ? 'docente-crear-ejercicio'
                         : r === '/docente/mensajes' ? 'docente-mensajes'
-                          : null
+                          : r === '/docente/perfil' ? 'docente-perfil'
+                            : r === '/docente/refuerzos' ? 'docente-refuerzos'
+                              : /^\/docente\/clase\/[^/]+\/ajustes$/.test(r) ? 'docente-ajustes'
+                                : null
         : rol === 'administrador'
           ? r === '/admin' || r === '/admin/usuarios' ? 'admin-usuarios'
             : r === '/admin/sugerencias' ? 'admin-sugerencias'
               : r === '/admin/usabilidad' ? 'admin-usabilidad'
                 : r === '/admin/dashboard' ? 'admin-estado'
-                  : null
+                  : r === '/admin/perfil' ? 'admin-perfil'
+                    : r === '/admin/catalogo' ? 'admin-catalogo'
+                      : r === '/admin/sistema' ? 'admin-registros'
+                        : null
           : null
   return RECORRIDOS.find((x) => x.id === id) ?? null
 }

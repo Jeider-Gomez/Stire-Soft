@@ -7,7 +7,7 @@
           <h1 class="text-xl font-bold text-base-texto-primario flex items-center gap-2"><LifeBuoy :size="22" class="text-acento-ambar-fuerte" aria-hidden="true" /> Refuerzos y retos</h1>
           <p class="text-xs text-base-texto-secundario mt-1">Lo que asignaste a estudiantes concretos y si funcionó: los pasos que hicieron y su dominio antes y ahora.</p>
         </div>
-        <NuxtLink v-if="claseId" :to="enlaceNuevoRefuerzo(claseId, 'refuerzo', [])" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 shrink-0">
+        <NuxtLink v-if="claseId" data-recorrido="nuevo-refuerzo" :to="enlaceNuevoRefuerzo(claseId, 'refuerzo', [])" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 shrink-0">
           <Plus :size="14" aria-hidden="true" /> Nuevo refuerzo o reto
         </NuxtLink>
       </div>

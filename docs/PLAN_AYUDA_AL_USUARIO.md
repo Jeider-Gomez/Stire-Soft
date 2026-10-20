@@ -230,10 +230,28 @@ docente se vuelve obligatorio.
 - **Recorridos:** 7 pantallas más, en total **23**. Las nuevas son mensajes del estudiante y del docente, logros,
   perfil del estudiante, entregas, crear ejercicio y estado del sistema.
 
+**Cierre del 20/10:**
+
+- **Pruebas en producción:** con la cuenta de prueba del estudiante, funcionan:
+  - la bienvenida;
+  - la lista de primeros pasos, que se completa sola y desaparece;
+  - el menú de ayuda;
+  - «Contar un problema o una idea»;
+  - el recorrido de Repasos;
+  - el «hazlo tú» del Tutor en el ejercicio.
+
+  Se corrigieron tres detalles que se vieron ahí: los pasos ya hechos, el enlace pegado al texto y «Recorrido de el
+  inicio».
+- **Manual:** 4 tareas más, en total **27**. Las nuevas son proyecto propio, refuerzos y retos, ajustes de la clase y
+  catálogo académico. El PDF tiene 25 páginas.
+- **Recorridos:** 7 pantallas más, en total **30**. Las nuevas son proyectos, perfil del docente y del administrador,
+  refuerzos, ajustes de la clase, catálogo y registros. Todas las pantallas del menú y de las pestañas de la clase tienen
+  su recorrido.
+
 **Falta:**
 
-- **Pantallas sin recorrido:** perfil del docente y del administrador, proyectos, refuerzos, evaluación, ajustes de la
-  clase, catálogo y registros.
+- **Pantallas de detalle sin recorrido:** un refuerzo o una entrega del estudiante, la revisión de una entrega, el
+  detalle de un estudiante y las encuestas. Son pantallas a las que se llega desde otra que ya lo explica.
 - **La medición** (§5).
 - **Capturas** para las tareas que no tienen.
 - **Probarlo como usuario en producción** después del despliegue.

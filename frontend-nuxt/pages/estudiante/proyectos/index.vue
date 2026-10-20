@@ -21,7 +21,7 @@
 
     <template v-else-if="estado">
       <!-- Crear -->
-      <form novalidate @submit.prevent="crearProyecto" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-3 text-xs">
+      <form novalidate data-recorrido="nuevo-proyecto" @submit.prevent="crearProyecto" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-3 text-xs">
         <h2 class="text-sm font-bold text-base-texto-primario">Nuevo proyecto</h2>
         <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
           <div class="flex-1">

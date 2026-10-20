@@ -221,6 +221,17 @@ export const MANUAL: SeccionManual[] = [
         ],
         resultado: 'Tu docente lo recibe en su bandeja de STIRE y su respuesta te llega a «Mensajes».',
       },
+      {
+        id: 'crear-un-proyecto',
+        titulo: '¿Cómo creo un proyecto propio?',
+        paraQue: 'Para programar lo que quieras, fuera de los ejercicios del curso.',
+        pasos: [
+          'Toca «Mis proyectos» en el menú. Si no aparece, todavía no está disponible en tu clase: está en prueba.',
+          'En «Nuevo proyecto», escribe el «Nombre» y elige el «Tipo de proyecto».',
+          'Toca «Crear proyecto» y luego «Abrir proyecto».',
+        ],
+        resultado: 'Tu proyecto se ejecuta en tu navegador y solo tú lo ves.',
+      },
     ],
   },
   {
@@ -280,6 +291,32 @@ export const MANUAL: SeccionManual[] = [
           'Cuando entreguen, abre la entrega para revisar cada versión y dejar tu comentario.',
         ],
         resultado: 'Cada versión queda con su fecha y cada revisión en el historial.',
+      },
+      {
+        id: 'asignar-un-refuerzo',
+        titulo: '¿Cómo le asigno un refuerzo o un reto a un estudiante?',
+        paraQue: 'Para apoyar a quien va atrás o darle más a quien va adelante.',
+        pasos: [
+          'Abre tu clase y toca «Refuerzos».',
+          'Toca «Nuevo refuerzo o reto».',
+          'Elige el «Tipo», a quién va y qué tiene que hacer: una explicación, un ejercicio, un recurso o una entrega.',
+          'Toca «Asignar el refuerzo» o «Asignar el reto».',
+        ],
+        resultado: 'En «Refuerzos y retos» ves los pasos que hizo y su dominio antes y ahora.',
+        consejo: 'También puedes asignarlo desde «Hoy» o desde el mapa de calor de «Estudiantes».',
+      },
+      {
+        id: 'ajustar-la-clase',
+        titulo: '¿Qué puedo cambiar en los ajustes de la clase?',
+        paraQue: 'Para que la clase funcione como tú quieres. Todo es opcional.',
+        pasos: [
+          'Abre tu clase y toca «Ajustes».',
+          'En «Avance entre módulos» decides cuánto dominio del módulo anterior hace falta para abrir el siguiente.',
+          'En «Compartir el contenido» eliges con quién compartirlo como plantilla, o «No compartir».',
+          'En «Logros y medallas» eliges qué medallas pueden ganar tus estudiantes.',
+          'En «Estado y gestión de la clase» la archivas al terminar el periodo.',
+        ],
+        resultado: 'La clase queda como la quieres, y todo se puede cambiar después.',
       },
       {
         id: 'avisar-a-la-clase',
@@ -382,6 +419,17 @@ export const MANUAL: SeccionManual[] = [
           'Para ver el registro del servidor, toca «Registros y mantenimiento».',
         ],
         resultado: 'Sabes si hay que actuar y dónde.',
+      },
+      {
+        id: 'ordenar-el-catalogo',
+        titulo: '¿Cómo ordeno el catálogo académico?',
+        paraQue: 'Para que no haya la misma asignatura con dos nombres.',
+        pasos: [
+          'Toca «Catálogo académico» en el menú.',
+          'En «Posibles duplicados», STIRE muestra las asignaturas parecidas: elige cuál dejar o toca «Son distintas».',
+          'En «Agregadas por docentes», toca «Confirmar como oficial» si corresponde. Es opcional: las oficiales salen primero en la búsqueda.',
+        ],
+        resultado: 'Al unir, las clases pasan a la que se queda y el nombre viejo sigue sirviendo para buscarla.',
       },
     ],
   },
