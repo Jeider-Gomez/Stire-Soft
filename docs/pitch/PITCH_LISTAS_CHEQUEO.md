@@ -76,24 +76,22 @@ Esta semana cerré la versión 2.0 y agregué el perfil de aprendizaje que propu
 
 ### José
 
-**[HOOK — 0:00–0:10]**
+### 1. Hook (0:00–0:10)
 
-Yo revisé si STIRE se entiende al usarlo, tanto en el computador como en el celular.
+Estas semanas nos enfocamos en eliminar las trabas visuales y hacer que STIRE-Soft sea más cómoda de usar, tanto en el computador como en el celular.
 
-**[PROBLEM — 0:10–0:25]**
+### 2. Problemas (0:10–0:23)
 
-Como estudiante encontré dos cosas: cuando un módulo estaba bloqueado, no decía qué faltaba para abrirlo, y en
-celulares pequeños el botón del Tutor tapaba algunas opciones.
+Durante las pruebas identifiqué dos problemas: el teclado del celular ocultaba la caja de texto del Tutor y el código QR de asistencia no mostraba cuánto tiempo seguía activo.
 
-**[SOLUTION — 0:25–0:50]**
+### 3. Soluciones y valor (0:23–0:48)
 
-Ahora, cuando el docente bloquea un módulo, el candado dice cuánto dominio necesita y cuánto llevas, y el plan del
-curso se ve completo en la barra lateral. En el celular, el botón del Tutor deja espacio y se convierte en un ícono. Lo comprobé en los dos aparatos.
+Para solucionarlos, se ajustó el panel del Tutor para que se desplace automáticamente y mantenga el campo de escritura visible sobre el teclado. También incorporamos una barra verde con cuenta regresiva que indica cuándo se renueva el código QR, cada 20 segundos. Además, se organizaron los paneles de ayuda y las notificaciones en computador para evitar que se superpongan.
 
-**[CIERRE — 0:50–1:00]**
+### 4. Cierre (0:48–1:00)
 
-Esta semana terminé como estudiante las secciones 1 y 2 de Pensamiento algorítmico y confirmé que mis cinco hallazgos
-quedaron corregidos.
+Con estas mejoras verificadas durante el uso diario, logramos que STIRE-Soft ofrezca una experiencia más clara y cómoda. Ahora me preparo para la siguiente fase: optimizar el avance de las lecciones y trabajar en la próxima versión.
+
 
 ### Jorge
 
