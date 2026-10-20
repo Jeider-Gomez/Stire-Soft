@@ -48,6 +48,13 @@ describe('recorrido guiado', () => {
     expect(r.recorridoDeRuta('/estudiante/clases', 'estudiante')?.id).toBe('estudiante-clases');
     expect(r.recorridoDeRuta('/estudiante/asistencia', 'estudiante')?.id).toBe('estudiante-asistencia');
     expect(r.recorridoDeRuta('/docente/clase/5/asistencia', 'docente')?.id).toBe('docente-asistencia');
+    expect(r.recorridoDeRuta('/estudiante/mensajes', 'estudiante')?.id).toBe('estudiante-mensajes');
+    expect(r.recorridoDeRuta('/estudiante/logros', 'estudiante')?.id).toBe('estudiante-logros');
+    expect(r.recorridoDeRuta('/estudiante/perfil', 'estudiante')?.id).toBe('estudiante-perfil');
+    expect(r.recorridoDeRuta('/docente/entregas', 'docente')?.id).toBe('docente-entregas');
+    expect(r.recorridoDeRuta('/docente/ejercicios/crear', 'docente')?.id).toBe('docente-crear-ejercicio');
+    expect(r.recorridoDeRuta('/docente/mensajes', 'docente')?.id).toBe('docente-mensajes');
+    expect(r.recorridoDeRuta('/admin/dashboard', 'administrador')?.id).toBe('admin-estado');
     // Otra pantalla u otro rol: sin recorrido (y sin botón «?»).
     expect(r.recorridoDeRuta('/docente/clase/5/ajustes', 'docente')).toBeNull();
     expect(r.recorridoDeRuta('/admin', 'docente')).toBeNull();
@@ -66,7 +73,7 @@ describe('recorrido guiado', () => {
         const marca = /data-recorrido="([^"]+)"/.exec(p.elemento)?.[1];
         const id = /^#([\w-]+)$/.exec(p.elemento)?.[1];
         const aria = /^\[aria-labelledby="([^"]+)"\]$/.exec(p.elemento)?.[1];
-        const nav = /^nav\[aria-label="([^"]+)"\]$/.exec(p.elemento)?.[1];
+        const nav = /^(?:nav)?\[aria-label="([^"]+)"\]$/.exec(p.elemento)?.[1];
         if (marca) expect(pantallas).toContain(`data-recorrido="${marca}"`);
         else if (id) expect(pantallas).toContain(`id="${id}"`);
         else if (aria) expect(pantallas).toContain(`aria-labelledby="${aria}"`);
@@ -109,9 +116,12 @@ describe('recorrido guiado', () => {
     expect(c).toContain("showButtons: pasos.length > 1 ? ['next', 'previous', 'close'] : ['next', 'close']");
     expect(c).toContain("matchMedia('(prefers-reduced-motion: reduce)')");
     expect(c).toContain("setAttribute('aria-label', 'Cerrar el recorrido')");
-    const h = leer('components', 'layout', 'HeaderNav.vue');
-    expect(h).toContain('v-if="recorrido.actual.value"');
-    expect(h).toContain('@click="recorrido.mostrar()"');
+    // El «?» es ahora el menú de ayuda (MenuAyuda.vue): en la cabecera y en el ejercicio, con el recorrido si lo hay.
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutMenuAyuda />');
+    expect(leer('layouts', 'workspace.vue')).toContain('<LayoutMenuAyuda :con-sugerencias="false" class="shrink-0" />');
+    const m = leer('components', 'layout', 'MenuAyuda.vue');
+    expect(m).toContain('<li v-if="recorrido.actual.value">');
+    expect(m).toContain('recorrido.mostrar()');
     for (const l of ['student.vue', 'teacher.vue', 'workspace.vue', 'admin.vue']) {
       expect(leer('layouts', l)).toContain('watch(() => rutaActual.path, primeraVez, { immediate: true })');
     }

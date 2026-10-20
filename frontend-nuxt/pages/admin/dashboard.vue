@@ -158,7 +158,7 @@
       </section>
 
       <!-- Tabla de Servicios Detallada -->
-      <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
+      <section data-recorrido="subsistemas" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-4">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-bold text-base-texto-primario uppercase tracking-wider">
             Estado detallado de los subsistemas de STIRE

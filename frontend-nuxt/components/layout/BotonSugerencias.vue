@@ -216,11 +216,12 @@ async function verMios() {
 useEscapeToClose(() => abierto.value, cerrar)
 
 // La notificación «Tu sugerencia ya está resuelta» trae ?sugerencias=mias: se abre «Lo que he enviado» con la respuesta
-// del equipo, y se quita de la dirección para que no se vuelva a abrir al recargar (08/10).
+// del equipo, y se quita de la dirección para que no se vuelva a abrir al recargar (08/10). El menú de ayuda de la
+// cabecera (MenuAyuda.vue) trae ?sugerencias=nueva: se abre el formulario en blanco.
 watch(() => route.query.sugerencias, (v) => {
-  if (v !== 'mias') return
+  if (v !== 'mias' && v !== 'nueva') return
   abrir()
-  void verMios()
+  if (v === 'mias') void verMios()
   const { sugerencias: _quitar, ...resto } = route.query
   void navigateTo({ path: route.path, query: resto }, { replace: true })
 }, { immediate: true })

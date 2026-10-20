@@ -59,8 +59,8 @@ describe('el aviso opcional de una sugerencia revisada', () => {
 
   it('la notificación abre «Lo que he enviado», con la respuesta del equipo, y se quita de la dirección', () => {
     const b = leer('components', 'layout', 'BotonSugerencias.vue');
-    expect(b).toContain("if (v !== 'mias') return");
-    expect(b).toContain('void verMios()');
+    expect(b).toContain("if (v !== 'mias' && v !== 'nueva') return");
+    expect(b).toContain("if (v === 'mias') void verMios()");
     expect(b).toContain('{ replace: true }');
     expect(b).toContain('Respuesta: {{ r.nota }}');
   });

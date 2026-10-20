@@ -88,6 +88,18 @@ export const MANUAL: SeccionManual[] = [
         ],
         resultado: 'Encuentras la respuesta o la dejas escrita para que la resolvamos.',
       },
+      {
+        id: 'cambiar-mis-datos',
+        titulo: '¿Cómo cambio mi nombre, mi foto o mi contraseña?',
+        paraQue: 'Para mantener tu cuenta al día.',
+        pasos: [
+          'Toca tu nombre, arriba a la derecha, y luego «Mi perfil».',
+          'En «Datos del perfil», cambia tu nombre y toca «Guardar nombre». La «Foto de perfil» es opcional.',
+          'En «Cambiar contraseña», escribe la actual y la nueva, y toca «Cambiar contraseña».',
+        ],
+        resultado: 'Tus datos quedan guardados.',
+        consejo: 'En la misma pantalla, «Apariencia» cambia el tema, el contraste y el tamaño del texto.',
+      },
     ],
   },
   {
@@ -197,6 +209,18 @@ export const MANUAL: SeccionManual[] = [
         resultado: 'Quedas como presente en la sesión de hoy.',
         siAlgoSaleMal: [{ problema: 'Al docente le cuesta leer el código', solucion: 'Sube el brillo de la pantalla y acerca el celular.' }],
       },
+      {
+        id: 'escribirle-a-mi-docente',
+        titulo: '¿Cómo le escribo a mi docente?',
+        paraQue: 'Para preguntarle algo sin salir de STIRE.',
+        pasos: [
+          'Toca «Mensajes» en el menú.',
+          'Toca «Escribir a un docente», elige el docente y escribe tu mensaje.',
+          'Toca «Enviar mensaje».',
+          'En «Avisos de la clase» ves lo que tu docente publica para todo el grupo.',
+        ],
+        resultado: 'Tu docente lo recibe en su bandeja de STIRE y su respuesta te llega a «Mensajes».',
+      },
     ],
   },
   {
@@ -232,6 +256,41 @@ export const MANUAL: SeccionManual[] = [
         ],
         resultado: 'Tus estudiantes ven la lección publicada en su plan del curso.',
         consejo: 'Si ya tienes el curso en otra clase o en una plantilla, usa «Traer de otra clase» en vez de escribirlo otra vez.',
+      },
+      {
+        id: 'crear-un-ejercicio',
+        titulo: '¿Cómo creo un ejercicio?',
+        paraQue: 'Para que tus estudiantes practiquen una lección y se califique solo.',
+        pasos: [
+          'En «Contenido», abre la lección y toca «Ejercicio».',
+          'Responde «¿Qué va a hacer el estudiante?» eligiendo el tipo de ejercicio.',
+          'Escribe el enunciado y lo que debe cumplir la respuesta, y toca «Ver cómo lo verá el estudiante».',
+          'Revisa la vista previa, elige «Publicar ahora» o «Guardar como borrador», y confirma.',
+        ],
+        resultado: 'El ejercicio aparece en la lección y STIRE lo califica al instante.',
+        consejo: 'Con «Volver al paso anterior» corriges lo que haga falta antes de publicarlo.',
+      },
+      {
+        id: 'recibir-entregas',
+        titulo: '¿Cómo recibo proyectos de mis estudiantes?',
+        paraQue: 'Para que entreguen un trabajo más grande que un ejercicio, si te sirve.',
+        pasos: [
+          'Abre tu clase y toca «Entregas».',
+          'Toca «Nueva entrega» y describe qué deben entregar y para cuándo.',
+          'Cuando entreguen, abre la entrega para revisar cada versión y dejar tu comentario.',
+        ],
+        resultado: 'Cada versión queda con su fecha y cada revisión en el historial.',
+      },
+      {
+        id: 'avisar-a-la-clase',
+        titulo: '¿Cómo le aviso algo a mis estudiantes?',
+        paraQue: 'Para escribirle a uno o recordarle algo a toda la clase.',
+        pasos: [
+          'Toca «Mensajes» en el menú.',
+          'Para escribirle a uno, toca «Escribir a un estudiante».',
+          'Para toda la clase, abre «Avisos de la clase» y toca «Publicar un aviso».',
+        ],
+        resultado: 'Tus estudiantes lo reciben en STIRE, con una notificación.',
       },
       {
         id: 'saber-a-quien-ayudar',
@@ -311,6 +370,18 @@ export const MANUAL: SeccionManual[] = [
           'Lee los comentarios: dicen qué cambiaría cada persona.',
         ],
         resultado: 'Sabes qué mejorar primero.',
+      },
+      {
+        id: 'revisar-el-sistema',
+        titulo: '¿Cómo reviso el estado del sistema?',
+        paraQue: 'Para saber si STIRE funciona bien o qué parte falla.',
+        pasos: [
+          'Toca «Estado del sistema» en el menú.',
+          'Arriba están los indicadores principales: cada uno dice si va normal o degradado.',
+          'Más abajo, el estado detallado de cada parte de STIRE.',
+          'Para ver el registro del servidor, toca «Registros y mantenimiento».',
+        ],
+        resultado: 'Sabes si hay que actuar y dónde.',
       },
     ],
   },

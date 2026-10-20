@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="text-xl font-bold text-base-texto-primario mb-6">Mi perfil</h1>
-    <PerfilForm />
+    <PerfilForm data-recorrido="datos-perfil" />
     <PerfilVinculos class="mt-6" />
     <PerfilAparienciaLectura class="mt-6" />
     <p class="mt-6 text-xs text-slate-600">

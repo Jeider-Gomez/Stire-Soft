@@ -3,7 +3,7 @@
        aumentar el contraste; temas de contraste como los de Windows; tamaño del texto, espaciado y movimiento. Cada
        cambio se ve al instante y se recuerda en este navegador. Está en el perfil y en el botón «Apariencia» de la
        cabecera, como el bloque de accesibilidad de Moodle. Cada tema muestra una vista previa, como GitHub y Windows. -->
-  <component :is="compacto ? 'div' : 'section'" :id="compacto ? undefined : 'apariencia'"
+  <component :is="compacto ? 'div' : 'section'" :id="compacto ? undefined : 'apariencia'" data-recorrido="apariencia"
     :class="compacto ? 'space-y-5' : 'bg-base-blanco rounded-xl border border-base-borde-sutil p-5 shadow-sm space-y-5 scroll-mt-20'"
     :aria-labelledby="compacto ? undefined : 'apariencia-titulo'">
     <div v-if="!compacto">

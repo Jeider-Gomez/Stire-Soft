@@ -12,7 +12,7 @@
             nota de la materia. Cada versión queda con su fecha, y cada revisión en el historial.
           </p>
         </div>
-        <button v-if="claseId !== null && !formulario" type="button" @click="formulario = true"
+        <button v-if="claseId !== null && !formulario" type="button" data-recorrido="nueva-entrega" @click="formulario = true"
           class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 shrink-0">
           <Plus :size="14" aria-hidden="true" /> Nueva entrega
         </button>

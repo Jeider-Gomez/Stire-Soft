@@ -47,6 +47,8 @@
         @click="tutorStore.openDrawer()">
         <Sparkles :size="16" aria-hidden="true" /> Tutor
       </button>
+      <!-- La ayuda también en el ejercicio, donde no hay cabecera general: repetir el recorrido y abrir el manual. -->
+      <LayoutMenuAyuda :con-sugerencias="false" class="shrink-0" />
 
       <!-- Estado de Autoguardado e Intentos -->
       <div class="hidden sm:flex items-center gap-4 text-xs">
@@ -138,6 +140,8 @@ const tutorStore = useTutorStore()
 
 // La primera vez en un ejercicio, el recorrido guiado señala sus partes (S10-J04).
 const { primeraVez } = useRecorrido()
+// El ejercicio y el Tutor cuentan para la lista de primeros pasos del estudiante (composables/usePrimerosPasos.ts).
+usePrimerosPasos().seguir()
 const rutaActual = useRoute()
 onMounted(() => watch(() => rutaActual.path, primeraVez, { immediate: true }))
 

@@ -168,11 +168,19 @@
       </nav>
     </div>
 
+    <!-- Ayuda para los tres roles, al final del menú: el manual de usuario (docs/PLAN_AYUDA_AL_USUARIO.md, frente C). -->
+    <nav aria-label="Ayuda" class="mt-auto pt-3 border-t border-base-borde-sutil text-sm font-medium">
+      <NuxtLink to="/ayuda" data-recorrido="ayuda" class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors text-base-texto-primario hover:bg-base-bg-secundario">
+        <BookOpen :size="18" aria-hidden="true" class="shrink-0" />
+        <span>Ayuda</span>
+      </NuxtLink>
+    </nav>
+
   </aside>
 </template>
 
 <script setup lang="ts">
-import { Activity, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
+import { Activity, BookOpen, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 

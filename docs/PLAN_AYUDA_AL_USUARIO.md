@@ -201,14 +201,42 @@ docente se vuelve obligatorio.
   - Enlace «Ver en el manual» en cada globo.
   - **4 pantallas nuevas:** Repasos, Mis clases, Mi asistencia y la asistencia del docente. Ya son 16 recorridos.
 
+**Hecho el 20/10:**
+
+- **Menú de ayuda (frente C):** el «?» de la cabecera ya está en todas las pantallas, también en el ejercicio. Reúne:
+  - el recorrido de la pantalla;
+  - la tarea del manual que la explica;
+  - los primeros pasos (solo el estudiante);
+  - el manual completo y las preguntas frecuentes;
+  - «Contar un problema o una idea», que abre la ventana de sugerencias en blanco.
+
+  Se cierra con Escape, tocando fuera o al cambiar de pantalla. Está en `components/layout/MenuAyuda.vue`.
+- **Barra lateral:** «Ayuda» al final, para los tres roles.
+- **Primeros pasos del estudiante (B.2):** una tarjeta en el inicio con 5 pasos y su avance («2 de 5»):
+  1. unirse a la clase;
+  2. abrir una lección;
+  3. abrir un ejercicio;
+  4. preguntarle al Tutor;
+  5. mirar los repasos.
+
+  Cada paso se marca solo cuando se hace. La tarjeta se puede ocultar, y el menú de ayuda la vuelve a mostrar.
+- **Manual:** 6 tareas más, en total **23**:
+  - cambiar los datos del perfil;
+  - escribirle al docente;
+  - crear un ejercicio;
+  - recibir entregas;
+  - avisar a la clase;
+  - revisar el estado del sistema.
+- **Recorridos:** 7 pantallas más, en total **23**. Las nuevas son mensajes del estudiante y del docente, logros,
+  perfil del estudiante, entregas, crear ejercicio y estado del sistema.
+
 **Falta:**
 
-- El menú de ayuda (frente C) y el enlace «Ayuda» en la barra lateral.
-- La lista de primeros pasos con progreso (B.2).
-- Las 16 pantallas que siguen sin recorrido.
-- La medición (§5).
-- Capturas nuevas para las tareas que no tienen.
-- Probarlo como usuario en producción después del despliegue.
+- **Pantallas sin recorrido:** perfil del docente y del administrador, proyectos, refuerzos, evaluación, ajustes de la
+  clase, catálogo y registros.
+- **La medición** (§5).
+- **Capturas** para las tareas que no tienen.
+- **Probarlo como usuario en producción** después del despliegue.
 
 ## 7. Lo que no entra en este plan
 

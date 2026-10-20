@@ -20,6 +20,8 @@
       <!-- Zona C: Contenido Dinámico de la Página -->
       <!-- pb-24: el lanzador del Tutor flota abajo a la derecha; sin este margen tapaba el último botón de la página. -->
       <main id="contenido" tabindex="-1" class="flex-1 min-w-0 p-4 sm:p-6 md:p-8 pb-24 sm:pb-24 md:pb-24 max-w-7xl mx-auto w-full overflow-y-auto">
+        <!-- Primeros pasos, solo en el inicio (components/estudiante/PrimerosPasos.vue). -->
+        <EstudiantePrimerosPasos v-if="route.path === '/estudiante'" class="mb-6" />
         <slot />
       </main>
     </div>
@@ -52,6 +54,8 @@ const { sidebarOpen, sidebarClass, close: closeSidebar, toggle: toggleSidebar } 
 const { primeraVez } = useRecorrido()
 const rutaActual = useRoute()
 onMounted(() => watch(() => rutaActual.path, primeraVez, { immediate: true }))
+// La lista de primeros pasos se marca sola al hacer cada cosa (composables/usePrimerosPasos.ts).
+usePrimerosPasos().seguir()
 
 onMounted(async () => {
   // Cargar datos de estudiante cuando el store esté vacío (§21.2 T3b), una sola vez

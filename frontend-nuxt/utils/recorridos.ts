@@ -30,6 +30,13 @@ export interface Recorrido {
   pasos: PasoRecorrido[]
 }
 
+/** Mensajes: los mismos tres pasos para el estudiante y el docente (components/mensajes/). */
+const mensajes = (conQuien: string): PasoRecorrido[] => [
+  { elemento: 'nav[aria-label="Mensajes y avisos"]', titulo: 'Mensajes y avisos', texto: `«Mensajes» es uno a uno con ${conQuien}; «Avisos de la clase» es lo que se publica para todo el grupo.` },
+  { elemento: '#redactar-mensaje', titulo: 'Escribir', texto: 'Escoge a quién y escribe tu mensaje. Lo recibe en su bandeja de STIRE.' },
+  { elemento: '[aria-label="Bandejas"]', titulo: 'Tus bandejas', texto: '«Recibidos» y «Enviados». Cada mensaje se responde desde aquí.' },
+]
+
 const tutor: PasoRecorrido = {
   elemento: '#lanzador-tutor',
   titulo: 'El Tutor',
@@ -118,6 +125,33 @@ export const RECORRIDOS: Recorrido[] = [
     ],
   },
   {
+    id: 'estudiante-mensajes',
+    rol: 'estudiante',
+    pantalla: 'tus mensajes',
+    manual: 'escribirle-a-mi-docente',
+    pasos: mensajes('tus docentes'),
+  },
+  {
+    id: 'estudiante-logros',
+    rol: 'estudiante',
+    pantalla: 'tus logros',
+    manual: 'ver-mi-progreso',
+    pasos: [
+      { elemento: '[aria-labelledby="mis-logros-titulo"]', titulo: 'Tus medallas', texto: 'Cada medalla dice qué hacer para ganarla y cuánto te falta. Solo las ves tú.' },
+    ],
+  },
+  {
+    id: 'estudiante-perfil',
+    rol: 'estudiante',
+    pantalla: 'tu perfil',
+    manual: 'cambiar-mis-datos',
+    pasos: [
+      { elemento: '[data-recorrido="datos-perfil"]', titulo: 'Tus datos', texto: 'Tu nombre, tu foto (opcional) y tu contraseña.' },
+      { elemento: '[aria-labelledby="vinculos-titulo"]', titulo: 'Qué estudias', texto: 'Opcional: tu programa y tu semestre ayudan a tus docentes a conocer el grupo.' },
+      { elemento: '[data-recorrido="apariencia"]', titulo: 'Apariencia y lectura', texto: 'El tema, el contraste, el tamaño del texto y menos movimiento, a tu gusto.' },
+    ],
+  },
+  {
     id: 'docente-inicio',
     rol: 'docente',
     pantalla: 'el inicio',
@@ -186,6 +220,43 @@ export const RECORRIDOS: Recorrido[] = [
     ],
   },
   {
+    id: 'docente-entregas',
+    rol: 'docente',
+    pantalla: 'las entregas',
+    manual: 'recibir-entregas',
+    pasos: [
+      { elemento: '[data-recorrido="nueva-entrega"]', titulo: 'Las entregas son opcionales', texto: 'Para un proyecto más grande que un ejercicio: describe qué deben entregar y para cuándo.' },
+      { elemento: '[aria-label="Entregas de la clase"]', titulo: 'Las de tu clase', texto: 'Abre una para revisar cada versión y dejar tu comentario.' },
+    ],
+  },
+  {
+    id: 'docente-crear-ejercicio',
+    rol: 'docente',
+    pantalla: 'el nuevo ejercicio',
+    manual: 'crear-un-ejercicio',
+    pasos: [
+      { elemento: '[aria-label="Pasos para crear el ejercicio"]', titulo: 'Tres pasos', texto: 'Eliges el tipo, escribes el contenido y revisas cómo lo verá el estudiante antes de publicar.' },
+      { elemento: '[aria-label="Tipo de ejercicio"]', titulo: 'El tipo', texto: 'Programar, opción múltiple, completar código, ordenar pasos y más. STIRE califica cada uno al instante.' },
+    ],
+  },
+  {
+    id: 'docente-mensajes',
+    rol: 'docente',
+    pantalla: 'tus mensajes',
+    manual: 'avisar-a-la-clase',
+    pasos: mensajes('tus estudiantes'),
+  },
+  {
+    id: 'admin-estado',
+    rol: 'administrador',
+    pantalla: 'el estado del sistema',
+    manual: 'revisar-el-sistema',
+    pasos: [
+      { elemento: '[aria-label="Indicadores principales de salud"]', titulo: 'Lo principal', texto: 'Cada indicador dice si va normal o degradado.' },
+      { elemento: '[data-recorrido="subsistemas"]', titulo: 'Cada parte de STIRE', texto: 'El estado detallado de cada subsistema y a qué hora se actualizó.' },
+    ],
+  },
+  {
     id: 'admin-usuarios',
     rol: 'administrador',
     pantalla: 'usuarios y roles',
@@ -233,7 +304,10 @@ export function recorridoDeRuta(ruta: string, rol: string | null | undefined): R
               : r === '/estudiante/repasos' ? 'estudiante-repasos'
                 : r === '/estudiante/clases' ? 'estudiante-clases'
                   : r === '/estudiante/asistencia' ? 'estudiante-asistencia'
-                    : null
+                    : r === '/estudiante/mensajes' ? 'estudiante-mensajes'
+                      : r === '/estudiante/logros' ? 'estudiante-logros'
+                        : r === '/estudiante/perfil' ? 'estudiante-perfil'
+                          : null
       : rol === 'docente'
         ? r === '/docente' ? 'docente-inicio'
           : /^\/docente\/clase\/[^/]+$/.test(r) ? 'docente-clase'
@@ -241,12 +315,16 @@ export function recorridoDeRuta(ruta: string, rol: string | null | undefined): R
               : r === '/docente/rendimiento' ? 'docente-estudiantes'
                 : /^\/docente\/clase\/[^/]+\/notas$/.test(r) ? 'docente-notas'
                   : /^\/docente\/clase\/[^/]+\/asistencia$/.test(r) ? 'docente-asistencia'
-                    : null
+                    : r === '/docente/entregas' ? 'docente-entregas'
+                      : r === '/docente/ejercicios/crear' ? 'docente-crear-ejercicio'
+                        : r === '/docente/mensajes' ? 'docente-mensajes'
+                          : null
         : rol === 'administrador'
           ? r === '/admin' || r === '/admin/usuarios' ? 'admin-usuarios'
             : r === '/admin/sugerencias' ? 'admin-sugerencias'
               : r === '/admin/usabilidad' ? 'admin-usabilidad'
-                : null
+                : r === '/admin/dashboard' ? 'admin-estado'
+                  : null
           : null
   return RECORRIDOS.find((x) => x.id === id) ?? null
 }
