@@ -85,6 +85,7 @@
       </li>
     </ol>
 
+    <DocenteErroresSemana :class-id="classId" />
     <DocenteValoracionesClase :class-id="classId" />
   </div>
 </template>

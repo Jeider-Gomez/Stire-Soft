@@ -22,7 +22,9 @@ import { esNivelConfianza, resumirCalibracion, type ResumenCalibracion } from '.
 import { contarCalidades, type NombreCalidad } from '../common/utils/spaced-repetition';
 import { CONFIANZA_SEGURO } from '../learning-progress/recommendation/recomendar-siguiente';
 import { DOMINADO } from '../learning-progress/estadisticas';
-import { erroresQueSeRepiten, FORMATOS, ordenDeEstudio, preferenciaDeFormatos, tipoDeError, type FalloClasificado } from './perfil-aprendizaje';
+import { erroresQueSeRepiten, FORMATOS, ordenDeEstudio, preferenciaDeFormatos, tipoDeFallo, type FalloClasificado, type FilaEjecucion } from './perfil-aprendizaje';
+import { erroresDeLaClase, type ErroresDeLaSemana, type FalloDeLaClase } from './errores-de-la-clase';
+import { diasEntre } from '../common/utils/dia-colombia';
 
 @Injectable()
 export class AnalyticsService {
@@ -65,11 +67,7 @@ export class AnalyticsService {
       );
     const fallos: FalloClasificado[] = [];
     for (const f of filas) {
-      const config = (typeof f.config === 'string' ? JSON.parse(f.config) : f.config) as { testCases?: Array<{ label?: string; input?: string; expected?: string }> } | null;
-      const caso = config?.testCases?.find((c) => c.label === f.testCaseLabel);
-      if (!caso || typeof caso.expected !== 'string' || f.status === 'time_limit') continue;
-      const obtenida = (f.stdout ?? '').trim() ? (f.stdout ?? '') : (f.stderr ?? '');
-      const tipo = tipoDeError(caso.expected, obtenida, caso.input ?? '');
+      const tipo = tipoDeFallo(f);
       if (tipo) fallos.push({ tipo, entregaId: String(f.submissionId), fecha: new Date(f.createdAt) });
     }
 
@@ -589,6 +587,43 @@ export class AnalyticsService {
       ultimaActividad: new Map(ultimas.map((u) => [Number(u.studentId), new Date(u.ultima)])),
       ahora,
     });
+  }
+
+  /**
+   * «Errores que más se repiten esta semana» para «Hoy» (MOD-02, propuesta de Pedro del 19/10; errores-de-la-clase.ts): los
+   * casos que fallaron en los ejercicios de programar de la clase en los últimos 7 días (hora de Colombia), separados en
+   * errores de concepto y descuidos de escritura, con quién tiene cada uno. Mismos permisos que el resumen de la semana.
+   */
+  async getErroresDeLaSemana(classId: number, requestingUser: { id: number; role: string }, ahora = new Date()): Promise<ErroresDeLaSemana> {
+    const cls = await this.dataSource.getRepository(Class).findOne({ where: { id: classId } });
+    if (!cls) throw new NotFoundException('La clase no existe.');
+    if (requestingUser.role === 'estudiante') throw new ForbiddenException('Los estudiantes no tienen permiso para ver métricas de clase.');
+    if (requestingUser.role === 'docente' && cls.teacherId !== requestingUser.id) throw new ForbiddenException('No tienes acceso a las métricas de esta clase.');
+
+    const matriculas = await this.dataSource.getRepository(Enrollment).find({ where: { classId, status: EnrollmentStatus.ACTIVE }, relations: ['student'] });
+    const nombres = new Map(matriculas.map((m) => [m.studentId, m.student?.fullName ?? '—']));
+    const idsUnidad = await this.idsUnidadesDeClase(classId, false);
+    if (idsUnidad.length === 0 || nombres.size === 0) return { concepto: [], escritura: [] };
+
+    const desde = new Date(ahora.getTime() - 8 * 24 * 60 * 60 * 1000);
+    const filas: Array<FilaEjecucion & { submissionId: string; studentId: number; unitId: number; createdAt: Date }> = await this.dataSource.query(
+      `SELECT er.stdout, er.stderr, er.status, er.testCaseLabel, sa.submissionId, s.studentId, a.learningUnitId AS unitId, er.createdAt, q.config
+         FROM execution_results er
+         JOIN submission_answers sa ON sa.id = er.submissionAnswerId
+         JOIN submissions s ON s.id = sa.submissionId
+         JOIN activities a ON a.id = s.activityId
+         JOIN activity_questions q ON q.id = sa.questionId
+        WHERE s.studentId IN (?) AND a.learningUnitId IN (?) AND er.status <> 'accepted' AND er.deletedAt IS NULL AND er.createdAt >= ?
+        ORDER BY er.createdAt DESC LIMIT 3000`,
+      [[...nombres.keys()], idsUnidad, desde],
+    );
+    const fallos: FalloDeLaClase[] = [];
+    for (const f of filas) {
+      if (diasEntre(new Date(f.createdAt), ahora) >= 7) continue;
+      const tipo = tipoDeFallo(f);
+      if (tipo) fallos.push({ tipo, studentId: Number(f.studentId), entregaId: String(f.submissionId), unitId: Number(f.unitId) });
+    }
+    return erroresDeLaClase(fallos, nombres);
   }
 
   /** Unidades de una clase en el orden del curso; con `soloPublicadas`, solo las de secciones publicadas. */

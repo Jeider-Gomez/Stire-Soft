@@ -82,6 +82,14 @@ export class AnalyticsController {
     return this.analyticsService.getResumenSemanal(classId, req.user);
   }
 
+  /** «Errores que más se repiten esta semana» para «Hoy» (MOD-02): de concepto y de escritura, con quién tiene cada uno. */
+  @Get('class/:classId/errores-semana')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  getErroresDeLaSemana(@Param('classId', ParseIntPipe) classId: number, @Req() req: { user: User }) {
+    return this.analyticsService.getErroresDeLaSemana(classId, req.user);
+  }
+
   @Get('class/:classId')
   getClassMetrics(@Param('classId') classId: string, @Req() req: any) {
     return this.analyticsService.getClassMetrics(+classId, req.user);

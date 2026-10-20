@@ -486,6 +486,16 @@ trazabilidad (solo para el anexo técnico).
 | **Cómo se materializa** | Tarjeta del perfil; cada elección de formato (diagrama, pseudocódigo, paso a paso, escuchar) se registra; los casos que fallan se clasifican con la salida esperada guardada. |
 | **Trazabilidad** | `src/analytics/perfil-aprendizaje.ts`, `src/analytics/analytics.service.ts` (`getPerfilAprendizaje`), migración `1793300000000-UsoFormatos`, `frontend-nuxt/components/estudiante/PerfilAprendizaje.vue`, `frontend-nuxt/utils/perfilAprendizaje.ts`. |
 
+## BT-46. El docente ve qué errores se repiten en su grupo esta semana: los de concepto para la clase, los de escritura para la práctica
+
+| | |
+|---|---|
+| **Problema observado** | Con el perfil (BT-45), cada docente veía los errores de un estudiante a la vez, pero no los del grupo. Pedro propuso (19/10) una tarjeta en «Hoy» para «identificar rápidamente las dificultades comunes del grupo y diferenciar los errores conceptuales de los de escritura, para decidir cuáles requieren una explicación adicional en clase y cuáles pueden trabajarse mediante práctica», y que desde cada error se llegue a los estudiantes que lo tienen. |
+| **Decisión** | - Tarjeta «Errores que más se repiten esta semana» en «Hoy»: los casos que fallaron en los últimos 7 días se clasifican con las mismas reglas del perfil y se separan en errores de concepto («para explicar en clase») y de escritura («se corrigen practicando»).<br>- Un error aparece desde 2 ejercicios, y primero el que tienen más estudiantes. Al tocarlo se ve quién lo tiene, con enlace a su ficha y un refuerzo ya armado con ellos y las lecciones donde apareció. El docente decide si lo crea. |
+| **Fundamento** | - Un tablero sirve cuando lo que muestra se puede convertir en una acción (Molenaar y Knoop-van Campen, 2019; Verbert et al., 2013), y el docente atiende mejor a su grupo cuando sabe dónde están las dificultades (Holstein, McLaren y Aleven, 2018).<br>- Retroalimentación formativa al grupo a partir de lo que muestran sus trabajos (Black y Wiliam, 1998).<br>- Las confusiones de fondo de quien aprende a programar son distintas de los errores al escribir (du Boulay, 1986). |
+| **Cómo se materializa** | Tarjeta en «Hoy» de cada clase; ruta `GET /analytics/class/:classId/errores-semana`. |
+| **Trazabilidad** | `src/analytics/errores-de-la-clase.ts`, `src/analytics/analytics.service.ts` (`getErroresDeLaSemana`), `frontend-nuxt/components/docente/ErroresSemana.vue`, `frontend-nuxt/utils/erroresSemana.ts`. |
+
 ## Decisiones anteriores que también tienen fundamento (resumen; ampliar si se anexan)
 
 | Decisión | Fundamento | Dónde se detalla |

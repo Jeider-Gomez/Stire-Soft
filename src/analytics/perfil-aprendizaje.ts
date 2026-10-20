@@ -78,6 +78,18 @@ export function tipoDeError(esperada: string, obtenida: string, entrada = ''): T
   return 'linea';
 }
 
+/** Un caso que falló, como sale de execution_results con la configuración de su pregunta (activity_questions.config). */
+export interface FilaEjecucion { stdout: string | null; stderr: string | null; status: string; testCaseLabel: string | null; config: unknown }
+
+/** El tipo de error de un caso que falló, con su salida esperada; null si no se puede saber (sin caso o por tiempo). */
+export function tipoDeFallo(f: FilaEjecucion): TipoError | null {
+  const config = (typeof f.config === 'string' ? JSON.parse(f.config) : f.config) as { testCases?: Array<{ label?: string; input?: string; expected?: string }> } | null;
+  const caso = config?.testCases?.find((c) => c.label === f.testCaseLabel);
+  if (!caso || typeof caso.expected !== 'string' || f.status === 'time_limit') return null;
+  const obtenida = (f.stdout ?? '').trim() ? (f.stdout ?? '') : (f.stderr ?? '');
+  return tipoDeError(caso.expected, obtenida, caso.input ?? '');
+}
+
 export interface FalloClasificado { tipo: TipoError; entregaId: string; fecha: Date }
 
 export interface ErroresDelEstudiante {

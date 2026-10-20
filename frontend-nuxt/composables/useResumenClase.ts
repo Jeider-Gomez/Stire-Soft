@@ -8,6 +8,7 @@ export function useResumenClase(classId: number) {
     mapa: <T,>() => api.get<T>(`/analytics/class/${classId}/heatmap`),
     refuerzos: <T,>() => api.get<T>(`/refuerzos/clase/${classId}`),
     semana: <T,>() => api.get<T>(`/analytics/class/${classId}/semana`),
+    errores: <T,>() => api.get<T>(`/analytics/class/${classId}/errores-semana`),
     resolverSolicitud: (id: string, accion: 'approve' | 'reject') => api.apiFetch(`/enrollment/${id}/${accion}`, { method: 'PATCH' }),
   }
 }
