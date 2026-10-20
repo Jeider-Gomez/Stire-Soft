@@ -137,26 +137,21 @@ Tutor.
 
 ### Pedro
 
-**[HOOK — 0:00–0:10]**
+**[HOOK] (0:00–0:10)**
 
-Yo revisé cómo conoce STIRE a cada estudiante.
+Esta semana evalué STIRE-Soft para comprobar cómo apoya a estudiantes y docentes durante el aprendizaje.
 
-**[PROBLEM — 0:10–0:25]**
+**[PROBLEM] (0:10–0:25)**
 
-STIRE veía cada intento por separado: no había un perfil del estudiante ni una forma de distinguir un error de
-concepto de un descuido al escribir.
+Encontramos que los docentes necesitan información más clara sobre los errores frecuentes. Además, los estudiantes requieren diferentes formas de comprender las lecciones cuando una explicación o un recurso no funciona.
 
-**[SOLUTION — 0:25–0:45]**
+**[SOLUTION] (0:25–0:50)**
 
-A partir de mi propuesta se creó «Mi perfil de aprendizaje». Muestra cuánto del temario domina el estudiante, qué
-errores de concepto se le repiten, separados de los descuidos, y cómo suele estudiar. Lo ven el estudiante y su
-docente. Además, si un video falla, la lección ofrece otra opción y le avisa al docente.
+Comprobamos que el tutor explica los errores con ejemplos y orienta paso a paso. También revisamos el seguimiento del progreso, la confianza al responder y las recomendaciones de aprendizaje. Se reportaron mejoras para ofrecer diferentes formatos de explicación, notificar recursos dañados y ayudar al docente a identificar errores frecuentes y asignar actividades de refuerzo.
 
-**[CIERRE — 0:45–1:00]**
+**[CIERRE] (0:50–1:00)**
 
-Esta semana dicté la Unidad 2 de Fundamentos y terminé como estudiante las secciones 3 y 4 de Pensamiento. Con la
-revisión de todos, pasamos de 62 y 58 por ciento a 100 en las dos listas. Lo que sigue es revisar los ejercicios de
-programar, el manual de usuario y un recorrido guiado dentro de STIRE.
+En general, cumplimos con las actividades de evaluación planificadas y avanzamos en la mejora de STIRE-Soft. Seguiremos trabajando en equipo, realizando pruebas y perfeccionando sus funcionalidades para entregar un producto final de calidad que beneficie tanto a estudiantes como a docentes.
 
 ## 3. Guion en inglés
 
