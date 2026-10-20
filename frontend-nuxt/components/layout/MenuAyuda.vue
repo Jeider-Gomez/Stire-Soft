@@ -24,7 +24,7 @@
         <li v-if="recorrido.actual.value">
           <button type="button" class="opcion" @click="verRecorrido">
             <Route :size="16" aria-hidden="true" class="shrink-0 text-stire-blue" />
-            <span>Recorrido de {{ recorrido.actual.value.pantalla }}</span>
+            <span>Ver cómo funciona {{ recorrido.actual.value.pantalla }}</span>
           </button>
         </li>
         <li v-if="tareaDePantalla">

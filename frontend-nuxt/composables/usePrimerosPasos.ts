@@ -36,10 +36,16 @@ export function usePrimerosPasos() {
     guardar()
   }
 
-  /** Lo hecho, contando la clase: estar en una ya cumple el primer paso. */
-  const hechos = computed<IdPrimerPaso[]>(() =>
-    studentStore.enrolledClasses.length > 0 && !estado.value.hechos.includes('clase') ? [...estado.value.hechos, 'clase'] : estado.value.hechos,
-  )
+  /**
+   * Lo hecho, contando lo que ya se ve en sus datos: estar en una clase cumple el primer paso, y haber trabajado una
+   * lección (tiene progreso) cumple abrir la lección y el ejercicio. Así quien ya usaba STIRE no ve pendiente lo que hizo.
+   */
+  const hechos = computed<IdPrimerPaso[]>(() => {
+    const deDatos: IdPrimerPaso[] = []
+    if (studentStore.enrolledClasses.length > 0) deDatos.push('clase')
+    if (studentStore.modules.some((m) => m.units.some((u) => u.empezada || u.masteryPercentage > 0))) deDatos.push('leccion', 'ejercicio')
+    return [...new Set([...estado.value.hechos, ...deDatos])]
+  })
   const avance = computed(() => avancePrimerosPasos(hechos.value))
   const visible = computed(() => !estado.value.oculta && !avance.value.terminado)
 
