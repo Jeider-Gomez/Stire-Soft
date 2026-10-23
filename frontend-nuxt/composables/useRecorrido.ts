@@ -27,12 +27,38 @@ function enlaceAlManual(tarea: string): HTMLAnchorElement {
 }
 
 /**
+ * «Saltar recorrido» y «No volver a mostrar recorridos» (23/10, pedido del dueño), debajo del texto de cada globo.
+ * Saltar cierra el de esta pantalla; la casilla apaga los automáticos en todas (Apariencia › Ayuda los vuelve a encender).
+ */
+function opcionesDelGlobo(alSaltar: (() => void) | null, apagados: boolean, alMarcar: (apagar: boolean) => void): HTMLDivElement {
+  const fila = document.createElement('div')
+  fila.className = 'recorrido-opciones'
+  const etiqueta = document.createElement('label')
+  const casilla = document.createElement('input')
+  casilla.type = 'checkbox'
+  casilla.checked = apagados
+  casilla.addEventListener('change', () => alMarcar(casilla.checked))
+  etiqueta.append(casilla, document.createTextNode('No volver a mostrar recorridos'))
+  fila.appendChild(etiqueta)
+  if (alSaltar) {
+    const saltar = document.createElement('button')
+    saltar.type = 'button'
+    saltar.className = 'recorrido-saltar'
+    saltar.textContent = 'Saltar recorrido'
+    saltar.addEventListener('click', alSaltar)
+    fila.appendChild(saltar)
+  }
+  return fila
+}
+
+/**
  * El recorrido guiado de la pantalla actual (utils/recorridos.ts). `primeraVez` lo muestra solo si esa persona no lo ha
- * visto en esa pantalla; `mostrar` lo repite (botón «?» de la cabecera).
+ * visto en esa pantalla y no apagó los recorridos; `mostrar` lo repite (botón «?» de la cabecera), aunque estén apagados.
  */
 export function useRecorrido() {
   const route = useRoute()
   const authStore = useAuthStore()
+  const { apariencia, cambiar } = useApariencia()
   const actual = computed(() => recorridoDeRuta(route.path, authStore.currentRole))
 
   function yaVisto(r: Recorrido): boolean {
@@ -51,7 +77,7 @@ export function useRecorrido() {
       // «Hazlo tú»: tocar el elemento lleva al paso siguiente (Driver.js deja tocar lo señalado).
       .map((p) => ({ element: p.elemento, advanceOnClick: p.hazloTu ?? false, popover: { title: p.titulo, description: p.texto } }))
     if (!pasos.length) return false
-    driver({
+    const recorrido = driver({
       steps: pasos,
       showProgress: pasos.length > 1,
       // Con un solo paso, «← Anterior» no lleva a ningún lado.
@@ -68,9 +94,15 @@ export function useRecorrido() {
         globo.closeButton.setAttribute('aria-label', 'Cerrar el recorrido')
         globo.closeButton.setAttribute('title', 'Cerrar el recorrido')
         if (r.manual) globo.description.appendChild(enlaceAlManual(r.manual))
+        globo.footer.before(opcionesDelGlobo(
+          pasos.length > 1 ? () => recorrido.destroy() : null,
+          !apariencia.value.recorridosAutomaticos,
+          (apagar) => cambiar({ recorridosAutomaticos: !apagar }),
+        ))
       },
       onDestroyed: () => marcarVisto(r),
-    }).drive()
+    })
+    recorrido.drive()
     return true
   }
 
@@ -80,9 +112,9 @@ export function useRecorrido() {
 
   function primeraVez() {
     const r = actual.value
-    if (!r || yaVisto(r)) return
+    if (!r || yaVisto(r) || !apariencia.value.recorridosAutomaticos) return
     setTimeout(() => {
-      if (actual.value?.id === r.id && !yaVisto(r)) dibujar(r)
+      if (actual.value?.id === r.id && !yaVisto(r) && apariencia.value.recorridosAutomaticos) dibujar(r)
     }, ESPERA_PRIMERA_VEZ_MS)
   }
 

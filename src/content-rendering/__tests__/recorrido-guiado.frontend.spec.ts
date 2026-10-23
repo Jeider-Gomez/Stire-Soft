@@ -117,7 +117,7 @@ describe('recorrido guiado', () => {
   it('sale solo la primera vez (por persona y pantalla) y se repite desde «?» en la cabecera', () => {
     expect(r.claveVisto('estudiante-inicio', 7)).toBe('stire-recorrido-estudiante-inicio-7');
     const c = leer('composables', 'useRecorrido.ts');
-    expect(c).toContain('if (!r || yaVisto(r)) return');
+    expect(c).toContain('if (!r || yaVisto(r) || !apariencia.value.recorridosAutomaticos) return');
     expect(c).toContain('onDestroyed: () => marcarVisto(r)');
     expect(c).toContain('.filter((p) => seVe(p.elemento))');
     expect(c).toContain("showButtons: pasos.length > 1 ? ['next', 'previous', 'close'] : ['next', 'close']");
@@ -132,5 +132,35 @@ describe('recorrido guiado', () => {
     for (const l of ['student.vue', 'teacher.vue', 'workspace.vue', 'admin.vue']) {
       expect(leer('layouts', l)).toContain('watch(() => rutaActual.path, primeraVez, { immediate: true })');
     }
+  });
+});
+
+// 23/10, pedido del dueño: saltar el recorrido y no volver a verlo solo.
+describe('«Saltar recorrido» y «No volver a mostrar recorridos»', () => {
+  it('cada globo trae las dos opciones; saltar cierra (y marca visto) y la casilla apaga los automáticos', () => {
+    const c = leer('composables', 'useRecorrido.ts');
+    expect(c).toContain("saltar.textContent = 'Saltar recorrido'");
+    expect(c).toContain("document.createTextNode('No volver a mostrar recorridos')");
+    expect(c).toContain('pasos.length > 1 ? () => recorrido.destroy() : null');
+    expect(c).toContain('(apagar) => cambiar({ recorridosAutomaticos: !apagar })');
+    expect(c).toContain('onDestroyed: () => marcarVisto(r)');
+    // Apagados, no aparecen solos ni tras la espera; «?» (mostrar) sigue funcionando.
+    expect(c).toContain('!yaVisto(r) && apariencia.value.recorridosAutomaticos) dibujar(r)');
+    expect(c).toMatch(/function mostrar\(\) \{\s+if \(actual\.value\) dibujar\(actual\.value\)/);
+  });
+
+  it('se vuelve a encender en Apariencia › Ayuda, y por defecto están encendidos', () => {
+    const ajustes = leer('components', 'perfil', 'AparienciaLectura.vue');
+    expect(ajustes).toContain('<legend class="text-xs font-semibold text-base-texto-primario mb-1">Ayuda</legend>');
+    expect(ajustes).toContain('cambiar({ recorridosAutomaticos: !a.recorridosAutomaticos })');
+    const ap = leer('utils', 'apariencia.ts');
+    expect(ap).toContain('recorridosAutomaticos: true,');
+    expect(ap).toContain('recorridosAutomaticos: p.recorridosAutomaticos !== false');
+  });
+
+  it('las opciones se tocan bien en el celular (44 px)', () => {
+    const css = leer('assets', 'css', 'recorrido.css');
+    expect(css).toMatch(/\.recorrido-opciones label \{[^}]*min-height: 44px/);
+    expect(css).toMatch(/\.recorrido-saltar \{[^}]*min-height: 44px/);
   });
 });

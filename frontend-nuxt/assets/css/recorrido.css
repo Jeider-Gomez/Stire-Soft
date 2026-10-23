@@ -43,3 +43,35 @@
   width: fit-content;
   margin-top: 6px;
 }
+/* «No volver a mostrar recorridos» y «Saltar recorrido»: encima de los botones de avanzar, con área de toque de 44 px. */
+.recorrido-stire .recorrido-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-top: 10px;
+  padding-top: 6px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 13px;
+}
+.recorrido-stire .recorrido-opciones label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.recorrido-stire .recorrido-opciones input {
+  width: 16px;
+  height: 16px;
+}
+.recorrido-stire .recorrido-saltar {
+  min-height: 44px;
+  padding: 0 4px;
+  font-weight: 600;
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}

@@ -33,10 +33,12 @@ export interface Apariencia {
   sonidos: boolean
   /** «¿Qué tan seguro estás?» antes de la primera entrega (utils/confianza.ts). Encendido por defecto; se apaga aquí o con «No volver a preguntarme». */
   preguntarConfianza: boolean
+  /** El recorrido guiado aparece solo la primera vez en cada pantalla (composables/useRecorrido.ts). Con «?» se ve siempre. */
+  recorridosAutomaticos: boolean
 }
 
 export const APARIENCIA_POR_DEFECTO: Apariencia = {
-  tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false, sonidos: false, preguntarConfianza: true,
+  tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false, sonidos: false, preguntarConfianza: true, recorridosAutomaticos: true,
 }
 export const CLAVE_APARIENCIA = 'stire.apariencia'
 
@@ -150,6 +152,7 @@ export function leerApariencia(crudo: string | null, sistema: PreferenciasSistem
     menosMovimiento: p.menosMovimiento === true,
     sonidos: p.sonidos === true,
     preguntarConfianza: p.preguntarConfianza !== false,
+    recorridosAutomaticos: p.recorridosAutomaticos !== false,
   }
 }
 

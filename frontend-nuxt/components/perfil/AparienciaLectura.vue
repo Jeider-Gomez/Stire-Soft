@@ -133,6 +133,15 @@
       </label>
     </fieldset>
 
+    <fieldset class="space-y-2 text-xs">
+      <legend class="text-xs font-semibold text-base-texto-primario mb-1">Ayuda</legend>
+      <label class="flex items-start gap-2 min-h-[44px] cursor-pointer">
+        <input :checked="a.recorridosAutomaticos" type="checkbox" class="mt-0.5 w-4 h-4 accent-acento-ambar-fuerte" @change="cambiar({ recorridosAutomaticos: !a.recorridosAutomaticos })" />
+        <span><span class="font-semibold text-base-texto-primario">Mostrar el recorrido guiado la primera vez que entro a una pantalla</span>
+          <span class="block text-[11px] text-base-texto-secundario">Apagado, no aparece solo. Siempre lo puedes ver con el botón «?» de arriba.</span></span>
+      </label>
+    </fieldset>
+
     <button v-if="cambiada" type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="restablecer">
       Volver a la apariencia de siempre
     </button>

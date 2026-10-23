@@ -561,6 +561,7 @@ export const MANUAL: SeccionManual[] = [
       { pregunta: '¿Si dejo pasar un repaso pierdo lo que avancé?', respuesta: 'No. Una lección dominada sigue dominada. El repaso solo te ayuda a no olvidarla.' },
       { pregunta: '¿Funciona en el celular?', respuesta: 'Sí. STIRE se adapta a la pantalla del celular, y los botones de «Probar código» y «Entregar solución» quedan abajo, a mano.' },
       { pregunta: '¿Cómo vuelvo a ver el recorrido de una pantalla?', respuesta: 'Toca «?» arriba a la derecha.' },
+      { pregunta: '¿Puedo saltarme el recorrido?', respuesta: 'Sí. Toca «Saltar recorrido» en el globo. Si no quieres que aparezca en ninguna pantalla, marca «No volver a mostrar recorridos»; se vuelve a activar en «Apariencia», en «Ayuda».' },
       { pregunta: '¿El docente tiene que usar todo?', respuesta: 'No. Asistencia, notas, refuerzos y entregas son opcionales. STIRE funciona aunque el docente solo cree la clase.' },
       { pregunta: '¿Puedo dejar de responder qué tan seguro estoy?', respuesta: 'Sí. Marca «No volver a preguntarme» en esa ventana, o apágalo en «Apariencia», en «Al practicar». Sin tu respuesta, ningún repaso se marca como Fácil y tu calibración deja de llenarse.' },
       { pregunta: '¿Puedo cambiar los colores o el tamaño de la letra?', respuesta: 'Sí. Toca «Apariencia» en la cabecera: puedes cambiar el tema, el contraste y el tamaño del texto.' },

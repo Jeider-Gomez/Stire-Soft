@@ -28,6 +28,8 @@ entry to the oldest.
 - Evaluación heurística: 3,85 → 4,21 / 5, sin problemas graves.
 - «¿Qué tan seguro estás?» se puede apagar: «No volver a preguntarme» en la misma ventana, y «Al practicar» en
   Apariencia para volver a encenderla (23/10). Solo frontend.
+- Recorrido guiado: «Saltar recorrido» y «No volver a mostrar recorridos» en cada globo; «Ayuda» en Apariencia los
+  vuelve a encender, y «?» los muestra siempre (23/10). Solo frontend.
 - Manual: sección para docentes «Cómo calcula STIRE los repasos», con las variables y las ecuaciones de SM-2 tal como
   las usa el motor (una prueba comprueba que coinciden). El PDF del manual queda por regenerar.
 
