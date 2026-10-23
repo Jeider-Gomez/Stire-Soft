@@ -13,9 +13,9 @@ describe('Mapa de calor: la página no se desplaza a los lados en un teléfono',
     expect(mapa).toMatch(/class="sr-only"/);
   });
 
-  it('el selector de clase de Rendimiento no pasa del ancho de la pantalla', () => {
-    const selector = rendimiento.slice(rendimiento.indexOf('id="rendimiento-class-selector"'));
-    expect(selector.slice(0, selector.indexOf('>'))).toMatch(/max-w-full/);
+  it('Rendimiento ya no tiene su propio selector de clase: la clase se elige en la barra lateral', () => {
+    // El selector se salía del ancho del teléfono; al quitarlo no hay nada que se desborde.
+    expect(rendimiento).not.toContain('rendimiento-class-selector');
   });
 
   it('Rendimiento muestra el mapa de la clase elegida', () => {

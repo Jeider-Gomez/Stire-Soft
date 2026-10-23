@@ -36,3 +36,21 @@ export function claseDeLaRuta(ruta: string, consulta: Record<string, unknown>): 
   const id = Number(Array.isArray(valor) ? valor[0] : valor)
   return Number.isInteger(id) && id > 0 ? id : null
 }
+
+/**
+ * La sección de la clase que muestra la dirección actual (para marcarla en la barra lateral), o null si no es una
+ * pantalla de la clase. «Estudiantes» incluye la ficha de un estudiante.
+ */
+export function pestanaDeLaRuta(ruta: string): PestanaClase | null {
+  const enClase = /^\/docente\/clase\/\d+(?:\/([a-z]+))?\/?$/.exec(ruta)
+  if (enClase) {
+    const seccion = enClase[1]
+    if (!seccion) return 'hoy'
+    return seccion === 'asistencia' || seccion === 'notas' || seccion === 'ajustes' ? seccion : null
+  }
+  if (ruta.startsWith('/docente/contenidos')) return 'contenido'
+  if (ruta.startsWith('/docente/rendimiento') || ruta.startsWith('/docente/estudiante/')) return 'estudiantes'
+  if (ruta.startsWith('/docente/entregas')) return 'entregas'
+  if (ruta.startsWith('/docente/refuerzos')) return 'refuerzos'
+  return null
+}

@@ -14,20 +14,6 @@
 
       <!-- Selector de Clase y Botón Nuevo Módulo -->
       <div class="flex flex-wrap items-center gap-3">
-        <!-- En el celular el nombre largo de la clase sacaba el selector del recuadro: ahora ocupa el ancho y se recorta. -->
-        <div v-if="teacherClasses.length > 1" class="flex items-center gap-2 w-full sm:w-auto min-w-0">
-          <label for="class-selector" class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
-          <select
-            id="class-selector"
-            v-model="selectedClassId"
-            @change="loadSections"
-            class="min-w-0 flex-1 sm:flex-none w-full sm:w-auto sm:max-w-xs truncate min-h-[44px] text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte">
-            <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
-              {{ c.name }} ({{ c.code }})
-            </option>
-          </select>
-        </div>
-
         <button
           v-if="selectedClassId"
           data-recorrido="nuevo-modulo"
@@ -153,7 +139,7 @@
 // Contenidos del curso (DOC-V02): la página organiza el árbol y abre una ventana a la vez; los datos y la API están en
 // composables/useContenidosCurso.ts y cada ventana en components/docente/contenidos/ (PAT-01 y PAT-04; antes un solo
 // archivo de 1131 líneas con cuatro ventanas y sus llamadas a la API).
-import { computed, nextTick, onMounted, provide, ref } from 'vue'
+import { computed, nextTick, onMounted, provide, ref, watch } from 'vue'
 import { Archive, BookOpen, Check, ChevronRight, CopyPlus, EyeOff, FileText, Folder, Loader2, Pencil, Plus, Trash2, TriangleAlert } from 'lucide-vue-next'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 import { CLAVE_CONTENIDOS, useContenidosCurso } from '~/composables/useContenidosCurso'
@@ -331,6 +317,15 @@ onMounted(async () => {
     expandedUnitId.value = qUnit
     void loadLessons(qUnit)
     nextTick(() => document.getElementById(`unidad-${qUnit}`)?.scrollIntoView({ block: 'center' }))
+  }
+})
+// La clase se elige en la barra lateral: al cambiarla, la dirección cambia pero esta pantalla sigue montada.
+watch(() => route.query.classId, (nueva) => {
+  const id = Number(nueva)
+  if (id && id !== selectedClassId.value && teacherClasses.value.some((c) => c.id === id)) {
+    selectedClassId.value = id
+    expandedUnitId.value = null
+    void loadSections()
   }
 })
 </script>

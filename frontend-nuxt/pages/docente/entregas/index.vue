@@ -17,13 +17,6 @@
           <Plus :size="14" aria-hidden="true" /> Nueva entrega
         </button>
       </div>
-      <div v-if="clases.length > 1" class="flex flex-col sm:flex-row sm:items-center gap-3 text-xs">
-        <label for="entregas-clase" class="font-semibold text-base-texto-primario">Clase</label>
-        <select id="entregas-clase" v-model="claseId" @change="cargar"
-          class="min-w-0 max-w-full w-full sm:w-auto bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30">
-          <option v-for="c in clases" :key="c.id" :value="c.id">{{ c.name }}</option>
-        </select>
-      </div>
     </header>
 
     <DocenteEntregaForm v-if="formulario && claseId !== null" :class-id="claseId" @guardada="alCrear" @cancelar="formulario = false" />
@@ -66,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { Inbox, Loader2, Plus } from 'lucide-vue-next'
 import { useEntregasDocente } from '~/composables/useEntregasDocente'
 import { useMisClases } from '~/composables/useMisClases'
@@ -117,6 +110,15 @@ async function alCrear(e: { id: number }) {
   formulario.value = false
   await navigateTo(`/docente/entregas/${e.id}`)
 }
+
+// La clase se elige en la barra lateral: al cambiarla, la dirección cambia pero esta pantalla sigue montada.
+watch(() => route.query.clase, (nueva) => {
+  const id = Number(nueva)
+  if (id && id !== claseId.value && clases.value.some((c) => c.id === id)) {
+    claseId.value = id
+    void cargar()
+  }
+})
 
 onMounted(async () => {
   try {

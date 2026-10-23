@@ -20,19 +20,6 @@
         </p>
       </div>
 
-      <!-- Selector de Clase -->
-      <div class="flex items-center gap-2 min-w-0">
-        <label for="rendimiento-class-selector" class="text-xs font-semibold text-base-texto-secundario whitespace-nowrap">Clase:</label>
-        <select
-          id="rendimiento-class-selector"
-          v-model="selectedClassId"
-          @change="loadClassMetrics"
-          class="min-w-0 max-w-full w-full sm:w-auto text-xs bg-base-blanco text-base-texto-primario border border-base-borde-fuerte rounded-md px-3 py-1.5 outline-none focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30">
-          <option v-for="c in teacherClasses" :key="c.id" :value="c.id">
-            {{ c.name }} ({{ c.code }})
-          </option>
-        </select>
-      </div>
     </header>
 
     <!-- ESTADO 1: Cargando -->
@@ -315,6 +302,15 @@ const filteredStudents = computed(() => {
     return metrics.value.studentRankings.filter(s => s.avgMastery < 50)
   }
   return metrics.value.studentRankings
+})
+
+// La clase se elige en la barra lateral: al cambiarla, la dirección cambia pero esta pantalla sigue montada.
+watch(() => route.query.classId, (nueva) => {
+  const id = Number(nueva)
+  if (id && id !== selectedClassId.value && teacherClasses.value.some(c => c.id === id)) {
+    selectedClassId.value = id
+    void loadClassMetrics()
+  }
 })
 
 async function fetchClassesAndMetrics() {

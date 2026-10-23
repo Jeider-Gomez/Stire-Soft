@@ -17,6 +17,7 @@ function cargar(archivo: string, deps: Record<string, unknown> = {}): Record<str
 const pestanas = cargar('pestanasClase.ts') as {
   enlacePestana: (p: string, id: number) => string;
   claseDeLaRuta: (ruta: string, consulta: Record<string, unknown>) => number | null;
+  pestanaDeLaRuta: (ruta: string) => string | null;
   PESTANAS_CLASE: Array<{ id: string }>;
 };
 const { pendientesDeHoy } = cargar('hoyClase.ts', { './refuerzos': cargar('refuerzos.ts') }) as {
@@ -44,7 +45,29 @@ describe('Pestañas de la clase', () => {
     expect(pestanas.claseDeLaRuta('/docente/entregas', { clase: 'x' })).toBeNull();
   });
 
-  it('cada pantalla de la clase muestra las pestañas con la suya marcada', () => {
+  it('la sección de la clase sale de la ruta, para marcarla en la barra lateral', () => {
+    expect(pestanas.pestanaDeLaRuta('/docente/clase/7')).toBe('hoy');
+    expect(pestanas.pestanaDeLaRuta('/docente/clase/7/')).toBe('hoy');
+    expect(pestanas.pestanaDeLaRuta('/docente/clase/7/asistencia')).toBe('asistencia');
+    expect(pestanas.pestanaDeLaRuta('/docente/clase/7/notas')).toBe('notas');
+    expect(pestanas.pestanaDeLaRuta('/docente/clase/7/ajustes')).toBe('ajustes');
+    expect(pestanas.pestanaDeLaRuta('/docente/contenidos')).toBe('contenido');
+    expect(pestanas.pestanaDeLaRuta('/docente/rendimiento')).toBe('estudiantes');
+    expect(pestanas.pestanaDeLaRuta('/docente/estudiante/12')).toBe('estudiantes');
+    expect(pestanas.pestanaDeLaRuta('/docente/entregas/3')).toBe('entregas');
+    expect(pestanas.pestanaDeLaRuta('/docente/refuerzos/nuevo')).toBe('refuerzos');
+    // lo que no es una sección de la clase no marca ninguna
+    expect(pestanas.pestanaDeLaRuta('/docente/mensajes')).toBeNull();
+    expect(pestanas.pestanaDeLaRuta('/docente')).toBeNull();
+    expect(pestanas.pestanaDeLaRuta('/docente/clase/7/otra')).toBeNull();
+    // cada pestaña lleva a una ruta que esa misma función reconoce como suya
+    for (const p of pestanas.PESTANAS_CLASE) {
+      const ruta = pestanas.enlacePestana(p.id, 5).split('?')[0];
+      expect(pestanas.pestanaDeLaRuta(ruta)).toBe(p.id);
+    }
+  });
+
+  it('cada pantalla de la clase muestra el encabezado con su sección marcada', () => {
     const esperado: Array<[string[], string]> = [
       [['pages', 'docente', 'clase', '[classId]', 'index.vue'], 'activa="hoy"'],
       [['pages', 'docente', 'contenidos.vue'], 'activa="contenido"'],
@@ -63,16 +86,22 @@ describe('Pestañas de la clase', () => {
     }
     expect(existsSync(path.join(raiz, 'pages', 'docente', 'clase', '[classId].vue'))).toBe(false);
     expect(leer('components', 'docente', 'PestanasClase.vue')).toContain(`:aria-current="p.id === activa ? 'page' : undefined"`);
+    // En computador las secciones viven en la barra lateral: las pestañas horizontales solo quedan en el celular.
+    expect(leer('components', 'docente', 'PestanasClase.vue')).toContain('<nav aria-label="Secciones de la clase" class="md:hidden">');
     // El nombre de la clase (que en «Hoy» enlaza a la página actual) va fuera del <nav>: una sola pestaña actual.
     const pestanasVue = leer('components', 'docente', 'PestanasClase.vue');
-    expect(pestanasVue.indexOf('{{ nombre }}')).toBeLessThan(pestanasVue.indexOf('<nav aria-label="Secciones de la clase">'));
+    expect(pestanasVue.indexOf('{{ nombre }}')).toBeLessThan(pestanasVue.indexOf('<nav aria-label="Secciones de la clase" class="md:hidden">'));
   });
 
   it('el menú lleva a cada clase y ya no es un menú por herramienta', () => {
     // Desde el 07/10 las clases del menú viven en ClasesDelMenu.vue (con sus iniciales).
     const menu = leer('components', 'layout', 'SidebarNav.vue') + leer('components', 'layout', 'ClasesDelMenu.vue');
     expect(menu).toContain(`<LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />`);
-    expect(menu).toContain(':to="`/docente/clase/${c.id}`"');
+    // al cambiar de clase el docente se queda en la misma sección (Contenido, Entregas…); sin sección, va a «Hoy»
+    expect(menu).toContain(`:to="enlacePestana(seccionActual ?? 'hoy', c.id)"`);
+    // la clase activa despliega sus secciones debajo, con la actual marcada
+    expect(menu).toContain('<li v-for="p in PESTANAS_CLASE" :key="p.id">');
+    expect(menu).toContain(`:aria-current="p.id === seccionActual ? 'page' : undefined"`);
     // dos grupos de la misma materia se distinguen por el código
     expect(menu).toContain('{{ c.code }}');
     for (const herramienta of ['to="/docente/contenidos"', 'to="/docente/rendimiento"', 'to="/docente/entregas"', 'to="/docente/refuerzos"']) {
@@ -80,6 +109,16 @@ describe('Pestañas de la clase', () => {
     }
     // La tarjeta de cada clase en «Mis clases» abre su «Hoy».
     expect(leer('pages', 'docente', 'index.vue')).toContain('<span>Ver hoy en la clase</span>');
+  });
+
+  it('la clase se elige solo en la barra lateral: sin selector repetido y las pantallas siguen el cambio', () => {
+    for (const archivo of [['pages', 'docente', 'contenidos.vue'], ['pages', 'docente', 'rendimiento.vue'], ['pages', 'docente', 'entregas', 'index.vue'], ['pages', 'docente', 'refuerzos', 'index.vue']]) {
+      const vue = leer(...archivo);
+      expect(vue).not.toMatch(/<label[^>]*>\s*Clase:?\s*<\/label>/);
+      expect(vue).not.toMatch(/<select[^>]*(class-selector|entregas-clase|ref-lista-clase)/);
+      // la dirección cambia al elegir otra clase en la barra, pero la pantalla sigue montada: tiene que mirarla
+      expect(vue).toMatch(/watch\(\(\) => route\.query\.(classId|clase)/);
+    }
   });
 
   it('en la tarjeta, «N estudiantes» lleva a la misma pantalla que la pestaña «Estudiantes» y el aviso dice quién necesita apoyo', () => {

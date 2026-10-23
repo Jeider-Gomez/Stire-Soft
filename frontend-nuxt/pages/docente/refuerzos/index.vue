@@ -11,12 +11,6 @@
           <Plus :size="14" aria-hidden="true" /> Nuevo refuerzo o reto
         </NuxtLink>
       </div>
-      <div v-if="clases.length > 1" class="flex flex-col sm:flex-row sm:items-center gap-3 text-xs">
-        <label for="ref-lista-clase" class="font-semibold text-base-texto-primario">Clase</label>
-        <select id="ref-lista-clase" v-model="claseId" @change="cargar" class="min-w-0 max-w-full w-full sm:w-auto bg-base-blanco border border-base-borde-fuerte rounded-md px-3 py-1.5">
-          <option v-for="c in clases" :key="c.id" :value="c.id">{{ c.name }}</option>
-        </select>
-      </div>
       <p class="text-[11px] text-base-texto-secundario">También puedes asignar desde <NuxtLink :to="claseId ? `/docente/clase/${claseId}` : '/docente'" class="underline">Hoy</NuxtLink> o desde el mapa de <NuxtLink :to="claseId ? `/docente/rendimiento?classId=${claseId}` : '/docente/rendimiento'" class="underline">Estudiantes</NuxtLink>: en «Bloqueados» y «Listos para más».</p>
     </header>
 
@@ -75,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { ArrowRight, LifeBuoy, Loader2, Plus } from 'lucide-vue-next'
 import { useRefuerzosDocente } from '~/composables/useRefuerzosDocente'
 import { useMisClases } from '~/composables/useMisClases'
@@ -121,6 +115,15 @@ async function archivar(id: number) {
     error.value = messageOf(err, 'No se pudo archivar.')
   }
 }
+
+// La clase se elige en la barra lateral: al cambiarla, la dirección cambia pero esta pantalla sigue montada.
+watch(() => route.query.clase, (nueva) => {
+  const id = Number(nueva)
+  if (id && id !== claseId.value && clases.value.some((c) => c.id === id)) {
+    claseId.value = id
+    void cargar()
+  }
+})
 
 onMounted(async () => {
   try {
