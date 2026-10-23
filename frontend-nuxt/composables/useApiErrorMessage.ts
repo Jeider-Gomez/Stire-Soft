@@ -43,6 +43,9 @@ export function useApiErrorMessage() {
     const { status, detail } = extract(err)
     if (detail) return detail
     if (status === 0) return 'No pude conectarme con el servidor. Revisa tu conexión e inténtalo de nuevo.'
+    // Sin motivo del servidor, se dice qué hacer (ítem 14 de la evaluación heurística).
+    if (status === 429) return 'Hiciste muchas solicitudes seguidas. Espera un minuto e inténtalo de nuevo.'
+    if (status >= 500) return 'El servidor tuvo un problema. Espera unos segundos e inténtalo de nuevo; si sigue, cuéntanos en «Contar un problema o una idea».'
     return fallback
   }
 

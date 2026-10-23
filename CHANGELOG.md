@@ -12,6 +12,23 @@ entry to the oldest.
 
 ---
 
+## Sin versión todavía — público de 18 años o más y mejoras de la evaluación heurística · 22 de Octubre de 2026
+
+**Por desplegar: primero el backend, que trae una migración, y después el frontend.**
+
+- Público de 18 años o más:
+  - en el registro se confirma la edad y se aceptan los términos y la política de datos (`/terminos`, `/privacidad`);
+  - las cuentas antiguas aceptan una vez;
+  - el Tutor exige la confirmación de edad;
+  - la investigación es opcional y revocable.
+- «Detener» una prueba en curso, Ctrl+Enter para probar, «Atajos de teclado» en el menú de ayuda, sonido opcional al
+  probar, glosario en línea y errores del servidor que dicen qué hacer.
+- Exportación para la investigación, anonimizada, solo de quienes consintieron
+  (`GET /usabilidad/investigacion/exportar`).
+- Evaluación heurística: 3,85 → 4,21 / 5, sin problemas graves.
+
+---
+
 ## v2.1.0 — ayuda completa, voz con el Tutor y errores de la clase · 22 de Octubre de 2026
 
 **Commit de la versión: `577a7fb`** (20/10/2026). Es el que está desplegado: backend en el servidor y frontend en

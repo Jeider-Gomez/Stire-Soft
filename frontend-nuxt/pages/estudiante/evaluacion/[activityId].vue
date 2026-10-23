@@ -15,7 +15,7 @@
         <!-- Pestaña Casos de Prueba: Solo visible para coding -->
         <button
           v-if="isCodingActivity"
-          @click="leftTab = 'casos'"
+          @click="leftTab = 'casos'" :title="definicion('Casos de prueba')"
           class="px-3 py-2 rounded-t-md transition-colors flex items-center gap-1.5 min-h-[44px]"
           :class="leftTab === 'casos' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'">
           <span class="inline-flex items-center gap-1.5"><FlaskConical :size="14" aria-hidden="true" /> Casos de prueba</span>
@@ -246,7 +246,7 @@
 
 <script setup lang="ts">
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
-import { tituloConNombre } from '~/utils/tituloPagina'
+import { tituloConNombre } from '~/utils/tituloPagina'; import { definicion } from '~/utils/glosario'
 import { BookOpen, FlaskConical, Lock, PanelLeftClose, Send, Sparkles, Terminal } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'

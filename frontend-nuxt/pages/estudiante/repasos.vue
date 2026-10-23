@@ -9,7 +9,7 @@
         {{ lista.length }} {{ lista.length === 1 ? 'repaso' : 'repasos' }} · {{ tiempoTotal(lista) }}
       </p>
       <p class="text-xs text-base-texto-secundario">
-        Repasar justo cuando empiezas a olvidar hace que lo recuerdes por más tiempo. Cada repaso es un ejercicio corto de una lección que ya practicaste.
+        <Termino palabra="Repetición espaciada">Repasar justo cuando empiezas a olvidar</Termino> hace que lo recuerdes por más tiempo. Cada repaso es un ejercicio corto de una lección que ya practicaste.
       </p>
       <p v-if="hayDominadas" class="text-xs text-base-texto-secundario">
         Las lecciones que ya dominaste <strong class="text-base-texto-primario">siguen dominadas</strong>: dejar pasar el repaso no te baja el dominio. El repaso es para que no se te olviden.

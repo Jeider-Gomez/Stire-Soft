@@ -78,14 +78,15 @@
         <!-- Acción 1: «Probar» (solo código y HTML/CSS) -->
         <button
           v-if="isCodingActivity || isHtmlCssActivity"
-          @click="handleRun"
+          @click="workspaceStore.isRunning ? workspaceStore.detenerEjecucion() : handleRun()"
           data-recorrido="probar"
-          :disabled="workspaceStore.isRunning || workspaceStore.isSubmitting"
+          aria-keyshortcuts="Control+Enter"
+          :disabled="workspaceStore.isSubmitting"
           class="borde-afordancia flex-1 md:flex-none justify-center min-h-[48px] md:min-h-[44px] px-4 rounded-md text-sm md:text-xs font-bold text-base-texto-primario bg-base-bg-secundario hover:bg-base-borde-sutil transition-colors flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
-          :title="isCodingActivity || isHtmlCssActivity ? 'Evalúa contra casos de prueba/reglas públicas sin consumir intentos' : 'Esta actividad se califica directamente al entregar'">
-          <Loader2 v-if="workspaceStore.isRunning" :size="14" class="animate-spin" aria-hidden="true" />
+          :title="workspaceStore.isRunning ? 'Deja de esperar esta prueba; tu código no se pierde' : 'Evalúa contra los casos de prueba públicos sin gastar intentos (Ctrl+Enter)'">
+          <Square v-if="workspaceStore.isRunning" :size="14" aria-hidden="true" />
           <Play v-else :size="14" aria-hidden="true" />
-          <span>{{ isHtmlCssActivity ? 'Probar' : 'Probar código' }}</span>
+          <span>{{ workspaceStore.isRunning ? 'Detener' : isHtmlCssActivity ? 'Probar' : 'Probar código' }}</span>
         </button>
 
         <!-- Acción 2: «Entregar» arriba solo en código y HTML/CSS; los demás tipos lo tienen al final de su columna -->
@@ -131,8 +132,9 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ChevronRight, Cloud, Loader2, Play, Send, Sparkles, TriangleAlert } from 'lucide-vue-next'
+import { ArrowLeft, ChevronRight, Cloud, Loader2, Play, Send, Sparkles, Square, TriangleAlert } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
+import { esAtajoProbar } from '~/utils/atajos'
 import { useTutorStore } from '~/stores/tutor'
 
 const workspaceStore = useWorkspaceStore()
@@ -167,6 +169,17 @@ function handleRun() {
     workspaceStore.runIsolatedCode()
   }
 }
+
+// Ctrl+Enter (o Cmd+Enter) prueba el código desde el editor, como en LeetCode o Replit (ítem 21; utils/atajos.ts).
+// Se escucha antes que el editor para que no inserte una línea.
+function alPulsarTecla(e: KeyboardEvent) {
+  if (!esAtajoProbar(e) || !(isCodingActivity.value || isHtmlCssActivity.value)) return
+  e.preventDefault()
+  e.stopPropagation()
+  if (!workspaceStore.isRunning && !workspaceStore.isSubmitting) handleRun()
+}
+onMounted(() => window.addEventListener('keydown', alPulsarTecla, true))
+onBeforeUnmount(() => window.removeEventListener('keydown', alPulsarTecla, true))
 
 const isUnsupportedType = computed(() => !supportedTypes.includes(workspaceStore.currentExercise.questionType))
 

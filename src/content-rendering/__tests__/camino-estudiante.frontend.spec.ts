@@ -44,7 +44,7 @@ describe('Avance honesto del curso', () => {
     expect(plantilla(leer('pages', 'estudiante', 'index.vue'))).toContain('<EstudianteTuAvance />');
     const inicio = plantilla(leer('components', 'estudiante', 'TuAvance.vue'));
     expect(inicio).toContain('a.dominadas');
-    expect(inicio).toContain('Dominio en lo que has trabajado');
+    expect(inicio).toContain('<Termino palabra="Dominio" /> en lo que has trabajado');
     expect(inicio).not.toContain('Ya dominas lo que llevas');
   });
 });

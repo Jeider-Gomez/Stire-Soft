@@ -116,6 +116,11 @@
         <span><span class="font-semibold text-base-texto-primario">Reducir el movimiento</span>
           <span class="block text-[11px] text-base-texto-secundario">Sin animaciones ni desplazamientos suaves, por si marean o distraen. Si tu dispositivo ya lo pide, se respeta igual.</span></span>
       </label>
+      <label class="flex items-start gap-2 min-h-[44px] cursor-pointer">
+        <input :checked="a.sonidos" type="checkbox" class="mt-0.5 w-4 h-4 accent-acento-ambar-fuerte" @change="cambiar({ sonidos: !a.sonidos })" />
+        <span><span class="font-semibold text-base-texto-primario">Sonido al probar código</span>
+          <span class="block text-[11px] text-base-texto-secundario">Una nota corta que sube si todo pasa y baja si algo falla. El resultado siempre se ve en pantalla.</span></span>
+      </label>
     </div>
 
     <button v-if="cambiada" type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="restablecer">

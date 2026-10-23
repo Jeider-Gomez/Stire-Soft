@@ -132,7 +132,7 @@
               <th class="p-2.5 font-semibold hidden sm:table-cell">Fecha</th>
               <th class="p-2.5 font-semibold">Puntaje</th>
               <th class="p-2.5 font-semibold">Resultado</th>
-              <th class="p-2.5 font-semibold">Tu dominio</th>
+              <th class="p-2.5 font-semibold">Tu <Termino palabra="Dominio">dominio</Termino></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-base-borde-sutil">

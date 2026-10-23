@@ -11,6 +11,7 @@
         Estudiantes y docentes la responden desde su inicio o su perfil. Cuenta la última respuesta de cada persona; se puede
         volver a responder cada 7 días, para medir otra vez después de los cambios.
       </p>
+      <AdminExportarInvestigacion />
     </header>
 
     <p v-if="!datos" :role="error ? 'alert' : 'status'" class="text-xs" :class="error ? 'text-semantico-falla' : 'text-slate-600'">{{ error || 'Cargando…' }}</p>

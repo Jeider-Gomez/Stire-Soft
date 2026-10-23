@@ -21,7 +21,7 @@
     </div>
 
     <div class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 shadow-sm">
-      <p class="text-[11px] text-base-texto-secundario font-medium">Dominio en lo que has trabajado</p>
+      <p class="text-[11px] text-base-texto-secundario font-medium"><Termino palabra="Dominio" /> en lo que has trabajado</p>
       <p class="text-xl font-bold mt-1" :class="a.dominioTrabajado >= DOMINADO ? 'text-semantico-pasa' : 'text-base-texto-primario'">
         {{ studentStore.hasLoaded && a.trabajadas ? `${a.dominioTrabajado} %` : '—' }}
         <span class="text-[11px] font-normal text-base-texto-secundario">{{ a.trabajadas ? `en ${contar(a.trabajadas, 'leccion')}` : '' }}</span>

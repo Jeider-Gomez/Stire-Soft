@@ -4,6 +4,7 @@ import { useAuthStore } from './auth'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
+import { sonarResultado } from '~/utils/sonidos'
 import { debePreguntarConfianza, type Calibracion, type Confianza } from '~/utils/confianza'
 import { puedeAutoguardar, esperaReintento, textoAutoguardado, claveBorrador, guardarBorrador, leerBorrador, borrarBorrador, borradorDistinto, type EstadoAutoguardado } from '~/utils/autoguardado'
 
@@ -327,12 +328,22 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   }
 
   // Acción 1: "▶ Probar código" — Evaluación en sandbox libre sin consumir intento
+  // «Detener» (ítem 8 de la evaluación heurística): deja de esperar la prueba en curso. El servidor la corta solo por su
+  // límite de tiempo; aquí el estudiante recupera el control sin esperar ni perder su código.
+  let ejecucion: AbortController | null = null
+  function detenerEjecucion() {
+    ejecucion?.abort()
+  }
+  const DETENIDA = '⏹ Detuviste la prueba. Corrige lo que quieras y vuelve a probar: tu código sigue ahí.'
+
   async function runIsolatedCode() {
     if (currentExercise.value.questionType !== 'coding') {
       consoleLog.value.push(`⚠ "Probar código" no aplica: esta actividad es de tipo "${currentExercise.value.questionType}", no de código libre.`)
       return
     }
     isRunning.value = true
+    ejecucion = new AbortController()
+    const senal = ejecucion.signal
     activeTab.value = 'casos'
     consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Solicitando ejecución en sandbox real (POST /submissions/:id/run)...`)
 
@@ -353,7 +364,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         allPassed: boolean
       }>(`/submissions/${subId}/run`, {
         code: code.value
-      })
+      }, { signal: senal })
 
       if (res && Array.isArray(res.results)) {
         // La entrada se conserva: el servidor no la devuelve y en su lugar quedaba el título («Ejemplo 1»).
@@ -368,6 +379,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         }))
 
         fallosSeguidos.value = res.allPassed ? 0 : fallosSeguidos.value + 1
+        sonarResultado(res.allPassed)
         if (res.allPassed) {
           consoleLog.value.push(`✔ Todos los casos públicos aprobados (${res.results.length}/${res.results.length}).`)
         } else {
@@ -376,6 +388,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         }
       }
     } catch (err) {
+      if (senal.aborted) { consoleLog.value.push(DETENIDA); return }
       const { messageOf, extract } = useApiErrorMessage()
       const { status } = extract(err)
       const msg = messageOf(err, 'Error de conexión con el sandbox del backend')
@@ -386,6 +399,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       })
     } finally {
       isRunning.value = false
+      ejecucion = null
     }
   }
 
@@ -401,6 +415,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
 
     isRunning.value = true
+    ejecucion = new AbortController()
+    const senal = ejecucion.signal
     htmlCssRunError.value = null
     htmlCssRateLimited.value = false
     consoleLog.value.push(`[${new Date().toLocaleTimeString()}] Solicitando evaluación de reglas públicas (POST /submissions/:id/run)...`)
@@ -412,7 +428,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const res = await api.post<HtmlCssRunResult & { submissionId?: string }>(`/submissions/${subId}/run`, {
         html: htmlCode.value,
         css: cssCode.value
-      })
+      }, { signal: senal })
 
       if (res && Array.isArray(res.results)) {
         htmlCssResults.value = {
@@ -421,6 +437,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           passedWeight: res.passedWeight,
           totalWeight: res.totalWeight
         }
+        sonarResultado(res.allPassed)
         if (res.allPassed) {
           consoleLog.value.push(`✔ Todas las reglas públicas aprobadas (${res.results.length}/${res.results.length}).`)
         } else {
@@ -430,6 +447,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       }
       return htmlCssResults.value
     } catch (err) {
+      if (senal.aborted) { consoleLog.value.push(DETENIDA); return null }
       const { messageOf, extract } = useApiErrorMessage()
       const { status } = extract(err)
       const msg = messageOf(err, 'Error de conexión con el evaluador del backend')
@@ -441,6 +459,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       return null
     } finally {
       isRunning.value = false
+      ejecucion = null
     }
   }
 
@@ -695,6 +714,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     loadActivity,
     runIsolatedCode,
     runHtmlCss,
+    detenerEjecucion,
     submitSolution,
     triggerAutosave
   }

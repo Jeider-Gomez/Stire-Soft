@@ -23,6 +23,8 @@ export function useApi() {
       headers?: Record<string, string>
       /** «blob» para pedir una imagen con el token (p. ej. el pantallazo de una sugerencia). */
       responseType?: 'blob'
+      /** Para cancelar la espera (p. ej. «Detener» en el ejercicio). */
+      signal?: AbortSignal
     } = {}
   ): Promise<T> {
     // Con un archivo (FormData) el navegador pone el Content-Type con su «boundary»; forzar JSON rompería la subida.
@@ -38,7 +40,8 @@ export function useApi() {
         method: options.method || 'GET',
         headers,
         body: options.body as Record<string, unknown> | BodyInit | null | undefined,
-        ...(options.responseType ? { responseType: options.responseType } : {})
+        ...(options.responseType ? { responseType: options.responseType } : {}),
+        ...(options.signal ? { signal: options.signal } : {})
       })
     } catch (error: unknown) {
       const err = error as { response?: { status?: number }; statusCode?: number; data?: { error?: string | string[]; message?: string }; message?: string }
@@ -55,8 +58,8 @@ export function useApi() {
   }
 
   // Conveniencia: POST tipado
-  function post<T>(endpoint: string, body?: unknown) {
-    return apiFetch<T>(endpoint, { method: 'POST', body })
+  function post<T>(endpoint: string, body?: unknown, opciones: { signal?: AbortSignal } = {}) {
+    return apiFetch<T>(endpoint, { method: 'POST', body, ...opciones })
   }
 
   // Conveniencia: PUT tipado

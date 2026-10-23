@@ -46,6 +46,12 @@
           </a>
         </li>
         <li>
+          <button type="button" class="opcion" @click="verAtajos">
+            <Keyboard :size="16" aria-hidden="true" class="shrink-0 text-stire-blue" />
+            <span>Atajos de teclado</span>
+          </button>
+        </li>
+        <li>
           <a href="/ayuda#preguntas-frecuentes" target="_blank" rel="noopener" class="opcion" @click="abierto = false">
             <MessageCircleQuestion :size="16" aria-hidden="true" class="shrink-0 text-stire-blue" />
             <span>Preguntas frecuentes<span class="sr-only"> (se abre en otra pestaña)</span></span>
@@ -59,11 +65,12 @@
         </li>
       </ul>
     </div>
+    <LayoutAtajosTeclado :abierto="atajosAbiertos" @cerrar="atajosAbiertos = false" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { BookOpen, CircleHelp, FileQuestion, ListChecks, MessageCircleQuestion, MessageSquarePlus, Route } from 'lucide-vue-next'
+import { BookOpen, CircleHelp, FileQuestion, Keyboard, ListChecks, MessageCircleQuestion, MessageSquarePlus, Route } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 
 // En el ejercicio (layouts/workspace.vue) no está el botón «Sugerencias» que abre la ventana: ahí la opción no sale.
@@ -84,6 +91,12 @@ function verPrimerosPasos() {
   abierto.value = false
   primerosPasos.mostrar()
   void navigateTo('/estudiante')
+}
+
+const atajosAbiertos = ref(false)
+function verAtajos() {
+  abierto.value = false
+  atajosAbiertos.value = true
 }
 
 function verRecorrido() {

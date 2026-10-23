@@ -11,6 +11,31 @@ equipo debe revisar las notas, y lo ideal es repetirla con estudiantes reales.
 **Dónde está el Excel diligenciado:** fuera del repositorio, junto al original del curso
 (`Semetre 10/soft 3/Evaluación Heurística - STIRE.xlsx`). No se sube porque el instrumento es de otro grupo.
 
+## Segunda actualización: mejoras para subir la calificación
+
+Se implementaron mejoras sobre los ítems que no llegaban a 5. Todas tienen prueba en
+`src/content-rendering/__tests__/atajos-y-control.frontend.spec.ts` o `src/usabilidad/investigacion.spec.ts`. La tercera
+copia del Excel es `Evaluación Heurística - STIRE (con mejoras).xlsx`.
+
+| Ítem | Antes | Después | Qué se hizo |
+|---|---|---|---|
+| 1 Retroalimentación | 4 | 5 | Botón «Detener» mientras corre la prueba; sonido corto opcional que sube si todo pasa y baja si algo falla |
+| 4 Lenguaje | 4 | 5 | Glosario en línea: «dominio», «casos de prueba» y «repetición espaciada» se explican donde aparecen, con la definición del manual (`components/Termino.vue`) |
+| 8 Control | 3 | 4 | «Probar» se vuelve «Detener» y deja de esperar sin perder el código. La entrega sigue sin deshacerse, a propósito: cuenta como intento |
+| 14 Errores que orientan | 4 | 5 | Sin motivo del servidor, el mensaje dice qué hacer (500: esperar y reintentar o contarlo; 429: esperar un minuto) |
+| 21 Atajos | 3 | 4 | Ctrl+Enter prueba el código; «Atajos de teclado» en el menú de ayuda. Falta «Continuar donde quedé» en todas partes |
+| 22 Configuración | 4 | 5 | Opción «Sonido al probar código» en Apariencia y lectura (apagada por defecto) |
+| 28 Errores sin jerga | 4 | 5 | Los mismos mensajes del ítem 14 |
+| 34 Datos anonimizados | 3 | 4 | Exportación para la investigación solo de quienes consintieron, con un código irreversible en lugar del nombre (admin › Encuesta de usabilidad) |
+
+**Resultado con las mejoras:**
+- **Likert promedio: 4,21 / 5** (3,85 → 3,97 → 4,21).
+- **Severidad total: 23** (35 → 28 → 23).
+- **Ningún problema grave.**
+
+Quedan en 3 los ítems 17 (explorar por cuenta propia) y 18 (imágenes y video en los cursos), que dependen sobre todo
+del contenido de los cursos y de diseñar retos opcionales. Son el siguiente paso.
+
 ## Actualización del mismo día: público de 18 años o más
 
 Tras la evaluación se decidió que STIRE y el estudio son para personas de 18 años o más. Se implementaron:

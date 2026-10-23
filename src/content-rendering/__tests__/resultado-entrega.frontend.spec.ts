@@ -140,7 +140,7 @@ describe('«Tus últimos ejercicios» dice cuánto movió cada entrega el domini
   });
 
   it('la tabla tiene la columna y el servidor la manda', () => {
-    expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('<th class="p-2.5 font-semibold">Tu dominio</th>');
+    expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('<th class="p-2.5 font-semibold">Tu <Termino palabra="Dominio">dominio</Termino></th>');
     const analytics = readFileSync(path.join(__dirname, '..', '..', 'analytics', 'analytics.service.ts'), 'utf8');
     expect(analytics).toContain('dominioDespues: s.dominioDespues ?? null');
   });

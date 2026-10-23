@@ -29,10 +29,12 @@ export interface Apariencia {
   texto: TamanoTexto
   espaciado: boolean
   menosMovimiento: boolean
+  /** Sonido corto al probar código (utils/sonidos.ts). Apagado por defecto. */
+  sonidos: boolean
 }
 
 export const APARIENCIA_POR_DEFECTO: Apariencia = {
-  tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false,
+  tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false, sonidos: false,
 }
 export const CLAVE_APARIENCIA = 'stire.apariencia'
 
@@ -144,6 +146,7 @@ export function leerApariencia(crudo: string | null, sistema: PreferenciasSistem
     texto: TAMANOS_TEXTO.some((t) => t.valor === p.texto) ? (p.texto as TamanoTexto) : APARIENCIA_POR_DEFECTO.texto,
     espaciado: p.espaciado === true,
     menosMovimiento: p.menosMovimiento === true,
+    sonidos: p.sonidos === true,
   }
 }
 
