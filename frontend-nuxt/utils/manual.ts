@@ -33,8 +33,8 @@ export interface SeccionManual {
   titulo: string
   intro: string
   tareas: TareaManual[]
-  /** Secciones de explicación (cómo funciona, glosario): párrafos con título, sin pasos. */
-  bloques?: Array<{ titulo: string; texto: string }>
+  /** Secciones de explicación (cómo funciona, glosario): párrafos con título, sin pasos. `formula` se dibuja en monoespaciado. */
+  bloques?: Array<{ titulo: string; texto: string; formula?: string }>
   /** Preguntas frecuentes, con su respuesta corta. */
   preguntas?: Array<{ pregunta: string; respuesta: string }>
   /** Dibuja el calendario de repasos (CALENDARIO_REPASOS) después de los bloques. */
@@ -465,6 +465,61 @@ export const MANUAL: SeccionManual[] = [
     conCalendario: true,
   },
   {
+    // Las mismas fórmulas que src/common/utils/spaced-repetition.ts; manual-usuario.frontend.spec.ts lo comprueba.
+    id: 'algoritmo-repasos',
+    rol: 'docente',
+    titulo: 'Cómo calcula STIRE los repasos',
+    intro:
+      'El detalle del algoritmo, para el docente que quiere saber exactamente cuándo vuelve una lección. STIRE usa SM-2, el algoritmo de SuperMemo (Woźniak, 1990) en el que se basa Anki, con dos ajustes para un semestre. Se calcula para cada estudiante y cada lección.',
+    tareas: [],
+    bloques: [
+      {
+        titulo: 'Las cuatro variables',
+        texto:
+          'q es la calidad del repaso: 1, 3, 4 o 5. n es cuántos repasos seguidos lleva bien; empieza en 0. I es el intervalo: los días hasta el próximo repaso. EF es el factor de facilidad, el número por el que se multiplica el intervalo; empieza en 2,5 y nunca baja de 1,3.',
+      },
+      {
+        titulo: '1. La calidad sale del resultado',
+        texto:
+          'El estudiante no se califica a sí mismo: STIRE mira la entrega. Aprobar es llegar a la nota mínima del ejercicio. «Estar seguro» es haber respondido «Estoy seguro» antes de entregar o haber tomado el reto de entrada de la lección.',
+        formula: 'q = 1   si no aprueba               (Otra vez)\nq = 3   si aprueba con 2 o más intentos (Difícil)\nq = 4   si aprueba al primer intento    (Bien)\nq = 5   si además estaba seguro         (Fácil)',
+      },
+      {
+        titulo: '2. El factor de facilidad',
+        texto:
+          'Si acierta (q ≥ 3), EF se ajusta: con q = 5 sube 0,10; con q = 4 queda igual; con q = 3 baja 0,14. Si falla, EF no cambia, como en el SM-2 original.',
+        formula: "EF' = máx( 1,3 ;  EF + 0,1 − (5 − q) × (0,08 + (5 − q) × 0,02) )",
+      },
+      {
+        titulo: '3. El intervalo',
+        texto:
+          'Si falla, n vuelve a 0 y la lección vuelve mañana. Si acierta, n sube en 1: el primer repaso es al día siguiente, el segundo a los 3 días y desde el tercero el intervalo anterior se multiplica por el EF nuevo y se redondea. Nunca pasa de 60 días.',
+        formula: "si q < 3:   n' = 0      I' = 1\nsi q ≥ 3:   n' = n + 1\n            I' = 1                    si n' = 1\n            I' = 3                    si n' = 2\n            I' = redondear(I × EF')   si n' ≥ 3\nI' = mín(I', 60)\npróximo repaso = hoy + I' días",
+      },
+      {
+        titulo: 'Un ejemplo',
+        texto:
+          'Una estudiante acierta siempre al primer intento, sin decir que está segura (q = 4): EF se queda en 2,5 y sus repasos llegan a los 1, 3, 8, 20, 50 y 60 días. Si falla el cuarto repaso, la lección vuelve mañana y desde ahí el calendario se repite: 1, 3 y luego 3 × EF días.',
+        formula: '1 → 3 → redondear(3 × 2,5) = 8 → 8 × 2,5 = 20 → 20 × 2,5 = 50 → 60 (tope)',
+      },
+      {
+        titulo: 'Cuándo se mueve el calendario',
+        texto:
+          'La primera vez que el estudiante entrega un ejercicio de la lección y cada vez que entrega uno con el repaso ya vencido. Practicar antes de la fecha no cuenta como repaso: si contara, el intervalo crecería sin que pasara el tiempo. Un repaso fallado no baja el dominio de la lección.',
+      },
+      {
+        titulo: 'En qué se aparta del SM-2 original',
+        texto:
+          'El segundo intervalo es de 3 días en vez de 6, para que en un semestre el primer repaso real llegue antes; hay un tope de 60 días; y la calidad sale del resultado del ejercicio en lugar de pedirle al estudiante que se califique de 0 a 5. La tabla de la sección «La repetición espaciada» sale de estas mismas fórmulas.',
+      },
+      {
+        titulo: 'Qué aporta «qué tan seguro estás»',
+        texto:
+          'En el algoritmo solo separa Bien (4) de Fácil (5): un acierto seguro hace subir el EF y espacia más los repasos. Quien omite la pregunta o la apaga llega como máximo a Bien. Fuera del algoritmo, alimenta la calibración (¿acierta cuando dice estar seguro?), que ves en la ficha de cada estudiante.',
+      },
+    ],
+  },
+  {
     id: 'como-funciona',
     rol: 'todos',
     titulo: 'Cómo funciona STIRE',
@@ -489,7 +544,7 @@ export const MANUAL: SeccionManual[] = [
       {
         titulo: 'Qué tan seguro estás',
         texto:
-          'Antes de la primera entrega de un ejercicio, STIRE te pregunta qué tan seguro estás. Al calificar ves si tu seguridad coincidió con el resultado: saber cuándo sabes también es aprender.',
+          'Antes de la primera entrega de un ejercicio, STIRE te pregunta qué tan seguro estás. Al calificar ves si tu seguridad coincidió con el resultado: saber cuándo sabes también es aprender. Si no quieres que te pregunte, marca «No volver a preguntarme»; se vuelve a activar en Apariencia.',
       },
     ],
   },
@@ -507,6 +562,7 @@ export const MANUAL: SeccionManual[] = [
       { pregunta: '¿Funciona en el celular?', respuesta: 'Sí. STIRE se adapta a la pantalla del celular, y los botones de «Probar código» y «Entregar solución» quedan abajo, a mano.' },
       { pregunta: '¿Cómo vuelvo a ver el recorrido de una pantalla?', respuesta: 'Toca «?» arriba a la derecha.' },
       { pregunta: '¿El docente tiene que usar todo?', respuesta: 'No. Asistencia, notas, refuerzos y entregas son opcionales. STIRE funciona aunque el docente solo cree la clase.' },
+      { pregunta: '¿Puedo dejar de responder qué tan seguro estoy?', respuesta: 'Sí. Marca «No volver a preguntarme» en esa ventana, o apágalo en «Apariencia», en «Al practicar». Sin tu respuesta, ningún repaso se marca como Fácil y tu calibración deja de llenarse.' },
       { pregunta: '¿Puedo cambiar los colores o el tamaño de la letra?', respuesta: 'Sí. Toca «Apariencia» en la cabecera: puedes cambiar el tema, el contraste y el tamaño del texto.' },
     ],
   },

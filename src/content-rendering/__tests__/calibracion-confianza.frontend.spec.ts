@@ -95,3 +95,34 @@ describe('cada resultado contado como en Anki', () => {
     expect(como).toContain('Cuando dijiste «Estoy seguro», acertaste');
   });
 });
+
+// 23/10, pedido del dueño: poder dejar de responder «¿qué tan seguro estás?», desde la misma ventana o desde Apariencia.
+describe('«No volver a preguntarme»', () => {
+  const conf = cargar<{ debePreguntarConfianza: (intentos: number, yaDecidio: boolean, preguntar?: boolean) => boolean }>('confianza');
+  const ap = cargar<{ leerApariencia: (crudo: string | null) => { preguntarConfianza: boolean } }>('apariencia');
+
+  it('se pregunta por defecto; apagado ya no se pregunta, ni siquiera en la primera entrega', () => {
+    expect(conf.debePreguntarConfianza(0, false)).toBe(true);
+    expect(conf.debePreguntarConfianza(0, false, true)).toBe(true);
+    expect(conf.debePreguntarConfianza(0, false, false)).toBe(false);
+    expect(conf.debePreguntarConfianza(1, false, true)).toBe(false);
+  });
+
+  it('lo guardado manda; sin nada guardado o con un valor dañado, se pregunta', () => {
+    expect(ap.leerApariencia(null).preguntarConfianza).toBe(true);
+    expect(ap.leerApariencia('{}').preguntarConfianza).toBe(true);
+    expect(ap.leerApariencia('{"preguntarConfianza":"no"}').preguntarConfianza).toBe(true);
+    expect(ap.leerApariencia('{"preguntarConfianza":false}').preguntarConfianza).toBe(false);
+  });
+
+  it('la ventana tiene la casilla, que solo cuenta al entregar; el ajuste está en Apariencia › Al practicar; la tienda lo respeta', () => {
+    const ventana = leer('components', 'JuicioConfianza.vue');
+    expect(ventana).toContain('id="no-volver-a-preguntar" v-model="noVolver"');
+    expect(ventana).toContain('if (noVolver.value) cambiar({ preguntarConfianza: false })');
+    expect(ventana).toContain("const volverAEditar = () => { workspaceStore.pidiendoConfianza = false }");
+    const ajustes = leer('components', 'perfil', 'AparienciaLectura.vue');
+    expect(ajustes).toContain('<legend class="text-xs font-semibold text-base-texto-primario mb-1">Al practicar</legend>');
+    expect(ajustes).toContain('cambiar({ preguntarConfianza: !a.preguntarConfianza })');
+    expect(leer('stores', 'workspace.ts')).toContain('debePreguntarConfianza(currentExercise.value.usedAttempts, juicioDecidido, leerApariencia(guardado).preguntarConfianza)');
+  });
+});

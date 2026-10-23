@@ -81,6 +81,7 @@
             <div v-for="b in s.bloques" :key="b.titulo" class="bg-base-blanco rounded-xl border border-base-borde-sutil border-t-4 border-t-stire-teal p-4">
               <dt class="font-poppins font-bold">{{ b.titulo }}</dt>
               <dd class="text-sm text-base-texto-secundario mt-1 leading-relaxed"><ManualTextoConBotones :texto="b.texto" /></dd>
+              <dd v-if="b.formula"><pre class="mt-3 overflow-x-auto rounded-md bg-base-bg-secundario border border-base-borde-sutil p-3 font-mono text-xs leading-relaxed text-base-texto-primario">{{ b.formula }}</pre></dd>
             </div>
           </dl>
           <ManualCalendarioRepasos v-if="s.conCalendario" />

@@ -25,7 +25,7 @@ const a = cargar<{
   TEMAS_CONTRASTE: Array<{ valor: string; texto: string; oscuro: boolean; paleta: Paleta }>;
   APARIENCIA_POR_DEFECTO: Apariencia;
 }>('apariencia');
-const BASE = { tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false, sonidos: false };
+const BASE = { tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false, sonidos: false, preguntarConfianza: true };
 
 describe('preferencias guardadas', () => {
   it('por defecto, el tema claro de siempre (se lee mejor; Piepenbrock et al., 2013)', () => {

@@ -11,9 +11,12 @@ export const OPCIONES_CONFIANZA: ReadonlyArray<{ valor: Confianza; texto: string
   { valor: 'adivino', texto: 'Estoy adivinando', ayuda: 'No sé si funciona' },
 ]
 
-/** Solo en la primera entrega del ejercicio y si todavía no respondió (u omitió) en esta visita. */
-export function debePreguntarConfianza(intentosUsados: number, yaDecidio: boolean): boolean {
-  return intentosUsados === 0 && !yaDecidio
+/**
+ * Solo en la primera entrega del ejercicio, si todavía no respondió (u omitió) en esta visita y si no pidió que no se
+ * le volviera a preguntar (Apariencia › Al practicar, o «No volver a preguntarme» en la misma ventana; 23/10, pedido del dueño).
+ */
+export function debePreguntarConfianza(intentosUsados: number, yaDecidio: boolean, preguntar = true): boolean {
+  return preguntar && intentosUsados === 0 && !yaDecidio
 }
 
 export interface Calibracion { confianza: Confianza; acerto: boolean }

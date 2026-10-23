@@ -6,6 +6,7 @@ import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
 import { sonarResultado } from '~/utils/sonidos'
 import { debePreguntarConfianza, type Calibracion, type Confianza } from '~/utils/confianza'
+import { CLAVE_APARIENCIA, leerApariencia } from '~/utils/apariencia'
 import { puedeAutoguardar, esperaReintento, textoAutoguardado, claveBorrador, guardarBorrador, leerBorrador, borrarBorrador, borradorDistinto, type EstadoAutoguardado } from '~/utils/autoguardado'
 
 export interface WorkspaceExercise {
@@ -491,7 +492,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   async function submitSolution() {
     const qType = currentExercise.value.questionType
     // Antes de la primera entrega del ejercicio se pregunta la confianza (una vez; se puede omitir).
-    if (debePreguntarConfianza(currentExercise.value.usedAttempts, juicioDecidido)) {
+    let guardado: string | null = null
+    try { guardado = localStorage.getItem(CLAVE_APARIENCIA) } catch { /* sin almacenamiento: se pregunta */ }
+    if (debePreguntarConfianza(currentExercise.value.usedAttempts, juicioDecidido, leerApariencia(guardado).preguntarConfianza)) {
       pidiendoConfianza.value = true
       return
     }

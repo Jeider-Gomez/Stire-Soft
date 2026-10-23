@@ -20,7 +20,7 @@ type Tarea = {
 };
 type Seccion = {
   id: string; rol: string; titulo: string; intro: string; tareas: Tarea[];
-  bloques?: Array<{ titulo: string; texto: string }>; preguntas?: Array<{ pregunta: string; respuesta: string }>; conCalendario?: boolean;
+  bloques?: Array<{ titulo: string; texto: string; formula?: string }>; preguntas?: Array<{ pregunta: string; respuesta: string }>; conCalendario?: boolean;
 };
 const m = cargar<{
   MANUAL: Seccion[];
@@ -117,6 +117,26 @@ describe('manual de usuario', () => {
     // Y lo que dice el texto: 1, 3, 8… y nunca más de 60 días.
     expect(m.CALENDARIO_REPASOS.find((f) => f.resultado === 'Bien')?.dias.slice(0, 3)).toEqual([1, 3, 8]);
     expect(Math.max(...m.CALENDARIO_REPASOS.flatMap((f) => f.dias))).toBe(60);
+  });
+
+  it('la sección del docente sobre el algoritmo dice lo mismo que el motor', () => {
+    const s = m.MANUAL.find((x) => x.id === 'algoritmo-repasos');
+    expect(s?.rol).toBe('docente');
+    const todo = (s?.bloques ?? []).map((b) => `${b.titulo} ${b.texto} ${b.formula ?? ''}`).join('\n');
+    // Valores iniciales y límites del motor: EF 2,5, mínimo 1,3, segundo intervalo 3 días, tope 60.
+    for (const t of ['2,5', '1,3', "I' = 3", "mín(I', 60)", "EF' = máx( 1,3 ;  EF + 0,1 − (5 − q) × (0,08 + (5 − q) × 0,02) )"]) expect(todo).toContain(t);
+    // Lo que dice el texto del cambio de EF con cada calidad.
+    const ef = (q: CalidadRepaso) => calculateNextReview({ repetitions: 2, intervalDays: 3, easeFactor: 2.5 }, q).easeFactor - 2.5;
+    expect(ef(5)).toBeCloseTo(0.1);
+    expect(ef(4)).toBeCloseTo(0);
+    expect(ef(3)).toBeCloseTo(-0.14);
+    expect(todo).toMatch(/q = 5 sube 0,10; con q = 4 queda igual; con q = 3 baja 0,14/);
+    // El ejemplo: 1, 3, 8, 20, 50, 60 con q = 4.
+    let e = { repetitions: 0, intervalDays: 0, easeFactor: 2.5 };
+    const dias = [0, 1, 2, 3, 4, 5].map(() => { const r = calculateNextReview(e, 4); e = r; return r.intervalDays; });
+    expect(dias).toEqual([1, 3, 8, 20, 50, 60]);
+    expect(todo).toContain('1, 3, 8, 20, 50 y 60 días');
+    expect(leer('pages', 'ayuda.vue')).toContain('<dd v-if="b.formula">');
   });
 
   it('el buscador encuentra sin importar tildes, y el filtro de rol deja lo suyo y lo de todos', () => {

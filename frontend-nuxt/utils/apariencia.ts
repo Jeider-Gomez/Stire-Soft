@@ -31,10 +31,12 @@ export interface Apariencia {
   menosMovimiento: boolean
   /** Sonido corto al probar código (utils/sonidos.ts). Apagado por defecto. */
   sonidos: boolean
+  /** «¿Qué tan seguro estás?» antes de la primera entrega (utils/confianza.ts). Encendido por defecto; se apaga aquí o con «No volver a preguntarme». */
+  preguntarConfianza: boolean
 }
 
 export const APARIENCIA_POR_DEFECTO: Apariencia = {
-  tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false, sonidos: false,
+  tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false, sonidos: false, preguntarConfianza: true,
 }
 export const CLAVE_APARIENCIA = 'stire.apariencia'
 
@@ -147,6 +149,7 @@ export function leerApariencia(crudo: string | null, sistema: PreferenciasSistem
     espaciado: p.espaciado === true,
     menosMovimiento: p.menosMovimiento === true,
     sonidos: p.sonidos === true,
+    preguntarConfianza: p.preguntarConfianza !== false,
   }
 }
 
