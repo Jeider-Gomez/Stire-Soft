@@ -12,6 +12,45 @@ entry to the oldest.
 
 ---
 
+## v2.1.0 — ayuda completa, voz con el Tutor y errores de la clase · 22 de Octubre de 2026
+
+**Commit de la versión: `577a7fb`** (20/10/2026). Es el que está desplegado: backend en el servidor y frontend en
+Vercel. Si antes de la prueba hay que volver a esta versión en Vercel, se redespliega ese commit (Deployments →
+el de `577a7fb` → *Promote to Production*). Lo que venga después de este commit es documentación, hasta nuevo aviso.
+
+Son 44 commits desde `v2.0.0` (17/10). Es MENOR porque todo lo nuevo se agrega y lo de antes se usa igual.
+
+**Ayuda al usuario** (`docs/PLAN_AYUDA_AL_USUARIO.md`)
+- Recorrido guiado la primera vez en 30 pantallas de los tres roles, con bienvenida, pasos «hazlo tú» y enlace
+  «Ver en el manual».
+- Menú «?» en todas las pantallas: ver cómo funciona la pantalla, ayuda sobre ella, primeros pasos, manual, preguntas
+  frecuentes y «Contar un problema o una idea».
+- «Primeros pasos» del estudiante en el inicio, que se marcan solos según su avance real.
+- Manual de usuario en `/ayuda`, sin iniciar sesión, en su versión 2.1:
+  - 27 tareas por rol, con buscador y filtro por rol;
+  - repetición espaciada explicada con su calendario real;
+  - preguntas frecuentes y glosario;
+  - PDF descargable de 25 páginas.
+
+**Tutor**
+- Hablarle al Tutor: primero el dictado del navegador y, si no sirve, se graba la voz y se transcribe con la clave del
+  estudiante (`POST /tutor/transcribir`).
+
+**Docente y modelo del estudiante**
+- «Mi perfil de aprendizaje» en Mi progreso y en la ficha del estudiante. Separa los errores de concepto de los
+  descuidos (MOD-02, BT-45).
+- «Errores que más se repiten esta semana» en «Hoy» de la clase, con enlace para armar un refuerzo
+  (`GET /analytics/class/:id/errores-semana`, BT-46).
+
+**Documentación**
+- Artículo IMRyD, CITATION.cff, pitch del grupo, listas de chequeo consolidadas.
+- Evaluación heurística del 22/10 (`docs/investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md`) y plan para menores
+  y transversalidad (`docs/PLAN_MENORES_Y_TRANSVERSALIDAD.md`).
+
+**Pendiente de esta versión:** capturas de `docs/material-visual/vistas/` y el Release en GitHub.
+
+---
+
 ## v2.0.0 — segunda versión con las listas de chequeo del profesor · 4 de Octubre de 2026
 
 La versión que se presenta al profesor el 06/10. Sale de aplicar las dos listas de chequeo (interfaz, Pressman caps.
