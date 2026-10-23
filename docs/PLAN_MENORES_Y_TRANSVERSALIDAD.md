@@ -78,7 +78,40 @@ educativa y si exige el art. 25. La autorización de datos de la Ley 1581 se nec
 5. **Por verificar:** si enviar datos a servidores de Google en otro país cuenta como transferencia internacional (Ley
    1581, art. 26) y si basta con la autorización.
 
-### 1.4 El caso Empower-peque-chef como antecedente
+### 1.4 Antecedente: estudiantes de undécimo con su propia clave de Google AI Studio
+
+En la práctica docente, estudiantes de undécimo crearon su propia clave en Google AI Studio con sus correos.
+
+- **AI Studio solo admite cuentas de 18 años o más.** La documentación de regiones disponibles de Google lo dice
+  («age requirements (18+)»).
+- **Con cuentas de Workspace for Education, los menores de 18 están bloqueados** aunque el administrador active AI
+  Studio.
+- **Por lo tanto, si un menor sacó la clave, su cuenta de Google tenía una edad de 18 o más** (real o mal declarada). La
+  plataforma no lo detecta.
+
+**¿De quién es la responsabilidad?** Son dos planos distintos:
+
+| Plano | Quién responde |
+|---|---|
+| Contrato con Google | El titular de la clave, que aceptó que tenía 18 años. Pero quien diseña la actividad y le pide al menor sacar la clave sabe que es menor, y los términos también prohíben usar la API en servicios que probablemente usen menores: el riesgo no es solo del estudiante |
+| Datos personales (Ley 1581) | **El responsable del tratamiento: quien organiza la actividad o administra STIRE**, no el estudiante. Si STIRE guarda la clave y envía a Google las preguntas de un menor, ese tratamiento lo hace STIRE, sin importar de quién sea la clave |
+
+**Cómo contarlo en un artículo sin problemas:** contarlo tal como pasó, sin presentarlo como un uso conforme. Por
+ejemplo:
+
+> «Cada estudiante accedió al tutor con una clave personal de Google AI Studio. Los términos de servicio de la API de
+> Gemini exigen que el titular tenga 18 años o más y prohíben su uso en servicios dirigidos a menores; en la muestra de
+> educación media esto constituye una limitación del estudio, que motivó el rediseño del acceso al tutor por edad
+> descrito en [sección].»
+
+- **No se recomienda** escribir que fue un uso permitido ni omitir la edad de los participantes.
+- Un revisor o el comité de ética lo notaría, y la honestidad sobre la limitación es parte del aporte.
+- Si hubo consentimiento firmado de los padres, se dice. Si no, también se declara.
+
+**Qué hacer ya:** si alguno de esos estudiantes tiene una clave guardada en STIRE, borrarla y dejar de usar el Tutor con
+menores hasta cerrar la fase B. Los documentos para pedir autorización están en [`legal/`](legal/README.md).
+
+### 1.5 El caso Empower-peque-chef como antecedente
 
 En Peque-chef se pidió el consentimiento firmado de los padres porque se analizaban datos de los niños y se tomaban
 fotos y videos. STIRE tiene datos parecidos:

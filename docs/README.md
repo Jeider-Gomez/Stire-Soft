@@ -16,6 +16,7 @@ tabla de abajo.
 | Subir cambios sin pisarse (ramas, Pull Requests, versiones) | [`FLUJO_GIT.md`](FLUJO_GIT.md) |
 | Saber **en qué versión vamos** y qué commit está desplegado | [`../CHANGELOG.md`](../CHANGELOG.md) (la primera entrada) |
 | Usar STIRE con **menores de edad**, el Tutor con IA dentro de la ley y el camino a **otras materias** | [`PLAN_MENORES_Y_TRANSVERSALIDAD.md`](PLAN_MENORES_Y_TRANSVERSALIDAD.md) |
+| Ver los borradores de **política de datos, términos, autorización del acudiente, asentimiento y consentimiento de investigación** | [`legal/`](legal/README.md) |
 | Ver la **evaluación heurística** de STIRE (22/10) | [`investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md`](investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md) |
 | Entender **cómo sube y baja el dominio** y por qué siempre se puede llegar al 100 % | [`DISENO_DOMINIO.md`](DISENO_DOMINIO.md) |
 | Diseñar **ejercicios de programar que enseñan** (referentes, lo hecho y lo propuesto para el docente) | [`DISENO_EJERCICIOS_PROGRAMAR.md`](DISENO_EJERCICIOS_PROGRAMAR.md) |
