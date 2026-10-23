@@ -19,6 +19,7 @@
     <AvisosPantalla />
     <DialogoConfirmar />
     <AvisoSinConexion />
+    <DocenteAsistenciaFlotante />
   </div>
 </template>
 

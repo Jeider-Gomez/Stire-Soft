@@ -348,11 +348,12 @@ export const MANUAL: SeccionManual[] = [
         pasos: [
           'Abre tu clase y toca «Asistencia».',
           'Toca «Tomar asistencia de hoy».',
+          'Si quieres seguir usando STIRE mientras llegan, ve a otra pantalla: abajo a la derecha queda el botón «Asistencia» con cuántos llegaron. Ábrelo para ver quiénes llegaron, escanear con «Escanear aquí» o buscar a alguien y marcarlo a mano.',
           'Toca «Escanear códigos» y lee el QR que cada estudiante muestra en «Mi asistencia». Ves su nombre y su foto para comparar.',
           'Al terminar, toca «Cerrar asistencia». Quien no marcó queda ausente y puedes corregir a mano.',
         ],
         resultado: 'La sesión queda guardada. Con «Planilla (CSV)» la descargas.',
-        consejo: '«Llamar a 3 al azar» te ayuda a comprobar que quien marcó está en el salón.',
+        consejo: '«Llamar a 3 al azar» te ayuda a comprobar que quien marcó está en el salón. Si no quieres el botón flotante, toca «Quitar de la vista»; vuelve con «Dejar activa mientras uso STIRE».',
       },
       {
         id: 'llevar-las-notas',

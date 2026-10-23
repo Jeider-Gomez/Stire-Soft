@@ -1,8 +1,9 @@
 import type { EstadoAsistencia } from '~/utils/asistencia'
 
-/** Acciones y consultas de asistencia para una clase docente. */
-export function useAsistenciaClase(classId: number) {
-  const api = useApi()
+type Api = ReturnType<typeof useApi>
+
+/** Las rutas de asistencia de una clase con un cliente ya creado: la tienda de la asistencia activa las usa fuera de un componente. */
+export function accionesAsistencia(api: Api, classId: number) {
   return {
     clase: <T,>() => api.get<T>(`/class/${classId}`),
     sesiones: <T,>() => api.get<T>(`/asistencia/clase/${classId}/sesiones`),
@@ -14,4 +15,9 @@ export function useAsistenciaClase(classId: number) {
     borrar: (sesionId: number) => api.del(`/asistencia/sesiones/${sesionId}`),
     resumen: <T,>() => api.get<T>(`/asistencia/clase/${classId}/resumen`),
   }
+}
+
+/** Acciones y consultas de asistencia para una clase docente. */
+export function useAsistenciaClase(classId: number) {
+  return accionesAsistencia(useApi(), classId)
 }

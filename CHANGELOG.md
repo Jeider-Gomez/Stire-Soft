@@ -35,6 +35,15 @@ entry to the oldest.
 
 ---
 
+## Sin versión todavía — asistencia activa · 23 de Octubre de 2026
+
+- Asistencia activa: al tomar la asistencia de hoy, un botón flotante «Asistencia 12 de 30» sigue a la vista en todas
+  las pantallas del docente. Abierto muestra quiénes llegaron hace poco, escanea con la cámara pequeña («Escanear
+  aquí») y marca a mano buscando por nombre. Se quita con «Quitar de la vista» y se va solo al cerrar o borrar la sesión.
+  Solo frontend (usa las rutas de asistencia que ya existían).
+
+---
+
 ## v2.1.0 — ayuda completa, voz con el Tutor y errores de la clase · 22 de Octubre de 2026
 
 **Commit de la versión: `577a7fb`** (20/10/2026). Es el que está desplegado: backend en el servidor y frontend en

@@ -44,6 +44,7 @@
           <button v-if="detalle.sesion.abierta" type="button" class="px-3 py-2 rounded-md bg-semantico-info text-base-blanco font-bold text-xs inline-flex items-center gap-1.5" @click="abrirEscaner">
             <ScanLine :size="14" aria-hidden="true" /> Escanear códigos
           </button>
+          <DocenteAsistenciaDejarActiva :class-id="classId" :sesion-id="detalle.sesion.id" :abierta="detalle.sesion.abierta" />
           <button type="button" :disabled="presentes.length === 0" class="px-3 py-2 rounded-md borde-afordancia font-semibold text-xs inline-flex items-center gap-1.5 disabled:opacity-40" @click="sortear">
             <Shuffle :size="14" aria-hidden="true" /> Llamar a 3 al azar
           </button>
@@ -117,6 +118,7 @@
 <script setup lang="ts">
 import { ClipboardCheck, Download, Loader2, Lock, LockOpen, ScanLine, Shuffle, Trash2, TriangleAlert } from 'lucide-vue-next'
 import { useAsistenciaClase } from '~/composables/useAsistenciaClase'
+import { useAsistenciaActivaStore } from '~/stores/asistenciaActiva'
 import {
   ESTADOS, csvAsistencia, elegirAlAzar, fechaSesion, textoEstado,
   type EstadoAsistencia, type ResultadoEscaneo, type ResumenAsistencia,
@@ -134,6 +136,7 @@ const route = useRoute()
 const router = useRouter()
 const classId = Number(route.params.classId)
 const accionesAsistencia = useAsistenciaClase(classId)
+const asistenciaActiva = useAsistenciaActivaStore()
 const { messageOf } = useApiErrorMessage()
 
 const clase = ref<{ id: number; name: string; code?: string } | null>(null)
@@ -198,6 +201,7 @@ async function tomarHoy() {
     const s = await accionesAsistencia.crearSesion<Sesion>()
     await cargarSesiones()
     await abrirSesion(s.id)
+    asistenciaActiva.activar(classId, s.id) // sigue a la vista al ir a otra pantalla; se quita desde el panel
   } catch (err) {
     error.value = messageOf(err, 'No se pudo empezar la asistencia.')
   } finally {

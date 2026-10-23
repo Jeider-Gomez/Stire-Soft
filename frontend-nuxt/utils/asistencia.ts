@@ -96,3 +96,34 @@ export function claseActualPrimero<T extends { classId: number }>(clases: T[], a
   const i = clases.findIndex((c) => c.classId === actual)
   return i <= 0 ? clases : [clases[i], ...clases.slice(0, i), ...clases.slice(i + 1)]
 }
+
+// ── Asistencia activa (stores/asistenciaActiva.ts): el panel flotante que sigue a la vista mientras se usa STIRE ──
+
+export interface MarcaEnSesion { id: number; nombre: string; estado: EstadoAsistencia | null; hora: string | null }
+
+/** Los últimos que llegaron (presente o tarde), del más reciente al más antiguo. */
+export function llegadasRecientes<T extends MarcaEnSesion>(estudiantes: T[], n = 5): T[] {
+  return estudiantes
+    .filter((e) => (e.estado === 'presente' || e.estado === 'tarde') && e.hora)
+    .sort((a, b) => String(b.hora).localeCompare(String(a.hora)))
+    .slice(0, n)
+}
+
+const llego = (e: MarcaEnSesion) => e.estado === 'presente' || e.estado === 'tarde'
+
+/** Los ids de quienes ya llegaron: lo que el docente «ya vio» al abrir el panel. */
+export function idsQueLlegaron(estudiantes: MarcaEnSesion[]): number[] {
+  return estudiantes.filter(llego).map((e) => e.id)
+}
+
+/** Cuántos llegaron que el docente todavía no vio: el número del panel plegado. Por id, no por hora (el reloj del computador puede no coincidir con el del servidor). */
+export function llegadosNoVistos(estudiantes: MarcaEnSesion[], vistos: readonly number[]): number {
+  return estudiantes.filter((e) => llego(e) && !vistos.includes(e.id)).length
+}
+
+/** Quienes faltan por marcar y coinciden con lo escrito, sin importar tildes ni mayúsculas (para marcar a mano). */
+export function sinMarcarQueCoinciden<T extends MarcaEnSesion>(estudiantes: T[], texto: string, n = 6): T[] {
+  const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const q = norm(texto.trim())
+  return estudiantes.filter((e) => e.estado === null && (!q || norm(e.nombre).includes(q))).slice(0, n)
+}
