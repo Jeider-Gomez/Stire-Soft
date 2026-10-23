@@ -19,6 +19,7 @@ tabla de abajo.
 | **Lo que sigue (23/10):** pedidos del profesor, ejercicios más fáciles y personalizados con IA, borrar cuentas, términos más simples, Mi progreso y el chat | [`PLAN_MEJORAS_2026-10-23.md`](PLAN_MEJORAS_2026-10-23.md) |
 | **El docente con IA:** crear, editar a mano y seguir con la IA; lo que confunde hoy al docente y las decisiones pendientes | [`PLAN_DOCENTE_CON_IA.md`](PLAN_DOCENTE_CON_IA.md) |
 | **Rediseño del panel del docente** «tipo Apple» y su asistente pedagógico (brief para confirmar) | [`PLAN_REDISENO_DOCENTE.md`](PLAN_REDISENO_DOCENTE.md) |
+| **El Asistente del docente, Tutor y Asistente como personaje, y ejercicios generados por la IA administrados por el docente** | [`PLAN_ASISTENTE_DOCENTE.md`](PLAN_ASISTENTE_DOCENTE.md) · [propuestas de logo](identidad-visual/propuestas/tutor-y-asistente.html) |
 | Ver los borradores de **política de datos, términos, autorización del acudiente, asentimiento y consentimiento de investigación** | [`legal/`](legal/README.md) |
 | Ver la **evaluación heurística** de STIRE (22/10) | [`investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md`](investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md) |
 | Entender **cómo sube y baja el dominio** y por qué siempre se puede llegar al 100 % | [`DISENO_DOMINIO.md`](DISENO_DOMINIO.md) |

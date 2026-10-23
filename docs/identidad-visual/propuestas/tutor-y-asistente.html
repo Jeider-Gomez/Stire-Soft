@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STIRE · propuestas de logo, Tutor y Asistente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul: #0B3D91; --azul-hover: #082A66; --morado: #7B2FBF; --turquesa: #00C2A8;
+    --lienzo: #F7F9FC; --blanco: #FFFFFF; --borde: #E2E8F0; --texto: #1E293B; --texto-2: #475569;
+    --oscuro: #0B1220; --oscuro-2: #131C2E;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--lienzo); color: var(--texto); font: 400 16px/1.6 Inter, system-ui, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1, h2 { font-family: Poppins, Inter, sans-serif; letter-spacing: -0.01em; line-height: 1.2; margin: 0; }
+  h1 { font-size: 2rem; } h2 { font-size: 1.5rem; margin-top: 48px; }
+  h3 { font-size: 1rem; margin: 0 0 4px; }
+  p { margin: 8px 0; } .nota { color: var(--texto-2); font-size: 0.875rem; max-width: 70ch; }
+  .rejilla { display: grid; gap: 16px; margin-top: 16px; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+  .tarjeta { background: var(--blanco); border: 1px solid var(--borde); border-radius: 16px; padding: 20px; }
+  .fila { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .fondo { border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 14px; }
+  .fondo.claro { background: var(--lienzo); border: 1px solid var(--borde); color: var(--azul); }
+  .fondo.oscuro { background: var(--oscuro); color: #93C5FD; }
+  .nombre { font: 700 1.5rem/1 Poppins, sans-serif; letter-spacing: -0.02em; color: var(--texto); }
+  .oscuro .nombre { color: #E6ECF5; }
+  .tam { display: flex; align-items: flex-end; gap: 14px; margin-top: 12px; }
+  .tam span { font-size: 11px; color: var(--texto-2); display: block; text-align: center; }
+  .etiqueta { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #E0E7F5; color: var(--azul); }
+  .etiqueta.rec { background: #D6F5EF; color: #00705F; }
+  .par { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .cabecera-chat { display: flex; align-items: center; gap: 10px; padding: 12px 14px; color: #fff; border-radius: 12px 12px 0 0; }
+  .cabecera-chat.tutor { background: var(--morado); } .cabecera-chat.asistente { background: var(--azul); }
+  .cabecera-chat strong { font: 600 0.9rem Poppins, sans-serif; display: block; line-height: 1.2; }
+  .cabecera-chat small { opacity: .85; font-size: 11px; }
+  .chat { background: var(--blanco); border: 1px solid var(--borde); border-top: 0; border-radius: 0 0 12px 12px; padding: 14px; display: grid; gap: 10px; }
+  .burbuja { display: flex; gap: 8px; align-items: flex-start; font-size: 0.875rem; }
+  .burbuja .texto { background: var(--lienzo); border: 1px solid var(--borde); border-radius: 12px; padding: 8px 12px; max-width: 85%; }
+  .burbuja.yo { justify-content: flex-end; } .burbuja.yo .texto { background: #E0E7F5; }
+  .borrador { border: 1px solid var(--azul); border-radius: 12px; padding: 10px 12px; font-size: 0.8125rem; }
+  .borrador .acc { display: flex; gap: 8px; margin-top: 8px; }
+  .borrador button { font: 600 0.75rem Inter, sans-serif; min-height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--borde); background: #fff; }
+  .borrador button.pri { background: var(--azul); color: #fff; border-color: var(--azul); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; background: var(--blanco); border: 1px solid var(--borde); border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+  th { background: var(--lienzo); font-weight: 600; } tr:last-child td { border-bottom: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .puntos circle { animation: late 1.2s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+    .puntos circle:nth-child(2) { animation-delay: .15s; } .puntos circle:nth-child(3) { animation-delay: .3s; }
+    @keyframes late { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>STIRE · logo, Tutor y Asistente</h1>
+  <p class="nota">Propuestas para decidir, dibujadas en SVG con <code>currentColor</code> (se adaptan al tema oscuro y a los de contraste). Pronunciación sugerida: «ES-ti-re». Nada de esto está aplicado en la app: es el material para que Jeider y José elijan. Los colores son los de la guía de identidad (<code>DESIGN.md</code>).</p>
+
+  <!-- Símbolos reutilizables -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- A · Escalera: cuatro pasos que suben y se separan cada vez más (los repasos a 1, 3, 8, 20 días). -->
+      <symbol id="escalera" viewBox="0 0 48 48">
+        <rect x="3" y="32" width="7" height="10" rx="3" fill="currentColor"/>
+        <rect x="14" y="24" width="7" height="18" rx="3" fill="currentColor"/>
+        <rect x="26" y="15" width="7" height="27" rx="3" fill="currentColor"/>
+        <rect x="40" y="5" width="7" height="37" rx="3" fill="currentColor"/>
+      </symbol>
+      <!-- Versión para 16 px: tres pasos, trazos más gruesos. -->
+      <symbol id="escalera-mini" viewBox="0 0 16 16">
+        <rect x="1" y="9" width="3.5" height="5" rx="1.5" fill="currentColor"/>
+        <rect x="6.25" y="5" width="3.5" height="9" rx="1.5" fill="currentColor"/>
+        <rect x="11.5" y="1" width="3.5" height="13" rx="1.5" fill="currentColor"/>
+      </symbol>
+      <!-- B · Burbuja con puntos: tres puntos que se separan (intervalos) dentro de una burbuja de conversación. -->
+      <symbol id="burbuja" viewBox="0 0 48 48">
+        <path d="M12 6h24a8 8 0 0 1 8 8v14a8 8 0 0 1-8 8H22l-9 7v-7h-1a8 8 0 0 1-8-8V14a8 8 0 0 1 8-8z" fill="currentColor"/>
+        <circle cx="14" cy="21" r="2.4" fill="#fff"/><circle cx="24" cy="21" r="3.4" fill="#fff"/><circle cx="36" cy="21" r="4.4" fill="#fff"/>
+      </symbol>
+      <!-- C · Corchetes: un dato entre corchetes, con una pista (el punto) dentro. -->
+      <symbol id="corchetes" viewBox="0 0 48 48">
+        <path d="M17 7H8v34h9M31 7h9v34h-9" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="24" cy="24" r="5" fill="currentColor"/>
+      </symbol>
+      <!-- Pasos blancos que van dentro del Tutor y del Asistente (la misma escalera, más pequeña). -->
+      <g id="pasos">
+        <rect x="11" y="27" width="4.5" height="7" rx="2" fill="#fff"/>
+        <rect x="18" y="22" width="4.5" height="12" rx="2" fill="#fff"/>
+        <rect x="26" y="17" width="4.5" height="17" rx="2" fill="#fff"/>
+        <rect x="35" y="11" width="4.5" height="23" rx="2" fill="#fff"/>
+      </g>
+      <!-- Tutor STIRE: burbuja redonda con cola, morada. -->
+      <symbol id="tutor" viewBox="0 0 48 48">
+        <circle cx="24" cy="23" r="21" fill="var(--morado)"/>
+        <path d="M9 36L4 46l12-6z" fill="var(--morado)"/>
+        <g transform="translate(0 1)"><use href="#pasos"/></g>
+      </symbol>
+      <!-- Asistente STIRE: hoja (cuadrado redondeado) azul con una chispa. -->
+      <symbol id="asistente" viewBox="0 0 48 48">
+        <rect x="2" y="2" width="44" height="44" rx="12" fill="var(--azul)"/>
+        <g transform="translate(-4 6) scale(.9)"><use href="#pasos"/></g>
+        <path d="M37 6l1.8 4.6L43.4 12l-4.6 1.8L37 18.4l-1.8-4.6L30.6 12l4.6-1.4z" fill="var(--turquesa)"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <h2>1 · Tres direcciones para el logo</h2>
+  <p class="nota">Las tres nacen de lo que hace STIRE y no de una letra en un cuadrado. Cada una se muestra en claro, en oscuro y a 16 px (la pestaña del navegador).</p>
+  <div class="rejilla">
+    <section class="tarjeta" aria-labelledby="la">
+      <h3 id="la">A · Escalera <span class="etiqueta rec">recomendada</span></h3>
+      <p class="nota">Cuatro pasos que suben y se separan: los niveles de dominio y los repasos a 1, 3, 8 y 20 días. Es la idea de «stair» (escalera) sin cambiar el nombre. Se parece a las piezas de bloques de la guía de José.</p>
+      <div class="fondo claro"><svg width="56" height="56" aria-hidden="true"><use href="#escalera"/></svg><span class="nombre">STIRE</span></div>
+      <div class="fondo oscuro" style="margin-top:8px"><svg width="56" height="56" aria-hidden="true"><use href="#escalera"/></svg><span class="nombre" style="color:#E6ECF5">STIRE</span></div>
+      <div class="tam"><div><svg width="16" height="16" style="color:var(--azul)" aria-hidden="true"><use href="#escalera-mini"/></svg><span>16 px</span></div><div><svg width="32" height="32" style="color:var(--azul)" aria-hidden="true"><use href="#escalera"/></svg><span>32 px</span></div><div><svg width="64" height="64" style="color:var(--azul)" aria-hidden="true"><use href="#escalera"/></svg><span>64 px</span></div></div>
+    </section>
+    <section class="tarjeta" aria-labelledby="lb">
+      <h3 id="lb">B · Burbuja de puntos</h3>
+      <p class="nota">Una burbuja de conversación con tres puntos que se separan: el diálogo del Tutor y los intervalos. Muy clara como «chat», pero se parece a muchos íconos de mensajes.</p>
+      <div class="fondo claro"><svg width="56" height="56" aria-hidden="true"><use href="#burbuja"/></svg><span class="nombre">STIRE</span></div>
+      <div class="fondo oscuro" style="margin-top:8px"><svg width="56" height="56" aria-hidden="true"><use href="#burbuja"/></svg><span class="nombre" style="color:#E6ECF5">STIRE</span></div>
+      <div class="tam"><div><svg width="16" height="16" style="color:var(--azul)" aria-hidden="true"><use href="#burbuja"/></svg><span>16 px</span></div><div><svg width="32" height="32" style="color:var(--azul)" aria-hidden="true"><use href="#burbuja"/></svg><span>32 px</span></div><div><svg width="64" height="64" style="color:var(--azul)" aria-hidden="true"><use href="#burbuja"/></svg><span>64 px</span></div></div>
+    </section>
+    <section class="tarjeta" aria-labelledby="lc">
+      <h3 id="lc">C · Corchetes con punto</h3>
+      <p class="nota">Un valor entre corchetes con una pista dentro: programar y guiar sin dar la respuesta. Es la más «de código» y la más sobria, pero la que menos habla de repasos.</p>
+      <div class="fondo claro"><svg width="56" height="56" aria-hidden="true"><use href="#corchetes"/></svg><span class="nombre">STIRE</span></div>
+      <div class="fondo oscuro" style="margin-top:8px"><svg width="56" height="56" aria-hidden="true"><use href="#corchetes"/></svg><span class="nombre" style="color:#E6ECF5">STIRE</span></div>
+      <div class="tam"><div><svg width="16" height="16" style="color:var(--azul)" aria-hidden="true"><use href="#corchetes"/></svg><span>16 px</span></div><div><svg width="32" height="32" style="color:var(--azul)" aria-hidden="true"><use href="#corchetes"/></svg><span>32 px</span></div><div><svg width="64" height="64" style="color:var(--azul)" aria-hidden="true"><use href="#corchetes"/></svg><span>64 px</span></div></div>
+    </section>
+  </div>
+
+  <h2>2 · Un personaje, dos caras</h2>
+  <p class="nota">Si se elige la escalera, el Tutor y el Asistente la llevan dentro con otro envase: burbuja redonda morada para hablar con el estudiante; hoja azul con una chispa para trabajar con el docente. Los dos dicen «IA» y ninguno tiene rostro humano.</p>
+  <div class="par">
+    <section aria-labelledby="pt">
+      <h3 id="pt" style="margin-bottom:8px">Tutor STIRE · panel del estudiante</h3>
+      <div class="cabecera-chat tutor">
+        <svg width="36" height="36" style="background:#fff;border-radius:50%" aria-hidden="true"><use href="#tutor"/></svg>
+        <span><strong>Tutor STIRE</strong><small>IA · te guía con preguntas</small></span>
+      </div>
+      <div class="chat">
+        <div class="burbuja"><svg width="28" height="28" aria-hidden="true"><use href="#tutor"/></svg><div class="texto">Hola, soy el Tutor de STIRE, una IA. Te hago preguntas para que lo resuelvas tú. ¿Qué parte te trabó?</div></div>
+        <div class="burbuja yo"><div class="texto">No sé por qué me sale «53» en vez de 8.</div></div>
+        <div class="burbuja"><svg width="28" height="28" aria-hidden="true"><use href="#tutor"/></svg><div class="texto">¿Qué tipo de dato crees que es lo que lees de la entrada?</div></div>
+        <div class="burbuja" aria-label="El Tutor está escribiendo"><svg width="28" height="28" aria-hidden="true"><use href="#tutor"/></svg><div class="texto"><svg class="puntos" width="30" height="10" aria-hidden="true"><circle cx="5" cy="5" r="3" fill="#7B2FBF"/><circle cx="15" cy="5" r="3" fill="#7B2FBF"/><circle cx="25" cy="5" r="3" fill="#7B2FBF"/></svg></div></div>
+      </div>
+    </section>
+    <section aria-labelledby="pa">
+      <h3 id="pa" style="margin-bottom:8px">Asistente STIRE · panel del docente</h3>
+      <div class="cabecera-chat asistente">
+        <svg width="36" height="36" aria-hidden="true"><use href="#asistente"/></svg>
+        <span><strong>Asistente STIRE</strong><small>IA · propone borradores, tú decides</small></span>
+      </div>
+      <div class="chat">
+        <div class="burbuja yo"><div class="texto">Hazme una explicación de condicionales más sencilla.</div></div>
+        <div class="borrador">
+          <strong>Borrador · Hecho con IA</strong>
+          <p style="margin:6px 0">Un condicional es una pregunta con dos caminos: «¿ya llegó el bus? Si sí, subo; si no, espero.»</p>
+          <p class="nota" style="margin:4px 0">Por qué: un ejemplo cotidiano antes del código reduce la carga para quien empieza.</p>
+          <div class="acc"><button class="pri">Aplicar</button><button>Ver cambios</button><button>Descartar</button></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="etiqueta">Más corto</span><span class="etiqueta">Agregar error común</span><span class="etiqueta">Cambiar el ejemplo</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <h2 style="margin-top:40px">Las diferencias, de un vistazo</h2>
+  <table>
+    <thead><tr><th></th><th>Tutor STIRE</th><th>Asistente STIRE</th></tr></thead>
+    <tbody>
+      <tr><td>Forma</td><td>Burbuja redonda con cola</td><td>Hoja (cuadrado redondeado) con chispa</td></tr>
+      <tr><td>Color</td><td>Morado, el de «lo que haces tú»</td><td>Azul, el acento del panel del docente</td></tr>
+      <tr><td>Entra desde</td><td>Abajo a la derecha</td><td>La derecha (inspector)</td></tr>
+      <tr><td>Respuesta</td><td>Pregunta o pista, nunca la solución</td><td>Borrador con «Aplicar», «Ver cambios» y «Descartar»</td></tr>
+      <tr><td>Está escribiendo</td><td>Tres puntos que laten</td><td>Esqueleto del borrador</td></tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>
