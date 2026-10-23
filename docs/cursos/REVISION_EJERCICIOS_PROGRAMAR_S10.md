@@ -23,7 +23,7 @@ Al final, cada uno escribe **una sugerencia sobre el panel del docente** para cr
 
 | # | Ejercicio | Lección | Revisa | ¿Se entiende? | ¿Qué recibe y qué muestra? | ¿Alcanzable? | Tiempo | Qué cambiarías |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Plantilla web de mi curso | La estructura de una página web | José |Sí. El enunciado especifica claramente los elementos requeridos (<h1>, <p>, <ul> con 3 <li>, y a con href).| | | | |
+| 1 | Plantilla web de mi curso | La estructura de una página web | José |Sí. El enunciado especifica claramente los elementos requeridos <h1>, <p>, <ul> con 3 <li>, y a con href.| | | | |
 | 2 | Repara la página del curso | La estructura de una página web | José | | | | | |
 | 3 | Presentación de tres diapositivas | JavaScript en la página web | José | | | | | |
 | 4 | La portada de un OVA | Construir un OVA interactivo | José | | | | | |
