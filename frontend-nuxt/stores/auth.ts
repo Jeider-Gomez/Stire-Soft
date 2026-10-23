@@ -1,5 +1,15 @@
 import { defineStore } from 'pinia'
 import type { User } from '~/types'
+import type { DecisionTerminos } from '~/utils/legal'
+
+/** Solo los campos de la aceptación de términos que devuelve el servidor (nunca se copia el resto a ciegas). */
+function camposAceptacion(u: User): Partial<User> {
+  return {
+    mayorDeEdadConfirmadoEn: u.mayorDeEdadConfirmadoEn,
+    terminosVersion: u.terminosVersion,
+    investigacionConsentida: u.investigacionConsentida,
+  }
+}
 
 export const useAuthStore = defineStore('auth', () => {
   const config = useRuntimeConfig()
@@ -68,10 +78,11 @@ export const useAuthStore = defineStore('auth', () => {
     password: string,
     classCode?: string,
     requestedRole?: 'estudiante' | 'docente',
-    roleRequestReason?: string
+    roleRequestReason?: string,
+    aceptacion?: DecisionTerminos
   ): Promise<{ ok: boolean; error?: string; enrollmentWarning?: string; roleRequest?: any }> {
     try {
-      const payload: Record<string, any> = { fullName, email, password }
+      const payload: Record<string, any> = { fullName, email, password, ...aceptacion }
       // §23 T3: enviar requestedRole solo si eligió docente; nunca enviar campo role
       if (requestedRole === 'docente') {
         payload.requestedRole = 'docente'
@@ -125,6 +136,37 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       return { ok: false, error: typeof msg === 'string' ? msg : 'Error al registrar la cuenta. Verifica los datos ingresados.' }
+    }
+  }
+
+  /** Confirma la mayoría de edad y acepta los términos vigentes (cuentas de antes del 22/10/2026; utils/legal.ts). */
+  async function aceptarTerminos(decision: DecisionTerminos): Promise<{ ok: boolean; error?: string }> {
+    try {
+      const u = await $fetch<User>(`${apiBase}/users/me/terminos`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token.value}` },
+        body: decision,
+      })
+      if (user.value) user.value = { ...user.value, ...camposAceptacion(u) }
+      return { ok: true }
+    } catch (err) {
+      const { detail } = useApiErrorMessage().extract(err)
+      return { ok: false, error: typeof detail === 'string' ? detail : 'No se pudo guardar. Intenta de nuevo.' }
+    }
+  }
+
+  /** Participar o no en la investigación; se puede cambiar cuando quiera. */
+  async function decidirInvestigacion(consiente: boolean): Promise<boolean> {
+    try {
+      const u = await $fetch<User>(`${apiBase}/users/me/investigacion`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token.value}` },
+        body: { consiente },
+      })
+      if (user.value) user.value = { ...user.value, ...camposAceptacion(u) }
+      return true
+    } catch {
+      return false
     }
   }
 
@@ -182,6 +224,8 @@ export const useAuthStore = defineStore('auth', () => {
     currentRole,
     login,
     register,
+    aceptarTerminos,
+    decidirInvestigacion,
     logout,
     switchRoleForDemo,
     hydrateUser

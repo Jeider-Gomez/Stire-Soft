@@ -42,6 +42,9 @@ describe('RegisterDto', () => {
     dto.email = 'test@example.com';
     dto.password = 'SafePassw0rd!';
     dto.fullName = 'Test Student';
+    // Público de 18 años o más: edad y términos son obligatorios (src/user/aceptacion-terminos.ts).
+    dto.confirmaMayorDeEdad = true;
+    dto.aceptaTerminos = true;
 
     const errors = await validate(dto);
     expect(errors.length).toBe(0);

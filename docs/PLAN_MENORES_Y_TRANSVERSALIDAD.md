@@ -5,6 +5,16 @@
 que encontró un solo problema grave: la privacidad de menores. Y la pregunta de Jeider: si STIRE se usa con jóvenes de
 colegio, ¿qué pide la ley, cómo se maneja el consentimiento (como en Empower-peque-chef) y cómo seguimos usando Gemini?
 
+> **Decisión del 22/10/2026 (Jeider): el público de STIRE y de este estudio son personas de 18 años o más.** Así el Tutor
+> con claves gratuitas propias de Gemini queda dentro de los términos de Google y no hace falta la autorización de
+> acudientes. Ya está en la app:
+> - al registrarse se confirma la edad y se aceptan los términos y la política de datos (`/terminos`, `/privacidad`);
+> - las cuentas antiguas aceptan una vez;
+> - el servidor no deja usar el Tutor sin esa confirmación;
+> - la investigación es opcional y se puede retirar desde el perfil.
+>
+> Ver §4. Lo de menores (§1, fases A–C) queda como camino futuro, para cuando se quiera llevar STIRE a colegios.
+>
 > Esto es una lectura técnica de normas y términos de servicio, no una asesoría jurídica. Antes de usar STIRE con
 > menores, el plan se revisa con el comité de ética de la Universidad y, si es posible, con alguien de derecho.
 
@@ -208,3 +218,53 @@ catálogo por asignatura. Lo que falta es justo lo que hace a STIRE un tutor:
 4. **D** cuando el piloto de algoritmia esté cerrado.
 
 Cada decisión de diseño que salga de aquí lleva su entrada BT en `docs/investigacion/BASE_TEORICA.md`.
+
+---
+
+## 4. Lo implementado el 22/10/2026: público de 18 años o más
+
+### En la app
+
+| Qué | Dónde | Prueba |
+|---|---|---|
+| Registro con dos casillas obligatorias, ninguna marcada: «tengo 18 años o más» y «acepto los términos y la política de datos». La investigación es una tercera casilla, opcional | `components/legal/CasillasAceptacion.vue`, `pages/auth/register.vue` | `terminos-mayores-de-edad.frontend.spec.ts` |
+| El servidor rechaza un registro sin las dos confirmaciones | `src/auth/dto/register.dto.ts` | `aceptacion-terminos.spec.ts`, `register.dto.spec.ts` |
+| Se guarda como prueba la fecha de la confirmación de edad, la versión de los términos aceptada y la decisión sobre la investigación (Decreto 1377, arts. 7 y 8) | `users`, migración `1793400000000-AceptacionTerminos` | `aceptacion-terminos.spec.ts` |
+| Términos y política de datos públicos, en lenguaje claro | `/terminos`, `/privacidad` (`utils/legal.ts`) | `terminos-mayores-de-edad.frontend.spec.ts` |
+| Las cuentas creadas antes, o cuando cambien los términos, aceptan una vez en «Antes de seguir» | `middleware/auth.global.ts`, `pages/aceptar-terminos.vue`, `POST /users/me/terminos` | ambas |
+| El Tutor (chat, voz y guardar la clave) solo para quien confirmó tener 18 años o más | `MayorDeEdadGuard` en `src/tutor/tutor.controller.ts` | `aceptacion-terminos.spec.ts` |
+| La investigación se puede retirar o aceptar después desde el perfil | `components/perfil/Investigacion.vue`, `PATCH /users/me/investigacion` | ambas |
+| El Tutor no le envía a Google el nombre ni el correo, como promete la política | `src/tutor/` | `aceptacion-terminos.spec.ts` (revisa el código fuente) |
+
+**Para desplegarlo:** la migración `1793400000000-AceptacionTerminos` corre sola al levantar el contenedor del backend.
+El backend va antes que el frontend. Después del despliegue, todas las cuentas, incluidas las de prueba, ven
+«Antes de seguir» una vez.
+
+### Lo que queda por hacer
+
+1. **Definir el responsable del tratamiento** (la Universidad, el grupo o el proyecto) y un correo de contacto. Hoy la
+   política remite a «Contar un problema o una idea» y al docente.
+2. **Exportación para investigación solo con quienes consintieron**, con un código en lugar del nombre. Hoy no existe
+   exportación.
+3. Presentar al comité de ética el consentimiento de investigación para adultos (`legal/CONSENTIMIENTO_INVESTIGACION.md`).
+4. **Datos de menores ya recogidos**, por ejemplo los estudiantes de undécimo de la práctica docente: no usarlos en el
+   artículo salvo que haya autorización firmada de los acudientes. Si se usan, declararlo.
+
+### Cómo escribirlo en el artículo (método)
+
+> «STIRE está dirigido a personas de 18 años o más; la mayoría de edad se verifica por autodeclaración al crear la
+> cuenta, junto con la aceptación de los términos de uso y de la política de tratamiento de datos (Ley 1581 de 2012;
+> Decreto 1377 de 2013). El tutor usa la API de Gemini de Google: cada participante creó su propia clave gratuita en
+> Google AI Studio, como titular de esa clave y bajo los términos de Google, y la asoció a su cuenta, donde se almacena
+> cifrada. STIRE no envía a Google datos de identificación del estudiante, y la política de datos informa que, en la capa
+> gratuita, Google puede usar el contenido enviado para mejorar sus productos. La participación en el estudio se
+> consintió por separado y podía retirarse en cualquier momento sin efectos en la calificación; los datos se analizaron
+> con códigos en lugar de nombres.»
+
+Y en **limitaciones**:
+
+> «La edad se verificó por autodeclaración. El uso de claves gratuitas implica que los proveedores pueden emplear las
+> interacciones con el tutor para mejorar sus servicios, lo que se informó a los participantes.»
+
+Esto es cierto con lo implementado. Lo que **no** se debe escribir: que hubo verificación de edad con documento, que
+Google no ve las conversaciones, o que participaron menores con estas claves.

@@ -93,11 +93,14 @@ export class AuthService {
    * Registrar un nuevo usuario
    */
   async register(registerDto: RegisterDto) {
-    const { requestedRole, roleRequestReason, ...accountData } = registerDto;
+    const { requestedRole, roleRequestReason, confirmaMayorDeEdad, aceptaTerminos, consienteInvestigacion, ...accountData } =
+      registerDto;
     const wantsTeacher = requestedRole === 'docente';
 
     // Siempre estudiante: el rol no viene del cliente (ValidationPipe rechaza un campo `role`).
-    const user = await this.userService.create(accountData);
+    // Público de 18 años o más: la aceptación se guarda como prueba (src/user/aceptacion-terminos.ts).
+    const creado = await this.userService.create(accountData);
+    const user = await this.userService.aceptarTerminos(creado.id, { confirmaMayorDeEdad, aceptaTerminos, consienteInvestigacion });
     const roleRequest = wantsTeacher ? await this.roleRequests.create(user.id, roleRequestReason) : null;
 
     const token = await this.generateToken(user.id, user.email, user.role);

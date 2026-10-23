@@ -26,6 +26,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAffiliationDto } from './dto/create-affiliation.dto';
 import { UserResponseDto } from './dto/user-response.dto';
+import { AceptarTerminosDto, DecisionInvestigacionDto } from './dto/aceptar-terminos.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User, UserRole } from './entities/user.entity';
@@ -68,6 +69,21 @@ export class UserController {
 
   // Rutas /me* declaradas ANTES de las rutas con :id para que 'me' no sea
   // capturado como valor del parametro :id.
+  // Cuentas creadas antes del 22/10/2026 (o al cambiar los términos): confirman mayoría de edad y aceptan una vez.
+  @Roles('estudiante', 'docente', 'admin')
+  @Post('me/terminos')
+  @HttpCode(HttpStatus.OK)
+  aceptarTerminos(@GetUser() user: User, @Body() dto: AceptarTerminosDto) {
+    return this.userService.aceptarTerminos(user.id, dto);
+  }
+
+  // Participar o no en la investigación; se puede cambiar cuando quiera (Decreto 1377, art. 9).
+  @Roles('estudiante', 'docente', 'admin')
+  @Patch('me/investigacion')
+  decidirInvestigacion(@GetUser() user: User, @Body() dto: DecisionInvestigacionDto) {
+    return this.userService.decidirInvestigacion(user.id, dto.consiente);
+  }
+
   @Patch('me')
   updateProfile(@GetUser() user: User, @Body() updateProfileDto: UpdateProfileDto) {
     return this.userService.updateProfile(user.id, updateProfileDto);

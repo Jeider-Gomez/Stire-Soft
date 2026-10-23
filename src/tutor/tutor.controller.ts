@@ -4,6 +4,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { MayorDeEdadGuard } from '../auth/guards/mayor-de-edad.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { User } from '../user/entities/user.entity';
 import { TutorService } from './tutor.service';
@@ -23,7 +24,7 @@ export class TutorController {
 
   @Throttle({ default: { limit: 20, ttl: 60000 } })
   @Post('chat')
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesGuard, MayorDeEdadGuard)
   @Roles('estudiante')
   @ApiOperation({ summary: 'Enviar un mensaje al Tutor IA adaptativo' })
   async chat(@Body() body: ChatDto | any, @GetUser() user: User) {
@@ -56,7 +57,7 @@ export class TutorController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post('transcribir')
   @HttpCode(200)
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesGuard, MayorDeEdadGuard)
   @Roles('estudiante')
   @UseInterceptors(FileInterceptor('audio', { limits: { fileSize: MAX_BYTES_AUDIO + 1, files: 1 } }))
   @ApiOperation({ summary: 'Convierte en texto una pregunta dicha con la voz (con la clave del estudiante)' })
@@ -112,7 +113,7 @@ export class TutorController {
 
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Put('api-key')
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesGuard, MayorDeEdadGuard)
   @Roles('estudiante')
   @ApiOperation({ summary: 'Guarda (cifrada) la clave gratuita de Google AI Studio del estudiante, tras verificarla con Google' })
   async saveApiKey(@Body() body: SaveApiKeyDto, @GetUser() user: User) {

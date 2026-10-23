@@ -227,6 +227,9 @@
           </div>
         </div>
 
+        <!-- Público de 18 años o más: edad y términos obligatorios, investigación opcional (utils/legal.ts). -->
+        <LegalCasillasAceptacion v-model:mayor-de-edad="confirmaMayorDeEdad" v-model:terminos="aceptaTerminos" v-model:investigacion="consienteInvestigacion" :falta="faltaAceptar" class="mt-4" />
+
         <!-- Acciones: «Crear cuenta» siempre a la vista; lo opcional es un botón aparte. -->
         <div class="mt-4 space-y-1.5">
           <button
@@ -298,6 +301,10 @@ const isLoading = ref(false)
 const errorMessage = ref('')
 const tutorKeyWarning = ref('')
 const roleRequestSuccessNotice = ref('')
+const confirmaMayorDeEdad = ref(false)
+const aceptaTerminos = ref(false)
+const consienteInvestigacion = ref(false)
+const faltaAceptar = ref(false)
 
 // Pasos del registro y validación propia (el formulario usa novalidate: los mensajes del navegador no dicen qué regla
 // de la contraseña falta y, con el paso 2 abierto, apuntaban a campos ocultos).
@@ -337,6 +344,8 @@ function detectarBloqMayus(evento: KeyboardEvent) {
 
 async function handleRegister() {
   if (Object.keys(validar()).length) { enfocarPrimerFaltante(); return }
+  faltaAceptar.value = !confirmaMayorDeEdad.value || !aceptaTerminos.value
+  if (faltaAceptar.value) { document.getElementById(confirmaMayorDeEdad.value ? 'acepta-terminos' : 'confirma-mayor-de-edad')?.focus(); return }
 
   isLoading.value = true
   errorMessage.value = ''
@@ -350,7 +359,8 @@ async function handleRegister() {
     password.value,
     selectedRole.value === 'estudiante' ? classCode.value : undefined,
     selectedRole.value === 'docente' ? 'docente' : undefined,
-    selectedRole.value === 'docente' ? teacherReason.value : undefined
+    selectedRole.value === 'docente' ? teacherReason.value : undefined,
+    { confirmaMayorDeEdad: true, aceptaTerminos: true, consienteInvestigacion: consienteInvestigacion.value }
   )
 
   isLoading.value = false

@@ -1,5 +1,13 @@
 # Documentos legales y de consentimiento de STIRE (borradores)
 
+**Decisión del 22/10/2026:** STIRE es para personas de 18 años o más. Ya están en la app:
+- los **términos** y la **política de datos** para adultos (`frontend-nuxt/utils/legal.ts`, páginas `/terminos` y
+  `/privacidad`);
+- la **confirmación de edad** al registrarse;
+- la decisión sobre la **investigación**, en el registro y en el perfil.
+
+La autorización del acudiente y el asentimiento quedan como borradores para un uso futuro en colegios.
+
 **Estado:** borradores del 22/10/2026 para revisar con el comité de ética de la Universidad de Córdoba y, si es
 posible, con alguien de derecho. **Ninguno está publicado en la app todavía.** Los campos entre `[corchetes]` se llenan
 antes de usarlos.

@@ -1,4 +1,4 @@
-import { IsEmail, IsIn, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength, Matches } from 'class-validator';
+import { Equals, IsBoolean, IsEmail, IsIn, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength, Matches } from 'class-validator';
 import {
   PASSWORD_COMPLEXITY_REGEX,
   PASSWORD_COMPLEXITY_MESSAGE,
@@ -29,4 +29,15 @@ export class RegisterDto {
   @IsString({ message: 'El motivo debe ser texto' })
   @MaxLength(300, { message: 'El motivo no puede superar 300 caracteres' })
   roleRequestReason?: string;
+
+  // Público de 18 años o más y términos aceptados (src/user/aceptacion-terminos.ts).
+  @Equals(true, { message: 'STIRE es para personas de 18 años o más: confirma tu edad para continuar.' })
+  confirmaMayorDeEdad: boolean;
+
+  @Equals(true, { message: 'Para crear tu cuenta debes aceptar los términos y la política de datos.' })
+  aceptaTerminos: boolean;
+
+  @IsOptional()
+  @IsBoolean({ message: 'La decisión sobre la investigación debe ser sí o no.' })
+  consienteInvestigacion?: boolean;
 }

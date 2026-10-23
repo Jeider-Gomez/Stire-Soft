@@ -19,6 +19,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAffiliationDto } from './dto/create-affiliation.dto';
 import { InstitutionService } from '../institution/institution.service';
 import { MediaService } from '../media/media.service';
+import { camposDeAceptacion, DecisionTerminos } from './aceptacion-terminos';
 
 
 export interface VinculoAcademico {
@@ -114,7 +115,8 @@ export class UserService {
   async findOneByEmail(email: string): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'password', 'fullName', 'role', 'isActive', 'fotoId'],
+      select: ['id', 'email', 'password', 'fullName', 'role', 'isActive', 'fotoId', 'mayorDeEdadConfirmadoEn', 'terminosVersion',
+        'terminosAceptadosEn', 'investigacionConsentida', 'investigacionDecididaEn'],
     });
   }
 
@@ -155,6 +157,23 @@ export class UserService {
   async updateProfile(id: number, updateProfileDto: UpdateProfileDto): Promise<User> {
     const user = await this.findOne(id);
     Object.assign(user, updateProfileDto);
+    return await this.userRepository.save(user);
+  }
+
+  /** Confirma la mayoría de edad y acepta los términos vigentes (src/user/aceptacion-terminos.ts). */
+  async aceptarTerminos(id: number, decision: DecisionTerminos): Promise<User> {
+    const campos = camposDeAceptacion(decision, new Date());
+    if (!campos) throw new BadRequestException('Confirma que tienes 18 años o más y acepta los términos para continuar.');
+    const user = await this.findOne(id);
+    Object.assign(user, campos);
+    return await this.userRepository.save(user);
+  }
+
+  /** Participar o dejar de participar en la investigación, cuando quiera. */
+  async decidirInvestigacion(id: number, consiente: boolean): Promise<User> {
+    const user = await this.findOne(id);
+    user.investigacionConsentida = consiente;
+    user.investigacionDecididaEn = new Date();
     return await this.userRepository.save(user);
   }
 

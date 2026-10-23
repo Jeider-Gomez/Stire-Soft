@@ -11,7 +11,31 @@ equipo debe revisar las notas, y lo ideal es repetirla con estudiantes reales.
 **Dónde está el Excel diligenciado:** fuera del repositorio, junto al original del curso
 (`Semetre 10/soft 3/Evaluación Heurística - STIRE.xlsx`). No se sube porque el instrumento es de otro grupo.
 
-## Resultado
+## Actualización del mismo día: público de 18 años o más
+
+Tras la evaluación se decidió que STIRE y el estudio son para personas de 18 años o más. Se implementaron:
+- la confirmación de edad y la aceptación de términos y política de datos en el registro;
+- las páginas `/terminos` y `/privacidad`;
+- el bloqueo del Tutor sin esa confirmación;
+- la investigación opcional y revocable.
+
+Detalle en `docs/PLAN_MENORES_Y_TRANSVERSALIDAD.md` §4. Con eso se recalificaron cuatro ítems. La segunda copia del
+Excel es `Evaluación Heurística - STIRE (mayores de 18).xlsx`.
+
+| Ítem | Antes | Después | Por qué |
+|---|---|---|---|
+| 4 Lenguaje | 3 | 4 | El público ya no incluye octavo grado |
+| 15 Tarea con ≤ 2 ayudas | 3 (F×I 2) | 4 (F×I 1) | Sin código de acudiente ni bloqueo por edad; solo crear la clave gratuita |
+| 33 Privacidad | 2 (F×I 6) | 4 (F×I 1) | Términos y política públicos, edad y aceptación con prueba, investigación aparte y revocable, el Tutor no envía nombre ni correo |
+| 34 Datos protegidos | 3 (F×I 2) | 3 (F×I 1) | Se registra quién consintió; falta la exportación con códigos |
+
+**Resultado actualizado:**
+- **Likert promedio: 3,97 / 5.**
+- **Severidad total: 28** (antes 35).
+- **Ningún problema grave** (antes 1).
+- Usabilidad general y potencial educativo siguen en 4.
+
+## Resultado de la primera calificación
 
 | Indicador | Resultado |
 |---|---|

@@ -10,6 +10,7 @@
  *  - Raíz (/):            redirige automáticamente al dashboard del rol activo
  */
 import { useAuthStore } from '~/stores/auth'
+import { servidorConTerminos, terminosAlDia } from '~/utils/legal'
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const authStore = useAuthStore()
@@ -25,8 +26,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   const isPublicRoute = to.path.startsWith('/auth')
-  // El manual de usuario se abre sin cuenta: se comparte por enlace y se descarga en PDF.
-  if (to.path === '/ayuda') return
+  // El manual de usuario se abre sin cuenta: se comparte por enlace y se descarga en PDF. Los términos y la política de
+  // datos también: se leen antes de crear la cuenta.
+  if (to.path === '/ayuda' || to.path === '/terminos' || to.path === '/privacidad') return
 
   // 1. Ruta pública — siempre permitida
   if (isPublicRoute) {
@@ -42,6 +44,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!authStore.isAuthenticated) {
     return navigateTo(to.fullPath === '/' ? '/auth/login' : { path: '/auth/login', query: { volver: to.fullPath } })
   }
+
+  // 2b. Público de 18 años o más: quien no ha aceptado los términos vigentes los acepta antes de seguir (utils/legal.ts).
+  // Solo si el servidor ya maneja los términos (devuelve el campo, aunque sea null): mientras el backend nuevo no está
+  // desplegado, nadie queda atrapado en una pantalla que el servidor no sabe recibir.
+  if (servidorConTerminos(authStore.user) && !terminosAlDia(authStore.user)) {
+    if (to.path === '/aceptar-terminos') return
+    return navigateTo({ path: '/aceptar-terminos', query: to.fullPath === '/' ? {} : { volver: to.fullPath } })
+  }
+  if (to.path === '/aceptar-terminos') return navigateTo('/')
 
   const role = authStore.currentRole
 

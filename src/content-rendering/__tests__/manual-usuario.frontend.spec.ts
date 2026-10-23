@@ -130,7 +130,8 @@ describe('manual de usuario', () => {
   });
 
   it('/ayuda se abre sin cuenta, tiene descarga en PDF y estilo de impresión, y se llega desde el pie de página', () => {
-    expect(leer('middleware', 'auth.global.ts')).toContain("if (to.path === '/ayuda') return");
+    // /ayuda es pública (también /terminos y /privacidad, desde el 22/10).
+    expect(leer('middleware', 'auth.global.ts')).toMatch(/if \(to\.path === '\/ayuda'( \|\| [^)]*)?\) return/);
     const pagina = leer('pages', 'ayuda.vue');
     expect(pagina).toContain(':href="PDF_MANUAL" download');
     expect(pagina).toContain('@media print');

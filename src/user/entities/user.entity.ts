@@ -51,6 +51,23 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   passwordChangedAt?: Date | null;
 
+  // Aceptación de términos y mayoría de edad (src/user/aceptacion-terminos.ts): prueba de la autorización.
+  @Column({ type: 'timestamp', nullable: true })
+  mayorDeEdadConfirmadoEn?: Date | null;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  terminosVersion?: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  terminosAceptadosEn?: Date | null;
+
+  /** Participar en la investigación es aparte y opcional; null = todavía no decidió. */
+  @Column({ type: 'boolean', nullable: true })
+  investigacionConsentida?: boolean | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  investigacionDecididaEn?: Date | null;
+
   @OneToMany(() => UserAffiliation, (affiliation) => affiliation.user)
   affiliations!: UserAffiliation[];
 

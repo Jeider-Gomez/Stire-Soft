@@ -8,12 +8,18 @@ import { UserRole } from '../user/entities/user.entity';
 // (login/registro) no tenía ni una línea probada.
 describe('AuthService', () => {
   let service: AuthService;
-  const mockUserService = { findOneByEmail: jest.fn(), create: jest.fn() };
+  const mockUserService = { findOneByEmail: jest.fn(), create: jest.fn(), aceptarTerminos: jest.fn() };
   const mockJwtService = { signAsync: jest.fn().mockResolvedValue('fake-jwt-token') };
   const mockRoleRequests = { create: jest.fn() };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // La aceptación de términos devuelve el usuario ya guardado con su prueba (src/user/aceptacion-terminos.ts).
+    mockUserService.aceptarTerminos.mockImplementation(async (id: number) => ({
+      ...(await mockUserService.create.mock.results[0]?.value),
+      id,
+      terminosVersion: '2026-10-22',
+    }));
     service = new AuthService(mockUserService as any, mockJwtService as any, mockRoleRequests as any, {} as any, {} as any, { get: jest.fn() } as any);
   });
 
@@ -135,6 +141,24 @@ describe('AuthService', () => {
       expect(mockUserService.create).toHaveBeenCalled();
       expect(mockRoleRequests.create).toHaveBeenCalledWith(8, undefined);
       expect(result.roleRequest).toEqual({ id: 4, status: 'pending' });
+    });
+
+    it('guarda la confirmación de mayoría de edad y la decisión sobre la investigación del registro', async () => {
+      mockUserService.create.mockResolvedValue({ id: 9, email: 'm@x.com', password: 'h', role: UserRole.ESTUDIANTE });
+
+      const result = await service.register({
+        email: 'm@x.com', password: 'Segura1!', fullName: 'M',
+        confirmaMayorDeEdad: true, aceptaTerminos: true, consienteInvestigacion: false,
+      } as any);
+
+      const creado = mockUserService.create.mock.calls[0][0];
+      expect(creado).not.toHaveProperty('confirmaMayorDeEdad');
+      expect(creado).not.toHaveProperty('consienteInvestigacion');
+      expect(mockUserService.aceptarTerminos).toHaveBeenCalledWith(9, {
+        confirmaMayorDeEdad: true, aceptaTerminos: true, consienteInvestigacion: false,
+      });
+      expect(result.user).toMatchObject({ id: 9, terminosVersion: '2026-10-22' });
+      expect(result.user).not.toHaveProperty('password');
     });
 
     it('email duplicado → 409 (propagado desde UserService.create)', async () => {

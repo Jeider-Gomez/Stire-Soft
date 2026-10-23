@@ -7,6 +7,10 @@ export interface User {
   role: Role
   /** Foto de perfil opcional (imagen en /media/<fotoId>); sin foto se muestran las iniciales. */
   fotoId?: string | null
+  /** Aceptación de términos y mayoría de edad (utils/legal.ts); sin ella, middleware/auth.global.ts pide aceptar. */
+  mayorDeEdadConfirmadoEn?: string | null
+  terminosVersion?: string | null
+  investigacionConsentida?: boolean | null
 }
 
 export type UnitStatus = 'dominado' | 'en-progreso' | 'por-iniciar' | 'bloqueado'
