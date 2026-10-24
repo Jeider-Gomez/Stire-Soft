@@ -1,0 +1,40 @@
+/*
+ * Aspecto del panel del docente (rediseño R0, docs/PLAN_REDISENO_DOCENTE.md).
+ *
+ * Todo cuelga de [data-panel="docente"], que pone layouts/teacher.vue: el panel del estudiante, el del administrador y
+ * la portada no cambian. Es la excepción acordada el 23/10 para el territorio de José (temas.css y main.css quedan
+ * intactos): aquí solo se redefinen variables que ya existen y unas pocas reglas, con estas condiciones:
+ *   - nada se toca en alto contraste (data-contraste="alto"): ese tema manda;
+ *   - los colores nuevos son los mismos canales --c-* de temas.css, así el tema oscuro sigue funcionando;
+ *   - con «reducir el movimiento» las transiciones desaparecen.
+ */
+
+/* Letra del sistema: la de Apple en sus equipos y la propia de cada sistema en los demás. Código y Poppins no cambian. */
+[data-panel="docente"] {
+  --ease-docente: cubic-bezier(0.2, 0.8, 0.2, 1);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+[data-panel="docente"] .font-interfaz { font-family: inherit; }
+[data-panel="docente"] .font-poppins { font-family: inherit; }
+
+/* Solo en claro y sin alto contraste: fondo gris neutro (el de las aplicaciones de Apple) y sombras frías y más suaves. */
+:root:not([data-tema="oscuro"]):not([data-contraste="alto"]) [data-panel="docente"] {
+  --c-stire-canvas: 245 245 247;
+  --c-base-bg-primario: 245 245 247;
+}
+:root:not([data-contraste="alto"]) [data-panel="docente"] .shadow-sm { box-shadow: 0 1px 2px rgb(15 23 42 / 0.06); }
+:root:not([data-contraste="alto"]) [data-panel="docente"] .shadow-md { box-shadow: 0 4px 12px -2px rgb(15 23 42 / 0.10); }
+:root:not([data-contraste="alto"]) [data-panel="docente"] .shadow-lg { box-shadow: 0 16px 32px -8px rgb(15 23 42 / 0.18); }
+
+/* Movimiento: de 150 a 250 ms con salida suave. */
+[data-panel="docente"] :is(.transition, .transition-colors, .transition-all, .transition-opacity, .transition-transform) {
+  transition-duration: 180ms;
+  transition-timing-function: var(--ease-docente);
+}
+:root[data-movimiento="reducido"] [data-panel="docente"] * {
+  transition-duration: 0ms !important;
+  animation-duration: 0ms !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-panel="docente"] * { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}

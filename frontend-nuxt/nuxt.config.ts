@@ -17,7 +17,9 @@ export default defineNuxtConfig({
   css: [
     // Primero las variables de los temas (claro, oscuro, alto contraste): main.css y las pantallas las usan.
     '~/assets/css/temas.css',
-    '~/assets/css/main.css'
+    '~/assets/css/main.css',
+    // Aspecto del panel del docente (rediseño R0): solo actúa dentro de [data-panel="docente"].
+    '~/assets/css/panel-docente.css'
   ],
 
   app: {
