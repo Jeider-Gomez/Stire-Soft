@@ -92,18 +92,15 @@
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
       <nav v-else-if="authStore.currentRole === 'docente'" class="space-y-1.5 text-sm font-medium">
-        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Gestión docente</p>
-
+        <!-- Rediseño v2 (24/10): arriba lo general (Inicio con todas las clases y Mensajes); debajo, la clase elegida con
+             sus secciones (ClasesDelMenu.vue). -->
         <NuxtLink
           to="/docente"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Users :size="18" aria-hidden="true" class="shrink-0" />
-          <span>Mis clases</span>
+          <House :size="18" aria-hidden="true" class="shrink-0" />
+          <span>Inicio</span>
         </NuxtLink>
-
-        <!-- Cada clase con sus iniciales; abre su «Hoy» (ClasesDelMenu.vue). -->
-        <LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />
 
         <NuxtLink
           to="/docente/mensajes"
@@ -112,6 +109,8 @@
           <Mail :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
         </NuxtLink>
+
+        <LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />
       </nav>
 
       <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR (ADM-V01..V03) -->
@@ -180,7 +179,7 @@
 </template>
 
 <script setup lang="ts">
-import { Activity, BookOpen, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp, Users } from 'lucide-vue-next'
+import { Activity, BookOpen, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 

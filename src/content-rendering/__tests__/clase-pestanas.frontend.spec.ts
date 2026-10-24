@@ -19,6 +19,10 @@ const pestanas = cargar('pestanasClase.ts') as {
   claseDeLaRuta: (ruta: string, consulta: Record<string, unknown>) => number | null;
   pestanaDeLaRuta: (ruta: string) => string | null;
   PESTANAS_CLASE: Array<{ id: string }>;
+  SECCIONES_MENU: Array<{ id: string; texto: string; incluye: string[] }>;
+  seccionDelMenu: (p: string | null) => string | null;
+  claseDelMenu: (deLaRuta: number | null, recordada: number | null, ids: number[]) => number | null;
+  colorDeClase: (i: number) => string;
 };
 const { pendientesDeHoy } = cargar('hoyClase.ts', { './refuerzos': cargar('refuerzos.ts') }) as {
   pendientesDeHoy: (d: unknown) => Array<{ clave: string; tipo: string; titulo: string; detalle: string; personas: Array<{ id: number; nota?: string }>; acciones: Array<{ texto: string; to: string }> }>;
@@ -100,8 +104,8 @@ describe('Pestañas de la clase', () => {
     // al cambiar de clase el docente se queda en la misma sección (Contenido, Entregas…); sin sección, va a «Hoy»
     expect(menu).toContain(`:to="enlacePestana(seccionActual ?? 'hoy', c.id)"`);
     // la clase activa despliega sus secciones debajo, con la actual marcada
-    expect(menu).toContain('<li v-for="p in PESTANAS_CLASE" :key="p.id">');
-    expect(menu).toContain(`:aria-current="p.id === seccionActual ? 'page' : undefined"`);
+    expect(menu).toContain('<li v-for="s in SECCIONES_MENU" :key="s.id">');
+    expect(menu).toContain(`:aria-current="p === seccionActual ? 'page' : undefined"`);
     // dos grupos de la misma materia se distinguen por el código
     expect(menu).toContain('{{ c.code }}');
     for (const herramienta of ['to="/docente/contenidos"', 'to="/docente/rendimiento"', 'to="/docente/entregas"', 'to="/docente/refuerzos"']) {
@@ -228,5 +232,45 @@ describe('«Hoy» de la clase', () => {
       { ...base, id: 5, cierraAt: enHoras(5), conteo: { sin_entregar: 0, por_revisar: 0, revisada: 5 } },
     ];
     expect(pendientesDeHoy({ ...vacio, entregas })).toEqual([]);
+  });
+});
+
+describe('Menú lateral del docente v2: una clase elegida y cinco secciones', () => {
+  it('cinco secciones; dos agrupan pantallas que siguen existiendo y Ajustes va aparte', () => {
+    expect(pestanas.SECCIONES_MENU.map((s) => s.texto)).toEqual(['Resumen', 'Contenido del curso', 'Estudiantes y avance', 'Entregas', 'Asistencia y notas']);
+    const cubiertas = pestanas.SECCIONES_MENU.flatMap((s) => s.incluye).concat(['ajustes']).sort();
+    expect(cubiertas).toEqual(pestanas.PESTANAS_CLASE.map((p) => p.id).sort());
+  });
+
+  it('cada pantalla marca la sección que la contiene', () => {
+    expect(pestanas.seccionDelMenu('refuerzos')).toBe('estudiantes');
+    expect(pestanas.seccionDelMenu('notas')).toBe('asistencia');
+    expect(pestanas.seccionDelMenu('contenido')).toBe('contenido');
+    expect(pestanas.seccionDelMenu('ajustes')).toBe('ajustes');
+    expect(pestanas.seccionDelMenu(null)).toBeNull();
+  });
+
+  it('muestra la clase de la dirección; fuera de una clase, la última elegida si sigue siendo suya; si no, la primera', () => {
+    expect(pestanas.claseDelMenu(7, 3, [3, 7])).toBe(7);
+    expect(pestanas.claseDelMenu(null, 3, [3, 7])).toBe(3);
+    expect(pestanas.claseDelMenu(null, 99, [3, 7])).toBe(3);
+    expect(pestanas.claseDelMenu(42, null, [3, 7])).toBe(3);
+    expect(pestanas.claseDelMenu(null, null, [])).toBeNull();
+  });
+
+  it('el color de cada clase se repite en ciclo y nunca falla', () => {
+    expect(pestanas.colorDeClase(0)).toBe(pestanas.colorDeClase(6));
+    expect(pestanas.colorDeClase(-1)).toMatch(/^#[0-9A-F]{6}$/);
+  });
+
+  it('el menú: selector con la lista de clases, Inicio y Mensajes arriba, Crear clase abre la ventana de Inicio', () => {
+    const menu = leer('components', 'layout', 'ClasesDelMenu.vue');
+    expect(menu).toContain('aria-haspopup="menu"');
+    expect(menu).toContain('to="/docente?crear=1"');
+    expect(menu).toContain("localStorage.setItem(CLAVE_RECORDADA");
+    const lateral = leer('components', 'layout', 'SidebarNav.vue');
+    expect(lateral.indexOf('<span>Inicio</span>')).toBeGreaterThan(-1);
+    expect(lateral.indexOf('to="/docente/mensajes"')).toBeLessThan(lateral.indexOf('<LayoutClasesDelMenu'));
+    expect(leer('pages', 'docente', 'index.vue')).toContain('if (useRoute().query.crear) creando.value = true');
   });
 });

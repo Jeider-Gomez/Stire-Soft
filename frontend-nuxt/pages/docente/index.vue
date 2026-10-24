@@ -419,8 +419,7 @@ function copyCode(code: string) {
 }
 
 onMounted(() => {
-  void estado.cargarPlantillas()
-  void estado.cargarClases()
-  void estado.cargarNoLeidos()
+  if (useRoute().query.crear) creando.value = true // «Crear clase» del menú lateral (ClasesDelMenu.vue)
+  void estado.cargarPlantillas(); void estado.cargarClases(); void estado.cargarNoLeidos()
 })
 </script>
