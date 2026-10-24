@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STIRE · Identidad v2 (propuestas)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul: #0B3D91; --morado: #7B2FBF; --turquesa: #00C2A8;
+    --fondo: #F7F9FC; --texto: #1E293B; --suave: #475569; --linea: #D9E1EC; --tarjeta: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font: 16px/1.55 Inter, system-ui, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1, h2, h3 { font-family: Poppins, Inter, sans-serif; margin: 0 0 8px; line-height: 1.2; }
+  h1 { font-size: 28px; } h2 { font-size: 22px; margin-top: 48px; } h3 { font-size: 16px; }
+  p { margin: 0 0 12px; max-width: 70ch; color: var(--suave); }
+  .nota { background: #EAF1FB; border-left: 4px solid var(--azul); padding: 12px 16px; border-radius: 8px; color: var(--texto); }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 16px; }
+  .card { background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .card.reco { border: 2px solid var(--azul); }
+  .card .etiqueta { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--azul); }
+  .fila { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .lienzo { background: var(--fondo); border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: center; }
+  .oscuro { background: #0B1220; color: #E6ECF5; }
+  .oscuro p, .oscuro h3 { color: #E6ECF5; }
+  svg.m { display: block; }
+  .t160 { width: 160px; height: 160px; } .t96 { width: 96px; height: 96px; } .t64 { width: 64px; height: 64px; }
+  .t32 { width: 32px; height: 32px; } .t16 { width: 16px; height: 16px; }
+  .tutor { color: var(--morado); } .asistente { color: var(--azul); } .base { color: var(--azul); }
+  .mono { color: #1E293B; --ojo: #F7F9FC; --cur: #F7F9FC; }
+  .negro-sobre-oscuro { color: #E6ECF5; --ojo: #0B1220; --cur: #0B1220; }
+  .nombre { font: 700 40px Poppins, sans-serif; letter-spacing: -.01em; }
+  .nombre small { display: block; font: 500 13px Inter, sans-serif; letter-spacing: 0; color: var(--suave); }
+  .oscuro .nombre small { color: #A9B6CC; }
+  .app { width: 96px; height: 96px; border-radius: 22px; display: flex; align-items: center; justify-content: center; }
+  table { border-collapse: collapse; width: 100%; background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+  th { background: #EEF2F8; font-weight: 600; }
+  @media (max-width: 560px) { .nombre { font-size: 32px; } }
+</style>
+</head>
+<body>
+<main>
+
+<!-- ============ Símbolos reutilizables (viewBox 0 0 64 64) ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Cuerpos -->
+    <symbol id="cuerpo-tutor" viewBox="0 0 64 64">
+      <rect x="22" y="6" width="20" height="14" rx="5" fill="currentColor"/>
+      <rect x="8" y="14" width="48" height="40" rx="14" fill="currentColor"/>
+    </symbol>
+    <symbol id="cuerpo-asistente" viewBox="0 0 64 64">
+      <rect x="36" y="6" width="20" height="14" rx="5" fill="currentColor"/>
+      <rect x="8" y="14" width="48" height="40" rx="9" fill="currentColor"/>
+    </symbol>
+    <symbol id="cola" viewBox="0 0 64 64">
+      <path d="M14 48 L9 62 L28 52 Z" fill="currentColor"/>
+    </symbol>
+    <symbol id="cursor" viewBox="0 0 64 64">
+      <rect x="35" y="46" width="12" height="4" rx="2" style="fill:var(--cur,#00C2A8)"/>
+    </symbol>
+    <!-- Ojos: dos pasos de una escalera -->
+    <symbol id="ojos-neutro" viewBox="0 0 64 64">
+      <rect x="19" y="30" width="9" height="12" rx="4.5" style="fill:var(--ojo,#fff)"/>
+      <rect x="36" y="24" width="9" height="18" rx="4.5" style="fill:var(--ojo,#fff)"/>
+    </symbol>
+    <symbol id="ojos-pensando" viewBox="0 0 64 64">
+      <rect x="21" y="27" width="9" height="12" rx="4.5" style="fill:var(--ojo,#fff)"/>
+      <rect x="38" y="21" width="9" height="18" rx="4.5" style="fill:var(--ojo,#fff)"/>
+    </symbol>
+    <symbol id="ojos-acierto" viewBox="0 0 64 64">
+      <path d="M19 40 Q23.5 30 28 40" fill="none" stroke-width="4.5" stroke-linecap="round" style="stroke:var(--ojo,#fff)"/>
+      <path d="M36 40 Q40.5 30 45 40" fill="none" stroke-width="4.5" stroke-linecap="round" style="stroke:var(--ojo,#fff)"/>
+    </symbol>
+    <symbol id="ojos-repaso" viewBox="0 0 64 64">
+      <circle cx="23.5" cy="35" r="5.5" style="fill:var(--ojo,#fff)"/>
+      <rect x="36" y="24" width="9" height="18" rx="4.5" style="fill:var(--ojo,#fff)"/>
+    </symbol>
+    <!-- Dirección B: corchetes que miran -->
+    <symbol id="corchetes" viewBox="0 0 64 64">
+      <path d="M24 12 H12 V52 H24" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M40 12 H52 V52 H40" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="26" cy="38" r="4.5" fill="currentColor"/>
+      <circle cx="38" cy="29" r="4.5" fill="currentColor"/>
+    </symbol>
+    <!-- Dirección C: la S es un diagrama de flujo -->
+    <symbol id="ese-flujo" viewBox="0 0 64 64">
+      <path d="M44 14 H26 A9 9 0 0 0 26 32 H38 A9 9 0 0 1 38 50 H20" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="49" cy="14" r="5" style="fill:var(--turquesa)"/>
+      <rect x="10" y="44" width="12" height="12" rx="3" fill="currentColor"/>
+    </symbol>
+    <!-- Dirección D: bucle de repaso (intervalos que crecen) -->
+    <symbol id="bucle" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="4" opacity=".28"/>
+      <circle cx="39.5" cy="11.3" r="3" fill="currentColor"/>
+      <circle cx="51.1" cy="21" r="4" fill="currentColor"/>
+      <circle cx="46.1" cy="48.9" r="5" fill="currentColor"/>
+      <circle cx="11.3" cy="24.5" r="6" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<h1>STIRE · identidad v2</h1>
+<p>Cuatro direcciones nuevas. La idea de partida: STIRE enseña <strong>algoritmia y programación</strong>, así que su marca debe parecerse a algo que se escribe o se ejecuta (un bloque, un corchete, un diagrama de flujo, un bucle), y no a un icono de chat o de señal.</p>
+<p class="nota"><strong>Estado:</strong> dibujadas a mano en SVG, <strong>aún sin revisar en pantalla por mí</strong>. Ábrela y dime qué ves. Para cualquier cosa que no se vea bien, es fácil corregirla.</p>
+
+<!-- ============ Dirección A ============ -->
+<h2>A · «Bloque con ojos» (la que recomiendo)</h2>
+<p>Un bloque de código con su muesca arriba, como los de Scratch o MakeCode. Los dos ojos son <strong>dos pastillas de distinta altura</strong>: forman una escalera de dos pasos (el nivel de dominio que sube) y dan la sensación de «mira hacia arriba, hacia el siguiente paso». Es una cara muy simple, sin cabeza ni manos, así que no es una persona ni un robot. Sirve para <strong>un mismo personaje con dos papeles</strong>: el Tutor (morado, con cola de diálogo) y el Asistente (azul, más cuadrado, con un cursor de escritura turquesa).</p>
+
+<div class="grid">
+  <div class="card reco">
+    <span class="etiqueta">Tutor STIRE · estudiante</span>
+    <div class="lienzo"><svg class="m t160 tutor" viewBox="0 0 64 64" role="img" aria-label="Tutor STIRE"><use href="#cuerpo-tutor"/><use href="#cola"/><use href="#ojos-neutro"/></svg></div>
+    <p>Morado <code>#7B2FBF</code>. La cola lo hace «hablar» y lo enmarca como guía, sin gorro de graduación.</p>
+  </div>
+  <div class="card reco">
+    <span class="etiqueta">Asistente STIRE · docente</span>
+    <div class="lienzo"><svg class="m t160 asistente" viewBox="0 0 64 64" role="img" aria-label="Asistente STIRE"><use href="#cuerpo-asistente"/><use href="#ojos-neutro"/><use href="#cursor"/></svg></div>
+    <p>Azul <code>#0B3D91</code>. Esquinas más cerradas y muesca a la derecha: parece una hoja de trabajo. El cursor turquesa dice «estoy escribiendo un borrador».</p>
+  </div>
+  <div class="card reco">
+    <span class="etiqueta">Marca base · producto</span>
+    <div class="lienzo"><svg class="m t160 base" viewBox="0 0 64 64" role="img" aria-label="Marca STIRE"><use href="#cuerpo-tutor"/><use href="#ojos-neutro"/></svg></div>
+    <p>Sin cola ni cursor. Es la que va en el favicon, el encabezado y el pie.</p>
+  </div>
+</div>
+
+<h3 style="margin-top:28px">Expresiones (el Tutor cambia según lo que pasa)</h3>
+<div class="grid">
+  <div class="card"><div class="lienzo"><svg class="m t96 tutor" viewBox="0 0 64 64"><use href="#cuerpo-tutor"/><use href="#cola"/><use href="#ojos-neutro"/></svg></div><p><strong>Neutro.</strong> Listo para ayudar.</p></div>
+  <div class="card"><div class="lienzo"><svg class="m t96 tutor" viewBox="0 0 64 64"><use href="#cuerpo-tutor"/><use href="#cola"/><use href="#ojos-pensando"/></svg></div><p><strong>Pensando.</strong> Los ojos suben y a la derecha mientras llega la respuesta.</p></div>
+  <div class="card"><div class="lienzo"><svg class="m t96 tutor" viewBox="0 0 64 64"><use href="#cuerpo-tutor"/><use href="#cola"/><use href="#ojos-acierto"/></svg></div><p><strong>Acierto.</strong> Ojos de arco al pasar una prueba.</p></div>
+  <div class="card"><div class="lienzo"><svg class="m t96 tutor" viewBox="0 0 64 64"><use href="#cuerpo-tutor"/><use href="#cola"/><use href="#ojos-repaso"/></svg></div><p><strong>Repaso.</strong> Un ojo redondo («lo recuerdo») y uno de paso: toca repasar.</p></div>
+</div>
+
+<h3 style="margin-top:28px">Formas de verlo</h3>
+<div class="grid">
+  <div class="card">
+    <span class="etiqueta">Con el nombre</span>
+    <div class="lienzo fila" style="justify-content:flex-start">
+      <svg class="m t64 base" viewBox="0 0 64 64"><use href="#cuerpo-tutor"/><use href="#ojos-neutro"/></svg>
+      <div class="nombre">STIRE<small>Sistema tutor inteligente con repetición espaciada</small></div>
+    </div>
+  </div>
+  <div class="card oscuro">
+    <span class="etiqueta" style="color:#7FB0FF">Sobre oscuro</span>
+    <div class="lienzo oscuro fila" style="justify-content:flex-start">
+      <svg class="m t64" viewBox="0 0 64 64" style="color:#E6ECF5;--ojo:#0B1220"><use href="#cuerpo-tutor"/><use href="#ojos-neutro"/></svg>
+      <div class="nombre">STIRE<small>Tema oscuro</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <span class="etiqueta">Una sola tinta</span>
+    <div class="lienzo fila">
+      <svg class="m t64 mono" viewBox="0 0 64 64"><use href="#cuerpo-tutor"/><use href="#ojos-neutro"/></svg>
+      <svg class="m t64" viewBox="0 0 64 64" style="color:#fff;--ojo:#1E293B;background:#1E293B;border-radius:12px"><use href="#cuerpo-tutor"/><use href="#ojos-neutro"/></svg>
+    </div>
+    <p>Para sellos, impresión en blanco y negro y documentos.</p>
+  </div>
+  <div class="card">
+    <span class="etiqueta">Icono de aplicación</span>
+    <div class="lienzo fila">
+      <div class="app" style="background:var(--azul)"><svg class="m" width="64" height="64" viewBox="0 0 64 64" style="color:#fff;--ojo:#0B3D91"><use href="#cuerpo-tutor"/><use href="#ojos-neutro"/></svg></div>
+      <div class="app" style="background:var(--morado)"><svg class="m" width="64" height="64" viewBox="0 0 64 64" style="color:#fff;--ojo:#7B2FBF"><use href="#cuerpo-tutor"/><use href="#cola"/><use href="#ojos-neutro"/></svg></div>
+    </div>
+  </div>
+  <div class="card">
+    <span class="etiqueta">Tamaños (prueba de legibilidad)</span>
+    <div class="lienzo fila">
+      <svg class="m t64 base" viewBox="0 0 64 64"><use href="#cuerpo-tutor"/><use href="#ojos-neutro"/></svg>
+      <svg class="m t32 base" viewBox="0 0 64 64"><use href="#cuerpo-tutor"/><use href="#ojos-neutro"/></svg>
+      <svg class="m t16 base" viewBox="0 0 64 64"><use href="#cuerpo-tutor"/><use href="#ojos-neutro"/></svg>
+    </div>
+    <p>64, 32 y 16 px. A 16 px los ojos siguen leyéndose como dos barras de distinta altura.</p>
+  </div>
+</div>
+
+<!-- ============ Otras direcciones ============ -->
+<h2>B · «Corchetes que miran»</h2>
+<p>Dos corchetes <code>[ ]</code> y, dentro, dos puntos a distinta altura. Se lee como código y a la vez como una cara. Más sobria que la A, pero con menos carácter de personaje.</p>
+<div class="grid">
+  <div class="card"><div class="lienzo"><svg class="m t96 base" viewBox="0 0 64 64"><use href="#corchetes"/></svg></div></div>
+  <div class="card"><div class="lienzo"><svg class="m t96 tutor" viewBox="0 0 64 64"><use href="#corchetes"/></svg></div></div>
+  <div class="card oscuro"><div class="lienzo oscuro"><svg class="m t96" viewBox="0 0 64 64" style="color:#00C2A8"><use href="#corchetes"/></svg></div></div>
+</div>
+
+<h2>C · «La S es un diagrama de flujo»</h2>
+<p>La letra S trazada como un camino con ángulos rectos: entra por un punto (inicio) y termina en un cuadrado (fin), como un diagrama de flujo. Es la más «de marca» y la que mejor funciona con el nombre, pero no tiene cara ni sirve para el personaje.</p>
+<div class="grid">
+  <div class="card"><div class="lienzo"><svg class="m t96 base" viewBox="0 0 64 64"><use href="#ese-flujo"/></svg></div></div>
+  <div class="card oscuro"><div class="lienzo oscuro"><svg class="m t96" viewBox="0 0 64 64" style="color:#E6ECF5"><use href="#ese-flujo"/></svg></div></div>
+</div>
+
+<h2>D · «Bucle de repaso»</h2>
+<p>Un anillo con cuatro puntos cada vez más grandes y más separados: los repasos a 1, 3, 8 y 20 días dentro de un bucle. Cuenta la repetición espaciada, pero se parece mucho a iconos de carga y de órbita.</p>
+<div class="grid">
+  <div class="card"><div class="lienzo"><svg class="m t96 base" viewBox="0 0 64 64"><use href="#bucle"/></svg></div></div>
+  <div class="card"><div class="lienzo"><svg class="m t96 tutor" viewBox="0 0 64 64"><use href="#bucle"/></svg></div></div>
+</div>
+
+<h2>Comparación</h2>
+<table>
+  <thead><tr><th>Dirección</th><th>Se distingue</th><th>Sirve de personaje</th><th>Encaja con programar</th><th>Riesgo</th></tr></thead>
+  <tbody>
+    <tr><td><strong>A · Bloque con ojos</strong></td><td>Alto</td><td>Sí (Tutor y Asistente)</td><td>Alto (bloque de código)</td><td>Parecerse a otras mascotas de bloques si la cara se complica. Por eso es solo dos pastillas</td></tr>
+    <tr><td>B · Corchetes</td><td>Medio</td><td>Poco</td><td>Alto</td><td>Se confunde con el icono de «código»</td></tr>
+    <tr><td>C · S de flujo</td><td>Alto</td><td>No</td><td>Alto</td><td>Mejor como logotipo que como avatar</td></tr>
+    <tr><td>D · Bucle</td><td>Bajo</td><td>No</td><td>Medio</td><td>Parece icono de carga</td></tr>
+  </tbody>
+</table>
+
+<h2>Cómo se combinan</h2>
+<p>Mi propuesta: <strong>A como personaje</strong> (Tutor y Asistente) y <strong>la S de flujo (C) como marca de las pantallas oficiales</strong> (portada, documentos). Así hay una marca seria y un personaje cercano, que comparten color y el motivo de la escalera: en A son los dos ojos; en C es el camino que avanza.</p>
+
+<h2>De dónde sale la idea</h2>
+<p>Lo que dije de otros logos viene de mi memoria, <strong>no lo verifiqué contra sus guías de marca</strong>:</p>
+<ul style="color:var(--suave);max-width:70ch">
+  <li>Los logos de los asistentes de IA suelen ser <strong>formas radiales o destellos</strong>. Sirven para decir «IA», pero no dicen nada de aprender a programar.</li>
+  <li>En los entornos para aprender a programar (micro:bit, MakeCode, Scratch) lo que se repite es <strong>una forma simple, tipo bloque o ficha, con rasgos mínimos</strong> que parecen ojos. De ahí sale la dirección A. No copio ninguna: ninguno de esos logos tiene ojos de distinta altura ni una muesca de bloque con cola.</li>
+  <li>Evité el gorro de graduación, el libro y la bombilla, que son los símbolos más repetidos de «tutor».</li>
+</ul>
+
+</main>
+</body>
+</html>

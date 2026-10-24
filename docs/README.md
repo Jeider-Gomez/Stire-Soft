@@ -22,6 +22,7 @@ tabla de abajo.
 | **El Asistente del docente, Tutor y Asistente como personaje, y ejercicios generados por la IA administrados por el docente** | [`PLAN_ASISTENTE_DOCENTE.md`](PLAN_ASISTENTE_DOCENTE.md) · [propuestas de logo](identidad-visual/propuestas/tutor-y-asistente.html) |
 | **Los prompts del Asistente:** plantillas con huecos, qué se pregunta al docente, qué se omite y cómo se prueban | [`DISENO_PROMPTS_ASISTENTE.md`](DISENO_PROMPTS_ASISTENTE.md) |
 | **Prompts para que Gemini dibuje propuestas de logo** (para ver ideas, no entregables) | [`identidad-visual/propuestas/PROMPTS_GEMINI_LOGO.md`](identidad-visual/propuestas/PROMPTS_GEMINI_LOGO.md) |
+| **Identidad v2: cuatro direcciones de logo con carácter** (bloque con ojos, corchetes, S de flujo, bucle) | [`identidad-visual/propuestas/identidad-stire-v2.html`](identidad-visual/propuestas/identidad-stire-v2.html) |
 | Ver los borradores de **política de datos, términos, autorización del acudiente, asentimiento y consentimiento de investigación** | [`legal/`](legal/README.md) |
 | Ver la **evaluación heurística** de STIRE (22/10) | [`investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md`](investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md) |
 | Entender **cómo sube y baja el dominio** y por qué siempre se puede llegar al 100 % | [`DISENO_DOMINIO.md`](DISENO_DOMINIO.md) |
