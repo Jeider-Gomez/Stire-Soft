@@ -1,6 +1,6 @@
 ---
 estado: propuesta (23/10/2026) con decisiones pendientes de Jeider (sección 6)
-origen: pedidos de Jeider del 23/10: nombre y logo de STIRE, identidad distinta para el Tutor (estudiante) y el Asistente
+origen: pedidos de Jeider del 23/10 (y la tesis de Caro, 2015, que subió el mismo día): nombre y logo de STIRE, identidad distinta para el Tutor (estudiante) y el Asistente
   (docente), plan del Asistente, y control del docente sobre los ejercicios que la IA genera para cada estudiante
 complementa: docs/PLAN_REDISENO_DOCENTE.md (§4, el asistente en el panel), docs/PLAN_DOCENTE_CON_IA.md (fases A a E) y
   docs/PLAN_MEJORAS_2026-10-23.md (punto 4, ejercicios personalizados)
@@ -72,6 +72,8 @@ visible, en el botón, en el encabezado y en cada mensaje.
 el tema oscuro y en los de contraste, y sus animaciones usan solo opacidad y escala y respetan «reducir el movimiento».
 
 ## 4. El Asistente del docente
+
+> Cómo se escriben, se llenan y se prueban los prompts del Asistente: [`DISENO_PROMPTS_ASISTENTE.md`](DISENO_PROMPTS_ASISTENTE.md).
 
 ### 4.1 Qué es y qué no es
 
@@ -174,32 +176,55 @@ La idea era personalizar según el «perfil cognitivo». El Perfil de aprendizaj
 Así que se personaliza por **el error de concepto que el estudiante repite, su nivel y la lección**, nunca por «estilo».
 Esto además sostiene mejor el artículo.
 
-### 5.2 Cómo funciona
+### 5.2 Cómo funciona: se genera solo, y un ejercicio sirve a muchos
 
-1. Un estudiante falla repetidamente por el mismo error de concepto (por ejemplo, «junta números como texto»).
-2. **Antes de generar, se busca en el banco** un ejercicio de esa lección, ese error y ese nivel que no haya visto.
-3. Si no hay, se genera con **la clave de Gemini del propio estudiante**, con el error y el nivel pero sin nombre ni
-   correo.
-4. La solución de referencia corre en el juez. Si no pasa sus casos, se descarta.
-5. Se guarda en el banco con la marca «hecho con IA» y llega al estudiante.
+Jeider lo planteó así: si todos reciben los mismos ejercicios no hay personalización, así que **la generación tiene
+que ser automática**, a partir de lo que el estudiante sabe y no sabe. Los sistemas que revisé (ALEKS, Duolingo,
+Khanmigo; ver `docs/investigacion/PERSONALIZACION_Y_ASISTENTE_ESTADO_DEL_ARTE.md`) perfilan por **lo que el estudiante
+responde y con qué resultado**, no por su estilo.
+
+**El perfil es una celda, no una persona:**
+
+> celda de perfil = (lección, error de concepto que repite, banda de nivel)
+
+Como varios estudiantes caen en la misma celda, **un ejercicio generado para una celda sirve a todos los de esa
+celda**. Eso ahorra generación (y cuota de Gemini) a medida que hay más estudiantes.
+
+1. **Cuándo aparece:** cuando el estudiante repite el mismo error de concepto en dos ejercicios seguidos de una
+   lección, o cuando un repaso vencido sigue fallando. (Las condiciones exactas se afinan con datos reales: es una
+   regla de STIRE, no del prompt.)
+2. **Antes de generar, se busca en el banco** un ejercicio de esa celda que ese estudiante no haya visto.
+3. Si no hay, se genera con **la clave de Gemini del propio estudiante**. El modelo recibe la celda y el texto de la
+   lección, **sin nombre ni correo**.
+4. **El error de concepto lo diagnostican las reglas de STIRE, no el modelo.** El modelo solo escribe el ejercicio.
+   Esto importa: en un estudio sobre tutores, GPT-4 a veces inventó una concepción errónea que el estudiante no tenía
+   (sin verificar en el texto completo).
+5. La solución de referencia corre en el juez. Si no pasa sus casos, se descarta.
+6. Se guarda en el banco con la marca «hecho con IA» y esa celda, y llega al estudiante.
 
 ### 5.3 Lo que controla el docente
 
-Tres niveles, el último gana:
+Por clase (y, si quiere, por unidad), con el patrón «Heredar / elegir» que ya usa el Tutor (`tutor-settings.ts`):
 
-1. **Por clase, y si quiere por unidad:** «Ejercicios generados por IA para estudiantes» con las opciones
-   *Heredar / Activado / Desactivado*. Es **el mismo patrón** que ya usa el Tutor (`tutor-settings.ts`: ámbitos
-   clase, unidad y actividad), así que el docente ya sabe usarlo.
-2. **Modo de revisión,** cuando está activado:
-   - **Directo:** el ejercicio llega al estudiante y el docente lo ve después.
-   - **Con mi aprobación:** el docente aprueba cada ejercicio antes de que lo vea el estudiante.
-3. **Límite:** máximo de ejercicios generados por estudiante a la semana.
+| Modo | Qué pasa |
+|---|---|
+| **Solo mis ejercicios** | No se genera nada. El estudiante ve únicamente los ejercicios que el docente creó. Es el valor para quien no quiere IA |
+| **Personalizados, con mi aprobación** | Se generan solos, pero **no llegan al estudiante hasta que el docente los aprueba** (modo revisión: una cola de tarjetas para aceptar, editar o descartar) |
+| **Personalizados, directos** | Se generan y llegan al estudiante. El docente los ve después y puede archivarlos |
 
-**Valor inicial recomendado: Desactivado** hasta que el docente lo encienda por clase. Es una función nueva y
-experimental, y el principio del proyecto es que las funciones del docente sean opcionales.
+Y dos ajustes más, cuando hay generación:
+- **Límite:** máximo de ejercicios generados por estudiante a la semana.
+- **Qué tipos:** por ejemplo, solo ejercicios de programar, o también de opción múltiple.
 
-**El estudiante también puede decir que no.** Si no tiene clave de Gemini, o no quiere ejercicios hechos por IA,
-simplemente no se le generan; es su cuenta y su cuota.
+**Valor inicial recomendado: «Solo mis ejercicios»,** porque el principio del proyecto es que las funciones del docente
+sean opcionales. **Para la prueba con los 10 usuarios,** conviene una clase con generación activada y otra con ella
+apagada: es la comparación con grupo de control que la tesis de Caro hizo con 22 y 22 estudiantes (ver
+`docs/investigacion/TESIS_CARO_2015_FICHA.md`), y el interruptor la permite sin código nuevo.
+
+**El estudiante también puede decir que no.** Sin clave de Gemini, o si no quiere ejercicios hechos por IA, no se le
+generan; es su cuenta y su cuota.
+
+**Si el docente desea que «apenas se muestren sus ejercicios»,** elige el primer modo y nada más cambia.
 
 ### 5.4 El panel del docente
 
@@ -234,8 +259,8 @@ Cambios previstos en el backend, con **migración** (no corre sola: se ejecuta c
 |---|---|---|
 | E1 | Pronunciación oficial | «ES-ti-re», anotada en la ayuda |
 | E2 | Elegir el logo (tres direcciones en la página de propuestas) | La escalera: conecta el nombre, los pasos y los repasos |
-| E3 | Valor inicial de «Ejercicios generados por IA» | Desactivado hasta que el docente lo active por clase |
-| E4 | Modo de revisión por defecto al activarlo | «Con mi aprobación» durante la prueba con los 10 usuarios; luego «Directo» |
+| E3 | Valor inicial de los ejercicios personalizados | «Solo mis ejercicios» hasta que el docente elija otro modo; en la prueba, una clase con generación y otra sin ella |
+| E4 | Modo al activar la generación | «Con mi aprobación» durante la prueba con los 10 usuarios; luego «Directo» |
 | E5 | Personalizar solo por error de concepto, nivel y lección (sin estilos) | Sí, por BT-42 |
 | E6 | ¿El asesor pedagógico (§4.6) viene apagado o encendido? | Apagado: el docente lo enciende |
 | E7 | ¿Uso del escudo de la Universidad de Córdoba en la marca? | Preguntar a la universidad antes de usarlo |
