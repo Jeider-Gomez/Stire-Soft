@@ -1,17 +1,18 @@
-# 🚀 Bitácora de Monitoreo y Control N.º 10 — Proyecto: STIRE-Soft
+# 🚀 Bitácora de Monitoreo y Control N.º 11 — Proyecto: STIRE-Soft
 
-**Curso:** DDSE3 — 2026-2  
-**Grupo:** [G1 / G2]  
-**Repositorio GitHub:** https://github.com/Jeider-Gomez/Stire-Soft  
-**Semana:** 19 – 23 de octubre de 2026  
-**Partes del pitch:** lunes 19 de octubre, 6:00 p. m. · **Ensayo:** lunes 19 de octubre, 8:00 p. m. · **Ejercicios:** viernes 23 de octubre · **Cierre de la bitácora:** viernes 23 de octubre, 8:00 p. m.  
-**Tablero Kanban:** https://trello.com/b/5zzc2oki/stire-kanban-desarrollo-semana-10-19-23-oct-2026
+**Curso:** DDSE3 — 2026-2
+**Grupo:** [G1 / G2]
+**Repositorio GitHub:** https://github.com/Jeider-Gomez/Stire-Soft
+**Semana:** 26 – 30 de octubre de 2026
+**Verificación del panel del docente:** jueves 29 de octubre, 8:00 p. m. · **Ejercicios:** viernes 30 de octubre · **Cierre de la bitácora:** viernes 30 de octubre, 8:00 p. m.
+**Tablero Kanban:** https://trello.com/b/HKakzG7r/stire-kanban-desarrollo-semana-11-26-30-oct-2026
 
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
-> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_09.md`](./docs/seguimiento/MONITOREO_SEMANAL_09.md), cerrada el
-> 17/10 con 23 de 36 ítems cumplidos. Se cerró la v2.0.0 y la revisión humana de las dos listas quedó en 32 / 32 y
-> 24 / 24 (MOD-02 lo confirma Pedro), con un SUS del equipo de 81,5. El pitch pasa a esta semana; lo demás, al backlog.
+> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_10.md`](./docs/seguimiento/MONITOREO_SEMANAL_10.md), cerrada el
+> 26/10 con 23 de 27 ítems cumplidos. Se ensayó y se expuso el pitch con los cinco, y el recorrido guiado y el manual
+> quedaron dentro de STIRE. Los ejercicios de Julio, Pedro y Jeider y el QA de la Semana 9 de Jorge se suman a esta
+> semana (los hábitos no: cada semana tiene su propio registro).
 
 ---
 
@@ -33,134 +34,105 @@
 
 ## 🎯 2. Objetivo del Sprint
 
-**Semana del pitch y de los ejercicios de programar** (decisiones de Jeider, 17/10): presentar STIRE antes y después de
-las listas de chequeo del profesor, revisar la mitad de los ejercicios de programar, empezar el recorrido guiado y el
-manual de usuario, y cerrar el QA de la Semana 9.
+**Semana de la verificación del panel del docente** (decisión de Jeider, 26/10): que el equipo pruebe como usuario lo
+nuevo del panel del docente y revise la propuesta del panel v2 antes de seguir programándola, y terminar la revisión de
+los ejercicios de programar.
 
 ### Resultados esperados
 
-1. Cada uno tiene su minuto del pitch, en español y en inglés, a más tardar el **lunes 19/10, 6:00 p. m.**
-2. **Ensayo del pitch el lunes 19/10, 8:00 p. m.**, por Meet, con cronómetro y en los dos idiomas. Exposición: fecha por
-   confirmar.
-3. Los 20 ejercicios de programar de las lecciones revisados, 4 por persona, a más tardar el **viernes 23/10**.
-4. El recorrido guiado dentro de STIRE (Jeider a cargo) y el manual de usuario (Pedro a cargo), avanzados y probados por
-   el equipo.
-5. Pedro confirma MOD-02 como usuario: la lista de Tutores queda en 24 / 24.
-6. Jorge entrega el QA de regresión de la Semana 9.
-7. Después de la exposición, Jeider reactiva el apagado automático de las 23:00. La encuesta SUS se queda cada 7 días.
-8. Registro de los 7 Hábitos de los 5 integrantes (`S10-H-*`) y bitácora cerrada el viernes 23/10, sin retraso.
+1. **Verificación humana del panel del docente** en
+   [`docs/calidad/VERIFICACION_PANEL_DOCENTE_S11.md`](./docs/calidad/VERIFICACION_PANEL_DOCENTE_S11.md): 17 criterios de
+   lo que ya está publicado (Parte A) y 6 partes del prototipo del panel v2 (Parte B), repartidos por persona, a más
+   tardar el **jueves 29/10, 8:00 p. m.**
+2. Los ejercicios de programar que faltan (los 4 de Julio, Pedro y Jeider), las 16 variantes y un ejercicio creado como
+   docente por cada uno, en `docs/cursos/REVISION_EJERCICIOS_PROGRAMAR_S10.md`, a más tardar el **viernes 30/10**.
+3. Jorge entrega el QA de regresión de la Semana 9.
+4. Jeider corrige lo que salga de la verificación y sigue con la siguiente parte del panel v2 (el Inicio del docente).
+5. Registro de los 7 Hábitos de los 5 integrantes (`S11-H-*`) y bitácora cerrada el viernes 30/10.
 
 ---
 
 ## 📋 3. Plan de trabajo semanal
 
-> 🔁 = viene de la Semana 9. ⏩ = está en el backlog, pero se puede adelantar. Cada persona tiene sus tarjetas por
-> separado y cada tarjeta de Trello tiene su lista de verificación.
+> 🔁 = viene de la Semana 10. Cada persona tiene sus tarjetas por separado y cada tarjeta de Trello tiene su lista de
+> verificación.
 
-### 3.1 El pitch y la presentación de avances
+### 3.1 La verificación del panel del docente
 
-Guiones de cada uno en [`docs/pitch/PITCH_LISTAS_CHEQUEO.md`](./docs/pitch/PITCH_LISTAS_CHEQUEO.md).
+Cada uno prueba su parte **como usuario** en https://stire-soft.vercel.app y llena su fila (Cumple · Parcial · No
+cumple, y qué vio). Se decide por lo que se ve y se hace, no por lo que dice el código ni una IA. El prototipo del panel
+v2 es aparte: no guarda nada y Jeider comparte el enlace en el grupo.
 
-- **Pitch, sin diapositivas:** cada uno habla **1 minuto**, en español y en inglés, con la estructura de los pitch
-  anteriores ([HOOK], [PROBLEM], [SOLUTION] y [CIERRE]) sobre los criterios de su lista y lo que hizo la semana. Los
-  cinco forman un pitch grupal de 5 minutos. Orden: Jeider (contexto del grupo) → José → Jorge → Julio → Pedro (cierra).
-- **Presentación de avances (aparte):** 15 diapositivas en inglés para el profesor, con capturas de antes y después:
-  https://claude.ai/artifact/VM5P4yjDpG27rRZXYgu3Vs. Se entiende sola y también después del pitch.
-- **Cifras:** antes 62,5 % y 58,3 %; hoy, según el equipo, 100 % y 100 %; SUS 81,5 (bueno).
-- **Antes del ensayo:** Julio prueba «Escuchar» y el micrófono del Tutor; Pedro confirma MOD-02.
-
-| Cuándo | Qué |
-|---|---|
-| Lunes 19/10, 6:00 p. m. | Cada uno tiene su minuto listo; Pedro revisa quién falta |
-| **Lunes 19/10, 8:00 p. m.** | **Ensayo por Meet con cronómetro, en los dos idiomas (Pedro dirige)** |
-| Por confirmar | Exposición |
+| Persona | Parte A · lo publicado | Parte B · el prototipo |
+|---|---|---|
+| José | PD-01 a PD-04: el aspecto del docente, los temas oscuro y de alto contraste, «Reducir el movimiento», el celular y el menú plegado | PV-04: la pantalla del estudiante |
+| Jorge | PD-05 a PD-10: el selector de clase, quedarse en la sección al cambiar de clase, recordar la última clase, «Crear clase», las cinco secciones y el teclado | PV-03: el diseñador de los 7 tipos de ejercicio |
+| Julio | PD-11 y PD-12: la asistencia en panel flotante y «Errores que más se repiten esta semana» | PV-02 y PV-05: el contenido del curso con explicaciones que se desbloquean, y Estudiantes y avance con alertas y opinión |
+| Pedro | PD-13 y PD-14: el recorrido guiado y el manual con los nombres nuevos, y el flujo completo del docente | PV-01: Inicio y Biblioteca de plantillas |
+| Jeider | PD-15 a PD-17: el registro para mayores de 18, las mejoras heurísticas y «No volver a preguntarme» | PV-06: Ajustes de la clase y el Asistente |
 
 ### 3.2 Los ejercicios de programar
 
-Son 36, todos de Fundamentos de Algoritmia: 20 dentro de las lecciones y 16 variantes. Se revisan como estudiante
-(¿se entiende?, ¿se sabe qué recibe y qué muestra?, ¿es alcanzable con la lección?, tiempo y qué cambiarías) en
-[`docs/cursos/REVISION_EJERCICIOS_PROGRAMAR_S10.md`](./docs/cursos/REVISION_EJERCICIOS_PROGRAMAR_S10.md).
+En [`docs/cursos/REVISION_EJERCICIOS_PROGRAMAR_S10.md`](./docs/cursos/REVISION_EJERCICIOS_PROGRAMAR_S10.md), como en la
+Semana 10. Al final, cada uno crea un ejercicio de programar como docente y anota qué le costó y una sugerencia.
 
-| Persona | Semana 10 · 4 de las lecciones (tarjeta `S10-EJ-*`) | ⏩ Semana 11 · variantes y uno creado como docente |
-|---|---|---|
-| José | Plantilla web de mi curso · Repara la página del curso · Presentación de tres diapositivas · La portada de un OVA | 4 variantes de HTML/CSS (`B-JO01`) |
-| Jorge | Saludo personalizado · Área y perímetro de un rectángulo · De minutos a horas · Promedio de tres notas | 4 variantes secuenciales (`B-JOR01`) |
-| Julio | ¿Aprobó o reprobó? · Fotocopias con descuento · Desempeño según la escala nacional · ¿El año es bisiesto? | 4 variantes de condicionales (`B-JL01`) |
-| Pedro | Tabla de multiplicar · Cuenta regresiva · Suma del 1 al n · ¿Cuántos aprobaron? | 2 variantes de ciclos (`B-P03`) |
-| Jeider | El mayor de tres números · Precios con IVA · Calificar un cuestionario · Retroalimentación para cada respuesta | 2 variantes del cuestionario (`B-J05`) |
-
-**⏩ La otra mitad está en el backlog, pero se puede adelantar:** quien termine sus 4 puede pasar su tarjeta de la
-Semana 11 a «En curso» desde ya. Ahí también está crear un ejercicio como docente y dejar una sugerencia sobre el panel.
-Lo que salga de la revisión lo corrige Jeider (`B-J02`).
+| Persona | 🔁 De la Semana 10 | Variantes | Ejercicio creado como docente |
+|---|---|---|---|
+| José | — | 21 a 24 (HTML/CSS) | Sí |
+| Jorge | — | 25 a 28 (secuenciales) | Sí |
+| Julio | 9 a 12 (condicionales) | 29 a 32 (condicionales) | Sí |
+| Pedro | 13 a 16 (ciclos) | 33 y 34 (ciclos) | Sí |
+| Jeider | 17 a 20 (funciones y OVA) | 35 y 36 (cuestionario) | Sí |
 
 ### Jeider Gómez — Líder Técnico
 
-- [ ] **S10-J04 · Recorrido guiado dentro de STIRE — a cargo** *(viernes 23/10; publicado el 18/10 para el estudiante y el docente (`0690ccb`), y para contenidos, estudiantes y notas del docente y las pantallas del administrador (`2e9d2c8`); falta probarlo con teclado y lector de pantalla)* — señala cada parte de la pantalla con
-  una explicación corta la primera vez que se entra, y se repite desde un botón «?». Estudiante: inicio, lección,
-  ejercicio, Tutor y progreso. Docente: «Hoy», contenidos, estudiantes y notas. Driver.js (licencia MIT). Todos lo
-  prueban cuando esté publicado.
-- [ ] **S10-EJ-JEIDER · Sus 4 ejercicios de programar** *(viernes 23/10)*.
-- [x] **Entrar por `/login`** ya no termina en «No encontramos esa página» (`ff81570`, 18/10).
-- [ ] **S10-J02 · Operar el servidor** — arriba en el ensayo y en la exposición; después, el apagado de las 23:00.
-- [x] **Su parte del pitch** — contexto del grupo, UX-08 y PAT-01, en los dos idiomas.
-- [x] **Presentación de avances** y guiones del pitch para cada uno. *(17/10.)*
-- [x] **Encuesta SUS cada 7 días**, ya sin volver a 90. *(17/10.)*
-- [x] **S10-J03 · Hablarle al Tutor con la voz en cualquier navegador** *(17/10)* — primero el dictado del navegador (no
-  gasta tokens); si no lo soporta (Brave en el computador), graba la voz y Gemini la pasa a texto con la clave del
-  estudiante. STIRE no guarda los audios. El campo del chat quedó como el de los chats de IA: un botón que es micrófono
-  sin texto y enviar con texto, y ya no se sale en el celular (`a6d40ee`, `fe57dbe`, `c33d1ce`). Probado por Jeider en
-  Chrome y en el celular.
+- [ ] **S11-RV-JEIDER · Su parte de la verificación** *(jueves 29/10)* — PD-15 a PD-17 y PV-06. Compartir el enlace del
+  prototipo con el equipo el lunes 26/10.
+- [ ] 🔁 **S11-EJ-JEIDER · Ejercicios** *(viernes 30/10)* — los 4 de la Semana 10, sus 2 variantes y uno creado como
+  docente.
+- [ ] **S11-J01 · Panel del docente v2, siguiente parte** *(viernes 30/10)* — corregir lo que salga de PD-01 a PD-10 y
+  publicar el Inicio nuevo del docente (por revisar de todas las clases y las clases en tarjetas o lista).
 
 ### Pedro Romero — Documentación + Bitácora
 
-- [x] **S10-P01 · Tablero de la Semana 10** — creado el 17/10.
-- [ ] 🔁 **S10-PITCH-PEDRO · Su minuto y el cierre** *(lunes 19/10)* — guion con MOD-02 y UI-04.
-- [ ] 🔁 **S10-P05 · Coordinar el pitch** — que todos tengan su parte, dirigir el ensayo del lunes 19/10 y mostrar la
-  presentación al profesor.
-- [ ] **S10-P06 · Confirmar MOD-02 como usuario** *(lunes 19/10)*.
-- [ ] **S10-P07 · Manual de usuario — a cargo** *(viernes 23/10)* — por tareas y por rol, como las guías de Canvas,
-  Classroom y Open edX: 6 tareas del estudiante y 6 del docente, cada una con pasos, una captura y «si algo sale mal».
-  **Cambio del 18/10 (Jeider):** el manual vive en la aplicación, en https://stire-soft.vercel.app/ayuda (se abre sin
-  cuenta y se descarga en PDF). Ya están la plantilla con la identidad de STIRE, los primeros pasos, «unirme a una
-  clase», «crear una clase» y «cómo funciona STIRE». Pedro completa las demás tareas en `frontend-nuxt/utils/manual.ts`
-  (copiar una tarea y cambiar sus textos) y sus capturas en `frontend-nuxt/public/manual/capturas/`. Mismas palabras
-  que el recorrido guiado.
-- [ ] **S10-EJ-PEDRO · Sus 4 ejercicios de programar** *(viernes 23/10)*.
-- [ ] **S10-P02 · Bitácora** — al día y cerrada el viernes 23/10.
+- [x] **S11-P01 · Tablero de la Semana 11** — creado el 26/10.
+- [ ] **S11-RV-PEDRO · Su parte de la verificación** *(jueves 29/10)* — PD-13, PD-14 y PV-01. Lo que haya que cambiar en
+  el manual por los nombres nuevos del menú, anotado.
+- [ ] 🔁 **S11-EJ-PEDRO · Ejercicios** *(viernes 30/10)* — los 4 de la Semana 10, sus 2 variantes y uno creado como
+  docente.
+- [ ] **S11-P02 · Bitácora** — al día y cerrada el viernes 30/10.
 
 ### José López — UI/UX + Comunicación
 
-- [ ] 🔁 **S10-PITCH-JOSE · Su minuto** *(lunes 19/10)* — guion con UX-01 y MOB-02.
-- [ ] **S10-EJ-JOSE · Sus 4 ejercicios de programar** *(viernes 23/10)*.
+- [ ] **S11-RV-JOSE · Su parte de la verificación** *(jueves 29/10)* — PD-01 a PD-04 y PV-04.
+- [ ] **S11-EJ-JOSE · Ejercicios** *(viernes 30/10)* — sus 4 variantes y uno creado como docente.
 
 ### Jorge Cervantes — Gestión + Calidad
 
-- [ ] 🔁 **S10-PITCH-JORGE · Su minuto** *(lunes 19/10)* — guion con UX-02; le falta su segundo criterio.
-- [ ] 🔁 **S10-JOR02 · QA de regresión de la Semana 9** *(jueves 22/10)* — avisos y notificaciones, «Apariencia», el
-  ejercicio de programar, la retroalimentación de opción múltiple, el Tutor, los 5 hallazgos de José y lo nuevo del 17/10.
-  Reporte en `docs/calidad/reportes-qa/REPORTE_QA_S9.md`.
-- [ ] **S10-EJ-JORGE · Sus 4 ejercicios de programar** *(viernes 23/10)*.
+- [ ] **S11-RV-JORGE · Su parte de la verificación** *(jueves 29/10)* — PD-05 a PD-10 y PV-03.
+- [ ] 🔁 **S11-JOR02 · QA de regresión de la Semana 9** *(miércoles 28/10)* — reporte en
+  `docs/calidad/reportes-qa/REPORTE_QA_S9.md`.
+- [ ] **S11-EJ-JORGE · Ejercicios** *(viernes 30/10)* — sus 4 variantes y uno creado como docente.
 
 ### Julio Galvis — Diseño Instruccional
 
-- [ ] 🔁 **S10-PITCH-JULIO · Su minuto** *(lunes 19/10)* — guion con UI-05 y UI-01; le falta su [CIERRE].
-- [ ] **S10-EJ-JULIO · Sus 4 ejercicios de programar** *(viernes 23/10)*.
+- [ ] **S11-RV-JULIO · Su parte de la verificación** *(jueves 29/10)* — PD-11, PD-12, PV-02 y PV-05.
+- [ ] 🔁 **S11-EJ-JULIO · Ejercicios de la Semana 10** *(miércoles 28/10)* — los 4 de condicionales.
+- [ ] **S11-EJ2-JULIO · Variantes y ejercicio creado** *(viernes 30/10)* — sus 4 variantes y uno creado como docente.
 
 ### 3.3 Todo el equipo — Los 7 Hábitos de la Gente Altamente Efectiva (Reto 3)
 
 Registro libre y semanal en un comentario de su tarjeta, con la situación real de cada hábito.
 
-- [ ] **S10-H-JEIDER** · **S10-H-PEDRO** · **S10-H-JOSE** · **S10-H-JORGE** · **S10-H-JULIO**
+- [ ] **S11-H-JEIDER** · **S11-H-PEDRO** · **S11-H-JOSE** · **S11-H-JORGE** · **S11-H-JULIO**
 
 ### 3.4 En el backlog
 
 | Persona | Tarjetas |
 |---|---|
-| Jeider | ⏩ `B-J05` 2 variantes y un ejercicio creado · `B-J02` corregir los ejercicios según la revisión · 🔁 `B-J03` asistencia con un iPhone |
-| Pedro | ⏩ `B-P03` 2 variantes y un ejercicio creado · 🔁 `B-P01` resultados de la prueba |
-| José | ⏩ `B-JO01` 4 variantes y un ejercicio creado |
-| Jorge | ⏩ `B-JOR01` 4 variantes y un ejercicio creado |
-| Julio | ⏩ `B-JL01` 4 variantes y un ejercicio creado · 🔁 `B-JL02` docente de Pensamiento · 🔁 `B-JL03` estudiante de Fundamentos |
+| Jeider | `B-J02` corregir los ejercicios según la revisión · `B-J03` asistencia con un iPhone · el resto del panel v2 (Biblioteca, Contenido del curso, y lo que necesita servidor: varias explicaciones por unidad, portada, alertas y el Asistente) |
+| Pedro | `B-P01` resultados de la prueba, semanas 1 y 2 |
+| Julio | `B-JL02` docente de Pensamiento, semanas 1 y 2 · `B-JL03` estudiante de Fundamentos, Unidades 1 y 2 |
 
 ---
 
@@ -181,35 +153,37 @@ Registro libre y semanal en un comentario de su tarjeta, con la situación real 
 
 ## ⚠️ 5. Riesgos vivos
 
-1. **Partes del pitch que no llegan:** en la Semana 9 quedaron sin entregar las de José, Jorge, Julio y Pedro.
-   Mitigación: cada uno ya tiene su guion; plazo el lunes 19/10 a las 6:00 p. m. y Pedro revisa antes del ensayo quién
-   falta.
-2. **Fecha de la exposición sin confirmar:** si cae antes del lunes, todo se adelanta.
-3. **Carga de la semana:** pitch, 4 ejercicios por persona y, para Jeider y Pedro, el recorrido guiado y el manual.
-   Mitigación: los ejercicios son cortos (unos 10 a 15 minutos cada uno) y las variantes quedan para la Semana 11.
-4. **Crédito de Azure:** el servidor sigue encendido 24/7 hasta la exposición; después se reactiva el apagado.
+1. **El prototipo no es STIRE:** la Parte B se revisa sobre una propuesta con datos de ejemplo. Mitigación: la tabla
+   pide comparar con el panel de hoy y anotar qué falta, no si «funciona».
+2. **Ejercicios acumulados:** Julio, Pedro y Jeider llevan 4 de la Semana 10 más las variantes. Mitigación: los de la
+   Semana 10 primero (Julio, miércoles 28/10) y las variantes hasta el viernes.
+3. **El QA de la Semana 9 lleva dos semanas abierto.** Mitigación: plazo propio el miércoles 28/10.
+4. **Cambios en el panel mientras se verifica:** si Jeider publica el Inicio nuevo antes del jueves, se avisa en el grupo
+   qué criterio cambió.
 
 ---
 
 ## 📅 6. Seguimiento
 
-- **Lunes 19/10:** partes del pitch listas (6:00 p. m.), MOD-02 confirmado y **ensayo a las 8:00 p. m.**
-- **Martes 20/10 y jueves 22/10:** cómo van los ejercicios, el recorrido guiado, el manual y el QA de Jorge.
-- **Viernes 23/10:** revisar Trello y GitHub, validar evidencias y decidir qué entra a la Semana 11.
+- **Lunes 26/10:** tablero creado, el enlace del prototipo compartido y la verificación repartida.
+- **Martes 27/10:** cómo va la verificación y los ejercicios.
+- **Miércoles 28/10:** ejercicios de Julio de la Semana 10 y QA de la Semana 9.
+- **Jueves 29/10, 8:00 p. m.:** verificación del panel del docente completa.
+- **Viernes 30/10:** revisar Trello y GitHub, validar evidencias y decidir qué entra a la Semana 12.
 
 ---
 
 ## 🧾 7. Resultado del Sprint — completar al cierre
 
-*(Se marca solo con resultados verificables al cierre del viernes 23/10.)*
+*(Se marca solo con resultados verificables al cierre del viernes 30/10.)*
 
 ---
 
 ## 🔭 8. Proyección
 
-**Semana 11 (26 – 30 de octubre):** las 16 variantes de los ejercicios y un ejercicio creado como docente por cada uno
-(si no se adelantaron), las correcciones que salgan de la revisión, el recorrido guiado y el manual terminados y probados
-por todo el equipo.
+**Semana 12 (2 – 6 de noviembre):** corregir lo que salga de la verificación, seguir con el panel v2 (Biblioteca y
+Contenido del curso) y decidir con el equipo qué partes que necesitan servidor van primero (varias explicaciones por
+unidad, alertas, portada y el Asistente).
 
 ---
 
@@ -226,9 +200,10 @@ por todo el equipo.
 | 7 | 28 de septiembre – 2 de octubre de 2026 | [`MONITOREO_SEMANAL_07.md`](./docs/seguimiento/MONITOREO_SEMANAL_07.md) |
 | 8 | 5 – 9 de octubre de 2026 | [`MONITOREO_SEMANAL_08.md`](./docs/seguimiento/MONITOREO_SEMANAL_08.md) |
 | 9 | 12 – 16 de octubre de 2026 | [`MONITOREO_SEMANAL_09.md`](./docs/seguimiento/MONITOREO_SEMANAL_09.md) |
-| 10 | 19 – 23 de octubre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
+| 10 | 19 – 23 de octubre de 2026 | [`MONITOREO_SEMANAL_10.md`](./docs/seguimiento/MONITOREO_SEMANAL_10.md) |
+| 11 | 26 – 30 de octubre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
 
 ---
 
-*Bitácora N.º 10 · Semana del 19 al 23 de octubre de 2026.*  
+*Bitácora N.º 11 · Semana del 26 al 30 de octubre de 2026.*
 *Responsable de seguimiento y cierre documental: Pedro Romero.*
