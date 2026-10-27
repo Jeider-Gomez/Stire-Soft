@@ -1,18 +1,18 @@
 <template>
-  <footer class="min-h-10 py-2 bg-base-blanco border-t border-base-borde-sutil px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs text-base-texto-secundario">
-    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-0.5">
-      <span class="flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-semantico-pasa"></span>
-        <span>Servicios conectados</span>
-      </span>
-      <span>•</span>
-      <span>STIRE</span>
+  <!-- Pie (rediseño 26/10): a la izquierda la marca, como firma (logo pequeño y «stire_», con lo que es y de dónde);
+       a la derecha lo útil: el estado del servicio y el manual. Antes eran cinco textos sueltos con puntos entre sí y el
+       nombre sin el logo. -->
+  <footer class="bg-base-blanco border-t border-base-borde-sutil px-4 sm:px-6 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-base-texto-secundario">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <LayoutLogo tamano="mini" con-nombre />
+      <span class="hidden md:inline truncate">Sistema tutor inteligente · Universidad de Córdoba</span>
     </div>
-
-    <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5">
+    <div class="flex items-center gap-4">
+      <span class="inline-flex items-center gap-1.5" title="La aplicación y el Tutor responden">
+        <span class="w-1.5 h-1.5 rounded-full bg-semantico-pasa" aria-hidden="true" />
+        Conectado
+      </span>
       <NuxtLink to="/ayuda" class="min-h-[44px] sm:min-h-0 inline-flex items-center font-semibold text-acento-ambar-fuerte hover:underline">Manual de usuario</NuxtLink>
-      <span>•</span>
-      <span>Universidad de Córdoba</span>
     </div>
   </footer>
 </template>

@@ -8,12 +8,8 @@
            fue, el puntaje y cuánto se movió el dominio —, luego lo que enseña (la retroalimentación) y el siguiente paso.
            Lo demás (casos, cuándo vuelve a los repasos, la meta del módulo) queda en «Más detalles», como Duolingo o Khan. -->
       <div class="flex items-center gap-3 text-left">
-        <div
-          class="w-11 h-11 shrink-0 rounded-full flex items-center justify-center"
-          :class="exito ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'">
-          <PartyPopper v-if="exito" :size="22" aria-hidden="true" />
-          <ClipboardCheck v-else :size="22" aria-hidden="true" />
-        </div>
+        <!-- El Tutor da la retroalimentación (26/10): celebra al aprobar y anima al fallar, nunca regaña. -->
+        <TutorMascota :expresion="exito ? 'acierto' : 'animo'" :tamano="44" aria-hidden="true" />
         <div class="min-w-0">
           <h3 id="resultado-titulo" class="text-base font-bold text-base-texto-primario">{{ paso.titulo }}</h3>
           <p class="text-sm">
@@ -23,10 +19,11 @@
         </div>
       </div>
 
-      <p class="text-xs text-left text-base-texto-secundario">{{ paso.mensaje }}</p>
-
-      <!-- Lo que enseña: la retroalimentación del ejercicio y, si dijo qué tan seguro estaba, si acertó (META-02). -->
-      <p v-if="r.feedback" class="text-xs text-left text-base-texto-primario">{{ r.feedback }}</p>
+      <!-- Lo que dice el Tutor: qué pasó y lo que enseña el ejercicio (su retroalimentación), en su globo. -->
+      <TutorGlobo cola="arriba" class="text-xs">
+        <p>{{ paso.mensaje }}</p>
+        <p v-if="r.feedback" class="mt-1.5">{{ r.feedback }}</p>
+      </TutorGlobo>
       <!-- Opción múltiple (JEIDER-S08-11): al acertar, por qué; al fallar, qué repasar, sin la respuesta. -->
       <p v-for="x in retro" :key="x.tipo + x.texto" class="flex items-start gap-2 p-3 rounded-lg border text-xs text-left text-base-texto-primario"
         :class="x.tipo === 'porque' ? 'border-semantico-pasa/30 bg-semantico-pasa/5' : 'border-semantico-info/30 bg-semantico-info/5'">
@@ -86,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight, BookOpen, ClipboardCheck, Lightbulb, ListChecks, Lock, PartyPopper, Scale, Sparkles } from 'lucide-vue-next'
+import { ArrowRight, BookOpen, Lightbulb, ListChecks, Lock, Scale, Sparkles } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'

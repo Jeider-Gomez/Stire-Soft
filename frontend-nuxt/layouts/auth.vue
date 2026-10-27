@@ -19,10 +19,16 @@
       <slot />
     </main>
 
-    <footer class="relative z-10 w-full max-w-6xl mx-auto px-4 py-5 border-t border-slate-200/90 text-center text-xs text-slate-500">
-      <NuxtLink to="/ayuda" class="font-semibold text-stire-blue hover:underline">Manual de usuario</NuxtLink>
-      <span class="mx-2" aria-hidden="true">·</span>
-      © 2026 STIRE. Todos los derechos reservados. Cumple estándar WCAG 2.1 AA.
+    <!-- Pie con la misma firma que el de la aplicación (components/layout/FooterBar.vue). -->
+    <footer class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-8 py-4 border-t border-slate-200/90 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+      <div class="flex items-center gap-2.5">
+        <LayoutLogo tamano="mini" con-nombre />
+        <span>© 2026 · Universidad de Córdoba</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span>Accesible (WCAG 2.1 AA)</span>
+        <NuxtLink to="/ayuda" class="font-semibold text-stire-blue hover:underline">Manual de usuario</NuxtLink>
+      </div>
     </footer>
   </div>
 </template>

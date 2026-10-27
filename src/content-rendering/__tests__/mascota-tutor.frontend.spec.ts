@@ -205,3 +205,19 @@ describe('el lanzador del Tutor y la pestaña', () => {
     expect(readFileSync(path.join(raiz, 'public', 'apple-touch-icon.png')).subarray(1, 4).toString()).toBe('PNG');
   });
 });
+
+describe('el Tutor en la retroalimentación, con su globo; el pie y la letra', () => {
+  it('la retroalimentación del ejercicio la da el Tutor: celebra al aprobar, anima al fallar, en su globo con su nombre', () => {
+    const r = leer('components', 'exercise', 'ResultadoEntrega.vue');
+    expect(r).toContain(`<TutorMascota :expresion="exito ? 'acierto' : 'animo'"`);
+    expect(r).toMatch(/<TutorGlobo cola="arriba"[\s\S]*paso\.mensaje[\s\S]*r\.feedback[\s\S]*<\/TutorGlobo>/);
+    const g = leer('components', 'tutor', 'Globo.vue');
+    expect(g).toContain('w-fit max-w-full'); // se ajusta al largo del texto
+    expect(g).toMatch(/>\s*Tutor\s*</);
+    expect(leer('components', 'tutor', 'LanzadorTutor.vue')).toContain('<TutorGlobo cola="abajo-derecha" superficie="flotante">');
+  });
+  it('el pie firma con el logo y el nombre, en la app y en las pantallas de acceso', () => {
+    expect(leer('components', 'layout', 'FooterBar.vue')).toContain('<LayoutLogo tamano="mini" con-nombre />');
+    expect(leer('layouts', 'auth.vue')).toContain('<LayoutLogo tamano="mini" con-nombre />');
+  });
+});

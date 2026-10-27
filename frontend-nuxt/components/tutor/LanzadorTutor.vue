@@ -24,9 +24,9 @@
   <!-- Burbuja: el Tutor habla solo en dos momentos que lo merecen: tras tres fallos seguidos ofrece ayuda, y al acertar
        felicita. Se va sola; tocarla abre el chat. -->
   <Transition name="burbuja">
-    <button v-if="burbuja && !tutorStore.isOpen" type="button" class="burbuja-tutor fixed right-4 sm:right-6 z-40 max-w-[15rem] px-3.5 py-2.5 rounded-2xl rounded-br-md text-left text-sm text-base-texto-primario"
+    <button v-if="burbuja && !tutorStore.isOpen" type="button" class="burbuja-tutor fixed right-4 sm:right-6 z-40 max-w-[16rem]"
       :class="{ 'sobre-barra': sobreBarra, 'hidden md:block': soloComputador }" role="status" @click="tutorStore.openDrawer()">
-      {{ burbuja }}
+      <TutorGlobo cola="abajo-derecha" superficie="flotante">{{ burbuja }}</TutorGlobo>
     </button>
   </Transition>
 </template>
@@ -82,7 +82,7 @@ onBeforeUnmount(() => document.removeEventListener('scroll', alDesplazar, { capt
 
 <style scoped>
 /* Material claro y translúcido que flota sobre la página (en oscuro y alto contraste lo dan los tokens del tema). */
-.lanzador-tutor, .burbuja-tutor {
+.lanzador-tutor {
   background: rgb(var(--c-base-blanco) / 0.88);
   backdrop-filter: blur(16px) saturate(170%);
   -webkit-backdrop-filter: blur(16px) saturate(170%);
@@ -105,7 +105,7 @@ onBeforeUnmount(() => document.removeEventListener('scroll', alDesplazar, { capt
   .burbuja-enter-from, .burbuja-leave-to { transform: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .lanzador-tutor, .burbuja-tutor { background: rgb(var(--c-base-blanco)); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .lanzador-tutor { background: rgb(var(--c-base-blanco)); backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 .lanzador-tutor {
   bottom: calc(1rem + env(safe-area-inset-bottom));
