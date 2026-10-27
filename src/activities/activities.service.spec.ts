@@ -150,6 +150,15 @@ describe('ActivitiesService — P0-04', () => {
   // OLA 2 P2: create() era el único de los cinco métodos hermanos sin
   // verificación de ownership — cualquier docente podía crear actividades
   // en unidades de aprendizaje de otro.
+  it('el docente dueño vuelve a borrador un ejercicio publicado; uno en borrador o archivado no se despublica', async () => {
+    mockClassRepo.findOne.mockResolvedValue({ id: 5, teacherId: 10 });
+    mockActivitiesRepo.findOne.mockResolvedValue({ ...publishedActivityClass5 });
+    await service.changeStatus(1, PublicationStatus.DRAFT, { id: 10, role: UserRole.DOCENTE } as Parameters<ActivitiesService['changeStatus']>[2]);
+    expect(mockActivitiesRepo.updateStatus).toHaveBeenCalledWith(1, PublicationStatus.DRAFT, undefined);
+    mockActivitiesRepo.findOne.mockResolvedValue({ ...draftActivityClass5 });
+    await expect(service.changeStatus(2, PublicationStatus.DRAFT, { id: 10, role: UserRole.DOCENTE } as Parameters<ActivitiesService['changeStatus']>[2])).rejects.toThrow('Solo una actividad publicada');
+  });
+
   describe('create — P2', () => {
     const createDto = { learningUnitId: 8, activityTypeId: 1, title: 'Nueva actividad' } as any;
 

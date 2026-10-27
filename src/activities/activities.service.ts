@@ -201,6 +201,10 @@ export class ActivitiesService {
     const activity = await this.findOne(id);
     await this.authorizationService.assertTeacherOwnsClass(user, this.resolveClassId(activity));
 
+    // Volver a borrador es solo para lo publicado: lo archivado se restaura, no se despublica.
+    if (status === PublicationStatus.DRAFT && activity.status !== PublicationStatus.PUBLISHED) {
+      throw new BadRequestException('Solo una actividad publicada puede volver a borrador.');
+    }
     let publishedAt = activity.publishedAt;
     if (status === PublicationStatus.PUBLISHED && !activity.publishedAt) {
       publishedAt = new Date();

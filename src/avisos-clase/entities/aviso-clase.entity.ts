@@ -36,4 +36,8 @@ export class AvisoClase {
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt!: Date;
+
+  /** Cuándo lo corrigió el docente por última vez; null si nunca se editó (el estudiante ve «editado»). */
+  @Column({ type: 'timestamp', nullable: true })
+  editadoEn!: Date | null;
 }

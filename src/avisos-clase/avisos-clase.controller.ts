@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -32,6 +32,13 @@ export class AvisosClaseController {
   @ApiOperation({ summary: 'Publicar un aviso: { tipo: aviso|citacion|recordatorio, titulo, cuerpo, fechaEvento?, lugar? }; avisa a cada estudiante' })
   crear(@Param('classId', ParseIntPipe) classId: number, @Body() datos: Record<string, unknown>, @GetUser() user: User) {
     return this.avisos.crear(user, classId, datos ?? {});
+  }
+
+  @Patch(':id')
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Corregir un aviso ya publicado: los mismos campos, más avisarCambio?: boolean para notificar otra vez' })
+  editar(@Param('id', ParseIntPipe) id: number, @Body() datos: Record<string, unknown>, @GetUser() user: User) {
+    return this.avisos.editar(user, id, datos ?? {});
   }
 
   @Delete(':id')

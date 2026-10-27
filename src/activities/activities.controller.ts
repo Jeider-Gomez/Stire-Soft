@@ -66,6 +66,15 @@ export class ActivitiesController {
     return this.activitiesService.changeStatus(id, PublicationStatus.PUBLISHED, user);
   }
 
+  @Patch(':id/unpublish')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Volver a borrador una actividad publicada (los estudiantes dejan de verla; sus entregas se conservan)' })
+  unpublish(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.activitiesService.changeStatus(id, PublicationStatus.DRAFT, user);
+  }
+
   @Patch(':id/archive')
   @UseGuards(RolesGuard)
   @Roles('docente', 'admin')

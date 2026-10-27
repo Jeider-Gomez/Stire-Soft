@@ -11,7 +11,7 @@ import { AuthorizationService } from '../common/authorization/authorization.serv
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../common/enums/notification-type.enum';
 
-/** Avisos del docente a toda su clase (aviso-reglas.ts): publicarlos, verlos y borrarlos. */
+/** Avisos del docente a toda su clase (aviso-reglas.ts): publicarlos, verlos, corregirlos y borrarlos. */
 @Injectable()
 export class AvisosClaseService {
   private readonly logger = new Logger(AvisosClaseService.name);
@@ -74,6 +74,44 @@ export class AvisosClaseService {
     return lista.map((a) => this.vista(a, nombre.get(a.classId) ?? ''));
   }
 
+  /**
+   * El docente corrige un aviso ya publicado (27/10, pedido de Jeider): cambia lo que dice y queda marcado «editado».
+   * Con `avisarCambio`, a cada estudiante le llega una notificación nueva («Actualizado: …»); sin él, solo cambia en «Avisos».
+   */
+  async editar(user: User, id: number, datos: Record<string, unknown>) {
+    const aviso = await this.avisos.findOne({ where: { id } });
+    if (!aviso) throw new NotFoundException('Aviso no encontrado.');
+    await this.autorizacion.assertTeacherOwnsClass(user, aviso.classId);
+    let v: DatosAviso;
+    try {
+      v = validarAviso(datos);
+    } catch (e) {
+      if (e instanceof AvisoInvalidoError) throw new BadRequestException(e.message);
+      throw e;
+    }
+    Object.assign(aviso, v, { editadoEn: new Date() });
+    const guardado = await this.avisos.save(aviso);
+    const clase = await this.clases.findOne({ where: { id: aviso.classId } });
+    let avisados = 0;
+    if (datos.avisarCambio === true) {
+      const estudiantes = await this.matriculas.find({ where: { classId: aviso.classId, status: EnrollmentStatus.ACTIVE } });
+      const { titulo, mensaje } = notificacionDeAviso(v, clase?.name ?? 'Tu clase');
+      const version = (guardado.editadoEn ?? new Date()).getTime();
+      for (const m of estudiantes) {
+        try {
+          await this.notificaciones.createNotification(m.studentId, `Actualizado: ${titulo}`, mensaje, NotificationType.AVISO, {
+            enlace: '/estudiante/mensajes?ver=avisos',
+            clave: `aviso:${aviso.id}:${version}`,
+          });
+          avisados++;
+        } catch (error) {
+          this.logger.error(`No se pudo avisar del cambio al estudiante ${m.studentId}: ${(error as Error).message}`);
+        }
+      }
+    }
+    return { ...this.vista(guardado, clase?.name ?? ''), avisados };
+  }
+
   async eliminar(user: User, id: number) {
     const aviso = await this.avisos.findOne({ where: { id } });
     if (!aviso) throw new NotFoundException('Aviso no encontrado.');
@@ -83,6 +121,6 @@ export class AvisosClaseService {
   }
 
   private vista(a: AvisoClase, clase: string) {
-    return { id: a.id, classId: a.classId, clase, tipo: a.tipo, titulo: a.titulo, cuerpo: a.cuerpo, fechaEvento: a.fechaEvento, lugar: a.lugar, createdAt: a.createdAt };
+    return { id: a.id, classId: a.classId, clase, tipo: a.tipo, titulo: a.titulo, cuerpo: a.cuerpo, fechaEvento: a.fechaEvento, lugar: a.lugar, createdAt: a.createdAt, editadoEn: a.editadoEn ?? null };
   }
 }

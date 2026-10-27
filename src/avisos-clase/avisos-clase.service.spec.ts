@@ -87,4 +87,26 @@ describe('AvisosClaseService', () => {
     await expect(service.eliminar(docente, 77)).resolves.toEqual({ eliminado: true });
     expect(avisos.delete).toHaveBeenCalledWith(77);
   });
+
+  it('el docente corrige un aviso publicado: cambia, queda «editado» y, si lo pide, avisa otra vez con una notificación nueva', async () => {
+    const { service, notificaciones } = crear();
+    await service.crear(docente, 3, { titulo: 'Parcial el lunes', cuerpo: 'Aula 3' });
+    notificaciones.createNotification.mockClear();
+    const sinAviso = await service.editar(docente, 77, { titulo: 'Parcial el martes', cuerpo: 'Aula 3' });
+    expect(sinAviso).toMatchObject({ titulo: 'Parcial el martes', avisados: 0 });
+    expect(sinAviso.editadoEn).toBeInstanceOf(Date);
+    expect(notificaciones.createNotification).not.toHaveBeenCalled();
+    const conAviso = await service.editar(docente, 77, { titulo: 'Parcial el martes', cuerpo: 'Aula 5', avisarCambio: true });
+    expect(conAviso.avisados).toBe(2);
+    const [, titulo, , , extra] = notificaciones.createNotification.mock.calls[0];
+    expect(titulo).toBe('Actualizado: Aviso: Parcial el martes');
+    expect(extra.clave).toMatch(/^aviso:77:\d+$/);
+  });
+
+  it('corregir: otro docente no puede, y lo inválido es un 400', async () => {
+    const { service } = crear();
+    await service.crear(docente, 3, { titulo: 'Aviso', cuerpo: 'Hola' });
+    await expect(service.editar(otroDocente, 77, { titulo: 'Aviso', cuerpo: 'x' })).rejects.toThrow(ForbiddenException);
+    await expect(service.editar(docente, 77, { titulo: 'x', cuerpo: 'x' })).rejects.toThrow(BadRequestException);
+  });
 });
