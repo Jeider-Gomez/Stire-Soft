@@ -1,6 +1,7 @@
 import { IsArray, IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, ValidateIf } from 'class-validator';
 import { ALCANCES_PLANTILLA } from '../entities/class.entity';
 import { CATEGORIAS_LOGRO } from '../../analytics/logros';
+import { PORTADAS_CLASE } from '../portadas';
 import type { AlcancePlantilla } from '../entities/class.entity';
 
 export class CreateClassDto {
@@ -79,6 +80,12 @@ export class CreateClassDto {
   @Matches(/^\d{4}(-[1-4])?$/, { message: 'El periodo se escribe como 2026-2 (año y periodo) o 2026' })
   @IsOptional()
   periodo?: string | null;
+
+  /** Color de portada, uno de PORTADAS_CLASE. null vuelve al color automático. */
+  @ValidateIf((_o, v) => v !== null && v !== undefined)
+  @IsIn(PORTADAS_CLASE as unknown as string[], { message: 'Elige uno de los colores de portada de la lista' })
+  @IsOptional()
+  portada?: string | null;
 
   /** Grupo o sección: «Grupo 2». */
   @ValidateIf((_o, v) => v !== null && v !== undefined)

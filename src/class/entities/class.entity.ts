@@ -124,6 +124,13 @@ export class Class {
   @Column({ type: 'varchar', length: 40, nullable: true })
   grupo?: string | null;
 
+  /**
+   * Color de portada de la clase (uno de PORTADAS_CLASE): se ve en sus tarjetas, en el menú y en su presentación. Sin
+   * elegir, la aplicación le da uno por su orden.
+   */
+  @Column({ type: 'varchar', length: 7, nullable: true })
+  portada?: string | null;
+
   // Relación OneToMany: Una clase tiene muchas inscripciones (Enrollment)
   @OneToMany(() => Enrollment, (enrollment) => enrollment.class, { eager: false })
   enrollments!: Enrollment[];

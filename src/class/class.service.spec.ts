@@ -282,6 +282,18 @@ describe('ClassService — asignatura, periodo y grupo de la clase', () => {
     expect(mal.map((e) => e.property)).toEqual(['periodo']);
     expect(await validate(plainToInstance(UpdateClassDto, { periodo: '2026-2', grupo: 'Grupo 2', asignaturaId: null }))).toHaveLength(0);
   });
+
+  // Portada de la clase (26/10): un color de la lista, para que el nombre en blanco siempre se lea.
+  it('la portada es un color de la lista; otro color es un 400 y null vuelve al automático', async () => {
+    expect(await validate(plainToInstance(UpdateClassDto, { portada: '#7B2FBF' }))).toHaveLength(0);
+    expect(await validate(plainToInstance(UpdateClassDto, { portada: null }))).toHaveLength(0);
+    const mal = await validate(plainToInstance(UpdateClassDto, { portada: '#FFFF00' }));
+    expect(mal.map((e) => e.property)).toEqual(['portada']);
+    classRepo.findOne.mockResolvedValue({ id: 1, teacherId: 10, portada: '#0F766E' });
+    const docente = { id: 10, role: UserRole.DOCENTE } as Parameters<ClassService['update']>[2];
+    expect(await service.update(1, { portada: '#B45309' }, docente)).toMatchObject({ portada: '#B45309' });
+    expect(await service.update(1, { portada: null }, docente)).toMatchObject({ portada: null });
+  });
 });
 
 // Plantillas por alcance (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.3).

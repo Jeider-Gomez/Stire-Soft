@@ -241,6 +241,7 @@ export class ClassService {
     }
     if (dto.periodo !== undefined) out.periodo = dto.periodo?.trim() || null;
     if (dto.grupo !== undefined) out.grupo = dto.grupo?.trim() || null;
+    if (dto.portada !== undefined) out.portada = dto.portada || null;
     // Alcance de la plantilla y el antiguo sí/no siempre coinciden: «sí» es compartir con todos.
     if (dto.alcancePlantilla !== undefined) {
       out.alcancePlantilla = dto.alcancePlantilla;
