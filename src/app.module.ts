@@ -39,6 +39,7 @@ import { SubmissionsModule } from './submissions/submissions.module';
 import { SubmissionAnswersModule } from './submission-answers/submission-answers.module';
 import { JudgeEngineModule } from './judge-engine/judge-engine.module';
 import { TutorModule } from './tutor/tutor.module';
+import { AsistenteDocenteModule } from './asistente-docente/asistente-docente.module';
 import { LearningProgressModule } from './learning-progress/learning-progress.module';
 import { ReviewSchedulesModule } from './review-schedules/review-schedules.module';
 import { NotificationsModule } from './notifications/notifications.module';
@@ -117,6 +118,7 @@ import { ReuseModule } from './reuse/reuse.module';
     SubmissionAnswersModule,
     JudgeEngineModule,
     TutorModule,
+    AsistenteDocenteModule,
     LearningProgressModule,
     ReviewSchedulesModule,
     NotificationsModule,

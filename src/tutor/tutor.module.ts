@@ -41,6 +41,7 @@ import { LearningUnitModule } from '../learning-unit/learning-unit.module';
     TutorKeyCryptoService,
     TutorSettingsService,
   ],
-  exports: [TutorService],
+  // El Asistente del docente usa la misma clave cifrada (src/asistente-docente).
+  exports: [TutorService, TutorCredentialService],
 })
 export class TutorModule {}
