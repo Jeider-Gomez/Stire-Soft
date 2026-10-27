@@ -167,7 +167,8 @@ describe('validación de entrada', () => {
   });
 
   it('el registro acepta requestedRole estudiante/docente y rechaza cualquier otro, incluido admin', async () => {
-    const base = { email: 'a@x.com', password: 'Clave1234!', fullName: 'Ana' };
+    // Desde el 22/10 el registro exige mayoría de edad y términos (register.dto.ts); sin ellos todo daba error.
+    const base = { email: 'a@x.com', password: 'Clave1234!', fullName: 'Ana', confirmaMayorDeEdad: true, aceptaTerminos: true };
     expect(await errors(RegisterDto, { ...base, requestedRole: 'docente' })).toEqual([]);
     expect(await errors(RegisterDto, { ...base, requestedRole: 'estudiante' })).toEqual([]);
     expect(await errors(RegisterDto, { ...base })).toEqual([]);
