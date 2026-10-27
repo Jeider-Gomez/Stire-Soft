@@ -5,10 +5,17 @@
   <section :aria-labelledby="`editor-${leccion.id}`" class="space-y-4">
     <div class="space-y-1">
       <p class="text-[11px] text-base-texto-secundario">
-        <button type="button" class="hover:underline" @click="$emit('volver')">Curso</button> › {{ ruta.modulo }} › {{ ruta.tema }}
+        <button type="button" class="hover:underline" @click="$emit('volver')">Curso</button> ›
+        <button type="button" class="hover:underline" @click="$emit('ir-grupo', 'modulo', ruta.moduloId)">{{ ruta.modulo }}</button> ›
+        <button type="button" class="hover:underline" @click="$emit('ir-grupo', 'tema', ruta.temaId)">{{ ruta.tema }}</button>
       </p>
       <div class="flex flex-wrap items-center gap-2">
-        <h2 :id="`editor-${leccion.id}`" class="text-lg font-bold text-base-texto-primario">{{ leccion.title }}</h2>
+        <!-- El nombre se cambia aquí mismo (como en el prototipo): se guarda al salir del campo o con Enter. -->
+        <h2 :id="`editor-${leccion.id}`" class="sr-only">{{ leccion.title }}</h2>
+        <label :for="`nombre-leccion-${leccion.id}`" class="sr-only">Nombre de la lección</label>
+        <input :id="`nombre-leccion-${leccion.id}`" v-model="nombre" maxlength="200"
+          class="min-w-0 flex-1 sm:flex-none sm:w-auto text-lg font-bold text-base-texto-primario bg-transparent rounded-md px-1 -mx-1 border border-transparent hover:border-base-borde-sutil focus:border-base-borde-fuerte focus:outline-none focus:ring-2 focus:ring-stire-blue/20"
+          :size="Math.max(8, nombre.length)" @keydown.enter.prevent="($event.target as HTMLInputElement).blur()" @keydown.esc="nombre = leccion.title" @blur="renombrar" />
         <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold rounded-full px-2 py-0.5" :class="CLASE_ESTADO[estado]">
           <span class="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />{{ TEXTO_ESTADO[estado] }}
         </span>
@@ -22,7 +29,7 @@
 
     <div role="tablist" aria-label="Partes de la lección" class="inline-flex p-0.5 rounded-full bg-base-bg-secundario border border-base-borde-sutil text-xs font-semibold">
       <button v-for="p in PESTANAS" :id="`pestana-${p.id}`" :key="p.id" type="button" role="tab" :aria-selected="pestana === p.id" :aria-controls="`panel-${p.id}`"
-        class="min-h-[36px] px-4 rounded-full" :class="pestana === p.id ? 'bg-base-blanco text-base-texto-primario shadow-sm' : 'text-base-texto-secundario'" @click="pestana = p.id">
+        class="min-h-[36px] px-4 rounded-full" :class="pestana === p.id ? 'bg-base-blanco text-base-texto-primario shadow-sm' : 'text-base-texto-secundario'" @click="$emit('update:pestana', p.id)">
         {{ p.texto }}
       </button>
     </div>
@@ -49,18 +56,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Archive, Pencil, Sparkles } from 'lucide-vue-next'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
-import { TEXTO_ESTADO, estadoDeLeccion, faltasDeLeccion, type EstadoLeccion, type LeccionConConteos } from '~/utils/estadoCurso'
+import { TEXTO_ESTADO, estadoDeLeccion, faltasDeLeccion, type EstadoLeccion, type LeccionConConteos, type PestanaLeccion } from '~/utils/estadoCurso'
 import type { LeccionDelArbol } from '~/utils/contenidosCurso'
 
 type Leccion = LeccionDelArbol & LeccionConConteos
-const props = defineProps<{ leccion: Leccion; ruta: { modulo: string; tema: string }; classId: number }>()
-defineEmits<{ volver: []; editar: [l: Leccion]; archivar: [l: Leccion]; ejercicios: [n: number] }>()
+const props = defineProps<{ leccion: Leccion; ruta: { modulo: string; tema: string; moduloId: number; temaId: number }; classId: number; pestana: PestanaLeccion }>()
+const emit = defineEmits<{
+  volver: []; editar: [l: Leccion]; archivar: [l: Leccion]; ejercicios: [n: number]
+  'ir-grupo': [nivel: 'modulo' | 'tema', id: number]; 'update:pestana': [p: PestanaLeccion]; renombrar: [titulo: string]
+}>()
 
-const PESTANAS = [{ id: 'leccion', texto: 'Lección' }, { id: 'actividades', texto: 'Actividades' }, { id: 'ajustes', texto: 'Ajustes' }] as const
-const pestana = ref<(typeof PESTANAS)[number]['id']>('leccion')
+const PESTANAS: ReadonlyArray<{ id: PestanaLeccion; texto: string }> = [{ id: 'leccion', texto: 'Lección' }, { id: 'actividades', texto: 'Actividades' }, { id: 'ajustes', texto: 'Ajustes' }]
+const nombre = ref(props.leccion.title)
+watch(() => props.leccion.title, (t) => { nombre.value = t })
+function renombrar() {
+  const t = nombre.value.trim()
+  if (!t) { nombre.value = props.leccion.title; return }
+  if (t !== props.leccion.title) emit('renombrar', t)
+}
 const asistenteAbierto = useState('asistente-abierto', () => false)
 const estado = computed(() => estadoDeLeccion(props.leccion))
 const faltas = computed(() => faltasDeLeccion(props.leccion))

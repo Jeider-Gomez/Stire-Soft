@@ -21,7 +21,7 @@ const a = cargar<{
   tituloDeEjercicio: (t: string, n: number) => string;
   pasosDeEstructura: (b: unknown) => string[];
   resumenBorrador: (b: unknown) => string;
-  enlaceContenido: (id: number) => string;
+  enlaceContenido: (id: number, leccion?: number, pestana?: string) => string;
 }>('asistenteDocente');
 
 describe('qué propone según dónde está el docente', () => {
@@ -36,7 +36,11 @@ describe('qué propone según dónde está el docente', () => {
     expect(a.tareaSugerida('inicio')).toBe('estructura');
     expect(a.tareaSugerida('clase')).toBe('estructura');
   });
-  it('lo creado se ve en Contenido del curso de esa clase', () => expect(a.enlaceContenido(7)).toBe('/docente/contenidos?classId=7'));
+  it('lo creado se ve en Contenido del curso de esa clase, y en su lección y pestaña', () => {
+    expect(a.enlaceContenido(7)).toBe('/docente/contenidos?classId=7');
+    expect(a.enlaceContenido(7, 12, 'actividades')).toBe('/docente/contenidos?classId=7&unitId=12&pestana=actividades');
+    expect(a.enlaceContenido(7, 12, 'leccion')).toBe('/docente/contenidos?classId=7&unitId=12');
+  });
 });
 
 describe('del borrador a STIRE', () => {
@@ -68,6 +72,7 @@ describe('el panel', () => {
   it('muestra paso a paso lo que va creando y lleva a Contenido del curso', () => {
     expect(panel).toContain('aria-label="Lo que el Asistente va creando"');
     expect(comp).toContain('await navigateTo(enlaceContenido(classId))');
+    expect(comp).toContain("await navigateTo(enlaceContenido(classId, leccion.id, b.tipo === 'ejercicios' ? 'actividades' : 'leccion'))");
     expect(comp).toContain('window.dispatchEvent(new CustomEvent(EVENTO_CONTENIDO_CAMBIO))');
     expect(leer('pages', 'docente', 'contenidos.vue')).toContain('window.addEventListener(EVENTO_CONTENIDO_CAMBIO, recargarPorAsistente)');
   });

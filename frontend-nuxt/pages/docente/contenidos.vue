@@ -89,14 +89,16 @@
     <div v-else class="grid gap-6 lg:grid-cols-[280px,minmax(0,1fr)] items-start">
       <aside class="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto rounded-2xl border border-base-borde-sutil bg-base-blanco p-3">
         <DocenteContenidosArbolLateral :modulos="sections" :seleccion="leccionAbierta" :grupo="grupoAbierto" :curso="selectedClass?.name"
-          @elegir="abrirLeccion" @elegir-grupo="abrirGrupo" @nuevo-modulo="openNewModuleModal" @nuevo-tema="nuevoTemaEn" @nueva-leccion="nuevaLeccionEn" />
+          @elegir="abrirLeccion" @elegir-grupo="abrirGrupo" @mover="organizar.mover" @nuevo-modulo="crearYAbrir('modulo', null)"
+          @nuevo-tema="(m) => crearYAbrir('tema', m)" @nueva-leccion="(_m, t) => crearYAbrir('leccion', t)" />
       </aside>
       <div class="min-w-0 space-y-8">
         <DocenteContenidosEditorUnidad v-if="leccionEnEditor" :key="leccionEnEditor.leccion.id" :leccion="leccionEnEditor.leccion"
-          :ruta="leccionEnEditor" :class-id="selectedClassId!" @volver="abrirLeccion(null)" @editar="openEditUnitModal" @archivar="confirmArchiveUnit"
+          :ruta="leccionEnEditor" :class-id="selectedClassId!" :pestana="pestana" @update:pestana="cambiarPestana" @ir-grupo="abrirGrupo"
+          @renombrar="renombrarLeccion" @volver="abrirLeccion(null)" @editar="openEditUnitModal" @archivar="confirmArchiveUnit"
           @ejercicios="(n) => setExerciseCount(leccionEnEditor!.leccion.id, n)" />
         <DocenteContenidosPanelGrupo v-else-if="grupoEnPanel" :key="`${grupoEnPanel.nivel}-${grupoEnPanel.grupo.id}`" v-bind="grupoEnPanel"
-          @volver="abrirLeccion(null)" @elegir="abrirLeccion" @agregar="agregarEnGrupo" @publicar="publicarGrupo" @archivar="archivarGrupo" />
+          @volver="abrirLeccion(null)" @abrir-hijo="abrirHijo" @mover="moverHijo" @agregar="agregarEnGrupo" @publicar="publicarGrupo" @archivar="archivarGrupo" />
         <template v-else>
           <DocenteContenidosMapaCurso :modulos="sections" @elegir="abrirLeccion" />
           <div class="space-y-2">
@@ -293,28 +295,34 @@ function openNewTopicModal(sec: ModuloDelArbol) {
 function openNewUnitModal(sec: ModuloDelArbol, topic: TemaDelArbol) {
   ventana.value = { tipo: 'crear', nivel: 'leccion', padreId: topic.id, orden: mayorOrden(topic.learningUnits) + 1, sectionId: sec.id, topicId: topic.id }
 }
-// La lección abierta a la derecha (EditorUnidad.vue); null muestra el mapa del curso.
-const leccionAbierta = ref<number | null>(null)
+// Qué está abierto a la derecha lo dice la dirección (useNavegacionContenido.ts): la lección (EditorUnidad.vue) en su
+// pestaña, un módulo o un tema (PanelGrupo.vue), o nada (el mapa del curso).
+const { leccionAbierta, grupoAbierto, pestana, abrirLeccion, abrirGrupo, cambiarPestana } = useNavegacionContenido(selectedClassId)
+const organizar = useOrganizarCurso(estado)
 const leccionEnEditor = computed(() => (leccionAbierta.value ? rutaDeLeccion(sections.value, leccionAbierta.value) : null))
-/** «+ Tema» y «+ Lección» del árbol lateral llegan con ids; abren la misma ventana de crear del árbol de siempre. */
-function nuevoTemaEn(moduloId: number) {
-  const m = sections.value.find((x) => x.id === moduloId)
-  if (m) openNewTopicModal(m)
+/** «+ Módulo», «+ Tema» y «+ Lección» crean al instante con un nombre provisional y abren lo nuevo para nombrarlo. */
+async function crearYAbrir(nivel: 'modulo' | 'tema' | 'leccion', padreId: number | null) {
+  const id = await organizar.crearRapido(nivel, padreId)
+  if (id === null) return
+  if (nivel === 'leccion') abrirLeccion(id)
+  else abrirGrupo(nivel, id)
 }
-function nuevaLeccionEn(moduloId: number, temaId: number) {
-  const m = sections.value.find((x) => x.id === moduloId)
-  const t = m?.topics?.find((x) => x.id === temaId)
-  if (m && t) openNewUnitModal(m, t)
+async function renombrarLeccion(titulo: string) {
+  const l = leccionEnEditor.value?.leccion
+  if (l) await estado.guardarLeccion(l.id, { title: titulo, description: l.description ?? '', difficulty: l.difficulty, order: l.order })
 }
-function abrirLeccion(id: number | null) {
-  leccionAbierta.value = id
-  grupoAbierto.value = null
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+/** En el panel de un módulo sus hijos son temas; en el de un tema, lecciones. */
+function abrirHijo(id: number) {
+  if (grupoAbierto.value?.nivel === 'modulo') abrirGrupo('tema', id)
+  else abrirLeccion(id)
+}
+function moverHijo(desde: number, hasta: number) {
+  const g = grupoAbierto.value
+  if (g) void organizar.mover(g.nivel === 'modulo' ? 'tema' : 'leccion', g.id, desde, hasta)
 }
 // Un módulo o un tema abierto a la derecha (PanelGrupo.vue): se edita ahí mismo, sin ventana encima.
-const { grupoAbierto, grupoEnPanel, abrirGrupo, agregarEnGrupo, publicarGrupo, archivarGrupo } = useGrupoDelCurso(estado, {
-  alAbrir: () => { leccionAbierta.value = null; window.scrollTo({ top: 0, behavior: 'smooth' }) },
-  nuevoTema: openNewTopicModal, nuevaLeccion: openNewUnitModal, archivarModulo: confirmArchiveModule, archivarTema: confirmArchiveTopic,
+const { grupoEnPanel, agregarEnGrupo, publicarGrupo, archivarGrupo } = useGrupoDelCurso(estado, grupoAbierto, {
+  nuevoTema: (m) => crearYAbrir('tema', m), nuevaLeccion: (t) => crearYAbrir('leccion', t), archivarModulo: confirmArchiveModule, archivarTema: confirmArchiveTopic,
 })
 function openLessonsModal(unit: LeccionDelArbol, opts: { create?: boolean; editId?: number } = {}) {
   // Desde el 27/10 la explicación se edita en la página, en la pestaña «Lección» (sin ventana encima).
@@ -357,14 +365,9 @@ const unitSummary = computed(() => {
   return out
 })
 
-// Con ?classId abre esa clase; con ?unitId, además, esa lección (enlaces desde «Hoy» y desde el ejercicio).
+// Con ?classId abre esa clase; ?unitId, ?modulo o ?tema los abre useNavegacionContenido.ts (enlaces desde otros paneles).
 const route = useRoute()
-onMounted(async () => {
-  await estado.cargarClases(Number(route.query.classId) || undefined)
-  const qUnit = Number(route.query.unitId)
-  // Desde el 27/10 la lección se abre en la página, como al tocarla en el árbol.
-  if (qUnit) abrirLeccion(qUnit)
-})
+onMounted(() => estado.cargarClases(Number(route.query.classId) || undefined))
 // Lo que crea el Asistente (components/docente/asistente/Panel.vue) aparece en el árbol sin recargar la página.
 const recargarPorAsistente = () => { void loadSections() }
 onMounted(() => window.addEventListener(EVENTO_CONTENIDO_CAMBIO, recargarPorAsistente))

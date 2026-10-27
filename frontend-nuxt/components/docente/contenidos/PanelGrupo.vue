@@ -40,24 +40,31 @@
       </div>
     </form>
 
+    <!-- Lo que tiene, en orden (prototipo: «Temas, en orden» / «Lecciones, en orden»): se reordena aquí con las flechas o
+         arrastrando, y un toque lo abre. -->
     <div class="space-y-2">
       <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h3 class="text-sm font-semibold text-base-texto-primario">Lecciones</h3>
-        <p class="text-[11px] text-base-texto-secundario">{{ conteo.lista }} de {{ conteo.total }} listas<template v-if="conteo.falta"> · a {{ conteo.falta }} les falta algo</template><template v-if="conteo.oculta"> · {{ conteo.oculta }} ocultas</template></p>
+        <h3 class="text-sm font-semibold text-base-texto-primario">{{ nivel === 'modulo' ? 'Temas, en orden' : 'Lecciones, en orden' }}</h3>
+        <p class="text-[11px] text-base-texto-secundario">{{ conteo.lista }} de {{ conteo.total }} lecciones listas<template v-if="conteo.falta"> · a {{ conteo.falta }} les falta algo</template><template v-if="conteo.oculta"> · {{ conteo.oculta }} ocultas</template></p>
       </div>
-      <ul v-if="lecciones.length" class="divide-y divide-base-borde-sutil rounded-xl border border-base-borde-sutil bg-base-blanco">
-        <li v-for="l in lecciones" :key="l.id">
-          <button type="button" class="w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-base-bg-secundario/60" @click="$emit('elegir', l.id)">
-            <span class="w-2 h-2 rounded-full shrink-0" :class="PUNTO[estadoDeLeccion(l)]" aria-hidden="true" />
+      <TransitionGroup v-if="hijos.length" tag="ol" name="orden" class="divide-y divide-base-borde-sutil rounded-xl border border-base-borde-sutil bg-base-blanco">
+        <li v-for="(h, i) in hijos" :key="h.id" draggable="true" class="flex items-center gap-1 pr-2"
+          :class="{ 'opacity-40': tomado === i, 'cae-aqui': sobre === i && tomado !== null && tomado !== i }"
+          @dragstart="tomado = i" @dragover.prevent="sobre = i" @drop.prevent="soltar(i)" @dragend="tomado = null; sobre = null">
+          <GripVertical :size="14" class="shrink-0 ml-2 text-base-texto-secundario cursor-grab" aria-hidden="true" />
+          <button type="button" class="flex-1 min-w-0 flex items-center gap-3 px-2 py-2.5 text-left rounded-lg hover:bg-base-bg-secundario/60" @click="$emit('abrir-hijo', h.id)">
+            <span class="w-5 text-[11px] tabular-nums text-base-texto-secundario" aria-hidden="true">{{ i + 1 }}</span>
+            <span class="w-2 h-2 rounded-full shrink-0" :class="h.punto" aria-hidden="true" />
             <span class="flex-1 min-w-0">
-              <span class="block text-sm text-base-texto-primario truncate">{{ l.title }}</span>
-              <span class="block text-[11px] text-base-texto-secundario truncate">{{ detalle(l) }}</span>
+              <span class="block text-sm text-base-texto-primario truncate">{{ h.title }}</span>
+              <span class="block text-[11px] text-base-texto-secundario truncate">{{ h.detalle }}</span>
             </span>
-            <ChevronRight :size="15" class="shrink-0 text-base-texto-secundario" aria-hidden="true" />
           </button>
+          <button type="button" class="flecha" :disabled="i === 0" :aria-label="`Subir «${h.title}»`" title="Subir" @click="$emit('mover', i, i - 1)"><ArrowUp :size="14" aria-hidden="true" /></button>
+          <button type="button" class="flecha" :disabled="i === hijos.length - 1" :aria-label="`Bajar «${h.title}»`" title="Bajar" @click="$emit('mover', i, i + 1)"><ArrowDown :size="14" aria-hidden="true" /></button>
         </li>
-      </ul>
-      <p v-else class="text-sm text-base-texto-secundario rounded-xl border border-dashed border-base-borde-fuerte px-3.5 py-3">Todavía no tiene lecciones.</p>
+      </TransitionGroup>
+      <p v-else class="text-sm text-base-texto-secundario rounded-xl border border-dashed border-base-borde-fuerte px-3.5 py-3">{{ nivel === 'modulo' ? 'Todavía no tiene temas.' : 'Todavía no tiene lecciones.' }}</p>
     </div>
 
     <div class="flex flex-wrap gap-2">
@@ -76,25 +83,29 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { Archive, ChevronRight, Eye, EyeOff, Loader2, Plus } from 'lucide-vue-next'
-import { TEXTO_ESTADO, conteoDeLecciones, estadoDeLeccion, faltasDeLeccion, type EstadoLeccion, type LeccionConConteos } from '~/utils/estadoCurso'
+import { Archive, ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, Loader2, Plus } from 'lucide-vue-next'
+import { conteoDeLecciones, type LeccionConConteos } from '~/utils/estadoCurso'
 
 const props = defineProps<{
   nivel: 'modulo' | 'tema'
   grupo: { id: number; title: string; description?: string }
   lecciones: LeccionConConteos[]
+  /** Sus hijos en orden: los temas de un módulo o las lecciones de un tema (useGrupoDelCurso.ts los prepara). */
+  hijos: Array<{ id: number; title: string; detalle: string; punto: string }>
   /** Para un tema, el nombre de su módulo (la ruta de arriba). */
   modulo?: string
   publicado?: boolean
   guardar: (d: { title: string; description: string }) => Promise<string | null>
 }>()
-defineEmits<{ volver: []; elegir: [id: number]; agregar: []; publicar: []; archivar: [] }>()
+const emit = defineEmits<{ volver: []; 'abrir-hijo': [id: number]; mover: [desde: number, hasta: number]; agregar: []; publicar: []; archivar: [] }>()
 
-const PUNTO: Record<EstadoLeccion, string> = { lista: 'bg-semantico-pasa', falta: 'bg-amber-600', oculta: 'bg-base-borde-fuerte' }
 const conteo = computed(() => conteoDeLecciones(props.lecciones))
-function detalle(l: LeccionConConteos) {
-  const e = estadoDeLeccion(l)
-  return e === 'falta' ? `Falta: ${faltasDeLeccion(l).join(' y ')}` : TEXTO_ESTADO[e]
+const tomado = ref<number | null>(null)
+const sobre = ref<number | null>(null)
+function soltar(i: number) {
+  if (tomado.value !== null && tomado.value !== i) emit('mover', tomado.value, i)
+  tomado.value = null
+  sobre.value = null
 }
 
 const f = reactive({ title: '', description: '' })
@@ -109,3 +120,10 @@ async function guardar() {
   guardando.value = false
 }
 </script>
+
+<style scoped>
+.flecha { @apply w-8 h-8 shrink-0 grid place-items-center rounded-md text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario disabled:opacity-30 disabled:pointer-events-none; }
+.cae-aqui { box-shadow: inset 0 2px 0 theme('colors.stire-blue'); }
+.orden-move { transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1); }
+@media (prefers-reduced-motion: reduce) { .orden-move { transition: none; } }
+</style>

@@ -47,9 +47,13 @@ export function tareaSugerida(p: PantallaDocente): TipoBorrador {
   return 'estructura'
 }
 
-/** Dónde se ve lo que se crea: el contenido del curso de esa clase. Si el docente está en otra pantalla, lo lleva allí. */
-export function enlaceContenido(classId: number): string {
-  return `/docente/contenidos?classId=${classId}`
+/**
+ * Dónde se ve lo que se crea: el contenido del curso de esa clase y, si fue para una lección, esa lección en su pestaña
+ * («Lección» para la explicación, «Actividades» para los ejercicios). Lo lleva allí aunque ya esté en Contenido.
+ */
+export function enlaceContenido(classId: number, leccionId?: number, pestana?: 'leccion' | 'actividades'): string {
+  if (!leccionId) return `/docente/contenidos?classId=${classId}`
+  return `/docente/contenidos?classId=${classId}&unitId=${leccionId}${pestana === 'actividades' ? '&pestana=actividades' : ''}`
 }
 
 /** La pregunta de opción múltiple en el formato del constructor de STIRE (McqExerciseBuilder.vue). */

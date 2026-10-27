@@ -9,13 +9,14 @@ export type EstadoLeccion = 'lista' | 'falta' | 'oculta'
 export interface LeccionConConteos {
   id: number
   title: string
+  order?: number | null
   isActive?: boolean
   explicaciones?: number
   explicacionesVisibles?: number
   activities?: Array<{ status?: string | null }>
 }
-export interface TemaConConteos { id: number; title: string; isActive?: boolean; learningUnits?: LeccionConConteos[] }
-export interface ModuloConConteos { id: number; title: string; isPublished?: boolean; isActive?: boolean; topics?: TemaConConteos[] }
+export interface TemaConConteos { id: number; title: string; order?: number | null; isActive?: boolean; learningUnits?: LeccionConConteos[] }
+export interface ModuloConConteos { id: number; title: string; order?: number | null; isPublished?: boolean; isActive?: boolean; topics?: TemaConConteos[] }
 
 /** Una actividad cuenta como práctica para el estudiante solo si está publicada. */
 const publicadas = (l: LeccionConConteos) => (l.activities ?? []).filter((a) => a.status === 'published' || a.status === 'publicado').length
@@ -35,7 +36,7 @@ export function estadoDeLeccion(l: LeccionConConteos): EstadoLeccion {
 
 export const TEXTO_ESTADO: Record<EstadoLeccion, string> = { lista: 'Lista', falta: 'Le falta algo', oculta: 'Oculta' }
 
-export interface PendienteCurso { id: number; titulo: string; modulo: string; falta: string }
+export interface PendienteCurso { id: number; titulo: string; modulo: string; falta: string; pestana: 'leccion' | 'actividades' | 'ajustes' }
 export interface ResumenCurso {
   unidades: number
   actividades: number
@@ -60,7 +61,7 @@ export function resumenCurso(modulos: ReadonlyArray<ModuloConConteos>): ResumenC
         if (e === 'oculta') r.ocultas++
         else if (e === 'falta') {
           r.conPendientes++
-          r.paraCompletar.push({ id: l.id, titulo: l.title, modulo: m.title, falta: `Falta: ${faltasDeLeccion(l).join(' y ')}` })
+          r.paraCompletar.push({ id: l.id, titulo: l.title, modulo: m.title, falta: `Falta: ${faltasDeLeccion(l).join(' y ')}`, pestana: pestanaParaCompletar(l) })
         } else listas++
       }
     }
@@ -71,12 +72,12 @@ export function resumenCurso(modulos: ReadonlyArray<ModuloConConteos>): ResumenC
 
 /** Dónde está una lección: «Módulo › Tema», para la ruta del editor. */
 export function rutaDeLeccion<L extends LeccionConConteos>(
-  modulos: ReadonlyArray<{ title: string; topics?: ReadonlyArray<{ title: string; learningUnits?: ReadonlyArray<L> }> }>,
+  modulos: ReadonlyArray<{ id: number; title: string; topics?: ReadonlyArray<{ id: number; title: string; learningUnits?: ReadonlyArray<L> }> }>,
   id: number,
-): { modulo: string; tema: string; leccion: L } | null {
+): { modulo: string; tema: string; moduloId: number; temaId: number; leccion: L } | null {
   for (const m of modulos) for (const t of m.topics ?? []) {
     const l = (t.learningUnits ?? []).find((x) => x.id === id)
-    if (l) return { modulo: m.title, tema: t.title, leccion: l }
+    if (l) return { modulo: m.title, tema: t.title, moduloId: m.id, temaId: t.id, leccion: l }
   }
   return null
 }
@@ -133,4 +134,38 @@ export function agruparActividades<A extends { activityType?: { code?: string | 
 ): Array<(typeof GRUPOS_ACTIVIDAD)[number] & { actividades: A[] }> {
   return GRUPOS_ACTIVIDAD.map((g) => ({ ...g, actividades: actividades.filter((a) => grupoDeActividad(a.activityType) === g.id) }))
     .filter((g) => g.actividades.length > 0)
+}
+
+/** Las pestañas de una lección abierta; viajan en la dirección (?pestana=) para que otros paneles lleven a la justa. */
+export const PESTANAS_LECCION = ['leccion', 'actividades', 'ajustes'] as const
+export type PestanaLeccion = (typeof PESTANAS_LECCION)[number]
+export const esPestana = (p: unknown): p is PestanaLeccion => typeof p === 'string' && (PESTANAS_LECCION as readonly string[]).includes(p)
+
+/** A qué pestaña llevar una lección a la que le falta algo: a la explicación si falta, si no a la práctica. */
+export function pestanaParaCompletar(l: LeccionConConteos): PestanaLeccion {
+  const f = faltasDeLeccion(l)
+  return f.some((x) => x.includes('explicación')) ? 'leccion' : f.length ? 'actividades' : 'leccion'
+}
+
+/**
+ * Mueve un elemento de `desde` a `hasta` entre hermanos y numera el orden de nuevo (1, 2, 3…). Devuelve la lista nueva y
+ * solo los que cambiaron de número, que son los que hay que guardar.
+ */
+export function moverEnLista<T extends { id: number; order?: number | null }>(lista: ReadonlyArray<T>, desde: number, hasta: number): { lista: T[]; cambios: Array<{ id: number; order: number }> } {
+  const n = lista.length
+  if (desde < 0 || desde >= n || hasta < 0 || hasta >= n || desde === hasta) return { lista: [...lista], cambios: [] }
+  const copia = [...lista]
+  const [x] = copia.splice(desde, 1)
+  copia.splice(hasta, 0, x)
+  const cambios: Array<{ id: number; order: number }> = []
+  copia.forEach((e, i) => {
+    if (e.order !== i + 1) cambios.push({ id: e.id, order: i + 1 })
+    e.order = i + 1
+  })
+  return { lista: copia, cambios }
+}
+
+/** El enlace a una lección desde cualquier panel: `/docente/contenidos?classId=7&unitId=12&pestana=actividades`. */
+export function enlaceALeccion(classId: number, unitId: number, pestana?: PestanaLeccion): string {
+  return `/docente/contenidos?classId=${classId}&unitId=${unitId}${pestana && pestana !== 'leccion' ? `&pestana=${pestana}` : ''}`
 }

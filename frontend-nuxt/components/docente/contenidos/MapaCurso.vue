@@ -18,7 +18,7 @@
       <h3 class="text-sm font-semibold text-base-texto-primario mb-1.5">Para completar</h3>
       <ul v-if="resumen.paraCompletar.length" class="divide-y divide-base-borde-sutil rounded-xl border border-base-borde-sutil bg-base-blanco">
         <li v-for="p in resumen.paraCompletar" :key="p.id">
-          <button type="button" class="w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-base-bg-secundario/60" @click="$emit('elegir', p.id)">
+          <button type="button" class="w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-base-bg-secundario/60" @click="$emit('elegir', p.id, p.pestana)">
             <span class="w-2 h-2 rounded-full shrink-0 bg-amber-600" aria-hidden="true" />
             <span class="flex-1 min-w-0">
               <span class="block text-sm text-base-texto-primario truncate">{{ p.titulo }}</span>
@@ -53,7 +53,8 @@ import { ChevronRight } from 'lucide-vue-next'
 import { resumenCurso, type ModuloConConteos } from '~/utils/estadoCurso'
 
 const props = defineProps<{ modulos: ModuloConConteos[] }>()
-defineEmits<{ elegir: [id: number] }>()
+defineEmits<{ elegir: [id: number, pestana: PestanaParaCompletar] }>()
+type PestanaParaCompletar = 'leccion' | 'actividades' | 'ajustes'
 const resumen = computed(() => resumenCurso(props.modulos))
 const cifras = computed(() => [
   { etiqueta: 'Lecciones', valor: resumen.value.unidades, tono: 'text-base-texto-primario' },

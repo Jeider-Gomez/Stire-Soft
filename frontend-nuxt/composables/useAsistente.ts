@@ -109,8 +109,9 @@ export function useAsistente() {
       }
       window.dispatchEvent(new CustomEvent(EVENTO_CONTENIDO_CAMBIO))
       borrador.value = null
-      // Lo lleva a ver lo creado, si no estaba ya allí.
-      if (!route.path.startsWith('/docente/contenidos')) await navigateTo(enlaceContenido(classId))
+      // Lo lleva a ver lo creado: la estructura en el mapa del curso; la explicación o los ejercicios, en su lección.
+      if (b.tipo === 'estructura') { if (!route.path.startsWith('/docente/contenidos')) await navigateTo(enlaceContenido(classId)) }
+      else if (leccion) await navigateTo(enlaceContenido(classId, leccion.id, b.tipo === 'ejercicios' ? 'actividades' : 'leccion'))
       return true
     } catch (e) {
       const i = pasos.value.findIndex((p) => p.estado === 'haciendo')

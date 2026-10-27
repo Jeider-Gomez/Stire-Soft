@@ -22,6 +22,10 @@ const e = cargar<{
   conteoDeLecciones: (l: L[]) => { total: number; lista: number; falta: number; oculta: number };
   grupoDeActividad: (t?: { code?: string; name?: string } | null) => string;
   agruparActividades: (a: Array<{ id: number; activityType?: { code?: string; name?: string } }>) => Array<{ id: string; actividades: Array<{ id: number }> }>;
+  moverEnLista: (l: Array<{ id: number; order?: number }>, d: number, h: number) => { lista: Array<{ id: number; order?: number }>; cambios: Array<{ id: number; order: number }> };
+  pestanaParaCompletar: (l: L) => string;
+  enlaceALeccion: (c: number, u: number, p?: string) => string;
+  esPestana: (p: unknown) => boolean;
   filtrarArbol: (m: unknown[], q: string) => Array<{ id: number; topics: Array<{ id: number; learningUnits: L[] }> }>;
 }>('estadoCurso');
 
@@ -113,7 +117,7 @@ describe('módulos y temas se abren y se editan en la página; el árbol se busc
     expect(leer('composables', 'useGrupoDelCurso.ts')).toContain('estado.guardarModulo(m.id, d)');
   });
   it('los enlaces con ?unitId (Asistente, «Hoy») abren la lección en la página', () => {
-    expect(leer('pages', 'docente', 'contenidos.vue')).toContain('if (qUnit) abrirLeccion(qUnit)');
+    expect(leer('composables', 'useNavegacionContenido.ts')).toContain('const unidad = Number(q.unitId) || null');
   });
 });
 
@@ -132,5 +136,50 @@ describe('la pestaña «Actividades» en tres grupos', () => {
   });
   it('el panel de ejercicios los muestra agrupados', () => {
     expect(leer('components', 'docente', 'UnitExercisesPanel.vue')).toContain('agruparActividades(visibleActivities.value)');
+  });
+});
+
+describe('el panel es dinámico: se reorganiza, crea sin ventanas y te lleva a cada lugar (prototipo del panel v2)', () => {
+  it('mover entre hermanos renumera 1, 2, 3… y solo guarda los que cambiaron', () => {
+    const lista = [{ id: 1, order: 1 }, { id: 2, order: 2 }, { id: 3, order: 3 }, { id: 4, order: 4 }];
+    const r = e.moverEnLista(lista, 3, 1);
+    expect(r.lista.map((x) => x.id)).toEqual([1, 4, 2, 3]);
+    expect(r.cambios).toEqual([{ id: 4, order: 2 }, { id: 2, order: 3 }, { id: 3, order: 4 }]);
+    expect(e.moverEnLista(lista, 0, 0).cambios).toEqual([]);
+    expect(e.moverEnLista(lista, 0, 9).cambios).toEqual([]);
+  });
+  it('«Para completar» lleva a la pestaña justa: la explicación si falta, si no la práctica', () => {
+    expect(e.pestanaParaCompletar(vacia)).toBe('leccion');
+    expect(e.pestanaParaCompletar(sinPractica)).toBe('actividades');
+    expect(e.resumenCurso([{ id: 1, title: 'M', topics: [{ id: 2, title: 'T', learningUnits: [sinPractica] }] }]).paraCompletar[0]).toMatchObject({ pestana: 'actividades' });
+  });
+  it('el enlace a una lección desde cualquier panel lleva la pestaña; la dirección guarda lo abierto', () => {
+    expect(e.enlaceALeccion(7, 12, 'actividades')).toBe('/docente/contenidos?classId=7&unitId=12&pestana=actividades');
+    expect(e.enlaceALeccion(7, 12)).toBe('/docente/contenidos?classId=7&unitId=12');
+    expect(e.esPestana('ajustes')).toBe(true);
+    expect(e.esPestana('otra')).toBe(false);
+    const nav = leer('composables', 'useNavegacionContenido.ts');
+    expect(nav).toContain("watch(() => route.fullPath, leerRuta, { immediate: true })");
+    expect(nav).toContain('router.replace(destino)');
+  });
+  it('el árbol se reorganiza arrastrando o con Alt+↑/↓, solo entre hermanos', () => {
+    const arbol = leer('components', 'docente', 'contenidos', 'ArbolLateral.vue');
+    expect(arbol).toContain("v-bind=\"arrastre('leccion', t.id, il)\"");
+    expect(arbol).toContain("@keydown.alt.up.prevent=\"teclado('tema', m.id, it, -1)\"");
+    expect(arbol).toContain('mismoGrupo(nivel, padre)');
+  });
+  it('el panel de un módulo o un tema lista sus hijos en orden, con subir, bajar y arrastrar', () => {
+    const panel = leer('components', 'docente', 'contenidos', 'PanelGrupo.vue');
+    expect(panel).toContain("'Temas, en orden' : 'Lecciones, en orden'");
+    expect(panel).toContain("@click=\"$emit('mover', i, i - 1)\"");
+    expect(panel).toContain('@drop.prevent="soltar(i)"');
+  });
+  it('crear sin ventana: nace con un nombre provisional y se abre para nombrarlo; el nombre de la lección se edita en su cabecera', () => {
+    const org = leer('composables', 'useOrganizarCurso.ts');
+    expect(org).toContain("title: 'Nueva lección'");
+    expect(leer('pages', 'docente', 'contenidos.vue')).toContain("@nuevo-modulo=\"crearYAbrir('modulo', null)\"");
+    const editor = leer('components', 'docente', 'contenidos', 'EditorUnidad.vue');
+    expect(editor).toContain('@blur="renombrar"');
+    expect(editor).toContain("@click=\"$emit('ir-grupo', 'tema', ruta.temaId)\"");
   });
 });
