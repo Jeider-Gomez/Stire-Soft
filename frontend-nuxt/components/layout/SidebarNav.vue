@@ -9,10 +9,10 @@
         <LayoutLogo tamano="mini" con-nombre />
       </NuxtLink>
       <!-- Plegada (como Platzi): queda solo el logo, y al pasar el mouse o con el foco se vuelve el ícono para expandir. -->
-      <button type="button" class="expandir-logo hidden w-9 h-9 items-center justify-center rounded-lg text-slate-600 hover:bg-base-bg-secundario"
+      <button type="button" class="expandir-logo hidden w-11 h-11 items-center justify-center rounded-lg text-slate-600 hover:bg-base-bg-secundario"
         aria-label="Mostrar el menú" title="Mostrar el menú" @click="alternarMenu">
-        <LayoutLogo tamano="mini" class="logo-reposo" />
-        <PanelLeftOpen :size="18" aria-hidden="true" class="icono-expandir" />
+        <LayoutLogo class="logo-reposo" />
+        <PanelLeftOpen :size="20" aria-hidden="true" class="icono-expandir" />
       </button>
       <button
         id="boton-menu"
@@ -21,8 +21,8 @@
         :aria-expanded="!colapsado"
         :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
         @click="alternarMenu">
-        <PanelLeftOpen v-if="colapsado" :size="18" aria-hidden="true" />
-        <PanelLeftClose v-else :size="18" aria-hidden="true" />
+        <PanelLeftOpen v-if="colapsado" :size="20" aria-hidden="true" />
+        <PanelLeftClose v-else :size="20" aria-hidden="true" />
         <span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
       </button>
     </div>
@@ -37,7 +37,7 @@
           to="/estudiante"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="isCurrentRoute('/estudiante') && route.path === '/estudiante' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <House :size="18" aria-hidden="true" class="shrink-0" />
+          <House :size="20" aria-hidden="true" class="shrink-0" />
           <span>Inicio</span>
         </NuxtLink>
 
@@ -48,7 +48,7 @@
           class="flex items-center justify-between px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/repasos' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
           <div class="flex items-center gap-2.5">
-            <Repeat :size="18" aria-hidden="true" class="shrink-0" />
+            <Repeat :size="20" aria-hidden="true" class="shrink-0" />
             <span>Repasos</span>
           </div>
           <!-- Insignia roja = repasos que tocan HOY (vencidos o críticos); los de mañana no son urgentes. -->
@@ -65,7 +65,7 @@
           to="/estudiante/progreso"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/progreso' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <TrendingUp :size="18" aria-hidden="true" class="shrink-0" />
+          <TrendingUp :size="20" aria-hidden="true" class="shrink-0" />
           <span>Mi progreso</span>
         </NuxtLink>
 
@@ -74,7 +74,7 @@
           to="/estudiante/asistencia"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/asistencia' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <QrCode :size="18" aria-hidden="true" class="shrink-0" />
+          <QrCode :size="20" aria-hidden="true" class="shrink-0" />
           <span>Mi asistencia</span>
         </NuxtLink>
 
@@ -84,7 +84,7 @@
           to="/estudiante/proyectos"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path.startsWith('/estudiante/proyectos') ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <FolderCode :size="18" aria-hidden="true" class="shrink-0" />
+          <FolderCode :size="20" aria-hidden="true" class="shrink-0" />
           <span>Mis proyectos</span>
         </NuxtLink>
 
@@ -93,7 +93,7 @@
           to="/estudiante/mensajes"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/estudiante/mensajes' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Mail :size="18" aria-hidden="true" class="shrink-0" />
+          <Mail :size="20" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
         </NuxtLink>
 
@@ -111,7 +111,7 @@
           to="/docente"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <House :size="18" aria-hidden="true" class="shrink-0" />
+          <House :size="20" aria-hidden="true" class="shrink-0" />
           <span>Inicio</span>
         </NuxtLink>
 
@@ -119,7 +119,7 @@
           to="/docente/mensajes"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/mensajes' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Mail :size="18" aria-hidden="true" class="shrink-0" />
+          <Mail :size="20" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
         </NuxtLink>
 
@@ -128,7 +128,7 @@
           to="/docente/biblioteca"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/docente/biblioteca' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Library :size="18" aria-hidden="true" class="shrink-0" />
+          <Library :size="20" aria-hidden="true" class="shrink-0" />
           <span>Biblioteca</span>
         </NuxtLink>
 
@@ -143,7 +143,7 @@
           to="/admin/dashboard"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/dashboard' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Activity :size="18" aria-hidden="true" class="shrink-0" />
+          <Activity :size="20" aria-hidden="true" class="shrink-0" />
           <span>Estado del sistema</span>
         </NuxtLink>
 
@@ -151,7 +151,7 @@
           to="/admin"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin' || route.path === '/admin/usuarios' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <ShieldCheck :size="18" aria-hidden="true" class="shrink-0" />
+          <ShieldCheck :size="20" aria-hidden="true" class="shrink-0" />
           <span>Usuarios y roles</span>
         </NuxtLink>
 
@@ -159,7 +159,7 @@
           to="/admin/sugerencias"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/sugerencias' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <MessageSquarePlus :size="18" aria-hidden="true" class="shrink-0" />
+          <MessageSquarePlus :size="20" aria-hidden="true" class="shrink-0" />
           <span>Sugerencias</span>
         </NuxtLink>
 
@@ -167,7 +167,7 @@
           to="/admin/catalogo"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/catalogo' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Library :size="18" aria-hidden="true" class="shrink-0" />
+          <Library :size="20" aria-hidden="true" class="shrink-0" />
           <span>Catálogo académico</span>
         </NuxtLink>
 
@@ -175,7 +175,7 @@
           to="/admin/usabilidad"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/usabilidad' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <ClipboardList :size="18" aria-hidden="true" class="shrink-0" />
+          <ClipboardList :size="20" aria-hidden="true" class="shrink-0" />
           <span>Encuesta de usabilidad</span>
         </NuxtLink>
 
@@ -183,7 +183,7 @@
           to="/admin/sistema"
           class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
           :class="route.path === '/admin/sistema' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Settings :size="18" aria-hidden="true" class="shrink-0" />
+          <Settings :size="20" aria-hidden="true" class="shrink-0" />
           <span>Registros y mantenimiento</span>
         </NuxtLink>
       </nav>
@@ -192,7 +192,7 @@
     <!-- Ayuda para los tres roles, al final del menú: el manual de usuario (docs/PLAN_AYUDA_AL_USUARIO.md, frente C). -->
     <nav aria-label="Ayuda" class="mt-auto pt-3 border-t border-base-borde-sutil text-sm font-medium">
       <NuxtLink to="/ayuda" data-recorrido="ayuda" class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors text-base-texto-primario hover:bg-base-bg-secundario">
-        <BookOpen :size="18" aria-hidden="true" class="shrink-0" />
+        <BookOpen :size="20" aria-hidden="true" class="shrink-0" />
         <span>Ayuda</span>
       </NuxtLink>
     </nav>

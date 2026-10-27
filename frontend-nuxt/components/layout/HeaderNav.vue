@@ -19,7 +19,13 @@
       <NuxtLink :to="homeRoute" class="md:hidden flex items-center flex-shrink-0 min-h-[44px]" aria-label="Ir al inicio">
         <LayoutLogo con-nombre />
       </NuxtLink>
-      <p class="hidden md:block text-xs text-slate-500 truncate">{{ subtitulo }}</p>
+      <!-- Buscar una lección (Ctrl+K), como la barra de búsqueda de Cursor: a la izquierda, donde se mira primero. -->
+      <button v-if="authStore.currentRole === 'estudiante'" type="button"
+        class="hidden md:inline-flex items-center gap-2 w-56 lg:w-64 min-h-[36px] px-3 rounded-lg border border-base-borde-sutil text-xs text-base-texto-secundario hover:border-base-borde-fuerte"
+        @click="irALeccion = true">
+        <Search :size="14" aria-hidden="true" /><span class="flex-1 text-left">Buscar una lección</span>
+        <kbd class="text-[10px] border border-base-borde-sutil rounded px-1">Ctrl K</kbd>
+      </button>
 
       <!-- Separador + Contexto de clase (solo estudiante) -->
       <div
@@ -50,11 +56,7 @@
     <div class="flex items-center gap-2 flex-shrink-0">
       <!-- El Tutor se abre con el lanzador flotante de abajo a la derecha, igual en todas las pantallas
            (components/tutor/LanzadorTutor.vue; recomendación de José, «reubicar el acceso al Tutor»). -->
-      <!-- Badge de Rol -->
-      <span :class="roleBadgeClass" class="hidden sm:inline-flex items-center gap-1.5">
-        <span class="pulse-dot" v-if="authStore.currentRole === 'docente' || authStore.currentRole === 'administrador'" />
-        {{ roleLabel }}
-      </span>
+      <!-- El rol y el lugar pasaron al menú de la cuenta (27/10): la barra queda para lo que se usa. -->
 
       <!-- Menú de ayuda: el recorrido de esta pantalla, su tarea del manual, el manual y las sugerencias
            (components/layout/MenuAyuda.vue; S10-J04). -->
@@ -111,6 +113,10 @@
             <div class="px-4 py-3 border-b border-slate-100">
               <p class="text-xs font-semibold text-slate-800">{{ authStore.user?.fullName }}</p>
               <p class="text-[11px] text-slate-500 mt-0.5">{{ authStore.user?.email }}</p>
+              <p class="mt-2 flex flex-wrap items-center gap-1.5">
+                <span :class="roleBadgeClass" class="inline-flex items-center">{{ roleLabel }}</span>
+                <span class="text-[10px] text-slate-500 truncate">{{ subtitulo }}</span>
+              </p>
             </div>
 
             <!-- Enlace Mi perfil -->
@@ -152,13 +158,14 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, LogOut, GraduationCap, UserCircle, Contrast, Sparkles } from 'lucide-vue-next'
+import { Menu, LogOut, GraduationCap, UserCircle, Contrast, Search, Sparkles } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { institucionCorta, lugarDeAsignatura, programaCorto } from '~/utils/contextoAcademico'
 
 defineEmits(['toggle-sidebar'])
 const asistenteAbierto = useState('asistente-abierto', () => false)
+const irALeccion = useState('ir-a-leccion', () => false)
 
 const authStore = useAuthStore()
 const primerNombre = computed(() => authStore.user?.fullName?.split(' ')[0] || 'usuario')
