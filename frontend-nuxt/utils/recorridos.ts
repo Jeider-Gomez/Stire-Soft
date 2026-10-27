@@ -169,7 +169,7 @@ export const RECORRIDOS: Recorrido[] = [
     pasos: [
       { titulo: 'Bienvenido a STIRE', texto: 'STIRE enseña, califica y agenda los repasos de tus estudiantes. Todo lo del docente es opcional: usa lo que te sirva.' },
       { elemento: '#abrir-crear-clase', titulo: 'Crear una clase', texto: 'Desde una plantilla o en blanco. Tus estudiantes entran con el código o escaneando el QR.' },
-      { elemento: '[data-recorrido="rezago"]', titulo: 'Alumnos en rezago', texto: 'Quién va por debajo de 50 % de dominio. Toca «Ver quiénes» para saber a quién apoyar.' },
+      { elemento: '[data-recorrido="rezago"]', titulo: 'Por revisar', texto: 'Lo que pide atención en todas tus clases: quién va por debajo de 50 % de dominio y los mensajes sin leer. Toca uno para atenderlo.' },
       { elemento: '[data-recorrido="clases"]', titulo: 'Tus clases', texto: 'Abre una clase para ver «Hoy», los contenidos, las entregas y las notas.' },
     ],
   },

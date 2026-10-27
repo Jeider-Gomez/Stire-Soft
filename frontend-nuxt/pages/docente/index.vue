@@ -1,126 +1,23 @@
 <template>
   <div class="max-w-5xl mx-auto space-y-7">
 
-    <!-- ═══════════════════════════════════════════════════════
-         CABECERA DOC-V01
-    ═══════════════════════════════════════════════════════ -->
-    <header class="bg-white rounded-2xl border border-slate-200 px-7 py-6 shadow-sm">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1.5">
-            <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold tracking-wider uppercase
-                         bg-stire-blue/10 text-stire-blue border border-stire-blue/20">
-              Panel docente
-            </span>
-          </div>
-          <h1 class="text-2xl font-poppins font-bold text-slate-800 tracking-tight">
-            Mis clases
-          </h1>
-          <p class="text-xs text-slate-500 mt-1">
-            Universidad de Córdoba · Sistema de Tutoría Inteligente
-            <span class="text-stire-blue font-semibold">STIRE</span>
-          </p>
-        </div>
-
-        <button
-          id="abrir-crear-clase"
-          @click="openCreateModal"
-          class="btn-stire-primary self-start sm:self-auto min-h-[44px]"
-        >
-          <Plus :size="15" />
-          Crear nueva clase
-        </button>
+    <!-- Inicio como en el prototipo del panel v2: saludo con el resumen, «Por revisar» de todas las clases y «Mis clases»
+         en tarjetas o lista (utils/inicioDocente.ts). Las cuatro tarjetas de cifras pasaron al resumen y a «Por revisar». -->
+    <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-poppins font-bold text-base-texto-primario tracking-tight">{{ saludo(new Date().getHours()) }}{{ nombre ? `, ${nombre}` : '' }}</h1>
+        <p class="text-sm text-base-texto-secundario mt-1">{{ isLoading ? 'Cargando tus clases…' : resumenInicio(clasesActivas) }}</p>
       </div>
+      <button id="abrir-crear-clase" @click="openCreateModal" class="btn-stire-primary self-start sm:self-auto min-h-[44px]">
+        <Plus :size="15" aria-hidden="true" />
+        Crear clase
+      </button>
     </header>
 
     <!-- Encuesta de usabilidad SUS (UX-08): solo si lleva unos días usando STIRE y no la ha respondido -->
     <InvitacionEncuesta ruta="/docente/encuesta" />
 
-    <!-- ═══════════════════════════════════════════════════════
-         BARRA DE MÉTRICAS (4 TARJETAS)
-    ═══════════════════════════════════════════════════════ -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-
-      <!-- 1. Total de estudiantes -->
-      <Transition appear enter-active-class="transition duration-300 ease-out"
-        enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
-        <div class="metric-card">
-          <div class="flex items-start justify-between mb-3">
-            <div class="p-2 rounded-xl bg-stire-blue/10">
-              <Users :size="18" class="text-stire-blue" />
-            </div>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stire-success/15 text-emerald-700 flex items-center gap-1">
-              <span class="pulse-dot" />
-              Activos
-            </span>
-          </div>
-          <p class="text-2xl font-poppins font-bold text-slate-800">{{ totalStudents }}</p>
-          <p class="text-xs text-slate-500 mt-0.5">Total de estudiantes</p>
-          <p class="text-[11px] text-slate-500 mt-1">En {{ classes.length }} grupo{{ classes.length !== 1 ? 's' : '' }} habilitado{{ classes.length !== 1 ? 's' : '' }}</p>
-        </div>
-      </Transition>
-
-      <!-- 2. Dominio promedio -->
-      <Transition appear enter-active-class="transition duration-300 ease-out delay-75"
-        enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
-        <div class="metric-card">
-          <div class="flex items-start justify-between mb-3">
-            <div class="p-2 rounded-xl bg-stire-teal/10">
-              <TrendingUp :size="18" class="text-teal-700" />
-            </div>
-          </div>
-          <p class="text-2xl font-poppins font-bold text-slate-800">{{ porcentaje(avgMastery) }}</p>
-          <!-- Micro barra de progreso -->
-          <div class="mt-2 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-            <div
-              class="h-full rounded-full bg-stire-teal transition-all duration-700"
-              :style="{ width: `${avgMastery}%` }"
-            />
-          </div>
-          <p class="text-xs text-slate-500 mt-1.5">Dominio promedio</p>
-        </div>
-      </Transition>
-
-      <!-- 3. Mensajes sin leer (dato real; antes era un "92 % adopción del Tutor" inventado) -->
-      <Transition appear enter-active-class="transition duration-300 ease-out delay-150"
-        enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
-        <NuxtLink to="/docente/mensajes" class="metric-card block hover:shadow-md transition-shadow">
-          <div class="flex items-start justify-between mb-3">
-            <div class="p-2 rounded-xl bg-stire-purple/10">
-              <Mail :size="18" class="text-stire-purple" />
-            </div>
-          </div>
-          <p class="text-2xl font-poppins font-bold text-stire-purple">{{ unreadMessages ?? '—' }}</p>
-          <p class="text-xs text-slate-500 mt-0.5">Mensajes sin leer</p>
-          <p class="text-[11px] text-slate-500 mt-1">De tus estudiantes</p>
-        </NuxtLink>
-      </Transition>
-
-      <!-- 4. Alumnos en rezago -->
-      <Transition appear enter-active-class="transition duration-300 ease-out delay-200"
-        enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
-        <!-- En ámbar solo cuando hay alguien en rezago: una tarjeta en alarma con «0» enseña a ignorar las alarmas. -->
-        <div data-recorrido="rezago" class="metric-card" :class="atRiskCount > 0 ? 'ring-2 ring-stire-warning/60' : ''">
-          <div class="flex items-start justify-between mb-3">
-            <div class="p-2 rounded-xl bg-stire-warning/10">
-              <AlertTriangle :size="18" class="text-amber-700" />
-            </div>
-            <button
-              v-if="atRiskCount > 0"
-              class="text-[11px] font-bold px-2 py-0.5 min-h-[44px] rounded-full bg-stire-warning/15 text-amber-800
-                     hover:bg-stire-warning/25 transition-colors whitespace-nowrap"
-              title="Ver quiénes están en rezago"
-              @click="navigateTo('/docente/rendimiento')"
-            >
-              Ver quiénes →
-            </button>
-          </div>
-          <p class="text-2xl font-poppins font-bold" :class="atRiskCount > 0 ? 'text-amber-700' : 'text-slate-800'">{{ atRiskCount }}</p>
-          <p class="text-xs text-slate-500 mt-0.5">Alumnos en rezago</p>
-          <p class="text-[11px] text-slate-500 mt-1">Dominio &lt; 50 %</p>
-        </div>
-      </Transition>
-    </div>
+    <DocenteInicioPorRevisar v-if="!isLoading && classes.length > 0" :items="porRevisar(clasesActivas, unreadMessages)" :colores="colores" />
 
     <!-- Notificación de éxito -->
     <Transition enter-active-class="transition duration-200 ease-out"
@@ -169,8 +66,9 @@
     <!-- ═══════════════════════════════════════════════════════
          BUSCADOR + CONTADOR
     ═══════════════════════════════════════════════════════ -->
-    <div v-else class="flex items-center gap-3">
-      <div class="relative flex-1 max-w-xs">
+    <div v-else class="flex flex-wrap items-center gap-3">
+      <h2 class="text-base font-poppins font-bold text-base-texto-primario mr-auto">Mis clases</h2>
+      <div class="relative flex-1 min-w-[12rem] max-w-xs">
         <input
           v-model="searchQuery"
           type="text"
@@ -182,6 +80,11 @@
       <p class="text-xs text-slate-500 whitespace-nowrap">
         Mostrando {{ filteredClasses.length }} de {{ classes.length }} clase{{ classes.length !== 1 ? 's' : '' }}
       </p>
+      <div role="group" aria-label="Cómo ver tus clases" class="seg relative inline-flex p-0.5 rounded-full bg-base-bg-secundario border border-base-borde-sutil text-xs font-semibold">
+        <span aria-hidden="true" class="seg-pulgar absolute top-0.5 bottom-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-base-blanco shadow-sm transition-transform duration-200 motion-reduce:transition-none" :class="{ 'translate-x-full': vista === 'lista' }" />
+        <button v-for="v in (['tarjetas', 'lista'] as const)" :key="v" type="button" class="relative min-h-[36px] px-3.5 rounded-full capitalize"
+          :class="vista === v ? 'text-base-texto-primario' : 'text-base-texto-secundario'" :aria-pressed="vista === v" @click="elegirVista(v)">{{ v }}</button>
+      </div>
     </div>
     <!-- Filtro por programa: solo si enseña en más de uno -->
     <div v-if="!isLoading && programasDelDocente.length > 1" role="group" aria-label="Filtrar por programa" class="flex flex-wrap gap-2 text-xs">
@@ -197,125 +100,15 @@
          TARJETAS DE CLASES
     ═══════════════════════════════════════════════════════ -->
     <section v-if="!isLoading && classes.length > 0" data-recorrido="clases" class="space-y-5">
-      <TransitionGroup
-        tag="div"
-        class="space-y-5"
-        enter-active-class="transition duration-250 ease-out"
-        enter-from-class="opacity-0 translate-y-2"
-        enter-to-class="opacity-100 translate-y-0"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-for="cls in filteredClasses"
-          :key="cls.id"
-          class="class-card"
-        >
-          <!-- ─── Encabezado de la tarjeta ─── -->
-          <div class="flex items-start justify-between gap-3 mb-5">
-            <div class="flex-1 min-w-0">
-              <!-- Código + Copiar -->
-              <div class="flex items-center gap-2 mb-2 flex-wrap">
-                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg
-                             bg-stire-blue/10 text-stire-blue border border-stire-blue/20 tracking-wider">
-                  {{ cls.code }}
-                </span>
-
-                <!-- Botón copiar con animación -->
-                <button
-                  @click="copyCode(cls.code)"
-                  class="flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 min-h-[44px] rounded-lg
-                         border border-slate-200 text-slate-500 hover:border-stire-teal/50
-                         hover:text-teal-700 hover:bg-stire-teal/5
-                         active:scale-95 transition-all duration-150 whitespace-nowrap"
-                  :title="`Copiar código ${cls.code}`"
-                  :aria-label="copiedCode === cls.code ? `Código ${cls.code} copiado` : `Copiar el código ${cls.code}`"
-                >
-                  <Transition mode="out-in"
-                    enter-active-class="transition duration-150 ease-out"
-                    enter-from-class="opacity-0 scale-75"
-                    enter-to-class="opacity-100 scale-100"
-                    leave-active-class="transition duration-100 ease-in"
-                    leave-from-class="opacity-100 scale-100"
-                    leave-to-class="opacity-0 scale-75"
-                  >
-                    <Check v-if="copiedCode === cls.code" :size="12" class="text-emerald-700" key="check" />
-                    <Copy v-else :size="12" key="copy" />
-                  </Transition>
-                  <span>{{ copiedCode === cls.code ? 'Copiado' : 'Copiar' }}</span>
-                </button>
-
-                <!-- QR proyector -->
-                <button
-                  @click="openQrModal(cls)"
-                  class="flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 min-h-[44px] rounded-lg
-                         border border-slate-200 text-slate-500 hover:border-stire-purple/50
-                         hover:text-stire-purple hover:bg-stire-purple/5
-                         active:scale-95 transition-all duration-150 whitespace-nowrap"
-                  title="Proyectar código QR"
-                  :aria-label="`Mostrar el QR de ${cls.name} para proyectarlo`"
-                >
-                  <QrCode :size="12" aria-hidden="true" />
-                  <span>QR</span>
-                </button>
-              </div>
-
-              <!-- Nombre + descripción -->
-              <h2 class="text-lg font-poppins font-bold text-slate-800 tracking-tight">
-                {{ cls.name }}
-              </h2>
-              <p v-if="cls.asignatura || cls.grupo || cls.periodo" class="text-xs text-slate-600 mt-0.5">
-                <template v-if="cls.asignatura">{{ cls.asignatura.nombre }} · {{ lugarDeAsignatura(cls.asignatura) }}</template>
-                <template v-if="cls.grupo || cls.periodo">{{ cls.asignatura ? ' · ' : '' }}{{ [cls.grupo, cls.periodo].filter(Boolean).join(' · ') }}</template>
-              </p>
-              <p v-if="cls.description" class="text-xs text-slate-500 mt-1 line-clamp-2">
-                {{ cls.description }}
-              </p>
-            </div>
-
-            <!-- Antes un «Activo» que salía igual en todas las clases. Ahora lo que pide atención: quién necesita apoyo. -->
-            <NuxtLink v-if="cls.atRiskCount" :to="`/docente/rendimiento?classId=${cls.id}`"
-              class="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 min-h-[32px] rounded-full bg-amber-50 text-amber-800 text-[11px] font-bold border border-amber-200 hover:bg-amber-100">
-              <AlertTriangle :size="12" aria-hidden="true" />
-              {{ cls.atRiskCount === 1 ? '1 necesita apoyo' : `${cls.atRiskCount} necesitan apoyo` }}
-            </NuxtLink>
-            <span v-else-if="cls.isActive === false" class="flex-shrink-0 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[11px] font-bold">Archivada</span>
-          </div>
-
-          <!-- Cómo entran los estudiantes (el código ya está arriba, con Copiar y QR) -->
-          <p class="text-xs text-slate-500 mb-5">
-            Matrícula {{ cls.requiresApproval ? 'con aprobación: apruebas a cada estudiante en «Matrícula».' : 'directa: entra quien tenga el código.' }}
-          </p>
-
-          <!-- Acciones (crítica del 05/10): antes seis botones con el mismo peso. Las cifras son un enlace de texto a
-               «Estudiantes» (la misma pantalla que esa pestaña; antes «N estudiantes» llevaba a Ajustes), y quedan dos
-               botones: Contenidos y, como acción principal, entrar a la clase. -->
-          <div class="flex flex-wrap items-center gap-x-4 gap-y-2.5 pt-4 border-t border-slate-100">
-            <NuxtLink :to="`/docente/rendimiento?classId=${cls.id}`"
-              class="min-h-[44px] inline-flex items-center gap-1.5 text-xs text-slate-700 hover:text-stire-blue hover:underline tabular-nums">
-              <Users :size="14" aria-hidden="true" />
-              <span>{{ cls.enrollmentCount === 1 ? '1 estudiante' : `${cls.enrollmentCount ?? 0} estudiantes` }}</span>
-              <template v-if="cls.avgMastery !== undefined && cls.enrollmentCount">
-                <span aria-hidden="true">·</span>
-                <span>dominio del grupo <strong :class="cls.avgMastery >= 70 ? 'text-emerald-700' : 'text-amber-700'">{{ porcentaje(cls.avgMastery) }}</strong></span>
-              </template>
-            </NuxtLink>
-
-            <div class="flex-1" />
-
-            <NuxtLink :to="`/docente/contenidos?classId=${cls.id}`" class="btn-stire-secondary min-h-[44px]">
-              <BookOpen :size="14" aria-hidden="true" />
-              <span>Contenidos</span>
-            </NuxtLink>
-            <!-- La clase como lugar: «Hoy», con las pestañas de la clase (utils/pestanasClase.ts) -->
-            <NuxtLink :to="`/docente/clase/${cls.id}`" class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800 min-h-[44px]">
-              <UserCheck :size="14" aria-hidden="true" />
-              <span>Ver hoy en la clase</span>
-            </NuxtLink>
-          </div>
-        </div>
-      </TransitionGroup>
+      <div v-if="vista === 'tarjetas'" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <DocenteInicioTarjetaClase v-for="cls in filteredClasses" :key="cls.id" :cls="cls" :color="colores[cls.id]" :sigla="siglas[cls.id]"
+          :copiado="copiedCode === cls.code" @copiar="copyCode" @qr="openQrModal" />
+        <button type="button" class="min-h-[240px] rounded-2xl border-2 border-dashed border-base-borde-fuerte text-stire-blue font-semibold flex flex-col items-center justify-center gap-1 hover:bg-stire-blue/5 transition-colors" @click="openCreateModal">
+          <Plus :size="20" aria-hidden="true" />Crear clase
+          <small class="font-normal text-xs text-base-texto-secundario px-6 text-center">En blanco, desde otra clase tuya o desde una plantilla</small>
+        </button>
+      </div>
+      <DocenteInicioListaClases v-else :clases="filteredClasses" :colores="colores" :siglas="siglas" />
       <!-- Periodos anteriores, plegados: no estorban, pero siguen a un clic -->
       <button v-if="organizacion.anteriores > 0" type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline" :aria-expanded="verAnteriores" @click="verAnteriores = true">
         Ver {{ organizacion.anteriores === 1 ? 'la clase' : `las ${organizacion.anteriores} clases` }} de periodos anteriores
@@ -370,17 +163,28 @@
 // y la API están en composables/useClasesDocente.ts; crear una clase y el QR, en sus ventanas (PAT-01 y PAT-04; antes
 // 826 líneas con las dos ventanas dentro).
 import { computed, onMounted, provide, ref } from 'vue'
-import { porcentaje } from '~/utils/porcentaje'
-import { lugarDeAsignatura } from '~/utils/contextoAcademico'
 import { organizarClases, programasDeLasClases } from '~/utils/organizarClases'
-import { AlertTriangle, Archive, BookOpen, Check, ChevronRight, Copy, Mail, Plus, QrCode, RotateCcw, Search, TrendingUp, UserCheck, Users } from 'lucide-vue-next'
+import { siglasDeClases } from '~/utils/contextoAcademico'
+import { colorDeClase } from '~/utils/pestanasClase'
+import { CLAVE_VISTA_CLASES, porRevisar, primerNombre, resumenInicio, saludo, vistaGuardada, type VistaClases } from '~/utils/inicioDocente'
+import { useAuthStore } from '~/stores/auth'
+import { Archive, BookOpen, Check, ChevronRight, Plus, RotateCcw, Search } from 'lucide-vue-next'
 import { CLAVE_CLASES_DOCENTE, useClasesDocente, type ClaseDelDocente } from '~/composables/useClasesDocente'
 
 definePageMeta({ layout: 'teacher' })
 
 const estado = useClasesDocente()
 provide(CLAVE_CLASES_DOCENTE, estado)
-const { clases: classes, cargando: isLoading, noLeidos: unreadMessages, totalEstudiantes: totalStudents, dominioPromedio: avgMastery, enRezago: atRiskCount } = estado
+const { clases: classes, cargando: isLoading, noLeidos: unreadMessages } = estado
+const nombre = computed(() => primerNombre(useAuthStore().user?.fullName))
+// Color y sigla iguales a los del menú lateral (ClasesDelMenu.vue): por el orden de todas las clases.
+const colores = computed(() => Object.fromEntries(classes.value.map((c, i) => [c.id, colorDeClase(i)])) as Record<number, string>)
+const siglas = computed(() => siglasDeClases(classes.value))
+const vista = ref<VistaClases>('tarjetas')
+function elegirVista(v: VistaClases) {
+  vista.value = v
+  try { localStorage.setItem(CLAVE_VISTA_CLASES, v) } catch { /* sin almacenamiento: solo por esta visita */ }
+}
 
 const successMessage = ref<string | null>(null)
 const copiedCode = ref<string | null>(null)
@@ -419,6 +223,7 @@ function copyCode(code: string) {
 }
 
 onMounted(() => {
+  try { vista.value = vistaGuardada(localStorage.getItem(CLAVE_VISTA_CLASES)) } catch { /* se queda en tarjetas */ }
   if (useRoute().query.crear) creando.value = true // «Crear clase» del menú lateral (ClasesDelMenu.vue)
   void estado.cargarPlantillas(); void estado.cargarClases(); void estado.cargarNoLeidos()
 })

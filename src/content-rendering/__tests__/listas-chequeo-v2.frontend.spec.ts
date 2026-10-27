@@ -37,7 +37,7 @@ describe('UX-07 · contraste WCAG 2.1 AA (axe-core marcó estas clases en produc
   });
 
   it('el botón «Abrir la clase» y la insignia «Estudiante» llevan un tono que cumple AA', () => {
-    expect(leer('pages', 'docente', 'index.vue')).toContain('class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800 min-h-[44px]"');
+    expect(leer('components', 'docente', 'inicio', 'TarjetaClase.vue')).toContain('class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800 min-h-[44px]');
     expect(leer('components', 'layout', 'HeaderNav.vue')).toContain("return 'badge-estudiante !text-teal-800'");
   });
 });
@@ -109,14 +109,15 @@ describe('MOB-02 · objetivos táctiles de 44 px (la revisión del «después» 
     ['pages/estudiante/index.vue', 'to="/estudiante/repasos"', 1],
     ['pages/estudiante/progreso.vue', 'to="/estudiante/repasos"', 1],
     ['pages/estudiante/progreso.vue', 'hover:bg-acento-ambar/10 whitespace-nowrap', 1],
-    ['pages/docente/index.vue', 'title="Ver quiénes están en rezago"', 1],
-    ['pages/docente/index.vue', '@click="copyCode(cls.code)"', 1],
-    ['pages/docente/index.vue', '@click="openQrModal(cls)"', 1],
+    // El inicio del docente rehecho (26/10): «Por revisar» y la tarjeta de cada clase son componentes.
+    ['components/docente/inicio/PorRevisar.vue', ":title=\"p.claseId ? 'Ver quiénes están en rezago'", 1],
+    ['components/docente/inicio/TarjetaClase.vue', "@click=\"$emit('copiar', cls.code)\"", 1],
+    ['components/docente/inicio/TarjetaClase.vue', "@click=\"$emit('qr', cls)\"", 1],
     // Las otras dos (Cancelar y Cerrar del QR) están desde el 05/10 en VentanaCrearClase y VentanaQrClase; de la
     // tarjeta de clase queda «Contenidos» (Estudiantes y Dominio pasaron a un enlace de texto, también de 44 px).
-    ['pages/docente/index.vue', 'class="btn-stire-secondary', 1],
-    ['pages/docente/index.vue', 'class="min-h-[44px] inline-flex items-center gap-1.5 text-xs text-slate-700', 1],
-    ['pages/docente/index.vue', 'class="btn-stire-teal', 1],
+    ['components/docente/inicio/TarjetaClase.vue', 'class="btn-stire-secondary', 1],
+    ['components/docente/inicio/TarjetaClase.vue', 'class="min-h-[44px] inline-flex items-center gap-1.5 text-xs text-slate-700', 1],
+    ['components/docente/inicio/TarjetaClase.vue', 'class="btn-stire-teal', 1],
   ];
   it.each(CONTROLES)('%s · %s mide al menos 44 px de alto', (rel, marca, cuantos) => {
     const tags = etiquetas(rel, marca);

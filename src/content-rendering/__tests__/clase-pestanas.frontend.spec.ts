@@ -111,8 +111,8 @@ describe('Pestañas de la clase', () => {
     for (const herramienta of ['to="/docente/contenidos"', 'to="/docente/rendimiento"', 'to="/docente/entregas"', 'to="/docente/refuerzos"']) {
       expect(menu).not.toContain(herramienta);
     }
-    // La tarjeta de cada clase en «Mis clases» abre su «Hoy».
-    expect(leer('pages', 'docente', 'index.vue')).toContain('<span>Ver hoy en la clase</span>');
+    // La tarjeta de cada clase en «Mis clases» abre su «Hoy» (components/docente/inicio/TarjetaClase.vue).
+    expect(leer('components', 'docente', 'inicio', 'TarjetaClase.vue')).toContain('<span>Ver hoy en la clase</span>');
   });
 
   it('la clase se elige solo en la barra lateral: sin selector repetido y las pantallas siguen el cambio', () => {
@@ -126,7 +126,7 @@ describe('Pestañas de la clase', () => {
   });
 
   it('en la tarjeta, «N estudiantes» lleva a la misma pantalla que la pestaña «Estudiantes» y el aviso dice quién necesita apoyo', () => {
-    const d = leer('pages', 'docente', 'index.vue');
+    const d = leer('components', 'docente', 'inicio', 'TarjetaClase.vue');
     expect(pestanas.enlacePestana('estudiantes', 7)).toBe('/docente/rendimiento?classId=7');
     expect(d).toMatch(/:to="`\/docente\/rendimiento\?classId=\$\{cls\.id\}`"[\s\S]{0,300}estudiantes`/);
     // «N estudiantes» ya no lleva a Ajustes y el «Activo» que salía igual en todas se fue.
