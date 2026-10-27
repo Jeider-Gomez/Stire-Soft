@@ -14,6 +14,19 @@
       >
         <Menu :size="18" aria-hidden="true" />
       </button>
+      <!-- Plegar el menú lateral (solo computador): fuera de la barra, en el encabezado, como en ElevenLabs o Claude; así
+           no ocupa espacio arriba del menú (Jeider, 26/10). Solo ícono; el nombre queda para el lector de pantalla. -->
+      <button
+        id="boton-menu"
+        type="button"
+        class="boton-menu hidden md:inline-flex w-9 h-9 items-center justify-center rounded-lg text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario flex-shrink-0"
+        :aria-expanded="!colapsado"
+        :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
+        @click="alternarMenu">
+        <PanelLeftOpen v-if="colapsado" :size="18" aria-hidden="true" />
+        <PanelLeftClose v-else :size="18" aria-hidden="true" />
+        <span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
+      </button>
 
       <!-- Isotipo + Logotipo -->
       <NuxtLink
@@ -155,10 +168,13 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, LogOut, GraduationCap, UserCircle, Contrast } from 'lucide-vue-next'
+import { Menu, LogOut, GraduationCap, UserCircle, Contrast, PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next'
+import { useMenuColapsado } from '~/composables/useMenuColapsado'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { institucionCorta, lugarDeAsignatura, programaCorto } from '~/utils/contextoAcademico'
+
+const { colapsado, alternarMenu } = useMenuColapsado()
 
 defineEmits(['toggle-sidebar'])
 

@@ -1,20 +1,7 @@
 <template>
   <aside ref="menuRef" class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] md:min-h-0 p-4 flex flex-col transition-[width] duration-200" :class="{ 'menu-colapsado md:w-16 md:px-2': colapsado }">
-    <!-- Ocultar el menú en computador para ganar espacio (recomendación de José, 02/10). Queda solo con íconos y se
-         recuerda en este navegador. En celular el menú ya es un cajón que se abre con la hamburguesa.
-         Arriba (pedido de Jeider, 02/10) y solo un ícono que no estorba (03/10), como en Platzi, ChatGPT o Claude
-         (P-UI-03). Toda la barra queda fija al bajar, así que el ícono siempre está a mano. -->
-    <button
-      id="boton-menu"
-      type="button"
-      class="boton-menu hidden md:flex self-end -mt-1 -mr-1 mb-2 w-9 h-9 items-center justify-center rounded-lg text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario"
-      :aria-expanded="!colapsado"
-      :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
-      @click="alternarMenu">
-      <PanelLeftOpen v-if="colapsado" :size="18" aria-hidden="true" class="shrink-0" />
-      <PanelLeftClose v-else :size="18" aria-hidden="true" class="shrink-0" />
-      <span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
-    </button>
+    <!-- El botón para plegar el menú pasó al encabezado (HeaderNav.vue, 26/10), como en ElevenLabs: así no ocupa
+         espacio arriba de la barra. -->
     <!-- Navegación según Rol Activo -->
     <div class="space-y-4">
       <!-- 🎓 NAVEGACIÓN ESTUDIANTE (6 Ítems Persistentes - Insumo 15 §5) -->
@@ -188,7 +175,7 @@
 </template>
 
 <script setup lang="ts">
-import { Activity, BookOpen, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp } from 'lucide-vue-next'
+import { Activity, BookOpen, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, QrCode, Repeat, Settings, ShieldCheck, TrendingUp } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 
@@ -197,16 +184,8 @@ const studentStore = useStudentStore()
 const route = useRoute()
 
 // ─── Menú colapsado (solo computador) ───
-const CLAVE_MENU = 'stire-menu-colapsado'
-const colapsado = useState('menu-colapsado', () => false)
+const { colapsado } = useMenuColapsado()
 const menuRef = ref<HTMLElement | null>(null)
-onMounted(() => {
-  try { colapsado.value = localStorage.getItem(CLAVE_MENU) === '1' } catch { /* sin almacenamiento */ }
-})
-function alternarMenu() {
-  colapsado.value = !colapsado.value
-  try { localStorage.setItem(CLAVE_MENU, colapsado.value ? '1' : '0') } catch { /* se usa sin recordar */ }
-}
 // Con solo íconos, cada enlace muestra su nombre al pasar el mouse (el lector de pantalla ya lo lee del texto oculto).
 watch([colapsado, () => route.path], () => nextTick(() => {
   for (const a of menuRef.value?.querySelectorAll<HTMLAnchorElement>('a') ?? []) {

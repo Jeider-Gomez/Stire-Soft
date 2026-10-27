@@ -55,8 +55,9 @@ describe('Ajustes de UI/UX de José', () => {
 
   it('el menú lateral se oculta en computador (solo íconos, recordado) sin perder los nombres para el lector de pantalla', () => {
     const menu = leer('components', 'layout', 'SidebarNav.vue');
-    expect(menu).toContain(':aria-expanded="!colapsado"');
-    expect(menu).toContain("localStorage.setItem(CLAVE_MENU, colapsado.value ? '1' : '0')");
+    // El botón y el estado recordado viven desde el 26/10 en el encabezado y en useMenuColapsado.ts.
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain(':aria-expanded="!colapsado"');
+    expect(leer('composables', 'useMenuColapsado.ts')).toContain("localStorage.setItem(CLAVE_MENU, colapsado.value ? '1' : '0')");
     expect(menu).toContain('clip: rect(0 0 0 0)');
     expect(menu).not.toMatch(/<Settings[^>]*\/>\s*<Settings/);
   });
@@ -147,16 +148,16 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
     expect(r).toMatch(/v-if="selectedRole === 'docente'"[^>]*text-semantico-falla/);
   });
 
-  it('el botón para ocultar el menú va arriba de la barra lateral, solo con ícono, y toda la barra queda fija al bajar', () => {
-    const menu = leer('components', 'layout', 'SidebarNav.vue');
-    const boton = menu.indexOf('id="boton-menu"');
-    expect(boton).toBeGreaterThan(-1);
-    expect(boton).toBeLessThan(menu.indexOf('<nav'));
-    // un ícono de 36 px, sin borde ni fondo fijo (P-UI-03)
-    expect(menu).toMatch(/id="boton-menu"[\s\S]*?class="boton-menu hidden md:flex self-end[^"]*w-9 h-9/);
-    expect(menu).not.toMatch(/id="boton-menu"[\s\S]*?class="[^"]*border border-base-borde-sutil/);
+  it('el botón para ocultar el menú va en el encabezado (fuera de la barra, 26/10), solo con ícono, y toda la barra queda fija al bajar', () => {
+    const cab = leer('components', 'layout', 'HeaderNav.vue');
+    // fuera de la barra lateral, para que no ocupe espacio arriba del menú (como ElevenLabs o Claude)
+    expect(leer('components', 'layout', 'SidebarNav.vue')).not.toContain('id="boton-menu"');
+    expect(cab).toMatch(/id="boton-menu"[\s\S]*?class="boton-menu hidden md:inline-flex w-9 h-9/);
+    expect(cab).not.toMatch(/id="boton-menu"[\s\S]*?class="[^"]*border border-base-borde-sutil/);
     // el nombre queda para el lector de pantalla; a la vista, solo el ícono
-    expect(menu).toContain(`<span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>`);
+    expect(cab).toContain(`<span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>`);
+    // la barra y el encabezado comparten el mismo estado, recordado en el navegador
+    expect(leer('composables', 'useMenuColapsado.ts')).toContain("useState('menu-colapsado'");
     // la barra entera es la que queda fija (P-UI-02)
     expect(leer('composables', 'useMobileSidebar.ts')).toContain("const FIJA = 'md:sticky md:top-16 md:self-start md:h-[calc(100vh-4rem)] md:overflow-y-auto'");
   });
