@@ -43,7 +43,7 @@ descarta la auditoría de la Fase 1; hasta entonces es **hipótesis**.
 | Nuevo ejercicio | `/docente/ejercicios/crear` | Constructor de los ocho tipos | Vive aparte del panel de contenidos |
 | Entregas | `/docente/entregas` | Talleres, revisión y nota | |
 | Notas | `/docente/clase/[id]/notas` | Notas de la clase | |
-| Asistencia | `/docente/clase/[id]/asistencia` | QR; «asistencia activa» que sigue en una esquina (`AsistenciaFlotante.vue`) con el conteo, los últimos que llegaron, un escáner pequeño y marcar a mano | Jeider la siente limitada: la cámara debe quedar encendida mientras el docente hace otras cosas, y apagarse cuando él quiera (P32) |
+| Asistencia | `/docente/clase/[id]/asistencia` | QR; «asistencia activa» que sigue en una esquina (`AsistenciaFlotante.vue`) con el conteo, los últimos que llegaron, un escáner pequeño y marcar a mano | Al plegar el panel se apaga la cámara; Jeider quiere que siga escaneando (cámara web hacia la puerta) mientras el docente navega, toma notas o marca a mano (P32) |
 | Ajustes de la clase | `/docente/clase/[id]/ajustes` | Solicitudes para entrar, portada (color), avance, compartir, datos, logros | |
 | Ficha del estudiante | `/docente/estudiante/[id]` | Perfil de aprendizaje, progreso, intervención | |
 | Refuerzos y retos | `/docente/refuerzos` | Asignar a un estudiante | |

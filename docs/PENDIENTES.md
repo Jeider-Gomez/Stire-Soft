@@ -49,7 +49,7 @@ aquí (queda en `CHANGELOG.md` y en los commits) y su número no se reutiliza. E
 |---|---|---|
 | P21 | Portada de la clase con imagen (el color ya está) | Guardar archivos |
 | P22 | Errores de concepto por tipo de ejercicio (hoy solo por semana) | Consulta y columna nuevas |
-| P32 | Asistencia flotante: la cámara sigue encendida mientras el docente hace otras cosas y él decide cuándo cerrarla | Revisar si el cierre de la sesión cambia |
+| P32 | Asistencia flotante: la cámara (por ejemplo una cámara web girada hacia la puerta) sigue escaneando mientras el docente navega por el panel, toma notas o marca a mano, y él la apaga cuando quiera. Hoy el escáner vive dentro del panel abierto (`AsistenciaFlotante.vue:32`): **al plegarlo, la cámara se apaga** | Solo frontend, salvo que haga falta otro estado de la sesión |
 
 ## E. Documentación y orden del repositorio
 
