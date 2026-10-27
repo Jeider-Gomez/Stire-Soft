@@ -46,8 +46,14 @@ describe('Aspecto del panel del docente (R0)', () => {
     expect(css).toContain('prefers-reduced-motion: reduce');
   });
 
-  it('usa la letra del sistema, sin fuentes externas', () => {
-    expect(css).toContain('-apple-system');
+  it('usa la letra del sistema, sin fuentes externas (desde el 26/10 en toda la app, no solo en el panel)', () => {
     expect(css).not.toMatch(/@import|googleapis/);
+    const tw = readFileSync(path.join(__dirname, '..', '..', '..', 'frontend-nuxt', 'tailwind.config.ts'), 'utf8');
+    expect(tw).toMatch(/interfaz: \['-apple-system'/);
+    expect(tw).toMatch(/poppins: \['-apple-system'/);
+    // Inter queda solo para el nombre «stire_» del logo; Poppins ya no se descarga.
+    const main = readFileSync(path.join(__dirname, '..', '..', '..', 'frontend-nuxt', 'assets', 'css', 'main.css'), 'utf8');
+    expect(main).toContain('family=Inter:wght@800&');
+    expect(main).not.toContain('Poppins');
   });
 });

@@ -74,8 +74,11 @@ export default <Partial<Config>>{
         }
       },
       fontFamily: {
-        interfaz: ['Inter', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif'],
+        // Letra del sistema en toda la app (26/10, decisión de Jeider): la de Apple en sus equipos (San Francisco) y la
+        // propia de cada sistema en los demás (Segoe UI en Windows, Roboto en Android). «poppins» queda como alias de la
+        // misma letra para no tocar las cientos de clases que la usan; los títulos se distinguen por peso y tamaño.
+        interfaz: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI Variable Text"', '"Segoe UI"', 'system-ui', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        poppins: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI Variable Text"', '"Segoe UI"', 'system-ui', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'],
         codigo: ['"JetBrains Mono"', 'monospace']
       },
       // En rem (los mismos 12, 14, 16… px con el tamaño normal), para que «Texto grande» los agrande (utils/apariencia.ts).

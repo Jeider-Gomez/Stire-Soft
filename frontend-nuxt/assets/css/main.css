@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+/* Inter solo para el nombre «stire_» del logo (components/layout/Logo.vue); el resto usa la letra del sistema. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,7 +8,7 @@
 @layer base {
   body {
     @apply bg-stire-canvas text-base-texto-primario font-interfaz antialiased min-h-screen;
-    /* Inter convierte «<-» y «->» en flechas: en opciones y pasos de pseudocódigo el estudiante debe ver lo que escribe. */
+    /* Sin alternativas contextuales: algunas letras convierten «<-» y «->» en flechas, y el estudiante debe ver lo que escribe. */
     font-feature-settings: "calt" 0;
   }
 

@@ -41,8 +41,8 @@
 import { computed } from 'vue'
 
 const props = withDefaults(defineProps<{
-  /** «grande» (48 px, pantallas de acceso) usa el dibujo completo; «normal» (28 px), el del favicon. */
-  tamano?: 'normal' | 'grande'
+  /** «grande» (48 px, pantallas de acceso) usa el dibujo completo; «normal» (28 px) y «mini» (20 px, pie), el del favicon. */
+  tamano?: 'mini' | 'normal' | 'grande'
   /** Junto al nombre «stire_». */
   conNombre?: boolean
   /** Nombre en blanco, para fondos de color. */
@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<{
 }>(), { tamano: 'normal', conNombre: false, claro: false })
 
 const grande = computed(() => props.tamano === 'grande')
-const alto = computed(() => (grande.value ? 48 : 28))
+const alto = computed(() => (grande.value ? 48 : props.tamano === 'mini' ? 20 : 28))
 </script>
 
 <style scoped>
@@ -70,7 +70,7 @@ const alto = computed(() => (grande.value ? 48 : 28))
 .logo-isotipo { display: block; flex-shrink: 0; }
 
 /* «stire_»: minúsculas, el punto de la i y el cursor en turquesa, como en el logo con nombre. */
-.logo-nombre { font-family: Inter, system-ui, sans-serif; font-weight: 700; line-height: 1; letter-spacing: -0.035em; color: #0b3d91; white-space: nowrap; }
+.logo-nombre { font-family: Inter, system-ui, sans-serif; font-weight: 800; line-height: 1; letter-spacing: -0.035em; color: #0b3d91; white-space: nowrap; }
 .logo-nombre.claro { color: #fff; }
 :global(:root[data-tema="oscuro"]) .logo-nombre:not(.claro) { color: rgb(var(--c-base-texto-primario)); }
 :global(:root[data-contraste="alto"]) .logo-nombre:not(.claro) { color: rgb(var(--c-base-texto-primario)); }

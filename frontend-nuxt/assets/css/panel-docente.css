@@ -9,13 +9,10 @@
  *   - con «reducir el movimiento» las transiciones desaparecen.
  */
 
-/* Letra del sistema: la de Apple en sus equipos y la propia de cada sistema en los demás. Código y Poppins no cambian. */
+/* La letra del sistema ya es la de toda la app (tailwind.config.ts, 26/10); aquí solo queda la curva de movimiento. */
 [data-panel="docente"] {
   --ease-docente: cubic-bezier(0.2, 0.8, 0.2, 1);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
-[data-panel="docente"] .font-interfaz { font-family: inherit; }
-[data-panel="docente"] .font-poppins { font-family: inherit; }
 
 /* Solo en claro y sin alto contraste: fondo gris neutro (el de las aplicaciones de Apple) y sombras frías y más suaves. */
 :root:not([data-tema="oscuro"]):not([data-contraste="alto"]) [data-panel="docente"] {
