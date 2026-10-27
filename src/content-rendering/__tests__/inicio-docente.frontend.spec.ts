@@ -14,12 +14,13 @@ function cargar<T>(nombre: string): T {
 }
 
 interface Clase { id: number; name: string; enrollmentCount?: number; atRiskCount?: number }
-interface Pendiente { n: number; texto: string; clase?: string; claseId?: number; ir: string }
+interface Pendiente { n: number; texto: string; clase?: string; claseId?: number; ir: string; tipo?: string }
+interface Alerta { claseId: number; clase: string; bloqueados: number; errorMasRepetido: { nombre: string; estudiantes: number } | null }
 const m = cargar<{
   saludo: (h: number) => string;
   primerNombre: (n: string | null | undefined) => string;
   resumenInicio: (c: Clase[]) => string;
-  porRevisar: (c: Clase[], noLeidos: number | null, maximo?: number) => Pendiente[];
+  porRevisar: (c: Clase[], noLeidos: number | null, maximo?: number, alertas?: Alerta[]) => Pendiente[];
   vistaGuardada: (v: string | null) => 'tarjetas' | 'lista';
 }>('inicioDocente');
 
@@ -86,5 +87,25 @@ describe('«Mis clases» en tarjetas o lista', () => {
     expect(leer('components', 'docente', 'inicio', 'PorRevisar.vue')).toContain('data-recorrido="rezago"');
     expect(leer('pages', 'docente', 'index.vue')).toContain('data-recorrido="clases"');
     expect(leer('pages', 'docente', 'index.vue')).toContain('id="abrir-crear-clase"');
+  });
+});
+
+describe('«Por revisar» trae también las alertas de cada clase (27/10)', () => {
+  const alertas: Alerta[] = [
+    { claseId: 1, clase: 'Fundamentos de Algoritmia', bloqueados: 2, errorMasRepetido: { nombre: 'Confunde = con ==', estudiantes: 4 } },
+    { claseId: 2, clase: 'Pensamiento Algorítmico', bloqueados: 0, errorMasRepetido: { nombre: 'Olvida inicializar', estudiantes: 1 } },
+  ];
+  it('quien no puede avanzar va primero; el error repetido entra si lo tienen dos o más; cada uno lleva a «Hoy» de su clase', () => {
+    const r = m.porRevisar(clases, null, 6, alertas);
+    expect(r[0]).toMatchObject({ n: 2, tipo: 'bloqueados', texto: 'estudiantes no pueden avanzar', ir: '/docente/clase/1#bloqueados' });
+    expect(r.find((p) => p.tipo === 'error')).toMatchObject({ n: 4, texto: 'repiten el error «Confunde = con ==»', ir: '/docente/clase/1#errores' });
+    expect(r.some((p) => p.texto.includes('Olvida inicializar'))).toBe(false);
+  });
+  it('el Inicio las carga de cada clase activa y «Hoy» tiene adónde llevar', () => {
+    expect(leer('pages', 'docente', 'index.vue')).toContain('porRevisar(clasesActivas, unreadMessages, 6, alertasClases)');
+    expect(leer('composables', 'useAlertasInicio.ts')).toContain('/errores-semana`).catch(() => null)');
+    const hoy = leer('pages', 'docente', 'clase', '[classId]', 'index.vue');
+    expect(hoy).toContain('id="bloqueados"');
+    expect(hoy).toContain('<DocenteErroresSemana id="errores"');
   });
 });

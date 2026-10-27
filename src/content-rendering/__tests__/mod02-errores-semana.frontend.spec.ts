@@ -34,7 +34,7 @@ describe('MOD-02: errores que más se repiten esta semana', () => {
   });
 
   it('está en «Hoy», separa concepto de escritura y cada estudiante lleva a su ficha', () => {
-    expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain('<DocenteErroresSemana :class-id="classId" />');
+    expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain('<DocenteErroresSemana id="errores" class="scroll-mt-24" :class-id="classId" />');
     expect(leer('composables', 'useResumenClase.ts')).toContain('/analytics/class/${classId}/errores-semana');
     const c = leer('components', 'docente', 'ErroresSemana.vue');
     expect(c).toContain('De concepto: para explicar en clase');

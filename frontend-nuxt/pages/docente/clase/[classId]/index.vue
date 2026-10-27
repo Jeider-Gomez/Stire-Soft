@@ -45,7 +45,7 @@
       </p>
     </section>
 
-    <ol v-if="!cargando && pendientes.length" class="space-y-3" aria-label="Pendientes de hoy">
+    <ol v-if="!cargando && pendientes.length" id="bloqueados" class="space-y-3 scroll-mt-24" aria-label="Pendientes de hoy">
       <li v-for="p in pendientes" :key="p.clave" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 sm:p-5 flex gap-3">
         <span class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" :class="ESTILO[p.tipo].fondo">
           <component :is="ESTILO[p.tipo].icono" :size="18" aria-hidden="true" />
@@ -90,7 +90,7 @@
     </div>
 
     <div class="min-w-0 space-y-6 xl:sticky xl:top-20">
-      <DocenteErroresSemana :class-id="classId" />
+      <DocenteErroresSemana id="errores" class="scroll-mt-24" :class-id="classId" />
       <DocenteValoracionesClase :class-id="classId" />
     </div>
     </div>

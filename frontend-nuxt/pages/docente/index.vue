@@ -20,7 +20,7 @@
     <!-- Encuesta de usabilidad SUS (UX-08): solo si lleva unos días usando STIRE y no la ha respondido -->
     <InvitacionEncuesta ruta="/docente/encuesta" />
 
-    <DocenteInicioPorRevisar v-if="!isLoading && classes.length > 0" :items="porRevisar(clasesActivas, unreadMessages)" :colores="colores" />
+    <DocenteInicioPorRevisar v-if="!isLoading && classes.length > 0" :items="porRevisar(clasesActivas, unreadMessages, 6, alertasClases)" :colores="colores" />
 
     <!-- Notificación de éxito -->
     <Transition enter-active-class="transition duration-200 ease-out"
@@ -165,7 +165,8 @@
 // Inicio del docente: sus clases organizadas por periodo y programa, las cifras de todas y el acceso a cada una. Los datos
 // y la API están en composables/useClasesDocente.ts; crear una clase y el QR, en sus ventanas (PAT-01 y PAT-04; antes
 // 826 líneas con las dos ventanas dentro).
-import { computed, onMounted, provide, ref } from 'vue'
+import { computed, onMounted, provide, ref, watch } from 'vue'
+import { useAlertasInicio } from '~/composables/useAlertasInicio'
 import { organizarClases, programasDeLasClases } from '~/utils/organizarClases'
 import { siglasDeClases } from '~/utils/contextoAcademico'
 import { colorDeClase } from '~/utils/pestanasClase'
@@ -198,6 +199,9 @@ const searchQuery = ref('')
 const programaFiltro = ref<number | null>(null)
 const verAnteriores = ref(false)
 const clasesActivas = computed(() => classes.value.filter((c) => c.isActive !== false))
+// Quién no puede avanzar y el error más repetido de cada clase, para «Por revisar» (antes solo dentro de cada clase).
+const { alertas: alertasClases, cargar: cargarAlertas } = useAlertasInicio()
+watch(() => clasesActivas.value.map((c) => c.id).join(','), () => { if (clasesActivas.value.length) void cargarAlertas(clasesActivas.value) }, { immediate: true })
 const clasesArchivadas = computed(() => classes.value.filter((c) => c.isActive === false))
 const programasDelDocente = computed(() => programasDeLasClases(clasesActivas.value))
 const organizacion = computed(() => organizarClases(clasesActivas.value, { texto: searchQuery.value, programaId: programaFiltro.value, verAnteriores: verAnteriores.value }))

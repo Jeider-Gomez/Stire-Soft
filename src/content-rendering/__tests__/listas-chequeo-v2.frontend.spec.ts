@@ -112,7 +112,7 @@ describe('MOB-02 · objetivos táctiles de 44 px (la revisión del «después» 
     ['pages/estudiante/progreso.vue', 'to="/estudiante/repasos"', 1],
     ['pages/estudiante/progreso.vue', 'hover:bg-acento-ambar/10 whitespace-nowrap', 1],
     // El inicio del docente rehecho (26/10): «Por revisar» y la tarjeta de cada clase son componentes.
-    ['components/docente/inicio/PorRevisar.vue', ":title=\"p.claseId ? 'Ver quiénes están en rezago'", 1],
+    ['components/docente/inicio/PorRevisar.vue', ':title="TITULO[p.tipo', 1],
     ['components/docente/inicio/TarjetaClase.vue', "@click=\"$emit('copiar', cls.code)\"", 1],
     ['components/docente/inicio/TarjetaClase.vue', "@click=\"$emit('qr', cls)\"", 1],
     // Las otras dos (Cancelar y Cerrar del QR) están desde el 05/10 en VentanaCrearClase y VentanaQrClase; de la
