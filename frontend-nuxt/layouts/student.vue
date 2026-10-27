@@ -28,6 +28,8 @@
 
     <!-- EST-V04: Tutor IA Drawer Global -->
     <TutorChatDrawer />
+    <!-- «Ir a una lección» con Ctrl+K desde cualquier pantalla (components/estudiante/IrALeccion.vue) -->
+    <EstudianteIrALeccion />
     <!-- En una lección, en el celular, el Tutor va en la barra de abajo (EstudianteNavegacionLeccion). -->
     <TutorLanzadorTutor :solo-computador="enLeccion" />
     <DialogoConfirmar />

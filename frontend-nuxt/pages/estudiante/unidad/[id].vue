@@ -14,6 +14,8 @@
       </template>
       <span class="font-bold text-base-texto-primario" aria-current="page">{{ unitData?.title || 'Cargando…' }}</span>
     </nav>
+    <!-- Computador: anterior · «Lección n de N» (abre Ctrl+K) · siguiente, fijo arriba (26/10) -->
+    <EstudianteSaltosLeccion :unit-id="unitId" class="-mt-4" />
 
     <!-- Estado de carga -->
     <p v-if="isLoading" role="status" class="p-12 flex items-center justify-center gap-2 text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">

@@ -16,6 +16,14 @@
       <ChevronDown v-if="planAbierto" :size="14" aria-hidden="true" />
       <ChevronRight v-else :size="14" aria-hidden="true" />
     </button>
+    <!-- Buscar y saltar a cualquier lección (Ctrl+K), como en Cursor (26/10) -->
+    <button v-show="planAbierto && studentStore.modules.length" type="button"
+      class="mx-2 mb-1.5 w-[calc(100%-1rem)] flex items-center gap-2 min-h-[36px] px-2.5 rounded-md border border-base-borde-sutil text-xs text-base-texto-secundario hover:text-base-texto-primario hover:border-base-borde-fuerte"
+      @click="irALeccion = true">
+      <Search :size="13" aria-hidden="true" />
+      <span class="flex-1 text-left">Ir a una lección</span>
+      <kbd class="text-[10px] border border-base-borde-sutil rounded px-1">Ctrl K</kbd>
+    </button>
     <ul v-show="planAbierto" id="plan-del-curso" class="space-y-0.5 pb-1">
       <li v-for="(mod, i) in studentStore.modules" :key="mod.id">
         <button
@@ -58,11 +66,12 @@
 </template>
 
 <script setup lang="ts">
-import { Check, ChevronDown, ChevronRight, Lock } from 'lucide-vue-next'
+import { Check, ChevronDown, ChevronRight, Lock, Search } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
 import { conteoModulo, leccionDeLaRuta, moduloInicial, tituloCorto } from '~/utils/planLateral'
 
 const studentStore = useStudentStore()
+const irALeccion = useState('ir-a-leccion', () => false)
 const route = useRoute()
 const esActual = (id: number) => route.path === `/estudiante/unidad/${id}`
 

@@ -49,3 +49,27 @@ export function navegacionLeccion(modulos: ReadonlyArray<ModuloPlan>, estados: R
     })),
   }
 }
+
+/** Una lección en el buscador «Ir a una lección» (Ctrl+K), con su módulo para ubicarla. */
+export interface LeccionBuscada { id: number; titulo: string; modulo: string; estado: UnitStatus; actual: boolean; abierta: boolean }
+
+const sinAcentos = (t: string) => t.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim()
+
+/**
+ * Buscador de lecciones (como el de Cursor o Platzi): todas las del curso en orden; con texto, las que lo tienen en su
+ * título o en el de su módulo, sin importar acentos ni mayúsculas. Las de módulos cerrados se muestran (con candado)
+ * para que el estudiante sepa que existen.
+ */
+export function buscarLecciones(modulos: ReadonlyArray<ModuloNav>, texto: string): LeccionBuscada[] {
+  const q = sinAcentos(texto)
+  return modulos.flatMap((m) => m.lecciones
+    .filter((l) => !q || sinAcentos(`${l.titulo} ${m.titulo}`).includes(q))
+    .map((l) => ({ id: l.id, titulo: l.titulo, modulo: m.titulo, estado: l.estado, actual: l.actual, abierta: m.abierto })))
+}
+
+/** Posición en todo el curso («Lección 7 de 24»), para el buscador y la barra de computador. */
+export function posicionEnCurso(modulos: ReadonlyArray<ModuloNav>, unitId: number): { n: number; total: number } | null {
+  const todas = modulos.flatMap((m) => m.lecciones)
+  const i = todas.findIndex((l) => l.id === unitId)
+  return i < 0 ? null : { n: i + 1, total: todas.length }
+}
