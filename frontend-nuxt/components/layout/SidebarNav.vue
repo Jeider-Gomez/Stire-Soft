@@ -6,8 +6,14 @@
     <div class="cabecera-menu h-16 -mt-4 -mx-4 px-4 mb-3 flex items-center justify-between gap-2 border-b border-base-borde-sutil">
       <!-- Logo pequeño y fijo; plegada la barra, queda solo la pantalla con gafas (Jeider, 26/10: «que su logo quede ahí»). -->
       <NuxtLink :to="inicio" class="logo-menu flex items-center min-h-[44px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stire-blue/40" aria-label="Ir al inicio">
-        <LayoutLogo tamano="mini" :con-nombre="!colapsado" />
+        <LayoutLogo tamano="mini" con-nombre />
       </NuxtLink>
+      <!-- Plegada (como Platzi): queda solo el logo, y al pasar el mouse o con el foco se vuelve el ícono para expandir. -->
+      <button type="button" class="expandir-logo hidden w-9 h-9 items-center justify-center rounded-lg text-slate-600 hover:bg-base-bg-secundario"
+        aria-label="Mostrar el menú" title="Mostrar el menú" @click="alternarMenu">
+        <LayoutLogo tamano="mini" class="logo-reposo" />
+        <PanelLeftOpen :size="18" aria-hidden="true" class="icono-expandir" />
+      </button>
       <button
         id="boton-menu"
         type="button"
@@ -238,12 +244,15 @@ function isCurrentRoute(path: string) {
   .menu-colapsado nav > div > p {
     display: none;
   }
+  .menu-colapsado .logo-menu,
+  .menu-colapsado .boton-menu { display: none; }
+  .menu-colapsado .expandir-logo { display: inline-flex; }
+  .expandir-logo .icono-expandir { display: none; }
+  .expandir-logo:hover .logo-reposo,
+  .expandir-logo:focus-visible .logo-reposo { display: none; }
+  .expandir-logo:hover .icono-expandir,
+  .expandir-logo:focus-visible .icono-expandir { display: block; }
   .menu-colapsado .cabecera-menu {
-    flex-direction: column;
-    height: auto;
-    gap: 0.25rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.5rem;
     justify-content: center;
     margin-left: -0.5rem;
     margin-right: -0.5rem;
@@ -257,7 +266,7 @@ function isCurrentRoute(path: string) {
     padding-right: 0.5rem;
   }
   .menu-colapsado a span,
-  .menu-colapsado button span {
+  .menu-colapsado button:not(.expandir-logo) span {
     position: absolute;
     width: 1px;
     height: 1px;
