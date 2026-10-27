@@ -115,6 +115,14 @@ en este momento" sin crear una rama que haya que mantener.
 | MENOR | Llega una función nueva y lo de antes sigue igual | `v1.0.3` → `v1.1.0` |
 | MAYOR | Cambia a fondo cómo se usa, **y solo después de la evaluación heurística humana del equipo** (la `v3.0.0` espera la del rediseño del 26–27/10) | `v1.4.0` → `v2.0.0` |
 
+**Cuándo se marca una versión (27/10, pedido de Jeider: «ni nunca ni demasiado rápido»):** lo desplegado se va
+acumulando en una sola entrada «En curso» arriba del `CHANGELOG.md`. Se marca la versión cuando se cumple lo primero de:
+- **cierre de la semana** (el viernes), si hay al menos una función nueva → MENOR; si solo hay arreglos → CORRECCIÓN;
+- **5 funciones nuevas** acumuladas → MENOR (sin esperar al viernes);
+- **5 arreglos** acumulados sin funciones nuevas → CORRECCIÓN.
+
+Nunca dos versiones el mismo día. La MAYOR (`v3.0.0`) solo tras la evaluación heurística humana del equipo.
+
 **Cada versión, tres pasos:** (1) una entrada en `CHANGELOG.md` con su número, (2) las capturas
 de `docs/material-visual/vistas/` actualizadas en el mismo commit (mismos nombres de archivo: así
 GitHub muestra el antes y el después de cada pantalla) y (3) el tag:

@@ -12,6 +12,15 @@ entry to the oldest.
 
 ---
 
+## En curso — sin versión todavía
+
+Se acumula aquí lo desplegado desde la `v2.4.0`; se marca la versión al cierre de la semana o al juntar 5 funciones nuevas
+(o 5 arreglos), según `docs/FLUJO_GIT.md` «Versiones».
+
+- (nada todavía)
+
+---
+
 ## v2.4.0 — el Asistente propone ejercicios de programación que corrige el juez · 27 de Octubre de 2026
 
 **Commit `3161ce5e`. Desplegada (backend `0943bf16`, sin migración; frontend en Vercel).**
