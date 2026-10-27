@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-5xl mx-auto space-y-6">
+  <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase v-if="claseDeLaFicha" :class-id="claseDeLaFicha" activa="estudiantes" />
     <!-- Navegación de retorno -->
     <div class="flex items-center gap-2 text-xs">

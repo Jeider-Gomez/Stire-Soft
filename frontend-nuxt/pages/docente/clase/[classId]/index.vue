@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-6">
+  <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase :class-id="classId" activa="hoy" :nombre="clase?.name" :codigo="clase?.code" />
 
     <header data-recorrido="hoy" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
@@ -25,6 +25,9 @@
       </dl>
     </header>
 
+    <!-- En pantallas anchas, dos columnas: lo que hay que hacer hoy y, al lado, cómo va la semana. -->
+    <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr),380px] items-start">
+    <div class="min-w-0 space-y-4">
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario">
       <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Revisando la clase…
     </p>
@@ -84,9 +87,13 @@
         </div>
       </li>
     </ol>
+    </div>
 
-    <DocenteErroresSemana :class-id="classId" />
-    <DocenteValoracionesClase :class-id="classId" />
+    <div class="min-w-0 space-y-6 xl:sticky xl:top-20">
+      <DocenteErroresSemana :class-id="classId" />
+      <DocenteValoracionesClase :class-id="classId" />
+    </div>
+    </div>
   </div>
 </template>
 

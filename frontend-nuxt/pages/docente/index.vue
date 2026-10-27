@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-5xl mx-auto space-y-7">
+  <div class="max-w-7xl mx-auto space-y-7">
 
     <!-- Inicio como en el prototipo del panel v2: saludo con el resumen, «Por revisar» de todas las clases y «Mis clases»
          en tarjetas o lista (utils/inicioDocente.ts). Las cuatro tarjetas de cifras pasaron al resumen y a «Por revisar». -->
@@ -103,7 +103,7 @@
          TARJETAS DE CLASES
     ═══════════════════════════════════════════════════════ -->
     <section v-if="!isLoading && classes.length > 0" data-recorrido="clases" class="space-y-5">
-      <div v-if="vista === 'tarjetas'" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-if="vista === 'tarjetas'" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         <DocenteInicioTarjetaClase v-for="cls in filteredClasses" :key="cls.id" :cls="cls" :color="colores[cls.id]" :sigla="siglas[cls.id]"
           :copiado="copiedCode === cls.code" @copiar="copyCode" @qr="openQrModal" />
         <button type="button" class="min-h-[240px] rounded-2xl border-2 border-dashed border-base-borde-fuerte text-stire-blue font-semibold flex flex-col items-center justify-center gap-1 hover:bg-stire-blue/5 transition-colors" @click="openCreateModal">

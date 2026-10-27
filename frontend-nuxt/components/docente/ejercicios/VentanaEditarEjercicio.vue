@@ -4,7 +4,7 @@
        si es una variante recién duplicada), Tab no se sale, Escape cierra y el foco vuelve a su botón «Editar». -->
   <Teleport to="body">
     <AdminDialogo id-titulo="edit-exercise-title" :titulo="variante ? 'Revisar la variante' : 'Editar ejercicio'" :subtitulo="ejercicio.title"
-      ancho="2xl" :devolver-foco="`editar-ejercicio-${ejercicio.id}`" :ocupado="guardando" @cerrar="emit('cerrar')">
+      ancho="4xl" :devolver-foco="`editar-ejercicio-${ejercicio.id}`" :ocupado="guardando" @cerrar="emit('cerrar')">
       <template #icono><Pencil :size="18" aria-hidden="true" /></template>
       <form class="space-y-4 text-xs" novalidate @submit.prevent="guardarCambios">
         <!-- Editar lo ya publicado (27/10): se puede, y se dice qué pasa al guardar. -->

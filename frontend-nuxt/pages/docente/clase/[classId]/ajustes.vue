@@ -1,9 +1,10 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-6">
+  <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase :class-id="classId" activa="ajustes" :nombre="classInfo?.name" :codigo="classInfo?.code" />
 
 
 
+    <div class="grid gap-6 lg:grid-cols-2 items-start">
     <!-- Quién está en la clase: primero las solicitudes, porque el estudiante no ve el curso hasta que lo aceptas. -->
     <section id="solicitudes" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
       <h1 class="text-sm font-bold text-base-texto-primario">Solicitudes para entrar</h1>
@@ -60,6 +61,7 @@
     <DocenteAjustesSeccionCompartir :ajustes="ajustes" />
     <DocenteAjustesSeccionDatos :ajustes="ajustes" />
     <DocenteAjustesSeccionGestion :ajustes="ajustes" :class-id="classId" />
+    </div>
 
     <!-- Diálogo: Confirmar quitar estudiante -->
     <AdminDialogo

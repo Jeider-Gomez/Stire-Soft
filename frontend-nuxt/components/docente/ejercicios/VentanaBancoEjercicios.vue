@@ -3,7 +3,7 @@
        común de ventanas: el foco entra a «Buscar», Tab no se sale, Escape cierra y el foco vuelve a «Mi banco». -->
   <Teleport to="body">
     <AdminDialogo id-titulo="bank-dialog-title" titulo="Mi banco de ejercicios" subtitulo="Agrega a esta lección una copia de un ejercicio tuyo."
-      ancho="3xl" :devolver-foco="`abrir-banco-${unidadId}`" @cerrar="emit('cerrar')">
+      ancho="4xl" :devolver-foco="`abrir-banco-${unidadId}`" @cerrar="emit('cerrar')">
       <template #icono><Library :size="18" aria-hidden="true" /></template>
       <div class="space-y-4 text-xs">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">

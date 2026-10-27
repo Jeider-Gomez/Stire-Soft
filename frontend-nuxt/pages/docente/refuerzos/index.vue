@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-5xl mx-auto space-y-5">
+  <div class="max-w-7xl mx-auto space-y-5">
     <DocentePestanasClase v-if="claseId" :class-id="claseId" activa="refuerzos" :nombre="claseActual?.name" />
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 shadow-sm space-y-3">
       <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">

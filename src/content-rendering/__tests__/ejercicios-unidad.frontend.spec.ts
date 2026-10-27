@@ -72,9 +72,9 @@ describe('el panel organiza; el composable habla con la API; una ventana por com
       expect(leer('components', 'docente', 'ejercicios', `${v}.vue`)).toContain('<AdminDialogo');
     }
     const base = leer('components', 'admin', 'AdminDialogo.vue');
-    expect(base).toContain("const ANCHOS = { md: 'max-w-md', '2xl': 'max-w-2xl', '3xl': 'max-w-3xl' } as const");
-    expect(leer('components', 'docente', 'ejercicios', 'VentanaEditarEjercicio.vue')).toContain('ancho="2xl"');
-    expect(leer('components', 'docente', 'ejercicios', 'VentanaBancoEjercicios.vue')).toContain('ancho="3xl"');
+    expect(base).toContain("const ANCHOS = { md: 'max-w-md', '2xl': 'max-w-2xl', '3xl': 'max-w-3xl', '4xl': 'max-w-4xl' } as const");
+    expect(leer('components', 'docente', 'ejercicios', 'VentanaEditarEjercicio.vue')).toContain('ancho="4xl"');
+    expect(leer('components', 'docente', 'ejercicios', 'VentanaBancoEjercicios.vue')).toContain('ancho="4xl"');
   });
 
   it('al cerrar, el foco vuelve al botón que abrió la ventana; tras archivar, al título «Ejercicios»', () => {

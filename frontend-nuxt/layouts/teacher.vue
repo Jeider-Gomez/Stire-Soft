@@ -13,7 +13,7 @@
     <LayoutSidebarNav :class="sidebarClass" />
     <div class="flex-1 min-w-0 flex flex-col">
       <LayoutHeaderNav @toggle-sidebar="toggleSidebar" />
-      <main id="contenido" tabindex="-1" class="flex-1 min-w-0 p-4 sm:p-6 md:p-8 max-w-6xl mx-auto w-full overflow-y-auto">
+      <main id="contenido" tabindex="-1" class="flex-1 min-w-0 p-4 sm:p-6 md:p-8 max-w-[90rem] mx-auto w-full overflow-y-auto">
         <slot />
       </main>
       <LayoutFooterBar />

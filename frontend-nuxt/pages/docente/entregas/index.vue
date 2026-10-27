@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-6">
+  <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase v-if="claseId !== null" :class-id="claseId" activa="entregas" :nombre="claseActual?.name" />
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">

@@ -48,10 +48,10 @@ const props = withDefaults(defineProps<{
   /** Si el fondo la cierra (no, cuando muestra algo que hay que copiar antes). */
   cierraConFondo?: boolean
   /** Ancho máximo: «md» para confirmar, «2xl» para un formulario largo, «3xl» para una lista con filtros. */
-  ancho?: 'md' | '2xl' | '3xl'
+  ancho?: 'md' | '2xl' | '3xl' | '4xl'
 }>(), { claseIcono: 'bg-acento-ambar/15 text-acento-ambar-fuerte', devolverFoco: null, ocupado: false, cierraConFondo: true, idDescripcion: undefined, ancho: 'md' })
 // Clases completas (no armadas con el ancho) para que Tailwind las encuentre al compilar.
-const ANCHOS = { md: 'max-w-md', '2xl': 'max-w-2xl', '3xl': 'max-w-3xl' } as const
+const ANCHOS = { md: 'max-w-md', '2xl': 'max-w-2xl', '3xl': 'max-w-3xl', '4xl': 'max-w-4xl' } as const
 
 const emit = defineEmits<{ cerrar: [] }>()
 const dialogo = ref<HTMLElement | null>(null)

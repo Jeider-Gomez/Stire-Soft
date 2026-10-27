@@ -13,7 +13,7 @@
       @click.self="incrustado || handleClose()">
       <div v-if="!incrustado" class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
 
-      <div class="relative bg-base-blanco rounded-2xl border w-full flex flex-col overflow-hidden" :class="incrustado ? 'border-base-borde-sutil' : 'border-base-borde-fuerte shadow-xl max-w-2xl max-h-[90vh]'">
+      <div class="relative bg-base-blanco rounded-2xl border w-full flex flex-col overflow-hidden" :class="incrustado ? 'border-base-borde-sutil' : 'border-base-borde-fuerte shadow-xl max-w-4xl max-h-[90vh]'">
         <header class="p-5 border-b border-base-borde-sutil flex items-center justify-between gap-4">
           <div class="min-w-0">
             <p class="text-[11px] font-semibold text-base-texto-secundario">Lecciones</p>

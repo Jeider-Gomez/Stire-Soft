@@ -1,7 +1,7 @@
 <template>
   <!-- Biblioteca (prototipo del panel v2): los cursos que otros docentes compartieron. Se revisan por dentro antes de
        usarlos y se copian a una clase nueva; nunca se enlazan (utils/biblioteca.ts). Opcional, como todo lo del docente. -->
-  <div class="max-w-5xl mx-auto space-y-6">
+  <div class="max-w-7xl mx-auto space-y-6">
     <header class="space-y-1">
       <h1 class="text-2xl font-poppins font-bold text-base-texto-primario tracking-tight">Biblioteca</h1>
       <p class="text-sm text-base-texto-secundario max-w-2xl">
@@ -34,7 +34,7 @@
       No hay cursos con «{{ texto }}». Prueba con otra palabra o quita el filtro.
     </p>
 
-    <ul v-else class="grid gap-4 md:grid-cols-2">
+    <ul v-else class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       <li v-for="p in visibles" :key="p.classId" class="flex flex-col gap-3 p-5 rounded-2xl bg-base-blanco border border-base-borde-sutil">
         <div class="flex flex-wrap gap-1.5 text-[11px] font-semibold">
           <span v-if="p.asignatura" class="px-2 py-0.5 rounded-full bg-stire-blue/10 text-stire-blue">{{ p.asignatura.nombre }}</span>
