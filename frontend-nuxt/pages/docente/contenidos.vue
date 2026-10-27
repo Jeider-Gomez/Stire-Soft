@@ -139,7 +139,8 @@
 // Contenidos del curso (DOC-V02): la página organiza el árbol y abre una ventana a la vez; los datos y la API están en
 // composables/useContenidosCurso.ts y cada ventana en components/docente/contenidos/ (PAT-01 y PAT-04; antes un solo
 // archivo de 1131 líneas con cuatro ventanas y sus llamadas a la API).
-import { computed, nextTick, onMounted, provide, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue'
+import { EVENTO_CONTENIDO_CAMBIO } from '~/utils/asistenteDocente'
 import { Archive, BookOpen, Check, ChevronRight, CopyPlus, EyeOff, FileText, Folder, Loader2, Pencil, Plus, Trash2, TriangleAlert } from 'lucide-vue-next'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 import { CLAVE_CONTENIDOS, useContenidosCurso } from '~/composables/useContenidosCurso'
@@ -319,6 +320,10 @@ onMounted(async () => {
     nextTick(() => document.getElementById(`unidad-${qUnit}`)?.scrollIntoView({ block: 'center' }))
   }
 })
+// Lo que crea el Asistente (components/docente/asistente/Panel.vue) aparece en el árbol sin recargar la página.
+const recargarPorAsistente = () => { void loadSections() }
+onMounted(() => window.addEventListener(EVENTO_CONTENIDO_CAMBIO, recargarPorAsistente))
+onBeforeUnmount(() => window.removeEventListener(EVENTO_CONTENIDO_CAMBIO, recargarPorAsistente))
 // La clase se elige en la barra lateral: al cambiarla, la dirección cambia pero esta pantalla sigue montada.
 watch(() => route.query.classId, (nueva) => {
   const id = Number(nueva)

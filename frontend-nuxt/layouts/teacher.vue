@@ -22,6 +22,8 @@
     <DialogoConfirmar />
     <AvisoSinConexion />
     <DocenteAsistenciaFlotante />
+    <!-- Asistente STIRE: panel a la derecha (components/docente/asistente/Panel.vue) -->
+    <DocenteAsistentePanel />
   </div>
 </template>
 

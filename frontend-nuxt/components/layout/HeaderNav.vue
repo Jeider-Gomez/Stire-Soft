@@ -67,6 +67,12 @@
       <LayoutBotonSugerencias />
 
       <!-- Notificaciones -->
+      <!-- Asistente STIRE (solo docente): propone estructura, lecciones y ejercicios según la pantalla (Ctrl+.) -->
+      <button v-if="authStore.currentRole === 'docente'" id="abrir-asistente" type="button"
+        class="hidden sm:inline-flex items-center gap-1.5 min-h-[36px] px-3 rounded-full border border-base-borde-sutil text-xs font-semibold text-stire-blue hover:bg-stire-blue/5"
+        :aria-expanded="asistenteAbierto" aria-controls="panel-asistente" title="Asistente STIRE (Ctrl+.)" @click="asistenteAbierto = !asistenteAbierto">
+        <Sparkles :size="14" aria-hidden="true" /> Asistente
+      </button>
       <LayoutNotificationBell />
 
       <!-- Separador -->
@@ -146,12 +152,13 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, LogOut, GraduationCap, UserCircle, Contrast } from 'lucide-vue-next'
+import { Menu, LogOut, GraduationCap, UserCircle, Contrast, Sparkles } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { institucionCorta, lugarDeAsignatura, programaCorto } from '~/utils/contextoAcademico'
 
 defineEmits(['toggle-sidebar'])
+const asistenteAbierto = useState('asistente-abierto', () => false)
 
 const authStore = useAuthStore()
 const primerNombre = computed(() => authStore.user?.fullName?.split(' ')[0] || 'usuario')
