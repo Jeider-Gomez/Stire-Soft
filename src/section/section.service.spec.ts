@@ -95,7 +95,7 @@ describe('SectionService.findByClassFor — quién ve qué', () => {
     },
     { id: 2, classId: 5, isPublished: false, topics: [] },
   ];
-  const qb: any = { leftJoinAndSelect: () => qb, where: () => qb, orderBy: () => qb, addOrderBy: () => qb, getMany: async () => JSON.parse(JSON.stringify(tree)) };
+  const qb: any = { leftJoinAndSelect: () => qb, loadRelationCountAndMap: () => qb, where: () => qb, orderBy: () => qb, addOrderBy: () => qb, getMany: async () => JSON.parse(JSON.stringify(tree)) };
   const classRepo = { findOne: jest.fn().mockResolvedValue({ id: 5, teacherId: 10 }) };
   const enrollmentRepo = { findOne: jest.fn() };
   const service = new SectionService({ createQueryBuilder: () => qb } as any, {} as any, new AuthorizationService(classRepo as any, enrollmentRepo as any));

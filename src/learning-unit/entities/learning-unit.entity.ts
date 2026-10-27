@@ -57,6 +57,10 @@ export class LearningUnit {
   @OneToMany(() => Content, (content) => content.learningUnit, { eager: false })
   contents!: Content[];
 
+  /** Conteos que llena la consulta del árbol (SectionService.findByClass); no son columnas. */
+  explicaciones?: number;
+  explicacionesVisibles?: number;
+
   @CreateDateColumn()
   createdAt!: Date;
 

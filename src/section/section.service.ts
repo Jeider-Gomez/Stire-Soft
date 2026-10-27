@@ -50,6 +50,10 @@ export class SectionService {
       .leftJoinAndSelect('topic.learningUnits', 'learningUnit')
       .leftJoinAndSelect('learningUnit.activities', 'activity')
       .leftJoinAndSelect('activity.activityType', 'activityType')
+      // Cuántas explicaciones tiene cada lección y cuántas ve el estudiante, sin traer su texto: el árbol del docente
+      // marca con ellas qué lección está lista y cuál le falta algo (Contenido del curso, 27/10).
+      .loadRelationCountAndMap('learningUnit.explicaciones', 'learningUnit.contents')
+      .loadRelationCountAndMap('learningUnit.explicacionesVisibles', 'learningUnit.contents', 'contenido', (qb) => qb.andWhere('contenido.isVisible = :visible', { visible: true }))
       .where('section.classId = :classId', { classId })
       .orderBy('section.order', 'ASC')
       .addOrderBy('topic.order', 'ASC')
