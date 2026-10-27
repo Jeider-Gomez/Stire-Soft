@@ -102,11 +102,13 @@
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
-          v-for="item in enrolledClasses"
+          v-for="(item, i) in enrolledClasses"
           :key="item.id"
-          class="bg-base-blanco rounded-xl border p-5 shadow-sm flex flex-col justify-between transition-all hover:shadow-md"
+          class="bg-base-blanco rounded-xl border p-5 pt-0 shadow-sm flex flex-col justify-between transition-all hover:shadow-md overflow-hidden"
           :class="isActiveClass(item.class?.id) ? 'border-acento-ambar ring-1 ring-acento-ambar' : 'border-base-borde-fuerte'">
           <div>
+            <!-- La franja con el color de portada de la clase, como en su presentación. -->
+            <div class="-mx-5 h-3 mb-4" :style="{ backgroundColor: item.class?.portada ?? colorDeClase(i) }" aria-hidden="true" />
             <div class="flex items-start justify-between gap-2 mb-2">
               <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono tracking-wider bg-base-bg-secundario border border-base-borde-fuerte text-base-texto-primario">
                 {{ item.class?.code || 'SIN CÓDIGO' }}
@@ -156,6 +158,7 @@ import { useClasesEstudiante, type MatriculaEstudiante as EnrollmentItem } from 
 import { useStudentStore } from '~/stores/student'
 import { ArrowLeft, BookOpen, CircleAlert, CircleCheck, GraduationCap, KeyRound, Loader2, RefreshCw, UserRound } from 'lucide-vue-next'
 import { normalizarCodigo, codigoMientrasEscribe } from '~/utils/codigoClase'
+import { colorDeClase } from '~/utils/pestanasClase'
 const { messageOf } = useApiErrorMessage()
 
 definePageMeta({

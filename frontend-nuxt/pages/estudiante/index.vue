@@ -1,32 +1,16 @@
 <template>
   <div class="space-y-6">
-    <!-- BARRA SUPERIOR: Contexto de Asignatura y Selector de Clases -->
-    <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <Landmark :size="20" class="text-acento-ambar-fuerte shrink-0" aria-hidden="true" />
-        <div>
-          <span class="text-[10px] font-bold uppercase tracking-wider text-acento-ambar-fuerte">
-            Tu clase
-          </span>
-          <!-- El nombre que le puso tu docente; si tienes otra clase que se llama igual, también el docente (etiquetaDeClase). -->
-          <h2 class="text-xs sm:text-sm font-bold text-base-texto-primario">
-            {{ studentStore.currentClassLabel || 'Sin clase activa seleccionada' }}
-          </h2>
-          <p v-if="studentStore.currentTeacher" class="text-[11px] text-base-texto-secundario">
-            Docente: {{ studentStore.currentTeacher }}
-          </p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2 self-start sm:self-auto">
-        <NuxtLink
-          to="/estudiante/clases"
-          class="borde-afordancia min-h-[44px] px-3 py-1.5 rounded-md text-xs font-semibold text-base-texto-primario bg-base-blanco hover:bg-base-bg-secundario transition-colors flex items-center gap-1.5 shadow-sm">
+    <!-- Presentación de la clase activa (prototipo del panel v2): franja con el color de portada, el docente y su bienvenida. -->
+    <PresentacionClase v-if="claseActual" :nombre="studentStore.currentClassLabel || claseActual.name" :color="colorPortada"
+      :docente="studentStore.currentTeacher || claseActual.teacherName" :bienvenida="claseActual.description" :codigo="claseActual.code" etiqueta="Tu clase">
+      <template #accion>
+        <NuxtLink to="/estudiante/clases"
+          class="borde-afordancia min-h-[44px] px-3 py-1.5 rounded-md text-xs font-semibold text-base-texto-primario bg-base-blanco hover:bg-base-bg-secundario transition-colors inline-flex items-center gap-1.5 shadow-sm">
           <Library :size="14" aria-hidden="true" />
           <span>Mis clases ({{ studentStore.enrolledClasses.length }})</span>
         </NuxtLink>
-      </div>
-    </div>
+      </template>
+    </PresentacionClase>
 
     <AvisoSolicitudRol :solicitud="myRoleRequest" @cerrar-sesion="authStore.logout()" />
 
@@ -268,8 +252,9 @@ function moduloAbierto(mod: { id: number; units: Array<{ id: number; status?: st
   const primeroPendiente = studentStore.modules.find((m) => m.units.some((u) => u.status !== 'dominado'))
   return (primeroPendiente ?? studentStore.modules[0])?.id === mod.id
 }
-import { BookOpen, Brain, CheckCircle2, ChevronRight, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Landmark, Library, Lock, Map as MapIcon, Play, RotateCcw, TrendingUp } from 'lucide-vue-next'
+import { BookOpen, Brain, CheckCircle2, ChevronRight, Circle, CircleDot, CircleHelp, Flame, GraduationCap, Inbox, KeyRound, Library, Lock, Map as MapIcon, Play, RotateCcw, TrendingUp } from 'lucide-vue-next'
 import { contar } from '~/utils/terminos'
+import { colorDeClase } from '~/utils/pestanasClase'
 import { calificacionTexto, fechaCorta, type EstadoEntrega } from '~/utils/entregas'
 import { useStudentStore } from '~/stores/student'
 import { useAuthStore } from '~/stores/auth'
@@ -281,6 +266,12 @@ definePageMeta({
 })
 
 const studentStore = useStudentStore()
+// La clase activa y su color de portada (el que eligió el docente, o el automático del menú).
+const claseActual = computed(() => studentStore.enrolledClasses.find((c) => c.classId === studentStore.currentClassId) ?? null)
+const colorPortada = computed(() => {
+  const i = studentStore.enrolledClasses.findIndex((c) => c.classId === studentStore.currentClassId)
+  return claseActual.value?.portada ?? colorDeClase(Math.max(i, 0))
+})
 const authStore = useAuthStore()
 const { solicitudRol, actividadRecomendada, refuerzos: cargarRefuerzos, entregas: cargarEntregas } = useInicioEstudiante()
 

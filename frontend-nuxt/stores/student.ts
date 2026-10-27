@@ -15,6 +15,8 @@ export interface EnrolledClassInfo {
   code: string
   description?: string
   teacherName: string
+  /** Color de portada que eligió el docente (null: el automático del menú). */
+  portada?: string | null
   /** Asignatura de la clase, con su programa e institución (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md). */
   asignatura?: AsignaturaInfo | null
 }
@@ -116,7 +118,7 @@ export const useStudentStore = defineStore('student', () => {
         const enrollmentsRes = await api.get<Array<{
           id: number
           classId?: number
-          class?: { id: number; name: string; code: string; description?: string; dominioParaAvanzar?: number; teacher?: { fullName: string }; asignatura?: AsignaturaInfo | null }
+          class?: { id: number; name: string; code: string; description?: string; portada?: string | null; dominioParaAvanzar?: number; teacher?: { fullName: string }; asignatura?: AsignaturaInfo | null }
         }>>('/enrollment/my')
 
         if (Array.isArray(enrollmentsRes) && enrollmentsRes.length > 0) {
@@ -129,6 +131,7 @@ export const useStudentStore = defineStore('student', () => {
               code: e.class!.code,
               description: e.class!.description,
               teacherName: e.class!.teacher?.fullName || 'Docente',
+              portada: e.class!.portada ?? null,
               asignatura: e.class!.asignatura ?? null
             }))
 

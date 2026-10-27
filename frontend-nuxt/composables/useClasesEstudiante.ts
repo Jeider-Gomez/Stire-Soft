@@ -1,6 +1,6 @@
 export interface MatriculaEstudiante {
   id: number; classId: number; status: string; joinedAt?: string
-  class?: { id: number; name: string; code: string; description?: string; teacher?: { fullName: string } }
+  class?: { id: number; name: string; code: string; description?: string; portada?: string | null; teacher?: { fullName: string } }
 }
 export function useClasesEstudiante() {
   const api = useApi()

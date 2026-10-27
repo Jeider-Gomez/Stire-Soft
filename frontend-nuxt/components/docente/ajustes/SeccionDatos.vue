@@ -46,15 +46,22 @@
 
     <div>
       <label for="class-description" class="block text-xs font-semibold text-base-texto-primario mb-1">
-        Descripción <span class="text-base-texto-secundario font-normal">(opcional)</span>
+        Bienvenida para tus estudiantes <span class="text-base-texto-secundario font-normal">(opcional; la leen al entrar a la clase)</span>
       </label>
       <textarea v-crece
         id="class-description"
         v-model="editForm.description"
         rows="3"
-        placeholder="Breve descripción de la clase..."
+        placeholder="Ej.: Bienvenidos. En este curso aprenderemos a pensar como programadores, paso a paso…"
         class="w-full min-h-[44px] px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none transition-colors resize-none"
       />
+    </div>
+
+    <!-- Así ven tus estudiantes la presentación de la clase, con el color de portada y la bienvenida. -->
+    <div class="space-y-1.5">
+      <p class="text-xs font-semibold text-base-texto-primario">Así la ven tus estudiantes</p>
+      <PresentacionClase :nombre="editForm.name || 'Tu clase'" :color="editForm.portada ?? COLORES_CLASE[0]" :bienvenida="editForm.description.trim() || null"
+        :codigo="classInfo?.code" etiqueta="Tu clase" vacio="Escribe una bienvenida arriba: es lo primero que leen al entrar." />
     </div>
 
     <div>
@@ -101,6 +108,7 @@
 
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next'
+import { COLORES_CLASE } from '~/utils/pestanasClase'
 import { nombreRepetido, type AsignaturaInfo } from '~/utils/contextoAcademico'
 import type { ClassInfo, EstadoAjustesClase } from '~/composables/useAjustesClase'
 
