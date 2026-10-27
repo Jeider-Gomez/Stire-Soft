@@ -13,6 +13,8 @@ export interface AvisoClase {
   fechaEvento: string | null
   lugar: string | null
   createdAt: string
+  /** Cuándo lo corrigió el docente (null si nunca): el estudiante ve «editado». */
+  editadoEn?: string | null
 }
 
 export const TIPOS_AVISO: Array<{ valor: TipoAviso; texto: string; ayuda: string; conFecha: boolean }> = [
@@ -48,6 +50,19 @@ export function avisoParaEnviar(f: FormularioAviso): Record<string, unknown> {
     fechaEvento: fecha && !Number.isNaN(fecha.getTime()) ? fecha.toISOString() : null,
     lugar: conFecha && f.lugar.trim() ? f.lugar.trim() : null,
   }
+}
+
+/** Un aviso publicado vuelto formulario, para corregirlo: la fecha en la hora local del docente (`datetime-local`). */
+export function formularioDeAviso(a: Pick<AvisoClase, 'tipo' | 'titulo' | 'cuerpo' | 'fechaEvento' | 'lugar'>): FormularioAviso {
+  let fecha = ''
+  if (a.fechaEvento) {
+    const d = new Date(a.fechaEvento)
+    if (!Number.isNaN(d.getTime())) {
+      const dos = (n: number) => String(n).padStart(2, '0')
+      fecha = `${d.getFullYear()}-${dos(d.getMonth() + 1)}-${dos(d.getDate())}T${dos(d.getHours())}:${dos(d.getMinutes())}`
+    }
+  }
+  return { tipo: a.tipo, titulo: a.titulo, cuerpo: a.cuerpo, fecha, lugar: a.lugar ?? '' }
 }
 
 /** Qué falta para poder publicar (null si nada): se dice junto al botón, no después de fallar. */

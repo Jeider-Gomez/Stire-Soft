@@ -85,6 +85,14 @@
             Publicar
           </button>
           <button
+            v-if="act.status === 'published'"
+            type="button"
+            class="min-h-[44px] sm:min-h-0 px-2 py-0.5 rounded text-[11px] font-semibold border border-base-borde-fuerte text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+            :aria-label="`Volver a borrador ${act.title}`" title="Deja de verse mientras lo corriges; las entregas se conservan"
+            @click="despublicar(act)">
+            A borrador
+          </button>
+          <button
             @click="openEdit(act)"
             :id="`editar-ejercicio-${act.id}`"
             class="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 inline-flex items-center justify-center p-1 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
@@ -141,7 +149,7 @@ const emit = defineEmits<{ (e: 'count', n: number): void }>()
 const estado = useEjerciciosUnidad(props.unitId, (n) => emit('count', n))
 provide(CLAVE_EJERCICIOS_UNIDAD, estado)
 const { ejercicios: activities, visibles: visibleActivities, cargando: loading, error: loadError, aviso: feedback, advertencia: feedbackAviso,
-  duplicando: isDuplicating, casillasSolas: singleExerciseSlots, cargar: load, publicar: publish, deLaUnidadEnBanco } = estado
+  duplicando: isDuplicating, casillasSolas: singleExerciseSlots, cargar: load, publicar: publish, despublicar, deLaUnidadEnBanco } = estado
 const grupos = computed(() => agruparActividades(visibleActivities.value))
 
 type Ventana =

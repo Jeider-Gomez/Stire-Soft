@@ -73,6 +73,19 @@ export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => v
     }
   }
 
+  /** Un ejercicio publicado vuelve a borrador para corregirlo con calma: deja de verse; las entregas se conservan. */
+  async function despublicar(ej: EjercicioDeLaLeccion) {
+    try {
+      await api.patch(`/activities/${ej.id}/unpublish`)
+      ej.status = 'draft'
+      aviso.value = `«${ej.title}» volvió a borrador: tus estudiantes ya no lo ven. Lo que entregaron se conserva.`
+      notificarPantalla({ tipo: 'exito', texto: aviso.value })
+    } catch (err) {
+      error.value = messageOf(err, 'No se pudo volver a borrador el ejercicio.')
+      notificarPantalla({ tipo: 'error', texto: error.value })
+    }
+  }
+
   async function archivar(ej: EjercicioDeLaLeccion): Promise<string | null> {
     try {
       await api.patch(`/activities/${ej.id}/archive`)
@@ -166,7 +179,7 @@ export function useEjerciciosUnidad(unidadId: number, alContar: (n: number) => v
 
   return {
     unidadId, ejercicios, visibles, tipos, cargando, error, aviso, advertencia, duplicando, casillasSolas, deLaUnidadEnBanco,
-    cargar, publicar, archivar, duplicarVariante, respuestasDe, guardar, buscarEnBanco, copiarDelBanco,
+    cargar, publicar, despublicar, archivar, duplicarVariante, respuestasDe, guardar, buscarEnBanco, copiarDelBanco,
   }
 }
 

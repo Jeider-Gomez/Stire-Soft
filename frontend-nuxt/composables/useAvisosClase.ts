@@ -36,6 +36,17 @@ export function useAvisosClase() {
     }
   }
 
+  /** Corrige un aviso publicado; con `avisarCambio`, les llega otra notificación. Devuelve a cuántos avisó, o el error. */
+  async function editar(id: number, datos: Record<string, unknown>, avisarCambio: boolean): Promise<{ avisados: number } | string> {
+    try {
+      const r = await api.patch<AvisoClase & { avisados: number }>(`/avisos-clase/${id}`, { ...datos, avisarCambio })
+      avisos.value = avisos.value.map((a) => (a.id === id ? { ...a, ...r } : a))
+      return { avisados: r.avisados }
+    } catch (err) {
+      return messageOf(err, 'No se pudo guardar el cambio.')
+    }
+  }
+
   async function eliminar(id: number): Promise<string | null> {
     try {
       await api.del(`/avisos-clase/${id}`)
@@ -46,5 +57,5 @@ export function useAvisosClase() {
     }
   }
 
-  return { avisos, cargando, error, cargar, publicar, eliminar }
+  return { avisos, cargando, error, cargar, publicar, editar, eliminar }
 }

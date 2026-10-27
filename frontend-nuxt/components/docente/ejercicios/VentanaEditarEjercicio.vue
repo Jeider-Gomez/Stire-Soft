@@ -7,6 +7,11 @@
       ancho="2xl" :devolver-foco="`editar-ejercicio-${ejercicio.id}`" :ocupado="guardando" @cerrar="emit('cerrar')">
       <template #icono><Pencil :size="18" aria-hidden="true" /></template>
       <form class="space-y-4 text-xs" novalidate @submit.prevent="guardarCambios">
+        <!-- Editar lo ya publicado (27/10): se puede, y se dice qué pasa al guardar. -->
+        <p v-if="ejercicio.status === 'published'" role="note" class="rounded-md bg-semantico-info/10 border border-semantico-info/30 p-2.5 text-[11px] text-base-texto-primario">
+          Este ejercicio ya está publicado: tus estudiantes verán los cambios en cuanto guardes, y lo que ya entregaron conserva su nota.
+          Si prefieres corregirlo sin que lo vean, usa «A borrador» en la lista y vuelve a publicarlo cuando esté listo.
+        </p>
         <div>
           <label for="edit-ex-title" class="block font-semibold text-base-texto-primario mb-1">Título</label>
           <input id="edit-ex-title" v-model="f.title" :data-foco-inicial="variante ? undefined : ''" type="text" required class="input-stire min-h-[44px]" />

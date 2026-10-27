@@ -37,7 +37,7 @@
               <component :is="ICONO[a.tipo]" :size="12" aria-hidden="true" /> {{ nombreTipoAviso(a.tipo) }}
             </span>
             <span class="font-semibold text-base-texto-primario">{{ a.clase }}</span>
-            <span class="text-base-texto-secundario">· publicado {{ fechaCorta(a.createdAt) }}</span>
+            <span class="text-base-texto-secundario">· publicado {{ fechaCorta(a.createdAt) }}<template v-if="a.editadoEn"> · editado {{ fechaCorta(a.editadoEn) }}</template></span>
           </div>
           <h2 :id="`aviso-${a.id}`" class="text-sm font-bold text-base-texto-primario">{{ a.titulo }}</h2>
           <!-- La fecha y el lugar de una citación, grandes y arriba del texto: es lo que no se puede perder. -->
@@ -46,7 +46,10 @@
             <span v-if="a.lugar" class="inline-flex items-center gap-1.5"><MapPin :size="14" aria-hidden="true" /> {{ a.lugar }}</span>
           </p>
           <p class="text-xs text-base-texto-primario whitespace-pre-line break-words leading-relaxed">{{ a.cuerpo }}</p>
-          <div v-if="rol === 'docente'" class="pt-1">
+          <div v-if="rol === 'docente'" class="pt-1 flex flex-wrap gap-x-4">
+            <button :id="`editar-aviso-${a.id}`" type="button" class="min-h-[44px] text-[11px] font-semibold text-base-texto-primario hover:underline inline-flex items-center gap-1" @click="abrirEdicion(a)">
+              <Pencil :size="13" aria-hidden="true" /> Corregir<span class="sr-only"> el aviso «{{ a.titulo }}»</span>
+            </button>
             <button type="button" class="min-h-[44px] text-[11px] font-semibold text-semantico-falla hover:underline inline-flex items-center gap-1" @click="borrar(a)">
               <Trash2 :size="13" aria-hidden="true" /> Borrar el aviso<span class="sr-only"> «{{ a.titulo }}»</span>
             </button>
@@ -55,13 +58,14 @@
       </li>
     </ul>
 
-    <AdminDialogo v-if="abierta" id-titulo="aviso-titulo" titulo="Publicar un aviso" ancho="2xl" devolver-foco="publicar-aviso"
-      subtitulo="Les llega a todos los estudiantes de la clase, como notificación y en «Avisos»." :ocupado="enviando" @cerrar="abierta = false">
+    <AdminDialogo v-if="abierta" id-titulo="aviso-titulo" :titulo="editando ? 'Corregir el aviso' : 'Publicar un aviso'" ancho="2xl"
+      :devolver-foco="editando ? `editar-aviso-${editando.id}` : 'publicar-aviso'"
+      :subtitulo="editando ? 'Cambia lo que dice; tus estudiantes lo verán marcado «editado».' : 'Les llega a todos los estudiantes de la clase, como notificación y en «Avisos».'" :ocupado="enviando" @cerrar="abierta = false">
       <template #icono><Megaphone :size="18" aria-hidden="true" /></template>
       <form class="space-y-4 text-xs" @submit.prevent="enviar">
         <div>
           <label for="aviso-clase" class="block font-semibold text-base-texto-primario mb-1">Clase</label>
-          <select id="aviso-clase" v-model.number="claseId" data-foco-inicial class="w-full min-h-[44px] px-3 rounded-md bg-base-blanco border border-base-borde-fuerte">
+          <select id="aviso-clase" v-model.number="claseId" data-foco-inicial :disabled="!!editando" class="w-full min-h-[44px] px-3 rounded-md bg-base-blanco border border-base-borde-fuerte">
             <option :value="0" disabled>Elige una clase</option>
             <option v-for="c in clases" :key="c.id" :value="c.id">{{ c.name }} ({{ c.code }})</option>
           </select>
@@ -96,12 +100,16 @@
           <textarea id="aviso-cuerpo" v-model="form.cuerpo" v-crece rows="4" maxlength="3000" class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte"
             placeholder="Qué deben saber o traer…" />
         </div>
+        <label v-if="editando" class="flex items-start gap-2 text-base-texto-primario">
+          <input v-model="avisarCambio" type="checkbox" class="mt-0.5 w-4 h-4 accent-acento-ambar-fuerte" />
+          <span><span class="font-semibold">Avisarles del cambio</span><span class="block text-[11px] text-base-texto-secundario">Les llega otra notificación: «Actualizado: …». Úsalo si cambió algo importante, como la fecha o el lugar.</span></span>
+        </label>
         <p v-if="errorEnvio" role="alert" class="text-semantico-falla font-semibold">{{ errorEnvio }}</p>
         <div class="flex flex-wrap items-center justify-end gap-2">
           <p v-if="falta" class="mr-auto text-base-texto-secundario">{{ falta }}</p>
           <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia font-semibold" @click="abierta = false">Cancelar</button>
           <button type="submit" :disabled="!!falta || enviando" class="min-h-[44px] px-4 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold disabled:opacity-50">
-            {{ enviando ? 'Publicando…' : 'Publicar y avisar' }}
+            {{ editando ? (enviando ? 'Guardando…' : 'Guardar el cambio') : (enviando ? 'Publicando…' : 'Publicar y avisar') }}
           </button>
         </div>
       </form>
@@ -111,13 +119,13 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { Bell, CalendarClock, Info, MapPin, Megaphone, Trash2 } from 'lucide-vue-next'
-import { avisoParaEnviar, faltaEnAviso, fechaDeEvento, nombreTipoAviso, TIPOS_AVISO, type AvisoClase, type FormularioAviso, type TipoAviso } from '~/utils/avisosClase'
+import { Bell, CalendarClock, Info, MapPin, Megaphone, Pencil, Trash2 } from 'lucide-vue-next'
+import { avisoParaEnviar, faltaEnAviso, fechaDeEvento, formularioDeAviso, nombreTipoAviso, TIPOS_AVISO, type AvisoClase, type FormularioAviso, type TipoAviso } from '~/utils/avisosClase'
 import { fechaCorta } from '~/utils/entregas'
 
 const props = defineProps<{ rol: 'docente' | 'estudiante' }>()
 
-const { avisos, cargando, error, cargar, publicar, eliminar } = useAvisosClase()
+const { avisos, cargando, error, cargar, publicar, editar, eliminar } = useAvisosClase()
 const { clasesDelDocente } = useDestinatarios()
 const { confirmar } = useConfirmar()
 
@@ -138,7 +146,21 @@ const form = reactive<FormularioAviso>({ tipo: 'aviso', titulo: '', cuerpo: '', 
 const conFecha = computed(() => TIPOS_AVISO.find((t) => t.valor === form.tipo)?.conFecha ?? false)
 const falta = computed(() => faltaEnAviso(form, claseId.value))
 
+// Corregir un aviso ya publicado (27/10): la misma ventana, con lo que ya decía; la clase no se cambia.
+const editando = ref<AvisoClase | null>(null)
+const avisarCambio = ref(false)
+function abrirEdicion(a: AvisoClase) {
+  editando.value = a
+  Object.assign(form, formularioDeAviso(a))
+  claseId.value = a.classId
+  avisarCambio.value = false
+  errorEnvio.value = null
+  hecho.value = null
+  abierta.value = true
+}
+
 function abrir() {
+  editando.value = null
   Object.assign(form, { tipo: 'aviso', titulo: '', cuerpo: '', fecha: '', lugar: '' })
   errorEnvio.value = null
   hecho.value = null
@@ -149,6 +171,14 @@ function abrir() {
 async function enviar() {
   if (falta.value) return
   enviando.value = true
+  if (editando.value) {
+    const e = await editar(editando.value.id, avisoParaEnviar(form), avisarCambio.value)
+    enviando.value = false
+    if (typeof e === 'string') { errorEnvio.value = e; return }
+    abierta.value = false
+    hecho.value = avisarCambio.value ? `Corregido; se lo avisamos a ${e.avisados === 1 ? '1 estudiante' : `${e.avisados} estudiantes`}.` : 'Corregido. Tus estudiantes lo ven marcado «editado».'
+    return
+  }
   const r = await publicar(claseId.value, avisoParaEnviar(form))
   enviando.value = false
   if (typeof r === 'string') { errorEnvio.value = r; return }
