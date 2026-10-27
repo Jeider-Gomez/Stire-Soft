@@ -124,6 +124,8 @@ código.
   califica con el motor real, y scripts que los crean y simulan por la API como un docente y sus estudiantes).
 - `docs/ESTADO_STIRE_HANDOFF.md` — estado del proyecto, qué se cerró, qué queda abierto.
 - `CHANGELOG.md` — historial de olas de remediación, punto por punto, con commits.
+- `docs/PENDIENTES.md` — lista viva de lo que falta (frontend, servidor y equipo); se actualiza al cerrar cada bloque.
+- `docs/identidad-visual/logo/` — el logo en SVG y PNG; se regenera con `scripts/identidad/`.
 - `docs/REAUDITORIA_OLA2.md` (gitignorado) — última reauditoría independiente, hallazgos con
   severidad y evidencia.
 - `docs/04_ESTANDARES_Y_SEGURIDAD.md` — estándares de código y seguridad vigentes.
