@@ -27,7 +27,7 @@
       <Lock :size="28" class="mx-auto text-slate-500" aria-hidden="true" />
       <p class="text-sm font-bold text-base-texto-primario">Esta lección se abre cuando domines un poco más «{{ bloqueo.titulo.split(':')[0] }}»</p>
       <p class="text-slate-600 max-w-md mx-auto">
-        Tu docente pidió {{ bloqueo.umbral }} % de dominio en ese módulo antes de seguir, para que avances con base. Vas en
+        Tu docente pidió {{ bloqueo.umbral }} % de <Termino palabra="Dominio">dominio</Termino> en ese módulo antes de seguir, para que avances con base. Vas en
         <strong class="text-base-texto-primario">{{ bloqueo.dominio }} %</strong>: te faltan {{ Math.max(0, bloqueo.umbral - bloqueo.dominio) }} puntos.
       </p>
       <div class="max-w-xs mx-auto h-2 bg-base-bg-secundario rounded-full overflow-hidden" role="progressbar" :aria-valuenow="bloqueo.dominio" aria-valuemin="0" :aria-valuemax="bloqueo.umbral" aria-label="Dominio del módulo anterior">
@@ -62,7 +62,9 @@
             <div class="h-full rounded-full" :class="dominio >= DOMINADO ? 'bg-semantico-pasa' : 'bg-acento-ambar-fuerte'" :style="{ width: `${dominio}%` }"></div>
           </div>
           <span class="text-[11px] font-semibold text-base-texto-primario">
-            {{ dominio >= DOMINADO ? `Dominada · ${dominio} %` : dominio > 0 ? `${dominio} % de dominio` : 'Aún sin dominio: empieza a practicar' }}
+            <template v-if="dominio >= DOMINADO">Dominada · {{ dominio }} %</template>
+            <template v-else-if="dominio > 0">{{ dominio }} % de <Termino palabra="Dominio">dominio</Termino></template>
+            <template v-else>Aún sin <Termino palabra="Dominio">dominio</Termino>: empieza a practicar</template>
           </span>
         </div>
         <EstudianteMetaDeLaLeccion :unit-id="unitId" data-recorrido="meta-leccion" />

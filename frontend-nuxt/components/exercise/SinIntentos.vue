@@ -7,7 +7,7 @@
   <div v-if="aviso">
     <div role="status" class="rounded-lg border border-semantico-info/30 bg-semantico-info/5 p-3 flex flex-col sm:flex-row sm:items-center gap-3">
       <p v-if="aviso === 'parecido'" class="flex-1 text-xs text-base-texto-primario">
-        <strong>Este ejercicio ya no sube tu dominio.</strong> Su grupo (mismo tipo y nivel) ya está completo. Sirve para
+        <strong>Este ejercicio ya no sube tu <Termino palabra="Dominio">dominio</Termino>.</strong> Su grupo (mismo tipo y nivel) ya está completo. Sirve para
         repasar; para seguir subiendo, prueba uno que todavía sume.
       </p>
       <p v-else-if="aviso === 'completado'" class="flex-1 text-xs text-base-texto-primario">

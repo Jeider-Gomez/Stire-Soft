@@ -10,7 +10,7 @@
     <p v-if="meta" class="flex items-start gap-1.5">
       <Lock :size="13" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
       <span>
-        El módulo «{{ corto(meta.siguiente) }}» se abre con <strong>{{ meta.umbral }} %</strong> de dominio promedio en
+        El módulo «{{ corto(meta.siguiente) }}» se abre con <strong>{{ meta.umbral }} %</strong> de <Termino palabra="Dominio">dominio</Termino> promedio en
         «{{ corto(meta.modulo) }}». Vas en {{ meta.dominio }} %: te {{ meta.falta === 1 ? 'falta 1 punto' : `faltan ${meta.falta} puntos` }}.
         Cuenta cualquier lección del módulo.
       </span>

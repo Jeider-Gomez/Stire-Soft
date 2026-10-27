@@ -22,7 +22,7 @@ describe('qué ejercicios suben el dominio, a la vista', () => {
 
   it('el aviso del parecido dice que no sube el dominio y lleva a la lista de los que sí suman', () => {
     const v = leer('components', 'exercise', 'SinIntentos.vue');
-    expect(v).toContain('<strong>Este ejercicio ya no sube tu dominio.</strong>');
+    expect(v).toContain('<strong>Este ejercicio ya no sube tu <Termino palabra="Dominio">dominio</Termino>.</strong>');
     expect(v).toContain('desdeLista.value = avisoPorEstado(suyo?.estado)');
     expect(v).toContain(':to="`/estudiante/unidad/${learningUnitId}?ejercicios=1`"');
   });

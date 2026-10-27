@@ -54,11 +54,13 @@
         <!-- 2. Pestaña Casos de Prueba (P02 — Solo coding) -->
         <div v-else-if="leftTab === 'casos' && isCodingActivity" class="space-y-4">
           <div class="flex items-center justify-between pb-2 border-b border-base-borde-sutil">
-            <h3 class="font-bold text-xs text-base-texto-primario">Casos públicos de verificación</h3>
+            <h3 class="font-bold text-xs text-base-texto-primario">Ejemplos para probar tu programa</h3>
             <span class="text-[11px] text-base-texto-secundario">
-              Evaluados con [▶ Probar código]
+              Se revisan al tocar «Probar código»
             </span>
           </div>
+          <!-- Ítem 4 de la evaluación heurística: en el celular no hay «title», así que la explicación va a la vista. -->
+          <p class="text-[11px] text-base-texto-secundario">{{ definicion('Casos de prueba') }}</p>
 
           <div class="space-y-3">
             <ExerciseCasoPrueba v-for="tc in workspaceStore.publicTestCases" :key="tc.id" :tc="tc" :diagnostico="tc.passed === false ? diagnostico(tc) : null" :limite-ms="workspaceStore.timeLimitMs" />

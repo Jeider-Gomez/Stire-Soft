@@ -159,7 +159,7 @@
         <Lock :size="20" class="shrink-0 text-acento-ambar-fuerte" aria-hidden="true" />
         <div class="flex-1 space-y-1.5">
           <h2 id="proximo-modulo-titulo" class="text-xs font-bold text-base-texto-primario">
-            «{{ studentStore.proximoModulo.modulo.titulo.split(':')[0] }}» se abre con {{ studentStore.proximoModulo.umbral }} % de dominio en «{{ studentStore.proximoModulo.anterior.titulo.split(':')[0] }}»
+            «{{ studentStore.proximoModulo.modulo.titulo.split(':')[0] }}» se abre con {{ studentStore.proximoModulo.umbral }} % de <Termino palabra="Dominio">dominio</Termino> en «{{ studentStore.proximoModulo.anterior.titulo.split(':')[0] }}»
           </h2>
           <div class="flex items-center gap-2">
             <div class="flex-1 max-w-xs h-2 bg-base-blanco rounded-full overflow-hidden border border-base-borde-sutil" role="progressbar" :aria-valuenow="studentStore.proximoModulo.dominio" aria-valuemin="0" :aria-valuemax="studentStore.proximoModulo.umbral" aria-label="Dominio para abrir el próximo módulo">

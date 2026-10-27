@@ -55,7 +55,24 @@ function diagnosticarError(o: string): Diagnostico | null {
   if (tipoError === 'TypeError' && /constant variable/.test(detalle)) {
     return { tipo: 'error', linea, mensaje: `${enLinea[0].toUpperCase()}${enLinea.slice(1)} cambias una variable creada con const, y const no se puede cambiar. Si su valor debe cambiar, créala con let.` }
   }
-  return { tipo: 'error', linea, mensaje: `Tu programa se detuvo por un error ${enLinea}: «${detalle || tipoError}». Lee esa línea con calma: ¿qué valor tiene cada variable ahí?` }
+  // Ítems 3 y 28 de la evaluación heurística del 27/10: los errores frecuentes de un novato, también en palabras de
+  // estudiante de colegio, sin el nombre técnico en inglés.
+  const Enlinea = `${enLinea[0].toUpperCase()}${enLinea.slice(1)}`
+  const noEsFuncion = /^(\S+) is not a function$/.exec(detalle)
+  if (tipoError === 'TypeError' && noEsFuncion) {
+    return { tipo: 'error', linea, mensaje: `${Enlinea} usas «${noEsFuncion[1]}» con paréntesis, como si fuera una función, pero no lo es. ¿Está bien escrito el nombre? ¿Es un valor y no una acción?` }
+  }
+  const antesDeCrear = /^Cannot access '(\S+)' before initialization$/.exec(detalle)
+  if (tipoError === 'ReferenceError' && antesDeCrear) {
+    return { tipo: 'error', linea, mensaje: `${Enlinea} usas «${antesDeCrear[1]}» antes de la línea donde la creas. Mueve el const o let más arriba, antes de usarla.` }
+  }
+  if (tipoError === 'RangeError' && /call stack/i.test(detalle)) {
+    return { tipo: 'error', linea, mensaje: `Una función se llama a sí misma sin parar ${enLinea}. Revisa que tenga un caso en el que deje de llamarse.` }
+  }
+  if (tipoError === 'TypeError' && /is not iterable/.test(detalle)) {
+    return { tipo: 'error', linea, mensaje: `${Enlinea} recorres con for…of algo que no es una lista. ¿Es un número o un texto donde esperabas un arreglo?` }
+  }
+  return { tipo: 'error', linea, mensaje: `Tu programa se detuvo por un error ${enLinea}. JavaScript lo dice en inglés: «${detalle || tipoError}». Lee esa línea con calma: ¿qué valor tiene cada variable ahí?` }
 }
 
 const lineas = (t: string) => t.replace(/\r\n/g, '\n').split('\n')
