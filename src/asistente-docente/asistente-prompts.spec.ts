@@ -89,3 +89,19 @@ describe('Asistente del docente · servicio', () => {
     expect(cuerpo.generationConfig.responseMimeType).toBe('application/json');
   });
 });
+
+describe('explicación alternativa y análisis de la clase (27/10)', () => {
+  it('la alternativa pide no repetir la principal y valida forma y «cuando»', () => {
+    expect(construirPrompt('alternativa', { leccion: 'Variables', textoActual: 'Una variable guarda un valor.' })).toContain('no la repitas');
+    const b = validarBorrador('alternativa', { forma: 'raro', titulo: 'Cajones', explicacion: 'Piensa en un cajón con una etiqueta que dice edad: guardas un número.', cuando: 'otro', porque: 'x' });
+    expect(b).toMatchObject({ tipo: 'alternativa', forma: 'analogia', cuando: 'noclaro', titulo: 'Cajones' });
+    expect(validarBorrador('alternativa', { explicacion: 'corta' })).toBeNull();
+  });
+  it('el análisis usa el resumen anónimo como datos y valida acciones', () => {
+    const p = construirPrompt('analisis', { clase: 'G1', resumenClase: 'Ciclos: 4 bloqueados' });
+    expect(p).toContain('Resumen anónimo de la clase:');
+    expect(p.lastIndexOf('<datos>')).toBeGreaterThan(p.indexOf('No inventes cifras'));
+    const b = validarBorrador('analisis', { porque: 'Va bien', hallazgos: [{ titulo: 'Atascados en Ciclos', detalle: 'Cuatro fallan seguido.', accion: 'refuerzo', leccion: 'Ciclos' }, { titulo: '', detalle: 'x' }, { titulo: 'Otro', detalle: 'y', accion: 'nada' }] });
+    expect(b).toMatchObject({ tipo: 'analisis', hallazgos: [{ accion: 'refuerzo', leccion: 'Ciclos' }, { accion: 'mensaje' }] });
+  });
+});

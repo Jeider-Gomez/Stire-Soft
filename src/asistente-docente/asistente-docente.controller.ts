@@ -19,6 +19,7 @@ class ContextoAsistenteDto {
   @IsOptional() @IsString() @MaxLength(200) leccion?: string;
   @IsOptional() @IsString() @MaxLength(8000) textoActual?: string;
   @IsOptional() @IsInt() @Min(1) @Max(8) cantidad?: number;
+  @IsOptional() @IsString() @MaxLength(3000) resumenClase?: string;
 }
 
 export class GenerarBorradorDto {

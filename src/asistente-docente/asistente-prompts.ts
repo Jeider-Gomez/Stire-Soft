@@ -1,14 +1,18 @@
 /**
  * Lo que el Asistente del docente le pide a Gemini y cómo se revisa lo que vuelve (docs/PLAN_ASISTENTE_DOCENTE.md §4).
- * Tres borradores, uno por panel: la estructura del curso (Contenido), la explicación de una lección (la lección) y
- * ejercicios de opción múltiple (Ejercicios). Todo es un BORRADOR: el docente lo revisa y decide si lo aplica.
+ * Cinco borradores: la estructura del curso (Contenido), la explicación de una lección, una explicación alternativa
+ * (otra forma de explicarla, para quien no entendió), ejercicios de opción múltiple y el análisis de la clase (qué
+ * atender y cómo). Todo es un BORRADOR: el docente lo revisa y decide si lo aplica.
+ *
+ * El análisis recibe un resumen ANÓNIMO de la clase (cuántos, en qué lección, qué error), armado en el navegador del
+ * docente: nunca nombres ni datos personales de estudiantes.
  *
  * Seguridad: el texto del curso y el pedido del docente van como DATOS entre etiquetas, nunca como instrucciones; Gemini
  * responde con un esquema JSON fijo y aquí se valida y se recorta cada campo antes de devolverlo. No viaja ningún dato
  * de estudiantes. Sin importaciones de Nest: se prueba solo (asistente-prompts.spec.ts).
  */
 
-export const TIPOS_BORRADOR = ['estructura', 'leccion', 'ejercicios'] as const;
+export const TIPOS_BORRADOR = ['estructura', 'leccion', 'alternativa', 'ejercicios', 'analisis'] as const;
 export type TipoBorrador = (typeof TIPOS_BORRADOR)[number];
 
 export interface ContextoAsistente {
@@ -21,6 +25,8 @@ export interface ContextoAsistente {
   textoActual?: string;
   /** Cuántos ejercicios (1 a 8) o módulos (1 a 8). */
   cantidad?: number;
+  /** Para el análisis: el resumen anónimo de la clase (señales por lección, errores repetidos, valoraciones). */
+  resumenClase?: string;
 }
 
 export interface BorradorEstructura {
@@ -40,9 +46,24 @@ export interface BorradorEjercicios {
   ejercicios: Array<{ enunciado: string; opciones: string[]; correcta: number; porQue: string; repasar: string; dificultad: 'basico' | 'intermedio' | 'avanzado' }>;
   porque: string;
 }
-export type Borrador = BorradorEstructura | BorradorLeccion | BorradorEjercicios;
+/** Otra forma de explicar la lección (explicaciones alternativas): una analogía o un paso a paso, y cuándo mostrarla. */
+export interface BorradorAlternativa {
+  tipo: 'alternativa';
+  forma: 'analogia' | 'paso';
+  titulo: string;
+  explicacion: string;
+  cuando: 'noclaro' | 'falla2' | 'repaso';
+  porque: string;
+}
+/** Qué atender en la clase y con qué se resuelve cada cosa. */
+export interface BorradorAnalisis {
+  tipo: 'analisis';
+  hallazgos: Array<{ titulo: string; detalle: string; accion: 'alternativa' | 'ejercicios' | 'refuerzo' | 'mensaje'; leccion: string }>;
+  porque: string;
+}
+export type Borrador = BorradorEstructura | BorradorLeccion | BorradorAlternativa | BorradorEjercicios | BorradorAnalisis;
 
-const LIMITE = { titulo: 120, corto: 400, explicacion: 6000, pedido: 600, textoActual: 4000 };
+const LIMITE = { titulo: 120, corto: 400, explicacion: 6000, pedido: 600, textoActual: 4000, resumenClase: 3000 };
 const recortar = (t: unknown, max: number) => (typeof t === 'string' ? t.replace(/\s+$/g, '').slice(0, max).trim() : '');
 const DIFICULTADES = ['basico', 'intermedio', 'avanzado'] as const;
 type Dificultad = (typeof DIFICULTADES)[number];
@@ -62,6 +83,7 @@ function datos(c: ContextoAsistente, pedido: string): string {
   return '<datos>\n' + linea('Asignatura', c.asignatura) + linea('Clase', c.clase) + linea('Módulo', c.modulo) + linea('Tema', c.tema)
     + linea('Lección', c.leccion)
     + (c.textoActual ? `Texto actual de la lección:\n${recortar(c.textoActual, LIMITE.textoActual)}\n` : '')
+    + (c.resumenClase ? `Resumen anónimo de la clase:\n${recortar(c.resumenClase, LIMITE.resumenClase)}\n` : '')
     + (pedido ? `Pedido del docente: ${recortar(pedido, LIMITE.pedido)}\n` : '')
     + '</datos>';
 }
@@ -75,6 +97,16 @@ export function construirPrompt(tipo: TipoBorrador, c: ContextoAsistente, pedido
     leccion: 'Escribe la explicación de la lección en Markdown, para leer en 5 a 8 minutos: una idea por párrafo, un ejemplo resuelto paso a paso '
       + '(en pseudocódigo o en el lenguaje del curso, en bloque de código), y una sección «Error común» con uno que cometen los principiantes. '
       + 'Si hay texto actual, mejóralo sin perder lo que el docente escribió. En «porque» di en una frase por qué la ordenaste así.',
+    alternativa: 'Escribe una explicación ALTERNATIVA de la lección para el estudiante que leyó la principal y no la entendió: no la repitas. '
+      + 'Elige la forma que mejor sirva: «analogia» (compara la idea con algo de la vida diaria y luego vuelve al código) o «paso» '
+      + '(un ejemplo trazado línea por línea, con el valor de cada variable en cada paso). En Markdown, para leer en 2 a 4 minutos. '
+      + 'Elige «cuando»: «noclaro» si sirve a quien dice que no entendió, «falla2» si ataca el error que lleva a fallar, «repaso» si es un resumen para volver. '
+      + 'En «porque» di en una frase por qué esa forma.',
+    analisis: 'Analiza el resumen anónimo de la clase y di qué conviene atender primero: 2 a 5 hallazgos, de lo más urgente a lo menos. '
+      + 'Cada uno con un título corto, un detalle de una o dos frases (qué pasa y por qué importa), la lección donde ocurre (tal como '
+      + 'aparece en el resumen; vacío si es de toda la clase) y una acción: «alternativa» (preparar otra forma de explicar), «ejercicios» '
+      + '(más práctica), «refuerzo» (asignar un refuerzo a quienes están atascados) o «mensaje» (escribirle a la clase). '
+      + 'No inventes cifras: usa solo las del resumen. En «porque» resume la situación de la clase en una frase.',
     ejercicios: `Escribe ${cantidad(c.cantidad, 3)} ejercicios de opción múltiple en escalera (de más fácil a más difícil) sobre la lección. `
       + 'Cada uno: enunciado claro, 4 opciones plausibles (los distractores son errores reales de principiantes, no absurdos), el índice (0 a 3) '
       + 'de la correcta, «porQue» (por qué es correcta, una o dos frases) y «repasar» (qué repasar si falla, sin dar la respuesta). '
@@ -101,6 +133,23 @@ export const ESQUEMAS: Record<TipoBorrador, object> = {
     },
   },
   leccion: { type: 'OBJECT', required: ['titulo', 'explicacion', 'porque'], properties: { titulo: S('Título de la lección'), explicacion: S('Explicación en Markdown'), porque: S('Por qué así, una frase') } },
+  alternativa: {
+    type: 'OBJECT', required: ['forma', 'titulo', 'explicacion', 'cuando', 'porque'],
+    properties: {
+      forma: { type: 'STRING', enum: ['analogia', 'paso'] }, titulo: S('Título corto de la explicación alternativa'),
+      explicacion: S('Explicación alternativa en Markdown'), cuando: { type: 'STRING', enum: ['noclaro', 'falla2', 'repaso'] }, porque: S('Por qué esa forma'),
+    },
+  },
+  analisis: {
+    type: 'OBJECT', required: ['hallazgos', 'porque'],
+    properties: {
+      porque: S('La situación de la clase en una frase'),
+      hallazgos: { type: 'ARRAY', items: { type: 'OBJECT', required: ['titulo', 'detalle', 'accion', 'leccion'], properties: {
+        titulo: S('Título corto'), detalle: S('Qué pasa y por qué importa'), leccion: S('Lección donde ocurre, o vacío'),
+        accion: { type: 'STRING', enum: ['alternativa', 'ejercicios', 'refuerzo', 'mensaje'] },
+      } } },
+    },
+  },
   ejercicios: {
     type: 'OBJECT', required: ['ejercicios', 'porque'],
     properties: {
@@ -125,6 +174,20 @@ export function validarBorrador(tipo: TipoBorrador, crudo: unknown): Borrador | 
     const explicacion = recortar(o.explicacion, LIMITE.explicacion);
     if (explicacion.length < 40) return null;
     return { tipo, titulo: recortar(o.titulo, LIMITE.titulo) || 'Lección', explicacion, porque };
+  }
+  if (tipo === 'alternativa') {
+    const explicacion = recortar(o.explicacion, LIMITE.explicacion);
+    if (explicacion.length < 40) return null;
+    const cuando = (['noclaro', 'falla2', 'repaso'] as const).find((x) => x === o.cuando) ?? 'noclaro';
+    return { tipo, forma: o.forma === 'paso' ? 'paso' : 'analogia', titulo: recortar(o.titulo, LIMITE.titulo) || 'Otra forma de verlo', explicacion, cuando, porque };
+  }
+  if (tipo === 'analisis') {
+    const ACCIONES = ['alternativa', 'ejercicios', 'refuerzo', 'mensaje'] as const;
+    const hallazgos = (Array.isArray(o.hallazgos) ? o.hallazgos : []).slice(0, 5).map((h: Record<string, unknown>) => ({
+      titulo: recortar(h?.titulo, LIMITE.titulo), detalle: recortar(h?.detalle, LIMITE.corto), leccion: recortar(h?.leccion, LIMITE.titulo),
+      accion: ACCIONES.find((a) => a === h?.accion) ?? 'mensaje',
+    })).filter((h) => h.titulo && h.detalle);
+    return hallazgos.length ? { tipo, hallazgos, porque } : null;
   }
   if (tipo === 'estructura') {
     const modulos = (Array.isArray(o.modulos) ? o.modulos : []).slice(0, 8).map((m: Record<string, unknown>) => ({
