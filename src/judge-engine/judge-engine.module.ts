@@ -96,6 +96,7 @@ export const QUEUE_DRIVER: 'redis' | 'inline' = process.env.QUEUE_DRIVER === 're
   // endpoint "Probar código" (SubmissionsService.runPublicCases) necesita
   // invocar runPublicCases() directamente, sin pasar por la cola de
   // calificación — esa ruta es solo para gradeAnswer().
-  exports: [ExecutionResultsRepository, JUDGE_QUEUE, JudgeExecutionService],
+  // SANDBOX_ADAPTER: el Asistente del docente calcula con el mismo juez las salidas de los ejercicios que propone.
+  exports: [ExecutionResultsRepository, JUDGE_QUEUE, JudgeExecutionService, SANDBOX_ADAPTER],
 })
 export class JudgeEngineModule {}

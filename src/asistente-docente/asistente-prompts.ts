@@ -12,7 +12,7 @@
  * de estudiantes. Sin importaciones de Nest: se prueba solo (asistente-prompts.spec.ts).
  */
 
-export const TIPOS_BORRADOR = ['estructura', 'leccion', 'alternativa', 'ejercicios', 'analisis'] as const;
+export const TIPOS_BORRADOR = ['estructura', 'leccion', 'alternativa', 'ejercicios', 'programacion', 'analisis'] as const;
 export type TipoBorrador = (typeof TIPOS_BORRADOR)[number];
 
 export interface ContextoAsistente {
@@ -61,7 +61,27 @@ export interface BorradorAnalisis {
   hallazgos: Array<{ titulo: string; detalle: string; accion: 'alternativa' | 'ejercicios' | 'refuerzo' | 'mensaje'; leccion: string }>;
   porque: string;
 }
-export type Borrador = BorradorEstructura | BorradorLeccion | BorradorAlternativa | BorradorEjercicios | BorradorAnalisis;
+/**
+ * Ejercicios de programación que corrige el juez de STIRE (JavaScript que lee la entrada y escribe con console.log). La IA
+ * propone la solución y las entradas; las SALIDAS esperadas no las escribe ella: el servidor ejecuta la solución en el
+ * juez y las calcula (casosConSalidas), así un caso nunca contradice a la solución.
+ */
+export interface EjercicioProgramacion {
+  titulo: string;
+  enunciado: string;
+  inicial: string;
+  solucion: string;
+  casos: Array<{ entrada: string; salida: string; publico: boolean }>;
+  dificultad: 'basico' | 'intermedio' | 'avanzado';
+}
+export interface BorradorProgramacion { tipo: 'programacion'; ejercicios: EjercicioProgramacion[]; porque: string }
+export type Borrador = BorradorEstructura | BorradorLeccion | BorradorAlternativa | BorradorEjercicios | BorradorProgramacion | BorradorAnalisis;
+
+/** La línea con la que todo ejercicio lee su entrada (la misma de los cursos: src/seeds/cursos/tipos.ts). */
+export const LEER_ENTRADA =
+  "// Lee la entrada: cada línea es un texto (no cambies esta línea)\n" +
+  "const lineas = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\n";
+const conLectura = (codigo: string) => (codigo.includes("readFileSync(0") ? codigo : LEER_ENTRADA + codigo);
 
 const LIMITE = { titulo: 120, corto: 400, explicacion: 6000, pedido: 600, textoActual: 4000, resumenClase: 3000 };
 const recortar = (t: unknown, max: number) => (typeof t === 'string' ? t.replace(/\s+$/g, '').slice(0, max).trim() : '');
@@ -107,6 +127,13 @@ export function construirPrompt(tipo: TipoBorrador, c: ContextoAsistente, pedido
       + 'aparece en el resumen; vacío si es de toda la clase) y una acción: «alternativa» (preparar otra forma de explicar), «ejercicios» '
       + '(más práctica), «refuerzo» (asignar un refuerzo a quienes están atascados) o «mensaje» (escribirle a la clase). '
       + 'No inventes cifras: usa solo las del resumen. En «porque» resume la situación de la clase en una frase.',
+    programacion: `Escribe ${cantidad(c.cantidad, 2)} ejercicios de programación en JavaScript sobre la lección, en escalera. `
+      + 'El programa lee la entrada del arreglo `lineas` (cada elemento es una línea de texto; ya está declarado, NO lo declares) y escribe '
+      + 'la salida con console.log, sin preguntar nada al usuario. Cada ejercicio: «titulo»; «enunciado» en Markdown con qué lee, qué '
+      + 'escribe y un ejemplo de entrada y salida; «inicial» (código de partida que convierte la entrada y deja un comentario de qué falta); '
+      + '«solucion» (el programa completo y correcto, sin la declaración de `lineas`); «entradas»: 4 a 6 entradas distintas (cada una es el '
+      + 'texto completo de la entrada, con saltos de línea \\n si son varias líneas), incluyendo casos límite; y «dificultad». '
+      + 'NO escribas las salidas: STIRE las calcula ejecutando tu solución. En «porque» di qué practica cada uno.',
     ejercicios: `Escribe ${cantidad(c.cantidad, 3)} ejercicios de opción múltiple en escalera (de más fácil a más difícil) sobre la lección. `
       + 'Cada uno: enunciado claro, 4 opciones plausibles (los distractores son errores reales de principiantes, no absurdos), el índice (0 a 3) '
       + 'de la correcta, «porQue» (por qué es correcta, una o dos frases) y «repasar» (qué repasar si falla, sin dar la respuesta). '
@@ -138,6 +165,16 @@ export const ESQUEMAS: Record<TipoBorrador, object> = {
     properties: {
       forma: { type: 'STRING', enum: ['analogia', 'paso'] }, titulo: S('Título corto de la explicación alternativa'),
       explicacion: S('Explicación alternativa en Markdown'), cuando: { type: 'STRING', enum: ['noclaro', 'falla2', 'repaso'] }, porque: S('Por qué esa forma'),
+    },
+  },
+  programacion: {
+    type: 'OBJECT', required: ['ejercicios', 'porque'],
+    properties: {
+      porque: S('Qué practica cada uno'),
+      ejercicios: { type: 'ARRAY', items: { type: 'OBJECT', required: ['titulo', 'enunciado', 'inicial', 'solucion', 'entradas', 'dificultad'], properties: {
+        titulo: S('Título'), enunciado: S('Enunciado en Markdown con un ejemplo'), inicial: S('Código de partida, sin declarar lineas'),
+        solucion: S('Solución completa, sin declarar lineas'), entradas: { type: 'ARRAY', items: { type: 'STRING' } }, dificultad: DIF,
+      } } },
     },
   },
   analisis: {
@@ -181,6 +218,19 @@ export function validarBorrador(tipo: TipoBorrador, crudo: unknown): Borrador | 
     const cuando = (['noclaro', 'falla2', 'repaso'] as const).find((x) => x === o.cuando) ?? 'noclaro';
     return { tipo, forma: o.forma === 'paso' ? 'paso' : 'analogia', titulo: recortar(o.titulo, LIMITE.titulo) || 'Otra forma de verlo', explicacion, cuando, porque };
   }
+  if (tipo === 'programacion') {
+    const ejercicios = (Array.isArray(o.ejercicios) ? o.ejercicios : []).slice(0, 5).map((e: Record<string, unknown>) => ({
+      titulo: recortar(e?.titulo, LIMITE.titulo),
+      enunciado: recortar(e?.enunciado, LIMITE.explicacion / 2),
+      inicial: conLectura(recortar(e?.inicial, LIMITE.textoActual)),
+      solucion: conLectura(recortar(e?.solucion, LIMITE.textoActual)),
+      // Las entradas llegan sin salidas; casosConSalidas las completa con el juez.
+      casos: [...new Set((Array.isArray(e?.entradas) ? e.entradas : []).map((x) => (typeof x === 'string' ? x.slice(0, 500) : '')).filter((x) => x.trim()))]
+        .slice(0, 6).map((entrada, i) => ({ entrada, salida: '', publico: i === 0 })),
+      dificultad: dificultad(e?.dificultad),
+    })).filter((e) => e.titulo && e.enunciado && e.solucion.length > LEER_ENTRADA.length + 5 && e.casos.length >= 2);
+    return ejercicios.length ? { tipo, ejercicios, porque } : null;
+  }
   if (tipo === 'analisis') {
     const ACCIONES = ['alternativa', 'ejercicios', 'refuerzo', 'mensaje'] as const;
     const hallazgos = (Array.isArray(o.hallazgos) ? o.hallazgos : []).slice(0, 5).map((h: Record<string, unknown>) => ({
@@ -211,4 +261,26 @@ export function validarBorrador(tipo: TipoBorrador, crudo: unknown): Borrador | 
     };
   }).filter((e) => e.enunciado && e.opciones.length >= 2 && Number.isInteger(e.correcta) && e.correcta >= 0 && e.correcta < e.opciones.length);
   return ejercicios.length ? { tipo: 'ejercicios', ejercicios, porque } : null;
+}
+
+/**
+ * Completa las salidas esperadas ejecutando la solución en el juez (`correr` devuelve la salida o null si falló). Un
+ * ejercicio cuya solución falla con alguna entrada se descarta: no se le muestra al docente algo que el juez no corrige.
+ */
+export async function casosConSalidas(
+  b: BorradorProgramacion,
+  correr: (codigo: string, entrada: string) => Promise<string | null>,
+): Promise<BorradorProgramacion | null> {
+  const ejercicios: EjercicioProgramacion[] = [];
+  for (const e of b.ejercicios) {
+    const casos: EjercicioProgramacion['casos'] = [];
+    let falla = false;
+    for (const c of e.casos) {
+      const salida = await correr(e.solucion, c.entrada);
+      if (salida === null || !salida.trim()) { falla = true; break; }
+      casos.push({ ...c, salida: salida.trim() });
+    }
+    if (!falla && casos.length >= 2) ejercicios.push({ ...e, casos });
+  }
+  return ejercicios.length ? { ...b, ejercicios } : null;
 }

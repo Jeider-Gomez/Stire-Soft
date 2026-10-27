@@ -1,8 +1,9 @@
-import { HttpException, HttpStatus, Injectable, Logger, ServiceUnavailableException, UnprocessableEntityException } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger, ServiceUnavailableException, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TutorCredentialService } from '../tutor/tutor-credential.service';
 import { OrdenDeModelos } from '../tutor/orden-modelos';
-import { Borrador, ContextoAsistente, ESQUEMAS, TipoBorrador, construirPrompt, validarBorrador } from './asistente-prompts';
+import { Borrador, ContextoAsistente, ESQUEMAS, TipoBorrador, casosConSalidas, construirPrompt, validarBorrador } from './asistente-prompts';
+import { SANDBOX_ADAPTER, type SandboxAdapter } from '../judge-engine/sandbox-adapter.interface';
 
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 /** Un borrador es más largo que una respuesta del Tutor: más tiempo de espera. */
@@ -22,6 +23,8 @@ export class AsistenteDocenteService {
   constructor(
     private readonly credenciales: TutorCredentialService,
     configService: ConfigService,
+    /** El mismo juez que califica a los estudiantes: calcula las salidas de los ejercicios de programación. */
+    @Inject(SANDBOX_ADAPTER) private readonly juez: SandboxAdapter,
   ) {
     this.modelo = configService.get<string>('GEMINI_MODEL', 'gemini-flash-latest');
   }
@@ -45,10 +48,22 @@ export class AsistenteDocenteService {
       let datos: unknown = null;
       try { datos = JSON.parse(texto); } catch { /* se reintenta */ }
       const borrador = validarBorrador(tipo, datos);
+      if (borrador?.tipo === 'programacion') {
+        const conSalidas = await casosConSalidas(borrador, (codigo, entrada) => this.correr(codigo, entrada));
+        if (conSalidas) return conSalidas;
+        this.logger.warn(`Asistente: ninguna solución de programación corrió en el juez (intento ${intento + 1}).`);
+        continue;
+      }
       if (borrador) return borrador;
       this.logger.warn(`Asistente: borrador «${tipo}» inválido (intento ${intento + 1}).`);
     }
     throw new UnprocessableEntityException('El Asistente no logró un borrador válido. Pídelo otra vez o con otras palabras.');
+  }
+
+  /** Ejecuta la solución propuesta con una entrada en el juez; null si no terminó bien. */
+  private async correr(codigo: string, entrada: string): Promise<string | null> {
+    const r = await this.juez.executeIsolated(codigo, 'javascript', { input: entrada, expected: '' });
+    return r.status === 'accepted' || r.status === 'wrong_answer' ? (r.stderr.trim() ? null : r.stdout) : null;
   }
 
   /** Prueba los modelos en orden hasta que uno responda (mismo criterio que el Tutor: src/tutor/orden-modelos.ts). */

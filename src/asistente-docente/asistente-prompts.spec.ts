@@ -1,7 +1,8 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common';
-import { construirPrompt, validarBorrador } from './asistente-prompts';
+import { LEER_ENTRADA, casosConSalidas, construirPrompt, validarBorrador } from './asistente-prompts';
+import { HardenedProcessSandboxAdapter } from '../judge-engine/hardened-process-sandbox.adapter';
 import { GenerarBorradorDto } from './asistente-docente.controller';
 import { AsistenteDocenteService } from './asistente-docente.service';
 
@@ -104,4 +105,34 @@ describe('explicación alternativa y análisis de la clase (27/10)', () => {
     const b = validarBorrador('analisis', { porque: 'Va bien', hallazgos: [{ titulo: 'Atascados en Ciclos', detalle: 'Cuatro fallan seguido.', accion: 'refuerzo', leccion: 'Ciclos' }, { titulo: '', detalle: 'x' }, { titulo: 'Otro', detalle: 'y', accion: 'nada' }] });
     expect(b).toMatchObject({ tipo: 'analisis', hallazgos: [{ accion: 'refuerzo', leccion: 'Ciclos' }, { accion: 'mensaje' }] });
   });
+});
+
+describe('ejercicios de programación que corrige el juez (27/10)', () => {
+  const crudo = {
+    porque: 'Practica leer y escribir',
+    ejercicios: [{
+      titulo: 'El doble', enunciado: 'Lee un número y escribe su doble. Ejemplo: 3 → 6', dificultad: 'basico',
+      inicial: 'const n = Number(lineas[0]);\n// escribe el doble', solucion: 'const n = Number(lineas[0]);\nconsole.log(n * 2);',
+      entradas: ['3', '0', '-7', '3'],
+    }],
+  };
+  it('valida: agrega la línea que lee la entrada, quita entradas repetidas y deja el primer caso público', () => {
+    const b = validarBorrador('programacion', crudo);
+    expect(b?.tipo).toBe('programacion');
+    const e = (b as Extract<typeof b, { tipo: 'programacion' }>)!.ejercicios[0];
+    expect(e.solucion.startsWith(LEER_ENTRADA)).toBe(true);
+    expect(e.casos.map((c) => [c.entrada, c.publico])).toEqual([['3', true], ['0', false], ['-7', false]]);
+  });
+  it('las salidas las calcula el juez real ejecutando la solución; si la solución falla, el ejercicio se descarta', async () => {
+    const juez = new HardenedProcessSandboxAdapter();
+    const correr = async (codigo: string, entrada: string) => {
+      const r = await juez.executeIsolated(codigo, 'javascript', { input: entrada, expected: '' });
+      return r.status === 'accepted' || r.status === 'wrong_answer' ? (r.stderr.trim() ? null : r.stdout) : null;
+    };
+    const b = validarBorrador('programacion', crudo) as Parameters<typeof casosConSalidas>[0];
+    const listo = await casosConSalidas(b, correr);
+    expect(listo?.ejercicios[0].casos.map((c) => c.salida)).toEqual(['6', '0', '-14']);
+    const roto = await casosConSalidas({ ...b, ejercicios: [{ ...b.ejercicios[0], solucion: LEER_ENTRADA + 'throw new Error("x")' }] }, correr);
+    expect(roto).toBeNull();
+  }, 30000);
 });
