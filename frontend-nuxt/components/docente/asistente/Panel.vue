@@ -5,13 +5,18 @@
        a Contenido del curso para verlo. Se abre con «Asistente» en el encabezado o con Ctrl+. y se cierra con Esc. -->
   <Transition name="panel-asistente">
     <aside v-if="abierto" id="panel-asistente" role="complementary" aria-labelledby="asistente-titulo"
-      class="fixed top-0 right-0 z-50 h-full w-full max-w-[420px] bg-base-blanco border-l border-base-borde-sutil shadow-2xl flex flex-col">
+      class="fixed top-0 right-0 z-50 h-full w-full bg-base-blanco border-l border-base-borde-sutil shadow-2xl flex flex-col transition-[max-width] duration-300"
+      :class="ancho ? 'max-w-[760px]' : 'max-w-[420px]'">
       <header class="flex items-center gap-3 px-4 h-16 border-b border-base-borde-sutil shrink-0">
         <TutorMascota :expresion="pensando ? 'pensando' : aplicando ? 'atento' : borrador ? 'contento' : 'normal'" :tamano="34" etiqueta="Asistente STIRE" />
         <div class="flex-1 min-w-0">
           <h2 id="asistente-titulo" class="text-sm font-bold text-base-texto-primario">Asistente STIRE <span class="ml-1 px-1.5 py-0.5 rounded bg-stire-blue/10 text-stire-blue text-[10px] font-semibold align-middle">IA</span></h2>
           <p class="text-[11px] text-base-texto-secundario truncate">Te propongo borradores; tú decides qué queda.</p>
         </div>
+        <button type="button" class="hidden md:grid w-9 h-9 rounded-lg place-items-center text-slate-500 hover:bg-base-bg-secundario" :aria-pressed="ancho"
+          :aria-label="ancho ? 'Hacer el panel angosto' : 'Hacer el panel ancho'" :title="ancho ? 'Angosto' : 'Ancho: más espacio para revisar el borrador'" @click="ancho = !ancho">
+          <component :is="ancho ? Minimize2 : Maximize2" :size="16" aria-hidden="true" />
+        </button>
         <button type="button" class="w-9 h-9 rounded-lg grid place-items-center text-slate-500 hover:bg-base-bg-secundario" aria-label="Cerrar el Asistente" title="Cerrar (Esc)" @click="abierto = false">
           <X :size="18" aria-hidden="true" />
         </button>
@@ -69,7 +74,7 @@
           </div>
 
           <!-- El borrador, para revisarlo antes de crear nada -->
-          <DocenteAsistenteBorrador v-if="borrador && !pensando" :borrador="borrador" />
+          <DocenteAsistenteBorrador v-if="borrador && !pensando" :borrador="borrador" :editable="!aplicando" @cambiar="(b) => (borrador = b)" />
 
           <div v-if="borrador && !pensando" class="flex flex-wrap gap-2">
             <button type="button" class="btn-stire-primary min-h-[44px]" :disabled="aplicando || (TAREAS[borrador.tipo].necesitaLeccion && !leccionElegida)" @click="aplicarBorrador">
@@ -86,11 +91,12 @@
               <Loader2 v-else-if="p.estado === 'haciendo'" :size="14" class="animate-spin text-stire-blue shrink-0" aria-hidden="true" />
               <X v-else-if="p.estado === 'error'" :size="14" class="text-semantico-falla shrink-0" aria-hidden="true" />
               <span v-else class="w-3.5 h-3.5 rounded-full border border-base-borde-fuerte shrink-0" aria-hidden="true" />
-              <span :class="p.estado === 'pendiente' ? 'text-base-texto-secundario' : 'text-base-texto-primario'">{{ p.texto }}</span>
+              <span class="flex-1 min-w-0" :class="p.estado === 'pendiente' ? 'text-base-texto-secundario' : 'text-base-texto-primario'">{{ p.texto }}</span>
+              <NuxtLink v-if="p.enlace && p.estado === 'hecho'" :to="p.enlace" class="shrink-0 font-semibold text-stire-blue hover:underline">{{ p.enlace.includes('ejercicio=') ? 'Editar' : 'Abrir' }}<span class="sr-only"> {{ p.texto }}</span></NuxtLink>
             </li>
           </ol>
           <p v-if="pasos.length && !aplicando && pasos.every((p) => p.estado === 'hecho')" class="text-xs text-semantico-pasa font-semibold">
-            Listo. Quedó oculto en Contenido del curso: revísalo y publícalo cuando quieras.
+            Listo. Quedó oculto en Contenido del curso: toca «Abrir» o «Editar» en cada paso para revisarlo y publícalo cuando quieras.
           </p>
         </template>
       </div>
@@ -100,7 +106,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { Check, Loader2, Sparkles, X } from 'lucide-vue-next'
+import { Check, Loader2, Maximize2, Minimize2, Sparkles, X } from 'lucide-vue-next'
 import { TAREAS, pantallaDeRuta, tareaSugerida, type TipoBorrador } from '~/utils/asistenteDocente'
 
 const route = useRoute()
@@ -111,6 +117,8 @@ const contexto = computed(() => pantallaDeRuta(route.path, route.query))
 const sugerida = computed(() => tareaSugerida(contexto.value.pantalla))
 const tareasOrdenadas = computed(() => [sugerida.value, ...(['estructura', 'leccion', 'ejercicios'] as TipoBorrador[]).filter((t) => t !== sugerida.value)])
 const tarea = ref<TipoBorrador>('estructura')
+// Ancho: más espacio para revisar y ordenar el borrador (en pantallas grandes).
+const ancho = useState('asistente-ancho', () => false)
 const pedido = ref('')
 const cantidad = ref(3)
 const clases = ref<Array<{ id: number; name: string; asignatura?: { nombre: string } | null }>>([])

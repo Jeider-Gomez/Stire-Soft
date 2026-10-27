@@ -79,6 +79,21 @@ export function pasosDeEstructura(b: BorradorEstructura): string[] {
   return b.modulos.flatMap((m) => [`Módulo «${m.titulo}»`, ...m.temas.flatMap((t) => [`Tema «${t.titulo}»`, ...t.lecciones.map((l) => `Lección «${l.titulo}»`)])])
 }
 
+/** Una lista con el elemento `i` movido a `j` (fuera de rango, igual). Para reordenar el borrador antes de crearlo. */
+export function moverItem<T>(lista: ReadonlyArray<T>, i: number, j: number): T[] {
+  const copia = [...lista]
+  if (i < 0 || i >= copia.length || j < 0 || j >= copia.length || i === j) return copia
+  const [x] = copia.splice(i, 1)
+  copia.splice(j, 0, x)
+  return copia
+}
+export const quitarItem = <T>(lista: ReadonlyArray<T>, i: number): T[] => lista.filter((_, k) => k !== i)
+
+/** El enlace a un ejercicio creado: su lección en «Actividades», con la ventana de edición de ese ejercicio abierta. */
+export function enlaceEjercicio(classId: number, leccionId: number, ejercicioId: number): string {
+  return `${enlaceContenido(classId, leccionId, 'actividades')}&ejercicio=${ejercicioId}`
+}
+
 /** Resumen del borrador en una línea, para la tarjeta. */
 export function resumenBorrador(b: BorradorAsistente): string {
   if (b.tipo === 'leccion') return `Explicación de «${b.titulo}»`

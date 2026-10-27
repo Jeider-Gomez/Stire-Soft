@@ -1,10 +1,11 @@
 import { ref } from 'vue'
 import {
-  EVENTO_CONTENIDO_CAMBIO, configOpcionMultiple, enlaceContenido, pasosDeEstructura, tituloDeEjercicio,
+  EVENTO_CONTENIDO_CAMBIO, configOpcionMultiple, enlaceContenido, enlaceEjercicio, pasosDeEstructura, tituloDeEjercicio,
   type BorradorAsistente, type TipoBorrador,
 } from '~/utils/asistenteDocente'
 
-export interface PasoAsistente { texto: string; estado: 'pendiente' | 'haciendo' | 'hecho' | 'error' }
+/** Un paso de lo que el Asistente va creando; hecho, lleva el enlace a lo creado para abrirlo y editarlo. */
+export interface PasoAsistente { texto: string; estado: 'pendiente' | 'haciendo' | 'hecho' | 'error'; enlace?: string }
 export interface LeccionDestino { id: number; titulo: string; modulo?: string; tema?: string }
 
 /**
@@ -51,8 +52,8 @@ export function useAsistente() {
   }
 
   /** Marca un paso y deja ver el avance. */
-  function avanzar(i: number, estado: PasoAsistente['estado']) {
-    pasos.value = pasos.value.map((p, j) => (j === i ? { ...p, estado } : p))
+  function avanzar(i: number, estado: PasoAsistente['estado'], enlace?: string) {
+    pasos.value = pasos.value.map((p, j) => (j === i ? { ...p, estado, ...(enlace ? { enlace } : {}) } : p))
   }
 
   /** Crea lo del borrador. Todo queda oculto/en borrador: el docente lo revisa y lo publica cuando quiera. */
@@ -68,15 +69,15 @@ export function useAsistente() {
         for (const [om, m] of b.modulos.entries()) {
           avanzar(i, 'haciendo')
           const mod = await api.post<{ id: number }>('/sections', { classId, title: m.titulo, description: m.descripcion || undefined, order: 100 + om })
-          avanzar(i++, 'hecho')
+          avanzar(i++, 'hecho', `/docente/contenidos?classId=${classId}&modulo=${mod.id}`)
           for (const [ot, t] of m.temas.entries()) {
             avanzar(i, 'haciendo')
             const tema = await api.post<{ id: number }>('/topic', { sectionId: mod.id, title: t.titulo, order: ot })
-            avanzar(i++, 'hecho')
+            avanzar(i++, 'hecho', `/docente/contenidos?classId=${classId}&tema=${tema.id}`)
             for (const [ol, l] of t.lecciones.entries()) {
               avanzar(i, 'haciendo')
-              await api.post('/learning-unit', { topicId: tema.id, title: l.titulo, description: l.objetivo || undefined, difficulty: l.dificultad, order: ol })
-              avanzar(i++, 'hecho')
+              const nueva = await api.post<{ id: number }>('/learning-unit', { topicId: tema.id, title: l.titulo, description: l.objetivo || undefined, difficulty: l.dificultad, order: ol })
+              avanzar(i++, 'hecho', enlaceContenido(classId, nueva.id))
             }
           }
         }
@@ -84,7 +85,7 @@ export function useAsistente() {
         if (!leccion) throw new Error('Elige la lección donde va la explicación.')
         pasos.value = [{ texto: `Explicación en «${leccion.titulo}»`, estado: 'haciendo' }]
         await api.post('/content', { learningUnitId: leccion.id, title: b.titulo, type: 'markdown', body: b.explicacion, order: 0, isVisible: false })
-        avanzar(0, 'hecho')
+        avanzar(0, 'hecho', enlaceContenido(classId, leccion.id, 'leccion'))
       } else {
         if (!leccion) throw new Error('Elige la lección donde van los ejercicios.')
         const tipos = await api.get<Array<{ id: number; code: string }> | { data?: Array<{ id: number; code: string }> }>('/activity-types')
@@ -104,7 +105,7 @@ export function useAsistente() {
             await api.del(`/activities/${act.id}`).catch(() => undefined)
             throw err
           }
-          avanzar(n, 'hecho')
+          avanzar(n, 'hecho', enlaceEjercicio(classId, leccion.id, act.id))
         }
       }
       window.dispatchEvent(new CustomEvent(EVENTO_CONTENIDO_CAMBIO))

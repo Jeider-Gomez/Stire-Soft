@@ -88,3 +88,25 @@ describe('el panel', () => {
     expect(leer('layouts', 'teacher.vue')).toContain('<DocenteAsistentePanel />');
   });
 });
+
+describe('el borrador del Asistente se ajusta antes de crearlo y cada cosa creada lleva a editarla (27/10)', () => {
+  const u = cargar<{ moverItem: <T>(l: T[], i: number, j: number) => T[]; quitarItem: <T>(l: T[], i: number) => T[]; enlaceEjercicio: (c: number, l: number, e: number) => string }>('asistenteDocente');
+  it('mover y quitar en el borrador', () => {
+    expect(u.moverItem(['a', 'b', 'c'], 2, 0)).toEqual(['c', 'a', 'b']);
+    expect(u.moverItem(['a', 'b'], 0, 5)).toEqual(['a', 'b']);
+    expect(u.quitarItem(['a', 'b', 'c'], 1)).toEqual(['a', 'c']);
+  });
+  it('el enlace a un ejercicio creado abre su lección en «Actividades» con ese ejercicio', () => {
+    expect(u.enlaceEjercicio(7, 12, 99)).toBe('/docente/contenidos?classId=7&unitId=12&pestana=actividades&ejercicio=99');
+  });
+  it('el borrador tiene subir, bajar, quitar y texto editable; los pasos hechos llevan «Abrir» o «Editar»', () => {
+    const b = leer('components', 'docente', 'asistente', 'Borrador.vue');
+    expect(b).toContain("@quitar=\"quitarEjercicio(i)\"");
+    expect(b).toContain('@change="marcarCorrecta(i, k)"');
+    const p = leer('components', 'docente', 'asistente', 'Panel.vue');
+    expect(p).toContain('@cambiar="(b) => (borrador = b)"');
+    expect(p).toContain("p.enlace.includes('ejercicio=') ? 'Editar' : 'Abrir'");
+    expect(leer('composables', 'useAsistente.ts')).toContain("avanzar(n, 'hecho', enlaceEjercicio(classId, leccion.id, act.id))");
+    expect(leer('components', 'docente', 'UnitExercisesPanel.vue')).toContain('const pedido = Number(route.query.ejercicio)');
+  });
+});

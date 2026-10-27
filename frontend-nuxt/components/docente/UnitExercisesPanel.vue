@@ -183,6 +183,14 @@ function alArchivar() {
   nextTick(() => titulo.value?.focus())
 }
 
-onMounted(load)
+// Con ?ejercicio=ID (desde el Asistente u otro panel) se abre la edición de ese ejercicio en cuanto carga la lista.
+const route = useRoute()
+async function cargarYAbrir() {
+  await load()
+  const pedido = Number(route.query.ejercicio)
+  const ej = pedido ? activities.value.find((a) => a.id === pedido) : undefined
+  if (ej) openEdit(ej)
+}
+onMounted(cargarYAbrir)
 defineExpose({ reload: load })
 </script>
