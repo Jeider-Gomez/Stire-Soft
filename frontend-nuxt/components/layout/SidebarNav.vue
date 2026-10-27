@@ -34,9 +34,6 @@
           <House :size="18" aria-hidden="true" class="shrink-0" />
           <span>Inicio</span>
         </NuxtLink>
-        <!-- Plan del curso justo después de Inicio (Jeider 17/10), con alto limitado para que el resto del menú siga a la
-             vista (components/layout/PlanDelCurso.vue). -->
-        <LayoutPlanDelCurso data-recorrido="plan" />
 
         <!-- 5. Repasos (EST-V05) -->
         <NuxtLink
@@ -93,6 +90,11 @@
           <Mail :size="18" aria-hidden="true" class="shrink-0" />
           <span>Mensajes</span>
         </NuxtLink>
+
+        <!-- Plan del curso al final (Jeider, 26/10: «al abrir el plan abarca mucho espacio y quedan lejos las demás
+             cosas»): Inicio, Repasos, Progreso, Asistencia y Mensajes quedan juntos arriba y el plan, que es largo, debajo.
+             Para saltar de lección sin bajar está «Ir a una lección» (Ctrl+K). components/layout/PlanDelCurso.vue. -->
+        <LayoutPlanDelCurso data-recorrido="plan" />
       </nav>
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
