@@ -245,7 +245,7 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo creo una clase?',
         paraQue: 'Para que tus estudiantes entren con un código y tú veas cómo van.',
         pasos: [
-          'En tu inicio, toca «Crear nueva clase».',
+          'En tu inicio, toca «Crear clase». También está en el menú, al abrir el selector de tus clases.',
           'Escribe el «Nombre de la clase». La asignatura, el grupo y el periodo son opcionales.',
           'En «Código de la clase», escribe uno o toca «Generar sugerido».',
           'En «Contenido de la clase», elige «Empezar vacía», una plantilla o una de tus clases para copiar sus lecciones.',
@@ -260,7 +260,7 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo armo los contenidos del curso?',
         paraQue: 'Para organizar lo que tus estudiantes van a estudiar y practicar.',
         pasos: [
-          'Abre tu clase y toca «Contenido».',
+          'Elige tu clase en el menú y toca «Contenido del curso».',
           'Toca «Nuevo módulo». Dentro del módulo, toca «Nuevo tema» y luego agrega cada lección.',
           'Abre una lección para escribir su explicación y crear sus ejercicios.',
           'Cuando esté lista, toca «Publicar». Con «Ocultar» la retiras sin borrarla.',
@@ -273,7 +273,7 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo creo un ejercicio?',
         paraQue: 'Para que tus estudiantes practiquen una lección y se califique solo.',
         pasos: [
-          'En «Contenido», abre la lección y toca «Ejercicio».',
+          'En «Contenido del curso», abre la lección y toca «Ejercicio».',
           'Responde «¿Qué va a hacer el estudiante?» eligiendo el tipo de ejercicio.',
           'Escribe el enunciado y lo que debe cumplir la respuesta, y toca «Ver cómo lo verá el estudiante».',
           'Revisa la vista previa, elige «Publicar ahora» o «Guardar como borrador», y confirma.',
@@ -286,7 +286,7 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo recibo proyectos de mis estudiantes?',
         paraQue: 'Para que entreguen un trabajo más grande que un ejercicio, si te sirve.',
         pasos: [
-          'Abre tu clase y toca «Entregas».',
+          'Elige tu clase en el menú y toca «Entregas».',
           'Toca «Nueva entrega» y describe qué deben entregar y para cuándo.',
           'Cuando entreguen, abre la entrega para revisar cada versión y dejar tu comentario.',
         ],
@@ -297,20 +297,20 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo le asigno un refuerzo o un reto a un estudiante?',
         paraQue: 'Para apoyar a quien va atrás o darle más a quien va adelante.',
         pasos: [
-          'Abre tu clase y toca «Refuerzos».',
+          'Elige tu clase en el menú, abre «Estudiantes y avance» y toca «Refuerzos».',
           'Toca «Nuevo refuerzo o reto».',
           'Elige el «Tipo», a quién va y qué tiene que hacer: una explicación, un ejercicio, un recurso o una entrega.',
           'Toca «Asignar el refuerzo» o «Asignar el reto».',
         ],
         resultado: 'En «Refuerzos y retos» ves los pasos que hizo y su dominio antes y ahora.',
-        consejo: 'También puedes asignarlo desde «Hoy» o desde el mapa de calor de «Estudiantes».',
+        consejo: 'También puedes asignarlo desde «Resumen» o desde el mapa de calor de «Estudiantes y avance».',
       },
       {
         id: 'ajustar-la-clase',
         titulo: '¿Qué puedo cambiar en los ajustes de la clase?',
         paraQue: 'Para que la clase funcione como tú quieres. Todo es opcional.',
         pasos: [
-          'Abre tu clase y toca «Ajustes».',
+          'Elige tu clase en el menú y toca «Ajustes de la clase», al pie.',
           'En «Avance entre módulos» decides cuánto dominio del módulo anterior hace falta para abrir el siguiente.',
           'En «Compartir el contenido» eliges con quién compartirlo como plantilla, o «No compartir».',
           'En «Logros y medallas» eliges qué medallas pueden ganar tus estudiantes.',
@@ -334,8 +334,9 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo sé a quién ayudar?',
         paraQue: 'Para apoyar primero a quien más lo necesita.',
         pasos: [
-          'Abre tu clase. En «Hoy» ves lo que conviene atender primero: quien no puede avanzar y lo que espera tu comentario.',
-          'Toca «Estudiantes». El mapa de calor muestra a cada estudiante en una fila y cada lección en una columna.',
+          'En tu inicio, «Por revisar» junta a quienes necesitan apoyo en todas tus clases. Toca uno para ir a esa clase.',
+          'Dentro de la clase, «Resumen» muestra lo que conviene atender primero: quien no puede avanzar y lo que espera tu comentario.',
+          'Toca «Estudiantes y avance». El mapa de calor muestra a cada estudiante en una fila y cada lección en una columna.',
           'Usa el filtro para ver solo a quienes van por debajo de 50 % de dominio.',
           'Abre un estudiante para ver su avance lección por lección.',
         ],
@@ -346,7 +347,7 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo tomo asistencia?',
         paraQue: 'Para llevar la asistencia sin papel, si te sirve.',
         pasos: [
-          'Abre tu clase y toca «Asistencia».',
+          'Elige tu clase en el menú, abre «Asistencia y notas» y toca «Asistencia».',
           'Toca «Tomar asistencia de hoy».',
           'Si quieres seguir usando STIRE mientras llegan, ve a otra pantalla: abajo a la derecha queda el botón «Asistencia» con cuántos llegaron. Ábrelo para ver quiénes llegaron, escanear con «Escanear aquí» o buscar a alguien y marcarlo a mano.',
           'Toca «Escanear códigos» y lee el QR que cada estudiante muestra en «Mi asistencia». Ves su nombre y su foto para comparar.',
@@ -360,7 +361,7 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo llevo las notas y las paso a Moodle?',
         paraQue: 'Para tener las notas en un solo lugar, si quieres llevarlas aquí.',
         pasos: [
-          'Abre tu clase y toca «Notas».',
+          'Elige tu clase en el menú, abre «Asistencia y notas» y toca «Notas».',
           'Elige cómo empezar, por ejemplo «Una sola nota» o «Una nota por módulo». Después cambias lo que quieras.',
           'Escribe las notas en la tabla. La final se puede ajustar, con un motivo que queda en el historial.',
           'Toca «Descargar para Moodle (CSV)» y súbelo en Moodle, en «Importar calificaciones».',
