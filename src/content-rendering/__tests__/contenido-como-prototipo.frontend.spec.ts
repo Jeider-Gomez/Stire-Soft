@@ -20,6 +20,8 @@ const e = cargar<{
   resumenCurso: (m: unknown[]) => { unidades: number; actividades: number; conPendientes: number; ocultas: number; paraCompletar: Array<{ id: number; falta: string }>; porModulo: Array<{ lecciones: number; listas: number }> };
   rutaDeLeccion: (m: unknown[], id: number) => { modulo: string; tema: string } | null;
   conteoDeLecciones: (l: L[]) => { total: number; lista: number; falta: number; oculta: number };
+  grupoDeActividad: (t?: { code?: string; name?: string } | null) => string;
+  agruparActividades: (a: Array<{ id: number; activityType?: { code?: string; name?: string } }>) => Array<{ id: string; actividades: Array<{ id: number }> }>;
   filtrarArbol: (m: unknown[], q: string) => Array<{ id: number; topics: Array<{ id: number; learningUnits: L[] }> }>;
 }>('estadoCurso');
 
@@ -112,5 +114,23 @@ describe('módulos y temas se abren y se editan en la página; el árbol se busc
   });
   it('los enlaces con ?unitId (Asistente, «Hoy») abren la lección en la página', () => {
     expect(leer('pages', 'docente', 'contenidos.vue')).toContain('if (qUnit) abrirLeccion(qUnit)');
+  });
+});
+
+describe('la pestaña «Actividades» en tres grupos', () => {
+  it('por el código del tipo, y si no llega, por el nombre; lo desconocido es práctica', () => {
+    expect(e.grupoDeActividad({ code: 'AUTO-EVAL' })).toBe('practica');
+    expect(e.grupoDeActividad({ code: 'TALLER' })).toBe('taller');
+    expect(e.grupoDeActividad({ code: 'PARCIAL' })).toBe('evaluacion');
+    expect(e.grupoDeActividad({ name: 'Parcial / Evaluación' })).toBe('evaluacion');
+    expect(e.grupoDeActividad(null)).toBe('practica');
+  });
+  it('en el orden Práctica, Talleres, Evaluación, sin grupos vacíos', () => {
+    const g = e.agruparActividades([{ id: 1, activityType: { code: 'PARCIAL' } }, { id: 2 }, { id: 3, activityType: { code: 'AUTO-EVAL' } }]);
+    expect(g.map((x) => x.id)).toEqual(['practica', 'evaluacion']);
+    expect(g[0].actividades.map((a) => a.id)).toEqual([2, 3]);
+  });
+  it('el panel de ejercicios los muestra agrupados', () => {
+    expect(leer('components', 'docente', 'UnitExercisesPanel.vue')).toContain('agruparActividades(visibleActivities.value)');
   });
 });

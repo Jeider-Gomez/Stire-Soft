@@ -109,3 +109,28 @@ export function filtrarArbol<M extends ModuloConConteos>(modulos: ReadonlyArray<
   }
   return out
 }
+
+/** Los tres grupos de la pestaña «Actividades» (prototipo del panel v2), según el tipo de actividad del catálogo. */
+export const GRUPOS_ACTIVIDAD = [
+  { id: 'practica', titulo: 'Práctica', ayuda: 'Se corrige sola y cuenta para el dominio.' },
+  { id: 'taller', titulo: 'Talleres', ayuda: 'Código más largo, con pruebas; pesa más que la práctica.' },
+  { id: 'evaluacion', titulo: 'Evaluación', ayuda: 'Parciales y quices; pesan más en el dominio.' },
+] as const
+export type GrupoActividad = (typeof GRUPOS_ACTIVIDAD)[number]['id']
+
+/** A qué grupo va una actividad: por el código de su tipo (AUTO-EVAL, TALLER, PARCIAL) o, si no llega, por el nombre. */
+export function grupoDeActividad(tipo?: { code?: string | null; name?: string | null } | null): GrupoActividad {
+  const c = (tipo?.code ?? '').toUpperCase()
+  const n = (tipo?.name ?? '').toLowerCase()
+  if (c === 'PARCIAL' || /parcial|evaluaci|quiz/.test(n)) return 'evaluacion'
+  if (c === 'TALLER' || /taller/.test(n)) return 'taller'
+  return 'practica'
+}
+
+/** Las actividades por grupo, en el orden de GRUPOS_ACTIVIDAD; los grupos vacíos no aparecen. */
+export function agruparActividades<A extends { activityType?: { code?: string | null; name?: string | null } | null }>(
+  actividades: ReadonlyArray<A>,
+): Array<(typeof GRUPOS_ACTIVIDAD)[number] & { actividades: A[] }> {
+  return GRUPOS_ACTIVIDAD.map((g) => ({ ...g, actividades: actividades.filter((a) => grupoDeActividad(a.activityType) === g.id) }))
+    .filter((g) => g.actividades.length > 0)
+}

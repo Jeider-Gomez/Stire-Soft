@@ -31,7 +31,7 @@
       <UnitLessonsModal :unit="{ id: leccion.id, title: leccion.title }" incrustado />
     </div>
     <div v-if="pestana === 'actividades'" id="panel-actividades" role="tabpanel" aria-labelledby="pestana-actividades" class="space-y-2">
-      <p class="text-xs text-base-texto-secundario">La práctica se corrige sola y cuenta para el dominio. Lo que está en borrador no lo ve el estudiante.</p>
+      <p class="text-xs text-base-texto-secundario">Lo que está en borrador no lo ve el estudiante.</p>
       <DocenteUnitExercisesPanel :unit-id="leccion.id" :class-id="classId" @count="$emit('ejercicios', $event)" />
     </div>
     <div v-if="pestana === 'ajustes'" id="panel-ajustes" role="tabpanel" aria-labelledby="pestana-ajustes" class="space-y-3 text-sm">

@@ -58,8 +58,13 @@
       Todavía no hay ejercicios. Empieza por uno sencillo: una pregunta de opción múltiple sobre la explicación.
     </p>
 
-    <ul v-else class="divide-y divide-base-borde-sutil rounded-lg border border-base-borde-sutil bg-base-blanco">
-      <li v-for="act in visibleActivities" :key="act.id" class="flex items-center justify-between gap-3 px-3 py-2 text-xs">
+    <!-- En tres grupos como en el prototipo del panel v2: Práctica, Talleres y Evaluación (los vacíos no aparecen). -->
+    <template v-else>
+    <section v-for="g in grupos" :key="g.id" :aria-label="g.titulo" class="space-y-1">
+      <p class="flex items-baseline gap-2 text-xs"><span class="font-semibold text-base-texto-primario">{{ g.titulo }} ({{ g.actividades.length }})</span>
+        <span class="text-[11px] text-base-texto-secundario">{{ g.ayuda }}</span></p>
+    <ul class="divide-y divide-base-borde-sutil rounded-lg border border-base-borde-sutil bg-base-blanco">
+      <li v-for="act in g.actividades" :key="act.id" class="flex items-center justify-between gap-3 px-3 py-2 text-xs">
         <div class="min-w-0">
           <p class="font-semibold text-base-texto-primario truncate">{{ act.title }}</p>
           <p class="text-[10px] text-base-texto-secundario">
@@ -105,6 +110,8 @@
         </div>
       </li>
     </ul>
+    </section>
+    </template>
     <p v-if="feedback" role="status" class="text-[11px] text-semantico-pasa">{{ feedback }}</p>
     <p v-if="feedbackAviso" role="status" class="text-[11px] text-acento-ambar-fuerte font-semibold">{{ feedbackAviso }}</p>
 
@@ -121,11 +128,12 @@
 // Los ejercicios de una lección en «Contenidos»: la lista y sus acciones. Los datos y la API están en
 // composables/useEjerciciosUnidad.ts; editar, archivar y «Mi banco», en sus ventanas (PAT-01 y PAT-04; antes 852 líneas
 // con las tres ventanas dentro, sin atrapar el foco).
-import { nextTick, onMounted, provide, ref } from 'vue'
+import { computed, nextTick, onMounted, provide, ref } from 'vue'
 import { Archive, Copy, Library, Pencil, Plus } from 'lucide-vue-next'
 import { CLAVE_EJERCICIOS_UNIDAD, useEjerciciosUnidad } from '~/composables/useEjerciciosUnidad'
 import { nombreNivel, type EjercicioDeLaLeccion } from '~/utils/ejerciciosUnidad'
 import type { ExplicacionParaGuia } from '~/utils/guiaLeccion'
+import { agruparActividades } from '~/utils/estadoCurso'
 
 const props = defineProps<{ unitId: number; classId: number; explicaciones?: ExplicacionParaGuia[] }>()
 const emit = defineEmits<{ (e: 'count', n: number): void }>()
@@ -134,6 +142,7 @@ const estado = useEjerciciosUnidad(props.unitId, (n) => emit('count', n))
 provide(CLAVE_EJERCICIOS_UNIDAD, estado)
 const { ejercicios: activities, visibles: visibleActivities, cargando: loading, error: loadError, aviso: feedback, advertencia: feedbackAviso,
   duplicando: isDuplicating, casillasSolas: singleExerciseSlots, cargar: load, publicar: publish, deLaUnidadEnBanco } = estado
+const grupos = computed(() => agruparActividades(visibleActivities.value))
 
 type Ventana =
   | { tipo: 'editar'; ejercicio: EjercicioDeLaLeccion; variante: boolean }

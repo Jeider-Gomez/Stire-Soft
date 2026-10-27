@@ -2,7 +2,7 @@
 // nombres de nivel y de tipo, qué casillas tienen un solo ejercicio y cómo se arma la búsqueda en «Mi banco».
 import { exerciseTypeInfo, type ExerciseTypeId } from './exerciseTypes'
 
-export interface TipoDeActividad { id: number; name: string; baseWeight: number }
+export interface TipoDeActividad { id: number; name: string; baseWeight: number; code?: string }
 
 export interface EjercicioDeLaLeccion {
   id: number
