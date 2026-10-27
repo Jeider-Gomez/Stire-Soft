@@ -12,6 +12,19 @@ entry to the oldest.
 
 ---
 
+## v2.4.0 — el Asistente propone ejercicios de programación que corrige el juez · 27 de Octubre de 2026
+
+**Commit `3161ce5e`. Desplegada (backend `0943bf16`, sin migración; frontend en Vercel).**
+
+- Nueva tarea del Asistente, «Ejercicios de programación»: la IA propone en JavaScript el enunciado, el código de
+  partida, la solución y las entradas. Las salidas esperadas las calcula el servidor ejecutando la solución en el mismo
+  juez que califica a los estudiantes; un ejercicio cuya solución falla se descarta.
+- En el borrador se ven el enunciado, el código de partida y la solución, y una tabla con los casos (el primero como
+  ejemplo, el resto ocultos). Se ordenan, renombran o quitan antes de crearlos; se crean en borrador con cinco intentos y
+  «Editar» lleva a cada uno.
+
+---
+
 ## v2.3.0 — panel del docente nuevo, identidad STIRE, Asistente y explicaciones alternativas · 27 de Octubre de 2026
 
 **Commit `63a8a7b6`. Desplegada: backend en Azure (con las migraciones `PortadaClase`, `AvisoEditado`,
