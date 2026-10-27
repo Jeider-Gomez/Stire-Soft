@@ -13,7 +13,7 @@ hecho se borra de aquí (queda en `CHANGELOG.md` y en los commits) y lo nuevo se
 | F1 | Corregir lo que salga de la verificación del panel del docente (PD-01..17, PV-01..06) | Cierra el jueves 29/10, 8 p. m. `docs/calidad/VERIFICACION_PANEL_DOCENTE_S11.md` |
 | F2 | Hoja de la mascota con las caras nuevas (contento, ánimo) y los gestos | `docs/identidad-visual/propuestas/mascota-stire.html` |
 | F3 | Avisos de errores repetidos y «no puede avanzar» también en «Por revisar» del Inicio | Hoy salen dentro de cada clase (Resumen y «Errores que más se repiten») |
-| F4 | **Contenido del curso como en el prototipo** (árbol Módulo › Tema › Unidad con estado, mapa «Para completar», editor de unidad con pestañas Lección / Actividades / Ajustes) | Lo siguiente. Prototipo: https://claude.ai/artifact/61bFSBKYLHEvho5RfF3HKv |
+| F4 | **Contenido del curso como en el prototipo**: hecho el árbol con estado, el mapa «Para completar», la lección con pestañas Lección / Actividades / Ajustes, el módulo y el tema editables en la página, buscar y plegar el árbol (27/10) | Falta: arrastrar para reordenar, Actividades en tres grupos (Práctica / Evaluación / Entregas), el árbol como hoja en el celular y «Ver la lección como estudiante». Prototipo: https://claude.ai/artifact/61bFSBKYLHEvho5RfF3HKv |
 | F6 | Presentación de la clase para los estudiantes (franja de portada y texto de bienvenida) | Usa la portada (B1) |
 | F5 | Revisar en el celular el logo pequeño (28 px), el pie y el lanzador nuevo del Tutor | Jeider decide; José lo verá después con lo demás |
 

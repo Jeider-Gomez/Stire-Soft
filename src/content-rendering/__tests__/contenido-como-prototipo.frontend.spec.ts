@@ -19,6 +19,8 @@ const e = cargar<{
   faltasDeLeccion: (l: L) => string[];
   resumenCurso: (m: unknown[]) => { unidades: number; actividades: number; conPendientes: number; ocultas: number; paraCompletar: Array<{ id: number; falta: string }>; porModulo: Array<{ lecciones: number; listas: number }> };
   rutaDeLeccion: (m: unknown[], id: number) => { modulo: string; tema: string } | null;
+  conteoDeLecciones: (l: L[]) => { total: number; lista: number; falta: number; oculta: number };
+  filtrarArbol: (m: unknown[], q: string) => Array<{ id: number; topics: Array<{ id: number; learningUnits: L[] }> }>;
 }>('estadoCurso');
 
 const lista: L = { id: 1, title: 'Variables', explicaciones: 1, explicacionesVisibles: 1, activities: [{ status: 'published' }] };
@@ -73,5 +75,42 @@ describe('la página', () => {
   });
   it('desde la lección se le puede pedir al Asistente', () => {
     expect(leer('components', 'docente', 'contenidos', 'EditorUnidad.vue')).toContain('Pedírselo al Asistente');
+  });
+});
+
+describe('módulos y temas se abren y se editan en la página; el árbol se busca y se pliega', () => {
+  const modulos = [
+    { id: 10, title: 'Inicio', topics: [{ id: 100, title: 'Datos', learningUnits: [lista, sinPractica] }] },
+    { id: 11, title: 'Control', topics: [{ id: 101, title: 'Repetición', learningUnits: [vacia, oculta] }] },
+  ];
+  it('el conteo de un grupo: listas, con faltas y ocultas', () => {
+    expect(e.conteoDeLecciones([lista, sinPractica, vacia, oculta])).toEqual({ total: 4, lista: 1, falta: 2, oculta: 1 });
+  });
+  it('buscar sin tildes: el módulo o el tema que coincide queda entero; si no, solo las lecciones que coinciden', () => {
+    expect(e.filtrarArbol(modulos, '').length).toBe(2);
+    expect(e.filtrarArbol(modulos, 'repeticion')[0].topics[0].learningUnits.length).toBe(2);
+    const r = e.filtrarArbol(modulos, 'TIPOS');
+    expect(r.map((m) => m.id)).toEqual([10]);
+    expect(r[0].topics[0].learningUnits.map((l) => l.id)).toEqual([2]);
+    expect(e.filtrarArbol(modulos, 'nada así')).toEqual([]);
+  });
+  it('el árbol: nombres de módulo y tema abren su panel, buscador y «Plegar todo»', () => {
+    const arbol = leer('components', 'docente', 'contenidos', 'ArbolLateral.vue');
+    expect(arbol).toContain("$emit('elegir-grupo', 'modulo', m.id)");
+    expect(arbol).toContain("$emit('elegir-grupo', 'tema', t.id)");
+    expect(arbol).toContain('placeholder="Buscar en el curso"');
+    expect(arbol).toContain("'Desplegar todo' : 'Plegar todo'");
+  });
+  it('el panel del grupo edita nombre y descripción sin ventana y lista sus lecciones con su estado', () => {
+    const panel = leer('components', 'docente', 'contenidos', 'PanelGrupo.vue');
+    expect(panel).toContain('@submit.prevent="guardar"');
+    expect(panel).not.toContain('AdminDialogo');
+    expect(panel).toContain('conteoDeLecciones(props.lecciones)');
+    const pagina = leer('pages', 'docente', 'contenidos.vue');
+    expect(pagina).toContain('<DocenteContenidosPanelGrupo v-else-if="grupoEnPanel"');
+    expect(leer('composables', 'useGrupoDelCurso.ts')).toContain('estado.guardarModulo(m.id, d)');
+  });
+  it('los enlaces con ?unitId (Asistente, «Hoy») abren la lección en la página', () => {
+    expect(leer('pages', 'docente', 'contenidos.vue')).toContain('if (qUnit) abrirLeccion(qUnit)');
   });
 });

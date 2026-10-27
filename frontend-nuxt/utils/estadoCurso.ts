@@ -80,3 +80,32 @@ export function rutaDeLeccion<L extends LeccionConConteos>(
   }
   return null
 }
+
+/** Cuántas lecciones de un módulo o un tema están listas, les falta algo u ocultas (el panel del grupo). */
+export function conteoDeLecciones(lecciones: ReadonlyArray<LeccionConConteos>): Record<EstadoLeccion, number> & { total: number } {
+  const c = { total: lecciones.length, lista: 0, falta: 0, oculta: 0 }
+  for (const l of lecciones) c[estadoDeLeccion(l)]++
+  return c
+}
+
+const sinTildes = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
+
+/**
+ * El árbol con solo lo que coincide con lo buscado (sin importar tildes ni mayúsculas): si coincide el nombre del módulo o
+ * del tema se queda entero; si no, solo las lecciones que coinciden. Sin texto, el árbol tal cual.
+ */
+export function filtrarArbol<M extends ModuloConConteos>(modulos: ReadonlyArray<M>, texto: string): M[] {
+  const q = sinTildes(texto.trim())
+  if (!q) return [...modulos]
+  const out: M[] = []
+  for (const m of modulos) {
+    if (sinTildes(m.title).includes(q)) { out.push(m); continue }
+    const temas = (m.topics ?? []).flatMap((t) => {
+      if (sinTildes(t.title).includes(q)) return [t]
+      const ls = (t.learningUnits ?? []).filter((l) => sinTildes(l.title).includes(q))
+      return ls.length ? [{ ...t, learningUnits: ls }] : []
+    })
+    if (temas.length) out.push({ ...m, topics: temas })
+  }
+  return out
+}

@@ -88,13 +88,15 @@
          (mover, archivar, eliminar). -->
     <div v-else class="grid gap-6 lg:grid-cols-[280px,minmax(0,1fr)] items-start">
       <aside class="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto rounded-2xl border border-base-borde-sutil bg-base-blanco p-3">
-        <DocenteContenidosArbolLateral :modulos="sections" :seleccion="leccionAbierta" :curso="selectedClass?.name"
-          @elegir="abrirLeccion" @nuevo-modulo="openNewModuleModal" @nuevo-tema="nuevoTemaEn" @nueva-leccion="nuevaLeccionEn" />
+        <DocenteContenidosArbolLateral :modulos="sections" :seleccion="leccionAbierta" :grupo="grupoAbierto" :curso="selectedClass?.name"
+          @elegir="abrirLeccion" @elegir-grupo="abrirGrupo" @nuevo-modulo="openNewModuleModal" @nuevo-tema="nuevoTemaEn" @nueva-leccion="nuevaLeccionEn" />
       </aside>
       <div class="min-w-0 space-y-8">
         <DocenteContenidosEditorUnidad v-if="leccionEnEditor" :key="leccionEnEditor.leccion.id" :leccion="leccionEnEditor.leccion"
           :ruta="leccionEnEditor" :class-id="selectedClassId!" @volver="abrirLeccion(null)" @editar="openEditUnitModal" @archivar="confirmArchiveUnit"
           @ejercicios="(n) => setExerciseCount(leccionEnEditor!.leccion.id, n)" />
+        <DocenteContenidosPanelGrupo v-else-if="grupoEnPanel" :key="`${grupoEnPanel.nivel}-${grupoEnPanel.grupo.id}`" v-bind="grupoEnPanel"
+          @volver="abrirLeccion(null)" @elegir="abrirLeccion" @agregar="agregarEnGrupo" @publicar="publicarGrupo" @archivar="archivarGrupo" />
         <template v-else>
           <DocenteContenidosMapaCurso :modulos="sections" @elegir="abrirLeccion" />
           <div class="space-y-2">
@@ -165,6 +167,7 @@ import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 import { CLAVE_CONTENIDOS, useContenidosCurso } from '~/composables/useContenidosCurso'
 import { useContenidosAcciones } from '~/composables/useContenidosAcciones'
 import { useAvisos } from '~/composables/useAvisos'
+import { useGrupoDelCurso } from '~/composables/useGrupoDelCurso'
 const { messageOf } = useApiErrorMessage()
 import { mayorOrden, resumenDeLeccion, type LeccionDelArbol, type ModuloDelArbol, type TemaDelArbol } from '~/utils/contenidosCurso'
 import { rutaDeLeccion } from '~/utils/estadoCurso'
@@ -305,8 +308,14 @@ function nuevaLeccionEn(moduloId: number, temaId: number) {
 }
 function abrirLeccion(id: number | null) {
   leccionAbierta.value = id
+  grupoAbierto.value = null
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
+// Un módulo o un tema abierto a la derecha (PanelGrupo.vue): se edita ahí mismo, sin ventana encima.
+const { grupoAbierto, grupoEnPanel, abrirGrupo, agregarEnGrupo, publicarGrupo, archivarGrupo } = useGrupoDelCurso(estado, {
+  alAbrir: () => { leccionAbierta.value = null; window.scrollTo({ top: 0, behavior: 'smooth' }) },
+  nuevoTema: openNewTopicModal, nuevaLeccion: openNewUnitModal, archivarModulo: confirmArchiveModule, archivarTema: confirmArchiveTopic,
+})
 function openLessonsModal(unit: LeccionDelArbol, opts: { create?: boolean; editId?: number } = {}) {
   // Desde el 27/10 la explicación se edita en la página, en la pestaña «Lección» (sin ventana encima).
   if (!opts.create && !opts.editId) { abrirLeccion(unit.id); return }
@@ -353,11 +362,8 @@ const route = useRoute()
 onMounted(async () => {
   await estado.cargarClases(Number(route.query.classId) || undefined)
   const qUnit = Number(route.query.unitId)
-  if (qUnit) {
-    expandedUnitId.value = qUnit
-    void loadLessons(qUnit)
-    nextTick(() => document.getElementById(`unidad-${qUnit}`)?.scrollIntoView({ block: 'center' }))
-  }
+  // Desde el 27/10 la lección se abre en la página, como al tocarla en el árbol.
+  if (qUnit) abrirLeccion(qUnit)
 })
 // Lo que crea el Asistente (components/docente/asistente/Panel.vue) aparece en el árbol sin recargar la página.
 const recargarPorAsistente = () => { void loadSections() }
