@@ -5,23 +5,34 @@
        es un panel al lado (P-UI-06); el acceso es este botón. Antes estaba en el encabezado: en el celular era un ícono
        sin nombre y en el ejercicio se iba con el scroll. Al bajar por la página se reduce al ícono (como «Redactar» de
        Gmail) para no tapar los botones de la derecha; al subir, o cerca del inicio, vuelve a decir «Tutor». -->
+  <!-- Rediseño 26/10 (con apple-design y emil-design-eng): antes una píldora morada donde la mascota morada se perdía.
+       Ahora una superficie clara y translúcida que flota sobre la página, con la mascota a tamaño completo y el nombre;
+       responde al presionar (escala 0,97) y se levanta solo con ratón. -->
   <button
     v-if="!tutorStore.isOpen"
     id="lanzador-tutor"
-    :class="[{ 'sobre-barra': sobreBarra, 'hidden md:inline-flex': soloComputador }, compacto ? 'p-3' : 'pl-3.5 pr-4 py-3']"
+    :class="[{ 'sobre-barra': sobreBarra, 'hidden md:inline-flex': soloComputador }, compacto ? 'p-1.5' : 'pl-1.5 pr-4 py-1.5']"
     type="button"
-    class="lanzador-tutor fixed right-4 sm:right-6 z-40 inline-flex items-center gap-2 rounded-full bg-stire-purple text-white text-sm font-bold shadow-lg shadow-stire-purple/30 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-stire-purple/40 transition-all"
+    class="lanzador-tutor fixed right-4 sm:right-6 z-40 inline-flex items-center gap-2 rounded-full text-sm font-semibold text-base-texto-primario focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-stire-purple/40"
     aria-label="Abrir el Tutor IA"
     @click="tutorStore.openDrawer()"
     @mouseenter="encima = true"
     @mouseleave="encima = false">
-    <TutorMascota :expresion="expresion" :tamano="20" mirar-cursor aria-hidden="true" />
+    <TutorMascota :expresion="expresion" :tamano="34" mirar-cursor aria-hidden="true" />
     <span v-if="!compacto">Tutor</span>
   </button>
+  <!-- Burbuja: el Tutor habla solo en dos momentos que lo merecen: tras tres fallos seguidos ofrece ayuda, y al acertar
+       felicita. Se va sola; tocarla abre el chat. -->
+  <Transition name="burbuja">
+    <button v-if="burbuja && !tutorStore.isOpen" type="button" class="burbuja-tutor fixed right-4 sm:right-6 z-40 max-w-[15rem] px-3.5 py-2.5 rounded-2xl rounded-br-md text-left text-sm text-base-texto-primario"
+      :class="{ 'sobre-barra': sobreBarra, 'hidden md:block': soloComputador }" role="status" @click="tutorStore.openDrawer()">
+      {{ burbuja }}
+    </button>
+  </Transition>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useTutorStore } from '~/stores/tutor'
 
 // En el ejercicio, en el celular, Probar y Entregar van en una barra fija abajo: el lanzador sube para no taparla.
@@ -31,6 +42,16 @@ const tutorStore = useTutorStore()
 // Al pasar el puntero por encima se alegra de verte (ojos de arco y un pequeño rebote).
 const encima = ref(false)
 const expresion = useExpresionTutor(undefined, encima)
+const burbuja = ref<string | null>(null)
+let finBurbuja: ReturnType<typeof setTimeout> | undefined
+watch(expresion, (e) => {
+  const texto = e === 'animo' ? '¿Te ayudo con este ejercicio? Puedo darte una pista.' : e === 'acierto' ? '¡Bien hecho! Pasaron las pruebas.' : null
+  if (!texto) return
+  burbuja.value = texto
+  clearTimeout(finBurbuja)
+  finBurbuja = setTimeout(() => { burbuja.value = null }, e === 'animo' ? 7000 : 2800)
+})
+onBeforeUnmount(() => clearTimeout(finBurbuja))
 
 /**
  * Compacto mientras se baja; la página puede desplazarse en la ventana o en el contenedor principal. En pantallas de
@@ -60,6 +81,32 @@ onBeforeUnmount(() => document.removeEventListener('scroll', alDesplazar, { capt
 </script>
 
 <style scoped>
+/* Material claro y translúcido que flota sobre la página (en oscuro y alto contraste lo dan los tokens del tema). */
+.lanzador-tutor, .burbuja-tutor {
+  background: rgb(var(--c-base-blanco) / 0.88);
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  border: 1px solid rgb(var(--c-base-borde-sutil));
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.06), 0 10px 28px -8px rgb(11 61 145 / 0.28);
+}
+.lanzador-tutor { transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 200ms ease; }
+.lanzador-tutor:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) {
+  .lanzador-tutor:hover { transform: translateY(-2px); box-shadow: 0 1px 2px rgb(15 23 42 / 0.06), 0 16px 34px -10px rgb(11 61 145 / 0.36); }
+}
+.burbuja-tutor { bottom: calc(4.75rem + env(safe-area-inset-bottom)); transform-origin: 100% 100%; }
+@media (min-width: 640px) { .burbuja-tutor { bottom: 5.25rem; } }
+@media (max-width: 767px) { .burbuja-tutor.sobre-barra { bottom: calc(9.25rem + env(safe-area-inset-bottom)); } }
+.burbuja-enter-active { transition: opacity 220ms ease-out, transform 220ms cubic-bezier(0.23, 1, 0.32, 1); }
+.burbuja-leave-active { transition: opacity 160ms ease-in, transform 160ms ease-in; }
+.burbuja-enter-from, .burbuja-leave-to { opacity: 0; transform: translateY(6px) scale(0.96); }
+@media (prefers-reduced-motion: reduce) {
+  .lanzador-tutor, .lanzador-tutor:active, .lanzador-tutor:hover { transition: none; transform: none; }
+  .burbuja-enter-from, .burbuja-leave-to { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .lanzador-tutor, .burbuja-tutor { background: rgb(var(--c-base-blanco)); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
 .lanzador-tutor {
   bottom: calc(1rem + env(safe-area-inset-bottom));
 }

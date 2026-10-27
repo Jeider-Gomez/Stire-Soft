@@ -179,3 +179,29 @@ describe('personalidad: cada situación tiene su cara y su gesto, y son coherent
     expect(leer('components', 'tutor', 'LanzadorTutor.vue')).toContain('useExpresionTutor(undefined, encima)');
   });
 });
+
+describe('el lanzador del Tutor y la pestaña', () => {
+  it('el lanzador es una superficie clara donde la mascota se ve completa (no morado sobre morado)', () => {
+    const l = leer('components', 'tutor', 'LanzadorTutor.vue');
+    expect(l).toContain(':tamano="34"');
+    expect(l).not.toContain('bg-stire-purple');
+    expect(l).toContain('background: rgb(var(--c-base-blanco) / 0.88)');
+    expect(l).toContain('.lanzador-tutor:active { transform: scale(0.97); }');
+    expect(l).toMatch(/@media \(hover: hover\) and \(pointer: fine\)/);
+    expect(l).toMatch(/@media \(prefers-reduced-transparency: reduce\)/);
+  });
+  it('habla solo cuando lo merece: ofrece ayuda tras tres fallos y felicita al acertar', () => {
+    const l = leer('components', 'tutor', 'LanzadorTutor.vue');
+    expect(l).toContain("e === 'animo' ? '¿Te ayudo con este ejercicio? Puedo darte una pista.'");
+    expect(l).toContain("e === 'acierto' ? '¡Bien hecho! Pasaron las pruebas.'");
+    expect(l).toContain('role="status"');
+  });
+  it('el logo va en la pestaña de todos los navegadores y al añadir STIRE a la pantalla del celular', () => {
+    const c = leer('nuxt.config.ts');
+    for (const ref of ["href: '/favicon.svg'", "href: '/favicon-32.png'", "href: '/favicon.ico'", "href: '/apple-touch-icon.png'"]) expect(c).toContain(ref);
+    const ico = readFileSync(path.join(raiz, 'public', 'favicon.ico'));
+    expect(ico.readUInt16LE(2)).toBe(1); // es un .ico
+    expect(ico.readUInt16LE(4)).toBe(2); // con 16 y 32 px
+    expect(readFileSync(path.join(raiz, 'public', 'apple-touch-icon.png')).subarray(1, 4).toString()).toBe('PNG');
+  });
+});
