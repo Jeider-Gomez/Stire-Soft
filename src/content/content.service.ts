@@ -13,6 +13,7 @@ import { ContentType } from '../common/enums/content-type.enum';
 import { metadatosDeRecurso } from './recursos/metadatos-recurso';
 import { normalizarRecurso, RecursoInvalidoError, type RecursoNormalizado } from './recursos/normalizar-recurso';
 import { insertadosDelTexto } from './recursos/insertados';
+import { explicacionesDelEstudiante, hayAlternativas, type SenalesExplicacion } from './explicaciones-alternativas';
 
 /** Reconstruye el metadata de una lección multimedia; un recurso inválido es un 400 con el motivo. */
 function metadatosValidos(tipo: ContentType, metadata: Record<string, unknown> | undefined | null) {
@@ -98,7 +99,21 @@ export class ContentService {
   async findByUnit(learningUnitId: number, user: User): Promise<Content[]> {
     const classId = await this.resolveClassIdFromUnitId(learningUnitId);
     await this.assertCanReadClass(user, classId);
-    return this.contentRepo.findByUnit(learningUnitId);
+    const visibles = await this.contentRepo.findByUnit(learningUnitId);
+    // Explicaciones alternativas: el estudiante solo ve las que necesita; el docente las ve todas.
+    if (user.role !== UserRole.ESTUDIANTE || !hayAlternativas(visibles)) return visibles;
+    return explicacionesDelEstudiante(visibles, await this.senalesDelEstudiante(user.id, learningUnitId));
+  }
+
+  /** Qué se sabe del estudiante en la lección: si dijo «No me quedó claro», cuántas veces falló y si ya la repasa. */
+  private async senalesDelEstudiante(studentId: number, learningUnitId: number): Promise<SenalesExplicacion> {
+    const q = (sql: string) => this.contentRepo.manager.query(sql, [studentId, learningUnitId]) as Promise<Array<Record<string, unknown>>>;
+    const [noClaro, fallos, repaso] = await Promise.all([
+      q('SELECT 1 FROM `valoraciones_leccion` WHERE `studentId` = ? AND `learningUnitId` = ? AND `util` = 0 LIMIT 1'),
+      q("SELECT COUNT(*) AS n FROM `submissions` s JOIN `activities` a ON a.`id` = s.`activityId` WHERE s.`studentId` = ? AND a.`learningUnitId` = ? AND s.`status` = 'graded' AND a.`totalPoints` > 0 AND s.`score` * 100 < a.`passingScore` * a.`totalPoints`"),
+      q('SELECT 1 FROM `review_schedules` WHERE `studentId` = ? AND `learningUnitId` = ? LIMIT 1'),
+    ]);
+    return { noClaro: noClaro.length > 0, fallos: Number(fallos[0]?.n ?? 0), enRepaso: repaso.length > 0 };
   }
 
   /** Listar TODOS los bloques de una unidad, incluyendo ocultos (solo el docente dueño o admin). */

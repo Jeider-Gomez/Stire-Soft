@@ -304,6 +304,7 @@ export class ReuseService {
           metadata: clonar(contenido.metadata),
           order: contenido.order,
           isVisible: datos.oculto ? false : contenido.isVisible,
+          cuando: contenido.cuando,
         }));
         resumen.contents++;
       }

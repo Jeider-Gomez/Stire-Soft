@@ -56,4 +56,11 @@ export class Content extends StireBaseEntity {
 
   @Column({ default: true })
   isVisible!: boolean;
+
+  /**
+   * Cuándo la ve el estudiante (explicaciones-alternativas.ts): «siempre» es la explicación principal; «noclaro»,
+   * «falla2» y «repaso» son explicaciones alternativas que aparecen cuando el estudiante las necesita.
+   */
+  @Column({ type: 'varchar', length: 10, default: 'siempre' })
+  cuando!: string;
 }

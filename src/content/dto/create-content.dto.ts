@@ -1,4 +1,5 @@
-import { IsString, IsNotEmpty, IsInt, IsEnum, IsOptional, IsBoolean, IsObject, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsInt, IsEnum, IsOptional, IsBoolean, IsObject, IsIn, Min } from 'class-validator';
+import { CUANDO_EXPLICACION } from '../explicaciones-alternativas';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ContentType } from '../../common/enums/content-type.enum';
 
@@ -48,4 +49,9 @@ export class CreateContentDto {
   @IsOptional()
   @IsBoolean()
   isVisible?: boolean;
+
+  @ApiPropertyOptional({ description: 'Cuándo la ve el estudiante: siempre, noclaro (si no entendió), falla2 (si falla dos veces) o repaso', default: 'siempre' })
+  @IsOptional()
+  @IsIn(CUANDO_EXPLICACION, { message: 'cuando es siempre, noclaro, falla2 o repaso.' })
+  cuando?: string;
 }
