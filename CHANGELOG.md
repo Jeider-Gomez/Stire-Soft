@@ -12,9 +12,64 @@ entry to the oldest.
 
 ---
 
-## Sin versión todavía — público de 18 años o más y mejoras de la evaluación heurística · 22 de Octubre de 2026
+## v3.0.0 — panel del docente nuevo, identidad STIRE, Asistente y explicaciones alternativas · 27 de Octubre de 2026
 
-**Por desplegar: primero el backend, que trae una migración, y después el frontend.**
+**Commit `63a8a7b6`. Desplegada: backend en Azure (con las migraciones `PortadaClase`, `AvisoEditado`,
+`ModuloAbiertoSiempre` y `ExplicacionesAlternativas`) y frontend en Vercel.** Es MAYOR porque cambia a fondo cómo se usa
+el panel del docente: el árbol de contenidos con ventanas encima pasa a ser un panel que se organiza en la página.
+
+**Identidad (decidida por Jeider el 26/10; José la revisa después, todo junto)**
+- STIRE-Soft pasa a llamarse **STIRE**. Logo nuevo: la mascota (una pantalla con gafas y sonrisa) y «stire_»; nítido y
+  fijo, con su versión de alto contraste, en SVG y PNG (`docs/identidad-visual/logo/`) y en la pestaña del navegador.
+- El **Tutor** tiene cara: la mascota con expresiones (contento, pensando, acierto, ánimo, durmiendo…) y gestos que
+  dependen de la situación. Da la retroalimentación del ejercicio en su globo. Lanzador flotante rediseñado.
+- Letra del sistema en toda la aplicación; pie de página nuevo con el logo.
+
+**Menú y navegación**
+- Barra lateral a toda la altura, con el logo y el botón de plegar arriba; plegada, el logo se vuelve el botón de
+  expandir al pasar el mouse. Encabezado más limpio.
+- Estudiante: ir a cualquier lección desde cualquier lugar (Ctrl+K) y anterior/siguiente siempre a la vista.
+- Docente: las secciones de la clase en la barra lateral, con selector de clase (23–24/10).
+
+**Panel del docente (como el prototipo del panel v2)**
+- **Inicio** con el saludo, «Por revisar» de todas las clases (rezago, quién no puede avanzar, el error más repetido,
+  mensajes) y las clases en tarjetas o lista. **Biblioteca** de cursos compartidos.
+- **Contenido del curso**: árbol con el estado de cada lección (lista, le falta algo, oculta), mapa «Para completar»,
+  la lección abierta en la página con pestañas Lección / Actividades / Ajustes, módulos y temas que se editan ahí
+  mismo. Se reorganiza arrastrando o con flechas; «+ Módulo/Tema/Lección» crea sin ventanas; buscar y plegar el árbol;
+  duplicar un tema; mover una lección a otro tema; módulo «siempre abierto»; «Ver como estudiante»; en el celular el
+  árbol es una hoja. La dirección guarda lo abierto, así que otros paneles llevan a la lección y la pestaña justas.
+- **Actividades** en tres grupos (Práctica, Talleres, Evaluación).
+- **Corregir lo publicado**: un aviso a la clase se corrige (queda «editado» y se puede avisar otra vez); un ejercicio
+  publicado vuelve a borrador.
+- **Portada de la clase** (color) y **presentación** para el estudiante con la bienvenida del docente.
+- Todas las pestañas de una clase con el mismo ancho; Hoy y Ajustes en dos columnas; ventanas de edición más anchas.
+
+**Asistente STIRE para el docente (IA con su propia clave de Google AI Studio)**
+- Propone borradores según la pantalla: estructura del curso, explicación de una lección, **explicación alternativa**,
+  ejercicios de opción múltiple y **«Analizar mi clase»** (con un resumen anónimo: nunca nombres de estudiantes).
+- El borrador se ordena y ajusta antes de crearlo; al aplicarlo muestra el avance y cada cosa creada lleva a editarla.
+  Todo se crea oculto o en borrador.
+
+**Explicaciones alternativas**
+- Cada explicación dice cuándo la ve el estudiante: siempre, si no entendió, si falla dos veces o en el repaso. El
+  servidor decide qué ve cada estudiante; al tocar «No me quedó claro» aparece la alternativa, marcada «Otra forma de
+  verlo».
+
+**Registro**: una sola casilla para aceptar los términos, con los fines investigativos.
+
+**Pendiente de esta versión**: las capturas de `docs/material-visual/vistas/` (paso 2 del versionado) se toman al
+revisarla en el navegador; la verificación humana del panel (`docs/calidad/VERIFICACION_PANEL_DOCENTE_S11.md`) cierra
+el 29/10.
+
+---
+
+## v2.2.0 — público de 18 años o más, mejoras de la evaluación heurística y asistencia activa · 23 de Octubre de 2026
+
+**Commit `6f64f96d`.** Marcada después, el 27/10, con lo que estaba «sin versión todavía».
+
+### Público de 18 años o más y evaluación heurística (22/10)
+
 
 - Público de 18 años o más:
   - en el registro se confirma la edad y se aceptan los términos y la política de datos (`/terminos`, `/privacidad`);
@@ -33,9 +88,7 @@ entry to the oldest.
 - Manual: sección para docentes «Cómo calcula STIRE los repasos», con las variables y las ecuaciones de SM-2 tal como
   las usa el motor (una prueba comprueba que coinciden). El PDF del manual queda por regenerar.
 
----
-
-## Sin versión todavía — asistencia activa · 23 de Octubre de 2026
+### Asistencia activa (23/10)
 
 - Asistencia activa: al tomar la asistencia de hoy, un botón flotante «Asistencia 12 de 30» sigue a la vista en todas
   las pantallas del docente. Abierto muestra quiénes llegaron hace poco, escanea con la cámara pequeña («Escanear
