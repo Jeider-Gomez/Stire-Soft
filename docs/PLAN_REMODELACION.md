@@ -51,7 +51,13 @@ repite, el nivel y el formato que prefiere. **Lo que no existe es que ese perfil
 estudiantes de una lección ven los mismos ejercicios. El recomendador cambia el orden y los repasos, pero no el
 ejercicio.
 
-### La personalización que pidió el profesor de Fundamentos
+### Los dos profesores
+
+- **Raúl Toscano** dirige Diseño y Desarrollo de Software III, el curso donde nace STIRE. El audio del 20/10 es suyo.
+- **Ali** es el profesor de Fundamentos que asesora a Jeider. Suyas son las ideas de personalizar los ejercicios por
+  perfil y de llevar al estudiante con bloques antes del código.
+
+### La personalización que pidió el profesor Ali
 
 Tiene razón: si todos hacen los mismos ejercicios, la personalización se queda corta. Lo que lo resuelve es P15:
 
@@ -61,19 +67,12 @@ Tiene razón: si todos hacen los mismos ejercicios, la personalización se queda
    parte ya existe para el docente desde la v2.4.0, así que el camino está probado.
 4. El ejercicio queda en el banco para los siguientes; el docente puede revisarlo si quiere (función opcional).
 
-**Dos cosas para confirmar con él antes de construir:**
-- En `docs/PLAN_MEJORAS_2026-10-23.md` esta idea quedó atribuida al **profesor Ali**, y ahora la cuentas del
-  **profesor Raúl**. ¿Son la misma persona, o los dos lo dijeron? Importa para citarlo bien en el artículo.
-- **¿Qué ve exactamente en su clase?** Dices «Nest y arreglos». NestJS es un framework de servidor en TypeScript, raro
-  en un curso de fundamentos. Hay que preguntarle el lenguaje, el framework y **la fecha en que quiere probar STIRE**:
-  esa fecha decide si la Fase 5 se adelanta.
+**Para confirmar con el profesor Ali:** **la fecha en que quiere probar STIRE en su clase.** Esa fecha decide si la
+Fase 5 se adelanta.
 
-**Cómo se enseñaría un framework en STIRE:** el juez no puede levantar una aplicación NestJS completa (está aislado,
-sin red ni paquetes). Lo que sí cabe:
-- **TypeScript en el juez:** se traduce a JavaScript antes de correrlo. Es barato y abre clases, tipos y decoradores.
-- Ejercicios con la **lógica** de un servicio (una clase con métodos que manejan arreglos) que el juez prueba con casos.
-- Los conceptos del framework (módulo, controlador, servicio, inyección) con ordenar, emparejar y completar código.
-- La aplicación completa, como **proyecto** con entrega, que ya existe.
+**Frameworks (NestJS y otros): futuro posible, no pendiente** (Jeider, 27/10). Si se retoma: el juez no puede levantar
+una aplicación completa, pero sí correr TypeScript traducido a JavaScript, probar la lógica de un servicio con casos y
+enseñar los conceptos con ordenar, emparejar y completar código.
 
 ### Los ejercicios se sienten difíciles
 
@@ -84,6 +83,10 @@ problema no es solo la dificultad, es el salto de leer una explicación a escrib
 1. Haces una lección de programar como estudiante y dices en voz alta qué no entiendes. Lo anoto todo.
 2. Con eso armamos la **escalera** en cada lección: ejemplo resuelto → completar → ordenar líneas con distractores →
    escribir. Los tipos ya existen; falta ordenarlos y llenar los escalones.
+3. **Bloques antes del código** (P31, pedido del profesor Ali): el estudiante arma el programa con bloques en español,
+   ve el JavaScript que generan y el juez lo califica igual. Antes de construirlo va una **investigación del proceso
+   formativo en programación** (cómo se pasa de los bloques al texto, qué dice la evidencia, qué hacen otras
+   plataformas), con fuentes verificadas para la tesis.
 
 ### ¿Cumplimos WCAG 2.1 AA?
 
@@ -121,7 +124,10 @@ La regla que propongo (P05) separa dos cosas:
 Buena idea si tiene límites, porque cinco avisos al entrar es justo la saturación que quieres evitar. Propuesta (P07):
 - **Un saludo al día**, con la mascota animada, y que diga algo útil: «Buenos días, Ana. Hoy te tocan 2 repasos».
 - **Felicitación en el momento** de ganar un logro, una vez, que se cierra sola y queda en «Logros».
-- Nada más por iniciativa del Tutor. Respeta «Reducir el movimiento», y se puede apagar en el perfil.
+- Nada más por iniciativa del Tutor. Respeta «Reducir el movimiento».
+- **Todo se controla** (Jeider, 27/10): en el perfil se apagan el saludo, las felicitaciones y cada tipo de aviso
+  (logros, avance del módulo, repasos). Hoy ganar un logro no avisa en el momento: eso se construye junto con el
+  interruptor. El inventario (§6) tiene todos los logros y avisos para que las maquetas no dejen ninguno por fuera.
 
 ## 3. Fases
 
@@ -133,6 +139,11 @@ Buena idea si tiene límites, porque cinco avisos al entrar es justo la saturaci
 | **3. Construcción** | 9/11 al 20/11 | Pantalla por pantalla, en este orden: estudiante (Inicio, lección, progreso), docente (Inicio y Asistente, contenidos), administrador (P12). La escalera de ejercicios (P14) | `2.5.0`, `2.6.0` |
 | **4. Evaluación humana** | Al terminar la 3 | Evaluación heurística del equipo (P13) y WCAG otra vez. Se corrige lo grave | **`3.0.0`** |
 | **5. Investigación** | Después, o antes si el profesor tiene fecha | Ejercicios personalizados (P15), perfiles simulados (P16), prueba con 10 personas (P17), comparación (P18), artículos (P20) | `3.1.0`… |
+
+**¿Pausar las funciones nuevas o hacerlas ya?** Recomiendo **diseñarlas ya y construirlas en la remodelación**. Las
+funciones pendientes (saludo del Tutor, bloques, asistencia flotante, controles de avisos) entran al inventario y a las
+maquetas de la Fase 2. Así encajan desde el principio, en vez de sumarse encima como pasó con el panel del docente. Las
+únicas excepciones son las correcciones y lo que el profesor Ali necesite con fecha.
 
 **Por qué este orden:** rediseñar sin auditar repite el error del panel del docente. Auditar sin pausar las funciones
 nuevas deja la auditoría vieja el mismo día. La personalización (Fase 5) es lo más valioso para el artículo, pero
@@ -150,12 +161,18 @@ construida sobre una interfaz desordenada se prueba mal con usuarios.
 
 | Persona | Tareas |
 |---|---|
-| **Jeider** | P04 (la lección como novato), P19 (preguntarle al profesor), aprobar el plan y el diseño de la Fase 2 |
-| **Jorge** (QA) | P03 con NVDA y teclado en el panel del docente y el Asistente; asistencia en iPhone (P27) |
-| **José** (UI/UX) | Leer el inventario y marcar qué le sobra a cada pantalla; proponer la regla de logo y mascota (P05) |
-| **Pedro** (documentación) | Tabla de perfiles simulados para el artículo (P16, la parte escrita); bitácora y tablero (P30) |
-| **Julio** | Probar el Asistente como docente y generar ejercicios de programación de una lección real; anotar qué sirve |
-| **Claude** | P02 (auditoría con agent-browser), P03 (axe), P24 (orden del repositorio), corregir lo grave |
+Los cinco hacen la **evaluación heurística de línea base** hasta el martes 3/11
+(`docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`): todos recorren el panel del docente y el del estudiante, y cada uno
+responde por dos heurísticas.
+
+| Persona | Heurísticas | Además |
+|---|---|---|
+| **Jeider** | H1 estado del sistema, H6 reconocer antes que recordar | Sus 4 ejercicios de programar como novato (P04); la fecha del profesor Ali (P19) |
+| **Pedro** | H2 lenguaje del usuario, H10 ayuda | Sus 4 ejercicios de programar |
+| **Julio** | H3 control y libertad, H7 eficiencia | Sus 4 ejercicios de programar |
+| **José** | H4 consistencia, H8 diseño minimalista | Los cambios de identidad y el aspecto del panel del docente, en general |
+| **Jorge** | H5 prevención de errores, H9 recuperarse de errores | QA libre: un poco de cada cosa, como decida |
+| **Claude** | | P02 (auditoría de consola y red), P03 (axe), P31 (investigación de bloques), P24 |
 
 ## 5. Lo que critico de STIRE (y que tú no me has pedido)
 
@@ -195,8 +212,9 @@ Se escribe en la Fase 3 o la 4, cuando la estructura ya no cambie.
 
 ## 7. Preguntas abiertas para Jeider
 
-1. ¿El profesor de Fundamentos es Raúl, Ali o los dos? ¿Qué lenguaje y qué framework ve, y **cuándo** quiere probar
-   STIRE en su clase?
-2. ¿Apruebas la pausa de funciones nuevas hasta terminar la Fase 2?
-3. ¿Quiénes son los 3 a 5 evaluadores de la evaluación heurística humana, y le pedimos a alguien de fuera del equipo?
-4. ¿El saludo y las felicitaciones del Tutor se pueden apagar, o siempre están?
+1. ¿**Cuándo** quiere el profesor Ali probar STIRE en su clase?
+2. ¿Qué es exactamente lo que te limita de la asistencia flotante de hoy? ¿Se apaga la cámara al plegarla o al cambiar
+   de pantalla?
+
+Respondidas el 27/10: los evaluadores son los 5 integrantes; todo aviso del Tutor se puede apagar; frameworks quedan
+para el futuro; Raúl es el profesor de DDSE3 y Ali el de Fundamentos.

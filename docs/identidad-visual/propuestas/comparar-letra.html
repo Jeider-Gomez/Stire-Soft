@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparar letra del docente</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --azul:#0B3D91; --texto:#1E293B; --suave:#475569; --linea:#E2E8F0; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#F5F5F7; color:var(--texto); font:16px/1.5 Inter, sans-serif; }
+  main { max-width:1100px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font:700 22px Poppins, sans-serif; margin:0 0 6px; }
+  .aviso { background:#FFF7E6; border-left:4px solid #B45309; padding:10px 14px; border-radius:8px; margin:12px 0 20px; font-size:14px; }
+  .dos { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); }
+  .col { background:#fff; border:1px solid var(--linea); border-radius:14px; padding:20px; }
+  .col > .etq { font:600 12px Inter, sans-serif; letter-spacing:.05em; text-transform:uppercase; color:var(--azul); margin-bottom:10px; display:block; }
+  .anterior { font-family: Inter, sans-serif; }
+  .anterior h2, .anterior .titulo { font-family: Poppins, sans-serif; }
+  .nuevo { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif; }
+  h2 { font-size:20px; margin:0 0 4px; }
+  .sub { color:var(--suave); font-size:13px; margin:0 0 14px; }
+  .fila { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-top:1px solid var(--linea); font-size:14px; }
+  .fila b { font-weight:600; }
+  .pill { font-size:12px; padding:2px 10px; border-radius:999px; background:#E8F5EE; color:#047857; font-weight:600; }
+  .pill.o { background:#EEF2F8; color:#475569; }
+  .btn { display:inline-block; margin-top:12px; padding:9px 16px; border-radius:10px; background:var(--azul); color:#fff; font-weight:600; font-size:14px; }
+  code { font-family:"JetBrains Mono", Consolas, monospace; background:#F1F5F9; padding:1px 6px; border-radius:6px; font-size:13px; }
+  p.t { font-size:15px; margin:12px 0 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>¿Cuál letra queda en el panel del docente?</h1>
+  <div class="aviso"><strong>Ojo:</strong> la letra de Apple (San Francisco) solo existe en equipos Apple. En tu Windows la columna «Nueva» se ve con <strong>Segoe UI</strong>, que es la del sistema aquí. Cada persona verá la del suyo: Apple en Mac y iPhone, Segoe en Windows, Roboto en Android.</div>
+  <div class="dos">
+    <section class="col anterior">
+      <span class="etq">Anterior · Inter + Poppins (igual en todos los equipos)</span>
+      <h2 class="titulo">Variables y tipos de datos</h2>
+      <p class="sub">Fundamentos de Algoritmia · Unidad 1</p>
+      <div class="fila"><b>¿Qué es un algoritmo?</b><span class="pill">Publicada</span></div>
+      <div class="fila"><b>Pseudocódigo y diagramas</b><span class="pill">Publicada</span></div>
+      <div class="fila"><b>Operadores y expresiones</b><span class="pill o">Oculta</span></div>
+      <p class="t">Una variable es un espacio con nombre donde guardas un dato. Por ejemplo <code>edad ← 19</code>. 0123456789</p>
+      <span class="btn">Nuevo módulo</span>
+    </section>
+    <section class="col nuevo">
+      <span class="etq">Nueva · letra del sistema</span>
+      <h2 class="titulo">Variables y tipos de datos</h2>
+      <p class="sub">Fundamentos de Algoritmia · Unidad 1</p>
+      <div class="fila"><b>¿Qué es un algoritmo?</b><span class="pill">Publicada</span></div>
+      <div class="fila"><b>Pseudocódigo y diagramas</b><span class="pill">Publicada</span></div>
+      <div class="fila"><b>Operadores y expresiones</b><span class="pill o">Oculta</span></div>
+      <p class="t">Una variable es un espacio con nombre donde guardas un dato. Por ejemplo <code>edad ← 19</code>. 0123456789</p>
+      <span class="btn">Nuevo módulo</span>
+    </section>
+  </div>
+</main>
+</body>
+</html>

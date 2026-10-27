@@ -14,7 +14,7 @@ aquí (queda en `CHANGELOG.md` y en los commits) y su número no se reutiliza. E
 | P01 | Cerrar la verificación humana del panel del docente (PD-01..17, PV-01..06) y corregir lo que salga | Equipo; plazo jueves 29/10, 8 p. m. | 0 |
 | P02 | Auditoría completa de uso: los 4 roles en computador y celular, errores de consola y de red, pantallas rotas, textos | Claude con agent-browser | 1 |
 | P03 | Volver a auditar **WCAG 2.1 AA**: la auditoría del 07/10 es anterior al rediseño del 23–27/10 | Claude (axe) y Jorge (NVDA, teclado) | 1 |
-| P04 | Jeider hace una lección de JavaScript **como estudiante novato**, diciendo en voz alta qué no entiende | Jeider | 1 |
+| P04 | Jeider hace sus 4 ejercicios de programar (17 a 20) **como estudiante novato**, anotando qué no entiende | Jeider | 1 |
 
 ## B. Remodelación (estudiante, docente, administrador)
 
@@ -22,24 +22,25 @@ aquí (queda en `CHANGELOG.md` y en los commits) y su número no se reutiliza. E
 |---|---|---|
 | P05 | Reglas de identidad: un logo por vista; la mascota solo cuando habla (incluye la hoja de caras y gestos) | 2 |
 | P06 | Inicio del estudiante: la mascota saluda una vez, animada, sin repetir la frase ni el logo | 2–3 |
-| P07 | El Tutor saluda («Buenos días») y felicita al ganar un logro, con límites para no saturar | 2–3 |
+| P07 | El Tutor saluda («Buenos días») y felicita al ganar un logro, sin saturar. **Todo se puede apagar** en el perfil: el saludo, las felicitaciones y cada tipo de aviso | 2–3 |
 | P08 | «Mi progreso»: una frase y una acción arriba; lo demás plegado | 3 |
 | P09 | Lección del estudiante: decidir qué va primero y qué se pliega | 3 |
 | P10 | Asistente del docente con la cara de STIRE, el mismo lenguaje del Tutor y un lugar claro en el Inicio | 2–3 |
 | P11 | Docente: quitar las ventanas viejas que quedan (`UnitLessonsModal`) y llevar «Nuevo ejercicio» al panel de contenidos | 3 |
 | P12 | Administrador: desactivar y reactivar a la vista, borrado definitivo, «Eliminar mi cuenta», «Borrar usuarios de prueba» (marca `esPrueba`) | 3 |
-| P13 | **Evaluación heurística humana** del rediseño (3 a 5 evaluadores, por separado). Abre la v3.0.0 | 4 |
+| P13 | **Evaluación heurística humana** de los 5 integrantes. La línea base (antes de rediseñar) va hasta el 3/11: `docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`. La segunda, después de la remodelación, abre la v3.0.0 | 1 y 4 |
 
 ## C. Ejercicios y personalización (lo que pidieron los profesores)
 
 | # | Qué | Fase |
 |---|---|---|
 | P14 | Escalera en cada lección: ejemplo resuelto → completar → ordenar líneas con distractores → escribir | 3 |
+| P31 | **Programar con bloques** para quien llega a Fundamentos sin saber JavaScript (pedido del profesor Ali), más una **investigación del proceso formativo en programación** que lo sustente | 1 (investigar) · 2–3 |
 | P15 | Ejercicios **personalizados por estudiante**: el perfil de aprendizaje elige del banco o genera con la IA, y el juez comprueba la solución antes de mostrarlo | 5 |
 | P16 | Batería de perfiles simulados: tabla que explica cada perfil, 100 a 300 usuarios marcados de prueba, modo API y modo «agente que hace clic» | 5 |
 | P17 | Prueba con unas 10 personas reales, observando qué hacen | 5 |
 | P18 | Comparar la repetición espaciada de STIRE con la del otro software del profesor | 5 |
-| P19 | Preparar STIRE para la clase del profesor de Fundamentos: confirmar qué lenguaje y qué framework usa; TypeScript en el juez; cómo enseñar un framework | 1 (preguntar) · 5 |
+| P19 | Clase del profesor Ali (Fundamentos): confirmar la fecha en que quiere probar STIRE. Enseñar frameworks (TypeScript en el juez, NestJS) queda como **futuro posible**, no pendiente | 1 (preguntar) |
 | P20 | Dos artículos (revista del proyecto y uno de implementación y evaluación) | 5 |
 
 ## D. Servidor
@@ -48,6 +49,7 @@ aquí (queda en `CHANGELOG.md` y en los commits) y su número no se reutiliza. E
 |---|---|---|
 | P21 | Portada de la clase con imagen (el color ya está) | Guardar archivos |
 | P22 | Errores de concepto por tipo de ejercicio (hoy solo por semana) | Consulta y columna nuevas |
+| P32 | Asistencia flotante: la cámara sigue encendida mientras el docente hace otras cosas y él decide cuándo cerrarla | Revisar si el cierre de la sesión cambia |
 
 ## E. Documentación y orden del repositorio
 

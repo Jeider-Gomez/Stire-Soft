@@ -43,7 +43,7 @@ descarta la auditoría de la Fase 1; hasta entonces es **hipótesis**.
 | Nuevo ejercicio | `/docente/ejercicios/crear` | Constructor de los ocho tipos | Vive aparte del panel de contenidos |
 | Entregas | `/docente/entregas` | Talleres, revisión y nota | |
 | Notas | `/docente/clase/[id]/notas` | Notas de la clase | |
-| Asistencia | `/docente/clase/[id]/asistencia` | QR, asistencia activa | |
+| Asistencia | `/docente/clase/[id]/asistencia` | QR; «asistencia activa» que sigue en una esquina (`AsistenciaFlotante.vue`) con el conteo, los últimos que llegaron, un escáner pequeño y marcar a mano | Jeider la siente limitada: la cámara debe quedar encendida mientras el docente hace otras cosas, y apagarse cuando él quiera (P32) |
 | Ajustes de la clase | `/docente/clase/[id]/ajustes` | Solicitudes para entrar, portada (color), avance, compartir, datos, logros | |
 | Ficha del estudiante | `/docente/estudiante/[id]` | Perfil de aprendizaje, progreso, intervención | |
 | Refuerzos y retos | `/docente/refuerzos` | Asignar a un estudiante | |
@@ -84,7 +84,34 @@ privacidad, aceptar términos, manual de usuario (`/ayuda`), recorridos guiados,
 
 Documentación de la API: Swagger (`src/main.ts`).
 
-## 6. Identidad en pantalla
+## 6. Logros, avisos y notificaciones
+
+Para que las maquetas de la Fase 2 no dejen nada por fuera. Todo lo que avisa al estudiante debe poder apagarse (P07).
+
+**Logros** (`src/analytics/logros.ts`). Seis escaleras con bronce, plata y oro, más dos de módulo. El docente decide en
+Ajustes de la clase si su clase los muestra (`ConfigLogrosClase`).
+
+| Categoría | Logro | Metas (bronce, plata, oro) |
+|---|---|---|
+| Constancia | Semanas de estudio (3 días distintos en una semana) | 1, 4, 12 semanas |
+| Práctica | Ejercicios aprobados en un día | 3, 5, 10 |
+| Dominio | Lecciones dominadas | 1, 5, 15 |
+| Desafío | Ejercicios avanzados aprobados | 1, 5, 15 |
+| Persistencia | «No te rendiste»: aprobar en el tercer intento o después | 1, 5, 15 |
+| Memoria | Repasos a tiempo | 10, 30, 100 |
+| Módulo | «Dominaste el módulo» | todas sus lecciones |
+| Módulo | «Módulo en una semana» | en los 7 días desde la primera entrega |
+
+**Avisos al estudiante** (`src/notifications/notificacion-reglas.ts`, desde el 07/10 para no saturar):
+- avance de cada módulo al 50, 75 y 100 %;
+- una sugerencia cuando falla 3 veces seguidas en una lección;
+- un aviso al día con los repasos pendientes;
+- lo que hace el docente: una nota, la revisión de una entrega, un mensaje, un aviso a la clase.
+
+**Lo que no existe todavía:** ganar un logro **no avisa** en el momento (solo se ve al abrir «Logros»); el Tutor no
+saluda ni felicita; y no hay un lugar donde el estudiante apague cada tipo de aviso.
+
+## 7. Identidad en pantalla
 
 | Elemento | Dónde aparece hoy | Regla propuesta (Fase 2) |
 |---|---|---|
