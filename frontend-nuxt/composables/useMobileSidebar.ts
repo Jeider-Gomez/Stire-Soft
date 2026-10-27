@@ -14,7 +14,8 @@ export function useMobileSidebar() {
 
   // En móvil el menú se superpone como cajón. Desde md es una columna que se queda fija al bajar, con su propio scroll,
   // como el índice de Platzi, Coursera o Udemy (P-UI-02 en docs/investigacion/referentes/PATRONES_DE_INTERFAZ.md).
-  const FIJA = 'md:sticky md:top-16 md:self-start md:h-[calc(100vh-4rem)] md:overflow-y-auto'
+  // Desde el 26/10 ocupa toda la altura, con el logo arriba (como Platzi): ya no empieza debajo del encabezado.
+  const FIJA = 'md:sticky md:top-0 md:self-start md:h-screen md:overflow-y-auto'
   const sidebarClass = computed(() =>
     sidebarOpen.value
       ? `fixed inset-y-0 left-0 z-50 flex overflow-y-auto shadow-2xl md:z-auto md:shadow-none ${FIJA}`

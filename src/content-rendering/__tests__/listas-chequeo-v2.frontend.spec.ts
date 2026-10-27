@@ -98,7 +98,9 @@ describe('MOB-02 · objetivos táctiles de 44 px (la revisión del «después» 
     return out;
   };
   const CONTROLES: [string, string, number][] = [
-    ['components/layout/HeaderNav.vue', 'class="flex items-center gap-2.5 group flex-shrink-0', 1],
+    // El logo del encabezado (solo celular desde el 26/10) y el de la barra lateral.
+    ['components/layout/HeaderNav.vue', 'class="md:hidden flex items-center flex-shrink-0', 1],
+    ['components/layout/SidebarNav.vue', 'class="ocultar-colapsado flex items-center', 1],
     ['layouts/workspace.vue', 'class="hover:underline', 2],
     ['pages/estudiante/unidad/[id].vue', 'to="/estudiante" class="hover:underline', 1],
     ['pages/estudiante/unidad/[id].vue', '@click="toggleManualChoice"', 1],

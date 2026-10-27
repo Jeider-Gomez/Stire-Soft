@@ -14,34 +14,12 @@
       >
         <Menu :size="18" aria-hidden="true" />
       </button>
-      <!-- Plegar el menú lateral (solo computador): fuera de la barra, en el encabezado, como en ElevenLabs o Claude; así
-           no ocupa espacio arriba del menú (Jeider, 26/10). Solo ícono; el nombre queda para el lector de pantalla. -->
-      <button
-        id="boton-menu"
-        type="button"
-        class="boton-menu hidden md:inline-flex w-9 h-9 items-center justify-center rounded-lg text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario flex-shrink-0"
-        :aria-expanded="!colapsado"
-        :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
-        @click="alternarMenu">
-        <PanelLeftOpen v-if="colapsado" :size="18" aria-hidden="true" />
-        <PanelLeftClose v-else :size="18" aria-hidden="true" />
-        <span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
-      </button>
-
-      <!-- Isotipo + Logotipo -->
-      <NuxtLink
-        :to="homeRoute"
-        class="flex items-center gap-2.5 group flex-shrink-0 min-h-[44px]"
-      >
-        <!-- Logo fijo con el nombre «stire_» (components/layout/Logo.vue). En el celular, solo la pantalla con gafas. -->
-        <LayoutLogo class="sm:hidden" />
-        <div class="hidden sm:block leading-none">
-          <LayoutLogo con-nombre />
-          <p class="text-[10px] text-slate-500 font-interfaz tracking-wide leading-tight mt-1 pl-9">
-            {{ subtitulo }}
-          </p>
-        </div>
+      <!-- Logo: en computador va arriba de la barra lateral (SidebarNav.vue, 26/10); aquí solo en el celular, donde el
+           menú es un cajón. En computador queda el lugar (institución, programa) como texto. -->
+      <NuxtLink :to="homeRoute" class="md:hidden flex items-center flex-shrink-0 min-h-[44px]" aria-label="Ir al inicio">
+        <LayoutLogo con-nombre />
       </NuxtLink>
+      <p class="hidden md:block text-xs text-slate-500 truncate">{{ subtitulo }}</p>
 
       <!-- Separador + Contexto de clase (solo estudiante) -->
       <div
@@ -168,13 +146,10 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, LogOut, GraduationCap, UserCircle, Contrast, PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next'
-import { useMenuColapsado } from '~/composables/useMenuColapsado'
+import { Menu, LogOut, GraduationCap, UserCircle, Contrast } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { institucionCorta, lugarDeAsignatura, programaCorto } from '~/utils/contextoAcademico'
-
-const { colapsado, alternarMenu } = useMenuColapsado()
 
 defineEmits(['toggle-sidebar'])
 

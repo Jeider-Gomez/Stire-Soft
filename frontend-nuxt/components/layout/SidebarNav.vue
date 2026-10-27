@@ -1,7 +1,24 @@
 <template>
   <aside ref="menuRef" class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] md:min-h-0 p-4 flex flex-col transition-[width] duration-200" :class="{ 'menu-colapsado md:w-16 md:px-2': colapsado }">
-    <!-- El botón para plegar el menú pasó al encabezado (HeaderNav.vue, 26/10), como en ElevenLabs: así no ocupa
-         espacio arriba de la barra. -->
+    <!-- Arriba de la barra, en una fila de la misma altura que el encabezado: el logo y, a su derecha, el botón para
+         plegar el menú (como Platzi, 26/10). Plegado, queda solo el botón. En el celular el menú es un cajón y el botón
+         no hace falta. -->
+    <div class="cabecera-menu h-16 -mt-4 -mx-4 px-4 mb-3 flex items-center justify-between gap-2 border-b border-base-borde-sutil">
+      <NuxtLink :to="inicio" class="ocultar-colapsado flex items-center min-h-[44px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stire-blue/40" aria-label="Ir al inicio">
+        <LayoutLogo con-nombre />
+      </NuxtLink>
+      <button
+        id="boton-menu"
+        type="button"
+        class="boton-menu hidden md:inline-flex w-9 h-9 items-center justify-center rounded-lg text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario flex-shrink-0"
+        :aria-expanded="!colapsado"
+        :title="colapsado ? 'Mostrar el menú' : 'Ocultar el menú'"
+        @click="alternarMenu">
+        <PanelLeftOpen v-if="colapsado" :size="18" aria-hidden="true" />
+        <PanelLeftClose v-else :size="18" aria-hidden="true" />
+        <span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>
+      </button>
+    </div>
     <!-- Navegación según Rol Activo -->
     <div class="space-y-4">
       <!-- 🎓 NAVEGACIÓN ESTUDIANTE (6 Ítems Persistentes - Insumo 15 §5) -->
@@ -175,7 +192,7 @@
 </template>
 
 <script setup lang="ts">
-import { Activity, BookOpen, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, QrCode, Repeat, Settings, ShieldCheck, TrendingUp } from 'lucide-vue-next'
+import { Activity, BookOpen, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 
@@ -184,7 +201,8 @@ const studentStore = useStudentStore()
 const route = useRoute()
 
 // ─── Menú colapsado (solo computador) ───
-const { colapsado } = useMenuColapsado()
+const { colapsado, alternarMenu } = useMenuColapsado()
+const inicio = computed(() => ({ docente: '/docente', admin: '/admin/dashboard' } as Record<string, string>)[authStore.currentRole] ?? '/estudiante')
 const menuRef = ref<HTMLElement | null>(null)
 // Con solo íconos, cada enlace muestra su nombre al pasar el mouse (el lector de pantalla ya lo lee del texto oculto).
 watch([colapsado, () => route.path], () => nextTick(() => {
@@ -217,9 +235,12 @@ function isCurrentRoute(path: string) {
   .menu-colapsado nav > div > p {
     display: none;
   }
-  .menu-colapsado .boton-menu {
-    align-self: center;
-    margin-right: 0;
+  .menu-colapsado .cabecera-menu {
+    justify-content: center;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
   .menu-colapsado a,
   .menu-colapsado button {
