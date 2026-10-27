@@ -13,8 +13,8 @@ function cargar<T>(nombre: string): T {
   return mod.exports as T;
 }
 
-type Expresion = 'normal' | 'atento' | 'pensando' | 'hablando' | 'acierto' | 'error' | 'durmiendo';
-interface Senales { activo: boolean; pensando: boolean; escribiendo: boolean; ultimoError: boolean; hablando: boolean; reaccion: 'acierto' | 'error' | null }
+type Expresion = 'normal' | 'contento' | 'atento' | 'pensando' | 'hablando' | 'acierto' | 'error' | 'animo' | 'durmiendo';
+interface Senales { activo: boolean; pensando: boolean; escribiendo: boolean; ultimoError: boolean; hablando: boolean; reaccion: 'acierto' | 'error' | 'animo' | null; encima?: boolean }
 const m = cargar<{
   expresionTutor: (s: Senales) => Expresion;
   OJOS: Record<Expresion, string[] | null>;
@@ -22,6 +22,8 @@ const m = cargar<{
   SIGNIFICADO: Record<Expresion, string>;
   esperaParpadeo: (azar: number) => number;
   miradaHacia: (dx: number, dy: number, maximo?: number) => { x: number; y: number };
+  reaccionAlResultado: (ok: boolean, fallos: number) => 'acierto' | 'error' | 'animo';
+  GESTO: Record<Expresion, string | null>;
 }>('mascotaTutor');
 
 const base: Senales = { activo: true, pensando: false, escribiendo: false, ultimoError: false, hablando: false, reaccion: null };
@@ -46,11 +48,11 @@ describe('qué cara pone el Tutor', () => {
 });
 
 describe('cada expresión está dibujada', () => {
-  const todas: Expresion[] = ['normal', 'atento', 'pensando', 'hablando', 'acierto', 'error', 'durmiendo'];
+  const todas: Expresion[] = ['normal', 'contento', 'atento', 'pensando', 'hablando', 'acierto', 'error', 'animo', 'durmiendo'];
   it.each(todas)('%s tiene boca y significado; los ojos son trazos o los puntos de «pensando»', (e) => {
     expect(m.BOCA[e]).toMatch(/^M/);
     expect(m.SIGNIFICADO[e].length).toBeGreaterThan(3);
-    if (e === 'pensando') expect(m.OJOS[e]).toBeNull();
+    if (e === 'pensando' || e === 'animo') expect(m.OJOS[e]).toBeNull();
     else expect(m.OJOS[e]).toHaveLength(2);
   });
   it('los ojos normales son las etiquetas < > del logo', () => {
@@ -89,13 +91,76 @@ describe('se siente viva sin distraer', () => {
 describe('reacciona al resultado del ejercicio', () => {
   it('«Probar» (código y HTML/CSS) y «Entregar» avisan el resultado', () => {
     const ws = leer('stores', 'workspace.ts');
-    expect(ws.match(/avisarResultado\(res\.allPassed\)/g)).toHaveLength(2);
-    expect(ws).toContain('avisarResultado(aprobo)');
+    expect(ws.match(/avisarResultado\(res\.allPassed/g)).toHaveLength(2);
+    expect(ws).toContain('avisarResultado(aprobo');
   });
   it('la mascota escucha ese aviso sin depender del store del ejercicio', () => {
     const c = leer('composables', 'useExpresionTutor.ts');
     expect(c).toContain('addEventListener(EVENTO_RESULTADO');
     expect(c).toContain('removeEventListener(EVENTO_RESULTADO');
     expect(c).not.toContain('useWorkspaceStore');
+  });
+});
+
+describe('el logo es el mismo personaje y el nombre es STIRE', () => {
+  it('el distintivo «ST» pasó a ser la pantalla con gafas, que cierra los ojos mientras se escribe la contraseña', () => {
+    const marca = leer('components', 'layout', 'MarcaST.vue');
+    expect(marca).toContain('<TutorMascota');
+    expect(marca).toContain(":expresion=\"escudo ? 'durmiendo' : 'normal'\"");
+    expect(marca).toContain('etiqueta="STIRE"');
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutMarcaST');
+  });
+  it('la pestaña usa el favicon nuevo y ningún texto visible dice «STIRE-Soft»', () => {
+    const config = leer('nuxt.config.ts');
+    expect(config).toContain("href: '/favicon.svg'");
+    expect(leer('public', 'favicon.svg')).toContain('#082B6B');
+    for (const f of [['nuxt.config.ts'], ['components', 'layout', 'HeaderNav.vue'], ['components', 'layout', 'FooterBar.vue'], ['layouts', 'auth.vue'], ['pages', 'ayuda.vue'], ['pages', 'index.vue'], ['utils', 'tituloPagina.ts']]) {
+      expect(leer(...f)).not.toMatch(/STIRE[- ]Soft|>Soft</);
+    }
+  });
+  it('en alto contraste: pantalla negra, gafas amarillas y el marco del color del texto del tema', () => {
+    const vue = leer('components', 'tutor', 'Mascota.vue');
+    expect(vue).toMatch(/:global\(:root\[data-contraste="alto"\]\) \.mascota-tutor \{[\s\S]*--m-pantalla: #000; --m-gafas: #ffd60a/);
+    expect(vue).toContain('--m-marco: rgb(var(--c-base-texto-primario))');
+    // los colores salen de variables, no de atributos fijos
+    expect(vue).not.toMatch(/(fill|stroke)="#/);
+  });
+});
+
+describe('personalidad: cada situación tiene su cara y su gesto, y son coherentes', () => {
+  it('al pasar el puntero por el lanzador se alegra, pero nunca por encima de algo que pasa de verdad', () => {
+    expect(m.expresionTutor({ ...base, encima: true })).toBe('contento');
+    expect(m.expresionTutor({ ...base, encima: true, pensando: true })).toBe('pensando');
+    expect(m.expresionTutor({ ...base, encima: true, escribiendo: true })).toBe('atento');
+  });
+  it('no se frustra: tras tres fallos seguidos deja la cara de error y pasa a animar', () => {
+    expect(m.reaccionAlResultado(true, 0)).toBe('acierto');
+    expect(m.reaccionAlResultado(false, 1)).toBe('error');
+    expect(m.reaccionAlResultado(false, 2)).toBe('error');
+    expect(m.reaccionAlResultado(false, 3)).toBe('animo');
+    expect(m.expresionTutor({ ...base, reaccion: 'animo' })).toBe('animo');
+  });
+  it('cada reacción tiene un gesto del cuerpo que la acompaña', () => {
+    expect(m.GESTO.acierto).toBe('salta');
+    expect(m.GESTO.error).toBe('niega');
+    expect(m.GESTO.animo).toBe('asiente');
+    expect(m.GESTO.pensando).toBe('ladea');
+    expect(m.GESTO.contento).toBe('rebota');
+    const vue = leer('components', 'tutor', 'Mascota.vue');
+    for (const g of Object.values(m.GESTO).filter(Boolean)) expect(vue).toContain(`.gesto-${g} {`);
+  });
+  it('guiña al abrir el chat, suelta chispas al acertar y mira alrededor cuando nadie la usa', () => {
+    const vue = leer('components', 'tutor', 'Mascota.vue');
+    expect(leer('components', 'tutor', 'TutorChatDrawer.vue')).toMatch(/<TutorMascota[^>]*forma="completa"[^>]*saludar/);
+    expect(vue).toContain('if (props.saludar) luego(350, guinar)');
+    expect(vue).toContain(`<g v-if="expresion === 'acierto' && !quieta" class="chispas"`);
+    expect(vue).toContain('function mirarAlrededor()');
+    expect(vue).toMatch(/\.respira, \.boca\.habla, \.zeta, \.ojo\.guina, \.ojos\.mirando, \.cuerpo, \.chispa \{ animation: none !important; \}/);
+  });
+  it('el ejercicio le cuenta cuántos fallos van seguidos', () => {
+    const ws = leer('stores', 'workspace.ts');
+    expect(ws.match(/avisarResultado\(res\.allPassed, fallosSeguidos\.value\)/g)).toHaveLength(2);
+    expect(ws).toContain('avisarResultado(aprobo, fallosSeguidos.value)');
+    expect(leer('components', 'tutor', 'LanzadorTutor.vue')).toContain('useExpresionTutor(undefined, encima)');
   });
 });

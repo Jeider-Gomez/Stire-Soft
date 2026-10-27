@@ -4,7 +4,7 @@
  * que la prueba pueda transpilar este archivo solo.
  */
 
-export type ExpresionTutor = 'normal' | 'atento' | 'pensando' | 'hablando' | 'acierto' | 'error' | 'durmiendo'
+export type ExpresionTutor = 'normal' | 'contento' | 'atento' | 'pensando' | 'hablando' | 'acierto' | 'error' | 'animo' | 'durmiendo'
 
 /** Lo que el Tutor «ve» en la página. */
 export interface SenalesMascota {
@@ -19,7 +19,9 @@ export interface SenalesMascota {
   /** Acaba de llegar una respuesta: mueve la boca un momento. */
   hablando: boolean
   /** Reacción breve al resultado de un ejercicio («Probar» o «Entregar»). */
-  reaccion: 'acierto' | 'error' | null
+  reaccion: 'acierto' | 'error' | 'animo' | null
+  /** El puntero está encima (solo el lanzador): se alegra de verte. */
+  encima?: boolean
 }
 
 /** Una sola expresión a la vez, de la más importante a la menos. */
@@ -30,38 +32,45 @@ export function expresionTutor(s: SenalesMascota): ExpresionTutor {
   if (s.ultimoError) return 'error'
   if (s.hablando) return 'hablando'
   if (s.escribiendo) return 'atento'
+  if (s.encima) return 'contento'
   return 'normal'
 }
 
 /** Qué significa cada expresión, para el lector de pantalla y el manual. */
 export const SIGNIFICADO: Record<ExpresionTutor, string> = {
   normal: 'Listo para ayudar',
+  contento: 'Contento de verte',
   atento: 'Te está leyendo',
   pensando: 'Pensando la respuesta',
   hablando: 'Respondiendo',
   acierto: '¡Pasaron las pruebas!',
   error: 'Algo falló',
+  animo: 'Te anima a seguir intentando',
   durmiendo: 'El Tutor está apagado',
 }
 
 // Geometría del logo (viewBox de 200): lentes con centro en (69,80) y (131,80).
 export const OJOS: Record<ExpresionTutor, string[] | null> = {
   normal: ['M76 70 L66 80 L76 90', 'M128 70 L138 80 L128 90'],
+  contento: ['M59 84 L69 76 L79 84', 'M121 84 L131 76 L141 84'],
   atento: ['M76 74 L66 84 L76 94', 'M128 74 L138 84 L128 94'],
   pensando: null,
   hablando: ['M76 70 L66 80 L76 90', 'M128 70 L138 80 L128 90'],
   acierto: ['M59 86 L69 74 L79 86', 'M121 86 L131 74 L141 86'],
   error: ['M62 70 L72 80 L62 90', 'M138 70 L128 80 L138 90'],
+  animo: null,
   durmiendo: ['M60 82 L78 82', 'M122 82 L140 82'],
 }
 
 export const BOCA: Record<ExpresionTutor, string> = {
   normal: 'M82 114 Q100 127 118 114',
+  contento: 'M80 112 Q100 130 120 112',
   atento: 'M84 115 Q100 125 116 115',
   pensando: 'M88 118 L112 118',
   hablando: 'M86 113 Q100 130 114 113 Q100 120 86 113',
   acierto: 'M78 111 Q100 133 122 111',
   error: 'M82 119 Q91 112 100 119 Q109 126 118 119',
+  animo: 'M84 116 Q100 126 116 116',
   durmiendo: 'M92 118 L108 118',
 }
 
@@ -71,9 +80,31 @@ export const DURACION_REACCION = 2600
 /** El ejercicio avisa su resultado con este evento; la mascota lo escucha sin acoplarse al store del ejercicio. */
 export const EVENTO_RESULTADO = 'stire:resultado-ejercicio'
 
-export function avisarResultado(todoBien: boolean): void {
+export function avisarResultado(todoBien: boolean, fallosSeguidos = 0): void {
   if (typeof window === 'undefined') return
-  window.dispatchEvent(new CustomEvent(EVENTO_RESULTADO, { detail: { todoBien } }))
+  window.dispatchEvent(new CustomEvent(EVENTO_RESULTADO, { detail: { todoBien, fallosSeguidos } }))
+}
+
+/** A partir de cuántos fallos seguidos el Tutor deja la cara de error y pasa a animar: no se frustra con el estudiante. */
+export const FALLOS_PARA_ANIMAR = 3
+
+/** La reacción al resultado: acierto, error o, tras varios fallos seguidos, ánimo. */
+export function reaccionAlResultado(todoBien: boolean, fallosSeguidos: number): 'acierto' | 'error' | 'animo' {
+  if (todoBien) return 'acierto'
+  return fallosSeguidos >= FALLOS_PARA_ANIMAR ? 'animo' : 'error'
+}
+
+/** El movimiento del cuerpo que acompaña cada cara; sin movimiento, null. */
+export const GESTO: Record<ExpresionTutor, string | null> = {
+  normal: null,
+  contento: 'rebota',
+  atento: 'inclina',
+  pensando: 'ladea',
+  hablando: null,
+  acierto: 'salta',
+  error: 'niega',
+  animo: 'asiente',
+  durmiendo: null,
 }
 
 /** Espera aleatoria entre parpadeos, como una persona: entre 2,5 y 6 segundos. */

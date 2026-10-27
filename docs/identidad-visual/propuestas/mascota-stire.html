@@ -155,7 +155,7 @@ th { color: var(--suave); font-weight: 600; font-size: 12px; text-transform: upp
     <div class="rejilla">
       <div class="panel"><h3>Oscuro sobre claro</h3><div class="escenario claro" id="monoClaro"></div></div>
       <div class="panel"><h3>Claro sobre oscuro</h3><div class="escenario oscuro" id="monoOscuro"></div></div>
-      <div class="panel"><h3>Alto contraste</h3><div class="escenario ac-oscuro" id="monoAC"></div><p>Negro y blanco puros, como el tema de alto contraste de STIRE.</p></div>
+      <div class="panel"><h3>Alto contraste</h3><div class="escenario ac-claro" id="acClaro"></div><div class="escenario ac-oscuro" id="monoAC"></div><p>Pantalla negra, gafas amarillas y lentes blancas con ojos negros (más de 15:1). El marco toma el color del texto: negro en el tema claro y blanco en el oscuro. Es la versión que usa la aplicación.</p></div>
     </div>
   </section>
 
@@ -197,6 +197,8 @@ const PALETAS = {
   5: { marco: '#7B2FBF', atras: '#00C2A8', pantalla: '#082B6B', gafas: '#00C2A8', lente: '#FFFFFF', gafasBorde: '#008F7C', ojo: '#7B2FBF', boca: '#FFFFFF', base: '#7B2FBF', cuello: '#FFFFFF' },
   6: { marco: '#0B3D91', atras: '#00C2A8', pantalla: '#082B6B', gafas: '#00C2A8', lente: '#FFFFFF', gafasBorde: '#008F7C', ojo: '#0B3D91', boca: '#FFFFFF', base: '#0B3D91', cuello: '#FFFFFF' },
 };
+// Alto contraste (igual que frontend-nuxt/components/tutor/Mascota.vue): el marco es el color del texto del tema.
+const altoContraste = (marco) => ({ marco, atras: marco, pantalla: '#000000', gafas: '#FFD60A', gafasBorde: '#FFD60A', lente: '#FFFFFF', ojo: '#000000', boca: '#FFD60A', base: marco, cuello: '#FFFFFF', contorno: '#000000' });
 const mono = (c, f) => ({ marco: c, atras: c, pantalla: c, gafas: c, lente: f, ojo: c, boca: f, base: c, cuello: f, contorno: f, gafasBorde: c });
 
 // Geometría del SVG original (STIRE_logo_5.svg, viewBox 200). Ojos dentro de las lentes: centros (69,80) y (131,80)
@@ -328,7 +330,8 @@ function pintar() {
 
   $('monoClaro').innerHTML = `<div class="fila"><figure>${mascota({ p: mono('#18213A', '#FFFFFF'), alto: 110 })}</figure><figure>${mascota({ p: mono('#18213A', '#FFFFFF'), nivel: 'favicon', alto: 32 })}</figure></div>`;
   $('monoOscuro').innerHTML = `<div class="fila"><figure>${mascota({ p: mono('#E8ECF6', '#0B1020'), alto: 110, sep: '#0B1020' })}</figure><figure>${mascota({ p: mono('#E8ECF6', '#0B1020'), nivel: 'favicon', alto: 32 })}</figure></div>`;
-  $('monoAC').innerHTML = `<div class="fila"><figure>${mascota({ p: mono('#FFFFFF', '#000000'), alto: 110, sep: '#000000' })}</figure><figure>${mascota({ p: mono('#FFFFFF', '#000000'), nivel: 'favicon', alto: 32 })}</figure></div>`;
+  $('acClaro').innerHTML = `<div class="fila"><figure>${mascota({ p: altoContraste('#020617'), alto: 110, sep: '#FFFFFF' })}</figure><figure>${mascotaCircular({ p: altoContraste('#020617'), alto: 64, atras: false })}</figure><figure>${mascota({ p: altoContraste('#020617'), nivel: 'favicon', alto: 32 })}</figure></div>`;
+  $('monoAC').innerHTML = `<div class="fila"><figure>${mascota({ p: altoContraste('#FFFFFF'), alto: 110, sep: '#000000' })}</figure><figure>${mascotaCircular({ p: altoContraste('#FFFFFF'), alto: 64, atras: false, sep: '#000000' })}</figure><figure>${mascota({ p: altoContraste('#FFFFFF'), nivel: 'favicon', alto: 32 })}</figure></div>`;
 
   $('pestana').innerHTML = mascota({ p, nivel: 'favicon', alto: 16 }) + '<span>STIRE · Mis clases</span>';
 

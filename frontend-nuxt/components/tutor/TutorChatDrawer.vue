@@ -44,7 +44,7 @@
         <div class="flex items-center justify-between bg-gradient-to-r from-stire-blue via-[#0e48a8] to-stire-purple text-white select-none" :class="compacto ? 'px-3 py-1' : 'p-3 lg:p-4'">
           <div class="flex items-center gap-3">
             <div v-if="!compacto" class="relative" aria-hidden="true">
-              <TutorMascota :expresion="expresion" :tamano="40" forma="completa" mirar-cursor />
+              <TutorMascota :expresion="expresion" :tamano="40" forma="completa" mirar-cursor saludar />
               <span v-if="tutorStore.tutorEnabled" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-stire-teal border-2 border-stire-blue rounded-full" />
             </div>
             <div>

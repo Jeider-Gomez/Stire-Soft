@@ -12,7 +12,9 @@
     type="button"
     class="lanzador-tutor fixed right-4 sm:right-6 z-40 inline-flex items-center gap-2 rounded-full bg-stire-purple text-white text-sm font-bold shadow-lg shadow-stire-purple/30 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-stire-purple/40 transition-all"
     aria-label="Abrir el Tutor IA"
-    @click="tutorStore.openDrawer()">
+    @click="tutorStore.openDrawer()"
+    @mouseenter="encima = true"
+    @mouseleave="encima = false">
     <TutorMascota :expresion="expresion" :tamano="20" mirar-cursor aria-hidden="true" />
     <span v-if="!compacto">Tutor</span>
   </button>
@@ -26,7 +28,9 @@ import { useTutorStore } from '~/stores/tutor'
 // En el ejercicio, en el celular, el Tutor va en la cabecera (layouts/workspace.vue) y el flotante solo en computador.
 defineProps<{ sobreBarra?: boolean; soloComputador?: boolean }>()
 const tutorStore = useTutorStore()
-const expresion = useExpresionTutor()
+// Al pasar el puntero por encima se alegra de verte (ojos de arco y un pequeño rebote).
+const encima = ref(false)
+const expresion = useExpresionTutor(undefined, encima)
 
 /**
  * Compacto mientras se baja; la página puede desplazarse en la ventana o en el contenedor principal. En pantallas de

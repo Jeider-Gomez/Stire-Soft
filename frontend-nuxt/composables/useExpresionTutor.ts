@@ -1,21 +1,22 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
 import { useTutorStore } from '~/stores/tutor'
-import { DURACION_REACCION, EVENTO_RESULTADO, expresionTutor } from '~/utils/mascotaTutor'
+import { DURACION_REACCION, EVENTO_RESULTADO, expresionTutor, reaccionAlResultado } from '~/utils/mascotaTutor'
 
 /**
  * La cara que pone el Tutor según lo que pasa en la página (utils/mascotaTutor.ts): duerme si el docente lo apagó,
  * piensa mientras llega la respuesta, mueve la boca al responder, atiende cuando el estudiante escribe y reacciona al
  * resultado de «Probar» o «Entregar».
  */
-export function useExpresionTutor(escribiendo?: Ref<boolean>) {
+export function useExpresionTutor(escribiendo?: Ref<boolean>, encima?: Ref<boolean>) {
   const tutor = useTutorStore()
-  const reaccion = ref<'acierto' | 'error' | null>(null)
+  const reaccion = ref<'acierto' | 'error' | 'animo' | null>(null)
   const hablando = ref(false)
   let finReaccion: ReturnType<typeof setTimeout> | undefined
   let finHabla: ReturnType<typeof setTimeout> | undefined
 
   function alResultado(e: Event) {
-    reaccion.value = (e as CustomEvent<{ todoBien: boolean }>).detail?.todoBien ? 'acierto' : 'error'
+    const d = (e as CustomEvent<{ todoBien: boolean; fallosSeguidos?: number }>).detail
+    reaccion.value = reaccionAlResultado(!!d?.todoBien, d?.fallosSeguidos ?? 0)
     clearTimeout(finReaccion)
     finReaccion = setTimeout(() => { reaccion.value = null }, DURACION_REACCION)
   }
@@ -42,5 +43,6 @@ export function useExpresionTutor(escribiendo?: Ref<boolean>) {
     ultimoError: tutor.messages[tutor.messages.length - 1]?.isError === true,
     hablando: hablando.value,
     reaccion: reaccion.value,
+    encima: encima?.value ?? false,
   }))
 }
