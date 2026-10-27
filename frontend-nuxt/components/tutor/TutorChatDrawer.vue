@@ -44,9 +44,7 @@
         <div class="flex items-center justify-between bg-gradient-to-r from-stire-blue via-[#0e48a8] to-stire-purple text-white select-none" :class="compacto ? 'px-3 py-1' : 'p-3 lg:p-4'">
           <div class="flex items-center gap-3">
             <div v-if="!compacto" class="relative" aria-hidden="true">
-              <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-inner">
-                <Bot :size="24" :stroke-width="2.2" class="text-teal-300" />
-              </div>
+              <TutorMascota :expresion="expresion" :tamano="40" forma="completa" mirar-cursor />
               <span v-if="tutorStore.tutorEnabled" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-stire-teal border-2 border-stire-blue rounded-full" />
             </div>
             <div>
@@ -192,9 +190,7 @@
             >
               <!-- Burbuja de mensaje (con el robot al lado cuando habla el Tutor) -->
               <div class="flex items-end gap-1.5 max-w-[88%] mensaje-entrada">
-                <span v-if="msg.sender !== 'student'" class="w-6 h-6 mb-1 rounded-lg bg-stire-blue flex items-center justify-center shrink-0" aria-hidden="true">
-                  <Bot :size="16" :stroke-width="2.2" class="text-teal-300" />
-                </span>
+                <TutorMascota v-if="msg.sender !== 'student'" :expresion="msg.isError ? 'error' : 'normal'" :tamano="20" :vivo="false" class="mb-1" aria-hidden="true" />
                 <!-- min-w-0: un bloque de código largo ya no ensancha la burbuja ni mueve el chat de lado (José, MOB-01). -->
                 <div
                   class="min-w-0 break-words rounded-2xl p-3 text-xs leading-relaxed shadow-sm"
@@ -243,9 +239,7 @@
 
             <!-- Indicador de pensamiento IA (§18.6 — texto escalado) -->
             <div v-if="tutorStore.isThinking" class="flex items-center gap-2 text-xs text-slate-500 py-1" role="status">
-              <span class="w-6 h-6 rounded-lg bg-stire-blue flex items-center justify-center shrink-0" aria-hidden="true">
-                <Bot :size="14" class="text-teal-300 animate-pulse" />
-              </span>
+              <TutorMascota expresion="pensando" :tamano="20" aria-hidden="true" />
               <span class="flex items-center gap-1 bg-white px-3 py-2 rounded-2xl border border-slate-200 shadow-sm">
                 <span class="w-1.5 h-1.5 rounded-full bg-stire-teal animate-bounce" aria-hidden="true" />
                 <span class="w-1.5 h-1.5 rounded-full bg-stire-purple animate-bounce [animation-delay:0.2s]" aria-hidden="true" />
@@ -328,7 +322,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight, Ban, BookOpen, Bot, ChevronRight, Clock, Compass, KeyRound, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
+import { ArrowRight, Ban, BookOpen, ChevronRight, Clock, Compass, KeyRound, Lightbulb, RotateCcw, Search, Send, Target, X } from 'lucide-vue-next'
 import { etiquetaDeContexto } from '~/utils/planLateral'
 import { useTutorStore } from '~/stores/tutor'
 import { useWorkspaceStore } from '~/stores/workspace'
@@ -417,6 +411,7 @@ function scrollToBottom() {
 // que se ve y el chat baja al último mensaje (composables/useAreaVisible.ts). En computador no cambia nada.
 const estiloAlTeclado = useAreaVisible(pantallaAncha, () => { if (tutorStore.isOpen) scrollToBottom() })
 const escribiendo = ref(false)
+const expresion = useExpresionTutor(escribiendo)
 const compacto = computed(() => !pantallaAncha.value && escribiendo.value)
 
 // ─── Foco al abrir / devolver foco al cerrar (§18.3 + §22 T2) ───────────────

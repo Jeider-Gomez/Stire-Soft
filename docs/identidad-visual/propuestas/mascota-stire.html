@@ -1,0 +1,374 @@
+<title>Mascota STIRE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap">
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Hoja de pruebas: una columna de secciones; cada sección es un banco de prueba de la misma pieza en un contexto real. */
+:root {
+  --azul: #0B3D91; --morado: #7B2FBF; --turquesa: #00C2A8; --noche: #0E1B4D;
+  --fondo: #F5F7FB; --superficie: #FFFFFF; --texto: #18213A; --suave: #56607A; --linea: #DDE3EE; --hundido: #ECF0F7;
+  --letra: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Inter, system-ui, sans-serif;
+  --letra-titulo: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Inter, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --fondo: #0B1020; --superficie: #141A2E; --texto: #E8ECF6; --suave: #9AA5C0; --linea: #262F4A; --hundido: #0F1528; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --fondo: #0B1020; --superficie: #141A2E; --texto: #E8ECF6; --suave: #9AA5C0; --linea: #262F4A; --hundido: #0F1528; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--fondo); color: var(--texto); font: 15px/1.55 var(--letra); }
+.envoltura { max-width: 1120px; margin: 0 auto; padding-block: 40px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2 { font-family: var(--letra-titulo); letter-spacing: -.02em; line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 700; }
+h2 { font-size: 22px; font-weight: 650; }
+p { margin: 0; color: var(--suave); max-width: 66ch; }
+.cabecera { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px; }
+.cabecera .texto { display: grid; gap: 10px; }
+section { margin-top: 56px; display: grid; gap: 16px; }
+.rotulo { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); }
+
+.selector { display: inline-flex; background: var(--hundido); border: 1px solid var(--linea); border-radius: 999px; padding: 4px; gap: 4px; }
+.selector button { font: 600 14px var(--letra); color: var(--suave); background: transparent; border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+.selector button[aria-pressed="true"] { background: var(--superficie); color: var(--texto); box-shadow: 0 1px 3px rgb(0 0 0 / .12); }
+button:focus-visible { outline: 3px solid var(--turquesa); outline-offset: 2px; }
+
+.rejilla { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.dos { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.panel { background: var(--superficie); border: 1px solid var(--linea); border-radius: 18px; padding: 20px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.panel h3 { margin: 0; font-size: 15px; font-weight: 650; }
+.panel p { font-size: 14px; }
+.escenario { display: grid; place-items: center; min-height: 190px; border-radius: 12px; background: var(--hundido); padding: 16px; }
+.escenario.claro { background: #FFFFFF; } .escenario.oscuro { background: #0B1020; }
+.escenario.ac-claro { background: #FFFFFF; outline: 2px solid #000; } .escenario.ac-oscuro { background: #000; outline: 2px solid #FFF; }
+.fila { display: flex; flex-wrap: wrap; align-items: end; gap: 20px; justify-content: center; }
+.fila figure { margin: 0; display: grid; justify-items: center; gap: 6px; }
+figcaption { font-size: 12px; color: var(--suave); font-variant-numeric: tabular-nums; }
+.oscuro figcaption, .ac-oscuro figcaption { color: #9AA5C0; }
+svg.m { display: block; overflow: visible; }
+
+.firma { display: flex; align-items: center; gap: 14px; }
+/* Nombre: «stire_» en minúsculas, punto de la i y cursor en turquesa (del logo original) */
+.nombre { font: 800 1em/1 Inter, var(--letra-titulo); letter-spacing: -.035em; color: #0B3D91; white-space: nowrap; }
+.nombre .i { position: relative; }
+.nombre .i::after { content: ""; position: absolute; left: 50%; top: .02em; width: .22em; height: .22em; border-radius: 50%; background: var(--turquesa); transform: translateX(-50%); }
+.nombre .cursor { display: inline-block; width: .58em; height: .14em; border-radius: 999px; background: var(--turquesa); margin-left: .05em; }
+.firma .nombre { font-size: 44px; }
+.oscuro .nombre { color: #E8ECF6; }
+
+/* Pestaña del navegador */
+.navegador { border-radius: 12px; overflow: hidden; border: 1px solid var(--linea); width: 100%; }
+.barra { background: #DEE3EC; padding: 8px 10px 0; display: flex; gap: 6px; }
+.pestana { background: #FFFFFF; color: #18213A; border-radius: 9px 9px 0 0; padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-size: 13px; min-width: 0; }
+.pestana.inactiva { background: transparent; color: #56607A; }
+.pestana span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.navegador .cuerpo { background: #FFFFFF; height: 56px; }
+
+/* Menú lateral */
+.lateral { width: 100%; max-width: 260px; border-radius: 14px; padding: 16px 12px; display: grid; gap: 4px; }
+.lateral.claro { background: #FFFFFF; border: 1px solid #DDE3EE; color: #18213A; }
+.lateral.oscuro { background: #141A2E; border: 1px solid #262F4A; color: #E8ECF6; }
+.lateral .marca { display: flex; align-items: center; gap: 10px; padding: 4px 8px 14px; font: 700 20px var(--letra-titulo); letter-spacing: -.02em; }
+.lateral a { display: block; padding: 8px 10px; border-radius: 8px; font-size: 14px; color: inherit; text-decoration: none; opacity: .8; }
+.lateral a.activa { opacity: 1; font-weight: 600; background: rgb(0 194 168 / .14); }
+
+/* Tutor */
+.chat { width: 100%; max-width: 420px; background: #FFFFFF; color: #18213A; border-radius: 16px; border: 1px solid #DDE3EE; padding: 14px; display: grid; gap: 12px; }
+.chat .cab { display: flex; align-items: center; gap: 10px; font-weight: 650; }
+.chat .cab small { display: block; font-weight: 400; color: #56607A; font-size: 12px; }
+.globo { background: #EEF2F8; border-radius: 4px 14px 14px 14px; padding: 10px 12px; font-size: 14px; }
+.acciones { display: flex; flex-wrap: wrap; gap: 8px; }
+.acciones button { font: 600 13px var(--letra); border: 1px solid #DDE3EE; background: #FFFFFF; color: #18213A; border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.acciones button[aria-pressed="true"] { background: #18213A; color: #FFFFFF; border-color: #18213A; }
+.flotante { display: inline-flex; align-items: center; gap: 10px; background: #18213A; color: #FFFFFF; border-radius: 999px; padding: 6px 18px 6px 6px; font-weight: 600; font-size: 14px; box-shadow: 0 8px 24px rgb(14 27 77 / .28); }
+.flotante .disco { background: #FFFFFF; border-radius: 999px; padding: 6px; display: grid; }
+
+.ojos { transform-box: fill-box; transform-origin: center; }
+.parpadeo .ojos { animation: parpadeo .22s ease-in-out; }
+@keyframes parpadeo { 50% { transform: scaleY(.1); } }
+@media (prefers-reduced-motion: reduce) { .parpadeo .ojos { animation: none; } }
+
+.nota { font-size: 13px; color: var(--suave); border-left: 3px solid var(--turquesa); padding-left: 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { color: var(--suave); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+.tabla { overflow-x: auto; }
+</style>
+
+<div class="envoltura">
+  <header class="cabecera">
+    <div class="texto">
+      <span class="rotulo">Identidad STIRE · propuesta</span>
+      <h1>Un solo personaje: logo y mascota</h1>
+      <p>La pantalla con gafas es el logo y también el Tutor. Aquí se ve la combinación 5 (pantalla oscura) y la 6 (todo azul) en tamaño real, con sus expresiones y en las pantallas donde va a vivir.</p>
+    </div>
+    <div class="selector" role="group" aria-label="Combinación de color">
+      <button type="button" id="op5" data-op="5" aria-pressed="true">5 · Pantalla oscura</button>
+      <button type="button" id="op6" data-op="6" aria-pressed="false">6 · Todo azul</button>
+    </div>
+  </header>
+
+  <section>
+    <span class="rotulo">Lado a lado</span>
+    <div class="dos">
+      <div class="panel"><h3>5 · Pantalla oscura</h3><div class="escenario claro" id="lado5"></div><p>Marco morado, pantalla azul noche, gafas turquesa y ojos morados.</p></div>
+      <div class="panel"><h3>6 · Todo azul</h3><div class="escenario claro" id="lado6"></div><p>Marco azul, pantalla azul noche, gafas turquesa y ojos azules.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">Tres niveles de detalle</span>
+    <h2>Se simplifica solo donde el tamaño lo exige</h2>
+    <div class="rejilla">
+      <div class="panel"><h3>Grande</h3><div class="escenario" id="nivelGrande"></div><p>Completo: tarjeta de atrás, marco, patillas y la barra de la base tal cual.</p></div>
+      <div class="panel"><h3>Mediano</h3><div class="escenario" id="nivelMediano"></div><p>Sin la tarjeta de atrás. Conserva patillas y barra.</p></div>
+      <div class="panel"><h3>Favicon</h3><div class="escenario" id="nivelFavicon"></div><p>La pantalla oscura es el cuerpo y el morado queda solo como borde fino. Gafas y sonrisa; sin patillas ni barra, que a 16 px se vuelven ruido.</p></div>
+    </div>
+    <div class="panel"><h3>Tres bordes para el favicon</h3>
+      <div class="rejilla" id="faviconBordes"></div>
+      <p>Mismo dibujo, cambia solo el borde. Se ve a 64, 32 y 16 px, y en una barra de pestañas.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">Versión circular</span>
+    <h2>Para avatares, fotos de perfil e íconos redondos</h2>
+    <div class="rejilla">
+      <div class="panel"><h3>Completa</h3><div class="escenario claro" id="circGrande"></div><p>El marco se vuelve aro y la tarjeta turquesa un círculo desplazado, como en el logo. La cara ocupa casi toda la pantalla redonda y las patillas llegan al aro.</p></div>
+      <div class="panel"><h3>Pequeña</h3><div class="escenario claro" id="circPeque"></div><p>Sin el círculo de atrás, para que el recorte redondo no la corte.</p></div>
+      <div class="panel"><h3>Sobre oscuro</h3><div class="escenario oscuro" id="circOscuro"></div></div>
+    </div>
+    <div class="dos">
+      <div class="panel"><h3>Dentro de un recorte redondo</h3><div class="escenario" id="circRecorte"></div><p>Así queda si una plataforma (WhatsApp, Teams, Google) recorta la imagen en círculo.</p></div>
+      <div class="panel"><h3>Avatar del Tutor en el chat</h3><div class="escenario" id="circChat"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">Expresiones</span>
+    <h2>Los ojos cambian; el resto no se mueve</h2>
+    <div class="rejilla" id="expresiones"></div>
+  </section>
+
+  <section>
+    <span class="rotulo">Un solo color</span>
+    <h2>Para impresos, sellos y alto contraste</h2>
+    <div class="rejilla">
+      <div class="panel"><h3>Oscuro sobre claro</h3><div class="escenario claro" id="monoClaro"></div></div>
+      <div class="panel"><h3>Claro sobre oscuro</h3><div class="escenario oscuro" id="monoOscuro"></div></div>
+      <div class="panel"><h3>Alto contraste</h3><div class="escenario ac-oscuro" id="monoAC"></div><p>Negro y blanco puros, como el tema de alto contraste de STIRE.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">En uso</span>
+    <h2>Donde se va a ver todos los días</h2>
+    <div class="panel"><h3>Pestaña del navegador (16 px reales)</h3>
+      <div class="navegador"><div class="barra">
+        <div class="pestana" id="pestana"><span>STIRE · Mis clases</span></div>
+        <div class="pestana inactiva"><span>Correo</span></div>
+      </div><div class="cuerpo"></div></div>
+    </div>
+    <div class="dos">
+      <div class="panel"><h3>Menú lateral, tema claro</h3><div class="escenario" id="menuClaro"></div></div>
+      <div class="panel"><h3>Menú lateral, tema oscuro</h3><div class="escenario" id="menuOscuro"></div></div>
+    </div>
+    <div class="dos">
+      <div class="panel"><h3>Botón del Tutor</h3><div class="escenario claro" id="boton"></div><p>Va flotando en la esquina del ejercicio.</p></div>
+      <div class="panel"><h3>Conversación con el Tutor</h3><div class="escenario" id="chat"></div><p>Toca un botón para ver cómo reacciona.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">Para decidir</span>
+    <div class="panel tabla"><table>
+      <thead><tr><th>Dónde se nota</th><th>5 · Pantalla oscura</th><th>6 · Todo azul</th></tr></thead>
+      <tbody>
+        <tr><td>Favicon en la pestaña</td><td>El morado se separa del gris de la barra</td><td>El azul se confunde un poco con otras pestañas azules</td></tr>
+        <tr><td>Menú lateral oscuro</td><td>El morado resalta sobre el fondo azul noche</td><td>El marco azul pierde borde; se apoya en la tarjeta turquesa</td></tr>
+        <tr><td>Junto al nombre STIRE</td><td>Dos colores de marca a la vista</td><td>Más sobrio; todo en la familia del azul</td></tr>
+      </tbody>
+    </table></div>
+    <p class="nota">Las versiones grande y mediana usan el trazo exacto de <code>STIRE_logo_5.svg</code>. La 6 cambia solo los colores. El favicon y las expresiones son propuestas nuevas sobre esa base.</p>
+  </section>
+</div>
+
+<script>
+const PALETAS = {
+  5: { marco: '#7B2FBF', atras: '#00C2A8', pantalla: '#082B6B', gafas: '#00C2A8', lente: '#FFFFFF', gafasBorde: '#008F7C', ojo: '#7B2FBF', boca: '#FFFFFF', base: '#7B2FBF', cuello: '#FFFFFF' },
+  6: { marco: '#0B3D91', atras: '#00C2A8', pantalla: '#082B6B', gafas: '#00C2A8', lente: '#FFFFFF', gafasBorde: '#008F7C', ojo: '#0B3D91', boca: '#FFFFFF', base: '#0B3D91', cuello: '#FFFFFF' },
+};
+const mono = (c, f) => ({ marco: c, atras: c, pantalla: c, gafas: c, lente: f, ojo: c, boca: f, base: c, cuello: f, contorno: f, gafasBorde: c });
+
+// Geometría del SVG original (STIRE_logo_5.svg, viewBox 200). Ojos dentro de las lentes: centros (69,80) y (131,80)
+const OJOS = {
+  normal:   ['M76 70 L66 80 L76 90', 'M128 70 L138 80 L128 90'],
+  acierto:  ['M59 86 L69 74 L79 86', 'M121 86 L131 74 L141 86'],
+  pensando: null,
+  error:    ['M62 70 L72 80 L62 90', 'M138 70 L128 80 L138 90'],
+};
+const BOCA = {
+  normal: 'M82 114 Q100 127 118 114', acierto: 'M78 111 Q100 133 122 111',
+  pensando: 'M88 118 L112 118', error: 'M82 119 Q91 112 100 119 Q109 126 118 119',
+};
+const EXPRESIONES = [
+  ['normal', '< >', 'Normal', 'Listo para ayudar.'],
+  ['acierto', '^ ^', 'Acierto', 'Cuando pasan las pruebas.'],
+  ['pensando', '• •', 'Pensando', 'Mientras llega la respuesta; mira hacia arriba.'],
+  ['error', '> <', 'Error', 'Cuando algo falla. Sin regaño: la boca ondula.'],
+];
+
+// Gafas: solo las patillas llevan un borde fino en turquesa más oscuro, dentro de su propio grosor.
+// Patillas y puente van debajo de las lentes para que no se metan en el vidrio.
+function gafas(p) {
+  const t = 'fill="none" stroke-linecap="round" stroke-linejoin="round"';
+  const patillas = ['M46 70 L30 62', 'M158 70 L174 62'];
+  return `<g ${t}>${patillas.map(d => `<path d="${d}" stroke="${p.gafasBorde}" stroke-width="6.5"/>`).join('')}${patillas.map(d => `<path d="${d}" stroke="${p.gafas}" stroke-width="3.8"/>`).join('')}
+      <path d="M95 73 Q100 66 105 73" stroke="${p.gafas}" stroke-width="6"/></g>
+    <rect x="45.5" y="62.5" width="52" height="44" rx="16" fill="none" stroke="${p.gafas}" stroke-width="4"/>
+    <rect x="107.5" y="62.5" width="52" height="44" rx="16" fill="none" stroke="${p.gafas}" stroke-width="4"/>
+    <rect x="43" y="58" width="52" height="44" rx="16" fill="${p.lente}" stroke="${p.gafas}" stroke-width="7.5"/>
+    <rect x="105" y="58" width="52" height="44" rx="16" fill="${p.lente}" stroke="${p.gafas}" stroke-width="7.5"/>`;
+}
+
+function ojos(p, expr) {
+  const sw = 8.5;
+  if (expr === 'pensando') return `<g class="ojos" fill="${p.ojo}"><circle cx="73" cy="75" r="6"/><circle cx="135" cy="75" r="6"/></g>`;
+  return `<g class="ojos" fill="none" stroke="${p.ojo}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${OJOS[expr].map(d => `<path d="${d}"/>`).join('')}</g>`;
+}
+
+function mascota({ p, nivel = 'grande', expr = 'normal', sep = '#FFFFFF', alto = 120, etiqueta = 'STIRE', borde }) {
+  if (nivel === 'favicon') {
+    // Pantalla oscura como cuerpo y solo un borde fino del color del marco: menos morado, más contraste con las lentes.
+    const b = borde === undefined ? p.marco : borde;
+    return `<svg class="m" viewBox="0 0 64 64" width="${alto}" height="${alto}" role="img" aria-label="${etiqueta}">
+      <rect x="1" y="3" width="62" height="58" rx="14" fill="${b || p.pantalla}"/>
+      <rect x="3.5" y="5.5" width="57" height="53" rx="12" fill="${p.pantalla}"/>
+      <g transform="translate(32 33.5) scale(1.1) translate(-32 -28)">
+        <g fill="none" stroke-linecap="round"><g stroke="${p.gafasBorde}" stroke-width="3.6"><path d="M10.5 17 L5.5 14.5"/><path d="M53.5 17 L58.5 14.5"/></g>
+          <g stroke="${p.gafas}" stroke-width="2.1"><path d="M10.5 17 L5.5 14.5"/><path d="M53.5 17 L58.5 14.5"/></g>
+          <path d="M29.5 18 H34.5" stroke="${p.gafas}" stroke-width="3.5"/></g>
+        <g fill="${p.lente}" stroke="${p.gafas}" stroke-width="3.5">
+          <rect x="10.5" y="11" width="19" height="19" rx="6"/><rect x="34.5" y="11" width="19" height="19" rx="6"/></g>
+        <g fill="none" stroke="${p.ojo}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.5 L18 20.5 L22 24.5"/><path d="M42 16.5 L46 20.5 L42 24.5"/></g>
+        <path d="M24 37.5 Q32 44.5 40 37.5" fill="none" stroke="${p.boca}" stroke-width="4.2" stroke-linecap="round"/>
+      </g>
+    </svg>`;
+  }
+  const atras = nivel === 'grande' ? `<rect x="34" y="32" width="148" height="100" rx="18" fill="${p.atras}" style="stroke:${sep}" stroke-width="3.5" paint-order="stroke"/>` : '';
+  const [vx, vy, vw, vh] = nivel === 'grande' ? [22, 28, 164, 138] : [22, 36, 156, 130];
+  const ancho = Math.round(alto * vw / vh);
+  const trazo = 'fill="none" stroke-linecap="round" stroke-linejoin="round"';
+  return `<svg class="m" viewBox="${vx} ${vy} ${vw} ${vh}" width="${ancho}" height="${alto}" role="img" aria-label="${etiqueta}">
+    ${atras}
+    <rect x="26" y="40" width="148" height="100" rx="18" fill="${p.marco}" style="stroke:${sep}" stroke-width="3.5" paint-order="stroke"/>
+    <rect x="38" y="52" width="124" height="76" rx="10" fill="${p.pantalla}"/>
+    ${gafas(p)}
+    ${ojos(p, expr)}
+    <path class="boca" d="${BOCA[expr]}" ${trazo} stroke="${p.boca}" stroke-width="6"/>
+    <rect x="30" y="150" width="140" height="12" rx="6" fill="${p.base}" style="stroke:${sep}" stroke-width="6" paint-order="stroke"/>
+    <rect x="128" y="145" width="22" height="9" rx="4.5" style="fill:${sep};stroke:${sep}" stroke-width="3"/>
+  </svg>`;
+}
+
+// Versión circular: el marco se vuelve aro, la tarjeta de atrás un círculo desplazado y la cara se escala para caber.
+function mascotaCircular({ p, expr = 'normal', sep = '#FFFFFF', alto = 120, atras = true, etiqueta = 'STIRE' }) {
+  const trazo = 'fill="none" stroke-linecap="round" stroke-linejoin="round"';
+  const vb = atras ? '10 0 204 200' : '10 10 180 180';
+  const ancho = Math.round(alto * (atras ? 204 / 200 : 1));
+  return `<svg class="m" viewBox="${vb}" width="${ancho}" height="${alto}" role="img" aria-label="${etiqueta}">
+    ${atras ? `<circle cx="110" cy="92" r="86" fill="${p.atras}" style="stroke:${sep}" stroke-width="3.5" paint-order="stroke"/>` : ''}
+    <circle cx="100" cy="100" r="86" fill="${p.marco}" style="stroke:${sep}" stroke-width="3.5" paint-order="stroke"/>
+    <circle cx="100" cy="100" r="76" fill="${p.pantalla}"/>
+    <g transform="translate(100 87) scale(1.1) translate(-100 -80)">
+      ${gafas(p)}
+      ${ojos(p, expr)}
+    </g>
+    <g transform="translate(100 140) scale(1.1) translate(-100 -120)">
+      <path class="boca" d="${BOCA[expr]}" ${trazo} stroke="${p.boca}" stroke-width="6"/>
+    </g>
+  </svg>`;
+}
+
+const NOMBRE ='<span class="nombre" aria-label="stire">st<span class="i">ı</span>re<span class="cursor"></span></span>';
+const $ = id => document.getElementById(id);
+let opcion = '5';
+try { opcion = localStorage.getItem('mascota-op') || '5'; } catch (e) {}
+
+function pintar() {
+  const p = PALETAS[opcion];
+  const firma = (pp, oscuro) => `<div class="fila"><figure>${mascota({ p: pp, alto: 190, sep: oscuro ? '#0B1020' : '#FFFFFF' })}</figure></div>
+     <div class="fila" style="margin-top:18px"><div class="firma">${mascota({ p: pp, alto: 64 })}${NOMBRE}</div></div>`;
+  $('lado5').innerHTML = `<div>${firma(PALETAS[5])}</div>`;
+  $('lado6').innerHTML = `<div>${firma(PALETAS[6])}</div>`;
+
+  $('nivelGrande').innerHTML = `<div class="fila"><figure>${mascota({ p, alto: 140, sep: 'var(--hundido)' })}<figcaption>140 px</figcaption></figure></div>`;
+  $('nivelMediano').innerHTML = `<div class="fila"><figure>${mascota({ p, nivel: 'mediano', alto: 96 })}<figcaption>96 px</figcaption></figure><figure>${mascota({ p, nivel: 'mediano', alto: 48 })}<figcaption>48 px</figcaption></figure></div>`;
+  $('nivelFavicon').innerHTML = `<div class="fila">${[64, 32, 24, 16].map(t => `<figure>${mascota({ p, nivel: 'favicon', alto: t })}<figcaption>${t} px</figcaption></figure>`).join('')}</div>`;
+
+  $('faviconBordes').innerHTML = [
+    ['A · Borde del marco', p.marco, 'Recomendado. Conecta con el logo grande sin que el color domine.'],
+    ['B · Borde turquesa', '#00C2A8', 'Más fresco; el turquesa ya está en las gafas.'],
+    ['C · Sin borde', null, 'El más sencillo. Sobre pestañas oscuras se pierde el contorno.'],
+  ].map(([nom, b, txt]) => `<div class="panel" style="background:var(--hundido)"><h3>${nom}</h3>
+      <div class="fila">${[64, 32, 16].map(t => `<figure>${mascota({ p, nivel: 'favicon', alto: t, borde: b })}<figcaption>${t} px</figcaption></figure>`).join('')}</div>
+      <div class="barra" style="border-radius:8px;padding:6px"><div class="pestana">${mascota({ p, nivel: 'favicon', alto: 16, borde: b })}<span>STIRE</span></div></div>
+      <div class="barra" style="border-radius:8px;padding:6px;background:#202124"><div class="pestana" style="background:#35363A;color:#E8EAED">${mascota({ p, nivel: 'favicon', alto: 16, borde: b })}<span>STIRE</span></div></div>
+      <p>${txt}</p></div>`).join('');
+
+  $('circGrande').innerHTML =`<div class="fila"><figure>${mascotaCircular({ p, alto: 150 })}<figcaption>150 px</figcaption></figure></div>`;
+  $('circPeque').innerHTML = `<div class="fila">${[96, 48, 32, 24].map(t => `<figure>${mascotaCircular({ p, alto: t, atras: false })}<figcaption>${t} px</figcaption></figure>`).join('')}</div>`;
+  $('circOscuro').innerHTML = `<div class="fila"><figure>${mascotaCircular({ p, alto: 120, sep: '#0B1020' })}</figure><figure>${mascotaCircular({ p, alto: 48, atras: false, sep: '#0B1020' })}</figure></div>`;
+  $('circRecorte').innerHTML = `<div class="fila">${['#FFFFFF', '#00C2A8', '#18213A'].map(f => `<figure><div style="width:96px;height:96px;border-radius:50%;overflow:hidden;background:${f};display:grid;place-items:center">${mascotaCircular({ p, alto: 84, atras: false, sep: f })}</div></figure>`).join('')}</div>`;
+  $('circChat').innerHTML = `<div class="chat"><div style="display:flex;gap:10px;align-items:flex-start">${mascotaCircular({ p, alto: 36, atras: false })}<div class="globo">¡Pasaron las 5 pruebas! El contador ya se detiene en 10.</div></div>
+    <div style="display:flex;gap:10px;align-items:flex-start">${mascotaCircular({ p, alto: 36, atras: false, expr: 'error' })}<div class="globo">La prueba 3 falló: el ciclo nunca termina.</div></div></div>`;
+
+  $('expresiones').innerHTML =EXPRESIONES.map(([e, sig, nom, txt]) =>
+    `<div class="panel"><h3>${nom} <span style="color:var(--suave);font-weight:500">${sig}</span></h3><div class="escenario">${mascota({ p, nivel: 'mediano', expr: e, alto: 110, etiqueta: 'Tutor ' + nom })}</div><p>${txt}</p></div>`).join('');
+
+  $('monoClaro').innerHTML = `<div class="fila"><figure>${mascota({ p: mono('#18213A', '#FFFFFF'), alto: 110 })}</figure><figure>${mascota({ p: mono('#18213A', '#FFFFFF'), nivel: 'favicon', alto: 32 })}</figure></div>`;
+  $('monoOscuro').innerHTML = `<div class="fila"><figure>${mascota({ p: mono('#E8ECF6', '#0B1020'), alto: 110, sep: '#0B1020' })}</figure><figure>${mascota({ p: mono('#E8ECF6', '#0B1020'), nivel: 'favicon', alto: 32 })}</figure></div>`;
+  $('monoAC').innerHTML = `<div class="fila"><figure>${mascota({ p: mono('#FFFFFF', '#000000'), alto: 110, sep: '#000000' })}</figure><figure>${mascota({ p: mono('#FFFFFF', '#000000'), nivel: 'favicon', alto: 32 })}</figure></div>`;
+
+  $('pestana').innerHTML = mascota({ p, nivel: 'favicon', alto: 16 }) + '<span>STIRE · Mis clases</span>';
+
+  const menu = (clase, sep) => `<nav class="lateral ${clase}" aria-label="Menú de ejemplo">
+      <div class="marca">${mascota({ p, nivel: 'mediano', alto: 30, sep })}${NOMBRE}</div>
+      <a class="activa">Inicio</a><a>Mensajes</a><a>Fundamentos de Programación</a><a>Ajustes</a></nav>`;
+  $('menuClaro').innerHTML = menu('claro', '#FFFFFF');
+  $('menuOscuro').innerHTML = menu('oscuro', '#141A2E');
+
+  $('boton').innerHTML = `<span class="flotante"><span class="disco">${mascota({ p, nivel: 'mediano', alto: 30 })}</span>Pregúntale al Tutor</span>`;
+  pintarChat('normal');
+}
+
+const RESPUESTAS = {
+  normal: 'Hola, soy tu Tutor. ¿En qué parte del ejercicio te quedaste?',
+  pensando: 'Déjame revisar tu ciclo para un momento…',
+  acierto: '¡Pasaron las 5 pruebas! El contador ya se detiene en 10.',
+  error: 'La prueba 3 falló: el ciclo nunca termina. Mira la condición del while.',
+};
+function pintarChat(expr) {
+  const p = PALETAS[opcion];
+  $('chat').innerHTML = `<div class="chat">
+    <div class="cab" id="cabTutor">${mascota({ p, nivel: 'mediano', alto: 40, expr, etiqueta: 'Tutor' })}<div>Tutor<small>Ejercicio: contar hasta 10</small></div></div>
+    <div class="globo" aria-live="polite">${RESPUESTAS[expr]}</div>
+    <div class="acciones" role="group" aria-label="Probar expresiones">
+      ${EXPRESIONES.map(([e, sig, nom]) => `<button type="button" id="exp-${e}" data-exp="${e}" aria-pressed="${e === expr}">${nom}</button>`).join('')}
+    </div></div>`;
+}
+$('chat').addEventListener('click', ev => {
+  const b = ev.target.closest('button[data-exp]'); if (!b) return;
+  pintarChat(b.dataset.exp);
+  const cab = $('cabTutor'); cab.classList.add('parpadeo');
+});
+
+document.querySelectorAll('.selector button').forEach(b => b.addEventListener('click', () => {
+  opcion = b.dataset.op;
+  try { localStorage.setItem('mascota-op', opcion); } catch (e) {}
+  document.querySelectorAll('.selector button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  pintar();
+}));
+document.querySelectorAll('.selector button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.op === opcion)));
+pintar();
+</script>

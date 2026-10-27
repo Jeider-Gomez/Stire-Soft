@@ -5,6 +5,7 @@ import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
 import { sonarResultado } from '~/utils/sonidos'
+import { avisarResultado } from '~/utils/mascotaTutor'
 import { debePreguntarConfianza, type Calibracion, type Confianza } from '~/utils/confianza'
 import { CLAVE_APARIENCIA, leerApariencia } from '~/utils/apariencia'
 import { puedeAutoguardar, esperaReintento, textoAutoguardado, claveBorrador, guardarBorrador, leerBorrador, borrarBorrador, borradorDistinto, type EstadoAutoguardado } from '~/utils/autoguardado'
@@ -381,6 +382,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
         fallosSeguidos.value = res.allPassed ? 0 : fallosSeguidos.value + 1
         sonarResultado(res.allPassed)
+        avisarResultado(res.allPassed)
         if (res.allPassed) {
           consoleLog.value.push(`✔ Todos los casos públicos aprobados (${res.results.length}/${res.results.length}).`)
         } else {
@@ -439,6 +441,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           totalWeight: res.totalWeight
         }
         sonarResultado(res.allPassed)
+        avisarResultado(res.allPassed)
         if (res.allPassed) {
           consoleLog.value.push(`✔ Todas las reglas públicas aprobadas (${res.results.length}/${res.results.length}).`)
         } else {
@@ -602,6 +605,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     if (!r || r.status !== 'graded') return
     const aprobo = typeof r.passed === 'boolean' ? r.passed : r.totalCount > 0 && r.passedCount === r.totalCount
     fallosSeguidos.value = aprobo ? 0 : fallosSeguidos.value + 1
+    avisarResultado(aprobo)
   })
 
   // Autosave: PUT /submissions/:id/autosave (aplica a coding y html_css). Con debounce: se guarda 0,8 s después de
