@@ -24,7 +24,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'STIRE-Soft — Sistema Tutor Inteligente',
+      title: 'STIRE — Sistema tutor inteligente',
       htmlAttrs: {
         lang: 'es'
       },
@@ -36,7 +36,8 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Sistema Tutor Inteligente con Repetición Espaciada y Evaluación Automática' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'alternate icon', type: 'image/x-icon', href: '/favicon.ico' }
       ]
     }
   },

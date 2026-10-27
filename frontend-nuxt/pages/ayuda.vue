@@ -11,7 +11,7 @@
         <div class="flex items-center gap-3">
           <LayoutMarcaST />
           <div class="font-poppins leading-tight">
-            <p class="text-lg font-bold">STIRE <span class="font-light">Soft</span></p>
+            <p class="text-lg font-bold">STIRE</p>
             <p class="text-xs text-white/80">Universidad de Córdoba · Licenciatura en Informática</p>
           </div>
         </div>
@@ -96,7 +96,7 @@
     </div>
 
     <footer class="border-t border-base-borde-sutil text-center text-xs text-base-texto-secundario py-6 px-4">
-      STIRE Soft · Universidad de Córdoba · {{ VERSION_MANUAL }}
+      STIRE · Universidad de Córdoba · {{ VERSION_MANUAL }}
     </footer>
   </div>
 </template>

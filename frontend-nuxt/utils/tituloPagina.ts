@@ -47,10 +47,10 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/admin(\/dashboard)?\/?$/, 'Administración'],
 ]
 
-export const NOMBRE_APP = 'STIRE-Soft'
+export const NOMBRE_APP = 'STIRE'
 
 /**
- * Con el nombre de lo que se abrió delante (07/10): «Variables y tipos · Lección · STIRE-Soft». En una pestaña o con
+ * Con el nombre de lo que se abrió delante (07/10): «Variables y tipos · Lección · STIRE». En una pestaña o con
  * el lector de pantalla, «Lección» sola no dice cuál.
  */
 export function tituloConNombre(nombre: string | null | undefined, ruta: string): string {
@@ -58,7 +58,7 @@ export function tituloConNombre(nombre: string | null | undefined, ruta: string)
   return nombre?.trim() ? `${nombre.trim()} · ${base}` : base
 }
 
-/** «Mi progreso · STIRE-Soft»; una ruta desconocida lleva solo el nombre de la aplicación. */
+/** «Mi progreso · STIRE»; una ruta desconocida lleva solo el nombre de la aplicación. */
 export function tituloPagina(ruta: string): string {
   const encontrado = TITULOS.find(([patron]) => patron.test(ruta))
   return encontrado ? `${encontrado[1]} · ${NOMBRE_APP}` : `${NOMBRE_APP} — Sistema Tutor Inteligente`

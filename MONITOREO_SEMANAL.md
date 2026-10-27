@@ -1,4 +1,4 @@
-# 🚀 Bitácora de Monitoreo y Control N.º 11 — Proyecto: STIRE-Soft
+# 🚀 Bitácora de Monitoreo y Control N.º 11 — Proyecto: STIRE
 
 **Curso:** DDSE3 — 2026-2
 **Grupo:** [G1 / G2]

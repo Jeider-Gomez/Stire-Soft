@@ -49,7 +49,7 @@ de reglas explicables y probadas contra el motor real. Además está hecho para 
 
 ## Brand Commitments
 
-- Nombre: STIRE (STIRE Soft), Universidad de Córdoba.
+- Nombre: STIRE (antes STIRE-Soft; renombrado el 26/10), Universidad de Córdoba.
 - La identidad visual vigente es de José (`docs/identidad-visual/`). El 23/10/2026 Jeider decidió que el rediseño del
   panel del docente puede cambiar también los tokens y el CSS global, y que él se lo comunica a José.
 - Voz: cercana, en segunda persona, frases cortas y sin jerga técnica. Los botones dicen lo que hacen.

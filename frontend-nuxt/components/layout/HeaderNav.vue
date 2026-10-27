@@ -1,5 +1,5 @@
 <template>
-  <!-- ===== HEADER INSTITUCIONAL STIRE SOFT ===== -->
+  <!-- ===== HEADER INSTITUCIONAL STIRE ===== -->
   <header
     class="h-16 bg-base-blanco/80 glass-header border-b border-base-borde-sutil flex items-center justify-between px-4 md:px-6 sticky top-0 z-40 shadow-sm"
   >
@@ -20,18 +20,13 @@
         :to="homeRoute"
         class="flex items-center gap-2.5 group flex-shrink-0 min-h-[44px]"
       >
-        <!-- Isotipo [ST] con gradiente institucional -->
-        <div
-          class="w-9 h-9 rounded-xl gradient-stire flex items-center justify-center text-white font-poppins font-bold text-sm shadow-md
-                 group-hover:shadow-lg group-hover:scale-105 transition-all duration-200 flex-shrink-0"
-        >
-          ST
-        </div>
+        <!-- Logo: la pantalla con gafas (components/layout/MarcaST.vue) -->
+        <LayoutMarcaST class="group-hover:scale-105 transition-transform duration-200" />
 
         <!-- Logotipo tipográfico -->
         <div class="hidden sm:block leading-none">
           <span class="font-poppins font-bold text-base text-slate-800 tracking-tight">
-            STIRE <span class="text-stire-blue">Soft</span>
+            STIRE
           </span>
           <p class="text-[10px] text-slate-500 font-interfaz tracking-wide leading-tight mt-0.5">
             {{ subtitulo }}

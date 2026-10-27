@@ -1,6 +1,6 @@
 <template>
   <div class="p-8 text-center">
-    <p class="text-sm text-base-texto-secundario">Redirigiendo a STIRE-Soft...</p>
+    <p class="text-sm text-base-texto-secundario">Redirigiendo a STIRE…</p>
   </div>
 </template>
 

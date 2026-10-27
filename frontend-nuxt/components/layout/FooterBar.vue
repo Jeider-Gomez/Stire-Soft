@@ -6,7 +6,7 @@
         <span>Servicios conectados</span>
       </span>
       <span>•</span>
-      <span>STIRE-Soft</span>
+      <span>STIRE</span>
     </div>
 
     <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5">

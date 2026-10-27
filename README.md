@@ -1,6 +1,6 @@
 <div align="center">
 
-# STIRE-Soft
+# STIRE
 
 **Sistema Tutor Inteligente con Repetición Espaciada para aprender Algoritmia**
 

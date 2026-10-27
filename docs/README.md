@@ -1,4 +1,4 @@
-# Documentación de STIRE-Soft
+# Documentación de STIRE
 
 Todo lo que explica el proyecto, ordenado por propósito. Si llegas por primera vez, empieza por la
 tabla de abajo.

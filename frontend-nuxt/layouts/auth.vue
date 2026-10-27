@@ -2,14 +2,11 @@
   <div class="relative min-h-screen flex flex-col justify-between overflow-x-hidden text-slate-800 selection:bg-stire-teal/30 selection:text-stire-blue">
     <LayoutFondoTecnologico />
 
-    <!-- Encabezado: marca «ST» con degradado y el nombre de la institución (prototipo de José) -->
+    <!-- Encabezado: logo de STIRE y el nombre de la institución (prototipo de José) -->
     <header class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-8 pt-4 pb-2 sm:pt-6 sm:pb-3 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <LayoutMarcaST />
-        <div class="flex items-baseline gap-1 font-poppins">
-          <span class="text-xl font-bold tracking-tight text-stire-blue">STIRE</span>
-          <span class="text-xl font-light text-slate-700">Soft</span>
-        </div>
+        <span class="text-xl font-bold tracking-tight text-stire-blue font-poppins">STIRE</span>
       </div>
       <div class="text-xs text-slate-600 font-medium text-center sm:text-right">
         <span class="text-slate-800 font-semibold">Universidad de Córdoba</span>
@@ -26,7 +23,7 @@
     <footer class="relative z-10 w-full max-w-6xl mx-auto px-4 py-5 border-t border-slate-200/90 text-center text-xs text-slate-500">
       <NuxtLink to="/ayuda" class="font-semibold text-stire-blue hover:underline">Manual de usuario</NuxtLink>
       <span class="mx-2" aria-hidden="true">·</span>
-      © 2026 STIRE-Soft. Todos los derechos reservados. Cumple estándar WCAG 2.1 AA.
+      © 2026 STIRE. Todos los derechos reservados. Cumple estándar WCAG 2.1 AA.
     </footer>
   </div>
 </template>

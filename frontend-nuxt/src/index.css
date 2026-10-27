@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Paleta Oficial STIRE Soft */
+  /* Paleta Oficial STIRE */
   --color-stire-blue: #0B3D91;        /* Azul Tecnológico (Primario / Institucional) */
   --color-stire-blue-dark: #082A66;   /* Azul Hover / Enfoque */
   --color-stire-purple: #7B2FBF;      /* Morado Innovación (Tutor IA / Rol Docente) */
