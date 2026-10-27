@@ -6,23 +6,27 @@
   <svg
     ref="raiz"
     class="mascota-tutor"
-    :class="{ respira: vivo && !quieta, 'respira-lento': expresion === 'durmiendo' }"
+    shape-rendering="geometricPrecision"
     :viewBox="forma === 'completa' ? '22 36 156 130' : '24 38 152 104'"
     :height="tamano"
     :width="Math.round(tamano * (forma === 'completa' ? 156 / 130 : 152 / 104))"
     role="img"
     :aria-label="etiqueta ?? `Tutor: ${SIGNIFICADO[expresion]}`"
   >
+    <!-- Todo el movimiento va DENTRO del dibujo: si se mueve la etiqueta <svg> entera, el navegador la convierte en una
+         imagen y al desplazarla medio píxel se ve borrosa o pixelada (26/10). -->
+    <g class="respiro" :class="{ respira: vivo && !quieta, 'respira-lento': expresion === 'durmiendo' }">
     <g :key="gestoClave" class="cuerpo" :class="gesto && !quieta ? `gesto-${gesto}` : ''">
       <rect x="26" y="40" width="148" height="100" rx="18" class="m-marco" />
       <rect x="38" y="52" width="124" height="76" rx="10" class="m-pantalla" />
-      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <g v-if="!pequena" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path d="M46 70 L30 62" class="m-patilla" stroke-width="6.5" /><path d="M158 70 L174 62" class="m-patilla" stroke-width="6.5" />
         <path d="M46 70 L30 62" class="m-gafas" stroke-width="3.8" /><path d="M158 70 L174 62" class="m-gafas" stroke-width="3.8" />
         <path d="M95 73 Q100 66 105 73" class="m-gafas" stroke-width="6" />
       </g>
-      <rect x="43" y="58" width="52" height="44" rx="16" class="m-lente" stroke-width="7.5" />
-      <rect x="105" y="58" width="52" height="44" rx="16" class="m-lente" stroke-width="7.5" />
+      <path v-if="pequena" d="M95 75 H105" class="m-gafas" stroke-width="9" />
+      <rect x="43" y="58" width="52" height="44" rx="16" class="m-lente" :stroke-width="pequena ? 10 : 7.5" />
+      <rect x="105" y="58" width="52" height="44" rx="16" class="m-lente" :stroke-width="pequena ? 10 : 7.5" />
       <g class="ojos" :class="{ parpadea, mirando: expresion === 'pensando' && !quieta }" :style="{ transform: `translate(${mirada.x}px, ${mirada.y}px)` }">
         <template v-if="OJOS[expresion] === null">
           <!-- pensando: arriba y a la derecha; ánimo: redondos y al centro, mirando de frente -->
@@ -30,11 +34,12 @@
             class="ojo m-ojo-relleno" :class="{ guina: guina && i === 0 }" :cx="c[0]" :cy="c[1]" :r="expresion === 'pensando' ? 6 : 7.5" />
         </template>
         <path v-for="(d, i) in OJOS[expresion] ?? []" v-else :key="d" :d="d" class="ojo m-ojo" :class="{ guina: guina && i === 0 }"
-          fill="none" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" />
+          fill="none" :stroke-width="pequena ? 11 : 8.5" stroke-linecap="round" stroke-linejoin="round" />
       </g>
-      <path class="boca m-boca" :class="{ habla: expresion === 'hablando' && !quieta }" :d="BOCA[expresion]" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+      <path class="boca m-boca" :class="{ habla: expresion === 'hablando' && !quieta }" :d="BOCA[expresion]" fill="none" :stroke-width="pequena ? 9 : 6" stroke-linecap="round" stroke-linejoin="round" />
       <!-- La base con el hueco del mouse recortado: deja ver el fondo, sea cual sea. -->
       <path v-if="forma === 'completa'" d="M36 150 H126.5 V151 a4.5 4.5 0 0 0 4.5 4.5 H147 a4.5 4.5 0 0 0 4.5 -4.5 V150 H164 a6 6 0 0 1 0 12 H36 a6 6 0 0 1 0 -12 Z" class="m-marco" />
+    </g>
     </g>
     <!-- Chispas al acertar: tres destellos que salen de la pantalla y se apagan. -->
     <g v-if="expresion === 'acierto' && !quieta" class="chispas" aria-hidden="true">
@@ -74,6 +79,8 @@ const quieta = ref(false)
 /** Cambia con cada cara para que su gesto se repita aunque la misma cara vuelva. */
 const gestoClave = ref(0)
 const gesto = computed(() => GESTO[props.expresion])
+/** Por debajo de 32 px se dibuja sin patillas y con trazos más gruesos: los finos se ven como píxeles sueltos. */
+const pequena = computed(() => props.tamano < 32)
 const temporizadores = new Set<ReturnType<typeof setTimeout>>()
 let reloj: ReturnType<typeof setTimeout> | undefined
 let cuadro = 0
@@ -175,16 +182,17 @@ onBeforeUnmount(() => {
 /* Pensando: los ojos van de un lado a otro, arriba, como quien busca la idea. */
 .ojos.mirando { animation: buscar 2.6s ease-in-out infinite alternate; }
 @keyframes buscar { from { transform: translate(-4px, -1px); } to { transform: translate(2px, -2px); } }
+.respiro { transform-box: fill-box; transform-origin: 50% 100%; }
 .respira { animation: respirar 3.6s ease-in-out infinite; }
 .respira.respira-lento { animation-duration: 6s; }
-@keyframes respirar { 50% { transform: translateY(-1.5px); } }
+@keyframes respirar { 50% { transform: translateY(-2px); } }
 .boca { transform-box: fill-box; transform-origin: center; }
 .boca.habla { animation: hablar 0.32s ease-in-out infinite alternate; }
 @keyframes hablar { to { transform: scaleY(0.45); } }
 /* Gestos del cuerpo: uno por cara y una sola vez (pensar y atender se quedan ladeados mientras duran). */
 .cuerpo { transform-box: fill-box; transform-origin: 50% 100%; }
 .gesto-salta { animation: saltar 0.6s cubic-bezier(0.3, 1.6, 0.5, 1); }
-@keyframes saltar { 0% { transform: translateY(0) scale(1, 1); } 25% { transform: translateY(1px) scale(1.04, 0.94); } 55% { transform: translateY(-9px) scale(0.97, 1.04); } 100% { transform: translateY(0) scale(1, 1); } }
+@keyframes saltar { 0% { transform: translateY(0) scale(1, 1); } 25% { transform: translateY(1px) scale(1.04, 0.94); } 55% { transform: translateY(-6px) scale(0.98, 1.03); } 100% { transform: translateY(0) scale(1, 1); } }
 .gesto-niega { animation: negar 0.5s ease-in-out; }
 @keyframes negar { 20% { transform: translateX(-3px) rotate(-2deg); } 50% { transform: translateX(3px) rotate(2deg); } 80% { transform: translateX(-2px) rotate(-1deg); } }
 .gesto-asiente { animation: asentir 0.9s ease-in-out; }

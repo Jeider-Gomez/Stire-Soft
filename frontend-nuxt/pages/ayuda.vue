@@ -9,9 +9,8 @@
     <header class="portada relative overflow-hidden bg-gradient-to-br from-stire-blue via-stire-blue to-stire-purple text-white">
       <div class="max-w-5xl mx-auto px-4 sm:px-8 py-10 sm:py-14 space-y-6">
         <div class="flex items-center gap-3">
-          <LayoutMarcaST />
+          <LayoutLogo con-nombre claro />
           <div class="font-poppins leading-tight">
-            <p class="text-lg font-bold">STIRE</p>
             <p class="text-xs text-white/80">Universidad de Córdoba · Licenciatura en Informática</p>
           </div>
         </div>

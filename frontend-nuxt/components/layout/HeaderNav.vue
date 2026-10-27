@@ -20,15 +20,11 @@
         :to="homeRoute"
         class="flex items-center gap-2.5 group flex-shrink-0 min-h-[44px]"
       >
-        <!-- Logo: la pantalla con gafas (components/layout/MarcaST.vue) -->
-        <LayoutMarcaST class="group-hover:scale-105 transition-transform duration-200" />
-
-        <!-- Logotipo tipográfico -->
+        <!-- Logo fijo con el nombre «stire_» (components/layout/Logo.vue). En el celular, solo la pantalla con gafas. -->
+        <LayoutLogo class="sm:hidden" />
         <div class="hidden sm:block leading-none">
-          <span class="font-poppins font-bold text-base text-slate-800 tracking-tight">
-            STIRE
-          </span>
-          <p class="text-[10px] text-slate-500 font-interfaz tracking-wide leading-tight mt-0.5">
+          <LayoutLogo con-nombre />
+          <p class="text-[10px] text-slate-500 font-interfaz tracking-wide leading-tight mt-1 pl-9">
             {{ subtitulo }}
           </p>
         </div>

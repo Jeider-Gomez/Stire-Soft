@@ -5,8 +5,7 @@
     <!-- Encabezado: logo de STIRE y el nombre de la institución (prototipo de José) -->
     <header class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-8 pt-4 pb-2 sm:pt-6 sm:pb-3 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <LayoutMarcaST />
-        <span class="text-xl font-bold tracking-tight text-stire-blue font-poppins">STIRE</span>
+        <LayoutLogo con-nombre />
       </div>
       <div class="text-xs text-slate-600 font-medium text-center sm:text-right">
         <span class="text-slate-800 font-semibold">Universidad de Córdoba</span>

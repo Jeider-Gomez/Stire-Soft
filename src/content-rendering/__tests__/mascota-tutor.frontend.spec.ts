@@ -103,12 +103,27 @@ describe('reacciona al resultado del ejercicio', () => {
 });
 
 describe('el logo es el mismo personaje y el nombre es STIRE', () => {
-  it('el distintivo «ST» pasó a ser la pantalla con gafas, que cierra los ojos mientras se escribe la contraseña', () => {
-    const marca = leer('components', 'layout', 'MarcaST.vue');
-    expect(marca).toContain('<TutorMascota');
-    expect(marca).toContain(":expresion=\"escudo ? 'durmiendo' : 'normal'\"");
-    expect(marca).toContain('etiqueta="STIRE"');
-    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutMarcaST');
+  it('el logo es una marca fija: no parpadea, no respira ni sigue el puntero (la vida es del Tutor)', () => {
+    const logo = leer('components', 'layout', 'Logo.vue');
+    expect(logo).not.toMatch(/animation|setTimeout|pointermove|<TutorMascota/);
+    expect(logo).toContain('shape-rendering="geometricPrecision"');
+    // con el nombre «stire_» del logo aprobado, en el encabezado, el acceso y la ayuda
+    expect(logo).toContain('st<span class="i">ı</span>re<span class="cursor" />');
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutLogo con-nombre />');
+    expect(leer('layouts', 'auth.vue')).toContain('<LayoutLogo con-nombre />');
+    expect(leer('pages', 'ayuda.vue')).toContain('<LayoutLogo con-nombre claro />');
+    expect(leer('components', 'layout', 'MarcaST.vue')).toContain('<LayoutLogo :tamano="tamano" />');
+    // sin agrandarse al pasar el puntero
+    expect(leer('components', 'layout', 'HeaderNav.vue')).not.toContain('group-hover:scale-105');
+  });
+  it('la mascota no se ve pixelada: el movimiento va dentro del dibujo y en pequeño los trazos son gruesos', () => {
+    const vue = leer('components', 'tutor', 'Mascota.vue');
+    // la etiqueta <svg> no lleva la clase que respira: la lleva el grupo de adentro
+    expect(vue).toMatch(/<svg[^>]*class="mascota-tutor"[^>]*shape-rendering="geometricPrecision"/);
+    expect(vue).not.toMatch(/<svg[^>]*respira/);
+    expect(vue).toContain('<g class="respiro" :class="{ respira: vivo && !quieta');
+    expect(vue).toContain('const pequena = computed(() => props.tamano < 32)');
+    expect(vue).toContain('<g v-if="!pequena" fill="none"');
   });
   it('la pestaña usa el favicon nuevo y ningún texto visible dice «STIRE-Soft»', () => {
     const config = leer('nuxt.config.ts');
