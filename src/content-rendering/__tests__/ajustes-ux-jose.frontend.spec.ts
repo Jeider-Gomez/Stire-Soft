@@ -153,8 +153,10 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
     const fila = menu.indexOf('class="cabecera-menu');
     expect(fila).toBeGreaterThan(-1);
     expect(fila).toBeLessThan(menu.indexOf('<nav'));
-    expect(menu.indexOf('<LayoutLogo con-nombre />')).toBeGreaterThan(fila);
-    expect(menu.indexOf('id="boton-menu"')).toBeGreaterThan(menu.indexOf('<LayoutLogo con-nombre />'));
+    // logo pequeño; plegada la barra, queda la pantalla con gafas sin el nombre
+    const logo = menu.indexOf('<LayoutLogo tamano="mini" :con-nombre="!colapsado" />');
+    expect(logo).toBeGreaterThan(fila);
+    expect(menu.indexOf('id="boton-menu"')).toBeGreaterThan(logo);
     // un ícono de 36 px, sin borde ni fondo fijo (P-UI-03); el nombre, para el lector de pantalla
     expect(menu).toMatch(/id="boton-menu"[\s\S]*?class="boton-menu hidden md:inline-flex w-9 h-9/);
     expect(menu).toContain(`<span class="sr-only">{{ colapsado ? 'Mostrar el menú' : 'Ocultar el menú' }}</span>`);

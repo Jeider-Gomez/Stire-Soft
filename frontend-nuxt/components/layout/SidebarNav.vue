@@ -4,8 +4,9 @@
          plegar el menú (como Platzi, 26/10). Plegado, queda solo el botón. En el celular el menú es un cajón y el botón
          no hace falta. -->
     <div class="cabecera-menu h-16 -mt-4 -mx-4 px-4 mb-3 flex items-center justify-between gap-2 border-b border-base-borde-sutil">
-      <NuxtLink :to="inicio" class="ocultar-colapsado flex items-center min-h-[44px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stire-blue/40" aria-label="Ir al inicio">
-        <LayoutLogo con-nombre />
+      <!-- Logo pequeño y fijo; plegada la barra, queda solo la pantalla con gafas (Jeider, 26/10: «que su logo quede ahí»). -->
+      <NuxtLink :to="inicio" class="logo-menu flex items-center min-h-[44px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stire-blue/40" aria-label="Ir al inicio">
+        <LayoutLogo tamano="mini" :con-nombre="!colapsado" />
       </NuxtLink>
       <button
         id="boton-menu"
@@ -236,6 +237,11 @@ function isCurrentRoute(path: string) {
     display: none;
   }
   .menu-colapsado .cabecera-menu {
+    flex-direction: column;
+    height: auto;
+    gap: 0.25rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.5rem;
     justify-content: center;
     margin-left: -0.5rem;
     margin-right: -0.5rem;
