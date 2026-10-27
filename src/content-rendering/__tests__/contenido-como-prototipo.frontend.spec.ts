@@ -198,3 +198,10 @@ describe('«Ver como estudiante» y el árbol en el celular', () => {
     expect(p).toContain('watch(() => route.fullPath, () => { arbolMovil.value = false })');
   });
 });
+
+describe('el manual cuenta el panel nuevo (PD-13)', () => {
+  const m = leer('utils', 'manual.ts');
+  it('crear desde el árbol, reordenar, «Ver como estudiante», «A borrador» y «Corregir» un aviso', () => {
+    for (const t of ['«+ Módulo», «+ Tema» o «+ Lección»', 'arrastra en el árbol', '«Ver como estudiante»', '«A borrador»', 'toca «Corregir» en el aviso']) expect(m).toContain(t);
+  });
+});
