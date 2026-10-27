@@ -159,20 +159,18 @@ construida sobre una interfaz desordenada se prueba mal con usuarios.
 
 ## 4. Reparto de la Fase 1 (para Trello)
 
-| Persona | Tareas |
-|---|---|
-Los cinco hacen la **evaluación heurística de línea base** hasta el martes 3/11
-(`docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`): todos recorren el panel del docente y el del estudiante, y cada uno
-responde por dos heurísticas.
+Los cinco hacen la **evaluación heurística con el instrumento del curso** (Empower-peque-chef adaptado a STIRE) hasta el
+jueves 5/11, cuando esté desplegada la versión con las mejoras del bloque A
+(`docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`). Todos hacen las mismas tareas y cada uno califica sus ítems.
 
-| Persona | Heurísticas | Además |
+| Persona | Ítems del instrumento | Además |
 |---|---|---|
-| **Jeider** | H1 estado del sistema, H6 reconocer antes que recordar | Sus 4 ejercicios de programar como novato (P04); la fecha del profesor Ali (P19) |
-| **Pedro** | H2 lenguaje del usuario, H10 ayuda | Sus 4 ejercicios de programar |
-| **Julio** | H3 control y libertad, H7 eficiencia | Sus 4 ejercicios de programar |
-| **José** | H4 consistencia, H8 diseño minimalista | Los cambios de identidad y el aspecto del panel del docente, en general |
-| **Jorge** | H5 prevención de errores, H9 recuperarse de errores | QA libre: un poco de cada cosa, como decida |
-| **Claude** | | P02 (auditoría de consola y red), P03 (axe), P31 (investigación de bloques), P24 |
+| **Jeider** | 1–3 y 15–19 | Sus 4 ejercicios de programar como novato (P04); la sesión del panel del docente y los ejercicios de programar con Claude (P34) |
+| **Pedro** | 4–6 y 30–32 | Sus 4 ejercicios de programar |
+| **Julio** | 7–9 y 20–23 | Sus 4 ejercicios de programar |
+| **José** | 10–12 y 24–26 | Los cambios de identidad y el aspecto del panel del docente, en general |
+| **Jorge** | 13–14, 27–29 y 33–34 | QA libre: un poco de cada cosa, como decida |
+| **Claude** | | Volver a calificar la v2.4.0 y el bloque A de `docs/calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`; P02 (auditoría de consola y red), P03 (axe), P31 (investigación de bloques), P24 |
 
 ## 5. Lo que critico de STIRE (y que tú no me has pedido)
 

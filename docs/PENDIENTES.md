@@ -28,7 +28,8 @@ aquí (queda en `CHANGELOG.md` y en los commits) y su número no se reutiliza. E
 | P10 | Asistente del docente con la cara de STIRE, el mismo lenguaje del Tutor y un lugar claro en el Inicio | 2–3 |
 | P11 | Docente: quitar las ventanas viejas que quedan (`UnitLessonsModal`) y llevar «Nuevo ejercicio» al panel de contenidos | 3 |
 | P12 | Administrador: desactivar y reactivar a la vista, borrado definitivo, «Eliminar mi cuenta», «Borrar usuarios de prueba» (marca `esPrueba`) | 3 |
-| P13 | **Evaluación heurística humana** de los 5 integrantes. La línea base (antes de rediseñar) va hasta el 3/11: `docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`. La segunda, después de la remodelación, abre la v3.0.0 | 1 y 4 |
+| P13 | **Evaluación heurística humana** con el instrumento del curso (Empower-peque-chef adaptado), repartida entre los 5: `docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`, hasta el jueves 5/11. Antes, Claude lleva a 5 lo que se pueda y lo registra en `docs/calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`. La segunda, después de la remodelación, abre la v3.0.0 | 1 y 4 |
+| P34 | **Sesión con Jeider:** recorrer juntos el panel del docente y cómo se crean los ejercicios de programar (constructor y Asistente) para decidir qué se queda en el rediseño | 1 |
 
 ## C. Ejercicios y personalización (lo que pidieron los profesores)
 
@@ -42,6 +43,7 @@ aquí (queda en `CHANGELOG.md` y en los commits) y su número no se reutiliza. E
 | P18 | Comparar la repetición espaciada de STIRE con la del otro software del profesor | 5 |
 | P19 | Clase del profesor Ali (Fundamentos): confirmar la fecha en que quiere probar STIRE. Enseñar frameworks (TypeScript en el juez, NestJS) queda como **futuro posible**, no pendiente | 1 (preguntar) |
 | P20 | Dos artículos (revista del proyecto y uno de implementación y evaluación) | 5 |
+| P33 | **Bajar la edad a grados 10 y 11** (15–17 años; decisión del 27/10). Antes de que un menor lo use: la Fase A (autorización del acudiente, asentimiento, cuenta en espera) y la Fase B (el Tutor de un menor nunca usa la API de Gemini) de `docs/PLAN_MENORES_Y_TRANSVERSALIDAD.md` | 3–5 |
 
 ## D. Servidor
 

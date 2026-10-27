@@ -1,0 +1,65 @@
+# Plan para llevar cada ítem de la evaluación heurística a 5
+
+**Para qué:** que cada uno de los 34 ítems del instrumento del curso (Empower-peque-chef adaptado a STIRE) llegue a
+«5, totalmente de acuerdo» antes de la evaluación humana, que es más dura que la de la IA. Este documento es el
+**registro de avance**: cada mejora se anota abajo con su commit y su prueba.
+
+**El equipo no lee este documento hasta entregar su evaluación** (`EVALUACION_HEURISTICA_HUMANA_S11.md`, regla 1).
+
+**Punto de partida:** la última calificación de la IA, del 22/10 sobre la v2.1.0
+(`docs/investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md`): Likert 4,21/5, severidad total 23. Desde el 27/10 el
+público incluye **grados 10 y 11** (P33), y eso baja los ítems 4, 15, 33 y 34 hasta que exista lo de menores de edad.
+Las notas de esta tabla son de esa fecha: la primera tarea es **volver a calificar la v2.4.0** (incluido el rediseño del
+docente) y corregir la columna.
+
+## Qué falta en cada ítem
+
+Bloques: **A** = correcciones de esta semana, antes de la evaluación humana · **R** = en la remodelación (Fase 2–3) ·
+**M** = menores de edad (P33) · **P** = se demuestra solo con personas reales (P17).
+
+| N.º | Ítem | IA 22/10 | Qué falta para 5 | Bloque |
+|---|---|---|---|---|
+| 1 | Retroalimentación del estado | 5 | Mantener | |
+| 2 | Respuesta en menos de 5 s | 4 | El Tutor (Gemini gratuito) puede pasar de 5 s: mostrar que está pensando y la respuesta a medida que llega | A |
+| 3 | Errores sencillos con sugerencia | 4 | Revisar todos los mensajes del juez y del servidor con la meta de lectura de grado 10 | A |
+| 4 | Lenguaje cotidiano | 5 (adultos) | Con grados 10–11: glosario en línea en todas las palabras técnicas, no solo en tres | A y M |
+| 5 | Íconos comprensibles | 4 | Ningún botón solo con ícono; descripción al pasar el ratón; la mascota con un gesto por intención | A |
+| 6 | Organización anticipable | 4 | Ordenar la lección y «Mi progreso» (P08, P09) | R |
+| 7 | Sin instrucciones, ≤ 2 clics | 4 | «Continuar donde quedé» en el Inicio: un clic al ejercicio siguiente | A |
+| 8 | Deshacer, detener, cancelar | 4 | «Deshacer» unos segundos después de borrar, en vez de solo confirmar; la entrega sigue sin deshacerse a propósito y debe decirlo antes | A |
+| 9 | Lo básico en < 15 min | 4 | Medirlo con estudiantes reales | P |
+| 10 | Consistencia visual | 4 | Colores fijos fuera de los tokens | R |
+| 11 | Convenciones web y móvil | 4 | Revisar ventanas que no cierran con Escape o no devuelven el foco | A |
+| 12 | Navegación predecible | 4 | Las pestañas de la clase del docente cambian el menú | R |
+| 13 | Validación y confirmación | 4 | Validación en vivo en todos los formularios; aviso de salir sin guardar en todos los editores | A |
+| 14 | Errores que orientan | 5 | Mantener | |
+| 15 | Tarea con ≤ 2 ayudas | 4 (adultos) | Con menores: la clave de Gemini por estudiante no sirve (Google lo prohíbe). Tutor sin clave propia o con otro proveedor | M |
+| 16 | Entender los conceptos | 4 | Escalera en cada lección (P14) y bloques antes del código (P31) | R |
+| 17 | Invita a explorar | 3 | Retos opcionales, sugerencias según el avance, «¿Sabías qué?» | R |
+| 18 | Imágenes, video, animación | 3 | Ejecución paso a paso del algoritmo en la lección; cursos con imágenes y videos cortos | R |
+| 19 | Mantiene la atención | 4 | El Tutor felicita al ganar un logro (P07), con interruptor | R |
+| 20 | Carga < 5 s, respuesta < 3 s | 4 | Medir con un salón completo (prueba de carga) y con la conexión de un celular | A y P |
+| 21 | Atajos | 4 | «Continuar donde quedé» en todas partes | A |
+| 22 | Configuración | 5 | Mantener; sumar los interruptores de avisos (P07) | R |
+| 23 | Información contextual | 5 | Mantener | |
+| 24 | Diseño limpio | 4 | Botones flotantes y «Hoy» del docente denso | R |
+| 25 | Lo esencial destacado | 4 | Panel del docente denso | R |
+| 26 | Metáforas reconocibles | 4 | Revisar el juego de íconos completo | R |
+| 27 | Errores visualmente claros | 4 | Ícono de advertencia en todos los mensajes de error, no solo en formularios | A |
+| 28 | Errores sin jerga | 5 | Mantener | |
+| 29 | Soluciones en el mensaje | 4 | Botón de acción en cada error («Reintentar», «Pedir ayuda al Tutor», «Ir a…») | A |
+| 30 | Ayuda contextual | 5 | Mantener | |
+| 31 | Sección de ayuda | 5 | Actualizar el manual con los nombres nuevos del docente | A |
+| 32 | Canales de soporte | 5 | Mantener | |
+| 33 | Privacidad de menores | 4 (adultos) · 2 con menores | Fase A de `docs/PLAN_MENORES_Y_TRANSVERSALIDAD.md`: autorización del acudiente, asentimiento, cuenta en espera | M |
+| 34 | Datos protegidos y anonimizados | 4 | Plazo de borrado; con menores, nada para investigación sin autorización | M |
+
+**Lo que no se puede prometer:** los ítems 9 y 20 solo llegan a 5 con una prueba con personas; los del bloque M dependen
+de la Fase A y B del plan de menores, que es trabajo de semanas; y los del bloque R se hacen en la remodelación. El
+bloque A es lo que cabe antes de la evaluación humana.
+
+## Registro de avance
+
+| Fecha | Ítems | Qué se hizo | Commit | Prueba |
+|---|---|---|---|---|
+| | | | | |

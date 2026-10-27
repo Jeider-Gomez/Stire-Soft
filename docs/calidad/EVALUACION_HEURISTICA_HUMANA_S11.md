@@ -1,108 +1,68 @@
-# Evaluación heurística humana — línea base antes de la remodelación (Semana 11)
+# Evaluación heurística humana de STIRE (Semana 11)
 
-**Objetivo:** encontrar los problemas de uso de STIRE **tal como está hoy** (v2.4.0), sobre todo en el panel del
-docente, para que el rediseño de la Fase 2 (`docs/PLAN_REMODELACION.md`) los resuelva. Después de la remodelación se
-repite con las mismas reglas, y esa segunda evaluación abre la v3.0.0.
+**Objetivo:** que los 5 integrantes califiquen STIRE con el **instrumento de evaluación heurística del curso** (el de
+Empower-peque-chef, adaptado a STIRE), repartido entre todos, para saber qué tan cerca está cada ítem de 5 y qué falta.
+Después de la remodelación se repite igual, y esa segunda evaluación abre la v3.0.0.
 
-**Resultado esperado:** cada uno entrega su tabla llena (abajo) con **al menos 8 problemas**, cada uno con la
-heurística, la pantalla, la severidad y una captura. **Plazo: martes 3 de noviembre, 8:00 p. m.**
+**Resultado esperado:** cada uno entrega **su copia del Excel** con sus filas llenas (Likert, frecuencia, impacto y
+observaciones con una captura cuando haya un problema), más las filas 35 a 39, que responden todos.
 
-**Quiénes:** los 5 integrantes. Cada uno es responsable de **dos heurísticas** y las busca en todas las pantallas;
-si ve un problema de otra heurística, también lo anota.
+**Cuándo:** empieza cuando Jeider avise en el grupo que está desplegada la versión con las mejoras de esta semana
+(meta: viernes 30/10). **Plazo: jueves 5 de noviembre, 8:00 p. m.**
+
+## El instrumento
+
+- **Excel:** `Evaluación Heurística - STIRE (equipo S11).xlsx`, en la carpeta compartida de OneDrive
+  (`Practica unicor/Evaluacion heuristica STIRE/`). No se sube al repositorio porque el instrumento es de otro grupo.
+- **Cada uno hace una copia** con su nombre (por ejemplo `... - JOSE.xlsx`) y llena **solo las filas con su nombre** en
+  la columna «Responsable». Las filas 35 a 39 (evaluación general y preguntas abiertas) las responden todos.
+- **Escalas:** Likert de 1 a 5; si hay un problema, frecuencia (0 a 2) e impacto (0 a 3). La severidad (frecuencia ×
+  impacto) la calcula el Excel. Si pones 5, frecuencia e impacto van en 0.
 
 ## Reglas
 
-1. **Evalúa solo.** Llena tu sección antes de leer las de los demás. Lo valioso es lo que ve cada uno.
-2. **Como usuario**, por lo que ves y haces; no por el código ni por lo que diga otra persona. Si dudas, compara con
-   Moodle, Google Classroom, Canvas o Khan Academy.
-3. En **https://stire-soft.vercel.app**, con tu cuenta de docente de la prueba (o `laura.martinez.docente@example.com`)
-   y tu cuenta de estudiante.
-4. En el computador y, si puedes, una pasada en el celular.
-5. Capturas en `docs/calidad/evidencias/he-s11/` con tu código en el nombre (por ejemplo `HE-JOSE-03.png`).
+1. **Evalúa solo.** No leas las copias de los demás ni las evaluaciones anteriores de STIRE
+   (`docs/investigacion/EVALUACION_HEURISTICA_STIRE_*.md`, `docs/calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`) hasta
+   entregar. Lo valioso es lo que ves tú.
+2. **Como usuario**, por lo que ves y haces; no por el código. Si dudas, compara con Moodle, Google Classroom, Canvas o
+   Khan Academy.
+3. **Ponte en el lugar de** un estudiante de **grado 10 u 11, o de primer semestre, que no sabe programar**. En las
+   tareas del docente, un docente que no conoce STIRE.
+4. **Sé exigente.** Un 5 es «totalmente de acuerdo, no le encuentro ningún problema». Ante la duda, la nota más baja,
+   y en «Observaciones» por qué.
+5. En **https://stire-soft.vercel.app**, con tu cuenta de docente de la prueba (o `laura.martinez.docente@example.com`)
+   y tu cuenta de estudiante. En el computador y una pasada en el celular.
+6. Capturas en `docs/calidad/evidencias/he-s11/`, con tu nombre y el número del ítem (por ejemplo `HE-JOSE-24.png`).
+7. Como dice el instrumento, en **dos sesiones** de unos 30 minutos.
 
-## Las tareas (las hacen todos)
+## Las tareas (las hacen todos, antes de calificar)
 
-**Panel del docente (unos 30 minutos):**
-1. Entra al Inicio y lee «Por revisar». Abre una clase.
-2. Cambia de clase con el selector de la barra lateral.
-3. En Contenido del curso: crea un tema y una lección, escribe una explicación corta, reordena la lección, muévela a
-   otro tema y mírala con «Ver como estudiante».
-4. Crea un ejercicio de opción múltiple y uno de programar.
-5. Abre el Asistente y pide ejercicios para tu lección (si no tienes clave de Google AI Studio, evalúa lo que te dice).
-6. Publica un aviso a la clase y corrígelo.
-7. Abre la asistencia, déjala activa y sigue trabajando en otra pantalla.
-8. Abre la ficha de un estudiante y mira su avance.
+**Como estudiante (unos 20 minutos):** únete a una clase, mira el Inicio, haz una lección completa, resuelve un
+ejercicio de programar (falla una vez a propósito), pregúntale algo al Tutor, mira Mi progreso y Logros, y cambia algo en
+Apariencia.
 
-**Panel del estudiante (unos 15 minutos):** Inicio, una lección completa, un ejercicio (falla una vez a propósito),
-pregúntale algo al Tutor, Mi progreso y Logros.
+**Como docente (unos 20 minutos):**
+1. Lee «Por revisar» en el Inicio y abre una clase.
+2. En Contenido del curso: crea un tema y una lección, escribe una explicación corta, muévela y mírala con «Ver como
+   estudiante».
+3. Crea un ejercicio de opción múltiple y uno de programar; pídele ejercicios al Asistente (sin clave, evalúa lo que te
+   dice).
+4. Publica un aviso a la clase, deja la asistencia activa y sigue trabajando en otra pantalla.
 
-## Las 10 heurísticas y quién responde por cada una
+## Quién califica qué
 
-| # | Heurística | Qué buscar en STIRE | Responsable |
-|---|---|---|---|
-| H1 | **Visibilidad del estado del sistema** | ¿Sé siempre dónde estoy, qué se guardó, qué está cargando, qué quedó publicado u oculto? | Jeider |
-| H2 | **Coincidencia con el mundo real** | ¿Las palabras son las de un docente o un estudiante (lección, tema, nota), no las del programador? | Pedro |
-| H3 | **Control y libertad** | ¿Puedo deshacer, cancelar, volver atrás o salir sin perder lo que hice? | Julio |
-| H4 | **Consistencia y estándares** | ¿Lo mismo se llama, se ve y se comporta igual en todas partes? ¿Funciona como en otras plataformas? | José |
-| H5 | **Prevención de errores** | ¿STIRE evita que me equivoque (borrar sin querer, publicar algo vacío, salir sin guardar)? | Jorge |
-| H6 | **Reconocer antes que recordar** | ¿Veo las opciones a la mano, o tengo que acordarme de dónde estaba algo? | Jeider |
-| H7 | **Flexibilidad y eficiencia** | ¿Lo frecuente se hace rápido? ¿Hay atajos para quien ya sabe, sin estorbar a quien empieza? | Julio |
-| H8 | **Estética y diseño minimalista** | ¿Cada pantalla muestra solo lo necesario? ¿Algo satura, se repite o distrae (logo, mascota, avisos)? | José |
-| H9 | **Reconocer y recuperarse de errores** | Cuando algo sale mal, ¿el mensaje dice qué pasó y cómo arreglarlo, en palabras simples? | Jorge |
-| H10 | **Ayuda y documentación** | ¿Encuentro ayuda cuando la necesito (manual, «?», recorridos) y me sirve para la tarea? | Pedro |
-
-**Además de sus dos heurísticas:**
-- **José** evalúa en general los cambios de identidad (el logo, la mascota, la letra, el pie, el lanzador del Tutor) y
-  el aspecto del panel del docente: ¿se ve como una sola aplicación? ¿qué cambiarías?
-- **Jorge** tiene libertad: además de H5 y H9, prueba un poco de cada cosa desde QA (casos raros, doble clic, recargar
-  a mitad de algo, celular, teclado) y anota lo que encuentre como mejor le parezca.
-
-## Severidad
-
-| Nivel | Significa |
-|---|---|
-| 0 | No es un problema de uso |
-| 1 | Cosmético: se arregla si sobra tiempo |
-| 2 | Menor: molesta, pero se puede seguir |
-| 3 | Mayor: cuesta mucho o confunde; hay que arreglarlo antes de la v3.0.0 |
-| 4 | Catástrofe: impide terminar la tarea; se arregla ya |
-
-## Tablas (cada uno la suya)
-
-Columnas: **ID** (`HE-NOMBRE-01`…) · **H** (H1 a H10) · **Pantalla** · **Qué pasa** (una o dos frases) · **Sev.** (0 a 4)
-· **Sugerencia** · **Captura**.
-
-### Jeider (H1, H6)
-
-| ID | H | Pantalla | Qué pasa | Sev. | Sugerencia | Captura |
-|---|---|---|---|---|---|---|
-| HE-JEIDER-01 | | | | | | |
-
-### Pedro (H2, H10)
-
-| ID | H | Pantalla | Qué pasa | Sev. | Sugerencia | Captura |
-|---|---|---|---|---|---|---|
-| HE-PEDRO-01 | | | | | | |
-
-### Julio (H3, H7)
-
-| ID | H | Pantalla | Qué pasa | Sev. | Sugerencia | Captura |
-|---|---|---|---|---|---|---|
-| HE-JULIO-01 | | | | | | |
-
-### José (H4, H8, identidad y aspecto del docente)
-
-| ID | H | Pantalla | Qué pasa | Sev. | Sugerencia | Captura |
-|---|---|---|---|---|---|---|
-| HE-JOSE-01 | | | | | | |
-
-### Jorge (H5, H9 y QA libre)
-
-| ID | H | Pantalla | Qué pasa | Sev. | Sugerencia | Captura |
-|---|---|---|---|---|---|---|
-| HE-JORGE-01 | | | | | | |
+| Persona | Ítems | Heurísticas |
+|---|---|---|
+| **Jeider** | 1–3 y 15–19 (8) | Visibilidad del estado del sistema; reconocer en lugar de recordar (aprendizaje y autonomía) |
+| **Pedro** | 4–6 y 30–32 (6) | Correspondencia con el mundo real; ayuda y documentación |
+| **Julio** | 7–9 y 20–23 (7) | Control y libertad; flexibilidad y eficiencia |
+| **José** | 10–12 y 24–26 (6) | Coherencia y estándares; diseño estético y minimalista. **Además:** un párrafo con su opinión de la identidad (logo, mascota, letra, pie, lanzador del Tutor) y del aspecto del panel del docente |
+| **Jorge** | 13–14, 27–29 y 33–34 (7) | Prevención de errores; recuperarse de errores; protección de datos. **Además:** QA libre (doble clic, recargar a mitad de algo, celular, teclado, tema oscuro), en «Observaciones» o en una hoja aparte |
+| **Todos** | 35–39 | Usabilidad general, potencial educativo y las tres preguntas abiertas |
 
 ## Después de entregar
 
-Jeider junta las cinco tablas, une los problemas repetidos y ordena por severidad. Los de severidad 4 se corrigen de
-inmediato; los de 3 y 2 entran al diseño de la Fase 2.
+Jeider junta las cinco copias en una tabla por ítem (Likert, severidad, observación) y la pega al final de este
+documento. Lo de severidad 4 o más se corrige de inmediato; lo demás entra al plan para llegar a 5
+(`docs/calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`) y al diseño de la Fase 2. Recién entonces se compara con la
+evaluación de la IA.

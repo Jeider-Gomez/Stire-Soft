@@ -139,7 +139,8 @@ del Decreto 1377 lo permite por medios técnicos.
 
 ## 2. Decisiones que propone el plan
 
-1. **Público:** primero de **noveno a undécimo** (14–17 años) y primer semestre.
+1. **Público:** primero de **noveno a undécimo** (14–17 años) y primer semestre. **Decisión del 27/10/2026:** se baja
+   a **grados 10 y 11** (15–17 años) y primer semestre; noveno y octavo quedan para después. Pendiente P33.
    - Octavo queda para después del piloto: su vocabulario y su autorregulación todavía piden más andamiaje del que hoy
      da STIRE.
    - La repetición espaciada funciona si el estudiante se autorregula: planea, cumple sus repasos y se autoevalúa con

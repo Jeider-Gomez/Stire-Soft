@@ -28,6 +28,7 @@ tabla de abajo.
 | **Identidad v2: cuatro direcciones de logo con carácter** (bloque con ojos, corchetes, S de flujo, bucle) | [`identidad-visual/propuestas/identidad-stire-v2.html`](identidad-visual/propuestas/identidad-stire-v2.html) |
 | Ver los borradores de **política de datos, términos, autorización del acudiente, asentimiento y consentimiento de investigación** | [`legal/`](legal/README.md) |
 | Ver la **evaluación heurística** de STIRE (22/10) | [`investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md`](investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-22.md) |
+| Hacer la **evaluación heurística del equipo** (Semana 11) y ver el **plan para llevar cada ítem a 5** | [`calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`](calidad/EVALUACION_HEURISTICA_HUMANA_S11.md) · [`calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`](calidad/EVALUACION_HEURISTICA_PLAN_A_5.md) |
 | Entender **cómo sube y baja el dominio** y por qué siempre se puede llegar al 100 % | [`DISENO_DOMINIO.md`](DISENO_DOMINIO.md) |
 | Diseñar **ejercicios de programar que enseñan** (referentes, lo hecho y lo propuesto para el docente) | [`DISENO_EJERCICIOS_PROGRAMAR.md`](DISENO_EJERCICIOS_PROGRAMAR.md) |
 
