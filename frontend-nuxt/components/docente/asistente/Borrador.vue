@@ -46,6 +46,33 @@
       </li>
     </ol>
 
+    <!-- Programación: el enunciado, el código de partida y los casos con la salida que calculó el juez de STIRE. -->
+    <ol v-else-if="borrador.tipo === 'programacion'" class="space-y-3 text-sm">
+      <li v-for="(e, i) in borrador.ejercicios" :key="`p${i}-${e.titulo}`" class="rounded-lg bg-base-blanco border border-base-borde-sutil p-2.5 space-y-2">
+        <div class="flex items-center gap-1">
+          <span class="w-5 text-xs font-semibold text-base-texto-secundario">{{ i + 1 }}.</span>
+          <input :value="e.titulo" :disabled="!editable" :aria-label="`Título del ejercicio ${i + 1}`" class="campo font-semibold" @change="cambiarTituloProg(i, ($event.target as HTMLInputElement).value)" />
+          <Controles v-if="editable" :i="i" :n="borrador.ejercicios.length" :que="`el ejercicio «${e.titulo}»`" @mover="(d) => moverProg(i, d)" @quitar="quitarProg(i)" />
+        </div>
+        <div class="prose prose-sm max-w-none text-base-texto-primario pl-6" v-html="formatTutorMessage(e.enunciado)" />
+        <details class="pl-6 text-xs">
+          <summary class="cursor-pointer font-semibold text-base-texto-primario">Código de partida y solución</summary>
+          <pre class="mt-1 p-2 rounded bg-base-bg-secundario overflow-x-auto font-codigo text-[11px]">{{ e.inicial }}</pre>
+          <pre class="mt-1 p-2 rounded bg-base-bg-secundario overflow-x-auto font-codigo text-[11px]">{{ e.solucion }}</pre>
+        </details>
+        <table class="ml-6 text-[11px] border-collapse">
+          <caption class="text-left text-base-texto-secundario pb-1">Casos de prueba: la salida la calculó el juez con la solución</caption>
+          <thead><tr class="text-base-texto-secundario"><th class="text-left pr-3 font-semibold">Entrada</th><th class="text-left pr-3 font-semibold">Salida</th><th class="text-left font-semibold">Lo ve</th></tr></thead>
+          <tbody>
+            <tr v-for="(c, k) in e.casos" :key="k" class="align-top">
+              <td class="pr-3 font-codigo whitespace-pre">{{ c.entrada }}</td><td class="pr-3 font-codigo whitespace-pre">{{ c.salida }}</td>
+              <td>{{ c.publico ? 'Sí (ejemplo)' : 'No (oculto)' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ol>
+
     <div v-else-if="borrador.tipo === 'leccion'" class="space-y-1">
       <p class="text-sm font-semibold text-base-texto-primario">{{ borrador.titulo }}</p>
       <div class="prose prose-sm max-w-none text-base-texto-primario max-h-80 overflow-y-auto" v-html="html" />
@@ -116,6 +143,13 @@ const cambiarLecciones = (i: number, j: number, fn: (ls: BorradorEstructura['mod
 const moverLeccion = (i: number, j: number, k: number, d: number) => cambiarLecciones(i, j, (ls) => moverItem(ls, k, k + d))
 const quitarLeccion = (i: number, j: number, k: number) => cambiarLecciones(i, j, (ls) => quitarItem(ls, k))
 const cambiarLeccion = (i: number, j: number, k: number, titulo: string) => cambiarLecciones(i, j, (ls) => ls.map((l, z) => (z === k && titulo.trim() ? { ...l, titulo: titulo.trim() } : l)))
+
+const programacion = (fn: (b: Extract<BorradorAsistente, { tipo: 'programacion' }>) => Extract<BorradorAsistente, { tipo: 'programacion' }>['ejercicios']) => {
+  if (props.borrador.tipo === 'programacion') emit('cambiar', { ...props.borrador, ejercicios: fn(props.borrador) })
+}
+const moverProg = (i: number, d: number) => programacion((b) => moverItem(b.ejercicios, i, i + d))
+const quitarProg = (i: number) => programacion((b) => quitarItem(b.ejercicios, i))
+const cambiarTituloProg = (i: number, t: string) => programacion((b) => b.ejercicios.map((e, x) => (x === i && t.trim() ? { ...e, titulo: t.trim() } : e)))
 
 const moverEjercicio = (i: number, d: number) => ejercicios((b) => moverItem(b.ejercicios, i, i + d))
 const quitarEjercicio = (i: number) => ejercicios((b) => quitarItem(b.ejercicios, i))

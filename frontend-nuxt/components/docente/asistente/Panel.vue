@@ -54,7 +54,7 @@
               <option v-for="l in lecciones" :key="l.id" :value="l.id">{{ l.modulo }} › {{ l.titulo }}</option>
             </select>
           </div>
-          <div v-if="tarea === 'estructura' || tarea === 'ejercicios'">
+          <div v-if="tarea === 'estructura' || tarea === 'ejercicios' || tarea === 'programacion'">
             <label for="asistente-cantidad" class="block text-xs font-semibold text-base-texto-primario mb-1">{{ tarea === 'estructura' ? 'Módulos' : 'Ejercicios' }}</label>
             <input id="asistente-cantidad" v-model.number="cantidad" type="number" min="1" max="8" class="input-stire min-h-[40px] w-24 text-sm" />
           </div>
@@ -155,7 +155,7 @@ async function generar() {
   const resumenClase = tarea.value === 'analisis' ? await resumenDeClase(claseId.value) : undefined
   await pedir(tarea.value, {
     asignatura: clase?.asignatura?.nombre, clase: clase?.name, modulo: l?.modulo, tema: l?.tema, leccion: l?.titulo,
-    textoActual, resumenClase, cantidad: tarea.value === 'estructura' || tarea.value === 'ejercicios' ? cantidad.value : undefined,
+    textoActual, resumenClase, cantidad: ['estructura', 'ejercicios', 'programacion'].includes(tarea.value) ? cantidad.value : undefined,
   }, pedido.value)
 }
 

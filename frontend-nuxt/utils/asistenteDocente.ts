@@ -5,7 +5,7 @@
  * para probarlo solo.
  */
 
-export type TipoBorrador = 'estructura' | 'leccion' | 'alternativa' | 'ejercicios' | 'analisis'
+export type TipoBorrador = 'estructura' | 'leccion' | 'alternativa' | 'ejercicios' | 'programacion' | 'analisis'
 export type Dificultad = 'basico' | 'intermedio' | 'avanzado'
 
 export interface BorradorEstructura {
@@ -20,7 +20,10 @@ export interface BorradorAlternativa { tipo: 'alternativa'; forma: 'analogia' | 
 export type AccionHallazgo = 'alternativa' | 'ejercicios' | 'refuerzo' | 'mensaje'
 export interface HallazgoClase { titulo: string; detalle: string; accion: AccionHallazgo; leccion: string }
 export interface BorradorAnalisis { tipo: 'analisis'; hallazgos: HallazgoClase[]; porque: string }
-export type BorradorAsistente = BorradorEstructura | BorradorLeccion | BorradorAlternativa | BorradorEjercicios | BorradorAnalisis
+/** Un ejercicio de programación: las salidas de sus casos las calculó el juez de STIRE con la solución. */
+export interface EjercicioProgramacion { titulo: string; enunciado: string; inicial: string; solucion: string; casos: Array<{ entrada: string; salida: string; publico: boolean }>; dificultad: Dificultad }
+export interface BorradorProgramacion { tipo: 'programacion'; ejercicios: EjercicioProgramacion[]; porque: string }
+export type BorradorAsistente = BorradorEstructura | BorradorLeccion | BorradorAlternativa | BorradorEjercicios | BorradorProgramacion | BorradorAnalisis
 
 export type PantallaDocente = 'inicio' | 'contenido' | 'clase' | 'ejercicios' | 'otra'
 
@@ -29,11 +32,12 @@ export const TAREAS: Record<TipoBorrador, { titulo: string; ayuda: string; boton
   leccion: { titulo: 'Explicación de una lección', ayuda: 'Texto para leer, con un ejemplo resuelto y un error común.', boton: 'Escribir la explicación', necesitaLeccion: true },
   alternativa: { titulo: 'Explicación alternativa', ayuda: 'Otra forma de explicar la lección para quien no la entendió.', boton: 'Escribir la alternativa', necesitaLeccion: true },
   ejercicios: { titulo: 'Ejercicios de práctica', ayuda: 'Opción múltiple en escalera, con su retroalimentación.', boton: 'Generar los ejercicios', necesitaLeccion: true },
+  programacion: { titulo: 'Ejercicios de programación', ayuda: 'En JavaScript, corregidos por el juez; STIRE comprueba la solución.', boton: 'Generar los ejercicios', necesitaLeccion: true },
   analisis: { titulo: 'Analizar mi clase', ayuda: 'Qué atender primero y con qué, según cómo le va a la clase.', boton: 'Analizar la clase', necesitaLeccion: false },
 }
 
 /** Las tareas en el orden del panel. */
-export const ORDEN_TAREAS: TipoBorrador[] = ['estructura', 'leccion', 'alternativa', 'ejercicios', 'analisis']
+export const ORDEN_TAREAS: TipoBorrador[] = ['estructura', 'leccion', 'alternativa', 'ejercicios', 'programacion', 'analisis']
 
 /** Qué hace cada hallazgo del análisis: el botón y adónde lleva (o qué tarea abre en el Asistente). */
 export const ACCION_HALLAZGO: Record<AccionHallazgo, { texto: string; tarea?: TipoBorrador }> = {
@@ -140,10 +144,27 @@ export function enlaceEjercicio(classId: number, leccionId: number, ejercicioId:
   return `${enlaceContenido(classId, leccionId, 'actividades')}&ejercicio=${ejercicioId}`
 }
 
+/** La configuración de una pregunta de programación tal como la guarda el constructor de STIRE (CodingExerciseBuilder). */
+export function configProgramacion(e: EjercicioProgramacion) {
+  let publico = 0
+  let oculto = 0
+  return {
+    language: 'javascript',
+    starterCode: e.inicial,
+    testCases: e.casos.map((c) => ({
+      label: c.publico ? `Ejemplo ${++publico}` : `Caso oculto ${++oculto}`,
+      input: c.entrada,
+      expected: c.salida,
+      isPublic: c.publico,
+    })),
+  }
+}
+
 /** Resumen del borrador en una línea, para la tarjeta. */
 export function resumenBorrador(b: BorradorAsistente): string {
   if (b.tipo === 'leccion') return `Explicación de «${b.titulo}»`
   if (b.tipo === 'alternativa') return `${b.forma === 'paso' ? 'Paso a paso' : 'Analogía'}: «${b.titulo}»`
+  if (b.tipo === 'programacion') return b.ejercicios.length === 1 ? '1 ejercicio de programación' : `${b.ejercicios.length} ejercicios de programación`
   if (b.tipo === 'analisis') return b.hallazgos.length === 1 ? '1 cosa por atender' : `${b.hallazgos.length} cosas por atender`
   if (b.tipo === 'ejercicios') return b.ejercicios.length === 1 ? '1 ejercicio' : `${b.ejercicios.length} ejercicios`
   const temas = b.modulos.reduce((s, m) => s + m.temas.length, 0)

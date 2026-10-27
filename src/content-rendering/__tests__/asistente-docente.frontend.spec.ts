@@ -72,7 +72,7 @@ describe('el panel', () => {
   it('muestra paso a paso lo que va creando y lleva a Contenido del curso', () => {
     expect(panel).toContain('aria-label="Lo que el Asistente va creando"');
     expect(comp).toContain('await navigateTo(enlaceContenido(classId))');
-    expect(comp).toContain("await navigateTo(enlaceContenido(classId, leccion.id, b.tipo === 'ejercicios' ? 'actividades' : 'leccion'))");
+    expect(comp).toContain("await navigateTo(enlaceContenido(classId, leccion.id, b.tipo === 'ejercicios' || b.tipo === 'programacion' ? 'actividades' : 'leccion'))");
     expect(comp).toContain('window.dispatchEvent(new CustomEvent(EVENTO_CONTENIDO_CAMBIO))');
     expect(leer('pages', 'docente', 'contenidos.vue')).toContain('window.addEventListener(EVENTO_CONTENIDO_CAMBIO, recargarPorAsistente)');
   });
@@ -131,7 +131,7 @@ describe('el Asistente escribe explicaciones alternativas y analiza la clase (27
   });
   it('en una clase propone primero analizarla; los hallazgos llevan a donde se resuelven', () => {
     expect(u.tareaSugerida('clase')).toBe('analisis');
-    expect(u.ORDEN_TAREAS).toEqual(['estructura', 'leccion', 'alternativa', 'ejercicios', 'analisis']);
+    expect(u.ORDEN_TAREAS).toEqual(['estructura', 'leccion', 'alternativa', 'ejercicios', 'programacion', 'analisis']);
     expect(u.enlaceDeHallazgo('refuerzo', 4)).toBe('/docente/clase/4#bloqueados');
     expect(u.enlaceDeHallazgo('alternativa', 4)).toBeNull();
   });
@@ -141,5 +141,22 @@ describe('el Asistente escribe explicaciones alternativas y analiza la clase (27
     expect(c).toContain("} else if (b.tipo === 'analisis') {");
     expect(leer('components', 'docente', 'asistente', 'Panel.vue')).toContain("borrador.tipo !== 'analisis'");
     expect(leer('components', 'docente', 'asistente', 'Borrador.vue')).toContain("@click=\"$emit('hacer', ACCION_HALLAZGO[h.accion].tarea!, h.leccion)\"");
+  });
+});
+
+describe('ejercicios de programación del Asistente (27/10)', () => {
+  const u = cargar<{ configProgramacion: (e: Record<string, unknown>) => { language: string; starterCode: string; testCases: Array<{ label: string; input: string; expected: string; isPublic: boolean }> }; ORDEN_TAREAS: string[] }>('asistenteDocente');
+  it('se guarda como la pregunta de programación del constructor de STIRE, con ejemplos públicos y casos ocultos', () => {
+    const c = u.configProgramacion({ inicial: 'const n = 1', casos: [{ entrada: '3', salida: '6', publico: true }, { entrada: '0', salida: '0', publico: false }, { entrada: '-7', salida: '-14', publico: false }] });
+    expect(c).toMatchObject({ language: 'javascript', starterCode: 'const n = 1' });
+    expect(c.testCases.map((t) => t.label)).toEqual(['Ejemplo 1', 'Caso oculto 1', 'Caso oculto 2']);
+    expect(c.testCases[2]).toMatchObject({ input: '-7', expected: '-14', isPublic: false });
+    expect(u.ORDEN_TAREAS).toContain('programacion');
+  });
+  it('se crea como pregunta «coding» con cinco intentos, y el borrador muestra los casos que calculó el juez', () => {
+    const c = leer('composables', 'useAsistente.ts');
+    expect(c).toContain("type: 'coding', question: e.enunciado");
+    expect(c).toContain('attemptsAllowed: 5');
+    expect(leer('components', 'docente', 'asistente', 'Borrador.vue')).toContain('la salida la calculó el juez con la solución');
   });
 });

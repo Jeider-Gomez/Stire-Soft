@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import {
-  EVENTO_CONTENIDO_CAMBIO, configOpcionMultiple, enlaceContenido, enlaceEjercicio, pasosDeEstructura, resumenAnonimoClase, tituloDeEjercicio,
+  EVENTO_CONTENIDO_CAMBIO, configOpcionMultiple, configProgramacion, enlaceContenido, enlaceEjercicio, pasosDeEstructura, resumenAnonimoClase, tituloDeEjercicio,
   type BorradorAsistente, type TipoBorrador,
 } from '~/utils/asistenteDocente'
 
@@ -89,6 +89,28 @@ export function useAsistente() {
         // Oculta, como todo lo del Asistente: el docente la revisa y decide cuándo se muestra.
         await api.post('/content', { learningUnitId: leccion.id, title: b.titulo, type: 'markdown', body: b.explicacion, order: 50, isVisible: false, cuando: b.cuando })
         avanzar(0, 'hecho', enlaceContenido(classId, leccion.id, 'leccion'))
+      } else if (b.tipo === 'programacion') {
+        if (!leccion) throw new Error('Elige la lección donde van los ejercicios.')
+        const tipos = await api.get<Array<{ id: number; code: string }> | { data?: Array<{ id: number; code: string }> }>('/activity-types')
+        const lista = Array.isArray(tipos) ? tipos : (tipos?.data ?? [])
+        const practica = lista.find((t) => t.code === 'AUTO-EVAL') ?? lista[0]
+        if (!practica) throw new Error('No hay tipos de actividad cargados en STIRE.')
+        pasos.value = b.ejercicios.map((e) => ({ texto: e.titulo, estado: 'pendiente' }))
+        for (const [n, e] of b.ejercicios.entries()) {
+          avanzar(n, 'haciendo')
+          // Cinco intentos, como los ejercicios de programar de los cursos (BT-41).
+          const act = await api.post<{ id: number }>('/activities', {
+            learningUnitId: leccion.id, activityTypeId: practica.id, title: e.titulo, description: e.enunciado,
+            difficulty: e.dificultad, totalPoints: 10, attemptsAllowed: 5, passingScore: 60, isRequired: true, adaptiveWeight: 0.4,
+          })
+          try {
+            await api.post('/activity-questions', { activityId: act.id, type: 'coding', question: e.enunciado, points: 10, order: 0, config: configProgramacion(e) })
+          } catch (err) {
+            await api.del(`/activities/${act.id}`).catch(() => undefined)
+            throw err
+          }
+          avanzar(n, 'hecho', enlaceEjercicio(classId, leccion.id, act.id))
+        }
       } else if (b.tipo === 'leccion') {
         if (!leccion) throw new Error('Elige la lección donde va la explicación.')
         pasos.value = [{ texto: `Explicación en «${leccion.titulo}»`, estado: 'haciendo' }]
@@ -120,7 +142,7 @@ export function useAsistente() {
       borrador.value = null
       // Lo lleva a ver lo creado: la estructura en el mapa del curso; la explicación o los ejercicios, en su lección.
       if (b.tipo === 'estructura') { if (!route.path.startsWith('/docente/contenidos')) await navigateTo(enlaceContenido(classId)) }
-      else if (leccion) await navigateTo(enlaceContenido(classId, leccion.id, b.tipo === 'ejercicios' ? 'actividades' : 'leccion'))
+      else if (leccion) await navigateTo(enlaceContenido(classId, leccion.id, b.tipo === 'ejercicios' || b.tipo === 'programacion' ? 'actividades' : 'leccion'))
       return true
     } catch (e) {
       const i = pasos.value.findIndex((p) => p.estado === 'haciendo')
