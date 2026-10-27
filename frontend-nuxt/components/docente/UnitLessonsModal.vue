@@ -1,17 +1,19 @@
 <template>
-  <Teleport to="body">
+  <!-- Con `incrustado` (Contenido del curso, 27/10) va dentro de la página, en la pestaña «Lección»: sin fondo oscuro ni
+       ventana encima, como en el prototipo del panel v2. Sin él, sigue siendo la ventana de siempre. -->
+  <Teleport to="body" :disabled="incrustado">
     <div
       v-if="isOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
+      :class="incrustado ? '' : 'fixed inset-0 z-50 flex items-center justify-center p-4'"
       ref="dialogRef"
-      role="dialog"
-      aria-modal="true"
+      :role="incrustado ? undefined : 'dialog'"
+      :aria-modal="incrustado ? undefined : 'true'"
       aria-labelledby="modal-lessons-title"
       tabindex="-1"
-      @click.self="handleClose">
-      <div class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
+      @click.self="incrustado || handleClose()">
+      <div v-if="!incrustado" class="absolute inset-0 bg-base-texto-primario/40 backdrop-blur-sm" aria-hidden="true"></div>
 
-      <div class="relative bg-base-blanco rounded-2xl border border-base-borde-fuerte shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="relative bg-base-blanco rounded-2xl border w-full flex flex-col overflow-hidden" :class="incrustado ? 'border-base-borde-sutil' : 'border-base-borde-fuerte shadow-xl max-w-2xl max-h-[90vh]'">
         <header class="p-5 border-b border-base-borde-sutil flex items-center justify-between gap-4">
           <div class="min-w-0">
             <p class="text-[11px] font-semibold text-base-texto-secundario">Lecciones</p>
@@ -29,6 +31,7 @@
               <ImagePlus :size="14" aria-hidden="true" /> Recurso
             </button>
             <button
+              v-if="!incrustado"
               @click="handleClose"
               class="p-1.5 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
               aria-label="Cerrar la explicación">
@@ -174,6 +177,8 @@ const recursoForm = reactive({ open: false, order: 0, recurso: null as LessonIte
 
 const props = defineProps<{
   unit: { id: number; title: string } | null
+  /** Dentro de la página (pestaña «Lección» de Contenido del curso), no como ventana. */
+  incrustado?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -219,7 +224,7 @@ async function openModal(opts: { create?: boolean; editId?: number } = {}) {
   feedbackMsg.value = null
   errorMsg.value = null
   lessonToDelete.value = null
-  nextTick(() => dialogRef.value?.focus())
+  if (!props.incrustado) nextTick(() => dialogRef.value?.focus())
   await fetchLessons()
   if (opts.create) openCreateForm()
   else if (opts.editId) {
@@ -239,7 +244,11 @@ useEscapeToClose(
   }
 )
 
+// Incrustado, se abre solo y vuelve a cargar al elegir otra lección.
+watch(() => props.unit?.id, (id) => { if (props.incrustado && id) void openModal() }, { immediate: true })
+
 function handleClose() {
+  if (props.incrustado) return
   isOpen.value = false
   emit('close')
 }

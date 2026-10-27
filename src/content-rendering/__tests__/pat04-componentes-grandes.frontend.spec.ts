@@ -7,7 +7,7 @@ const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'components/docente/LessonEditor.vue': { lineas: 336, motivo: 'Editor de una leccion; contenido y estado de edicion van juntos.' },
   'components/docente/SelectorAsignatura.vue': { lineas: 324, motivo: 'Seleccion y busqueda del catalogo forman una unica interaccion.' },
   'components/docente/ArbolContenidos.vue': { lineas: 401, motivo: 'Árbol de módulos, temas y lecciones con menú Más y bloques archivados; Fase 30 B3.' },
-  'components/docente/UnitLessonsModal.vue': { lineas: 392, motivo: 'Gestiona las lecciones de una unidad en una sola ventana.' },
+  'components/docente/UnitLessonsModal.vue': { lineas: 400, motivo: '+8 el 27/10: modo incrustado para editar la explicación en la página (Contenido como el prototipo). Gestiona las lecciones de una unidad en una sola ventana.' },
   'components/exercise/HtmlCssExercise.vue': { lineas: 331, motivo: 'Renderiza y gestiona la interaccion de un solo tipo de ejercicio.' },
   'components/layout/SidebarNav.vue': { lineas: 304, motivo: 'Navegacion por rol y comportamiento responsive de una unica barra lateral. 335 -> 304 el 07/10: las clases del docente salieron a ClasesDelMenu.vue.' },
   'components/perfil/Form.vue': { lineas: 362, motivo: 'Formulario de perfil con una unica accion de guardado y secciones de la misma cuenta.' },

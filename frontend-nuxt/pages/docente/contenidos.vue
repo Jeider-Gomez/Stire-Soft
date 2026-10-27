@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-5xl mx-auto space-y-6">
+  <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase v-if="selectedClassId" :class-id="selectedClassId" activa="contenido" :nombre="selectedClass?.name" :codigo="selectedClass?.code" />
     <!-- Cabecera DOC-V02 -->
     <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -83,8 +83,23 @@
       </div>
     </div>
 
+    <!-- Como en el prototipo del panel v2 (27/10): el árbol a la izquierda con el estado de cada lección; a la derecha, el
+         mapa del curso o la lección abierta con sus pestañas, sin ventanas encima. Debajo del mapa, el árbol para organizar
+         (mover, archivar, eliminar). -->
+    <div v-else class="grid gap-6 lg:grid-cols-[280px,minmax(0,1fr)] items-start">
+      <aside class="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto rounded-2xl border border-base-borde-sutil bg-base-blanco p-3">
+        <DocenteContenidosArbolLateral :modulos="sections" :seleccion="leccionAbierta" :curso="selectedClass?.name"
+          @elegir="abrirLeccion" @nuevo-modulo="openNewModuleModal" @nuevo-tema="nuevoTemaEn" @nueva-leccion="nuevaLeccionEn" />
+      </aside>
+      <div class="min-w-0 space-y-8">
+        <DocenteContenidosEditorUnidad v-if="leccionEnEditor" :key="leccionEnEditor.leccion.id" :leccion="leccionEnEditor.leccion"
+          :ruta="leccionEnEditor" :class-id="selectedClassId!" @volver="abrirLeccion(null)" @editar="openEditUnitModal" @archivar="confirmArchiveUnit"
+          @ejercicios="(n) => setExerciseCount(leccionEnEditor!.leccion.id, n)" />
+        <template v-else>
+          <DocenteContenidosMapaCurso :modulos="sections" @elegir="abrirLeccion" />
+          <div class="space-y-2">
+            <h2 class="text-sm font-semibold text-base-texto-primario">Organizar el curso</h2>
     <DocenteArbolContenidos
-      v-else
       data-recorrido="arbol"
       :estado="estado"
       :expanded-unit-id="expandedUnitId"
@@ -107,6 +122,10 @@
       :restaurar-leccion="u => estado.restaurar('leccion', u.id)"
       :open-lessons-modal="openLessonsModal"
       :set-exercise-count="setExerciseCount" />
+          </div>
+        </template>
+      </div>
+    </div>
     <!-- Una ventana a la vez; cada una es su propio componente con la base común (foco, Tab atrapado, Escape). -->
     <DocenteContenidosVentanaEditarModulo v-if="ventana?.tipo === 'modulo'" :modulo="ventana.modulo" @cerrar="ventana = null" />
     <DocenteContenidosVentanaEditarTema v-else-if="ventana?.tipo === 'tema'" :tema="ventana.tema" @cerrar="ventana = null" />
@@ -148,6 +167,7 @@ import { useContenidosAcciones } from '~/composables/useContenidosAcciones'
 import { useAvisos } from '~/composables/useAvisos'
 const { messageOf } = useApiErrorMessage()
 import { mayorOrden, resumenDeLeccion, type LeccionDelArbol, type ModuloDelArbol, type TemaDelArbol } from '~/utils/contenidosCurso'
+import { rutaDeLeccion } from '~/utils/estadoCurso'
 
 definePageMeta({ layout: 'teacher' })
 
@@ -270,7 +290,26 @@ function openNewTopicModal(sec: ModuloDelArbol) {
 function openNewUnitModal(sec: ModuloDelArbol, topic: TemaDelArbol) {
   ventana.value = { tipo: 'crear', nivel: 'leccion', padreId: topic.id, orden: mayorOrden(topic.learningUnits) + 1, sectionId: sec.id, topicId: topic.id }
 }
+// La lección abierta a la derecha (EditorUnidad.vue); null muestra el mapa del curso.
+const leccionAbierta = ref<number | null>(null)
+const leccionEnEditor = computed(() => (leccionAbierta.value ? rutaDeLeccion(sections.value, leccionAbierta.value) : null))
+/** «+ Tema» y «+ Lección» del árbol lateral llegan con ids; abren la misma ventana de crear del árbol de siempre. */
+function nuevoTemaEn(moduloId: number) {
+  const m = sections.value.find((x) => x.id === moduloId)
+  if (m) openNewTopicModal(m)
+}
+function nuevaLeccionEn(moduloId: number, temaId: number) {
+  const m = sections.value.find((x) => x.id === moduloId)
+  const t = m?.topics?.find((x) => x.id === temaId)
+  if (m && t) openNewUnitModal(m, t)
+}
+function abrirLeccion(id: number | null) {
+  leccionAbierta.value = id
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 function openLessonsModal(unit: LeccionDelArbol, opts: { create?: boolean; editId?: number } = {}) {
+  // Desde el 27/10 la explicación se edita en la página, en la pestaña «Lección» (sin ventana encima).
+  if (!opts.create && !opts.editId) { abrirLeccion(unit.id); return }
   selectedUnitForLessons.value = { id: unit.id, title: unit.title }
   nextTick(() => lessonsModalRef.value?.openModal(opts))
 }
