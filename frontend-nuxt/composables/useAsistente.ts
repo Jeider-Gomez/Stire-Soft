@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import {
-  EVENTO_CONTENIDO_CAMBIO, configOpcionMultiple, enlaceContenido, enlaceEjercicio, pasosDeEstructura, tituloDeEjercicio,
+  EVENTO_CONTENIDO_CAMBIO, configOpcionMultiple, enlaceContenido, enlaceEjercicio, pasosDeEstructura, resumenAnonimoClase, tituloDeEjercicio,
   type BorradorAsistente, type TipoBorrador,
 } from '~/utils/asistenteDocente'
 
@@ -81,6 +81,14 @@ export function useAsistente() {
             }
           }
         }
+      } else if (b.tipo === 'analisis') {
+        return true
+      } else if (b.tipo === 'alternativa') {
+        if (!leccion) throw new Error('Elige la lección de la explicación alternativa.')
+        pasos.value = [{ texto: `Explicación alternativa en «${leccion.titulo}»`, estado: 'haciendo' }]
+        // Oculta, como todo lo del Asistente: el docente la revisa y decide cuándo se muestra.
+        await api.post('/content', { learningUnitId: leccion.id, title: b.titulo, type: 'markdown', body: b.explicacion, order: 50, isVisible: false, cuando: b.cuando })
+        avanzar(0, 'hecho', enlaceContenido(classId, leccion.id, 'leccion'))
       } else if (b.tipo === 'leccion') {
         if (!leccion) throw new Error('Elige la lección donde va la explicación.')
         pasos.value = [{ texto: `Explicación en «${leccion.titulo}»`, estado: 'haciendo' }]
@@ -136,11 +144,25 @@ export function useAsistente() {
     return porModulo.flat()
   }
 
+  /**
+   * El resumen anónimo de la clase para «Analizar mi clase» (utils/asistenteDocente.ts): quién está bloqueado o falla
+   * estando seguro, por lección, y los errores de concepto de la semana. Solo cifras y nombres de lecciones y errores.
+   */
+  async function resumenDeClase(classId: number): Promise<string> {
+    type Fila = { studentId: number; unitTitle: string }
+    const [mapa, errores, clase] = await Promise.all([
+      api.get<{ bloqueados?: Fila[]; segurosQueFallan?: Fila[] }>(`/analytics/class/${classId}/heatmap`).catch(() => null),
+      api.get<{ concepto?: Array<{ nombre: string; detalle?: string; estudiantes: unknown[] }> }>(`/analytics/class/${classId}/errores-semana`).catch(() => null),
+      api.get<{ enrollmentCount?: number }>(`/class/${classId}`).catch(() => null),
+    ])
+    return resumenAnonimoClase({ estudiantes: clase?.enrollmentCount, bloqueados: mapa?.bloqueados, segurosQueFallan: mapa?.segurosQueFallan, errores: errores?.concepto })
+  }
+
   /** El texto que ya tiene una lección: base para mejorar la explicación o para los ejercicios. */
   async function textoDeLeccion(unitId: number): Promise<string | undefined> {
     const contenidos = await api.get<Array<{ type: string; body?: string }>>(`/content/unit/${unitId}/all`).catch(() => [])
     return (Array.isArray(contenidos) ? contenidos : []).filter((c) => c.type === 'markdown' && c.body).map((c) => c.body).join('\n\n').slice(0, 7000) || undefined
   }
 
-  return { abierto, tieneClave, borrador, pasos, pensando, aplicando, error, revisarClave, guardarClave, pedir, aplicar, descartar, leccionesDeClase, textoDeLeccion }
+  return { abierto, tieneClave, borrador, pasos, pensando, aplicando, error, revisarClave, guardarClave, pedir, aplicar, descartar, leccionesDeClase, textoDeLeccion, resumenDeClase }
 }

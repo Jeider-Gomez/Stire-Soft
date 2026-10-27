@@ -27,6 +27,25 @@
       </li>
     </ol>
 
+    <div v-else-if="borrador.tipo === 'alternativa'" class="space-y-1.5">
+      <p class="text-[11px] text-base-texto-secundario">{{ borrador.forma === 'paso' ? 'Paso a paso' : 'Analogía' }} · la verá el estudiante {{ CUANDO_TEXTO[borrador.cuando] }}</p>
+      <p class="text-sm font-semibold text-base-texto-primario">{{ borrador.titulo }}</p>
+      <div class="prose prose-sm max-w-none text-base-texto-primario max-h-80 overflow-y-auto" v-html="html" />
+    </div>
+
+    <!-- Análisis de la clase: cada hallazgo con su acción; las de contenido se hacen aquí mismo con el Asistente. -->
+    <ol v-else-if="borrador.tipo === 'analisis'" class="space-y-2.5">
+      <li v-for="(h, i) in borrador.hallazgos" :key="i" class="rounded-lg bg-base-blanco border border-base-borde-sutil p-3 space-y-1.5">
+        <p class="text-sm font-semibold text-base-texto-primario">{{ i + 1 }}. {{ h.titulo }}</p>
+        <p class="text-xs text-base-texto-primario">{{ h.detalle }}</p>
+        <p v-if="h.leccion" class="text-[11px] text-base-texto-secundario">Lección: {{ h.leccion }}</p>
+        <button v-if="ACCION_HALLAZGO[h.accion].tarea" type="button" class="text-xs font-semibold text-stire-blue hover:underline min-h-[32px]"
+          @click="$emit('hacer', ACCION_HALLAZGO[h.accion].tarea!, h.leccion)">{{ ACCION_HALLAZGO[h.accion].texto }} con el Asistente</button>
+        <NuxtLink v-else-if="classId && enlaceDeHallazgo(h.accion, classId)" :to="enlaceDeHallazgo(h.accion, classId)!" class="inline-flex items-center text-xs font-semibold text-stire-blue hover:underline min-h-[32px]">
+          {{ ACCION_HALLAZGO[h.accion].texto }}</NuxtLink>
+      </li>
+    </ol>
+
     <div v-else-if="borrador.tipo === 'leccion'" class="space-y-1">
       <p class="text-sm font-semibold text-base-texto-primario">{{ borrador.titulo }}</p>
       <div class="prose prose-sm max-w-none text-base-texto-primario max-h-80 overflow-y-auto" v-html="html" />
@@ -56,12 +75,13 @@
 <script setup lang="ts">
 import { computed, defineComponent, h } from 'vue'
 import { ArrowDown, ArrowUp, X } from 'lucide-vue-next'
-import { moverItem, quitarItem, resumenBorrador, type BorradorAsistente, type BorradorEjercicios, type BorradorEstructura } from '~/utils/asistenteDocente'
+import { ACCION_HALLAZGO, enlaceDeHallazgo, moverItem, quitarItem, resumenBorrador, type BorradorAsistente, type BorradorEjercicios, type BorradorEstructura, type TipoBorrador } from '~/utils/asistenteDocente'
 
-const props = withDefaults(defineProps<{ borrador: BorradorAsistente; editable?: boolean }>(), { editable: true })
-const emit = defineEmits<{ cambiar: [b: BorradorAsistente] }>()
+const props = withDefaults(defineProps<{ borrador: BorradorAsistente; editable?: boolean; classId?: number | null }>(), { editable: true, classId: null })
+const emit = defineEmits<{ cambiar: [b: BorradorAsistente]; hacer: [tarea: TipoBorrador, leccion: string] }>()
+const CUANDO_TEXTO = { noclaro: 'si no entendió', falla2: 'si falla dos veces', repaso: 'en el repaso' } as const
 // La explicación se ve como la leerá el estudiante, con el mismo formateo seguro del Tutor.
-const html = computed(() => (props.borrador.tipo === 'leccion' ? formatTutorMessage(props.borrador.explicacion) : ''))
+const html = computed(() => (props.borrador.tipo === 'leccion' || props.borrador.tipo === 'alternativa' ? formatTutorMessage(props.borrador.explicacion) : ''))
 
 /** Subir, bajar y quitar: tres botones pequeños con su nombre accesible. */
 const Controles = defineComponent({

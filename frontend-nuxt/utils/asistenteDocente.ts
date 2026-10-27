@@ -5,7 +5,7 @@
  * para probarlo solo.
  */
 
-export type TipoBorrador = 'estructura' | 'leccion' | 'ejercicios'
+export type TipoBorrador = 'estructura' | 'leccion' | 'alternativa' | 'ejercicios' | 'analisis'
 export type Dificultad = 'basico' | 'intermedio' | 'avanzado'
 
 export interface BorradorEstructura {
@@ -16,14 +16,59 @@ export interface BorradorEstructura {
 export interface BorradorLeccion { tipo: 'leccion'; titulo: string; explicacion: string; porque: string }
 export interface EjercicioBorrador { enunciado: string; opciones: string[]; correcta: number; porQue: string; repasar: string; dificultad: Dificultad }
 export interface BorradorEjercicios { tipo: 'ejercicios'; ejercicios: EjercicioBorrador[]; porque: string }
-export type BorradorAsistente = BorradorEstructura | BorradorLeccion | BorradorEjercicios
+export interface BorradorAlternativa { tipo: 'alternativa'; forma: 'analogia' | 'paso'; titulo: string; explicacion: string; cuando: 'noclaro' | 'falla2' | 'repaso'; porque: string }
+export type AccionHallazgo = 'alternativa' | 'ejercicios' | 'refuerzo' | 'mensaje'
+export interface HallazgoClase { titulo: string; detalle: string; accion: AccionHallazgo; leccion: string }
+export interface BorradorAnalisis { tipo: 'analisis'; hallazgos: HallazgoClase[]; porque: string }
+export type BorradorAsistente = BorradorEstructura | BorradorLeccion | BorradorAlternativa | BorradorEjercicios | BorradorAnalisis
 
 export type PantallaDocente = 'inicio' | 'contenido' | 'clase' | 'ejercicios' | 'otra'
 
 export const TAREAS: Record<TipoBorrador, { titulo: string; ayuda: string; boton: string; necesitaLeccion: boolean }> = {
   estructura: { titulo: 'Estructura del curso', ayuda: 'Módulos, temas y lecciones con su objetivo, en orden.', boton: 'Proponer la estructura', necesitaLeccion: false },
   leccion: { titulo: 'Explicación de una lección', ayuda: 'Texto para leer, con un ejemplo resuelto y un error común.', boton: 'Escribir la explicación', necesitaLeccion: true },
+  alternativa: { titulo: 'Explicación alternativa', ayuda: 'Otra forma de explicar la lección para quien no la entendió.', boton: 'Escribir la alternativa', necesitaLeccion: true },
   ejercicios: { titulo: 'Ejercicios de práctica', ayuda: 'Opción múltiple en escalera, con su retroalimentación.', boton: 'Generar los ejercicios', necesitaLeccion: true },
+  analisis: { titulo: 'Analizar mi clase', ayuda: 'Qué atender primero y con qué, según cómo le va a la clase.', boton: 'Analizar la clase', necesitaLeccion: false },
+}
+
+/** Las tareas en el orden del panel. */
+export const ORDEN_TAREAS: TipoBorrador[] = ['estructura', 'leccion', 'alternativa', 'ejercicios', 'analisis']
+
+/** Qué hace cada hallazgo del análisis: el botón y adónde lleva (o qué tarea abre en el Asistente). */
+export const ACCION_HALLAZGO: Record<AccionHallazgo, { texto: string; tarea?: TipoBorrador }> = {
+  alternativa: { texto: 'Preparar una explicación alternativa', tarea: 'alternativa' },
+  ejercicios: { texto: 'Preparar más práctica', tarea: 'ejercicios' },
+  refuerzo: { texto: 'Ver quiénes y asignar un refuerzo' },
+  mensaje: { texto: 'Escribir un aviso a la clase' },
+}
+export function enlaceDeHallazgo(accion: AccionHallazgo, classId: number): string | null {
+  if (accion === 'refuerzo') return `/docente/clase/${classId}#bloqueados`
+  if (accion === 'mensaje') return '/docente/mensajes?ver=avisos'
+  return null
+}
+
+/**
+ * El resumen ANÓNIMO de la clase que se le manda al Asistente para el análisis: cifras por lección y nombres de errores,
+ * nunca nombres de estudiantes. Se arma aquí, en el navegador del docente.
+ */
+export function resumenAnonimoClase(d: {
+  estudiantes?: number
+  bloqueados?: ReadonlyArray<{ studentId: number; unitTitle: string }>
+  segurosQueFallan?: ReadonlyArray<{ studentId: number; unitTitle: string }>
+  errores?: ReadonlyArray<{ nombre: string; detalle?: string; estudiantes: ReadonlyArray<unknown> }>
+}): string {
+  const lineas: string[] = []
+  if (d.estudiantes) lineas.push(`Estudiantes en la clase: ${d.estudiantes}.`)
+  const porLeccion = (filas: ReadonlyArray<{ studentId: number; unitTitle: string }> = []) => {
+    const m = new Map<string, Set<number>>()
+    for (const f of filas) m.set(f.unitTitle, (m.get(f.unitTitle) ?? new Set()).add(f.studentId))
+    return [...m.entries()].sort((a, b) => b[1].size - a[1].size)
+  }
+  for (const [leccion, ids] of porLeccion(d.bloqueados)) lineas.push(`Lección «${leccion}»: ${ids.size} fallan varias veces seguidas (bloqueados).`)
+  for (const [leccion, ids] of porLeccion(d.segurosQueFallan)) lineas.push(`Lección «${leccion}»: ${ids.size} dicen estar seguros y fallan.`)
+  for (const e of (d.errores ?? []).slice(0, 5)) lineas.push(`Error de concepto repetido esta semana: «${e.nombre}» (${e.estudiantes.length} estudiantes)${e.detalle ? `: ${e.detalle}` : ''}.`)
+  return lineas.length ? lineas.join('\n') : 'Sin alertas esta semana: nadie está bloqueado ni hay errores repetidos.'
 }
 
 /** Dónde está el docente y de qué clase: de eso depende qué le propone primero. */
@@ -44,6 +89,7 @@ export function pantallaDeRuta(ruta: string, query: Record<string, unknown>): { 
 export function tareaSugerida(p: PantallaDocente): TipoBorrador {
   if (p === 'ejercicios') return 'ejercicios'
   if (p === 'contenido') return 'leccion'
+  if (p === 'clase') return 'analisis'
   return 'estructura'
 }
 
@@ -97,6 +143,8 @@ export function enlaceEjercicio(classId: number, leccionId: number, ejercicioId:
 /** Resumen del borrador en una línea, para la tarjeta. */
 export function resumenBorrador(b: BorradorAsistente): string {
   if (b.tipo === 'leccion') return `Explicación de «${b.titulo}»`
+  if (b.tipo === 'alternativa') return `${b.forma === 'paso' ? 'Paso a paso' : 'Analogía'}: «${b.titulo}»`
+  if (b.tipo === 'analisis') return b.hallazgos.length === 1 ? '1 cosa por atender' : `${b.hallazgos.length} cosas por atender`
   if (b.tipo === 'ejercicios') return b.ejercicios.length === 1 ? '1 ejercicio' : `${b.ejercicios.length} ejercicios`
   const temas = b.modulos.reduce((s, m) => s + m.temas.length, 0)
   const lecciones = b.modulos.reduce((s, m) => s + m.temas.reduce((x, t) => x + t.lecciones.length, 0), 0)

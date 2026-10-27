@@ -30,11 +30,11 @@ describe('qué propone según dónde está el docente', () => {
     expect(a.pantallaDeRuta('/docente/clase/9/notas', {})).toMatchObject({ pantalla: 'clase', classId: 9 });
     expect(a.pantallaDeRuta('/docente', {})).toMatchObject({ pantalla: 'inicio', classId: null });
   });
-  it('en Contenido propone la lección; en Ejercicios, ejercicios; en el resto, la estructura del curso', () => {
+  it('en Contenido propone la lección; en Ejercicios, ejercicios; en una clase, analizarla; en el resto, la estructura del curso', () => {
     expect(a.tareaSugerida('contenido')).toBe('leccion');
     expect(a.tareaSugerida('ejercicios')).toBe('ejercicios');
     expect(a.tareaSugerida('inicio')).toBe('estructura');
-    expect(a.tareaSugerida('clase')).toBe('estructura');
+    expect(a.tareaSugerida('clase')).toBe('analisis');
   });
   it('lo creado se ve en Contenido del curso de esa clase, y en su lección y pestaña', () => {
     expect(a.enlaceContenido(7)).toBe('/docente/contenidos?classId=7');
@@ -108,5 +108,38 @@ describe('el borrador del Asistente se ajusta antes de crearlo y cada cosa cread
     expect(p).toContain("p.enlace.includes('ejercicio=') ? 'Editar' : 'Abrir'");
     expect(leer('composables', 'useAsistente.ts')).toContain("avanzar(n, 'hecho', enlaceEjercicio(classId, leccion.id, act.id))");
     expect(leer('components', 'docente', 'UnitExercisesPanel.vue')).toContain('const pedido = Number(route.query.ejercicio)');
+  });
+});
+
+describe('el Asistente escribe explicaciones alternativas y analiza la clase (27/10)', () => {
+  const u = cargar<{
+    resumenAnonimoClase: (d: Record<string, unknown>) => string;
+    tareaSugerida: (p: string) => string;
+    enlaceDeHallazgo: (a: string, c: number) => string | null;
+    ORDEN_TAREAS: string[];
+  }>('asistenteDocente');
+  it('el resumen de la clase es anónimo: cifras por lección y errores, nunca nombres', () => {
+    const r = u.resumenAnonimoClase({
+      estudiantes: 30,
+      bloqueados: [{ studentId: 1, fullName: 'Ana Ruiz', unitTitle: 'Ciclos' }, { studentId: 2, fullName: 'Luis Paz', unitTitle: 'Ciclos' }, { studentId: 1, fullName: 'Ana Ruiz', unitTitle: 'Ciclos' }],
+      errores: [{ nombre: 'Confunde = con ==', estudiantes: [{ nombre: 'Ana Ruiz' }, { nombre: 'Luis Paz' }] }],
+    });
+    expect(r).toContain('Lección «Ciclos»: 2 fallan varias veces seguidas');
+    expect(r).toContain('«Confunde = con ==» (2 estudiantes)');
+    expect(r).not.toMatch(/Ana|Luis/);
+    expect(u.resumenAnonimoClase({})).toContain('Sin alertas');
+  });
+  it('en una clase propone primero analizarla; los hallazgos llevan a donde se resuelven', () => {
+    expect(u.tareaSugerida('clase')).toBe('analisis');
+    expect(u.ORDEN_TAREAS).toEqual(['estructura', 'leccion', 'alternativa', 'ejercicios', 'analisis']);
+    expect(u.enlaceDeHallazgo('refuerzo', 4)).toBe('/docente/clase/4#bloqueados');
+    expect(u.enlaceDeHallazgo('alternativa', 4)).toBeNull();
+  });
+  it('la alternativa se crea oculta con su «cuando»; el análisis no crea nada', () => {
+    const c = leer('composables', 'useAsistente.ts');
+    expect(c).toContain("isVisible: false, cuando: b.cuando");
+    expect(c).toContain("} else if (b.tipo === 'analisis') {");
+    expect(leer('components', 'docente', 'asistente', 'Panel.vue')).toContain("borrador.tipo !== 'analisis'");
+    expect(leer('components', 'docente', 'asistente', 'Borrador.vue')).toContain("@click=\"$emit('hacer', ACCION_HALLAZGO[h.accion].tarea!, h.leccion)\"");
   });
 });

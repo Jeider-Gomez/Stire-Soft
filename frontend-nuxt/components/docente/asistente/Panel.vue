@@ -37,7 +37,7 @@
           </div>
 
           <!-- Qué hacer: las tres tareas; la de esta pantalla va primero -->
-          <div role="radiogroup" aria-label="Qué quieres que prepare" class="grid gap-2">
+          <div role="radiogroup" aria-label="Qué quieres que prepare" class="grid gap-2" :class="ancho ? 'sm:grid-cols-2' : ''">
             <button v-for="t in tareasOrdenadas" :key="t" type="button" role="radio" :aria-checked="tarea === t"
               class="tarea text-left rounded-xl border px-3.5 py-2.5" :class="tarea === t ? 'border-stire-blue bg-stire-blue/5' : 'border-base-borde-sutil hover:border-base-borde-fuerte'"
               @click="tarea = t">
@@ -54,7 +54,7 @@
               <option v-for="l in lecciones" :key="l.id" :value="l.id">{{ l.modulo }} › {{ l.titulo }}</option>
             </select>
           </div>
-          <div v-if="tarea !== 'leccion'">
+          <div v-if="tarea === 'estructura' || tarea === 'ejercicios'">
             <label for="asistente-cantidad" class="block text-xs font-semibold text-base-texto-primario mb-1">{{ tarea === 'estructura' ? 'Módulos' : 'Ejercicios' }}</label>
             <input id="asistente-cantidad" v-model.number="cantidad" type="number" min="1" max="8" class="input-stire min-h-[40px] w-24 text-sm" />
           </div>
@@ -74,9 +74,10 @@
           </div>
 
           <!-- El borrador, para revisarlo antes de crear nada -->
-          <DocenteAsistenteBorrador v-if="borrador && !pensando" :borrador="borrador" :editable="!aplicando" @cambiar="(b) => (borrador = b)" />
+          <DocenteAsistenteBorrador v-if="borrador && !pensando" :borrador="borrador" :editable="!aplicando" :class-id="claseId"
+            @cambiar="(b) => (borrador = b)" @hacer="hacerHallazgo" />
 
-          <div v-if="borrador && !pensando" class="flex flex-wrap gap-2">
+          <div v-if="borrador && !pensando && borrador.tipo !== 'analisis'" class="flex flex-wrap gap-2">
             <button type="button" class="btn-stire-primary min-h-[44px]" :disabled="aplicando || (TAREAS[borrador.tipo].necesitaLeccion && !leccionElegida)" @click="aplicarBorrador">
               <Check :size="15" aria-hidden="true" /> {{ aplicando ? 'Creando…' : 'Aplicar en la clase' }}
             </button>
@@ -107,15 +108,15 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Check, Loader2, Maximize2, Minimize2, Sparkles, X } from 'lucide-vue-next'
-import { TAREAS, pantallaDeRuta, tareaSugerida, type TipoBorrador } from '~/utils/asistenteDocente'
+import { ORDEN_TAREAS, TAREAS, pantallaDeRuta, tareaSugerida, type TipoBorrador } from '~/utils/asistenteDocente'
 
 const route = useRoute()
 const { misClases } = useMisClases()
-const { abierto, tieneClave, borrador, pasos, pensando, aplicando, error, revisarClave, pedir, aplicar, descartar, leccionesDeClase, textoDeLeccion } = useAsistente()
+const { abierto, tieneClave, borrador, pasos, pensando, aplicando, error, revisarClave, pedir, aplicar, descartar, leccionesDeClase, textoDeLeccion, resumenDeClase } = useAsistente()
 
 const contexto = computed(() => pantallaDeRuta(route.path, route.query))
 const sugerida = computed(() => tareaSugerida(contexto.value.pantalla))
-const tareasOrdenadas = computed(() => [sugerida.value, ...(['estructura', 'leccion', 'ejercicios'] as TipoBorrador[]).filter((t) => t !== sugerida.value)])
+const tareasOrdenadas = computed(() => [sugerida.value, ...ORDEN_TAREAS.filter((t) => t !== sugerida.value)])
 const tarea = ref<TipoBorrador>('estructura')
 // Ancho: más espacio para revisar y ordenar el borrador (en pantallas grandes).
 const ancho = useState('asistente-ancho', () => false)
@@ -149,11 +150,22 @@ async function generar() {
   const clase = clases.value.find((c) => c.id === claseId.value)
   const l = leccionElegida.value
   // Para la explicación y los ejercicios, el texto que ya tiene la lección le sirve de base.
-  const textoActual = l && tarea.value !== 'estructura' ? await textoDeLeccion(l.id) : undefined
+  const textoActual = l && TAREAS[tarea.value].necesitaLeccion ? await textoDeLeccion(l.id) : undefined
+  // El análisis lleva el resumen anónimo de la clase (cifras por lección y errores; nunca nombres).
+  const resumenClase = tarea.value === 'analisis' ? await resumenDeClase(claseId.value) : undefined
   await pedir(tarea.value, {
     asignatura: clase?.asignatura?.nombre, clase: clase?.name, modulo: l?.modulo, tema: l?.tema, leccion: l?.titulo,
-    textoActual, cantidad: tarea.value === 'leccion' ? undefined : cantidad.value,
+    textoActual, resumenClase, cantidad: tarea.value === 'estructura' || tarea.value === 'ejercicios' ? cantidad.value : undefined,
   }, pedido.value)
+}
+
+/** Un hallazgo del análisis que se resuelve con el Asistente: abre esa tarea con su lección ya elegida. */
+function hacerHallazgo(t: TipoBorrador, leccion: string) {
+  const buscada = leccion.trim().toLowerCase()
+  const l = lecciones.value.find((x) => x.titulo.trim().toLowerCase() === buscada) ?? lecciones.value.find((x) => buscada && x.titulo.toLowerCase().includes(buscada))
+  descartar()
+  tarea.value = t
+  if (l) leccionId.value = l.id
 }
 
 async function aplicarBorrador() {
