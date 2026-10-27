@@ -110,6 +110,15 @@
           <span>Mensajes</span>
         </NuxtLink>
 
+        <!-- Biblioteca: cursos que otros docentes compartieron, para copiarlos a una clase nueva (pages/docente/biblioteca.vue) -->
+        <NuxtLink
+          to="/docente/biblioteca"
+          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
+          :class="route.path === '/docente/biblioteca' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+          <Library :size="18" aria-hidden="true" class="shrink-0" />
+          <span>Biblioteca</span>
+        </NuxtLink>
+
         <LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />
       </nav>
 

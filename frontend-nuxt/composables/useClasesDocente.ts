@@ -65,6 +65,11 @@ export function useClasesDocente() {
     plantillas.value = await api.get<Plantilla[]>(asignaturaId ? `/reuse/plantillas?asignaturaId=${asignaturaId}` : '/reuse/plantillas').catch(() => [])
   }
 
+  /** Los módulos de una plantilla, para revisarla por dentro antes de copiarla (Biblioteca). */
+  async function modulosDePlantilla(classId: number) {
+    return api.get<Array<{ id: number; title: string; order: number }>>(`/reuse/classes/${classId}/modulos`).catch(() => null)
+  }
+
   /** ¿Sirve el código y está libre? Dos clases nunca comparten código. */
   async function revisarCodigo(texto: string) {
     return api.get<{ codigo: string; disponible: boolean; motivo: string | null }>(`/class/codigo-disponible?codigo=${encodeURIComponent(texto)}`)
@@ -128,7 +133,7 @@ export function useClasesDocente() {
 
   return {
     clases, cargando, noLeidos, plantillas,
-    cargarClases, cargarNoLeidos, cargarPlantillas, revisarCodigo, crearClase,
+    cargarClases, cargarNoLeidos, cargarPlantillas, modulosDePlantilla, revisarCodigo, crearClase,
     restaurarClase, archivarClase,
     totalEstudiantes, dominioPromedio, enRezago,
   }

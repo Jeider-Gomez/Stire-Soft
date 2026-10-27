@@ -271,6 +271,7 @@ describe('Menú lateral del docente v2: una clase elegida y cinco secciones', ()
     const lateral = leer('components', 'layout', 'SidebarNav.vue');
     expect(lateral.indexOf('<span>Inicio</span>')).toBeGreaterThan(-1);
     expect(lateral.indexOf('to="/docente/mensajes"')).toBeLessThan(lateral.indexOf('<LayoutClasesDelMenu'));
-    expect(leer('pages', 'docente', 'index.vue')).toContain('if (useRoute().query.crear) creando.value = true');
+    // Desde el 26/10 la consulta se lee una vez: también trae la plantilla elegida en la Biblioteca.
+    expect(leer('pages', 'docente', 'index.vue')).toContain('if (q.crear) creando.value = true');
   });
 });

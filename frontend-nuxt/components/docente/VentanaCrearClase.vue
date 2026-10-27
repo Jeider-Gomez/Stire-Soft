@@ -86,11 +86,13 @@ import { nombreRepetido, nombreSugerido, periodoActual } from '~/utils/contextoA
 import { normalizarCodigo, sugerirCodigo } from '~/utils/codigoClase'
 
 const emit = defineEmits<{ cerrar: []; creada: [aviso: string] }>()
+/** Desde la Biblioteca, «Usar en una clase nueva» llega con la plantilla ya elegida. */
+const props = defineProps<{ plantillaInicial?: number | null }>()
 const estado = inject(CLAVE_CLASES_DOCENTE)
 if (!estado) throw new Error('VentanaCrearClase necesita useClasesDocente() con provide(CLAVE_CLASES_DOCENTE).')
 const { clases, plantillas, cargarPlantillas, revisarCodigo, crearClase } = estado
 
-const f = reactive<DatosClaseNueva>({ name: '', code: '', description: '', requiresApproval: false, sourceClassId: null, asignatura: null, grupo: '', periodo: periodoActual() })
+const f = reactive<DatosClaseNueva>({ name: '', code: '', description: '', requiresApproval: false, sourceClassId: props.plantillaInicial ?? null, asignatura: null, grupo: '', periodo: periodoActual() })
 const guardando = ref(false)
 const error = ref<string | null>(null)
 

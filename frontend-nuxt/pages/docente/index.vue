@@ -8,10 +8,13 @@
         <h1 class="text-2xl font-poppins font-bold text-base-texto-primario tracking-tight">{{ saludo(new Date().getHours()) }}{{ nombre ? `, ${nombre}` : '' }}</h1>
         <p class="text-sm text-base-texto-secundario mt-1">{{ isLoading ? 'Cargando tus clases…' : resumenInicio(clasesActivas) }}</p>
       </div>
-      <button id="abrir-crear-clase" @click="openCreateModal" class="btn-stire-primary self-start sm:self-auto min-h-[44px]">
+      <div class="flex flex-wrap gap-2 self-start sm:self-auto">
+      <NuxtLink to="/docente/biblioteca" class="btn-stire-secondary min-h-[44px]">Explorar la biblioteca</NuxtLink>
+      <button id="abrir-crear-clase" @click="openCreateModal" class="btn-stire-primary min-h-[44px]">
         <Plus :size="15" aria-hidden="true" />
         Crear clase
       </button>
+      </div>
     </header>
 
     <!-- Encuesta de usabilidad SUS (UX-08): solo si lleva unos días usando STIRE y no la ha respondido -->
@@ -152,7 +155,7 @@
     </section>
 
     <!-- Ventanas: crear una clase y mostrar su QR (components/docente/), sobre la base de ventanas común. -->
-    <DocenteVentanaCrearClase v-if="creando" @cerrar="creando = false" @creada="alCrear" />
+    <DocenteVentanaCrearClase v-if="creando" :plantilla-inicial="plantillaInicial" @cerrar="creando = false; plantillaInicial = null" @creada="alCrear" />
     <DocenteVentanaQrClase v-if="qr" :codigo="qr.codigo" :nombre="qr.nombre" @cerrar="qr = null" />
 
   </div>
@@ -206,6 +209,7 @@ async function restaurarClase(cls: ClaseDelDocente) {
 
 // Ventanas
 const creando = ref(false)
+const plantillaInicial = ref<number | null>(null)
 const qr = ref<{ codigo: string; nombre: string } | null>(null)
 const openCreateModal = () => { creando.value = true }
 const openQrModal = (cls: ClaseDelDocente) => { qr.value = { codigo: cls.code, nombre: cls.name } }
@@ -224,7 +228,9 @@ function copyCode(code: string) {
 
 onMounted(() => {
   try { vista.value = vistaGuardada(localStorage.getItem(CLAVE_VISTA_CLASES)) } catch { /* se queda en tarjetas */ }
-  if (useRoute().query.crear) creando.value = true // «Crear clase» del menú lateral (ClasesDelMenu.vue)
+  const q = useRoute().query
+  if (q.crear) creando.value = true // «Crear clase» del menú lateral (ClasesDelMenu.vue) o de la Biblioteca
+  if (Number(q.plantilla) > 0) plantillaInicial.value = Number(q.plantilla)
   void estado.cargarPlantillas(); void estado.cargarClases(); void estado.cargarNoLeidos()
 })
 </script>
