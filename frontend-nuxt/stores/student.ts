@@ -48,7 +48,7 @@ export const useStudentStore = defineStore('student', () => {
   // Bloqueo suave por módulo (utils/bloqueoModulos.ts): umbral de la clase activa (0 = sin bloqueo).
   const dominioParaAvanzar = ref(50)
   const estadosModulos = computed(() => estadoDeModulos(
-    modules.value.map((m) => ({ id: m.id, titulo: m.title, lecciones: m.units.map((u) => ({ dominio: u.masteryPercentage, empezada: !!u.empezada })) })),
+    modules.value.map((m) => ({ id: m.id, titulo: m.title, abiertoSiempre: m.abiertoSiempre, lecciones: m.units.map((u) => ({ dominio: u.masteryPercentage, empezada: !!u.empezada })) })),
     dominioParaAvanzar.value,
   ))
   const estadoModulo = (moduleId: number) => estadosModulos.value.find((e) => e.id === moduleId) ?? null
@@ -228,6 +228,7 @@ export const useStudentStore = defineStore('student', () => {
             description?: string
             order: number
             isPublished: boolean
+            abiertoSiempre?: boolean
             topics?: Array<{
               id: number
               title: string
@@ -312,6 +313,7 @@ export const useStudentStore = defineStore('student', () => {
               return {
                 id: sec.id,
                 title: sec.title,
+                abiertoSiempre: !!sec.abiertoSiempre,
                 order: sec.order,
                 units: allUnits,
                 topics

@@ -18,6 +18,8 @@ export function useGrupoDelCurso(
     nuevaLeccion: (temaId: number) => void
     archivarModulo: (m: ModuloDelArbol) => void
     archivarTema: (t: TemaDelArbol) => void
+    duplicarTema: (temaId: number) => void
+    alternarAbierto: (m: ModuloDelArbol) => void
   },
 ) {
 
@@ -44,7 +46,7 @@ export function useGrupoDelCurso(
         return { id: x.id, title: x.title, punto: c.falta ? PUNTO.falta : c.total ? PUNTO.lista : PUNTO.oculta,
           detalle: c.total ? `${c.lista} de ${c.total} lecciones listas` : 'Sin lecciones todavía' }
       })
-      return { nivel: 'modulo' as const, grupo: m, publicado: m.isPublished, lecciones: (m.topics ?? []).flatMap((x) => x.learningUnits ?? []), hijos,
+      return { nivel: 'modulo' as const, grupo: m, publicado: m.isPublished, abiertoSiempre: !!m.abiertoSiempre, lecciones: (m.topics ?? []).flatMap((x) => x.learningUnits ?? []), hijos,
         guardar: (d: { title: string; description: string }) => estado.guardarModulo(m.id, d) }
     }
     return null
@@ -65,5 +67,14 @@ export function useGrupoDelCurso(
     else if (m) acciones.archivarModulo(m)
   }
 
-  return { grupoEnPanel, agregarEnGrupo, publicarGrupo, archivarGrupo }
+  function duplicarGrupo() {
+    const { t } = moduloYTema()
+    if (t) acciones.duplicarTema(t.id)
+  }
+  function alternarAbierto() {
+    const { m, t } = moduloYTema()
+    if (m && !t) acciones.alternarAbierto(m)
+  }
+
+  return { grupoEnPanel, agregarEnGrupo, duplicarGrupo, alternarAbierto, publicarGrupo, archivarGrupo }
 }

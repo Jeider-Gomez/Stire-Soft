@@ -37,8 +37,6 @@
       </div>
     </header>
 
-
-
     <!-- ESTADO 1: Cargando -->
     <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
       <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Cargando los contenidos…
@@ -101,10 +99,12 @@
       <div class="min-w-0 space-y-8">
         <DocenteContenidosEditorUnidad v-if="leccionEnEditor" :key="leccionEnEditor.leccion.id" :leccion="leccionEnEditor.leccion"
           :ruta="leccionEnEditor" :class-id="selectedClassId!" :pestana="pestana" @update:pestana="cambiarPestana" @ir-grupo="abrirGrupo"
+          :temas="temasDeLaClase" @mover-a="moverLeccionA"
           @renombrar="renombrarLeccion" @volver="abrirLeccion(null)" @editar="openEditUnitModal" @archivar="confirmArchiveUnit"
           @ejercicios="(n) => setExerciseCount(leccionEnEditor!.leccion.id, n)" />
         <DocenteContenidosPanelGrupo v-else-if="grupoEnPanel" :key="`${grupoEnPanel.nivel}-${grupoEnPanel.grupo.id}`" v-bind="grupoEnPanel"
-          @volver="abrirLeccion(null)" @abrir-hijo="abrirHijo" @mover="moverHijo" @agregar="agregarEnGrupo" @publicar="publicarGrupo" @archivar="archivarGrupo" />
+          @volver="abrirLeccion(null)" @abrir-hijo="abrirHijo" @mover="moverHijo" @agregar="agregarEnGrupo" @publicar="publicarGrupo" @archivar="archivarGrupo"
+          @duplicar="duplicarGrupo" @alternar-abierto="alternarAbierto" />
         <template v-else>
           <DocenteContenidosMapaCurso :modulos="sections" @elegir="abrirLeccion" />
           <div class="space-y-2">
@@ -320,6 +320,11 @@ async function renombrarLeccion(titulo: string) {
   const l = leccionEnEditor.value?.leccion
   if (l) await estado.guardarLeccion(l.id, { title: titulo, description: l.description ?? '', difficulty: l.difficulty, order: l.order })
 }
+const temasDeLaClase = computed(() => sections.value.flatMap((m) => (m.topics ?? []).map((t) => ({ id: t.id, titulo: t.title, modulo: m.title }))))
+async function moverLeccionA(temaId: number) {
+  const l = leccionEnEditor.value?.leccion
+  if (l && (await organizar.moverLeccion(l.id, temaId))) abrirLeccion(l.id)
+}
 /** En el panel de un módulo sus hijos son temas; en el de un tema, lecciones. */
 function abrirHijo(id: number) {
   if (grupoAbierto.value?.nivel === 'modulo') abrirGrupo('tema', id)
@@ -330,8 +335,9 @@ function moverHijo(desde: number, hasta: number) {
   if (g) void organizar.mover(g.nivel === 'modulo' ? 'tema' : 'leccion', g.id, desde, hasta)
 }
 // Un módulo o un tema abierto a la derecha (PanelGrupo.vue): se edita ahí mismo, sin ventana encima.
-const { grupoEnPanel, agregarEnGrupo, publicarGrupo, archivarGrupo } = useGrupoDelCurso(estado, grupoAbierto, {
+const { grupoEnPanel, agregarEnGrupo, publicarGrupo, archivarGrupo, duplicarGrupo, alternarAbierto } = useGrupoDelCurso(estado, grupoAbierto, {
   nuevoTema: (m) => crearYAbrir('tema', m), nuevaLeccion: (t) => crearYAbrir('leccion', t), archivarModulo: confirmArchiveModule, archivarTema: confirmArchiveTopic,
+  duplicarTema: async (t) => { const id = await organizar.duplicarTema(t); if (id) abrirGrupo('tema', id) }, alternarAbierto: organizar.alternarAbiertoSiempre,
 })
 function openLessonsModal(unit: LeccionDelArbol, opts: { create?: boolean; editId?: number } = {}) {
   // Desde el 27/10 la explicación se edita en la página, en la pestaña «Lección» (sin ventana encima).

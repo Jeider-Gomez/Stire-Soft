@@ -56,6 +56,8 @@ export interface CourseModule {
   /** Todas las lecciones del módulo, en orden (atajo de topics[].units). */
   units: LearningUnit[]
   topics: CourseTopic[]
+  /** Siempre abierto: no espera el dominio del módulo anterior (lo decide el docente). */
+  abiertoSiempre?: boolean
 }
 
 export type ReviewUrgency = 'al-dia' | 'manana' | 'vencido' | 'critico'

@@ -205,3 +205,29 @@ describe('el manual cuenta el panel nuevo (PD-13)', () => {
     for (const t of ['«+ Módulo», «+ Tema» o «+ Lección»', 'arrastra en el árbol', '«Ver como estudiante»', '«A borrador»', 'toca «Corregir» en el aviso']) expect(m).toContain(t);
   });
 });
+
+describe('duplicar un tema, mover una lección a otro tema y módulos siempre abiertos (27/10)', () => {
+  const js = ts.transpileModule(leer('utils', 'bloqueoModulos.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
+  const mod = { exports: {} as Record<string, unknown> };
+  new Function('module', 'exports', js)(mod, mod.exports);
+  const b = mod.exports as { estadoDeModulos: (m: unknown[], u: number) => Array<{ abierto: boolean }> };
+  it('un módulo siempre abierto no espera el dominio del anterior', () => {
+    const modulos = [
+      { id: 1, titulo: 'A', lecciones: [{ dominio: 10, empezada: true }] },
+      { id: 2, titulo: 'B', lecciones: [{ dominio: 0, empezada: false }] },
+      { id: 3, titulo: 'Proyecto', abiertoSiempre: true, lecciones: [{ dominio: 0, empezada: false }] },
+    ];
+    expect(b.estadoDeModulos(modulos, 50).map((e) => e.abierto)).toEqual([true, false, true]);
+    expect(leer('stores', 'student.ts')).toContain('abiertoSiempre: !!sec.abiertoSiempre');
+  });
+  it('el panel del tema lo duplica y el del módulo lo deja siempre abierto; la lección se mueve desde Ajustes', () => {
+    const panel = leer('components', 'docente', 'contenidos', 'PanelGrupo.vue');
+    expect(panel).toContain("@click=\"$emit('duplicar')\"");
+    expect(panel).toContain("@change=\"$emit('alternar-abierto')\"");
+    const org = leer('composables', 'useOrganizarCurso.ts');
+    expect(org).toContain('/reuse/topics/${temaId}/duplicar');
+    expect(org).toContain('/learning-unit/${leccionId}/mover');
+    expect(org).toContain('{ abiertoSiempre: nuevo }');
+    expect(leer('components', 'docente', 'contenidos', 'EditorUnidad.vue')).toContain('Mover a otro tema');
+  });
+});

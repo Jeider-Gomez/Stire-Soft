@@ -40,6 +40,15 @@
       </div>
     </form>
 
+    <!-- Requisito del módulo (prototipo: «Se abre al terminar el anterior» o «Libre»). -->
+    <label v-if="nivel === 'modulo'" class="flex items-start gap-3 rounded-2xl border border-base-borde-sutil bg-base-blanco p-4 cursor-pointer">
+      <input type="checkbox" class="mt-0.5 w-4 h-4 accent-stire-blue" :checked="abiertoSiempre" @change="$emit('alternar-abierto')" />
+      <span class="text-sm">
+        <span class="block font-semibold text-base-texto-primario">Siempre abierto</span>
+        <span class="block text-xs text-base-texto-secundario">No espera el dominio del módulo anterior. Útil para un repaso, un proyecto o lecturas que se hacen en cualquier orden.</span>
+      </span>
+    </label>
+
     <!-- Lo que tiene, en orden (prototipo: «Temas, en orden» / «Lecciones, en orden»): se reordena aquí con las flechas o
          arrastrando, y un toque lo abre. -->
     <div class="space-y-2">
@@ -74,6 +83,9 @@
       <button v-if="nivel === 'modulo'" type="button" class="btn-stire-secondary min-h-[40px] text-xs" @click="$emit('publicar')">
         <component :is="publicado ? EyeOff : Eye" :size="14" aria-hidden="true" /> {{ publicado ? 'Dejar de publicar' : 'Publicar para los estudiantes' }}
       </button>
+      <button v-if="nivel === 'tema'" type="button" class="btn-stire-secondary min-h-[40px] text-xs" @click="$emit('duplicar')">
+        <Copy :size="14" aria-hidden="true" /> Duplicar tema
+      </button>
       <button type="button" class="btn-stire-secondary min-h-[40px] text-xs" @click="$emit('archivar')">
         <Archive :size="14" aria-hidden="true" /> Ocultar (archivar)
       </button>
@@ -83,7 +95,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { Archive, ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, Loader2, Plus } from 'lucide-vue-next'
+import { Archive, ArrowDown, ArrowUp, Copy, Eye, EyeOff, GripVertical, Loader2, Plus } from 'lucide-vue-next'
 import { conteoDeLecciones, type LeccionConConteos } from '~/utils/estadoCurso'
 
 const props = defineProps<{
@@ -95,9 +107,10 @@ const props = defineProps<{
   /** Para un tema, el nombre de su módulo (la ruta de arriba). */
   modulo?: string
   publicado?: boolean
+  abiertoSiempre?: boolean
   guardar: (d: { title: string; description: string }) => Promise<string | null>
 }>()
-const emit = defineEmits<{ volver: []; 'abrir-hijo': [id: number]; mover: [desde: number, hasta: number]; agregar: []; publicar: []; archivar: [] }>()
+const emit = defineEmits<{ volver: []; 'abrir-hijo': [id: number]; mover: [desde: number, hasta: number]; agregar: []; publicar: []; archivar: []; duplicar: []; 'alternar-abierto': [] }>()
 
 const conteo = computed(() => conteoDeLecciones(props.lecciones))
 const tomado = ref<number | null>(null)

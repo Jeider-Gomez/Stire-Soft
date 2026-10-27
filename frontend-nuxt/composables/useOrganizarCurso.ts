@@ -81,5 +81,44 @@ export function useOrganizarCurso(estado: EstadoContenidos) {
     }
   }
 
-  return { mover, crearRapido }
+  /** Duplica un tema con sus lecciones (la copia queda oculta y en borrador); devuelve el id de la copia para abrirla. */
+  async function duplicarTema(temaId: number): Promise<number | null> {
+    try {
+      const r = await api.post<{ id: number; title: string }>(`/reuse/topics/${temaId}/duplicar`, {})
+      await estado.cargarModulos()
+      avisar({ tipo: 'exito', texto: `Listo: «${r.title}». Sus explicaciones quedaron ocultas y sus ejercicios en borrador.` })
+      return r.id
+    } catch (err) {
+      avisar({ tipo: 'error', texto: messageOf(err, 'No se pudo duplicar el tema.') })
+      return null
+    }
+  }
+
+  /** Mueve una lección a otro tema de la clase; queda al final de ese tema. */
+  async function moverLeccion(leccionId: number, temaId: number): Promise<boolean> {
+    try {
+      await api.patch(`/learning-unit/${leccionId}/mover`, { topicId: temaId })
+      await estado.cargarModulos()
+      avisar({ tipo: 'exito', texto: 'La lección quedó al final del tema nuevo, con sus explicaciones y ejercicios.' })
+      return true
+    } catch (err) {
+      avisar({ tipo: 'error', texto: messageOf(err, 'No se pudo mover la lección.') })
+      return false
+    }
+  }
+
+  /** Deja un módulo siempre abierto (o vuelve a pedir el dominio del anterior). */
+  async function alternarAbiertoSiempre(m: ModuloDelArbol) {
+    const nuevo = !m.abiertoSiempre
+    m.abiertoSiempre = nuevo
+    try {
+      await api.patch(`/sections/${m.id}`, { abiertoSiempre: nuevo })
+      avisar({ tipo: 'exito', texto: nuevo ? `«${m.title}» queda siempre abierto.` : `«${m.title}» vuelve a abrirse con el dominio del módulo anterior.` })
+    } catch (err) {
+      m.abiertoSiempre = !nuevo
+      avisar({ tipo: 'error', texto: messageOf(err, 'No se pudo cambiar.') })
+    }
+  }
+
+  return { mover, crearRapido, duplicarTema, moverLeccion, alternarAbiertoSiempre }
 }

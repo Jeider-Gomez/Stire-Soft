@@ -28,6 +28,8 @@ export interface ModuloDelArbol {
   order: number
   isPublished: boolean
   isActive?: boolean
+  /** Siempre abierto: no espera el dominio del módulo anterior. */
+  abiertoSiempre?: boolean
   topics?: TemaDelArbol[]
 }
 

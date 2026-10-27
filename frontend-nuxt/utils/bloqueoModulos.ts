@@ -10,6 +10,8 @@ export interface ModuloParaBloqueo {
   id: number
   titulo: string
   lecciones: ReadonlyArray<{ dominio: number; empezada: boolean }>
+  /** El docente lo dejó siempre abierto (repaso, proyecto, lecturas): no espera el dominio del anterior. */
+  abiertoSiempre?: boolean
 }
 
 export interface EstadoModulo {
@@ -31,7 +33,7 @@ export function estadoDeModulos(modulos: ReadonlyArray<ModuloParaBloqueo>, umbra
   const estados: EstadoModulo[] = []
   modulos.forEach((m, i) => {
     const dominio = dominioDelModulo(m)
-    if (i === 0 || umbral <= 0) {
+    if (i === 0 || umbral <= 0 || m.abiertoSiempre) {
       estados.push({ id: m.id, abierto: true, dominio, requiere: null })
       return
     }

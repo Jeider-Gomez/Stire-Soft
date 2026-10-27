@@ -54,6 +54,19 @@
         <dt class="text-base-texto-secundario">Visible</dt><dd class="text-base-texto-primario">{{ leccion.isActive === false ? 'No: está archivada' : 'Sí' }}</dd>
         <dt class="text-base-texto-secundario">Descripción</dt><dd class="text-base-texto-primario">{{ leccion.description || '—' }}</dd>
       </dl>
+      <!-- Mover a otro tema de la clase: queda al final de ese tema, con todo lo que tiene. -->
+      <div v-if="temas.length > 1" class="flex flex-wrap items-end gap-2">
+        <div>
+          <label :for="`mover-${leccion.id}`" class="block text-xs font-semibold text-base-texto-primario mb-1">Mover a otro tema</label>
+          <select :id="`mover-${leccion.id}`" v-model="temaDestino" class="input-stire min-h-[40px] text-sm">
+            <option :value="null" disabled>Elige el tema</option>
+            <option v-for="t in temas" :key="t.id" :value="t.id" :disabled="t.id === ruta.temaId">{{ t.modulo }} › {{ t.titulo }}{{ t.id === ruta.temaId ? ' (está aquí)' : '' }}</option>
+          </select>
+        </div>
+        <button type="button" class="btn-stire-secondary min-h-[40px]" :disabled="!temaDestino" @click="temaDestino && $emit('mover-a', temaDestino)">
+          <FolderInput :size="14" aria-hidden="true" /> Mover
+        </button>
+      </div>
       <div class="flex flex-wrap gap-2">
         <button type="button" class="btn-stire-secondary min-h-[40px]" @click="$emit('editar', leccion)"><Pencil :size="14" aria-hidden="true" /> Cambiar nombre y dificultad</button>
         <button v-if="leccion.isActive !== false" type="button" class="btn-stire-secondary min-h-[40px]" @click="$emit('archivar', leccion)"><Archive :size="14" aria-hidden="true" /> Ocultar (archivar)</button>
@@ -64,20 +77,25 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Archive, Eye, Pencil, Sparkles } from 'lucide-vue-next'
+import { Archive, Eye, FolderInput, Pencil, Sparkles } from 'lucide-vue-next'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 import { TEXTO_ESTADO, estadoDeLeccion, faltasDeLeccion, type EstadoLeccion, type LeccionConConteos, type PestanaLeccion } from '~/utils/estadoCurso'
 import type { LeccionDelArbol } from '~/utils/contenidosCurso'
 
 type Leccion = LeccionDelArbol & LeccionConConteos
-const props = defineProps<{ leccion: Leccion; ruta: { modulo: string; tema: string; moduloId: number; temaId: number }; classId: number; pestana: PestanaLeccion }>()
+const props = defineProps<{
+  leccion: Leccion; ruta: { modulo: string; tema: string; moduloId: number; temaId: number }; classId: number; pestana: PestanaLeccion
+  /** Los temas de la clase, para «Mover a otro tema». */
+  temas: Array<{ id: number; titulo: string; modulo: string }>
+}>()
 const emit = defineEmits<{
   volver: []; editar: [l: Leccion]; archivar: [l: Leccion]; ejercicios: [n: number]
-  'ir-grupo': [nivel: 'modulo' | 'tema', id: number]; 'update:pestana': [p: PestanaLeccion]; renombrar: [titulo: string]
+  'ir-grupo': [nivel: 'modulo' | 'tema', id: number]; 'update:pestana': [p: PestanaLeccion]; renombrar: [titulo: string]; 'mover-a': [temaId: number]
 }>()
 
 const PESTANAS: ReadonlyArray<{ id: PestanaLeccion; texto: string }> = [{ id: 'leccion', texto: 'Lección' }, { id: 'actividades', texto: 'Actividades' }, { id: 'ajustes', texto: 'Ajustes' }]
 const comoEstudiante = ref(false)
+const temaDestino = ref<number | null>(null)
 const nombre = ref(props.leccion.title)
 watch(() => props.leccion.title, (t) => { nombre.value = t })
 function renombrar() {
