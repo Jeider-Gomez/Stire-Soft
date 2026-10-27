@@ -10,6 +10,9 @@ tabla de abajo.
 | Revisar las **entregas del curso** (lo que pidió el docente y dónde está cada cosa) | [`curso-ddse3/`](curso-ddse3/README.md) |
 | Leer el **artículo científico** de STIRE y lo que le falta | [`curso-ddse3/articulo/`](curso-ddse3/articulo/PENDIENTES.md) |
 | Ver la **semana en curso** | [`../MONITOREO_SEMANAL.md`](../MONITOREO_SEMANAL.md) |
+| **El plan vigente (27/10):** pausa, auditoría, rediseño y evaluación humana antes de la v3.0.0 | [`PLAN_REMODELACION.md`](PLAN_REMODELACION.md) |
+| Lo que falta, **numerado** (P01, P02…) | [`PENDIENTES.md`](PENDIENTES.md) |
+| Qué hace cada pantalla y qué choca (base del rediseño) | [`INVENTARIO_STIRE.md`](INVENTARIO_STIRE.md) |
 | Saber qué está hecho y qué falta en todo el proyecto | [`PLAN_MAESTRO.md`](PLAN_MAESTRO.md) |
 | Entender por qué existe STIRE | [`00_VISION_FUNCIONAL.md`](00_VISION_FUNCIONAL.md) |
 | Ver la aplicación desplegada y cómo se actualiza | [`DESPLIEGUE.md`](DESPLIEGUE.md) §8 |

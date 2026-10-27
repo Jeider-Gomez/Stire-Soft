@@ -1,42 +1,68 @@
 # Pendientes de STIRE
 
-Lista viva de lo que falta, para que nada se olvide entre sesiones. Se actualiza al cerrar cada bloque de trabajo: lo
-hecho se borra de aquí (queda en `CHANGELOG.md` y en los commits) y lo nuevo se agrega. Última actualización: 27/10/2026.
+Lista viva y **numerada** de lo que falta. El número no cambia aunque el punto se mueva de fase; lo hecho se borra de
+aquí (queda en `CHANGELOG.md` y en los commits) y su número no se reutiliza. En qué orden se hace y por qué:
+`docs/PLAN_REMODELACION.md`. Qué hace cada pantalla: `docs/INVENTARIO_STIRE.md`. Última actualización: 27/10/2026.
 
 **Cómo se despliega:** el frontend sale solo a Vercel al subir a `main`. El backend solo cuando Jeider pega los comandos
 (backend antes que el frontend que lo usa; las migraciones no se corren solas). Ver `docs/DESPLIEGUE.md` §8.
 
-## 1. Se puede hacer ya (solo frontend, sin despliegue del servidor)
+## A. Verificar y depurar
 
-| # | Qué | Notas |
+| # | Qué | Quién | Fase |
+|---|---|---|---|
+| P01 | Cerrar la verificación humana del panel del docente (PD-01..17, PV-01..06) y corregir lo que salga | Equipo; plazo jueves 29/10, 8 p. m. | 0 |
+| P02 | Auditoría completa de uso: los 4 roles en computador y celular, errores de consola y de red, pantallas rotas, textos | Claude con agent-browser | 1 |
+| P03 | Volver a auditar **WCAG 2.1 AA**: la auditoría del 07/10 es anterior al rediseño del 23–27/10 | Claude (axe) y Jorge (NVDA, teclado) | 1 |
+| P04 | Jeider hace una lección de JavaScript **como estudiante novato**, diciendo en voz alta qué no entiende | Jeider | 1 |
+
+## B. Remodelación (estudiante, docente, administrador)
+
+| # | Qué | Fase |
 |---|---|---|
-| F1 | Corregir lo que salga de la verificación del panel del docente (PD-01..17, PV-01..06) | Cierra el jueves 29/10, 8 p. m. `docs/calidad/VERIFICACION_PANEL_DOCENTE_S11.md` |
-| F2 | Hoja de la mascota con las caras nuevas (contento, ánimo) y los gestos | `docs/identidad-visual/propuestas/mascota-stire.html` |
-| F4 | Contenido del curso como en el prototipo: **hecho** (árbol, mapa, lección con pestañas, reordenar, crear sin ventanas, duplicar tema, mover lección a otro tema, módulo siempre abierto, «Ver como estudiante») | Falta en el Asistente: «Analizar mi clase» y ejercicios de programación revisados por el juez |
-| F5 | Revisar en el celular el logo pequeño (28 px), el pie y el lanzador nuevo del Tutor | Jeider decide; José lo verá después con lo demás |
+| P05 | Reglas de identidad: un logo por vista; la mascota solo cuando habla (incluye la hoja de caras y gestos) | 2 |
+| P06 | Inicio del estudiante: la mascota saluda una vez, animada, sin repetir la frase ni el logo | 2–3 |
+| P07 | El Tutor saluda («Buenos días») y felicita al ganar un logro, con límites para no saturar | 2–3 |
+| P08 | «Mi progreso»: una frase y una acción arriba; lo demás plegado | 3 |
+| P09 | Lección del estudiante: decidir qué va primero y qué se pliega | 3 |
+| P10 | Asistente del docente con la cara de STIRE, el mismo lenguaje del Tutor y un lugar claro en el Inicio | 2–3 |
+| P11 | Docente: quitar las ventanas viejas que quedan (`UnitLessonsModal`) y llevar «Nuevo ejercicio» al panel de contenidos | 3 |
+| P12 | Administrador: desactivar y reactivar a la vista, borrado definitivo, «Eliminar mi cuenta», «Borrar usuarios de prueba» (marca `esPrueba`) | 3 |
+| P13 | **Evaluación heurística humana** del rediseño (3 a 5 evaluadores, por separado). Abre la v3.0.0 | 4 |
 
-## 2. Necesita el servidor (migración y comandos de despliegue)
+## C. Ejercicios y personalización (lo que pidieron los profesores)
+
+| # | Qué | Fase |
+|---|---|---|
+| P14 | Escalera en cada lección: ejemplo resuelto → completar → ordenar líneas con distractores → escribir | 3 |
+| P15 | Ejercicios **personalizados por estudiante**: el perfil de aprendizaje elige del banco o genera con la IA, y el juez comprueba la solución antes de mostrarlo | 5 |
+| P16 | Batería de perfiles simulados: tabla que explica cada perfil, 100 a 300 usuarios marcados de prueba, modo API y modo «agente que hace clic» | 5 |
+| P17 | Prueba con unas 10 personas reales, observando qué hacen | 5 |
+| P18 | Comparar la repetición espaciada de STIRE con la del otro software del profesor | 5 |
+| P19 | Preparar STIRE para la clase del profesor de Fundamentos: confirmar qué lenguaje y qué framework usa; TypeScript en el juez; cómo enseñar un framework | 1 (preguntar) · 5 |
+| P20 | Dos artículos (revista del proyecto y uno de implementación y evaluación) | 5 |
+
+## D. Servidor
 
 | # | Qué | Por qué necesita servidor |
 |---|---|---|
-| B1 | Portada de cada clase: color y presentación con bienvenida **hechos**; falta subir una imagen | La imagen necesita guardar archivos |
-| B2 | Varias explicaciones por unidad que se desbloquean según el estudiante | Tabla nueva y reglas de desbloqueo |
-| B4 | Marcar en el servidor los errores de concepto por tipo de ejercicio o reto | Hoy se agrupan solo por semana |
+| P21 | Portada de la clase con imagen (el color ya está) | Guardar archivos |
+| P22 | Errores de concepto por tipo de ejercicio (hoy solo por semana) | Consulta y columna nuevas |
 
-## 3. Del equipo o de decisión de Jeider
+## E. Documentación y orden del repositorio
+
+| # | Qué |
+|---|---|
+| P23 | Manual técnico (qué lleva: `docs/PLAN_REMODELACION.md` §6) |
+| P24 | Ordenar `docs/`: 44 archivos sueltos en la raíz, con planes ya ejecutados mezclados con los vigentes (`PLAN_MAESTRO`, `PLAN_MEJORAS`, `PLAN_DOCENTE_CON_IA`, `PLAN_REDISENO_DOCENTE`…); `pages/admin/usuarios.vue` que solo redirige |
+| P25 | Capturas de cada versión en `docs/material-visual/vistas/` |
+
+## F. Del equipo o de decisión de Jeider
 
 | # | Qué | Quién |
 |---|---|---|
-| E1 | José revisa todas las decisiones de identidad juntas más adelante (logo, mascota, letra, pie, lanzador) | Cuando Jeider decida; no bloquea |
-| E3 | Prueba de asistencia en iPhone | Equipo |
-| E4 | Correcciones de ejercicios B-J02 (revisión de la semana 10) | Equipo |
-| E5 | Verificar las fuentes de la investigación (tesis) | Jeider |
-| E6 | Cerrar en Trello el tablero de la Semana 10 | Jeider |
-
-## 4. Hecho recientemente (para contexto; se borra en la próxima actualización)
-
-- 27/10: panel de contenidos dinámico (reordenar, crear sin ventanas, la dirección guarda lo abierto, duplicar tema, mover lección, módulo siempre abierto, «Ver como estudiante»); corregir avisos y ejercicios publicados; borrador del Asistente editable con enlaces a lo creado; anchos del docente unificados; presentación de la clase; alertas de cada clase en «Por revisar».
-
-- 26/10: mascota del Tutor con expresiones y gestos; logo fijo con «stire_»; nombre STIRE; Inicio del docente nuevo;
-  Biblioteca; manual con el menú nuevo; logo exportado en SVG y PNG (`docs/identidad-visual/logo/`); favicon en todos
-  los navegadores; lanzador del Tutor rediseñado.
+| P26 | José revisa todas las decisiones de identidad juntas | Cuando Jeider decida |
+| P27 | Prueba de asistencia en iPhone | Equipo |
+| P28 | Correcciones de ejercicios B-J02 | Equipo |
+| P29 | Verificar las fuentes de la investigación (tesis) | Jeider |
+| P30 | Tablero de Trello de la semana 11 con el reparto de la Fase 1 | Jeider |
