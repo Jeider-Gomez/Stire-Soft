@@ -87,7 +87,13 @@
          mapa del curso o la lección abierta con sus pestañas, sin ventanas encima. Debajo del mapa, el árbol para organizar
          (mover, archivar, eliminar). -->
     <div v-else class="grid gap-6 lg:grid-cols-[280px,minmax(0,1fr)] items-start">
-      <aside class="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto rounded-2xl border border-base-borde-sutil bg-base-blanco p-3">
+      <!-- En el celular el árbol es una hoja que sube desde abajo (prototipo del panel v2): así la lección queda arriba. -->
+      <button type="button" class="lg:hidden btn-stire-secondary min-h-[44px] text-xs justify-self-start" :aria-expanded="arbolMovil" aria-controls="arbol-curso" @click="arbolMovil = true">
+        <ListTree :size="15" aria-hidden="true" /> Estructura del curso
+      </button>
+      <div v-if="arbolMovil" class="lg:hidden fixed inset-0 z-40 bg-black/30" aria-hidden="true" @click="arbolMovil = false" />
+      <aside id="arbol-curso" class="rounded-2xl border border-base-borde-sutil bg-base-blanco p-3 lg:block lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
+        :class="arbolMovil ? 'fixed inset-x-0 bottom-0 z-50 max-h-[75vh] overflow-y-auto rounded-b-none shadow-2xl' : 'hidden'" @keydown.esc="arbolMovil = false">
         <DocenteContenidosArbolLateral :modulos="sections" :seleccion="leccionAbierta" :grupo="grupoAbierto" :curso="selectedClass?.name"
           @elegir="abrirLeccion" @elegir-grupo="abrirGrupo" @mover="organizar.mover" @nuevo-modulo="crearYAbrir('modulo', null)"
           @nuevo-tema="(m) => crearYAbrir('tema', m)" @nueva-leccion="(_m, t) => crearYAbrir('leccion', t)" />
@@ -164,7 +170,7 @@
 // archivo de 1131 líneas con cuatro ventanas y sus llamadas a la API).
 import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue'
 import { EVENTO_CONTENIDO_CAMBIO } from '~/utils/asistenteDocente'
-import { Archive, BookOpen, Check, ChevronRight, CopyPlus, EyeOff, FileText, Folder, Loader2, Pencil, Plus, Trash2, TriangleAlert } from 'lucide-vue-next'
+import { ListTree, Archive, BookOpen, Check, ChevronRight, CopyPlus, EyeOff, FileText, Folder, Loader2, Pencil, Plus, Trash2, TriangleAlert } from 'lucide-vue-next'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 import { CLAVE_CONTENIDOS, useContenidosCurso } from '~/composables/useContenidosCurso'
 import { useContenidosAcciones } from '~/composables/useContenidosAcciones'
@@ -299,6 +305,9 @@ function openNewUnitModal(sec: ModuloDelArbol, topic: TemaDelArbol) {
 // pestaña, un módulo o un tema (PanelGrupo.vue), o nada (el mapa del curso).
 const { leccionAbierta, grupoAbierto, pestana, abrirLeccion, abrirGrupo, cambiarPestana } = useNavegacionContenido(selectedClassId)
 const organizar = useOrganizarCurso(estado)
+const route = useRoute()
+const arbolMovil = ref(false)
+watch(() => route.fullPath, () => { arbolMovil.value = false })
 const leccionEnEditor = computed(() => (leccionAbierta.value ? rutaDeLeccion(sections.value, leccionAbierta.value) : null))
 /** «+ Módulo», «+ Tema» y «+ Lección» crean al instante con un nombre provisional y abren lo nuevo para nombrarlo. */
 async function crearYAbrir(nivel: 'modulo' | 'tema' | 'leccion', padreId: number | null) {
@@ -366,7 +375,6 @@ const unitSummary = computed(() => {
 })
 
 // Con ?classId abre esa clase; ?unitId, ?modulo o ?tema los abre useNavegacionContenido.ts (enlaces desde otros paneles).
-const route = useRoute()
 onMounted(() => estado.cargarClases(Number(route.query.classId) || undefined))
 // Lo que crea el Asistente (components/docente/asistente/Panel.vue) aparece en el árbol sin recargar la página.
 const recargarPorAsistente = () => { void loadSections() }

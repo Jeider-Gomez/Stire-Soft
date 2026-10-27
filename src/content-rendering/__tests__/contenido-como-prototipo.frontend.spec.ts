@@ -183,3 +183,18 @@ describe('el panel es dinámico: se reorganiza, crea sin ventanas y te lleva a c
     expect(editor).toContain("@click=\"$emit('ir-grupo', 'tema', ruta.temaId)\"");
   });
 });
+
+describe('«Ver como estudiante» y el árbol en el celular', () => {
+  it('la vista del estudiante usa el mismo componente que su lección y solo muestra lo visible y lo publicado', () => {
+    const v = leer('components', 'docente', 'contenidos', 'VistaEstudiante.vue');
+    expect(v).toContain('<ContenidoLeccion :texto="x.body ?? \'\'" :insertados="insertadosDe(x.metadata)"');
+    expect(v).toContain("x.isVisible !== false");
+    expect(v).toContain("a.status === 'published'");
+    expect(leer('components', 'docente', 'contenidos', 'EditorUnidad.vue')).toContain("'Volver a editar' : 'Ver como estudiante'");
+  });
+  it('en el celular el árbol es una hoja que sube desde abajo y se cierra al elegir', () => {
+    const p = leer('pages', 'docente', 'contenidos.vue');
+    expect(p).toContain('fixed inset-x-0 bottom-0 z-50 max-h-[75vh]');
+    expect(p).toContain('watch(() => route.fullPath, () => { arbolMovil.value = false })');
+  });
+});

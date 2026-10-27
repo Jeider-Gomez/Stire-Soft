@@ -19,7 +19,12 @@
         <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold rounded-full px-2 py-0.5" :class="CLASE_ESTADO[estado]">
           <span class="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />{{ TEXTO_ESTADO[estado] }}
         </span>
-        <button type="button" class="ml-auto inline-flex items-center gap-1.5 min-h-[36px] px-3 rounded-full border border-base-borde-sutil text-xs font-semibold text-stire-blue hover:bg-stire-blue/5"
+        <button type="button" class="ml-auto inline-flex items-center gap-1.5 min-h-[36px] px-3 rounded-full border text-xs font-semibold"
+          :class="comoEstudiante ? 'border-stire-blue bg-stire-blue text-base-blanco' : 'border-base-borde-sutil text-base-texto-primario hover:bg-base-bg-secundario'"
+          :aria-pressed="comoEstudiante" @click="comoEstudiante = !comoEstudiante">
+          <Eye :size="13" aria-hidden="true" /> {{ comoEstudiante ? 'Volver a editar' : 'Ver como estudiante' }}
+        </button>
+        <button type="button" class="inline-flex items-center gap-1.5 min-h-[36px] px-3 rounded-full border border-base-borde-sutil text-xs font-semibold text-stire-blue hover:bg-stire-blue/5"
           @click="asistenteAbierto = true">
           <Sparkles :size="13" aria-hidden="true" /> Pedírselo al Asistente
         </button>
@@ -27,21 +32,23 @@
       <p v-if="faltas.length && estado !== 'oculta'" class="text-xs text-amber-800">Falta: {{ faltas.join(' y ') }}.</p>
     </div>
 
-    <div role="tablist" aria-label="Partes de la lección" class="inline-flex p-0.5 rounded-full bg-base-bg-secundario border border-base-borde-sutil text-xs font-semibold">
+    <DocenteContenidosVistaEstudiante v-if="comoEstudiante" :leccion-id="leccion.id" :titulo="leccion.title" :actividades="leccion.activities" />
+
+    <div v-show="!comoEstudiante" role="tablist" aria-label="Partes de la lección" class="inline-flex p-0.5 rounded-full bg-base-bg-secundario border border-base-borde-sutil text-xs font-semibold">
       <button v-for="p in PESTANAS" :id="`pestana-${p.id}`" :key="p.id" type="button" role="tab" :aria-selected="pestana === p.id" :aria-controls="`panel-${p.id}`"
         class="min-h-[36px] px-4 rounded-full" :class="pestana === p.id ? 'bg-base-blanco text-base-texto-primario shadow-sm' : 'text-base-texto-secundario'" @click="$emit('update:pestana', p.id)">
         {{ p.texto }}
       </button>
     </div>
 
-    <div v-show="pestana === 'leccion'" id="panel-leccion" role="tabpanel" aria-labelledby="pestana-leccion">
+    <div v-show="!comoEstudiante && pestana === 'leccion'" id="panel-leccion" role="tabpanel" aria-labelledby="pestana-leccion">
       <UnitLessonsModal :unit="{ id: leccion.id, title: leccion.title }" incrustado />
     </div>
-    <div v-if="pestana === 'actividades'" id="panel-actividades" role="tabpanel" aria-labelledby="pestana-actividades" class="space-y-2">
+    <div v-if="!comoEstudiante && pestana === 'actividades'" id="panel-actividades" role="tabpanel" aria-labelledby="pestana-actividades" class="space-y-2">
       <p class="text-xs text-base-texto-secundario">Lo que está en borrador no lo ve el estudiante.</p>
       <DocenteUnitExercisesPanel :unit-id="leccion.id" :class-id="classId" @count="$emit('ejercicios', $event)" />
     </div>
-    <div v-if="pestana === 'ajustes'" id="panel-ajustes" role="tabpanel" aria-labelledby="pestana-ajustes" class="space-y-3 text-sm">
+    <div v-if="!comoEstudiante && pestana === 'ajustes'" id="panel-ajustes" role="tabpanel" aria-labelledby="pestana-ajustes" class="space-y-3 text-sm">
       <dl class="grid grid-cols-[auto,1fr] gap-x-4 gap-y-1.5 text-xs">
         <dt class="text-base-texto-secundario">Dificultad</dt><dd class="text-base-texto-primario capitalize">{{ dificultad }}</dd>
         <dt class="text-base-texto-secundario">Visible</dt><dd class="text-base-texto-primario">{{ leccion.isActive === false ? 'No: está archivada' : 'Sí' }}</dd>
@@ -57,7 +64,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Archive, Pencil, Sparkles } from 'lucide-vue-next'
+import { Archive, Eye, Pencil, Sparkles } from 'lucide-vue-next'
 import UnitLessonsModal from '~/components/docente/UnitLessonsModal.vue'
 import { TEXTO_ESTADO, estadoDeLeccion, faltasDeLeccion, type EstadoLeccion, type LeccionConConteos, type PestanaLeccion } from '~/utils/estadoCurso'
 import type { LeccionDelArbol } from '~/utils/contenidosCurso'
@@ -70,6 +77,7 @@ const emit = defineEmits<{
 }>()
 
 const PESTANAS: ReadonlyArray<{ id: PestanaLeccion; texto: string }> = [{ id: 'leccion', texto: 'Lección' }, { id: 'actividades', texto: 'Actividades' }, { id: 'ajustes', texto: 'Ajustes' }]
+const comoEstudiante = ref(false)
 const nombre = ref(props.leccion.title)
 watch(() => props.leccion.title, (t) => { nombre.value = t })
 function renombrar() {
