@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LearningUnit } from './entities/learning-unit.entity';
@@ -137,6 +137,23 @@ export class LearningUnitService {
     await this.authorizationService.assertTeacherOwnsClass(user, await this.resolveClassId(unit));
     Object.assign(unit, updateDto);
     return await this.learningUnitRepository.save(unit);
+  }
+
+  /**
+   * Mover una lección a otro tema (27/10, Contenido del curso): solo dentro de la misma clase, y queda al final del tema
+   * de destino. Lleva consigo sus explicaciones, ejercicios y el avance de los estudiantes (todo cuelga de la lección).
+   */
+  async mover(id: number, topicId: number, user: User): Promise<LearningUnit> {
+    const unit = await this.findOneRaw(id);
+    const origen = await this.resolveClassId(unit);
+    await this.authorizationService.assertTeacherOwnsClass(user, origen);
+    if (unit.topicId === topicId) return unit;
+    const destino = await this.resolveClassIdFromTopicId(topicId);
+    if (destino !== origen) throw new BadRequestException('Una lección solo se mueve a otro tema de la misma clase.');
+    const hermanas = await this.learningUnitRepository.find({ where: { topicId } });
+    unit.topicId = topicId;
+    unit.order = hermanas.reduce((max, l) => Math.max(max, l.order ?? 0), 0) + 1;
+    return this.learningUnitRepository.save(unit);
   }
 
   /** Qué se pierde si se elimina la lección (Fase 30). */

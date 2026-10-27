@@ -30,6 +30,13 @@ export class Section {
   @Column({ default: false })
   isPublished!: boolean;
 
+  /**
+   * Siempre abierto (27/10, prototipo del panel v2: requisito «libre»): el módulo no espera el dominio del anterior.
+   * Sirve para un módulo de repaso, de proyecto o de lecturas que se puede hacer en cualquier orden.
+   */
+  @Column({ default: false })
+  abiertoSiempre!: boolean;
+
   /** Archivado (Fase 30): guarda todo, no se ve para el estudiante y se puede restaurar. Archivar también lo despublica. */
   @Column({ default: true })
   isActive!: boolean;

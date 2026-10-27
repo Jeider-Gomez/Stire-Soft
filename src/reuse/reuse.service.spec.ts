@@ -96,6 +96,24 @@ describe('ReuseService', () => {
     service = new ReuseService(dataSource as never, authorization as never);
   });
 
+  describe('duplicarTema (27/10)', () => {
+    it('copia el tema al final de su módulo, con «(copia)», explicaciones ocultas y ejercicios en borrador', async () => {
+      db.insertar(Topic, { id: 22, sectionId: 10, title: 'Tema 1b', order: 4, isActive: true });
+      const r = await service.duplicarTema(DOCENTE, 20);
+      expect(r.title).toBe('Tema 1 (copia)');
+      expect(r.resumen).toMatchObject({ topics: 1, learningUnits: 1, contents: 1, activities: 1, questions: 1 });
+      const copia = db.tabla(Topic).find((t) => t.id === r.id)!;
+      expect(copia).toMatchObject({ sectionId: 10, order: 5 });
+      const unidad = db.tabla(LearningUnit).find((u) => u.topicId === r.id)!;
+      expect(db.tabla(Content).find((c) => c.learningUnitId === unidad.id)).toMatchObject({ isVisible: false, body: '## La idea' });
+      expect(db.tabla(Activity).filter((x) => x.learningUnitId === unidad.id).map((x) => x.status)).toEqual([PublicationStatus.DRAFT]);
+      expect(authorization.assertTeacherOwnsClass).toHaveBeenCalledWith(DOCENTE, ORIGEN);
+    });
+    it('un tema que no existe es 404', async () => {
+      await expect(service.duplicarTema(DOCENTE, 999)).rejects.toThrow('no encontrado');
+    });
+  });
+
   describe('importClassContent', () => {
     it('copia todo el árbol a la clase destino, después de lo que ya tenía y en borrador', async () => {
       const r = await service.importClassContent(DOCENTE, DESTINO, { sourceClassId: ORIGEN });

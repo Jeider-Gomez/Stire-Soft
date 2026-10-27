@@ -232,55 +232,7 @@ export class ReuseService {
 
         const temas = await manager.find(Topic, { where: { sectionId: seccion.id }, order: { order: 'ASC', id: 'ASC' } });
         for (const tema of temas) {
-          const nuevoTema = await manager.save(Topic, manager.create(Topic, {
-            title: tema.title,
-            description: tema.description,
-            order: tema.order,
-            isActive: tema.isActive,
-            sectionId: nuevaSeccion.id,
-          }));
-          resumen.topics++;
-
-          const unidades = await manager.find(LearningUnit, { where: { topicId: tema.id }, order: { order: 'ASC', id: 'ASC' } });
-          for (const unidad of unidades) {
-            const nuevaUnidad = await manager.save(LearningUnit, manager.create(LearningUnit, {
-              title: unidad.title,
-              description: unidad.description,
-              difficulty: unidad.difficulty,
-              order: unidad.order,
-              isActive: unidad.isActive,
-              topicId: nuevoTema.id,
-            }));
-            resumen.learningUnits++;
-
-            const contenidos = await manager.find(Content, { where: { learningUnitId: unidad.id }, order: { order: 'ASC', id: 'ASC' } });
-            for (const contenido of contenidos) {
-              await manager.save(Content, manager.create(Content, {
-                learningUnitId: nuevaUnidad.id,
-                title: contenido.title,
-                type: contenido.type,
-                body: contenido.body,
-                metadata: clonar(contenido.metadata),
-                order: contenido.order,
-                isVisible: contenido.isVisible,
-              }));
-              resumen.contents++;
-            }
-
-            const actividades = await manager.find(Activity, { where: { learningUnitId: unidad.id }, order: { order: 'ASC', id: 'ASC' } });
-            for (const actividad of actividades) {
-              if (actividad.status === PublicationStatus.ARCHIVED) continue;
-              const copia = await this.copiarActividad(manager, actividad, {
-                learningUnitId: nuevaUnidad.id,
-                createdBy: user.id,
-                status: actividad.status,
-                order: actividad.order,
-                title: actividad.title,
-              });
-              resumen.questions += copia.preguntas;
-              resumen.activities++;
-            }
-          }
+          await this.copiarTema(manager, tema, { sectionId: nuevaSeccion.id, order: tema.order, title: tema.title, createdBy: user.id, oculto: false }, resumen);
         }
       }
       return resumen;
@@ -290,6 +242,86 @@ export class ReuseService {
       await this.dataSource.query('UPDATE `classes` SET `vecesCopiada` = `vecesCopiada` + 1 WHERE `id` = ?', [origen.id]);
     }
     return resumen;
+  }
+
+  /**
+   * Duplicar un tema con sus lecciones, explicaciones y ejercicios (27/10, prototipo del panel v2: «Duplicar tema»). La
+   * copia queda al final del mismo módulo, con «(copia)» en el nombre, sus explicaciones ocultas y sus ejercicios en
+   * borrador: el estudiante no ve nada nuevo hasta que el docente lo revise y lo publique.
+   */
+  async duplicarTema(user: User, topicId: number): Promise<{ id: number; title: string; resumen: ResumenImportacion }> {
+    return this.dataSource.transaction(async (manager) => {
+      const tema = await manager.findOne(Topic, { where: { id: topicId } });
+      const seccion = tema ? await manager.findOne(Section, { where: { id: tema.sectionId } }) : null;
+      if (!tema || !seccion) throw new NotFoundException(`Tema ${topicId} no encontrado`);
+      await this.authorizationService.assertTeacherOwnsClass(user, seccion.classId);
+      const hermanos = await manager.find(Topic, { where: { sectionId: seccion.id } });
+      const resumen: ResumenImportacion = { sections: 0, topics: 0, learningUnits: 0, contents: 0, activities: 0, questions: 0 };
+      const copia = await this.copiarTema(manager, tema, {
+        sectionId: seccion.id,
+        order: hermanos.reduce((max, t) => Math.max(max, t.order ?? 0), 0) + 1,
+        title: `${tema.title} (copia)`.slice(0, 200),
+        createdBy: user.id,
+        oculto: true,
+      }, resumen);
+      return { id: copia.id, title: copia.title, resumen };
+    });
+  }
+
+  /** Copia un tema con sus lecciones, explicaciones y ejercicios. Con `oculto`, todo lo copiado queda sin publicar. */
+  private async copiarTema(
+    manager: EntityManager,
+    tema: Topic,
+    datos: { sectionId: number; order: number; title: string; createdBy: number; oculto: boolean },
+    resumen: ResumenImportacion,
+  ): Promise<Topic> {
+    const nuevoTema = await manager.save(Topic, manager.create(Topic, {
+      title: datos.title,
+      description: tema.description,
+      order: datos.order,
+      isActive: tema.isActive,
+      sectionId: datos.sectionId,
+    }));
+    resumen.topics++;
+    const unidades = await manager.find(LearningUnit, { where: { topicId: tema.id }, order: { order: 'ASC', id: 'ASC' } });
+    for (const unidad of unidades) {
+      const nuevaUnidad = await manager.save(LearningUnit, manager.create(LearningUnit, {
+        title: unidad.title,
+        description: unidad.description,
+        difficulty: unidad.difficulty,
+        order: unidad.order,
+        isActive: unidad.isActive,
+        topicId: nuevoTema.id,
+      }));
+      resumen.learningUnits++;
+      const contenidos = await manager.find(Content, { where: { learningUnitId: unidad.id }, order: { order: 'ASC', id: 'ASC' } });
+      for (const contenido of contenidos) {
+        await manager.save(Content, manager.create(Content, {
+          learningUnitId: nuevaUnidad.id,
+          title: contenido.title,
+          type: contenido.type,
+          body: contenido.body,
+          metadata: clonar(contenido.metadata),
+          order: contenido.order,
+          isVisible: datos.oculto ? false : contenido.isVisible,
+        }));
+        resumen.contents++;
+      }
+      const actividades = await manager.find(Activity, { where: { learningUnitId: unidad.id }, order: { order: 'ASC', id: 'ASC' } });
+      for (const actividad of actividades) {
+        if (actividad.status === PublicationStatus.ARCHIVED) continue;
+        const copia = await this.copiarActividad(manager, actividad, {
+          learningUnitId: nuevaUnidad.id,
+          createdBy: datos.createdBy,
+          status: datos.oculto ? PublicationStatus.DRAFT : actividad.status,
+          order: actividad.order,
+          title: actividad.title,
+        });
+        resumen.questions += copia.preguntas;
+        resumen.activities++;
+      }
+    }
+    return nuevoTema;
   }
 
   /**

@@ -18,6 +18,7 @@ import { PrerequisitesGuard } from '../common/guards/prerequisites.guard';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../user/entities/user.entity';
 
+import { MoverLeccionDto } from './dto/mover-leccion.dto';
 @Controller('learning-unit')
 @UseGuards(JwtAuthGuard)
 export class LearningUnitController {
@@ -73,6 +74,14 @@ export class LearningUnitController {
   @Roles('docente', 'admin')
   update(@Param('id') id: string, @Body() updateDto: UpdateLearningUnitDto, @GetUser() user: User) {
     return this.learningUnitService.update(+id, updateDto, user);
+  }
+
+  /** Mover la lección a otro tema de la misma clase: { topicId }. Queda al final de ese tema. */
+  @Patch(':id/mover')
+  @UseGuards(RolesGuard)
+  @Roles('docente', 'admin')
+  mover(@Param('id') id: string, @Body() dto: MoverLeccionDto, @GetUser() user: User) {
+    return this.learningUnitService.mover(+id, dto.topicId, user);
   }
 
   /** Qué se pierde si se elimina la lección; si hay trabajo de estudiantes, no se puede (se archiva). */

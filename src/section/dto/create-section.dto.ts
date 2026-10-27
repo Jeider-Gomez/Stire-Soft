@@ -27,4 +27,9 @@ export class CreateSectionDto {
   @IsOptional()
   @IsBoolean()
   isPublished?: boolean;
+
+  @ApiPropertyOptional({ description: 'Siempre abierto: no espera el dominio del módulo anterior', default: false })
+  @IsOptional()
+  @IsBoolean()
+  abiertoSiempre?: boolean;
 }

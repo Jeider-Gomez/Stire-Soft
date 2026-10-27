@@ -100,4 +100,23 @@ describe('LearningUnitService.findByClass — llega a la clase por la sección',
     await service.findByClass(5);
     expect(llamadas).toEqual(['join unit.topic topic', 'join topic.section section', 'where section.classId = :classId']);
   });
+
+});
+
+describe('LearningUnitService.mover — a otro tema de la misma clase (27/10)', () => {
+  const lecciones = { findOne: jest.fn(), find: jest.fn(), save: jest.fn(async (u: unknown) => u) };
+  const temas = { findOne: jest.fn(async ({ where }: { where: { id: number } }) => ({ id: where.id, sectionId: where.id === 9 ? 3 : where.id === 40 ? 30 : 3 })) };
+  const secciones = { findOne: jest.fn(async ({ where }: { where: { id: number } }) => ({ id: where.id, classId: where.id === 30 ? 77 : 5 })) };
+  const clases = { findOne: jest.fn(async () => ({ id: 5, teacherId: 10 })) };
+  const service = new LearningUnitService(lecciones as never, temas as never, secciones as never, new AuthorizationService(clases as never, { findOne: jest.fn() } as never));
+  const dueno = { id: 10, role: UserRole.DOCENTE } as Parameters<LearningUnitService['mover']>[2];
+
+  beforeEach(() => lecciones.findOne.mockResolvedValue({ id: 24, topicId: 7, order: 1 }));
+  it('pasa al final del tema de destino', async () => {
+    lecciones.find.mockResolvedValue([{ id: 1, order: 2 }, { id: 2, order: 6 }]);
+    await expect(service.mover(24, 9, dueno)).resolves.toMatchObject({ topicId: 9, order: 7 });
+  });
+  it('no se mueve a un tema de otra clase', async () => {
+    await expect(service.mover(24, 40, dueno)).rejects.toThrow('misma clase');
+  });
 });

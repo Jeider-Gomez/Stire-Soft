@@ -44,6 +44,13 @@ export class ReuseController {
     return this.reuseService.bank(user, query);
   }
 
+  @Post('topics/:topicId/duplicar')
+  @Roles('docente', 'admin')
+  @ApiOperation({ summary: 'Duplicar un tema con sus lecciones; la copia queda oculta y en borrador al final del módulo' })
+  duplicarTema(@Param('topicId', ParseIntPipe) topicId: number, @GetUser() user: User) {
+    return this.reuseService.duplicarTema(user, topicId);
+  }
+
   @Post('activities/:activityId/copy')
   @ApiOperation({ summary: 'Copiar un ejercicio propio a una unidad propia (desde el banco o como variante), en borrador' })
   copyActivity(
