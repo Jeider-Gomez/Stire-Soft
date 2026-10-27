@@ -15,6 +15,8 @@ export interface ClaseDelDocente {
   atRiskCount?: number
   asignatura?: AsignaturaInfo | null
   grupo?: string | null
+  /** Color de portada elegido por el docente; sin él, el automático por orden (utils/pestanasClase.ts). */
+  portada?: string | null
   periodo?: string | null
 }
 
@@ -27,6 +29,8 @@ export interface DatosClaseNueva {
   asignatura: AsignaturaInfo | null
   grupo: string
   periodo: string
+  /** Color de portada; null = automático. */
+  portada: string | null
 }
 
 /**
@@ -90,6 +94,7 @@ export function useClasesDocente() {
         asignaturaId: d.asignatura?.id,
         grupo: d.grupo.trim() || undefined,
         periodo: d.periodo.trim() || undefined,
+        portada: d.portada || undefined,
       })
       void useContextoDocente().recargar() // la barra superior toma la asignatura nueva
       let aviso = `Clase «${nueva.name}» creada con el código ${nueva.code}.`

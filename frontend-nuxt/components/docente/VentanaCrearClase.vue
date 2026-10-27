@@ -54,6 +54,7 @@
       </div>
 
       <!-- Copiar contenido: plantillas recomendadas para su asignatura, el resto agrupado, y sus clases (§2.3) -->
+      <DocenteSelectorPortada v-model="f.portada" />
       <DocenteElegirPlantilla v-model="f.sourceClassId" :plantillas="plantillas" :mis-clases="clases" :asignatura-nombre="f.asignatura?.nombre" />
 
       <div class="p-4 bg-stire-canvas rounded-xl border border-base-borde-sutil flex items-center justify-between gap-4">
@@ -92,7 +93,7 @@ const estado = inject(CLAVE_CLASES_DOCENTE)
 if (!estado) throw new Error('VentanaCrearClase necesita useClasesDocente() con provide(CLAVE_CLASES_DOCENTE).')
 const { clases, plantillas, cargarPlantillas, revisarCodigo, crearClase } = estado
 
-const f = reactive<DatosClaseNueva>({ name: '', code: '', description: '', requiresApproval: false, sourceClassId: props.plantillaInicial ?? null, asignatura: null, grupo: '', periodo: periodoActual() })
+const f = reactive<DatosClaseNueva>({ name: '', code: '', description: '', requiresApproval: false, sourceClassId: props.plantillaInicial ?? null, asignatura: null, grupo: '', periodo: periodoActual(), portada: null })
 const guardando = ref(false)
 const error = ref<string | null>(null)
 

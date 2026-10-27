@@ -105,7 +105,7 @@ const route = useRoute()
 const colapsado = useState('menu-colapsado', () => false)
 const { misClases } = useMisClases()
 
-const clases = ref<Array<{ id: number; name: string; code?: string }>>([])
+const clases = ref<Array<{ id: number; name: string; code?: string; portada?: string | null }>>([])
 const abierto = ref(false)
 const raiz = ref<HTMLElement | null>(null)
 const recordada = useState<number | null>('clase-docente-elegida', () => null)
@@ -121,7 +121,7 @@ const seccionMarcada = computed(() => seccionDelMenu(seccionActual.value))
 const ICONOS: Partial<Record<PestanaClase, unknown>> = { hoy: CalendarCheck, contenido: BookOpen, estudiantes: Users, entregas: Inbox, asistencia: ClipboardCheck }
 const TEXTO_PESTANA = Object.fromEntries(PESTANAS_CLASE.map((p) => [p.id, p.texto])) as Record<PestanaClase, string>
 const siglas = computed(() => siglasDeClases(clases.value))
-const colores = computed(() => Object.fromEntries(clases.value.map((c, i) => [c.id, colorDeClase(i)])) as Record<number, string>)
+const colores = computed(() => Object.fromEntries(clases.value.map((c, i) => [c.id, c.portada ?? colorDeClase(i)])) as Record<number, string>)
 
 function elegir(id: number) {
   recordada.value = id

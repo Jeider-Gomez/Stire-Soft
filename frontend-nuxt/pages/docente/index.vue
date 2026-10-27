@@ -181,7 +181,7 @@ provide(CLAVE_CLASES_DOCENTE, estado)
 const { clases: classes, cargando: isLoading, noLeidos: unreadMessages } = estado
 const nombre = computed(() => primerNombre(useAuthStore().user?.fullName))
 // Color y sigla iguales a los del menú lateral (ClasesDelMenu.vue): por el orden de todas las clases.
-const colores = computed(() => Object.fromEntries(classes.value.map((c, i) => [c.id, colorDeClase(i)])) as Record<number, string>)
+const colores = computed(() => Object.fromEntries(classes.value.map((c, i) => [c.id, c.portada ?? colorDeClase(i)])) as Record<number, string>)
 const siglas = computed(() => siglasDeClases(classes.value))
 const vista = ref<VistaClases>('tarjetas')
 function elegirVista(v: VistaClases) {

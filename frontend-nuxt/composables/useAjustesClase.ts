@@ -22,6 +22,8 @@ export interface ClassInfo {
   compartidaComoPlantilla?: boolean
   alcancePlantilla?: AlcancePlantilla
   enfoque?: string | null
+  /** Color de portada (src/class/portadas.ts); null = automático. */
+  portada?: string | null
   logrosActivos?: boolean
   categoriasLogro?: string | null
   dominioParaAvanzar?: number

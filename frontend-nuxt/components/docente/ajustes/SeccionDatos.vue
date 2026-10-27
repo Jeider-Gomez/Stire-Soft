@@ -23,6 +23,8 @@
       </div>
     </div>
 
+    <DocenteSelectorPortada v-model="editForm.portada" />
+
     <div>
       <label for="class-name" class="block text-xs font-semibold text-base-texto-primario mb-1">
         Nombre <span class="text-semantico-falla">*</span>
@@ -117,7 +119,8 @@ const editForm = reactive({
   description: '',
   asignatura: null as AsignaturaInfo | null,
   grupo: '',
-  periodo: ''
+  periodo: '',
+  portada: null as string | null
 })
 
 // Estado guardado (para comparar cambios)
@@ -126,7 +129,8 @@ const savedData = reactive({
   description: '',
   asignaturaId: null as number | null,
   grupo: '',
-  periodo: ''
+  periodo: '',
+  portada: null as string | null
 })
 
 const isSavingData = ref(false)
@@ -136,7 +140,8 @@ const codeCopied = ref(false)
 
 const hasChanges = computed(() => {
   return editForm.name.trim() !== savedData.name || editForm.description !== savedData.description ||
-    (editForm.asignatura?.id ?? null) !== savedData.asignaturaId || editForm.grupo.trim() !== savedData.grupo || editForm.periodo.trim() !== savedData.periodo
+    (editForm.asignatura?.id ?? null) !== savedData.asignaturaId || editForm.grupo.trim() !== savedData.grupo || editForm.periodo.trim() !== savedData.periodo ||
+    editForm.portada !== savedData.portada
 })
 
 function llenarFormulario(c: ClassInfo | null) {
@@ -145,11 +150,13 @@ function llenarFormulario(c: ClassInfo | null) {
   editForm.asignatura = c?.asignatura ?? null
   editForm.grupo = c?.grupo ?? ''
   editForm.periodo = c?.periodo ?? ''
+  editForm.portada = c?.portada ?? null
   savedData.name = editForm.name
   savedData.description = editForm.description
   savedData.asignaturaId = editForm.asignatura?.id ?? null
   savedData.grupo = editForm.grupo
   savedData.periodo = editForm.periodo
+  savedData.portada = editForm.portada
 }
 
 // El formulario se llena una sola vez, cuando llegan los datos de la clase (y después de guardar): si se llenara con cada
@@ -181,6 +188,7 @@ async function saveData() {
     if ((editForm.asignatura?.id ?? null) !== savedData.asignaturaId) body.asignaturaId = editForm.asignatura?.id ?? null
     if (editForm.grupo.trim() !== savedData.grupo) body.grupo = editForm.grupo.trim()
     if (editForm.periodo.trim() !== savedData.periodo) body.periodo = editForm.periodo.trim()
+    if (editForm.portada !== savedData.portada) body.portada = editForm.portada
 
     const updated = await props.ajustes.guardarDatos(body)
     llenarFormulario(updated)
