@@ -40,18 +40,21 @@ describe('Términos y mayoría de edad en la pantalla', () => {
     expect(texto).toContain('tu propia clave gratuita de Google AI Studio');
   });
 
-  it('la política avisa qué recibe Google, que no se envían nombre ni correo y que la investigación es aparte', () => {
+  it('la política avisa qué recibe Google, que no se envían nombre ni correo y que la investigación se autoriza al aceptar y se retira en el perfil', () => {
     const texto = JSON.stringify(POLITICA);
     expect(texto).toMatch(/Google puede usar ese contenido/);
     expect(texto).toMatch(/no le envía tu nombre ni tu correo/);
-    expect(texto).toMatch(/solo si lo autorizas aparte/);
+    expect(texto).toMatch(/fines investigativos, que autorizas al aceptar/);
+    expect(texto).toMatch(/retirar esa autorización cuando quieras/);
   });
 
-  it('ninguna casilla viene marcada y la investigación es opcional', () => {
+  it('una sola casilla, sin marcar, con la edad, los términos y los fines investigativos (Jeider, 26/10)', () => {
     const casillas = front('components/legal/CasillasAceptacion.vue');
     expect(casillas).not.toMatch(/checked/);
+    expect(casillas.match(/type="checkbox"/g)).toHaveLength(1);
     expect(casillas.match(/default: false/g)).toHaveLength(3);
-    expect(casillas).toContain('Opcional:');
+    expect(casillas).toContain('con fines investigativos');
+    expect(casillas).toContain('set: (v: boolean) => { mayorDeEdad.value = v; terminos.value = v; investigacion.value = v }');
   });
 
   it('el registro no deja crear la cuenta sin las dos casillas y envía la decisión', () => {

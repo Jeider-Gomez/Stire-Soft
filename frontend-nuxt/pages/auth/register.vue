@@ -227,7 +227,7 @@
           </div>
         </div>
 
-        <!-- Público de 18 años o más: edad y términos obligatorios, investigación opcional (utils/legal.ts). -->
+        <!-- Público de 18 años o más: una sola casilla con edad, términos y fines investigativos (utils/legal.ts). -->
         <LegalCasillasAceptacion v-model:mayor-de-edad="confirmaMayorDeEdad" v-model:terminos="aceptaTerminos" v-model:investigacion="consienteInvestigacion" :falta="faltaAceptar" class="mt-4" />
 
         <!-- Acciones: «Crear cuenta» siempre a la vista; lo opcional es un botón aparte. -->
@@ -345,7 +345,7 @@ function detectarBloqMayus(evento: KeyboardEvent) {
 async function handleRegister() {
   if (Object.keys(validar()).length) { enfocarPrimerFaltante(); return }
   faltaAceptar.value = !confirmaMayorDeEdad.value || !aceptaTerminos.value
-  if (faltaAceptar.value) { document.getElementById(confirmaMayorDeEdad.value ? 'acepta-terminos' : 'confirma-mayor-de-edad')?.focus(); return }
+  if (faltaAceptar.value) { document.getElementById('acepta-condiciones')?.focus(); return }
 
   isLoading.value = true
   errorMessage.value = ''

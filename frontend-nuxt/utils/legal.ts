@@ -128,9 +128,9 @@ export const POLITICA: DocumentoLegal = {
       parrafos: [
         'Para prestarte el servicio educativo: tus clases, ejercicios, repasos y progreso, y para que tu docente sepa a quién ayudar.',
         'Para mejorar STIRE: encontrar errores y pantallas difíciles.',
-        'Para investigación, solo si lo autorizas aparte. En las publicaciones nunca aparece tu nombre: se analizan los datos ' +
-          'de grupo con un código en lugar de tu nombre. Puedes cambiar esa decisión cuando quieras desde tu perfil, sin ' +
-          'ninguna consecuencia en tu clase.',
+        'Con fines investigativos, que autorizas al aceptar estas condiciones. En las publicaciones nunca aparece tu nombre: ' +
+          'se analizan los datos de grupo con un código en lugar de tu nombre. Puedes retirar esa autorización cuando quieras ' +
+          'desde tu perfil, sin ninguna consecuencia en tu clase.',
       ],
     },
     {
