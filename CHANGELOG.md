@@ -12,11 +12,11 @@ entry to the oldest.
 
 ---
 
-## v3.0.0 — panel del docente nuevo, identidad STIRE, Asistente y explicaciones alternativas · 27 de Octubre de 2026
+## v2.3.0 — panel del docente nuevo, identidad STIRE, Asistente y explicaciones alternativas · 27 de Octubre de 2026
 
 **Commit `63a8a7b6`. Desplegada: backend en Azure (con las migraciones `PortadaClase`, `AvisoEditado`,
-`ModuloAbiertoSiempre` y `ExplicacionesAlternativas`) y frontend en Vercel.** Es MAYOR porque cambia a fondo cómo se usa
-el panel del docente: el árbol de contenidos con ventanas encima pasa a ser un panel que se organiza en la página.
+`ModuloAbiertoSiempre` y `ExplicacionesAlternativas`) y frontend en Vercel.** Es MENOR: la `v3.0.0` se reserva para
+cuando el equipo haga la evaluación heurística humana del rediseño (decisión de Jeider, 27/10).
 
 **Identidad (decidida por Jeider el 26/10; José la revisa después, todo junto)**
 - STIRE-Soft pasa a llamarse **STIRE**. Logo nuevo: la mascota (una pantalla con gafas y sonrisa) y «stire_»; nítido y

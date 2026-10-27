@@ -113,7 +113,7 @@ en este momento" sin crear una rama que haya que mantener.
 |---|---|---|
 | CORRECCIÓN | Se arregla algo sin cambiar cómo se usa (lo que sale de la prueba con el equipo) | `v1.0.0` → `v1.0.1` |
 | MENOR | Llega una función nueva y lo de antes sigue igual | `v1.0.3` → `v1.1.0` |
-| MAYOR | Cambia a fondo cómo se usa (lo que se rediseñe después de la prueba) | `v1.4.0` → `v2.0.0` |
+| MAYOR | Cambia a fondo cómo se usa, **y solo después de la evaluación heurística humana del equipo** (la `v3.0.0` espera la del rediseño del 26–27/10) | `v1.4.0` → `v2.0.0` |
 
 **Cada versión, tres pasos:** (1) una entrada en `CHANGELOG.md` con su número, (2) las capturas
 de `docs/material-visual/vistas/` actualizadas en el mismo commit (mismos nombres de archivo: así
@@ -133,7 +133,7 @@ git push origin v1.0.1
 | `v2.0.0` | La que se presentó al profesor (06/10) tras aplicar las dos listas de chequeo |
 | `v2.1.0` | Commit `577a7fb` (20/10): ayuda completa (recorridos, menú «?», manual), voz con el Tutor y errores de la clase. La desplegada al 22/10 |
 | `v2.2.0` | Commit `6f64f96d` (23/10): público de 18 años o más, mejoras de la evaluación heurística y asistencia activa |
-| `v3.0.0` | Commit `63a8a7b6` (27/10): panel del docente nuevo (contenido que se organiza en la página), identidad STIRE con el Tutor como mascota, Asistente del docente y explicaciones alternativas. La desplegada al 27/10 |
+| `v2.3.0` | Commit `63a8a7b6` (27/10): panel del docente nuevo (contenido que se organiza en la página), identidad STIRE con el Tutor como mascota, Asistente del docente y explicaciones alternativas. La desplegada al 27/10 |
 
 **Para saber en qué versión vamos:** `git describe --tags` dice el último tag y cuántos commits van después. El
 `CHANGELOG.md` dice, en la entrada de cada versión, cuál es su commit y si es el que está desplegado.
