@@ -15,7 +15,7 @@ hecho se borra de aquí (queda en `CHANGELOG.md` y en los commits) y lo nuevo se
 | F3 | Avisos de errores repetidos y «no puede avanzar» también en «Por revisar» del Inicio | Hoy salen dentro de cada clase (Resumen y «Errores que más se repiten») |
 | F4 | **Contenido del curso como en el prototipo** (árbol Módulo › Tema › Unidad con estado, mapa «Para completar», editor de unidad con pestañas Lección / Actividades / Ajustes) | Lo siguiente. Prototipo: https://claude.ai/artifact/61bFSBKYLHEvho5RfF3HKv |
 | F6 | Presentación de la clase para los estudiantes (franja de portada y texto de bienvenida) | Usa la portada (B1) |
-| F5 | Revisar con el equipo el logo pequeño (28 px) y el lanzador nuevo del Tutor | Es territorio de José: que lo apruebe |
+| F5 | Revisar en el celular el logo pequeño (28 px), el pie y el lanzador nuevo del Tutor | Jeider decide; José lo verá después con lo demás |
 
 ## 2. Necesita el servidor (migración y comandos de despliegue)
 
