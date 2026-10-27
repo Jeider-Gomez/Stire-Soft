@@ -36,8 +36,12 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Sistema Tutor Inteligente con Repetición Espaciada y Evaluación Automática' }
       ],
       link: [
+        // El logo en la pestaña (scripts/identidad/exportar-png.js): SVG nítido; PNG y .ico para los navegadores que no
+        // usan SVG; y el ícono que iPhone y Android ponen al añadir STIRE a la pantalla de inicio.
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'alternate icon', type: 'image/x-icon', href: '/favicon.ico' }
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
+        { rel: 'icon', type: 'image/x-icon', sizes: '16x16 32x32', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' }
       ]
     }
   },
