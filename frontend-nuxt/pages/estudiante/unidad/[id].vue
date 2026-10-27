@@ -76,7 +76,10 @@
         id="explicacion"
         tabindex="-1"
         class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 md:p-8 shadow-sm space-y-6 text-xs text-base-texto-primario leading-relaxed">
-        <section v-for="content in unitContent" :key="content.id" class="space-y-2">
+        <section v-for="content in unitContent" :key="content.id" class="space-y-2"
+          :class="esAlternativa(content.cuando) ? 'rounded-lg border-l-4 border-stire-blue bg-stire-blue/5 p-4 -mx-1' : ''">
+          <!-- Explicación alternativa: otra forma de explicar lo mismo, que aparece cuando el estudiante la necesita. -->
+          <p v-if="esAlternativa(content.cuando)" class="text-[11px] font-bold uppercase tracking-wider text-stire-blue">Otra forma de verlo</p>
           <h2 v-if="content.title" class="text-sm font-bold text-base-texto-primario">
             {{ content.title }}
           </h2>
@@ -89,7 +92,8 @@
       </article>
 
       <!-- Practicar: es la forma de avanzar y de medir lo que sabes (docs/DISENO_INTERVENCION_DOCENTE.md §10.2) -->
-      <ValorarLeccion :unit-id="unitId" data-recorrido="valorar" />
+      <ValorarLeccion :unit-id="unitId" data-recorrido="valorar" @no-claro="buscarAlternativa" />
+      <p v-if="avisoAlternativa" role="status" class="text-xs font-semibold text-stire-blue">{{ avisoAlternativa }}</p>
 
       <section class="rounded-lg border border-acento-ambar-fuerte/30 bg-acento-ambar/10 p-5 space-y-3" aria-labelledby="practicar-titulo">
         <div class="flex flex-wrap items-start justify-between gap-3">
@@ -200,6 +204,7 @@ import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { useTutorStore } from '~/stores/tutor'
 import { useUnidadEstudiante } from '~/composables/useUnidadEstudiante'
+import { esAlternativa } from '~/utils/explicacionesAlternativas'
 import { insertadosDe } from '~/utils/contenidoLeccion'
 import { siguienteLeccion } from '~/utils/siguienteLeccion'
 import { notaModuloCerrado } from '~/utils/resultadoEntrega'
@@ -236,6 +241,7 @@ interface ContentBlock {
   body: string
   type?: string
   metadata?: Record<string, unknown> | null
+  cuando?: string
 }
 
 /** Video, PDF, imagen o recurso insertado (paso 6); el resto es texto en Markdown. */
@@ -261,6 +267,16 @@ const unitData = ref<UnitDetail | null>(null)
 // El nombre de la lección en la pestaña y para el lector de pantalla (WCAG 2.4.2).
 useHead({ title: computed(() => tituloConNombre(unitData.value?.title, route.path)) })
 const unitContent = ref<ContentBlock[]>([])
+// Al decir «No me quedó claro», si el docente preparó otra forma de explicarlo, aparece y se lleva al estudiante allí.
+const avisoAlternativa = ref<string | null>(null)
+async function buscarAlternativa() {
+  const antes = new Set(unitContent.value.map((c) => c.id))
+  const ahora = (await contenidos(unitId).catch(() => null)) ?? unitContent.value
+  unitContent.value = ahora
+  const nueva = ahora.find((c) => !antes.has(c.id))
+  avisoAlternativa.value = nueva ? 'Tu docente preparó otra forma de explicarlo: la tienes arriba, marcada «Otra forma de verlo».' : null
+  if (nueva) volverALaExplicacion()
+}
 const recommendedActivity = ref<NextActivityRecommendation | null>(null)
 const tutorStore = useTutorStore()
 const enPausa = computed(() => recommendedActivity.value?.reason === 'pausa')

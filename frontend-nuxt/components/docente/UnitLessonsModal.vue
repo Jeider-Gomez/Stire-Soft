@@ -74,6 +74,7 @@
                 </span>
                 <span v-else-if="item.body" class="block text-base-texto-secundario text-[11px] truncate mt-0.5">{{ excerpt(item.body) }}</span>
               </button>
+              <DocenteCuandoExplicacion :id="item.id" :titulo="item.title" :cuando="item.cuando" class="shrink-0" @cambiado="(c: string) => (item.cuando = c)" />
 
               <div class="flex items-center gap-0.5 shrink-0">
                 <button :disabled="idx === 0 || isReordering" @click="moveLesson(idx, -1)"
@@ -168,6 +169,8 @@ interface LessonItem {
   metadata?: Record<string, unknown> | null
   order: number
   isVisible: boolean
+  /** Cuándo la ve el estudiante (explicaciones alternativas). */
+  cuando?: string
 }
 
 /** Video, PDF, imagen o recurso insertado (paso 6): se editan con su propio formulario, no con el editor de texto. */

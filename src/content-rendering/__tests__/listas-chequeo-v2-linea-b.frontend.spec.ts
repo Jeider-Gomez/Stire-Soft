@@ -218,7 +218,7 @@ describe('UI-01 · el algoritmo en pseudocódigo, diagrama de flujo y paso a pas
 
 describe('UI-04 · «¿Te sirvió esta explicación?» y recursos que fallan', () => {
   it('la lección pregunta al final y, con «No», el Tutor la explica de otra forma', () => {
-    expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toContain('<ValorarLeccion :unit-id="unitId" data-recorrido="valorar" />');
+    expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toContain('<ValorarLeccion :unit-id="unitId" data-recorrido="valorar" @no-claro="buscarAlternativa" />');
     const v = leer('components', 'ValorarLeccion.vue');
     expect(v).toContain('tutorStore.pedirOtraExplicacion(');
     expect(leer('stores', 'tutor.ts')).toMatch(/modoOtraExplicacion\.value \? 'otra-explicacion'/);

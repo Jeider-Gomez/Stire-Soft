@@ -65,6 +65,8 @@ import { useTutorStore } from '~/stores/tutor'
 import { useStudentStore } from '~/stores/student'
 
 const props = defineProps<{ unitId: number }>()
+// La página vuelve a pedir las explicaciones: puede que el docente haya preparado una alternativa para este caso.
+const emit = defineEmits<{ 'no-claro': [] }>()
 const api = useApi()
 const { messageOf } = useApiErrorMessage()
 const tutorStore = useTutorStore()
@@ -134,6 +136,7 @@ async function valorar(util: boolean) {
     const yaEraNo = voto.value === false
     voto.value = util
     if (!util && yaEraNo) enviado.value = true
+    if (!util) emit('no-claro')
   } catch (e) {
     error.value = messageOf(e, 'No se pudo guardar tu respuesta. Intenta de nuevo.')
   } finally {
