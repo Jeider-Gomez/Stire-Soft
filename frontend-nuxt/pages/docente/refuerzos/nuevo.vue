@@ -178,6 +178,10 @@ const f = reactive({
   fechaLimite: '',
 })
 
+// Ítem 13: salir con cambios sin guardar pregunta antes. La foto se toma cuando termina de cargar la clase, con el
+// título y el mensaje que propone STIRE ya puestos.
+const { guardado } = useSalirSinGuardar(() => ({ ...f }))
+
 const nombreLeccion = (id: number) => modulos.value.flatMap((m) => m.lecciones).find((l) => l.id === id)?.title ?? ''
 const ejercicioDe = (id: number | null) => sugerencias.value.ejercicios.find((e) => e.id === id)
 function etiquetaEjercicio(e: Ejercicio) {
@@ -243,6 +247,7 @@ onMounted(async () => {
     await cargarClase()
   } finally {
     cargando.value = false
+    guardado()
   }
 })
 
@@ -269,6 +274,7 @@ async function guardar() {
         return { tipo: p.tipo, entregaId: p.entregaId }
       }),
     })
+    guardado()
     await navigateTo(`/docente/refuerzos?clase=${claseId.value}`)
   } catch (err) {
     error.value = messageOf(err, 'No se pudo asignar.')

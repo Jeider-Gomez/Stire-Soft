@@ -15,7 +15,7 @@
         </div>
         <div class="flex items-center gap-2">
           <p v-if="error" role="alert" class="text-[11px] text-semantico-falla max-w-xs">{{ error }}</p>
-          <button type="button" @click="$emit('cancel')"
+          <button type="button" @click="cancelar"
             class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario">
             Cancelar
           </button>
@@ -186,6 +186,11 @@ Una pregunta corta para que el estudiante piense antes de pasar a los ejercicios
 
 const title = ref(props.initialTitle)
 const body = ref(props.initialBody)
+// Ítem 13: volver sin guardar la explicación pregunta antes (también al cambiar de página o cerrar la pestaña).
+const { puedeSalir } = useSalirSinGuardar(() => ({ title: title.value, body: body.value }))
+async function cancelar() {
+  if (await puedeSalir()) emit('cancel')
+}
 const titleRef = ref<HTMLInputElement | null>(null)
 const bodyRef = ref<HTMLTextAreaElement | null>(null)
 

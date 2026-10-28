@@ -4,7 +4,7 @@ import * as path from 'path';
 const raiz = path.join(__dirname, '..', '..', '..', 'frontend-nuxt');
 const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'components/CodeEditor.vue': { lineas: 438, motivo: 'Editor CodeMirror; edicion, estado y comandos forman una sola herramienta.' },
-  'components/docente/LessonEditor.vue': { lineas: 336, motivo: 'Editor de una leccion; contenido y estado de edicion van juntos.' },
+  'components/docente/LessonEditor.vue': { lineas: 341, motivo: 'Editor de una leccion; contenido y estado de edicion van juntos.' },
   'components/docente/SelectorAsignatura.vue': { lineas: 324, motivo: 'Seleccion y busqueda del catalogo forman una unica interaccion.' },
   'components/docente/ArbolContenidos.vue': { lineas: 401, motivo: 'Árbol de módulos, temas y lecciones con menú Más y bloques archivados; Fase 30 B3.' },
   'components/docente/UnitLessonsModal.vue': { lineas: 403, motivo: '+8 el 27/10: modo incrustado para editar la explicación en la página (Contenido como el prototipo). Gestiona las lecciones de una unidad en una sola ventana.' },
@@ -19,7 +19,7 @@ const GRANDES: Record<string, { lineas: number; motivo: string }> = {
   'pages/docente/contenidos.vue': { lineas: 407, motivo: 'Coordina estados y acciones del arbol curricular; el arbol se extrae a ArbolContenidos.vue.' },
   'pages/docente/index.vue': { lineas: 426, motivo: 'Inicio docente con tarjetas de clase y sección de clases archivadas; Fase 30 B4.' },
   'pages/docente/rendimiento.vue': { lineas: 364, motivo: 'Panel de analitica del rendimiento; filtros y metricas describen una misma vista.' },
-  'pages/docente/ejercicios/crear.vue': { lineas: 411, motivo: 'Orquesta el alta de ejercicio y delega configuracion especifica a constructores por tipo.' },
+  'pages/docente/ejercicios/crear.vue': { lineas: 416, motivo: 'Orquesta el alta de ejercicio y delega configuracion especifica a constructores por tipo.' },
   'pages/estudiante/index.vue': { lineas: 392, motivo: 'Dashboard del aprendizaje del estudiante; el aviso de solicitud de rol se separo a AvisoSolicitudRol.vue. 415 -> 392 el 08/10: el avance del curso y del dominio salieron a TuAvance.vue.' },
   'pages/estudiante/evaluacion/[activityId].vue': { lineas: 369, motivo: '+2 el 27/10: qué son los casos de prueba, a la vista (ítem 4 de la evaluación heurística). 411 -> 366 el 10/10: la tarjeta del caso de prueba salió a CasoPrueba.vue; +1 «Lo que vas a usar» (ConceptosEjercicio.vue). Orquesta una evaluacion y selecciona los componentes existentes segun el tipo de actividad. +3 el 07/10: el nombre del ejercicio en el título de la página (WCAG 2.4.2). +6 el 07/10: plegar el enunciado (hallazgo de José, S08-E01); la franja y su memoria ya están fuera (FranjaPanelPlegado.vue, usePanelPlegable.ts). 537 -> 423 el 07/10: el resultado de la entrega salió a ResultadoEntrega.vue (y SinIntentos.vue). 411 el 08/10: la guía paso a paso (PasosCodigo.vue) entra y «Cómo se califica» sale a ComoSeCalifica.vue.' },
   'pages/estudiante/unidad/[id].vue': { lineas: 407, motivo: 'Orquesta la vista de una unidad; los bloques de contenido ya tienen componentes especializados. +3 el 07/10: el nombre de la lección en el título de la página (WCAG 2.4.2). +10 el 27/10: explicaciones alternativas al decir «No me quedó claro». +2 el 27/10: «dominio» explicado en la barra (ítem 4 de la evaluación heurística).' },

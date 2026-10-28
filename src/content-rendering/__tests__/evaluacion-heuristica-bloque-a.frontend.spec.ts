@@ -112,3 +112,61 @@ describe('Ítem 8: lo que se borra se puede deshacer', () => {
     expect(leer('components', 'mensajes', 'AvisosClase.vue')).toContain('borrado.`, deshacer })');
   });
 });
+
+const { vigilarCambios, PREGUNTA_SALIR } = cargar<{
+  vigilarCambios: (d: () => unknown) => { sucio: () => boolean; guardado: () => void };
+  PREGUNTA_SALIR: { titulo: string; accion: string; cancelar: string };
+}>('cambiosSinGuardar');
+
+describe('Ítem 13: salir sin guardar pregunta antes', () => {
+  it('solo hay cambios si lo escrito difiere de lo que había al abrir o al último guardado', () => {
+    const f = { titulo: 'Variables', cuerpo: '' };
+    const { sucio, guardado } = vigilarCambios(() => ({ ...f }));
+    expect(sucio()).toBe(false);
+    f.cuerpo = 'let x = 1';
+    expect(sucio()).toBe(true);
+    guardado();
+    expect(sucio()).toBe(false);
+    f.cuerpo = '';
+    expect(sucio()).toBe(true);
+  });
+
+  it('la pregunta deja seguir editando y no usa el cuadro del navegador para cambiar de página', () => {
+    expect(PREGUNTA_SALIR.titulo).toBe('¿Salir sin guardar?');
+    expect(PREGUNTA_SALIR.cancelar).toBe('Seguir editando');
+    const c = leer('composables', 'useSalirSinGuardar.ts');
+    expect(c).toContain('onBeforeRouteLeave(() => puedeSalir())');
+    expect(c).toContain("addEventListener('beforeunload'");
+    expect(c).toContain('confirmar({ ...PREGUNTA_SALIR })');
+    expect(c).not.toContain('window.confirm');
+  });
+
+  it('la ventana base espera la respuesta antes de cerrarse con la X, Escape o el fondo', () => {
+    expect(leer('components', 'admin', 'AdminDialogo.vue')).toContain('if (props.antesDeCerrar && !(await props.antesDeCerrar())) return');
+  });
+
+  it.each([
+    ['components/docente/contenidos/VentanaEditarLeccion.vue'],
+    ['components/docente/contenidos/VentanaEditarTema.vue'],
+    ['components/docente/contenidos/VentanaEditarModulo.vue'],
+    ['components/docente/contenidos/VentanaCrear.vue'],
+    ['components/docente/ejercicios/VentanaEditarEjercicio.vue'],
+  ])('%s pregunta al cerrar y al cancelar', (archivo) => {
+    const v = leer(archivo);
+    expect(v).toContain('useSalirSinGuardar(');
+    expect(v).toContain(':antes-de-cerrar="puedeSalir"');
+    expect(v).toContain('@click="cancelar"');
+    expect(v).not.toMatch(/@click="\$?emit\('cerrar'\)">\s*Cancelar/);
+  });
+
+  it('el editor de la explicación y las páginas de crear ejercicio y refuerzo también preguntan', () => {
+    expect(leer('components', 'docente', 'LessonEditor.vue')).toContain('if (await puedeSalir()) emit(\'cancel\')');
+    // Tras guardar se toma la foto nueva, para que salir después no pregunte.
+    expect(leer('pages', 'docente', 'ejercicios', 'crear.vue')).toMatch(/created\.value = \{[^\n]*\}\s*guardado\(\)/);
+    expect(leer('pages', 'docente', 'refuerzos', 'nuevo.vue')).toMatch(/guardado\(\)\s*await navigateTo/);
+  });
+
+  it('el editor de ejercicios cuenta también los cambios en las respuestas', () => {
+    expect(leer('components', 'docente', 'ejercicios', 'VentanaEditarEjercicio.vue')).toContain('respuestasCambiaron:');
+  });
+});

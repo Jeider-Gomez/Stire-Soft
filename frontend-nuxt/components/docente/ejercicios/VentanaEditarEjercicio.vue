@@ -4,7 +4,7 @@
        si es una variante recién duplicada), Tab no se sale, Escape cierra y el foco vuelve a su botón «Editar». -->
   <Teleport to="body">
     <AdminDialogo id-titulo="edit-exercise-title" :titulo="variante ? 'Revisar la variante' : 'Editar ejercicio'" :subtitulo="ejercicio.title"
-      ancho="4xl" :devolver-foco="`editar-ejercicio-${ejercicio.id}`" :ocupado="guardando" @cerrar="emit('cerrar')">
+      ancho="4xl" :devolver-foco="`editar-ejercicio-${ejercicio.id}`" :ocupado="guardando" :antes-de-cerrar="puedeSalir" @cerrar="emit('cerrar')">
       <template #icono><Pencil :size="18" aria-hidden="true" /></template>
       <form class="space-y-4 text-xs" novalidate @submit.prevent="guardarCambios">
         <!-- Editar lo ya publicado (27/10): se puede, y se dice qué pasa al guardar. -->
@@ -104,7 +104,7 @@
         </details>
         <p v-if="error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
         <div class="flex justify-end gap-2">
-          <button type="button" class="btn-stire-secondary min-h-[44px]" :disabled="guardando" @click="emit('cerrar')">Cancelar</button>
+          <button type="button" class="btn-stire-secondary min-h-[44px]" :disabled="guardando" @click="cancelar">Cancelar</button>
           <button type="submit" :disabled="guardando" class="btn-stire-primary min-h-[44px] disabled:opacity-50">
             {{ guardando ? 'Guardando…' : 'Guardar cambios' }}
           </button>
@@ -209,6 +209,16 @@ onMounted(async () => {
     r.error = messageOf(err, 'No se pudieron cargar las respuestas del ejercicio.')
   }
 })
+
+// Ítem 13: con cambios sin guardar (en el formulario o en las respuestas, comparadas con las guardadas), la X, Escape,
+// el fondo y «Cancelar» preguntan antes de cerrar.
+const { puedeSalir } = useSalirSinGuardar(() => ({
+  ...f,
+  respuestasCambiaron: r.estado === 'editable' && r.base !== '' && stableJson(editorActivo()?.validateAndGetConfig(f.totalPoints).config) !== r.base,
+}))
+async function cancelar() {
+  if (await puedeSalir()) emit('cerrar')
+}
 
 function alternarVistaPrevia() {
   r.errorEditor = null

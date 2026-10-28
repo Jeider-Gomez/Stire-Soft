@@ -1,6 +1,6 @@
 <template>
   <!-- Editar un tema: título, descripción y orden. Base común de ventanas (foco, Tab atrapado, Escape). -->
-  <AdminDialogo id-titulo="editar-tema-titulo" titulo="Editar tema" :subtitulo="tema.title" :devolver-foco="`mas-tema-${tema.id}`" :ocupado="guardando" @cerrar="emit('cerrar')">
+  <AdminDialogo id-titulo="editar-tema-titulo" titulo="Editar tema" :subtitulo="tema.title" :devolver-foco="`mas-tema-${tema.id}`" :ocupado="guardando" :antes-de-cerrar="puedeSalir" @cerrar="emit('cerrar')">
     <template #icono><Folder :size="18" aria-hidden="true" /></template>
     <form class="space-y-4 text-xs" novalidate @submit.prevent="guardar">
       <div>
@@ -21,7 +21,7 @@
       </div>
       <p v-if="error" id="editar-tema-error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
       <div class="flex items-center justify-end gap-2 pt-1">
-        <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia font-semibold" :disabled="guardando" @click="emit('cerrar')">Cancelar</button>
+        <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia font-semibold" :disabled="guardando" @click="cancelar">Cancelar</button>
         <button type="submit" :disabled="guardando" class="min-h-[44px] px-5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold hover:bg-acento-ambar disabled:opacity-50 inline-flex items-center gap-2">
           <Loader2 v-if="guardando" :size="14" class="animate-spin" aria-hidden="true" />
           {{ guardando ? 'Guardando…' : 'Guardar tema' }}
@@ -45,6 +45,12 @@ if (!estado) throw new Error('VentanaEditarTema necesita useContenidosCurso() co
 const f = reactive({ title: props.tema.title, description: props.tema.description ?? '', order: props.tema.order })
 const guardando = ref(false)
 const error = ref<string | null>(null)
+
+// Ítem 13: con cambios sin guardar, la X, Escape, el fondo y «Cancelar» preguntan antes de cerrar.
+const { puedeSalir } = useSalirSinGuardar(() => ({ ...f }))
+async function cancelar() {
+  if (await puedeSalir()) emit('cerrar')
+}
 
 async function guardar() {
   guardando.value = true

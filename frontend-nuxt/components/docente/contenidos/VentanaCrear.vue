@@ -8,6 +8,7 @@
     :id-descripcion="`crear-${nivel}-desc`"
     clase-icono="bg-acento-ambar/15 text-acento-ambar-fuerte"
     :ocupado="guardando"
+    :antes-de-cerrar="puedeSalir"
     @cerrar="$emit('cerrar')"
   >
     <template #icono><Plus :size="18" aria-hidden="true" /></template>
@@ -55,7 +56,7 @@
       <p v-if="error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
 
       <div class="flex items-center justify-end gap-3 pt-1">
-        <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario" :disabled="guardando" @click="$emit('cerrar')">
+        <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario" :disabled="guardando" @click="cancelar">
           Cancelar
         </button>
         <button type="submit" :disabled="guardando"
@@ -99,6 +100,12 @@ const descripcion = ref('')
 const dificultad = ref<'basico' | 'intermedio' | 'avanzado'>('basico')
 const guardando = ref(false)
 const error = ref<string | null>(null)
+
+// Ítem 13: con cambios sin guardar, la X, Escape, el fondo y «Cancelar» preguntan antes de cerrar.
+const { puedeSalir } = useSalirSinGuardar(() => ({ titulo: titulo.value, descripcion: descripcion.value }))
+async function cancelar() {
+  if (await puedeSalir()) emit('cerrar')
+}
 
 async function crear() {
   const t = titulo.value.trim()

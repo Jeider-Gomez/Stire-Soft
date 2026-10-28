@@ -278,6 +278,9 @@ const form = reactive({
   questionText: ''
 })
 
+// Ítem 13: salir con el título o el enunciado escritos y sin guardar pregunta antes.
+const { guardado } = useSalirSinGuardar(() => ({ titulo: form.title, enunciado: form.questionText, vista: previewConfig.value }))
+
 const codingBuilderRef = ref<InstanceType<typeof CodingExerciseBuilder> | null>(null)
 const mcqBuilderRef = ref<InstanceType<typeof McqExerciseBuilder> | null>(null)
 const fillCodeBuilderRef = ref<InstanceType<typeof FillCodeExerciseBuilder> | null>(null)
@@ -359,6 +362,7 @@ async function submitExercise() {
       attemptsAllowed: form.attemptsAllowed,
     }, exerciseType.value, previewConfig.value, publishImmediately.value)
     created.value = { title: form.title.trim(), published }
+    guardado()
   } catch (err) {
     submitError.value = messageOf(err, 'No se pudo guardar el ejercicio.')
   } finally {
@@ -374,6 +378,7 @@ function startAnother() {
   ;[codingBuilderRef, mcqBuilderRef, fillCodeBuilderRef, dragDropBuilderRef, matchingBuilderRef, orderingBuilderRef, htmlCssBuilderRef]
     .forEach((r) => (r.value as { reset?: () => void } | null)?.reset?.())
   step.value = 1
+  guardado()
 }
 
 async function onClassChange() {

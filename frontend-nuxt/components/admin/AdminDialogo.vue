@@ -49,7 +49,9 @@ const props = withDefaults(defineProps<{
   cierraConFondo?: boolean
   /** Ancho máximo: «md» para confirmar, «2xl» para un formulario largo, «3xl» para una lista con filtros. */
   ancho?: 'md' | '2xl' | '3xl' | '4xl'
-}>(), { claseIcono: 'bg-acento-ambar/15 text-acento-ambar-fuerte', devolverFoco: null, ocupado: false, cierraConFondo: true, idDescripcion: undefined, ancho: 'md' })
+  /** En un editor: pregunta antes de cerrar si hay cambios sin guardar (useSalirSinGuardar, ítem 13). */
+  antesDeCerrar?: (() => boolean | Promise<boolean>) | null
+}>(), { claseIcono: 'bg-acento-ambar/15 text-acento-ambar-fuerte', devolverFoco: null, ocupado: false, cierraConFondo: true, idDescripcion: undefined, ancho: 'md', antesDeCerrar: null })
 // Clases completas (no armadas con el ancho) para que Tailwind las encuentre al compilar.
 const ANCHOS = { md: 'max-w-md', '2xl': 'max-w-2xl', '3xl': 'max-w-3xl', '4xl': 'max-w-4xl' } as const
 
@@ -57,8 +59,10 @@ const emit = defineEmits<{ cerrar: [] }>()
 const dialogo = ref<HTMLElement | null>(null)
 const inicioClic = ref<EventTarget | null>(null)
 
-function cerrar() {
-  if (!props.ocupado) emit('cerrar')
+async function cerrar() {
+  if (props.ocupado) return
+  if (props.antesDeCerrar && !(await props.antesDeCerrar())) return
+  emit('cerrar')
 }
 
 onMounted(() => nextTick(() => (dialogo.value?.querySelector<HTMLElement>('[data-foco-inicial]') ?? dialogo.value)?.focus()))
