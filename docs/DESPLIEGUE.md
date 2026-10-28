@@ -189,7 +189,9 @@ márcalos «No es spam».
 
 **Operación diaria:** para las pruebas, Azure → `stire-servidor` → **Iniciar**; al terminar, **Detener** (o el apagado de
 las 23:00). **Actualizar:** `cd ~/stire && git pull && docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build`
-y las migraciones si hay nuevas. **Si un secreto se filtra** (se pegó en un chat, un documento…): se cambia en el servidor
+y las migraciones si hay nuevas. Si cambió `deploy/Caddyfile`, Caddy no lo ve hasta reiniciarlo (está montado como archivo):
+primero `docker run --rm -e API_DOMAIN=prueba.local -v ~/stire/deploy/Caddyfile:/etc/caddy/Caddyfile:ro caddy:2 caddy validate --config /etc/caddy/Caddyfile`
+(debe decir «Valid configuration») y luego `docker compose -f docker-compose.prod.yml --env-file .env.prod restart caddy`. **Si un secreto se filtra** (se pegó en un chat, un documento…): se cambia en el servidor
 (`ALTER USER` para las dos de MariaDB, `JWT_SECRET` cierra todas las sesiones y `TUTOR_KEY_ENCRYPTION_SECRET` solo mientras
 no haya claves de Gemini guardadas) y la de Gmail se revoca en su página y se crea otra.
 

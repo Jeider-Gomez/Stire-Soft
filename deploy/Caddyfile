@@ -1,6 +1,9 @@
 # HTTPS automático (Let's Encrypt) para el dominio del backend. Definir API_DOMAIN en .env.prod,
 # p. ej. stire-api.duckdns.org o 129-153-10-20.nip.io (nip.io no requiere registrar nada).
 {$API_DOMAIN} {
-	encode gzip
+	# La respuesta del Tutor por partes (/tutor/chat/stream, SSE) va sin comprimir: gzip retiene los trozos pequeños y el
+	# estudiante la vería llegar de golpe. Si se cambia este archivo: `docker compose ... restart caddy`.
+	@comprimible not path /tutor/chat/stream
+	encode @comprimible gzip
 	reverse_proxy backend:3001
 }
