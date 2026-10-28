@@ -12,8 +12,7 @@ junta las 10 en un informe corto: lo que más se repitió, ordenado por cuántas
 
 ## A quién buscar
 
-- **Mayores de 18 años.** Por ahora STIRE es solo para mayores de edad (los estudiantes de colegio esperan al plan de
-  menores, P33).
+- **Mayores de 18 años**, porque así lo pide hoy el registro de STIRE.
 - **Que no hayan usado STIRE** y que no sean del equipo.
 - De cada integrante, **una persona que no sepa programar** (primer semestre o de otra carrera) y **una de primero a
   tercer semestre de la Licenciatura en Informática**. Así salen 5 y 5.

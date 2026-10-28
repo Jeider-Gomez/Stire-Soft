@@ -8,8 +8,7 @@
 
 **Punto de partida:** la calificación de la IA del 27/10 sobre la v2.4.0, con el público de **grado 10 y 11 hasta tercer
 semestre** y la nota del más exigente (`docs/investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-27.md`): Likert
-**3,94/5** (4,21 para tercer semestre), severidad total 37, un problema grave (ítem 33). El bloque M (menores de edad,
-P33) **queda en pausa** por decisión del 27/10.
+**3,94/5** (4,21 para tercer semestre), severidad total 37, un problema grave (ítem 33).
 
 ## Qué falta en cada ítem
 

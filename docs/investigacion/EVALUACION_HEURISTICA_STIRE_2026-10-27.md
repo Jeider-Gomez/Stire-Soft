@@ -26,7 +26,7 @@ de entregar su evaluación** (`docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`
 **Lectura:**
 - **Para un universitario, STIRE sigue igual que el 22/10 (4,21).** La baja viene del público de colegio.
 - **Lo que más pesa con los de colegio:** la privacidad de menores (33) y el Tutor que exige una clave de Google solo para
-  mayores de 18 (15). Las dos se resuelven con el plan de menores (P33), que **por decisión del 27/10 queda en pausa**.
+  mayores de 18 (15). Las dos se resuelven con el plan de menores (P33).
 - **El lenguaje (4):** «dominio» aparece unas 100 veces en las pantallas del estudiante y solo 3 lugares lo explican.
 - **Contenido (17 y 18):** casi todo es texto y no hay nada para explorar por cuenta propia. No es un problema de la
   interfaz sino de los cursos y de la remodelación.
