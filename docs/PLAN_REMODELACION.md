@@ -140,6 +140,27 @@ Buena idea si tiene límites, porque cinco avisos al entrar es justo la saturaci
 | **4. Evaluación humana** | Al terminar la 3 | Evaluación heurística del equipo (P13) y WCAG otra vez. Se corrige lo grave | **`3.0.0`** |
 | **5. Investigación** | Después, o antes si el profesor tiene fecha | Ejercicios personalizados (P15), perfiles simulados (P16), prueba con 10 personas (P17), comparación (P18), artículos (P20) | `3.1.0`… |
 
+**Con qué se diseña la Fase 2.** El diseño no parte de cero: parte de lo que salió en las pruebas de la Fase 1, y cada
+pantalla nueva tiene que resolver lo que esas pruebas encontraron.
+
+| Insumo | Dónde | Qué aporta |
+|---|---|---|
+| Evaluación heurística de la IA (27/10) | `docs/investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-27.md` y el bloque R de `docs/calidad/EVALUACION_HEURISTICA_PLAN_A_5.md` | Los ítems que solo se arreglan rediseñando (abajo) |
+| Evaluación heurística del equipo (hasta el 5/11) | `docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md` | Lo mismo, visto por 5 personas; se compara con la de la IA al final |
+| Prueba con 10 personas (hasta el 6/11) | `docs/calidad/PRUEBA_CON_PERSONAS.md` | Dónde se pierde alguien que nunca usó STIRE |
+| Perfiles simulados (P16) | `docs/calidad/prueba-perfiles/` | Qué funciones se rompen o no se usan con cientos de usuarios |
+| Revisión del panel del docente con Jeider (P34) | este plan | Qué se queda en el docente |
+
+**Lo que la evaluación de la IA le pide a cada pantalla:**
+
+| Pantalla | Ítems por debajo de 5 | Qué tiene que lograr el diseño |
+|---|---|---|
+| Lección del estudiante (P09) | 6, 16, 18 | Un orden claro; el ejemplo paso a paso y la escalera a la vista; imagen o animación, no solo texto |
+| Inicio del estudiante (P06) | 17, 19, 24 | Algo para explorar por cuenta propia; el saludo y los logros celebrados sin saturar; menos botones flotantes |
+| Mi progreso (P08) | 25 | Una frase y una acción arriba; lo demás plegado |
+| Panel del docente (P10, P11) | 10, 12, 24, 25 | Un solo estilo; el menú no cambia al cambiar de pestaña; «Hoy» menos denso |
+| Toda la app (P05, P07) | 10, 22, 26 | Un logo por vista, la mascota solo cuando habla, interruptores de avisos, un solo juego de íconos |
+
 **¿Pausar las funciones nuevas o hacerlas ya?** Recomiendo **diseñarlas ya y construirlas en la remodelación**. Las
 funciones pendientes (saludo del Tutor, bloques, asistencia flotante, controles de avisos) entran al inventario y a las
 maquetas de la Fase 2. Así encajan desde el principio, en vez de sumarse encima como pasó con el panel del docente. Las
