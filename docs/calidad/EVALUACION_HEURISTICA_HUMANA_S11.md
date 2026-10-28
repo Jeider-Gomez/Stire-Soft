@@ -4,7 +4,7 @@
 Empower-peque-chef, adaptado a STIRE), repartido entre todos, para saber qué tan cerca está cada ítem de 5 y qué falta.
 Después de la remodelación se repite igual, y esa segunda evaluación abre la v3.0.0.
 
-**Resultado esperado:** cada uno entrega **su copia del Excel** con sus filas llenas (Likert, frecuencia, impacto y
+**Resultado esperado:** cada uno entrega **su pestaña de la hoja** con sus filas llenas (Likert, frecuencia, impacto y
 observaciones con una captura cuando haya un problema), más las filas 35 a 39, que responden todos.
 
 **Cuándo:** empieza cuando Jeider avise en el grupo que está desplegada la versión con las mejoras de esta semana
@@ -12,18 +12,18 @@ observaciones con una captura cuando haya un problema), más las filas 35 a 39, 
 
 ## El instrumento
 
-- **Excel:** `Evaluación Heurística - STIRE (equipo S11).xlsx`, en la carpeta compartida de OneDrive
-  (`Practica unicor/Evaluacion heuristica STIRE/`). No se sube al repositorio porque el instrumento es de otro grupo.
-- **Cada uno hace una copia** con su nombre (por ejemplo `... - JOSE.xlsx`) y llena **solo las filas con su nombre** en
-  la columna «Responsable». Las filas 35 a 39 (evaluación general y preguntas abiertas) las responden todos.
+- **Hoja de Google:** «Evaluación heurística STIRE · Semana 11 (equipo)», en el Drive de Jeider (el enlace va en el
+  grupo y en Trello). No se sube al repositorio porque el instrumento es de otro grupo.
+- **Cada uno duplica la pestaña «Evaluación»** (clic derecho › Duplicar), le pone su nombre y llena **solo las filas con
+  su nombre** en la columna «Responsable». Las filas 35 a 39 (evaluación general y preguntas abiertas) las responden
+  todos.
 - **Escalas:** Likert de 1 a 5; si hay un problema, frecuencia (0 a 2) e impacto (0 a 3). La severidad (frecuencia ×
-  impacto) la calcula el Excel. Si pones 5, frecuencia e impacto van en 0.
+  impacto) la calcula la hoja. Si pones 5, frecuencia e impacto van en 0.
 
 ## Reglas
 
-1. **Evalúa solo.** No leas las copias de los demás ni las evaluaciones anteriores de STIRE
-   (`docs/investigacion/EVALUACION_HEURISTICA_STIRE_*.md`, `docs/calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`) hasta
-   entregar. Lo valioso es lo que ves tú.
+1. **Es una revisión humana, como la vez pasada.** Evalúa solo: no abras las pestañas de los demás ni ninguna
+   evaluación anterior de STIRE (tampoco la de la IA) hasta entregar. Lo valioso es lo que ves tú.
 2. **Como usuario**, por lo que ves y haces; no por el código. Si dudas, compara con Moodle, Google Classroom, Canvas o
    Khan Academy.
 3. **Ponte en el lugar de** un estudiante de **grado 10 u 11, o de primer semestre, que no sabe programar**. En las
