@@ -214,3 +214,31 @@ describe('Ítems 27 y 29: cada error se ve claro y trae una salida', () => {
     expect(leer('components', 'exercise', 'CasoPrueba.vue')).toContain('Pedir ayuda al Tutor');
   });
 });
+
+const { revisarFormatoClave } = cargar<{ revisarFormatoClave: (t: string) => string | null }>('claveGoogle');
+
+describe('Ítem 7: activar el Tutor sin instrucciones de fuera', () => {
+  it('la guía dentro de STIRE lleva los 5 pasos, el enlace y qué hacer si algo falla', () => {
+    const g = leer('components', 'GuiaClaveGoogle.vue');
+    expect((g.match(/titulo: '/g) ?? []).length).toBe(5);
+    expect(g).toContain('Abrir Google AI Studio');
+    expect(g).toContain('¿Algo no salió?');
+    expect(g).toContain('18 años o más');
+  });
+
+  it('la usan el Tutor del estudiante y el Asistente del docente', () => {
+    expect(leer('components', 'tutor', 'TutorKeyPanel.vue')).toContain('<GuiaClaveGoogle />');
+    expect(leer('components', 'docente', 'asistente', 'Clave.vue')).toContain('<GuiaClaveGoogle />');
+  });
+
+  it.each([
+    ['AIzaSyA1234567890abcdefghijklmnopqrstu', null],
+    ['  AIzaSyA1234567890abcdefghijklmnopqrstu  ', null],
+    ['AIza Sy123', 'espacios'],
+    ['mi-proyecto-123', 'empiezan por «AIza»'],
+    ['AIzaSy12345', 'incompleta'],
+  ])('revisa la forma de «%s» antes de enviarla', (clave, esperado) => {
+    const r = revisarFormatoClave(clave);
+    if (esperado === null) expect(r).toBeNull(); else expect(r).toContain(esperado);
+  });
+});

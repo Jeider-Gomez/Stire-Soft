@@ -82,7 +82,8 @@ describe('el panel', () => {
   });
   it('sin clave, explica cómo conseguirla gratis; se abre desde el encabezado o con Ctrl+.', () => {
     expect(panel).toContain('<DocenteAsistenteClave v-if="tieneClave === false" />');
-    expect(leer('components', 'docente', 'asistente', 'Clave.vue')).toContain('aistudio.google.com/apikey');
+    expect(leer('components', 'docente', 'asistente', 'Clave.vue')).toContain('<GuiaClaveGoogle />'); // el enlace va en la guía (utils/claveGoogle.ts)
+    expect(leer('utils', 'claveGoogle.ts')).toContain('aistudio.google.com/apikey');
     expect(panel).toContain("(e.ctrlKey || e.metaKey) && e.key === '.'");
     expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('id="abrir-asistente"');
     expect(leer('layouts', 'teacher.vue')).toContain('<DocenteAsistentePanel />');

@@ -44,29 +44,10 @@
 
     <!-- Sin clave: instrucciones + formulario -->
     <div v-else class="space-y-4">
-      <!-- Pasos para conseguir la clave -->
+      <!-- Pasos para conseguir la clave, dentro de STIRE (ítem 7) -->
       <div>
-        <p class="text-xs font-bold text-base-texto-primario mb-2">
-          Clave de Google AI Studio — para usar el Tutor
-        </p>
-        <ol class="text-[11px] text-base-texto-secundario space-y-1.5 list-decimal pl-4">
-          <li>
-            Abre Google AI Studio:
-            <a
-              href="https://aistudio.google.com/apikey"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-acento-ambar-fuerte underline"
-            >https://aistudio.google.com/apikey</a>
-          </li>
-          <li>Inicia sesión con tu cuenta de Google (la misma de tu correo institucional o personal).</li>
-          <li>Pulsa <strong>«Create API key»</strong> (Crear clave de API).</li>
-          <li>Copia la clave que aparece y pégala aquí abajo.</li>
-        </ol>
-        <p class="text-[10px] text-base-texto-secundario mt-2 italic">
-          No requiere tarjeta de crédito. La capa gratuita tiene un límite por minuto y por día
-          — si lo alcanzas, el Tutor te lo dirá.
-        </p>
+        <p class="text-xs font-bold text-base-texto-primario mb-2">Activa el Tutor en 5 pasos</p>
+        <GuiaClaveGoogle />
       </div>
 
       <!-- Campo de la clave + botón guardar -->
@@ -91,6 +72,7 @@
 <script setup lang="ts">
 import { KeyRound } from 'lucide-vue-next'
 import { useTutorStore } from '~/stores/tutor'
+import { revisarFormatoClave } from '~/utils/claveGoogle'
 
 const { confirmar } = useConfirmar()
 const tutorStore = useTutorStore()
@@ -103,6 +85,9 @@ const showForm = ref(false)
 
 async function handleSave() {
   if (!apiKeyInput.value.trim()) return
+  // Ítem 7: si la clave no tiene la forma de una de Google, se dice qué revisar sin esperar al servidor.
+  const formato = revisarFormatoClave(apiKeyInput.value)
+  if (formato) { saveError.value = formato; return }
   isSaving.value = true
   saveError.value = ''
   const result = await tutorStore.saveApiKey(apiKeyInput.value.trim())
