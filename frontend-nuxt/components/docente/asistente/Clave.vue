@@ -12,7 +12,7 @@
       <input id="asistente-clave" v-model="clave" type="password" autocomplete="off" class="input-stire min-h-[40px] flex-1 text-sm" placeholder="Pega tu clave" />
       <button type="submit" class="btn-stire-primary min-h-[40px]" :disabled="guardando || clave.trim().length < 20">{{ guardando ? 'Verificando…' : 'Guardar' }}</button>
     </form>
-    <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
   </div>
 </template>
 

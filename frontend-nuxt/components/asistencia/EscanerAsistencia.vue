@@ -28,7 +28,7 @@
               <p v-if="ultimo.alerta" class="font-semibold text-acento-ambar-fuerte flex items-center gap-1"><TriangleAlert :size="14" aria-hidden="true" /> {{ ultimo.alerta }}</p>
             </div>
           </div>
-          <p v-else-if="ultimo" role="alert" class="rounded-lg border border-semantico-falla/40 bg-semantico-falla/5 p-3 font-semibold text-semantico-falla">{{ ultimo.mensaje }}</p>
+          <MensajeError v-else-if="ultimo" class="rounded-lg border border-semantico-falla/40 bg-semantico-falla/5 p-3 font-semibold">{{ ultimo.mensaje }}</MensajeError>
         </div>
         <p class="text-base-texto-secundario">{{ marcados }} de {{ total }} marcados</p>
       </div>

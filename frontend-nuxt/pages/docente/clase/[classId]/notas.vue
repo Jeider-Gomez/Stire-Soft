@@ -21,7 +21,7 @@
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario">
       <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Calculando las notas…
     </p>
-    <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
 
     <template v-if="libro">
       <!-- ─── Sin notas: es opcional. Formas de empezar, que después se cambian por completo. ─── -->

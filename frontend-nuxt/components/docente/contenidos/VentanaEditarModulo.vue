@@ -47,7 +47,7 @@
           class="w-32 min-h-[44px] px-3 rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none focus:ring-2 focus:ring-acento-ambar-fuerte/30 text-base-texto-primario"
         />
       </div>
-      <p v-if="error" id="editar-modulo-error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
+      <MensajeError v-if="error" id="editar-modulo-error" class="text-[11px]">{{ error }}</MensajeError>
       <div class="flex items-center justify-end gap-2 pt-1">
         <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia font-semibold" :disabled="guardando" @click="cancelar">
           Cancelar

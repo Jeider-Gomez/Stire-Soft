@@ -16,7 +16,7 @@
       {{ descripciones[nivel] }}
       No se borra nada: un docente o administrador puede recuperarlo cuando desee.
     </p>
-    <p v-if="error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
+    <MensajeError v-if="error" class="text-[11px]">{{ error }}</MensajeError>
     <div class="flex items-center justify-end gap-2 pt-2">
       <button
         type="button"

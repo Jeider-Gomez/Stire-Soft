@@ -53,7 +53,7 @@
         El módulo se creará como <strong class="text-base-texto-primario">Borrador</strong>. Los estudiantes no lo verán hasta que lo publiques.
       </div>
 
-      <p v-if="error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
+      <MensajeError v-if="error" class="text-[11px]">{{ error }}</MensajeError>
 
       <div class="flex items-center justify-end gap-3 pt-1">
         <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario" :disabled="guardando" @click="cancelar">

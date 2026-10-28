@@ -66,7 +66,7 @@
             <Sparkles :size="15" aria-hidden="true" /> {{ pensando ? 'Preparando el borrador…' : TAREAS[tarea].boton }}
           </button>
 
-          <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+          <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
 
           <!-- Pensando: un esqueleto, no un círculo que gira -->
           <div v-if="pensando" class="space-y-2" aria-hidden="true">

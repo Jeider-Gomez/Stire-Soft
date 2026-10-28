@@ -129,7 +129,7 @@
         </div>
       </section>
 
-      <p v-if="error" role="alert" class="text-semantico-falla">{{ error }}</p>
+      <MensajeError v-if="error">{{ error }}</MensajeError>
       <button type="submit" :disabled="guardando" class="px-5 py-2.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold inline-flex items-center gap-1.5 disabled:opacity-50">
         <Loader2 v-if="guardando" :size="14" class="animate-spin" aria-hidden="true" /><Send v-else :size="14" aria-hidden="true" />
         {{ f.tipo === 'reto' ? 'Asignar el reto' : 'Asignar el refuerzo' }}

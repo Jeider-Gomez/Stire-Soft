@@ -6,7 +6,7 @@
 <template>
   <div class="space-y-3">
     <p v-if="cargando" class="text-xs text-slate-700">Cargando ejercicios…</p>
-    <p v-else-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-else-if="error" class="text-xs" :reintentar="cargar">{{ error }}</MensajeError>
     <template v-else-if="ejercicios.length">
       <!-- A dónde ir: cuántos suben y el que más -->
       <div class="rounded-lg bg-base-blanco border border-base-borde-sutil p-3 space-y-1.5">
@@ -92,13 +92,16 @@ const niveles = computed(() => agruparEjercicios(ejercicios.value))
 const mejor = computed(() => recomendado(ejercicios.value))
 const resumen = computed(() => resumenEjercicios(ejercicios.value, textoReabre))
 
-onMounted(async () => {
+async function cargar() {
+  cargando.value = true
+  error.value = null
   try {
     ejercicios.value = await misEjercicios(props.unitId)
   } catch {
-    error.value = 'No se pudo cargar la lista de ejercicios. Prueba de nuevo en un momento.'
+    error.value = 'No se pudo cargar la lista de ejercicios.'
   } finally {
     cargando.value = false
   }
-})
+}
+onMounted(cargar)
 </script>

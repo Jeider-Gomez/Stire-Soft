@@ -3,7 +3,7 @@
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario">
       <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Abriendo la entrega…
     </p>
-    <p v-else-if="error && !envio" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-else-if="error && !envio" class="text-xs" :reintentar="cargar">{{ error }}</MensajeError>
 
     <template v-else-if="envio">
       <header class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">

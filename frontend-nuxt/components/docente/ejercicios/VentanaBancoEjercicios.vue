@@ -32,7 +32,7 @@
           </div>
         </div>
 
-        <p v-if="error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
+        <MensajeError v-if="error" class="text-[11px]">{{ error }}</MensajeError>
 
         <div class="overflow-y-auto border border-base-borde-sutil rounded-lg divide-y divide-base-borde-sutil min-h-[220px] max-h-[380px]" aria-live="polite" :aria-busy="buscando">
           <p v-if="buscando" class="p-8 text-center text-slate-600">

@@ -71,7 +71,7 @@
           <p v-if="r.estado === 'cargando'" role="status" class="flex items-center gap-2 text-slate-600">
             <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando respuestas…
           </p>
-          <p v-else-if="r.estado === 'error'" role="alert" class="text-semantico-falla text-[11px]">{{ r.error }}</p>
+          <MensajeError v-else-if="r.estado === 'error'" class="text-[11px]">{{ r.error }}</MensajeError>
           <p v-else-if="r.estado === 'sin-editor'" class="text-slate-600 text-[11px]">Las respuestas de este tipo de ejercicio no se editan desde aquí.</p>
           <div v-else-if="r.estado === 'bloqueado'" class="rounded-md border border-base-borde-fuerte bg-base-bg-secundario/40 p-3 space-y-2">
             <p class="text-[11px] text-base-texto-primario">
@@ -95,14 +95,14 @@
           </div>
           <DocenteExercisePreview v-if="r.vistaPrevia && r.vistaConfig && r.tipo"
             :type="r.tipo" :title="f.title" :statement="f.description" :config="r.vistaConfig" />
-          <p v-if="r.errorEditor" role="alert" class="text-semantico-falla text-[11px]">{{ r.errorEditor }}</p>
+          <MensajeError v-if="r.errorEditor" class="text-[11px]">{{ r.errorEditor }}</MensajeError>
         </section>
 
         <details class="border-t border-base-borde-sutil pt-3">
           <summary class="min-h-[44px] sm:min-h-0 flex items-center text-[11px] font-semibold text-slate-600 cursor-pointer select-none">Tutor IA en este ejercicio</summary>
           <div class="mt-3"><DocenteTutorSettingsPanel scope-type="activity" :scope-id="ejercicio.id" /></div>
         </details>
-        <p v-if="error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
+        <MensajeError v-if="error" class="text-[11px]">{{ error }}</MensajeError>
         <div class="flex justify-end gap-2">
           <button type="button" class="btn-stire-secondary min-h-[44px]" :disabled="guardando" @click="cancelar">Cancelar</button>
           <button type="submit" :disabled="guardando" class="btn-stire-primary min-h-[44px] disabled:opacity-50">

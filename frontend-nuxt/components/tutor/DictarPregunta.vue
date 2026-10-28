@@ -21,7 +21,7 @@
     <p v-if="estado === 'escuchando' && modo === 'grabacion'" class="absolute bottom-full right-0 mb-2 whitespace-nowrap px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-700 shadow-md">
       Grabando {{ segundos }} s · toca para terminar
     </p>
-    <p v-if="error" role="alert" class="absolute bottom-full right-0 mb-2 w-64 p-2.5 rounded-lg border border-semantico-falla/40 bg-white text-xs text-semantico-falla shadow-md">{{ error }}</p>
+    <MensajeError v-if="error" class="absolute bottom-full right-0 mb-2 w-64 p-2.5 rounded-lg border border-semantico-falla/40 bg-white text-xs shadow-md">{{ error }}</MensajeError>
   </span>
 </template>
 

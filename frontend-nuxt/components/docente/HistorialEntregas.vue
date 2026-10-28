@@ -9,7 +9,7 @@
       <p v-if="total" class="text-[11px] text-base-texto-secundario">{{ textoConteo(entregas.length, total) }}</p>
     </div>
 
-    <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
     <p v-else-if="cargando && !entregas.length" class="text-xs text-base-texto-secundario">Cargando…</p>
     <div v-else-if="!entregas.length" class="text-xs text-base-texto-secundario italic py-4">
       El estudiante no ha enviado soluciones aún.

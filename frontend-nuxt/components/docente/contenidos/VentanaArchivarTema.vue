@@ -7,7 +7,7 @@
       {{ lecciones === 0 ? 'Los estudiantes dejarán de ver este tema.' : lecciones === 1 ? 'Los estudiantes dejarán de ver su lección y sus ejercicios.' : `Los estudiantes dejarán de ver sus ${lecciones} lecciones y sus ejercicios.` }}
       No se borra nada: un administrador puede recuperarlo.
     </p>
-    <p v-if="error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
+    <MensajeError v-if="error" class="text-[11px]">{{ error }}</MensajeError>
     <div class="flex items-center justify-end gap-2">
       <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="archivando" @click="emit('cerrar')">Cancelar</button>
       <button type="button" :disabled="archivando" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="archivar">

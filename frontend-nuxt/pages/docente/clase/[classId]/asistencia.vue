@@ -23,7 +23,7 @@
     </header>
 
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario"><Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando…</p>
-    <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
 
     <!-- ─── La sesión abierta en pantalla ─── -->
     <section v-if="detalle" class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-sm p-5 space-y-4" aria-labelledby="sesion-titulo">
@@ -69,7 +69,7 @@
         <p class="text-base-texto-secundario">Si alguno no está en el salón, márcalo ausente: alguien marcó por él.</p>
       </div>
 
-      <p v-if="errorMarca" role="alert" class="text-xs text-semantico-falla">{{ errorMarca }}</p>
+      <MensajeError v-if="errorMarca" class="text-xs">{{ errorMarca }}</MensajeError>
       <p v-if="!detalle.estudiantes.length" class="text-xs text-base-texto-secundario">Esta clase aún no tiene estudiantes.</p>
       <ul v-else class="divide-y divide-base-borde-sutil">
         <li v-for="e in detalle.estudiantes" :key="e.id" class="py-2 flex flex-col sm:flex-row sm:items-center gap-2 justify-between">

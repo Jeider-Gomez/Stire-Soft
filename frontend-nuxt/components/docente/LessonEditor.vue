@@ -14,7 +14,7 @@
           </h2>
         </div>
         <div class="flex items-center gap-2">
-          <p v-if="error" role="alert" class="text-[11px] text-semantico-falla max-w-xs">{{ error }}</p>
+          <MensajeError v-if="error" class="text-[11px] max-w-xs">{{ error }}</MensajeError>
           <button type="button" @click="cancelar"
             class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario">
             Cancelar
@@ -81,7 +81,7 @@
               class="w-full px-2 py-1.5 rounded border border-base-borde-fuerte bg-base-blanco" />
             <input v-model="img.pie" type="text" maxlength="300" placeholder="Pie de la imagen (opcional)" aria-label="Pie de la imagen"
               class="w-full px-2 py-1.5 rounded border border-base-borde-fuerte bg-base-blanco" />
-            <p v-if="panelError" role="alert" class="text-semantico-falla">{{ panelError }}</p>
+            <MensajeError v-if="panelError">{{ panelError }}</MensajeError>
             <div class="flex justify-end gap-2">
               <button type="button" @click="panel = null" class="px-3 py-1.5 rounded-md borde-afordancia font-semibold">Cancelar</button>
               <button type="submit" :disabled="insertando" class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold disabled:opacity-50">{{ insertando ? 'Subiendo…' : 'Insertar imagen' }}</button>
@@ -93,7 +93,7 @@
               class="w-full px-2 py-1.5 rounded border border-base-borde-fuerte bg-base-blanco" />
             <input v-model="rec.url" type="text" placeholder="Enlace de YouTube, Genially, Canva, Google Drive, Scratch, PhET…" aria-label="Enlace o código para insertar"
               class="w-full px-2 py-1.5 rounded border border-base-borde-fuerte bg-base-blanco" />
-            <p v-if="panelError" role="alert" class="text-semantico-falla">{{ panelError }}</p>
+            <MensajeError v-if="panelError">{{ panelError }}</MensajeError>
             <div class="flex justify-end gap-2">
               <button type="button" @click="panel = null" class="px-3 py-1.5 rounded-md borde-afordancia font-semibold">Cancelar</button>
               <button type="submit" :disabled="insertando" class="px-3 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold disabled:opacity-50">{{ insertando ? 'Revisando…' : 'Insertar' }}</button>

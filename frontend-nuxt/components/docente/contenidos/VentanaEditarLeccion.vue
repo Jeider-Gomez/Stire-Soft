@@ -34,7 +34,7 @@
         <summary class="min-h-[44px] inline-flex items-center text-[11px] font-semibold text-slate-700 cursor-pointer hover:text-base-texto-primario select-none">Cómo ayuda el Tutor en esta lección</summary>
         <div class="mt-3"><DocenteTutorSettingsPanel scope-type="unit" :scope-id="leccion.id" /></div>
       </details>
-      <p v-if="error" id="editar-leccion-error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
+      <MensajeError v-if="error" id="editar-leccion-error" class="text-[11px]">{{ error }}</MensajeError>
       <div class="flex items-center justify-end gap-2 pt-1">
         <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia font-semibold" :disabled="guardando" @click="cancelar">Cancelar</button>
         <button type="submit" :disabled="guardando" class="min-h-[44px] px-5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold hover:bg-acento-ambar disabled:opacity-50 inline-flex items-center gap-2">

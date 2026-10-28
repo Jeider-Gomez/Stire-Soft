@@ -21,7 +21,7 @@
     </header>
 
     <p v-if="hecho" role="status" class="text-xs font-semibold text-semantico-pasa bg-semantico-pasa/10 border border-semantico-pasa/30 rounded-md px-3 py-2">{{ hecho }}</p>
-    <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
     <p v-if="cargando" role="status" class="text-xs text-base-texto-secundario">Cargando avisos…</p>
 
     <div v-else-if="!avisos.length" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-8 text-center text-xs text-base-texto-secundario space-y-1">
@@ -104,7 +104,7 @@
           <input v-model="avisarCambio" type="checkbox" class="mt-0.5 w-4 h-4 accent-acento-ambar-fuerte" />
           <span><span class="font-semibold">Avisarles del cambio</span><span class="block text-[11px] text-base-texto-secundario">Les llega otra notificación: «Actualizado: …». Úsalo si cambió algo importante, como la fecha o el lugar.</span></span>
         </label>
-        <p v-if="errorEnvio" role="alert" class="text-semantico-falla font-semibold">{{ errorEnvio }}</p>
+        <MensajeError v-if="errorEnvio" class="font-semibold">{{ errorEnvio }}</MensajeError>
         <div class="flex flex-wrap items-center justify-end gap-2">
           <p v-if="falta" class="mr-auto text-base-texto-secundario">{{ falta }}</p>
           <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia font-semibold" @click="abierta = false">Cancelar</button>

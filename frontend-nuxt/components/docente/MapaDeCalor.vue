@@ -12,7 +12,7 @@
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario p-4 bg-base-blanco rounded-xl border border-base-borde-sutil">
       <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Calculando el mapa de calor…
     </p>
-    <p v-else-if="error" role="alert" class="text-xs text-semantico-falla p-4 bg-base-blanco rounded-xl border border-semantico-falla/30">{{ error }}</p>
+    <MensajeError v-else-if="error" :reintentar="cargar" class="text-xs p-4 bg-base-blanco rounded-xl border border-semantico-falla/30">{{ error }}</MensajeError>
 
     <template v-else-if="mapa">
       <!-- Las cuatro preguntas del docente -->

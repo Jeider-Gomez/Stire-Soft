@@ -48,7 +48,7 @@
           </button>
         </li>
       </ol>
-      <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+      <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
     </template>
   </div>
 </template>

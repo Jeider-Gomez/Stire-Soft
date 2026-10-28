@@ -77,7 +77,7 @@
       <p id="quitar-estudiante-desc" class="text-xs text-slate-700">
         El estudiante perderá el acceso a las actividades y contenidos de esta clase. Podrá solicitar matricularse nuevamente si le compartes el código de ingreso.
       </p>
-      <p v-if="errorQuitarEstudiante" role="alert" class="text-semantico-falla text-[11px]">{{ errorQuitarEstudiante }}</p>
+      <MensajeError v-if="errorQuitarEstudiante" class="text-[11px]">{{ errorQuitarEstudiante }}</MensajeError>
       <div class="flex items-center justify-end gap-2">
         <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="procesandoQuitar" @click="estudianteAQuitar = null">Cancelar</button>
         <button type="button" :disabled="procesandoQuitar" class="min-h-[44px] px-5 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2" @click="ejecutarQuitarEstudiante">

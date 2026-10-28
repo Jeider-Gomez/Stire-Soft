@@ -6,7 +6,7 @@
       clase-icono="bg-semantico-falla/10 text-semantico-falla" :devolver-foco="`archivar-ejercicio-${ejercicio.id}`" :ocupado="archivando" @cerrar="emit('cerrar')">
       <template #icono><Archive :size="18" aria-hidden="true" /></template>
       <p id="archive-exercise-desc" class="text-xs text-slate-700">Los estudiantes dejarán de verlo. Sus entregas anteriores se conservan.</p>
-      <p v-if="error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
+      <MensajeError v-if="error" class="text-[11px]">{{ error }}</MensajeError>
       <div class="flex justify-end gap-2">
         <button type="button" data-foco-inicial class="btn-stire-secondary min-h-[44px]" :disabled="archivando" @click="emit('cerrar')">Cancelar</button>
         <button type="button" :disabled="archivando" class="min-h-[44px] px-5 py-2 rounded-lg bg-semantico-falla text-white text-xs font-bold disabled:opacity-50" @click="confirmar">

@@ -46,6 +46,10 @@
       <span>
         {{ diagnostico.mensaje }}
         <template v-if="!tc.actualOutput && limiteMs"> Si tarda más de {{ limiteMs }} ms (un bucle infinito), se corta.</template>
+        <!-- Ítem 29: el error trae su salida; el Tutor ve el caso que falló (su último «Probar código»). -->
+        <button type="button" class="ml-1 min-h-[32px] px-1.5 rounded-md font-semibold text-semantico-info underline underline-offset-2 hover:bg-semantico-info/10" @click="pedirAyuda">
+          Pedir ayuda al Tutor
+        </button>
       </span>
     </p>
     <!-- Qué repasar, con un ejemplo de otro problema (utils/conceptosEjercicio.ts). -->
@@ -64,7 +68,9 @@ import { BookMarked, Check, Lightbulb, X } from 'lucide-vue-next'
 import type { TestCase } from '~/types'
 import type { Diagnostico } from '~/utils/diagnosticoSalida'
 import { CONCEPTOS } from '~/utils/conceptosEjercicio'
+import { useTutorStore } from '~/stores/tutor'
 
 const props = defineProps<{ tc: TestCase; diagnostico: Diagnostico | null; limiteMs?: number | null }>()
 const repasar = computed(() => (props.diagnostico?.repasar ? CONCEPTOS[props.diagnostico.repasar] : null))
+const pedirAyuda = () => useTutorStore().openDrawer({ conPregunta: true })
 </script>

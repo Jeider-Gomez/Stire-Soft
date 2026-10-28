@@ -11,7 +11,7 @@
       <p class="text-[11px] text-base-texto-secundario">Sale de {{ docente ? 'lo que hace' : 'lo que haces' }} en STIRE. No cambia lo que {{ docente ? 've' : 'ves' }}: todos los formatos siguen disponibles.</p>
     </div>
 
-    <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
     <p v-else-if="!perfil" class="text-xs text-base-texto-secundario">Cargando…</p>
     <template v-else>
       <!-- El temario: dominado en verde, en proceso en ámbar y pendiente en gris (modelo overlay). -->

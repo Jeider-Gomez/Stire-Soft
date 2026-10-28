@@ -67,7 +67,7 @@
 
       <p role="status" class="sr-only">{{ anuncio }}</p>
       <p v-if="cargando" class="text-xs text-base-texto-secundario">Cargando…</p>
-      <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+      <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
       <div v-if="!cargando && !visibles.length" class="text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil p-8 text-center space-y-1">
         <p class="font-semibold text-base-texto-primario">{{ filtros.buscar || filtros.tipo !== 'todos' ? 'Nada coincide con la búsqueda' : filtros.bandeja === 'pendientes' ? '¡Al día! No hay nada por atender' : 'Aquí no hay nada todavía' }}</p>
       </div>

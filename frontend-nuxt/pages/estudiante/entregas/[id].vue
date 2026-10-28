@@ -50,7 +50,7 @@
           </div>
         </template>
         <p v-if="mensaje" role="status" class="text-semantico-pasa font-semibold">{{ mensaje }}</p>
-        <p v-if="error" role="alert" class="text-semantico-falla">{{ error }}</p>
+        <MensajeError v-if="error">{{ error }}</MensajeError>
       </section>
 
       <!-- Lo entregado: comentario primero, luego la nota -->

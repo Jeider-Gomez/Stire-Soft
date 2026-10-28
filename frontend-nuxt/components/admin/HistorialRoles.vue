@@ -10,7 +10,7 @@
       </button>
     </div>
 
-    <p v-if="error" role="alert" class="p-4 text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error" class="p-4">{{ error }}</MensajeError>
     <p v-else-if="cargando && !cambios.length" class="p-8 text-center text-base-texto-secundario">Cargando…</p>
     <p v-else-if="!cambios.length" class="p-8 text-center text-base-texto-secundario">Todavía no hay cambios de rol registrados.</p>
 

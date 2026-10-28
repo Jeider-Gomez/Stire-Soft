@@ -12,7 +12,7 @@
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario">
       <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando tus proyectos…
     </p>
-    <p v-else-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-else-if="error" class="text-xs" :reintentar="cargar">{{ error }}</MensajeError>
 
     <section v-else-if="estado && !estado.disponible" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 text-xs text-base-texto-secundario space-y-1">
       <p class="font-semibold text-base-texto-primario">Proyectos está en prueba</p>
@@ -40,7 +40,7 @@
             <Plus :size="14" aria-hidden="true" /> Crear proyecto
           </button>
         </div>
-        <p v-if="errorCrear" role="alert" class="text-semantico-falla text-[11px]">{{ errorCrear }}</p>
+        <MensajeError v-if="errorCrear" class="text-[11px]">{{ errorCrear }}</MensajeError>
         <p class="text-[11px] text-base-texto-secundario">
           Tienes {{ proyectos.length }} de {{ estado.limites.proyectosPorUsuario }} proyectos. Cada uno admite
           {{ estado.limites.archivosPorProyecto }} archivos y 200 KB de código.
@@ -107,7 +107,9 @@ const porBorrar = ref<number | null>(null)
 const kb = (bytes: number) => (bytes < 1024 ? 'menos de 1 KB' : `${Math.round(bytes / 1024)} KB`)
 const fecha = (iso: string) => new Date(iso).toLocaleString('es-CO', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
 
-onMounted(async () => {
+async function cargar() {
+  cargando.value = true
+  error.value = null
   try {
     estado.value = await accionesProyecto.estado()
     if (estado.value.disponible) proyectos.value = await accionesProyecto.listar()
@@ -116,7 +118,8 @@ onMounted(async () => {
   } finally {
     cargando.value = false
   }
-})
+}
+onMounted(cargar)
 
 async function crearProyecto() {
   errorCrear.value = null

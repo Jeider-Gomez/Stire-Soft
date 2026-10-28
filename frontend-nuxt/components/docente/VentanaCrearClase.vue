@@ -65,7 +65,7 @@
         <input id="new-class-aprobacion" v-model="f.requiresApproval" type="checkbox" class="w-5 h-5 rounded cursor-pointer accent-stire-blue" />
       </div>
 
-      <p v-if="error" role="alert" class="p-3 bg-stire-danger/10 border border-stire-danger/25 text-semantico-falla rounded-xl text-xs">{{ error }}</p>
+      <MensajeError v-if="error" class="p-3 bg-stire-danger/10 border border-stire-danger/25 rounded-xl text-xs">{{ error }}</MensajeError>
 
       <div class="flex items-center justify-end gap-3 pt-1">
         <button type="button" class="btn-stire-secondary min-h-[44px]" :disabled="guardando" @click="emit('cerrar')">Cancelar</button>

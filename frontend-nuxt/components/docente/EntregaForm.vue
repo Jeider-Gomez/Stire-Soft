@@ -122,7 +122,7 @@
       <input v-model="f.publicada" type="checkbox" class="accent-acento-ambar-fuerte" /> Publicada (los estudiantes la ven)
     </label>
 
-    <p v-if="error" role="alert" class="text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error">{{ error }}</MensajeError>
     <div class="flex items-center gap-2">
       <button type="submit" :disabled="guardando" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold inline-flex items-center gap-1.5 disabled:opacity-50">
         <Loader2 v-if="guardando" :size="14" class="animate-spin" aria-hidden="true" /><Save v-else :size="14" aria-hidden="true" />

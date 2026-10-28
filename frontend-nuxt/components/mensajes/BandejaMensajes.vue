@@ -63,7 +63,7 @@
             <label :for="`editar-${m.id}`" class="sr-only">Corregir el mensaje</label>
             <textarea :id="`editar-${m.id}`" v-model="textoEditado" v-crece rows="3" maxlength="2000"
               class="w-full px-3 py-2 rounded-md bg-base-blanco border border-base-borde-fuerte resize-none focus:ring-2 focus:ring-acento-ambar-fuerte/30" />
-            <p v-if="errorEdicion" role="alert" class="text-[11px] text-semantico-falla">{{ errorEdicion }}</p>
+            <MensajeError v-if="errorEdicion" class="text-[11px]">{{ errorEdicion }}</MensajeError>
             <div class="flex gap-2">
               <button type="submit" :disabled="guardando" class="min-h-[44px] sm:min-h-[36px] px-3 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold disabled:opacity-50">{{ guardando ? 'Guardando…' : 'Guardar' }}</button>
               <button type="button" class="min-h-[44px] sm:min-h-[36px] px-3 rounded-md borde-afordancia font-semibold" @click="editando = null">Cancelar</button>

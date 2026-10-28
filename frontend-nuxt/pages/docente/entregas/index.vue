@@ -24,7 +24,7 @@
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario">
       <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando…
     </p>
-    <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
     <p v-if="!cargando && clases.length === 0" class="text-xs text-base-texto-secundario">Todavía no tienes clases.</p>
 
     <section v-if="!cargando && claseId !== null" aria-label="Entregas de la clase" class="space-y-2">

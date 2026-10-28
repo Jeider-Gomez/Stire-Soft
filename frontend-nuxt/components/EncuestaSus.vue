@@ -75,7 +75,7 @@
           class="w-full px-3 py-2 text-sm rounded-md border border-base-borde-sutil bg-base-blanco focus:border-acento-ambar-fuerte focus:ring-2 focus:ring-acento-ambar-fuerte/30 outline-none" />
       </div>
 
-      <p v-if="error" role="alert" class="text-xs font-semibold text-semantico-falla">{{ error }}</p>
+      <MensajeError v-if="error" class="text-xs font-semibold">{{ error }}</MensajeError>
       <button type="submit" :disabled="enviando" class="min-h-[44px] px-5 rounded-md bg-acento-ambar-fuerte text-base-blanco text-sm font-bold disabled:opacity-50">
         {{ enviando ? 'Enviando…' : 'Enviar respuestas' }}
       </button>

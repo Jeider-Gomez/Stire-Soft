@@ -35,7 +35,7 @@
               <p role="status" class="rounded-md bg-semantico-pasa/10 text-semantico-pasa p-4 text-sm font-semibold">
                 ¡Gracias! Quedó guardado con la pantalla donde estabas{{ capturaSubida ? ' y tu pantallazo' : '' }}. Con esto mejoramos STIRE.
               </p>
-              <p v-if="avisoCaptura" role="alert" class="rounded-md bg-acento-ambar/10 text-acento-ambar-fuerte p-3 font-semibold">{{ avisoCaptura }}</p>
+              <MensajeError v-if="avisoCaptura" class="rounded-md bg-acento-ambar/10 text-acento-ambar-fuerte p-3 font-semibold">{{ avisoCaptura }}</MensajeError>
               <div class="grid grid-cols-2 gap-2">
                 <button ref="nuevaRef" type="button" class="min-h-[44px] rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold" @click="nuevaSugerencia">Nueva sugerencia</button>
                 <button type="button" class="min-h-[44px] rounded-md border border-base-borde-fuerte font-semibold text-base-texto-primario" @click="verMios">Ver lo que he enviado</button>
@@ -64,7 +64,7 @@
               </div>
               <ZonaPantallazo ref="zonaRef" v-model="captura" />
               <p class="text-[11px] text-base-texto-secundario">Se guarda la pantalla donde estás (<span class="font-mono">{{ route.fullPath }}</span>) y el tamaño de tu pantalla.</p>
-              <p v-if="error" role="alert" class="text-semantico-falla">{{ error }}</p>
+              <MensajeError v-if="error">{{ error }}</MensajeError>
               <div class="flex flex-wrap items-center gap-3">
                 <button type="submit" :disabled="enviando || f.texto.trim().length < 5" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold disabled:opacity-40">
                   {{ enviando ? 'Enviando…' : 'Enviar' }}

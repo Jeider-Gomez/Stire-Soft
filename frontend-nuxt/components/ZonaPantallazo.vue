@@ -36,7 +36,7 @@
       </p>
     </div>
     <input ref="archivoRef" type="file" accept="image/png,image/jpeg,image/gif,image/webp" class="sr-only" tabindex="-1" aria-hidden="true" @change="alElegir" />
-    <p v-if="aviso" role="alert" class="text-semantico-falla">{{ aviso }}</p>
+    <MensajeError v-if="aviso">{{ aviso }}</MensajeError>
   </div>
 </template>
 

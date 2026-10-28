@@ -52,7 +52,7 @@
       </button>
       <p v-if="enviado" role="status" class="text-xs text-slate-600">Enviado. Gracias: así tu docente sabe qué explicar mejor.</p>
     </div>
-    <p v-if="error" role="alert" class="text-xs font-semibold text-red-700">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs font-semibold text-red-700">{{ error }}</MensajeError>
   </section>
 </template>
 

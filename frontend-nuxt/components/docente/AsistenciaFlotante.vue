@@ -21,7 +21,7 @@
           <div class="h-full bg-semantico-pasa transition-all" :style="{ width: `${store.conteo.total ? (store.conteo.llegaron / store.conteo.total) * 100 : 0}%` }" />
         </div>
       </div>
-      <p v-if="store.error" role="alert" class="text-semantico-falla">{{ store.error }}</p>
+      <MensajeError v-if="store.error">{{ store.error }}</MensajeError>
 
       <!-- Escanear sin salir de la pantalla: la cámara pequeña sigue leyendo mientras el panel está abierto. -->
       <div class="space-y-2">
@@ -35,7 +35,7 @@
           <p v-else-if="store.ultimo?.ok" class="font-semibold" :class="store.ultimo.alerta ? 'text-acento-ambar-fuerte' : 'text-semantico-pasa'">
             {{ store.ultimo.nombre }}: {{ store.ultimo.yaEstaba ? 'ya estaba marcado' : 'presente' }}<template v-if="store.ultimo.alerta"> · {{ store.ultimo.alerta }}</template>
           </p>
-          <p v-else-if="store.ultimo" role="alert" class="font-semibold text-semantico-falla">{{ store.ultimo.mensaje }}</p>
+          <MensajeError v-else-if="store.ultimo" class="font-semibold">{{ store.ultimo.mensaje }}</MensajeError>
         </div>
       </div>
 

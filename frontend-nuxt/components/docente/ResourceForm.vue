@@ -82,7 +82,7 @@
           </div>
         </div>
 
-        <p v-if="error" role="alert" class="text-semantico-falla text-[11px]">{{ error }}</p>
+        <MensajeError v-if="error" class="text-[11px]">{{ error }}</MensajeError>
         <div class="flex justify-end gap-2">
           <button type="button" @click="emit('cancel')" class="px-4 py-2 rounded-md borde-afordancia font-semibold">Cancelar</button>
           <button type="submit" :disabled="guardando" class="px-5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold disabled:opacity-50 inline-flex items-center gap-1.5">

@@ -31,7 +31,7 @@
         <textarea :id="`grupo-desc-${grupo.id}`" v-model="f.description" rows="2"
           class="w-full px-3 py-2 rounded-lg border border-base-borde-fuerte bg-base-blanco text-base-texto-primario resize-y focus:outline-none focus:ring-2 focus:ring-stire-blue/30" />
       </div>
-      <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+      <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
       <div class="flex items-center justify-end gap-2">
         <button v-if="cambiado" type="button" class="min-h-[36px] px-3 rounded-lg text-xs font-semibold text-base-texto-secundario hover:text-base-texto-primario" @click="deshacer">Deshacer</button>
         <button type="submit" :disabled="!cambiado || guardando" class="btn-stire-primary min-h-[36px] text-xs disabled:opacity-50">

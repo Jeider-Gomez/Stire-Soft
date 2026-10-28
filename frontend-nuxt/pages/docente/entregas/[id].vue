@@ -3,7 +3,7 @@
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario">
       <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando la entrega…
     </p>
-    <p v-else-if="error && !entrega" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-else-if="error && !entrega" class="text-xs" :reintentar="cargar">{{ error }}</MensajeError>
 
     <template v-else-if="entrega">
       <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 shadow-sm space-y-3 text-xs">
@@ -42,7 +42,7 @@
       </header>
 
       <DocenteEntregaForm v-if="editando" :class-id="entrega.classId" :inicial="entrega" @guardada="alGuardar" @cancelar="editando = false" />
-      <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+      <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
       <p v-if="aviso" role="status" class="text-xs text-semantico-pasa font-semibold">{{ aviso }}</p>
 
       <section class="bg-base-blanco rounded-xl border border-base-borde-sutil shadow-sm text-xs" aria-labelledby="estudiantes-titulo">

@@ -32,14 +32,14 @@
           <RefreshCw :size="13" aria-hidden="true" /> {{ textoCuentaQr(segundos) }}
         </p>
       </div>
-      <p v-if="errorCodigo" role="alert" class="text-xs text-semantico-falla">{{ errorCodigo }}</p>
+      <MensajeError v-if="errorCodigo" class="text-xs">{{ errorCodigo }}</MensajeError>
       <p v-else class="text-[11px] text-base-texto-secundario">Sube el brillo de la pantalla si al docente le cuesta leerlo.</p>
     </section>
 
     <section class="space-y-3" aria-labelledby="historial-titulo">
       <h2 id="historial-titulo" class="text-sm font-bold text-base-texto-primario">Asistencia por clase</h2>
       <p v-if="cargando" role="status" class="text-xs text-base-texto-secundario">Cargando…</p>
-      <p v-else-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+      <MensajeError v-else-if="error" class="text-xs" :reintentar="cargarHistorial">{{ error }}</MensajeError>
       <p v-else-if="!clases.length" class="text-xs text-base-texto-secundario">Aún no estás en ninguna clase.</p>
       <article v-for="c in clasesOrdenadas" :key="c.classId" class="bg-base-blanco rounded-xl border p-4 shadow-sm space-y-2" :class="c.classId === studentStore.currentClassId ? 'border-acento-ambar-fuerte' : 'border-base-borde-fuerte'">
         <div class="flex items-center justify-between gap-2">

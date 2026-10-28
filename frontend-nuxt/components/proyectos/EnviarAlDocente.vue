@@ -27,7 +27,7 @@
       <p v-if="mensaje" role="status" class="text-semantico-pasa font-semibold">
         {{ mensaje }} <NuxtLink v-if="ultimaEntrega" :to="`/estudiante/entregas/${ultimaEntrega}`" class="underline">Ver la entrega</NuxtLink>
       </p>
-      <p v-if="error" role="alert" class="text-semantico-falla">{{ error }}</p>
+      <MensajeError v-if="error">{{ error }}</MensajeError>
     </template>
   </section>
 </template>

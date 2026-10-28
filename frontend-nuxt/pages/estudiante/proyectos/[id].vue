@@ -3,7 +3,7 @@
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario">
       <Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Abriendo el proyecto…
     </p>
-    <p v-else-if="error && !proyecto" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-else-if="error && !proyecto" class="text-xs">{{ error }}</MensajeError>
 
     <template v-else-if="proyecto">
       <!-- Cabecera -->
@@ -32,7 +32,7 @@
           </button>
         </div>
       </header>
-      <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+      <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <!-- Archivos y editor -->

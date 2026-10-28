@@ -182,7 +182,7 @@
           </div>
         </details>
 
-        <p v-if="stepError" role="alert" class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-lg text-xs">{{ stepError }}</p>
+        <MensajeError v-if="stepError" class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 rounded-lg text-xs">{{ stepError }}</MensajeError>
 
         <div class="flex justify-between gap-3">
           <button type="button" @click="step = 1" class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario">
@@ -210,7 +210,7 @@
           </label>
         </fieldset>
 
-        <p v-if="submitError" role="alert" class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-lg text-xs">{{ submitError }}</p>
+        <MensajeError v-if="submitError" class="p-3 bg-semantico-falla/10 border border-semantico-falla/30 rounded-lg text-xs">{{ submitError }}</MensajeError>
 
         <div class="flex justify-between gap-3">
           <button type="button" @click="step = 2" class="px-4 py-2 rounded-md borde-afordancia text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario">

@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync, statSync } from 'fs';
 import * as path from 'path';
 import * as ts from 'typescript';
 
@@ -168,5 +168,49 @@ describe('Ítem 13: salir sin guardar pregunta antes', () => {
 
   it('el editor de ejercicios cuenta también los cambios en las respuestas', () => {
     expect(leer('components', 'docente', 'ejercicios', 'VentanaEditarEjercicio.vue')).toContain('respuestasCambiaron:');
+  });
+});
+
+describe('Ítems 27 y 29: cada error se ve claro y trae una salida', () => {
+  const comp = leer('components', 'MensajeError.vue');
+
+  it('el mensaje de error lleva ícono y role="alert", no solo el color', () => {
+    expect(comp).toContain('role="alert"');
+    expect(comp).toMatch(/<CircleAlert[^>]*aria-hidden="true"/);
+  });
+
+  it('ofrece «Reintentar» y «Pedir ayuda al Tutor» cuando se le pasan', () => {
+    expect(comp).toContain('v-if="reintentar"');
+    expect(comp).toContain('Reintentar');
+    expect(comp).toContain('Pedir ayuda al Tutor');
+    expect(comp).toContain('openDrawer({ conPregunta: true })');
+  });
+
+  it('ya no quedan errores de una línea solo con color', () => {
+    const sueltos = /<p v-(?:else-)?if="[^"]+"(?: id="[^"]+")? role="alert" class="[^"]*"(?: id="[^"]+")?>\{\{ [^}]+ \}\}<\/p>/;
+    const vues: string[] = [];
+    const recorrer = (dir: string) => readdirSync(dir).forEach((n) => {
+      const p = path.join(dir, n);
+      if (statSync(p).isDirectory()) recorrer(p); else if (p.endsWith('.vue')) vues.push(p);
+    });
+    ['pages', 'components', 'layouts'].forEach((d) => recorrer(path.join(raiz, d)));
+    const conProblema = vues.filter((v) => sueltos.test(readFileSync(v, 'utf8'))).map((v) => path.relative(raiz, v));
+    expect(conProblema).toEqual([]);
+  });
+
+  it.each([
+    ['pages/estudiante/evaluacion/[activityId].vue', ':reintentar="initActivity"'],
+    ['pages/estudiante/asistencia.vue', ':reintentar="cargarHistorial"'],
+    ['pages/estudiante/proyectos/index.vue', ':reintentar="cargar"'],
+    ['components/estudiante/EjerciciosDeLaLeccion.vue', ':reintentar="cargar"'],
+    ['components/docente/UnitExercisesPanel.vue', ':reintentar="cargarYAbrir"'],
+    ['components/docente/MapaDeCalor.vue', ':reintentar="cargar"'],
+    ['pages/docente/entregas/[id].vue', ':reintentar="cargar"'],
+  ])('%s: si no carga, se puede reintentar ahí mismo', (archivo, prop) => {
+    expect(leer(archivo)).toContain(prop);
+  });
+
+  it('un caso que falla en un ejercicio de programar ofrece pedir ayuda al Tutor', () => {
+    expect(leer('components', 'exercise', 'CasoPrueba.vue')).toContain('Pedir ayuda al Tutor');
   });
 });

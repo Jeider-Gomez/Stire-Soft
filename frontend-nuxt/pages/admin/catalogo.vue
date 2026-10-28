@@ -14,7 +14,7 @@
     </header>
 
     <p v-if="cargando" role="status" class="text-xs text-base-texto-secundario">Cargando…</p>
-    <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
     <p v-if="aviso" role="status" class="text-xs text-semantico-pasa">{{ aviso }}</p>
 
     <section aria-labelledby="duplicados-titulo" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 space-y-3">

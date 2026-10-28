@@ -182,7 +182,7 @@ describe('UI-05: el Tutor acompaña cuando el estudiante se estanca', () => {
     expect(v.mensajeErrorVoz('audio-capture')).toMatch(/micrófono/);
     expect(v.mensajeErrorVoz('aborted')).toBeNull();
     const d = leer('components', 'tutor', 'DictarPregunta.vue');
-    expect(d).toContain('<p v-if="error" role="alert"');
+    expect(d).toContain('<MensajeError v-if="error"'); // con ícono y role="alert" (components/MensajeError.vue)
     expect(d).not.toMatch(/<p v-if="error"[^>]*sr-only/);
   });
 

@@ -153,7 +153,7 @@
         <button type="button" class="min-h-[44px] text-xs font-semibold text-acento-ambar-fuerte hover:underline" @click="agregarIgual">No, es otra: agregarla</button>
       </div>
 
-      <p v-if="error" role="alert" class="text-xs text-semantico-falla">{{ error }}</p>
+      <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
       <div v-if="!parecidas.length" class="flex flex-wrap justify-end gap-2">
         <button type="button" class="min-h-[44px] px-4 rounded-md text-xs font-semibold borde-afordancia" @click="agregando = false">Cancelar</button>
         <button type="button" class="min-h-[44px] px-4 rounded-md text-xs font-bold bg-acento-ambar-fuerte text-base-blanco disabled:opacity-50" :disabled="guardando" @click="guardar">

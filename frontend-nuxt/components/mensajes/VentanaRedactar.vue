@@ -16,7 +16,7 @@
       </div>
       <!-- Una imagen para dar contexto (sugerencia n.º 13): se pega con Ctrl+V, se arrastra o se elige. -->
       <ZonaPantallazo ref="zonaRef" v-model="imagen" titulo="Imagen" texto-alt="Imagen que se enviará con el mensaje" id-base="redactar-imagen" />
-      <p v-if="error" id="redactar-error" role="alert" class="p-2 bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded text-[11px]">{{ error }}</p>
+      <MensajeError v-if="error" id="redactar-error" class="p-2 bg-semantico-falla/10 border border-semantico-falla/30 rounded text-[11px]">{{ error }}</MensajeError>
       <div class="flex items-center justify-end gap-2 pt-2 border-t border-base-borde-sutil">
         <button type="button" class="min-h-[44px] px-3 rounded-md borde-afordancia font-semibold" :disabled="enviando" @click="emit('cerrar')">Cancelar</button>
         <button type="submit" :disabled="enviando" class="min-h-[44px] px-4 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold hover:bg-acento-ambar disabled:opacity-50 inline-flex items-center gap-1.5">

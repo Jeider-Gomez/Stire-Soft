@@ -35,7 +35,7 @@
         </p>
         <p>{{ impacto.motivo }}</p>
       </div>
-      <p v-if="errorAccion" role="alert" class="text-semantico-falla text-[11px]">{{ errorAccion }}</p>
+      <MensajeError v-if="errorAccion" class="text-[11px]">{{ errorAccion }}</MensajeError>
       <div class="flex items-center justify-end gap-2">
         <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" @click="$emit('cerrar')">Cerrar</button>
         <button
@@ -80,7 +80,7 @@
           <input v-model="entendido" type="checkbox" class="mt-0.5 w-4 h-4 accent-semantico-falla" />
           <span>Entiendo que el módulo se borra para siempre, con todo lo de arriba.</span>
         </label>
-        <p v-if="errorAccion" role="alert" class="text-semantico-falla text-[11px] font-semibold p-2 bg-semantico-falla/10 rounded">{{ errorAccion }}</p>
+        <MensajeError v-if="errorAccion" class="text-[11px] font-semibold p-2 bg-semantico-falla/10 rounded">{{ errorAccion }}</MensajeError>
         <div class="flex items-center justify-end gap-2 pt-1">
           <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="$emit('cerrar')">Cancelar</button>
           <button
@@ -97,7 +97,7 @@
 
       <!-- Eliminación directa para tema, lección o módulo vacío -->
       <div v-else>
-        <p v-if="errorAccion" role="alert" class="text-semantico-falla text-[11px] font-semibold p-2 bg-semantico-falla/10 rounded">{{ errorAccion }}</p>
+        <MensajeError v-if="errorAccion" class="text-[11px] font-semibold p-2 bg-semantico-falla/10 rounded">{{ errorAccion }}</MensajeError>
         <div class="flex items-center justify-end gap-2 pt-1">
           <button type="button" data-foco-inicial class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="eliminando" @click="$emit('cerrar')">Cancelar</button>
           <button

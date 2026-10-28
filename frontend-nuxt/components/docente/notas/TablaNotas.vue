@@ -79,7 +79,7 @@
                       <button v-if="f.ajuste" type="button" :disabled="guardandoAjuste" class="min-h-[44px] px-3 py-2 rounded-md borde-afordancia text-xs font-semibold" @click="quitarAjuste(f)">Quitar</button>
                     </div>
                   </form>
-                  <p v-if="errorAjuste" role="alert" class="text-xs text-semantico-falla mt-2">{{ errorAjuste }}</p>
+                  <MensajeError v-if="errorAjuste" class="text-xs mt-2">{{ errorAjuste }}</MensajeError>
                   <div class="mt-4">
                     <h3 class="text-[11px] font-bold uppercase tracking-wider text-base-texto-secundario">Historial</h3>
                     <p v-if="historial.length === 0" class="text-xs text-base-texto-secundario mt-1">Sin cambios todavía.</p>

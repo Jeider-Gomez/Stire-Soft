@@ -53,7 +53,7 @@
     </div>
 
     <p v-if="loading" class="text-[11px] text-base-texto-secundario animate-pulse">Cargando ejercicios…</p>
-    <p v-else-if="loadError" role="alert" class="text-[11px] text-semantico-falla">{{ loadError }}</p>
+    <MensajeError v-else-if="loadError" class="text-[11px]" :reintentar="cargarYAbrir">{{ loadError }}</MensajeError>
     <p v-else-if="activities.length === 0" class="text-[11px] text-base-texto-secundario italic">
       Todavía no hay ejercicios. Empieza por uno sencillo: una pregunta de opción múltiple sobre la explicación.
     </p>

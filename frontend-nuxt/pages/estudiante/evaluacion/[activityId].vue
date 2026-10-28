@@ -215,7 +215,7 @@
               :show-statement="!workspaceStore.currentExercise.description" />
           </template>
 
-          <p v-else-if="workspaceStore.loadError" role="alert" class="text-xs text-semantico-falla py-6">No se pudo cargar el ejercicio: {{ workspaceStore.loadError }}</p>
+          <MensajeError v-else-if="workspaceStore.loadError" class="text-xs py-6" :reintentar="initActivity">No se pudo cargar el ejercicio: {{ workspaceStore.loadError }}</MensajeError>
           <div v-else class="animate-pulse space-y-3 py-6" aria-label="Cargando el ejercicio">
             <div class="h-4 bg-base-bg-secundario rounded w-3/4"></div>
             <div class="h-20 bg-base-bg-secundario rounded"></div>

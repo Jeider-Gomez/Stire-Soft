@@ -36,7 +36,7 @@
       </label>
     </fieldset>
 
-    <p v-if="error" role="alert" class="text-semantico-falla text-xs">{{ error }}</p>
+    <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
     <div class="flex items-center justify-end gap-2">
       <button type="button" class="min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold" :disabled="importando" @click="emit('cerrar')">Cancelar</button>
       <button type="button" :disabled="importando || !origenId || !elegidos.length"
