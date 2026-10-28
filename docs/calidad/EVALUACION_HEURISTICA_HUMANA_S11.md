@@ -7,8 +7,7 @@ Después de la remodelación se repite igual, y esa segunda evaluación abre la 
 **Resultado esperado:** cada uno entrega **su pestaña de la hoja** con sus filas llenas (Likert, frecuencia, impacto y
 observaciones con una captura cuando haya un problema), más las filas 35 a 39, que responden todos.
 
-**Cuándo:** empieza cuando Jeider avise en el grupo que está desplegada la versión con las mejoras de esta semana
-(meta: viernes 30/10). **Plazo: jueves 5 de noviembre, 8:00 p. m.**
+**Cuándo:** desde ya (semana autónoma). **Plazo: jueves 5 de noviembre, 8:00 p. m.**
 
 ## El instrumento
 

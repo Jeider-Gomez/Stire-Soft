@@ -7,8 +7,7 @@ audio del 20/10 (P17).
 **Resultado esperado:** cada integrante hace la prueba con **2 personas** y entrega una hoja por persona (abajo). Jeider
 junta las 10 en un informe corto: lo que más se repitió, ordenado por cuántas personas lo vivieron.
 
-**Cuándo:** desde que Jeider avise que están desplegadas las mejoras de esta semana (meta: sábado 31/10) hasta el
-**viernes 6/11, 8:00 p. m.**
+**Cuándo:** desde ya (semana autónoma) hasta el **viernes 6/11, 8:00 p. m.**
 
 ## A quién buscar
 
@@ -20,7 +19,8 @@ junta las 10 en un informe corto: lo que más se repitió, ordenado por cuántas
 
 ## Antes de la sesión
 
-1. Jeider crea la clase **«Prueba de STIRE»** con el curso de Fundamentos y comparte el código en el grupo.
+1. Entra con tu cuenta de docente de la prueba y usa una clase tuya con el curso de Fundamentos (o crea una nueva). Ten
+   a la mano su código para dárselo a la persona.
 2. Ten a la mano esta guía y la hoja de la persona (cópiala en un documento o en papel).
 3. Busca un lugar tranquilo. La persona usa su propio celular o un computador; anota cuál.
 
@@ -48,7 +48,7 @@ junta las 10 en un informe corto: lo que más se repitió, ordenado por cuántas
 | # | Tarea (se lee tal cual) |
 |---|---|
 | T1 | Crea tu cuenta en https://stire-soft.vercel.app |
-| T2 | Únete a la clase con este código: (el de Jeider) |
+| T2 | Únete a la clase con este código: (el de tu clase) |
 | T3 | Abre la primera lección y léela hasta el final |
 | T4 | Resuelve el primer ejercicio que te proponga STIRE |
 | T5 | Resuelve un ejercicio de programar. Si te equivocas, intenta arreglarlo |
