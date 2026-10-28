@@ -199,6 +199,49 @@ institución:
 
 Mientras no haya convenio, la regla de cero cobros manda.
 
+## 6e. Que se sientan como un tutor y un asistente reales (pedido del 28/10)
+
+**La idea de Jeider:** el logo es la persona. En el estudiante, un tutor que lo conoce, habla con él y lo lleva de la mano
+(«ve a practicar esto», «repasa aquello»); en el docente, un asistente que conoce la clase y le propone qué hacer. Todo lo
+que STIRE mide (dominio, repasos, errores de concepto, calibración, competencias, formatos que usa) existe **para que
+ellos lo lean** y se adapten.
+
+**1. Saben con quién hablan.** STIRE arma una ficha corta con datos reales, sin que el modelo la invente, y se la pasa en
+cada conversación (es la capa 3 de la memoria, §6b):
+
+| Tutor: «lo que sé de ti» | Asistente: «lo que sé de tu clase» |
+|---|---|
+| Dónde va en el curso y qué lección tiene abierta | Cuántos estudiantes, cuántos activos esta semana |
+| Competencias en desarrollo y afianzadas | Competencias y lecciones que más cuestan |
+| Errores de concepto que repite | Errores de concepto repetidos del grupo |
+| Si suele adivinar o va seguro (calibración) | Quién está atascado o lleva días sin entrar (con alias: los nombres no viajan a la IA; STIRE los pone al mostrar) |
+| Repasos vencidos y racha | Ejercicios con más fallos; lecciones sin ejercicios |
+| Qué representación prefiere (texto, diagrama, paso a paso) | Qué le pidió el docente antes (su hilo) |
+
+**2. Actúan sobre su entorno, siempre con un clic del usuario.** Con «herramientas» (llamadas a funciones que Gemini y
+los demás proveedores ya soportan), el modelo no solo escribe: propone **acciones** que STIRE muestra como botones en el
+chat. STIRE tiene la lista cerrada de acciones posibles y comprueba cada una; nada pasa sin que la persona toque el botón.
+
+| Tutor | Asistente |
+|---|---|
+| Abrir la lección o la parte que explica un concepto | Ir a una lección, un ejercicio o un estudiante |
+| Proponer un ejercicio breve de esa competencia («Practica esto primero») | Generar un borrador (explicación, ejercicios, variantes, diagrama) con la ficha ya llena |
+| Empezar un repaso vencido | Preparar un refuerzo para quienes están atascados (el docente lo revisa y lo asigna) |
+| Mostrar el siguiente paso del plan («Paso 2 de 3») | Redactar un aviso a la clase (el docente lo edita y lo publica) |
+| Cambiar la representación de la lección | Abrir el análisis de la semana |
+
+**3. Hablan primero cuando aporta** (con interruptor, como todo aviso del Tutor): al abrir un ejercicio donde falló ayer,
+«ayer te trabaste leyendo la entrada, ¿empezamos por ahí?»; al entrar el docente el lunes, «tres estudiantes no avanzan
+en ciclos desde el jueves, ¿preparo un refuerzo?».
+
+**4. Tienen una persona coherente:** el mismo nombre y tono siempre, frases cortas, recuerdan lo que hablaron (§6b) y la
+mascota cambia de gesto según lo que pasa (ya existe `useExpresionTutor`). El Asistente es la misma pantalla con su
+accesorio de trabajo (§2).
+
+**5. Verificar la generación de ejercicios otra vez.** Hoy el Asistente valida el esquema y corre la solución de
+programación en el juez antes de mostrarla. Falta comprobarlo de punta a punta con Gemini real y en los 7 tipos: es el
+primer juego de casos de oro del laboratorio de prompts (§6), con una clave de prueba de Jeider en local.
+
 ## 7. El logo con el doble borde
 
 El logo completo tiene la **tarjeta de atrás**, el doble borde que comunica la repetición espaciada (volver sobre lo
