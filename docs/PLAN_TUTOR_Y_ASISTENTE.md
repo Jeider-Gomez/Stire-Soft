@@ -123,6 +123,35 @@ La regla: **ningún cambio de prompt entra sin medir que mejora.**
 **Costo cero:** el laboratorio corre en local con la clave gratuita de Google AI Studio de Jeider, pocas veces y con
 pocos casos.
 
+## 6b. Memoria y guía paso a paso del Tutor (evaluación del 28/10)
+
+**Cómo está hoy (revisado en el código):**
+
+| Capacidad | Hoy | Problema |
+|---|---|---|
+| Memoria de conversación | Los **últimos 6 mensajes** del estudiante (3 idas y vueltas), de **todo** STIRE mezclado (`HISTORY_WINDOW = 6`) | Si cambia de ejercicio, el Tutor arrastra lo del anterior; si vuelve mañana al mismo ejercicio, ya no recuerda lo que hablaron |
+| Memoria del estudiante | Ve sus 3 últimos progresos y su dominio en el tema | No recuerda qué conceptos ya le explicó, ni qué errores repite (el perfil de aprendizaje existe pero no se le pasa entero) |
+| Escalera de ayuda | Pista → pregunta guía → señalar dónde está la falla, según los **intentos fallidos entregados** | Si pregunta 5 veces en el chat sin entregar, la ayuda no sube |
+| Paso a paso | Existe el «modo por pasos» (señal UI-05): el Tutor divide el problema en subpreguntas | No guarda en qué paso va: cada respuesta vuelve a empezar el plan |
+| No dar la solución | Reglas en el prompt y una barrera en el código que quita bloques largos | Bien |
+
+**Propuesta: memoria en tres capas, y un plan de pasos que se recuerda.**
+
+1. **Hilo por ejercicio o lección:** la conversación se guarda por lugar. Al abrir el Tutor en un ejercicio, recibe los
+   últimos 10 mensajes **de ese ejercicio**, aunque haya pasado un día. El chat general tiene su propio hilo.
+2. **Resumen del hilo:** cuando un hilo es largo, se guarda un resumen de 3 a 5 líneas (qué entendió, dónde se trabó, qué
+   se le explicó) y se manda el resumen en vez de todo.
+3. **Lo que el Tutor sabe de ti:** 3 a 5 líneas armadas por STIRE con datos, no texto libre de la IA: competencias en
+   desarrollo, errores de concepto que repite, conceptos que ya se le explicaron y si prefiere analogías o pasos. El
+   estudiante lo puede ver y borrar («Lo que el Tutor recuerda de ti»).
+4. **Plan de pasos del ejercicio:** en modo por pasos, el Tutor arma una vez los pasos del ejercicio (por ejemplo: leer
+   los datos → calcular → mostrar) y STIRE guarda en cuál va. Solo avanza cuando el estudiante muestra que el paso
+   funciona (su «Probar código» o su respuesta), y la pantalla muestra «Paso 2 de 3».
+5. **La ayuda sube también por la conversación:** tres preguntas seguidas sin avance cuentan como un intento fallido
+   para la escalera de ayuda.
+
+Se mide en el laboratorio de prompts (sección 6) con casos de oro de conversaciones de varios turnos.
+
 ## 7. El logo con el doble borde
 
 El logo completo tiene la **tarjeta de atrás**, el doble borde que comunica la repetición espaciada (volver sobre lo
