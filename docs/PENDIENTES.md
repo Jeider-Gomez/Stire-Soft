@@ -39,7 +39,7 @@ aquí (queda en `CHANGELOG.md` y en los commits) y su número no se reutiliza. E
 | P31 | **Programar con bloques** para quien llega a Fundamentos sin saber JavaScript (pedido del profesor Ali), más una **investigación del proceso formativo en programación** que lo sustente | 1 (investigar) · 2–3 |
 | P15 | Ejercicios **personalizados por estudiante**: el perfil de aprendizaje elige del banco o genera con la IA, y el juez comprueba la solución antes de mostrarlo | 5 |
 | P16 | Batería de perfiles simulados: tabla que explica cada perfil, 100 a 300 usuarios marcados de prueba, modo API y modo «agente que hace clic» | 5 |
-| P17 | Prueba con unas 10 personas reales, observando qué hacen | 5 |
+| P17 | **Prueba con 10 personas reales** (pedido del profesor Toscano), 2 por integrante, hasta el viernes 6/11: `docs/calidad/PRUEBA_CON_PERSONAS.md`. Se adelanta para que retroalimente el diseño de la remodelación | 1–2 |
 | P18 | Comparar la repetición espaciada de STIRE con la del otro software del profesor | 5 |
 | P19 | Clase del profesor Ali (Fundamentos): confirmar la fecha en que quiere probar STIRE. Enseñar frameworks (TypeScript en el juez, NestJS) queda como **futuro posible**, no pendiente | 1 (preguntar) |
 | P20 | Dos artículos (revista del proyecto y uno de implementación y evaluación) | 5 |
