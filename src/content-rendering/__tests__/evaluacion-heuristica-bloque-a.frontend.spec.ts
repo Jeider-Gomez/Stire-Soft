@@ -242,3 +242,16 @@ describe('Ítem 7: activar el Tutor sin instrucciones de fuera', () => {
     if (esperado === null) expect(r).toBeNull(); else expect(r).toContain(esperado);
   });
 });
+
+describe('Ítem 31: el manual dice lo que hay hoy en el panel del docente', () => {
+  const manual = leer('utils', 'manual.ts');
+
+  it.each([['inicio-del-docente'], ['usar-la-biblioteca'], ['usar-el-asistente']])('tiene la tarea «%s»', (id) => {
+    expect(manual).toContain(`id: '${id}'`);
+  });
+
+  it('usa los nombres del menú de hoy, no los viejos', () => {
+    ['«Contenido del curso»', '«Estudiantes y avance»', '«Asistencia y notas»', '«Por revisar»', '«Aplicar en la clase»'].forEach((n) => expect(manual).toContain(n));
+    ['«Contenidos»', '«Seguimiento»', '«Gestión de la clase»'].forEach((n) => expect(manual).not.toContain(n));
+  });
+});

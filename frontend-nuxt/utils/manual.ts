@@ -41,7 +41,7 @@ export interface SeccionManual {
   conCalendario?: boolean
 }
 
-export const VERSION_MANUAL = 'Versión 2.1 · octubre de 2026'
+export const VERSION_MANUAL = 'Versión 2.2 · octubre de 2026'
 export const PDF_MANUAL = '/manual/STIRE-Manual-de-usuario.pdf'
 
 /**
@@ -254,6 +254,42 @@ export const MANUAL: SeccionManual[] = [
         captura: { src: '/manual/capturas/docente-crear-clase.png', alt: 'Ventana «Crear nueva clase» con el nombre, el código y el contenido de la clase.' },
         resultado: 'La clase aparece en tu inicio. Comparte el código o el QR con tus estudiantes.',
         consejo: 'Si marcas «Requiere aprobación», cada estudiante entra cuando tú lo aceptas.',
+      },
+      {
+        id: 'inicio-del-docente',
+        titulo: '¿Qué veo al entrar?',
+        paraQue: 'Para saber en un vistazo qué pide atención hoy en todas tus clases.',
+        pasos: [
+          'Toca «Inicio» en el menú. Arriba está el saludo con el resumen del día.',
+          'En «Por revisar» está lo que espera por ti en todas tus clases, con la cifra a la izquierda. Toca una fila para ir directo.',
+          'En «Mis clases» abres una clase. Para cambiar de clase después, usa el selector de clases del menú: te quedas en la misma sección.',
+        ],
+        resultado: 'Llegas a lo que necesita atención sin recorrer clase por clase.',
+      },
+      {
+        id: 'usar-la-biblioteca',
+        titulo: '¿Cómo uso un curso de la Biblioteca?',
+        paraQue: 'Para empezar una clase con el contenido que otro docente compartió, en vez de armarlo desde cero.',
+        pasos: [
+          'Toca «Biblioteca» en el menú y busca por nombre o por asignatura.',
+          'Abre un curso y mira «Lo que trae»: sus módulos y lecciones.',
+          'Toca «Usar en una clase nueva».',
+        ],
+        resultado: 'Se crea tu clase con una copia del contenido, en borrador: lo revisas, lo cambias y lo publicas cuando quieras.',
+        consejo: 'Para compartir el tuyo, ve a «Ajustes de la clase» › «Compartir el contenido».',
+      },
+      {
+        id: 'usar-el-asistente',
+        titulo: '¿Cómo me ayuda el Asistente?',
+        paraQue: 'Para preparar más rápido la estructura del curso, una explicación o ejercicios.',
+        pasos: [
+          'Abre el Asistente con su botón en la parte de arriba o con Ctrl + punto. La primera vez te guía para activarlo con tu clave gratuita de Google.',
+          'Elige la clase y, si hace falta, la lección. Lo que te propone depende de la pantalla en la que estás.',
+          'Si quieres, escribe en «¿Algo en especial?» lo que necesitas, y pídele el borrador.',
+          'Revísalo. Toca «Aplicar en la clase» si te sirve, «Otra versión» si quieres otra o «Descartar».',
+        ],
+        resultado: 'Lo aplicado queda en borrador en «Contenido del curso»: lo revisas y lo publicas tú.',
+        consejo: 'El Asistente nunca publica nada solo, y los ejercicios de programar llegan con la solución ya comprobada.',
       },
       {
         id: 'armar-los-contenidos',
