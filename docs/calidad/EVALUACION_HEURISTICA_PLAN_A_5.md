@@ -62,3 +62,4 @@ bloque A es lo que cabe antes de la evaluación humana.
 |---|---|---|---|---|
 | 27/10 | 4 | «Dominio» se explica con el glosario en cada pantalla del estudiante donde aparece (lección, Inicio, progreso, meta del módulo, aviso del parecido); la pestaña de casos de prueba dice qué son a la vista, sin «casos públicos de verificación» | `8d9a018e` | `evaluacion-heuristica-bloque-a.frontend.spec.ts` |
 | 27/10 | 3 y 28 | Cuatro errores frecuentes más en palabras de estudiante («no es una función», «antes de crearla», una función que se llama sin parar, recorrer algo que no es lista); los raros avisan que el detalle viene en inglés | `8d9a018e` | `evaluacion-heuristica-bloque-a.frontend.spec.ts` |
+| 28/10 | 8 | Borrar un módulo, un tema, una lección o un aviso de clase ofrece «Deshacer» durante 6 s: desaparece al instante y el servidor lo borra al cerrarse el aviso; si falla, vuelve a su lugar | (este commit) | `evaluacion-heuristica-bloque-a.frontend.spec.ts` |

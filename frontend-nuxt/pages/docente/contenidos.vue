@@ -252,30 +252,21 @@ function confirmarEliminarLeccion(unit: LeccionDelArbol) {
 async function ejecutarEliminar() {
   const conf = confirmacion.value
   if (!conf) return
-  eliminando.value = true
-  try {
-    if (conf.tipo === 'modulo') {
-      await acciones.eliminar('modulo', conf.id)
-      sections.value = sections.value.filter(s => s.id !== conf.id)
-    } else if (conf.tipo === 'tema') {
-      await acciones.eliminar('tema', conf.id)
-      const sec = sections.value.find(s => s.id === conf.sectionId)
-      if (sec) sec.topics = (sec.topics ?? []).filter(t => t.id !== conf.id)
-    } else {
-      await acciones.eliminar('leccion', conf.id)
-      const modulo = sections.value.find(s => s.id === conf.sectionId)
-      const tema = modulo?.topics?.find(t => t.id === conf.topicId)
-      if (tema) tema.learningUnits = (tema.learningUnits ?? []).filter(u => u.id !== conf.id)
-      if (expandedUnitId.value === conf.id) expandedUnitId.value = null
-    }
-    const textos: Record<string, string> = { modulo: 'Módulo «%s» eliminado', tema: 'Tema «%s» eliminado', leccion: 'Lección «%s» eliminada' }
-    avisar({ tipo: 'exito', texto: `${textos[conf.tipo].replace('%s', conf.titulo)}.` })
-    confirmacion.value = null
-  } catch (err: unknown) {
-    avisar({ tipo: 'error', texto: messageOf(err, 'No se pudo eliminar.') })
-  } finally {
-    eliminando.value = false
-  }
+  // Ítem 8 de la evaluación heurística: desaparece al instante y se puede deshacer mientras dura el aviso.
+  const lista = conf.tipo === 'modulo'
+    ? quitarDeLista(sections.value, s => s.id === conf.id)
+    : conf.tipo === 'tema'
+      ? quitarDeLista(sections.value.find(s => s.id === conf.sectionId)?.topics ?? [], t => t.id === conf.id)
+      : quitarDeLista(sections.value.find(s => s.id === conf.sectionId)?.topics?.find(t => t.id === conf.topicId)?.learningUnits ?? [], u => u.id === conf.id)
+  if (conf.tipo === 'leccion' && expandedUnitId.value === conf.id) expandedUnitId.value = null
+  const { deshacer } = borrarConDeshacer({
+    ...lista,
+    borrar: () => acciones.eliminar(conf.tipo, conf.id),
+    alFallar: (err) => avisar({ tipo: 'error', texto: messageOf(err, 'No se pudo eliminar; volvió a su lugar.') }),
+  })
+  const textos: Record<string, string> = { modulo: 'Módulo «%s» eliminado', tema: 'Tema «%s» eliminado', leccion: 'Lección «%s» eliminada' }
+  avisar({ tipo: 'exito', texto: `${textos[conf.tipo].replace('%s', conf.titulo)}.`, deshacer })
+  confirmacion.value = null
 }
 
 /**

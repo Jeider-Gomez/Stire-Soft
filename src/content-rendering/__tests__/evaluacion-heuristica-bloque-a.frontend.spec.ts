@@ -55,3 +55,60 @@ describe('Ítems 3 y 28: los errores frecuentes de JavaScript en palabras de est
     expect(d?.mensaje).toContain('JavaScript lo dice en inglés');
   });
 });
+
+type Borrado = { deshacer: () => void };
+type Opciones = { quitar: () => void; reponer: () => void; borrar: () => Promise<unknown>; alFallar?: (e: unknown) => void; programar?: (fn: () => void, ms: number) => unknown; cancelar?: (t: unknown) => void };
+const { borrarConDeshacer, quitarDeLista } = cargar<{
+  borrarConDeshacer: (o: Opciones) => Borrado;
+  quitarDeLista: <T>(l: T[], f: (x: T) => boolean) => { quitar: () => void; reponer: () => void };
+}>('borrarConDeshacer');
+
+describe('Ítem 8: lo que se borra se puede deshacer', () => {
+  // Un reloj de mentira: el borrado queda «programado» y la prueba decide cuándo pasa el tiempo.
+  function reloj() {
+    let fn: (() => void) | null = null;
+    return { programar: (f: () => void) => { fn = f; return 1; }, cancelar: () => { fn = null; }, pasar: () => fn?.() };
+  }
+
+  it('desaparece al instante y el servidor lo borra cuando se cierra el aviso', async () => {
+    const lista = ['a', 'b', 'c'];
+    const r = reloj();
+    const borrar = jest.fn().mockResolvedValue(undefined);
+    borrarConDeshacer({ ...quitarDeLista(lista, (x) => x === 'b'), borrar, ...r });
+    expect(lista).toEqual(['a', 'c']);
+    expect(borrar).not.toHaveBeenCalled();
+    r.pasar();
+    await Promise.resolve();
+    expect(borrar).toHaveBeenCalledTimes(1);
+    expect(lista).toEqual(['a', 'c']);
+  });
+
+  it('«Deshacer» lo devuelve a su mismo lugar y el servidor no borra nada', () => {
+    const lista = ['a', 'b', 'c'];
+    const r = reloj();
+    const borrar = jest.fn().mockResolvedValue(undefined);
+    const { deshacer } = borrarConDeshacer({ ...quitarDeLista(lista, (x) => x === 'b'), borrar, ...r });
+    deshacer();
+    deshacer();
+    r.pasar();
+    expect(lista).toEqual(['a', 'b', 'c']);
+    expect(borrar).not.toHaveBeenCalled();
+  });
+
+  it('si el servidor no pudo borrarlo, vuelve a la lista y se avisa', async () => {
+    const lista = ['a', 'b'];
+    const r = reloj();
+    const alFallar = jest.fn();
+    borrarConDeshacer({ ...quitarDeLista(lista, (x) => x === 'a'), borrar: () => Promise.reject(new Error('caído')), alFallar, ...r });
+    r.pasar();
+    await new Promise((ok) => setImmediate(ok));
+    expect(lista).toEqual(['a', 'b']);
+    expect(alFallar).toHaveBeenCalledTimes(1);
+  });
+
+  it('borrar módulos, temas, lecciones y avisos de clase ofrece «Deshacer»', () => {
+    expect(leer('pages', 'docente', 'contenidos.vue')).toMatch(/borrarConDeshacer\([\s\S]*, deshacer \}\)/);
+    expect(leer('composables', 'useAvisosClase.ts')).toContain('borrarConDeshacer(');
+    expect(leer('components', 'mensajes', 'AvisosClase.vue')).toContain('borrado.`, deshacer })');
+  });
+});

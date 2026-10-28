@@ -128,6 +128,7 @@ const props = defineProps<{ rol: 'docente' | 'estudiante' }>()
 const { avisos, cargando, error, cargar, publicar, editar, eliminar } = useAvisosClase()
 const { clasesDelDocente } = useDestinatarios()
 const { confirmar } = useConfirmar()
+const { avisar } = useAvisos()
 
 const ICONO: Record<TipoAviso, typeof Bell> = { aviso: Info, citacion: CalendarClock, recordatorio: Bell }
 const ESTILO: Record<TipoAviso, string> = {
@@ -189,7 +190,8 @@ async function enviar() {
 async function borrar(a: AvisoClase) {
   const ok = await confirmar({ titulo: '¿Borrar el aviso?', mensaje: `«${a.titulo}» deja de verse para tus estudiantes. Las notificaciones que ya les llegaron no se borran.`, accion: 'Borrar el aviso', peligro: true })
   if (!ok) return
-  error.value = await eliminar(a.id)
+  const deshacer = eliminar(a.id, (m) => { error.value = m })
+  avisar({ tipo: 'exito', texto: `Aviso «${a.titulo}» borrado.`, deshacer })
 }
 
 onMounted(async () => {

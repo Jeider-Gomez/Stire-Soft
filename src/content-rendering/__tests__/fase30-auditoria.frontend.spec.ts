@@ -72,7 +72,7 @@ describe('Fase 30 — auditoría', () => {
     const c = leer('pages', 'docente', 'contenidos.vue');
     // Antes se guardaba en `errorEliminacion`, que ningún elemento mostraba: un 409 dejaba la ventana muda.
     expect(c).not.toContain('errorEliminacion');
-    expect(c).toContain("avisar({ tipo: 'error', texto: messageOf(err, 'No se pudo eliminar.') })");
+    expect(c).toContain("avisar({ tipo: 'error', texto: messageOf(err, 'No se pudo eliminar; volvió a su lugar.') })");
     const onArchivar = c.slice(c.indexOf('function onArchivar()'), c.indexOf('function onArchivar()') + 160);
     expect(onArchivar).toContain('loadSections()');
     expect(onArchivar).not.toContain('.filter(');

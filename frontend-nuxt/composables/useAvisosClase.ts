@@ -47,14 +47,13 @@ export function useAvisosClase() {
     }
   }
 
-  async function eliminar(id: number): Promise<string | null> {
-    try {
-      await api.del(`/avisos-clase/${id}`)
-      avisos.value = avisos.value.filter((a) => a.id !== id)
-      return null
-    } catch (err) {
-      return messageOf(err, 'No se pudo borrar el aviso.')
-    }
+  /** Lo quita al instante y lo borra en el servidor cuando se cierra el aviso; devuelve «Deshacer» (ítem 8). */
+  function eliminar(id: number, alFallar: (mensaje: string) => void): () => void {
+    return borrarConDeshacer({
+      ...quitarDeLista(avisos.value, (a) => a.id === id),
+      borrar: () => api.del(`/avisos-clase/${id}`),
+      alFallar: (err) => alFallar(messageOf(err, 'No se pudo borrar el aviso; volvió a la lista.')),
+    }).deshacer
   }
 
   return { avisos, cargando, error, cargar, publicar, editar, eliminar }
