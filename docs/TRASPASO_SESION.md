@@ -68,9 +68,9 @@ mensajes de error (3).
 
 | Decisión | Contexto |
 |---|---|
-| Tutor sin clave propia de cada estudiante (ítem 15) | Hoy cada uno pone su clave gratuita de Google; la alternativa puede costar. Cero cobros manda |
-| Visual o lector | Toscano propone adaptar por perfil; BT-42 dice que no hay evidencia. Propuesta: el estudiante elige y se mide |
-| Validar la lista de competencias con Ali y Toscano | Antes de etiquetar los ejercicios |
+| **Decidido 28/10:** cada uno con su propia clave de IA | La guía paso a paso va dentro de STIRE; la clave institucional queda como decisión futura (P46) |
+| **Decidido 28/10:** cubrir los distintos estilos | Varias representaciones que el estudiante elige, en lecciones y ejercicios (P45) |
+| **Decidido 28/10:** competencias genéricas y bajo control del docente | Apagadas por defecto, lista desde plantilla, FDOC, copia o a mano, cualquier tipo de evidencia; Jeider las valida después con Ali y Toscano |
 | Privacidad e investigación (ítems 33 y 34) | Espera la revisión de Pedro (S11-P03) |
 
 ## 6. Mapa rápido

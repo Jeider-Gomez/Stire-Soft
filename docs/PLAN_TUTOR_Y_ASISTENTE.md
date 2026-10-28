@@ -175,6 +175,30 @@ JSON con este esquema», «responde a medida que escribe») y una implementació
 - **Ollama en el servidor de Azure:** la máquina actual es pequeña para un modelo útil; sirve para probar en local,
   no para la clase todavía.
 
+## 6d. La clave de la IA (decidido el 28/10: cada uno con su propia clave)
+
+**Por ahora, cada docente y cada estudiante usa su propia clave gratuita.** Lo que tiene que hacer (y lo que la guía
+dentro de STIRE, ítem 7 de la evaluación, debe llevar paso a paso):
+
+| Proveedor | Pasos | Gratis | Condición |
+|---|---|---|---|
+| Google AI Studio (hoy) | Entrar a aistudio.google.com con una cuenta de Google → «Get API key» → «Create API key» → copiarla → pegarla en STIRE (Tutor o Asistente → Configurar clave) | Sí, con límite por minuto y por día | 18 años o más |
+| Groq / OpenRouter (con P44) | Crear cuenta → sección «API Keys» → crear → copiar → pegar en STIRE eligiendo el proveedor | Capa gratuita con límites | Revisar las condiciones de cada uno |
+
+STIRE guarda la clave cifrada, comprueba que sirve al pegarla y explica en palabras sencillas qué hacer si se acaba el
+límite del día.
+
+**Vía institucional (próxima decisión, no ahora):** una sola clave de la universidad para todos. Sería un trámite con la
+institución:
+1. Presentar el proyecto a la facultad o a la oficina de tecnología (qué datos viajan, a quién, para qué; la política
+   de datos que revisa Pedro).
+2. Que la universidad abra una cuenta con el proveedor (Google Cloud o Workspace for Education, u otro) y apruebe su
+   costo o un convenio educativo, porque las claves institucionales casi siempre se pagan por uso.
+3. Que nombre un responsable de la clave y de los límites de gasto.
+4. En STIRE: el administrador la pone una vez, con un tope de uso por estudiante y por día.
+
+Mientras no haya convenio, la regla de cero cobros manda.
+
 ## 7. El logo con el doble borde
 
 El logo completo tiene la **tarjeta de atrás**, el doble borde que comunica la repetición espaciada (volver sobre lo

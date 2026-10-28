@@ -188,10 +188,32 @@ Como todo lo del docente en STIRE, es opcional y ajustable (Ajustes de la clase)
 - Marcar a mano el nivel de un estudiante («lo demostró en clase»), que cuenta como evidencia de comprobación.
 - Activar o no el test inicial.
 
-**Perfil visual o lector (punto a decidir):** el profesor propone ejercicios según si el estudiante es más visual. La
-base teórica de STIRE (BT-42) dice que adaptar por estilos de aprendizaje no tiene evidencia. Propuesta intermedia: el
-banco tiene versiones con diagrama o prueba de escritorio y versiones en texto, y **el estudiante elige**; STIRE registra
-qué elige y si le va mejor, y eso va a la tesis.
+**Estilos (decidido el 28/10):** se cubren todos, en los ejercicios y en las explicaciones. Ver la sección 5b.
+
+### 5.5b Que sirva a cualquier curso y no se imponga (revisado el 28/10)
+
+Jeider no quiere un software que imponga su modelo, sino uno que el docente adapte y controle, y que sirva también para
+cursos sin programación o de frameworks. Por eso el sistema de competencias es **genérico**:
+
+- **Apagado por defecto.** El docente lo enciende en Ajustes de la clase y elige el modo: «solo informar» (ve el mapa,
+  nadie recibe recomendaciones) o «recomendar» (STIRE sugiere el siguiente ejercicio). El dominio por lección sigue
+  igual, con o sin competencias.
+- **La lista la pone el docente**, partiendo de lo que prefiera:
+  1. Una **plantilla** de la biblioteca (Fundamentos de Algoritmia, Pensamiento algorítmico y las que se agreguen, por
+     ejemplo un curso de frameworks).
+  2. **Su plan de curso** (FDOC u otro): sube el PDF o pega los resultados de aprendizaje y el Asistente propone los
+     indicadores.
+  3. **Copiar** la de otra clase suya o de un colega.
+  4. **Escribirla** a mano, o dejarla vacía.
+- **Cualquier tipo de evidencia cuenta**, no solo programar: opción múltiple, unir, ordenar, clasificar, completar,
+  programar, HTML/CSS y las **entregas que el docente califica con rúbrica** (que sirven para cursos sin juez
+  automático, como diseño o escritura). Lo único propio de programación es el juez, y es opcional.
+- **Etiquetar es asistido, no obligatorio:** el Asistente propone las competencias de cada ejercicio y el docente
+  acepta o cambia. Un ejercicio sin etiqueta simplemente no cuenta para competencias.
+- **Las reglas de la ecuación son ajustables** con valores por defecto, como hoy las del dominio: desde qué confianza
+  es «lograda», cuántos ejercicios distintos pide, cuántos días para «afianzada», cuánto pesa adivinar o pedir pistas.
+- **El docente siempre manda:** puede marcar a mano el nivel de un estudiante, quitar una evidencia o apagar las
+  recomendaciones para alguien.
 
 ### 5.6 ¿Es viable o nos estamos saturando?
 
@@ -203,11 +225,33 @@ qué elige y si le va mejor, y eso va a la tesis.
 | 2. Confianza y niveles calculados, solo para ver | Bajo | Una función pura sobre lo que ya se guarda (intentos, número de intento, repasos, «adivino»), como el perfil de aprendizaje: sin migración, y con historial desde el primer día |
 | 3. «Mis competencias» y la vista del docente | Medio | Pantallas nuevas; se diseñan en la Fase 2 con las demás |
 | 4. Recomendar el siguiente ejercicio y remitir al concepto | Medio | Necesita suficientes ejercicios breves por competencia |
-| 5. Test inicial, ajustes del docente, pistas por ejercicio y Asistente por competencia | Medio-alto | Ejercicios breves nuevos, validación con los profesores y migración para guardar los ajustes y en qué ejercicio se pidió cada pista |
+| 5. Test inicial, ajustes del docente (modo, lista, plantillas, copiar, reglas), pistas por ejercicio y Asistente por competencia | Medio-alto | Ejercicios breves nuevos, validación con los profesores y migración para guardar los ajustes y en qué ejercicio se pidió cada pista |
 
 **Lo que satura** es meterlo todo mientras el equipo hace la evaluación heurística, la prueba con personas y la
 verificación. Propuesta: el equipo no recibe tareas nuevas por esto; las partes 1 y 2 desde el lunes 2/11, la 3 en el
 diseño de la Fase 2, y la 4 y la 5 en la Fase 3, con lo que digan la prueba con personas y los profesores.
+
+## 5b. Varias formas de aprender: en las explicaciones y en los ejercicios (decidido el 28/10)
+
+Jeider quiere cubrir los distintos estilos (más visual, más lector, más de escuchar, más de hacer). Para que sea
+**pedagógico y con fundamento**, no se adivina el «estilo» de nadie ni se le esconde nada: cada lección y cada ejercicio
+vienen en **varias representaciones**, el estudiante **elige** la que le sirve, STIRE **recuerda su preferencia** y la
+pone primero, y mide si le va mejor. Esto sí tiene evidencia: aprender con varias representaciones de la misma idea
+(texto con diagrama, código con su ejecución paso a paso) ayuda a todos (principio multimedia de Mayer; codificación
+dual). Así se cubre lo que pidió Toscano sin chocar con BT-42.
+
+| Representación | En la explicación | En el ejercicio | ¿Ya existe? |
+|---|---|---|---|
+| Leer | El texto de la lección | El enunciado con su molde | Sí |
+| Ver | Diagrama de flujo y la **ejecución paso a paso** con el valor de cada variable | Versión con diagrama o con prueba de escritorio | En parte (`AlgoritmoMultiformato`, `PasoAlgoritmo`) |
+| Escuchar | «Escuchar la lección» | El enunciado leído en voz alta | En parte (`EscucharLeccion`) |
+| Hacer | Ejemplo en vivo que se puede cambiar y correr | Ordenar, completar, arrastrar antes de escribir | Sí (los 7 tipos) |
+| Otra forma | Explicación alternativa (analogía o paso a paso) | Un parecido más fácil | Sí (alternativas del Asistente, parecidos) |
+
+**Cómo se ve:** arriba de la lección, «Verla como: Texto · Diagrama · Paso a paso · Escuchar». STIRE abre la última que
+eligió el estudiante. El docente genera con el Asistente las que falten («haz el diagrama y el paso a paso de esta
+lección») y decide cuáles publica. El perfil de aprendizaje (BT-45) ya registra qué formatos usa; se le suma si le fue
+mejor con cada uno, y eso va a la tesis.
 
 ## 6. Que quede claro qué se pide y qué debe salir
 
