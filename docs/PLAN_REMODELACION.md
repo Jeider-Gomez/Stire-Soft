@@ -150,6 +150,7 @@ pantalla nueva tiene que resolver lo que esas pruebas encontraron.
 | Prueba con 10 personas (hasta el 6/11) | `docs/calidad/PRUEBA_CON_PERSONAS.md` | Dónde se pierde alguien que nunca usó STIRE |
 | Perfiles simulados (P16) | `docs/calidad/prueba-perfiles/` | Qué funciones se rompen o no se usan con cientos de usuarios |
 | Revisión con el profesor Toscano (28/10) | `docs/curso-ddse3/RETROALIMENTACION_TOSCANO_2026-10-28.md` | Ejercicios desagregados, remitir al concepto, explicar el código en el editor, repaso sin rojo y personalizar por competencias (P35–P38, P15) |
+| Propuesta de la parte formativa (28/10) | `docs/PROPUESTA_PARTE_FORMATIVA.md` | Leer sin arreglos, explicar el código en el panel izquierdo, «Practica esto primero», competencias (P39) y ejercicios breves |
 | Revisión del panel del docente con Jeider (P34) | este plan | Qué se queda en el docente |
 
 **Lo que la evaluación de la IA le pide a cada pantalla:**
