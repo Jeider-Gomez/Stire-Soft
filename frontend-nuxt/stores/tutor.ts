@@ -1,6 +1,7 @@
 import { contextoSegunPantalla, ultimaPruebaDe } from '~/utils/contextoTutor'
 import { conceptosDelEjercicio } from '~/utils/conceptosEjercicio'
 import { saludoDeRespaldo } from '~/utils/saludoTutor'
+import { enviarEnVivo } from '~/utils/tutorEnVivo'
 import { defineStore } from 'pinia'
 import type { TutorMessage, TutorSuggestedActivity, TutorApiKey, TutorGuidance } from '~/types'
 import { useAuthStore } from './auth'
@@ -18,6 +19,7 @@ export const useTutorStore = defineStore('tutor', () => {
   const authStore = useAuthStore()
   const workspaceStore = useWorkspaceStore()
   const route = useRoute()
+  const baseUrl = useRuntimeConfig().public.apiBase || 'http://localhost:3001'
 
   // ─── Estado del drawer ──────────────────────────────────────────────────────
   const isOpen = ref(false)
@@ -328,54 +330,77 @@ export const useTutorStore = defineStore('tutor', () => {
     isThinking.value = true
     startThinkingTimer()
 
+    const cuerpo = {
+      message: userText,
+      context: proyectoAbierto.value && route.path.startsWith('/estudiante/proyectos/')
+        ? {
+            currentRoute: route.path,
+            proyectoTitulo: proyectoAbierto.value.titulo,
+            proyectoTipo: proyectoAbierto.value.tipo,
+            // Todos los archivos, cada uno con su nombre, para que el Tutor vea el proyecto completo.
+            currentCode: proyectoAbierto.value.archivos.map((a) => `/* ${a.nombre} */\n${a.contenido}`).join('\n\n'),
+            codeLanguage: ({ web: 'html', javascript: 'javascript', pseudocodigo: 'text', diagrama: 'text' } as const)[proyectoAbierto.value.tipo],
+          }
+        : contextoSegunPantalla(route.path, workspaceStore.currentExercise ?? null, {
+            js: workspaceStore.code, html: workspaceStore.htmlCode, css: workspaceStore.cssCode,
+          }, {
+            // Señales (src/tutor/tutor-senales.ts): error probable de la salida, juicio de confianza y modo por pasos.
+            errorProbable: workspaceStore.errorProbable ?? undefined,
+            confianza: workspaceStore.calibracion?.confianza,
+            acerto: workspaceStore.calibracion?.acerto,
+            modo: modoEnvio,
+            conceptos: conceptosParaTutor(),
+          }, ultimaPruebaDe(workspaceStore.publicTestCases))
+    }
+    // Ítem 2 de la evaluación heurística: la respuesta aparece a medida que llega (SSE). Si el servidor todavía no tiene
+    // esa ruta, se usa el chat de siempre.
+    // En un objeto: TypeScript no sigue lo que se asigna dentro de la función que recibe los trozos.
+    const vivo: { m: TutorMessage | null } = { m: null }
     try {
-      const res = await api.post<{
+      const fin = await enviarEnVivo(`${baseUrl}/tutor/chat/stream`, authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {}, cuerpo, (trozo) => {
+        if (!vivo.m) {
+          isThinking.value = false
+          stopThinkingTimer()
+          messages.value.push({ id: `msg-${Date.now()}-tutor`, sender: 'tutor', text: '', timestamp: nowLabel() })
+          vivo.m = messages.value[messages.value.length - 1]!
+        }
+        vivo.m.text += trozo
+      })
+      const res = fin ?? await api.post<{
         success: boolean
         message: string
         response?: string
         suggestedActivity: TutorSuggestedActivity | null
         guidanceLevel?: 1 | 2 | 3 | null
-      }>('/tutor/chat', {
-        message: userText,
-        context: proyectoAbierto.value && route.path.startsWith('/estudiante/proyectos/')
-          ? {
-              currentRoute: route.path,
-              proyectoTitulo: proyectoAbierto.value.titulo,
-              proyectoTipo: proyectoAbierto.value.tipo,
-              // Todos los archivos, cada uno con su nombre, para que el Tutor vea el proyecto completo.
-              currentCode: proyectoAbierto.value.archivos.map((a) => `/* ${a.nombre} */\n${a.contenido}`).join('\n\n'),
-              codeLanguage: ({ web: 'html', javascript: 'javascript', pseudocodigo: 'text', diagrama: 'text' } as const)[proyectoAbierto.value.tipo],
-            }
-          : contextoSegunPantalla(route.path, workspaceStore.currentExercise ?? null, {
-              js: workspaceStore.code, html: workspaceStore.htmlCode, css: workspaceStore.cssCode,
-            }, {
-              // Señales (src/tutor/tutor-senales.ts): error probable de la salida, juicio de confianza y modo por pasos.
-              errorProbable: workspaceStore.errorProbable ?? undefined,
-              confianza: workspaceStore.calibracion?.confianza,
-              acerto: workspaceStore.calibracion?.acerto,
-              modo: modoEnvio,
-              conceptos: conceptosParaTutor(),
-            }, ultimaPruebaDe(workspaceStore.publicTestCases))
-      })
+      }>('/tutor/chat', cuerpo)
 
       // Actualizar nivel de guía con la respuesta del backend
       if (res?.guidanceLevel !== undefined) {
         guidanceLevel.value = res.guidanceLevel ?? null
       }
 
-      if (res && (res.message || res.response)) {
+      const texto = ('response' in res ? res.message || res.response : res.message) || ''
+      if (vivo.m) {
+        // El texto definitivo (el que se guardó, ya pasado entero por la barrera) reemplaza al que llegó por partes.
+        const m = vivo.m
+        m.text = texto || m.text
+        m.guidanceLevel = res.guidanceLevel ?? null
+        m.suggestedActivity = (res.suggestedActivity as TutorSuggestedActivity | null) ?? null
+      } else if (texto) {
         messages.value.push({
           id: `msg-${Date.now()}-tutor`,
           sender: 'tutor',
-          text: res.message || res.response || '',
+          text: texto,
           guidanceLevel: res.guidanceLevel ?? null,
           timestamp: nowLabel(),
-          suggestedActivity: res.suggestedActivity ?? null
+          suggestedActivity: (res.suggestedActivity as TutorSuggestedActivity | null) ?? null
         })
       }
     } catch (err) {
       console.warn('[STIRE Tutor] Error al consultar Tutor IA:', err)
       const { text, needsKey, is403 } = friendlyTutorError(err)
+      // Si se cortó a mitad, se quita lo que alcanzó a llegar: queda el aviso con «Reintentar».
+      if (vivo.m) messages.value = messages.value.filter((m) => m !== vivo.m)
 
       if (needsKey) {
         // 428/422: abrir panel de clave y marcar que hay un reintento pendiente

@@ -255,3 +255,53 @@ describe('Ítem 31: el manual dice lo que hay hoy en el panel del docente', () =
     ['«Contenidos»', '«Seguimiento»', '«Gestión de la clase»'].forEach((n) => expect(manual).not.toContain(n));
   });
 });
+
+type Evento = { tipo: string; texto?: string; message?: string; estado?: number; mensaje?: string };
+const enVivo = cargar<{
+  leerEventos: (a: string) => { eventos: Evento[]; resto: string };
+  enviarEnVivo: (url: string, h: Record<string, string>, c: unknown, f: (t: string) => void) => Promise<Evento | null>;
+}>('tutorEnVivo');
+
+describe('Ítem 2: la respuesta del Tutor aparece a medida que llega', () => {
+  const sse = (...eventos: object[]) => eventos.map((e) => `data: ${JSON.stringify(e)}\n\n`).join('');
+  const responder = (status: number, cuerpo: string) => {
+    const bytes = new TextEncoder().encode(cuerpo);
+    const body = new ReadableStream<Uint8Array>({ start(c) { for (let i = 0; i < bytes.length; i += 9) c.enqueue(bytes.slice(i, i + 9)); c.close(); } });
+    return { status, ok: status >= 200 && status < 300, body, json: async () => JSON.parse(cuerpo) };
+  };
+  const realFetch = global.fetch;
+  afterEach(() => { (global as unknown as { fetch: typeof fetch }).fetch = realFetch; });
+
+  it('separa los eventos completos y guarda lo que llegó a medias', () => {
+    const { eventos, resto } = enVivo.leerEventos('data: {"tipo":"trozo","texto":"Ho"}\n\ndata: {"tipo":"tro');
+    expect(eventos).toEqual([{ tipo: 'trozo', texto: 'Ho' }]);
+    expect(resto).toBe('data: {"tipo":"tro');
+  });
+
+  it('entrega cada trozo y termina con el mensaje definitivo, aunque los bytes lleguen partidos', async () => {
+    (global as unknown as { fetch: unknown }).fetch = jest.fn().mockResolvedValue(responder(200, sse(
+      { tipo: 'trozo', texto: '¿Qué ' }, { tipo: 'trozo', texto: 'ves?' }, { tipo: 'fin', message: '¿Qué ves?', suggestedActivity: null, guidanceLevel: 1 },
+    )));
+    const trozos: string[] = [];
+    const fin = await enVivo.enviarEnVivo('http://api/tutor/chat/stream', { Authorization: 'Bearer x' }, { message: 'hola' }, (t) => trozos.push(t));
+    expect(trozos).toEqual(['¿Qué ', 'ves?']);
+    expect(fin).toMatchObject({ tipo: 'fin', message: '¿Qué ves?' });
+  });
+
+  it('si el servidor aún no tiene la ruta, avisa para volver al chat de siempre', async () => {
+    (global as unknown as { fetch: unknown }).fetch = jest.fn().mockResolvedValue(responder(404, '{}'));
+    await expect(enVivo.enviarEnVivo('u', {}, {}, () => undefined)).resolves.toBeNull();
+  });
+
+  it('un error del servidor llega con su código, para el mismo aviso de siempre (clave, límite…)', async () => {
+    (global as unknown as { fetch: unknown }).fetch = jest.fn().mockResolvedValue(responder(429, '{"error":"Alcanzaste el límite"}'));
+    await expect(enVivo.enviarEnVivo('u', {}, {}, () => undefined)).rejects.toMatchObject({ statusCode: 429, data: { error: 'Alcanzaste el límite' } });
+  });
+
+  it('el chat usa la ruta en vivo, vuelve a /tutor/chat si no está y reemplaza el texto por el definitivo', () => {
+    const store = leer('stores', 'tutor.ts');
+    expect(store).toContain('/tutor/chat/stream');
+    expect(store).toContain("fin ?? await api.post");
+    expect(store).toContain('m.text = texto || m.text');
+  });
+});

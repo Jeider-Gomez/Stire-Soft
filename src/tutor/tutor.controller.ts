@@ -1,4 +1,5 @@
-import { Controller, Post, Get, Put, Delete, Body, Query, BadRequestException, UseGuards, UseInterceptors, UploadedFile, HttpCode } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Body, Query, BadRequestException, HttpException, UseGuards, UseInterceptors, UploadedFile, HttpCode, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
@@ -28,17 +29,8 @@ export class TutorController {
   @Roles('estudiante')
   @ApiOperation({ summary: 'Enviar un mensaje al Tutor IA adaptativo' })
   async chat(@Body() body: ChatDto | any, @GetUser() user: User) {
-    const rawMessage =
-      typeof body === 'string'
-        ? body
-        : body?.message || body?.prompt || body?.content;
-
-    if (!rawMessage || typeof rawMessage !== 'string' || !rawMessage.trim()) {
-      throw new BadRequestException('El mensaje no puede estar vacío');
-    }
-
-    const context = typeof body === 'object' ? body?.context : undefined;
-    const { message, suggestedActivity, guidanceLevel } = await this.tutorService.sendMessage(user, rawMessage.trim(), context);
+    const { mensaje, context } = mensajeDelCuerpo(body);
+    const { message, suggestedActivity, guidanceLevel } = await this.tutorService.sendMessage(user, mensaje, context);
 
     return {
       success: true,
@@ -47,6 +39,47 @@ export class TutorController {
       suggestedActivity,
       guidanceLevel,
     };
+  }
+
+  /**
+   * El mismo chat, con la respuesta por partes (SSE; ítem 2 de la evaluación heurística): el estudiante la ve a medida que
+   * llega en vez de esperar varios segundos en blanco. Cada evento es `data: {json}`: `trozo` (texto ya pasado por la
+   * barrera contra dar la solución), `fin` (el mensaje definitivo, el que se guarda, con la sugerencia y el nivel de
+   * ayuda) o `error`. Si algo falla ANTES del primer trozo, responde con el código HTTP de siempre, así el navegador lo
+   * trata igual que en /tutor/chat.
+   */
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
+  @Post('chat/stream')
+  @UseGuards(RolesGuard, MayorDeEdadGuard)
+  @Roles('estudiante')
+  @ApiOperation({ summary: 'Enviar un mensaje al Tutor IA y recibir la respuesta por partes (SSE)' })
+  async chatEnVivo(@Body() body: ChatDto | any, @GetUser() user: User, @Res() res: Response) {
+    const { mensaje, context } = mensajeDelCuerpo(body);
+    let abierto = false;
+    const enviar = (dato: object) => {
+      if (!abierto) {
+        res.status(200);
+        res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-cache, no-transform');
+        res.setHeader('X-Accel-Buffering', 'no');
+        res.flushHeaders();
+        abierto = true;
+      }
+      res.write(`data: ${JSON.stringify(dato)}
+
+`);
+    };
+    try {
+      const r = await this.tutorService.sendMessageEnVivo(user, mensaje, context, (texto) => enviar({ tipo: 'trozo', texto }));
+      enviar({ tipo: 'fin', message: r.message, suggestedActivity: r.suggestedActivity, guidanceLevel: r.guidanceLevel });
+      res.end();
+    } catch (err) {
+      if (!abierto) throw err;
+      const estado = err instanceof HttpException ? err.getStatus() : 500;
+      const texto = err instanceof HttpException ? String((err.getResponse() as { message?: unknown })?.message ?? err.message) : 'El Tutor se interrumpió. Inténtalo de nuevo.';
+      enviar({ tipo: 'error', estado, mensaje: texto });
+      res.end();
+    }
   }
 
   @Throttle({ default: { limit: 30, ttl: 60000 } })
@@ -129,4 +162,14 @@ export class TutorController {
     await this.credentialService.remove(user.id);
     return { success: true, hasKey: false, last4: null };
   }
+}
+
+/** El mensaje y el contexto que manda el chat (texto suelto o `{ message | prompt | content, context }`). */
+function mensajeDelCuerpo(body: unknown): { mensaje: string; context: unknown } {
+  const b = body as { message?: unknown; prompt?: unknown; content?: unknown; context?: unknown } | string | null;
+  const crudo = typeof b === 'string' ? b : b?.message || b?.prompt || b?.content;
+  if (!crudo || typeof crudo !== 'string' || !crudo.trim()) {
+    throw new BadRequestException('El mensaje no puede estar vacío');
+  }
+  return { mensaje: crudo.trim(), context: typeof b === 'object' && b ? b.context : undefined };
 }

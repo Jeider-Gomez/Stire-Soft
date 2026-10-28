@@ -21,7 +21,7 @@ import { LearningUnitService } from '../learning-unit/learning-unit.service';
 import { LearningProgressService } from '../learning-progress/learning-progress.service';
 import { GuidanceLevel, guidanceLevelForFailedAttempts } from './tutor-guidance';
 import { TutorSettingsService } from './tutor-settings.service';
-import { limitCodeBlocks } from './tutor-solution-guard';
+import { crearFiltroEnVivo, limitCodeBlocks } from './tutor-solution-guard';
 import { User } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -84,6 +84,20 @@ export function saludoSinSugerencia(
 
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 const GEMINI_TIMEOUT_MS = 15000;
+/** Con la respuesta por partes: tope de la respuesta completa una vez que empezó a llegar. */
+const GEMINI_TIMEOUT_EN_VIVO_MS = 60000;
+
+/** El texto de una línea del SSE de Gemini («data: {…}»); vacío si la línea no trae texto. */
+export function textoDeEventoGemini(linea: string): string {
+  const l = linea.trim();
+  if (!l.startsWith('data:')) return '';
+  try {
+    const datos = JSON.parse(l.slice(5).trim()) as { candidates?: Array<{ content?: { parts?: Array<{ text?: unknown }> } }> };
+    return (datos?.candidates?.[0]?.content?.parts ?? []).map((p) => (typeof p?.text === 'string' ? p.text : '')).join('');
+  } catch {
+    return '';
+  }
+}
 /** Compartido por todas las preguntas: si un modelo de Google está caído, lo está para todos (orden-modelos.ts). */
 const ordenDeModelos = new OrdenDeModelos();
 const HISTORY_WINDOW = 6;
@@ -151,6 +165,30 @@ export class TutorService {
   }
 
   async sendMessage(user: User, message: string, context?: any): Promise<TutorReply> {
+    const p = await this.prepararMensaje(user, message, context);
+    const rawReply = await this.callGemini(p.apiKey, p.systemPrompt, p.history, message);
+    return this.cerrarMensaje(user.id, message, context, p, rawReply);
+  }
+
+  /**
+   * Igual que sendMessage, pero la respuesta llega por partes (ítem 2 de la evaluación heurística): `alEscribir` recibe
+   * cada trozo ya pasado por la barrera contra dar la solución (un bloque de código se retiene hasta revisarlo). El texto
+   * definitivo, el que se guarda, es el que devuelve al final.
+   */
+  async sendMessageEnVivo(user: User, message: string, context: any, alEscribir: (texto: string) => void): Promise<TutorReply> {
+    const p = await this.prepararMensaje(user, message, context);
+    const filtro = p.conBarrera ? crearFiltroEnVivo(this.opcionesDeBarrera(context, message)) : null;
+    const rawReply = await this.pedirAGeminiEnVivo(p.apiKey, this.cuerpoDelChat(p.systemPrompt, p.history, message), (trozo) => {
+      const visible = filtro ? filtro.agregar(trozo) : trozo;
+      if (visible) alEscribir(visible);
+    });
+    const resto = filtro?.terminar();
+    if (resto) alEscribir(resto);
+    return this.cerrarMensaje(user.id, message, context, p, rawReply);
+  }
+
+  /** Todo lo que va antes de hablar con Gemini: permisos, clave, contexto, nivel de ayuda, prompt e historial. */
+  private async prepararMensaje(user: User, message: string, context?: any) {
     const studentId = user.id;
     const unit = await this.resolveAccessibleUnit(user, context);
 
@@ -171,7 +209,6 @@ export class TutorService {
       );
     }
 
-    const practiceIntent = PRACTICE_INTENT_PATTERN.test(message);
     const enunciado = unit ? await this.enunciadoDelEjercicio(context?.activityId, unit.id) : {};
     const promptContext = {
       ...this.sanitizeContext(context, unit),
@@ -186,19 +223,31 @@ export class TutorService {
     const systemPrompt = await this.contextService.buildSystemPrompt(studentId, promptContext, guidanceLevel, settings.style, refuerzo);
     // El historial se lee ANTES de guardar el mensaje nuevo: si no, el LLM lo recibe dos veces.
     const history = await this.convRepo.getRecentContext(studentId, HISTORY_WINDOW);
-
-    const rawReply = await this.callGemini(apiKey, systemPrompt, history, message);
-
-    // Dentro de una actividad o de un proyecto propio, un bloque de código largo se sustituye por un aviso (barrera en
-    // código contra dar la solución o escribir el proyecto; ver tutor-solution-guard.ts).
-    let replyText = rawReply;
+    // Dentro de una actividad o de un proyecto propio, un bloque de código largo se sustituye por un aviso.
     const enProyecto = typeof context?.proyectoTitulo === 'string' && context.proyectoTitulo.trim() !== '';
-    if (guidanceLevel !== null || enProyecto) {
-      const guarded = limitCodeBlocks(rawReply, {
-        studentCode: typeof context?.currentCode === 'string' ? context.currentCode : undefined,
-        studentMessage: message,
-        markup: context?.codeLanguage === 'html' || context?.codeLanguage === 'css',
-      });
+    return { unit, apiKey, systemPrompt, history, guidanceLevel, conBarrera: guidanceLevel !== null || enProyecto };
+  }
+
+  private opcionesDeBarrera(context: any, message: string) {
+    return {
+      studentCode: typeof context?.currentCode === 'string' ? context.currentCode : undefined,
+      studentMessage: message,
+      markup: context?.codeLanguage === 'html' || context?.codeLanguage === 'css',
+    };
+  }
+
+  /** Lo que va después: la barrera sobre el texto completo, guardar la conversación y la tarjeta de práctica. */
+  private async cerrarMensaje(
+    studentId: number,
+    message: string,
+    context: any,
+    p: { unit: { id: number; title: string } | null; guidanceLevel: GuidanceLevel | null; conBarrera: boolean },
+    rawReply: string,
+  ): Promise<TutorReply> {
+    // Barrera en código contra dar la solución o escribir el proyecto (ver tutor-solution-guard.ts).
+    let replyText = rawReply;
+    if (p.conBarrera) {
+      const guarded = limitCodeBlocks(rawReply, this.opcionesDeBarrera(context, message));
       replyText = guarded.text;
       if (guarded.redactedBlocks > 0) {
         this.logger.warn(`Se omitieron ${guarded.redactedBlocks} bloque(s) de código largo en la respuesta del Tutor (barrera anti-solución).`);
@@ -218,9 +267,9 @@ export class TutorService {
     // Solo se adjunta una tarjeta de ejercicio cuando el estudiante lo pidió explícitamente --
     // el "¿ya entendiste, practicamos?" es pregunta natural del propio LLM (tutor-context.service.ts
     // regla 6), no un marcador oculto: menos tokens por llamada y sin saturar cada respuesta.
-    const suggestedActivity = practiceIntent ? await this.resolveExplicitSuggestion(studentId, unit) : null;
+    const suggestedActivity = PRACTICE_INTENT_PATTERN.test(message) ? await this.resolveExplicitSuggestion(studentId, p.unit) : null;
 
-    return { message: sanitizedAiResponse, suggestedActivity, guidanceLevel };
+    return { message: sanitizedAiResponse, suggestedActivity, guidanceLevel: p.guidanceLevel };
   }
 
   /**
@@ -378,12 +427,15 @@ export class TutorService {
     history: Array<{ role: string; content: string }>,
     userMessage: string,
   ): Promise<string> {
-    const body = {
+    return this.pedirAGemini(apiKey, this.cuerpoDelChat(systemPrompt, history, userMessage));
+  }
+
+  private cuerpoDelChat(systemPrompt: string, history: Array<{ role: string; content: string }>, userMessage: string) {
+    return {
       system_instruction: { parts: [{ text: systemPrompt }] },
       contents: this.toGeminiContents(history, userMessage),
       generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
     };
-    return this.pedirAGemini(apiKey, body);
   }
 
   /**
@@ -446,18 +498,26 @@ export class TutorService {
         continue;
       }
 
-      const errText = await res.text().catch(() => '');
-      if (res.status === 401 || res.status === 403 || (res.status === 400 && /API_KEY_INVALID|API key not valid/i.test(errText))) {
-        this.logger.warn(`Google rechazó la clave de un estudiante (${res.status}).`);
-        throw new UnprocessableEntityException(
-          'Tu clave de Google AI Studio no es válida o fue revocada. Configura una nueva para seguir usando el Tutor.',
-        );
-      }
-      if (res.status === 429) sawQuota = true;
-      if (res.status >= 500) ordenDeModelos.fallo(model);
-      this.logger.warn(`Modelo ${model} devolvió ${res.status}. Probando siguiente modelo.`);
+      if (await this.revisarFallo(res, model)) sawQuota = true;
     }
+    this.sinModeloDisponible(sawQuota);
+  }
 
+  /** Un modelo respondió con error: clave inválida (se lanza), cuota (devuelve true) u otro (se prueba el siguiente). */
+  private async revisarFallo(res: Awaited<ReturnType<typeof fetch>>, model: string): Promise<boolean> {
+    const errText = await res.text().catch(() => '');
+    if (res.status === 401 || res.status === 403 || (res.status === 400 && /API_KEY_INVALID|API key not valid/i.test(errText))) {
+      this.logger.warn(`Google rechazó la clave de un estudiante (${res.status}).`);
+      throw new UnprocessableEntityException(
+        'Tu clave de Google AI Studio no es válida o fue revocada. Configura una nueva para seguir usando el Tutor.',
+      );
+    }
+    if (res.status >= 500) ordenDeModelos.fallo(model);
+    this.logger.warn(`Modelo ${model} devolvió ${res.status}. Probando siguiente modelo.`);
+    return res.status === 429;
+  }
+
+  private sinModeloDisponible(sawQuota: boolean): never {
     if (sawQuota) {
       throw new HttpException(
         'Alcanzaste el límite gratuito de tu clave de Google AI Studio por ahora. Espera un momento e inténtalo de nuevo.',
@@ -465,6 +525,85 @@ export class TutorService {
       );
     }
     throw new ServiceUnavailableException('El tutor no está disponible en este momento. Inténtalo de nuevo en un minuto.');
+  }
+
+  /**
+   * Como pedirAGemini, pero con la respuesta por partes (streamGenerateContent con SSE). Se cambia de modelo solo antes
+   * del primer trozo: si un modelo no empieza a responder en GEMINI_TIMEOUT_MS, se prueba el siguiente; una vez que
+   * escribió, un corte se informa como error (no se puede empezar de nuevo con otro). Devuelve el texto completo.
+   */
+  private async pedirAGeminiEnVivo(apiKey: string, body: object, alRecibir: (texto: string) => void): Promise<string> {
+    const candidateModels = Array.from(
+      new Set([this.geminiModel, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'].map(m => m.replace(/^models\//, ''))),
+    );
+    let sawQuota = false;
+    for (const model of ordenDeModelos.orden(candidateModels)) {
+      const inicio = Date.now();
+      const control = new AbortController();
+      let reloj = setTimeout(() => control.abort(), GEMINI_TIMEOUT_MS);
+      let res: Awaited<ReturnType<typeof fetch>>;
+      try {
+        res = await fetch(`${GEMINI_BASE_URL}/${model}:streamGenerateContent?alt=sse`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+          body: JSON.stringify(body),
+          signal: control.signal,
+        });
+      } catch (err: any) {
+        clearTimeout(reloj);
+        ordenDeModelos.fallo(model);
+        this.logger.warn(`Fallo de red o timeout con ${model} (${err?.name ?? 'error'}). Probando siguiente modelo.`);
+        continue;
+      }
+      if (!res.ok || !res.body) {
+        clearTimeout(reloj);
+        if (await this.revisarFallo(res, model)) sawQuota = true;
+        continue;
+      }
+
+      let texto = '';
+      let resto = '';
+      const decoder = new TextDecoder();
+      const reader = res.body.getReader();
+      try {
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          resto += decoder.decode(value, { stream: true });
+          const lineas = resto.split('\n');
+          resto = lineas.pop() ?? '';
+          for (const trozo of lineas.map(textoDeEventoGemini)) {
+            if (!trozo) continue;
+            if (!texto) {
+              // Empezó a responder: desde aquí manda el tope de la respuesta completa, no el de arrancar.
+              clearTimeout(reloj);
+              reloj = setTimeout(() => control.abort(), GEMINI_TIMEOUT_EN_VIVO_MS);
+            }
+            texto += trozo;
+            alRecibir(trozo);
+          }
+        }
+        const ultimo = textoDeEventoGemini(resto);
+        if (ultimo) { texto += ultimo; alRecibir(ultimo); }
+      } catch (err: any) {
+        clearTimeout(reloj);
+        if (texto) {
+          this.logger.warn(`${model} se cortó a mitad de la respuesta (${err?.name ?? 'error'}).`);
+          throw new ServiceUnavailableException('El Tutor se interrumpió. Inténtalo de nuevo.');
+        }
+        ordenDeModelos.fallo(model);
+        this.logger.warn(`${model} no empezó a responder (${err?.name ?? 'error'}). Probando siguiente modelo.`);
+        continue;
+      }
+      clearTimeout(reloj);
+      if (texto.trim()) {
+        this.logger.log(`Tutor en vivo: ${model} respondió en ${Date.now() - inicio} ms.`);
+        ordenDeModelos.respondio(model);
+        return texto.trim();
+      }
+      this.logger.warn(`Modelo ${model} respondió sin texto.`);
+    }
+    this.sinModeloDisponible(sawQuota);
   }
 
   /** Gemini exige turnos que empiecen por el usuario y alternen: se descartan los `system`, los turnos iniciales del modelo y se fusionan los consecutivos. */

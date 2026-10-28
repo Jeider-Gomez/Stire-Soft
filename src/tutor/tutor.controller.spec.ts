@@ -66,3 +66,67 @@ describe('SaveApiKeyDto', () => {
     expect((await check(value)).length).toBeGreaterThan(0);
   });
 });
+
+describe('TutorController — chat con la respuesta por partes (SSE)', () => {
+  const respuesta = () => {
+    const escrito: string[] = [];
+    const res: any = {
+      status: jest.fn(), setHeader: jest.fn(), flushHeaders: jest.fn(), end: jest.fn(),
+      write: jest.fn((t: string) => escrito.push(t)),
+    };
+    return { res, eventos: () => escrito.map((t) => JSON.parse(t.replace(/^data: /, '').trim())) };
+  };
+
+  it('manda los trozos y al final el mensaje definitivo, como text/event-stream', async () => {
+    const tutorService = {
+      sendMessageEnVivo: jest.fn(async (_u: unknown, _m: string, _c: unknown, alEscribir: (t: string) => void) => {
+        alEscribir('Hola, ');
+        alEscribir('¿qué probaste?');
+        return { message: 'Hola, ¿qué probaste?', suggestedActivity: null, guidanceLevel: 1 };
+      }),
+    };
+    const controller = new TutorController(tutorService as any, {} as any);
+    const { res, eventos } = respuesta();
+
+    await controller.chatEnVivo({ message: '  ayuda  ', context: { activityId: 3 } }, USER, res);
+
+    expect(tutorService.sendMessageEnVivo).toHaveBeenCalledWith(USER, 'ayuda', { activityId: 3 }, expect.any(Function));
+    expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'text/event-stream; charset=utf-8');
+    expect(eventos()).toEqual([
+      { tipo: 'trozo', texto: 'Hola, ' },
+      { tipo: 'trozo', texto: '¿qué probaste?' },
+      { tipo: 'fin', message: 'Hola, ¿qué probaste?', suggestedActivity: null, guidanceLevel: 1 },
+    ]);
+    expect(res.end).toHaveBeenCalled();
+  });
+
+  it('si falla antes del primer trozo, responde con el error HTTP de siempre (sin abrir el SSE)', async () => {
+    const tutorService = { sendMessageEnVivo: jest.fn().mockRejectedValue(Object.assign(new Error('sin clave'), { status: 428 })) };
+    const controller = new TutorController(tutorService as any, {} as any);
+    const { res } = respuesta();
+
+    await expect(controller.chatEnVivo({ message: 'hola' }, USER, res)).rejects.toMatchObject({ status: 428 });
+    expect(res.write).not.toHaveBeenCalled();
+  });
+
+  it('si se corta después de empezar, lo avisa como evento de error y cierra', async () => {
+    const tutorService = {
+      sendMessageEnVivo: jest.fn(async (_u: unknown, _m: string, _c: unknown, alEscribir: (t: string) => void) => {
+        alEscribir('Empiezo');
+        throw new Error('corte');
+      }),
+    };
+    const controller = new TutorController(tutorService as any, {} as any);
+    const { res, eventos } = respuesta();
+
+    await controller.chatEnVivo({ message: 'hola' }, USER, res);
+
+    expect(eventos()[1]).toMatchObject({ tipo: 'error', estado: 500 });
+    expect(res.end).toHaveBeenCalled();
+  });
+
+  it('un mensaje vacío se rechaza con 400', async () => {
+    const controller = new TutorController({} as any, {} as any);
+    await expect(controller.chatEnVivo({ message: '   ' }, USER, respuesta().res)).rejects.toMatchObject({ status: 400 });
+  });
+});

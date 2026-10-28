@@ -85,3 +85,49 @@ export function limitCodeBlocks(text: string, options: GuardOptions = {}): Guard
 
   return { text: guarded, redactedBlocks };
 }
+
+/**
+ * La misma barrera para la respuesta que llega por partes (ítem 2 de la evaluación heurística: «la respuesta a medida que
+ * llega»). El texto fuera de un bloque de código se deja pasar al instante; un bloque ```…``` se retiene hasta que se
+ * cierra y pasa por limitCodeBlocks antes de mostrarse. Así ninguna solución alcanza a verse mientras llega.
+ */
+export function crearFiltroEnVivo(options: GuardOptions = {}): { agregar: (trozo: string) => string; terminar: () => string } {
+  let pendiente = '';
+  let enBloque = false;
+
+  function agregar(trozo: string): string {
+    pendiente += trozo;
+    let salida = '';
+    for (;;) {
+      if (!enBloque) {
+        const inicio = pendiente.indexOf('```');
+        if (inicio === -1) {
+          // Uno o dos acentos al final pueden ser el comienzo de una valla: se esperan al siguiente trozo.
+          const corte = pendiente.length - (pendiente.endsWith('``') ? 2 : pendiente.endsWith('`') ? 1 : 0);
+          salida += pendiente.slice(0, corte);
+          pendiente = pendiente.slice(corte);
+          return salida;
+        }
+        salida += pendiente.slice(0, inicio);
+        pendiente = pendiente.slice(inicio);
+        enBloque = true;
+      } else {
+        const cierre = pendiente.indexOf('```', 3);
+        if (cierre === -1) return salida;
+        salida += limitCodeBlocks(pendiente.slice(0, cierre + 3), options).text;
+        pendiente = pendiente.slice(cierre + 3);
+        enBloque = false;
+      }
+    }
+  }
+
+  /** Lo que quedó retenido al terminar (un bloque sin cerrar también pasa por la barrera). */
+  function terminar(): string {
+    const resto = enBloque ? limitCodeBlocks(pendiente, options).text : pendiente;
+    pendiente = '';
+    enBloque = false;
+    return resto;
+  }
+
+  return { agregar, terminar };
+}
