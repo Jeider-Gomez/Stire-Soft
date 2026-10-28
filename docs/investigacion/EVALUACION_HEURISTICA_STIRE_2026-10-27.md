@@ -9,7 +9,7 @@ califica con el **más exigente**, que casi siempre es el de colegio; la columna
 universitario cuando cambia. Ante la duda, la nota más baja.
 
 **Cómo:** evaluación experta de una sola persona (la IA), contra el código, sin estudiantes. El Excel lleno está fuera
-del repositorio (OneDrive, `Evaluacion heuristica STIRE/IA - no abrir antes de entregar/`). **El equipo no lo lee antes
+del repositorio, en una carpeta de OneDrive que no se comparte (`Evaluacion heuristica STIRE - IA (privado, no compartir)/`). **El equipo no lo lee antes
 de entregar su evaluación** (`docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`).
 
 ## Resultado
