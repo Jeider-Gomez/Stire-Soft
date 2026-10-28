@@ -31,6 +31,7 @@ tabla de abajo.
 | Hacer la **prueba con 10 personas reales** (2 por integrante, pedida por el profesor Toscano) | [`calidad/PRUEBA_CON_PERSONAS.md`](calidad/PRUEBA_CON_PERSONAS.md) |
 | Hacer la **evaluación heurística del equipo** (Semana 11) y ver el **plan para llevar cada ítem a 5** | [`calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`](calidad/EVALUACION_HEURISTICA_HUMANA_S11.md) · [`calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`](calidad/EVALUACION_HEURISTICA_PLAN_A_5.md) |
 | Ver la **propuesta de la parte formativa**: ejercicios sin arreglos, explicar el código, «Practica esto primero» y competencias | [`PROPUESTA_PARTE_FORMATIVA.md`](PROPUESTA_PARTE_FORMATIVA.md) · [`curso-ddse3/RETROALIMENTACION_TOSCANO_2026-10-28.md`](curso-ddse3/RETROALIMENTACION_TOSCANO_2026-10-28.md) |
+| Ver el **plan de los dos asistentes** (Tutor y Asistente del docente): contexto por pantalla, ficha guiada, crear una clase desde cero y laboratorio de prompts | [`PLAN_TUTOR_Y_ASISTENTE.md`](PLAN_TUTOR_Y_ASISTENTE.md) |
 | Entender **cómo sube y baja el dominio** y por qué siempre se puede llegar al 100 % | [`DISENO_DOMINIO.md`](DISENO_DOMINIO.md) |
 | Diseñar **ejercicios de programar que enseñan** (referentes, lo hecho y lo propuesto para el docente) | [`DISENO_EJERCICIOS_PROGRAMAR.md`](DISENO_EJERCICIOS_PROGRAMAR.md) |
 
