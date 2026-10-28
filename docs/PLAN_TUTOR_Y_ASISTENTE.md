@@ -152,6 +152,29 @@ pocos casos.
 
 Se mide en el laboratorio de prompts (sección 6) con casos de oro de conversaciones de varios turnos.
 
+## 6c. Cualquier proveedor de IA (escalable)
+
+**Hoy no:** Gemini está escrito a mano en tres lugares (`src/tutor/tutor.service.ts`,
+`src/asistente-docente/asistente-docente.service.ts` y la comprobación de la clave en `tutor-credential.service.ts`).
+
+**Se puede, y no es mucho trabajo**, con un **adaptador de proveedor**: una interfaz única («genera texto», «genera un
+JSON con este esquema», «responde a medida que escribe») y una implementación por proveedor. Con tres se cubre casi todo:
+
+| Adaptador | Cubre |
+|---|---|
+| Gemini | Lo de hoy |
+| Compatible con OpenAI | OpenAI, Groq, OpenRouter, DeepSeek, Mistral y **Ollama** (modelos que corren en un computador propio, sin costo por uso) |
+| Anthropic | Claude |
+
+- **Quién elige:** el administrador fija el proveedor por defecto de la institución; cada docente o estudiante puede
+  poner su propia clave del proveedor que quiera (como hoy con Google).
+- **Lo que no cambia:** la política pedagógica, las fichas y las validaciones de STIRE (el esquema se revisa en STIRE,
+  no se confía en el proveedor), y la barrera que no deja dar la solución.
+- **Cuidado:** cada proveedor responde distinto, así que cada uno pasa por el laboratorio de prompts antes de ofrecerse;
+  y las condiciones de uso cambian (Gemini exige 18 años o más; hay que revisar las de cada uno).
+- **Ollama en el servidor de Azure:** la máquina actual es pequeña para un modelo útil; sirve para probar en local,
+  no para la clase todavía.
+
 ## 7. El logo con el doble borde
 
 El logo completo tiene la **tarjeta de atrás**, el doble borde que comunica la repetición espaciada (volver sobre lo
