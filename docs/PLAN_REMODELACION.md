@@ -165,11 +165,11 @@ jueves 5/11, cuando esté desplegada la versión con las mejoras del bloque A
 
 | Persona | Ítems del instrumento | Además |
 |---|---|---|
-| **Jeider** | 1–3 y 15–19 | Sus 4 ejercicios de programar como novato (P04); la sesión del panel del docente y los ejercicios de programar con Claude (P34) |
-| **Pedro** | 4–6 y 30–32 | Sus 4 ejercicios de programar |
-| **Julio** | 7–9 y 20–23 | Sus 4 ejercicios de programar |
-| **José** | 10–12 y 24–26 | Los cambios de identidad y el aspecto del panel del docente, en general |
-| **Jorge** | 13–14, 27–29 y 33–34 | QA libre: un poco de cada cosa, como decida |
+| **Jeider** | 1–3 y 15–17 | Sus 4 ejercicios de programar como novato (P04); la sesión del panel del docente y los ejercicios de programar con Claude (P34) |
+| **Pedro** | 4–6, 23 y 30–32 | Sus 4 ejercicios de programar |
+| **Julio** | 7–9 y 20–22 | Sus 4 ejercicios de programar |
+| **José** | 10–12, 18 y 24–26 | Los cambios de identidad y el aspecto del panel del docente, en general |
+| **Jorge** | 13–14, 19, 27–29 y 33–34 | QA libre: un poco de cada cosa, como decida |
 | **Claude** | | Volver a calificar la v2.4.0 y el bloque A de `docs/calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`; P02 (auditoría de consola y red), P03 (axe), P31 (investigación de bloques), P24 |
 
 ## 5. Lo que critico de STIRE (y que tú no me has pedido)

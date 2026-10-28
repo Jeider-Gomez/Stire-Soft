@@ -53,11 +53,11 @@ Apariencia.
 
 | Persona | Ítems | Heurísticas |
 |---|---|---|
-| **Jeider** | 1–3 y 15–19 (8) | Visibilidad del estado del sistema; reconocer en lugar de recordar (aprendizaje y autonomía) |
-| **Pedro** | 4–6 y 30–32 (6) | Correspondencia con el mundo real; ayuda y documentación |
-| **Julio** | 7–9 y 20–23 (7) | Control y libertad; flexibilidad y eficiencia |
-| **José** | 10–12 y 24–26 (6) | Coherencia y estándares; diseño estético y minimalista. **Además:** un párrafo con su opinión de la identidad (logo, mascota, letra, pie, lanzador del Tutor) y del aspecto del panel del docente |
-| **Jorge** | 13–14, 27–29 y 33–34 (7) | Prevención de errores; recuperarse de errores; protección de datos. **Además:** QA libre (doble clic, recargar a mitad de algo, celular, teclado, tema oscuro), en «Observaciones» o en una hoja aparte |
+| **Jeider** | 1–3 y 15–17 (6) | Visibilidad del estado del sistema; reconocer en lugar de recordar (aprendizaje y autonomía) |
+| **Pedro** | 4–6, 23 y 30–32 (7) | Correspondencia con el mundo real; ayuda en el momento justo; ayuda y documentación |
+| **Julio** | 7–9 y 20–22 (6) | Control y libertad; flexibilidad y eficiencia |
+| **José** | 10–12, 18 y 24–26 (7) | Coherencia y estándares; imágenes y video; diseño estético y minimalista. **Además:** un párrafo con su opinión de la identidad (logo, mascota, letra, pie, lanzador del Tutor) y del aspecto del panel del docente |
+| **Jorge** | 13–14, 19, 27–29 y 33–34 (8) | Prevención de errores; atención del estudiante; recuperarse de errores; protección de datos. **Además:** QA libre (doble clic, recargar a mitad de algo, celular, teclado, tema oscuro), en «Observaciones» o en una hoja aparte |
 | **Todos** | 35–39 | Usabilidad general, potencial educativo y las tres preguntas abiertas |
 
 ## Después de entregar
