@@ -9,7 +9,7 @@
         <div class="bg-base-blanco rounded-2xl p-5 w-full max-w-sm space-y-3 text-xs max-h-[90dvh] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h2 id="escaner-titulo" class="text-sm font-bold text-base-texto-primario">Escanear el QR de la clase</h2>
-            <button ref="cerrarRef" type="button" class="p-2 rounded-md hover:bg-base-bg-secundario" aria-label="Cerrar" @click="cerrar"><X :size="16" aria-hidden="true" /></button>
+            <button title="Cerrar" ref="cerrarRef" type="button" class="p-2 rounded-md hover:bg-base-bg-secundario" aria-label="Cerrar" @click="cerrar"><X :size="16" aria-hidden="true" /></button>
           </div>
 
           <template v-if="modo === 'camara'">
@@ -34,6 +34,7 @@
 import { ScanLine, X } from 'lucide-vue-next'
 import { codigoDesdeQr } from '~/utils/codigoClase'
 import { hayCamara } from '~/utils/lectorQr'
+import { recordarFoco } from '~/utils/devolverFoco'
 
 const emit = defineEmits<{ (e: 'codigo', codigo: string): void }>()
 
@@ -41,7 +42,10 @@ const abierto = ref(false)
 const modo = ref<'camara' | 'sin-lector' | 'sin-permiso'>('sin-lector')
 const cerrarRef = ref<HTMLButtonElement | null>(null)
 
+let devolver = () => {}
+
 async function abrir() {
+  devolver = recordarFoco()
   abierto.value = true
   modo.value = hayCamara() ? 'camara' : 'sin-lector'
   await nextTick()
@@ -56,5 +60,8 @@ function alLeer(texto: string) {
 // Cerrar desmonta <CamaraQr>, que apaga la cámara.
 function cerrar() {
   abierto.value = false
+  devolver()
 }
+// Escape cierra aunque el foco no esté dentro (ítem 11).
+useEscapeToClose(() => abierto.value, cerrar)
 </script>

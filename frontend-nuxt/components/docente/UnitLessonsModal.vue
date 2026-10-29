@@ -30,7 +30,7 @@
               class="px-3 py-1.5 rounded-md borde-afordancia bg-base-blanco text-acento-ambar-fuerte font-bold text-xs hover:bg-acento-ambar/10 inline-flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
               <ImagePlus :size="14" aria-hidden="true" /> Recurso
             </button>
-            <button
+            <button title="Cerrar la explicación"
               v-if="!incrustado"
               @click="handleClose"
               class="p-1.5 rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
@@ -135,6 +135,7 @@
   <!-- Editor a pantalla completa (fase C) -->
   <DocenteLessonEditor
     v-if="showForm"
+    ref="editorRef"
     :unit-title="unit?.title || ''"
     :is-editing="formState.isEditing"
     :initial-title="formState.title"
@@ -236,12 +237,13 @@ async function openModal(opts: { create?: boolean; editId?: number } = {}) {
   }
 }
 
+const editorRef = ref<{ cancelar: () => Promise<void> } | null>(null)
 // Escape: primero cierra el editor o la confirmación de borrar; si no hay nada encima, el panel.
 useEscapeToClose(
   () => isOpen.value,
   () => {
     if (recursoForm.open) recursoForm.open = false
-    else if (showForm.value) cancelForm()
+    else if (showForm.value) void editorRef.value?.cancelar()
     else if (lessonToDelete.value) lessonToDelete.value = null
     else handleClose()
   }

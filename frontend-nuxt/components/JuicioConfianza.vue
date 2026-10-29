@@ -42,6 +42,7 @@
 import { nextTick, ref, watch } from 'vue'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { OPCIONES_CONFIANZA, type Confianza } from '~/utils/confianza'
+import { recordarFoco } from '~/utils/devolverFoco'
 
 const workspaceStore = useWorkspaceStore()
 const { cambiar } = useApariencia()
@@ -56,8 +57,12 @@ const omitir = () => responder(null)
 // Cierra sin entregar: el estudiante vio algo que quiere corregir antes de gastar el intento.
 const volverAEditar = () => { workspaceStore.pidiendoConfianza = false }
 
+// Ítem 11: al cerrar, el foco vuelve a «Entregar».
+let devolver = () => {}
 watch(() => workspaceStore.pidiendoConfianza, async (abierto) => {
-  if (abierto) { await nextTick(); primera.value?.focus() }
+  if (!abierto) { devolver(); return }
+  devolver = recordarFoco()
+  await nextTick(); primera.value?.focus()
 })
 // Escape cierra sin entregar: el estudiante quizá quería seguir editando.
 useEscapeToClose(() => workspaceStore.pidiendoConfianza, volverAEditar)

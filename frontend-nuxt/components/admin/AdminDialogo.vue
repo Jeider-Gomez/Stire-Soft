@@ -34,6 +34,7 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { atraparFoco } from '~/utils/trampaDeFoco'
+import { recordarFoco } from '~/utils/devolverFoco'
 
 const props = withDefaults(defineProps<{
   idTitulo: string
@@ -66,9 +67,12 @@ async function cerrar() {
 }
 
 onMounted(() => nextTick(() => (dialogo.value?.querySelector<HTMLElement>('[data-foco-inicial]') ?? dialogo.value)?.focus()))
+// Sin `devolverFoco`, el foco vuelve a lo que lo tenía al abrir (ítem 11).
+const devolver = recordarFoco()
 onBeforeUnmount(() => {
   const id = props.devolverFoco
   if (id) nextTick(() => document.getElementById(id)?.focus())
+  else devolver()
 })
 // Escape cierra aunque el foco se haya perdido (p. ej. tras un error al enviar).
 useEscapeToClose(() => true, cerrar)

@@ -82,7 +82,7 @@
 
       <!-- Avatar + menú usuario -->
       <div class="relative" ref="avatarMenuRef">
-        <button
+        <button title="Tu cuenta"
           @click="showUserMenu = !showUserMenu"
           class="flex items-center gap-2 p-1 min-h-[44px] rounded-xl hover:bg-slate-100 transition-colors duration-150 group"
           :aria-expanded="showUserMenu"

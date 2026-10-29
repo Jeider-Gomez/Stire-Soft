@@ -42,6 +42,7 @@
 import { Loader2, TriangleAlert, X } from 'lucide-vue-next'
 import { esQrDeAsistencia, type ResultadoEscaneo } from '~/utils/asistencia'
 import { hayCamara } from '~/utils/lectorQr'
+import { recordarFoco } from '~/utils/devolverFoco'
 
 defineProps<{ ultimo: ResultadoEscaneo | null; procesando: boolean; marcados: number; total: number }>()
 const emit = defineEmits<{ (e: 'codigo', codigo: string): void; (e: 'cerrar'): void }>()
@@ -59,4 +60,7 @@ function alLeer(texto: string) {
 }
 
 onMounted(() => cerrarRef.value?.focus())
+// Ítem 11: Escape cierra aunque el foco no esté dentro, y el foco vuelve al botón que lo abrió.
+onBeforeUnmount(recordarFoco())
+useEscapeToClose(() => true, () => emit('cerrar'))
 </script>

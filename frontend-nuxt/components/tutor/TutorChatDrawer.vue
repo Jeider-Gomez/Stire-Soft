@@ -147,7 +147,7 @@
           >
             Ir a repasar
           </button>
-          <button
+          <button title="Ocultar el aviso de repasos"
             type="button"
             class="shrink-0 p-1 rounded text-slate-700 hover:text-base-texto-primario hover:bg-acento-ambar/15"
             aria-label="Ocultar el aviso de repasos"

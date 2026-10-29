@@ -45,7 +45,7 @@
         <div class="px-4 pt-2.5 pb-2 border-b border-base-borde-sutil shrink-0 space-y-2">
           <div class="flex items-center gap-2">
             <h2 id="titulo-notificaciones" class="text-sm font-semibold text-base-texto-primario flex-1">Notificaciones</h2>
-            <button ref="cerrarRef" type="button" class="min-w-[44px] min-h-[44px] -my-2 -mr-2 inline-flex items-center justify-center rounded-md text-base-texto-primario hover:bg-base-bg-secundario sm:hidden" @click="cerrar">
+            <button title="Cerrar las notificaciones" ref="cerrarRef" type="button" class="min-w-[44px] min-h-[44px] -my-2 -mr-2 inline-flex items-center justify-center rounded-md text-base-texto-primario hover:bg-base-bg-secundario sm:hidden" @click="cerrar">
               <X :size="16" aria-hidden="true" /><span class="sr-only">Cerrar las notificaciones</span>
             </button>
           </div>

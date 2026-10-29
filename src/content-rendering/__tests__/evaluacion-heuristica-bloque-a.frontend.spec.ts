@@ -305,3 +305,99 @@ describe('Ítem 2: la respuesta del Tutor aparece a medida que llega', () => {
     expect(store).toContain('m.text = texto || m.text');
   });
 });
+
+/** Todos los .vue de components, pages y layouts. */
+function todosLosVue(): string[] {
+  const vues: string[] = [];
+  const recorrer = (dir: string) => readdirSync(dir).forEach((n) => {
+    const p = path.join(dir, n);
+    if (statSync(p).isDirectory()) recorrer(p); else if (p.endsWith('.vue')) vues.push(p);
+  });
+  ['components', 'pages', 'layouts'].forEach((d) => recorrer(path.join(raiz, d)));
+  return vues;
+}
+
+describe('Ítem 5: ningún botón es solo un ícono sin descripción', () => {
+  it('todo botón sin texto visible lleva «title» (se ve al pasar el ratón)', () => {
+    const sinDescripcion: string[] = [];
+    for (const archivo of todosLosVue()) {
+      const plantilla = readFileSync(archivo, 'utf8').split('<script')[0];
+      for (const m of plantilla.matchAll(/<button\b((?:[^>"']|"[^"]*"|'[^']*')*)>([\s\S]*?)<\/button>/g)) {
+        const cuerpo = m[2]
+          .replace(/<!--[\s\S]*?-->/g, '')
+          .replace(/<[A-Z]\w*\b(?:[^>"']|"[^"]*"|'[^']*')*\/>/g, '')
+          .replace(/<(span|svg)[^>]*class="[^"]*sr-only[^"]*"[^>]*>[\s\S]*?<\/\1>/g, '');
+        if (cuerpo.replace(/<[^>]+>/g, '').trim()) continue;
+        if (!/(^|\s):?title=/.test(m[1])) sinDescripcion.push(`${path.relative(raiz, archivo)}: ${m[0].slice(0, 80)}`);
+      }
+    }
+    expect(sinDescripcion).toEqual([]);
+  });
+});
+
+describe('Ítem 11: las ventanas cierran con Escape y devuelven el foco', () => {
+  const foco = cargar<{ recordarFoco: () => () => void }>('devolverFoco');
+
+  it('el foco vuelve a lo que lo tenía al abrir, solo si sigue en la página', () => {
+    jest.useFakeTimers();
+    const boton = { isConnected: true, focus: jest.fn() };
+    const g = global as unknown as { document?: unknown };
+    const antes = g.document;
+    g.document = { activeElement: boton, body: {} };
+    try {
+      const devolver = foco.recordarFoco();
+      devolver();
+      jest.runAllTimers();
+      expect(boton.focus).toHaveBeenCalledTimes(1);
+
+      boton.isConnected = false;
+      foco.recordarFoco()();
+      jest.runAllTimers();
+      expect(boton.focus).toHaveBeenCalledTimes(1);
+    } finally {
+      g.document = antes;
+      jest.useRealTimers();
+    }
+  });
+
+  it('la ventana base devuelve el foco aunque no le digan a qué botón', () => {
+    expect(leer('components', 'admin', 'AdminDialogo.vue')).toMatch(/else devolver\(\)/);
+  });
+
+  it.each([
+    ['components/exercise/ResultadoEntrega.vue'],
+    ['components/EscanerQrClase.vue'],
+    ['components/asistencia/EscanerAsistencia.vue'],
+  ])('%s cierra con Escape aunque el foco no esté dentro y devuelve el foco', (archivo) => {
+    const v = leer(archivo);
+    expect(v).toContain('useEscapeToClose(');
+    expect(v).toContain('recordarFoco()');
+  });
+
+  it.each([['components/estudiante/IrALeccion.vue'], ['components/JuicioConfianza.vue']])('%s devuelve el foco al cerrar', (archivo) => {
+    expect(leer(archivo)).toContain('devolver = recordarFoco()');
+  });
+
+  it('el resultado de una entrega pone el foco en el paso siguiente', () => {
+    expect(leer('components', 'exercise', 'ResultadoEntrega.vue')).toContain("querySelector<HTMLElement>('[data-foco-inicial]')?.focus()");
+  });
+
+  it('Escape en el editor de lecciones pregunta si hay cambios sin guardar (no cierra directo)', () => {
+    const panel = leer('components', 'docente', 'UnitLessonsModal.vue');
+    expect(panel).toContain('else if (showForm.value) void editorRef.value?.cancelar()');
+    expect(panel).not.toMatch(/else if \(showForm\.value\) cancelForm\(\)/);
+    expect(leer('components', 'docente', 'LessonEditor.vue')).toContain('defineExpose({ cancelar })');
+  });
+});
+
+describe('Ítem 21: en el celular, lo que el teclado hace con atajos se hace con el dedo', () => {
+  it('«Probar» y «Entregar» bajan a una barra fija abajo en el celular', () => {
+    expect(leer('layouts', 'workspace.vue')).toMatch(/barra-acciones fixed md:static inset-x-0 bottom-0/);
+  });
+
+  it('ir a cualquier lección: la barra de abajo abre el plan del curso, sin Ctrl+K', () => {
+    const nav = leer('components', 'estudiante', 'NavegacionLeccion.vue');
+    expect(nav).toContain('hojaAbierta');
+    expect(nav).toContain('Cerrar el plan del curso');
+  });
+});

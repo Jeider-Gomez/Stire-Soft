@@ -43,7 +43,7 @@
             <div class="mx-auto mb-2 w-10 h-1 rounded-full bg-base-borde-fuerte" aria-hidden="true" />
             <div class="flex items-center gap-2">
               <h2 id="titulo-hoja-lecciones" class="flex-1 text-sm font-bold text-base-texto-primario">Plan del curso</h2>
-              <button ref="cerrarRef" type="button" class="min-w-[44px] min-h-[44px] -my-2 -mr-2 inline-flex items-center justify-center rounded-md hover:bg-base-bg-secundario" @click="hojaAbierta = false">
+              <button title="Cerrar el plan del curso" ref="cerrarRef" type="button" class="min-w-[44px] min-h-[44px] -my-2 -mr-2 inline-flex items-center justify-center rounded-md hover:bg-base-bg-secundario" @click="hojaAbierta = false">
                 <X :size="18" aria-hidden="true" /><span class="sr-only">Cerrar el plan del curso</span>
               </button>
             </div>

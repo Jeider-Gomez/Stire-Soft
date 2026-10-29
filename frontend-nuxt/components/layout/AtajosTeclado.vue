@@ -4,7 +4,7 @@
     <div class="p-5 space-y-4">
       <div class="flex items-start justify-between gap-3">
         <h2 id="atajos-titulo" class="font-poppins text-lg font-bold text-base-texto-primario">Atajos de teclado</h2>
-        <button type="button" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100" aria-label="Cerrar" @click="dialogo?.close()">
+        <button title="Cerrar" type="button" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100" aria-label="Cerrar" @click="dialogo?.close()">
           <X :size="18" aria-hidden="true" />
         </button>
       </div>

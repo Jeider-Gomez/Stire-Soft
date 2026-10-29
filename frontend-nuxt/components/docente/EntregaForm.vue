@@ -2,7 +2,7 @@
   <form novalidate @submit.prevent="guardar" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 shadow-sm space-y-4 text-xs" aria-labelledby="entrega-form-titulo">
     <div class="flex items-center justify-between gap-2">
       <h2 id="entrega-form-titulo" class="text-sm font-bold text-base-texto-primario">{{ inicial ? 'Editar la entrega' : 'Nueva entrega' }}</h2>
-      <button type="button" @click="$emit('cancelar')" class="p-1.5 rounded hover:bg-base-bg-secundario" aria-label="Cerrar el formulario"><X :size="16" aria-hidden="true" /></button>
+      <button title="Cerrar el formulario" type="button" @click="$emit('cancelar')" class="p-1.5 rounded hover:bg-base-bg-secundario" aria-label="Cerrar el formulario"><X :size="16" aria-hidden="true" /></button>
     </div>
 
     <div>

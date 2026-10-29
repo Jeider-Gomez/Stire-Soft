@@ -3,7 +3,7 @@
      ejercicio que elige el recomendador, intentar de nuevo si quedan intentos, o la lección. utils/resultadoEntrega.ts. -->
 <template>
   <div class="fixed inset-0 bg-base-texto-primario/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div role="dialog" aria-modal="true" aria-labelledby="resultado-titulo" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 max-w-md w-full shadow-2xl space-y-3 text-center max-h-[90dvh] overflow-y-auto overscroll-contain">
+    <div ref="ventana" role="dialog" aria-modal="true" aria-labelledby="resultado-titulo" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 max-w-md w-full shadow-2xl space-y-3 text-center max-h-[90dvh] overflow-y-auto overscroll-contain">
       <!-- MOD-03 (Jeider 17/10: «estamos saturando al estudiante»): arriba solo lo que importa en una mirada — cómo le
            fue, el puntaje y cuánto se movió el dominio —, luego lo que enseña (la retroalimentación) y el siguiente paso.
            Lo demás (casos, cuándo vuelve a los repasos, la meta del módulo) queda en «Más detalles», como Duolingo o Khan. -->
@@ -90,6 +90,7 @@ import { useStudentStore } from '~/stores/student'
 import { siguienteLeccion } from '~/utils/siguienteLeccion'
 import { mensajeCalibracion } from '~/utils/confianza'
 import { calidadDelResultado } from '~/utils/escalaResultados'
+import { recordarFoco } from '~/utils/devolverFoco'
 import { CUANDO_VUELVE, dominioCorto, intentosQueQuedan, pasoSiguiente, retroParaMostrar, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
 
 const props = defineProps<{ exito: boolean; reto: boolean }>()
@@ -107,7 +108,13 @@ const maxScore = computed(() => r.value.maxScore ?? ej.value.maxScore)
 const quedanIntentos = computed(() => intentosQueQuedan(ej.value))
 
 const recomendacion = ref<RecomendacionSiguiente | null>(null)
+// Ítem 11: el foco entra en el botón principal y vuelve al ejercicio al cerrar; Escape cierra y deja revisar el código.
+const ventana = ref<HTMLElement | null>(null)
+const devolver = recordarFoco()
+onBeforeUnmount(devolver)
+useEscapeToClose(() => ws.submissionResult !== null, () => { ws.submissionResult = null })
 onMounted(async () => {
+  nextTick(() => ventana.value?.querySelector<HTMLElement>('[data-foco-inicial]')?.focus())
   // El ejercicio usa otro layout: si se abrió directo (sin pasar por el plan), el plan se carga para saber qué lección sigue.
   if (!studentStore.hasLoaded) studentStore.fetchStudentData().catch(() => undefined)
   const sid = authStore.user?.id

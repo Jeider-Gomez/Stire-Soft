@@ -20,7 +20,7 @@
         <button type="button" class="boton-reproductor" aria-label="Frase anterior" title="Frase anterior" :disabled="actual === 0" @click="saltar(-1)">
           <SkipBack :size="16" aria-hidden="true" />
         </button>
-        <button type="button" class="boton-reproductor bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar" :aria-label="estado === 'leyendo' ? 'Pausar' : 'Seguir escuchando'" @click="estado === 'leyendo' ? pausar() : seguir()">
+        <button :title="estado === 'leyendo' ? 'Pausar' : 'Seguir escuchando'" type="button" class="boton-reproductor bg-acento-ambar-fuerte text-base-blanco hover:bg-acento-ambar" :aria-label="estado === 'leyendo' ? 'Pausar' : 'Seguir escuchando'" @click="estado === 'leyendo' ? pausar() : seguir()">
           <component :is="estado === 'leyendo' ? Pause : Play" :size="16" aria-hidden="true" />
         </button>
         <button type="button" class="boton-reproductor" aria-label="Frase siguiente" title="Frase siguiente" :disabled="actual >= lecturas.length - 1" @click="saltar(1)">

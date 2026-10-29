@@ -3,7 +3,7 @@
        donde lo encontró, y la app anota sola la pantalla, el dispositivo y la clase. El dueño pidió «sugerencias» en vez
        de «reportar», que suena negativo (01/10). En el código y la API siguen llamándose «reportes». -->
   <div>
-    <button
+    <button title="Sugerencias"
       type="button"
       data-recorrido="sugerencias"
       class="flex items-center gap-1.5 px-2 py-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors text-xs font-semibold min-h-[44px] min-w-[44px] justify-center"
@@ -23,7 +23,7 @@
             <h2 id="reportar-titulo" class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
               <MessageSquarePlus :size="16" class="text-acento-ambar-fuerte" aria-hidden="true" /> {{ viendoMios ? 'Mis sugerencias' : 'Sugerencias' }}
             </h2>
-            <button type="button" class="p-1 text-base-texto-secundario hover:text-base-texto-primario" aria-label="Cerrar" @click="cerrar">
+            <button title="Cerrar" type="button" class="p-1 text-base-texto-secundario hover:text-base-texto-primario" aria-label="Cerrar" @click="cerrar">
               <X :size="16" aria-hidden="true" />
             </button>
           </div>

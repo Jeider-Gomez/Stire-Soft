@@ -43,7 +43,7 @@
           </button>
 
           <!-- Cerrar -->
-          <button
+          <button title="Cerrar aviso"
             type="button"
             aria-label="Cerrar aviso"
             class="shrink-0 p-0.5 rounded hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-current"

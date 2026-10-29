@@ -8,7 +8,7 @@
           <Link2 :size="14" class="text-acento-ambar-fuerte" aria-hidden="true" />
           Flecha{{ flecha.rama ? ` del «${flecha.rama}»` : '' }}
         </span>
-        <button type="button" class="min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] inline-flex items-center justify-center rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario"
+        <button title="Cerrar el panel de la flecha" type="button" class="min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] inline-flex items-center justify-center rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario"
           aria-label="Cerrar el panel de la flecha" @click="emit('cerrar')">
           <X :size="14" aria-hidden="true" />
         </button>
@@ -28,7 +28,7 @@
     <div v-else-if="figura" class="space-y-3">
       <div class="flex items-center justify-between border-b border-base-borde-sutil pb-2">
         <span class="font-bold text-base-texto-primario text-xs">{{ TIPO_FIGURA[figura.tipo].nombre }}</span>
-        <button type="button" class="min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] inline-flex items-center justify-center rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario"
+        <button :title="`Cerrar el panel de ${nombreFigura(figura)}`" type="button" class="min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] inline-flex items-center justify-center rounded text-slate-600 hover:text-base-texto-primario hover:bg-base-bg-secundario"
           :aria-label="`Cerrar el panel de ${nombreFigura(figura)}`" @click="emit('cerrar')">
           <X :size="14" aria-hidden="true" />
         </button>

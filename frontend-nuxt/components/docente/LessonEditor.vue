@@ -191,6 +191,8 @@ const { puedeSalir } = useSalirSinGuardar(() => ({ title: title.value, body: bod
 async function cancelar() {
   if (await puedeSalir()) emit('cancel')
 }
+// El panel de lecciones lo llama con Escape: así también pregunta si hay cambios sin guardar (ítem 13).
+defineExpose({ cancelar })
 const titleRef = ref<HTMLInputElement | null>(null)
 const bodyRef = ref<HTMLTextAreaElement | null>(null)
 

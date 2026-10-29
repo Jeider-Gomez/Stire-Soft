@@ -44,6 +44,7 @@ import { CheckCircle2, Circle, CircleDot, Lock, Search } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
 import { buscarLecciones, navegacionLeccion, posicionEnCurso, type LeccionBuscada } from '~/utils/navegacionLeccion'
 import type { UnitStatus } from '~/types'
+import { recordarFoco } from '~/utils/devolverFoco'
 
 const studentStore = useStudentStore()
 const route = useRoute()
@@ -61,8 +62,11 @@ const ICONO: Record<UnitStatus, typeof Circle> = { dominado: CheckCircle2, 'en-p
 const COLOR: Record<UnitStatus, string> = { dominado: 'text-semantico-pasa', 'en-progreso': 'text-acento-ambar-fuerte', 'por-iniciar': 'text-base-texto-secundario', bloqueado: 'text-base-texto-secundario' }
 
 watch(texto, () => { elegida.value = 0 })
+// Ítem 11: el foco vuelve a donde estaba al cerrar.
+let devolver = () => {}
 watch(abierto, (a) => {
-  if (!a) return
+  if (!a) { devolver(); return }
+  devolver = recordarFoco()
   texto.value = ''
   // Empieza en la lección donde está, para que Enter + ↓ sea «la siguiente».
   elegida.value = Math.max(0, lista.value.findIndex((l) => l.actual))

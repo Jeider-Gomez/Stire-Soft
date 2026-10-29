@@ -49,7 +49,7 @@
           class="p-1 text-base-texto-secundario hover:text-base-texto-primario disabled:opacity-30 rounded"
           title="Bajar regla" aria-label="Bajar regla"
         ><ChevronDown :size="14" aria-hidden="true" /></button>
-        <button
+        <button :title="`Eliminar regla ${idx + 1}`"
           type="button"
           @click="$emit('quitar')"
           class="p-1 text-semantico-falla hover:bg-semantico-falla/10 rounded transition-colors"
