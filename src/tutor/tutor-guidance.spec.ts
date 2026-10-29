@@ -88,6 +88,15 @@ describe('Explicar un concepto vs. guiar en el ejercicio (28/10)', () => {
     expect(p).not.toContain('Termina con UNA pregunta o UNA acción');
   });
 
+  it('el ejemplo de un concepto no reutiliza los datos del ejercicio, y nunca escribe la fórmula que lo resuelve (29/10)', async () => {
+    // Jeider probó: «¿qué es una variable?» dentro de «Completa la presentación» dio `let edad = 19;` (el hueco del ejercicio),
+    // y «no sé cómo sacar el perímetro» dio `2 * (base + altura)`.
+    const p = await prompt();
+    expect(p).toContain('no uses los nombres de variables, los valores ni los datos que aparecen en el enunciado');
+    expect(p).toContain('ni siquiera como «recuerda que es 2 * (base + altura)»');
+    expect(p).toContain('dale la idea con palabras');
+  });
+
   it('el nivel 2 señala dónde mirar y hace una sola pregunta', () => {
     expect(guidanceInstruction(2)).toContain('dile en qué parte de su programa mirar');
     expect(guidanceInstruction(2)).not.toContain('una o dos preguntas');
