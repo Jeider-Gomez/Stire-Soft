@@ -68,3 +68,27 @@ describe('andamiaje progresivo — tutor-guidance', () => {
     });
   });
 });
+
+describe('Explicar un concepto vs. guiar en el ejercicio (28/10)', () => {
+  // Jeider: «si yo pregunto qué es una variable, quisiera que me responda y explique enseguida».
+  const prompt = () => new TutorContextService({ find: jest.fn().mockResolvedValue([]) }).buildSystemPrompt(1, { currentCode: 'let a = 1', activityId: 3 });
+
+  it('una pregunta de concepto se explica de una vez, sin preguntas para evaluar', async () => {
+    const p = await prompt();
+    expect(p).toContain('EXPLÍCALO DE UNA VEZ, sin devolverle preguntas');
+    expect(p).toContain('No le hagas preguntas para evaluar si entendió');
+    expect(p).not.toContain('responde con una pregunta orientadora');
+  });
+
+  it('en su ejercicio guía sin dar la solución, pero nunca responde solo con preguntas', async () => {
+    const p = await prompt();
+    expect(p).toContain('Nunca respondas solo con preguntas');
+    expect(p).toContain('NUNCA resuelvas el ejercicio');
+    expect(p).not.toContain('Termina con UNA pregunta o UNA acción');
+  });
+
+  it('el nivel 2 señala dónde mirar y hace una sola pregunta', () => {
+    expect(guidanceInstruction(2)).toContain('dile en qué parte de su programa mirar');
+    expect(guidanceInstruction(2)).not.toContain('una o dos preguntas');
+  });
+});
