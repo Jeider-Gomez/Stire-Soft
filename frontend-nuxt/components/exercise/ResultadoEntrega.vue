@@ -127,7 +127,7 @@ onMounted(async () => {
 })
 
 const sigLeccion = computed(() => siguienteLeccion(studentStore.modules, studentStore.estadosModulos, ej.value.learningUnitId))
-const paso = computed(() => pasoSiguiente({ aprobado: props.exito, quedanIntentos: quedanIntentos.value, actividadActual: ej.value.activityId, recomendacion: recomendacion.value, siguienteLeccion: sigLeccion.value }))
+const paso = computed(() => pasoSiguiente({ aprobado: props.exito, quedanIntentos: quedanIntentos.value, actividadActual: ej.value.activityId, recomendacion: recomendacion.value, siguienteLeccion: sigLeccion.value, dominio: ws.masteryAfter }))
 const cambio = computed(() => textoCambioDominio(ws.masteryBefore, ws.masteryAfter))
 const retro = computed(() => retroParaMostrar(r.value.retroalimentacion))
 const calibracion = computed(() => (ws.calibracion && ej.value.usedAttempts === 1 ? mensajeCalibracion(ws.calibracion, esCodigo.value) : null))

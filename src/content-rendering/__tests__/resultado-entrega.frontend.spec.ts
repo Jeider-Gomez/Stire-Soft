@@ -17,7 +17,7 @@ function cargar<T>(nombre: string): T {
 interface Accion { tipo: string; texto: string; activityId?: number; reto?: boolean; unitId?: number }
 interface Paso { titulo: string; mensaje: string; primaria: Accion; secundaria: Accion; siguienteLeccion: Accion | null; nota: string | null }
 const u = cargar<{
-  pasoSiguiente: (e: { aprobado: boolean; quedanIntentos: number; actividadActual: number; recomendacion: unknown; siguienteLeccion?: unknown }) => Paso;
+  pasoSiguiente: (e: { aprobado: boolean; quedanIntentos: number; actividadActual: number; recomendacion: unknown; siguienteLeccion?: unknown; dominio?: number | null }) => Paso;
   textoCambioDominio: (a: number | null, d: number | null) => { texto: string; diferencia: number } | null;
   CUANDO_VUELVE: Record<string, string>;
 }>('resultadoEntrega');
@@ -198,7 +198,7 @@ describe('pasar a la siguiente lección siempre es una opción', () => {
   });
 
   it('con la lección completa, avanzar es lo principal; practicar más o repasar queda como opción', () => {
-    const p = u.pasoSiguiente({ aprobado: true, quedanIntentos: 0, actividadActual: 10, recomendacion: rec(12, 'practica_extra', true), siguienteLeccion: sig(10) });
+    const p = u.pasoSiguiente({ aprobado: true, quedanIntentos: 0, actividadActual: 10, recomendacion: rec(12, 'practica_extra', true), siguienteLeccion: sig(10), dominio: 80 });
     expect(p.titulo).toBe('¡Completaste la lección!');
     expect(p.primaria).toMatchObject({ tipo: 'siguiente-leccion', unitId: 11 });
     expect(p.secundaria).toMatchObject({ tipo: 'ejercicio', activityId: 12, texto: 'Practicar con otro ejercicio' });
@@ -217,5 +217,31 @@ describe('pasar a la siguiente lección siempre es una opción', () => {
     expect(leer('components', 'exercise', 'ResultadoEntrega.vue')).toContain('@click="hacer(paso.siguienteLeccion)"');
     expect(leer('components', 'exercise', 'SinIntentos.vue')).toContain('@click="ir(aSiguiente)"');
     expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toContain('Siguiente lección: {{ sigLeccion.titulo }}');
+  });
+});
+
+describe('al completar la lección, el mensaje dice el dominio que de verdad tiene (29/10, Jeider)', () => {
+  const sig = { id: 9, titulo: 'Operadores y expresiones', abierta: true, requiere: null };
+  const completa = (dominio: number | null) =>
+    u.pasoSiguiente({ aprobado: true, quedanIntentos: 1, actividadActual: 10, recomendacion: rec(10, 'completada', true), siguienteLeccion: sig, dominio }).mensaje;
+
+  it('con 100 % no manda a «practicar más para llegar al 100 %»', () => {
+    const m = completa(100);
+    expect(m).toContain('100 % de dominio');
+    expect(m).not.toContain('practica');
+  });
+
+  it('con menos del 100 % dice en cuánto va y cuánto falta practicar', () => {
+    const m = completa(72);
+    expect(m).toContain('vas en 72 %');
+    expect(m).toContain('hasta el 100 %');
+  });
+
+  it('si no se conoce el dominio, no inventa ninguna cifra', () => {
+    expect(completa(null)).not.toMatch(/\d+ %/);
+  });
+
+  it('«Difícil» dice la razón real: más de un intento', () => {
+    expect(u.CUANDO_VUELVE.dificil).toContain('más de un intento');
   });
 });

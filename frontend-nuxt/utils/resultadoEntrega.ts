@@ -66,12 +66,22 @@ export function notaModuloCerrado(sig: SiguienteLeccion | null | undefined): str
   return `La siguiente lección, «${sig.titulo}», se abre con ${r.umbral} % de dominio en «${r.titulo.split(':')[0]}». Vas en ${r.dominio} %: te faltan ${Math.max(0, r.umbral - r.dominio)} puntos.`
 }
 
+/** Lo que se dice al completar la lección, según el dominio que de verdad tiene (29/10, Jeider: decía «practica para llegar al 100 %» con 100 %). */
+export function mensajeLeccionCompleta(haySiguiente: boolean, dominio: number | null): string {
+  const cierra = haySiguiente ? 'Lo recomendado es seguir con la siguiente lección.' : 'En el inicio está tu siguiente paso.'
+  if (dominio === null) return `Ya resolviste un ejercicio de cada tipo. ${cierra}`
+  if (dominio >= 100) return `Tienes el 100 % de dominio en esta lección: no te falta nada aquí. ${cierra}`
+  return `Ya resolviste un ejercicio de cada tipo y vas en ${dominio} % de dominio. ${cierra} Si quieres subir hasta el 100 %, practica un poco más.`
+}
+
 export function pasoSiguiente(e: {
   aprobado: boolean
   quedanIntentos: number
   actividadActual: number
   recomendacion: RecomendacionSiguiente | null
   siguienteLeccion?: SiguienteLeccion | null
+  /** Dominio de la lección después de este ejercicio (0 a 100), si se conoce. */
+  dominio?: number | null
 }): PasoSiguiente {
   const ir = irA(e.recomendacion, e.actividadActual)
   const siguiente = irASiguienteLeccion(e.siguienteLeccion)
@@ -83,9 +93,7 @@ export function pasoSiguiente(e: {
     if (completa) {
       return {
         titulo: '¡Completaste la lección!',
-        mensaje: siguiente
-          ? 'Ya resolviste un ejercicio de cada tipo. Lo recomendado es seguir con la siguiente lección; si quieres, practica más para llegar al 100 %.'
-          : 'Ya resolviste lo que pide esta lección. En el inicio está tu siguiente paso.',
+        mensaje: mensajeLeccionCompleta(!!siguiente, e.dominio ?? null),
         primaria: siguiente ?? { tipo: 'inicio', texto: 'Ir a mi siguiente paso' },
         secundaria: ir ?? LECCION,
         siguienteLeccion: null,
@@ -162,7 +170,7 @@ export function cambioCorto(antes: number | null | undefined, despues: number | 
 /** Cuándo vuelve la lección a sus repasos, en palabras (antes: «Para tus repasos: Otra vez», que no se entendía). */
 export const CUANDO_VUELVE: Record<NombreCalidad, string> = {
   'otra-vez': 'Esta lección vuelve pronto a tus repasos, para afianzarla.',
-  dificil: 'Esta lección vuelve en pocos días a tus repasos, porque te costó un poco.',
+  dificil: 'Esta lección vuelve en pocos días a tus repasos, porque la lograste después de más de un intento.',
   bien: 'Esta lección vuelve a tus repasos en unos días, para que no se te olvide.',
   facil: 'Esta lección tarda más en volver a tus repasos: ya la tienes clara.',
 }
