@@ -32,12 +32,19 @@ export interface ContextoTutor {
   activityTitle?: string
   currentCode?: string
   codeLanguage?: string
+  /** «completar»: el ejercicio es rellenar huecos de una plantilla (no hay entrada ni programa propio que revisar). */
+  tipoEjercicio?: 'completar'
+}
+
+/** La plantilla de un ejercicio de completar, con lo que el estudiante ya escribió en cada hueco (los vacíos quedan como ___a___). */
+export function plantillaConRespuestas(plantilla: string, respuestas?: Record<string, string> | null): string {
+  return plantilla.replace(/___([a-zA-Z0-9_-]+)___/g, (hueco, id: string) => respuestas?.[id]?.trim() || hueco)
 }
 
 export function contextoSegunPantalla(
   ruta: string,
   ejercicio: EjercicioAbierto | null,
-  codigo: { js: string; html: string; css: string },
+  codigo: { js: string; html: string; css: string; completar?: string },
   senales?: SenalesTutor,
   ultimaPrueba?: UltimaPrueba | null,
 ): ContextoTutor {
@@ -54,9 +61,15 @@ export function contextoSegunPantalla(
       activityId: ejercicio.activityId,
       activityTitle: ejercicio.title,
       // En un ejercicio de HTML y CSS el código está en html/css (`js` es el búfer del ejercicio de JavaScript).
+      // Solo el ejercicio de programar tiene su programa en `js`; en los demás tipos ese búfer es un comentario de relleno, y
+      // el Tutor se ponía a hablar de leer la entrada (29/10, Jeider, «Completa la presentación»). En «completar» va la plantilla.
       ...(ejercicio.questionType === 'html_css'
         ? { currentCode: ['<!-- index.html -->', codigo.html, '', '/* estilos.css */', codigo.css].join('\n'), codeLanguage: 'html' }
-        : { currentCode: codigo.js }),
+        : ejercicio.questionType === 'coding'
+          ? { currentCode: codigo.js }
+          : ejercicio.questionType === 'fill_code'
+            ? { currentCode: codigo.completar ?? '', tipoEjercicio: 'completar' as const }
+            : {}),
       // Solo las señales que existen: un objeto vacío no se manda.
       ...(senales && Object.values(senales).some((v) => v !== undefined) ? { senales } : {}),
       ...(ultimaPrueba ? { ultimaPrueba } : {}),

@@ -7,7 +7,10 @@ const js = ts.transpileModule(readFileSync(path.join(raiz, 'utils', 'contextoTut
 const mod = { exports: {} as Record<string, unknown> };
 new Function('module', 'exports', js)(mod, mod.exports);
 type Ej = { activityId: number; title: string; learningUnitId?: number; questionType: string };
-const { contextoSegunPantalla } = mod.exports as { contextoSegunPantalla: (r: string, e: Ej | null, c: { js: string; html: string; css: string }) => Record<string, unknown> };
+const { contextoSegunPantalla, plantillaConRespuestas } = mod.exports as {
+  contextoSegunPantalla: (r: string, e: Ej | null, c: { js: string; html: string; css: string; completar?: string }) => Record<string, unknown>;
+  plantillaConRespuestas: (p: string, r?: Record<string, string> | null) => string;
+};
 const codigo = { js: 'console.log(1)', html: '<h1>a</h1>', css: 'h1{}' };
 const ultimoEjercicio: Ej = { activityId: 20, title: 'Saludo personalizado', learningUnitId: 5, questionType: 'coding' };
 
@@ -22,6 +25,27 @@ describe('Contexto que la pantalla le manda al Tutor', () => {
     expect(contextoSegunPantalla('/estudiante/evaluacion/20', ultimoEjercicio, codigo)).toEqual({
       currentRoute: '/estudiante/evaluacion/20', learningUnitId: 5, activityId: 20, activityTitle: 'Saludo personalizado', currentCode: 'console.log(1)',
     });
+  });
+
+  // Jeider (29/10): en «Completa la presentación» el Tutor habló de leer la entrada con lineas[0], porque no veía la
+  // plantilla y se inventó el programa (el búfer de código de otro ejercicio no es de este).
+  it('un ejercicio de completar manda su plantilla con lo que ya escribió, y lo marca como completar', () => {
+    const plantilla = '___a___ nombre = "Luisa";\nlet edad = ___b___;';
+    const c = contextoSegunPantalla('/estudiante/evaluacion/30', { ...ultimoEjercicio, activityId: 30, questionType: 'fill_code' }, { ...codigo, completar: plantillaConRespuestas(plantilla, { a: 'const' }) });
+    expect(c.currentCode).toBe('const nombre = "Luisa";\nlet edad = ___b___;');
+    expect(c.tipoEjercicio).toBe('completar');
+    expect(c.currentCode).not.toContain('console.log(1)');
+  });
+
+  it('en los demás tipos (opción múltiple, ordenar…) no se manda el código de relleno de otro ejercicio', () => {
+    const c = contextoSegunPantalla('/estudiante/evaluacion/31', { ...ultimoEjercicio, activityId: 31, questionType: 'mcq' }, codigo);
+    expect(c).not.toHaveProperty('currentCode');
+    expect(c).not.toHaveProperty('tipoEjercicio');
+  });
+
+  it('los huecos vacíos o con espacios quedan como ___id___', () => {
+    expect(plantillaConRespuestas('x = ___a___ + ___b___', { a: '  ', b: '2' })).toBe('x = ___a___ + 2');
+    expect(plantillaConRespuestas('x = ___a___', null)).toBe('x = ___a___');
   });
 
   it('un ejercicio de HTML y CSS manda los dos archivos como html', () => {

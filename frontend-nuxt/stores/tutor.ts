@@ -1,4 +1,4 @@
-import { contextoSegunPantalla, ultimaPruebaDe } from '~/utils/contextoTutor'
+import { contextoSegunPantalla, plantillaConRespuestas, ultimaPruebaDe } from '~/utils/contextoTutor'
 import { conceptosDelEjercicio } from '~/utils/conceptosEjercicio'
 import { saludoDeRespaldo } from '~/utils/saludoTutor'
 import { enviarEnVivo } from '~/utils/tutorEnVivo'
@@ -344,6 +344,7 @@ export const useTutorStore = defineStore('tutor', () => {
           }
         : contextoSegunPantalla(route.path, workspaceStore.currentExercise ?? null, {
             js: workspaceStore.code, html: workspaceStore.htmlCode, css: workspaceStore.cssCode,
+            completar: plantillaConRespuestas(String(workspaceStore.currentQuestion?.config?.codeTemplate ?? ''), workspaceStore.pendingAnswer?.blanks),
           }, {
             // Señales (src/tutor/tutor-senales.ts): error probable de la salida, juicio de confianza y modo por pasos.
             errorProbable: workspaceStore.errorProbable ?? undefined,

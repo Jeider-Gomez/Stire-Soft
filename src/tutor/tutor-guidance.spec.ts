@@ -105,6 +105,27 @@ describe('Explicar un concepto vs. guiar en el ejercicio (28/10)', () => {
     expect(p).toContain('La práctica tampoco usa los nombres ni datos de su ejercicio');
   });
 
+  it('en un ejercicio de completar, el Tutor ve la plantilla y no habla de leer la entrada (29/10)', async () => {
+    const servicio = new TutorContextService({ find: jest.fn().mockResolvedValue([]) });
+    const p = await servicio.buildSystemPrompt(1, { currentCode: 'const nombre = "Luisa";\nlet edad = ___b___;', tipoEjercicio: 'completar', activityId: 3 });
+    expect(p).toContain('ESTE EJERCICIO ES DE COMPLETAR HUECOS');
+    expect(p).toContain('let edad = ___b___;');
+    expect(p).toContain('SIN decirle la palabra ni el valor que lo llena');
+    expect(p).not.toContain('CÓMO AYUDAR EN UN EJERCICIO DE PROGRAMAR');
+    expect(p).not.toContain('lee mal la entrada');
+  });
+
+  it('en un ejercicio de programar siguen las pistas de programar y no las de completar', async () => {
+    const p = await prompt();
+    expect(p).toContain('CÓMO AYUDAR EN UN EJERCICIO DE PROGRAMAR');
+    expect(p).not.toContain('ESTE EJERCICIO ES DE COMPLETAR HUECOS');
+  });
+
+  it('la sugerencia de practicar o repasar no sustituye al cierre concreto de una explicación (29/10)', async () => {
+    const p = await prompt();
+    expect(p).toContain('NO la uses para cerrar una explicación nueva');
+  });
+
   it('el nivel 2 señala dónde mirar y hace una sola pregunta', () => {
     expect(guidanceInstruction(2)).toContain('dile en qué parte de su programa mirar');
     expect(guidanceInstruction(2)).not.toContain('una o dos preguntas');
