@@ -73,10 +73,11 @@ describe('Explicar un concepto vs. guiar en el ejercicio (28/10)', () => {
   // Jeider: «si yo pregunto qué es una variable, quisiera que me responda y explique enseguida».
   const prompt = () => new TutorContextService({ find: jest.fn().mockResolvedValue([]) }).buildSystemPrompt(1, { currentCode: 'let a = 1', activityId: 3 });
 
-  it('una pregunta de concepto se explica de una vez, sin preguntas para evaluar', async () => {
+  it('una pregunta de concepto se explica primero y luego se comprueba con UNA pregunta o una práctica pequeña', async () => {
     const p = await prompt();
-    expect(p).toContain('EXPLÍCALO DE UNA VEZ, sin devolverle preguntas');
-    expect(p).toContain('No le hagas preguntas para evaluar si entendió');
+    expect(p).toContain('EXPLÍCALO PRIMERO Y DE UNA VEZ, sin devolverle preguntas antes de explicar');
+    expect(p).toContain('cierra con UNA sola de estas');
+    expect(p).toContain('una práctica pequeña de 1 o 2 líneas');
     expect(p).not.toContain('responde con una pregunta orientadora');
   });
 
