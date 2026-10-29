@@ -52,8 +52,9 @@ la hoja de Google (cada uno sus ítems, ver Trello S11-HE; plazo 5/11), **prueba
 `docs/calidad/PRUEBA_CON_PERSONAS.md`) y Pedro revisa las políticas (S11-P03). Jeider junta el informe de la prueba (8/11).
 
 **Mejoras de la evaluación de la IA antes de la humana** (`docs/calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`, bloque A,
-con registro de avance): hechos los ítems 3, 4, 8, 13 y 28. Faltan 2, 5, 7, 11, 21, 27, 29, 31 y revisar todos los
-mensajes de error (3).
+con registro de avance): hechos los ítems 2, 3, 4, 5, 7, 8, 11, 13, 21, 27, 28, 29 y 31 (28/10). El ítem 2 (respuesta del
+Tutor por partes) **necesita desplegar el backend y reiniciar Caddy** (`docs/DESPLIEGUE.md` §8, «Actualizar»); mientras
+no se despliegue, el chat sigue funcionando como antes.
 
 **Insumos de la remodelación reunidos el 28/10** (todo en `docs/PENDIENTES.md`, P35 a P44):
 
