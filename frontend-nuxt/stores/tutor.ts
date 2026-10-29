@@ -265,10 +265,11 @@ export const useTutorStore = defineStore('tutor', () => {
   /**
    * Abre el panel. Con `conPregunta` (un botón que abre el Tutor con una pregunta ya escrita) no se pide el saludo
    * proactivo: llegaba después de la pregunta y quedaba debajo, como si fuera la respuesta (Jeider, 17/10: pidió que
-   * explicara un video y el Tutor contestó «tienes pendiente repasar…»).
+   * explicara un video y el Tutor contestó «tienes pendiente repasar…»). Dentro de un ejercicio tampoco se saluda (29/10,
+   * Jeider: «lo de los saludos no en el ejercicio»): ahí está resolviendo algo, y los repasos tienen su lugar en el inicio.
    */
   async function openDrawer(opciones: { conPregunta?: boolean } = {}) {
-    if (opciones.conPregunta) hasGreeted.value = true
+    if (opciones.conPregunta || /^\/estudiante\/evaluacion\/\d+/.test(route.path)) hasGreeted.value = true
     isOpen.value = true
     // 1. Historial (solo la primera vez)
     await fetchHistory()
