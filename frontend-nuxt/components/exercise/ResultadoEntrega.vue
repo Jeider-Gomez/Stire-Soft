@@ -49,6 +49,14 @@
         <Sparkles :size="14" aria-hidden="true" /> Que el Tutor me explique qué falló
       </button>
 
+      <button
+        v-else
+        type="button"
+        class="w-full min-h-[44px] py-2 rounded-md borde-afordancia text-xs font-semibold text-stire-purple hover:bg-base-bg-secundario inline-flex items-center justify-center gap-1.5"
+        @click="$emit('charlar')">
+        <Sparkles :size="14" aria-hidden="true" /> Charlar con el Tutor sobre este ejercicio
+      </button>
+
       <div class="flex flex-col-reverse sm:flex-row items-stretch gap-2">
         <button type="button" class="flex-1 min-h-[44px] py-2 rounded-md borde-afordancia text-xs font-semibold bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario" @click="hacer(paso.secundaria)">
           {{ paso.secundaria.texto }}
@@ -70,9 +78,9 @@
             Resolviste bien {{ r.passedCount ?? 0 }} de {{ r.totalCount }} {{ r.totalCount === 1 ? 'ejercicio' : 'ejercicios' }} (con todos sus casos de prueba, también los ocultos).
           </p>
           <p v-if="cambio">{{ cambio.texto }}.</p>
-          <p v-if="calidad" class="flex items-start gap-2">
+          <p v-if="cuandoVuelve" class="flex items-start gap-2">
             <ListChecks :size="15" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
-            <span>{{ CUANDO_VUELVE[calidad] }}</span>
+            <span>{{ cuandoVuelve }}</span>
           </p>
           <EstudianteMetaDeLaLeccion v-if="ej.learningUnitId" :unit-id="ej.learningUnitId" solo-modulo class="text-left" />
           <p v-if="paso.nota" class="flex items-start gap-1.5 text-[11px] text-base-texto-secundario"><Lock :size="13" class="shrink-0 mt-0.5" aria-hidden="true" /> {{ paso.nota }}</p>
@@ -89,17 +97,16 @@ import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { siguienteLeccion } from '~/utils/siguienteLeccion'
 import { mensajeCalibracion } from '~/utils/confianza'
-import { calidadDelResultado } from '~/utils/escalaResultados'
 import { recordarFoco } from '~/utils/devolverFoco'
-import { CUANDO_VUELVE, dominioCorto, intentosQueQuedan, pasoSiguiente, retroParaMostrar, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
+import { textoCuandoVuelve, dominioCorto, intentosQueQuedan, pasoSiguiente, retroParaMostrar, textoCambioDominio, type AccionResultado, type RecomendacionSiguiente } from '~/utils/resultadoEntrega'
 
 const props = defineProps<{ exito: boolean; reto: boolean }>()
-defineEmits<{ tutor: [] }>()
+defineEmits<{ tutor: []; charlar: [] }>()
 
 const ws = useWorkspaceStore()
 const authStore = useAuthStore()
 const studentStore = useStudentStore()
-const { siguienteActividad } = useUnidadEstudiante()
+const { siguienteActividad, proximoRepaso: consultarProximoRepaso } = useUnidadEstudiante()
 
 const r = computed(() => ws.submissionResult!)
 const ej = computed(() => ws.currentExercise)
@@ -117,6 +124,7 @@ onMounted(async () => {
   nextTick(() => ventana.value?.querySelector<HTMLElement>('[data-foco-inicial]')?.focus())
   // El ejercicio usa otro layout: si se abrió directo (sin pasar por el plan), el plan se carga para saber qué lección sigue.
   if (!studentStore.hasLoaded) studentStore.fetchStudentData().catch(() => undefined)
+  void cargarProximoRepaso()
   const sid = authStore.user?.id
   if (!sid || !ej.value.learningUnitId) return
   try {
@@ -131,13 +139,18 @@ const paso = computed(() => pasoSiguiente({ aprobado: props.exito, quedanIntento
 const cambio = computed(() => textoCambioDominio(ws.masteryBefore, ws.masteryAfter))
 const retro = computed(() => retroParaMostrar(r.value.retroalimentacion))
 const calibracion = computed(() => (ws.calibracion && ej.value.usedAttempts === 1 ? mensajeCalibracion(ws.calibracion, esCodigo.value) : null))
-/** Otra vez, Difícil, Bien o Fácil, con la misma regla que el servidor usa para sus repasos (calidadDeRepaso). */
-const calidad = computed(() => r.value.status === 'graded'
-  ? calidadDelResultado({ aprobado: props.exito, primerIntento: ej.value.usedAttempts === 1, seguro: ws.juicioConfianza === 'seguro' || props.reto })
-  : null)
-
-/** «Más detalles» solo si hay algo que poner dentro. */
-const hayDetalles = computed(() => (esCodigo.value && (r.value.totalCount ?? 0) > 0) || !!cambio.value || !!calidad.value || !!ej.value.learningUnitId || !!paso.value.nota)
+/** La fecha real del próximo repaso de esta lección, tal como la tiene el servidor (no una suposición). */
+const proximoRepaso = ref<string | null>(null)
+const cuandoVuelve = computed(() => textoCuandoVuelve(proximoRepaso.value))
+async function cargarProximoRepaso() {
+  if (!ej.value.learningUnitId) return
+  try {
+    proximoRepaso.value = await consultarProximoRepaso(ej.value.learningUnitId)
+  } catch {
+    proximoRepaso.value = null // sin fecha no se dice nada
+  }
+}
+const hayDetalles = computed(() => (esCodigo.value && (r.value.totalCount ?? 0) > 0) || !!cambio.value || !!cuandoVuelve.value || !!ej.value.learningUnitId || !!paso.value.nota)
 
 function hacer(a: AccionResultado) {
   ws.submissionResult = null

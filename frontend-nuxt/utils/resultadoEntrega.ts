@@ -167,12 +167,21 @@ export function cambioCorto(antes: number | null | undefined, despues: number | 
   return { corto: diferencia > 0 ? `+${diferencia} %` : diferencia < 0 ? `−${-diferencia} %` : 'igual', diferencia }
 }
 
-/** Cuándo vuelve la lección a sus repasos, en palabras (antes: «Para tus repasos: Otra vez», que no se entendía). */
-export const CUANDO_VUELVE: Record<NombreCalidad, string> = {
-  'otra-vez': 'Esta lección vuelve pronto a tus repasos, para afianzarla.',
-  dificil: 'Esta lección vuelve en pocos días a tus repasos, porque la lograste después de más de un intento.',
-  bien: 'Esta lección vuelve a tus repasos en unos días, para que no se te olvide.',
-  facil: 'Esta lección tarda más en volver a tus repasos: ya la tienes clara.',
+/**
+ * Cuándo vuelve la lección a los repasos, con la fecha que de verdad tiene en el calendario del servidor (29/10, Jeider:
+ * el texto fijo «vuelve en pocos días porque te costó» no era cierto: si ya había un repaso programado, el intento no
+ * lo mueve). Sin fecha conocida no se dice nada.
+ */
+export function textoCuandoVuelve(nextReviewDate: string | null | undefined, ahora: Date = new Date()): string | null {
+  if (!nextReviewDate) return null
+  const fecha = new Date(nextReviewDate)
+  if (Number.isNaN(fecha.getTime())) return null
+  const dia = (d: Date) => d.toLocaleDateString('en-CA', { timeZone: 'America/Bogota' })
+  const dias = Math.round((Date.parse(dia(fecha)) - Date.parse(dia(ahora))) / 86_400_000)
+  const cuando = fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', timeZone: 'America/Bogota' })
+  if (dias <= 0) return 'Esta lección ya toca repasarla: la tienes en tus repasos.'
+  if (dias === 1) return `Esta lección vuelve a tus repasos mañana (${cuando}).`
+  return `Esta lección vuelve a tus repasos el ${cuando}, en ${dias} días.`
 }
 
 export type MotivoAviso = 'sin-intentos' | 'completado' | 'parecido'

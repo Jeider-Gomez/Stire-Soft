@@ -100,5 +100,11 @@ export function useUnidadEstudiante() {
     return api.put(`/learning-progress/unit/${unitId}/confidence`, { confianza })
   }
 
-  return { unidad, contenidos, actividades, misEjercicios, entregasDeClase, progreso, siguienteActividad, registrarConfianza }
+  /** Cuándo toca repasar esta lección según el calendario del servidor, o null si todavía no tiene. */
+  async function proximoRepaso(unitId: number): Promise<string | null> {
+    const lista = await api.get<Array<{ learningUnitId: number; nextReviewDate: string }>>('/review-schedules/due')
+    return (Array.isArray(lista) ? lista : []).find((x) => x.learningUnitId === unitId)?.nextReviewDate ?? null
+  }
+
+  return { unidad, proximoRepaso, contenidos, actividades, misEjercicios, entregasDeClase, progreso, siguienteActividad, registrarConfianza }
 }

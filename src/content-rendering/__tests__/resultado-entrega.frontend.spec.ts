@@ -19,7 +19,7 @@ interface Paso { titulo: string; mensaje: string; primaria: Accion; secundaria: 
 const u = cargar<{
   pasoSiguiente: (e: { aprobado: boolean; quedanIntentos: number; actividadActual: number; recomendacion: unknown; siguienteLeccion?: unknown; dominio?: number | null }) => Paso;
   textoCambioDominio: (a: number | null, d: number | null) => { texto: string; diferencia: number } | null;
-  CUANDO_VUELVE: Record<string, string>;
+  textoCuandoVuelve: (f: string | null | undefined, ahora?: Date) => string | null;
 }>('resultadoEntrega');
 
 const rec = (activityId: number, reason: string, allCompleted = false) => ({ activityId, title: 'Prueba de escritorio: el intercambio', reason, reasonMessage: 'Prueba otro ejercicio del mismo tipo y nivel.', allCompleted });
@@ -157,8 +157,10 @@ describe('la ventana del resultado', () => {
     expect(v).toContain('v-if="esCodigo && (r.totalCount ?? 0) > 0"');
   });
 
-  it('cuándo vuelve la lección se dice en palabras, una frase distinta por resultado', () => {
-    expect(new Set(Object.values(u.CUANDO_VUELVE)).size).toBe(4);
+  it('cuándo vuelve la lección se dice con la fecha real del servidor, no con un texto fijo por resultado', () => {
+    expect(v).toContain('consultarProximoRepaso(ej.value.learningUnitId)');
+    expect(leer('composables', 'useUnidadEstudiante.ts')).toContain("'/review-schedules/due'");
+    expect(v).not.toContain('CUANDO_VUELVE');
     expect(v).not.toContain('Para tus repasos:');
   });
 
@@ -241,7 +243,23 @@ describe('al completar la lección, el mensaje dice el dominio que de verdad tie
     expect(completa(null)).not.toMatch(/\d+ %/);
   });
 
-  it('«Difícil» dice la razón real: más de un intento', () => {
-    expect(u.CUANDO_VUELVE.dificil).toContain('más de un intento');
+  it('el próximo repaso se dice con su fecha real (hora de Colombia)', () => {
+    const hoy = new Date('2026-10-29T15:00:00Z');
+    expect(u.textoCuandoVuelve('2026-10-30T15:00:00Z', hoy)).toContain('mañana');
+    expect(u.textoCuandoVuelve('2026-11-12T15:00:00Z', hoy)).toMatch(/12 de noviembre, en 14 días/);
+    expect(u.textoCuandoVuelve('2026-10-28T15:00:00Z', hoy)).toContain('ya toca');
+  });
+
+  it('sin fecha conocida no se inventa ninguna', () => {
+    expect(u.textoCuandoVuelve(null)).toBeNull();
+    expect(u.textoCuandoVuelve('no es fecha')).toBeNull();
+  });
+
+  it('al aprobar se puede charlar con el Tutor sin pedirle una pista', () => {
+    const v = leer('components', 'exercise', 'ResultadoEntrega.vue');
+    const pagina = leer('pages', 'estudiante', 'evaluacion', '[activityId].vue');
+    expect(v).toContain("@click=\"$emit('charlar')\"");
+    expect(pagina).toContain('@charlar="charlarConElTutor"');
+    expect(pagina.slice(pagina.indexOf('async function charlarConElTutor'), pagina.indexOf('async function pedirAyudaAlTutor'))).not.toContain('requestQuickHint');
   });
 });

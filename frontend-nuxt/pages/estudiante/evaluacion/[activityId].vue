@@ -242,7 +242,7 @@
     </div>
 
     <!-- Resultado de la entrega: qué pasó, cuánto se movió el dominio y a dónde seguir (07/10). -->
-    <ExerciseResultadoEntrega v-if="workspaceStore.submissionResult" :exito="isSuccessResult" :reto="route.query.reto === '1'" @tutor="pedirAyudaAlTutor" />
+    <ExerciseResultadoEntrega v-if="workspaceStore.submissionResult" :exito="isSuccessResult" :reto="route.query.reto === '1'" @tutor="pedirAyudaAlTutor" @charlar="charlarConElTutor" />
   </div>
 </template>
 
@@ -292,6 +292,13 @@ async function resolverPorPasos() {
   workspaceStore.submissionResult = null
   ofertaCerrada.value = true
   await tutorStore.resolverPorPasos()
+}
+
+/** Ya terminó el ejercicio: se cierra el resultado y se abre el chat, sin pedirle una pista que no necesita. */
+async function charlarConElTutor() {
+  workspaceStore.submissionResult = null
+  ofertaCerrada.value = true
+  await tutorStore.openDrawer({ conPregunta: true })
 }
 
 async function pedirAyudaAlTutor() {

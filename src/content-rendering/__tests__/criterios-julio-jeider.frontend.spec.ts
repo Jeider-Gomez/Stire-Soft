@@ -96,7 +96,7 @@ describe('MOD-03: el resultado de una entrega, breve y claro', () => {
     const v = leer('components', 'exercise', 'ResultadoEntrega.vue');
     const detalles = v.indexOf('<details v-if="hayDetalles"');
     expect(detalles).toBeGreaterThan(v.indexOf('@click="hacer(paso.primaria)"'));
-    expect(v.indexOf('{{ CUANDO_VUELVE[calidad] }}')).toBeGreaterThan(detalles);
+    expect(v.indexOf('{{ cuandoVuelve }}')).toBeGreaterThan(detalles);
     expect(v.indexOf('<EstudianteMetaDeLaLeccion')).toBeGreaterThan(detalles);
     expect(v.indexOf('{{ calibracion.texto }}')).toBeLessThan(detalles);
     expect(v.indexOf('{{ x.texto }}')).toBeLessThan(detalles);
