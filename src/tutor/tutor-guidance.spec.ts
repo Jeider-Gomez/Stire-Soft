@@ -97,6 +97,14 @@ describe('Explicar un concepto vs. guiar en el ejercicio (28/10)', () => {
     expect(p).toContain('dale la idea con palabras');
   });
 
+  it('el cierre es una práctica o pregunta concreta, nunca un ofrecimiento («¿te gustaría practicar?») (29/10)', async () => {
+    // Jeider probó «¿qué es una variable?» y el Tutor cerró con «¿te gustaría practicar, o prefieres repasar la teoría?».
+    const p = await prompt();
+    expect(p).toContain('Ponla DIRECTAMENTE, con los datos concretos');
+    expect(p).toContain('NUNCA cierres con un ofrecimiento como «¿te gustaría practicar?»');
+    expect(p).toContain('La práctica tampoco usa los nombres ni datos de su ejercicio');
+  });
+
   it('el nivel 2 señala dónde mirar y hace una sola pregunta', () => {
     expect(guidanceInstruction(2)).toContain('dile en qué parte de su programa mirar');
     expect(guidanceInstruction(2)).not.toContain('una o dos preguntas');
