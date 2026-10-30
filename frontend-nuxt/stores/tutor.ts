@@ -344,7 +344,7 @@ export const useTutorStore = defineStore('tutor', () => {
           }
         : contextoSegunPantalla(route.path, workspaceStore.currentExercise ?? null, {
             js: workspaceStore.code, html: workspaceStore.htmlCode, css: workspaceStore.cssCode,
-            completar: plantillaConRespuestas(String(workspaceStore.currentQuestion?.config?.codeTemplate ?? ''), workspaceStore.pendingAnswer?.blanks),
+            completar: plantillaConRespuestas(String(workspaceStore.currentQuestion?.config?.codeTemplate ?? ''), workspaceStore.huecosEscritos),
           }, {
             // Señales (src/tutor/tutor-senales.ts): error probable de la salida, juicio de confianza y modo por pasos.
             errorProbable: workspaceStore.errorProbable ?? undefined,

@@ -43,6 +43,16 @@ describe('Contexto que la pantalla le manda al Tutor', () => {
     expect(c).not.toHaveProperty('tipoEjercicio');
   });
 
+  // Jeider (29/10): puso `let` en el primer hueco, el segundo seguía vacío y el Tutor dijo «perfecto» sin ver nada: la respuesta
+  // solo llegaba al store con TODOS los huecos llenos.
+  it('el Tutor ve lo que lleva escrito en los huecos aunque falten otros', () => {
+    const lee = (...r: string[]) => readFileSync(path.join(raiz, ...r), 'utf8');
+    expect(lee('components', 'exercise', 'FillCodeExercise.vue')).toContain('workspaceStore.huecosEscritos = { ...blankAnswers }');
+    expect(lee('stores', 'tutor.ts')).toContain('workspaceStore.huecosEscritos');
+    expect(lee('stores', 'tutor.ts')).not.toContain('workspaceStore.pendingAnswer?.blanks');
+    expect(plantillaConRespuestas('___a___ n = ___b___;', { a: 'let', b: '' })).toBe('let n = ___b___;');
+  });
+
   it('los huecos vacíos o con espacios quedan como ___id___', () => {
     expect(plantillaConRespuestas('x = ___a___ + ___b___', { a: '  ', b: '2' })).toBe('x = ___a___ + 2');
     expect(plantillaConRespuestas('x = ___a___', null)).toBe('x = ___a___');

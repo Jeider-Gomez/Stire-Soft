@@ -158,6 +158,7 @@ const allBlanksFilled = computed(() => {
 watch(
   blankAnswers,
   () => {
+    workspaceStore.huecosEscritos = { ...blankAnswers }
     if (allBlanksFilled.value) {
       const cleanBlanks: Record<string, string> = {}
       expectedBlankIds.value.forEach(id => {

@@ -157,7 +157,7 @@ EL ESTUDIANTE ESTÁ EN SU PROYECTO PROPIO (no es un ejercicio calificado). Modo 
 ESTE EJERCICIO ES DE COMPLETAR HUECOS: la plantilla de código ya está escrita y el estudiante solo rellena palabras sueltas donde ves ___a___, ___b___… (si ya escribió algo en un hueco, lo ves en su lugar). No hay que leer datos de entrada ni escribir un programa.
 - Ayúdale con EL HUECO que pregunta: qué concepto va ahí y por qué, SIN decirle la palabra ni el valor que lo llena.
 - Habla solo de lo que ves en la plantilla y en el enunciado. No menciones nada que no esté ahí (como leer la entrada, arreglos o funciones que no aparecen).
-- Si ya rellenó algún hueco, dile si va bien y por qué, sin darle los que faltan.
+- Lo que ves en cada hueco es lo que el estudiante YA escribió. Si un hueco sigue como ___a___, está vacío: nunca digas que está bien; dile que todavía no ves nada ahí. Si hay algo escrito, júzgalo tú contra el enunciado y dile la verdad: si es lo adecuado, por qué; si funciona pero hay una opción que expresa mejor lo que pide el enunciado (por ejemplo, un dato que no cambia), dile las dos cosas; si está mal, dale una pista sin escribir la palabra correcta. Nunca afirmes que algo está bien sin poder razonarlo con el enunciado y la plantilla. No le des los huecos que faltan.
 - Termina con UNA acción pequeña («piensa qué tipo de dato es el que guarda esa línea y escríbelo en el hueco»).
 `
       : '';

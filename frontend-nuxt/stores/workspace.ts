@@ -73,6 +73,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
    * submitSolution() la consume al entregar.
    */
   const pendingAnswer = ref<Record<string, any> | null>(null)
+  /** Lo que lleva escrito en cada hueco de un ejercicio de completar, aunque falten otros (el Tutor lo ve; `pendingAnswer` solo existe con todos llenos). */
+  const huecosEscritos = ref<Record<string, string>>({})
 
   /** Motivo por el que no se pudo cargar el ejercicio (se muestra en pantalla, no solo en la consola del sandbox). */
   const loadError = ref<string | null>(null)
@@ -175,6 +177,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     calibracion.value = null
     fallosSeguidos.value = 0
     pendingAnswer.value = null
+    huecosEscritos.value = {}
     currentQuestion.value = null
     masteryBefore.value = null
     masteryAfter.value = null
@@ -689,6 +692,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     currentQuestion,
     loadError,
     pendingAnswer,
+    huecosEscritos,
     code,
     htmlCode,
     cssCode,
