@@ -108,6 +108,7 @@ describe('explicación alternativa y análisis de la clase (27/10)', () => {
 });
 
 describe('ejercicios de programación que corrige el juez (27/10)', () => {
+  const LF = String.fromCharCode(10);
   const crudo = {
     porque: 'Practica leer y escribir',
     ejercicios: [{
@@ -122,6 +123,23 @@ describe('ejercicios de programación que corrige el juez (27/10)', () => {
     const e = (b as Extract<typeof b, { tipo: 'programacion' }>)!.ejercicios[0];
     expect(e.solucion.startsWith(LEER_ENTRADA)).toBe(true);
     expect(e.casos.map((c) => [c.entrada, c.publico])).toEqual([['3', true], ['0', false], ['-7', false]]);
+  });
+  // 31/10, Jeider: «que el docente pueda hacer más ejercicios sin esas dos líneas».
+  it('con leerTexto() y leerNumero() no se agrega ninguna línea de lectura al código del ejercicio', () => {
+    const inicial = ['const n = leerNumero();', '// escribe el doble'].join(LF);
+    const solucion = ['const n = leerNumero();', 'console.log(n * 2);'].join(LF);
+    const nuevo = { ...crudo, ejercicios: [{ ...crudo.ejercicios[0], inicial, solucion }] };
+    const e = (validarBorrador('programacion', nuevo) as Extract<ReturnType<typeof validarBorrador>, { tipo: 'programacion' }>).ejercicios[0];
+    expect(e.solucion).toBe(solucion);
+    expect(e.inicial).not.toContain('readFileSync');
+    expect(e.solucion).not.toContain('lineas');
+  });
+  it('el pedido a la IA le dice que use leerTexto() y leerNumero(), y que no las declare ni use lineas', () => {
+    const p = construirPrompt('programacion', { cantidad: 2, leccion: 'Variables' });
+    expect(p).toContain('leerTexto()');
+    expect(p).toContain('leerNumero()');
+    expect(p).toContain('NO las declares');
+    expect(p).not.toContain('del arreglo `lineas`');
   });
   it('las salidas las calcula el juez real ejecutando la solución; si la solución falla, el ejercicio se descarta', async () => {
     const juez = new HardenedProcessSandboxAdapter();

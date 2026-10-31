@@ -19,9 +19,9 @@ export function revisarEjercicioCodigo(e: { enunciado: string; plantilla: string
       porque: 'Con un ejemplo el estudiante puede hacerlo primero a mano; los pasos que ve en su pantalla salen de él.',
     },
     {
-      ok: /readFileSync|\blineas\b|\binput\b|prompt\(/.test(plantilla),
+      ok: /readFileSync|\blineas\b|\binput\b|prompt\(|\bleer(Texto|Numero|Lineas)\b/.test(plantilla),
       texto: 'La plantilla ya lee la entrada',
-      porque: 'Quien empieza no sabe leer datos en JavaScript: así se concentra en el algoritmo. Ej.: const lineas = require(\'fs\').readFileSync(0, \'utf8\').trim().split(\'\\n\');',
+      porque: 'Quien empieza no sabe leer datos en JavaScript: así se concentra en el algoritmo. Ej.: const nombre = leerTexto(); o const n = leerNumero(); (ya existen en STIRE, no hay que declarar nada).',
     },
     {
       ok: plantilla !== '' && !/console\.log\s*\(\s*[^)\s]/.test(plantilla),

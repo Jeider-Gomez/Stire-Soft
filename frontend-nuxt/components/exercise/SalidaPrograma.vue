@@ -8,7 +8,8 @@
     class="flex-shrink-0 overflow-y-auto border-t border-editor-border bg-editor-header text-editor-text text-xs"
     :class="plegada ? '' : 'max-h-[46%]'"
     aria-labelledby="salida-titulo">
-    <div class="flex items-center justify-between gap-2 px-4 py-1.5" :class="plegada ? '' : 'border-b border-editor-border'">
+    <!-- El botón flotante del Tutor queda abajo a la derecha: el panel le deja sitio (md:pr-24 y md:pb-16) para que no tape «Ocultar» ni «Ejecutar». -->
+    <div class="flex items-center justify-between gap-2 px-4 md:pr-24 py-1.5" :class="plegada ? '' : 'border-b border-editor-border'">
       <h3 id="salida-titulo" class="inline-flex items-center gap-1.5 font-bold text-white">
         <Terminal :size="13" aria-hidden="true" /> Salida de tu programa
       </h3>
@@ -26,7 +27,7 @@
       </div>
     </div>
 
-    <div v-show="!plegada" id="salida-cuerpo" class="px-4 py-2 space-y-3">
+    <div v-show="!plegada" id="salida-cuerpo" class="px-4 py-2 md:pb-16 space-y-3">
       <div class="space-y-2" role="status" aria-live="polite">
         <p v-if="resumen.estado !== 'no-coincide' || !resumen.caso" class="leading-relaxed" :class="resumen.estado === 'coincide' ? 'text-[#5eead4]' : 'text-editor-muted'">
           <Check v-if="resumen.estado === 'coincide'" :size="13" class="inline mr-1" aria-hidden="true" />

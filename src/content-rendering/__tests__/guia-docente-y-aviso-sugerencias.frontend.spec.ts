@@ -18,6 +18,14 @@ const { revisarEjercicioCodigo } = cargar<{ revisarEjercicioCodigo: (e: { enunci
 const LEE = "const lineas = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\n// Escribe el resultado con console.log\n";
 
 describe('la guía del docente para un ejercicio de programar', () => {
+  // 31/10, Jeider: «que el docente pueda hacer más ejercicios sin esas dos líneas».
+  it('una plantilla que pide el dato con leerTexto() o leerNumero() cuenta como que ya lee la entrada', () => {
+    for (const lectura of ['const nombre = leerTexto();', 'const n = leerNumero();', 'const todas = leerLineas();']) {
+      const r = revisarEjercicioCodigo({ enunciado: 'Ejemplo: `Ana`', plantilla: lectura + String.fromCharCode(10) + '// Escribe el resultado con console.log', casos: [{ input: 'Ana', expected: 'Hola', isPublic: true }] });
+      expect(r.find((p) => p.texto === 'La plantilla ya lee la entrada')?.ok).toBe(true);
+    }
+  });
+
   it('un ejercicio vacío tiene todo por hacer', () => {
     expect(revisarEjercicioCodigo({ enunciado: '', plantilla: '', casos: [{ input: '', expected: '', isPublic: true }] }).every((p) => !p.ok)).toBe(true);
   });

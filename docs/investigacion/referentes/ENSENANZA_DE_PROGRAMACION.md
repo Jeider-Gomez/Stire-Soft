@@ -158,6 +158,16 @@ que lo de abajo viene de documentación, foros de usuarios y estudios; se marca 
 sobre todo, **la entrada de datos como tema aparte y posterior**: los primeros ejercicios pueden trabajar solo con variables en el código y `console.log`
 (P51: un ejercicio previo de solo mostrar en pantalla).
 
+**Observado en la pantalla (31/10/2026), LeetCode, problema «Two Sum»** **[obs]**:
+- El editor **ya trae la firma de la función** (en C++, `twoSum(nums, target)` dentro de una clase) y el estudiante solo la completa: la plataforma **llama a la función con los datos de prueba y compara lo que devuelve**. No hay que leer ninguna entrada.
+- Arriba, al centro: depurar, ejecutar («Run») y «Submit» juntos. Abajo, un panel plegable con «Testcase» y «Test Result».
+- Ejecutar o entregar pide iniciar sesión («You need to log in / sign up to run or submit»). Sin sesión, el problema se puede leer.
+- Que sea una función y no leer entrada estándar es lo que permite al autor de un problema escribir solo los casos (argumentos y resultado esperado).
+
+**Para STIRE:** **P57 · Ejercicios de función**: el ejercicio trae `function saludar(nombre) { }`; el docente define el nombre de la función y los casos (argumentos y resultado
+esperado), y STIRE llama a la función y compara lo que devuelve. El estudiante no ve `leerTexto()` ni arreglos, y el docente no necesita saber de entrada estándar: escala.
+Va junto con P49, P54 y P56.
+
 **Lo que NO se encontró:** ningún estudio que compare directamente «leer con una función lista» contra `input()` o `lineas`;
 ni documentación oficial de LeetCode sobre qué muestra al fallar. Por eso las decisiones de abajo se tratan como hipótesis
 y se miden con la prueba con personas (P17).

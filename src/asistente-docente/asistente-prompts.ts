@@ -81,7 +81,11 @@ export type Borrador = BorradorEstructura | BorradorLeccion | BorradorAlternativ
 export const LEER_ENTRADA =
   "// Lee la entrada: cada línea es un texto (no cambies esta línea)\n" +
   "const lineas = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\n";
-const conLectura = (codigo: string) => (codigo.includes("readFileSync(0") ? codigo : LEER_ENTRADA + codigo);
+/**
+ * Solo el código que recorre `lineas` lleva las dos líneas que la declaran. Con leerTexto() y leerNumero() (el juez las define: src/judge-engine/sandbox-lectura.ts)
+ * no hace falta nada: el estudiante pide el dato y listo (31/10, Jeider: «sin esas dos líneas»).
+ */
+const conLectura = (codigo: string) => (/\blineas\b/.test(codigo) && !codigo.includes('readFileSync(0') ? LEER_ENTRADA + codigo : codigo);
 
 const LIMITE = { titulo: 120, corto: 400, explicacion: 6000, pedido: 600, textoActual: 4000, resumenClase: 3000 };
 const recortar = (t: unknown, max: number) => (typeof t === 'string' ? t.replace(/\s+$/g, '').slice(0, max).trim() : '');
@@ -128,10 +132,10 @@ export function construirPrompt(tipo: TipoBorrador, c: ContextoAsistente, pedido
       + '(más práctica), «refuerzo» (asignar un refuerzo a quienes están atascados) o «mensaje» (escribirle a la clase). '
       + 'No inventes cifras: usa solo las del resumen. En «porque» resume la situación de la clase en una frase.',
     programacion: `Escribe ${cantidad(c.cantidad, 2)} ejercicios de programación en JavaScript sobre la lección, en escalera. `
-      + 'El programa lee la entrada del arreglo `lineas` (cada elemento es una línea de texto; ya está declarado, NO lo declares) y escribe '
-      + 'la salida con console.log, sin preguntar nada al usuario. Cada ejercicio: «titulo»; «enunciado» en Markdown con qué lee, qué '
+      + 'El programa pide cada dato de la entrada, en orden, con `leerTexto()` (la siguiente línea, como texto) o `leerNumero()` (la siguiente línea, como número); '
+      + 'ya existen, NO las declares ni uses `lineas` ni `require`. Escribe la salida con console.log, sin preguntar nada al usuario. Cada ejercicio: «titulo»; «enunciado» en Markdown con qué lee, qué '
       + 'escribe y un ejemplo de entrada y salida; «inicial» (código de partida que convierte la entrada y deja un comentario de qué falta); '
-      + '«solucion» (el programa completo y correcto, sin la declaración de `lineas`); «entradas»: 4 a 6 entradas distintas (cada una es el '
+      + '«solucion» (el programa completo y correcto); «entradas»: 4 a 6 entradas distintas (cada una es el '
       + 'texto completo de la entrada, con saltos de línea \\n si son varias líneas), incluyendo casos límite; y «dificultad». '
       + 'NO escribas las salidas: STIRE las calcula ejecutando tu solución. En «porque» di qué practica cada uno.',
     ejercicios: `Escribe ${cantidad(c.cantidad, 3)} ejercicios de opción múltiple en escalera (de más fácil a más difícil) sobre la lección. `
@@ -172,7 +176,7 @@ export const ESQUEMAS: Record<TipoBorrador, object> = {
     properties: {
       porque: S('Qué practica cada uno'),
       ejercicios: { type: 'ARRAY', items: { type: 'OBJECT', required: ['titulo', 'enunciado', 'inicial', 'solucion', 'entradas', 'dificultad'], properties: {
-        titulo: S('Título'), enunciado: S('Enunciado en Markdown con un ejemplo'), inicial: S('Código de partida, sin declarar lineas'),
+        titulo: S('Título'), enunciado: S('Enunciado en Markdown con un ejemplo'), inicial: S('Código de partida que pide los datos con leerTexto() o leerNumero()'),
         solucion: S('Solución completa, sin declarar lineas'), entradas: { type: 'ARRAY', items: { type: 'STRING' } }, dificultad: DIF,
       } } },
     },
@@ -228,7 +232,7 @@ export function validarBorrador(tipo: TipoBorrador, crudo: unknown): Borrador | 
       casos: [...new Set((Array.isArray(e?.entradas) ? e.entradas : []).map((x) => (typeof x === 'string' ? x.slice(0, 500) : '')).filter((x) => x.trim()))]
         .slice(0, 6).map((entrada, i) => ({ entrada, salida: '', publico: i === 0 })),
       dificultad: dificultad(e?.dificultad),
-    })).filter((e) => e.titulo && e.enunciado && e.solucion.length > LEER_ENTRADA.length + 5 && e.casos.length >= 2);
+    })).filter((e) => e.titulo && e.enunciado && e.solucion.replace(LEER_ENTRADA, '').trim().length > 5 && e.casos.length >= 2);
     return ejercicios.length ? { tipo, ejercicios, porque } : null;
   }
   if (tipo === 'analisis') {
