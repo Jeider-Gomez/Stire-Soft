@@ -47,7 +47,7 @@ describe('TutorContextService.buildSystemPrompt — lo que vio la prueba con Gem
   it('las reglas piden no mostrar datos internos, no contestar fuera de tema, respetar el pseudocódigo y no inventar un ejercicio', async () => {
     progressRepo.find.mockResolvedValue([]);
     const prompt = await service.buildSystemPrompt(1, {}, null);
-    expect(prompt).toContain('No menciones datos internos: ni su nivel');
+    expect(prompt).toContain('No menciones datos internos (su nivel');
     expect(prompt).toContain('no la respondas: dilo con amabilidad');
     expect(prompt).toContain('responde en pseudocódigo y no lo traduzcas a JavaScript');
     expect(prompt).toContain('no supongas que el estudiante está resolviendo uno');
@@ -98,10 +98,10 @@ describe('TutorContextService — nivel por tema y lenguaje sencillo', () => {
     const service = new TutorContextService({ find: jest.fn().mockResolvedValue(registros) } as unknown as ConstructorParameters<typeof TutorContextService>[0]);
     const prompt = await service.buildSystemPrompt(1, { learningUnitId: 2, unitTitle: 'Variables y tipos de datos' }, null);
     expect(prompt).toContain('estudiante de nivel PRINCIPIANTE en este tema');
-    expect(prompt).toContain('Habla siempre en lenguaje sencillo y cotidiano, en cualquier nivel');
+    expect(prompt).toContain('Habla en lenguaje sencillo y cotidiano');
     expect(prompt).not.toContain('Big O Notation');
     expect(prompt).not.toContain('ingeniería de software');
-    expect(prompt).toContain('Nunca digas «tu perfil», «tu nivel»');
+    expect(prompt).toContain('ni digas «tu perfil», «tu nivel»');
   });
 });
 
@@ -157,7 +157,7 @@ describe('TutorContextService.buildSystemPrompt — enunciado y última prueba',
   it('si un recurso no carga, dice que no lo ve y explica el tema con la lección, sin inventar el video', async () => {
     const prompt = await service.buildSystemPrompt(1, {}, null);
     expect(prompt).toContain('no le carga, tú no puedes verlo');
-    expect(prompt).toContain('No inventes lo que dice el video.');
+    expect(prompt).toContain('No inventes lo que dice.');
   });
 });
 
