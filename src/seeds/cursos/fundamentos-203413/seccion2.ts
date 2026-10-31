@@ -114,15 +114,15 @@ a <- a - b
 
 Para mostrar un decimal usa \`.toFixed(1)\`, por ejemplo \`(3.25).toFixed(1)\` da \`3.3\`.`,
               dificultad: 'basico',
-              inicial: `${LEER_ENTRADA}const nota1 = Number(lineas[0]);
-const nota2 = Number(lineas[1]);
-const nota3 = Number(lineas[2]);
+              inicial: `const nota1 = leerNumero();
+const nota2 = leerNumero();
+const nota3 = leerNumero();
 
 // Calcula el promedio y escríbelo con un decimal
 `,
-              solucion: `${LEER_ENTRADA}const nota1 = Number(lineas[0]);
-const nota2 = Number(lineas[1]);
-const nota3 = Number(lineas[2]);
+              solucion: `const nota1 = leerNumero();
+const nota2 = leerNumero();
+const nota3 = leerNumero();
 const promedio = (nota1 + nota2 + nota3) / 3;
 console.log(promedio.toFixed(1));
 `,
@@ -131,9 +131,9 @@ console.log(promedio.toFixed(1));
                 { entrada: '2.5\n3.0\n4.2', salida: '3.2', publico: false },
                 { entrada: '5\n5\n4', salida: '4.7', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const nota1 = Number(lineas[0]);
-const nota2 = Number(lineas[1]);
-const nota3 = Number(lineas[2]);
+              errorComun: `const nota1 = leerNumero();
+const nota2 = leerNumero();
+const nota3 = leerNumero();
 const promedio = nota1 + nota2 + nota3 / 3;
 console.log(promedio.toFixed(1));
 `,
@@ -172,7 +172,7 @@ En pseudocódigo se escribe \`Si ... Entonces ... SiNo ... FinSi\`, y en el diag
 En Colombia se aprueba con **3.0** o más (escala de 0.0 a 5.0):
 
 \`\`\`js
-const nota = Number(lineas[0]);
+const nota = leerNumero();
 if (nota >= 3.0) {
   console.log("Aprobó");
 } else {
@@ -220,7 +220,7 @@ if (nota > 3) {
                 'Completa el programa para que escriba `par` si el número es par, o `impar` si no lo es. Un número es par si el residuo de dividirlo entre 2 es 0.',
               dificultad: 'basico',
               lenguaje: 'javascript',
-              plantilla: `const n = Number(lineas[0]);
+              plantilla: `const n = leerNumero();
 if (n ___a___ 2 === 0) {
   console.log("par");
 } ___b___ {
@@ -236,11 +236,11 @@ if (n ___a___ 2 === 0) {
 
 **Ejemplo:** con \`3.0\` la salida es \`Aprobó\`.`,
               dificultad: 'basico',
-              inicial: `${LEER_ENTRADA}const nota = Number(lineas[0]);
+              inicial: `const nota = leerNumero();
 
 // Decide si aprobó
 `,
-              solucion: `${LEER_ENTRADA}const nota = Number(lineas[0]);
+              solucion: `const nota = leerNumero();
 if (nota >= 3.0) {
   console.log("Aprobó");
 } else {
@@ -253,7 +253,7 @@ if (nota >= 3.0) {
                 { entrada: '4.5', salida: 'Aprobó', publico: false },
                 { entrada: '0', salida: 'Reprobó', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const nota = Number(lineas[0]);
+              errorComun: `const nota = leerNumero();
 if (nota > 3) {
   console.log("Aprobó");
 } else {
@@ -270,13 +270,13 @@ Lee el número de fotocopias (primera línea) y \`si\` o \`no\` (segunda línea,
 
 **Ejemplo:** con \`10\` y \`si\` la salida es \`1350\`.`,
               dificultad: 'intermedio',
-              inicial: `${LEER_ENTRADA}const fotocopias = Number(lineas[0]);
-const carne = lineas[1].trim();
+              inicial: `const fotocopias = leerNumero();
+const carne = leerTexto().trim();
 
 // Calcula el total con o sin descuento
 `,
-              solucion: `${LEER_ENTRADA}const fotocopias = Number(lineas[0]);
-const carne = lineas[1].trim();
+              solucion: `const fotocopias = leerNumero();
+const carne = leerTexto().trim();
 let total = fotocopias * 150;
 if (carne === "si") {
   total = total - total * 10 / 100;
@@ -289,7 +289,7 @@ console.log(total);
                 { entrada: '20\nsi', salida: '2700', publico: false },
                 { entrada: '3\nno', salida: '450', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const fotocopias = Number(lineas[0]);
+              errorComun: `const fotocopias = leerNumero();
 let total = fotocopias * 150;
 total = total * 0.9;
 console.log(total);
@@ -393,11 +393,11 @@ if (nota >= 3.0) {
 
 **Ejemplo:** con \`4.2\` la salida es \`Alto\`.`,
               dificultad: 'intermedio',
-              inicial: `${LEER_ENTRADA}const nota = Number(lineas[0]);
+              inicial: `const nota = leerNumero();
 
 // Escribe el desempeño
 `,
-              solucion: `${LEER_ENTRADA}const nota = Number(lineas[0]);
+              solucion: `const nota = leerNumero();
 if (nota >= 4.6) {
   console.log("Superior");
 } else if (nota >= 4.0) {
@@ -415,7 +415,7 @@ if (nota >= 4.6) {
                 { entrada: '2.9', salida: 'Bajo', publico: false },
                 { entrada: '5.0', salida: 'Superior', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const nota = Number(lineas[0]);
+              errorComun: `const nota = leerNumero();
 if (nota >= 3.0) {
   console.log("Básico");
 } else if (nota >= 4.0) {
@@ -436,11 +436,11 @@ Lee un año y escribe \`bisiesto\` o \`no bisiesto\`.
 
 **Ejemplos:** 2024 es bisiesto; 1900 no lo es; 2000 sí lo es.`,
               dificultad: 'avanzado',
-              inicial: `${LEER_ENTRADA}const anio = Number(lineas[0]);
+              inicial: `const anio = leerNumero();
 
 // Combina condiciones con && y ||
 `,
-              solucion: `${LEER_ENTRADA}const anio = Number(lineas[0]);
+              solucion: `const anio = leerNumero();
 if ((anio % 4 === 0 && anio % 100 !== 0) || anio % 400 === 0) {
   console.log("bisiesto");
 } else {
@@ -454,7 +454,7 @@ if ((anio % 4 === 0 && anio % 100 !== 0) || anio % 400 === 0) {
                 { entrada: '2023', salida: 'no bisiesto', publico: false },
                 { entrada: '2100', salida: 'no bisiesto', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const anio = Number(lineas[0]);
+              errorComun: `const anio = leerNumero();
 if (anio % 4 === 0) {
   console.log("bisiesto");
 } else {
@@ -540,7 +540,7 @@ for (let i = 0; i < 5; i++) {
               enunciado: 'Completa el ciclo para que escriba la tabla del número leído, **del 1 al 10**.',
               dificultad: 'basico',
               lenguaje: 'javascript',
-              plantilla: `const n = Number(lineas[0]);
+              plantilla: `const n = leerNumero();
 for (let i = 1; i ___a___ 10; i___b___) {
   console.log(n + " x " + i + " = " + (n * i));
 }`,
@@ -559,11 +559,11 @@ for (let i = 1; i ___a___ 10; i___b___) {
 7 x 2 = 14
 \`\`\``,
               dificultad: 'basico',
-              inicial: `${LEER_ENTRADA}const n = Number(lineas[0]);
+              inicial: `const n = leerNumero();
 
 // Escribe la tabla con un ciclo for
 `,
-              solucion: `${LEER_ENTRADA}const n = Number(lineas[0]);
+              solucion: `const n = leerNumero();
 for (let i = 1; i <= 10; i++) {
   console.log(n + " x " + i + " = " + (n * i));
 }
@@ -585,7 +585,7 @@ for (let i = 1; i <= 10; i++) {
                   publico: false,
                 },
               ],
-              errorComun: `${LEER_ENTRADA}const n = Number(lineas[0]);
+              errorComun: `const n = leerNumero();
 for (let i = 1; i < 10; i++) {
   console.log(n + " x " + i + " = " + (n * i));
 }
@@ -605,11 +605,11 @@ for (let i = 1; i < 10; i++) {
 ¡Despegue!
 \`\`\``,
               dificultad: 'basico',
-              inicial: `${LEER_ENTRADA}let n = Number(lineas[0]);
+              inicial: `let n = leerNumero();
 
 // Usa while y no olvides cambiar n en cada vuelta
 `,
-              solucion: `${LEER_ENTRADA}let n = Number(lineas[0]);
+              solucion: `let n = leerNumero();
 while (n >= 1) {
   console.log(n);
   n = n - 1;
@@ -621,7 +621,7 @@ console.log("¡Despegue!");
                 { entrada: '1', salida: '1\n¡Despegue!', publico: false },
                 { entrada: '5', salida: '5\n4\n3\n2\n1\n¡Despegue!', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}let n = Number(lineas[0]);
+              errorComun: `let n = leerNumero();
 while (n > 1) {
   console.log(n);
   n = n - 1;
@@ -723,11 +723,11 @@ console.log(suma);
 
 **Ejemplo:** con \`5\` la salida es \`15\`. Con \`0\` la suma es \`0\`.`,
               dificultad: 'basico',
-              inicial: `${LEER_ENTRADA}const n = Number(lineas[0]);
+              inicial: `const n = leerNumero();
 
 // Usa un acumulador
 `,
-              solucion: `${LEER_ENTRADA}const n = Number(lineas[0]);
+              solucion: `const n = leerNumero();
 let suma = 0;
 for (let i = 1; i <= n; i++) {
   suma = suma + i;
@@ -740,7 +740,7 @@ console.log(suma);
                 { entrada: '100', salida: '5050', publico: false },
                 { entrada: '0', salida: '0', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const n = Number(lineas[0]);
+              errorComun: `const n = leerNumero();
 let suma = 0;
 for (let i = 1; i < n; i++) {
   suma = suma + i;
@@ -764,7 +764,7 @@ donde X es cuántos sacaron **3.0 o más**, y P es el promedio del grupo con un 
 
 **Ejemplo:** con \`4\`, \`3.5\`, \`2.0\`, \`3.0\`, \`4.5\` la salida es \`Aprobaron: 3 de 4\` y \`Promedio: 3.3\`.`,
               dificultad: 'intermedio',
-              inicial: `${LEER_ENTRADA}const n = Number(lineas[0]);
+              inicial: `const n = leerNumero();
 
 // Un contador para los aprobados y un acumulador para la suma
 `,
@@ -890,17 +890,17 @@ console.log(areaCirculo(2).toFixed(2)); // 12.57`,
 
 **Ejemplo:** con \`4\`, \`9\` y \`2\` la salida es \`9\`.`,
               dificultad: 'intermedio',
-              inicial: `${LEER_ENTRADA}
+              inicial: `
 function mayor(a, b, c) {
   // Devuelve el mayor de los tres
 }
 
-const a = Number(lineas[0]);
-const b = Number(lineas[1]);
-const c = Number(lineas[2]);
+const a = leerNumero();
+const b = leerNumero();
+const c = leerNumero();
 console.log(mayor(a, b, c));
 `,
-              solucion: `${LEER_ENTRADA}
+              solucion: `
 function mayor(a, b, c) {
   let m = a;
   if (b > m) m = b;
@@ -908,9 +908,9 @@ function mayor(a, b, c) {
   return m;
 }
 
-const a = Number(lineas[0]);
-const b = Number(lineas[1]);
-const c = Number(lineas[2]);
+const a = leerNumero();
+const b = leerNumero();
+const c = leerNumero();
 console.log(mayor(a, b, c));
 `,
               casos: [
@@ -919,15 +919,15 @@ console.log(mayor(a, b, c));
                 { entrada: '7\n7\n3', salida: '7', publico: false },
                 { entrada: '-5\n-2\n-9', salida: '-2', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}
+              errorComun: `
 function mayor(a, b, c) {
   if (a > b) return a;
   return b;
 }
 
-const a = Number(lineas[0]);
-const b = Number(lineas[1]);
-const c = Number(lineas[2]);
+const a = leerNumero();
+const b = leerNumero();
+const c = leerNumero();
 console.log(mayor(a, b, c));
 `,
             },
@@ -940,12 +940,12 @@ La primera línea trae **n**, la cantidad de productos, y luego vienen n precios
 
 **Ejemplo:** con \`2\`, \`1000\`, \`2500\` la salida es \`1190\` y \`2975\`.`,
               dificultad: 'intermedio',
-              inicial: `${LEER_ENTRADA}
+              inicial: `
 function conIva(precio) {
   // Devuelve el precio con IVA, redondeado
 }
 
-const n = Number(lineas[0]);
+const n = leerNumero();
 // Recorre los n precios y escribe cada uno con IVA
 `,
               solucion: `${LEER_ENTRADA}

@@ -7,6 +7,7 @@ import { join } from 'path';
 import type { SandboxAdapter, RunResult } from './sandbox-adapter.interface';
 import { SANDBOX_TIMEOUT_MS } from './sandbox-limits';
 import { Semaphore } from './semaphore';
+import { PRELUDIO_LECTURA } from './sandbox-lectura';
 
 // ADR 06 — aislamiento por proceso hijo del sistema operativo, no por
 // contexto de JavaScript (node:vm nunca fue una frontera de seguridad:
@@ -106,7 +107,7 @@ export class HardenedProcessSandboxAdapter implements SandboxAdapter {
     const dir = mkdtempSync(join(tmpdir(), `stire-sbx-${randomUUID()}-`));
     const guardFile = join(dir, 'guard.cjs');
     const codeFile = join(dir, 'student.js');
-    writeFileSync(guardFile, NETWORK_GUARD, 'utf8');
+    writeFileSync(guardFile, NETWORK_GUARD + PRELUDIO_LECTURA, 'utf8');
     writeFileSync(codeFile, code, 'utf8');
 
     const start = Date.now();

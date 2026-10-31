@@ -220,13 +220,13 @@ donde la nota es aciertos ÷ N × 5, con un decimal.
 
 **Ejemplo:** con \`b a c d a\` y \`b a d d a\` la salida es \`Aciertos: 4 de 5\` y \`Nota: 4.0\`.`,
               dificultad: 'intermedio',
-              inicial: `${LEER_ENTRADA}const clave = lineas[0].trim().split(" ");
-const respuestas = lineas[1].trim().split(" ");
+              inicial: `const clave = leerTexto().trim().split(" ");
+const respuestas = leerTexto().trim().split(" ");
 
 // Cuenta los aciertos y calcula la nota
 `,
-              solucion: `${LEER_ENTRADA}const clave = lineas[0].trim().split(" ");
-const respuestas = lineas[1].trim().split(" ");
+              solucion: `const clave = leerTexto().trim().split(" ");
+const respuestas = leerTexto().trim().split(" ");
 let aciertos = 0;
 for (let i = 0; i < clave.length; i++) {
   if (respuestas[i] === clave[i]) {
@@ -241,8 +241,8 @@ console.log("Nota: " + (aciertos / clave.length * 5).toFixed(1));
                 { entrada: 'a b c\nc b a', salida: 'Aciertos: 1 de 3\nNota: 1.7', publico: false },
                 { entrada: 'a a a a\na a a a', salida: 'Aciertos: 4 de 4\nNota: 5.0', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const clave = lineas[0].trim().split(" ");
-const respuestas = lineas[1].trim().split(" ");
+              errorComun: `const clave = leerTexto().trim().split(" ");
+const respuestas = leerTexto().trim().split(" ");
 let aciertos = 0;
 for (let i = 0; i <= clave.length; i++) {
   if (respuestas[i] === clave[i]) {
@@ -271,13 +271,13 @@ Pregunta 2: incorrecta, era a
 Pregunta 3: correcta
 \`\`\``,
               dificultad: 'avanzado',
-              inicial: `${LEER_ENTRADA}const clave = lineas[0].trim().split(" ");
-const respuestas = lineas[1].trim().split(" ");
+              inicial: `const clave = leerTexto().trim().split(" ");
+const respuestas = leerTexto().trim().split(" ");
 
 // Recorre las preguntas y escribe la retroalimentación
 `,
-              solucion: `${LEER_ENTRADA}const clave = lineas[0].trim().split(" ");
-const respuestas = lineas[1].trim().split(" ");
+              solucion: `const clave = leerTexto().trim().split(" ");
+const respuestas = leerTexto().trim().split(" ");
 for (let i = 0; i < clave.length; i++) {
   if (respuestas[i] === clave[i]) {
     console.log("Pregunta " + (i + 1) + ": correcta");
@@ -291,8 +291,8 @@ for (let i = 0; i < clave.length; i++) {
                 { entrada: 'a b\nb a', salida: 'Pregunta 1: incorrecta, era a\nPregunta 2: incorrecta, era b', publico: false },
                 { entrada: 'd\nd', salida: 'Pregunta 1: correcta', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const clave = lineas[0].trim().split(" ");
-const respuestas = lineas[1].trim().split(" ");
+              errorComun: `const clave = leerTexto().trim().split(" ");
+const respuestas = leerTexto().trim().split(" ");
 for (let i = 0; i < clave.length; i++) {
   if (respuestas[i] === clave[i]) {
     console.log("Pregunta " + i + ": correcta");

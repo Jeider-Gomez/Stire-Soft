@@ -14,8 +14,13 @@ import { cursoFundamentos203413 } from '../../src/seeds/cursos/fundamentos-20341
 import { cursoPensamientoAlgoritmico } from '../../src/seeds/cursos/pensamiento-algoritmico';
 import { aConfig, Curso, Ejercicio, intentosPorDefecto } from '../../src/seeds/cursos/tipos';
 
-/** Con --actualizar, lo que ya existe recibe el texto vigente de las lecciones y los enunciados (como cuando el docente los edita). */
+/**
+ * Con --actualizar, lo que ya existe recibe el texto vigente de las lecciones y los enunciados (como cuando el docente los edita) y,
+ * en cada ejercicio, el código de partida, los casos y las opciones vigentes. El servidor no deja cambiar un ejercicio que ya tiene
+ * entregas (409, «cambiaría notas ya puestas»): esos se cuentan y se dejan como están.
+ */
 const ACTUALIZAR = process.argv.includes('--actualizar');
+const resumen = { preguntasActualizadas: 0, preguntasConEntregas: 0 };
 
 const CURSOS: Record<string, Curso> = {
   fundamentos: cursoFundamentos203413,
@@ -58,7 +63,16 @@ async function crearEjercicio(api: Api, unidadId: number, e: Ejercicio, activity
   } else if (ACTUALIZAR) {
     await api.patch(`/activities/${act.id}`, { description: e.enunciado });
   }
-  const preguntas = await api.get<unknown[]>(`/activity-questions/activity/${act.id}`);
+  const preguntas = await api.get<Array<{ id: number }>>(`/activity-questions/activity/${act.id}`);
+  if (preguntas.length > 0 && ACTUALIZAR) {
+    try {
+      await api.patch(`/activity-questions/${preguntas[0].id}`, { question: e.enunciado, config: aConfig(e) });
+      resumen.preguntasActualizadas++;
+    } catch (err) {
+      if (!String(err).includes('→ 409')) throw err;
+      resumen.preguntasConEntregas++;
+    }
+  }
   if (preguntas.length === 0) {
     await api.post('/activity-questions', { activityId: act.id, type: e.tipo, question: e.enunciado, points: puntos, order: 0, config: aConfig(e) });
   }
@@ -114,6 +128,10 @@ async function crearCurso(api: Api, curso: Curso): Promise<void> {
     if (!previa?.isPublished) await api.patch(`/sections/${seccion.id}/publish`);
   }
   console.log(`Listo: ${curso.codigo} completo (${nuevos} ejercicios nuevos en esta corrida).`);
+  if (ACTUALIZAR) {
+    console.log(`Ejercicios actualizados (código de partida, casos y enunciado): ${resumen.preguntasActualizadas}.`);
+    console.log(`Ejercicios que NO se tocaron porque ya tienen entregas de estudiantes: ${resumen.preguntasConEntregas}.`);
+  }
 }
 
 async function main(): Promise<void> {

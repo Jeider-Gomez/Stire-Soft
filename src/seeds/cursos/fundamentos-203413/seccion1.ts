@@ -290,13 +290,12 @@ Para mostrar un resultado usamos \`console.log(...)\`.
 
 ## Un ejemplo
 
-En los ejercicios de programar, el programa **lee** los datos de entrada. Cada línea llega como **texto**, por eso
-se convierte a número con \`Number(...)\`:
+En los ejercicios de programar, el programa **lee** los datos de entrada. Con \`leerTexto()\` pides un **texto** y con
+\`leerNumero()\` pides un **número**. Cada vez que los llamas te dan la **siguiente** línea de la entrada:
 
 \`\`\`js
-const lineas = require('fs').readFileSync(0, 'utf8').trim().split('\\n');
-const nombre = lineas[0];           // primera línea: un texto
-const edad = Number(lineas[1]);     // segunda línea: convertida a número
+const nombre = leerTexto();    // primera línea: un texto
+const edad = leerNumero();     // segunda línea: un número
 console.log(nombre + " tiene " + edad + " años");
 \`\`\`
 
@@ -305,7 +304,7 @@ Si la entrada es \`Luisa\` y \`19\`, el programa escribe \`Luisa tiene 19 años\
 ## Error común
 
 Olvidar que \`"42"\` (con comillas) es **texto**, no número. Con textos, el \`+\` **pega** en vez de sumar:
-\`"5" + 3\` da \`"53"\`. Por eso siempre convertimos con \`Number(...)\` lo que viene de la entrada.
+\`"5" + 3\` da \`"53"\`. Por eso \`leerNumero()\` ya te da un número, y \`leerTexto()\` te da un texto: pide cada dato con la función que corresponde.
 
 ## Pruébalo
 
@@ -370,21 +369,20 @@ console.log(nombre + " tiene " + edad + " años");`,
             {
               tipo: 'coding',
               titulo: 'Saludo personalizado',
-              enunciado: `Escribe un programa que lea un **nombre** y escriba el saludo:
+              enunciado: `Escribe un programa que **salude** a una persona por su nombre.
 
-\`\`\`
-Hola, <nombre>. Bienvenido a Algoritmia.
-\`\`\`
+1. **Lee** el nombre con \`leerTexto()\` (esa línea ya está escrita en el editor).
+2. **Muestra** el saludo en pantalla con \`console.log(...)\`. El saludo es: \`Hola, \`, luego el nombre, y al final \`. Bienvenido a Algoritmia.\`
 
-**Ejemplo:** si la entrada es \`Ana\`, la salida es \`Hola, Ana. Bienvenido a Algoritmia.\`
+**Ejemplo:** si el nombre es \`Ana\`, el programa debe mostrar \`Hola, Ana. Bienvenido a Algoritmia.\`
 
-Revisa los espacios y los puntos: la salida debe ser exactamente igual.`,
+Cuida los espacios y los puntos: lo que muestres debe ser exactamente igual.`,
               dificultad: 'basico',
-              inicial: `${LEER_ENTRADA}const nombre = lineas[0];
+              inicial: `const nombre = leerTexto();
 
 // Escribe el saludo con console.log
 `,
-              solucion: `${LEER_ENTRADA}const nombre = lineas[0];
+              solucion: `const nombre = leerTexto();
 console.log("Hola, " + nombre + ". Bienvenido a Algoritmia.");
 `,
               casos: [
@@ -392,7 +390,7 @@ console.log("Hola, " + nombre + ". Bienvenido a Algoritmia.");
                 { entrada: 'Juan Carlos', salida: 'Hola, Juan Carlos. Bienvenido a Algoritmia.', publico: false },
                 { entrada: 'María José', salida: 'Hola, María José. Bienvenido a Algoritmia.', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const nombre = lineas[0];
+              errorComun: `const nombre = leerTexto();
 console.log("Hola," + nombre + " Bienvenido a Algoritmia.");
 `,
             },
@@ -434,7 +432,7 @@ console.log(horas + " h " + resto + " min"); // 2 h 15 min
 ## Error común
 
 Sumar sin convertir la entrada. Si \`base\` y \`altura\` son los textos \`"3"\` y \`"4"\`, entonces
-\`2 * (base + altura)\` calcula \`2 * "34"\` = **68**, no 14. Convierte primero: \`Number(lineas[0])\`.
+\`2 * (base + altura)\` calcula \`2 * "34"\` = **68**, no 14. Convierte primero: \`leerNumero()\`.
 
 ## Pruébalo
 
@@ -488,13 +486,13 @@ console.log(edad >= 18 || conPermiso);
 14
 \`\`\``,
               dificultad: 'basico',
-              inicial: `${LEER_ENTRADA}const base = Number(lineas[0]);
-const altura = Number(lineas[1]);
+              inicial: `const base = leerNumero();
+const altura = leerNumero();
 
 // Calcula y escribe el área y el perímetro
 `,
-              solucion: `${LEER_ENTRADA}const base = Number(lineas[0]);
-const altura = Number(lineas[1]);
+              solucion: `const base = leerNumero();
+const altura = leerNumero();
 console.log(base * altura);
 console.log(2 * (base + altura));
 `,
@@ -503,8 +501,8 @@ console.log(2 * (base + altura));
                 { entrada: '5\n5', salida: '25\n20', publico: false },
                 { entrada: '2.5\n4', salida: '10\n13', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const base = lineas[0];
-const altura = lineas[1];
+              errorComun: `const base = leerTexto();
+const altura = leerTexto();
 console.log(base * altura);
 console.log(2 * (base + altura));
 `,
@@ -518,11 +516,11 @@ console.log(2 * (base + altura));
 
 Pista: \`Math.floor\` y el operador \`%\`.`,
               dificultad: 'intermedio',
-              inicial: `${LEER_ENTRADA}const minutos = Number(lineas[0]);
+              inicial: `const minutos = leerNumero();
 
 // Calcula las horas completas y los minutos que sobran
 `,
-              solucion: `${LEER_ENTRADA}const minutos = Number(lineas[0]);
+              solucion: `const minutos = leerNumero();
 const horas = Math.floor(minutos / 60);
 const resto = minutos % 60;
 console.log(horas + " h " + resto + " min");
@@ -533,7 +531,7 @@ console.log(horas + " h " + resto + " min");
                 { entrada: '45', salida: '0 h 45 min', publico: false },
                 { entrada: '1440', salida: '24 h 0 min', publico: false },
               ],
-              errorComun: `${LEER_ENTRADA}const minutos = Number(lineas[0]);
+              errorComun: `const minutos = leerNumero();
 const horas = minutos / 60;
 const resto = minutos % 60;
 console.log(horas + " h " + resto + " min");

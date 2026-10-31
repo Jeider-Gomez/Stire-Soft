@@ -131,6 +131,35 @@ Ya están en `../REFERENTES_PLATAFORMAS_Y_STI.md` §3 y §4:
 
 ---
 
+## Entrada, salida y casos ocultos: lo que se investigó el 31/10/2026
+
+**Por qué.** En la prueba de «Saludo personalizado» (`../../calidad/PRUEBA_ESTUDIANTE_SALUDO_2026-10-31.md`) el dueño del
+proyecto, sin saber JavaScript, no supo qué escribir, ni dónde se veía el resultado, ni por qué fallaba al entregar. Se
+buscó cómo lo resuelven otras plataformas. **Límite honesto:** no se pudo abrir cada plataforma (varias piden cuenta), así
+que lo de abajo viene de documentación, foros de usuarios y estudios; se marca cada cosa.
+
+| Pregunta | Qué se encontró | Evidencia |
+|---|---|---|
+| ¿Dónde se ve el resultado? | **freeCodeCamp** (currículo anterior): usuarios preguntan «¿dónde está la salida?» porque las pruebas solo decían si pasaron, sin mostrar lo que escribió el programa; la respuesta de la comunidad era usar `console.log` y abrir la consola del navegador. Es el mismo tropiezo del dueño. **Codecademy**: la consola está dentro de la misma pantalla, junto al editor; el primer ejercicio no tiene puntos de control. El patrón común (Programiz, Educative) es editor + botón «Run» + área de salida llamada «consola». | foros de usuarios y documentos de terceros **[obs ajena]**; no se vio el currículo nuevo de freeCodeCamp ni la página oficial de Codecademy |
+| ¿«Probar» y «Entregar» son distintos? | **LeetCode**: «Run» prueba y «Submit» califica contra todos los casos. Cuando falla un caso oculto, el resultado muestra la **entrada que falló** y la salida esperada, y los usuarios la copian a una prueba propia y la repiten con «Run». Hay quejas porque el resto de los casos queda oculto. | foros de usuarios de LeetCode **[obs ajena]**; LeetCode no publica documentación oficial de esto |
+| ¿Se puede probar con datos propios? | **LeetCode** tiene casos de prueba propios («Custom Testcase»). | foros **[obs ajena]** |
+| ¿Ayudan los ejemplos que se pueden ejecutar y editar? | Estudios con estudiantes de programación: los **ejemplos interactivos** (PCEX) mejoraron la participación y el desempeño; en un entorno de bloques (Snap!) los ejemplos resueltos **no** mejoraron el aprendizaje, aunque bajaron la carga mental. Quien aprende con tutoriales suele **tocar el código del ejemplo** más que leer la explicación. | estudios de SIGCSE e ICER **[inv]**; muestras pequeñas, de aula |
+| ¿Cuándo enseñar la entrada de datos? | Un artículo de 1997 sobre el primer curso de programación dice que la **entrada y salida es una de las mayores dificultades** y que **no hace falta enseñarla al principio**. Estudios recientes confirman que la sintaxis opaca el problema que se quiere enseñar. | **[inv]**; el de 1997 es sobre C, pero la dificultad no depende del lenguaje |
+
+**Lo que NO se encontró:** ningún estudio que compare directamente «leer con una función lista» contra `input()` o `lineas`;
+ni documentación oficial de LeetCode sobre qué muestra al fallar. Por eso las decisiones de abajo se tratan como hipótesis
+y se miden con la prueba con personas (P17).
+
+**Para STIRE:**
+- **P-UI-17 · La salida del programa a la vista, junto al editor.** El estudiante no debería tener que buscarla en otra
+  pestaña. (P48; pendiente.)
+- **P-UI-18 · Probar con datos propios.** «Probar con mis datos» además de los casos del ejercicio. (P49; pendiente.)
+- **P-PED-16 · La entrada de datos sin ceremonia.** En los primeros ejercicios se pide el dato con una función lista
+  (`leerTexto()`, `leerNumero()`) y la lista (`lineas`) se enseña cuando toca. **Hecho en el código el 31/10** (juez, los ejercicios básicos de
+  las unidades 1 y 2 del curso 203413 y sus textos); falta desplegar y recargar el curso en el servidor.
+- **P-PED-17 · Al fallar un caso oculto, mostrar con qué entrada falló** (como LeetCode), sin revelar los demás. (Propuesto.)
+- **P-PED-18 · Ejemplos ejecutables dentro de la lección.** Código que se edita y se ejecuta ahí mismo. (P50; pendiente.)
+
 ## Enlaces
 
 - Coursera Coach: https://blog.coursera.org/coursera-coach-providing-essential-learner-support
@@ -143,3 +172,10 @@ Ya están en `../REFERENTES_PLATAFORMAS_Y_STI.md` §3 y §4:
 - Exercism, novedades v3: https://exercism.org/blog/whats-new-in-v3-with-angelika
 - CS50 y la IA: https://cs50.harvard.edu/x/notes/ai/
 - Brilliant: https://brilliant.org/faq/
+- LeetCode, foro: «run code and submit have different results»: https://leetcode.com/discuss/feedback/207419/run-code-and-submit-have-different-results
+- LeetCode, foro: «Accepted… then Wrong Answer. How to view all test cases?»: https://leetcode.com/discuss/general-discussion/548314/accepted-then-wrong-answer-how-to-view-all-test-cases
+- freeCodeCamp, foro: «Where is the output?»: https://forum.freecodecamp.org/t/where-is-the-output/600720
+- freeCodeCamp, foro: «How to view the output of the code in exercises?»: https://forum.freecodecamp.org/t/how-to-view-the-output-of-the-code-in-exercises/216422
+- Ejemplos interactivos de construcción de programas (PCEX): https://par.nsf.gov/biblio/10112138
+- Ejemplos resueltos en un entorno de bloques (SIGCSE): https://hintslab.wordpress.com/?p=44
+- Dificultad de la entrada y salida en el primer curso (1997): https://www.cs.kent.ac.uk/pubs/1997/2176/content.pdf

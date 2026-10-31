@@ -36,7 +36,7 @@ export type ErrorDeSalida = keyof typeof ERRORES_DE_SALIDA;
  * enunciado). Con ellos el Tutor sabe qué explicar si el estudiante dice que no sabe JavaScript.
  */
 export const CONCEPTOS_EJERCICIO = {
-  'leer-entrada': 'leer la entrada (lineas[0] es la primera línea; el número es la posición, no el valor)',
+  'leer-entrada': 'leer la entrada (leerTexto() y leerNumero() dan la siguiente línea cada vez que se llaman; con lineas, lineas[0] es la primera línea y el número es la posición, no el valor)',
   'convertir-numero': 'convertir texto en número con Number(...)',
   operaciones: 'operaciones aritméticas y paréntesis, guardando cada resultado en una variable',
   'division-entera': 'división entera con Math.floor y residuo con %',

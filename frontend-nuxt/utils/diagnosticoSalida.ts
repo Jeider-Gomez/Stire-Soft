@@ -27,7 +27,7 @@ const REPASAR: Record<TipoDiagnostico, ClaveConcepto> = {
   vacia: 'varias-lineas', espacios: 'varias-lineas', linea: 'varias-lineas', mayusculas: 'texto', puntuacion: 'texto',
 }
 
-const LEER_POSICION = 'Ojo: el número entre corchetes es la POSICIÓN, no el valor: la primera línea que entra es lineas[0], la segunda lineas[1].'
+const LEER_POSICION = 'Ojo: pide cada dato en orden con leerTexto() o leerNumero(). Si usas lineas, el número entre corchetes es la POSICIÓN, no el valor: la primera línea que entra es lineas[0], la segunda lineas[1].'
 
 /**
  * Un error de JavaScript explicado en palabras de estudiante (10/10, Jeider: «SyntaxError: Unexpected token ';'» y la

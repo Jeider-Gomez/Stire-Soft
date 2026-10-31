@@ -32,6 +32,50 @@ describe('HardenedProcessSandboxAdapter', () => {
     expect(result.status).toBe('wrong_answer');
   });
 
+  // 31/10, Jeider: «un arreglo que no sé ni qué es». El estudiante pide el dato sin escribir cómo se lee la entrada.
+  describe('funciones de lectura listas para usar', () => {
+    const LF = String.fromCharCode(10);
+    const BS = String.fromCharCode(92);
+    const correr = (code: string, input: string) => adapter.executeIsolated(code, 'javascript', { input, expected: '' });
+
+    it('leerTexto devuelve cada línea de la entrada, en orden', async () => {
+      const r = await correr('const a = leerTexto(); const b = leerTexto(); console.log(b + "|" + a);', ['Ana', 'Luis'].join(LF));
+      expect(r.stdout).toBe('Luis|Ana');
+      expect(r.stderr).toBe('');
+    });
+
+    it('leerNumero devuelve un número y se puede operar con él', async () => {
+      const r = await correr('const base = leerNumero(); const altura = leerNumero(); console.log(base * altura);', ['4', '5'].join(LF));
+      expect(r.stdout).toBe('20');
+    });
+
+    it('leerLineas devuelve todas las líneas como arreglo', async () => {
+      const r = await correr('console.log(leerLineas().length + ":" + leerLineas()[1]);', ['a', 'b', 'c'].join(LF));
+      expect(r.stdout).toBe('3:b');
+    });
+
+    it('sin más líneas, leerTexto devuelve texto vacío y no falla', async () => {
+      const r = await correr('console.log("[" + leerTexto() + "][" + leerTexto() + "]");', 'solo');
+      expect(r.stdout).toBe('[solo][]');
+    });
+
+    it('una función del estudiante con el mismo nombre manda sobre la del juez', async () => {
+      const r = await correr('function leerTexto() { return "mía"; } console.log(leerTexto());', 'x');
+      expect(r.stdout).toBe('mía');
+    });
+
+    it('el código que lee la entrada a la antigua sigue funcionando', async () => {
+      const antiguo = "const lineas = require('fs').readFileSync(0, 'utf8').trim().split('" + BS + "n'); console.log(lineas[0]);";
+      const r = await correr(antiguo, 'Ana');
+      expect(r.stdout).toBe('Ana');
+    });
+
+    it('no mueve los números de línea: el error de sintaxis sigue en la línea del estudiante', async () => {
+      const r = await correr(['console.log(1);', 'console.log(;'].join(LF), '');
+      expect(r.stderr).toContain('línea 2');
+    });
+  });
+
   it('rechaza lenguajes distintos de JavaScript con error explícito', async () => {
     const result = await adapter.executeIsolated('print("Hola")', 'python', {
       expected: '',

@@ -21,8 +21,8 @@ export const CONCEPTOS: Record<ClaveConcepto, Concepto> = {
   'leer-entrada': {
     clave: 'leer-entrada',
     titulo: 'Leer lo que entra',
-    idea: 'La plantilla guarda cada línea que entra en lineas. Se cuenta desde 0: la primera es lineas[0], la segunda lineas[1]. El número es la posición, no el valor.',
-    ejemplo: '// Si entra:  Ana\n//            17\nconst nombre = lineas[0]; // "Ana"\nconst edad = lineas[1];   // "17"',
+    idea: 'Para pedir un dato usa leerTexto() si es un texto o leerNumero() si es un número. Cada vez que las llamas te dan la siguiente línea que entra.',
+    ejemplo: '// Si entra:  Ana\n//            17\nconst nombre = leerTexto(); // "Ana"\nconst edad = leerNumero();  // 17',
   },
   'convertir-numero': {
     clave: 'convertir-numero',
@@ -88,8 +88,9 @@ export function conceptosDelEjercicio(e: {
   const entra = e.ejemplo ? lineasDe(e.ejemplo.input) : []
   const sale = e.ejemplo ? lineasDe(e.ejemplo.expectedOutput) : []
   const claves: ClaveConcepto[] = []
-  if (/\blineas\b/.test(e.plantilla) && entra.length > 0) claves.push('leer-entrada')
-  if (entra.length > 0 && entra.some(esNumero)) claves.push('convertir-numero')
+  if (/\blineas\b|\bleer(Texto|Numero)\b/.test(e.plantilla) && entra.length > 0) claves.push('leer-entrada')
+  // Con leerNumero() el dato ya llega como número: la conversión con Number(...) solo se explica si la plantilla lee con `lineas`.
+  if (entra.length > 0 && entra.some(esNumero) && !/\bleerNumero\b/.test(e.plantilla)) claves.push('convertir-numero')
   if (/[×÷*]|\b(suma|resta|multiplic|divid|área|perímetro|promedio|total|calcul|operador|expresi)/i.test(texto)) claves.push('operaciones')
   if (/Math\.floor|%|\b(residuo|resto|entera|sobran|horas y minutos)/i.test(texto)) claves.push('division-entera')
   if (sale.some((l) => /[A-Za-zÁÉÍÓÚáéíóúñ]{2,}/.test(l) && !esNumero(l))) claves.push('texto')

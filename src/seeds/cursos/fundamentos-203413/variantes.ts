@@ -6,7 +6,8 @@ import { Ejercicio, LEER_ENTRADA } from '../tipos';
  * reintentos y repasos, para que el estudiante no repita la misma respuesta memorizada. Se agregan a su unidad por el
  * título (ver `conVariantes` en ../tipos.ts); la prueba de cursos exige que ninguna casilla quede con un solo ejercicio.
  */
-const prog = (cuerpo: string) => LEER_ENTRADA + cuerpo;
+// Solo los ejercicios que todavía recorren `lineas` (ciclos) llevan las dos líneas de lectura; el resto pide el dato con leerTexto() o leerNumero().
+const prog = (cuerpo: string) => (cuerpo.includes('lineas') ? LEER_ENTRADA + cuerpo : cuerpo);
 
 export const variantesFundamentos: Record<string, Ejercicio[]> = {
   'Algoritmos en la vida diaria': [
@@ -139,14 +140,14 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'Lee un **nombre** (primera línea) y una **ciudad** (segunda línea) y escribe:\n\n```\n<nombre> vive en <ciudad>.\n```\n\n**Ejemplo:** con `Ana` y `Montería` la salida es `Ana vive en Montería.`\n\nRevisa los espacios y el punto final.',
       dificultad: 'basico',
-      inicial: prog('const nombre = lineas[0];\nconst ciudad = lineas[1];\n\n// Escribe la frase con console.log\n'),
-      solucion: prog('const nombre = lineas[0];\nconst ciudad = lineas[1];\nconsole.log(nombre + " vive en " + ciudad + ".");\n'),
+      inicial: prog('const nombre = leerTexto();\nconst ciudad = leerTexto();\n\n// Escribe la frase con console.log\n'),
+      solucion: prog('const nombre = leerTexto();\nconst ciudad = leerTexto();\nconsole.log(nombre + " vive en " + ciudad + ".");\n'),
       casos: [
         { entrada: 'Ana\nMontería', salida: 'Ana vive en Montería.', publico: true },
         { entrada: 'Luis Pérez\nCereté', salida: 'Luis Pérez vive en Cereté.', publico: false },
         { entrada: 'Sofía\nSan Pelayo', salida: 'Sofía vive en San Pelayo.', publico: false },
       ],
-      errorComun: prog('const nombre = lineas[0];\nconst ciudad = lineas[1];\nconsole.log(nombre + "vive en" + ciudad);\n'),
+      errorComun: prog('const nombre = leerTexto();\nconst ciudad = leerTexto();\nconsole.log(nombre + "vive en" + ciudad);\n'),
     },
   ],
 
@@ -181,14 +182,14 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'Lee el **lado** de un cuadrado y escribe en dos líneas:\n\n1. El área (lado × lado).\n2. El perímetro (4 × lado).\n\n**Ejemplo:** con `3` la salida es:\n\n```\n9\n12\n```',
       dificultad: 'basico',
-      inicial: prog('const lado = Number(lineas[0]);\n\n// Calcula y escribe el área y el perímetro\n'),
-      solucion: prog('const lado = Number(lineas[0]);\nconsole.log(lado * lado);\nconsole.log(4 * lado);\n'),
+      inicial: prog('const lado = leerNumero();\n\n// Calcula y escribe el área y el perímetro\n'),
+      solucion: prog('const lado = leerNumero();\nconsole.log(lado * lado);\nconsole.log(4 * lado);\n'),
       casos: [
         { entrada: '3', salida: '9\n12', publico: true },
         { entrada: '5', salida: '25\n20', publico: false },
         { entrada: '2.5', salida: '6.25\n10', publico: false },
       ],
-      errorComun: prog('const lado = lineas[0];\nconsole.log(lado * lado);\nconsole.log(lado + lado + lado + lado);\n'),
+      errorComun: prog('const lado = leerTexto();\nconsole.log(lado * lado);\nconsole.log(lado + lado + lado + lado);\n'),
     },
     {
       tipo: 'coding',
@@ -196,9 +197,9 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'Lee una cantidad de **segundos** y escríbela en minutos y segundos con el formato `M min S s`.\n\n**Ejemplo:** con `125` la salida es `2 min 5 s`.\n\nPista: `Math.floor` y el operador `%`.',
       dificultad: 'intermedio',
-      inicial: prog('const segundos = Number(lineas[0]);\n\n// Calcula los minutos completos y los segundos que sobran\n'),
+      inicial: prog('const segundos = leerNumero();\n\n// Calcula los minutos completos y los segundos que sobran\n'),
       solucion: prog(
-        'const segundos = Number(lineas[0]);\nconst minutos = Math.floor(segundos / 60);\nconst resto = segundos % 60;\nconsole.log(minutos + " min " + resto + " s");\n',
+        'const segundos = leerNumero();\nconst minutos = Math.floor(segundos / 60);\nconst resto = segundos % 60;\nconsole.log(minutos + " min " + resto + " s");\n',
       ),
       casos: [
         { entrada: '125', salida: '2 min 5 s', publico: true },
@@ -207,7 +208,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
         { entrada: '3600', salida: '60 min 0 s', publico: false },
       ],
       errorComun: prog(
-        'const segundos = Number(lineas[0]);\nconst minutos = segundos / 60;\nconst resto = segundos % 60;\nconsole.log(minutos + " min " + resto + " s");\n',
+        'const segundos = leerNumero();\nconst minutos = segundos / 60;\nconst resto = segundos % 60;\nconsole.log(minutos + " min " + resto + " s");\n',
       ),
     },
   ],
@@ -381,14 +382,14 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'En el torneo interfacultades cada partido ganado da **3 puntos** y cada empate **1 punto**.\n\nLee los partidos ganados (primera línea) y los empatados (segunda línea) y escribe los puntos del equipo.\n\n**Ejemplo:** con `2` y `1` la salida es `7`.',
       dificultad: 'basico',
-      inicial: prog('const ganados = Number(lineas[0]);\nconst empatados = Number(lineas[1]);\n\n// Calcula y escribe los puntos\n'),
-      solucion: prog('const ganados = Number(lineas[0]);\nconst empatados = Number(lineas[1]);\nconsole.log(3 * ganados + empatados);\n'),
+      inicial: prog('const ganados = leerNumero();\nconst empatados = leerNumero();\n\n// Calcula y escribe los puntos\n'),
+      solucion: prog('const ganados = leerNumero();\nconst empatados = leerNumero();\nconsole.log(3 * ganados + empatados);\n'),
       casos: [
         { entrada: '2\n1', salida: '7', publico: true },
         { entrada: '0\n0', salida: '0', publico: false },
         { entrada: '5\n3', salida: '18', publico: false },
       ],
-      errorComun: prog('const ganados = lineas[0];\nconst empatados = lineas[1];\nconsole.log(3 * ganados + empatados);\n'),
+      errorComun: prog('const ganados = leerTexto();\nconst empatados = leerTexto();\nconsole.log(3 * ganados + empatados);\n'),
     },
   ],
 
@@ -410,7 +411,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado: 'Completa el programa para que escriba `positivo` si el número es mayor que cero, o `cero o negativo` en otro caso.',
       dificultad: 'basico',
       lenguaje: 'javascript',
-      plantilla: 'const n = Number(lineas[0]);\nif (n ___a___ 0) {\n  console.log("positivo");\n} ___b___ {\n  console.log("cero o negativo");\n}',
+      plantilla: 'const n = leerNumero();\nif (n ___a___ 0) {\n  console.log("positivo");\n} ___b___ {\n  console.log("cero o negativo");\n}',
       huecos: { a: '>', b: 'else' },
       errorComun: { a: '>=' },
     },
@@ -419,15 +420,15 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       titulo: '¿Mayor o menor de edad?',
       enunciado: 'Lee una edad y escribe `Mayor de edad` si es **18 o más**, o `Menor de edad` en otro caso.\n\n**Ejemplo:** con `18` la salida es `Mayor de edad`.',
       dificultad: 'basico',
-      inicial: prog('const edad = Number(lineas[0]);\n\n// Decide si es mayor de edad\n'),
-      solucion: prog('const edad = Number(lineas[0]);\nif (edad >= 18) {\n  console.log("Mayor de edad");\n} else {\n  console.log("Menor de edad");\n}\n'),
+      inicial: prog('const edad = leerNumero();\n\n// Decide si es mayor de edad\n'),
+      solucion: prog('const edad = leerNumero();\nif (edad >= 18) {\n  console.log("Mayor de edad");\n} else {\n  console.log("Menor de edad");\n}\n'),
       casos: [
         { entrada: '18', salida: 'Mayor de edad', publico: true },
         { entrada: '17', salida: 'Menor de edad', publico: true },
         { entrada: '30', salida: 'Mayor de edad', publico: false },
         { entrada: '0', salida: 'Menor de edad', publico: false },
       ],
-      errorComun: prog('const edad = Number(lineas[0]);\nif (edad > 18) {\n  console.log("Mayor de edad");\n} else {\n  console.log("Menor de edad");\n}\n'),
+      errorComun: prog('const edad = leerNumero();\nif (edad > 18) {\n  console.log("Mayor de edad");\n} else {\n  console.log("Menor de edad");\n}\n'),
     },
     {
       tipo: 'coding',
@@ -435,9 +436,9 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'Cada boleta de cine cuesta **$12000**. Los miércoles se paga **la mitad**.\n\nLee el número de boletas (primera línea) y `si` o `no` (segunda línea, ¿es miércoles?). Escribe el total a pagar.\n\n**Ejemplo:** con `2` y `si` la salida es `12000`.',
       dificultad: 'intermedio',
-      inicial: prog('const boletas = Number(lineas[0]);\nconst miercoles = lineas[1].trim();\n\n// Calcula el total, con o sin el descuento del miércoles\n'),
+      inicial: prog('const boletas = leerNumero();\nconst miercoles = leerTexto().trim();\n\n// Calcula el total, con o sin el descuento del miércoles\n'),
       solucion: prog(
-        'const boletas = Number(lineas[0]);\nconst miercoles = lineas[1].trim();\nlet total = boletas * 12000;\nif (miercoles === "si") {\n  total = total / 2;\n}\nconsole.log(total);\n',
+        'const boletas = leerNumero();\nconst miercoles = leerTexto().trim();\nlet total = boletas * 12000;\nif (miercoles === "si") {\n  total = total / 2;\n}\nconsole.log(total);\n',
       ),
       casos: [
         { entrada: '2\nsi', salida: '12000', publico: true },
@@ -445,7 +446,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
         { entrada: '3\nsi', salida: '18000', publico: false },
         { entrada: '1\nno', salida: '12000', publico: false },
       ],
-      errorComun: prog('const boletas = Number(lineas[0]);\nlet total = boletas * 12000;\ntotal = total / 2;\nconsole.log(total);\n'),
+      errorComun: prog('const boletas = leerNumero();\nlet total = boletas * 12000;\ntotal = total / 2;\nconsole.log(total);\n'),
     },
   ],
 
@@ -476,9 +477,9 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'Lee una edad y escribe la tarifa del bus: `Gratis` (menos de 5 años), `Estudiante` (5 a 17), `Completa` (18 a 59) o `Adulto mayor` (60 o más).\n\n**Ejemplo:** con `30` la salida es `Completa`.',
       dificultad: 'intermedio',
-      inicial: prog('const edad = Number(lineas[0]);\n\n// Escribe la tarifa\n'),
+      inicial: prog('const edad = leerNumero();\n\n// Escribe la tarifa\n'),
       solucion: prog(
-        'const edad = Number(lineas[0]);\nif (edad < 5) {\n  console.log("Gratis");\n} else if (edad < 18) {\n  console.log("Estudiante");\n} else if (edad < 60) {\n  console.log("Completa");\n} else {\n  console.log("Adulto mayor");\n}\n',
+        'const edad = leerNumero();\nif (edad < 5) {\n  console.log("Gratis");\n} else if (edad < 18) {\n  console.log("Estudiante");\n} else if (edad < 60) {\n  console.log("Completa");\n} else {\n  console.log("Adulto mayor");\n}\n',
       ),
       casos: [
         { entrada: '30', salida: 'Completa', publico: true },
@@ -489,7 +490,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
         { entrada: '60', salida: 'Adulto mayor', publico: false },
       ],
       errorComun: prog(
-        'const edad = Number(lineas[0]);\nif (edad < 5) {\n  console.log("Gratis");\n} else if (edad >= 5) {\n  console.log("Estudiante");\n} else if (edad >= 18) {\n  console.log("Completa");\n} else {\n  console.log("Adulto mayor");\n}\n',
+        'const edad = leerNumero();\nif (edad < 5) {\n  console.log("Gratis");\n} else if (edad >= 5) {\n  console.log("Estudiante");\n} else if (edad >= 18) {\n  console.log("Completa");\n} else {\n  console.log("Adulto mayor");\n}\n',
       ),
     },
     {
@@ -498,9 +499,9 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'Lee las longitudes de tres lados (una por línea).\n\n- Si con ellos **no** se puede formar un triángulo (la suma de dos lados cualesquiera debe ser **mayor** que el tercero), escribe `no es triángulo`.\n- Si se puede, escribe `equilátero` (tres lados iguales), `isósceles` (exactamente dos iguales) o `escaleno` (ninguno igual).\n\n**Ejemplos:** `3 3 3` es equilátero; `3 4 5` es escaleno; `1 2 3` no es triángulo.',
       dificultad: 'avanzado',
-      inicial: prog('const a = Number(lineas[0]);\nconst b = Number(lineas[1]);\nconst c = Number(lineas[2]);\n\n// Primero revisa si es un triángulo; luego clasifícalo\n'),
+      inicial: prog('const a = leerNumero();\nconst b = leerNumero();\nconst c = leerNumero();\n\n// Primero revisa si es un triángulo; luego clasifícalo\n'),
       solucion: prog(
-        'const a = Number(lineas[0]);\nconst b = Number(lineas[1]);\nconst c = Number(lineas[2]);\nif (a + b <= c || a + c <= b || b + c <= a) {\n  console.log("no es triángulo");\n} else if (a === b && b === c) {\n  console.log("equilátero");\n} else if (a === b || b === c || a === c) {\n  console.log("isósceles");\n} else {\n  console.log("escaleno");\n}\n',
+        'const a = leerNumero();\nconst b = leerNumero();\nconst c = leerNumero();\nif (a + b <= c || a + c <= b || b + c <= a) {\n  console.log("no es triángulo");\n} else if (a === b && b === c) {\n  console.log("equilátero");\n} else if (a === b || b === c || a === c) {\n  console.log("isósceles");\n} else {\n  console.log("escaleno");\n}\n',
       ),
       casos: [
         { entrada: '3\n3\n3', salida: 'equilátero', publico: true },
@@ -511,7 +512,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
         { entrada: '2\n10\n3', salida: 'no es triángulo', publico: false },
       ],
       errorComun: prog(
-        'const a = Number(lineas[0]);\nconst b = Number(lineas[1]);\nconst c = Number(lineas[2]);\nif (a === b && b === c) {\n  console.log("equilátero");\n} else if (a === b || b === c || a === c) {\n  console.log("isósceles");\n} else {\n  console.log("escaleno");\n}\n',
+        'const a = leerNumero();\nconst b = leerNumero();\nconst c = leerNumero();\nif (a === b && b === c) {\n  console.log("equilátero");\n} else if (a === b || b === c || a === c) {\n  console.log("isósceles");\n} else {\n  console.log("escaleno");\n}\n',
       ),
     },
   ],
@@ -574,15 +575,15 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       titulo: 'Suma de los pares hasta n',
       enunciado: 'Lee un número **n** y escribe la suma de los números **pares** entre 1 y n (incluido n si es par).\n\n**Ejemplo:** con `10` la salida es `30` (2 + 4 + 6 + 8 + 10).',
       dificultad: 'basico',
-      inicial: prog('const n = Number(lineas[0]);\n\n// Usa un acumulador\n'),
-      solucion: prog('const n = Number(lineas[0]);\nlet suma = 0;\nfor (let i = 1; i <= n; i++) {\n  if (i % 2 === 0) {\n    suma = suma + i;\n  }\n}\nconsole.log(suma);\n'),
+      inicial: prog('const n = leerNumero();\n\n// Usa un acumulador\n'),
+      solucion: prog('const n = leerNumero();\nlet suma = 0;\nfor (let i = 1; i <= n; i++) {\n  if (i % 2 === 0) {\n    suma = suma + i;\n  }\n}\nconsole.log(suma);\n'),
       casos: [
         { entrada: '10', salida: '30', publico: true },
         { entrada: '1', salida: '0', publico: false },
         { entrada: '7', salida: '12', publico: false },
         { entrada: '0', salida: '0', publico: false },
       ],
-      errorComun: prog('const n = Number(lineas[0]);\nlet suma = 0;\nfor (let i = 1; i < n; i++) {\n  if (i % 2 === 0) {\n    suma = suma + i;\n  }\n}\nconsole.log(suma);\n'),
+      errorComun: prog('const n = leerNumero();\nlet suma = 0;\nfor (let i = 1; i < n; i++) {\n  if (i % 2 === 0) {\n    suma = suma + i;\n  }\n}\nconsole.log(suma);\n'),
     },
     {
       tipo: 'coding',
@@ -590,7 +591,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'La primera línea trae **n**, el número de ventas de una tienda. Luego vienen n valores, uno por línea.\n\nEscribe dos líneas:\n\n```\nTotal: T\nVentas mayores a 50000: K\n```\n\ndonde T es la suma de todas las ventas y K cuántas fueron **mayores** que 50000.\n\n**Ejemplo:** con `4`, `20000`, `60000`, `50000`, `75000` la salida es `Total: 205000` y `Ventas mayores a 50000: 2`.',
       dificultad: 'intermedio',
-      inicial: prog('const n = Number(lineas[0]);\n\n// Un acumulador para el total y un contador para las ventas grandes\n'),
+      inicial: prog('const n = leerNumero();\n\n// Un acumulador para el total y un contador para las ventas grandes\n'),
       solucion: prog(
         'const n = Number(lineas[0]);\nlet total = 0;\nlet grandes = 0;\nfor (let i = 1; i <= n; i++) {\n  const venta = Number(lineas[i]);\n  total = total + venta;\n  if (venta > 50000) {\n    grandes++;\n  }\n}\nconsole.log("Total: " + total);\nconsole.log("Ventas mayores a 50000: " + grandes);\n',
       ),
@@ -794,9 +795,9 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'La primera línea trae la **clave** del cuestionario y la segunda las **respuestas** del estudiante, separadas por espacios. Un guion `-` significa que dejó la pregunta **en blanco**.\n\nEscribe tres líneas:\n\n```\nCorrectas: X\nIncorrectas: Y\nEn blanco: Z\n```\n\nUna respuesta en blanco **no** cuenta como incorrecta.\n\n**Ejemplo:** con `a b c d` y `a - c b` la salida es `Correctas: 2`, `Incorrectas: 1` y `En blanco: 1`.',
       dificultad: 'intermedio',
-      inicial: prog('const clave = lineas[0].trim().split(" ");\nconst respuestas = lineas[1].trim().split(" ");\n\n// Cuenta correctas, incorrectas y en blanco\n'),
+      inicial: prog('const clave = leerTexto().trim().split(" ");\nconst respuestas = leerTexto().trim().split(" ");\n\n// Cuenta correctas, incorrectas y en blanco\n'),
       solucion: prog(
-        'const clave = lineas[0].trim().split(" ");\nconst respuestas = lineas[1].trim().split(" ");\nlet correctas = 0;\nlet incorrectas = 0;\nlet enBlanco = 0;\nfor (let i = 0; i < clave.length; i++) {\n  if (respuestas[i] === "-") {\n    enBlanco++;\n  } else if (respuestas[i] === clave[i]) {\n    correctas++;\n  } else {\n    incorrectas++;\n  }\n}\nconsole.log("Correctas: " + correctas);\nconsole.log("Incorrectas: " + incorrectas);\nconsole.log("En blanco: " + enBlanco);\n',
+        'const clave = leerTexto().trim().split(" ");\nconst respuestas = leerTexto().trim().split(" ");\nlet correctas = 0;\nlet incorrectas = 0;\nlet enBlanco = 0;\nfor (let i = 0; i < clave.length; i++) {\n  if (respuestas[i] === "-") {\n    enBlanco++;\n  } else if (respuestas[i] === clave[i]) {\n    correctas++;\n  } else {\n    incorrectas++;\n  }\n}\nconsole.log("Correctas: " + correctas);\nconsole.log("Incorrectas: " + incorrectas);\nconsole.log("En blanco: " + enBlanco);\n',
       ),
       casos: [
         { entrada: 'a b c d\na - c b', salida: 'Correctas: 2\nIncorrectas: 1\nEn blanco: 1', publico: true },
@@ -804,7 +805,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
         { entrada: 'd d\nd d', salida: 'Correctas: 2\nIncorrectas: 0\nEn blanco: 0', publico: false },
       ],
       errorComun: prog(
-        'const clave = lineas[0].trim().split(" ");\nconst respuestas = lineas[1].trim().split(" ");\nlet correctas = 0;\nlet incorrectas = 0;\nlet enBlanco = 0;\nfor (let i = 0; i < clave.length; i++) {\n  if (respuestas[i] === clave[i]) {\n    correctas++;\n  } else {\n    incorrectas++;\n  }\n}\nconsole.log("Correctas: " + correctas);\nconsole.log("Incorrectas: " + incorrectas);\nconsole.log("En blanco: " + enBlanco);\n',
+        'const clave = leerTexto().trim().split(" ");\nconst respuestas = leerTexto().trim().split(" ");\nlet correctas = 0;\nlet incorrectas = 0;\nlet enBlanco = 0;\nfor (let i = 0; i < clave.length; i++) {\n  if (respuestas[i] === clave[i]) {\n    correctas++;\n  } else {\n    incorrectas++;\n  }\n}\nconsole.log("Correctas: " + correctas);\nconsole.log("Incorrectas: " + incorrectas);\nconsole.log("En blanco: " + enBlanco);\n',
       ),
     },
     {
@@ -813,9 +814,9 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
       enunciado:
         'Con la clave (primera línea) y las respuestas (segunda línea), escribe **una sola línea** con los números de las preguntas falladas, separados por coma y espacio:\n\n```\nFalladas: 2, 4\n```\n\nLas preguntas se numeran desde **1**. Si no falló ninguna, escribe `Falladas: ninguna`.\n\n**Ejemplo:** con `b a c d` y `b c c a` la salida es `Falladas: 2, 4`.',
       dificultad: 'avanzado',
-      inicial: prog('const clave = lineas[0].trim().split(" ");\nconst respuestas = lineas[1].trim().split(" ");\n\n// Junta los números de las preguntas falladas\n'),
+      inicial: prog('const clave = leerTexto().trim().split(" ");\nconst respuestas = leerTexto().trim().split(" ");\n\n// Junta los números de las preguntas falladas\n'),
       solucion: prog(
-        'const clave = lineas[0].trim().split(" ");\nconst respuestas = lineas[1].trim().split(" ");\nconst falladas = [];\nfor (let i = 0; i < clave.length; i++) {\n  if (respuestas[i] !== clave[i]) {\n    falladas.push(i + 1);\n  }\n}\nif (falladas.length === 0) {\n  console.log("Falladas: ninguna");\n} else {\n  console.log("Falladas: " + falladas.join(", "));\n}\n',
+        'const clave = leerTexto().trim().split(" ");\nconst respuestas = leerTexto().trim().split(" ");\nconst falladas = [];\nfor (let i = 0; i < clave.length; i++) {\n  if (respuestas[i] !== clave[i]) {\n    falladas.push(i + 1);\n  }\n}\nif (falladas.length === 0) {\n  console.log("Falladas: ninguna");\n} else {\n  console.log("Falladas: " + falladas.join(", "));\n}\n',
       ),
       casos: [
         { entrada: 'b a c d\nb c c a', salida: 'Falladas: 2, 4', publico: true },
@@ -823,7 +824,7 @@ export const variantesFundamentos: Record<string, Ejercicio[]> = {
         { entrada: 'c\na', salida: 'Falladas: 1', publico: false },
       ],
       errorComun: prog(
-        'const clave = lineas[0].trim().split(" ");\nconst respuestas = lineas[1].trim().split(" ");\nconst falladas = [];\nfor (let i = 0; i < clave.length; i++) {\n  if (respuestas[i] !== clave[i]) {\n    falladas.push(i);\n  }\n}\nif (falladas.length === 0) {\n  console.log("Falladas: ninguna");\n} else {\n  console.log("Falladas: " + falladas.join(", "));\n}\n',
+        'const clave = leerTexto().trim().split(" ");\nconst respuestas = leerTexto().trim().split(" ");\nconst falladas = [];\nfor (let i = 0; i < clave.length; i++) {\n  if (respuestas[i] !== clave[i]) {\n    falladas.push(i);\n  }\n}\nif (falladas.length === 0) {\n  console.log("Falladas: ninguna");\n} else {\n  console.log("Falladas: " + falladas.join(", "));\n}\n',
       ),
     },
   ],

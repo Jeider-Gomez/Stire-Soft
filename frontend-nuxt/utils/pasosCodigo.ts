@@ -58,6 +58,14 @@ export function pasosCodigo(e: {
         ? `const a = Number(lineas[0]); // a vale ${entra[0]}, la ${ORDINAL[0]} línea`
         : `const dato = lineas[0]; // dato vale "${entra[0] ?? ''}"`,
     })
+  } else if (/\bleer(Texto|Numero)\s*\(/.test(e.codigo)) {
+    // 31/10 (Jeider, «Saludo personalizado»: «un arreglo que no sé ni qué es»): los ejercicios pedían el dato con `lineas[0]`; ahora se pide con leerTexto() o leerNumero().
+    pasos.push({
+      titulo: 'Lo que recibe tu programa',
+      detalle: `Para pedir un dato usas \`leerTexto()\` (un texto) o \`leerNumero()\` (un número). La primera vez te da la primera línea que entra; la segunda vez, la siguiente.${numeros ? ' Aquí todo son números: usa `leerNumero()`.' : ''}`,
+      datos: entra.slice(0, 5).map((v, i) => ({ posicion: `${i + 1}.ª vez`, valor: v })),
+      codigo: numeros ? `const a = leerNumero(); // a vale ${entra[0]}` : `const dato = leerTexto(); // dato vale "${entra[0] ?? ''}"`,
+    })
   } else if (/\binput\b/.test(e.codigo)) {
     pasos.push({ titulo: 'Lo que recibe tu programa', detalle: '`input` tiene todo lo que entra, como texto. Si son varias líneas, sepáralas con `input.split(\'\\n\')`.' })
   }

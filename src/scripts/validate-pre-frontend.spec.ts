@@ -241,7 +241,7 @@ describe('VALIDACIÓN INTEGRAL PRE-FRONTEND — STIRE', () => {
       expect(prompt3).toContain('nivel AVANZADO');
       // 03/10/2026: es un curso de introducción. Al avanzado se le propone un reto, en lenguaje sencillo; ya no se le pide
       // al modelo hablar de Big O (en la prueba real respondía con jerga a un ejercicio básico).
-      expect(prompt3).toContain('proponerle un reto extra');
+      expect(prompt3).toContain('proponer un reto extra');
       expect(prompt3).not.toContain('Big O Notation');
     });
 

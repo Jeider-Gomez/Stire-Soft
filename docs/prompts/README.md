@@ -61,6 +61,7 @@ ejercicio de programar), con datos de ejemplo. Las genera la prueba `src/tutor/t
 | v8 · 2026-10-31 | La pantalla **manda sobre el historial** del chat; el estado de los huecos va también en el mensaje del estudiante (`tutor-huecos.ts`). | Con el hueco vacío dijo «tienes `const`, es correcto» por lo que se había dicho antes en el chat: una regla del prompt no bastó, un dato en el mensaje sí. |
 | v9 · 2026-10-31 | Se acortan las reglas más largas (explicar un concepto, lenguaje sencillo, datos internos, sugerencia, recurso que no carga): **−15 %** de tokens, sin cambiar lo que piden. | Jeider: «cada palabra más afecta; queremos prompts precisos y eficientes». |
 | v10 · 2026-10-31 | En ejercicios de programar, el Tutor sabe dónde se ve el resultado de «Probar código» (pestaña «Casos de prueba») y, si el estudiante no sabe mostrar algo en pantalla, le explica `console.log` antes de seguir corrigiendo. | Jeider en «Saludo personalizado»: no sabía que hacía falta `console.log`, ni dónde se mostraba el resultado, y el Tutor solo le fue corrigiendo línea por línea durante diez mensajes. |
+| v11 · 2026-10-31 | La señal «leer la entrada» le dice al Tutor que `leerTexto()` y `leerNumero()` dan la siguiente línea cada vez que se llaman (con `lineas`, la posición). | Los ejercicios básicos ya no traen `lineas` (juez con funciones de lectura listas): el Tutor no debe mandar al estudiante a `lineas[0]`. |
 
 ## Lo que sigue (P41)
 
