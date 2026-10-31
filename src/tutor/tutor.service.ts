@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TutorConversationsRepository } from './tutor-conversations.repository';
-import { TutorContextService } from './tutor-context.service';
+import { TutorContextService, VERSION_PROMPT_TUTOR } from './tutor-context.service';
 import { TutorCredentialService } from './tutor-credential.service';
 import { ContentRenderingService } from '../content-rendering/content-rendering.service';
 import { TutorRecommendationService, SuggestedActivity, DueReviewsSummary } from './tutor-recommendation.service';
@@ -489,7 +489,7 @@ export class TutorService {
           .trim();
         if (text || vacioEsRespuesta) {
           // Cuánto tarda cada respuesta (10/10, «el tutor se demora»): para medir antes de cambiar el modelo o el pensamiento.
-          this.logger.log(`Tutor: ${model} respondió en ${Date.now() - inicio} ms.`);
+          this.logger.log(`Tutor: ${model} respondió en ${Date.now() - inicio} ms (prompt ${VERSION_PROMPT_TUTOR}).`);
           ordenDeModelos.respondio(model);
           return text;
         }
@@ -596,7 +596,7 @@ export class TutorService {
       }
       clearTimeout(reloj);
       if (texto.trim()) {
-        this.logger.log(`Tutor en vivo: ${model} respondió en ${Date.now() - inicio} ms (primer trozo a los ${primerTrozoMs} ms).`);
+        this.logger.log(`Tutor en vivo: ${model} respondió en ${Date.now() - inicio} ms (primer trozo a los ${primerTrozoMs} ms; prompt ${VERSION_PROMPT_TUTOR}).`);
         ordenDeModelos.respondio(model);
         return texto.trim();
       }

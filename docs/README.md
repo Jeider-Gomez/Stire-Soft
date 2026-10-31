@@ -11,6 +11,7 @@ tabla de abajo.
 | Leer el **artículo científico** de STIRE y lo que le falta | [`curso-ddse3/articulo/`](curso-ddse3/articulo/PENDIENTES.md) |
 | Ver la **semana en curso** | [`../MONITOREO_SEMANAL.md`](../MONITOREO_SEMANAL.md) |
 | **El plan vigente (27/10):** pausa, auditoría, rediseño y evaluación humana antes de la v3.0.0 | [`PLAN_REMODELACION.md`](PLAN_REMODELACION.md) |
+| **Los prompts del Tutor:** cómo se arman (son dinámicos), qué versión es la vigente y por qué cambió cada vez | [`prompts/README.md`](prompts/README.md) |
 | Lo que falta, **numerado** (P01, P02…) | [`PENDIENTES.md`](PENDIENTES.md) |
 | Qué hace cada pantalla y qué choca (base del rediseño) | [`INVENTARIO_STIRE.md`](INVENTARIO_STIRE.md) |
 | Saber qué está hecho y qué falta en todo el proyecto | [`PLAN_MAESTRO.md`](PLAN_MAESTRO.md) |

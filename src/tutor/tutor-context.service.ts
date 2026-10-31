@@ -28,6 +28,13 @@ export function nivelDelEstudiante(
   return { nivel, dominio };
 }
 
+/**
+ * La versión del prompt del Tutor. Se sube con cada cambio de lo que dice el prompt y se anota en docs/prompts/README.md
+ * (con el porqué); el servidor la escribe en su registro junto al tiempo de cada respuesta, para saber qué versión contestó.
+ * La prueba tutor-prompt-registro.spec.ts obliga a que los dos coincidan y a que las instantáneas estén al día.
+ */
+export const VERSION_PROMPT_TUTOR = 'v9 · 2026-10-31';
+
 const MAX_DATO_PRUEBA = 300;
 const textoDe = (v: unknown) => (typeof v === 'string' ? v.slice(0, MAX_DATO_PRUEBA) : null);
 
