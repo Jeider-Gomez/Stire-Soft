@@ -11,7 +11,7 @@
       'border-base-borde-sutil bg-base-bg-secundario/40': tc.passed === undefined
     }">
     <div class="flex items-center justify-between font-bold text-xs">
-      <span>Caso #{{ tc.id }}</span>
+      <span>{{ tc.nombre || `Caso #${tc.id}` }}</span>
       <span v-if="tc.passed === true" class="text-semantico-pasa flex items-center gap-1">
         <Check :size="16" aria-hidden="true" />
         <span>Superado</span>

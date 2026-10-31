@@ -5,6 +5,8 @@
 
 export interface CasoDeSalida {
   id: number
+  /** Qué comprueba el caso; se muestra en el panel «Salida». */
+  nombre?: string
   input: string
   expectedOutput: string
   actualOutput?: string

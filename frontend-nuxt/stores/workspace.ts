@@ -271,6 +271,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           publicTestCases.value = rawCases.map((tc: any, index: number) => ({
             id: index + 1,
             input: tc.input || tc.label || `Caso #${index + 1}`,
+            nombre: typeof tc.label === 'string' && tc.label ? tc.label : undefined,
             expectedOutput: String(tc.expected !== undefined ? tc.expected : tc.expectedOutput || ''),
             actualOutput: '',
             isPublic: true,
@@ -374,8 +375,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       if (res && Array.isArray(res.results)) {
         // La entrada se conserva: el servidor no la devuelve y en su lugar quedaba el título («Ejemplo 1»).
         const entradas = publicTestCases.value.map((tc) => tc.input)
+        const nombres = publicTestCases.value.map((tc) => tc.nombre)
         publicTestCases.value = res.results.map((r, index) => ({
           id: index + 1,
+          nombre: (r.label && r.label !== 'Caso público' ? r.label : undefined) ?? nombres[index],
           input: r.input || entradas[index] || r.label || `Caso #${index + 1}`,
           expectedOutput: r.expected || r.expectedOutput || '',
           actualOutput: r.actualOutput !== undefined ? String(r.actualOutput) : '',

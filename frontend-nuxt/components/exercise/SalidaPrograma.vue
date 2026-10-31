@@ -39,6 +39,7 @@
             <X :size="13" class="inline mr-1" aria-hidden="true" />
             {{ resumen.coinciden }} de {{ resumen.total }} {{ resumen.total === 1 ? 'ejemplo coincide' : 'ejemplos coinciden' }}. {{ siguientePaso(resumen) }}
           </p>
+          <p v-if="resumen.caso.nombre" class="font-sans font-semibold text-white">{{ resumen.caso.nombre }}</p>
           <dl class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-codigo">
             <div>
               <dt class="text-[10px] text-editor-muted font-sans">Entró</dt>

@@ -109,6 +109,8 @@ export interface StudentAnalytics {
 
 export interface TestCase {
   id: number
+  /** Qué comprueba el caso («Saludo con un nombre compuesto»); sin él se dice «Caso n». */
+  nombre?: string
   input: string
   expectedOutput: string
   actualOutput?: string

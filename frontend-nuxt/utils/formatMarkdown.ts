@@ -38,6 +38,12 @@ function renderTables(text: string): string {
   return out.join('\n')
 }
 
+/** El nombre con que se rotula un bloque de código según su lenguaje (```js, ```html…). Un bloque sin lenguaje (una salida de ejemplo) no lleva etiqueta. */
+export const ETIQUETAS_DE_LENGUAJE: Record<string, string> = {
+  js: 'JavaScript', javascript: 'JavaScript', html: 'HTML', css: 'CSS', ts: 'TypeScript', typescript: 'TypeScript',
+  json: 'JSON', python: 'Python', py: 'Python', sql: 'SQL', bash: 'Terminal', sh: 'Terminal', shell: 'Terminal',
+}
+
 /**
  * Formateador ligero de lecciones y enunciados Markdown en STIRE.
  * Única fuente de verdad compartida entre lecciones, ejercicios y previsualizaciones.
@@ -50,9 +56,13 @@ export function formatMarkdown(raw: string, options: { escapeHtml?: boolean } = 
   const codeBlocks: string[] = []
 
   // 1. Bloques de código preformateado (```)
-  let withoutCode = raw.replace(/```[\w-]*\n?([\s\S]*?)```/g, (_m, code: string) => {
+  let withoutCode = raw.replace(/```([\w-]*)\n?([\s\S]*?)```/g, (_m, lang: string, code: string) => {
+    // P55 (Jeider, viendo MDN: «me gusta que las cajitas indican el lenguaje»): la etiqueta es un <span> dentro del bloque, porque el saneado
+    // del navegador y el del servidor solo dejan pasar ciertas etiquetas y atributos (utils/sanitizeRenderedHtml.ts). La lectura en voz alta lee solo el <code>.
+    const etiqueta = ETIQUETAS_DE_LENGUAJE[lang.toLowerCase()]
+    const rotulo = etiqueta ? `<span class="absolute top-1.5 right-2.5 text-[10px] font-semibold tracking-wide text-base-texto-secundario select-none">${etiqueta}</span>` : ''
     codeBlocks.push(
-      `<pre class="bg-base-bg-secundario border border-base-borde-sutil rounded-md p-3 my-2 overflow-x-auto"><code class="font-codigo text-[11px] text-base-texto-primario">${escapeHtml(code.replace(/\n$/, ''))}</code></pre>`
+      `<pre class="bg-base-bg-secundario border border-base-borde-sutil rounded-md p-3 my-2 overflow-x-auto${etiqueta ? ' relative pt-6' : ''}">${rotulo}<code class="font-codigo text-[11px] text-base-texto-primario">${escapeHtml(code.replace(/\n$/, ''))}</code></pre>`
     )
     return `\u0000${codeBlocks.length - 1}\u0000`
   })

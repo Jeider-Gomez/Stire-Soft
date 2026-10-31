@@ -182,7 +182,7 @@ function lecturasDeTabla(tabla: Element): Lectura[] {
 
 /** Un bloque de código o pseudocódigo: corto, línea por línea (con `textoParaVoz` al decirlo); largo, se anuncia. */
 function lecturasDeCodigo(pre: Element): Lectura[] {
-  const lineas = (pre.textContent ?? '').split('\n').map((l) => l.trim()).filter(Boolean)
+  const lineas = (pre.querySelector('code')?.textContent ?? pre.textContent ?? '').split('\n').map((l) => l.trim()).filter(Boolean)
   if (!lineas.length) return []
   if (lineas.length > MAX_LINEAS_CODIGO) return [{ el: pre, frase: una(`Hay un fragmento de código de ${lineas.length} líneas en la pantalla.`)[0] }]
   return [{ el: pre, frase: una('Código:')[0] }, ...lineas.map((l) => ({ el: pre, frase: una(l)[0] }))]
