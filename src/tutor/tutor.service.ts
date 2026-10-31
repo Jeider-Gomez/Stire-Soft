@@ -45,6 +45,7 @@ const GREETING_PREFIXES = ['Oye,', 'Mira,', 'Antes de seguir,', 'Una cosa,'];
 // El saludo según la hora vive en tutor-saludo.ts: también lo usa el prompt (tutor-context.service.ts).
 import { saludoSegunHora, esSaludo } from './tutor-saludo';
 import { modelosCandidatos, OrdenDeModelos } from './orden-modelos';
+import { notaDeHuecos } from './tutor-huecos';
 import { cuerpoTranscripcion, esWav, limpiarTranscripcion, MAX_BYTES_AUDIO } from './tutor-voz';
 export { saludoSegunHora, esSaludo };
 
@@ -166,7 +167,7 @@ export class TutorService {
 
   async sendMessage(user: User, message: string, context?: any): Promise<TutorReply> {
     const p = await this.prepararMensaje(user, message, context);
-    const rawReply = await this.callGemini(p.apiKey, p.systemPrompt, p.history, message);
+    const rawReply = await this.callGemini(p.apiKey, p.systemPrompt, p.history, message + notaDeHuecos(context));
     return this.cerrarMensaje(user.id, message, context, p, rawReply);
   }
 
@@ -178,7 +179,7 @@ export class TutorService {
   async sendMessageEnVivo(user: User, message: string, context: any, alEscribir: (texto: string) => void): Promise<TutorReply> {
     const p = await this.prepararMensaje(user, message, context);
     const filtro = p.conBarrera ? crearFiltroEnVivo(this.opcionesDeBarrera(context, message)) : null;
-    const rawReply = await this.pedirAGeminiEnVivo(p.apiKey, this.cuerpoDelChat(p.systemPrompt, p.history, message), (trozo) => {
+    const rawReply = await this.pedirAGeminiEnVivo(p.apiKey, this.cuerpoDelChat(p.systemPrompt, p.history, message + notaDeHuecos(context)), (trozo) => {
       const visible = filtro ? filtro.agregar(trozo) : trozo;
       if (visible) alEscribir(visible);
     });

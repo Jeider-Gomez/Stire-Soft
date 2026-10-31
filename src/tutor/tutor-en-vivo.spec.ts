@@ -128,6 +128,18 @@ describe('TutorService.sendMessageEnVivo', () => {
     expect(convRepo.save).toHaveBeenNthCalledWith(2, { studentId: 1, role: 'assistant', content: '¿Qué valor tiene i al empezar?' });
   });
 
+  it('en un ejercicio de completar, el mensaje a Gemini lleva el estado de los huecos y lo guardado es el mensaje original', async () => {
+    fetchMock.mockResolvedValue(geminiEnVivo(['Todavía no veo nada ahí.']));
+    const contexto = { activityId: 20, learningUnitId: 7, tipoEjercicio: 'completar', currentCode: '___a___ nombre = "Luisa";' };
+
+    await service.sendMessageEnVivo(STUDENT, '¿está bien el primer hueco?', contexto, () => undefined);
+
+    const enviado = JSON.parse(fetchMock.mock.calls[0][1].body).contents.at(-1).parts[0].text;
+    expect(enviado).toContain('¿está bien el primer hueco?');
+    expect(enviado).toContain('huecos vacíos: a');
+    expect(convRepo.save).toHaveBeenNthCalledWith(1, { studentId: 1, role: 'user', content: '¿está bien el primer hueco?' });
+  });
+
   it('en un ejercicio, la solución no se ve mientras llega ni se guarda', async () => {
     fetchMock.mockResolvedValue(geminiEnVivo(['Prueba esto:\n```javascript\n', PROGRAMA.slice(0, 40), PROGRAMA.slice(40) + '\n```\n¿Te sirve?']));
     const trozos: string[] = [];
