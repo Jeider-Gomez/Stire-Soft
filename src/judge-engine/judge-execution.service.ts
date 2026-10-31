@@ -21,6 +21,22 @@ import type { JudgeJobData } from './judge-queue.interface';
 // el resto del sistema event-driven (submission.graded) y cierra el hallazgo
 // de arquitectura de la auditoria: "judge.worker.ts inyecta directamente
 // SubmissionsService en vez de emitir un evento".
+/** El resultado de una entrega de código, en palabras: cuántos casos pasaron, cuánto vale eso y cuáles fueron, sin datos de los casos. */
+export function feedbackDeCasos(
+  detalle: Array<{ nombre: string; paso: boolean }>,
+  puntos: number,
+  maxPuntos: number | undefined,
+  estado: string,
+): string {
+  const pasaron = detalle.filter((d) => d.paso).length;
+  const puntaje = maxPuntos ? ` (${puntos} de ${maxPuntos} puntos)` : '';
+  const marcas = detalle.map((d) => `${d.paso ? '✓' : '✗'} ${d.nombre}`).join(' · ');
+  const error = estado === 'runtime_error' || estado === 'compile_error' || estado === 'time_limit'
+    ? ' En algún caso tu programa se detuvo con un error o tardó demasiado.'
+    : '';
+  return `Pasaron ${pasaron} de ${detalle.length} casos${puntaje}. ${marcas}.${error}`;
+}
+
 @Injectable()
 export class JudgeExecutionService {
   private readonly logger = new Logger(JudgeExecutionService.name);
@@ -38,6 +54,8 @@ export class JudgeExecutionService {
     let totalWeight = 0;
     let allAccepted = true;
     let statusSummary = 'accepted';
+    // Qué pasó con cada caso, solo con su nombre (nunca la entrada ni la salida: los ocultos no se revelan).
+    const detalle: Array<{ nombre: string; paso: boolean }> = [];
 
     for (const testCase of testCases) {
       this.logger.log(`Procesando Test Case ${testCase.label || 'Oculto'}`);
@@ -56,6 +74,7 @@ export class JudgeExecutionService {
 
       const weight = testCase.weight || 10;
       totalWeight += weight;
+      detalle.push({ nombre: testCase.label || 'Caso oculto', paso: runResult.status === 'accepted' });
       if (runResult.status === 'accepted') {
         passedWeight += weight;
       } else {
@@ -70,9 +89,9 @@ export class JudgeExecutionService {
     const totalScore =
       maxPoints && totalWeight > 0 ? Math.round((passedWeight / totalWeight) * maxPoints) : passedWeight;
 
-    const feedback = allAccepted
-      ? '¡Excelente! Todos los casos pasaron.'
-      : `Falló la evaluación: ${statusSummary}.`;
+    // 31/10 (Jeider, viendo freeCodeCamp: «la pista me va diciendo qué me falta»; «no un rotundo cero si te equivocas»): se dice
+    // cuántos casos pasaron, cuántos puntos valen y cuáles, por su nombre.
+    const feedback = allAccepted ? '¡Excelente! Todos los casos pasaron.' : feedbackDeCasos(detalle, totalScore, maxPoints, statusSummary);
 
     // emitAsync (no emit): esperamos a que el listener persista la nota
     // antes de dar por terminado el job. Con emit() un fallo del listener

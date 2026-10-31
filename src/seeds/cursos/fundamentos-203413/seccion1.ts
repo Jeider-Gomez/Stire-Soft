@@ -386,9 +386,9 @@ Cuida los espacios y los puntos: lo que muestres debe ser exactamente igual.`,
 console.log("Hola, " + nombre + ". Bienvenido a Algoritmia.");
 `,
               casos: [
-                { entrada: 'Ana', salida: 'Hola, Ana. Bienvenido a Algoritmia.', publico: true },
-                { entrada: 'Juan Carlos', salida: 'Hola, Juan Carlos. Bienvenido a Algoritmia.', publico: false },
-                { entrada: 'María José', salida: 'Hola, María José. Bienvenido a Algoritmia.', publico: false },
+                { nombre: 'Saludo con un nombre simple', entrada: 'Ana', salida: 'Hola, Ana. Bienvenido a Algoritmia.', publico: true },
+                { nombre: 'Saludo con un nombre de dos palabras', entrada: 'Juan Carlos', salida: 'Hola, Juan Carlos. Bienvenido a Algoritmia.', publico: false },
+                { nombre: 'Saludo con un nombre con tilde', entrada: 'María José', salida: 'Hola, María José. Bienvenido a Algoritmia.', publico: false },
               ],
               errorComun: `const nombre = leerTexto();
 console.log("Hola," + nombre + " Bienvenido a Algoritmia.");
@@ -497,9 +497,9 @@ console.log(base * altura);
 console.log(2 * (base + altura));
 `,
               casos: [
-                { entrada: '3\n4', salida: '12\n14', publico: true },
-                { entrada: '5\n5', salida: '25\n20', publico: false },
-                { entrada: '2.5\n4', salida: '10\n13', publico: false },
+                { nombre: 'Un rectángulo de lados distintos', entrada: '3\n4', salida: '12\n14', publico: true },
+                { nombre: 'Un cuadrado (base y altura iguales)', entrada: '5\n5', salida: '25\n20', publico: false },
+                { nombre: 'Medidas con decimales', entrada: '2.5\n4', salida: '10\n13', publico: false },
               ],
               errorComun: `const base = leerTexto();
 const altura = leerTexto();
@@ -526,10 +526,10 @@ const resto = minutos % 60;
 console.log(horas + " h " + resto + " min");
 `,
               casos: [
-                { entrada: '135', salida: '2 h 15 min', publico: true },
-                { entrada: '60', salida: '1 h 0 min', publico: false },
-                { entrada: '45', salida: '0 h 45 min', publico: false },
-                { entrada: '1440', salida: '24 h 0 min', publico: false },
+                { nombre: 'Más de una hora, con minutos sobrantes', entrada: '135', salida: '2 h 15 min', publico: true },
+                { nombre: 'Una hora exacta', entrada: '60', salida: '1 h 0 min', publico: false },
+                { nombre: 'Menos de una hora', entrada: '45', salida: '0 h 45 min', publico: false },
+                { nombre: 'Un día completo', entrada: '1440', salida: '24 h 0 min', publico: false },
               ],
               errorComun: `const minutos = leerNumero();
 const horas = minutos / 60;

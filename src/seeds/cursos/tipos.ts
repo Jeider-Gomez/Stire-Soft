@@ -67,7 +67,8 @@ export interface Programar extends EjercicioBase {
   tipo: 'coding';
   inicial: string;
   solucion: string;
-  casos: Array<{ entrada: string; salida: string; publico: boolean }>;
+  /** `nombre` dice qué comprueba el caso («Saludo con un nombre compuesto»): el estudiante lo ve al probar y al entregar, también en los ocultos, sin sus datos. */
+  casos: Array<{ entrada: string; salida: string; publico: boolean; nombre?: string }>;
   errorComun: string;
 }
 
@@ -204,7 +205,7 @@ export function aConfig(e: Ejercicio): Record<string, unknown> {
         language: 'javascript',
         starterCode: e.inicial,
         testCases: e.casos.map((c, i) => ({
-          label: c.publico ? `Ejemplo ${i + 1}` : `Caso oculto ${i + 1}`,
+          label: c.nombre ?? (c.publico ? `Ejemplo ${i + 1}` : `Caso oculto ${i + 1}`),
           input: c.entrada,
           expected: c.salida,
           isPublic: c.publico,

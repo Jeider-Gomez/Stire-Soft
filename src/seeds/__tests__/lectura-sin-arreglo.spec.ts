@@ -44,3 +44,32 @@ describe('Los ejercicios básicos no obligan a leer un arreglo', () => {
     expect(enunciado).toContain('console.log');
   });
 });
+
+// 31/10, Jeider, viendo freeCodeCamp: «la pista me va diciendo qué me falta». Los casos de los ejercicios de la unidad 1 dicen qué comprueban.
+describe('Los casos de los ejercicios básicos tienen nombre', () => {
+  // Los ejercicios originales; las variantes que agrega el curso (conVariantes) todavía usan «Ejemplo n» y «Caso oculto n» (P54).
+  const ORIGINALES = ['Saludo personalizado', 'Área y perímetro de un rectángulo', 'De minutos a horas'];
+  const programar = ejerciciosDe(0).filter((e) => e.tipo === 'coding' && ORIGINALES.includes(e.titulo)) as Array<Ejercicio & { casos: Array<{ nombre?: string; publico: boolean }> }>;
+
+  it('cada caso de la unidad 1 lleva un nombre que dice qué comprueba', () => {
+    expect(programar.length).toBe(3);
+    for (const e of programar) {
+      for (const c of e.casos) expect((c.nombre ?? '').length).toBeGreaterThan(5);
+    }
+  });
+
+  it('dentro de un ejercicio, los nombres no se repiten', () => {
+    for (const e of programar) {
+      const nombres = e.casos.map((c) => c.nombre);
+      expect(new Set(nombres).size).toBe(nombres.length);
+    }
+  });
+
+  it('el nombre llega a la configuración que guarda la app como la etiqueta del caso; sin nombre queda «Ejemplo n» o «Caso oculto n»', () => {
+    const { aConfig } = jest.requireActual('../cursos/tipos') as { aConfig: (e: Ejercicio) => { testCases: Array<{ label: string }> } };
+    const e = programar[0];
+    expect(aConfig(e).testCases.map((t) => t.label)).toEqual(e.casos.map((c) => c.nombre));
+    const sin = { ...e, casos: [{ entrada: 'a', salida: 'b', publico: true }, { entrada: 'c', salida: 'd', publico: false }] } as Ejercicio;
+    expect(aConfig(sin).testCases.map((t) => t.label)).toEqual(['Ejemplo 1', 'Caso oculto 2']);
+  });
+});

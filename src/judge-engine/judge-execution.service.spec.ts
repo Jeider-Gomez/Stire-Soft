@@ -135,4 +135,41 @@ describe('JudgeExecutionService.gradeAnswer — la nota se escala a los puntos d
     await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: cases2 });
     expect(scoreEmitted(t.emitter)).toBe(20);
   });
+
+  // 31/10, Jeider: «la pista me va diciendo qué me falta» y «no un rotundo cero si te equivocas».
+  const feedbackEmitted = (emitter: any) => emitter.emitAsync.mock.calls[0][1].feedback;
+  const nombrados = [{ label: 'Saludo con un nombre simple', input: 'Ana', expected: 'a' }, { label: 'Saludo con un nombre compuesto', input: 'Juan Carlos', expected: 'b' }];
+
+  it('si pasa uno de dos casos, la nota es parcial y el mensaje dice cuántos pasaron, cuántos puntos y cuáles, por su nombre', async () => {
+    const t = build(['accepted', 'wrong_answer']);
+    await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: nombrados, maxPoints: 20 });
+    expect(scoreEmitted(t.emitter)).toBe(10);
+    expect(feedbackEmitted(t.emitter)).toBe('Pasaron 1 de 2 casos (10 de 20 puntos). ✓ Saludo con un nombre simple · ✗ Saludo con un nombre compuesto.');
+  });
+
+  it('el mensaje nunca trae los datos de los casos: ni la entrada ni la salida esperada', async () => {
+    const t = build(['wrong_answer', 'wrong_answer']);
+    await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: nombrados, maxPoints: 20 });
+    expect(feedbackEmitted(t.emitter)).not.toContain('Juan Carlos');
+    expect(feedbackEmitted(t.emitter)).not.toContain('Ana');
+    expect(scoreEmitted(t.emitter)).toBe(0);
+  });
+
+  it('un caso oculto sin nombre se llama «Caso oculto», no se deja en blanco', async () => {
+    const t = build(['wrong_answer']);
+    await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: [{ input: '1', expected: '1' }], maxPoints: 10 });
+    expect(feedbackEmitted(t.emitter)).toContain('✗ Caso oculto');
+  });
+
+  it('si el programa se detuvo con un error o se pasó del tiempo, lo dice', async () => {
+    const t = build(['accepted', 'runtime_error']);
+    await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: nombrados, maxPoints: 20 });
+    expect(feedbackEmitted(t.emitter)).toContain('se detuvo con un error o tardó demasiado');
+  });
+
+  it('con todos los casos correctos conserva el mensaje de siempre', async () => {
+    const t = build(['accepted', 'accepted']);
+    await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: nombrados, maxPoints: 20 });
+    expect(feedbackEmitted(t.emitter)).toBe('¡Excelente! Todos los casos pasaron.');
+  });
 });
