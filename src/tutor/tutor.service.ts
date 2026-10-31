@@ -558,6 +558,7 @@ export class TutorService {
       }
 
       let texto = '';
+      let primerTrozoMs = 0;
       let resto = '';
       const decoder = new TextDecoder();
       const reader = res.body.getReader();
@@ -571,6 +572,7 @@ export class TutorService {
           for (const trozo of lineas.map(textoDeEventoGemini)) {
             if (!trozo) continue;
             if (!texto) {
+              primerTrozoMs = Date.now() - inicio;
               // Empezó a responder: desde aquí manda el tope de la respuesta completa, no el de arrancar.
               clearTimeout(reloj);
               reloj = setTimeout(() => control.abort(), GEMINI_TIMEOUT_EN_VIVO_MS);
@@ -593,7 +595,7 @@ export class TutorService {
       }
       clearTimeout(reloj);
       if (texto.trim()) {
-        this.logger.log(`Tutor en vivo: ${model} respondió en ${Date.now() - inicio} ms.`);
+        this.logger.log(`Tutor en vivo: ${model} respondió en ${Date.now() - inicio} ms (primer trozo a los ${primerTrozoMs} ms).`);
         ordenDeModelos.respondio(model);
         return texto.trim();
       }
