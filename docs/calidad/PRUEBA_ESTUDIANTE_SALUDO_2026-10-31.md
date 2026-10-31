@@ -33,6 +33,7 @@ en [`../PENDIENTES.md`](../PENDIENTES.md) (P48 a P53).
 
 - **La entrada sin arreglo (P35 y P53):** el juez define `leerTexto()`, `leerNumero()` y `leerLineas()` (`src/judge-engine/sandbox-lectura.ts`); los ejercicios básicos de las unidades 1 y 2 los usan y ya no traen las líneas con `lineas` y `require('fs')`. «Saludo personalizado» empieza con `const nombre = leerTexto();`. Las soluciones se comprueban con el juez real. **Falta desplegar y recargar el curso** (`--actualizar`).
 - **El enunciado de «Saludo personalizado»** va en pasos numerados, nombra `console.log` y no trae el marcador `<nombre>`.
+- **P48, la salida a la vista:** panel «Salida» bajo el editor (`SalidaPrograma.vue`): antes de probar dice qué va a aparecer ahí y que probar no gasta intentos; después, lo que mostró el programa junto a lo esperado. El enunciado va antes del aviso de «ya completaste».
 - **La pantalla** (paso a paso, conceptos y diagnóstico de la salida) habla de `leerTexto()` y `leerNumero()`.
 - **Investigación** de cómo lo hacen otras plataformas: `docs/investigacion/referentes/ENSENANZA_DE_PROGRAMACION.md`, sección «Entrada, salida y casos ocultos».
 - **Prompt v10:** el Tutor sabe dónde se ve el resultado de «Probar código» y, si el estudiante no sabe cómo mostrar algo en pantalla, le explica `console.log` antes de seguir corrigiendo (`docs/prompts/README.md`).

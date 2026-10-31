@@ -43,8 +43,9 @@
       <div class="flex-1 overflow-y-auto p-5 text-xs text-base-texto-primario leading-relaxed">
         <!-- 1. Pestaña Enunciado -->
         <div v-if="leftTab === 'enunciado'" class="space-y-4">
-          <ExerciseSinIntentos v-if="avisoEjercicio" :motivo="avisoEjercicio" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
+          <!-- 31/10 (Jeider): lo que hay que hacer va primero; el aviso, después. -->
           <div class="prose prose-xs" v-html="formatMarkdown(workspaceStore.currentExercise.description)"></div>
+          <ExerciseSinIntentos v-if="avisoEjercicio" :motivo="avisoEjercicio" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
           <ExerciseConceptosEjercicio v-if="isCodingActivity" :enunciado="workspaceStore.currentExercise.description" :plantilla="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :unidad="workspaceStore.currentExercise.unitTitle" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" />
           <ExercisePasosCodigo v-if="isCodingActivity" :codigo="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" @por-pasos="resolverPorPasos" />
 
@@ -157,6 +158,9 @@
           @update:model-value="workspaceStore.triggerAutosave"
         />
       </div>
+
+      <!-- P48: la salida del programa siempre a la vista, con lo que hace cada botón (utils/salidaPrograma.ts). -->
+      <ExerciseSalidaPrograma :casos="workspaceStore.publicTestCases" :ejecutando="workspaceStore.isRunning" @ver-casos="plegarPanel(false); leftTab = 'casos'" />
 
       <!-- Barra de Estado Inferior del Editor -->
       <div class="h-7 bg-[#007acc] text-white px-4 flex items-center justify-between text-[11px] flex-shrink-0 font-medium">
