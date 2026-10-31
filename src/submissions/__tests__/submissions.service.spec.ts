@@ -113,6 +113,7 @@ describe('SubmissionsService', () => {
 
     judgeExecutionService = {
       runPublicCases: jest.fn(),
+      runWithInput: jest.fn(),
     };
 
     enrollmentRepo = {
@@ -366,6 +367,42 @@ describe('SubmissionsService', () => {
       expect(eventEmitter.emit).not.toHaveBeenCalled();
       expect(submission.attemptNumber).toBe(1);
       expect(submission.status).toBe(SubmissionStatus.IN_PROGRESS);
+    });
+
+    // P49, 31/10 (Jeider: «que funcione en la consola de verdad»): el estudiante escribe sus datos y ve lo que mostró su programa.
+    it('con `input` ejecuta el código con los datos del estudiante, sin casos, sin intento y sin guardar nada', async () => {
+      const submission = makeSubmission({ attemptNumber: 1, status: SubmissionStatus.IN_PROGRESS });
+      submissionsRepo.findOne.mockResolvedValue(submission);
+      questionsRepo.findByActivityId.mockResolvedValue([makeCodingQuestion()]);
+      judgeExecutionService.runWithInput.mockResolvedValue({ input: 'Juan Carlos', output: 'Hola, Juan Carlos', error: '', status: 'ok', timeMs: 40 });
+
+      const result = await service.runPublicCases(submissionId, { code: dto.code, input: 'Juan Carlos' }, studentId);
+
+      expect(judgeExecutionService.runWithInput).toHaveBeenCalledWith(dto.code, 'javascript', 'Juan Carlos');
+      expect(judgeExecutionService.runPublicCases).not.toHaveBeenCalled();
+      expect(result.custom).toEqual({ input: 'Juan Carlos', output: 'Hola, Juan Carlos', error: '', status: 'ok', timeMs: 40 });
+      expect(result).not.toHaveProperty('results');
+      expect(submissionsRepo.save).not.toHaveBeenCalled();
+      expect(eventEmitter.emit).not.toHaveBeenCalled();
+      expect(submission.attemptNumber).toBe(1);
+    });
+
+    it('con `input` vacío también ejecuta con los datos que el estudiante dejó (nada)', async () => {
+      submissionsRepo.findOne.mockResolvedValue(makeSubmission());
+      questionsRepo.findByActivityId.mockResolvedValue([makeCodingQuestion()]);
+      judgeExecutionService.runWithInput.mockResolvedValue({ input: '', output: '', error: '', status: 'ok', timeMs: 10 });
+
+      await service.runPublicCases(submissionId, { code: dto.code, input: '' }, studentId);
+
+      expect(judgeExecutionService.runWithInput).toHaveBeenCalledWith(dto.code, 'javascript', '');
+    });
+
+    it('los datos propios no saltan las comprobaciones: sin matrícula activa, 403 y no se ejecuta nada', async () => {
+      submissionsRepo.findOne.mockResolvedValue(makeSubmission());
+      enrollmentRepo.findOne.mockResolvedValue(null);
+
+      await expect(service.runPublicCases(submissionId, { code: dto.code, input: 'x' }, studentId)).rejects.toThrow(ForbiddenException);
+      expect(judgeExecutionService.runWithInput).not.toHaveBeenCalled();
     });
 
     it('coding sin `code` → 400 (el DTO ahora admite html/css, así que el servicio exige el campo del tipo)', async () => {

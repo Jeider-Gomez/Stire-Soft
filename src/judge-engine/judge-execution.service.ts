@@ -94,6 +94,27 @@ export class JudgeExecutionService {
     );
   }
 
+  /**
+   * «Probar con mis datos» (P49, 31/10, Jeider: «que funcione en la consola de verdad»): ejecuta el código con la entrada que
+   * escribió el estudiante y devuelve lo que mostró, sin compararlo con nada. Mismo sandbox que califica, mismo ensayo efímero:
+   * no se guarda ni cuenta como intento.
+   */
+  async runWithInput(
+    code: string,
+    language: string,
+    input: string,
+  ): Promise<{ input: string; output: string; error: string; status: 'ok' | 'error' | 'time_limit'; timeMs: number }> {
+    const r = await this.sandbox.executeIsolated(code, language, { input, expected: '' });
+    const fallo = r.status === 'runtime_error' || r.status === 'compile_error' || r.status === 'time_limit';
+    return {
+      input,
+      output: r.stdout,
+      error: fallo ? r.stderr : '',
+      status: r.status === 'time_limit' ? 'time_limit' : fallo ? 'error' : 'ok',
+      timeMs: r.timeMs,
+    };
+  }
+
   // "Probar código" (EST-V03, Insumo 15 §7.1): ejecuta SOLO contra casos
   // públicos, reutilizando el mismo sandbox que gradeAnswer(), pero a
   // propósito NO persiste en ExecutionResultsRepository ni emite

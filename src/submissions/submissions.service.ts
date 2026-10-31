@@ -273,6 +273,11 @@ export class SubmissionsService {
     }
 
     const config = codingQuestion.config || {};
+    // P49: con `input` se ejecuta el código con los datos del estudiante y se devuelve lo que mostró, sin casos ni intento.
+    if (typeof dto.input === 'string') {
+      const custom = await this.judgeExecutionService.runWithInput(dto.code, config.language || 'javascript', dto.input);
+      return { submissionId: submission.id, custom };
+    }
     const testCases: Array<{ label?: string; input?: string; expected?: string; isPublic?: boolean }> =
       config.testCases || [];
 

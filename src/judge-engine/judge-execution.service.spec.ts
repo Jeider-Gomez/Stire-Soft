@@ -1,5 +1,42 @@
 import { JudgeExecutionService } from './judge-execution.service';
 
+describe('JudgeExecutionService.runWithInput («Probar con mis datos», P49)', () => {
+  const crear = () => {
+    const sandbox = { executeIsolated: jest.fn() };
+    return { sandbox, service: new JudgeExecutionService(sandbox as any, {} as any, {} as any) };
+  };
+
+  it('manda al sandbox la entrada del estudiante, sin nada esperado, y devuelve lo que mostró', async () => {
+    const { sandbox, service } = crear();
+    sandbox.executeIsolated.mockResolvedValue({ status: 'wrong_answer', stdout: 'Hola, Juan', stderr: '', timeMs: 30, memoryKb: 1 });
+
+    const r = await service.runWithInput('codigo', 'javascript', 'Juan');
+
+    expect(sandbox.executeIsolated).toHaveBeenCalledWith('codigo', 'javascript', { input: 'Juan', expected: '' });
+    expect(r).toEqual({ input: 'Juan', output: 'Hola, Juan', error: '', status: 'ok', timeMs: 30 });
+  });
+
+  it('«wrong_answer» del sandbox no es un error aquí: no se compara con nada', async () => {
+    const { sandbox, service } = crear();
+    sandbox.executeIsolated.mockResolvedValue({ status: 'wrong_answer', stdout: 'cualquier cosa', stderr: '', timeMs: 5, memoryKb: 1 });
+    expect((await service.runWithInput('c', 'javascript', '')).status).toBe('ok');
+  });
+
+  it('un error de ejecución devuelve su mensaje y estado «error»', async () => {
+    const { sandbox, service } = crear();
+    sandbox.executeIsolated.mockResolvedValue({ status: 'runtime_error', stdout: '', stderr: 'ReferenceError: x is not defined (línea 2)', timeMs: 8, memoryKb: 1 });
+    const r = await service.runWithInput('c', 'javascript', '');
+    expect(r.status).toBe('error');
+    expect(r.error).toContain('línea 2');
+  });
+
+  it('si se pasa del tiempo, estado «time_limit»', async () => {
+    const { sandbox, service } = crear();
+    sandbox.executeIsolated.mockResolvedValue({ status: 'time_limit', stdout: '', stderr: 'Tiempo límite excedido', timeMs: 3000, memoryKb: 1 });
+    expect((await service.runWithInput('c', 'javascript', '')).status).toBe('time_limit');
+  });
+});
+
 describe('JudgeExecutionService.runPublicCases', () => {
   let service: JudgeExecutionService;
   let sandbox: any;

@@ -10,6 +10,12 @@ export class RunCodeDto {
   @IsNotEmpty()
   code?: string;
 
+  @ApiPropertyOptional({ description: 'Datos de entrada que escribe el estudiante (preguntas coding): se ejecuta su código con ellos y se devuelve lo que mostró, sin comparar; máximo 5 000 caracteres' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(5_000)
+  input?: string;
+
   @ApiPropertyOptional({ description: 'HTML del estudiante (preguntas html_css); máximo 50 000 caracteres' })
   @IsOptional()
   @IsString()
