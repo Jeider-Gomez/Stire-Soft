@@ -1,4 +1,4 @@
-import { OrdenDeModelos } from './orden-modelos';
+import { modelosCandidatos, MODELO_RAPIDO, OrdenDeModelos } from './orden-modelos';
 
 // 17/10: una respuesta del Tutor tardó ~30 s esperando a dos modelos caídos antes de llegar al que sí respondía.
 describe('OrdenDeModelos', () => {
@@ -29,5 +29,18 @@ describe('OrdenDeModelos', () => {
     expect(o.orden(candidatos, 100)).toEqual(['a', 'c', 'b']);
     o.respondio('b');
     expect(o.orden(candidatos, 100)).toEqual(['b', 'a', 'c']);
+  });
+});
+
+describe('modelosCandidatos', () => {
+  it('el modelo rápido va primero desde el arranque, para que la primera pregunta tras un despliegue no espere 30 s', () => {
+    expect(modelosCandidatos('gemini-flash-latest')[0]).toBe(MODELO_RAPIDO);
+  });
+
+  it('sin repetidos y con el modelo configurado en la lista, sin el prefijo «models/»', () => {
+    const lista = modelosCandidatos('models/gemini-2.0-flash');
+    expect(lista).toContain('gemini-2.0-flash');
+    expect(new Set(lista).size).toBe(lista.length);
+    expect(modelosCandidatos(MODELO_RAPIDO).filter((m) => m === MODELO_RAPIDO)).toHaveLength(1);
   });
 });

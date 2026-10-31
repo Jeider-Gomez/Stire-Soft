@@ -44,7 +44,7 @@ const PRACTICE_INTENT_PATTERN =
 const GREETING_PREFIXES = ['Oye,', 'Mira,', 'Antes de seguir,', 'Una cosa,'];
 // El saludo según la hora vive en tutor-saludo.ts: también lo usa el prompt (tutor-context.service.ts).
 import { saludoSegunHora, esSaludo } from './tutor-saludo';
-import { OrdenDeModelos } from './orden-modelos';
+import { modelosCandidatos, OrdenDeModelos } from './orden-modelos';
 import { cuerpoTranscripcion, esWav, limpiarTranscripcion, MAX_BYTES_AUDIO } from './tutor-voz';
 export { saludoSegunHora, esSaludo };
 
@@ -460,9 +460,7 @@ export class TutorService {
 
   /** Prueba los modelos en orden (orden-modelos.ts) hasta que uno responda. `vacioEsRespuesta`: un audio sin voz da texto vacío. */
   private async pedirAGemini(apiKey: string, body: object, vacioEsRespuesta = false): Promise<string> {
-    const candidateModels = Array.from(
-      new Set([this.geminiModel, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'].map(m => m.replace(/^models\//, ''))),
-    );
+    const candidateModels = modelosCandidatos(this.geminiModel);
 
     let sawQuota = false;
     for (const model of ordenDeModelos.orden(candidateModels)) {
@@ -533,9 +531,7 @@ export class TutorService {
    * escribió, un corte se informa como error (no se puede empezar de nuevo con otro). Devuelve el texto completo.
    */
   private async pedirAGeminiEnVivo(apiKey: string, body: object, alRecibir: (texto: string) => void): Promise<string> {
-    const candidateModels = Array.from(
-      new Set([this.geminiModel, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'].map(m => m.replace(/^models\//, ''))),
-    );
+    const candidateModels = modelosCandidatos(this.geminiModel);
     let sawQuota = false;
     for (const model of ordenDeModelos.orden(candidateModels)) {
       const inicio = Date.now();

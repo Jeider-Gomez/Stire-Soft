@@ -6,6 +6,14 @@
  * - un modelo que se cae (tiempo de espera, red o error 5xx) pasa al final durante `castigoMs`.
  * Lo que depende de la clave del estudiante (cuota, clave inválida) no castiga al modelo: es de esa clave, no del modelo.
  */
+/** El modelo que responde en menos de un segundo (31/10, registro del servidor: tras cada despliegue la primera pregunta esperaba 30 s a los otros dos). */
+export const MODELO_RAPIDO = 'gemini-3.5-flash-lite';
+
+/** Los modelos en el orden inicial: el rápido primero, luego el configurado y los demás. Sin repetir y sin el prefijo «models/». */
+export function modelosCandidatos(configurado: string): string[] {
+  return Array.from(new Set([MODELO_RAPIDO, configurado, 'gemini-flash-latest', 'gemini-3.8-flash'].map((m) => m.replace(/^models\//, ''))));
+}
+
 export class OrdenDeModelos {
   private ultimoQueRespondio: string | null = null;
   private readonly castigadoHasta = new Map<string, number>();
