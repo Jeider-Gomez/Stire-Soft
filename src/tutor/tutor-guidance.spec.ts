@@ -113,6 +113,8 @@ describe('Explicar un concepto vs. guiar en el ejercicio (28/10)', () => {
     expect(p).toContain('SIN decirle la palabra ni el valor que lo llena');
     expect(p).toContain('un hueco que sigue como ___a___ está vacío');
     expect(p).toContain('Un hueco vacío nunca está bien');
+    // 31/10, prueba con la cuenta de Santiago: con el hueco vacío dijo «pusiste let» por el historial del chat.
+    expect(p).toContain('manda sobre la conversación anterior');
     expect(p).toContain('Nunca afirmes que algo está bien sin poder razonarlo');
     // 29/10: le pidió cambiar el `let` de la edad, que era texto fijo de la plantilla.
     expect(p).toContain('nunca le pidas cambiar texto fuera de los huecos');
