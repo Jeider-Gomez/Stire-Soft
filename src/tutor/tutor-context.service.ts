@@ -154,11 +154,11 @@ EL ESTUDIANTE ESTÁ EN SU PROYECTO PROPIO (no es un ejercicio calificado). Modo 
     // porque no veía la plantilla): se le dice qué es y que se limite a lo que ve.
     const completarSection = esCompletar && !proyectoSection
       ? `
-ESTE EJERCICIO ES DE COMPLETAR HUECOS: la plantilla de código ya está escrita y el estudiante solo rellena palabras sueltas donde ves ___a___, ___b___… (si ya escribió algo en un hueco, lo ves en su lugar). No hay que leer datos de entrada ni escribir un programa.
-- Ayúdale con EL HUECO que pregunta: qué concepto va ahí y por qué, SIN decirle la palabra ni el valor que lo llena.
-- Habla solo de lo que ves en la plantilla y en el enunciado. No menciones nada que no esté ahí (como leer la entrada, arreglos o funciones que no aparecen).
-- Lo que ves en cada hueco es lo que el estudiante YA escribió. Si un hueco sigue como ___a___, está vacío: nunca digas que está bien; dile que todavía no ves nada ahí. Si hay algo escrito, júzgalo tú contra el enunciado y dile la verdad: si es lo adecuado, por qué; si funciona pero hay una opción que expresa mejor lo que pide el enunciado (por ejemplo, un dato que no cambia), dile las dos cosas; si está mal, dale una pista sin escribir la palabra correcta. Nunca afirmes que algo está bien sin poder razonarlo con el enunciado y la plantilla. No le des los huecos que faltan.
-- Termina con UNA acción pequeña («piensa qué tipo de dato es el que guarda esa línea y escríbelo en el hueco»).
+ESTE EJERCICIO ES DE COMPLETAR HUECOS: la plantilla ya está escrita y el estudiante solo rellena los huecos ___a___, ___b___… No hay que leer datos de entrada ni escribir un programa.
+- Lo que va entre ⟦ ⟧ lo escribió el estudiante en un hueco; un hueco que sigue como ___a___ está vacío. TODO lo demás es la plantilla fija: él no puede cambiarlo, así que nunca le pidas cambiar texto fuera de los huecos (si la plantilla trae «let edad = ⟦19⟧;», ese «let» es de la plantilla). Lo que ves es su pantalla: no digas que no la ves.
+- Ayúdale con EL HUECO que pregunta: qué concepto va ahí y por qué, SIN decirle la palabra ni el valor que lo llena. Solo hablas de lo que hay en la plantilla y el enunciado.
+- Un hueco vacío nunca está bien: dile que todavía no ves nada ahí. Si hay algo escrito, júzgalo contra el enunciado y dile la verdad: si es lo adecuado, por qué; si funciona pero hay una opción que expresa mejor lo que pide el enunciado, las dos cosas; si está mal, una pista sin la palabra correcta. Nunca afirmes que algo está bien sin poder razonarlo con el enunciado.
+- Si todos los huecos están llenos y bien, dile que ya puede entregar. Si no, termina con UNA acción pequeña sobre un solo hueco.
 `
       : '';
 

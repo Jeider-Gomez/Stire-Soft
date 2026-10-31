@@ -111,8 +111,12 @@ describe('Explicar un concepto vs. guiar en el ejercicio (28/10)', () => {
     expect(p).toContain('ESTE EJERCICIO ES DE COMPLETAR HUECOS');
     expect(p).toContain('let edad = ___b___;');
     expect(p).toContain('SIN decirle la palabra ni el valor que lo llena');
-    expect(p).toContain('Si un hueco sigue como ___a___, está vacío: nunca digas que está bien');
+    expect(p).toContain('un hueco que sigue como ___a___ está vacío');
+    expect(p).toContain('Un hueco vacío nunca está bien');
     expect(p).toContain('Nunca afirmes que algo está bien sin poder razonarlo');
+    // 29/10: le pidió cambiar el `let` de la edad, que era texto fijo de la plantilla.
+    expect(p).toContain('nunca le pidas cambiar texto fuera de los huecos');
+    expect(p).toContain('Si todos los huecos están llenos y bien, dile que ya puede entregar');
     expect(p).not.toContain('CÓMO AYUDAR EN UN EJERCICIO DE PROGRAMAR');
     expect(p).not.toContain('lee mal la entrada');
   });

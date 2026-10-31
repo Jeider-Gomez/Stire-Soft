@@ -36,9 +36,13 @@ export interface ContextoTutor {
   tipoEjercicio?: 'completar'
 }
 
-/** La plantilla de un ejercicio de completar, con lo que el estudiante ya escribió en cada hueco (los vacíos quedan como ___a___). */
+/**
+ * La plantilla de un ejercicio de completar, con lo que el estudiante ya escribió en cada hueco entre ⟦ ⟧ (los vacíos quedan
+ * como ___a___). Las marcas separan lo suyo de lo fijo de la plantilla: sin ellas el Tutor le pidió cambiar el `let` de una
+ * línea que no era un hueco (29/10, Jeider).
+ */
 export function plantillaConRespuestas(plantilla: string, respuestas?: Record<string, string> | null): string {
-  return plantilla.replace(/___([a-zA-Z0-9_-]+)___/g, (hueco, id: string) => respuestas?.[id]?.trim() || hueco)
+  return plantilla.replace(/___([a-zA-Z0-9_-]+)___/g, (hueco, id: string) => { const escrito = respuestas?.[id]?.trim(); return escrito ? `⟦${escrito}⟧` : hueco })
 }
 
 export function contextoSegunPantalla(

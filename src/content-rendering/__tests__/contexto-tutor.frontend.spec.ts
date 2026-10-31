@@ -32,7 +32,7 @@ describe('Contexto que la pantalla le manda al Tutor', () => {
   it('un ejercicio de completar manda su plantilla con lo que ya escribió, y lo marca como completar', () => {
     const plantilla = '___a___ nombre = "Luisa";\nlet edad = ___b___;';
     const c = contextoSegunPantalla('/estudiante/evaluacion/30', { ...ultimoEjercicio, activityId: 30, questionType: 'fill_code' }, { ...codigo, completar: plantillaConRespuestas(plantilla, { a: 'const' }) });
-    expect(c.currentCode).toBe('const nombre = "Luisa";\nlet edad = ___b___;');
+    expect(c.currentCode).toBe('⟦const⟧ nombre = "Luisa";\nlet edad = ___b___;');
     expect(c.tipoEjercicio).toBe('completar');
     expect(c.currentCode).not.toContain('console.log(1)');
   });
@@ -50,11 +50,11 @@ describe('Contexto que la pantalla le manda al Tutor', () => {
     expect(lee('components', 'exercise', 'FillCodeExercise.vue')).toContain('workspaceStore.huecosEscritos = { ...blankAnswers }');
     expect(lee('stores', 'tutor.ts')).toContain('workspaceStore.huecosEscritos');
     expect(lee('stores', 'tutor.ts')).not.toContain('workspaceStore.pendingAnswer?.blanks');
-    expect(plantillaConRespuestas('___a___ n = ___b___;', { a: 'let', b: '' })).toBe('let n = ___b___;');
+    expect(plantillaConRespuestas('___a___ n = ___b___;', { a: 'let', b: '' })).toBe('⟦let⟧ n = ___b___;');
   });
 
   it('los huecos vacíos o con espacios quedan como ___id___', () => {
-    expect(plantillaConRespuestas('x = ___a___ + ___b___', { a: '  ', b: '2' })).toBe('x = ___a___ + 2');
+    expect(plantillaConRespuestas('x = ___a___ + ___b___', { a: '  ', b: '2' })).toBe('x = ___a___ + ⟦2⟧');
     expect(plantillaConRespuestas('x = ___a___', null)).toBe('x = ___a___');
   });
 
