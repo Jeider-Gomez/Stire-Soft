@@ -172,6 +172,26 @@ y se miden con la prueba con personas (P17).
 - **P-PED-17 · Al fallar un caso oculto, mostrar con qué entrada falló** (como LeetCode), sin revelar los demás. (Propuesto.)
 - **P-PED-18 · Ejemplos ejecutables dentro de la lección.** Código que se edita y se ejecuta ahí mismo. (P50; pendiente.)
 
+### Opciones técnicas para P48 a P50 (31/10/2026)
+
+El proyecto ya usa **CodeMirror 6** en el editor y un **juez en el servidor** (proceso hijo aislado, ADR 06). Se compararon las opciones para
+la salida a la vista, probar con datos propios y el código ejecutable en las lecciones:
+
+| Opción | Sirve para | Ventajas | Desventajas | Veredicto |
+|---|---|---|---|---|
+| **El mismo juez del servidor** con una entrada que escribe el estudiante | P48 y P49 («Probar con mis datos») | Es el mismo motor que califica: no hay «en el navegador funciona y al entregar no». Casi no agrega código: el juez ya recibe la entrada. | Va y vuelve al servidor (cerca de 1 s). | **Recomendada** |
+| **Un Web Worker en el navegador**, creado desde un `Blob`, que captura `console.log` y se corta a los pocos segundos | P50 (ejemplos de la lección) | Cero costo de servidor, instantáneo, el Worker no toca la página, se puede terminar si el código no acaba. Unas 100 líneas propias con pruebas. | Hay que cuidar el tiempo límite y que no use la red. | **Recomendada** para la lección |
+| Un **iframe con `sandbox="allow-scripts"`** (sin `allow-same-origin`) | Vista previa de HTML y CSS | Ya se usa en el ejercicio de HTML y CSS. | El código corre en el hilo de la página: un ciclo infinito congela la pestaña. Para JavaScript es peor que el Worker. | Solo para HTML y CSS |
+| **Sandpack** (CodeSandbox) | Proyectos de varios archivos con empaquetador | Muy usada en documentación. | Pesada y pensada para React y proyectos; para fragmentos de 3 líneas es excesiva, y es una dependencia más. | Descartada |
+| **StackBlitz WebContainers** | Ejecutar un proyecto Node completo en el navegador | Un Node real. | Mucho más de lo necesario, con licencia y términos propios. | Descartada |
+| **Pyodide** | Python en el navegador | Solo si hubiera Python. | El curso es de JavaScript. | No aplica |
+
+**Evidencia:** web de documentación y guías de terceros **[doc]**; no se encontró una comparación hecha con estudiantes. La recomendación se funda en el
+tamaño del problema y en lo que el proyecto ya tiene.
+
+**Orden propuesto:** (1) P48, con el panel de salida y los textos de «Probar» y «Entregar» (solo pantalla); (2) P49 con el juez; (3) mostrar la
+entrada que falló al entregar (P-PED-17); (4) P50 con el Worker; (5) P51, el ejercicio previo de solo `console.log`.
+
 ## Enlaces
 
 - Coursera Coach: https://blog.coursera.org/coursera-coach-providing-essential-learner-support
