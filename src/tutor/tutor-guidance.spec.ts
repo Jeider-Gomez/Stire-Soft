@@ -125,6 +125,9 @@ describe('Explicar un concepto vs. guiar en el ejercicio (28/10)', () => {
 
   it('en un ejercicio de programar siguen las pistas de programar y no las de completar', async () => {
     const p = await prompt();
+    // 31/10, «Saludo personalizado»: el estudiante no sabía dónde se ve la salida ni que hacía falta console.log.
+    expect(p).toContain('en la pestaña «Casos de prueba» (panel izquierdo)');
+    expect(p).toContain('explícale «console.log(...)»');
     expect(p).toContain('CÓMO AYUDAR EN UN EJERCICIO DE PROGRAMAR');
     expect(p).not.toContain('ESTE EJERCICIO ES DE COMPLETAR HUECOS');
   });
