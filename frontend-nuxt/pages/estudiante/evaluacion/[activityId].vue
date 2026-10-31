@@ -140,8 +140,9 @@
         </div>
 
         <div class="flex items-center gap-3 text-[11px]">
-          <span>Tabulaciones: 2 espacios</span>
-          <span>UTF-8</span>
+          <ExerciseSelectorVista class="hidden md:flex" :panel-plegado="panelPlegado" :salida-plegada="salidaPlegada" @elegir="elegirVista" />
+          <span class="hidden lg:inline">Tabulaciones: 2 espacios</span>
+          <span class="hidden lg:inline">UTF-8</span>
         </div>
       </div>
 
@@ -160,7 +161,7 @@
       </div>
 
       <!-- P48: la salida del programa siempre a la vista, con lo que hace cada botón (utils/salidaPrograma.ts). -->
-      <ExerciseSalidaPrograma :casos="workspaceStore.publicTestCases" :ejecutando="workspaceStore.isRunning" @ver-casos="plegarPanel(false); leftTab = 'casos'" />
+      <ExerciseSalidaPrograma :casos="workspaceStore.publicTestCases" :ejecutando="workspaceStore.isRunning" :plegada="salidaPlegada" @plegar="plegarSalida" @ver-casos="plegarPanel(false); leftTab = 'casos'" />
 
       <!-- Barra de Estado Inferior del Editor -->
       <div class="h-7 bg-[#007acc] text-white px-4 flex items-center justify-between text-[11px] flex-shrink-0 font-medium">
@@ -259,6 +260,7 @@ import { useTutorStore } from '~/stores/tutor'
 import { ayudaSegunFallos, debeOfrecerTutor, pistaSegunTipo, TEXTO_AYUDA, type Ayuda } from '~/utils/ofertaTutor'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import { exerciseTypeInfo } from '~/utils/exerciseTypes'
+import { plegadosDe, type IdVista } from '~/utils/vistaEjercicio'
 
 definePageMeta({
   layout: 'workspace'
@@ -270,6 +272,9 @@ const workspaceStore = useWorkspaceStore()
 useHead({ title: computed(() => tituloConNombre(workspaceStore.currentExercise?.title, route.path)) })
 const leftTab = ref<'enunciado' | 'casos' | 'consola'>('enunciado')
 const { plegado: panelPlegado, plegar: plegarPanel } = usePanelPlegable('stire.ejercicio.panelPlegado')
+// 31/10 (Jeider): la salida también se pliega, y tres vistas acomodan enunciado y salida de una vez (utils/vistaEjercicio.ts).
+const { plegado: salidaPlegada, plegar: plegarSalida } = usePanelPlegable('stire.ejercicio.salidaPlegada')
+function elegirVista(id: IdVista) { const v = plegadosDe(id); plegarPanel(v.panelPlegado); plegarSalida(v.salidaPlegada) }
 const tutorStore = useTutorStore()
 
 // Oferta del Tutor al fallar: vuelve a aparecer en cada nueva prueba, salvo que el Tutor ya esté abierto.

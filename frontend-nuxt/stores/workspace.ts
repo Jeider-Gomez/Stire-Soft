@@ -724,6 +724,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     masteryAfter,
     loadActivity,
     runIsolatedCode,
+    ensureActiveSubmission,
     runHtmlCss,
     detenerEjecucion,
     submitSolution,
