@@ -65,6 +65,23 @@ no se despliegue, el chat sigue funcionando como antes.
 | `docs/PLAN_TUTOR_Y_ASISTENTE.md` | Los dos asistentes: contexto justo por pantalla, política pedagógica común, ficha guiada, crear clase desde cero, **laboratorio de prompts**, memoria del Tutor en tres capas, varios proveedores de IA, logo con doble borde, **orden de trabajo** |
 | `docs/investigacion/EVALUACION_HEURISTICA_STIRE_2026-10-27.md` | Evaluación de la IA (3,94/5 para grado 10–11) |
 
+## 4 bis. Lo del 31/10/2026: el entorno de programar (Jeider probó como estudiante)
+
+**Hecho y desplegado:** prompt del Tutor v1 a v11 con registro en `docs/prompts/` (instantáneas y receta); el Tutor ve la plantilla y los huecos en
+los ejercicios de completar; el modelo rápido va primero (respuestas en ~1 s); el juez define `leerTexto()`, `leerNumero()` y `leerLineas()`
+(`src/judge-engine/sandbox-lectura.ts`) y los ejercicios básicos de las unidades 1 y 2 ya no traen `lineas`; panel «Salida» bajo el editor, que se
+oculta, con «Probar con mis datos» (`POST /submissions/:id/run` con `input`) y tres vistas; el Asistente del docente y su lista de chequeo usan las
+funciones nuevas; el resultado de la entrega dice el dominio y la fecha reales del repaso.
+
+**Falta (ver `PENDIENTES.md`):** P54 casos con nombre y mostrar el tipo de caso que falló; P55 etiqueta del lenguaje en los bloques de código; P51 un
+ejercicio previo de solo `console.log` y enunciados en pasos; P52 el Tutor detecta al estudiante perdido; P50 código ejecutable en las lecciones (un
+Web Worker propio); **P57 ejercicios de función** (la firma viene dada y STIRE llama a la función con los casos, como LeetCode); P56 condiciones más
+flexibles; recargar el curso con `scripts/cursos/crear-cursos.ts --actualizar` (lo corre Jeider con sus credenciales; no actualiza ejercicios con entregas).
+
+**Límites de esta forma de trabajar:** no se escriben contraseñas en sitios reales (ni siquiera las de las cuentas demo); no se pasan verificaciones
+de robots; el despliegue lo pega Jeider (backend antes que frontend); para que Claude pruebe solo hace falta correr STIRE en `localhost` con las cuentas demo.
+Investigación y retroalimentación: `docs/investigacion/referentes/ENSENANZA_DE_PROGRAMACION.md` y `docs/calidad/PRUEBA_*_2026-10-31.md`.
+
 ## 5. Decisiones pendientes de Jeider
 
 | Decisión | Contexto |
