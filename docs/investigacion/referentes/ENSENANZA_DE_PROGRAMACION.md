@@ -146,6 +146,18 @@ que lo de abajo viene de documentación, foros de usuarios y estudios; se marca 
 | ¿Ayudan los ejemplos que se pueden ejecutar y editar? | Estudios con estudiantes de programación: los **ejemplos interactivos** (PCEX) mejoraron la participación y el desempeño; en un entorno de bloques (Snap!) los ejemplos resueltos **no** mejoraron el aprendizaje, aunque bajaron la carga mental. Quien aprende con tutoriales suele **tocar el código del ejemplo** más que leer la explicación. | estudios de SIGCSE e ICER **[inv]**; muestras pequeñas, de aula |
 | ¿Cuándo enseñar la entrada de datos? | Un artículo de 1997 sobre el primer curso de programación dice que la **entrada y salida es una de las mayores dificultades** y que **no hace falta enseñarla al principio**. Estudios recientes confirman que la sintaxis opaca el problema que se quiere enseñar. | **[inv]**; el de 1997 es sobre C, pero la dificultad no depende del lenguaje |
 
+**Observado en la pantalla (31/10/2026), freeCodeCamp, certificación de JavaScript v9, laboratorio «Build a Sentence Maker»** **[obs]**:
+- El currículo se organiza en **lecturas cortas → laboratorio → repaso → cuestionario**.
+- La pantalla del laboratorio tiene **tres zonas**: instrucciones a la izquierda (pestañas «Instructions» y `script.js`), el editor al centro y, a la derecha, un panel
+  **«Console»** que desde antes de ejecutar nada dice «Your test output will go here» (la salida tiene su lugar fijo y avisa qué va a ir ahí).
+- Los requisitos son **«user stories» numeradas** («1. Declara estas variables con `let`: adjective, noun…»); cada una es una prueba.
+- **Un solo botón, «Check Your Code»**, más reiniciar y pedir ayuda. No hay «Run» y «Submit» separados: se comprueba al pulsar.
+- El editor empieza **vacío**, y **ningún ejercicio de ese tramo lee datos de entrada**: las variables se escriben en el código y se muestran con `console.log`. Es decir, evitan por completo el problema de «cómo leo el dato».
+
+**Para STIRE:** el panel de salida con su aviso desde el principio (P-UI-17), los requisitos en pasos numerados (hecho en «Saludo personalizado») y,
+sobre todo, **la entrada de datos como tema aparte y posterior**: los primeros ejercicios pueden trabajar solo con variables en el código y `console.log`
+(P51: un ejercicio previo de solo mostrar en pantalla).
+
 **Lo que NO se encontró:** ningún estudio que compare directamente «leer con una función lista» contra `input()` o `lineas`;
 ni documentación oficial de LeetCode sobre qué muestra al fallar. Por eso las decisiones de abajo se tratan como hipótesis
 y se miden con la prueba con personas (P17).
