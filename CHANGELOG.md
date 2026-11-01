@@ -23,6 +23,7 @@ Se acumula aquí lo desplegado desde la `v2.4.0`; se marca la versión al cierre
 - El chat del Tutor marca dónde empieza cada ejercicio.
 - Un ejercicio que no recibe datos ya no muestra el nombre del caso como entrada, ni pide «Decidir con if» por la palabra «paréntesis», ni guía con una variable que no existe.
 - El panel «Salida» explica en español qué revisar, también con «Probar con mis datos», y hay mensajes propios para el paréntesis sin cerrar, el texto sin comillas y la comilla sin cerrar.
+- Script de una sola vez (`src/scripts/actualizar-ejercicios-con-entregas.ts`) para renovar enunciados y casos de los ejercicios con entregas, sin tocar notas ni dominio; a un docente lo sigue protegiendo el bloqueo.
 - La carga del curso envía la posición de cada ejercicio: uno agregado después queda en su sitio.
 - El Tutor recibe la señal de que el estudiante lleva tres intentos seguidos sin lograrlo (P52): faltaba subir esa parte de la pantalla.
 

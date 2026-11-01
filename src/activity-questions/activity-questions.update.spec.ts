@@ -1,4 +1,6 @@
 import 'reflect-metadata';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { In } from 'typeorm';
 import { ActivityQuestionsService } from './activity-questions.service';
@@ -97,6 +99,34 @@ describe('ActivityQuestionsService.update (paso 4b)', () => {
     const { service } = crear();
     await expect(service.update(5, { question: '   ' }, docente)).rejects.toThrow(BadRequestException);
     await expect(service.update(5, { points: 0 }, docente)).rejects.toThrow(BadRequestException);
+  });
+});
+
+// 01/11: el script que renueva el curso (src/scripts/actualizar-ejercicios-con-entregas.ts) no pasa por el 409 de `update`.
+describe('ActivityQuestionsService.actualizarDesdeElCurso', () => {
+  const config = { options: [{ id: 'a', text: 'Otra A' }, { id: 'b', text: 'Otra B' }], correctAnswerId: 'b' };
+
+  it('guarda aunque haya entregas, con el enunciado sanitizado, sin cambiar los puntos', async () => {
+    const { service, questionsRepo, submissions } = crear({ entregas: 3 });
+    const r = await service.actualizarDesdeElCurso(mcq() as never, { question: 'Nuevo', config });
+    expect(r).toMatchObject({ question: 'limpio:Nuevo', points: 50, config });
+    expect(questionsRepo.save).toHaveBeenCalledTimes(1);
+    expect(submissions.count).not.toHaveBeenCalled();
+  });
+
+  it('pasa por la misma validación que al crear', async () => {
+    const coding = { ...mcq(), type: QuestionType.CODING };
+    const { service, questionsRepo } = crear();
+    await expect(
+      service.actualizarDesdeElCurso(coding as never, { question: 'N', config: { language: 'javascript', testCases: [{ isPublic: false }] } }),
+    ).rejects.toThrow(BadRequestException);
+    expect(questionsRepo.save).not.toHaveBeenCalled();
+  });
+
+  it('no tiene ruta en la API: a un docente lo sigue protegiendo el 409', () => {
+    expect(Object.getOwnPropertyNames(ActivityQuestionsController.prototype)).not.toContain('actualizarDesdeElCurso');
+    const controlador = readFileSync(join(__dirname, 'activity-questions.controller.ts'), 'utf8');
+    expect(controlador).not.toContain('actualizarDesdeElCurso');
   });
 });
 

@@ -138,6 +138,19 @@ export class ActivityQuestionsService {
       );
     }
 
+    return this.aplicarCambios(question, dto);
+  }
+
+  /**
+   * SOLO para src/scripts/actualizar-ejercicios-con-entregas.ts: renueva el enunciado y los casos de un ejercicio del curso
+   * aunque ya tenga entregas (01/11, decisión de Jeider). No tiene ruta en la API: a un docente lo sigue protegiendo el 409
+   * de `update`. Las notas y el dominio ya guardados no se recalculan: quedan como estaban.
+   */
+  actualizarDesdeElCurso(question: ActivityQuestion, cambios: { question: string; config: Record<string, any> }): Promise<ActivityQuestion> {
+    return this.aplicarCambios(question, cambios);
+  }
+
+  private async aplicarCambios(question: ActivityQuestion, dto: UpdateActivityQuestionDto): Promise<ActivityQuestion> {
     if (dto.config !== undefined) {
       this.validateConfig(question.type, dto.config);
       question.config = dto.config;
