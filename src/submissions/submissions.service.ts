@@ -24,7 +24,7 @@ import { Enrollment } from '../enrollment/entities/enrollment.entity';
 import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { Activity } from '../activities/entities/activity.entity';
 import { actividadVisiblePara } from '../activities/visibilidad';
-import { retroalimentacionCerrada } from './retroalimentacion';
+import { feedbackDeCodigo, retroalimentacionCerrada } from './retroalimentacion';
 import { intentosDisponibles, reglasDeClase } from '../common/utils/motor-dominio';
 import { Class } from '../class/entities/class.entity';
 import { Refuerzo } from '../refuerzos/entities/refuerzo.entity';
@@ -331,6 +331,8 @@ export class SubmissionsService {
     });
     if (!submission) throw new NotFoundException('Intento no encontrado');
 
+    const preguntas = await this.questionsRepo.findByActivityId(submission.activityId);
+
     return {
       submissionId: submission.id,
       status: submission.status,
@@ -342,8 +344,8 @@ export class SubmissionsService {
           : null,
       passedCount: submission.answers.filter((a) => a.isCorrect === true).length,
       totalCount: submission.answers.length,
-      feedback: submission.feedback,
-      retroalimentacion: retroalimentacionCerrada(await this.questionsRepo.findByActivityId(submission.activityId), submission.answers),
+      feedback: submission.feedback || feedbackDeCodigo(preguntas, submission.answers),
+      retroalimentacion: retroalimentacionCerrada(preguntas, submission.answers),
     };
   }
 

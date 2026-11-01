@@ -73,8 +73,8 @@
       <details v-if="hayDetalles" class="text-left text-xs border-t border-base-borde-sutil pt-2">
         <summary class="min-h-[44px] flex items-center cursor-pointer font-semibold text-base-texto-secundario hover:text-base-texto-primario">Más detalles</summary>
         <div class="space-y-2 pt-1 text-base-texto-primario">
-          <!-- Se cuentan preguntas (respuestas correctas), no casos de prueba; con 0 preguntas contadas no se muestra «0 de 0». -->
-          <p v-if="esCodigo && (r.totalCount ?? 0) > 0">
+          <!-- Se cuentan preguntas, no casos; con 0 preguntas no se muestra «0 de 0». Si el juez ya dijo qué casos pasaron, esto sobra y hasta se contradice (01/11: con 7 de 20 decía «0 de 1»). -->
+          <p v-if="contarEjercicios">
             Resolviste bien {{ r.passedCount ?? 0 }} de {{ r.totalCount }} {{ r.totalCount === 1 ? 'ejercicio' : 'ejercicios' }} (con todos sus casos de prueba, también los ocultos).
           </p>
           <p v-if="cambio">{{ cambio.texto }}.</p>
@@ -150,7 +150,8 @@ async function cargarProximoRepaso() {
     proximoRepaso.value = null // sin fecha no se dice nada
   }
 }
-const hayDetalles = computed(() => (esCodigo.value && (r.value.totalCount ?? 0) > 0) || !!cambio.value || !!cuandoVuelve.value || !!ej.value.learningUnitId || !!paso.value.nota)
+const contarEjercicios = computed(() => esCodigo.value && (r.value.totalCount ?? 0) > 0 && !r.value.feedback)
+const hayDetalles = computed(() => contarEjercicios.value || !!cambio.value || !!cuandoVuelve.value || !!ej.value.learningUnitId || !!paso.value.nota)
 
 function hacer(a: AccionResultado) {
   ws.submissionResult = null

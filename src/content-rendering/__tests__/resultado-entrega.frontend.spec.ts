@@ -154,7 +154,8 @@ describe('la ventana del resultado', () => {
   });
 
   it('no muestra «0 de 0»: el conteo de preguntas aparece solo si hay alguna', () => {
-    expect(v).toContain('v-if="esCodigo && (r.totalCount ?? 0) > 0"');
+    expect(v).toContain('v-if="contarEjercicios"');
+    expect(v).toContain('esCodigo.value && (r.value.totalCount ?? 0) > 0');
   });
 
   it('cuándo vuelve la lección se dice con la fecha real del servidor, no con un texto fijo por resultado', () => {

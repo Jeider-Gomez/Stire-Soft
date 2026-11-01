@@ -23,6 +23,22 @@ interface PreguntaParaRetro {
 const texto = (v: unknown): string | null =>
   typeof v === 'string' && v.trim() ? v.trim() : null;
 
+/**
+ * Qué dijo el juez de los ejercicios de programar de esta entrega (01/11, probando como Santiago: «Pasaron 1 de 3 casos…» se
+ * guardaba en cada respuesta y la pantalla lo buscaba en la entrega, donde nadie lo escribe: nunca llegaba al estudiante).
+ * Solo programar: en las demás, el texto automático de la respuesta («¡Correcto!») no enseña nada y ya tienen su retroalimentación.
+ */
+export function feedbackDeCodigo(
+  preguntas: PreguntaParaRetro[],
+  respuestas: Array<{ questionId: number; feedback?: string | null }>,
+): string | null {
+  const textos = respuestas.flatMap((r) => {
+    const p = preguntas.find((q) => q.id === r.questionId);
+    return p?.type === QuestionType.CODING && r.feedback ? [r.feedback] : [];
+  });
+  return textos.length ? textos.join(' ') : null;
+}
+
 /** Por ahora, las preguntas de opción múltiple: las demás ya dicen qué falló (casos de prueba, posiciones). */
 export function retroalimentacionCerrada(
   preguntas: PreguntaParaRetro[],

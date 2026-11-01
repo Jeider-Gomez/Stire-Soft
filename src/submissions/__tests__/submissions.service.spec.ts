@@ -680,6 +680,28 @@ describe('SubmissionsService', () => {
       expect(result.retroalimentacion).toEqual([{ preguntaId: 1, correcta: true, explicacion: 'Porque sí.', repasar: null }]);
     });
 
+    // 01/11, probando como Santiago: el juez guarda el detalle en la respuesta y la pantalla lo lee de aquí.
+    it('devuelve lo que dijo el juez de un ejercicio de programar, que se guarda en la respuesta', async () => {
+      const activity = makeActivity({ totalPoints: 20, passingScore: 60 });
+      const detalle = 'Pasaron 1 de 3 casos (7 de 20 puntos). ✓ Ejemplo · ✗ Otro nombre · ✗ Otra ciudad.';
+      submissionsRepo.findOne.mockResolvedValue(
+        makeSubmission({ status: SubmissionStatus.GRADED, score: 7, activity, answers: [{ questionId: 1, isCorrect: false, feedback: detalle }] }),
+      );
+      questionsRepo.findByActivityId.mockResolvedValue([{ id: 1, type: QuestionType.CODING, config: {} }]);
+
+      expect((await service.getSubmissionStatus(submissionId, studentId)).feedback).toBe(detalle);
+    });
+
+    it('no muestra el texto automático de una opción múltiple como retroalimentación', async () => {
+      const activity = makeActivity({ totalPoints: 20, passingScore: 60 });
+      submissionsRepo.findOne.mockResolvedValue(
+        makeSubmission({ status: SubmissionStatus.GRADED, score: 20, activity, answers: [{ questionId: 1, isCorrect: true, feedback: '¡Correcto!' }] }),
+      );
+      questionsRepo.findByActivityId.mockResolvedValue([{ id: 1, type: QuestionType.MCQ, config: {} }]);
+
+      expect((await service.getSubmissionStatus(submissionId, studentId)).feedback).toBeFalsy();
+    });
+
     it('deja passed=null mientras status no sea GRADED', async () => {
       const activity = makeActivity({ totalPoints: 20, passingScore: 60 });
       const submission = makeSubmission({
