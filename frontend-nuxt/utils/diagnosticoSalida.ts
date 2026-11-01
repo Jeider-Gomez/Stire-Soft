@@ -33,13 +33,23 @@ const LEER_POSICION = 'Ojo: pide cada dato en orden con leerTexto() o leerNumero
  * Un error de JavaScript explicado en palabras de estudiante (10/10, Jeider: «SyntaxError: Unexpected token ';'» y la
  * pista decía «la primera diferencia está en la línea 1»). Mensajes mejorados del compilador: Becker (2016).
  */
-function diagnosticarError(o: string): Diagnostico | null {
+export function diagnosticarError(o: string): Diagnostico | null {
   const m = /^([A-Za-z]*Error): ?(.*?)(?: \(línea (\d+)\))?$/.exec(o.split('\n')[0].trim())
   if (!m) return null
   const [, tipoError, detalle] = m
   const linea = m[3] ? Number(m[3]) : undefined
   const enLinea = linea ? `en la línea ${linea}` : 'en tu código'
   if (tipoError === 'SyntaxError') {
+    // Los tres que más salen al empezar (01/11: `console.log(Hola STIRE)`, con el texto sin comillas, da «missing )»).
+    if (/missing \) after/.test(detalle)) {
+      return { tipo: 'sintaxis', linea, mensaje: `Algo no cuadra dentro de los paréntesis ${enLinea}. Puede que falte cerrar un paréntesis ), o que un texto esté sin comillas: se escribe console.log("Hola"), no console.log(Hola).` }
+    }
+    if (/Invalid or unexpected token/.test(detalle)) {
+      return { tipo: 'sintaxis', linea, mensaje: `Hay un signo que JavaScript no reconoce ${enLinea}. Lo más común: una comilla que abres y no cierras, o comillas de otro tipo copiadas de otro lado.` }
+    }
+    if (/Unexpected end of input/.test(detalle)) {
+      return { tipo: 'sintaxis', linea, mensaje: 'Tu código se acaba antes de tiempo: abriste un paréntesis ( o una llave { y falta cerrarla.' }
+    }
     return {
       tipo: 'sintaxis', linea,
       mensaje: `JavaScript no entiende cómo está escrito algo ${enLinea}, así que el programa ni siquiera empezó. Revisa que no falte un valor después de un signo (+, *, =), un paréntesis o una comilla. Un comentario /* … */ no cuenta como valor.`,

@@ -54,6 +54,11 @@
               <dd class="whitespace-pre-wrap break-words text-[#5eead4]">{{ resumen.caso.expectedOutput }}</dd>
             </div>
           </dl>
+          <!-- Qué revisar, en español (01/11: aquí solo se veía «SyntaxError: missing )…»; la explicación estaba en la otra pestaña). -->
+          <p v-if="queRevisar" class="flex items-start gap-1.5 font-sans leading-relaxed text-editor-text">
+            <Lightbulb :size="13" class="shrink-0 mt-0.5 text-[#fcd34d]" aria-hidden="true" />
+            <span>{{ queRevisar }}</span>
+          </p>
           <button
             type="button"
             class="min-h-[32px] px-2 -ml-2 rounded-md font-semibold text-[#7dd3fc] hover:bg-white/10 underline underline-offset-2"
@@ -97,6 +102,7 @@
             </p>
             <pre v-if="resultado.status === 'ok'" class="whitespace-pre-wrap break-words font-codigo text-[#5eead4] m-0">{{ resultado.output || '(no mostró nada)' }}</pre>
             <pre v-else class="whitespace-pre-wrap break-words font-codigo text-[#f87171] m-0">{{ resultado.error || resultado.output || '(sin detalle)' }}</pre>
+            <p v-if="errorExplicado" class="font-sans leading-relaxed text-editor-text">{{ errorExplicado }}</p>
           </template>
         </div>
       </form>
@@ -105,8 +111,9 @@
 </template>
 
 <script setup lang="ts">
-import { Check, ChevronDown, ChevronUp, Loader2, Play, Terminal, X } from 'lucide-vue-next'
+import { Check, ChevronDown, ChevronUp, Lightbulb, Loader2, Play, Terminal, X } from 'lucide-vue-next'
 import { useProbarConMisDatos } from '~/composables/useProbarConMisDatos'
+import { diagnosticarError, diagnosticarSalida } from '~/utils/diagnosticoSalida'
 import { resumenDeSalida, siguientePaso, type CasoDeSalida } from '~/utils/salidaPrograma'
 
 const props = defineProps<{ casos: ReadonlyArray<CasoDeSalida>; ejecutando: boolean; plegada: boolean }>()
@@ -116,4 +123,12 @@ const resumen = computed(() => resumenDeSalida(props.casos, props.ejecutando))
 const recibeDatos = computed(() => props.casos.length === 0 || props.casos.some((c) => !!c.input))
 // `ejecutando` ya es la propiedad (la prueba de los ejemplos); la del composable es la de «mis datos».
 const { entrada, resultado, ejecutando: ejecutandoPropio, fallo, ejecutar } = useProbarConMisDatos()
+const queRevisar = computed(() => {
+  const c = resumen.value.caso
+  return c && resumen.value.estado === 'no-coincide' ? diagnosticarSalida(String(c.expectedOutput ?? ''), String(c.actualOutput ?? ''), String(c.input ?? ''))?.mensaje ?? null : null
+})
+const errorExplicado = computed(() => {
+  const r = resultado.value
+  return r && r.status === 'error' ? diagnosticarError(r.error || r.output || '')?.mensaje ?? null : null
+})
 </script>
