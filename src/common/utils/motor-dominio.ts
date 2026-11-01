@@ -130,6 +130,9 @@ export function moverEstimacion(
     return nueva >= REGLAS.completo && nota >= 1 ? 1 : nueva;
   }
   if (intento.aprobado) return p;
+  // Casilla completa y no es un repaso: la pantalla dice «ya no sube tu dominio» y sirve para practicar sin miedo, así que
+  // fallar tampoco la baja (01/11, Jeider, tras ver 100 % → 95 % en un ejercicio de práctica). Lo olvidado lo miden los repasos.
+  if (!intento.repaso && p >= REGLAS.completo) return p;
   const baja = intento.repaso
     ? REGLAS.bajaPorRepasoFallado
     : REGLAS.bajaPorFallo;

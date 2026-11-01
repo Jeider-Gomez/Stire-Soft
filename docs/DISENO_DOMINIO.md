@@ -46,7 +46,8 @@ uno la mueve hacia su nota **r**:
 | Aprueba al 3.º o más | p + 0,4 × (r − p) | Más repetición, menos sube. |
 | Vuelve a aprobar uno ya aprobado | p + 0,25 × (r − p) | Es repaso: suma poco y no se puede «farmear» con el mismo ejercicio. |
 | No aprueba, pero hizo una parte (p. ej., 3 de 5 casos) | p + 0,25 × (r − p) si r > p | Lo que sí sabe cuenta, poco. |
-| Falla en práctica | p − 0,10 × (p − r) | Un error baja poco y nunca a cero. Tres errores seguidos desde 100 dejan la casilla en ~73 %. |
+| Falla en práctica con la casilla **sin completar** | p − 0,10 × (p − r) | Un error baja poco y nunca a cero. |
+| Falla en práctica con la casilla **completa** (98 % o más) | p no cambia | La pantalla dice «ya no sube tu dominio» y sirve para practicar sin miedo; lo olvidado lo miden los repasos (Jeider, 01/11, tras ver 100 % → 95 %). |
 | Falla un **repaso** (lo olvidó) | p − 0,25 × (p − r) | Olvidar dice más que equivocarse practicando (Anki, Duolingo). |
 | Llega a 98 % o más con nota completa | p = 1 | Sin esto, la media móvil se acercaría a 1 sin llegar nunca. |
 

@@ -70,14 +70,24 @@ describe('motor del dominio: sube y baja con evidencia', () => {
   });
 
   it('un error baja poco, nunca toda la lección', () => {
-    const h = [intento(1, 10)]; // 100
-    expect(calcularDominio([...h, intento(2, 0)], una)).toBe(90);
+    const h = [intento(1, 0), intento(1, 10)]; // 60
+    expect(calcularDominio([...h, intento(2, 0)], una)).toBe(54);
     expect(
       calcularDominio([...h, intento(2, 0, { isReview: true })], una),
-    ).toBe(75); // olvidó: baja más
+    ).toBe(45); // olvidó: baja más
     expect(
       calcularDominio([...h, intento(2, 0), intento(2, 0), intento(2, 0)], una),
-    ).toBeGreaterThan(70);
+    ).toBeGreaterThan(40);
+  });
+
+  // 01/11: la pantalla decía «ya no sube tu dominio» y fallar lo bajaba de 100 % a 95 %.
+  it('con la casilla completa, practicar y fallar no la baja; fallar un repaso sí', () => {
+    const h = [intento(1, 10)]; // 100
+    expect(calcularDominio([...h, intento(2, 0)], una)).toBe(100);
+    expect(calcularDominio([...h, intento(2, 3), intento(2, 0), intento(2, 0)], una)).toBe(100);
+    expect(
+      calcularDominio([...h, intento(2, 0, { isReview: true })], una),
+    ).toBe(75);
   });
 
   it('lo que sí sabe cuenta un poco aunque no apruebe (3 de 10 casos)', () => {
