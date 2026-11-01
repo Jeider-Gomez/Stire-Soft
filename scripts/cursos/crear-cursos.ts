@@ -44,7 +44,7 @@ interface UnidadVista { id: number; title: string }
 interface TemaVista { id: number; title: string; learningUnits?: UnidadVista[] }
 interface SeccionVista { id: number; title: string; isPublished: boolean; topics?: TemaVista[] }
 
-async function crearEjercicio(api: Api, unidadId: number, e: Ejercicio, activityTypeId: number | undefined, previas: Actividad[]): Promise<boolean> {
+async function crearEjercicio(api: Api, unidadId: number, e: Ejercicio, orden: number, activityTypeId: number | undefined, previas: Actividad[]): Promise<boolean> {
   const puntos = e.puntos ?? 20;
   let act = previas.find((a) => a.title === e.titulo);
   if (!act) {
@@ -59,9 +59,11 @@ async function crearEjercicio(api: Api, unidadId: number, e: Ejercicio, activity
       attemptsAllowed: e.intentos ?? intentosPorDefecto(e.tipo),
       isRequired: true,
       adaptiveWeight: 0.4,
+      order: orden,
     });
   } else if (ACTUALIZAR) {
-    await api.patch(`/activities/${act.id}`, { description: e.enunciado });
+    // La posición también: sin ella, un ejercicio agregado después quedaba al final, aunque fuera el más fácil (01/11).
+    await api.patch(`/activities/${act.id}`, { description: e.enunciado, order: orden });
   }
   const preguntas = await api.get<Array<{ id: number }>>(`/activity-questions/activity/${act.id}`);
   if (preguntas.length > 0 && ACTUALIZAR) {
@@ -119,7 +121,7 @@ async function crearCurso(api: Api, curso: Curso): Promise<void> {
         const res = unidadPrevia ? await api.get<{ data?: Actividad[] } | Actividad[]>(`/activities?learningUnitId=${unidad.id}`) : [];
         const previas = Array.isArray(res) ? res : res.data ?? [];
         let creados = 0;
-        for (const e of u.ejercicios) if (await crearEjercicio(api, unidad.id, e, tipoPara(e), previas)) creados++;
+        for (const [orden, e] of u.ejercicios.entries()) if (await crearEjercicio(api, unidad.id, e, orden + 1, tipoPara(e), previas)) creados++;
         nuevos += creados;
         console.log(`  · ${s.titulo} › ${t.titulo} › ${u.titulo}: ${creados} ejercicios nuevos de ${u.ejercicios.length}`);
       }
