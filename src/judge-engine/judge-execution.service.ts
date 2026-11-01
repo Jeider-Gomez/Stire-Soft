@@ -34,7 +34,7 @@ export function feedbackDeCasos(
   const error = estado === 'runtime_error' || estado === 'compile_error' || estado === 'time_limit'
     ? ' En algún caso tu programa se detuvo con un error o tardó demasiado.'
     : '';
-  return `Pasaron ${pasaron} de ${detalle.length} casos${puntaje}. ${marcas}.${error}`;
+  return `${pasaron === 1 ? 'Pasó' : 'Pasaron'} ${pasaron} de ${detalle.length} ${detalle.length === 1 ? 'caso' : 'casos'}${puntaje}. ${marcas}.${error}`;
 }
 
 @Injectable()

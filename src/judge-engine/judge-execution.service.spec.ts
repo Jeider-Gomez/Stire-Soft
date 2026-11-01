@@ -1,4 +1,4 @@
-import { JudgeExecutionService } from './judge-execution.service';
+import { JudgeExecutionService, feedbackDeCasos } from './judge-execution.service';
 
 describe('JudgeExecutionService.runWithInput («Probar con mis datos», P49)', () => {
   const crear = () => {
@@ -144,7 +144,9 @@ describe('JudgeExecutionService.gradeAnswer — la nota se escala a los puntos d
     const t = build(['accepted', 'wrong_answer']);
     await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: nombrados, maxPoints: 20 });
     expect(scoreEmitted(t.emitter)).toBe(10);
-    expect(feedbackEmitted(t.emitter)).toBe('Pasaron 1 de 2 casos (10 de 20 puntos). ✓ Saludo con un nombre simple · ✗ Saludo con un nombre compuesto.');
+    expect(feedbackEmitted(t.emitter)).toBe('Pasó 1 de 2 casos (10 de 20 puntos). ✓ Saludo con un nombre simple · ✗ Saludo con un nombre compuesto.');
+    // 01/11: con un solo caso decía «Pasaron 0 de 1 casos».
+    expect(feedbackDeCasos([{ nombre: 'Único', paso: false }], 0, 20, 'wrong_answer')).toBe('Pasaron 0 de 1 caso (0 de 20 puntos). ✗ Único.');
   });
 
   it('el mensaje nunca trae los datos de los casos: ni la entrada ni la salida esperada', async () => {
