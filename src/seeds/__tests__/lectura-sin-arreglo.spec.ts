@@ -18,11 +18,28 @@ describe('Los ejercicios básicos no obligan a leer un arreglo', () => {
     expect(con.map((e) => e.titulo)).toEqual([]);
   });
 
-  it('en la unidad 1 los ejercicios de programar piden el dato con leerTexto() o leerNumero()', () => {
-    const programar = ejerciciosDe(0).filter((e) => e.tipo === 'coding');
-    expect(programar.length).toBeGreaterThan(0);
-    for (const e of programar) {
-      expect(codigoDe(e).join('\n')).toMatch(/leer(Texto|Numero)\(\)/);
+  it('en la unidad 1 los ejercicios de programar que reciben un dato lo piden con leerTexto() o leerNumero()', () => {
+    const conDato = ejerciciosDe(0).filter((e) => e.tipo === 'coding' && (e as { casos: Array<{ entrada: string }> }).casos.some((c) => c.entrada !== ''));
+    expect(conDato.length).toBeGreaterThan(0);
+    for (const e of conDato) {
+      expect(codigoDe(e).join(String.fromCharCode(10))).toMatch(/leer(Texto|Numero)\(\)/);
+    }
+  });
+
+  // 31/10 (Jeider, «Saludo personalizado»: «no sabía que había que hacer un console.log»): antes de leer un dato, dos ejercicios sin entrada (P51).
+  it('antes de «Saludo personalizado» hay dos ejercicios sin entrada: primero un console.log, luego una variable', () => {
+    const titulos = ejerciciosDe(0).map((e) => e.titulo);
+    const i = titulos.indexOf('Saludo personalizado');
+    expect(titulos.indexOf('Tu primer console.log')).toBeGreaterThan(-1);
+    expect(titulos.indexOf('Tu primer console.log')).toBeLessThan(titulos.indexOf('Un mensaje con una variable'));
+    expect(titulos.indexOf('Un mensaje con una variable')).toBeLessThan(i);
+    for (const t of ['Tu primer console.log', 'Un mensaje con una variable']) {
+      const e = ejerciciosDe(0).find((x) => x.titulo === t) as unknown as { casos: Array<{ entrada: string; publico: boolean }>; enunciado: string; inicial: string };
+      expect(e.casos.every((c) => c.entrada === '')).toBe(true);
+      expect(e.casos.some((c) => c.publico)).toBe(true);
+      expect(`${e.inicial}${e.enunciado}`).not.toMatch(/leer(Texto|Numero)|lineas|readFileSync/);
+      expect(e.enunciado).toContain('console.log');
+      expect(e.enunciado).toContain('1.');
     }
   });
 
@@ -48,11 +65,11 @@ describe('Los ejercicios básicos no obligan a leer un arreglo', () => {
 // 31/10, Jeider, viendo freeCodeCamp: «la pista me va diciendo qué me falta». Los casos de los ejercicios de la unidad 1 dicen qué comprueban.
 describe('Los casos de los ejercicios básicos tienen nombre', () => {
   // Los ejercicios originales; las variantes que agrega el curso (conVariantes) todavía usan «Ejemplo n» y «Caso oculto n» (P54).
-  const ORIGINALES = ['Saludo personalizado', 'Área y perímetro de un rectángulo', 'De minutos a horas'];
+  const ORIGINALES = ['Tu primer console.log', 'Un mensaje con una variable', 'Saludo personalizado', 'Área y perímetro de un rectángulo', 'De minutos a horas'];
   const programar = ejerciciosDe(0).filter((e) => e.tipo === 'coding' && ORIGINALES.includes(e.titulo)) as Array<Ejercicio & { casos: Array<{ nombre?: string; publico: boolean }> }>;
 
   it('cada caso de la unidad 1 lleva un nombre que dice qué comprueba', () => {
-    expect(programar.length).toBe(3);
+    expect(programar.length).toBe(5);
     for (const e of programar) {
       for (const c of e.casos) expect((c.nombre ?? '').length).toBeGreaterThan(5);
     }

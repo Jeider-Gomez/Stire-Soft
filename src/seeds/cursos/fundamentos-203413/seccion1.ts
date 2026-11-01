@@ -366,6 +366,54 @@ console.log(nombre + " tiene " + edad + " años");`,
               },
               errorComun: { b: '"19 años"' },
             },
+            // 31/10 (Jeider, «Saludo personalizado»: «no sabía que había que hacer un console.log», «no tenía ni idea de qué hacer»): antes de leer un dato,
+            // dos ejercicios sin entrada. Como en freeCodeCamp, los primeros ejercicios solo muestran cosas con console.log (P51).
+            {
+              tipo: 'coding',
+              titulo: 'Tu primer console.log',
+              enunciado: `Tu primer programa **muestra un mensaje en la pantalla**.
+
+1. Escribe una línea con \`console.log(...)\`.
+2. Dentro de los paréntesis pon el mensaje **entre comillas**.
+
+El mensaje que debes mostrar es: \`¡Hola, STIRE!\`
+
+**Ejemplo:** la línea \`console.log("Buenos días");\` muestra \`Buenos días\`.
+
+Pulsa **Probar código**: lo que muestre tu programa aparece abajo, en «Salida de tu programa». Probar no gasta intentos.`,
+              dificultad: 'basico',
+              inicial: `// Escribe aquí tu línea con console.log
+`,
+              solucion: `console.log("¡Hola, STIRE!");
+`,
+              casos: [{ nombre: 'Muestra el mensaje exacto', entrada: '', salida: '¡Hola, STIRE!', publico: true }],
+              errorComun: `console.log("Hola STIRE");
+`,
+            },
+            {
+              tipo: 'coding',
+              titulo: 'Un mensaje con una variable',
+              enunciado: `Una **variable** guarda un dato con un nombre. Aquí ya está creada: \`const ciudad = "Montería";\`
+
+1. Usa \`console.log(...)\` para mostrar el texto \`Vivo en Montería.\`
+2. Arma el texto **uniendo** con el signo \`+\` estas tres partes: \`"Vivo en "\`, la variable \`ciudad\` y \`"."\`.
+
+**Ejemplo:** con \`const mascota = "Luna";\`, la línea \`console.log("Mi mascota es " + mascota);\` muestra \`Mi mascota es Luna\`.
+
+Cuida los espacios y los puntos: lo que muestres debe ser exactamente igual.`,
+              dificultad: 'basico',
+              inicial: `const ciudad = "Montería";
+
+// Muestra el mensaje con console.log
+`,
+              solucion: `const ciudad = "Montería";
+console.log("Vivo en " + ciudad + ".");
+`,
+              casos: [{ nombre: 'Une el texto con la variable, con sus espacios y el punto', entrada: '', salida: 'Vivo en Montería.', publico: true }],
+              errorComun: `const ciudad = "Montería";
+console.log("Vivo en" + ciudad + ".");
+`,
+            },
             {
               tipo: 'coding',
               titulo: 'Saludo personalizado',

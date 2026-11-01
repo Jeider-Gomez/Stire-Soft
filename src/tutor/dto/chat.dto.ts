@@ -10,7 +10,7 @@ export class ChatContextDto {
   codeLanguage?: string;
   currentRoute?: string;
   /** Error probable, confianza y modo por pasos (tutor-senales.ts); el servidor solo acepta valores de listas cerradas. */
-  senales?: { errorProbable?: string; confianza?: string; acerto?: boolean; modo?: string };
+  senales?: { errorProbable?: string; confianza?: string; acerto?: boolean; modo?: string; perdido?: boolean };
 }
 
 export class ChatDto {

@@ -56,6 +56,8 @@ export interface SenalesDelEstudiante {
   /** Si la última entrega con ese juicio aprobó. */
   acerto?: unknown;
   modo?: unknown;
+  /** P52: varios intentos seguidos sin lograrlo (solo vale `true`). */
+  perdido?: unknown;
   /** Claves de CONCEPTOS_EJERCICIO. */
   conceptos?: unknown;
 }
@@ -88,6 +90,15 @@ export function instruccionesDeSenales(s: SenalesDelEstudiante | null | undefine
       .filter((c): c is keyof typeof CONCEPTOS_EJERCICIO => typeof c === 'string' && Object.prototype.hasOwnProperty.call(CONCEPTOS_EJERCICIO, c))
       .map((c) => CONCEPTOS_EJERCICIO[c]);
     if (conceptos.length > 0) lineas.push(`LO QUE PIDE ESTE EJERCICIO: ${conceptos.join('; ')}.`);
+  }
+
+  // P52 (31/10, Jeider en «Saludo personalizado»: diez mensajes corrigiendo errores sueltos a alguien que no sabía qué escribía).
+  if (s.perdido === true && !s.modo) {
+    lineas.push(
+      'POSIBLEMENTE PERDIDO (lleva varios intentos seguidos sin lograrlo): deja de corregir línea por línea. En este mensaje, en pocas frases: ' +
+        '(1) dile con otras palabras qué pide el ejercicio; (2) si el programa muestra algo, recuérdale dónde ve el resultado (el panel «Salida» o la pestaña «Casos de prueba») ' +
+        'y qué hace console.log, con un ejemplo de OTRO problema; (3) termina con UNA acción pequeña. No des la solución.',
+    );
   }
 
   if (s.modo === 'por-pasos') {

@@ -30,6 +30,20 @@ describe('instruccionesDeSenales (MOD-02, META-02 y UI-05 de la lista de chequeo
     expect(instruccionesDeSenales({ confianza: 'seguro' })).toEqual([]);
   });
 
+  // 31/10, Jeider en «Saludo personalizado»: diez mensajes corrigiendo errores sueltos a alguien que no sabía qué escribía.
+  it('perdido: orienta antes de seguir corrigiendo (qué pide, dónde se ve el resultado, qué hace console.log) y no da la solución', () => {
+    const l = instruccionesDeSenales({ perdido: true });
+    expect(l).toHaveLength(1);
+    expect(l[0]).toContain('deja de corregir línea por línea');
+    expect(l[0]).toContain('dónde ve el resultado');
+    expect(l[0]).toContain('console.log');
+    expect(l[0]).toContain('No des la solución');
+  });
+  it('perdido solo vale `true` y cede ante un modo de ayuda que el estudiante eligió', () => {
+    expect(instruccionesDeSenales({ perdido: 'sí' })).toEqual([]);
+    expect(instruccionesDeSenales({ perdido: false })).toEqual([]);
+    expect(instruccionesDeSenales({ perdido: true, modo: 'por-pasos' }).join(' ')).not.toContain('POSIBLEMENTE PERDIDO');
+  });
   it('modo por pasos: divide en subpreguntas y plantea solo la primera, sin código de la solución', () => {
     const [l] = instruccionesDeSenales({ modo: 'por-pasos' });
     expect(l).toMatch(/3 a 5 subpreguntas/);
