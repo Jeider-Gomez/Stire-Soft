@@ -164,6 +164,8 @@ export interface TutorMessage {
   id: string
   sender: 'student' | 'tutor'
   text: string
+  /** Solo marca en el chat que aquí empieza este ejercicio (utils/temaDelChat.ts); no es un mensaje de nadie ni se envía. */
+  separador?: boolean
   /** Nivel de guía real del backend (§18.4). null = fuera de una actividad. */
   guidanceLevel?: 1 | 2 | 3 | null
   timestamp: string

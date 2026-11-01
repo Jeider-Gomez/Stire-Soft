@@ -23,7 +23,7 @@ export function useExpresionTutor(escribiendo?: Ref<boolean>, encima?: Ref<boole
 
   watch(() => tutor.messages.length, (n, antes) => {
     const ultimo = tutor.messages[n - 1]
-    if (n <= (antes ?? 0) || !ultimo || ultimo.sender === 'student' || ultimo.isError) return
+    if (n <= (antes ?? 0) || !ultimo || ultimo.sender === 'student' || ultimo.isError || ultimo.separador) return
     hablando.value = true
     clearTimeout(finHabla)
     finHabla = setTimeout(() => { hablando.value = false }, 1600)

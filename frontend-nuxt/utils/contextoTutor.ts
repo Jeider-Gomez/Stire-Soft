@@ -16,6 +16,8 @@ export interface SenalesTutor {
   confianza?: string
   acerto?: boolean
   modo?: 'por-pasos' | 'otra-explicacion' | 'ejemplo-parecido' | 'acompanado'
+  /** Lleva varios intentos seguidos sin lograrlo (P52): el Tutor orienta antes de seguir corrigiendo línea por línea. */
+  perdido?: boolean
   /** Conceptos que pide el ejercicio (utils/conceptosEjercicio.ts). */
   conceptos?: string[]
 }

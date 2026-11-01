@@ -2,6 +2,7 @@ import { contextoSegunPantalla, plantillaConRespuestas, ultimaPruebaDe } from '~
 import { conceptosDelEjercicio } from '~/utils/conceptosEjercicio'
 import { saludoDeRespaldo } from '~/utils/saludoTutor'
 import { enviarEnVivo } from '~/utils/tutorEnVivo'
+import { faltaMarcarTema, textoDelTema } from '~/utils/temaDelChat'
 import { defineStore } from 'pinia'
 import type { TutorMessage, TutorSuggestedActivity, TutorApiKey, TutorGuidance } from '~/types'
 import { useAuthStore } from './auth'
@@ -110,6 +111,15 @@ export const useTutorStore = defineStore('tutor', () => {
       console.warn('[STIRE Tutor] No se pudo cargar el historial:', err)
     }
   }
+
+  /** En un ejercicio, una línea separa lo que ya estaba en el chat de lo que se hable aquí (utils/temaDelChat.ts). */
+  function marcarTemaDelEjercicio() {
+    const titulo = workspaceStore.currentExercise?.title
+    if (!isOpen.value || !titulo || !/^\/estudiante\/evaluacion\/\d+/.test(route.path) || workspaceStore.isLoadingExercise) return
+    if (!faltaMarcarTema(messages.value, titulo)) return
+    messages.value.push({ id: `tema-${Date.now()}`, sender: 'tutor', text: textoDelTema(titulo), separador: true, timestamp: nowLabel() })
+  }
+  watch(() => workspaceStore.currentExercise?.title, marcarTemaDelEjercicio)
 
   // ─── Estado de la clave de API (§19) ────────────────────────────────────────
   async function fetchApiKeyStatus() {
@@ -273,6 +283,7 @@ export const useTutorStore = defineStore('tutor', () => {
     isOpen.value = true
     // 1. Historial (solo la primera vez)
     await fetchHistory()
+    marcarTemaDelEjercicio()
     // 2. Estado de la clave de API
     await fetchApiKeyStatus()
     // 3. Nivel de guía de la actividad actual
@@ -351,6 +362,8 @@ export const useTutorStore = defineStore('tutor', () => {
             confianza: workspaceStore.calibracion?.confianza,
             acerto: workspaceStore.calibracion?.acerto,
             modo: modoEnvio,
+            // P52 (31/10): tres intentos seguidos sin lograrlo y sin otro modo de ayuda elegido: el Tutor orienta antes de seguir corrigiendo.
+            perdido: workspaceStore.fallosSeguidos >= 3 && !modoEnvio ? true : undefined,
             conceptos: conceptosParaTutor(),
           }, ultimaPruebaDe(workspaceStore.publicTestCases))
     }

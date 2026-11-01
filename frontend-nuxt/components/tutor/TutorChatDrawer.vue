@@ -182,9 +182,13 @@
             aria-live="polite"
             aria-label="Mensajes del Tutor"
           >
+            <template v-for="msg in tutorStore.messages" :key="msg.id">
+            <!-- Dónde empieza este ejercicio en el chat (utils/temaDelChat.ts). -->
+            <p v-if="msg.separador" class="flex items-center gap-2 text-[11px] font-medium text-base-texto-secundario before:h-px before:flex-1 before:bg-base-borde-sutil after:h-px after:flex-1 after:bg-base-borde-sutil">
+              <span class="text-center">{{ msg.text }}</span>
+            </p>
             <div
-              v-for="msg in tutorStore.messages"
-              :key="msg.id"
+              v-else
               class="flex flex-col"
               :class="msg.sender === 'student' ? 'items-end' : 'items-start'"
             >
@@ -236,6 +240,7 @@
                 </span>
               </button>
             </div>
+            </template>
 
             <!-- Indicador de pensamiento IA (§18.6 — texto escalado) -->
             <div v-if="tutorStore.isThinking" class="flex items-center gap-2 text-xs text-slate-500 py-1" role="status">

@@ -17,7 +17,11 @@ entry to the oldest.
 Se acumula aquí lo desplegado desde la `v2.4.0`; se marca la versión al cierre de la semana o al juntar 5 funciones nuevas
 (o 5 arreglos), según `docs/FLUJO_GIT.md` «Versiones».
 
-- (nada todavía)
+- El resultado de entregar un ejercicio de programar dice cuántos casos pasaron y cuáles: el texto existía, pero no llegaba a la pantalla.
+- Practicar y fallar en una casilla ya completa no baja el dominio; fallar un repaso sigue bajándolo.
+- El botón del Tutor ya no tapa «Mostrar» en el panel de salida.
+- El chat del Tutor marca dónde empieza cada ejercicio.
+- El Tutor recibe la señal de que el estudiante lleva tres intentos seguidos sin lograrlo (P52): faltaba subir esa parte de la pantalla.
 
 ---
 
