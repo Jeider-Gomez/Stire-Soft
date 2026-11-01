@@ -61,7 +61,8 @@ describe('La pantalla del ejercicio de programar', () => {
 
   // Jeider, 31/10: «el Tutor como que se interpone» al usar la consola de prueba: el botón flotante tapaba «Ocultar» y «Ejecutar».
   it('el panel deja sitio al botón flotante del Tutor, abajo a la derecha, para que no tape sus botones', () => {
-    expect(salida).toContain('md:pr-24');
+    // 01/11: 96 px no alcanzaban para un botón de unos 140 px con su margen: al plegar el panel tapaba «Mostrar».
+    expect(salida).toContain('md:pr-40');
     expect(salida).toContain('md:pb-16');
   });
 

@@ -8,8 +8,8 @@
     class="flex-shrink-0 overflow-y-auto border-t border-editor-border bg-editor-header text-editor-text text-xs"
     :class="plegada ? '' : 'max-h-[46%]'"
     aria-labelledby="salida-titulo">
-    <!-- El botón flotante del Tutor queda abajo a la derecha: el panel le deja sitio (md:pr-24 y md:pb-16) para que no tape «Ocultar» ni «Ejecutar». -->
-    <div class="flex items-center justify-between gap-2 px-4 md:pr-24 py-1.5" :class="plegada ? '' : 'border-b border-editor-border'">
+    <!-- El botón flotante del Tutor queda abajo a la derecha: el panel le deja sitio (md:pr-40 y md:pb-16) para que no tape «Mostrar» ni «Ejecutar». Mide unos 140 px con su margen (01/11: con md:pr-24 tapaba «Mostrar» al plegar). -->
+    <div class="flex items-center justify-between gap-2 px-4 md:pr-40 py-1.5" :class="plegada ? '' : 'border-b border-editor-border'">
       <h3 id="salida-titulo" class="inline-flex items-center gap-1.5 font-bold text-white">
         <Terminal :size="13" aria-hidden="true" /> Salida de tu programa
       </h3>
