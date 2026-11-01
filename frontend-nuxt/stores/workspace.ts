@@ -270,7 +270,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           const rawCases = config.testCases || config.publicTestCases || []
           publicTestCases.value = rawCases.map((tc: any, index: number) => ({
             id: index + 1,
-            input: tc.input || tc.label || `Caso #${index + 1}`,
+            // Sin entrada se queda vacía: antes mostraba el nombre del caso como si fuera lo que entra (01/11, «Tu primer console.log»).
+            input: typeof tc.input === 'string' ? tc.input : '',
             nombre: typeof tc.label === 'string' && tc.label ? tc.label : undefined,
             expectedOutput: String(tc.expected !== undefined ? tc.expected : tc.expectedOutput || ''),
             actualOutput: '',
@@ -379,7 +380,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         publicTestCases.value = res.results.map((r, index) => ({
           id: index + 1,
           nombre: (r.label && r.label !== 'Caso público' ? r.label : undefined) ?? nombres[index],
-          input: r.input || entradas[index] || r.label || `Caso #${index + 1}`,
+          input: r.input || entradas[index] || '',
           expectedOutput: r.expected || r.expectedOutput || '',
           actualOutput: r.actualOutput !== undefined ? String(r.actualOutput) : '',
           isPublic: true,

@@ -105,7 +105,7 @@ describe('la tarjeta del caso de prueba', () => {
   });
 
   it('tras «Probar código» la entrada no se cambia por el título del caso', () => {
-    expect(leer('stores', 'workspace.ts')).toContain('input: r.input || entradas[index] || r.label');
+    expect(leer('stores', 'workspace.ts')).toContain("input: r.input || entradas[index] || ''");
   });
 
   it('la página la usa con el diagnóstico solo cuando el caso falla', () => {

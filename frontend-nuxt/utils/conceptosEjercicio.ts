@@ -84,7 +84,8 @@ export function conceptosDelEjercicio(e: {
   ejemplo?: { input: string; expectedOutput: string } | null
   unidad?: string
 }): Concepto[] {
-  const texto = `${e.enunciado}\n${e.unidad ?? ''}`
+  // Sin las negritas: los `**` de Markdown contaban como multiplicación (01/11, «Tu primer console.log» pedía «Operaciones»).
+  const texto = `${e.enunciado}\n${e.unidad ?? ''}`.replace(/\*\*/g, '')
   const entra = e.ejemplo ? lineasDe(e.ejemplo.input) : []
   const sale = e.ejemplo ? lineasDe(e.ejemplo.expectedOutput) : []
   const claves: ClaveConcepto[] = []
@@ -95,7 +96,8 @@ export function conceptosDelEjercicio(e: {
   if (/Math\.floor|%|\b(residuo|resto|entera|sobran|horas y minutos)/i.test(texto)) claves.push('division-entera')
   if (sale.some((l) => /[A-Za-zÁÉÍÓÚáéíóúñ]{2,}/.test(l) && !esNumero(l))) claves.push('texto')
   if (sale.length > 1) claves.push('varias-lineas')
-  if (/\bif\b|\bsi (es|el|la|un|una)\b|condicional|decisi|mayor que|menor que|\bpar\b|\bimpar\b|aprob/i.test(texto)) claves.push('decisiones')
+  // «par» con letras alrededor, también con tilde: \b no entiende de tildes y encontraba «par» en «paréntesis».
+  if (/\bif\b|\bsi (es|el|la|un|una)\b|condicional|decisi|mayor que|menor que|(?<!\p{L})(im)?par(?!\p{L})|aprob/iu.test(texto)) claves.push('decisiones')
   if (/\bfor\b|\bwhile\b|\bciclo|\bbucle|repet|tabla de multiplicar|desde 1 hasta/i.test(texto)) claves.push('ciclos')
   return claves.map((c) => CONCEPTOS[c])
 }

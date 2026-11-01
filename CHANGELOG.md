@@ -21,6 +21,8 @@ Se acumula aquí lo desplegado desde la `v2.4.0`; se marca la versión al cierre
 - Practicar y fallar en una casilla ya completa no baja el dominio; fallar un repaso sigue bajándolo.
 - El botón del Tutor ya no tapa «Mostrar» en el panel de salida.
 - El chat del Tutor marca dónde empieza cada ejercicio.
+- Un ejercicio que no recibe datos ya no muestra el nombre del caso como entrada, ni pide «Decidir con if» por la palabra «paréntesis», ni guía con una variable que no existe.
+- La carga del curso envía la posición de cada ejercicio: uno agregado después queda en su sitio.
 - El Tutor recibe la señal de que el estudiante lleva tres intentos seguidos sin lograrlo (P52): faltaba subir esa parte de la pantalla.
 
 ---

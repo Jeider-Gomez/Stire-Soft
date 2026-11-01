@@ -70,11 +70,15 @@ export function pasosCodigo(e: {
     pasos.push({ titulo: 'Lo que recibe tu programa', detalle: '`input` tiene todo lo que entra, como texto. Si son varias líneas, sepáralas con `input.split(\'\\n\')`.' })
   }
 
-  pasos.push({
-    titulo: 'Haz el cálculo o arma el texto',
-    detalle: 'Un paso por línea, guardando cada resultado en una variable con `const` y un nombre que diga qué es. Así es más fácil encontrar un error.',
-    codigo: numeros ? 'const doble = a * 2; // cambia a * 2 por lo que pide el ejercicio' : 'const mensaje = "Recibí: " + dato; // cambia esto por lo que pide el ejercicio',
-  })
+  // Un programa que no recibe datos no tiene un `dato` que usar (01/11, «Tu primer console.log»): se va directo a mostrar.
+  const sinEntrada = !!e.ejemplo && entra.length === 0
+  if (!sinEntrada) {
+    pasos.push({
+      titulo: 'Haz el cálculo o arma el texto',
+      detalle: 'Un paso por línea, guardando cada resultado en una variable con `const` y un nombre que diga qué es. Así es más fácil encontrar un error.',
+      codigo: numeros ? 'const doble = a * 2; // cambia a * 2 por lo que pide el ejercicio' : 'const mensaje = "Recibí: " + dato; // cambia esto por lo que pide el ejercicio',
+    })
+  }
 
   const obtenidas = (e.ejemplo?.actualOutput ?? '').replace(/\r/g, '').split('\n')
   const probado = e.ejemplo?.passed !== undefined
@@ -86,7 +90,7 @@ export function pasosCodigo(e: {
     metas: sale.length > 1
       ? sale.map((esperado, i) => ({ linea: i + 1, esperado, ok: probado ? (obtenidas[i] ?? '').trim() === esperado.trim() : undefined }))
       : undefined,
-    codigo: numeros ? 'console.log(doble);' : 'console.log(mensaje);',
+    codigo: sinEntrada ? 'console.log("Buenos días"); // cambia el mensaje por el que pide el ejercicio' : numeros ? 'console.log(doble);' : 'console.log(mensaje);',
   })
   pasos.push({ titulo: 'Pulsa «Probar código»', detalle: 'En «Casos de prueba» ves si coincide y qué cambia. Probar no gasta intentos: entrega cuando coincida.' })
   return pasos

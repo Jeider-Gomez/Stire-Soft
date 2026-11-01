@@ -63,8 +63,8 @@
         </template>
       </div>
 
-      <!-- P49: probar con los datos que el estudiante escribe, sin casos y sin gastar intentos. -->
-      <form class="space-y-1.5 pt-2 border-t border-editor-border" @submit.prevent="ejecutar">
+      <!-- P49: probar con los datos que el estudiante escribe, sin casos y sin gastar intentos. Si el programa no recibe nada, no hay qué escribir. -->
+      <form v-if="recibeDatos" class="space-y-1.5 pt-2 border-t border-editor-border" @submit.prevent="ejecutar">
         <label for="mis-datos" class="block font-bold text-white">Probar con mis datos</label>
         <p id="mis-datos-ayuda" class="text-[10px] text-editor-muted">
           Escribe lo que entra, una línea por cada dato que pide tu programa (por ejemplo, un nombre). No se califica ni gasta intentos.
@@ -113,6 +113,7 @@ const props = defineProps<{ casos: ReadonlyArray<CasoDeSalida>; ejecutando: bool
 defineEmits<{ 'ver-casos': []; plegar: [valor: boolean] }>()
 
 const resumen = computed(() => resumenDeSalida(props.casos, props.ejecutando))
+const recibeDatos = computed(() => props.casos.length === 0 || props.casos.some((c) => !!c.input))
 // `ejecutando` ya es la propiedad (la prueba de los ejemplos); la del composable es la de «mis datos».
 const { entrada, resultado, ejecutando: ejecutandoPropio, fallo, ejecutar } = useProbarConMisDatos()
 </script>
