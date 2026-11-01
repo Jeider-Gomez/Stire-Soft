@@ -237,9 +237,9 @@ console.log("Aciertos: " + aciertos + " de " + clave.length);
 console.log("Nota: " + (aciertos / clave.length * 5).toFixed(1));
 `,
               casos: [
-                { entrada: 'b a c d a\nb a d d a', salida: 'Aciertos: 4 de 5\nNota: 4.0', publico: true },
-                { entrada: 'a b c\nc b a', salida: 'Aciertos: 1 de 3\nNota: 1.7', publico: false },
-                { entrada: 'a a a a\na a a a', salida: 'Aciertos: 4 de 4\nNota: 5.0', publico: false },
+                { nombre: 'Algunos aciertos', entrada: 'b a c d a\nb a d d a', salida: 'Aciertos: 4 de 5\nNota: 4.0', publico: true },
+                { nombre: 'Un solo acierto', entrada: 'a b c\nc b a', salida: 'Aciertos: 1 de 3\nNota: 1.7', publico: false },
+                { nombre: 'Todas correctas', entrada: 'a a a a\na a a a', salida: 'Aciertos: 4 de 4\nNota: 5.0', publico: false },
               ],
               errorComun: `const clave = leerTexto().trim().split(" ");
 const respuestas = leerTexto().trim().split(" ");
@@ -287,9 +287,9 @@ for (let i = 0; i < clave.length; i++) {
 }
 `,
               casos: [
-                { entrada: 'b a c\nb c c', salida: 'Pregunta 1: correcta\nPregunta 2: incorrecta, era a\nPregunta 3: correcta', publico: true },
-                { entrada: 'a b\nb a', salida: 'Pregunta 1: incorrecta, era a\nPregunta 2: incorrecta, era b', publico: false },
-                { entrada: 'd\nd', salida: 'Pregunta 1: correcta', publico: false },
+                { nombre: 'Una incorrecta', entrada: 'b a c\nb c c', salida: 'Pregunta 1: correcta\nPregunta 2: incorrecta, era a\nPregunta 3: correcta', publico: true },
+                { nombre: 'Todas incorrectas', entrada: 'a b\nb a', salida: 'Pregunta 1: incorrecta, era a\nPregunta 2: incorrecta, era b', publico: false },
+                { nombre: 'Una sola pregunta', entrada: 'd\nd', salida: 'Pregunta 1: correcta', publico: false },
               ],
               errorComun: `const clave = leerTexto().trim().split(" ");
 const respuestas = leerTexto().trim().split(" ");

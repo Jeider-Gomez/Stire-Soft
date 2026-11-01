@@ -127,9 +127,9 @@ const promedio = (nota1 + nota2 + nota3) / 3;
 console.log(promedio.toFixed(1));
 `,
               casos: [
-                { entrada: '3\n4\n5', salida: '4.0', publico: true },
-                { entrada: '2.5\n3.0\n4.2', salida: '3.2', publico: false },
-                { entrada: '5\n5\n4', salida: '4.7', publico: false },
+                { nombre: 'Promedio exacto', entrada: '3\n4\n5', salida: '4.0', publico: true },
+                { nombre: 'Notas con decimales', entrada: '2.5\n3.0\n4.2', salida: '3.2', publico: false },
+                { nombre: 'Promedio que hay que redondear', entrada: '5\n5\n4', salida: '4.7', publico: false },
               ],
               errorComun: `const nota1 = leerNumero();
 const nota2 = leerNumero();
@@ -248,10 +248,10 @@ if (nota >= 3.0) {
 }
 `,
               casos: [
-                { entrada: '3.0', salida: 'Aprobó', publico: true },
-                { entrada: '2.9', salida: 'Reprobó', publico: true },
-                { entrada: '4.5', salida: 'Aprobó', publico: false },
-                { entrada: '0', salida: 'Reprobó', publico: false },
+                { nombre: 'Nota justo en el límite', entrada: '3.0', salida: 'Aprobó', publico: true },
+                { nombre: 'Nota justo debajo del límite', entrada: '2.9', salida: 'Reprobó', publico: true },
+                { nombre: 'Nota alta', entrada: '4.5', salida: 'Aprobó', publico: false },
+                { nombre: 'Nota mínima', entrada: '0', salida: 'Reprobó', publico: false },
               ],
               errorComun: `const nota = leerNumero();
 if (nota > 3) {
@@ -284,10 +284,10 @@ if (carne === "si") {
 console.log(total);
 `,
               casos: [
-                { entrada: '10\nsi', salida: '1350', publico: true },
-                { entrada: '10\nno', salida: '1500', publico: true },
-                { entrada: '20\nsi', salida: '2700', publico: false },
-                { entrada: '3\nno', salida: '450', publico: false },
+                { nombre: 'Con descuento', entrada: '10\nsi', salida: '1350', publico: true },
+                { nombre: 'Sin descuento', entrada: '10\nno', salida: '1500', publico: true },
+                { nombre: 'Más copias con descuento', entrada: '20\nsi', salida: '2700', publico: false },
+                { nombre: 'Pocas copias sin descuento', entrada: '3\nno', salida: '450', publico: false },
               ],
               errorComun: `const fotocopias = leerNumero();
 let total = fotocopias * 150;
@@ -409,11 +409,11 @@ if (nota >= 4.6) {
 }
 `,
               casos: [
-                { entrada: '4.2', salida: 'Alto', publico: true },
-                { entrada: '4.6', salida: 'Superior', publico: false },
-                { entrada: '3.0', salida: 'Básico', publico: false },
-                { entrada: '2.9', salida: 'Bajo', publico: false },
-                { entrada: '5.0', salida: 'Superior', publico: false },
+                { nombre: 'Desempeño alto', entrada: '4.2', salida: 'Alto', publico: true },
+                { nombre: 'Nota en el rango más alto', entrada: '4.6', salida: 'Superior', publico: false },
+                { nombre: 'Justo en un límite de la escala', entrada: '3.0', salida: 'Básico', publico: false },
+                { nombre: 'Un poco menos que ese límite', entrada: '2.9', salida: 'Bajo', publico: false },
+                { nombre: 'Nota máxima', entrada: '5.0', salida: 'Superior', publico: false },
               ],
               errorComun: `const nota = leerNumero();
 if (nota >= 3.0) {
@@ -448,11 +448,11 @@ if ((anio % 4 === 0 && anio % 100 !== 0) || anio % 400 === 0) {
 }
 `,
               casos: [
-                { entrada: '2024', salida: 'bisiesto', publico: true },
-                { entrada: '1900', salida: 'no bisiesto', publico: true },
-                { entrada: '2000', salida: 'bisiesto', publico: false },
-                { entrada: '2023', salida: 'no bisiesto', publico: false },
-                { entrada: '2100', salida: 'no bisiesto', publico: false },
+                { nombre: 'Divisible entre 4', entrada: '2024', salida: 'bisiesto', publico: true },
+                { nombre: 'Siglo que no es bisiesto', entrada: '1900', salida: 'no bisiesto', publico: true },
+                { nombre: 'Siglo divisible entre 400', entrada: '2000', salida: 'bisiesto', publico: false },
+                { nombre: 'Año común', entrada: '2023', salida: 'no bisiesto', publico: false },
+                { nombre: 'Otro siglo que no es bisiesto', entrada: '2100', salida: 'no bisiesto', publico: false },
               ],
               errorComun: `const anio = leerNumero();
 if (anio % 4 === 0) {
@@ -570,16 +570,19 @@ for (let i = 1; i <= 10; i++) {
 `,
               casos: [
                 {
+                  nombre: 'Una tabla cualquiera',
                   entrada: '7',
                   salida: Array.from({ length: 10 }, (_, i) => `7 x ${i + 1} = ${7 * (i + 1)}`).join('\n'),
                   publico: true,
                 },
                 {
+                  nombre: 'La tabla más pequeña',
                   entrada: '1',
                   salida: Array.from({ length: 10 }, (_, i) => `1 x ${i + 1} = ${i + 1}`).join('\n'),
                   publico: false,
                 },
                 {
+                  nombre: 'Número de dos cifras',
                   entrada: '12',
                   salida: Array.from({ length: 10 }, (_, i) => `12 x ${i + 1} = ${12 * (i + 1)}`).join('\n'),
                   publico: false,
@@ -617,9 +620,9 @@ while (n >= 1) {
 console.log("¡Despegue!");
 `,
               casos: [
-                { entrada: '3', salida: '3\n2\n1\n¡Despegue!', publico: true },
-                { entrada: '1', salida: '1\n¡Despegue!', publico: false },
-                { entrada: '5', salida: '5\n4\n3\n2\n1\n¡Despegue!', publico: false },
+                { nombre: 'Desde un número pequeño', entrada: '3', salida: '3\n2\n1\n¡Despegue!', publico: true },
+                { nombre: 'Desde el menor posible', entrada: '1', salida: '1\n¡Despegue!', publico: false },
+                { nombre: 'Desde un número mayor', entrada: '5', salida: '5\n4\n3\n2\n1\n¡Despegue!', publico: false },
               ],
               errorComun: `let n = leerNumero();
 while (n > 1) {
@@ -735,10 +738,10 @@ for (let i = 1; i <= n; i++) {
 console.log(suma);
 `,
               casos: [
-                { entrada: '5', salida: '15', publico: true },
-                { entrada: '1', salida: '1', publico: false },
-                { entrada: '100', salida: '5050', publico: false },
-                { entrada: '0', salida: '0', publico: false },
+                { nombre: 'n pequeño', entrada: '5', salida: '15', publico: true },
+                { nombre: 'n es 1', entrada: '1', salida: '1', publico: false },
+                { nombre: 'n grande', entrada: '100', salida: '5050', publico: false },
+                { nombre: 'n es 0', entrada: '0', salida: '0', publico: false },
               ],
               errorComun: `const n = leerNumero();
 let suma = 0;
@@ -782,9 +785,9 @@ console.log("Aprobaron: " + aprobados + " de " + n);
 console.log("Promedio: " + (suma / n).toFixed(1));
 `,
               casos: [
-                { entrada: '4\n3.5\n2.0\n3.0\n4.5', salida: 'Aprobaron: 3 de 4\nPromedio: 3.3', publico: true },
-                { entrada: '3\n1.0\n2.5\n2.9', salida: 'Aprobaron: 0 de 3\nPromedio: 2.1', publico: false },
-                { entrada: '5\n5.0\n4.0\n3.0\n3.0\n4.8', salida: 'Aprobaron: 5 de 5\nPromedio: 4.0', publico: false },
+                { nombre: 'Algunos aprueban', entrada: '4\n3.5\n2.0\n3.0\n4.5', salida: 'Aprobaron: 3 de 4\nPromedio: 3.3', publico: true },
+                { nombre: 'Nadie aprueba', entrada: '3\n1.0\n2.5\n2.9', salida: 'Aprobaron: 0 de 3\nPromedio: 2.1', publico: false },
+                { nombre: 'Todos aprueban', entrada: '5\n5.0\n4.0\n3.0\n3.0\n4.8', salida: 'Aprobaron: 5 de 5\nPromedio: 4.0', publico: false },
               ],
               errorComun: `${LEER_ENTRADA}const n = Number(lineas[0]);
 let aprobados = 0;
@@ -914,10 +917,10 @@ const c = leerNumero();
 console.log(mayor(a, b, c));
 `,
               casos: [
-                { entrada: '4\n9\n2', salida: '9', publico: true },
-                { entrada: '1\n2\n30', salida: '30', publico: false },
-                { entrada: '7\n7\n3', salida: '7', publico: false },
-                { entrada: '-5\n-2\n-9', salida: '-2', publico: false },
+                { nombre: 'El mayor en el medio', entrada: '4\n9\n2', salida: '9', publico: true },
+                { nombre: 'El mayor al final', entrada: '1\n2\n30', salida: '30', publico: false },
+                { nombre: 'Dos números iguales', entrada: '7\n7\n3', salida: '7', publico: false },
+                { nombre: 'Números negativos', entrada: '-5\n-2\n-9', salida: '-2', publico: false },
               ],
               errorComun: `
 function mayor(a, b, c) {
@@ -959,9 +962,9 @@ for (let i = 1; i <= n; i++) {
 }
 `,
               casos: [
-                { entrada: '2\n1000\n2500', salida: '1190\n2975', publico: true },
-                { entrada: '3\n3500\n150\n99', salida: '4165\n179\n118', publico: false },
-                { entrada: '1\n0', salida: '0', publico: false },
+                { nombre: 'Dos precios', entrada: '2\n1000\n2500', salida: '1190\n2975', publico: true },
+                { nombre: 'Tres precios con redondeo', entrada: '3\n3500\n150\n99', salida: '4165\n179\n118', publico: false },
+                { nombre: 'Precio cero', entrada: '1\n0', salida: '0', publico: false },
               ],
               errorComun: `${LEER_ENTRADA}
 function conIva(precio) {
