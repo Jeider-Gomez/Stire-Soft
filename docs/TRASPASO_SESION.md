@@ -76,7 +76,7 @@ funciones nuevas; el resultado de la entrega dice el dominio y la fecha reales d
 **Falta (ver `PENDIENTES.md`):** P54 casos con nombre y mostrar el tipo de caso que falló; P55 etiqueta del lenguaje en los bloques de código; P51 un
 ejercicio previo de solo `console.log` y enunciados en pasos; P52 el Tutor detecta al estudiante perdido; P50 código ejecutable en las lecciones (un
 Web Worker propio); **P57 ejercicios de función** (la firma viene dada y STIRE llama a la función con los casos, como LeetCode); P56 condiciones más
-flexibles; recargar el curso con `.\scripts\cursosecargar-curso.ps1` (PowerShell; pide el correo y la contraseña del docente con la escritura oculta; lo corre Jeider, nunca Claude; no actualiza ejercicios con entregas).
+flexibles; recargar el curso con `.\scripts\cursos\recargar-curso.ps1` (PowerShell; pide el correo y la contraseña del docente con la escritura oculta; lo corre Jeider, nunca Claude; no actualiza ejercicios con entregas).
 
 **Límites de esta forma de trabajar:** no se escriben contraseñas en sitios reales (ni siquiera las de las cuentas demo); no se pasan verificaciones
 de robots; el despliegue lo pega Jeider (backend antes que frontend); para que Claude pruebe solo hace falta correr STIRE en `localhost` con las cuentas demo.
