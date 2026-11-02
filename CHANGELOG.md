@@ -27,7 +27,8 @@ Se acumula aquí lo desplegado desde la `v2.4.0`; se marca la versión al cierre
 - La carga del curso envía la posición de cada ejercicio: uno agregado después queda en su sitio.
 - El Tutor recibe la señal de que el estudiante lleva tres intentos seguidos sin lograrlo (P52): faltaba subir esa parte de la pantalla.
 - El Tutor recibe el código numerado como en el editor y cita bien la línea, y sabe que el resultado de «Probar código» está en «Salida de tu programa».
-- El Tutor ya no dicta la solución por piezas, y la pista de la pantalla aclara que su «línea» es la de la salida, no la del código.
+- La pista de la pantalla aclara que su «línea» es la de la salida, no la del código.
+- El Tutor recibe con cada mensaje de un ejercicio de programar un recordatorio de no dictar las piezas de la solución.
 
 ---
 

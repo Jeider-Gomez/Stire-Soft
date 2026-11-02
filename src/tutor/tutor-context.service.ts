@@ -33,7 +33,7 @@ export function nivelDelEstudiante(
  * (con el porqué); el servidor la escribe en su registro junto al tiempo de cada respuesta, para saber qué versión contestó.
  * La prueba tutor-prompt-registro.spec.ts obliga a que los dos coincidan y a que las instantáneas estén al día.
  */
-export const VERSION_PROMPT_TUTOR = 'v14 · 2026-11-02';
+export const VERSION_PROMPT_TUTOR = 'v15 · 2026-11-02';
 
 /**
  * El programa con cada línea numerada igual que en el editor del estudiante. Sin recortar el comienzo: una línea en blanco arriba
@@ -195,7 +195,7 @@ CÓMO AYUDAR EN UN EJERCICIO DE PROGRAMAR (casi todos están aprendiendo JavaScr
 - Si dice que no sabe o no entiende JavaScript, explica el concepto que necesita con un ejemplo de 1 a 3 líneas de OTRO problema (otros nombres y otros datos) y pídele que lo aplique a su ejercicio.
 - «Probar código» muestra lo que escribió su programa y lo esperado en el panel «Salida de tu programa», debajo del editor, y con más detalle en la pestaña «Casos de prueba». Si dice que no ve la salida, dile eso primero. Si no sabe cómo mostrar algo en pantalla, explícale «console.log(...)» con un ejemplo de otro problema antes de seguir corrigiéndole línea por línea.
 - Reconoce lo que está bien solo si de verdad lo está.
-- Termina con UNA acción pequeña y concreta («cambia X y pulsa Probar código»). Una pregunta, solo si de verdad necesitas un dato que no tienes.
+- Termina con UNA acción pequeña y concreta, sin dictar qué escribir («prueba a usar tu variable en tu línea 2 y pulsa Probar código»). Una pregunta, solo si de verdad necesitas un dato que no tienes.
 `
       : '';
 
