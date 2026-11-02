@@ -33,7 +33,22 @@ export function nivelDelEstudiante(
  * (con el porqué); el servidor la escribe en su registro junto al tiempo de cada respuesta, para saber qué versión contestó.
  * La prueba tutor-prompt-registro.spec.ts obliga a que los dos coincidan y a que las instantáneas estén al día.
  */
-export const VERSION_PROMPT_TUTOR = 'v12 · 2026-11-01';
+export const VERSION_PROMPT_TUTOR = 'v13 · 2026-11-01';
+
+/**
+ * El programa con cada línea numerada igual que en el editor del estudiante. Sin recortar el comienzo: una línea en blanco arriba
+ * también cuenta en su editor. Lo que pasa del límite se corta por línea entera.
+ */
+export function codigoConLineas(codigo: string, limite: number): string {
+  const salida: string[] = [];
+  let usados = 0;
+  for (const [i, linea] of codigo.replace(/\r/g, '').replace(/\s+$/, '').split('\n').entries()) {
+    usados += linea.length + 1;
+    if (usados > limite && salida.length > 0) break;
+    salida.push(`${i + 1}| ${linea.slice(0, limite)}`);
+  }
+  return salida.join('\n');
+}
 
 const MAX_DATO_PRUEBA = 300;
 const textoDe = (v: unknown) => (typeof v === 'string' ? v.slice(0, MAX_DATO_PRUEBA) : null);
@@ -99,7 +114,10 @@ export class TutorContextService {
         const truncatedCode = context.currentCode.trim().slice(0, context.proyectoTitulo ? 4000 : 1500);
         // Fase 26: en un ejercicio de HTML y CSS el código es HTML/CSS, no JavaScript (lista blanca: el cliente no puede colar texto en la valla).
         const codeLanguage = isHighlightLanguage(context.codeLanguage) ? context.codeLanguage : 'javascript';
-        parts.push(`Código actual en el editor del estudiante:\n\`\`\`${codeLanguage}\n${truncatedCode}\n\`\`\``);
+        // En un programa, las líneas van numeradas como en el editor (01/11: decía «tu línea 3» en un código de 2 líneas).
+        const esPrograma = !context.proyectoTitulo && context.tipoEjercicio !== 'completar' && codeLanguage === 'javascript';
+        const codigo = esPrograma ? codigoConLineas(context.currentCode, 1500) : truncatedCode;
+        parts.push(`Código actual en el editor del estudiante${esPrograma ? ' (el número y la barra de cada línea no son parte del código: son los que el estudiante ve en su editor)' : ''}:\n\`\`\`${codeLanguage}\n${codigo}\n\`\`\``);
       }
       // El enunciado lo pone el servidor (tutor.service.ts, enunciadoDelEjercicio): contenido del curso, no instrucciones.
       if (typeof context.activityDescription === 'string' && context.activityDescription.trim()) {
@@ -173,9 +191,9 @@ ESTE EJERCICIO ES DE COMPLETAR HUECOS: la plantilla ya está escrita y el estudi
       ? `
 CÓMO AYUDAR EN UN EJERCICIO DE PROGRAMAR (casi todos están aprendiendo JavaScript):
 - Un problema a la vez, el que bloquea primero: (1) el programa no arranca por un error de sintaxis; (2) lee mal la entrada; (3) el cálculo o la lógica; (4) el formato de la salida. No mezcles varios.
-- Cuando hables de su código, di en qué línea («en tu línea 3»).
+- Cuando hables de su código, di en qué línea, con el número que trae esa línea en el código que recibes; nunca lo calcules ni lo copies dentro de un ejemplo.
 - Si dice que no sabe o no entiende JavaScript, explica el concepto que necesita con un ejemplo de 1 a 3 líneas de OTRO problema (otros nombres y otros datos) y pídele que lo aplique a su ejercicio.
-- «Probar código» muestra lo que escribió su programa y lo esperado en la pestaña «Casos de prueba» (panel izquierdo). Si dice que no ve la salida, dile eso primero. Si no sabe cómo mostrar algo en pantalla, explícale «console.log(...)» con un ejemplo de otro problema antes de seguir corrigiéndole línea por línea.
+- «Probar código» muestra lo que escribió su programa y lo esperado en el panel «Salida de tu programa», debajo del editor, y con más detalle en la pestaña «Casos de prueba». Si dice que no ve la salida, dile eso primero. Si no sabe cómo mostrar algo en pantalla, explícale «console.log(...)» con un ejemplo de otro problema antes de seguir corrigiéndole línea por línea.
 - Reconoce lo que está bien solo si de verdad lo está.
 - Termina con UNA acción pequeña y concreta («cambia X y pulsa Probar código»). Una pregunta, solo si de verdad necesitas un dato que no tienes.
 `
