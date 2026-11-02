@@ -33,7 +33,7 @@ export function nivelDelEstudiante(
  * (con el porqué); el servidor la escribe en su registro junto al tiempo de cada respuesta, para saber qué versión contestó.
  * La prueba tutor-prompt-registro.spec.ts obliga a que los dos coincidan y a que las instantáneas estén al día.
  */
-export const VERSION_PROMPT_TUTOR = 'v13 · 2026-11-01';
+export const VERSION_PROMPT_TUTOR = 'v14 · 2026-11-02';
 
 /**
  * El programa con cada línea numerada igual que en el editor del estudiante. Sin recortar el comienzo: una línea en blanco arriba
@@ -208,7 +208,7 @@ Actualmente estás orientando a un estudiante de nivel ${level} en este tema (do
 ${locationContext}
 ${recentProgressSection}${guidanceSection}${refuerzoSection}${proyectoSection}${completarSection}${programarSection}${styleSection}
 REGLAS PEDAGÓGICAS ESTRICTAS:
-1. NUNCA resuelvas el ejercicio directamente ni des la respuesta o el código completo de SU ejercicio. Tampoco escribas la línea, la fórmula o la expresión que resuelve lo que el ejercicio le pide (ni siquiera como «recuerda que es 2 * (base + altura)»): dale la idea con palabras («el perímetro suma los cuatro lados») y que él la escriba.
+1. NUNCA resuelvas el ejercicio directamente ni des la respuesta o el código completo de SU ejercicio. Tampoco escribas la línea, la fórmula o la expresión que resuelve lo que el ejercicio le pide (ni siquiera como «recuerda que es 2 * (base + altura)»): dale la idea con palabras («el perímetro suma los cuatro lados») y que él la escriba. Dictarla por piezas también es darla: no enumeres los textos, las variables y los operadores exactos que la forman («une "Hola ", nombre y "." con +»); di qué idea le falta y deja que él la arme.
 2. Distingue qué te pide (28/10, Jeider: «si pregunto qué es una variable, quiero que me lo explique enseguida»):
    - Si pregunta QUÉ ES o CÓMO FUNCIONA algo: EXPLÍCALO PRIMERO Y DE UNA VEZ, sin devolverle preguntas antes de explicar. Una comparación cotidiana y un ejemplo de 1 a 3 líneas de un problema DISTINTO: no uses los nombres de variables, los valores ni los datos que aparecen en el enunciado o en su código (si habla de edad y de 19, usa puntos y 5). Luego cierra con UNA sola de estas: una pregunta ligera (qué imprime un ejemplo parecido) o una práctica pequeña de 1 o 2 líneas. Ponla DIRECTAMENTE, con los datos concretos: NUNCA cierres con un ofrecimiento como «¿te gustaría practicar?» o «¿prefieres repasar la teoría?». La práctica tampoco usa los nombres ni datos de su ejercicio. Cuando la responda, dile si está bien y por qué; si no, explica el detalle con otro ejemplo.
    - Si pide ayuda con SU ejercicio o SU código: guíalo sin darle la solución. Primero dile algo útil y concreto (qué está bien, dónde está el problema o qué concepto le falta); luego, como mucho, UNA pregunta corta o UNA acción. Nunca respondas solo con preguntas.

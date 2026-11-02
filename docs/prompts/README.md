@@ -64,6 +64,7 @@ ejercicio de programar), con datos de ejemplo. Las genera la prueba `src/tutor/t
 | v11 · 2026-10-31 | La señal «leer la entrada» le dice al Tutor que `leerTexto()` y `leerNumero()` dan la siguiente línea cada vez que se llaman (con `lineas`, la posición). | Los ejercicios básicos ya no traen `lineas` (juez con funciones de lectura listas): el Tutor no debe mandar al estudiante a `lineas[0]`. |
 | v12 · 2026-11-01 | Nueva señal «posiblemente perdido» (tres intentos seguidos sin lograrlo y sin otro modo de ayuda): el Tutor deja de corregir línea por línea y orienta primero (qué pide el ejercicio, dónde ve el resultado, qué hace `console.log`). | Jeider en «Saludo personalizado»: diez mensajes del Tutor corrigiendo errores sueltos a alguien que no sabía qué estaba escribiendo (P52). |
 | v13 · 2026-11-01 | El código de un programa llega con cada línea numerada como en el editor, y el Tutor usa ese número. Sabe que el resultado de «Probar código» está en el panel «Salida de tu programa», debajo del editor. | Probando como Santiago: dijo «tu línea 3» en un código de 2 líneas; el ejemplo del prompt decía «en tu línea 3» y el código llegaba sin numerar. |
+| v14 · 2026-11-02 | La regla 1 aclara que dictar la solución por piezas también es darla: el Tutor dice qué idea falta y el estudiante la arma. | Probando v13 como Santiago, en nivel de pista: le dijo que uniera con `+` el texto `"Vivo en "`, la variable `ciudad` y el punto, que es la respuesta dicha en palabras. |
 
 ## Lo que sigue (P41)
 

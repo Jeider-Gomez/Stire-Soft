@@ -32,6 +32,14 @@ describe('la pista ante un error de JavaScript', () => {
     expect(d?.mensaje).not.toContain('primera diferencia');
   });
 
+  it('la diferencia entre salidas aclara que la línea es de la salida, no del código', () => {
+    // 02/11, como Santiago: la pantalla decía «línea 1» y el Tutor, con razón, «tu línea 2» del código.
+    const d = diagnosticarSalida('a\nb\nc', 'a\nx\nc');
+    expect(d?.tipo).toBe('linea');
+    expect(d?.mensaje).toContain('la línea 2 de esa salida');
+    expect(d?.mensaje).toContain('lo que mostró tu programa');
+  });
+
   it('sin línea (servidor anterior) sigue explicando el error', () => {
     expect(diagnosticarSalida('12', "SyntaxError: Unexpected token ';'")?.mensaje).toContain('en tu código');
   });

@@ -152,5 +152,5 @@ function diagnosticar(esperada: string, obtenida: string, entrada: string): Diag
   const lo = lineas(o)
   const i = le.findIndex((l, k) => l.trim() !== (lo[k] ?? '').trim())
   const n = i === -1 ? Math.min(le.length, lo.length) + 1 : i + 1
-  return { tipo: 'linea', mensaje: `Compara línea por línea: la primera diferencia está en la línea ${n}.` }
+  return { tipo: 'linea', mensaje: `Compara lo que mostró tu programa con lo que debe salir: la primera diferencia está en la línea ${n} de esa salida.` }
 }

@@ -85,6 +85,8 @@ describe('Explicar un concepto vs. guiar en el ejercicio (28/10)', () => {
     const p = await prompt();
     expect(p).toContain('Nunca respondas solo con preguntas');
     expect(p).toContain('NUNCA resuelvas el ejercicio');
+    // 02/11, como Santiago: dictó en palabras el texto, la variable y el punto que forman la solución.
+    expect(p).toContain('Dictarla por piezas también es darla');
     expect(p).not.toContain('Termina con UNA pregunta o UNA acción');
   });
 
