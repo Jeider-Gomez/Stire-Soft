@@ -9,6 +9,7 @@ import { avisarResultado } from '~/utils/mascotaTutor'
 import { debePreguntarConfianza, type Calibracion, type Confianza } from '~/utils/confianza'
 import { CLAVE_APARIENCIA, leerApariencia } from '~/utils/apariencia'
 import { puedeAutoguardar, esperaReintento, textoAutoguardado, claveBorrador, guardarBorrador, leerBorrador, borrarBorrador, borradorDistinto, type EstadoAutoguardado } from '~/utils/autoguardado'
+import { intentoYaCerrado, mensajeErrorEntrega, ENTREGA_TARDA } from '~/utils/errorEntrega'
 
 export interface WorkspaceExercise {
   activityId: number
@@ -89,6 +90,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const htmlCssRateLimited = ref(false)
   const isRunning = ref(false)
   const isSubmitting = ref(false)
+  // P60: por qué falló la última entrega, en pantalla (antes solo quedaba en «Registro»).
+  const errorEntrega = ref<string | null>(null)
   const isLoadingExercise = ref(false)
   // Estado REAL del autoguardado (antes era un texto fijo «sincronizado ✔» desde
   // antes de escribir nada). Solo aplica a actividades de código. Textos y reglas en utils/autoguardado.ts.
@@ -171,6 +174,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     cancelarAutoguardado()
     currentSubmissionId.value = null
     submissionResult.value = null
+    errorEntrega.value = null
     pidiendoConfianza.value = false
     juicioConfianza.value = null
     juicioDecidido = false
@@ -523,6 +527,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     cancelarAutoguardado()
     isSubmitting.value = true
     submissionResult.value = null
+    errorEntrega.value = null
     // El cambio de dominio se cuenta desde la entrega anterior, no desde que se abrió el ejercicio (07/10: la segunda
     // entrega decía «+17 %» sumando también lo de la primera, y una bajada se mostraba como «se mantiene»).
     if (masteryAfter.value !== null) masteryBefore.value = masteryAfter.value
@@ -580,7 +585,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
             consoleLog.value.push(`🎯 Solución calificada con ${finalResult.totalScore}/${finalMaxScore} puntos por el backend.`)
             masteryAfter.value = await fetchUnitMastery(currentExercise.value.learningUnitId)
           } else {
-            consoleLog.value.push(`⚠ La calificación está tardando más de lo esperado. Revisa tus notificaciones en unos minutos.`)
+            errorEntrega.value = ENTREGA_TARDA
+            consoleLog.value.push(`⚠ ${ENTREGA_TARDA}`)
           }
         }
       }
@@ -589,6 +595,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const { status } = extract(err)
       const msg = messageOf(err, 'Error de red o backend no disponible')
       console.warn('[STIRE Submissions] Error al calificar solución:', msg)
+      // Un intento cerrado en otra pestaña no se puede volver a usar: el próximo «Entregar» abre uno nuevo.
+      if (intentoYaCerrado(status, msg)) currentSubmissionId.value = null
+      errorEntrega.value = mensajeErrorEntrega({ status, mensaje: msg })
 
       if (status === 403 || status === 409) {
         consoleLog.value.push(`⛔ Límite alcanzado o acceso no autorizado: ${msg}`)
@@ -658,7 +667,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     autosaveState.value = 'idle'
   }
 
-  async function saveNow(generacion: number, intento: number) {
+  async function saveNow(generacion: number, intento: number, reabierto = false) {
     try {
       const subId = await ensureActiveSubmission()
       const qType = currentExercise.value.questionType
@@ -680,7 +689,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     } catch (err: unknown) {
       if (generacion !== autosaveGeneracion) return
       const e = err as { response?: { status?: number }; statusCode?: number; message?: string }
-      const espera = esperaReintento(intento, e?.response?.status ?? e?.statusCode)
+      const status = e?.response?.status ?? e?.statusCode
+      // P60: el intento se cerró (en otra pestaña o con una entrega): se olvida y se guarda en uno nuevo, una sola vez.
+      if (!reabierto && intentoYaCerrado(status, useApiErrorMessage().messageOf(err, e?.message ?? ''))) {
+        currentSubmissionId.value = null
+        return saveNow(generacion, intento, true)
+      }
+      const espera = esperaReintento(intento, status)
       if (espera === null) {
         autosaveState.value = 'error'
         console.warn('[STIRE Autosave] No se pudo autoguardar:', e?.message)
@@ -705,6 +720,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     htmlCssRateLimited,
     isRunning,
     isSubmitting,
+    errorEntrega,
     isLoadingExercise,
     lastAutosave,
     pidiendoConfianza,

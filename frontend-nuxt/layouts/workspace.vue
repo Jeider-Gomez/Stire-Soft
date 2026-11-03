@@ -104,6 +104,23 @@
       </div>
     </header>
 
+    <!-- P60: si la entrega falla, se dice aquí con qué hacer (antes solo quedaba en la pestaña «Registro»). -->
+    <div
+      v-if="workspaceStore.errorEntrega"
+      role="alert"
+      class="bg-semantico-falla/10 border-b border-semantico-falla/30 px-4 py-2 text-xs text-base-texto-primario flex items-start gap-2 flex-shrink-0">
+      <TriangleAlert :size="16" class="text-semantico-falla shrink-0 mt-0.5" aria-hidden="true" />
+      <span class="flex-1">{{ workspaceStore.errorEntrega }}</span>
+      <button
+        type="button"
+        class="shrink-0 min-h-[32px] min-w-[32px] -my-1 rounded-md inline-flex items-center justify-center hover:bg-semantico-falla/15 transition-colors"
+        aria-label="Cerrar el aviso"
+        title="Cerrar el aviso"
+        @click="workspaceStore.errorEntrega = null">
+        <X :size="14" aria-hidden="true" />
+      </button>
+    </div>
+
     <!-- Aviso solo si el tipo no está soportado en la plataforma -->
     <div
       v-if="isUnsupportedType"
@@ -132,7 +149,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ChevronRight, Cloud, Loader2, Play, Send, Sparkles, Square, TriangleAlert } from 'lucide-vue-next'
+import { ArrowLeft, ChevronRight, Cloud, Loader2, Play, Send, Sparkles, Square, TriangleAlert, X } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { esAtajoProbar } from '~/utils/atajos'
 import { useTutorStore } from '~/stores/tutor'
