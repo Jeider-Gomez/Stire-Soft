@@ -28,6 +28,7 @@ Se acumula aquí lo desplegado desde la `v2.4.0`; se marca la versión al cierre
 - La carga del curso envía la posición de cada ejercicio: uno agregado después queda en su sitio.
 - El Tutor recibe la señal de que el estudiante lleva tres intentos seguidos sin lograrlo (P52): faltaba subir esa parte de la pantalla.
 - Si «Entregar» falla, el ejercicio lo dice arriba con qué hacer (antes solo quedaba en «Registro»). Un intento cerrado en otra pestaña ya no deja la entrega ni el autoguardado atascados: el siguiente «Entregar» o guardado abre uno nuevo (P60).
+- Al entregar un programa que falla, el resultado dice qué revisar en el primer caso que falló (no mostró nada, NaN, números juntados como texto, se pasa por 1, decimales, mayúsculas, el tipo de error…) sin ningún dato del caso, así que sirve también en los ocultos. El Tutor recibe ese resultado y orienta sin inventar los datos de un caso oculto ni dar la corrección (prompt v17, P61).
 - El Tutor recibe el código numerado como en el editor y cita bien la línea, y sabe que el resultado de «Probar código» está en «Salida de tu programa».
 - La pista de la pantalla aclara que su «línea» es la de la salida, no la del código.
 - El Tutor recibe con cada mensaje de un ejercicio de programar un recordatorio de no dictar las piezas de la solución.

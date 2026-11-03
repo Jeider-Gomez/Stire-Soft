@@ -139,6 +139,17 @@ describe('TutorContextService.buildSystemPrompt — enunciado y última prueba',
     expect(prompt).toContain('No digas «¡Exacto!»');
   });
 
+  it('P61: la última entrega fallida va entre vallas, con la regla de no inventar los datos de un caso oculto', async () => {
+    const prompt = await service.buildSystemPrompt(1, {
+      activityDescription: 'Suma dos números.',
+      ultimaEntrega: 'Pasaron 0 de 1 caso. ✗ Caso oculto. Qué revisar en «Caso oculto»: el número no es el esperado.',
+    }, null);
+    expect(prompt).toContain('<<<ENTREGA\nPasaron 0 de 1 caso. ✗ Caso oculto.');
+    expect(prompt).toContain('no inventes su entrada ni su salida');
+    const sin = await service.buildSystemPrompt(1, { activityDescription: 'Suma dos números.' }, null);
+    expect(sin).not.toContain('<<<ENTREGA');
+  });
+
   it('una prueba con forma inválida o sin salidas no se incluye', () => {
     expect(ultimaPruebaDe('hola')).toBeNull();
     expect(ultimaPruebaDe({ esperada: 12, obtenida: 'x' })).toBeNull();

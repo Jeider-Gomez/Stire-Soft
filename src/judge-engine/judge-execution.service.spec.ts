@@ -144,7 +144,8 @@ describe('JudgeExecutionService.gradeAnswer — la nota se escala a los puntos d
     const t = build(['accepted', 'wrong_answer']);
     await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: nombrados, maxPoints: 20 });
     expect(scoreEmitted(t.emitter)).toBe(10);
-    expect(feedbackEmitted(t.emitter)).toBe('Pasó 1 de 2 casos (10 de 20 puntos). ✓ Saludo con un nombre simple · ✗ Saludo con un nombre compuesto.');
+    // P61: más qué revisar en el primer caso que falló (aquí el programa no mostró nada), sin sus datos.
+    expect(feedbackEmitted(t.emitter)).toBe('Pasó 1 de 2 casos (10 de 20 puntos). ✓ Saludo con un nombre simple · ✗ Saludo con un nombre compuesto. Qué revisar en «Saludo con un nombre compuesto»: tu programa no mostró nada. Revisa que llegue a un console.log con el resultado en todos los caminos (también dentro de cada if o else).');
     // 01/11: con un solo caso decía «Pasaron 0 de 1 casos».
     expect(feedbackDeCasos([{ nombre: 'Único', paso: false }], 0, 20, 'wrong_answer')).toBe('Pasaron 0 de 1 caso (0 de 20 puntos). ✗ Único.');
   });
@@ -164,9 +165,14 @@ describe('JudgeExecutionService.gradeAnswer — la nota se escala a los puntos d
   });
 
   it('si el programa se detuvo con un error o se pasó del tiempo, lo dice', async () => {
-    const t = build(['accepted', 'runtime_error']);
+    let t = build(['accepted', 'runtime_error']);
     await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: nombrados, maxPoints: 20 });
-    expect(feedbackEmitted(t.emitter)).toContain('se detuvo con un error o tardó demasiado');
+    expect(feedbackEmitted(t.emitter)).toContain('tu programa se detuvo con un error');
+    t = build(['time_limit', 'accepted']);
+    await t.service.gradeAnswer({ submissionAnswerId: 1, code: '', language: 'javascript', testCases: nombrados, maxPoints: 20 });
+    expect(feedbackEmitted(t.emitter)).toContain('tardó demasiado');
+    // Sin orientación (no debería pasar) se conserva el aviso general de siempre.
+    expect(feedbackDeCasos([{ nombre: 'A', paso: false }], 0, 10, 'time_limit')).toContain('se detuvo con un error o tardó demasiado');
   });
 
   it('con todos los casos correctos conserva el mensaje de siempre', async () => {

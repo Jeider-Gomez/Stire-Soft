@@ -67,6 +67,7 @@ ejercicio de programar), con datos de ejemplo. Las genera la prueba `src/tutor/t
 | v14 · 2026-11-02 | La regla 1 aclara que dictar la solución por piezas también es darla: el Tutor dice qué idea falta y el estudiante la arma. | Probando v13 como Santiago, en nivel de pista: le dijo que uniera con `+` el texto `"Vivo en "`, la variable `ciudad` y el punto, que es la respuesta dicha en palabras. |
 | v15 · 2026-11-02 | En un ejercicio de programar, cada mensaje del estudiante llega con un recordatorio de no dictar las piezas de su solución (`tutor-nota-programar.ts`), y el cierre con una acción ya no invita a decir qué escribir. | La v14 no bastó: en el sitio real siguió diciendo «une con + el texto "Vivo en ", la variable ciudad y el punto», y dio un ejemplo con el mismo molde. |
 | v16 · 2026-11-02 | El Tutor sabe que el panel «Salida de tu programa» solo muestra lo que escribió el programa; lo esperado, la comparación y qué revisar están en «Casos de prueba». | Jeider: la consola es para el resultado y la retroalimentación se da en los casos. |
+| v17 · 2026-11-03 | El servidor le pasa al Tutor el resultado de la última entrega fallida del ejercicio (casos por nombre y qué revisar en el primero que falló, sin sus datos). Si el caso es oculto, el Tutor no inventa su entrada ni su salida: orienta en general y no da la corrección (P61). | Jeider, en la evaluación heurística: al entregar solo se sabía en qué caso se falló, sin orientación sobre qué revisar, y de un caso oculto no se ve nada. |
 
 ## Lo que sigue (P41)
 

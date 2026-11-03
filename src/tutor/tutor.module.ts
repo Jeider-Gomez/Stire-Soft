@@ -21,10 +21,11 @@ import { LearningProgressModule } from '../learning-progress/learning-progress.m
 import { ContentRenderingModule } from '../content-rendering/content-rendering.module';
 import { ReviewSchedulesModule } from '../review-schedules/review-schedules.module';
 import { LearningUnitModule } from '../learning-unit/learning-unit.module';
+import { SubmissionAnswer } from '../submission-answers/entities/submission-answer.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TutorConversation, TutorCredential, TutorSetting, Activity, Enrollment, Refuerzo, Content]),
+    TypeOrmModule.forFeature([TutorConversation, TutorCredential, TutorSetting, Activity, Enrollment, Refuerzo, Content, SubmissionAnswer]),
     LearningProgressModule,
     ContentRenderingModule,
     ReviewSchedulesModule,

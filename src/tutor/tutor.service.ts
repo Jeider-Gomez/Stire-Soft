@@ -28,11 +28,15 @@ import { Repository } from 'typeorm';
 import { Content } from '../content/entities/content.entity';
 import { ContentType } from '../common/enums/content-type.enum';
 import { Activity } from '../activities/entities/activity.entity';
+import { SubmissionAnswer } from '../submission-answers/entities/submission-answer.entity';
+import { SubmissionStatus } from '../common/enums/submission-status.enum';
 
 /** Cuánto de la lección se le da al Tutor: lo suficiente para hablar con las mismas palabras y ejemplos. */
 export const MAX_LECCION_PARA_TUTOR = 3000;
 /** Cuánto del enunciado del ejercicio se le da al Tutor (10/10: sin él felicitaba código que no resolvía el ejercicio). */
 export const MAX_ENUNCIADO_PARA_TUTOR = 1500;
+/** P61: el resultado de la última entrega fallida que lee el Tutor (lo escribe el juez: casos por nombre y qué revisar). */
+export const MAX_ENTREGA_PARA_TUTOR = 700;
 /** La lección cuando hay un ejercicio abierto: el enunciado es lo principal. */
 export const MAX_LECCION_CON_EJERCICIO = 1500;
 
@@ -162,6 +166,8 @@ export class TutorService {
     private readonly settingsService: TutorSettingsService,
     @InjectRepository(Content) private readonly contenidos: Repository<Content>,
     @InjectRepository(Activity) private readonly actividades: Repository<Activity>,
+    // P61: opcional para que un servicio armado a mano (pruebas, scripts) siga funcionando sin él.
+    @InjectRepository(SubmissionAnswer) private readonly respuestas?: Repository<SubmissionAnswer>,
   ) {
     this.geminiModel = this.configService.get<string>('GEMINI_MODEL', 'gemini-flash-latest');
   }
@@ -212,8 +218,11 @@ export class TutorService {
     }
 
     const enunciado = unit ? await this.enunciadoDelEjercicio(context?.activityId, unit.id) : {};
+    // Solo con el enunciado ya encontrado: la actividad existe y es de la unidad autorizada.
+    const entrega = enunciado.activityDescription ? await this.ultimaEntregaFallida(studentId, context?.activityId) : {};
     const promptContext = {
       ...this.sanitizeContext(context, unit),
+      ...entrega,
       // Con un ejercicio abierto la lección es apoyo: va más corta, así el Tutor lee menos y responde antes (10/10).
       ...(unit ? await this.leccionDeLaUnidad(unit.id, enunciado.activityDescription ? MAX_LECCION_CON_EJERCICIO : MAX_LECCION_PARA_TUTOR) : {}),
       ...enunciado,
@@ -370,6 +379,24 @@ export class TutorService {
     return { activityDescription: texto.length > MAX_ENUNCIADO_PARA_TUTOR ? `${texto.slice(0, MAX_ENUNCIADO_PARA_TUTOR)}\n[…]` : texto };
   }
 
+  /**
+   * P61, versión con IA: el resultado de la última entrega de este ejercicio, si no aprobó. Lo escribe el juez
+   * (judge-execution.service.ts): qué casos pasaron, por su nombre, y qué revisar en el primero que falló, sin los datos
+   * de los casos. Con eso el Tutor orienta también sobre un caso oculto sin inventar sus datos ni dar la solución.
+   */
+  private async ultimaEntregaFallida(studentId: number, activityId: unknown): Promise<{ ultimaEntrega?: string }> {
+    const id = Number(activityId);
+    if (!this.respuestas || !Number.isInteger(id) || id <= 0) return {};
+    const r = await this.respuestas.findOne({
+      where: { submission: { studentId, activityId: id, status: SubmissionStatus.GRADED } },
+      relations: { submission: true },
+      order: { submission: { submittedAt: 'DESC' }, id: 'DESC' },
+    });
+    const texto = r && r.isCorrect === false ? r.feedback?.trim() : '';
+    if (!texto) return {};
+    return { ultimaEntrega: texto.length > MAX_ENTREGA_PARA_TUTOR ? `${texto.slice(0, MAX_ENTREGA_PARA_TUTOR)}…` : texto };
+  }
+
   private sanitizeContext(context: any, unit: { id: number; title: string } | null): any {
     if (!context || typeof context !== 'object') return context;
     const rest = { ...context };
@@ -379,6 +406,7 @@ export class TutorService {
     delete rest.lessonTitle;
     delete rest.lessonText;
     delete rest.activityDescription;
+    delete rest.ultimaEntrega;
     return unit ? { ...rest, learningUnitId: unit.id, unitTitle: unit.title } : rest;
   }
 

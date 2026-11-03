@@ -6,6 +6,7 @@ import { ExecutionResultsRepository } from './judge-engine.repository';
 import { JudgeAnswerGradedEvent } from '../common/events/judge-answer-graded.event';
 import { JudgeAnswerFailedEvent } from '../common/events/judge-answer-failed.event';
 import type { JudgeJobData } from './judge-queue.interface';
+import { orientacionDeFallo } from './orientacion-fallo';
 
 // Logica de calificacion real, extraida de JudgeWorker para que sea
 // compartida por los dos modos de cola (ADR 08): JudgeWorker (BullMQ,
@@ -27,13 +28,17 @@ export function feedbackDeCasos(
   puntos: number,
   maxPuntos: number | undefined,
   estado: string,
+  // P61: qué revisar en el primer caso que falló, sin sus datos (orientacion-fallo.ts).
+  orientacion?: { caso: string; texto: string } | null,
 ): string {
   const pasaron = detalle.filter((d) => d.paso).length;
   const puntaje = maxPuntos ? ` (${puntos} de ${maxPuntos} puntos)` : '';
   const marcas = detalle.map((d) => `${d.paso ? '✓' : '✗'} ${d.nombre}`).join(' · ');
-  const error = estado === 'runtime_error' || estado === 'compile_error' || estado === 'time_limit'
-    ? ' En algún caso tu programa se detuvo con un error o tardó demasiado.'
-    : '';
+  const error = orientacion
+    ? ` Qué revisar en «${orientacion.caso}»: ${orientacion.texto}`
+    : estado === 'runtime_error' || estado === 'compile_error' || estado === 'time_limit'
+      ? ' En algún caso tu programa se detuvo con un error o tardó demasiado.'
+      : '';
   return `${pasaron === 1 ? 'Pasó' : 'Pasaron'} ${pasaron} de ${detalle.length} ${detalle.length === 1 ? 'caso' : 'casos'}${puntaje}. ${marcas}.${error}`;
 }
 
@@ -56,6 +61,7 @@ export class JudgeExecutionService {
     let statusSummary = 'accepted';
     // Qué pasó con cada caso, solo con su nombre (nunca la entrada ni la salida: los ocultos no se revelan).
     const detalle: Array<{ nombre: string; paso: boolean }> = [];
+    let orientacion: { caso: string; texto: string } | null = null;
 
     for (const testCase of testCases) {
       this.logger.log(`Procesando Test Case ${testCase.label || 'Oculto'}`);
@@ -74,7 +80,12 @@ export class JudgeExecutionService {
 
       const weight = testCase.weight || 10;
       totalWeight += weight;
-      detalle.push({ nombre: testCase.label || 'Caso oculto', paso: runResult.status === 'accepted' });
+      const nombre = testCase.label || 'Caso oculto';
+      detalle.push({ nombre, paso: runResult.status === 'accepted' });
+      if (!orientacion) {
+        const texto = orientacionDeFallo(runResult, testCase);
+        if (texto) orientacion = { caso: nombre, texto };
+      }
       if (runResult.status === 'accepted') {
         passedWeight += weight;
       } else {
@@ -91,7 +102,7 @@ export class JudgeExecutionService {
 
     // 31/10 (Jeider, viendo freeCodeCamp: «la pista me va diciendo qué me falta»; «no un rotundo cero si te equivocas»): se dice
     // cuántos casos pasaron, cuántos puntos valen y cuáles, por su nombre.
-    const feedback = allAccepted ? '¡Excelente! Todos los casos pasaron.' : feedbackDeCasos(detalle, totalScore, maxPoints, statusSummary);
+    const feedback = allAccepted ? '¡Excelente! Todos los casos pasaron.' : feedbackDeCasos(detalle, totalScore, maxPoints, statusSummary, orientacion);
 
     // emitAsync (no emit): esperamos a que el listener persista la nota
     // antes de dar por terminado el job. Con emit() un fallo del listener
