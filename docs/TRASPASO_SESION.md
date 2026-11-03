@@ -48,8 +48,8 @@ salvo correcciones. Fases: 0 orden → 1 auditoría → 2 diseño → 3 construc
 humana (abre la v3.0.0) → 5 investigación.
 
 **Semana 11 (26/10–6/11), el equipo:** verificación del panel del docente (S11-RV), **evaluación heurística humana** en
-la hoja de Google (cada uno sus ítems, ver Trello S11-HE; plazo 5/11), **prueba con 2 personas cada uno** (S11-PP, 6/11;
-`docs/calidad/PRUEBA_CON_PERSONAS.md`) y Pedro revisa las políticas (S11-P03). Jeider junta el informe de la prueba (8/11).
+la hoja de Google (cada uno sus ítems, ver Trello S11-HE; plazo 5/11), **prueba con 2 personas cada uno** (S11-PP, aplazada al 13/11;
+`docs/calidad/PRUEBA_CON_PERSONAS.md`) y Pedro revisa las políticas (S11-P03). Jeider junta el informe de la prueba (15/11).
 
 **Mejoras de la evaluación de la IA antes de la humana** (`docs/calidad/EVALUACION_HEURISTICA_PLAN_A_5.md`, bloque A,
 con registro de avance): hechos los ítems 2, 3, 4, 5, 7, 8, 11, 13, 21, 27, 28, 29 y 31 (28/10). El ítem 2 (respuesta del

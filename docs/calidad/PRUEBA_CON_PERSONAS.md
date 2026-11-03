@@ -7,7 +7,7 @@ audio del 20/10 (P17).
 **Resultado esperado:** cada integrante hace la prueba con **2 personas** y entrega una hoja por persona (abajo). Jeider
 junta las 10 en un informe corto: lo que más se repitió, ordenado por cuántas personas lo vivieron.
 
-**Cuándo:** desde ya (semana autónoma) hasta el **viernes 6/11, 8:00 p. m.**
+**Cuándo:** se aplazó una semana para todo el equipo (Jeider, 02/11): hasta el **viernes 13/11, 8:00 p. m.**
 
 ## A quién buscar
 
