@@ -63,6 +63,7 @@
           <!-- Ítem 4 de la evaluación heurística: en el celular no hay «title», así que la explicación va a la vista. -->
           <p class="text-[11px] text-base-texto-secundario">{{ definicion('Casos de prueba') }}</p>
 
+          <ExerciseResumenCasos :casos="workspaceStore.publicTestCases" :ejecutando="workspaceStore.isRunning" />
           <div class="space-y-3">
             <ExerciseCasoPrueba v-for="tc in workspaceStore.publicTestCases" :key="tc.id" :tc="tc" :diagnostico="tc.passed === false ? diagnostico(tc) : null" :limite-ms="workspaceStore.timeLimitMs" />
           </div>
@@ -160,7 +161,7 @@
         />
       </div>
 
-      <!-- P48: la salida del programa siempre a la vista, con lo que hace cada botón (utils/salidaPrograma.ts). -->
+      <!-- P48: la salida del programa siempre a la vista; la comparación está en «Casos de prueba» (utils/salidaPrograma.ts). -->
       <ExerciseSalidaPrograma :casos="workspaceStore.publicTestCases" :ejecutando="workspaceStore.isRunning" :plegada="salidaPlegada" @plegar="plegarSalida" @ver-casos="plegarPanel(false); leftTab = 'casos'" />
 
       <!-- Barra de Estado Inferior del Editor -->

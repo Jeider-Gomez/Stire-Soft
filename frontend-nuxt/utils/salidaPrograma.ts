@@ -5,7 +5,7 @@
 
 export interface CasoDeSalida {
   id: number
-  /** Qué comprueba el caso; se muestra en el panel «Salida». */
+  /** Qué comprueba el caso; se muestra en la consola y en su tarjeta. */
   nombre?: string
   input: string
   expectedOutput: string
@@ -34,7 +34,13 @@ export function resumenDeSalida(casos: ReadonlyArray<CasoDeSalida>, ejecutando: 
   return { estado: 'coincide', caso: casos[0] ?? null, coinciden, total }
 }
 
-/** Una frase corta de lo que sigue, para quien mira el panel. */
+/** Lo que dice la consola mientras no hay resultado: nada de comparar, eso está en «Casos de prueba». */
+export function textoDeConsola(r: ResumenSalida): string {
+  if (r.estado === 'ejecutando') return 'Ejecutando tu programa…'
+  return 'Aquí aparece lo que muestre tu programa al pulsar «Probar código». Pruébalo las veces que quieras: no gasta intentos.'
+}
+
+/** Una frase corta de lo que sigue, sobre las tarjetas de «Casos de prueba». */
 export function siguientePaso(r: ResumenSalida): string {
   if (r.estado === 'sin-probar') return 'Escribe tu programa y pulsa «Probar código»: no gasta intentos, pruébalo las veces que quieras.'
   if (r.estado === 'ejecutando') return 'Ejecutando tu programa…'
@@ -43,5 +49,5 @@ export function siguientePaso(r: ResumenSalida): string {
       ? `Coinciden los ${r.total} ejemplos. Ya puedes pulsar «Entregar solución»: revisa todos los casos, también los que no ves, y usa un intento.`
       : 'Coincide con el ejemplo. Ya puedes pulsar «Entregar solución»: revisa todos los casos, también los que no ves, y usa un intento.'
   }
-  return 'Todavía no coincide. Compara las dos salidas, corrige y vuelve a probar: no gasta intentos.'
+  return 'Todavía no coincide. Compara lo que mostró con lo que debe salir, corrige y vuelve a probar: no gasta intentos.'
 }

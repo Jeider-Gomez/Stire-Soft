@@ -92,6 +92,6 @@ export function pasosCodigo(e: {
       : undefined,
     codigo: sinEntrada ? 'console.log("Buenos días"); // cambia el mensaje por el que pide el ejercicio' : numeros ? 'console.log(doble);' : 'console.log(mensaje);',
   })
-  pasos.push({ titulo: 'Pulsa «Probar código»', detalle: 'Abajo, en «Salida de tu programa», ves si coincide y qué cambia. Probar no gasta intentos: entrega cuando coincida.' })
+  pasos.push({ titulo: 'Pulsa «Probar código»', detalle: 'Abajo ves lo que mostró tu programa y en «Casos de prueba», si coincide y qué revisar. Probar no gasta intentos: entrega cuando coincida.' })
   return pasos
 }

@@ -66,6 +66,7 @@ ejercicio de programar), con datos de ejemplo. Las genera la prueba `src/tutor/t
 | v13 · 2026-11-01 | El código de un programa llega con cada línea numerada como en el editor, y el Tutor usa ese número. Sabe que el resultado de «Probar código» está en el panel «Salida de tu programa», debajo del editor. | Probando como Santiago: dijo «tu línea 3» en un código de 2 líneas; el ejemplo del prompt decía «en tu línea 3» y el código llegaba sin numerar. |
 | v14 · 2026-11-02 | La regla 1 aclara que dictar la solución por piezas también es darla: el Tutor dice qué idea falta y el estudiante la arma. | Probando v13 como Santiago, en nivel de pista: le dijo que uniera con `+` el texto `"Vivo en "`, la variable `ciudad` y el punto, que es la respuesta dicha en palabras. |
 | v15 · 2026-11-02 | En un ejercicio de programar, cada mensaje del estudiante llega con un recordatorio de no dictar las piezas de su solución (`tutor-nota-programar.ts`), y el cierre con una acción ya no invita a decir qué escribir. | La v14 no bastó: en el sitio real siguió diciendo «une con + el texto "Vivo en ", la variable ciudad y el punto», y dio un ejemplo con el mismo molde. |
+| v16 · 2026-11-02 | El Tutor sabe que el panel «Salida de tu programa» solo muestra lo que escribió el programa; lo esperado, la comparación y qué revisar están en «Casos de prueba». | Jeider: la consola es para el resultado y la retroalimentación se da en los casos. |
 
 ## Lo que sigue (P41)
 

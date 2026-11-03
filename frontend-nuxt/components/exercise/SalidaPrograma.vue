@@ -2,7 +2,8 @@
      P48: siempre a la vista; antes de probar dice qué va a aparecer ahí y que probar no gasta intentos (entregar sí); después muestra lo
      que escribió el programa junto a lo que se esperaba. Se puede ocultar y mostrar («se desplegó y no pude quitarla»).
      P49: «Probar con mis datos»: el estudiante escribe lo que entra y ve lo que mostró su programa, con el mismo juez que califica.
-     El detalle de todos los casos sigue en la pestaña «Casos de prueba». utils/salidaPrograma.ts y composables/useProbarConMisDatos.ts. -->
+     02/11 (Jeider): este panel solo muestra el resultado; la comparación y qué revisar están en «Casos de prueba» (ResumenCasos.vue y CasoPrueba.vue).
+     «Mis datos» sí explica su error: esa prueba no pasa por los casos. utils/salidaPrograma.ts y composables/useProbarConMisDatos.ts. -->
 <template>
   <section
     class="flex-shrink-0 overflow-y-auto border-t border-editor-border bg-editor-header text-editor-text text-xs"
@@ -29,41 +30,25 @@
 
     <div v-show="!plegada" id="salida-cuerpo" class="px-4 py-2 md:pb-16 space-y-3">
       <div class="space-y-2" role="status" aria-live="polite">
-        <p v-if="resumen.estado !== 'no-coincide' || !resumen.caso" class="leading-relaxed" :class="resumen.estado === 'coincide' ? 'text-[#5eead4]' : 'text-editor-muted'">
-          <Check v-if="resumen.estado === 'coincide'" :size="13" class="inline mr-1" aria-hidden="true" />
-          {{ siguientePaso(resumen) }}
-        </p>
+        <p v-if="!resumen.caso" class="leading-relaxed text-editor-muted">{{ textoDeConsola(resumen) }}</p>
 
         <template v-if="resumen.caso">
-          <p v-if="resumen.estado === 'no-coincide'" class="text-[#f87171] font-semibold">
-            <X :size="13" class="inline mr-1" aria-hidden="true" />
-            {{ resumen.coinciden }} de {{ resumen.total }} {{ resumen.total === 1 ? 'ejemplo coincide' : 'ejemplos coinciden' }}. {{ siguientePaso(resumen) }}
-          </p>
           <p v-if="resumen.caso.nombre" class="font-sans font-semibold text-white">{{ resumen.caso.nombre }}</p>
-          <dl class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-codigo">
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-2 font-codigo">
             <div>
               <dt class="text-[10px] text-editor-muted font-sans">Entró</dt>
               <dd class="whitespace-pre-wrap break-words text-[#fcd34d]">{{ resumen.caso.input || '(nada)' }}</dd>
             </div>
             <div>
               <dt class="text-[10px] text-editor-muted font-sans">Tu programa mostró</dt>
-              <dd class="whitespace-pre-wrap break-words" :class="resumen.estado === 'coincide' ? 'text-[#5eead4]' : 'text-[#f87171]'">{{ resumen.caso.actualOutput || '(no mostró nada)' }}</dd>
-            </div>
-            <div v-if="resumen.estado === 'no-coincide'">
-              <dt class="text-[10px] text-editor-muted font-sans">Se esperaba</dt>
-              <dd class="whitespace-pre-wrap break-words text-[#5eead4]">{{ resumen.caso.expectedOutput }}</dd>
+              <dd class="whitespace-pre-wrap break-words text-white">{{ resumen.caso.actualOutput || '(no mostró nada)' }}</dd>
             </div>
           </dl>
-          <!-- Qué revisar, en español (01/11: aquí solo se veía «SyntaxError: missing )…»; la explicación estaba en la otra pestaña). -->
-          <p v-if="queRevisar" class="flex items-start gap-1.5 font-sans leading-relaxed text-editor-text">
-            <Lightbulb :size="13" class="shrink-0 mt-0.5 text-[#fcd34d]" aria-hidden="true" />
-            <span>{{ queRevisar }}</span>
-          </p>
           <button
             type="button"
             class="min-h-[32px] px-2 -ml-2 rounded-md font-semibold text-[#7dd3fc] hover:bg-white/10 underline underline-offset-2"
             @click="$emit('ver-casos')">
-            Ver los casos con detalle
+            Ver la comparación en «Casos de prueba»
           </button>
         </template>
       </div>
@@ -111,10 +96,10 @@
 </template>
 
 <script setup lang="ts">
-import { Check, ChevronDown, ChevronUp, Lightbulb, Loader2, Play, Terminal, X } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp, Loader2, Play, Terminal } from 'lucide-vue-next'
 import { useProbarConMisDatos } from '~/composables/useProbarConMisDatos'
-import { diagnosticarError, diagnosticarSalida } from '~/utils/diagnosticoSalida'
-import { resumenDeSalida, siguientePaso, type CasoDeSalida } from '~/utils/salidaPrograma'
+import { diagnosticarError } from '~/utils/diagnosticoSalida'
+import { resumenDeSalida, textoDeConsola, type CasoDeSalida } from '~/utils/salidaPrograma'
 
 const props = defineProps<{ casos: ReadonlyArray<CasoDeSalida>; ejecutando: boolean; plegada: boolean }>()
 defineEmits<{ 'ver-casos': []; plegar: [valor: boolean] }>()
@@ -123,10 +108,6 @@ const resumen = computed(() => resumenDeSalida(props.casos, props.ejecutando))
 const recibeDatos = computed(() => props.casos.length === 0 || props.casos.some((c) => !!c.input))
 // `ejecutando` ya es la propiedad (la prueba de los ejemplos); la del composable es la de «mis datos».
 const { entrada, resultado, ejecutando: ejecutandoPropio, fallo, ejecutar } = useProbarConMisDatos()
-const queRevisar = computed(() => {
-  const c = resumen.value.caso
-  return c && resumen.value.estado === 'no-coincide' ? diagnosticarSalida(String(c.expectedOutput ?? ''), String(c.actualOutput ?? ''), String(c.input ?? ''))?.mensaje ?? null : null
-})
 const errorExplicado = computed(() => {
   const r = resultado.value
   return r && r.status === 'error' ? diagnosticarError(r.error || r.output || '')?.mensaje ?? null : null

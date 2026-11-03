@@ -15,9 +15,10 @@ function cargar<T>(nombre: string): T {
 
 interface Caso { id: number; input: string; expectedOutput: string; actualOutput?: string; passed?: boolean }
 interface Resumen { estado: string; caso: Caso | null; coinciden: number; total: number }
-const { resumenDeSalida, siguientePaso } = cargar<{
+const { resumenDeSalida, siguientePaso, textoDeConsola } = cargar<{
   resumenDeSalida: (c: Caso[], ejecutando: boolean) => Resumen;
   siguientePaso: (r: Resumen) => string;
+  textoDeConsola: (r: Resumen) => string;
 }>('salidaPrograma');
 
 const ana: Caso = { id: 1, input: 'Ana', expectedOutput: 'Hola, Ana.' };
@@ -27,11 +28,12 @@ describe('Lo que muestra el panel «Salida»', () => {
     const r = resumenDeSalida([ana], false);
     expect(r.estado).toBe('sin-probar');
     expect(r.caso).toBeNull();
-    expect(siguientePaso(r)).toContain('no gasta intentos');
+    expect(textoDeConsola(r)).toContain('no gasta intentos');
   });
 
   it('mientras se ejecuta lo dice', () => {
     expect(resumenDeSalida([ana], true).estado).toBe('ejecutando');
+    expect(textoDeConsola(resumenDeSalida([ana], true))).toContain('Ejecutando');
     expect(siguientePaso(resumenDeSalida([ana], true))).toContain('Ejecutando');
   });
 
@@ -88,7 +90,21 @@ describe('La pantalla del ejercicio de programar', () => {
     expect(panel).toContain('aria-live="polite"');
     expect(panel).toContain('Probar no gasta intentos · Entregar sí');
     expect(panel).toContain('Tu programa mostró');
-    expect(panel).toContain('Se esperaba');
     expect(panel).toContain("$emit('ver-casos')");
+  });
+
+  // 02/11, Jeider: la consola solo muestra el resultado; la comparación y la retroalimentación se dan en «Casos de prueba».
+  it('la consola no compara ni corrige: eso está en «Casos de prueba»', () => {
+    expect(panel).not.toContain('Se esperaba');
+    expect(panel).not.toContain('expectedOutput');
+    expect(panel).not.toContain('coinciden');
+    expect(panel).not.toContain('siguientePaso');
+    expect(panel).not.toContain('diagnosticarSalida');
+    const resumen = leer('components', 'exercise', 'ResumenCasos.vue');
+    expect(resumen).toContain('ejemplos coinciden');
+    expect(resumen).toContain('siguientePaso(resumen)');
+    expect(pagina).toContain('<ExerciseResumenCasos :casos="workspaceStore.publicTestCases"');
+    expect(leer('components', 'exercise', 'CasoPrueba.vue')).toContain('Debe salir:');
+    expect(pagina).toContain(':diagnostico="tc.passed === false ? diagnostico(tc) : null"');
   });
 });

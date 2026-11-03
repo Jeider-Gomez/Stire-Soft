@@ -45,12 +45,12 @@ describe('Los errores de sintaxis más comunes, en palabras de estudiante', () =
   });
 });
 
-describe('El panel «Salida» explica lo que pasó', () => {
+describe('Dónde se explica lo que pasó', () => {
   const panel = leer('components', 'exercise', 'SalidaPrograma.vue');
 
-  it('al probar los ejemplos, dice qué revisar, sin dar la solución', () => {
-    expect(panel).toContain('v-if="queRevisar"');
-    expect(panel).toContain("resumen.value.estado === 'no-coincide' ? diagnosticarSalida(");
+  it('al probar los ejemplos, dice qué revisar en «Casos de prueba», no en la consola', () => {
+    expect(panel).not.toContain('diagnosticarSalida');
+    expect(leer('components', 'exercise', 'CasoPrueba.vue')).toContain('{{ diagnostico.mensaje }}');
   });
 
   it('con «Probar con mis datos», explica el error del programa', () => {
