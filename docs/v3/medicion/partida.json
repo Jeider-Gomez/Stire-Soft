@@ -1,0 +1,366 @@
+{
+  "fecha": "2026-11-12T16:27:20.779Z",
+  "base": "http://localhost:3000",
+  "rutas": [
+    {
+      "rol": "estudiante",
+      "ruta": "/estudiante",
+      "llego": "/estudiante",
+      "fria": {
+        "total": 2247,
+        "lcp": 1480,
+        "kb": 400,
+        "kbJs": 365,
+        "pedidos": 251,
+        "url": "/estudiante"
+      },
+      "caliente": {
+        "total": 1308,
+        "lcp": 688,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 251,
+        "url": "/estudiante"
+      },
+      "celular": {
+        "total": 19808,
+        "lcp": 16788,
+        "kb": 332,
+        "kbJs": 298,
+        "pedidos": 223,
+        "url": "/estudiante"
+      },
+      "axe": []
+    },
+    {
+      "rol": "estudiante",
+      "ruta": "/estudiante/unidad/1",
+      "llego": "/estudiante/unidad/1",
+      "fria": {
+        "total": 2021,
+        "lcp": 1316,
+        "kb": 407,
+        "kbJs": 371,
+        "pedidos": 251,
+        "url": "/estudiante/unidad/1"
+      },
+      "caliente": {
+        "total": 1360,
+        "lcp": 716,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 251,
+        "url": "/estudiante/unidad/1"
+      },
+      "celular": {
+        "total": 25418,
+        "lcp": 22364,
+        "kb": 370,
+        "kbJs": 334,
+        "pedidos": 238,
+        "url": "/estudiante/unidad/1"
+      },
+      "axe": []
+    },
+    {
+      "rol": "estudiante",
+      "ruta": "/estudiante/repasos",
+      "llego": "/estudiante/repasos",
+      "fria": {
+        "total": 2376,
+        "lcp": 1452,
+        "kb": 414,
+        "kbJs": 377,
+        "pedidos": 250,
+        "url": "/estudiante/repasos"
+      },
+      "caliente": {
+        "total": 1371,
+        "lcp": 720,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 251,
+        "url": "/estudiante/repasos"
+      },
+      "celular": {
+        "total": 19872,
+        "lcp": 14900,
+        "kb": 380,
+        "kbJs": 344,
+        "pedidos": 234,
+        "url": "/estudiante/repasos"
+      },
+      "axe": []
+    },
+    {
+      "rol": "estudiante",
+      "ruta": "/estudiante/progreso",
+      "llego": "/estudiante/progreso",
+      "fria": {
+        "total": 1729,
+        "lcp": 1936,
+        "kb": 369,
+        "kbJs": 334,
+        "pedidos": 237,
+        "url": "/estudiante/progreso"
+      },
+      "caliente": {
+        "total": 2449,
+        "lcp": 1380,
+        "kb": 19,
+        "kbJs": 13,
+        "pedidos": 251,
+        "url": "/estudiante/progreso"
+      },
+      "celular": {
+        "total": 15322,
+        "lcp": 14644,
+        "kb": 328,
+        "kbJs": 293,
+        "pedidos": 215,
+        "url": "/estudiante/progreso"
+      },
+      "axe": []
+    },
+    {
+      "rol": "docente",
+      "ruta": "/docente",
+      "llego": "/docente",
+      "fria": {
+        "total": 2991,
+        "lcp": 1696,
+        "kb": 432,
+        "kbJs": 393,
+        "pedidos": 251,
+        "url": "/docente"
+      },
+      "caliente": {
+        "total": 1753,
+        "lcp": 828,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 251,
+        "url": "/docente"
+      },
+      "celular": {
+        "total": 16866,
+        "lcp": 13156,
+        "kb": 341,
+        "kbJs": 304,
+        "pedidos": 227,
+        "url": "/docente"
+      },
+      "axe": []
+    },
+    {
+      "rol": "docente",
+      "ruta": "/docente/clase/1",
+      "llego": "/docente/clase/1",
+      "fria": {
+        "total": 2210,
+        "lcp": 1512,
+        "kb": 388,
+        "kbJs": 349,
+        "pedidos": 251,
+        "url": "/docente/clase/1"
+      },
+      "caliente": {
+        "total": 1327,
+        "lcp": 768,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 251,
+        "url": "/docente/clase/1"
+      },
+      "celular": {
+        "total": 21630,
+        "lcp": 21980,
+        "kb": 322,
+        "kbJs": 287,
+        "pedidos": 215,
+        "url": "/docente/clase/1"
+      },
+      "axe": []
+    },
+    {
+      "rol": "docente",
+      "ruta": "/docente/entregas",
+      "llego": "/docente/entregas",
+      "fria": {
+        "total": 2105,
+        "lcp": 1268,
+        "kb": 452,
+        "kbJs": 412,
+        "pedidos": 251,
+        "url": "/docente/entregas"
+      },
+      "caliente": {
+        "total": 1160,
+        "lcp": 540,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 251,
+        "url": "/docente/entregas"
+      },
+      "celular": {
+        "total": 14649,
+        "lcp": 14132,
+        "kb": 318,
+        "kbJs": 282,
+        "pedidos": 206,
+        "url": "/docente/entregas"
+      },
+      "axe": []
+    },
+    {
+      "rol": "docente",
+      "ruta": "/docente/contenidos",
+      "llego": "/docente/contenidos",
+      "fria": {
+        "total": 3091,
+        "lcp": 2280,
+        "kb": 457,
+        "kbJs": 418,
+        "pedidos": 251,
+        "url": "/docente/contenidos"
+      },
+      "caliente": {
+        "total": 1694,
+        "lcp": 804,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 251,
+        "url": "/docente/contenidos"
+      },
+      "celular": {
+        "total": 16456,
+        "lcp": 15808,
+        "kb": 425,
+        "kbJs": 389,
+        "pedidos": 234,
+        "url": "/docente/contenidos"
+      },
+      "axe": []
+    },
+    {
+      "rol": "admin",
+      "ruta": "/admin",
+      "llego": "/admin",
+      "fria": {
+        "total": 2186,
+        "lcp": 1388,
+        "kb": 372,
+        "kbJs": 336,
+        "pedidos": 233,
+        "url": "/admin"
+      },
+      "caliente": {
+        "total": 1257,
+        "lcp": 612,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 234,
+        "url": "/admin"
+      },
+      "celular": {
+        "total": 17629,
+        "lcp": 14576,
+        "kb": 309,
+        "kbJs": 274,
+        "pedidos": 185,
+        "url": "/admin"
+      },
+      "axe": []
+    },
+    {
+      "rol": "admin",
+      "ruta": "/admin/dashboard",
+      "llego": "/admin/dashboard",
+      "fria": {
+        "total": 2484,
+        "lcp": 1416,
+        "kb": 372,
+        "kbJs": 336,
+        "pedidos": 232,
+        "url": "/admin/dashboard"
+      },
+      "caliente": {
+        "total": 1392,
+        "lcp": 772,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 232,
+        "url": "/admin/dashboard"
+      },
+      "celular": {
+        "total": 14952,
+        "lcp": 13876,
+        "kb": 300,
+        "kbJs": 265,
+        "pedidos": 181,
+        "url": "/admin/dashboard"
+      },
+      "axe": []
+    },
+    {
+      "rol": "admin",
+      "ruta": "/admin/catalogo",
+      "llego": "/admin/catalogo",
+      "fria": {
+        "total": 2560,
+        "lcp": 1856,
+        "kb": 372,
+        "kbJs": 336,
+        "pedidos": 232,
+        "url": "/admin/catalogo"
+      },
+      "caliente": {
+        "total": 1285,
+        "lcp": 652,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 232,
+        "url": "/admin/catalogo"
+      },
+      "celular": {
+        "total": 15572,
+        "lcp": 12184,
+        "kb": 330,
+        "kbJs": 294,
+        "pedidos": 193,
+        "url": "/admin/catalogo"
+      },
+      "axe": []
+    },
+    {
+      "rol": "admin",
+      "ruta": "/admin/sistema",
+      "llego": "/admin/sistema",
+      "fria": {
+        "total": 2216,
+        "lcp": 1460,
+        "kb": 372,
+        "kbJs": 336,
+        "pedidos": 233,
+        "url": "/admin/sistema"
+      },
+      "caliente": {
+        "total": 1168,
+        "lcp": 476,
+        "kb": 5,
+        "kbJs": 0,
+        "pedidos": 233,
+        "url": "/admin/sistema"
+      },
+      "celular": {
+        "total": 13544,
+        "lcp": 12020,
+        "kb": 299,
+        "kbJs": 264,
+        "pedidos": 178,
+        "url": "/admin/sistema"
+      },
+      "axe": []
+    }
+  ]
+}
