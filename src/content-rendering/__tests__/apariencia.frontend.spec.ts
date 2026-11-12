@@ -188,7 +188,9 @@ describe('lo que encontró la revisión con agent-browser (07/10)', () => {
   it('los botones de Ajustes y los contadores del menú tienen contraste suficiente (no usan el color de borde como fondo)', () => {
     expect(leer('pages', 'docente', 'clase', '[classId]', 'ajustes.vue')).not.toContain("'bg-base-borde-sutil text-slate-700'");
     expect(leer('components', 'docente', 'ajustes', 'SeccionLogros.vue')).not.toContain('bg-base-borde-sutil');
-    expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('bg-semantico-falla text-base-blanco');
+    // v3 (12/11): la cuenta de repasos va en sol con tinta (#FFC94D y #14213D, más de 10:1), en assets/css/menu-v3.css.
+    expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('class="cuenta-menu"');
+    expect(leer('assets', 'css', 'menu-v3.css')).toContain('background: #ffc94d; color: #14213d;');
   });
 
   it('cada lista del ejercicio de emparejar dice de qué elemento es la pareja; la flecha es decorativa', () => {

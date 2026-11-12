@@ -270,7 +270,9 @@ describe('Menú lateral del docente v2: una clase elegida y cinco secciones', ()
     expect(menu).toContain("localStorage.setItem(CLAVE_RECORDADA");
     const lateral = leer('components', 'layout', 'SidebarNav.vue');
     expect(lateral.indexOf('<span>Inicio</span>')).toBeGreaterThan(-1);
-    expect(lateral.indexOf('to="/docente/mensajes"')).toBeLessThan(lateral.indexOf('<LayoutClasesDelMenu'));
+    // v3 (12/11, cuadro D3-Clase): «Mis clases» arriba, la clase en el medio y Mensajes y Biblioteca al final.
+    expect(lateral.indexOf('<span>Mis clases</span>')).toBeLessThan(lateral.indexOf('<LayoutClasesDelMenu'));
+    expect(lateral.indexOf('to="/docente/mensajes"')).toBeGreaterThan(lateral.indexOf('<LayoutClasesDelMenu'));
     // Desde el 26/10 la consulta se lee una vez: también trae la plantilla elegida en la Biblioteca.
     expect(leer('pages', 'docente', 'index.vue')).toContain('if (q.crear) creando.value = true');
   });

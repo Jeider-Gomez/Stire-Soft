@@ -29,72 +29,47 @@
     <!-- Navegación según Rol Activo -->
     <div class="space-y-4">
       <!-- 🎓 NAVEGACIÓN ESTUDIANTE (6 Ítems Persistentes - Insumo 15 §5) -->
-      <nav v-if="authStore.currentRole === 'estudiante'" class="space-y-1.5 text-sm font-medium">
-        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Navegación</p>
-
-        <!-- 1. Inicio (EST-V01) -->
-        <NuxtLink
-          to="/estudiante"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="isCurrentRoute('/estudiante') && route.path === '/estudiante' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <House :size="20" aria-hidden="true" class="shrink-0" />
+      <!-- v3 (Fase B; cuadro Navegacion-estudiante): cada sección con su color, en el orden del diseño. «Aprender» es el
+           plan del curso de abajo; Mi asistencia y Mensajes son lo que el diseño junta en «Mi clase» (rosa) hasta que
+           esa pantalla exista (Fase D). -->
+      <nav v-if="authStore.currentRole === 'estudiante'" class="menu-v3 text-sm">
+        <NuxtLink to="/estudiante" class="item-menu tono-menta" :class="{ activo: route.path === '/estudiante' }">
+          <span class="icono-menu"><House :size="18" aria-hidden="true" /></span>
           <span>Inicio</span>
         </NuxtLink>
 
-        <!-- 5. Repasos (EST-V05) -->
-        <NuxtLink
-          to="/estudiante/repasos"
-          data-recorrido="repasos"
-          class="flex items-center justify-between px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/estudiante/repasos' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <div class="flex items-center gap-2.5">
-            <Repeat :size="20" aria-hidden="true" class="shrink-0" />
-            <span>Repasos</span>
-          </div>
-          <!-- Insignia roja = repasos que tocan HOY (vencidos o críticos); los de mañana no son urgentes. -->
+        <!-- La cuenta = repasos que tocan HOY (vencidos o críticos); los de mañana no son urgentes. -->
+        <NuxtLink to="/estudiante/repasos" data-recorrido="repasos" class="item-menu tono-sol" :class="{ activo: route.path === '/estudiante/repasos' }">
+          <span class="icono-menu"><Repeat :size="18" aria-hidden="true" /></span>
+          <span>Repasos</span>
           <span
             v-if="studentStore.reviewsDueToday.length > 0"
-            class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-semantico-falla text-base-blanco"
+            class="cuenta-menu"
             :aria-label="`${studentStore.reviewsDueToday.length} para hoy`">
             {{ studentStore.reviewsDueToday.length }}
           </span>
         </NuxtLink>
 
-        <!-- 6. Mi progreso (EST-V06) -->
-        <NuxtLink
-          to="/estudiante/progreso"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/estudiante/progreso' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <TrendingUp :size="20" aria-hidden="true" class="shrink-0" />
-          <span>Mi progreso</span>
-        </NuxtLink>
-
-        <!-- Asistencia con QR (src/asistencia): el código que el estudiante le muestra al docente -->
-        <NuxtLink
-          to="/estudiante/asistencia"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/estudiante/asistencia' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <QrCode :size="20" aria-hidden="true" class="shrink-0" />
-          <span>Mi asistencia</span>
-        </NuxtLink>
-
         <!-- Proyectos (docs/DISENO_PROYECTOS.md): solo si está disponible para esta cuenta (fase de prueba) -->
-        <NuxtLink
-          v-if="proyectosDisponible"
-          to="/estudiante/proyectos"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path.startsWith('/estudiante/proyectos') ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <FolderCode :size="20" aria-hidden="true" class="shrink-0" />
+        <NuxtLink v-if="proyectosDisponible" to="/estudiante/proyectos" class="item-menu tono-cian" :class="{ activo: route.path.startsWith('/estudiante/proyectos') }">
+          <span class="icono-menu"><FolderCode :size="18" aria-hidden="true" /></span>
           <span>Mis proyectos</span>
         </NuxtLink>
 
-        <!-- 7. Mensajes -->
-        <NuxtLink
-          to="/estudiante/mensajes"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/estudiante/mensajes' ? 'bg-acento-ambar/10 text-acento-ambar-fuerte font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Mail :size="20" aria-hidden="true" class="shrink-0" />
+        <!-- Asistencia con QR (src/asistencia): el código que el estudiante le muestra al docente -->
+        <NuxtLink to="/estudiante/asistencia" class="item-menu tono-rosa" :class="{ activo: route.path === '/estudiante/asistencia' }">
+          <span class="icono-menu"><QrCode :size="18" aria-hidden="true" /></span>
+          <span>Mi asistencia</span>
+        </NuxtLink>
+
+        <NuxtLink to="/estudiante/mensajes" class="item-menu tono-rosa" :class="{ activo: route.path === '/estudiante/mensajes' }">
+          <span class="icono-menu"><Mail :size="18" aria-hidden="true" /></span>
           <span>Mensajes</span>
+        </NuxtLink>
+
+        <NuxtLink to="/estudiante/progreso" class="item-menu tono-lila" :class="{ activo: route.path === '/estudiante/progreso' }">
+          <span class="icono-menu"><TrendingUp :size="18" aria-hidden="true" /></span>
+          <span>Mi progreso</span>
         </NuxtLink>
 
         <!-- Plan del curso al final (Jeider, 26/10: «al abrir el plan abarca mucho espacio y quedan lejos las demás
@@ -104,86 +79,64 @@
       </nav>
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
-      <nav v-else-if="authStore.currentRole === 'docente'" class="space-y-1.5 text-sm font-medium">
-        <!-- Rediseño v2 (24/10): arriba lo general (Inicio con todas las clases y Mensajes); debajo, la clase elegida con
-             sus secciones (ClasesDelMenu.vue). -->
-        <NuxtLink
-          to="/docente"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/docente' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <House :size="20" aria-hidden="true" class="shrink-0" />
-          <span>Inicio</span>
+      <!-- v3 (Fase B; cuadro D3-Clase): «Mis clases» arriba; debajo, la clase elegida con sus secciones
+           (ClasesDelMenu.vue); Mensajes y Biblioteca, que no son de una clase, al final. -->
+      <nav v-else-if="authStore.currentRole === 'docente'" class="menu-v3 text-sm">
+        <NuxtLink to="/docente" class="item-menu tono-menta" :class="{ activo: route.path === '/docente' }">
+          <span class="icono-menu"><House :size="18" aria-hidden="true" /></span>
+          <span>Mis clases</span>
         </NuxtLink>
 
-        <NuxtLink
-          to="/docente/mensajes"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/docente/mensajes' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Mail :size="20" aria-hidden="true" class="shrink-0" />
+        <LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />
+
+        <p class="titulo-seccion">General</p>
+        <NuxtLink to="/docente/mensajes" class="item-menu tono-lila" :class="{ activo: route.path === '/docente/mensajes' }">
+          <span class="icono-menu"><Mail :size="18" aria-hidden="true" /></span>
           <span>Mensajes</span>
         </NuxtLink>
 
         <!-- Biblioteca: cursos que otros docentes compartieron, para copiarlos a una clase nueva (pages/docente/biblioteca.vue) -->
-        <NuxtLink
-          to="/docente/biblioteca"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/docente/biblioteca' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Library :size="20" aria-hidden="true" class="shrink-0" />
+        <NuxtLink to="/docente/biblioteca" class="item-menu tono-cielo" :class="{ activo: route.path === '/docente/biblioteca' }">
+          <span class="icono-menu"><Library :size="18" aria-hidden="true" /></span>
           <span>Biblioteca</span>
         </NuxtLink>
-
-        <LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />
       </nav>
 
-      <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR (ADM-V01..V03) -->
-      <nav v-else data-recorrido="menu-admin" class="space-y-1.5 text-sm font-medium">
-        <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 py-1">Administración</p>
+      <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR (v3, Fase B; cuadro A-Usuarios del lienzo): por secciones, cada entrada con su
+           color. Clases, Contenido compartido, IA y proveedores y Datos para investigación entran con sus pantallas
+           (Fase F); hasta entonces no se muestran. -->
+      <nav v-else data-recorrido="menu-admin" class="menu-v3 text-sm">
+        <p class="titulo-rol">Administración</p>
 
-        <NuxtLink
-          to="/admin/dashboard"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin/dashboard' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Activity :size="20" aria-hidden="true" class="shrink-0" />
-          <span>Estado del sistema</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/admin"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin' || route.path === '/admin/usuarios' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <ShieldCheck :size="20" aria-hidden="true" class="shrink-0" />
+        <p class="titulo-seccion">Personas</p>
+        <NuxtLink to="/admin" class="item-menu tono-menta" :class="{ activo: enAdmin('/admin', '/admin/usuarios') }" :aria-current="enAdmin('/admin', '/admin/usuarios') ? 'page' : undefined">
+          <span class="icono-menu"><Users :size="18" aria-hidden="true" /></span>
           <span>Usuarios y roles</span>
         </NuxtLink>
 
-        <NuxtLink
-          to="/admin/sugerencias"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin/sugerencias' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <MessageSquarePlus :size="20" aria-hidden="true" class="shrink-0" />
-          <span>Sugerencias</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/admin/catalogo"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin/catalogo' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Library :size="20" aria-hidden="true" class="shrink-0" />
+        <p class="titulo-seccion">Académico</p>
+        <NuxtLink to="/admin/catalogo" class="item-menu tono-cielo" :class="{ activo: enAdmin('/admin/catalogo') }">
+          <span class="icono-menu"><Library :size="18" aria-hidden="true" /></span>
           <span>Catálogo académico</span>
         </NuxtLink>
 
-        <NuxtLink
-          to="/admin/usabilidad"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin/usabilidad' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <ClipboardList :size="20" aria-hidden="true" class="shrink-0" />
+        <p class="titulo-seccion">Opiniones</p>
+        <NuxtLink to="/admin/sugerencias" class="item-menu tono-lila" :class="{ activo: enAdmin('/admin/sugerencias') }">
+          <span class="icono-menu"><MessageSquare :size="18" aria-hidden="true" /></span>
+          <span>Sugerencias</span>
+        </NuxtLink>
+        <NuxtLink to="/admin/usabilidad" class="item-menu tono-menta" :class="{ activo: enAdmin('/admin/usabilidad') }">
+          <span class="icono-menu"><Target :size="18" aria-hidden="true" /></span>
           <span>Encuesta de usabilidad</span>
         </NuxtLink>
 
-        <NuxtLink
-          to="/admin/sistema"
-          class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors"
-          :class="route.path === '/admin/sistema' ? 'bg-semantico-pasa/10 text-semantico-pasa font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Settings :size="20" aria-hidden="true" class="shrink-0" />
+        <p class="titulo-seccion">Sistema</p>
+        <NuxtLink to="/admin/dashboard" class="item-menu tono-cielo" :class="{ activo: enAdmin('/admin/dashboard') }">
+          <span class="icono-menu"><Activity :size="18" aria-hidden="true" /></span>
+          <span>Estado del sistema</span>
+        </NuxtLink>
+        <NuxtLink to="/admin/sistema" class="item-menu tono-sol" :class="{ activo: enAdmin('/admin/sistema') }">
+          <span class="icono-menu"><Settings :size="18" aria-hidden="true" /></span>
           <span>Registros y mantenimiento</span>
         </NuxtLink>
       </nav>
@@ -201,7 +154,7 @@
 </template>
 
 <script setup lang="ts">
-import { Activity, BookOpen, ClipboardList, Library, FolderCode, House, Mail, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, ShieldCheck, TrendingUp } from 'lucide-vue-next'
+import { Activity, BookOpen, Library, FolderCode, House, Mail, MessageSquare, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, Target, TrendingUp, Users } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 
@@ -234,9 +187,14 @@ onMounted(async () => {
 function isCurrentRoute(path: string) {
   return route.path.startsWith(path)
 }
+
+/** Entrada del administrador activa: su ruta exacta (las del admin no tienen subpáginas). */
+const enAdmin = (...rutas: string[]) => rutas.includes(route.path)
 </script>
 
 <style scoped>
+/* El menú v3 (item-menu, icono-menu, tono-*) está en assets/css/menu-v3.css. */
+
 /* Solo íconos: el texto queda para el lector de pantalla y los títulos de sección se ocultan. */
 @media (min-width: 768px) {
   .menu-colapsado .ocultar-colapsado,
@@ -265,7 +223,7 @@ function isCurrentRoute(path: string) {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
-  .menu-colapsado a span,
+  .menu-colapsado a span:not(.icono-menu),
   .menu-colapsado button:not(.expandir-logo) span {
     position: absolute;
     width: 1px;

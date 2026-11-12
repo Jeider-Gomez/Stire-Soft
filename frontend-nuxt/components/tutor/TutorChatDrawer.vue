@@ -469,6 +469,13 @@ function handleDocumentKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape' && tutorStore.isOpen) {
     tutorStore.closeDrawer()
   }
+  // Ctrl+. (Cmd+. en Mac) abre y cierra el Tutor desde cualquier pantalla, el mismo atajo del Asistente del docente
+  // (v3, Fase B; cuadro E-Tutor).
+  if ((event.ctrlKey || event.metaKey) && event.key === '.') {
+    event.preventDefault()
+    if (tutorStore.isOpen) tutorStore.closeDrawer()
+    else tutorStore.openDrawer()
+  }
 }
 
 onMounted(() => document.addEventListener('keydown', handleDocumentKeydown))

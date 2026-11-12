@@ -79,6 +79,23 @@ sale coherente.
 | Tutor y Asistente flotantes; se abren al lado (Ctrl .) | `tutor/LanzadorTutor.vue`, `TutorChatDrawer.vue`, `docente/asistente/Panel.vue` | E-Tutor, D3-Asistente |
 | Barra de abajo en el celular | `layout/SidebarNav.vue` (móvil) | E-Cel-Inicio, D3-Cel-Inicio |
 
+**Hecho el 12/11** (falta el visto bueno de Jeider):
+- Color por sección en `temas.css` (`--c-sec-*`, claro y oscuro) y el estilo del menú en `assets/css/menu-v3.css`.
+- Menús de los tres roles con su color por sección. El del administrador va por secciones; el del docente va con «Mis
+  clases» arriba, la clase en el medio y Mensajes y Biblioteca al final.
+- La barra de arriba: «Ayuda» con su palabra y el Asistente en sol con «Ctrl .».
+- Ctrl+. abre y cierra el Tutor. La barra de abajo del estudiante en el celular (`layout/BarraInferior.vue`): Inicio,
+  Aprender, Repasos, Progreso y Tutor.
+- El logo se ve blanco en oscuro, y la mascota cambia en alto contraste. Antes `:global()` lo impedía.
+
+**Queda para cuando exista lo que muestra:**
+- «Sigue donde ibas» y «Asistencia abierta» en el menú del estudiante: falta un dato de la última lección y de la
+  asistencia abierta para el estudiante.
+- «Mi clase» y «Aprender» como pantallas (Fase D); hoy «Aprender» abre el plan del curso.
+- Buscar (Ctrl K) para el docente y el administrador: hoy solo existe la búsqueda de lecciones del estudiante.
+- Las cuentas de pendientes del administrador.
+- La barra de abajo del docente en el celular.
+
 ### Fase C · Entrar y presentar STIRE
 
 | Qué | Qué existe | Qué es nuevo |

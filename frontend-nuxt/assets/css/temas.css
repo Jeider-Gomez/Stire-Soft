@@ -40,6 +40,13 @@
   --c-repaso-vencido: 138 80 0;
   --c-repaso-critico: 185 28 28;
   --c-stire-canvas: 247 249 252;
+  /* Color por sección del menú (v3, DESIGN.md): fuerte (línea y ícono activos), fondo e ícono en reposo, fila activa. */
+  --c-sec-menta: 10 127 112; --c-sec-menta-fondo: 213 246 240; --c-sec-menta-icono: 10 127 112; --c-sec-menta-fila: 213 246 240;
+  --c-sec-cielo: 29 111 209; --c-sec-cielo-fondo: 227 244 255; --c-sec-cielo-icono: 29 111 209; --c-sec-cielo-fila: 227 244 255;
+  --c-sec-sol: 163 95 0; --c-sec-sol-fondo: 255 241 194; --c-sec-sol-icono: 163 95 0; --c-sec-sol-fila: 255 241 194;
+  --c-sec-rosa: 209 47 58; --c-sec-rosa-fondo: 255 228 228; --c-sec-rosa-icono: 209 47 58; --c-sec-rosa-fila: 255 228 228;
+  --c-sec-lila: 124 58 237; --c-sec-lila-fondo: 239 232 255; --c-sec-lila-icono: 124 58 237; --c-sec-lila-fila: 239 232 255;
+  --c-sec-cian: 14 116 144; --c-sec-cian-fondo: 207 250 254; --c-sec-cian-icono: 14 116 144; --c-sec-cian-fila: 207 250 254;
   color-scheme: light;
 }
 
@@ -66,6 +73,13 @@
   --c-repaso-vencido: 255 217 122;
   --c-repaso-critico: 255 138 138;
   --c-stire-canvas: 11 18 32;
+  /* En oscuro el fuerte no cambia; el ícono en reposo se aclara y los fondos se oscurecen (A-Usuarios-Oscuro). */
+  --c-sec-menta-fondo: 15 58 58; --c-sec-menta-icono: 94 230 208; --c-sec-menta-fila: 15 58 58;
+  --c-sec-cielo-fondo: 27 38 59; --c-sec-cielo-icono: 143 200 255; --c-sec-cielo-fila: 19 48 79;
+  --c-sec-sol-fondo: 58 46 14; --c-sec-sol-icono: 255 217 122; --c-sec-sol-fila: 58 46 14;
+  --c-sec-rosa-fondo: 27 38 59; --c-sec-rosa-icono: 255 138 138; --c-sec-rosa-fila: 58 26 34;
+  --c-sec-lila-fondo: 27 38 59; --c-sec-lila-icono: 201 168 245; --c-sec-lila-fila: 42 33 72;
+  --c-sec-cian-fondo: 27 38 59; --c-sec-cian-icono: 103 232 249; --c-sec-cian-fila: 14 52 64;
   color-scheme: dark;
 }
 /*

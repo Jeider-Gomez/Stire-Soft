@@ -13,7 +13,8 @@
     <LayoutSidebarNav :class="sidebarClass" />
 
     <!-- Zona A + C + E: encabezado, contenido y pie, a la derecha del menú -->
-    <div class="flex-1 min-w-0 flex flex-col">
+    <!-- En el celular, el espacio de la barra de abajo (LayoutBarraInferior, 72 px) para que no tape el pie. -->
+    <div class="flex-1 min-w-0 flex flex-col" :class="{ 'pb-[72px] md:pb-0': !enLeccion }">
       <LayoutHeaderNav @toggle-sidebar="toggleSidebar" />
 
       <!-- Zona C: Contenido Dinámico de la Página -->
@@ -30,8 +31,10 @@
     <TutorChatDrawer />
     <!-- «Ir a una lección» con Ctrl+K desde cualquier pantalla (components/estudiante/IrALeccion.vue) -->
     <EstudianteIrALeccion />
-    <!-- En una lección, en el celular, el Tutor va en la barra de abajo (EstudianteNavegacionLeccion). -->
-    <TutorLanzadorTutor :solo-computador="enLeccion" />
+    <!-- En el celular el Tutor va en la barra de abajo: la del menú (LayoutBarraInferior, v3) o, en una lección, la de la
+         lección (EstudianteNavegacionLeccion). El lanzador flotante queda para el computador. -->
+    <LayoutBarraInferior v-if="!enLeccion" />
+    <TutorLanzadorTutor solo-computador />
     <DialogoConfirmar />
     <AvisoSinConexion />
   </div>

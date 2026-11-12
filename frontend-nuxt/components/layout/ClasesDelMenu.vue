@@ -4,8 +4,8 @@
      clase (Inicio, Mensajes) muestra la última que eligió. Cada clase lleva sus iniciales («FA1», «FA2» si se repiten)
      para distinguirla con el menú plegado (Jeider, 07/10). -->
 <template>
-  <div v-if="clases.length" ref="raiz" class="pt-3 pb-1 border-t border-base-borde-sutil mt-2">
-    <p class="text-xs uppercase tracking-wider text-base-texto-secundario px-3 pb-1.5" :class="{ 'md:hidden': colapsado }">Clase</p>
+  <div v-if="clases.length" ref="raiz">
+    <p class="titulo-seccion" :class="{ 'md:hidden': colapsado }">Clase</p>
 
     <div class="relative">
       <button
@@ -58,36 +58,37 @@
     </div>
 
     <!-- Las secciones de la clase elegida. Plegado el menú, no caben y se omiten. -->
-    <ul v-if="actual" :class="{ 'md:hidden': colapsado }" :aria-label="`Secciones de ${actual.name}`" class="mt-2 space-y-0.5">
+    <!-- v3 (Fase B, cuadro D3-Clase): cada sección con su color (assets/css/menu-v3.css). -->
+    <ul v-if="actual" :class="{ 'md:hidden': colapsado }" :aria-label="`Secciones de ${actual.name}`" class="menu-v3 mt-2">
       <li v-for="s in SECCIONES_MENU" :key="s.id">
         <NuxtLink
           :to="enlacePestana(s.id, actual.id)"
           :aria-current="s.id === seccionMarcada && s.incluye.length === 1 ? 'page' : undefined"
-          class="flex items-center gap-2.5 min-h-[40px] px-3 rounded-md text-[13px] transition-colors"
-          :class="s.id === seccionMarcada ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <component :is="ICONOS[s.id]" :size="16" aria-hidden="true" class="shrink-0" />
+          class="item-menu"
+          :class="[TONOS[s.id] ?? 'tono-cielo', { activo: s.id === seccionMarcada }]">
+          <span class="icono-menu"><component :is="ICONOS[s.id]" :size="18" aria-hidden="true" /></span>
           <span>{{ s.texto }}</span>
         </NuxtLink>
         <!-- Una sección que agrupa dos pantallas las muestra al abrirla (Estudiantes y Refuerzos; Asistencia y Notas). -->
-        <ul v-if="s.id === seccionMarcada && s.incluye.length > 1" class="ml-8 mt-0.5 mb-1 space-y-0.5">
+        <ul v-if="s.id === seccionMarcada && s.incluye.length > 1" class="ml-12 mt-0.5 mb-1 space-y-0.5">
           <li v-for="p in s.incluye" :key="p">
             <NuxtLink
               :to="enlacePestana(p, actual.id)"
               :aria-current="p === seccionActual ? 'page' : undefined"
-              class="flex items-center min-h-[34px] px-2.5 rounded-md text-[12.5px] transition-colors"
-              :class="p === seccionActual ? 'text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
+              class="flex items-center min-h-[34px] px-2.5 rounded-md text-[13px] transition-colors"
+              :class="p === seccionActual ? 'text-base-texto-primario font-bold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
               {{ TEXTO_PESTANA[p] }}
             </NuxtLink>
           </li>
         </ul>
       </li>
-      <li class="pt-1.5 mt-1.5 border-t border-base-borde-sutil">
+      <li>
         <NuxtLink
           :to="enlacePestana('ajustes', actual.id)"
           :aria-current="seccionActual === 'ajustes' ? 'page' : undefined"
-          class="flex items-center gap-2.5 min-h-[40px] px-3 rounded-md text-[13px] transition-colors"
-          :class="seccionActual === 'ajustes' ? 'bg-semantico-info/10 text-semantico-info font-semibold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-          <Settings :size="16" aria-hidden="true" class="shrink-0" />
+          class="item-menu tono-menta"
+          :class="{ activo: seccionActual === 'ajustes' }">
+          <span class="icono-menu"><Settings :size="18" aria-hidden="true" /></span>
           <span>Ajustes de la clase</span>
         </NuxtLink>
       </li>
@@ -119,6 +120,8 @@ const actual = computed(() => {
 const seccionActual = computed<PestanaClase | null>(() => (deLaRuta.value ? pestanaDeLaRuta(route.path) : null))
 const seccionMarcada = computed(() => seccionDelMenu(seccionActual.value))
 const ICONOS: Partial<Record<PestanaClase, unknown>> = { hoy: CalendarCheck, contenido: BookOpen, estudiantes: Users, entregas: Inbox, asistencia: ClipboardCheck }
+/** El color de cada sección, en el orden del lienzo (colD del generador: cielo, sol, rosa, lila…). */
+const TONOS: Partial<Record<PestanaClase, string>> = { hoy: 'tono-cielo', contenido: 'tono-sol', estudiantes: 'tono-lila', asistencia: 'tono-rosa', entregas: 'tono-sol' }
 const TEXTO_PESTANA = Object.fromEntries(PESTANAS_CLASE.map((p) => [p.id, p.texto])) as Record<PestanaClase, string>
 const siglas = computed(() => siglasDeClases(clases.value))
 const colores = computed(() => Object.fromEntries(clases.value.map((c, i) => [c.id, c.portada ?? colorDeClase(i)])) as Record<number, string>)

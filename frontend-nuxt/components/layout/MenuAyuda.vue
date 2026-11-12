@@ -6,13 +6,14 @@
   <div ref="raiz" class="relative">
     <button
       type="button"
-      class="p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors"
+      class="p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center gap-1.5 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors"
       :aria-expanded="abierto"
       aria-controls="menu-ayuda"
       title="Ayuda"
       @click="abierto = !abierto">
       <CircleHelp :size="18" aria-hidden="true" />
-      <span class="sr-only">Ayuda</span>
+      <!-- v3 (Fase B): con la palabra a la vista en computador, como Apariencia y Sugerencias. -->
+      <span class="sr-only lg:not-sr-only">Ayuda</span>
     </button>
 
     <div

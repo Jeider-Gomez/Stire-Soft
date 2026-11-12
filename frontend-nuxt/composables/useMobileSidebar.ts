@@ -1,7 +1,8 @@
 // Estado del menú lateral en pantallas < md: se abre con la hamburguesa del
 // encabezado y se cierra al navegar, al pulsar Escape o al tocar el fondo.
 export function useMobileSidebar() {
-  const sidebarOpen = ref(false)
+  // Compartido: la barra de abajo del celular (LayoutBarraInferior, «Aprender») abre el mismo menú que la hamburguesa.
+  const sidebarOpen = useState('menu-movil-abierto', () => false)
   const route = useRoute()
 
   const close = () => { sidebarOpen.value = false }

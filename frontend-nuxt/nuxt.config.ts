@@ -18,6 +18,8 @@ export default defineNuxtConfig({
     // Primero las variables de los temas (claro, oscuro, alto contraste): main.css y las pantallas las usan.
     '~/assets/css/temas.css',
     '~/assets/css/main.css',
+    // Menú lateral v3 de los tres roles (Fase B): color por sección.
+    '~/assets/css/menu-v3.css',
     // Aspecto del panel del docente (rediseño R0): solo actúa dentro de [data-panel="docente"].
     '~/assets/css/panel-docente.css'
   ],

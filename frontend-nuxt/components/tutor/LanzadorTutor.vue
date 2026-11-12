@@ -15,6 +15,7 @@
     type="button"
     class="lanzador-tutor fixed right-4 sm:right-6 z-40 inline-flex items-center gap-2 rounded-full text-sm font-semibold text-base-texto-primario focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-stire-purple/40"
     aria-label="Abrir el Tutor IA"
+    title="Abrir el Tutor (Ctrl+.)"
     @click="tutorStore.openDrawer()"
     @mouseenter="encima = true"
     @mouseleave="encima = false">

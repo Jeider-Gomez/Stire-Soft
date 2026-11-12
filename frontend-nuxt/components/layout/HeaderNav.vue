@@ -70,10 +70,13 @@
 
       <!-- Notificaciones -->
       <!-- Asistente STIRE (solo docente): propone estructura, lecciones y ejercicios según la pantalla (Ctrl+.) -->
+      <!-- v3 (Fase B, cuadro D3-Inicio): botón de sol suave con su atajo a la vista; lleno mientras el panel está abierto. -->
       <button v-if="authStore.currentRole === 'docente'" id="abrir-asistente" type="button"
-        class="hidden sm:inline-flex items-center gap-1.5 min-h-[36px] px-3 rounded-full border border-base-borde-sutil text-xs font-semibold text-stire-blue hover:bg-stire-blue/5"
+        class="boton-asistente hidden sm:inline-flex items-center gap-2 min-h-[40px] px-3.5 rounded-xl text-[13px] font-bold"
+        :class="{ abierto: asistenteAbierto }"
         :aria-expanded="asistenteAbierto" aria-controls="panel-asistente" title="Asistente STIRE (Ctrl+.)" @click="asistenteAbierto = !asistenteAbierto">
-        <Sparkles :size="14" aria-hidden="true" /> Asistente
+        <Sparkles :size="16" aria-hidden="true" /> Asistente
+        <kbd class="hidden lg:inline text-[11px] font-semibold opacity-70">Ctrl .</kbd>
       </button>
       <LayoutNotificationBell />
 
@@ -236,3 +239,9 @@ function handleLogout() {
   navigateTo('/auth/login')
 }
 </script>
+
+<style scoped>
+/* Asistente: sol suave (#FFF1C2) con tinta; abierto, el sol lleno. En oscuro, el fondo de sol de las secciones. */
+.boton-asistente { background: rgb(var(--c-sec-sol-fondo)); color: rgb(var(--c-base-texto-primario)); transition: background-color .2s ease; }
+.boton-asistente.abierto, .boton-asistente:hover { background: #ffc94d; color: #14213d; }
+</style>

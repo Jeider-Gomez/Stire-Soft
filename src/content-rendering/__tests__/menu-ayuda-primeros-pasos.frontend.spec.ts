@@ -26,7 +26,8 @@ describe('menú de ayuda', () => {
   it('está en la cabecera de todos los roles y reúne recorrido, ayuda de la pantalla, manual, preguntas y sugerencias', () => {
     const m = leer('components', 'layout', 'MenuAyuda.vue');
     expect(m).toContain(':aria-expanded="abierto"');
-    expect(m).toContain('<span class="sr-only">Ayuda</span>');
+    // v3 (12/11): la palabra se ve en computador, como Apariencia y Sugerencias.
+    expect(m).toContain('<span class="sr-only lg:not-sr-only">Ayuda</span>');
     expect(m).toContain('<li v-if="recorrido.actual.value">');
     expect(m).toContain(':href="`/ayuda#${tareaDePantalla}`"');
     expect(m).toContain('href="/ayuda"');

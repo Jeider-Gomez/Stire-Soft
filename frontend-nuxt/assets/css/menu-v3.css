@@ -1,0 +1,45 @@
+/*
+ * Menú lateral v3 (Fase B; cuadros Navegacion-estudiante, D3-Clase y A-Usuarios del lienzo, scripts/diseno-v3).
+ * Títulos de sección y entradas con el color de su sección (--c-sec-* en temas.css): ícono en un cuadrito de color
+ * suave; la entrada activa lleva el fondo suave, una línea a la izquierda y el ícono lleno.
+ * Es global porque lo usan SidebarNav.vue, ClasesDelMenu.vue y PlanDelCurso.vue.
+ */
+.menu-v3 { display: flex; flex-direction: column; gap: 4px; }
+.titulo-rol { margin: 0 12px 6px; font-size: 12px; font-weight: 700; color: rgb(var(--c-base-texto-secundario)); }
+.titulo-seccion {
+  margin: 12px 12px 2px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: rgb(var(--c-base-texto-secundario));
+}
+
+.tono-menta { --t: var(--c-sec-menta); --t-fondo: var(--c-sec-menta-fondo); --t-icono: var(--c-sec-menta-icono); --t-fila: var(--c-sec-menta-fila); }
+.tono-cielo { --t: var(--c-sec-cielo); --t-fondo: var(--c-sec-cielo-fondo); --t-icono: var(--c-sec-cielo-icono); --t-fila: var(--c-sec-cielo-fila); }
+.tono-sol { --t: var(--c-sec-sol); --t-fondo: var(--c-sec-sol-fondo); --t-icono: var(--c-sec-sol-icono); --t-fila: var(--c-sec-sol-fila); }
+.tono-rosa { --t: var(--c-sec-rosa); --t-fondo: var(--c-sec-rosa-fondo); --t-icono: var(--c-sec-rosa-icono); --t-fila: var(--c-sec-rosa-fila); }
+.tono-lila { --t: var(--c-sec-lila); --t-fondo: var(--c-sec-lila-fondo); --t-icono: var(--c-sec-lila-icono); --t-fila: var(--c-sec-lila-fila); }
+.tono-cian { --t: var(--c-sec-cian); --t-fondo: var(--c-sec-cian-fondo); --t-icono: var(--c-sec-cian-icono); --t-fila: var(--c-sec-cian-fila); }
+
+.item-menu {
+  position: relative; display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 10px; border-radius: 14px;
+  font-size: 14px; font-weight: 600; color: rgb(var(--c-base-texto-primario)); transition: background-color .2s ease;
+}
+.item-menu > span:not(.icono-menu):not(.cuenta-menu) { flex: 1; min-width: 0; }
+.icono-menu {
+  width: 32px; height: 32px; flex: none; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  background: rgb(var(--t-fondo)); color: rgb(var(--t-icono)); transition: transform .2s cubic-bezier(.23, 1, .32, 1);
+}
+.item-menu.activo { font-weight: 700; background: rgb(var(--t-fila)); }
+.item-menu.activo::before {
+  content: ''; position: absolute; left: -1rem; top: 8px; bottom: 8px; width: 4px; border-radius: 0 4px 4px 0;
+  background: rgb(var(--t));
+}
+.item-menu.activo .icono-menu { background: rgb(var(--t)); color: #fff; }
+.item-menu:focus-visible { outline: 2px solid rgb(var(--c-acento-ambar-fuerte)); outline-offset: 2px; }
+/* Las cuentas («3» repasos para hoy): sol con tinta, como en el diseño. */
+.cuenta-menu {
+  font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #ffc94d; color: #14213d;
+}
+@media (hover: hover) and (pointer: fine) {
+  .item-menu:not(.activo):hover { background: rgb(var(--c-base-bg-secundario)); }
+  .item-menu:hover .icono-menu { transform: rotate(-8deg) scale(1.12); }
+}
+.menu-colapsado .item-menu.activo::before { left: -0.5rem; }
