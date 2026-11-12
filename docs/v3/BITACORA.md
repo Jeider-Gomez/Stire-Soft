@@ -28,19 +28,20 @@ carpeta. Sirve para no pisarse: quién está tocando qué, qué se terminó y qu
 | # | Qué | Dónde | Fase |
 |---|---|---|---|
 | P-1 | El cuadro D3-Clase del lienzo aún pone la Biblioteca al final; en la app ya va debajo de «Mis clases» | `scripts/diseno-v3/generador/proto_est2.mjs` (`lateralD`) | B |
-| P-2 | «Sigue donde ibas» y «Asistencia abierta» en el menú del estudiante: falta el dato | backend + `SidebarNav.vue` | B/D |
-| P-3 | Buscar (Ctrl K) para docente y administrador | `HeaderNav.vue` | B |
-| P-4 | Cuentas de pendientes en el menú del administrador | `SidebarNav.vue` | B/F |
-| P-5 | Barra de abajo del docente en el celular | `BarraInferior.vue` | B |
+| P-2 | «Sigue donde ibas» y «Asistencia abierta» en el menú del estudiante: falta el dato (pasado a la Fase D) | backend + `SidebarNav.vue` | D |
+| P-4 | Cuentas de pendientes en el menú del administrador (pasado a la Fase F) | backend + `SidebarNav.vue` | F |
 | P-6 | P59: bajar los 180–250 pedidos por página (agrupar el JavaScript) y volver a medir con `scripts/v3/medir-partida.mjs` | `nuxt.config.ts` | — |
 | P-8 | El ☰ del estudiante en el celular sigue (el diseño E-Cel-Inicio no lo tiene): sale cuando «Mi clase» y «Mis proyectos» tengan su lugar (Fase D) | `HeaderNav.vue`, `BarraInferior.vue` | D |
 | P-9 | `pages/docente/refuerzos/index.vue` dice «Bloqueados» (regla de palabras humanas: «necesita ayuda») | esa página | E |
+| P-10 | El Asistente usa la mascota del Tutor; el diseño (D3-Asistente) lo dibuja como la libreta azul con gafas | `docente/asistente/Panel.vue` | E |
+| P-11 | La cabecera del Tutor dice «Te guía con preguntas…»; el diseño (E-Tutor) dice «Estás en: lección · %» y «Plegar» | `TutorChatDrawer.vue` | D |
 | P-7 | En oscuro, el código de la clase junto al título del Resumen casi no se ve; la tarjeta del menú dice el código y el diseño, «28 estudiantes» | `pages/docente/clase/[classId]/index.vue`, `ClasesDelMenu.vue` | E |
 
 ## Hecho
 
 | Fecha | Qué | Commit |
 |---|---|---|
+| 12/11 | Cierre de la Fase B (falta el visto bueno de Jeider y `verify:clean`): enlaces del texto subrayados en todos los temas; Buscar (Ctrl K) para docente y administrador (pantallas, clases y ayuda); barra de abajo del docente en el celular; el Asistente deja su espacio a la página como el Tutor; la barra de arriba se compacta con un panel abierto; cabecera del Tutor blanca, no morada | ver `git log` (cuatro commits del 12/11 de la tarde) |
 | 12/11 | Arreglos de coherencia del marco 1 a 6 (abajo) y Biblioteca debajo de «Mis clases» (pedido de Jeider). Van en el mismo commit que «Dónde estás» del otro chat, que estaba sin guardar en los mismos archivos | ver `git log` («fix(v3): coherencia del marco») |
 | 12/11 | Evaluación del marco contra los cuadros E-Inicio, D3-Clase, A-Usuarios y E-Cel-Inicio, en claro, oscuro y celular: coherente en estructura, nombres y colores; 6 incoherencias (abajo) | — |
 | 12/11 | Marco de la Fase B: menú por secciones de los tres roles, barra de arriba, Ctrl+., barra del celular del estudiante | `21940fd1` (otro chat) |

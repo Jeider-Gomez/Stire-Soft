@@ -88,13 +88,16 @@ sale coherente.
   Aprender, Repasos, Progreso y Tutor.
 - El logo se ve blanco en oscuro, y la mascota cambia en alto contraste. Antes `:global()` lo impedía.
 
-**Queda para cuando exista lo que muestra:**
+**Hecho también el 12/11, por la tarde:** coherencia del marco con el prototipo (celular, Ayuda una vez, «Resumen de tu
+clase», «Administración › …», logo de 34 px, Biblioteca bajo «Mis clases»); enlaces del texto subrayados en todos los
+temas; Buscar (Ctrl K) del docente y del administrador; barra de abajo del docente; el Asistente deja su espacio a la
+página; cabecera del Tutor blanca. El día a día está en `docs/v3/BITACORA.md`.
+
+**Pasa a otras fases** (necesita datos del servidor):
 - «Sigue donde ibas» y «Asistencia abierta» en el menú del estudiante: falta un dato de la última lección y de la
   asistencia abierta para el estudiante.
 - «Mi clase» y «Aprender» como pantallas (Fase D); hoy «Aprender» abre el plan del curso.
-- Buscar (Ctrl K) para el docente y el administrador: hoy solo existe la búsqueda de lecciones del estudiante.
 - Las cuentas de pendientes del administrador.
-- La barra de abajo del docente en el celular.
 
 ### Fase C · Entrar y presentar STIRE
 
