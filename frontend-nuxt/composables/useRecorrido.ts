@@ -6,6 +6,8 @@ import { claveVisto, recorridoDeRuta, type Recorrido } from '~/utils/recorridos'
 
 /** Espera a que la pantalla cargue sus datos antes de señalar sus partes. */
 const ESPERA_PRIMERA_VEZ_MS = 1500
+/** Elementos en los que aria-expanded está permitido (ARIA 1.2); en los demás se quita. */
+const ARIA_EXPANDIDO_PERMITIDO = 'button, a[href], summary, select, [role="button"], [role="link"], [role="combobox"], [role="tab"], [role="menuitem"], [role="treeitem"], [role="row"], [role="checkbox"], [role="switch"]'
 
 /** Sin selector (la bienvenida) siempre se muestra, en el centro. */
 function seVe(selector: string | undefined): boolean {
@@ -70,6 +72,16 @@ export function useRecorrido() {
     try { localStorage.setItem(claveVisto(r.id, authStore.user?.id), '1') } catch { /* solo se pierde el recuerdo */ }
   }
 
+  /** Driver.js marca lo señalado con aria-expanded y aria-haspopup, que solo valen en botones, enlaces y controles parecidos:
+   *  sobre una tarjeta o un contenedor axe lo marca como error crítico (medición de partida de la v3, 12/11). */
+  function limpiarAria() {
+    document.querySelectorAll('.driver-active-element, #driver-dummy-element').forEach((el) => {
+      if (el.matches(ARIA_EXPANDIDO_PERMITIDO)) return
+      el.removeAttribute('aria-expanded')
+      el.removeAttribute('aria-haspopup')
+    })
+  }
+
   /** Dibuja el recorrido con los pasos cuyo elemento se ve. Devuelve false si no había nada que señalar. */
   function dibujar(r: Recorrido): boolean {
     const pasos: DriveStep[] = r.pasos
@@ -100,6 +112,7 @@ export function useRecorrido() {
           (apagar) => cambiar({ recorridosAutomaticos: !apagar }),
         ))
       },
+      onHighlighted: limpiarAria,
       onDestroyed: () => marcarVisto(r),
     })
     recorrido.drive()

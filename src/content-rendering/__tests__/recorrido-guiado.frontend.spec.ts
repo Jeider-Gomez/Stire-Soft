@@ -164,3 +164,20 @@ describe('«Saltar recorrido» y «No volver a mostrar recorridos»', () => {
     expect(css).toMatch(/\.recorrido-saltar \{[^}]*min-height: 44px/);
   });
 });
+
+describe('lo que el recorrido señala no rompe la accesibilidad (axe, medición de partida de la v3, 12/11)', () => {
+  // Driver.js pone aria-expanded y aria-haspopup a lo señalado; en una tarjeta o un contenedor axe lo marca crítico.
+  const comp = leer('composables', 'useRecorrido.ts');
+  const selector = comp.match(/const ARIA_EXPANDIDO_PERMITIDO = '([^']+)'/)![1];
+  it('después de señalar, quita esos atributos de lo que no es un botón, enlace o control', () => {
+    expect(comp).toContain('onHighlighted: limpiarAria,');
+    expect(comp).toMatch(/function limpiarAria\(\) \{[\s\S]*?if \(el\.matches\(ARIA_EXPANDIDO_PERMITIDO\)\) return[\s\S]*?removeAttribute\('aria-expanded'\)[\s\S]*?removeAttribute\('aria-haspopup'\)/);
+  });
+  it('el selector deja los botones y enlaces y quita los contenedores', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { JSDOM } = require('jsdom') as typeof import('jsdom');
+    const doc = new JSDOM('<div id="t"></div><section id="s"></section><button id="b"></button><a id="a" href="#">x</a><div id="r" role="tab"></div>').window.document;
+    const pasa = (id: string) => doc.getElementById(id)!.matches(selector);
+    expect([pasa('t'), pasa('s'), pasa('b'), pasa('a'), pasa('r')]).toEqual([false, false, true, true, true]);
+  });
+});
