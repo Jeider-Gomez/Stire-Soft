@@ -117,6 +117,9 @@ código.
 
 ## Dónde está cada cosa
 
+- **`docs/v3/BITACORA.md` — si trabajas en la v3, léela al empezar y anótate antes de editar.** Varios chats trabajan
+  en esta misma carpeta: ahí se ve quién toca qué archivos, qué se terminó y qué queda.
+
 - `README.md` y `docs/README.md` — presentación del proyecto e índice de toda la documentación.
 - `docs/curso-ddse3/` — entregas del curso: cada requisito del docente con el archivo que lo cumple.
   Cuando llegue una guía nueva, se guarda en `guias/` y se agregan sus requisitos a la tabla.
