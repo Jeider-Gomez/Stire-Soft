@@ -11,7 +11,7 @@
           <Plus :size="14" aria-hidden="true" /> Nuevo refuerzo o reto
         </NuxtLink>
       </div>
-      <p class="text-[11px] text-base-texto-secundario">También puedes asignar desde <NuxtLink :to="claseId ? `/docente/clase/${claseId}` : '/docente'" class="underline">Hoy</NuxtLink> o desde el mapa de <NuxtLink :to="claseId ? `/docente/rendimiento?classId=${claseId}` : '/docente/rendimiento'" class="underline">Estudiantes</NuxtLink>: en «Bloqueados» y «Listos para más».</p>
+      <p class="text-[11px] text-base-texto-secundario">También puedes asignar desde <NuxtLink :to="claseId ? `/docente/clase/${claseId}` : '/docente'" class="underline">Resumen de la clase</NuxtLink> o desde el mapa de <NuxtLink :to="claseId ? `/docente/rendimiento?classId=${claseId}` : '/docente/rendimiento'" class="underline">Estudiantes</NuxtLink>: en «Bloqueados» y «Listos para más».</p>
     </header>
 
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario"><Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando…</p>

@@ -78,6 +78,8 @@ describe('La barra superior y los formularios usan los datos, no texto fijo', ()
     expect(header).not.toMatch(/Ing\. Sistemas|Ingeniería de Sistemas|Licenciatura en Informática|Lic\. en Informática|Facultad de/);
     expect(header).toContain('useContextoDocente()');
     expect(header).toContain('studentStore.currentAsignatura');
+    // v3 (12/11): la clase del estudiante y su lugar están en la tarjeta de arriba del menú (prototipo E-Inicio)
+    expect(leer('components', 'layout', 'SidebarNav.vue')).toContain('lugarDeAsignatura(studentStore.currentAsignatura)) || studentStore.currentTeacher');
   });
   it('crear una clase y sus ajustes permiten elegir asignatura, grupo y periodo', () => {
     for (const f of [leer('components', 'docente', 'VentanaCrearClase.vue'), leer('components', 'docente', 'ajustes', 'SeccionDatos.vue')]) {
@@ -133,7 +135,6 @@ describe('Regresión 04/10: el estudiante veía «Curso libre» en Fundamentos d
   it('la barra del estudiante no cae en «Curso libre» si la asignatura es de un programa o institución', () => {
     const header = leer('components', 'layout', 'HeaderNav.vue');
     expect(header).toContain("(a.programId || a.institutionId ? 'Sistema tutor inteligente' : 'Curso libre')");
-    expect(header).toContain('lugarDeAsignatura(studentStore.currentAsignatura)) || studentStore.currentTeacher');
   });
   it('la matrícula del estudiante pide la asignatura con su programa e institución', () => {
     const svc = readFileSync(path.join(__dirname, '..', '..', 'enrollment', 'enrollment.service.ts'), 'utf8');

@@ -157,7 +157,8 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
     // expandir (como Platzi)
     expect(menu).toMatch(/\.expandir-logo:hover \.icono-expandir,[\s\S]*display: block/);
     expect(menu).toContain('.menu-colapsado .expandir-logo { display: inline-flex; }');
-    const logo = menu.indexOf('<LayoutLogo tamano="mini" con-nombre />');
+    // v3 (12/11): el logo del menú mide 34 px, como en el prototipo (antes «mini», 20 px).
+    const logo = menu.indexOf('<LayoutLogo tamano="menu" con-nombre />');
     expect(logo).toBeGreaterThan(fila);
     expect(menu.indexOf('id="boton-menu"')).toBeGreaterThan(logo);
     // un ícono de 36 px, sin borde ni fondo fijo (P-UI-03); el nombre, para el lector de pantalla

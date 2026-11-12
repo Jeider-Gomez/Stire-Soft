@@ -5,7 +5,7 @@
 export type PestanaClase = 'hoy' | 'contenido' | 'estudiantes' | 'asistencia' | 'entregas' | 'refuerzos' | 'notas' | 'ajustes'
 
 export const PESTANAS_CLASE: Array<{ id: PestanaClase; texto: string }> = [
-  { id: 'hoy', texto: 'Hoy' },
+  { id: 'hoy', texto: 'Resumen' },
   { id: 'contenido', texto: 'Contenido' },
   { id: 'estudiantes', texto: 'Estudiantes' },
   { id: 'asistencia', texto: 'Asistencia' },
@@ -59,13 +59,16 @@ export function pestanaDeLaRuta(ruta: string): PestanaClase | null {
  * Lo que muestra la barra lateral (rediseño v2, 24/10): cinco secciones en vez de ocho. Dos agrupan pantallas que siguen
  * existiendo («Estudiantes y avance» incluye Refuerzos; «Asistencia y notas», las dos) y, cuando están abiertas, las
  * muestran debajo. Ajustes va aparte, al pie de la clase.
+ * v3 (12/11, prototipo D3-Clase): los nombres y el orden del prototipo, y Refuerzos y retos con su propia entrada.
+ * «Competencias» y «Repasos de la clase» entran cuando existan sus pantallas (Fase E).
  */
 export const SECCIONES_MENU: Array<{ id: PestanaClase; texto: string; incluye: PestanaClase[] }> = [
-  { id: 'hoy', texto: 'Resumen', incluye: ['hoy'] },
-  { id: 'contenido', texto: 'Contenido del curso', incluye: ['contenido'] },
-  { id: 'estudiantes', texto: 'Estudiantes y avance', incluye: ['estudiantes', 'refuerzos'] },
-  { id: 'entregas', texto: 'Entregas', incluye: ['entregas'] },
+  { id: 'hoy', texto: 'Resumen de la clase', incluye: ['hoy'] },
+  { id: 'contenido', texto: 'Contenido', incluye: ['contenido'] },
+  { id: 'estudiantes', texto: 'Estudiantes', incluye: ['estudiantes'] },
   { id: 'asistencia', texto: 'Asistencia y notas', incluye: ['asistencia', 'notas'] },
+  { id: 'entregas', texto: 'Entregas', incluye: ['entregas'] },
+  { id: 'refuerzos', texto: 'Refuerzos y retos', incluye: ['refuerzos'] },
 ]
 
 /** La sección del menú que contiene una pantalla de la clase (Refuerzos → «Estudiantes y avance»). */

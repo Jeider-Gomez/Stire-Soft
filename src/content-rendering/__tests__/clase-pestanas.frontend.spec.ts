@@ -100,7 +100,7 @@ describe('Pestañas de la clase', () => {
   it('el menú lleva a cada clase y ya no es un menú por herramienta', () => {
     // Desde el 07/10 las clases del menú viven en ClasesDelMenu.vue (con sus iniciales).
     const menu = leer('components', 'layout', 'SidebarNav.vue') + leer('components', 'layout', 'ClasesDelMenu.vue');
-    expect(menu).toContain(`<LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />`);
+    expect(menu).toContain(`<LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'">`);
     // al cambiar de clase el docente se queda en la misma sección (Contenido, Entregas…); sin sección, va a «Hoy»
     expect(menu).toContain(`:to="enlacePestana(seccionActual ?? 'hoy', c.id)"`);
     // la clase activa despliega sus secciones debajo, con la actual marcada
@@ -237,13 +237,15 @@ describe('«Hoy» de la clase', () => {
 
 describe('Menú lateral del docente v2: una clase elegida y cinco secciones', () => {
   it('cinco secciones; dos agrupan pantallas que siguen existiendo y Ajustes va aparte', () => {
-    expect(pestanas.SECCIONES_MENU.map((s) => s.texto)).toEqual(['Resumen', 'Contenido del curso', 'Estudiantes y avance', 'Entregas', 'Asistencia y notas']);
+    // v3 (12/11): los nombres y el orden del prototipo D3-Clase; Refuerzos y retos con su propia entrada.
+    expect(pestanas.SECCIONES_MENU.map((s) => s.texto)).toEqual(['Resumen de la clase', 'Contenido', 'Estudiantes', 'Asistencia y notas', 'Entregas', 'Refuerzos y retos']);
     const cubiertas = pestanas.SECCIONES_MENU.flatMap((s) => s.incluye).concat(['ajustes']).sort();
     expect(cubiertas).toEqual(pestanas.PESTANAS_CLASE.map((p) => p.id).sort());
   });
 
   it('cada pantalla marca la sección que la contiene', () => {
-    expect(pestanas.seccionDelMenu('refuerzos')).toBe('estudiantes');
+    // v3 (12/11, prototipo D3-Clase): Refuerzos y retos tiene su propia entrada en el menú
+    expect(pestanas.seccionDelMenu('refuerzos')).toBe('refuerzos');
     expect(pestanas.seccionDelMenu('notas')).toBe('asistencia');
     expect(pestanas.seccionDelMenu('contenido')).toBe('contenido');
     expect(pestanas.seccionDelMenu('ajustes')).toBe('ajustes');
@@ -270,8 +272,10 @@ describe('Menú lateral del docente v2: una clase elegida y cinco secciones', ()
     expect(menu).toContain("localStorage.setItem(CLAVE_RECORDADA");
     const lateral = leer('components', 'layout', 'SidebarNav.vue');
     expect(lateral.indexOf('<span>Inicio</span>')).toBeGreaterThan(-1);
-    // v3 (12/11, cuadro D3-Clase): «Mis clases» arriba, la clase en el medio y Mensajes y Biblioteca al final.
-    expect(lateral.indexOf('<span>Mis clases</span>')).toBeLessThan(lateral.indexOf('<LayoutClasesDelMenu'));
+    // v3 (12/11, cuadro D3-Clase): «Mis clases» arriba con la Biblioteca debajo (Jeider, 12/11: las dos son de todas
+    // las clases), luego la clase y Mensajes al final.
+    expect(lateral.indexOf('<span>Mis clases</span>')).toBeLessThan(lateral.indexOf('<span>Biblioteca</span>'));
+    expect(lateral.indexOf('<span>Biblioteca</span>')).toBeLessThan(lateral.indexOf('<LayoutClasesDelMenu'));
     expect(lateral.indexOf('to="/docente/mensajes"')).toBeGreaterThan(lateral.indexOf('<LayoutClasesDelMenu'));
     // Desde el 26/10 la consulta se lee una vez: también trae la plantilla elegida en la Biblioteca.
     expect(leer('pages', 'docente', 'index.vue')).toContain('if (q.crear) creando.value = true');

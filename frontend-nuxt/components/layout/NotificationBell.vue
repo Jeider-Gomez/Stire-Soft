@@ -3,13 +3,14 @@
     <button
       ref="botonRef"
       @click="toggleOpen"
-      class="relative p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors duration-150"
+      class="relative p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center gap-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors duration-150"
       :aria-expanded="isOpen"
       aria-controls="panel-notificaciones"
     >
       <!-- Sin aria-label: el nombre sale del texto, así incluye el número que se ve (WCAG 2.5.3, control por voz). -->
       <Bell :size="18" aria-hidden="true" />
-      <span class="sr-only">Notificaciones</span>
+      <!-- v3 (barra del prototipo): «Avisos» se lee en pantallas anchas, como Ayuda y Apariencia. -->
+      <span class="sr-only lg:not-sr-only text-xs font-semibold">Avisos</span>
       <span
         v-if="unreadCount > 0"
         class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-red-600 text-white text-[9px] font-bold flex items-center justify-center"

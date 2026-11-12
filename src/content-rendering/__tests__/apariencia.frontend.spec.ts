@@ -168,7 +168,8 @@ describe('dónde se elige', () => {
     for (const rol of ['estudiante', 'docente', 'admin']) expect(leer('pages', rol, 'perfil.vue')).toContain('<PerfilAparienciaLectura class="mt-6" />');
     const cabecera = leer('components', 'layout', 'HeaderNav.vue');
     expect(cabecera).toContain(':to="`${homeRoute}/perfil#apariencia`"');
-    expect(cabecera).toContain('<LayoutBotonApariencia />');
+    // en el celular el botón no va en la barra (E-Cel-Inicio): queda el enlace del menú de la cuenta, de arriba
+    expect(cabecera).toContain('<LayoutBotonApariencia class="hidden md:block" />');
     const boton = leer('components', 'layout', 'BotonApariencia.vue');
     expect(boton).toContain('<PerfilAparienciaLectura compacto />');
     expect(boton).toContain('devolver-foco="boton-apariencia"');

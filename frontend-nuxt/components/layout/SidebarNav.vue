@@ -6,7 +6,7 @@
     <div class="cabecera-menu h-16 -mt-4 -mx-4 px-4 mb-3 flex items-center justify-between gap-2 border-b border-base-borde-sutil">
       <!-- Logo pequeño y fijo; plegada la barra, queda solo la pantalla con gafas (Jeider, 26/10: «que su logo quede ahí»). -->
       <NuxtLink :to="inicio" class="logo-menu flex items-center min-h-[44px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stire-blue/40" aria-label="Ir al inicio">
-        <LayoutLogo tamano="mini" con-nombre />
+        <LayoutLogo tamano="menu" con-nombre />
       </NuxtLink>
       <!-- Plegada (como Platzi): queda solo el logo, y al pasar el mouse o con el foco se vuelve el ícono para expandir. -->
       <button type="button" class="expandir-logo hidden w-11 h-11 items-center justify-center rounded-lg text-slate-600 hover:bg-base-bg-secundario"
@@ -29,14 +29,30 @@
     <!-- Navegación según Rol Activo -->
     <div class="space-y-4">
       <!-- 🎓 NAVEGACIÓN ESTUDIANTE (6 Ítems Persistentes - Insumo 15 §5) -->
-      <!-- v3 (Fase B; cuadro Navegacion-estudiante): cada sección con su color, en el orden del diseño. «Aprender» es el
-           plan del curso de abajo; Mi asistencia y Mensajes son lo que el diseño junta en «Mi clase» (rosa) hasta que
-           esa pantalla exista (Fase D). -->
+      <!-- v3 (Fase B; prototipo E-Inicio): la clase activa arriba y las seis secciones del prototipo, cada una con su
+           color. «Aprender» abre el plan del curso (que sigue al final del menú, Jeider 26/10) hasta que exista su pantalla;
+           «Mi clase» reúne Mi asistencia y Mensajes, lo que el prototipo pone en sus pestañas (Fase D). -->
       <nav v-if="authStore.currentRole === 'estudiante'" class="menu-v3 text-sm">
+        <NuxtLink v-if="studentStore.currentClassName" to="/estudiante/clases" class="clase-menu"
+          :aria-label="`Clase activa: ${studentStore.currentClassLabel}. Cambiar de clase`" title="Cambiar de clase">
+          <span class="siglas-clase" aria-hidden="true">{{ siglaClase }}</span>
+          <span class="min-w-0 flex-1">
+            <span class="block truncate text-sm font-bold">{{ studentStore.currentClassLabel }}</span>
+            <!-- Debajo, el lugar de la asignatura o, si no tiene, el docente (antes en la barra de arriba). -->
+            <span class="block truncate text-xs text-base-texto-secundario">{{ (studentStore.currentAsignatura && lugarDeAsignatura(studentStore.currentAsignatura)) || studentStore.currentTeacher }}</span>
+          </span>
+          <ChevronDown :size="16" aria-hidden="true" class="shrink-0" />
+        </NuxtLink>
+
         <NuxtLink to="/estudiante" class="item-menu tono-menta" :class="{ activo: route.path === '/estudiante' }">
           <span class="icono-menu"><House :size="18" aria-hidden="true" /></span>
           <span>Inicio</span>
         </NuxtLink>
+
+        <button type="button" class="item-menu tono-cielo text-left" :class="{ activo: enAprender }" :aria-expanded="planAbierto" aria-controls="plan-del-curso" @click="planAbierto = !planAbierto">
+          <span class="icono-menu"><BookOpen :size="18" aria-hidden="true" /></span>
+          <span>Aprender</span>
+        </button>
 
         <!-- La cuenta = repasos que tocan HOY (vencidos o críticos); los de mañana no son urgentes. -->
         <NuxtLink to="/estudiante/repasos" data-recorrido="repasos" class="item-menu tono-sol" :class="{ activo: route.path === '/estudiante/repasos' }">
@@ -56,18 +72,21 @@
           <span>Mis proyectos</span>
         </NuxtLink>
 
-        <!-- Asistencia con QR (src/asistencia): el código que el estudiante le muestra al docente -->
-        <NuxtLink to="/estudiante/asistencia" class="item-menu tono-rosa" :class="{ activo: route.path === '/estudiante/asistencia' }">
-          <span class="icono-menu"><QrCode :size="18" aria-hidden="true" /></span>
-          <span>Mi asistencia</span>
-        </NuxtLink>
+        <!-- Mi clase: la asistencia con QR (src/asistencia) y los mensajes, debajo, como las pestañas del prototipo. -->
+        <button type="button" class="item-menu tono-rosa text-left" :class="{ activo: enMiClase }" :aria-expanded="miClaseAbierta" aria-controls="menu-mi-clase" @click="miClaseAbierta = !miClaseAbierta">
+          <span class="icono-menu"><GraduationCap :size="18" aria-hidden="true" /></span>
+          <span>Mi clase</span>
+        </button>
+        <ul v-show="miClaseAbierta" id="menu-mi-clase" class="ml-12 space-y-0.5 ocultar-colapsado">
+          <li>
+            <NuxtLink to="/estudiante/asistencia" class="sub-menu" :class="{ actual: route.path === '/estudiante/asistencia' }">Mi asistencia</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="/estudiante/mensajes" class="sub-menu" :class="{ actual: route.path === '/estudiante/mensajes' }">Mensajes</NuxtLink>
+          </li>
+        </ul>
 
-        <NuxtLink to="/estudiante/mensajes" class="item-menu tono-rosa" :class="{ activo: route.path === '/estudiante/mensajes' }">
-          <span class="icono-menu"><Mail :size="18" aria-hidden="true" /></span>
-          <span>Mensajes</span>
-        </NuxtLink>
-
-        <NuxtLink to="/estudiante/progreso" class="item-menu tono-lila" :class="{ activo: route.path === '/estudiante/progreso' }">
+        <NuxtLink to="/estudiante/progreso" class="item-menu tono-lila" :class="{ activo: route.path === '/estudiante/progreso' || route.path === '/estudiante/logros' }">
           <span class="icono-menu"><TrendingUp :size="18" aria-hidden="true" /></span>
           <span>Mi progreso</span>
         </NuxtLink>
@@ -79,20 +98,13 @@
       </nav>
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
-      <!-- v3 (Fase B; cuadro D3-Clase): «Mis clases» arriba; debajo, la clase elegida con sus secciones
-           (ClasesDelMenu.vue); Mensajes y Biblioteca, que no son de una clase, al final. -->
+      <!-- v3 (Fase B; prototipo D3-Clase): «Mis clases» arriba; debajo, la clase elegida con sus secciones en una sola
+           lista (ClasesDelMenu.vue), con «Avisos y mensajes» antes de Ajustes. La Biblioteca va junto a «Mis clases»
+           (Jeider, 12/11): las dos son de todas las clases, y de la Biblioteca se copia un curso para una clase nueva. -->
       <nav v-else-if="authStore.currentRole === 'docente'" class="menu-v3 text-sm">
         <NuxtLink to="/docente" class="item-menu tono-menta" :class="{ activo: route.path === '/docente' }">
           <span class="icono-menu"><House :size="18" aria-hidden="true" /></span>
           <span>Mis clases</span>
-        </NuxtLink>
-
-        <LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'" />
-
-        <p class="titulo-seccion">General</p>
-        <NuxtLink to="/docente/mensajes" class="item-menu tono-lila" :class="{ activo: route.path === '/docente/mensajes' }">
-          <span class="icono-menu"><Mail :size="18" aria-hidden="true" /></span>
-          <span>Mensajes</span>
         </NuxtLink>
 
         <!-- Biblioteca: cursos que otros docentes compartieron, para copiarlos a una clase nueva (pages/docente/biblioteca.vue) -->
@@ -100,6 +112,15 @@
           <span class="icono-menu"><Library :size="18" aria-hidden="true" /></span>
           <span>Biblioteca</span>
         </NuxtLink>
+
+        <LayoutClasesDelMenu v-if="authStore.currentRole === 'docente'">
+          <li>
+            <NuxtLink to="/docente/mensajes" class="item-menu tono-lila" :class="{ activo: route.path === '/docente/mensajes' }">
+              <span class="icono-menu"><Mail :size="18" aria-hidden="true" /></span>
+              <span>Avisos y mensajes</span>
+            </NuxtLink>
+          </li>
+        </LayoutClasesDelMenu>
       </nav>
 
       <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR (v3, Fase B; cuadro A-Usuarios del lienzo): por secciones, cada entrada con su
@@ -142,19 +163,14 @@
       </nav>
     </div>
 
-    <!-- Ayuda para los tres roles, al final del menú: el manual de usuario (docs/PLAN_AYUDA_AL_USUARIO.md, frente C). -->
-    <nav aria-label="Ayuda" class="mt-auto pt-3 border-t border-base-borde-sutil text-sm font-medium">
-      <NuxtLink to="/ayuda" data-recorrido="ayuda" class="flex items-center gap-2.5 min-h-[44px] px-3 py-2 rounded-md transition-colors text-base-texto-primario hover:bg-base-bg-secundario">
-        <BookOpen :size="20" aria-hidden="true" class="shrink-0" />
-        <span>Ayuda</span>
-      </NuxtLink>
-    </nav>
-
+    <!-- v3 (12/11): «Ayuda» ya no va al pie del menú. Estaba dos veces; como en el prototipo, queda solo en la barra de
+         arriba (MenuAyuda.vue), que reúne el manual, el recorrido de la pantalla y «Enviar una sugerencia». -->
   </aside>
 </template>
 
 <script setup lang="ts">
-import { Activity, BookOpen, Library, FolderCode, House, Mail, MessageSquare, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, Target, TrendingUp, Users } from 'lucide-vue-next'
+import { Activity, BookOpen, ChevronDown, Library, FolderCode, GraduationCap, House, Mail, MessageSquare, PanelLeftClose, PanelLeftOpen, Repeat, Settings, Target, TrendingUp, Users } from 'lucide-vue-next'
+import { lugarDeAsignatura, siglasDeClases } from '~/utils/contextoAcademico'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 
@@ -188,11 +204,43 @@ function isCurrentRoute(path: string) {
   return route.path.startsWith(path)
 }
 
+// ─── Estudiante (prototipo E-Inicio) ───
+/** Las iniciales de la clase activa, como en la tarjeta del prototipo («FA»). */
+const siglaClase = computed(() => {
+  const id = studentStore.currentClassId ?? 0
+  return siglasDeClases([{ id, name: studentStore.currentClassName }])[id] ?? ''
+})
+/** «Aprender» abre y cierra el plan del curso (el mismo estado que PlanDelCurso.vue) y se marca dentro de una lección. */
+const planAbierto = useState('plan-abierto', () => true)
+const enAprender = computed(() => route.path.startsWith('/estudiante/unidad/') || route.path.startsWith('/estudiante/evaluacion/'))
+/** «Mi clase» reúne Mi asistencia y Mensajes; se abre sola cuando está en una de ellas. */
+const enMiClase = computed(() => route.path === '/estudiante/asistencia' || route.path === '/estudiante/mensajes')
+const miClaseAbierta = ref(enMiClase.value)
+watch(enMiClase, (si) => { if (si) miClaseAbierta.value = true })
+
 /** Entrada del administrador activa: su ruta exacta (las del admin no tienen subpáginas). */
 const enAdmin = (...rutas: string[]) => rutas.includes(route.path)
 </script>
 
 <style scoped>
+/* La tarjeta de la clase activa, arriba del menú del estudiante (prototipo E-Inicio). */
+.clase-menu {
+  display: flex; align-items: center; gap: 0.625rem; min-height: 56px; margin-bottom: 0.75rem;
+  padding: 0.5rem 0.625rem; border-radius: 14px; border: 1px solid rgb(var(--c-base-borde-sutil));
+  color: rgb(var(--c-base-texto-primario)); transition: border-color 150ms;
+}
+.clase-menu:hover { border-color: rgb(var(--c-base-borde-fuerte)); }
+.siglas-clase {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px;
+  border-radius: 10px; background: rgb(var(--c-sec-menta-fondo)); color: rgb(var(--c-base-texto-primario)); font-size: 12px; font-weight: 800;
+}
+.sub-menu {
+  display: flex; align-items: center; min-height: 36px; padding: 0 0.625rem; border-radius: 8px; font-size: 13px;
+  color: rgb(var(--c-base-texto-primario));
+}
+.sub-menu:hover { background: rgb(var(--c-base-bg-secundario)); }
+.sub-menu.actual { font-weight: 700; background: rgb(var(--c-sec-rosa-fila)); }
+
 /* El menú v3 (item-menu, icono-menu, tono-*) está en assets/css/menu-v3.css. */
 
 /* Solo íconos: el texto queda para el lector de pantalla y los títulos de sección se ocultan. */
@@ -223,7 +271,8 @@ const enAdmin = (...rutas: string[]) => rutas.includes(route.path)
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
-  .menu-colapsado a span:not(.icono-menu),
+  .menu-colapsado .clase-menu > svg { display: none; }
+  .menu-colapsado a span:not(.icono-menu):not(.siglas-clase),
   .menu-colapsado button:not(.expandir-logo) span {
     position: absolute;
     width: 1px;

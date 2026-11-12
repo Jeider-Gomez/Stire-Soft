@@ -46,11 +46,11 @@ describe('menú de ayuda', () => {
     expect(b).toContain("if (v !== 'mias' && v !== 'nueva') return");
   });
 
-  it('«Ayuda» está al final de la barra lateral para los tres roles', () => {
-    const s = leer('components', 'layout', 'SidebarNav.vue');
-    const ayuda = s.indexOf('<nav aria-label="Ayuda"');
-    expect(ayuda).toBeGreaterThan(s.lastIndexOf('<span>Registros y mantenimiento</span>'));
-    expect(s).toContain('<NuxtLink to="/ayuda" data-recorrido="ayuda"');
+  it('«Ayuda» está una sola vez, en la barra de arriba, para los tres roles (v3, 12/11; antes también al pie del menú)', () => {
+    expect(leer('components', 'layout', 'SidebarNav.vue')).not.toContain('to="/ayuda"');
+    const h = leer('components', 'layout', 'HeaderNav.vue');
+    expect(h.match(/<LayoutMenuAyuda /g)).toHaveLength(1);
+    expect(h).not.toMatch(/<LayoutMenuAyuda[^>]*v-if/);
   });
 });
 

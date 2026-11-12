@@ -77,13 +77,16 @@ const esActual = (id: number) => route.path === `/estudiante/unidad/${id}`
 
 // Todo el plan se pliega desde su título y se recuerda en este navegador.
 const CLAVE_PLAN = 'stire-plan-plegado'
-const planAbierto = ref(true)
+// Compartido con «Aprender» del menú (v3, SidebarNav.vue), que abre y cierra este mismo plan.
+const planAbierto = useState('plan-abierto', () => true)
 onMounted(() => {
   try { planAbierto.value = localStorage.getItem(CLAVE_PLAN) !== '1' } catch { /* sin almacenamiento */ }
 })
+watch(planAbierto, (abierto) => {
+  try { localStorage.setItem(CLAVE_PLAN, abierto ? '0' : '1') } catch { /* se usa sin recordar */ }
+})
 function alternarPlan() {
   planAbierto.value = !planAbierto.value
-  try { localStorage.setItem(CLAVE_PLAN, planAbierto.value ? '0' : '1') } catch { /* se usa sin recordar */ }
 }
 
 // Un solo módulo abierto: el de la lección donde está (se sigue al cambiar de lección); abrir otro cierra el anterior.

@@ -71,16 +71,16 @@
 import { computed, useId } from 'vue'
 
 const props = withDefaults(defineProps<{
-  /** «grande» (48 px, pantallas de acceso), «normal» (28 px) y «mini» (20 px, menú y pie). */
-  tamano?: 'mini' | 'normal' | 'grande'
+  /** «grande» (48 px, pantallas de acceso), «menu» (34 px, arriba del menú lateral, como en el prototipo v3), «normal»
+   *  (28 px, barra del celular) y «mini» (20 px, pie y acceso). */
+  tamano?: 'mini' | 'normal' | 'menu' | 'grande'
   /** Junto al nombre «stıre». */
   conNombre?: boolean
   /** Nombre en blanco, para fondos de color. */
   claro?: boolean
 }>(), { tamano: 'normal', conNombre: false, claro: false })
 
-const grande = computed(() => props.tamano === 'grande')
-const alto = computed(() => (grande.value ? 48 : props.tamano === 'mini' ? 20 : 28))
+const alto = computed(() => ({ grande: 48, menu: 34, normal: 28, mini: 20 })[props.tamano])
 /** El nombre mide el 78 % del alto de la mascota, como en el cuadro del logo. */
 const altoNombre = computed(() => Math.round(alto.value * 0.78))
 const huecos = `logo-huecos-${useId()}`

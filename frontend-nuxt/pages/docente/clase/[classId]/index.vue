@@ -3,7 +3,7 @@
     <DocentePestanasClase :class-id="classId" activa="hoy" :nombre="clase?.name" :codigo="clase?.code" />
 
     <header data-recorrido="hoy" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
-      <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Hoy en tu clase</h1>
+      <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Resumen de tu clase</h1>
       <p class="text-xs text-base-texto-secundario mt-1">
         Lo que conviene atender, en orden: primero quien no puede avanzar, luego lo que espera tu comentario y al final quien
         está listo para más.{{ totalEstudiantes === null ? '' : ` ${totalEstudiantes} ${totalEstudiantes === 1 ? 'estudiante' : 'estudiantes'} en la clase.` }}

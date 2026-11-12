@@ -19,56 +19,31 @@
       <NuxtLink :to="homeRoute" class="md:hidden flex items-center flex-shrink-0 min-h-[44px]" aria-label="Ir al inicio">
         <LayoutLogo con-nombre />
       </NuxtLink>
-      <!-- Buscar una lección (Ctrl+K), como la barra de búsqueda de Cursor: a la izquierda, donde se mira primero. -->
-      <button v-if="authStore.currentRole === 'estudiante'" type="button"
-        class="hidden md:inline-flex items-center gap-2 w-56 lg:w-64 min-h-[36px] px-3 rounded-lg border border-base-borde-sutil text-xs text-base-texto-secundario hover:border-base-borde-fuerte"
-        @click="irALeccion = true">
-        <Search :size="14" aria-hidden="true" /><span class="flex-1 text-left">Buscar una lección</span>
-        <kbd class="text-[10px] border border-base-borde-sutil rounded px-1">Ctrl K</kbd>
-      </button>
-
-      <!-- Separador + Contexto de clase (solo estudiante) -->
-      <div
-        v-if="authStore.currentRole === 'estudiante' && studentStore.currentClassName"
-        class="hidden lg:flex items-center gap-2 ml-2 pl-3 border-l border-slate-200 min-w-0"
-      >
-        <GraduationCap :size="13" class="text-slate-500 flex-shrink-0" />
-        <span class="text-xs text-slate-600 font-medium truncate max-w-[220px]">
-          {{ studentStore.currentClassLabel }}
-        </span>
-        <span class="text-slate-500">•</span>
-        <span class="text-xs text-slate-500 truncate max-w-[260px]" :title="studentStore.currentTeacher">
-          {{ (studentStore.currentAsignatura && lugarDeAsignatura(studentStore.currentAsignatura)) || studentStore.currentTeacher }}
-        </span>
-      </div>
-
-      <!-- Contexto institucional del docente: sale de las asignaturas de sus clases (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md).
-           Si ninguna la tiene, no se muestra nada: nunca un programa inventado. -->
-      <div
-        v-else-if="authStore.currentRole === 'docente' && contexto.texto.value"
-        class="hidden lg:flex items-center gap-1.5 ml-2 pl-3 border-l border-slate-200 text-xs text-slate-500"
-      >
-        <span>{{ contexto.texto.value }}</span>
-      </div>
+      <!-- v3 (Fase B; barra() y barraD() del prototipo): «Dónde estás» a la izquierda, con los nombres del menú
+           (utils/migas.ts). La clase del estudiante pasó a la tarjeta de arriba del menú (SidebarNav.vue). -->
+      <nav v-if="migas.length" aria-label="Dónde estás" class="hidden md:flex items-center gap-1.5 min-w-0 text-sm text-base-texto-secundario whitespace-nowrap overflow-hidden">
+        <template v-for="(m, i) in migas" :key="i">
+          <span v-if="i < migas.length - 1" class="truncate">{{ m }}</span>
+          <span v-if="i < migas.length - 1" aria-hidden="true">›</span>
+          <strong v-else class="truncate font-semibold text-base-texto-primario" aria-current="page">{{ m }}</strong>
+        </template>
+      </nav>
     </div>
 
     <!-- ── DERECHA: Badge de rol + Avatar + Salir ── -->
     <div class="flex items-center gap-2 flex-shrink-0">
-      <!-- El Tutor se abre con el lanzador flotante de abajo a la derecha, igual en todas las pantallas
-           (components/tutor/LanzadorTutor.vue; recomendación de José, «reubicar el acceso al Tutor»). -->
-      <!-- El rol y el lugar pasaron al menú de la cuenta (27/10): la barra queda para lo que se usa. -->
+      <!-- El Tutor se abre con el lanzador flotante de abajo a la derecha (components/tutor/LanzadorTutor.vue). El rol y
+           el lugar están en el menú de la cuenta (27/10). Orden del prototipo: Buscar (o el Asistente del docente),
+           Apariencia, Avisos, Ayuda, Sugerencias y la cuenta. -->
 
-      <!-- Menú de ayuda: el recorrido de esta pantalla, su tarea del manual, el manual y las sugerencias
-           (components/layout/MenuAyuda.vue; S10-J04). -->
-      <LayoutMenuAyuda />
+      <!-- Buscar una lección (Ctrl+K), como la barra de búsqueda de Cursor -->
+      <button v-if="authStore.currentRole === 'estudiante'" type="button"
+        class="hidden md:inline-flex items-center gap-2 min-h-[40px] px-3 rounded-xl border border-base-borde-sutil text-sm text-base-texto-secundario hover:border-base-borde-fuerte"
+        title="Buscar una lección (Ctrl+K)" @click="irALeccion = true">
+        <Search :size="16" aria-hidden="true" /><span>Buscar</span>
+        <kbd class="hidden lg:inline text-[11px] font-semibold">Ctrl K</kbd>
+      </button>
 
-      <!-- Apariencia y lectura a un clic desde cualquier pantalla (components/layout/BotonApariencia.vue) -->
-      <LayoutBotonApariencia />
-
-      <!-- Sugerencias: un problema, algo confuso o una idea (docs/calidad/PRUEBA_DOS_SEMANAS.md) -->
-      <LayoutBotonSugerencias />
-
-      <!-- Notificaciones -->
       <!-- Asistente STIRE (solo docente): propone estructura, lecciones y ejercicios según la pantalla (Ctrl+.) -->
       <!-- v3 (Fase B, cuadro D3-Inicio): botón de sol suave con su atajo a la vista; lleno mientras el panel está abierto. -->
       <button v-if="authStore.currentRole === 'docente'" id="abrir-asistente" type="button"
@@ -78,10 +53,26 @@
         <Sparkles :size="16" aria-hidden="true" /> Asistente
         <kbd class="hidden lg:inline text-[11px] font-semibold opacity-70">Ctrl .</kbd>
       </button>
+
+      <!-- Apariencia y lectura a un clic desde cualquier pantalla (components/layout/BotonApariencia.vue). En el celular la
+           barra lleva solo logo, avisos, ayuda y cuenta (cuadro E-Cel-Inicio): la apariencia queda en el menú de la cuenta. -->
+      <LayoutBotonApariencia class="hidden md:block" />
+
+      <!-- Avisos -->
       <LayoutNotificationBell />
 
+      <!-- Menú de ayuda: el recorrido de esta pantalla, su tarea del manual, el manual y las sugerencias
+           (components/layout/MenuAyuda.vue; S10-J04). -->
+      <LayoutMenuAyuda :con-sugerencias="authStore.currentRole !== 'administrador'" />
+
+      <!-- Sugerencias: un problema, algo confuso o una idea (docs/calidad/PRUEBA_DOS_SEMANAS.md). El administrador las lee
+           (Opiniones › Sugerencias), no las envía: no lo ve, como en el cuadro A-Usuarios. En el celular el botón no se ve
+           (barra E-Cel-Inicio: logo, avisos y cuenta) pero sigue montado: «Enviar una sugerencia» del menú de Ayuda abre
+           su ventana con ?sugerencias=nueva. -->
+      <LayoutBotonSugerencias v-if="authStore.currentRole !== 'administrador'" class="hidden md:block" />
+
       <!-- Separador -->
-      <div class="w-px h-6 bg-slate-200 mx-1" />
+      <div class="hidden md:block w-px h-6 bg-slate-200 mx-1" />
 
       <!-- Avatar + menú usuario -->
       <div class="relative" ref="avatarMenuRef">
@@ -164,7 +155,8 @@
 import { Menu, LogOut, GraduationCap, UserCircle, Contrast, Search, Sparkles } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
-import { institucionCorta, lugarDeAsignatura, programaCorto } from '~/utils/contextoAcademico'
+import { institucionCorta, programaCorto } from '~/utils/contextoAcademico'
+import { migasDeRuta } from '~/utils/migas'
 
 defineEmits(['toggle-sidebar'])
 const asistenteAbierto = useState('asistente-abierto', () => false)
@@ -188,6 +180,11 @@ const subtitulo = computed(() => {
   if (authStore.currentRole === 'docente' && contexto.texto.value) return contexto.texto.value
   return 'Sistema tutor inteligente'
 })
+
+// «Dónde estás» (utils/migas.ts): para el docente, la clase elegida en el menú (ClasesDelMenu.vue) abre el camino.
+const route = useRoute()
+const claseDelDocente = useState<string | null>('clase-docente-nombre', () => null)
+const migas = computed(() => migasDeRuta(route.path, authStore.currentRole, claseDelDocente.value))
 
 const showUserMenu = ref(false)
 const avatarMenuRef = ref<HTMLElement | null>(null)

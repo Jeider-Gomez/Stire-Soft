@@ -180,7 +180,7 @@ export const RECORRIDOS: Recorrido[] = [
     manual: 'saber-a-quien-ayudar',
     pasos: [
       { elemento: 'nav[aria-label="Secciones de la clase"]', titulo: 'Las secciones de la clase', texto: '«Hoy», contenidos, estudiantes, entregas, notas, asistencia y ajustes, siempre arriba.' },
-      { elemento: '[data-recorrido="hoy"]', titulo: 'Hoy en tu clase', texto: 'Lo que conviene atender primero: quien no puede avanzar, lo que espera tu comentario y quien está listo para más.' },
+      { elemento: '[data-recorrido="hoy"]', titulo: 'Resumen de tu clase', texto: 'Lo que conviene atender primero: quien no puede avanzar, lo que espera tu comentario y quien está listo para más.' },
     ],
   },
   {

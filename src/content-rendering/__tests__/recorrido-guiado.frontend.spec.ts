@@ -124,7 +124,7 @@ describe('recorrido guiado', () => {
     expect(c).toContain("matchMedia('(prefers-reduced-motion: reduce)')");
     expect(c).toContain("setAttribute('aria-label', 'Cerrar el recorrido')");
     // El «?» es ahora el menú de ayuda (MenuAyuda.vue): en la cabecera y en el ejercicio, con el recorrido si lo hay.
-    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutMenuAyuda />');
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutMenuAyuda :con-sugerencias=');
     expect(leer('layouts', 'workspace.vue')).toContain('<LayoutMenuAyuda :con-sugerencias="false" class="shrink-0" />');
     const m = leer('components', 'layout', 'MenuAyuda.vue');
     expect(m).toContain('<li v-if="recorrido.actual.value">');

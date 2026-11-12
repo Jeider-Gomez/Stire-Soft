@@ -4,7 +4,8 @@
      clase (Inicio, Mensajes) muestra la última que eligió. Cada clase lleva sus iniciales («FA1», «FA2» si se repiten)
      para distinguirla con el menú plegado (Jeider, 07/10). -->
 <template>
-  <div v-if="clases.length" ref="raiz">
+  <div ref="raiz">
+    <template v-if="clases.length">
     <p class="titulo-seccion" :class="{ 'md:hidden': colapsado }">Clase</p>
 
     <div class="relative">
@@ -56,10 +57,12 @@
         </div>
       </Transition>
     </div>
+    </template>
 
-    <!-- Las secciones de la clase elegida. Plegado el menú, no caben y se omiten. -->
-    <!-- v3 (Fase B, cuadro D3-Clase): cada sección con su color (assets/css/menu-v3.css). -->
-    <ul v-if="actual" :class="{ 'md:hidden': colapsado }" :aria-label="`Secciones de ${actual.name}`" class="menu-v3 mt-2">
+    <!-- v3 (Fase B, prototipo D3-Clase): cada sección con su color (assets/css/menu-v3.css) y, como en el prototipo,
+         lo que no es de una clase (Avisos y mensajes, desde SidebarNav por el slot) antes de Ajustes. -->
+    <ul :class="{ 'md:hidden': colapsado }" :aria-label="actual ? `Secciones de ${actual.name}` : 'Secciones'" class="menu-v3 mt-2">
+      <template v-if="actual">
       <li v-for="s in SECCIONES_MENU" :key="s.id">
         <NuxtLink
           :to="enlacePestana(s.id, actual.id)"
@@ -82,7 +85,9 @@
           </li>
         </ul>
       </li>
-      <li>
+      </template>
+      <slot />
+      <li v-if="actual">
         <NuxtLink
           :to="enlacePestana('ajustes', actual.id)"
           :aria-current="seccionActual === 'ajustes' ? 'page' : undefined"
@@ -97,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpen, CalendarCheck, ChevronsUpDown, ClipboardCheck, Inbox, LayoutGrid, Plus, Settings, Users } from 'lucide-vue-next'
+import { BarChart3, BookOpen, ChevronsUpDown, Inbox, LayoutGrid, Plus, QrCode, Settings, Users, Zap } from 'lucide-vue-next'
 import { PESTANAS_CLASE, SECCIONES_MENU, claseDeLaRuta, claseDelMenu, colorDeClase, enlacePestana, pestanaDeLaRuta, seccionDelMenu, type PestanaClase } from '~/utils/pestanasClase'
 import { siglasDeClases } from '~/utils/contextoAcademico'
 
@@ -116,12 +121,15 @@ const actual = computed(() => {
   const id = claseDelMenu(deLaRuta.value, recordada.value, clases.value.map((c) => c.id))
   return clases.value.find((c) => c.id === id) ?? null
 })
+/** El nombre de la clase elegida, para «Dónde estás» de la barra de arriba (HeaderNav.vue, utils/migas.ts). */
+const nombreClase = useState<string | null>('clase-docente-nombre', () => null)
+watch(actual, (c) => { nombreClase.value = c?.name ?? null }, { immediate: true })
 /** La pantalla de la clase en la que está el docente: al cambiar de clase se queda en esa misma sección. */
 const seccionActual = computed<PestanaClase | null>(() => (deLaRuta.value ? pestanaDeLaRuta(route.path) : null))
 const seccionMarcada = computed(() => seccionDelMenu(seccionActual.value))
-const ICONOS: Partial<Record<PestanaClase, unknown>> = { hoy: CalendarCheck, contenido: BookOpen, estudiantes: Users, entregas: Inbox, asistencia: ClipboardCheck }
-/** El color de cada sección, en el orden del lienzo (colD del generador: cielo, sol, rosa, lila…). */
-const TONOS: Partial<Record<PestanaClase, string>> = { hoy: 'tono-cielo', contenido: 'tono-sol', estudiantes: 'tono-lila', asistencia: 'tono-rosa', entregas: 'tono-sol' }
+const ICONOS: Partial<Record<PestanaClase, unknown>> = { hoy: BarChart3, contenido: BookOpen, estudiantes: Users, entregas: Inbox, asistencia: QrCode, refuerzos: Zap }
+/** El color de cada sección, el mismo del prototipo D3-Clase (colD del generador: la posición en su menú). */
+const TONOS: Partial<Record<PestanaClase, string>> = { hoy: 'tono-cielo', contenido: 'tono-sol', estudiantes: 'tono-lila', asistencia: 'tono-cielo', entregas: 'tono-sol', refuerzos: 'tono-rosa' }
 const TEXTO_PESTANA = Object.fromEntries(PESTANAS_CLASE.map((p) => [p.id, p.texto])) as Record<PestanaClase, string>
 const siglas = computed(() => siglasDeClases(clases.value))
 const colores = computed(() => Object.fromEntries(clases.value.map((c, i) => [c.id, c.portada ?? colorDeClase(i)])) as Record<number, string>)
