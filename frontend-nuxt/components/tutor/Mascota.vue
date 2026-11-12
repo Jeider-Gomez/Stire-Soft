@@ -176,7 +176,7 @@ onBeforeUnmount(() => {
 .m-boca { stroke: var(--m-boca); }
 /* Alto contraste: pantalla negra, gafas amarillas y lentes blancas con ojos negros (más de 15:1); el marco toma el color
    del texto del tema, así se separa del fondo en claro (negro) y en oscuro (blanco). */
-:global(:root[data-contraste="alto"]) .mascota-tutor {
+:root[data-contraste="alto"] .mascota-tutor {
   --m-fondo: #ffd60a; --m-marco: rgb(var(--c-base-texto-primario)); --m-pantalla: #000; --m-gafas: #ffd60a; --m-patilla: #ffd60a;
   --m-lente: #fff; --m-ojo: #000; --m-boca: #ffd60a;
 }

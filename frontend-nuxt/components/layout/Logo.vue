@@ -92,9 +92,11 @@ const huecos = `logo-huecos-${useId()}`
   --l-fondo: #00c2a8; --l-borde: #fff; --l-marco: #7b2fbf; --l-pantalla: #082b6b; --l-gafas: #00c2a8; --l-patilla: #008f7c;
   --l-lente: #fff; --l-ojo: #7b2fbf; --l-boca: #fff; --n-tinta: #102a4c; --n-turquesa: #14b3a4;
 }
-:global(:root[data-tema="oscuro"]) .logo-stire, .logo-stire.claro { --n-tinta: #fff; --n-turquesa: #2fd3c0; }
+/* Sin :global(): Vue lo compila dejando solo «:root[...]» y el logo no cambiaba en oscuro (Jeider, 12/11). Así queda
+   «:root[data-tema=oscuro] .logo-stire[data-v-…]». */
+:root[data-tema="oscuro"] .logo-stire, .logo-stire.claro { --n-tinta: #fff; --n-turquesa: #2fd3c0; }
 /* Alto contraste: igual que la mascota (components/tutor/Mascota.vue); el nombre, todo del color del texto. */
-:global(:root[data-contraste="alto"]) .logo-stire {
+:root[data-contraste="alto"] .logo-stire {
   --l-fondo: #ffd60a; --l-marco: rgb(var(--c-base-texto-primario)); --l-pantalla: #000; --l-gafas: #ffd60a; --l-patilla: #ffd60a;
   --l-lente: #fff; --l-ojo: #000; --l-boca: #ffd60a; --n-tinta: rgb(var(--c-base-texto-primario)); --n-turquesa: rgb(var(--c-base-texto-primario));
 }

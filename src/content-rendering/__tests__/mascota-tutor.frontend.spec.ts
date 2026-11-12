@@ -114,7 +114,9 @@ describe('el logo es el mismo personaje y el nombre es STIRE', () => {
     expect(logo).toContain(':mask="`url(#${huecos})`"');
     expect(logo).toContain('const huecos = `logo-huecos-${useId()}`');
     expect(logo).toContain('--n-tinta: #102a4c; --n-turquesa: #14b3a4;');
-    expect(logo).toMatch(/:global\(:root\[data-tema="oscuro"\]\) \.logo-stire, \.logo-stire\.claro \{ --n-tinta: #fff; --n-turquesa: #2fd3c0; \}/);
+    expect(logo).toContain(':root[data-tema="oscuro"] .logo-stire, .logo-stire.claro { --n-tinta: #fff; --n-turquesa: #2fd3c0; }');
+    // 12/11, Jeider: con «:global(:root[…]) .logo-stire» Vue deja solo «:root[…]» y el nombre seguía oscuro en el tema oscuro.
+    expect(logo).not.toMatch(/:global\(:root/);
     expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutLogo con-nombre />');
     expect(leer('layouts', 'auth.vue')).toContain('<LayoutLogo con-nombre />');
     expect(leer('pages', 'ayuda.vue')).toContain('<LayoutLogo con-nombre claro />');
@@ -147,7 +149,8 @@ describe('el logo es el mismo personaje y el nombre es STIRE', () => {
   });
   it('en alto contraste: pantalla negra, gafas amarillas y el marco del color del texto del tema', () => {
     const vue = leer('components', 'tutor', 'Mascota.vue');
-    expect(vue).toMatch(/:global\(:root\[data-contraste="alto"\]\) \.mascota-tutor \{[\s\S]*--m-pantalla: #000; --m-gafas: #ffd60a/);
+    expect(vue).toMatch(/:root\[data-contraste="alto"\] \.mascota-tutor \{[\s\S]*--m-pantalla: #000; --m-gafas: #ffd60a/);
+    expect(vue).not.toMatch(/:global\(:root/);
     expect(vue).toContain('--m-marco: rgb(var(--c-base-texto-primario))');
     // los colores salen de variables, no de atributos fijos
     expect(vue).not.toMatch(/(fill|stroke)="#/);
