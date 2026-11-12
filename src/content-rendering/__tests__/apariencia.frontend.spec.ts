@@ -323,3 +323,17 @@ describe('inicio del docente sin problemas de contraste (axe, medición de parti
     expect(leer('pages', 'docente', 'index.vue')).toContain('<p class="text-xs text-base-texto-secundario whitespace-nowrap">');
   });
 });
+
+describe('enlaces dentro del texto (v3, Fase B; WCAG 1.4.1)', () => {
+  it('se subrayan en todos los temas, no solo en alto contraste: en claro son del color del texto', () => {
+    const t = leer('assets', 'css', 'temas.css').split(String.fromCharCode(13)).join('');
+    const selector = ['main :is(p, li, td, dd, label, small) a:not([class*="bg-"]):not([class*="borde"]):not(nav a),', '.prose a,', 'a[class*="hover:underline"]:not([class*="bg-"]):not([class*="text-xl"]):not([class*="text-2xl"]) { text-decoration-line: underline;'].join(String.fromCharCode(10));
+    const i = t.indexOf(selector);
+    expect(i).toBeGreaterThan(-1);
+    // la regla no va dentro de un tema: vale para claro y oscuro (está antes del bloque del tema oscuro)
+    expect(i).toBeLessThan(t.indexOf(':root[data-tema="oscuro"] {'));
+    expect(t.slice(i - 40, i)).not.toContain('data-contraste');
+    // las pestañas (en un <nav>) y los enlaces con borde (se ven como botones) no se subrayan
+    expect(leer('components', 'docente', 'PestanasClase.vue')).toMatch(/<nav aria-label="Secciones de la clase"[\s\S]*?border-b-2/);
+  });
+});
