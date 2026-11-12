@@ -83,13 +83,22 @@ describe('dónde está', () => {
 describe('barra de abajo del docente en el celular (v3, cuadro D3-Cel-Inicio)', () => {
   const barra = leer('components', 'layout', 'BarraInferiorDocente.vue');
   it('Clases, Asistencia, Estudiantes, Mensajes y Asistente, en ese orden', () => {
-    const orden = ['</span>Clases', '</span>Asistencia', '</span>Estudiantes', '</span>Mensajes', '</span>Asistente'].map((t) => barra.indexOf(t));
+    const orden = ['</span>Clases', '</span>Asistencia', '</span>Estudiantes', '</span>Mensajes', ' />Asistente'].map((t) => barra.indexOf(t));
     expect(orden.every((n) => n > 0)).toBe(true);
     expect([...orden].sort((x, y) => x - y)).toEqual(orden);
   });
   it('Asistencia y Estudiantes son de la clase elegida en el menú; sin clase llevan a «Mis clases»', () => {
     expect(barra).toContain(":to=\"clase ? enlacePestana('asistencia', clase) : '/docente'\"");
     expect(leer('components', 'layout', 'ClasesDelMenu.vue')).toContain("const idClase = useState<number | null>('clase-docente-id'");
+  });
+  it('el Asistente va con su libreta (como el Tutor con su mascota en la barra del estudiante), la del diseño', () => {
+    expect(barra).toContain('<DocenteAsistenteLibreta :tamano="30" />Asistente');
+    const libreta = leer('components', 'docente', 'asistente', 'Libreta.vue');
+    // la libreta azul con las gafas del Tutor, con borde blanco para cualquier fondo, y su id único por cada una
+    expect(libreta).toContain('<rect x="20" y="22" width="120" height="116" rx="22" fill="#14213D" />');
+    expect(libreta).toContain('stroke="#00C2A8"');
+    expect(libreta).toContain('const borde = `libreta-borde-${useId()}`');
+    expect(libreta).toContain('aria-hidden="true"');
   });
   it('el Asistente abre el mismo panel que la barra de arriba', () => {
     expect(barra).toContain("useState('asistente-abierto'");
