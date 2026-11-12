@@ -101,7 +101,7 @@ describe('el Tutor con el teclado abierto deja espacio para leer', () => {
     expect(d).toContain('const compacto = computed(() => !pantallaAncha.value && escribiendo.value)');
     expect(d).toContain('v-if="activeContextLabel && !compacto"');
     expect(d).toContain('v-if="tutorStore.guidanceLevel !== null && !compacto"');
-    expect(d).toContain('<p v-if="!compacto" class="text-[11px] text-slate-200">');
+    expect(d).toContain('<p v-if="!compacto" class="text-xs text-base-texto-secundario">');
   });
   it('tocar Enviar no cierra el teclado', () => {
     expect(d).toMatch(/@mousedown\.prevent\s+@click="handleSend"/);

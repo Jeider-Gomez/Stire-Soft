@@ -2,7 +2,7 @@
   <!-- Asistencia activa (stores/asistenciaActiva.ts): sigue a la vista mientras el docente usa STIRE, en una esquina para
        no estorbar. Plegada muestra «Asistencia 12 de 30» y cuántos llegaron sin que los viera; abierta, los últimos que
        llegaron, el escáner pequeño y marcar a mano. No sale en la propia página de asistencia, que ya lo muestra todo. -->
-  <div v-if="store.activa && store.detalle && !enSuPagina" class="fixed bottom-4 right-4 z-[60] flex flex-col items-end gap-2 max-w-[calc(100vw-2rem)]" @keydown.esc="plegar">
+  <div v-if="store.activa && store.detalle && !enSuPagina" class="fixed bottom-[88px] md:bottom-4 right-4 z-[60] flex flex-col items-end gap-2 max-w-[calc(100vw-2rem)]" @keydown.esc="plegar">
     <section v-if="abierto" id="panel-asistencia" aria-labelledby="panel-asistencia-titulo"
       class="w-[22rem] max-w-full max-h-[70vh] overflow-y-auto bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-xl p-4 space-y-3 text-xs">
       <div class="flex items-start justify-between gap-2">

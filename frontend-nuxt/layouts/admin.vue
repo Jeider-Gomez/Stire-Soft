@@ -18,6 +18,8 @@
       <LayoutFooterBar />
     </div>
     <DialogoConfirmar />
+    <!-- Buscar (Ctrl K): pantallas, clases y ayuda (components/layout/Buscar.vue, v3 Fase B). -->
+    <LayoutBuscar />
     <AvisoSinConexion />
   </div>
 </template>

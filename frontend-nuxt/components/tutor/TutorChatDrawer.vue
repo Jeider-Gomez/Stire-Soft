@@ -38,18 +38,18 @@
           <ChevronRight :size="16" aria-hidden="true" />
         </button>
 
-        <!-- Header del Tutor IA -->
         <!-- Escribiendo en el celular (con el teclado abierto) todo se compacta: solo el nombre, la X y los mensajes. Con
              la cabecera completa y tres franjas quedaba una rendija para leer (Jeider, 12/10). -->
-        <div class="flex items-center justify-between bg-gradient-to-r from-stire-blue via-[#0e48a8] to-stire-purple text-white select-none" :class="compacto ? 'px-3 py-1' : 'p-3 lg:p-4'">
+        <!-- v3 (cuadro E-Tutor): cabecera blanca con «Tu Tutor»; nunca sobre morado, donde su marco morado se pierde. -->
+        <div class="flex items-center justify-between bg-base-blanco text-base-texto-primario border-b border-base-borde-sutil select-none" :class="compacto ? 'px-3 py-1' : 'p-3 lg:p-4'">
           <div class="flex items-center gap-3">
             <div v-if="!compacto" class="relative" aria-hidden="true">
               <TutorMascota :expresion="expresion" :tamano="40" forma="completa" mirar-cursor saludar />
-              <span v-if="tutorStore.tutorEnabled" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-stire-teal border-2 border-stire-blue rounded-full" />
+              <span v-if="tutorStore.tutorEnabled" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-stire-teal border-2 border-base-blanco rounded-full" />
             </div>
             <div>
-              <h3 class="font-bold text-sm font-poppins tracking-tight">Tutor IA STIRE</h3>
-              <p v-if="!compacto" class="text-[11px] text-slate-200">Te guía con preguntas y pistas; no te da la solución</p>
+              <h3 class="font-bold text-base font-poppins tracking-tight">Tu Tutor</h3>
+              <p v-if="!compacto" class="text-xs text-base-texto-secundario">Te guía con preguntas y pistas; no te da la solución</p>
             </div>
           </div>
 
@@ -58,7 +58,7 @@
             <button
               v-if="tutorStore.hasKey"
               @click="tutorStore.showKeyPanel = !tutorStore.showKeyPanel"
-              class="inline-flex items-center gap-1 whitespace-nowrap px-2 py-1 rounded-lg text-[11px] text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
+              class="inline-flex items-center gap-1 whitespace-nowrap px-2 py-1 rounded-lg text-xs text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-primario transition-colors"
               :aria-label="tutorStore.showKeyPanel ? 'Ocultar panel de clave' : 'Gestionar mi clave de Google AI Studio'"
             >
               <KeyRound :size="12" aria-hidden="true" /> Mi clave
@@ -70,7 +70,7 @@
               id="cerrar-tutor"
               ref="closeButtonRef"
               @click="tutorStore.closeDrawer()"
-              class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-200 hover:text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
+              class="w-10 h-10 flex items-center justify-center rounded-lg text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-primario focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acento-ambar-fuerte transition-colors"
               aria-label="Cerrar Tutor"
               title="Cerrar (Esc)"
             >

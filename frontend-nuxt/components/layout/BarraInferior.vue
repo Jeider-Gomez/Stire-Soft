@@ -37,27 +37,3 @@ const studentStore = useStudentStore()
 const { sidebarOpen, toggle } = useMobileSidebar()
 const pendientes = computed(() => studentStore.reviewsDueToday.length)
 </script>
-
-<style scoped>
-/* Solo en el celular (< 768 px): un display propio le ganaría a «md:hidden». */
-.barra-inferior { display: none; }
-@media (max-width: 767px) {
-  .barra-inferior {
-    position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; height: 72px; display: grid; grid-template-columns: repeat(5, 1fr);
-    background: rgb(var(--c-base-blanco)); border-top: 1px solid rgb(var(--c-base-borde-sutil));
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
-.barra-inferior > a, .barra-inferior > button {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 44px;
-  font-size: 11px; font-weight: 500; color: rgb(var(--c-base-texto-primario));
-}
-.barra-inferior > .activo { font-weight: 700; }
-.pildora {
-  position: relative; width: 44px; height: 28px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
-  color: rgb(var(--t-icono));
-}
-.activo .pildora { background: rgb(var(--t-fila)); color: rgb(var(--t)); }
-:root[data-tema="oscuro"] .activo .pildora { color: rgb(var(--t-icono)); }
-.punto { position: absolute; top: 0; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: #ffc94d; }
-</style>

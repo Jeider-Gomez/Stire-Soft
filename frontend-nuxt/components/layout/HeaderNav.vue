@@ -1,7 +1,9 @@
 <template>
   <!-- ===== HEADER INSTITUCIONAL STIRE ===== -->
+  <!-- Con el Tutor o el Asistente abiertos al lado queda poco ancho: los botones muestran solo su ícono (barra-compacta). -->
   <header
     class="h-16 bg-base-blanco/80 glass-header border-b border-base-borde-sutil flex items-center justify-between px-4 md:px-6 sticky top-0 z-40 shadow-sm"
+    :class="{ 'barra-compacta': panelAbierto }"
   >
     <!-- ── IZQUIERDA: Isotipo + Logotipo + Contexto Institucional ── -->
     <div class="flex items-center gap-3 min-w-0">
@@ -36,10 +38,12 @@
            el lugar están en el menú de la cuenta (27/10). Orden del prototipo: Buscar (o el Asistente del docente),
            Apariencia, Avisos, Ayuda, Sugerencias y la cuenta. -->
 
-      <!-- Buscar una lección (Ctrl+K), como la barra de búsqueda de Cursor -->
-      <button v-if="authStore.currentRole === 'estudiante'" type="button"
+      <!-- Buscar (Ctrl+K), como la barra de búsqueda de Cursor. El estudiante busca una lección (IrALeccion.vue); el docente
+           y el administrador, pantallas, clases y ayuda (Buscar.vue). Mismo botón y mismo atajo en los tres roles. -->
+      <button type="button"
         class="hidden md:inline-flex items-center gap-2 min-h-[40px] px-3 rounded-xl border border-base-borde-sutil text-sm text-base-texto-secundario hover:border-base-borde-fuerte"
-        title="Buscar una lección (Ctrl+K)" @click="irALeccion = true">
+        :title="authStore.currentRole === 'estudiante' ? 'Buscar una lección (Ctrl+K)' : 'Buscar en STIRE (Ctrl+K)'"
+        @click="authStore.currentRole === 'estudiante' ? (irALeccion = true) : (buscarAbierto = true)">
         <Search :size="16" aria-hidden="true" /><span>Buscar</span>
         <kbd class="hidden lg:inline text-[11px] font-semibold">Ctrl K</kbd>
       </button>
@@ -85,7 +89,7 @@
           <AvatarUsuario :nombre="authStore.user?.fullName" :foto-id="authStore.user?.fotoId" decorativo
             class="shadow-sm group-hover:shadow-md transition-shadow" />
           <span class="sr-only">Menú de la cuenta: </span>
-          <span class="sr-only md:not-sr-only md:block text-xs font-medium text-slate-700 max-w-[120px] truncate">
+          <span class="nombre-cuenta sr-only md:not-sr-only md:block text-xs font-medium text-slate-700 max-w-[120px] truncate">
             {{ primerNombre }}
           </span><span v-if="restoDelNombre" class="sr-only"> {{ restoDelNombre }}</span>
         </button>
@@ -155,12 +159,17 @@
 import { Menu, LogOut, GraduationCap, UserCircle, Contrast, Search, Sparkles } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
+import { useTutorStore } from '~/stores/tutor'
 import { institucionCorta, programaCorto } from '~/utils/contextoAcademico'
 import { migasDeRuta } from '~/utils/migas'
 
 defineEmits(['toggle-sidebar'])
 const asistenteAbierto = useState('asistente-abierto', () => false)
 const irALeccion = useState('ir-a-leccion', () => false)
+const buscarAbierto = useState('buscar-abierto', () => false)
+const tutorStore = useTutorStore()
+/** El Tutor (estudiante) o el Asistente (docente) abiertos al lado de la página. */
+const panelAbierto = computed(() => asistenteAbierto.value || tutorStore.isOpen)
 
 const authStore = useAuthStore()
 const primerNombre = computed(() => authStore.user?.fullName?.split(' ')[0] || 'usuario')
@@ -241,4 +250,9 @@ function handleLogout() {
 /* Asistente: sol suave (#FFF1C2) con tinta; abierto, el sol lleno. En oscuro, el fondo de sol de las secciones. */
 .boton-asistente { background: rgb(var(--c-sec-sol-fondo)); color: rgb(var(--c-base-texto-primario)); transition: background-color .2s ease; }
 .boton-asistente.abierto, .boton-asistente:hover { background: #ffc94d; color: #14213d; }
+/* Panel al lado abierto: las palabras de los botones pasan al lector de pantalla (como sr-only) y se ocultan los atajos. */
+.barra-compacta :deep(.lg\:not-sr-only), .barra-compacta .nombre-cuenta {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.barra-compacta :deep(kbd) { display: none; }
 </style>

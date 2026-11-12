@@ -43,3 +43,29 @@
   .item-menu:hover .icono-menu { transform: rotate(-8deg) scale(1.12); }
 }
 .menu-colapsado .item-menu.activo::before { left: -0.5rem; }
+
+/*
+ * Barra de abajo en el celular (v3, Fase B): la del estudiante (BarraInferior.vue, cuadro E-Cel-Inicio) y la del docente
+ * (BarraInferiorDocente.vue, cuadro D3-Cel-Inicio). Cinco entradas con el color de su sección.
+ */
+/* Solo en el celular (< 768 px): un display propio le ganaría a «md:hidden». */
+.barra-inferior { display: none; }
+@media (max-width: 767px) {
+  .barra-inferior {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; height: 72px; display: grid; grid-template-columns: repeat(5, 1fr);
+    background: rgb(var(--c-base-blanco)); border-top: 1px solid rgb(var(--c-base-borde-sutil));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+.barra-inferior > a, .barra-inferior > button {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 44px;
+  font-size: 11px; font-weight: 500; color: rgb(var(--c-base-texto-primario));
+}
+.barra-inferior > .activo { font-weight: 700; }
+.barra-inferior .pildora {
+  position: relative; width: 44px; height: 28px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+  color: rgb(var(--t-icono));
+}
+.barra-inferior .activo .pildora { background: rgb(var(--t-fila)); color: rgb(var(--t)); }
+:root[data-tema="oscuro"] .barra-inferior .activo .pildora { color: rgb(var(--t-icono)); }
+.barra-inferior .punto { position: absolute; top: 0; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: #ffc94d; }

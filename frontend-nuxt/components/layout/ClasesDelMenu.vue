@@ -123,7 +123,9 @@ const actual = computed(() => {
 })
 /** El nombre de la clase elegida, para «Dónde estás» de la barra de arriba (HeaderNav.vue, utils/migas.ts). */
 const nombreClase = useState<string | null>('clase-docente-nombre', () => null)
-watch(actual, (c) => { nombreClase.value = c?.name ?? null }, { immediate: true })
+// La clase elegida, también para la barra de abajo del celular (BarraInferiorDocente.vue: Asistencia y Estudiantes).
+const idClase = useState<number | null>('clase-docente-id', () => null)
+watch(actual, (c) => { nombreClase.value = c?.name ?? null; idClase.value = c?.id ?? null }, { immediate: true })
 /** La pantalla de la clase en la que está el docente: al cambiar de clase se queda en esa misma sección. */
 const seccionActual = computed<PestanaClase | null>(() => (deLaRuta.value ? pestanaDeLaRuta(route.path) : null))
 const seccionMarcada = computed(() => seccionDelMenu(seccionActual.value))

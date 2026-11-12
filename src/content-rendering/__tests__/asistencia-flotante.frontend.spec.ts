@@ -55,7 +55,7 @@ describe('dónde vive y cómo se comporta', () => {
     expect(leer('layouts', 'teacher.vue')).toContain('<DocenteAsistenciaFlotante />');
     const panel = leer('components', 'docente', 'AsistenciaFlotante.vue');
     expect(panel).toContain('route.path === `/docente/clase/${store.activa.classId}/asistencia`');
-    expect(panel).toContain('class="fixed bottom-4 right-4 z-[60]');
+    expect(panel).toContain('class="fixed bottom-[88px] md:bottom-4 right-4 z-[60]');
     expect(panel).toContain(':aria-expanded="abierto"');
     expect(panel).toContain('@keydown.esc="plegar"');
     expect(panel).toContain('<CamaraQr @leido="alLeer"');
