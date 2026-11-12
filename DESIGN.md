@@ -3,27 +3,32 @@ version: alpha
 name: STIRE
 description: Sistema tutor inteligente para aprender algoritmia y programación. Interfaz sobria, legible y accesible, en español, para estudiantes y docentes de la Universidad de Córdoba.
 colors:
-  primary: "#0B3D91"
-  primary-hover: "#082A66"
+  primary: "#14213D"
+  primary-hover: "#1E3A5F"
   secondary: "#7B2FBF"
   tertiary: "#00C2A8"
-  tertiary-dark: "#009985"
+  tertiary-dark: "#0B6B5E"
+  sun: "#FFC94D"
+  sun-soft: "#FFF1C2"
+  mint: "#D5F6F0"
+  sky: "#E3F4FF"
   neutral: "#F7F9FC"
   surface: "#FFFFFF"
-  surface-muted: "#F1F5F9"
-  border: "#E2E8F0"
+  surface-muted: "#EEF3F9"
+  border: "#E3EAF3"
   border-strong: "#CBD5E1"
-  text: "#1E293B"
-  text-muted: "#475569"
+  text: "#14213D"
+  text-muted: "#4A5873"
+  info: "#1D6FD1"
   success: "#047857"
   danger: "#B91C1C"
-  warning: "#B45309"
+  warning: "#A35F00"
   editor-bg: "#0F172A"
   editor-text: "#E2E8F0"
   dark-canvas: "#0B1220"
   dark-surface: "#131C2E"
-  dark-text: "#E6ECF5"
-  dark-primary: "#93C5FD"
+  dark-text: "#E8F6FF"
+  dark-primary: "#FFC94D"
 typography:
   display:
     fontFamily: Poppins
@@ -120,7 +125,8 @@ components:
 # STIRE — Sistema de diseño
 
 > Fuente de verdad visual para las personas y para los agentes de IA que tocan la interfaz. Se lee junto con
-> `PRODUCT.md` (quién usa STIRE y por qué) y `docs/identidad-visual/` (la identidad de José). Los valores salen de
+> `PRODUCT.md` (quién usa STIRE y por qué), el diseño v3 (`scripts/diseno-v3/`, paleta «Cielo y sol») y
+> `docs/v3/PLAN_CONSTRUCCION_V3.md` (cómo se construye). Los valores salen de
 > `frontend-nuxt/tailwind.config.ts` y `frontend-nuxt/assets/css/temas.css`; si el código cambia, este archivo cambia
 > en el mismo commit.
 
@@ -131,33 +137,49 @@ STIRE enseña a programar a personas de 18 años o más y le dice al docente a q
 contenido (la explicación, el ejercicio, el código) sea lo más importante de la pantalla.
 
 Personalidad: sobria, cercana y clara. Habla en segunda persona, con frases cortas y sin jerga técnica; los botones
-dicen lo que hacen («Cerrar la asistencia», no «Aceptar»). El color se usa con medida: un azul institucional para la
-acción principal y colores de estado que significan algo (dominado, vencido, falla).
+dicen lo que hacen («Cerrar la asistencia», no «Aceptar»). El color se usa con medida: la tinta para la acción
+principal, un color suave por sección para orientarse y colores de estado que significan algo (dominado, vencido,
+falla).
 
-**Dirección vigente (decidida el 23/10/2026, en ejecución):** el panel del docente se rediseña con una gramática
-«tipo Apple»: una sola barra lateral como índice, títulos grandes, una acción principal por pantalla, hojas que suben
-desde abajo en vez de ventanas encima de ventanas, translucidez solo en la barra lateral y la barra de herramientas, y
-movimiento corto que explica de dónde viene cada cosa. Detalle y fases en `docs/PLAN_REDISENO_DOCENTE.md`. El panel
-del estudiante no se rediseña todavía: lo que sigue describe el sistema actual, que los dos paneles comparten.
+**Dirección vigente (v3, aprobada el 12/11/2026, en construcción):** «Cielo y sol». Fondos claros y fríos, la tinta
+#14213D para el texto y el botón principal, y en oscuro el sol #FFC94D como acento. Cada sección del estudiante tiene
+su color (ver abajo). Se construye por fases A→G (`docs/v3/PLAN_CONSTRUCCION_V3.md`); la Fase A cambió los valores de
+los tokens, el logo y la mascota. Lo demás de este archivo (tipografía, espacios, movimiento) sigue vigente.
 
 ## Colors
 
-La paleta es la de la identidad de José: azules tecnológicos sobre blancos fríos, con un morado y un verde azulado
-como acentos de rol.
+Paleta «Cielo y sol» (v3): blancos fríos y cielos suaves, la tinta como color fuerte, el sol como acento cálido y el
+morado y el turquesa de la mascota.
 
-- **Primary (#0B3D91):** azul institucional. Botón principal, enlaces y foco. Su tono de hover es #082A66.
-- **Secondary (#7B2FBF):** morado. Identifica al docente (insignia) y el estado «en progreso» de una unidad.
-- **Tertiary (#00C2A8, texto #009985):** verde azulado. Identifica al estudiante y el estado de éxito del editor.
-- **Neutral (#F7F9FC):** fondo de la página. Las tarjetas son blancas (#FFFFFF) sobre él; #F1F5F9 separa zonas dentro
-  de una tarjeta.
-- **Texto:** #1E293B (principal) y #475569 (secundario). Ambos pasan WCAG AA (4.5:1) sobre blanco y sobre el fondo.
-- **Estado:** éxito #047857, falla #B91C1C, advertencia o repaso vencido #B45309. El color nunca va solo: siempre lo
-  acompaña un icono o un texto.
+- **Primary (#14213D, «tinta»):** botón principal, títulos y texto. Hover #1E3A5F.
+- **Texto:** #14213D (principal) y #4A5873 (secundario, «suave»). Pasan WCAG AA (4.5:1) sobre blanco, sobre el fondo
+  #F7F9FC y sobre el gris #EEF3F9. La prueba `apariencia.frontend.spec.ts` lo comprueba en claro y en oscuro.
+- **Sol (#FFC94D, claro #FFF1C2, texto encima #7A4B00):** el acento cálido. En oscuro es el botón principal.
+- **Menta (#D5F6F0, texto #0B6B5E) y cielo (#E3F4FF):** fondos suaves de avisos y tarjetas destacadas.
+- **Secondary (#7B2FBF):** morado de la mascota; el docente y el estado «en progreso».
+- **Tertiary (#00C2A8):** turquesa de la mascota y del logo. Solo como relleno o dibujo, nunca como color de texto.
+- **Neutral (#F7F9FC):** fondo de la página; tarjetas blancas; #EEF3F9 separa zonas; bordes #E3EAF3.
+- **Estado:** éxito #047857, falla #B91C1C, información o «nuevo» #1D6FD1, repaso vencido #A35F00. El color nunca va
+  solo: siempre lo acompaña un icono o un texto.
+
+**Color por sección (estudiante).** Cada sección tiene un color fuerte (icono, línea activa) y uno suave (fondo):
+Inicio #0A7F70 / #D5F6F0 · Aprender y lección #1D6FD1 / #E3F4FF · Repasos #A35F00 / #FFF1C2 · Clase #D12F3A /
+#FFE4E4 · Progreso #7C3AED / #EFE8FF · Proyectos #0E7490 / #CFFAFE. Llega con el marco (Fase B).
 
 **Temas.** Todo color se lee de variables CSS (`--c-*` en `temas.css`), así que las pantallas no cambian de código:
 - *Claro* (por defecto), con los valores de arriba.
-- *Oscuro*: lienzo #0B1220, tarjetas #131C2E, texto #E6ECF5, y el azul de acento se aclara a #93C5FD.
+- *Oscuro*: lienzo #0B1220, tarjetas #131C2E, texto #E8F6FF; el botón principal es el sol #FFC94D con texto oscuro;
+  estados aclarados (éxito #5EE6A8, falla #FF8A8A, información #8FC8FF, en progreso #C9A8F5). Los enlaces de acento
+  van casi blancos, no amarillos.
 - *Alto contraste* y los temas de contraste como los de Windows. Cualquier rediseño debe sobrevivir a los cuatro.
+
+## Logo y mascota
+
+El logo definitivo (cuadro «Logo-final» del lienzo v3, decidido el 09/11) es la mascota —la pantalla morada con
+gafas, con la pantalla turquesa detrás y el borde blanco— y el nombre «stıre»: la s de circuito (Sistema), la t con
+las gafas del Tutor, la ı turquesa con el cerebro (Inteligente) y la r y la e en Poppins Bold. Nombre en tinta
+#102A4C con turquesa #14B3A4; sobre fondo oscuro, blanco con #2FD3C0. Está en `components/layout/Logo.vue` (fijo, sin
+movimiento) y la mascota con vida en `components/tutor/Mascota.vue`. El borde se deja tal cual (decisión del 12/11).
 
 Los colores del editor de código (#0F172A, texto #E2E8F0) son fijos: el editor es siempre oscuro.
 
@@ -192,10 +214,11 @@ docente usa 10 a 12 px en filas y controles y 16 px en tarjetas.
 
 ## Components
 
-- **Botón primario:** azul institucional, texto blanco, 44 px de alto, 12 px de radio. Uno solo por pantalla.
+- **Botón primario:** tinta #14213D con texto blanco (en oscuro, sol #FFC94D con texto oscuro), 44 px de alto, 12 px
+  de radio. Uno solo por pantalla.
 - **Botón secundario:** fondo blanco, borde fino, texto principal.
 - **Tarjeta:** blanca, 16 px de radio, borde fino y sombra `sm`.
-- **Input:** 44 px de alto, borde fino; al enfocarse, borde azul y anillo azul suave de 2 px.
+- **Input:** 44 px de alto, borde fino; al enfocarse, borde de tinta y anillo suave de 2 px.
 - **Insignias de rol:** docente en morado, estudiante en verde azulado, admin en azul. Redondas.
 - **Editor de código:** fondo pizarra, texto claro, tipografía mono sin ligaduras.
 
@@ -225,11 +248,13 @@ docente usa 10 a 12 px en filas y controles y 16 px en tarjetas.
 ## Deuda conocida (para el rediseño)
 
 Cosas que hoy no coinciden entre sí y que conviene arreglar, no copiar:
-1. Los tokens se llaman `acento-ambar` y `acento-ambar-fuerte`, pero ya son azules (se conservaron por las cientos de
-   clases que los usan). Un nombre honesto sería `acento` y `acento-hover`.
+1. Los tokens se llaman `acento-ambar` y `acento-ambar-fuerte`, pero en claro son la tinta (se conservaron por las
+   cientos de clases que los usan). Un nombre honesto sería `acento` y `acento-hover`.
 2. Las sombras usan un tono cálido (`rgba(43,38,34,…)`) sobre una paleta de azules fríos.
 3. `borderRadius.lg` está definido en 16 px, pero los botones usan `rounded-xl` (12 px) y las tarjetas `rounded-2xl`
    (16 px): el nombre del token y el uso real no coinciden.
 4. Los botones suben 2 px al pasar el cursor y los de color (`btn-stire-teal`) tienen otro hover: no hay una regla única.
 5. El tema oscuro se logra con unas 25 reglas de sobreescritura sobre clases de Tailwind (`temas.css`), en vez de tokens
    para todo: cada clase nueva que no esté en la lista se ve mal de noche.
+6. En claro, los enlaces dentro de un párrafo son del mismo color que el texto y solo los distingue la negrita. Para
+   WCAG 1.4.1 se subrayan en la Fase B (en alto contraste ya van subrayados).
