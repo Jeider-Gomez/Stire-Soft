@@ -11,28 +11,33 @@
  *   data-espaciado="normal|amplio"
  *
  * Lo que es oscuro siempre (el editor de código, la cabecera del Tutor, el fondo de las ventanas) no cambia.
+ *
+ * v3 «Cielo y sol» (12/11; scripts/diseno-v3, paleta C del generador): tinta #14213D, texto suave #4A5873, borde #E3EAF3,
+ * fondo #F7F9FC. El color principal (acento-ambar-fuerte: botones, enlaces, foco) es la tinta en claro y el sol #FFC94D
+ * en oscuro, con el texto del botón oscuro; en oscuro el texto de acento no se pinta de sol: va casi blanco (ver abajo).
+ * Los nombres de las variables no cambian, así no se tocan las clases de las pantallas.
  */
 
 :root {
   --c-base-blanco: 255 255 255;
   --c-base-bg-primario: 247 249 252;
-  --c-base-bg-secundario: 241 245 249;
-  --c-base-borde-sutil: 226 232 240;
+  --c-base-bg-secundario: 238 243 249;
+  --c-base-borde-sutil: 227 234 243;
   --c-base-borde-fuerte: 203 213 225;
-  --c-base-texto-secundario: 71 85 105;
-  --c-base-texto-primario: 30 41 59;
-  --c-acento-ambar: 8 42 102;
-  --c-acento-ambar-fuerte: 11 61 145;
+  --c-base-texto-secundario: 74 88 115;
+  --c-base-texto-primario: 20 33 61;
+  --c-acento-ambar: 30 58 95;
+  --c-acento-ambar-fuerte: 20 33 61;
   --c-semantico-pasa: 4 120 87;
   --c-semantico-falla: 185 28 28;
-  --c-semantico-info: 11 61 145;
+  --c-semantico-info: 29 111 209;
   --c-unidad-dominado: 4 120 87;
   --c-unidad-en-progreso: 123 47 191;
-  --c-unidad-por-iniciar: 11 61 145;
+  --c-unidad-por-iniciar: 29 111 209;
   --c-unidad-bloqueado: 100 116 139;
   --c-repaso-al-dia: 4 120 87;
   --c-repaso-manana: 123 47 191;
-  --c-repaso-vencido: 180 83 9;
+  --c-repaso-vencido: 163 95 0;
   --c-repaso-critico: 185 28 28;
   --c-stire-canvas: 247 249 252;
   color-scheme: light;
@@ -44,22 +49,22 @@
   --c-base-bg-primario: 11 18 32;
   --c-base-bg-secundario: 27 38 59;
   --c-base-borde-sutil: 38 51 73;
-  --c-base-borde-fuerte: 71 85 105;
+  --c-base-borde-fuerte: 51 65 85;
   --c-base-texto-secundario: 167 180 200;
-  --c-base-texto-primario: 230 236 245;
-  --c-acento-ambar: 191 219 254;
-  --c-acento-ambar-fuerte: 147 197 253;
-  --c-semantico-pasa: 52 211 153;
-  --c-semantico-falla: 248 113 113;
-  --c-semantico-info: 147 197 253;
-  --c-unidad-dominado: 52 211 153;
-  --c-unidad-en-progreso: 196 181 253;
-  --c-unidad-por-iniciar: 147 197 253;
+  --c-base-texto-primario: 232 246 255;
+  --c-acento-ambar: 255 217 122;
+  --c-acento-ambar-fuerte: 255 201 77;
+  --c-semantico-pasa: 94 230 168;
+  --c-semantico-falla: 255 138 138;
+  --c-semantico-info: 143 200 255;
+  --c-unidad-dominado: 94 230 168;
+  --c-unidad-en-progreso: 201 168 245;
+  --c-unidad-por-iniciar: 143 200 255;
   --c-unidad-bloqueado: 148 163 184;
-  --c-repaso-al-dia: 52 211 153;
-  --c-repaso-manana: 196 181 253;
-  --c-repaso-vencido: 251 191 36;
-  --c-repaso-critico: 248 113 113;
+  --c-repaso-al-dia: 94 230 168;
+  --c-repaso-manana: 201 168 245;
+  --c-repaso-vencido: 255 217 122;
+  --c-repaso-critico: 255 138 138;
   --c-stire-canvas: 11 18 32;
   color-scheme: dark;
 }
@@ -87,6 +92,8 @@
 /* Botones de color con texto blanco fijo: en oscuro el color se aclara, así que el texto pasa a oscuro. */
 :root[data-tema="oscuro"] :is([class*="bg-acento-"], [class*="bg-semantico-"]):is(.text-white, .hover\:text-white:hover) { color: rgb(var(--c-base-blanco)); }
 :root[data-tema="oscuro"] :is(.\!text-teal-800, .\!text-teal-700) { color: rgb(110 231 183) !important; }
+:root[data-tema="oscuro"] :is(.text-acento-ambar-fuerte, .text-acento-ambar) { color: rgb(var(--c-base-texto-primario)); }
+:root[data-tema="oscuro"] :is([class*="bg-acento-"]):is(.text-acento-ambar-fuerte, .text-acento-ambar) { color: rgb(var(--c-base-blanco)); }
 :root[data-tema="oscuro"] .badge-admin { color: rgb(147 197 253); }
 :root[data-tema="oscuro"] .badge-docente { color: rgb(196 181 253); }
 :root[data-tema="oscuro"] .badge-estudiante { color: rgb(110 231 183) !important; }

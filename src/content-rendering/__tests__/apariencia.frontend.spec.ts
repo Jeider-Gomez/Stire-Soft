@@ -66,14 +66,43 @@ describe('los colores', () => {
     }
   });
 
-  it('el tema claro conserva los colores de antes; solo el texto secundario subió a slate-600 (07/10: 4,3 a 1 sobre gris)', () => {
-    const antes: Record<string, string> = {
-      'base-blanco': '#FFFFFF', 'base-bg-primario': '#F7F9FC', 'base-bg-secundario': '#F1F5F9', 'base-borde-sutil': '#E2E8F0',
-      'base-borde-fuerte': '#CBD5E1', 'base-texto-secundario': '#475569', 'base-texto-primario': '#1E293B',
-      'acento-ambar': '#082A66', 'acento-ambar-fuerte': '#0B3D91', 'semantico-pasa': '#047857', 'semantico-falla': '#B91C1C',
-      'repaso-vencido': '#B45309', 'unidad-en-progreso': '#7B2FBF', 'stire-canvas': '#F7F9FC',
+  it('el tema claro usa la paleta «Cielo y sol» de la v3 (12/11; scripts/diseno-v3, paleta C del generador)', () => {
+    const v3: Record<string, string> = {
+      'base-blanco': '#FFFFFF', 'base-bg-primario': '#F7F9FC', 'base-bg-secundario': '#EEF3F9', 'base-borde-sutil': '#E3EAF3',
+      'base-borde-fuerte': '#CBD5E1', 'base-texto-secundario': '#4A5873', 'base-texto-primario': '#14213D',
+      'acento-ambar': '#1E3A5F', 'acento-ambar-fuerte': '#14213D', 'semantico-pasa': '#047857', 'semantico-falla': '#B91C1C',
+      'semantico-info': '#1D6FD1', 'repaso-vencido': '#A35F00', 'unidad-en-progreso': '#7B2FBF', 'stire-canvas': '#F7F9FC',
     };
-    for (const [v, hex] of Object.entries(antes)) expect(claro).toContain(`--c-${v}: ${rgb(hex)};`);
+    for (const [v, hex] of Object.entries(v3)) expect(claro).toContain(`--c-${v}: ${rgb(hex)};`);
+  });
+
+  it('en claro y en oscuro, el texto y los botones pasan WCAG AA (4,5 a 1)', () => {
+    const oscuro = temas.slice(temas.indexOf(':root[data-tema="oscuro"] {'), temas.indexOf('}', temas.indexOf(':root[data-tema="oscuro"] {')));
+    const valor = (bloque: string, v: string) => {
+      const m = bloque.match(new RegExp(`--c-${v}: ([0-9]+) ([0-9]+) ([0-9]+);`));
+      if (!m) throw new Error(`falta --c-${v}`);
+      return [1, 2, 3].map((i) => Number(m[i]));
+    };
+    const lum = (c: number[]) => {
+      const [r, g, b] = c.map((x) => { const s = x / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const contraste = (a: number[], b: number[]) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
+    const blanco = [255, 255, 255];
+    for (const [nombre, bloque] of [['claro', claro], ['oscuro', oscuro]] as const) {
+      const v = (n: string) => valor(bloque, n);
+      const pares: Array<[string, number[], number[]]> = [
+        ['texto sobre tarjeta', v('base-texto-primario'), v('base-blanco')],
+        ['texto suave sobre gris', v('base-texto-secundario'), v('base-bg-secundario')],
+        ['texto suave sobre el fondo', v('base-texto-secundario'), v('stire-canvas')],
+        ['información', v('semantico-info'), v('base-blanco')],
+        ['falla', v('semantico-falla'), v('base-blanco')],
+        ['repaso vencido', v('repaso-vencido'), v('base-blanco')],
+        // el botón principal: texto blanco en claro; en oscuro el texto toma el color de la tarjeta (regla de temas.css)
+        ['botón principal', nombre === 'claro' ? blanco : v('base-blanco'), v('acento-ambar-fuerte')],
+      ];
+      for (const [par, a, b] of pares) expect({ nombre, par, ok: contraste(a, b) >= 4.5 }).toEqual({ nombre, par, ok: true });
+    }
   });
 
   it('hay tema oscuro y alto contraste en los dos temas; lo que siempre es oscuro (editor) no cambia', () => {
