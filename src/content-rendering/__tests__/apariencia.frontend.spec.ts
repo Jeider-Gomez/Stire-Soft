@@ -70,8 +70,8 @@ describe('los colores', () => {
     const v3: Record<string, string> = {
       'base-blanco': '#FFFFFF', 'base-bg-primario': '#F7F9FC', 'base-bg-secundario': '#EEF3F9', 'base-borde-sutil': '#E3EAF3',
       'base-borde-fuerte': '#CBD5E1', 'base-texto-secundario': '#4A5873', 'base-texto-primario': '#14213D',
-      'acento-ambar': '#1E3A5F', 'acento-ambar-fuerte': '#14213D', 'semantico-pasa': '#047857', 'semantico-falla': '#B91C1C',
-      'semantico-info': '#1D6FD1', 'repaso-vencido': '#A35F00', 'unidad-en-progreso': '#7B2FBF', 'stire-canvas': '#F7F9FC',
+      'acento-ambar': '#1E3A5F', 'acento-ambar-fuerte': '#14213D', 'semantico-pasa': '#046C4E', 'semantico-falla': '#B91C1C',
+      'semantico-info': '#1658AA', 'repaso-vencido': '#8A5000', 'unidad-en-progreso': '#7B2FBF', 'stire-canvas': '#F7F9FC',
     };
     for (const [v, hex] of Object.entries(v3)) expect(claro).toContain(`--c-${v}: ${rgb(hex)};`);
   });
@@ -101,6 +101,14 @@ describe('los colores', () => {
         // el botón principal: texto blanco en claro; en oscuro el texto toma el color de la tarjeta (regla de temas.css)
         ['botón principal', nombre === 'claro' ? blanco : v('base-blanco'), v('acento-ambar-fuerte')],
       ];
+      // Las insignias y avisos ponen el color de estado sobre su propio tono suave (`bg-semantico-info/15`, …): axe lo
+      // encontró por debajo de 4,5 con el azul #1D6FD1 al medir el punto de partida (12/11, docs/v3/medicion).
+      const tenue = (c: number[], fondo: number[], a: number) => c.map((x, i) => Math.round(x * a + fondo[i] * (1 - a)));
+      for (const estado of ['semantico-info', 'semantico-pasa', 'semantico-falla', 'repaso-vencido', 'unidad-por-iniciar']) {
+        for (const fondo of ['base-blanco', 'stire-canvas']) {
+          pares.push([`${estado} sobre su tono suave (15 %) en ${fondo}`, v(estado), tenue(v(estado), v(fondo), 0.15)]);
+        }
+      }
       for (const [par, a, b] of pares) expect({ nombre, par, ok: contraste(a, b) >= 4.5 }).toEqual({ nombre, par, ok: true });
     }
   });
@@ -289,5 +297,26 @@ describe('revisión exhaustiva de accesibilidad (07/10, axe-core con WCAG 2.2 en
 describe('editor de código en el celular (07/10, axe en el ejercicio 122 a 375 px)', () => {
   it('el contenido del editor es enfocable siempre: la zona con desplazamiento se alcanza con el teclado', () => {
     expect(leer('components', 'CodeEditor.vue')).toMatch(/EditorView\.contentAttributes\.of\(\{[\s\S]*?tabindex: '0'/);
+  });
+});
+
+describe('inicio del docente sin problemas de contraste (axe, medición de partida de la v3, 12/11)', () => {
+  const lum = (c: number[]) => {
+    const [r, g, b] = c.map((x) => { const s = x / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const contraste = (a: number[], b: number[]) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
+  it('la sigla de cada tarjeta va sobre su color oscurecido (bg-black/25) y el texto blanco pasa 4,5 con todos los colores de clase', () => {
+    const tarjeta = leer('components', 'docente', 'inicio', 'TarjetaClase.vue');
+    expect(tarjeta).toContain('rounded-md bg-black/25 text-[10px]');
+    const colores = [...leer('utils', 'pestanasClase.ts').match(/COLORES_CLASE = \[([^\]]+)\]/)![1].matchAll(/#([0-9A-Fa-f]{6})/g)].map((m) => m[1]);
+    expect(colores.length).toBeGreaterThan(3);
+    for (const hex of colores) {
+      const fondo = [0, 2, 4].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * 0.75));
+      expect({ hex, ok: contraste([255, 255, 255], fondo) >= 4.5 }).toEqual({ hex, ok: true });
+    }
+  });
+  it('«Mostrando N de M clases» usa el texto suave del tema, no un gris suelto', () => {
+    expect(leer('pages', 'docente', 'index.vue')).toContain('<p class="text-xs text-base-texto-secundario whitespace-nowrap">');
   });
 });

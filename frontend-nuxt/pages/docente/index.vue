@@ -80,7 +80,7 @@
         />
         <Search :size="12" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" aria-hidden="true" />
       </div>
-      <p class="text-xs text-slate-500 whitespace-nowrap">
+      <p class="text-xs text-base-texto-secundario whitespace-nowrap">
         Mostrando {{ filteredClasses.length }} de {{ classes.length }} clase{{ classes.length !== 1 ? 's' : '' }}
       </p>
       <div role="group" aria-label="Cómo ver tus clases" class="seg relative inline-flex p-0.5 rounded-full bg-base-bg-secundario border border-base-borde-sutil text-xs font-semibold">

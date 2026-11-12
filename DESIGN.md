@@ -19,10 +19,10 @@ colors:
   border-strong: "#CBD5E1"
   text: "#14213D"
   text-muted: "#4A5873"
-  info: "#1D6FD1"
-  success: "#047857"
+  info: "#1658AA"
+  success: "#046C4E"
   danger: "#B91C1C"
-  warning: "#A35F00"
+  warning: "#8A5000"
   editor-bg: "#0F172A"
   editor-text: "#E2E8F0"
   dark-canvas: "#0B1220"
@@ -159,7 +159,7 @@ morado y el turquesa de la mascota.
 - **Secondary (#7B2FBF):** morado de la mascota; el docente y el estado «en progreso».
 - **Tertiary (#00C2A8):** turquesa de la mascota y del logo. Solo como relleno o dibujo, nunca como color de texto.
 - **Neutral (#F7F9FC):** fondo de la página; tarjetas blancas; #EEF3F9 separa zonas; bordes #E3EAF3.
-- **Estado:** éxito #047857, falla #B91C1C, información o «nuevo» #1D6FD1, repaso vencido #A35F00. El color nunca va
+- **Estado:** éxito #046C4E, falla #B91C1C, información o «nuevo» #1658AA (como texto; #1D6FD1 en iconos y en el color de Aprender), repaso vencido #8A5000. Como texto pasan 4,5 a 1 también sobre su propio tono suave. El color nunca va
   solo: siempre lo acompaña un icono o un texto.
 
 **Color por sección (estudiante).** Cada sección tiene un color fuerte (icono, línea activa) y uno suave (fondo):

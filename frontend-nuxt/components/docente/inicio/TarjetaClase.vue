@@ -7,7 +7,7 @@
         <rect x="2" y="30" width="11" height="22" rx="4.5" fill="#fff" opacity="0.18" /><rect x="18" y="20" width="11" height="32" rx="4.5" fill="#fff" opacity="0.24" />
         <rect x="34" y="10" width="11" height="42" rx="4.5" fill="#fff" opacity="0.3" /><rect x="50" y="0" width="11" height="52" rx="4.5" fill="#fff" opacity="0.36" />
       </svg>
-      <span class="inline-flex px-1.5 py-0.5 rounded-md bg-white/20 text-[10px] font-bold font-mono tracking-wider">{{ sigla }}</span>
+      <span class="inline-flex px-1.5 py-0.5 rounded-md bg-black/25 text-[10px] font-bold font-mono tracking-wider">{{ sigla }}</span>
       <h3 class="relative mt-6 pr-16 text-base font-poppins font-bold leading-snug line-clamp-2">{{ cls.name }}</h3>
       <p v-if="cls.asignatura || cls.grupo || cls.periodo" class="relative pr-16 text-xs text-white/85 truncate">
         <template v-if="cls.asignatura">{{ cls.asignatura.nombre }} · {{ lugarDeAsignatura(cls.asignatura) }}</template>
