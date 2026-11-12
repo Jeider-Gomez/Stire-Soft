@@ -54,7 +54,9 @@ mayoría ya existe en la app: se mueve, cambia de estilo o se une con otra. Lo q
 
 ## 2. Fases
 
-### Fase A · Preparación (no cambia lo que ve la gente)
+### Fase A · Preparación (no cambia lo que ve la gente) — ✅ cerrada el 12/11
+
+Colores, logo y mascota, `DESIGN.md` y la medición de partida (`docs/v3/medicion/`): axe 0 en las 12 rutas; en celular lento la primera visita tarda 13–27 s por la cantidad de pedidos.
 
 | Qué | Dónde | Nota |
 |---|---|---|
