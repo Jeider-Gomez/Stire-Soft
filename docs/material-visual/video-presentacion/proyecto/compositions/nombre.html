@@ -1,0 +1,141 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #082b6b; font-family: Inter, sans-serif; color: #fff; }
+    #nombre-brillo { position: absolute; left: 360px; top: 140px; width: 1200px; height: 800px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,194,168,.30), rgba(8,43,107,0)); }
+    #nombre-rejilla { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.12) 2px, transparent 2px); background-size: 48px 48px; }
+    #nombre-pregunta { position: absolute; left: 0; right: 0; top: 470px; text-align: center; font: 700 84px Poppins, sans-serif; color: #fff; }
+    #nombre-pregunta span { display: inline-block; transform-origin: 50% 100%; }
+    .nombre-sigla { position: absolute; top: 318px; font: 800 300px/1 Poppins, sans-serif; color: #ffffff; opacity: 0; }
+    #nombre-sg1 { left: 498px; } #nombre-sg2 { left: 784px; } #nombre-sg3 { left: 1044px; } #nombre-sg4 { left: 1241px; } #nombre-sg5 { left: 1470px; }
+    #nombre-marca { position: absolute; left: 306px; top: 250px; width: 1308px; height: 392px; }
+    #nombre-marca svg { width: 1308px; height: 392px; overflow: visible; }
+    .nombre-rotulo { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 14px; font: 700 54px/1 Poppins, sans-serif; white-space: nowrap; }
+    .nombre-rotulo i { width: 6px; height: 56px; border-radius: 3px; background: currentColor; }
+    .nombre-rotulo b { font-weight: 700; }
+    .nombre-rotulo em { font-style: normal; color: #ffc94d; }
+    #nombre-r1 { left: 498px; top: 660px; color: #5ee6d0; }
+    #nombre-r2 { left: 784px; top: 112px; color: #5ee6d0; flex-direction: column-reverse; }
+    #nombre-r3 { left: 1044px; top: 660px; color: #5ee6d0; }
+    #nombre-r4 { left: 1384px; top: 112px; color: #5ee6d0; flex-direction: column-reverse; }
+    .nombre-rotulo b { color: #fff; }
+    #nombre-linea { position: absolute; left: 560px; top: 720px; width: 800px; height: 10px; border-radius: 5px; background: #00c2a8; transform-origin: left center; }
+    #nombre-lema { position: absolute; left: 0; right: 0; top: 770px; text-align: center; font: 600 56px/1.3 Inter, sans-serif; color: #e3f4ff; }
+    #nombre-lema b { color: #ffc94d; font-weight: 700; display: inline-block; }
+    #nombre-lema1 { display: inline-block; }
+  </style>
+  <div id="root" data-composition-id="nombre" data-width="1920" data-height="1080">
+    <div id="nombre-brillo"></div>
+    <div id="nombre-rejilla"></div>
+    <h2 id="nombre-pregunta"><span>¿Y</span> <span>por</span> <span>qué</span> <span>me</span> <span>llamo</span> <span>así?</span></h2>
+    <div class="nombre-sigla" id="nombre-sg1">S</div><div class="nombre-sigla" id="nombre-sg2">T</div><div class="nombre-sigla" id="nombre-sg3">I</div><div class="nombre-sigla" id="nombre-sg4">R</div><div class="nombre-sigla" id="nombre-sg5">E</div>
+    <div id="nombre-marca">
+      <svg viewBox="-6 18 654 196" aria-label="stire, el logotipo armado por partes">
+        <!-- S · Sistema: un circuito -->
+        <g id="nombre-s"><g transform="translate(-13.5,12.8) scale(0.376)">
+          <g fill="none" stroke="#ffffff" stroke-width="17" stroke-linejoin="miter">
+            <path id="nombre-traza1" class="nombre-traza" pathLength="1" stroke-dasharray="1" d="M350,75 H175 L105,145 V255 L170,320 H320 L350,350 V385 L320,415 H65" />
+            <path id="nombre-traza2" class="nombre-traza" pathLength="1" stroke-dasharray="1" d="M420,150 H205 L180,175 V215 L210,245 H375 L430,300 V425 L365,490 H140" />
+          </g>
+          <g fill="#00c2a8"><circle class="nombre-nodo" cx="350" cy="75" r="29" /><circle class="nombre-nodo" cx="420" cy="150" r="29" /><circle class="nombre-nodo" cx="65" cy="415" r="29" /><circle class="nombre-nodo" cx="140" cy="490" r="29" /></g>
+          <g fill="none" stroke="#5ee6d0" stroke-width="8"><circle class="nombre-onda" cx="350" cy="75" r="29" opacity="0" /><circle class="nombre-onda" cx="420" cy="150" r="29" opacity="0" /><circle class="nombre-onda" cx="65" cy="415" r="29" opacity="0" /><circle class="nombre-onda" cx="140" cy="490" r="29" opacity="0" /></g>
+          <g id="nombre-chispa1" opacity="0"><circle r="46" fill="#5ee6d0" opacity="0.35" /><circle r="22" fill="#ffffff" /></g>
+          <g id="nombre-chispa2" opacity="0"><circle r="46" fill="#5ee6d0" opacity="0.35" /><circle r="22" fill="#ffffff" /></g>
+        </g></g>
+        <!-- t · Tutor: la barra son unas gafas -->
+        <g id="nombre-t"><path d="M373 145V0H286Q193 0 141.0 45.5Q89 91 89 194V694H260V192Q260 167 272.0 156.0Q284 145 312 145Z" transform="translate(192.9,200) scale(0.23,-0.23)" fill="#ffffff" /></g>
+        <g id="nombre-gafas">
+          <g fill="#14B3A4"><rect x="168" y="78" width="10" height="10" rx="5" /><rect x="288" y="78" width="10" height="10" rx="5" /><rect x="226" y="80.5" width="14" height="10.5" /><rect x="174" y="67" width="54" height="45" rx="12" /><rect x="238" y="67" width="54" height="45" rx="12" /></g>
+          <g fill="#082b6b"><rect x="184" y="77" width="34.5" height="25" rx="5" /><rect x="247.5" y="77" width="34.5" height="25" rx="5" /></g>
+        </g>
+        <!-- i · Inteligente: el punto es un cerebro -->
+        <g id="nombre-i"><rect x="343.3" y="110" width="39.4" height="90" fill="#14B3A4" /></g>
+        <g transform="translate(363,64) scale(1.05)"><circle id="nombre-destello" r="34" fill="none" stroke="#ffffff" stroke-width="5" opacity="0" /><g id="nombre-cerebro">
+          <g id="nombre-izq"><g transform="translate(-3,0)"><path d="M-3,-27 C-12,-31 -22,-27 -23,-18 C-32,-15 -34,-3 -28,3 C-34,11 -28,23 -18,23 C-14,30 -5,30 -3,25 Z" fill="#14B3A4" stroke="#14B3A4" stroke-width="6" stroke-linejoin="round" /><path d="M-3,-15 H-11 L-16,-20 M-3,0 H-17 M-3,13 H-10 L-15,18 M-9,-15 V-8" fill="none" stroke="#082b6b" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" /><circle cx="-17" cy="-21" r="4.4" fill="#082b6b" /><circle cx="-18.5" cy="0" r="4.4" fill="#082b6b" /><circle cx="-16" cy="19" r="4.4" fill="#082b6b" /><circle cx="-9" cy="-6" r="3.6" fill="#082b6b" /></g></g>
+          <g id="nombre-der"><g transform="scale(-1,1)"><g transform="translate(-3,0)"><path d="M-3,-27 C-12,-31 -22,-27 -23,-18 C-32,-15 -34,-3 -28,3 C-34,11 -28,23 -18,23 C-14,30 -5,30 -3,25 Z" fill="#14B3A4" stroke="#14B3A4" stroke-width="6" stroke-linejoin="round" /><path d="M-3,-15 H-11 L-16,-20 M-3,0 H-17 M-3,13 H-10 L-15,18 M-9,-15 V-8" fill="none" stroke="#082b6b" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" /><circle cx="-17" cy="-21" r="4.4" fill="#082b6b" /><circle cx="-18.5" cy="0" r="4.4" fill="#082b6b" /><circle cx="-16" cy="19" r="4.4" fill="#082b6b" /><circle cx="-9" cy="-6" r="3.6" fill="#082b6b" /></g></g></g>
+        </g></g>
+        <!-- re · Repetición espaciada: vuelve con eco, cada vez más separado -->
+                <g id="nombre-eco3" class="nombre-eco" fill="none" stroke="#5ee6d0" stroke-width="12" opacity="0"><path d="M408 564V383H361Q297 383 265.0 355.5Q233 328 233 259V0H62V558H233V465Q263 511 308.0 537.5Q353 564 408 564Z" transform="translate(413,200) scale(0.23,-0.23)" /><path d="M585 238H198Q202 186 231.5 158.5Q261 131 304 131Q368 131 393 185H575Q561 130 524.5 86.0Q488 42 433.0 17.0Q378 -8 310 -8Q228 -8 164.0 27.0Q100 62 64.0 127.0Q28 192 28 279Q28 366 63.5 431.0Q99 496 163.0 531.0Q227 566 310 566Q391 566 454.0 532.0Q517 498 552.5 435.0Q588 372 588 288Q588 264 585 238ZM413 333Q413 377 383.0 403.0Q353 429 308 429Q265 429 235.5 404.0Q206 379 199 333Z" transform="translate(507,200) scale(0.23,-0.23)" /></g>
+        <g id="nombre-eco2" class="nombre-eco" fill="none" stroke="#5ee6d0" stroke-width="12" opacity="0"><path d="M408 564V383H361Q297 383 265.0 355.5Q233 328 233 259V0H62V558H233V465Q263 511 308.0 537.5Q353 564 408 564Z" transform="translate(413,200) scale(0.23,-0.23)" /><path d="M585 238H198Q202 186 231.5 158.5Q261 131 304 131Q368 131 393 185H575Q561 130 524.5 86.0Q488 42 433.0 17.0Q378 -8 310 -8Q228 -8 164.0 27.0Q100 62 64.0 127.0Q28 192 28 279Q28 366 63.5 431.0Q99 496 163.0 531.0Q227 566 310 566Q391 566 454.0 532.0Q517 498 552.5 435.0Q588 372 588 288Q588 264 585 238ZM413 333Q413 377 383.0 403.0Q353 429 308 429Q265 429 235.5 404.0Q206 379 199 333Z" transform="translate(507,200) scale(0.23,-0.23)" /></g>
+        <g id="nombre-eco1" class="nombre-eco" fill="none" stroke="#5ee6d0" stroke-width="12" opacity="0"><path d="M408 564V383H361Q297 383 265.0 355.5Q233 328 233 259V0H62V558H233V465Q263 511 308.0 537.5Q353 564 408 564Z" transform="translate(413,200) scale(0.23,-0.23)" /><path d="M585 238H198Q202 186 231.5 158.5Q261 131 304 131Q368 131 393 185H575Q561 130 524.5 86.0Q488 42 433.0 17.0Q378 -8 310 -8Q228 -8 164.0 27.0Q100 62 64.0 127.0Q28 192 28 279Q28 366 63.5 431.0Q99 496 163.0 531.0Q227 566 310 566Q391 566 454.0 532.0Q517 498 552.5 435.0Q588 372 588 288Q588 264 585 238ZM413 333Q413 377 383.0 403.0Q353 429 308 429Q265 429 235.5 404.0Q206 379 199 333Z" transform="translate(507,200) scale(0.23,-0.23)" /></g>
+        <g id="nombre-rl"><path d="M408 564V383H361Q297 383 265.0 355.5Q233 328 233 259V0H62V558H233V465Q263 511 308.0 537.5Q353 564 408 564Z" transform="translate(413,200) scale(0.23,-0.23)" fill="#ffffff" /></g>
+        <g id="nombre-el"><path d="M585 238H198Q202 186 231.5 158.5Q261 131 304 131Q368 131 393 185H575Q561 130 524.5 86.0Q488 42 433.0 17.0Q378 -8 310 -8Q228 -8 164.0 27.0Q100 62 64.0 127.0Q28 192 28 279Q28 366 63.5 431.0Q99 496 163.0 531.0Q227 566 310 566Q391 566 454.0 532.0Q517 498 552.5 435.0Q588 372 588 288Q588 264 585 238ZM413 333Q413 377 383.0 403.0Q353 429 308 429Q265 429 235.5 404.0Q206 379 199 333Z" transform="translate(507,200) scale(0.23,-0.23)" fill="#ffffff" /></g>
+      </svg>
+    </div>
+    <div class="nombre-rotulo" id="nombre-r1"><i></i><span><em>S</em><b>istema</b></span></div>
+    <div class="nombre-rotulo" id="nombre-r2"><i></i><span><em>T</em><b>utor</b></span></div>
+    <div class="nombre-rotulo" id="nombre-r3"><i></i><span><em>I</em><b>nteligente</b></span></div>
+    <div class="nombre-rotulo" id="nombre-r4"><i></i><span><em>R</em><b>epetición </b><em>E</em><b>spaciada</b></span></div>
+    <div id="nombre-linea"></div>
+    <p id="nombre-lema"><span id="nombre-lema1">Un tutor que te enseña</span> <b>y te repasa justo a tiempo</b></p>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Ritmo: voz al 1.1×, y 1.6 s de pausa antes de salir de la escena
+    const H = (t) => t <= 0.3 ? t : (t < 16.3 ? 0.3 + (t - 0.3) / 1.1 : t - 16.3 + 16.227);
+    const T = H;
+    // Tiempos según la voz (la frase empieza a los 0.3 s de la escena)
+    tl.fromTo("#nombre-rejilla", { opacity: 0, scale: 1.15 }, { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" }, T(0));
+    tl.fromTo("#nombre-brillo", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 1.4, ease: "sine.out" }, T(0.2));
+    // «¿Y por qué me llamo así?»
+    tl.fromTo("#nombre-pregunta span", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.07, ease: "power2.out" }, T(0.3));
+    tl.to("#nombre-pregunta", { opacity: 0, y: -16, duration: 0.45, ease: "power2.inOut" }, T(1.95));
+    // «STIRE significa…»: las cinco letras planas, parejas y centradas; luego cada una se corre a donde nacerá su parte del logo
+    [["#nombre-sg1", 106], ["#nombre-sg2", 28], ["#nombre-sg3", -77], ["#nombre-sg4", -117], ["#nombre-sg5", -146]].forEach(([g, dx], i) => {
+      tl.fromTo(g, { xPercent: -50, x: dx, opacity: 0, y: 24 }, { xPercent: -50, x: dx, opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, T(2.25 + i * 0.08));
+      tl.to(g, { x: 0, opacity: 0.16, duration: 0.7, ease: "sine.inOut" }, T(3.15));
+    });
+    // Cada letra se apaga cuando nace su símbolo
+    [["#nombre-sg1", 3.4], ["#nombre-sg2", 5.5], ["#nombre-sg3", 6.7], ["#nombre-sg4", 8.7], ["#nombre-sg5", 8.85]].forEach(([g, t]) => {
+      tl.to(g, { opacity: 0, duration: 0.5, ease: "sine.inOut" }, T(t));
+    });
+    const rotulo = (s, t, arriba) => {
+      tl.fromTo(s, { xPercent: -50, opacity: 0, y: arriba ? 30 : -30, scale: 0.8 }, { xPercent: -50, opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(2.4)" }, T(t));
+      tl.fromTo(s + " i", { scaleY: 0, transformOrigin: arriba ? "50% 100%" : "50% 0%" }, { scaleY: 1, duration: 0.3, ease: "expo.out" }, T(t));
+    };
+    // S · Sistema: el circuito se dibuja con una chispa que lo recorre y enciende los nodos
+    tl.fromTo("#nombre-s .nombre-traza", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.9, stagger: 0.12, ease: "power2.inOut" }, T(3.4));
+    [["#nombre-traza1", "#nombre-chispa1", 3.4], ["#nombre-traza2", "#nombre-chispa2", 3.52]].forEach(([tr, ch, t]) => {
+      const camino = document.querySelector(tr), largo = camino.getTotalLength(), chispa = document.querySelector(ch), pr = { p: 0 };
+      const mover = () => { const pt = camino.getPointAtLength(largo * pr.p); chispa.setAttribute("transform", "translate(" + pt.x + "," + pt.y + ")"); };
+      tl.fromTo(pr, { p: 0 }, { p: 1, duration: 0.9, ease: "power2.inOut", onUpdate: mover, onStart: mover }, T(t));
+      tl.fromTo(ch, { opacity: 0 }, { opacity: 1, duration: 0.1 }, T(t));
+      tl.to(ch, { opacity: 0, duration: 0.2 }, T(t + 0.85));
+    });
+    tl.fromTo("#nombre-s .nombre-nodo", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.4, stagger: 0.08, ease: "back.out(4)" }, T(4.1));
+    tl.fromTo("#nombre-s .nombre-onda", { scale: 1, opacity: 0.9, transformOrigin: "50% 50%" }, { scale: 2.8, opacity: 0, duration: 0.7, stagger: 0.08, ease: "power2.out", immediateRender: false }, T(4.15));
+    rotulo("#nombre-r1", 4.45, false);
+    // t · Tutor: el palo sale de un salto y las gafas caen girando
+    tl.fromTo("#nombre-t", { scaleY: 0, scaleX: 1.3, transformOrigin: "50% 100%" }, { scaleY: 1, scaleX: 1, duration: 0.7, ease: "elastic.out(1, 0.45)" }, T(5.5));
+    tl.fromTo("#nombre-gafas", { y: -260, opacity: 0, rotation: -300, transformOrigin: "50% 50%" }, { y: 0, opacity: 1, rotation: 0, duration: 0.75, ease: "bounce.out" }, T(5.7));
+    tl.to("#nombre-gafas", { keyframes: [{ scaleY: 0.2, duration: 0.08 }, { scaleY: 1, duration: 0.1 }], transformOrigin: "50% 50%" }, T(6.75));
+    rotulo("#nombre-r2", 6.15, true);
+    // i · Inteligente: las dos mitades del cerebro se juntan y se enciende la idea
+    tl.fromTo("#nombre-i", { scaleY: 0, scaleX: 1.3, transformOrigin: "50% 100%" }, { scaleY: 1, scaleX: 1, duration: 0.7, ease: "elastic.out(1, 0.45)" }, T(6.7));
+    tl.fromTo("#nombre-izq", { x: -70, rotation: -40, opacity: 0, transformOrigin: "100% 50%" }, { x: 0, rotation: 0, opacity: 1, duration: 0.4, ease: "back.out(3)" }, T(6.9));
+    tl.fromTo("#nombre-der", { x: 70, rotation: 40, opacity: 0, transformOrigin: "0% 50%" }, { x: 0, rotation: 0, opacity: 1, duration: 0.4, ease: "back.out(3)" }, T(6.9));
+    tl.fromTo("#nombre-destello", { scale: 0.6, opacity: 1, transformOrigin: "50% 50%" }, { scale: 2.6, opacity: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, T(7.2));
+    tl.to("#nombre-cerebro", { keyframes: [{ scale: 1.25, duration: 0.14 }, { scale: 1, duration: 0.2 }], transformOrigin: "50% 50%" }, T(7.2));
+    rotulo("#nombre-r3", 7.25, false);
+    // re · Repetición espaciada: r y e rebotan, y la palabra vuelve en ecos cada vez más separados
+    tl.fromTo("#nombre-rl", { y: 120, scaleY: 0.4, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, scaleY: 1, opacity: 1, duration: 0.6, ease: "elastic.out(1, 0.5)" }, T(8.7));
+    tl.fromTo("#nombre-el", { y: 120, scaleY: 0.4, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, scaleY: 1, opacity: 1, duration: 0.6, ease: "elastic.out(1, 0.5)" }, T(8.85));
+    rotulo("#nombre-r4", 9.1, true);
+    [["#nombre-eco1", 9.5, 40], ["#nombre-eco2", 9.95, 80], ["#nombre-eco3", 10.75, 130]].forEach(([e, t, lejos]) => {
+      tl.fromTo(e, { x: 0, opacity: 0.95 }, { x: lejos, opacity: 0, duration: 0.75, ease: "power2.out", immediateRender: false }, T(t));
+    });
+    // «Dicho fácil…»: queda el nombre y lo que significa
+    tl.to(".nombre-rotulo", { opacity: 0, filter: "blur(8px)", duration: 0.3, stagger: 0.04 }, T(11.0));
+    tl.to("#nombre-marca", { y: -60, scale: 0.9, duration: 0.6, ease: "power3.inOut" }, T(11.1));
+    tl.fromTo("#nombre-linea", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, T(11.6));
+    tl.fromTo("#nombre-lema1", { opacity: 0, y: 30, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, T(12.4));
+    tl.fromTo("#nombre-lema b", { opacity: 0, y: 30, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2.5)" }, T(14.0));
+    // El nombre respira mientras se explica
+    tl.fromTo("#nombre-marca", { rotation: 0 }, { rotation: -1.5, duration: 4.4, ease: "sine.inOut" }, T(11.8));
+    tl.fromTo("#nombre-linea", { backgroundColor: "#00c2a8" }, { backgroundColor: "#ffc94d", duration: 0.4, immediateRender: false }, T(14.0));
+    // Salida: el nombre se encoge y queda la noche para el editor de código
+    tl.to("#nombre-marca", { scale: 0.2, opacity: 0, filter: "blur(12px)", duration: 0.45, ease: "power3.in" }, T(16.3));
+    tl.to("#nombre-linea, #nombre-lema, #nombre-rejilla, #nombre-brillo", { opacity: 0, filter: "blur(10px)", duration: 0.4, ease: "power2.in" }, T(16.3));
+    window.__timelines["nombre"] = tl;
+  </script>
+
+</template>

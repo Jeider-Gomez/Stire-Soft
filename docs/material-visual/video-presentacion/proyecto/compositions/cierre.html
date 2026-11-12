@@ -1,0 +1,56 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #f7f9fc; font-family: Inter, sans-serif; color: #14213d; }
+    #cierre-cielo { position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, #e3f4ff 0%, #f7f9fc 60%); }
+    #cierre-marca { position: absolute; left: 520px; top: 250px; width: 360px; height: 300px; }
+    #cierre-marca svg { width: 360px; height: 300px; overflow: visible; }
+    #cierre-texto { position: absolute; left: 920px; top: 300px; width: 520px; height: 156px; }
+    #cierre-texto img { width: 520px; height: 156px; display: block; }
+    #cierre-frase { position: absolute; left: 0; right: 0; top: 640px; text-align: center; font: 700 64px/1.2 Poppins, sans-serif; }
+    #cierre-frase span { display: inline-block; }
+    #cierre-url { position: absolute; left: 0; right: 0; top: 760px; display: flex; justify-content: center; }
+    #cierre-url span { padding: 18px 34px; border-radius: 999px; background: #14213d; color: #fff; font: 600 40px "JetBrains Mono", monospace; }
+  </style>
+  <div id="root" data-composition-id="cierre" data-width="1920" data-height="1080">
+    <div id="cierre-cielo"></div>
+    <div id="cierre-marca">
+      <svg viewBox="20 26 168 140" aria-label="Logo de STIRE">
+        <rect id="cierre-eco" x="34" y="32" width="148" height="100" rx="18" fill="#00C2A8" stroke="#FFFFFF" stroke-width="3.5" paint-order="stroke" />
+        <g id="cierre-frente">
+          <rect x="26" y="40" width="148" height="100" rx="18" fill="#7B2FBF" stroke="#FFFFFF" stroke-width="3.5" paint-order="stroke" />
+          <rect x="38" y="52" width="124" height="76" rx="10" fill="#082B6B" />
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M46 70 L30 62 M158 70 L174 62" stroke="#008F7C" stroke-width="6.5" /><path d="M46 70 L30 62 M158 70 L174 62" stroke="#00C2A8" stroke-width="3.8" /><path d="M95 73 Q100 66 105 73" stroke="#00C2A8" stroke-width="6" /></g>
+          <rect x="45.5" y="62.5" width="52" height="44" rx="16" fill="none" stroke="#00C2A8" stroke-width="4" /><rect x="107.5" y="62.5" width="52" height="44" rx="16" fill="none" stroke="#00C2A8" stroke-width="4" />
+          <rect x="43" y="58" width="52" height="44" rx="16" fill="#FFFFFF" stroke="#00C2A8" stroke-width="7.5" /><rect x="105" y="58" width="52" height="44" rx="16" fill="#FFFFFF" stroke="#00C2A8" stroke-width="7.5" />
+          <path id="cierre-ojos" d="M76 70 L66 80 L76 90 M128 70 L138 80 L128 90" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#7B2FBF" stroke-width="8.5" />
+          <path d="M82 114 Q100 127 118 114" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#FFFFFF" stroke-width="6" />
+        </g>
+        <path id="cierre-base" d="M36 150 H126.5 V151 a4.5 4.5 0 0 0 4.5 4.5 H147 a4.5 4.5 0 0 0 4.5 -4.5 V150 H164 a6 6 0 0 1 0 12 H36 a6 6 0 0 1 0 -12 Z" fill="#7B2FBF" />
+      </svg>
+    </div>
+    <div id="cierre-texto"><img src="assets/logo-texto.svg" alt="stire" /></div>
+    <p id="cierre-frase"><span>Entra</span> <span>con</span> <span>el</span> <span>código</span> <span>de</span> <span>tu</span> <span>clase</span></p>
+    <div id="cierre-url"><span>stire-soft.vercel.app</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Ritmo: voz al 1.1×, y 1.6 s de pausa antes de salir de la escena
+    const H = (t) => t <= 0.3 ? t : (0.3 + (t - 0.3) / 1.1);
+    const T = H;
+    // La base del logo se dibuja, la pantalla cae sobre ella
+    tl.fromTo("#cierre-base", { scaleX: 0, transformOrigin: "50% 50%" }, { scaleX: 1, duration: 0.45, ease: "expo.out" }, T(0.15));
+    tl.fromTo("#cierre-frente", { y: -260, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.in" }, T(0.35));
+    tl.fromTo("#cierre-marca", { scaleY: 1 }, { scaleY: 0.9, transformOrigin: "50% 100%", duration: 0.1, ease: "power2.out" }, T(0.8));
+    tl.to("#cierre-marca", { scaleY: 1, duration: 0.5, ease: "elastic.out(1, 0.45)" }, T(0.9));
+    // El eco: la tarjeta de atrás, la repetición espaciada
+    tl.fromTo("#cierre-eco", { x: -8, y: 8, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.45, ease: "back.out(2.4)" }, T(1.15));
+    // El nombre se descubre de izquierda a derecha
+    tl.fromTo("#cierre-texto", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "power3.out" }, T(1.3));
+    // Guiño
+    tl.to("#cierre-ojos", { scaleY: 0.15, transformOrigin: "50% 50%", duration: 0.08 }, T(2.3));
+    tl.to("#cierre-ojos", { scaleY: 1, duration: 0.12 }, T(2.42));
+    tl.fromTo("#cierre-frase span", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, stagger: 0.08 }, T(0.4));
+    tl.fromTo("#cierre-url span", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, T(2.0));
+    window.__timelines["cierre"] = tl;
+  </script>
+</template>

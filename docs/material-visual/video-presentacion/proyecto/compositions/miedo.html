@@ -1,0 +1,76 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #082b6b; font-family: Inter, sans-serif; }
+    #miedo-tinte { position: absolute; inset: 0; background: radial-gradient(circle at 50% 60%, rgba(220,38,38,.55), rgba(8,43,107,0) 70%); opacity: 0; }
+    #miedo-editor { position: absolute; left: 260px; top: 200px; width: 1400px; }
+    .miedo-linea { display: flex; gap: 36px; font: 500 52px/1.9 "JetBrains Mono", monospace; color: #e2e8f0; white-space: nowrap; }
+    .miedo-linea i { font-style: normal; color: #64748b; width: 50px; text-align: right; }
+    .miedo-linea .k { color: #93c5fd; } .miedo-linea .f { color: #5ee6d0; } .miedo-linea .n { color: #ffc94d; }
+    #miedo-cursor { display: inline-block; width: 6px; height: 56px; background: #00c2a8; vertical-align: middle; margin-left: 4px; }
+    .miedo-error { position: absolute; left: 340px; width: 1240px; padding: 26px 34px; border-radius: 22px; background: #fee2e2; border: 3px solid #dc2626; color: #991b1b; font: 600 40px/1.35 "JetBrains Mono", monospace; box-shadow: 0 30px 70px rgba(0,0,0,.35); }
+    .miedo-error { top: 620px; transform-origin: 50% 0%; }
+    #miedo-calma { position: absolute; left: 340px; top: 600px; width: 1240px; padding: 34px 40px; border-radius: 28px; background: #fff1c2; color: #14213d; display: flex; gap: 28px; align-items: center; box-shadow: 0 30px 70px rgba(0,0,0,.3); }
+    #miedo-calma p { margin: 0; font: 600 46px/1.3 Inter, sans-serif; }
+    #miedo-calma small { display: block; font: 500 30px/1.4 Inter, sans-serif; color: #7a4b00; margin-top: 6px; }
+    #miedo-mini { width: 120px; height: 82px; flex: none; }
+    #miedo-subraya { position: absolute; left: 1196px; top: 405px; width: 70px; height: 8px; border-radius: 4px; background: #dc2626; transform-origin: left center; }
+    #miedo-crece { position: absolute; inset: 0; background: #f7f9fc; clip-path: inset(600px 340px 290px 340px round 28px); opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="miedo" data-width="1920" data-height="1080">
+    <div id="miedo-tinte"></div>
+    <div id="miedo-editor">
+      <div class="miedo-linea" id="miedo-l1"><i>1</i><span><span class="k">const</span> base = <span class="f">leerNumero</span>();</span></div>
+      <div class="miedo-linea" id="miedo-l2"><i>2</i><span><span class="k">const</span> altura = <span class="f">leerNumero</span>();</span></div>
+      <div class="miedo-linea" id="miedo-l3"><i>3</i><span><span class="f">console</span>.log(<span class="n">2</span> * (base + altura);<span id="miedo-cursor"></span></span></div>
+    </div>
+    <div id="miedo-subraya"></div>
+    <div class="miedo-error" data-layout-allow-overlap id="miedo-e1">SyntaxError: missing ) after argument list</div>
+    <div class="miedo-error" data-layout-allow-overlap id="miedo-e2">Unexpected token ';'</div>
+    <div class="miedo-error" data-layout-allow-overlap id="miedo-e3">Uncaught SyntaxError at line 3:31</div>
+    <div class="miedo-error" data-layout-allow-overlap id="miedo-e4">TypeError: undefined is not a function</div>
+    <div id="miedo-calma">
+      <svg id="miedo-mini" viewBox="24 38 152 104" aria-hidden="true"><rect x="26" y="40" width="148" height="100" rx="18" fill="#7b2fbf" /><rect x="38" y="52" width="124" height="76" rx="10" fill="#082b6b" /><rect x="43" y="58" width="52" height="44" rx="16" fill="#fff" stroke="#00c2a8" stroke-width="7.5" /><rect x="105" y="58" width="52" height="44" rx="16" fill="#fff" stroke="#00c2a8" stroke-width="7.5" /><path d="M59 84 L69 76 L79 84 M121 84 L131 76 L141 84" fill="none" stroke="#7b2fbf" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M80 112 Q100 130 120 112" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" /></svg>
+      <p>Falta cerrar un paréntesis en la línea 3</p>
+    </div>
+    <div id="miedo-crece"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Tiempos ajustados a la voz: T() lleva cada momento del diseño original a su palabra
+    const T0 = ((k) => (t) => { for (let i = 1; i < k.length; i++) if (t <= k[i][0]) { const [a, b] = k[i - 1], [c, d] = k[i]; return b + (t - a) * (d - b) / (c - a); } const [a, b] = k[k.length - 1]; return b + (t - a); })([[0, 0], [2.9, 3.5], [3.4, 4.3], [5.3, 6.8], [5.6, 7.4], [8.15, 8.35], [9, 9]]);
+    const R = (t) => H(t);
+    const T = (t) => H(T0(t));
+    const H = (t) => t <= 0.2 ? t : (t < 8.35 ? 0.2 + (t - 0.2) / 1.1 : t - 8.35 + 9);
+    
+    // El código se escribe línea por línea
+    ["#miedo-l1", "#miedo-l2", "#miedo-l3"].forEach((s, i) => {
+      tl.fromTo(s, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.75, ease: "steps(22)" }, T(0.3 + i * 0.85));
+    });
+    tl.fromTo("#miedo-cursor", { opacity: 1 }, { opacity: 0, duration: 0.25, repeat: 7, yoyo: true, ease: "steps(1)" }, T(2.9));
+    // El error aparece y se multiplica: el susto
+    tl.fromTo("#miedo-subraya", { scaleX: 0 }, { scaleX: 1, duration: 0.25, ease: "expo.out" }, T(3.3));
+    tl.fromTo("#miedo-e1", { y: 260, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out" }, T(3.4));
+    tl.fromTo("#miedo-e1", { x: 0 }, { x: 14, duration: 0.05, repeat: 5, yoyo: true, ease: "none" }, T(3.85));
+    tl.fromTo("#miedo-tinte", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.out" }, T(3.6));
+    // Cada error nuevo entra delante y empuja a los anteriores hacia atrás, como una pila de tarjetas
+    const errores = ["#miedo-e1", "#miedo-e2", "#miedo-e3", "#miedo-e4"];
+    [4.3, 4.62, 4.94].forEach((t, i) => {
+      const nuevo = errores[i + 1];
+      tl.fromTo(nuevo, { y: 240, opacity: 0, scale: 1 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "expo.out" }, T(t));
+      for (let j = 0; j <= i; j++) {
+        const fondo = i + 1 - j;
+        tl.to(errores[j], { y: -46 * fondo, scale: 1 - 0.06 * fondo, opacity: 1 - 0.22 * fondo, duration: 0.3, ease: "power3.out" }, T(t));
+      }
+    });
+    // Calma: todo el rojo se recoge en una sola explicación, en español
+    tl.to("#miedo-e1, #miedo-e2, #miedo-e3, #miedo-e4", { y: 40, opacity: 0, scale: 0.94, filter: "blur(10px)", duration: 0.4, stagger: 0.05, ease: "power3.in" }, T(5.3));
+    tl.to("#miedo-tinte", { opacity: 0, duration: 0.6, ease: "power2.inOut" }, T(5.3));
+    tl.to("#miedo-subraya", { backgroundColor: "#ffc94d", duration: 0.4 }, T(5.4));
+    tl.fromTo("#miedo-calma", { opacity: 0, scale: 0.9, filter: "blur(8px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.55, ease: "expo.out" }, T(5.6));
+    tl.fromTo("#miedo-mini", { rotation: -12 }, { rotation: 0, duration: 0.7, ease: "elastic.out(1, 0.4)" }, T(5.75));
+    // La tarjeta crece hasta ser el siguiente mundo
+    tl.set("#miedo-crece", { opacity: 1 }, T(8.15));
+    tl.fromTo("#miedo-crece", { clipPath: "inset(600px 340px 290px 340px round 28px)" }, { clipPath: "inset(0px 0px 0px 0px round 0px)", duration: 0.75, ease: "power3.inOut" }, T(8.15));
+    window.__timelines["miedo"] = tl;
+  </script>
+</template>

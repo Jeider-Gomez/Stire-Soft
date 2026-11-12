@@ -1,0 +1,81 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: linear-gradient(160deg, #e6f4ff 0%, #f1fbf8 100%); font-family: Inter, sans-serif; color: #14213d; }
+    #repasos-puntos { position: absolute; inset: 0; background-image: radial-gradient(rgba(20,33,61,.08) 2px, transparent 2px); background-size: 44px 44px; }
+    #repasos-titulo { position: absolute; left: 140px; top: 80px; font: 700 92px/1.05 Poppins, sans-serif; letter-spacing: -0.02em; }
+    #repasos-titulo span { display: inline-block; }
+    #repasos-titulo em { font-style: normal; color: #7b2fbf; }
+    #repasos-cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 50% 60%; }
+    #repasos-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .repasos-marca { position: absolute; display: flex; flex-direction: column-reverse; align-items: center; gap: 12px; font: 700 32px Poppins, sans-serif; white-space: nowrap; color: #14213d; }
+    .repasos-marca i { width: 40px; height: 40px; border-radius: 50%; background: #7b2fbf; border: 8px solid #fff; box-shadow: 0 0 0 4px #00c2a8; box-sizing: content-box; }
+    #repasos-m1 { left: 380px; top: 222px; } #repasos-m2 { left: 760px; top: 222px; } #repasos-m3 { left: 1240px; top: 222px; } #repasos-m4 { left: 1700px; top: 314px; }
+    .repasos-onda { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; border: 6px solid #00c2a8; opacity: 0; }
+    #repasos-o1 { left: 380px; top: 330px; } #repasos-o2 { left: 760px; top: 330px; } #repasos-o3 { left: 1240px; top: 330px; } #repasos-o4 { left: 1700px; top: 422px; }
+    #repasos-jinete { position: absolute; left: 0; top: 0; width: 110px; height: 76px; }
+    #repasos-jinete svg { width: 110px; height: 76px; overflow: visible; }
+    #repasos-sin { position: absolute; left: 960px; top: 660px; display: flex; gap: 18px; }
+    #repasos-sin span { padding: 16px 28px; border-radius: 999px; background: #14213d; color: #fff; font: 700 36px Poppins, sans-serif; box-shadow: 0 16px 34px rgba(20,33,61,.22); }
+    #repasos-sin span:nth-child(3) { background: #00c2a8; color: #082b6b; }
+    #repasos-eje { position: absolute; left: 160px; top: 760px; font: 600 30px Inter, sans-serif; color: #4a5873; }
+  </style>
+  <div id="root" data-composition-id="repasos" data-width="1920" data-height="1080">
+    <div id="repasos-puntos"></div>
+    <h2 id="repasos-titulo"><span>Vuelve</span> <span><em>justo</em></span> <span><em>a</em></span> <span><em>tiempo</em></span></h2>
+    <div id="repasos-cam">
+      <svg id="repasos-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <line x1="160" y1="820" x2="1780" y2="820" stroke="#cbd5e1" stroke-width="4" />
+        <path id="repasos-sombra" d="M160 330 Q300 760 1780 800" fill="none" stroke="#e11d48" stroke-width="6" stroke-dasharray="14 14" opacity="0" />
+        <path id="repasos-curva" d="M160 330 Q200 600 380 680 L380 330 Q480 540 760 600 L760 330 Q900 480 1240 520 L1240 330 Q1450 410 1700 440" fill="none" stroke="#14213d" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="100" />
+        <path id="repasos-medida" d="M160 330 Q200 600 380 680 L380 330 Q480 540 760 600 L760 330 Q900 480 1240 520 L1240 330 Q1450 410 1700 440" fill="none" stroke="none" />
+      </svg>
+      <p id="repasos-eje">Sin repasar, se olvida así</p>
+      <div class="repasos-onda" id="repasos-o1"></div><div class="repasos-onda" id="repasos-o2"></div><div class="repasos-onda" id="repasos-o3"></div><div class="repasos-onda" id="repasos-o4"></div>
+      <div class="repasos-marca" id="repasos-m1"><i></i>Al otro día</div>
+      <div class="repasos-marca" id="repasos-m2"><i></i>A los 3 días</div>
+      <div class="repasos-marca" id="repasos-m3"><i></i>A la semana</div>
+      <div class="repasos-marca" id="repasos-m4"><i></i>A las 3 semanas</div>
+      <div id="repasos-jinete"><svg viewBox="24 38 152 104" aria-hidden="true"><rect x="26" y="40" width="148" height="100" rx="18" fill="#7b2fbf" /><rect x="38" y="52" width="124" height="76" rx="10" fill="#082b6b" /><rect x="43" y="58" width="52" height="44" rx="16" fill="#fff" stroke="#00c2a8" stroke-width="7.5" /><rect x="105" y="58" width="52" height="44" rx="16" fill="#fff" stroke="#00c2a8" stroke-width="7.5" /><path d="M59 84 L69 76 L79 84 M121 84 L131 76 L141 84" fill="none" stroke="#7b2fbf" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M80 112 Q100 130 120 112" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" /></svg></div>
+    </div>
+    <div id="repasos-sin"><span>Sin rachas</span><span>Sin presión</span><span>Un repaso a la vez</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Ritmo: voz al 1.1×, y 1.6 s de pausa antes de salir de la escena
+    const H = (t) => t <= 0.2 ? t : (t < 8.3 ? 0.2 + (t - 0.2) / 1.1 : t - 8.3 + 9.073);
+    const T = H;
+    // Tiempos según la voz (la frase empieza a los 0.2 s de la escena)
+    tl.fromTo("#repasos-puntos", { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 1.0, ease: "power2.out" }, T(0));
+    tl.fromTo("#repasos-titulo span", { opacity: 0, y: 40, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.35, stagger: 0.09, ease: "back.out(2)" }, T(0.5));
+    // La cámara se acerca despacio todo el tiempo
+    tl.fromTo("#repasos-cam", { scale: 0.96 }, { scale: 1.04, duration: 8.2, ease: "none" }, T(0));
+    // Lo que se olvida si no se repasa
+    tl.fromTo("#repasos-sombra", { opacity: 0 }, { opacity: 0.6, duration: 0.6 }, T(2.2));
+    tl.fromTo("#repasos-eje", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4 }, T(2.6));
+    // La mascota recorre la memoria: cada repaso la sube otra vez
+    const INICIO = 0.9, DURA = 4.6;
+    tl.fromTo("#repasos-curva", { strokeDashoffset: 100 }, { strokeDashoffset: 0, duration: DURA / 1.1, ease: "none" }, T(INICIO));
+    const camino = document.querySelector("#repasos-medida"), largo = camino.getTotalLength(), jinete = document.querySelector("#repasos-jinete"), pr = { p: 0 };
+    const mover = () => { const pt = camino.getPointAtLength(largo * pr.p); gsap.set(jinete, { x: pt.x - 55, y: pt.y - 80 }); };
+    tl.fromTo(pr, { p: 0 }, { p: 1, duration: DURA / 1.1, ease: "none", onUpdate: mover, onStart: mover }, T(INICIO));
+    tl.fromTo(jinete, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(3)" }, T(INICIO));
+    // Cada marca aparece justo cuando la mascota llega
+    const cuando = (mx, my) => { for (let l = 0; l <= largo; l += 2) { const pt = camino.getPointAtLength(l); if (Math.abs(pt.x - mx) < 4 && Math.abs(pt.y - my) < 6) return INICIO + (l / largo) * DURA; } return INICIO + DURA; };
+    [["#repasos-m1", "#repasos-o1", 380, 330], ["#repasos-m2", "#repasos-o2", 760, 330], ["#repasos-m3", "#repasos-o3", 1240, 330], ["#repasos-m4", "#repasos-o4", 1700, 440]].forEach(([m, o, x, y]) => {
+      const t = cuando(x, y);
+      tl.fromTo(m, { xPercent: -50, opacity: 0, y: 30, scale: 0.6 }, { xPercent: -50, opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2.5)" }, T(t));
+      tl.fromTo(o, { scale: 0.5, opacity: 0.9 }, { scale: 3, opacity: 0, duration: 0.7, ease: "power2.out", immediateRender: false }, T(t));
+      tl.to("#repasos-jinete svg", { keyframes: [{ y: -26, scaleY: 1.08, duration: 0.14, ease: "power2.out" }, { y: 0, scaleY: 1, duration: 0.3, ease: "bounce.out" }] }, T(t));
+    });
+    tl.to("#repasos-sombra, #repasos-eje", { opacity: 0.18, duration: 0.6 }, T(4.2));
+    // «Sin rachas · sin presión · un repaso a la vez», cada uno cuando se dice
+    [4.1, 5.7, 6.9].forEach((t, i) => {
+      tl.fromTo("#repasos-sin span:nth-child(" + (i + 1) + ")", { opacity: 0, y: 40, scale: 0.7, rotation: (i % 2 ? 4 : -4) }, { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.5)" }, T(t));
+    });
+    tl.to("#repasos-jinete svg", { keyframes: [{ rotation: -10, duration: 0.12 }, { rotation: 10, duration: 0.12 }, { rotation: 0, duration: 0.2 }], transformOrigin: "50% 100%" }, T(7.0));
+    // Salida: todo se recoge en la mascota, que salta al festejo
+    tl.to("#repasos-titulo, #repasos-sin, #repasos-svg, .repasos-marca, #repasos-eje, #repasos-puntos", { opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power3.in" }, T(8.3));
+    tl.to(jinete, { scale: 4, opacity: 0, duration: 0.45, ease: "power3.in" }, T(8.3));
+    window.__timelines["repasos"] = tl;
+  </script>
+</template>

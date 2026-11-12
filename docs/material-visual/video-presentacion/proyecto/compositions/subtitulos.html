@@ -1,0 +1,32 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    .sub { position: absolute; left: 0; right: 0; bottom: 70px; display: flex; justify-content: center; }
+    .sub span { max-width: 1500px; padding: 14px 30px; border-radius: 16px; background: rgba(20,33,61,.86); color: #fff; font: 600 42px/1.3 Inter, sans-serif; text-align: center; }
+  </style>
+  <div id="root" data-composition-id="subtitulos" data-width="1920" data-height="1080">
+    <p id="sub-1" class="clip sub" data-start="0.4" data-duration="2.6"><span>¡Hola! Soy el Tutor de STIRE.</span></p>
+    <p id="sub-2" class="clip sub" data-start="3.0" data-duration="3.0"><span>Bueno… en realidad soy una pantalla con gafas,</span></p>
+    <p id="sub-3" class="clip sub" data-start="6.0" data-duration="2.9"><span>pero me tomo muy en serio lo de ayudarte.</span></p>
+    <p id="sub-4" class="clip sub" data-start="9.2" data-duration="3.2"><span>Aprender a programar asusta un poco al principio.</span></p>
+    <p id="sub-5" class="clip sub" data-start="12.4" data-duration="5.4"><span>A todos nos ha pasado: un error en rojo y cero idea de por dónde empezar.</span></p>
+    <p id="sub-6" class="clip sub" data-start="18.2" data-duration="2.0"><span>Por eso aquí vas a tu ritmo.</span></p>
+    <p id="sub-7" class="clip sub" data-start="20.2" data-duration="6.6"><span>Cada lección es cortita: una idea, un ejemplo y un espacio para probar el código ahí mismo.</span></p>
+    <p id="sub-8" class="clip sub" data-start="27.2" data-duration="3.4"><span>¿Te equivocaste? Tranquilo, no te voy a dar la respuesta.</span></p>
+    <p id="sub-9" class="clip sub" data-start="30.6" data-duration="5.0"><span>Primero una pista, luego una pregunta y, si hace falta, te digo dónde mirar.</span></p>
+    <p id="sub-10" class="clip sub" data-start="35.8" data-duration="4.0"><span>La solución la escribes tú… y se siente increíble.</span></p>
+    <p id="sub-11" class="clip sub" data-start="40.2" data-duration="3.8"><span>Lo que aprendes vuelve justo cuando lo empiezas a olvidar.</span></p>
+    <p id="sub-12" class="clip sub" data-start="44.0" data-duration="3.3"><span>Sin rachas, sin presión: un repaso a la vez.</span></p>
+    <p id="sub-13" class="clip sub" data-start="47.6" data-duration="3.7"><span>Y cuando por fin te sale… lo celebramos juntos.</span></p>
+    <p id="sub-14" class="clip sub" data-start="51.7" data-duration="4.7"><span>Tu profe también está ahí: ve lo que le cuesta a la clase</span></p>
+    <p id="sub-15" class="clip sub" data-start="56.4" data-duration="2.2"><span>y prepara repasos con su Asistente.</span></p>
+    <p id="sub-15b" class="clip sub" data-start="58.6" data-duration="2.2"><span>Pero las decisiones siempre son suyas.</span></p>
+    <p id="sub-16" class="clip sub" data-start="61.2" data-duration="4.1"><span>En el computador o en el celular. Gratis y en español.</span></p>
+    <p id="sub-17" class="clip sub" data-start="65.7" data-duration="2.9"><span>Entra con el código de tu clase.</span></p>
+    <p id="sub-18" class="clip sub" data-start="68.6" data-duration="3.2"><span>¡Aquí te espero!</span></p>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    window.__timelines["subtitulos"] = tl;
+  </script>
+</template>

@@ -1,0 +1,52 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #f7f9fc; font-family: Inter, sans-serif; color: #14213d; }
+    #docente-cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+    #docente-marco { position: absolute; left: 310px; top: 22px; width: 1300px; border-radius: 22px; overflow: hidden; background: #fff; box-shadow: 0 40px 90px rgba(20,33,61,.18); }
+    #docente-barra { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 18px; background: #eef3f9; }
+    #docente-barra span { width: 13px; height: 13px; border-radius: 50%; background: #cbd5e1; }
+    #docente-barra em { margin-left: 18px; font: 500 16px Inter, sans-serif; font-style: normal; color: #4a5873; }
+    #docente-img { display: block; width: 1300px; height: 993px; }
+    #docente-titulo { position: absolute; left: 120px; top: 110px; font: 700 96px/1.05 Poppins, sans-serif; letter-spacing: -0.02em; }
+    #docente-titulo span { display: inline-block; }
+    #docente-titulo em { font-style: normal; color: #a35f00; }
+    #docente-asist { position: absolute; left: 1290px; top: 80px; width: 490px; height: 900px; border-radius: 24px; overflow: hidden; background: #fff; box-shadow: 0 40px 90px rgba(20,33,61,.3); }
+    #docente-asist img { position: absolute; left: -952px; top: 0; width: 1440px; height: 1040px; }
+    #docente-anillo { position: absolute; left: 1400px; top: 738px; width: 106px; height: 58px; border-radius: 16px; border: 6px solid #ffc94d; }
+    #docente-decides { position: absolute; left: 420px; top: 60px; padding: 18px 30px; border-radius: 999px; background: #14213d; color: #fff; font: 700 42px Poppins, sans-serif; white-space: nowrap; }
+  </style>
+  <div id="root" data-composition-id="docente" data-width="1920" data-height="1080">
+    <div id="docente-cam">
+      <div id="docente-marco">
+        <div id="docente-barra"><span></span><span></span><span></span></div>
+        <img id="docente-img" src="assets/pantallas/D3-Clase.png" alt="El resumen de la clase que ve el docente" />
+      </div>
+    </div>
+    <h2 id="docente-titulo"><span>Y</span> <span>tu</span> <span><em>profe</em></span></h2>
+    <div id="docente-asist" data-layout-allow-overflow><img src="assets/pantallas/D3-Asistente.png" alt="El Asistente del docente propone un borrador" /></div>
+    <div id="docente-anillo"></div>
+    <div id="docente-decides">Siempre decide el profe</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Tiempos ajustados a la voz: T() lleva cada momento del diseño original a su palabra
+    const T0 = ((k) => (t) => { for (let i = 1; i < k.length; i++) if (t <= k[i][0]) { const [a, b] = k[i - 1], [c, d] = k[i]; return b + (t - a) * (d - b) / (c - a); } const [a, b] = k[k.length - 1]; return b + (t - a); })([[0, 0], [1.7, 2.2], [1.9, 2.5], [4.2, 4.2], [4.6, 4.6], [6.6, 7.1], [7.0, 7.7], [9.1, 9.5], [9.5, 9.9]]);
+    const R = (t) => H(t);
+    const T = (t) => H(T0(t));
+    const H = (t) => t <= 0.2 ? t : (t < 9.5 ? 0.2 + (t - 0.2) / 1.1 : t - 9.5 + 10.164);
+    
+    tl.fromTo("#docente-titulo span", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, stagger: 0.09 }, T(0.15));
+    tl.fromTo("#docente-cam", { x: 1500, filter: "blur(16px)", scale: 0.86 }, { x: 134, y: 150, filter: "blur(0px)", scale: 0.86, duration: 0.6, ease: "expo.out" }, T(0.1));
+    tl.to("#docente-titulo span", { opacity: 0, filter: "blur(8px)", duration: 0.18, stagger: 0.05 }, T(1.7));
+    // Punch-in: «Lo que le cuesta a la clase»
+    tl.to("#docente-cam", { scale: 1.9, x: -1491, y: -528, duration: 1.0, ease: "power2.inOut" }, T(1.9));
+    tl.to("#docente-cam", { scale: 0.8, x: 60, y: 110, filter: "blur(4px)", duration: 0.8, ease: "power2.inOut" }, T(4.2));
+    // El Asistente propone; el profe decide
+    tl.fromTo("#docente-asist", { x: 700, rotation: 4 }, { x: 0, rotation: 0, duration: 0.7, ease: "expo.out" }, T(4.6));
+    tl.fromTo("#docente-anillo", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, T(6.6));
+    tl.fromTo("#docente-decides", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, T(7.0));
+    // Sale encogiéndose hacia el celular
+    tl.to("#docente-cam, #docente-asist, #docente-anillo, #docente-decides", { scale: 0.5, opacity: 0, filter: "blur(10px)", transformOrigin: "50% 50%", duration: 0.35, ease: "power3.in" }, T(9.1));
+    window.__timelines["docente"] = tl;
+  </script>
+</template>
