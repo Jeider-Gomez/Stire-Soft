@@ -7,9 +7,9 @@
     ref="raiz"
     class="mascota-tutor"
     shape-rendering="geometricPrecision"
-    :viewBox="forma === 'completa' ? '22 36 156 130' : '24 38 152 104'"
+    :viewBox="forma === 'completa' ? '20 26 168 140' : '22 28 164 116'"
     :height="tamano"
-    :width="Math.round(tamano * (forma === 'completa' ? 156 / 130 : 152 / 104))"
+    :width="Math.round(tamano * (forma === 'completa' ? 168 / 140 : 164 / 116))"
     role="img"
     :aria-label="etiqueta ?? `Tutor: ${SIGNIFICADO[expresion]}`"
   >
@@ -17,12 +17,16 @@
          imagen y al desplazarla medio píxel se ve borrosa o pixelada (26/10). -->
     <g class="respiro" :class="{ respira: vivo && !quieta, 'respira-lento': expresion === 'durmiendo' }">
     <g :key="gestoClave" class="cuerpo" :class="gesto && !quieta ? `gesto-${gesto}` : ''">
-      <rect x="26" y="40" width="148" height="100" rx="18" class="m-marco" />
+      <!-- La pantalla turquesa de atrás y el borde blanco del logo definitivo (cuadro «Logo-final», v3). -->
+      <rect x="34" y="32" width="148" height="100" rx="18" class="m-fondo" stroke-width="3.5" paint-order="stroke" />
+      <rect x="26" y="40" width="148" height="100" rx="18" class="m-marco m-borde" stroke-width="3.5" paint-order="stroke" />
       <rect x="38" y="52" width="124" height="76" rx="10" class="m-pantalla" />
       <g v-if="!pequena" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path d="M46 70 L30 62" class="m-patilla" stroke-width="6.5" /><path d="M158 70 L174 62" class="m-patilla" stroke-width="6.5" />
         <path d="M46 70 L30 62" class="m-gafas" stroke-width="3.8" /><path d="M158 70 L174 62" class="m-gafas" stroke-width="3.8" />
         <path d="M95 73 Q100 66 105 73" class="m-gafas" stroke-width="6" />
+        <rect x="45.5" y="62.5" width="52" height="44" rx="16" class="m-gafas" stroke-width="4" />
+        <rect x="107.5" y="62.5" width="52" height="44" rx="16" class="m-gafas" stroke-width="4" />
       </g>
       <path v-if="pequena" d="M95 75 H105" class="m-gafas" stroke-width="9" />
       <rect x="43" y="58" width="52" height="44" rx="16" class="m-lente" :stroke-width="pequena ? 10 : 7.5" />
@@ -157,10 +161,12 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .mascota-tutor {
-  --m-marco: #7b2fbf; --m-pantalla: #082b6b; --m-gafas: #00c2a8; --m-patilla: #008f7c; --m-lente: #fff; --m-ojo: #7b2fbf; --m-boca: #fff;
+  --m-fondo: #00c2a8; --m-borde: #fff; --m-marco: #7b2fbf; --m-pantalla: #082b6b; --m-gafas: #00c2a8; --m-patilla: #008f7c; --m-lente: #fff; --m-ojo: #7b2fbf; --m-boca: #fff;
   display: block; overflow: visible; flex-shrink: 0;
 }
+.m-fondo { fill: var(--m-fondo); stroke: var(--m-borde); }
 .m-marco { fill: var(--m-marco); }
+.m-borde { stroke: var(--m-borde); }
 .m-pantalla { fill: var(--m-pantalla); }
 .m-gafas { stroke: var(--m-gafas); }
 .m-patilla { stroke: var(--m-patilla); }
@@ -171,7 +177,7 @@ onBeforeUnmount(() => {
 /* Alto contraste: pantalla negra, gafas amarillas y lentes blancas con ojos negros (más de 15:1); el marco toma el color
    del texto del tema, así se separa del fondo en claro (negro) y en oscuro (blanco). */
 :global(:root[data-contraste="alto"]) .mascota-tutor {
-  --m-marco: rgb(var(--c-base-texto-primario)); --m-pantalla: #000; --m-gafas: #ffd60a; --m-patilla: #ffd60a;
+  --m-fondo: #ffd60a; --m-marco: rgb(var(--c-base-texto-primario)); --m-pantalla: #000; --m-gafas: #ffd60a; --m-patilla: #ffd60a;
   --m-lente: #fff; --m-ojo: #000; --m-boca: #ffd60a;
 }
 .ojos { transform-box: fill-box; transform-origin: center; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }

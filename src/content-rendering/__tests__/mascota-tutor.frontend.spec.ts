@@ -107,8 +107,14 @@ describe('el logo es el mismo personaje y el nombre es STIRE', () => {
     const logo = leer('components', 'layout', 'Logo.vue');
     expect(logo).not.toMatch(/animation|setTimeout|pointermove|<TutorMascota/);
     expect(logo).toContain('shape-rendering="geometricPrecision"');
-    // con el nombre «stire_» del logo aprobado, en el encabezado, el acceso y la ayuda
-    expect(logo).toContain('st<span class="i">ı</span>re<span class="cursor" />');
+    // el logo definitivo de la v3 (cuadro «Logo-final»): la mascota con la pantalla turquesa detrás y el borde blanco,
+    // y el nombre «stıre» con la s de circuito, la t con gafas y la ı con el cerebro; los huecos son transparentes
+    expect(logo).toContain('<rect x="34" y="32" width="148" height="100" rx="18" class="l-fondo"');
+    expect(logo).toContain('d="M350,75 H175 L105,145 V255 L170,320 H320 L350,350 V385 L320,415 H65"');
+    expect(logo).toContain(':mask="`url(#${huecos})`"');
+    expect(logo).toContain('const huecos = `logo-huecos-${useId()}`');
+    expect(logo).toContain('--n-tinta: #102a4c; --n-turquesa: #14b3a4;');
+    expect(logo).toMatch(/:global\(:root\[data-tema="oscuro"\]\) \.logo-stire, \.logo-stire\.claro \{ --n-tinta: #fff; --n-turquesa: #2fd3c0; \}/);
     expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutLogo con-nombre />');
     expect(leer('layouts', 'auth.vue')).toContain('<LayoutLogo con-nombre />');
     expect(leer('pages', 'ayuda.vue')).toContain('<LayoutLogo con-nombre claro />');
@@ -124,6 +130,12 @@ describe('el logo es el mismo personaje y el nombre es STIRE', () => {
     expect(vue).toContain('<g class="respiro" :class="{ respira: vivo && !quieta');
     expect(vue).toContain('const pequena = computed(() => props.tamano < 32)');
     expect(vue).toContain('<g v-if="!pequena" fill="none"');
+  });
+  it('la mascota es la del logo definitivo: pantalla turquesa detrás y borde blanco, también en el Tutor', () => {
+    const vue = leer('components', 'tutor', 'Mascota.vue');
+    expect(vue).toContain('<rect x="34" y="32" width="148" height="100" rx="18" class="m-fondo" stroke-width="3.5" paint-order="stroke" />');
+    expect(vue).toContain('class="m-marco m-borde" stroke-width="3.5"');
+    expect(vue).toContain("'20 26 168 140' : '22 28 164 116'");
   });
   it('la pestaña usa el favicon nuevo y ningún texto visible dice «STIRE-Soft»', () => {
     const config = leer('nuxt.config.ts');
