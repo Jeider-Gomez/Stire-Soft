@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Navegación del docente</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC}
+a{color:#14213D}a:hover{color:#263349}
+</style>
+</helmet>
+<div style="width:1440px;height:2300px;box-sizing:border-box;padding:72px 80px;display:flex;flex-direction:column;gap:40px;background:#F7F9FC">
+
+<header style="display:flex;flex-direction:column;gap:12px;max-width:1000px">
+<p style="margin:0;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7B2FBF">Docente · mapa de navegación</p>
+<h1 style="margin:0;font-family:Poppins,sans-serif;font-size:44px;line-height:1.1;font-weight:700">De «manejar un barco» a un solo índice</h1>
+<p style="margin:0;font-size:17px;line-height:1.6;color:#4A5873">Hoy hay tres navegaciones a la vez (clases, pestañas de la clase y ventanas encima). Se pasa a una barra lateral con la clase elegida arriba, cinco secciones fijas y un camino principal para cada tarea. El Asistente vive al lado, como el Tutor del estudiante.</p>
+</header>
+
+<section style="display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px;align-items:start">
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px">
+<p style="margin:0 0 8px;font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#14213D">stire_</p>
+<div style="display:flex;align-items:center;height:44px;padding:0 12px;border-radius:12px;font-size:15px;font-weight:600">Inicio · todas las clases</div>
+<div style="margin:8px 0;padding:10px 12px;border:1px solid #CBD5E1;border-radius:12px;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:12px;color:#4A5873">Clase</span>
+<span style="font-size:15px;font-weight:600">Fundamentos · Grupo 1 ▾</span>
+</div>
+<sc-for list="{{secciones}}" as="s" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 12px;border-radius:12px;background:{{s.fondo}};font-size:15px;font-weight:600;color:{{s.color}}">{{s.nombre}}</div>
+</sc-for>
+<div style="margin-top:12px;padding-top:12px;border-top:1px solid #E3EAF3;display:flex;flex-direction:column;gap:4px">
+<p style="margin:0;font-size:12px;font-weight:600;color:#4A5873">FUERA DE LA CLASE</p>
+<p style="margin:0;font-size:14px;line-height:1.8;color:#4A5873">Biblioteca · Mensajes · Ayuda</p>
+</div>
+<div style="margin-top:12px;padding:12px;border-radius:12px;background:#F3EAFB;font-size:14px;color:#5B2192;font-weight:600">Asistente · panel al lado, Ctrl + .</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:8px">
+<h2 style="margin:0;font-size:18px;font-weight:600">Un camino por tarea</h2>
+<p style="margin:0;font-size:15px;line-height:1.6;color:#4A5873">Crear un ejercicio: solo desde Contenido (desaparece «Nuevo ejercicio» suelto). Ver cómo va el grupo: solo en Estudiantes y avance («Rendimiento» se une ahí). Revisar entregas: en «Por revisar», que lleva a la entrega.</p>
+</div>
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:8px">
+<h2 style="margin:0;font-size:18px;font-weight:600">Dos escenas con el mismo peso</h2>
+<p style="margin:0;font-size:15px;line-height:1.6;color:#4A5873"><strong style="color:#14213D">Preparar</strong> en el computador: armar el curso, escribir, crear ejercicios. <strong style="color:#14213D">Dictar</strong> proyectando o con el celular: asistencia, mostrar la lección (modo clase), ver quién se trabó.</p>
+</div>
+<div style="background:#F3EAFB;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:8px">
+<h2 style="margin:0;font-size:18px;font-weight:600;color:#5B2192">Todo es opcional</h2>
+<p style="margin:0;font-size:15px;line-height:1.6;color:#14213D">Logros, competencias, avisos y el Asistente se activan por clase. Las sugerencias de la IA siempre se pueden editar; nunca se imponen.</p>
+</div>
+</div>
+</section>
+
+<section style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+<sc-for list="{{pantallas}}" as="p" hint-placeholder-count="6">
+<article style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;gap:4px">
+<h2 style="margin:0;font-size:20px;font-weight:700">{{p.nombre}}</h2>
+<p style="margin:0;font-size:14px;line-height:1.5;color:#4A5873">{{p.meta}}</p>
+</div>
+<ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{p.items}}" as="i" hint-placeholder-count="5">
+<li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45">
+<span style="flex:none;min-width:74px;text-align:center;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:{{i.fondo}};color:{{i.color}}">{{i.tipo}}</span>
+<span>{{i.texto}}</span>
+</li>
+</sc-for>
+</ul>
+</article>
+</sc-for>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      existe: { tipo: 'Existe', fondo: '#EEF3F9', color: '#334155' },
+      mejora: { tipo: 'Mejora', fondo: '#D5F6F0', color: '#14213D' },
+      nuevo: { tipo: 'Nuevo', fondo: '#F3EAFB', color: '#5B2192' },
+      pliega: { tipo: 'Se une', fondo: '#E3F5F2', color: '#00695C' },
+      futuro: { tipo: 'Después', fondo: '#FDF1E3', color: '#8A3C04' }
+    };
+    const it = (t, texto) => ({ ...T[t], texto });
+    return {
+      secciones: [
+        { nombre: 'Resumen', fondo: '#F3EAFB', color: '#5B2192' },
+        { nombre: 'Contenido', fondo: '#FFFFFF', color: '#14213D' },
+        { nombre: 'Estudiantes y avance', fondo: '#FFFFFF', color: '#14213D' },
+        { nombre: 'Asistencia y notas', fondo: '#FFFFFF', color: '#14213D' },
+        { nombre: 'Ajustes', fondo: '#FFFFFF', color: '#14213D' }
+      ],
+      pantallas: [
+        { nombre: 'Inicio (todas las clases)', meta: '«¿Qué preparamos hoy?»: lo urgente de cada clase', items: [
+          it('existe', '«Por revisar»: quién no puede avanzar, el error más repetido, entregas y mensajes'),
+          it('mejora', 'El Asistente con un lugar fijo y la cara de STIRE, no un botón de texto'),
+          it('existe', 'Clases en tarjetas o lista, con crear clase'),
+          it('mejora', 'Menos denso: una tarjeta por clase con una sola cifra clave')
+        ] },
+        { nombre: 'Resumen de la clase', meta: 'Lo que conviene hacer ahora con este grupo', items: [
+          it('mejora', 'Asistencia del día, entregas por revisar y avisos en un solo lugar'),
+          it('nuevo', 'Modo clase: proyectar la lección en grande para dictar'),
+          it('nuevo', 'Alertas de errores repetidos en el grupo, con la lección para reforzar')
+        ] },
+        { nombre: 'Contenido del curso', meta: 'Tres columnas, como Notas o Mail: módulos · lecciones · editor', items: [
+          it('mejora', 'Editor visual en vez de Markdown crudo, con vista previa al lado'),
+          it('pliega', 'Crear ejercicios aquí mismo (los 8 tipos); sale «Nuevo ejercicio» suelto'),
+          it('mejora', 'Quitar las ventanas viejas (UnitLessonsModal) que quedan mezcladas'),
+          it('nuevo', 'Varias explicaciones por lección que se desbloquean'),
+          it('nuevo', 'Etiquetar ejercicios por competencia y nivel (P39), si se activan'),
+          it('existe', 'Ver como estudiante · duplicar · mover · reordenar')
+        ] },
+        { nombre: 'Estudiantes y avance', meta: 'Quién va bien, quién se trabó y por qué', items: [
+          it('pliega', '«Rendimiento» se une aquí: un solo lugar para el avance del grupo'),
+          it('existe', 'Mapa de calor del grupo y ficha de cada estudiante'),
+          it('mejora', 'Refuerzos y retos se asignan desde la ficha del estudiante'),
+          it('nuevo', 'La opinión de los estudiantes sobre cada lección («¿te sirvió?»)')
+        ] },
+        { nombre: 'Asistencia y notas', meta: 'Lo que se usa al dictar', items: [
+          it('mejora', 'Asistencia flotante que sigue escaneando al navegar (P32)'),
+          it('existe', 'QR, marcar a mano, historial y notas de la clase'),
+          it('existe', 'Entregas de talleres con archivo y nota')
+        ] },
+        { nombre: 'Ajustes de la clase · Asistente', meta: 'Lo opcional se decide aquí, por clase', items: [
+          it('existe', 'Solicitudes para entrar, portada, compartir, logros'),
+          it('nuevo', 'Activar competencias, avisos al estudiante y el Tutor por lección'),
+          it('mejora', 'Asistente: ficha guiada por partes y crear la clase desde cero (P40)'),
+          it('futuro', 'Asistente que analiza la clase y propone refuerzos por su cuenta')
+        ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

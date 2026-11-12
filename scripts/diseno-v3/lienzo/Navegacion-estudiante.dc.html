@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Navegación del estudiante</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC}
+a{color:#14213D}a:hover{color:#263349}
+</style>
+</helmet>
+<div style="width:1440px;height:2300px;box-sizing:border-box;padding:72px 80px;display:flex;flex-direction:column;gap:40px;background:#F7F9FC">
+
+<header style="display:flex;flex-direction:column;gap:12px;max-width:1000px">
+<p style="margin:0;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#009985">Estudiante · mapa de navegación</p>
+<h1 style="margin:0;font-family:Poppins,sans-serif;font-size:44px;line-height:1.1;font-weight:700">Cuatro lugares y el Tutor siempre a la mano</h1>
+<p style="margin:0;font-size:17px;line-height:1.6;color:#4A5873">Hoy el menú tiene seis entradas más el plan del curso abierto. Se reduce a cuatro destinos (Inicio, Aprender, Repasos y Progreso); lo que se usa menos va en «Más». En el celular, esos cuatro van en una barra abajo, al alcance del pulgar.</p>
+</header>
+
+<section style="display:flex;gap:16px;flex-wrap:wrap" aria-label="Leyenda">
+<sc-for list="{{leyenda}}" as="l" hint-placeholder-count="5">
+<span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:6px 14px;border-radius:999px;background:{{l.fondo}};color:{{l.texto}}">{{l.nombre}} <span style="font-weight:400">· {{l.que}}</span></span>
+</sc-for>
+</section>
+
+<section style="display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px;align-items:start">
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px">
+<p style="margin:0 0 8px;font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#14213D">stire_</p>
+<sc-for list="{{menu}}" as="m" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 12px;border-radius:12px;background:{{m.fondo}};font-size:15px;font-weight:600;color:{{m.color}}">{{m.nombre}}<span style="font-size:12px;font-weight:500;color:#4A5873">{{m.extra}}</span></div>
+</sc-for>
+<div style="margin-top:12px;padding-top:12px;border-top:1px solid #E3EAF3;display:flex;flex-direction:column;gap:4px">
+<p style="margin:0;font-size:12px;font-weight:600;color:#4A5873">MÁS</p>
+<p style="margin:0;font-size:14px;line-height:1.8;color:#4A5873">Mis clases · Logros · Proyectos · Entregas · Asistencia · Mensajes</p>
+</div>
+<div style="margin-top:12px;padding:12px;border-radius:12px;background:#F3EAFB;font-size:14px;color:#5B2192;font-weight:600">Tutor · Ctrl + . o el botón con la mascota</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:8px">
+<h2 style="margin:0;font-size:18px;font-weight:600">Arriba, en todas las pantallas</h2>
+<p style="margin:0;font-size:15px;line-height:1.6;color:#4A5873">Buscar una lección (Ctrl + K) · Notificaciones con su nombre al pasar el cursor · Ayuda («?» con el recorrido y el manual) · Apariencia · Mi cuenta (perfil, clave del Tutor, avisos que quiero recibir).</p>
+</div>
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:8px">
+<h2 style="margin:0;font-size:18px;font-weight:600">En el celular</h2>
+<p style="margin:0;font-size:15px;line-height:1.6;color:#4A5873">Barra de abajo con Inicio, Aprender, Repasos y Progreso. «Más» y la cuenta van en el avatar. El Tutor sube como una hoja desde abajo y nunca tapa «Continuar» ni «Entregar».</p>
+</div>
+<div style="background:#D5F6F0;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:8px">
+<h2 style="margin:0;font-size:18px;font-weight:600;color:#14213D">Por qué</h2>
+<p style="margin:0;font-size:15px;line-height:1.6;color:#14213D">Ítem 6 de la evaluación (Pedro): «encontré rápido los repasos y la siguiente lección», pero el orden de la información no se anticipaba. Ítem 5: la campana sin texto, la medalla antes de tiempo y el Tutor tapando «Continuar».</p>
+</div>
+</div>
+</section>
+
+<section style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+<sc-for list="{{pantallas}}" as="p" hint-placeholder-count="6">
+<article style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;gap:4px">
+<h2 style="margin:0;font-size:20px;font-weight:700">{{p.nombre}}</h2>
+<p style="margin:0;font-size:14px;line-height:1.5;color:#4A5873">{{p.meta}}</p>
+</div>
+<ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{p.items}}" as="i" hint-placeholder-count="5">
+<li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45">
+<span style="flex:none;min-width:74px;text-align:center;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:{{i.fondo}};color:{{i.color}}">{{i.tipo}}</span>
+<span>{{i.texto}}</span>
+</li>
+</sc-for>
+</ul>
+</article>
+</sc-for>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      existe: { tipo: 'Existe', fondo: '#EEF3F9', color: '#334155' },
+      mejora: { tipo: 'Mejora', fondo: '#D5F6F0', color: '#14213D' },
+      nuevo: { tipo: 'Nuevo', fondo: '#F3EAFB', color: '#5B2192' },
+      pliega: { tipo: 'Se pliega', fondo: '#E3F5F2', color: '#00695C' },
+      futuro: { tipo: 'Después', fondo: '#FDF1E3', color: '#8A3C04' }
+    };
+    const it = (t, texto) => ({ ...T[t], texto });
+    return {
+      leyenda: [
+        { nombre: 'Existe', que: 'se queda como está', fondo: '#EEF3F9', texto: '#334155' },
+        { nombre: 'Mejora', que: 'existe y se rediseña', fondo: '#D5F6F0', texto: '#14213D' },
+        { nombre: 'Nuevo', que: 'falta construirlo', fondo: '#F3EAFB', texto: '#5B2192' },
+        { nombre: 'Se pliega', que: 'sigue, pero no a la vista', fondo: '#E3F5F2', texto: '#00695C' },
+        { nombre: 'Después', que: 'investigación, no entra a la v3', fondo: '#FDF1E3', texto: '#8A3C04' }
+      ],
+      menu: [
+        { nombre: 'Inicio', extra: '', fondo: '#D5F6F0', color: '#14213D' },
+        { nombre: 'Aprender', extra: 'plan del curso', fondo: '#FFFFFF', color: '#14213D' },
+        { nombre: 'Repasos', extra: '11 hoy', fondo: '#FFFFFF', color: '#14213D' },
+        { nombre: 'Progreso', extra: '', fondo: '#FFFFFF', color: '#14213D' }
+      ],
+      pantallas: [
+        { nombre: 'Inicio', meta: 'Una sola pregunta: ¿qué hago ahora?', items: [
+          it('mejora', 'Una acción principal grande: «Continuar: Operadores y expresiones»'),
+          it('mejora', 'Repasos de hoy en azul, no en rojo ni ámbar'),
+          it('nuevo', 'Saludo del Tutor una vez al día, útil y que se puede apagar (P07)'),
+          it('existe', 'Avisos del docente: el último a la vista, los demás en «Ver todos»'),
+          it('pliega', 'Racha, logros y encuesta pasan a Progreso; «¿Por qué veo esto?» queda en un enlace'),
+          it('nuevo', 'Algo para explorar: «Prueba un reto» o una lección que aún no abres (ítem 17)')
+        ] },
+        { nombre: 'Aprender · el plan del curso', meta: 'Dónde estoy y qué sigue, sin abrir todo el árbol', items: [
+          it('mejora', 'Módulos como tarjetas con su avance; se abre uno a la vez'),
+          it('existe', 'Ir a cualquier lección con Ctrl + K'),
+          it('nuevo', 'Competencias del módulo a la vista, si el docente las activa (P39)'),
+          it('pliega', 'El plan deja de estar siempre abierto en la barra lateral')
+        ] },
+        { nombre: 'Lección', meta: 'La pantalla más cargada: idea → ejemplo → pruébalo → practica', items: [
+          it('mejora', 'Orden fijo: la idea, un ejemplo paso a paso, pruébalo y practica (ítem 6)'),
+          it('nuevo', 'Elegir cómo verlo: texto, diagrama, paso a paso o video (P45)'),
+          it('nuevo', 'Código que se ejecuta dentro de la lección (P50)'),
+          it('mejora', 'Palabras técnicas con su explicación donde aparecen: pseudocódigo, pruebas de escritorio… (ítem 4)'),
+          it('existe', '«No me quedó claro» con la explicación alternativa · Escuchar'),
+          it('mejora', 'El Tutor en un panel al lado, no en un botón flotante')
+        ] },
+        { nombre: 'Ejercicio', meta: 'Enunciado · editor · salida, y la escalera de ejercicios', items: [
+          it('nuevo', 'Escalera por lección: ejemplo resuelto → completar → ordenar → escribir (P14, P35)'),
+          it('nuevo', 'Tocar una palabra del código (const, Number) y ver qué es (P37)'),
+          it('nuevo', '«Te falta este concepto»: un enlace a su explicación en vez de la respuesta (P36)'),
+          it('existe', 'Salida bajo el editor, casos con nombre, pista de qué revisar al fallar'),
+          it('nuevo', 'Ejercicios de función: la firma viene dada (P57)'),
+          it('futuro', 'Bloques antes del código (P31) y ejercicios elegidos por perfil (P15)')
+        ] },
+        { nombre: 'Repasos', meta: 'La repetición espaciada del día, sin presión', items: [
+          it('mejora', 'Color amable y un contador simple: «Te quedan 3»'),
+          it('existe', 'Repasar justo cuando empiezas a olvidar'),
+          it('mejora', 'Al terminar, una frase y el siguiente paso, no una tabla')
+        ] },
+        { nombre: 'Progreso', meta: 'Una frase y una acción arriba; lo demás plegado (ítem 25)', items: [
+          it('mejora', 'Arriba: «Vas en el 40 % del módulo 1. Te conviene repasar Variables»'),
+          it('pliega', 'Perfil de aprendizaje, calibración y autorregulación en secciones plegables'),
+          it('mejora', 'Logros y racha llegan aquí; al ganar uno, aviso en el momento (se puede apagar)'),
+          it('nuevo', '«Mis competencias», si el docente las activa (P39)')
+        ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

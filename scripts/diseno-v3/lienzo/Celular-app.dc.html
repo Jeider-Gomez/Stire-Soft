@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Celular · app instalada</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC} a{color:#14213D}
+@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes respira{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes parpadea{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes pulso{0%{box-shadow:0 0 0 0 rgba(20,33,61,.45)}70%{box-shadow:0 0 0 14px rgba(20,33,61,0)}100%{box-shadow:0 0 0 0 rgba(20,33,61,0)}}
+@keyframes llena{from{width:0}}
+@keyframes anillo{from{stroke-dashoffset:302}}
+@keyframes llama{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.08) rotate(2deg)}}
+@keyframes brillo{0%{transform:translateX(-120%) skewX(-20deg)}60%,100%{transform:translateX(220%) skewX(-20deg)}}
+@keyframes chispa{0%{opacity:0;transform:scale(.2)}40%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.6) translateY(-14px)}}
+@keyframes toast{0%{opacity:0;transform:translateY(24px) scale(.96)}12%,88%{opacity:1;transform:none}100%{opacity:1;transform:none}}
+.entra{animation:entra .5s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}.d5{animation-delay:.40s}
+.vivo{animation:respira 3.2s ease-in-out infinite}
+.vivo .ojo{transform-box:fill-box;transform-origin:center;animation:parpadea 4.5s infinite}
+.pulso{animation:pulso 2s infinite}
+.barra-llena{animation:llena 1.1s cubic-bezier(.2,.8,.2,1) both .3s}
+.anillo{animation:anillo 1.4s cubic-bezier(.2,.8,.2,1) both .3s}
+.llama{transform-origin:50% 90%;animation:llama 1.6s ease-in-out infinite}
+.medalla{position:relative;overflow:hidden}
+.medalla::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:brillo 2.8s ease-in-out infinite 1s}
+.chispa{animation:chispa 1.8s ease-out infinite}
+.toast{animation:toast 6s ease-out both 1.2s}
+.alza{transition:transform .2s ease,box-shadow .2s ease}.alza:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.10)}
+
+@keyframes mirar{0%,18%{transform:translate(0,0)}22%,38%{transform:translate(-4px,-1px)}42%,58%{transform:translate(4px,-1px)}62%,100%{transform:translate(0,0)}}
+@keyframes ladea{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-6deg)}86%{transform:rotate(4deg)}}
+@keyframes saluda{0%{transform:translateY(0) scale(1)}20%{transform:translateY(-14px) scale(1.04)}40%{transform:translateY(0) scale(.98,1.02)}55%{transform:translateY(-6px)}70%,100%{transform:translateY(0)}}
+@keyframes puntos{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@keyframes ocultar{to{opacity:0;width:0;padding:0;margin:0}}
+@keyframes aparece{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes confeti{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+@keyframes sube{from{transform:scale(.6);opacity:0}60%{transform:scale(1.12);opacity:1}to{transform:scale(1)}}
+@keyframes medidor{from{stroke-dashoffset:283}}
+.tutor-vivo{display:inline-flex;animation:saluda 1.2s cubic-bezier(.3,1.5,.5,1) both .2s}
+.tutor-vivo svg{animation:respira 3.2s ease-in-out infinite 1.4s}
+.tutor-vivo .cabeza{transform-box:fill-box;transform-origin:50% 100%;animation:ladea 7s ease-in-out infinite 2s}
+.tutor-vivo .ojos{animation:mirar 6s ease-in-out infinite 2.5s}
+.tutor-vivo .ojo{transform-box:fill-box;transform-origin:center;animation:parpadea 4.2s infinite}
+.escribiendo{display:inline-flex;gap:4px;align-items:center;animation:ocultar .01s forwards 1.6s}
+.escribiendo i{width:7px;height:7px;border-radius:99px;background:#94A3B8;animation:puntos 1s infinite}
+.escribiendo i:nth-child(2){animation-delay:.15s}.escribiendo i:nth-child(3){animation-delay:.3s}
+.mensaje{opacity:0;animation:aparece .4s ease-out forwards 1.65s}
+.confeti{position:absolute;width:10px;height:14px;border-radius:2px;animation:confeti 1.8s cubic-bezier(.2,.7,.3,1) infinite}
+.sube{animation:sube .7s cubic-bezier(.3,1.5,.5,1) both .3s}
+.medidor{animation:medidor 1.6s cubic-bezier(.2,.8,.2,1) both .3s}
+
+/* WCAG 2.2.2: ninguna animación automática dura más de 5 s */
+.vivo,.tutor-vivo svg{animation-iteration-count:1}
+.vivo .ojo,.tutor-vivo .ojo{animation-iteration-count:1}
+.tutor-vivo .cabeza{animation-duration:2.4s;animation-iteration-count:1;animation-delay:1.6s}
+.tutor-vivo .ojos{animation-duration:2.4s;animation-iteration-count:1;animation-delay:2.2s}
+.pulso{animation-iteration-count:2}
+.llama{animation-iteration-count:3}
+.medalla::after{animation-iteration-count:1}
+.chispa,.confeti{animation-iteration-count:2}
+.escribiendo i{animation-iteration-count:2}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width:1440px;height:1500px;box-sizing:border-box;display:flex;flex-direction:column;background:#F7F9FC;overflow:hidden">
+<div style="padding:48px 56px;display:flex;flex-direction:column;gap:24px">
+<div><h1 style="margin:0;font-family:Poppins,sans-serif;font-size:34px;font-weight:700">STIRE como app en el celular</h1>
+<p style="margin:6px 0 0;font-size:16px;color:#4A5873;max-width:1000px;line-height:1.55">Se descarga desde el navegador y queda como acceso directo, como una app (se llama PWA). No cuesta nada y no pasa por la tienda.</p>
+<div style="margin-top:8px;display:flex;gap:8px"><span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:#FFF1C2;color:#7A4B00;border:1px solid #E9C46A;white-space:nowrap" title="Que se descargue del navegador y quede como acceso rápido">▲ Jeider, 06/11</span><span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:#FFF1C2;color:#7A4B00;border:1px solid #E9C46A;white-space:nowrap" title="Cero cobros">▲ PRODUCT.md</span></div></div>
+<div style="display:flex;gap:40px;justify-content:center"><figure style="margin:0;display:flex;flex-direction:column;align-items:center;gap:12px"><div style="position:relative;width:360px;height:760px;flex:none;border-radius:44px;background:#0F172A;padding:12px;box-shadow:0 24px 50px rgba(15,23,42,.25)">
+<div style="position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:#fff;display:flex;flex-direction:column">
+<div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600;color:#14213D"><span>7:24</span><span style="width:90px;height:22px;border-radius:99px;background:#0F172A"></span><span>●●● 82 %</span></div>
+<div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;position:relative;background:#F7F9FC"><div style="height:9px;width:300px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div><div style="height:9px;width:260px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div><div style="height:9px;width:220px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div><div style="height:9px;width:300px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div><div style="height:9px;width:260px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div><div style="height:9px;width:220px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div><div style="height:9px;width:300px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div><div style="height:9px;width:260px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div><div style="height:9px;width:220px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div><div style="height:9px;width:300px;border-radius:5px;background:#EEF3F9;margin:0 0 10px"></div>
+<div class="entra d4" style="position:absolute;left:10px;right:10px;bottom:14px;padding:16px;border-radius:20px;background:#fff;box-shadow:0 18px 40px rgba(15,23,42,.22);display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:12px"><span role="img" aria-label="STIRE" style="display:inline-flex;align-items:center;gap:14px"><svg viewBox="0 4 64 58" width="51" height="46" aria-hidden="true"><rect x="1" y="3" width="62" height="58" rx="14" fill="#7b2fbf"/><rect x="3.5" y="5.5" width="57" height="53" rx="12" fill="#082b6b"/><g transform="translate(32 33.5) scale(1.1) translate(-32 -28)"><g fill="none" stroke-linecap="round"><path d="M10.5 17 L5.5 14.5 M53.5 17 L58.5 14.5" stroke="#00c2a8" stroke-width="3"/><path d="M29.5 18 H34.5" stroke="#00c2a8" stroke-width="3.5"/></g><rect x="10.5" y="11" width="19" height="19" rx="6" fill="#fff" stroke="#00c2a8" stroke-width="3.5"/><rect x="34.5" y="11" width="19" height="19" rx="6" fill="#fff" stroke="#00c2a8" stroke-width="3.5"/><path d="M22 16.5 L18 20.5 L22 24.5 M42 16.5 L46 20.5 L42 24.5" fill="none" stroke="#7b2fbf" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 37.5 Q32 44.5 40 37.5" fill="none" stroke="#fff" stroke-width="4.2" stroke-linecap="round"/></g></svg></span><div><p style="margin:0;font-size:16px;font-weight:700">Instala STIRE en tu celular</p><p style="margin:2px 0 0;font-size:13px;color:#4A5873">Se abre como una app, sin el navegador.</p></div></div>
+<p style="margin:0;font-size:13px;line-height:1.5;color:#4A5873">No ocupa casi espacio y no pasa por la tienda. Puedes quitarla cuando quieras.</p>
+<div style="display:flex;gap:8px"><span style="flex:1;height:44px;border-radius:12px;background:#14213D;color:#fff;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center">Instalar</span><span style="flex:1;height:44px;border-radius:12px;border:1px solid #CBD5E1;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center">Ahora no</span></div></div></div></div></div><figcaption style="font-size:14px;font-weight:700;max-width:340px;text-align:center">1 · STIRE ofrece instalarse una sola vez, sin insistir</figcaption></figure><figure style="margin:0;display:flex;flex-direction:column;align-items:center;gap:12px"><div style="position:relative;width:360px;height:760px;flex:none;border-radius:44px;background:#0F172A;padding:12px;box-shadow:0 24px 50px rgba(15,23,42,.25)">
+<div style="position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:#1E3A8A;display:flex;flex-direction:column">
+<div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600;color:#fff"><span>7:24</span><span style="width:90px;height:22px;border-radius:99px;background:#0F172A"></span><span>●●● 82 %</span></div>
+<div style="flex:1;padding:28px 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:22px 10px;align-content:start;background:linear-gradient(160deg,#1E3A8A,#0E5B78)"><span style="display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px"><span style="width:60px;height:60px;border-radius:16px;background:#22C55E"></span>Teléfono</span><span style="display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px"><span style="width:60px;height:60px;border-radius:16px;background:#3B82F6"></span>Mensajes</span><span style="display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px"><span style="width:60px;height:60px;border-radius:16px;background:#F59E0B"></span>Fotos</span><span style="display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px"><span style="width:60px;height:60px;border-radius:16px;background:#EF4444"></span>Cámara</span><span style="display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px"><span style="width:60px;height:60px;border-radius:16px;background:#8B5CF6"></span>Correo</span><span style="display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px"><span style="width:60px;height:60px;border-radius:16px;background:#0EA5E9"></span>Clima</span><span style="display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px"><span style="width:60px;height:60px;border-radius:16px;background:#64748B"></span>Ajustes</span><span style="display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px;font-weight:700"><span class="sube" style="width:60px;height:60px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center"><span role="img" aria-label="STIRE" style="display:inline-flex;align-items:center;gap:13px"><svg viewBox="0 4 64 58" width="49" height="44" aria-hidden="true"><rect x="1" y="3" width="62" height="58" rx="14" fill="#7b2fbf"/><rect x="3.5" y="5.5" width="57" height="53" rx="12" fill="#082b6b"/><g transform="translate(32 33.5) scale(1.1) translate(-32 -28)"><g fill="none" stroke-linecap="round"><path d="M10.5 17 L5.5 14.5 M53.5 17 L58.5 14.5" stroke="#00c2a8" stroke-width="3"/><path d="M29.5 18 H34.5" stroke="#00c2a8" stroke-width="3.5"/></g><rect x="10.5" y="11" width="19" height="19" rx="6" fill="#fff" stroke="#00c2a8" stroke-width="3.5"/><rect x="34.5" y="11" width="19" height="19" rx="6" fill="#fff" stroke="#00c2a8" stroke-width="3.5"/><path d="M22 16.5 L18 20.5 L22 24.5 M42 16.5 L46 20.5 L42 24.5" fill="none" stroke="#7b2fbf" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 37.5 Q32 44.5 40 37.5" fill="none" stroke="#fff" stroke-width="4.2" stroke-linecap="round"/></g></svg></span></span>STIRE</span></div></div></div><figcaption style="font-size:14px;font-weight:700;max-width:340px;text-align:center">2 · Queda en la pantalla de inicio con el logo</figcaption></figure><figure style="margin:0;display:flex;flex-direction:column;align-items:center;gap:12px"><div style="position:relative;width:360px;height:760px;flex:none;border-radius:44px;background:#0F172A;padding:12px;box-shadow:0 24px 50px rgba(15,23,42,.25)">
+<div style="position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:#F7F9FC;display:flex;flex-direction:column">
+<div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600;color:#fff"><span>7:24</span><span style="width:90px;height:22px;border-radius:99px;background:#0F172A"></span><span>●●● 82 %</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#F7F9FC"><span class="tutor-vivo"><svg viewBox="24 38 152 104" width="161" height="110" role="img" aria-label="Tutor"><g class="cabeza"><rect x="26" y="40" width="148" height="100" rx="18" fill="#7b2fbf"/><rect x="38" y="52" width="124" height="76" rx="10" fill="#082b6b"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M46 70 L30 62 M158 70 L174 62" stroke="#008f7c" stroke-width="6.5"/><path d="M46 70 L30 62 M158 70 L174 62" stroke="#00c2a8" stroke-width="3.8"/><path d="M95 73 Q100 66 105 73" stroke="#00c2a8" stroke-width="6"/></g><rect x="43" y="58" width="52" height="44" rx="16" fill="#fff" stroke="#00c2a8" stroke-width="7.5"/><rect x="105" y="58" width="52" height="44" rx="16" fill="#fff" stroke="#00c2a8" stroke-width="7.5"/><g class="ojos"><path class="ojo" d="M59 84 L69 76 L79 84" fill="none" stroke="#7b2fbf" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><path class="ojo" d="M121 84 L131 76 L141 84" fill="none" stroke="#7b2fbf" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M80 112 Q100 130 120 112" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/></g></svg></span>
+<span style="font-family:Poppins,sans-serif;font-size:32px;font-weight:700;color:#14213D">st<span style="color:#00A892">ı</span>re</span><span style="font-size:14px;color:#4A5873">Abriendo tus próximos pasos…</span></div></div></div><figcaption style="font-size:14px;font-weight:700;max-width:340px;text-align:center">3 · Abre con la mascota, como una app</figcaption></figure></div>
+<section style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;"><div style="display:flex;align-items:center;gap:8px"><h2 style="margin:0;font-size:18px;font-weight:700">Reglas</h2></div><p style="margin:0;font-size:15px;line-height:1.5">1. Se instala desde el navegador (Chrome, Edge o Safari: «Agregar a inicio»); no hay tienda ni costo.</p><p style="margin:0;font-size:15px;line-height:1.5">2. El aviso para instalar sale una vez, después de usar STIRE un rato, y no vuelve si dices «Ahora no».</p><p style="margin:0;font-size:15px;line-height:1.5">3. Abre en pantalla completa, sin la barra del navegador: gana espacio en el celular.</p><p style="margin:0;font-size:15px;line-height:1.5">4. Sin conexión abre lo último que viste y guarda tu código hasta que vuelva la señal.</p><p style="margin:0;font-size:15px;line-height:1.5">5. El ícono es el logo con doble borde (P42); el color de la barra es el azul de STIRE.</p></section>
+<aside aria-label="Así se construye" style="flex:none;box-sizing:border-box;padding:18px 32px;background:#FFF8E6;border-top:2px dashed #E0B44C;display:grid;grid-template-columns:260px 1fr 1fr;gap:28px;font-size:13px;line-height:1.5;color:#14213D">
+<div><p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:.06em;color:#8A5A00">ASÍ SE CONSTRUYE</p><code style="font-family:'JetBrains Mono',monospace;font-size:13px">frontend-nuxt: manifiesto y service worker</code></div>
+<div><p style="margin:0 0 4px;font-weight:700">Se reutiliza de la app actual</p><ul style="margin:0;padding-left:18px"><li>Íconos que ya existen: icono-192.png, apple-touch-icon.png</li><li>AvisoSinConexion y el guardado del borrador del código</li><li>Vercel sirve el sitio (gratis)</li></ul></div>
+<div><p style="margin:0 0 4px;font-weight:700">Nuevo o cambia</p><ul style="margin:0;padding-left:18px"><li>Manifiesto de la app (nombre, colores, íconos de 192 y 512 px)</li><li>Service worker para abrir sin conexión</li><li>Aviso «Instala STIRE» una sola vez</li></ul></div>
+</aside></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

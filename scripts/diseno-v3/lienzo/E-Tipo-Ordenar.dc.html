@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Estudiante · Ejercicio · Ordenar pasos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC} a{color:#14213D}
+@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes llena{from{transform:scaleX(0)}}
+@keyframes respira{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes saluda{0%{transform:translateY(0)}20%{transform:translateY(-16px) scale(1.05)}40%{transform:translateY(0) scale(.97,1.03)}55%{transform:translateY(-6px)}70%,100%{transform:translateY(0)}}
+@keyframes brillo{0%{transform:translateX(-120%) skewX(-20deg)}60%,100%{transform:translateX(260%) skewX(-20deg)}}
+@keyframes confeti{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+@keyframes sube{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+@keyframes anillo{from{stroke-dashoffset:var(--total)}}
+@keyframes pulso{0%{box-shadow:0 0 0 0 rgba(0,194,168,.55)}70%{box-shadow:0 0 0 14px rgba(0,194,168,0)}100%{box-shadow:0 0 0 0 rgba(0,194,168,0)}}
+@keyframes crece{from{transform:scaleY(0)}}
+@keyframes dibuja{from{stroke-dashoffset:100}}
+@keyframes aparece{from{opacity:0}}
+.crece{transform-origin:bottom;animation:crece .7s cubic-bezier(.23,1,.32,1) both}
+.dibuja{stroke-dasharray:100;animation:dibuja 1.4s cubic-bezier(.23,1,.32,1) both .3s}
+.aparece{animation:aparece .8s ease both .9s}
+@keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.entra{animation:entra .45s cubic-bezier(.23,1,.32,1) both}
+.boton{transition:transform .16s cubic-bezier(.23,1,.32,1),box-shadow .2s ease}.boton:active{transform:scale(.97)}
+.llena{transform-origin:left;animation:llena .9s cubic-bezier(.23,1,.32,1) both .3s}
+.vivo{display:inline-flex;animation:saluda 1.2s cubic-bezier(.3,1.5,.5,1) both .2s,respira 3.6s ease-in-out 1.4s infinite}@keyframes ojo-parpadea{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}@keyframes ojos-mirar{0%,18%{transform:translate(0,0)}22%,38%{transform:translate(-4px,-1px)}42%,58%{transform:translate(4px,-1px)}62%,100%{transform:translate(0,0)}}@keyframes cabeza-ladea{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-5deg)}86%{transform:rotate(3deg)}}.vivo .cabeza{transform-box:fill-box;transform-origin:50% 100%;animation:cabeza-ladea 8s ease-in-out 2s infinite}.vivo .ojos{animation:ojos-mirar 7s ease-in-out 2.5s infinite}.vivo .ojo{transform-box:fill-box;transform-origin:center;animation:ojo-parpadea 4.2s infinite}
+.flota{animation:flota 2.4s ease-in-out .6s 2}
+@media (hover:hover) and (pointer:fine){.alza{transition:transform .2s cubic-bezier(.23,1,.32,1),box-shadow .2s ease}.alza:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(20,33,61,.10)}a.fila{transition:background-color .15s ease}a.fila:hover{background-color:#EEF3F9}.boton:hover{box-shadow:0 6px 16px rgba(20,33,61,.18)}}
+a.fila:active{transform:scale(.99)}
+.medalla{position:relative;overflow:hidden}.medalla::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);animation:brillo 2.6s ease-in-out .9s 1}
+.confeti{position:absolute;width:10px;height:14px;border-radius:2px;animation:confeti 1.9s cubic-bezier(.2,.7,.3,1) .3s 2 both}
+.sube{animation:sube .7s cubic-bezier(.3,1.5,.5,1) both .4s}
+.anillo{animation:anillo 1.5s cubic-bezier(.2,.8,.2,1) both .3s}
+.pulso{animation:pulso 2s 3}
+.pulso{animation:pulso 2.4s ease-out infinite}
+@keyframes desliza{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@keyframes baja{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes deriva{0%{transform:translate(0,0) scale(1)}50%{transform:translate(3%,4%) scale(1.08)}100%{transform:translate(-2%,1%) scale(1.02)}}
+@keyframes destello{0%{transform:translateX(-130%) skewX(-20deg)}100%{transform:translateX(330%) skewX(-20deg)}}
+@keyframes parpadea{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes gira{to{transform:rotate(360deg)}}
+@keyframes corre{to{background-position:200% 0}}
+@keyframes meneo{0%,100%{transform:rotate(0)}30%{transform:rotate(-10deg) scale(1.1)}60%{transform:rotate(6deg) scale(1.05)}}
+.menu-i{animation:desliza .5s cubic-bezier(.23,1,.32,1) both;transition:background-color .2s ease,transform .2s cubic-bezier(.23,1,.32,1)}
+.menu-i:nth-of-type(2){animation-delay:.04s}.menu-i:nth-of-type(3){animation-delay:.08s}.menu-i:nth-of-type(4){animation-delay:.12s}.menu-i:nth-of-type(5){animation-delay:.16s}.menu-i:nth-of-type(6){animation-delay:.2s}.menu-i:nth-of-type(7){animation-delay:.24s}.menu-i:nth-of-type(8){animation-delay:.28s}.menu-i:nth-of-type(9){animation-delay:.32s}.menu-i:nth-of-type(10){animation-delay:.36s}
+.ico{transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+.menu-i[aria-current] .ico{animation:meneo .7s ease .5s 1;box-shadow:0 6px 14px rgba(20,33,61,.18)}
+.barra-arco{position:relative;animation:baja .45s cubic-bezier(.23,1,.32,1) both}
+.barra-arco::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,#00C2A8,#5CCBFF,#FFC94D,#FF8FA3,#00C2A8);background-size:200% 100%;animation:corre 8s linear infinite;pointer-events:none}
+.avatar-arco{border:3px solid transparent;background:linear-gradient(#D5F6F0,#D5F6F0) padding-box,conic-gradient(#00C2A8,#5CCBFF,#FFC94D,#FF8FA3,#00C2A8) border-box!important}
+.fondo-vivo{position:relative;isolation:isolate}
+.fondo-vivo::before{content:"";position:absolute;inset:-25%;z-index:-1;pointer-events:none;background:radial-gradient(circle at 82% 12%,rgba(92,203,255,.22),transparent 30%),radial-gradient(circle at 12% 88%,rgba(255,201,77,.20),transparent 28%),radial-gradient(circle at 55% 60%,rgba(0,194,168,.10),transparent 30%),radial-gradient(circle at 30% 20%,rgba(255,143,163,.10),transparent 25%);animation:deriva 22s ease-in-out infinite alternate}
+.tarjeta::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:20px;border-radius:18px 18px 0 0;background:linear-gradient(90deg,var(--acento),var(--acento2));-webkit-mask:linear-gradient(#000 0 4px,transparent 4px);mask:linear-gradient(#000 0 4px,transparent 4px);pointer-events:none}
+.tarjeta{transition:transform .25s cubic-bezier(.23,1,.32,1),box-shadow .25s ease,border-color .25s ease}
+.boton::after{content:"";position:absolute;top:0;bottom:0;left:0;width:35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-130%) skewX(-20deg);pointer-events:none}
+.llena{position:relative;overflow:hidden}.llena::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:destello 1.6s ease-in-out 1.2s 2 both}
+.cursor{display:inline-block;animation:parpadea 1.05s steps(1) infinite}
+.vivo{animation:saluda 1.2s cubic-bezier(.3,1.5,.5,1) both .2s,respira 3.6s ease-in-out 1.4s infinite}
+@media (hover:hover) and (pointer:fine){.menu-i:hover{background-color:#F1F5FB}.menu-i:hover .ico{transform:rotate(-8deg) scale(1.12)}.tarjeta:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(20,33,61,.12);border-color:var(--acento)}.boton:hover::after{animation:destello .8s ease}.boton:hover{transform:translateY(-1px)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-iteration-count:1!important;animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}}</style>
+</helmet>
+<div style="position:relative;width:1440px;height:1000px;display:flex;flex-direction:column;background:#F7F9FC;overflow:hidden"><h1 style="position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Estudiante · Ejercicio · Ordenar pasos</h1><header class="barra-arco" style="height:60px;flex:none;display:flex;align-items:center;gap:14px;padding:0 16px;background:#FFFFFF;border-bottom:1px solid #E3EAF3">
+<a href="E-Leccion.dc.html" style="display:flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:10px;border:1px solid #E3EAF3;text-decoration:none;color:#14213D;font-size:14px;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Volver a la lección</a>
+<div style="min-width:0;flex:1"><p style="margin:0;font-family:Poppins,sans-serif;font-size:16px;font-weight:700">Ordena el algoritmo</p><p style="margin:0;font-size:12px;color:#4A5873">Aprender › Operadores y expresiones › Ejercicio</p></div>
+<span aria-label="Ayuda de esta pantalla" style="width:30px;height:30px;border-radius:50%;border:1px solid #E3EAF3;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">?</span>
+<span style="display:flex;align-items:center;gap:6px;color:#0B6B5E;font-size:13px;font-weight:700"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>Guardado</span>
+<span style="font-size:13px">Intentos: <strong>1</strong> de 3</span>
+</header>
+<main class="fondo-vivo" style="flex:1;overflow:hidden;display:flex;justify-content:center;padding:36px 16px"><div style="width:720px;display:flex;flex-direction:column;gap:16px">
+<p style="margin:0;font-size:12px;font-weight:700;color:#7A4B00;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="11" height="6" rx="1.5"/><rect x="7" y="14" width="14" height="6" rx="1.5"/><path d="M7 10v4"/></svg>Ordenar pasos</p>
+<section class="entra" style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:18px;box-shadow:0 1px 3px rgba(20,33,61,.06)"><div style="font-size:16px;line-height:1.6">Arrastra los pasos para preparar un café en orden. También puedes usar las flechas del teclado.</div><div style="display:flex;flex-direction:column;gap:8px"><span style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid #CBD5E1;background:#FFFFFF;font-size:15px"><span aria-hidden="true" style="color:#64748B;letter-spacing:-2px">⋮⋮</span><span style="width:26px;height:26px;flex:none;border-radius:8px;background:#F7F9FC;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">1</span>Calentar el agua</span><span style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid #CBD5E1;background:#FFFFFF;font-size:15px"><span aria-hidden="true" style="color:#64748B;letter-spacing:-2px">⋮⋮</span><span style="width:26px;height:26px;flex:none;border-radius:8px;background:#F7F9FC;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">2</span>Poner el café en el filtro</span><span style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid #CBD5E1;background:#FFFFFF;font-size:15px"><span aria-hidden="true" style="color:#64748B;letter-spacing:-2px">⋮⋮</span><span style="width:26px;height:26px;flex:none;border-radius:8px;background:#F7F9FC;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">3</span>Servir el agua sobre el café</span><span style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid #CBD5E1;background:#FFFFFF;font-size:15px"><span aria-hidden="true" style="color:#64748B;letter-spacing:-2px">⋮⋮</span><span style="width:26px;height:26px;flex:none;border-radius:8px;background:#F7F9FC;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">4</span>Endulzar al gusto</span></div></section>
+<div style="display:flex;align-items:center;gap:12px"><p style="margin:0;flex:1;font-size:13px;color:#4A5873">Todo o nada. · Te quedan 2 intentos.</p><a href="E-Tutor.dc.html" style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:#14213D"><span class="vivo" style="flex:none"><svg style="width:24px;height:auto;flex:none;overflow:visible" xmlns="http://www.w3.org/2000/svg" viewBox="20 26 168 140" role="img" aria-label="Mascota de STIRE"><rect x="34" y="32" width="148" height="100" rx="18" fill="#00C2A8" stroke="#FFFFFF" stroke-width="3.5" paint-order="stroke"/><g class="cabeza"><rect x="26" y="40" width="148" height="100" rx="18" fill="#7B2FBF" stroke="#FFFFFF" stroke-width="3.5" paint-order="stroke"/><rect x="38" y="52" width="124" height="76" rx="10" fill="#082B6B"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M46 70 L30 62 M158 70 L174 62" stroke="#008F7C" stroke-width="6.5"/><path d="M46 70 L30 62 M158 70 L174 62" stroke="#00C2A8" stroke-width="3.8"/><path d="M95 73 Q100 66 105 73" stroke="#00C2A8" stroke-width="6"/></g><rect x="45.5" y="62.5" width="52" height="44" rx="16" fill="none" stroke="#00C2A8" stroke-width="4"/><rect x="107.5" y="62.5" width="52" height="44" rx="16" fill="none" stroke="#00C2A8" stroke-width="4"/><rect x="43" y="58" width="52" height="44" rx="16" fill="#FFFFFF" stroke="#00C2A8" stroke-width="7.5"/><rect x="105" y="58" width="52" height="44" rx="16" fill="#FFFFFF" stroke="#00C2A8" stroke-width="7.5"/><g class="ojos"><path class="ojo" d="M76 70 L66 80 L76 90" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#7B2FBF" stroke-width="8.5"/><path class="ojo" d="M128 70 L138 80 L128 90" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#7B2FBF" stroke-width="8.5"/></g><path d="M82 114 Q100 127 118 114" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#FFFFFF" stroke-width="6"/></g><path d="M36 150 H126.5 V151 a4.5 4.5 0 0 0 4.5 4.5 H147 a4.5 4.5 0 0 0 4.5 -4.5 V150 H164 a6 6 0 0 1 0 12 H36 a6 6 0 0 1 0 -12 Z" fill="#7B2FBF"/></svg></span>Pedir una pista</a><a class="boton" href="E-Logrado.dc.html" style="position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:12px;background:#FFC94D;color:#14213D;border:0;text-decoration:none;font-weight:600;font-size:15px;white-space:nowrap;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2-7z"/></svg> Entregar respuesta</a></div>
+</div></main></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

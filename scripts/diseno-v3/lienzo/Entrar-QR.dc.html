@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Entrar con el QR de la clase</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC}
+.tel{width:330px;height:640px;border-radius:36px;background:#14213D;padding:10px;box-sizing:border-box;flex:none}
+.pan{width:100%;height:100%;border-radius:28px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+.est{height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font:600 12px Inter,sans-serif}
+.cuerpo{flex:1;padding:14px 18px 18px;display:flex;flex-direction:column;gap:12px}
+.clase{display:flex;gap:10px;align-items:center;padding:12px;border-radius:14px;background:#D5F6F0}
+.ini{width:40px;height:40px;border-radius:12px;background:#14213D;color:#fff;font:700 13px Inter;display:flex;align-items:center;justify-content:center;flex:none}
+.campo{display:flex;flex-direction:column;gap:5px;font:600 14px Inter,sans-serif}
+.campo span{height:44px;display:flex;align-items:center;padding:0 12px;border:1px solid #8492A6;border-radius:11px;font-weight:500}
+.btn{height:48px;border-radius:13px;background:#14213D;color:#fff;font:700 15px Inter,sans-serif;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.sec{height:44px;border-radius:13px;border:1px solid #CBD5E1;color:#14213D;font:600 14px Inter,sans-serif;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.nota{font-size:13px;color:#4A5873;line-height:1.5}
+.paso{font:700 12px Inter;letter-spacing:.06em;color:#0B6B5E}
+h3{margin:0;font:700 17px Poppins,sans-serif}
+.col{display:flex;flex-direction:column;gap:14px;width:330px}
+.flecha{align-self:center;font-size:26px;color:#8492A6}
+</style>
+</helmet>
+<div style="width:1440px;height:1820px;box-sizing:border-box;padding:48px 56px;display:flex;flex-direction:column;gap:30px;overflow:hidden">
+<div><h1 style="margin:0;font:700 34px Poppins,sans-serif">Entrar con el QR de la clase</h1>
+<p style="margin:8px 0 0;font-size:16px;color:#4A5873;max-width:1050px;line-height:1.55">El docente proyecta el QR y cada estudiante lo escanea con la cámara del celular. <strong>Escanear ya es decidir unirse</strong> (sugerencia de Jorge, 16/10): nadie tiene que pulsar «Unirse» después. STIRE recuerda la clase mientras la persona entra o crea su cuenta, y la une sola al terminar.</p></div>
+
+<!-- Caso 1 -->
+<div style="display:flex;gap:28px;align-items:flex-start">
+<div class="col" style="width:250px"><span class="paso">CASO 1</span><h3>Ya es estudiante y tiene la sesión abierta</h3><p class="nota" style="margin:0">Lo más común en clase. Escanea y queda dentro, en un segundo.</p></div>
+<div class="tel"><div class="pan" style="background:#0F172A;color:#fff"><div class="est"><span>7:24</span><span>82 %</span></div><div class="cuerpo" style="align-items:center;justify-content:center;gap:18px"><div style="width:210px;height:210px;border:3px solid #00C2A8;border-radius:22px;display:flex;align-items:center;justify-content:center;font:700 13px Inter;color:#9FB0C8">[ QR de la clase ]</div><span style="font-size:14px;text-align:center">Cámara del celular<br><span style="color:#9FB0C8">Abrir «stire…/clases?codigo=FA-2026-G2»</span></span></div></div></div>
+<span class="flecha">→</span>
+<div class="tel"><div class="pan"><div class="est"><span>7:24</span><span>82 %</span></div><div class="cuerpo">
+<div style="text-align:center;padding:18px 0 4px"><div style="width:64px;height:64px;margin:0 auto;border-radius:50%;background:#047857;color:#fff;font-size:32px;display:flex;align-items:center;justify-content:center">✓</div><h3 style="margin-top:12px">¡Ya estás en la clase!</h3></div>
+<div class="clase"><span class="ini">FA</span><span><strong>Fundamentos de Algoritmia · G2</strong><br><span style="font-size:13px">Prof. Pedro · 28 compañeros</span></span></div>
+<p class="nota" style="margin:0">Si el profe está tomando asistencia, también quedó marcada.</p>
+<a class="btn" href="E-Inicio.dc.html" style="margin-top:auto">Ir a mi clase</a></div></div></div>
+<span class="flecha" style="font-size:15px;max-width:150px;color:#4A5873;line-height:1.5">Si ya estaba en esa clase: «Ya estás en esta clase» y la abre. Si el código venció: lo dice y deja escribir otro.</span>
+</div>
+
+<!-- Caso 2 y 3 -->
+<div style="display:flex;gap:28px;align-items:flex-start">
+<div class="col" style="width:250px"><span class="paso">CASOS 2 Y 3</span><h3>Sin sesión abierta: ya tiene cuenta, o es su primera vez</h3><p class="nota" style="margin:0">La clase se ve arriba todo el tiempo, para que sepa a dónde va. Al terminar, se une sola.</p></div>
+<div class="tel"><div class="pan"><div class="est"><span>7:24</span><span>82 %</span></div><div class="cuerpo">
+<div class="clase"><span class="ini">FA</span><span style="font-size:13px">Te vas a unir a<br><strong style="font-size:14px">Fundamentos de Algoritmia · G2</strong></span></div>
+<span class="paso" style="color:#4A5873">CASO 2 · YA TENGO CUENTA</span>
+<label class="campo">Correo<span>laura.martinez@correo.com</span></label>
+<label class="campo">Contraseña<span>••••••••••</span></label>
+<a class="btn" href="E-Inicio.dc.html">Entrar y unirme</a>
+<a class="sec" href="Entrar-QR.dc.html">Es mi primera vez: crear cuenta</a>
+<span class="nota" style="text-align:center">¿Olvidaste tu contraseña?</span></div></div></div>
+<div class="tel"><div class="pan"><div class="est"><span>7:24</span><span>82 %</span></div><div class="cuerpo">
+<div class="clase"><span class="ini">FA</span><span style="font-size:13px">Te vas a unir a<br><strong style="font-size:14px">Fundamentos de Algoritmia · G2</strong></span></div>
+<span class="paso" style="color:#4A5873">CASO 3 · PRIMERA VEZ</span>
+<label class="campo">Nombre y apellido<span>Laura Martínez</span></label>
+<label class="campo">Correo<span>laura.martinez@correo.com</span></label>
+<label class="campo">Contraseña<span>•••••••••• <span style="border:0;height:auto;padding:0;margin-left:auto;color:#047857;font-size:12px;font-weight:700">Buena</span></span></label>
+<label style="display:flex;gap:8px;font-size:13px;line-height:1.4"><span style="width:18px;height:18px;border-radius:5px;background:#14213D;flex:none"></span>Tengo 18 años o más y acepto los términos.</label>
+<a class="btn" href="E-Inicio.dc.html">Crear cuenta y unirme</a></div></div></div>
+<div class="col" style="width:300px;padding-top:30px"><div style="padding:16px;border-radius:16px;background:#fff;border:1px solid #E3EAF3;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5">
+<strong>Lo que ya aprendimos y se mantiene</strong>
+<span>• Solo lo necesario: no se pide «estudiante o docente» (el QR ya dice que es estudiante), ni el código (ya viene), ni la clave de IA.</span>
+<span>• Una contraseña con el ojo para verla, sin «confirmar».</span>
+<span>• Errores debajo de cada campo y el cursor en el primero que falta.</span>
+<span>• Si cierra y vuelve, la clase sigue esperando hasta que entre.</span>
+</div></div>
+</div>
+
+<div style="display:flex;gap:16px;align-items:center;padding:16px 20px;border-radius:16px;background:#FFF1C2;font-size:14px;line-height:1.5">
+<strong style="white-space:nowrap">Sin QR también funciona:</strong>
+<span>en Entrar, «Tengo un código» → se escribe el código (la clase aparece al escribir) o se toca <strong>«Escanear QR»</strong> para usar la cámara desde STIRE. Y ya adentro, en «Mi clase», está el mismo botón para unirse a otra clase.</span>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1820}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

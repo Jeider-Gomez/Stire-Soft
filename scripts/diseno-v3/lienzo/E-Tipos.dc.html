@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Ejercicios · Qué panel lleva cada tipo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC} a{color:#14213D}
+@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes llena{from{transform:scaleX(0)}}
+@keyframes respira{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes saluda{0%{transform:translateY(0)}20%{transform:translateY(-16px) scale(1.05)}40%{transform:translateY(0) scale(.97,1.03)}55%{transform:translateY(-6px)}70%,100%{transform:translateY(0)}}
+@keyframes brillo{0%{transform:translateX(-120%) skewX(-20deg)}60%,100%{transform:translateX(260%) skewX(-20deg)}}
+@keyframes confeti{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+@keyframes sube{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+@keyframes anillo{from{stroke-dashoffset:var(--total)}}
+@keyframes pulso{0%{box-shadow:0 0 0 0 rgba(0,194,168,.55)}70%{box-shadow:0 0 0 14px rgba(0,194,168,0)}100%{box-shadow:0 0 0 0 rgba(0,194,168,0)}}
+@keyframes crece{from{transform:scaleY(0)}}
+@keyframes dibuja{from{stroke-dashoffset:100}}
+@keyframes aparece{from{opacity:0}}
+.crece{transform-origin:bottom;animation:crece .7s cubic-bezier(.23,1,.32,1) both}
+.dibuja{stroke-dasharray:100;animation:dibuja 1.4s cubic-bezier(.23,1,.32,1) both .3s}
+.aparece{animation:aparece .8s ease both .9s}
+@keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.entra{animation:entra .45s cubic-bezier(.23,1,.32,1) both}
+.boton{transition:transform .16s cubic-bezier(.23,1,.32,1),box-shadow .2s ease}.boton:active{transform:scale(.97)}
+.llena{transform-origin:left;animation:llena .9s cubic-bezier(.23,1,.32,1) both .3s}
+.vivo{display:inline-flex;animation:saluda 1.2s cubic-bezier(.3,1.5,.5,1) both .2s,respira 3.6s ease-in-out 1.4s infinite}@keyframes ojo-parpadea{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}@keyframes ojos-mirar{0%,18%{transform:translate(0,0)}22%,38%{transform:translate(-4px,-1px)}42%,58%{transform:translate(4px,-1px)}62%,100%{transform:translate(0,0)}}@keyframes cabeza-ladea{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-5deg)}86%{transform:rotate(3deg)}}.vivo .cabeza{transform-box:fill-box;transform-origin:50% 100%;animation:cabeza-ladea 8s ease-in-out 2s infinite}.vivo .ojos{animation:ojos-mirar 7s ease-in-out 2.5s infinite}.vivo .ojo{transform-box:fill-box;transform-origin:center;animation:ojo-parpadea 4.2s infinite}
+.flota{animation:flota 2.4s ease-in-out .6s 2}
+@media (hover:hover) and (pointer:fine){.alza{transition:transform .2s cubic-bezier(.23,1,.32,1),box-shadow .2s ease}.alza:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(20,33,61,.10)}a.fila{transition:background-color .15s ease}a.fila:hover{background-color:#EEF3F9}.boton:hover{box-shadow:0 6px 16px rgba(20,33,61,.18)}}
+a.fila:active{transform:scale(.99)}
+.medalla{position:relative;overflow:hidden}.medalla::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);animation:brillo 2.6s ease-in-out .9s 1}
+.confeti{position:absolute;width:10px;height:14px;border-radius:2px;animation:confeti 1.9s cubic-bezier(.2,.7,.3,1) .3s 2 both}
+.sube{animation:sube .7s cubic-bezier(.3,1.5,.5,1) both .4s}
+.anillo{animation:anillo 1.5s cubic-bezier(.2,.8,.2,1) both .3s}
+.pulso{animation:pulso 2s 3}
+.pulso{animation:pulso 2.4s ease-out infinite}
+@keyframes desliza{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@keyframes baja{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes deriva{0%{transform:translate(0,0) scale(1)}50%{transform:translate(3%,4%) scale(1.08)}100%{transform:translate(-2%,1%) scale(1.02)}}
+@keyframes destello{0%{transform:translateX(-130%) skewX(-20deg)}100%{transform:translateX(330%) skewX(-20deg)}}
+@keyframes parpadea{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes gira{to{transform:rotate(360deg)}}
+@keyframes corre{to{background-position:200% 0}}
+@keyframes meneo{0%,100%{transform:rotate(0)}30%{transform:rotate(-10deg) scale(1.1)}60%{transform:rotate(6deg) scale(1.05)}}
+.menu-i{animation:desliza .5s cubic-bezier(.23,1,.32,1) both;transition:background-color .2s ease,transform .2s cubic-bezier(.23,1,.32,1)}
+.menu-i:nth-of-type(2){animation-delay:.04s}.menu-i:nth-of-type(3){animation-delay:.08s}.menu-i:nth-of-type(4){animation-delay:.12s}.menu-i:nth-of-type(5){animation-delay:.16s}.menu-i:nth-of-type(6){animation-delay:.2s}.menu-i:nth-of-type(7){animation-delay:.24s}.menu-i:nth-of-type(8){animation-delay:.28s}.menu-i:nth-of-type(9){animation-delay:.32s}.menu-i:nth-of-type(10){animation-delay:.36s}
+.ico{transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+.menu-i[aria-current] .ico{animation:meneo .7s ease .5s 1;box-shadow:0 6px 14px rgba(20,33,61,.18)}
+.barra-arco{position:relative;animation:baja .45s cubic-bezier(.23,1,.32,1) both}
+.barra-arco::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,#00C2A8,#5CCBFF,#FFC94D,#FF8FA3,#00C2A8);background-size:200% 100%;animation:corre 8s linear infinite;pointer-events:none}
+.avatar-arco{border:3px solid transparent;background:linear-gradient(#D5F6F0,#D5F6F0) padding-box,conic-gradient(#00C2A8,#5CCBFF,#FFC94D,#FF8FA3,#00C2A8) border-box!important}
+.fondo-vivo{position:relative;isolation:isolate}
+.fondo-vivo::before{content:"";position:absolute;inset:-25%;z-index:-1;pointer-events:none;background:radial-gradient(circle at 82% 12%,rgba(92,203,255,.22),transparent 30%),radial-gradient(circle at 12% 88%,rgba(255,201,77,.20),transparent 28%),radial-gradient(circle at 55% 60%,rgba(0,194,168,.10),transparent 30%),radial-gradient(circle at 30% 20%,rgba(255,143,163,.10),transparent 25%);animation:deriva 22s ease-in-out infinite alternate}
+.tarjeta::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:20px;border-radius:18px 18px 0 0;background:linear-gradient(90deg,var(--acento),var(--acento2));-webkit-mask:linear-gradient(#000 0 4px,transparent 4px);mask:linear-gradient(#000 0 4px,transparent 4px);pointer-events:none}
+.tarjeta{transition:transform .25s cubic-bezier(.23,1,.32,1),box-shadow .25s ease,border-color .25s ease}
+.boton::after{content:"";position:absolute;top:0;bottom:0;left:0;width:35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-130%) skewX(-20deg);pointer-events:none}
+.llena{position:relative;overflow:hidden}.llena::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:destello 1.6s ease-in-out 1.2s 2 both}
+.cursor{display:inline-block;animation:parpadea 1.05s steps(1) infinite}
+.vivo{animation:saluda 1.2s cubic-bezier(.3,1.5,.5,1) both .2s,respira 3.6s ease-in-out 1.4s infinite}
+@media (hover:hover) and (pointer:fine){.menu-i:hover{background-color:#F1F5FB}.menu-i:hover .ico{transform:rotate(-8deg) scale(1.12)}.tarjeta:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(20,33,61,.12);border-color:var(--acento)}.boton:hover::after{animation:destello .8s ease}.boton:hover{transform:translateY(-1px)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-iteration-count:1!important;animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}}</style>
+</helmet>
+<div style="width:1440px;height:1000px;background:#F7F9FC;padding:40px 60px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<h1 style="margin:0;font-family:Poppins,sans-serif;font-size:28px">Qué panel lleva cada tipo de ejercicio</h1>
+<p style="margin:0 0 10px;font-size:16px;color:#4A5873;max-width:900px;line-height:1.5">La disposición es la del panel desplegado. Al lado del trabajo va solo lo que el trabajo produce. Si no produce nada que ver, no hay panel extra y la pregunta va sola en una columna.</p>
+<div style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;padding:0 16px;font-size:12px;font-weight:700;letter-spacing:.06em;color:#4A5873"><span>TIPO</span><span>JUNTO AL TRABAJO</span><span>POR QUÉ</span><span></span></div>
+<a href="E-Ejercicio.dc.html" class="fila" style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;text-decoration:none;color:#14213D;border:1px solid #E3EAF3;background:#FFFFFF"><strong style="font-size:15px">Programar</strong><span style="font-size:14px;font-weight:700">Salida del programa, abajo</span><span style="font-size:14px;color:#4A5873;line-height:1.5">El programa lee y muestra datos. La salida los pide como una terminal y no gasta intentos. Los casos de prueba van en su pestaña.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+<a href="E-Ejercicio-Bloques.dc.html" class="fila" style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;text-decoration:none;color:#14213D;border:1px solid #E3EAF3;background:#FFFFFF"><strong style="font-size:15px">Programar con bloques</strong><span style="font-size:14px;font-weight:700">Salida del programa, abajo</span><span style="font-size:14px;color:#4A5873;line-height:1.5">Arma un programa igual que en código, así que se prueba igual. «Ver como código» muestra lo que armó.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+<a href="E-Tipo-Html.dc.html" class="fila" style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;text-decoration:none;color:#14213D;border:1px solid #E3EAF3;background:#FFFFFF"><strong style="font-size:15px">HTML y CSS</strong><span style="font-size:14px;font-weight:700">Vista previa en vivo y reglas, a la derecha</span><span style="font-size:14px;color:#4A5873;line-height:1.5">Lo que se hace es una página: hay que verla mientras se escribe. Las reglas del profe se ven cumplirse.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+<a href="E-Tipo-Opcion.dc.html" class="fila" style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;text-decoration:none;color:#14213D;border:1px solid #E3EAF3;background:#FFFFFF"><strong style="font-size:15px">Opción múltiple</strong><span style="font-size:14px;font-weight:700">Nada: una columna</span><span style="font-size:14px;color:#4A5873;line-height:1.5">Se elige una respuesta. Más paneles solo distraen.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+<a href="E-Tipo-Completar.dc.html" class="fila" style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;text-decoration:none;color:#14213D;border:1px solid #E3EAF3;background:#FFFFFF"><strong style="font-size:15px">Completar código</strong><span style="font-size:14px;font-weight:700">Nada: una columna</span><span style="font-size:14px;color:#4A5873;line-height:1.5">Son pocos espacios en un código corto; no se ejecuta.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+<a href="E-Tipo-Ordenar.dc.html" class="fila" style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;text-decoration:none;color:#14213D;border:1px solid #E3EAF3;background:#FFFFFF"><strong style="font-size:15px">Ordenar pasos</strong><span style="font-size:14px;font-weight:700">Nada: una columna</span><span style="font-size:14px;color:#4A5873;line-height:1.5">Se ordena una lista; lo que se ve es la lista.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+<a href="E-Tipo-Emparejar.dc.html" class="fila" style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;text-decoration:none;color:#14213D;border:1px solid #E3EAF3;background:#FFFFFF"><strong style="font-size:15px">Emparejar</strong><span style="font-size:14px;font-weight:700">Nada: una columna</span><span style="font-size:14px;color:#4A5873;line-height:1.5">Las parejas se ven en la misma tarjeta.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+<a href="E-Tipo-Clasificar.dc.html" class="fila" style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;text-decoration:none;color:#14213D;border:1px solid #E3EAF3;background:#FFFFFF"><strong style="font-size:15px">Clasificar</strong><span style="font-size:14px;font-weight:700">Nada: una columna</span><span style="font-size:14px;color:#4A5873;line-height:1.5">Las cajas son la respuesta.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+<a href="E-Tipo-Abierta.dc.html" class="fila" style="display:grid;grid-template-columns:220px 260px 1fr 20px;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;text-decoration:none;color:#14213D;border:1px solid #E3EAF3;background:#FFFFFF"><strong style="font-size:15px">Respuesta abierta (nuevo)</strong><span style="font-size:14px;font-weight:700">Nada: una columna</span><span style="font-size:14px;color:#4A5873;line-height:1.5">Se escribe; la revisa el profe.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+<p style="margin:8px 0 0;font-size:14px;color:#4A5873">Las tres vistas del desplegado (Estándar, Código grande y Solo código) siguen igual en Programar y Bloques.</p></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

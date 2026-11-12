@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Qué se agrega, qué se simplifica, qué se esconde</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC}
+a{color:#14213D}a:hover{color:#263349}
+</style>
+</helmet>
+<div style="width:1440px;height:2000px;box-sizing:border-box;padding:72px 80px;display:flex;flex-direction:column;gap:40px;background:#F7F9FC">
+
+<header style="display:flex;flex-direction:column;gap:12px;max-width:1040px">
+<p style="margin:0;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#14213D">Organizar sin saturar</p>
+<h1 style="margin:0;font-family:Poppins,sans-serif;font-size:44px;line-height:1.1;font-weight:700">Entra lo que falta, sale lo que sobra</h1>
+<p style="margin:0;font-size:17px;line-height:1.6;color:#4A5873">STIRE tiene más funciones de las que un estudiante usa en su primera semana. Nada se borra sin razón: se une con otra, se pliega o pasa a «Más». Lo nuevo entra solo si resuelve algo que vimos en las pruebas o que pidieron los profesores.</p>
+</header>
+
+<section style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:start">
+<sc-for list="{{columnas}}" as="c" hint-placeholder-count="3">
+<article style="background:#FFFFFF;border:1px solid #E3EAF3;border-top:6px solid {{c.color}};border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:4px">
+<h2 style="margin:0;font-size:22px;font-weight:700">{{c.titulo}}</h2>
+<p style="margin:0;font-size:14px;color:#4A5873">{{c.sub}}</p>
+</div>
+<ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{c.items}}" as="i" hint-placeholder-count="6">
+<li style="display:flex;flex-direction:column;gap:2px;padding-bottom:12px;border-bottom:1px solid #EEF3F9">
+<span style="font-size:15px;font-weight:600;line-height:1.4">{{i.que}}</span>
+<span style="font-size:13px;line-height:1.5;color:#4A5873">{{i.por}}</span>
+</li>
+</sc-for>
+</ul>
+</article>
+</sc-for>
+</section>
+
+<section style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start">
+<article style="background:#D5F6F0;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:14px">
+<h2 style="margin:0;font-family:Poppins,sans-serif;font-size:26px;font-weight:600;color:#14213D">Siete reglas para no saturar al estudiante</h2>
+<ol style="margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.55">
+<sc-for list="{{reglas}}" as="r" hint-placeholder-count="7">
+<li>{{r}}</li>
+</sc-for>
+</ol>
+</article>
+<article style="background:#FDF1E3;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:14px">
+<h2 style="margin:0;font-family:Poppins,sans-serif;font-size:26px;font-weight:600;color:#8A3C04">No entra a la v3: es investigación</h2>
+<p style="margin:0;font-size:15px;line-height:1.6;color:#14213D">Va después, para la tesis y los artículos. El diseño les deja el espacio, pero no se construye ahora.</p>
+<ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.5">
+<sc-for list="{{despues}}" as="d" hint-placeholder-count="5">
+<li>{{d}}</li>
+</sc-for>
+</ul>
+</article>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      columnas: [
+        { titulo: 'Se agrega', sub: 'Falta y entra en la v3', color: '#7B2FBF', items: [
+          { que: 'Escalera de ejercicios por lección', por: 'Toscano: desagregar de lo simple a lo complejo (P14, P35)' },
+          { que: 'Explicar el código tocando cada palabra', por: 'Toscano: el código se explica en el editor (P37)' },
+          { que: '«Te falta este concepto» con su enlace', por: 'Toscano: remitir al concepto, no dar la respuesta (P36)' },
+          { que: 'Elegir cómo ver la lección', por: 'Distintos estilos de aprender, decidido el 28/10 (P45)' },
+          { que: 'Código que corre dentro de la lección', por: 'Practicar sin saltar al ejercicio (P50)' },
+          { que: 'Ejercicios de función', por: 'Que el principiante no tenga que leer la entrada (P57)' },
+          { que: 'Competencias, opcionales por clase', por: 'Toscano y Ali: confianza por competencia (P39)' },
+          { que: 'Saludo y logros en el momento, apagables', por: 'Que STIRE se sienta vivo sin cansar (P07)' },
+          { que: 'Avisos que quiero recibir', por: 'Cada aviso se puede apagar (P07)' }
+        ] },
+        { titulo: 'Se simplifica o se une', sub: 'Existe dos veces o pesa demasiado', color: '#14213D', items: [
+          { que: 'Menú del estudiante: de 6 entradas a 4', por: 'Inicio, Aprender, Repasos y Progreso' },
+          { que: '«Rendimiento» dentro de Estudiantes y avance', por: 'Dos caminos para ver lo mismo' },
+          { que: '«Nuevo ejercicio» dentro de Contenido', por: 'Un solo camino para crear' },
+          { que: 'Mi progreso: una frase y una acción arriba', por: 'Hoy todo va en una columna (ítem 25)' },
+          { que: 'Inicio del docente menos denso', por: 'Ítems 24 y 25 de la evaluación' },
+          { que: 'Un solo juego de íconos y un logo por vista', por: 'Ítems 10 y 26' },
+          { que: 'Repasos en azul, sin rojo', por: 'Toscano: el rojo genera rechazo (P38)' }
+        ] },
+        { titulo: 'Se pliega o pasa a «Más»', sub: 'Sigue ahí, pero no a la vista', color: '#009985', items: [
+          { que: 'Logros, proyectos, entregas, asistencia, mensajes', por: 'En «Más»: se usan, pero no a diario' },
+          { que: 'Racha y logros fuera del Inicio', por: 'Pasan a Progreso; el Inicio queda con una acción' },
+          { que: 'Perfil, calibración y autorregulación', por: 'Secciones plegables en Progreso' },
+          { que: 'El plan del curso siempre abierto', por: 'Se abre en «Aprender», no ocupa la barra' },
+          { que: 'La encuesta SUS', por: 'Dentro de «Ayuda»' },
+          { que: 'Funciones del docente que no usa', por: 'Apagadas por defecto, se activan en Ajustes' }
+        ] }
+      ],
+      reglas: [
+        'Una acción principal por pantalla; lo demás es secundario.',
+        'Al entrar, como mucho un aviso a la vez.',
+        'La mascota aparece solo cuando tiene algo que decir.',
+        'Nada flota encima de un botón: el Tutor vive en un panel.',
+        'Todo aviso, saludo o felicitación se puede apagar.',
+        'Cada palabra técnica se explica donde aparece.',
+        'Si un estudiante se traba tres veces, cambia la ayuda, no se repite.'
+      ],
+      despues: [
+        'Ejercicios personalizados por perfil y por error (P15, pedido de Ali)',
+        'Bloques antes del código (P31, pedido de Ali)',
+        'Cientos de usuarios simulados para el artículo (P16)',
+        'Comparar la repetición espaciada con otro software (P18)',
+        'Los dos artículos (P20)'
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

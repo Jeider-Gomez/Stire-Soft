@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Administrador y pantallas comunes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC}
+a{color:#14213D}a:hover{color:#263349}
+</style>
+</helmet>
+<div style="width:1440px;height:1500px;box-sizing:border-box;padding:72px 80px;display:flex;flex-direction:column;gap:40px;background:#F7F9FC">
+
+<header style="display:flex;flex-direction:column;gap:12px;max-width:1000px">
+<p style="margin:0;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#14213D">Administrador · público · común a todos</p>
+<h1 style="margin:0;font-family:Poppins,sans-serif;font-size:44px;line-height:1.1;font-weight:700">Lo que sostiene a los demás</h1>
+<p style="margin:0;font-size:17px;line-height:1.6;color:#4A5873">El administrador entra poco, pero cuando entra necesita resolver rápido. Las pantallas públicas son la primera impresión de STIRE.</p>
+</header>
+
+<section style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+<sc-for list="{{pantallas}}" as="p" hint-placeholder-count="6">
+<article style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;gap:4px">
+<h2 style="margin:0;font-size:20px;font-weight:700">{{p.nombre}}</h2>
+<p style="margin:0;font-size:14px;line-height:1.5;color:#4A5873">{{p.meta}}</p>
+</div>
+<ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{p.items}}" as="i" hint-placeholder-count="4">
+<li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45">
+<span style="flex:none;min-width:74px;text-align:center;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:{{i.fondo}};color:{{i.color}}">{{i.tipo}}</span>
+<span>{{i.texto}}</span>
+</li>
+</sc-for>
+</ul>
+</article>
+</sc-for>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      existe: { tipo: 'Existe', fondo: '#EEF3F9', color: '#334155' },
+      mejora: { tipo: 'Mejora', fondo: '#D5F6F0', color: '#14213D' },
+      nuevo: { tipo: 'Nuevo', fondo: '#F3EAFB', color: '#5B2192' },
+      quita: { tipo: 'Se quita', fondo: '#E3F5F2', color: '#00695C' },
+      futuro: { tipo: 'Después', fondo: '#FDF1E3', color: '#8A3C04' }
+    };
+    const it = (t, texto) => ({ ...T[t], texto });
+    return {
+      pantallas: [
+        { nombre: 'Usuarios y roles', meta: 'Encontrar a alguien y resolver en un paso', items: [
+          it('existe', 'Lista, cambiar rol, solicitudes de rol e historial'),
+          it('nuevo', 'Desactivar y reactivar cuentas a la vista'),
+          it('nuevo', 'Borrar los usuarios de prueba y el borrado definitivo'),
+          it('nuevo', 'Ver la app como un usuario, para ayudarle'),
+          it('quita', '/admin/usuarios, que solo redirige')
+        ] },
+        { nombre: 'Panel y sistema', meta: 'Cómo está STIRE hoy', items: [
+          it('mejora', 'Cifras del sistema y mantenimiento en una sola pantalla'),
+          it('existe', 'Limpieza y estado del servidor')
+        ] },
+        { nombre: 'Catálogo · sugerencias · usabilidad', meta: 'Lo que llega de los usuarios', items: [
+          it('existe', 'Instituciones y programas, unir duplicados'),
+          it('existe', 'Sugerencias: resolver o archivar'),
+          it('existe', 'Resultados del SUS por rol'),
+          it('existe', 'Exportar datos anónimos para la tesis')
+        ] },
+        { nombre: 'Portada, entrar y crear cuenta', meta: 'La primera impresión', items: [
+          it('mejora', 'Portada con qué es STIRE, para quién y un botón: «Entrar»'),
+          it('existe', 'Registro para mayores de 18, con una casilla de términos'),
+          it('existe', 'Recuperar la contraseña · términos · privacidad')
+        ] },
+        { nombre: 'Ayuda', meta: 'Que nadie dependa de una persona técnica', items: [
+          it('existe', 'Manual sin cuenta, descargable en PDF'),
+          it('mejora', 'Recorrido guiado por pantalla, que se puede saltar'),
+          it('existe', 'Guía paso a paso para activar el Tutor y el Asistente'),
+          it('mejora', 'Encuesta SUS dentro de «Ayuda», no en el menú')
+        ] },
+        { nombre: 'Mi cuenta (todos los roles)', meta: 'Lo personal en un solo lugar', items: [
+          it('existe', 'Datos, foto y clave de IA'),
+          it('existe', 'Apariencia: temas, alto contraste, texto grande, reducir el movimiento'),
+          it('nuevo', 'Avisos que quiero recibir: saludo, logros, avance, repasos (P07)'),
+          it('futuro', 'Clave institucional de IA (P46)')
+        ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

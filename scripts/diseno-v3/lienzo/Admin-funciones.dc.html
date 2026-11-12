@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Funciones del administrador</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC} a{color:#14213D}
+@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes respira{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes parpadea{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes pulso{0%{box-shadow:0 0 0 0 rgba(20,33,61,.45)}70%{box-shadow:0 0 0 14px rgba(20,33,61,0)}100%{box-shadow:0 0 0 0 rgba(20,33,61,0)}}
+@keyframes llena{from{width:0}}
+@keyframes anillo{from{stroke-dashoffset:302}}
+@keyframes llama{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.08) rotate(2deg)}}
+@keyframes brillo{0%{transform:translateX(-120%) skewX(-20deg)}60%,100%{transform:translateX(220%) skewX(-20deg)}}
+@keyframes chispa{0%{opacity:0;transform:scale(.2)}40%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.6) translateY(-14px)}}
+@keyframes toast{0%{opacity:0;transform:translateY(24px) scale(.96)}12%,88%{opacity:1;transform:none}100%{opacity:1;transform:none}}
+.entra{animation:entra .5s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}.d5{animation-delay:.40s}
+.vivo{animation:respira 3.2s ease-in-out infinite}
+.vivo .ojo{transform-box:fill-box;transform-origin:center;animation:parpadea 4.5s infinite}
+.pulso{animation:pulso 2s infinite}
+.barra-llena{animation:llena 1.1s cubic-bezier(.2,.8,.2,1) both .3s}
+.anillo{animation:anillo 1.4s cubic-bezier(.2,.8,.2,1) both .3s}
+.llama{transform-origin:50% 90%;animation:llama 1.6s ease-in-out infinite}
+.medalla{position:relative;overflow:hidden}
+.medalla::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:brillo 2.8s ease-in-out infinite 1s}
+.chispa{animation:chispa 1.8s ease-out infinite}
+.toast{animation:toast 6s ease-out both 1.2s}
+.alza{transition:transform .2s ease,box-shadow .2s ease}.alza:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.10)}
+
+@keyframes mirar{0%,18%{transform:translate(0,0)}22%,38%{transform:translate(-4px,-1px)}42%,58%{transform:translate(4px,-1px)}62%,100%{transform:translate(0,0)}}
+@keyframes ladea{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-6deg)}86%{transform:rotate(4deg)}}
+@keyframes saluda{0%{transform:translateY(0) scale(1)}20%{transform:translateY(-14px) scale(1.04)}40%{transform:translateY(0) scale(.98,1.02)}55%{transform:translateY(-6px)}70%,100%{transform:translateY(0)}}
+@keyframes puntos{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@keyframes ocultar{to{opacity:0;width:0;padding:0;margin:0}}
+@keyframes aparece{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes confeti{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+@keyframes sube{from{transform:scale(.6);opacity:0}60%{transform:scale(1.12);opacity:1}to{transform:scale(1)}}
+@keyframes medidor{from{stroke-dashoffset:283}}
+.tutor-vivo{display:inline-flex;animation:saluda 1.2s cubic-bezier(.3,1.5,.5,1) both .2s}
+.tutor-vivo svg{animation:respira 3.2s ease-in-out infinite 1.4s}
+.tutor-vivo .cabeza{transform-box:fill-box;transform-origin:50% 100%;animation:ladea 7s ease-in-out infinite 2s}
+.tutor-vivo .ojos{animation:mirar 6s ease-in-out infinite 2.5s}
+.tutor-vivo .ojo{transform-box:fill-box;transform-origin:center;animation:parpadea 4.2s infinite}
+.escribiendo{display:inline-flex;gap:4px;align-items:center;animation:ocultar .01s forwards 1.6s}
+.escribiendo i{width:7px;height:7px;border-radius:99px;background:#94A3B8;animation:puntos 1s infinite}
+.escribiendo i:nth-child(2){animation-delay:.15s}.escribiendo i:nth-child(3){animation-delay:.3s}
+.mensaje{opacity:0;animation:aparece .4s ease-out forwards 1.65s}
+.confeti{position:absolute;width:10px;height:14px;border-radius:2px;animation:confeti 1.8s cubic-bezier(.2,.7,.3,1) infinite}
+.sube{animation:sube .7s cubic-bezier(.3,1.5,.5,1) both .3s}
+.medidor{animation:medidor 1.6s cubic-bezier(.2,.8,.2,1) both .3s}
+
+/* WCAG 2.2.2: ninguna animación automática dura más de 5 s */
+.vivo,.tutor-vivo svg{animation-iteration-count:1}
+.vivo .ojo,.tutor-vivo .ojo{animation-iteration-count:1}
+.tutor-vivo .cabeza{animation-duration:2.4s;animation-iteration-count:1;animation-delay:1.6s}
+.tutor-vivo .ojos{animation-duration:2.4s;animation-iteration-count:1;animation-delay:2.2s}
+.pulso{animation-iteration-count:2}
+.llama{animation-iteration-count:3}
+.medalla::after{animation-iteration-count:1}
+.chispa,.confeti{animation-iteration-count:2}
+.escribiendo i{animation-iteration-count:2}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width:1440px;height:1500px;box-sizing:border-box;display:flex;flex-direction:column;background:#F7F9FC;overflow:hidden">
+<div style="padding:48px 56px;display:flex;flex-direction:column;gap:22px">
+<div><h1 style="margin:0;font-family:Poppins,sans-serif;font-size:34px;font-weight:700">Todas las funciones del administrador</h1>
+<p style="margin:6px 0 0;font-size:16px;color:#4A5873;max-width:980px;line-height:1.55">Nada se pierde: lo que hoy está en 6 entradas del menú queda en 3. El administrador entra poco, así que cada pantalla dice primero si algo espera por él.</p></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start"><section style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;"><h2 style="margin:0;font-size:20px;font-weight:700">Usuarios</h2><p style="margin:0;font-size:14px;line-height:1.45">· Lista con búsqueda y filtros (rol, desactivados, de prueba)</p><p style="margin:0;font-size:14px;line-height:1.45">· Aprobar o rechazar solicitudes para ser docente</p><p style="margin:0;font-size:14px;line-height:1.45">· Cambiar rol, con historial de cambios</p><p style="margin:0;font-size:14px;line-height:1.45">· Desactivar y reactivar (P12)</p><p style="margin:0;font-size:14px;line-height:1.45">· Desactivar en grupo las cuentas de prueba (P12)</p><p style="margin:0;font-size:14px;line-height:1.45">· Borrar definitivamente, escribiendo el nombre para confirmar (P12)</p></section><section style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;"><h2 style="margin:0;font-size:20px;font-weight:700">Opiniones</h2><p style="margin:0;font-size:14px;line-height:1.45">· Sugerencias con captura: resolver o archivar</p><p style="margin:0;font-size:14px;line-height:1.45">· Encuesta SUS: puntaje, por rol, afirmaciones que bajan, comentarios</p><p style="margin:0;font-size:14px;line-height:1.45">· Cada cuánto se ofrece la encuesta</p><p style="margin:0;font-size:14px;line-height:1.45">· Exportar respuestas sin nombres</p></section><section style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;"><h2 style="margin:0;font-size:20px;font-weight:700">Sistema</h2><p style="margin:0;font-size:14px;line-height:1.45">· Estado, tiempo de respuesta y errores</p><p style="margin:0;font-size:14px;line-height:1.45">· Registro de lo que pasó</p><p style="margin:0;font-size:14px;line-height:1.45">· Mantenimiento y limpieza</p><p style="margin:0;font-size:14px;line-height:1.45">· Catálogo: instituciones, programas y asignaturas duplicadas</p><p style="margin:0;font-size:14px;line-height:1.45">· Exportar datos anónimos para la investigación</p><p style="margin:0;font-size:14px;line-height:1.45">· Espacio de imágenes usado</p></section></div>
+<section style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;"><div style="display:flex;align-items:center;gap:8px"><h2 style="margin:0;font-size:18px;font-weight:700">Sugerencias para mejorarlo</h2></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div style="padding:14px 16px;border-radius:14px;background:#F7F9FC;border:1px solid #E3EAF3"><p style="margin:0;font-size:15px;font-weight:700">Ver como un usuario (solo lectura)</p><p style="margin:4px 0 0;font-size:14px;color:#4A5873;line-height:1.5">Para soporte: el admin ve lo que ve un estudiante o docente sin poder cambiar nada, y queda registrado. Lo pide el inventario.</p></div><div style="padding:14px 16px;border-radius:14px;background:#F7F9FC;border:1px solid #E3EAF3"><p style="margin:0;font-size:15px;font-weight:700">Avisos agrupados con un resumen al día</p><p style="margin:4px 0 0;font-size:14px;color:#4A5873;line-height:1.5">Nunca un aviso por cada solicitud o sugerencia; el admin elige qué recibe.</p></div><div style="padding:14px 16px;border-radius:14px;background:#F7F9FC;border:1px solid #E3EAF3"><p style="margin:0;font-size:15px;font-weight:700">Borrado con 30 días de gracia y «Eliminar mi cuenta»</p><p style="margin:4px 0 0;font-size:14px;color:#4A5873;line-height:1.5">Ley 1581: cualquiera puede pedir que borren sus datos. Primero se desactiva; a los 30 días se borra.</p></div><div style="padding:14px 16px;border-radius:14px;background:#F7F9FC;border:1px solid #E3EAF3"><p style="margin:0;font-size:15px;font-weight:700">Registro de acciones del admin</p><p style="margin:4px 0 0;font-size:14px;color:#4A5873;line-height:1.5">Quién cambió un rol o borró algo, y cuándo. Da confianza y ayuda a deshacer errores.</p></div><div style="padding:14px 16px;border-radius:14px;background:#F7F9FC;border:1px solid #E3EAF3"><p style="margin:0;font-size:15px;font-weight:700">Unir duplicados del catálogo con una sugerencia</p><p style="margin:4px 0 0;font-size:14px;color:#4A5873;line-height:1.5">STIRE ya detecta asignaturas parecidas; el admin solo confirma.</p></div><div style="padding:14px 16px;border-radius:14px;background:#F7F9FC;border:1px solid #E3EAF3"><p style="margin:0;font-size:15px;font-weight:700">Uso del Tutor sin datos personales</p><p style="margin:4px 0 0;font-size:14px;color:#4A5873;line-height:1.5">Cuántas preguntas por semana y si hay claves que fallan, sin ver las conversaciones.</p></div><div style="padding:14px 16px;border-radius:14px;background:#F7F9FC;border:1px solid #E3EAF3"><p style="margin:0;font-size:15px;font-weight:700">La encuesta SUS no interrumpe</p><p style="margin:4px 0 0;font-size:14px;color:#4A5873;line-height:1.5">Se ofrece al terminar una tarea y nunca en medio de un ejercicio.</p></div></div></section></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

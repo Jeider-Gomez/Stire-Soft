@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>El camino al 5 en la evaluación heurística</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14213D;background:#F7F9FC}
+a{color:#14213D}a:hover{color:#263349}
+</style>
+</helmet>
+<div style="width:1440px;height:2400px;box-sizing:border-box;padding:72px 80px;display:flex;flex-direction:column;gap:32px;background:#F7F9FC">
+
+<header style="display:flex;flex-direction:column;gap:12px;max-width:1080px">
+<p style="margin:0;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#14213D">Evaluación heurística · instrumento del curso</p>
+<h1 style="margin:0;font-family:Poppins,sans-serif;font-size:44px;line-height:1.1;font-weight:700">Qué hace el diseño para que cada ítem llegue a 5</h1>
+<p style="margin:0;font-size:17px;line-height:1.6;color:#4A5873">La nota de cada ítem es la de la evaluación de la IA del 27/10, pensada para estudiantes de grado 10–11. Los marcados «Mejorado» ya se corrigieron antes de que evaluara el equipo. El 6/11 se suman las notas del equipo, que mandan sobre las de la IA. <strong style="color:#14213D">La v3.0.0 se marca cuando los cinco digan «cumple».</strong></p>
+</header>
+
+<section style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px">
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;color:#4A5873">Promedio de la IA (27/10)</span><span style="font-family:Poppins,sans-serif;font-size:32px;font-weight:700">3,94 / 5</span></div>
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;color:#4A5873">Ítems ya en 5</span><span style="font-family:Poppins,sans-serif;font-size:32px;font-weight:700">5 de 34</span></div>
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;color:#4A5873">Mejorados antes del equipo</span><span style="font-family:Poppins,sans-serif;font-size:32px;font-weight:700">13</span></div>
+<div style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;color:#4A5873">Meta de la v3</span><span style="font-family:Poppins,sans-serif;font-size:32px;font-weight:700;color:#047857">34 de 34 en 5</span></div>
+</section>
+
+<section style="background:#FFFFFF;border:1px solid #E3EAF3;border-radius:16px;overflow:hidden">
+<div style="display:grid;grid-template-columns:56px 260px 76px 110px minmax(0,1fr);gap:16px;padding:14px 20px;background:#EEF3F9;font-size:12px;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.04em">
+<span>N.º</span><span>Ítem</span><span>IA</span><span>Estado</span><span>Qué hace el diseño de la v3</span>
+</div>
+<sc-for list="{{items}}" as="i" hint-placeholder-count="34">
+<div style="display:grid;grid-template-columns:56px 260px 76px 110px minmax(0,1fr);gap:16px;padding:10px 20px;border-top:1px solid #EEF3F9;font-size:14px;line-height:1.45;align-items:start">
+<span style="font-weight:700;color:#4A5873">{{i.n}}</span>
+<span style="font-weight:600">{{i.nombre}}</span>
+<span style="font-weight:700;color:{{i.notaColor}}">{{i.nota}}</span>
+<span style="justify-self:start;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:{{i.fondo}};color:{{i.color}}">{{i.estado}}</span>
+<span style="color:#334155">{{i.diseno}}</span>
+</div>
+</sc-for>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const mejorados = [2, 3, 4, 5, 7, 8, 11, 13, 21, 27, 28, 29, 31];
+    const filas = [
+      [1, 'Retroalimentación del estado', 5, 'Mantener: cargando, guardado y resultado por caso, con el mismo componente en todas las pantallas.'],
+      [2, 'Respuesta en menos de 5 s', 4, 'El Tutor responde a medida que escribe; medir y bajar la primera respuesta (P59).'],
+      [3, 'Errores sencillos con sugerencia', 4, 'Al entregar, «qué revisar» sin dar la solución; errores de JavaScript traducidos al español.'],
+      [4, 'Lenguaje cotidiano', 3, 'Cada palabra técnica con su explicación donde aparece: dominio, casos de prueba, pseudocódigo, calibración.'],
+      [5, 'Íconos comprensibles', 4, 'Todo ícono con texto o nombre al pasar el cursor; la campana dice «Notificaciones»; la medalla solo cuando se gana.'],
+      [6, 'Organización anticipable', 4, 'Cuatro destinos en el menú y la lección siempre en el mismo orden: idea, ejemplo, pruébalo, practica.'],
+      [7, 'Sin instrucciones, en 2 clics', 4, '«Continuar» lleva al ejercicio en un clic; la guía para activar el Tutor dentro de STIRE.'],
+      [8, 'Deshacer, detener, cancelar', 4, '«Deshacer» en todo lo que se borra; «Detener» en la prueba; volver a editar antes de entregar.'],
+      [9, 'Lo básico en menos de 15 min', 4, '«Primeros pasos» de tres pasos y un recorrido corto que se puede saltar.'],
+      [10, 'Consistencia visual', 4, 'Un solo sistema de diseño para estudiante, docente y administrador; nada de colores fuera de los tokens.'],
+      [11, 'Convenciones web y móvil', 4, 'Barra inferior en el celular, hojas que suben desde abajo, Escape cierra todo.'],
+      [12, 'Navegación predecible', 4, 'El docente con un solo índice; sin ventanas viejas mezcladas con el panel nuevo.'],
+      [13, 'Validación y confirmación', 4, 'Aviso al salir sin guardar en todos los editores; validar mientras se escribe.'],
+      [14, 'Errores que orientan', 5, 'Mantener: el error dice qué hacer y ofrece reintentar.'],
+      [15, 'Tarea con 2 ayudas o menos', 3, 'Escalera de ejercicios y «te falta este concepto»: se avanza sin depender de la IA.'],
+      [16, 'Entender los conceptos', 4, 'Elegir cómo ver la lección y tocar el código para que se explique.'],
+      [17, 'Invita a explorar', 3, '«Prueba un reto» y lecciones por descubrir en el Inicio, sin obligar.'],
+      [18, 'Imágenes, video y animación', 3, 'Cada lección con al menos un diagrama o animación del paso a paso, no solo texto.'],
+      [19, 'Mantiene la atención', 4, 'Logro celebrado en el momento y saludo del día, una vez y apagables.'],
+      [20, 'Carga en menos de 5 s', 4, 'Medir con celular y datos móviles y cargar primero lo que se ve (P59).'],
+      [21, 'Atajos', 4, 'Atajos a la vista en el menú «?» y equivalentes táctiles en el celular.'],
+      [22, 'Configuración', 4, '«Avisos que quiero recibir» por tipo, junto a la apariencia.'],
+      [23, 'Información contextual', 5, 'Mantener: «Ayuda sobre esta pantalla» en todas.'],
+      [24, 'Diseño limpio', 4, 'Sin botones flotantes encima del contenido; el Inicio del docente con una cifra por clase.'],
+      [25, 'Lo esencial destacado', 4, 'Progreso con una frase y una acción arriba; lo demás plegado.'],
+      [26, 'Metáforas reconocibles', 4, 'Un logo por vista y la mascota solo cuando habla.'],
+      [27, 'Errores visualmente claros', 4, 'Todo error con ícono, texto y color, en el mismo componente.'],
+      [28, 'Errores sin jerga', 4, 'El intérprete de JavaScript traducido en todos los lugares donde aparece.'],
+      [29, 'Soluciones en el mensaje', 4, 'Cada error con su botón: reintentar, pedir ayuda al Tutor o ir al concepto.'],
+      [30, 'Ayuda contextual', 5, 'Mantener el menú «?» en todas las pantallas.'],
+      [31, 'Sección de ayuda', 4, 'Manual al día con la v3, con capturas nuevas.'],
+      [32, 'Canales de soporte', 5, 'Mantener: mensajes al docente, «Contar un problema», Tutor.'],
+      [33, 'Privacidad', 2, 'Con STIRE solo para mayores de 18 se cumple; para colegios hace falta la autorización del acudiente (futuro).'],
+      [34, 'Datos protegidos y anonimizados', 3, 'Plazo de borrado visible y descarga de mis datos en «Mi cuenta» (espera la revisión de Pedro, S11-P03).']
+    ];
+    return {
+      items: filas.map(([n, nombre, nota, diseno]) => {
+        const ok = nota === 5;
+        const mej = mejorados.includes(n);
+        return {
+          n, nombre, nota, diseno,
+          notaColor: nota >= 5 ? '#047857' : nota >= 4 ? '#14213D' : '#B45309',
+          estado: ok ? 'Ya en 5' : mej ? 'Mejorado' : 'Por diseñar',
+          fondo: ok ? '#E7F6EF' : mej ? '#D5F6F0' : '#F3EAFB',
+          color: ok ? '#047857' : mej ? '#14213D' : '#5B2192'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
