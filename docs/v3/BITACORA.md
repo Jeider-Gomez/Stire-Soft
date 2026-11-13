@@ -43,6 +43,7 @@ carpeta. Sirve para no pisarse: quién está tocando qué, qué se terminó y qu
 
 | Fecha | Qué | Commit |
 |---|---|---|
+| 13/11 | Cierre de las Fases B y C: `verify:clean` en verde, 2858 de 2858 pruebas, fotos de después de las pantallas públicas (`vistas/00`–`03`) y la evidencia en `CHANGELOG.md`. Falta el visto bueno de Jeider | ver `git log` («Cierre de las Fases B y C») |
 | 13/11 | Fase C, paso 3: Crear cuenta, ¿Olvidaste tu contraseña? y Nueva contraseña con el marco de Entrar (`AuthMarcoEntrar`) y los estados del cuadro «Entrar-estados»: «Abriendo tu inicio…» con la mascota, error con salida, código con «Unirme a la clase», fuerza de la clave en menta y reglas como pastillas. «Crear mi cuenta» se ve sin bajar en 1366×657 y 390×844 | ver `git log` («Crear cuenta») |
 | 13/11 | Fase C, paso 2: página de inicio pública como los cuadros «Pagina-inicio» (video, cómo funciona, cómo enseña, repasos, docentes, accesibilidad y el código de la clase); `/` sin sesión ya no salta a Entrar | `75c340f5` |
 | 13/11 | Fase C, paso 1: Entrar como el cuadro «Entrar» (tarjeta con la turquesa detrás, mascota que reacciona, «Tengo un código» que guarda la clase como el QR, «Solo mirar» sutil, 44 px) y el video «¿Qué es STIRE?» con subtítulos y transcripción | ver `git log` (dos commits del 13/11) |

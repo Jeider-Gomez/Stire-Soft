@@ -6,6 +6,8 @@ GitHub muestra el cambio de cada pantalla lado a lado (en el commit o en el Pull
 *2-up*, *Swipe* u *Onion skin*). Así se ve cómo va cambiando la app sin carpetas por versión.
 
 - **Versión de estas capturas:** `v1.1.0` (2 de octubre de 2026), con la que empieza la prueba del equipo.
+- **Las `0x` ya son de la v3** (13 de noviembre de 2026, rama `feat/v3-fase-a`, Fase C): Entrar, Crear cuenta,
+  recuperar la contraseña y la página de inicio nuevas. La versión anterior se ve en el *History* de cada archivo.
 - **Cuándo se actualizan:** en el mismo commit que la entrada del `CHANGELOG.md` de cada versión
   (ver `docs/FLUJO_GIT.md`, «Versiones»).
 - **Cómo se toman:** las toma Claude Code con un recorrido automático en Chrome (1440 px; las `3x`

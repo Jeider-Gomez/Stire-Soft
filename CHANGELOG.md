@@ -12,6 +12,39 @@ entry to the oldest.
 
 ---
 
+## v3 en construcción — rama `feat/v3-fase-a`, sin desplegar
+
+El plan está en `docs/v3/`. Lo que se construye en la rama no se despliega hasta el visto bueno del equipo.
+
+### Cierre de las Fases B y C · 13 de Noviembre de 2026
+
+- **Fase B (el marco):** menú por secciones de los tres roles, barra de arriba, Buscar (Ctrl K) para docente y
+  administrador, barras de abajo del celular, Tutor y Asistente que dejan su espacio a la página.
+- **Fase C (entrar y presentar STIRE):** página de inicio pública con el video «¿Qué es STIRE?» (subtítulos y
+  transcripción), Entrar con «Tengo un código», Crear cuenta en dos pasos (BT-27), recuperar y cambiar la contraseña con
+  el mismo marco, y los estados del cuadro «Entrar-estados».
+- Fotos de después: `docs/material-visual/vistas/00` a `03`.
+- Falta el visto bueno de Jeider tras su auditoría.
+
+Verificación final: 2858 de 2858 pruebas y `npm run verify:clean` (extracto literal de la salida):
+
+```
+[verify:clean 1] rm -rf node_modules dist
+[verify:clean 2] npm ci (instalacion exacta desde package-lock.json)
+[verify:clean 3] crear base de datos vacia de verificacion: stire_verify_clean
+[verify:clean 4] migration:run contra la base de datos vacia
+[verify:clean 5] db:seed:demo contra la base de datos vacia
+[verify:clean 6] npm run build
+[verify:clean] setup completo. Base de datos de verificacion: stire_verify_clean (puerto 3097). Continua scripts/verify-clean-server-check.js.
+login real contra el servidor recien levantado (docente de demo)
+  login OK para docente.demo@stire.local (token recibido)
+  OK, status 200
+[verify:clean:server-check] limpieza: eliminar base de datos de verificacion stire_verify_clean
+[verify:clean] TODO EN VERDE: npm ci -> migration:run -> db:seed:demo -> build -> start -> login real -> apagado.
+```
+
+---
+
 ## En curso — sin versión todavía
 
 Se acumula aquí lo desplegado desde la `v2.4.0`; se marca la versión al cierre de la semana o al juntar 5 funciones nuevas
