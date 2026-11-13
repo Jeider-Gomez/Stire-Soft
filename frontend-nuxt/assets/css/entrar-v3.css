@@ -1,0 +1,111 @@
+/* Entrada v3 (Fase C; cuadros «Entrar» y «Entrar-celular» del lienzo): tarjeta, campos, botones y chips de
+   pages/auth/login.vue, con los tokens de temas.css para que funcionen en claro, oscuro y alto contraste. */
+/* La tarjeta turquesa que asoma detrás, girada, como en el logo. */
+.tarjeta-atras {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #5fe3d1, #00a892);
+  transform: rotate(5deg) translate(18px, -6px);
+}
+@media (min-width: 640px) {
+  .tarjeta-entrar { box-shadow: 0 30px 70px rgba(15, 23, 42, 0.14); }
+}
+.mascota-entrar {
+  position: absolute;
+  top: -92px;
+  right: 34px;
+  z-index: 2;
+  filter: drop-shadow(0 6px 6px rgba(20, 33, 61, 0.18));
+}
+.globo-entrar {
+  position: absolute;
+  right: calc(100% + 8px);
+  top: 4px;
+  white-space: nowrap;
+  padding: 8px 12px;
+  border-radius: 14px 14px 4px 14px;
+  background: rgb(var(--c-base-blanco));
+  color: rgb(var(--c-base-texto-primario));
+  box-shadow: 0 8px 24px rgba(20, 33, 61, 0.14);
+  font-size: 13px;
+  font-weight: 600;
+}
+.pestanas-entrar { background: rgb(var(--c-base-bg-secundario)); }
+.pestana-activa {
+  background: rgb(var(--c-base-blanco));
+  color: rgb(var(--c-base-texto-primario));
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+.campo-entrar {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgb(var(--c-base-borde-fuerte));
+  background: rgb(var(--c-base-blanco));
+  color: rgb(var(--c-base-texto-primario));
+  font-size: 16px;
+  font-weight: 500;
+}
+.campo-entrar::placeholder { color: rgb(var(--c-base-texto-secundario)); font-weight: 400; }
+.campo-entrar:focus { outline: 3px solid rgb(var(--c-sec-menta) / 0.45); outline-offset: 1px; border-color: rgb(var(--c-sec-menta)); }
+.campo-entrar.campo-con-error { border-color: rgb(var(--c-semantico-falla)); }
+/* El botón principal: azul noche con letra blanca; en oscuro se invierte (claro sobre la tarjeta oscura). */
+.boton-entrar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  border-radius: 13px;
+  font-size: 16px;
+  font-weight: 700;
+  background: rgb(var(--c-base-texto-primario));
+  color: rgb(var(--c-base-blanco));
+  transition: transform 0.15s ease;
+}
+.boton-entrar:not(:disabled):active { transform: scale(0.98); }
+.boton-secundario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  border-radius: 13px;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid rgb(var(--c-base-borde-fuerte));
+  background: rgb(var(--c-base-blanco));
+  color: rgb(var(--c-base-texto-primario));
+}
+.boton-secundario:hover { background: rgb(var(--c-base-bg-secundario)); }
+.chip-demo {
+  min-height: 30px;
+  padding: 0 11px;
+  border-radius: 999px;
+  border: 1px solid;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgb(var(--c-base-texto-primario));
+}
+/* Se ve de 30 px como en el cuadro, pero se toca en 44 px (LECCIONES §D, regla 11). */
+.chip-demo { position: relative; }
+.chip-demo::after { content: ''; position: absolute; inset: -7px 0; }
+.chip-menta { background: rgb(var(--c-sec-menta-fondo)); border-color: rgb(var(--c-sec-menta) / 0.35); }
+.chip-sol { background: rgb(var(--c-sec-sol-fondo)); border-color: rgb(var(--c-sec-sol) / 0.35); }
+.chip-cielo { background: rgb(var(--c-sec-cielo-fondo)); border-color: rgb(var(--c-sec-cielo) / 0.35); }
+.aviso-clase { background: rgb(var(--c-sec-menta-fondo)); color: rgb(var(--c-base-texto-primario)); }
+.aviso-error { background: rgb(var(--c-semantico-falla) / 0.1); border: 2px solid rgb(var(--c-semantico-falla) / 0.45); color: rgb(var(--c-semantico-falla)); }
+.aviso-mayus { background: rgb(var(--c-sec-sol-fondo)); color: rgb(var(--c-base-texto-primario)); }
+.aviso-enter-active,
+.aviso-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.aviso-enter-from,
+.aviso-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .boton-entrar { transition: none; }
+}

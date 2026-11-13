@@ -118,7 +118,7 @@ describe('el logo es el mismo personaje y el nombre es STIRE', () => {
     // 12/11, Jeider: con «:global(:root[…]) .logo-stire» Vue deja solo «:root[…]» y el nombre seguía oscuro en el tema oscuro.
     expect(logo).not.toMatch(/:global\(:root/);
     expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutLogo con-nombre />');
-    expect(leer('layouts', 'auth.vue')).toContain('<LayoutLogo con-nombre />');
+    expect(leer('layouts', 'auth.vue')).toContain('<LayoutLogo tamano="grande" con-nombre />');
     expect(leer('pages', 'ayuda.vue')).toContain('<LayoutLogo con-nombre claro />');
     expect(leer('components', 'layout', 'MarcaST.vue')).toContain('<LayoutLogo :tamano="tamano" />');
     // sin agrandarse al pasar el puntero
@@ -231,8 +231,9 @@ describe('el Tutor en la retroalimentación, con su globo; el pie y la letra', (
     expect(g).toMatch(/>\s*Tutor\s*</);
     expect(leer('components', 'tutor', 'LanzadorTutor.vue')).toContain('<TutorGlobo cola="abajo-derecha" superficie="flotante">');
   });
-  it('el pie firma con el logo y el nombre, en la app y en las pantallas de acceso', () => {
+  it('el pie firma con el logo y el nombre en la app; en las pantallas de acceso, el logo va arriba', () => {
     expect(leer('components', 'layout', 'FooterBar.vue')).toContain('<LayoutLogo tamano="mini" con-nombre />');
-    expect(leer('layouts', 'auth.vue')).toContain('<LayoutLogo tamano="mini" con-nombre />');
+    // v3 (12/11, cuadro «Entrar»): el pie de la entrada no repite el logo y dice para quién es STIRE
+    expect(leer('layouts', 'auth.vue')).toContain('Para mayores de 18 años');
   });
 });

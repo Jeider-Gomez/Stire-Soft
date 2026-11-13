@@ -1,34 +1,37 @@
 <template>
-  <div class="relative min-h-screen flex flex-col justify-between overflow-x-hidden text-slate-800 selection:bg-stire-teal/30 selection:text-stire-blue">
-    <LayoutFondoTecnologico />
-
-    <!-- Encabezado: logo de STIRE y el nombre de la institución (prototipo de José) -->
-    <header class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-8 pt-4 pb-2 sm:pt-6 sm:pb-3 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <LayoutLogo con-nombre />
-      </div>
-      <div class="text-xs text-slate-600 font-medium text-center sm:text-right">
-        <span class="text-slate-800 font-semibold">Universidad de Córdoba</span>
-        <span class="mx-2 text-teal-300 font-bold" aria-hidden="true">•</span>
-        <span class="text-stire-blue">Sistema Tutor Inteligente</span>
-      </div>
+  <!-- v3 (Fase C; cuadro «Entrar» del lienzo): fondo claro con un halo menta detrás de la tarjeta, el logo a la
+       izquierda, la institución al centro y Apariencia a la derecha. El pie lleva Términos, Privacidad, el manual y
+       «Para mayores de 18 años» (desde el 22/10 STIRE es solo para mayores de edad). -->
+  <div class="fondo-entrar relative min-h-screen flex flex-col overflow-x-hidden text-base-texto-primario">
+    <header class="w-full px-4 sm:px-12 min-h-[64px] sm:min-h-[76px] flex items-center justify-between gap-x-4 gap-y-1 py-3">
+      <NuxtLink to="/" class="inline-flex items-center min-h-[44px]" aria-label="STIRE, ir al inicio">
+        <LayoutLogo tamano="grande" con-nombre />
+      </NuxtLink>
+      <p class="hidden sm:block text-center text-[13px] font-semibold">
+        Universidad de Córdoba <span class="text-sec-menta" aria-hidden="true">•</span> Sistema Tutor Inteligente
+      </p>
+      <LayoutBotonApariencia />
     </header>
 
-    <!-- Contenedor central de la tarjeta -->
-    <main class="relative z-10 flex-1 flex items-center justify-center px-4 py-3 sm:py-6">
+    <main class="flex-1 flex items-center justify-center px-4 sm:px-12 lg:px-24 pb-8">
       <slot />
     </main>
 
-    <!-- Pie con la misma firma que el de la aplicación (components/layout/FooterBar.vue). -->
-    <footer class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-8 py-4 border-t border-slate-200/90 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
-      <div class="flex items-center gap-2.5">
-        <LayoutLogo tamano="mini" con-nombre />
-        <span>© 2026 · Universidad de Córdoba</span>
-      </div>
-      <div class="flex items-center gap-3">
-        <span>Accesible (WCAG 2.1 AA)</span>
-        <NuxtLink to="/ayuda" class="font-semibold text-stire-blue hover:underline">Manual de usuario</NuxtLink>
-      </div>
+    <footer class="w-full px-4 sm:px-12 pb-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-base-texto-secundario">
+      <NuxtLink to="/terminos" class="underline">Términos</NuxtLink>
+      <NuxtLink to="/privacidad" class="underline">Privacidad</NuxtLink>
+      <NuxtLink to="/ayuda" class="underline">Manual de usuario</NuxtLink>
+      <span>· Accesible (WCAG 2.1 AA) · © 2026 Universidad de Córdoba</span>
+      <span class="sm:ml-auto">Para mayores de 18 años</span>
     </footer>
   </div>
 </template>
+
+<style scoped>
+.fondo-entrar {
+  background:
+    radial-gradient(circle at 78% 30%, rgb(var(--c-sec-menta-fondo)) 0, transparent 38%),
+    rgb(var(--c-base-bg-primario));
+}
+.text-sec-menta { color: rgb(var(--c-sec-menta)); }
+</style>

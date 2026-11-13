@@ -70,12 +70,13 @@ export const MANUAL: SeccionManual[] = [
         paraQue: 'Para empezar a usar STIRE desde el computador o el celular.',
         pasos: [
           'Abre stire-soft.vercel.app en el navegador.',
-          'Si no tienes cuenta, toca «Regístrate aquí», escribe tu «Nombre completo», «Correo» y «Contraseña», y toca «Crear cuenta».',
-          'Si ya tienes cuenta, escribe tu correo y tu contraseña y toca «Ingresar a la plataforma».',
+          'Si tu docente te dio el código de una clase, toca «Tengo un código», escríbelo y toca «Seguir»: al entrar o crear la cuenta quedas en esa clase.',
+          'Si no tienes cuenta, toca «Crear cuenta», escribe tu «Nombre completo», «Correo» y «Contraseña», y toca «Crear cuenta».',
+          'Si ya tienes cuenta, escribe tu correo y tu contraseña y toca «Entrar».',
         ],
         resultado: 'Llegas a tu inicio.',
         consejo: 'La primera vez en cada pantalla, un recorrido corto te muestra sus partes. Para verlo otra vez, toca «?» arriba a la derecha.',
-        siAlgoSaleMal: [{ problema: 'No recuerdo mi contraseña', solucion: 'En la pantalla de entrada, toca «¿Olvidaste tu clave?».' }],
+        siAlgoSaleMal: [{ problema: 'No recuerdo mi contraseña', solucion: 'En la pantalla de entrada, toca «¿Olvidaste tu contraseña?».' }],
       },
       {
         id: 'pedir-ayuda',

@@ -176,9 +176,10 @@ describe('Ajustes de Jeider (02/10): ventanas con scroll, aviso de rol, menú y 
     }
   });
 
-  it('login: marca al lado del título en computador, foco tras un error y ayuda de recuperación en su página', () => {
+  it('login: dos formas de entrar, foco tras un error y ayuda de recuperación en su página', () => {
     const l = leer('pages', 'auth', 'login.vue');
-    expect(l).toContain('flex flex-col lg:flex-row items-center');
+    // v3 (12/11, cuadro «Entrar»): la marca va en la cabecera y la tarjeta tiene «Tengo un código» y «Ya tengo cuenta»
+    expect(l).toContain('role="tablist" aria-label="Forma de entrar"');
     expect(l).toContain('passwordRef.value?.focus()');
     // v2.0.0 (PAT-03): el error de cada campo va primero; si no hay, el error general del servidor
     expect(l).toContain(":aria-describedby=\"faltan.email ? 'email-falta' : errorMessage ? 'login-error' : undefined\"");
