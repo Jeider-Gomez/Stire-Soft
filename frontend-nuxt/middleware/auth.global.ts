@@ -41,8 +41,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // 2. Sin token → redirigir al login
   // (guarda a dónde iba: el QR de una clase lleva a /estudiante/clases?codigo=…, y tras entrar debe volver ahí)
+  // (v3, Fase C: sin sesión, la raíz es la página de inicio pública, pages/index.vue)
   if (!authStore.isAuthenticated) {
-    return navigateTo(to.fullPath === '/' ? '/auth/login' : { path: '/auth/login', query: { volver: to.fullPath } })
+    if (to.path === '/') return
+    return navigateTo({ path: '/auth/login', query: { volver: to.fullPath } })
   }
 
   // 2b. Público de 18 años o más: quien no ha aceptado los términos vigentes los acepta antes de seguir (utils/legal.ts).

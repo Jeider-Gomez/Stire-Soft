@@ -19,7 +19,7 @@ carpeta. Sirve para no pisarse: quién está tocando qué, qué se terminó y qu
 
 | Desde | Quién | Qué | Archivos |
 |---|---|---|---|
-| — | — | (nadie) | — |
+| 13/11 | Chat de la Fase C | Fase C, paso 2: página de inicio pública (cuadros Pagina-inicio y Pagina-inicio-celular) | `pages/index.vue`, `components/presentacion/` y sus pruebas |
 
 > Si dejas cambios sin guardar al irte, anótalo aquí con los archivos, para que el siguiente sepa de quién son.
 

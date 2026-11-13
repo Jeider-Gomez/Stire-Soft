@@ -70,6 +70,13 @@ descarta la auditoría de la Fase 1; hasta entonces es **hipótesis**.
 Portada (`/`), iniciar sesión, crear cuenta (18+ y una casilla de términos), recuperar contraseña, términos,
 privacidad, aceptar términos, manual de usuario (`/ayuda`), recorridos guiados, menú «?», atajos de teclado.
 
+**v3 (13/11, Fase C):**
+- La portada `/` es una página pública (`pages/index.vue`, `components/presentacion/`): video de presentación con
+  subtítulos y transcripción, cómo funciona, cómo enseña el Tutor, repasos, docentes, accesibilidad y «¿Tienes el código
+  de tu clase?». Con sesión abierta sigue llevando al panel del rol.
+- Entrar (`/auth/login`) tiene «Tengo un código» (guarda la clase como el QR), «Solo mirar» y «¿Qué es STIRE?» con el
+  video. `?forma=codigo` abre el código; el registro acepta `?rol=docente`.
+
 ## 5. Servidor (NestJS, 49 tablas)
 
 | Bloque | Módulos |

@@ -293,7 +293,7 @@ const fullName = ref('')
 const email = ref('')
 const password = ref('')
 const classCode = ref('')
-const selectedRole = ref<'estudiante' | 'docente'>('estudiante')
+const selectedRole = ref<'estudiante' | 'docente'>(route.query.rol === 'docente' ? 'docente' : 'estudiante') // «Soy docente» de la página de inicio
 const teacherReason = ref('')
 const apiKey = ref('')
 const showApiKey = ref(false)

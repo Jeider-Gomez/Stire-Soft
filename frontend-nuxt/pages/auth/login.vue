@@ -186,7 +186,7 @@ const PESTANAS = [
   { id: 'codigo', texto: 'Tengo un código' },
   { id: 'cuenta', texto: 'Ya tengo cuenta' },
 ] as const
-const pestana = ref<'codigo' | 'cuenta'>('cuenta')
+const pestana = ref<'codigo' | 'cuenta'>(route.query.forma === 'codigo' ? 'codigo' : 'cuenta') // «Unirme a una clase» abre el código
 function cambiarPestana() {
   pestana.value = pestana.value === 'cuenta' ? 'codigo' : 'cuenta'
   nextTick(() => document.getElementById(`pestana-${pestana.value}`)?.focus())
