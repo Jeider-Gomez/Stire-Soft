@@ -1,15 +1,15 @@
 <!-- Barra de abajo del estudiante en el celular (v3, Fase B; cuadro E-Cel-Inicio del lienzo): Inicio, Aprender, Repasos,
-     Progreso y el Tutor, siempre a un toque. «Aprender» abre el menú con el plan del curso, que es donde está hoy; el
-     resto sigue en ese menú (☰ arriba). En una lección no se muestra: allí va la barra de la lección
+     Progreso y el Tutor, siempre a un toque. «Aprender» lleva a su pantalla (Fase D, 13/11); el
+     resto sigue en el menú (☰ arriba). En una lección no se muestra: allí va la barra de la lección
      (EstudianteNavegacionLeccion), que ya trae al Tutor. -->
 <template>
   <nav aria-label="Menú principal" class="barra-inferior">
     <NuxtLink to="/estudiante" class="tono-menta" :class="{ activo: route.path === '/estudiante' }" :aria-current="route.path === '/estudiante' ? 'page' : undefined">
       <span class="pildora"><House :size="19" aria-hidden="true" /></span>Inicio
     </NuxtLink>
-    <button type="button" class="tono-cielo" :aria-expanded="sidebarOpen" @click="toggle">
+    <NuxtLink to="/estudiante/aprender" class="tono-cielo" :class="{ activo: route.path === '/estudiante/aprender' }" :aria-current="route.path === '/estudiante/aprender' ? 'page' : undefined">
       <span class="pildora"><BookOpen :size="19" aria-hidden="true" /></span>Aprender
-    </button>
+    </NuxtLink>
     <NuxtLink to="/estudiante/repasos" class="tono-sol" :class="{ activo: route.path === '/estudiante/repasos' }" :aria-current="route.path === '/estudiante/repasos' ? 'page' : undefined">
       <span class="pildora">
         <Repeat :size="19" aria-hidden="true" />
@@ -34,6 +34,5 @@ import { useTutorStore } from '~/stores/tutor'
 const route = useRoute()
 const tutorStore = useTutorStore()
 const studentStore = useStudentStore()
-const { sidebarOpen, toggle } = useMobileSidebar()
 const pendientes = computed(() => studentStore.reviewsDueToday.length)
 </script>

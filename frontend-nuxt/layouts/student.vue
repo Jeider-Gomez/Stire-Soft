@@ -11,6 +11,8 @@
       @click="closeSidebar"
     />
     <LayoutSidebarNav :class="sidebarClass" />
+    <!-- Al estudiar una lección: el menú queda en íconos y al lado va el curso entero (v3, cuadro «E-Leccion»). -->
+    <EstudianteContenidoCurso v-if="enLeccion" />
 
     <!-- Zona A + C + E: encabezado, contenido y pie, a la derecha del menú -->
     <!-- En el celular, el espacio de la barra de abajo (LayoutBarraInferior, 72 px) para que no tape el pie. -->

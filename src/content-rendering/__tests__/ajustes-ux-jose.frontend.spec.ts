@@ -57,7 +57,8 @@ describe('Ajustes de UI/UX de José', () => {
     const menu = leer('components', 'layout', 'SidebarNav.vue');
     // El estado recordado vive desde el 26/10 en useMenuColapsado.ts.
     expect(menu).toContain(':aria-expanded="!colapsado"');
-    expect(leer('composables', 'useMenuColapsado.ts')).toContain("localStorage.setItem(CLAVE_MENU, colapsado.value ? '1' : '0')");
+    // v3 (Fase D, 13/11): se recuerda lo que eligió; en una lección va en íconos sin cambiar esa elección.
+    expect(leer('composables', 'useMenuColapsado.ts')).toContain("localStorage.setItem(CLAVE_MENU, elegido.value ? '1' : '0')");
     expect(menu).toContain('clip: rect(0 0 0 0)');
     expect(menu).not.toMatch(/<Settings[^>]*\/>\s*<Settings/);
   });

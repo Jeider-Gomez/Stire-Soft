@@ -56,7 +56,8 @@ describe('MOD-01: el plan del curso en la barra lateral', () => {
     const menu = leer('components', 'layout', 'SidebarNav.vue');
     // 26/10 (Jeider): abierto ocupaba tanto que alejaba el resto; ahora los accesos van juntos arriba y el plan debajo.
     expect(menu.indexOf('<span>Inicio</span>')).toBeLessThan(menu.indexOf('<span>Repasos</span>'));
-    expect(menu.indexOf('to="/estudiante/mensajes"')).toBeLessThan(menu.indexOf('<LayoutPlanDelCurso data-recorrido="plan" />'));
+    // v3 (Fase D, 13/11): en una lección no se muestra, porque el curso está al lado en «Contenido del curso».
+    expect(menu.indexOf('to="/estudiante/mensajes"')).toBeLessThan(menu.indexOf("<LayoutPlanDelCurso v-if=\"!route.path.startsWith('/estudiante/unidad/') && route.path !== '/estudiante/aprender'\" data-recorrido=\"plan\" />"));
     // 17/10, segunda vuelta (Jeider): un solo scroll, el de la barra; nada de un scroll dentro del plan.
     expect(leer('components', 'layout', 'PlanDelCurso.vue')).not.toMatch(/overflow-y-auto|max-h-/);
     expect(menu).not.toContain('openModules');

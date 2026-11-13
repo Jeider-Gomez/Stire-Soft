@@ -30,7 +30,7 @@
     <div class="space-y-4">
       <!-- 🎓 NAVEGACIÓN ESTUDIANTE (6 Ítems Persistentes - Insumo 15 §5) -->
       <!-- v3 (Fase B; prototipo E-Inicio): la clase activa arriba y las seis secciones del prototipo, cada una con su
-           color. «Aprender» abre el plan del curso (que sigue al final del menú, Jeider 26/10) hasta que exista su pantalla;
+           color. «Aprender» lleva a su pantalla (Fase D); el plan del curso sigue al final del menú (Jeider 26/10);
            «Mi clase» reúne Mi asistencia y Mensajes, lo que el prototipo pone en sus pestañas (Fase D). -->
       <nav v-if="authStore.currentRole === 'estudiante'" class="menu-v3 text-sm">
         <NuxtLink v-if="studentStore.currentClassName" to="/estudiante/clases" class="clase-menu"
@@ -49,10 +49,11 @@
           <span>Inicio</span>
         </NuxtLink>
 
-        <button type="button" class="item-menu tono-cielo text-left" :class="{ activo: enAprender }" :aria-expanded="planAbierto" aria-controls="plan-del-curso" @click="planAbierto = !planAbierto">
+        <!-- v3 (Fase D, 13/11): «Aprender» ya es su pantalla (cuadro «E-Aprender»); el plan sigue al final del menú. -->
+        <NuxtLink to="/estudiante/aprender" class="item-menu tono-cielo" :class="{ activo: enAprender }" :aria-current="route.path === '/estudiante/aprender' ? 'page' : undefined">
           <span class="icono-menu"><BookOpen :size="18" aria-hidden="true" /></span>
           <span>Aprender</span>
-        </button>
+        </NuxtLink>
 
         <!-- La cuenta = repasos que tocan HOY (vencidos o críticos); los de mañana no son urgentes. -->
         <NuxtLink to="/estudiante/repasos" data-recorrido="repasos" class="item-menu tono-sol" :class="{ activo: route.path === '/estudiante/repasos' }">
@@ -94,7 +95,8 @@
         <!-- Plan del curso al final (Jeider, 26/10: «al abrir el plan abarca mucho espacio y quedan lejos las demás
              cosas»): Inicio, Repasos, Progreso, Asistencia y Mensajes quedan juntos arriba y el plan, que es largo, debajo.
              Para saltar de lección sin bajar está «Ir a una lección» (Ctrl+K). components/layout/PlanDelCurso.vue. -->
-        <LayoutPlanDelCurso data-recorrido="plan" />
+        <!-- En una lección el curso ya está al lado («Contenido del curso») y en «Aprender» es la pantalla: no se repite. -->
+        <LayoutPlanDelCurso v-if="!route.path.startsWith('/estudiante/unidad/') && route.path !== '/estudiante/aprender'" data-recorrido="plan" />
       </nav>
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
@@ -210,9 +212,8 @@ const siglaClase = computed(() => {
   const id = studentStore.currentClassId ?? 0
   return siglasDeClases([{ id, name: studentStore.currentClassName }])[id] ?? ''
 })
-/** «Aprender» abre y cierra el plan del curso (el mismo estado que PlanDelCurso.vue) y se marca dentro de una lección. */
-const planAbierto = useState('plan-abierto', () => true)
-const enAprender = computed(() => route.path.startsWith('/estudiante/unidad/') || route.path.startsWith('/estudiante/evaluacion/'))
+/** «Aprender» se marca en su pantalla y dentro de una lección o un ejercicio. */
+const enAprender = computed(() => route.path === '/estudiante/aprender' || route.path.startsWith('/estudiante/unidad/') || route.path.startsWith('/estudiante/evaluacion/'))
 /** «Mi clase» reúne Mi asistencia y Mensajes; se abre sola cuando está en una de ellas. */
 const enMiClase = computed(() => route.path === '/estudiante/asistencia' || route.path === '/estudiante/mensajes')
 const miClaseAbierta = ref(enMiClase.value)
@@ -273,7 +274,8 @@ const enAdmin = (...rutas: string[]) => rutas.includes(route.path)
   }
   .menu-colapsado .clase-menu > svg { display: none; }
   .menu-colapsado a span:not(.icono-menu):not(.siglas-clase),
-  .menu-colapsado button:not(.expandir-logo) span {
+  /* El ícono de «Aprender» y «Mi clase» (botones) también es un span: sin este :not, se aplastaba a 1 px plegado. */
+  .menu-colapsado button:not(.expandir-logo) span:not(.icono-menu):not(.siglas-clase) {
     position: absolute;
     width: 1px;
     height: 1px;
