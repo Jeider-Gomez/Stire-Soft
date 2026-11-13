@@ -33,9 +33,12 @@ describe('fuerza de la clave al registrarse', () => {
     }
   });
 
-  it('la barra usa los tokens de STIRE (fuerte: el degradado de la marca), dice el nivel en palabras y deja las reglas', () => {
+  it('la barra usa los colores v3 de temas.css (buena y fuerte en menta), dice el nivel en palabras y deja las reglas', () => {
     const v = leer('components', 'auth', 'FuerzaClave.vue');
-    expect(v).toContain("4: 'bg-gradient-to-r from-stire-blue to-stire-purple'");
+    expect(v).toContain("4: '--c-sec-menta'");
+    // v3 (13/11): también la nueva contraseña la usa, sin «repite la contraseña»
+    expect(leer('pages', 'auth', 'reset-password.vue')).toContain('<AuthFuerzaClave id="reglas-clave"');
+    expect(leer('pages', 'auth', 'reset-password.vue')).not.toContain('confirmPassword');
     expect(v).toContain('{{ fuerza.texto }}');
     expect(v).toContain('v-for="regla in reglas"');
     expect(v).not.toMatch(/#[0-9a-fA-F]{3,6}/);

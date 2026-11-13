@@ -3,7 +3,7 @@
        izquierda, la institución al centro y Apariencia a la derecha. El pie lleva Términos, Privacidad, el manual y
        «Para mayores de 18 años» (desde el 22/10 STIRE es solo para mayores de edad). -->
   <div class="fondo-entrar relative min-h-screen flex flex-col overflow-x-hidden text-base-texto-primario">
-    <header class="w-full px-4 sm:px-12 min-h-[64px] sm:min-h-[76px] flex items-center justify-between gap-x-4 gap-y-1 py-3">
+    <header class="cabecera-entrar w-full px-4 sm:px-12 min-h-[64px] sm:min-h-[76px] flex items-center justify-between gap-x-4 gap-y-1 py-3">
       <NuxtLink to="/" class="inline-flex items-center min-h-[44px]" aria-label="STIRE, ir al inicio">
         <LayoutLogo tamano="grande" con-nombre />
       </NuxtLink>

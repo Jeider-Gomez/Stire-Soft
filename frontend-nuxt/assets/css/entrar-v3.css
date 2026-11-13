@@ -109,3 +109,12 @@
 @media (prefers-reduced-motion: reduce) {
   .boton-entrar { transition: none; }
 }
+
+/* Pantallas bajas (un portátil de 1366×657): menos aire para que «Entrar» y «Crear mi cuenta» se vean sin bajar
+   (BT-27, LECCIONES §B). Va al final para ganarle a las clases de Tailwind con la misma especificidad. */
+@media (min-width: 640px) and (max-height: 760px) {
+  .cabecera-entrar { min-height: 60px; }
+  .campo-entrar { min-height: 44px; }
+  .tarjeta-entrar, .tarjeta-entrar form, .tarjeta-entrar form > div { gap: 10px; }
+  .boton-entrar, .boton-secundario { min-height: 46px; }
+}

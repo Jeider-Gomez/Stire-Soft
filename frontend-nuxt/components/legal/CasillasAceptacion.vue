@@ -7,9 +7,9 @@
       <input id="acepta-condiciones" v-model="todo" type="checkbox" class="casilla" :aria-invalid="falta && !todo || undefined" />
       <span>
         Tengo <strong>18 años o más</strong> y acepto los
-        <NuxtLink to="/terminos" target="_blank" class="font-semibold text-stire-blue underline">términos</NuxtLink>
+        <NuxtLink to="/terminos" target="_blank" class="font-semibold underline enlace-legal">términos</NuxtLink>
         y la
-        <NuxtLink to="/privacidad" target="_blank" class="font-semibold text-stire-blue underline">política de datos</NuxtLink>,
+        <NuxtLink to="/privacidad" target="_blank" class="font-semibold underline enlace-legal">política de datos</NuxtLink>,
         incluido el uso de mis datos de aprendizaje, sin mi nombre, con fines investigativos.
       </span>
     </label>
@@ -35,6 +35,10 @@ const todo = computed({
 
 <style scoped>
 .casilla {
-  @apply mt-0.5 w-5 h-5 shrink-0 rounded border-slate-400 text-stire-blue focus:ring-2 focus:ring-stire-blue/40;
+  @apply mt-0.5 w-5 h-5 shrink-0 rounded focus:ring-2;
+  /* v3: la casilla toma el azul noche de la tinta (en oscuro, la tinta clara) */
+  accent-color: rgb(var(--c-base-texto-primario));
+  --tw-ring-color: rgb(var(--c-sec-menta) / 0.45);
 }
+.enlace-legal { color: rgb(var(--c-base-texto-primario)); }
 </style>

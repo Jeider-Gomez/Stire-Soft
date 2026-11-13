@@ -60,6 +60,13 @@ export function rutaDeVuelta(valor: unknown): string | null {
   return valor
 }
 
+/** El código de la clase que trae «volver» (el QR o «Tengo un código»), para mostrarlo mientras entra o crea la cuenta. */
+export function codigoDeLaVuelta(volver: unknown): string | null {
+  const v = rutaDeVuelta(volver)
+  const m = v ? /^\/estudiante\/clases\?codigo=([^&]+)/.exec(v) : null
+  return m ? decodeURIComponent(m[1]) : null
+}
+
 /**
  * El código que trae un QR escaneado dentro de la app: el enlace de STIRE (…/estudiante/clases?codigo=X) o, en un QR
  * antiguo, el código suelto. Cualquier otro enlace se ignora (no se sigue un QR ajeno).

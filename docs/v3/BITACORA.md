@@ -19,7 +19,7 @@ carpeta. Sirve para no pisarse: quién está tocando qué, qué se terminó y qu
 
 | Desde | Quién | Qué | Archivos |
 |---|---|---|---|
-| 13/11 | Chat de la Fase C | Fase C, paso 2: página de inicio pública (cuadros Pagina-inicio y Pagina-inicio-celular) | `pages/index.vue`, `components/presentacion/` y sus pruebas |
+| — | — | (nadie) | — |
 
 > Si dejas cambios sin guardar al irte, anótalo aquí con los archivos, para que el siguiente sepa de quién son.
 
@@ -27,6 +27,7 @@ carpeta. Sirve para no pisarse: quién está tocando qué, qué se terminó y qu
 
 | # | Qué | Dónde | Fase |
 |---|---|---|---|
+| P-13 | «Unirme con un código»: al escribirlo, ver la clase (nombre y docente) antes de unirse, como el cuadro «Entrar-estados». Necesita un punto público del servidor que diga solo el nombre de la clase y del docente por su código, con límite de intentos | `src/class/`, `pages/auth/login.vue` | C |
 | P-12 | Entrar: falta «Recordarme en este equipo» (necesita servidor: sesión larga); las reacciones finas de la mascota (persiana, @ que falta, se duerme) van con `useMascotaEntrar` | `pages/auth/login.vue`, `components/auth/MascotaEntrar.vue` | C |
 | P-1 | El cuadro D3-Clase del lienzo aún pone la Biblioteca al final; en la app ya va debajo de «Mis clases» | `scripts/diseno-v3/generador/proto_est2.mjs` (`lateralD`) | B |
 | P-2 | «Sigue donde ibas» y «Asistencia abierta» en el menú del estudiante: falta el dato (pasado a la Fase D) | backend + `SidebarNav.vue` | D |
@@ -42,6 +43,8 @@ carpeta. Sirve para no pisarse: quién está tocando qué, qué se terminó y qu
 
 | Fecha | Qué | Commit |
 |---|---|---|
+| 13/11 | Fase C, paso 3: Crear cuenta, ¿Olvidaste tu contraseña? y Nueva contraseña con el marco de Entrar (`AuthMarcoEntrar`) y los estados del cuadro «Entrar-estados»: «Abriendo tu inicio…» con la mascota, error con salida, código con «Unirme a la clase», fuerza de la clave en menta y reglas como pastillas. «Crear mi cuenta» se ve sin bajar en 1366×657 y 390×844 | ver `git log` («Crear cuenta») |
+| 13/11 | Fase C, paso 2: página de inicio pública como los cuadros «Pagina-inicio» (video, cómo funciona, cómo enseña, repasos, docentes, accesibilidad y el código de la clase); `/` sin sesión ya no salta a Entrar | `75c340f5` |
 | 13/11 | Fase C, paso 1: Entrar como el cuadro «Entrar» (tarjeta con la turquesa detrás, mascota que reacciona, «Tengo un código» que guarda la clase como el QR, «Solo mirar» sutil, 44 px) y el video «¿Qué es STIRE?» con subtítulos y transcripción | ver `git log` (dos commits del 13/11) |
 | 12/11 | La libreta del Asistente (dibujo del lienzo) en la barra de abajo del docente, como el Tutor en la del estudiante (pedido de Jeider) | ver `git log` («la libreta del Asistente») |
 | 12/11 | Cierre de la Fase B (falta el visto bueno de Jeider y `verify:clean`): enlaces del texto subrayados en todos los temas; Buscar (Ctrl K) para docente y administrador (pantallas, clases y ayuda); barra de abajo del docente en el celular; el Asistente deja su espacio a la página como el Tutor; la barra de arriba se compacta con un panel abierto; cabecera del Tutor blanca, no morada | ver `git log` (cuatro commits del 12/11 de la tarde) |

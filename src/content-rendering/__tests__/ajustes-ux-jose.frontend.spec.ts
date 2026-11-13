@@ -72,14 +72,17 @@ describe('Ajustes de UI/UX de José', () => {
     for (const id of ['classCode', 'teacherReason', 'apiKey']) expect(r.indexOf(`id="${id}"`)).toBeGreaterThan(p2);
     // sin «confirmar contraseña»: el ojo para ver la clave cumple esa función
     expect(r).not.toContain('confirmPassword');
-    expect(r).toContain(`<div v-if="selectedRole === 'estudiante'" class="border border-slate-200 rounded-xl p-3 space-y-2 bg-white">`);
+    // v3 (13/11, cuadro «Entrar-estados»): la clave de Google sigue solo para estudiantes, con el estilo nuevo
+    expect(r).toContain(`<div v-if="selectedRole === 'estudiante'" class="caja-clave flex flex-col gap-2 p-3 rounded-xl">`);
     expect(r).toContain("if (selectedRole.value === 'estudiante' && apiKey.value.trim())");
     // «Crear cuenta» se puede pulsar desde el paso 1; ir a lo opcional valida primero
-    expect(r).toMatch(/type="submit"[\s\S]*?Crear cuenta/);
+    expect(r).toMatch(/type="submit"[\s\S]*?Crear mi cuenta/);
     expect(r).toContain('id="ir-opcional"');
     expect(r).toContain('if (Object.keys(validar()).length) { enfocarPrimerFaltante(); return }');
-    // el borde rojo debe ganarle al estilo del campo (.campo-auth es scoped y pisaba «border-red-400»)
-    expect(r).toContain("'!border-red-400 !ring-1 !ring-red-300'");
+    // el borde rojo debe ganarle al estilo del campo (antes .campo-auth scoped pisaba «border-red-400»); en la v3 es una
+    // regla con dos clases, más específica que la del campo (assets/css/entrar-v3.css)
+    expect(r).toContain(":class=\"{ 'campo-con-error': faltan.fullName }\"");
+    expect(leer('assets', 'css', 'entrar-v3.css')).toContain('.campo-entrar.campo-con-error { border-color: rgb(var(--c-semantico-falla)); }');
     expect(leer('pages', 'auth', 'login.vue')).not.toMatch(/'border-red-400'/);
   });
 });

@@ -1,81 +1,64 @@
 <template>
-  <div class="w-full max-w-md">
-    <div class="relative bg-base-blanco/95 rounded-3xl border border-slate-200/90 p-8 shadow-xl shadow-stire-blue/10 backdrop-blur-2xl overflow-hidden animar-entrada">
-      <div class="absolute top-0 inset-x-0 h-[3px] linea-marca" aria-hidden="true" />
-      <div class="text-center mb-6">
-        <LayoutMarcaST tamano="grande" class="mx-auto mb-3.5" />
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Elige tu contraseña nueva</h1>
-      </div>
-
-      <!-- Enlace sin token -->
-      <div v-if="!token" role="alert" class="p-4 rounded-md bg-semantico-falla/10 border border-semantico-falla/30 text-xs text-semantico-falla space-y-2">
-        <p class="font-bold">Este enlace no es válido.</p>
-        <p>Abre el enlace completo que te llegó por correo o solicita uno nuevo.</p>
-        <NuxtLink to="/auth/forgot-password" class="inline-block font-semibold underline">Solicitar un enlace nuevo</NuxtLink>
-      </div>
-
-      <!-- Listo -->
-      <div v-else-if="done" role="status" class="p-4 rounded-md bg-semantico-pasa/10 border border-semantico-pasa/30 text-xs space-y-3">
-        <p class="font-bold text-semantico-pasa">Tu contraseña se actualizó.</p>
-        <p class="text-base-texto-primario">Ya puedes iniciar sesión con la nueva contraseña. Las sesiones abiertas en otros dispositivos se cerraron.</p>
-        <NuxtLink
-          to="/auth/login"
-          class="block text-center py-2.5 px-4 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold transition-colors shadow-sm">
-          Ir a iniciar sesión
-        </NuxtLink>
-      </div>
-
-      <template v-else>
-        <div v-if="errorMessage" role="alert" class="mb-4 p-3 rounded-md bg-semantico-falla/10 border border-semantico-falla/30 text-xs text-semantico-falla space-y-1">
-          <p class="flex items-center gap-2"><TriangleAlert :size="16" aria-hidden="true" /><span>{{ errorMessage }}</span></p>
-          <NuxtLink v-if="linkExpired" to="/auth/forgot-password" class="inline-block font-semibold underline">
-            Solicitar un enlace nuevo
-          </NuxtLink>
-        </div>
-
-        <form @submit.prevent="handleSubmit" class="space-y-4">
-          <div>
-            <label for="password" class="block text-xs font-semibold text-base-texto-primario mb-1">Contraseña nueva</label>
-            <input
-              id="password"
-              v-model="password"
-              type="password"
-              required
-              minlength="6"
-              autocomplete="new-password"
-              class="w-full px-3 py-2 text-xs rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
-            <p class="text-[11px] text-base-texto-secundario mt-1">
-              Mínimo 6 caracteres, con mayúscula, minúscula y un número o símbolo.
-            </p>
-          </div>
-
-          <div>
-            <label for="confirmPassword" class="block text-xs font-semibold text-base-texto-primario mb-1">Repite la contraseña</label>
-            <input
-              id="confirmPassword"
-              v-model="confirmPassword"
-              type="password"
-              required
-              autocomplete="new-password"
-              class="w-full px-3 py-2 text-xs rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none" />
-          </div>
-
-          <button
-            type="submit"
-            :disabled="isLoading"
-            class="w-full py-2.5 px-4 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors shadow-sm disabled:opacity-50">
-            <span v-if="isLoading">Guardando...</span>
-            <span v-else>Guardar contraseña</span>
-          </button>
-        </form>
-      </template>
+  <!-- v3 (Fase C): crear la contraseña nueva con el mismo marco que Entrar. Como en el registro (BT-27), sin «repite la
+       contraseña»: el ojo para verla y la barra de fuerza evitan el mismo error con la mitad del trabajo. -->
+  <AuthMarcoEntrar compacto :mascota="{ campo: enFoco ? 'password' : null, verClave, error: !!errorMessage, listo: done, pestana: 'cuenta' }">
+    <!-- Enlace sin token -->
+    <div v-if="!token" role="alert" class="flex flex-col gap-3">
+      <h1 class="m-0 font-poppins font-bold text-[24px]">Este enlace no sirve</h1>
+      <p class="m-0 text-[15px] text-base-texto-secundario">Abre el enlace completo que te llegó por correo o pide uno nuevo.</p>
+      <NuxtLink to="/auth/forgot-password" class="boton-entrar">Pedir un enlace nuevo</NuxtLink>
     </div>
-  </div>
+
+    <!-- Listo -->
+    <div v-else-if="done" role="status" class="flex flex-col items-center gap-3 text-center py-2">
+      <TutorMascota expresion="acierto" :tamano="72" aria-hidden="true" />
+      <h1 class="m-0 font-poppins font-bold text-[22px]">Tu contraseña está lista</h1>
+      <p class="m-0 text-[15px] leading-relaxed text-base-texto-secundario">Ya puedes entrar con ella. Las sesiones abiertas en otros dispositivos se cerraron.</p>
+      <NuxtLink to="/auth/login" class="boton-entrar w-full mt-1">Entrar</NuxtLink>
+    </div>
+
+    <template v-else>
+      <div>
+        <h1 class="m-0 font-poppins font-bold text-[24px] sm:text-[28px]">Crea tu contraseña nueva</h1>
+        <p class="mt-1 mb-0 text-[15px] text-base-texto-secundario">La usarás desde ahora para entrar a STIRE.</p>
+      </div>
+
+      <div v-if="errorMessage" role="alert" class="flex items-start gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold aviso-error">
+        <AlertCircle :size="18" class="shrink-0 mt-px" aria-hidden="true" />
+        <span>{{ errorMessage }}
+          <NuxtLink v-if="linkExpired" to="/auth/forgot-password" class="underline">Pide un enlace nuevo</NuxtLink></span>
+      </div>
+
+      <form novalidate class="flex flex-col gap-4" @submit.prevent="handleSubmit">
+        <div class="flex flex-col gap-1.5">
+          <label for="password" class="text-[15px] font-semibold">Contraseña nueva</label>
+          <div class="relative">
+            <input id="password" v-model="password" :type="verClave ? 'text' : 'password'" required autocomplete="new-password"
+              placeholder="Crea una contraseña" aria-describedby="reglas-clave" class="campo-entrar pr-12"
+              :class="{ 'campo-con-error': falta }" :aria-invalid="falta || undefined"
+              @focus="enFoco = true" @blur="enFoco = false" @input="falta = false" />
+            <button type="button" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center rounded-lg text-base-texto-secundario hover:text-base-texto-primario"
+              :aria-label="verClave ? 'Ocultar la contraseña' : 'Mostrar la contraseña'" :title="verClave ? 'Ocultar la contraseña' : 'Mostrar la contraseña'"
+              :aria-pressed="verClave" @click="verClave = !verClave">
+              <EyeOff v-if="verClave" :size="18" aria-hidden="true" />
+              <Eye v-else :size="18" aria-hidden="true" />
+            </button>
+          </div>
+          <AuthFuerzaClave id="reglas-clave" :clave="password" :falta="falta" />
+        </div>
+        <button type="submit" :disabled="isLoading" class="boton-entrar disabled:cursor-wait">
+          <span v-if="isLoading">Guardando…</span>
+          <span v-else>Guardar mi contraseña</span>
+        </button>
+      </form>
+    </template>
+  </AuthMarcoEntrar>
 </template>
 
 <script setup lang="ts">
-import { TriangleAlert } from 'lucide-vue-next'
+import { AlertCircle, Eye, EyeOff } from 'lucide-vue-next'
 import { useCuentaPublica } from '~/composables/useCuentaPublica'
+import { reglasDeClave } from '~/utils/fuerzaClave'
 
 definePageMeta({ layout: 'auth' })
 
@@ -83,7 +66,9 @@ const cuentaPublica = useCuentaPublica()
 const route = useRoute()
 const token = computed(() => String(route.query.token || ''))
 const password = ref('')
-const confirmPassword = ref('')
+const verClave = ref(false)
+const enFoco = ref(false)
+const falta = ref(false)
 const isLoading = ref(false)
 const errorMessage = ref('')
 const linkExpired = ref(false)
@@ -92,18 +77,16 @@ const done = ref(false)
 async function handleSubmit() {
   errorMessage.value = ''
   linkExpired.value = false
-  if (password.value !== confirmPassword.value) {
-    errorMessage.value = 'Las contraseñas no coinciden.'
-    return
-  }
+  // Las mismas reglas del servidor que se ven debajo del campo: si falta alguna, se marca en rojo y no se envía.
+  falta.value = !reglasDeClave(password.value).every((r) => r.cumple)
+  if (falta.value) { document.getElementById('password')?.focus(); return }
   isLoading.value = true
   try {
     await cuentaPublica.restablecerContrasena(token.value, password.value)
     done.value = true
   } catch (err) {
     // El código y el motivo del servidor, leídos sin «any» (composables/useApiErrorMessage.ts).
-    const { status, detail: m } = useApiErrorMessage().extract(err)
-    const text = m
+    const { status, detail: text } = useApiErrorMessage().extract(err)
     if (status === 429) {
       errorMessage.value = 'Demasiados intentos seguidos. Espera un minuto e inténtalo de nuevo.'
     } else {

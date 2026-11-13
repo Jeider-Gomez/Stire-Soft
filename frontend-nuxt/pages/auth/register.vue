@@ -1,284 +1,214 @@
 <template>
-  <div class="w-full max-w-[490px] lg:max-w-[760px] mx-auto">
-    <!-- Tarjeta del prototipo de José (misma que el inicio de sesión) -->
-    <div class="tarjeta-auth relative rounded-3xl p-5 sm:p-7 bg-base-blanco/95 border border-slate-200/90 backdrop-blur-2xl overflow-hidden animar-entrada">
-      <div class="absolute top-0 inset-x-0 h-[3px] linea-marca" aria-hidden="true" />
-
-      <!-- En computador la marca va al lado del título: el formulario cabe sin bajar en un portátil. -->
-      <div class="flex flex-col lg:flex-row items-center lg:gap-4 text-center lg:text-left mb-4">
-        <!-- En el celular la marca ya está en el encabezado: aquí se ocultaría espacio que necesita el formulario. -->
-        <LayoutMarcaST tamano="grande" :escudo="campoEnFoco === 'password'" class="hidden lg:flex shrink-0" />
-        <div>
-          <h1 class="text-2xl font-bold tracking-tight font-poppins text-slate-900">Crear cuenta</h1>
-          <p class="text-sm mt-1 max-w-[360px] lg:max-w-none leading-relaxed text-slate-600">
-            Crea tu cuenta en menos de un minuto
-          </p>
-        </div>
-      </div>
-
-      <!-- Error -->
-      <Transition name="aviso">
-        <div v-if="errorMessage" role="alert" class="mb-4 flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs border bg-red-50 border-red-200 text-red-700">
-          <AlertCircle :size="16" class="shrink-0 text-red-500" aria-hidden="true" />
-          <span>{{ errorMessage }}</span>
-        </div>
-      </Transition>
-
-      <!-- Aviso de solicitud de rol docente pendiente (§23 T3) -->
-      <div v-if="roleRequestSuccessNotice" role="alert" class="mb-4 p-3 rounded-xl bg-semantico-falla/10 border-2 border-l-8 border-semantico-falla text-xs text-semantico-falla space-y-2">
-        <div class="flex items-start gap-2">
-          <ShieldAlert :size="18" class="shrink-0" aria-hidden="true" />
-          <div>
-            <p class="text-sm font-bold">Todavía no eres docente</p>
-            <p class="text-base-texto-primario">{{ roleRequestSuccessNotice }}</p>
-          </div>
-        </div>
-        <button
-          type="button"
-          @click="navigateTo('/estudiante')"
-          class="w-full py-1.5 px-3 rounded-lg bg-stire-blue text-white font-semibold text-xs hover:bg-stire-blue-dark transition-colors">
-          Ir al inicio del estudiante →
-        </button>
-      </div>
-
-      <!-- Aviso no bloqueante de clave no guardada (§19.1) -->
-      <div v-if="tutorKeyWarning" role="status" class="mb-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-800 flex items-start gap-2">
-        <AlertTriangle :size="16" class="shrink-0 text-amber-600" aria-hidden="true" />
-        <span>{{ tutorKeyWarning }}</span>
-      </div>
-
-      <!-- Registro en dos pasos (pedido de Jeider, 03/10): el paso 1 es solo lo obligatorio y cabe sin bajar; el paso 2 es
-           opcional y se llega con un botón aparte. Sin «confirmar contraseña»: el ojo para ver la clave evita el error
-           que ese campo intentaba evitar, con la mitad del trabajo. -->
-      <ol class="flex items-center gap-2 mb-3 text-[11px] font-semibold" aria-label="Pasos del registro">
-        <li class="flex items-center gap-1.5" :class="paso === 1 ? 'text-stire-blue' : 'text-slate-500'" :aria-current="paso === 1 ? 'step' : undefined">
-          <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px]" :class="paso === 1 ? 'bg-stire-blue text-white' : 'bg-stire-teal/20 text-[#00705f]'">
-            <Check v-if="paso === 2" :size="11" aria-hidden="true" /><template v-else>1</template>
-          </span>
-          Tu cuenta
-        </li>
-        <li class="flex-1 h-px bg-slate-200" aria-hidden="true" />
-        <li class="flex items-center gap-1.5" :class="paso === 2 ? 'text-stire-blue' : 'text-slate-500'" :aria-current="paso === 2 ? 'step' : undefined">
-          <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px]" :class="paso === 2 ? 'bg-stire-blue text-white' : 'bg-slate-100 text-slate-500'">2</span>
-          Opcional
-        </li>
-      </ol>
-
-      <form ref="formRef" @submit.prevent="handleRegister" novalidate>
-        <!-- PASO 1: lo obligatorio -->
-        <div v-show="paso === 1" id="paso-obligatorio" class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-3 items-start">
-          <!-- Tipo de cuenta primero: cambia lo que se pide después (§23 T3). Radios reales con forma de tarjeta. -->
-          <fieldset class="lg:col-span-2">
-            <legend class="text-sm font-semibold text-slate-700 mb-1.5">Soy</legend>
-            <div class="grid grid-cols-2 gap-2">
-              <label
-                class="py-2 px-3 rounded-xl text-sm border flex items-center justify-center gap-1.5 cursor-pointer transition-all focus-within:ring-2 focus-within:ring-stire-teal/40"
-                :class="selectedRole === 'estudiante'
-                  ? 'bg-stire-teal/15 border-stire-teal text-[#00705f] font-semibold ring-2 ring-stire-teal/20'
-                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900'">
-                <input type="radio" name="accountType" value="estudiante" v-model="selectedRole" class="sr-only" />
-                <GraduationCap :size="16" aria-hidden="true" /> Estudiante
-              </label>
-              <label
-                class="py-2 px-3 rounded-xl text-sm border flex items-center justify-center gap-1.5 cursor-pointer transition-all focus-within:ring-2 focus-within:ring-stire-purple/40"
-                :class="selectedRole === 'docente'
-                  ? 'bg-stire-purple/15 border-stire-purple text-stire-purple font-semibold ring-2 ring-stire-purple/20'
-                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900'">
-                <input type="radio" name="accountType" value="docente" v-model="selectedRole" class="sr-only" />
-                <BookOpen :size="16" aria-hidden="true" /> Docente
-              </label>
-            </div>
-          </fieldset>
-
-          <!-- Docente: qué pasa con la solicitud. Rojo porque es importante (pedido de Jeider, 02/10). -->
-          <p v-if="selectedRole === 'docente'" class="lg:col-span-2 -mt-1 flex items-start gap-1.5 p-2.5 rounded-xl bg-semantico-falla/10 border border-semantico-falla/40 text-[11px] text-semantico-falla font-semibold">
-            <ShieldAlert :size="14" class="shrink-0 mt-px" aria-hidden="true" />
-            Entrarás como estudiante hasta que el administrador apruebe tu solicitud.
-          </p>
-
-          <div class="space-y-1.5">
-            <label for="fullName" class="block text-sm font-semibold text-slate-700">Nombre completo</label>
-            <div class="relative">
-              <User :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
-              <input id="fullName" ref="nombreRef" v-model="fullName" type="text" required autocomplete="name" placeholder="Ej: Pedro Romero Mendoza" class="campo-auth pl-10 pr-3.5" :class="campoMal('fullName')" :aria-invalid="!!faltan.fullName || undefined" />
-            </div>
-            <p v-if="faltan.fullName" class="text-[11px] font-semibold text-red-700">{{ faltan.fullName }}</p>
-          </div>
-
-          <div class="space-y-1.5">
-            <label for="email" class="block text-sm font-semibold text-slate-700">Correo</label>
-            <div class="relative">
-              <Mail :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
-              <input id="email" v-model="email" type="email" required autocomplete="email" placeholder="usuario@unicor.edu.co" class="campo-auth pl-10 pr-3.5" :class="campoMal('email')" :aria-invalid="!!faltan.email || undefined" />
-            </div>
-            <p v-if="faltan.email" class="text-[11px] font-semibold text-red-700">{{ faltan.email }}</p>
-          </div>
-
-          <div class="space-y-1.5 lg:col-span-2">
-            <label for="password" class="block text-sm font-semibold text-slate-700">Contraseña</label>
-            <div class="relative">
-              <Lock :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
-              <input
-                id="password"
-                v-model="password"
-                :type="verClave ? 'text' : 'password'"
-                required
-                autocomplete="new-password"
-                placeholder="Crea una contraseña"
-                aria-describedby="reglas-clave"
-                :aria-invalid="!!faltan.password || undefined"
-                @focus="campoEnFoco = 'password'"
-                @blur="campoEnFoco = null; bloqMayus = false"
-                @keydown="detectarBloqMayus"
-                @keyup="detectarBloqMayus"
-                class="campo-auth pl-10 pr-11 focus:border-stire-purple focus:ring-stire-purple/20"
-                :class="campoMal('password')" />
-              <button
-                type="button"
-                @click="verClave = !verClave"
-                class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-slate-700 transition-colors"
-                :aria-label="verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'" :title="verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-                :aria-pressed="verClave">
-                <EyeOff v-if="verClave" :size="16" aria-hidden="true" />
-                <Eye v-else :size="16" aria-hidden="true" />
-              </button>
-            </div>
-            <Transition name="aviso">
-              <p v-if="bloqMayus" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 text-[11px] font-medium">
-                <AlertTriangle :size="14" class="text-amber-600" aria-hidden="true" /> Bloq Mayús está activado
-              </p>
-            </Transition>
-            <!-- JEIDER-S08-12: barra de fuerza con color y texto, y las reglas del servidor siempre a la vista. -->
-            <AuthFuerzaClave id="reglas-clave" :clave="password" :falta="!!faltan.password" />
-          </div>
-        </div>
-
-        <!-- PASO 2: lo opcional. Nada de esto es necesario para entrar; todo se puede hacer después. -->
-        <div v-show="paso === 2" id="paso-opcional" class="space-y-4">
-          <p class="text-xs text-slate-600 -mt-1">
-            {{ selectedRole === 'docente'
-              ? 'Ayuda al administrador a aprobar tu solicitud más rápido.'
-              : 'Puedes dejarlo para después: el código de clase se ingresa en «Mis clases» y la clave, desde el Tutor.' }}
-          </p>
-
-          <div v-if="selectedRole === 'docente'">
-            <div class="flex items-center justify-between mb-1">
-              <label for="teacherReason" class="text-sm font-semibold text-slate-700">¿Qué materia o dependencia?</label>
-              <span class="text-[10px] text-slate-500 font-mono">{{ teacherReason.length }}/300</span>
-            </div>
-            <textarea
-              id="teacherReason"
-              v-model="teacherReason"
-              v-crece
-              maxlength="300"
-              rows="2"
-              placeholder="Ej: Docente de Algoritmia y Programación Web"
-              class="campo-auth px-3 py-1.5 text-sm resize-none"></textarea>
-          </div>
-
-          <div v-if="selectedRole === 'estudiante'" class="space-y-1.5">
-            <label for="classCode" class="block text-sm font-semibold text-slate-700">Código de clase</label>
-            <div class="relative">
-              <KeyRound :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" aria-hidden="true" />
-              <input id="classCode" v-model="classCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ej.: ALGO-203413" @input="classCode = codigoMientrasEscribe(classCode)" class="campo-auth pl-10 pr-3.5 uppercase tracking-wider font-mono" />
-            </div>
-            <p class="text-[11px] text-slate-500">Si tu docente te dio un código, ingrésalo para entrar a su clase de una vez.</p>
-          </div>
-
-          <!-- Clave de Google AI Studio (§19.1): solo estudiantes, el Tutor es solo para ellos (src/tutor/tutor.controller.ts). -->
-          <div v-if="selectedRole === 'estudiante'" class="border border-slate-200 rounded-xl p-3 space-y-2 bg-white">
-            <label for="apiKey" class="flex items-center gap-1.5 text-sm font-semibold text-slate-700">
-              <Bot :size="15" class="text-stire-purple" aria-hidden="true" />
-              Clave de Google AI Studio
-              <span class="text-[11px] font-normal text-slate-500">(para usar el Tutor)</span>
-            </label>
-            <p class="text-[11px] text-slate-500">
-              El Tutor usa tu cuenta gratuita de Google: sin costo para ti ni para el proyecto.
-              <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" class="text-stire-blue underline ml-1">Conseguir clave gratuita ↗</a>
-            </p>
-            <div class="relative">
-              <input
-                id="apiKey"
-                v-model="apiKey"
-                :type="showApiKey ? 'text' : 'password'"
-                autocomplete="off"
-                placeholder="AIzaSy…"
-                class="campo-auth pl-3.5 pr-11 text-xs font-mono" />
-              <button
-                type="button"
-                @click="showApiKey = !showApiKey"
-                :aria-label="showApiKey ? 'Ocultar clave' : 'Mostrar clave'" :title="showApiKey ? 'Ocultar clave' : 'Mostrar clave'"
-                :aria-pressed="showApiKey"
-                class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-slate-700">
-                <EyeOff v-if="showApiKey" :size="16" aria-hidden="true" />
-                <Eye v-else :size="16" aria-hidden="true" />
-              </button>
-            </div>
-            <!-- Aviso de privacidad §19.3 -->
-            <p class="flex items-start gap-1.5 text-[10px] text-slate-500">
-              <ShieldCheck :size="13" class="shrink-0 text-stire-blue mt-px" aria-hidden="true" />
-              <span>
-                Tu clave se guarda cifrada y solo sirve para hablar con el Tutor; nadie del equipo puede verla.
-                Las preguntas que le haces al Tutor se envían a Google usando <strong>tu</strong> cuenta.
-                En la capa gratuita, Google puede usar ese contenido para mejorar sus productos: no escribas
-                datos personales ni contraseñas en el chat.
-              </span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Público de 18 años o más: una sola casilla con edad, términos y fines investigativos (utils/legal.ts). -->
-        <LegalCasillasAceptacion v-model:mayor-de-edad="confirmaMayorDeEdad" v-model:terminos="aceptaTerminos" v-model:investigacion="consienteInvestigacion" :falta="faltaAceptar" class="mt-4" />
-
-        <!-- Acciones: «Crear cuenta» siempre a la vista; lo opcional es un botón aparte. -->
-        <div class="mt-4 space-y-1.5">
-          <button
-            type="submit"
-            :disabled="isLoading"
-            class="boton-acceso relative w-full py-3 px-4 rounded-xl font-bold text-sm font-poppins text-[#070e24] bg-stire-teal hover:bg-[#14e2c8] focus:outline-none focus-visible:ring-4 focus-visible:ring-stire-teal/40 shadow-lg shadow-stire-teal/20 transition-all flex items-center justify-center gap-2 overflow-hidden disabled:cursor-wait">
-            <span class="brillo-barrido" aria-hidden="true" />
-            <template v-if="isLoading">
-              <span class="w-4 h-4 rounded-full border-2 border-[#070e24] border-t-transparent animate-spin" aria-hidden="true" />
-              <span>Creando tu cuenta…</span>
-            </template>
-            <template v-else>
-              <span>Crear cuenta</span> <ArrowRight :size="16" aria-hidden="true" />
-            </template>
-          </button>
-          <button
-            v-if="paso === 1"
-            id="ir-opcional"
-            type="button"
-            class="w-full py-2 px-4 rounded-xl text-sm font-semibold text-stire-blue hover:bg-stire-blue/5 inline-flex items-center justify-center gap-1.5"
-            @click="irAOpcional">
-            <ListPlus :size="16" aria-hidden="true" />
-            {{ selectedRole === 'docente' ? 'Agregar la materia que dictas (opcional)' : 'Agregar código de clase o clave del Tutor (opcional)' }}
-          </button>
-          <button
-            v-else
-            type="button"
-            class="w-full py-2 px-4 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 inline-flex items-center justify-center gap-1.5"
-            @click="paso = 1">
-            <ArrowLeft :size="16" aria-hidden="true" /> Volver a mis datos
-          </button>
-        </div>
-      </form>
-
-      <p class="mt-3 pt-3 border-t border-slate-200 text-center text-sm text-slate-600">
-        ¿Ya tienes una cuenta registrada?
-        <NuxtLink :to="{ path: '/auth/login', query: route.query }" class="font-semibold text-stire-blue hover:text-stire-purple hover:underline transition-colors">
-          Inicia sesión aquí
-        </NuxtLink>
+  <!-- v3 (Fase C; cuadro «Entrar-estados» › «Crear cuenta»): el mismo marco que Entrar (AuthMarcoEntrar). Se conserva
+       el registro en dos pasos (BT-27): el paso 1 es solo lo obligatorio y «Crear mi cuenta» se ve sin bajar; el paso 2
+       es opcional, con botón aparte. Sin «confirmar contraseña»: el ojo para verla evita el mismo error. -->
+  <AuthMarcoEntrar compacto :mascota="{ campo: campoEnFoco, verClave, error: !!errorMessage, listo: isLoading, pestana: 'cuenta' }">
+    <div>
+      <h1 class="m-0 font-poppins font-bold text-[24px] sm:text-[28px]">Crear cuenta</h1>
+      <p class="mt-1 mb-0 text-xs font-bold tracking-[.06em] uppercase text-base-texto-secundario" aria-live="polite">
+        {{ paso === 1 ? 'Paso 1 de 2 · Lo necesario' : 'Paso 2 de 2 · Opcional' }}
       </p>
     </div>
-  </div>
+
+    <!-- Llegó con el QR o el código de una clase: se ve a qué clase se va a unir mientras crea la cuenta. -->
+    <p v-if="codigoDeVuelta" class="m-0 flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold aviso-clase">
+      <QrCode :size="18" aria-hidden="true" class="shrink-0" />
+      <span>Al crear tu cuenta te unes a la clase <span class="font-mono">{{ codigoDeVuelta }}</span>.</span>
+    </p>
+
+    <Transition name="aviso">
+      <div v-if="errorMessage" role="alert" class="flex items-start gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold aviso-error">
+        <AlertCircle :size="18" class="shrink-0 mt-px" aria-hidden="true" />
+        <span>{{ errorMessage }}</span>
+      </div>
+    </Transition>
+
+    <!-- Aviso de solicitud de rol docente pendiente (§23 T3) -->
+    <div v-if="roleRequestSuccessNotice" role="alert" class="p-3 rounded-xl bg-semantico-falla/10 border-2 border-l-8 border-semantico-falla text-xs text-semantico-falla space-y-2">
+      <div class="flex items-start gap-2">
+        <ShieldAlert :size="18" class="shrink-0" aria-hidden="true" />
+        <div>
+          <p class="m-0 text-sm font-bold">Todavía no eres docente</p>
+          <p class="m-0 text-base-texto-primario">{{ roleRequestSuccessNotice }}</p>
+        </div>
+      </div>
+      <button type="button" class="boton-entrar w-full" @click="navigateTo('/estudiante')">Ir al inicio del estudiante</button>
+    </div>
+
+    <!-- Aviso no bloqueante de clave no guardada (§19.1) -->
+    <div v-if="tutorKeyWarning" role="status" class="flex items-start gap-2 p-3 rounded-xl text-xs aviso-mayus">
+      <AlertTriangle :size="16" class="shrink-0" aria-hidden="true" />
+      <span>{{ tutorKeyWarning }}</span>
+    </div>
+
+    <form ref="formRef" novalidate class="flex flex-col gap-3.5" @submit.prevent="handleRegister">
+      <!-- PASO 1: lo obligatorio -->
+      <div v-show="paso === 1" id="paso-obligatorio" class="flex flex-col gap-3.5">
+        <!-- Tipo de cuenta primero: cambia lo que se pide después (§23 T3). Radios reales con forma de botón. -->
+        <fieldset class="m-0 p-0 border-0">
+          <legend class="mb-1.5 text-[15px] font-semibold">Voy a usar STIRE como</legend>
+          <div class="grid grid-cols-2 gap-2">
+            <label v-for="r in ROLES" :key="r.valor" class="opcion-rol" :class="{ elegida: selectedRole === r.valor }">
+              <input v-model="selectedRole" type="radio" name="accountType" :value="r.valor" class="sr-only">
+              {{ r.texto }}
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Docente: qué pasa con la solicitud. Rojo porque es importante (pedido de Jeider, 02/10). -->
+        <p v-if="selectedRole === 'docente'" class="m-0 -mt-1 flex items-start gap-1.5 p-2.5 rounded-xl bg-semantico-falla/10 border border-semantico-falla/40 text-xs text-semantico-falla font-semibold">
+          <ShieldAlert :size="14" class="shrink-0 mt-px" aria-hidden="true" />
+          Entrarás como estudiante hasta que el administrador apruebe tu solicitud.
+        </p>
+
+        <!-- En computador, nombre y correo lado a lado: «Crear mi cuenta» se ve sin bajar en 1366×657 (BT-27). -->
+        <div class="grid lg:grid-cols-2 gap-3.5 lg:gap-3 items-start">
+          <div class="flex flex-col gap-1.5">
+            <label for="fullName" class="text-[15px] font-semibold">Nombre y apellido</label>
+            <input id="fullName" ref="nombreRef" v-model="fullName" type="text" required autocomplete="name" placeholder="Ej.: Laura Martínez"
+              class="campo-entrar" :class="{ 'campo-con-error': faltan.fullName }" :aria-invalid="!!faltan.fullName || undefined"
+              :aria-describedby="faltan.fullName ? 'nombre-falta' : undefined" />
+            <p v-if="faltan.fullName" id="nombre-falta" class="m-0 text-xs font-semibold text-semantico-falla">{{ faltan.fullName }}</p>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="email" class="text-[15px] font-semibold">Correo</label>
+            <input id="email" v-model="email" type="email" required autocomplete="email" placeholder="tu@correo.com"
+              class="campo-entrar" :class="{ 'campo-con-error': faltan.email }" :aria-invalid="!!faltan.email || undefined"
+              :aria-describedby="faltan.email ? 'correo-falta' : undefined" />
+            <p v-if="faltan.email" id="correo-falta" class="m-0 text-xs font-semibold text-semantico-falla">{{ faltan.email }}</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label for="password" class="text-[15px] font-semibold">Contraseña</label>
+          <div class="relative">
+            <input
+              id="password"
+              v-model="password"
+              :type="verClave ? 'text' : 'password'"
+              required
+              autocomplete="new-password"
+              placeholder="Crea una contraseña"
+              aria-describedby="reglas-clave"
+              :aria-invalid="!!faltan.password || undefined"
+              class="campo-entrar pr-12"
+              :class="{ 'campo-con-error': faltan.password }"
+              @focus="campoEnFoco = 'password'"
+              @blur="campoEnFoco = null; bloqMayus = false"
+              @keydown="detectarBloqMayus"
+              @keyup="detectarBloqMayus" />
+            <button
+              type="button"
+              class="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center rounded-lg text-base-texto-secundario hover:text-base-texto-primario"
+              :aria-label="verClave ? 'Ocultar la contraseña' : 'Mostrar la contraseña'" :title="verClave ? 'Ocultar la contraseña' : 'Mostrar la contraseña'"
+              :aria-pressed="verClave"
+              @click="verClave = !verClave">
+              <EyeOff v-if="verClave" :size="18" aria-hidden="true" />
+              <Eye v-else :size="18" aria-hidden="true" />
+            </button>
+          </div>
+          <Transition name="aviso">
+            <p v-if="bloqMayus" class="m-0 flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold aviso-mayus">
+              <AlertTriangle :size="14" aria-hidden="true" /> Bloq Mayús está activado
+            </p>
+          </Transition>
+          <!-- JEIDER-S08-12: barra de fuerza con color y texto, y las reglas del servidor siempre a la vista. -->
+          <AuthFuerzaClave id="reglas-clave" :clave="password" :falta="!!faltan.password" />
+        </div>
+      </div>
+
+      <!-- PASO 2: lo opcional. Nada de esto es necesario para entrar; todo se puede hacer después. -->
+      <div v-show="paso === 2" id="paso-opcional" class="flex flex-col gap-4">
+        <p class="m-0 text-sm text-base-texto-secundario">
+          {{ selectedRole === 'docente'
+            ? 'Ayuda al administrador a aprobar tu solicitud más rápido.'
+            : 'Puedes dejarlo para después: el código de clase se ingresa en «Mis clases» y la clave, desde el Tutor.' }}
+        </p>
+
+        <div v-if="selectedRole === 'docente'" class="flex flex-col gap-1.5">
+          <div class="flex items-center justify-between">
+            <label for="teacherReason" class="text-[15px] font-semibold">¿Qué materia o dependencia?</label>
+            <span class="text-[11px] text-base-texto-secundario font-mono">{{ teacherReason.length }}/300</span>
+          </div>
+          <textarea id="teacherReason" v-model="teacherReason" v-crece maxlength="300" rows="2"
+            placeholder="Ej.: Docente de Algoritmia y Programación Web" class="campo-entrar py-3 resize-none"></textarea>
+        </div>
+
+        <div v-if="selectedRole === 'estudiante'" class="flex flex-col gap-1.5">
+          <label for="classCode" class="text-[15px] font-semibold">Código de la clase</label>
+          <input id="classCode" v-model="classCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false"
+            placeholder="Ej.: ALGO-203413" class="campo-entrar font-mono uppercase tracking-wider" aria-describedby="codigo-ayuda-registro"
+            @input="classCode = codigoMientrasEscribe(classCode)" />
+          <p id="codigo-ayuda-registro" class="m-0 text-xs text-base-texto-secundario">Si tu docente te dio un código, escríbelo para entrar a su clase de una vez.</p>
+        </div>
+
+        <!-- Clave de Google AI Studio (§19.1): solo estudiantes, el Tutor es solo para ellos (src/tutor/tutor.controller.ts). -->
+        <div v-if="selectedRole === 'estudiante'" class="caja-clave flex flex-col gap-2 p-3 rounded-xl">
+          <label for="apiKey" class="flex items-center gap-1.5 text-[15px] font-semibold">
+            <Bot :size="16" aria-hidden="true" />
+            Clave de Google AI Studio
+            <span class="text-xs font-normal text-base-texto-secundario">(para usar el Tutor)</span>
+          </label>
+          <p class="m-0 text-xs text-base-texto-secundario">
+            El Tutor usa tu cuenta gratuita de Google: sin costo para ti ni para el proyecto.
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" class="font-semibold underline ml-1">Conseguir clave gratuita<span class="sr-only"> (se abre en otra pestaña)</span></a>
+          </p>
+          <div class="relative">
+            <input id="apiKey" v-model="apiKey" :type="showApiKey ? 'text' : 'password'" autocomplete="off" placeholder="AIzaSy…" class="campo-entrar pr-12 text-sm font-mono" />
+            <button type="button" :aria-label="showApiKey ? 'Ocultar la clave' : 'Mostrar la clave'" :title="showApiKey ? 'Ocultar la clave' : 'Mostrar la clave'"
+              :aria-pressed="showApiKey" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center rounded-lg text-base-texto-secundario hover:text-base-texto-primario"
+              @click="showApiKey = !showApiKey">
+              <EyeOff v-if="showApiKey" :size="18" aria-hidden="true" />
+              <Eye v-else :size="18" aria-hidden="true" />
+            </button>
+          </div>
+          <!-- Aviso de privacidad §19.3 -->
+          <p class="m-0 flex items-start gap-1.5 text-[11px] text-base-texto-secundario">
+            <ShieldCheck :size="14" class="shrink-0 mt-px" aria-hidden="true" />
+            <span>
+              Tu clave se guarda cifrada y solo sirve para hablar con el Tutor; nadie del equipo puede verla.
+              Las preguntas que le haces al Tutor se envían a Google usando <strong>tu</strong> cuenta.
+              En la capa gratuita, Google puede usar ese contenido para mejorar sus productos: no escribas
+              datos personales ni contraseñas en el chat.
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Público de 18 años o más: una sola casilla con edad, términos y fines investigativos (utils/legal.ts). -->
+      <LegalCasillasAceptacion v-model:mayor-de-edad="confirmaMayorDeEdad" v-model:terminos="aceptaTerminos" v-model:investigacion="consienteInvestigacion" :falta="faltaAceptar" />
+
+      <!-- Acciones: «Crear mi cuenta» siempre a la vista; lo opcional es un botón aparte. -->
+      <button type="submit" :disabled="isLoading" class="boton-entrar relative overflow-hidden disabled:cursor-wait">
+        <span class="brillo-barrido" aria-hidden="true" />
+        <template v-if="isLoading">
+          <span class="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" aria-hidden="true" />
+          <span>Creando tu cuenta…</span>
+        </template>
+        <span v-else>Crear mi cuenta</span>
+      </button>
+      <button v-if="paso === 1" id="ir-opcional" type="button" class="boton-secundario gap-1.5 text-[15px]" @click="irAOpcional">
+        {{ selectedRole === 'docente' ? 'Paso 2, opcional: la materia que dictas' : 'Paso 2, opcional: unirme a mi clase' }}
+        <ChevronRight :size="16" aria-hidden="true" />
+      </button>
+      <button v-else type="button" class="boton-secundario gap-1.5 text-[15px]" @click="paso = 1">
+        <ArrowLeft :size="16" aria-hidden="true" /> Volver a mis datos
+      </button>
+    </form>
+
+    <p class="m-0 pt-3 border-t border-base-borde-sutil text-center text-sm text-base-texto-secundario">
+      ¿Ya tienes cuenta?
+      <NuxtLink :to="{ path: '/auth/login', query: route.query }" class="font-semibold underline text-base-texto-primario">Entrar</NuxtLink>
+    </p>
+  </AuthMarcoEntrar>
 </template>
 
 <script setup lang="ts">
-import { AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, BookOpen, Bot, Check, Eye, EyeOff, GraduationCap, KeyRound, ListPlus, Lock, Mail, ShieldAlert, ShieldCheck, User } from 'lucide-vue-next'
+import { AlertCircle, AlertTriangle, ArrowLeft, Bot, ChevronRight, Eye, EyeOff, QrCode, ShieldAlert, ShieldCheck } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useCuentaPublica } from '~/composables/useCuentaPublica'
-import { rutaDeVuelta, codigoMientrasEscribe } from '~/utils/codigoClase'
+import { codigoDeLaVuelta, codigoMientrasEscribe, rutaDeVuelta } from '~/utils/codigoClase'
 import { faltantesDelRegistro, type Faltantes } from '~/utils/registro'
 
 const route = useRoute()
@@ -295,6 +225,8 @@ const password = ref('')
 const classCode = ref('')
 const selectedRole = ref<'estudiante' | 'docente'>(route.query.rol === 'docente' ? 'docente' : 'estudiante') // «Soy docente» de la página de inicio
 const teacherReason = ref('')
+const ROLES = [{ valor: 'estudiante', texto: 'Estudiante' }, { valor: 'docente', texto: 'Docente' }] as const
+const codigoDeVuelta = computed(() => codigoDeLaVuelta(route.query.volver))
 const apiKey = ref('')
 const showApiKey = ref(false)
 const isLoading = ref(false)
@@ -312,7 +244,6 @@ const paso = ref<1 | 2>(1)
 const nombreRef = ref<HTMLInputElement | null>(null)
 const faltan = ref<Faltantes>({})
 const validar = () => (faltan.value = faltantesDelRegistro(fullName.value, email.value, password.value))
-const campoMal = (campo: keyof Faltantes) => (faltan.value[campo] ? '!border-red-400 !ring-1 !ring-red-300' : '')
 // Al corregir un campo marcado, su aviso se va solo.
 watch([fullName, email, password], () => { if (Object.keys(faltan.value).length) validar() })
 
@@ -332,7 +263,7 @@ onMounted(() => {
   if (window.matchMedia?.('(pointer: fine)').matches) nombreRef.value?.focus()
 })
 
-// Solo presentación (prototipo de José): foco, ver la clave, Bloq Mayús y medidor de fuerza.
+// Solo presentación: foco (la mascota no mira la contraseña), ver la clave, Bloq Mayús y medidor de fuerza.
 const campoEnFoco = ref<'password' | null>(null)
 const verClave = ref(false)
 const bloqMayus = ref(false)
@@ -390,19 +321,15 @@ async function handleRegister() {
 </script>
 
 <style scoped>
-.tarjeta-auth {
-  box-shadow: 0 24px 48px -12px rgba(11, 61, 145, 0.1), 0 12px 24px -8px rgba(123, 47, 191, 0.07), 0 0 0 1px rgba(11, 61, 145, 0.05);
+/* Los campos, botones y avisos son los de Entrar (assets/css/entrar-v3.css). */
+.opcion-rol {
+  display: flex; align-items: center; justify-content: center; min-height: 46px; border-radius: 12px; cursor: pointer;
+  border: 1px solid rgb(var(--c-base-borde-fuerte)); background: rgb(var(--c-base-blanco)); color: rgb(var(--c-base-texto-primario));
+  font-size: 15px; font-weight: 600;
 }
-.campo-auth {
-  @apply w-full py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 placeholder-slate-400 transition-all
-         focus:outline-none focus:border-stire-blue focus:ring-2 focus:ring-stire-blue/15;
-}
-.boton-acceso:not(:disabled):hover {
-  transform: scale(1.01);
-}
-.boton-acceso:not(:disabled):active {
-  transform: scale(0.98);
-}
+.opcion-rol.elegida { border: 2px solid rgb(var(--c-base-texto-primario)); font-weight: 700; }
+.opcion-rol:focus-within { outline: 3px solid rgb(var(--c-sec-menta) / 0.45); outline-offset: 1px; }
+.caja-clave { border: 1px solid rgb(var(--c-base-borde-sutil)); background: rgb(var(--c-base-bg-primario)); }
 .aviso-enter-active,
 .aviso-leave-active {
   transition: opacity 0.2s ease, transform 0.2s ease;
