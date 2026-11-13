@@ -23,6 +23,23 @@
       <kbd class="text-[10px] font-normal text-base-texto-secundario border border-base-borde-sutil rounded px-1">Ctrl K</kbd>
     </button>
 
+    <div class="flex items-center gap-2">
+    <!-- El anillo de la meta y «Practicar» (cuadro «E-Leccion»): el dominio de la lección a la vista y un atajo a los
+         ejercicios. La marca del anillo es la meta, como la línea de la barra de «Practica esta lección». -->
+    <a href="#ejercicios" class="salto-grande salto-meta pointer-events-auto hidden xl:inline-flex !pl-2 !pr-1.5" :aria-label="anillo.lectura">
+      <svg width="32" height="32" viewBox="0 0 36 36" aria-hidden="true" class="shrink-0">
+        <circle cx="18" cy="18" r="14" fill="none" stroke="rgb(var(--c-base-borde-sutil))" stroke-width="5" />
+        <circle cx="18" cy="18" r="14" fill="none" stroke="#00c2a8" stroke-width="5" stroke-linecap="round" transform="rotate(-90 18 18)"
+          :stroke-dasharray="anillo.largo" :stroke-dashoffset="anillo.lleno" />
+        <circle cx="18" cy="18" r="14" fill="none" stroke="rgb(var(--c-base-texto-primario))" stroke-width="7" transform="rotate(-90 18 18)"
+          :stroke-dasharray="`1.2 ${anillo.largo}`" :stroke-dashoffset="anillo.marca" />
+      </svg>
+      <span class="flex flex-col leading-tight" aria-hidden="true">
+        <span class="text-[13px] font-bold">{{ dominio }} %</span>
+        <span class="text-[11px] font-medium text-base-texto-secundario">meta {{ DOMINADO }} %</span>
+      </span>
+      <span class="boton-practicar !min-h-[34px] !px-3 !text-[13px] !rounded-[10px] inline-flex" aria-hidden="true"><Hand :size="15" /> Practicar</span>
+    </a>
     <NuxtLink v-if="nav.siguiente" :to="`/estudiante/unidad/${nav.siguiente.id}`" class="salto-siguiente pointer-events-auto"
       :title="nav.siguiente.abierta ? undefined : 'Módulo cerrado: la lección se ve, pero su módulo aún no se abre'" :aria-label="`Siguiente lección: ${nav.siguiente.titulo}`">
       <span class="hidden lg:flex flex-col items-end leading-tight min-w-0" aria-hidden="true">
@@ -33,12 +50,15 @@
       <component :is="nav.siguiente.abierta ? ChevronRight : Lock" :size="17" class="shrink-0" aria-hidden="true" />
     </NuxtLink>
     <span v-else aria-hidden="true" />
+    </div>
   </nav>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ChevronLeft, ChevronRight, ListTree, Lock } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, Hand, ListTree, Lock } from 'lucide-vue-next'
+import { DOMINADO } from '~/utils/terminos'
+import { anilloMeta } from '~/utils/leccionV3'
 import { useStudentStore } from '~/stores/student'
 import { navegacionLeccion, posicionEnCurso } from '~/utils/navegacionLeccion'
 
@@ -48,6 +68,8 @@ const abrir = useState('ir-a-leccion', () => false)
 const { abierto: contenidoAbierto, alternar: alternarContenido } = useContenidoCurso()
 const nav = computed(() => navegacionLeccion(studentStore.modules, studentStore.estadosModulos, props.unitId))
 const posicion = computed(() => posicionEnCurso(nav.value.modulos, props.unitId))
+const dominio = computed(() => nav.value.modulos.flatMap((m) => m.lecciones).find((l) => l.actual)?.dominio ?? 0)
+const anillo = computed(() => anilloMeta(dominio.value, DOMINADO))
 </script>
 
 <style scoped>

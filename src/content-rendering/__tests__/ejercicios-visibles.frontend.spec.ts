@@ -28,7 +28,7 @@ describe('qué ejercicios suben el dominio, a la vista', () => {
   });
 
   it('en la lección es un botón que dice para qué sirve, y ?ejercicios=1 la abre con la lista a la vista', () => {
-    const p = leer('pages', 'estudiante', 'unidad', '[id].vue');
+    const p = leer('components', 'estudiante', 'leccion', 'Practica.vue');
     expect(p).toContain("'Ver todos: cuáles suben tu dominio'");
     expect(p).toContain(':aria-expanded="chooseManually"');
     expect(p).toContain("const chooseManually = ref(route.query.ejercicios === '1')");

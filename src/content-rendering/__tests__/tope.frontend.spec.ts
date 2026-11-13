@@ -7,12 +7,14 @@ const leer = (...partes: string[]) => readFileSync(path.join(raiz, ...partes), '
 
 describe('Tope: lo que ve el estudiante', () => {
   it('en la lección, la pausa pone primero «Pedir una pista» y «Releer la explicación»; el ejercicio queda como enlace secundario', () => {
-    const leccion = leer('pages', 'estudiante', 'unidad', '[id].vue');
+    const leccion = leer('components', 'estudiante', 'leccion', 'Practica.vue');
     expect(leccion).toContain("const enPausa = computed(() => recommendedActivity.value?.reason === 'pausa')");
     expect(leccion.indexOf('Pedir una pista al Tutor')).toBeLessThan(leccion.indexOf('Releer la explicación'));
     expect(leccion.indexOf('Releer la explicación')).toBeLessThan(leccion.indexOf('Probar otro ejercicio igual'));
     expect(leccion).toContain('@click="tutorStore.openDrawer()"');
-    expect(leccion).toContain('id="explicacion"');
+    // «Releer» lleva a la explicación, que está en la página (v3: la práctica es su propia pieza).
+    expect(leccion).toContain("document.getElementById('explicacion')");
+    expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toContain('id="explicacion"');
   });
 
   it('en el inicio, el siguiente paso de una lección en pausa es releer la lección', () => {

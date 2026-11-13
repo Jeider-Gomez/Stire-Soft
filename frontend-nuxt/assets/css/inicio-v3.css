@@ -158,3 +158,48 @@
   border: 1px solid rgb(var(--c-base-borde-sutil));
 }
 .filtro-aprender[aria-pressed="true"] { background: rgb(var(--c-base-texto-primario)); color: rgb(var(--c-base-blanco)); border-color: transparent; }
+
+/* La lección (Fase D, paso 2; cuadro «E-Leccion»): la portada celeste con el título, las tarjetas blancas y el botón de
+   practicar. Comparte el cielo del siguiente paso del Inicio. */
+.portada-leccion {
+  position: relative;
+  padding: 22px 20px 18px;
+  background: var(--heroe-fondo);
+  color: rgb(var(--heroe-texto));
+  --heroe-fondo: radial-gradient(circle at 88% 8%, rgba(255, 255, 255, 0.6), transparent 42%),
+    linear-gradient(120deg, #8debff 0%, #5ccbff 58%, #7fb8ff 100%);
+  --heroe-texto: 20 33 61;
+}
+@media (min-width: 640px) { .portada-leccion { padding: 26px 30px 22px; } }
+:root[data-tema="oscuro"] .portada-leccion {
+  --heroe-fondo: radial-gradient(circle at 88% 8%, rgba(92, 203, 255, 0.2), transparent 42%),
+    linear-gradient(120deg, #0b2b3f 0%, #0f3550 58%, #163b5c 100%);
+  --heroe-texto: 232 246 255;
+}
+:root[data-contraste="alto"] .portada-leccion {
+  --heroe-fondo: rgb(var(--c-base-blanco));
+  --heroe-texto: var(--c-base-texto-primario);
+  border-bottom: 2px solid rgb(var(--c-base-texto-primario));
+}
+.tarjeta-leccion { background: rgb(var(--c-base-blanco)); border: 1px solid rgb(var(--c-base-borde-sutil)); border-radius: 22px; }
+.boton-practicar {
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: #ffc94d;
+  color: #14213d;
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.boton-practicar:hover { filter: brightness(1.05); }
+.boton-practicar:active { transform: scale(0.98); }
+.siguiente-ejercicio { background: rgb(var(--c-sec-menta-fondo)); box-shadow: inset 0 0 0 2px #00c2a8; }
+.texto-menta { color: rgb(var(--c-semantico-pasa)); }
+:root[data-tema="oscuro"] .texto-menta { color: rgb(var(--c-sec-menta-icono)); }
+.texto-sol { color: rgb(var(--c-sec-sol-icono)); }
+.portada-leccion .pastilla-principal { background: #14213d; color: #fff; }
+:root[data-tema="oscuro"] .portada-leccion .pastilla-principal { background: #e8f6ff; color: #14213d; }

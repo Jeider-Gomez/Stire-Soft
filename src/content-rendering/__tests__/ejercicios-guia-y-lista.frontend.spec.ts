@@ -83,7 +83,7 @@ describe('«Ver todos los ejercicios» de la lección', () => {
   it('por nivel y por grupo de parecidos, con el resumen y el recomendado arriba, y la lección lo usa en vez de la lista de nombres', () => {
     expect(v).toContain('Nivel {{ NIVEL[n.nivel] ?? n.nivel }}');
     expect(v).toContain('El que más sube: {{ mejor.titulo }}');
-    const leccion = leer('pages', 'estudiante', 'unidad', '[id].vue');
+    const leccion = leer('components', 'estudiante', 'leccion', 'Practica.vue');
     expect(leccion).toContain('<EstudianteEjerciciosDeLaLeccion v-else-if="chooseManually" :unit-id="unitId" />');
     expect(leer('composables', 'useUnidadEstudiante.ts')).toContain('`/learning-progress/unit/${unitId}/mis-ejercicios`');
   });

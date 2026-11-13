@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-6">
+  <div class="max-w-[1240px] mx-auto space-y-5">
     <!-- Dónde está: Inicio › Módulo › Tema (si agrupa varias lecciones) › Lección -->
     <nav aria-label="Ubicación" class="flex items-center gap-1.5 flex-wrap text-xs text-base-texto-secundario">
       <NuxtLink to="/estudiante" class="hover:underline inline-flex items-center min-h-[44px] -my-3">Inicio</NuxtLink>
@@ -48,148 +48,74 @@
     </div>
 
     <template v-else>
-      <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-3">
-        <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-          {{ TERMINOS.leccion.uno }}
-        </span>
-        <h1 id="titulo-leccion" class="text-xl md:text-2xl font-bold text-base-texto-primario tracking-tight">{{ unitData.title }}</h1>
-        <p v-if="unitData.description" id="descripcion-leccion" class="text-xs text-base-texto-secundario">{{ unitData.description }}</p>
-        <!-- El dominio de la lección se ve desde el principio: practicar es la forma de medirlo. -->
-        <div v-if="dominio !== null" class="flex items-center gap-3">
-          <div class="relative w-40 h-2 bg-base-bg-secundario rounded-full overflow-hidden border border-base-borde-sutil" role="progressbar"
-            :aria-valuenow="dominio" aria-valuemin="0" aria-valuemax="100" aria-label="Tu dominio de la lección">
-            <span class="absolute inset-y-0 w-0.5 bg-base-texto-primario/60" :style="{ left: `${DOMINADO}%` }" aria-hidden="true" />
-            <div class="h-full rounded-full" :class="dominio >= DOMINADO ? 'bg-semantico-pasa' : 'bg-acento-ambar-fuerte'" :style="{ width: `${dominio}%` }"></div>
-          </div>
-          <span class="text-[11px] font-semibold text-base-texto-primario">
-            <template v-if="dominio >= DOMINADO">Dominada · {{ dominio }} %</template>
-            <template v-else-if="dominio > 0">{{ dominio }} % de <Termino palabra="Dominio">dominio</Termino></template>
-            <template v-else>Aún sin <Termino palabra="Dominio">dominio</Termino>: empieza a practicar</template>
-          </span>
-        </div>
-        <EstudianteMetaDeLaLeccion :unit-id="unitId" data-recorrido="meta-leccion" />
-        <!-- UI-01: escuchar la lección y qué más trae, en una línea (docs/DISENO_FORMATOS_LECCION.md) -->
-        <EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" data-recorrido="escuchar" />
-      </header>
+      <!-- Lección v3 (Fase D, paso 2; cuadro «E-Leccion»): la lección principal en una columna de lectura y, al lado, las
+           otras formas de verla; debajo, «Practica esta lección». Con poco ancho, las otras formas van bajo el título. -->
+      <div class="xl:flex gap-6 items-start">
+        <div class="flex-1 min-w-0 space-y-5">
+          <article class="tarjeta-leccion overflow-hidden" aria-labelledby="titulo-leccion">
+            <header class="portada-leccion space-y-2">
+              <p v-if="ubicacion.rotulo" class="m-0 text-[13px] font-bold uppercase opacity-80">{{ ubicacion.rotulo }}</p>
+              <h1 id="titulo-leccion" class="m-0 font-poppins text-[26px] sm:text-[32px] font-bold leading-tight">{{ unitData.title }}</h1>
+              <p v-if="unitData.description" id="descripcion-leccion" class="m-0 max-w-[560px] text-base leading-relaxed">{{ unitData.description }}</p>
+              <div class="flex flex-wrap items-center gap-2.5 pt-2">
+                <span class="pastilla-principal inline-flex items-center gap-2 min-h-[38px] px-3.5 rounded-full text-[13px] font-bold">
+                  <BookOpen :size="15" aria-hidden="true" /> {{ TERMINOS.leccion.uno }} principal
+                </span>
+                <!-- UI-01: escuchar la lección y qué más trae, en una línea (docs/DISENO_FORMATOS_LECCION.md) -->
+                <EscucharLeccion v-if="unitContent.length > 0" :bloques="bloquesDeTexto" data-recorrido="escuchar" />
+              </div>
+              <EstudianteLeccionOtrasFormas modo="fila" class="xl:hidden pt-1" :alternativas="alternativas" :version="unitContent.length" />
+            </header>
 
-      <!-- La explicación y los recursos de la lección, tal como los publicó el docente -->
-      <article
-        v-if="unitContent.length > 0"
-        id="explicacion"
-        tabindex="-1"
-        class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 md:p-8 shadow-sm space-y-6 text-xs text-base-texto-primario leading-relaxed">
-        <section v-for="content in unitContent" :key="content.id" class="space-y-2"
-          :class="esAlternativa(content.cuando) ? 'rounded-lg border-l-4 border-stire-blue bg-stire-blue/5 p-4 -mx-1' : ''">
-          <!-- Explicación alternativa: otra forma de explicar lo mismo, que aparece cuando el estudiante la necesita. -->
-          <p v-if="esAlternativa(content.cuando)" class="text-[11px] font-bold uppercase tracking-wider text-stire-blue">Otra forma de verlo</p>
-          <h2 v-if="content.title" class="text-sm font-bold text-base-texto-primario">
-            {{ content.title }}
-          </h2>
-          <LessonResource v-if="esRecurso(content.type)" :type="content.type ?? ''" :title="content.title" :metadata="content.metadata" />
-          <ContenidoLeccion v-else :texto="content.body" :insertados="insertadosDe(content.metadata)" />
-        </section>
-      </article>
-      <article v-else class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 text-xs text-base-texto-secundario">
-        Esta lección todavía no tiene explicación publicada. Puedes pasar directo a practicar.
-      </article>
-
-      <!-- Practicar: es la forma de avanzar y de medir lo que sabes (docs/DISENO_INTERVENCION_DOCENTE.md §10.2) -->
-      <ValorarLeccion :unit-id="unitId" data-recorrido="valorar" @no-claro="buscarAlternativa" />
-      <p v-if="avisoAlternativa" role="status" class="text-xs font-semibold text-stire-blue">{{ avisoAlternativa }}</p>
-
-      <section class="rounded-lg border border-acento-ambar-fuerte/30 bg-acento-ambar/10 p-5 space-y-3" aria-labelledby="practicar-titulo">
-        <div class="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h2 id="practicar-titulo" class="text-sm font-bold text-base-texto-primario">Practica</h2>
-            <p class="text-xs text-slate-700">
-              {{ recommendedActivity?.reasonMessage ?? 'Cada ejercicio que resuelves suma a tu dominio de la lección.' }}
+            <!-- La explicación y los recursos de la lección, tal como los publicó el docente -->
+            <div v-if="unitContent.length > 0" id="explicacion" tabindex="-1"
+              class="px-5 sm:px-8 py-6 space-y-6 text-[17px] text-base-texto-primario leading-[1.7] focus:outline-none">
+              <section v-for="content in unitContent" :id="`bloque-${content.id}`" :key="content.id" class="space-y-2 scroll-mt-32"
+                :class="esAlternativa(content.cuando) ? 'rounded-2xl border-l-4 border-stire-blue bg-stire-blue/5 p-4 -mx-1' : ''">
+                <!-- Explicación alternativa: otra forma de explicar lo mismo, que aparece cuando el estudiante la necesita. -->
+                <p v-if="esAlternativa(content.cuando)" class="text-[11px] font-bold uppercase tracking-wider text-stire-blue">Otra forma de verlo</p>
+                <h2 v-if="content.title" class="font-poppins text-[22px] font-bold text-base-texto-primario">
+                  {{ content.title }}
+                </h2>
+                <LessonResource v-if="esRecurso(content.type)" :type="content.type ?? ''" :title="content.title" :metadata="content.metadata" />
+                <ContenidoLeccion v-else :texto="content.body" :insertados="insertadosDe(content.metadata)" />
+              </section>
+            </div>
+            <p v-else class="m-0 px-5 sm:px-8 py-6 text-sm text-base-texto-secundario">
+              Esta lección todavía no tiene explicación publicada. Puedes pasar directo a practicar.
             </p>
-          </div>
-          <!-- 09/10 (Jeider): antes, un enlace pequeño que no se encontraba; ahora un botón que dice para qué sirve. -->
-          <button
-            v-if="recommendedActivity"
-            type="button"
-            :aria-expanded="chooseManually"
-            class="inline-flex items-center gap-1.5 px-3 rounded-md borde-afordancia bg-base-blanco text-xs font-semibold text-base-texto-primario hover:bg-base-bg-secundario min-h-[44px]"
-            @click="toggleManualChoice">
-            <ListChecks :size="14" class="text-acento-ambar-fuerte" aria-hidden="true" />
-            {{ chooseManually ? 'Volver al recomendado' : 'Ver todos: cuáles suben tu dominio' }}
-          </button>
+
+            <div class="px-4 sm:px-6 pb-5 space-y-2">
+              <ValorarLeccion :unit-id="unitId" data-recorrido="valorar" @no-claro="buscarAlternativa" />
+              <p v-if="avisoAlternativa" role="status" class="text-sm font-semibold text-stire-blue">{{ avisoAlternativa }}</p>
+            </div>
+          </article>
+
+          <EstudianteLeccionPractica :unit-id="unitId" />
+
+          <!-- Entregas de esta lección: el docente las valora (docs/DISENO_INTERVENCION_DOCENTE.md §3) -->
+          <section v-if="entregas.length" class="tarjeta-leccion p-5 space-y-2 text-sm" aria-labelledby="entregas-leccion">
+            <h2 id="entregas-leccion" class="text-base font-bold text-base-texto-primario flex items-center gap-1.5"><Inbox :size="16" class="text-acento-ambar-fuerte" aria-hidden="true" /> Entregas de esta lección</h2>
+            <NuxtLink v-for="e in entregas" :key="e.id" :to="`/estudiante/entregas/${e.id}`" class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-base-borde-sutil px-3 min-h-[44px] hover:border-acento-ambar-fuerte">
+              <span class="font-semibold text-base-texto-primario">{{ e.titulo }}</span>
+              <span class="text-xs text-base-texto-secundario">{{ e.versionesUsadas }} de {{ e.limite }} versiones{{ e.cierraAt ? ` · cierra ${fechaCorta(e.cierraAt)}` : '' }}</span>
+            </NuxtLink>
+          </section>
+
+          <!-- Entre lecciones (cuadro «E-Leccion»): volver al curso y la siguiente, con su nombre. Si su módulo está cerrado, qué falta. -->
+          <nav aria-label="Entre lecciones" class="grid gap-3 sm:grid-cols-2">
+            <NuxtLink to="/estudiante/aprender" class="tarjeta-leccion flex items-center gap-3 px-5 py-4 min-h-[44px] hover:shadow-md transition-shadow">
+              <ArrowLeft :size="20" aria-hidden="true" />
+              <span><span class="block text-xs text-base-texto-secundario">Volver</span><span class="block font-bold">Al plan del curso</span></span>
+            </NuxtLink>
+            <NuxtLink v-if="sigLeccion?.abierta" :to="`/estudiante/unidad/${sigLeccion.id}`" class="salto-final flex items-center justify-end gap-3 px-5 py-4 rounded-[22px] min-h-[44px] text-right">
+              <span><span class="block text-xs opacity-75">Siguiente lección</span><span class="block font-bold">{{ sigLeccion.titulo }}</span></span>
+              <ArrowRight :size="20" aria-hidden="true" />
+            </NuxtLink>
+            <p v-else-if="sigLeccion" class="m-0 self-center text-sm text-base-texto-secundario sm:text-right">{{ notaModuloCerrado(sigLeccion) }}</p>
+          </nav>
         </div>
-
-        <!-- Tope (docs/DISENO_INTERVENCION_DOCENTE.md §4.4): tras varios fallos seguidos, lo primero es parar y volver a la
-             explicación o pedir una pista; el ejercicio sigue ahí, pero ya no es el botón principal. -->
-        <div v-if="enPausa" class="flex items-center gap-2 flex-wrap">
-          <!-- La pista primero: el estudiante ya está en la lección, y «volver a la explicación» solo subía la página. -->
-          <button type="button" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold text-xs transition-colors min-h-[44px]" @click="tutorStore.openDrawer()">
-            <Lightbulb :size="14" aria-hidden="true" /> Pedir una pista al Tutor
-          </button>
-          <button type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-md borde-afordancia text-xs font-semibold min-h-[44px]" @click="volverALaExplicacion">
-            <BookOpen :size="14" aria-hidden="true" /> Releer la explicación
-          </button>
-        </div>
-
-        <div v-if="recommendedActivity && !chooseManually" class="flex items-center gap-2 flex-wrap">
-          <NuxtLink
-            :to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"
-            class="inline-flex items-center gap-2 transition-colors text-xs min-h-[44px]"
-            :class="enPausa ? 'font-semibold text-acento-ambar-fuerte hover:underline' : 'px-5 py-2.5 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco font-bold'"
-          >
-            <template v-if="enPausa">Probar otro ejercicio igual</template>
-            <template v-else>
-            <RotateCcw v-if="recommendedActivity.reason === 'repaso'" :size="14" aria-hidden="true" />
-            <TrendingUp v-else-if="recommendedActivity.reason === 'reto' || recommendedActivity.reason === 'sube_nivel'" :size="14" aria-hidden="true" />
-            <Play v-else :size="14" aria-hidden="true" />
-            {{ dominio ? 'Seguir practicando' : 'Practicar' }}: {{ recommendedActivity.title }}
-            </template>
-          </NuxtLink>
-          <span
-            v-if="recommendedActivity.level"
-            class="px-2 py-0.5 rounded text-[10px] font-bold bg-base-blanco border border-base-borde-fuerte text-slate-700"
-          >
-            {{ levelLabel(recommendedActivity.level) }}
-          </span>
-        </div>
-
-        <!-- Todos los ejercicios, por nivel, con cuáles todavía suben el dominio (08/10). -->
-        <EstudianteEjerciciosDeLaLeccion v-else-if="chooseManually" :unit-id="unitId" />
-
-        <p v-else class="text-xs text-slate-700">
-          Todavía no hay ejercicios publicados para esta lección.
-        </p>
-
-        <!-- Tomar un reto, como «¿Ya sabes esto?» de Duolingo, pero en cualquier momento mientras la lección no esté
-             dominada (pedido del dueño, 04/10): el que se siente seguro elige un ejercicio del nivel siguiente. -->
-        <div v-if="puedeSaltar" class="pt-2 border-t border-acento-ambar-fuerte/20 text-xs space-y-1">
-          <button type="button" :disabled="saltando" @click="saltarConReto"
-            class="min-h-[44px] font-semibold text-acento-ambar-fuerte hover:underline inline-flex items-center gap-1.5 disabled:opacity-50">
-            <Zap :size="13" aria-hidden="true" /> ¿Te sientes seguro? Toma un reto
-          </button>
-          <p class="text-[11px] text-slate-700">Un ejercicio del nivel siguiente. Si lo resuelves a la primera, lo de abajo deja de exigirse y tu dominio sube más rápido.</p>
-          <p v-if="saltoError" role="status" class="text-slate-700">{{ saltoError }}</p>
-        </div>
-      </section>
-
-      <!-- Entregas de esta lección: el docente las valora (docs/DISENO_INTERVENCION_DOCENTE.md §3) -->
-      <section v-if="entregas.length" class="bg-base-blanco rounded-lg border border-base-borde-sutil p-4 space-y-2 text-xs" aria-labelledby="entregas-leccion">
-        <h2 id="entregas-leccion" class="text-sm font-bold text-base-texto-primario flex items-center gap-1.5"><Inbox :size="15" class="text-acento-ambar-fuerte" aria-hidden="true" /> Entregas de esta lección</h2>
-        <NuxtLink v-for="e in entregas" :key="e.id" :to="`/estudiante/entregas/${e.id}`" class="flex flex-wrap items-center justify-between gap-2 rounded-md border border-base-borde-sutil px-3 py-2 hover:border-acento-ambar-fuerte">
-          <span class="font-semibold text-base-texto-primario">{{ e.titulo }}</span>
-          <span class="text-[11px] text-base-texto-secundario">{{ e.versionesUsadas }} de {{ e.limite }} versiones{{ e.cierraAt ? ` · cierra ${fechaCorta(e.cierraAt)}` : '' }}</span>
-        </NuxtLink>
-      </section>
-
-      <div class="pt-4 border-t border-base-borde-sutil flex flex-wrap items-center justify-between gap-3">
-        <NuxtLink
-          to="/estudiante"
-          class="inline-flex items-center gap-1.5 borde-afordancia px-4 py-2 rounded-md text-xs font-semibold bg-base-blanco text-base-texto-primario min-h-[44px]">
-          <ArrowLeft :size="14" aria-hidden="true" /> Volver al plan del curso
-        </NuxtLink>
-        <!-- 09/10: pasar a la siguiente lección cuando quiera; si su módulo está cerrado, qué falta. -->
-        <NuxtLink v-if="sigLeccion?.abierta" :to="`/estudiante/unidad/${sigLeccion.id}`" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-bold bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco min-h-[44px] text-right">
-          Siguiente lección: {{ sigLeccion.titulo }} <ArrowRight :size="14" aria-hidden="true" />
-        </NuxtLink>
-        <p v-else-if="sigLeccion" class="max-w-xs text-right text-[11px] text-base-texto-secundario">{{ notaModuloCerrado(sigLeccion) }}</p>
+        <EstudianteLeccionOtrasFormas modo="lado" class="hidden xl:block" :alternativas="alternativas" :version="unitContent.length" />
       </div>
     </template>
     <!-- Celular: anterior, plan del curso, siguiente y Tutor en una barra abajo (12/10). -->
@@ -198,27 +124,25 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight, BookOpen, ChevronRight, Inbox, Lightbulb, ListChecks, Loader2, Lock, Play, RotateCcw, TrendingUp, Zap } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, BookOpen, ChevronRight, Inbox, Loader2, Lock } from 'lucide-vue-next'
 import { fechaCorta } from '~/utils/entregas'
 import { tituloConNombre } from '~/utils/tituloPagina'
-import { DOMINADO, TERMINOS } from '~/utils/terminos'
-import { useAuthStore } from '~/stores/auth'
+import { TERMINOS } from '~/utils/terminos'
 import { useStudentStore } from '~/stores/student'
-import { useTutorStore } from '~/stores/tutor'
 import { useUnidadEstudiante } from '~/composables/useUnidadEstudiante'
 import { esAlternativa } from '~/utils/explicacionesAlternativas'
 import { insertadosDe } from '~/utils/contenidoLeccion'
 import { siguienteLeccion } from '~/utils/siguienteLeccion'
 import { notaModuloCerrado } from '~/utils/resultadoEntrega'
+import { ubicacionLeccion } from '~/utils/leccionV3'
 
 definePageMeta({
   layout: 'student'
 })
 
 const route = useRoute()
-const authStore = useAuthStore()
 const studentStore = useStudentStore()
-const { unidad, contenidos, entregasDeClase, progreso, siguienteActividad, registrarConfianza } = useUnidadEstudiante()
+const { unidad, contenidos, entregasDeClase } = useUnidadEstudiante()
 
 const unitId = Number(route.params.id) || 0
 /** Si la lección es de un módulo todavía cerrado, qué falta para abrirlo; null si está abierta. */
@@ -228,6 +152,8 @@ const bloqueo = computed(() => {
 })
 
 const sigLeccion = computed(() => siguienteLeccion(studentStore.modules, studentStore.estadosModulos, unitId))
+/** Módulo y tema para la miga de pan; «Módulo 1 · Tema 2 · Lección 2 de 2» para la portada. */
+const ubicacion = computed(() => ubicacionLeccion(studentStore.modules, unitId))
 
 interface UnitDetail {
   id: number
@@ -250,18 +176,8 @@ interface ContentBlock {
 const esRecurso = (type?: string) => ['video', 'pdf', 'image', 'embed'].includes(type ?? '')
 /** Los bloques de texto, para escucharlos (EscucharLeccion). Computado: el mismo arreglo mientras no cambie la lección. */
 const bloquesDeTexto = computed(() => unitContent.value.filter((c) => !esRecurso(c.type)))
-
-interface NextActivityRecommendation {
-  activityId: number
-  title: string
-  questionType: string | null
-  order: number
-  allCompleted: boolean
-  level: string
-  reason: string
-  /** Por qué se recomienda, en una línea (docs/DISENO_PRACTICA_ADAPTATIVA.md §3.3). */
-  reasonMessage: string
-}
+/** Las explicaciones extra que ya se ven: van también en «Otras formas de verla». */
+const alternativas = computed(() => unitContent.value.filter((c) => esAlternativa(c.cuando)).map((c) => ({ id: c.id, title: c.title })))
 
 const isLoading = ref(true)
 const loadError = ref(false)
@@ -277,77 +193,10 @@ async function buscarAlternativa() {
   unitContent.value = ahora
   const nueva = ahora.find((c) => !antes.has(c.id))
   avisoAlternativa.value = nueva ? 'Tu docente preparó otra forma de explicarlo: la tienes arriba, marcada «Otra forma de verlo».' : null
-  if (nueva) volverALaExplicacion()
+  if (nueva) nextTick(() => document.getElementById(`bloque-${nueva.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
 }
-const recommendedActivity = ref<NextActivityRecommendation | null>(null)
-const tutorStore = useTutorStore()
-const enPausa = computed(() => recommendedActivity.value?.reason === 'pausa')
 
-/** Lleva a la explicación de la lección y le pasa el foco, para que el lector de pantalla también llegue ahí. */
-function volverALaExplicacion() {
-  const el = document.getElementById('explicacion')
-  if (!el) return
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  el.focus({ preventScroll: true })
-}
-// Desde un ejercicio («Ver cuáles todavía suben tu dominio») se llega con la lista ya abierta.
-const chooseManually = ref(route.query.ejercicios === '1')
-
-const { messageOf } = useApiErrorMessage()
-
-/** Dominio de la lección (null si aún no hay progreso: se muestra desde que empieza a practicar). */
-const dominio = ref<number | null>(null)
-/**
- * Tomar un reto (docs/DISENO_INTERVENCION_DOCENTE.md §10.2; en cualquier momento desde el 04/10): reemplaza la pregunta
- * «¿Cómo te sientes con este tema?». Por dentro es el reto de salto (confianza 3): si lo resuelve al primer intento, lo
- * de abajo deja de exigirse.
- */
-const puedeSaltar = ref(false)
 const entregas = ref<Array<{ id: number; titulo: string; learningUnitId: number | null; cierraAt: string | null; versionesUsadas: number; limite: number }>>([])
-const saltando = ref(false)
-const saltoError = ref<string | null>(null)
-
-/** Módulo y tema de la lección, del plan ya cargado; el tema solo si agrupa más de una lección. */
-const ubicacion = computed(() => {
-  for (const mod of studentStore.modules) {
-    for (const tema of mod.topics) {
-      if (tema.units.some((u) => u.id === unitId)) {
-        return { modulo: mod.title, tema: tema.units.length > 1 ? tema.title : null }
-      }
-    }
-  }
-  return { modulo: null, tema: null }
-})
-
-async function saltarConReto() {
-  saltando.value = true
-  saltoError.value = null
-  try {
-    const studentId = authStore.user?.id
-    // Primero se busca el reto; solo si hay uno se marca la confianza (así no cambia nada si no lo hay).
-    const reto = studentId
-      ? await siguienteActividad(studentId, unitId, true)
-      : null
-    if (reto?.activityId && reto.reason === 'reto') {
-      await registrarConfianza(unitId, 3)
-      await navigateTo(`/estudiante/evaluacion/${reto.activityId}?reto=1`)
-      return
-    }
-    // Tras varios fallos seguidos el tope (BT-16) va primero: no se ofrece algo más difícil.
-    saltoError.value = reto?.reason === 'pausa'
-      ? 'Llevas varios intentos seguidos sin lograrlo: primero vuelve a la explicación o pide una pista. El reto queda para después.'
-      : 'No hay ejercicios de un nivel más alto pendientes en esta lección: sigue con el recomendado.'
-    puedeSaltar.value = false
-  } catch (error: unknown) {
-    saltoError.value = messageOf(error, 'No se pudo preparar el reto. Prueba con «Practicar».')
-  } finally {
-    saltando.value = false
-  }
-}
-
-function toggleManualChoice() {
-  chooseManually.value = !chooseManually.value
-}
 
 onMounted(async () => {
   if (!unitId) {
@@ -379,29 +228,11 @@ onMounted(async () => {
   } finally {
     isLoading.value = false
   }
-  if (chooseManually.value) nextTick(() => document.getElementById('practicar-titulo')?.scrollIntoView({ block: 'start' }))
-
-  const studentId = authStore.user?.id
-  if (!studentId) return
-
-  try {
-    const [progress, rec] = await Promise.all([
-      progreso(studentId, unitId),
-      siguienteActividad(studentId, unitId)
-    ])
-    recommendedActivity.value = rec
-    dominio.value = progress && (progress.attemptsCount ?? 0) > 0 ? Math.round(progress.mastery ?? 0) : null
-    // El reto se ofrece mientras la lección no esté dominada ni completada (antes, solo antes de empezar).
-    puedeSaltar.value = !!rec && !rec.allCompleted && rec.reason !== 'pausa' && (progress?.mastery ?? 0) < DOMINADO
-  } catch (error: unknown) {
-    console.warn('[STIRE Student] No se pudo cargar el progreso o la actividad recomendada:', error)
-  }
 })
-
-function levelLabel(level: string) {
-  if (level === 'basico') return 'Básico'
-  if (level === 'intermedio') return 'Intermedio'
-  if (level === 'avanzado') return 'Avanzado'
-  return level
-}
 </script>
+
+<style scoped>
+.salto-final { background: linear-gradient(135deg, #14213d, #25407a); color: #fff; transition: filter 0.15s ease; }
+.salto-final:hover { filter: brightness(1.12); }
+:root[data-tema='oscuro'] .salto-final { background: #e8f6ff; color: #14213d; }
+</style>

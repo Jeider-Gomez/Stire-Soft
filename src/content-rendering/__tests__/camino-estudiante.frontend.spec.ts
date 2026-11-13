@@ -79,7 +79,7 @@ describe('La lección antes del ejercicio y la evaluación implícita', () => {
   });
 
   it('no se pregunta «¿Cómo te sientes?»: se ofrece tomar un reto en cualquier momento, con el mismo reto de salto (confianza 3)', () => {
-    const leccion = leer('pages', 'estudiante', 'unidad', '[id].vue');
+    const leccion = leer('components', 'estudiante', 'leccion', 'Practica.vue');
     const apiUnidad = leer('composables', 'useUnidadEstudiante.ts');
     expect(plantilla(leccion)).not.toContain('¿Cómo te sientes');
     expect(leccion).toContain('¿Te sientes seguro? Toma un reto');

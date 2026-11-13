@@ -39,8 +39,10 @@ describe('lo que pide el módulo para abrir el siguiente, desde la lección', ()
     const meta = leer('components', 'estudiante', 'MetaDeLaLeccion.vue');
     expect(meta).toContain('Meta de la lección: {{ DOMINADO }} %');
     expect(meta).toContain('se abre con <strong>{{ meta.umbral }} %</strong> de <Termino palabra="Dominio">dominio</Termino> promedio');
-    const leccion = leer('pages', 'estudiante', 'unidad', '[id].vue');
-    expect(leccion).toContain('<EstudianteMetaDeLaLeccion :unit-id="unitId" data-recorrido="meta-leccion" />');
+    // v3 (13/11): la meta vive en «Practica esta lección», junto a la barra del dominio.
+    const leccion = leer('components', 'estudiante', 'leccion', 'Practica.vue');
+    expect(leccion).toContain('<EstudianteMetaDeLaLeccion :unit-id="unitId" class="!text-xs" />');
+    expect(leccion).toContain('data-recorrido="meta-leccion"');
     expect(leccion).toContain(':style="{ left: `${DOMINADO}%` }"');
     expect(leer('components', 'exercise', 'ResultadoEntrega.vue')).toContain('<EstudianteMetaDeLaLeccion v-if="ej.learningUnitId" :unit-id="ej.learningUnitId" solo-modulo');
   });

@@ -20,8 +20,11 @@
       <LayoutHeaderNav @toggle-sidebar="toggleSidebar" />
 
       <!-- Zona C: Contenido Dinámico de la Página -->
-      <!-- pb-24: el lanzador del Tutor flota abajo a la derecha; sin este margen tapaba el último botón de la página. -->
-      <main id="contenido" tabindex="-1" class="flex-1 min-w-0 p-4 sm:p-6 md:p-8 pb-24 sm:pb-24 md:pb-24 max-w-7xl mx-auto w-full overflow-y-auto">
+      <!-- pb-24: el lanzador del Tutor flota abajo a la derecha; sin este margen tapaba el último botón de la página.
+           overflow-x-clip y no overflow-y-auto (13/11): «auto» hacía de <main> un contenedor de desplazamiento que no se
+           desplaza (lo hace la ventana), y así nada de adentro se quedaba fijo arriba (sticky): ni la barra de la lección
+           ni «Otras formas de verla». -->
+      <main id="contenido" tabindex="-1" class="flex-1 min-w-0 p-4 sm:p-6 md:p-8 pb-24 sm:pb-24 md:pb-24 max-w-7xl mx-auto w-full overflow-x-clip">
         <!-- Primeros pasos, solo en el inicio (components/estudiante/PrimerosPasos.vue). -->
         <EstudiantePrimerosPasos v-if="route.path === '/estudiante'" class="mb-6" />
         <slot />

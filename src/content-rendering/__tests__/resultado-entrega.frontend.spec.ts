@@ -219,7 +219,7 @@ describe('pasar a la siguiente lección siempre es una opción', () => {
   it('la ventana, el aviso de sin intentos y la página de la lección muestran la siguiente lección', () => {
     expect(leer('components', 'exercise', 'ResultadoEntrega.vue')).toContain('@click="hacer(paso.siguienteLeccion)"');
     expect(leer('components', 'exercise', 'SinIntentos.vue')).toContain('@click="ir(aSiguiente)"');
-    expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toContain('Siguiente lección: {{ sigLeccion.titulo }}');
+    expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toContain('<span class="block text-xs opacity-75">Siguiente lección</span><span class="block font-bold">{{ sigLeccion.titulo }}</span>');
   });
 });
 
