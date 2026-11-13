@@ -1,3 +1,4 @@
+import type { RespuestaLogros } from '~/utils/logros'
 import type { Valoracion } from '~/utils/entregas'
 
 /** Datos remotos del inicio del estudiante (PAT-01: la página organiza y presenta). */
@@ -55,5 +56,20 @@ export function useInicioEstudiante() {
     return api.get<EntregaInicioEstudiante[]>(`/entregas/mias?classId=${classId}`)
   }
 
-  return { solicitudRol, actividadRecomendada, refuerzos, entregas }
+  /** Mensajes sin leer, para «De tu clase» (v3). */
+  async function mensajesSinLeer(): Promise<number> {
+    return (await api.get<{ count: number }>('/message/unread-count'))?.count ?? 0
+  }
+
+  /** Los logros y los días de esta semana con práctica, para «Tu semana» (v3). */
+  function logros(studentId: number): Promise<RespuestaLogros> {
+    return api.get<RespuestaLogros>(`/analytics/student/${studentId}/logros`)
+  }
+
+  /** Ya se mostraron: la próxima vez no se vuelven a celebrar (siguen en «Mi progreso»). */
+  function marcarLogrosVistos(): Promise<unknown> {
+    return api.post('/analytics/logros/vistos', {})
+  }
+
+  return { solicitudRol, actividadRecomendada, refuerzos, entregas, mensajesSinLeer, logros, marcarLogrosVistos }
 }

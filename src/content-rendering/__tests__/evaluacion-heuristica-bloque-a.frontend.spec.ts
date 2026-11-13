@@ -17,7 +17,7 @@ describe('Ítem 4: las palabras técnicas se explican donde aparecen', () => {
   // Cada pantalla del estudiante que habla de «dominio» lo explica ahí mismo, también en el celular (sin «title»).
   it.each([
     ['pages/estudiante/unidad/[id].vue'],
-    ['pages/estudiante/index.vue'],
+    ['components/estudiante/inicio/CaminoModulo.vue'],
     ['pages/estudiante/progreso.vue'],
     ['components/estudiante/TuAvance.vue'],
     ['components/estudiante/MetaDeLaLeccion.vue'],

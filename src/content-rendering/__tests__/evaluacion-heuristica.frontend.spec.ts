@@ -41,7 +41,7 @@ describe('Evaluación heurística: hallazgos corregidos', () => {
     const store = leer('stores', 'student.ts');
     expect(store).toMatch(/reviewsDueToday = computed\(\(\) => reviews\.value\.filter\(\(r\) => r\.urgency === 'vencido' \|\| r\.urgency === 'critico'\)\)/);
     expect(leer('pages', 'estudiante', 'progreso.vue')).toMatch(/studentStore\.reviewsDueToday\.length/);
-    expect(leer('pages', 'estudiante', 'index.vue')).toMatch(/studentStore\.reviewsDueToday\.length/);
+    expect(leer('components', 'estudiante', 'inicio', 'SiguientePaso.vue')).toMatch(/studentStore\.reviewsDueToday\.length/);
     // la insignia roja del menú lateral tenía el mismo problema
     const menu = leer('components', 'layout', 'SidebarNav.vue');
     expect(menu).toMatch(/v-if="studentStore\.reviewsDueToday\.length > 0"/);

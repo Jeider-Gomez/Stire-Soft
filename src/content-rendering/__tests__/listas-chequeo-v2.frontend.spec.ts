@@ -108,7 +108,7 @@ describe('MOB-02 · objetivos táctiles de 44 px (la revisión del «después» 
     ['pages/estudiante/unidad/[id].vue', '@click="tutorStore.openDrawer()"', 1],
     ['pages/estudiante/unidad/[id].vue', ':to="`/estudiante/evaluacion/${recommendedActivity.activityId}`"', 1],
     ['pages/estudiante/evaluacion/[activityId].vue', "@click=\"leftTab = 'casos'\"", 1],
-    ['pages/estudiante/index.vue', 'to="/estudiante/repasos"', 1],
+    ['components/estudiante/inicio/CaminoModulo.vue', 'to="/estudiante/aprender"', 1],
     ['pages/estudiante/progreso.vue', 'to="/estudiante/repasos"', 1],
     ['pages/estudiante/progreso.vue', 'hover:bg-acento-ambar/10 whitespace-nowrap', 1],
     // El inicio del docente rehecho (26/10): «Por revisar» y la tarjeta de cada clase son componentes.

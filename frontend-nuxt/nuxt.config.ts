@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     '~/assets/css/main.css',
     // Menú lateral v3 de los tres roles (Fase B): color por sección.
     '~/assets/css/menu-v3.css', '~/assets/css/entrar-v3.css',
+    '~/assets/css/inicio-v3.css',
     // Aspecto del panel del docente (rediseño R0): solo actúa dentro de [data-panel="docente"].
     '~/assets/css/panel-docente.css'
   ],

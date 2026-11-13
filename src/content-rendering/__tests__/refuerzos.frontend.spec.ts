@@ -48,8 +48,9 @@ describe('Refuerzos: la acción junto al dato', () => {
 
   it('el docente ve «¿funcionó?» (antes → ahora) y el estudiante ve su refuerzo antes del siguiente paso', () => {
     expect(leer('pages', 'docente', 'refuerzos', 'index.vue')).toContain('¿Funcionó? Dominio antes → ahora');
-    const inicio = leer('pages', 'estudiante', 'index.vue');
-    expect(inicio.indexOf('v-for="r in refuerzos"')).toBeLessThan(inicio.indexOf('<!-- 1. EL SIGUIENTE PASO'));
+    // v3 (Fase D, 13/11): el refuerzo tiene su tarjeta propia en el Inicio, «Te lo dejó el profe», con su botón.
+    expect(leer('pages', 'estudiante', 'index.vue')).toContain('<EstudianteInicioTeLoDejoElProfe :refuerzos="refuerzos" />');
+    expect(leer('components', 'estudiante', 'inicio', 'TeLoDejoElProfe.vue')).toContain(':to="`/estudiante/refuerzos/${r.id}`"');
   });
 
   it('en un ejercicio del refuerzo, el chat del Tutor dice que la ayuda está ampliada y por qué', () => {

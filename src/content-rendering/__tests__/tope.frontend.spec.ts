@@ -16,8 +16,9 @@ describe('Tope: lo que ve el estudiante', () => {
   });
 
   it('en el inicio, el siguiente paso de una lección en pausa es releer la lección', () => {
-    const inicio = leer('pages', 'estudiante', 'index.vue');
-    expect(inicio).toContain("|| recommendedReason === 'pausa'\" :to=\"`/estudiante/unidad/${studentStore.activeUnit.id}`\"");
-    expect(inicio).toContain("recommendedReason === 'pausa' ? 'Releer la lección'");
+    // v3 (Fase D, 13/11): la misma regla, en la pieza «Tu siguiente paso».
+    const inicio = leer('components', 'estudiante', 'inicio', 'SiguientePaso.vue');
+    expect(inicio).toContain("|| props.razon === 'pausa') {");
+    expect(inicio).toContain("props.razon === 'pausa' ? 'Releer la lección'");
   });
 });

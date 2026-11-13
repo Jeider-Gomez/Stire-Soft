@@ -114,7 +114,7 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo me uno a una clase?',
         paraQue: 'Para ver las lecciones y los ejercicios que preparó tu docente.',
         pasos: [
-          'En tu inicio, toca «Mis clases». Si todavía no tienes clases, toca «Ingresar código de clase».',
+          'Si todavía no tienes clases, en tu inicio toca «Unirme con el código de mi clase». Si ya tienes una, abre «Mis clases».',
           'En «¿Tienes un código de clase?», escribe el código que te dio tu docente, por ejemplo ALGO-203413.',
           'Toca «Unirse». Si tu docente proyecta un QR, también puedes tocar «Escanear QR» y apuntar la cámara.',
         ],

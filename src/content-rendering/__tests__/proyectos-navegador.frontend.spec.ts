@@ -171,7 +171,7 @@ describe('Escalas de calificación de una entrega (pedido del dueño, 04/10)', (
   it('el estudiante ve la valoración en su entrega y en el inicio', () => {
     const leer = (archivo: string) => readFileSync(path.join(__dirname, '..', '..', '..', 'frontend-nuxt', archivo), 'utf8');
     expect(leer('pages/estudiante/entregas/[id].vue')).toContain('NOMBRE_VALORACION[v.valoracion]');
-    expect(leer('pages/estudiante/index.vue')).toContain('calificacionTexto(e.ultima)');
+    expect(leer('components/estudiante/inicio/DeTuClase.vue')).toContain('calificacionTexto(e.ultima)');
   });
 });
 

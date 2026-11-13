@@ -31,7 +31,8 @@ describe('MOD-02 · el modelo del estudiante no se contradice', () => {
   });
 
   it('el inicio y «Mi progreso» usan la misma regla', () => {
-    expect(leer('pages', 'estudiante', 'index.vue')).toContain('tocaRepasar(unit.masteryPercentage');
+    // v3 (Fase D, 13/11): el plan del curso, con «Repasar», pasó del Inicio a «Aprender» (PlanCurso.vue).
+    expect(leer('components', 'estudiante', 'PlanCurso.vue')).toContain('tocaRepasar(unit.masteryPercentage');
     expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('tocaRepasar(item.mastery');
   });
 });
@@ -241,7 +242,7 @@ describe('UI-05 y META-03 · resolver por pasos y «¿Por qué veo esto?»', () 
     expect(leer('stores', 'tutor.ts')).toContain("'Quiero resolver este ejercicio por pasos.'");
   });
   it('el siguiente paso explica cómo elige STIRE y deja elegir otra cosa', () => {
-    const i = leer('pages', 'estudiante', 'index.vue');
+    const i = leer('components', 'estudiante', 'inicio', 'SiguientePaso.vue');
     expect(i).toContain('¿Por qué veo esto?');
     expect(i).toContain('Es una sugerencia: puedes abrir cualquier lección abierta');
   });

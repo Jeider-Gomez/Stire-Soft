@@ -1,0 +1,160 @@
+/* Inicio del estudiante v3 (Fase D, paso 1; cuadros «E-Inicio», «E-Inicio-Oscuro» y «E-Cel-Inicio» del lienzo).
+   Global, como entrar-v3.css: los componentes de components/estudiante/inicio/ comparten estas piezas. */
+
+/* El siguiente paso: el cielo del cuadro, con la mascota a la izquierda y el anillo del curso a la derecha. */
+.heroe-inicio {
+  --heroe-fondo: radial-gradient(circle at 88% 8%, rgba(255, 255, 255, 0.6), transparent 42%),
+    linear-gradient(120deg, #8debff 0%, #5ccbff 58%, #7fb8ff 100%);
+  --heroe-texto: 20 33 61;
+  --heroe-boton2: rgba(255, 255, 255, 0.6);
+  --heroe-pista: rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 18px 20px;
+  background: var(--heroe-fondo);
+  color: rgb(var(--heroe-texto));
+}
+@media (min-width: 640px) { .heroe-inicio { border-radius: 26px; padding: 24px 32px; } }
+:root[data-tema="oscuro"] .heroe-inicio {
+  --heroe-fondo: radial-gradient(circle at 88% 8%, rgba(92, 203, 255, 0.2), transparent 42%),
+    linear-gradient(120deg, #0b2b3f 0%, #0f3550 58%, #163b5c 100%);
+  --heroe-texto: 232 246 255;
+  --heroe-boton2: rgba(255, 255, 255, 0.12);
+  --heroe-pista: rgba(255, 255, 255, 0.14);
+}
+:root[data-contraste="alto"] .heroe-inicio {
+  --heroe-fondo: rgb(var(--c-base-blanco));
+  --heroe-texto: var(--c-base-texto-primario);
+  --heroe-boton2: rgb(var(--c-base-bg-secundario));
+  border: 2px solid rgb(var(--c-base-texto-primario));
+}
+/* Sin «display» aquí: lo pone la clase (inline-flex, hidden sm:inline-flex), para que «hidden» de Tailwind funcione. */
+.heroe-inicio .boton-heroe {
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+.heroe-inicio .boton-heroe:active { transform: scale(0.98); }
+.heroe-inicio .boton-principal { background: linear-gradient(135deg, #14213d, #25407a); color: #fff; }
+.heroe-inicio .boton-principal:hover { filter: brightness(1.12); }
+:root[data-tema="oscuro"] .heroe-inicio .boton-principal { background: #e8f6ff; color: #14213d; }
+.heroe-inicio .boton-otro { background: var(--heroe-boton2); color: inherit; }
+.heroe-inicio .boton-otro:hover { filter: brightness(1.05); }
+
+/* Las tarjetas de abajo: blancas, con la línea de dos colores arriba (la sección a la que llevan). */
+.tarjeta-inicio {
+  position: relative;
+  background: rgb(var(--c-base-blanco));
+  border: 1px solid rgb(var(--c-base-borde-sutil));
+  border-radius: 18px;
+  padding: 20px 22px;
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease;
+}
+.tarjeta-inicio::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: -1px;
+  height: 20px;
+  border-radius: 18px 18px 0 0;
+  background: linear-gradient(90deg, rgb(var(--acento)), rgb(var(--acento2)));
+  -webkit-mask: linear-gradient(#000 0 4px, transparent 4px);
+  mask: linear-gradient(#000 0 4px, transparent 4px);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .tarjeta-inicio:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(20, 33, 61, 0.1); }
+}
+.titulo-tarjeta { margin: 0; font-family: Poppins, sans-serif; font-size: 19px; font-weight: 700; flex: 1; }
+
+/* Filas que se tocan (mensajes, entregas): 44 px de alto como mínimo. */
+.fila-inicio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 8px;
+  margin: 0 -8px;
+  border-radius: 12px;
+  font-size: 14px;
+  transition: background-color 0.15s ease;
+}
+.fila-inicio:hover { background-color: rgb(var(--c-base-bg-secundario)); }
+
+/* Etiquetas en pastilla: texto Y color (el color nunca va solo). */
+.pastilla-inicio { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.pastilla-menta { background: rgb(var(--c-sec-menta-fondo)); color: rgb(var(--c-semantico-pasa)); }
+.pastilla-sol { background: rgb(var(--c-sec-sol-fondo)); color: #7a4b00; }
+.pastilla-gris { background: rgb(var(--c-base-bg-secundario)); color: rgb(var(--c-base-texto-secundario)); }
+.pastilla-tinta { background: rgb(var(--c-base-texto-primario)); color: rgb(var(--c-base-blanco)); }
+:root[data-tema="oscuro"] .pastilla-menta { color: rgb(var(--c-sec-menta-icono)); }
+:root[data-tema="oscuro"] .pastilla-sol { color: rgb(var(--c-sec-sol-icono)); }
+
+.boton-tarjeta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1px solid rgb(var(--c-base-borde-fuerte));
+  background: rgb(var(--c-base-blanco));
+  font-weight: 600;
+  font-size: 15px;
+  transition: background-color 0.15s ease;
+}
+.boton-tarjeta:hover { background: rgb(var(--c-base-bg-secundario)); }
+
+/* El camino del módulo: círculos sobre una línea que se llena hasta donde vas. */
+.paso-camino { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
+.paso-hecho { background: #00c2a8; color: #14213d; }
+.paso-aqui { background: rgb(var(--c-base-texto-primario)); color: rgb(var(--c-base-blanco)); box-shadow: 0 0 0 6px rgb(var(--c-sec-menta-fondo)); }
+.paso-empezado { background: rgb(var(--c-base-blanco)); color: rgb(var(--c-base-texto-primario)); border: 3px solid #ffc94d; }
+.paso-pendiente { background: rgb(var(--c-base-blanco)); color: rgb(var(--c-base-texto-secundario)); border: 2px solid rgb(var(--c-base-borde-fuerte)); }
+
+/* Los días de la semana. */
+.dia-semana { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.dia-hecho { background: #00c2a8; color: #14213d; }
+.dia-hoy { border: 2px dashed #ffc94d; }
+.dia-otro { border: 2px solid rgb(var(--c-base-borde-sutil)); }
+
+/* «Aprender» (cuadro «E-Aprender»): el botón principal fuera de la tarjeta celeste y los filtros en pastilla. */
+.boton-tinta {
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #14213d, #25407a);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.boton-tinta:hover { filter: brightness(1.12); }
+.boton-tinta:active { transform: scale(0.98); }
+:root[data-tema="oscuro"] .boton-tinta { background: #e8f6ff; color: #14213d; }
+.filtro-aprender {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  background: rgb(var(--c-base-blanco));
+  color: rgb(var(--c-base-texto-primario));
+  border: 1px solid rgb(var(--c-base-borde-sutil));
+}
+.filtro-aprender[aria-pressed="true"] { background: rgb(var(--c-base-texto-primario)); color: rgb(var(--c-base-blanco)); border-color: transparent; }

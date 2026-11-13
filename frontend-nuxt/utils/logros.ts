@@ -15,7 +15,8 @@ export interface Logro {
   progreso: { actual: number; meta: number }
 }
 /** `activos`: false si ninguna de sus clases usa logros (el docente los apagó). */
-export interface RespuestaLogros { activos: boolean; logros: Logro[]; nuevos: string[]; siguiente: Logro | null }
+/** `semana`: los días de esta semana con práctica («2026-11-09»), para «Tu semana» del inicio (v3). */
+export interface RespuestaLogros { activos: boolean; logros: Logro[]; nuevos: string[]; siguiente: Logro | null; semana?: string[] }
 
 /** Nombre y para qué sirve cada categoría, en el orden en que se muestran. */
 export const CATEGORIAS_LOGRO: Record<CategoriaLogro, { nombre: string; sentido: string }> = {

@@ -14,10 +14,10 @@ describe('la presentación de la clase', () => {
     expect(c).toContain('{{ bienvenida }}');
     expect(c).toContain('Con {{ docente }}');
   });
-  it('el Inicio del estudiante abre con la presentación de su clase activa, con el color que eligió el docente', () => {
-    const p = leer('pages', 'estudiante', 'index.vue');
-    expect(p).toContain('<PresentacionClase v-if="claseActual"');
-    expect(p).toContain('claseActual.value?.portada ?? colorDeClase(Math.max(i, 0))');
+  it('el color de portada que eligió el docente llega al estudiante', () => {
+    // v3 (Fase D, 13/11): el Inicio sigue el cuadro «E-Inicio» (siguiente paso, camino, tarjetas) y ya no abre con la
+    // franja; la presentación queda en «Mis clases» y se retoma en «Mi clase» (Fase D, paso 5).
+    expect(leer('pages', 'estudiante', 'index.vue')).not.toContain('<PresentacionClase');
     expect(leer('stores', 'student.ts')).toContain("portada: e.class!.portada ?? null");
   });
   it('«Mis clases» lleva la franja de color en cada tarjeta', () => {

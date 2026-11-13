@@ -6,6 +6,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/auth\/register/, 'Crear cuenta'],
   [/^\/auth\/forgot-password/, 'Recuperar contraseña'],
   [/^\/auth\/reset-password/, 'Nueva contraseña'],
+  [/^\/estudiante\/aprender/, 'Aprender'],
   [/^\/estudiante\/clases/, 'Mis clases'],
   [/^\/estudiante\/asistencia/, 'Mi asistencia'],
   [/^\/estudiante\/unidad\//, 'Lección'],

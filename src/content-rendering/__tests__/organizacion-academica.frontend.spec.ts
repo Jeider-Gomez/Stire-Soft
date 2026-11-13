@@ -311,11 +311,12 @@ describe('Logros y medallas', () => {
     expect(M.filtrarLogros(l, 'todos')).toHaveLength(3);
   });
   it('el inicio celebra lo nuevo una vez y muestra una meta; «Mi progreso» solo el resumen; todas en su pantalla; sin ranking', () => {
-    const inicio = leer('components', 'estudiante', 'LogrosInicio.vue');
-    expect(inicio).toContain("api.post('/analytics/logros/vistos'");
-    expect(inicio).toContain('datos.siguiente');
+    // v3 (Fase D, 13/11): el logro nuevo o la próxima meta van en «Tu semana» del Inicio; se marcan vistos una vez.
+    const inicio = leer('components', 'estudiante', 'inicio', 'TuSemana.vue');
+    expect(inicio).toContain('d.siguiente');
     expect(inicio).toContain('to="/estudiante/logros"');
-    expect(leer('pages', 'estudiante', 'index.vue')).toContain('<EstudianteLogrosInicio />');
+    expect(leer('composables', 'useInicioEstudiante.ts')).toContain("api.post('/analytics/logros/vistos'");
+    expect(leer('pages', 'estudiante', 'index.vue')).toContain('if (logros.value.nuevos.length) void inicio.marcarLogrosVistos()');
     // 04/10: las 26 medallas llenaban «Mi progreso»; ahora va una fila con las ganadas y la próxima meta.
     const progreso = leer('pages', 'estudiante', 'progreso.vue');
     expect(progreso).toContain('<EstudianteResumenLogros />');

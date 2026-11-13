@@ -282,7 +282,7 @@ describe('revisión exhaustiva de accesibilidad (07/10, axe-core con WCAG 2.2 en
     expect(cab).not.toContain(':aria-label="`Menú de ${');
     expect(cab).toContain(':aria-expanded="showUserMenu"');
     expect(leer('pages', 'docente', 'contenidos.vue')).not.toContain('aria-label="Traer contenidos de otra clase"');
-    expect(leer('pages', 'estudiante', 'index.vue')).toContain('<span class="sr-only">: {{ estadoLeccion(unit) }}</span>');
+    expect(leer('components', 'estudiante', 'PlanCurso.vue')).toContain('<span class="sr-only">: {{ estadoLeccion(unit) }}</span>');
   });
 
   it('2.5.8 Tamaño del objetivo: casillas de 20 px en filas de 32 px; migas del ejercicio sin tapar; nombre de la clase de 28 px', () => {

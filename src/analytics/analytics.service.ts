@@ -17,7 +17,7 @@ import { EnrollmentStatus } from '../enrollment/enums/enrollment-status.enum';
 import { construirMapaDeCalor, MapaDeCalor } from './mapa-de-calor';
 import { construirResumenSemanal, ResumenSemanal } from './resumen-semanal';
 import { rachaDeDias, repasosPendientes } from './racha-y-repasos';
-import { categoriasPermitidas, evaluarLogros, siguienteLogro, type Logro } from './logros';
+import { categoriasPermitidas, diasDeLaSemana, evaluarLogros, siguienteLogro, type Logro } from './logros';
 import { esNivelConfianza, resumirCalibracion, type ResumenCalibracion } from './calibracion';
 import { contarCalidades, type NombreCalidad } from '../common/utils/spaced-repetition';
 import { CONFIANZA_SEGURO } from '../learning-progress/recommendation/recomendar-siguiente';
@@ -290,7 +290,7 @@ export class AnalyticsService {
     return { ...resumen, escala };
   }
 
-  async getLogros(studentId: number, requestingUser: User): Promise<{ activos: boolean; logros: Logro[]; nuevos: string[]; siguiente: Logro | null }> {
+  async getLogros(studentId: number, requestingUser: User): Promise<{ activos: boolean; logros: Logro[]; nuevos: string[]; siguiente: Logro | null; semana: string[] }> {
     if (requestingUser.role === 'estudiante' && requestingUser.id !== studentId) {
       throw new ForbiddenException('No tienes acceso a los logros de otro estudiante.');
     }
@@ -303,8 +303,15 @@ export class AnalyticsService {
         "WHERE e.studentId = ? AND e.status = 'active'",
       [studentId],
     );
+    // «Tu semana» del inicio (v3): los días con práctica desde el lunes, se usen o no los logros en sus clases.
+    const desdeElLunes = new Date(Date.now() - 8 * 86_400_000);
+    const recientes: Array<{ fecha: Date }> = await this.dataSource.query(
+      "SELECT COALESCE(s.submittedAt, s.createdAt) AS fecha FROM submissions s WHERE s.studentId = ? AND s.status <> 'in_progress' AND COALESCE(s.submittedAt, s.createdAt) >= ?",
+      [studentId, desdeElLunes],
+    );
+    const semana = diasDeLaSemana(recientes.map((r) => new Date(r.fecha)));
     const conLogros = clases.filter((c) => Number(c.logrosActivos));
-    if (!conLogros.length) return { activos: false, logros: [], nuevos: [], siguiente: null };
+    if (!conLogros.length) return { activos: false, logros: [], nuevos: [], siguiente: null, semana };
     const permitidas = categoriasPermitidas(conLogros.map((c) => c.categoriasLogro));
     const clasesConDominio = new Set(conLogros.filter((c) => categoriasPermitidas([c.categoriasLogro]).has('dominio')).map((c) => Number(c.classId)));
 
@@ -355,6 +362,7 @@ export class AnalyticsService {
       // Solo los que la clase permite hoy: si el docente quita una categoría, no se celebran sus medallas.
       nuevos: guardados.filter((g) => !Number(g.visto) && vigentes.has(g.clave)).map((g) => g.clave),
       siguiente: siguienteLogro(logros),
+      semana,
     };
   }
 

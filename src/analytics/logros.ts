@@ -90,6 +90,16 @@ function lunesDe(dia: string): string {
   return d.toISOString().slice(0, 10);
 }
 
+/**
+ * Los días de esta semana (lunes a domingo) con práctica, como «2026-11-09», para «Tu semana» del inicio del estudiante
+ * (v3, cuadro «E-Inicio»). Usa el mismo día de Colombia (`diaDe`) que la constancia, así la tarjeta y el logro nunca se contradicen.
+ */
+export function diasDeLaSemana(fechas: ReadonlyArray<Date>, hoy: Date = new Date()): string[] {
+  const lunes = lunesDe(diaDe(hoy));
+  const dias = new Set(fechas.map((f) => diaDe(f)).filter((d) => lunesDe(d) === lunes));
+  return [...dias].sort();
+}
+
 /** Fechas (ISO) en que se alcanzó cada cantidad: la n-ésima vez que algo ocurrió. */
 type Hitos = Array<{ cantidad: number; fecha: Date }>;
 const cuandoLlego = (hitos: Hitos, meta: number): string | null => hitos.find((h) => h.cantidad >= meta)?.fecha.toISOString() ?? null;

@@ -1,4 +1,4 @@
-import { categoriasPermitidas, evaluarLogros, siguienteLogro, type EntregaParaLogros, type LeccionParaLogros } from './logros';
+import { categoriasPermitidas, diasDeLaSemana, evaluarLogros, siguienteLogro, type EntregaParaLogros, type LeccionParaLogros } from './logros';
 
 // Logros y medallas (logros.ts; BT-29). Días y semanas en hora de Colombia.
 const col = (dia: string, hora = '10:00') => new Date(`${dia}T${hora}:00-05:00`);
@@ -108,5 +108,20 @@ describe('categoriasPermitidas — lo que el docente eligió en cada clase', () 
     expect([...categoriasPermitidas(['dominio,memoria'])].sort()).toEqual(['dominio', 'memoria']);
     expect([...categoriasPermitidas(['dominio', 'desafio,dominio'])].sort()).toEqual(['desafio', 'dominio']);
     expect([...categoriasPermitidas(['dominio,inventada'])]).toEqual(['dominio']);
+  });
+});
+
+describe('diasDeLaSemana («Tu semana» del inicio, v3)', () => {
+  const jueves = col('2026-11-12', '15:00');
+  it('solo los días de esta semana, de lunes a domingo, sin repetir y en orden', () => {
+    const fechas = [col('2026-11-11'), col('2026-11-09', '08:00'), col('2026-11-09', '20:00'), col('2026-11-08'), col('2026-11-16')];
+    expect(diasDeLaSemana(fechas, jueves)).toEqual(['2026-11-09', '2026-11-11']);
+  });
+  it('corta el día en hora de Colombia: las 9 p. m. del domingo siguen siendo domingo', () => {
+    expect(diasDeLaSemana([col('2026-11-15', '21:00')], jueves)).toEqual(['2026-11-15']);
+    expect(diasDeLaSemana([col('2026-11-08', '21:00')], jueves)).toEqual([]);
+  });
+  it('sin práctica, una semana vacía', () => {
+    expect(diasDeLaSemana([], jueves)).toEqual([]);
   });
 });

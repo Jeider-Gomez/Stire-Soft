@@ -40,8 +40,10 @@ describe('Avance honesto del curso', () => {
   });
 
   it('el inicio muestra «x de N lecciones», no un dominio suelto', () => {
-    // Desde el 08/10 las dos tarjetas están en TuAvance.vue (curso por estados y cuánto subió hoy o esta semana).
-    expect(plantilla(leer('pages', 'estudiante', 'index.vue'))).toContain('<EstudianteTuAvance />');
+    // v3 (Fase D, 13/11): el anillo del siguiente paso dice el porcentaje y «x de N lecciones dominadas» de TODO el curso.
+    const paso = plantilla(leer('components', 'estudiante', 'inicio', 'SiguientePaso.vue'));
+    expect(paso).toContain("{{ curso.dominadas }} de {{ contar(curso.total, 'leccion') }} dominadas");
+    // TuAvance.vue (curso por estados y cuánto subió) queda para «Mi progreso» (Fase D, paso 4).
     const inicio = plantilla(leer('components', 'estudiante', 'TuAvance.vue'));
     expect(inicio).toContain('a.dominadas');
     expect(inicio).toContain('<Termino palabra="Dominio" /> en lo que has trabajado');
@@ -57,17 +59,22 @@ describe('Nombres: módulo → tema → lección', () => {
   });
 
   it('el estudiante ya no ve «Unidad 1 … 6 Unidades»: el plan cuenta lecciones y muestra los temas que agrupan varias', () => {
-    const inicio = plantilla(leer('pages', 'estudiante', 'index.vue'));
+    // v3 (Fase D, 13/11): el Inicio se armó con piezas (components/estudiante/inicio/) y el plan pasó a «Aprender».
+    const inicio = plantilla(leer('components', 'estudiante', 'PlanCurso.vue'));
     expect(inicio).not.toMatch(/'Unidad' : 'Unidades'/);
-    expect(inicio).toMatch(/v-for="tema in mod\.topics"/);
-    expect(inicio).toMatch(/v-if="tema\.units\.length > 1"/);
+    // v3 (cuadro «E-Aprender»): cada tema es una tarjeta con su nombre, también si tiene una sola lección.
+    expect(inicio).toMatch(/v-for="tema in temas"/);
+    expect(leer('components', 'estudiante', 'PlanCurso.vue')).toContain('(actual.value?.topics ?? []).map((t, i) => {');
   });
 });
 
 describe('La lección antes del ejercicio y la evaluación implícita', () => {
   it('una lección sin empezar abre la lección (la explicación), no un ejercicio suelto', () => {
-    const inicio = plantilla(leer('pages', 'estudiante', 'index.vue'));
-    expect(inicio).toMatch(/v-if="!studentStore\.activeUnit\.empezada \|\| !recommendedExerciseId \|\| recommendedReason === 'pausa'" :to="`\/estudiante\/unidad\/\$\{studentStore\.activeUnit\.id\}`"/);
+    // v3 (Fase D, 13/11): el Inicio se armó con piezas (components/estudiante/inicio/) y el plan pasó a «Aprender».
+    const paso = leer('components', 'estudiante', 'inicio', 'SiguientePaso.vue');
+    expect(paso).toContain("if (!leccion.value?.empezada || !props.ejercicioId || props.razon === 'pausa') {");
+    expect(paso).toContain('return { to: aLeccion.value,');
+    const inicio = plantilla(leer('components', 'estudiante', 'PlanCurso.vue'));
     expect(inicio).toMatch(/<NuxtLink :to="`\/estudiante\/unidad\/\$\{unit\.id\}`"/);
   });
 

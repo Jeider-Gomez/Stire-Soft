@@ -31,7 +31,9 @@ describe('una lección dominada se ve terminada', () => {
   });
 
   it('el inicio y «Mi progreso» usan esos textos', () => {
-    expect(leer('pages', 'estudiante', 'index.vue')).toContain('estadoDePractica(studentStore.activeUnit.masteryPercentage, recommendedReason).boton');
+    const paso = leer('components', 'estudiante', 'inicio', 'SiguientePaso.vue');
+    expect(paso).toContain('estadoDePractica(leccion.value?.masteryPercentage ?? 0, props.razon)');
+    expect(paso).toContain('texto: practica.value.boton');
     expect(leer('pages', 'estudiante', 'progreso.vue')).toContain('{{ textoRepaso(item.mastery) }}');
   });
 });
