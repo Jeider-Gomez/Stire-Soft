@@ -234,6 +234,9 @@ describe('Ítem 7: activar el Tutor sin instrucciones de fuera', () => {
   it.each([
     ['AIzaSyA1234567890abcdefghijklmnopqrstu', null],
     ['  AIzaSyA1234567890abcdefghijklmnopqrstu  ', null],
+    // el formato nuevo de Google AI Studio (2026): empieza por «AQ.» y lleva puntos y guiones
+    ['AQ.Ab8RN6KN-I5K1oUNsiQVPOcNgA59mwAxeeNl_x-yZ', null],
+    ['AQ.Ab8RN6', 'incompleta'],
     ['AIza Sy123', 'espacios'],
     ['mi-proyecto-123', 'empiezan por «AIza»'],
     ['AIzaSy12345', 'incompleta'],

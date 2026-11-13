@@ -35,7 +35,7 @@ const PASOS = [
   { titulo: 'Abre Google AI Studio', detalle: 'Se abre en otra pestaña; esta queda aquí esperándote.' },
   { titulo: 'Entra con tu cuenta de Google', detalle: 'La primera vez Google te pide aceptar sus condiciones. Hay que tener 18 años o más.' },
   { titulo: 'Toca «Create API key» (Crear clave de API)', detalle: 'Si te pregunta por un proyecto, elige «Create API key in new project».' },
-  { titulo: 'Copia la clave', detalle: 'Usa el botón de copiar de Google. Empieza por «AIza» y tiene unos 39 caracteres.' },
+  { titulo: 'Copia la clave', detalle: 'Usa el botón de copiar de Google. Empieza por «AIza» o por «AQ.».' },
   { titulo: 'Vuelve aquí, pégala y toca «Guardar»', detalle: 'STIRE la comprueba con Google y la guarda cifrada: nadie más la ve.' },
 ] as const
 
