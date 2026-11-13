@@ -88,6 +88,33 @@ Tres unidades: **herramientas para el frontend** (5 semanas), **implementación 
 | U3-E2 / E3 · Primer y segundo avance del artículo | — | 📅 |
 | U3 · Presentación del artículo como en un congreso | — | 📅 |
 
+## 4c. Resultados del artículo y revistas (guías guardadas el 9/11/2026)
+
+El profesor dejó dos documentos en la carpeta de la semana 12 y pidió, para esta semana: el Resumen y los Resultados
+sobre implementación y evaluación, con tres pruebas; elegir 3 revistas; bajar artículos de ejemplo; y hacer los ajustes
+que salgan de la evaluación. El plan de la semana está en la [bitácora N.º 13](../../MONITOREO_SEMANAL.md).
+
+| Lo que pide | Dónde va | Estado |
+|---|---|---|
+| **Resumen** en un solo párrafo, con contexto, problema, objetivo, metodología, resultados y conclusiones, y de 3 a 5 palabras clave ([plantilla IMRyD V2](guias/Plantilla_Articulo_IMRyD_V2.docx)) | El artículo, `articulo/` | 🔄 |
+| **Resultados** sobre la implementación y la evaluación, contrastados con la literatura | El artículo, `articulo/` | 🔄 |
+| Prueba heurística de expertos | [`calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`](../calidad/EVALUACION_HEURISTICA_HUMANA_S11.md): tabla por ítem lista (promedio 4,21); falta el ítem 9 y las filas 35 a 39 de Julio | 🔄 |
+| Prueba de usuario final con 10 personas | [`calidad/PRUEBA_CON_PERSONAS.md`](../calidad/PRUEBA_CON_PERSONAS.md), con el [protocolo de observación](../calidad/PROTOCOLO_OBSERVACION.md) y [las 10 hojas](../calidad/prueba-personas/README.md): 2 por integrante, a más tardar el 13/11 | 📅 |
+| Prueba de estrés con una batería de casos: perfiles de estudiante en una tabla (cuál y por qué) y con ellos 100 a 300 usuarios de prueba, marcados para borrarlos, que usan STIRE solos | — | 📅 |
+| **3 revistas** (la elegida y dos de respaldo) de la [lista del profesor](guias/Guia_Revistas_Cientificas.docx), con su categoría vigente en Publindex o Scimago | — | 📅 |
+| Artículos de ejemplo de esas revistas | — | 📅 |
+| Ajustes después de los hallazgos de la evaluación | [`PENDIENTES.md`](../PENDIENTES.md) y `CHANGELOG.md` | 📅 |
+
+**Del audio del profesor del 20/10** (transcrito en local el 9/11): son **dos artículos**, el del proyecto y otro de
+implementación y evaluación para otra revista; de este se escriben primero el abstract y los resultados, como los pide
+la revista elegida. En la prueba de usuario final el observador mira qué hace la persona con la herramienta, y 10 son
+suficientes para sacar conclusiones. En la heurística, leer el formulario completo, usar la herramienta y después
+llenarlo.
+
+La plantilla IMRyD V2 agrega dos apartados que el borrador no tiene: **Diseño del sistema o propuesta** (§3) y **Casos de
+estudio** (§4), además de Discusión aparte de los Resultados. El Resumen pide de 150 a 250 palabras y Acta Scientiæ
+Informaticæ, máximo 200: con 150 a 200 se cumplen las dos.
+
 ## 5. Bitácoras semanales
 
 | Semana del curso | Fechas | Bitácora |
@@ -114,6 +141,8 @@ Evidencias de las reuniones (capturas con fecha): [`seguimiento/evidencias/`](..
 | [`Checklist_Interfaz_Pressman.docx`](guias/Checklist_Interfaz_Pressman.docx) | Lista de chequeo del frontend: UX, movilidad y patrones (Pressman & Maxim, caps. 12–14) |
 | [`Checklist_ITS_Caro.docx`](guias/Checklist_ITS_Caro.docx) | Lista de chequeo de Sistemas Tutores Inteligentes (Caro Piñeres, 2015) |
 | [`FDOC-088_Plan_de_Curso_DDSE3_2026-2.pdf`](guias/FDOC-088_Plan_de_Curso_DDSE3_2026-2.pdf) | Plan de curso oficial: competencias, 3 unidades, evidencias, rúbrica y bibliografía |
+| [`Plantilla_Articulo_IMRyD_V2.docx`](guias/Plantilla_Articulo_IMRyD_V2.docx) | Estructura del artículo: resumen, introducción, métodos, diseño, casos de estudio, resultados, discusión y conclusiones (9/11) |
+| [`Guia_Revistas_Cientificas.docx`](guias/Guia_Revistas_Cientificas.docx) | Lista de revistas indexadas y cómo verificar su categoría en Publindex y Scimago (9/11) |
 
 Referencia base de MODESEC: Caro, M., Toscano, R., Hernández, F., & David, M. (2009). MODESEC: Modelo
 para el desarrollo de software educativo basado en competencias. *Nuevas Ideas en Informática

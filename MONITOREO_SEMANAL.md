@@ -1,19 +1,18 @@
-# 🚀 Bitácora de Monitoreo y Control N.º 12 — Proyecto: STIRE
+# 🚀 Bitácora de Monitoreo y Control N.º 13 — Proyecto: STIRE
 
 **Curso:** DDSE3 — 2026-2
 **Grupo:** [G1 / G2]
 **Repositorio GitHub:** https://github.com/Jeider-Gomez/Stire-Soft
-**Semana:** 2 – 6 de noviembre de 2026
-**Evaluación heurística completa:** jueves 5 de noviembre, 8:00 p. m. · **Cierre de la bitácora:** viernes 6 de noviembre, 8:00 p. m. · **Prueba con 2 personas:** viernes 13 de noviembre
-**Tablero Kanban:** https://trello.com/b/kJB9EHP8/stire-kanban-desarrollo-semana-12-2-6-nov-2026
+**Semana:** 9 – 13 de noviembre de 2026
+**Evaluación heurística completa:** martes 10 de noviembre, 8:00 p. m. · **Prueba con 2 personas:** viernes 13 de noviembre · **Cierre de la bitácora:** viernes 13 de noviembre, 8:00 p. m. · **Informe y artículo:** domingo 15 de noviembre
+**Tablero Kanban:** *(enlace del tablero de la Semana 13)*
 
 > **Regla de trabajo:** Trello contiene el flujo operativo y los checklists. GitHub contiene el código y las evidencias técnicas. Esta bitácora registra el resultado real de la semana y no duplica el detalle de las tarjetas.
 
-> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_11.md`](./docs/seguimiento/MONITOREO_SEMANAL_11.md), cerrada el
-> 3/11 con 13 de 26 tarjetas terminadas. Tres de las cinco pestañas de la evaluación heurística quedaron completas, el
-> panel del docente v2 publicó su Inicio y el entorno de programar se mejoró probándolo como estudiante. Lo que quedó
-> abierto se suma a esta semana con 🔁. La prueba con 2 personas se aplazó al 13/11 y el QA de regresión de Jorge ya no
-> se pide.
+> **Bitácora anterior:** [`docs/seguimiento/MONITOREO_SEMANAL_12.md`](./docs/seguimiento/MONITOREO_SEMANAL_12.md), cerrada el
+> 9/11 con 1 de 11 tarjetas terminadas: solo avanzó Jeider (P60 y P61, el diseño de la tercera versión y su pestaña de
+> la evaluación). Las pestañas que faltan de la evaluación heurística se suman a esta semana con 🔁. Las verificaciones
+> del panel, las políticas y los ejercicios pasan al backlog como objetivos personales.
 
 ---
 
@@ -35,66 +34,65 @@
 
 ## 🎯 2. Objetivo del Sprint
 
-**Semana de cerrar la evaluación heurística:** que estén las cinco pestañas, juntarlas y corregir primero lo más grave.
-También quedan al día las verificaciones del panel del docente que siguen abiertas.
+**Tres frentes, solo lo que pide el profesor.** Sus requisitos están en
+[`docs/curso-ddse3/README.md`](./docs/curso-ddse3/README.md) §4c (guías del 9/11 y su audio del 20/10). Todo lo demás es
+objetivo personal y está en el backlog.
 
-### Resultados esperados
-
-1. Las cinco pestañas de la evaluación heurística completas el **jueves 5/11, 8:00 p. m.** (faltan Jorge y una parte de
-   Julio).
-2. Jeider las junta en una tabla por ítem en
-   [`docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md`](./docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md) y corrige lo
-   de severidad 4 o más.
-3. Las verificaciones abiertas del panel del docente, en
-   [`docs/calidad/VERIFICACION_PANEL_DOCENTE_S11.md`](./docs/calidad/VERIFICACION_PANEL_DOCENTE_S11.md).
-4. Una entrega fallida se ve en pantalla y orienta sobre el error (P60 y P61).
-5. Preparar la prueba con 2 personas por integrante, que se hace a más tardar el **viernes 13/11**.
+1. **Evaluación heurística de expertos:** las cinco pestañas completas el **martes 10/11**, juntas en una tabla por ítem
+   y las mejoras de lo más grave.
+2. **Prueba de usuario final con 10 personas** (2 por integrante) con el protocolo de observación de
+   [`docs/calidad/PRUEBA_CON_PERSONAS.md`](./docs/calidad/PRUEBA_CON_PERSONAS.md), a más tardar el **viernes 13/11**.
+3. **Artículo de implementación y evaluación:** elegir la revista de la lista del profesor y escribir el **Resumen y los
+   Resultados** como los pide esa revista, con las tres evaluaciones: la heurística, la de usuarios y la prueba de
+   estrés. Para el **domingo 15/11**.
 
 ---
 
 ## 📋 3. Plan de trabajo semanal
 
-> 🔁 = viene de la Semana 11 y se suma a esta semana. Si ya lo hiciste, márcalo. Cada persona tiene sus tarjetas por
+> 🔁 = viene de la Semana 12 y se suma a esta semana. Si ya lo hiciste, márcalo. Cada persona tiene sus tarjetas por
 > separado.
 
-### Jeider Gómez — Líder Técnico
+### Frente 1 · Evaluación heurística
 
-- [ ] **S12-J01 · Juntar la evaluación heurística y corregir lo de severidad 4 o más** *(viernes 6/11)*. Ya hay uno: el
-  ítem 6, sobre cómo está organizada la información.
-- [ ] 🔁 **S11-J04 · Que una entrega fallida se vea (P60 y P61)** *(viernes 6/11)*.
-- [ ] 🔁 **Prueba con 2 personas** *(viernes 13/11)* e **informe de las 10** *(domingo 15/11)*.
+- [x] 🔁 **Jorge** *(martes 10/11)*: los ítems 28, 29, 33 y 34 y las filas 35 a 39. **Jeider lo está esperando.**
+- [x] 🔁 **José** *(martes 10/11)*: la frecuencia y el impacto de sus 7 ítems; sin eso no hay severidad. *(Los calificó
+  todos con 5, así que van en 0.)*
+- [ ] 🔁 **Julio** *(martes 10/11)*: la calificación del ítem 9 y las filas 35 a 39.
+- [x] 🔁 **Jeider** *(jueves 12/11)*: juntarla en una tabla por ítem
+  ([resultados](./docs/calidad/EVALUACION_HEURISTICA_HUMANA_S11.md#resultados-tabla-por-ítem-1011)). Promedio 4,21 de 5.
+- [ ] **Jeider** *(jueves 12/11)*: la mejora de severidad 4, el ítem 6 (los números del avance se contradicen). El
+  ítem 33 (solo mayores de 18) es una decisión tomada y queda registrado como trabajo futuro.
 
-### Pedro Romero — Documentación + Bitácora
+### Frente 2 · Prueba de usuario final (10 personas)
 
-- [ ] **S12-P01 · Bitácora N.º 12** al día y cerrada el viernes 6/11.
-- [ ] 🔁 **Verificación** *(viernes 6/11)*: PD-13, PD-14 y PV-01.
-- [ ] 🔁 **S11-P03 · Políticas** *(viernes 6/11)*: Gemini, datos para investigación y términos.
-- [ ] 🔁 **EJ-PEDRO · Sus 4 ejercicios** *(viernes 6/11)*: 13 a 16.
-- [ ] 🔁 **Prueba con 2 personas** *(viernes 13/11)*.
+- [ ] 🔁 **Los cinco** *(viernes 13/11)*: 2 personas cada uno, mayores de 18 y que no hayan usado STIRE (un amigo, un
+  primo: no tiene que ser en un colegio). Se sigue el protocolo de observación de
+  [`PRUEBA_CON_PERSONAS.md`](./docs/calidad/PRUEBA_CON_PERSONAS.md): la persona hace 8 tareas diciendo lo que piensa, el
+  observador no ayuda y anota dónde duda; al final, la encuesta SUS y tres preguntas. Una hoja por persona.
+- [ ] **Jeider** *(domingo 15/11)*: el informe de las 10.
 
-### José López — UI/UX + Comunicación
+### Frente 3 · Artículo de implementación y evaluación
 
-- [ ] 🔁 **Prueba con 2 personas** *(viernes 13/11)*.
+- [ ] **Pedro** *(miércoles 11/11)*: elegir la revista (y dos de respaldo) de la lista del profesor, con su categoría
+  vigente en Publindex o Scimago, y bajar 2 o 3 artículos de ejemplo de ella.
+- [ ] **Jorge con Jeider** *(jueves 12/11)*: la **prueba de estrés** como la pidió el profesor: una batería de casos con
+  distintos perfiles de estudiante (una tabla con cada perfil y por qué), y con ellos 100 a 300 usuarios de prueba
+  marcados para borrarlos después, que entran y usan STIRE solos. Se corre en local, no en el servidor gratuito.
+- [ ] **Jeider** *(domingo 15/11)*: el Resumen y los Resultados con las tres evaluaciones, en el formato de la revista
+  elegida.
+- [ ] **Pedro** *(viernes 13/11)*: la bitácora N.º 13 al día y cerrada.
 
-### Jorge Cervantes — Gestión + Calidad
+### En el backlog: objetivos personales
 
-- [ ] 🔁 **Evaluación heurística** *(jueves 5/11)*: ítems 13–14, 19, 27–29 y 33–34, las filas 35 a 39 y el QA libre.
-- [ ] 🔁 **Verificación** *(viernes 6/11)*: PD-05 a PD-10 y PV-03.
-- [ ] 🔁 **Prueba con 2 personas** *(viernes 13/11)*.
-
-### Julio Galvis — Diseño Instruccional
-
-- [ ] 🔁 **Evaluación heurística** *(jueves 5/11)*: la calificación del ítem 9 y las filas 35 a 39.
-- [ ] 🔁 **Verificación** *(viernes 6/11)*: PD-11, PD-12, PV-02 y PV-05.
-- [ ] 🔁 **EJ-JULIO · Sus 4 ejercicios** *(viernes 6/11)*: 9 a 12.
-- [ ] 🔁 **Prueba con 2 personas** *(viernes 13/11)*.
-
-### En el backlog
+No los pide el profesor; cada uno los hace si le queda tiempo.
 
 | Persona | Tarjetas |
 |---|---|
-| Jeider | `B-J02` corregir los ejercicios según la revisión · `B-J04` el resto del panel v2 · `B-J05` ejercicios de función (P57) y tiempos (P59) · revisar el panel del docente para el rediseño |
-| Pedro | `B-P01` resultados de la prueba, semanas 1 y 2 |
+| Jeider | Rediseño de la tercera versión · `B-J02` corregir los ejercicios según la revisión · `B-J04` el resto del panel v2 · `B-J05` ejercicios de función (P57) y tiempos (P59) |
+| Pedro | Verificación PD-13, PD-14 y PV-01 · `S11-P03` políticas · `EJ-PEDRO` ejercicios 13 a 16 · `B-P01` resultados de la prueba, semanas 1 y 2 |
+| Jorge | Verificación PD-05 a PD-10 y PV-03 |
+| Julio | Verificación PD-11, PD-12, PV-02 y PV-05 · `EJ-JULIO` ejercicios 9 a 12 |
 
 ---
 
@@ -113,34 +111,36 @@ También quedan al día las verificaciones del panel del docente que siguen abie
 
 ## ⚠️ 5. Riesgos vivos
 
-1. **La evaluación heurística no está completa:** sin las cinco pestañas no se puede juntar. Mitigación: plazo el
-   jueves 5/11 y Jeider junta el viernes con lo que haya.
-2. **Verificaciones del panel del docente abiertas desde el 29/10:** el panel sigue cambiando. Mitigación: se verifica
-   lo publicado hoy y se anota la fecha.
-3. **Prueba con personas:** depende de conseguir 2 personas mayores de 18 por integrante. Mitigación: una semana extra,
-   hasta el 13/11.
+1. **La evaluación heurística sigue incompleta desde el 5/11** y las mejoras esperan por Jorge. Mitigación: plazo el
+   martes 10/11; el miércoles se junta con lo que haya y se dice qué faltó.
+2. **Prueba con 10 personas:** depende de que cada uno consiga 2 personas y les pida su consentimiento. Mitigación:
+   buscarlas desde hoy, no el viernes.
+3. **Prueba de estrés:** en el despliegue podría tumbar el servidor gratuito durante la prueba con personas.
+   Mitigación: se corre en local.
 
 ---
 
 ## 📅 6. Seguimiento
 
-- **Martes 3/11:** cierre de la Semana 11 y tablero de la Semana 12.
-- **Jueves 5/11, 8:00 p. m.:** evaluación heurística completa.
-- **Viernes 6/11:** resultados juntos, revisar Trello y GitHub y cerrar la bitácora.
-- **Viernes 13/11:** prueba con 2 personas de cada integrante.
+- **Lunes 9/11:** cierre de la Semana 12 y tablero de la Semana 13.
+- **Martes 10/11, 8:00 p. m.:** las cinco pestañas de la evaluación heurística completas.
+- **Miércoles 11/11:** la revista elegida y sus artículos de ejemplo.
+- **Jueves 12/11:** las mejoras de la evaluación y la prueba de estrés.
+- **Viernes 13/11:** prueba con 2 personas de cada integrante y cierre de la bitácora.
+- **Domingo 15/11:** informe de las 10, Resumen y Resultados del artículo.
 
 ---
 
 ## 🧾 7. Resultado del Sprint — completar al cierre
 
-*(Se marca solo con resultados verificables al cierre del viernes 6/11.)*
+*(Se marca solo con resultados verificables al cierre del viernes 13/11.)*
 
 ---
 
 ## 🔭 8. Proyección
 
-**Semana 13 (9 – 13 de noviembre):** la prueba con personas y su informe (15/11), corregir lo que salga de la
-evaluación heurística y seguir con el rediseño del panel del docente.
+**Semana 14 (16 – 20 de noviembre):** los ajustes que salgan de las pruebas, el siguiente avance del artículo y su
+envío a una de las 3 revistas. El proyecto integrador final se sustenta en la Semana 16 (24 y 26 de noviembre).
 
 ---
 
@@ -159,9 +159,10 @@ evaluación heurística y seguir con el rediseño del panel del docente.
 | 9 | 12 – 16 de octubre de 2026 | [`MONITOREO_SEMANAL_09.md`](./docs/seguimiento/MONITOREO_SEMANAL_09.md) |
 | 10 | 19 – 23 de octubre de 2026 | [`MONITOREO_SEMANAL_10.md`](./docs/seguimiento/MONITOREO_SEMANAL_10.md) |
 | 11 | 26 – 30 de octubre de 2026 | [`MONITOREO_SEMANAL_11.md`](./docs/seguimiento/MONITOREO_SEMANAL_11.md) |
-| 12 | 2 – 6 de noviembre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
+| 12 | 2 – 6 de noviembre de 2026 | [`MONITOREO_SEMANAL_12.md`](./docs/seguimiento/MONITOREO_SEMANAL_12.md) |
+| 13 | 9 – 13 de noviembre de 2026 | `MONITOREO_SEMANAL.md` (este documento) |
 
 ---
 
-*Bitácora N.º 12 · Semana del 2 al 6 de noviembre de 2026.*
+*Bitácora N.º 13 · Semana del 9 al 13 de noviembre de 2026.*
 *Responsable de seguimiento y cierre documental: Pedro Romero.*
