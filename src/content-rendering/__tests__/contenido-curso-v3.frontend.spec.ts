@@ -56,7 +56,9 @@ describe('«Contenido del curso»: dónde y cómo', () => {
     expect(leer('layouts', 'student.vue')).toContain('<EstudianteContenidoCurso v-if="enLeccion" />');
     const panel = leer('components', 'estudiante', 'ContenidoCurso.vue');
     expect(panel).toContain('aria-label="Contenido del curso"');
-    expect(panel).toContain('class="hidden lg:flex flex-col w-[300px]');
+    expect(panel).toContain('class="hidden flex-col w-[300px]');
+    // Con el Tutor abierto cede su sitio a la lección (solo se queda en pantallas 2xl).
+    expect(panel).toContain(`:class="tutorStore.isOpen ? '2xl:flex' : 'lg:flex'"`);
     expect(panel).toContain('aria-label="Recoger el contenido"');
     expect(leer('components', 'estudiante', 'SaltosLeccion.vue')).toContain('<ListTree :size="16" aria-hidden="true" /> Contenido');
     expect(leer('composables', 'useContenidoCurso.ts')).toContain("localStorage.setItem(CLAVE_CONTENIDO, abierto.value ? '1' : '0')");

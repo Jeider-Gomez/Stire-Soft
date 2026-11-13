@@ -109,10 +109,20 @@ describe('cuándo responder y cuándo invitar', () => {
     expect(debeInvitar(haceDias(3), null, ahora)).toBe(true);
     expect(debeInvitar(haceDias(30), haceDias(5), ahora)).toBe(false);
   });
+
+  it('a un usuario nuevo se le invita apenas usó STIRE de verdad (13/11, prueba de una sola sesión)', () => {
+    expect(debeInvitar(haceDias(0), null, ahora, true)).toBe(true);
+    expect(debeInvitar(haceDias(0), null, ahora, false)).toBe(false);
+    // Si ya respondió hace poco, tampoco: se respeta la semana entre respuestas.
+    expect(debeInvitar(haceDias(0), haceDias(2), ahora, true)).toBe(false);
+  });
 });
 
 describe('UsabilidadService', () => {
   type Repo = ConstructorParameters<typeof UsabilidadService>[0];
+  type Fuente = ConstructorParameters<typeof UsabilidadService>[1];
+  let entregas: unknown[] = [];
+  const fuente = { query: jest.fn(() => Promise.resolve(entregas)) };
   const guardadas: Array<Record<string, unknown>> = [];
   let ultima: { createdAt: Date; puntaje: number } | null = null;
   const repo = {
@@ -124,7 +134,7 @@ describe('UsabilidadService', () => {
       { userId: 1, rol: 'estudiante', respuestas: [5, 1, 5, 1, 5, 1, 5, 1, 5, 1], puntaje: 100, comentario: null, createdAt: new Date(2026, 6, 1) },
     ])),
   };
-  const service = new UsabilidadService(repo as unknown as Repo);
+  const service = new UsabilidadService(repo as unknown as Repo, fuente as unknown as Fuente);
   const user = { id: 1, role: 'estudiante', createdAt: new Date(2026, 8, 1) } as User;
 
   it('guarda el puntaje calculado en el servidor (no el que mande la pantalla) y el comentario sin espacios', async () => {
@@ -144,6 +154,16 @@ describe('UsabilidadService', () => {
   it('no deja responder dos veces en 7 días', async () => {
     ultima = { createdAt: new Date(2026, 9, 15), puntaje: 80 };
     await expect(service.responder(user, { respuestas: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3] }, new Date(2026, 9, 20))).rejects.toThrow('Ya respondiste');
+  });
+
+  it('invita a un estudiante recién llegado cuando ya entregó un ejercicio, y no antes', async () => {
+    ultima = null;
+    const nuevo = { id: 9, role: 'estudiante', createdAt: new Date(2026, 10, 13, 8) } as User;
+    entregas = [];
+    expect((await service.estado(nuevo, new Date(2026, 10, 13, 10))).invitar).toBe(false);
+    entregas = [{ 1: 1 }];
+    expect((await service.estado(nuevo, new Date(2026, 10, 13, 10))).invitar).toBe(true);
+    expect(fuente.query).toHaveBeenLastCalledWith(expect.stringContaining('FROM submissions'), [9]);
   });
 
   it('en los resultados cuenta solo la última respuesta de cada persona', async () => {

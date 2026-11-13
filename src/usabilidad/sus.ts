@@ -126,7 +126,11 @@ export function resumirSus(respuestas: RespuestaSus[]): ResumenSus {
  * en 7 días también después de la prueba.
  */
 export const DIAS_ENTRE_RESPUESTAS = 7;
-/** No se invita a quien acaba de llegar: para opinar de la usabilidad hay que haber usado la plataforma. */
+/**
+ * No se invita a quien acaba de llegar: para opinar de la usabilidad hay que haber usado la plataforma. 13/11, Jeider:
+ * los usuarios nuevos (la prueba con 10 personas es de una sola sesión) también la ven, apenas la usaron de verdad:
+ * a los 3 días, o antes si ya entregó un ejercicio (estudiante) o creó una clase (docente).
+ */
 export const DIAS_DE_USO_PARA_INVITAR = 3;
 const DIA = 86_400_000;
 
@@ -134,6 +138,6 @@ export function puedeResponder(ultima: Date | null, ahora: Date): boolean {
   return !ultima || ahora.getTime() - ultima.getTime() >= DIAS_ENTRE_RESPUESTAS * DIA;
 }
 
-export function debeInvitar(cuentaCreada: Date, ultima: Date | null, ahora: Date): boolean {
-  return puedeResponder(ultima, ahora) && ahora.getTime() - cuentaCreada.getTime() >= DIAS_DE_USO_PARA_INVITAR * DIA;
+export function debeInvitar(cuentaCreada: Date, ultima: Date | null, ahora: Date, yaLoUso = false): boolean {
+  return puedeResponder(ultima, ahora) && (yaLoUso || ahora.getTime() - cuentaCreada.getTime() >= DIAS_DE_USO_PARA_INVITAR * DIA);
 }

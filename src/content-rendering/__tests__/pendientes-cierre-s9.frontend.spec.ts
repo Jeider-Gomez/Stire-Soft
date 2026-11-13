@@ -19,7 +19,7 @@ describe('la cabecera del Tutor dice la lección abierta, no la recomendada', ()
   const modulos: Mod[] = [{ id: 1, title: 'M', units: [{ id: 21, title: 'Descomponer', status: 'dominado' }, { id: 22, title: 'El robot que sigue órdenes', status: 'dominado' }] }];
 
   it('en una lección, esa lección', () => {
-    expect(etiquetaDeContexto('/estudiante/unidad/22', null, modulos, { title: 'Descomponer' })).toBe('Lección actual: El robot que sigue órdenes');
+    expect(etiquetaDeContexto('/estudiante/unidad/22', null, modulos, { title: 'Descomponer' })).toBe('Estás en: El robot que sigue órdenes');
   });
   it('en un ejercicio, el ejercicio; fuera de él, un ejercicio viejo del store no se muestra', () => {
     const ej = { activityId: 5, title: 'Área', unitTitle: 'Operadores' };

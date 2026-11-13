@@ -3,8 +3,10 @@
        menú queda en íconos y este panel muestra el curso entero al lado de la lección, para moverse sin salir de ella.
        Solo en computador (lg); en el celular lo hace la barra de abajo de la lección (NavegacionLeccion.vue). Se recoge
        para leer a pantalla completa y se vuelve a abrir con «Contenido», arriba de la lección (SaltosLeccion.vue). -->
-  <aside v-if="abierto" aria-label="Contenido del curso"
-    class="hidden lg:flex flex-col w-[300px] flex-none sticky top-0 h-screen overflow-y-auto bg-base-blanco border-r border-base-borde-sutil">
+  <!-- Con el Tutor abierto (400 px a la derecha) la lección quedaba aplastada: el panel cede su sitio salvo en pantallas
+       muy anchas (2xl) y vuelve solo al cerrar el Tutor. -->
+  <aside v-if="abierto" aria-label="Contenido del curso" :class="tutorStore.isOpen ? '2xl:flex' : 'lg:flex'"
+    class="hidden flex-col w-[300px] flex-none sticky top-0 h-screen overflow-y-auto bg-base-blanco border-r border-base-borde-sutil">
     <div class="flex items-center gap-2 pt-3.5 pb-2.5 pl-[18px] pr-3.5">
       <h2 class="m-0 flex-1 text-xs font-bold tracking-[0.06em] uppercase text-base-texto-secundario">Contenido del curso</h2>
       <button type="button" class="w-[34px] h-[34px] rounded-[10px] border border-base-borde-sutil inline-flex items-center justify-center hover:bg-base-bg-secundario"
@@ -57,11 +59,13 @@
 <script setup lang="ts">
 import { ChevronDown, Lock, PanelLeftClose } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
+import { useTutorStore } from '~/stores/tutor'
 import { contenidoDelCurso } from '~/utils/contenidoCurso'
 import { contar } from '~/utils/terminos'
 
 const route = useRoute()
 const studentStore = useStudentStore()
+const tutorStore = useTutorStore()
 const { abierto, alternar } = useContenidoCurso()
 
 const unitId = computed(() => Number(route.params.id))

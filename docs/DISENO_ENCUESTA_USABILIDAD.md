@@ -30,7 +30,7 @@ guarda, se calcula solo y se puede volver a medir.
 
 Las guías de encuestas dentro de la aplicación coinciden en lo siguiente (Qualaroo, Userpilot, Braze; son guías de
 producto, no evidencia científica):
-- Preguntar **después de usar**, no al llegar. Por eso no se invita a quien lleva menos de 3 días.
+- Preguntar **después de usar**, no al llegar. Se invita a los 3 días o, antes, apenas la persona usó STIRE de verdad: el estudiante entregó un ejercicio o el docente creó una clase (13/11, para que los usuarios nuevos de la prueba con 10 personas, de una sola sesión, también la vean).
 - **No interrumpir:** una tarjeta en el inicio, no una ventana encima.
 - **Respetar el «Ahora no»:** la oculta 7 días.
 - **No cansar:** se puede volver a responder cada 7 días (antes 90; 7 desde el 08/10 y fijo desde el 17/10, decisión de Jeider): STIRE cambia cada semana y así se compara una semana con la otra.

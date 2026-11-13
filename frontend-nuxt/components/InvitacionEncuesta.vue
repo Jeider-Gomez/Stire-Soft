@@ -1,6 +1,6 @@
 <template>
   <!-- Invitación a la encuesta SUS (UX-08), sin interrumpir: una tarjeta en el inicio, no una ventana encima. Aparece solo
-       a quien lleva unos días usando STIRE y no la ha respondido (el servidor decide); «Ahora no» la oculta una semana.
+       a quien ya usó STIRE (3 días, o antes si entregó un ejercicio o creó una clase) y no la ha respondido (el servidor decide); «Ahora no» la oculta una semana.
        Preguntar después de usar, no al llegar, es lo que da respuestas que sirven (docs/DISENO_ENCUESTA_USABILIDAD.md). -->
   <aside v-if="visible" class="rounded-lg border border-semantico-info/30 bg-semantico-info/5 p-4 flex flex-col sm:flex-row sm:items-center gap-3" aria-labelledby="invitacion-encuesta-titulo">
     <MessageSquareHeart :size="22" class="shrink-0 text-semantico-info" aria-hidden="true" />

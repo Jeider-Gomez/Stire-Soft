@@ -2,7 +2,7 @@
 // los nombres se cortaban, varios módulos abiertos empujaban el menú hacia abajo y «Mi progreso» solo mostraba lo tocado).
 // Como el temario de Coursera o Udemy: un módulo abierto a la vez, el de la lección donde está el estudiante.
 
-export interface LeccionPlan { id: number; title: string; status: string; empezada?: boolean }
+export interface LeccionPlan { id: number; title: string; status: string; empezada?: boolean; masteryPercentage?: number }
 export interface ModuloPlan { id: number; title: string; units: LeccionPlan[] }
 
 /** El módulo que se abre solo: el de la lección abierta; si no hay, el primero con algo sin dominar; si no, el primero. */
@@ -55,7 +55,9 @@ export function etiquetaDeContexto(
   const leccion = leccionDeLaRuta(ruta)
   if (leccion !== null) {
     const u = modulos.flatMap((m) => m.units).find((x) => x.id === leccion)
-    return u ? `Lección actual: ${u.title}` : null
+    // v3 (cuadro «E-Tutor»): «Estás en: Operadores y expresiones · 62 %», con el dominio si ya la empezó.
+    if (!u) return null
+    return u.empezada && typeof u.masteryPercentage === 'number' ? `Estás en: ${u.title} · ${u.masteryPercentage} %` : `Estás en: ${u.title}`
   }
   return siguiente?.title ? `Tu siguiente lección: ${siguiente.title}` : null
 }
