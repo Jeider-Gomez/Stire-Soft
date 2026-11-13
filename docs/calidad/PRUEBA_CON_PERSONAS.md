@@ -9,6 +9,9 @@ junta las 10 en un informe corto: lo que más se repitió, ordenado por cuántas
 
 **Cuándo:** se aplazó una semana para todo el equipo (Jeider, 02/11): hasta el **viernes 13/11, 8:00 p. m.**
 
+**Cómo se observa:** [`PROTOCOLO_OBSERVACION.md`](PROTOCOLO_OBSERVACION.md) trae el método completo, con la regla de
+ayuda, cuándo cuenta cada tarea como lograda, los códigos para anotar y la hoja que se usa.
+
 ## A quién buscar
 
 - **Mayores de 18 años**, porque así lo pide hoy el registro de STIRE.
@@ -58,32 +61,8 @@ junta las 10 en un informe corto: lo que más se repitió, ordenado por cuántas
 
 ## La hoja de cada persona
 
-Copia esta tabla, una por persona, y súbela a `docs/calidad/prueba-personas/` con el código como nombre (por ejemplo
-`JOSE-1.md`). **Sin nombres, correos ni fotos de la cara.**
-
-```markdown
-# JOSE-1 · <fecha> · <celular o computador>
-
-Edad: · Grado o semestre y carrera: · ¿Sabe programar? (nada / un poco / sí):
-
-| Tarea | ¿Lo logró? (sí / con ayuda / no) | Minutos (aprox.) | Dónde dudó o qué dijo (sus palabras, entre comillas) |
-|---|---|---|---|
-| T1 Crear cuenta | | | |
-| T2 Unirse a la clase | | | |
-| T3 Leer la lección | | | |
-| T4 Primer ejercicio | | | |
-| T5 Ejercicio de programar | | | |
-| T6 Tutor | | | |
-| T7 Mi progreso | | | |
-| T8 Repasos | | | |
-
-Puntaje del SUS (lo muestra STIRE al terminar la encuesta):
-1. Lo más confuso:
-2. Lo que le gustó:
-3. ¿Lo usaría? ¿Por qué?
-
-Lo que vi yo (observador):
-```
+Las 10 hojas ya están creadas en [`prueba-personas/`](prueba-personas/README.md), dos por integrante (por ejemplo
+`JOSE-1.md` y `JOSE-2.md`): cada uno llena solo las suyas. **Sin nombres, correos ni fotos de la cara.**
 
 ## Después
 
