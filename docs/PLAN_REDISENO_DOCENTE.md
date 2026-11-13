@@ -143,7 +143,7 @@ Se muestran como acciones sugeridas arriba del campo de texto:
 - **Pedagogía como asesor, no como jefe:** puede decir por qué propone algo («un error común ayuda a…») y citar la base
   teórica del proyecto (BASE_TEORICA.md). El docente decide.
 - Los ejercicios de código se validan en el juez antes de mostrarse.
-- Todo lo aplicado lleva «Hecho con IA» hasta que el docente lo edite o lo marque como revisado.
+- Lo aplicado no lleva marca visible «Hecho con IA» (decidido el 11/11/2026); el origen se registra solo para el conteo.
 
 ### Lo que no hace
 

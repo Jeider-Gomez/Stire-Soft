@@ -39,8 +39,8 @@ En cada lugar donde el docente crea algo, tres caminos que se pueden mezclar:
 **Reglas:**
 - Nada de lo que hace la IA se publica solo. Llega como **borrador** y el docente decide. Es la regla de siempre: las
   funciones del docente son opcionales y las sugerencias se pueden editar.
-- Lo generado lleva la marca «Hecho con IA»; después pasa a «revisado por el docente». Eso sirve para la transparencia
-  y es un dato para el artículo: cuánto se generó, cuánto se editó y cuánto se descartó.
+- Lo generado no lleva marca visible (decidido el 11/11/2026): es un borrador que el docente edita y aplica. Para el
+  artículo se cuenta, sin mostrarlo, cuánto se generó, cuánto se editó y cuánto se descartó.
 - A la IA nunca se le mandan datos personales de estudiantes, solo contenido del curso y cifras de la clase sin nombres.
 
 ## 3. Decisiones que tienes que tomar
@@ -74,7 +74,7 @@ En cada lugar donde el docente crea algo, tres caminos que se pueden mezclar:
 1. La IA recibe la explicación de la lección, el nivel y los tipos pedidos.
 2. Devuelve un JSON con el mismo formato que usan hoy los constructores de ejercicios, que el servidor valida.
 3. Para «Programar» y «Completar código», STIRE ejecuta la solución de referencia en el juez y descarta lo que no pasa.
-4. Los aceptados quedan en el banco de la clase marcados como «Hecho con IA». Este mismo motor sirve después para los
+4. Los aceptados quedan en el banco de la clase sin marca visible (se registra su origen solo para el conteo). Este mismo motor sirve después para los
    ejercicios personalizados del estudiante (PLAN_MEJORAS, punto 4).
 
 ### 4.3 Refuerzos con IA

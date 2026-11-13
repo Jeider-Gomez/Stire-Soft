@@ -127,7 +127,9 @@ Además hay una **caja libre** para pedir cualquier cosa del contexto abierto (�
    general» y no inventa una cita.
 5. **Los ejercicios de programar se validan solos:** la solución de referencia corre en el juez y el ejercicio que no
    pasa sus propios casos de prueba no llega al docente.
-6. **Marca «Hecho con IA»** hasta que el docente lo revise y lo edite.
+6. **Sin marca visible «Hecho con IA»** (decisión de Jeider, 11/11/2026): el borrador vive en el panel del Asistente y
+   nada llega a los estudiantes sin que el docente lo aplique. El borrador se edita en el sitio, y se puede pedir un
+   cambio solo en una parte. El conteo de borradores generados, editados y descartados se guarda igual (§4.9).
 
 ### 4.6 El «asesor pedagógico»: lo que revisa sin que se lo pidan
 
