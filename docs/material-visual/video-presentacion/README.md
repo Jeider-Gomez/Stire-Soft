@@ -29,6 +29,18 @@ npx hyperframes check        # comprueba que no haya errores
 npx hyperframes render       # saca el MP4
 ```
 
+## Dónde está en la app
+
+El MP4 comprimido para la web (7,5 MB, 1080p, `-crf 26 -movflags +faststart`), el póster y los subtítulos están en
+`frontend-nuxt/public/video/`. Se abre desde «¿Qué es STIRE?» en Entrar (`components/presentacion/VideoSTIRE.vue`),
+con la transcripción en `utils/videoPresentacion.ts`. Si se rehace el video, se vuelve a comprimir con:
+
+```
+ffmpeg -i renders/stire-presentacion.mp4 -c:v libx264 -preset slow -crf 26 -pix_fmt yuv420p -c:a aac -b:a 96k -movflags +faststart ../../../../frontend-nuxt/public/video/stire-presentacion.mp4
+```
+
+y se copian `subtitulos/stire-presentacion.es.vtt` y, si cambió el guion, la transcripción.
+
 ## Cómo rehacer la música o los subtítulos
 
 Desde `proyecto/` (requiere Python con numpy y ffmpeg):
