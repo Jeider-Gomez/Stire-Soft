@@ -1,64 +1,77 @@
 <template>
-  <div class="max-w-3xl mx-auto space-y-6">
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
-      <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Mi asistencia</h1>
-      <p class="text-xs text-base-texto-secundario mt-0.5">
-        Cuando tu docente tome asistencia, muéstrale este código desde tu celular. Cambia cada 20 segundos, así que una
-        foto del código no sirve para marcar a otra persona.
-      </p>
-    </header>
+  <!-- «Mi clase» › Asistencia (v3, Fase D, paso 5; cuadros «E-Clase-Asistencia» y «E-Cel-Asistencia»): a la izquierda el código
+       que cambia cada 20 segundos (src/asistencia); a la derecha, cómo va en esta clase y sus sesiones. Las demás clases,
+       recogidas. Ausente no va en rojo de error: se dice con texto, y se puede pedir que el profe la cambie a excusa. -->
+  <div class="max-w-6xl mx-auto space-y-[18px]">
+    <EstudianteClaseCabecera />
 
-    <section class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col items-center gap-3 text-center" aria-labelledby="mi-codigo-titulo">
-      <h2 id="mi-codigo-titulo" class="sr-only">Mi código de asistencia</h2>
-      <div class="flex items-center gap-3">
-        <AvatarUsuario :nombre="authStore.user?.fullName" :foto-id="authStore.user?.fotoId" tamano="w-12 h-12 text-base" decorativo />
-        <p class="text-base font-bold text-base-texto-primario">{{ authStore.user?.fullName }}</p>
-      </div>
-      <div class="relative bg-white p-3 rounded-xl border border-base-borde-sutil">
-        <canvas ref="qrCanvas" aria-label="Tu código QR de asistencia" role="img" class="block w-64 h-64 max-w-full" />
-        <div v-if="cargandoCodigo && !hayCodigo" class="absolute inset-0 flex items-center justify-center" role="status">
-          <Loader2 :size="20" class="animate-spin text-base-texto-secundario" aria-hidden="true" />
-          <span class="sr-only">Generando tu código…</span>
+    <div class="grid gap-[18px] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] items-start">
+      <section class="tarjeta-inicio flex flex-col items-center gap-3 text-center" style="--acento: 0 194 168; --acento2: 92 203 255" aria-labelledby="mi-codigo-titulo">
+        <h2 id="mi-codigo-titulo" class="titulo-tarjeta self-stretch text-left">Mi código de asistencia</h2>
+        <div class="flex items-center gap-3">
+          <AvatarUsuario :nombre="authStore.user?.fullName" :foto-id="authStore.user?.fotoId" tamano="w-10 h-10 text-sm" decorativo />
+          <p class="m-0 text-base font-bold text-base-texto-primario">{{ authStore.user?.fullName }}</p>
         </div>
-      </div>
-      <!-- Cuánto le queda al código (hallazgo de José, 09/10: la barra de 6 px no se notaba). Ahora es más gruesa, con
-           borde, y dice los segundos en palabras; los últimos 5 s cambia a ámbar. No se anuncia cada segundo al lector
-           de pantalla: solo el texto, que se lee al llegar a él. -->
-      <div class="w-64 max-w-full space-y-1">
-        <div class="h-3 rounded-full bg-base-bg-secundario border border-base-borde-fuerte overflow-hidden" aria-hidden="true">
-          <div class="h-full rounded-full transition-[width] duration-1000 ease-linear" :class="segundos <= 5 ? 'bg-acento-ambar-fuerte' : 'bg-stire-teal'" :style="{ width: `${restante}%` }" />
+        <div class="relative bg-white p-3 rounded-2xl border border-base-borde-sutil">
+          <canvas ref="qrCanvas" aria-label="Tu código QR de asistencia" role="img" class="block w-64 h-64 max-w-full" />
+          <div v-if="cargandoCodigo && !hayCodigo" class="absolute inset-0 flex items-center justify-center" role="status">
+            <Loader2 :size="20" class="animate-spin text-base-texto-secundario" aria-hidden="true" />
+            <span class="sr-only">Generando tu código…</span>
+          </div>
         </div>
-        <p v-if="hayCodigo" class="flex items-center justify-center gap-1.5 text-xs font-semibold text-base-texto-primario tabular-nums">
-          <RefreshCw :size="13" aria-hidden="true" /> {{ textoCuentaQr(segundos) }}
-        </p>
-      </div>
-      <MensajeError v-if="errorCodigo" class="text-xs">{{ errorCodigo }}</MensajeError>
-      <p v-else class="text-[11px] text-base-texto-secundario">Sube el brillo de la pantalla si al docente le cuesta leerlo.</p>
-    </section>
+        <!-- Cuánto le queda al código (hallazgo de José, 09/10: la barra de 6 px no se notaba). Ahora es más gruesa, con
+             borde, y dice los segundos en palabras; los últimos 5 s cambia a ámbar. No se anuncia cada segundo al lector
+             de pantalla: solo el texto, que se lee al llegar a él. -->
+        <div class="w-64 max-w-full space-y-1">
+          <div class="h-3 rounded-full bg-base-bg-secundario border border-base-borde-fuerte overflow-hidden" aria-hidden="true">
+            <div class="h-full rounded-full transition-[width] duration-1000 ease-linear" :class="segundos <= 5 ? 'bg-acento-ambar-fuerte' : 'bg-stire-teal'" :style="{ width: `${restante}%` }" />
+          </div>
+          <p v-if="hayCodigo" class="flex items-center justify-center gap-1.5 text-xs font-semibold text-base-texto-primario tabular-nums">
+            <RefreshCw :size="13" aria-hidden="true" /> {{ textoCuentaQr(segundos) }}
+          </p>
+        </div>
+        <MensajeError v-if="errorCodigo" class="text-xs">{{ errorCodigo }}</MensajeError>
+        <p class="m-0 text-[15px] leading-relaxed">Muéstrale la pantalla al profe: <strong>su cámara lo lee</strong> y quedas marcado. No tienes que escribir nada.</p>
+        <p v-if="!errorCodigo" class="m-0 text-[13px] text-base-texto-secundario">Sube el brillo si a la cámara le cuesta leerlo.</p>
+        <p class="m-0 text-[13px] text-base-texto-secundario"><strong>Por qué:</strong> el código cambia cada 20 segundos y va con tu celular: una foto no le sirve a otra persona.</p>
+      </section>
 
-    <section class="space-y-3" aria-labelledby="historial-titulo">
-      <h2 id="historial-titulo" class="text-sm font-bold text-base-texto-primario">Asistencia por clase</h2>
-      <p v-if="cargando" role="status" class="text-xs text-base-texto-secundario">Cargando…</p>
-      <MensajeError v-else-if="error" class="text-xs" :reintentar="cargarHistorial">{{ error }}</MensajeError>
-      <p v-else-if="!clases.length" class="text-xs text-base-texto-secundario">Aún no estás en ninguna clase.</p>
-      <article v-for="c in clasesOrdenadas" :key="c.classId" class="bg-base-blanco rounded-xl border p-4 shadow-sm space-y-2" :class="c.classId === studentStore.currentClassId ? 'border-acento-ambar-fuerte' : 'border-base-borde-fuerte'">
-        <div class="flex items-center justify-between gap-2">
-          <h3 class="text-sm font-bold text-base-texto-primario min-w-0 truncate">
-            <span v-if="c.classId === studentStore.currentClassId" class="mr-1.5 px-1.5 py-0.5 rounded bg-acento-ambar/10 text-acento-ambar-fuerte text-[10px] font-bold align-middle">Clase actual</span>{{ c.clase }}
-          </h3>
-          <span class="text-xs font-bold shrink-0" :class="c.porcentaje === null ? 'text-base-texto-secundario' : c.porcentaje >= 80 ? 'text-semantico-pasa' : 'text-semantico-falla'">
-            {{ c.porcentaje === null ? 'Sin registros' : `${c.porcentaje} % de asistencia` }}
-          </span>
-        </div>
-        <p v-if="!c.sesiones.length" class="text-xs text-base-texto-secundario">Tu docente aún no ha tomado asistencia en esta clase.</p>
-        <ul v-else class="divide-y divide-base-borde-sutil text-xs">
-          <li v-for="s in c.sesiones" :key="s.id" class="flex items-center justify-between gap-2 py-1.5">
-            <span class="text-base-texto-primario min-w-0 truncate">{{ fechaSesion(s.fecha) }}<span v-if="s.tema" class="text-base-texto-secundario"> · {{ s.tema }}</span></span>
-            <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold shrink-0" :class="claseEstado(s.estado)">{{ textoEstado(s.estado) }}</span>
-          </li>
-        </ul>
-      </article>
-    </section>
+      <section class="space-y-[18px]" aria-labelledby="historial-titulo">
+        <h2 id="historial-titulo" class="sr-only">Asistencia por clase</h2>
+        <p v-if="cargando" role="status" class="text-sm text-base-texto-secundario">Cargando…</p>
+        <MensajeError v-else-if="error" class="text-xs" :reintentar="cargarHistorial">{{ error }}</MensajeError>
+        <p v-else-if="!clases.length" class="text-sm text-base-texto-secundario">Aún no estás en ninguna clase.</p>
+        <template v-else>
+          <article v-for="(c, i) in clasesOrdenadas" v-show="i === 0 || verOtras" :key="c.classId" class="tarjeta-inicio space-y-3" style="--acento: 255 201 77; --acento2: 209 47 58">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="titulo-tarjeta !text-[17px] min-w-0 truncate">
+                <span v-if="c.classId === studentStore.currentClassId" class="mr-1.5 pastilla-inicio pastilla-sol align-middle">Clase actual</span>{{ c.clase }}
+              </h3>
+              <span class="text-[13px] font-bold shrink-0">{{ c.porcentaje === null ? 'Sin registros' : `${c.porcentaje} % de asistencia` }}</span>
+            </div>
+            <ul v-if="c.sesiones.length" class="grid grid-cols-2 sm:grid-cols-4 gap-2 m-0 p-0 list-none" aria-label="Cuántas veces de cada una">
+              <li v-for="e in ESTADOS" :key="e.id" class="rounded-xl px-3 py-2 border" :class="e.clase">
+                <strong class="block font-poppins text-[22px] leading-none">{{ c.sesiones.filter((s) => s.estado === e.id).length }}</strong>
+                <span class="text-[13px] font-semibold">{{ e.texto }}</span>
+              </li>
+            </ul>
+            <p v-if="!c.sesiones.length" class="m-0 text-sm text-base-texto-secundario">Tu docente aún no ha tomado asistencia en esta clase.</p>
+            <ul v-else class="m-0 p-0 list-none divide-y divide-base-borde-sutil text-sm">
+              <li v-for="s in c.sesiones" :key="s.id" class="flex items-center justify-between gap-2 py-2">
+                <span class="text-base-texto-primario min-w-0 truncate">{{ fechaSesion(s.fecha) }}<span v-if="s.tema" class="text-base-texto-secundario"> · {{ s.tema }}</span></span>
+                <span class="px-2.5 py-0.5 rounded-full border text-xs font-bold shrink-0" :class="claseEstado(s.estado)">{{ textoEstado(s.estado) }}</span>
+              </li>
+            </ul>
+            <p v-if="i === 0" class="m-0 text-[13px] text-base-texto-secundario">
+              ¿Faltaste por algo justificado? <NuxtLink to="/estudiante/mensajes" class="font-bold underline">Escríbele al profe</NuxtLink> y él la cambia a excusa.
+            </p>
+          </article>
+          <button v-if="clasesOrdenadas.length > 1" type="button" class="min-h-[44px] text-sm font-semibold underline" :aria-expanded="verOtras" @click="verOtras = !verOtras">
+            {{ verOtras ? 'Ocultar mis otras clases' : `Ver mis otras clases (${clasesOrdenadas.length - 1})` }}
+          </button>
+        </template>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -86,6 +99,8 @@ const clases = ref<ClaseAsistencia[]>([])
 const studentStore = useStudentStore()
 const clasesOrdenadas = computed(() => claseActualPrimero(clases.value, studentStore.currentClassId))
 const cargando = ref(true)
+/** Las demás clases, recogidas: la cabecera es de la clase actual. */
+const verOtras = ref(false)
 const error = ref<string | null>(null)
 
 let temporizador: ReturnType<typeof setTimeout> | null = null

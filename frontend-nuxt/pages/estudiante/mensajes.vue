@@ -1,5 +1,8 @@
 <template>
-  <div class="max-w-5xl mx-auto">
+  <!-- «Mi clase» › Avisos y mensajes (v3, Fase D, paso 5; cuadro «E-Clase-Mensajes»): la cabecera de la clase y, debajo, los
+       avisos del profe y la conversación con él. -->
+  <div class="max-w-6xl mx-auto space-y-[18px]">
+    <EstudianteClaseCabecera />
     <MensajesPestanasMensajes :activa="verAvisos ? 'avisos' : 'mensajes'" />
     <MensajesAvisosClase v-if="verAvisos" rol="estudiante" />
     <MensajesBandejaMensajes

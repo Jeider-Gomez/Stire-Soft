@@ -96,6 +96,7 @@
 .pastilla-sol { background: rgb(var(--c-sec-sol-fondo)); color: #7a4b00; }
 .pastilla-gris { background: rgb(var(--c-base-bg-secundario)); color: rgb(var(--c-base-texto-secundario)); }
 .pastilla-tinta { background: rgb(var(--c-base-texto-primario)); color: rgb(var(--c-base-blanco)); }
+.pastilla-lila { background: rgb(var(--c-sec-lila-fondo)); color: rgb(var(--c-sec-lila-icono)); }
 :root[data-tema="oscuro"] .pastilla-menta { color: rgb(var(--c-sec-menta-icono)); }
 :root[data-tema="oscuro"] .pastilla-sol { color: rgb(var(--c-sec-sol-icono)); }
 

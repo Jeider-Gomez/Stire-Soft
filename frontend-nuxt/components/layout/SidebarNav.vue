@@ -73,23 +73,22 @@
           <span>Mis proyectos</span>
         </NuxtLink>
 
-        <!-- Mi clase: la asistencia con QR (src/asistencia) y los mensajes, debajo, como las pestañas del prototipo. -->
-        <button type="button" class="item-menu tono-rosa text-left" :class="{ activo: enMiClase }" :aria-expanded="miClaseAbierta" aria-controls="menu-mi-clase" @click="miClaseAbierta = !miClaseAbierta">
+        <!-- Mi clase (v3, Fase D, paso 5): una sola entrada; dentro, la cabecera de la clase con sus pestañas (Notas, Asistencia,
+             Entregas, Refuerzos y retos, Avisos y mensajes: utils/miClase.ts). -->
+        <NuxtLink to="/estudiante/clase" class="item-menu tono-rosa" :class="{ activo: enMiClase }">
           <span class="icono-menu"><GraduationCap :size="18" aria-hidden="true" /></span>
           <span>Mi clase</span>
-        </button>
-        <ul v-show="miClaseAbierta" id="menu-mi-clase" class="ml-12 space-y-0.5 ocultar-colapsado">
-          <li>
-            <NuxtLink to="/estudiante/asistencia" class="sub-menu" :class="{ actual: route.path === '/estudiante/asistencia' }">Mi asistencia</NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/estudiante/mensajes" class="sub-menu" :class="{ actual: route.path === '/estudiante/mensajes' }">Mensajes</NuxtLink>
-          </li>
-        </ul>
+        </NuxtLink>
 
         <NuxtLink to="/estudiante/progreso" class="item-menu tono-lila" :class="{ activo: route.path === '/estudiante/progreso' || route.path === '/estudiante/logros' }">
           <span class="icono-menu"><TrendingUp :size="18" aria-hidden="true" /></span>
           <span>Mi progreso</span>
+        </NuxtLink>
+
+        <!-- El código de asistencia, a mano (cuadros E-*: el atajo de abajo del menú): cuando el profe toma asistencia, se abre
+             de un toque, sin pasar por «Mi clase». -->
+        <NuxtLink to="/estudiante/asistencia" class="atajo-asistencia ocultar-colapsado" :class="{ activo: route.path === '/estudiante/asistencia' }">
+          <QrCode :size="16" aria-hidden="true" /> Mi código de asistencia
         </NuxtLink>
 
         <!-- Plan del curso al final (Jeider, 26/10: «al abrir el plan abarca mucho espacio y quedan lejos las demás
@@ -171,8 +170,9 @@
 </template>
 
 <script setup lang="ts">
-import { Activity, BookOpen, ChevronDown, Library, FolderCode, GraduationCap, House, Mail, MessageSquare, PanelLeftClose, PanelLeftOpen, Repeat, Settings, Target, TrendingUp, Users } from 'lucide-vue-next'
+import { Activity, BookOpen, ChevronDown, Library, FolderCode, GraduationCap, House, Mail, MessageSquare, PanelLeftClose, PanelLeftOpen, QrCode, Repeat, Settings, Target, TrendingUp, Users } from 'lucide-vue-next'
 import { lugarDeAsignatura, siglasDeClases } from '~/utils/contextoAcademico'
+import { enMiClase as enMiClaseRuta } from '~/utils/miClase'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 
@@ -214,10 +214,8 @@ const siglaClase = computed(() => {
 })
 /** «Aprender» se marca en su pantalla y dentro de una lección o un ejercicio. */
 const enAprender = computed(() => route.path === '/estudiante/aprender' || route.path.startsWith('/estudiante/unidad/') || route.path.startsWith('/estudiante/evaluacion/'))
-/** «Mi clase» reúne Mi asistencia y Mensajes; se abre sola cuando está en una de ellas. */
-const enMiClase = computed(() => route.path === '/estudiante/asistencia' || route.path === '/estudiante/mensajes')
-const miClaseAbierta = ref(enMiClase.value)
-watch(enMiClase, (si) => { if (si) miClaseAbierta.value = true })
+/** «Mi clase» se marca en cualquiera de sus pestañas, en una entrega o en un refuerzo. */
+const enMiClase = computed(() => enMiClaseRuta(route.path))
 
 /** Entrada del administrador activa: su ruta exacta (las del admin no tienen subpáginas). */
 const enAdmin = (...rutas: string[]) => rutas.includes(route.path)
@@ -284,4 +282,6 @@ const enAdmin = (...rutas: string[]) => rutas.includes(route.path)
     white-space: nowrap;
   }
 }
+.atajo-asistencia { display: flex; align-items: center; gap: 8px; min-height: 44px; margin: 8px 4px 4px; padding: 0 12px; border-radius: 12px; font-size: 13px; font-weight: 700; background: rgb(var(--c-sec-sol-fondo)); color: rgb(var(--c-base-texto-primario)); transition: filter 0.15s ease; }
+.atajo-asistencia:hover, .atajo-asistencia.activo { filter: brightness(0.96); }
 </style>

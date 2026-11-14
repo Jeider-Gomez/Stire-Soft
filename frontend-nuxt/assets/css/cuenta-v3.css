@@ -1,0 +1,39 @@
+/* Mi cuenta v3 (Fase D, paso 5; cuadro «E-Cuenta»). Las tarjetas del perfil (components/perfil/) son las mismas para los
+   tres roles; dentro de .cuenta-v3 se acomodan en columnas y toman la forma de las tarjetas v3 (bordes suaves, línea de
+   color arriba), sin tocar su lógica. Las columnas son de CSS: cada tarjeta mide lo que necesita, sin huecos. */
+.cuenta-v3 { columns: 1; column-gap: 18px; }
+@media (min-width: 1024px) { .cuenta-v3 { columns: 2; } }
+@media (min-width: 1440px) { .cuenta-v3 { columns: 3; } }
+
+/* El formulario del perfil trae su propio contenedor angosto: aquí sus tres partes (foto, datos, contraseña) son tarjetas sueltas. */
+.cuenta-v3 > div { display: contents; }
+
+.cuenta-v3 section {
+  position: relative;
+  break-inside: avoid;
+  margin: 0 0 18px;
+  max-width: none;
+  background: rgb(var(--c-base-blanco));
+  border: 1px solid rgb(var(--c-base-borde-sutil));
+  border-radius: 18px;
+  padding: 20px 22px;
+  box-shadow: none;
+}
+.cuenta-v3 section::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto;
+  height: 20px;
+  border-radius: 18px 18px 0 0;
+  background: linear-gradient(90deg, #5ccbff, #7c3aed);
+  -webkit-mask: linear-gradient(#000 0 4px, transparent 4px);
+  mask: linear-gradient(#000 0 4px, transparent 4px);
+  pointer-events: none;
+}
+.cuenta-v3 section:nth-of-type(3n + 2)::before { background: linear-gradient(90deg, #ffc94d, #d12f3a); }
+.cuenta-v3 section:nth-of-type(3n)::before { background: linear-gradient(90deg, #00c2a8, #5ccbff); }
+/* Los títulos de las tarjetas, como los del cuadro (Poppins, 19 px). */
+.cuenta-v3 section > h2, .cuenta-v3 section > div > h2, .cuenta-v3 section h2:first-child { font-family: Poppins, sans-serif; font-size: 19px; }
+/* Las secciones anidadas (dentro de una tarjeta) no son tarjetas. */
+.cuenta-v3 section section { border: 0; padding: 0; margin: 0; background: transparent; }
+.cuenta-v3 section section::before { display: none; }

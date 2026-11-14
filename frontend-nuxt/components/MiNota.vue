@@ -1,7 +1,7 @@
 <template>
   <!-- Mi nota en la clase (docs/DISENO_INTERVENCION_DOCENTE.md §6): solo si el docente decidió mostrarla. Primero de dónde
        sale cada parte y qué falta; la nota al final, sin compararla con la de nadie. -->
-  <section v-if="datos?.visible" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-6 shadow-sm space-y-4" aria-labelledby="mi-nota-titulo">
+  <section v-if="datos?.visible" class="tarjeta-inicio space-y-4" style="--acento: 0 194 168; --acento2: 92 203 255" aria-labelledby="mi-nota-titulo">
     <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
       <h2 id="mi-nota-titulo" class="text-sm font-bold text-base-texto-primario flex items-center gap-2">
         <GraduationCap :size="16" class="text-acento-ambar-fuerte" aria-hidden="true" /> Tu nota en esta clase
@@ -26,6 +26,11 @@
       <span v-if="datos.faltan.length && !datos.ajustada" class="text-[11px] text-base-texto-secundario">Falta: {{ datos.faltan.join(', ') }}.</span>
     </div>
   </section>
+  <!-- En la pestaña «Notas» de «Mi clase» (v3): si el profe no las muestra, se dice; en otras pantallas no aparece nada. -->
+  <section v-else-if="vacio && cargada" class="tarjeta-inicio" style="--acento: 0 194 168; --acento2: 92 203 255" aria-labelledby="mi-nota-vacia">
+    <h2 id="mi-nota-vacia" class="titulo-tarjeta mb-1.5">Tus notas</h2>
+    <p class="m-0 text-[15px] text-base-texto-secundario leading-relaxed">Tu profe todavía no muestra las notas en STIRE. Cuando las publique, aquí verás de dónde sale cada parte y qué te falta.</p>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -34,7 +39,7 @@ import { GraduationCap } from 'lucide-vue-next'
 import { useApi } from '~/composables/useApi'
 import { notaComa, type ModoCalculo, type TipoComponente } from '~/utils/calificaciones'
 
-const props = defineProps<{ classId: number | null | undefined }>()
+const props = defineProps<{ classId: number | null | undefined; vacio?: boolean }>()
 
 type MiNota =
   | { visible: false }
@@ -46,6 +51,8 @@ type MiNota =
 
 const api = useApi()
 const datos = ref<MiNota | null>(null)
+/** Ya se preguntó al servidor (para no decir «todavía no muestra» mientras carga). */
+const cargada = ref(false)
 
 /** Se muestra el porcentaje solo donde ese nivel (el módulo o la final) usa porcentajes. */
 function conPorcentaje(moduloId: number | null): boolean {
@@ -60,11 +67,14 @@ const nombreModulo = (moduloId: number) => {
 
 watch(() => props.classId, async (id) => {
   datos.value = null
+  cargada.value = false
   if (!id) return
   try {
     datos.value = await api.get<MiNota>(`/calificaciones/mia/${id}`)
   } catch {
     datos.value = null // sin nota visible: la sección no aparece
+  } finally {
+    cargada.value = true
   }
 }, { immediate: true })
 </script>
