@@ -1,3 +1,4 @@
+import { diaColombia, diasEntreDias } from '~/utils/avanceReciente'
 import { defineStore } from 'pinia'
 import { estadoDeModulos, proximoModuloCerrado } from '~/utils/bloqueoModulos'
 import { computed } from 'vue'
@@ -356,7 +357,11 @@ export const useStudentStore = defineStore('student', () => {
             easeFactor: r.easeFactor,
             intervalDays: r.intervalDays,
             nextReviewDate: new Date(r.nextReviewDate).toLocaleDateString('es-CO'),
-            estimatedTimeMin: 5
+            estimatedTimeMin: 5,
+            // v3 (E-Repasos): cuándo toca en días de Colombia y cuántos repasos bien hechos lleva.
+            diaRepaso: diaColombia(new Date(r.nextReviewDate)),
+            diasHasta: diasEntreDias(diaColombia(new Date()), diaColombia(new Date(r.nextReviewDate))),
+            repeticiones: r.repetitions,
           }))
 
           if (analytics.value.reviewStats) {

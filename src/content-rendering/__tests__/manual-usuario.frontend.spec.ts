@@ -140,7 +140,7 @@ describe('manual de usuario', () => {
   });
 
   it('el buscador encuentra sin importar tildes, y el filtro de rol deja lo suyo y lo de todos', () => {
-    const conRepaso = m.filtrarManual(m.MANUAL, 'repasar ahora', 'todos');
+    const conRepaso = m.filtrarManual(m.MANUAL, 'repasar seguidos', 'todos');
     expect(conRepaso.flatMap((s) => s.tareas.map((t) => t.id))).toEqual(['hacer-mis-repasos']);
     expect(m.filtrarManual(m.MANUAL, 'leccion', 'todos').length).toBeGreaterThan(0);
     const docente = m.filtrarManual(m.MANUAL, '', 'docente');

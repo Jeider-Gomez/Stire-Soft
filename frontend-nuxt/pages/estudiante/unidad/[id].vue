@@ -91,6 +91,7 @@
             </div>
           </article>
 
+          <EstudianteColaRepasos :learning-unit-id="unitId" />
           <EstudianteLeccionPractica :unit-id="unitId" />
 
           <!-- Entregas de esta lección: el docente las valora (docs/DISENO_INTERVENCION_DOCENTE.md §3) -->

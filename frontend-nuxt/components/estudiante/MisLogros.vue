@@ -5,7 +5,7 @@
   <section v-if="!datos || datos.activos" id="logros" class="bg-base-blanco rounded-lg border border-base-borde-sutil p-5 shadow-sm space-y-4 scroll-mt-20" aria-labelledby="mis-logros-titulo">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <h1 id="mis-logros-titulo" class="text-xl font-bold text-base-texto-primario tracking-tight">Mis logros</h1>
+        <component :is="enPestana ? 'h2' : 'h1'" id="mis-logros-titulo" class="text-xl font-bold text-base-texto-primario tracking-tight">Mis logros</component>
         <p v-if="datos" class="text-xs text-base-texto-secundario">{{ obtenidos }} de {{ datos.logros.length }} medallas · solo las ves tú</p>
       </div>
       <!-- Filtro: un grupo de opciones, no pestañas (no cambia de panel, solo filtra la lista). -->
@@ -45,6 +45,8 @@
 </template>
 
 <script setup lang="ts">
+// En la pestaña «Logros» de «Mi progreso» el título de la página ya es «Mi progreso»: aquí va como subtítulo (un solo h1).
+defineProps<{ enPestana?: boolean }>()
 import { computed, onMounted, ref } from 'vue'
 import { agruparLogros, filtrarLogros, NOMBRE_NIVEL, porcentajeLogro, textoProgreso, type FiltroLogros, type RespuestaLogros } from '~/utils/logros'
 import { useAuthStore } from '~/stores/auth'

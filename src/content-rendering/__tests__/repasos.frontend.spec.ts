@@ -36,7 +36,9 @@ describe('repasos de hoy', () => {
 
   it('un solo botón principal y el resto en lista; sin jerga («factor de estabilidad», «SM-2»)', () => {
     const p = leer('pages', 'estudiante', 'repasos.vue');
-    expect((p.match(/Repasar ahora/g) ?? []).length).toBe(1);
+    // v3 (14/11, E-Repasos): la acción principal es repasar los de hoy seguidos; cada tema de la lista tiene su «Repasar».
+    expect((p.match(/boton-principal/g) ?? []).length).toBe(1);
+    expect(p).toContain('`Repasar los ${grupos.hoy.length} seguidos`');
     expect(p).not.toMatch(/factor de estabilidad|SM-2|Iniciar refuerzo/);
     expect(leer('stores', 'student.ts')).not.toContain('Crítico — Repasar hoy');
   });

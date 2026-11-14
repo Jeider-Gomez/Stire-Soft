@@ -320,7 +320,8 @@ describe('Logros y medallas', () => {
     // 04/10: las 26 medallas llenaban «Mi progreso»; ahora va una fila con las ganadas y la próxima meta.
     const progreso = leer('pages', 'estudiante', 'progreso.vue');
     expect(progreso).toContain('<EstudianteResumenLogros />');
-    expect(progreso).not.toContain('<EstudianteMisLogros />');
+    // v3 (14/11, E-Progreso): la lista completa va en su propia pestaña «Logros», nunca en la vista del dominio.
+    expect(progreso).toContain(`<EstudianteMisLogros v-if="pestana === 'logros'" en-pestana />`);
     expect(leer('pages', 'estudiante', 'logros.vue')).toContain('<EstudianteMisLogros />');
     const resumen = leer('components', 'estudiante', 'ResumenLogros.vue');
     expect(resumen).toContain('ganados.value.slice(0, 8)');

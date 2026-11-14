@@ -73,6 +73,12 @@ export interface SpacedReviewItem {
   intervalDays: number
   nextReviewDate: string
   estimatedTimeMin: number
+  /** Días (de Colombia) que faltan para que toque: negativo si ya pasó, 0 hoy (v3, cuadro «E-Repasos»). */
+  diasHasta?: number
+  /** Fecha en que toca, AAAA-MM-DD (hora de Colombia). */
+  diaRepaso?: string
+  /** Repasos bien hechos seguidos: las casillas de «qué tan firme está el recuerdo». */
+  repeticiones?: number
 }
 
 export interface StudentAnalytics {

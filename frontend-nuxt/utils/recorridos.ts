@@ -88,9 +88,9 @@ export const RECORRIDOS: Recorrido[] = [
     pantalla: 'tu progreso',
     manual: 'ver-mi-progreso',
     pasos: [
-      { elemento: '[data-recorrido="avance"]', titulo: 'Avance del curso', texto: 'Cuántas lecciones dominas de todo el curso.' },
+      { elemento: '[data-recorrido="avance"]', titulo: 'Avance del curso', texto: 'Cuántas lecciones terminaste, cuántas empezaste y cuántas faltan.' },
+      { elemento: '[data-recorrido="mapa"]', titulo: 'Todo el curso', texto: 'Cada lección con su estado. Toca una para abrirla. En «Cómo estudio» está tu perfil de aprendizaje.' },
       { elemento: '[data-recorrido="lecciones"]', titulo: 'Cómo vas en cada lección', texto: 'El dominio de cada lección que has trabajado, y un botón para repasarla.' },
-      { elemento: '[data-recorrido="perfil"]', titulo: 'Tu perfil de aprendizaje', texto: 'Los errores que se te repiten y cómo sueles estudiar. Te sirve para pensar cómo mejorar; no cambia lo que ves.' },
     ],
   },
   {
@@ -100,8 +100,8 @@ export const RECORRIDOS: Recorrido[] = [
     manual: 'hacer-mis-repasos',
     pasos: [
       { elemento: '[data-recorrido="repasos-hoy"]', titulo: 'Por qué repasar', texto: 'Lo que aprendes se olvida en pocos días. Repasar justo a tiempo hace que lo recuerdes por más tiempo.' },
-      { elemento: '[aria-labelledby="empezar-titulo"]', titulo: 'Empieza por aquí', texto: 'El repaso más urgente. Es un ejercicio corto de una lección que ya practicaste.' },
-      { elemento: '[aria-labelledby="despues-titulo"]', titulo: 'Después', texto: 'Los demás de hoy. Según cómo te vaya, cada lección vuelve en 1, 3, 8 días o más.' },
+      { elemento: '[aria-labelledby="titulo-tus-repasos"]', titulo: 'Tus repasos', texto: 'Lo que vence hoy, lo de la semana y lo de más adelante. Las casillas dicen qué tan firme está cada recuerdo.' },
+      { elemento: '[aria-labelledby="asi-funcionan"]', titulo: 'Cómo funcionan', texto: 'Si aciertas, el tema vuelve más tarde; si fallas, vuelve pronto para explicártelo otra vez.' },
     ],
   },
   {

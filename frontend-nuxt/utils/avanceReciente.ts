@@ -23,6 +23,11 @@ export function diaColombia(d: Date): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: ZONA, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d)
 }
 
+/** Días entre dos días AAAA-MM-DD (negativo si `hasta` ya pasó). */
+export function diasEntreDias(desde: string, hasta: string): number {
+  return Math.round((Date.parse(`${hasta}T12:00:00Z`) - Date.parse(`${desde}T12:00:00Z`)) / 86_400_000)
+}
+
 /** El lunes (AAAA-MM-DD) de la semana de un día. */
 export function lunesDe(dia: string): string {
   const d = new Date(`${dia}T12:00:00Z`)
