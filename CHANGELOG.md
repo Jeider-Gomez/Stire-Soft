@@ -16,6 +16,37 @@ entry to the oldest.
 
 El plan está en `docs/v3/`. Lo que se construye en la rama no se despliega hasta el visto bueno del equipo.
 
+### Cierre de la Fase D (estudiante) · 14 de Noviembre de 2026
+
+- **Inicio y Aprender** («E-Inicio», «E-Aprender»), **lección** completa («E-Leccion»), **ejercicio** sobre el v9 con los
+  demás tipos y la mesa de trabajo («E-Ejercicio», «E-Tipo-*»), **Repasos** y **Mi progreso** («E-Repasos»,
+  «E-Progreso»), **Mi clase** y **Mi cuenta** («E-Clase-*», «E-Cuenta»), **Mis proyectos** y el **Laboratorio**
+  («E-Proyectos», «E-Laboratorio»; servidor nuevo con la migración `1793900000000-Laboratorio`) y la cabecera del
+  **Tutor** («E-Tutor»).
+- Lo que necesita servidor y no se inventa queda en la bitácora: P-14 a P-17.
+- **Desplegar el backend antes que el frontend** (los días de práctica de la semana, la encuesta SUS y el Laboratorio).
+- Falta el visto bueno de Jeider.
+
+Verificación final: 2971 de 2971 pruebas y `npm run verify:clean` (extracto literal de la salida):
+
+```
+[verify:clean 1] rm -rf node_modules dist
+[verify:clean 2] npm ci (instalacion exacta desde package-lock.json)
+[verify:clean 3] crear base de datos vacia de verificacion: stire_verify_clean
+[verify:clean 4] migration:run contra la base de datos vacia
+Migration Laboratorio1793900000000 has been executed successfully.
+[verify:clean 5] db:seed:demo contra la base de datos vacia
+[verify:clean 6] npm run build
+[verify:clean] setup completo. Base de datos de verificacion: stire_verify_clean (puerto 3097). Continua scripts/verify-clean-server-check.js.
+login real contra el servidor recien levantado (docente de demo)
+  login OK para docente.demo@stire.local (token recibido)
+verificacion de datos sembrados via GET /enrollment/my
+  OK, status 200
+apagado del servidor
+[verify:clean:server-check] limpieza: eliminar base de datos de verificacion stire_verify_clean
+[verify:clean] TODO EN VERDE: npm ci -> migration:run -> db:seed:demo -> build -> start -> login real -> apagado.
+```
+
 ### Cierre de las Fases B y C · 13 de Noviembre de 2026
 
 - **Fase B (el marco):** menú por secciones de los tres roles, barra de arriba, Buscar (Ctrl K) para docente y
