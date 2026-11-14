@@ -3,7 +3,7 @@
   <div class="p-3 bg-base-bg-secundario rounded-lg border border-base-borde-sutil space-y-1">
     <span class="font-bold text-base-texto-primario block">Cómo se califica</span>
     <ul v-if="codigo" class="list-disc pl-4 space-y-1 text-slate-600 text-[11px]">
-      <li>{{ ws.publicTestCases.length }} {{ ws.publicTestCases.length === 1 ? 'ejemplo que puedes ver' : 'ejemplos que puedes ver' }} en la pestaña «Casos de prueba» y probar con «Probar código».</li>
+      <li>{{ ws.publicTestCases.length }} {{ ws.publicTestCases.length === 1 ? 'ejemplo que puedes ver' : 'ejemplos que puedes ver' }} en la pestaña «Prueba de casos» y probar con «Probar código».</li>
       <li v-if="ws.hiddenTestCaseCount > 0">
         {{ ws.hiddenTestCaseCount }} {{ ws.hiddenTestCaseCount === 1 ? 'caso oculto' : 'casos ocultos' }} más, que se revisan al entregar (por ejemplo, los valores límite).
       </li>

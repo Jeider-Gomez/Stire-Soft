@@ -15,6 +15,8 @@ export interface Concepto {
   idea: string
   /** Ejemplo resuelto de otro contexto (JavaScript válido). */
   ejemplo: string
+  /** Lo que se escribe, para la columna de «Lo que necesitas saber» (v3, cuadro «E-Ejercicio» v9). */
+  codigo: string
 }
 
 export const CONCEPTOS: Record<ClaveConcepto, Concepto> = {
@@ -23,54 +25,63 @@ export const CONCEPTOS: Record<ClaveConcepto, Concepto> = {
     titulo: 'Leer lo que entra',
     idea: 'Para pedir un dato usa leerTexto() si es un texto o leerNumero() si es un número. Cada vez que las llamas te dan la siguiente línea que entra.',
     ejemplo: '// Si entra:  Ana\n//            17\nconst nombre = leerTexto(); // "Ana"\nconst edad = leerNumero();  // 17',
+    codigo: 'leerNumero()',
   },
   'convertir-numero': {
     clave: 'convertir-numero',
     titulo: 'Convertir texto en número',
     idea: 'Todo lo que entra llega como texto. Para hacer cuentas, conviértelo con Number(...). Sin eso, "5" + "3" da "53".',
     ejemplo: 'const precio = Number("1500"); // 1500, ya es número\nconsole.log(precio + 500);     // 2000',
+    codigo: 'Number(…)',
   },
   operaciones: {
     clave: 'operaciones',
     titulo: 'Operaciones',
     idea: 'Suma +, resta -, multiplicación *, división /. Los paréntesis se hacen primero, como en matemáticas. Guarda cada resultado en una variable con un nombre que diga qué es.',
     ejemplo: 'const precio = 1500;\nconst envio = 500;\nconst total = (precio + envio) * 2; // 4000',
+    codigo: '+ - * / ( )',
   },
   'division-entera': {
     clave: 'division-entera',
     titulo: 'División entera y residuo',
     idea: 'Math.floor(a / b) da cuántas veces cabe b en a (sin decimales). a % b da lo que sobra.',
     ejemplo: 'const dias = Math.floor(50 / 7); // 7 semanas completas\nconst sobran = 50 % 7;           // 1 día que sobra',
+    codigo: 'Math.floor  %',
   },
   texto: {
     clave: 'texto',
     titulo: 'Armar un texto',
     idea: 'Une textos y variables con +. Los espacios y signos van dentro de las comillas, y deben quedar igual que en el ejemplo.',
     ejemplo: 'const ciudad = "Montería";\nconsole.log("Vivo en " + ciudad + ".");  // Vivo en Montería.',
+    codigo: '"…" + dato',
   },
   'varias-lineas': {
     clave: 'varias-lineas',
     titulo: 'Mostrar varias líneas',
     idea: 'Cada console.log escribe una línea. Si deben salir dos líneas, usa dos console.log, en el orden del ejemplo.',
     ejemplo: 'console.log(10); // primera línea\nconsole.log(20); // segunda línea',
+    codigo: 'console.log()',
   },
   decisiones: {
     clave: 'decisiones',
     titulo: 'Decidir con if',
     idea: 'if revisa una condición: si se cumple hace lo primero; si no, lo que está en else.',
     ejemplo: 'const nota = 3.5;\nif (nota >= 3) {\n  console.log("Aprobó");\n} else {\n  console.log("Reprobó");\n}',
+    codigo: 'if … else',
   },
   ciclos: {
     clave: 'ciclos',
     titulo: 'Repetir con for',
     idea: 'for repite un bloque: dónde empieza, hasta cuándo sigue y cuánto avanza en cada vuelta. Revisa si el último valor entra (< o <=).',
     ejemplo: 'for (let i = 1; i <= 3; i++) {\n  console.log("Vuelta " + i);\n}',
+    codigo: 'for',
   },
   'escribir-bien': {
     clave: 'escribir-bien',
     titulo: 'Escribir para que JavaScript entienda',
     idea: 'Cada operación necesita un valor a cada lado; cada paréntesis o comilla que abres, se cierra. Un comentario /* … */ no es un valor.',
     ejemplo: 'const total = 3 + 4;   // bien: un valor a cada lado del +\n// const mal = 3 + ;   // mal: falta el valor después del +',
+    codigo: '( ) " "',
   },
 }
 
@@ -99,5 +110,7 @@ export function conceptosDelEjercicio(e: {
   // «par» con letras alrededor, también con tilde: \b no entiende de tildes y encontraba «par» en «paréntesis».
   if (/\bif\b|\bsi (es|el|la|un|una)\b|condicional|decisi|mayor que|menor que|(?<!\p{L})(im)?par(?!\p{L})|aprob/iu.test(texto)) claves.push('decisiones')
   if (/\bfor\b|\bwhile\b|\bciclo|\bbucle|repet|tabla de multiplicar|desde 1 hasta/i.test(texto)) claves.push('ciclos')
-  return claves.map((c) => CONCEPTOS[c])
+  // Lo que se escribe para leer, el mismo que usa la plantilla de este ejercicio.
+  const leer = /\bleerNumero\b/.test(e.plantilla) ? 'leerNumero()' : /\bleerTexto\b/.test(e.plantilla) ? 'leerTexto()' : 'lineas[0]'
+  return claves.map((c) => (c === 'leer-entrada' ? { ...CONCEPTOS[c], codigo: leer } : CONCEPTOS[c]))
 }

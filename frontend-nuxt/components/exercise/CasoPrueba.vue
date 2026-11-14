@@ -3,68 +3,62 @@
      «12» y «14» se leían «12 14» en una sola línea y un SyntaxError decía «la primera diferencia está en la línea 1».
      Ahora la entrada siempre está, los saltos de línea se respetan y el error dice su línea (utils/diagnosticoSalida.ts). -->
 <template>
-  <div
-    class="border rounded-lg p-3 space-y-2 transition-colors"
-    :class="{
-      'border-semantico-pasa/40 bg-semantico-pasa/5': tc.passed === true,
-      'border-semantico-falla/40 bg-semantico-falla/5': tc.passed === false,
-      'border-base-borde-sutil bg-base-bg-secundario/40': tc.passed === undefined
-    }">
-    <div class="flex items-center justify-between font-bold text-xs">
-      <span>{{ tc.nombre || `Caso #${tc.id}` }}</span>
-      <span v-if="tc.passed === true" class="text-semantico-pasa flex items-center gap-1">
-        <Check :size="16" aria-hidden="true" />
-        <span>Superado</span>
+  <!-- v3 (13/11, cuadro «E-Ejercicio-Casos»): «Cumple» o «Todavía no» con el nombre del caso; lo que entra, lo que debía
+       mostrar y lo que mostró solo se despliega en el que todavía no cumple, con «Lo que pasa» y qué repasar. -->
+  <div class="caso-prueba rounded-xl border overflow-hidden" :class="tc.passed === true ? 'caso-cumple' : tc.passed === false ? 'caso-falta' : 'caso-sin'">
+    <div class="flex items-center justify-between gap-2 px-3 min-h-[40px] text-[13px] font-bold">
+      <span v-if="tc.passed === true" class="inline-flex items-center gap-1 texto-menta">
+        <Check :size="15" aria-hidden="true" /> Cumple
       </span>
-      <span v-else-if="tc.passed === false" class="text-semantico-falla flex items-center gap-1">
-        <X :size="14" aria-hidden="true" />
-        <span>Todavía no coincide</span>
+      <span v-else-if="tc.passed === false" class="inline-flex items-center gap-1 texto-sol">
+        <X :size="14" aria-hidden="true" /> Todavía no coincide
       </span>
-      <span v-else class="text-base-texto-secundario text-[11px]">Sin evaluar</span>
+      <span v-else class="text-base-texto-secundario text-xs font-semibold">Sin probar</span>
+      <span class="text-right">{{ tc.nombre || `Caso #${tc.id}` }}</span>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] font-codigo pt-1">
-      <div class="p-2 bg-base-blanco rounded border border-base-borde-sutil">
-        <span class="text-base-texto-secundario text-[10px] block font-sans">Entra:</span>
-        <span class="block whitespace-pre-wrap break-words text-acento-ambar-fuerte font-bold">{{ tc.input || '(nada)' }}</span>
+    <div v-if="tc.passed !== true" class="px-3 pb-3 space-y-2">
+      <div class="grid grid-cols-3 gap-2 text-xs font-codigo">
+        <div>
+          <span class="text-base-texto-secundario text-[11px] block font-sans">Entra:</span>
+          <span class="block whitespace-pre-wrap break-words font-bold">{{ tc.input || '(nada)' }}</span>
+        </div>
+        <div>
+          <span class="text-base-texto-secundario text-[11px] block font-sans">Debe salir:</span>
+          <span class="block whitespace-pre-wrap break-words font-bold">{{ tc.expectedOutput }}</span>
+        </div>
+        <div>
+          <span class="text-base-texto-secundario text-[11px] block font-sans">Tu código mostró:</span>
+          <span class="block whitespace-pre-wrap break-words"
+            :class="tc.passed === false ? 'font-bold texto-sol' : 'text-base-texto-secundario'">{{ tc.actualOutput || '—' }}</span>
+        </div>
       </div>
-      <div class="p-2 bg-base-blanco rounded border border-base-borde-sutil">
-        <span class="text-base-texto-secundario text-[10px] block font-sans">Debe salir:</span>
-        <span class="block whitespace-pre-wrap break-words font-bold text-semantico-pasa">{{ tc.expectedOutput }}</span>
-      </div>
-      <div class="p-2 bg-base-blanco rounded border border-base-borde-sutil">
-        <span class="text-base-texto-secundario text-[10px] block font-sans">Lo que mostró tu código:</span>
-        <span
-          class="block whitespace-pre-wrap break-words"
-          :class="tc.passed ? 'text-semantico-pasa font-bold' : tc.passed === false ? 'text-semantico-falla font-bold' : 'text-base-texto-secundario'">{{ tc.actualOutput || '—' }}</span>
-      </div>
-    </div>
 
-    <!-- Qué revisar: el error de concepto más probable, sin dar la solución (MOD-02 y MOD-04) -->
-    <p v-if="diagnostico" class="flex items-start gap-1.5 text-[11px] text-base-texto-primario bg-base-blanco rounded border border-semantico-falla/25 p-2">
-      <Lightbulb :size="13" class="shrink-0 mt-0.5 text-acento-ambar-fuerte" aria-hidden="true" />
-      <span>
-        {{ diagnostico.mensaje }}
-        <template v-if="!tc.actualOutput && limiteMs"> Si tarda más de {{ limiteMs }} ms (un bucle infinito), se corta.</template>
-        <!-- Ítem 29: el error trae su salida; el Tutor ve el caso que falló (su último «Probar código»). -->
-        <button type="button" class="ml-1 min-h-[32px] px-1.5 rounded-md font-semibold text-semantico-info underline underline-offset-2 hover:bg-semantico-info/10" @click="pedirAyuda">
+      <!-- Qué revisar: el error de concepto más probable, sin dar la solución (MOD-02 y MOD-04) -->
+      <div v-if="diagnostico" class="rounded-lg bg-base-blanco p-2.5 text-[13px] text-base-texto-primario leading-relaxed space-y-1.5">
+        <p class="m-0">
+          <strong>Lo que pasa:</strong> {{ diagnostico.mensaje }}
+          <template v-if="!tc.actualOutput && limiteMs"> Si tarda más de {{ limiteMs }} ms (un bucle infinito), se corta.</template>
+        </p>
+        <!-- Qué repasar, con un ejemplo de otro problema (utils/conceptosEjercicio.ts). -->
+        <details v-if="repasar" class="text-xs">
+          <summary class="cursor-pointer min-h-[32px] inline-flex items-center gap-1 font-semibold underline underline-offset-2">
+            <BookMarked :size="13" aria-hidden="true" /> Repasa: {{ repasar.titulo }}
+          </summary>
+          <p class="mt-1 mb-0">{{ repasar.idea }}</p>
+          <pre class="mt-1.5 mb-0 font-mono bg-editor-bg text-editor-text rounded px-2 py-1.5 overflow-x-auto whitespace-pre">{{ repasar.ejemplo }}</pre>
+        </details>
+        <!-- Ítem 29: el Tutor ve el caso que falló (su último «Probar código»); va al final: primero, entenderlo. -->
+        <button type="button" class="min-h-[32px] px-1.5 -ml-1.5 rounded-md text-xs font-semibold text-semantico-info underline underline-offset-2 hover:bg-semantico-info/10" @click="pedirAyuda">
           Pedir ayuda al Tutor
         </button>
-      </span>
-    </p>
-    <!-- Qué repasar, con un ejemplo de otro problema (utils/conceptosEjercicio.ts). -->
-    <details v-if="repasar" class="text-[11px] bg-base-blanco rounded border border-base-borde-sutil px-2 py-1.5">
-      <summary class="cursor-pointer min-h-[32px] flex items-center gap-1 font-semibold text-semantico-info">
-        <BookMarked :size="13" aria-hidden="true" /> Repasa: {{ repasar.titulo }}
-      </summary>
-      <p class="mt-1 text-base-texto-primario">{{ repasar.idea }}</p>
-      <pre class="mt-1.5 font-mono bg-editor-bg text-editor-text rounded px-2 py-1.5 overflow-x-auto whitespace-pre">{{ repasar.ejemplo }}</pre>
-    </details>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { BookMarked, Check, Lightbulb, X } from 'lucide-vue-next'
+import { BookMarked, Check, X } from 'lucide-vue-next'
 import type { TestCase } from '~/types'
 import type { Diagnostico } from '~/utils/diagnosticoSalida'
 import { CONCEPTOS } from '~/utils/conceptosEjercicio'
@@ -74,3 +68,9 @@ const props = defineProps<{ tc: TestCase; diagnostico: Diagnostico | null; limit
 const repasar = computed(() => (props.diagnostico?.repasar ? CONCEPTOS[props.diagnostico.repasar] : null))
 const pedirAyuda = () => useTutorStore().openDrawer({ conPregunta: true })
 </script>
+
+<style scoped>
+.caso-cumple { border-color: rgb(var(--c-sec-menta-fondo)); background: rgb(var(--c-sec-menta-fondo) / 0.6); }
+.caso-falta { border-color: #ffc94d; background: rgb(var(--c-sec-sol-fondo) / 0.7); }
+.caso-sin { border-color: rgb(var(--c-base-borde-sutil)); background: rgb(var(--c-base-bg-secundario) / 0.4); }
+</style>

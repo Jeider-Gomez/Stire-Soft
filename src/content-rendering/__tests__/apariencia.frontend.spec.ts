@@ -194,10 +194,12 @@ describe('lo que encontró la revisión con agent-browser (07/10)', () => {
     expect(leer('assets', 'css', 'menu-v3.css')).toContain('background: #ffc94d; color: #14213d;');
   });
 
-  it('cada lista del ejercicio de emparejar dice de qué elemento es la pareja; la flecha es decorativa', () => {
+  it('cada elemento del ejercicio de emparejar dice cuál es su pareja; la línea que los une es decorativa', () => {
+    // v3 (13/11): se empareja tocando (E-Tipo-Emparejar), ya no con listas; cada pareja con su color y una línea entre las dos.
     const c = leer('components', 'exercise', 'MatchingExercise.vue');
-    expect(c).toContain(':aria-label="`Pareja de «${itemText(leftItem)}»`"');
-    expect(c).toContain('aria-hidden="true">➔</span>');
+    expect(c).toContain(":aria-label=\"`Pareja de «${itemText(leftItem)}»: ${pairs[leftItem.id] ? textoDe(pairs[leftItem.id]) : 'sin elegir'}`\"");
+    expect(c).toContain(':aria-pressed="elegida === leftItem.id"');
+    expect(c).toContain('<span class="linea-emparejar" :style="{ background: pairs[leftItem.id] ? colorDe(leftItem.id) : \'transparent\' }" aria-hidden="true" />');
   });
 
   it('en «Mi progreso» los títulos no saltan de h1 a h3', () => {

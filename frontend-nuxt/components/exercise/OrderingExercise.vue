@@ -5,37 +5,32 @@
       <p class="text-xs leading-relaxed whitespace-pre-wrap">{{ question.question }}</p>
     </div>
 
-    <!-- Instrucciones -->
-    <div class="text-[11px] text-slate-600 bg-base-bg-secundario px-3 py-2 rounded border border-base-borde-sutil">
-      Organiza los siguientes bloques en el orden secuencial correcto con las flechas de subir y bajar:
-    </div>
+    <p class="m-0 text-[15px] text-base-texto-primario">Arrastra los pasos para ponerlos en orden, o usa las flechas.</p>
 
-    <!-- Lista de bloques reordenables -->
-    <div class="space-y-2">
-      <div
+    <!-- v3 (cuadro «E-Tipo-Ordenar»): se arrastran con el ratón; las flechas siguen para el teclado y el celular. -->
+    <ol class="m-0 p-0 list-none space-y-2">
+      <li
         v-for="(block, index) in orderedBlocks"
         :key="block.id"
-        class="flex items-center justify-between p-3 rounded-lg border border-base-borde-sutil bg-base-blanco transition-all shadow-xs hover:border-acento-ambar/50"
+        draggable="true"
+        class="fila-ordenar flex items-center gap-2.5 min-h-[48px] pl-3 pr-1 py-1 rounded-xl"
+        :class="{ arrastrando: arrastrado === index, destino: sobre === index && arrastrado !== index }"
+        @dragstart="arrastrado = index"
+        @dragover.prevent="sobre = index"
+        @dragleave="sobre = sobre === index ? null : sobre"
+        @drop.prevent="soltar(index)"
+        @dragend="arrastrado = null; sobre = null"
       >
-        <div class="flex items-center gap-3 flex-1">
-          <!-- Indicador de posición -->
-          <span class="w-6 h-6 rounded-full bg-acento-ambar/10 text-acento-ambar-fuerte font-mono text-xs font-bold flex items-center justify-center flex-shrink-0 border border-acento-ambar/30">
-            {{ index + 1 }}
-          </span>
-
-          <!-- Contenido del bloque -->
-          <span class="text-xs text-base-texto-primario font-mono bg-base-bg-secundario px-2.5 py-1.5 rounded border border-base-borde-sutil flex-1">
-            {{ block.content }}
-          </span>
-        </div>
-
-        <!-- Botones para subir / bajar -->
-        <div class="flex items-center gap-1 ml-3">
+        <GripVertical :size="16" class="shrink-0 text-base-texto-secundario cursor-grab" aria-hidden="true" />
+        <span class="w-7 h-7 rounded-full bg-base-bg-secundario text-xs font-bold flex items-center justify-center flex-shrink-0" aria-hidden="true">{{ index + 1 }}</span>
+        <span class="font-codigo text-sm text-base-texto-primario flex-1 min-w-0 break-words">{{ block.content }}</span>
+        <span class="flex items-center gap-1">
           <button
             type="button"
             @click="moveUp(index)"
             :disabled="index === 0"
-            class="p-1.5 rounded text-xs border border-base-borde-sutil hover:bg-base-bg-secundario disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-base-texto-primario"
+            class="w-11 h-11 md:w-9 md:h-9 rounded-lg inline-flex items-center justify-center text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-borde-sutil disabled:opacity-0 disabled:cursor-not-allowed transition-colors"
+            :aria-label="`Subir «${block.content}»`"
             title="Mover arriba"
           >
             <ArrowUp :size="16" aria-hidden="true" />
@@ -44,29 +39,21 @@
             type="button"
             @click="moveDown(index)"
             :disabled="index === orderedBlocks.length - 1"
-            class="p-1.5 rounded text-xs border border-base-borde-sutil hover:bg-base-bg-secundario disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-base-texto-primario"
+            class="w-11 h-11 md:w-9 md:h-9 rounded-lg inline-flex items-center justify-center text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-borde-sutil disabled:opacity-0 disabled:cursor-not-allowed transition-colors"
+            :aria-label="`Bajar «${block.content}»`"
             title="Mover abajo"
           >
             <ArrowDown :size="16" aria-hidden="true" />
           </button>
-        </div>
-      </div>
-    </div>
+        </span>
+      </li>
+    </ol>
 
-    <!-- Estado -->
-    <div class="text-[11px] text-base-texto-secundario flex items-center justify-between pt-1">
-      <span class="text-semantico-pasa">
-        {{ orderedBlocks.length }} bloques ordenados. Puedes ajustar el orden o entregar.
-      </span>
-      <span>
-        Cuando estés seguro, pulsa <strong>Entregar respuesta</strong>.
-      </span>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ArrowDown, ArrowUp } from 'lucide-vue-next'
+import { ArrowDown, ArrowUp, GripVertical } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 
 interface BlockItem {
@@ -111,6 +98,21 @@ function moveDown(index: number) {
   syncPendingAnswer()
 }
 
+/** Arrastrar y soltar: el bloque arrastrado pasa al lugar donde se suelta. */
+const arrastrado = ref<number | null>(null)
+const sobre = ref<number | null>(null)
+function soltar(destino: number) {
+  const origen = arrastrado.value
+  arrastrado.value = null
+  sobre.value = null
+  if (origen === null || origen === destino) return
+  const lista = [...orderedBlocks.value]
+  const [movido] = lista.splice(origen, 1)
+  lista.splice(destino, 0, movido)
+  orderedBlocks.value = lista
+  syncPendingAnswer()
+}
+
 function syncPendingAnswer() {
   if (orderedBlocks.value.length > 0) {
     workspaceStore.pendingAnswer = {
@@ -125,3 +127,9 @@ onMounted(() => {
   syncPendingAnswer()
 })
 </script>
+
+<style scoped>
+.fila-ordenar { border: 1px solid rgb(var(--c-base-borde-fuerte)); background: rgb(var(--c-base-blanco)); transition: border-color 0.15s ease, opacity 0.15s ease; }
+.fila-ordenar.arrastrando { opacity: 0.5; }
+.fila-ordenar.destino { border: 2px dashed rgb(var(--c-base-texto-primario)); }
+</style>

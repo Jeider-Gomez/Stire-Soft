@@ -2,14 +2,14 @@
   <div class="md:h-full flex flex-col md:flex-row md:overflow-hidden bg-base-bg-primario">
     <ExerciseFranjaPanelPlegado v-if="(isCodingActivity || isHtmlCssActivity) && panelPlegado" controla="panel-enunciado" @mostrar="plegarPanel(false)" />
     <!-- COLUMNA IZQUIERDA: Enunciado, Casos de Prueba (solo coding) y Consola. Los demás tipos usan una sola columna. -->
-    <div v-if="isCodingActivity || isHtmlCssActivity" v-show="!panelPlegado" id="panel-enunciado" class="w-full md:w-[45%] lg:w-[40%] flex flex-col border-r border-base-borde-sutil bg-base-blanco md:h-full max-h-[55vh] md:max-h-none overflow-hidden">
+    <div v-if="isCodingActivity || isHtmlCssActivity" v-show="!panelPlegado" id="panel-enunciado" :style="{ '--ancho-izq': `${anchoIzq}%` }" class="w-full md:w-[var(--ancho-izq)] flex flex-col border-r border-base-borde-sutil bg-base-blanco md:h-full max-h-[55vh] md:max-h-none overflow-hidden">
       <!-- Pestañas de Navegación del Panel Izquierdo -->
-      <div class="flex items-center border-b border-base-borde-sutil bg-base-bg-secundario text-xs font-semibold px-2 pt-2 gap-1 flex-shrink-0">
+      <div class="flex items-center border-b border-base-borde-sutil bg-base-bg-secundario text-xs font-semibold px-2 pt-2 gap-1 flex-shrink-0 overflow-x-auto whitespace-nowrap [scrollbar-width:none]">
         <button
           @click="leftTab = 'enunciado'"
           class="min-h-[44px] px-3 py-2 rounded-t-md transition-colors"
           :class="leftTab === 'enunciado' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'">
-          <span class="inline-flex items-center gap-1.5"><BookOpen :size="14" aria-hidden="true" /> Enunciado</span>
+          <span class="inline-flex items-center gap-1.5"><BookOpen :size="14" aria-hidden="true" /> Lo que pide el profe</span>
         </button>
 
         <!-- Pestaña Casos de Prueba: Solo visible para coding -->
@@ -18,7 +18,7 @@
           @click="leftTab = 'casos'" :title="definicion('Casos de prueba')"
           class="px-3 py-2 rounded-t-md transition-colors flex items-center gap-1.5 min-h-[44px]"
           :class="leftTab === 'casos' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'">
-          <span class="inline-flex items-center gap-1.5"><FlaskConical :size="14" aria-hidden="true" /> Casos de prueba</span>
+          <span class="inline-flex items-center gap-1.5"><FlaskConical :size="14" aria-hidden="true" /> Prueba de casos</span>
           <span
             v-if="passedCount > 0"
             class="px-1.5 py-0.2 rounded-full text-[10px]"
@@ -27,6 +27,9 @@
           </span>
         </button>
 
+        <button v-if="isHtmlCssActivity && reglasIzquierda" type="button" class="min-h-[44px] px-3 py-2 rounded-t-md transition-colors" :class="leftTab === 'reglas' ? 'bg-base-blanco text-base-texto-primario border-t-2 border-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'" @click="leftTab = 'reglas'">
+          <span class="inline-flex items-center gap-1.5"><ClipboardList :size="14" aria-hidden="true" /> Reglas</span>
+        </button>
         <button
           @click="leftTab = 'consola'"
           class="min-h-[44px] px-3 py-2 rounded-t-md transition-colors"
@@ -44,10 +47,10 @@
         <!-- 1. Pestaña Enunciado -->
         <div v-if="leftTab === 'enunciado'" class="space-y-4">
           <!-- 31/10 (Jeider): lo que hay que hacer va primero; el aviso, después. -->
-          <div class="prose prose-xs" v-html="formatMarkdown(workspaceStore.currentExercise.description)"></div>
+          <ExerciseMisionEjercicio :enunciado="workspaceStore.currentExercise.description" :tipo="isCodingActivity ? 'Programar · JavaScript' : 'Página web · HTML y CSS'" :nivel="workspaceStore.currentExercise.difficulty" :ejemplo="isCodingActivity ? workspaceStore.publicTestCases[0] : null" />
           <ExerciseSinIntentos v-if="avisoEjercicio" :motivo="avisoEjercicio" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
-          <ExerciseConceptosEjercicio v-if="isCodingActivity" :enunciado="workspaceStore.currentExercise.description" :plantilla="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :unidad="workspaceStore.currentExercise.unitTitle" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" />
           <ExercisePasosCodigo v-if="isCodingActivity" :codigo="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" @por-pasos="resolverPorPasos" />
+          <ExerciseConceptosEjercicio v-if="isCodingActivity" :enunciado="workspaceStore.currentExercise.description" :plantilla="workspaceStore.currentExercise.initialCode" :ejemplo="workspaceStore.publicTestCases[0]" :unidad="workspaceStore.currentExercise.unitTitle" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" :ya-aprobado="workspaceStore.currentExercise.yaAprobada" />
 
           <ExerciseComoSeCalifica :codigo="isCodingActivity" :html-css="isHtmlCssActivity" />
         </div>
@@ -61,7 +64,7 @@
             </span>
           </div>
           <!-- Ítem 4 de la evaluación heurística: en el celular no hay «title», así que la explicación va a la vista. -->
-          <p class="text-[11px] text-base-texto-secundario">{{ definicion('Casos de prueba') }}</p>
+          <p class="text-[13px] text-base-texto-secundario">{{ definicion('Casos de prueba') }}</p>
 
           <ExerciseResumenCasos :casos="workspaceStore.publicTestCases" :ejecutando="workspaceStore.isRunning" />
           <div class="space-y-3">
@@ -105,29 +108,13 @@
           </div>
         </div>
 
-        <!-- 3. Pestaña Consola / Registro de Ejecución -->
-        <div v-else class="space-y-2">
-          <div class="flex items-center justify-between pb-1 border-b border-base-borde-sutil">
-            <span class="font-bold text-xs">Historial de calificación</span>
-            <button
-              @click="workspaceStore.consoleLog = ['Historial limpiado.']"
-              class="text-[11px] text-base-texto-secundario hover:text-base-texto-primario underline">
-              Limpiar
-            </button>
-          </div>
-
-          <div class="bg-editor-bg text-editor-text p-3 rounded-lg font-codigo text-xs space-y-1 min-h-[220px] max-h-[350px] overflow-y-auto">
-            <div v-for="(log, idx) in workspaceStore.consoleLog" :key="idx" class="leading-relaxed">
-              <span v-if="log.startsWith('✔')" class="text-[#5eead4]">{{ log }}</span>
-              <span v-else-if="log.startsWith('✖') || log.startsWith('⚠') || log.startsWith('⛔')" class="text-[#f87171]">{{ log }}</span>
-              <span v-else-if="log.startsWith('🎯')" class="text-[#fcd34d] font-bold">{{ log }}</span>
-              <span v-else class="text-[#7dd3fc]">{{ log }}</span>
-            </div>
-          </div>
-        </div>
+        <!-- 3. «Reglas a la izquierda» (página web, mesa de trabajo 14/11) y 4. Registro de calificación. -->
+        <ExerciseReglasHtmlCss v-else-if="leftTab === 'reglas' && isHtmlCssActivity && reglasIzquierda" class="-m-5 h-[calc(100%+2.5rem)]" />
+        <ExerciseRegistroCalificacion v-else />
       </div>
     </div>
 
+    <ExerciseDivisor v-if="isCodingActivity || isHtmlCssActivity" v-show="!panelPlegado" class="hidden md:flex" :model-value="anchoIzq" :min="MEDIDAS.izquierda.min" :max="MEDIDAS.izquierda.max" :inicial="MEDIDAS.izquierda.inicial" etiqueta="Ancho del enunciado" lado="izquierda" @update:model-value="fijarAnchoIzq" />
     <!-- COLUMNA DERECHA: Renderizado Reactivo según questionType -->
 
     <!-- CASO A: Coding — CodeEditor (CodeMirror 6) -->
@@ -186,16 +173,16 @@
     </div>
 
     <!-- CASO C: opción múltiple, completar código, clasificar, ordenar y emparejar — una sola columna centrada -->
-    <div v-else class="flex-1 md:h-full overflow-y-auto bg-base-bg-primario">
+    <div v-else class="fondo-tipo flex-1 md:h-full overflow-y-auto">
       <div class="max-w-2xl mx-auto px-4 py-8 space-y-4">
-        <p v-if="typeInfo" class="text-[11px] font-semibold text-acento-ambar-fuerte flex items-center gap-1.5">
+        <p v-if="typeInfo" class="text-xs font-bold texto-sol flex items-center gap-1.5">
           <DocenteExerciseTypeIcon :type="typeInfo.id" :size="14" /> {{ typeInfo.name }}
         </p>
 
-        <section class="bg-base-blanco rounded-2xl border border-base-borde-sutil shadow-sm p-6 space-y-5">
+        <section class="bg-base-blanco rounded-[22px] border border-base-borde-sutil shadow-sm p-5 sm:p-7 space-y-5">
           <div
             v-if="workspaceStore.currentExercise.description"
-            class="prose prose-sm max-w-none text-base-texto-primario"
+            class="prose max-w-none text-base-texto-primario text-[17px]"
             v-html="statementHtml"></div>
 
           <template v-if="workspaceStore.currentQuestion">
@@ -230,19 +217,23 @@
 
         <ExerciseSinIntentos v-if="avisoEjercicio" :motivo="avisoEjercicio" :activity-id="workspaceStore.currentExercise.activityId" :learning-unit-id="workspaceStore.currentExercise.learningUnitId" />
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <p class="text-[11px] text-base-texto-secundario">
+          <p class="text-[13px] text-base-texto-secundario">
             <span v-if="typeInfo">{{ typeInfo.grading }} · </span>
             <template v-if="remainingAttempts > 0">Te {{ remainingAttempts === 1 ? 'queda 1 intento' : `quedan ${remainingAttempts} intentos` }}.</template>
             <template v-else>Ya usaste todos tus intentos.</template>
           </p>
+          <!-- v3 (cuadros E-Tipo-*): la pista al lado de entregar, para pedirla antes de gastar un intento. -->
+          <span class="flex items-center gap-3 self-end sm:self-auto">
+          <button type="button" class="min-h-[44px] inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold underline underline-offset-2 hover:text-stire-purple" @click="pedirAyudaAlTutor"><TutorMascota expresion="contento" :tamano="22" aria-hidden="true" />Pedir una pista</button>
           <button
             type="button"
             @click="workspaceStore.submitSolution()"
             :disabled="!canSubmitAnswer"
-            class="px-5 py-2.5 rounded-lg bg-acento-ambar-fuerte text-base-blanco text-sm font-bold hover:bg-acento-ambar inline-flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
+            class="boton-practicar inline-flex justify-center min-h-[44px] disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte">
             <Send :size="16" aria-hidden="true" />
             {{ workspaceStore.isSubmitting ? 'Calificando…' : 'Entregar respuesta' }}
           </button>
+          </span>
         </div>
       </div>
     </div>
@@ -252,16 +243,21 @@
   </div>
 </template>
 
+<style scoped>
+/* El fondo suave de los ejercicios de una columna (cuadros E-Tipo-*). */
+.fondo-tipo { background: radial-gradient(circle at 15% 10%, rgb(var(--c-sec-rosa-fondo) / 0.55), transparent 40%), radial-gradient(circle at 85% 15%, rgb(var(--c-sec-cielo-fondo) / 0.8), transparent 45%), rgb(var(--c-base-bg-primario)); }
+</style>
+
 <script setup lang="ts">
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
 import { tituloConNombre } from '~/utils/tituloPagina'; import { definicion } from '~/utils/glosario'
-import { BookOpen, FlaskConical, Lock, PanelLeftClose, Send, Sparkles, Terminal } from 'lucide-vue-next'
+import { BookOpen, ClipboardList, FlaskConical, Lock, PanelLeftClose, Send, Sparkles, Terminal } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useTutorStore } from '~/stores/tutor'
 import { ayudaSegunFallos, debeOfrecerTutor, pistaSegunTipo, TEXTO_AYUDA, type Ayuda } from '~/utils/ofertaTutor'
 import { formatMarkdown } from '~/utils/formatMarkdown'
 import { exerciseTypeInfo } from '~/utils/exerciseTypes'
-import { plegadosDe, type IdVista } from '~/utils/vistaEjercicio'
+import { plegadosDe, type IdVista } from '~/utils/vistaEjercicio'; import { MEDIDAS } from '~/utils/mesaEjercicio'
 
 definePageMeta({
   layout: 'workspace'
@@ -271,11 +267,15 @@ const route = useRoute()
 const workspaceStore = useWorkspaceStore()
 // El nombre del ejercicio en la pestaña y para el lector de pantalla (WCAG 2.4.2).
 useHead({ title: computed(() => tituloConNombre(workspaceStore.currentExercise?.title, route.path)) })
-const leftTab = ref<'enunciado' | 'casos' | 'consola'>('enunciado')
+const leftTab = ref<'enunciado' | 'casos' | 'reglas' | 'consola'>('enunciado')
 const { plegado: panelPlegado, plegar: plegarPanel } = usePanelPlegable('stire.ejercicio.panelPlegado')
 // 31/10 (Jeider): la salida también se pliega, y tres vistas acomodan enunciado y salida de una vez (utils/vistaEjercicio.ts).
 const { plegado: salidaPlegada, plegar: plegarSalida } = usePanelPlegable('stire.ejercicio.salidaPlegada')
 function elegirVista(id: IdVista) { const v = plegadosDe(id); plegarPanel(v.panelPlegado); plegarSalida(v.salidaPlegada) }
+// 14/11 (mesa de trabajo, utils/mesaEjercicio.ts): el ancho del panel izquierdo se arrastra, y en la página web las reglas pueden ir aquí.
+const { valor: anchoIzq, fijar: fijarAnchoIzq } = useMedidaRecordada(MEDIDAS.izquierda.clave, MEDIDAS.izquierda.inicial, MEDIDAS.izquierda.min, MEDIDAS.izquierda.max)
+const { plegado: reglasIzquierda } = usePanelPlegable('stire.ejercicio.reglasIzquierda')
+watch(reglasIzquierda, (aqui) => { if (aqui) leftTab.value = 'reglas'; else if (leftTab.value === 'reglas') leftTab.value = 'enunciado' })
 const tutorStore = useTutorStore()
 
 // Oferta del Tutor al fallar: vuelve a aparecer en cada nueva prueba, salvo que el Tutor ya esté abierto.

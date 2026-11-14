@@ -48,7 +48,7 @@
             type="button"
             class="min-h-[32px] px-2 -ml-2 rounded-md font-semibold text-[#7dd3fc] hover:bg-white/10 underline underline-offset-2"
             @click="$emit('ver-casos')">
-            Ver la comparación en «Casos de prueba»
+            Ver la comparación en «Prueba de casos»
           </button>
         </template>
       </div>

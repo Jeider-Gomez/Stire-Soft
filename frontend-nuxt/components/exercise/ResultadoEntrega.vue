@@ -3,15 +3,15 @@
      ejercicio que elige el recomendador, intentar de nuevo si quedan intentos, o la lección. utils/resultadoEntrega.ts. -->
 <template>
   <div class="fixed inset-0 bg-base-texto-primario/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div ref="ventana" role="dialog" aria-modal="true" aria-labelledby="resultado-titulo" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 max-w-md w-full shadow-2xl space-y-3 text-center max-h-[90dvh] overflow-y-auto overscroll-contain">
+    <div ref="ventana" role="dialog" aria-modal="true" aria-labelledby="resultado-titulo" class="bg-base-blanco rounded-[24px] border border-base-borde-sutil p-5 sm:p-6 max-w-md w-full shadow-2xl space-y-3 text-center max-h-[90dvh] overflow-y-auto overscroll-contain">
       <!-- MOD-03 (Jeider 17/10: «estamos saturando al estudiante»): arriba solo lo que importa en una mirada — cómo le
            fue, el puntaje y cuánto se movió el dominio —, luego lo que enseña (la retroalimentación) y el siguiente paso.
            Lo demás (casos, cuándo vuelve a los repasos, la meta del módulo) queda en «Más detalles», como Duolingo o Khan. -->
       <div class="flex items-center gap-3 text-left">
         <!-- El Tutor da la retroalimentación (26/10): celebra al aprobar y anima al fallar, nunca regaña. -->
-        <TutorMascota :expresion="exito ? 'acierto' : 'animo'" :tamano="44" aria-hidden="true" />
+        <TutorMascota :expresion="exito ? 'acierto' : 'animo'" :tamano="exito ? 64 : 48" aria-hidden="true" />
         <div class="min-w-0">
-          <h3 id="resultado-titulo" class="text-base font-bold text-base-texto-primario">{{ paso.titulo }}</h3>
+          <h3 id="resultado-titulo" class="font-poppins text-xl font-bold text-base-texto-primario leading-tight">{{ paso.titulo }}</h3>
           <p class="text-sm">
             <span class="font-bold" :class="exito ? 'text-semantico-pasa' : 'text-semantico-falla'">{{ r.totalScore ?? 0 }} / {{ maxScore }} pts</span>
             <span v-if="cambio" class="text-base-texto-secundario"> · {{ dominioCorto(ws.masteryBefore, ws.masteryAfter) }}</span>
@@ -58,10 +58,11 @@
       </button>
 
       <div class="flex flex-col-reverse sm:flex-row items-stretch gap-2">
-        <button type="button" class="flex-1 min-h-[44px] py-2 rounded-md borde-afordancia text-xs font-semibold bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario" @click="hacer(paso.secundaria)">
+        <button type="button" class="flex-1 min-h-[44px] py-2 rounded-xl borde-afordancia text-sm font-semibold bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario" @click="hacer(paso.secundaria)">
           {{ paso.secundaria.texto }}
         </button>
-        <button type="button" data-foco-inicial class="flex-1 min-h-[44px] py-2 rounded-md bg-acento-ambar-fuerte hover:bg-acento-ambar text-base-blanco text-xs font-bold inline-flex items-center justify-center gap-1.5" @click="hacer(paso.primaria)">
+        <!-- v3 (cuadro «E-Logrado»): el siguiente paso en tinta, como el botón principal de la app. -->
+        <button type="button" data-foco-inicial class="boton-tinta flex-1 inline-flex text-sm" @click="hacer(paso.primaria)">
           {{ paso.primaria.texto }} <ArrowRight :size="14" aria-hidden="true" />
         </button>
       </div>

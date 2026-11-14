@@ -33,6 +33,8 @@ export function useProbarConMisDatos() {
       const res = await api.post<{ custom?: ResultadoPropio }>(`/submissions/${id}/run`, { code: ws.code, input: entrada.value })
       resultado.value = res?.custom ?? null
       if (!resultado.value) fallo.value = 'No llegó el resultado. Intenta de nuevo.'
+      // El paso «Ejecuta» del camino del ejercicio (components/exercise/CaminoEjercicio.vue) queda hecho en este ejercicio.
+      else useState<number | null>('ejecuto-con-mis-datos', () => null).value = ws.currentExercise.activityId
     } catch (err) {
       const { status } = useApiErrorMessage().extract(err)
       fallo.value = status === 429

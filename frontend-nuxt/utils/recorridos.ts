@@ -76,7 +76,7 @@ export const RECORRIDOS: Recorrido[] = [
     pantalla: 'el ejercicio',
     manual: 'resolver-un-ejercicio',
     pasos: [
-      { elemento: '#panel-enunciado', titulo: 'El enunciado', texto: 'Qué hay que hacer, qué recibe tu programa y qué debe mostrar. En «Casos de prueba» ves ejemplos de entrada y salida.' },
+      { elemento: '#panel-enunciado', titulo: 'El enunciado', texto: 'Qué hay que hacer, qué recibe tu programa y qué debe mostrar. En «Prueba de casos» ves ejemplos de entrada y salida.' },
       { elemento: '[data-recorrido="probar"]', titulo: 'Probar', texto: 'Revisa tu código con los ejemplos sin gastar intentos. Hazlo tú: tócalo ahora y mira qué pasa.', hazloTu: true },
       { elemento: '[data-recorrido="entregar"]', titulo: 'Entregar', texto: 'Cuando estés listo, entrégalo: se califica y cuenta como un intento.' },
       { ...tutor, titulo: 'Si te atascas', texto: 'El Tutor te da una pista y, si sigues atascado, te acompaña paso a paso. Hazlo tú: ábrelo y pregúntale.', hazloTu: true },

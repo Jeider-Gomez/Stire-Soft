@@ -95,7 +95,7 @@
           @click="workspaceStore.submitSolution()"
           data-recorrido="entregar"
           :disabled="!canSubmit"
-          class="flex-1 md:flex-none justify-center min-h-[48px] md:min-h-[44px] px-4 rounded-md text-sm md:text-xs font-bold text-base-blanco bg-acento-ambar-fuerte hover:bg-acento-ambar transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          class="boton-entregar flex-1 md:flex-none justify-center min-h-[48px] md:min-h-[44px] px-4 rounded-xl text-sm md:text-[13px] font-bold transition-[filter] flex items-center gap-1.5 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
           :title="canSubmit ? 'Envía tu solución formalmente para calificación' : 'Completa la respuesta antes de entregar'">
           <Loader2 v-if="workspaceStore.isSubmitting" :size="14" class="animate-spin" aria-hidden="true" />
           <Send v-else :size="14" aria-hidden="true" />
@@ -103,6 +103,9 @@
         </button>
       </div>
     </header>
+
+    <!-- v3 (Fase D, paso 3): el camino del ejercicio de programar, bajo la cabecera, como el cuadro «E-Ejercicio» v9. -->
+    <ExerciseCaminoEjercicio v-if="isCodingActivity || isHtmlCssActivity" :tipo="isHtmlCssActivity ? 'web' : 'codigo'" />
 
     <!-- P60: si la entrega falla, se dice aquí con qué hacer (antes solo quedaba en la pestaña «Registro»). -->
     <div
@@ -212,4 +215,8 @@ const canSubmit = computed(() => {
 <style scoped>
 .barra-acciones { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)); }
 @media (min-width: 768px) { .barra-acciones { padding-bottom: 0; } }
+/* «Entregar» en tinta, como el botón principal de la v3 (cuadro «E-Ejercicio»); en oscuro se invierte. */
+.boton-entregar { background: linear-gradient(135deg, #14213d, #25407a); color: #fff; }
+.boton-entregar:not(:disabled):hover { filter: brightness(1.12); }
+:root[data-tema='oscuro'] .boton-entregar { background: #e8f6ff; color: #14213d; }
 </style>

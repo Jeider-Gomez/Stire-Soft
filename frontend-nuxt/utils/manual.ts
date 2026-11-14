@@ -143,7 +143,7 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo resuelvo un ejercicio de programación?',
         paraQue: 'Para practicar y subir tu dominio de la lección.',
         pasos: [
-          'Lee el «Enunciado»: qué recibe tu programa y qué debe mostrar. En «Casos de prueba» ves ejemplos de entrada y salida.',
+          'Lee «Lo que pide el profe»: qué recibe tu programa y qué debe mostrar. En «Prueba de casos» ves ejemplos de entrada y salida.',
           'Escribe tu solución en el editor.',
           'Toca «Probar código». Compara tu código con los ejemplos y no gasta intentos: pruébalo las veces que quieras.',
           'Cuando pasen los ejemplos, toca «Entregar solución».',

@@ -181,7 +181,7 @@ describe('«Lo que vas a usar»: los conceptos que pide el ejercicio, con un eje
 
   it('la pantalla la muestra en programar, con el enlace a la lección', () => {
     const vue = leer('components', 'exercise', 'ConceptosEjercicio.vue');
-    expect(vue).toContain('Lo que vas a usar');
+    expect(vue).toContain('Lo que necesitas saber'); // v3 (13/11): antes «Lo que vas a usar»
     expect(vue).toContain('Repasar la lección');
     expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('<ExerciseConceptosEjercicio v-if="isCodingActivity"');
   });

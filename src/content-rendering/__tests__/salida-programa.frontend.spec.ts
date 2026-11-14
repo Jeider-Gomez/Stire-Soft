@@ -79,7 +79,8 @@ describe('La pantalla del ejercicio de programar', () => {
   });
 
   it('en el panel del enunciado, el enunciado va antes que el aviso de «ya completaste» o «sin intentos»', () => {
-    const enunciado = pagina.indexOf('<div class="prose prose-xs" v-html="formatMarkdown(workspaceStore.currentExercise.description)">');
+    // v3 (13/11): el enunciado va en «Tu misión» (MisionEjercicio.vue).
+    const enunciado = pagina.indexOf('<ExerciseMisionEjercicio :enunciado="workspaceStore.currentExercise.description"');
     const aviso = pagina.indexOf('<ExerciseSinIntentos v-if="avisoEjercicio"');
     expect(enunciado).toBeGreaterThan(-1);
     expect(aviso).toBeGreaterThan(enunciado);
