@@ -49,7 +49,8 @@
             </div>
             <div>
               <h3 class="font-bold text-base font-poppins tracking-tight">Tu Tutor</h3>
-              <p v-if="!compacto" class="text-xs text-base-texto-secundario">Te guía con preguntas y pistas; no te da la solución</p>
+              <!-- v3 (cuadro «E-Tutor», P-11): debajo del nombre, dónde está («Estás en: lección · %»); sin lección, lo que hace. -->
+              <p v-if="!compacto" class="text-xs text-base-texto-secundario max-w-[260px] truncate">{{ activeContextLabel || 'Te guía con preguntas y pistas; no te da la solución' }}</p>
             </div>
           </div>
 
@@ -70,11 +71,13 @@
               id="cerrar-tutor"
               ref="closeButtonRef"
               @click="tutorStore.closeDrawer()"
-              class="w-10 h-10 flex items-center justify-center rounded-lg text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-primario focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acento-ambar-fuerte transition-colors"
-              aria-label="Cerrar Tutor"
-              title="Cerrar (Esc)"
+              class="h-10 flex items-center justify-center rounded-lg text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-primario focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acento-ambar-fuerte transition-colors"
+              :aria-label="pantallaAncha ? 'Plegar el Tutor' : 'Cerrar Tutor'"
+              title="Esc"
+              :class="pantallaAncha ? 'px-3 gap-1.5 text-sm font-semibold' : 'w-10'"
             >
-              <X :size="20" aria-hidden="true" />
+              <template v-if="pantallaAncha">Plegar <ChevronRight :size="16" aria-hidden="true" /></template>
+              <X v-else :size="20" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -110,10 +113,11 @@
         </p>
 
         <!-- Indicador de Contexto Activo de Aprendizaje -->
-        <div v-if="activeContextLabel && !compacto" class="px-4 py-2 bg-stire-canvas border-b border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
+        <div v-if="tutorStore.tutorEnabled && tutorStore.contentLink && !compacto" class="px-4 py-2 bg-stire-canvas border-b border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
+          <!-- El «Estás en…» ya va en la cabecera; aquí queda el atajo a la explicación de lo que se está resolviendo. -->
           <div class="flex items-center gap-1.5 truncate">
             <BookOpen :size="14" class="text-teal-700 shrink-0" aria-hidden="true" />
-            <span class="truncate font-medium font-poppins text-stire-blue">{{ activeContextLabel }}</span>
+            <span class="truncate font-medium">La explicación: {{ tutorStore.contentLink.title }}</span>
           </div>
           <div class="flex items-center gap-2 flex-shrink-0">
             <!-- Botón Ir al contenido de la unidad (§22 T1 — visible con clave y sin clave) -->
