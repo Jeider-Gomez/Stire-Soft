@@ -39,7 +39,7 @@
              otra pestaña los enlaces externos. -->
         <iframe :key="vuelta" :srcdoc="vistaPrevia" ref="vistaRef" :title="tituloVista"
           sandbox="allow-scripts allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox"
-          class="bg-white h-full"
+          class="bg-white h-full min-h-[16rem]"
           :class="ampliado && ancho !== 'completo' ? 'rounded-lg border border-base-borde-fuerte shadow-sm' : 'w-full'"
           :style="ampliado && ancho !== 'completo' ? { width: ancho === 'celular' ? '375px' : '768px', minHeight: '100%' } : undefined" />
       </div>

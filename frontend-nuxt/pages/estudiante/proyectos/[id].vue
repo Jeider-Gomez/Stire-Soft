@@ -6,6 +6,7 @@
     <MensajeError v-else-if="error && !proyecto" class="text-xs">{{ error }}</MensajeError>
 
     <template v-else-if="proyecto">
+      <ProyectosPublicarLaboratorio :proyecto-id="proyecto.id" />
       <!-- Cabecera -->
       <header class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
         <div class="flex items-center gap-3 min-w-0">
