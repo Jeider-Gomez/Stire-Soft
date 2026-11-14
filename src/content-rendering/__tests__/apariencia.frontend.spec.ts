@@ -311,14 +311,16 @@ describe('inicio del docente sin problemas de contraste (axe, medición de parti
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   };
   const contraste = (a: number[], b: number[]) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
-  it('la sigla de cada tarjeta va sobre su color oscurecido (bg-black/25) y el texto blanco pasa 4,5 con todos los colores de clase', () => {
+  it('la tarjeta v3 (D3-Inicio) pone la sigla en tinta sobre blanco; el color de la clase solo tiñe la cabecera', () => {
     const tarjeta = leer('components', 'docente', 'inicio', 'TarjetaClase.vue');
-    expect(tarjeta).toContain('rounded-md bg-black/25 text-[10px]');
+    expect(tarjeta).toContain('.sigla-clase { flex: none; width: 44px; height: 44px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; background: rgb(var(--c-base-blanco)); color: rgb(var(--c-base-texto-primario)); }');
+    expect(tarjeta).toContain('color-mix(in srgb, var(--tono) 16%, rgb(var(--c-base-blanco)))');
     const colores = [...leer('utils', 'pestanasClase.ts').match(/COLORES_CLASE = \[([^\]]+)\]/)![1].matchAll(/#([0-9A-Fa-f]{6})/g)].map((m) => m[1]);
     expect(colores.length).toBeGreaterThan(3);
     for (const hex of colores) {
-      const fondo = [0, 2, 4].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * 0.75));
-      expect({ hex, ok: contraste([255, 255, 255], fondo) >= 4.5 }).toEqual({ hex, ok: true });
+      // La cabecera: 16 % del color de la clase sobre blanco; el nombre va en tinta (#14213d) y debe pasar 4,5.
+      const fondo = [0, 2, 4].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * 0.16 + 255 * 0.84));
+      expect({ hex, ok: contraste([0x14, 0x21, 0x3d], fondo) >= 4.5 }).toEqual({ hex, ok: true });
     }
   });
   it('«Mostrando N de M clases» usa el texto suave del tema, no un gris suelto', () => {

@@ -112,7 +112,7 @@ describe('Pestañas de la clase', () => {
       expect(menu).not.toContain(herramienta);
     }
     // La tarjeta de cada clase en «Mis clases» abre su «Hoy» (components/docente/inicio/TarjetaClase.vue).
-    expect(leer('components', 'docente', 'inicio', 'TarjetaClase.vue')).toContain('<span>Ver hoy en la clase</span>');
+    expect(leer('components', 'docente', 'inicio', 'TarjetaClase.vue')).toContain('Ver el resumen <ChevronRight');
   });
 
   it('la clase se elige solo en la barra lateral: sin selector repetido y las pantallas siguen el cambio', () => {

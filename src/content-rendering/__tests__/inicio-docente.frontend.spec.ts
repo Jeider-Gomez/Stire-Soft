@@ -22,6 +22,8 @@ const m = cargar<{
   resumenInicio: (c: Clase[]) => string;
   porRevisar: (c: Clase[], noLeidos: number | null, maximo?: number, alertas?: Alerta[]) => Pendiente[];
   vistaGuardada: (v: string | null) => 'tarjetas' | 'lista';
+  tituloPorRevisar: (n: number) => string;
+  lineaUrgente: (p: { n: number; texto: string; clase?: string } | null) => string;
 }>('inicioDocente');
 
 const clases: Clase[] = [
@@ -86,7 +88,7 @@ describe('«Mis clases» en tarjetas o lista', () => {
   it('el recorrido guiado sigue encontrando «Por revisar» y las clases', () => {
     expect(leer('components', 'docente', 'inicio', 'PorRevisar.vue')).toContain('data-recorrido="rezago"');
     expect(leer('pages', 'docente', 'index.vue')).toContain('data-recorrido="clases"');
-    expect(leer('pages', 'docente', 'index.vue')).toContain('id="abrir-crear-clase"');
+    expect(leer('components', 'docente', 'inicio', 'Portada.vue')).toContain('id="abrir-crear-clase"');
   });
 });
 
@@ -102,10 +104,29 @@ describe('«Por revisar» trae también las alertas de cada clase (27/10)', () =
     expect(r.some((p) => p.texto.includes('Olvida inicializar'))).toBe(false);
   });
   it('el Inicio las carga de cada clase activa y «Hoy» tiene adónde llevar', () => {
-    expect(leer('pages', 'docente', 'index.vue')).toContain('porRevisar(clasesActivas, unreadMessages, 6, alertasClases)');
+    expect(leer('pages', 'docente', 'index.vue')).toContain('porRevisar(clasesActivas.value, unreadMessages.value, 6, alertasClases.value)');
     expect(leer('composables', 'useAlertasInicio.ts')).toContain('/errores-semana`).catch(() => null)');
     const hoy = leer('pages', 'docente', 'clase', '[classId]', 'index.vue');
     expect(hoy).toContain('id="bloqueados"');
     expect(hoy).toContain('<DocenteErroresSemana id="errores"');
+  });
+});
+
+describe('La portada del Inicio del docente como «D3-Inicio» (Fase E, paso 1)', () => {
+  it('cuenta lo que hay por revisar y dice lo más urgente, con cifras reales y palabras humanas', () => {
+    expect(m.tituloPorRevisar(3)).toBe('3 cosas por revisar en tus clases');
+    expect(m.tituloPorRevisar(1)).toBe('1 cosa por revisar en tus clases');
+    expect(m.tituloPorRevisar(0)).toBe('Todo al día en tus clases');
+    expect(m.lineaUrgente({ n: 2, texto: 'estudiantes necesitan apoyo', clase: 'Fundamentos · G2' })).toBe('Lo más urgente: 2 estudiantes necesitan apoyo en Fundamentos · G2.');
+    expect(m.lineaUrgente(null)).toBe('Nadie necesita ayuda por ahora y no tienes mensajes sin leer.');
+    const porRevisar = leer('components', 'docente', 'inicio', 'PorRevisar.vue');
+    expect(porRevisar).not.toMatch(/en rezago|está bloqueado/);
+  });
+  it('«Tus clases» y «Por revisar» van lado a lado; la tarjeta no inventa «próxima sesión» ni «practicaron esta semana»', () => {
+    const p = leer('pages', 'docente', 'index.vue');
+    expect(p).toContain('<DocenteInicioPortada');
+    expect(p).toContain('xl:grid-cols-[minmax(0,1fr)_380px]');
+    const t = leer('components', 'docente', 'inicio', 'TarjetaClase.vue').replace(/<!--[\s\S]*?-->/g, '');
+    expect(t).not.toMatch(/próxima sesión|practicaron/i);
   });
 });

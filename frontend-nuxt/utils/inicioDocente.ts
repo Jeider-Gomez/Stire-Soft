@@ -95,6 +95,18 @@ export function porRevisar(clases: ReadonlyArray<ClaseResumen>, noLeidos: number
   return items.sort((a, b) => peso(b) - peso(a) || b.n - a.n).slice(0, maximo)
 }
 
+/** «3 cosas por revisar en tus clases» (cuadro «D3-Inicio»); sin nada, «Todo al día». */
+export function tituloPorRevisar(n: number): string {
+  if (n === 0) return 'Todo al día en tus clases'
+  return `${n} ${n === 1 ? 'cosa' : 'cosas'} por revisar en tus clases`
+}
+
+/** «Lo más urgente: 2 estudiantes necesitan apoyo en Fundamentos · G2.» (lo primero de «Por revisar»). */
+export function lineaUrgente(p: { n: number; texto: string; clase?: string } | null): string {
+  if (!p) return 'Nadie necesita ayuda por ahora y no tienes mensajes sin leer.'
+  return `Lo más urgente: ${p.n} ${p.texto}${p.clase ? ` en ${p.clase}` : ''}.`
+}
+
 /** La vista guardada; cualquier otra cosa vuelve a tarjetas. */
 export function vistaGuardada(valor: string | null): VistaClases {
   return valor === 'lista' ? 'lista' : 'tarjetas'

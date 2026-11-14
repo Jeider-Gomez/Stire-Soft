@@ -1,26 +1,13 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-7">
 
-    <!-- Inicio como en el prototipo del panel v2: saludo con el resumen, «Por revisar» de todas las clases y «Mis clases»
-         en tarjetas o lista (utils/inicioDocente.ts). Las cuatro tarjetas de cifras pasaron al resumen y a «Por revisar». -->
-    <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-poppins font-bold text-base-texto-primario tracking-tight">{{ saludo(new Date().getHours()) }}{{ nombre ? `, ${nombre}` : '' }}</h1>
-        <p class="text-sm text-base-texto-secundario mt-1">{{ isLoading ? 'Cargando tus clases…' : resumenInicio(clasesActivas) }}</p>
-      </div>
-      <div class="flex flex-wrap gap-2 self-start sm:self-auto">
-      <NuxtLink to="/docente/biblioteca" class="btn-stire-secondary min-h-[44px]">Explorar la biblioteca</NuxtLink>
-      <button id="abrir-crear-clase" @click="openCreateModal" class="btn-stire-primary min-h-[44px]">
-        <Plus :size="15" aria-hidden="true" />
-        Crear clase
-      </button>
-      </div>
-    </header>
+    <!-- Inicio del docente (v3, Fase E, paso 1; cuadro «D3-Inicio»): la portada con la libreta y lo más urgente, y debajo
+         «Tus clases» a la izquierda y «Por revisar» al lado (utils/inicioDocente.ts). «Nueva clase» abre una sola ventana. -->
+    <DocenteInicioPortada :items="pendientes" :saludo="`${saludo(new Date().getHours())}${nombre ? `, ${nombre}` : ''}`" :cargando="isLoading" :hay-clases="classes.length > 0" @nueva-clase="openCreateModal" />
 
     <!-- Encuesta de usabilidad SUS (UX-08): solo si lleva unos días usando STIRE y no la ha respondido -->
     <InvitacionEncuesta ruta="/docente/encuesta" />
 
-    <DocenteInicioPorRevisar v-if="!isLoading && classes.length > 0" :items="porRevisar(clasesActivas, unreadMessages, 6, alertasClases)" :colores="colores" />
 
     <!-- Notificación de éxito -->
     <Transition enter-active-class="transition duration-200 ease-out"
@@ -39,6 +26,8 @@
       </div>
     </Transition>
 
+    <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px] items-start">
+    <div class="min-w-0 space-y-5">
     <!-- Cargando -->
     <div
       v-if="isLoading"
@@ -70,7 +59,8 @@
          BUSCADOR + CONTADOR
     ═══════════════════════════════════════════════════════ -->
     <div v-else class="flex flex-wrap items-center gap-3">
-      <h2 class="text-base font-poppins font-bold text-base-texto-primario mr-auto">Mis clases</h2>
+      <h2 class="m-0 text-[19px] font-poppins font-bold text-base-texto-primario mr-auto">Tus clases</h2>
+      <NuxtLink to="/docente/biblioteca" class="borde-afordancia inline-flex items-center min-h-[44px] px-3 rounded-xl text-sm font-semibold">Explorar la biblioteca</NuxtLink>
       <div class="relative flex-1 min-w-[12rem] max-w-xs">
         <input
           v-model="searchQuery"
@@ -103,7 +93,7 @@
          TARJETAS DE CLASES
     ═══════════════════════════════════════════════════════ -->
     <section v-if="!isLoading && classes.length > 0" data-recorrido="clases" class="space-y-5">
-      <div v-if="vista === 'tarjetas'" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+      <div v-if="vista === 'tarjetas'" class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
         <DocenteInicioTarjetaClase v-for="cls in filteredClasses" :key="cls.id" :cls="cls" :color="colores[cls.id]" :sigla="siglas[cls.id]"
           :copiado="copiedCode === cls.code" @copiar="copyCode" @qr="openQrModal" />
         <button type="button" class="min-h-[240px] rounded-2xl border-2 border-dashed border-base-borde-fuerte text-stire-blue font-semibold flex flex-col items-center justify-center gap-1 hover:bg-stire-blue/5 transition-colors" @click="openCreateModal">
@@ -153,6 +143,9 @@
         </details>
       </div>
     </section>
+    </div>
+    <DocenteInicioPorRevisar v-if="!isLoading && classes.length > 0" class="xl:sticky xl:top-20" :items="pendientes" :colores="colores" />
+    </div>
 
     <!-- Ventanas: crear una clase y mostrar su QR (components/docente/), sobre la base de ventanas común. -->
     <DocenteVentanaCrearClase v-if="creando" :plantilla-inicial="plantillaInicial" @cerrar="creando = false; plantillaInicial = null" @creada="alCrear" />
@@ -170,7 +163,7 @@ import { useAlertasInicio } from '~/composables/useAlertasInicio'
 import { organizarClases, programasDeLasClases } from '~/utils/organizarClases'
 import { siglasDeClases } from '~/utils/contextoAcademico'
 import { colorDeClase } from '~/utils/pestanasClase'
-import { CLAVE_VISTA_CLASES, porRevisar, primerNombre, resumenInicio, saludo, vistaGuardada, type VistaClases } from '~/utils/inicioDocente'
+import { CLAVE_VISTA_CLASES, porRevisar, primerNombre, saludo, vistaGuardada, type VistaClases } from '~/utils/inicioDocente'
 import { useAuthStore } from '~/stores/auth'
 import { Archive, BookOpen, Check, ChevronRight, Plus, RotateCcw, Search } from 'lucide-vue-next'
 import { CLAVE_CLASES_DOCENTE, useClasesDocente, type ClaseDelDocente } from '~/composables/useClasesDocente'
@@ -202,6 +195,7 @@ const clasesActivas = computed(() => classes.value.filter((c) => c.isActive !== 
 // Quién no puede avanzar y el error más repetido de cada clase, para «Por revisar» (antes solo dentro de cada clase).
 const { alertas: alertasClases, cargar: cargarAlertas } = useAlertasInicio()
 watch(() => clasesActivas.value.map((c) => c.id).join(','), () => { if (clasesActivas.value.length) void cargarAlertas(clasesActivas.value) }, { immediate: true })
+const pendientes = computed(() => porRevisar(clasesActivas.value, unreadMessages.value, 6, alertasClases.value))
 const clasesArchivadas = computed(() => classes.value.filter((c) => c.isActive === false))
 const programasDelDocente = computed(() => programasDeLasClases(clasesActivas.value))
 const organizacion = computed(() => organizarClases(clasesActivas.value, { texto: searchQuery.value, programaId: programaFiltro.value, verAnteriores: verAnteriores.value }))

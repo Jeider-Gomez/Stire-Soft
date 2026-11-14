@@ -37,7 +37,8 @@ describe('UX-07 · contraste WCAG 2.1 AA (axe-core marcó estas clases en produc
   });
 
   it('el botón «Abrir la clase» y la insignia «Estudiante» llevan un tono que cumple AA', () => {
-    expect(leer('components', 'docente', 'inicio', 'TarjetaClase.vue')).toContain('class="btn-stire-teal !bg-teal-700 hover:!bg-teal-800 min-h-[44px]');
+    // v3 (D3-Inicio, 14/11): «Ver el resumen» es un enlace en menta oscura (--c-semantico-pasa), que cumple AA en los dos temas.
+    expect(leer('components', 'docente', 'inicio', 'TarjetaClase.vue')).toContain('color: rgb(var(--c-semantico-pasa))');
     expect(leer('components', 'layout', 'HeaderNav.vue')).toContain("return 'badge-estudiante !text-teal-800'");
   });
 });
@@ -115,11 +116,10 @@ describe('MOB-02 · objetivos táctiles de 44 px (la revisión del «después» 
     ['components/docente/inicio/PorRevisar.vue', ':title="TITULO[p.tipo', 1],
     ['components/docente/inicio/TarjetaClase.vue', "@click=\"$emit('copiar', cls.code)\"", 1],
     ['components/docente/inicio/TarjetaClase.vue', "@click=\"$emit('qr', cls)\"", 1],
-    // Las otras dos (Cancelar y Cerrar del QR) están desde el 05/10 en VentanaCrearClase y VentanaQrClase; de la
-    // tarjeta de clase queda «Contenidos» (Estudiantes y Dominio pasaron a un enlace de texto, también de 44 px).
-    ['components/docente/inicio/TarjetaClase.vue', 'class="btn-stire-secondary', 1],
-    ['components/docente/inicio/TarjetaClase.vue', 'class="min-h-[44px] inline-flex items-center gap-1.5 text-xs text-slate-700', 1],
-    ['components/docente/inicio/TarjetaClase.vue', 'class="btn-stire-teal', 1],
+    // Las otras dos (Cancelar y Cerrar del QR) están desde el 05/10 en VentanaCrearClase y VentanaQrClase. La tarjeta v3
+    // (D3-Inicio, 14/11) lleva «N estudiantes» y «Ver el resumen» como enlaces de 44 px.
+    ['components/docente/inicio/TarjetaClase.vue', 'class="ver-resumen', 1],
+    ['components/docente/inicio/TarjetaClase.vue', 'class="enlace-sutil inline-flex items-center min-h-[44px]', 1],
   ];
   it.each(CONTROLES)('%s · %s mide al menos 44 px de alto', (rel, marca, cuantos) => {
     const tags = etiquetas(rel, marca);
