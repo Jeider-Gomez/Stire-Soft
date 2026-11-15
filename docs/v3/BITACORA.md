@@ -39,14 +39,12 @@ carpeta. Sirve para no pisarse: quién está tocando qué, qué se terminó y qu
 | P-4 | Cuentas de pendientes en el menú del administrador (pasado a la Fase F) | backend + `SidebarNav.vue` | F |
 | P-6 | P59: bajar los 180–250 pedidos por página (agrupar el JavaScript) y volver a medir con `scripts/v3/medir-partida.mjs` | `nuxt.config.ts` | — |
 | P-8 | El ☰ del estudiante en el celular sigue (el diseño E-Cel-Inicio no lo tiene): sale cuando «Mi clase» y «Mis proyectos» tengan su lugar (Fase D) | `HeaderNav.vue`, `BarraInferior.vue` | D |
-| P-9 | `pages/docente/refuerzos/index.vue` dice «Bloqueados» (regla de palabras humanas: «necesita ayuda») | esa página | E |
-| P-10 | La libreta del Asistente ya existe (`docente/asistente/Libreta.vue`) y va en la barra de abajo del docente; falta ponerla en la cabecera del panel, que aún usa la mascota del Tutor | `docente/asistente/Panel.vue` | E |
-| P-7 | En oscuro, el código de la clase junto al título del Resumen casi no se ve; la tarjeta del menú dice el código y el diseño, «28 estudiantes» | `pages/docente/clase/[classId]/index.vue`, `ClasesDelMenu.vue` | E |
 
 ## Hecho
 
 | Fecha | Qué | Commit |
 |---|---|---|
+| 15/11 | Fase E, pasos 9–11: **P-7** código de clase con borde visible en claro y oscuro (`PestanasClase.vue`); **P-9** ya estaba resuelto (dice «Necesitan ayuda»); **P-10** libreta del Asistente en la cabecera del panel docente en vez de la mascota del Tutor (`Panel.vue`) | pendiente commit |
 | 14/11 | Fase E, pasos 5–8: **cabecera-docente** en Ajustes de la clase (`ce84b3a`), Biblioteca (`2617964`), Mi cuenta — renombrada desde «Mi perfil» (`c8459c1`) y Mensajes — renombrado a «Avisos y mensajes» (`33bda8e`) | `ce84b3a` … `33bda8e` |
 | 14/11 | Fase E, paso 4: **Estudiantes** (D3-Estudiantes): título "Estudiantes", cabecera con total y dominio promedio, botón «Invitar»; **Ficha del estudiante** (D3-Estudiante): cabecera limpia sin badge, botones reordenados (Escribirle · Asignar refuerzo · Asignar reto); **Contenido**: título «Contenido» | `a387f5c` |
 | 14/11 | Fase E, paso 3: **Nueva clase** como «D3-Nueva-Clase»: una sola ventana que empieza por «¿Con qué contenido empieza?» (Vacía, Copiar una de mis clases o Un curso de la Biblioteca, con la línea de lo que se copia), y sigue con nombre, asignatura (opcional), grupo, periodo, descripción, código con «Generar sugerido» al lado, portada y «Requiere aprobación» como interruptor; «Crear la clase». La franja «O créala con el Asistente» espera (P-19) | `0af2c96` |
