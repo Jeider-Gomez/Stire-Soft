@@ -163,6 +163,8 @@
       </div>
     </section>
 
+    <AdminAccionesAdmin />
+
     <!-- Modal de Confirmación de Limpieza de Mantenimiento -->
     <Teleport to="body">
       <div
