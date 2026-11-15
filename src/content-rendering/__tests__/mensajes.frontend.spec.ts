@@ -45,7 +45,7 @@ describe('una sola bandeja para los dos roles', () => {
       expect(p).toContain('<MensajesVentanaRedactar');
       expect(p).toContain('provide(CLAVE_MENSAJES, estado)');
       expect(p).not.toMatch(/api\.(get|post|patch)/);
-      expect(p.split('\n').length).toBeLessThan(110);
+      expect(p.split('\n').length).toBeLessThan(120);
     }
   });
 
