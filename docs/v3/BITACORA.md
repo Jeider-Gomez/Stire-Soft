@@ -44,6 +44,7 @@ carpeta. Sirve para no pisarse: quién está tocando qué, qué se terminó y qu
 
 | Fecha | Qué | Commit |
 |---|---|---|
+| 15/11 | **Fase F, paso 1**: cabecera `cabecera-docente` en las 7 páginas del administrador (Usuarios, Sistema, Catálogo, Sugerencias, Encuesta SUS, Resumen/dashboard, Mi cuenta); se elimina el estilo de caja blanca con borde antiguo | pendiente commit |
 | 15/11 | Fase E, pasos 9–11: **P-7** código de clase con borde visible en claro y oscuro (`PestanasClase.vue`); **P-9** ya estaba resuelto (dice «Necesitan ayuda»); **P-10** libreta del Asistente en la cabecera del panel docente en vez de la mascota del Tutor (`Panel.vue`) | pendiente commit |
 | 14/11 | Fase E, pasos 5–8: **cabecera-docente** en Ajustes de la clase (`ce84b3a`), Biblioteca (`2617964`), Mi cuenta — renombrada desde «Mi perfil» (`c8459c1`) y Mensajes — renombrado a «Avisos y mensajes» (`33bda8e`) | `ce84b3a` … `33bda8e` |
 | 14/11 | Fase E, paso 4: **Estudiantes** (D3-Estudiantes): título "Estudiantes", cabecera con total y dominio promedio, botón «Invitar»; **Ficha del estudiante** (D3-Estudiante): cabecera limpia sin badge, botones reordenados (Escribirle · Asignar refuerzo · Asignar reto); **Contenido**: título «Contenido» | `a387f5c` |
