@@ -14,12 +14,23 @@
       </button>
     </header>
 
+    <!-- Aviso de solicitudes pendientes (A-Usuarios: aparece sobre la tabla, no solo en la pestaña) -->
+    <button v-if="pendientes > 0 && pestana !== 'solicitudes'" type="button"
+      class="w-full text-left flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-acento-ambar-fuerte/10 border border-acento-ambar-fuerte/30 text-sm font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar-fuerte/15 transition-colors"
+      @click="pestana = 'solicitudes'">
+      <span class="flex items-center gap-2">
+        <ClipboardList :size="16" aria-hidden="true" />
+        {{ pendientes === 1 ? '1 solicitud para ser docente espera' : `${pendientes} solicitudes para ser docente esperan` }}
+      </span>
+      <span class="text-xs font-bold flex items-center gap-1">Revisar <ArrowRight :size="14" aria-hidden="true" /></span>
+    </button>
+
     <!-- Pestañas (§23 T4) -->
-    <nav class="flex items-center gap-4 border-b border-base-borde-sutil text-xs font-semibold overflow-x-auto whitespace-nowrap" aria-label="Secciones de administración">
+    <nav class="flex items-center gap-1 border-b border-base-borde-sutil text-xs font-semibold overflow-x-auto whitespace-nowrap" aria-label="Secciones de administración">
       <button v-for="p in PESTANAS" :key="p.id" type="button" class="min-h-[44px] pb-2.5 px-3 -mb-px transition-colors flex items-center gap-1.5"
         :class="pestana === p.id ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'"
         :aria-current="pestana === p.id ? 'true' : undefined" @click="pestana = p.id">
-        <component :is="p.icono" :size="14" aria-hidden="true" /><span>{{ p.texto }}</span>
+        <span>{{ p.texto }}</span>
         <span v-if="p.id === 'usuarios'" class="px-1.5 py-0.5 rounded-full bg-base-bg-secundario text-[10px] text-slate-600 font-normal">{{ gestion.usuarios.value.length }}</span>
         <span v-else-if="p.id === 'solicitudes'" class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
           :class="pendientes > 0 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-bg-secundario text-slate-600 font-normal'">{{ pendientes }}</span>
@@ -52,7 +63,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, provide, ref } from 'vue'
-import { Check, ClipboardList, History, TriangleAlert, UserPlus, Users } from 'lucide-vue-next'
+import { ArrowRight, Check, ClipboardList, History, TriangleAlert, UserPlus, Users } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { CLAVE_GESTION_USUARIOS, useGestionUsuarios } from '~/composables/useGestionUsuarios'
 import type { Rol, SolicitudRol, UsuarioAdmin } from '~/utils/adminUsuarios'
@@ -65,9 +76,9 @@ provide(CLAVE_GESTION_USUARIOS, gestion)
 
 type Pestana = 'usuarios' | 'solicitudes' | 'roles'
 const PESTANAS: ReadonlyArray<{ id: Pestana; texto: string; icono: typeof Users }> = [
-  { id: 'usuarios', texto: 'Gestión de usuarios', icono: Users },
-  { id: 'solicitudes', texto: 'Solicitudes de docente', icono: ClipboardList },
-  { id: 'roles', texto: 'Cambios de rol', icono: History },
+  { id: 'usuarios', texto: 'Todos', icono: Users },
+  { id: 'solicitudes', texto: 'Solicitudes', icono: ClipboardList },
+  { id: 'roles', texto: 'Historial de roles', icono: History },
 ]
 const pestana = ref<Pestana>('usuarios')
 const pendientes = computed(() => gestion.solicitudes.value.filter((s) => s.status === 'pending').length)
