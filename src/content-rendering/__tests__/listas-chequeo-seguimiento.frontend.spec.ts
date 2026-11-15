@@ -86,6 +86,7 @@ describe('MOB-02 · controles de 44 px en el celular', () => {
   it('Crear clase: «Generar sugerido» ya no mide 17 px y se cierra con «Cancelar» de 44 px o con Escape', () => {
     const d = leer('components', 'docente', 'VentanaCrearClase.vue');
     expect(d).toMatch(/btn-stire-secondary min-h-\[44px\][^>]*>Cancelar/);
-    expect(d).toMatch(/min-h-\[44px\] sm:min-h-0 text-\[11px\] text-stire-blue[^>]*>\s*Generar sugerido/);
+    // v3 (D3-Nueva-Clase): «Generar sugerido» es un botón al lado del código, de 44 px en toda pantalla.
+    expect(d).toMatch(/btn-stire-secondary min-h-\[44px\] shrink-0[^>]*>Generar sugerido/);
   });
 });

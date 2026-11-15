@@ -3,9 +3,10 @@
        primero las plantillas de la asignatura que va a dictar (hasta 3, con lo que dice si sirven), el resto agrupado por
        asignatura detrás de «Ver más plantillas», y sus propias clases aparte. Un grupo de radios: una sola elección. -->
   <fieldset class="space-y-2">
-    <legend class="block text-xs font-semibold text-slate-700 mb-1.5">Contenido de la clase</legend>
+    <legend :class="sinVacia ? 'sr-only' : 'block text-xs font-semibold text-slate-700 mb-1.5'">{{ sinVacia ? 'Curso de la Biblioteca' : 'Contenido de la clase' }}</legend>
 
-    <label :class="claseOpcion(modelValue === null)">
+    <!-- En «Nueva clase» (v3, D3-Nueva-Clase) «Vacía» y «Copiar una de mis clases» ya son pestañas: aquí solo la Biblioteca. -->
+    <label v-if="!sinVacia" :class="claseOpcion(modelValue === null)">
       <input type="radio" :name="nombre" :checked="modelValue === null" class="sr-only" @change="emit('update:modelValue', null)" />
       <span class="text-xs font-semibold text-base-texto-primario">Empezar vacía</span>
       <span class="text-[11px] text-slate-600">Creas los módulos y lecciones tú.</span>
@@ -61,6 +62,8 @@ const props = defineProps<{
   plantillas: Plantilla[]
   misClases: Array<{ id: number; name: string }>
   asignaturaNombre?: string | null
+  /** Sin «Empezar vacía» (la ventana ya la ofrece aparte). */
+  sinVacia?: boolean
 }>()
 const emit = defineEmits<{ 'update:modelValue': [number | null] }>()
 const nombre = `plantilla-${useId()}`

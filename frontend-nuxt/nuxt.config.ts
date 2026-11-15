@@ -22,6 +22,8 @@ export default defineNuxtConfig({
     '~/assets/css/menu-v3.css', '~/assets/css/entrar-v3.css',
     '~/assets/css/inicio-v3.css',
     '~/assets/css/cuenta-v3.css',
+    // Panel del docente v3 (Fase E): cabeceras, cifras y tarjetas como los cuadros «D3-*».
+    '~/assets/css/docente-v3.css',
     // Aspecto del panel del docente (rediseño R0): solo actúa dentro de [data-panel="docente"].
     '~/assets/css/panel-docente.css'
   ],
