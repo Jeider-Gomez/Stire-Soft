@@ -8,7 +8,7 @@
     </header>
     <PerfilForm data-recorrido="datos-perfil" />
     <PerfilVinculos />
-    <PerfilAparienciaLectura />
+    <PerfilAparienciaLectura class="mt-6" />
     <PerfilInvestigacion />
     <p class="text-xs text-slate-600">
       ¿Cómo te ha parecido usar STIRE?

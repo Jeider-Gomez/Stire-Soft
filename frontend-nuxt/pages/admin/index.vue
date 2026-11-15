@@ -30,7 +30,7 @@
       <button v-for="p in PESTANAS" :key="p.id" type="button" class="min-h-[44px] pb-2.5 px-3 -mb-px transition-colors flex items-center gap-1.5"
         :class="pestana === p.id ? 'border-b-2 border-acento-ambar-fuerte text-acento-ambar-fuerte font-bold' : 'text-slate-600 hover:text-base-texto-primario'"
         :aria-current="pestana === p.id ? 'true' : undefined" @click="pestana = p.id">
-        <span>{{ p.texto }}</span>
+        <component :is="p.icono" :size="14" aria-hidden="true" /><span>{{ p.texto }}</span>
         <span v-if="p.id === 'usuarios'" class="px-1.5 py-0.5 rounded-full bg-base-bg-secundario text-[10px] text-slate-600 font-normal">{{ gestion.usuarios.value.length }}</span>
         <span v-else-if="p.id === 'solicitudes'" class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
           :class="pendientes > 0 ? 'bg-acento-ambar-fuerte text-base-blanco' : 'bg-base-bg-secundario text-slate-600 font-normal'">{{ pendientes }}</span>

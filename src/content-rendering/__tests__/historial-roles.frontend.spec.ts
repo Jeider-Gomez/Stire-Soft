@@ -9,7 +9,7 @@ describe('Administración: pestaña «Cambios de rol»', () => {
 
   it('la página del admin tiene la pestaña y muestra el historial dentro de la cadena de pestañas', () => {
     // Desde la división del panel (PAT-04), las pestañas son una lista y cada una muestra su componente.
-    expect(pagina).toContain("{ id: 'roles', texto: 'Cambios de rol', icono: History }");
+    expect(pagina).toContain("{ id: 'roles', texto: 'Historial de roles', icono: History }");
     expect(pagina).toContain("<AdminHistorialRoles v-else-if=\"pestana === 'roles'\" />");
   });
 

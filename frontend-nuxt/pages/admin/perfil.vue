@@ -7,7 +7,7 @@
       </div>
     </header>
     <PerfilForm data-recorrido="datos-perfil" />
-    <PerfilAparienciaLectura />
+    <PerfilAparienciaLectura class="mt-6" />
   </div>
 </template>
 
