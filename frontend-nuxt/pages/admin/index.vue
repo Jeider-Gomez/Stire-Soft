@@ -3,13 +3,12 @@
        composables/useGestionUsuarios.ts, cada pestaña y cada ventana es su propio componente (components/admin/). Antes era
        un solo archivo de 1532 líneas («The Blob», PAT-04); docs/DISENO_ARQUITECTURA_FRONTEND.md. -->
   <div class="max-w-5xl mx-auto space-y-6">
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <span class="inline-block mb-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/10 text-semantico-pasa uppercase tracking-wider">Administración del sistema</span>
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Usuarios y roles</h1>
-        <p class="text-xs text-slate-600 mt-0.5">Control de acceso y permisos según la matriz institucional</p>
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Usuarios</h1>
+        <p class="detalle-docente">Registra personas, cambia roles y gestiona solicitudes de acceso.</p>
       </div>
-      <button id="open-register-user-btn" type="button" class="min-h-[44px] px-4 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar shadow-sm self-start sm:self-auto inline-flex items-center gap-1.5"
+      <button id="open-register-user-btn" type="button" class="min-h-[44px] px-4 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs hover:bg-acento-ambar shrink-0 self-start inline-flex items-center gap-1.5"
         @click="abrir({ tipo: 'registrar' })">
         <UserPlus :size="14" aria-hidden="true" /> Registrar usuario
       </button>

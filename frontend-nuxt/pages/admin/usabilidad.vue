@@ -3,14 +3,11 @@
        2008), por rol, qué afirmación lo arrastra y qué cambiarían primero. Con 5 personas ya se encuentran la mayoría de
        los problemas de usabilidad; el SUS dice cuánto, los comentarios dicen qué. -->
   <div class="max-w-5xl mx-auto space-y-5">
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-2">
-      <h1 class="text-xl font-bold text-base-texto-primario flex items-center gap-2">
-        <ClipboardList :size="22" class="text-acento-ambar-fuerte" aria-hidden="true" /> Encuesta de usabilidad (SUS)
-      </h1>
-      <p class="text-xs text-slate-600">
-        Estudiantes y docentes la responden desde su inicio o su perfil. Cuenta la última respuesta de cada persona; se puede
-        volver a responder cada 7 días, para medir otra vez después de los cambios.
-      </p>
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Encuesta de usabilidad</h1>
+        <p class="detalle-docente">Estudiantes y docentes la responden desde su perfil. Cuenta la última respuesta por persona; se puede repetir cada 7 días.</p>
+      </div>
       <AdminExportarInvestigacion />
     </header>
 

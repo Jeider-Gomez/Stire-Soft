@@ -2,15 +2,11 @@
   <!-- Catálogo académico (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md §2.2.2): el admin no busca duplicados a mano; STIRE los
        detecta y aquí se unen o se descartan con un clic. También se confirman como oficiales las que agregan los docentes. -->
   <div class="max-w-5xl mx-auto space-y-5">
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-2">
-      <h1 class="text-xl font-bold text-base-texto-primario flex items-center gap-2">
-        <Library :size="22" class="text-acento-ambar-fuerte" aria-hidden="true" /> Catálogo académico
-      </h1>
-      <p class="text-xs text-base-texto-secundario">
-        Los docentes agregan asignaturas al crear sus clases, sin esperar a nadie. Aquí revisas lo que STIRE detecta: la misma
-        asignatura con dos nombres, y las agregadas que puedes confirmar como oficiales. Al unir, las clases pasan a la que se
-        queda y el nombre viejo sigue sirviendo para buscarla.
-      </p>
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Catálogo</h1>
+        <p class="detalle-docente">Revisa duplicados que STIRE detecta y confirma asignaturas como oficiales.</p>
+      </div>
     </header>
 
     <p v-if="cargando" role="status" class="text-xs text-base-texto-secundario">Cargando…</p>

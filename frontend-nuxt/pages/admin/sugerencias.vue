@@ -3,21 +3,14 @@
        arriba; al resolver se escribe cómo (lo lee quien la envió); lo que no sirve (pruebas, vacías) se archiva con un
        motivo, sin borrarlo. Se descarga como Excel con filtros y un resumen. -->
   <div class="max-w-5xl mx-auto space-y-5">
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-4">
-      <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        <div>
-          <h1 class="text-xl font-bold text-base-texto-primario flex items-center gap-2">
-            <MessageSquarePlus :size="22" class="text-acento-ambar-fuerte" aria-hidden="true" /> Sugerencias
-          </h1>
-          <p class="text-xs text-base-texto-secundario mt-0.5">
-            Lo que envían los usuarios con el botón «Sugerencias»: problemas, cosas confusas e ideas, con la pantalla, el dispositivo y la clase.
-            Quien la envió ve el estado y tu respuesta.
-          </p>
-        </div>
-        <button type="button" data-recorrido="excel" :disabled="!lista.length" class="shrink-0 min-h-[44px] px-4 rounded-md bg-semantico-pasa text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 disabled:opacity-40 self-start" @click="descargar">
-          <FileSpreadsheet :size="15" aria-hidden="true" /> Descargar Excel
-        </button>
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Sugerencias</h1>
+        <p class="detalle-docente">Lo que los usuarios reportan con el botón «Sugerencias»: problemas, ideas y cosas confusas. Quien la envió ve tu respuesta.</p>
       </div>
+      <button type="button" data-recorrido="excel" :disabled="!lista.length" class="shrink-0 min-h-[44px] px-4 rounded-md borde-afordancia text-xs font-semibold inline-flex items-center gap-1.5 disabled:opacity-40 self-start" @click="descargar">
+        <FileSpreadsheet :size="14" aria-hidden="true" /> Descargar Excel
+      </button>
       <!-- El estado de un vistazo: cuánto falta y cuánto bloquea. -->
       <dl data-recorrido="estado-sugerencias" class="grid grid-cols-3 gap-2 text-center">
         <div class="rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 p-2">

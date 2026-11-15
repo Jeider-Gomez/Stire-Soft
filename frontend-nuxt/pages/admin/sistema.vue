@@ -1,30 +1,15 @@
 <template>
   <div class="max-w-6xl mx-auto space-y-6">
-    <!-- Cabecera ADM-V03 -->
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Auditoría y mantenimiento
-          </span>
-        </div>
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Registros del sistema y parámetros
-        </h1>
-        <p class="text-xs text-base-texto-secundario mt-0.5">
-          Parámetros del sandbox y eventos recientes del servidor
-        </p>
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Registros y mantenimiento</h1>
+        <p class="detalle-docente">Parámetros del sandbox y eventos recientes del servidor.</p>
       </div>
-
-      <button
-        ref="cleanupBtnRef"
-        id="run-cleanup-btn"
-        @click="confirmAndRunCleanup"
-        :disabled="isCleaning"
-        class="px-4 py-2 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:bg-semantico-falla/90 transition-colors shadow-sm self-start sm:self-auto flex items-center gap-1.5 cursor-pointer disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-semantico-falla">
+      <button ref="cleanupBtnRef" id="run-cleanup-btn" @click="confirmAndRunCleanup" :disabled="isCleaning"
+        class="min-h-[44px] px-4 rounded-md bg-semantico-falla text-base-blanco font-bold text-xs hover:bg-semantico-falla/90 shrink-0 self-start flex items-center gap-1.5 disabled:opacity-50">
         <Loader2 :size="14" v-if="isCleaning" class="animate-spin" aria-hidden="true" />
-        <Eraser :size="16" v-else aria-hidden="true" />
-        <span>{{ isCleaning ? 'Ejecutando limpieza...' : 'Ejecutar limpieza de mantenimiento' }}</span>
+        <Eraser :size="14" v-else aria-hidden="true" />
+        {{ isCleaning ? 'Limpiando…' : 'Ejecutar limpieza' }}
       </button>
     </header>
 

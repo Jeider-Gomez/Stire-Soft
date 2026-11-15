@@ -1,38 +1,23 @@
 <template>
   <div class="max-w-6xl mx-auto space-y-6">
-    <!-- Cabecera ADM-V01 -->
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-pasa/10 text-semantico-pasa uppercase tracking-wider">
-            Administración del sistema
-          </span>
-          <span
-            v-if="statusData"
-            class="px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1.5"
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Sistema</h1>
+        <p class="detalle-docente">
+          Salud de los servicios
+          <span v-if="statusData" class="ml-2 px-2 py-0.5 rounded-full text-[11px] font-bold inline-flex items-center gap-1"
             :class="isSystemHealthy ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-semantico-falla/15 text-semantico-falla'">
-            <component :is="isSystemHealthy ? CircleCheck : TriangleAlert" :size="12" aria-hidden="true" />
-            <span>{{ isSystemHealthy ? 'Servicios operacionales' : 'Degradación detectada' }}</span>
+            <component :is="isSystemHealthy ? CircleCheck : TriangleAlert" :size="11" aria-hidden="true" />
+            {{ isSystemHealthy ? 'Servicios operacionales' : 'Degradación detectada' }}
           </span>
-        </div>
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Panel de control y salud del sistema
-        </h1>
-        <p class="text-xs text-base-texto-secundario mt-0.5">
-          Monitoreo de infraestructura, latencia de sandboxes y telemetría de carga
         </p>
       </div>
-
-      <div class="flex items-center gap-2">
-        <button
-          @click="fetchStatus"
-          :disabled="isLoading"
-          class="borde-afordancia px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-base-bg-secundario text-slate-600 flex items-center gap-1.5 transition-colors disabled:opacity-50"
-          aria-label="Actualizar métricas del sistema">
-          <Loader2 :size="14" :class="{ 'animate-spin': isLoading }" aria-hidden="true" />
-          <span>Actualizar</span>
-        </button>
-      </div>
+      <button @click="fetchStatus" :disabled="isLoading"
+        class="borde-afordancia px-3 py-2 rounded-md text-xs font-semibold flex items-center gap-1.5 min-h-[44px] shrink-0 self-start disabled:opacity-50"
+        aria-label="Actualizar métricas del sistema">
+        <Loader2 :size="14" :class="{ 'animate-spin': isLoading }" aria-hidden="true" />
+        Actualizar
+      </button>
     </header>
 
     <!-- ESTADO: Cargando inicial -->
