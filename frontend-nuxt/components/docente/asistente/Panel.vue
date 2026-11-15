@@ -8,7 +8,7 @@
       class="fixed top-0 right-0 z-50 h-full w-full bg-base-blanco border-l border-base-borde-sutil shadow-2xl flex flex-col transition-[max-width] duration-300"
       :class="ancho ? 'max-w-[760px]' : 'max-w-[420px]'">
       <header class="flex items-center gap-3 px-4 h-16 border-b border-base-borde-sutil shrink-0">
-        <TutorMascota :expresion="pensando ? 'pensando' : aplicando ? 'atento' : borrador ? 'contento' : 'normal'" :tamano="34" etiqueta="Asistente STIRE" />
+        <DocenteAsistenteLibreta :tamano="38" />
         <div class="flex-1 min-w-0">
           <h2 id="asistente-titulo" class="text-sm font-bold text-base-texto-primario">Asistente STIRE <span class="ml-1 px-1.5 py-0.5 rounded bg-stire-blue/10 text-stire-blue text-[10px] font-semibold align-middle">IA</span></h2>
           <p class="text-[11px] text-base-texto-secundario truncate">Te propongo borradores; tú decides qué queda.</p>
