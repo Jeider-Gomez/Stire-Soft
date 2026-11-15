@@ -1,5 +1,11 @@
 <template>
-  <div class="max-w-7xl mx-auto">
+  <div class="max-w-7xl mx-auto space-y-4">
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Avisos y mensajes</h1>
+        <p class="detalle-docente">Envía avisos a toda la clase o escríbele directamente a un estudiante.</p>
+      </div>
+    </header>
     <MensajesPestanasMensajes :activa="verAvisos ? 'avisos' : 'mensajes'" />
     <MensajesAvisosClase v-if="verAvisos" rol="docente" />
     <MensajesBandejaMensajes
