@@ -4,10 +4,17 @@
 
 
 
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Ajustes de la clase</h1>
+        <p class="detalle-docente">Matrícula, Tutor, Asistente, logros y cómo se comparte el curso.</p>
+      </div>
+    </header>
+
     <div class="grid gap-6 lg:grid-cols-2 items-start">
     <!-- Quién está en la clase: primero las solicitudes, porque el estudiante no ve el curso hasta que lo aceptas. -->
     <section id="solicitudes" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 space-y-3">
-      <h1 class="text-sm font-bold text-base-texto-primario">Solicitudes para entrar</h1>
+      <h2 class="text-sm font-bold text-base-texto-primario">Solicitudes para entrar</h2>
       <p v-if="pending.length === 0" class="text-xs text-base-texto-secundario">No hay solicitudes pendientes.</p>
       <div v-for="enrollment in pending" :key="enrollment.id" class="flex items-center justify-between gap-3 border-b border-base-borde-sutil py-3">
         <span class="text-xs min-w-0 truncate inline-flex items-center gap-2"><AvatarUsuario :nombre="enrollment.student?.fullName" :foto-id="enrollment.student?.fotoId" decorativo /><span class="truncate">{{ enrollment.student?.fullName || enrollment.student?.email || 'Estudiante' }}</span></span>
