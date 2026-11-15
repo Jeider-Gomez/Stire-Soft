@@ -2,12 +2,11 @@
   <!-- Biblioteca (prototipo del panel v2): los cursos que otros docentes compartieron. Se revisan por dentro antes de
        usarlos y se copian a una clase nueva; nunca se enlazan (utils/biblioteca.ts). Opcional, como todo lo del docente. -->
   <div class="max-w-7xl mx-auto space-y-6">
-    <header class="space-y-1">
-      <h1 class="text-2xl font-poppins font-bold text-base-texto-primario tracking-tight">Biblioteca</h1>
-      <p class="text-sm text-base-texto-secundario max-w-2xl">
-        Cursos que otros docentes compartieron. Revísalos por dentro antes de usarlos: se copian a tu clase nueva, nunca se
-        enlazan, y sus estudiantes, entregas y notas no se comparten.
-      </p>
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Biblioteca</h1>
+        <p class="detalle-docente">Cursos que otros docentes compartieron. Se copian en borrador: los revisas, cambias lo que quieras y publicas cuando quieras.</p>
+      </div>
     </header>
 
     <div class="flex flex-wrap gap-2.5">
