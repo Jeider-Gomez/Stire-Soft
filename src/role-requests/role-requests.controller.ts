@@ -1,14 +1,18 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Optional, Patch, Query } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { User } from '../user/entities/user.entity';
 import { DecideRoleRequestDto, RoleRequestsQueryDto } from './dto/role-request.dto';
 import { RoleRequestsService } from './role-requests.service';
+import { AccionesAdminService } from '../admin-system/acciones-admin.service';
 
 @Controller('role-requests')
 export class RoleRequestsController {
-  constructor(private readonly service: RoleRequestsService) {}
+  constructor(
+    private readonly service: RoleRequestsService,
+    @Optional() private readonly acciones?: AccionesAdminService,
+  ) {}
 
   // Cualquier usuario autenticado ve solo la suya (el id sale del JWT, nunca de la URL).
   @Roles('estudiante', 'docente', 'admin')
@@ -27,7 +31,9 @@ export class RoleRequestsController {
   @Roles('admin')
   @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Patch(':id')
-  decide(@Param('id', ParseIntPipe) id: number, @Body() dto: DecideRoleRequestDto, @GetUser() admin: User) {
-    return this.service.decide(id, dto, admin.id);
+  async decide(@Param('id', ParseIntPipe) id: number, @Body() dto: DecideRoleRequestDto, @GetUser() admin: User) {
+    const r = await this.service.decide(id, dto, admin.id);
+    await this.acciones?.registrar({ adminId: admin.id, accion: 'decidir_solicitud', objetivoTipo: 'solicitud_rol', objetivoId: id, detalle: String(dto.decision) });
+    return r;
   }
 }

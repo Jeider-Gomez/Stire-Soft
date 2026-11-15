@@ -1,10 +1,11 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Optional, Query, UseGuards } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { SystemStatusService } from './system-status.service';
 import { LogEntry, LogLevel, logBuffer } from './log-buffer';
+import { AccionesAdminService } from './acciones-admin.service';
 import { LogsQueryDto, LogLevelFilter } from './dto/logs-query.dto';
 
 const LEVELS_BY_FILTER: Record<LogLevelFilter, LogLevel[] | undefined> = {
@@ -18,7 +19,10 @@ const LEVELS_BY_FILTER: Record<LogLevelFilter, LogLevel[] | undefined> = {
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminSystemController {
-  constructor(private readonly statusService: SystemStatusService) {}
+  constructor(
+    private readonly statusService: SystemStatusService,
+    @Optional() private readonly acciones?: AccionesAdminService,
+  ) {}
 
   // Consulta varias tablas y hace un ping a la base; el rol admin no evita que un panel abierto
   // en varias pestañas con actualización automática la sature.
@@ -26,6 +30,12 @@ export class AdminSystemController {
   @Get('status')
   async status() {
     return this.statusService.getStatus();
+  }
+
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
+  @Get('acciones')
+  async accionesRecientes(@Query('limit') limit?: string) {
+    return this.acciones ? this.acciones.recientes(Number(limit) || 100) : [];
   }
 
   @Throttle({ default: { limit: 30, ttl: 60000 } })

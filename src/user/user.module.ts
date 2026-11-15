@@ -7,12 +7,14 @@ import { UserAffiliation } from './entities/user-affiliation.entity';
 import { CambioDeRol } from './entities/cambio-de-rol.entity';
 import { InstitutionModule } from '../institution/institution.module';
 import { MediaModule } from '../media/media.module';
+import { AdminSystemModule } from '../admin-system/admin-system.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, UserAffiliation, CambioDeRol]),
     InstitutionModule,
     MediaModule,
+    AdminSystemModule,
   ],
   controllers: [UserController],
   providers: [UserService],

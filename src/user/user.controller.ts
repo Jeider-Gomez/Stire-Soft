@@ -13,12 +13,14 @@ import {
   UseInterceptors,
   HttpCode,
   HttpStatus,
+  Optional,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MAX_BYTES_IMAGEN } from '../media/imagen-subida';
 import { Throttle } from '@nestjs/throttler';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './user.service';
+import { AccionesAdminService } from '../admin-system/acciones-admin.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -37,6 +39,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    @Optional() private readonly acciones?: AccionesAdminService,
   ) {}
 
   // Solo admin: crear cuentas de terceros fuera del auto-registro publico.
@@ -155,12 +158,16 @@ export class UserController {
 
   @Roles('admin')
   @Patch(':id/role')
-  updateRole(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateRoleDto, @GetUser() admin: User) {
-    return this.userService.updateRole(id, dto.role, admin.id);
+  async updateRole(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateRoleDto, @GetUser() admin: User) {
+    const r = await this.userService.updateRole(id, dto.role, admin.id);
+    await this.acciones?.registrar({ adminId: admin.id, accion: 'cambiar_rol', objetivoTipo: 'usuario', objetivoId: id, detalle: `Nuevo rol: ${dto.role}` });
+    return r;
   }
   @Roles('admin')
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number, @GetUser() admin: User) {
-    return this.userService.remove(id, admin.id);
+  async remove(@Param('id', ParseIntPipe) id: number, @GetUser() admin: User) {
+    const r = await this.userService.remove(id, admin.id);
+    await this.acciones?.registrar({ adminId: admin.id, accion: 'desactivar_usuario', objetivoTipo: 'usuario', objetivoId: id });
+    return r;
   }
 }
