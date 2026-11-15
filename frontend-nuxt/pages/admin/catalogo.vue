@@ -5,7 +5,7 @@
     <header class="cabecera-docente">
       <div class="min-w-0">
         <h1 class="titulo-docente">Catálogo</h1>
-        <p class="detalle-docente">Revisa duplicados que STIRE detecta y confirma asignaturas como oficiales.</p>
+        <p class="detalle-docente">Las asignaturas con las que los docentes crean sus clases. Ellos agregan lo que falte; tú solo ordenas.</p>
       </div>
     </header>
 
@@ -15,6 +15,7 @@
 
     <section aria-labelledby="duplicados-titulo" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 space-y-3">
       <h2 id="duplicados-titulo" class="text-sm font-bold text-base-texto-primario">Posibles duplicados ({{ datos.duplicados.length }})</h2>
+      <p class="text-xs text-base-texto-secundario">Nada se rompe si lo dejas para después: todo sigue funcionando.</p>
       <p v-if="!cargando && !datos.duplicados.length" class="text-xs text-base-texto-secundario">Nada que revisar: no hay asignaturas parecidas.</p>
       <ul class="space-y-3">
         <li v-for="d in datos.duplicados" :key="`${d.a.id}-${d.b.id}`" class="rounded-lg border border-base-borde-sutil p-3 space-y-2">
