@@ -1,13 +1,13 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase v-if="claseId !== null" :class-id="claseId" activa="entregas" :nombre="claseActual?.name" />
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm space-y-4">
+    <header class="cabecera-docente flex-col !flex-nowrap">
       <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
-          <h1 class="text-xl font-bold text-base-texto-primario tracking-tight flex items-center gap-2">
+          <h1 class="titulo-docente flex items-center gap-2">
             <Inbox :size="22" class="text-acento-ambar-fuerte" aria-hidden="true" /> Entregas
           </h1>
-          <p class="text-xs text-base-texto-secundario mt-1">
+          <p class="detalle-docente">
             Espacios donde tus estudiantes entregan un proyecto: dentro de una lección (y si quieres, contando para su dominio) o como
             nota de la materia. Cada versión queda con su fecha, y cada revisión en el historial.
           </p>

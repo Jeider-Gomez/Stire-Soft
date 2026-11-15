@@ -2,28 +2,35 @@
   <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase :class-id="classId" activa="hoy" :nombre="clase?.name" :codigo="clase?.code" />
 
-    <header data-recorrido="hoy" class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm">
-      <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Resumen de tu clase</h1>
-      <p class="text-xs text-base-texto-secundario mt-1">
-        Lo que conviene atender, en orden: primero quien no puede avanzar, luego lo que espera tu comentario y al final quien
-        está listo para más.{{ totalEstudiantes === null ? '' : ` ${totalEstudiantes} ${totalEstudiantes === 1 ? 'estudiante' : 'estudiantes'} en la clase.` }}
-      </p>
-      <!-- Resumen de la semana (estilo «Class Snapshot»): esta semana frente a la anterior. -->
-      <dl v-if="semana" class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs" aria-label="Esta semana">
-        <div class="rounded-lg bg-base-bg-secundario px-3 py-2">
-          <dt class="text-[11px] text-slate-600">Practicaron esta semana</dt>
-          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.estudiantesActivos }} de {{ semana.total }} <span class="font-normal text-slate-600">· la semana pasada {{ semana.semanaAnterior.estudiantesActivos }}</span></dd>
-        </div>
-        <div class="rounded-lg bg-base-bg-secundario px-3 py-2">
-          <dt class="text-[11px] text-slate-600">Ejercicios entregados</dt>
-          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.ejercicios }} <span class="font-normal text-slate-600">· la semana pasada {{ semana.semanaAnterior.ejercicios }}</span></dd>
-        </div>
-        <div class="rounded-lg bg-base-bg-secundario px-3 py-2">
-          <dt class="text-[11px] text-slate-600">Aprobados</dt>
-          <dd class="font-bold text-base-texto-primario">{{ semana.estaSemana.aprobados }} <span class="font-normal text-slate-600">· la semana pasada {{ semana.semanaAnterior.aprobados }}</span></dd>
-        </div>
-      </dl>
+    <!-- v3 (Fase E, paso 2; cuadro «D3-Clase»): el título con la clase y, a la derecha, lo que se hace al empezar la sesión. -->
+    <header data-recorrido="hoy" class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Resumen de tu clase</h1>
+        <p class="detalle-docente">
+          {{ clase?.name ? `${clase.name} · ` : '' }}{{ totalEstudiantes === null ? '' : `${totalEstudiantes} ${totalEstudiantes === 1 ? 'estudiante' : 'estudiantes'} · ` }}lo que conviene
+          atender, en orden: primero quien necesita ayuda, luego lo que espera tu comentario y al final quien está listo para más.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <NuxtLink :to="enlacePestana('asistencia', classId)" class="borde-afordancia inline-flex items-center gap-2 min-h-[44px] px-4 rounded-xl text-sm font-semibold"><ClipboardCheck :size="16" aria-hidden="true" /> Tomar asistencia</NuxtLink>
+        <NuxtLink :to="enlacePestana('contenido', classId)" class="boton-tinta inline-flex">Ir al contenido <ChevronRight :size="16" aria-hidden="true" /></NuxtLink>
+      </div>
     </header>
+    <!-- Esta semana frente a la anterior (estilo «Class Snapshot»), en tarjetas como las cifras del cuadro. -->
+    <dl v-if="semana" class="cifras-docente lg:!grid-cols-3" aria-label="Esta semana">
+      <div class="cifra-docente">
+        <dt>Practicaron esta semana</dt>
+        <dd>{{ semana.estaSemana.estudiantesActivos }} de {{ semana.total }}<small>la semana pasada {{ semana.semanaAnterior.estudiantesActivos }}</small></dd>
+      </div>
+      <div class="cifra-docente">
+        <dt>Ejercicios entregados</dt>
+        <dd>{{ semana.estaSemana.ejercicios }}<small>la semana pasada {{ semana.semanaAnterior.ejercicios }}</small></dd>
+      </div>
+      <div class="cifra-docente">
+        <dt>Aprobados</dt>
+        <dd>{{ semana.estaSemana.aprobados }}<small>la semana pasada {{ semana.semanaAnterior.aprobados }}</small></dd>
+      </div>
+    </dl>
 
     <!-- En pantallas anchas, dos columnas: lo que hay que hacer hoy y, al lado, cómo va la semana. -->
     <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr),380px] items-start">
@@ -39,21 +46,22 @@
       <CheckCircle2 :size="28" class="mx-auto text-semantico-pasa" aria-hidden="true" />
       <h2 class="text-sm font-bold text-base-texto-primario">Todo al día</h2>
       <p class="text-xs text-base-texto-secundario">
-        Nadie está bloqueado y no hay entregas por revisar. Puedes preparar lo que sigue en
+        Nadie necesita ayuda y no hay entregas por revisar. Puedes preparar lo que sigue en
         <NuxtLink :to="enlacePestana('contenido', classId)" class="underline">Contenido</NuxtLink> o mirar el mapa en
         <NuxtLink :to="enlacePestana('estudiantes', classId)" class="underline">Estudiantes</NuxtLink>.
       </p>
     </section>
 
+    <h2 v-if="!cargando && pendientes.length" class="m-0 font-poppins font-bold text-[19px]">Necesitan algo <span class="block text-[14px] font-normal font-sans text-base-texto-secundario">Cada uno con su porqué y lo que puedes hacer. Tú decides.</span></h2>
     <ol v-if="!cargando && pendientes.length" id="bloqueados" class="space-y-3 scroll-mt-24" aria-label="Pendientes de hoy">
-      <li v-for="p in pendientes" :key="p.clave" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 sm:p-5 flex gap-3">
+      <li v-for="p in pendientes" :key="p.clave" class="bg-base-blanco rounded-2xl border border-base-borde-sutil p-4 sm:p-5 flex gap-3">
         <span class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" :class="ESTILO[p.tipo].fondo">
           <component :is="ESTILO[p.tipo].icono" :size="18" aria-hidden="true" />
         </span>
         <div class="min-w-0 flex-1 space-y-2">
           <div>
-            <h2 class="text-sm font-bold text-base-texto-primario">{{ p.titulo }}</h2>
-            <p class="text-xs text-base-texto-secundario mt-0.5">{{ p.detalle }}</p>
+            <h3 class="m-0 text-[15px] font-bold text-base-texto-primario">{{ p.titulo }}</h3>
+            <p class="m-0 text-[14px] text-base-texto-secundario mt-0.5">{{ p.detalle }}</p>
           </div>
 
           <ul v-if="p.personas.length" class="flex flex-wrap gap-1.5 text-[11px]" :aria-label="`Estudiantes: ${p.titulo}`">
@@ -99,7 +107,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, type Component } from 'vue'
-import { AlertTriangle, CheckCircle2, Clock, Inbox, Loader2, Moon, Rocket, Undo2, UserPlus } from 'lucide-vue-next'
+import { AlertTriangle, CheckCircle2, ChevronRight, ClipboardCheck, Clock, Inbox, Loader2, Moon, Rocket, Undo2, UserPlus } from 'lucide-vue-next'
 import { useResumenClase } from '~/composables/useResumenClase'
 import { enlacePestana } from '~/utils/pestanasClase'
 import { pendientesDeHoy, type EntregaHoy, type MapaHoy, type RefuerzoHoy, type SemanaHoy, type TipoPendiente } from '~/utils/hoyClase'
@@ -146,7 +154,7 @@ const totalEstudiantes = computed(() => mapa.value?.estudiantes.length ?? null)
 const fuentesCaidas = computed(() => [
   !solicitudesCargadas.value && 'solicitudes',
   entregas.value === null && 'entregas',
-  mapa.value === null && 'estudiantes bloqueados',
+  mapa.value === null && 'quién necesita ayuda',
   refuerzos.value === null && 'refuerzos',
 ].filter((x): x is string => typeof x === 'string'))
 

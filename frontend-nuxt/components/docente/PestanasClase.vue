@@ -4,7 +4,7 @@
        la barra es un cajón, quedan las pestañas de siempre. -->
   <div class="bg-base-blanco rounded-xl border border-base-borde-fuerte shadow-sm md:bg-transparent md:border-0 md:shadow-none">
     <div v-if="nombre" class="px-4 pt-3 flex items-center gap-2 min-w-0 text-xs md:px-0 md:pt-0">
-      <NuxtLink :to="enlacePestana('hoy', classId)" class="font-bold text-sm md:text-2xl md:tracking-tight text-base-texto-primario truncate hover:underline py-1 min-h-[28px]">{{ nombre }}</NuxtLink>
+      <NuxtLink :to="enlacePestana('hoy', classId)" class="font-bold text-sm md:text-[13px] md:font-semibold md:text-base-texto-secundario text-base-texto-primario truncate hover:underline py-1 min-h-[28px]">{{ nombre }}</NuxtLink>
       <span v-if="codigo" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-acento-ambar/15 text-acento-ambar-fuerte shrink-0">{{ codigo }}</span>
     </div>
     <!-- El nombre va fuera del <nav>: en «Hoy» también enlaza a la página actual, y la navegación debe tener una sola. -->

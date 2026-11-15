@@ -2,12 +2,10 @@
   <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase v-if="selectedClassId" :class-id="selectedClassId" activa="contenido" :nombre="selectedClass?.name" :codigo="selectedClass?.code" />
     <!-- Cabecera DOC-V02 -->
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <header class="cabecera-docente">
       <div>
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Contenidos del curso
-        </h1>
-        <p class="text-xs text-base-texto-secundario mt-0.5 max-w-md">
+        <h1 class="titulo-docente">Contenido</h1>
+        <p class="detalle-docente">
           Organiza el curso en módulos, temas y lecciones. Abre una lección para escribir su explicación y crear sus ejercicios.
         </p>
       </div>

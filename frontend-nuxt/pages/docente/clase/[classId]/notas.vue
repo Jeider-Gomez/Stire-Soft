@@ -2,10 +2,10 @@
   <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase :class-id="classId" activa="notas" :nombre="clase?.name" :codigo="clase?.code" />
 
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+    <header class="cabecera-docente">
       <div class="min-w-0">
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Notas de la clase</h1>
-        <p class="text-xs text-base-texto-secundario mt-1 max-w-2xl">
+        <h1 class="titulo-docente">Notas de la clase</h1>
+        <p class="detalle-docente">
           Opcional y a tu manera. Agrega las notas que quieras: las que STIRE calcula (el dominio de las lecciones, las
           entregas) y las que pones tú, también de actividades en el salón. Cada una puede ser del curso entero o de un
           módulo; usas porcentajes, promedias o solo registras. Las notas oficiales van a Moodle: descarga el archivo y

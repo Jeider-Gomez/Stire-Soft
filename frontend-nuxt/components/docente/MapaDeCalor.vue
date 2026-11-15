@@ -19,7 +19,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
         <article class="bg-base-blanco rounded-xl border border-semantico-falla/30 p-4 space-y-2">
           <h3 class="font-bold text-semantico-falla flex items-center gap-1.5">
-            <AlertTriangle :size="14" aria-hidden="true" /> Bloqueados ({{ mapa.bloqueados.length }})
+            <AlertTriangle :size="14" aria-hidden="true" /> Necesitan ayuda ({{ mapa.bloqueados.length }})
           </h3>
           <p class="text-[11px] text-base-texto-secundario">Tres o más entregas falladas seguidas en una lección, en los últimos 7 días.</p>
           <ul v-if="mapa.bloqueados.length" class="space-y-1">
@@ -28,7 +28,7 @@
               <span class="text-base-texto-secundario"> · {{ b.unitTitle }} · {{ b.fallosSeguidos }} fallos seguidos</span>
             </li>
           </ul>
-          <p v-else class="text-[11px] text-base-texto-secundario">Nadie está bloqueado ahora.</p>
+          <p v-else class="text-[11px] text-base-texto-secundario">Nadie necesita ayuda ahora.</p>
           <NuxtLink v-if="mapa.bloqueados.length" :to="enlaceNuevoRefuerzo(classId, 'refuerzo', mapa.bloqueados.map((b) => b.studentId), mapa.bloqueados.map((b) => b.unitId))"
             class="inline-flex items-center gap-1 font-bold text-semantico-falla hover:underline"><LifeBuoy :size="13" aria-hidden="true" /> Asignar un refuerzo</NuxtLink>
         </article>

@@ -7,49 +7,40 @@
         :to="volverAlGrupo"
         class="borde-afordancia px-2.5 py-1 rounded text-base-texto-secundario hover:text-base-texto-primario flex items-center gap-1">
         <ArrowLeft :size="14" aria-hidden="true" />
-        <span>Volver a cómo va el grupo</span>
+        <span>Estudiantes</span>
       </NuxtLink>
     </div>
 
-    <!-- Cabecera DOC-V05 -->
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Estudiante
-          </span>
-        </div>
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          {{ dashboard?.studentName || 'Seguimiento y diagnóstico del estudiante' }}
-        </h1>
-        <p class="text-xs text-base-texto-secundario mt-0.5">
-          {{ ultimaActividad }}
-        </p>
+    <!-- Cabecera D3-Estudiante -->
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">{{ dashboard?.studentName || 'Ficha del estudiante' }}</h1>
+        <p class="detalle-docente">{{ ultimaActividad }}</p>
       </div>
 
       <!-- La intervención individual (docs/DISENO_INTERVENCION_DOCENTE.md §4.2): refuerzo, reto o mensaje desde la ficha. -->
-      <div class="flex flex-wrap gap-2 self-start sm:self-auto">
+      <div class="flex flex-wrap gap-2 self-start">
+        <NuxtLink
+          to="/docente/mensajes"
+          class="px-3.5 py-2 rounded-md borde-afordancia text-xs font-semibold flex items-center gap-1.5 min-h-[44px]">
+          <Mail :size="14" aria-hidden="true" /> Escribirle
+        </NuxtLink>
         <NuxtLink
           :to="enlaceNuevoRefuerzo(claseDeLaFicha, 'refuerzo', [Number(route.params.studentId)])"
-          class="px-3.5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold flex items-center gap-1.5">
+          class="px-3.5 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold flex items-center gap-1.5 min-h-[44px]">
           <LifeBuoy :size="14" aria-hidden="true" /> Asignar refuerzo
         </NuxtLink>
         <NuxtLink
           :to="enlaceNuevoRefuerzo(claseDeLaFicha, 'reto', [Number(route.params.studentId)])"
-          class="px-3.5 py-2 rounded-md borde-afordancia text-xs font-semibold flex items-center gap-1.5">
+          class="px-3.5 py-2 rounded-md borde-afordancia text-xs font-semibold flex items-center gap-1.5 min-h-[44px]">
           <Rocket :size="14" aria-hidden="true" /> Asignar reto
-        </NuxtLink>
-        <NuxtLink
-          to="/docente/mensajes"
-          class="px-3.5 py-2 rounded-md borde-afordancia text-xs font-semibold text-acento-ambar-fuerte hover:bg-acento-ambar/10 transition-colors flex items-center gap-1.5">
-          <Mail :size="14" aria-hidden="true" /> Escribirle
         </NuxtLink>
       </div>
     </header>
 
     <!-- ESTADO 1: Cargando -->
     <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
-      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Obteniendo métricas y registros de actividad del alumno...
+      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Cargando…
     </div>
 
     <!-- ESTADO 2: Error -->
@@ -65,7 +56,7 @@
         <NuxtLink
           :to="volverAlGrupo"
           class="px-4 py-1.5 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold">
-          Volver a la cohorte
+          Volver a Estudiantes
         </NuxtLink>
       </div>
     </div>

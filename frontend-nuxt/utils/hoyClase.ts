@@ -87,7 +87,7 @@ function atascados(d: DatosHoy, tipo: 'bloqueados' | 'salto_fallido'): Pendiente
     return tipo === 'bloqueados'
       ? {
           clave: `bloqueados-${g.unitId}`, tipo, personas, acciones,
-          titulo: `${plural(g.filas.length, 'estudiante bloqueado', 'estudiantes bloqueados')} en «${g.unitTitle}»`,
+          titulo: `${plural(g.filas.length, 'estudiante necesita', 'estudiantes necesitan')} ayuda en «${g.unitTitle}»`,
           detalle: sinAyuda.length
             ? 'Fallaron varias veces seguidas: la práctica de siempre no les está funcionando. Un refuerzo les muestra la idea de otra forma.'
             : 'Ya tienen un refuerzo en curso. Mira si lo están haciendo antes de asignar otro.',

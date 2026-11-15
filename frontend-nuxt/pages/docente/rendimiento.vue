@@ -1,30 +1,23 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase v-if="selectedClassId" :class-id="selectedClassId" activa="estudiantes" :nombre="selectedClass?.name" :codigo="selectedClass?.code" />
-    <!-- Cabecera DOC-V04 -->
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-semantico-info/10 text-semantico-info uppercase tracking-wider">
-            Tu grupo
-          </span>
-          <span v-if="selectedClass" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-acento-ambar/15 text-acento-ambar-fuerte">
-            {{ selectedClass.code }}
-          </span>
-        </div>
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">
-          Cómo va tu grupo
-        </h1>
-        <p class="text-xs text-base-texto-secundario mt-0.5">
-          Quién va bien, quién necesita ayuda y en qué lección
+    <!-- Cabecera D3-Estudiantes -->
+    <header class="cabecera-docente">
+      <div class="min-w-0">
+        <h1 class="titulo-docente">Estudiantes</h1>
+        <p class="detalle-docente">
+          <template v-if="metrics">{{ metrics.metrics.totalStudents }} {{ metrics.metrics.totalStudents === 1 ? 'estudiante' : 'estudiantes' }} · dominio promedio {{ porcentaje(metrics.metrics.avgClassMastery) }}</template>
+          <template v-else>Dominio por lección, quién va bien y quién necesita ayuda</template>
         </p>
       </div>
-
+      <NuxtLink v-if="selectedClass" :to="`/docente/clase/${selectedClassId}`" class="borde-afordancia px-3 py-2 rounded-lg text-xs font-semibold shrink-0 self-start flex items-center gap-1.5 min-h-[44px]">
+        <QrCode :size="14" aria-hidden="true" /> Invitar con código o QR
+      </NuxtLink>
     </header>
 
     <!-- ESTADO 1: Cargando -->
     <div v-if="isLoading" class="p-12 text-center text-xs text-base-texto-secundario bg-base-blanco rounded-xl border border-base-borde-sutil">
-      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Calculando métricas de cohorte en tiempo real...
+      <Loader2 :size="14" class="inline-block animate-spin mr-2" aria-hidden="true" /> Calculando…
     </div>
 
     <!-- ESTADO 2: Error -->
@@ -43,9 +36,9 @@
       <Users :size="28" class="text-3xl" aria-hidden="true" />
       <h3 class="font-bold text-base-texto-primario text-sm">Sin estudiantes matriculados</h3>
       <p class="text-base-texto-secundario max-w-md mx-auto">
-        Esta clase aún no cuenta con estudiantes registrados. Comparte el código
+        Esta clase aún no tiene estudiantes. Comparte el código
         <strong class="text-acento-ambar-fuerte font-mono">{{ selectedClass?.code }}</strong>
-        para que los alumnos se vinculen y comiencen a generar analíticas.
+        para que entren.
       </p>
       <NuxtLink
         to="/docente"
@@ -235,7 +228,7 @@ function textoDiagnostico(dominio: number): string {
 function claseDiagnostico(dominio: number): string {
   return dominio < 50 ? 'bg-semantico-falla/15 text-semantico-falla' : dominio >= 80 ? 'bg-semantico-pasa/10 text-semantico-pasa' : 'bg-acento-ambar/15 text-acento-ambar-fuerte'
 }
-import { ArrowRight, Loader2, OctagonAlert, TriangleAlert, Users } from 'lucide-vue-next'
+import { ArrowRight, Loader2, OctagonAlert, QrCode, TriangleAlert, Users } from 'lucide-vue-next'
 import { porcentaje } from '~/utils/porcentaje'
 import { useRendimiento } from '~/composables/useRendimiento'
 import { useMisClases } from '~/composables/useMisClases'

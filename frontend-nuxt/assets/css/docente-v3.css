@@ -1,0 +1,29 @@
+/* El panel del docente v3 (Fase E; cuadros «D3-*»). Cada pantalla abre con su título grande y una línea que dice de qué
+   clase es y qué conviene mirar, sin caja alrededor; los botones van a la derecha. Las tarjetas son blancas, con bordes
+   suaves y la línea de color arriba, como las del estudiante (inicio-v3.css). */
+.cabecera-docente {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px 16px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.titulo-docente { margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 24px; line-height: 1.2; letter-spacing: -0.01em; color: rgb(var(--c-base-texto-primario)); }
+@media (min-width: 640px) { .titulo-docente { font-size: 28px; } }
+.detalle-docente { margin: 4px 0 0; font-size: 15px; line-height: 1.5; color: rgb(var(--c-base-texto-secundario)); max-width: 72ch; }
+
+/* Las cifras de la clase (D3-Clase): etiqueta en mayúsculas, número grande y una línea de color abajo. */
+.cifras-docente { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 1024px) { .cifras-docente { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.cifra-docente { position: relative; padding: 14px 16px 16px; border-radius: 16px; background: rgb(var(--c-base-blanco)); border: 1px solid rgb(var(--c-base-borde-sutil)); overflow: hidden; }
+.cifra-docente::before { content: ""; position: absolute; inset: 0 0 auto; height: 4px; background: linear-gradient(90deg, #5ccbff, #7c3aed); }
+.cifra-docente:nth-child(2)::before { background: linear-gradient(90deg, #ffc94d, #d12f3a); }
+.cifra-docente:nth-child(3)::before { background: linear-gradient(90deg, #00c2a8, #5ccbff); }
+.cifra-docente:nth-child(4)::before { background: linear-gradient(90deg, #7c3aed, #d12f3a); }
+.cifra-docente dt { font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: rgb(var(--c-base-texto-secundario)); }
+.cifra-docente dd { margin: 4px 0 0; font-family: Poppins, sans-serif; font-size: 26px; font-weight: 700; color: rgb(var(--c-base-texto-primario)); }
+.cifra-docente dd small { display: block; font-family: inherit; font-size: 13px; font-weight: 500; color: rgb(var(--c-base-texto-secundario)); }

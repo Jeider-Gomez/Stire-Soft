@@ -170,7 +170,7 @@ describe('«Hoy» de la clase', () => {
     });
     expect(lista.map((p) => p.tipo)).toEqual(['solicitudes', 'bloqueados', 'revisar', 'salto_fallido', 'refuerzo_quieto', 'entrega_cierra', 'listos']);
     // los bloqueados de una misma lección van juntos, con un solo refuerzo para los dos
-    expect(lista[1].titulo).toBe('2 estudiantes bloqueados en «Else if»');
+    expect(lista[1].titulo).toBe('2 estudiantes necesitan ayuda en «Else if»');
     expect(lista[1].acciones[0]).toEqual({ texto: 'Asignar refuerzo a los 2', to: '/docente/refuerzos/nuevo?tipo=refuerzo&clase=5&estudiantes=16%2C17&lecciones=34' });
     expect(lista[2]).toMatchObject({ titulo: 'Por revisar: «Calculadora»', detalle: '3 estudiantes esperan tu comentario.' });
     expect(lista[4].titulo).toBe('1 estudiante no ha empezado el refuerzo «Otra forma»');
@@ -218,8 +218,8 @@ describe('«Hoy» de la clase', () => {
     expect(lista[0].acciones[0]).toEqual({ texto: 'Escribirles', to: '/docente/mensajes' });
     // y la pantalla muestra la semana frente a la anterior
     expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain('accionesResumen.semana<SemanaHoy>()');
-    // el espacio antes del total va dentro de la expresión: Vue recorta el de un <template> y salía «más.4 estudiantes»
-    expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain("totalEstudiantes === null ? '' : ` ${totalEstudiantes}");
+    // el total va en la línea de debajo del título («Algoritmos · 4 estudiantes · lo que conviene…»), dentro de la expresión
+    expect(leer('pages', 'docente', 'clase', '[classId]', 'index.vue')).toContain("totalEstudiantes === null ? '' : `${totalEstudiantes} ${totalEstudiantes === 1 ? 'estudiante' : 'estudiantes'} · `");
   });
 
   it('una entrega en borrador, ya cerrada o que cierra en más de 3 días no aparece como «cierra pronto»', () => {

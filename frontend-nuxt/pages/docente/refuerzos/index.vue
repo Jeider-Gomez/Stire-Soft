@@ -1,17 +1,17 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-5">
     <DocentePestanasClase v-if="claseId" :class-id="claseId" activa="refuerzos" :nombre="claseActual?.name" />
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-5 shadow-sm space-y-3">
+    <header class="cabecera-docente flex-col !flex-nowrap">
       <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
-          <h1 class="text-xl font-bold text-base-texto-primario flex items-center gap-2"><LifeBuoy :size="22" class="text-acento-ambar-fuerte" aria-hidden="true" /> Refuerzos y retos</h1>
-          <p class="text-xs text-base-texto-secundario mt-1">Lo que asignaste a estudiantes concretos y si funcionó: los pasos que hicieron y su dominio antes y ahora.</p>
+          <h1 class="titulo-docente flex items-center gap-2"><LifeBuoy :size="22" class="text-acento-ambar-fuerte" aria-hidden="true" /> Refuerzos y retos</h1>
+          <p class="detalle-docente">Lo que asignaste a estudiantes concretos y si funcionó: los pasos que hicieron y su dominio antes y ahora.</p>
         </div>
         <NuxtLink v-if="claseId" data-recorrido="nuevo-refuerzo" :to="enlaceNuevoRefuerzo(claseId, 'refuerzo', [])" class="px-4 py-2 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-xs inline-flex items-center gap-1.5 shrink-0">
           <Plus :size="14" aria-hidden="true" /> Nuevo refuerzo o reto
         </NuxtLink>
       </div>
-      <p class="text-[11px] text-base-texto-secundario">También puedes asignar desde <NuxtLink :to="claseId ? `/docente/clase/${claseId}` : '/docente'" class="underline">Resumen de la clase</NuxtLink> o desde el mapa de <NuxtLink :to="claseId ? `/docente/rendimiento?classId=${claseId}` : '/docente/rendimiento'" class="underline">Estudiantes</NuxtLink>: en «Bloqueados» y «Listos para más».</p>
+      <p class="text-[11px] text-base-texto-secundario">También puedes asignar desde <NuxtLink :to="claseId ? `/docente/clase/${claseId}` : '/docente'" class="underline">Resumen de la clase</NuxtLink> o desde el mapa de <NuxtLink :to="claseId ? `/docente/rendimiento?classId=${claseId}` : '/docente/rendimiento'" class="underline">Estudiantes</NuxtLink>: en «Necesitan ayuda» y «Listos para más».</p>
     </header>
 
     <p v-if="cargando" role="status" class="flex items-center gap-2 text-xs text-base-texto-secundario"><Loader2 :size="14" class="animate-spin" aria-hidden="true" /> Cargando…</p>

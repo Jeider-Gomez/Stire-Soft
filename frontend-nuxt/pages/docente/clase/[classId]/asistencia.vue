@@ -2,10 +2,10 @@
   <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase :class-id="classId" activa="asistencia" :nombre="clase?.name" :codigo="clase?.code" />
 
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+    <header class="cabecera-docente">
       <div class="min-w-0">
-        <h1 class="text-xl font-bold text-base-texto-primario tracking-tight">Asistencia</h1>
-        <p class="text-xs text-base-texto-secundario mt-1 max-w-2xl">
+        <h1 class="titulo-docente">Asistencia</h1>
+        <p class="detalle-docente">
           Opcional. Cada estudiante abre <strong>Mi asistencia</strong> en su celular y tú escaneas su código, que cambia
           cada 20 segundos: ves su nombre y su foto para comparar, y si un mismo celular marca a dos cuentas te avisa.
           También puedes marcar o corregir a mano.
