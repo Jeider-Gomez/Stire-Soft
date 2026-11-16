@@ -76,8 +76,8 @@
             <p class="text-base text-base-texto-secundario max-w-2xl">{{ s.intro }}</p>
           </header>
           <ManualTareaManual v-for="t in s.tareas" :key="t.id" :tarea="t" :rol="s.rol" />
-          <dl v-if="s.bloques?.length" class="grid sm:grid-cols-2 gap-4">
-            <div v-for="b in s.bloques" :key="b.titulo" class="bg-base-blanco rounded-xl border border-base-borde-sutil border-t-4 border-t-stire-teal p-4">
+          <dl v-if="s.bloques?.length" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div v-for="b in s.bloques" :key="b.titulo" class="min-w-0 bg-base-blanco rounded-xl border border-base-borde-sutil border-t-4 border-t-stire-teal p-4">
               <dt class="font-poppins font-bold">{{ b.titulo }}</dt>
               <dd class="text-sm text-base-texto-secundario mt-1 leading-relaxed"><ManualTextoConBotones :texto="b.texto" /></dd>
               <dd v-if="b.formula"><pre class="mt-3 overflow-x-auto rounded-md bg-base-bg-secundario border border-base-borde-sutil p-3 font-mono text-xs leading-relaxed text-base-texto-primario">{{ b.formula }}</pre></dd>
