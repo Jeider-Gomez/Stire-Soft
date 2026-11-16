@@ -35,7 +35,7 @@
           :class="moduloAbierto === mod.id ? 'bg-base-bg-secundario font-semibold text-base-texto-primario' : 'text-base-texto-primario hover:bg-base-bg-secundario'"
           @click="alternarModulo(mod.id)">
           <span class="shrink-0 w-7 text-center rounded text-[10px] font-bold py-0.5" :class="conteoModulo(mod).dominadas === conteoModulo(mod).total && mod.units.length ? 'bg-semantico-pasa/15 text-semantico-pasa' : 'bg-base-bg-secundario text-base-texto-primario'">M{{ i + 1 }}</span>
-          <Lock v-if="studentStore.estadoModulo(mod.id)?.abierto === false" :size="12" class="shrink-0 text-slate-500" aria-label="Bloqueado" />
+          <Lock v-if="studentStore.estadoModulo(mod.id)?.abierto === false" :size="12" class="shrink-0 text-slate-500" aria-label="Todavía no está abierto" />
           <span class="flex-1 min-w-0 truncate">{{ tituloCorto(mod.title) }}</span>
           <span class="shrink-0 text-[10px] font-semibold text-base-texto-secundario" :aria-label="`${conteoModulo(mod).dominadas} de ${conteoModulo(mod).total} lecciones dominadas`">{{ conteoModulo(mod).dominadas }}/{{ conteoModulo(mod).total }}</span>
         </button>
