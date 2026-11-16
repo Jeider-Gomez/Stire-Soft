@@ -23,7 +23,7 @@
       <p v-if="temaDeContraste" :id="`${prefijo}-nota-tema`" class="text-[11px] text-base-texto-secundario">
         Con el tema de contraste «{{ temaDeContraste.texto }}» activo, se usan sus colores. Apaga «Tema de contraste» abajo para volver a estos.
       </p>
-      <div class="grid sm:grid-cols-3 gap-2">
+      <div class="grid gap-2" :class="compacto ? 'grid-cols-3' : 'sm:grid-cols-3'">
         <label v-for="t in TEMAS" :key="t.valor" class="flex flex-col gap-2 rounded-md border-2 p-2 cursor-pointer text-xs has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-acento-ambar-fuerte"
           :class="[a.tema === t.valor ? 'border-acento-ambar-fuerte' : 'border-base-borde-sutil', temaDeContraste ? 'opacity-60 cursor-not-allowed' : '']">
           <!-- Vista previa: una tarjeta en miniatura con los colores del tema (decorativa) -->
@@ -73,7 +73,7 @@
       </div>
       <fieldset v-show="temaDeContraste" :id="`${prefijo}-ct-temas`" class="border-t border-base-borde-sutil p-3 space-y-2">
         <legend class="sr-only">Elige el tema de contraste</legend>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div class="grid grid-cols-2 gap-2" :class="{ 'sm:grid-cols-4': !compacto }">
           <label v-for="t in TEMAS_CONTRASTE" :key="t.valor" class="flex flex-col gap-1.5 rounded-md border-2 p-1.5 cursor-pointer text-xs has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-acento-ambar-fuerte"
             :class="a.temaContraste === t.valor ? 'border-acento-ambar-fuerte' : 'border-base-borde-sutil'">
             <span class="flex items-end justify-between h-16 rounded px-2 py-1.5 border" aria-hidden="true"
