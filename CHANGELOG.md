@@ -16,6 +16,44 @@ entry to the oldest.
 
 El plan está en `docs/v3/`. Lo que se construye en la rama no se despliega hasta el visto bueno del equipo.
 
+### Revisión antes de desplegar (Fases E y F) · 16 de Noviembre de 2026
+
+- **Docente** (Fase E) y **administrador** (Fase F, lo que no pide servidor nuevo, más el registro de acciones del
+  administrador con la migración `1794000000000-AccionesAdmin`).
+- Recorrido en local de 46 pantallas (estudiante, docente, administrador y públicas), en computador y a 375 px, en claro y en oscuro.
+  Arreglos: el recorrido de bienvenida ya no sale sobre una ventana abierta; en oscuro se leen «En práctica»,
+  «Practicar» y las pastillas seleccionadas sobre azul; la barra del docente no se sale entre 1024 y 1279 px; el manual no
+  se desborda en el celular; «Mi cuenta» y los nombres de las pestañas iguales a los del menú; sin «Hoy» ni «Bloqueado».
+- Las 246 llamadas del frontend tienen su ruta en el servidor. Las rutas del administrador responden 403 a un estudiante y a
+  un docente, y 401 sin sesión.
+- **Desplegar el backend antes que el frontend**, con las migraciones `1793900000000-Laboratorio` y
+  `1794000000000-AccionesAdmin` (las dos solo crean tablas).
+- Queda para la v3.1 lo que pide servidor nuevo (P-12 a P-19 de la bitácora). La v3.0.0 espera la evaluación del equipo
+  (`docs/v3/LISTA_REVISION_FASE_G.md`).
+
+Verificación final: 2997 de 2997 pruebas, `npm run generate` del frontend y `npm run verify:clean` (extracto literal de la salida):
+
+```
+[verify:clean 1] rm -rf node_modules dist
+[verify:clean 2] npm ci (instalacion exacta desde package-lock.json)
+[verify:clean 3] crear base de datos vacia de verificacion: stire_verify_clean
+[verify:clean 4] migration:run contra la base de datos vacia
+0 migrations are already loaded in the database.
+53 migrations were found in the source code.
+53 migrations are new migrations must be executed.
+Migration AccionesAdmin1794000000000 has been executed successfully.
+[verify:clean 5] db:seed:demo contra la base de datos vacia
+[verify:clean 6] npm run build
+[verify:clean] setup completo. Base de datos de verificacion: stire_verify_clean (puerto 3097). Continua scripts/verify-clean-server-check.js.
+login real contra el servidor recien levantado (docente de demo)
+  login OK para docente.demo@stire.local (token recibido)
+verificacion de datos sembrados via GET /enrollment/my
+  OK, status 200
+apagado del servidor
+[verify:clean:server-check] limpieza: eliminar base de datos de verificacion stire_verify_clean
+[verify:clean] TODO EN VERDE: npm ci -> migration:run -> db:seed:demo -> build -> start -> login real -> apagado.
+```
+
 ### Cierre de la Fase D (estudiante) · 14 de Noviembre de 2026
 
 - **Inicio y Aprender** («E-Inicio», «E-Aprender»), **lección** completa («E-Leccion»), **ejercicio** sobre el v9 con los
