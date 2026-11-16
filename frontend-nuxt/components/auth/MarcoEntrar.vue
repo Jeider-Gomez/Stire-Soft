@@ -9,7 +9,7 @@
       <PresentacionVideoSTIRE class="lg:self-start" />
     </section>
 
-    <div class="flex justify-center" :class="compacto ? 'sm:pt-[60px]' : 'sm:pt-[72px]'">
+    <div class="marco-tarjeta flex justify-center" :class="compacto ? 'sm:pt-[60px]' : 'sm:pt-[72px]'">
       <div class="relative w-full max-w-[440px]">
         <div class="tarjeta-atras hidden sm:block" aria-hidden="true" />
         <AuthMascotaEntrar v-bind="mascota" />
