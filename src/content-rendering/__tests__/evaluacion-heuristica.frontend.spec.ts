@@ -31,7 +31,7 @@ describe('Evaluación heurística: hallazgos corregidos', () => {
     const titulo = cargarTitulo();
     expect(titulo('/estudiante/asistencia')).toBe('Mi asistencia · STIRE');
     expect(titulo('/docente/clase/28/asistencia')).toBe('Asistencia de la clase · STIRE');
-    expect(titulo('/docente/clase/28')).toBe('Hoy en la clase · STIRE');
+    expect(titulo('/docente/clase/28')).toBe('Resumen de la clase · STIRE');
     expect(leer('utils', 'tituloPagina.ts')).toContain('return nombre?.trim() ? `${nombre.trim()} · ${base}` : base');
     expect(leer('pages', 'estudiante', 'unidad', '[id].vue')).toContain('useHead({ title: computed(() => tituloConNombre(unitData.value?.title, route.path)) })');
     expect(leer('pages', 'estudiante', 'evaluacion', '[activityId].vue')).toContain('tituloConNombre(workspaceStore.currentExercise?.title, route.path)');

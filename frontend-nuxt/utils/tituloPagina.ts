@@ -33,7 +33,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/docente\/clase\/\d+\/ajustes/, 'Ajustes de la clase'],
   [/^\/docente\/clase\/\d+\/notas/, 'Notas de la clase'],
   [/^\/docente\/clase\/\d+\/asistencia/, 'Asistencia de la clase'],
-  [/^\/docente\/clase\//, 'Hoy en la clase'],
+  [/^\/docente\/clase\//, 'Resumen de la clase'],
   [/^\/docente\/estudiante\//, 'Detalle del estudiante'],
   [/^\/docente\/refuerzos\/nuevo/, 'Asignar refuerzo o reto'],
   [/^\/docente\/refuerzos/, 'Refuerzos y retos'],
