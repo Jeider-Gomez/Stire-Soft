@@ -16,6 +16,12 @@ function seVe(selector: string | undefined): boolean {
   return !!el && el.getClientRects().length > 0
 }
 
+/** Con una ventana abierta (por ejemplo «Nueva clase») el recorrido no sale solo: quedaría una ventana sobre otra.
+ *  No se marca como visto, así que aparece en la visita siguiente; el botón «?» lo sigue mostrando. */
+function hayVentanaAbierta(): boolean {
+  return !!document.querySelector('[role="dialog"][aria-modal="true"]')
+}
+
 /** «Ver en el manual» al pie del globo: abre la tarea en otra pestaña para no perder el recorrido. */
 function enlaceAlManual(tarea: string): HTMLAnchorElement {
   const a = document.createElement('a')
@@ -127,6 +133,7 @@ export function useRecorrido() {
     const r = actual.value
     if (!r || yaVisto(r) || !apariencia.value.recorridosAutomaticos) return
     setTimeout(() => {
+      if (hayVentanaAbierta()) return
       if (actual.value?.id === r.id && !yaVisto(r) && apariencia.value.recorridosAutomaticos) dibujar(r)
     }, ESPERA_PRIMERA_VEZ_MS)
   }

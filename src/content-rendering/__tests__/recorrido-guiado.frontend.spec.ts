@@ -136,6 +136,18 @@ describe('recorrido guiado', () => {
 });
 
 // 23/10, pedido del dueño: saltar el recorrido y no volver a verlo solo.
+describe('el recorrido no sale solo encima de una ventana abierta', () => {
+  it('si hay una ventana modal (como «Nueva clase»), espera a la visita siguiente y no se marca como visto', () => {
+    const c = leer('composables', 'useRecorrido.ts');
+    expect(c).toContain(`document.querySelector('[role="dialog"][aria-modal="true"]')`);
+    const cuerpo = c.slice(c.indexOf('function primeraVez()'));
+    expect(cuerpo.indexOf('if (hayVentanaAbierta()) return')).toBeGreaterThan(-1);
+    expect(cuerpo.indexOf('if (hayVentanaAbierta()) return')).toBeLessThan(cuerpo.indexOf('dibujar(r)'));
+    // La ventana de crear clase usa la base común, que se anuncia como modal.
+    expect(leer('components', 'admin', 'AdminDialogo.vue')).toContain('aria-modal="true"');
+  });
+});
+
 describe('«Saltar recorrido» y «No volver a mostrar recorridos»', () => {
   it('cada globo trae las dos opciones; saltar cierra (y marca visto) y la casilla apaga los automáticos', () => {
     const c = leer('composables', 'useRecorrido.ts');
