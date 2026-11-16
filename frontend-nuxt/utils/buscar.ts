@@ -73,7 +73,7 @@ export function pantallasDeRol(rol: string): Resultado[] {
       p('sus', 'Encuesta de usabilidad', '/admin/usabilidad', 'Opiniones', 'sus encuesta puntaje'),
       p('estado', 'Estado del sistema', '/admin/dashboard', 'Sistema', 'salud servidor funciona'),
       p('registros', 'Registros y mantenimiento', '/admin/sistema', 'Sistema', 'logs registros mantenimiento'),
-      p('perfil', 'Mi perfil', '/admin/perfil', 'Tus datos y la clave', 'cuenta contraseña clave apariencia'),
+      p('perfil', 'Mi cuenta', '/admin/perfil', 'Tus datos y la clave', 'cuenta contraseña clave apariencia'),
     ]
   }
   return []

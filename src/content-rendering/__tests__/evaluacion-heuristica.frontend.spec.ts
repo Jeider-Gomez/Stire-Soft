@@ -21,7 +21,7 @@ describe('Evaluación heurística: hallazgos corregidos', () => {
     const titulo = cargarTitulo();
     expect(titulo('/estudiante/progreso')).toBe('Mi progreso · STIRE');
     expect(titulo('/estudiante/evaluacion/12')).toBe('Ejercicio · STIRE');
-    expect(titulo('/docente/rendimiento')).toBe('Rendimiento del grupo · STIRE');
+    expect(titulo('/docente/rendimiento')).toBe('Estudiantes · STIRE');
     expect(titulo('/estudiante')).toBe('Inicio · STIRE');
     expect(new Set(['/estudiante', '/estudiante/repasos', '/docente', '/docente/contenidos'].map(titulo)).size).toBe(4);
     expect(leer('app.vue')).toMatch(/useHead\(\{ title: computed\(\(\) => tituloPagina\(route\.path\)\) \}\)/);

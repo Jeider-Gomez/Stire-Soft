@@ -117,7 +117,7 @@
               </p>
             </div>
 
-            <!-- Enlace Mi perfil -->
+            <!-- Enlace Mi cuenta -->
             <NuxtLink
               :to="`${homeRoute}/perfil`"
               @click="showUserMenu = false"
@@ -125,7 +125,7 @@
                      hover:bg-slate-50 transition-colors duration-150 font-medium"
             >
               <UserCircle :size="14" />
-              <span>Mi perfil</span>
+              <span>Mi cuenta</span>
             </NuxtLink>
 
             <!-- Apariencia y lectura: tema oscuro, contraste y tamaño del texto (components/perfil/AparienciaLectura.vue) -->

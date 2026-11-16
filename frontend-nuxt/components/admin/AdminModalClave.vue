@@ -60,7 +60,7 @@
         </div>
         <div class="p-3 rounded-lg bg-acento-ambar/10 border border-acento-ambar/30 text-xs text-base-texto-primario space-y-1">
           <p class="font-bold text-acento-ambar-fuerte flex items-center gap-1"><TriangleAlert :size="14" aria-hidden="true" /> Información importante:</p>
-          <p>Entrégasela por un canal seguro; la persona debe cambiarla en Mi perfil.</p>
+          <p>Entrégasela por un canal seguro; la persona debe cambiarla en «Mi cuenta».</p>
           <p class="text-slate-700 text-[11px]">Por seguridad, esta contraseña no se volverá a mostrar tras cerrar esta ventana.</p>
         </div>
       </div>

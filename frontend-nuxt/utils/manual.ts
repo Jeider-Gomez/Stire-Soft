@@ -94,7 +94,7 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo cambio mi nombre, mi foto o mi contraseña?',
         paraQue: 'Para mantener tu cuenta al día.',
         pasos: [
-          'Toca tu nombre, arriba a la derecha, y luego «Mi perfil».',
+          'Toca tu nombre, arriba a la derecha, y luego «Mi cuenta».',
           'En «Datos del perfil», cambia tu nombre y toca «Guardar nombre». La «Foto de perfil» es opcional.',
           'En «Cambiar contraseña», escribe la actual y la nueva, y toca «Cambiar contraseña».',
         ],

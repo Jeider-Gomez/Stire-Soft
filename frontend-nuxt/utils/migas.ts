@@ -52,7 +52,7 @@ const ADMIN: Array<[RegExp, Tramo[]]> = [
   [/^\/admin\/usabilidad/, ['Administración', 'Encuesta de usabilidad']],
   [/^\/admin\/dashboard/, ['Administración', 'Estado del sistema']],
   [/^\/admin\/sistema/, ['Administración', 'Registros y mantenimiento']],
-  [/^\/admin\/perfil/, ['Administración', 'Mi perfil']],
+  [/^\/admin\/perfil/, ['Administración', 'Mi cuenta']],
 ]
 
 /** Los tramos de «Dónde estás» para una ruta; sin coincidencia, ninguno (nunca un camino inventado). */
