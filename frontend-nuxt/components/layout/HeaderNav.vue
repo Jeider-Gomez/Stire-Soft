@@ -3,7 +3,7 @@
   <!-- Con el Tutor o el Asistente abiertos al lado queda poco ancho: los botones muestran solo su ícono (barra-compacta). -->
   <header
     class="h-16 bg-base-blanco/80 glass-header border-b border-base-borde-sutil flex items-center justify-between px-4 md:px-6 sticky top-0 z-40 shadow-sm"
-    :class="{ 'barra-compacta': panelAbierto }"
+    :class="{ 'barra-compacta': panelAbierto, 'barra-ajustada': authStore.currentRole === 'docente' }"
   >
     <!-- ── IZQUIERDA: Isotipo + Logotipo + Contexto Institucional ── -->
     <div class="flex items-center gap-3 min-w-0">
@@ -255,4 +255,12 @@ function handleLogout() {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 .barra-compacta :deep(kbd) { display: none; }
+/* El docente tiene un botón más (Asistente): entre 1024 y 1279 px, con el menú abierto, la barra se salía 79 px y el menú
+   de la cuenta quedaba fuera de la pantalla (medido el 16/11). En ese ancho, solo iconos, como la barra compacta. */
+@media (max-width: 1279px) {
+  .barra-ajustada :deep(.lg\:not-sr-only), .barra-ajustada .nombre-cuenta {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  .barra-ajustada :deep(kbd) { display: none; }
+}
 </style>
