@@ -5,7 +5,8 @@
        - El fondo la cierra solo si el clic EMPEZÓ en el fondo: al seleccionar texto arrastrando y soltar fuera, el
          navegador lo contaba como clic en el fondo y la cerraba (reporte de Jorge, 02/10). -->
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+    class="fixed inset-0 z-50 flex"
+    :class="lateral ? 'items-stretch justify-end p-0 sm:p-3 bg-transparent' : 'items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm'"
     @mousedown="inicioClic = $event.target" @click.self="inicioClic === $event.currentTarget && cierraConFondo && cerrar()">
     <div
       ref="dialogo"
@@ -14,8 +15,8 @@
       :aria-labelledby="idTitulo"
       :aria-describedby="idDescripcion"
       tabindex="-1"
-      class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 w-full shadow-xl space-y-4 outline-none max-h-[90dvh] overflow-y-auto"
-      :class="ANCHOS[ancho]"
+      class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 w-full shadow-xl space-y-4 outline-none overflow-y-auto"
+      :class="lateral ? 'max-w-md h-full max-h-[100dvh] shadow-2xl' : [ANCHOS[ancho], 'max-h-[90dvh]']"
       @keydown="atraparFoco($event, dialogo)">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" :class="claseIcono">
@@ -52,7 +53,9 @@ const props = withDefaults(defineProps<{
   ancho?: 'md' | '2xl' | '3xl' | '4xl'
   /** En un editor: pregunta antes de cerrar si hay cambios sin guardar (useSalirSinGuardar, ítem 13). */
   antesDeCerrar?: (() => boolean | Promise<boolean>) | null
-}>(), { claseIcono: 'bg-acento-ambar/15 text-acento-ambar-fuerte', devolverFoco: null, ocupado: false, cierraConFondo: true, idDescripcion: undefined, ancho: 'md', antesDeCerrar: null })
+  /** Panel a la derecha sin oscurecer el fondo: se ve la pantalla de atrás mientras se cambia (Apariencia, 16/11). */
+  lateral?: boolean
+}>(), { lateral: false,  claseIcono: 'bg-acento-ambar/15 text-acento-ambar-fuerte', devolverFoco: null, ocupado: false, cierraConFondo: true, idDescripcion: undefined, ancho: 'md', antesDeCerrar: null })
 // Clases completas (no armadas con el ancho) para que Tailwind las encuentre al compilar.
 const ANCHOS = { md: 'max-w-md', '2xl': 'max-w-2xl', '3xl': 'max-w-3xl', '4xl': 'max-w-4xl' } as const
 

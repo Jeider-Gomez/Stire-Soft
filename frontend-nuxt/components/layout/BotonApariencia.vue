@@ -17,7 +17,7 @@
 
     <Teleport to="body">
       <AdminDialogo v-if="abierto" id-titulo="apariencia-rapida-titulo" titulo="Apariencia y lectura"
-        subtitulo="Se aplica al instante y se recuerda en este navegador." ancho="2xl" devolver-foco="boton-apariencia"
+        subtitulo="Se aplica al instante y se recuerda en este navegador." ancho="2xl" lateral devolver-foco="boton-apariencia"
         @cerrar="abierto = false">
         <template #icono><Contrast :size="18" aria-hidden="true" /></template>
         <PerfilAparienciaLectura compacto />
