@@ -56,6 +56,10 @@ describe('SaveApiKeyDto', () => {
     expect(dto.apiKey).toBe('AIzaSyFAKE-KEY_1234567890abcdefghijklmnoZ9x2');
   });
 
+  it('acepta el formato nuevo de Google AI Studio («AQ.…», con puntos y guiones)', async () => {
+    expect(await check('AQ.Ab8RN6KN-I5K1oUNsiQVPOcNgA59mwAxeeNl_x-yZ')).toHaveLength(0);
+  });
+
   it.each([
     ['muy corta', 'AIza123'],
     ['con espacios internos', 'AIzaSyFAKE KEY 1234567890abcdefghijklmno'],
