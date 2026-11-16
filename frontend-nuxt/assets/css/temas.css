@@ -116,7 +116,9 @@ a[class*="hover:underline"]:not([class*="bg-"]):not([class*="text-xl"]):not([cla
 :root[data-tema="oscuro"] :is([class*="bg-acento-"], [class*="bg-semantico-"]):is(.text-white, .hover\:text-white:hover) { color: rgb(var(--c-base-blanco)); }
 :root[data-tema="oscuro"] :is(.\!text-teal-800, .\!text-teal-700) { color: rgb(110 231 183) !important; }
 :root[data-tema="oscuro"] :is(.text-acento-ambar-fuerte, .text-acento-ambar) { color: rgb(var(--c-base-texto-primario)); }
-:root[data-tema="oscuro"] :is([class*="bg-acento-"]):is(.text-acento-ambar-fuerte, .text-acento-ambar) { color: rgb(var(--c-base-blanco)); }
+/* Solo sobre el fondo lleno (el sol): un fondo tenue («/15») o uno que solo aparece al pasar el cursor sigue siendo oscuro,
+   y ahí el texto oscuro no se leía («En práctica» y «Practicar» en Mi progreso, medido el 16/11: 1,4:1 y 1:1). */
+:root[data-tema="oscuro"] :is([class~="bg-acento-ambar-fuerte"], [class~="bg-acento-ambar"], .hover\:bg-acento-ambar-fuerte:hover, .hover\:bg-acento-ambar:hover):is(.text-acento-ambar-fuerte, .text-acento-ambar) { color: rgb(var(--c-base-blanco)); }
 :root[data-tema="oscuro"] .badge-admin { color: rgb(147 197 253); }
 :root[data-tema="oscuro"] .badge-docente { color: rgb(196 181 253); }
 :root[data-tema="oscuro"] .badge-estudiante { color: rgb(110 231 183) !important; }
