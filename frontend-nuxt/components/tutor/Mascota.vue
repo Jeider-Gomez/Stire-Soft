@@ -180,6 +180,13 @@ onBeforeUnmount(() => {
   --m-fondo: #ffd60a; --m-marco: rgb(var(--c-base-texto-primario)); --m-pantalla: #000; --m-gafas: #ffd60a; --m-patilla: #ffd60a;
   --m-lente: #fff; --m-ojo: #000; --m-boca: #ffd60a;
 }
+/* Temas de contraste (Acuático, Desierto, Anochecer, Cielo nocturno): la mascota toma la paleta del tema en vez del
+   amarillo fijo (Jeider, 16/11): fondo y gafas con el color de resalte, marco y ojos con el texto, pantalla con el fondo. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .mascota-tutor {
+  --m-fondo: rgb(var(--c-ct-resalte)); --m-borde: rgb(var(--c-base-blanco)); --m-marco: rgb(var(--c-base-texto-primario));
+  --m-pantalla: rgb(var(--c-base-blanco)); --m-gafas: rgb(var(--c-ct-resalte)); --m-patilla: rgb(var(--c-ct-resalte));
+  --m-lente: rgb(var(--c-base-blanco)); --m-ojo: rgb(var(--c-base-texto-primario)); --m-boca: rgb(var(--c-ct-enlace));
+}
 .ojos { transform-box: fill-box; transform-origin: center; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .ojos.parpadea { transform: scaleY(0.1) !important; transition-duration: 0.08s; }
 .ojo { transform-box: fill-box; transform-origin: center; }

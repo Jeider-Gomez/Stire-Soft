@@ -100,6 +100,12 @@ const huecos = `logo-huecos-${useId()}`
   --l-fondo: #ffd60a; --l-marco: rgb(var(--c-base-texto-primario)); --l-pantalla: #000; --l-gafas: #ffd60a; --l-patilla: #ffd60a;
   --l-lente: #fff; --l-ojo: #000; --l-boca: #ffd60a; --n-tinta: rgb(var(--c-base-texto-primario)); --n-turquesa: rgb(var(--c-base-texto-primario));
 }
+/* Temas de contraste: la paleta del tema, como la mascota (Mascota.vue). */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .logo-stire {
+  --l-fondo: rgb(var(--c-ct-resalte)); --l-borde: rgb(var(--c-base-blanco)); --l-marco: rgb(var(--c-base-texto-primario));
+  --l-pantalla: rgb(var(--c-base-blanco)); --l-gafas: rgb(var(--c-ct-resalte)); --l-patilla: rgb(var(--c-ct-resalte));
+  --l-lente: rgb(var(--c-base-blanco)); --l-ojo: rgb(var(--c-base-texto-primario)); --l-boca: rgb(var(--c-ct-enlace));
+}
 .l-fondo { fill: var(--l-fondo); stroke: var(--l-borde); }
 .l-marco { fill: var(--l-marco); }
 .l-borde { stroke: var(--l-borde); }

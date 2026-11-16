@@ -132,3 +132,6 @@
   .campo-entrar { min-height: 40px; }
   .boton-entrar, .boton-secundario { min-height: 42px; }
 }
+/* Temas de contraste: la tarjeta que asoma detrás deja el degradado turquesa y toma el resalte del tema (16/11). */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .tarjeta-atras { background: rgb(var(--c-ct-resalte)); }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .fondo-entrar { background: rgb(var(--c-base-blanco)) !important; background-image: none !important; }
