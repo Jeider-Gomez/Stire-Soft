@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 // Cada tipo de aviso con su color y adónde lleva: tinta para quien no puede avanzar, sol para quien va más lento y los errores.
-const TITULO = { rezago: 'Ver quiénes necesitan apoyo', bloqueados: 'Ver quiénes no pueden avanzar', error: 'Ver el error y a quiénes les pasa', mensajes: 'Ver tus mensajes' } as const
+const TITULO = { rezago: 'Ver quiénes necesitan apoyo', bloqueados: 'Ver quiénes necesitan ayuda para avanzar', error: 'Ver el error y a quiénes les pasa', mensajes: 'Ver tus mensajes' } as const
 const CIFRA = { rezago: 'pastilla-sol', bloqueados: 'pastilla-tinta', error: 'pastilla-sol', mensajes: 'pastilla-lila' } as const
 import { ChevronRight } from 'lucide-vue-next'
 import type { PendienteInicio } from '~/utils/inicioDocente'
