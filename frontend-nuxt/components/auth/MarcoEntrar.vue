@@ -24,7 +24,7 @@
 <script setup lang="ts">
 defineProps<{
   /** Lo que la mascota ve: campo con el foco, si se ve la clave, error, listo y pestaña. */
-  mascota: { campo: 'email' | 'password' | null; verClave: boolean; error: boolean; listo: boolean; pestana: 'codigo' | 'cuenta' }
+  mascota: { campo: 'email' | 'password' | null; verClave: boolean; error: boolean; listo: boolean; pestana: 'codigo' | 'cuenta'; correo?: string; largoClave?: number; mayus?: boolean }
   /** Menos aire y, en el celular, sin la tarjeta del video: el registro tiene más campos y «Crear mi cuenta» debe verse
    *  sin bajar en 390×844 y 1366×657 (BT-27). */
   compacto?: boolean

@@ -41,6 +41,11 @@
           fill="none" :stroke-width="pequena ? 11 : 8.5" stroke-linecap="round" stroke-linejoin="round" />
       </g>
       <path class="boca m-boca" :class="{ habla: expresion === 'hablando' && !quieta }" :d="BOCA[expresion]" fill="none" :stroke-width="pequena ? 9 : 6" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Lo que se muestra en la pantalla encima de la cara (la persiana de Entrar, un ✓, una ?), recortado a la pantalla. -->
+      <g v-if="$slots.pantalla" :clip-path="`url(#${recorte})`">
+        <defs><clipPath :id="recorte"><rect x="38" y="52" width="124" height="76" rx="10" /></clipPath></defs>
+        <slot name="pantalla" />
+      </g>
       <!-- La base con el hueco del mouse recortado: deja ver el fondo, sea cual sea. -->
       <path v-if="forma === 'completa'" d="M36 150 H126.5 V151 a4.5 4.5 0 0 0 4.5 4.5 H147 a4.5 4.5 0 0 0 4.5 -4.5 V150 H164 a6 6 0 0 1 0 12 H36 a6 6 0 0 1 0 -12 Z" class="m-marco" />
     </g>
@@ -56,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import { BOCA, GESTO, OJOS, SIGNIFICADO, esperaParpadeo, miradaHacia, type ExpresionTutor } from '~/utils/mascotaTutor'
 
 const props = withDefaults(defineProps<{
@@ -76,6 +81,7 @@ const props = withDefaults(defineProps<{
 }>(), { expresion: 'normal', tamano: 40, forma: 'compacta', vivo: true, mirarCursor: false, saludar: false })
 
 const raiz = ref<SVGSVGElement | null>(null)
+const recorte = `mascota-pantalla-${useId()}`
 const parpadea = ref(false)
 const guina = ref(false)
 const mirada = ref({ x: 0, y: 0 })

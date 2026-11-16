@@ -1,7 +1,7 @@
 <template>
   <!-- v3 (Fase C; cuadros «Entrar» y «Entrar-celular» del lienzo). Conserva lo aprendido (docs/v3/LECCIONES_QUE_NO_SE_PIERDEN.md):
        error bajo cada campo, el servidor no dice cuál dato falló, ojo y Bloq Mayús, la vuelta del QR y «Solo mirar» sutil. -->
-  <AuthMarcoEntrar :mascota="{ campo: campoEnFoco, verClave, error: !!errorMessage, listo: accesoConcedido, pestana }">
+  <AuthMarcoEntrar :mascota="{ campo: campoEnFoco, verClave, error: !!errorMessage, listo: accesoConcedido, pestana, correo: email, largoClave: password.length, mayus: bloqMayus }">
     <div>
       <h1 class="m-0 font-poppins font-bold text-[24px] sm:text-[28px]">Entrar<span class="sm:hidden"> a STIRE</span></h1>
       <p class="mt-1 mb-0 text-[15px] text-base-texto-secundario">Qué bueno verte de nuevo.</p>
