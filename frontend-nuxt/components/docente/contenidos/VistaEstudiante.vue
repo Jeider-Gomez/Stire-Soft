@@ -11,7 +11,7 @@
     <div v-if="hayAlternativas" class="flex flex-wrap items-center gap-1.5 px-4 py-2 border-b border-base-borde-sutil text-[11px]" role="radiogroup" aria-label="Situación del estudiante">
       <span class="text-base-texto-secundario">Un estudiante que</span>
       <button v-for="s in SITUACIONES" :key="s.valor" type="button" role="radio" :aria-checked="situacion === s.valor"
-        class="min-h-[28px] px-2.5 rounded-full border font-semibold" :class="situacion === s.valor ? 'border-stire-blue bg-stire-blue text-base-blanco' : 'border-base-borde-sutil text-base-texto-primario hover:bg-base-bg-secundario'"
+        class="min-h-[28px] px-2.5 rounded-full border font-semibold" :class="situacion === s.valor ? 'border-stire-blue bg-stire-blue text-white' : 'border-base-borde-sutil text-base-texto-primario hover:bg-base-bg-secundario'"
         @click="situacion = s.valor">{{ s.texto }}</button>
     </div>
     <div class="p-5 space-y-6">

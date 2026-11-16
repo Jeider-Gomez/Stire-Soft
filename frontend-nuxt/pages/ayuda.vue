@@ -59,7 +59,7 @@
           <div class="flex flex-wrap gap-2" role="group" aria-label="Ver el manual de">
             <button v-for="r in ROLES" :key="r.valor" type="button" :aria-pressed="rol === r.valor"
               class="min-h-[44px] px-4 rounded-full border text-sm font-semibold"
-              :class="rol === r.valor ? 'bg-stire-blue border-stire-blue text-base-blanco' : 'border-base-borde-fuerte text-base-texto-primario hover:bg-base-bg-secundario'"
+              :class="rol === r.valor ? 'bg-stire-blue border-stire-blue text-white' : 'border-base-borde-fuerte text-base-texto-primario hover:bg-base-bg-secundario'"
               @click="rol = r.valor">{{ r.texto }}</button>
           </div>
           <p class="text-xs text-base-texto-secundario" aria-live="polite">{{ resumenFiltro }}</p>

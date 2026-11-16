@@ -20,7 +20,7 @@
           <span class="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />{{ TEXTO_ESTADO[estado] }}
         </span>
         <button type="button" class="ml-auto inline-flex items-center gap-1.5 min-h-[36px] px-3 rounded-full border text-xs font-semibold"
-          :class="comoEstudiante ? 'border-stire-blue bg-stire-blue text-base-blanco' : 'border-base-borde-sutil text-base-texto-primario hover:bg-base-bg-secundario'"
+          :class="comoEstudiante ? 'border-stire-blue bg-stire-blue text-white' : 'border-base-borde-sutil text-base-texto-primario hover:bg-base-bg-secundario'"
           :aria-pressed="comoEstudiante" @click="comoEstudiante = !comoEstudiante">
           <Eye :size="13" aria-hidden="true" /> {{ comoEstudiante ? 'Volver a editar' : 'Ver como estudiante' }}
         </button>
