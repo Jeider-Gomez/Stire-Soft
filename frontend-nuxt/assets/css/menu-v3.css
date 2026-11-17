@@ -69,3 +69,12 @@
 .barra-inferior .activo .pildora { background: rgb(var(--t-fila)); color: rgb(var(--t)); }
 :root[data-tema="oscuro"] .barra-inferior .activo .pildora { color: rgb(var(--t-icono)); }
 .barra-inferior .punto { position: absolute; top: 0; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: #ffc94d; }
+
+/* El scroll propio del menú lateral (useMobileSidebar.ts, FIJA): fino y casi invisible hasta pasar el mouse. Con el menú
+   recogido no se muestra: la barra gruesa de Windows se comía medio ancho del menú (Jeider, 16/11). Se sigue pudiendo
+   bajar con la rueda, el dedo o el teclado. */
+aside.w-sidebar { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+aside.w-sidebar:hover, aside.w-sidebar:focus-within { scrollbar-color: rgb(var(--c-base-borde-fuerte)) transparent; }
+aside.w-sidebar.menu-colapsado { scrollbar-width: none; }
+aside.w-sidebar::-webkit-scrollbar { width: 6px; }
+aside.w-sidebar.menu-colapsado::-webkit-scrollbar { display: none; }
