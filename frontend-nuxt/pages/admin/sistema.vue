@@ -148,7 +148,7 @@
           Sin eventos con este filtro
         </div>
 
-        <div v-else v-for="(entry, idx) in logEntries" :key="idx" class="leading-relaxed flex items-start gap-2">
+        <div v-else v-for="(entry, idx) in logEntries" :key="idx" class="leading-relaxed flex flex-wrap sm:flex-nowrap items-start gap-x-2">
           <span class="text-editor-muted shrink-0">[{{ formatLogTime(entry.timestamp) }}]</span>
           <span
             class="font-bold shrink-0 text-[10px] uppercase px-1 rounded"
@@ -158,7 +158,7 @@
           <span v-if="entry.context" class="text-[#4ec9b0] shrink-0 font-semibold">
             [{{ entry.context }}]
           </span>
-          <span class="text-white break-words">{{ entry.message }}</span>
+          <span class="text-white min-w-0 [overflow-wrap:anywhere]">{{ entry.message }}</span>
         </div>
       </div>
     </section>

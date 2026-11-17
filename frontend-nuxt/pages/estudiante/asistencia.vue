@@ -5,7 +5,7 @@
   <div class="max-w-6xl mx-auto space-y-[18px]">
     <EstudianteClaseCabecera />
 
-    <div class="grid gap-[18px] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] items-start">
+    <div class="grid grid-cols-1 gap-[18px] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] items-start">
       <section class="tarjeta-inicio flex flex-col items-center gap-3 text-center" style="--acento: 0 194 168; --acento2: 92 203 255" aria-labelledby="mi-codigo-titulo">
         <h2 id="mi-codigo-titulo" class="titulo-tarjeta self-stretch text-left">Mi código de asistencia</h2>
         <div class="flex items-center gap-3">

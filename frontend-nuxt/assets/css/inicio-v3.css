@@ -51,6 +51,7 @@
 
 /* Las tarjetas de abajo: blancas, con la línea de dos colores arriba (la sección a la que llevan). */
 .tarjeta-inicio {
+  min-width: 0; /* en una grilla, que el texto no la ensanche (Mi asistencia en el celular se salía 140 px) */
   position: relative;
   background: rgb(var(--c-base-blanco));
   border: 1px solid rgb(var(--c-base-borde-sutil));
