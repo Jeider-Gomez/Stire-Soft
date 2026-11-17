@@ -6,7 +6,7 @@
     <div>
       <h1 class="m-0 font-poppins font-bold text-[24px] sm:text-[28px]">Crear cuenta</h1>
       <p class="mt-1 mb-0 text-xs font-bold tracking-[.06em] uppercase text-base-texto-secundario" aria-live="polite">
-        {{ paso === 1 ? 'Paso 1 de 2 · Lo necesario' : 'Paso 2 de 2 · Opcional' }}
+        {{ paso === 1 ? 'Paso 1 de 2 · Lo necesario' : selectedRole === 'estudiante' ? 'Paso 2 de 2 · Activa tu Tutor' : 'Paso 2 de 2 · Opcional' }}
       </p>
     </div>
 
@@ -123,7 +123,7 @@
         <p class="m-0 text-sm text-base-texto-secundario">
           {{ selectedRole === 'docente'
             ? 'Ayuda al administrador a aprobar tu solicitud más rápido.'
-            : 'Puedes dejarlo para después: el código de clase se ingresa en «Mis clases» y la clave, desde el Tutor.' }}
+            : 'El Tutor te explica cuando un ejercicio no sale. Necesita una clave gratuita de Google: ponla ahora, una sola vez, y no te interrumpe después en mitad de una lección.' }}
         </p>
 
         <div v-if="selectedRole === 'docente'" class="flex flex-col gap-1.5">
@@ -135,13 +135,6 @@
             placeholder="Ej.: Docente de Algoritmia y Programación Web" class="campo-entrar py-3 resize-none"></textarea>
         </div>
 
-        <div v-if="selectedRole === 'estudiante'" class="flex flex-col gap-1.5">
-          <label for="classCode" class="text-[15px] font-semibold">Código de la clase</label>
-          <input id="classCode" v-model="classCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false"
-            placeholder="Ej.: ALGO-203413" class="campo-entrar font-mono uppercase tracking-wider" aria-describedby="codigo-ayuda-registro"
-            @input="classCode = codigoMientrasEscribe(classCode)" />
-          <p id="codigo-ayuda-registro" class="m-0 text-xs text-base-texto-secundario">Si tu docente te dio un código, escríbelo para entrar a su clase de una vez.</p>
-        </div>
 
         <!-- Clave de Google AI Studio (§19.1): solo estudiantes, el Tutor es solo para ellos (src/tutor/tutor.controller.ts). -->
         <div v-if="selectedRole === 'estudiante'" class="caja-clave flex flex-col gap-2 p-3 rounded-xl">
@@ -151,16 +144,15 @@
             <span class="text-xs font-normal text-base-texto-secundario">(para usar el Tutor)</span>
           </label>
           <p class="m-0 text-xs text-base-texto-secundario">
-            Recomendado: ponerla ahora para que el Tutor no te interrumpa luego en mitad de un ejercicio. Es gratis
-            y no pide tarjeta. Si prefieres, la pones después desde el Tutor.
+            Es gratis y no pide tarjeta. Sigue los pasos: Google se abre en otra pestaña y esta te espera con lo que ya escribiste.
           </p>
           <!-- La misma guía del Tutor, aquí donde se crea la cuenta: al volver de Google esta pestaña sigue con lo escrito. -->
-          <details class="guia-clave-registro rounded-lg border border-base-borde-sutil bg-base-blanco px-3">
+          <details open class="guia-clave-registro rounded-lg border border-base-borde-sutil bg-base-blanco px-3">
             <summary class="cursor-pointer min-h-[44px] flex items-center gap-1.5 text-sm font-semibold text-base-texto-primario">¿Cómo consigo la clave? (5 pasos, unos 2 minutos)</summary>
             <div class="pb-3"><GuiaClaveGoogle /></div>
           </details>
           <div class="relative">
-            <input id="apiKey" v-model="apiKey" :type="showApiKey ? 'text' : 'password'" autocomplete="off" placeholder="AIzaSy…" class="campo-entrar pr-12 text-sm font-mono" />
+            <input id="apiKey" v-model="apiKey" aria-describedby="clave-falta" style="font-size:16px" :type="showApiKey ? 'text' : 'password'" autocomplete="off" placeholder="AIzaSy…" class="campo-entrar pr-12 text-sm font-mono" />
             <button type="button" :aria-label="showApiKey ? 'Ocultar la clave' : 'Mostrar la clave'" :title="showApiKey ? 'Ocultar la clave' : 'Mostrar la clave'"
               :aria-pressed="showApiKey" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center rounded-lg text-base-texto-secundario hover:text-base-texto-primario"
               @click="showApiKey = !showApiKey">
@@ -168,6 +160,7 @@
               <Eye v-else :size="18" aria-hidden="true" />
             </button>
           </div>
+          <p v-if="avisoClave" id="clave-falta" role="alert" class="m-0 flex items-start gap-1.5 text-xs font-semibold text-semantico-falla"><AlertCircle :size="14" class="shrink-0 mt-px" aria-hidden="true" /><span>{{ avisoClave }}</span></p>
           <!-- Aviso de privacidad §19.3 -->
           <p class="m-0 flex items-start gap-1.5 text-[11px] text-base-texto-secundario">
             <ShieldCheck :size="14" class="shrink-0 mt-px" aria-hidden="true" />
@@ -179,25 +172,40 @@
             </span>
           </p>
         </div>
+        <div v-if="selectedRole === 'estudiante'" class="flex flex-col gap-1.5">
+          <label for="classCode" class="text-[15px] font-semibold">Código de la clase <span class="text-xs font-normal text-base-texto-secundario">(opcional)</span></label>
+          <input id="classCode" v-model="classCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false"
+            placeholder="Ej.: ALGO-203413" class="campo-entrar font-mono uppercase tracking-wider" aria-describedby="codigo-ayuda-registro"
+            @input="classCode = codigoMientrasEscribe(classCode)" />
+          <p id="codigo-ayuda-registro" class="m-0 text-xs text-base-texto-secundario">Si tu docente te dio un código, escríbelo para entrar a su clase de una vez.</p>
+        </div>
       </div>
 
       <!-- Público de 18 años o más: una sola casilla con edad, términos y fines investigativos (utils/legal.ts). -->
       <LegalCasillasAceptacion v-model:mayor-de-edad="confirmaMayorDeEdad" v-model:terminos="aceptaTerminos" v-model:investigacion="consienteInvestigacion" :falta="faltaAceptar" />
 
       <!-- Acciones: «Crear mi cuenta» siempre a la vista; lo opcional es un botón aparte. -->
-      <button type="submit" :disabled="isLoading" class="boton-entrar relative overflow-hidden disabled:cursor-wait">
+      <button v-if="paso === 1 && selectedRole === 'estudiante'" type="button" class="boton-entrar gap-1.5" @click="irAOpcional">
+        Siguiente: activa tu Tutor <ChevronRight :size="16" aria-hidden="true" />
+      </button>
+      <button v-else type="submit" :disabled="isLoading" class="boton-entrar relative overflow-hidden disabled:cursor-wait">
         <span class="brillo-barrido" aria-hidden="true" />
         <template v-if="isLoading">
           <span class="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" aria-hidden="true" />
           <span>Creando tu cuenta…</span>
         </template>
-        <span v-else>Crear mi cuenta</span>
+        <span v-else>{{ selectedRole === 'estudiante' ? 'Crear mi cuenta con el Tutor activo' : 'Crear mi cuenta' }}</span>
       </button>
-      <button v-if="paso === 1" id="ir-opcional" type="button" class="boton-secundario gap-1.5 text-[15px]" @click="irAOpcional">
-        {{ selectedRole === 'docente' ? 'Paso 2, opcional: la materia que dictas' : 'Paso 2, opcional: unirme a mi clase' }}
+      <!-- Se puede seguir sin la clave, pero hay que confirmarlo: el Tutor es parte de cómo se aprende en STIRE. -->
+      <button v-if="paso === 2 && selectedRole === 'estudiante'" type="button" class="min-h-[44px] text-sm font-semibold underline text-base-texto-secundario" :disabled="isLoading" @click="seguirSinClave">
+        {{ confirmarSinClave ? 'Sí, crear la cuenta sin el Tutor por ahora' : 'Seguir sin el Tutor' }}
+      </button>
+      <p v-if="confirmarSinClave" role="status" class="m-0 -mt-2 text-xs text-center text-base-texto-secundario">Sin la clave, el Tutor no podrá ayudarte cuando un ejercicio no salga. La puedes poner luego desde el Tutor.</p>
+      <button v-if="paso === 1 && selectedRole === 'docente'" id="ir-opcional" type="button" class="boton-secundario gap-1.5 text-[15px]" @click="irAOpcional">
+        Paso 2, opcional: la materia que dictas
         <ChevronRight :size="16" aria-hidden="true" />
       </button>
-      <button v-else type="button" class="boton-secundario gap-1.5 text-[15px]" @click="paso = 1">
+      <button v-if="paso === 2" type="button" class="boton-secundario gap-1.5 text-[15px]" @click="paso = 1">
         <ArrowLeft :size="16" aria-hidden="true" /> Volver a mis datos
       </button>
     </form>
@@ -215,6 +223,7 @@ import { useAuthStore } from '~/stores/auth'
 import { useCuentaPublica } from '~/composables/useCuentaPublica'
 import { codigoDeLaVuelta, codigoMientrasEscribe, rutaDeVuelta } from '~/utils/codigoClase'
 import { faltantesDelRegistro, type Faltantes } from '~/utils/registro'
+import { revisarFormatoClave } from '~/utils/claveGoogle'
 
 const route = useRoute()
 
@@ -278,8 +287,25 @@ function detectarBloqMayus(evento: KeyboardEvent) {
 }
 
 
+// La clave del Tutor en el registro del estudiante (17/11, Pedro y Jeider): se pide en el paso 2; seguir sin ella se confirma.
+let sinClaveConfirmado = false
+const confirmarSinClave = ref(false)
+const avisoClave = ref('')
+watch(apiKey, () => { avisoClave.value = ''; confirmarSinClave.value = false })
+function seguirSinClave() {
+  if (!confirmarSinClave.value) { confirmarSinClave.value = true; return }
+  apiKey.value = ''
+  sinClaveConfirmado = true
+  void handleRegister()
+}
+
 async function handleRegister() {
   if (Object.keys(validar()).length) { enfocarPrimerFaltante(); return }
+  if (selectedRole.value === 'estudiante' && !sinClaveConfirmado) {
+    if (paso.value === 1) { paso.value = 2; return }
+    avisoClave.value = apiKey.value.trim() ? (revisarFormatoClave(apiKey.value) ?? '') : 'Pega aquí tu clave, o toca «Seguir sin el Tutor».'
+    if (avisoClave.value) { nextTick(() => document.getElementById('apiKey')?.focus()); return }
+  }
   faltaAceptar.value = !confirmaMayorDeEdad.value || !aceptaTerminos.value
   if (faltaAceptar.value) { document.getElementById('acepta-condiciones')?.focus(); return }
 

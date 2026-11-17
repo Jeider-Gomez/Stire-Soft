@@ -49,7 +49,7 @@ describe('Entrar (v3)', () => {
   it('Crear cuenta usa el mismo marco, conserva los dos pasos y muestra la clase del QR', () => {
     const r = leer('pages', 'auth', 'register.vue');
     expect(r).toContain('<AuthMarcoEntrar compacto');
-    expect(r).toContain("{{ paso === 1 ? 'Paso 1 de 2 · Lo necesario' : 'Paso 2 de 2 · Opcional' }}");
+    expect(r).toContain("{{ paso === 1 ? 'Paso 1 de 2 · Lo necesario' : selectedRole === 'estudiante' ? 'Paso 2 de 2 · Activa tu Tutor' : 'Paso 2 de 2 · Opcional' }}");
     expect(r).toContain('<legend class="mb-1.5 text-[15px] font-semibold">Voy a usar STIRE como</legend>');
     expect(r).toContain('Al crear tu cuenta te unes a la clase');
     expect(r).not.toContain('confirmPassword');
