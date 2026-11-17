@@ -3,7 +3,7 @@
        como árbol y los ejercicios, cada uno con subir, bajar, quitar y su texto editable; la explicación como se leerá.
        Lo que el docente cambia aquí es lo que se crea. Con el porqué de la propuesta. -->
   <section class="rounded-xl border border-base-borde-sutil bg-base-bg-secundario/40 p-3.5 space-y-2.5" aria-label="Borrador del Asistente">
-    <p class="text-xs font-semibold text-stire-blue">Borrador · {{ resumenBorrador(borrador) }}</p>
+    <p class="text-xs font-semibold text-stire-blue">Borrador · {{ resumenBorrador(borrador) }} <span class="font-normal text-base-texto-secundario">· generado con IA: revísalo antes de crear</span></p>
     <p v-if="editable && borrador.tipo !== 'leccion'" class="text-[11px] text-base-texto-secundario">Cambia los nombres, el orden o quita lo que no quieras: se crea tal como lo dejes.</p>
 
     <ol v-if="borrador.tipo === 'estructura'" class="space-y-3 text-sm">

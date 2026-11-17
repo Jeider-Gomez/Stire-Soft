@@ -2,7 +2,7 @@
   <!-- Quién y cuándo, y en las respuestas del Tutor un botón para escucharlas (UI-05, Jeider 17/10). Usa la voz que el
        estudiante eligió en «Escuchar la lección» o, si no eligió, la más natural del navegador (utils/vozTutor.ts). -->
   <span class="mt-1 px-1 flex items-center gap-1.5 text-[10px] text-base-texto-secundario">
-    {{ deEstudiante ? 'Tú' : 'Tutor IA' }} • {{ hora }}
+    {{ deEstudiante ? 'Tú' : 'Tutor · generado con IA, puede equivocarse' }} • <time :datetime="fecha?.toISOString()">{{ horaCorta }}</time>
     <button
       v-if="!deEstudiante && puedeHablar && texto"
       type="button"
@@ -22,7 +22,10 @@ import { Square, Volume2 } from 'lucide-vue-next'
 import { CLAVE_PREFERENCIAS_VOZ, elegirVoz, leerPreferenciasVoz } from '~/utils/escucharLeccion'
 import { hayVozNatural, textoDeMensaje } from '~/utils/vozTutor'
 
-const props = defineProps<{ deEstudiante: boolean; hora: string; texto: string }>()
+const props = defineProps<{ deEstudiante: boolean; hora: string | Date; texto: string }>()
+// La hora llegaba como el texto largo del navegador («Mon Nov 16 2026 21:42:06 GMT-0500…»): ahora, «9:42 p. m.».
+const fecha = computed(() => { const d = new Date(props.hora); return Number.isNaN(d.getTime()) ? null : d })
+const horaCorta = computed(() => fecha.value ? fecha.value.toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' }) : String(props.hora ?? ''))
 const puedeHablar = ref(false)
 const hablando = ref(false)
 const sinVozNatural = ref(false)

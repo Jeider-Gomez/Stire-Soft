@@ -138,6 +138,9 @@ export const POLITICA: DocumentoLegal = {
       parrafos: [
         'Tu docente ve tu avance, tus errores y tus notas en las clases que dicta. Ningún docente ve clases ajenas.',
         GOOGLE,
+        'Dónde se guardan: el servidor y la base de datos de STIRE están en Microsoft Azure (Estados Unidos) y las páginas ' +
+          'las entrega Vercel. Ellos alojan el servicio; no usan tus datos para nada más. Las respuestas del Tutor y del ' +
+          'Asistente las genera Google con IA: pueden equivocarse, y en STIRE se marcan como «generado con IA».',
         'Nadie más, salvo orden de una autoridad competente.',
       ],
     },
