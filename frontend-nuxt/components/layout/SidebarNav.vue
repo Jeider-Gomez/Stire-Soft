@@ -192,7 +192,8 @@ watch([colapsado, () => route.path], () => nextTick(() => {
 }), { immediate: true })
 
 // Proyectos está en prueba: el menú solo lo muestra si el servidor dice que esta cuenta puede usarlo.
-const proyectosDisponible = ref(false)
+// Compartido con el menú de la cuenta (HeaderNav.vue), que en el celular lleva «Mis proyectos» (P-8): un solo pedido.
+const proyectosDisponible = useState('proyectos-disponible', () => false)
 onMounted(async () => {
   if (authStore.currentRole !== 'estudiante') return
   try {

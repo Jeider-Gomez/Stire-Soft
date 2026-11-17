@@ -8,7 +8,9 @@
     <!-- ── IZQUIERDA: Isotipo + Logotipo + Contexto Institucional ── -->
     <div class="flex items-center gap-3 min-w-0">
       <!-- Botón colapsar sidebar (mobile) -->
-      <button
+      <!-- P-8 (17/11): el estudiante no lleva ☰ en el celular, como el cuadro E-Cel-Inicio (logo, campana y cuenta). Lo
+           principal está en la barra de abajo (LayoutBarraInferior) y lo demás, en el menú de la cuenta. -->
+      <button v-if="authStore.currentRole !== 'estudiante'"
         @click="$emit('toggle-sidebar')"
         class="p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors duration-150 flex-shrink-0 md:hidden"
         aria-label="Abrir menú lateral"
@@ -119,6 +121,16 @@
               </p>
             </div>
 
+            <!-- P-8: en el celular, lo del menú del estudiante que no está en la barra de abajo. -->
+            <nav v-if="authStore.currentRole === 'estudiante'" aria-label="Más secciones" class="md:hidden border-b border-slate-100 py-1">
+              <NuxtLink v-for="e in masDelEstudiante" :key="e.to" :to="e.to" @click="showUserMenu = false"
+                class="w-full flex items-center gap-2.5 px-4 py-2.5 min-h-[44px] text-sm text-slate-700 hover:bg-slate-50 font-medium"
+                :aria-current="route.path === e.to ? 'page' : undefined">
+                <component :is="e.icono" :size="16" aria-hidden="true" />
+                <span>{{ e.texto }}</span>
+              </NuxtLink>
+            </nav>
+
             <!-- Enlace Mi cuenta -->
             <NuxtLink
               :to="`${homeRoute}/perfil`"
@@ -158,7 +170,7 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, LogOut, GraduationCap, UserCircle, Contrast, Search, Sparkles } from 'lucide-vue-next'
+import { Menu, LogOut, GraduationCap, UserCircle, Contrast, Search, Sparkles, FolderCode, QrCode, Trophy, ArrowLeftRight } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { useTutorStore } from '~/stores/tutor'
@@ -198,6 +210,16 @@ const claseDelDocente = useState<string | null>('clase-docente-nombre', () => nu
 const migas = computed(() => migasDeRuta(route.path, authStore.currentRole, claseDelDocente.value))
 
 const showUserMenu = ref(false)
+// P-8: lo que en el celular va en el menú de la cuenta (el resto está en la barra de abajo). «Mis proyectos» solo si el
+// servidor lo dejó ver (lo pregunta SidebarNav.vue y lo comparte en este estado).
+const proyectosDisponible = useState('proyectos-disponible', () => false)
+const masDelEstudiante = computed(() => [
+  { to: '/estudiante/clase', texto: 'Mi clase', icono: GraduationCap },
+  { to: '/estudiante/asistencia', texto: 'Mi asistencia', icono: QrCode },
+  ...(proyectosDisponible.value ? [{ to: '/estudiante/proyectos', texto: 'Mis proyectos', icono: FolderCode }] : []),
+  { to: '/estudiante/logros', texto: 'Mis logros', icono: Trophy },
+  { to: '/estudiante/clases', texto: 'Cambiar de clase', icono: ArrowLeftRight },
+])
 const avatarMenuRef = ref<HTMLElement | null>(null)
 
 // Cerrar el dropdown al hacer click fuera
