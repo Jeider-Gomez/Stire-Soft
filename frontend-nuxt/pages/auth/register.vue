@@ -151,9 +151,14 @@
             <span class="text-xs font-normal text-base-texto-secundario">(para usar el Tutor)</span>
           </label>
           <p class="m-0 text-xs text-base-texto-secundario">
-            El Tutor usa tu cuenta gratuita de Google: sin costo para ti ni para el proyecto.
-            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" class="font-semibold underline ml-1">Conseguir clave gratuita<span class="sr-only"> (se abre en otra pestaña)</span></a>
+            Recomendado: ponerla ahora para que el Tutor no te interrumpa luego en mitad de un ejercicio. Es gratis
+            y no pide tarjeta. Si prefieres, la pones después desde el Tutor.
           </p>
+          <!-- La misma guía del Tutor, aquí donde se crea la cuenta: al volver de Google esta pestaña sigue con lo escrito. -->
+          <details class="guia-clave-registro rounded-lg border border-base-borde-sutil bg-base-blanco px-3">
+            <summary class="cursor-pointer min-h-[44px] flex items-center gap-1.5 text-sm font-semibold text-base-texto-primario">¿Cómo consigo la clave? (5 pasos, unos 2 minutos)</summary>
+            <div class="pb-3"><GuiaClaveGoogle /></div>
+          </details>
           <div class="relative">
             <input id="apiKey" v-model="apiKey" :type="showApiKey ? 'text' : 'password'" autocomplete="off" placeholder="AIzaSy…" class="campo-entrar pr-12 text-sm font-mono" />
             <button type="button" :aria-label="showApiKey ? 'Ocultar la clave' : 'Mostrar la clave'" :title="showApiKey ? 'Ocultar la clave' : 'Mostrar la clave'"
