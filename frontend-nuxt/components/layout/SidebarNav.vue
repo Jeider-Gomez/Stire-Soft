@@ -128,25 +128,22 @@
         </LayoutClasesDelMenu>
       </nav>
 
-      <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR (v3, Fase B; cuadro A-Usuarios del lienzo): por secciones, cada entrada con su
+      <!-- ⚙️ NAVEGACIÓN ADMINISTRADOR (v3; cuadro A-Usuarios del lienzo): una sola lista sin secciones (Jeider, 16/11), cada entrada con su
            color. Clases, Contenido compartido, IA y proveedores y Datos para investigación entran con sus pantallas
            (Fase F); hasta entonces no se muestran. -->
       <nav v-else data-recorrido="menu-admin" class="menu-v3 text-sm">
         <p class="titulo-rol">Administración</p>
 
-        <p class="titulo-seccion">Personas</p>
         <NuxtLink to="/admin" class="item-menu tono-menta" :class="{ activo: enAdmin('/admin', '/admin/usuarios') }" :aria-current="enAdmin('/admin', '/admin/usuarios') ? 'page' : undefined">
           <span class="icono-menu"><Users :size="18" aria-hidden="true" /></span>
           <span>Usuarios y roles</span>
         </NuxtLink>
 
-        <p class="titulo-seccion">Académico</p>
         <NuxtLink to="/admin/catalogo" class="item-menu tono-cielo" :class="{ activo: enAdmin('/admin/catalogo') }">
           <span class="icono-menu"><Library :size="18" aria-hidden="true" /></span>
           <span>Catálogo académico</span>
         </NuxtLink>
 
-        <p class="titulo-seccion">Opiniones</p>
         <NuxtLink to="/admin/sugerencias" class="item-menu tono-lila" :class="{ activo: enAdmin('/admin/sugerencias') }">
           <span class="icono-menu"><MessageSquare :size="18" aria-hidden="true" /></span>
           <span>Sugerencias</span>
@@ -156,7 +153,6 @@
           <span>Encuesta de usabilidad</span>
         </NuxtLink>
 
-        <p class="titulo-seccion">Sistema</p>
         <NuxtLink to="/admin/dashboard" class="item-menu tono-cielo" :class="{ activo: enAdmin('/admin/dashboard') }">
           <span class="icono-menu"><Activity :size="18" aria-hidden="true" /></span>
           <span>Estado del sistema</span>
