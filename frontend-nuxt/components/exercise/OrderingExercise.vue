@@ -5,10 +5,11 @@
       <p class="text-xs leading-relaxed whitespace-pre-wrap">{{ question.question }}</p>
     </div>
 
-    <p class="m-0 text-[15px] text-base-texto-primario">Arrastra los pasos para ponerlos en orden (con el dedo, desde <span aria-hidden="true">⠿</span> la manija de la izquierda), o usa las flechas.</p>
+    <p class="m-0 text-[15px] text-base-texto-primario">Arrastra los pasos para ponerlos en orden, o usa las flechas. <span class="md:hidden">Con el dedo: mantén presionado un paso y muévelo, o arrástralo desde <span aria-hidden="true">⠿</span>.</span></p>
 
-    <!-- v3 (cuadro «E-Tipo-Ordenar»): se arrastran con el ratón o con el dedo desde la manija (17/11); las flechas siguen
-         para el teclado. -->
+    <!-- v3 (cuadro «E-Tipo-Ordenar»): se arrastran con el ratón o con el dedo (17/11, Jeider: «lo que hace es scroll en
+         la página»): mantener presionada la fila 220 ms la levanta (deslizar rápido sigue desplazando la página) y desde la
+         manija se levanta enseguida. Las flechas siguen para el teclado. -->
     <ol class="m-0 p-0 list-none space-y-2">
       <li
         v-for="(block, index) in orderedBlocks"
@@ -22,11 +23,12 @@
         @dragleave="sobre = sobre === index ? null : sobre"
         @drop.prevent="soltar(index)"
         @dragend="arrastrado = null; sobre = null"
+        @pointerdown="levantarFila($event, index)"
+        @contextmenu.prevent
       >
-        <!-- Manija: con el dedo, desde aquí se arrastra la fila (el resto de la fila deja desplazar la página). -->
+        <!-- Manija: con el dedo, desde aquí la fila se levanta enseguida (sin mantener presionado). -->
         <span class="manija-ordenar shrink-0 flex items-center gap-1.5 min-h-[44px] -ml-1 pl-1 cursor-grab" aria-hidden="true"
-          @pointerdown="tactil.empezar($event, String(index))"
-          @contextmenu.prevent>
+          @pointerdown.stop="tactil.empezar($event, String(index), { pieza: filaDe($event) })">
           <GripVertical :size="18" class="text-base-texto-secundario" />
           <span class="w-7 h-7 rounded-full bg-base-bg-secundario text-xs font-bold flex items-center justify-center">{{ index + 1 }}</span>
         </span>
@@ -129,6 +131,13 @@ const tactil = useArrastreTactil({
   },
 })
 const arrastreNativo = tactil.arrastreNativo
+const ESPERA_FILA_MS = 220
+const filaDe = (e: PointerEvent) => (e.currentTarget as HTMLElement).closest('li') as HTMLElement
+/** Mantener presionada la fila (fuera de las flechas) la levanta; un deslizamiento rápido desplaza la página. */
+function levantarFila(e: PointerEvent, index: number) {
+  if ((e.target as HTMLElement).closest('button')) return
+  tactil.empezar(e, String(index), { espera: ESPERA_FILA_MS })
+}
 
 function syncPendingAnswer() {
   if (orderedBlocks.value.length > 0) {
@@ -149,5 +158,7 @@ onMounted(() => {
 .fila-ordenar { border: 1px solid rgb(var(--c-base-borde-fuerte)); background: rgb(var(--c-base-blanco)); transition: border-color 0.15s ease, opacity 0.15s ease; }
 .fila-ordenar.arrastrando { opacity: 0.5; }
 .fila-ordenar.destino { border: 2px dashed rgb(var(--c-base-texto-primario)); }
-.manija-ordenar { touch-action: none; -webkit-user-select: none; user-select: none; }
+.manija-ordenar { touch-action: none; }
+/* Mantener presionada una fila no selecciona su texto ni abre el menú del celular. */
+.fila-ordenar { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 </style>

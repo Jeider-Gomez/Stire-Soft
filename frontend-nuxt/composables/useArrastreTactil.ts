@@ -38,6 +38,9 @@ export function useArrastreTactil(op: Opciones) {
   let inicio: { id: string; x: number; y: number; el: HTMLElement } | null = null
   let fantasma: HTMLElement | null = null
   let arrastrando = false
+  // Con espera (mantener presionado): mientras corre, mover el dedo desplaza la página; al cumplirse, empieza el arrastre.
+  let temporizador: ReturnType<typeof setTimeout> | null = null
+  let conEspera = false
 
   function zonaEn(x: number, y: number): string | null {
     const el = document.elementFromPoint(x, y)
@@ -64,16 +67,28 @@ export function useArrastreTactil(op: Opciones) {
     const dy = e.clientY - inicio.y
     if (!arrastrando) {
       if (!esArrastre(dx, dy)) return
-      arrastrando = true
-      fantasma = crearFantasma(inicio.el)
-      op.alEmpezar(inicio.id)
-      navigator.vibrate?.(8)
+      // Se movió antes de cumplir la espera: es desplazar la página, no arrastrar.
+      if (conEspera) { limpiar(); return }
+      arrancar()
     }
     e.preventDefault()
     if (fantasma) fantasma.style.transform = `translate(${dx}px, ${dy}px) scale(1.04)`
     const paso = desplazamientoEnBorde(e.clientY, window.innerHeight)
     if (paso) window.scrollBy(0, paso)
     op.alMover(zonaEn(e.clientX, e.clientY))
+  }
+
+  function arrancar() {
+    if (!inicio) return
+    arrastrando = true
+    fantasma = crearFantasma(inicio.el)
+    op.alEmpezar(inicio.id)
+    navigator.vibrate?.(8)
+  }
+
+  /** Mientras se arrastra, el dedo no desplaza la página (en una fila que sí deja desplazar: `touch-action` normal). */
+  function frenarDesplazamiento(t: TouchEvent) {
+    if (arrastrando && t.cancelable) t.preventDefault()
   }
 
   function soltar(e: PointerEvent) {
@@ -97,16 +112,29 @@ export function useArrastreTactil(op: Opciones) {
     fantasma = null
     inicio = null
     arrastrando = false
+    conEspera = false
+    if (temporizador) clearTimeout(temporizador)
+    temporizador = null
+    window.removeEventListener('touchmove', frenarDesplazamiento)
     window.removeEventListener('pointermove', mover)
     window.removeEventListener('pointerup', soltar)
     window.removeEventListener('pointercancel', cancelar)
   }
 
-  /** En `@pointerdown` de la pieza. El ratón no entra aquí: usa el arrastre nativo. */
-  function empezar(e: PointerEvent, id: string) {
+  /**
+   * En `@pointerdown` de la pieza. El ratón no entra aquí: usa el arrastre nativo.
+   * Sin `espera`, la pieza (con `touch-action: none`) se arrastra apenas se mueve el dedo. Con `espera` (ms), hay que
+   * mantenerla presionada ese tiempo: así una fila grande deja desplazar la página con un deslizamiento rápido.
+   */
+  function empezar(e: PointerEvent, id: string, opciones: { espera?: number; pieza?: HTMLElement } = {}) {
     if (e.pointerType === 'mouse' || e.button > 0) return
     limpiar()
-    inicio = { id, x: e.clientX, y: e.clientY, el: e.currentTarget as HTMLElement }
+    inicio = { id, x: e.clientX, y: e.clientY, el: opciones.pieza ?? (e.currentTarget as HTMLElement) }
+    if (opciones.espera) {
+      conEspera = true
+      temporizador = setTimeout(() => { temporizador = null; if (inicio && !arrastrando) arrancar() }, opciones.espera)
+    }
+    window.addEventListener('touchmove', frenarDesplazamiento, { passive: false })
     window.addEventListener('pointermove', mover, { passive: false })
     window.addEventListener('pointerup', soltar)
     window.addEventListener('pointercancel', cancelar)

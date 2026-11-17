@@ -37,6 +37,12 @@ describe('Arrastrar con el dedo', () => {
     expect(fuente).toContain("if (e.pointerType === 'mouse' || e.button > 0) return");
   });
 
+  it('con espera, moverse antes de tiempo desplaza la página y mientras se arrastra no', () => {
+    expect(fuente).toContain('if (conEspera) { limpiar(); return }');
+    expect(fuente).toContain('if (arrastrando && t.cancelable) t.preventDefault()');
+    expect(fuente).toContain("window.addEventListener('touchmove', frenarDesplazamiento, { passive: false })");
+  });
+
   it('en pantalla táctil se apaga el arrastre nativo y el menú de mantener presionado', () => {
     expect(fuente).toContain("arrastreNativo.value = !window.matchMedia?.('(pointer: coarse)').matches");
     for (const c of ['DragDropExercise.vue', 'OrderingExercise.vue']) {
@@ -57,7 +63,11 @@ describe('Arrastrar con el dedo', () => {
 
   it('ordenar: se arrastra desde la manija y cada fila es una zona', () => {
     const v = leer('components', 'exercise', 'OrderingExercise.vue');
-    expect(v).toContain('@pointerdown="tactil.empezar($event, String(index))"');
+    expect(v).toContain('@pointerdown.stop="tactil.empezar($event, String(index), { pieza: filaDe($event) })"');
+    // 17/11 (Jeider: «lo que hace es scroll en la página»): mantener presionada cualquier parte de la fila la levanta.
+    expect(v).toContain('@pointerdown="levantarFila($event, index)"');
+    expect(v).toContain("tactil.empezar(e, String(index), { espera: ESPERA_FILA_MS })");
+    expect(v).toContain("if ((e.target as HTMLElement).closest('button')) return");
     expect(v).toContain(':data-zona="String(index)"');
     expect(v).toContain('.manija-ordenar { touch-action: none;');
   });
