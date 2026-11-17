@@ -4,7 +4,7 @@
 <template>
   <section data-recorrido="siguiente-paso" class="heroe-inicio grid gap-4 sm:gap-6 items-center grid-cols-[1fr_88px] sm:grid-cols-[1fr_150px] lg:grid-cols-[130px_1fr_170px]"
     aria-labelledby="titulo-siguiente-paso">
-    <span class="hidden lg:block" aria-hidden="true"><TutorMascota expresion="contento" :tamano="110" forma="completa" /></span>
+    <span class="mascota-heroe hidden lg:block" aria-hidden="true"><TutorMascota expresion="contento" :tamano="110" forma="completa" /></span>
 
     <div class="min-w-0">
       <p class="m-0 mb-1.5 text-[15px] font-semibold">{{ saludoTexto }}</p>
@@ -12,9 +12,9 @@
         Tu siguiente paso: {{ titulo }}
       </h1>
       <!-- En el celular (cuadro «E-Cel-Inicio») solo el título y un botón: la explicación y el segundo botón, desde sm. -->
-      <p class="hidden sm:block mt-2 mb-0 text-base font-medium leading-relaxed">{{ explicacion }}</p>
+      <p class="explicacion-heroe hidden sm:block mt-2 mb-0 text-base font-medium leading-relaxed">{{ explicacion }}</p>
 
-      <div class="flex flex-wrap gap-x-2.5 gap-y-1 items-center mt-3 sm:mt-4">
+      <div class="acciones-heroe flex flex-wrap gap-x-2.5 gap-y-1 items-center mt-3 sm:mt-4">
         <NuxtLink :to="principal.to" class="boton-heroe boton-principal inline-flex">
           {{ principal.texto }} <ChevronRight :size="17" aria-hidden="true" />
         </NuxtLink>
@@ -37,7 +37,7 @@
 
     <!-- El anillo: el porcentaje del curso dominado, con el número escrito (no solo el arco). -->
     <div class="flex flex-col items-center gap-1 self-start sm:self-center">
-      <svg class="w-[88px] h-[88px] sm:w-[150px] sm:h-[150px]" viewBox="0 0 150 150" role="img" :aria-label="`${porcentaje} % del curso dominado`">
+      <svg class="anillo-heroe w-[88px] h-[88px] sm:w-[150px] sm:h-[150px]" viewBox="0 0 150 150" role="img" :aria-label="`${porcentaje} % del curso dominado`">
         <defs>
           <linearGradient id="anillo-curso" gradientUnits="userSpaceOnUse" x1="138" y1="75" x2="98" y2="134">
             <stop offset="0" stop-color="#00C2A8" /><stop offset="1" stop-color="#FFC94D" />

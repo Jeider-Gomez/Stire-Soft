@@ -2,7 +2,7 @@
   <!-- Inicio del estudiante v3 (Fase D, paso 1; cuadros «E-Inicio», «E-Inicio-Oscuro» y «E-Cel-Inicio»): el siguiente paso
        con la mascota, el camino del módulo y tres tarjetas (de tu clase, te lo dejó el profe, tu semana sin rachas). El
        plan completo del curso está en «Aprender» (menú y barra del celular). Las piezas: components/estudiante/inicio/. -->
-  <div class="flex flex-col gap-[18px]">
+  <div class="inicio-estudiante flex flex-col gap-[18px]">
     <AvisoSolicitudRol :solicitud="myRoleRequest" @cerrar-sesion="authStore.logout()" />
 
     <!-- Sin clase: lo único que se puede hacer es unirse a una. -->

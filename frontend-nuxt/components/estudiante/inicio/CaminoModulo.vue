@@ -21,8 +21,8 @@
     </NuxtLink>
     <div class="overflow-x-auto -mx-2 px-2 pt-2 pb-1" :class="aqui ? 'hidden sm:block' : ''">
       <nav aria-label="Lecciones del módulo"><ol class="relative flex justify-between gap-2 m-0 p-0 list-none" :style="{ minWidth: `${lecciones.length * 112}px` }">
-        <span class="absolute left-6 right-6 top-[22px] h-1 rounded-full bg-base-borde-sutil" aria-hidden="true" />
-        <span class="linea-llena absolute left-6 top-[22px] h-1 rounded-full" :style="{ width: `calc((100% - 48px) * ${llenado})` }" aria-hidden="true" />
+        <span class="linea-camino absolute left-6 right-6 top-[22px] h-1 rounded-full bg-base-borde-sutil" aria-hidden="true" />
+        <span class="linea-camino linea-llena absolute left-6 top-[22px] h-1 rounded-full" :style="{ width: `calc((100% - 48px) * ${llenado})` }" aria-hidden="true" />
         <li v-for="u in lecciones" :key="u.id" class="relative w-[112px] flex-none">
           <NuxtLink :to="`/estudiante/unidad/${u.id}`" class="paso-enlace flex flex-col items-center gap-2 text-center rounded-xl pb-1">
             <span class="paso-camino" :class="CLASE[u.estado]">
@@ -38,7 +38,7 @@
       </ol></nav>
     </div>
     <!-- El módulo siguiente con candado suave (utils/bloqueoModulos.ts): cuánto falta para abrirlo. -->
-    <p v-if="studentStore.proximoModulo" class="m-0 mt-3 pt-3 border-t border-base-borde-sutil flex items-center gap-2 text-[13px] text-base-texto-secundario">
+    <p v-if="studentStore.proximoModulo" class="pie-camino m-0 mt-3 pt-3 border-t border-base-borde-sutil flex items-center gap-2 text-[13px] text-base-texto-secundario">
       <Lock :size="15" class="shrink-0" aria-hidden="true" />
       <span>«{{ corto(studentStore.proximoModulo.modulo.titulo) }}» se abre con {{ studentStore.proximoModulo.umbral }} % de
         <Termino palabra="Dominio">dominio</Termino> en «{{ corto(studentStore.proximoModulo.anterior.titulo) }}». Vas en {{ studentStore.proximoModulo.dominio }} %.</span>
