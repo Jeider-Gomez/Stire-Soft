@@ -59,17 +59,17 @@
   <script>
     const tl = gsap.timeline({ paused: true });
     
-    tl.to("#hola-masc", { y: -12, duration: 1.2, yoyo: true, repeat: 5, ease: "sine.inOut" }, 0.6);
-    tl.fromTo("#hola-ojos", { scaleY: 1 }, { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.08, yoyo: true, repeat: 1 }, 4.59);
+    tl.to("#hola-masc", { y: -12, duration: 1.2, yoyo: true, repeat: 7, ease: "sine.inOut" }, 0.6);
+    tl.fromTo("#hola-ojos", { scaleY: 1 }, { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.08, yoyo: true, repeat: 1 }, 6.91);
     tl.fromTo("#hola-globo", { opacity: 0, y: 24, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 0);
     
     
     
     
-    tl.fromTo("#hola-llave svg", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(2)" }, 1.20);
-    tl.fromTo("#hola-llave h2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 2.00);
-    ["#hola-c1", "#hola-c2", "#hola-c3"].forEach((s, i) => tl.fromTo(s, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.6)" }, 4.20 + i * 0.35));
-    tl.to("#hola-globo, #hola-llave", { opacity: 0, duration: 0.3, ease: "power2.in" }, 8.00);
+    tl.fromTo("#hola-llave svg", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(2)" }, 1.50);
+    tl.fromTo("#hola-llave h2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 2.50);
+    ["#hola-c1", "#hola-c2", "#hola-c3"].forEach((s, i) => tl.fromTo(s, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.6)" }, 5.25 + i * 0.35));
+    tl.to("#hola-globo, #hola-llave", { opacity: 0, duration: 0.3, ease: "power2.in" }, 12.13);
     window.__timelines["hola"] = tl;
   </script>
 </template>

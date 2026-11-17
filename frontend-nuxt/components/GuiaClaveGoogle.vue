@@ -2,10 +2,10 @@
   <!-- Guía paso a paso para conseguir la clave gratuita de Google AI Studio, dentro de STIRE (ítem 7). La usan el Tutor
        del estudiante y el Asistente del docente; el formulario para pegarla lo pone cada uno debajo. -->
   <div class="space-y-3">
-    <!-- El Tutor lo explica en un video de 50 s (17/11, pedido de Pedro y Jeider): proyecto en docs/material-visual/video-clave/. -->
+    <!-- El Tutor lo explica en un video de 1 min (17/11, pedido de Pedro y Jeider): proyecto en docs/material-visual/video-clave/. -->
     <details class="video-clave rounded-xl border border-base-borde-sutil overflow-hidden" :open="videoAbierto">
       <summary class="cursor-pointer min-h-[44px] flex items-center gap-2 px-3 text-sm font-semibold text-base-texto-primario">
-        <PlayCircle :size="18" aria-hidden="true" /> Mira cómo se hace: el Tutor te lo explica (50 s)
+        <PlayCircle :size="18" aria-hidden="true" /> Mira cómo se hace: el Tutor te lo explica (1 min)
       </summary>
       <video class="block w-full aspect-video bg-base-bg-secundario" controls playsinline preload="none" poster="/video/activa-tu-tutor.jpg">
         <source src="/video/activa-tu-tutor.mp4" type="video/mp4">

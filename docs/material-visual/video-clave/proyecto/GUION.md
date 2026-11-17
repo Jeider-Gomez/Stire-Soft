@@ -1,7 +1,7 @@
 # Guion — «Activa tu Tutor» (la mascota explica cómo sacar la clave de Google AI Studio)
 
 Pedido del 17/11 (Pedro y Jeider): un video corto, con el Tutor explicando, para conseguir la clave sin perderse.
-Voz: Kokoro (em_alex, en el equipo, gratis) hasta que haya clave de ElevenLabs para la voz de Will del video de presentación.
+Voz: **Will** (ElevenLabs, modelo v3, cuenta gratuita), la misma del video de presentación; acelerada a 1,1× sin cambiar el tono (`assets/voz/willr_XX.mp3`).
 
 | N.º | Escena | Lo que dice |
 |---|---|---|

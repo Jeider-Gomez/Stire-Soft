@@ -63,20 +63,20 @@
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#entrar-masc", { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.6)" }, 0);
     tl.to("#entrar-masc", { y: -12, duration: 1.2, yoyo: true, repeat: 5, ease: "sine.inOut" }, 0.6);
-    tl.fromTo("#entrar-ojos", { scaleY: 1 }, { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.08, yoyo: true, repeat: 1 }, 4.22);
+    tl.fromTo("#entrar-ojos", { scaleY: 1 }, { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.08, yoyo: true, repeat: 1 }, 5.03);
     tl.fromTo("#entrar-globo", { opacity: 0, y: 24, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 0.35);
     tl.fromTo("#entrar-paso", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, 0.2);
     tl.fromTo("#entrar-nav", { opacity: 0, x: 140, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0.3);
     
     // El dedo que toca: llega desde abajo a la derecha hasta el centro del botón y lo presiona
-    tl.fromTo("#entrar-mano", { x: 420, y: 320, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.7, ease: "power2.inOut" }, 0.05);
-    tl.to("#entrar-btn", { scale: 0.94, duration: 0.1, yoyo: true, repeat: 1 }, 0.80);
-    tl.to("#entrar-mano", { scale: 0.75, duration: 0.1, yoyo: true, repeat: 1 }, 0.80);
+    tl.fromTo("#entrar-mano", { x: 420, y: 320, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.7, ease: "power2.inOut" }, 0.13);
+    tl.to("#entrar-btn", { scale: 0.94, duration: 0.1, yoyo: true, repeat: 1 }, 0.88);
+    tl.to("#entrar-mano", { scale: 0.75, duration: 0.1, yoyo: true, repeat: 1 }, 0.88);
     
-    tl.fromTo("#entrar-casilla", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.20);
-    tl.fromTo("#entrar-check", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 3.20);
-    tl.fromTo("#entrar-nota", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35 }, 4.60);
-    tl.to("#entrar-globo, #entrar-nav, #entrar-mano", { opacity: 0, duration: 0.3, ease: "power2.in" }, 7.32);
+    tl.fromTo("#entrar-casilla", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.43);
+    tl.fromTo("#entrar-check", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 3.53);
+    tl.fromTo("#entrar-nota", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35 }, 5.07);
+    tl.to("#entrar-globo, #entrar-nav, #entrar-mano", { opacity: 0, duration: 0.3, ease: "power2.in" }, 8.76);
     window.__timelines["entrar"] = tl;
   </script>
 </template>

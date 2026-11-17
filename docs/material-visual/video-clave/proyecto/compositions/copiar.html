@@ -62,20 +62,20 @@
   <script>
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#copiar-masc", { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.6)" }, 0);
-    tl.to("#copiar-masc", { y: -12, duration: 1.2, yoyo: true, repeat: 6, ease: "sine.inOut" }, 0.6);
-    tl.fromTo("#copiar-ojos", { scaleY: 1 }, { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.08, yoyo: true, repeat: 1 }, 4.84);
+    tl.to("#copiar-masc", { y: -12, duration: 1.2, yoyo: true, repeat: 8, ease: "sine.inOut" }, 0.6);
+    tl.fromTo("#copiar-ojos", { scaleY: 1 }, { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.08, yoyo: true, repeat: 1 }, 8.80);
     tl.fromTo("#copiar-globo", { opacity: 0, y: 24, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 0.35);
     tl.fromTo("#copiar-paso", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, 0.2);
     tl.fromTo("#copiar-nav", { opacity: 0, x: 140, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0.3);
     
     // El dedo que toca: llega desde abajo a la derecha hasta el centro del botón y lo presiona
-    tl.fromTo("#copiar-mano", { x: 420, y: 320, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.7, ease: "power2.inOut" }, 0.85);
-    tl.to("#copiar-btn", { scale: 0.94, duration: 0.1, yoyo: true, repeat: 1 }, 1.60);
-    tl.to("#copiar-mano", { scale: 0.75, duration: 0.1, yoyo: true, repeat: 1 }, 1.60);
+    tl.fromTo("#copiar-mano", { x: 420, y: 320, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.7, ease: "power2.inOut" }, 1.46);
+    tl.to("#copiar-btn", { scale: 0.94, duration: 0.1, yoyo: true, repeat: 1 }, 2.21);
+    tl.to("#copiar-mano", { scale: 0.75, duration: 0.1, yoyo: true, repeat: 1 }, 2.21);
     
-    tl.fromTo("#copiar-toast", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, 2.00);
-    tl.fromTo("#copiar-nota", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35 }, 4.80);
-    tl.to("#copiar-globo, #copiar-nav, #copiar-mano", { opacity: 0, duration: 0.3, ease: "power2.in" }, 8.45);
+    tl.fromTo("#copiar-toast", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, 2.76);
+    tl.fromTo("#copiar-nota", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35 }, 6.63);
+    tl.to("#copiar-globo, #copiar-nav, #copiar-mano", { opacity: 0, duration: 0.3, ease: "power2.in" }, 15.52);
     window.__timelines["copiar"] = tl;
   </script>
 </template>

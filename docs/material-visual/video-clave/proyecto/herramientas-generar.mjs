@@ -3,7 +3,9 @@ import fs from 'fs'
 import path from 'path'
 
 const D = process.argv[2]
-const voz = { '01': 6.848, '02': 6.059, '03': 6.165, '04': 7.531, '05': 7.296, '06': 7.061 }
+// Duraciones con las que se diseñaron los tiempos (voz local) y las de la voz de Will (ElevenLabs, a 1,1×).
+const base = { '01': 6.848, '02': 6.059, '03': 6.165, '04': 7.531, '05': 7.296, '06': 7.061 }
+const voz = { '01': 8.557, '02': 7.325, '03': 6.796, '04': 9.549, '05': 10.08, '06': 9.043 }
 const PAD = 0.5, COLA = 1.0
 
 const MASCOTA = (id) => `
@@ -141,7 +143,8 @@ const CSS = `
 function escena(e, inicio) {
   if (e.tap) { const id = e.tap.slice(1); e.pantalla = e.pantalla.replace(new RegExp('(id="' + id + '"[^>]*>)([^<]*)'), '$1$2<i class="mano" id="' + e.id + '-mano"></i>') }
   const dur = PAD + voz[e.n] + COLA
-  const T = (t) => (t).toFixed(2)
+  const k = voz[e.n] / base[e.n]
+  const T = (t) => (t * k).toFixed(2)
   const html = `<template>
   <style>${CSS}</style>
   <div id="root" data-composition-id="${e.id}" data-width="1920" data-height="1080">
@@ -163,7 +166,7 @@ function escena(e, inicio) {
     ${e.id === 'hola' ? '' : `tl.fromTo("#${e.id}-nav", { opacity: 0, x: 140, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0.3);`}
     ${e.tap ? `
     // El dedo que toca: llega desde abajo a la derecha hasta el centro del botón y lo presiona
-    tl.fromTo("#${e.id}-mano", { x: 420, y: 320, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.7, ease: "power2.inOut" }, ${T(e.tapEn - 0.75)});
+    tl.fromTo("#${e.id}-mano", { x: 420, y: 320, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.7, ease: "power2.inOut" }, ${(Number(T(e.tapEn)) - 0.75).toFixed(2)});
     tl.to("${e.tap}", { scale: 0.94, duration: 0.1, yoyo: true, repeat: 1 }, ${T(e.tapEn)});
     tl.to("#${e.id}-mano", { scale: 0.75, duration: 0.1, yoyo: true, repeat: 1 }, ${T(e.tapEn)});` : ''}
     ${e.anim(T)}
@@ -182,7 +185,7 @@ const total = t
 const hosts = partes.map((p) => `      <div id="${p.e.id}" data-composition-id="${p.e.id}" data-composition-src="compositions/${p.e.id}.html" data-start="${p.inicio.toFixed(3)}" data-duration="${p.dur.toFixed(3)}" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>`).join('\n')
 const musica = `      <audio id="musica" class="clip" src="assets/musica.mp3" data-start="0" data-duration="${total.toFixed(3)}" data-track-index="3" data-volume="0.25"></audio>
 `
-const audios = musica + partes.map((p, i) => `      <audio id="voz-${p.e.n}" class="clip" src="assets/voz/v${p.e.n}.wav" data-start="${(p.inicio + PAD).toFixed(3)}" data-duration="${voz[p.e.n].toFixed(3)}" data-track-index="2" data-volume="1"></audio>`).join('\n')
+const audios = musica + partes.map((p, i) => `      <audio id="voz-${p.e.n}" class="clip" src="assets/voz/willr_${p.e.n}.mp3" data-start="${(p.inicio + PAD).toFixed(3)}" data-duration="${voz[p.e.n].toFixed(3)}" data-track-index="2" data-volume="1"></audio>`).join('\n')
 fs.writeFileSync(path.join(D, 'index.html'), `<!doctype html>
 <html lang="es">
   <head>
