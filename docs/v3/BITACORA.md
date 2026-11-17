@@ -13,28 +13,32 @@ a paso y con sus commits, en [`BITACORA_HECHO.md`](BITACORA_HECHO.md).
 4. Nada se sube a GitHub sin que Jeider lo pida. Siempre en español. **Sin tareas extra**: no se abren tarjetas en
    Trello ni documentos nuevos si no hacen falta para lo que sigue.
 
-## Dónde estamos (16/11)
+## Dónde estamos (semana del 16/11)
 
-- **La v3 está publicada** para todos: servidor de Azure con las migraciones del Laboratorio y de las acciones del
-  administrador, y el frontend en Vercel desde `main` (`main` = `feat/v3-fase-a`). `verify:clean` en verde el 16/11.
-- **No está marcada como v3.0.0**: eso lo hace Jeider cuando la haya probado (la evaluación heurística ya se hizo).
-- Fases A a F construidas. De la G queda la **prueba con 10 personas** y lo que salga de ella.
+- **La v3 está publicada** para todos (Azure con sus migraciones y Vercel desde `main`). No está marcada como v3.0.0:
+  eso lo hace Jeider cuando la revise.
+- **Fase G cerrada.** La prueba con 10 personas que pidió el profesor se hizo y se recogió la semana pasada. Ya estamos
+  en cosas nuevas.
 
-## Lo que sigue: la prueba con 10 personas
+## Prueba con 10 personas: cerrada
 
-Hojas en [`docs/calidad/prueba-personas/`](../calidad/prueba-personas/): cada integrante observa a 2 personas
-(`-1` no sabe programar, `-2` de la Licenciatura) con el protocolo de
-[`PROTOCOLO_OBSERVACION.md`](../calidad/PROTOCOLO_OBSERVACION.md).
+| Qué | Estado |
+|---|---|
+| Las 10 sesiones (5 observadores × 2 personas, protocolo de [`PROTOCOLO_OBSERVACION.md`](../calidad/PROTOCOLO_OBSERVACION.md)) | Hechas y recogidas la semana pasada. Hojas en [`docs/calidad/prueba-personas/`](../calidad/prueba-personas/) |
+| Encuesta SUS al final | Opcional: los participantes no la respondieron. Por eso el SUS no entra en el informe de la prueba |
+| Arreglar los problemas de gravedad 3 y 2 | **No se hace** (decisión de Jeider, 16/11). Lo que salga de las hojas va a `PENDIENTES.md` si hace falta |
+| Seguir midiendo el SUS | El admin ya elige el periodo en «Encuesta de usabilidad»: últimos 7, 30 o 90 días, o entre dos fechas (`905f902`) |
 
-| Paso | Quién | Cuándo | Qué queda |
-|---|---|---|---|
-| 1. Hacer las 10 sesiones y llenar las 10 hojas | Los 5 observadores | 17/11 | `JEIDER-1.md` … `JORGE-2.md` llenas (o el documento enviado a Jeider, que lo sube con el mismo nombre) |
-| 2. Juntar los resultados | Claude, con las hojas llenas | 17–18/11 | `INFORME.md` con lo del §9 del protocolo: éxito y tiempo mediano por tarea, errores, SUS (promedio y mediana, por perfil), problemas agrupados con su heurística y una frase textual, y la respuesta a P1–P5 |
-| 3. Arreglar lo de gravedad 3 y 2 | Claude, aprobado por Jeider | 18–19/11 | Un commit por problema y la tabla «Ajustes» del informe (el reporte de validación del Reto 5); lo de gravedad 1 a `PENDIENTES.md` |
-| 4. Revisar y marcar la v3.0.0 | Jeider | Después | El tag y la línea en `CHANGELOG.md` |
+Las cifras de la prueba salen **solo de lo que está escrito en las hojas**. No se inventan ni se completan.
 
-Los números del informe salen **solo de las hojas llenas**: no se inventan ni se completan resultados que falten. Si
-una hoja llega incompleta, el informe dice cuántas personas hicieron cada tarea.
+### Lo que realmente hicimos (aparte de la prueba)
+
+Para el informe al profesor, separado de la prueba con personas:
+- **Evaluación heurística** de la v3, hecha por el equipo antes de publicar.
+- **Revisión con `verify:clean`** y despliegue de la v3 el 16/11 (servidor con migraciones, luego Vercel).
+- **Ajustes de la semana del 16/11**, uno por commit (tabla de abajo): Entrar sin bajar y con la mascota del diseño,
+  temas de contraste en la mascota y el logo, cambio de tema con círculo, menús sin scroll, barra de arriba con íconos,
+  «Mi asistencia» fija, y el SUS por periodo.
 
 ## Trabajando ahora
 
@@ -49,6 +53,7 @@ una hoja llega incompleta, el informe dice cuántas personas hicieron cada tarea
 | Entrar cabe sin bajar en 1363×647; mascota y logo con los colores de los temas de contraste; la mascota de Entrar como el diseño (persiana con candado, ✓ y @ del correo, Mayúsculas, se duerme) | `891e827`, `4b8f2b7`, `e32fa7c` |
 | Cambio de tema con un círculo (como remotion.dev); Apariencia como acceso rápido de dos íconos (claro/oscuro y contraste), lo demás en el perfil | `a1f735c`, `9b812d6` |
 | Menú del docente sin scroll (abierto y plegado); «Asistencia y notas» una sola entrada con sus dos pestañas dentro | `2b2496c`, `bf5a39e`, `37da8d1` |
+| El SUS por periodo: el admin elige desde qué fecha hasta cuál mira los resultados | `905f902` |
 | Barra de arriba solo con íconos; «Mi asistencia» como entrada fija del estudiante y el plan del curso fuera del menú; íconos más grandes y responsive | `9b812d6`, `ecb88e8`, `ce538c4` |
 
 ## Pendiente
