@@ -169,7 +169,7 @@ describe('dónde se elige', () => {
     const cabecera = leer('components', 'layout', 'HeaderNav.vue');
     expect(cabecera).toContain(':to="`${homeRoute}/perfil#apariencia`"');
     // en el celular el botón no va en la barra (E-Cel-Inicio): queda el enlace del menú de la cuenta, de arriba
-    expect(cabecera).toContain('<LayoutBotonApariencia class="hidden md:block" />');
+    expect(cabecera).toContain('<LayoutBotonApariencia />');
     const boton = leer('components', 'layout', 'BotonApariencia.vue');
     // 16/11 (Jeider): la cabecera es un acceso rápido de dos íconos (claro/oscuro y contraste); lo demás, en el perfil.
     expect(boton).toContain("@click=\"cambiar({ tema: oscuro ? 'claro' : 'oscuro', temaContraste: 'ninguno' })\"");

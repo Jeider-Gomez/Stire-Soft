@@ -17,7 +17,7 @@
     </button>
     <!-- Sonidos (pendiente de la evaluación heurística, ítem 1): apagados por defecto; al encenderlos se oye una muestra. -->
     <button type="button" :title="apariencia.sonidos ? 'Apagar los sonidos' : 'Encender los sonidos al probar y entregar'"
-      :aria-pressed="apariencia.sonidos" class="boton-rapido" :class="{ encendido: apariencia.sonidos }" @click="alternarSonidos">
+      :aria-pressed="apariencia.sonidos" class="boton-rapido solo-amplio" :class="{ encendido: apariencia.sonidos }" @click="alternarSonidos">
       <Volume2 v-if="apariencia.sonidos" :size="20" aria-hidden="true" />
       <VolumeX v-else :size="20" aria-hidden="true" />
       <span class="sr-only">Sonidos</span>
@@ -53,4 +53,5 @@ const oscuro = computed(() => (temaVisto.value ?? (apariencia.value.tema === 'os
 }
 .boton-rapido:hover { background: rgb(var(--c-base-bg-secundario)); color: rgb(var(--c-base-texto-primario)); }
 .boton-rapido.encendido { color: rgb(var(--c-base-texto-primario)); background: rgb(var(--c-base-bg-secundario)); }
+@media (max-width: 767px) { .solo-amplio { display: none; } }
 </style>

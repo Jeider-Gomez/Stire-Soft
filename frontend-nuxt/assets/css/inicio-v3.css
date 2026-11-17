@@ -43,9 +43,9 @@
   transition: transform 0.15s ease, filter 0.15s ease;
 }
 .heroe-inicio .boton-heroe:active { transform: scale(0.98); }
-.heroe-inicio .boton-principal { background: linear-gradient(135deg, #14213d, #25407a); color: #fff; }
-.heroe-inicio .boton-principal:hover { filter: brightness(1.12); }
-:root[data-tema="oscuro"] .heroe-inicio .boton-principal { background: #e8f6ff; color: #14213d; }
+.heroe-inicio .boton-principal, .activa-tutor .boton-principal { background: linear-gradient(135deg, #14213d, #25407a); color: #fff; }
+.heroe-inicio .boton-principal:hover, .activa-tutor .boton-principal:hover { filter: brightness(1.12); }
+:root[data-tema="oscuro"] .heroe-inicio .boton-principal, :root[data-tema="oscuro"] .activa-tutor .boton-principal { background: #e8f6ff; color: #14213d; }
 .heroe-inicio .boton-otro { background: var(--heroe-boton2); color: inherit; }
 .heroe-inicio .boton-otro:hover { filter: brightness(1.05); }
 

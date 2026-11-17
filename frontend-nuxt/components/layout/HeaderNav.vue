@@ -19,7 +19,9 @@
       <!-- Logo: en computador va arriba de la barra lateral (SidebarNav.vue, 26/10); aquí solo en el celular, donde el
            menú es un cajón. En computador queda el lugar (institución, programa) como texto. -->
       <NuxtLink :to="homeRoute" class="md:hidden flex items-center flex-shrink-0 min-h-[44px]" aria-label="Ir al inicio">
-        <LayoutLogo con-nombre />
+        <!-- En un celular angosto, solo el isotipo: así caben claro/oscuro y contraste a la derecha (17/11). -->
+        <LayoutLogo con-nombre class="hidden min-[470px]:flex" />
+        <LayoutLogo class="min-[470px]:hidden" />
       </NuxtLink>
       <!-- v3 (Fase B; barra() y barraD() del prototipo): «Dónde estás» a la izquierda, con los nombres del menú
            (utils/migas.ts). La clase del estudiante pasó a la tarjeta de arriba del menú (SidebarNav.vue). -->
@@ -33,7 +35,7 @@
     </div>
 
     <!-- ── DERECHA: Badge de rol + Avatar + Salir ── -->
-    <div class="flex items-center gap-2 flex-shrink-0">
+    <div class="flex items-center gap-0.5 sm:gap-2 flex-shrink-0">
       <!-- El Tutor se abre con el lanzador flotante de abajo a la derecha (components/tutor/LanzadorTutor.vue). El rol y
            el lugar están en el menú de la cuenta (27/10). Orden del prototipo: Buscar (o el Asistente del docente),
            Apariencia, Avisos, Ayuda, Sugerencias y la cuenta. -->
@@ -58,9 +60,9 @@
         <kbd class="hidden lg:inline text-[11px] font-semibold opacity-70">Ctrl .</kbd>
       </button>
 
-      <!-- Apariencia y lectura a un clic desde cualquier pantalla (components/layout/BotonApariencia.vue). En el celular la
-           barra lleva solo logo, avisos, ayuda y cuenta (cuadro E-Cel-Inicio): la apariencia queda en el menú de la cuenta. -->
-      <LayoutBotonApariencia class="hidden md:block" />
+      <!-- Apariencia y lectura a un clic desde cualquier pantalla (components/layout/BotonApariencia.vue). En el celular (17/11,
+           Jeider: «que esté siempre disponible») va solo claro/oscuro; contraste y sonido, desde la tableta. -->
+      <LayoutBotonApariencia />
 
       <!-- Avisos -->
       <LayoutNotificationBell />

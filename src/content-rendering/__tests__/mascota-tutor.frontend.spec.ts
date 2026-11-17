@@ -117,7 +117,7 @@ describe('el logo es el mismo personaje y el nombre es STIRE', () => {
     expect(logo).toContain(':root[data-tema="oscuro"] .logo-stire, .logo-stire.claro { --n-tinta: #fff; --n-turquesa: #2fd3c0; }');
     // 12/11, Jeider: con «:global(:root[…]) .logo-stire» Vue deja solo «:root[…]» y el nombre seguía oscuro en el tema oscuro.
     expect(logo).not.toMatch(/:global\(:root/);
-    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutLogo con-nombre />');
+    expect(leer('components', 'layout', 'HeaderNav.vue')).toContain('<LayoutLogo con-nombre class="hidden min-[470px]:flex" />');
     expect(leer('layouts', 'auth.vue')).toContain('<LayoutLogo tamano="grande" con-nombre />');
     expect(leer('pages', 'ayuda.vue')).toContain('<LayoutLogo con-nombre claro />');
     expect(leer('components', 'layout', 'MarcaST.vue')).toContain('<LayoutLogo :tamano="tamano" />');
