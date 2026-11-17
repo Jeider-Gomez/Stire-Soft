@@ -99,7 +99,7 @@ describe('el Tutor con el teclado abierto deja espacio para leer', () => {
   const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
   it('escribiendo en el celular, la cabecera se compacta y las franjas se esconden', () => {
     expect(d).toContain('const compacto = computed(() => !pantallaAncha.value && escribiendo.value)');
-    expect(d).toContain('v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado && !compacto"');
+    expect(d).toContain('v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado && !compacto && !tutorStore.showKeyPanel"');
     expect(d).toContain('v-if="tutorStore.guidanceLevel !== null && !compacto"');
     expect(d).toContain('<p v-if="!compacto" class="text-xs text-base-texto-secundario max-w-[260px] truncate">');
   });

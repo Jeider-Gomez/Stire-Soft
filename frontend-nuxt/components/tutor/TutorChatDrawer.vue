@@ -116,7 +116,7 @@
              pegada al encabezado y que se puede descartar: como tarjeta flotante ocupaba ~80 px del chat y los mensajes
              parecían quedar debajo (pedido de Jeider, 03/10). El detalle del más atrasado va en el título. -->
         <div
-          v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado && !compacto"
+          v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado && !compacto && !tutorStore.showKeyPanel"
           id="aviso-repasos-tutor"
           class="px-4 py-1.5 bg-acento-ambar/10 border-b border-acento-ambar/30 text-[11px] text-base-texto-primario flex items-center gap-2 shrink-0"
           role="status"

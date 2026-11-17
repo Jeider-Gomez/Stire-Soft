@@ -307,7 +307,7 @@ describe('Tutor: aviso de repasos compacto y «Mi clave» en una línea (pedido 
   const d = leer('components', 'tutor', 'TutorChatDrawer.vue');
 
   it('el aviso de repasos es una franja de una línea que se puede descartar, no una tarjeta flotante', () => {
-    expect(d).toContain('v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado && !compacto"');
+    expect(d).toContain('v-if="tutorStore.tutorEnabled && overdueNotice && !avisoRepasosDescartado && !compacto && !tutorStore.showKeyPanel"');
     expect(d).toContain('aria-label="Ocultar el aviso de repasos"');
     expect(d).toContain("useState('tutor-aviso-repasos-descartado'");
     expect(d).toContain("sessionStorage.setItem(CLAVE_AVISO_REPASOS, '1')");
