@@ -10,7 +10,7 @@
         <rect width="100%" height="100%" :fill="`url(#trama-${uid})`" />
       </svg>
       <span v-if="etiqueta" class="relative text-[10px] font-bold uppercase tracking-wider text-white/90">{{ etiqueta }}</span>
-      <span v-if="codigo" class="relative ml-auto px-2 py-0.5 rounded bg-black/20 text-[10px] font-mono font-bold text-white">{{ codigo }}</span>
+      <span v-if="codigo" class="codigo-presentacion relative ml-auto px-2 py-0.5 rounded bg-black/20 text-[10px] font-mono font-bold text-white">{{ codigo }}</span>
     </div>
     <div class="p-5 space-y-2">
       <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">

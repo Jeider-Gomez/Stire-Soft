@@ -25,7 +25,7 @@
         :class="bandeja === b.valor ? 'border-acento-ambar-fuerte text-acento-ambar-fuerte' : 'border-transparent text-base-texto-secundario hover:text-base-texto-primario'"
         @click="bandeja = b.valor">
         {{ b.texto }}
-        <span class="px-1.5 rounded-full bg-base-bg-secundario text-[10px] text-base-texto-primario">{{ (b.valor === 'recibidos' ? recibidos : enviados).length }}</span>
+        <span class="cuenta-pestana px-1.5 rounded-full bg-base-bg-secundario text-[10px] text-base-texto-primario">{{ (b.valor === 'recibidos' ? recibidos : enviados).length }}</span>
       </button>
       <button v-if="noLeidos > 0" type="button" class="ml-auto min-h-[44px] px-2 text-[11px] font-semibold text-acento-ambar-fuerte hover:underline" @click="marcarTodos">
         Marcar todos como leídos

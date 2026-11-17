@@ -33,7 +33,7 @@
         class="min-h-[44px] px-3 font-semibold inline-flex items-center gap-1.5 border-b-2 -mb-px"
         :class="filtros.bandeja === b.valor ? 'border-acento-ambar-fuerte text-acento-ambar-fuerte' : 'border-transparent text-base-texto-secundario hover:text-base-texto-primario'"
         @click="filtros.bandeja = b.valor">
-        {{ b.texto }} <span class="px-1.5 rounded-full bg-base-bg-secundario text-[10px] text-base-texto-primario">{{ conteo[b.valor] }}</span>
+        {{ b.texto }} <span class="cuenta-pestana px-1.5 rounded-full bg-base-bg-secundario text-[10px] text-base-texto-primario">{{ conteo[b.valor] }}</span>
       </button>
     </div>
 

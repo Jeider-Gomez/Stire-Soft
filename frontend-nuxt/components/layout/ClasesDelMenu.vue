@@ -18,7 +18,7 @@
         :class="colapsado ? 'md:justify-center md:px-1.5' : ''"
         @click="abierto = !abierto"
         @keydown.escape="abierto = false">
-        <span aria-hidden="true" class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg text-[10px] font-bold font-mono text-white" :style="{ backgroundColor: actual ? colores[actual.id] : undefined }">{{ actual ? siglas[actual.id] : '' }}</span>
+        <span aria-hidden="true" class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg text-[10px] font-bold font-mono text-white siglas-color" :style="{ backgroundColor: actual ? colores[actual.id] : undefined }">{{ actual ? siglas[actual.id] : '' }}</span>
         <span class="min-w-0 flex-1" :class="{ 'md:sr-only': colapsado }">
           <span class="block truncate font-semibold text-[13px] text-base-texto-primario">{{ actual?.name }}</span>
           <span v-if="actual?.code" class="block truncate font-mono text-[10px] text-base-texto-secundario">{{ actual.code }}</span>

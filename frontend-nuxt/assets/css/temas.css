@@ -285,3 +285,14 @@ a[class*="hover:underline"]:not([class*="bg-"]):not([class*="text-xl"]):not([cla
 /* Cambio de tema con un círculo (utils/transicionTema.ts): sin el fundido por defecto, la página nueva solo se recorta. */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 ::view-transition-new(root) { z-index: 2; }
+
+/* Auditoría de contraste del 17/11 (las 34 pantallas en alto contraste y los 4 temas de Windows). */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) a.logo-menu[aria-current] { background: transparent !important; }
+:root[data-contraste="alto"] .siglas-color { color: #fff !important; }
+:root[data-contraste="alto"] .cuenta-pestana { background: rgb(var(--c-base-texto-primario)) !important; color: rgb(var(--c-base-blanco)) !important; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) [aria-selected="true"] .cuenta-pestana,
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) a[aria-current] .cuenta-menu { background: rgb(var(--c-ct-resalte-texto)) !important; color: rgb(var(--c-ct-resalte)) !important; }
+:root[data-contraste="alto"] .codigo-presentacion { background: rgb(var(--c-base-blanco)) !important; color: rgb(var(--c-base-texto-primario)) !important; }
+:root[data-contraste="alto"] .agregar { color: rgb(var(--c-base-texto-primario)) !important; text-decoration: underline; }
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .agregar { color: rgb(var(--c-ct-enlace)) !important; }
+:root[data-contraste="alto"] .arbol-lateral .elegido { background: rgb(var(--c-base-texto-primario)) !important; color: rgb(var(--c-base-blanco)) !important; }
