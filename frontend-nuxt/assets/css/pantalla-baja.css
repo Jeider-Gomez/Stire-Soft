@@ -1,0 +1,28 @@
+/* Computador con poca altura (16/11, Jeider: «que cuando entre a cierto panel tenga las cosas a la mano, que no tenga
+   que bajar tanto»). Un portátil de 1366×768 deja unos 630 px dentro del navegador: aquí se compacta lo que solo ocupa
+   alto (márgenes, títulos grandes, portadas) para que lo que se usa quede arriba. No se quita nada ni cambia el celular. */
+@media (min-width: 1024px) and (max-height: 820px) {
+  /* Menos margen arriba en todas las páginas */
+  main#contenido { padding-top: 18px !important; }
+  main#contenido h1 { font-size: clamp(20px, 3.4vh, 26px) !important; line-height: 1.2 !important; }
+  main#contenido .space-y-\[18px\] > * + * { margin-top: 14px !important; }
+
+  /* Lección: portada más baja, para ver el comienzo de la explicación */
+  .portada-leccion { padding: 16px 26px 14px !important; }
+  .portada-leccion > * + * { margin-top: 4px !important; }
+  .portada-leccion #descripcion-leccion { font-size: 14px !important; }
+  #explicacion { padding-top: 16px !important; }
+
+  /* Mi progreso: la portada con el anillo, más baja */
+  .anillo-progreso { padding: 10px 14px !important; }
+  .anillo-progreso svg { width: 92px !important; height: 92px !important; }
+
+}
+
+@media (min-width: 1024px) and (max-height: 820px) {
+  /* Mi asistencia: el QR un poco más pequeño (sigue leyéndose bien con la cámara) para ver también las instrucciones */
+  .qr-asistencia { width: 200px !important; height: 200px !important; }
+  /* Portadas de Repasos, Mi progreso y Mi clase: más bajas */
+  .heroe-inicio h2, .heroe-inicio h1 { margin-top: 0 !important; }
+  .tarjeta-inicio { padding-top: 14px !important; padding-bottom: 14px !important; }
+}

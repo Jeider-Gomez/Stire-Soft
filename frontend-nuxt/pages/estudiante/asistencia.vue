@@ -13,7 +13,7 @@
           <p class="m-0 text-base font-bold text-base-texto-primario">{{ authStore.user?.fullName }}</p>
         </div>
         <div class="relative bg-white p-3 rounded-2xl border border-base-borde-sutil">
-          <canvas ref="qrCanvas" aria-label="Tu código QR de asistencia" role="img" class="block w-64 h-64 max-w-full" />
+          <canvas ref="qrCanvas" aria-label="Tu código QR de asistencia" role="img" class="qr-asistencia block w-64 h-64 max-w-full" />
           <div v-if="cargandoCodigo && !hayCodigo" class="absolute inset-0 flex items-center justify-center" role="status">
             <Loader2 :size="20" class="animate-spin text-base-texto-secundario" aria-hidden="true" />
             <span class="sr-only">Generando tu código…</span>
