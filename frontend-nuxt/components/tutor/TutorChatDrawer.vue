@@ -228,14 +228,14 @@
 
             <!-- Como el cuadro «E-Tutor»: después de la conversación, a dónde ir (la lección y los repasos). «Practicar
                  esto» es la tarjeta de sugerencia de arriba, cuando el Tutor propone un ejercicio. -->
-            <div v-if="tutorStore.tutorEnabled && !tutorStore.isThinking && tutorStore.messages.length && (tutorStore.contentLink || tutorStore.dueReviews?.length)"
+            <div v-if="tutorStore.tutorEnabled && !tutorStore.isThinking && tutorStore.messages.length && (tutorStore.contentLink || tutorStore.dueReviews?.overdueCount)"
               class="flex flex-wrap gap-2" data-acciones-tutor>
               <button v-if="tutorStore.contentLink" type="button" class="accion-tutor"
                 :aria-label="`Abrir la lección: ${tutorStore.contentLink.title}`"
                 @click="navigateWithAutosaveCheck(`/estudiante/unidad/${tutorStore.contentLink.learningUnitId}`)">
                 <BookOpen :size="15" aria-hidden="true" /> Abrir la lección
               </button>
-              <button v-if="tutorStore.dueReviews?.length" type="button" class="accion-tutor" @click="navigateWithAutosaveCheck('/estudiante/repasos')">
+              <button v-if="tutorStore.dueReviews?.overdueCount" type="button" class="accion-tutor" @click="navigateWithAutosaveCheck('/estudiante/repasos')">
                 <Clock :size="15" aria-hidden="true" /> Repasar
               </button>
             </div>

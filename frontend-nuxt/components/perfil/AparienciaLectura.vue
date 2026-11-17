@@ -123,8 +123,8 @@
       <legend class="text-xs font-semibold text-base-texto-primario mb-1">Al practicar</legend>
       <label class="flex items-start gap-2 min-h-[44px] cursor-pointer">
         <input :checked="a.sonidos" type="checkbox" class="mt-0.5 w-4 h-4 accent-acento-ambar-fuerte" @change="cambiar({ sonidos: !a.sonidos })" />
-        <span><span class="font-semibold text-base-texto-primario">Sonido al probar código</span>
-          <span class="block text-[11px] text-base-texto-secundario">Una nota corta que sube si todo pasa y baja si algo falla. El resultado siempre se ve en pantalla.</span></span>
+        <span><span class="font-semibold text-base-texto-primario">Sonidos al probar y entregar</span>
+          <span class="block text-[11px] text-base-texto-secundario">Al probar: sube si todo pasa y baja si algo falla. Al entregar: uno para el acierto, otro si estuviste cerca y otro suave si aún no. El resultado siempre se ve en pantalla. También se encienden con el botón de la barra de arriba.</span></span>
       </label>
       <label class="flex items-start gap-2 min-h-[44px] cursor-pointer">
         <input :checked="a.preguntarConfianza" type="checkbox" class="mt-0.5 w-4 h-4 accent-acento-ambar-fuerte" @change="cambiar({ preguntarConfianza: !a.preguntarConfianza })" />

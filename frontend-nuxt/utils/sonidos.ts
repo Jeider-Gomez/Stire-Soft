@@ -5,19 +5,41 @@ import { CLAVE_APARIENCIA, leerApariencia } from './apariencia'
 
 /** Las notas de cada resultado, en hercios: subir es «bien», bajar es «revisa». */
 export const NOTAS = { bien: [523.25, 783.99], revisa: [392, 311.13] } as const
+/**
+ * Al entregar (diseño «Apariencia», ítem 1 de Jeider): tres resultados, tres sonidos. Acierto sube en tres notas; cerca
+ * (más de la mitad de los puntos) sube y se queda; aún no baja suave. Nunca suena a error: es «sigue», no «mal».
+ */
+export const NOTAS_ENTREGA = { acierto: [523.25, 659.25, 783.99], cerca: [440, 523.25], 'aun-no': [392, 349.23] } as const
+export type ResultadoEntrega = keyof typeof NOTAS_ENTREGA
+export function resultadoDeEntrega(puntos: number, maximo: number): ResultadoEntrega {
+  if (maximo > 0 && puntos >= maximo) return 'acierto'
+  return maximo > 0 && puntos / maximo >= 0.5 ? 'cerca' : 'aun-no'
+}
 
 export function sonidosEncendidos(guardado: string | null): boolean {
   return leerApariencia(guardado).sonidos
 }
 
 export function sonarResultado(todoBien: boolean): void {
+  tocar(todoBien ? NOTAS.bien : NOTAS.revisa)
+}
+
+export function sonarEntrega(resultado: ResultadoEntrega): void {
+  tocar(NOTAS_ENTREGA[resultado])
+}
+
+/** Una vez encendido, se oye una muestra para saber cómo suena. */
+export function probarSonido(): void {
+  tocar(NOTAS_ENTREGA.acierto, true)
+}
+
+function tocar(notas: ReadonlyArray<number>, siempre = false): void {
   let guardado: string | null = null
   try { guardado = localStorage.getItem(CLAVE_APARIENCIA) } catch { return }
-  if (!sonidosEncendidos(guardado)) return
+  if (!siempre && !sonidosEncendidos(guardado)) return
   const Contexto = window.AudioContext
   if (!Contexto) return
   const ctx = new Contexto()
-  const notas = todoBien ? NOTAS.bien : NOTAS.revisa
   notas.forEach((frecuencia, i) => {
     const osc = ctx.createOscillator()
     const volumen = ctx.createGain()

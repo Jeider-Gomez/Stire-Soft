@@ -4,7 +4,7 @@ import { useAuthStore } from './auth'
 import { useApi } from '~/composables/useApi'
 import { useApiErrorMessage } from '~/composables/useApiErrorMessage'
 import { diagnosticarSalida } from '~/utils/diagnosticoSalida'
-import { sonarResultado } from '~/utils/sonidos'
+import { resultadoDeEntrega, sonarEntrega, sonarResultado } from '~/utils/sonidos'
 import { avisarResultado } from '~/utils/mascotaTutor'
 import { debePreguntarConfianza, type Calibracion, type Confianza } from '~/utils/confianza'
 import { CLAVE_APARIENCIA, leerApariencia } from '~/utils/apariencia'
@@ -570,6 +570,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
         if (submitRes.status === 'graded') {
           submissionResult.value = submitRes
+          sonarEntrega(resultadoDeEntrega(submitRes.totalScore ?? 0, maxScore ?? 0))
           consoleLog.value.push(`🎯 Solución calificada con ${submitRes.totalScore}/${maxScore} puntos por el backend.`)
           masteryAfter.value = await fetchUnitMastery(currentExercise.value.learningUnitId)
           return
@@ -581,6 +582,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           const finalResult = await pollSubmissionStatus(subId)
           if (finalResult) {
             submissionResult.value = finalResult
+            sonarEntrega(resultadoDeEntrega(finalResult.totalScore ?? 0, finalResult.maxScore ?? maxScore ?? 0))
             const finalMaxScore = finalResult.maxScore ?? maxScore
             consoleLog.value.push(`🎯 Solución calificada con ${finalResult.totalScore}/${finalMaxScore} puntos por el backend.`)
             masteryAfter.value = await fetchUnitMastery(currentExercise.value.learningUnitId)

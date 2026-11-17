@@ -15,14 +15,27 @@
       <Contrast :size="20" aria-hidden="true" />
       <span class="sr-only">Contraste alto</span>
     </button>
+    <!-- Sonidos (pendiente de la evaluación heurística, ítem 1): apagados por defecto; al encenderlos se oye una muestra. -->
+    <button type="button" :title="apariencia.sonidos ? 'Apagar los sonidos' : 'Encender los sonidos al probar y entregar'"
+      :aria-pressed="apariencia.sonidos" class="boton-rapido" :class="{ encendido: apariencia.sonidos }" @click="alternarSonidos">
+      <Volume2 v-if="apariencia.sonidos" :size="20" aria-hidden="true" />
+      <VolumeX v-else :size="20" aria-hidden="true" />
+      <span class="sr-only">Sonidos</span>
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { Contrast, Moon, Sun } from 'lucide-vue-next'
+import { Contrast, Moon, Sun, Volume2, VolumeX } from 'lucide-vue-next'
+import { probarSonido } from '~/utils/sonidos'
 
 const { apariencia, cambiar } = useApariencia()
+function alternarSonidos() {
+  const encender = !apariencia.value.sonidos
+  cambiar({ sonidos: encender })
+  if (encender) probarSonido()
+}
 // El tema que se ve (con «Como mi dispositivo» ya resuelto) lo pone utils/apariencia.ts en <html data-tema>.
 const temaVisto = ref<string | null>(null)
 onMounted(() => {

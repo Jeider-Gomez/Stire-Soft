@@ -65,7 +65,7 @@ describe('Sonidos opcionales (ítems 1 y 22)', () => {
     expect(front('components/perfil/AparienciaLectura.vue')).toContain("cambiar({ sonidos: !a.sonidos })");
     expect(front('stores/workspace.ts').match(/sonarResultado\(res\.allPassed\)/g)).toHaveLength(2);
     const sonidos = front('utils/sonidos.ts');
-    expect(sonidos).toContain('if (!sonidosEncendidos(guardado)) return');
+    expect(sonidos).toContain('if (!siempre && !sonidosEncendidos(guardado)) return');
   });
 });
 
@@ -98,5 +98,17 @@ describe('Errores que dicen qué hacer (ítem 14)', () => {
     expect(messageOf({ statusCode: 0 }, 'x')).toMatch(/Revisa tu conexión/);
     expect(messageOf({ statusCode: 400 }, 'texto propio')).toBe('texto propio');
     expect(messageOf({ statusCode: 500, data: { error: 'La clase no existe' } }, 'x')).toBe('La clase no existe');
+  });
+});
+
+describe('Sonidos al entregar (17/11)', () => {
+  it('acierto, cerca y aún no; el botón de la barra los enciende y da una muestra', () => {
+    const s = readFileSync(join(__dirname, '..', '..', '..', 'frontend-nuxt', 'utils', 'sonidos.ts'), 'utf8');
+    expect(s).toContain("if (maximo > 0 && puntos >= maximo) return 'acierto'");
+    expect(s).toContain("puntos / maximo >= 0.5 ? 'cerca' : 'aun-no'");
+    const w = readFileSync(join(__dirname, '..', '..', '..', 'frontend-nuxt', 'stores', 'workspace.ts'), 'utf8');
+    expect(w.match(/sonarEntrega\(resultadoDeEntrega/g)?.length).toBe(2);
+    const b = readFileSync(join(__dirname, '..', '..', '..', 'frontend-nuxt', 'components', 'layout', 'BotonApariencia.vue'), 'utf8');
+    expect(b).toContain('if (encender) probarSonido()');
   });
 });
