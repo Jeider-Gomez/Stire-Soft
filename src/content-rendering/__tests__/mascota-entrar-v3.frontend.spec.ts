@@ -54,3 +54,11 @@ describe('el menú lateral sin la barra de scroll gruesa', () => {
     expect(c).toContain('aside.w-sidebar { scrollbar-width: thin;');
   });
 });
+
+describe('el menú del docente cabe sin scroll', () => {
+  it('recogido, las secciones de la clase también quedan solo con su ícono (regla global, no «scoped»)', () => {
+    const c = leer('assets', 'css', 'menu-v3.css');
+    expect(c).toContain('.menu-colapsado .item-menu > span:not(.icono-menu):not(.siglas-clase)');
+    expect(c).toContain('@media (min-width: 768px) and (max-height: 760px)');
+  });
+});

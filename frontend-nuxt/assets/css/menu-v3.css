@@ -78,3 +78,19 @@ aside.w-sidebar:hover, aside.w-sidebar:focus-within { scrollbar-color: rgb(var(-
 aside.w-sidebar.menu-colapsado { scrollbar-width: none; }
 aside.w-sidebar::-webkit-scrollbar { width: 6px; }
 aside.w-sidebar.menu-colapsado::-webkit-scrollbar { display: none; }
+
+/* Menú recogido: también las secciones de la clase (ClasesDelMenu.vue) quedan solo con su ícono. La regla de
+   SidebarNav.vue es «scoped» y no llegaba a ese componente: su texto se partía en dos o tres líneas, cada botón
+   crecía y el menú necesitaba scroll (Jeider, 16/11: «no quiero que tenga scroll»). */
+@media (min-width: 768px) {
+  .menu-colapsado .item-menu { justify-content: center; padding-left: 0.5rem; padding-right: 0.5rem; }
+  .menu-colapsado .item-menu > span:not(.icono-menu):not(.siglas-clase) {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+}
+/* Pantallas bajas (un portátil de 1366×657): menos aire entre las entradas para que todo el menú quepa sin bajar. */
+@media (min-width: 768px) and (max-height: 760px) {
+  .menu-v3 { gap: 2px; }
+  .item-menu { min-height: 38px; }
+  .icono-menu { width: 28px; height: 28px; }
+}
