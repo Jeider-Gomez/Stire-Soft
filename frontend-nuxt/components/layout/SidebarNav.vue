@@ -1,5 +1,5 @@
 <template>
-  <aside ref="menuRef" class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] md:min-h-0 p-4 flex flex-col transition-[width] duration-200" :class="{ 'menu-colapsado md:w-16 md:px-2': colapsado }">
+  <aside ref="menuRef" class="w-sidebar flex-shrink-0 bg-base-blanco border-r border-base-borde-sutil min-h-[calc(100vh-4rem)] md:min-h-0 p-4 flex flex-col overflow-x-hidden transition-[width] duration-200" :class="{ 'menu-colapsado': colapsado }">
     <!-- Arriba de la barra, en una fila de la misma altura que el encabezado: el logo y, a su derecha, el botón para
          plegar el menú (como Platzi, 26/10). Plegado, queda solo el botón. En el celular el menú es un cajón y el botón
          no hace falta. -->
