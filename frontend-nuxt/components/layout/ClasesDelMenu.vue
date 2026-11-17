@@ -66,24 +66,14 @@
       <li v-for="s in SECCIONES_MENU" :key="s.id">
         <NuxtLink
           :to="enlacePestana(s.id, actual.id)"
-          :aria-current="s.id === seccionMarcada && s.incluye.length === 1 ? 'page' : undefined"
+          :aria-current="s.id === seccionMarcada ? (s.incluye.length === 1 ? 'page' : 'location') : undefined"
           class="item-menu"
           :class="[TONOS[s.id] ?? 'tono-cielo', { activo: s.id === seccionMarcada }]">
           <span class="icono-menu"><component :is="ICONOS[s.id]" :size="18" aria-hidden="true" /></span>
           <span>{{ s.texto }}</span>
         </NuxtLink>
-        <!-- Una sección que agrupa dos pantallas las muestra al abrirla (Estudiantes y Refuerzos; Asistencia y Notas). -->
-        <ul v-if="s.id === seccionMarcada && s.incluye.length > 1" class="ml-12 mt-0.5 mb-1 space-y-0.5">
-          <li v-for="p in s.incluye" :key="p">
-            <NuxtLink
-              :to="enlacePestana(p, actual.id)"
-              :aria-current="p === seccionActual ? 'page' : undefined"
-              class="flex items-center min-h-[34px] px-2.5 rounded-md text-[13px] transition-colors"
-              :class="p === seccionActual ? 'text-base-texto-primario font-bold' : 'text-base-texto-primario hover:bg-base-bg-secundario'">
-              {{ TEXTO_PESTANA[p] }}
-            </NuxtLink>
-          </li>
-        </ul>
+        <!-- Una sección que agrupa dos pantallas («Asistencia y notas») ya no abre un submenú aquí: plegado no se veía.
+             Sus partes son pestañas dentro de la pantalla (docente/SubpestanasSeccion.vue, 16/11). -->
       </li>
       </template>
       <slot />
@@ -103,7 +93,7 @@
 
 <script setup lang="ts">
 import { BarChart3, BookOpen, ChevronsUpDown, Inbox, LayoutGrid, Plus, QrCode, Settings, Users, Zap } from 'lucide-vue-next'
-import { PESTANAS_CLASE, SECCIONES_MENU, claseDeLaRuta, claseDelMenu, colorDeClase, enlacePestana, pestanaDeLaRuta, seccionDelMenu, type PestanaClase } from '~/utils/pestanasClase'
+import { SECCIONES_MENU, claseDeLaRuta, claseDelMenu, colorDeClase, enlacePestana, pestanaDeLaRuta, seccionDelMenu, type PestanaClase } from '~/utils/pestanasClase'
 import { siglasDeClases } from '~/utils/contextoAcademico'
 
 const CLAVE_RECORDADA = 'stire-clase-docente'
@@ -132,7 +122,6 @@ const seccionMarcada = computed(() => seccionDelMenu(seccionActual.value))
 const ICONOS: Partial<Record<PestanaClase, unknown>> = { hoy: BarChart3, contenido: BookOpen, estudiantes: Users, entregas: Inbox, asistencia: QrCode, refuerzos: Zap }
 /** El color de cada sección, el mismo del prototipo D3-Clase (colD del generador: la posición en su menú). */
 const TONOS: Partial<Record<PestanaClase, string>> = { hoy: 'tono-cielo', contenido: 'tono-sol', estudiantes: 'tono-lila', asistencia: 'tono-cielo', entregas: 'tono-sol', refuerzos: 'tono-rosa' }
-const TEXTO_PESTANA = Object.fromEntries(PESTANAS_CLASE.map((p) => [p.id, p.texto])) as Record<PestanaClase, string>
 const siglas = computed(() => siglasDeClases(clases.value))
 const colores = computed(() => Object.fromEntries(clases.value.map((c, i) => [c.id, c.portada ?? colorDeClase(i)])) as Record<number, string>)
 

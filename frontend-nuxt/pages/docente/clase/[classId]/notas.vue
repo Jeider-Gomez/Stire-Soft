@@ -1,6 +1,7 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
     <DocentePestanasClase :class-id="classId" activa="notas" :nombre="clase?.name" :codigo="clase?.code" />
+    <DocenteSubpestanasSeccion :class-id="classId" activa="notas" :partes="['asistencia', 'notas']" titulo="Asistencia y notas" />
 
     <header class="cabecera-docente">
       <div class="min-w-0">

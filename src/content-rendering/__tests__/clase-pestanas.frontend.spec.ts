@@ -105,7 +105,12 @@ describe('Pestañas de la clase', () => {
     expect(menu).toContain(`:to="enlacePestana(seccionActual ?? 'hoy', c.id)"`);
     // la clase activa despliega sus secciones debajo, con la actual marcada
     expect(menu).toContain('<li v-for="s in SECCIONES_MENU" :key="s.id">');
-    expect(menu).toContain(`:aria-current="p === seccionActual ? 'page' : undefined"`);
+    // «Asistencia y notas» es una sola entrada; sus dos partes son pestañas dentro de la pantalla (16/11)
+    expect(menu).toContain(`:aria-current="s.id === seccionMarcada ? (s.incluye.length === 1 ? 'page' : 'location') : undefined"`);
+    expect(menu).not.toContain('class="ml-12 mt-0.5 mb-1 space-y-0.5"');
+    for (const p of ['asistencia', 'notas']) {
+      expect(leer('pages', 'docente', 'clase', '[classId]', `${p}.vue`)).toContain(`<DocenteSubpestanasSeccion :class-id="classId" activa="${p}" :partes="['asistencia', 'notas']"`);
+    }
     // dos grupos de la misma materia se distinguen por el código
     expect(menu).toContain('{{ c.code }}');
     for (const herramienta of ['to="/docente/contenidos"', 'to="/docente/rendimiento"', 'to="/docente/entregas"', 'to="/docente/refuerzos"']) {
