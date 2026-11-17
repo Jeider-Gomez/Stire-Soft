@@ -3,7 +3,7 @@
     <p v-if="showStatement" class="text-sm leading-relaxed whitespace-pre-wrap text-base-texto-primario">{{ question.question }}</p>
 
     <p class="text-xs text-base-texto-secundario">
-      Arrastra cada elemento a su categoría, o tócalo y luego toca la categoría.
+      Arrastra cada elemento a su categoría (también con el dedo), o tócalo y luego toca la categoría.
     </p>
 
     <!-- Elementos sin ubicar -->
@@ -13,6 +13,7 @@
       @dragover.prevent="dragOver = TRAY"
       @dragleave="salir($event)"
       @drop.prevent="dropOn(null)"
+      :data-zona="TRAY"
       aria-label="Elementos por ubicar">
       <button
         v-for="item in unplaced"
@@ -21,9 +22,10 @@
         draggable="true"
         @dragstart="onDragStart(item.id)"
         @dragend="terminar"
+        @pointerdown="tactil.empezar($event, item.id)"
         @click="toggleSelect(item.id)"
         :aria-pressed="selected === item.id"
-        class="px-3 py-1.5 rounded-lg border text-xs font-mono cursor-grab active:cursor-grabbing shadow-xs transition focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+        class="arrastre-tactil min-h-[44px] md:min-h-0 px-3 py-1.5 rounded-lg border text-xs font-mono cursor-grab active:cursor-grabbing shadow-xs transition focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
         :class="selected === item.id ? 'bg-acento-ambar-fuerte text-base-blanco border-acento-ambar-fuerte' : 'bg-base-blanco text-base-texto-primario border-base-borde-fuerte hover:border-acento-ambar-fuerte'">
         {{ item.content }}
       </button>
@@ -39,7 +41,8 @@
         :class="ESTILO_ZONA[estado(target.id)]"
         @dragover.prevent="dragOver = target.id"
         @dragleave="salir($event)"
-        @drop.prevent="dropOn(target.id)">
+        @drop.prevent="dropOn(target.id)"
+        :data-zona="target.id">
         <button
           type="button"
           @click="placeSelected(target.id)"
@@ -58,8 +61,9 @@
             draggable="true"
             @dragstart="onDragStart(item.id)"
             @dragend="terminar"
+            @pointerdown="tactil.empezar($event, item.id)"
             @click="unplace(item.id)"
-            class="px-2.5 py-1 rounded-md border border-acento-ambar-fuerte/40 bg-acento-ambar/10 text-xs font-mono text-base-texto-primario hover:bg-acento-ambar/20 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
+            class="arrastre-tactil min-h-[40px] md:min-h-0 px-2.5 py-1 rounded-md border border-acento-ambar-fuerte/40 bg-acento-ambar/10 text-xs font-mono text-base-texto-primario hover:bg-acento-ambar/20 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
             :aria-label="`${item.content}, en ${target.label}. Toca para devolverlo`"
             title="Toca para devolverlo">
             {{ item.content }}
@@ -146,6 +150,14 @@ function onDragStart(id: string) {
   selected.value = null
 }
 
+// Con el dedo (composables/useArrastreTactil.ts): lo mismo que el arrastre del ratón. Soltar fuera de toda zona la
+// deja donde estaba.
+const tactil = useArrastreTactil({
+  alEmpezar: onDragStart,
+  alMover: (zona) => { dragOver.value = zona },
+  alSoltar: (zona) => (zona === null ? terminar() : dropOn(zona === TRAY ? null : zona)),
+})
+
 function dropOn(targetId: string | null) {
   if (dragging.value) mappings[dragging.value] = targetId ?? ''
   dragging.value = null
@@ -165,3 +177,8 @@ watch(mappings, () => {
 
 onMounted(() => { workspaceStore.pendingAnswer = null })
 </script>
+
+<style scoped>
+/* El dedo sobre una pieza la arrastra; no desplaza la página (useArrastreTactil.ts). */
+.arrastre-tactil { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+</style>

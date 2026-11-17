@@ -5,14 +5,16 @@
       <p class="text-xs leading-relaxed whitespace-pre-wrap">{{ question.question }}</p>
     </div>
 
-    <p class="m-0 text-[15px] text-base-texto-primario">Arrastra los pasos para ponerlos en orden, o usa las flechas.</p>
+    <p class="m-0 text-[15px] text-base-texto-primario">Arrastra los pasos para ponerlos en orden (con el dedo, desde <span aria-hidden="true">⠿</span> la manija de la izquierda), o usa las flechas.</p>
 
-    <!-- v3 (cuadro «E-Tipo-Ordenar»): se arrastran con el ratón; las flechas siguen para el teclado y el celular. -->
+    <!-- v3 (cuadro «E-Tipo-Ordenar»): se arrastran con el ratón o con el dedo desde la manija (17/11); las flechas siguen
+         para el teclado. -->
     <ol class="m-0 p-0 list-none space-y-2">
       <li
         v-for="(block, index) in orderedBlocks"
         :key="block.id"
         draggable="true"
+        :data-zona="String(index)"
         class="fila-ordenar flex items-center gap-2.5 min-h-[48px] pl-3 pr-1 py-1 rounded-xl"
         :class="{ arrastrando: arrastrado === index, destino: sobre === index && arrastrado !== index }"
         @dragstart="arrastrado = index"
@@ -21,8 +23,12 @@
         @drop.prevent="soltar(index)"
         @dragend="arrastrado = null; sobre = null"
       >
-        <GripVertical :size="16" class="shrink-0 text-base-texto-secundario cursor-grab" aria-hidden="true" />
-        <span class="w-7 h-7 rounded-full bg-base-bg-secundario text-xs font-bold flex items-center justify-center flex-shrink-0" aria-hidden="true">{{ index + 1 }}</span>
+        <!-- Manija: con el dedo, desde aquí se arrastra la fila (el resto de la fila deja desplazar la página). -->
+        <span class="manija-ordenar shrink-0 flex items-center gap-1.5 min-h-[44px] -ml-1 pl-1 cursor-grab" aria-hidden="true"
+          @pointerdown="tactil.empezar($event, String(index))">
+          <GripVertical :size="18" class="text-base-texto-secundario" />
+          <span class="w-7 h-7 rounded-full bg-base-bg-secundario text-xs font-bold flex items-center justify-center">{{ index + 1 }}</span>
+        </span>
         <span class="font-codigo text-sm text-base-texto-primario flex-1 min-w-0 break-words">{{ block.content }}</span>
         <span class="flex items-center gap-1">
           <button
@@ -113,6 +119,15 @@ function soltar(destino: number) {
   syncPendingAnswer()
 }
 
+// Con el dedo, desde la manija (composables/useArrastreTactil.ts): la fila cae en el lugar de la fila que tiene debajo.
+const tactil = useArrastreTactil({
+  alEmpezar: (id) => { arrastrado.value = Number(id) },
+  alMover: (zona) => { sobre.value = zona === null ? null : Number(zona) },
+  alSoltar: (zona) => {
+    if (zona === null) { arrastrado.value = null; sobre.value = null } else soltar(Number(zona))
+  },
+})
+
 function syncPendingAnswer() {
   if (orderedBlocks.value.length > 0) {
     workspaceStore.pendingAnswer = {
@@ -132,4 +147,5 @@ onMounted(() => {
 .fila-ordenar { border: 1px solid rgb(var(--c-base-borde-fuerte)); background: rgb(var(--c-base-blanco)); transition: border-color 0.15s ease, opacity 0.15s ease; }
 .fila-ordenar.arrastrando { opacity: 0.5; }
 .fila-ordenar.destino { border: 2px dashed rgb(var(--c-base-texto-primario)); }
+.manija-ordenar { touch-action: none; -webkit-user-select: none; user-select: none; }
 </style>
