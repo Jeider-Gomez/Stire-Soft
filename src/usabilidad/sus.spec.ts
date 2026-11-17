@@ -1,4 +1,4 @@
-import { aceptabilidadSus, debeInvitar, puedeResponder, puntajeSus, resumirSus, TAREAS_POR_ROL, validarTareas, type RespuestaSus } from './sus';
+import { aceptabilidadSus, debeInvitar, dentroDelPeriodo, leerPeriodo, puedeResponder, puntajeSus, resumirSus, TAREAS_POR_ROL, validarTareas, type RespuestaSus } from './sus';
 import { UsabilidadService } from './usabilidad.service';
 import type { User } from '../user/entities/user.entity';
 
@@ -170,5 +170,26 @@ describe('UsabilidadService', () => {
     const r = await service.resultados();
     expect(r.n).toBe(1);
     expect(r.promedio).toBe(50);
+  });
+
+  it('el admin elige el periodo: solo cuenta lo respondido entre esas fechas', async () => {
+    const julio = await service.resultados('2026-07-01', '2026-07-31');
+    expect(julio.n).toBe(1);
+    expect(julio.promedio).toBe(100);
+    expect((await service.resultados('2026-11-01')).n).toBe(0);
+    await expect(service.resultados('ayer')).rejects.toThrow('AAAA-MM-DD');
+    await expect(service.resultados('2026-08-01', '2026-07-01')).rejects.toThrow('antes');
+  });
+});
+
+describe('leerPeriodo (hora de Colombia, días incluidos)', () => {
+  it('«hasta» incluye todo ese día y sin fechas no hay límite', () => {
+    const p = leerPeriodo('2026-11-10', '2026-11-16');
+    expect(dentroDelPeriodo(new Date('2026-11-10T05:00:00Z'), p)).toBe(true);
+    expect(dentroDelPeriodo(new Date('2026-11-10T04:59:00Z'), p)).toBe(false);
+    expect(dentroDelPeriodo(new Date('2026-11-17T04:59:00Z'), p)).toBe(true);
+    expect(dentroDelPeriodo(new Date('2026-11-17T05:00:00Z'), p)).toBe(false);
+    expect(dentroDelPeriodo(new Date(2000, 0, 1), leerPeriodo())).toBe(true);
+    expect(() => leerPeriodo('2026-02-30')).toThrow('no existe');
   });
 });

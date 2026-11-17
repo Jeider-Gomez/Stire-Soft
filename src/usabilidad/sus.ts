@@ -134,6 +134,31 @@ export const DIAS_ENTRE_RESPUESTAS = 7;
 export const DIAS_DE_USO_PARA_INVITAR = 3;
 const DIA = 86_400_000;
 
+/**
+ * El periodo que elige el admin para mirar el SUS (16/11, Jeider: «que el admin elija en qué tiempo quiere hacer el
+ * análisis»). Fechas «AAAA-MM-DD» en hora de Colombia (UTC−5), con los dos días incluidos; sin fecha, sin límite.
+ */
+export interface PeriodoSus { desde: Date | null; hasta: Date | null }
+const FECHA = /^\d{4}-\d{2}-\d{2}$/;
+function inicioDelDiaEnColombia(texto: string): Date {
+  const [a, m, d] = texto.split('-').map(Number);
+  const fecha = new Date(Date.UTC(a, m - 1, d, 5));
+  if (fecha.getUTCDate() !== d || fecha.getUTCMonth() !== m - 1) throw new EncuestaInvalidaError('La fecha no existe.');
+  return fecha;
+}
+export function leerPeriodo(desde?: string, hasta?: string): PeriodoSus {
+  for (const f of [desde, hasta]) if (f && !FECHA.test(f)) throw new EncuestaInvalidaError('Las fechas van como AAAA-MM-DD.');
+  const periodo = {
+    desde: desde ? inicioDelDiaEnColombia(desde) : null,
+    hasta: hasta ? new Date(inicioDelDiaEnColombia(hasta).getTime() + DIA) : null,
+  };
+  if (periodo.desde && periodo.hasta && periodo.desde >= periodo.hasta) throw new EncuestaInvalidaError('«Desde» va antes de «hasta».');
+  return periodo;
+}
+export function dentroDelPeriodo(fecha: Date, p: PeriodoSus): boolean {
+  return (!p.desde || fecha >= p.desde) && (!p.hasta || fecha < p.hasta);
+}
+
 export function puedeResponder(ultima: Date | null, ahora: Date): boolean {
   return !ultima || ahora.getTime() - ultima.getTime() >= DIAS_ENTRE_RESPUESTAS * DIA;
 }

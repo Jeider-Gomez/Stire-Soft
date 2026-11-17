@@ -117,3 +117,15 @@ describe('segunda parte, distinta para estudiantes y docentes (pedido del dueño
     expect(leer('pages', 'admin', 'usabilidad.vue')).toContain('v-for="(lista, r) in datos.tareas ?? {}"');
   });
 });
+
+describe('El admin elige el periodo del SUS (16/11)', () => {
+  it('la pantalla tiene el periodo y lo manda al servidor como desde y hasta', () => {
+    const p = leer('pages', 'admin', 'usabilidad.vue');
+    expect(p).toContain('data-periodo-sus');
+    expect(p).toContain('Entre dos fechas');
+    expect(p).toContain("timeZone: 'America/Bogota'");
+    const c = leer('composables', 'useResultadosSus.ts');
+    expect(c).toContain("q.set('desde'");
+    expect(c).toContain("q.set('hasta'");
+  });
+});

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -34,9 +34,9 @@ export class UsabilidadController {
 
   @Get('sus/resultados')
   @Roles('admin')
-  @ApiOperation({ summary: 'Resultados de la encuesta SUS, sin nombres' })
-  resultados() {
-    return this.usabilidad.resultados();
+  @ApiOperation({ summary: 'Resultados de la encuesta SUS, sin nombres; desde y hasta (AAAA-MM-DD) son opcionales' })
+  resultados(@Query('desde') desde?: string, @Query('hasta') hasta?: string) {
+    return this.usabilidad.resultados(desde, hasta);
   }
 
   // Datos para la investigación: solo de quienes aceptaron participar, con un código en lugar del nombre.

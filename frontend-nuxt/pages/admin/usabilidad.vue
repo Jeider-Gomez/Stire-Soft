@@ -11,6 +11,28 @@
       <AdminExportarInvestigacion />
     </header>
 
+    <!-- El periodo del análisis (16/11, Jeider): todo, los últimos 7 o 30 días, o entre dos fechas. -->
+    <section class="bg-base-blanco rounded-xl border border-base-borde-sutil p-4 flex flex-wrap items-end gap-3" aria-label="Periodo del análisis" data-periodo-sus>
+      <label class="text-xs text-slate-600 flex flex-col gap-1">Periodo
+        <select v-model="rango" class="campo-periodo" @change="aplicarRango">
+          <option value="todo">Desde el principio</option>
+          <option value="7">Últimos 7 días</option>
+          <option value="30">Últimos 30 días</option>
+          <option value="90">Últimos 90 días</option>
+          <option value="fechas">Entre dos fechas</option>
+        </select>
+      </label>
+      <template v-if="rango === 'fechas'">
+        <label class="text-xs text-slate-600 flex flex-col gap-1">Desde
+          <input v-model="desde" type="date" class="campo-periodo" :max="hasta || hoy" @change="cargar">
+        </label>
+        <label class="text-xs text-slate-600 flex flex-col gap-1">Hasta
+          <input v-model="hasta" type="date" class="campo-periodo" :min="desde" :max="hoy" @change="cargar">
+        </label>
+      </template>
+      <p class="text-[11px] text-slate-600 basis-full">{{ textoPeriodo }}</p>
+    </section>
+
     <p v-if="!datos" :role="error ? 'alert' : 'status'" class="text-xs" :class="error ? 'text-semantico-falla' : 'text-slate-600'">{{ error || 'Cargando…' }}</p>
 
     <template v-else>
@@ -94,11 +116,44 @@ const colorAceptabilidad = computed(() =>
   datos.value?.aceptabilidad === 'aceptable' ? 'text-semantico-pasa' : datos.value?.aceptabilidad === 'marginal' ? 'text-acento-ambar-fuerte' : 'text-semantico-falla',
 )
 
-onMounted(async () => {
-  try {
-    datos.value = await resultadosSus.cargar()
-  } catch {
-    error.value = 'No se pudieron cargar los resultados.'
+// Fechas en hora de Colombia, como las cuenta el servidor (src/usabilidad/sus.ts, leerPeriodo).
+const diaColombia = (d: Date) => d.toLocaleDateString('en-CA', { timeZone: 'America/Bogota' })
+const hoy = diaColombia(new Date())
+const rango = ref<'todo' | '7' | '30' | '90' | 'fechas'>('todo')
+const desde = ref('')
+const hasta = ref('')
+
+function aplicarRango() {
+  if (rango.value === 'todo') { desde.value = ''; hasta.value = '' }
+  else if (rango.value !== 'fechas') {
+    desde.value = diaColombia(new Date(Date.now() - (Number(rango.value) - 1) * 86_400_000))
+    hasta.value = hoy
   }
+  cargar()
+}
+
+const textoPeriodo = computed(() => {
+  const f = (s: string) => new Date(s + 'T12:00:00').toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })
+  if (!desde.value && !hasta.value) return 'Todas las respuestas. Cuenta la última de cada persona.'
+  return `Respuestas del ${desde.value ? f(desde.value) : 'principio'} al ${hasta.value ? f(hasta.value) : 'día de hoy'}, ambos incluidos. Cuenta la última de cada persona en ese periodo.`
 })
+
+async function cargar() {
+  error.value = ''
+  try {
+    datos.value = await resultadosSus.cargar({ desde: desde.value || undefined, hasta: hasta.value || undefined })
+  } catch {
+    datos.value = null
+    error.value = 'No se pudieron cargar los resultados de ese periodo.'
+  }
+}
+
+onMounted(cargar)
 </script>
+
+<style scoped>
+.campo-periodo {
+  min-height: 40px; padding: 0 .6rem; border-radius: 10px; border: 1px solid rgb(var(--c-base-borde-sutil));
+  background: rgb(var(--c-base-blanco)); color: rgb(var(--c-base-texto-primario)); font-size: .8rem;
+}
+</style>

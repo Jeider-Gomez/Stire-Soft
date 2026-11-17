@@ -4,7 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { EncuestaSus } from './entities/encuesta-sus.entity';
 import { ResponderSusDto } from './dto/responder-sus.dto';
-import { debeInvitar, EncuestaInvalidaError, puedeResponder, puntajeSus, resumirSus, validarTareas, type ResumenSus } from './sus';
+import { debeInvitar, dentroDelPeriodo, EncuestaInvalidaError, leerPeriodo, puedeResponder, puntajeSus, resumirSus, validarTareas, type ResumenSus } from './sus';
 
 @Injectable()
 export class UsabilidadService {
@@ -59,9 +59,16 @@ export class UsabilidadService {
     return { puntaje };
   }
 
-  /** Resultados sin nombres, con la última respuesta de cada persona. */
-  async resultados(): Promise<ResumenSus> {
-    const todas = await this.encuestas.find({ order: { createdAt: 'DESC' } });
+  /** Resultados sin nombres, con la última respuesta de cada persona dentro del periodo que elige el admin. */
+  async resultados(desde?: string, hasta?: string): Promise<ResumenSus> {
+    let periodo;
+    try {
+      periodo = leerPeriodo(desde, hasta);
+    } catch (e) {
+      if (e instanceof EncuestaInvalidaError) throw new BadRequestException(e.message);
+      throw e;
+    }
+    const todas = (await this.encuestas.find({ order: { createdAt: 'DESC' } })).filter((e) => dentroDelPeriodo(e.createdAt, periodo));
     const vistas = new Set<number>();
     const ultimas = todas.filter((e) => {
       if (vistas.has(e.userId)) return false;
