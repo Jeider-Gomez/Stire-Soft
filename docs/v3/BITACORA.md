@@ -49,6 +49,7 @@ Para el informe al profesor, separado de la prueba con personas:
 
 - 17/11 · **Activar el Tutor sin cortar el aprendizaje** (audio de Pedro; recomendado, no obligatorio, por decisión de Jeider). Medido a 360×640: el campo y «Guardar» quedaban fuera de la pantalla. Ahora: la guía arriba y el campo, «Pegar» y «Guardar y activar el Tutor» fijos abajo; al volver de Google dice «¿Ya la copiaste? Pégala aquí.»; letra de 16 px en el campo, toques de 44 px, sin emojis; privacidad plegada. En el inicio, «Activa tu Tutor antes de empezar» (solo si el servidor confirmó que no hay clave; «Ahora no» la oculta). El primer paso «Activa tu Tutor» se cumple al tener la clave. Con el Tutor abierto entre 1024 y 1439 px el menú pasa a íconos: a la página le quedaban 285 px, ahora 525. **Sin probar:** guardar una clave real (no se escribe una clave real) ni en un celular de verdad. **Queda del equipo:** el video que propuso Pedro (hay que grabarlo con una cuenta de Google). La idea de un Tutor que funcione sin clave es P46, descartada el 12/11. **Visto y no tocado:** el aviso «Tienes N repasos vencidos» sale encima de la guía de la clave (`TutorChatDrawer.vue`, de otra sesión)
 - 17/11 · **Lo que quedaba del Tutor y del celular**, uno por commit: el aviso de repasos ya no tapa la guía de la clave (`0f18659`); contraste revisado en 34 pantallas con los 6 modos de contraste y arreglado lo que fallaba (`3816383`); en el registro del estudiante el paso 2 es «Activa tu Tutor», con la guía y el video abiertos, y seguir sin clave se confirma (`f4cdd3e`, `4d569bd`); celular a 412 px sin nada que se salga (`cc6ec05`); sonidos al entregar (acierto, cerca, aún no) y botón de sonido arriba (`aa077e4`); barra de la lección con «Practicar» (`a9e36e9`); claro/oscuro y contraste siempre arriba en el celular (`e01da74`); video «Activa tu Tutor» de 1 min con la voz de Will, en `docs/material-visual/video-clave/` (`253242f`, `129aff0`); «generado con IA» en el Tutor y el Asistente, la hora del chat legible y en Privacidad dónde se guardan los datos (`b10185e`). **Sin probar:** guardar una clave real y un celular de verdad.
+- 17/11 · **Pendientes de solo frontend**, uno por commit: P-8, el estudiante ya no lleva ☰ en el celular (como E-Cel-Inicio): lo principal en la barra de abajo y Mi clase, Mi asistencia, Mis proyectos, Mis logros y Cambiar de clase en el menú de la cuenta (`b233afc`); P-6, sin pedidos repetidos al servidor: un GET igual en camino se comparte y la carga del estudiante no se repite; medido con la base local, la lección pasa de 17 a 13 pedidos, el inicio del docente de 15 a 13 y Mi clase del docente de 13 a 12, sin ningún pedido repetido en 10 pantallas (`b90024b`). Los «180–250» eran sobre todo archivos de código de `nuxt dev`. P-2 y P-4 sin tocar el servidor: «Sigue donde ibas» y «Abierta» en Mi asistencia (con un punto en la cuenta en el celular), y las cuentas de solicitudes de rol y sugerencias nuevas del administrador; se preguntan como mucho una vez por minuto (`54ec79d`). **Sin probar:** «Abierta» con una sesión de asistencia abierta de verdad.
 
 | Qué | Commit |
 |---|---|
@@ -78,7 +79,6 @@ Para el informe al profesor, separado de la prueba con personas:
 | P-14 | Ejercicios de respuesta abierta y por bloques | `src/activities/` |
 | P-13 | Ver la clase (nombre y docente) antes de unirse con un código | `src/class/`, `login.vue` |
 | P-12 | «Recordarme en este equipo» (sesión larga). Lo demás de la mascota ya se hizo el 16/11; faltan los detalles finos (contar qué hace cada enlace, reaccionar al tocarla, «{…}» al cargar) | `login.vue`, `MascotaEntrar.vue` |
-| P-2 / P-4 | «Sigue donde ibas» y «Asistencia abierta» en el menú del estudiante; cuentas de pendientes en el del administrador | `SidebarNav.vue` |
 
 **Del video de lanzamiento (16/11, lista de 35 puntos; no es asesoría legal)**: queda **descargar y borrar mis datos**
 (necesita servidor; va con P-16). Hecho el 17/11: «generado con IA», proveedores (Google, Azure, Vercel), cuánto se guardan y
@@ -89,6 +89,4 @@ encenderla así dejaría las contraseñas de las cuentas demo en la página. Hac
 clave ni sus datos, con una clase de muestra y que se reinicien cada noche.
 
 **Solo frontend**
-- P-6: bajar los 180–250 pedidos por página y volver a medir (`scripts/v3/medir-partida.mjs`).
-- P-8: el ☰ del estudiante en el celular.
 - P-1: el cuadro D3-Clase del lienzo aún pone la Biblioteca al final (solo el dibujo).
