@@ -11,7 +11,7 @@ const fuente = leer('composables', 'useArrastreTactil.ts');
 function cargar() {
   const js = ts.transpileModule(fuente, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
   const mod = { exports: {} as Record<string, unknown> };
-  new Function('module', 'exports', 'onBeforeUnmount', js)(mod, mod.exports, () => undefined);
+  new Function("module", "exports", "onBeforeUnmount", "onMounted", "ref", js)(mod, mod.exports, () => undefined, () => undefined, (v: unknown) => ({ value: v }));
   return mod.exports as {
     esArrastre: (dx: number, dy: number) => boolean;
     desplazamientoEnBorde: (y: number, alto: number) => number;
@@ -35,6 +35,16 @@ describe('Arrastrar con el dedo', () => {
 
   it('solo dedo y lápiz: el ratón sigue con el arrastre nativo', () => {
     expect(fuente).toContain("if (e.pointerType === 'mouse' || e.button > 0) return");
+  });
+
+  it('en pantalla táctil se apaga el arrastre nativo y el menú de mantener presionado', () => {
+    expect(fuente).toContain("arrastreNativo.value = !window.matchMedia?.('(pointer: coarse)').matches");
+    for (const c of ['DragDropExercise.vue', 'OrderingExercise.vue']) {
+      const v = leer('components', 'exercise', c);
+      expect(v).not.toContain('draggable="true"');
+      expect(v).toContain(':draggable="arrastreNativo"');
+      expect(v).toContain('@contextmenu.prevent');
+    }
   });
 
   it('clasificar: piezas y zonas conectadas, y el dedo no desplaza la página sobre una pieza', () => {

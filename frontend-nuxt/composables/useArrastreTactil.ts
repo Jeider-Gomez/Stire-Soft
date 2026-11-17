@@ -112,6 +112,11 @@ export function useArrastreTactil(op: Opciones) {
     window.addEventListener('pointercancel', cancelar)
   }
 
+  // En una pantalla táctil (celular, tableta) se apaga el arrastre nativo: si el dedo se queda quieto un momento antes de
+  // moverse, el navegador empezaba su propio arrastre y cancelaba este (pointercancel). Con ratón se queda el nativo.
+  const arrastreNativo = ref(true)
+  onMounted(() => { arrastreNativo.value = !window.matchMedia?.('(pointer: coarse)').matches })
+
   onBeforeUnmount(limpiar)
-  return { empezar }
+  return { empezar, arrastreNativo }
 }

@@ -19,10 +19,11 @@
         v-for="item in unplaced"
         :key="item.id"
         type="button"
-        draggable="true"
+        :draggable="arrastreNativo"
         @dragstart="onDragStart(item.id)"
         @dragend="terminar"
         @pointerdown="tactil.empezar($event, item.id)"
+        @contextmenu.prevent
         @click="toggleSelect(item.id)"
         :aria-pressed="selected === item.id"
         class="arrastre-tactil min-h-[44px] md:min-h-0 px-3 py-1.5 rounded-lg border text-xs font-mono cursor-grab active:cursor-grabbing shadow-xs transition focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
@@ -58,10 +59,11 @@
             v-for="item in placedIn(target.id)"
             :key="item.id"
             type="button"
-            draggable="true"
+            :draggable="arrastreNativo"
             @dragstart="onDragStart(item.id)"
             @dragend="terminar"
             @pointerdown="tactil.empezar($event, item.id)"
+        @contextmenu.prevent
             @click="unplace(item.id)"
             class="arrastre-tactil min-h-[40px] md:min-h-0 px-2.5 py-1 rounded-md border border-acento-ambar-fuerte/40 bg-acento-ambar/10 text-xs font-mono text-base-texto-primario hover:bg-acento-ambar/20 focus:outline-none focus:ring-2 focus:ring-acento-ambar-fuerte"
             :aria-label="`${item.content}, en ${target.label}. Toca para devolverlo`"
@@ -157,6 +159,7 @@ const tactil = useArrastreTactil({
   alMover: (zona) => { dragOver.value = zona },
   alSoltar: (zona) => (zona === null ? terminar() : dropOn(zona === TRAY ? null : zona)),
 })
+const arrastreNativo = tactil.arrastreNativo
 
 function dropOn(targetId: string | null) {
   if (dragging.value) mappings[dragging.value] = targetId ?? ''

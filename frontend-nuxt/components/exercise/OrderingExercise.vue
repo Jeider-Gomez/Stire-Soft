@@ -13,7 +13,7 @@
       <li
         v-for="(block, index) in orderedBlocks"
         :key="block.id"
-        draggable="true"
+        :draggable="arrastreNativo"
         :data-zona="String(index)"
         class="fila-ordenar flex items-center gap-2.5 min-h-[48px] pl-3 pr-1 py-1 rounded-xl"
         :class="{ arrastrando: arrastrado === index, destino: sobre === index && arrastrado !== index }"
@@ -25,7 +25,8 @@
       >
         <!-- Manija: con el dedo, desde aquí se arrastra la fila (el resto de la fila deja desplazar la página). -->
         <span class="manija-ordenar shrink-0 flex items-center gap-1.5 min-h-[44px] -ml-1 pl-1 cursor-grab" aria-hidden="true"
-          @pointerdown="tactil.empezar($event, String(index))">
+          @pointerdown="tactil.empezar($event, String(index))"
+          @contextmenu.prevent>
           <GripVertical :size="18" class="text-base-texto-secundario" />
           <span class="w-7 h-7 rounded-full bg-base-bg-secundario text-xs font-bold flex items-center justify-center">{{ index + 1 }}</span>
         </span>
@@ -127,6 +128,7 @@ const tactil = useArrastreTactil({
     if (zona === null) { arrastrado.value = null; sobre.value = null } else soltar(Number(zona))
   },
 })
+const arrastreNativo = tactil.arrastreNativo
 
 function syncPendingAnswer() {
   if (orderedBlocks.value.length > 0) {
