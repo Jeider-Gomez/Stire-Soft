@@ -7,7 +7,7 @@
   <div class="md:hidden">
     <nav
       aria-label="Lecciones"
-      class="barra-leccion fixed inset-x-0 bottom-0 z-30 bg-base-blanco/95 border-t border-base-borde-sutil shadow-[0_-4px_12px_rgba(15,23,42,0.06)] transition-transform duration-200"
+      class="barra-leccion fixed inset-x-0 bottom-0 z-30 bg-base-blanco border-t border-base-borde-sutil shadow-[0_-4px_12px_rgba(15,23,42,0.06)] transition-transform duration-200"
       :class="oculta && !hojaAbierta ? 'translate-y-full' : 'translate-y-0'">
       <div class="flex items-stretch gap-1 px-2 pt-1.5">
         <NuxtLink v-if="nav.anterior" :to="`/estudiante/unidad/${nav.anterior.id}`" class="boton-barra" :aria-label="`Lección anterior: ${nav.anterior.titulo}`">
@@ -15,10 +15,15 @@
         </NuxtLink>
         <span v-else class="boton-barra opacity-40" aria-hidden="true"><ChevronLeft :size="20" /><span>Anterior</span></span>
 
-        <button type="button" class="boton-barra flex-[1.4]" :aria-expanded="hojaAbierta" aria-controls="hoja-lecciones" @click="hojaAbierta = true">
+        <button type="button" class="boton-barra" :aria-expanded="hojaAbierta" aria-controls="hoja-lecciones" @click="hojaAbierta = true">
           <ListOrdered :size="20" aria-hidden="true" />
-          <span>{{ nav.posicion ? `Lección ${nav.posicion.n} de ${nav.posicion.total}` : 'Lecciones' }}</span>
+          <span>{{ nav.posicion ? `${nav.posicion.n} de ${nav.posicion.total}` : 'Lecciones' }}</span><span v-if="nav.posicion" class="sr-only"> lecciones: ver el plan del curso</span>
         </button>
+
+        <!-- 17/11: lo que más se hace al terminar de leer es practicar; antes había que bajar hasta el final para encontrarlo. -->
+        <a href="#ejercicios" class="boton-barra" @click.prevent="irAPracticar">
+          <Target :size="20" aria-hidden="true" /><span>Practicar</span>
+        </a>
 
         <NuxtLink v-if="nav.siguiente" :to="`/estudiante/unidad/${nav.siguiente.id}`" class="boton-barra" :aria-label="`Siguiente lección: ${nav.siguiente.titulo}${nav.siguiente.abierta ? '' : ' (módulo cerrado)'}`">
           <component :is="nav.siguiente.abierta ? ChevronRight : Lock" :size="20" aria-hidden="true" /><span>Siguiente</span>
@@ -75,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { CheckCircle2, ChevronLeft, ChevronRight, Circle, CircleDot, ListOrdered, Lock, Sparkles, X } from 'lucide-vue-next'
+import { CheckCircle2, ChevronLeft, ChevronRight, Circle, CircleDot, ListOrdered, Lock, Sparkles, Target, X } from 'lucide-vue-next'
 import { useStudentStore } from '~/stores/student'
 import { useTutorStore } from '~/stores/tutor'
 import { navegacionLeccion } from '~/utils/navegacionLeccion'
@@ -90,6 +95,14 @@ const ICONO: Record<UnitStatus, typeof Circle> = { dominado: CheckCircle2, 'en-p
 const COLOR: Record<UnitStatus, string> = { dominado: 'text-semantico-pasa', 'en-progreso': 'text-acento-ambar-fuerte', 'por-iniciar': 'text-base-texto-secundario', bloqueado: 'text-base-texto-secundario' }
 
 const hojaAbierta = ref(false)
+function irAPracticar() {
+  const destino = document.getElementById("ejercicios")
+  if (!destino) return
+  const quieto = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  destino.scrollIntoView({ behavior: quieto ? "auto" : "smooth", block: "start" })
+  destino.querySelector<HTMLElement>("h2")?.setAttribute("tabindex", "-1")
+  destino.querySelector<HTMLElement>("h2")?.focus({ preventScroll: true })
+}
 const cerrarRef = ref<HTMLButtonElement | null>(null)
 watch(hojaAbierta, (a) => { if (a) nextTick(() => cerrarRef.value?.focus()) })
 watch(() => props.unitId, () => { hojaAbierta.value = false })
