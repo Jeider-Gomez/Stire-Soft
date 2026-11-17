@@ -52,7 +52,7 @@ export const RECORRIDOS: Recorrido[] = [
     pasos: [
       { titulo: 'Bienvenido a STIRE', texto: 'Aquí aprendes a programar a tu ritmo: lees, practicas, el Tutor te guía y STIRE te recuerda repasar.' },
       { elemento: '[data-recorrido="siguiente-paso"]', titulo: 'Tu siguiente paso', texto: 'STIRE te dice qué conviene hacer ahora: seguir practicando, ver la explicación o hacer tus repasos.' },
-      { elemento: '[data-recorrido="plan"]', titulo: 'El plan del curso', texto: 'Los módulos y sus lecciones, con tu avance. Una lección con ✓ ya la dominas; con un punto, la estás practicando.' },
+      { elemento: '[data-recorrido="aprender"]', titulo: 'Aprender', texto: 'Aquí están los módulos y sus lecciones, con tu avance. Una lección con ✓ ya la dominas; con un punto, la estás practicando.' },
       { elemento: '[data-recorrido="repasos"]', titulo: 'Repasos', texto: 'Las lecciones que toca repasar hoy para no olvidarlas. El número dice cuántas son.' },
       tutor,
       { elemento: '[data-recorrido="sugerencias"]', titulo: 'Sugerencias', texto: 'Si algo no funciona o te confunde, cuéntanos aquí. Lo leemos todo.' },

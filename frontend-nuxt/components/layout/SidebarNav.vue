@@ -50,7 +50,7 @@
         </NuxtLink>
 
         <!-- v3 (Fase D, 13/11): «Aprender» ya es su pantalla (cuadro «E-Aprender»); el plan sigue al final del menú. -->
-        <NuxtLink to="/estudiante/aprender" class="item-menu tono-cielo" :class="{ activo: enAprender }" :aria-current="route.path === '/estudiante/aprender' ? 'page' : undefined">
+        <NuxtLink to="/estudiante/aprender" class="item-menu tono-cielo" data-recorrido="aprender" :class="{ activo: enAprender }" :aria-current="route.path === '/estudiante/aprender' ? 'page' : undefined">
           <span class="icono-menu"><BookOpen :size="18" aria-hidden="true" /></span>
           <span>Aprender</span>
         </NuxtLink>
@@ -87,15 +87,19 @@
 
         <!-- El código de asistencia, a mano (cuadros E-*: el atajo de abajo del menú): cuando el profe toma asistencia, se abre
              de un toque, sin pasar por «Mi clase». -->
-        <NuxtLink to="/estudiante/asistencia" class="atajo-asistencia ocultar-colapsado" :class="{ activo: route.path === '/estudiante/asistencia' }">
-          <QrCode :size="16" aria-hidden="true" /> Mi código de asistencia
+        <!-- 16/11 (Jeider): «Mi asistencia» es una entrada más del menú, como Inicio, Aprender o Repasos, siempre visible. -->
+        <NuxtLink to="/estudiante/asistencia" class="item-menu tono-sol" :class="{ activo: route.path === '/estudiante/asistencia' }">
+          <span class="icono-menu"><QrCode :size="18" aria-hidden="true" /></span>
+          <span>Mi asistencia</span>
         </NuxtLink>
 
         <!-- Plan del curso al final (Jeider, 26/10: «al abrir el plan abarca mucho espacio y quedan lejos las demás
              cosas»): Inicio, Repasos, Progreso, Asistencia y Mensajes quedan juntos arriba y el plan, que es largo, debajo.
              Para saltar de lección sin bajar está «Ir a una lección» (Ctrl+K). components/layout/PlanDelCurso.vue. -->
         <!-- En una lección el curso ya está al lado («Contenido del curso») y en «Aprender» es la pantalla: no se repite. -->
-        <LayoutPlanDelCurso v-if="!route.path.startsWith('/estudiante/unidad/') && route.path !== '/estudiante/aprender'" data-recorrido="plan" />
+        <!-- 16/11 (Jeider: «siento que estorba»): el plan ya no va en el menú. El curso se recorre en «Aprender», dentro de
+             cada lección con «Contenido del curso» y con Ctrl+K («Ir a una lección»). -->
+
       </nav>
 
       <!-- 👨‍🏫 NAVEGACIÓN DOCENTE (DOC-V01..V06) -->
@@ -215,7 +219,8 @@ const siglaClase = computed(() => {
 /** «Aprender» se marca en su pantalla y dentro de una lección o un ejercicio. */
 const enAprender = computed(() => route.path === '/estudiante/aprender' || route.path.startsWith('/estudiante/unidad/') || route.path.startsWith('/estudiante/evaluacion/'))
 /** «Mi clase» se marca en cualquiera de sus pestañas, en una entrega o en un refuerzo. */
-const enMiClase = computed(() => enMiClaseRuta(route.path))
+// «Mi asistencia» tiene su propia entrada (16/11): ahí se marca esa, no «Mi clase».
+const enMiClase = computed(() => enMiClaseRuta(route.path) && route.path !== '/estudiante/asistencia')
 
 /** Entrada del administrador activa: su ruta exacta (las del admin no tienen subpáginas). */
 const enAdmin = (...rutas: string[]) => rutas.includes(route.path)
@@ -282,6 +287,4 @@ const enAdmin = (...rutas: string[]) => rutas.includes(route.path)
     white-space: nowrap;
   }
 }
-.atajo-asistencia { display: flex; align-items: center; gap: 8px; min-height: 44px; margin: 8px 4px 4px; padding: 0 12px; border-radius: 12px; font-size: 13px; font-weight: 700; background: rgb(var(--c-sec-sol-fondo)); color: rgb(var(--c-base-texto-primario)); transition: filter 0.15s ease; }
-.atajo-asistencia:hover, .atajo-asistencia.activo { filter: brightness(0.96); }
 </style>

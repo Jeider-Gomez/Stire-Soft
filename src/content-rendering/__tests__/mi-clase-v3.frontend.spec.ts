@@ -33,7 +33,9 @@ describe('«Mi clase»: una cabecera y cinco pestañas', () => {
     expect(C.enMiClase('/estudiante/repasos')).toBe(false);
     const menu = leer('components', 'layout', 'SidebarNav.vue');
     expect(menu).toContain('<NuxtLink to="/estudiante/clase" class="item-menu tono-rosa" :class="{ activo: enMiClase }">');
-    expect(menu).toContain('Mi código de asistencia');
+    // 16/11 (Jeider): «Mi asistencia» es una entrada más del menú, siempre visible; ahí se marca esa y no «Mi clase».
+    expect(menu).toContain('<span>Mi asistencia</span>');
+    expect(menu).toContain("enMiClaseRuta(route.path) && route.path !== '/estudiante/asistencia'");
   });
   it('cada pantalla de la clase lleva la cabecera, y la pestaña actual se anuncia', () => {
     for (const p of [['clase', 'index.vue'], ['clase', 'entregas.vue'], ['clase', 'refuerzos.vue'], ['asistencia.vue'], ['mensajes.vue']]) {

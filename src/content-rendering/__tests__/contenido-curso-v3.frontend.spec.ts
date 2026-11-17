@@ -76,7 +76,7 @@ describe('«Contenido del curso»: dónde y cómo', () => {
     expect(m).toContain("const enLeccion = computed(() => route.path.startsWith('/estudiante/unidad/'))");
     expect(m).toContain('colapsado.value = enLeccion.value ? !abiertoEnLeccion.value : elegido.value');
     // Y el plan del menú no se repite al lado del panel.
-    expect(leer('components', 'layout', 'SidebarNav.vue')).toContain("<LayoutPlanDelCurso v-if=\"!route.path.startsWith('/estudiante/unidad/') && route.path !== '/estudiante/aprender'\"");
+    expect(leer('components', 'layout', 'SidebarNav.vue')).not.toContain('<LayoutPlanDelCurso');
   });
 
   it('plegado, el ícono de los botones del menú («Aprender», «Mi clase») no se aplasta', () => {
