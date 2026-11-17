@@ -45,9 +45,10 @@ Para el informe al profesor, separado de la prueba con personas:
 | Desde | Quién | Qué | Archivos |
 |---|---|---|---|
 
-## Hecho hoy (16/11)
+## Hecho hoy (16 y 17/11)
 
 - 17/11 · **Activar el Tutor sin cortar el aprendizaje** (audio de Pedro; recomendado, no obligatorio, por decisión de Jeider). Medido a 360×640: el campo y «Guardar» quedaban fuera de la pantalla. Ahora: la guía arriba y el campo, «Pegar» y «Guardar y activar el Tutor» fijos abajo; al volver de Google dice «¿Ya la copiaste? Pégala aquí.»; letra de 16 px en el campo, toques de 44 px, sin emojis; privacidad plegada. En el inicio, «Activa tu Tutor antes de empezar» (solo si el servidor confirmó que no hay clave; «Ahora no» la oculta). El primer paso «Activa tu Tutor» se cumple al tener la clave. Con el Tutor abierto entre 1024 y 1439 px el menú pasa a íconos: a la página le quedaban 285 px, ahora 525. **Sin probar:** guardar una clave real (no se escribe una clave real) ni en un celular de verdad. **Queda del equipo:** el video que propuso Pedro (hay que grabarlo con una cuenta de Google). La idea de un Tutor que funcione sin clave es P46, descartada el 12/11. **Visto y no tocado:** el aviso «Tienes N repasos vencidos» sale encima de la guía de la clave (`TutorChatDrawer.vue`, de otra sesión)
+- 17/11 · **Lo que quedaba del Tutor y del celular**, uno por commit: el aviso de repasos ya no tapa la guía de la clave (); contraste revisado en 34 pantallas con los 6 modos de contraste y arreglado lo que fallaba (); en el registro del estudiante el paso 2 es «Activa tu Tutor», con la guía y el video abiertos, y seguir sin clave se confirma (, ); celular a 412 px sin nada que se salga (); sonidos al entregar (acierto, cerca, aún no) y botón de sonido arriba (); barra de la lección con «Practicar» (); claro/oscuro y contraste siempre arriba en el celular (); video «Activa tu Tutor» de 1 min con la voz de Will, en  (, ); «generado con IA» en el Tutor y el Asistente, la hora del chat legible y en Privacidad dónde se guardan los datos (). **Sin probar:** guardar una clave real y un celular de verdad.
 
 | Qué | Commit |
 |---|---|
@@ -79,9 +80,13 @@ Para el informe al profesor, separado de la prueba con personas:
 | P-12 | «Recordarme en este equipo» (sesión larga). Lo demás de la mascota ya se hizo el 16/11; faltan los detalles finos (contar qué hace cada enlace, reaccionar al tocarla, «{…}» al cargar) | `login.vue`, `MascotaEntrar.vue` |
 | P-2 / P-4 | «Sigue donde ibas» y «Asistencia abierta» en el menú del estudiante; cuentas de pendientes en el del administrador | `SidebarNav.vue` |
 
-**Del video de lanzamiento (16/11, lista de 35 puntos; no es asesoría legal)**: descargar y borrar mis datos, etiqueta
-«Generado con IA» visible en el Tutor y el Asistente, publicar qué proveedores procesan datos (Google, Azure, Vercel) y
-cuánto se guardan, y un contacto visible para reclamos.
+**Del video de lanzamiento (16/11, lista de 35 puntos; no es asesoría legal)**: queda **descargar y borrar mis datos**
+(necesita servidor; va con P-16). Hecho el 17/11: «generado con IA», proveedores (Google, Azure, Vercel), cuánto se guardan y
+por dónde reclamar, en Privacidad.
+
+**Por decidir con Jeider (17/11)**: la demo «Solo mirar» en el sitio publicado. Hoy está apagada en producción a propósito:
+encenderla así dejaría las contraseñas de las cuentas demo en la página. Hace falta servidor: cuentas demo que no cambien su
+clave ni sus datos, con una clase de muestra y que se reinicien cada noche.
 
 **Solo frontend**
 - P-6: bajar los 180–250 pedidos por página y volver a medir (`scripts/v3/medir-partida.mjs`).
