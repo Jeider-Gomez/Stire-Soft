@@ -281,3 +281,7 @@ a[class*="hover:underline"]:not([class*="bg-"]):not([class*="text-xl"]):not([cla
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Cambio de tema con un círculo (utils/transicionTema.ts): sin el fundido por defecto, la página nueva solo se recorta. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { z-index: 2; }

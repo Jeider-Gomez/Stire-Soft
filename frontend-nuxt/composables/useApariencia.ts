@@ -3,6 +3,7 @@
 // privado) se aplica igual, sin recordarse.
 import { computed } from 'vue'
 import { APARIENCIA_POR_DEFECTO, aplicarApariencia, CLAVE_APARIENCIA, leerApariencia, preferenciasDelSistema, type Apariencia } from '~/utils/apariencia'
+import { cambiarConCirculo } from '~/utils/transicionTema'
 
 export function leerAparienciaGuardada(): string | null {
   try { return localStorage.getItem(CLAVE_APARIENCIA) } catch { return null }
@@ -14,7 +15,10 @@ export function useApariencia() {
 
   function cambiar(cambios: Partial<Apariencia>) {
     a.value = { ...a.value, ...cambios }
-    aplicarApariencia(a.value)
+    // Los cambios de color se revelan con un círculo desde donde se tocó (utils/transicionTema.ts); el resto, al instante.
+    const deColor = ['tema', 'altoContraste', 'temaContraste'].some((k) => k in cambios)
+    if (deColor) cambiarConCirculo(() => aplicarApariencia(a.value), a.value.menosMovimiento)
+    else aplicarApariencia(a.value)
     try { localStorage.setItem(CLAVE_APARIENCIA, JSON.stringify(a.value)) } catch { /* sin almacenamiento: no se recuerda */ }
   }
 

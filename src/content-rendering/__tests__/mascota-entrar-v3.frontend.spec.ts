@@ -29,3 +29,28 @@ describe('la mascota de Entrar reacciona como en el diseño', () => {
     expect(leer('components', 'admin', 'AdminDialogo.vue')).toContain("lateral ? 'items-stretch justify-end");
   });
 });
+
+describe('cambiar de tema con un círculo, como remotion.dev', () => {
+  const t = leer('utils', 'transicionTema.ts');
+  it('el círculo sale de donde se tocó y cubre hasta la esquina más lejana', () => {
+    const ts = require('typescript');
+    const js = ts.transpileModule(t, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+    const mod = { exports: {} as { radioHastaLaEsquina?: (x: number, y: number, w: number, h: number) => number } };
+    new Function('module', 'exports', js)(mod, mod.exports);
+    expect(mod.exports.radioHastaLaEsquina?.(0, 0, 300, 400)).toBe(500);
+    expect(mod.exports.radioHastaLaEsquina?.(150, 200, 300, 400)).toBe(250);
+  });
+  it('solo con los cambios de color, y sin animación con «reducir movimiento»', () => {
+    expect(leer('composables', 'useApariencia.ts')).toContain("['tema', 'altoContraste', 'temaContraste'].some((k) => k in cambios)");
+    expect(t).toContain("matchMedia('(prefers-reduced-motion: reduce)')");
+    expect(leer('assets', 'css', 'temas.css')).toContain('::view-transition-new(root) { z-index: 2; }');
+  });
+});
+
+describe('el menú lateral sin la barra de scroll gruesa', () => {
+  it('fina hasta pasar el mouse, y oculta con el menú recogido', () => {
+    const c = leer('assets', 'css', 'menu-v3.css');
+    expect(c).toContain('aside.w-sidebar.menu-colapsado { scrollbar-width: none; }');
+    expect(c).toContain('aside.w-sidebar { scrollbar-width: thin;');
+  });
+});
