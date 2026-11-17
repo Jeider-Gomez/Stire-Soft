@@ -24,8 +24,7 @@ describe('la mascota de Entrar reacciona como en el diseño', () => {
     expect(leer('components', 'tutor', 'Mascota.vue')).toContain(':root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .mascota-tutor');
     expect(leer('components', 'layout', 'Logo.vue')).toContain(':root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .logo-stire');
   });
-  it('Apariencia abre a un lado sin oscurecer, para ver la pantalla de atrás', () => {
-    expect(leer('components', 'layout', 'BotonApariencia.vue')).toContain('lateral');
+  it('el diálogo puede abrir a un lado sin oscurecer, para ver la pantalla de atrás', () => {
     expect(leer('components', 'admin', 'AdminDialogo.vue')).toContain("lateral ? 'items-stretch justify-end");
   });
 });

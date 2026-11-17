@@ -1,38 +1,43 @@
 <template>
-  <!-- «Apariencia» en la cabecera (07/10): tema, alto contraste, tamaño del texto y espaciado sin salir de la pantalla.
-       Antes estaba solo al final del perfil, debajo de la contraseña, y quien la necesitaba no la encontraba. Así lo
-       resuelven Moodle (bloque de accesibilidad en cada página) y YouTube (apariencia en el menú de arriba). -->
-  <div>
-    <button title="Apariencia y lectura"
-      id="boton-apariencia"
-      type="button"
-      class="flex items-center gap-1.5 px-2 py-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors text-xs font-semibold min-h-[44px] min-w-[44px] justify-center"
-      :aria-expanded="abierto"
-      @click="abierto = true"
-    >
-      <!-- Sin aria-label: el nombre empieza por «Apariencia», lo que se ve (WCAG 2.5.3, control por voz). -->
-      <Contrast :size="18" aria-hidden="true" />
-      <span class="sr-only lg:not-sr-only">Apariencia</span><span class="sr-only"> y lectura: tema, contraste y tamaño del texto</span>
+  <!-- Apariencia como acceso rápido (Jeider, 16/11: «uno pierde mucho tiempo seleccionando»): dos íconos, uno cambia entre
+       claro y oscuro (con el círculo de utils/transicionTema.ts) y otro sube el contraste. Todo lo demás (temas de Windows,
+       tamaño del texto, espaciado, movimiento) sigue en el perfil, en «Apariencia y lectura». -->
+  <div class="flex items-center">
+    <button id="boton-apariencia" type="button" :title="oscuro ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+      :aria-pressed="oscuro" class="boton-rapido" @click="cambiar({ tema: oscuro ? 'claro' : 'oscuro', temaContraste: 'ninguno' })">
+      <Sun v-if="oscuro" :size="20" aria-hidden="true" />
+      <Moon v-else :size="20" aria-hidden="true" />
+      <span class="sr-only">Tema oscuro</span>
     </button>
-
-    <Teleport to="body">
-      <AdminDialogo v-if="abierto" id-titulo="apariencia-rapida-titulo" titulo="Apariencia y lectura"
-        subtitulo="Se aplica al instante y se recuerda en este navegador." ancho="2xl" lateral devolver-foco="boton-apariencia"
-        @cerrar="abierto = false">
-        <template #icono><Contrast :size="18" aria-hidden="true" /></template>
-        <PerfilAparienciaLectura compacto />
-        <div class="flex justify-end pt-1">
-          <button type="button" class="min-h-[44px] px-5 rounded-md bg-acento-ambar-fuerte text-base-blanco text-xs font-bold hover:bg-acento-ambar transition-colors"
-            @click="abierto = false">Listo</button>
-        </div>
-      </AdminDialogo>
-    </Teleport>
+    <button type="button" :title="apariencia.altoContraste ? 'Quitar el contraste alto' : 'Aumentar el contraste'"
+      :aria-pressed="apariencia.altoContraste" class="boton-rapido" :class="{ encendido: apariencia.altoContraste }"
+      @click="cambiar({ altoContraste: !apariencia.altoContraste })">
+      <Contrast :size="20" aria-hidden="true" />
+      <span class="sr-only">Contraste alto</span>
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Contrast } from 'lucide-vue-next'
+import { computed, onMounted, ref } from 'vue'
+import { Contrast, Moon, Sun } from 'lucide-vue-next'
 
-const abierto = ref(false)
+const { apariencia, cambiar } = useApariencia()
+// El tema que se ve (con «Como mi dispositivo» ya resuelto) lo pone utils/apariencia.ts en <html data-tema>.
+const temaVisto = ref<string | null>(null)
+onMounted(() => {
+  temaVisto.value = document.documentElement.getAttribute('data-tema')
+  new MutationObserver(() => { temaVisto.value = document.documentElement.getAttribute('data-tema') })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-tema'] })
+})
+const oscuro = computed(() => (temaVisto.value ?? (apariencia.value.tema === 'oscuro' ? 'oscuro' : 'claro')) === 'oscuro')
 </script>
+
+<style scoped>
+.boton-rapido {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; border-radius: 12px;
+  color: rgb(var(--c-base-texto-secundario)); transition: background-color .15s ease, color .15s ease;
+}
+.boton-rapido:hover { background: rgb(var(--c-base-bg-secundario)); color: rgb(var(--c-base-texto-primario)); }
+.boton-rapido.encendido { color: rgb(var(--c-base-texto-primario)); background: rgb(var(--c-base-bg-secundario)); }
+</style>

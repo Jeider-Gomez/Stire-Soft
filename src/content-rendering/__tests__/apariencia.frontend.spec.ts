@@ -171,8 +171,10 @@ describe('dónde se elige', () => {
     // en el celular el botón no va en la barra (E-Cel-Inicio): queda el enlace del menú de la cuenta, de arriba
     expect(cabecera).toContain('<LayoutBotonApariencia class="hidden md:block" />');
     const boton = leer('components', 'layout', 'BotonApariencia.vue');
-    expect(boton).toContain('<PerfilAparienciaLectura compacto />');
-    expect(boton).toContain('devolver-foco="boton-apariencia"');
+    // 16/11 (Jeider): la cabecera es un acceso rápido de dos íconos (claro/oscuro y contraste); lo demás, en el perfil.
+    expect(boton).toContain("@click=\"cambiar({ tema: oscuro ? 'claro' : 'oscuro', temaContraste: 'ninguno' })\"");
+    expect(boton).toContain('@click="cambiar({ altoContraste: !apariencia.altoContraste })"');
+    expect(boton).toContain(':aria-pressed="oscuro"');
   });
 
   it('el panel: grupos de opciones con leyenda, controles de 44 px y «Volver a la apariencia de siempre»', () => {

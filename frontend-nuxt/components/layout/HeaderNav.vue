@@ -251,7 +251,12 @@ function handleLogout() {
 .boton-asistente { background: rgb(var(--c-sec-sol-fondo)); color: rgb(var(--c-base-texto-primario)); transition: background-color .2s ease; }
 .boton-asistente.abierto, .boton-asistente:hover { background: #ffc94d; color: #14213d; }
 /* Panel al lado abierto: las palabras de los botones pasan al lector de pantalla (como sr-only) y se ocultan los atajos. */
-.barra-compacta :deep(.lg\:not-sr-only), .barra-compacta .nombre-cuenta {
+/* Los botones de la barra son solo íconos (Jeider, 16/11: «solo dejar el ícono, eso ya es intuitivo»): Avisos, Ayuda y
+   Sugerencias dicen su nombre al lector de pantalla y en el «title»; el número de avisos va en su burbuja. */
+:deep(.lg\:not-sr-only) {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.barra-compacta .nombre-cuenta {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 .barra-compacta :deep(kbd) { display: none; }
