@@ -8,6 +8,12 @@ export interface ApiError {
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
+// P-6 (17/11): al abrir una pantalla, el menú, la barra y la página piden a veces lo mismo al mismo tiempo (las clases del
+// docente salían 3 veces; en una lección, 4 pedidos salían dos veces). Un GET igual que ya está en camino no se repite:
+// se espera el mismo y cada quien recibe su propia copia (así nadie cambia los datos del otro). Solo mientras está en
+// camino: al terminar se olvida, y el siguiente pedido trae datos frescos.
+const getsEnCamino = new Map<string, Promise<unknown>>()
+
 export function useApi() {
   const config = useRuntimeConfig()
   const authStore = useAuthStore()
@@ -53,8 +59,14 @@ export function useApi() {
   }
 
   // Conveniencia: GET tipado
-  function get<T>(endpoint: string) {
-    return apiFetch<T>(endpoint, { method: 'GET' })
+  function get<T>(endpoint: string): Promise<T> {
+    const clave = `${authStore.token ?? ''} ${endpoint}`
+    let enCamino = getsEnCamino.get(clave)
+    if (!enCamino) {
+      enCamino = apiFetch<T>(endpoint, { method: 'GET' }).finally(() => getsEnCamino.delete(clave))
+      getsEnCamino.set(clave, enCamino)
+    }
+    return enCamino.then((r) => copiar(r as T))
   }
 
   // Conveniencia: POST tipado
@@ -86,4 +98,9 @@ export function useApi() {
     del,
     baseUrl
   }
+}
+
+/** Copia de una respuesta JSON para que cada quien que la pidió tenga la suya. */
+function copiar<T>(r: T): T {
+  return r === null || typeof r !== 'object' ? r : structuredClone(r)
 }

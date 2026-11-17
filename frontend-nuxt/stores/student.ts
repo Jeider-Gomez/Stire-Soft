@@ -96,9 +96,14 @@ export const useStudentStore = defineStore('student', () => {
    * Cambia la clase activa y recarga el plan curricular
    */
   async function selectClass(classId: number, name?: string, teacher?: string) {
+    // Si había una carga en curso, primero se espera (P-6): al abrir una lección desde cero, la carga del menú ya elige
+    // la clase y no hace falta repetir los 4 pedidos. Si la clase es otra, se carga de nuevo con ella.
+    if (cargaEnCurso) await cargaEnCurso.catch(() => undefined)
+    const yaEsta = hasLoaded.value && currentClassId.value === classId
     currentClassId.value = classId
     if (name) currentClassName.value = name
     if (teacher) currentTeacher.value = teacher
+    if (yaEsta) return
     await fetchStudentData()
   }
 
@@ -109,7 +114,15 @@ export const useStudentStore = defineStore('student', () => {
    * 3. GET /sections/class/:classId (Árbol curricular dinámico)
    * 4. GET /review-schedules/due (SM-2)
    */
-  async function fetchStudentData() {
+  // P-6 (17/11): el menú, la página y sus componentes piden los datos al mismo tiempo al abrir una pantalla; antes cada
+  // llamada repetía los 4 pedidos (en una lección salían dos veces). Mientras una carga está en curso, las demás la esperan.
+  let cargaEnCurso: Promise<void> | null = null
+  function fetchStudentData(): Promise<void> {
+    cargaEnCurso ??= cargarDatosEstudiante().finally(() => { cargaEnCurso = null })
+    return cargaEnCurso
+  }
+
+  async function cargarDatosEstudiante() {
     if (!authStore.token) return
     isSyncing.value = true
 
