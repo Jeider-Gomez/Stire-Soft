@@ -91,7 +91,12 @@
         <NuxtLink to="/estudiante/asistencia" class="item-menu tono-sol" :class="{ activo: route.path === '/estudiante/asistencia' }">
           <span class="icono-menu"><QrCode :size="18" aria-hidden="true" /></span>
           <span>Mi asistencia</span>
+          <!-- P-2: mientras el profe toma asistencia y aún no la marcaste (useAvisosDelMenu.ts). -->
+          <span v-if="asistenciaAbierta" class="cuenta-menu">Abierta<span class="sr-only">: el profe está tomando asistencia</span></span>
         </NuxtLink>
+
+        <!-- P-2: «Sigue donde ibas», la lección en la que va (SigueDondeIbas.vue). -->
+        <LayoutSigueDondeIbas />
 
         <!-- Plan del curso al final (Jeider, 26/10: «al abrir el plan abarca mucho espacio y quedan lejos las demás
              cosas»): Inicio, Repasos, Progreso, Asistencia y Mensajes quedan juntos arriba y el plan, que es largo, debajo.
@@ -137,6 +142,8 @@
         <NuxtLink to="/admin" class="item-menu tono-menta" :class="{ activo: enAdmin('/admin', '/admin/usuarios') }" :aria-current="enAdmin('/admin', '/admin/usuarios') ? 'page' : undefined">
           <span class="icono-menu"><Users :size="18" aria-hidden="true" /></span>
           <span>Usuarios y roles</span>
+          <!-- P-4: solicitudes de rol que esperan respuesta (useAvisosDelMenu.ts). -->
+          <span v-if="solicitudesRol > 0" class="cuenta-menu" :aria-label="`${solicitudesRol} ${solicitudesRol === 1 ? 'solicitud' : 'solicitudes'} por responder`">{{ solicitudesRol }}</span>
         </NuxtLink>
 
         <NuxtLink to="/admin/catalogo" class="item-menu tono-cielo" :class="{ activo: enAdmin('/admin/catalogo') }">
@@ -147,6 +154,7 @@
         <NuxtLink to="/admin/sugerencias" class="item-menu tono-lila" :class="{ activo: enAdmin('/admin/sugerencias') }">
           <span class="icono-menu"><MessageSquare :size="18" aria-hidden="true" /></span>
           <span>Sugerencias</span>
+          <span v-if="sugerenciasNuevas > 0" class="cuenta-menu" :aria-label="`${sugerenciasNuevas} ${sugerenciasNuevas === 1 ? 'nueva' : 'nuevas'}`">{{ sugerenciasNuevas }}</span>
         </NuxtLink>
         <NuxtLink to="/admin/usabilidad" class="item-menu tono-menta" :class="{ activo: enAdmin('/admin/usabilidad') }">
           <span class="icono-menu"><Target :size="18" aria-hidden="true" /></span>
@@ -218,6 +226,11 @@ const enAprender = computed(() => route.path === '/estudiante/aprender' || route
 /** «Mi clase» se marca en cualquiera de sus pestañas, en una entrega o en un refuerzo. */
 // «Mi asistencia» tiene su propia entrada (16/11): ahí se marca esa, no «Mi clase».
 const enMiClase = computed(() => enMiClaseRuta(route.path) && route.path !== '/estudiante/asistencia')
+
+// P-2 y P-4: lo que el menú avisa (asistencia abierta; solicitudes y sugerencias por atender).
+const avisos = useAvisosDelMenu()
+const { asistenciaAbierta, solicitudesRol, sugerenciasNuevas } = avisos
+avisos.seguir()
 
 /** Entrada del administrador activa: su ruta exacta (las del admin no tienen subpáginas). */
 const enAdmin = (...rutas: string[]) => rutas.includes(route.path)

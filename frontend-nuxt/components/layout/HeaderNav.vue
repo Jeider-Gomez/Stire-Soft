@@ -86,12 +86,15 @@
       <div class="relative" ref="avatarMenuRef">
         <button title="Tu cuenta"
           @click="showUserMenu = !showUserMenu"
-          class="flex items-center gap-2 p-1 min-h-[44px] rounded-xl hover:bg-slate-100 transition-colors duration-150 group"
+          class="relative flex items-center gap-2 p-1 min-h-[44px] rounded-xl hover:bg-slate-100 transition-colors duration-150 group"
           :aria-expanded="showUserMenu"
         >
           <!-- Sin aria-label: el nombre contiene lo que se ve, el primer nombre (WCAG 2.5.3, control por voz). -->
           <AvatarUsuario :nombre="authStore.user?.fullName" :foto-id="authStore.user?.fotoId" decorativo
             class="shadow-sm group-hover:shadow-md transition-shadow" />
+          <!-- P-2 en el celular: un punto en la cuenta mientras la asistencia está abierta (Mi asistencia está en su menú). -->
+          <span v-if="asistenciaAbierta" class="punto-asistencia md:hidden" aria-hidden="true" />
+          <span v-if="asistenciaAbierta" class="sr-only md:hidden">(asistencia abierta)</span>
           <span class="sr-only">Menú de la cuenta: </span>
           <span class="nombre-cuenta sr-only md:not-sr-only md:block text-xs font-medium text-slate-700 max-w-[120px] truncate">
             {{ primerNombre }}
@@ -122,14 +125,7 @@
             </div>
 
             <!-- P-8: en el celular, lo del menú del estudiante que no está en la barra de abajo. -->
-            <nav v-if="authStore.currentRole === 'estudiante'" aria-label="Más secciones" class="md:hidden border-b border-slate-100 py-1">
-              <NuxtLink v-for="e in masDelEstudiante" :key="e.to" :to="e.to" @click="showUserMenu = false"
-                class="w-full flex items-center gap-2.5 px-4 py-2.5 min-h-[44px] text-sm text-slate-700 hover:bg-slate-50 font-medium"
-                :aria-current="route.path === e.to ? 'page' : undefined">
-                <component :is="e.icono" :size="16" aria-hidden="true" />
-                <span>{{ e.texto }}</span>
-              </NuxtLink>
-            </nav>
+            <LayoutMasDelEstudiante v-if="authStore.currentRole === 'estudiante'" @elegir="showUserMenu = false" />
 
             <!-- Enlace Mi cuenta -->
             <NuxtLink
@@ -170,7 +166,7 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, LogOut, GraduationCap, UserCircle, Contrast, Search, Sparkles, FolderCode, QrCode, Trophy, ArrowLeftRight } from 'lucide-vue-next'
+import { Menu, LogOut, UserCircle, Contrast, Search, Sparkles } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
 import { useTutorStore } from '~/stores/tutor'
@@ -210,16 +206,8 @@ const claseDelDocente = useState<string | null>('clase-docente-nombre', () => nu
 const migas = computed(() => migasDeRuta(route.path, authStore.currentRole, claseDelDocente.value))
 
 const showUserMenu = ref(false)
-// P-8: lo que en el celular va en el menú de la cuenta (el resto está en la barra de abajo). «Mis proyectos» solo si el
-// servidor lo dejó ver (lo pregunta SidebarNav.vue y lo comparte en este estado).
-const proyectosDisponible = useState('proyectos-disponible', () => false)
-const masDelEstudiante = computed(() => [
-  { to: '/estudiante/clase', texto: 'Mi clase', icono: GraduationCap },
-  { to: '/estudiante/asistencia', texto: 'Mi asistencia', icono: QrCode },
-  ...(proyectosDisponible.value ? [{ to: '/estudiante/proyectos', texto: 'Mis proyectos', icono: FolderCode }] : []),
-  { to: '/estudiante/logros', texto: 'Mis logros', icono: Trophy },
-  { to: '/estudiante/clases', texto: 'Cambiar de clase', icono: ArrowLeftRight },
-])
+// P-2: un punto en la cuenta, en el celular, mientras la asistencia está abierta.
+const { asistenciaAbierta } = useAvisosDelMenu()
 const avatarMenuRef = ref<HTMLElement | null>(null)
 
 // Cerrar el dropdown al hacer click fuera
@@ -271,6 +259,7 @@ function handleLogout() {
 </script>
 
 <style scoped>
+.punto-asistencia { position: absolute; top: 6px; right: 4px; width: 11px; height: 11px; border-radius: 999px; background: #ffc94d; border: 2px solid rgb(var(--c-base-blanco)); }
 /* Asistente: sol suave (#FFF1C2) con tinta; abierto, el sol lleno. En oscuro, el fondo de sol de las secciones. */
 .boton-asistente { background: rgb(var(--c-sec-sol-fondo)); color: rgb(var(--c-base-texto-primario)); transition: background-color .2s ease; }
 .boton-asistente.abierto, .boton-asistente:hover { background: #ffc94d; color: #14213d; }

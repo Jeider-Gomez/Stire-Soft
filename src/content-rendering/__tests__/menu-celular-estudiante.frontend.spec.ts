@@ -8,6 +8,7 @@ const leer = (...p: string[]) => readFileSync(path.join(raiz, ...p), 'utf8');
 
 describe('P-8 · menú del estudiante en el celular', () => {
   const cab = leer('components', 'layout', 'HeaderNav.vue');
+  const mas = leer('components', 'layout', 'MasDelEstudiante.vue');
   const barra = leer('components', 'layout', 'BarraInferior.vue');
 
   it('el ☰ no se muestra al estudiante', () => {
@@ -18,13 +19,14 @@ describe('P-8 · menú del estudiante en el celular', () => {
     const enBarra = ['/estudiante', '/estudiante/aprender', '/estudiante/repasos', '/estudiante/progreso'];
     for (const r of enBarra) expect(barra).toContain(`to="${r}"`);
     for (const r of ['/estudiante/clase', '/estudiante/asistencia', '/estudiante/proyectos', '/estudiante/clases']) {
-      expect(cab).toContain(`to: '${r}'`);
+      expect(mas).toContain(`to: '${r}'`);
     }
-    expect(cab).toMatch(/v-if="authStore\.currentRole === 'estudiante'" aria-label="Más secciones" class="md:hidden/);
+    expect(cab).toContain(`<LayoutMasDelEstudiante v-if="authStore.currentRole === 'estudiante'"`);
+    expect(mas).toContain('aria-label="Más secciones" class="md:hidden');
   });
 
   it('«Mis proyectos» sale solo si está disponible y sin pedirlo dos veces', () => {
-    expect(cab).toContain("useState('proyectos-disponible'");
+    expect(mas).toContain("useState('proyectos-disponible'");
     expect(leer('components', 'layout', 'SidebarNav.vue')).toContain("useState('proyectos-disponible'");
     expect(cab).not.toContain('/proyectos/estado');
   });
