@@ -380,6 +380,6 @@ describe('Degradados que respetan el tema oscuro (sugerencia n.º 6 de José, 09
   });
 
   it('el fondo de los mensajes del Tutor va de stire-canvas a base-blanco', () => {
-    expect(leer('components', 'tutor', 'TutorChatDrawer.vue')).toContain('bg-gradient-to-b from-stire-canvas/70 to-base-blanco');
+    expect(leer('components', 'tutor', 'TutorChatDrawer.vue')).toContain('class="flex-1 overflow-y-auto p-4 space-y-3.5 bg-base-blanco"');
   });
 });

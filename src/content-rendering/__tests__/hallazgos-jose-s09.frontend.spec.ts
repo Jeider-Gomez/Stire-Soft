@@ -120,7 +120,7 @@ describe('MOB-02 (José): el Tutor no tapa la última opción del ejercicio', ()
 
 describe('MOB-01 (José): un bloque de código largo del Tutor no mueve el chat de lado', () => {
   it('la burbuja puede encogerse (min-w-0) y el código se desplaza dentro de su recuadro', () => {
-    expect(leer('components', 'tutor', 'TutorChatDrawer.vue')).toContain('class="min-w-0 break-words rounded-2xl p-3');
+    expect(leer('components', 'tutor', 'TutorChatDrawer.vue')).toContain('class="min-w-0 break-words rounded-2xl px-3.5 py-3');
     expect(leer('utils', 'formatTutorMessage.ts')).toContain('overflow-x-auto');
   });
 });

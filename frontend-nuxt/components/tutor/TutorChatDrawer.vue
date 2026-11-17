@@ -112,26 +112,6 @@
           Ayuda ampliada: este ejercicio es parte de tu refuerzo «{{ tutorStore.refuerzo }}».
         </p>
 
-        <!-- Indicador de Contexto Activo de Aprendizaje -->
-        <div v-if="tutorStore.tutorEnabled && tutorStore.contentLink && !compacto" class="px-4 py-2 bg-stire-canvas border-b border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
-          <!-- El «Estás en…» ya va en la cabecera; aquí queda el atajo a la explicación de lo que se está resolviendo. -->
-          <div class="flex items-center gap-1.5 truncate">
-            <BookOpen :size="14" class="text-teal-700 shrink-0" aria-hidden="true" />
-            <span class="truncate font-medium">La explicación: {{ tutorStore.contentLink.title }}</span>
-          </div>
-          <div class="flex items-center gap-2 flex-shrink-0">
-            <!-- Botón Ir al contenido de la unidad (§22 T1 — visible con clave y sin clave) -->
-            <button
-              v-if="tutorStore.tutorEnabled && tutorStore.contentLink"
-              @click="navigateWithAutosaveCheck(`/estudiante/unidad/${tutorStore.contentLink.learningUnitId}`)"
-              class="borde-afordancia px-2 py-0.5 rounded bg-base-blanco text-[10px] font-medium text-acento-ambar-fuerte hover:bg-acento-ambar/10 flex items-center gap-1 border border-acento-ambar/30"
-              :aria-label="`Ir a la explicación de la lección: ${tutorStore.contentLink.title}`"
-            >
-              <BookOpen :size="12" aria-hidden="true" /> Ver la lección
-            </button>
-          </div>
-        </div>
-
         <!-- Aviso de repasos vencidos (§22 T1 — fuera del v-else, visible con clave y sin clave). Una franja de una línea
              pegada al encabezado y que se puede descartar: como tarjeta flotante ocupaba ~80 px del chat y los mensajes
              parecían quedar debajo (pedido de Jeider, 03/10). El detalle del más atrasado va en el título. -->
@@ -181,7 +161,7 @@
           <!-- Mensajes del Chat (§18.2 — scroll automático) -->
           <TutorAvisoAcompanado />
           <div
-            class="flex-1 overflow-y-auto p-4 space-y-3.5 bg-gradient-to-b from-stire-canvas/70 to-base-blanco"
+            class="flex-1 overflow-y-auto p-4 space-y-3.5 bg-base-blanco"
             ref="messagesContainer"
             aria-live="polite"
             aria-label="Mensajes del Tutor"
@@ -201,12 +181,12 @@
                 <TutorMascota v-if="msg.sender !== 'student'" :expresion="msg.isError ? 'error' : 'normal'" :tamano="20" :vivo="false" class="mb-1" aria-hidden="true" />
                 <!-- min-w-0: un bloque de código largo ya no ensancha la burbuja ni mueve el chat de lado (José, MOB-01). -->
                 <div
-                  class="min-w-0 break-words rounded-2xl p-3 text-xs leading-relaxed shadow-sm"
+                  class="min-w-0 break-words rounded-2xl px-3.5 py-3 text-sm leading-relaxed"
                   :class="msg.isError
                     ? 'bg-semantico-falla/10 border border-semantico-falla/30 text-semantico-falla rounded-bl-none'
                     : msg.sender === 'student'
-                      ? 'bg-stire-teal text-[#070e24] font-medium rounded-br-none'
-                      : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none'"
+                      ? 'burbuja-estudiante rounded-br-none'
+                      : 'burbuja-tutor rounded-bl-none'"
                   :role="msg.isError ? 'alert' : undefined"
                 >
                   <div class="prose prose-xs" v-html="formatTutorMessage(msg.text)"></div>
@@ -246,10 +226,24 @@
             </div>
             </template>
 
+            <!-- Como el cuadro «E-Tutor»: después de la conversación, a dónde ir (la lección y los repasos). «Practicar
+                 esto» es la tarjeta de sugerencia de arriba, cuando el Tutor propone un ejercicio. -->
+            <div v-if="tutorStore.tutorEnabled && !tutorStore.isThinking && tutorStore.messages.length && (tutorStore.contentLink || tutorStore.dueReviews?.length)"
+              class="flex flex-wrap gap-2" data-acciones-tutor>
+              <button v-if="tutorStore.contentLink" type="button" class="accion-tutor"
+                :aria-label="`Abrir la lección: ${tutorStore.contentLink.title}`"
+                @click="navigateWithAutosaveCheck(`/estudiante/unidad/${tutorStore.contentLink.learningUnitId}`)">
+                <BookOpen :size="15" aria-hidden="true" /> Abrir la lección
+              </button>
+              <button v-if="tutorStore.dueReviews?.length" type="button" class="accion-tutor" @click="navigateWithAutosaveCheck('/estudiante/repasos')">
+                <Clock :size="15" aria-hidden="true" /> Repasar
+              </button>
+            </div>
+
             <!-- Indicador de pensamiento IA (§18.6 — texto escalado) -->
             <div v-if="tutorStore.isThinking" class="flex items-center gap-2 text-xs text-slate-500 py-1" role="status">
               <TutorMascota expresion="pensando" :tamano="20" aria-hidden="true" />
-              <span class="flex items-center gap-1 bg-white px-3 py-2 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="flex items-center gap-1 burbuja-tutor px-3 py-2 rounded-2xl">
                 <span class="w-1.5 h-1.5 rounded-full bg-stire-teal animate-bounce" aria-hidden="true" />
                 <span class="w-1.5 h-1.5 rounded-full bg-stire-purple animate-bounce [animation-delay:0.2s]" aria-hidden="true" />
                 <span class="w-1.5 h-1.5 rounded-full bg-stire-blue animate-bounce [animation-delay:0.4s]" aria-hidden="true" />
@@ -260,12 +254,12 @@
 
           <!-- Atajos y campo de pregunta. Los atajos se ven solos solo al empezar en un ejercicio; después, con el
                bombillo junto al campo (utils/atajosTutor.ts). -->
-          <div class="relative p-3 border-t border-slate-200 bg-stire-canvas space-y-2">
+          <div class="relative p-3 border-t border-base-borde-sutil bg-base-blanco space-y-2">
             <div
               v-if="atajosVisibles"
               id="atajos-tutor"
               class="flex flex-wrap gap-1.5"
-              :class="verAtajos && !atajosSolos ? 'absolute bottom-full left-3 right-3 mb-1 p-2 rounded-xl bg-white border border-slate-200 shadow-lg z-10' : ''"
+              :class="verAtajos && !atajosSolos ? 'absolute bottom-full left-3 right-3 mb-1 p-2 rounded-xl bg-base-blanco border border-base-borde-sutil shadow-lg z-10' : ''"
               role="group"
               aria-label="Atajos para pedir ayuda al Tutor">
               <button
@@ -274,7 +268,7 @@
                 type="button"
                 @click="usarAtajo(a.tipo)"
                 :disabled="tutorStore.isThinking || !tutorStore.tutorEnabled"
-                class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[11px] font-medium text-slate-700 hover:text-stire-blue hover:border-stire-teal/60 hover:bg-stire-teal/10 transition-colors shadow-sm disabled:opacity-40"
+                class="px-2.5 py-1 rounded-full bg-base-blanco border border-base-borde-sutil text-xs font-medium text-base-texto-primario hover:text-stire-blue hover:border-stire-teal/60 hover:bg-stire-teal/10 transition-colors shadow-sm disabled:opacity-40"
                 :aria-label="a.etiqueta">
                 <component :is="a.icono" :size="12" class="inline -mt-0.5" aria-hidden="true" /> {{ a.texto }}
               </button>
@@ -283,7 +277,7 @@
             <!-- Input de Pregunta Libre (§18.6 — font-size ≥16px para evitar zoom iOS) -->
             <!-- Como el campo de los chats de IA en el celular (17/10, Jeider: el botón de enviar se salía de la pantalla): una
                  caja con los atajos, el texto y UN botón a la derecha, que es el micrófono si no hay texto y enviar si lo hay. -->
-            <div class="flex items-center gap-1 p-1 rounded-2xl bg-white border border-slate-200 focus-within:border-stire-teal focus-within:ring-2 focus-within:ring-stire-teal/20 transition-all">
+            <div class="flex items-center gap-1 p-1 rounded-xl bg-base-blanco border border-base-borde-sutil focus-within:border-stire-teal focus-within:ring-2 focus-within:ring-stire-teal/20 transition-all">
               <button
                 v-if="!atajosSolos"
                 id="boton-atajos"
@@ -308,7 +302,7 @@
                 placeholder="Pregúntale al Tutor…"
                 aria-label="Pregunta al Tutor IA"
                 style="font-size: 16px;"
-                class="flex-1 min-w-0 px-2 py-2 bg-transparent text-slate-800 placeholder:text-slate-500 outline-none disabled:opacity-50" />
+                class="flex-1 min-w-0 px-2 py-2 bg-transparent text-base-texto-primario placeholder:text-base-texto-secundario outline-none disabled:opacity-50" />
               <TutorDictarPregunta v-show="!inputQuery.trim() || vozActiva" :escrito="inputQuery" :desactivado="tutorStore.isThinking || !tutorStore.tutorEnabled" @texto="(t) => (inputQuery = t)" @activo="(a) => (vozActiva = a)" />
               <!-- mousedown.prevent: tocar Enviar no le quita el foco al campo; si no, el teclado se cerraba y el botón se
                    movía bajo el dedo antes de recibir el toque. -->
@@ -548,4 +542,14 @@ function handleSend() {
 .fade-leave-to {
   opacity: 0;
 }
+
+/* Burbujas como el cuadro «E-Tutor», con los tokens del tema: también en oscuro y en los temas de contraste. */
+.burbuja-tutor { background: rgb(var(--c-base-bg-secundario)); color: rgb(var(--c-base-texto-primario)); }
+.burbuja-estudiante { background: rgb(var(--c-sec-menta-fondo)); color: rgb(var(--c-base-texto-primario)); }
+.accion-tutor {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 12px;
+  border: 1px solid rgb(var(--c-base-borde-fuerte)); background: rgb(var(--c-base-blanco)); color: rgb(var(--c-base-texto-primario));
+  font-size: 13px; font-weight: 600;
+}
+.accion-tutor:hover { background: rgb(var(--c-base-bg-secundario)); }
 </style>
