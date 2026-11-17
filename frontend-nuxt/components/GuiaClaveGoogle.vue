@@ -2,6 +2,16 @@
   <!-- Guía paso a paso para conseguir la clave gratuita de Google AI Studio, dentro de STIRE (ítem 7). La usan el Tutor
        del estudiante y el Asistente del docente; el formulario para pegarla lo pone cada uno debajo. -->
   <div class="space-y-3">
+    <!-- El Tutor lo explica en un video de 50 s (17/11, pedido de Pedro y Jeider): proyecto en docs/material-visual/video-clave/. -->
+    <details class="video-clave rounded-xl border border-base-borde-sutil overflow-hidden" :open="videoAbierto">
+      <summary class="cursor-pointer min-h-[44px] flex items-center gap-2 px-3 text-sm font-semibold text-base-texto-primario">
+        <PlayCircle :size="18" aria-hidden="true" /> Mira cómo se hace: el Tutor te lo explica (50 s)
+      </summary>
+      <video class="block w-full aspect-video bg-base-bg-secundario" controls playsinline preload="none" poster="/video/activa-tu-tutor.jpg">
+        <source src="/video/activa-tu-tutor.mp4" type="video/mp4">
+        <track kind="captions" srclang="es" label="Español" src="/video/activa-tu-tutor.es.vtt" default>
+      </video>
+    </details>
     <ol class="space-y-2.5">
       <li v-for="(p, i) in PASOS" :key="i" class="flex gap-2.5">
         <span class="shrink-0 w-6 h-6 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte text-xs font-bold flex items-center justify-center" aria-hidden="true">{{ i + 1 }}</span>
@@ -28,7 +38,10 @@
 </template>
 
 <script setup lang="ts">
-import { CircleHelp, ExternalLink } from 'lucide-vue-next'
+import { CircleHelp, ExternalLink, PlayCircle } from 'lucide-vue-next'
+
+// En el registro el video se ve abierto; en el Tutor, recogido para no empujar el campo de la clave.
+withDefaults(defineProps<{ videoAbierto?: boolean }>(), { videoAbierto: false })
 import { ENLACE_AI_STUDIO } from '~/utils/claveGoogle'
 
 const PASOS = [

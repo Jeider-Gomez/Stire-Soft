@@ -149,7 +149,7 @@
           <!-- La misma guía del Tutor, aquí donde se crea la cuenta: al volver de Google esta pestaña sigue con lo escrito. -->
           <details open class="guia-clave-registro rounded-lg border border-base-borde-sutil bg-base-blanco px-3">
             <summary class="cursor-pointer min-h-[44px] flex items-center gap-1.5 text-sm font-semibold text-base-texto-primario">¿Cómo consigo la clave? (5 pasos, unos 2 minutos)</summary>
-            <div class="pb-3"><GuiaClaveGoogle /></div>
+            <div class="pb-3"><GuiaClaveGoogle video-abierto /></div>
           </details>
           <div class="relative">
             <input id="apiKey" v-model="apiKey" aria-describedby="clave-falta" style="font-size:16px" :type="showApiKey ? 'text' : 'password'" autocomplete="off" placeholder="AIzaSy…" class="campo-entrar pr-12 text-sm font-mono" />

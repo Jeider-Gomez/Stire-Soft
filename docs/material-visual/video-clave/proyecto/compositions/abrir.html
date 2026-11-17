@@ -1,0 +1,79 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #f7f9fc; font-family: Inter, sans-serif; color: #14213d; }
+    .cielo { position: absolute; inset: 0; background: radial-gradient(circle at 15% 85%, rgba(255,201,77,.18), transparent 35%), radial-gradient(circle at 85% 10%, rgba(92,203,255,.22), transparent 40%); }
+    .masc { position: absolute; left: 120px; top: 300px; width: 560px; height: 384px; }
+    .masc svg { width: 560px; height: 384px; overflow: visible; }
+    .globo { position: absolute; left: 90px; top: 730px; width: 620px; padding: 26px 32px; border-radius: 30px 30px 30px 8px; background: #14213d; color: #fff; font: 700 40px/1.25 Inter, sans-serif; text-align: center; }
+    .paso { position: absolute; left: 120px; top: 150px; padding: 12px 24px; border-radius: 999px; background: #d5f6f0; color: #0b6b5e; font: 800 30px Poppins, sans-serif; letter-spacing: .04em; }
+    .nav { position: absolute; left: 820px; top: 150px; width: 980px; height: 720px; border-radius: 28px; background: #fff; box-shadow: 0 40px 90px rgba(20,33,61,.18); overflow: hidden; }
+    .nav-barra { height: 70px; background: #eef2f7; display: flex; align-items: center; gap: 12px; padding: 0 26px; }
+    .nav-barra i { width: 16px; height: 16px; border-radius: 50%; background: #cbd5e1; }
+    .nav-barra span { margin-left: 18px; flex: 1; height: 42px; border-radius: 21px; background: #fff; display: flex; align-items: center; padding: 0 22px; font: 500 28px Inter, sans-serif; color: #4a5873; }
+    .nav-cuerpo { padding: 50px 60px; display: flex; flex-direction: column; gap: 30px; font: 500 30px/1.4 Inter, sans-serif; }
+    .nav-cuerpo h3 { font: 800 50px Poppins, sans-serif; }
+    .nav-cuerpo p { color: #4a5873; }
+    .btn { align-self: flex-start; padding: 24px 38px; border-radius: 18px; font: 800 34px Inter, sans-serif; }
+    .btn.sol { background: #a35f00; color: #fff; } .btn.azul { background: #1a56c4; color: #fff; } .btn.tinta { background: #14213d; color: #fff; }
+    .btn.blanco { background: #fff; color: #14213d; border: 3px solid #cbd5e1; } .btn.mini { padding: 18px 28px; font-size: 30px; }
+    .pestana { align-self: flex-start; padding: 16px 26px; border-radius: 14px; background: #e6f4ff; color: #1a56c4; font: 700 28px Inter, sans-serif; }
+    .casilla { display: flex; align-items: center; gap: 18px; font-weight: 700; }
+    .casilla b { width: 44px; height: 44px; border-radius: 10px; background: #00c2a8; display: block; }
+    .nota { color: #4a5873; font: 700 28px Inter, sans-serif; }
+    .dialogo { padding: 30px; border-radius: 22px; border: 3px solid #e3eaf3; background: #f7f9fc; }
+    .opcion { margin-top: 18px; padding: 22px 26px; border-radius: 16px; border: 3px solid #cbd5e1; background: #fff; font-weight: 800; }
+    .clave { display: flex; align-items: center; gap: 22px; padding: 22px 26px; border-radius: 18px; background: #f1f5fb; }
+    .clave code { flex: 1; font: 600 32px "JetBrains Mono", monospace; }
+    .toast { align-self: flex-start; padding: 14px 24px; border-radius: 999px; background: #e7f6ef; color: #047857; font: 800 30px Inter, sans-serif; }
+    .campo { height: 96px; border-radius: 18px; border: 3px solid #00c2a8; display: flex; align-items: center; padding: 0 28px; font: 600 32px "JetBrains Mono", monospace; }
+    .fila { display: flex; gap: 20px; }
+    .exito { align-self: flex-start; padding: 18px 30px; border-radius: 999px; background: #e7f6ef; color: #047857; font: 800 38px Poppins, sans-serif; }
+    .centro { position: absolute; left: 820px; top: 180px; width: 980px; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+    .centro h2 { font: 800 60px Poppins, sans-serif; }
+    .chips { display: flex; gap: 20px; } .chips span { padding: 16px 28px; border-radius: 999px; background: #fff; box-shadow: 0 10px 30px rgba(20,33,61,.1); font: 800 32px Inter, sans-serif; }
+    .btn, .opcion { position: relative; } .mano { position: absolute; left: 50%; top: 50%; margin: -45px 0 0 -45px; width: 90px; height: 90px; border-radius: 50%; background: rgba(0,194,168,.35); border: 6px solid #00c2a8; pointer-events: none; z-index: 10; }</style>
+  <div id="root" data-composition-id="abrir" data-width="1920" data-height="1080">
+    <div class="cielo"></div>
+    <div class="paso" id="abrir-paso">Paso 1 de 5</div>
+    <div class="masc" id="abrir-masc">
+      <svg viewBox="24 38 152 104" aria-hidden="true">
+        <g id="abrir-cuerpo">
+          <rect x="26" y="40" width="148" height="100" rx="18" fill="#7b2fbf" />
+          <rect x="38" y="52" width="124" height="76" rx="10" fill="#082b6b" />
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M46 70 L30 62 M158 70 L174 62" stroke="#008f7c" stroke-width="6.5" /><path d="M46 70 L30 62 M158 70 L174 62" stroke="#00c2a8" stroke-width="3.8" /><path d="M95 73 Q100 66 105 73" stroke="#00c2a8" stroke-width="6" /></g>
+          <rect x="43" y="58" width="52" height="44" rx="16" fill="#fff" stroke="#00c2a8" stroke-width="7.5" />
+          <rect x="105" y="58" width="52" height="44" rx="16" fill="#fff" stroke="#00c2a8" stroke-width="7.5" />
+          <g id="abrir-ojos"><path d="M59 84 L69 76 L79 84" fill="none" stroke="#7b2fbf" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M121 84 L131 76 L141 84" fill="none" stroke="#7b2fbf" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" /></g>
+          <path id="abrir-boca" d="M80 112 Q100 130 120 112" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" />
+        </g>
+      </svg>
+    </div>
+    <div class="globo" id="abrir-globo">Toca «Abrir Google AI Studio»</div>
+    
+    <div class="nav" id="abrir-nav">
+      <div class="nav-barra"><i></i><i></i><i></i><span>stire-soft.vercel.app</span></div>
+      <div class="nav-cuerpo stire"><h3>Activa tu Tutor</h3><p>Sigue los pasos. Google se abre en otra pestaña.</p>
+        <div class="btn sol" id="abrir-btn">↗ Abrir Google AI Studio<i class="mano" id="abrir-mano"></i></div>
+        <div class="pestana" id="abrir-pestana">Nueva pestaña: aistudio.google.com</div></div>
+    </div>
+    
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#abrir-masc", { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.6)" }, 0);
+    tl.to("#abrir-masc", { y: -12, duration: 1.2, yoyo: true, repeat: 5, ease: "sine.inOut" }, 0.6);
+    tl.fromTo("#abrir-ojos", { scaleY: 1 }, { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.08, yoyo: true, repeat: 1 }, 4.16);
+    tl.fromTo("#abrir-globo", { opacity: 0, y: 24, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 0.35);
+    tl.fromTo("#abrir-paso", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, 0.2);
+    tl.fromTo("#abrir-nav", { opacity: 0, x: 140, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0.3);
+    
+    // El dedo que toca: llega desde abajo a la derecha hasta el centro del botón y lo presiona
+    tl.fromTo("#abrir-mano", { x: 420, y: 320, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.7, ease: "power2.inOut" }, 0.85);
+    tl.to("#abrir-btn", { scale: 0.94, duration: 0.1, yoyo: true, repeat: 1 }, 1.60);
+    tl.to("#abrir-mano", { scale: 0.75, duration: 0.1, yoyo: true, repeat: 1 }, 1.60);
+    
+    tl.fromTo("#abrir-pestana", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, 3.00);
+    tl.to("#abrir-globo, #abrir-nav, #abrir-mano", { opacity: 0, duration: 0.3, ease: "power2.in" }, 7.21);
+    window.__timelines["abrir"] = tl;
+  </script>
+</template>
