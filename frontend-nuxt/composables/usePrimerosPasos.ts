@@ -43,8 +43,12 @@ export function usePrimerosPasos() {
   const hechos = computed<IdPrimerPaso[]>(() => {
     const deDatos: IdPrimerPaso[] = []
     if (studentStore.enrolledClasses.length > 0) deDatos.push('clase')
+    // Activar el Tutor se cumple al tener la clave guardada (17/11), no solo por abrirlo.
+    if (useTutorStore().hasKey === true) deDatos.push('tutor')
     if (studentStore.modules.some((m) => m.units.some((u) => u.empezada || u.masteryPercentage > 0))) deDatos.push('leccion', 'ejercicio')
-    return [...new Set([...estado.value.hechos, ...deDatos])]
+    // «tutor» guardado antes del 17/11 significaba «lo abrió»; ahora solo cuenta tener la clave.
+    const guardados = estado.value.hechos.filter((h) => h !== 'tutor')
+    return [...new Set([...guardados, ...deDatos])]
   })
   const avance = computed(() => avancePrimerosPasos(hechos.value))
   const visible = computed(() => !estado.value.oculta && !avance.value.terminado)
@@ -68,7 +72,7 @@ export function usePrimerosPasos() {
     onMounted(() => {
       cargar()
       watch(() => route.path, (r) => marcar(pasoDeRuta(r)), { immediate: true })
-      watch(() => tutorStore.isOpen, (abierto) => { if (abierto) marcar('tutor') }, { immediate: true })
+      watch(() => tutorStore.hasKey, (tiene) => { if (tiene) marcar('tutor') }, { immediate: true })
     })
   }
 

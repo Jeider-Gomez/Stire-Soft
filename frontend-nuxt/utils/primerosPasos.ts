@@ -21,7 +21,7 @@ export const PRIMEROS_PASOS: PrimerPaso[] = [
   { id: 'clase', texto: 'Únete a tu clase', detalle: 'Con el código o el QR de tu docente.', enlace: '/estudiante/clases' },
   { id: 'leccion', texto: 'Abre una lección', detalle: 'Desde el plan del curso, en el menú.', enlace: '/ayuda#estudiar-una-leccion' },
   { id: 'ejercicio', texto: 'Abre un ejercicio y prueba tu código', detalle: '«Probar código» no gasta intentos.', enlace: '/ayuda#resolver-un-ejercicio' },
-  { id: 'tutor', texto: 'Pregúntale algo al Tutor', detalle: 'Te guía sin darte la respuesta.', enlace: '/ayuda#pedir-ayuda-al-tutor' },
+  { id: 'tutor', texto: 'Activa tu Tutor', detalle: 'Una clave gratuita de Google, una sola vez. Te guía sin darte la respuesta.', enlace: '/ayuda#pedir-ayuda-al-tutor' },
   { id: 'repasos', texto: 'Mira tus repasos', detalle: 'Así no se te olvida lo que aprendes.', enlace: '/estudiante/repasos' },
 ]
 

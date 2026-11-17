@@ -70,7 +70,7 @@ describe('primeros pasos del estudiante', () => {
     expect(p.pasoDeRuta('/estudiante/repasos/')).toBe('repasos');
     expect(p.pasoDeRuta('/estudiante/progreso')).toBeNull();
     const c = leer('composables', 'usePrimerosPasos.ts');
-    expect(c).toContain("if (abierto) marcar('tutor')");
+    expect(c).toContain("if (tiene) marcar('tutor')");
     expect(c).toContain("if (studentStore.enrolledClasses.length > 0) deDatos.push('clase')");
     // Quien ya trabajó una lección no la ve pendiente.
     expect(c).toContain("if (studentStore.modules.some((m) => m.units.some((u) => u.empezada || u.masteryPercentage > 0))) deDatos.push('leccion', 'ejercicio')");

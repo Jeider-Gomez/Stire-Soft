@@ -4,23 +4,23 @@
   <div class="space-y-3">
     <ol class="space-y-2.5">
       <li v-for="(p, i) in PASOS" :key="i" class="flex gap-2.5">
-        <span class="shrink-0 w-6 h-6 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte text-[11px] font-bold flex items-center justify-center" aria-hidden="true">{{ i + 1 }}</span>
-        <div class="min-w-0 text-xs text-base-texto-primario leading-relaxed">
+        <span class="shrink-0 w-6 h-6 rounded-full bg-acento-ambar/15 text-acento-ambar-fuerte text-xs font-bold flex items-center justify-center" aria-hidden="true">{{ i + 1 }}</span>
+        <div class="min-w-0 text-sm text-base-texto-primario leading-snug">
           <p class="font-semibold">{{ p.titulo }}</p>
-          <p class="text-[11px] text-base-texto-secundario">{{ p.detalle }}</p>
+          <p class="text-xs text-base-texto-secundario mt-0.5 leading-relaxed">{{ p.detalle }}</p>
           <a v-if="i === 0" :href="ENLACE_AI_STUDIO" target="_blank" rel="noopener noreferrer"
-            class="mt-1.5 min-h-[36px] inline-flex items-center gap-1.5 px-3 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-[11px] hover:bg-acento-ambar">
+            class="mt-2 min-h-[44px] inline-flex items-center gap-1.5 px-4 rounded-md bg-acento-ambar-fuerte text-base-blanco font-bold text-sm hover:bg-acento-ambar">
             <ExternalLink :size="13" aria-hidden="true" /> Abrir Google AI Studio <span class="sr-only">(se abre en otra pestaña)</span>
           </a>
         </div>
       </li>
     </ol>
-    <p class="text-[11px] text-base-texto-secundario">Es gratis y no pide tarjeta. Tiene un límite por minuto y por día: si lo alcanzas, te avisamos.</p>
-    <details class="text-[11px] rounded border border-base-borde-sutil px-2 py-1.5">
-      <summary class="cursor-pointer min-h-[32px] flex items-center gap-1 font-semibold text-base-texto-primario">
+    <p class="text-xs text-base-texto-secundario">Es gratis y no pide tarjeta. Tiene un límite por minuto y por día: si lo alcanzas, te avisamos.</p>
+    <details class="text-xs rounded-md border border-base-borde-sutil px-3">
+      <summary class="cursor-pointer min-h-[44px] flex items-center gap-1 font-semibold text-base-texto-primario">
         <CircleHelp :size="13" aria-hidden="true" /> ¿Algo no salió?
       </summary>
-      <ul class="mt-1.5 space-y-1.5 text-base-texto-primario">
+      <ul class="pb-3 space-y-1.5 text-base-texto-primario leading-relaxed">
         <li v-for="(a, i) in AYUDAS" :key="i"><strong>{{ a.problema }}</strong> {{ a.solucion }}</li>
       </ul>
     </details>
@@ -32,7 +32,7 @@ import { CircleHelp, ExternalLink } from 'lucide-vue-next'
 import { ENLACE_AI_STUDIO } from '~/utils/claveGoogle'
 
 const PASOS = [
-  { titulo: 'Abre Google AI Studio', detalle: 'Se abre en otra pestaña; esta queda aquí esperándote.' },
+  { titulo: 'Abre Google AI Studio', detalle: 'Se abre en otra pestaña; esta queda aquí esperándote. En el celular, vuelve con el botón de pestañas del navegador.' },
   { titulo: 'Entra con tu cuenta de Google', detalle: 'La primera vez Google te pide aceptar sus condiciones. Hay que tener 18 años o más.' },
   { titulo: 'Toca «Create API key» (Crear clave de API)', detalle: 'Si te pregunta por un proyecto, elige «Create API key in new project».' },
   { titulo: 'Copia la clave', detalle: 'Usa el botón de copiar de Google. Empieza por «AIza» o por «AQ.».' },

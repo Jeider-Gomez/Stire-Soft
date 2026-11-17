@@ -20,6 +20,7 @@
     </section>
 
     <template v-else>
+      <EstudianteInicioActivaTutor />
       <EstudianteInicioSiguientePaso :ejercicio-id="recommendedExerciseId" :razon="recommendedReason" :mensaje="recommendedReasonMessage" />
       <EstudianteInicioCaminoModulo />
 

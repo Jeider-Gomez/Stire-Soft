@@ -162,7 +162,7 @@ export const MANUAL: SeccionManual[] = [
         paraQue: 'Para destrabarte con preguntas y pistas, sin que te den la respuesta.',
         pasos: [
           'En una lección o un ejercicio, toca «Tutor», abajo a la derecha.',
-          'La primera vez te pide tu clave de Google AI Studio. Sigue los pasos del panel: crea la clave, cópiala y pégala.',
+          'La primera vez te pide tu clave de Google AI Studio (mejor hazlo desde el inicio, con «Activar el Tutor»). Sigue los pasos del panel: crea la clave, cópiala, vuelve y toca «Pegar».',
           'Escribe tu duda en «Pregúntale al Tutor…» o toca el micrófono para dictarla.',
           'Si no sabes qué preguntar, toca el bombillo y elige «Pista conceptual».',
         ],

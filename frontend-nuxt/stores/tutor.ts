@@ -69,6 +69,8 @@ export const useTutorStore = defineStore('tutor', () => {
   // ─── Clave de Google AI Studio (§19) ────────────────────────────────────────
   const hasLoadedHistory = ref(false)
   const hasKey = ref<boolean | null>(null)   // null = aún no cargado
+  /** El servidor respondió (hasKey false también puede venir de un error de red: entonces no se invita a activar). */
+  const claveConsultada = ref(false)
   const last4 = ref<string | null>(null)
   /** true = mostrar TutorKeyPanel en lugar del campo de pregunta */
   const showKeyPanel = ref(false)
@@ -129,6 +131,7 @@ export const useTutorStore = defineStore('tutor', () => {
       last4.value = res?.last4 ?? null
       // Si no tiene clave, mostrar el panel automáticamente
       if (!hasKey.value) showKeyPanel.value = true
+      claveConsultada.value = true
     } catch (err) {
       console.warn('[STIRE Tutor] No se pudo verificar el estado de la clave:', err)
       hasKey.value = false
@@ -486,6 +489,7 @@ export const useTutorStore = defineStore('tutor', () => {
     contentLink,
     refuerzo,
     hasKey,
+    claveConsultada,
     last4,
     showKeyPanel,
     lastUserMessage,
