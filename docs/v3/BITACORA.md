@@ -47,6 +47,8 @@ Para el informe al profesor, separado de la prueba con personas:
 
 ## Hecho hoy (16/11)
 
+- 17/11 · **Activar el Tutor sin cortar el aprendizaje** (audio de Pedro; recomendado, no obligatorio, por decisión de Jeider). Medido a 360×640: el campo y «Guardar» quedaban fuera de la pantalla. Ahora: la guía arriba y el campo, «Pegar» y «Guardar y activar el Tutor» fijos abajo; al volver de Google dice «¿Ya la copiaste? Pégala aquí.»; letra de 16 px en el campo, toques de 44 px, sin emojis; privacidad plegada. En el inicio, «Activa tu Tutor antes de empezar» (solo si el servidor confirmó que no hay clave; «Ahora no» la oculta). El primer paso «Activa tu Tutor» se cumple al tener la clave. Con el Tutor abierto entre 1024 y 1439 px el menú pasa a íconos: a la página le quedaban 285 px, ahora 525. **Sin probar:** guardar una clave real (no se escribe una clave real) ni en un celular de verdad. **Queda del equipo:** el video que propuso Pedro (hay que grabarlo con una cuenta de Google). La idea de un Tutor que funcione sin clave es P46, descartada el 12/11. **Visto y no tocado:** el aviso «Tienes N repasos vencidos» sale encima de la guía de la clave (`TutorChatDrawer.vue`, de otra sesión)
+
 | Qué | Commit |
 |---|---|
 | Revisión antes de desplegar y despliegue de la v3 (servidor con migraciones, luego Vercel); claves «AQ.» de Google AI Studio | `e44ec1d`, `5d0a1e4` |
