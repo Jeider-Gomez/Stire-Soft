@@ -18,6 +18,14 @@ import { Asignatura } from '../../institution/entities/asignatura.entity';
 export const ALCANCES_PLANTILLA = ['nadie', 'asignatura', 'programa', 'facultad', 'institucion', 'todos'] as const;
 export type AlcancePlantilla = (typeof ALCANCES_PLANTILLA)[number];
 
+/**
+ * Competencias en la clase (P39; docs/PROPUESTA_PARTE_FORMATIVA.md §5.5b): apagadas por defecto; «informar» muestra
+ * «Mis competencias» y la vista del docente; «recomendar» además elige el siguiente ejercicio por la competencia más baja
+ * y, cuando un ejercicio no sale, manda a practicar la competencia que falta.
+ */
+export const MODOS_COMPETENCIAS = ['apagado', 'informar', 'recomendar'] as const;
+export type ModoCompetencias = (typeof MODOS_COMPETENCIAS)[number];
+
 @Entity('classes')
 @Index(['teacherId'])
 export class Class {
@@ -104,6 +112,10 @@ export class Class {
   /** Si los niveles altos pesan más en el dominio de la lección (básico 1, intermedio 1,5, avanzado 2). Opcional. */
   @Column({ type: 'boolean', default: false })
   nivelesPesanDistinto!: boolean;
+
+  /** Competencias en la clase: apagado, informar o recomendar (MODOS_COMPETENCIAS). */
+  @Column({ type: 'varchar', length: 12, default: 'apagado' })
+  competenciasModo!: ModoCompetencias;
 
   /**
    * Qué enseña esta clase y para quién (docs/DISENO_ORGANIZACION_Y_PLANTILLAS.md). Opcional: sin asignatura la clase

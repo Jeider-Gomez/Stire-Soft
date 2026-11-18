@@ -30,7 +30,7 @@ const { pendientesDeHoy } = cargar('hoyClase.ts', { './refuerzos': cargar('refue
 
 describe('Pestañas de la clase', () => {
   it('cada pestaña lleva a su pantalla con la clase ya elegida', () => {
-    expect(pestanas.PESTANAS_CLASE.map((p) => p.id)).toEqual(['hoy', 'contenido', 'estudiantes', 'asistencia', 'entregas', 'refuerzos', 'notas', 'ajustes']);
+    expect(pestanas.PESTANAS_CLASE.map((p) => p.id)).toEqual(['hoy', 'contenido', 'competencias', 'estudiantes', 'asistencia', 'entregas', 'refuerzos', 'notas', 'ajustes']);
     expect(pestanas.enlacePestana('hoy', 5)).toBe('/docente/clase/5');
     expect(pestanas.enlacePestana('contenido', 5)).toBe('/docente/contenidos?classId=5');
     expect(pestanas.enlacePestana('estudiantes', 5)).toBe('/docente/rendimiento?classId=5');
@@ -243,7 +243,7 @@ describe('«Hoy» de la clase', () => {
 describe('Menú lateral del docente v2: una clase elegida y cinco secciones', () => {
   it('cinco secciones; dos agrupan pantallas que siguen existiendo y Ajustes va aparte', () => {
     // v3 (12/11): los nombres y el orden del prototipo D3-Clase; Refuerzos y retos con su propia entrada.
-    expect(pestanas.SECCIONES_MENU.map((s) => s.texto)).toEqual(['Resumen de la clase', 'Contenido', 'Estudiantes', 'Asistencia y notas', 'Entregas', 'Refuerzos y retos']);
+    expect(pestanas.SECCIONES_MENU.map((s) => s.texto)).toEqual(['Resumen de la clase', 'Contenido', 'Competencias', 'Estudiantes', 'Asistencia y notas', 'Entregas', 'Refuerzos y retos']);
     const cubiertas = pestanas.SECCIONES_MENU.flatMap((s) => s.incluye).concat(['ajustes']).sort();
     expect(cubiertas).toEqual(pestanas.PESTANAS_CLASE.map((p) => p.id).sort());
   });

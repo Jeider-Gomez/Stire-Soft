@@ -1,0 +1,32 @@
+/* Competencias (P39; cuadros «E-Progreso-Competencias» y «D3-Competencias»): el color de cada estado en la barra y en la
+   pastilla, en claro, oscuro y alto contraste. */
+.tarjeta-competencias { background: rgb(var(--c-base-blanco)); border: 1px solid rgb(var(--c-base-borde-sutil)); border-radius: 18px; padding: 18px 22px; }
+.barra-competencia { flex: 1; height: 10px; border-radius: 99px; background: rgb(var(--c-base-borde-sutil)); overflow: hidden; }
+.barra-competencia > span { display: block; height: 100%; border-radius: 99px; transform-origin: left; transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+.pastilla-nivel { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.pastilla-dificultad { padding: 3px 9px; border-radius: 999px; font-weight: 700; }
+
+.estado-domina .barra-competencia > span, .barra-domina { background: #00c2a8; }
+.estado-hace .barra-competencia > span, .barra-hace { background: #5ccbff; }
+.estado-camino .barra-competencia > span, .barra-camino { background: #ffc94d; }
+.estado-sin .barra-competencia > span { background: transparent; }
+.estado-domina .pastilla-nivel { background: #d5f6f0; color: #0b6b5e; }
+.estado-hace .pastilla-nivel { background: #e3f4ff; color: #0b4f7a; }
+.estado-camino .pastilla-nivel { background: #fff1c2; color: #7a4b00; }
+.estado-sin .pastilla-nivel { background: rgb(var(--c-base-blanco)); color: rgb(var(--c-base-texto-secundario)); border: 1px solid rgb(var(--c-base-borde-sutil)); }
+.dif-basico { background: rgb(var(--c-base-bg-secundario)); }
+.dif-intermedio { background: #e3f4ff; color: #0b4f7a; }
+.dif-avanzado { background: #d5f6f0; color: #0b6b5e; }
+
+:root[data-tema="oscuro"] .estado-domina .pastilla-nivel, :root[data-tema="oscuro"] .dif-avanzado { background: rgba(0, 194, 168, 0.18); color: #7ce8d8; }
+:root[data-tema="oscuro"] .estado-hace .pastilla-nivel, :root[data-tema="oscuro"] .dif-intermedio { background: rgba(92, 203, 255, 0.18); color: #9fdcff; }
+:root[data-tema="oscuro"] .estado-camino .pastilla-nivel { background: rgba(255, 201, 77, 0.18); color: #ffd97a; }
+
+/* Alto contraste: sin colores pastel, el texto del tema y un borde. */
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .pastilla-nivel,
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .pastilla-dificultad {
+  background: rgb(var(--c-base-blanco)); color: rgb(var(--c-base-texto-primario)); border: 1px solid rgb(var(--c-base-texto-primario));
+}
+:root[data-tema-contraste]:not([data-tema-contraste="ninguno"]) .barra-competencia > span { background: rgb(var(--c-base-texto-primario)); }
+
+@media (prefers-reduced-motion: reduce) { .barra-competencia > span { transition: none; } }

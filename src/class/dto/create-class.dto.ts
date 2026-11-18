@@ -1,8 +1,8 @@
 import { IsArray, IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, ValidateIf } from 'class-validator';
-import { ALCANCES_PLANTILLA } from '../entities/class.entity';
+import { ALCANCES_PLANTILLA, MODOS_COMPETENCIAS } from '../entities/class.entity';
 import { CATEGORIAS_LOGRO } from '../../analytics/logros';
 import { PORTADAS_CLASE } from '../portadas';
-import type { AlcancePlantilla } from '../entities/class.entity';
+import type { AlcancePlantilla, ModoCompetencias } from '../entities/class.entity';
 
 export class CreateClassDto {
   @IsString({ message: 'El nombre debe ser una cadena de texto' })
@@ -68,6 +68,11 @@ export class CreateClassDto {
   @IsBoolean({ message: 'Indica sí o no' })
   @IsOptional()
   nivelesPesanDistinto?: boolean;
+
+  /** Competencias en la clase (P39): apagado, informar o recomendar. */
+  @IsIn(MODOS_COMPETENCIAS, { message: 'Las competencias se apagan, solo informan o recomiendan ejercicios' })
+  @IsOptional()
+  competenciasModo?: ModoCompetencias;
 
   /** Asignatura del catálogo (GET /asignaturas); null la quita. */
   @ValidateIf((_o, v) => v !== null && v !== undefined)

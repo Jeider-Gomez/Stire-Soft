@@ -92,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { BarChart3, BookOpen, ChevronsUpDown, Inbox, LayoutGrid, Plus, QrCode, Settings, Users, Zap } from 'lucide-vue-next'
+import { BarChart3, BookOpen, ChevronsUpDown, Inbox, LayoutGrid, Plus, QrCode, Settings, Target, Users, Zap } from 'lucide-vue-next'
 import { SECCIONES_MENU, claseDeLaRuta, claseDelMenu, colorDeClase, enlacePestana, pestanaDeLaRuta, seccionDelMenu, type PestanaClase } from '~/utils/pestanasClase'
 import { siglasDeClases } from '~/utils/contextoAcademico'
 
@@ -119,9 +119,9 @@ watch(actual, (c) => { nombreClase.value = c?.name ?? null; idClase.value = c?.i
 /** La pantalla de la clase en la que está el docente: al cambiar de clase se queda en esa misma sección. */
 const seccionActual = computed<PestanaClase | null>(() => (deLaRuta.value ? pestanaDeLaRuta(route.path) : null))
 const seccionMarcada = computed(() => seccionDelMenu(seccionActual.value))
-const ICONOS: Partial<Record<PestanaClase, unknown>> = { hoy: BarChart3, contenido: BookOpen, estudiantes: Users, entregas: Inbox, asistencia: QrCode, refuerzos: Zap }
+const ICONOS: Partial<Record<PestanaClase, unknown>> = { hoy: BarChart3, contenido: BookOpen, competencias: Target, estudiantes: Users, entregas: Inbox, asistencia: QrCode, refuerzos: Zap }
 /** El color de cada sección, el mismo del prototipo D3-Clase (colD del generador: la posición en su menú). */
-const TONOS: Partial<Record<PestanaClase, string>> = { hoy: 'tono-cielo', contenido: 'tono-sol', estudiantes: 'tono-lila', asistencia: 'tono-cielo', entregas: 'tono-sol', refuerzos: 'tono-rosa' }
+const TONOS: Partial<Record<PestanaClase, string>> = { hoy: 'tono-cielo', contenido: 'tono-sol', competencias: 'tono-cian', estudiantes: 'tono-lila', asistencia: 'tono-cielo', entregas: 'tono-sol', refuerzos: 'tono-rosa' }
 const siglas = computed(() => siglasDeClases(clases.value))
 const colores = computed(() => Object.fromEntries(clases.value.map((c, i) => [c.id, c.portada ?? colorDeClase(i)])) as Record<number, string>)
 

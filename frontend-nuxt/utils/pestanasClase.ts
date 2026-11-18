@@ -2,11 +2,12 @@
 // todo, en pestañas, como en Canvas o Google Classroom, en vez de un menú por herramienta donde cada pantalla le
 // vuelve a preguntar «¿de qué clase?». Las pestañas son enlaces a las pantallas de siempre, con la clase ya elegida.
 
-export type PestanaClase = 'hoy' | 'contenido' | 'estudiantes' | 'asistencia' | 'entregas' | 'refuerzos' | 'notas' | 'ajustes'
+export type PestanaClase = 'hoy' | 'contenido' | 'competencias' | 'estudiantes' | 'asistencia' | 'entregas' | 'refuerzos' | 'notas' | 'ajustes'
 
 export const PESTANAS_CLASE: Array<{ id: PestanaClase; texto: string }> = [
   { id: 'hoy', texto: 'Resumen' },
   { id: 'contenido', texto: 'Contenido' },
+  { id: 'competencias', texto: 'Competencias' },
   { id: 'estudiantes', texto: 'Estudiantes' },
   { id: 'asistencia', texto: 'Asistencia' },
   { id: 'entregas', texto: 'Entregas' },
@@ -20,6 +21,7 @@ export function enlacePestana(pestana: PestanaClase, classId: number): string {
   switch (pestana) {
     case 'hoy': return `/docente/clase/${classId}`
     case 'contenido': return `/docente/contenidos?classId=${classId}`
+    case 'competencias': return `/docente/clase/${classId}/competencias`
     case 'estudiantes': return `/docente/rendimiento?classId=${classId}`
     case 'asistencia': return `/docente/clase/${classId}/asistencia`
     case 'entregas': return `/docente/entregas?clase=${classId}`
@@ -46,7 +48,7 @@ export function pestanaDeLaRuta(ruta: string): PestanaClase | null {
   if (enClase) {
     const seccion = enClase[1]
     if (!seccion) return 'hoy'
-    return seccion === 'asistencia' || seccion === 'notas' || seccion === 'ajustes' ? seccion : null
+    return seccion === 'asistencia' || seccion === 'notas' || seccion === 'ajustes' || seccion === 'competencias' ? seccion : null
   }
   if (ruta.startsWith('/docente/contenidos')) return 'contenido'
   if (ruta.startsWith('/docente/rendimiento') || ruta.startsWith('/docente/estudiante/')) return 'estudiantes'
@@ -60,11 +62,12 @@ export function pestanaDeLaRuta(ruta: string): PestanaClase | null {
  * existiendo («Estudiantes y avance» incluye Refuerzos; «Asistencia y notas», las dos) y, cuando están abiertas, las
  * muestran debajo. Ajustes va aparte, al pie de la clase.
  * v3 (12/11, prototipo D3-Clase): los nombres y el orden del prototipo, y Refuerzos y retos con su propia entrada.
- * «Competencias» y «Repasos de la clase» entran cuando existan sus pantallas (Fase E).
+ * «Competencias» (P39, cuadro D3-Competencias) entró el 18/11; «Repasos de la clase» entra cuando exista su pantalla.
  */
 export const SECCIONES_MENU: Array<{ id: PestanaClase; texto: string; incluye: PestanaClase[] }> = [
   { id: 'hoy', texto: 'Resumen de la clase', incluye: ['hoy'] },
   { id: 'contenido', texto: 'Contenido', incluye: ['contenido'] },
+  { id: 'competencias', texto: 'Competencias', incluye: ['competencias'] },
   { id: 'estudiantes', texto: 'Estudiantes', incluye: ['estudiantes'] },
   { id: 'asistencia', texto: 'Asistencia y notas', incluye: ['asistencia', 'notas'] },
   { id: 'entregas', texto: 'Entregas', incluye: ['entregas'] },

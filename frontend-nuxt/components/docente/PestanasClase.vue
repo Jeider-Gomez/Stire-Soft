@@ -9,7 +9,7 @@
     </div>
     <!-- El nombre va fuera del <nav>: en «Hoy» también enlaza a la página actual, y la navegación debe tener una sola. -->
     <nav aria-label="Secciones de la clase" class="md:hidden">
-      <!-- En el celular no caben las 8: el borde derecho se desvanece para mostrar que hay más, y la activa queda a la vista. -->
+      <!-- En el celular no caben las 9: el borde derecho se desvanece para mostrar que hay más, y la activa queda a la vista. -->
       <ul ref="lista" class="flex overflow-x-auto px-2 text-xs font-semibold pestanas-desvanecidas">
         <li v-for="p in PESTANAS_CLASE" :key="p.id" class="shrink-0">
           <NuxtLink
@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { BookOpen, CalendarCheck, ClipboardCheck, GraduationCap, Inbox, LifeBuoy, Settings, Users } from 'lucide-vue-next'
+import { BookOpen, CalendarCheck, ClipboardCheck, GraduationCap, Inbox, LifeBuoy, Settings, Target, Users } from 'lucide-vue-next'
 import { PESTANAS_CLASE, enlacePestana, type PestanaClase } from '~/utils/pestanasClase'
 
 defineProps<{ classId: number; activa: PestanaClase; nombre?: string; codigo?: string }>()
@@ -38,7 +38,7 @@ defineProps<{ classId: number; activa: PestanaClase; nombre?: string; codigo?: s
 const lista = ref<HTMLElement | null>(null)
 onMounted(() => lista.value?.querySelector('[aria-current="page"]')?.scrollIntoView({ inline: 'center', block: 'nearest' }))
 
-const ICONOS = { hoy: CalendarCheck, contenido: BookOpen, estudiantes: Users, asistencia: ClipboardCheck, entregas: Inbox, refuerzos: LifeBuoy, notas: GraduationCap, ajustes: Settings }
+const ICONOS = { hoy: CalendarCheck, contenido: BookOpen, competencias: Target, estudiantes: Users, asistencia: ClipboardCheck, entregas: Inbox, refuerzos: LifeBuoy, notas: GraduationCap, ajustes: Settings }
 </script>
 
 <style scoped>

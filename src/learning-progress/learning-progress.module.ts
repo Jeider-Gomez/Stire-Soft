@@ -4,6 +4,7 @@ import { LearningProgress } from './entities/learning-progress.entity';
 import { LearningProgressRepository } from './learning-progress.repository';
 import { LearningProgressService } from './learning-progress.service';
 import { LearningProgressController } from './learning-progress.controller';
+import { CompetenciasService } from './competencias.service';
 import { SubmissionGradedListener } from './listeners/submission-graded.listener';
 import { EntregaRevisadaListener } from './listeners/entrega-revisada.listener';
 import { SubmissionsModule } from '../submissions/submissions.module';
@@ -20,7 +21,7 @@ import { AuthorizationModule } from '../common/authorization/authorization.modul
     AuthorizationModule,
   ],
   controllers: [LearningProgressController],
-  providers: [LearningProgressRepository, LearningProgressService, SubmissionGradedListener, EntregaRevisadaListener],
-  exports: [LearningProgressService, LearningProgressRepository],
+  providers: [LearningProgressRepository, LearningProgressService, CompetenciasService, SubmissionGradedListener, EntregaRevisadaListener],
+  exports: [LearningProgressService, LearningProgressRepository, CompetenciasService],
 })
 export class LearningProgressModule {}

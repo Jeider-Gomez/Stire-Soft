@@ -1,13 +1,13 @@
 <template>
   <!-- Mi progreso v3 (Fase D, paso 4; cuadros «E-Progreso», «E-Progreso-Reflexion», «E-Progreso-Oscuro» y «E-Cel-Progreso»): cómo
        va, qué ya domina y cómo estudia, en tres pestañas. Nada se compara con los compañeros. «Competencias» (cuadro
-       «E-Progreso-Competencias») espera al servidor: hoy no hay puntos por competencia (docs/v3/BITACORA.md, P-15). -->
+       «E-Progreso-Competencias») entró el 18/11 (P39): aparece si el docente activó las competencias. -->
   <div class="max-w-6xl mx-auto space-y-[18px]">
     <header>
       <h1 class="m-0 font-poppins font-bold text-[26px] sm:text-[30px] text-base-texto-primario">Mi progreso</h1>
       <p class="m-0 mt-1 text-[15px] text-base-texto-secundario">Cómo vas, qué ya dominas y cómo estudias. Nada se compara con tus compañeros.</p>
       <div class="mt-3 flex gap-1 border-b border-base-borde-sutil overflow-x-auto [scrollbar-width:none]" role="tablist" aria-label="Partes de mi progreso">
-        <button v-for="p in PESTANAS" :id="`pestana-${p.id}`" :key="p.id" type="button" role="tab" class="pestana-progreso" :aria-selected="pestana === p.id"
+        <button v-for="p in visibles" :id="`pestana-${p.id}`" :key="p.id" type="button" role="tab" class="pestana-progreso" :aria-selected="pestana === p.id"
           :aria-controls="`panel-${p.id}`" :tabindex="pestana === p.id ? 0 : -1" @click="elegir(p.id)" @keydown="moverConFlechas">{{ p.texto }}</button>
       </div>
     </header>
@@ -128,6 +128,11 @@
       </div>
     </div>
 
+    <!-- COMPETENCIAS (P39, cuadro «E-Progreso-Competencias»): solo si el docente las activó. -->
+    <div v-else-if="pestana === 'competencias'" id="panel-competencias" role="tabpanel" aria-labelledby="pestana-competencias">
+      <EstudianteMisCompetencias />
+    </div>
+
     <!-- LOGROS: todas las medallas, en su pestaña (antes, en la misma vista, tapaban el dominio). -->
     <div v-else-if="pestana === 'logros'" id="panel-logros" role="tabpanel" aria-labelledby="pestana-logros">
       <EstudianteMisLogros v-if="pestana === 'logros'" en-pestana />
@@ -230,21 +235,8 @@ onMounted(() => {
   studentStore.fetchStudentData()
 })
 
-// v3: las pestañas, en la dirección (?ver=logros), para volver a la misma y para enlazarla.
-const PESTANAS = [{ id: 'dominio', texto: 'Dominio' }, { id: 'logros', texto: 'Logros' }, { id: 'estudio', texto: 'Cómo estudio' }] as const
-type Pestana = (typeof PESTANAS)[number]['id']
-const route = useRoute()
-const router = useRouter()
-const pestana = computed<Pestana>(() => (PESTANAS.some((p) => p.id === route.query.ver) ? route.query.ver as Pestana : 'dominio'))
-const elegir = (id: Pestana) => router.replace({ query: { ...route.query, ver: id === 'dominio' ? undefined : id } })
-/** Flechas izquierda y derecha entre pestañas (patrón de pestañas de WAI-ARIA). */
-function moverConFlechas(e: KeyboardEvent) {
-  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return
-  const i = PESTANAS.findIndex((p) => p.id === pestana.value)
-  const sig = PESTANAS[(i + (e.key === 'ArrowRight' ? 1 : PESTANAS.length - 1)) % PESTANAS.length].id
-  elegir(sig)
-  nextTick(() => document.getElementById(`pestana-${sig}`)?.focus())
-}
+// Las pestañas (composables/usePestanasProgreso.ts): «Competencias» aparece si el docente las activó.
+const { visibles, pestana, elegir, moverConFlechas } = usePestanasProgreso()
 
 const resumen = computed(() => resumenCurso(studentStore.modules))
 const arcos = computed(() => arcosAnillo(resumen.value))

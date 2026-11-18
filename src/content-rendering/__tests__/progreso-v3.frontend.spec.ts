@@ -64,7 +64,9 @@ describe('las pestañas y la reflexión', () => {
     expect(p).toContain('role="tablist"');
     expect(p).toContain(':aria-selected="pestana === p.id"');
     expect(p).toContain('@keydown="moverConFlechas"');
-    expect(p).toContain("ver: id === 'dominio' ? undefined : id");
+    // 18/11: la lógica de las pestañas salió a composables/usePestanasProgreso.ts (con «Competencias», P39).
+    expect(leer('composables', 'usePestanasProgreso.ts')).toContain("ver: id === 'dominio' ? undefined : id");
+    expect(p).toContain('const { visibles, pestana, elegir, moverConFlechas } = usePestanasProgreso()');
     expect(p).toContain('<EstudianteProgresoMapaCurso data-recorrido="mapa" />');
     expect(p).toContain('Nada se compara con tus compañeros.');
   });

@@ -25,6 +25,7 @@ const ESTUDIANTE: Array<[RegExp, Tramo[]]> = [
 const DOCENTE: Array<[RegExp, Tramo[]]> = [
   [/^\/docente\/?$/, ['Mis clases']],
   [/^\/docente\/clase\/\d+\/ajustes/, ['CLASE', 'Ajustes de la clase']],
+  [/^\/docente\/clase\/\d+\/competencias/, ['CLASE', 'Competencias']],
   [/^\/docente\/clase\/\d+\/notas/, ['CLASE', 'Asistencia y notas', 'Notas']],
   [/^\/docente\/clase\/\d+\/asistencia/, ['CLASE', 'Asistencia y notas', 'Asistencia']],
   [/^\/docente\/clase\/\d+/, ['CLASE', 'Resumen de la clase']],

@@ -26,6 +26,8 @@ export default defineNuxtConfig({
     '~/assets/css/pantalla-baja.css',
     // Panel del docente v3 (Fase E): cabeceras, cifras y tarjetas como los cuadros «D3-*».
     '~/assets/css/docente-v3.css',
+    // Competencias (P39): colores de cada nivel en claro, oscuro y alto contraste.
+    '~/assets/css/competencias-v3.css',
     // Aspecto del panel del docente (rediseño R0): solo actúa dentro de [data-panel="docente"].
     '~/assets/css/panel-docente.css'
   ],
