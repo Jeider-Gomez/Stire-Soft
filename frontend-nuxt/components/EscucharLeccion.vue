@@ -42,11 +42,20 @@
           </label>
           <label v-if="voces.length > 1" class="block">
             <span class="block font-semibold text-base-texto-primario mb-1">Voz</span>
+            <!-- Las más humanas primero y aparte (utils/escucharLeccion.ts, calidadVoz). -->
             <select v-model="vozElegida" class="w-full min-h-[44px] rounded-md border border-base-borde-fuerte bg-base-blanco px-2">
-              <option v-for="v in voces" :key="v.voiceURI" :value="v.voiceURI">{{ nombreVoz(v) }}</option>
+              <optgroup v-if="vocesNaturales.length" label="Más naturales">
+                <option v-for="v in vocesNaturales" :key="v.voiceURI" :value="v.voiceURI">{{ nombreVoz(v) }}</option>
+              </optgroup>
+              <optgroup v-if="otrasVoces.length" :label="vocesNaturales.length ? 'Otras voces' : 'Voces'">
+                <option v-for="v in otrasVoces" :key="v.voiceURI" :value="v.voiceURI">{{ nombreVoz(v) }}</option>
+              </optgroup>
             </select>
           </label>
-          <p class="text-[11px] text-base-texto-secundario">Las voces son las de tu navegador: en Edge y Chrome hay voces naturales en español.</p>
+          <button type="button" class="w-full min-h-[44px] rounded-md borde-afordancia font-semibold inline-flex items-center justify-center gap-1.5" @click="probarVoz">
+            <Volume2 :size="14" aria-hidden="true" /> Probar esta voz
+          </button>
+          <p class="text-[11px] text-base-texto-secundario">{{ vocesNaturales.length ? 'Las voces son las de tu navegador; las más naturales van primero.' : consejo }}</p>
         </div>
       </div>
     </div>
@@ -55,9 +64,9 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
-import { Headphones, Pause, Play, Settings2, SkipBack, SkipForward, X } from 'lucide-vue-next'
+import { Headphones, Pause, Play, Settings2, SkipBack, SkipForward, Volume2, X } from 'lucide-vue-next'
 import {
-  CLAVE_PREFERENCIAS_VOZ, elegirVoz, formatosDeLeccion, leerPreferenciasVoz, lecturasDeLeccion, nombreVoz, textoFormatos,
+  CLAVE_PREFERENCIAS_VOZ, consejoVozNatural, elegirVoz, esVozNatural, formatosDeLeccion, leerPreferenciasVoz, lecturasDeLeccion, nombreVoz, textoFormatos,
   textoParaVoz, VELOCIDADES, vocesEnEspanol, type BloqueLeccion, type Lectura,
 } from '~/utils/escucharLeccion'
 
@@ -79,6 +88,22 @@ const preferencias = leerPreferenciasVoz(leerLocal())
 const velocidad = ref<number>(preferencias.velocidad)
 const vozElegida = ref<string | null>(preferencias.voz)
 const formatos = computed(() => textoFormatos(formatosDeLeccion(props.bloques)))
+const vocesNaturales = computed(() => voces.value.filter(esVozNatural))
+const otrasVoces = computed(() => voces.value.filter((v) => !esVozNatural(v)))
+const consejo = ref('')
+
+/** Una frase de muestra con la voz y la velocidad elegidas (si estaba leyendo, sigue desde la frase actual al terminar). */
+function probarVoz() {
+  const s = window.speechSynthesis
+  turno++
+  s.cancel()
+  const u = new SpeechSynthesisUtterance('Hola, así sueno. Te puedo leer la lección mientras la sigues en la pantalla.')
+  const voz = voces.value.find((v) => v.voiceURI === vozElegida.value) ?? null
+  if (voz) { u.voice = voz; u.lang = voz.lang } else u.lang = 'es-CO'
+  u.rate = velocidad.value
+  if (estado.value === 'leyendo') estado.value = 'pausa'
+  s.speak(u)
+}
 
 // Cada lectura tiene su turno: al cancelar, el navegador dispara el «fin» de la frase cortada, y ese fin no debe seguir.
 let turno = 0
@@ -103,6 +128,7 @@ function cargarVoces() {
 onMounted(() => {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
   disponible.value = true
+  consejo.value = consejoVozNatural(navigator.userAgent)
   cargarVoces()
   // En Chrome las voces llegan después de cargar la página.
   window.speechSynthesis.addEventListener?.('voiceschanged', cargarVoces)

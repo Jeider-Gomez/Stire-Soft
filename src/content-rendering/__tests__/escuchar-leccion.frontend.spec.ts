@@ -22,6 +22,8 @@ const e = cargar<{
   elegirVoz: <V extends Voz>(v: V[], preferida?: string | null) => V | null;
   vocesEnEspanol: <V extends Voz>(v: V[]) => V[];
   nombreVoz: (v: Voz) => string;
+  calidadVoz: (v: Voz & { localService?: boolean }) => number;
+  consejoVozNatural: (agente: string) => string;
   formatosDeLeccion: (b: Array<{ title?: string | null; body?: string | null }>) => Record<string, boolean>;
   textoFormatos: (f: Record<string, boolean>) => string;
   leerPreferenciasVoz: (crudo: string | null) => { velocidad: number; voz: string | null };
@@ -57,6 +59,31 @@ describe('la voz', () => {
     expect(e.elegirVoz([v('en-US'), v('es-ES'), v('es-MX')])?.lang).toBe('es-MX');
     expect(e.elegirVoz([v('es-CO', 'Microsoft Gonzalo'), v('es-MX', 'Microsoft Dalia Online (Natural)')])?.lang).toBe('es-MX');
     expect(e.elegirVoz([v('en-US'), v('fr-FR')])).toBeNull();
+  });
+
+  it('ordena por qué tan humana suena: Edge natural, Apple mejorada, Google, y las clásicas al final (17/11)', () => {
+    expect(e.calidadVoz({ lang: 'es-CO', name: 'Microsoft Salome Online (Natural) - Spanish (Colombia)' })).toBe(3);
+    expect(e.calidadVoz({ lang: 'es-MX', name: 'Paulina (Enhanced)' })).toBe(2);
+    expect(e.calidadVoz({ lang: 'es-US', name: 'Google español de Estados Unidos' })).toBe(1);
+    expect(e.calidadVoz({ lang: 'es-ES', name: 'Lucía', localService: false })).toBe(1);
+    expect(e.calidadVoz({ lang: 'es-ES', name: 'Microsoft Helena - Spanish (Spain)' })).toBe(0);
+    expect(e.calidadVoz({ lang: 'es', name: 'eSpeak Spanish' })).toBe(0);
+    const v = (lang: string, name: string) => ({ lang, name, voiceURI: name });
+    const orden = e.vocesEnEspanol([v('es-CO', 'Microsoft Sabina'), v('es-US', 'Google español de Estados Unidos'), v('es-MX', 'Paulina (Enhanced)'), v('es-MX', 'Microsoft Dalia Online (Natural)')]);
+    expect(orden.map((x) => x.name)).toEqual(['Microsoft Dalia Online (Natural)', 'Paulina (Enhanced)', 'Google español de Estados Unidos', 'Microsoft Sabina']);
+  });
+
+  it('sin voz natural, dice dónde conseguirla según el equipo', () => {
+    expect(e.consejoVozNatural('Mozilla/5.0 (Linux; Android 14)')).toContain('Servicios de voz de Google');
+    expect(e.consejoVozNatural('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)')).toContain('Paulina (mejorada)');
+    expect(e.consejoVozNatural('Mozilla/5.0 (Windows NT 10.0) Chrome/130')).toContain('Microsoft Edge');
+  });
+
+  it('el selector separa las naturales y deja probar la voz; el Tutor lee frase por frase', () => {
+    const c = leer('components', 'EscucharLeccion.vue');
+    expect(c).toContain('<optgroup v-if="vocesNaturales.length" label="Más naturales">');
+    expect(c).toContain('@click="probarVoz"');
+    expect(leer('components', 'tutor', 'PieMensaje.vue')).toContain('const frases = partirEnFrases(textoDeMensaje(props.texto))');
   });
 
   it('respeta la voz que eligió el estudiante si sigue disponible', () => {

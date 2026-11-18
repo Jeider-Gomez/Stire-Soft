@@ -74,18 +74,45 @@ export function textoParaVoz(texto: string): string {
     .trim()
 }
 
-interface VozLike { lang: string; name?: string }
+interface VozLike { lang: string; name?: string; localService?: boolean }
 
 const LATAM = /^es-(CO|419|MX|US|AR|CL|PE|VE|EC|UY|BO|PY|CR|PA|DO|GT|HN|NI|SV|PR|CU)/i
-/** Voces neuronales (Edge «Natural», Chrome «Google», Safari «Premium/Mejorada»): suenan mucho mejor que las clásicas. */
-const NATURAL = /natural|neural|online|premium|enhanced|mejorada|google/i
+/**
+ * Qué tan humana suena una voz (17/11, Jeider: «mejores voces»), de 0 a 3:
+ *  3 · neuronales de Microsoft Edge («Online (Natural)»: Salome y Gonzalo de Colombia, Dalia de México…), las mejores;
+ *  2 · las mejoradas de Apple («Premium», «Enhanced», «mejorada»; Paulina, Mónica) y las de Siri;
+ *  1 · las de Google (Chrome y Android) y las que el navegador trae de internet (`localService: false`);
+ *  0 · las clásicas del sistema (Microsoft Helena, Sabina…), que suenan robóticas.
+ */
+export function calidadVoz(v: VozLike): number {
+  const n = v.name ?? ''
+  if (/espeak|compact/i.test(n)) return 0
+  if (/natural|neural/i.test(n) || /microsoft.*online/i.test(n)) return 3
+  if (/premium|enhanced|mejorada|siri/i.test(n)) return 2
+  if (/google/i.test(n) || v.localService === false) return 1
+  return 0
+}
 
-/** Puntaje de una voz: -1 si no es español; las naturales primero y, entre iguales, Colombia y luego Latinoamérica. */
+/** Si la voz suena humana (cualquier calidad desde 1). */
+export const esVozNatural = (v: VozLike) => calidadVoz(v) >= 1
+
+/** Puntaje de una voz: -1 si no es español; la más humana primero y, entre iguales, Colombia y luego Latinoamérica. */
 export function puntajeVoz(v: VozLike): number {
   const lang = v.lang.replace('_', '-')
   if (!/^es\b/i.test(lang)) return -1
   const region = /^es-CO/i.test(lang) ? 3 : LATAM.test(lang) ? 2 : 1
-  return (NATURAL.test(v.name ?? '') ? 10 : 0) + region
+  return calidadVoz(v) * 10 + region
+}
+
+/**
+ * Cómo conseguir una voz natural en el equipo de la persona, cuando no tiene ninguna. Las voces son del navegador o del
+ * sistema: STIRE no puede instalarlas, pero sí decir dónde están (todas gratis).
+ */
+export function consejoVozNatural(agente: string): string {
+  if (/android/i.test(agente)) return 'Para una voz más natural: en Ajustes del celular busca «Texto a voz», elige «Servicios de voz de Google» e instala la voz en español (Latinoamérica).'
+  if (/iphone|ipad|ipod/i.test(agente)) return 'Para una voz más natural: en Ajustes › Accesibilidad › Contenido leído › Voces › Español, descarga «Paulina (mejorada)» o «Mónica (mejorada)».'
+  if (/edg\//i.test(agente)) return 'Para una voz más natural, revisa que Edge tenga internet: sus voces naturales (Salome, Gonzalo) vienen de ahí.'
+  return 'Para una voz más natural, abre STIRE en Microsoft Edge: trae voces naturales de Colombia (Salome y Gonzalo), gratis.'
 }
 
 /** Las voces en español, la mejor primero. */

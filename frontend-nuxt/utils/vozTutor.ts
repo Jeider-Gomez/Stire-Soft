@@ -2,7 +2,7 @@
 // humana»). Escuchar y dictar usan las voces del navegador (Web Speech API): sin costo y sin claves. Las más humanas son
 // las «Natural» de Microsoft Edge y las de Google en Chrome; utils/escucharLeccion.ts ya las pone primero.
 
-import { textoParaVoz } from '~/utils/escucharLeccion'
+import { esVozNatural, textoParaVoz } from '~/utils/escucharLeccion'
 
 /** Lo que se lee de una respuesta del Tutor: sin código (se avisa que está en el chat) ni marcas de formato. */
 export function textoDeMensaje(markdown: string): string {
@@ -20,7 +20,7 @@ export function textoDeMensaje(markdown: string): string {
 
 /** Si el navegador tiene alguna voz en español que suene humana (para sugerir Edge cuando no la hay). */
 export function hayVozNatural(voces: ReadonlyArray<{ lang: string; name?: string }>): boolean {
-  return voces.some((v) => /^es\b/i.test(v.lang.replace('_', '-')) && /natural|neural|online|premium|enhanced|mejorada|google/i.test(v.name ?? ''))
+  return voces.some((v) => /^es\b/i.test(v.lang.replace('_', '-')) && esVozNatural(v))
 }
 
 /** Lo dictado hasta ahora: lo que ya estaba escrito más lo que va reconociendo, con un espacio entre ambos. */

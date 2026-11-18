@@ -13,13 +13,13 @@
       <Square v-if="hablando" :size="11" aria-hidden="true" /><Volume2 v-else :size="12" aria-hidden="true" />
       {{ hablando ? 'Detener' : 'Escuchar' }}
     </button>
-    <span v-if="hablando && sinVozNatural">Para una voz más natural, abre STIRE en Microsoft Edge.</span>
+    <span v-if="hablando && sinVozNatural">{{ consejo }}</span>
   </span>
 </template>
 
 <script setup lang="ts">
 import { Square, Volume2 } from 'lucide-vue-next'
-import { CLAVE_PREFERENCIAS_VOZ, elegirVoz, leerPreferenciasVoz } from '~/utils/escucharLeccion'
+import { CLAVE_PREFERENCIAS_VOZ, consejoVozNatural, elegirVoz, leerPreferenciasVoz, partirEnFrases } from '~/utils/escucharLeccion'
 import { hayVozNatural, textoDeMensaje } from '~/utils/vozTutor'
 
 const props = defineProps<{ deEstudiante: boolean; hora: string | Date; texto: string }>()
@@ -29,7 +29,8 @@ const horaCorta = computed(() => fecha.value ? fecha.value.toLocaleTimeString('e
 const puedeHablar = ref(false)
 const hablando = ref(false)
 const sinVozNatural = ref(false)
-onMounted(() => { puedeHablar.value = 'speechSynthesis' in window })
+const consejo = ref('')
+onMounted(() => { puedeHablar.value = 'speechSynthesis' in window; consejo.value = consejoVozNatural(navigator.userAgent) })
 
 function alternar() {
   const voz = window.speechSynthesis
@@ -37,16 +38,21 @@ function alternar() {
   voz.cancel() // una sola voz a la vez: si otra respuesta se estaba leyendo, se detiene
   let prefs = leerPreferenciasVoz(null)
   try { prefs = leerPreferenciasVoz(localStorage.getItem(CLAVE_PREFERENCIAS_VOZ)) } catch { /* sin almacenamiento */ }
-  const u = new SpeechSynthesisUtterance(textoDeMensaje(props.texto))
   const voces = voz.getVoices()
   sinVozNatural.value = voces.length > 0 && !hayVozNatural(voces)
   const elegida = elegirVoz(voces, prefs.voz)
-  if (elegida) { u.voice = elegida; u.lang = elegida.lang } else u.lang = 'es-CO'
-  u.rate = prefs.velocidad
-  u.onend = () => { hablando.value = false }
-  u.onerror = () => { hablando.value = false }
+  // Frase por frase (17/11): de un solo golpe, Chrome se calla a los ~15 segundos en una respuesta larga.
+  const frases = partirEnFrases(textoDeMensaje(props.texto))
+  if (!frases.length) return
   hablando.value = true
-  voz.speak(u)
+  frases.forEach((frase, i) => {
+    const u = new SpeechSynthesisUtterance(frase)
+    if (elegida) { u.voice = elegida; u.lang = elegida.lang } else u.lang = 'es-CO'
+    u.rate = prefs.velocidad
+    if (i === frases.length - 1) u.onend = () => { hablando.value = false }
+    u.onerror = (ev) => { if (ev.error !== 'interrupted' && ev.error !== 'canceled') hablando.value = false }
+    voz.speak(u)
+  })
 }
 onBeforeUnmount(() => { if (hablando.value) window.speechSynthesis.cancel() })
 </script>
