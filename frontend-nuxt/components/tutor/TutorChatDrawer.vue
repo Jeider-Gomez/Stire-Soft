@@ -44,7 +44,7 @@
         <div class="flex items-center justify-between bg-base-blanco text-base-texto-primario border-b border-base-borde-sutil select-none" :class="compacto ? 'px-3 py-1' : 'p-3 lg:p-4'">
           <div class="flex items-center gap-3">
             <div v-if="!compacto" class="relative" aria-hidden="true">
-              <TutorMascota :expresion="expresion" :tamano="40" forma="completa" mirar-cursor saludar />
+              <TutorMascota :expresion="expresion" :tamano="56" forma="completa" mirar-cursor saludar />
               <span v-if="tutorStore.tutorEnabled" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-stire-teal border-2 border-base-blanco rounded-full" />
             </div>
             <div>
@@ -178,7 +178,7 @@
             >
               <!-- Burbuja de mensaje (con el robot al lado cuando habla el Tutor) -->
               <div class="flex items-end gap-1.5 max-w-[88%] mensaje-entrada">
-                <TutorMascota v-if="msg.sender !== 'student'" :expresion="msg.isError ? 'error' : 'normal'" :tamano="20" :vivo="false" class="mb-1" aria-hidden="true" />
+                <TutorMascota v-if="msg.sender !== 'student'" :expresion="msg.isError ? 'error' : 'normal'" :tamano="32" :vivo="false" class="mb-1" aria-hidden="true" />
                 <!-- min-w-0: un bloque de código largo ya no ensancha la burbuja ni mueve el chat de lado (José, MOB-01). -->
                 <div
                   class="min-w-0 break-words rounded-2xl px-3.5 py-3 text-sm leading-relaxed"
@@ -242,7 +242,7 @@
 
             <!-- Indicador de pensamiento IA (§18.6 — texto escalado) -->
             <div v-if="tutorStore.isThinking" class="flex items-center gap-2 text-xs text-slate-500 py-1" role="status">
-              <TutorMascota expresion="pensando" :tamano="20" aria-hidden="true" />
+              <TutorMascota expresion="pensando" :tamano="32" aria-hidden="true" />
               <span class="flex items-center gap-1 burbuja-tutor px-3 py-2 rounded-2xl">
                 <span class="w-1.5 h-1.5 rounded-full bg-stire-teal animate-bounce" aria-hidden="true" />
                 <span class="w-1.5 h-1.5 rounded-full bg-stire-purple animate-bounce [animation-delay:0.2s]" aria-hidden="true" />
