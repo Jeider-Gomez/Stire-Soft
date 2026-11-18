@@ -20,6 +20,8 @@ import { Topic } from '../topic/entities/topic.entity';
 import { Section } from '../section/entities/section.entity';
 import { LearningProgress } from './entities/learning-progress.entity';
 import { Confianza, MotivoRecomendacion, nivelSaltadoHasta, recomendarSiguiente } from './recommendation/recomendar-siguiente';
+import { CompetenciasService } from './competencias.service';
+import { competenciaParaPracticar, competenciasDeActividad, prioridadPorCompetencia } from '../common/utils/competencias';
 import { construirEstadisticas, SEMANAS_CALENDARIO } from './estadisticas';
 import { actividadVisiblePara } from '../activities/visibilidad';
 import { ejerciciosDeLaLeccion, EjercicioLeccion } from './ejercicios-leccion';
@@ -77,6 +79,7 @@ export class LearningProgressService {
     private readonly submissionsRepo: SubmissionsRepository,
     private readonly activitiesRepo: ActivitiesRepository,
     private readonly eventEmitter: EventEmitter2,
+    private readonly competencias: CompetenciasService,
   ) {}
 
   /**
@@ -240,6 +243,7 @@ export class LearningProgressService {
     const confianza = progress?.entryConfidence;
     const calificadas = submissions.filter((sub) => sub.status !== SubmissionStatus.IN_PROGRESS);
     const reglas = await this.reglasDeLaUnidad(learningUnitId);
+    const personal = await this.prioridadPorCompetencias(studentId, learningUnitId);
     const recomendacion = recomendarSiguiente({
       actividades: activities.map(activity => ({
         id: activity.id,
@@ -263,8 +267,11 @@ export class LearningProgressService {
       // Con la lección completa, sigue ofreciendo lo que todavía sube el dominio hasta el 100 % (09/10).
       ganancias: new Map(activities.map((a) => [a.id, gananciaSiLoResuelve(calificadas, activities, a.id, { pesoNivel: reglas.pesoNivel })])),
       horasParaReabrir: reglas.horasParaReabrir,
+      prioridad: personal?.prioridad,
     });
     if (!recomendacion) return null;
+    // Con las competencias recomendando, decirle por qué este: la competencia que más le cuesta y que este ejercicio trabaja.
+    const porCompetencia = personal?.motivo(recomendacion.actividad.id);
 
     return {
       activityId: recomendacion.actividad.id,
@@ -274,8 +281,35 @@ export class LearningProgressService {
       allCompleted: recomendacion.completada,
       level: recomendacion.nivel,
       reason: recomendacion.motivo,
-      reasonMessage: recomendacion.mensaje,
+      reasonMessage: porCompetencia && ['siguiente', 'hermana', 'sube_nivel'].includes(recomendacion.motivo)
+        ? `${recomendacion.mensaje} Te lo recomiendo porque practica «${porCompetencia}», la competencia que más te cuesta.`
+        : recomendacion.mensaje,
     };
+  }
+
+  /**
+   * Prioridad del recomendador por competencias (P15/P39): solo si la clase tiene las competencias en «recomendar». Si
+   * algo falla al calcularlas, se recomienda como siempre (nunca deja al estudiante sin siguiente ejercicio).
+   */
+  private async prioridadPorCompetencias(studentId: number, learningUnitId: number): Promise<{ prioridad: Map<number, number>; motivo: (activityId: number) => string | null } | null> {
+    try {
+      const classId = await this.resolveClassId(learningUnitId);
+      if ((await this.competencias.modoDeClase(classId)) !== 'recomendar') return null;
+      const { estados, actividades } = await this.competencias.calcularPara(studentId, classId);
+      const deLaLeccion = actividades.filter((a) => a.learningUnitId === learningUnitId);
+      const prioridad = prioridadPorCompetencia(deLaLeccion, estados);
+      const masBaja = competenciaParaPracticar(estados);
+      return {
+        prioridad,
+        motivo: (activityId) => {
+          const a = deLaLeccion.find((x) => x.id === activityId);
+          return a && masBaja && masBaja.estado !== 'sin-evidencia' && competenciasDeActividad(a).includes(masBaja.id) ? masBaja.nombre : null;
+        },
+      };
+    } catch (e) {
+      this.logger.warn(`No se pudieron calcular las competencias para recomendar: ${(e as Error).message}`);
+      return null;
+    }
   }
 
   /**

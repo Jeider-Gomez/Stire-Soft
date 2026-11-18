@@ -10,7 +10,7 @@ describe('LearningProgressService.countFailedAttempts', () => {
   beforeEach(() => {
     submissionsRepo = { find: jest.fn().mockResolvedValue([]) };
     activitiesRepo = { findOne: jest.fn().mockResolvedValue(activity) };
-    service = new LearningProgressService({} as any, submissionsRepo, activitiesRepo, {} as any);
+    service = new LearningProgressService({} as any, submissionsRepo, activitiesRepo, {} as any, {} as any);
   });
 
   it('cuenta solo los intentos ya calificados que no alcanzaron el puntaje de aprobación', async () => {

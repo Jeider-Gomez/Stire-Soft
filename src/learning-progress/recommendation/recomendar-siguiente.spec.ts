@@ -259,3 +259,31 @@ describe('reto pedido por el estudiante', () => {
     expect(recomendar(UNIDAD, [intento(1, 100), intento(2, 0)])!.motivo).not.toBe('reto');
   });
 });
+
+describe('personalizar por competencias (P15/P39, Toscano 28/10)', () => {
+  const ahora = new Date(2026, 8, 1, 1, 0);
+  it('sin prioridad, el orden de siempre', () => {
+    const r = recomendarSiguiente({ actividades: UNIDAD, intentos: [], confianza: null, repasoVencido: false, ahora });
+    expect(r?.actividad.id).toBe(1);
+  });
+
+  it('con prioridad, dentro del mismo nivel va primero la casilla de la competencia más baja', () => {
+    // La competencia de programar (4) es la que más le cuesta.
+    const prioridad = new Map([[1, 0.9], [2, 0.8], [3, 0.8], [4, 0.1]]);
+    const r = recomendarSiguiente({ actividades: UNIDAD, intentos: [], confianza: null, repasoVencido: false, ahora, prioridad });
+    expect(r?.actividad.id).toBe(4);
+    expect(r?.nivel).toBe(Difficulty.BASICO);
+  });
+
+  it('entre hermanas nuevas, la de la competencia más baja', () => {
+    const prioridad = new Map([[1, 0.9], [2, 0.7], [3, 0.2], [4, 0.9]]);
+    const r = recomendarSiguiente({ actividades: UNIDAD, intentos: [], confianza: null, repasoVencido: false, ahora, prioridad });
+    expect(r?.actividad.id).toBe(3);
+  });
+
+  it('no salta niveles: la prioridad solo ordena dentro del nivel que toca', () => {
+    const prioridad = new Map([[1, 0.9], [2, 0.9], [3, 0.9], [4, 0.9], [7, 0]]);
+    const r = recomendarSiguiente({ actividades: UNIDAD, intentos: [], confianza: null, repasoVencido: false, ahora, prioridad });
+    expect(r?.nivel).toBe(Difficulty.BASICO);
+  });
+});

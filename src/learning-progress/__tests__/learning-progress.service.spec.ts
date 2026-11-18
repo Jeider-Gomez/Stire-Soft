@@ -76,7 +76,7 @@ describe('LearningProgressService', () => {
     eventEmitter = {
       emit: jest.fn(),
     };
-    service = new LearningProgressService(progressRepo, submissionsRepo, activitiesRepo, eventEmitter);
+    service = new LearningProgressService(progressRepo, submissionsRepo, activitiesRepo, eventEmitter, { modoDeClase: async () => 'apagado' } as any);
   });
 
   // ─── recalculateMastery ───────────────────────────────────────────────────

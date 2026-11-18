@@ -75,6 +75,12 @@ export interface EntradaRecomendador {
   ahora?: Date;
   /** Cada cuántas horas se reabre un intento en esta clase (Ajustes; por defecto 24). */
   horasParaReabrir?: number;
+  /**
+   * Personalizar por competencias (P15/P39; Toscano, 28/10: «mismo ejercicio para todos no es personalizar»): con las
+   * competencias en modo «recomendar», la confianza más baja entre las competencias de cada actividad (0 a 1). Dentro
+   * del mismo nivel, primero la casilla y el ejercicio de la competencia que más le cuesta. Sin esto, el orden de siempre.
+   */
+  prioridad?: Map<number, number>;
 }
 
 const NOMBRE_NIVEL: Record<Difficulty, string> = {
@@ -223,11 +229,13 @@ function recomendarSinTope(entrada: EntradaRecomendador): Recomendacion | null {
   });
 
   // Dentro de una casilla sin aprobar: tras un fallo, una hermana nueva; si no hay, reintentar; si no, la primera libre.
+  const prioridad = (a: ActividadParaRecomendar) => entrada.prioridad?.get(a.id) ?? 1;
   const elegirEnCasilla = (c: Casilla): { actividad: ActividadParaRecomendar; motivo: MotivoRecomendacion } | null => {
     const conIntentos = c.actividades.filter(quedanIntentos);
     if (conIntentos.length === 0) return null;
     const fallada = [...calificados].reverse().find((i) => c.actividades.some((a) => a.id === i.activityId));
-    const nueva = conIntentos.find((a) => !intentada(a));
+    const nuevas = conIntentos.filter((a) => !intentada(a));
+    const nueva = entrada.prioridad ? [...nuevas].sort((a, b) => prioridad(a) - prioridad(b))[0] : nuevas[0];
     if (fallada) {
       if (nueva) return { actividad: nueva, motivo: 'hermana' };
       const misma = conIntentos.find((a) => a.id === fallada.activityId);
@@ -236,8 +244,12 @@ function recomendarSinTope(entrada: EntradaRecomendador): Recomendacion | null {
     return { actividad: nueva ?? conIntentos[0], motivo: 'siguiente' };
   };
 
+  const prioridadCasilla = (c: Casilla) => Math.min(...c.actividades.map(prioridad));
   const primeraPendienteEnNivel = (nivel: number) => {
-    for (const c of pendientes.filter((p) => p.nivel === nivel)) {
+    const delNivel = pendientes.filter((p) => p.nivel === nivel);
+    // Con prioridad, la casilla de la competencia más baja primero; el orden de siempre desempata (sort estable).
+    if (entrada.prioridad) delNivel.sort((a, b) => prioridadCasilla(a) - prioridadCasilla(b));
+    for (const c of delNivel) {
       const elegida = elegirEnCasilla(c);
       if (elegida) return elegida;
     }
