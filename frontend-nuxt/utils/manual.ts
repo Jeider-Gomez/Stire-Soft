@@ -215,12 +215,11 @@ export const MANUAL: SeccionManual[] = [
         titulo: '¿Cómo le escribo a mi docente?',
         paraQue: 'Para preguntarle algo sin salir de STIRE.',
         pasos: [
-          'Toca «Mensajes» en el menú.',
-          'Toca «Escribir a un docente», elige el docente y escribe tu mensaje.',
-          'Toca «Enviar mensaje».',
-          'En «Avisos de la clase» ves lo que tu docente publica para todo el grupo.',
+          'Toca «Mi clase» en el menú y luego «Avisos y mensajes».',
+          'A la derecha está la conversación con tu profe: escribe abajo y toca «Enviar» (o la tecla Enter). Con el botón de la imagen le mandas una captura.',
+          'A la izquierda, en «Avisos de la clase», ves lo que tu profe publica para todo el grupo.',
         ],
-        resultado: 'Tu docente lo recibe en su bandeja de STIRE y su respuesta te llega a «Mensajes».',
+        resultado: 'Tu profe lo recibe en su bandeja de STIRE y su respuesta aparece en la misma conversación.',
       },
       {
         id: 'crear-un-proyecto',

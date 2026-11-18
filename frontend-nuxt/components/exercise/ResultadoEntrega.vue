@@ -6,7 +6,7 @@
     <div ref="ventana" role="dialog" aria-modal="true" aria-labelledby="resultado-titulo" class="relative bg-base-blanco rounded-[24px] border border-base-borde-sutil p-5 sm:p-6 max-w-md w-full shadow-2xl space-y-3 text-center max-h-[90dvh] overflow-y-auto overflow-x-hidden overscroll-contain">
       <!-- Sugerencia de un estudiante (17/11: «no me deja salir cuando termino una lección»): solo se cerraba con Escape.
            Ahora una X siempre a la vista; cerrar deja revisar el ejercicio. -->
-      <button type="button" class="absolute top-2 right-2 w-11 h-11 inline-flex items-center justify-center rounded-full text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario"
+      <button type="button" class="absolute top-2 right-2 w-11 h-11 inline-flex items-center justify-center rounded-full text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-borde-sutil"
         aria-label="Cerrar y revisar el ejercicio" title="Cerrar" @click="ws.submissionResult = null">
         <X :size="20" aria-hidden="true" />
       </button>

@@ -143,7 +143,9 @@ describe('UI-01: «No me quedó claro» siempre deja otros caminos, no solo el c
     expect(v).toContain('<li v-for="op in opciones" :key="op.tipo">');
     expect(v).not.toContain('O míralo de otra forma en esta lección');
     expect(v).toContain("query: { redactar: '1', texto: `No me quedó clara la lección");
-    expect(leer('pages', 'estudiante', 'mensajes.vue')).toMatch(/if \(route\.query\.redactar !== '1'\) return/);
+    // 17/11: la duda queda escrita en el chat con el profe (ConversacionProfe.vue).
+    expect(leer('pages', 'estudiante', 'mensajes.vue')).toContain("if (route.query.redactar === '1') {");
+    expect(leer('pages', 'estudiante', 'mensajes.vue')).toContain('<MensajesConversacionProfe :texto-inicial="textoInicial"');
   });
 });
 

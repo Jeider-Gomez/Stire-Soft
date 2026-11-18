@@ -60,11 +60,13 @@ describe('avisos a la clase: el formulario', () => {
   });
 
   it('las páginas de mensajes tienen la pestaña «Avisos de la clase» (la notificación lleva a ?ver=avisos)', () => {
-    for (const rol of ['docente', 'estudiante']) {
-      const p = leer('pages', rol, 'mensajes.vue');
-      expect(p).toContain('<MensajesPestanasMensajes');
-      expect(p).toContain(`<MensajesAvisosClase v-if="verAvisos" rol="${rol}" />`);
-    }
+    const p = leer('pages', 'docente', 'mensajes.vue');
+    expect(p).toContain('<MensajesPestanasMensajes');
+    expect(p).toContain('<MensajesAvisosClase v-if="verAvisos" rol="docente" />');
+    // 17/11: el estudiante ve los avisos y el chat a la vez; ?ver=avisos lo lleva a los avisos (en el celular, debajo).
+    const e = leer('pages', 'estudiante', 'mensajes.vue');
+    expect(e).toContain('<MensajesAvisosClase id="avisos-clase" rol="estudiante" compacto');
+    expect(e).toContain("if (route.query.ver === 'avisos')");
     expect(leer('components', 'mensajes', 'PestanasMensajes.vue')).toContain("{ query: { ver: 'avisos' } }");
     expect(u.nombreTipoAviso('citacion')).toBe('Citación');
   });

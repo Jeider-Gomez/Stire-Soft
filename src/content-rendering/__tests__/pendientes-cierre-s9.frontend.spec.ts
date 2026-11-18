@@ -34,11 +34,11 @@ describe('la cabecera del Tutor dice la lección abierta, no la recomendada', ()
 describe('PAT-03 (Jorge): el campo que falta se marca en rojo', () => {
   it('el mensaje vacío y el destinatario sin elegir', () => {
     expect(leer('components', 'mensajes', 'VentanaRedactar.vue')).toContain(":class=\"error && !contenido.trim() ? 'border-semantico-falla border-2' : 'border-base-borde-fuerte'\"");
-    for (const rol of ['docente', 'estudiante']) {
-      const p = leer('pages', rol, 'mensajes.vue');
-      expect(p).toContain(':aria-invalid="!!errorEnvio && !destinatario"');
-      expect(p).toContain(":class=\"errorEnvio && !destinatario ? 'border-semantico-falla border-2' : 'border-base-borde-fuerte'\"");
-    }
+    // El estudiante ya no elige destinatario (17/11): el chat es con el profe de su clase y Enviar no se activa vacío.
+    const p = leer('pages', 'docente', 'mensajes.vue');
+    expect(p).toContain(':aria-invalid="!!errorEnvio && !destinatario"');
+    expect(p).toContain(":class=\"errorEnvio && !destinatario ? 'border-semantico-falla border-2' : 'border-base-borde-fuerte'\"");
+    expect(leer('components', 'mensajes', 'ConversacionProfe.vue')).toContain(':disabled="enviando || !texto.trim() || !docenteId"');
   });
 });
 

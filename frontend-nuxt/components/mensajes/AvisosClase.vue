@@ -2,7 +2,16 @@
   <!-- Avisos a la clase (utils/avisosClase.ts): el docente publica un aviso, una citación o un recordatorio para TODA la
        clase, y a cada estudiante le llega una notificación. El estudiante los ve aquí, el más nuevo primero. -->
   <div class="space-y-4">
-    <header class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <!-- Compacto (17/11, «Avisos y mensajes» del estudiante, cuadro «E-Clase-Mensajes»): un título con los filtros, al lado del chat. -->
+    <div v-if="compacto" class="flex flex-wrap items-center justify-between gap-2">
+      <h2 class="m-0 text-xl font-bold text-base-texto-primario">Avisos de la clase</h2>
+      <div role="group" aria-label="Mostrar" class="flex flex-wrap gap-1.5">
+        <button v-for="f in FILTROS" :key="f.valor" type="button" class="filtro-aviso" :class="{ elegido: filtro === f.valor }" :aria-pressed="filtro === f.valor" @click="filtro = f.valor">
+          {{ f.texto }}
+        </button>
+      </div>
+    </div>
+    <header v-else class="bg-base-blanco rounded-xl border border-base-borde-fuerte p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <h1 class="text-xl font-bold text-base-texto-primario tracking-tight inline-flex items-center gap-2">
           <Megaphone :size="20" class="text-acento-ambar-fuerte" aria-hidden="true" /> {{ rol === 'docente' ? 'Avisos a tus clases' : 'Avisos de tus clases' }}
@@ -24,13 +33,13 @@
     <MensajeError v-if="error" class="text-xs">{{ error }}</MensajeError>
     <p v-if="cargando" role="status" class="text-xs text-base-texto-secundario">Cargando avisos…</p>
 
-    <div v-else-if="!avisos.length" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-8 text-center text-xs text-base-texto-secundario space-y-1">
-      <p class="font-semibold text-base-texto-primario">Todavía no hay avisos</p>
+    <div v-else-if="!visibles.length" class="bg-base-blanco rounded-xl border border-base-borde-sutil p-8 text-center text-xs text-base-texto-secundario space-y-1">
+      <p class="font-semibold text-base-texto-primario">{{ avisos.length ? 'No hay avisos de este tipo' : 'Todavía no hay avisos' }}</p>
       <p>{{ rol === 'docente' ? 'Usa «Publicar un aviso» para citar a tus estudiantes o recordarles algo.' : 'Cuando un docente publique un aviso para tu clase, aparecerá aquí y te llegará una notificación.' }}</p>
     </div>
 
     <ul v-else class="space-y-3">
-      <li v-for="a in avisos" :key="a.id">
+      <li v-for="a in visibles" :key="a.id">
         <article class="bg-base-blanco rounded-xl border border-base-borde-sutil p-5 space-y-2" :aria-labelledby="`aviso-${a.id}`">
           <div class="flex flex-wrap items-center gap-2 text-[11px]">
             <span class="px-2 py-0.5 rounded font-bold inline-flex items-center gap-1" :class="ESTILO[a.tipo]">
@@ -123,7 +132,7 @@ import { Bell, CalendarClock, Info, MapPin, Megaphone, Pencil, Trash2 } from 'lu
 import { avisoParaEnviar, faltaEnAviso, fechaDeEvento, formularioDeAviso, nombreTipoAviso, TIPOS_AVISO, type AvisoClase, type FormularioAviso, type TipoAviso } from '~/utils/avisosClase'
 import { fechaCorta } from '~/utils/entregas'
 
-const props = defineProps<{ rol: 'docente' | 'estudiante' }>()
+const props = defineProps<{ rol: 'docente' | 'estudiante'; compacto?: boolean }>()
 
 const { avisos, cargando, error, cargar, publicar, editar, eliminar } = useAvisosClase()
 const { clasesDelDocente } = useDestinatarios()
@@ -138,6 +147,9 @@ const ESTILO: Record<TipoAviso, string> = {
 }
 
 const clases = ref<Array<{ id: number; name: string; code: string }>>([])
+const FILTROS = [{ valor: 'todos', texto: 'Todos' }, { valor: 'citacion', texto: 'Citaciones' }, { valor: 'recordatorio', texto: 'Recordatorios' }] as const
+const filtro = ref<'todos' | TipoAviso>('todos')
+const visibles = computed(() => (filtro.value === 'todos' ? avisos.value : avisos.value.filter((a) => a.tipo === filtro.value)))
 const abierta = ref(false)
 const enviando = ref(false)
 const errorEnvio = ref<string | null>(null)
@@ -201,3 +213,8 @@ onMounted(async () => {
   } else await cargar('estudiante')
 })
 </script>
+
+<style scoped>
+.filtro-aviso { min-height: 36px; padding: 0 12px; border-radius: 999px; font-size: 13px; font-weight: 600; color: rgb(var(--c-base-texto-primario)); border: 1px solid rgb(var(--c-base-borde-sutil)); background: rgb(var(--c-base-blanco)); }
+.filtro-aviso.elegido { background: rgb(var(--c-base-texto-primario)); color: rgb(var(--c-base-blanco)); border-color: transparent; }
+</style>

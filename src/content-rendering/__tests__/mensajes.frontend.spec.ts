@@ -41,8 +41,9 @@ describe('una sola bandeja para los dos roles', () => {
   it('las páginas no llaman a la API: usan el composable y los componentes compartidos', () => {
     for (const rol of ['estudiante', 'docente']) {
       const p = leer('pages', rol, 'mensajes.vue');
-      expect(p).toContain('<MensajesBandejaMensajes');
-      expect(p).toContain('<MensajesVentanaRedactar');
+      // 17/11: el estudiante habla con su profe en un chat (cuadro «E-Clase-Mensajes»); el docente sigue con su bandeja.
+      expect(p).toContain(rol === 'estudiante' ? '<MensajesConversacionProfe' : '<MensajesBandejaMensajes');
+      if (rol === 'docente') expect(p).toContain('<MensajesVentanaRedactar');
       expect(p).toContain('provide(CLAVE_MENSAJES, estado)');
       expect(p).not.toMatch(/api\.(get|post|patch)/);
       expect(p.split('\n').length).toBeLessThan(120);
@@ -67,5 +68,39 @@ describe('una sola bandeja para los dos roles', () => {
 
   it('sin «any»: los errores se tratan como unknown', () => {
     expect(leer('composables', 'useMensajes.ts')).not.toMatch(/:\s*any\b/);
+  });
+});
+
+// 17/11 (Jeider: «en el chat no tenemos coherencia con el diseño»): el estudiante habla con su profe en un chat.
+describe('El chat con el profe (cuadro «E-Clase-Mensajes»)', () => {
+  const m = cargar<{
+    conversacionCon: (l: Array<{ id: number; senderId: number; receiverId: number; createdAt: string }>, otro: number) => Array<{ id: number }>;
+    diaDeMensaje: (iso: string, ahora?: Date) => string;
+  }>('mensajes');
+
+  it('junta lo enviado y lo recibido con ese profe, del más viejo al más nuevo y sin repetir', () => {
+    const l = [
+      { id: 3, senderId: 9, receiverId: 1, createdAt: '2026-11-04T17:30:00Z' },
+      { id: 1, senderId: 1, receiverId: 9, createdAt: '2026-11-04T16:12:00Z' },
+      { id: 2, senderId: 1, receiverId: 7, createdAt: '2026-11-04T16:20:00Z' },
+      { id: 3, senderId: 9, receiverId: 1, createdAt: '2026-11-04T17:30:00Z' },
+    ];
+    expect(m.conversacionCon(l, 9).map((x) => x.id)).toEqual([1, 3]);
+  });
+
+  it('separa por día: Hoy, Ayer o el día con su fecha', () => {
+    const ahora = new Date(2026, 10, 17, 10);
+    expect(m.diaDeMensaje(new Date(2026, 10, 17, 8).toISOString(), ahora)).toBe('Hoy');
+    expect(m.diaDeMensaje(new Date(2026, 10, 16, 20).toISOString(), ahora)).toBe('Ayer');
+    expect(m.diaDeMensaje(new Date(2026, 10, 4, 9).toISOString(), ahora)).toBe('Miércoles 4 nov');
+  });
+
+  it('avisos y chat a la vez; Enter envía y se puede adjuntar una imagen', () => {
+    const p = leer('pages', 'estudiante', 'mensajes.vue');
+    expect(p).toContain('lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]');
+    const c = leer('components', 'mensajes', 'ConversacionProfe.vue');
+    expect(c).toContain('@keydown.enter.exact.prevent="enviar"');
+    expect(c).toContain('<input type="file" accept="image/*"');
+    expect(c).toContain('role="log"');
   });
 });

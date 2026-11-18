@@ -39,11 +39,13 @@ describe('n.º 13: los mensajes llevan una imagen y se pueden corregir', () => {
     const v = leer('components', 'mensajes', 'VentanaRedactar.vue');
     expect(v).toContain('<ZonaPantallazo ref="zonaRef" v-model="imagen" titulo="Imagen" texto-alt="Imagen que se enviará con el mensaje" id-base="redactar-imagen" />');
     expect(v).toContain('@paste="pegarEnTexto"');
-    for (const pagina of [['docente', 'mensajes.vue'], ['estudiante', 'mensajes.vue']]) {
-      const p = leer('pages', ...pagina);
-      expect(p).toContain('async function enviarMensaje(imagen: Blob | null) {');
-      expect(p).toContain('estado.enviar(destinatario.value, contenido.value, imagen)');
-    }
+    const p = leer('pages', 'docente', 'mensajes.vue');
+    expect(p).toContain('async function enviarMensaje(imagen: Blob | null) {');
+    expect(p).toContain('estado.enviar(destinatario.value, contenido.value, imagen)');
+    // El estudiante, desde el chat con el profe (17/11): adjunta o pega una imagen.
+    const chat = leer('components', 'mensajes', 'ConversacionProfe.vue');
+    expect(chat).toContain('estado.enviar(docenteId.value, texto.value, imagen.value)');
+    expect(chat).toContain('@paste="pegar"');
   });
 
   it('se envía el texto y luego la imagen; si la imagen falla, el aviso no deja reenviar el mensaje', () => {

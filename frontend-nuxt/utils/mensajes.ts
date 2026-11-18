@@ -41,3 +41,27 @@ export const LARGO_VISTA_PREVIA = 160
 export function esLargo(m: Pick<Mensaje, 'content'>): boolean {
   return m.content.length > LARGO_VISTA_PREVIA || m.content.includes('\n')
 }
+
+// ─── La conversación con el profe (17/11; cuadro «E-Clase-Mensajes»): un chat, no una bandeja de correo ───
+
+/** Los mensajes entre la persona y `otroId`, del más viejo al más nuevo (así se lee un chat). */
+export function conversacionCon<M extends Pick<Mensaje, 'id' | 'senderId' | 'receiverId' | 'createdAt'>>(mensajes: M[], otroId: number): M[] {
+  const vistos = new Set<number>()
+  return mensajes
+    .filter((m) => (m.senderId === otroId || m.receiverId === otroId) && !vistos.has(m.id) && vistos.add(m.id))
+    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() || a.id - b.id)
+}
+
+/** El separador de cada día del chat: «Hoy», «Ayer» o «Martes 4 nov». */
+export function diaDeMensaje(iso: string, ahora: Date = new Date()): string {
+  const d = new Date(iso)
+  const dia = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime()
+  const dias = Math.round((dia(ahora) - dia(d)) / 86_400_000)
+  if (dias === 0) return 'Hoy'
+  if (dias === 1) return 'Ayer'
+  const texto = d.toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'short' }).replace(',', '').replace(/ de /g, ' ').replace(/\.$/, '')
+  return texto.charAt(0).toUpperCase() + texto.slice(1)
+}
+
+/** La hora de un mensaje: «4:12 p. m.». */
+export const horaDeMensaje = (iso: string) => new Date(iso).toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })

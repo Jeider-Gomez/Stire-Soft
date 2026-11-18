@@ -1,95 +1,39 @@
 <template>
-  <!-- «Mi clase» › Avisos y mensajes (v3, Fase D, paso 5; cuadro «E-Clase-Mensajes»): la cabecera de la clase y, debajo, los
-       avisos del profe y la conversación con él. -->
+  <!-- «Mi clase» › Avisos y mensajes (v3, Fase D, paso 5; cuadro «E-Clase-Mensajes»): la cabecera de la clase y, debajo,
+       los avisos del profe a la izquierda y la conversación con él a la derecha, a la vista las dos. 17/11 (Jeider: «en el
+       chat no tenemos coherencia con el diseño»): antes eran dos pestañas y los mensajes, una bandeja de correo con
+       «Recibidos», «Enviados» y una ventana aparte para escribir. En el celular el chat va primero. -->
   <div class="max-w-6xl mx-auto space-y-[18px]">
     <EstudianteClaseCabecera />
-    <MensajesPestanasMensajes :activa="verAvisos ? 'avisos' : 'mensajes'" />
-    <MensajesAvisosClase v-if="verAvisos" rol="estudiante" />
-    <MensajesBandejaMensajes
-      v-else
-      titulo="Mensajes con tus docentes"
-      descripcion="Escríbele a un docente de tus clases o lee lo que te han enviado."
-      texto-redactar="Escribir a un docente"
-      vacio-recibidos="Cuando un docente te escriba, el mensaje aparece aquí."
-      vacio-enviados="Aún no le has escrito a ningún docente. Usa «Escribir a un docente» para empezar."
-      @redactar="abrir(null)"
-      @responder="(m) => abrir(m)" />
-
-    <MensajesVentanaRedactar
-      v-if="abierta"
-      v-model:contenido="contenido"
-      titulo="Escribir a un docente"
-      subtitulo="Tu docente lo recibe en su bandeja de STIRE."
-      etiqueta-mensaje="Tu mensaje"
-      placeholder="Escribe tu duda o comentario…"
-      :respondiendo-a="respondiendoA"
-      :enviando="enviando"
-      :error="errorEnvio"
-      @cerrar="abierta = false"
-      @enviar="enviarMensaje">
-      <template #destinatario>
-        <label for="redactar-destinatario" class="block font-semibold text-base-texto-primario mb-1">Docente</label>
-        <p v-if="cargandoDocentes" class="text-base-texto-secundario">Cargando tus docentes…</p>
-        <select v-else id="redactar-destinatario" v-model="destinatario" data-foco-inicial :disabled="docentes.length === 0" :aria-invalid="!!errorEnvio && !destinatario"
-          class="w-full min-h-[44px] px-3 rounded-md bg-base-blanco border disabled:opacity-50" :class="errorEnvio && !destinatario ? 'border-semantico-falla border-2' : 'border-base-borde-fuerte'">
-          <option :value="0" disabled>{{ docentes.length ? 'Elige un docente' : 'No estás matriculado en ninguna clase activa' }}</option>
-          <option v-for="d in docentes" :key="d.id" :value="d.id">{{ d.nombre }} · {{ d.detalle }}</option>
-        </select>
-      </template>
-    </MensajesVentanaRedactar>
+    <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] items-start">
+      <MensajesAvisosClase id="avisos-clase" rol="estudiante" compacto class="order-2 lg:order-1" />
+      <MensajesConversacionProfe :texto-inicial="textoInicial" class="order-1 lg:order-2 lg:sticky lg:top-20" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// Mensajes del estudiante: la bandeja y la ventana son compartidas con el docente (components/mensajes/); aquí solo
-// se decide a quién puede escribirle: a los docentes de sus clases activas.
-import { computed, onMounted, provide, ref } from 'vue'
-import { CLAVE_MENSAJES, useDestinatarios, useMensajes, type Destinatario } from '~/composables/useMensajes'
-import { otraPersona, type Mensaje } from '~/utils/mensajes'
+// Mensajes del estudiante: los datos son los de siempre (composables/useMensajes.ts), compartidos con el chat
+// (components/mensajes/ConversacionProfe.vue).
+import { onMounted, provide, ref } from 'vue'
+import { CLAVE_MENSAJES, useMensajes } from '~/composables/useMensajes'
 
 definePageMeta({ layout: 'student' })
 
-// «Avisos» (?ver=avisos): lo que el docente comunica a toda la clase (components/mensajes/AvisosClase.vue).
 const route = useRoute()
-const verAvisos = computed(() => route.query.ver === 'avisos')
-
 const estado = useMensajes()
 provide(CLAVE_MENSAJES, estado)
-const { docentesDelEstudiante } = useDestinatarios()
+const textoInicial = ref('')
 
-const abierta = ref(false)
-const contenido = ref('')
-const destinatario = ref(0)
-const respondiendoA = ref<string | null>(null)
-const enviando = ref(false)
-const errorEnvio = ref<string | null>(null)
-const docentes = ref<Destinatario[]>([])
-const cargandoDocentes = ref(false)
-
-async function abrir(m: Mensaje | null) {
-  contenido.value = ''
-  errorEnvio.value = null
-  respondiendoA.value = m ? otraPersona(m, 'recibidos') : null
-  destinatario.value = m ? m.senderId : 0
-  abierta.value = true
-  if (!m && docentes.value.length === 0) {
-    cargandoDocentes.value = true
-    docentes.value = await docentesDelEstudiante()
-    cargandoDocentes.value = false
-  }
-}
-
-// «Preguntarle a tu docente» desde una lección que no quedó clara (UI-01): abre la ventana con la duda ya escrita.
 onMounted(() => {
-  if (route.query.redactar !== '1') return
-  abrir(null).then(() => { contenido.value = typeof route.query.texto === 'string' ? route.query.texto.slice(0, 2000) : '' })
-  navigateTo({ path: route.path }, { replace: true })
+  estado.cargar()
+  // «Preguntarle a tu docente» desde una lección que no quedó clara (UI-01): la duda queda escrita en el chat.
+  if (route.query.redactar === '1') {
+    textoInicial.value = typeof route.query.texto === 'string' ? route.query.texto.slice(0, 2000) : ''
+    navigateTo({ path: route.path }, { replace: true })
+    nextTick(() => document.getElementById('chat-profe-texto')?.focus())
+  }
+  // La notificación de un aviso (?ver=avisos) lleva a los avisos, que en el celular van debajo del chat.
+  if (route.query.ver === 'avisos') nextTick(() => document.getElementById('avisos-clase')?.scrollIntoView({ block: 'start' }))
 })
-
-async function enviarMensaje(imagen: Blob | null) {
-  enviando.value = true
-  errorEnvio.value = await estado.enviar(destinatario.value, contenido.value, imagen)
-  enviando.value = false
-  if (!errorEnvio.value) abierta.value = false
-}
 </script>
