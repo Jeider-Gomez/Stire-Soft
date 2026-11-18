@@ -46,6 +46,9 @@
         <span>{{ calibracion.texto }}</span>
       </p>
 
+      <!-- P36 (Toscano): tras dos intentos sin lograrlo, la competencia que falta y dónde practicarla. -->
+      <ExercisePracticarPrimero v-if="!exito && (ej.usedAttempts ?? 0) >= 2" :activity-id="ej.activityId" @ir="ws.submissionResult = null" />
+
       <button
         v-if="!exito"
         id="oferta-tutor-resultado"
