@@ -14,7 +14,7 @@ export function useApariencia() {
   const cambiada = computed(() => JSON.stringify(a.value) !== JSON.stringify(APARIENCIA_POR_DEFECTO))
 
   function cambiar(cambios: Partial<Apariencia>) {
-    a.value = { ...a.value, ...cambios }
+    a.value = { ...a.value, ...cambios, ...('sonidos' in cambios ? { sonidosElegidos: true } : {}) }
     // Los cambios de color se revelan con un círculo desde donde se tocó (utils/transicionTema.ts); el resto, al instante.
     const deColor = ['tema', 'altoContraste', 'temaContraste'].some((k) => k in cambios)
     if (deColor) cambiarConCirculo(() => aplicarApariencia(a.value), a.value.menosMovimiento)

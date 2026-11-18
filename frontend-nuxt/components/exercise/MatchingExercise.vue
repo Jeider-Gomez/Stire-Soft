@@ -61,6 +61,7 @@
 <script setup lang="ts">
 import { useWorkspaceStore } from '~/stores/workspace'
 import { esArrastre } from '~/composables/useArrastreTactil'
+import { sonarToque } from '~/utils/sonidos'
 
 interface ColumnItem {
   id: string
@@ -112,6 +113,7 @@ function unir(izquierda: string, derecha: string) {
   if (antes) pairs[antes] = ''
   pairs[izquierda] = derecha
   elegida.value = null
+  sonarToque()
 }
 
 /** Tocar: elige; con uno de la otra columna ya elegido, los une; uno ya unido suelta su línea y queda elegido. */

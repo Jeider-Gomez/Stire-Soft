@@ -29,8 +29,13 @@ export interface Apariencia {
   texto: TamanoTexto
   espaciado: boolean
   menosMovimiento: boolean
-  /** Sonido corto al probar código (utils/sonidos.ts). Apagado por defecto. */
+  /**
+   * Sonidos cortos al probar, entregar y ubicar piezas (utils/sonidos.ts). Encendidos por defecto desde el 17/11 (Jeider:
+   * «¿por qué la aplicación no tiene sonidos?»); antes venían apagados y casi nadie los encontraba.
+   */
   sonidos: boolean
+  /** Si la persona eligió encenderlos o apagarlos: entonces se respeta lo que eligió, aunque cambie lo de por defecto. */
+  sonidosElegidos: boolean
   /** «¿Qué tan seguro estás?» antes de la primera entrega (utils/confianza.ts). Encendido por defecto; se apaga aquí o con «No volver a preguntarme». */
   preguntarConfianza: boolean
   /** El recorrido guiado aparece solo la primera vez en cada pantalla (composables/useRecorrido.ts). Con «?» se ve siempre. */
@@ -38,7 +43,7 @@ export interface Apariencia {
 }
 
 export const APARIENCIA_POR_DEFECTO: Apariencia = {
-  tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false, sonidos: false, preguntarConfianza: true, recorridosAutomaticos: true,
+  tema: 'claro', altoContraste: false, temaContraste: 'ninguno', texto: 'normal', espaciado: false, menosMovimiento: false, sonidos: true, sonidosElegidos: false, preguntarConfianza: true, recorridosAutomaticos: true,
 }
 export const CLAVE_APARIENCIA = 'stire.apariencia'
 
@@ -150,7 +155,9 @@ export function leerApariencia(crudo: string | null, sistema: PreferenciasSistem
     texto: TAMANOS_TEXTO.some((t) => t.valor === p.texto) ? (p.texto as TamanoTexto) : APARIENCIA_POR_DEFECTO.texto,
     espaciado: p.espaciado === true,
     menosMovimiento: p.menosMovimiento === true,
-    sonidos: p.sonidos === true,
+    // Quien nunca los tocó los tiene encendidos; quien los apagó o encendió, como los dejó.
+    sonidos: p.sonidosElegidos === true ? p.sonidos === true : true,
+    sonidosElegidos: p.sonidosElegidos === true,
     preguntarConfianza: p.preguntarConfianza !== false,
     recorridosAutomaticos: p.recorridosAutomaticos !== false,
   }

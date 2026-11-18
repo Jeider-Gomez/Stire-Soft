@@ -58,14 +58,30 @@ describe('Detener una prueba (ítem 8)', () => {
 });
 
 describe('Sonidos opcionales (ítems 1 y 22)', () => {
-  it('vienen apagados, se encienden en Apariencia y suenan al probar', () => {
+  it('vienen encendidos (17/11), se apagan en Apariencia y suenan al probar; lo que la persona eligió se respeta', () => {
     const apariencia = front('utils/apariencia.ts');
-    expect(apariencia).toContain('sonidos: false,');
-    expect(apariencia).toContain('sonidos: p.sonidos === true');
+    expect(apariencia).toContain('sonidos: true, sonidosElegidos: false,');
+    expect(apariencia).toContain('sonidos: p.sonidosElegidos === true ? p.sonidos === true : true,');
+    expect(front('composables/useApariencia.ts')).toContain("...('sonidos' in cambios ? { sonidosElegidos: true } : {})");
     expect(front('components/perfil/AparienciaLectura.vue')).toContain("cambiar({ sonidos: !a.sonidos })");
     expect(front('stores/workspace.ts').match(/sonarResultado\(res\.allPassed\)/g)).toHaveLength(2);
     const sonidos = front('utils/sonidos.ts');
     expect(sonidos).toContain('if (!siempre && !sonidosEncendidos(guardado)) return');
+  });
+});
+
+describe('Sonidos en el celular y al ubicar piezas (17/11)', () => {
+  it('un solo contexto de audio, despertado con el primer toque o tecla', () => {
+    const s = front('utils/sonidos.ts');
+    expect(s).toContain('contexto ??= new Contexto()');
+    expect(s).toContain("if (contexto.state === 'suspended') void contexto.resume()");
+    expect(s).not.toContain('ctx.close()');
+    expect(front('plugins/sonidos.client.ts')).toContain('prepararSonidos()');
+  });
+  it('un «tic» al unir, ubicar o soltar en los ejercicios', () => {
+    expect(front('components/exercise/MatchingExercise.vue')).toContain('sonarToque()');
+    expect(front('components/exercise/DragDropExercise.vue').match(/sonarToque\(\)/g)?.length).toBe(2);
+    expect(front('components/exercise/OrderingExercise.vue')).toContain('sonarToque()');
   });
 });
 

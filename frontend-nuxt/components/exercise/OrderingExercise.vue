@@ -64,6 +64,7 @@
 <script setup lang="ts">
 import { ArrowDown, ArrowUp, GripVertical } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
+import { sonarToque } from '~/utils/sonidos'
 
 interface BlockItem {
   id: string
@@ -120,6 +121,7 @@ function soltar(destino: number) {
   lista.splice(destino, 0, movido)
   orderedBlocks.value = lista
   syncPendingAnswer()
+  sonarToque()
 }
 
 // Con el dedo, desde la manija (composables/useArrastreTactil.ts): la fila cae en el lugar de la fila que tiene debajo.

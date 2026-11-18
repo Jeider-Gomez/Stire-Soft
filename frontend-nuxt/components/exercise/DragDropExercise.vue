@@ -83,6 +83,7 @@
 <script setup lang="ts">
 import { useWorkspaceStore } from '~/stores/workspace'
 import { estadoZona, saleDeLaZona, type EstadoZona } from '~/utils/zonaArrastre'
+import { sonarToque } from '~/utils/sonidos'
 
 interface DragItem { id: string; content: string }
 interface DropTarget { id: string; label: string }
@@ -123,6 +124,7 @@ function placeSelected(targetId: string) {
   if (!selected.value) return
   mappings[selected.value] = targetId
   selected.value = null
+  sonarToque()
 }
 
 function unplace(id: string) {
@@ -163,6 +165,7 @@ const arrastreNativo = tactil.arrastreNativo
 
 function dropOn(targetId: string | null) {
   if (dragging.value) mappings[dragging.value] = targetId ?? ''
+  if (dragging.value && targetId) sonarToque()
   dragging.value = null
   dragOver.value = null
 }
