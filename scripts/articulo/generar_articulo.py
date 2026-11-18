@@ -37,29 +37,34 @@ CUERPO = [
     ('h', 'RESUMEN'),
     ('p', 'El aprendizaje de la programación exige retener y aplicar conceptos que se acumulan de una semana a otra, y en '
           'grupos numerosos el docente no alcanza a acompañar a cada estudiante. Este artículo presenta el diseño, el '
-          'desarrollo y una evaluación preliminar de STIRE, un sistema tutor inteligente web para el curso Fundamentos de '
-          'Algoritmia de la Universidad de Córdoba (Colombia). STIRE combina ejercicios calificados automáticamente, un '
-          'tutor conversacional basado en un modelo de lenguaje que orienta con preguntas y pistas, y un calendario de '
-          'repasos que adapta el algoritmo SM-2 al ritmo de un semestre. El desarrollo siguió la metodología MODESEC en '
-          'iteraciones semanales. La evaluación preliminar la realizó el equipo de desarrollo con dos listas de chequeo, de '
-          'interfaz gráfica y de sistemas tutores inteligentes, y con la escala de usabilidad SUS. Tras las mejoras, el '
-          'cumplimiento llegó a 100 % y 95,8 %, respectivamente, y la usabilidad obtuvo 81,5 puntos. Una evaluación previa '
-          'hecha con inteligencia artificial resultó más generosa que la revisión humana en 9 de 28 criterios. El uso del '
-          'tutor fue bajo, en parte porque cada estudiante debía configurar su propia clave de acceso al modelo.'),
+          'desarrollo, la implementación y la evaluación de STIRE, un sistema tutor inteligente web para el curso '
+          'Fundamentos de Algoritmia de la Universidad de Córdoba (Colombia). STIRE combina ejercicios calificados '
+          'automáticamente, un tutor conversacional basado en un modelo de lenguaje que orienta con preguntas y pistas, un '
+          'calendario de repasos que adapta el algoritmo SM-2 al ritmo de un semestre y un nivel por competencia que elige '
+          'el siguiente ejercicio. El desarrollo siguió la metodología MODESEC en iteraciones semanales. La evaluación tuvo '
+          'cuatro partes: listas de chequeo de interfaz y de sistemas tutores (cumplimiento final de 100 % y 95,8 %), una '
+          'evaluación heurística del equipo (promedio de 4,21 sobre 5 en 33 ítems), una prueba de observación con 9 usuarios '
+          'finales de 18 a 24 años, 8 de ellos sin saber programar, y una prueba de estrés con hasta 100 estudiantes '
+          'simulados a la vez. Todos los participantes completaron el recorrido y quienes respondieron dijeron que usarían '
+          'STIRE para aprender, pero 6 de 9 tuvieron dificultad para activar el tutor con su clave de acceso al modelo y 6 de 9 '
+          'no entendieron para qué sirven los repasos. El servidor no falló con 100 estudiantes; el ejecutor de código fue '
+          'el cuello de botella, con esperas de hasta 10 segundos.'),
     ('p', '**PALABRAS CLAVES:** aprendizaje de la programación; inteligencia artificial; repetición espaciada; sistemas '
           'tutores inteligentes; usabilidad.'),
     ('h', 'ABSTRACT'),
     ('p', '*Learning to program requires retaining and applying concepts that build on each other week after week, and in '
-          'large groups instructors cannot support every student. This paper presents the design, development, and a '
-          'preliminary evaluation of STIRE, a web-based intelligent tutoring system for the Fundamentals of Algorithms '
-          'course at the University of Córdoba (Colombia). STIRE combines automatically graded exercises, a conversational '
-          'tutor based on a language model that guides students with questions and hints, and a review schedule that '
-          'adapts the SM-2 algorithm to the pace of an academic term. Development followed the MODESEC methodology in weekly '
-          'iterations. The development team carried out the preliminary evaluation with two checklists, one for the '
-          'graphical interface and one for intelligent tutoring systems, and with the System Usability Scale. After the '
-          'improvements, compliance reached 100% and 95.8%, respectively, and usability scored 81.5. An earlier '
-          'AI-based evaluation was more lenient than the human review in 9 of 28 criteria. Tutor use was low, partly '
-          'because each student had to set up their own access key to the model.*'),
+          'large groups instructors cannot support every student. This paper presents the design, development, '
+          'implementation, and evaluation of STIRE, a web-based intelligent tutoring system for the Fundamentals of '
+          'Algorithms course at the University of Córdoba (Colombia). STIRE combines automatically graded exercises, a '
+          'conversational tutor based on a language model that guides students with questions and hints, a review schedule '
+          'that adapts the SM-2 algorithm to the pace of an academic term, and a per-competency level that selects the next '
+          'exercise. Development followed the MODESEC methodology in weekly iterations. The evaluation had four parts: '
+          'interface and tutoring-system checklists (final compliance of 100% and 95.8%), a heuristic evaluation by the team '
+          '(mean of 4.21 out of 5 across 33 items), an observation study with 9 end users aged 18 to 24, 8 of whom could not '
+          'program, and a stress test with up to 100 simulated students at once. All participants completed the session and '
+          'those asked said they would use STIRE to learn, but 6 of 9 struggled to activate the tutor with their own model '
+          'access key and 6 of 9 did not understand what the reviews were for. The server did not fail with 100 students; '
+          'the code runner was the bottleneck, with waits of up to 10 seconds.*'),
     ('p', '**KEY WORDS:** artificial intelligence; intelligent tutoring systems; programming learning; spaced repetition; '
           'usability.'),
 
@@ -112,7 +117,16 @@ CUERPO = [
           'declararse seguro (5). Y ningún intervalo supera 60 días. La Tabla 1 muestra los intervalos que resultan.'),
     ('cap', 'Tabla 1. Días hasta cada repaso según el resultado del estudiante'),
     ('tabla', 'intervalos'),
-    ('s', 'E. Evaluación preliminar'),
+    ('s', 'E. Competencias'),
+    ('p', 'Además del dominio por lección, STIRE calcula un nivel por competencia (asignación simple, tipos de datos y '
+          'conversión, leer los datos, condicionales, ciclos, arreglos…), tomadas del plan oficial del curso. Cada '
+          'ejercicio vale 1, 2 o 3 puntos según sea básico, intermedio o avanzado; un intento bien resuelto suma sus puntos a '
+          'los logrados y todo intento los suma a los posibles. El nivel es (logrados + 1) ÷ (posibles + 2): con pocos datos '
+          'no da 0 % ni 100 %, y un solo ejercicio avanzado bien resuelto ya da 80 %. Desde 80 % la competencia «se domina», '
+          'desde 50 % «se hace» y por debajo está «en camino». Con esa información el sistema elige el siguiente ejercicio '
+          'por la competencia más baja y, tras dos intentos fallidos, envía al estudiante a la explicación y a un ejercicio '
+          'más sencillo en lugar de darle la respuesta. El docente decide si las competencias se usan.'),
+    ('s', 'F. Evaluación'),
     ('p', 'Se usaron dos listas de chequeo: una de interfaz gráfica, basada en Pressman y Maxim (2019), con 16 criterios, '
           'y otra de sistemas tutores inteligentes, basada en Caro Piñeres (2015), con 12. Cada criterio vale 2 puntos si '
           'se cumple, 1 si se cumple parcialmente y 0 si no se cumple, de modo que las listas suman 32 y 24 puntos. Se '
@@ -124,7 +138,21 @@ CUERPO = [
           'Entre el 5 y el 16 de octubre, el equipo usó el sistema durante dos semanas con los dos cursos, en un diseño '
           'cruzado: cada integrante fue docente o estudiante de un curso y cambió de curso en la segunda semana. El uso del '
           'tutor se tomó de los registros del servidor.'),
-    ('s', 'F. Uso de inteligencia artificial'),
+    ('p', '**Evaluación heurística.** Entre el 3 y el 10 de noviembre, los cinco integrantes calificaron la versión '
+          'publicada con un instrumento heurístico del curso, adaptado a STIRE: 34 ítems repartidos entre ellos, cada uno '
+          'en escala de 1 a 5 y, si había un problema, con su frecuencia (0 a 2) y su impacto (0 a 3), cuyo producto da la '
+          'severidad. Evaluaron como usuarios, sin ver la evaluación de la inteligencia artificial.'),
+    ('p', '**Prueba con usuarios finales.** Entre el 13 y el 18 de noviembre, cada integrante observó a una o dos personas '
+          'que no habían usado STIRE con una hoja de observación común (INS-OBS-01): crear la cuenta y unirse a la clase, '
+          'estudiar una lección, resolver ejercicios, pedir ayuda al tutor y revisar los repasos, anotando lo que hacía la '
+          'persona y lo que percibía el observador, si le dio alguna pista y tres preguntas al final. Algunas personas '
+          'respondieron además la escala SUS. Las hojas no llevan nombres.'),
+    ('p', '**Prueba de estrés.** Se simularon estudiantes que hacen una sesión completa, con pausas de 1 a 3 segundos: '
+          'entrar, ver su clase, la lección, su avance, el siguiente ejercicio y sus competencias, responder uno de opción '
+          'múltiple y probar dos veces y entregar uno de programación. Se corrió con 10, 30, 60 y 100 estudiantes a la vez, '
+          '45 segundos por etapa, contra una copia local del servidor (un portátil con 8 GB de memoria), no contra el '
+          'servidor en uso.'),
+    ('s', 'G. Uso de inteligencia artificial'),
     ('p', 'En el desarrollo se usaron asistentes de programación con inteligencia artificial (Claude Code, Codex y Google '
           'Antigravity) para escribir y revisar código y documentación; cada cambio pasó por pruebas automáticas y por la '
           'revisión del equipo. En la preparación de este artículo se usó un asistente para estructurar el texto y '
@@ -159,22 +187,57 @@ CUERPO = [
           'su clave de acceso al modelo, no hubo mensajes al tutor en las 24 horas anteriores y las respuestas medidas '
           'tardaban entre 3 y 29 segundos. La clave personal parece ser la principal barrera: en despliegues como el de '
           'CS50, el asistente lo provee el curso (Liu et al., 2024).'),
-    ('s', 'D. Discusión'),
+    ('s', 'D. Evaluación heurística'),
+    ('p', 'Se calificaron 33 de los 34 ítems, con un promedio de 4,21 sobre 5: 13 ítems con 5, 15 con 4, 4 con 3 y 1 con 2. '
+          'La usabilidad general y el potencial educativo obtuvieron 4,25 cada uno. Dos ítems tuvieron severidad de 4 o '
+          'más: los números del avance no coincidían entre pantallas (severidad 4), un defecto que quedó para corregir, y '
+          'el registro solo admite mayores de 18 años (severidad 6), una decisión tomada porque el modelo que usa el tutor no '
+          'permite menores. Lo que más se repitió fueron los mensajes de error de programación todavía técnicos y ayudas que '
+          'se abren fuera de la pantalla.'),
+    ('s', 'E. Prueba con usuarios finales'),
+    ('p', 'Participaron 9 personas de 18 a 24 años (media de 20,2), 8 sin conocimientos de programación y 1 con pocos; 6 '
+          'usaron computador y 3 celular. Las nueve completaron el recorrido, y 7 necesitaron al menos una pista del '
+          'observador. Lo que más valoraron fueron las lecciones con ejemplos de la vida diaria, escuchar la lección, los '
+          'ejercicios de arrastrar y soltar y el tutor cuando funcionó; todas las personas a quienes se les preguntó dijeron '
+          'que usarían STIRE o su tutor para aprender. La Tabla 3 resume las dificultades que se repitieron. Las cuatro '
+          'personas que respondieron la escala SUS dieron 47,5, 62,5, 70 y 72,5 (media de 63,1), por debajo de los 81,5 que '
+          'había dado el equipo.'),
+    ('cap', 'Tabla 3. Dificultades que se repitieron en la prueba con 9 usuarios finales'),
+    ('tabla', 'usuarios'),
+    ('p', 'La barrera del tutor que se intuía en los registros quedó a la vista: una persona escribió la clave del modelo '
+          'en el campo del código de la clase, y otra dijo que sin la ayuda del observador no lo habría podido usar. En '
+          'programación, la revisión exacta de la salida frustró a dos personas, que fallaron por un espacio o una '
+          'mayúscula.'),
+    ('s', 'F. Prueba de estrés'),
+    ('p', 'El servidor no tuvo ninguna falla en las cuatro etapas (Tabla 4). Las respuestas de 400 que se contaron son el '
+          'límite de intentos por ejercicio, que funcionó como debe, porque los mismos estudiantes repetían los mismos '
+          'ejercicios de una etapa a otra. Navegar, ver las competencias y entregar respondieron en menos de medio segundo en '
+          'el 95 % de los casos incluso con 100 estudiantes. El cuello de botella fue probar el código: el ejecutor corre como '
+          'máximo tres programas a la vez por seguridad y memoria, y con 100 estudiantes la espera llegó a 10 segundos.'),
+    ('cap', 'Tabla 4. Prueba de estrés: tiempo de respuesta según los estudiantes a la vez'),
+    ('tabla', 'estres'),
+    ('s', 'G. Discusión'),
     ('p', 'STIRE aplica en un mismo sistema la práctica distribuida, la práctica de recuperación y la ayuda graduada. Sin '
           'embargo, la evidencia que respalda cada idea proviene de otros contextos: los tutores que revisó VanLehn (2011) '
           'no usaban modelos de lenguaje, y los estudios de Cepeda et al. (2006) son de memoria verbal, no de '
           'programación. Además, SM-2 programa los repasos con reglas fijas, mientras que los modelos que aprenden de los '
-          'datos de cada estudiante pueden programarlos mejor (Tabibian et al., 2019). Lo que muestra esta evaluación es '
-          'que el sistema funciona y que su interfaz mejoró; su efecto en el aprendizaje está por medir.'),
+          'datos de cada estudiante pueden programarlos mejor (Tabibian et al., 2019). La distancia entre la usabilidad '
+          'que dio el equipo (81,5) y la de los usuarios finales (63,1) confirma que quien desarrolla no puede ser el único '
+          'que evalúa. Lo que muestra esta evaluación es que el sistema funciona, que aguanta un grupo grande y que su '
+          'principal barrera es de entrada (la clave del tutor y entender los repasos); su efecto en el aprendizaje está '
+          'por medir.'),
 
     ('h', 'IV. CONCLUSIONES'),
-    ('p', 'STIRE reúne en un sistema web el acompañamiento de un tutor, la retroalimentación inmediata y los repasos '
-          'espaciados, adaptados al ritmo de un semestre. La evaluación preliminar mostró una mejora clara de la interfaz '
-          'y de las funciones de tutoría, y dejó una lección metodológica: la evaluación con inteligencia artificial sirve '
-          'para revisar lo verificable, pero no reemplaza la prueba con usuarios. Las principales limitaciones son que '
-          'evaluaron los propios desarrolladores y que no se ha medido el aprendizaje. Como trabajo futuro se proponen una '
-          'prueba con estudiantes del curso, una clave de acceso al modelo provista por la institución, el repaso '
-          'intercalado de varias lecciones y un programador de repasos que aprenda de los datos.'),
+    ('p', 'STIRE reúne en un sistema web el acompañamiento de un tutor, la retroalimentación inmediata, los repasos '
+          'espaciados adaptados al ritmo de un semestre y un nivel por competencia que elige el siguiente ejercicio. La '
+          'evaluación mostró una interfaz bien valorada por el equipo (4,21 sobre 5), un servidor que atiende a 100 '
+          'estudiantes a la vez sin fallar y personas sin experiencia que logran recorrerlo y quieren usarlo, pero también '
+          'tres barreras de entrada: activar el tutor con una clave propia, entender los repasos y una revisión de código '
+          'demasiado exacta. La lección metodológica es doble: la inteligencia artificial y el propio equipo sirven para '
+          'revisar lo verificable, pero no reemplazan la prueba con usuarios. Las limitaciones son que la prueba con usuarios '
+          'fue con 9 personas, sin grupo de comparación, y que no se ha medido el aprendizaje. Como trabajo futuro se '
+          'proponen una prueba con estudiantes del curso durante un semestre, un tutor que no exija clave propia, ejecutar el '
+          'código en el navegador para quitar la espera y un programador de repasos que aprenda de los datos.'),
 
     ('h', 'V. REFERENCIAS'),
     ('ref', 'Bangor, A., Kortum, P. T., y Miller, J. T. (2008). An empirical evaluation of the System Usability Scale. '
@@ -217,7 +280,7 @@ CUERPO = [
 ANCHO_FIGURA = {'figuras/figura1_arquitectura.png': 7.0, 'figuras/figura2_tutor.png': 7.4}
 
 # Ancho de cada columna de las tablas (cm), para que la primera no se parta en muchas líneas.
-ANCHOS_TABLA = {'intervalos': [3.9, 4.3], 'listas': [3.8, 2.2, 2.2]}
+ANCHOS_TABLA = {'intervalos': [3.9, 4.3], 'listas': [3.8, 2.2, 2.2], 'usuarios': [5.6, 2.6], 'estres': [2.0, 1.9, 2.1, 2.2]}
 
 TABLAS = {
     'intervalos': [
@@ -232,6 +295,21 @@ TABLAS = {
         ['6 oct.: solo IA, versión 2.0', '31 (96,9 %)', '24 (100 %)'],
         ['9–17 oct.: equipo como usuario, versión 2.0', '27 (84,4 %)', '20 (83,3 %)'],
         ['17 oct.: tras las correcciones', '32 (100 %)', '23 (95,8 %)'],
+    ],
+    'usuarios': [
+        ['Dificultad', 'Personas'],
+        ['Activar el tutor con la clave de acceso al modelo', '6 de 9'],
+        ['Entender o encontrar los repasos', '6 de 9'],
+        ['Registrarse (no lo encuentran o error de conexión)', '5 de 9'],
+        ['Completar pseudocódigo o programar sin saber', '5 de 9'],
+        ['Ordenar los pasos del ejercicio del café', '3 de 9'],
+    ],
+    'estres': [
+        ['Estudiantes a la vez', 'Pedidos por segundo', 'p95 general', 'p95 al probar código'],
+        ['10', '7,7', '0,2 s', '0,3 s'],
+        ['30', '22,0', '0,4 s', '0,7 s'],
+        ['60', '31,9', '3,7 s', '4,2 s'],
+        ['100', '34,8', '9,1 s', '9,9 s'],
     ],
 }
 
@@ -302,10 +380,40 @@ def llenar_tabla(tabla_el, filas, documento, anchos):
     return tabla._tbl
 
 
+def modelos_desde_salida(elementos):
+    """Los modelos tomados de un STIRE_Articulo.docx ya generado (cuando no se tiene a mano la plantilla de la revista):
+    el primer título, párrafo, subtítulo, leyenda, figura, referencia y tabla del cuerpo, que empieza en «RESUMEN»."""
+    def texto(el):
+        return ''.join(x.text or '' for x in el.iter(qn('w:t')))
+    inicio = next(i for i, el in enumerate(elementos) if texto(el) == 'RESUMEN')
+    cuerpo = elementos[inicio:-1]
+    buscar = lambda prueba: next(el for el in cuerpo if prueba(el))
+    modelo = {
+        'h': elementos[inicio],
+        'blanco': elementos[inicio + 1],
+        'p': elementos[inicio + 2],
+        's': buscar(lambda el: texto(el).startswith('A. ')),
+        'cap': buscar(lambda el: texto(el).startswith('Figura 1')),
+        'fig': buscar(lambda el: next(el.iter(qn('w:drawing')), None) is not None),
+        'ref': buscar(lambda el: texto(el).startswith('Bangor')),
+    }
+    tabla = buscar(lambda el: el.tag == qn('w:tbl'))
+    return modelo, tabla, inicio
+
+
 def main(plantilla: str):
     documento = docx.Document(plantilla)
     cuerpo = documento.element.body
     elementos = list(cuerpo.iterchildren())
+    desde_salida = Path(plantilla).resolve() == SALIDA.resolve()
+
+    if desde_salida:
+        # Regenerar sobre el propio artículo: el encabezado (título, autores, afiliación) se conserva tal cual.
+        modelo, tabla_modelo, inicio = modelos_desde_salida(elementos)
+        final = elementos[-1]
+        for el in elementos[inicio:-1]:
+            cuerpo.remove(el)
+        return llenar_cuerpo(documento, cuerpo, modelo, tabla_modelo, final)
 
     # Modelos de la plantilla (posiciones del Formato-Revista_Acta_S_Informaticae.docx).
     modelo = {
@@ -332,7 +440,11 @@ def main(plantilla: str):
     final = elementos[-1]  # sectPr del cuerpo
     for el in elementos[8:-1]:
         cuerpo.remove(el)
+    llenar_cuerpo(documento, cuerpo, modelo, tabla_modelo, final)
 
+
+def llenar_cuerpo(documento, cuerpo, modelo, tabla_modelo, final):
+    """Escribe CUERPO antes de `final` con los modelos de párrafo, limpia comentarios y enlaces y guarda."""
     def nuevo(tipo, texto=None):
         el = copy.deepcopy(modelo[tipo])
         rpr = vaciar(el)
