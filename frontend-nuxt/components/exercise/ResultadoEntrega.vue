@@ -3,11 +3,17 @@
      ejercicio que elige el recomendador, intentar de nuevo si quedan intentos, o la lección. utils/resultadoEntrega.ts. -->
 <template>
   <div class="fixed inset-0 bg-base-texto-primario/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div ref="ventana" role="dialog" aria-modal="true" aria-labelledby="resultado-titulo" class="bg-base-blanco rounded-[24px] border border-base-borde-sutil p-5 sm:p-6 max-w-md w-full shadow-2xl space-y-3 text-center max-h-[90dvh] overflow-y-auto overscroll-contain">
+    <div ref="ventana" role="dialog" aria-modal="true" aria-labelledby="resultado-titulo" class="relative bg-base-blanco rounded-[24px] border border-base-borde-sutil p-5 sm:p-6 max-w-md w-full shadow-2xl space-y-3 text-center max-h-[90dvh] overflow-y-auto overflow-x-hidden overscroll-contain">
+      <!-- Sugerencia de un estudiante (17/11: «no me deja salir cuando termino una lección»): solo se cerraba con Escape.
+           Ahora una X siempre a la vista; cerrar deja revisar el ejercicio. -->
+      <button type="button" class="absolute top-2 right-2 w-11 h-11 inline-flex items-center justify-center rounded-full text-base-texto-secundario hover:text-base-texto-primario hover:bg-base-bg-secundario"
+        aria-label="Cerrar y revisar el ejercicio" title="Cerrar" @click="ws.submissionResult = null">
+        <X :size="20" aria-hidden="true" />
+      </button>
       <!-- MOD-03 (Jeider 17/10: «estamos saturando al estudiante»): arriba solo lo que importa en una mirada — cómo le
            fue, el puntaje y cuánto se movió el dominio —, luego lo que enseña (la retroalimentación) y el siguiente paso.
            Lo demás (casos, cuándo vuelve a los repasos, la meta del módulo) queda en «Más detalles», como Duolingo o Khan. -->
-      <div class="flex items-center gap-3 text-left">
+      <div class="flex items-center gap-3 text-left pr-8">
         <!-- El Tutor da la retroalimentación (26/10): celebra al aprobar y anima al fallar, nunca regaña. -->
         <TutorMascota :expresion="exito ? 'acierto' : 'animo'" :tamano="exito ? 64 : 48" aria-hidden="true" />
         <div class="min-w-0">
@@ -57,13 +63,15 @@
         <Sparkles :size="14" aria-hidden="true" /> Charlar con el Tutor sobre este ejercicio
       </button>
 
-      <div class="flex flex-col-reverse sm:flex-row items-stretch gap-2">
-        <button type="button" class="flex-1 min-h-[44px] py-2 rounded-xl borde-afordancia text-sm font-semibold bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario" @click="hacer(paso.secundaria)">
-          {{ paso.secundaria.texto }}
-        </button>
+      <!-- Uno debajo del otro, el siguiente paso primero (17/11): lado a lado, el nombre largo de la lección se salía de la
+           ventana y el botón quedaba cortado. -->
+      <div class="flex flex-col items-stretch gap-2">
         <!-- v3 (cuadro «E-Logrado»): el siguiente paso en tinta, como el botón principal de la app. -->
-        <button type="button" data-foco-inicial class="boton-tinta flex-1 inline-flex text-sm" @click="hacer(paso.primaria)">
-          {{ paso.primaria.texto }} <ArrowRight :size="14" aria-hidden="true" />
+        <button type="button" data-foco-inicial class="boton-tinta boton-resultado inline-flex text-sm" @click="hacer(paso.primaria)">
+          <span class="min-w-0">{{ paso.primaria.texto }}</span> <ArrowRight :size="14" class="shrink-0" aria-hidden="true" />
+        </button>
+        <button type="button" class="min-h-[44px] py-2 px-4 rounded-xl borde-afordancia text-sm font-semibold bg-base-blanco text-base-texto-primario hover:bg-base-bg-secundario" @click="hacer(paso.secundaria)">
+          {{ paso.secundaria.texto }}
         </button>
       </div>
       <!-- Pasar a la siguiente lección siempre es una opción (09/10); si su módulo está cerrado, se dice qué falta. -->
@@ -92,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight, BookOpen, Lightbulb, ListChecks, Lock, Scale, Sparkles } from 'lucide-vue-next'
+import { ArrowRight, BookOpen, Lightbulb, ListChecks, Lock, Scale, Sparkles, X } from 'lucide-vue-next'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useAuthStore } from '~/stores/auth'
 import { useStudentStore } from '~/stores/student'
@@ -162,3 +170,8 @@ function hacer(a: AccionResultado) {
   if (a.tipo === 'inicio') return navigateTo('/estudiante')
 }
 </script>
+
+<style scoped>
+/* El texto del siguiente paso puede ser largo («Pasar a la siguiente lección: «…»»): se parte en líneas, no se sale. */
+.boton-resultado { white-space: normal; text-align: center; padding-top: 10px; padding-bottom: 10px; line-height: 1.3; overflow-wrap: anywhere; }
+</style>
