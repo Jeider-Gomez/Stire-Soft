@@ -1,0 +1,586 @@
+{
+ "fecha": "2026-11-18",
+ "api": "http://localhost:3001",
+ "segundosPorEtapa": 45,
+ "etapas": [
+  {
+   "usuarios": 10,
+   "segundos": 52,
+   "pedidos": 402,
+   "porSegundo": 7.7,
+   "errores": 0,
+   "tasaError": 0,
+   "p50": 26,
+   "p95": 199,
+   "casos": [
+    {
+     "caso": "1. Entrar",
+     "pedidos": 10,
+     "errores": 0,
+     "estados": {
+      "201": 10
+     },
+     "p50": 92,
+     "p95": 141,
+     "max": 141
+    },
+    {
+     "caso": "2. Mis clases",
+     "pedidos": 34,
+     "errores": 0,
+     "estados": {
+      "200": 34
+     },
+     "p50": 7,
+     "p95": 16,
+     "max": 25
+    },
+    {
+     "caso": "2. Perfil",
+     "pedidos": 34,
+     "errores": 0,
+     "estados": {
+      "200": 34
+     },
+     "p50": 5,
+     "p95": 14,
+     "max": 24
+    },
+    {
+     "caso": "3. Contenido de la clase",
+     "pedidos": 34,
+     "errores": 0,
+     "estados": {
+      "200": 34
+     },
+     "p50": 42,
+     "p95": 76,
+     "max": 82
+    },
+    {
+     "caso": "4. Tablero de avance",
+     "pedidos": 34,
+     "errores": 0,
+     "estados": {
+      "200": 34
+     },
+     "p50": 11,
+     "p95": 35,
+     "max": 41
+    },
+    {
+     "caso": "5. Siguiente ejercicio",
+     "pedidos": 34,
+     "errores": 0,
+     "estados": {
+      "200": 34
+     },
+     "p50": 52,
+     "p95": 103,
+     "max": 127
+    },
+    {
+     "caso": "6. Competencias",
+     "pedidos": 34,
+     "errores": 0,
+     "estados": {
+      "200": 34
+     },
+     "p50": 20,
+     "p95": 36,
+     "max": 41
+    },
+    {
+     "caso": "7. Empezar opción múltiple",
+     "pedidos": 34,
+     "errores": 0,
+     "estados": {
+      "201": 34
+     },
+     "p50": 23,
+     "p95": 37,
+     "max": 39
+    },
+    {
+     "caso": "7. Entregar opción múltiple",
+     "pedidos": 34,
+     "errores": 0,
+     "estados": {
+      "201": 34
+     },
+     "p50": 54,
+     "p95": 79,
+     "max": 110
+    },
+    {
+     "caso": "8. Empezar programar",
+     "pedidos": 30,
+     "errores": 0,
+     "estados": {
+      "201": 30
+     },
+     "p50": 15,
+     "p95": 31,
+     "max": 31
+    },
+    {
+     "caso": "8. Entregar programar",
+     "pedidos": 30,
+     "errores": 0,
+     "estados": {
+      "201": 30
+     },
+     "p50": 16,
+     "p95": 37,
+     "max": 66
+    },
+    {
+     "caso": "8. Probar código",
+     "pedidos": 60,
+     "errores": 0,
+     "estados": {
+      "201": 60
+     },
+     "p50": 185,
+     "p95": 329,
+     "max": 530
+    }
+   ]
+  },
+  {
+   "usuarios": 30,
+   "segundos": 54,
+   "pedidos": 1184,
+   "porSegundo": 22,
+   "errores": 34,
+   "tasaError": 2.87,
+   "p50": 35,
+   "p95": 379,
+   "casos": [
+    {
+     "caso": "1. Entrar",
+     "pedidos": 30,
+     "errores": 0,
+     "estados": {
+      "201": 30
+     },
+     "p50": 97,
+     "p95": 144,
+     "max": 151
+    },
+    {
+     "caso": "2. Mis clases",
+     "pedidos": 103,
+     "errores": 0,
+     "estados": {
+      "200": 103
+     },
+     "p50": 9,
+     "p95": 29,
+     "max": 79
+    },
+    {
+     "caso": "2. Perfil",
+     "pedidos": 103,
+     "errores": 0,
+     "estados": {
+      "200": 103
+     },
+     "p50": 6,
+     "p95": 30,
+     "max": 70
+    },
+    {
+     "caso": "3. Contenido de la clase",
+     "pedidos": 103,
+     "errores": 0,
+     "estados": {
+      "200": 103
+     },
+     "p50": 47,
+     "p95": 92,
+     "max": 173
+    },
+    {
+     "caso": "4. Tablero de avance",
+     "pedidos": 103,
+     "errores": 0,
+     "estados": {
+      "200": 103
+     },
+     "p50": 19,
+     "p95": 56,
+     "max": 171
+    },
+    {
+     "caso": "5. Siguiente ejercicio",
+     "pedidos": 103,
+     "errores": 0,
+     "estados": {
+      "200": 103
+     },
+     "p50": 62,
+     "p95": 196,
+     "max": 350
+    },
+    {
+     "caso": "6. Competencias",
+     "pedidos": 103,
+     "errores": 0,
+     "estados": {
+      "200": 103
+     },
+     "p50": 31,
+     "p95": 97,
+     "max": 221
+    },
+    {
+     "caso": "7. Empezar opción múltiple",
+     "pedidos": 103,
+     "errores": 34,
+     "estados": {
+      "201": 69,
+      "400": 34
+     },
+     "p50": 23,
+     "p95": 56,
+     "max": 190
+    },
+    {
+     "caso": "7. Entregar opción múltiple",
+     "pedidos": 69,
+     "errores": 0,
+     "estados": {
+      "201": 69
+     },
+     "p50": 65,
+     "p95": 170,
+     "max": 194
+    },
+    {
+     "caso": "8. Empezar programar",
+     "pedidos": 91,
+     "errores": 0,
+     "estados": {
+      "201": 91
+     },
+     "p50": 23,
+     "p95": 83,
+     "max": 143
+    },
+    {
+     "caso": "8. Entregar programar",
+     "pedidos": 91,
+     "errores": 0,
+     "estados": {
+      "201": 91
+     },
+     "p50": 27,
+     "p95": 76,
+     "max": 169
+    },
+    {
+     "caso": "8. Probar código",
+     "pedidos": 182,
+     "errores": 0,
+     "estados": {
+      "201": 182
+     },
+     "p50": 304,
+     "p95": 742,
+     "max": 1267
+    }
+   ]
+  },
+  {
+   "usuarios": 60,
+   "segundos": 58,
+   "pedidos": 1834,
+   "porSegundo": 31.9,
+   "errores": 90,
+   "tasaError": 4.91,
+   "p50": 47,
+   "p95": 3744,
+   "casos": [
+    {
+     "caso": "1. Entrar",
+     "pedidos": 60,
+     "errores": 0,
+     "estados": {
+      "201": 60
+     },
+     "p50": 86,
+     "p95": 125,
+     "max": 170
+    },
+    {
+     "caso": "2. Mis clases",
+     "pedidos": 162,
+     "errores": 0,
+     "estados": {
+      "200": 162
+     },
+     "p50": 8,
+     "p95": 48,
+     "max": 79
+    },
+    {
+     "caso": "2. Perfil",
+     "pedidos": 162,
+     "errores": 0,
+     "estados": {
+      "200": 162
+     },
+     "p50": 6,
+     "p95": 38,
+     "max": 61
+    },
+    {
+     "caso": "3. Contenido de la clase",
+     "pedidos": 162,
+     "errores": 0,
+     "estados": {
+      "200": 162
+     },
+     "p50": 56,
+     "p95": 135,
+     "max": 166
+    },
+    {
+     "caso": "4. Tablero de avance",
+     "pedidos": 162,
+     "errores": 0,
+     "estados": {
+      "200": 162
+     },
+     "p50": 30,
+     "p95": 102,
+     "max": 168
+    },
+    {
+     "caso": "5. Siguiente ejercicio",
+     "pedidos": 162,
+     "errores": 0,
+     "estados": {
+      "200": 162
+     },
+     "p50": 76,
+     "p95": 226,
+     "max": 301
+    },
+    {
+     "caso": "6. Competencias",
+     "pedidos": 162,
+     "errores": 0,
+     "estados": {
+      "200": 162
+     },
+     "p50": 46,
+     "p95": 133,
+     "max": 169
+    },
+    {
+     "caso": "7. Empezar opción múltiple",
+     "pedidos": 162,
+     "errores": 90,
+     "estados": {
+      "201": 72,
+      "400": 90
+     },
+     "p50": 33,
+     "p95": 100,
+     "max": 180
+    },
+    {
+     "caso": "7. Entregar opción múltiple",
+     "pedidos": 72,
+     "errores": 0,
+     "estados": {
+      "201": 72
+     },
+     "p50": 96,
+     "p95": 216,
+     "max": 340
+    },
+    {
+     "caso": "8. Empezar programar",
+     "pedidos": 142,
+     "errores": 0,
+     "estados": {
+      "201": 142
+     },
+     "p50": 38,
+     "p95": 121,
+     "max": 238
+    },
+    {
+     "caso": "8. Entregar programar",
+     "pedidos": 142,
+     "errores": 0,
+     "estados": {
+      "201": 142
+     },
+     "p50": 28,
+     "p95": 97,
+     "max": 167
+    },
+    {
+     "caso": "8. Probar código",
+     "pedidos": 284,
+     "errores": 0,
+     "estados": {
+      "201": 284
+     },
+     "p50": 3427,
+     "p95": 4235,
+     "max": 4773
+    }
+   ]
+  },
+  {
+   "usuarios": 100,
+   "segundos": 69,
+   "pedidos": 2392,
+   "porSegundo": 34.8,
+   "errores": 128,
+   "tasaError": 5.35,
+   "p50": 67,
+   "p95": 9108,
+   "casos": [
+    {
+     "caso": "1. Entrar",
+     "pedidos": 100,
+     "errores": 0,
+     "estados": {
+      "201": 100
+     },
+     "p50": 99,
+     "p95": 124,
+     "max": 146
+    },
+    {
+     "caso": "2. Mis clases",
+     "pedidos": 208,
+     "errores": 0,
+     "estados": {
+      "200": 208
+     },
+     "p50": 10,
+     "p95": 46,
+     "max": 92
+    },
+    {
+     "caso": "2. Perfil",
+     "pedidos": 208,
+     "errores": 0,
+     "estados": {
+      "200": 208
+     },
+     "p50": 8,
+     "p95": 32,
+     "max": 98
+    },
+    {
+     "caso": "3. Contenido de la clase",
+     "pedidos": 208,
+     "errores": 0,
+     "estados": {
+      "200": 208
+     },
+     "p50": 69,
+     "p95": 134,
+     "max": 270
+    },
+    {
+     "caso": "4. Tablero de avance",
+     "pedidos": 208,
+     "errores": 0,
+     "estados": {
+      "200": 208
+     },
+     "p50": 41,
+     "p95": 115,
+     "max": 154
+    },
+    {
+     "caso": "5. Siguiente ejercicio",
+     "pedidos": 208,
+     "errores": 0,
+     "estados": {
+      "200": 208
+     },
+     "p50": 131,
+     "p95": 370,
+     "max": 610
+    },
+    {
+     "caso": "6. Competencias",
+     "pedidos": 208,
+     "errores": 0,
+     "estados": {
+      "200": 208
+     },
+     "p50": 66,
+     "p95": 213,
+     "max": 260
+    },
+    {
+     "caso": "7. Empezar opción múltiple",
+     "pedidos": 208,
+     "errores": 128,
+     "estados": {
+      "201": 80,
+      "400": 128
+     },
+     "p50": 57,
+     "p95": 239,
+     "max": 299
+    },
+    {
+     "caso": "7. Entregar opción múltiple",
+     "pedidos": 80,
+     "errores": 0,
+     "estados": {
+      "201": 80
+     },
+     "p50": 136,
+     "p95": 452,
+     "max": 571
+    },
+    {
+     "caso": "8. Empezar programar",
+     "pedidos": 189,
+     "errores": 0,
+     "estados": {
+      "201": 189
+     },
+     "p50": 73,
+     "p95": 263,
+     "max": 348
+    },
+    {
+     "caso": "8. Entregar programar",
+     "pedidos": 189,
+     "errores": 0,
+     "estados": {
+      "201": 189
+     },
+     "p50": 30,
+     "p95": 120,
+     "max": 167
+    },
+    {
+     "caso": "8. Probar código",
+     "pedidos": 378,
+     "errores": 0,
+     "estados": {
+      "201": 378
+     },
+     "p50": 8505,
+     "p95": 9947,
+     "max": 10320
+    }
+   ]
+  }
+ ]
+}
