@@ -128,11 +128,34 @@ Lo que el docente ve por competencia (cantidad de ejercicios básicos / intermed
 - Las competencias de lecciones que nadie ha empezado salen como «Sin evidencia», sin porcentaje. Es correcto; la
   ecuación daría 50 % y la pantalla no lo muestra.
 
+## 2 bis. Repetición con 3 semillas más y 12 lecciones (20/11)
+
+Para saber si lo de arriba era casualidad de una semilla, se repitió con las semillas `20261122`, `20261123` y
+`20261124`, 15 estudiantes por clase y 12 lecciones (hasta el Módulo 2). Cada corrida duró entre 13 y 21 minutos, sin
+cuelgues. Los datos están en `resultados-2026112{2,3,4}.json`.
+
+| Semilla | Lecciones | r | Error medio | Sesgo | Mismo estado | A: aprobación / lecciones | B: aprobación / lecciones |
+|---|---|---|---|---|---|---|---|
+| 20261121 | 6 | 0,46 | 0,19 | −0,15 | 43 % | 58 % / 3,8 | 60 % / 3,8 |
+| 20261122 | 12 | 0,32 | 0,17 | −0,13 | 45 % | 68 % / 9,7 | 70 % / 9,5 |
+| 20261123 | 12 | 0,48 | 0,20 | −0,17 | 39 % | 63 % / 8,4 | 63 % / 7,4 |
+| 20261124 | 12 | 0,39 | 0,20 | −0,16 | 45 % | 61 % / 7,9 | 64 % / 8,3 |
+| **Las tres de 12, juntas** (1 260 pares) | | **0,41** | **0,19** | **−0,15** | **43 %** | | |
+
+- **El hallazgo 3 se sostiene:** en las cuatro corridas la ecuación subestima entre 0,13 y 0,17, y acierta el estado
+  en 4 de cada 10 casos.
+- **Algo nuevo:** con más de 10 intentos en una competencia (486 pares), el sesgo crece a **−0,24**. Cuanta más historia
+  tiene un estudiante, más pesan sus fallos del principio. Es el argumento más fuerte para dar más peso a lo reciente.
+- **El hallazgo 4 también se sostiene:** «recomendar» y «solo ver» no se diferencian de forma consistente. La clase A
+  terminó más lecciones en dos semillas y menos en otra, con diferencias de una lección o menos.
+- **Lo que ve el docente:** la competencia más baja de la clase cambia con lo que se recorre («Leer los datos» con 6
+  lecciones; «Contar y acumular» o «Funciones» con 12). Con 12 lecciones solo quedan 3 competencias sin evidencia.
+
 ## 3. Limitaciones
 
 - El modelo del estudiante es inventado: cómo acierta y cómo aprende son supuestos razonables, no medidos en
   estudiantes de la Universidad de Córdoba. Los números dependen de esos supuestos.
-- Hay una sola semilla, 15 estudiantes por clase y 6 lecciones.
+- Son cuatro semillas, 15 estudiantes por clase y hasta 12 lecciones; no llega al Módulo 3.
 - Los estudiantes simulados no usan el Tutor, no leen las explicaciones (la lectura no cambia su habilidad) y no
   vuelven a repasar otro día, así que la repetición espaciada (SM-2) no se puso a prueba aquí. Su comportamiento se
   explica aparte y se proyecta en `scripts/cursos/simular-al-azar.ts`.
@@ -145,5 +168,4 @@ Lo que el docente ve por competencia (cantidad de ejercicios básicos / intermed
 1. ~~Desplegar el arreglo del hallazgo 1 en Azure~~: hecho el 20/11.
 2. Llevar el hallazgo 3 a Toscano: ¿la ecuación debe dar más peso a lo reciente?
 3. Completar el banco con ejercicios intermedios (hallazgo 5); el Asistente rediseñado los puede proponer.
-4. Repetir con 3 o 4 semillas más y 12 lecciones, y en un contenedor de 2 CPU y 4 GB, antes de llevar números al
-   artículo.
+4. ~~Repetir con más semillas y 12 lecciones~~: hecho (§2 bis). Falta repetirlo en un contenedor de 2 CPU y 4 GB.

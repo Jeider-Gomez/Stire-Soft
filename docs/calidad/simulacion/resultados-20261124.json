@@ -1,0 +1,4178 @@
+{
+  "fecha": "2026-11-20T17:41:32.122Z",
+  "semilla": "20261124",
+  "estudiantes": 15,
+  "lecciones": 12,
+  "minutos": 20.916383333333332,
+  "clases": {
+    "A": {
+      "id": 14,
+      "code": "SIM-1124-A"
+    },
+    "B": {
+      "id": 15,
+      "code": "SIM-1124-B"
+    }
+  },
+  "resumen": [
+    {
+      "clase": "A",
+      "entregas": [
+        58.733333333333334,
+        8.496796782055904
+      ],
+      "aprobadas": 35.8,
+      "fallidas": 22.933333333333334,
+      "tasaAprobacion": 0.6145818078512939,
+      "leccionesCompletas": 7.933333333333334,
+      "sinIntentos": 4.066666666666666,
+      "habilidadFinal": [
+        0.7876274765915331,
+        0.09763431112607683
+      ],
+      "motivos": {
+        "siguiente": 541,
+        "hermana": 92,
+        "sube_nivel": 32,
+        "reto": 25,
+        "baja_nivel": 5
+      }
+    },
+    {
+      "clase": "B",
+      "entregas": [
+        56.86666666666667,
+        6.878630354624062
+      ],
+      "aprobadas": 35.93333333333333,
+      "fallidas": 20.933333333333334,
+      "tasaAprobacion": 0.6432029802496125,
+      "leccionesCompletas": 8.266666666666667,
+      "sinIntentos": 3.7333333333333334,
+      "habilidadFinal": [
+        0.7846239886662244,
+        0.09830281942767526
+      ],
+      "motivos": {
+        "siguiente": 538,
+        "hermana": 81,
+        "sube_nivel": 32,
+        "baja_nivel": 6,
+        "reto": 25
+      }
+    }
+  ],
+  "validez": {
+    "pares": 420,
+    "r": 0.38684538556645215,
+    "errorMedio": 0.19828138837430284,
+    "pocos": {
+      "n": 3,
+      "error": 0.16564343004216756
+    },
+    "mas": {
+      "n": 417,
+      "error": 0.1985161938299297,
+      "r": 0.39844290989414394
+    }
+  },
+  "vista": {
+    "A": {
+      "modo": "recomendar",
+      "estudiantes": 15,
+      "competencias": [
+        {
+          "id": "pasos-precisos",
+          "nombre": "Pasos precisos y en orden",
+          "ejemplo": "un algoritmo no deja dudas en ningún paso",
+          "nivel": 0.633,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 1,
+            "lo-hace": 12,
+            "lo-domina": 2
+          },
+          "enCamino": [
+            {
+              "studentId": 355,
+              "nombre": "Simulado A10",
+              "nivel": 0.385
+            }
+          ],
+          "banco": {
+            "basico": 14,
+            "intermedio": 0,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "descomponer",
+          "nombre": "Descomponer el problema",
+          "ejemplo": "entradas, proceso y salidas",
+          "nivel": 0.629,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 2,
+            "lo-hace": 11,
+            "lo-domina": 2
+          },
+          "enCamino": [
+            {
+              "studentId": 355,
+              "nombre": "Simulado A10",
+              "nivel": 0.429
+            },
+            {
+              "studentId": 364,
+              "nombre": "Simulado A15",
+              "nivel": 0.444
+            }
+          ],
+          "banco": {
+            "basico": 8,
+            "intermedio": 0,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "representar",
+          "nombre": "Pseudocódigo y diagramas",
+          "ejemplo": "Leer, calcular, Escribir",
+          "nivel": 0.741,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 0,
+            "lo-hace": 12,
+            "lo-domina": 3
+          },
+          "enCamino": [],
+          "banco": {
+            "basico": 8,
+            "intermedio": 0,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "asignacion",
+          "nombre": "Asignación simple",
+          "ejemplo": "a = 2, b = 3, sumar",
+          "nivel": 0.603,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 1,
+            "lo-hace": 12,
+            "lo-domina": 2
+          },
+          "enCamino": [
+            {
+              "studentId": 361,
+              "nombre": "Simulado A13",
+              "nivel": 0.2
+            }
+          ],
+          "banco": {
+            "basico": 16,
+            "intermedio": 2,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "variables",
+          "nombre": "Constantes y variables",
+          "ejemplo": "const no cambia; let sí",
+          "nivel": 0.576,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 4,
+            "lo-hace": 9,
+            "lo-domina": 2
+          },
+          "enCamino": [
+            {
+              "studentId": 361,
+              "nombre": "Simulado A13",
+              "nivel": 0.25
+            },
+            {
+              "studentId": 355,
+              "nombre": "Simulado A10",
+              "nivel": 0.4
+            },
+            {
+              "studentId": 364,
+              "nombre": "Simulado A15",
+              "nivel": 0.4
+            },
+            {
+              "studentId": 344,
+              "nombre": "Simulado A5",
+              "nivel": 0.444
+            }
+          ],
+          "banco": {
+            "basico": 10,
+            "intermedio": 0,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "tipos",
+          "nombre": "Tipos de datos y conversión",
+          "ejemplo": "Number(\"2\") pasa texto a número",
+          "nivel": 0.576,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 4,
+            "lo-hace": 9,
+            "lo-domina": 2
+          },
+          "enCamino": [
+            {
+              "studentId": 361,
+              "nombre": "Simulado A13",
+              "nivel": 0.25
+            },
+            {
+              "studentId": 355,
+              "nombre": "Simulado A10",
+              "nivel": 0.4
+            },
+            {
+              "studentId": 364,
+              "nombre": "Simulado A15",
+              "nivel": 0.4
+            },
+            {
+              "studentId": 344,
+              "nombre": "Simulado A5",
+              "nivel": 0.444
+            }
+          ],
+          "banco": {
+            "basico": 10,
+            "intermedio": 1,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "operadores",
+          "nombre": "Operadores y orden",
+          "ejemplo": "primero × y ÷, luego + y −",
+          "nivel": 0.626,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 3,
+            "lo-hace": 8,
+            "lo-domina": 4
+          },
+          "enCamino": [
+            {
+              "studentId": 361,
+              "nombre": "Simulado A13",
+              "nivel": 0.214
+            },
+            {
+              "studentId": 358,
+              "nombre": "Simulado A12",
+              "nivel": 0.417
+            },
+            {
+              "studentId": 348,
+              "nombre": "Simulado A7",
+              "nivel": 0.462
+            }
+          ],
+          "banco": {
+            "basico": 6,
+            "intermedio": 2,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "entrada",
+          "nombre": "Leer los datos que entran",
+          "ejemplo": "leerNumero(), leerTexto()",
+          "nivel": 0.7,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 0,
+            "lo-hace": 12,
+            "lo-domina": 3
+          },
+          "enCamino": [],
+          "banco": {
+            "basico": 21,
+            "intermedio": 12,
+            "avanzado": 4
+          }
+        },
+        {
+          "id": "mostrar",
+          "nombre": "Mostrar resultados",
+          "ejemplo": "console.log(resultado)",
+          "nivel": 0.653,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 1,
+            "lo-hace": 13,
+            "lo-domina": 1
+          },
+          "enCamino": [
+            {
+              "studentId": 336,
+              "nombre": "Simulado A1",
+              "nivel": 0.409
+            }
+          ],
+          "banco": {
+            "basico": 17,
+            "intermedio": 4,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "condicionales",
+          "nombre": "Decidir con condicionales",
+          "ejemplo": "if (nota >= 3) { … } else { … }",
+          "nivel": 0.664,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 0,
+            "lo-hace": 13,
+            "lo-domina": 2
+          },
+          "enCamino": [],
+          "banco": {
+            "basico": 6,
+            "intermedio": 10,
+            "avanzado": 2
+          }
+        },
+        {
+          "id": "ciclos",
+          "nombre": "Repetir con ciclos",
+          "ejemplo": "for (let i = 1; i <= 5; i++)",
+          "nivel": 0.546,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 4,
+            "lo-hace": 8,
+            "lo-domina": 3
+          },
+          "enCamino": [
+            {
+              "studentId": 344,
+              "nombre": "Simulado A5",
+              "nivel": 0.267
+            },
+            {
+              "studentId": 356,
+              "nombre": "Simulado A11",
+              "nivel": 0.294
+            },
+            {
+              "studentId": 336,
+              "nombre": "Simulado A1",
+              "nivel": 0.417
+            },
+            {
+              "studentId": 339,
+              "nombre": "Simulado A2",
+              "nivel": 0.474
+            }
+          ],
+          "banco": {
+            "basico": 10,
+            "intermedio": 6,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "contar-acumular",
+          "nombre": "Contar y acumular",
+          "ejemplo": "suma += nota; contador++",
+          "nivel": 0.514,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 4,
+            "lo-hace": 9,
+            "lo-domina": 2
+          },
+          "enCamino": [
+            {
+              "studentId": 344,
+              "nombre": "Simulado A5",
+              "nivel": 0.125
+            },
+            {
+              "studentId": 356,
+              "nombre": "Simulado A11",
+              "nivel": 0.273
+            },
+            {
+              "studentId": 336,
+              "nombre": "Simulado A1",
+              "nivel": 0.35
+            },
+            {
+              "studentId": 350,
+              "nombre": "Simulado A8",
+              "nivel": 0.462
+            }
+          ],
+          "banco": {
+            "basico": 4,
+            "intermedio": 6,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "funciones",
+          "nombre": "Funciones",
+          "ejemplo": "function area(b, h) { return b * h }",
+          "nivel": 0.538,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 5,
+            "lo-hace": 8,
+            "lo-domina": 2
+          },
+          "enCamino": [
+            {
+              "studentId": 336,
+              "nombre": "Simulado A1",
+              "nivel": 0.083
+            },
+            {
+              "studentId": 342,
+              "nombre": "Simulado A4",
+              "nivel": 0.357
+            },
+            {
+              "studentId": 355,
+              "nombre": "Simulado A10",
+              "nivel": 0.417
+            },
+            {
+              "studentId": 358,
+              "nombre": "Simulado A12",
+              "nivel": 0.417
+            },
+            {
+              "studentId": 347,
+              "nombre": "Simulado A6",
+              "nivel": 0.417
+            }
+          ],
+          "banco": {
+            "basico": 0,
+            "intermedio": 8,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "pagina-web",
+          "nombre": "Página con HTML y CSS",
+          "ejemplo": "<h1>, <p> y una regla de estilo",
+          "nivel": 0.655,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 2,
+            "lo-hace": 11,
+            "lo-domina": 2
+          },
+          "enCamino": [
+            {
+              "studentId": 342,
+              "nombre": "Simulado A4",
+              "nivel": 0.333
+            },
+            {
+              "studentId": 350,
+              "nombre": "Simulado A8",
+              "nivel": 0.455
+            }
+          ],
+          "banco": {
+            "basico": 20,
+            "intermedio": 6,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "eventos",
+          "nombre": "Eventos en la página",
+          "ejemplo": "boton.addEventListener(\"click\", …)",
+          "nivel": 0.5,
+          "estado": "sin-evidencia",
+          "porEstado": {
+            "sin-evidencia": 15,
+            "en-camino": 0,
+            "lo-hace": 0,
+            "lo-domina": 0
+          },
+          "enCamino": [],
+          "banco": {
+            "basico": 4,
+            "intermedio": 4,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "arreglos",
+          "nombre": "Arreglos y posiciones",
+          "ejemplo": "la lista empieza en 0",
+          "nivel": 0.5,
+          "estado": "sin-evidencia",
+          "porEstado": {
+            "sin-evidencia": 15,
+            "en-camino": 0,
+            "lo-hace": 0,
+            "lo-domina": 0
+          },
+          "enCamino": [],
+          "banco": {
+            "basico": 2,
+            "intermedio": 4,
+            "avanzado": 2
+          }
+        },
+        {
+          "id": "ova",
+          "nombre": "Construir un OVA",
+          "ejemplo": "la lógica y la navegación de un recurso",
+          "nivel": 0.5,
+          "estado": "sin-evidencia",
+          "porEstado": {
+            "sin-evidencia": 15,
+            "en-camino": 0,
+            "lo-hace": 0,
+            "lo-domina": 0
+          },
+          "enCamino": [],
+          "banco": {
+            "basico": 12,
+            "intermedio": 6,
+            "avanzado": 2
+          }
+        }
+      ],
+      "masBaja": "Contar y acumular"
+    },
+    "B": {
+      "modo": "informar",
+      "estudiantes": 15,
+      "competencias": [
+        {
+          "id": "pasos-precisos",
+          "nombre": "Pasos precisos y en orden",
+          "ejemplo": "un algoritmo no deja dudas en ningún paso",
+          "nivel": 0.688,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 2,
+            "lo-hace": 8,
+            "lo-domina": 5
+          },
+          "enCamino": [
+            {
+              "studentId": 346,
+              "nombre": "Simulado B6",
+              "nivel": 0.333
+            },
+            {
+              "studentId": 357,
+              "nombre": "Simulado B11",
+              "nivel": 0.357
+            }
+          ],
+          "banco": {
+            "basico": 14,
+            "intermedio": 0,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "descomponer",
+          "nombre": "Descomponer el problema",
+          "ejemplo": "entradas, proceso y salidas",
+          "nivel": 0.655,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 3,
+            "lo-hace": 9,
+            "lo-domina": 3
+          },
+          "enCamino": [
+            {
+              "studentId": 337,
+              "nombre": "Simulado B1",
+              "nivel": 0.429
+            },
+            {
+              "studentId": 354,
+              "nombre": "Simulado B10",
+              "nivel": 0.455
+            },
+            {
+              "studentId": 345,
+              "nombre": "Simulado B5",
+              "nivel": 0.455
+            }
+          ],
+          "banco": {
+            "basico": 8,
+            "intermedio": 0,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "representar",
+          "nombre": "Pseudocódigo y diagramas",
+          "ejemplo": "Leer, calcular, Escribir",
+          "nivel": 0.744,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 1,
+            "lo-hace": 9,
+            "lo-domina": 5
+          },
+          "enCamino": [
+            {
+              "studentId": 346,
+              "nombre": "Simulado B6",
+              "nivel": 0.25
+            }
+          ],
+          "banco": {
+            "basico": 8,
+            "intermedio": 0,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "asignacion",
+          "nombre": "Asignación simple",
+          "ejemplo": "a = 2, b = 3, sumar",
+          "nivel": 0.555,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 5,
+            "lo-hace": 9,
+            "lo-domina": 1
+          },
+          "enCamino": [
+            {
+              "studentId": 354,
+              "nombre": "Simulado B10",
+              "nivel": 0.222
+            },
+            {
+              "studentId": 346,
+              "nombre": "Simulado B6",
+              "nivel": 0.409
+            },
+            {
+              "studentId": 345,
+              "nombre": "Simulado B5",
+              "nivel": 0.429
+            },
+            {
+              "studentId": 337,
+              "nombre": "Simulado B1",
+              "nivel": 0.467
+            },
+            {
+              "studentId": 343,
+              "nombre": "Simulado B4",
+              "nivel": 0.476
+            }
+          ],
+          "banco": {
+            "basico": 16,
+            "intermedio": 2,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "variables",
+          "nombre": "Constantes y variables",
+          "ejemplo": "const no cambia; let sí",
+          "nivel": 0.609,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 4,
+            "lo-hace": 8,
+            "lo-domina": 3
+          },
+          "enCamino": [
+            {
+              "studentId": 353,
+              "nombre": "Simulado B9",
+              "nivel": 0.4
+            },
+            {
+              "studentId": 337,
+              "nombre": "Simulado B1",
+              "nivel": 0.429
+            },
+            {
+              "studentId": 345,
+              "nombre": "Simulado B5",
+              "nivel": 0.444
+            },
+            {
+              "studentId": 346,
+              "nombre": "Simulado B6",
+              "nivel": 0.444
+            }
+          ],
+          "banco": {
+            "basico": 10,
+            "intermedio": 0,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "tipos",
+          "nombre": "Tipos de datos y conversión",
+          "ejemplo": "Number(\"2\") pasa texto a número",
+          "nivel": 0.609,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 4,
+            "lo-hace": 8,
+            "lo-domina": 3
+          },
+          "enCamino": [
+            {
+              "studentId": 353,
+              "nombre": "Simulado B9",
+              "nivel": 0.4
+            },
+            {
+              "studentId": 337,
+              "nombre": "Simulado B1",
+              "nivel": 0.429
+            },
+            {
+              "studentId": 345,
+              "nombre": "Simulado B5",
+              "nivel": 0.444
+            },
+            {
+              "studentId": 346,
+              "nombre": "Simulado B6",
+              "nivel": 0.444
+            }
+          ],
+          "banco": {
+            "basico": 10,
+            "intermedio": 1,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "operadores",
+          "nombre": "Operadores y orden",
+          "ejemplo": "primero × y ÷, luego + y −",
+          "nivel": 0.519,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 5,
+            "lo-hace": 10,
+            "lo-domina": 0
+          },
+          "enCamino": [
+            {
+              "studentId": 354,
+              "nombre": "Simulado B10",
+              "nivel": 0.083
+            },
+            {
+              "studentId": 343,
+              "nombre": "Simulado B4",
+              "nivel": 0.353
+            },
+            {
+              "studentId": 346,
+              "nombre": "Simulado B6",
+              "nivel": 0.4
+            },
+            {
+              "studentId": 345,
+              "nombre": "Simulado B5",
+              "nivel": 0.429
+            },
+            {
+              "studentId": 365,
+              "nombre": "Simulado B15",
+              "nivel": 0.462
+            }
+          ],
+          "banco": {
+            "basico": 6,
+            "intermedio": 2,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "entrada",
+          "nombre": "Leer los datos que entran",
+          "ejemplo": "leerNumero(), leerTexto()",
+          "nivel": 0.69,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 2,
+            "lo-hace": 10,
+            "lo-domina": 3
+          },
+          "enCamino": [
+            {
+              "studentId": 354,
+              "nombre": "Simulado B10",
+              "nivel": 0.45
+            },
+            {
+              "studentId": 345,
+              "nombre": "Simulado B5",
+              "nivel": 0.484
+            }
+          ],
+          "banco": {
+            "basico": 21,
+            "intermedio": 12,
+            "avanzado": 4
+          }
+        },
+        {
+          "id": "mostrar",
+          "nombre": "Mostrar resultados",
+          "ejemplo": "console.log(resultado)",
+          "nivel": 0.683,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 1,
+            "lo-hace": 10,
+            "lo-domina": 4
+          },
+          "enCamino": [
+            {
+              "studentId": 337,
+              "nombre": "Simulado B1",
+              "nivel": 0.429
+            }
+          ],
+          "banco": {
+            "basico": 17,
+            "intermedio": 4,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "condicionales",
+          "nombre": "Decidir con condicionales",
+          "ejemplo": "if (nota >= 3) { … } else { … }",
+          "nivel": 0.741,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 2,
+            "lo-hace": 7,
+            "lo-domina": 6
+          },
+          "enCamino": [
+            {
+              "studentId": 354,
+              "nombre": "Simulado B10",
+              "nivel": 0.471
+            },
+            {
+              "studentId": 338,
+              "nombre": "Simulado B2",
+              "nivel": 0.471
+            }
+          ],
+          "banco": {
+            "basico": 6,
+            "intermedio": 10,
+            "avanzado": 2
+          }
+        },
+        {
+          "id": "ciclos",
+          "nombre": "Repetir con ciclos",
+          "ejemplo": "for (let i = 1; i <= 5; i++)",
+          "nivel": 0.576,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 4,
+            "lo-hace": 7,
+            "lo-domina": 4
+          },
+          "enCamino": [
+            {
+              "studentId": 345,
+              "nombre": "Simulado B5",
+              "nivel": 0.154
+            },
+            {
+              "studentId": 349,
+              "nombre": "Simulado B7",
+              "nivel": 0.231
+            },
+            {
+              "studentId": 338,
+              "nombre": "Simulado B2",
+              "nivel": 0.25
+            },
+            {
+              "studentId": 353,
+              "nombre": "Simulado B9",
+              "nivel": 0.474
+            }
+          ],
+          "banco": {
+            "basico": 10,
+            "intermedio": 6,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "contar-acumular",
+          "nombre": "Contar y acumular",
+          "ejemplo": "suma += nota; contador++",
+          "nivel": 0.548,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 4,
+            "lo-hace": 8,
+            "lo-domina": 3
+          },
+          "enCamino": [
+            {
+              "studentId": 345,
+              "nombre": "Simulado B5",
+              "nivel": 0.125
+            },
+            {
+              "studentId": 349,
+              "nombre": "Simulado B7",
+              "nivel": 0.125
+            },
+            {
+              "studentId": 338,
+              "nombre": "Simulado B2",
+              "nivel": 0.167
+            },
+            {
+              "studentId": 337,
+              "nombre": "Simulado B1",
+              "nivel": 0.438
+            }
+          ],
+          "banco": {
+            "basico": 4,
+            "intermedio": 6,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "funciones",
+          "nombre": "Funciones",
+          "ejemplo": "function area(b, h) { return b * h }",
+          "nivel": 0.555,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 3,
+            "lo-hace": 9,
+            "lo-domina": 3
+          },
+          "enCamino": [
+            {
+              "studentId": 359,
+              "nombre": "Simulado B12",
+              "nivel": 0.25
+            },
+            {
+              "studentId": 337,
+              "nombre": "Simulado B1",
+              "nivel": 0.357
+            },
+            {
+              "studentId": 365,
+              "nombre": "Simulado B15",
+              "nivel": 0.417
+            }
+          ],
+          "banco": {
+            "basico": 0,
+            "intermedio": 8,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "pagina-web",
+          "nombre": "Página con HTML y CSS",
+          "ejemplo": "<h1>, <p> y una regla de estilo",
+          "nivel": 0.648,
+          "estado": "lo-hace",
+          "porEstado": {
+            "sin-evidencia": 0,
+            "en-camino": 3,
+            "lo-hace": 10,
+            "lo-domina": 2
+          },
+          "enCamino": [
+            {
+              "studentId": 337,
+              "nombre": "Simulado B1",
+              "nivel": 0.333
+            },
+            {
+              "studentId": 360,
+              "nombre": "Simulado B13",
+              "nivel": 0.455
+            },
+            {
+              "studentId": 351,
+              "nombre": "Simulado B8",
+              "nivel": 0.455
+            }
+          ],
+          "banco": {
+            "basico": 20,
+            "intermedio": 6,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "eventos",
+          "nombre": "Eventos en la página",
+          "ejemplo": "boton.addEventListener(\"click\", …)",
+          "nivel": 0.5,
+          "estado": "sin-evidencia",
+          "porEstado": {
+            "sin-evidencia": 15,
+            "en-camino": 0,
+            "lo-hace": 0,
+            "lo-domina": 0
+          },
+          "enCamino": [],
+          "banco": {
+            "basico": 4,
+            "intermedio": 4,
+            "avanzado": 0
+          }
+        },
+        {
+          "id": "arreglos",
+          "nombre": "Arreglos y posiciones",
+          "ejemplo": "la lista empieza en 0",
+          "nivel": 0.5,
+          "estado": "sin-evidencia",
+          "porEstado": {
+            "sin-evidencia": 15,
+            "en-camino": 0,
+            "lo-hace": 0,
+            "lo-domina": 0
+          },
+          "enCamino": [],
+          "banco": {
+            "basico": 2,
+            "intermedio": 4,
+            "avanzado": 2
+          }
+        },
+        {
+          "id": "ova",
+          "nombre": "Construir un OVA",
+          "ejemplo": "la lógica y la navegación de un recurso",
+          "nivel": 0.5,
+          "estado": "sin-evidencia",
+          "porEstado": {
+            "sin-evidencia": 15,
+            "en-camino": 0,
+            "lo-hace": 0,
+            "lo-domina": 0
+          },
+          "enCamino": [],
+          "banco": {
+            "basico": 12,
+            "intermedio": 6,
+            "avanzado": 2
+          }
+        }
+      ],
+      "masBaja": "Operadores y orden"
+    }
+  },
+  "medidas": [
+    {
+      "clase": "A",
+      "n": 1,
+      "entregas": 70,
+      "aprobadas": 37,
+      "fallidas": 33,
+      "leccionesCompletas": 7,
+      "sinIntentos": 5,
+      "motivos": {
+        "siguiente": 39,
+        "hermana": 9,
+        "sube_nivel": 4
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.583,
+          "posibles": 10,
+          "real": 0.787117944836857
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.6523546533795641
+        },
+        {
+          "id": "representar",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.485249318325075
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.769,
+          "posibles": 11,
+          "real": 0.7835332689969245
+        },
+        {
+          "id": "variables",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.6946312333930938
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7079605435450701
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.857,
+          "posibles": 5,
+          "real": 0.5458454957339355
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.579,
+          "posibles": 36,
+          "real": 0.9698093374065369
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.409,
+          "posibles": 20,
+          "real": 0.8928641798942252
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.571,
+          "posibles": 19,
+          "real": 0.7938049551861265
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.417,
+          "posibles": 22,
+          "real": 0.8486385874042962
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.35,
+          "posibles": 18,
+          "real": 0.6920226918804339
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.083,
+          "posibles": 10,
+          "real": 0.3672435143761463
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.571,
+          "posibles": 12,
+          "real": 0.7258097702811023
+        }
+      ],
+      "habilidadFinal": 0.7104918210456705
+    },
+    {
+      "clase": "A",
+      "n": 2,
+      "entregas": 60,
+      "aprobadas": 38,
+      "fallidas": 22,
+      "leccionesCompletas": 8,
+      "sinIntentos": 4,
+      "motivos": {
+        "siguiente": 39,
+        "hermana": 3,
+        "sube_nivel": 3
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.636,
+          "posibles": 9,
+          "real": 0.8922108875071664
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.7312775128230266
+        },
+        {
+          "id": "representar",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.772629794691393
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.556,
+          "posibles": 16,
+          "real": 0.8395640339642365
+        },
+        {
+          "id": "variables",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7880678955035575
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.8824467961982373
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.5,
+          "posibles": 10,
+          "real": 0.6796127965372301
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.548,
+          "posibles": 40,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.706,
+          "posibles": 15,
+          "real": 0.8098274107119054
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.682,
+          "posibles": 20,
+          "real": 0.7929295567428252
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.474,
+          "posibles": 17,
+          "real": 0.7732236857442504
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.5,
+          "posibles": 12,
+          "real": 0.8343440309018102
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.875,
+          "posibles": 6,
+          "real": 0.6877053626929523
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.6,
+          "posibles": 8,
+          "real": 0.6725587929819646
+        }
+      ],
+      "habilidadFinal": 0.7947427540714683
+    },
+    {
+      "clase": "A",
+      "n": 3,
+      "entregas": 55,
+      "aprobadas": 42,
+      "fallidas": 13,
+      "leccionesCompletas": 10,
+      "sinIntentos": 2,
+      "motivos": {
+        "siguiente": 41,
+        "hermana": 3,
+        "sube_nivel": 3
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.636,
+          "posibles": 9,
+          "real": 0.9236287836852748
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.814720150583789
+        },
+        {
+          "id": "representar",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.8017461394986375
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.909,
+          "posibles": 9,
+          "real": 0.9359085750444982
+        },
+        {
+          "id": "variables",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.9578480952668191
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.9293235697888452
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.857,
+          "posibles": 5,
+          "real": 0.9299860235735689
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.806,
+          "posibles": 29,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.684,
+          "posibles": 17,
+          "real": 0.97
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.789,
+          "posibles": 17,
+          "real": 0.97
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.667,
+          "posibles": 13,
+          "real": 0.9051982976860342
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.636,
+          "posibles": 9,
+          "real": 0.8717733472998112
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.7,
+          "posibles": 8,
+          "real": 0.7905097429521836
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.727,
+          "posibles": 9,
+          "real": 0.8547956942448026
+        }
+      ],
+      "habilidadFinal": 0.9018170299731618
+    },
+    {
+      "clase": "A",
+      "n": 4,
+      "entregas": 39,
+      "aprobadas": 25,
+      "fallidas": 14,
+      "leccionesCompletas": 9,
+      "sinIntentos": 3,
+      "motivos": {
+        "siguiente": 24,
+        "hermana": 4,
+        "reto": 5
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.538,
+          "posibles": 11,
+          "real": 0.8948716521748931
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.9095187843474387
+        },
+        {
+          "id": "representar",
+          "nivel": 0.556,
+          "posibles": 7,
+          "real": 0.8215342125479329
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.875,
+          "posibles": 6,
+          "real": 0.8432577728142973
+        },
+        {
+          "id": "variables",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.7658979535352168
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.9131375345541166
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.75,
+          "posibles": 2,
+          "real": 0.7040754316412325
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.95,
+          "posibles": 18,
+          "real": 0.9407908899214233
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.706,
+          "posibles": 15,
+          "real": 0.9066751173850802
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.857,
+          "posibles": 5,
+          "real": 0.961397964582307
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.889,
+          "posibles": 7,
+          "real": 0.8504519775885907
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.8283890684617601
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.357,
+          "posibles": 12,
+          "real": 0.8084029250320153
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.333,
+          "posibles": 7,
+          "real": 0.7364207721399095
+        }
+      ],
+      "habilidadFinal": 0.8489158611947296
+    },
+    {
+      "clase": "A",
+      "n": 5,
+      "entregas": 55,
+      "aprobadas": 28,
+      "fallidas": 27,
+      "leccionesCompletas": 7,
+      "sinIntentos": 5,
+      "motivos": {
+        "siguiente": 28,
+        "hermana": 7,
+        "reto": 5
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.615,
+          "posibles": 11,
+          "real": 0.7243887808866384
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.556,
+          "posibles": 7,
+          "real": 0.5259174103325017
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.5871942452697532
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.545,
+          "posibles": 9,
+          "real": 0.5294102023522186
+        },
+        {
+          "id": "variables",
+          "nivel": 0.444,
+          "posibles": 7,
+          "real": 0.5471648570116385
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.444,
+          "posibles": 7,
+          "real": 0.342722808663769
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.75,
+          "posibles": 2,
+          "real": 0.5129282531049888
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.667,
+          "posibles": 25,
+          "real": 0.7956514081322136
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.619,
+          "posibles": 19,
+          "real": 0.7151259057880036
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.615,
+          "posibles": 11,
+          "real": 0.3566025377812275
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.267,
+          "posibles": 13,
+          "real": 0.4950954003910452
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.125,
+          "posibles": 6,
+          "real": 0.25465631155429586
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.23427420687560416
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.545,
+          "posibles": 9,
+          "real": 0.3612428055890459
+        }
+      ],
+      "habilidadFinal": 0.4987410809809245
+    },
+    {
+      "clase": "A",
+      "n": 6,
+      "entregas": 62,
+      "aprobadas": 42,
+      "fallidas": 20,
+      "leccionesCompletas": 9,
+      "sinIntentos": 3,
+      "motivos": {
+        "siguiente": 41,
+        "hermana": 6,
+        "sube_nivel": 3,
+        "baja_nivel": 1
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.538,
+          "posibles": 11,
+          "real": 0.8108345161125058
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.6711083660087397
+        },
+        {
+          "id": "representar",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.6991463160970135
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.769,
+          "posibles": 11,
+          "real": 0.8010148662458103
+        },
+        {
+          "id": "variables",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.6214674883547876
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7703927465992253
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.857,
+          "posibles": 5,
+          "real": 0.5394623727587639
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.758,
+          "posibles": 31,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.65,
+          "posibles": 18,
+          "real": 0.8906182738247534
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.652,
+          "posibles": 21,
+          "real": 0.8687733965060178
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.588,
+          "posibles": 15,
+          "real": 0.9068270566867156
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.583,
+          "posibles": 10,
+          "real": 0.8148071027519243
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.417,
+          "posibles": 10,
+          "real": 0.6841254960340949
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.9,
+          "posibles": 8,
+          "real": 0.7726138433790815
+        }
+      ],
+      "habilidadFinal": 0.7729422743828167
+    },
+    {
+      "clase": "A",
+      "n": 7,
+      "entregas": 54,
+      "aprobadas": 32,
+      "fallidas": 22,
+      "leccionesCompletas": 8,
+      "sinIntentos": 4,
+      "motivos": {
+        "siguiente": 30,
+        "hermana": 6,
+        "reto": 5,
+        "baja_nivel": 1
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.5,
+          "posibles": 10,
+          "real": 0.8757495783304149
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.556,
+          "posibles": 7,
+          "real": 0.8071267869816595
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.794166604103151
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.526,
+          "posibles": 17,
+          "real": 0.9085172247775617
+        },
+        {
+          "id": "variables",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7243065641003608
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7821538067293732
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.462,
+          "posibles": 11,
+          "real": 0.7678082028215225
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.611,
+          "posibles": 34,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.722,
+          "posibles": 16,
+          "real": 0.9452139599687593
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.615,
+          "posibles": 11,
+          "real": 0.7305300836426486
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.538,
+          "posibles": 11,
+          "real": 0.7816203517466023
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.6395795036868998
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.6005249272200189
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.875,
+          "posibles": 6,
+          "real": 0.8518570727308025
+        }
+      ],
+      "habilidadFinal": 0.7985110476314123
+    },
+    {
+      "clase": "A",
+      "n": 8,
+      "entregas": 59,
+      "aprobadas": 37,
+      "fallidas": 22,
+      "leccionesCompletas": 8,
+      "sinIntentos": 4,
+      "motivos": {
+        "siguiente": 40,
+        "hermana": 6,
+        "sube_nivel": 2
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.8,
+          "posibles": 8,
+          "real": 0.7863592835075183
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.6403584614572045
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7465672112255202
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.643,
+          "posibles": 12,
+          "real": 0.7232179107898152
+        },
+        {
+          "id": "variables",
+          "nivel": 0.5,
+          "posibles": 6,
+          "real": 0.6433376275887218
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.5,
+          "posibles": 6,
+          "real": 0.549920528932738
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.75,
+          "posibles": 6,
+          "real": 0.6758239616009141
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.622,
+          "posibles": 35,
+          "real": 0.9653418169868512
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.6,
+          "posibles": 18,
+          "real": 0.8398310968656464
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.682,
+          "posibles": 20,
+          "real": 0.8572218117938485
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.563,
+          "posibles": 14,
+          "real": 0.8218301414711919
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.462,
+          "posibles": 11,
+          "real": 0.7607747545405217
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.583,
+          "posibles": 10,
+          "real": 0.7591811031585108
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.455,
+          "posibles": 9,
+          "real": 0.5853525578203611
+        }
+      ],
+      "habilidadFinal": 0.739651304838526
+    },
+    {
+      "clase": "A",
+      "n": 9,
+      "entregas": 64,
+      "aprobadas": 41,
+      "fallidas": 23,
+      "leccionesCompletas": 8,
+      "sinIntentos": 4,
+      "motivos": {
+        "siguiente": 41,
+        "hermana": 9,
+        "sube_nivel": 3,
+        "baja_nivel": 1
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.8,
+          "posibles": 8,
+          "real": 0.8907001152084447
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7808222373606328
+        },
+        {
+          "id": "representar",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.8087759831152347
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.625,
+          "posibles": 14,
+          "real": 0.929070919739377
+        },
+        {
+          "id": "variables",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7157518303716056
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7614001617664665
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.6,
+          "posibles": 8,
+          "real": 0.7233029918198356
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.758,
+          "posibles": 31,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.765,
+          "posibles": 15,
+          "real": 0.9553651541257635
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.609,
+          "posibles": 21,
+          "real": 0.9056309826110359
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.529,
+          "posibles": 15,
+          "real": 0.8892177880242554
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.538,
+          "posibles": 11,
+          "real": 0.8390514405463445
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.7,
+          "posibles": 8,
+          "real": 0.7592386194607006
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.615,
+          "posibles": 11,
+          "real": 0.9060981958834591
+        }
+      ],
+      "habilidadFinal": 0.8453161728595111
+    },
+    {
+      "clase": "A",
+      "n": 10,
+      "entregas": 50,
+      "aprobadas": 27,
+      "fallidas": 23,
+      "leccionesCompletas": 8,
+      "sinIntentos": 4,
+      "motivos": {
+        "siguiente": 27,
+        "hermana": 6,
+        "reto": 5
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.385,
+          "posibles": 11,
+          "real": 0.8792450666525697
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.429,
+          "posibles": 5,
+          "real": 0.5143436285737316
+        },
+        {
+          "id": "representar",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.6429493916091658
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.5,
+          "posibles": 10,
+          "real": 0.7192671908764935
+        },
+        {
+          "id": "variables",
+          "nivel": 0.4,
+          "posibles": 8,
+          "real": 0.6568937212620344
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.4,
+          "posibles": 8,
+          "real": 0.8126423435016846
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.75,
+          "posibles": 2,
+          "real": 0.536066025127276
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.692,
+          "posibles": 24,
+          "real": 0.8885601889128941
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.55,
+          "posibles": 18,
+          "real": 0.8551757120788679
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.643,
+          "posibles": 12,
+          "real": 0.6538416610817093
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.8,
+          "posibles": 8,
+          "real": 0.8506464208246407
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.7258836618140743
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.417,
+          "posibles": 10,
+          "real": 0.7035153522878542
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.7,
+          "posibles": 8,
+          "real": 0.8075473042322061
+        }
+      ],
+      "habilidadFinal": 0.7318984049168
+    },
+    {
+      "clase": "A",
+      "n": 11,
+      "entregas": 62,
+      "aprobadas": 37,
+      "fallidas": 25,
+      "leccionesCompletas": 6,
+      "sinIntentos": 6,
+      "motivos": {
+        "siguiente": 39,
+        "hermana": 9,
+        "sube_nivel": 4
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.727,
+          "posibles": 9,
+          "real": 0.8745141755840508
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7582369313410728
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7699430566654509
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.6,
+          "posibles": 13,
+          "real": 0.934565774819667
+        },
+        {
+          "id": "variables",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.8491127206650972
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7451404013975658
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.556,
+          "posibles": 7,
+          "real": 0.7332424755381951
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.759,
+          "posibles": 27,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.722,
+          "posibles": 16,
+          "real": 0.9657611546559204
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.571,
+          "posibles": 19,
+          "real": 0.8944508889466055
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.294,
+          "posibles": 15,
+          "real": 0.8994108839980987
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.273,
+          "posibles": 9,
+          "real": 0.6625073552544295
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.5983012561029513
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.75,
+          "posibles": 10,
+          "real": 0.8769234498966527
+        }
+      ],
+      "habilidadFinal": 0.8237221803475542
+    },
+    {
+      "clase": "A",
+      "n": 12,
+      "entregas": 61,
+      "aprobadas": 41,
+      "fallidas": 20,
+      "leccionesCompletas": 9,
+      "sinIntentos": 3,
+      "motivos": {
+        "siguiente": 40,
+        "hermana": 4,
+        "sube_nivel": 4
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.727,
+          "posibles": 9,
+          "real": 0.8916429988172969
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.8630341720638163
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7987838499910902
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.5,
+          "posibles": 16,
+          "real": 0.9294684373508473
+        },
+        {
+          "id": "variables",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.8805831565557201
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.9206617056662452
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.417,
+          "posibles": 10,
+          "real": 0.834444231320575
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.75,
+          "posibles": 30,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.65,
+          "posibles": 18,
+          "real": 0.97
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.824,
+          "posibles": 15,
+          "real": 0.9217455995247583
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.588,
+          "posibles": 15,
+          "real": 0.9332772825077728
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.538,
+          "posibles": 11,
+          "real": 0.8079247067612829
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.417,
+          "posibles": 10,
+          "real": 0.7468064235990491
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.75,
+          "posibles": 10,
+          "real": 0.9028466083283685
+        }
+      ],
+      "habilidadFinal": 0.8836585123204872
+    },
+    {
+      "clase": "A",
+      "n": 13,
+      "entregas": 77,
+      "aprobadas": 37,
+      "fallidas": 40,
+      "leccionesCompletas": 6,
+      "sinIntentos": 6,
+      "motivos": {
+        "siguiente": 39,
+        "hermana": 8,
+        "sube_nivel": 3,
+        "baja_nivel": 2
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.571,
+          "posibles": 12,
+          "real": 0.8746597538801374
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.7124398042957254
+        },
+        {
+          "id": "representar",
+          "nivel": 0.556,
+          "posibles": 7,
+          "real": 0.7430464781729736
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.2,
+          "posibles": 18,
+          "real": 0.8134418035490254
+        },
+        {
+          "id": "variables",
+          "nivel": 0.25,
+          "posibles": 6,
+          "real": 0.694337236748679
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.25,
+          "posibles": 6,
+          "real": 0.680650008012424
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.214,
+          "posibles": 12,
+          "real": 0.6977060830817828
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.524,
+          "posibles": 40,
+          "real": 0.9697588280959951
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.5,
+          "posibles": 20,
+          "real": 0.8691259267110973
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.5,
+          "posibles": 26,
+          "real": 0.8246064014481304
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.556,
+          "posibles": 16,
+          "real": 0.7960461557481394
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.5,
+          "posibles": 12,
+          "real": 0.651058495839183
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.7,
+          "posibles": 8,
+          "real": 0.43468614770349007
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.533,
+          "posibles": 13,
+          "real": 0.7702034650193517
+        }
+      ],
+      "habilidadFinal": 0.7522690420218667
+    },
+    {
+      "clase": "A",
+      "n": 14,
+      "entregas": 52,
+      "aprobadas": 42,
+      "fallidas": 10,
+      "leccionesCompletas": 10,
+      "sinIntentos": 2,
+      "motivos": {
+        "siguiente": 41,
+        "hermana": 4,
+        "sube_nivel": 3
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.727,
+          "posibles": 9,
+          "real": 0.8521340073371874
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.97
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7864889527986774
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.75,
+          "posibles": 10,
+          "real": 0.895438021363544
+        },
+        {
+          "id": "variables",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.9183735057541791
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.9475778393515053
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.857,
+          "posibles": 5,
+          "real": 0.9354383835940325
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.96,
+          "posibles": 23,
+          "real": 0.9653235232159642
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.929,
+          "posibles": 12,
+          "real": 0.97
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.75,
+          "posibles": 18,
+          "real": 0.97
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.833,
+          "posibles": 10,
+          "real": 0.9484809164324409
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.778,
+          "posibles": 7,
+          "real": 0.7851385012656105
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.875,
+          "posibles": 6,
+          "real": 0.9669830289145086
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.667,
+          "posibles": 10,
+          "real": 0.8736373968528554
+        }
+      ],
+      "habilidadFinal": 0.9132152912057504
+    },
+    {
+      "clase": "A",
+      "n": 15,
+      "entregas": 61,
+      "aprobadas": 31,
+      "fallidas": 30,
+      "leccionesCompletas": 6,
+      "sinIntentos": 6,
+      "motivos": {
+        "siguiente": 32,
+        "hermana": 8,
+        "reto": 5
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.538,
+          "posibles": 11,
+          "real": 0.8488963855990729
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.444,
+          "posibles": 7,
+          "real": 0.7197515767108964
+        },
+        {
+          "id": "representar",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7999548006900397
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.529,
+          "posibles": 15,
+          "real": 0.8857384609663063
+        },
+        {
+          "id": "variables",
+          "nivel": 0.4,
+          "posibles": 8,
+          "real": 0.8207925734017691
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.4,
+          "posibles": 8,
+          "real": 0.8267700170708503
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.667,
+          "posibles": 7,
+          "real": 0.6296487213119886
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.645,
+          "posibles": 29,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.545,
+          "posibles": 20,
+          "real": 0.9321554562062053
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.533,
+          "posibles": 13,
+          "real": 0.834775857716443
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.5,
+          "posibles": 12,
+          "real": 0.8474149183842539
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.5525376865770756
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.7,
+          "posibles": 8,
+          "real": 0.7058105627392726
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.5,
+          "posibles": 10,
+          "real": 0.8050241777782654
+        }
+      ],
+      "habilidadFinal": 0.798519371082317
+    },
+    {
+      "clase": "B",
+      "n": 1,
+      "entregas": 64,
+      "aprobadas": 32,
+      "fallidas": 32,
+      "leccionesCompletas": 4,
+      "sinIntentos": 8,
+      "motivos": {
+        "siguiente": 39,
+        "hermana": 7,
+        "sube_nivel": 1,
+        "baja_nivel": 1
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.8,
+          "posibles": 8,
+          "real": 0.7636799974783751
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.429,
+          "posibles": 5,
+          "real": 0.5016948635468909
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.5254308199388348
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.467,
+          "posibles": 13,
+          "real": 0.7809735956723721
+        },
+        {
+          "id": "variables",
+          "nivel": 0.429,
+          "posibles": 5,
+          "real": 0.6279607516749868
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.429,
+          "posibles": 5,
+          "real": 0.6442002203827208
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.6228233512196438
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.719,
+          "posibles": 30,
+          "real": 0.9644804508549428
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.429,
+          "posibles": 19,
+          "real": 0.8584218472007071
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.778,
+          "posibles": 16,
+          "real": 0.7889709457218004
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.5,
+          "posibles": 18,
+          "real": 0.8358229029898736
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.438,
+          "posibles": 14,
+          "real": 0.6659464289810758
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.357,
+          "posibles": 12,
+          "real": 0.4806352597275534
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.333,
+          "posibles": 10,
+          "real": 0.5930132578943447
+        }
+      ],
+      "habilidadFinal": 0.6895753352345801
+    },
+    {
+      "clase": "B",
+      "n": 2,
+      "entregas": 59,
+      "aprobadas": 32,
+      "fallidas": 27,
+      "leccionesCompletas": 4,
+      "sinIntentos": 8,
+      "motivos": {
+        "siguiente": 39,
+        "hermana": 8,
+        "sube_nivel": 2
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.636,
+          "posibles": 9,
+          "real": 0.8922108875071663
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7433035203001379
+        },
+        {
+          "id": "representar",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.7682251616660095
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.692,
+          "posibles": 11,
+          "real": 0.7959031401813158
+        },
+        {
+          "id": "variables",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.763245807211831
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.8686786320464409
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.75,
+          "posibles": 6,
+          "real": 0.6351546439420972
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.773,
+          "posibles": 20,
+          "real": 0.9476475848988684
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.867,
+          "posibles": 13,
+          "real": 0.7931300149571767
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.471,
+          "posibles": 15,
+          "real": 0.7294770796453114
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.25,
+          "posibles": 14,
+          "real": 0.7223697296853334
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.167,
+          "posibles": 10,
+          "real": 0.8099537159252995
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.6936401884187311
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.5,
+          "posibles": 12,
+          "real": 0.7587974400112611
+        }
+      ],
+      "habilidadFinal": 0.7801241104569271
+    },
+    {
+      "clase": "B",
+      "n": 3,
+      "entregas": 52,
+      "aprobadas": 44,
+      "fallidas": 8,
+      "leccionesCompletas": 12,
+      "sinIntentos": 0,
+      "motivos": {
+        "siguiente": 40,
+        "sube_nivel": 4,
+        "hermana": 2
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.8,
+          "posibles": 8,
+          "real": 0.921386824317445
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7935777246216529
+        },
+        {
+          "id": "representar",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.8017461394986375
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.833,
+          "posibles": 10,
+          "real": 0.9424730226286838
+        },
+        {
+          "id": "variables",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.9578480952668191
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.9293235697888452
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.75,
+          "posibles": 6,
+          "real": 0.9371570777158479
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.828,
+          "posibles": 27,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.867,
+          "posibles": 13,
+          "real": 0.9672995542311813
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.75,
+          "posibles": 18,
+          "real": 0.97
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.833,
+          "posibles": 10,
+          "real": 0.8823280691978492
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.778,
+          "posibles": 7,
+          "real": 0.8571413054472928
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.875,
+          "posibles": 6,
+          "real": 0.7666046487750355
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.75,
+          "posibles": 10,
+          "real": 0.8795828389314709
+        }
+      ],
+      "habilidadFinal": 0.8983192050300542
+    },
+    {
+      "clase": "B",
+      "n": 4,
+      "entregas": 42,
+      "aprobadas": 34,
+      "fallidas": 8,
+      "leccionesCompletas": 12,
+      "sinIntentos": 0,
+      "motivos": {
+        "siguiente": 28,
+        "reto": 5,
+        "baja_nivel": 1,
+        "hermana": 2
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.889,
+          "posibles": 7,
+          "real": 0.8652017229117636
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.9095187843474387
+        },
+        {
+          "id": "representar",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.7761064338883865
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.476,
+          "posibles": 19,
+          "real": 0.9324425836769861
+        },
+        {
+          "id": "variables",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.7658979535352168
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.9131375345541166
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.353,
+          "posibles": 15,
+          "real": 0.8724536481089058
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.633,
+          "posibles": 28,
+          "real": 0.9623803066328476
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.923,
+          "posibles": 11,
+          "real": 0.891443654869328
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.857,
+          "posibles": 5,
+          "real": 0.961397964582307
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.8,
+          "posibles": 8,
+          "real": 0.8613398090232213
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.8283890684617601
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.875,
+          "posibles": 6,
+          "real": 0.7722153279840751
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.778,
+          "posibles": 7,
+          "real": 0.7874274883502469
+        }
+      ],
+      "habilidadFinal": 0.8642394486376143
+    },
+    {
+      "clase": "B",
+      "n": 5,
+      "entregas": 53,
+      "aprobadas": 27,
+      "fallidas": 26,
+      "leccionesCompletas": 7,
+      "sinIntentos": 5,
+      "motivos": {
+        "siguiente": 26,
+        "hermana": 4,
+        "reto": 5,
+        "baja_nivel": 1
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.727,
+          "posibles": 9,
+          "real": 0.7060379190426419
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.455,
+          "posibles": 9,
+          "real": 0.5555124658488431
+        },
+        {
+          "id": "representar",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.600286761369973
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.429,
+          "posibles": 19,
+          "real": 0.6485234346491756
+        },
+        {
+          "id": "variables",
+          "nivel": 0.444,
+          "posibles": 7,
+          "real": 0.5471648570116385
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.444,
+          "posibles": 7,
+          "real": 0.3427228086637689
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.429,
+          "posibles": 12,
+          "real": 0.6362133103314387
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.484,
+          "posibles": 29,
+          "real": 0.7952881944782124
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.5,
+          "posibles": 20,
+          "real": 0.711707825663659
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.857,
+          "posibles": 5,
+          "real": 0.20997196524740316
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.154,
+          "posibles": 11,
+          "real": 0.43716531283990656
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.125,
+          "posibles": 6,
+          "real": 0.25465631155429586
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.23427420687560416
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.667,
+          "posibles": 7,
+          "real": 0.31871280603313945
+        }
+      ],
+      "habilidadFinal": 0.49987415568640714
+    },
+    {
+      "clase": "B",
+      "n": 6,
+      "entregas": 68,
+      "aprobadas": 36,
+      "fallidas": 32,
+      "leccionesCompletas": 6,
+      "sinIntentos": 6,
+      "motivos": {
+        "siguiente": 40,
+        "hermana": 10,
+        "sube_nivel": 2,
+        "baja_nivel": 1
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.333,
+          "posibles": 10,
+          "real": 0.7498981249894585
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.6495079252879877
+        },
+        {
+          "id": "representar",
+          "nivel": 0.25,
+          "posibles": 6,
+          "real": 0.6358909606358873
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.409,
+          "posibles": 20,
+          "real": 0.8637139567841694
+        },
+        {
+          "id": "variables",
+          "nivel": 0.444,
+          "posibles": 7,
+          "real": 0.630742234521028
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.444,
+          "posibles": 7,
+          "real": 0.7760185486841352
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.4,
+          "posibles": 13,
+          "real": 0.676652565333866
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.59,
+          "posibles": 37,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.632,
+          "posibles": 17,
+          "real": 0.8834344684372176
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.714,
+          "posibles": 19,
+          "real": 0.868773396506018
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.625,
+          "posibles": 14,
+          "real": 0.898213837798085
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.583,
+          "posibles": 10,
+          "real": 0.8148071027519243
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.6549249991167878
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.571,
+          "posibles": 12,
+          "real": 0.8298649874462019
+        }
+      ],
+      "habilidadFinal": 0.7787459363066261
+    },
+    {
+      "clase": "B",
+      "n": 7,
+      "entregas": 55,
+      "aprobadas": 33,
+      "fallidas": 22,
+      "leccionesCompletas": 9,
+      "sinIntentos": 3,
+      "motivos": {
+        "siguiente": 31,
+        "hermana": 5,
+        "reto": 5
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.667,
+          "posibles": 10,
+          "real": 0.8953837609543909
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7564981812829389
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.794166604103151
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.667,
+          "posibles": 13,
+          "real": 0.8845032869036638
+        },
+        {
+          "id": "variables",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7243065641003608
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7821538067293732
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.667,
+          "posibles": 7,
+          "real": 0.7068585936878341
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.704,
+          "posibles": 25,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.684,
+          "posibles": 17,
+          "real": 0.9512410029835143
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.692,
+          "posibles": 11,
+          "real": 0.7527359926569936
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.231,
+          "posibles": 11,
+          "real": 0.7406352624881598
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.125,
+          "posibles": 6,
+          "real": 0.5719364502700175
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.6005249272200189
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.538,
+          "posibles": 11,
+          "real": 0.9172810168661059
+        }
+      ],
+      "habilidadFinal": 0.7891589607318945
+    },
+    {
+      "clase": "B",
+      "n": 8,
+      "entregas": 57,
+      "aprobadas": 39,
+      "fallidas": 18,
+      "leccionesCompletas": 10,
+      "sinIntentos": 2,
+      "motivos": {
+        "siguiente": 38,
+        "hermana": 6,
+        "sube_nivel": 4
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.667,
+          "posibles": 10,
+          "real": 0.813772304123935
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.5,
+          "posibles": 6,
+          "real": 0.6642237542992733
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7465672112255202
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.667,
+          "posibles": 13,
+          "real": 0.7363327666837172
+        },
+        {
+          "id": "variables",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.636088859503849
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.5407731616804203
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.6,
+          "posibles": 8,
+          "real": 0.6973358150984913
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.697,
+          "posibles": 31,
+          "real": 0.960240075911242
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.706,
+          "posibles": 15,
+          "real": 0.8162539730491497
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.882,
+          "posibles": 15,
+          "real": 0.8245628754949591
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.714,
+          "posibles": 12,
+          "real": 0.8182090362352836
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.636,
+          "posibles": 9,
+          "real": 0.7559127661208883
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.7,
+          "posibles": 8,
+          "real": 0.7420649028060043
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.455,
+          "posibles": 9,
+          "real": 0.5853525578203611
+        }
+      ],
+      "habilidadFinal": 0.7384064328609353
+    },
+    {
+      "clase": "B",
+      "n": 9,
+      "entregas": 67,
+      "aprobadas": 38,
+      "fallidas": 29,
+      "leccionesCompletas": 6,
+      "sinIntentos": 6,
+      "motivos": {
+        "siguiente": 40,
+        "hermana": 8,
+        "sube_nivel": 4
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.7,
+          "posibles": 8,
+          "real": 0.8797968871446737
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.7261619525597489
+        },
+        {
+          "id": "representar",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.8087759831152347
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.5,
+          "posibles": 16,
+          "real": 0.9467994074381583
+        },
+        {
+          "id": "variables",
+          "nivel": 0.4,
+          "posibles": 8,
+          "real": 0.7577905364718733
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.4,
+          "posibles": 8,
+          "real": 0.7966877363115692
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.6,
+          "posibles": 8,
+          "real": 0.7564415656857926
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.622,
+          "posibles": 35,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.6,
+          "posibles": 18,
+          "real": 0.9665214853951216
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.625,
+          "posibles": 22,
+          "real": 0.9244678002668654
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.474,
+          "posibles": 17,
+          "real": 0.8892177880242553
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.5,
+          "posibles": 12,
+          "real": 0.8171527707626751
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.7352214281711161
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.615,
+          "posibles": 11,
+          "real": 0.9060981958834591
+        }
+      ],
+      "habilidadFinal": 0.8486523955164673
+    },
+    {
+      "clase": "B",
+      "n": 10,
+      "entregas": 56,
+      "aprobadas": 31,
+      "fallidas": 25,
+      "leccionesCompletas": 9,
+      "sinIntentos": 3,
+      "motivos": {
+        "siguiente": 28,
+        "hermana": 4,
+        "reto": 5,
+        "baja_nivel": 1
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.8,
+          "posibles": 8,
+          "real": 0.870575170651367
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.455,
+          "posibles": 9,
+          "real": 0.6871769467794936
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.612819010800339
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.222,
+          "posibles": 16,
+          "real": 0.7470286426944301
+        },
+        {
+          "id": "variables",
+          "nivel": 0.5,
+          "posibles": 6,
+          "real": 0.5965430873596005
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.5,
+          "posibles": 6,
+          "real": 0.7796870930826644
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.083,
+          "posibles": 10,
+          "real": 0.6444785060361201
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.45,
+          "posibles": 38,
+          "real": 0.9492734339494167
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.591,
+          "posibles": 20,
+          "real": 0.8903068376638485
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.471,
+          "posibles": 15,
+          "real": 0.6880729932771183
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.615,
+          "posibles": 11,
+          "real": 0.8622690994716914
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.7668870360387698
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.583,
+          "posibles": 10,
+          "real": 0.7201949585390021
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.7,
+          "posibles": 8,
+          "real": 0.807547304232206
+        }
+      ],
+      "habilidadFinal": 0.7587757228982904
+    },
+    {
+      "clase": "B",
+      "n": 11,
+      "entregas": 61,
+      "aprobadas": 39,
+      "fallidas": 22,
+      "leccionesCompletas": 8,
+      "sinIntentos": 4,
+      "motivos": {
+        "siguiente": 39,
+        "hermana": 7,
+        "sube_nivel": 4,
+        "baja_nivel": 1
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.357,
+          "posibles": 12,
+          "real": 0.8861653738912542
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.7253370261634599
+        },
+        {
+          "id": "representar",
+          "nivel": 0.556,
+          "posibles": 7,
+          "real": 0.821755955443214
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.667,
+          "posibles": 13,
+          "real": 0.9324054431513317
+        },
+        {
+          "id": "variables",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.8285794886451578
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7104582778038513
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.6,
+          "posibles": 8,
+          "real": 0.7574432969150655
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.862,
+          "posibles": 27,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.765,
+          "posibles": 15,
+          "real": 0.9558084303868349
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.882,
+          "posibles": 15,
+          "real": 0.8873663645791245
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.563,
+          "posibles": 14,
+          "real": 0.9055168519662241
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.583,
+          "posibles": 10,
+          "real": 0.7543892570955812
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.583,
+          "posibles": 10,
+          "real": 0.678495602405366
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.667,
+          "posibles": 10,
+          "real": 0.8646436259756886
+        }
+      ],
+      "habilidadFinal": 0.834168928173011
+    },
+    {
+      "clase": "B",
+      "n": 12,
+      "entregas": 54,
+      "aprobadas": 41,
+      "fallidas": 13,
+      "leccionesCompletas": 10,
+      "sinIntentos": 2,
+      "motivos": {
+        "siguiente": 38,
+        "hermana": 3,
+        "sube_nivel": 5
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.667,
+          "posibles": 10,
+          "real": 0.9042907937018926
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.8630341720638163
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.7987838499910902
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.6,
+          "posibles": 13,
+          "real": 0.909595503653656
+        },
+        {
+          "id": "variables",
+          "nivel": 0.5,
+          "posibles": 6,
+          "real": 0.86904629648023
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.5,
+          "posibles": 6,
+          "real": 0.9129968338277624
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.667,
+          "posibles": 7,
+          "real": 0.8064921243759665
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.786,
+          "posibles": 26,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.5,
+          "posibles": 16,
+          "real": 0.97
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.833,
+          "posibles": 16,
+          "real": 0.9286397158751059
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.909,
+          "posibles": 9,
+          "real": 0.8903807626403045
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.875,
+          "posibles": 6,
+          "real": 0.72127155455534
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.25,
+          "posibles": 10,
+          "real": 0.722345394662929
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.9,
+          "posibles": 8,
+          "real": 0.875472722955211
+        }
+      ],
+      "habilidadFinal": 0.8673106946273788
+    },
+    {
+      "clase": "B",
+      "n": 13,
+      "entregas": 63,
+      "aprobadas": 36,
+      "fallidas": 27,
+      "leccionesCompletas": 7,
+      "sinIntentos": 5,
+      "motivos": {
+        "siguiente": 40,
+        "hermana": 9,
+        "sube_nivel": 2
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.636,
+          "posibles": 9,
+          "real": 0.8284768952003386
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.6595654080163966
+        },
+        {
+          "id": "representar",
+          "nivel": 0.714,
+          "posibles": 5,
+          "real": 0.6957998058538902
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.625,
+          "posibles": 14,
+          "real": 0.849999328881435
+        },
+        {
+          "id": "variables",
+          "nivel": 0.556,
+          "posibles": 7,
+          "real": 0.765703432803594
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.556,
+          "posibles": 7,
+          "real": 0.7552119006548128
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.667,
+          "posibles": 7,
+          "real": 0.6829082923390826
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.706,
+          "posibles": 32,
+          "real": 0.9565903604140458
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.65,
+          "posibles": 18,
+          "real": 0.8738298439450211
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.5,
+          "posibles": 22,
+          "real": 0.7794061661383435
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.625,
+          "posibles": 14,
+          "real": 0.7585446637309496
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.636,
+          "posibles": 9,
+          "real": 0.5505203879466207
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.5,
+          "posibles": 8,
+          "real": 0.39942901698505984
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.455,
+          "posibles": 9,
+          "real": 0.6138309589535531
+        }
+      ],
+      "habilidadFinal": 0.7264154615616532
+    },
+    {
+      "clase": "B",
+      "n": 14,
+      "entregas": 47,
+      "aprobadas": 44,
+      "fallidas": 3,
+      "leccionesCompletas": 12,
+      "sinIntentos": 0,
+      "motivos": {
+        "siguiente": 40,
+        "sube_nivel": 4,
+        "hermana": 1
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.889,
+          "posibles": 7,
+          "real": 0.8262399761947727
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.97
+        },
+        {
+          "id": "representar",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.7685478961673382
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.769,
+          "posibles": 11,
+          "real": 0.901295493080008
+        },
+        {
+          "id": "variables",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.916471416399704
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.9463562796774148
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.667,
+          "posibles": 7,
+          "real": 0.9404428903449744
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.857,
+          "posibles": 26,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.929,
+          "posibles": 12,
+          "real": 0.97
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.938,
+          "posibles": 14,
+          "real": 0.97
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.833,
+          "posibles": 10,
+          "real": 0.9484809164324409
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.778,
+          "posibles": 7,
+          "real": 0.7851385012656106
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.875,
+          "posibles": 6,
+          "real": 0.9669830289145086
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.818,
+          "posibles": 9,
+          "real": 0.8706928509125862
+        }
+      ],
+      "habilidadFinal": 0.9107606606706685
+    },
+    {
+      "clase": "B",
+      "n": 15,
+      "entregas": 55,
+      "aprobadas": 33,
+      "fallidas": 22,
+      "leccionesCompletas": 8,
+      "sinIntentos": 4,
+      "motivos": {
+        "siguiente": 32,
+        "hermana": 5,
+        "reto": 5
+      },
+      "estimacion": [
+        {
+          "id": "pasos-precisos",
+          "nivel": 0.538,
+          "posibles": 11,
+          "real": 0.8488963855990729
+        },
+        {
+          "id": "descomponer",
+          "nivel": 0.571,
+          "posibles": 5,
+          "real": 0.6526364348695207
+        },
+        {
+          "id": "representar",
+          "nivel": 0.556,
+          "posibles": 7,
+          "real": 0.8203167514085633
+        },
+        {
+          "id": "asignacion",
+          "nivel": 0.526,
+          "posibles": 17,
+          "real": 0.9147796036775748
+        },
+        {
+          "id": "variables",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.7946561715634841
+        },
+        {
+          "id": "tipos",
+          "nivel": 0.625,
+          "posibles": 6,
+          "real": 0.8015053919924148
+        },
+        {
+          "id": "operadores",
+          "nivel": 0.462,
+          "posibles": 11,
+          "real": 0.7589363781720343
+        },
+        {
+          "id": "entrada",
+          "nivel": 0.645,
+          "posibles": 29,
+          "real": 0.97
+        },
+        {
+          "id": "mostrar",
+          "nivel": 0.632,
+          "posibles": 17,
+          "real": 0.8957689536251638
+        },
+        {
+          "id": "condicionales",
+          "nivel": 0.75,
+          "posibles": 10,
+          "real": 0.7892247077561604
+        },
+        {
+          "id": "ciclos",
+          "nivel": 0.636,
+          "posibles": 9,
+          "real": 0.830123768894263
+        },
+        {
+          "id": "contar-acumular",
+          "nivel": 0.833,
+          "posibles": 4,
+          "real": 0.44537741683643445
+        },
+        {
+          "id": "funciones",
+          "nivel": 0.417,
+          "posibles": 10,
+          "real": 0.7141606819875671
+        },
+        {
+          "id": "pagina-web",
+          "nivel": 0.778,
+          "posibles": 7,
+          "real": 0.7512706960297597
+        }
+      ],
+      "habilidadFinal": 0.7848323816008581
+    }
+  ]
+}
