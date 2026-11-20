@@ -1,8 +1,67 @@
 # Traspaso de sesión: dónde quedamos y cómo se trabaja
 
 > Para una sesión nueva de Claude Code (en la nube o local). Se lee después de `CLAUDE.md`.
-> **Última actualización:** 2026-10-28. Lo privado (contraseñas, acceso al servidor) **no** va aquí: el repo es
+> **Última actualización:** 2026-11-20 (ver primero §0). Lo privado (contraseñas, acceso al servidor) **no** va aquí: el repo es
 > público. Jeider lo pega en el primer mensaje.
+
+## 0. Lo más reciente (16–20/11/2026): empieza por aquí
+
+**Rama de trabajo:** `feat/v3-fase-a`. Tras build y pruebas en verde, cada commit se sube a la rama **y** a `main` sin
+preguntar (pedido de Jeider, 16/11). Si toca el servidor, Jeider pega el comando de despliegue y Claude lo corre por
+SSH; el comando lleva siempre `migration:run` después de `up -d --build` (las migraciones no corren solas). Si varios
+chats trabajan a la vez, anotarse en `docs/v3/BITACORA.md`.
+
+**Hecho y desplegado (Azure al día con `main` el 20/11, `cccc18a`; Vercel publica solo):**
+
+| Qué | Dónde |
+|---|---|
+| Revisión antes de desplegar (fases E y F de la v3): recorrido, candados, tema oscuro, barra del docente, nombres coherentes, manual en el celular | `CHANGELOG.md`, 16/11 |
+| Activar el Tutor (pedido de Pedro): tarjeta «Activa tu Tutor» en el inicio del estudiante (recomendada, no obligatoria), formulario fijo abajo con «Pegar», guía más grande en el celular | `components/tutor/TutorKeyPanel.vue`, `CampoClave.vue`, `estudiante/inicio/ActivaTutor.vue` |
+| Competencias: solo cuentan las entregas calificadas (antes, una que esperaba al juez contaba como fallada) | `src/learning-progress/competencias.service.ts` |
+| **Arreglo grave:** con 10 entregas a la vez el servidor se colgaba (la conexión de la transacción no se soltaba antes de avisar y llamar al juez) | `src/submissions/submissions.service.ts`, commit `9434c21` |
+| El aviso de «Clase creada» copiando otra dice que lo copiado está sin publicar | `frontend-nuxt/composables/useClasesDocente.ts` |
+| Migración `CompetenciasModo` corrida en producción el 20/11 (faltaba) | — |
+
+**Simulaciones (para el artículo):**
+
+- `scripts/cursos/simular-al-azar.ts`: un estudiante con perfil al azar recorre el curso; imprime competencias, repasos
+  y una proyección de SM-2.
+- `scripts/simulacion/docente-y-estudiantes.ts`: un docente crea dos clases desde cero (competencias en «recomendar» y
+  en «informar») y 15 estudiantes simulados con habilidad conocida recorren cada una. Informe:
+  `docs/calidad/simulacion/SIMULACION_DOCENTE_ESTUDIANTES_2026-11-20.md`. Resultados principales:
+  - la ecuación de Toscano subestima en 0,15, con r = 0,46 frente a la habilidad real;
+  - «recomendar» y «solo ver» casi no se diferencian en 6 lecciones;
+  - al banco le faltan ejercicios intermedios.
+- Se corren contra un servidor local con la base `stire_pruebas_local`:
+  `DB_DATABASE=stire_pruebas_local TRUST_PROXY=1 node dist/main.js` (puerto 3001). Nunca contra `basestire` ni contra
+  producción.
+
+**Propuestas esperando el visto bueno de Jeider (no construir antes):**
+
+| Propuesta | Archivo | Lo que debe decidir |
+|---|---|---|
+| El Asistente del docente que conversa: te sugiere con datos de la clase, te pregunta antes de preparar (como un cuestionario) y afinan juntos el borrador | `scripts/diseno-v3/propuestas/Asistente-conversa.html` | Preguntas fijas o de la IA; sugerencias al abrir o como aviso; solo panel o también al crear una clase |
+| Diagnóstico de entrada para los estudiantes nuevos y análisis de los exámenes que asigna el docente (dificultad, discriminación, distractores, por competencia) | `docs/curso-ddse3/PROPUESTA_DIAGNOSTICO_COMPETENCIAS.md` | Empezar por el análisis de exámenes; cuándo sale el diagnóstico; si hay uno de cierre |
+| Laboratorio de prompts: casos de prueba y comparación de versiones en el panel del administrador (P41) | `docs/prompts/README.md` | Va junto con el Asistente |
+
+**Artículos (dos, según el profesor Toscano):**
+
+- El del proyecto, para **Acta Scientiæ Informaticæ**: `docs/curso-ddse3/articulo/`, máximo 6 páginas y ya tiene 6.
+  Lo que se agregue tiene que reemplazar algo.
+- El de implementación y evaluación, para **3 revistas de la lista del profesor**
+  (`docs/curso-ddse3/guias/Guia_Revistas_Cientificas.docx`). **Todavía no se eligieron.** La propuesta del 20/11 es
+  Campus Virtuales como principal, y RITA y RISTI de respaldo, pendiente de verificar su categoría, costo y extensión.
+- **No hay prueba piloto con estudiantes del curso** (Jeider, 20/11). La prueba con usuarios finales tiene 9 personas
+  y falta la décima, que debe responder la escala SUS.
+- Lo que falta para el artículo está en `docs/curso-ddse3/articulo/PENDIENTES.md`.
+
+**En curso o pedido el 20/11:**
+
+- Más corridas de la simulación (semillas 20261122 a 20261124, 12 lecciones), para agregar sus resultados al informe.
+- Una simulación **en el navegador** de un usuario novato que se confunde: perfiles de estudiante como pidió Toscano
+  (`docs/curso-ddse3/README.md` §4c).
+- Simular cursos creados con el Asistente (con IA), probando distintas versiones. **Necesita una clave de Google AI
+  Studio**: no hay ninguna en el `.env` local.
 
 ## 1. Con quién trabajas
 
@@ -28,14 +87,14 @@
 | **No mencionar la pausa del plan de menores** en mensajes, documentos ni Trello. Decir «mayores de 18» está bien. | Pedido de Jeider (27/10). |
 | **Para el equipo, lo estrictamente necesario**, que se pueda hacer ya y que **nada dependa de Jeider**. | Semana autónoma; equipo saturado. |
 | **Trello:** lo que Jeider hace fuera del repo no deja rastro. Preguntar antes de marcarlo como no hecho. | Pasó el 07/10. |
-| **Desplegar solo cuando Jeider pega los comandos**, y el **backend antes que el frontend** que lo usa. Vercel publica el frontend al hacer push a `main`. | La API rechaza campos desconocidos. |
+| **Desplegar solo cuando Jeider pega los comandos** (si los pega, Claude los corre por SSH), y el **backend antes que el frontend** que lo usa. Vercel publica el frontend al hacer push a `main`. | La API rechaza campos desconocidos. |
 | **Scripts con contraseñas no van al repo.** Cuentas de prueba con `Test123.` (laura.martinez.docente@, santiago.ruiz@, valentina.perez@, admin.simulacion@ … example.com). Nunca la contraseña personal de Jeider ni escribir credenciales en un navegador. | Repo público. |
 | **Tesis ≠ software:** `docs/investigacion/` tiene reglas propias y solo citas verificadas. Cada decisión de diseño con fundamento → entrada BT en `docs/investigacion/BASE_TEORICA.md`. | Hubo citas fabricadas por IA. |
 | Commits en español con los pies de atribución de la sesión; push a `main` permitido. Sin prueba, un arreglo no está terminado. | `CLAUDE.md`, `docs/FLUJO_GIT.md`. |
 
 ## 3. Cómo verificar
 
-- `npm run build` (backend) y `npm test` en la raíz (≈2520 pruebas, SQLite en memoria). Frontend: `cd frontend-nuxt &&
+- `npm run build` (backend) y `npm test` en la raíz (≈3080 pruebas, SQLite en memoria). Frontend: `cd frontend-nuxt &&
   npm run build` (si falla por un `.nuxt/nuxt.lock` viejo, borrarlo).
 - Las pruebas del frontend están en `src/content-rendering/__tests__/*.frontend.spec.ts`: leen los `.vue` como texto y
   cargan `utils/` con `ts.transpileModule`. El trinquete `pat04-componentes-grandes` limita las líneas por archivo.
