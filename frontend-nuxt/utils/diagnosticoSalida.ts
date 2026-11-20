@@ -29,6 +29,16 @@ const REPASAR: Record<TipoDiagnostico, ClaveConcepto> = {
 
 const LEER_POSICION = 'Ojo: pide cada dato en orden con leerTexto() o leerNumero(). Si usas lineas, el número entre corchetes es la POSICIÓN, no el valor: la primera línea que entra es lineas[0], la segunda lineas[1].'
 
+// Los nombres que un novato escribe con otras mayúsculas (simulación de un usuario novato, 20/11: «Console.log» daba
+// «Console is not defined» y la pista solo preguntaba si estaba bien escrito).
+const NOMBRES_CONOCIDOS = ['console', 'console.log', 'Math', 'Number', 'String', 'parseInt', 'parseFloat', 'leerNumero', 'leerTexto', 'leerLineas']
+
+/** El nombre bien escrito si `nombre` es uno conocido con otras mayúsculas; null si no lo es o si ya está bien. */
+export function nombreConocido(nombre: string): string | null {
+  const encontrado = NOMBRES_CONOCIDOS.find((n) => n.toLowerCase() === nombre.toLowerCase())
+  return encontrado && encontrado !== nombre ? encontrado : null
+}
+
 /**
  * Un error de JavaScript explicado en palabras de estudiante (10/10, Jeider: «SyntaxError: Unexpected token ';'» y la
  * pista decía «la primera diferencia está en la línea 1»). Mensajes mejorados del compilador: Becker (2016).
@@ -56,6 +66,10 @@ export function diagnosticarError(o: string): Diagnostico | null {
     }
   }
   const noExiste = /^(\S+) is not defined$/.exec(detalle)
+  const correcto = noExiste ? nombreConocido(noExiste[1]) : null
+  if (tipoError === 'ReferenceError' && noExiste && correcto) {
+    return { tipo: 'no-existe', linea, mensaje: `Escribiste «${noExiste[1]}» ${enLinea}, pero se escribe «${correcto}». JavaScript distingue las mayúsculas de las minúsculas.` }
+  }
   if (tipoError === 'ReferenceError' && noExiste) {
     return { tipo: 'no-existe', linea, mensaje: `Usas «${noExiste[1]}» ${enLinea}, pero no existe. ¿La creaste antes con const o let? ¿Está escrita igual, con las mismas mayúsculas?` }
   }
@@ -69,6 +83,10 @@ export function diagnosticarError(o: string): Diagnostico | null {
   // estudiante de colegio, sin el nombre técnico en inglés.
   const Enlinea = `${enLinea[0].toUpperCase()}${enLinea.slice(1)}`
   const noEsFuncion = /^(\S+) is not a function$/.exec(detalle)
+  const funcionCorrecta = noEsFuncion ? nombreConocido(noEsFuncion[1]) : null
+  if (tipoError === 'TypeError' && noEsFuncion && funcionCorrecta) {
+    return { tipo: 'error', linea, mensaje: `${Enlinea} escribiste «${noEsFuncion[1]}», pero se escribe «${funcionCorrecta}». JavaScript distingue las mayúsculas de las minúsculas.` }
+  }
   if (tipoError === 'TypeError' && noEsFuncion) {
     return { tipo: 'error', linea, mensaje: `${Enlinea} usas «${noEsFuncion[1]}» con paréntesis, como si fuera una función, pero no lo es. ¿Está bien escrito el nombre? ¿Es un valor y no una acción?` }
   }
@@ -135,6 +153,11 @@ function diagnosticar(esperada: string, obtenida: string, entrada: string): Diag
   }
   if (sinPuntuacion(e).toLowerCase() === sinPuntuacion(o).toLowerCase()) {
     return { tipo: 'puntuacion', mensaje: 'Casi: falta o sobra un signo (punto, coma, dos puntos…). Compáralos uno por uno.' }
+  }
+  // Varias diferencias pequeñas a la vez (simulación de un usuario novato, 20/11: «Vivo enMontería» contra «Vivo en
+  // Montería.» caía en «la primera diferencia está en la línea 1»).
+  if (sinPuntuacion(e).replace(/\s+/g, '').toLowerCase() === sinPuntuacion(o).replace(/\s+/g, '').toLowerCase()) {
+    return { tipo: 'puntuacion', mensaje: 'Casi: las palabras están bien, pero cambian los espacios o los signos (un punto, una coma). Compara letra por letra, también los espacios entre comillas.' }
   }
 
   const no = numero(o)

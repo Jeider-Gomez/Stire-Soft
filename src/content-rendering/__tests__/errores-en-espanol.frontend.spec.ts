@@ -58,3 +58,32 @@ describe('Dónde se explica lo que pasó', () => {
     expect(panel).toContain("r.status === 'error' ? diagnosticarError(");
   });
 });
+
+describe('Un nombre conocido escrito con otras mayúsculas (simulación de un usuario novato, 20/11)', () => {
+  it('«Console.log» dice cómo se escribe, con su línea', () => {
+    const d = diagnosticarError('ReferenceError: Console is not defined (línea 5)');
+    expect(d?.mensaje).toContain('se escribe «console»');
+    expect(d?.mensaje).toContain('en la línea 5');
+  });
+
+  it('«console.Log» y «Leernumero» también', () => {
+    expect(diagnosticarError('TypeError: console.Log is not a function (línea 2)')?.mensaje).toContain('se escribe «console.log»');
+    expect(diagnosticarError('ReferenceError: Leernumero is not defined (línea 1)')?.mensaje).toContain('se escribe «leerNumero»');
+  });
+
+  it('una variable propia que no existe sigue con la pregunta general, sin inventar el nombre', () => {
+    const d = diagnosticarError('ReferenceError: totl is not defined (línea 3)');
+    expect(d?.mensaje).toContain('¿La creaste antes con const o let?');
+    expect(d?.mensaje).not.toContain('se escribe');
+  });
+});
+
+describe('Varias diferencias pequeñas a la vez (simulación de un usuario novato, 20/11)', () => {
+  it('faltan un espacio y el punto: «las palabras están bien»', () => {
+    expect(diagnosticarSalida('Vivo en Montería.', 'Vivo enMontería')?.mensaje).toContain('las palabras están bien');
+  });
+
+  it('una palabra distinta sigue diciendo dónde está la diferencia', () => {
+    expect(diagnosticarSalida('Vivo en Montería.', 'Vivo en Cereté.')?.mensaje).toContain('primera diferencia');
+  });
+});
