@@ -36,17 +36,21 @@ function makeSubmission(overrides: Partial<any> = {}): any {
 // ─── Mock de QueryRunner (transacción DB) ─────────────────────────────────
 
 function makeQueryRunner(overrides: Partial<any> = {}) {
-  return {
+  // Con estado, como el de TypeORM: sabe si la transacción sigue abierta y si la conexión ya se soltó.
+  const qr: any = {
+    isTransactionActive: false,
+    isReleased: false,
     connect: jest.fn().mockResolvedValue(undefined),
-    startTransaction: jest.fn().mockResolvedValue(undefined),
-    commitTransaction: jest.fn().mockResolvedValue(undefined),
-    rollbackTransaction: jest.fn().mockResolvedValue(undefined),
-    release: jest.fn().mockResolvedValue(undefined),
+    startTransaction: jest.fn().mockImplementation(async () => { qr.isTransactionActive = true; }),
+    commitTransaction: jest.fn().mockImplementation(async () => { qr.isTransactionActive = false; }),
+    rollbackTransaction: jest.fn().mockImplementation(async () => { qr.isTransactionActive = false; }),
+    release: jest.fn().mockImplementation(async () => { qr.isReleased = true; }),
     manager: {
       save: jest.fn().mockImplementation(async (entities) => entities),
     },
     ...overrides,
   };
+  return qr;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -628,6 +632,57 @@ describe('SubmissionsService', () => {
       expect(result.passed).toBeNull();
       // Sin evaluación síncrona completa, el evento no se emite todavía.
       expect(eventEmitter.emitAsync).not.toHaveBeenCalled();
+    });
+
+    it('suelta la conexión de la transacción antes de avisar la calificación y de llamar al juez (20/11: con diez entregas a la vez el servidor se colgaba)', async () => {
+      const qr = makeQueryRunner();
+      dataSource.createQueryRunner.mockReturnValue(qr);
+      const activity = makeActivity({ totalPoints: 20, passingScore: 60 });
+      submissionsRepo.findOne.mockResolvedValue(makeSubmission({ status: SubmissionStatus.IN_PROGRESS, activity }));
+      questionsRepo.findByActivityId.mockResolvedValue([makeQuestion()]);
+      evalEngine.evaluateAnswer.mockReturnValue({ isCorrect: true, score: 20, needsAsyncJudge: false, feedback: 'Correcto' });
+      let sueltaAlAvisar: boolean | undefined;
+      eventEmitter.emitAsync.mockImplementation(async () => { sueltaAlAvisar = qr.isReleased; return []; });
+
+      await service.submitAnswers(submissionId, { answers: [{ questionId: 1, answer: { selectedId: 'a' } }] }, studentId);
+
+      expect(sueltaAlAvisar).toBe(true);
+      expect(qr.release).toHaveBeenCalledTimes(1);
+    });
+
+    it('con un ejercicio de programar, el juez corre con la conexión ya suelta', async () => {
+      const qr = makeQueryRunner();
+      dataSource.createQueryRunner.mockReturnValue(qr);
+      const activity = makeActivity({ totalPoints: 25, passingScore: 60 });
+      submissionsRepo.findOne.mockResolvedValue(makeSubmission({ status: SubmissionStatus.IN_PROGRESS, activity }));
+      questionsRepo.findByActivityId.mockResolvedValue([
+        makeQuestion({ type: QuestionType.CODING, config: { language: 'javascript', testCases: [] } }),
+      ]);
+      evalEngine.evaluateAnswer.mockReturnValue({ isCorrect: null, score: 0, needsAsyncJudge: true, feedback: null });
+      let sueltaAlJuzgar: boolean | undefined;
+      judgeQueue.enqueue.mockImplementation(async () => { sueltaAlJuzgar = qr.isReleased; });
+
+      await service.submitAnswers(submissionId, { answers: [{ questionId: 1, answer: { code: 'x' } }] }, studentId);
+
+      expect(sueltaAlJuzgar).toBe(true);
+      expect(qr.release).toHaveBeenCalledTimes(1);
+    });
+
+    it('si falla antes del commit, deshace la transacción y suelta la conexión una sola vez', async () => {
+      const qr = makeQueryRunner();
+      qr.manager.save.mockRejectedValueOnce(new Error('base caída'));
+      dataSource.createQueryRunner.mockReturnValue(qr);
+      submissionsRepo.findOne.mockResolvedValue(makeSubmission({ status: SubmissionStatus.IN_PROGRESS, activity: makeActivity() }));
+      questionsRepo.findByActivityId.mockResolvedValue([makeQuestion()]);
+      evalEngine.evaluateAnswer.mockReturnValue({ isCorrect: true, score: 20, needsAsyncJudge: false, feedback: '' });
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      await expect(
+        service.submitAnswers(submissionId, { answers: [{ questionId: 1, answer: { selectedId: 'a' } }] }, studentId),
+      ).rejects.toThrow();
+      expect(qr.rollbackTransaction).toHaveBeenCalledTimes(1);
+      expect(qr.release).toHaveBeenCalledTimes(1);
+      errorSpy.mockRestore();
     });
 
     it('retorna la calificación persistida aunque falle un listener de submission.graded', async () => {

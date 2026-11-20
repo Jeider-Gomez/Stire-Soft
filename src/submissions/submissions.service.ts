@@ -183,6 +183,10 @@ export class SubmissionsService {
 
       // ✅ COMMIT PRIMERO — la transacción DB siempre se compromete antes de tocar Redis
       await queryRunner.commitTransaction();
+      // Se suelta la conexión ANTES de avisar y de encolar al juez: quienes escuchan el aviso (dominio, repasos,
+      // competencias) y el juez en línea piden conexiones propias. Con la de la transacción todavía tomada, diez
+      // entregas a la vez acaparaban las diez conexiones esperando una undécima y el servidor se colgaba (20/11).
+      await queryRunner.release();
 
       // Emitir evento (solo si no hay evaluación asíncrona pendiente).
       // emitAsync (no emit): esperamos a que mastery/repasos/notificaciones
@@ -226,10 +230,10 @@ export class SubmissionsService {
 
     } catch (error: any) {
       console.error('[SubmissionsService] Error crítico en submitAnswers — haciendo rollback:', error);
-      await queryRunner.rollbackTransaction();
+      if (queryRunner.isTransactionActive) await queryRunner.rollbackTransaction();
       throw new BadRequestException('Fallo crítico al procesar la evaluación de la entrega.');
     } finally {
-      await queryRunner.release();
+      if (!queryRunner.isReleased) await queryRunner.release();
     }
   }
 
