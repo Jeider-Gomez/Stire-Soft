@@ -58,3 +58,19 @@ describe('orientacionDeFallo (P61): qué revisar sin revelar el caso', () => {
     expect(f).toBe('Pasó 1 de 2 casos (10 de 20 puntos). ✓ Suma pequeña · ✗ Caso oculto. Qué revisar en «Caso oculto»: los números se juntaron como texto.');
   });
 });
+
+describe('orientacionDeFallo: lo que encontró la simulación de un usuario novato (20/11)', () => {
+  it('faltan un espacio y el punto a la vez: dice que las palabras están bien', () => {
+    expect(orientacionDeFallo(mal('Vivo enMontería'), { expected: 'Vivo en Montería.' })).toMatch(/las palabras están bien/);
+  });
+
+  it('sin datos de entrada no sugiere «Probar con mis datos»', () => {
+    const texto = orientacionDeFallo(mal('Hola mundo'), { expected: 'Adiós a todos' });
+    expect(texto).not.toMatch(/Probar con mis datos/);
+    expect(texto).toMatch(/Probar código/);
+  });
+
+  it('con datos de entrada sí lo sugiere', () => {
+    expect(orientacionDeFallo(mal('Hola mundo'), { input: 'Ana', expected: 'Adiós a todos' })).toMatch(/Probar con mis datos/);
+  });
+});

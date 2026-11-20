@@ -56,6 +56,10 @@ export function orientacionDeFallo(
   if (sinEspacios(e) === sinEspacios(o)) return 'casi: la diferencia está en espacios o saltos de línea.';
   if (e.toLowerCase() === o.toLowerCase()) return 'casi: cambia alguna mayúscula o minúscula. La salida debe ser exactamente igual.';
   if (sinSignos(e) === sinSignos(o)) return 'casi: falta o sobra un signo (punto, coma, dos puntos…).';
+  // Varias diferencias pequeñas a la vez (simulación de un usuario novato, 20/11: faltaban un espacio y el punto).
+  if (sinEspacios(sinSignos(e)) === sinEspacios(sinSignos(o))) {
+    return 'casi: las palabras están bien, pero cambian los espacios o los signos (un punto, una coma). Compara letra por letra, también los espacios entre comillas.';
+  }
 
   const ne = numero(e);
   const no = numero(o);
@@ -71,5 +75,8 @@ export function orientacionDeFallo(
   if (lineasO !== lineasE) {
     return `tu programa mostró ${lineasO < lineasE ? 'menos' : 'más'} líneas de las que pide el enunciado. Revisa cuántas veces escribes con console.log.`;
   }
-  return 'lo que muestra tu programa no coincide. Piensa qué tiene de distinto este caso (su nombre da una pista) y pruébalo con «Probar con mis datos».';
+  // «Probar con mis datos» solo sirve si el ejercicio lee datos.
+  return String(caso.input ?? '').trim()
+    ? 'lo que muestra tu programa no coincide. Piensa qué tiene de distinto este caso (su nombre da una pista) y pruébalo con «Probar con mis datos».'
+    : 'lo que muestra tu programa no coincide. Compáralo con lo que pide el enunciado y pruébalo con «Probar código».';
 }
