@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asistente que conversa</title>
+<style>
+:root {
+  --fondo: #F7F9FC; --hoja: #FFFFFF; --suave: #EEF3F9; --borde: #E3EAF3; --borde-f: #CBD5E1;
+  --tinta: #14213D; --texto2: #4A5873; --sol: #FFC94D; --sol-fondo: #FFF1C2; --sol-texto: #6B4500;
+  --menta: #00C2A8; --azul: #0B3D91; --azul-fondo: #E6EEFB; --pasa: #046C4E; --pasa-fondo: #E3F4EC;
+  --boton: #14213D; --boton-texto: #FFFFFF; --sombra: 0 10px 30px -18px rgba(20,33,61,.45);
+}
+:root[data-theme="dark"] {
+  --fondo: #0B1220; --hoja: #131C2E; --suave: #1A2438; --borde: #263248; --borde-f: #33415C;
+  --tinta: #E8F6FF; --texto2: #A9B6CC; --sol: #FFC94D; --sol-fondo: #3A2E0E; --sol-texto: #FFD97A;
+  --azul: #93C5FD; --azul-fondo: #13274A; --pasa: #6EE7B7; --pasa-fondo: #0F2D24;
+  --boton: #FFC94D; --boton-texto: #14213D; --sombra: 0 10px 30px -18px rgba(0,0,0,.8);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --fondo: #0B1220; --hoja: #131C2E; --suave: #1A2438; --borde: #263248; --borde-f: #33415C;
+  --tinta: #E8F6FF; --texto2: #A9B6CC; --sol-fondo: #3A2E0E; --sol-texto: #FFD97A;
+  --azul: #93C5FD; --azul-fondo: #13274A; --pasa: #6EE7B7; --pasa-fondo: #0F2D24;
+  --boton: #FFC94D; --boton-texto: #14213D; --sombra: 0 10px 30px -18px rgba(0,0,0,.8);
+}}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); color: var(--tinta); font: 14px/1.45 Inter, system-ui, sans-serif; }
+header.pagina { max-width: 1340px; margin: 0 auto; padding: 24px 16px 8px; display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+h1 { margin: 0; font-size: 24px; }
+.sub { margin: 6px 0 0; color: var(--texto2); max-width: 760px; }
+.tema { border: 1px solid var(--borde-f); background: var(--hoja); color: var(--tinta); border-radius: 10px; min-height: 40px; padding: 0 14px; font: inherit; font-weight: 600; cursor: pointer; }
+main { max-width: 1340px; margin: 0 auto; padding: 8px 16px 40px; display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); align-items: start; }
+.momento > .etiqueta { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--texto2); margin: 0 0 8px; }
+.momento > .nota { font-size: 13px; color: var(--texto2); margin: 10px 2px 0; }
+.panel { background: var(--hoja); border: 1px solid var(--borde); border-radius: 18px; box-shadow: var(--sombra); overflow: hidden; display: flex; flex-direction: column; min-height: 640px; }
+.cabeza { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--borde); }
+.cabeza strong { display: block; font-size: 14px; }
+.cabeza span { font-size: 12px; color: var(--texto2); }
+.ia { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 6px; background: var(--azul-fondo); color: var(--azul); margin-left: 4px; vertical-align: middle; }
+.contexto { margin: 0; padding: 8px 14px; font-size: 12px; color: var(--texto2); background: var(--suave); border-bottom: 1px solid var(--borde); }
+.cuerpo { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.burbuja { background: var(--suave); border-radius: 4px 14px 14px 14px; padding: 10px 12px; max-width: 92%; }
+.burbuja.mia { align-self: flex-end; background: var(--azul-fondo); border-radius: 14px 4px 14px 14px; }
+.sugerencia { border: 1px solid var(--borde); border-left: 4px solid var(--sol); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
+.sugerencia p { margin: 0; }
+.dato { font-size: 12px; color: var(--texto2); }
+.fila { display: flex; flex-wrap: wrap; gap: 8px; }
+.boton { min-height: 40px; padding: 0 14px; border-radius: 10px; border: 0; background: var(--boton); color: var(--boton-texto); font: inherit; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.boton.sec { background: transparent; color: var(--tinta); border: 1px solid var(--borde-f); font-weight: 600; }
+.chip { min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--borde-f); background: var(--hoja); color: var(--tinta); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.titulo-sec { font-size: 12px; font-weight: 700; color: var(--texto2); margin: 4px 0 -4px; }
+.pregunta { border: 1px solid var(--borde); border-radius: 14px; padding: 12px; display: grid; gap: 10px; }
+.pregunta legend, .pregunta .p { font-weight: 700; padding: 0; }
+.avance { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--texto2); }
+.avance i { flex: 1; height: 6px; border-radius: 99px; background: var(--suave); overflow: hidden; }
+.avance i b { display: block; height: 100%; width: 66%; background: var(--menta); border-radius: 99px; }
+.opcion { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--borde); border-radius: 10px; padding: 9px 10px; cursor: pointer; }
+.opcion.si { border-color: var(--tinta); background: var(--suave); }
+.opcion small { display: block; color: var(--texto2); font-size: 12px; }
+.marca { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--borde-f); flex-shrink: 0; margin-top: 2px; }
+.opcion.si .marca { border: 6px solid var(--tinta); }
+.cuadro { border-radius: 5px; }
+.opcion.si .cuadro { border: 2px solid var(--tinta); background: var(--tinta); }
+.recomendada { font-size: 11px; font-weight: 700; color: var(--pasa); background: var(--pasa-fondo); padding: 1px 6px; border-radius: 6px; margin-left: 4px; }
+.otra { border: 1px dashed var(--borde-f); border-radius: 10px; padding: 9px 10px; color: var(--texto2); }
+.borrador { border: 1px solid var(--borde); border-radius: 14px; overflow: hidden; }
+.borrador header { padding: 10px 12px; background: var(--suave); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+.borrador ol { margin: 0; padding: 10px 12px 10px 30px; display: grid; gap: 8px; }
+.nivel { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 6px; background: var(--azul-fondo); color: var(--azul); margin-right: 4px; }
+.porque { margin: 0; padding: 10px 12px; border-top: 1px solid var(--borde); font-size: 13px; }
+.porque b { color: var(--sol-texto); }
+.ok { color: var(--pasa); font-size: 12px; font-weight: 600; }
+.escribir { border-top: 1px solid var(--borde); padding: 10px 14px; display: flex; gap: 8px; align-items: center; }
+.escribir div { flex: 1; min-height: 44px; border: 1px solid var(--borde-f); border-radius: 12px; display: flex; align-items: center; padding: 0 12px; color: var(--texto2); }
+.pie { margin: 0; padding: 0 14px 12px; font-size: 11px; color: var(--texto2); }
+.celular { width: 360px; max-width: 100%; margin: 0 auto; border: 10px solid #0E1626; border-radius: 34px; overflow: hidden; }
+.celular .panel { border: 0; border-radius: 0; box-shadow: none; min-height: 640px; }
+.fijo { position: sticky; bottom: 0; background: var(--hoja); border-top: 1px solid var(--borde); padding: 10px 14px; display: flex; gap: 8px; }
+.fijo .boton { flex: 1; justify-content: center; min-height: 44px; }
+.decisiones { max-width: 1340px; margin: 0 auto 48px; padding: 0 16px; }
+.decisiones section { background: var(--hoja); border: 1px solid var(--borde); border-radius: 16px; padding: 16px 18px; }
+.decisiones h2 { margin: 0 0 8px; font-size: 18px; }
+.decisiones li { margin: 6px 0; }
+@media (max-width: 420px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="pagina">
+  <div>
+    <h1>El Asistente que conversa</h1>
+    <p class="sub">Propuesta del 20/11 sobre el cuadro aprobado <b>D3-Asistente</b>. El Asistente te sugiere con datos de tu clase,
+      te hace dos o tres preguntas antes de preparar algo, y te propone un borrador que puedes afinar conversando.
+      Nada se publica sin ti. Todos los textos y datos son de ejemplo.</p>
+  </div>
+  <button class="tema" type="button" onclick="cambiarTema()">Claro / oscuro</button>
+</header>
+
+<main>
+  <!-- 1. Te sugiere -->
+  <div class="momento">
+    <p class="etiqueta">1 · Te sugiere (interviene con datos de tu clase)</p>
+    <div class="panel">
+      <div class="cabeza">
+        <svg width="40" height="36" viewBox="14 6 192 166" aria-hidden="true"><rect x="30" y="30" width="140" height="128" rx="18" fill="#14213D"/><rect x="40" y="40" width="120" height="112" rx="10" fill="#fff"/><rect x="50" y="68" width="45" height="38" rx="14" fill="#fff" stroke="#00C2A8" stroke-width="6.5"/><rect x="105" y="68" width="45" height="38" rx="14" fill="#fff" stroke="#00C2A8" stroke-width="6.5"/><path d="M63 91 L72 83 L81 91 M119 91 L128 83 L137 91" fill="none" stroke="#14213D" stroke-width="6" stroke-linecap="round"/><path d="M86 116 Q100 126 114 116" fill="none" stroke="#14213D" stroke-width="5.5" stroke-linecap="round"/></svg>
+        <div><strong>Asistente STIRE <span class="ia">IA</span></strong><span>Te propongo; tú decides qué queda.</span></div>
+      </div>
+      <p class="contexto">Estás en <b>Fundamentos · G2 › Operadores y expresiones</b></p>
+      <div class="cuerpo">
+        <div class="burbuja">Hola, Pedro. Miré cómo va la clase esta semana y encontré dos cosas en las que te puedo ayudar:</div>
+        <div class="sugerencia">
+          <p><b>6 estudiantes van «En camino» en Operadores y orden.</b></p>
+          <p class="dato">Nivel de la clase 46 %. Fallan sobre todo en los paréntesis (14 de 28 intentos).</p>
+          <div class="fila"><button class="boton">Preparar un refuerzo</button><button class="boton sec">Ver quiénes</button></div>
+        </div>
+        <div class="sugerencia">
+          <p><b>«Operadores y orden» solo tiene ejercicios básicos.</b></p>
+          <p class="dato">Quien ya lo hace no tiene un intermedio para seguir subiendo.</p>
+          <div class="fila"><button class="boton sec">Proponer 3 intermedios</button></div>
+        </div>
+        <p class="titulo-sec">O pídeme algo</p>
+        <div class="fila">
+          <button class="chip">Ejercicios</button><button class="chip">Explicación</button><button class="chip">Otra forma de verla</button>
+          <button class="chip">Estructura del curso</button><button class="chip">Analizar mi clase</button>
+        </div>
+      </div>
+      <div class="escribir"><div>Pídele algo con tus palabras…</div><button class="boton" aria-label="Enviar">➤</button></div>
+      <p class="pie">Los nombres de tus estudiantes no se envían a la IA. Las sugerencias salen de los datos de STIRE, sin gastar tu clave.</p>
+    </div>
+    <p class="nota">Las sugerencias se calculan con los datos de STIRE (competencias, errores frecuentes, banco de ejercicios), sin IA. Se pueden apagar en Ajustes.</p>
+  </div>
+
+  <!-- 2. Te pregunta -->
+  <div class="momento">
+    <p class="etiqueta">2 · Te pregunta antes de preparar (como un cuestionario)</p>
+    <div class="panel">
+      <div class="cabeza">
+        <svg width="40" height="36" viewBox="14 6 192 166" aria-hidden="true"><rect x="30" y="30" width="140" height="128" rx="18" fill="#14213D"/><rect x="40" y="40" width="120" height="112" rx="10" fill="#fff"/><rect x="50" y="68" width="45" height="38" rx="14" fill="#fff" stroke="#00C2A8" stroke-width="6.5"/><rect x="105" y="68" width="45" height="38" rx="14" fill="#fff" stroke="#00C2A8" stroke-width="6.5"/><path d="M63 91 L72 83 L81 91 M119 91 L128 83 L137 91" fill="none" stroke="#14213D" stroke-width="6" stroke-linecap="round"/><path d="M86 116 Q100 126 114 116" fill="none" stroke="#14213D" stroke-width="5.5" stroke-linecap="round"/></svg>
+        <div><strong>Asistente STIRE <span class="ia">IA</span></strong><span>Refuerzo para Operadores y orden</span></div>
+      </div>
+      <div class="cuerpo">
+        <div class="burbuja mia">Preparar un refuerzo</div>
+        <div class="burbuja">Antes de prepararlo, dos preguntas rápidas para que te sirva a la primera.</div>
+        <div class="avance">Pregunta 2 de 3 <i><b></b></i></div>
+        <div class="pregunta">
+          <span class="p">¿Qué tipo de ejercicios quieres?</span>
+          <div class="opcion si"><span class="marca cuadro"></span><span>Completar código <span class="recomendada">recomendado</span><small>Ven el paréntesis en su sitio, sin escribir todo el programa.</small></span></div>
+          <div class="opcion si"><span class="marca cuadro"></span><span>Opción múltiple<small>Rápido de corregir; muestra el error más común.</small></span></div>
+          <div class="opcion"><span class="marca cuadro"></span><span>Programar<small>Lo comprueba el juez con casos de prueba.</small></span></div>
+          <div class="otra">Otra cosa: escríbela aquí…</div>
+        </div>
+        <div class="fila"><button class="boton">Siguiente</button><button class="boton sec">Decide tú</button><button class="boton sec">Atrás</button></div>
+        <div class="pregunta" style="opacity:.6">
+          <span class="p">Ya respondiste</span>
+          <span class="dato">1 · ¿Para quiénes? <b>Los 6 que van «En camino»</b> · cambiar</span>
+        </div>
+      </div>
+      <p class="pie">Las preguntas cambian según lo que pidas. «Decide tú» usa lo recomendado y sigue.</p>
+    </div>
+    <p class="nota">Una pregunta a la vez, con opciones y «Otra cosa». Es lo que hace Claude cuando le falta un dato: pregunta en vez de adivinar.</p>
+  </div>
+
+  <!-- 3. Te propone -->
+  <div class="momento">
+    <p class="etiqueta">3 · Te propone y lo afinan juntos</p>
+    <div class="panel">
+      <div class="cabeza">
+        <svg width="40" height="36" viewBox="14 6 192 166" aria-hidden="true"><rect x="30" y="30" width="140" height="128" rx="18" fill="#14213D"/><rect x="40" y="40" width="120" height="112" rx="10" fill="#fff"/><rect x="50" y="68" width="45" height="38" rx="14" fill="#fff" stroke="#00C2A8" stroke-width="6.5"/><rect x="105" y="68" width="45" height="38" rx="14" fill="#fff" stroke="#00C2A8" stroke-width="6.5"/><path d="M63 91 L72 83 L81 91 M119 91 L128 83 L137 91" fill="none" stroke="#14213D" stroke-width="6" stroke-linecap="round"/><path d="M86 116 Q100 126 114 116" fill="none" stroke="#14213D" stroke-width="5.5" stroke-linecap="round"/></svg>
+        <div><strong>Asistente STIRE <span class="ia">IA</span></strong><span>Refuerzo para Operadores y orden</span></div>
+      </div>
+      <div class="cuerpo">
+        <div class="burbuja">Listo. Te propongo 3 ejercicios en escalera para los 6 que van «En camino».</div>
+        <div class="borrador">
+          <header><span>Borrador · 3 ejercicios</span><span class="ok">✓ comprobados</span></header>
+          <ol>
+            <li><span class="nivel">Básico</span> Completar: <code>console.log(2 ▢ (3 + 4))</code> debe mostrar 14.</li>
+            <li><span class="nivel">Básico</span> ¿Cuánto vale <code>10 - 4 / 2</code>? Con el error común como distractor.</li>
+            <li><span class="nivel">Intermedio</span> Completar: el total con envío, con paréntesis.</li>
+          </ol>
+          <p class="porque"><b>Por qué así:</b> atacan el error que más repite tu clase (olvidar los paréntesis) y van de lo
+            más fácil a lo menos fácil, como pidió el profesor Toscano.</p>
+        </div>
+        <div class="fila"><button class="boton">Aplicar como refuerzo</button><button class="boton sec">Ver y editar</button><button class="boton sec">Descartar</button></div>
+        <p class="titulo-sec">Afinarlo</p>
+        <div class="fila"><button class="chip">Uno más fácil</button><button class="chip">Con otro ejemplo</button><button class="chip">Uno de programar</button><button class="chip">Otra versión</button></div>
+        <div class="burbuja mia">Que el último sea con precios de la cafetería</div>
+        <div class="burbuja">Cambié el tercero: «Dos empanadas de 2 500 y un jugo de 3 000, con 10 % de descuento». ¿Lo dejo así?</div>
+      </div>
+      <div class="escribir"><div>Pídele algo sobre este borrador…</div><button class="boton" aria-label="Enviar">➤</button></div>
+      <p class="pie">Nada se publica sin ti, y «Aplicar» se puede deshacer.</p>
+    </div>
+    <p class="nota">El borrador queda en la conversación: cada «afinarlo» crea una versión nueva y se puede volver a la anterior.</p>
+  </div>
+
+  <!-- Celular -->
+  <div class="momento">
+    <p class="etiqueta">En el celular · la misma pregunta</p>
+    <div class="celular">
+      <div class="panel">
+        <div class="cabeza"><strong>Asistente STIRE <span class="ia">IA</span></strong></div>
+        <div class="cuerpo">
+          <div class="avance">Pregunta 2 de 3 <i><b></b></i></div>
+          <div class="pregunta">
+            <span class="p">¿Qué tipo de ejercicios quieres?</span>
+            <div class="opcion si"><span class="marca cuadro"></span><span>Completar código <span class="recomendada">recomendado</span></span></div>
+            <div class="opcion si"><span class="marca cuadro"></span><span>Opción múltiple</span></div>
+            <div class="opcion"><span class="marca cuadro"></span><span>Programar</span></div>
+            <div class="otra">Otra cosa…</div>
+          </div>
+        </div>
+        <div class="fijo"><button class="boton sec">Decide tú</button><button class="boton">Siguiente</button></div>
+      </div>
+    </div>
+    <p class="nota">En el celular los botones quedan fijos abajo, a la vista, como en la clave del Tutor.</p>
+  </div>
+</main>
+
+<div class="decisiones"><section>
+  <h2>Lo que decides tú antes de construirlo</h2>
+  <ol>
+    <li><b>Las preguntas:</b> fijas por tarea (sin gastar la clave, siempre iguales; recomendado) o que las proponga la IA según lo que pidas (más flexibles, gastan la clave).</li>
+    <li><b>Las sugerencias del punto 1:</b> siempre visibles al abrir el Asistente, o solo un aviso en el botón «Asistente» (sin abrirlo).</li>
+    <li><b>Dónde vive:</b> se queda como panel a la derecha (como hoy), o también en «Crear una clase» como pasos (cuadro D3-Crear-Asistente, P-19).</li>
+  </ol>
+</section></div>
+
+<script>
+function cambiarTema() {
+  const r = document.documentElement;
+  const oscuro = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = oscuro ? 'light' : 'dark';
+}
+</script>
+</body>
+</html>
