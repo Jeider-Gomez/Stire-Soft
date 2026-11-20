@@ -25,6 +25,21 @@ Estados: ⬜ falta · 🔄 en curso · ✅ hecho e incluido en el artículo.
 | ⬜ | Uso actual del Tutor (mensajes, cuentas con clave y tiempos de respuesta, desde el 12/10) | Actualizar la subsección «Usabilidad y uso del tutor» |
 | ⬜ | Leer el PDF de Woźniak y Gorzelańczyk (1994) para saber qué formula | Hoy SM-2 se cita a Woźniak (1990) |
 
+## Lo que haría más fuerte el artículo (revisión del 20/11)
+
+Sale de cruzar la retroalimentación de Toscano (`../RETROALIMENTACION_TOSCANO_2026-10-28.md`) con lo que el
+artículo ya dice. Ordenado de más a menos útil para el artículo.
+
+| | Qué falta | Por qué sirve | Qué se agrega al artículo |
+|---|---|---|---|
+| 🔄 | **Simulación de docente y estudiantes** (`docs/calidad/simulacion/`): un docente crea dos clases desde cero, una con las competencias en «recomendar» y otra en «informar», y 15 estudiantes simulados con habilidad conocida recorren cada una | Es la única forma, antes de la prueba piloto, de comprobar si la ecuación de Toscano estima bien lo que el estudiante sabe (se conoce su habilidad real) y si recomendar cambia el recorrido | Un párrafo en «Evaluación» con la correlación entre el nivel estimado y la habilidad real, y la comparación entre las dos clases, dicho como simulación, no como prueba con personas |
+| ⬜ | **Repetir la prueba de estrés en una máquina como la de Azure** (contenedor de 2 CPU y 4 GB) | La de noviembre corrió en un portátil de 8 GB; un evaluador puede preguntar si el servidor real aguanta lo mismo | Cambiar la sección F para que los números sean los de la máquina real |
+| ⬜ | **Test inicial de competencias** (Toscano, recomendación 5): hoy solo hay reto de entrada por lección | Toscano lo pidió por nombre; sin él, el nivel de cada competencia arranca de cero para todos | La subsección de competencias diría cómo arranca cada estudiante |
+| ⬜ | **Banco etiquetado por perfil, visual o lector** (Toscano, recomendación 6; P45) | Es la segunda mitad de lo que pidió sobre el banco de ejercicios | Una frase en competencias y una limitación menos |
+| ⬜ | **Explicar el código en el editor** (Toscano, recomendación 3; P37) | Toscano lo propuso para quien se pierde en el código | Una línea en la descripción del Tutor |
+| ⬜ | **Evaluar los prompts con casos de oro** (P41): hoy solo hay instantáneas y versiones | Dar un número de calidad de las respuestas del Tutor (por ejemplo, cuántas veces dio la solución cuando no debía) | Un dato en la evaluación del Tutor |
+| ⬜ | **Prueba piloto con estudiantes del curso** (ya en «Datos y pruebas») | Sigue siendo lo más importante: todo lo anterior es simulación | La subsección de resultados con personas |
+
 ## Del propio artículo
 
 | | Qué falta |
