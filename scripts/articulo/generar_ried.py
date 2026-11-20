@@ -17,18 +17,18 @@ RAIZ = Path(__file__).resolve().parents[2] / 'docs' / 'curso-ddse3' / 'articulo-
 PLANTILLA = RAIZ / 'plantilla_articulos_ried.docx'
 SALIDA = RAIZ / 'STIRE_RIED_borrador.docx'
 
-TITULO = 'Un tutor inteligente para aprender a programar: implementación y evaluación de STIRE en la universidad'
-TITULO_EN = 'An intelligent tutor for learning to program: implementation and evaluation of STIRE at university'
+TITULO = 'Un tutor inteligente para aprender a programar: implementación y evaluación de STIRE con usuarios principiantes'
+TITULO_EN = 'An intelligent tutor for learning to program: implementation and evaluation of STIRE with novice users'
 
 RESUMEN = (
-    'Aprender a programar en el primer semestre universitario exige retener conceptos que se acumulan de una semana a '
+    'Aprender a programar exige retener conceptos que se acumulan de una semana a '
     'otra y recibir ayuda cuando el estudiante se equivoca. Este trabajo presenta la implementación y la '
     'evaluación de STIRE, un sistema tutor inteligente web para el curso Fundamentos de Algoritmia de una universidad '
     'pública colombiana. STIRE combina ejercicios calificados automáticamente, un tutor conversacional basado en un '
     'modelo de lenguaje que orienta con preguntas en lugar de dar la solución, repasos programados con una adaptación '
     'del algoritmo SM-2 y un nivel por competencia que sugiere el siguiente ejercicio. La evaluación, de enfoque mixto, '
     'tuvo tres pruebas: una evaluación heurística con un instrumento de 34 ítems, una prueba de observación con 10 '
-    'usuarios finales y una prueba de estrés con una batería de ocho casos por estudiante, de 10 a 100 estudiantes '
+    'personas de 18 a 24 años, familiares y conocidos del equipo, y una prueba de estrés con ocho casos, de 10 a 100 estudiantes '
     'simultáneos. La heurística dio un promedio de 4,21 sobre 5. Las 10 personas, 9 de ellas sin experiencia en '
     'programación, completaron el recorrido, y la usabilidad percibida (SUS) fue de 63,1, por debajo de la que dio el '
     'equipo (81,5). Las principales barreras fueron activar el tutor con una clave personal y entender para qué sirven los '
@@ -86,7 +86,7 @@ CUERPO = [
           'que se tomó porque el proveedor del modelo de lenguaje no permite menores. Los problemas que más se repitieron '
           'fueron los mensajes de error de programación todavía técnicos y ayudas que se abrían fuera de la pantalla.'),
     ('s', 'Prueba con usuarios finales'),
-    ('p', 'Participaron 10 personas de 18 a 24 años (media de 20,0 años); 9 no sabían programar y una sabía un poco. Siete '
+    ('p', 'Participaron 10 personas de 18 a 24 años (media de 20,0 años), familiares, amigos y conocidos del equipo de distintos lugares, elegidas por conveniencia; 9 no sabían programar y una sabía un poco. Siete '
           'usaron un computador y tres un celular. Las diez completaron el recorrido y ocho necesitaron al menos una pista '
           'del observador. Lo más valorado fueron las lecciones con ejemplos de la vida diaria, poder escuchar la lección, '
           'los ejercicios de arrastrar y soltar y el tutor cuando estaba activo; todas las personas a quienes se les '
@@ -138,7 +138,7 @@ TABLAS = {
     'pruebas': [
         ['Prueba', 'Propósito', 'Participantes', 'Instrumento'],
         ['Evaluación heurística', 'Encontrar problemas de usabilidad y de potencial educativo', '5 evaluadores del equipo', '34 ítems Likert 1-5, frecuencia e impacto'],
-        ['Usuarios finales', 'Ver qué hace una persona nueva con el sistema', '10 personas de 18 a 24 años', 'Hoja de observación y escala SUS'],
+        ['Usuarios finales', 'Ver qué hace una persona nueva con el sistema', '10 personas de 18 a 24 años (familiares y conocidos)', 'Hoja de observación y escala SUS'],
         ['Estrés', 'Saber si el servidor aguanta un curso completo', '10, 30, 60 y 100 estudiantes virtuales', 'Batería de 8 casos de uso por estudiante'],
     ],
     'usuarios': [
