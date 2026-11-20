@@ -137,8 +137,9 @@ export class CompetenciasService {
     const filas: Array<{ studentId: number; activityId: number; score: number; fecha: Date }> = await this.dataSource.query(
       `SELECT s.studentId, s.activityId, s.score, COALESCE(s.submittedAt, s.createdAt) AS fecha
          FROM submissions s
-        WHERE s.studentId IN (?) AND s.activityId IN (?) AND s.status <> ? AND s.deletedAt IS NULL`,
-      [studentIds, activityIds, SubmissionStatus.IN_PROGRESS],
+        WHERE s.studentId IN (?) AND s.activityId IN (?) AND s.status = ? AND s.deletedAt IS NULL`,
+      // Solo las calificadas: una entrega que espera al juez (SUBMITTED) tiene un puntaje a medias y contaba como fallada.
+      [studentIds, activityIds, SubmissionStatus.GRADED],
     );
     for (const f of filas) {
       porEstudiante.get(Number(f.studentId))?.push({ activityId: Number(f.activityId), score: Number(f.score), fecha: new Date(f.fecha) });
