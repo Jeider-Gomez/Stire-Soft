@@ -3,7 +3,7 @@
 **Qué es:** un docente simulado crea dos clases desde cero copiando el curso de Fundamentos de Algoritmia
 (ALGO-203413), y 30 estudiantes simulados (15 en cada clase) recorren las 6 primeras lecciones haciendo lo que STIRE
 les recomienda. Todo pasa por la API, como en la app. **No es una prueba con personas**: sirve para comprobar el
-sistema antes de la prueba piloto, y sus números no se pueden presentar como resultados con estudiantes.
+sistema antes de llevarlo al aula, y sus números no se pueden presentar como resultados con estudiantes.
 
 - Script: `scripts/simulacion/docente-y-estudiantes.ts` (semilla `20261121`; con la misma semilla sale lo mismo).
 - Datos completos: `resultados-20261121.json` (cada estudiante, cada competencia, lo que vio el docente).
@@ -46,10 +46,12 @@ tocara la base se quedaba esperando sin respuesta, incluido el inicio de sesión
 - **Arreglo:** commit `9434c21`. La conexión se suelta justo después de guardar. Tiene 3 pruebas nuevas, y las 2
   principales fallan sin el arreglo.
 - **Resultado:** la segunda corrida (esta) terminó sin cuelgues: 913 entregas en 5,9 minutos.
-- **Por qué la prueba de estrés de noviembre no lo vio:** muy probablemente porque, al agregar las competencias, el
-  aviso de «entrega calificada» pasó a hacer más trabajo en la base. Es una hipótesis, no está comprobada.
-- **Pendiente:** el arreglo está en `main`, pero **el servidor de Azure no lo tiene hasta desplegarlo**. Mientras
-  tanto, una clase que entregue al mismo tiempo (un quiz en el aula) podría colgarlo.
+- **Por qué la prueba de estrés del 18/11 no lo vio:** no está comprobado. La forma de entregar existe desde el
+  14/09. Aquella prueba duraba 45 segundos por etapa, con pausas de 1 a 3 segundos y pocas entregas
+  en cada sesión (una batería de 8 casos). Esta corre 6 minutos seguidos y cada estudiante entrega unas 30 veces, así que coinciden muchas más
+  entregas a la vez. El resultado de aquella prueba sigue siendo válido para lo que midió, pero no cubría este caso.
+- **Desplegado en Azure el 20/11** (commit `cccc18a`). Hasta ese día, una clase entregando al mismo tiempo (un quiz
+  en el aula) podía colgar el servidor.
 
 ### Hallazgo 2 (arreglado): la clase copiada llega sin publicar y nadie se lo dice al docente
 
@@ -140,7 +142,7 @@ Lo que el docente ve por competencia (cantidad de ejercicios básicos / intermed
 
 ## 4. Qué sigue
 
-1. Desplegar el arreglo del hallazgo 1 en Azure (comandos SSH en la conversación del 20/11).
+1. ~~Desplegar el arreglo del hallazgo 1 en Azure~~: hecho el 20/11.
 2. Llevar el hallazgo 3 a Toscano: ¿la ecuación debe dar más peso a lo reciente?
 3. Completar el banco con ejercicios intermedios (hallazgo 5); el Asistente rediseñado los puede proponer.
 4. Repetir con 3 o 4 semillas más y 12 lecciones, y en un contenedor de 2 CPU y 4 GB, antes de llevar números al
