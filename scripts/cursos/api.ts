@@ -37,6 +37,10 @@ export class Api {
     return this.request<T>('PATCH', ruta, body);
   }
 
+  delete<T>(ruta: string): Promise<T> {
+    return this.request<T>('DELETE', ruta);
+  }
+
   private async request<T>(method: string, ruta: string, body?: unknown, reintentos = 8): Promise<T> {
     const espera = ultimaPeticion + PAUSA_MINIMA_MS - Date.now();
     if (espera > 0) await esperar(espera);
