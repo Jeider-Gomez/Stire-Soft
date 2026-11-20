@@ -101,6 +101,8 @@ export function useClasesDocente() {
       if (d.sourceClassId) {
         try {
           await api.post(`/reuse/classes/${nueva.id}/import`, { sourceClassId: d.sourceClassId })
+          // La copia llega sin publicar; sin decirlo, el docente comparte el código y sus estudiantes no ven nada (20/11).
+          aviso += ' El contenido copiado está sin publicar: revísalo en Contenido y publica cada módulo cuando quieras que tus estudiantes lo vean.'
         } catch (err: unknown) {
           aviso = `Clase «${nueva.name}» creada con el código ${nueva.code}, pero no se pudo copiar el contenido (${messageOf(err, 'error del servidor')}). Tráelo desde Contenidos con «Traer de otra clase».`
         }
