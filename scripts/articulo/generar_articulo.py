@@ -43,10 +43,10 @@ CUERPO = [
           'calendario de repasos que adapta el algoritmo SM-2 al ritmo de un semestre y un nivel por competencia que elige '
           'el siguiente ejercicio. El desarrollo siguió la metodología MODESEC en iteraciones semanales. La evaluación tuvo '
           'cuatro partes: listas de chequeo de interfaz y de sistemas tutores (cumplimiento final de 100 % y 95,8 %), una '
-          'evaluación heurística del equipo (promedio de 4,21 sobre 5 en 33 ítems), una prueba de observación con 9 usuarios '
-          'finales de 18 a 24 años, 8 de ellos sin saber programar, y una prueba de estrés con hasta 100 estudiantes '
+          'evaluación heurística del equipo (promedio de 4,21 sobre 5 en 33 ítems), una prueba de observación con 10 usuarios '
+          'finales de 18 a 24 años, 9 de ellos sin saber programar, y una prueba de estrés con hasta 100 estudiantes '
           'simulados a la vez. Todos los participantes completaron el recorrido y quienes respondieron dijeron que usarían '
-          'STIRE para aprender, pero 6 de 9 tuvieron dificultad para activar el tutor con su clave de acceso al modelo y 6 de 9 '
+          'STIRE para aprender, pero 6 de 10 tuvieron dificultad para activar el tutor con su clave de acceso al modelo y 6 de 10 '
           'no entendieron para qué sirven los repasos. El servidor no falló con 100 estudiantes; el ejecutor de código fue '
           'el cuello de botella, con esperas de hasta 10 segundos.'),
     ('p', '**PALABRAS CLAVES:** aprendizaje de la programación; inteligencia artificial; repetición espaciada; sistemas '
@@ -195,19 +195,20 @@ CUERPO = [
           'permite menores. Lo que más se repitió fueron los mensajes de error de programación todavía técnicos y ayudas que '
           'se abren fuera de la pantalla.'),
     ('s', 'E. Prueba con usuarios finales'),
-    ('p', 'Participaron 9 personas de 18 a 24 años (media de 20,2), 8 sin conocimientos de programación y 1 con pocos; 6 '
-          'usaron computador y 3 celular. Las nueve completaron el recorrido, y 7 necesitaron al menos una pista del '
+    ('p', 'Participaron 10 personas de 18 a 24 años (media de 20,0), 9 sin conocimientos de programación y 1 con pocos; 7 '
+          'usaron computador y 3 celular. Las diez completaron el recorrido, y 8 necesitaron al menos una pista del '
           'observador. Lo que más valoraron fueron las lecciones con ejemplos de la vida diaria, escuchar la lección, los '
           'ejercicios de arrastrar y soltar y el tutor cuando funcionó; todas las personas a quienes se les preguntó dijeron '
           'que usarían STIRE o su tutor para aprender. La Tabla 3 resume las dificultades que se repitieron. Las cuatro '
           'personas que respondieron la escala SUS dieron 47,5, 62,5, 70 y 72,5 (media de 63,1), por debajo de los 81,5 que '
           'había dado el equipo.'),
-    ('cap', 'Tabla 3. Dificultades que se repitieron en la prueba con 9 usuarios finales'),
+    ('cap', 'Tabla 3. Dificultades que se repitieron en la prueba con 10 usuarios finales'),
     ('tabla', 'usuarios'),
     ('p', 'La barrera del tutor que se intuía en los registros quedó a la vista: una persona escribió la clave del modelo '
           'en el campo del código de la clase, y otra dijo que sin la ayuda del observador no lo habría podido usar. En '
           'programación, la revisión exacta de la salida frustró a dos personas, que fallaron por un espacio o una '
-          'mayúscula.'),
+          'mayúscula. Con el tutor activo, la décima persona lo encontró útil, pero sus respuestas le parecieron demasiado '
+          'técnicas y extensas para quien empieza, y no sabía que podía seguir preguntándole.'),
     ('s', 'F. Prueba de estrés'),
     ('p', 'El servidor no tuvo ninguna falla en las cuatro etapas (Tabla 4). Las respuestas de 400 que se contaron son el '
           'límite de intentos por ejercicio, que funcionó como debe, porque los mismos estudiantes repetían los mismos '
@@ -235,7 +236,7 @@ CUERPO = [
           'tres barreras de entrada: activar el tutor con una clave propia, entender los repasos y una revisión de código '
           'demasiado exacta. La lección metodológica es doble: la inteligencia artificial y el propio equipo sirven para '
           'revisar lo verificable, pero no reemplazan la prueba con usuarios. Las limitaciones son que la prueba con usuarios '
-          'fue con 9 personas, sin grupo de comparación, y que no se ha medido el aprendizaje. Como trabajo futuro se '
+          'fue con 10 personas, sin grupo de comparación, y que no se ha medido el aprendizaje. Como trabajo futuro se '
           'proponen una prueba con estudiantes del curso durante un semestre, un tutor que no exija clave propia, ejecutar el '
           'código en el navegador para quitar la espera y un programador de repasos que aprenda de los datos.'),
 
@@ -298,11 +299,11 @@ TABLAS = {
     ],
     'usuarios': [
         ['Dificultad', 'Personas'],
-        ['Activar el tutor con la clave de acceso al modelo', '6 de 9'],
-        ['Entender o encontrar los repasos', '6 de 9'],
-        ['Registrarse (no lo encuentran o error de conexión)', '5 de 9'],
-        ['Completar pseudocódigo o programar sin saber', '5 de 9'],
-        ['Ordenar los pasos del ejercicio del café', '3 de 9'],
+        ['Activar el tutor con la clave de acceso al modelo', '6 de 10'],
+        ['Entender o encontrar los repasos', '6 de 10'],
+        ['Registrarse (no lo encuentran o error de conexión)', '5 de 10'],
+        ['Completar pseudocódigo o programar sin saber', '5 de 10'],
+        ['Ordenar los pasos de un algoritmo (como el del café)', '4 de 10'],
     ],
     'estres': [
         ['Estudiantes a la vez', 'Pedidos por segundo', 'p95 general', 'p95 al probar código'],

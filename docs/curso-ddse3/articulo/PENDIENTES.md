@@ -19,7 +19,7 @@ Estados: ⬜ falta · 🔄 en curso · ✅ hecho e incluido en el artículo.
 
 | | Qué falta | Qué se agrega al artículo cuando esté |
 |---|---|---|
-| ⬜ | **El décimo usuario de la prueba con usuarios finales** (Toscano pidió «unas 10 personas»; van 9). Mismo protocolo (`docs/calidad/PROTOCOLO_OBSERVACION.md`), y que responda la escala SUS: solo 4 de los 9 la respondieron | En la sección E: «Participaron 10 personas…», la Tabla 3 y la media de SUS con 5 respuestas |
+| ✅ | **El décimo usuario de la prueba con usuarios finales** (hecho el 20/11 por Jorge: incluido en la sección E y la Tabla 3; no respondió el SUS, que sigue con 4) (Toscano pidió «unas 10 personas»; van 9). Mismo protocolo (`docs/calidad/PROTOCOLO_OBSERVACION.md`), y que responda la escala SUS: solo 4 de los 9 la respondieron | En la sección E: «Participaron 10 personas…», la Tabla 3 y la media de SUS con 5 respuestas |
 | ⬜ | Dato local de pérdida o repitencia de Fundamentos de Algoritmia, con su fuente | Una frase en la introducción |
 | ⬜ | Confirmación de MOD-02 (Pedro) | La Tabla 2 pasaría de 23 a 24 puntos en tutores |
 | ⬜ | Uso actual del Tutor (mensajes, cuentas con clave y tiempos de respuesta, desde el 12/10) | Actualizar la subsección «Usabilidad y uso del tutor» |
@@ -38,7 +38,7 @@ artículo ya dice. Ordenado de más a menos útil para el artículo.
 | ⬜ | **Banco etiquetado por perfil, visual o lector** (Toscano, recomendación 6; P45) | Es la segunda mitad de lo que pidió sobre el banco de ejercicios | Una frase en competencias y una limitación menos |
 | ⬜ | **Explicar el código en el editor** (Toscano, recomendación 3; P37) | Toscano lo propuso para quien se pierde en el código | Una línea en la descripción del Tutor |
 | ⬜ | **Evaluar los prompts con casos de oro** (P41): hoy solo hay instantáneas y versiones | Dar un número de calidad de las respuestas del Tutor (por ejemplo, cuántas veces dio la solución cuando no debía) | Un dato en la evaluación del Tutor |
-| ⬜ | **El décimo usuario** (ya en «Datos y pruebas») | Cierra la muestra que pidió Toscano | La sección E con 10 personas |
+| ✅ | **El décimo usuario** (hecho el 20/11) (ya en «Datos y pruebas») | Cierra la muestra que pidió Toscano | La sección E con 10 personas |
 
 ## Del propio artículo
 
