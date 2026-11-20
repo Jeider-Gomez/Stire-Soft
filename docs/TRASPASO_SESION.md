@@ -58,10 +58,14 @@ chats trabajan a la vez, anotarse en `docs/v3/BITACORA.md`.
 **En curso o pedido el 20/11:**
 
 - Más corridas de la simulación (semillas 20261122 a 20261124, 12 lecciones), para agregar sus resultados al informe.
-- Una simulación **en el navegador** de un usuario novato que se confunde: perfiles de estudiante como pidió Toscano
-  (`docs/curso-ddse3/README.md` §4c).
-- Simular cursos creados con el Asistente (con IA), probando distintas versiones. **Necesita una clave de Google AI
-  Studio**: no hay ninguna en el `.env` local.
+- **Hecha (20/11):** simulación en el navegador de una estudiante novata, con la tabla de perfiles que pidió Toscano:
+  `docs/calidad/simulacion/SIMULACION_NAVEGADOR_NOVATO_2026-11-20.md`. Se arreglaron la clave pegada en el código de la
+  clase, el error de mayúsculas en nombres conocidos y los «casi» con varias diferencias. **Queda pendiente:** en el
+  celular, el globo del recorrido tapa lo que explica.
+- **Lista, sin correr:** `scripts/simulacion/curso-con-asistente.ts`. El docente pide al Asistente estructuras,
+  ejercicios y programación en 8 versiones del pedido, y el script mide cada borrador. **Necesita una clave de Google AI
+  Studio** en `STIRE_CLAVE_GOOGLE`; no hay ninguna en el `.env` local, y la clave nunca va al repositorio.
+- **Pendiente de desplegar en Azure:** `746a82e` (orientación al entregar, servidor). Lo del frontend publica solo.
 
 ## 1. Con quién trabajas
 
