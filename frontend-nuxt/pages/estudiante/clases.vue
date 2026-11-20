@@ -54,7 +54,7 @@
             spellcheck="false"
             enterkeyhint="go"
             placeholder="Ej.: ALGO-203413"
-            @input="joinCode = codigoMientrasEscribe(joinCode)"
+            @input="alEscribirCodigo"
             class="min-h-[44px] px-3 py-1.5 text-xs font-mono uppercase tracking-wider rounded-md bg-base-blanco border border-base-borde-fuerte focus:border-acento-ambar-fuerte outline-none w-full sm:w-52" />
           <button
             type="submit"
@@ -157,7 +157,7 @@
 import { useClasesEstudiante, type MatriculaEstudiante as EnrollmentItem } from '~/composables/useClasesEstudiante'
 import { useStudentStore } from '~/stores/student'
 import { ArrowLeft, BookOpen, CircleAlert, CircleCheck, GraduationCap, KeyRound, Loader2, RefreshCw, UserRound } from 'lucide-vue-next'
-import { normalizarCodigo, codigoMientrasEscribe } from '~/utils/codigoClase'
+import { AVISO_CLAVE_EN_CODIGO, normalizarCodigo, codigoMientrasEscribe, pareceClaveDeGoogle } from '~/utils/codigoClase'
 import { colorDeClase } from '~/utils/pestanasClase'
 const { messageOf } = useApiErrorMessage()
 
@@ -171,6 +171,16 @@ const studentStore = useStudentStore()
 const enrolledClasses = ref<EnrollmentItem[]>([])
 const isLoading = ref(false)
 const joinCode = ref('')
+// La clave de Google pegada aquí por error: se borra y se dice dónde va (prueba con usuarios y simulación del 20/11).
+function alEscribirCodigo() {
+  if (pareceClaveDeGoogle(joinCode.value)) {
+    joinCode.value = ''
+    feedbackMessage.value = AVISO_CLAVE_EN_CODIGO
+    feedbackIsError.value = true
+    return
+  }
+  joinCode.value = codigoMientrasEscribe(joinCode.value)
+}
 const route = useRoute()
 const desdeQr = ref(false)
 const codigoRef = ref<HTMLInputElement | null>(null)

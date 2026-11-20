@@ -176,7 +176,8 @@
           <label for="classCode" class="text-[15px] font-semibold">Código de la clase <span class="text-xs font-normal text-base-texto-secundario">(opcional)</span></label>
           <input id="classCode" v-model="classCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false"
             placeholder="Ej.: ALGO-203413" class="campo-entrar font-mono uppercase tracking-wider" aria-describedby="codigo-ayuda-registro"
-            @input="classCode = codigoMientrasEscribe(classCode)" />
+            @input="alEscribirCodigo" />
+          <p v-if="avisoCodigo" role="alert" class="m-0 flex items-start gap-1.5 text-xs font-semibold text-semantico-falla"><AlertCircle :size="14" class="shrink-0 mt-px" aria-hidden="true" /><span>{{ avisoCodigo }}</span></p>
           <p id="codigo-ayuda-registro" class="m-0 text-xs text-base-texto-secundario">Si tu docente te dio un código, escríbelo para entrar a su clase de una vez.</p>
         </div>
       </div>
@@ -221,7 +222,7 @@
 import { AlertCircle, AlertTriangle, ArrowLeft, Bot, ChevronRight, Eye, EyeOff, QrCode, ShieldAlert, ShieldCheck } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { useCuentaPublica } from '~/composables/useCuentaPublica'
-import { codigoDeLaVuelta, codigoMientrasEscribe, rutaDeVuelta } from '~/utils/codigoClase'
+import { codigoDeLaVuelta, codigoMientrasEscribe, pareceClaveDeGoogle, rutaDeVuelta } from '~/utils/codigoClase'
 import { faltantesDelRegistro, type Faltantes } from '~/utils/registro'
 import { revisarFormatoClave } from '~/utils/claveGoogle'
 
@@ -251,6 +252,19 @@ const confirmaMayorDeEdad = ref(false)
 const aceptaTerminos = ref(false)
 const consienteInvestigacion = ref(false)
 const faltaAceptar = ref(false)
+
+// Si pega la clave de Google en el código de la clase, se pasa sola al campo de la clave (prueba con usuarios, 11/2026).
+const avisoCodigo = ref('')
+function alEscribirCodigo() {
+  if (pareceClaveDeGoogle(classCode.value)) {
+    if (!apiKey.value.trim()) apiKey.value = classCode.value.trim()
+    classCode.value = ''
+    avisoCodigo.value = 'Eso era tu clave de Google: la pasamos al campo de la clave, arriba. Aquí va el código que te dio tu docente.'
+    return
+  }
+  avisoCodigo.value = ''
+  classCode.value = codigoMientrasEscribe(classCode.value)
+}
 
 // Pasos del registro y validación propia (el formulario usa novalidate: los mensajes del navegador no dicen qué regla
 // de la contraseña falta y, con el paso 2 abierto, apuntaban a campos ocultos).

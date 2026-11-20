@@ -8,7 +8,7 @@
         <label for="codigo-inicio" class="text-sm font-semibold">Código de la clase</label>
         <input id="codigo-inicio" ref="campo" v-model="codigo" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false"
           placeholder="Ej.: ALGO-203413" class="campo-codigo" :aria-invalid="!!falta || undefined" :aria-describedby="falta ? 'codigo-inicio-falta' : undefined"
-          @input="codigo = codigoMientrasEscribe(codigo); falta = ''">
+          @input="if (pareceClaveDeGoogle(codigo)) { codigo = ''; falta = AVISO_CLAVE_EN_CODIGO } else { codigo = codigoMientrasEscribe(codigo); falta = '' }">
       </div>
       <button type="submit" class="sm:self-end min-h-[52px] px-6 rounded-xl font-bold boton-oscuro">Entrar</button>
     </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { codigoMientrasEscribe, normalizarCodigo } from '~/utils/codigoClase'
+import { AVISO_CLAVE_EN_CODIGO, codigoMientrasEscribe, normalizarCodigo, pareceClaveDeGoogle } from '~/utils/codigoClase'
 
 const codigo = ref('')
 const falta = ref('')

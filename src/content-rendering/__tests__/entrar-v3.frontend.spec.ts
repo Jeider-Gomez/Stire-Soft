@@ -10,7 +10,7 @@ describe('Entrar (v3)', () => {
 
   it('«Tengo un código» guarda la clase como el QR y «Crear cuenta» la lleva consigo', () => {
     expect(login).toContain('volver: `/estudiante/clases?codigo=${encodeURIComponent(limpio)}`');
-    expect(login).toContain("@input=\"codigo = codigoMientrasEscribe(codigo); faltaCodigo = ''\"");
+    expect(login).toContain("codigo = codigoMientrasEscribe(codigo); faltaCodigo = ''");
     expect(login).toContain(":to=\"{ path: '/auth/register', query: route.query }\"");
   });
 

@@ -29,6 +29,17 @@ export function codigoMientrasEscribe(texto: string): string {
     .slice(0, 30)
 }
 
+/**
+ * ¿Pegó su clave de Google en el campo del código? Pasó en la prueba con usuarios finales (11/2026) y volvió a pasar en
+ * la simulación de un usuario novato (20/11): el campo la pasaba a mayúsculas, la cortaba y no decía nada.
+ */
+export function pareceClaveDeGoogle(texto: string): boolean {
+  return /^\s*(AIza[0-9A-Za-z_-]{20,}|AQ\.[0-9A-Za-z._-]{20,})\s*$/.test(texto)
+}
+
+export const AVISO_CLAVE_EN_CODIGO =
+  'Eso es tu clave de Google, no el código de la clase. La clave va en el Tutor; aquí va el código que te dio tu docente, por ejemplo ALGO-203413.'
+
 // Sin letras ni números que se confunden al dictarlos o leerlos en un proyector (0/O, 1/I/L).
 const ALFABETO = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
 

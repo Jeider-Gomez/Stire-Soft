@@ -34,7 +34,7 @@
         <input id="codigo-clase" ref="codigoRef" v-model="codigo" type="text" autocapitalize="characters" autocomplete="off"
           spellcheck="false" placeholder="Ej.: ALGO-203413" class="campo-entrar font-mono uppercase tracking-wider"
           :aria-invalid="!!faltaCodigo || undefined" :aria-describedby="faltaCodigo ? 'codigo-falta' : 'codigo-ayuda'"
-          @input="codigo = codigoMientrasEscribe(codigo); faltaCodigo = ''" />
+          @input="if (pareceClaveDeGoogle(codigo)) { codigo = ''; faltaCodigo = AVISO_CLAVE_EN_CODIGO } else { codigo = codigoMientrasEscribe(codigo); faltaCodigo = '' }" />
         <p v-if="faltaCodigo" id="codigo-falta" class="m-0 text-xs font-semibold text-semantico-falla">{{ faltaCodigo }}</p>
         <p v-else id="codigo-ayuda" class="m-0 text-xs text-base-texto-secundario">Te lo da tu docente. Tiene esta forma: ALGO-203413.</p>
       </div>
@@ -150,7 +150,7 @@
 import { faltantesDelIngreso } from '~/utils/registro'
 import { AlertCircle, AlertTriangle, CheckCircle2, Eye, EyeOff, QrCode } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
-import { codigoDeLaVuelta, codigoMientrasEscribe, normalizarCodigo, rutaDeVuelta } from '~/utils/codigoClase'
+import { AVISO_CLAVE_EN_CODIGO, codigoDeLaVuelta, codigoMientrasEscribe, normalizarCodigo, pareceClaveDeGoogle, rutaDeVuelta } from '~/utils/codigoClase'
 
 definePageMeta({
   layout: 'auth'
